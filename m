@@ -1,53 +1,68 @@
-Return-Path: <linux-kernel+bounces-96416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 537EA875BD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:09:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C427875BDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:10:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD7B3B20C53
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:09:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDBD31C20F3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03FF4224DD;
-	Fri,  8 Mar 2024 01:09:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A59224EC;
+	Fri,  8 Mar 2024 01:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="C1ulDhg5"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63AC020B35;
-	Fri,  8 Mar 2024 01:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PKb8h0YU"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3B3219FD;
+	Fri,  8 Mar 2024 01:10:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709860171; cv=none; b=o/9NA9eLcw6CYvle1ytKVz4lgpzRKJr5DfO/g++aKaSepLbmKV3SO4ayfDURMLywTIdymZhMDVitLvrEWQkukl0LRSkL2Tay8Cset1JAsLQAEGPXQSMbcCvd1bF9b002i9ri/UQ1ouOI8jqRz63/9cFxpLeiV43JwhQbYCNteKY=
+	t=1709860222; cv=none; b=cQ68fT0da4xeSw5H3Zk9WnCFL8ZELpvQeu21KqBXsjBwR7VJq6dHIwgRPBYRDdPT7gtTzQaKfYhdvKnU53ba82hNBfRj8Q5wo0lbgN3iTc13AgCj8TUzepy5L9RDIHv6T4JH6aHwAj+Di/stvq+i+FJA6nXWz/oq7tVnlXUTiXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709860171; c=relaxed/simple;
-	bh=S5oTdDbKKJ9uCz6925DSgCk/EUQPohigcFEx7WR6WHE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tcnVOiPyyue1sfWQPD1Jy2KgFH8mMlwqT4gnwbI6PUP6QrKfK98pIkybuQ8otq5b+hxOgiY2MpTU2ZTRRri85orsqQbsKGliocOw3CS/Dihp+3JtbDSMbITg6PW8wbrWIzSRQMiAL7CWRfMqfxXWjoMcKu0n+eJjvn2graCLnIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=C1ulDhg5; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=1iFaV
-	287Y0eGK7s0IO6GL/mOj5DAK8MslBCFLFMR+hg=; b=C1ulDhg5gNEul61gUji6Q
-	yG4T4Dl+k4lXFXJdCkH6p3MJefz2DZ4RWxQp2WxbmGlp221QddyucrVywW5RHnlw
-	N/UoC6srh1XzJRf8ct5j/Bzseo2RfFVH3oNkjOnp+Ft4ioKJvq9N5Gzpm8YJdSc/
-	1WPi0Qxog0pPRqC9Z6mWi8=
-Received: from ldingyan9LVDQ.vmware.com.com (unknown [114.250.139.10])
-	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wBH76AxZeplz6ePAw--.49439S2;
-	Fri, 08 Mar 2024 09:09:06 +0800 (CST)
-From: Dingyan Li <18500469033@163.com>
-To: stern@rowland.harvard.edu
-Cc: gregkh@linuxfoundation.org,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] USB: Use EHCI control transfer pid macros instead of constant values.
-Date: Fri,  8 Mar 2024 09:08:59 +0800
-Message-Id: <20240308010859.81987-1-18500469033@163.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-In-Reply-To: <1e7f57d6-a4c1-4a3d-8cff-f966c89a8140@rowland.harvard.edu>
-References: <1e7f57d6-a4c1-4a3d-8cff-f966c89a8140@rowland.harvard.edu>
+	s=arc-20240116; t=1709860222; c=relaxed/simple;
+	bh=gsq1qaqDZuKtkZEjmhFcNJ0Oz98c/gwFuViMAOndml0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mMrbCnMbABD1sMJV8y4sJvmnol5VTAitZ4RcH9p7HBjIVcphz9ia9H41Nx2PaEvZzQkD8+BTWcyGWKFV7lrr0B4wp9qNFgKWkzT3w9F10+8evM2ih+dSTM7iZI0QuVZ0eLpPYRHYvEeavm5rSJInATOkrzhChZ6ovbGT1FKYLuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PKb8h0YU; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4280iOKF018041;
+	Fri, 8 Mar 2024 01:10:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=1FOBliT
+	XVZjNoR4w147dMcGdIAtKZY7dRZ/ierdbGAI=; b=PKb8h0YU/XHmVnTLthmIxcK
+	gns1wRl0DQHBboluNSOmW71kMYpUF8onH6cAeV9CUGI0dKlrJqueRsiMWwTMXaNF
+	Fizb8n8S+JCj6y8U5hrDrgPaLG3G5MWHzk69wbfs8SWtz8GSEJt9fm48aFlOGNYN
+	w1L29pYyRoQ73qIYOOWV9OPB6BJuquYr+u8d1ZYKFzv8oDPIwNiZ6KHmoAoMbb6v
+	AsGlgEwoFuLCEPy6UoRlsdP8fL4n/j2mh82ICjrcNc39sPPO/oAj/VhyFty1FpXO
+	EQc528JzF/cOOG6eX2tra80UZQ/oA2wvq/r/FCm4c2kgzN0IH9sohIPf4cfn9Yg=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqn8qgd4u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 01:10:08 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4281A7qV000484
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 8 Mar 2024 01:10:07 GMT
+Received: from maow2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 7 Mar 2024 17:10:05 -0800
+From: Kassey Li <quic_yingangl@quicinc.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+        <mathieu.desnoyers@efficios.com>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>
+CC: <quic_yingangl@quicinc.com>
+Subject: [PATCH] workqueue: add function in event of workqueue_activate_work
+Date: Fri, 8 Mar 2024 09:09:29 +0800
+Message-ID: <20240308010929.1955339-1-quic_yingangl@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,166 +70,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wBH76AxZeplz6ePAw--.49439S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZr43JFyxtr47AF4Uuw1xXwb_yoW7JrWfpF
-	W3WrW7tayUJr4YqwnrGrsYyF1rJw13G34UKFy29397Gr4vyr15GF17KFWftr9rXry8ur1Y
-	qr45Xr98urs7JFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UiJ5wUUUUU=
-X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/1tbiVBmay2VOByQVUAABsQ
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: bLgoSJfrZTGi0izl7Ov7QcWYirb5-T75
+X-Proofpoint-ORIG-GUID: bLgoSJfrZTGi0izl7Ov7QcWYirb5-T75
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_18,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1011 suspectscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403080007
 
-Macros with good names offer better readability. Besides, also move
-the definition to ehci.h.
+The trace event "workqueue_activate_work" only print work struct.
+However, function is the region of interest in a full sequence of work.
+Current workqueue_activate_work trace event output:
 
-Signed-off-by: Dingyan Li <18500469033@163.com>
+    workqueue_activate_work: work struct ffffff88b4a0f450
+
+With this change, workqueue_activate_work will print the function name,
+align with workqueue_queue_work/execute_start/execute_end event.
+
+checkpatch.pl will report below error for the space:
+
+	ERROR: space prohibited after that open parenthesis '('
+	#28: FILE: include/trace/events/workqueue.h:67:
+	+               __field( void *,        function)
+
+	total: 1 errors, 0 warnings, 16 lines checked
+
+fix this error.
+
+Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
 ---
- drivers/usb/host/ehci-dbg.c | 10 +++++-----
- drivers/usb/host/ehci-q.c   | 20 ++++++++------------
- drivers/usb/host/ehci.h     |  8 +++++++-
- 3 files changed, 20 insertions(+), 18 deletions(-)
+ include/trace/events/workqueue.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/ehci-dbg.c b/drivers/usb/host/ehci-dbg.c
-index c063fb042926..435001128221 100644
---- a/drivers/usb/host/ehci-dbg.c
-+++ b/drivers/usb/host/ehci-dbg.c
-@@ -430,13 +430,13 @@ static void qh_lines(struct ehci_hcd *ehci, struct ehci_qh *qh,
- 				mark = '/';
- 		}
- 		switch ((scratch >> 8) & 0x03) {
--		case 0:
-+		case PID_CODE_OUT:
- 			type = "out";
- 			break;
--		case 1:
-+		case PID_CODE_IN:
- 			type = "in";
- 			break;
--		case 2:
-+		case PID_CODE_SETUP:
- 			type = "setup";
- 			break;
- 		default:
-@@ -602,10 +602,10 @@ static unsigned output_buf_tds_dir(char *buf, struct ehci_hcd *ehci,
- 	list_for_each_entry(qtd, &qh->qtd_list, qtd_list) {
- 		temp++;
- 		switch ((hc32_to_cpu(ehci, qtd->hw_token) >> 8)	& 0x03) {
--		case 0:
-+		case PID_CODE_OUT:
- 			type = "out";
- 			continue;
--		case 1:
-+		case PID_CODE_IN:
- 			type = "in";
- 			continue;
- 		}
-diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
-index 666f5c4db25a..ba37a9fcab92 100644
---- a/drivers/usb/host/ehci-q.c
-+++ b/drivers/usb/host/ehci-q.c
-@@ -27,10 +27,6 @@
+diff --git a/include/trace/events/workqueue.h b/include/trace/events/workqueue.h
+index 262d52021c23..a42c1a293459 100644
+--- a/include/trace/events/workqueue.h
++++ b/include/trace/events/workqueue.h
+@@ -63,14 +63,16 @@ TRACE_EVENT(workqueue_activate_work,
+ 	TP_ARGS(work),
  
- /*-------------------------------------------------------------------------*/
+ 	TP_STRUCT__entry(
+-		__field( void *,	work	)
++		__field(void *,	work)
++		__field(void *,	function)
+ 	),
  
--/* PID Codes that are used here, from EHCI specification, Table 3-16. */
--#define PID_CODE_IN    1
--#define PID_CODE_SETUP 2
--
- /* fill a qtd, returning how much of the buffer we were able to queue up */
+ 	TP_fast_assign(
+ 		__entry->work		= work;
++		__entry->function	= work->func;
+ 	),
  
- static unsigned int
-@@ -230,7 +226,7 @@ static int qtd_copy_status (
- 			/* fs/ls interrupt xfer missed the complete-split */
- 			status = -EPROTO;
- 		} else if (token & QTD_STS_DBE) {
--			status = (QTD_PID (token) == 1) /* IN ? */
-+			status = (QTD_PID(token) == PID_CODE_IN) /* IN ? */
- 				? -ENOSR  /* hc couldn't read data */
- 				: -ECOMM; /* hc couldn't write data */
- 		} else if (token & QTD_STS_XACT) {
-@@ -606,7 +602,7 @@ qh_urb_transaction (
- 		/* SETUP pid */
- 		qtd_fill(ehci, qtd, urb->setup_dma,
- 				sizeof (struct usb_ctrlrequest),
--				token | (2 /* "setup" */ << 8), 8);
-+				token | (PID_CODE_SETUP << 8), 8);
+-	TP_printk("work struct %p", __entry->work)
++	TP_printk("work struct %p function=%ps ", __entry->work, __entry->function)
+ );
  
- 		/* ... and always at least one more pid */
- 		token ^= QTD_TOGGLE;
-@@ -620,7 +616,7 @@ qh_urb_transaction (
- 
- 		/* for zero length DATA stages, STATUS is always IN */
- 		if (len == 0)
--			token |= (1 /* "in" */ << 8);
-+			token |= (PID_CODE_IN << 8);
- 	}
- 
- 	/*
-@@ -642,7 +638,7 @@ qh_urb_transaction (
- 	}
- 
- 	if (is_input)
--		token |= (1 /* "in" */ << 8);
-+		token |= (PID_CODE_IN << 8);
- 	/* else it's already initted to "out" pid (0 << 8) */
- 
- 	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
-@@ -709,7 +705,7 @@ qh_urb_transaction (
- 
- 		if (usb_pipecontrol (urb->pipe)) {
- 			one_more = 1;
--			token ^= 0x0100;	/* "in" <--> "out"  */
-+			token ^= (PID_CODE_IN << 8);	/* "in" <--> "out"  */
- 			token |= QTD_TOGGLE;	/* force DATA1 */
- 		} else if (usb_pipeout(urb->pipe)
- 				&& (urb->transfer_flags & URB_ZERO_PACKET)
-@@ -1203,7 +1199,7 @@ static int ehci_submit_single_step_set_feature(
- 		/* SETUP pid, and interrupt after SETUP completion */
- 		qtd_fill(ehci, qtd, urb->setup_dma,
- 				sizeof(struct usb_ctrlrequest),
--				QTD_IOC | token | (2 /* "setup" */ << 8), 8);
-+				QTD_IOC | token | (PID_CODE_SETUP << 8), 8);
- 
- 		submit_async(ehci, urb, &qtd_list, GFP_ATOMIC);
- 		return 0; /*Return now; we shall come back after 15 seconds*/
-@@ -1216,7 +1212,7 @@ static int ehci_submit_single_step_set_feature(
- 	token ^= QTD_TOGGLE;   /*We need to start IN with DATA-1 Pid-sequence*/
- 	buf = urb->transfer_dma;
- 
--	token |= (1 /* "in" */ << 8);  /*This is IN stage*/
-+	token |= (PID_CODE_IN << 8);  /*This is IN stage*/
- 
- 	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
- 
-@@ -1229,7 +1225,7 @@ static int ehci_submit_single_step_set_feature(
- 	qtd->hw_alt_next = EHCI_LIST_END(ehci);
- 
- 	/* STATUS stage for GetDesc control request */
--	token ^= 0x0100;        /* "in" <--> "out"  */
-+	token ^= (PID_CODE_IN << 8);        /* "in" <--> "out"  */
- 	token |= QTD_TOGGLE;    /* force DATA1 */
- 
- 	qtd_prev = qtd;
-diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
-index 1441e3400796..d7a3c8d13f6b 100644
---- a/drivers/usb/host/ehci.h
-+++ b/drivers/usb/host/ehci.h
-@@ -321,10 +321,16 @@ struct ehci_qtd {
- 	size_t			length;			/* length of buffer */
- } __aligned(32);
- 
-+/* PID Codes that are used here, from EHCI specification, Table 3-16. */
-+#define PID_CODE_OUT   0
-+#define PID_CODE_IN    1
-+#define PID_CODE_SETUP 2
-+
- /* mask NakCnt+T in qh->hw_alt_next */
- #define QTD_MASK(ehci)	cpu_to_hc32(ehci, ~0x1f)
- 
--#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && QTD_PID(token) == 1)
-+#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && \
-+						QTD_PID(token) == PID_CODE_IN)
- 
- /*-------------------------------------------------------------------------*/
- 
+ /**
 -- 
 2.25.1
 
