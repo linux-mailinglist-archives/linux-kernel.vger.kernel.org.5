@@ -1,144 +1,250 @@
-Return-Path: <linux-kernel+bounces-96396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91A2875B9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:55:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10261875BBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:00:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E75D282FA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:55:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 342981C20FC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF33321344;
-	Fri,  8 Mar 2024 00:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1AB8224F0;
+	Fri,  8 Mar 2024 00:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ChQoYXcP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LPOMpFkB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCCD139E;
-	Fri,  8 Mar 2024 00:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B8E2135C;
+	Fri,  8 Mar 2024 00:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709859309; cv=none; b=U5M0NJL4E27oE/7h6+0bv6Hq7xLkfPjvTzK/pscUgnPrawxeEKb6O31J6rXk3F6gi+cjAl8CaGZzCf8zJvyAvpUrS7ilUuTx2HkI1az2b4ApvvJMk4oETInaDP7O1Xi+pmgTm5wFhoDLDEb/a5o8UGRahs7UQEZSwCmDMhWdLZQ=
+	t=1709859531; cv=none; b=m75vBdoD/3C8g5vCc/kuqtdt61lZYI3s3dGVWCkdo3c9bDS8cx3SqLrzT5+lvTbwf5oRZ7E/Sz80oZip0PIwNVwGvN+sYQ5pvKu2/2F0fwktgty8+5JT01nNDmNH4DJB1d47obt6Pj0loQcjUwWoW6NLmvgKPOqPGL8fc8PmrZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709859309; c=relaxed/simple;
-	bh=Kl50z5rZDKN8yW2rlkLfQHge6/CEjtccvWbBjiAdYPo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jjaMn52xPJdmrykH3bNhskjJyqMNxzlKTSKgFcF/sjVgnOUmUIcmjOS5ckGIpV9Uvfb0/oL4uEx7f6X9uNkJStOpDaUKQ0VpER8SEbj45TP/5QhmhNup2EZZZfXpm/5o7p4KRtvFpqO5wzL5bcImbaqrKaoe7vOAjYjXp0aSx4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ChQoYXcP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E44BC433F1;
-	Fri,  8 Mar 2024 00:55:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709859308;
-	bh=Kl50z5rZDKN8yW2rlkLfQHge6/CEjtccvWbBjiAdYPo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ChQoYXcPHNSJcbPbOm+q5p2knS/G6zVfeycEJtC8Vi7AqGJkfiDYx6Ur82DEPJ05o
-	 cGXi74OjU9LjfVNuZS742VXlzOkImZofiNGypL5eHAkq+1CSNzppcdnwmXXtTvWad0
-	 AH7OmuAkhX2BuNZ3CBv0bCL1ge3T8FNymLEGsbKgCswzjX2q5xfoSvPaQ2ePT26CjB
-	 Zz2Le+qJwzFxHNO5gJwDF7C7vFpEEcvUruZ7BXeIhXqntb+mCkFcwjps6PbUtT4ab+
-	 oLsfXZukF77+3jX27CI38ArI9Q7TKrwmE2xvAo5M6+KfuEDU2SHgRI22bsDlglgkup
-	 pf8stVrg5UCNg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 103F1CE0716; Thu,  7 Mar 2024 16:55:08 -0800 (PST)
-Date: Thu, 7 Mar 2024 16:55:08 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Julia Lawall <julia.lawall@inria.fr>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
-	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
-	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
-	quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-Message-ID: <7b11260c-ebed-4440-9d35-d6a788151888@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
- <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
- <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
- <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
- <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
- <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
- <CAHk-=wia769uoyVz3P7yZURhO8NNB7xeOLX07ZM2vWf1nTLYkQ@mail.gmail.com>
- <65a9665e-22d4-4f21-a1cb-7ef1c82ed078@paulmck-laptop>
- <alpine.DEB.2.22.394.2403072231130.3161@hadrien>
- <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
+	s=arc-20240116; t=1709859531; c=relaxed/simple;
+	bh=UnUW87fuiaXOWWLX9//SnpFXWJlC5GpqiAqCizoHHQ0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FJHwuczv+EbmT+rH7iMDgHZKR+y1EwK9OKYcCFLjUMIXW0NYXRVdx9ClS9DjnaguopWHr9CKbgGrU6nfq40dUF0YwUde76rd+1vMSi+YtBBfBVO7oIpCcO8LxhXEVi9Y0WcqL076rlxR7XGDdAJXVvVFEef+Nfue1VvKQ0ylE5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LPOMpFkB; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709859529; x=1741395529;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=UnUW87fuiaXOWWLX9//SnpFXWJlC5GpqiAqCizoHHQ0=;
+  b=LPOMpFkBVyJ+ZKEw/OFlli2E1244yMgrQO7LcB2dBUmRZPodPdJBuPGJ
+   EdaXKjlUHgixXzB9A2xXHJA955+ApsAP/ss8UWJHQfoqszA16PRIOedc3
+   sOq5hG+ffpNRSgsjM24jDczj8plAiOJtADZfLCJgpl+wTaQK9AMLyBgTu
+   WUBIZQVGaKgoMlQlqw9u3nFmFOJko3KDz0Sqv+4Um5FqQyHukXVqE5Bvp
+   m8+BI0WNelAWGcxA/SRoqZfInJsVIjpmeTZWBLjQXu0GIk+05rM/+NIUu
+   AF4z+S2NjeG87TBpcFipsIBt3ZW8+v7WJLeInuf3wan0B7xo541l6LBjO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15133567"
+X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
+   d="scan'208";a="15133567"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 16:57:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
+   d="scan'208";a="14793930"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 16:57:12 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  David Hildenbrand <david@redhat.com>,
+  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
+  <stable@vger.kernel.org>
+Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
+ swapoff()
+In-Reply-To: <29335a89-b14b-4ef3-abf8-0b41e6d0ec67@arm.com> (Ryan Roberts's
+	message of "Thu, 7 Mar 2024 09:19:20 +0000")
+References: <20240305151349.3781428-1-ryan.roberts@arm.com>
+	<875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com>
+	<af11bbca-3f6a-4db5-916c-b0d5b942352b@arm.com>
+	<ff6aec00-f939-b7ba-c127-b133c4d95ee5@huawei.com>
+	<87bk7q7ffp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<0925807f-d226-7f08-51d1-ab771b1a6c24@huawei.com>
+	<8734t27awd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<92672c62-47d8-44ff-bd05-951c813c95a5@arm.com>
+	<87y1au5smu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<29335a89-b14b-4ef3-abf8-0b41e6d0ec67@arm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+Date: Fri, 08 Mar 2024 08:55:18 +0800
+Message-ID: <87jzmd5yq1.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
+Content-Type: text/plain; charset=ascii
 
-On Thu, Mar 07, 2024 at 02:09:00PM -0800, Linus Torvalds wrote:
-> On Thu, 7 Mar 2024 at 13:40, Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> > I tried the following:
-> >
-> > @@
-> > expression x;
-> > @@
-> >
-> > *WRITE_ONCE(x,<+...READ_ONCE(x)...+>)
-> >
-> > This gave a number of results, shown below.  Let me know if some of them
-> > are undesirable.
-> 
-> Well, all the ones you list do look like garbage.
-> 
-> That said, quite often the garbage does seem to be "we don't actually
-> care about the result". Several of them look like statistics.
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-[ . . . ]
+> On 07/03/2024 08:54, Huang, Ying wrote:
+>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>> 
+>>> On 07/03/2024 07:34, Huang, Ying wrote:
+>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>>
+>>>>> On 2024/3/7 13:56, Huang, Ying wrote:
+>>>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>>>>
+>>>>>>> On 2024/3/6 17:31, Ryan Roberts wrote:
+>>>>>>>> On 06/03/2024 08:51, Miaohe Lin wrote:
+>>>>>>>>> On 2024/3/6 10:52, Huang, Ying wrote:
+>>>>>>>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>>>>>>>>
+>>>>>>>>>>> There was previously a theoretical window where swapoff() could run and
+>>>>>>>>>>> teardown a swap_info_struct while a call to free_swap_and_cache() was
+>>>>>>>>>>> running in another thread. This could cause, amongst other bad
+>>>>>>>>>>> possibilities, swap_page_trans_huge_swapped() (called by
+>>>>>>>>>>> free_swap_and_cache()) to access the freed memory for swap_map.
+>>>>>>>>>>>
+>>>>>>>>>>> This is a theoretical problem and I haven't been able to provoke it from
+>>>>>>>>>>> a test case. But there has been agreement based on code review that this
+>>>>>>>>>>> is possible (see link below).
+>>>>>>>>>>>
+>>>>>>>>>>> Fix it by using get_swap_device()/put_swap_device(), which will stall
+>>>>>>>>>>> swapoff(). There was an extra check in _swap_info_get() to confirm that
+>>>>>>>>>>> the swap entry was valid. This wasn't present in get_swap_device() so
+>>>>>>>>>>> I've added it. I couldn't find any existing get_swap_device() call sites
+>>>>>>>>>>> where this extra check would cause any false alarms.
+>>>>>>>>>>>
+>>>>>>>>>>> Details of how to provoke one possible issue (thanks to David Hilenbrand
+>>>>>>>>>>> for deriving this):
+>>>>>>>>>>>
+>>>>>>>>>>> --8<-----
+>>>>>>>>>>>
+>>>>>>>>>>> __swap_entry_free() might be the last user and result in
+>>>>>>>>>>> "count == SWAP_HAS_CACHE".
+>>>>>>>>>>>
+>>>>>>>>>>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+>>>>>>>>>>>
+>>>>>>>>>>> So the question is: could someone reclaim the folio and turn
+>>>>>>>>>>> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
+>>>>>>>>>>>
+>>>>>>>>>>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
+>>>>>>>>>>> still references by swap entries.
+>>>>>>>>>>>
+>>>>>>>>>>> Process 1 still references subpage 0 via swap entry.
+>>>>>>>>>>> Process 2 still references subpage 1 via swap entry.
+>>>>>>>>>>>
+>>>>>>>>>>> Process 1 quits. Calls free_swap_and_cache().
+>>>>>>>>>>> -> count == SWAP_HAS_CACHE
+>>>>>>>>>>> [then, preempted in the hypervisor etc.]
+>>>>>>>>>>>
+>>>>>>>>>>> Process 2 quits. Calls free_swap_and_cache().
+>>>>>>>>>>> -> count == SWAP_HAS_CACHE
+>>>>>>>>>>>
+>>>>>>>>>>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+>>>>>>>>>>> __try_to_reclaim_swap().
+>>>>>>>>>>>
+>>>>>>>>>>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
+>>>>>>>>>>> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
+>>>>>>>>>>> swap_entry_free()->swap_range_free()->
+>>>>>>>>>>> ...
+>>>>>>>>>>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>>>>>>>>>>>
+>>>>>>>>>>> What stops swapoff to succeed after process 2 reclaimed the swap cache
+>>>>>>>>>>> but before process1 finished its call to swap_page_trans_huge_swapped()?
+>>>>>>>>>>>
+>>>>>>>>>>> --8<-----
+>>>>>>>>>>
+>>>>>>>>>> I think that this can be simplified.  Even for a 4K folio, this could
+>>>>>>>>>> happen.
+>>>>>>>>>>
+>>>>>>>>>> CPU0                                     CPU1
+>>>>>>>>>> ----                                     ----
+>>>>>>>>>>
+>>>>>>>>>> zap_pte_range
+>>>>>>>>>>   free_swap_and_cache
+>>>>>>>>>>   __swap_entry_free
+>>>>>>>>>>   /* swap count become 0 */
+>>>>>>>>>>                                          swapoff
+>>>>>>>>>>                                            try_to_unuse
+>>>>>>>>>>                                              filemap_get_folio
+>>>>>>>>>>                                              folio_free_swap
+>>>>>>>>>>                                              /* remove swap cache */
+>>>>>>>>>>                                            /* free si->swap_map[] */
+>>>>>>>>>>
+>>>>>>>>>>   swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+>>>>>>>>>
+>>>>>>>>> Sorry for jumping the discussion here. IMHO, free_swap_and_cache is called with pte lock held.
+>>>>>>>>
+>>>>>>>> I don't beleive it has the PTL when called by shmem.
+>>>>>>>
+>>>>>>> In the case of shmem, folio_lock is used to guard against the race.
+>>>>>>
+>>>>>> I don't find folio is lock for shmem.  find_lock_entries() will only
+>>>>>> lock the folio if (!xa_is_value()), that is, not swap entry.  Can you
+>>>>>> point out where the folio is locked for shmem?
+>>>>>
+>>>>> You're right, folio is locked if not swap entry. That's my mistake. But it seems above race is still nonexistent.
+>>>>> shmem_unuse() will first be called to read all the shared memory data that resides in the swap device back into
+>>>>> memory when doing swapoff. In that case, all the swapped pages are moved to page cache thus there won't be any
+>>>>> xa_is_value(folio) cases when calling shmem_undo_range(). free_swap_and_cache() even won't be called from
+>>>>> shmem_undo_range() after shmem_unuse(). Or am I miss something?
+>>>>
+>>>> I think the following situation is possible.  Right?
+>>>>
+>>>> CPU0                               CPU1
+>>>> ----                               ----
+>>>> shmem_undo_range
+>>>>   shmem_free_swap
+>>>>     xa_cmpxchg_irq
+>>>>     free_swap_and_cache
+>>>>       __swap_entry_free
+>>>>       /* swap count become 0 */
+>>>>                                    swapoff
+>>>>                                      try_to_unuse
+>>>>                                        shmem_unuse /* cannot find swap entry */
+>>>>                                        find_next_to_unuse
+>>>>                                        filemap_get_folio
+>>>>                                        folio_free_swap
+>>>>                                        /* remove swap cache */
+>>>>                                        /* free si->swap_map[] */
+>>>>       swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+>>>>
+>>>> shmem_undo_range can run earlier.
+>>>
+>>> Yes that's the shmem problem I've been trying to convey. Perhaps there are other
+>>> (extremely subtle) mechanisms that make this impossible, I don't know.
+>>>
+>>> Either way, given the length of this discussion, and the subtleties in the
+>>> syncrhonization mechanisms that have so far been identified, I think the safest
+>>> thing to do is just apply the patch. Then we have explicit syncrhonization that
+>>> we can trivially reason about.
+>> 
+>> Yes.  This is tricky and we can improve it.  So I suggest to,
+>> 
+>> - Revise the patch description to use shmem race as example except
+>>   someone found it's impossible.
+>> 
+>> - Revise the comments of get_swap_device() about RCU reader side lock
+>>   (including IRQ off, spinlock, etc.) can prevent swapoff via
+>>   synchronize_rcu() in swapoff().
+>> 
+>> - Revise the comments of synchronize_rcu() in swapoff(), which can
+>>   prevent swapoff in parallel with RCU reader side lock including swap
+>>   cache operations, etc.
+>
+> The only problem with this is that Andrew has already put my v2 into mm-*stable* :-|
+>
+> So (1) from that list isn't possible. I could do a patch for (2) and (3), but to
+> be honest, I think you would do a better job of writing it up than I would - any
+> chance you could post the patch?
+>
 
-> > diff -u -p /home/julia/linux/kernel/rcu/tree.c /tmp/nothing/kernel/rcu/tree.c
-> > --- /home/julia/linux/kernel/rcu/tree.c
-> > +++ /tmp/nothing/kernel/rcu/tree.c
-> > @@ -1620,8 +1620,6 @@ static void rcu_gp_fqs(bool first_time)
-> >         /* Clear flag to prevent immediate re-entry. */
-> >         if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
-> >                 raw_spin_lock_irq_rcu_node(rnp);
-> > -               WRITE_ONCE(rcu_state.gp_flags,
-> > -                          READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
-> >                 raw_spin_unlock_irq_rcu_node(rnp);
-> 
-> This smells bad to me. The code is holding a lock, but apparently not
-> one that protects gp_flags.
-> 
-> And that READ_ONCE->WRITE_ONCE sequence can corrupt all the other flags.
-> 
-> Maybe it's fine for some reason (that reason being either that the
-> ONCE operations aren't actually needed at all, or because nobody
-> *really* cares about the flags), but it smells.
-> 
-> > @@ -1882,8 +1880,6 @@ static void rcu_report_qs_rsp(unsigned l
-> >  {
-> >         raw_lockdep_assert_held_rcu_node(rcu_get_root());
-> >         WARN_ON_ONCE(!rcu_gp_in_progress());
-> > -       WRITE_ONCE(rcu_state.gp_flags,
-> > -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
-> >         raw_spin_unlock_irqrestore_rcu_node(rcu_get_root(), flags);
-> 
-> Same field, same lock held, same odd smelly pattern.
-> 
-> > -       WRITE_ONCE(rcu_state.gp_flags,
-> > -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
-> >         raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
-> 
-> .. and again.
+Sure.  I will do that.
 
-In all three cases, the updates are protected by the lock, so the
-READ_ONCE() is unnecessary.  I have queued a commit to remove the
-READ_ONCE()s.
-
-Thanks to both of you (Julia and Linus) for spotting these!
-
-							Thanx, Paul
+--
+Best Regards,
+Huang, Ying
 
