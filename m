@@ -1,107 +1,108 @@
-Return-Path: <linux-kernel+bounces-96507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8402D875D3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:45:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C2A875D3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E270C2825B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:45:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C9821F21E5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDF12DF9C;
-	Fri,  8 Mar 2024 04:45:17 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC34F2E62E;
+	Fri,  8 Mar 2024 04:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A4spbCkn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D8C1E487
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 04:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB2B1E487;
+	Fri,  8 Mar 2024 04:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709873116; cv=none; b=D9HqH9pOF+Oi5ZGI/gO2szmvTVAs8RdRH8j71sZ7O//VZAib/sN2aWle9IXIM+96XaDKXg4lenlJviJO914VBx28BPP1XtOhzKIDFAGuD+vhi0xc20F5w6otqmjMaOSCNEczm24dynAcEJj4BSdn+5+Yfp1IB8Ct5kPu9KR/Ro8=
+	t=1709873247; cv=none; b=E6gm4xHzUaT43pfZtB9luuH4eX6YyzU7PgeAaHp31hpTX81bYuHemqCoKeAYwatey2aCWZHuIRzypSnKUjeg+qMmtnNGKBG8QO3Qt3kQ+78q834bKtoCw+4k4mPGJHbLFIM78AqE4E9bT2yXHvrjbq5kNrVcNJRMm/BHD831Vzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709873116; c=relaxed/simple;
-	bh=Hf1XWUB1fz27uQAd3k10izX6ave3Sc00He5qxOo1P70=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iFX2mc/DcJJbxZqn+sxlIQM9Hwj+cMnoOetzOHFIo8opeMhGKyxnSTJamRULGHiENVPgVMlCPKoA6ksdXNUpKcj40t7gfgaXx6ZbdvDTq2tMdVPXZm3c4RJD3Ghy6hsEiE+lp7Pb7n90zehUBVKfwRfG/ibNGDenqYBCGvIHiPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TrYSS3T7zz2BfcD;
-	Fri,  8 Mar 2024 12:42:48 +0800 (CST)
-Received: from kwepemd500003.china.huawei.com (unknown [7.221.188.36])
-	by mail.maildlp.com (Postfix) with ESMTPS id 28E4014040F;
-	Fri,  8 Mar 2024 12:45:11 +0800 (CST)
-Received: from kwepemd100011.china.huawei.com (7.221.188.204) by
- kwepemd500003.china.huawei.com (7.221.188.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 8 Mar 2024 12:45:10 +0800
-Received: from M910t.huawei.com (10.110.54.157) by
- kwepemd100011.china.huawei.com (7.221.188.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 8 Mar 2024 12:45:09 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	<x86@kernel.org>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
-	<peterz@infradead.org>
-CC: "H. Peter Anvin" <hpa@zytor.com>, Alexander Potapenko <glider@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-	<kasan-dev@googlegroups.com>, Changbin Du <changbin.du@huawei.com>
-Subject: [PATCH] x86: kmsan: fix boot failure due to instrumentation
-Date: Fri, 8 Mar 2024 12:44:01 +0800
-Message-ID: <20240308044401.1120395-1-changbin.du@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709873247; c=relaxed/simple;
+	bh=mov2suGwYSotDcil8OtlRhObFutbrPEMy0JCqdY2T1w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AjwXrh/mZ0NdlCT5oFIO4VaxwW1AclaEwBAUlhUCu8ic7OxCHmScOH8tfDrfGc/P2vsE+zcUM2mtd9rjFOjrmfY+jR7q9QbWg6wvG1owLCCHq3ESbpspwGQg18geQoUWHM1iUPFutUUVjnw9vFEl7TLKRqxhrLzT5aluISTWMw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A4spbCkn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17224C433F1;
+	Fri,  8 Mar 2024 04:47:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709873246;
+	bh=mov2suGwYSotDcil8OtlRhObFutbrPEMy0JCqdY2T1w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=A4spbCkn3HzV/GF5B7akHbt5i9qAw2bbSfPjSIMm7slD9p85X3DT3/Z9zORg3h6l1
+	 CGzva2VFdHClrWUJJsHZW1FtTYepQg3GxIooVwGKnAtXQL5WU8c0ZZ/Hc9erzDkuRx
+	 lkKHw/Ih6GUsIYqCFGibUSPFLPVsIQ6bSsZn0WukhGlCPUuDNQjQ4MyIPsk9fwQTeB
+	 9tWnQOaYntQ/Fz9rYTBvCDH07eZbxLiGdJeZoJMDwZP/m7NMJiXNxJs453Uwm4mME/
+	 8fdLfYXm57ybJ+BMkZWv1fQfKlVt9XM4IsJn+oHVlJzYqtEGTcdLnrzqgFArb4hAmm
+	 FOQ2aeYT91kOw==
+Date: Thu, 7 Mar 2024 20:47:25 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Sai Krishna <saikrishnag@marvell.com>
+Cc: <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+ <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <sgoutham@marvell.com>, <gakula@marvell.com>, <hkelam@marvell.com>,
+ <sbhatta@marvell.com>
+Subject: Re: [net-next PATCH v2] octeontx2-pf: Reset MAC stats during probe
+Message-ID: <20240307204725.4dddcc9d@kernel.org>
+In-Reply-To: <20240305082707.213332-1-saikrishnag@marvell.com>
+References: <20240305082707.213332-1-saikrishnag@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100011.china.huawei.com (7.221.188.204)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Instrumenting sev.c and mem_encrypt_identity.c with KMSAN will result in
-kernel being unable to boot. Some of the code are invoked too early in
-boot stage that before kmsan is ready.
+On Tue, 5 Mar 2024 13:57:07 +0530 Sai Krishna wrote:
+> +int otx2_reset_mac_stats(struct otx2_nic *pfvf);
+>  
+>  /* RVU block related APIs */
+>  int otx2_attach_npa_nix(struct otx2_nic *pfvf);
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> index e5fe67e73865..a91f5b7e84c6 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> @@ -1124,6 +1124,24 @@ static int otx2_cgx_config_linkevents(struct otx2_nic *pf, bool enable)
+>  	return err;
+>  }
+>  
+> +int otx2_reset_mac_stats(struct otx2_nic *pfvf)
+> +{
+> +	struct msg_req *req;
+> +	int err;
+> +
+> +	mutex_lock(&pfvf->mbox.lock);
+> +	req = otx2_mbox_alloc_msg_cgx_stats_rst(&pfvf->mbox);
+> +	if (!req) {
+> +		mutex_unlock(&pfvf->mbox.lock);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	err = otx2_sync_mbox_msg(&pfvf->mbox);
+> +	mutex_unlock(&pfvf->mbox.lock);
+> +	return err;
+> +}
+> +EXPORT_SYMBOL(otx2_reset_mac_stats);
 
-This change disable kmsan instrumentation for above two files to fix the
-boot failure.
+Why the export? I see only one call to this function and it's right
+below..
 
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
----
- arch/x86/kernel/Makefile | 1 +
- arch/x86/mm/Makefile     | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 0000325ab98f..04591d0145e0 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -33,6 +33,7 @@ KASAN_SANITIZE_sev.o					:= n
- KCSAN_SANITIZE := n
- KMSAN_SANITIZE_head$(BITS).o				:= n
- KMSAN_SANITIZE_nmi.o					:= n
-+KMSAN_SANITIZE_sev.o					:= n
- 
- # If instrumentation of the following files is enabled, boot hangs during
- # first second.
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index c80febc44cd2..6ec103bedcf1 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -16,6 +16,7 @@ KASAN_SANITIZE_pgprot.o		:= n
- KCSAN_SANITIZE := n
- # Avoid recursion by not calling KMSAN hooks for CEA code.
- KMSAN_SANITIZE_cpu_entry_area.o := n
-+KMSAN_SANITIZE_mem_encrypt_identity.o := n
- 
- ifdef CONFIG_FUNCTION_TRACER
- CFLAGS_REMOVE_mem_encrypt.o		= -pg
--- 
-2.25.1
+>  static int otx2_cgx_config_loopback(struct otx2_nic *pf, bool enable)
+>  {
+>  	struct msg_req *msg;
+> @@ -3048,6 +3066,9 @@ static int otx2_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  
+>  	otx2_qos_init(pf, qos_txqs);
+>  
+> +	/* reset CGX/RPM MAC stats */
+> +	otx2_reset_mac_stats(pf);
+> +
 
 
