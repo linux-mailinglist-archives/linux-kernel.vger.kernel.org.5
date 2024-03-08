@@ -1,201 +1,150 @@
-Return-Path: <linux-kernel+bounces-97337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E009C8768F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:56:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A8F8768FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59D2F284441
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 291BA1C20B06
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC371F941;
-	Fri,  8 Mar 2024 16:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B0F1CD0A;
+	Fri,  8 Mar 2024 16:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iyTMxIno"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dmrAho/9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7521D534;
-	Fri,  8 Mar 2024 16:56:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26946568A;
+	Fri,  8 Mar 2024 16:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916994; cv=none; b=XXvw9QA5NJWdO82XMbRunkJEXraXu/YN8zHIzLgLr4xmE7qdDu/Ouf16hTC9VdfuV3LdqyNXzlcwIPqff0WJUZBtEeeyRrb45b5wDGVdpinOGx8omX/m0Q+eUHvRSkB3jr62/2Nsaczy3fJY2z7jgrsZsnMSLN/LU8PiaFWqnyA=
+	t=1709917102; cv=none; b=AgcagG5mrztG/IctpSWZ+EzMidVrdGcUTKg3e5ygqWf7BffKGdcpFgF2C7yYDhQ3wyte2vonllQhUjrpn56O+i5bUvv9tDzbpqLx2iVk0PeckZAYUZv9j3dLqyyUmrMHq1lzTWpEpZ31cxR3zrI8HCDQ+KH6yDTAzCERSlEZ1wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916994; c=relaxed/simple;
-	bh=f7IeXH5Ea9BXgzNxn3Q/+rkUDulpRb7CeEz87gBe8zw=;
+	s=arc-20240116; t=1709917102; c=relaxed/simple;
+	bh=EuVxJD2mHfKnoyQBcowTIaQagWYJL80opZu/yj/GV0M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NyWM4FJ5F8HyxsGrQcHWoZGgWQs8Qw3ygjyLthWBzqveR5/FNGH+J3iyDTonVV1pCIcMF4gwSTC5EkFVg4QsONI9qYOR9gjF07XDOvZgeJH9IrYfXQdZIadIAyKy09Vb1LC/iAOg68hbpszjZ+PC4jGYKfcv3zalwRZ663gmAx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iyTMxIno; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F0DCC433C7;
-	Fri,  8 Mar 2024 16:56:34 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZlssJsa6B3DG1YrF3uRraSO8HJzyzWZsAc8lA4hLkWJ2gvZleQyBxI68PjIBu1v+f38Xcf8IYqCQkqh4cQ1TbrVy0G53G2NSAW7Kn/m0Dj9Pwyd2XW/zXYwxxFf8U7RdFl2sAHkle+VrPlFT+utMrA4NHHAF6Uu8MH9122iLIRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dmrAho/9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AC37C433C7;
+	Fri,  8 Mar 2024 16:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709916994;
-	bh=f7IeXH5Ea9BXgzNxn3Q/+rkUDulpRb7CeEz87gBe8zw=;
+	s=k20201202; t=1709917101;
+	bh=EuVxJD2mHfKnoyQBcowTIaQagWYJL80opZu/yj/GV0M=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iyTMxInokP4XaeTmRTIiCps4U3jOzHAOKqRLJcngKiVmf8EkMhwZTjb9zAGwve9xj
-	 aI62VexwEuxZTBo5vNRZ8rtN/NwVgxHBf5tM7TYFlXqnv8HNfTViXUIo9iEfvUiD3d
-	 tSpXuyfwFO5r8SdEA+0p+s/QY0fE7NQvIgyLOaw1+pNiMYoFAVF14orRSiQVB/Gn5D
-	 9iP+xCHYIwwt38rBPEY8eayALB3RlNCrsNhb0GKCsstaE2mZ0IBVe/NXGwUEczaUUO
-	 tkIpVLHyXT4qHSeVQ++nRRalyFlDLI7LD9z9OFZUZwxsAaxjQXpi6QLaQRiLgWYM7o
-	 1zBjS9ktNf5kQ==
-Date: Fri, 8 Mar 2024 08:56:33 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Neal Gompa <neal@gompa.dev>, linux-fsdevel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Message-ID: <20240308165633.GO6184@frogsfrogsfrogs>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
- <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
- <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
- <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
+	b=dmrAho/9nVEkb9cd/5KFFzOsfYCcwASNebcl8zju555mMlRc/37x7VdH/dGNnaESa
+	 6bg1wBfr//iiMHZgy2M/zWxgVnxbv3mjcolGzZBlaPCG2GQIartPxGbAZRRqynkLlJ
+	 1wGCS5+XSBQk5UJ/nSneEG1nfxnFLCxuHmgfyXCbLPEJFUDqVQPgU7lFbl3kELYdsx
+	 Lwne+5FRbKM63dW5Kbb5pEQAOX37B4YQ4c/2WKPVOKcb4+WY0NNJhwprV3lUA5CYUO
+	 BCzoTPyb32rwTGP8fqNfkLFqoI/PNUNqqX/cSGpugqK6+x3uwr2TNl1Y7YUFHdcHLL
+	 O9t7Dc8COFnnw==
+Date: Fri, 8 Mar 2024 16:58:16 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v6 3/4] ASoC: dt-bindings: fsl-sai: allow only one
+ dma-names
+Message-ID: <20240308-croon-goofball-797d091e981a@spud>
+References: <20240308-asrc_8qxp-v6-0-e08f6d030e09@nxp.com>
+ <20240308-asrc_8qxp-v6-3-e08f6d030e09@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="AtYEuJt27XJncbRZ"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
+In-Reply-To: <20240308-asrc_8qxp-v6-3-e08f6d030e09@nxp.com>
 
-On Fri, Mar 08, 2024 at 11:48:31AM -0500, Kent Overstreet wrote:
-> On Fri, Mar 08, 2024 at 11:44:48AM -0500, Neal Gompa wrote:
-> > On Fri, Mar 8, 2024 at 11:34 AM Kent Overstreet
-> > <kent.overstreet@linux.dev> wrote:
-> > >
-> > > On Fri, Mar 08, 2024 at 06:42:27AM -0500, Neal Gompa wrote:
-> > > > On Thu, Mar 7, 2024 at 9:29 PM Kent Overstreet
-> > > > <kent.overstreet@linux.dev> wrote:
-> > > > >
-> > > > > Add a new statx field for (sub)volume identifiers, as implemented by
-> > > > > btrfs and bcachefs.
-> > > > >
-> > > > > This includes bcachefs support; we'll definitely want btrfs support as
-> > > > > well.
-> > > > >
-> > > > > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
-> > > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > > Cc: Josef Bacik <josef@toxicpanda.com>
-> > > > > Cc: Miklos Szeredi <mszeredi@redhat.com>
-> > > > > Cc: Christian Brauner <brauner@kernel.org>
-> > > > > Cc: David Howells <dhowells@redhat.com>
-> > > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > > ---
-> > > > >  fs/bcachefs/fs.c          | 3 +++
-> > > > >  fs/stat.c                 | 1 +
-> > > > >  include/linux/stat.h      | 1 +
-> > > > >  include/uapi/linux/stat.h | 4 +++-
-> > > > >  4 files changed, 8 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> > > > > index 3f073845bbd7..6a542ed43e2c 100644
-> > > > > --- a/fs/bcachefs/fs.c
-> > > > > +++ b/fs/bcachefs/fs.c
-> > > > > @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
-> > > > >         stat->blksize   = block_bytes(c);
-> > > > >         stat->blocks    = inode->v.i_blocks;
-> > > > >
-> > > > > +       stat->subvol    = inode->ei_subvol;
-> > > > > +       stat->result_mask |= STATX_SUBVOL;
-> > > > > +
-> > > > >         if (request_mask & STATX_BTIME) {
-> > > > >                 stat->result_mask |= STATX_BTIME;
-> > > > >                 stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
-> > > > > diff --git a/fs/stat.c b/fs/stat.c
-> > > > > index 77cdc69eb422..70bd3e888cfa 100644
-> > > > > --- a/fs/stat.c
-> > > > > +++ b/fs/stat.c
-> > > > > @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
-> > > > >         tmp.stx_mnt_id = stat->mnt_id;
-> > > > >         tmp.stx_dio_mem_align = stat->dio_mem_align;
-> > > > >         tmp.stx_dio_offset_align = stat->dio_offset_align;
-> > > > > +       tmp.stx_subvol = stat->subvol;
-> > > > >
-> > > > >         return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
-> > > > >  }
-> > > > > diff --git a/include/linux/stat.h b/include/linux/stat.h
-> > > > > index 52150570d37a..bf92441dbad2 100644
-> > > > > --- a/include/linux/stat.h
-> > > > > +++ b/include/linux/stat.h
-> > > > > @@ -53,6 +53,7 @@ struct kstat {
-> > > > >         u32             dio_mem_align;
-> > > > >         u32             dio_offset_align;
-> > > > >         u64             change_cookie;
-> > > > > +       u64             subvol;
-> > > > >  };
-> > > > >
-> > > > >  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
-> > > > > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> > > > > index 2f2ee82d5517..67626d535316 100644
-> > > > > --- a/include/uapi/linux/stat.h
-> > > > > +++ b/include/uapi/linux/stat.h
-> > > > > @@ -126,8 +126,9 @@ struct statx {
-> > > > >         __u64   stx_mnt_id;
-> > > > >         __u32   stx_dio_mem_align;      /* Memory buffer alignment for direct I/O */
-> > > > >         __u32   stx_dio_offset_align;   /* File offset alignment for direct I/O */
-> > > > > +       __u64   stx_subvol;     /* Subvolume identifier */
-> > > > >         /* 0xa0 */
-> > > > > -       __u64   __spare3[12];   /* Spare space for future expansion */
-> > > > > +       __u64   __spare3[11];   /* Spare space for future expansion */
-> > > > >         /* 0x100 */
-> > > > >  };
-> > > > >
-> > > > > @@ -155,6 +156,7 @@ struct statx {
-> > > > >  #define STATX_MNT_ID           0x00001000U     /* Got stx_mnt_id */
-> > > > >  #define STATX_DIOALIGN         0x00002000U     /* Want/got direct I/O alignment info */
-> > > > >  #define STATX_MNT_ID_UNIQUE    0x00004000U     /* Want/got extended stx_mount_id */
-> > > > > +#define STATX_SUBVOL           0x00008000U     /* Want/got stx_subvol */
-> > > > >
-> > > > >  #define STATX__RESERVED                0x80000000U     /* Reserved for future struct statx expansion */
-> > > > >
-> > > > > --
-> > > > > 2.43.0
-> > > > >
-> > > > >
-> > > >
-> > > > I think it's generally expected that patches that touch different
-> > > > layers are split up. That is, we should have a patch that adds the
-> > > > capability and a separate patch that enables it in bcachefs. This also
-> > > > helps make it clearer to others how a new feature should be plumbed
-> > > > into a filesystem.
-> > > >
-> > > > I would prefer it to be split up in this manner for this reason.
-> > >
-> > > I'll do it that way if the patch is big enough that it ought to be
-> > > split up. For something this small, seeing how it's used is relevant
-> > > context for both reviewers and people looking at it afterwards.
-> > >
-> > 
-> > It needs to also be split up because fs/ and fs/bcachefs are
-> > maintained differently. And while right now bcachefs is the only
-> > consumer of the API, btrfs will add it right after it's committed, and
-> > for people who are cherry-picking/backporting accordingly, having to
-> > chop out part of a patch would be unpleasant.
-> 
-> It's a new feature, not a bugfix, this should never get backported. And
-> I the bcachefs maintainer wrote the patch, and I'm submitting it to the
-> VFS maintainer, so if it's fine with him it's fine with me.
 
-But then how am I supposed to bikeshed the structure of the V2 patchset
-by immediately asking you to recombine the patches and spit out a V3?
+--AtYEuJt27XJncbRZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-</sarcasm>
+On Fri, Mar 08, 2024 at 10:30:52AM -0500, Frank Li wrote:
+> Some sai only connect one direction dma (rx/tx) in SOC. For example:
+> imx8qxp sai5 only connect tx dma channel. So allow only one "rx" or "tx"
+> for dma-names.
+>=20
+> Remove description under dmas because no user use index to get dma channe=
+l.
+> All user use 'dma-names' to get correct dma channel. dma-names already in
+> 'required' list.
+>=20
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-But, seriously, can you update the manpage too?  Is stx_subvol a u64
-cookie where userspace mustn't try to read anything into its contents?
-Just like st_ino and st_dev are (supposed) to be?
+Please drop my ack from this, this isn't the patch I acked originally
+and we were having a conversation as recently as yesterday on v4 about
+this patch because Rob didn't like this approach. His suggestion is
+better than the one I gave on v4 that you have used here.
 
-Should the XFS data and rt volumes be reported with different stx_vol
-values?
+Please give it a few days between resubmissions, and do not send new
+versions of a series every day. It is very confusing to have different
+conversions on three versions of this patch in my inbox all at the same
+time.
 
---D
+Thanks,
+Conor.
+
+> ---
+>  Documentation/devicetree/bindings/sound/fsl,sai.yaml | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,sai.yaml b/Docum=
+entation/devicetree/bindings/sound/fsl,sai.yaml
+> index 2456d958adeef..93e7737a49a7b 100644
+> --- a/Documentation/devicetree/bindings/sound/fsl,sai.yaml
+> +++ b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
+> @@ -81,15 +81,13 @@ properties:
+> =20
+>    dmas:
+>      minItems: 1
+> -    items:
+> -      - description: DMA controller phandle and request line for RX
+> -      - description: DMA controller phandle and request line for TX
+> +    maxItems: 2
+> =20
+>    dma-names:
+>      minItems: 1
+> +    maxItems: 2
+>      items:
+> -      - const: rx
+> -      - const: tx
+> +      enum: [ rx, tx ]
+> =20
+>    interrupts:
+>      items:
+>=20
+> --=20
+> 2.34.1
+>=20
+
+--AtYEuJt27XJncbRZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZetDpwAKCRB4tDGHoIJi
+0p1zAPwOVqZkJw5DaQiuRLY7UuKy72/FOl/NK/YmqCZ4DyG7uQEA+Ki09p+Lossj
+bxiyf19v0Oygl2gWDK2Oq8f11MiHpgA=
+=OJXG
+-----END PGP SIGNATURE-----
+
+--AtYEuJt27XJncbRZ--
 
