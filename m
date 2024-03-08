@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-96674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D561875FD5
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A40D5875FD6
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0C8E1F217C4
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F365283B40
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629DD55C3F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D8055E41;
 	Fri,  8 Mar 2024 08:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SSwpU1Sf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dfd6CgSc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4819524D2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E54524D4;
 	Fri,  8 Mar 2024 08:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709887186; cv=none; b=g7xTRCSsKm/PrjYZGcv6UHT2bMCjMg2YmCqaQXz5FpgiEmC5BXIIll9vz9ulhaSex0RW6FmE8mTUdKL793pmV+nEtoSYoK8Vh06BSVoV83WSPdGazkDgKfabo+ltC9yLA8MQU4Lo1uWQ0AuyLjrCBNu4tM0zGXYO8NLEKOKdJhk=
+	t=1709887186; cv=none; b=lmaKtkXHglwYff52TrrviHg/aIsb5CXnmJMTa3BPcMVWHq2NSUq1Q4Ou4QYh+MyqwpitgcS3WuWYNZCSt9RTffNxctx2Fp7cUzOnpH+cN5w33PXt9zPFN0ixlSfqcV2KWB6tqNbCFE3099GvHgjprCDoyBtyo8Z35IDx5Mwqui8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709887186; c=relaxed/simple;
-	bh=S/doFh+gAKWZAIIBgfTAfdC4/d/iX9a1igOHcKDtz+w=;
+	bh=6GLdR1NzwuN3vF74pRPb7zqnKBAq4A6IwVQqiGNp8do=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SrgejpZdxJAxT9P1lwA02UEX6tjD/XN07l31RSsJjQIHLVjfUGKpXjgVFaq573MZq0pYQyVIFld+Xqwm5/rkSYX0ZpVzEYcLQlmA8VyWSRR0TGIJUBfKXqWfZRSch7OU7vwfUBDq8DYQVLk3B4HeZUJIPoGwZdiTYWCnAZAo6pA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SSwpU1Sf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 66F43C41612;
+	 In-Reply-To:To:Cc; b=cyKKiGXZZpvhkBfQEReVlYzG4Aam7ldtkr0gDjWII+NDIvEQi7ApycO03Ap0c8jAOhg7RjDqfJBArGIrx+IVZ/MsuzgyXGKmEVAWmiSKkiBFBZYUE4uqUJQvO/yRdhzG+vAc5yQrGrk8vBnwT7dPH6OfD3NwhDhdMZROdbDIwkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dfd6CgSc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 71C6FC3277C;
 	Fri,  8 Mar 2024 08:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709887185;
-	bh=S/doFh+gAKWZAIIBgfTAfdC4/d/iX9a1igOHcKDtz+w=;
+	bh=6GLdR1NzwuN3vF74pRPb7zqnKBAq4A6IwVQqiGNp8do=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=SSwpU1SfUbc2JrQ7TO+U85lvQAW3Xmt1LW2RAAEz4wA7uwdBvrVasEJD1DhP+6HAl
-	 nqW2s4zqc9yqDSR4uW76T2vpnFXKo0RFHRI5Dtt+SXhk0PiAIfaiLqVpqEHH3Z7GU8
-	 /mGuR9phpkdGTuVU2juI9gj18cYvLjj7TobEOVioaTPZODVWtEawB13WxaIHV2HH+W
-	 h7KpPrkoxLoP/kKPK5EKWWuovdsKTgMOXSN5H+y5s0qPeOjEBVWauOkouilS6kNUC6
-	 9/D5e7qtcU66dFsGE13+O3NRcARExU9Hhzv3D9Kugn6KmPgepYdnvw60wg+HVP13JR
-	 9XB3glTYkX2gQ==
+	b=dfd6CgScdrDkOenNuOa6Nw05rhzkLG+DhIQyadkwxNqpxgThpdUmRP8O25RQzQL7Q
+	 ejO8GQ33AY7NYceho5ONm9slNAmY7RJRiaBA4Sb+5FzJLFyMi5RiO2nnds4gdqlBW3
+	 ZU1WPzl8kaHxyPoKdj8UU7Xf64F3Tgg4gEL1lNJlJE2YUBIjuU9inIQUiFAymjWEmJ
+	 Bh7LPIeD1oDiNAVQsz73wwjL3abHRRXVU61uuQ2WLkulhS047go2gh3ShfWX+Hgmx4
+	 74WgYa8wr32YwntKdeMDUaX01c8AiYg5RRsXJ/LzisHHjuVh4/HsdT0akWC/2cqmn4
+	 4Dz7LdhySSZMw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F349C54E4A;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59C57C54E5D;
 	Fri,  8 Mar 2024 08:39:45 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Fri, 08 Mar 2024 16:39:47 +0800
-Subject: [PATCH net-next v10 5/8] dt-bindings: net: hisi-femac: add
- mandatory MDIO bus subnode
+Date: Fri, 08 Mar 2024 16:39:48 +0800
+Subject: [PATCH net-next v10 6/8] dt-bindings: net: hisi-femac: add binding
+ for Hi3798MV200 FEMAC core
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240308-net-v10-5-3684df40897e@outlook.com>
+Message-Id: <20240308-net-v10-6-3684df40897e@outlook.com>
 References: <20240308-net-v10-0-3684df40897e@outlook.com>
 In-Reply-To: <20240308-net-v10-0-3684df40897e@outlook.com>
 To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
@@ -68,14 +68,13 @@ To: Yisen Zhuang <yisen.zhuang@huawei.com>,
  Heiner Kallweit <hkallweit1@gmail.com>, 
  Russell King <linux@armlinux.org.uk>
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709887184; l=2289;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709887184; l=1017;
  i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=4fkGrr79J0kJPETyUJ+upr3jatyv9l4bbxNa0d6pOpo=;
- b=EhuknQz1y81X0Cf6TpUbJgN8zxZd+XplAMExrSaQmLcjRif3OwdEle+mxocGIt0HHNzT0N4Uc
- XN9xEnEb+j5BkIt8S1TBmnjQYSJB9HrMW8y385mY0nID+VWFPWXGDX/
+ bh=UOldq5CRtsm/LbzVGbDAknoLyxLVr+a/RNgHhOeLLzY=;
+ b=UjLXcDkC1iGFxi4r1mMdTBtvkykYwtbSeS3izlFvAwHbVZVcNHy9Ytu+vGzY+PRDPV8xlTyEn
+ Eni2Eu0RJFpAO/Wuqel4d92H1pW0z83RdLmqmmF+4pOr9ysOIsBI19t
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
 X-Endpoint-Received:
@@ -85,79 +84,34 @@ Reply-To: <forbidden405@outlook.com>
 
 From: Yang Xiwen <forbidden405@outlook.com>
 
-FEMAC core always has an integrated MDIO bus mapped in its address
-space. Add required properties '#address-cells', 'size-cells', 'ranges'
-and MDIO bus subnode.
+HiSilicon FEMAC core is also found on Hi3798MV200 SoC. Document it in
+binding. While at it, make "hisilicon,hi3516cv200-femac" as the fallback
+compatible.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- .../bindings/net/hisilicon,hisi-femac.yaml         | 30 ++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-index 3344d3bfefb8..5cd2331668bc 100644
+index 5cd2331668bc..cee10d263d0b 100644
 --- a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
 +++ b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-@@ -22,6 +22,15 @@ properties:
-       - description: The first region is the MAC core register base and size.
-       - description: The second region is the global MAC control register.
+@@ -14,8 +14,12 @@ allOf:
  
-+  ranges:
-+    maxItems: 1
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 1
-+
-   interrupts:
-     maxItems: 1
+ properties:
+   compatible:
+-    enum:
+-      - hisilicon,hi3516cv300-femac
++    oneOf:
++      - items:
++          - enum:
++              - hisilicon,hi3798mv200-femac
++          - const: hisilicon,hi3516cv300-femac
++      - const: hisilicon,hi3516cv300-femac
  
-@@ -57,9 +66,16 @@ properties:
-       - description: reset pulse for PHY
-       - description: post-reset delay for PHY
- 
-+patternProperties:
-+  'mdio@[0-9a-f]+':
-+    $ref: hisilicon,hisi-femac-mdio.yaml#
-+
- required:
-   - compatible
-   - reg
-+  - ranges
-+  - '#address-cells'
-+  - '#size-cells'
-   - interrupts
-   - clocks
-   - resets
-@@ -75,6 +91,9 @@ examples:
-     ethernet@10090000 {
-         compatible = "hisilicon,hi3516cv300-femac";
-         reg = <0x10090000 0x1000>, <0x10091300 0x200>;
-+        ranges = <0x0 0x10090000 0x10000>;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-         interrupts = <12>;
-         clocks = <&clk_femac>, <&clk_femacif>, <&clk_fephy>;
-         clock-names = "mac", "macif", "phy";
-@@ -84,4 +103,15 @@ examples:
-         phy-mode = "mii";
-         phy-handle = <&fephy>;
-         hisilicon,phy-reset-delays-us = <10000 20000 20000>;
-+
-+        mdio@1100 {
-+            compatible = "hisilicon,hisi-femac-mdio";
-+            reg = <0x1100 0x20>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            phy@1 {
-+                reg = <1>;
-+            };
-+        };
-     };
+   reg:
+     items:
 
 -- 
 2.43.0
