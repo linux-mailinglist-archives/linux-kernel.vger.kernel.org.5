@@ -1,70 +1,122 @@
-Return-Path: <linux-kernel+bounces-96978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B650F876408
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 51A6087640A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E81031C2161E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:10:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8336D1C21533
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E52D57862;
-	Fri,  8 Mar 2024 12:10:04 +0000 (UTC)
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A66E5731B;
-	Fri,  8 Mar 2024 12:09:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F79E5676E;
+	Fri,  8 Mar 2024 12:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FvwdXM/I"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6572A535CA;
+	Fri,  8 Mar 2024 12:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709899803; cv=none; b=N6RA5OpYGOYQhKs9iYihG6vR7r09ZfIjQi3rxCAksVpkAenYxRuxUJKWxcEVyPzztbzOG5Y1MwdVLnxor+ODNfpmxgEdTVQDnSIniySfwORlKb8678s4X9tNM/ANod46QbqzvDr+4hKkM+RtryW45TzMZcjtv5y/bOzN0gL56zo=
+	t=1709899826; cv=none; b=S98WSt33X0QTeHI4TNHV6rK3F0P20Z4lEVQTGYvwjF0fYyk6A2Kgjm/BUbnMCd1F1o54glbttfY4HY7ECVvxusSEHH3KmvYwmRwy7otE3jQSGA8KLap/inPwsT/M0xVz6tn+WcT7mXsOEGgt89Fv9gEX3HaU1b9tpWYwajjM6Mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709899803; c=relaxed/simple;
-	bh=9T09C1YQCN5oBbpYEijWlMzI0K+d0IQxA9WFgqToIXA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=YYqI+pu7W5M10Vit5a4B6XTYTUj3ImjcYaZOVzoz2+55L1Dk4g279NqczDYWC6zLEzIGHlAiN6vwjyoWMyOR1iCSCSrSi50tTwQ/a94OBAo3ItA2R51cRpMVfc+hEXsdDSfwkBGvVRv+scPgDrCy7/riUzhlQg9fo0mn1DUjFbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id DC9D692009C; Fri,  8 Mar 2024 13:09:57 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id D63B192009B;
-	Fri,  8 Mar 2024 12:09:57 +0000 (GMT)
-Date: Fri, 8 Mar 2024 12:09:57 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Andreas Larsson <andreas@gaisler.com>
-cc: sam@ravnborg.org, sparclinux@vger.kernel.org, 
-    Randy Dunlap <rdunlap@infradead.org>, 
-    Miquel Raynal <miquel.raynal@bootlin.com>, 
-    linux-parport@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, 
-    Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, 
-    Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: Re: [PATCH v2 7/7] sparc32: Fix section mismatch in leon_pci_grpci
-In-Reply-To: <8398f430-14be-4447-9c17-9f6ac0af024a@gaisler.com>
-Message-ID: <alpine.DEB.2.21.2403081209100.45777@angie.orcam.me.uk>
-References: <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org> <20240224-sam-fix-sparc32-all-builds-v2-7-1f186603c5c4@ravnborg.org> <b62d0ae6-c2cb-4f2c-b792-2dba52a44e35@gaisler.com> <c5654b69-209e-4406-ac70-9a4547adfc36@gaisler.com>
- <alpine.DEB.2.21.2403072015010.29359@angie.orcam.me.uk> <8398f430-14be-4447-9c17-9f6ac0af024a@gaisler.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1709899826; c=relaxed/simple;
+	bh=Umw52OeAdsCrNTCL2UqZxJ1nYRjrDFqkST66g4dDbGc=;
+	h=From:To:Subject:Date:Message-Id; b=iMxMHEQ8G8WFYy+G+Ml3YGfztOIZd1TkR/S0DCD0hNhhVCoMKTfHt4/Ub/MgKSrUFaHvji6avaDv1Xse91DJqlggYcaS9YtlRqmxAINvl7gqdk1Q6H53RlBaKPy70qb0FgmeN33RkxkCf+v/Qv0sOll8/9Q+YJc6gzvg4NOxsaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FvwdXM/I; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc29f1956cso5088275ad.0;
+        Fri, 08 Mar 2024 04:10:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709899825; x=1710504625; darn=vger.kernel.org;
+        h=message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FT4YKhx1arQKM4uZFE6CXUn3u3YsdPfEE6W1XkpDDy0=;
+        b=FvwdXM/IPjZt+7o3kBFuAll5FU/BVwPWDbIfpmdEZ8FOh3TTwDh7XjxpQfdRPhzvt7
+         2Bwr5d7W14h+Elt24k4g46BXGnQrlhg1JNWbrN6XL2+2wdQu70nYKvtvkB3co2W9eqLt
+         /8lYwD5EttxlNuE+YLcW9AFjK4NZKMen/nQuKBr2UOsUVKXtviz15gWxvhZYfg8EfnTH
+         xxMCiUQtlMKnO2fOM8JZJ+mh99kiXNkech8jyWp2kH9zq1PAHpSMYoRmsjBujRhUDAZK
+         4Nf00Inpy1+XRuKdfKWrMixMDRj024q79SfsurbNqr9I6k37DPaRD/7vn6yZeA/y5o6Z
+         bL3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709899825; x=1710504625;
+        h=message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FT4YKhx1arQKM4uZFE6CXUn3u3YsdPfEE6W1XkpDDy0=;
+        b=j0CSGjjmegYcvsdI1A2BV/URH07eANl7t4j4N9TxN02iUUSWUK1SMFgLL0JTESI6XG
+         cASrKfUAtgrvPu/iDOtv1gFN9Hm+RdS/Kz3FojZ6Xg7ZjwmtJr/qNMLlgJRTwBIsN3js
+         JVYQHF1v5ISSelaw+FyTl4/R+z/bR/7/I6cXCJ5g6WN2jymUzUoXzOP66BpaSfUZiCYf
+         pPmVAAWjuBLaazionwOeINRH34Q2SEDoD3w/4Hu0pNd8ozGPOKpTrtIiXJxfLTwnVVqO
+         ZMrfawhsGq8gEAT1ONKaF/Jj3n55wI5vKFoox+Wgm9FLd8hXwCIYQJ1F0ei4vHsNdB4s
+         FcsA==
+X-Forwarded-Encrypted: i=1; AJvYcCWbS6/gG8+VXl9lqNpZ3dj9WDn32y3fUCa7GGx51fNaFaFT3ROZbxJeQEH/+PoeRn/UC5dSfKKQoEsxvAqy4ass5LGZZUvVtkZvjaC/7DrtKRLkSBS5KBrt2gsJLKL7Pf1iF2HQUVWoXJo=
+X-Gm-Message-State: AOJu0YzkSCI+fsv6/MzgBN+RvrjAQp82dTBkfanzcWBMVAiZvjAxgdhE
+	85r4ZLNwSoyEyDR+glc8Rayu1uHBUtdCdsF4cf+AeSpQhSTn4+EBVdzpvjawRwA=
+X-Google-Smtp-Source: AGHT+IHsH8NDwM4TODYOCRN5NcxpEfZ5S2tEIVEttMzmnICm6qCNbDEBiYPhQlBVvEUzv2dZkNIrTA==
+X-Received: by 2002:a17:902:ec92:b0:1dc:42da:bad with SMTP id x18-20020a170902ec9200b001dc42da0badmr12957207plg.62.1709899824581;
+        Fri, 08 Mar 2024 04:10:24 -0800 (PST)
+Received: from goorm.ap-northeast-2.compute.internal (ec2-52-78-100-77.ap-northeast-2.compute.amazonaws.com. [52.78.100.77])
+        by smtp.gmail.com with ESMTPSA id jf19-20020a170903269300b001db37fd26bcsm2491016plb.116.2024.03.08.04.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 04:10:24 -0800 (PST)
+From: yongsuyoo0215@gmail.com
+To: mchehab@kernel.org,
+	yongsuyoo0215@gmail.com,
+	v4bel@theori.io,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] media: dvb_ca_en50221: Fix a bug for detecting CI MODULE
+Date: Fri,  8 Mar 2024 12:10:21 +0000
+Message-Id: <20240308121021.1732-1-yongsuyoo0215@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 
-On Fri, 8 Mar 2024, Andreas Larsson wrote:
+From: Yongsu yoo <yongsuyoo0215@gmail.com>
 
-> Based on the outcome of the testing and discussions that followed I will
-> not pick up the "sparc32: Do not select ZONE_DMA" patch from
-> 
-> https://lore.kernel.org/sparclinux/20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org/
-> 
-> which was the one that got your name misspelled, unless I missed some
-> other occurrence.
+Signed-off-by:Yongsu Yoo <yongsuyoo0215@gmail.com>
 
- Ah, OK then, thank you for double-checking.
+In source/drivers/media/dvb-core/dvb_ca_en50221.c, if the CA_RESET
+ioctl is called, the dvb_ca_en50221_slot_shutdown will also be called.
+Inside of the dvb_ca_en50221_slot_shutdown,
+the ca->slot_info[slot].slot_state will become DVB_CA_SLOTSTATE_NONE.
+In the most of cases, the ca->slot_info[slot].slot_state will quickly
+becomes restored to other states by the subsequent operations of the
+thread dvb_ca_en50221_thread_state_machine.
+But in some rare cases, when the CA_GET_SLOT_INFO ioctl is immediately
+called after the CA_RESET ioctl is called, the
+the ca->slot_info[slot].slot_state can still remains at
+DVB_CA_SLOTSTATE_NONE, and this causes CA_GET_SLOT_INFO ioctl not to
+return CA_CI_MODULE_PRESENT as info->flags even if CA_CI_MODULE is
+really connected on TV. This means that the CA_GET_SLOT_INFO ioctl
+does not return right informtion. This is a Bug. We fix this bug.
+---
+ drivers/media/dvb-core/dvb_ca_en50221.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-  Maciej
+diff --git a/drivers/media/dvb-core/dvb_ca_en50221.c b/drivers/media/dvb-core/dvb_ca_en50221.c
+index baf64540dc00..8d37c3c13227 100644
+--- a/drivers/media/dvb-core/dvb_ca_en50221.c
++++ b/drivers/media/dvb-core/dvb_ca_en50221.c
+@@ -1403,6 +1403,10 @@ static int dvb_ca_en50221_io_do_ioctl(struct file *file,
+ 		    (sl->slot_state != DVB_CA_SLOTSTATE_INVALID)) {
+ 			info->flags = CA_CI_MODULE_PRESENT;
+ 		}
++		if ((sl->slot_state == DVB_CA_SLOTSTATE_NONE) &&
++		    (sl->camchange_type == DVB_CA_EN50221_CAMCHANGE_INSERTED)) {
++			info->flags = CA_CI_MODULE_PRESENT;
++	     	}
+ 		if (sl->slot_state == DVB_CA_SLOTSTATE_RUNNING)
+ 			info->flags |= CA_CI_MODULE_READY;
+ 		break;
+-- 
+2.17.1
+
 
