@@ -1,194 +1,167 @@
-Return-Path: <linux-kernel+bounces-96648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC8B875F73
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:27:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 082C6875F79
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:29:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFC702822E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:27:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 896CE1F2291E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AAC4524A8;
-	Fri,  8 Mar 2024 08:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D00A524B5;
+	Fri,  8 Mar 2024 08:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XmNiLN0f"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="chhhgCNZ"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F9AD2C85C;
-	Fri,  8 Mar 2024 08:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADFA51C5A
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 08:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709886458; cv=none; b=nwbAA3V6FAYn9r9b1GCdTgfe4aYS6ucUaYX2iSQYx+wlcN9ra8YrsFxvn9po2WlopBs3VFky+mdUV4CZ7RWWqvP+LznXS6tTR1dpVURge/qbdHQTiYaii1x8qVtnc4K3k2lOxMmak2foGzrrNV2FnSL/KJ7Y+mlhhRswPcS83YI=
+	t=1709886544; cv=none; b=KxXmYN5g8INKFlXmB3ED54XzbwAMOdtbNv3dcmJpNIZzFPzw6FMIQYZ7ZT21QzsHyhGU3nOAmBHQ0z0PTNBK6pCpmegSgr6Ud5RMTsRfv0GoxBIClfYH50Q3wMJoIqnNf9rD5nJ6MxJGPHUx7oRKQZMaJiGC/+lQs3canBxIQG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709886458; c=relaxed/simple;
-	bh=it+8N8x9nkiwam2Z6P8taeub+gmE2B4+vtKE+rvyjVE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jNc7D9YvokIR3X+tNsw4iOo4FK850LjisOrZsNB957MjKvLKt+o/dz595R3dOaIu9WHWRpjb3tufCVdBXu6oQuALcQ3jG177twtaFE0okoQId2N8tKBH9m9xSOyf/PgFeHWZ0xA6ve/TEqgcEfWba352vYxOq+SfKLSAg4UQ8sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=XmNiLN0f; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4281ir34024318;
-	Fri, 8 Mar 2024 08:27:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=TTXHftTjjsBsUWU4UrbQ62ok56w6+TCUiqaFxrq8KxM=; b=Xm
-	NiLN0fpd08l0sB184F/qADPtqfV6FGGtimrTbKXHM1xqE0R9j4puWAxwLdhpmbB+
-	3vlbDawEcmIOmhiga3GtN60QmLZA968XbI+6nRPNWC8WnKExn6EBt5VBlaj6GPOI
-	6DCdO0ubt6hw76NB39eEOtHJWkKFWzujX7gHlhQGViJCrIYaiv1KOBexjXvde9xt
-	4c1nrsC63fLj+IQAfHIatlEhUtY/FIjF4z7D74HEX/sDpJLp5GVyhEHh6DDmco2V
-	TQONb8cGN/GdZHF7eef+iUxW87+OZspXbbsaPUPJdP18KoxC5RSWokN4zUFB6zxs
-	MiiiA3rMJKz2nJPMCcNg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqn8q17tw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 08:27:03 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4288R1Ou019589
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 8 Mar 2024 08:27:02 GMT
-Received: from [10.216.7.18] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Mar
- 2024 00:26:55 -0800
-Message-ID: <1e353c1a-e267-14d0-fdf4-36aea9062ed3@quicinc.com>
-Date: Fri, 8 Mar 2024 13:56:51 +0530
+	s=arc-20240116; t=1709886544; c=relaxed/simple;
+	bh=mPhaeJdV2mnKJUS0uSsE89bsTS8W9V6mwwZ9n1XtTQU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H9STkqwSqYeJCBShcw/JaoH+EJaE/UFpVy2ASxDFBbkK2uAZfLXn9482O3hh0MOa3Hrig7kZhVbX/u4Fsh7fXlGTda8x21JJnC97WajXyOV4dndyVgFvNw0abVpFEbvKKIL2eL++rCXThZxVadFTvTRNqxl+e2596dZU8INjeWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=chhhgCNZ; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56781070f38so5019019a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 00:29:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709886541; x=1710491341; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uGaTIeAcsz12SzGkwhmBpWe07BhlDEc5lNBSFM3BK4U=;
+        b=chhhgCNZ9sea3TbMPezZ9Ev/Obcj96FfaX1HOegMt30tfZ48PKVP1ePP/un5SG3M8C
+         lsd3s5zObNRZum2FUVPpVAXuCsME8WP7smh2lZyiqlepiE9aQA4RAKMPTt12IO3jqVEA
+         sOQ3tIuXaTx+ppqFbDQrkLkVOOVT8lTVEFw48hGgH2MhD3M63aJ6fQcBo+qMtfMRBs68
+         npa39IYwpk4rX260WsvjzopSHJicnwOA6smHFk2l4O5cK6Gl/cNtzq+jsXyccMVo3Gz3
+         EnLvh6BUFL2Dl+KSPq3iOfyKNqAYLSlHpU3RmjqCo28ppNnMFE7MNZ3pcA12rNweaZd0
+         NCjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709886541; x=1710491341;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uGaTIeAcsz12SzGkwhmBpWe07BhlDEc5lNBSFM3BK4U=;
+        b=HwqLssochhfaNiJ9VigYikue1yw15tqdaZAh6MeimmCP9qvTv3ya0tRp1xlutiSE6I
+         uhaTELIWSItQf2Ft2gVB20ZQYCdyN/ma2g2GGfcpQIpPkrccF9wU3P+q//MRibep613+
+         Lsttk/jDL1bQiqf65JTLoR726GcvPqQo/7RnQJ6mZqy+C7aAMncCAme/IlaVme4MPalB
+         9p5gU6GSZs87Q30VE9ERwiAbFPa28osdLzu01rr4pHhpJp3u78tTNEErkpqam9fDuWZA
+         E6H/ynOZ4fOv3ytsw6D0relfe7ivhyXBo6wVYrBzIWQgkQXC2Zf9HccXAy2kEqITd/4E
+         13DA==
+X-Forwarded-Encrypted: i=1; AJvYcCXtDaxkEkgr7JckchERecaKr1c/3msuKIH2l51fUq42OsOPRZFQkvFE44t6aD3rEYW50FGmi2NZUg5KYG/Fi1t1QXFgGSKjFzP1Uk/i
+X-Gm-Message-State: AOJu0YxiCnqA0+NUVE4X4F0bsJlipP5hLMzQbMwJUTLqE0IykgUWMOGl
+	46FR4QflEItCASmyFLDiqEtHY37DT9MZy+mTSg14Fg08mjNKpmtRqDJQMLTTQ84=
+X-Google-Smtp-Source: AGHT+IHqXdZrS35AxMLvKEFjUD3rxc2ONhdickA6wgVvvf5FmEC22SiIn6NplBS14w2l6xsNCRSB9w==
+X-Received: by 2002:a17:906:8d3:b0:a45:7936:d09e with SMTP id o19-20020a17090608d300b00a457936d09emr2676913eje.19.1709886541014;
+        Fri, 08 Mar 2024 00:29:01 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id h2-20020a170906260200b00a45f545beeesm74840ejc.122.2024.03.08.00.28.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 00:29:00 -0800 (PST)
+Message-ID: <578f421c-ca06-45d4-8380-8b2b423d4d47@linaro.org>
+Date: Fri, 8 Mar 2024 09:28:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 2/5] clk: qcom: clk-alpha-pll: Add support for Regera PLL
- ops
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] dt-bindings: net: add new property st,ext-phyclk
+ in documentation for stm32
 Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "Stephen
- Boyd" <sboyd@kernel.org>,
-        Abhishek Sahu <absahu@codeaurora.org>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: Stephen Boyd <sboyd@codeaurora.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>,
-        "Imran
- Shaik" <quic_imrashai@quicinc.com>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
- <20240229-camcc-support-sm8150-v1-2-8c28c6c87990@quicinc.com>
- <630bb10a-2197-4573-a6d5-01fa6650c315@linaro.org>
-From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <630bb10a-2197-4573-a6d5-01fa6650c315@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Christophe Roullier <christophe.roullier@foss.st.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Richard Cochran <richardcochran@gmail.com>, Jose Abreu
+ <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240307135957.303481-1-christophe.roullier@foss.st.com>
+ <20240307135957.303481-3-christophe.roullier@foss.st.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240307135957.303481-3-christophe.roullier@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: DeOmEczicIlX57jmsaIPHm2uetJ4bz6Q
-X-Proofpoint-ORIG-GUID: DeOmEczicIlX57jmsaIPHm2uetJ4bz6Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_06,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- mlxlogscore=880 mlxscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- malwarescore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403080066
 
+On 07/03/2024 14:59, Christophe Roullier wrote:
+> Add property st,ext-phyclk to manage cases when PHY have no cristal/quartz
+> This property can be used with RMII phy without cristal 50Mhz and when we
+> want to select RCC clock instead of ETH_REF_CLK
+> Can be used also with RGMII phy with no cristal and we select RCC clock
+> instead of ETH_CLK125
+> 
 
-On 3/2/2024 5:26 AM, Konrad Dybcio wrote:
-> On 29.02.2024 06:38, Satya Priya Kakitapalli wrote:
->> From: Taniya Das <quic_tdas@quicinc.com>
->>
->> Regera PLL ops are required to control the Regera PLL from clock
->> controller drivers, thus add support for the same.
->>
->> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
->> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
->> ---
-> [...]
->
->
->> +static int clk_regera_pll_enable(struct clk_hw *hw)
-> This function is 1:1 clk_zonda_pll_enable() logic-wise, except for
-> the `if (val & ZONDA_STAY_IN_CFA)` part. Would it be an issue on
-> Regera?
+Nothing improved here. You say you add new property (wrote it explicitly
+in the subject), but where is it? Where is the user?
 
+I think we talked about this. Rob also asked quite clear:
 
-Yes, that is only applicable for Zonda PLL, hence we cannot re-use the 
-same code for Regera.
+>That is obvious from the diff. What is not obvious is why we need a new
+> property and what is the problem with the existing ones.
 
+How did you solve it?
 
->> +static void clk_regera_pll_disable(struct clk_hw *hw)
-> This again is clk_zonda_pll_disable(), except the very last value written
-> to PLL_OPMODE is different. Could you commonize them?
->
+Best regards,
+Krzysztof
 
-This difference is there between Zonda and regera PLLs as per the HW 
-recommendation, hence we cannot re-use this.
-
-
->> +
->> +static void zonda_pll_adjust_l_val(unsigned long rate, unsigned long prate,
->> +									u32 *l)
-> (Ugly wrapping, please touch it up)
->
-> ..should it apply to zonda as the name suggests? Also, any explanations?
-
-
-Yes, it is applicable for Zonda PLL as well, will update the Zonda pll 
-set rate in next post. The L value needs to be adjusted to handle the 16 
-bit signed alpha.
-
-
->> +	u64 remainder, quotient;
->> +
->> +	quotient = rate;
->> +	remainder = do_div(quotient, prate);
->> +	*l = quotient;
->> +
->> +	if ((remainder * 2) / prate)
->> +		*l = *l + 1;
->> +}
->> +
->> +static int clk_regera_pll_set_rate(struct clk_hw *hw, unsigned long rate,
->> +				  unsigned long prate)
->> +{
->> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
->> +	unsigned long rrate;
->> +	u32 l, alpha_width = pll_alpha_width(pll);
->> +	u64 a;
->> +	int ret;
->> +
->> +	rrate = alpha_pll_round_rate(rate, prate, &l, &a, alpha_width);
->> +
->> +	ret = alpha_pll_check_rate_margin(hw, rrate, rate);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	if (a && (a & BIT(15)))
-> What is BIT(15)?
->
-> Also, the left part of the condition is totally bogus, if a is 0 then
-> a & BIT(15) will surely be zero as well.
-
-
-Sure, will correct this.
-
-
-> Konrad
->
->
 
