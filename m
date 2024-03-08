@@ -1,185 +1,91 @@
-Return-Path: <linux-kernel+bounces-96493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C3BE875D01
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:58:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94ADF875D03
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:02:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D8E61C20CC4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:58:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 469491F21EB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BFD2D047;
-	Fri,  8 Mar 2024 03:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZADXQRtg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC752C6B7;
+	Fri,  8 Mar 2024 04:02:04 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820532C190;
-	Fri,  8 Mar 2024 03:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9F528E1B
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 04:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709870312; cv=none; b=jE+T3TVAaPGExfSWnw0azJsuKJv6Bjo+gI36j3pWmCSKe4ARCHTLXDsgj4JP3sjbwK8SLd38XPcNSv/m2BuQducyNYDZyGxZIqXLlpcTcQHV0eD51T5mRDnSWpe85OIp17ysvLqxuQ7eE3KVPts7BGaS2Qw+ohIVEqxv59smoKo=
+	t=1709870524; cv=none; b=e9mhAO5SPGCIKSuagSt0377fSViW6fMaZdLA+qN0Y4CDs1jlN05qzMzk8xNdDZmeHcsglGnAENrnQeG4zhLNDNvKAhdfOfglgum/vIGssitatU/xMrf0qFOcfKqdJ6B6QxEGM1TvW+hcxYxGZCp5S9Q+ftZXSw9jsgEJxZcMR3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709870312; c=relaxed/simple;
-	bh=mF6Wbp6MtxfNFDHq0iHrXjjYNWZxisqag9vARhbWvOU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aKAPJFYD9DEFLLVE4606nXAd8E8OxP0B5e30PgkuP9WQk26yef/Lj4H8OIVd/PflCyZlyWEZjTE1w90LkK9HjdMXqCFyHZtOszITWqhhg0AhoR6QlXF0+tG/p8xz3o1k1FdFKCfWoCk1Y7RuhFuz2gwJu3tQ2IO6cXm9FwMgva4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZADXQRtg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA81C433F1;
-	Fri,  8 Mar 2024 03:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709870312;
-	bh=mF6Wbp6MtxfNFDHq0iHrXjjYNWZxisqag9vARhbWvOU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZADXQRtggZVF7jCXRnr/Nx++UqGw2O1E+U/KttSTtzSSlM9bBjttGEo/A8hRic7ge
-	 O+gDFK9MJBHmJ2YDam/9YZE3gp0xxBazL1mTi5MDwug/eJk53dwV/etCOw6KZlAWuN
-	 2i1Oe8pKYSCdgSopwQohIoatN4yPvCX5Cuzbnr/d5jvVAjw1Ie2U1uJLT8OtOKVyTs
-	 N5lwkQbIk4pRTkVTCTO3QA4II1m8BzPZ9ti7U330EoXvcxzor4u0v+kBt/tUSkRAKp
-	 tt8z4/H4M6CWk2MTdlJfmcAQM/5mZHnYRX7fG89CTjTzKp4ec7OLIdHAisaNLAPPMH
-	 kRchFPzFcbV0A==
-Date: Thu, 7 Mar 2024 19:58:28 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, Sumit
- Semwal <sumit.semwal@linaro.org>, "Christian =?UTF-8?B?S8O2bmln?="
- <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, David
- Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeelb@google.com>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, Kaiyuan
- Zhang <kaiyuanz@google.com>
-Subject: Re: [RFC PATCH net-next v6 05/15] netdev: support binding dma-buf
- to netdevice
-Message-ID: <20240307195828.183a76c2@kernel.org>
-In-Reply-To: <20240305020153.2787423-6-almasrymina@google.com>
-References: <20240305020153.2787423-1-almasrymina@google.com>
-	<20240305020153.2787423-6-almasrymina@google.com>
+	s=arc-20240116; t=1709870524; c=relaxed/simple;
+	bh=G6Djrr2MxRBhWPFd/9J6IONYLwzSuiPfqPYSZd2yTsM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=sYX1ExJku4CkSywaQfDE4sqloktMO0rZd33HXs9MGfhvTh6wwjqTJFnbBPwrJPaQhwgD2ghGuptioyJHaivBFSAkjiaH66CP7+RSGWsgWPzJ2c09yRbviF/Pdr0UU2HhA8JmQDX3u8xAFYEs10BUvnVkUvLfgM4xAWN0mbNzdKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c873aa5a95so174893739f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 20:02:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709870522; x=1710475322;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QCiyG4o54TrjDfLD0ps7QesGLXWPOUDgDBMKldRTYPg=;
+        b=NFjlH0OczLa5HFrsbRnjS1HXwPdYZXqkfqeKYWxTamGADikJba2Tz3Zt5Dnx+PMDNE
+         KoSEFz/14/PxjR1uQ54j1jIh0nIU3X/756hWIWfDDHXVKhb/rw38SXetq6OZ9Z+YcUS2
+         00aNB3mZEsX69AkY2QDTxSJbIFsbYlZiZixrw4jcfNPmhljGxSNUIyPogcdUjTjZV0OK
+         gWVUTgeD3l1582ZhZuHASMkiN9PcmOje8f+4E2v1cyZYs5ChqVHVJ525KYuU0GBWArbh
+         KjNUF5+TpF0WYdMXNqaBEYpzBzw+gUuKzmtZ6qL7yX79FwIcbX3snJSkWi6cvI7yxLb+
+         OkNA==
+X-Forwarded-Encrypted: i=1; AJvYcCVBuOceTWsLiUPvsIQ2JPoT9J6f71Y2plU3eclXoX1iVIuiZAkqGjAZP1fq9WBq9Ko3w2ONjWv8E0MFLnXli18+BIgm+G0Z5eT4CLdw
+X-Gm-Message-State: AOJu0Yx5UTHjJLOOjnOQWXYp2VhUr3wvSFP2uN0AaQbfN3KZr2pymz7Q
+	8vixf4QYSorGkzgFd3bQt7G7w1fHItCG5CMNtiN5MRWaK3ND++V7WIQRVZxg6VzKYf2gQWnfwQ3
+	/n9d7Gb9me6oVOBOO42a+eQdAKoFeMG8e2cnwNJlg8BP+7os5TdqtBZM=
+X-Google-Smtp-Source: AGHT+IELur/qUvDjoOhOme4OZH1E9SVj/n5Qat2+FmIjlDtybLlgcVORnoYjLEk46wzNl3bCWeS6tLYD/IcJzmQxUF/5ah1d8gn7
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:144e:b0:474:ebfd:1749 with SMTP id
+ l14-20020a056638144e00b00474ebfd1749mr720212jad.0.1709870521959; Thu, 07 Mar
+ 2024 20:02:01 -0800 (PST)
+Date: Thu, 07 Mar 2024 20:02:01 -0800
+In-Reply-To: <0000000000009d4b80060df41cf8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000012d93d06131e4140@google.com>
+Subject: Re: [syzbot] [reiserfs?] general protection fault in reiserfs_xattr_set
+From: syzbot <syzbot+74dce9511a59ad67a492@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, eadavis@qq.com, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon,  4 Mar 2024 18:01:40 -0800 Mina Almasry wrote:
-> +	if (!dev || !dev->netdev_ops)
-> +		return -EINVAL;
+syzbot suspects this issue was fixed by commit:
 
-too defensive
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-> +	if (!dev->netdev_ops->ndo_queue_stop ||
-> +	    !dev->netdev_ops->ndo_queue_mem_free ||
-> +	    !dev->netdev_ops->ndo_queue_mem_alloc ||
-> +	    !dev->netdev_ops->ndo_queue_start)
-> +		return -EOPNOTSUPP;
-> +
-> +	new_mem = dev->netdev_ops->ndo_queue_mem_alloc(dev, rxq_idx);
-> +	if (!new_mem)
-> +		return -ENOMEM;
-> +
-> +	err = dev->netdev_ops->ndo_queue_stop(dev, rxq_idx, &old_mem);
-> +	if (err)
-> +		goto err_free_new_mem;
-> +
-> +	err = dev->netdev_ops->ndo_queue_start(dev, rxq_idx, new_mem);
-> +	if (err)
-> +		goto err_start_queue;
-> +
-> +	dev->netdev_ops->ndo_queue_mem_free(dev, old_mem);
+    fs: Block writes to mounted block devices
 
-nice :)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16fc31de180000
+start commit:   453f5db0619e Merge tag 'trace-v6.7-rc7' of git://git.kerne..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7bcb8f62f1e2c3e
+dashboard link: https://syzkaller.appspot.com/bug?extid=74dce9511a59ad67a492
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1534af31e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1512b9a1e80000
 
-> +	rxq = __netif_get_rx_queue(dev, rxq_idx);
-> +
-> +	if (rxq->binding)
+If the result looks correct, please mark the issue as fixed by replying with:
 
-nit: a few places have an empty line between call and error check
+#syz fix: fs: Block writes to mounted block devices
 
-> +		return -EEXIST;
-
-> +	if (!capable(CAP_NET_ADMIN))
-> +		return -EPERM;
-
-this can be a flag on the netlink policy, no?
-
-	flags: [ admin-perm ]
-
-on the op
-
-> +	dmabuf = dma_buf_get(dmabuf_fd);
-> +	if (IS_ERR_OR_NULL(dmabuf))
-> +		return -EBADFD;
-
-
-> +	hdr = genlmsg_put(rsp, info->snd_portid, info->snd_seq,
-
-genlmsg_iput()
-
-> +static int netdev_netlink_notify(struct notifier_block *nb, unsigned long state,
-> +				 void *_notify)
-> +{
-> +	struct netlink_notify *notify = _notify;
-> +	struct netdev_dmabuf_binding *rbinding;
-> +
-> +	if (state != NETLINK_URELEASE || notify->protocol != NETLINK_GENERIC)
-> +		return NOTIFY_DONE;
-> +
-> +	rtnl_lock();
-> +
-> +	list_for_each_entry(rbinding, &netdev_rbinding_list, list) {
-> +		if (rbinding->owner_nlportid == notify->portid) {
-> +			netdev_unbind_dmabuf(rbinding);
-> +			break;
-> +		}
-> +	}
-> +
-> +	rtnl_unlock();
-> +
-> +	return NOTIFY_OK;
-> +}
-
-While you were not looking we added three new members to the netlink
-family:
-
- * @sock_priv_size: the size of per-socket private memory
- * @sock_priv_init: the per-socket private memory initializer
- * @sock_priv_destroy: the per-socket private memory destructor
-
-You should be able to associate state with a netlink socket
-and have it auto-destroyed if the socket closes.
-LMK if that doesn't work for you, I was hoping it would fit nicely.
-
-I just realized now that the code gen doesn't know how to spit
-those members out, but I'll send a patch tomorrow, you can hack
-it manually until that gets in.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
