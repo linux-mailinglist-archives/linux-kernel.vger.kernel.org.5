@@ -1,88 +1,48 @@
-Return-Path: <linux-kernel+bounces-96825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D8438761E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:23:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CBF48761F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F6561C21A98
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:23:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B34D283428
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DB554775;
-	Fri,  8 Mar 2024 10:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eMTB0dxI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02855467C;
+	Fri,  8 Mar 2024 10:24:57 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1CFD29E;
-	Fri,  8 Mar 2024 10:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30A1535D7;
+	Fri,  8 Mar 2024 10:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709893383; cv=none; b=kYvwi/y7jK5bj19NKzXvzV3OCcP2DeVyJIrpfZ892TalY5b9VxJ8j+sq6OVAff2Eqc2GW4K7yFoDEfbn09ZNcGqYCZLAkUB9LUVn89spwSOWY/VJr9OLi0FWdI4COO1SbcGfU8cUWT27+VeOkFcNahA6pQvvzoKMzV6WZGexams=
+	t=1709893497; cv=none; b=RNEnJZ02tziD+cgKNO456bOq7oZ5VORXtEpDhZ04FYE9eoqnV44NxaRgRiqYKX9XNKlM7E5bIvkXkubg0ZFoLjxeOv6XcPZiVRs/ACne9DSVYLnuoZD1hJ8XDNNv8AUOR8K+G4dxyxo93a3QXWzmvoQFBq/i3qWixYqPdcLZDHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709893383; c=relaxed/simple;
-	bh=lHycvlNl7OVIrzQI78hPFaTIMft0lPdksi6rDoX3W/g=;
+	s=arc-20240116; t=1709893497; c=relaxed/simple;
+	bh=FHgKrmtpL5qJMcf6wT+EWhuFyHiWEd/Ju4BGzDwllvM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u17qCdi7+wZwI/MJGL12KcM9hrN2Annuc14QnmgXOWaDYIt4uWlB0T3wVvabU3TvgHbP9VVb4R5g6hzfQU8aFqRb4rP2a8fjXEYssnRYaTmj8BaDtUUEPMWnJK8yYDTs12atDKzwty7BAlR7er6SV4pMK461FekqNbAnECLRWA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eMTB0dxI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E1BFC433C7;
-	Fri,  8 Mar 2024 10:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709893382;
-	bh=lHycvlNl7OVIrzQI78hPFaTIMft0lPdksi6rDoX3W/g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eMTB0dxIOS+2itv74DP87TT3a7S3lfZoD0+2Ls0iMrgdCcuIV4TZHR8C/py3lEoLM
-	 rGXHcOX82vv7YXrL1/xhf67lvGXpZQbd+56lYq8J4pfE1vSC4Z9QmS9P8uZkL4AnaS
-	 UE+ngGFia7kmUXjyWDby8Q4Cd9pZqA2t88xVQTlABBPsGJEFng7d1B4ndq/wO4Spkp
-	 nhGLBhuH+r3uinoM2tful9m8gThPphuZ2QPQ8mte4TEAThEeCy4ovpQm1GN6JR0HEX
-	 mCHXeItsOiBq9vlmwyPHb0GtJgonfjHk4SSF350AxdKeECKF73Js76nM3nPgm2jTIn
-	 10tpVfabCXnxQ==
-Date: Fri, 8 Mar 2024 11:22:52 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com
-Subject: Re: [PATCH v9 06/10] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
- API directly from all glue drivers
-Message-ID: <Zerm_LukciAYCZxD@ryzen>
-References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
- <20240304-pci-dbi-rework-v9-6-29d433d99cda@linaro.org>
- <ZeolaEIRYmKZjnvT@ryzen>
- <20240308053624.GB3789@thinkpad>
- <ZerUx9Vw_W997LZk@ryzen>
- <20240308094947.GH3789@thinkpad>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pxtWMay3oWs5n8W+GFrXueKng1MW9PJlWrCrZ6qbqMSVXF5Ete+9ZZbM3SoOs9QEgKt1Ht66PvzCk+bGkEH6TlTKBunf2XKyKFJfYKhWRdHJVONy314zSkVo+6Jmj3DkuvzQKOcD/ryS/M2Jtg5vjBgxzuhHzWhOXk4mlr3s1GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1riXPB-004rot-G7; Fri, 08 Mar 2024 18:24:46 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 08 Mar 2024 18:25:01 +0800
+Date: Fri, 8 Mar 2024 18:25:01 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: WangYuli <wangyuli@uniontech.com>
+Cc: davem@davemloft.net, chenhuacai@kernel.org, kernel@xen0n.name,
+	linux-crypto@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org, guanwentao@uniontech.com
+Subject: Re: [PATCH v2] LoongArch/crypto: Clean up useless assignment
+ operations
+Message-ID: <ZernfR9PlbJzxhI+@gondor.apana.org.au>
+References: <79D75E042AE5B03F+20240229100449.1001261-1-wangyuli@uniontech.com>
+ <ZermFgvsJymZkz4u@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,84 +51,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240308094947.GH3789@thinkpad>
+In-Reply-To: <ZermFgvsJymZkz4u@gondor.apana.org.au>
 
-On Fri, Mar 08, 2024 at 03:19:47PM +0530, Manivannan Sadhasivam wrote:
-> > > > > @@ -467,6 +467,13 @@ static int dra7xx_add_pcie_ep(struct dra7xx_pcie *dra7xx,
-> > > > >  		return ret;
-> > > > >  	}
-> > > > >  
-> > > > > +	ret = dw_pcie_ep_init_registers(ep);
-> > > > > +	if (ret) {
-> > > > 
-> > > > Here you are using if (ret) to error check the return from
-> > > > dw_pcie_ep_init_registers().
-> > > > 
-> > > > 
-> > > > > index c0c62533a3f1..8392894ed286 100644
-> > > > > --- a/drivers/pci/controller/dwc/pci-keystone.c
-> > > > > +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> > > > > @@ -1286,6 +1286,13 @@ static int ks_pcie_probe(struct platform_device *pdev)
-> > > > >  		ret = dw_pcie_ep_init(&pci->ep);
-> > > > >  		if (ret < 0)
-> > > > >  			goto err_get_sync;
-> > > > > +
-> > > > > +		ret = dw_pcie_ep_init_registers(&pci->ep);
-> > > > > +		if (ret < 0) {
-> > > > 
-> > > > Here you are using if (ret < 0) to error check the return from
-> > > > dw_pcie_ep_init_registers(). Please be consistent.
-> > > > 
-> > > 
-> > > I maintained the consistency w.r.t individual drivers. Please check them
-> > > individually.
-> > > 
-> > > If I maintain consistency w.r.t this patch, then the style will change within
-> > > the drivers.
+On Fri, Mar 08, 2024 at 06:19:02PM +0800, Herbert Xu wrote:
+>
+> > diff --git a/arch/loongarch/crypto/crc32-loongarch.c b/arch/loongarch/crypto/crc32-loongarch.c
+> > index a49e507af38c..3eebea3a7b47 100644
+> > --- a/arch/loongarch/crypto/crc32-loongarch.c
+> > +++ b/arch/loongarch/crypto/crc32-loongarch.c
+> > @@ -44,7 +44,6 @@ static u32 crc32_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
 > > 
-> > Personally, I disagree with that.
-> > 
-> > All glue drivers should use the same way of checking dw_pcie_ep_init(),
-> > depending on the kdoc of dw_pcie_ep_init().
-> > 
-> > If the kdoc for dw_pcie_ep_init() says returns 0 on success,
-> > then I think that it is strictly more correct to do:
-> > 
-> > ret = dw_pcie_ep_init()
-> > if (ret) {
-> > 	<error handling>
-> > }
-> > 
-> > And if a glue driver doesn't look like that, then I think we should change
-> > them. (Same reasoning for dw_pcie_ep_init_registers().)
-> > 
-> > 
-> > If you read code that looks like:
-> > ret = dw_pcie_ep_init()
-> > if (ret < 0) {
-> > 	<error handling>
-> > }
-> > 
-> > then you assume that is is a function with a kdoc that says it can return 0
-> > or a positive value on success, e.g. a function that returns an index in an
-> > array.
-> > 
+> >                CRC32(crc, value, w);
+> >                p += sizeof(u32);
+> > -               len -= sizeof(u32);
+> >        }
 > 
-> But if you read the same function from the individual drivers, it could present
-> a different opinion because the samantics is different than others.
+> This makes no sense whatsoever.  Please review this patch carefully
+> before you resubmit.
 
-Is there any glue driver where a positive result from dw_pcie_ep_init() is
-considered valid?
+Nevermind, I see what's going on now.  Your reference to the lack
+of a CRC instruction utterly confused me.
 
+The fact that len -= is unnecessary has nothing to do with whether
+there is a CRC instruction.
 
-> 
-> I'm not opposed to keeping the API semantics consistent, but we have to take
-> account of the drivers style as well.
+Please modify your patch description so that it is not needlessly
+confusing.  You should simply state that len -= is unnecessary
+because you only test whether the relevant bit is set in len for
+the tail case.
 
-kdoc > "driver style"
-IMO, but you are the maintainer, I just offered my 50 cents :)
-
-
-Kind regards,
-Niklas
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
