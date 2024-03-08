@@ -1,131 +1,201 @@
-Return-Path: <linux-kernel+bounces-96406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE750875BB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:59:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AACC875BBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F8071F22FE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:59:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1D68283544
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E41725635;
-	Fri,  8 Mar 2024 00:57:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B8D22333;
+	Fri,  8 Mar 2024 00:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YP+pqXiW"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JiwTGHVO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CBA25625;
-	Fri,  8 Mar 2024 00:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61839219F0;
+	Fri,  8 Mar 2024 00:58:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709859478; cv=none; b=tIrn/DtwU6mMSV/mpJirwdwrJ7f2a8ZHK6m/WpchSEdLjVbXx7YCbm4+xcYYczPYZbHQBj5X7g5r00J+Ntcrh3cZO4OfS/Z13hAYHzdl+jyu7YlA7Ab46gv5IuntYlfvaaQ1v6qeB7mcAwTt+xfIdFJTx6nHDPFLhjQE50WVUJM=
+	t=1709859531; cv=none; b=WjCX87rSzCx12UdP5Y/kvU2PbsmgUB7d7t9CInGVa5/c12INMN/LKCj65V6/xB5aTXM3+3HtTIO1OmK8g1+tp4CY6t5/RJ7/zZxe52T5J2Xyu3xy6ZvPEV/3j7mPlYXkzKVhRshacyw10yastFNOnwozMW7Gzb9vYYGSi0NTcIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709859478; c=relaxed/simple;
-	bh=Tptsd0AMzvZ/4E40X6HcdeufjoaiGyAKP4BOAzUEnQU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=anh11Px58xrY96FZclfvl6UWHLyaqXtqZmoG3KBOFa8rb7JJRNT9E5auzRdPLJZyetD+J5hBVThLwAoLrTTr0+L9pA3q5Sz6EJhbJlhiRZDNBqHYI1UgM3j5U42aKMVtDX5EWLjw3SB2msjR3CQdCjWsW3TlUW2LR7qrhCq3lSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=YP+pqXiW; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4280vkeP024611;
-	Thu, 7 Mar 2024 18:57:46 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1709859466;
-	bh=LQl76NpetecJ20TZj5RZix3WNgTwsm8Tbrnifw2uQ88=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=YP+pqXiWY5cdH5zVmz9RTpJbeNiNVy7XTTh8/CodvZ1tGLqv3Wj4/X58NFV/wxFRk
-	 K1GsYbblzXTR+hSRemZpknch95nLE4UgoSxMCqeO/3sh4jjRv/iREXlV5S/s9QW61x
-	 7QnyJuYHJpssfT+2PP52sQPiw2FEE9zPt5nUk0Z4=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4280vkoW122498
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 7 Mar 2024 18:57:46 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 7
- Mar 2024 18:57:46 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 7 Mar 2024 18:57:47 -0600
-Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4280vkjY055151;
-	Thu, 7 Mar 2024 18:57:46 -0600
-From: Judith Mendez <jm@ti.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter
-	<adrian.hunter@intel.com>
-CC: Andrew Davis <afd@ti.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 7/7] mmc: sdhci_am654: Fix ITAPDLY for HS400 timing
-Date: Thu, 7 Mar 2024 18:57:46 -0600
-Message-ID: <20240308005746.1059813-8-jm@ti.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240308005746.1059813-1-jm@ti.com>
-References: <20240308005746.1059813-1-jm@ti.com>
+	s=arc-20240116; t=1709859531; c=relaxed/simple;
+	bh=ZPyNgw50IlMj3ZZ9BFxPHhxLNMbM6ym6HoTafz/JF0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oGWubKew99022mTMS2qqNk84+L+R7ATCUbgdKJaPnhimX2cDNdOsb2+KBK2L+V3DjLJM6LAftOMdxImELLh7riLHkc1CBsDBznZ6TUFLfaybj/80LySazH5ZO3PMRLOn2vQrkwov6ZfwF8jqbzYS73nRwMBXc0pqGduR3cf7jDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JiwTGHVO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C65F8C433F1;
+	Fri,  8 Mar 2024 00:58:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709859530;
+	bh=ZPyNgw50IlMj3ZZ9BFxPHhxLNMbM6ym6HoTafz/JF0c=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=JiwTGHVOguV9FSNQ3ANzjq1D6UTnKbnaJQNIOVCH/xER5PeTG+JaUxQABsm2Mwx42
+	 PPxUQuNiZv6HWLrOzIj5/6V/ShiiB4Mhd1Ehlh7zLvprQLRiIPkzOjj/T4LfxxVY8V
+	 NM35WC+MxQRvwyS7aGtc1jeeMgtLOSIdQen6xcIOESgHunqq9mE2OLGkWJsOSETous
+	 pk8CVatOWHLjZDzSouDyikl8lCNRyLGEGGiePtKV7URo5KvRWjb/fotsoH+qw07maA
+	 wuD62nRBDbnstHtgTSwblP9Am2fbYo7BeZWu2om1PwmxKiZMx8LoZrclg5EdmDG+qC
+	 Lg63C/OnC+RDA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 6D32ACE0716; Thu,  7 Mar 2024 16:58:50 -0800 (PST)
+Date: Thu, 7 Mar 2024 16:58:50 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
+	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
+	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
+	quic_neeraju@quicinc.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Message-ID: <c3b94335-cf11-456d-bec7-4e4262235868@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
+ <20240306142738.7b66a716@rorschach.local.home>
+ <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
+ <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
+ <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
+ <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
+ <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
+ <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
+ <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
+ <2721d70f-67a8-428f-903b-1c7c6c6da7f9@efficios.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2721d70f-67a8-428f-903b-1c7c6c6da7f9@efficios.com>
 
-While STRB is currently used for DATA and CRC responses, the CMD
-responses from the device to the host still require ITAPDLY for
-HS400 timing.
+On Thu, Mar 07, 2024 at 02:53:43PM -0500, Mathieu Desnoyers wrote:
+> On 2024-03-07 14:47, Paul E. McKenney wrote:
+> > On Thu, Mar 07, 2024 at 08:53:05AM -0500, Mathieu Desnoyers wrote:
+> > > On 2024-03-06 22:37, Paul E. McKenney wrote:
+> > > > On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
+> > > [...]
+> > > > 
+> > > > > As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
+> > > > > is concerned, the only valid use-case I can think of is
+> > > > > split counters or RCU implementations where there is a
+> > > > > single updater doing the increment, and one or more
+> > > > > concurrent reader threads that need to snapshot a
+> > > > > consistent value with READ_ONCE().
+> > > > 
+> > > [...]
+> > > > 
+> > > > So what would you use that pattern for?
+> > > > 
+> > > > One possibility is a per-CPU statistical counter in userspace on a
+> > > > fastpath, in cases where losing the occasional count is OK.  Then learning
+> > > > your CPU (and possibly being immediately migrated to some other CPU),
+> > > > READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
+> > > > make sense.
+> > > > 
+> > > > I suppose the same in the kernel if there was a fastpath so extreme you
+> > > > could not afford to disable preemption.
+> > > > 
+> > > > At best, very niche.
+> > > > 
+> > > > Or am I suffering a failure of imagination yet again?  ;-)
+> > > 
+> > > The (niche) use-cases I have in mind are split-counters and RCU
+> > > grace period tracking, where precise counters totals are needed
+> > > (no lost count).
+> > > 
+> > > In the kernel, this could be:
+> > 
+> > Thank you for looking into this!
+> > 
+> > > - A per-cpu counter, each counter incremented from thread context with
+> > >    preemption disabled (single updater per counter), read concurrently by
+> > >    other threads. WRITE_ONCE/READ_ONCE is useful to make sure there
+> > >    is no store/load tearing there. Atomics on the update would be stronger
+> > >    than necessary on the increment fast-path.
+> > 
+> > But if preemption is disabled, the updater can read the value without
+> > READ_ONCE() without risk of concurrent update.  Or are you concerned about
+> > interrupt handlers?  This would have to be a read from the interrupt
+> > handler, given that an updated from the interrupt handler could result
+> > in a lost count.
+> 
+> You are correct that the updater don't need READ_ONCE there. It would
+> however require a WRITE_ONCE() to match READ_ONCE() from concurrent
+> reader threads.
+> 
+> > 
+> > > - A per-thread counter (e.g. within task_struct), only incremented by the
+> > >    single thread, read by various threads concurrently.
+> > 
+> > Ditto.
+> 
+> Right, only WRITE_ONCE() on the single updater, READ_ONCE() on readers.
+> 
+> > 
+> > > - A counter which increment happens to be already protected by a lock, read
+> > >    by various threads without taking the lock. (technically doable, but
+> > >    I'm not sure I see a relevant use-case for it)
+> > 
+> > In that case, the lock would exclude concurrent updates, so the lock
+> > holder would not need READ_ONCE(), correct?
+> 
+> Correct.
+> 
+> > 
+> > > In user-space:
+> > > 
+> > > - The "per-cpu" counter would have to use rseq for increments to prevent
+> > >    inopportune migrations, which needs to be implemented in assembler anyway.
+> > >    The counter reads would have to use READ_ONCE().
+> > 
+> > Fair enough!
+> > 
+> > > - The per-thread counter (Thread-Local Storage) incremented by a single
+> > >    thread, read by various threads concurrently, is a good target
+> > >    for WRITE_ONCE()/READ_ONCE() pairing. This is actually what we do in
+> > >    various liburcu implementations which track read-side critical sections
+> > >    per-thread.
+> > 
+> > Agreed, but do any of these use WRITE_ONCE(x, READ_ONCE(x) + 1) or
+> > similar?
+> 
+> Not quite, I recall it's more like WRITE_ONCE(x, READ_ONCE(y)) or such,
+> so we can grab the value of the current gp counter and store it into a
+> TLS variable.
 
-Currently what is stored for HS400 is the ITAPDLY from High Speed
-mode which is incorrect. The ITAPDLY for HS400 speed mode should
-be the same as ITAPDLY as HS200 timing after tuning is executed.
-Add the functionality to save ITAPDLY from HS200 tuning and save
-as HS400 ITAPDLY.
+Good point, you could use that pattern to grab a shared snapshot.
 
-Fixes: a161c45f2979 ("mmc: sdhci_am654: Enable DLL only for some speed modes")
-Signed-off-by: Judith Mendez <jm@ti.com>
----
-Changelog:
-v2->v3:
-- Remove unnecessary variables
-- Save itapdlyena for HS400 timing
----
- drivers/mmc/host/sdhci_am654.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Still sounds niche, but you never know!  ;-)
 
-diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-index a4eeaf894806..7e73ef897cd9 100644
---- a/drivers/mmc/host/sdhci_am654.c
-+++ b/drivers/mmc/host/sdhci_am654.c
-@@ -301,6 +301,12 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
- 	if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ) {
- 		sdhci_am654_setup_dll(host, clock);
- 		sdhci_am654->dll_enable = true;
-+
-+		if (timing == MMC_TIMING_MMC_HS400) {
-+			sdhci_am654->itap_del_ena[timing] = 0x1;
-+			sdhci_am654->itap_del_sel[timing] = sdhci_am654->itap_del_sel[timing - 1];
-+		}
-+
- 		sdhci_am654_write_itapdly(sdhci_am654, sdhci_am654->itap_del_sel[timing],
- 					  sdhci_am654->itap_del_ena[timing]);
- 	} else {
-@@ -531,6 +537,9 @@ static int sdhci_am654_platform_execute_tuning(struct sdhci_host *host,
- 
- 	sdhci_am654_write_itapdly(sdhci_am654, itap, sdhci_am654->itap_del_ena[timing]);
- 
-+	/* Save ITAPDLY */
-+	sdhci_am654->itap_del_sel[timing] = itap;
-+
- 	return 0;
- }
- 
--- 
-2.43.2
+							Thanx, Paul
 
+> > > - Same as for the kernel, a counter increment protected by a lock which
+> > >    needs to be read from various threads concurrently without taking
+> > >    the lock could be a valid use-case, though I fail to see how it is
+> > >    useful due to lack of imagination on my part. ;-)
+> > 
+> > In RCU, we have "WRITE_ONCE(*sp, *sp + 1)" for this use case, though
+> > here we have the WRITE_ONCE() but not the READ_ONCE() because we hold
+> > the lock excluding any other updates.
+> 
+> You are right, the READ_ONCE() is not needed in this case for the
+> updater, only for the concurrent readers.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+> 
 
