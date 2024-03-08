@@ -1,139 +1,141 @@
-Return-Path: <linux-kernel+bounces-97313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A7A8768A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:40:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 621128768AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9BD21C2237D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:40:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2A972873FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60FA6CA7D;
-	Fri,  8 Mar 2024 16:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54D51170F;
+	Fri,  8 Mar 2024 16:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="H/Yec1qF"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y8P2CCKN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB21291E
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 16:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087F31CA8E;
+	Fri,  8 Mar 2024 16:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916032; cv=none; b=dEMVIHax0S+dvgduJHVe3lotxtEpAV1jwRD1SoVFJnDcB2arwxekGjxu2Z6ANHF58vrEKlBZXUijNtVtCe0LSIVcS/DeZp7VgBJsC1wbpmhz3tyn5oAD9BZndvChoLQlV/mPoCt8lApCtcW9eOueSvr3dDfGuyIE59UC2vrOCMA=
+	t=1709916043; cv=none; b=J7lTrnBHA/Lz6VZSlU6lpRFMCu10egCEt11CJCHauP03xFd1d+SCW0jxhFoz2C5Msmh64Y1QZldDuOsIpDGPfe4JhUEdY74UModw0cQFOqGkCffdvn5/Gy8GttFhUbWP1FV65rrow34fw1cg68f0qWaprGfmdkv2ltmuBsp5PvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916032; c=relaxed/simple;
-	bh=ZUg+0eyFf8SLa+7/psF6zUUJXHTZ5YicG+qyXXCAn+8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eZFg1dqIOJqIPr4FZyXek5MF3CRXQTP/w1VdSXUtaPniw19ffweeolGwpTGZgyhJrvKOOcjt50mE8D9/PAfYvBnxcH1wGakS2FPjLR1v9rTcnuh2SQPznIjQzXRNWmcHOT8DNx41qIs21zA3a7aPYu7oT3eBSLJpjOAZn+ovbps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=H/Yec1qF; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428GM63c018947;
-	Fri, 8 Mar 2024 16:40:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=EWCnq4p+1XmWnlfA383L83BWP0XbwgMcLrJy6nqjYcI=;
- b=H/Yec1qFBUBIue8rhgRVOovi+xE1xLSSjb8P+adM9Wn18aCUBfBvjHnzr4BkCE2ZTIyt
- YiNp7l/AsWyK82RknnsSlzs2NCa41qxClHvPqhYtK9CntwziK0qhutUQQSq/DHqMRkYn
- B0MGsSmCxTwkhH8I24rZSg5NKFyIpwRpq+dU03lkNi/wBw5dReelS+3e9dSSSpLlAGVn
- KTUQk2aLBK4HjV3x8Hmz34k1AU+EKufysfKM9uXxijY2GFLVU1uHdqITXNarcbwEaQy/
- gTD7BuVGVR+ptDS0tzU0yA3NQGYAF1bcNpk9C4yV9k2u5RPiETT5sNOFN+owLISPgCug nA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr64qgarx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 16:40:16 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 428GcIU6031791;
-	Fri, 8 Mar 2024 16:40:15 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr64qgarf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 16:40:15 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428DjPRw025399;
-	Fri, 8 Mar 2024 16:40:14 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmeu05qed-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 16:40:14 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428GeBJm39190784
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 8 Mar 2024 16:40:14 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C19CC58066;
-	Fri,  8 Mar 2024 16:40:11 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 187B558069;
-	Fri,  8 Mar 2024 16:40:09 +0000 (GMT)
-Received: from [9.43.68.167] (unknown [9.43.68.167])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  8 Mar 2024 16:40:08 +0000 (GMT)
-Message-ID: <14d29fdf-ef10-48e6-a102-f1f0bb27c181@linux.ibm.com>
-Date: Fri, 8 Mar 2024 22:10:07 +0530
+	s=arc-20240116; t=1709916043; c=relaxed/simple;
+	bh=ivspc6KyS5C5s0+lppQbNKthOBmzM+WjLyrCDyM1dTs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=D6/zKY6Jk3Tq80MdILmFjKo2gRPj25DxmhatgpaL5H5ntnCProekqx1y8Ky1lZdL9Wt3bQjgZt1EHycb9E+fQLsaM9NvlRP+a0AQ41o2+UZ+iQXV2GMg1B3+qiLEjWdhK4ikmSRkgz/Z9Gw5pNHgY/a6B99EKSPTqryFRRfClS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y8P2CCKN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6479EC433C7;
+	Fri,  8 Mar 2024 16:40:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709916042;
+	bh=ivspc6KyS5C5s0+lppQbNKthOBmzM+WjLyrCDyM1dTs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=Y8P2CCKNotEK8bIPwpQaSJNAUOzJkpkjGk1h4jqzyEoYEel48uJPzIeSsND50VvqB
+	 1sNPZNAk1dJnTIAPjE3YRQ01yrbEavHZjiuxx3fm4yk3XoHAmbz22gJZ7L4HK4kZO5
+	 +klRU1+rlY7EmtVjnZkxAOfjbsJRN59WKIS2cax4VgRwjenyftUJx1lnf1WJhzCI+N
+	 bqwklRn+5FbIkhnxjNsTmRpbdGg+gVave4Nrnervp4+T8dy+ma9GfpD6nvrW3S2hua
+	 q4qMF3+x0HpiSLjxH6J690K+LembhWfzlv1zZqyTT0ImivUm3k6CssfUpMNNtY42ux
+	 ZEsWgXWjlz/3w==
+Date: Fri, 8 Mar 2024 10:40:40 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: Michael Schaller <michael@5challer.de>, bhelgaas@google.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev, macro@orcam.me.uk,
+	ajayagarwal@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+	gregkh@linuxfoundation.org, hkallweit1@gmail.com,
+	michael.a.bottini@linux.intel.com, johan+linaro@kernel.org
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
+Message-ID: <20240308164040.GA683683@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/10] sched/debug: Increase SCHEDSTAT_VERSION to 16
-Content-Language: en-US
-To: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>
-References: <20240308105901.1096078-1-mingo@kernel.org>
- <20240308105901.1096078-5-mingo@kernel.org>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <20240308105901.1096078-5-mingo@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: f38fy00-BC0dDZnjdEbZ4g4VI-GUQbwY
-X-Proofpoint-ORIG-GUID: AkjUf_JYpsyfi5TErVzCCpO2qxKY8UA-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- adultscore=0 clxscore=1011 malwarescore=0 mlxlogscore=655 spamscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403080134
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAd53p6GEPJe3rNNrUAah5PdLXspKh5Gz9tFstR6SFCREs+9=Q@mail.gmail.com>
 
-
-
-On 3/8/24 4:28 PM, Ingo Molnar wrote:
-> We changed the order of definitions within 'enum cpu_idle_type',
-> which changed the order of [CPU_MAX_IDLE_TYPES] columns in
-> show_schedstat().
+On Thu, Mar 07, 2024 at 02:51:05PM +0800, Kai-Heng Feng wrote:
+> On Wed, Jan 10, 2024 at 8:40 PM Michael Schaller <michael@5challer.de> wrote:
+> > On 10.01.24 04:43, Kai-Heng Feng wrote:
+> > > On Fri, Jan 5, 2024 at 11:51 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > >> On Fri, Jan 05, 2024 at 12:18:32PM +0100, Michael Schaller wrote:
+> > >>> On 05.01.24 04:25, Kai-Heng Feng wrote:
+> > >>>> Just wondering, does `echo 0 > /sys/power/pm_asysnc` help?
+> > >>>
+> > >>> Yes, `echo 0 | sudo tee /sys/power/pm_async` does indeed also result in a
+> > >>> working resume. I've tested this on kernel 6.6.9 (which still has commit
+> > >>> 08d0cc5f3426). I've also attached the relevant dmesg output of the
+> > >>> suspend/resume cycle in case this helps.
+> > >>
+> > >> Thanks for testing that!
+> > >>
+> > >>> Furthermore does this mean that commit 08d0cc5f3426 isn't at fault but
+> > >>> rather that we are dealing with a timing issue?
+> > >>
+> > >> PCI does have a few software timing requirements, mostly related to
+> > >> reset and power state (D0/D3cold).  ASPM has some timing parameters,
+> > >> too, but I think they're all requirements on the hardware, not on
+> > >> software.
+> > >>
+> > >> Adding an arbitrary delay anywhere shouldn't break anything, and other
+> > >> than those few required situations, it shouldn't fix anything either.
+> > >
+> > > At least it means 8d0cc5f3426 isn't the culprit?
+> > >
+> > > Michael, does the issue happen when iwlwifi module is not loaded? It
+> > > can be related to iwlwifi firmware.
+> > >
+> > The issue still happens if the iwlwifi module has been blacklisted and
+> > after a reboot. This was again with vanilla kernel 6.6.9 and I've
+> > confirmed via dmesg that iwlwifi wasn't loaded.
 > 
+> Can you please give latest mainline kernel a try? With commit
+> f93e71aea6c60ebff8adbd8941e678302d377869 (Revert "PCI/ASPM: Remove
+> pcie_aspm_pm_state_change()") reverted.
+> 
+> Also do you have efi-pstore enabled? Is there anything logged in
+> /var/lib/systemd/pstore (assuming systemd is used)?
 
-> +++ b/kernel/sched/stats.c
-> @@ -113,7 +113,7 @@ void __update_stats_enqueue_sleeper(struct rq *rq, struct task_struct *p,
->   * Bump this up when changing the output format or the meaning of an existing
->   * format, so that tools can adapt (or abort)
->   */
-> -#define SCHEDSTAT_VERSION 15
-> +#define SCHEDSTAT_VERSION 16
+It seems possible that some recent ASPM fixes could help this issue.
+These fixes are not upstream yet, but should appear in v6.9-rc1.
 
-Please add the info about version, and change of the order 
-briefly in Documentation/scheduler/sched-stats.rst as well.
+Your (Michael's) bisection identified 08d0cc5f3426 ("PCI/ASPM: Remove
+pcie_aspm_pm_state_change()"), which appeared in v6.0.  This was
+intended to solve the problem of ASPM config changes made via sysfs
+getting lost.
 
-One recent user that I recollect is sched scoreboard. Version number should 
-be able to help the users when they it is breaking their scripts. 
+We removed 08d0cc5f3426 in v6.7 with f93e71aea6c6 ("Revert "PCI/ASPM:
+Remove pcie_aspm_pm_state_change()"") to address the reboot after
+resume problem that you reported.
 
-+Gautham, Any thoughts?
+e4dbf699467e ("PCI/ASPM: Update save_state when configuration
+changes") is planned for v6.9-rc1 and should solve the same problem
+08d0cc5f3426 tried to solve, but in a different way.
 
->  
->  static int show_schedstat(struct seq_file *seq, void *v)
->  {
+390fd84739c5 ("PCI/ASPM: Save L1 PM Substates Capability for
+suspend/resume") is also planned for v6.9-rc1 and fixes some problems
+with restoring L1 Substates config during resume.  These substates are
+enabled for your 03:00.0 device, so this commit may also be related.
+
+That's all a long way to say that I think testing v6.9-rc1 or later
+(or linux-next as of Mar 7 or later) would be very interesting.
+
+> > I've also checked if there is a newer firmware but Ubuntu 23.10 is
+> > already using the newest firmware available from
+> > https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/log/iwlwifi-8265-36.ucode
+> > (version 36.ca7b901d.0 according to dmesg).
+> >
+> > Michael
+> >
+> > >>
+> > >> Bjorn
 
