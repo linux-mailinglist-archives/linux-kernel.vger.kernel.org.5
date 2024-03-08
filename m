@@ -1,89 +1,76 @@
-Return-Path: <linux-kernel+bounces-97022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A9FC876481
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C105876480
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D82AF1F222E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:46:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 001E51F22758
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7237617753;
-	Fri,  8 Mar 2024 12:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421EF1AACA;
+	Fri,  8 Mar 2024 12:44:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="UrhA2Sj6"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="azXs8ocm"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE033134A9
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 12:46:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5347C18049
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 12:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709901988; cv=none; b=f2G7B0cJXGbImdV4wp2bYw3L+f8mUoojbqgrWX7V8noG790E6ZA1nBN/ZA2n0OKJ5HWDcnMO+b4ewdfxfJJJbkS6swf0DJkKh6tLh19D3ysoPC4XXmISUt8DzdBsajcs7Dld0ZRJyqMYKcAbYLGckD+/T8qUKkH0qY6ZJWi1hD4=
+	t=1709901852; cv=none; b=rLIZzY/HwDYHAIYWdhz4NMJxU5WDgJ9gHplf8DrgukWDAqdpI16f/+FLwu1CBHZ/IvI6/stwwEzMq9n0VA0+s/Xu3TW/vMhu3WzzTxG4rF9t75z8HBe9OQIrqGnlPcFhjqWeEGnOuYgLPNTVQe+Ffhc1aLk+HfsiGuZdFfAExFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709901988; c=relaxed/simple;
-	bh=lC5yQxdaVNiFX1FCkgmTGC04REnu2YrGytPwqQ1LzKg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nse4px8x0BCrWn/sr+o13Y7r2kPSxXAEdXndBTXGVkyVeozs+RYvM7Tz/yDZX4u0I4K3XZD3AmM7FKO2899lR7lgBleMVen32UUoahWTdFcLAoP8PCesweDSAefh+j+7X9I/A8B0+V6/dSv47OfxwClgOEALc2WHlx0OH0ozSTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=UrhA2Sj6; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-412f62ee005so15206455e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 04:46:26 -0800 (PST)
+	s=arc-20240116; t=1709901852; c=relaxed/simple;
+	bh=XxREvmxu2/O06ne/haRu+k1mj44Mw/ZDyIv8QLpzO9U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KhBUq8FJV1BRXJkiNSI+ctyG3D/epGTrlWtC1yB0X2mMkZFK2YkZYwAo5u8fXOS5lM37BlKFqKSGnBKK0XdFvkkStjhoHxByxwO7L4mzL8YaoHb20/EEYqETXqlRnNyEczpzcAUtl4ZywSugK8khdweIAwV4Tu6fQzOnGmvNCtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk; spf=pass smtp.mailfrom=rasmusvillemoes.dk; dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b=azXs8ocm; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rasmusvillemoes.dk
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5131316693cso2622924e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 04:44:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709901985; x=1710506785; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RSC3VchrKSriPFqJb390A7+6m5EVYRKP2rJaLF33dcE=;
-        b=UrhA2Sj6M7mGx/4nITO+wKJLXElxijV/+J9fu2bcmiiGk3ohEOzoMF7sMFO4O7LGZq
-         vCo3EYUe93ltR9i7p1by/MOV+f8mhFTK/fpM0ozyrf5Bjyd4x45p573UyzfuUcDH8olQ
-         uOj6Wq19Msou9Z5MrgIC9IAc45rDr4XpICdWUju90u44/irpOXsuj5iKL+xKuGZLOcxG
-         AcG92510NUELCM+HRErVHKiHUjoAShYC7s3AaLcXnEuCR2/LuE9dcOx0CbGi5nWqJ45z
-         PkXlGuBiXGJDpIkrC0mWYIiDnBWsgBLlIsPdLbLXMXU7xGWFngZI2lx3rA+LNgB0i37N
-         X1Yg==
+        d=rasmusvillemoes.dk; s=google; t=1709901847; x=1710506647; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4zJhkPuIst6RukagPbbrxvpBERTFo5SNybbWJgx3wQA=;
+        b=azXs8ocmIOf5UB1/BOajxKuv9bEnkBoy3ZoXKsQfytVlli4P6PNoY0Eobrd7BEdeTX
+         tYtp+JTqaUdXS/IF25FaLy8/LQ5JR5/h4XV1Jv7viZu+urXmPbTWz/8jSgbvaeLoV3JE
+         KSpNEfo4geqFTtmgyP8VCdpLTm0Ss5Bd11HtY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709901985; x=1710506785;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RSC3VchrKSriPFqJb390A7+6m5EVYRKP2rJaLF33dcE=;
-        b=HyqBIIN7z8pOMJZLikcqVZqcZk34J7nkZGfvJxJ+mxAa9vM1Vshb87pbIhwkXu58HK
-         H7pMPaXLRnJPCIXeDCdiwsRT6P6PKGOQwhXcTEsnbmEUqxY5C0XsE1CJgzRNwkgi13oO
-         kiivbDtFl3DkxCS1dKllXpdEAs/Bf6v9YuDlmu54/z7fEnK+KRfnree/EmTxb3lvYn09
-         5wxN24ulbGYteKpFVr4dpGDzD75CtpcPEcp00Cn8WEyagpG/4qyOiwEPVE80cR1BIK8l
-         nC59PlxFxV3IhanyJqU0i41rIn3Ts8wgjwzc1prjZOpvA9+R7UBCX9TC+OAu3Miyu+ZY
-         DG9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWm473pDGG0lrX+oeALtu2lPJ4OWu8ncrpZPK5ni0qkRCKYL4U43e2oJByKr7xNuDxm4PlxWOiu446QtVsVu0nt7LNCRJltSU+33Ow/
-X-Gm-Message-State: AOJu0Ywn6lsmvsqXNecWDVln8higLOAIRfbpuO+vl4fTA45f/Rn4GO9f
-	J1ZsyIfk9k5F49xerpYv+A94CX4HLQC3IJhC+hcFiFzq905D30vfKBv1I/iDRgs=
-X-Google-Smtp-Source: AGHT+IF66YZUxLnyCYBBwG6/pgIqnrGGOsxmyygjR2zRqyH2HPn4eBpoLCe3akXubj7FR0wBp3/p1g==
-X-Received: by 2002:adf:f94a:0:b0:33d:579e:f462 with SMTP id q10-20020adff94a000000b0033d579ef462mr15362918wrr.36.1709901984855;
-        Fri, 08 Mar 2024 04:46:24 -0800 (PST)
-Received: from fedora.fritz.box (aftr-82-135-80-247.dynamic.mnet-online.de. [82.135.80.247])
-        by smtp.gmail.com with ESMTPSA id bn1-20020a056000060100b0033e17341ebesm3486020wrb.117.2024.03.08.04.46.23
+        d=1e100.net; s=20230601; t=1709901847; x=1710506647;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4zJhkPuIst6RukagPbbrxvpBERTFo5SNybbWJgx3wQA=;
+        b=coB8Kcd1pEFBXAC7d0dEOpaDPCOH9iuLtaFxgMlC8P+EwpqDQ8y688/3NEE8JfhPNu
+         CUoGT9UV85LbiGGwmXj1s9ydqbPraZZoR8RZu5oKEPXe6kjWtZp+B5htXH/ur+TFW2MC
+         H7BB36AEHi0wx89dJBqfKLqhURUeujssUZF5OSjYIi9Pw52Ad2+CO4AQtcTCKcoV6ezv
+         LWqXjxmVCRAXSlHXPOD6xI1yj+fIADJOajOYPfJWIPVGW7qMmpl8oKHzRPZxSFUCsFdc
+         wLO7oTBePAUkUGpVzrJWTlbb2T1xiSOyCRNR9uLL+3XNuHZDxGGhhOFiSsCvRSlMw05q
+         jgaw==
+X-Forwarded-Encrypted: i=1; AJvYcCWKXfAQISBK+OzO9uIZVhj+aJE/f6XUjn9pFs0F8KHRsWydvHdyDptDAjMukGkERIs30Q4Q+qaG9jFdVgOzSCmpZtj5UF9PAMzVmCkD
+X-Gm-Message-State: AOJu0YyvmDM+mDcnZ3Cz/Igsir/vzDVZ3ExFZFdMZmZQPODjbpk0RaNA
+	XbLtHGkG4sGPuiHA/PiMTt7F8wmmLDW2jzHh47osE7vduPhFkqCX8lYYF7Li4zv9t7cOEOEqpGR
+	KUxs=
+X-Google-Smtp-Source: AGHT+IEM8rYyxUnvGiXEkg84+s5MR6KBxxnN+zs+tM29uikuP70f9HwzXpAeA2hvX8BkgZGu162gWw==
+X-Received: by 2002:a19:5f53:0:b0:513:4847:2c0b with SMTP id a19-20020a195f53000000b0051348472c0bmr3777440lfj.7.1709901847481;
+        Fri, 08 Mar 2024 04:44:07 -0800 (PST)
+Received: from prevas-ravi.prevas.se ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id q14-20020ac246ee000000b00513210d5b83sm3474858lfo.195.2024.03.08.04.44.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 04:46:24 -0800 (PST)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: thorsten.blum@toblux.com
-Cc: David.Laight@ACULAB.COM,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	hpa@zytor.com,
-	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	wei.liu@kernel.org,
-	x86@kernel.org
-Subject: [RESEND PATCH v2] x86/apic: Use u32 instead of unsigned long
-Date: Fri,  8 Mar 2024 13:43:37 +0100
-Message-ID: <20240308124336.41654-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240301203901.150465-3-thorsten.blum@toblux.com>
-References: <20240301203901.150465-3-thorsten.blum@toblux.com>
+        Fri, 08 Mar 2024 04:44:05 -0800 (PST)
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] bootconfig: do not put quotes on cmdline items unless necessary
+Date: Fri,  8 Mar 2024 13:44:01 +0100
+Message-Id: <20240308124401.1702046-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.40.1.1.g1c60b9335d
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,60 +79,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Improve types by using u32 instead of unsigned long. Fixes two
-Coccinelle/coccicheck warnings reported by do_div.cocci.
+When trying to migrate to using bootconfig to embed the kernel's and
+PID1's command line with the kernel image itself, and so allowing
+changing that without modifying the bootloader, I noticed that
+/proc/cmdline changed from e.g.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
-Changes in v2:
-- Revert changing do_div() to div64_ul() after feedback from David Laight
-- Use u32 instead of unsigned long to fix Coccinelle warnings
-- Update patch title and description
----
- arch/x86/kernel/apic/apic.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+  console=ttymxc0,115200n8 cma=128M quiet -- --log-level=notice
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 4667bc4b00ab..184e1843620d 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -664,7 +664,7 @@ void lapic_update_tsc_freq(void)
- static __initdata int lapic_cal_loops = -1;
- static __initdata long lapic_cal_t1, lapic_cal_t2;
- static __initdata unsigned long long lapic_cal_tsc1, lapic_cal_tsc2;
--static __initdata unsigned long lapic_cal_pm1, lapic_cal_pm2;
-+static __initdata u32 lapic_cal_pm1, lapic_cal_pm2;
- static __initdata unsigned long lapic_cal_j1, lapic_cal_j2;
- 
- /*
-@@ -674,7 +674,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
+to
+
+  console="ttymxc0,115200n8" cma="128M" quiet -- --log-level="notice"
+
+The kernel parameters are parsed just fine, and the quotes are indeed
+stripped from the actual argv[] given to PID1. However, the quoting
+doesn't really serve any purpose and looks excessive, and might
+confuse some (naive) userspace tool trying to parse /proc/cmdline. So
+do not quote the value unless it contains whitespace.
+
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+
+v2: use strpbrk(, " \t\r\n") instead of a loop doing isspace().
+Technically not quite equivalent, but much more readable, and it's
+quite unlikely anybody has \f or \v or 0xa0 bytes in kernel command
+line arguments. Perhaps \r and \n, and maybe even \t, could also be
+dropped from that list, but those at least have some chance of
+appearing in the wild.
+
+ init/main.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/init/main.c b/init/main.c
+index e24b0780fdff..3dd630132209 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -324,7 +324,7 @@ static int __init xbc_snprint_cmdline(char *buf, size_t size,
  {
- 	unsigned long long tsc = 0;
- 	long tapic = apic_read(APIC_TMCCT);
--	unsigned long pm = acpi_pm_read_early();
-+	u32 pm = acpi_pm_read_early();
+ 	struct xbc_node *knode, *vnode;
+ 	char *end = buf + size;
+-	const char *val;
++	const char *val, *q;
+ 	int ret;
  
- 	if (boot_cpu_has(X86_FEATURE_TSC))
- 		tsc = rdtsc();
-@@ -699,7 +699,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
- }
- 
- static int __init
--calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
-+calibrate_by_pmtimer(u32 deltapm, long *delta, long *deltatsc)
- {
- 	const long pm_100ms = PMTMR_TICKS_PER_SEC / 10;
- 	const long pm_thresh = pm_100ms / 100;
-@@ -710,7 +710,7 @@ calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
- 	return -1;
- #endif
- 
--	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %ld\n", deltapm);
-+	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %u\n", deltapm);
- 
- 	/* Check, if the PM timer is available */
- 	if (!deltapm)
+ 	xbc_node_for_each_key_value(root, knode, val) {
+@@ -342,8 +342,9 @@ static int __init xbc_snprint_cmdline(char *buf, size_t size,
+ 			continue;
+ 		}
+ 		xbc_array_for_each_value(vnode, val) {
+-			ret = snprintf(buf, rest(buf, end), "%s=\"%s\" ",
+-				       xbc_namebuf, val);
++			q = strpbrk(val, " \t\r\n") ? "\"" : "";
++			ret = snprintf(buf, rest(buf, end), "%s=%s%s%s ",
++				       xbc_namebuf, q, val, q);
+ 			if (ret < 0)
+ 				return ret;
+ 			buf += ret;
 -- 
-2.44.0
+2.40.1.1.g1c60b9335d
 
 
