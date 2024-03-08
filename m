@@ -1,226 +1,194 @@
-Return-Path: <linux-kernel+bounces-97589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A57876C3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:05:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1BEF876C41
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 294FFB20F10
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:05:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AC301F21F0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E775F578;
-	Fri,  8 Mar 2024 21:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354355F578;
+	Fri,  8 Mar 2024 21:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WlUEfC23"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="BYluXopi"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED8DF17745;
-	Fri,  8 Mar 2024 21:04:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF4317745;
+	Fri,  8 Mar 2024 21:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709931898; cv=none; b=rCfQ+N58xE59xLOdtdBgZ9jqq7Rcmp+SFlwOmIF/8gPMF+PCt0dTDkan2H5UOW+gtAYAj10TJSzFUTzNQTWDPpkfwD1kXXd4bn3yZvp1ElTWVK7vvmNO1MN7LUfU+uqWGv0u2U5DSfTW+wNJv4q34aT40LAi7ZOHSnrF67FpJvM=
+	t=1709931941; cv=none; b=jLZWaxyeYCqY+RoEm0xRmdghniL6L+xkwgZzkC1W6Y7KBDcjchMJ2faqaRlQ3C9vzu9uNTWQHCgLYbezU8DgVVBDgy12QZ4pwfTDFHzTOEeKVs1OpdRBrBWrjpHTCvrGmmSQn2e90GeqSWYU+PicGsWtMJMxrMcBbNPjSUF+r7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709931898; c=relaxed/simple;
-	bh=2GHIXJPloA0g/FHvC8srFZitcWCm5kq+2bTiaMIbpSs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fJf2wClegnxGScLMQD4HoOxiEhYkCrJe8uA6aGii8vTxuFe5jWaaPkjSJfKYJ+QPtiYWSCsVODOvlu33Slqz0X3ZkxvSP1DsDcbb2BBPwGRJj5inwKfqE/Aj1BSfsg+ntgJFL/+7bjvKGNpCq4g/3sDZvCJz01z+WVJ5nQXDi6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WlUEfC23; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e66da40b18so797765b3a.0;
-        Fri, 08 Mar 2024 13:04:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709931896; x=1710536696; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fjpZAMJBAu9QgQuXUo9LhCs4dCb/6W9jscOKJm3Xm7o=;
-        b=WlUEfC23WH4rxcn+E8Bh/AqsxYULQrIQrShqjZtf+8HvFJ6ogPdFR+1QvbJp+8ywPs
-         6Y1D+hNJ5Uv2e8bKvrkScnA1vMPS+ORjTocQgkHdWcD1Pwvrz33+oPPGqXiI1BjNM+ym
-         TBbFry/xIhrjKMda06ddMiSkLZLm0MFjVqlThce5sJN+xxCvj71oxwq5BCsq4GLtmgS5
-         49tRlF5P8MI2JuzQDNwZctM75ZoJRCOTJSMm3s9RkxBpDGt9KtEXwcqCuYsFixWEm7uF
-         SWGWyd3va5EJjPNDpJo0zWz406ytO68YygMUU0lUd/ARPbyepxofOedOkzKqrZ1uVw1n
-         0b/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709931896; x=1710536696;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fjpZAMJBAu9QgQuXUo9LhCs4dCb/6W9jscOKJm3Xm7o=;
-        b=kfyCnE1hz7OKOp0twj462EC2wa9e4ax5cq6pZoKRPcZWAnggXwn3sFunZin/MquEl+
-         +I8D2OPl4NGTYeENw3wQKO2vl9FzzZ+hJroJ+cgB+j7pQGAfWRCYsrt+WP2M+zerBkLk
-         oYw4cVGb1GdGq2HRlGf+Rk/GrVGbNSYnvAEiRnvU9ehDSH+vwONjfWT7lWkCbyYGtgNg
-         aNsnKrD79xSWEyfXRXN32dmkFTTbrl7x02RKqgxnKaXvTARgJYL+DBR5SjtJpz8aOxvo
-         lPfQf3dbAzwtAqTPdIX77WRtX0s6C0NtHyo+c1QyLV81tUI40JVHhSgu7W28qowLihNA
-         wg4A==
-X-Forwarded-Encrypted: i=1; AJvYcCXl3s6uJXUT9LkCSxEIHQCXr+YqGpD+VvyXEHsWIum0FUcDIvGlt/C4hegc6dicEiuWLuNx6FKjzrthqQrjWwqTl36ikRElmSgLO05irhmf7X/CVGiVz8iuCKp+geER/z80UyUtGt/3e1vhb4KX/sgKVE5r6FS8phFN0ot5vwqQqg==
-X-Gm-Message-State: AOJu0YyVwnExpxqKx+R/kpmU5xbE9JrKdj8gS0mh9sPftvM8ONQ1PPdt
-	ymBuTzmoRXc3RMeyMkft3pVAu6ge+DDDJ0F6I2PUa//WGHjYPka3
-X-Google-Smtp-Source: AGHT+IE2bE9o08o/ETuxRvXCqtM11mgsHI6U2w8TrgOkft0uxleWtKI/Ys+602xA43x7/FecWouENQ==
-X-Received: by 2002:a05:6a20:6a99:b0:1a1:4d41:3570 with SMTP id bi25-20020a056a206a9900b001a14d413570mr124034pzb.59.1709931896105;
-        Fri, 08 Mar 2024 13:04:56 -0800 (PST)
-Received: from gmail.com ([192.184.166.229])
-        by smtp.gmail.com with ESMTPSA id d12-20020a056a0010cc00b006e55aa75d6csm122920pfu.122.2024.03.08.13.04.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 13:04:55 -0800 (PST)
-Date: Fri, 8 Mar 2024 13:04:53 -0800
-From: Calvin Owens <jcalvinowens@gmail.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Luis Chamberlain <mcgrof@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Naveen N Rao <naveen.n.rao@linux.ibm.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	David S Miller <davem@davemloft.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC][PATCH 2/4] bpf: Allow BPF_JIT with CONFIG_MODULES=n
-Message-ID: <Zet9ddK2kaEuTrOW@gmail.com>
-References: <cover.1709676663.git.jcalvinowens@gmail.com>
- <afebd15dd032f908e46871bec5be438063ae7458.1709676663.git.jcalvinowens@gmail.com>
- <a7ac9672-06d1-4f6a-b676-01c9868ea39c@csgroup.eu>
+	s=arc-20240116; t=1709931941; c=relaxed/simple;
+	bh=CJpU7PWKIrFYOOqFWndohMTjLNyEZPWygUxPokaxCcQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L0YF8CbXnZY+PjrGbqMIi/VNOLmdcuSH9ehDsF6yy9/n933kUF7BoU7uI0q6g11becQWl8610kKLRdCCnjn4SwwAtlBfUdJ0oYM7B8bvWPrsmpbzB6IaG1XOnvSTSp8zxDKvMjwmjOhU7bkrac7cqrbiciQumSOM7nu2THg3ppE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=BYluXopi; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1709931923; x=1710536723; i=w_armin@gmx.de;
+	bh=CJpU7PWKIrFYOOqFWndohMTjLNyEZPWygUxPokaxCcQ=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=BYluXopicfKwxb4kNRBAZGM+7BqLtW3izs1+WvcRuPX3kRljpM41EJZ6sWNzZbu/
+	 2O7r+iF1aD2426dvwm+IxQawEF+gpPZZswwVfAORqk+ZpG5Vmg+niLdzGtS4UbL4+
+	 ltYNoH4Dc6rOd3C07PrpxbB42NYgPeBpqLZs508RFdViseBg/U8ldytS/cJrGD4E2
+	 Rx1LVY9PEwfpFzCxKuDTcKKKRCCiKuOykNIdiMbiMYtXZLKqjRTtJ8VrZDY2TaIAD
+	 7B7rt0+V8TCphu/EwMuY+krY0iuujAy0+r4n/sDs50COVB1CipF0lpgXFA94aHo2O
+	 1HQ2YVM3sdzBVxlblQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MVvLB-1rJ19i021V-00RqXc; Fri, 08 Mar 2024 22:05:23 +0100
+From: Armin Wolf <W_Armin@gmx.de>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Cc: rafael@kernel.org,
+	lenb@kernel.org,
+	mario.limonciello@amd.com,
+	linux-acpi@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] platform/x86: wmi: Support reading/writing 16 bit EC values
+Date: Fri,  8 Mar 2024 22:05:18 +0100
+Message-Id: <20240308210519.2986-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a7ac9672-06d1-4f6a-b676-01c9868ea39c@csgroup.eu>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mtu9WjXr40WaZ2ID4AXRXUusZwL9r7IBbaUfGB7C3QwidQdllXb
+ lJFb8UHCwQAT5k/dx9avOSubQuFGgfSuPq+861b1tMVB4qP1TtMSkaPnrfMDp+Pzd4uKb2k
+ DR3zItvG8MBcHwhzeI/JnLo+qxadtq3MFk90IWByj24XuD4mRxXklSBMjIk8Eyrv1Sr/4bX
+ uHmyzoQ+p/tXj1I6w9Z+Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:4NUKyOK3Rx4=;G11GCJfi82Dmn84z8Oo9Twa3FU4
+ MsE4DPtcljrVZChUY+iZzezsOLEOS+f7ONKrNrt4RVHkYVeD8+lI2h7rSZTJPTPP0w0raE08Y
+ csF12pKVBNxt8ydffMoBssbHJeZOE64nSv9IPFYFbSS0ui0jUoFE4xJMtQYsleYckihyr3RYE
+ SHqQBoyTW5cEO1HlgqsbxtuuYpfLfpsXJA0ZNAYQwX1QJlJgJ2LRyjID7TPwVqb0Hxvwup59n
+ gnwBW6R5xhtX6XAgfuqKTNxB1qLqpjlVDm54LkR2FJGaG0Y5WIOFb5l9VoudRepZasuCeWNYq
+ VsCK0oivqMg5xRDRh+GspcxheU0/cKMxh1Rfke/VNo32g6115FMmYbC4uv/Qu4xPZh+9/N8Ue
+ G8vo/5fvJkIuqXBBjHF87UNLsvI2rLqEv3NVwypSww8crLJF/o6M0UjOwJIV5Dm4Z3FcMPn7s
+ Hh9LWusoMfCB1/BSUzATggyZo1Tu10K8ZgDLYvOGW11otJIdlRYylLEno1ni5ADe5Ev2komJc
+ 0/FpOtwOku4LKXTJXpaf2+ujaBDgNp40y0LGKMJDJdvKsfj4DO2eQjXugls8TWEpgq3sOF+Zv
+ UHBkLae8zO+RYuH537dOvaJ34MabSmG5f7uKVQM00iCjOno8qEgLQ9uldJPJHHAM2W0B7cBJi
+ QXxWGBOohi0mp7rPLrhxZ+vyzVBkiDpJqc+xMtv8SOzWj8JSoeqSKPKlC6HhIB64hEPKijv1h
+ zEJXILT5EIFnt3Ner4gf4ZgF268/3vYQLK04lQ1XVDGODqOd6oY8jIF8Ajvkqb/UFLNcOByGI
+ VM46RCMh/AI+WEAolS3M2SDbY7pcWnZ8322BeKvPTodQ0=
 
-On Thursday 03/07 at 22:09 +0000, Christophe Leroy wrote:
-> 
-> 
-> Le 06/03/2024 à 21:05, Calvin Owens a écrit :
-> > [Vous ne recevez pas souvent de courriers de jcalvinowens@gmail.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
-> > 
-> > No BPF code has to change, except in struct_ops (for module refs).
-> > 
-> > This conflicts with bpf-next because of this (relevant) series:
-> > 
-> >      https://lore.kernel.org/all/20240119225005.668602-1-thinker.li@gmail.com/
-> > 
-> > If something like this is merged down the road, it can go through
-> > bpf-next at leisure once the module_alloc change is in: it's a one-way
-> > dependency.
-> > 
-> > Signed-off-by: Calvin Owens <jcalvinowens@gmail.com>
-> > ---
-> >   kernel/bpf/Kconfig          |  2 +-
-> >   kernel/bpf/bpf_struct_ops.c | 28 ++++++++++++++++++++++++----
-> >   2 files changed, 25 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> > index 6a906ff93006..77df483a8925 100644
-> > --- a/kernel/bpf/Kconfig
-> > +++ b/kernel/bpf/Kconfig
-> > @@ -42,7 +42,7 @@ config BPF_JIT
-> >          bool "Enable BPF Just In Time compiler"
-> >          depends on BPF
-> >          depends on HAVE_CBPF_JIT || HAVE_EBPF_JIT
-> > -       depends on MODULES
-> > +       select MODULE_ALLOC
-> >          help
-> >            BPF programs are normally handled by a BPF interpreter. This option
-> >            allows the kernel to generate native code when a program is loaded
-> > diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> > index 02068bd0e4d9..fbf08a1bb00c 100644
-> > --- a/kernel/bpf/bpf_struct_ops.c
-> > +++ b/kernel/bpf/bpf_struct_ops.c
-> > @@ -108,11 +108,30 @@ const struct bpf_prog_ops bpf_struct_ops_prog_ops = {
-> >   #endif
-> >   };
-> > 
-> > +#if IS_ENABLED(CONFIG_MODULES)
-> 
-> Can you avoid ifdefs as much as possible ?
+The ACPI EC address space handler currently only supports
+reading/writing 8 bit values. Some firmware implementations however
+want to access for example 16 bit values, which is prefectly legal
+according to the ACPI spec.
 
-Similar to the other one, this was just a misguided attempt to avoid
-triggering -Wunused, I'll clean it up.
+Add support for reading/writing such values.
 
-This particular patch will look very different when rebased on bpf-next.
+Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
 
-> >   static const struct btf_type *module_type;
-> > 
-> > +static int bpf_struct_module_type_init(struct btf *btf)
-> > +{
-> > +       s32 module_id;
-> 
-> Could be:
-> 
-> 	if (!IS_ENABLED(CONFIG_MODULES))
-> 		return 0;
-> 
-> > +
-> > +       module_id = btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
-> > +       if (module_id < 0)
-> > +               return 1;
-> > +
-> > +       module_type = btf_type_by_id(btf, module_id);
-> > +       return 0;
-> > +}
-> > +#else
-> > +static int bpf_struct_module_type_init(struct btf *btf)
-> > +{
-> > +       return 0;
-> > +}
-> > +#endif
-> > +
-> >   void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
-> >   {
-> > -       s32 type_id, value_id, module_id;
-> > +       s32 type_id, value_id;
-> >          const struct btf_member *member;
-> >          struct bpf_struct_ops *st_ops;
-> >          const struct btf_type *t;
-> > @@ -125,12 +144,10 @@ void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
-> >   #include "bpf_struct_ops_types.h"
-> >   #undef BPF_STRUCT_OPS_TYPE
-> > 
-> > -       module_id = btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
-> > -       if (module_id < 0) {
-> > +       if (bpf_struct_module_type_init(btf)) {
-> >                  pr_warn("Cannot find struct module in btf_vmlinux\n");
-> >                  return;
-> >          }
-> > -       module_type = btf_type_by_id(btf, module_id);
-> > 
-> >          for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
-> >                  st_ops = bpf_struct_ops[i];
-> > @@ -433,12 +450,15 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> > 
-> >                  moff = __btf_member_bit_offset(t, member) / 8;
-> >                  ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
-> > +
-> > +#if IS_ENABLED(CONFIG_MODULES)
-> 
-> Can't see anything depending on CONFIG_MODULES here, can you instead do:
-> 
-> 		if (IS_ENABLED(CONFIG_MODULES) && ptype == module_type) {
-> 
-> >                  if (ptype == module_type) {
-> >                          if (*(void **)(udata + moff))
-> >                                  goto reset_unlock;
-> >                          *(void **)(kdata + moff) = BPF_MODULE_OWNER;
-> >                          continue;
-> >                  }
-> > +#endif
-> > 
-> >                  err = st_ops->init_member(t, member, kdata, udata);
-> >                  if (err < 0)
-> > --
-> > 2.43.0
-> > 
-> > 
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+Changes since v3:
+- change type of variable i to size_t
+
+Changes since v2:
+- fix address overflow check
+
+Changes since v1:
+- use BITS_PER_BYTE
+- validate that number of bytes to read/write does not overflow the
+  address
+=2D--
+ drivers/platform/x86/wmi.c | 49 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 39 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index 1920e115da89..d9bf6d452b3a 100644
+=2D-- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -1153,6 +1153,34 @@ static int parse_wdg(struct device *wmi_bus_dev, st=
+ruct platform_device *pdev)
+ 	return 0;
+ }
+
++static int ec_read_multiple(u8 address, u8 *buffer, size_t bytes)
++{
++	size_t i;
++	int ret;
++
++	for (i =3D 0; i < bytes; i++) {
++		ret =3D ec_read(address + i, &buffer[i]);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int ec_write_multiple(u8 address, u8 *buffer, size_t bytes)
++{
++	size_t i;
++	int ret;
++
++	for (i =3D 0; i < bytes; i++) {
++		ret =3D ec_write(address + i, buffer[i]);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
+ /*
+  * WMI can have EmbeddedControl access regions. In which case, we just wa=
+nt to
+  * hand these off to the EC driver.
+@@ -1162,27 +1190,28 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physi=
+cal_address address,
+ 			  u32 bits, u64 *value,
+ 			  void *handler_context, void *region_context)
+ {
+-	int result =3D 0;
+-	u8 temp =3D 0;
++	int bytes =3D bits / BITS_PER_BYTE;
++	int ret;
++
++	if (!value)
++		return AE_NULL_ENTRY;
+
+-	if ((address > 0xFF) || !value)
++	if (!bytes || bytes > sizeof(*value))
+ 		return AE_BAD_PARAMETER;
+
+-	if (function !=3D ACPI_READ && function !=3D ACPI_WRITE)
++	if (address > U8_MAX || address + bytes - 1 > U8_MAX)
+ 		return AE_BAD_PARAMETER;
+
+-	if (bits !=3D 8)
++	if (function !=3D ACPI_READ && function !=3D ACPI_WRITE)
+ 		return AE_BAD_PARAMETER;
+
+ 	if (function =3D=3D ACPI_READ) {
+-		result =3D ec_read(address, &temp);
+-		*value =3D temp;
++		ret =3D ec_read_multiple(address, (u8 *)value, bytes);
+ 	} else {
+-		temp =3D 0xff & *value;
+-		result =3D ec_write(address, temp);
++		ret =3D ec_write_multiple(address, (u8 *)value, bytes);
+ 	}
+
+-	switch (result) {
++	switch (ret) {
+ 	case -EINVAL:
+ 		return AE_BAD_PARAMETER;
+ 	case -ENODEV:
+=2D-
+2.39.2
+
 
