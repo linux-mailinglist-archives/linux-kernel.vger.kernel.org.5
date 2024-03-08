@@ -1,178 +1,212 @@
-Return-Path: <linux-kernel+bounces-97317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C65C08768B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:44:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5531F8768BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B22EB20A46
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:44:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08112287DB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B0479D1;
-	Fri,  8 Mar 2024 16:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jl7rqKZQ"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E86F1CFB4;
+	Fri,  8 Mar 2024 16:45:30 +0000 (UTC)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3B67484
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 16:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75851171A4;
+	Fri,  8 Mar 2024 16:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916281; cv=none; b=mt7c0AxJjZAK+FCgkB1VMW40n8bQlxTgu7h6pV3J9Rod/Jj33mtu1AtyJ/ZEUBeF1f30cMXdZtXhxUuVJ6cHERCuNMzlnMPe5rNUmw1GClOPZ0nm49/Sb6fJ8EMfclwuyrEeTfI9/yIozxENBY8iqJnH2TB0Tc0h5t1m84jzSak=
+	t=1709916329; cv=none; b=qjGRiCMVkMGzdQaG2NzPKJTtFaZxcFeq9yXm/Ss//Uoo9EIFNwUrx522xW4CUN3W2PLEG/wFfKkn9vy7lsltkLmxXP0oGrnnaGATJgAsfOycgNgd2ygFm6f2Kfv8sWcHAkCn0MEpbQYdET01X6lz8zXNqUJM7NqCVFCVZ5X4G8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916281; c=relaxed/simple;
-	bh=UrEBxQszULiVbIBPuPmBCRY25FgHIkpOHvzckOGcYBM=;
+	s=arc-20240116; t=1709916329; c=relaxed/simple;
+	bh=8U5qdKB0DMpmg3gUpkvAO98Vy1vsWobCQuZf+O8qEEM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u0MS29kT7CqEF3j6/x0mMDHpM77NvmhQVnt/YpeidSikZyj5MB/90MWoGXgRGgiN0oIU32TYS+rkq2INFbjoPcQ5Fooyb1FKfBdz+Oq5eA8HA0J/p7qRt28FyEYsZ8xVU4QYYAig/gsy7zAR36EoE0OvIKp0h7fBjd0oPsG9wAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Jl7rqKZQ; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5133d26632fso1366088e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 08:44:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709916278; x=1710521078; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3pb+tQdggieSesTRk+wpBTn9tTjLUrGvHa4LzSreo9I=;
-        b=Jl7rqKZQUbNsEN2TjWILnxe/pkkpYbGnT0rtG+ApWGvXpMkTLvke6WoQ05k3Ey+a70
-         Dv7Txoe8sfQccoo7hvFHwlc07nqTvuWSJCPOKnWHktuC6gC2oqWwWJB8kgMWceN4W/I8
-         0ciSTnee+VUPKpxwNyuiU74Qkz3aRJjlw+wjMtSJaOq7hpJfyD105+ddBAQB74kbMlA+
-         afVFkcSOlhVxYP+zLkUPsQJR6u2L4zpWXhZ5/N6KUHDgRsEDjsmndCZmh33txekWjtQO
-         yFjEmzI9jyUhSns6YNk3PH9akKvBc5wnePEvpDlRo+bdA+rFrOa6xI09tv++WyoMVPXT
-         Sj+w==
+	 To:Cc:Content-Type; b=rocen+Bf6yvmbzgNoiqhe17E//vdpGaW+ld8uhbTCIOzBtkLT2xn714fSkj7vGGQXFKe2i8ztdFLtPm+phVLQUf6mZW31m6kodPtPSMfEa4YNc31nA3TNnWKEXUKrlq4eoBf0/PnnA+9gBfDUxfcCWbRl4mA7hRcXzlyEdmb7rM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4467d570cdso126409266b.3;
+        Fri, 08 Mar 2024 08:45:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709916278; x=1710521078;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3pb+tQdggieSesTRk+wpBTn9tTjLUrGvHa4LzSreo9I=;
-        b=mgp5Pf24d9+0DqDDhMg2enaCzJS1cGNnzdPZYWw+Kuf4LHM3l4eScT6JIE4tqa5gbH
-         695RS4T5oBRWkM/VpmejhKNtokaSVcQteAiq5yF/zYnY/u9JirWtpuwExKn2eikoKG+e
-         MQNk0hJ4f1rStUpOF3IndZigzz0OShSANeb2QYlFOyeYj474x4NGEKMs8XPmD680Wgzh
-         tJZzMVLD4l9h7fB0IpUgKha3ze6m+aV9vpfnWvIFRN8+7DliK5mhyw8grchFQZUIOfIY
-         uVOlRxXYmWsrdHEqrXsLN2KMWw+JDclIPWSOcL24mgMleHPUrMf/23qBcGz1d2/DXT+w
-         Ik9w==
-X-Forwarded-Encrypted: i=1; AJvYcCV0n7k9DIiyJrXjxKsUOElG7ChfQY9ot6ASLbkF58YM2xWKfs8A4PxCX6Rn9STGxbaLtoW5yyE2iJ7hyEY5jubcR2lUMb5uRVnjkaYU
-X-Gm-Message-State: AOJu0YxLyWLOm06EVl0acYYCkgbrzhEqRtmdJncoLA5A6XrGyftA3LpJ
-	dDVFCjZAn+7iujvzE60kNvebzr/JAQii3rJ5gVkk6tIpnj/n4GBc8rLioStR5t6Re/jBfjACIn6
-	u4q5ue9H6d5UR4mGNlO610C58bwhfgw1/tbE2lA==
-X-Google-Smtp-Source: AGHT+IGSEiadE1M7hzpNQ204ASdBT/8qGfuylY/6QNi4hO5JxEG2URQ276EsCZjORAMhtcwTRiKYB5Z6qnoZK/RfDLE=
-X-Received: by 2002:a2e:a9a2:0:b0:2d3:93dd:c54b with SMTP id
- x34-20020a2ea9a2000000b002d393ddc54bmr4587311ljq.25.1709916277656; Fri, 08
- Mar 2024 08:44:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709916326; x=1710521126;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YhkgjgkXj1OWZTfq9UV7UD5/nprSvz13YTx6ty0+ulw=;
+        b=xAno1HEMi+gjucxFEAjZdCU4oWDLxg1Q2mrSKS0Y6KKdTKVW7yIOL6Z0MFW54XZxTH
+         WpwVra4emztjltpwYtFDqi2ULYafFl6WpGKOcpF74t6tXy3r2ZoFgy9Ubk8tjwrKpyzf
+         r4Oge/kxApiXWHQKQ7oVP7CnFWaEIxIPuYkIJduvOCmxTSafh1I+V1u54XUxeB9mzvJ5
+         BEPQnjRcZSvdiisX9UhPK8SCL98jSNb9XXqSvWhr8N/9+H+w55XzOkjLyzQOojc0yGir
+         Pynre9cezwunVMy33TOm5N03E+IrN+B0DbbFE4FpbbppE5VJfFD5NO2n4slLZb55YLRB
+         CB5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXCuQyCPdURjfzvUmDr66lWs9P+bQnv6mgEBQVy6ke1SdS8hInYu9WCzzjWvFhGSQauiIN/dOwTX+0jWZxKRKL8nM91e3dO+cc5Nh6w0AI3zp9PAwmlF8gLDScw7ooql4nDOas5Q+/21yM2a2auodl3j9DOePyEAGkPzThNxECD2mBlNlNVs5MIhw==
+X-Gm-Message-State: AOJu0YzMf8i5Vrog/OQaGuM2DD9f7uCnjlVz3LN0h30wh03JPGjbitII
+	3rjJL0DIbzpO7SLjgblyEmJW7OVa33HfwluOGCFCB6OwrS4FsY0xXJsRs/NSx3o5Lw==
+X-Google-Smtp-Source: AGHT+IHC9EI2cqzk5Ho0bywx2cZfLMGRgh8ZLqN+WqW56+lV7Y+zxgsbVz82D2FxojiEklqKe09+Tw==
+X-Received: by 2002:a17:906:c348:b0:a45:b631:1045 with SMTP id ci8-20020a170906c34800b00a45b6311045mr6159284ejb.21.1709916325392;
+        Fri, 08 Mar 2024 08:45:25 -0800 (PST)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id fw11-20020a170906c94b00b00a45a8c4edb4sm4020089ejb.48.2024.03.08.08.45.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 08:45:25 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a4429c556efso142414366b.0;
+        Fri, 08 Mar 2024 08:45:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWaZqd3o8IESgHTAB2g1KrJq91h4JlmdYJRO13JQ6VisoA7MdePLMFBWhw4OBNWufRNUOBtXNT9hLrLGWGq+D3GYEKz6Etwx9VF45Yob8URFA+caEzNGzjHbTBqaAut8sxDdOlgMUV9w8vbiHb0lkVeg/z7pWRJ4EZM/nvK56Pw4MWswyJZdxqPJQ==
+X-Received: by 2002:a17:906:cf88:b0:a45:373:cff with SMTP id
+ um8-20020a170906cf8800b00a4503730cffmr12031257ejb.68.1709916325086; Fri, 08
+ Mar 2024 08:45:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301164227.339208-1-abdellatif.elkhlifi@arm.com>
- <20240301164227.339208-2-abdellatif.elkhlifi@arm.com> <ZeYWKVpeFm1+4mlT@p14s> <20240307194026.GA355455@e130802.arm.com>
-In-Reply-To: <20240307194026.GA355455@e130802.arm.com>
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Date: Fri, 8 Mar 2024 09:44:26 -0700
-Message-ID: <CANLsYkzA20rQdTM6AOvFK=3o28GvcoRbckL=ri8RegHqyHaiCw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] remoteproc: Add Arm remoteproc driver
-To: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Drew.Reed@arm.com, Adam.Johnston@arm.com, 
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com> <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
+In-Reply-To: <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
+From: Neal Gompa <neal@gompa.dev>
+Date: Fri, 8 Mar 2024 11:44:48 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
+Message-ID: <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, Miklos Szeredi <mszeredi@redhat.com>, 
+	Christian Brauner <brauner@kernel.org>, David Howells <dhowells@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 7 Mar 2024 at 12:40, Abdellatif El Khlifi
-<abdellatif.elkhlifi@arm.com> wrote:
+On Fri, Mar 8, 2024 at 11:34=E2=80=AFAM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
 >
-> Hi Mathieu,
->
-> > > +   do {
-> > > +           state_reg = readl(priv->reset_cfg.state_reg);
-> > > +           *rst_ack = EXTSYS_RST_ST_RST_ACK(state_reg);
+> On Fri, Mar 08, 2024 at 06:42:27AM -0500, Neal Gompa wrote:
+> > On Thu, Mar 7, 2024 at 9:29=E2=80=AFPM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > >
+> > > Add a new statx field for (sub)volume identifiers, as implemented by
+> > > btrfs and bcachefs.
+> > >
+> > > This includes bcachefs support; we'll definitely want btrfs support a=
+s
+> > > well.
+> > >
+> > > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu=
+2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > Cc: Josef Bacik <josef@toxicpanda.com>
+> > > Cc: Miklos Szeredi <mszeredi@redhat.com>
+> > > Cc: Christian Brauner <brauner@kernel.org>
+> > > Cc: David Howells <dhowells@redhat.com>
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > ---
+> > >  fs/bcachefs/fs.c          | 3 +++
+> > >  fs/stat.c                 | 1 +
+> > >  include/linux/stat.h      | 1 +
+> > >  include/uapi/linux/stat.h | 4 +++-
+> > >  4 files changed, 8 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> > > index 3f073845bbd7..6a542ed43e2c 100644
+> > > --- a/fs/bcachefs/fs.c
+> > > +++ b/fs/bcachefs/fs.c
+> > > @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+> > >         stat->blksize   =3D block_bytes(c);
+> > >         stat->blocks    =3D inode->v.i_blocks;
+> > >
+> > > +       stat->subvol    =3D inode->ei_subvol;
+> > > +       stat->result_mask |=3D STATX_SUBVOL;
 > > > +
-> > > +           if (*rst_ack == EXTSYS_RST_ACK_RESERVED) {
-> > > +                   dev_err(dev, "unexpected RST_ACK value: 0x%x\n",
-> > > +                           *rst_ack);
-> > > +                   return -EINVAL;
-> > > +           }
-> > > +
-> > > +           /* expected ACK value read */
-> > > +           if ((*rst_ack & exp_ack) || (*rst_ack == exp_ack))
+> > >         if (request_mask & STATX_BTIME) {
+> > >                 stat->result_mask |=3D STATX_BTIME;
+> > >                 stat->btime =3D bch2_time_to_timespec(c, inode->ei_in=
+ode.bi_otime);
+> > > diff --git a/fs/stat.c b/fs/stat.c
+> > > index 77cdc69eb422..70bd3e888cfa 100644
+> > > --- a/fs/stat.c
+> > > +++ b/fs/stat.c
+> > > @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx _=
+_user *buffer)
+> > >         tmp.stx_mnt_id =3D stat->mnt_id;
+> > >         tmp.stx_dio_mem_align =3D stat->dio_mem_align;
+> > >         tmp.stx_dio_offset_align =3D stat->dio_offset_align;
+> > > +       tmp.stx_subvol =3D stat->subvol;
+> > >
+> > >         return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+> > >  }
+> > > diff --git a/include/linux/stat.h b/include/linux/stat.h
+> > > index 52150570d37a..bf92441dbad2 100644
+> > > --- a/include/linux/stat.h
+> > > +++ b/include/linux/stat.h
+> > > @@ -53,6 +53,7 @@ struct kstat {
+> > >         u32             dio_mem_align;
+> > >         u32             dio_offset_align;
+> > >         u64             change_cookie;
+> > > +       u64             subvol;
+> > >  };
+> > >
+> > >  /* These definitions are internal to the kernel for now. Mainly used=
+ by nfsd. */
+> > > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> > > index 2f2ee82d5517..67626d535316 100644
+> > > --- a/include/uapi/linux/stat.h
+> > > +++ b/include/uapi/linux/stat.h
+> > > @@ -126,8 +126,9 @@ struct statx {
+> > >         __u64   stx_mnt_id;
+> > >         __u32   stx_dio_mem_align;      /* Memory buffer alignment fo=
+r direct I/O */
+> > >         __u32   stx_dio_offset_align;   /* File offset alignment for =
+direct I/O */
+> > > +       __u64   stx_subvol;     /* Subvolume identifier */
+> > >         /* 0xa0 */
+> > > -       __u64   __spare3[12];   /* Spare space for future expansion *=
+/
+> > > +       __u64   __spare3[11];   /* Spare space for future expansion *=
+/
+> > >         /* 0x100 */
+> > >  };
+> > >
+> > > @@ -155,6 +156,7 @@ struct statx {
+> > >  #define STATX_MNT_ID           0x00001000U     /* Got stx_mnt_id */
+> > >  #define STATX_DIOALIGN         0x00002000U     /* Want/got direct I/=
+O alignment info */
+> > >  #define STATX_MNT_ID_UNIQUE    0x00004000U     /* Want/got extended =
+stx_mount_id */
+> > > +#define STATX_SUBVOL           0x00008000U     /* Want/got stx_subvo=
+l */
+> > >
+> > >  #define STATX__RESERVED                0x80000000U     /* Reserved f=
+or future struct statx expansion */
+> > >
+> > > --
+> > > 2.43.0
+> > >
+> > >
 > >
-> > I'm not sure why the second condition in this if() statement is needed.  As far
-> > as I can tell the first condition will trigger and the second one won't be
-> > reached.
->
-> The second condition takes care of the following: exp_ack and  *rst_ack are both 0.
-> This case happens when RST_REQ bit is cleared (meaning: No reset requested) and
-> we expect the RST_ACK to be 00 afterwards.
->
-
-This is the kind of conditions that definitely deserve documentation.
-Please split the conditions in two different if() statements and add a
-comment to explain what is going on.
-
-> > > +/**
-> > > + * arm_rproc_load() - Load firmware to memory function for rproc_ops
-> > > + * @rproc: pointer to the remote processor object
-> > > + * @fw: pointer to the firmware
-> > > + *
-> > > + * Does nothing currently.
-> > > + *
-> > > + * Return:
-> > > + *
-> > > + * 0 for success.
-> > > + */
-> > > +static int arm_rproc_load(struct rproc *rproc, const struct firmware *fw)
-> > > +{
+> > I think it's generally expected that patches that touch different
+> > layers are split up. That is, we should have a patch that adds the
+> > capability and a separate patch that enables it in bcachefs. This also
+> > helps make it clearer to others how a new feature should be plumbed
+> > into a filesystem.
 > >
-> > What is the point of doing rproc_of_parse_firmware() if the firmware image is
-> > not loaded to memory?  Does the remote processor have some kind of default ROM
-> > image to run if it doesn't find anything in memory?
+> > I would prefer it to be split up in this manner for this reason.
 >
-> Yes, the remote processor has a default FW image already loaded by default.
+> I'll do it that way if the patch is big enough that it ought to be
+> split up. For something this small, seeing how it's used is relevant
+> context for both reviewers and people looking at it afterwards.
 >
 
-That too would have mandated a comment - otherwise people looking at
-the code are left wondering, as I did.
+It needs to also be split up because fs/ and fs/bcachefs are
+maintained differently. And while right now bcachefs is the only
+consumer of the API, btrfs will add it right after it's committed, and
+for people who are cherry-picking/backporting accordingly, having to
+chop out part of a patch would be unpleasant.
 
-> rproc_boot() [1] and _request_firmware() [2] fail if there is no FW file in the filesystem or a filename
-> provided.
->
-> Please correct me if I'm wrong.
 
-You are correct, the remoteproc subsystem expects a firmware image to
-be provided _and_ loaded into memory.  Providing a dummy image just to
-get the remote processor booted is a hack, but simply because the
-subsystem isn't tailored to handle this use case.  So I am left
-wondering what the plans are for this driver, i.e is this a real
-scenario that needs to be addressed or just an initial patchset to get
-a foundation for the driver.
-
-In the former case we need to start talking about refactoring the
-subsystem so that it properly handles remote processors that don't
-need a firmware image.  In the latter case I'd rather see a patchset
-where the firmware image is loaded into RAM.
-
->
-> [1]: https://elixir.bootlin.com/linux/v6.8-rc7/source/drivers/remoteproc/remoteproc_core.c#L1947
-> [2]: https://elixir.bootlin.com/linux/v6.8-rc7/source/drivers/base/firmware_loader/main.c#L863
->
-> > > +module_platform_driver(arm_rproc_driver);
-> > > +
-> >
-> > I am echoing Krzysztof view about how generic this driver name is.  This has to
-> > be related to a family of processors or be made less generic in some way.  Have
-> > a look at what TI did for their K3 lineup [1] - I would like to see the same
-> > thing done here.
->
-> Thank you, I'll take care of that and of all the other comments made.
->
-> Cheers,
-> Abdellatif
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
