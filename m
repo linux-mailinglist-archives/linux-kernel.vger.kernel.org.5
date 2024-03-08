@@ -1,135 +1,104 @@
-Return-Path: <linux-kernel+bounces-96538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 171A1875DBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:40:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFF27875DBF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ACC41C21604
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:40:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B86028216F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85142339A1;
-	Fri,  8 Mar 2024 05:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B22E364BA;
+	Fri,  8 Mar 2024 05:41:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Br1bEehd"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UuLIWdKA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4E92564;
-	Fri,  8 Mar 2024 05:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3994364A1
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 05:41:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709876436; cv=none; b=XWOwqu/ao1v71+3267OLAzt3XbMEiXrG905gfzCHtzJKAKDLk794S0sh7oApxCoDpWXmETqzsqKSlMzj3/wLFeIOXPtXHgbrAX79VrZeZRR+sXPyfSNrxl4AhOjNEbqYFUtWPWm4Uk+BxsmHShSat3MNNHpnklDJMrJGGbvx3ms=
+	t=1709876513; cv=none; b=WmtR/EoRXNlOrkaMqygBh+6WqCPdvFkY7j279H3Kmrbzxo/miL5t3me4zrW6Ko24E5X+9vRRbMHnld6qA8b+A4J7U8xatQ1ankOE9AjRj+If2W5nOauCSuCEhkUgrx63jUqwG8oYvfVgs12qF8/YEWaqI27YNpAFlMDl3OcK9BM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709876436; c=relaxed/simple;
-	bh=VXzTDDwrVzsBd5OwF3NbrcZGSZl081y1VSk5gTaR33M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=oYt9ljqKFHNdMs9LxB/BGjGJLi3VEG7XUaoeJ3cmEvIwUU5GAzZbiuUB+xj3ARMUmTwjJ0QeZkNXaNZ5+1EzxpfJKQcrRXyIQUFTShs7t7g9/HK/qk4OBlA0oN6ewaFN8pEpit8MC5NkAqVKxsTha5GfstJXFP4wqjiCDNoF8YY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Br1bEehd; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e4f8f140c1so740667a34.2;
-        Thu, 07 Mar 2024 21:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709876434; x=1710481234; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FmIdbXAIShCcx4VSxfFCIq6Nn+BVqj1An3BXPDxEMT8=;
-        b=Br1bEehd3eynC8MInWxktqrrpdwCp1NI1xa9UVTuedejHoGDNM8X8nBaKngPp+VP2l
-         BC7dDldTwTPmjc8xIhoT4oA5r4b4hS7gIlhoAWhdwLO0UvYZt4rypb6L4F20FfxDvQSu
-         Rf8VMEjoKWwkgsUX7814x0Gm8ZkBzhBBPkzRpLDgLpOu58gSMDVHgWytjSrfSQ3WXwqb
-         j6Z/LohasUNpL93GPABo8lEfOnb0976Fgqjif6wtJyEnfXsu5gj0S/VXySRqfsn6j82e
-         es0pzgw//YlUUvSAhqesmaKC4LD5d4jZG/GZUYEwTl7eEEhLVXdwFajt3TRk24AhAidp
-         cNUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709876434; x=1710481234;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FmIdbXAIShCcx4VSxfFCIq6Nn+BVqj1An3BXPDxEMT8=;
-        b=wBz/CGc3KMusO9dCNQ2v5EMjNdDFcmOidVIqfySO48dE0OlDYcRThcFLKvBsOzYurg
-         Rbs/EgmZggE6DXcZxV/4oQN/VMyBUbOa5mlhzJ2cOo8ZRRAN6O/jhCCUUfW4FzQKUP4e
-         gen4Q/ceheRGYc0h5XLLDopJQCU5iHsJzUFTxyCPvtaHKWi/e0umNI2RTzrhw+EAJ2U2
-         cvG046B2mNg9YrxNCnl81zHi8+wdr2aHw31t5rY4G+DVYnmudizdvhnB0yZ6GpDYIvM2
-         GljY+qioFy+vDHWWsrzsx9b8pSjRSGXY2qQqGBqaet6gbKX2V5rEBVSRh6B4vvF1R5Fb
-         tf/w==
-X-Forwarded-Encrypted: i=1; AJvYcCXw8cuMRMITv1KxNoTJenZ+OOeIZskRnLFmwusdF3FPiiYmQwolUXwdzG0oKR6rNzXCUfLU6tFqXfRvgp8DStcQUuadf7xk8oBAMPg=
-X-Gm-Message-State: AOJu0YzxilDxSGRzzYqOsRqkApTAZfB6Ybhs+Tyjl/WquWFvsa/AXLot
-	GZdxyeXFNNeGSfWkOGM+6C3o4ffpMpzSoU+HGY6S4suHMkh3G7DBdvqs+eMO
-X-Google-Smtp-Source: AGHT+IGYu8d37+M+Hyt6EPIoBZhXbKT9k6mfbVygFCJcEx7bVGhnKAsjEq7wGIDWsDQqLgqQPmh1wg==
-X-Received: by 2002:a05:6808:f15:b0:3c2:30b2:c6c2 with SMTP id m21-20020a0568080f1500b003c230b2c6c2mr1468161oiw.26.1709876434258;
-        Thu, 07 Mar 2024 21:40:34 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:13a:f30c:e020:9a13])
-        by smtp.gmail.com with ESMTPSA id n21-20020a056a000d5500b006e669289fa7sm661870pfv.220.2024.03.07.21.40.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 21:40:33 -0800 (PST)
-Date: Thu, 7 Mar 2024 21:40:31 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [git pull] Input updates for v6.8-rc7
-Message-ID: <Zeqhkk0HJwEIUZ0D@google.com>
+	s=arc-20240116; t=1709876513; c=relaxed/simple;
+	bh=YY0ngKqwHmUqwvnA4WlChAL0cHrU5iop01IV/D1Icmc=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=W9rJt2757GJJ3amASE6c9YQJKO9JrJjPElrJdK6uGXVrBlmmfUPekalH+DpD9P6JeMtzNpDJNxpskb6SM8TygmJ68Z9YeONJOBLa57KYRgc8wFm4LlqboC2yttWeYzSnMCTqWWMiC8JHSAJ4cunjI5hG6LQjtruSm4/Z/xqbxx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UuLIWdKA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E151C433F1;
+	Fri,  8 Mar 2024 05:41:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709876512;
+	bh=YY0ngKqwHmUqwvnA4WlChAL0cHrU5iop01IV/D1Icmc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UuLIWdKAa8zcUN4HxBW5lzHPWCaFYsn58FHrIoGLj/7/DMtt6jCMmU0U66+zJuuGY
+	 OIb6ziXVPUicx7PTbInbOpwtIBqb16dTeW9VrUBrs+IeXRYnrioU8uqKcGoNI+pC8i
+	 NtJpGokO7satK5ho8IeDspYk6JGSqWoPSwQvMR8ACoiJ2F+eKvliE9rAU4/HnEENmE
+	 seGpCfM6KjIw7mQCmQvi4ldvItCMx6A0rezbjKl5LhnvPtbBrULReLMtQ1NjJysczo
+	 /VsWDTKIrMHu+8rpvmA62LTwmNo/oUYhny2xDpQizg6oPmpG1R6oBaMDPgFKQrvlcQ
+	 bP32jzuMPpAww==
+Date: Fri, 8 Mar 2024 14:41:46 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bootconfig: do not put quotes on cmdline items unless
+ necessary
+Message-Id: <20240308144146.7875c1a3092846111c6ca690@kernel.org>
+In-Reply-To: <40914a69-d4b7-4fdd-bc58-cf9b28271ac3@rasmusvillemoes.dk>
+References: <20240306122452.1664709-1-linux@rasmusvillemoes.dk>
+	<20240306124211.b490ea3c2372d89cff8c287c@linux-foundation.org>
+	<e1075345-ea35-4b39-a158-a0d165314a14@rasmusvillemoes.dk>
+	<40914a69-d4b7-4fdd-bc58-cf9b28271ac3@rasmusvillemoes.dk>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Linus,
+On Thu, 7 Mar 2024 09:18:17 +0100
+Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
 
-Please pull from:
+> On 07/03/2024 09.10, Rasmus Villemoes wrote:
+> 
+> >>> +static int has_space(const char *v)
+> >>> +{
+> >>> +	for (; *v; v++)
+> >>> +		if (isspace(*v))
+> >>> +			return 1;
+> >>> +	return 0;
+> >>> +}
+> >>
+> >> Do we already have something which does this?
+> > 
+> > Well, 'value[strcspn(value, " \t\r\n")] ? "\"" : ""' would be a
+> > oneliner, but not particularly readable. Also that list of characters
+> > doesn't necessarily match isspace(), see below.
+> 
+> I didn't look close enough. We do have strpbrk(), so strpbrk(value, "
+> \t\r\n") ? .. : .. , but that still leaves the question of just what set
+> of characters to search for. But there's no harm in just making it "
+> \t\n\v\f\r\xa0" except it requires a comment saying "these are precisely
+> the isspace() characters in the kernel's ctype".
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.8-rc7
+I think strpbrk(" \t\r\n") is good enough. Some may not work in cmdline
+but as you said, since next_arg()@lib/cmdline.c uses isspace() to separate
+the argument, it is better to use the same rule.
 
-to receive updates for the input subsystem. You will get:
+Thank you,
 
-- a revert of endpoint checks in bcm5974 - the driver is being naughty
-  and pokes at unclaimed USB interface, so the check fails. We need to
-  fix the driver to claim both interfaces, and then re-implement the
-  endpoints check
-
-- a fix to Synaptics RMI driver to avoid UAF on driver unload or device
-  unbinding
-
-- a few new VID/PIDs added to xpad game controller driver
-
-- a change to gpio_keys_polled driver to quiet it when GPIO causes probe
-  deferral.
-
-Changelog:
----------
-
-Javier Carrasco (1):
-      Revert "Input: bcm5974 - check endpoint type before starting traffic"
-
-Mathias Krause (1):
-      Input: synaptics-rmi4 - fix UAF of IRQ domain on driver removal
-
-Max Nguyen (1):
-      Input: xpad - add additional HyperX Controller Identifiers
-
-Uwe Kleine-König (1):
-      Input: gpio_keys_polled - suppress deferred probe error for gpio
-
-Diffstat:
---------
-
- drivers/input/joystick/xpad.c             |  6 ++++++
- drivers/input/keyboard/gpio_keys_polled.c | 10 ++++------
- drivers/input/mouse/bcm5974.c             | 20 --------------------
- drivers/input/rmi4/rmi_driver.c           |  6 +++---
- 4 files changed, 13 insertions(+), 29 deletions(-)
-
-Thanks.
+> 
+> Rasmus
+> 
 
 
 -- 
-Dmitry
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
