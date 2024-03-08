@@ -1,321 +1,240 @@
-Return-Path: <linux-kernel+bounces-96423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1F3875BE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:14:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F229C875BF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:24:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6735B214A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:14:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A92F528391B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828C3224F0;
-	Fri,  8 Mar 2024 01:14:30 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177C0224CC;
-	Fri,  8 Mar 2024 01:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709860469; cv=none; b=ljxcEZjygLX3RAMLBylzCfXoW1R1EiiHsc/hGyhY9ogpNjrBxOMeAG1eaS/qH+Oj0bti0t3yIwN73BeIVpupuKVnuYspU2niFfCc42lnDLeELHPE4aX5odvQq+NqGAeVTZWG+QdaYD4AaIsvybXsMcA3nHNaCmjY9TB8BU0bcVE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709860469; c=relaxed/simple;
-	bh=6DLoLRfIvnW++px44Y/21mjPNbxrYAB9FR08pnzPg/k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qdGokzCMPlpO2DIAzvZKiwoCn7Nkc/gtPdYlPjYkIBTX6o2GI9z0v2p0aJ9uwcChlXteHFeqnfUaNgSrbmaLYtSo1p7hdm5puNuKXFWt7BQU6xzhGhCMiGxCS2/g29E+ZOAc/9iRs54ThoTrN/1XqyCvRRXMKiRqU83tjHEWS2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [112.20.109.198])
-	by gateway (Coremail) with SMTP id _____8BxyuhvZuplFiMWAA--.35104S3;
-	Fri, 08 Mar 2024 09:14:23 +0800 (CST)
-Received: from [192.168.100.8] (unknown [112.20.109.198])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx7c5qZuplEMpQAA--.18370S3;
-	Fri, 08 Mar 2024 09:14:19 +0800 (CST)
-Message-ID: <18a69517-9796-476b-973e-291319e121ce@loongson.cn>
-Date: Fri, 8 Mar 2024 09:14:16 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595D422EF4;
+	Fri,  8 Mar 2024 01:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="soqzusbb";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="l5GbHh+8"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F0923B0;
+	Fri,  8 Mar 2024 01:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709861078; cv=fail; b=dgY+wLRkM8Co5iTnsM16YzegERmLd6gZZ5++gqq66Ld7d3UxisTZ5EAwQ/FqxKAJG7qZpIed8xk4OQlfRD+VIiqxc0pdPZHPE3WKcfepqQXUeOI9XCBTIc/lcAw+PGgiapNtMvJ4/yEld6mnjSH5uXSAlgTV/E37M2guFDTFRpU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709861078; c=relaxed/simple;
+	bh=iejS9U0B2gz0zwGq8cK0hXNxrOif96FJRkNfWWEGGcs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=AUYfSjuSf+X01uIo/mhjjeiOCIVn8907oBeKeTP8vivQiUBUrgP4m9I42Hl549qkCbT6udsUk1IyHv5/qDIx9SdKvWJS543zTBvfflTcx6IuQ+oBoLKB8MeGmVPjGR8ThSB4HwUWFbQOdANIYb6h3gtvbEjOLaTCSuXwe1a18Jo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=soqzusbb; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=l5GbHh+8; arc=fail smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 9bcd0372dcea11ee935d6952f98a51a9-20240308
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=iejS9U0B2gz0zwGq8cK0hXNxrOif96FJRkNfWWEGGcs=;
+	b=soqzusbbmQ4fQDOHWjeFmC/eTdZXXEU582+5AzWOHKclmEytnp4VrT+ELB4sNYDA5H9p+NYvDpSCt47zHdKPuSHmmHzLCHeh5Renu/K6VpA2N2RGtGtk3/xyQq5i5eccGp5CPLbMiHFQp8G5qKAphP3s2bsPMudCBG4YYXsZdFs=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:efd77065-1107-4308-ae16-eebc99084e54,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:0fd92690-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
+X-UUID: 9bcd0372dcea11ee935d6952f98a51a9-20240308
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+	(envelope-from <lena.wang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 2064460330; Fri, 08 Mar 2024 09:24:28 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 8 Mar 2024 09:24:27 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 8 Mar 2024 09:24:27 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i81h04t1WFeQCaXTJQQdI0r9IA8BpEfbM3z+/fpU9UeNpdRKqb31Ts2LjpZv55ekmdeMHxolO+X78Il+wTVqwq0WfoVuYSUPyIf5SeqGmGfqtdVLkw3a9yTyk/GExZvqnPHAz7O0mljS7M+OonGzQVMlOOvtO3uIgw8F3ChywlvdSjhayjqxd8RCyVjsBJ400+2qccsM5ibmxqM/gay1inmkdrGdpayWWcEzWz4kMhBz9bVjkoQrBxfFtj4BfE5KnY2vzog0Vsxqr/jL7N3fFoO0Nxwj/zZAr9L0hTJUl7XGxmsvUFm5F3CHLSUSFzdgYSNsHTyMvvZNZogkoAJlqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iejS9U0B2gz0zwGq8cK0hXNxrOif96FJRkNfWWEGGcs=;
+ b=TV88QoZ9JHp4M3DfhuV4Nwq3YUfchih8uQdI0fYsBnbZi/L3ABiu2yKDJPvxJSHOAUdechFP9oT54fpRPOFLSLnpeyoF82Qpmu8kLBkf9ErT5YfDw/6UffFRGQ4Zy6FT/H9vi0y//jM9BYW43tq9Jbi25N7OgscxI2uspSEh2FXkuQmLgp5wxZQgV7pr4tpXMPVzLGU+nDG2TF/keCCc8R8PAy8FN+tWsB+tgUX+Q4dDZviMTw9F2881S5AGQTiP3ajlbyXXzsgX1wFSikB+M8gXpxqmK4nZaO/WSGNhRSQp7ST9VBxmeCAX9UbuhUuOUUmgX428KeMvF+u7Rbg2RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iejS9U0B2gz0zwGq8cK0hXNxrOif96FJRkNfWWEGGcs=;
+ b=l5GbHh+8Azpwph6Q4xBVkR3c/6MS5K0az/Yj76iLcwd+wKDzgmzBQDl/ayBHgyuPCxMDrPsJdqzhqBqIDJtH67eOtV0+cYnX2p4++s0dqzf6naa6AqOA/KzLLj6dUAyUXXbtEtsnUdKDS6aNHHvizgLN5AkrxGF1U0I+SfcNGTs=
+Received: from SI2PR03MB6463.apcprd03.prod.outlook.com (2603:1096:4:1a3::9) by
+ SG2PR03MB6480.apcprd03.prod.outlook.com (2603:1096:4:1c7::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7362.24; Fri, 8 Mar 2024 01:24:25 +0000
+Received: from SI2PR03MB6463.apcprd03.prod.outlook.com
+ ([fe80::6091:6aa6:efd9:a3aa]) by SI2PR03MB6463.apcprd03.prod.outlook.com
+ ([fe80::6091:6aa6:efd9:a3aa%5]) with mapi id 15.20.7362.019; Fri, 8 Mar 2024
+ 01:24:25 +0000
+From: =?utf-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>
+To: "fw@strlen.de" <fw@strlen.de>, "davem@davemloft.net"
+	<davem@davemloft.net>, "pablo@netfilter.org" <pablo@netfilter.org>,
+	"kadlec@netfilter.org" <kadlec@netfilter.org>, "jiri@resnulli.us"
+	<jiri@resnulli.us>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH net v3] netfilter: Add protection for bmp length out of
+ range
+Thread-Topic: [PATCH net v3] netfilter: Add protection for bmp length out of
+ range
+Thread-Index: AQHabvG0DZxC9eczF0uTSH6BuJVdS7EtDQGA
+Date: Fri, 8 Mar 2024 01:24:24 +0000
+Message-ID: <e1f1a2ebbbf95d6aa8d2a12811ce379f438ab21b.camel@mediatek.com>
+References: <571b3e3f7191b5f67792d1090fc537bf4045c522.camel@mediatek.com>
+In-Reply-To: <571b3e3f7191b5f67792d1090fc537bf4045c522.camel@mediatek.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SI2PR03MB6463:EE_|SG2PR03MB6480:EE_
+x-ms-office365-filtering-correlation-id: 4e44bd0f-757d-41a5-e349-08dc3f0e7da7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UODwQtq53tzOGPkfutprwA/Iv3z2g5qlmEhApoIrm0SQuQ/6eQfEPCcOclXdyAdmCrNdS6uqNsoLZuIIHugAMpz0U9pJ8o3SP2YIwMVMRwTCPiE2V2n6eopke3fsFcnYob4Ut7pmtE2XfclHAgdoT7Df8skDZfRvH4wdVwaZZRvaP1pWEnYXgDpcsPQhbxduVaQy8Sf3rIOlNsy3ZMCqmDrie+Kg4vnCmEX28AL1bvGGkqgVeZeRjw8I2mNXTHRPMJgpJoF+5ddLmYf//Sa1J0Id/EVqXcRlp5nc2SjGpUs99xj4aEWHc/i8X8a4vq+eR6oDNVxqRopXJLHvxgelRmm/iXXUldzzdqPCuZbEa/qKXVAik09b3j1AKNkPWAdfPOUoBz//TfHPn9jx+Yse+UkPpBd6zf1VQEexeDXNI+iCKZEnCa+pCFM9Rq0TO86JCHl0Ub2EkJO59/YcletqEsnqUqAJBbZSqQ14Z7dc36aF/mvmApusHpYCrvWI7Ccuibayt+2PT+ZhqtdiSZ/sWuupsBfyJwuFkYNfmSKydTBiOKFtgm5W+7Hfw7QvoqGtWIDLDbds0p+Y5EIOFTIU+seriHv9XObFFZe4PkDlcqwSHbqnNJCodlFsnKQ4AJor79FyGi1QYt6efDAnbNsc7SjvcVY5FWlXEa8GAyZat3NY3La9XzBZzg5avpM47oKcMD9Jr/54kwKXe0vH2hHuUzOiz+RAEK7Hs2eRCfsM4Q4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR03MB6463.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cDZYWFByaE5HQTlWREEyRHkwQ3dRR3ZwTjIyRGlnVUlNVy8weU83bG0vNVdZ?=
+ =?utf-8?B?eHBPbHZJYTdJZnMrSDlrU3ByYjFCQXdWUllRVGZuQVVKT0x3eWgyeHNKanVx?=
+ =?utf-8?B?TkFhNjhEM2luSU9BejduQ0dnU29FZ1J3aWVDUVZ4SjNQRjNHakxmMmZZcW5F?=
+ =?utf-8?B?Y3ZHZnc5dnFhL282Z2JpZ2hGQW9WMEFnMm1ZdDhXbTJGQVdub3RVYmlxOXlJ?=
+ =?utf-8?B?bGlpeUphdW82WXRBY3I2OVI5Nmdrak5zclgya3pJZ01RVTNrcVhkcnNWNnhZ?=
+ =?utf-8?B?ZXNRQkQwaHJJNFlDU2ZsajNFRFVkQkpyU0gyTzJwSG1LTXFJL3JUclZpYWdn?=
+ =?utf-8?B?dVZaTzF5ZFhsNE9QZzNNSmNOQVlGdGpNTkkvNjRaUG41QnduK2Z1YjZlYXQz?=
+ =?utf-8?B?YmNBSGlYa3BNWFZJbjN5azI0RHQ2Ym1IT3FVWDVjNjhyS1hPYk0ydmFRN3Nz?=
+ =?utf-8?B?MFdqZjRhc1RIMjNCelNlMWN6T29tdzk0SkJOTjR2cityeVYySS9DcWRKYVNt?=
+ =?utf-8?B?ZkJhRk81NVgrYzJqa3ZQOFNuMjFjQ00xYmluUjBYTmVzMmdOdEY0MWVCK215?=
+ =?utf-8?B?K0VHeWdDd005clZCN2JPZW5CeGNRRy9kdXhuUm9MeFlJMTI2VVV4emFKZW9v?=
+ =?utf-8?B?TGFUbncxQ3RTNmM5QnFKSTIvcFI0aCtNNFJJNEN2VHFnNTFRTWtoeWxPU2Fu?=
+ =?utf-8?B?Y2NFc0tlOUV1ZVlGYm53QlVCcytrSlljMmdTbExCVFBaSVd5S05rWVNXdG9i?=
+ =?utf-8?B?R3UvQ0VRTWFsQkwvWGUvT2RjTjdiaGVMNzF3NGxSNGdFYlZIR24wMDRpSllx?=
+ =?utf-8?B?U2JjenNSY05PUUdTMkgzZHhuY2hOalByL1pJUDhobUt4S3crTExaNDl2SWJX?=
+ =?utf-8?B?UURNUjYxaGlQcTBMdVBPVnp1NW9CR0QyYWZua3Y3MDYwUE9CNzhYSjhOS0N5?=
+ =?utf-8?B?T0tOSTlYSkdQc0czUnRQSlM0YmZlb3I2WkV2N2RQVHdqY2dqZXBSTWx0QS8z?=
+ =?utf-8?B?V1k1YklEcWo2UldyTmxVY2swWVlzUDZLMmRQaVBvMVpKWWNBSm9INnlCTFk2?=
+ =?utf-8?B?RVJlOVY4aE9xTFNzdC8ySHJOMDVSQzEzSHVsZ2pPVXdOUE9jNm9xWitIL25R?=
+ =?utf-8?B?cVFMYWJpcEZscjBnQTVPN0g5NTVVNXM1Yzg2WmtCSXJ3R0ZybXFtNHZCVlVB?=
+ =?utf-8?B?RUs0bmdlMUJtQUx4RkdGbm05cDkya29iWU1xRTBsZmpkRnVFaVpRL3dMVi9G?=
+ =?utf-8?B?ZTJyVU9XaUwyV1lKcjVYL3FnZEFxVHN1K000VjQ0dUxXenZ1T1JocnVySXMv?=
+ =?utf-8?B?aU5PY1ZvNGhHSUxyLzRSTnR6a1RjQWJFQzIweWpqQVlJTjN6TkRiMkNvT25F?=
+ =?utf-8?B?T052NDRsa2RGaEFsdlBKclFESGt0eUplMndUOXdjNm4rcy80NzJzZmZOeXJE?=
+ =?utf-8?B?elN3SnVzR3lhNzdhd3ZlYVRONmRYOGs3UHhld09RK25jcHdmK3lBcTdsVDVv?=
+ =?utf-8?B?VXNHU2ppWlZLRG9pSXp4Q0FXOUkzTmE2T1pYVkt0S2ZTUnJPeFRPQnpIWWFF?=
+ =?utf-8?B?NEZtN3JUeGQvd3pVMFhTRE01dk4vZk1Zd0pWYklQVGZjaUgveXJ4SXJuUi8x?=
+ =?utf-8?B?NFdlRUE4ZXF0Z2ltZ0FsVzR3ZmNTU2VYcU0zN0pVdDBZZmtPNU9PU1VIOVVJ?=
+ =?utf-8?B?aWsydnFjZ2RxbUtrZ1RvdEFZT3FVRW5DK3Y3aVRsVmxpbWNFb0xHbERlRjR2?=
+ =?utf-8?B?c3F0Q3FMZDBxY2lZNndWSy9yTXFxN09Odk1pakQwMzNvbnk4dGRaUko3RFNN?=
+ =?utf-8?B?eUdyRE8wOStIVjV4UCs4LzluUElFMzYzakJEVURJa2tGVTl4cVNXbUp0TEU0?=
+ =?utf-8?B?TXlramJUUWFrUE1YYjZHWG5BVVo4OG02SWV6WWg2SXVHVEVaNktJTUJyMWhI?=
+ =?utf-8?B?c2RKRStMcVpXRkRPMVhHeGFzNDgyZVFGeUJUMVFIWW4xTEhaM0dtbTJQdExa?=
+ =?utf-8?B?QUtESGo4d2poQSt6ajN3WXNLcndtNFJDVFZIbTJFK1RBQVpKWHhUeXdpRW5G?=
+ =?utf-8?B?L1hNQWlaMHNjdFVCNnd1ZXArcjcxV2FTalFmeWdJZ1hmNUVzKzByeGhsS2hq?=
+ =?utf-8?B?WlF4dXBSaG92bGN4VEpURVJremVoOGRFRUtiQmVzSCtmSU4rZ1Fmdlpubkx1?=
+ =?utf-8?B?TGc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9F822636415F794D8158A9A6A72FAE75@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] gpiolib: legacy: Remove unused
- gpio_request_array() and gpio_free_array()
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Corbet <corbet@lwn.net>,
- Alex Shi <alexs@kernel.org>, Hu Haowen <2023002089@link.tyut.edu.cn>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Russell King <linux@armlinux.org.uk>
-References: <20240307135109.3778316-1-andriy.shevchenko@linux.intel.com>
- <20240307135109.3778316-4-andriy.shevchenko@linux.intel.com>
-From: Yanteng Si <siyanteng@loongson.cn>
-In-Reply-To: <20240307135109.3778316-4-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Bx7c5qZuplEMpQAA--.18370S3
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKFWfuw4xtry3uFy3Gr18CrX_yoW3Gr1fpF
-	sxtF4SyayUXa4DKryDJay7C3W7K39rXr13C3yak3yrZFn0y3sYvF4DtFy8XFyayrWkAF4x
-	JFZ5Wr98JFyqvFcCm3ZEXasCq-sJn29KB7ZKAUJUUUUk529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Eb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWr
-	XwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-	kF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
-	MxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-	0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-	14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
-	vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8
-	JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0L0ePUUUUU==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR03MB6463.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e44bd0f-757d-41a5-e349-08dc3f0e7da7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 01:24:24.9669
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: E2zdSwL5pj3dZAcm02a4TUTkoMlzAZPfDEiATi0oE9Od68WJfY/Vv1tuu33uW6/102ZWGuQrCERDAjZEfkv93w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR03MB6480
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--13.784100-8.000000
+X-TMASE-MatchedRID: hls5oAVArl9BfGdIwmVjfCa1MaKuob8PC/ExpXrHizyPcd2jEAJg7b2+
+	Pt89anuu7s3FANKtoAUgNFIGSbJIXWFGJky2Zpt1QpxiLlDD9FWAfODDLypXmhjQD3m2MCf7JR7
+	lNPN0VZ9YOFrTWedzh6FhcHRcvXnavFOnPbNb4smUa50su1E7W0DwlkRNC6PCBUe+Zw5ql5T5WK
+	Feqf3EsfOHGdsHfPNBHhRlNXoVQjOqeo/H3QKcFawOh3D3JSTGCt4iaV1DkENGhLlz15UeamyXv
+	LQmhhlM69RbzlHiTFofZdczzDm/ukL9tcyTZdAsgxsfzkNRlfKx5amWK2anSPoLR4+zsDTtCx9q
+	oxmS2x0DYq8ppNVrgdbZqh0J0V5RWwUqLb3H3tA3RsY8jDZzSg==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--13.784100-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	A5C3FA402CBF3267B90DE3631B224C68C53C48E3DC83F8F6C96F04F83A63B3B62000:8
 
-
-在 2024/3/7 21:49, Andy Shevchenko 写道:
-> No more users.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->   Documentation/driver-api/gpio/legacy.rst      | 16 --------
->   .../zh_CN/driver-api/gpio/legacy.rst          | 16 --------
-
-For Chinese:
-
-
-Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
-
-
-Thanks,
-
-Yanteng
-
->   Documentation/translations/zh_TW/gpio.txt     | 17 --------
->   drivers/gpio/gpiolib-legacy.c                 | 39 -------------------
->   include/linux/gpio.h                          | 15 -------
->   5 files changed, 103 deletions(-)
->
-> diff --git a/Documentation/driver-api/gpio/legacy.rst b/Documentation/driver-api/gpio/legacy.rst
-> index b6505914791c..534dfe95d128 100644
-> --- a/Documentation/driver-api/gpio/legacy.rst
-> +++ b/Documentation/driver-api/gpio/legacy.rst
-> @@ -225,8 +225,6 @@ setup or driver probe/teardown code, so this is an easy constraint.)::
->                   gpio_request()
->   
->           ## 	gpio_request_one()
-> -        ##	gpio_request_array()
-> -        ## 	gpio_free_array()
->   
->                   gpio_free()
->   
-> @@ -295,14 +293,6 @@ are claimed, three additional calls are defined::
->   	 */
->   	int gpio_request_one(unsigned gpio, unsigned long flags, const char *label);
->   
-> -	/* request multiple GPIOs in a single call
-> -	 */
-> -	int gpio_request_array(struct gpio *array, size_t num);
-> -
-> -	/* release multiple GPIOs in a single call
-> -	 */
-> -	void gpio_free_array(struct gpio *array, size_t num);
-> -
->   where 'flags' is currently defined to specify the following properties:
->   
->   	* GPIOF_DIR_IN		- to configure direction as input
-> @@ -341,12 +331,6 @@ A typical example of usage::
->   	if (err)
->   		...
->   
-> -	err = gpio_request_array(leds_gpios, ARRAY_SIZE(leds_gpios));
-> -	if (err)
-> -		...
-> -
-> -	gpio_free_array(leds_gpios, ARRAY_SIZE(leds_gpios));
-> -
->   
->   GPIOs mapped to IRQs
->   --------------------
-> diff --git a/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst b/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
-> index aeccff777170..0faf042001d2 100644
-> --- a/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
-> +++ b/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
-> @@ -208,8 +208,6 @@ GPIO 值的命令需要等待其信息排到队首才发送命令，再获得其
->                   gpio_request()
->   
->           ## 	gpio_request_one()
-> -        ##	gpio_request_array()
-> -        ## 	gpio_free_array()
->   
->                   gpio_free()
->   
-> @@ -272,14 +270,6 @@ gpio_request()前将这类细节配置好，例如使用引脚控制子系统的
->   	 */
->   	int gpio_request_one(unsigned gpio, unsigned long flags, const char *label);
->   
-> -	/* 在单个函数中申请多个 GPIO
-> -	 */
-> -	int gpio_request_array(struct gpio *array, size_t num);
-> -
-> -	/* 在单个函数中释放多个 GPIO
-> -	 */
-> -	void gpio_free_array(struct gpio *array, size_t num);
-> -
->   这里 'flags' 当前定义可指定以下属性:
->   
->   	* GPIOF_DIR_IN		- 配置方向为输入
-> @@ -317,12 +307,6 @@ gpio_request()前将这类细节配置好，例如使用引脚控制子系统的
->   	if (err)
->   		...
->   
-> -	err = gpio_request_array(leds_gpios, ARRAY_SIZE(leds_gpios));
-> -	if (err)
-> -		...
-> -
-> -	gpio_free_array(leds_gpios, ARRAY_SIZE(leds_gpios));
-> -
->   
->   GPIO 映射到 IRQ
->   ----------------
-> diff --git a/Documentation/translations/zh_TW/gpio.txt b/Documentation/translations/zh_TW/gpio.txt
-> index b9b48012c62e..77d69d381316 100644
-> --- a/Documentation/translations/zh_TW/gpio.txt
-> +++ b/Documentation/translations/zh_TW/gpio.txt
-> @@ -215,13 +215,10 @@ GPIO 值的命令需要等待其信息排到隊首才發送命令，再獲得其
->   	gpio_request()
->   
->   ## 	gpio_request_one()
-> -##	gpio_request_array()
-> -## 	gpio_free_array()
->   
->   	gpio_free()
->   
->   
-> -
->   聲明和釋放 GPIO
->   ----------------------------
->   爲了有助於捕獲系統配置錯誤,定義了兩個函數。
-> @@ -278,14 +275,6 @@ gpio_request()前將這類細節配置好，例如使用 pinctrl 子系統的映
->   	 */
->   	int gpio_request_one(unsigned gpio, unsigned long flags, const char *label);
->   
-> -	/* 在單個函數中申請多個 GPIO
-> -	 */
-> -	int gpio_request_array(struct gpio *array, size_t num);
-> -
-> -	/* 在單個函數中釋放多個 GPIO
-> -	 */
-> -	void gpio_free_array(struct gpio *array, size_t num);
-> -
->   這裡 'flags' 當前定義可指定以下屬性:
->   
->   	* GPIOF_DIR_IN		- 配置方向爲輸入
-> @@ -323,12 +312,6 @@ gpio_request()前將這類細節配置好，例如使用 pinctrl 子系統的映
->   	if (err)
->   		...
->   
-> -	err = gpio_request_array(leds_gpios, ARRAY_SIZE(leds_gpios));
-> -	if (err)
-> -		...
-> -
-> -	gpio_free_array(leds_gpios, ARRAY_SIZE(leds_gpios));
-> -
->   
->   GPIO 映射到 IRQ
->   --------------------
-> diff --git a/drivers/gpio/gpiolib-legacy.c b/drivers/gpio/gpiolib-legacy.c
-> index 3392e758d36f..5a9911ae9125 100644
-> --- a/drivers/gpio/gpiolib-legacy.c
-> +++ b/drivers/gpio/gpiolib-legacy.c
-> @@ -72,42 +72,3 @@ int gpio_request(unsigned gpio, const char *label)
->   	return gpiod_request(desc, label);
->   }
->   EXPORT_SYMBOL_GPL(gpio_request);
-> -
-> -/**
-> - * gpio_request_array - request multiple GPIOs in a single call
-> - * @array:	array of the 'struct gpio'
-> - * @num:	how many GPIOs in the array
-> - *
-> - * **DEPRECATED** This function is deprecated and must not be used in new code.
-> - */
-> -int gpio_request_array(const struct gpio *array, size_t num)
-> -{
-> -	int i, err;
-> -
-> -	for (i = 0; i < num; i++, array++) {
-> -		err = gpio_request_one(array->gpio, array->flags, array->label);
-> -		if (err)
-> -			goto err_free;
-> -	}
-> -	return 0;
-> -
-> -err_free:
-> -	while (i--)
-> -		gpio_free((--array)->gpio);
-> -	return err;
-> -}
-> -EXPORT_SYMBOL_GPL(gpio_request_array);
-> -
-> -/**
-> - * gpio_free_array - release multiple GPIOs in a single call
-> - * @array:	array of the 'struct gpio'
-> - * @num:	how many GPIOs in the array
-> - *
-> - * **DEPRECATED** This function is deprecated and must not be used in new code.
-> - */
-> -void gpio_free_array(const struct gpio *array, size_t num)
-> -{
-> -	while (num--)
-> -		gpio_free((array++)->gpio);
-> -}
-> -EXPORT_SYMBOL_GPL(gpio_free_array);
-> diff --git a/include/linux/gpio.h b/include/linux/gpio.h
-> index f4e5406554bb..56ac7e7a2889 100644
-> --- a/include/linux/gpio.h
-> +++ b/include/linux/gpio.h
-> @@ -120,8 +120,6 @@ static inline int gpio_to_irq(unsigned gpio)
->   }
->   
->   int gpio_request_one(unsigned gpio, unsigned long flags, const char *label);
-> -int gpio_request_array(const struct gpio *array, size_t num);
-> -void gpio_free_array(const struct gpio *array, size_t num);
->   
->   /* CONFIG_GPIOLIB: bindings for managed devices that want to request gpios */
->   
-> @@ -152,11 +150,6 @@ static inline int gpio_request_one(unsigned gpio,
->   	return -ENOSYS;
->   }
->   
-> -static inline int gpio_request_array(const struct gpio *array, size_t num)
-> -{
-> -	return -ENOSYS;
-> -}
-> -
->   static inline void gpio_free(unsigned gpio)
->   {
->   	might_sleep();
-> @@ -165,14 +158,6 @@ static inline void gpio_free(unsigned gpio)
->   	WARN_ON(1);
->   }
->   
-> -static inline void gpio_free_array(const struct gpio *array, size_t num)
-> -{
-> -	might_sleep();
-> -
-> -	/* GPIO can never have been requested */
-> -	WARN_ON(1);
-> -}
-> -
->   static inline int gpio_direction_input(unsigned gpio)
->   {
->   	return -ENOSYS;
-
+T24gVHVlLCAyMDI0LTAzLTA1IGF0IDE5OjI1ICswODAwLCBsZW5hIHdhbmcgd3JvdGU6DQo+IEZy
+b206IExlbmEgV2FuZyA8bGVuYS53YW5nQG1lZGlhdGVrLmNvbT4NCj4gDQo+IFVCU0FOIGxvYWQg
+cmVwb3J0cyBhbiBleGNlcHRpb24gb2YgQlJLIzU1MTUgU0hJRlRfSVNTVUU6Qml0d2lzZQ0KPiBz
+aGlmdHMNCj4gdGhhdCBhcmUgb3V0IG9mIGJvdW5kcyBmb3IgdGhlaXIgZGF0YSB0eXBlLg0KPiAN
+Cj4gdm1saW51eCAgIGdldF9iaXRtYXAoYj03NSkgKyA3MTINCj4gPG5ldC9uZXRmaWx0ZXIvbmZf
+Y29ubnRyYWNrX2gzMjNfYXNuMS5jOjA+DQo+IHZtbGludXggICBkZWNvZGVfc2VxKGJzPTB4RkZG
+RkZGRDAwODAzNzAwMCwgZj0weEZGRkZGRkQwMDgwMzcwMTgsDQo+IGxldmVsPTEzNDQ0MzEwMCkg
+KyAxOTU2DQo+IDxuZXQvbmV0ZmlsdGVyL25mX2Nvbm50cmFja19oMzIzX2FzbjEuYzo1OTI+DQo+
+IHZtbGludXggICBkZWNvZGVfY2hvaWNlKGJhc2U9MHhGRkZGRkZEMDA4MDM3MEYwLCBsZXZlbD0y
+Mzg0MzYzNikgKw0KPiAxMjE2DQo+IDxuZXQvbmV0ZmlsdGVyL25mX2Nvbm50cmFja19oMzIzX2Fz
+bjEuYzo4MTQ+DQo+IHZtbGludXggICBkZWNvZGVfc2VxKGY9MHhGRkZGRkZEMDA4MDM3MUE4LCBs
+ZXZlbD0xMzQ0NDM1MDApICsgODEyDQo+IDxuZXQvbmV0ZmlsdGVyL25mX2Nvbm50cmFja19oMzIz
+X2FzbjEuYzo1NzY+DQo+IHZtbGludXggICBkZWNvZGVfY2hvaWNlKGJhc2U9MHhGRkZGRkZEMDA4
+MDM3MjgwLCBsZXZlbD0wKSArIDEyMTYNCj4gPG5ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNrX2gz
+MjNfYXNuMS5jOjgxND4NCj4gdm1saW51eCAgIERlY29kZVJhc01lc3NhZ2UoKSArIDMwNA0KPiA8
+bmV0L25ldGZpbHRlci9uZl9jb25udHJhY2tfaDMyM19hc24xLmM6ODMzPg0KPiB2bWxpbnV4ICAg
+cmFzX2hlbHAoKSArIDY4NA0KPiA8bmV0L25ldGZpbHRlci9uZl9jb25udHJhY2tfaDMyM19tYWlu
+LmM6MTcyOD4NCj4gdm1saW51eCAgIG5mX2NvbmZpcm0oKSArIDE4OA0KPiA8bmV0L25ldGZpbHRl
+ci9uZl9jb25udHJhY2tfcHJvdG8uYzoxMzc+DQo+IA0KPiBEdWUgdG8gYWJub3JtYWwgZGF0YSBp
+biBza2ItPmRhdGEsIHRoZSBleHRlbnNpb24gYml0bWFwIGxlbmd0aA0KPiBleGNlZWRzIDMyIHdo
+ZW4gZGVjb2RpbmcgcmFzIG1lc3NhZ2UgdGhlbiB1c2VzIHRoZSBsZW5ndGggdG8gbWFrZQ0KPiBh
+IHNoaWZ0IG9wZXJhdGlvbi4gSXQgd2lsbCBjaGFuZ2UgaW50byBuZWdhdGl2ZSBhZnRlciBzZXZl
+cmFsIGxvb3AuDQo+IFVCU0FOIGxvYWQgY291bGQgZGV0ZWN0IGEgbmVnYXRpdmUgc2hpZnQgYXMg
+YW4gdW5kZWZpbmVkIGJlaGF2aW91cg0KPiBhbmQgcmVwb3J0cyBleGNlcHRpb24uDQo+IFNvIHdl
+IGFkZCB0aGUgcHJvdGVjdGlvbiB0byBhdm9pZCB0aGUgbGVuZ3RoIGV4Y2VlZGluZyAzMi4gT3Ig
+ZWxzZQ0KPiBpdCB3aWxsIHJldHVybiBvdXQgb2YgcmFuZ2UgZXJyb3IgYW5kIHN0b3AgZGVjb2Rp
+bmcuDQo+IA0KPiBGaXhlczogNWUzNTk0MWQ5OTAxICgiW05FVEZJTFRFUl06IEFkZCBILjMyMyBj
+b25udHJhY2svTkFUIGhlbHBlciIpDQo+IFNpZ25lZC1vZmYtYnk6IExlbmEgV2FuZyA8bGVuYS53
+YW5nQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+IHYzOg0KPiAgIC0gYWRkICJGaXhlczoiIHRhZy4N
+Cj4gdjI6DQo+ICAgLSBhZGQgbGVuZ3RoIHByb3RlY3RvbiBmb3IgYW5vdGhlciBnZXRfYml0bWFw
+IGNhbGwuDQo+ICAgLSB1cGRhdGUgY29tbWl0IG1lc3NhZ2UgdG8gdHJpbSBzdGFja3RyYWNlLg0K
+PiAtLS0NCj4gLS0tDQo+ICBuZXQvbmV0ZmlsdGVyL25mX2Nvbm50cmFja19oMzIzX2FzbjEuYyB8
+IDQgKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAt
+LWdpdCBhL25ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNrX2gzMjNfYXNuMS5jDQo+IGIvbmV0L25l
+dGZpbHRlci9uZl9jb25udHJhY2tfaDMyM19hc24xLmMNCj4gaW5kZXggZTY5N2E4MjRiMDAxLi41
+NDBkOTc3MTViZDIgMTAwNjQ0DQo+IC0tLSBhL25ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNrX2gz
+MjNfYXNuMS5jDQo+ICsrKyBiL25ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNrX2gzMjNfYXNuMS5j
+DQo+IEBAIC01MzMsNiArNTMzLDggQEAgc3RhdGljIGludCBkZWNvZGVfc2VxKHN0cnVjdCBiaXRz
+dHIgKmJzLCBjb25zdA0KPiBzdHJ1Y3QgZmllbGRfdCAqZiwNCj4gIAkvKiBHZXQgZmllbGRzIGJp
+dG1hcCAqLw0KPiAgCWlmIChuZl9oMzIzX2Vycm9yX2JvdW5kYXJ5KGJzLCAwLCBmLT5zeikpDQo+
+ICAJCXJldHVybiBIMzIzX0VSUk9SX0JPVU5EOw0KPiArCWlmIChmLT5zeiA+IDMyKQ0KPiArCQly
+ZXR1cm4gSDMyM19FUlJPUl9SQU5HRTsNCj4gIAlibXAgPSBnZXRfYml0bWFwKGJzLCBmLT5zeik7
+DQo+ICAJaWYgKGJhc2UpDQo+ICAJCSoodW5zaWduZWQgaW50ICopYmFzZSA9IGJtcDsNCj4gQEAg
+LTU4OSw2ICs1OTEsOCBAQCBzdGF0aWMgaW50IGRlY29kZV9zZXEoc3RydWN0IGJpdHN0ciAqYnMs
+IGNvbnN0DQo+IHN0cnVjdCBmaWVsZF90ICpmLA0KPiAgCWJtcDJfbGVuID0gZ2V0X2JpdHMoYnMs
+IDcpICsgMTsNCj4gIAlpZiAobmZfaDMyM19lcnJvcl9ib3VuZGFyeShicywgMCwgYm1wMl9sZW4p
+KQ0KPiAgCQlyZXR1cm4gSDMyM19FUlJPUl9CT1VORDsNCj4gKwlpZiAoYm1wMl9sZW4gPiAzMikN
+Cj4gKwkJcmV0dXJuIEgzMjNfRVJST1JfUkFOR0U7DQo+ICAJYm1wMiA9IGdldF9iaXRtYXAoYnMs
+IGJtcDJfbGVuKTsNCj4gIAlibXAgfD0gYm1wMiA+PiBmLT5zejsNCj4gIAlpZiAoYmFzZSkNCg0K
+RGVhciBhbGwsDQp0aGUgcGF0Y2ggaXMgbm90IGFwcGxpZWQgYW5kIGl0IG1heSBiZSBkdWUgdG8g
+Zm9ybWF0IGVycm9yIHdpdGgNCmV2b2x1dGlvbi4gSSB3aWxsIHRyeSB0byByZXNlbmQgdjQgdmVy
+c2lvbiB3aXRoIGdpdCBzZW5kLW1haWwuDQoNCkNvdWxkIGFueW9uZSBoZWxwIHRvIGNoYW5nZSB0
+aGUgdjMgc3RhdGUgdG8gQ2hhbmdlIFJlcXVlc3RlZD8NCg0KVGhhbmtzDQpMZW5hDQo=
 
