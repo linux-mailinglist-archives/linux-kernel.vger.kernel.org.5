@@ -1,177 +1,112 @@
-Return-Path: <linux-kernel+bounces-96559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D92875E24
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:03:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 255A0875E1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68F4B1C211EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:03:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D234228218B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:02:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BA64F606;
-	Fri,  8 Mar 2024 07:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FFA4EB3D;
+	Fri,  8 Mar 2024 07:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="qQPPDfgY"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a5r/nxFN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADE04EB2C;
-	Fri,  8 Mar 2024 07:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8928F1CFB2;
+	Fri,  8 Mar 2024 07:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709881374; cv=none; b=qYOmeSjp+wIe/ZFN0mDqii3lK8EAJ9mZAXQ10y4o/NhwVK4jrE/c5kfXG2pWWOfctsUpa7LOYv+dISUz521NE+tYDdGFuCW+lgPhfVgVpvzYma4yUuzKHcAh7OFGHbcU5a5vQg46EdWkw6uhoZWP4DDpPvQS4/Syv6ki6Ix55is=
+	t=1709881335; cv=none; b=I5sRy2WcfkEHIGjlJEWu6bdyQg1ubOMpbYZVbwQSqbcP9lMFvB0b1xOV3csTdAoMG1TcOB1k4Y25osLphIIK908/V/DxdRJqawvIu1ionXUsOAepKoGVPSmFjXCAHVPS1WElI5i42RguZoMGoBXp+MQ7efIVbUA6gJqWwCIQvsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709881374; c=relaxed/simple;
-	bh=7ruNXrmUyAheCWWLm1oSc73QJzGRd+8WlblR1mjKBek=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nlnbCz7uZfdqKMI6PZcvQXmGHbTAReju3do+bSALYmhisfLDBzdBHMFO+lb8u96Qc8ApRcI5U2va9ldEaI+8tFQT+hkpk2QXHeUifCv65wAc3EWjDIspuXFsyBDKKroraa/8dggQ1aEl35EdhKUQu6H88S9vXzA/8xoljVIlMmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=qQPPDfgY; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: de863916dd1911eeb8927bc1f75efef4-20240308
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=HYLVEQAeXAzYFBzdQ4HfU1if9wh4fJliGECJyMJTAJ8=;
-	b=qQPPDfgYZKLDdx9pcCa3FdpS2ikSnVhTCqfgdxbpQk56Y+bRo0l4SiuKUEeH7sf8+eIcNxUW08JEDV+r2ZsFzBRJIhMYhlpJiUaXnkYuw+w+ajmGexkQn2wEBpOW7vS9AbnWJgBRyGgILvvnOKlXb9eaAlHFao2Vw9yO+gfPcdY=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:02625fd9-44b2-4266-9b6c-ef32ac9f58b8,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:78eec384-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: de863916dd1911eeb8927bc1f75efef4-20240308
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
-	(envelope-from <poshao.chen@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1744216713; Fri, 08 Mar 2024 15:02:47 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 8 Mar 2024 15:02:46 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 8 Mar 2024 15:02:46 +0800
-From: PoShao Chen <poshao.chen@mediatek.com>
-To: <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-CC: <lukasz.luba@arm.com>, <dietmar.eggemann@arm.com>, <rafael@kernel.org>,
-	<mingo@kernel.org>, <rafael.j.wysocki@intel.com>, <rui.zhang@intel.com>,
-	<vincent.guittot@linaro.org>, <daniel.lezcano@linaro.org>,
-	<viresh.kumar@linaro.org>, <amit.kachhap@gmail.com>,
-	<clive.lin@mediatek.com>, <ccj.yeh@mediatek.com>,
-	<ching-hao.hsu@mediatek.com>, <poshao.chen@mediatek.com>
-Subject: [PATCH 2/2] thermal: cooling: Fix unneeded conversions in cpufreq_cooling and devfreq_cooling
-Date: Fri, 8 Mar 2024 14:59:22 +0800
-Message-ID: <20240308065922.10329-2-poshao.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240308065922.10329-1-poshao.chen@mediatek.com>
-References: <20240308065922.10329-1-poshao.chen@mediatek.com>
+	s=arc-20240116; t=1709881335; c=relaxed/simple;
+	bh=iTLENVg3/Y3YtimadfoWFR5x7fj4yBYLoTVs3XljBhI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ALoE/Iw8pytXOg+HXR7W44NPzlij5U2O1bhVSm7cf+5OvJLDEk7d4sp2rkAyxIiMSJGbPXZfWnSMnXiT8F00yOZtF6cCD/g4O7aWnBlMoqZ64PO6aIosrUQRT6g2+kQrlA7VqNID2DSVsBoje6SK6VuvqM7ISI7dnkkwOg+voHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a5r/nxFN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 277D1C433C7;
+	Fri,  8 Mar 2024 07:02:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709881335;
+	bh=iTLENVg3/Y3YtimadfoWFR5x7fj4yBYLoTVs3XljBhI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=a5r/nxFNoA9OaeVntqzq6Bwqr+WsxPU8YQ5VdWAWOqe+ho4kZqxjAJ8MjNg3RKi/R
+	 1Rmm9U+vJ/3t4Brwv6zdRu7qB4A7KcMX1Lm+cW6MQ8uK9fsyrH3aS6fFcQJOGE5+4Y
+	 6T6thBj7FXIUv15Iz3Et6XaMyvdUz+VLldnA0rbtNtloK3iPI9iEmiqcBmdO0NV2wa
+	 0z+zGkwEqtUK/wXIgK9LLqPnQ3RhPyqJriRnj+fRsgGx9pJUgOkQJdnH/6jy5XnXiN
+	 CD/x5p7mwLsUqatUBIGfAngpRuZWTgQUSarpPl7K5WFeL9EgHA/pfQLkvxbKNEe8Pg
+	 KYqjQz5zM/aHg==
+Date: Fri, 8 Mar 2024 08:02:10 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Cc: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org, 
+	wsa@kernel.org, linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, quic_vdadhani@quicinc.com
+Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
+ mode
+Message-ID: <yocn3rjxn37c7qniv2kkawgg2k7ghdwvrxcf77tdlpujnul3du@6oqvt5v4ykno>
+References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
+ <cmtru4nvoab6g5emp2yrxnvfpvtrcsuna6dqsyewpagg3qmkau@r2zoj6vgslet>
+ <9dbe987a-fdd1-4bec-b350-5936abf69b1b@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--9.870000-8.000000
-X-TMASE-MatchedRID: 3q/Jq05zu+qDyGVXKzWcEuqwWVBfMuvo0w14HFJQjaMsfFlFugSGUNno
-	quRwHY3BbK1J8N978RWUfobZwcvQE8rNY6Kxr3NKH5YQyOg71ZZMkOX0UoduuQqiCYa6w8tvVSd
-	AA6mVeIYriEKQi78d2HDtxegKT7/su7+GodKzwZdSGsgQwHevX30tCKdnhB589yM15V5aWpj6C0
-	ePs7A07SAJgyd9wrc88jzsfqJeP5v2wn0UK+VrFyU//YpP2DKvF3MvGKttLrWWf4RCoUdnMg==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--9.870000-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	63E754CAFDDC1C375A2A74378AEF2BADBE63BB297FA8F76FEEF00283DE88C6372000:8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9dbe987a-fdd1-4bec-b350-5936abf69b1b@quicinc.com>
 
-Fix the incorrect division of power values by MICROWATT_PER_MILLIWATT for
-non-microwatt units in the Energy Model (EM) by adding an
-em_is_microwatts() check. This ensures that power values are only converted
-when the EM specifies microwatts, allowing for accurate interpretation of
-power according to the unit defined by the EM.
+Hi Mukesh,
 
-Signed-off-by: PoShao Chen <poshao.chen@mediatek.com>
----
- drivers/thermal/cpufreq_cooling.c |  6 ++++--
- drivers/thermal/devfreq_cooling.c | 12 ++++++++----
- 2 files changed, 12 insertions(+), 6 deletions(-)
+..
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index 9d1b1459700d..5324b9766843 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -120,7 +120,8 @@ static u32 cpu_freq_to_power(struct cpufreq_cooling_device *cpufreq_cdev,
- 	}
- 
- 	power_mw = table[i + 1].power;
--	power_mw /= MICROWATT_PER_MILLIWATT;
-+	if (em_is_microwatts(cpufreq_cdev->em))
-+		power_mw /= MICROWATT_PER_MILLIWATT;
- 	rcu_read_unlock();
- 
- 	return power_mw;
-@@ -139,7 +140,8 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
- 	for (i = cpufreq_cdev->max_level; i > 0; i--) {
- 		/* Convert EM power to milli-Watts to make safe comparison */
- 		em_power_mw = table[i].power;
--		em_power_mw /= MICROWATT_PER_MILLIWATT;
-+		if (em_is_microwatts(cpufreq_cdev->em))
-+			em_power_mw /= MICROWATT_PER_MILLIWATT;
- 		if (power >= em_power_mw)
- 			break;
- 	}
-diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-index 50dec24e967a..c28e0c4a63d6 100644
---- a/drivers/thermal/devfreq_cooling.c
-+++ b/drivers/thermal/devfreq_cooling.c
-@@ -222,7 +222,8 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 			dfc->res_util = table[state].power;
- 			rcu_read_unlock();
- 
--			dfc->res_util /= MICROWATT_PER_MILLIWATT;
-+			if (em_is_microwatts(dfc->em_pd))
-+				dfc->res_util /= MICROWATT_PER_MILLIWATT;
- 
- 			dfc->res_util *= SCALE_ERROR_MITIGATION;
- 
-@@ -247,7 +248,8 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 		*power = table[perf_idx].power;
- 		rcu_read_unlock();
- 
--		*power /= MICROWATT_PER_MILLIWATT;
-+		if (em_is_microwatts(dfc->em_pd))
-+			*power /= MICROWATT_PER_MILLIWATT;
- 		/* Scale power for utilization */
- 		*power *= status.busy_time;
- 		*power >>= 10;
-@@ -279,7 +281,8 @@ static int devfreq_cooling_state2power(struct thermal_cooling_device *cdev,
- 	*power = table[perf_idx].power;
- 	rcu_read_unlock();
- 
--	*power /= MICROWATT_PER_MILLIWATT;
-+	if (em_is_microwatts(dfc->em_pd))
-+		*power /= MICROWATT_PER_MILLIWATT;
- 
- 	return 0;
- }
-@@ -321,7 +324,8 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
- 	for (i = dfc->max_state; i > 0; i--) {
- 		/* Convert EM power to milli-Watts to make safe comparison */
- 		em_power_mw = table[i].power;
--		em_power_mw /= MICROWATT_PER_MILLIWATT;
-+		if (em_is_microwatts(dfc->em_pd))
-+			em_power_mw /= MICROWATT_PER_MILLIWATT;
- 		if (est_power >= em_power_mw)
- 			break;
- 	}
--- 
-2.18.0
+> > > Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+> > 
+> > I still don't understand what's the fix here. You are making a
+> > generic DMA error to be more specific... where is the bug? What
+> > exactly is broken now?
+> > 
+> This is about being particular while reporting specific error.
+> Like i mentioned, instead of generic DMA transfer error, it should be
+> particular error 1) NACK 2) BUT_PROTO 3)ARB_LOST.
+> Ofcourse when data transfer via DMA fails, it can be considered as
+> DMA Txfer fail.
+> In summary so far driver was considering all failure as txfer failure,
+> but i2c has errors which are kind of response/condition on the bus.
 
+I understand that, but what I need to know is: does the system
+crash? does the system act in unexpected way?
+
+Moving from "you received an error" to "you received a nack" is
+not a fix, it's an improvement and it should not have the Fixes
+tag.
+
+Having the Fixes tag decides which path this patch will take to
+to reach upstream. It's important because after it gets to
+upstream other people will take your patch and backport it older
+kernels.
+
+I want to avoid this extra work when not necessary.
+
+> Sorry if it confusing still, but please let me know if anything required to
+> be updated in  commit log which can bring clarity.
+> 
+> > Besides, keep in mind, that commits with fixes tags get
+> > backported to older kernels (this one dates back to 5.18) and you
+> > should also Cc the stable mailing list:
+> > 
+> > Cc: <stable@vger.kernel.org> # v5.18+
+> 
+> Sure, will add into CC. was waiting for reviewed-by tag.
+
+No need to resend.
+
+Thanks,
+Andi
 
