@@ -1,183 +1,165 @@
-Return-Path: <linux-kernel+bounces-96688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0AC876002
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:46:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2FBA876000
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:46:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4742B1F216FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:46:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE8F51C22659
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C3B52F95;
-	Fri,  8 Mar 2024 08:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WyBmVid6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83519535C8;
-	Fri,  8 Mar 2024 08:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C0152F90;
+	Fri,  8 Mar 2024 08:44:42 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B39452F6B;
+	Fri,  8 Mar 2024 08:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709887491; cv=none; b=oaZLhLvpVmYYD95cX3di8KtFfXq3WePwq7vXNibl21u7NODIWMcb4ogdCtEus6FieqN+KOwmocv7gAKXQUko2Y3yMm6vmybVEmyQgkeRedXAu1Q75xOq/4LFEJcNqwLpBSLJ3aj8a8sxcyAA8KwS9kU9eYYa+F6Y4lWHP9FlGGA=
+	t=1709887481; cv=none; b=ltgqxfdBVxHy5xkPk3a5kJRp7BHMh5erof3NxpIptz5FAfkghb1uTGRZY5aeAqM9dQRm2JTFUBNiR6r00IlYucUfXGs3sCLAI6kIpU3p0un8IScFNg52Ps7dYAecIMgqlf8+d6u5nucmhnpTnXoR1DwkQl+YWnfoWKecFv9HN7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709887491; c=relaxed/simple;
-	bh=MqTFq+pTP6o+klH+NTFFyqhWNYws6ibOnKBQpzbhvN8=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=i9lmVeuSROqm0Eux1GWan81ogPhrsilLAyWiZeX5632xVpbNy1SbaheGPxJjk+GEKkKqcZGgNAFIMHA0nGdLlKIU7bkJd4SmQHch6AmaFTaKzHUJDwgautLq8OYT4rC5Cd4HpwxSS/4GvZLzpdWP8RlTlQr/ti558m+rWuDLD/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WyBmVid6; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709887488; x=1741423488;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=MqTFq+pTP6o+klH+NTFFyqhWNYws6ibOnKBQpzbhvN8=;
-  b=WyBmVid6ochK6u4gGi0aDoUSU2pPd+zVJbR1bZnfWuTBax7yr+NQ5dqQ
-   KHuwqLaXkonYTdsdyrYCtRTvZDL9pGtrh1V5QQmME5LsmRxFT+0GDunrH
-   Tlufc3wspNDqJtw/aQB+UnnE6xDQTvVzPGjIsKjiOuKPOMgmNZBA9rTxf
-   uOeMfSGsUKUbaLQxR7DgFBu8LJheZtgAorFbE8UfUpQRFAAJXf3qFllsA
-   OEyc9ZMfS1VaooSdA4IY2RfMD1cmSYMGxx+PP4GCr9y0PkU3ljPemIhOy
-   RPk3TaM+RWipW+be2cH8Tka5TE+ofbA9H1SwHGZUkJI3SQCxjjJ6ufPnK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="16005609"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="16005609"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 00:44:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="10810386"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.186])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 00:44:46 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 8 Mar 2024 10:44:41 +0200 (EET)
-To: Ai Chao <aichao@kylinos.cn>
-cc: Hans de Goede <hdegoede@redhat.com>, LKML <linux-kernel@vger.kernel.org>, 
-    platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v5] platform/x86: add lenovo wmi camera button driver
-In-Reply-To: <20240307085939.668881-1-aichao@kylinos.cn>
-Message-ID: <13940666-caab-8bde-d76e-231de9ee4f5c@linux.intel.com>
-References: <20240307085939.668881-1-aichao@kylinos.cn>
+	s=arc-20240116; t=1709887481; c=relaxed/simple;
+	bh=14VPe0pUD24RgR8UUeJpMDtadw2Rx3IIZ/obF0bI/aU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ejnkSnFfjBc13XHcdJAm/tOjRRmoR0ydlxCJjBXD/khwFAe/KiJ/I3lMjTgxxJmuBjm7er8M7MBiPHDhUPs7gaJ99AqUm0fOXOdfTlA6QxcBlw6bZmmBAr1CAInFR9cOWx0EyDaZVeIZRFn677LNuD8fXqDIY7a6JnF7niuVd+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D274C15;
+	Fri,  8 Mar 2024 00:45:10 -0800 (PST)
+Received: from [10.57.10.181] (unknown [10.57.10.181])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 79A893F762;
+	Fri,  8 Mar 2024 00:44:30 -0800 (PST)
+Message-ID: <3a11f361-4bb5-4a17-b07d-aac549264cc8@arm.com>
+Date: Fri, 8 Mar 2024 08:44:49 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] thermal: cooling: Fix unneeded conversions in
+ cpufreq_cooling and devfreq_cooling
+Content-Language: en-US
+To: PoShao Chen <poshao.chen@mediatek.com>
+Cc: dietmar.eggemann@arm.com, rafael@kernel.org, mingo@kernel.org,
+ rafael.j.wysocki@intel.com, rui.zhang@intel.com, vincent.guittot@linaro.org,
+ daniel.lezcano@linaro.org, viresh.kumar@linaro.org, amit.kachhap@gmail.com,
+ clive.lin@mediatek.com, ccj.yeh@mediatek.com, ching-hao.hsu@mediatek.com,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20240308065922.10329-1-poshao.chen@mediatek.com>
+ <20240308065922.10329-2-poshao.chen@mediatek.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20240308065922.10329-2-poshao.chen@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 7 Mar 2024, Ai Chao wrote:
+Hi PoShao,
 
-> Add lenovo generic wmi driver to support camera button.
-> The Camera button is a GPIO device. This driver receives ACPI notifyi
-> when the camera button is switched on/off. This driver is used in
-> Lenovo A70, it is a Computer integrated machine.
+On 3/8/24 06:59, PoShao Chen wrote:
+> Fix the incorrect division of power values by MICROWATT_PER_MILLIWATT for
+> non-microwatt units in the Energy Model (EM) by adding an
+> em_is_microwatts() check. This ensures that power values are only converted
+> when the EM specifies microwatts, allowing for accurate interpretation of
+> power according to the unit defined by the EM.
 > 
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+> Signed-off-by: PoShao Chen <poshao.chen@mediatek.com>
 > ---
-> v5: Remove camera button groups, modify KEY_CAMERA to SW_CAMERA_LENS_COVER.
-> v4: Remove lenovo_wmi_input_setup, move camera_mode into struct lenovo_wmi_priv.
-> v3: Remove lenovo_wmi_remove function.
-> v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
+>   drivers/thermal/cpufreq_cooling.c |  6 ++++--
+>   drivers/thermal/devfreq_cooling.c | 12 ++++++++----
+>   2 files changed, 12 insertions(+), 6 deletions(-)
 > 
->  drivers/platform/x86/Kconfig             | 12 ++++
->  drivers/platform/x86/Makefile            |  1 +
->  drivers/platform/x86/lenovo-wmi-camera.c | 89 ++++++++++++++++++++++++
->  3 files changed, 102 insertions(+)
->  create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
-> 
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index bdd302274b9a..9506a455b547 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
->  	To compile this driver as a module, choose M here: the module
->  	will be called inspur-platform-profile.
->  
-> +config LENOVO_WMI_CAMERA
-> +	tristate "Lenovo WMI Camera Button driver"
-> +	depends on ACPI_WMI
-> +	depends on INPUT
-> +	help
-> +	  This driver provides support for Lenovo camera button. The Camera
-> +	  button is a GPIO device. This driver receives ACPI notify when the
-> +	  camera button is switched on/off.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called lenovo-wmi-camera.
-> +
->  source "drivers/platform/x86/x86-android-tablets/Kconfig"
->  
->  config FW_ATTR_CLASS
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 1de432e8861e..217e94d7c877 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
->  obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
->  obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
->  obj-$(CONFIG_YOGABOOK)		+= lenovo-yogabook.o
-> +obj-$(CONFIG_LENOVO_WMI_CAMERA)	+= lenovo-wmi-camera.o
->  
->  # Intel
->  obj-y				+= intel/
-> diff --git a/drivers/platform/x86/lenovo-wmi-camera.c b/drivers/platform/x86/lenovo-wmi-camera.c
-> new file mode 100644
-> index 000000000000..571d67ade8ac
-> --- /dev/null
-> +++ b/drivers/platform/x86/lenovo-wmi-camera.c
-> @@ -0,0 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Lenovo WMI Camera Button Driver
-> + *
-> + * Author: Ai Chao <aichao@kylinos.cn>
-> + * Copyright (C) 2024 KylinSoft Corporation.
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/device.h>
-> +#include <linux/input.h>
-> +#include <linux/module.h>
-> +#include <linux/wmi.h>
-> +
-> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
-> +
-> +struct lenovo_wmi_priv {
-> +	struct input_dev *idev;
-> +	struct device *dev;
-> +};
-> +
-> +enum {
-> +	SW_CAMERA_OFF	= 0,
-> +	SW_CAMERA_ON	= 1,
-> +};
-> +
-> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_object *obj)
-> +{
-> +	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-> +
-> +	if (obj->type == ACPI_TYPE_BUFFER &&
-> +	    obj->buffer.pointer[0] <= SW_CAMERA_ON) {
-> +		/* obj->buffer.pointer[0] is camera mode:
-> +		 *      0 camera close
-> +		 *      1 camera open
-> +		 */
-> +		input_report_switch(priv->idev, SW_CAMERA_LENS_COVER,
-> +				    obj->buffer.pointer[0]);
-> +		input_sync(priv->idev);
-> +	} else {
-> +		dev_dbg(&wdev->dev, "Bad response type %d\n", obj->type);
+> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+> index 9d1b1459700d..5324b9766843 100644
+> --- a/drivers/thermal/cpufreq_cooling.c
+> +++ b/drivers/thermal/cpufreq_cooling.c
+> @@ -120,7 +120,8 @@ static u32 cpu_freq_to_power(struct cpufreq_cooling_device *cpufreq_cdev,
+>   	}
+>   
+>   	power_mw = table[i + 1].power;
+> -	power_mw /= MICROWATT_PER_MILLIWATT;
+> +	if (em_is_microwatts(cpufreq_cdev->em))
+> +		power_mw /= MICROWATT_PER_MILLIWATT;
+>   	rcu_read_unlock();
+>   
+>   	return power_mw;
+> @@ -139,7 +140,8 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
+>   	for (i = cpufreq_cdev->max_level; i > 0; i--) {
+>   		/* Convert EM power to milli-Watts to make safe comparison */
+>   		em_power_mw = table[i].power;
+> -		em_power_mw /= MICROWATT_PER_MILLIWATT;
+> +		if (em_is_microwatts(cpufreq_cdev->em))
+> +			em_power_mw /= MICROWATT_PER_MILLIWATT;
+>   		if (power >= em_power_mw)
+>   			break;
+>   	}
+> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+> index 50dec24e967a..c28e0c4a63d6 100644
+> --- a/drivers/thermal/devfreq_cooling.c
+> +++ b/drivers/thermal/devfreq_cooling.c
+> @@ -222,7 +222,8 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
+>   			dfc->res_util = table[state].power;
+>   			rcu_read_unlock();
+>   
+> -			dfc->res_util /= MICROWATT_PER_MILLIWATT;
+> +			if (em_is_microwatts(dfc->em_pd))
+> +				dfc->res_util /= MICROWATT_PER_MILLIWATT;
+>   
+>   			dfc->res_util *= SCALE_ERROR_MITIGATION;
+>   
+> @@ -247,7 +248,8 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
+>   		*power = table[perf_idx].power;
+>   		rcu_read_unlock();
+>   
+> -		*power /= MICROWATT_PER_MILLIWATT;
+> +		if (em_is_microwatts(dfc->em_pd))
+> +			*power /= MICROWATT_PER_MILLIWATT;
+>   		/* Scale power for utilization */
+>   		*power *= status.busy_time;
+>   		*power >>= 10;
+> @@ -279,7 +281,8 @@ static int devfreq_cooling_state2power(struct thermal_cooling_device *cdev,
+>   	*power = table[perf_idx].power;
+>   	rcu_read_unlock();
+>   
+> -	*power /= MICROWATT_PER_MILLIWATT;
+> +	if (em_is_microwatts(dfc->em_pd))
+> +		*power /= MICROWATT_PER_MILLIWATT;
+>   
+>   	return 0;
+>   }
+> @@ -321,7 +324,8 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
+>   	for (i = dfc->max_state; i > 0; i--) {
+>   		/* Convert EM power to milli-Watts to make safe comparison */
+>   		em_power_mw = table[i].power;
+> -		em_power_mw /= MICROWATT_PER_MILLIWATT;
+> +		if (em_is_microwatts(dfc->em_pd))
+> +			em_power_mw /= MICROWATT_PER_MILLIWATT;
+>   		if (est_power >= em_power_mw)
+>   			break;
+>   	}
 
-This message seems to assume camera mode is on the valid range. Wouldn't 
-it be useful from debugging point of view to show also the camera mode 
-value?
+Thanks for the patches and reporting this!
 
--- 
- i.
+I have checked the commit which introduced the micro-Watts.
+All the drivers where aligned to register the new uW values, also
+your mediatek-cpufreq-hw.c
+ae6ccaa650380d243
 
+I have also check current upstream and all drivers there provide
+the uW to the em_dev_register_perf_domain().
+
+Is it some out-of-tree kernel driver, which shows this issue?
+
+I would need to check all places and force actually to provide the
+uW to the EM registration function. It's pointless to try to support
+mW just because the flag in the registration wasn't set by some
+downstream driver.
+
+Let me re-write that bit in the EM...
+
+Regards,
+Lukasz
 
