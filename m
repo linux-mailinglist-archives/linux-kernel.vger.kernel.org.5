@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-97658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E27E7876D34
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:37:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D61E876D36
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F7941C212A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:37:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F04E91F226F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E77E4084C;
-	Fri,  8 Mar 2024 22:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6BB47F7D;
+	Fri,  8 Mar 2024 22:37:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NxsyvlBf"
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L/+BhC5p"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2CF38DD6
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA64A405FC
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709937431; cv=none; b=gVfNn8i+snLXojzLu1/C67qph5hTwzyTS5S7lbwH+1Q6M3R3atrwscm715WTYUj2Sq3+aK7mwnIiPZcy2oHpYSoghSJrK/nqcaet0qMaILr9M9kRbdhkufBSgp5Jw/I0zam1aYC6bCVoZLLstPAzU7xyGiN9Cu1/txVAoKk3qWg=
+	t=1709937433; cv=none; b=hlz7AiJfxkpORn9cChCNYLJBmYzfuK4R18JQH+Yu7SqL583J2zrfCw9jFgO32PU+kWfjt38IcDSAa4ZAal5btw3jahh0B4BCZAmr9vU6DR+2w8FgMXpL/gzKldVJy5DNqTpXe4nG1qYU/hZmhjg+abn081/D7tNScP8uohBUYWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709937431; c=relaxed/simple;
-	bh=NS+bcTksJzt9UzoAJxYD5IzJnlLkkDM+4ngl1bKux40=;
+	s=arc-20240116; t=1709937433; c=relaxed/simple;
+	bh=uXQXgnPJrZOKe4RbgiP6EoFj6TNvC6MdhGnUCOQc76Y=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Szj3u4ovF0wxgGtV5voYMCtZ0NpgnhvFienkLVqIecWLq2XgzJ4HPh7lTqKK8w0KgDSACjxSj24e8RTsQvhT83SZWfK+/BLox3uhpDFXRYuiqX+QmmZt0QwYylsLrl688Rgs8w1K4pgEJ9+D8dFNMcMrTeXmtEFpfy/j1WcDq48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NxsyvlBf; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=Wfv6QLUXw1QWVLGQ3s8YGfME7vo6BbSRJtx8zIVRpEhLx4GIjOOUmBMg6+F52+py4STiopKXiTn6RBoRHqd9+bIntKbxh1plWbUPuNmi6gcWQjKf1MAo851948J2iexKXT60JEtAf1SiCrKcVpIPZ43JGPIOB/ZwxUg+fZG/M7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L/+BhC5p; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-299ba5ae65eso1089621a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:37:09 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so2143612276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:37:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709937429; x=1710542229; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709937431; x=1710542231; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=CSMEyvHVT5rcPZYiZTj2DM20CdI6zV4f8pTUQYVjXUE=;
-        b=NxsyvlBfSWofJx738igoV6h2ZeDa2BGhzZq0ahuOfMiGGJRiXb2+NVZMbxqj22iWBc
-         BBxTVa5WVn1tO1dd5vQf62ykNROzs528NMya0+1x2jnjxIk35g8zVR0M4fYaSHIf/2L0
-         YdouPV477zW96O8QJtLdQQjm5Kl71YjUcvwje8ijy1eJO9PGu9FRJT7yorykQKqCQskq
-         i6ouLGJuG4O07wNukwoNJG0IlE2awEVynkE6mz2XhhcKivjgwXdTPOHZYwJUqJwicMlY
-         Vc0q2EbsuiF6e/GJXOPkQbJ/MLT9vV12wnyG+39Zo0U7juKt/oHQk0WnHSjEjaWLmvy/
-         rE3g==
+        bh=vPbWGBEv8YflAA5jQeJzy8PnVvXeLnvTmYa/ZZ4fLow=;
+        b=L/+BhC5pCC2kPV06vo0Omz8nRSwI6LeEvH4hAEizjqGX6PG6MUUAyhA4phWhAUnEhu
+         UN1/h9XT9EUZ7rmFtvh+ZYlzfb5/gqHPlH1+KPTGK2OQNNbiJbIKN5L9YAjtqrwQNYMN
+         GOIXtJhxcmfQ0BZyQ3R5e14n7ta7opWv7q+BEuXWhVFtccHpsk+qi3QrZC2BStVY9vSX
+         sOocFCMMoL1qL2bBcuUOYu5j7V24kL3kc+qtq1N0ZYTcVeRgJLMbwUW4hiu718mZrfAh
+         8R4zw7p+hy/FZOuy6hs6ruyLDx0YS8zWI7znJxvfLzPaMYp+F6pckidH+oF9RhuSejqd
+         6MpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709937429; x=1710542229;
+        d=1e100.net; s=20230601; t=1709937431; x=1710542231;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CSMEyvHVT5rcPZYiZTj2DM20CdI6zV4f8pTUQYVjXUE=;
-        b=JFFCmw42ZiN7OVvDELGKbmIFLP9/7WD0eTkJ57RkAjvR3oNnunGKUX6RGz3dpL1bB9
-         zkIR0+J8jLdfrfRmZRlTJPsegg5Y6cidlYsrd9FvFIpRn/UHDhvjFkGiounWfwJAUyEw
-         PhcXL9WhoAIfeqJb5Z8siLCyaVQ9X7iFeX2+ce6sbQICpj0+jzpHowsc41nflKgYxEUv
-         h7z6LqbwgIpB3pW8Fhq+g4vQEk3oZei7CCPrRMBx1/27Qb0vFWBiSBiXFYl3SxKkVOOm
-         bEMq9qlMguvm8Zlzv1bPk3yUpuuyEBkoQ/mEc2tM2Ag50QKPCWNV9UnTd/mmMFqXijOd
-         NFCA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqBOldMyEiiuzOvSq5GEI9grLixNegaCFlM0SPv2Uf9PzckkdYmOX0XUFmmF7/3FYvMCN8ANHVl/AATl74vgrvHHKhg6nG/xlSr1Jz
-X-Gm-Message-State: AOJu0Yzo+eMn/tLK9MbHENmKJ9N8Xn7kuxy3OLfRpIcbyFg5UHPd9PRv
-	jhIxBma9rsU/kd36Q1VOubGeT31dAGk0LkyFvMe80n3uiJ2eY4SA8lc+wCnjZCJpVkQ+3kedHQl
-	XWg==
-X-Google-Smtp-Source: AGHT+IFoCdBvlBQVYbr0HIq4dKGpQ2BVqy5ajQ9B2Y1eMh5QxSgFYr2GQ8p8LTcvJRVFlz6U9eWkPyagZqo=
+        bh=vPbWGBEv8YflAA5jQeJzy8PnVvXeLnvTmYa/ZZ4fLow=;
+        b=UCjYihR6Gjn1dP/r7SE3DYf6GcbjIo5H30Oq9pGrPa1+41F/pzF4coRkBPK8W+/cQ2
+         rx5AYqdzuZgXRCTsRx/rn2XthWeV7GEGs9f6T5cI/b+fo1oxKHIRRFOup8kOzRXpseSa
+         LncyvEq6E/ndKKIMzNez54xfj2si+lxWmhEaBMc8tYo6LO4UIl9C/UsiaXd0mGQlyoI2
+         x4OX4D8bv3etN7f6Djb2EXz1oN4s3bBDqNLZho9489wKM66eweJfB3eTmnJToy+8lxgz
+         rVFOYZH9rohe46S0bYQtyz2IpUfYkyFm7ssT4aG+p2BCx9JaJcLGKNVjepQVw1PmX4TZ
+         2sag==
+X-Forwarded-Encrypted: i=1; AJvYcCVjVfATZ9kN0cJ9NCnmNCRSuJGyIZrGiPF3Ik8IAXnpDvAIqa0OSwFr+vm1Kwhg2vwntPCeT6KvzQkCUjgUhNWgELcC0EH+ukjwouOH
+X-Gm-Message-State: AOJu0YzTcEQDzDrZWKLP6u6Jm3e3+bHqZJNeMiSfudJeSNS+hulxXlaY
+	9eVH963gqY7kgmntCBjx1veA04YF/rDyY7OXoj8p5hz5DaMjMd1jWcciy1mt/rtIw7iYf7+VsM2
+	Lyg==
+X-Google-Smtp-Source: AGHT+IHMIR8oStHcy0MnK26a+KwG9Yyh4GDrFB8J/4ynRuCm56DNqKdDcklxmd4n3jkM0bc8TlImx/WLNg0=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:4f43:b0:29b:b5bc:b537 with SMTP id
- pj3-20020a17090b4f4300b0029bb5bcb537mr1821pjb.1.1709937429312; Fri, 08 Mar
- 2024 14:37:09 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:102b:b0:dc7:3189:4e75 with SMTP id
+ x11-20020a056902102b00b00dc731894e75mr29989ybt.3.1709937431047; Fri, 08 Mar
+ 2024 14:37:11 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  8 Mar 2024 14:36:54 -0800
+Date: Fri,  8 Mar 2024 14:36:55 -0800
 In-Reply-To: <20240308223702.1350851-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,17 +75,15 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240308223702.1350851-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240308223702.1350851-2-seanjc@google.com>
-Subject: [GIT PULL] KVM: Async #PF changes for 6.9
+Message-ID: <20240308223702.1350851-3-seanjc@google.com>
+Subject: [GIT PULL] KVM: Common MMU changes for 6.9
 From: Sean Christopherson <seanjc@google.com>
 To: Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Fix a long-standing bug in the async #PF code where KVM code could be left
-running in a workqueue even after all *external* references to KVM-the-module
-have been put, and a few minor cleanups on top.
+Two small cleanups in what is effectively common MMU code.
 
 The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
@@ -93,32 +91,29 @@ The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
 are available in the Git repository at:
 
-  https://github.com/kvm-x86/linux.git tags/kvm-x86-asyncpf-6.9
+  https://github.com/kvm-x86/linux.git tags/kvm-x86-generic-6.9
 
-for you to fetch changes up to c2744ed2230a92636f04cde48f2f7d8d3486e194:
+for you to fetch changes up to ea3689d9df50c283cb5d647a74aa45e2cc3f8064:
 
-  KVM: Nullify async #PF worker's "apf" pointer as soon as it might be freed (2024-02-06 11:04:58 -0800)
-
-----------------------------------------------------------------
-KVM async page fault changes for 6.9:
-
- - Always flush the async page fault workqueue when a work item is being
-   removed, especially during vCPU destruction, to ensure that there are no
-   workers running in KVM code when all references to KVM-the-module are gone,
-   i.e. to prevent a use-after-free if kvm.ko is unloaded.
-
- - Grab a reference to the VM's mm_struct in the async #PF worker itself instead
-   of gifting the worker a reference, e.g. so that there's no need to remember
-   to *conditionally* clean up after the worker.
+  KVM: fix kvm_mmu_memory_cache allocation warning (2024-02-22 17:02:26 -0800)
 
 ----------------------------------------------------------------
-Sean Christopherson (4):
-      KVM: Always flush async #PF workqueue when vCPU is being destroyed
-      KVM: Put mm immediately after async #PF worker completes remote gup()
-      KVM: Get reference to VM's address space in the async #PF worker
-      KVM: Nullify async #PF worker's "apf" pointer as soon as it might be freed
+KVM common MMU changes for 6.9:
 
- include/linux/kvm_host.h |  1 -
- virt/kvm/async_pf.c      | 73 ++++++++++++++++++++++++++++++++----------------
- 2 files changed, 49 insertions(+), 25 deletions(-)
+  - Harden KVM against underflowing the active mmu_notifier invalidation
+    count, so that "bad" invalidations (usually due to bugs elsehwere in the
+    kernel) are detected earlier and are less likely to hang the kernel.
+
+  - Fix a benign bug in __kvm_mmu_topup_memory_cache() where the object size
+    and number of objects parameters to kvmalloc_array() were swapped.
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      KVM: fix kvm_mmu_memory_cache allocation warning
+
+Sean Christopherson (1):
+      KVM: Harden against unpaired kvm_mmu_notifier_invalidate_range_end() calls
+
+ virt/kvm/kvm_main.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
