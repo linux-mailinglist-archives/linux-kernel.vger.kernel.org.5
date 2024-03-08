@@ -1,297 +1,225 @@
-Return-Path: <linux-kernel+bounces-96667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55976875FB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC90875FB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:39:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 799C01C218E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:39:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAC241C20E8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D405224D4;
-	Fri,  8 Mar 2024 08:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0CD22F17;
+	Fri,  8 Mar 2024 08:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="dyx+JlFC";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="vOcq953t"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="ij7r4yar"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE99650A70
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 08:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709887182; cv=fail; b=OumaCMwVXOqI1msWFrnGW7G7yChZ7+ytekgNkWGFu5N8D4CmqJsCdYwVycKtdFncoX9PZrlrCDZNBcHrFA7ZVmtwLaGTFAyq7Ytzl+bqkkH49+6iXVHy+0ezq+kw8sOTtOopLs222QiqYrjFcM6FLB6vTQThYjjTeItdTmQr68E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709887182; c=relaxed/simple;
-	bh=27gE8AFMNeFJo79tK08O/m7rR6nV2QJNBq8BVPNW7Fc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=cAHyUu5YdPrzBPXOWjg87zYTySfaZAkRXP3Fu4MB5M/cOvTaKfUnexfZvUOCIhOjaGOadgo/ukM3wwn1l6nm/IBnqT8W3zRUIIE4KLnvQXGjyLSl2f1ZJU2750itHl8DphaXbTsQw4ClONvsFGmwN18Fqh8mpxunNvEpdeGYoJc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=dyx+JlFC; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=vOcq953t; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4281ivvM018129;
-	Fri, 8 Mar 2024 08:39:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=hk0WdmYViO4ssHl/OlMEhHvyGso7EDpUh8pPYyfKulg=;
- b=dyx+JlFCWteacDEu9GlhmWZ/qwIL9Z2eAS2mo7FuooiBLYhMZIUD6zjzr0URo5vT41hl
- LPGhUujhiOXZ3YAwRK7qyJ1PmELEt3Ooa46lME/5P33RM4rwUqK6OXLk/WmvPyg7GfOQ
- kWqFyc7a2qXmqqxtgM6tb68y28F/eZ3XXZFPCImS+5iPJwIFFjadH+uHALYV9+2cMvIH
- r3+whTwZ7DO7hcIDRzo29agCgIKpPLG7HGX9WQeCzJyBp8Ac8q+VTZnGu4tQORmvESUw
- uv7Cy3UDYeoEGsU9BM5cfPw+bXv8DDf7ycNb7SdOgW2Z9SkiMJErjWisBW9ThhjJNAn8 fA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wku1cnem5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 08 Mar 2024 08:39:27 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4288BtlN016065;
-	Fri, 8 Mar 2024 08:39:11 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wktjcg3xh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 08 Mar 2024 08:39:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EkGCrgv8ub1X1kBuY2adV4oBBA2m9d68fS9px4jhTtiIvyCzRwuYyf35sKuWY36rAJoLfzNATW0ubwYzTne58csaY2+9zni200QIup9EbE1vyS3/9RdD/Gcvzskg57pdzBRVCGT7i9DwPDpx363fAS7rXlEN+uWHiEO09RaJkJQpYqCSjgR/XEy/wBZ+JC6vqZUsdpTtSuf2r0lXw6QrGmKz+tRM+kB4dq0eUB0FXr8l9Crs/PnnE9pu7MI4GmaTkogyW0W6HfqLLh00pzyhb0XxNclXFWCC1LSPVNZPFSm8pVy8kHYL1vQQP0xy/J3YT0lIS9uYuHzZYX6F5Ok8IQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hk0WdmYViO4ssHl/OlMEhHvyGso7EDpUh8pPYyfKulg=;
- b=YWTxtY+DiKVKpVwC7QYAsMBhuFo5+tzdcbaNGlNjeXz8LkKkOaQwgcCvbITsbkdcPzO7b8whZakznyp8cw1TBdQ92rDnC6ZYRb8fp5IaIVnY2nM5htxgBjBqgkPFltuFoJRZEY5ErrR+WayPFaCdZHqWQbTx07KYw0Eampwi40ghWPhDQA7iipk8OfDfx18jCKGR2XjiICt8EctFVhqyrl7fOcwgeDFkJMmsD8x68OTphlrX7kE+7N53Ghq8rcfNXVVw7H6PHdqWXlra7ogrxutkH1KlT83qsXMPtJmqKXDAEVLDNIxTu5gdxBrmwLsBB114rnXVVpEgBVpcerHPOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C651CF8A;
+	Fri,  8 Mar 2024 08:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709887164; cv=none; b=vEypbsgkhzwMS1g+ZjVALamQE2W7V2+GDIYlYvKu8GACW8EBqJlyPAgEiXUiYqyKHry8k3whOEHmIgJE+VlaYE19/NJpMpBUry7bPQTtnl93P7tdrHHNc+9w7f8+JzneInKvI11gl0EIzA7mlK7aTYwdcKXD1zY1Su85Nw6XWcI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709887164; c=relaxed/simple;
+	bh=WlJwc0CXz289aYzNYoYl8BrBG4AN8UC5Lj2Bw7BYaSQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ndwoX9xcIus2pvIy8r4KZoG6ZbgCXjy4oUuHdeCH8zoJr576AxhXxftwAbL6mme/goSEDi5lqM3n2Gv94Rr234sCpNyDiDaTYRymDQ83y/rOHiTtXQPiG3Gc85x46TeBBBzo3y5gEryUdHi1sp6pzOX8ulAi5t9YGTR+8lGMx34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=ij7r4yar; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hk0WdmYViO4ssHl/OlMEhHvyGso7EDpUh8pPYyfKulg=;
- b=vOcq953tRrr6O4ZCMHjgO3fkDkBWpn1B/bqdsryA7ohj+v9WyROzM67kRgGdWH8ePFjiT83jkJcjRMSqRmmDRszvywtAaxVw0mHDjl4Jyk5VmojJqjkC5ywqKkh77fmDB/Anpw25wSpJEUJJao5g3B8lLSlgr5fy50u17cBjxJw=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by CY8PR10MB6636.namprd10.prod.outlook.com (2603:10b6:930:54::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Fri, 8 Mar
- 2024 08:39:09 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7362.019; Fri, 8 Mar 2024
- 08:39:09 +0000
-Message-ID: <d845a0aa-f323-4917-95b7-8edcfb3b4272@oracle.com>
-Date: Fri, 8 Mar 2024 08:39:05 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] firmware_loader: Use init_utsname()->release
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: mcgrof@kernel.org, russ.weight@linux.dev, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, masahiroy@kernel.org
-References: <20240223153121.440763-1-john.g.garry@oracle.com>
- <2024030757-trickily-tuesday-bfcc@gregkh>
-Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <2024030757-trickily-tuesday-bfcc@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS4P190CA0008.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:5de::14) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1709887160; x=1741423160;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=+0Zk9YrNAPHRCrDTW6MNWvjCjE1nDUbXvpf0eiRTAcI=;
+  b=ij7r4yarpxHsJVBLPIINqpv5h+1uaPTjFGfcNjkDD9kxgdKDQTmOUXCr
+   4Tmq5KjvMz8jYgSxandvKNdzS5lg9LMXEyd8EKDL/+nGpD0FQ5nVi/PG1
+   SSZOFDsQFu4gEAeBLNZju3/TLYU2Y6KJaGmBPyTEELKMbLgxOYnNx3HKC
+   GslvdLVQYqM4wClt1wtNa+1AiDN+QBSAJE1rru57GmMahH4bsDljs1bdO
+   Qktbn7abKU1kckGMVEXkx5HhjNClPmnl5bF48ZtcVs4eAl//8Fk4QGl3d
+   IUiXxVQ93rc5E5eUMqSox/GpxAlX83JkCv61TJWVVOad9tas/rlcEH9wV
+   g==;
+X-IronPort-AV: E=Sophos;i="6.07,109,1708383600"; 
+   d="scan'208";a="35803051"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 08 Mar 2024 09:39:17 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 4074628007C;
+	Fri,  8 Mar 2024 09:39:17 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>, Sebastian Wick <sebastian.wick@redhat.com>, Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>, Dave Stevenson <dave.stevenson@raspberrypi.com>
+Subject: Re: [PATCH v8 05/27] drm/tests: Add output bpc tests
+Date: Fri, 08 Mar 2024 09:39:18 +0100
+Message-ID: <1788224.VLH7GnMWUR@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240307-kms-hdmi-connector-state-v8-5-ef6a6f31964b@kernel.org>
+References: <20240307-kms-hdmi-connector-state-v8-0-ef6a6f31964b@kernel.org> <20240307-kms-hdmi-connector-state-v8-5-ef6a6f31964b@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|CY8PR10MB6636:EE_
-X-MS-Office365-Filtering-Correlation-Id: 75c8c5e6-eac2-4adb-252f-08dc3f4b38ca
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	PSgHxGsCytzZvW4lOxnFceDLAJVNGLIf3NEwopwxrxyuRBbq+y51Ux5HkP7OCJ0YVZjMFHfunTco6US+x9c4higbrFASwOG5RqSyom8dKObT6VE5J0rc+mUQAQxia5+/Mxv5OymjxezhJtSsc2R0cLtZsvID2Klb9A7tXhCaZRGJBRLUYyAr4a9414bIydxn0SqQh9q6NbC0No7F/gVnVOTKjhdSo4pa5wWZ/8UcwsaNar0yWcsbik9Va7RC8f6+dioo2hmTPdxZjer94GXf5xjJ7Cv1jN80sv+Zp17pARfqzcGpRPhML9FnbxU8bdFfzDugC3IfG0jPjp5FkmhzYfmh69f6KOj6bTRyVInxMBScMkWeNV21NJK376nfRZ8KSOC4vRGgvDe0AbLxYuRjTLlUMnKiEzTcI/H9Nn3Dq2mYbK7APXsZOwEu3s4nAOrHwUYvOPQVzDR2GEMkLhpMDcOYEe6y9Z3tisCE+vtXa+vSaZ1wShSt2h5XR4rvqUBbWM4a3CzNdEukVSYXhnBhOdj/3i1Oz9y5gMLngU1DXJArgmG6jR4ZIrhq4Zj2/IDOk5bWdrNaE+o4NatRQUGMYmfqZ6anZJ0aqSU4oel8vn8=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?R3RsQ1VmcFlkSmJDNXlSRTY1eEJxQkl0a0ZzUDhCRGx5Q09wN2VPUkJ1VVlY?=
- =?utf-8?B?TGZqd2h2UlRCVk5ILzdLd1ptalNrS2UyOWl5UHlRdEQvSHdDdVdwOWNRbHNx?=
- =?utf-8?B?NGdXbmJDakxTQU52dWtNcTIwbHhGQVlIdTJxakFaYmVabXo5VklrUDdGZmpk?=
- =?utf-8?B?TFYrQ3JwUHJvNmVDTVpaQ250MTlpWU5qTU5LWlFpdk1Hb250Z05aUS9jYkxm?=
- =?utf-8?B?Smpsbzkyc3JnS1hZWWl3R2tTcjNCOTVWVGJCMThkSmhWaFc2Qm9GMmlyR0p3?=
- =?utf-8?B?MlVsZkFFUWtaTXZTdHVsS2JuUGhVaXRaeEN1ZGlQYkpyM29pejlpUEloTkNT?=
- =?utf-8?B?b3poTkVoQ1ZzZmRrYVpPblU2VEpXdCtpbXBySUNhVUtKOWxoR21LdnhZYjdN?=
- =?utf-8?B?eW0zN2lCNlA4RkorZ1JqYXJoOXYzWUM1QXloSFM0ODJZSC9Sa3NFRkREOC9u?=
- =?utf-8?B?NUhSM2tZWjQ4L2o5Y3J3dUFzdElSK05aT2dYUUN3enkybWpYa0x4dFI2OUYx?=
- =?utf-8?B?Q2pwaURpVWtBZTdMdGxvbjVDSGpVUDlTWE1oUVhzd0ZqcVY4bk0zTlNUcEtJ?=
- =?utf-8?B?QzJJcmhOTGRHenRUNFNRYXpSWmNjZnl5Y01kUkxjNFkvRzg3WlY0bjRwZ3Bt?=
- =?utf-8?B?d21nd09WYmpWWDMvNkgralJOQnVwYmx1dlhUNzUySWZJaDV3ZmNibEIvUVdw?=
- =?utf-8?B?czdjZzFhcW9SS2puMDBWbktsaXlUSUlzRG1YVEIxazlHQUZkcTNkVG9hSkZJ?=
- =?utf-8?B?SlpCVVBTMlM4UGJIUithT2JuQUYrWmZwYUlISlJVbG9xbCtKTGtDNGVNemxP?=
- =?utf-8?B?bC83aHVwb0xhMm1BeVJEUWFBcHJBWVRsMzNFcEtEMFdQd1VsMEFxZXhoVjZE?=
- =?utf-8?B?aDZzdHJHdjlOQjFmRnhwNGZLN2duWmJua2FQZThidFhxQlBqWmxOdHdyUy94?=
- =?utf-8?B?Q0R2MGZ2RGU5bTRzSjdnVFh5eVg4Uitsc284dUNsbWpmelo0M21PcXBBbXN4?=
- =?utf-8?B?VXhwK2pDU3ErdDB6cE5wUSthUHJRQkozK1R0SkZzTzAxbThLZFZGOGg2cjcw?=
- =?utf-8?B?Y3pnaHY3d1BTVGNWREhDSVFMTjFYdXR1dkZ1MGxhSFFUaEFTRm96WXNnK1Rk?=
- =?utf-8?B?VTJuVjJ4SFUvYTdyNHZXUksvV1A0UnB6VUFKVlpVc0RRTmcvSHNidzlMMXVY?=
- =?utf-8?B?MGFoUmF5b3ZZQzZ4M1hibzV1NGwvRXRPN0xDWlNRTDBJbXBJR0UzNFBJRnNL?=
- =?utf-8?B?cWxSOHhXdDhaM2tkSFZpZjRYc1UvSkhka3YzV3crQ1V1NkozTUxDalpNMVdD?=
- =?utf-8?B?R3RVOGFhK3hpdldLRUQ0NWVVQTgyOGdmWWRkZC9hR0dDdzJ0alc5QWpBbzR1?=
- =?utf-8?B?b2JNUFpOTTlwRlFIdzBNcFpxRmt4M2FldTJ0Sm5qRU9DRU1NbWNaSko3YkZW?=
- =?utf-8?B?c1NWWHo2WHY3bUtTQ0hnMHdaUFVTODludE9sRG1IM3VxVm45R2o4YWxDaG1K?=
- =?utf-8?B?blA4czlld2lwYVBOb2JHR1JuVnYrOURwVG5CWFJLL0d3WkZSWGpoR05kaGU3?=
- =?utf-8?B?OFg0VXNwa3pZdkxFRGcyVHZTVWZnc1pKY2pJUnVSM1Bqd3dNUTRkNnY5L1pn?=
- =?utf-8?B?OXdRV2xiT2pOVzJkNFpSY3hZTmRudURMM1JVeFYzM3dob3ltSnpsOTBUY1N0?=
- =?utf-8?B?QUdlbUVFUWdtSjRUZjJvNTBnaWNKZGhHZUtDNWFQb3p3ak95WHVWMDAycUpX?=
- =?utf-8?B?UWZhd3I0V05zNVdhaEI4VVlXQzhQV0pwbnppT0EyTFBWR2VTcXhsZ1NNQlhv?=
- =?utf-8?B?b0hBTzFuVkZ1ck9SVEhLaUlFZS96bWtzUSsvaC9PMnMwZTgvVTFwOHNXT3Ru?=
- =?utf-8?B?TDlYN01uRmtPZEpscUpjMks5OUEwUjRtNzRUZU1xYzVoSWZCMDVqcGJoNlVl?=
- =?utf-8?B?Z0hRSk5JOWdPTVdldnVWMmVrbzRaelBaZ09JSjJ0WlJJaXpaNWN4Y3lnM0Q4?=
- =?utf-8?B?d3BRa1NqbkJxd3F4MlVRdTFkUXNUazFka1AwM2NGTDRCVVA1UXI1MjBOODdz?=
- =?utf-8?B?cDVxWFJHOXgxWmVWQkVYbFlHVVVYWEtLRG9ET2l1OHlTWnMwVDRRek1QQUIw?=
- =?utf-8?Q?TcPcLvf5ahBrQ8wZlaEPWMpSV?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	kUrXq9DN2oz82o9EVcGLklTvsep2gPcUMkONJlYbccKU0uO5Hez/0tLBkvT7gNUcwBQAwldb/XpAeNHoELO9/HlltF76YLQ5n8WMW6UNdWJEXXrP60cClKzH/KiFrRrsCY21DxxwaxGq0LWyolrhxeCEX4KgvAcPjsRe7u4bP22/ZEtDG8youzTaDGhp8LmR/ipyaomuyy5ktyLN8IVnWzlvMiQ0z8rqJPLhuLgMCnXXKVOj6TVPRP0xmmiGWZAglq5RCo0mT208X7YonSgfUYv0YKiU9/cMYMVpRABdG+dgU7KJ/ldg3bY3M21ajKFL+H3My0zhZMRRoSPmkORi2LF6LmIHVZTHENC32uszTnz63Qu+lVcA01NEi8Il78ySL4wQqgOSTpm7URxi0hM+qq60pClryV2jr2T7p5V3oluL819UxqruMKU9d0cFINzM01GZCeO79Vx/OAkNryy4Rvc/efyrgQRjjZjZymP7GyLMgu02nXpmm3gX2SPcSX3jtfvz+6WTZqva/SuziY1fTaOwvI01oY1o0qtAdeM4kFNoclM+8R4gtYcG5w8qgFIctlS2WASsnXyr7Dd5xUGG1R4gubO4mRwx9Cw+LXU2L1I=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75c8c5e6-eac2-4adb-252f-08dc3f4b38ca
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 08:39:08.9537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uzJJb5ummCn+4FFO6h1kHgzhA98qdEibMTM61ti3COAM4WRwlJXzacVf9wxnveNcpCt8q8f2rv/JxWTprJaCCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6636
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_06,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403080068
-X-Proofpoint-ORIG-GUID: 22WkcjuUxYaA7UCwb3F5jMdB0RN_xDDT
-X-Proofpoint-GUID: 22WkcjuUxYaA7UCwb3F5jMdB0RN_xDDT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On 07/03/2024 22:01, Greg KH wrote:
-> On Fri, Feb 23, 2024 at 03:31:21PM +0000, John Garry wrote:
->> Instead of using UTS_RELEASE, use init_utsname()->release, which means
->> that we don't need to rebuild the code just for the git head commit
->> changing.
-> But you are now exchanging build "convience" with code complexity and
-> runtime checking.  Which is better, and which is "provable"?
+Hi Maxime,
 
-Well I did want something that did not add too much complexity, so it 
-would be an obvious win.
+Am Donnerstag, 7. M=E4rz 2024, 14:38:32 CET schrieb Maxime Ripard:
+> Now that we're tracking the output bpc count in the connector state,
+> let's add a few tests to make sure it works as expected.
+>=20
+> Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
+>  drivers/gpu/drm/tests/Makefile                     |   1 +
+>  .../gpu/drm/tests/drm_atomic_state_helper_test.c   | 436 +++++++++++++++=
+++++++
+>  drivers/gpu/drm/tests/drm_connector_test.c         | 140 +++++++
+>  drivers/gpu/drm/tests/drm_kunit_edid.h             | 106 +++++
+>  4 files changed, 683 insertions(+)
+>=20
+> [snip]
+> diff --git a/drivers/gpu/drm/tests/drm_kunit_edid.h b/drivers/gpu/drm/tes=
+ts/drm_kunit_edid.h
+> new file mode 100644
+> index 000000000000..2bba316de064
+> --- /dev/null
+> +++ b/drivers/gpu/drm/tests/drm_kunit_edid.h
+> @@ -0,0 +1,106 @@
+> +#ifndef DRM_KUNIT_EDID_H_
+> +#define DRM_KUNIT_EDID_H_
+> +
+> +/*
+> + * edid-decode (hex):
+> + *
+> + * 00 ff ff ff ff ff ff 00 31 d8 2a 00 00 00 00 00
+> + * 00 21 01 03 81 a0 5a 78 02 00 00 00 00 00 00 00
+> + * 00 00 00 20 00 00 01 01 01 01 01 01 01 01 01 01
+> + * 01 01 01 01 01 01 02 3a 80 18 71 38 2d 40 58 2c
+> + * 45 00 40 84 63 00 00 1e 00 00 00 fc 00 54 65 73
+> + * 74 20 45 44 49 44 0a 20 20 20 00 00 00 fd 00 32
+> + * 46 1e 46 0f 00 0a 20 20 20 20 20 20 00 00 00 10
+> + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 92
+> + *
+> + * 02 03 1b 81 e3 05 00 20 41 10 e2 00 4a 6d 03 0c
+> + * 00 12 34 00 28 20 00 00 00 00 00 00 00 00 00 00
+> + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> + * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 d0
+> + *
+> + * ----------------
+> + *
+> + * Block 0, Base EDID:
+> + *   EDID Structure Version & Revision: 1.3
+> + *   Vendor & Product Identification:
+> + *     Manufacturer: LNX
+> + *     Model: 42
+> + *     Made in: 2023
+> + *   Basic Display Parameters & Features:
+> + *     Digital display
+> + *     DFP 1.x compatible TMDS
+> + *     Maximum image size: 160 cm x 90 cm
+> + *     Gamma: 2.20
+> + *     Monochrome or grayscale display
+> + *     First detailed timing is the preferred timing
+> + *   Color Characteristics:
+> + *     Red  : 0.0000, 0.0000
+> + *     Green: 0.0000, 0.0000
+> + *     Blue : 0.0000, 0.0000
+> + *     White: 0.0000, 0.0000
+> + *   Established Timings I & II:
+> + *     DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.1=
+75000 MHz
+> + *   Standard Timings: none
+> + *   Detailed Timing Descriptors:
+> + *     DTD 1:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.5000=
+00 MHz (1600 mm x 900 mm)
+> + *                  Hfront   88 Hsync  44 Hback  148 Hpol P
+> + *                  Vfront    4 Vsync   5 Vback   36 Vpol P
+> + *     Display Product Name: 'Test EDID'
+> + *     Display Range Limits:
+> + *       Monitor ranges (GTF): 50-70 Hz V, 30-70 kHz H, max dotclock 150=
+ MHz
+> + *     Dummy Descriptor:
+> + *   Extension blocks: 1
+> + * Checksum: 0x92
+> + *
+> + * ----------------
+> + *
+> + * Block 1, CTA-861 Extension Block:
+> + *   Revision: 3
+> + *   Underscans IT Video Formats by default
+> + *   Native detailed modes: 1
+> + *   Colorimetry Data Block:
+> + *     sRGB
+> + *   Video Data Block:
+> + *     VIC  16:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.50=
+0000 MHz
+> + *   Video Capability Data Block:
+> + *     YCbCr quantization: No Data
+> + *     RGB quantization: Selectable (via AVI Q)
+> + *     PT scan behavior: No Data
+> + *     IT scan behavior: Always Underscanned
+> + *     CE scan behavior: Always Underscanned
+> + *   Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
+> + *     Source physical address: 1.2.3.4
+> + *     Maximum TMDS clock: 200 MHz
+> + *     Extended HDMI video details:
+> + * Checksum: 0xd0  Unused space in Extension Block: 100 bytes
+> + */
+> +const unsigned char test_edid_hdmi_1080p_rgb_max_200mhz[] =3D {
 
-> 
->> Note: As mentioned by Masahiro in [0], when CONFIG_MODVERSIONS=y it
->> could be possible for a driver to be built as a module with a different
->> kernel baseline and so use a different UTS_RELEASE from that baseline. So
->> now using init_utsname()->release could lead to a change in behaviour
->> in this driver. However, considering the nature of this driver and how it
->> would not make sense to build it as an external module against a different
->> tree, this change should not have any effect on users.
-> This is not a "driver", it's the firmware core so this does not make
-> sense.
+Shouldn't this be a static one? It's defined in a header.
 
-Understood
+Best regards,
+Alexander
 
-> 
-> 
-> 
->> [0]https://urldefense.com/v3/__https://lore.kernel.org/lkml/CAK7LNAQ_r5yUjNpOppLkDBQ12sDxBYQTvRZGn1ng8D1POfZr_A@mail.gmail.com/__;!!ACWV5N9M2RV99hQ!I5-MVUh-jmCxwUFtX_eLsjXZpF9BBk6KeBWJ-6mlrfjJjomRDUWQ0_nXpixUddcj_Gz6H_FiBu8lUys6u5kzcqsAyg$  
->>
->> Reviewed-by: Luis Chamberlain<mcgrof@kernel.org>
->> Signed-off-by: John Garry<john.g.garry@oracle.com>
->> ---
->> Changes in v2:
->> - moved note into commit log and tweaked slightly
->> - add Luis' RB tags, thanks
->>
->> Also verified against fw loader selftest - it seems to show no regression
->> from baseline, however the baeline sometimes hangs (and also does with
->> this patch).
->>
->> diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
->> index 3c67f24785fc..9a3671659134 100644
->> --- a/drivers/base/firmware_loader/main.c
->> +++ b/drivers/base/firmware_loader/main.c
->> @@ -38,7 +38,7 @@
->>   #include <linux/zstd.h>
->>   #include <linux/xz.h>
->>   
->> -#include <generated/utsrelease.h>
->> +#include <linux/utsname.h>
->>   
->>   #include "../base.h"
->>   #include "firmware.h"
->> @@ -471,9 +471,9 @@ static int fw_decompress_xz(struct device *dev, struct fw_priv *fw_priv,
->>   static char fw_path_para[256];
->>   static const char * const fw_path[] = {
->>   	fw_path_para,
->> -	"/lib/firmware/updates/" UTS_RELEASE,
->> +	"/lib/firmware/updates/", /* UTS_RELEASE is appended later */
->>   	"/lib/firmware/updates",
->> -	"/lib/firmware/" UTS_RELEASE,
->> +	"/lib/firmware/", /* UTS_RELEASE is appended later */
->>   	"/lib/firmware"
->>   };
->>   
->> @@ -496,7 +496,7 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
->>   	size_t size;
->>   	int i, len, maxlen = 0;
->>   	int rc = -ENOENT;
->> -	char *path, *nt = NULL;
->> +	char *path, *fw_path_string, *nt = NULL;
->>   	size_t msize = INT_MAX;
->>   	void *buffer = NULL;
->>   	dev_err(device, "%s suffix=%s\n", __func__, suffix);
->> @@ -511,6 +511,12 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
->>   	if (!path)
->>   		return -ENOMEM;
->>   
->> +	fw_path_string = __getname();
->> +	if (!fw_path_string) {
->> +		__putname(path);
->> +		return -ENOMEM;
->> +	}
->> +
->>   	wait_for_initramfs();
->>   	for (i = 0; i < ARRAY_SIZE(fw_path); i++) {
->>   		size_t file_size = 0;
->> @@ -521,16 +527,32 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
->>   		if (!fw_path[i][0])
->>   			continue;
->>   
->> +		len = snprintf(fw_path_string, PATH_MAX, "%s", fw_path[i]);
->> +		if (len >= PATH_MAX) {
->> +			rc = -ENAMETOOLONG;
->> +			break;
->> +		}
->> +
->> +		/* Special handling to append UTS_RELEASE */
-> You don't really document why you want to do that here, and ick:
+> +  0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x31, 0xd8, 0x2a, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x01, 0x03, 0x81, 0xa0, 0x5a, 0x78,
+> +  0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20,
+> +  0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+> +  0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02, 0x3a, 0x80, 0x18, 0x71, 0x38,
+> +  0x2d, 0x40, 0x58, 0x2c, 0x45, 0x00, 0x40, 0x84, 0x63, 0x00, 0x00, 0x1e,
+> +  0x00, 0x00, 0x00, 0xfc, 0x00, 0x54, 0x65, 0x73, 0x74, 0x20, 0x45, 0x44,
+> +  0x49, 0x44, 0x0a, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0xfd, 0x00, 0x32,
+> +  0x46, 0x00, 0x00, 0xc4, 0x00, 0x0a, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
+> +  0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x41, 0x02, 0x03, 0x1b, 0x81,
+> +  0xe3, 0x05, 0x00, 0x20, 0x41, 0x10, 0xe2, 0x00, 0x4a, 0x6d, 0x03, 0x0c,
+> +  0x00, 0x12, 0x34, 0x00, 0x28, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> +  0x00, 0x00, 0x00, 0xd0
+> +};
+> +
+> +#endif // DRM_KUNIT_EDID_H_
+>=20
+>=20
 
-FWIW, I did leave comments for current members of fw_path[]
 
-> 
->> +		if ((fw_path[i] != fw_path_para) && (fw_path[i][len - 1] == '/')) {
->> +			len = snprintf(fw_path_string, PATH_MAX, "%s%s",
->> +					fw_path[i], init_utsname()->release);
-> You now have a "rule" where a trailing / means we add the UTS_RELEASE to
-> it, how is anyone going to remember that if they want to add a new path
-> to the array above?
-> 
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
 
-I didn't think that those path ever really changed, so would not be a 
-problem, but I see what you mean.
 
-> this is going to be a maintenance nightmare, sorry.
-
-Understood, back to the drawing board ...
-
-Thanks,
-John
 
