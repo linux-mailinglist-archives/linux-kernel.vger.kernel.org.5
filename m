@@ -1,89 +1,58 @@
-Return-Path: <linux-kernel+bounces-97352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ACF287694D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:05:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F300876955
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:08:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 451B2286F13
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:05:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 462A2281B88
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:08:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F0020B10;
-	Fri,  8 Mar 2024 17:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A5324A06;
+	Fri,  8 Mar 2024 17:08:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="DDurbmA3"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jrWFndom"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6398A200BE
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549482420C;
+	Fri,  8 Mar 2024 17:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709917551; cv=none; b=HJXvugESxKbGy7JERxlv9Lz5/xk57/NYj5M6DEHF8SXs8e8imJ36Dg2/cMiVd6XrGC6UEcLqTyLDclJkQmfMqJ3X1n+n2RuhVDt+Z+u9SliptXjiqZu+P14WRAJpS5POjGuDbzWfy3UiAmWQpMNWHnciAEkdq7exOJr+K5ShHgY=
+	t=1709917701; cv=none; b=jMRRA3MnI7OEsAjeIAaecPG51cvdsl4BXhM0MlS/lf5NI5Oe4lMOIuCHDYxJ3IEfSamjfQ3JNsZj0NyIuYjXXhfUadG8Mdr0u9+FevtSRsKOYy/lLSfGzAoiRhQPw5OV0KOY2CLuNXRsvcWKQ5AyadQMEUf6W3Knewv06Z3qFyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709917551; c=relaxed/simple;
-	bh=V6KJTShdwT+mkrh0tNjho/v1spFJQp+mhN1u9pDoGUg=;
+	s=arc-20240116; t=1709917701; c=relaxed/simple;
+	bh=yjkgaWbfvxOAOJ8/GrcE5ERV6Xdug+DVVLT7XjhOlTk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NcZaSf5intdtuxddXteUjq0vSgXMFS7aIIuzMQ7wN3CTmBC8anJiaD4zgDsqfou101LJQBqNOVAn68Ca+T3+l/u/Mz9U6sbUyDWZgrqzRHGRomZFdGOVvOsV3im/25P0JTYWuOTokPQW2hgwA1g3Jprbqf+D0diZdBDsJNIo7oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=DDurbmA3; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c21a3120feso436343b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:05:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1709917548; x=1710522348; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=M1AjcWBSkItGUiNsU5CP48uMxnVb158nfN7iDwmiCRM=;
-        b=DDurbmA3S6btZn2V8KtaQVOAeU8XJtj2r2bxnzLWx/bXgBtqnKFzitf+UKd3O+C8Sf
-         GzSEE5xJX6ZJwq+cgIT9I+GoVPReBCKzUqa3diO4WI2esw9hE4l4Ybc+d1u+FQmA+2ru
-         /t6/zSUaORfxu+qRugu+U6q6pVMItxiwHgC6N5VdfO8aP01mvm0otMqzG0VW9GPaKvym
-         w9RnhV2zf+ykqTh/UWxYdF4koZZy375vi2K90ej2Dpn9zybrsvP6NTGj3BBH2Ougo0Yh
-         YrKZkb53J0xmtuSnehL9IeWufuOOeF20AX4aowrlITKI1CoGUICBc2F16BYKP+z5pCAV
-         gfKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709917548; x=1710522348;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M1AjcWBSkItGUiNsU5CP48uMxnVb158nfN7iDwmiCRM=;
-        b=IhmpdKCbBQoskrr7j/xLH0N9ubNE/XK/ZZHHGdgnUh8SqP7eHTpeeRO/QWOWVALEHv
-         HSYLemttRv+8d+2GIVPYvmz1MEupwQlWm3DH9lVCN4TGskc9j+wiZtraPPo/vv55ESE1
-         0M4CWCeKLzI/p8dLDvUkbw+r32O5Mz4oV3Vj5zNaI0gUxuj2p3VfihdSnXGCUmwjvGjS
-         cYl7tR11/Nm3uKhnUg3Plk2PCmys6JqZ5wnR7JPFfWq03ffFUdjDap+1TjYzKDc9MKMm
-         eg0JfT/rJdDmCeQmsaMBVCOCaeavhzfQuSrh8rQOZRUQnaYf46Ftx7+uT1fnGCaiiSau
-         k41A==
-X-Forwarded-Encrypted: i=1; AJvYcCU56DcQFZxctgucDygiMe+8jHqmINeqMDVqTImyrfiqFLLLMBtr2k3/e7bScrt+04HVH7+Xss/3hHHVKD70+4ZIxY2jBqLPJ5AxXofM
-X-Gm-Message-State: AOJu0YxmZjRo6XxZ6vb/ve1vVsdNH3mCP8QF7YscM8fcBHHB4CbxHeww
-	rcjC+M3XIeg+MAbiKdP3qfRofqnqRbcAU0uD51GeJipmBTXv0GddkCMSc1t6weo=
-X-Google-Smtp-Source: AGHT+IFmpdDM8Yw9rLFEeWGGVYCMO+qikKXQROcwg2THfy528Bht9EXOGogx2z63mdDKX9uCapRecg==
-X-Received: by 2002:a05:6808:1393:b0:3c2:3a02:2731 with SMTP id c19-20020a056808139300b003c23a022731mr106904oiw.5.1709917548441;
-        Fri, 08 Mar 2024 09:05:48 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id v2-20020a544482000000b003c1ec2c3fa5sm1655913oiv.42.2024.03.08.09.05.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 09:05:47 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1ridfG-007SKN-Rm;
-	Fri, 08 Mar 2024 13:05:46 -0400
-Date: Fri, 8 Mar 2024 13:05:46 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Alex Williamson <alex.williamson@redhat.com>
-Cc: "Tian, Kevin" <kevin.tian@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"clg@redhat.com" <clg@redhat.com>,
-	"Chatre, Reinette" <reinette.chatre@intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/7] vfio/pci: Disable auto-enable of exclusive INTx IRQ
-Message-ID: <20240308170546.GS9225@ziepe.ca>
-References: <20240306211445.1856768-1-alex.williamson@redhat.com>
- <20240306211445.1856768-2-alex.williamson@redhat.com>
- <BL1PR11MB527189373E8756AA8697E8D78C202@BL1PR11MB5271.namprd11.prod.outlook.com>
- <20240307132348.5dbc57dc.alex.williamson@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uPq9rxy8qun47y8VVcJGkH8qVck79FNRw3U5ZbLmB1FHJkjt2qB4HTJVC/alBuBIuk+3xzR//7QwO3WHxhXja5ciwxdYgO4rZ2k2ptp8gDLCrazicNy0K3SUOCXY618pNIysIg74qN51VTnt4h0CZWh2TNvRnC1wyxhSlG1lTiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jrWFndom; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8CE101BF208;
+	Fri,  8 Mar 2024 17:08:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709917690;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SVSOVMM++kpSS7mrO6vPo+8T0YiZCKLh1YcyRU4PU+0=;
+	b=jrWFndomKXlOKifh8SJu/xxEkVdtVmr98MEjZ+7hFRthTHJKujWCykaljnvIvOdtm7Dok6
+	M5tjTkWxhcWVLR0ib0dwtzRbmM11eEqG5foA9pKwMy/DXOg4uUggHkmFvEaQY100sS/+Bp
+	pYaikC+wimyQPKjSNwhgfeVMhVXpOGlVMaVzeT6+bf/kqrKuhov+Afv8A5Gw+uPjZF+ekD
+	aAR07y5nHuo2+++FZbpPxmXO5XbPt08sNYX9ChZpYhxl/4TddBcUBnt7CB4XYeBgpboqZN
+	OxtD+TGlSCuakbxbSCTP3XXoc69X0TmpYm1qLJ/scQ+Yp+jUu3MY8tnLiY3dfw==
+Date: Fri, 8 Mar 2024 18:08:10 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+Cc: a.zummo@towertech.it, linux-rtc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtc: fix uninitialized read of rtc_wkalrm.time
+Message-ID: <2024030817081059be4ef2@mail.local>
+References: <20231129073647.2624497-1-nicholas@linux.ibm.com>
+ <20240229215850a1990100@mail.local>
+ <66a2c8b3-b1e8-4d2c-8a19-09e62099a2d7@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,38 +61,94 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307132348.5dbc57dc.alex.williamson@redhat.com>
+In-Reply-To: <66a2c8b3-b1e8-4d2c-8a19-09e62099a2d7@linux.ibm.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Thu, Mar 07, 2024 at 01:23:48PM -0700, Alex Williamson wrote:
-> On Thu, 7 Mar 2024 08:39:16 +0000
-> "Tian, Kevin" <kevin.tian@intel.com> wrote:
+On 08/03/2024 11:53:13+1100, Nicholas Miehlbradt wrote:
 > 
-> > > From: Alex Williamson <alex.williamson@redhat.com>
-> > > Sent: Thursday, March 7, 2024 5:15 AM
-> > > 
-> > > Currently for devices requiring masking at the irqchip for INTx, ie.
-> > > devices without DisINTx support, the IRQ is enabled in request_irq()
-> > > and subsequently disabled as necessary to align with the masked status
-> > > flag.  This presents a window where the interrupt could fire between
-> > > these events, resulting in the IRQ incrementing the disable depth twice.
-> > > This would be unrecoverable for a user since the masked flag prevents
-> > > nested enables through vfio.
-> > > 
-> > > Instead, invert the logic using IRQF_NO_AUTOEN such that exclusive INTx
-> > > is never auto-enabled, then unmask as required.
-> > > 
-> > > Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-> > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>  
+> 
+> On 1/3/2024 8:58 am, Alexandre Belloni wrote:
+> > Hello,
 > > 
-> > CC stable?
+> > On 29/11/2023 07:36:47+0000, Nicholas Miehlbradt wrote:
+> > > If either of the first two branches of the if statement in
+> > > rtc_read_alarm_internal are taken the fields of alarm->time are not
+> > > initialized but are subsequently read by the call to rtc_tm_to_time64.
+> > > 
+> > > Refactor so that the time field is only read if the final branch of the
+> > > if statment which initializes the field is taken.
+> > > 
+> > 
+> > While the problem description is correct, the solution is not because
+> > you have no guarantee that the fields have been initialized if
+> > ->read_alarm returns a value different from 0
+> > 
+> > So, instead of avoiding the conversion unless the final branch is taken,
+> > it should be avoided as long as err != 0.
+> > 
+> > But, I'm also wondering whether there is actually an issue. mktime64
+> > can be fed whatever value without bugging out and the value of err will
+> > be part of the trace so userspace knows that it shouldn't trust the
+> > value.
+> > 
+> > So, what is the actual issue? :)
 > 
-> I've always found that having a Fixes: tag is sufficient to get picked
-> up for stable, so I typically don't do both.  If it helps out someone's
-> process I'd be happy to though.  Thanks,
+> Thank you for your feedback.
+> I found this issue during my implementation of KMSAN for powerpc. The goal
+> with this patch is to eliminate use of undefined memory which leads to
+> undefined behaviour, I should have made this more clear in my original
+> message. You can find the KMSAN patch series here:
+> https://lore.kernel.org/linuxppc-dev/20231214055539.9420-1-nicholas@linux.ibm.com/
+> 
+> I can make the changes suggested and fold this patch into the next version
+> of my KMSAN series if that would help to add context as to why I am
+> submitting this patch?
 
-It helps other distros in the ecosystem to flag patches that really
-should be backported. Not everyone runs their backport trees as
-agressively as a stable does.
+Please do but I must say I don't really like "defensive" programming
+just to please a static checker. There is no actual issue here, even if
+the memory is not initialized, the result will never be incorrect and
+the various checks that are being added everywhere are just bloating the
+kernel, making it slower to boot and run. Now, we even have useless CVEs
+that are assigned for this kind of issues...
 
-Jason
+Maybe it would be better to ensure the correctness of the result rather
+than having a look at whether the memory was initialized or not.
+
+> > 
+> > > Signed-off-by: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+> > > ---
+> > >   drivers/rtc/interface.c | 4 +++-
+> > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/rtc/interface.c b/drivers/rtc/interface.c
+> > > index 1b63111cdda2..f40e76d2fe2b 100644
+> > > --- a/drivers/rtc/interface.c
+> > > +++ b/drivers/rtc/interface.c
+> > > @@ -179,6 +179,7 @@ static int rtc_read_alarm_internal(struct rtc_device *rtc,
+> > >   				   struct rtc_wkalrm *alarm)
+> > >   {
+> > >   	int err;
+> > > +	time64_t trace_time = -1;
+> > >   	err = mutex_lock_interruptible(&rtc->ops_lock);
+> > >   	if (err)
+> > > @@ -201,11 +202,12 @@ static int rtc_read_alarm_internal(struct rtc_device *rtc,
+> > >   		alarm->time.tm_yday = -1;
+> > >   		alarm->time.tm_isdst = -1;
+> > >   		err = rtc->ops->read_alarm(rtc->dev.parent, alarm);
+> > > +		trace_time = rtc_tm_to_time64(&alarm->time);
+> > >   	}
+> > >   	mutex_unlock(&rtc->ops_lock);
+> > > -	trace_rtc_read_alarm(rtc_tm_to_time64(&alarm->time), err);
+> > > +	trace_rtc_read_alarm(trace_time, err);
+> > >   	return err;
+> > >   }
+> > > -- 
+> > > 2.37.2
+> > > 
+> > 
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
