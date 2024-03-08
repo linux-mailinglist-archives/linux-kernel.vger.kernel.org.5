@@ -1,156 +1,151 @@
-Return-Path: <linux-kernel+bounces-96651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45B02875F83
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 29890875F85
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:31:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7846D1C21902
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:31:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BA831C218CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7720208A3;
-	Fri,  8 Mar 2024 08:31:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R0Gk5oDx"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7874C3214;
-	Fri,  8 Mar 2024 08:31:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1C81D69E;
+	Fri,  8 Mar 2024 08:31:50 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2AA1CD3D;
+	Fri,  8 Mar 2024 08:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709886680; cv=none; b=J7XMoWmgxlQ9OXTr/7MC/n4VDFWgzfjDs25td+L/EJrdUGMObMrS9T6oxlG2NiKKyxM2+r5/bfnBx9WytlMNc3y8gPGSBgRJF/mSFl4mjxUB+at8SZhh94XVfWN3svJ4vRlCxRECMtQFk+IUtAf2FAchqT6aA8I40yt/EDkX3h4=
+	t=1709886709; cv=none; b=X1Hdq5v7Gdmt4PukQqL7Pd2GfeXLec5lwA1S3SzJDyTLU+6UkFhAyjNmBDG40eqTs05j1LP5ycqxMwoAerTTUjRgM8macVCEGnTniuxJWt2VcPGJzMphkprJC0xUTYb3xFkEW/CAK6jO0VYbaRJpsCVxDRtKw5cnZNjepesSLdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709886680; c=relaxed/simple;
-	bh=+DF9vRiArhUyXhhhb8gcTRYI1HSCO9TwBHB3JFkJRDk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Tdi6uJoygLVwjiOw/cHQtUliNRFMo6T+Gi3JUcTecrI0dy4ULTDKkij7fM+xATC9YjqL2USd1bSUCQsYs9b6Vu0PK6Z1nZxLSIbYcT3441M+H+NsoFC32n7t7aL4hp7LiV6JVK92ZT9PcEvRHEm1ddSp9p2CDUDdKRtcZUvQlZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R0Gk5oDx; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42868sT2006942;
-	Fri, 8 Mar 2024 08:31:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=yIccJuIEDZZJkTHxklIyIAT7gx8dwfNVhqyWMGhbaOU=; b=R0
-	Gk5oDxvvzonVZ9Xa7t+iNWmMoGGMJ277dApNecQLZQ2FTqbyl7V+uYDWJaGVakAx
-	A3lh1G1RPFhrU8ISsyi+FgPdxJntX2DVXKdUHvv66LvDW6nXRQ7xwbq1keH7qyGD
-	ATGyGzwryNddxbW5icy8Hj284Qe4efb+T4A5NX2kE7wz5+WwWI2nU95itN6aGiBi
-	6waqWcvzv9orZ2mO3m4MT3vP9Y2ldpFujUpwxG8JCMnxAjypI9ubhxudrlbGWFqI
-	D59Y16TXXfbcx7A45mtgKu/rmN2b88dRfvHRzHrU5pbmS20g8KUMX+uMuZJyhzT6
-	ZvPj3CxacKFce6z+wcAw==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqn8n18re-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 08:31:14 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4288VEOb024189
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 8 Mar 2024 08:31:14 GMT
-Received: from [10.216.43.112] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Mar
- 2024 00:31:10 -0800
-Message-ID: <6bacd2be-14d4-49cc-9c98-7010a5f9f9bc@quicinc.com>
-Date: Fri, 8 Mar 2024 14:01:07 +0530
+	s=arc-20240116; t=1709886709; c=relaxed/simple;
+	bh=hDfMG2qxYuktOsweK4dW0+1dH+uTHvPFBUTxH/5FjMg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=u1Kgf7yK38EwfmLSTRWAGyVjJFXWJ3gv6O3KKO2Ig4hUn8x/vzNGB+tu2aaCnjeohggQMxyIms+4OGuzbAePIu30mMaAQoX32nBzusnqhtHA5nCmASzvcrKQfRAC/PzbTi3JryD5V2fIUR0tUKa6XDUYCWNO7prWBXCigLDIBQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-7f-65eacce93237
+From: Honggyu Kim <honggyu.kim@sk.com>
+To: SeongJae Park <sj@kernel.org>
+Cc: Honggyu Kim <honggyu.kim@sk.com>,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	dave.jiang@intel.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	linmiaohe@huawei.com,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rakie.kim@sk.com,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com,
+	42.hyeyoo@gmail.com
+Subject: Re: Re: [RFC PATCH v2 0/7] DAMON based 2-tier memory management for CXL memory
+Date: Fri,  8 Mar 2024 17:31:25 +0900
+Message-ID: <20240308083129.1796-1-honggyu.kim@sk.com>
+X-Mailer: git-send-email 2.43.0.windows.1
+In-Reply-To: <20240307030550.47095-1-sj@kernel.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
- mode
-Content-Language: en-US
-To: Andi Shyti <andi.shyti@kernel.org>
-CC: <konrad.dybcio@linaro.org>, <andersson@kernel.org>, <vkoul@kernel.org>,
-        <wsa@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <quic_vdadhani@quicinc.com>
-References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
- <cmtru4nvoab6g5emp2yrxnvfpvtrcsuna6dqsyewpagg3qmkau@r2zoj6vgslet>
- <9dbe987a-fdd1-4bec-b350-5936abf69b1b@quicinc.com>
- <yocn3rjxn37c7qniv2kkawgg2k7ghdwvrxcf77tdlpujnul3du@6oqvt5v4ykno>
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-In-Reply-To: <yocn3rjxn37c7qniv2kkawgg2k7ghdwvrxcf77tdlpujnul3du@6oqvt5v4ykno>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: PFNXOaHvYy00tuIf_lCSNwkrriXsvgFP
-X-Proofpoint-GUID: PFNXOaHvYy00tuIf_lCSNwkrriXsvgFP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_06,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- adultscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- impostorscore=0 malwarescore=0 suspectscore=0 spamscore=0 phishscore=0
- mlxlogscore=921 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403080066
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHIsWRmVeSWpSXmKPExsXC9ZZnoe6rM69SDX4sZbeY2GNgMWf9GjaL
+	XTdCLP7vPcZo8eT/b1aLEzcb2Sw6vy9lsbi8aw6bxb01/1ktjqw/y2Kx+ewZZovFy9Us9nU8
+	YLI4/PUNk8XkSwvYLF5MOcNocXLWZBaL2UfvsTsIeSw9/YbNY0MTkNg56y67R8u+W+weCzaV
+	erQcecvqsXjPSyaPTas62Tw2fZrE7nFixm8Wj50PLT1ebJ7J6NHb/I7N4/MmuQC+KC6blNSc
+	zLLUIn27BK6MqdubWAqeCVS8/vGKuYFxHW8XIyeHhICJxK47vWww9rJXN1hBbDYBNYkrLycx
+	gdgiAooS5x5fBIpzcTALLGSR6P2+ASwhLBAucarpNXMXIzsHi4CqxNZEkCivgJnEousTWCFG
+	ako83v6THcTmFDCWePnyPTOILSTAI/Fqw35GiHpBiZMzn7CA2MwC8hLNW2czg6ySEDjELrFz
+	1Q9GiEGSEgdX3GCZwMg/C0nPLCQ9CxiZVjEKZeaV5SZm5pjoZVTmZVboJefnbmIExtqy2j/R
+	Oxg/XQg+xCjAwajEw1tx92WqEGtiWXFl7iFGCQ5mJRFeFgugEG9KYmVValF+fFFpTmrxIUZp
+	DhYlcV6jb+UpQgLpiSWp2ampBalFMFkmDk6pBka2zmn+3wNOSZQfaj3AY3RF5k7IbMPCybt2
+	OSRmadsH7+SNmROrvP1k4d6vN1y2hB27fe3HFceag+xbOw1LW3bPe3Gq+xNf8r2zbt2eQZpb
+	IyZqXnDtXMIx56nh7IuG/9ddaFnwyOmKfn8/k9rtzb+7Az9zWcoGK7Xnch/eLKP35Fxv42n3
+	KxeVWIozEg21mIuKEwHxr/zSsQIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsXCNUNLT/flmVepBjvazSwm9hhYzFm/hs1i
+	140Qi/97jzFaPPn/m9XixM1GNovPz14zW3Q++c5ocXjuSVaLzu9LWSwu75rDZnFvzX9WiyPr
+	z7JYbD57htli8XI1i0PXnrNa7Ot4wGRx+OsbJovJlxawWbyYcobR4uSsySwWs4/eY3cQ81h6
+	+g2bx4YmILFz1l12j5Z9t9g9Fmwq9Wg58pbVY/Gel0wem1Z1snls+jSJ3ePEjN8sHjsfWnq8
+	2DyT0aO3+R2bx7fbHh6LX3xg8vi8SS5AIIrLJiU1J7MstUjfLoErY+r2JpaCZwIVr3+8Ym5g
+	XMfbxcjJISFgIrHs1Q1WEJtNQE3iystJTCC2iICixLnHF4HiXBzMAgtZJHq/bwBLCAuES5xq
+	es3cxcjOwSKgKrE1ESTKK2Amsej6BFaIkZoSj7f/ZAexOQWMJV6+fM8MYgsJ8Ei82rCfEaJe
+	UOLkzCcsIDazgLxE89bZzBMYeWYhSc1CklrAyLSKUSQzryw3MTPHVK84O6MyL7NCLzk/dxMj
+	ML6W1f6ZuIPxy2X3Q4wCHIxKPLwVd1+mCrEmlhVX5h5ilOBgVhLhZbEACvGmJFZWpRblxxeV
+	5qQWH2KU5mBREuf1Ck9NEBJITyxJzU5NLUgtgskycXBKNTD2e7KsOxDObuh5wr3bdqpo7+Wv
+	7x/XmBgqzDNsuqf398KjnYvPGl7wkH/O8fLv01zpNYfMzxix7tVsMbo+LSL5wcPz3+1YZCL9
+	Ky+FWka8WGJXzsNz2fJT8Yx0tQD9F6Lbv/OcU9Fluvh8q9PpAoN71zcefRu49adNX81Spbw8
+	vpl3mnewvipVYinOSDTUYi4qTgQAsqCBdasCAAA=
+X-CFilter-Loop: Reflected
 
+Hi SeongJae,
 
+I couldn't send email to LKML properly due to internal system issues,
+but it's better now so I will be able to communicate better.
 
-On 3/8/2024 12:32 PM, Andi Shyti wrote:
-> Hi Mukesh,
+On Wed,  6 Mar 2024 19:05:50 -0800 SeongJae Park <sj@kernel.org> wrote:
 > 
-> ...
+> Hello,
 > 
->>>> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
->>>
->>> I still don't understand what's the fix here. You are making a
->>> generic DMA error to be more specific... where is the bug? What
->>> exactly is broken now?
->>>
->> This is about being particular while reporting specific error.
->> Like i mentioned, instead of generic DMA transfer error, it should be
->> particular error 1) NACK 2) BUT_PROTO 3)ARB_LOST.
->> Ofcourse when data transfer via DMA fails, it can be considered as
->> DMA Txfer fail.
->> In summary so far driver was considering all failure as txfer failure,
->> but i2c has errors which are kind of response/condition on the bus.
+> On Tue, 27 Feb 2024 15:51:20 -0800 SeongJae Park <sj@kernel.org> wrote:
 > 
-> I understand that, but what I need to know is: does the system
-> crash? does the system act in unexpected way?
+> > On Mon, 26 Feb 2024 23:05:46 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
+> > 
+> > > There was an RFC IDEA "DAMOS-based Tiered-Memory Management" previously
+> > > posted at [1].
+> > > 
+> > > It says there is no implementation of the demote/promote DAMOS action
+> > > are made.  This RFC is about its implementation for physical address
+> > > space.
+> [...]
+> > Honggyu joined DAMON Beer/Coffee/Tea Chat[1] yesterday, and we discussed about
+> > this patchset in high level.  Sharing the summary here for open discussion.  As
+> > also discussed on the first version of this patchset[2], we want to make single
+> > action for general page migration with minimum changes, but would like to keep
+> > page level access re-check.  We also agreed the previously proposed DAMOS
+> > filter-based approach could make sense for the purpose.
+> > 
+> > Because I was anyway planning making such DAMOS filter for not only
+> > promotion/demotion but other types of DAMOS action, I will start developing the
+> > page level access re-check results based DAMOS filter.  Once the implementation
+> > of the prototype is done, I will share the early implementation.  Then, Honggyu
+> > will adjust their implementation based on the filter, and run their tests again
+> > and share the results.
 > 
-> Moving from "you received an error" to "you received a nack" is
-> not a fix, it's an improvement and it should not have the Fixes
-> tag.
+> I just posted an RFC patchset for the page level access re-check DAMOS filter:
+> https://lore.kernel.org/r/20240307030013.47041-1-sj@kernel.org
 > 
-> Having the Fixes tag decides which path this patch will take to
-> to reach upstream. It's important because after it gets to
-> upstream other people will take your patch and backport it older
-> kernels.
-> 
-> I want to avoid this extra work when not necessary.
-> 
+> I hope it to help you better understanding and testing the idea.
 
-Sure, then i think i should be removing fixes tag. It's not a crash but
-it's an improvement. That being said, i think don't need to CC stable 
-kernel list and i should remove fixes tag ?
+Thanks very much for your work! I will test it based on your changes.
 
->> Sorry if it confusing still, but please let me know if anything required to
->> be updated in  commit log which can bring clarity.
->>
->>> Besides, keep in mind, that commits with fixes tags get
->>> backported to older kernels (this one dates back to 5.18) and you
->>> should also Cc the stable mailing list:
->>>
->>> Cc: <stable@vger.kernel.org> # v5.18+
->>
->> Sure, will add into CC. was waiting for reviewed-by tag.
+Thanks,
+Honggyu
+
 > 
-> No need to resend.
-
-ok, sure.
-
+> > 
+> > [1] https://lore.kernel.org/damon/20220810225102.124459-1-sj@kernel.org/
+> > [2] https://lore.kernel.org/damon/20240118171756.80356-1-sj@kernel.org
+> 
 > 
 > Thanks,
-> Andi
+> SJ
+> 
+> [...]
+> 
+> 
+> 
 
