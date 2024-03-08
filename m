@@ -1,133 +1,210 @@
-Return-Path: <linux-kernel+bounces-96633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89484875F29
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:10:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A048875F2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:11:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAF131C22376
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:10:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B97282661
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D333524BD;
-	Fri,  8 Mar 2024 08:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A57B50A9D;
+	Fri,  8 Mar 2024 08:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="15ME6Br9";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="U6R7Rhkk"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="zGqzObWI"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85391D699;
-	Fri,  8 Mar 2024 08:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75A550A6B;
+	Fri,  8 Mar 2024 08:11:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709885428; cv=none; b=nJvcfgL2GX8lLtRJzW0XS7TY3xsRIi3anx2V4AOWuh1TQJKv9regu/o5JMM7+zlhVnXBxYVJzehuj9dBcsIHY/eEsl+qOaMaRFoOWoBb5fMy9vVbDN4YUOnu1aHLpeQuaO48ZNj0WrcyhJfzAzOZ5tv9t2FOdc8steq9pVJBZ5A=
+	t=1709885468; cv=none; b=FC9aMQbk6IIqubd0Ipc/1+Ys9psbiwik9apQLhKysa+QjUEOU0EjbYBvRogKCCtzBgmE7d8XfjhIyPEbR5BXXLxjG+fH8Bzt7VYNFaQ8iEey7SEAlym5RzGNx+hi/ixbv03zm/akP05LH4RXHz8I5nrrRXcBq7iMgDphh4x01Ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709885428; c=relaxed/simple;
-	bh=wqYl+xABsF4/cjTLWzFqzpX2r2AzYBBqqzjPUy+lHfo=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=HeF+wLNkBBESEOpGieybZKYxotijp5EIwTp4HgHW6BS0YtscCiTMgC9JH/0uGWqcf3NO4pVWhxKZVNbdr4rEuBCDsQAmMJkFjgZW1e9aEtBIj/rzzzSbDWDEOemQEtIpJbVBihVDNids9qSTu2aQhNrgh2GH41clseTGuc6aIN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=15ME6Br9; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=U6R7Rhkk; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 08 Mar 2024 08:10:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709885423;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1EE8cHk9aq8DGs6t4JRhIhoGf0zb9ZsCIwTSchrrkaA=;
-	b=15ME6Br9sCns2yhx0wmxBSUYO5AUbdgLn4RQXmXp2qfWsyITezXchXOTOflGu3KWJiqN4V
-	qs288zTCWUGbcXbErXsHp/FcHjy/dkU1jAfMICgqy9vPRSvXm+8bsTdEkg5x11oeysY08h
-	5CrZtgZ4YNuHnlNi+WsMYlNANr2mGldPN/kKXqffpcudlC/ZTCE9Ol8E4Rv34Y+HQavRj5
-	fT7x0x1r8FyogxAM5nacD/oY/ciGrGJFe1PObuF0K7jTcn52EGZvyqMWofPbzk2wIt+K/7
-	2yM9dKAfOhwWvLz4fiU81loVSBH9gP7WAxab8sDiZBnY7/Dl/Z9PaClai6FIIA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709885423;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1EE8cHk9aq8DGs6t4JRhIhoGf0zb9ZsCIwTSchrrkaA=;
-	b=U6R7RhkkdujFeUUxLaeI0KWQ+whSJq7mYJkHnbqpJol5pF8iwgnwsaZG6ZMLV7ccbqZADn
-	uJYfPIP/NO0t/QDQ==
-From: "tip-bot2 for Changbin Du" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sev] x86/sev: Disable KMSAN for memory encryption TUs
-Cc: Changbin Du <changbin.du@huawei.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240308044401.1120395-1-changbin.du@huawei.com>
-References: <20240308044401.1120395-1-changbin.du@huawei.com>
+	s=arc-20240116; t=1709885468; c=relaxed/simple;
+	bh=azvXjbqOy9RcR5PVyxuvJYdzxJhKP1d/eIAG7xygbtg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dyitRCESPNOxnETHIs6EKg72uJIzMVAQD5pnov+BJ8PU9JjQwIm7bhq+PNCdxt5JnwB2IoTS0x7TN00ZQSS3RrtrDa9iU2JOpq4YuAbDuLNKMif087FKxbtmTo/vKN7P3JCv5tnuX4DJEVozupUj+NQ2HsrVSl41KPSvr/0Y+as=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=zGqzObWI; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4288Asj7060202;
+	Fri, 8 Mar 2024 02:10:54 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709885454;
+	bh=G2l3/k6t8Rzejj2TsUUYEtxEjPBCHJVZwIzgx1QUZLA=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=zGqzObWIHxcYJ8qFN0lBD2Gbe3MoAwnvrJmELKN7G1x1ACiYAkvRmyqh1qQ9n8GKl
+	 8QskXp/LVdYyp7eDaag8EFfabhLE6HK0warxfYEQSbfCaUOgolNIci+96Gx7Mpts/a
+	 1mwzP9mY+xx9YBTX4LJmdhOAn5NgHpRiwsM0CSBg=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4288As1i011124
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 8 Mar 2024 02:10:54 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 8
+ Mar 2024 02:10:54 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 8 Mar 2024 02:10:54 -0600
+Received: from [10.249.141.75] ([10.249.141.75])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4288AoZV066587;
+	Fri, 8 Mar 2024 02:10:51 -0600
+Message-ID: <e7320b4c-d6c3-4164-a39b-d77c9ebcc7b7@ti.com>
+Date: Fri, 8 Mar 2024 13:40:50 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170988542239.398.10746491684726406217.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3] arm64: dts: ti: k3-am68-sk-som: Add support for OSPI
+ flash
+To: Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        Nishanth Menon
+	<nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sinthu Raja <sinthu.raja@ti.com>
+References: <20240226095231.35684-1-sinthu.raja@ti.com>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240226095231.35684-1-sinthu.raja@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The following commit has been merged into the x86/sev branch of tip:
+Hi Sinthu,
 
-Commit-ID:     c0935fca6ba4799e5efc6daeee37887e84707d01
-Gitweb:        https://git.kernel.org/tip/c0935fca6ba4799e5efc6daeee37887e84707d01
-Author:        Changbin Du <changbin.du@huawei.com>
-AuthorDate:    Fri, 08 Mar 2024 12:44:01 +08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Fri, 08 Mar 2024 08:59:22 +01:00
+On 2/26/2024 3:22 PM, Sinthu Raja wrote:
+> From: Sinthu Raja <sinthu.raja@ti.com>
+>
+> AM68 SK has an OSPI NOR flash on its SOM connected to OSPI0 instance.
+> Enable support for the same. Also, describe the OSPI flash partition
+> information through the device tree, according to the offsets in the
+> bootloader.
+>
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+> ---
+>
+> Changes in V3:
+> Address review comments:
+>     a. Fix the make dtbs_check error related to ospi pinctrl
+>     b. Increase the partition 0 size to 1MB and update the following
+> partitions start address accordingly.
+>
+> V2: https://lore.kernel.org/linux-arm-kernel/20240219075932.6458-1-sinthu.raja@ti.com/
+>
+>   arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi | 78 ++++++++++++++++++++++
+>   1 file changed, 78 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi b/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> index 0f4a5da0ebc4..d3e869c250a2 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> @@ -130,6 +130,24 @@ rtos_ipc_memory_region: ipc-memories@a8000000 {
+>   	};
+>   };
+>   
+> +&wkup_pmx0 {
+> +	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins {
+> +		pinctrl-single,pins = <
+> +			J721S2_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (D19) MCU_OSPI0_CLK */
+> +			J721S2_WKUP_IOPAD(0x02c, PIN_OUTPUT, 0) /* (F15) MCU_OSPI0_CSn0 */
+> +			J721S2_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (C19) MCU_OSPI0_D0 */
+> +			J721S2_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F16) MCU_OSPI0_D1 */
+> +			J721S2_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (G15) MCU_OSPI0_D2 */
+> +			J721S2_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (F18) MCU_OSPI0_D3 */
+> +			J721S2_WKUP_IOPAD(0x01c, PIN_INPUT, 0) /* (E19) MCU_OSPI0_D4 */
+> +			J721S2_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (G19) MCU_OSPI0_D5 */
+> +			J721S2_WKUP_IOPAD(0x024, PIN_INPUT, 0) /* (F19) MCU_OSPI0_D6 */
+> +			J721S2_WKUP_IOPAD(0x028, PIN_INPUT, 0) /* (F20) MCU_OSPI0_D7 */
+> +			J721S2_WKUP_IOPAD(0x008, PIN_INPUT, 0) /* (E18) MCU_OSPI0_DQS */
 
-x86/sev: Disable KMSAN for memory encryption TUs
 
-Instrumenting sev.c and mem_encrypt_identity.c with KMSAN will result in
-a triple-faulting kernel. Some of the code is invoked too early during
-boot, before KMSAN is ready.
+I see there is one pin SOC_MCU_OSPI0_INT# connected over F17 GPIO.
 
-Disable KMSAN instrumentation for the two translation units.
+Please suggest, if this is being used ?
 
-  [ bp: Massage commit message. ]
-
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240308044401.1120395-1-changbin.du@huawei.com
----
- arch/x86/kernel/Makefile | 1 +
- arch/x86/mm/Makefile     | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 0000325..04591d0 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -33,6 +33,7 @@ KASAN_SANITIZE_sev.o					:= n
- KCSAN_SANITIZE := n
- KMSAN_SANITIZE_head$(BITS).o				:= n
- KMSAN_SANITIZE_nmi.o					:= n
-+KMSAN_SANITIZE_sev.o					:= n
- 
- # If instrumentation of the following files is enabled, boot hangs during
- # first second.
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index c80febc..6ec103b 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -16,6 +16,7 @@ KASAN_SANITIZE_pgprot.o		:= n
- KCSAN_SANITIZE := n
- # Avoid recursion by not calling KMSAN hooks for CEA code.
- KMSAN_SANITIZE_cpu_entry_area.o := n
-+KMSAN_SANITIZE_mem_encrypt_identity.o := n
- 
- ifdef CONFIG_FUNCTION_TRACER
- CFLAGS_REMOVE_mem_encrypt.o		= -pg
+> +		>;
+> +	};
+> +};
+> +
+>   &wkup_pmx2 {
+>   	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
+>   		pinctrl-single,pins = <
+> @@ -152,6 +170,66 @@ eeprom@51 {
+>   	};
+>   };
+>   
+> +&ospi0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
+> +
+> +	flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0x0>;
+> +		spi-tx-bus-width = <8>;
+> +		spi-rx-bus-width = <8>;
+> +		spi-max-frequency = <25000000>;
+> +		cdns,tshsl-ns = <60>;
+> +		cdns,tsd2d-ns = <60>;
+> +		cdns,tchsh-ns = <60>;
+> +		cdns,tslch-ns = <60>;
+> +		cdns,read-delay = <4>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "ospi.tiboot3";
+> +				reg = <0x0 0x100000>;
+> +			};
+> +
+> +			partition@100000 {
+> +				label = "ospi.tispl";
+> +				reg = <0x100000 0x200000>;
+> +			};
+> +
+> +			partition@300000 {
+> +				label = "ospi.u-boot";
+> +				reg = <0x300000 0x400000>;
+> +			};
+> +
+> +			partition@700000 {
+> +				label = "ospi.env";
+> +				reg = <0x700000 0x40000>;
+> +			};
+> +
+> +			partition@740000 {
+> +				label = "ospi.env.backup";
+> +				reg = <0x740000 0x40000>;
+> +			};
+> +
+> +			partition@800000 {
+> +				label = "ospi.rootfs";
+> +				reg = <0x800000 0x37c0000>;
+> +			};
+> +
+> +			partition@3fc0000 {
+> +				label = "ospi.phypattern";
+> +				reg = <0x3fc0000 0x40000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>   &mailbox0_cluster0 {
+>   	status = "okay";
+>   	interrupts = <436>;
 
