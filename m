@@ -1,171 +1,233 @@
-Return-Path: <linux-kernel+bounces-96480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F7E7875CBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:31:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9842875CBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E1881F21ED7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:31:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD1B11C20A96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B69262C1AF;
-	Fri,  8 Mar 2024 03:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B5D2C1A9;
+	Fri,  8 Mar 2024 03:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="jP4H2k0E"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2042.outbound.protection.outlook.com [40.107.104.42])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HGhvAMmP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5FB23741;
-	Fri,  8 Mar 2024 03:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709868653; cv=fail; b=nIAS1jpCWhxHWNHDhz9a+p5bpjvMcm9MF2ds2DK4k7P4P812s/w0mRbb44aKFTI1mibS5FMXnWOlJ88UCOB+GJcNNugzXN3LXawY97sOWz3NoRpbiVY9Oo33RDLX7+Nu1i0UjVynqALLHEJznzsWtOKCR9hir4uRcv2pbvIMw80=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709868653; c=relaxed/simple;
-	bh=JOhRAKj4fvw62eeCqYbycvjXxKdzYlXUQURf0gwWxOk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=FKES2rI4drFLyFXQw1MIY6tV1MWWZYhX2HysvskT16hm8upTsSNyb9f0XZ6AsRgWdC0R/e6oA5FYfHxN8lOa3ISqJBWPsPtj/5itasvAl5lJLFu5YHyk9wIFekS2gSZDveS6fWBHLBfYNhtDDO9FVPkExDxRS2X1KoqOQzbyGVA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=jP4H2k0E; arc=fail smtp.client-ip=40.107.104.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MSvZZWlKa/xgVd6a8eByfHuIWeZrR/t5avWJnESe6b+qzH3yXgErzXEdI/dOTxMX1O6B7WYWg42s6S6RC3a5n7Cq2XQvW8/SRam/xFWp3nj38rDYmvzIIIzB4LPkOAkWfr6lnmFf0hhoHbpRGgt+v4Ou8AWeRiuwck1qWrsnMiK5HvLvDLrCZQuFzManj8fi3pkeLkg4TBL8oiVHI82GOlmZ9PtxbWpnRNPPlKYbZRhx2cA6SRTvhQSJvO4pzAAlJzkmMFb6ioG8lk0BqZ9Ja4OineCOJvMR0iR0T0WQ8U6sVmzcvyGkonUD4CN02bJvkPZ66QiTjm2cTLivFDuFQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JOhRAKj4fvw62eeCqYbycvjXxKdzYlXUQURf0gwWxOk=;
- b=NLfMLAbNNfIEnkcwCQ62oyEribJG5PpsRD4iic/M3ab7FzxyoO6urv7JQ3qDGzaW9ZlVnMXiMDIbigzlWL3Wnst5+UgduCiANYXJJyPZMMDs2uNi6NLlJ42byQOoScgd0uKVkWadfzo1/hwSHEmNEXyIXDA67hGexX8qI8m9dGc/QHfppjdP6+gTrQY74B9sM1yMaun9Ml4RchpOewaxoqExApMpdP2YCJwmFTQ8c3HTOlQWTDZY4XipR/QvT7tZOdTfwvwS8969V7luYhNLr5juDyjy2yUeZP3ujDiHCQyqELDLxuZOQsoJQE66wZtYezpRK3yt3gtkxzv3MQvRlg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JOhRAKj4fvw62eeCqYbycvjXxKdzYlXUQURf0gwWxOk=;
- b=jP4H2k0ERjGzm8ibSXAfcE6tdX2B3PjSJ79EiAqrJjWxUUm/7m5MnSj911AXxZVvhnZSOUrYE/JXSxoLlPB7DTVOxXnjv2nQvYCLTlDpsHGOvrw9IbbQAkhnoKU5Xk7dOgGBFCApIQqsnl0LoatSbGBu92N7l8XyBO5oQfHohUw=
-Received: from DU2PR04MB8822.eurprd04.prod.outlook.com (2603:10a6:10:2e1::11)
- by DU2PR04MB8552.eurprd04.prod.outlook.com (2603:10a6:10:2d7::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Fri, 8 Mar
- 2024 03:30:48 +0000
-Received: from DU2PR04MB8822.eurprd04.prod.outlook.com
- ([fe80::d45f:4483:c11:68b0]) by DU2PR04MB8822.eurprd04.prod.outlook.com
- ([fe80::d45f:4483:c11:68b0%7]) with mapi id 15.20.7339.035; Fri, 8 Mar 2024
- 03:30:48 +0000
-From: Xu Yang <xu.yang_2@nxp.com>
-To: John Garry <john.g.garry@oracle.com>, Frank Li <frank.li@nxp.com>,
-	"will@kernel.org" <will@kernel.org>, "mark.rutland@arm.com"
-	<mark.rutland@arm.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "shawnguo@kernel.org"
-	<shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"kernel@pengutronix.de" <kernel@pengutronix.de>, "festevam@gmail.com"
-	<festevam@gmail.com>, "jolsa@kernel.org" <jolsa@kernel.org>,
-	"namhyung@kernel.org" <namhyung@kernel.org>, "irogers@google.com"
-	<irogers@google.com>
-CC: "mike.leach@linaro.org" <mike.leach@linaro.org>, "peterz@infradead.org"
-	<peterz@infradead.org>, "mingo@redhat.com" <mingo@redhat.com>,
-	"acme@kernel.org" <acme@kernel.org>, "alexander.shishkin@linux.intel.com"
-	<alexander.shishkin@linux.intel.com>, "adrian.hunter@intel.com"
-	<adrian.hunter@intel.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-perf-users@vger.kernel.org"
-	<linux-perf-users@vger.kernel.org>, "imx@lists.linux.dev"
-	<imx@lists.linux.dev>
-Subject: RE: [EXT] Re: [PATCH v6 7/7] perf vendor events arm64:: Add i.MX95
- DDR Performance Monitor metrics
-Thread-Topic: [EXT] Re: [PATCH v6 7/7] perf vendor events arm64:: Add i.MX95
- DDR Performance Monitor metrics
-Thread-Index: AQHacHX0/LKKJL0xVUmo1xu3gKBTp7EsPmsAgADyYtA=
-Date: Fri, 8 Mar 2024 03:30:48 +0000
-Message-ID:
- <DU2PR04MB8822853B582D2FD295E4D0DB8C272@DU2PR04MB8822.eurprd04.prod.outlook.com>
-References: <20240307095730.3792680-1-xu.yang_2@nxp.com>
- <20240307095730.3792680-7-xu.yang_2@nxp.com>
- <85ffb1f4-75d9-4ac5-9be4-9f80b122679d@oracle.com>
-In-Reply-To: <85ffb1f4-75d9-4ac5-9be4-9f80b122679d@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU2PR04MB8822:EE_|DU2PR04MB8552:EE_
-x-ms-office365-filtering-correlation-id: 84e933d5-ca2b-41d1-0f79-08dc3f2025de
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- qVADTMFTNrAS3Ha8fxW7IMPA1IhUMENPKMOcskfGDfs4VFuhfJ6ecJRhyklN3wCd22MNhmH6c2eWuzHBwoKgFrln8U+Kio2bW6HdxqQJQlYiv2J7yY0b7GSkqYAovYFo523pgEmr0HL0ijq8uNUKkFodxiTE3m0ucsHv4+1KgZDsa/DzyjjbMcY286TmAB0aSszvtoH+UuF5FfoTscRBvKoALveHmzPU1s2rKRXcI9bvKaLfsM1ty+OeS1DqBDjHCC7iEzNot5YIdH0LbTdWZ0NzPi/j/VvJYieLMVqWnB0OTkswIY4TTqAT6JCJAscDgyZaFyfntUvM7wmeoerWAa4psGQZcySorq4rFHW4I/jcqU8tRZKlA89qLooSgv1B4qEz8RaCgJi6HnS8uM7Ca2sbSdjLAgjPW0IEl0h12KP+mWSHqFdfqL3UWFC75cKeK73k5PB+MK6vnVZrHRJgplr5sIaxvSyFtT8POEpE2RzUoVh8RnE/NORIx72vnXbr3btk6k06KBBIYqHI+HMQaDSR0O1Hb4wqRKBZUiBMOe2u0TqzM9UvsilSYp/VSnsDP2BPAVhdy0B6cT1MQGZiOed2bvYFisllNmSJN6NB3sQYeQ2sTD9CdzNqAJX7g76Xff8iAgIuxWY1tWIpEeCVOTc2DSU4tTN+3cunSK8B625GDBNY7CCMIbE6uslE87UvLRhH8UhB42xexp/DdBfa3uFdncl5CLNRXx4NXb8yza8=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8822.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(921011)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?BnUvjlOBgs0hMGYw3PIrXt6j7zPHnJ52tm/pgVlSwpo362cWEOuW6UPjBL9b?=
- =?us-ascii?Q?wLTwdZAxgnajJArkRr+HI0fp9N5r4EhhIvcHpFwauxvnYDDISqWOhMx7dWdJ?=
- =?us-ascii?Q?DDS05xJUswet6UgduhfN20BcYLMl3e3V4dtvrcuqkYEbGsXn4fy1hJR+B4xc?=
- =?us-ascii?Q?9h5JnRlD8tnbRFbe/GtD/iPUthRbl2YX0o44J+cGfOBZJ2eFbyNInhZt9LUv?=
- =?us-ascii?Q?QtSJ5ztFyLtRmIVKkvpuE0QkTXaXwBzOqoBH/fNbwPkRfk6IczjeBaGwghs6?=
- =?us-ascii?Q?XyTT/O+AecsooTzfa7y/qoGXQl3FWPbeKAWezDZBU52O4kgK/DzNkp0mPaPQ?=
- =?us-ascii?Q?rAw5lu9X0gSsYYDypE+j49bvs+X9bGE9mew4RkN2p5xuvhq/6BvIPGEJHWJI?=
- =?us-ascii?Q?1Y1xizi1fgESgIf3oFWAcAi/I4mG6lK2nrVBeb3jbbLYyF49RyZ42Sm4PgQm?=
- =?us-ascii?Q?26ge8iikgy6dDJPjLRVb0HZUqaB9E1fOfvt7vDXcpYgbP+QSfnkaWaHuyKl+?=
- =?us-ascii?Q?RaazIdwGyiUi60HQjs9/15Dvmy+ntyJCABkt6ujqXmK7R+JKObT8uXknww0Y?=
- =?us-ascii?Q?434WtRMeUQnYbyDm57iO74uUPAJJFmpbAOVbHdwqH6CZFpyyhEFU377fNeoX?=
- =?us-ascii?Q?leIxWyqAlDEIzU2ahVeCni9wBLkhgy6iX60HWV+Q/x1PFa46Ygm3wXZyrnaS?=
- =?us-ascii?Q?g/oRRHFHyIdlarhyhXuE2UCUhDXDR8yTMZ9RcWYmmrfytrP9xtJJWLT+chC4?=
- =?us-ascii?Q?g8julBcU4mOtd4mT1OHbZB0WJuSZKQjHETKv0/jQCNzVbpMy/gEMQslFnvf0?=
- =?us-ascii?Q?zBKijOVuRuXMt1V8+0/bn6X5japPQk3qQxw+4DtcZ+xc61cYEYFSH09/E2Ei?=
- =?us-ascii?Q?k3zTFqhTAEda8TVXnQGjahbSotJ/TSRFgoTU09XW3ahXLZ0e+D/0VVbrz3Cc?=
- =?us-ascii?Q?9TVKwAuuqqjfJJGaU68XzcssJtmrIf1RRg7BTiZj3ktSoMG/Buo6jJMJKdQl?=
- =?us-ascii?Q?/4Bz0LmbguRtP81QXBnDEp065Cos2A07byNkzVB1B+kg8OUcZBOHkwzIOkGW?=
- =?us-ascii?Q?eQkdLNJxDnfuC2ix+AJqc1XGSJPiz0KGxMss9EAxK378sEHZZ0Di421yOoLM?=
- =?us-ascii?Q?dvDUrUsdT6ptBq2dDrnja5aTGjYvSeczkEQYaOuJbY9PejRKSd6jE20O8uhv?=
- =?us-ascii?Q?9nno6GE+I9XdT9juw09w9iDXAHiTVUNWFh9Q02bESacEaPP6cWrAyjjffgtd?=
- =?us-ascii?Q?qePZwIGwhSCpDC0L/C1eNIzxZfJWHuwzCMnqXCTI4xU3uLuHsggSRVZiN7wn?=
- =?us-ascii?Q?yZuSJ/hyFk2gbZSvk/L7GZRpEN2Wiv79N/xoVK5uSggsa3UWQ9X+YyjXZpbS?=
- =?us-ascii?Q?JlS7rdU9txrLyMakevNg5+cqfqIHCPmrwcsbtftpqZQb7HQNdJaPQbQeAwZ+?=
- =?us-ascii?Q?Kn3l4ZxrkaGsui8aGtVby474O9KrQGBSQ4CIj0pbYzgjeJNBO5XR4GuEk6y9?=
- =?us-ascii?Q?RnxHZCQYniwdgg67+M+yzIq7tCoL0TX3VvIzgC0kqJJfgWjwqci79COitg6l?=
- =?us-ascii?Q?MjySz72Vt20k5i12yiQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C836A23741;
+	Fri,  8 Mar 2024 03:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709868733; cv=none; b=LAEzH7n55IttQZffvQjldL6R7NvZmUCOwSUYm0vrVCwD9T/YcDnh20mAb9wi8hEdOHSpRbCK42BrPZjf4P+dDuKQAF7jipTQjylTQrePHTYKGgLdjzMuIzNkQStoOuwFQlLPOykOzoH4SzKhd4HEK/JTcWBfjmPNBfKzzThJh0w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709868733; c=relaxed/simple;
+	bh=xz2mbi7zbvu6CWgXtWvwpyh3AAA+1Dz5a4MEwUxajnA=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Q70kFHYz8NjXs3UPYeq0eHdRD4PI5ddHmOY0PcDarOObT+AkhGoQ5DxufM4fIjT+S2ZifcVV0SdxeAeMl/13x2EQ4q9iFbmROwF/h7mLTDa8EJIUGUgoFkpWhpbYLWR7PmaIxDxLQ8NdkiGW+dXoxWoUJqcScy7u8ZVJYfCmea8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HGhvAMmP; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709868732; x=1741404732;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xz2mbi7zbvu6CWgXtWvwpyh3AAA+1Dz5a4MEwUxajnA=;
+  b=HGhvAMmP4A0F00387OxCq2Ocsf3s5N33WO2lMOkrAuMVjSWCrKxrH7yz
+   2iZm8hzkNPl4WRRwrp4S8wCJla8xQH901D+nhNsOXBw0Pag/1KH/cAAEt
+   X0PtQOCYG9b5yG1bhWO2cwV6a2fixQQVmZiFT74A9g0RsIMsv9W3u5h3p
+   aAavztoYQq8apCn4V3XVEQqlHicYSGyplmNlmXEeWbOOul0yq69mj+t0z
+   B6p2uMdZR5mvnXWnrnQxKhZanAaAkAFQzfES2CXJ85Mf6DMTOvo1BoowQ
+   D+KGb8rIvKzCTKZ2tk3mrbiptO0lPI7/Ygk40A6WvQPXkObVDb32xGSsO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="5172342"
+X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
+   d="scan'208";a="5172342"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 19:32:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
+   d="scan'208";a="10324634"
+Received: from kkgame1-x299-aorus-gaming-3-pro.itwn.intel.com ([10.225.75.87])
+  by orviesa010.jf.intel.com with ESMTP; 07 Mar 2024 19:32:09 -0800
+From: Kane Chen <kane.chen@intel.com>
+To: kane.chen@intel.com,
+	linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	ilpo.jarvinen@linux.intel.com,
+	david.e.box@intel.com,
+	kane.chen@intel.corp-partner.google.com
+Subject: [PATCH v2 1/1] platform/x86/intel/pmc: Improve PKGC residency counters debug
+Date: Fri,  8 Mar 2024 11:31:27 +0800
+Message-Id: <20240308033127.1013053-1-kane.chen@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8822.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84e933d5-ca2b-41d1-0f79-08dc3f2025de
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 03:30:48.6505
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XxGZLP8+VlLTsEAB67vGvqIg1UvAWfp6DxCCzM944CsjjAbCKIVBpNvoHhZaj6ExCfoBh+3/yE47M8yK7K9hNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8552
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi John,
+The current code only prints PKGC-10 residency when the PKGC-10
+is not reached in previous 'freeze' attempt. To debug PKGC-10 issues, we
+also need to know other PKGC residency counters to better triage issues.
+Ex:
+1. When system is stuck in PC2, it can be caused short LTR from device.
+2. When system is stuck in PC8, it can be caused by display engine.
 
->=20
-> On 07/03/2024 09:57, Xu Yang wrote:
-> > Add JSON metrics for i.MX95 DDR Performance Monitor.
-> >
-> > Reviewed-by: Ian Rogers<irogers@google.com>
-> > Reviewed-by: Frank Li<Frank.Li@nxp.com>
-> > Signed-off-by: Xu Yang<xu.yang_2@nxp.com>
->=20
-> FWIW, Please note that I gave a RB tag here:
+To better triage issues, all PKGC residency are needed when issues happen.
 
-Sorry, I forgot this. Will add this RB tag in next version.
+Example log:
+ CPU did not enter Package C10!!! (Package C10 cnt=0x0)
+ Prev Package C2 cnt = 0x2191a325de, Current Package C2 cnt = 0x21aba30724
+ Prev Package C3 cnt = 0x0, Current Package C3 cnt = 0x0
+ Prev Package C6 cnt = 0x0, Current Package C6 cnt = 0x0
+ Prev Package C7 cnt = 0x0, Current Package C7 cnt = 0x0
+ Prev Package C8 cnt = 0x0, Current Package C8 cnt = 0x0
+ Prev Package C9 cnt = 0x0, Current Package C9 cnt = 0x0
+ Prev Package C10 cnt = 0x0, Current Package C10 cnt = 0x0
 
-Thanks,
-Xu Yang
+With this log, we can know whether it's a stuck PC2 issue, and we can
+check whether the short LTR from device causes the issue.
+
+Signed-off-by: Kane Chen <kane.chen@intel.com>
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+---
+v1->v2: Fixed grammar issue in commit message.
+        Change int to unsigned int
+        Better description for pkgc_res_cnt
+---
+ drivers/platform/x86/intel/pmc/core.c | 47 ++++++++++++++++++++-------
+ drivers/platform/x86/intel/pmc/core.h |  7 ++--
+ 2 files changed, 41 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
+index 8f9c036809c79..10c96c1a850af 100644
+--- a/drivers/platform/x86/intel/pmc/core.c
++++ b/drivers/platform/x86/intel/pmc/core.c
+@@ -1389,6 +1389,15 @@ static int pmc_core_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	pmcdev->pmcs[PMC_IDX_MAIN] = primary_pmc;
+ 
++	/* The last element in msr_map is empty */
++	pmcdev->num_of_pkgc = ARRAY_SIZE(msr_map) - 1;
++	pmcdev->pkgc_res_cnt = devm_kcalloc(&pdev->dev,
++					    pmcdev->num_of_pkgc,
++					    sizeof(*pmcdev->pkgc_res_cnt),
++					    GFP_KERNEL);
++	if (!pmcdev->pkgc_res_cnt)
++		return -ENOMEM;
++
+ 	/*
+ 	 * Coffee Lake has CPU ID of Kaby Lake and Cannon Lake PCH. So here
+ 	 * Sunrisepoint PCH regmap can't be used. Use Cannon Lake PCH regmap
+@@ -1432,6 +1441,7 @@ static __maybe_unused int pmc_core_suspend(struct device *dev)
+ {
+ 	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
+ 	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
++	unsigned int i;
+ 
+ 	if (pmcdev->suspend)
+ 		pmcdev->suspend(pmcdev);
+@@ -1440,9 +1450,11 @@ static __maybe_unused int pmc_core_suspend(struct device *dev)
+ 	if (pm_suspend_via_firmware())
+ 		return 0;
+ 
+-	/* Save PC10 residency for checking later */
+-	if (rdmsrl_safe(MSR_PKG_C10_RESIDENCY, &pmcdev->pc10_counter))
+-		return -EIO;
++	/* Save PKGC residency for checking later */
++	for (i = 0; i < pmcdev->num_of_pkgc; i++) {
++		if (rdmsrl_safe(msr_map[i].bit_mask, &pmcdev->pkgc_res_cnt[i]))
++			return -EIO;
++	}
+ 
+ 	/* Save S0ix residency for checking later */
+ 	if (pmc_core_dev_state_get(pmc, &pmcdev->s0ix_counter))
+@@ -1451,14 +1463,15 @@ static __maybe_unused int pmc_core_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static inline bool pmc_core_is_pc10_failed(struct pmc_dev *pmcdev)
++static inline bool pmc_core_is_deepest_pkgc_failed(struct pmc_dev *pmcdev)
+ {
+-	u64 pc10_counter;
++	u32 deepest_pkgc_msr = msr_map[pmcdev->num_of_pkgc - 1].bit_mask;
++	u64 deepest_pkgc_residency;
+ 
+-	if (rdmsrl_safe(MSR_PKG_C10_RESIDENCY, &pc10_counter))
++	if (rdmsrl_safe(deepest_pkgc_msr, &deepest_pkgc_residency))
+ 		return false;
+ 
+-	if (pc10_counter == pmcdev->pc10_counter)
++	if (deepest_pkgc_residency == pmcdev->pkgc_res_cnt[pmcdev->num_of_pkgc - 1])
+ 		return true;
+ 
+ 	return false;
+@@ -1497,10 +1510,22 @@ int pmc_core_resume_common(struct pmc_dev *pmcdev)
+ 	if (!warn_on_s0ix_failures)
+ 		return 0;
+ 
+-	if (pmc_core_is_pc10_failed(pmcdev)) {
+-		/* S0ix failed because of PC10 entry failure */
+-		dev_info(dev, "CPU did not enter PC10!!! (PC10 cnt=0x%llx)\n",
+-			 pmcdev->pc10_counter);
++	if (pmc_core_is_deepest_pkgc_failed(pmcdev)) {
++		/* S0ix failed because of deepest PKGC entry failure */
++		dev_info(dev, "CPU did not enter %s!!! (%s cnt=0x%llx)\n",
++			 msr_map[pmcdev->num_of_pkgc - 1].name,
++			 msr_map[pmcdev->num_of_pkgc - 1].name,
++			 pmcdev->pkgc_res_cnt[pmcdev->num_of_pkgc - 1]);
++
++		for (i = 0; i < pmcdev->num_of_pkgc; i++) {
++			u64 pc_cnt;
++
++			if (!rdmsrl_safe(msr_map[i].bit_mask, &pc_cnt)) {
++				dev_info(dev, "Prev %s cnt = 0x%llx, Current %s cnt = 0x%llx\n",
++					 msr_map[i].name, pmcdev->pkgc_res_cnt[i],
++					 msr_map[i].name, pc_cnt);
++			}
++		}
+ 		return 0;
+ 	}
+ 
+diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
+index 54137faaae2b2..83504c49a0e31 100644
+--- a/drivers/platform/x86/intel/pmc/core.h
++++ b/drivers/platform/x86/intel/pmc/core.h
+@@ -385,7 +385,8 @@ struct pmc {
+  * @pmc_xram_read_bit:	flag to indicate whether PMC XRAM shadow registers
+  *			used to read MPHY PG and PLL status are available
+  * @mutex_lock:		mutex to complete one transcation
+- * @pc10_counter:	PC10 residency counter
++ * @pkgc_res_cnt:	Array of PKGC residency counters
++ * @num_of_pkgc:	Number of PKGC
+  * @s0ix_counter:	S0ix residency (step adjusted)
+  * @num_lpm_modes:	Count of enabled modes
+  * @lpm_en_modes:	Array of enabled modes from lowest to highest priority
+@@ -403,13 +404,15 @@ struct pmc_dev {
+ 	int pmc_xram_read_bit;
+ 	struct mutex lock; /* generic mutex lock for PMC Core */
+ 
+-	u64 pc10_counter;
+ 	u64 s0ix_counter;
+ 	int num_lpm_modes;
+ 	int lpm_en_modes[LPM_MAX_NUM_MODES];
+ 	void (*suspend)(struct pmc_dev *pmcdev);
+ 	int (*resume)(struct pmc_dev *pmcdev);
+ 
++	u64 *pkgc_res_cnt;
++	u8 num_of_pkgc;
++
+ 	bool has_die_c6;
+ 	u32 die_c6_offset;
+ 	struct telem_endpoint *punit_ep;
+-- 
+2.34.1
 
 
