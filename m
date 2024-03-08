@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-97051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1CC58764E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF2068764E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:17:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 335A91F24F6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:17:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 955D11F25262
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B53523767;
-	Fri,  8 Mar 2024 13:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61ADB3D970;
+	Fri,  8 Mar 2024 13:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i5gJnMO8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AJeLwDrF"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F4E454BD6;
-	Fri,  8 Mar 2024 13:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEDC5676F;
+	Fri,  8 Mar 2024 13:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709903784; cv=none; b=vCgpXmwUyIhIl4VXEwH5OulO6I0gtt3aMFU6WNc0IK+VMD+LOaenSk+iuDryGB07Yiot3ATWkfbf164CMunMDtVp+nmvgiqxqiqmnEkjsFkbEbbTq4xkNFSsNvTcMy4wt8tyByJcNmmnzLROfzvw8aBOPeksooqeUzcOspR334U=
+	t=1709903792; cv=none; b=O6na9JZaFLVvSmu/+VyF0aoHkPQUr/gDD7F/gf6Ue6TGHoXaI/Ih5pO2VpKRMfkOEtMJqQ0gwyrcYVU5iT3V/xUP7ve/A6OGeJ6W0LP6ux7GjT+SZM6h4axHeZrsJjwc2gsy4XvvVOkEydC/+v0b2/Y0QCDWjgY0tFcQGlsxaHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709903784; c=relaxed/simple;
-	bh=Jf0Ify4PqkXxXfo1lgCW0RH1p8hV+xM9o246fKxlK4k=;
+	s=arc-20240116; t=1709903792; c=relaxed/simple;
+	bh=zboSVI3HgVZXbpDBNnsTotqgGm69H9hHwUY1hZ67rA8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=krrM9rZ7FFHGeEjfWRtpUD15GeNfk7RdZ0DB1YXFuFGsMnrrNB3t/E2YLtue88F2lBp2WngU2wQqWiU9kcau2ZP2glpGm5rPkllxocsjdmODXfrRUwXjiIJ6rxDezcxB6ZYslt9zSQnYZkXMunwh7VujOy5C3HE+wQ9zg1UXcZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i5gJnMO8; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version; b=M855xKmvO3Mfx+0dyRrH2yT9VcUHMELrNIjFtWGZFMV7BvW2FTKAXF6YzOEmnPa6eSv0v8uwkBgUXKpVEOVslgzZwYrrlX8yOHULlXC3fi/IzGSUUBIGrhOWAR2/WBNfPbVk+rX9uxXhbDRBp7YY2h5bNjjsHJB0uwTYlLMJ3T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AJeLwDrF; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709903783; x=1741439783;
+  t=1709903791; x=1741439791;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Jf0Ify4PqkXxXfo1lgCW0RH1p8hV+xM9o246fKxlK4k=;
-  b=i5gJnMO81AWqRB22K7efOPL82V8tiTFR/t9QNdR5oe/NDcGUyj83UYLO
-   jZ2tPm1o7+bE7DHCPRlT2fLcC8NzUZYMKmTH02Ss25M11ijx6QlkkliEW
-   +yEHy7yb0j3+u44xv/jiloqdTybwzBSdQWsvcSqx+GjytsvWLHyOeiRKZ
-   Z0u/Xr5DZJcsOIIeYe3IJnibgNeWGmbGZoQksEHAMsWz2HXjpp3vvgkUS
-   cf1u0DGQsQxNBedEuCYxC+S4kyuB91Vhk9BBdAebCZn6JfcXsmcZzHCmt
-   S+BDu6Dbn5t9Z1IIgoFkxiFk04IDOelphA7fltuqV7yJ/+/TGmQ+DDrXW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15342591"
+  bh=zboSVI3HgVZXbpDBNnsTotqgGm69H9hHwUY1hZ67rA8=;
+  b=AJeLwDrFChumvLrBcVDDcwJ2IZDo/B+x7XSl9UYaAL++dgpQCa9IAqqT
+   zFn9SMdcvy+vIHoGotWQlsBzpxvEvBtJcotG0CghSQ6aaJue7kqlKh6eV
+   HRykUwuCB10l1H1RwN2aqdIEyiW/DMMyJBZsOo7YBVTslmfdpOycUTuug
+   jZc9zgWMo5QTnuFnkONSAd75Xe7qCZJvgG8a3N9gdjBUMmn/JA/a1TlYN
+   ZNlcRyOfGO6ac7iPng3bBSIxWCWgRVDakYchBloQ0rqQtktJiy6dyu6B/
+   HXFgLYm4z/1+tkPrwgizuWT4f9CQ/OVVZ8YHtd26t9ehUaji4F878gNCF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15342636"
 X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="15342591"
+   d="scan'208";a="15342636"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:23 -0800
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:30 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="15161463"
+   d="scan'208";a="15161489"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.249.46.63])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:16 -0800
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:23 -0800
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: Michael Ellerman <mpe@ellerman.id.au>,
@@ -82,9 +82,9 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH 08/19] x86/vdso: Make delta calculation overflow safe
-Date: Fri,  8 Mar 2024 15:15:01 +0200
-Message-Id: <20240308131512.44324-9-adrian.hunter@intel.com>
+Subject: [PATCH 09/19] timekeeping: Move timekeeping helper functions
+Date: Fri,  8 Mar 2024 15:15:02 +0200
+Message-Id: <20240308131512.44324-10-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240308131512.44324-1-adrian.hunter@intel.com>
 References: <20240308131512.44324-1-adrian.hunter@intel.com>
@@ -97,84 +97,73 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Kernel timekeeping is designed to keep the change in cycles (since the last
-timer interrupt) below max_cycles, which prevents multiplication overflow
-when converting cycles to nanoseconds. However, if timer interrupts stop,
-the calculation will eventually overflow.
-
-Add protection against that. Select GENERIC_VDSO_OVERFLOW_PROTECT so that
-max_cycles is made available in the VDSO data page. Check against
-max_cycles, falling back to a slower higher precision calculation. Take
-advantage of the opportunity to move masking and negative motion check
-into the slow path.
-
-The result is a calculation that has similar performance as before. Newer
-machines showed performance benefit, whereas older Skylake-based hardware
-such as Intel Kaby Lake was seen <1% worse.
+Move timekeeping helper functions to prepare for their reuse.
 
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- arch/x86/Kconfig                         |  1 +
- arch/x86/include/asm/vdso/gettimeofday.h | 29 +++++++++++++++++-------
- 2 files changed, 22 insertions(+), 8 deletions(-)
+ kernel/time/timekeeping.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 720b96388191..200f80a36593 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -168,6 +168,7 @@ config X86
- 	select GENERIC_TIME_VSYSCALL
- 	select GENERIC_GETTIMEOFDAY
- 	select GENERIC_VDSO_TIME_NS
-+	select GENERIC_VDSO_OVERFLOW_PROTECT
- 	select GUP_GET_PXX_LOW_HIGH		if X86_PAE
- 	select HARDIRQS_SW_RESEND
- 	select HARDLOCKUP_CHECK_TIMESTAMP	if X86_64
-diff --git a/arch/x86/include/asm/vdso/gettimeofday.h b/arch/x86/include/asm/vdso/gettimeofday.h
-index 5727dedd3549..0ef36190abe6 100644
---- a/arch/x86/include/asm/vdso/gettimeofday.h
-+++ b/arch/x86/include/asm/vdso/gettimeofday.h
-@@ -319,18 +319,31 @@ static inline bool arch_vdso_cycles_ok(u64 cycles)
-  */
- static __always_inline u64 vdso_calc_ns(const struct vdso_data *vd, u64 cycles, u64 base)
- {
-+	u64 delta = cycles - vd->cycle_last;
-+
- 	/*
-+	 * Negative motion and deltas which can cause multiplication
-+	 * overflow require special treatment. This check covers both as
-+	 * negative motion is guaranteed to be greater than @vd::max_cycles
-+	 * due to unsigned comparison.
-+	 *
- 	 * Due to the MSB/Sign-bit being used as invalid marker (see
--	 * arch_vdso_cycles_valid() above), the effective mask is S64_MAX.
-+	 * arch_vdso_cycles_valid() above), the effective mask is S64_MAX,
-+	 * but that case is also unlikely and will also take the unlikely path
-+	 * here.
- 	 */
--	u64 delta = (cycles - vd->cycle_last) & S64_MAX;
-+	if (unlikely(delta > vd->max_cycles)) {
-+		/*
-+		 * Due to the above mentioned TSC wobbles, filter out
-+		 * negative motion.  Per the above masking, the effective
-+		 * sign bit is now bit 62.
-+		 */
-+		if (delta & (1ULL << 62))
-+			return base >> vd->shift;
- 
--	/*
--	 * Due to the above mentioned TSC wobbles, filter out negative motion.
--	 * Per the above masking, the effective sign bit is now bit 62.
--	 */
--	if (unlikely(delta & (1ULL << 62)))
--		return base >> vd->shift;
-+		/* Handle multiplication overflow gracefully */
-+		return mul_u64_u32_add_u64_shr(delta & S64_MAX, vd->mult, base, vd->shift);
-+	}
- 
- 	return ((delta * vd->mult) + base) >> vd->shift;
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index b58dffc58a8f..3375f0a6400f 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -381,6 +381,23 @@ static inline u64 timekeeping_delta_to_ns(const struct tk_read_base *tkr, u64 de
+ 	return nsec;
  }
+ 
++static inline u64 timekeeping_cycles_to_ns(const struct tk_read_base *tkr, u64 cycles)
++{
++	u64 delta;
++
++	/* calculate the delta since the last update_wall_time */
++	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
++	return timekeeping_delta_to_ns(tkr, delta);
++}
++
++static __always_inline u64 fast_tk_get_delta_ns(struct tk_read_base *tkr)
++{
++	u64 delta, cycles = tk_clock_read(tkr);
++
++	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
++	return timekeeping_delta_to_ns(tkr, delta);
++}
++
+ static inline u64 timekeeping_get_ns(const struct tk_read_base *tkr)
+ {
+ 	u64 delta;
+@@ -389,15 +406,6 @@ static inline u64 timekeeping_get_ns(const struct tk_read_base *tkr)
+ 	return timekeeping_delta_to_ns(tkr, delta);
+ }
+ 
+-static inline u64 timekeeping_cycles_to_ns(const struct tk_read_base *tkr, u64 cycles)
+-{
+-	u64 delta;
+-
+-	/* calculate the delta since the last update_wall_time */
+-	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
+-	return timekeeping_delta_to_ns(tkr, delta);
+-}
+-
+ /**
+  * update_fast_timekeeper - Update the fast and NMI safe monotonic timekeeper.
+  * @tkr: Timekeeping readout base from which we take the update
+@@ -431,14 +439,6 @@ static void update_fast_timekeeper(const struct tk_read_base *tkr,
+ 	memcpy(base + 1, base, sizeof(*base));
+ }
+ 
+-static __always_inline u64 fast_tk_get_delta_ns(struct tk_read_base *tkr)
+-{
+-	u64 delta, cycles = tk_clock_read(tkr);
+-
+-	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
+-	return timekeeping_delta_to_ns(tkr, delta);
+-}
+-
+ static __always_inline u64 __ktime_get_fast_ns(struct tk_fast *tkf)
+ {
+ 	struct tk_read_base *tkr;
 -- 
 2.34.1
 
