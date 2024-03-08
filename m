@@ -1,115 +1,133 @@
-Return-Path: <linux-kernel+bounces-96632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29251875F27
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:10:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89484875F29
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:10:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D87E6282587
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:10:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAF131C22376
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1116E51C23;
-	Fri,  8 Mar 2024 08:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D333524BD;
+	Fri,  8 Mar 2024 08:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mCRR1Bsf"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="15ME6Br9";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="U6R7Rhkk"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEFFE50A64;
-	Fri,  8 Mar 2024 08:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85391D699;
+	Fri,  8 Mar 2024 08:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709885427; cv=none; b=g7DV5jU4f1KC9Y6nGuTdz1Mu/5WcvDaCi6mR+PpC7BrZWZBPxOGjWy5vvT/d66HVlhIXVqPVsUncYVOdUlmu3ohc4Os3JC1vddsqebh5JP8jzpuRui2jOTuwM+yZIzNw8ZmzMmV8OB3h9Mw4T5XRvMHQ9ORX/8Y9BcXsMZdFMbE=
+	t=1709885428; cv=none; b=nJvcfgL2GX8lLtRJzW0XS7TY3xsRIi3anx2V4AOWuh1TQJKv9regu/o5JMM7+zlhVnXBxYVJzehuj9dBcsIHY/eEsl+qOaMaRFoOWoBb5fMy9vVbDN4YUOnu1aHLpeQuaO48ZNj0WrcyhJfzAzOZ5tv9t2FOdc8steq9pVJBZ5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709885427; c=relaxed/simple;
-	bh=QjZEM1MYYmI+IOq2vcxJk/pRuJdvqllvHwDZJOPw12A=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=nZLM7TNIyLJ5TtqDQSIjiZTvb3g7Z/vJ073FzWkAaOwzMmuGNUprHEYPC7/HQhVZtCuseBEmDESt+Imv3eJ+RiSF3LvEzSS8STGn44I0TAguIaJbHr5lIBRUXCys1GxML2VCw4hLIhrQzUA8Mb1BO4xEJ6EuwUkN0hxpXdKu9H8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mCRR1Bsf; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dcc7f4717fso4793975ad.0;
-        Fri, 08 Mar 2024 00:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709885424; x=1710490224; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hcM7FrNQHVQGFhkrY8ckS/fCn/8FtV3DNgN4UpFrLKE=;
-        b=mCRR1Bsf/OP3MzNpufC9OjgT8kP5rXBIs/lHwa0nhYRGNLd+w9VQj6A05hDRGPSzTe
-         D/f+ZUiyGFcBgJFtAZ9JtHRyEASljabTqO9H3rXun5nfZlAMSQqPPNVQWIt7dr9++NAi
-         +D6VdfU7ulWgOVZLnesu4isGFD/iEZqgeJpwQSUxuliI2jtt2ZvQuS92F9Zx/E9bh5PS
-         JFJlfn8cZvDC7Bcmyx/cpFahcE26PkDV6cKdVtrPswRVGDazcYv0wwezCIyrzAgv9Wm+
-         0D4e7T0MC2AadWm3MFm48YPWor/bpZyvUNsnOkeVqJQd+CV/Hxow3QmhGQwR956LXygb
-         Ou3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709885424; x=1710490224;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hcM7FrNQHVQGFhkrY8ckS/fCn/8FtV3DNgN4UpFrLKE=;
-        b=dVsWAtpLx1Rsj//zukwoffKOKNhTXUuMqvFG2HJO9mStyK+NNyTr3rtYkxx/Beapu5
-         jvYlSIv1Spqg+klkGQeEYDSkJv7Io/j53jpmlb79IFnTzSHq7SpnKUTEl3G0umWxll43
-         Aid+i3A0k6cjxQ4oJmMI496XXQ4MahKwOmziuB5WiTuYWMST0Rnb620Q4TKJ2ixkkBrw
-         hpr6iIBbBWF8VxsYQSBPG6c29QEzpAzeAxjWShblfvjagTX2Ni7yPK6HVXjf8Qwra1h0
-         LcxNVyI3C6f62oeLW4T8MWEZ6Jp2cmmf2EkVt7yGyTM9LM84smWQ4Mzoxp4ZDX0RciXl
-         9vQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWV4iYJb8r4GEvTpbphO+Gm9ShHWo35qrkr46SHq7jYjD4L0oVAZQqBjTdFTGuUuo+LsN2GIxANY/4oh//8of4PuZbHERK4H9AG+3aHSXsodl1tpwJME5+EVeZEx5LGtPpGX3AanpUFvNF3lP4KWRA2+NvsaTX0JP7lgqXf+iYsHgsOK5Me3rw=
-X-Gm-Message-State: AOJu0YziyaOsJTdImpaTwfKpaHOgtcRqWzfsQ8mJZyx2/5rPx/Yb6x0S
-	UOnMBNGMNsYdgTeyiQfsKOnSvVYCqhAGgui55Mzhst8fhNjsLidWfRe+WtlP
-X-Google-Smtp-Source: AGHT+IGrBuaPbsZ3jHUc+Hl21nNzlKHS6HWAKWT/9bvJ4uIRvOv547zmcLIbLtccSHPy4ErvBnLWfw==
-X-Received: by 2002:a17:903:1104:b0:1dc:cbc0:1971 with SMTP id n4-20020a170903110400b001dccbc01971mr11852309plh.49.1709885424308;
-        Fri, 08 Mar 2024 00:10:24 -0800 (PST)
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id x1-20020a170902a38100b001dd1bdee6d9sm8857439pla.31.2024.03.08.00.10.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 00:10:23 -0800 (PST)
-Date: Fri, 08 Mar 2024 13:40:19 +0530
-Message-Id: <87r0glp2j8.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>, "Darrick J . Wong" <djwong@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 4/8] ext4: Add statx and other atomic write helper routines
-In-Reply-To: <e06621b2-8b33-41ec-a049-1befe83cdb5c@oracle.com>
+	s=arc-20240116; t=1709885428; c=relaxed/simple;
+	bh=wqYl+xABsF4/cjTLWzFqzpX2r2AzYBBqqzjPUy+lHfo=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=HeF+wLNkBBESEOpGieybZKYxotijp5EIwTp4HgHW6BS0YtscCiTMgC9JH/0uGWqcf3NO4pVWhxKZVNbdr4rEuBCDsQAmMJkFjgZW1e9aEtBIj/rzzzSbDWDEOemQEtIpJbVBihVDNids9qSTu2aQhNrgh2GH41clseTGuc6aIN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=15ME6Br9; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=U6R7Rhkk; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 08 Mar 2024 08:10:22 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709885423;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1EE8cHk9aq8DGs6t4JRhIhoGf0zb9ZsCIwTSchrrkaA=;
+	b=15ME6Br9sCns2yhx0wmxBSUYO5AUbdgLn4RQXmXp2qfWsyITezXchXOTOflGu3KWJiqN4V
+	qs288zTCWUGbcXbErXsHp/FcHjy/dkU1jAfMICgqy9vPRSvXm+8bsTdEkg5x11oeysY08h
+	5CrZtgZ4YNuHnlNi+WsMYlNANr2mGldPN/kKXqffpcudlC/ZTCE9Ol8E4Rv34Y+HQavRj5
+	fT7x0x1r8FyogxAM5nacD/oY/ciGrGJFe1PObuF0K7jTcn52EGZvyqMWofPbzk2wIt+K/7
+	2yM9dKAfOhwWvLz4fiU81loVSBH9gP7WAxab8sDiZBnY7/Dl/Z9PaClai6FIIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709885423;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1EE8cHk9aq8DGs6t4JRhIhoGf0zb9ZsCIwTSchrrkaA=;
+	b=U6R7RhkkdujFeUUxLaeI0KWQ+whSJq7mYJkHnbqpJol5pF8iwgnwsaZG6ZMLV7ccbqZADn
+	uJYfPIP/NO0t/QDQ==
+From: "tip-bot2 for Changbin Du" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/sev: Disable KMSAN for memory encryption TUs
+Cc: Changbin Du <changbin.du@huawei.com>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240308044401.1120395-1-changbin.du@huawei.com>
+References: <20240308044401.1120395-1-changbin.du@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Message-ID: <170988542239.398.10746491684726406217.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-John Garry <john.g.garry@oracle.com> writes:
+The following commit has been merged into the x86/sev branch of tip:
 
-> On 02/03/2024 07:42, Ritesh Harjani (IBM) wrote:
->>   	}
->>   
->> +	if (request_mask & STATX_WRITE_ATOMIC) {
->> +		unsigned int fsawu_min = 0, fsawu_max = 0;
->> +
->> +		/*
->> +		 * Get fsawu_[min|max] value which we can advertise to userspace
->> +		 * in statx call, if we support atomic writes using
->> +		 * EXT4_MF_ATOMIC_WRITE_FSAWU.
->> +		 */
->> +		if (ext4_can_atomic_write_fsawu(inode->i_sb)) {
->
-> To me, it does not make sense to fill this in unless 
-> EXT4_INODE_ATOMIC_WRITE is also set for the inode.
->
+Commit-ID:     c0935fca6ba4799e5efc6daeee37887e84707d01
+Gitweb:        https://git.kernel.org/tip/c0935fca6ba4799e5efc6daeee37887e84707d01
+Author:        Changbin Du <changbin.du@huawei.com>
+AuthorDate:    Fri, 08 Mar 2024 12:44:01 +08:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 08 Mar 2024 08:59:22 +01:00
 
-I was thinking advertising filesystem atomic write unit on an inode
-could still be advertized. But I don't have any strong objection either.
-We can advertize this values only when the inode has the atomic write
-attribute enabled. I think this makes more sense. 
+x86/sev: Disable KMSAN for memory encryption TUs
 
-Thanks
--ritesh
+Instrumenting sev.c and mem_encrypt_identity.c with KMSAN will result in
+a triple-faulting kernel. Some of the code is invoked too early during
+boot, before KMSAN is ready.
 
+Disable KMSAN instrumentation for the two translation units.
 
->> +			ext4_atomic_write_fsawu(inode->i_sb, &fsawu_min,
->> +						&fsawu_max);
->> +		}
->> +
->> +		generic_fill_statx_atomic_writes(stat, fsawu_min, fsawu_max);
->> +	}
->> +
->>   	flags = ei->i_flags & EXT4_FL_USER_VISIBLE;
+  [ bp: Massage commit message. ]
+
+Signed-off-by: Changbin Du <changbin.du@huawei.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240308044401.1120395-1-changbin.du@huawei.com
+---
+ arch/x86/kernel/Makefile | 1 +
+ arch/x86/mm/Makefile     | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 0000325..04591d0 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -33,6 +33,7 @@ KASAN_SANITIZE_sev.o					:= n
+ KCSAN_SANITIZE := n
+ KMSAN_SANITIZE_head$(BITS).o				:= n
+ KMSAN_SANITIZE_nmi.o					:= n
++KMSAN_SANITIZE_sev.o					:= n
+ 
+ # If instrumentation of the following files is enabled, boot hangs during
+ # first second.
+diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+index c80febc..6ec103b 100644
+--- a/arch/x86/mm/Makefile
++++ b/arch/x86/mm/Makefile
+@@ -16,6 +16,7 @@ KASAN_SANITIZE_pgprot.o		:= n
+ KCSAN_SANITIZE := n
+ # Avoid recursion by not calling KMSAN hooks for CEA code.
+ KMSAN_SANITIZE_cpu_entry_area.o := n
++KMSAN_SANITIZE_mem_encrypt_identity.o := n
+ 
+ ifdef CONFIG_FUNCTION_TRACER
+ CFLAGS_REMOVE_mem_encrypt.o		= -pg
 
