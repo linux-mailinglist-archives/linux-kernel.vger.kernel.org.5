@@ -1,324 +1,230 @@
-Return-Path: <linux-kernel+bounces-96566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D7B875E41
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:10:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A892A875E46
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 787171F24D3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C998281066
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A631B2C848;
-	Fri,  8 Mar 2024 07:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41104EB5B;
+	Fri,  8 Mar 2024 07:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="QbTPBYei"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="jue+IQCv";
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Ef0RA7+4"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBC42E3E4
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709881799; cv=none; b=mWD4g++UYxQnlc/l9yVHjr49X2hmon3WsOnVpSxMhiATA1txiSU95Ba8I0f3g23N5A/n42IyuATxJ0Q1LLnWGQwYUcHFMdQWVb06sA6xj3iR7IoOhjGPml6hqi94ZwCFgoratY6dSK8lot0kZLutkaBPZ88IDfDyRTrFUg5GGls=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709881799; c=relaxed/simple;
-	bh=zRZa5pLUOC5g9yma7RyKYKAPSpayxGnS5uyQlDWGukc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XY0esn3A65DYSRvzJ4adt5q92D8vwVmAC/91GnjPj1lL2Pf2A6s5SQ/K9YauWLcy7dCYtWklxHFnqoo1eIXjVBlw6kFqiFBhTJ5WTCPUunPx5ttD1WosR3eCBm1oQ5BSNxqSZA++3cylW0ESL2vYwoNO6ND3of9xwjiUCcZ6iIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=QbTPBYei; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e4f7e1af80so207630a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 23:09:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1709881797; x=1710486597; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4mzC03zGyATOP3gzEZUnSU+K1YFl+dHhu2DUvP/mur0=;
-        b=QbTPBYeiMMrnXyebM095xVgAfc1vivYqVcuQa3qEmpLbAKjCuj/O0LPOcVQ4s6IUyI
-         RwaBUvtmC31CzL+3qusGEt7CjtewcN9GeYGmHkanComAvQcY2jgdJjxQKHzqnOF3+eYI
-         Mt6M17vWVLJw5qFNmm5v4oOJCKgphTfzrtcZprVddHY2+rvMP2E9lBuGIzwFbOdED9yn
-         Vg90qiDXn/g0KuOJVH/uVdd6QSWzJbx3EwuVhNdLI69ZATyf+zG1OKJ2pjDaPwlkjJ6J
-         4ZZaZ34sG9i+8FiJuPMMi6xRwu5vRs94oaKL3iAsKvreeDIRiwxeq+ukcmrlRr57io3g
-         NcQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709881797; x=1710486597;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4mzC03zGyATOP3gzEZUnSU+K1YFl+dHhu2DUvP/mur0=;
-        b=BNkZjV7McU/y3S11HOQcw6M4s+gVdaTPhPI+BhLt6rdJuH+kCYu26fd1wJ59KK/i+7
-         tAGZSiyFXvBJYBGV2S3y8lNAo/H4FUSSFogvFuPjcJ65yIoPecGQZhSHv59jya0ClRXS
-         KmVowlHlV+3lB2ZwwiiGVmP6DU6v95xreuEuDcYvNGHVm5sNJpA4TDDDrg41gd6+YRFJ
-         8CnJsGa0IBczworWgvXpC66y8ktc8e0nOqmcFIu+1yFp5TJBZ5rksWpxU0R+KL9LqW15
-         zREVCBRu9Ki6q9DwcJ6Xm5m7KVFA5c7NL85L/xFqMyKGmBxONQex5LW8Giywkqp8yccj
-         77yg==
-X-Forwarded-Encrypted: i=1; AJvYcCX3fL8P83RkobYgZY6Le4oO8hRwjvqmuUAm/i/pYoac+kBT8g5pVApTkAZR0nV+0/gZE8WVMyvxL+dSSmBkTvp8BGEwLuRhfpdZWtYC
-X-Gm-Message-State: AOJu0YwRWHsBR7qM0ieERyY0repbM6vrYE6JW6RYc8Iv8p0VzcIXrJyK
-	IxLB7CtaD5WhSbciqEshksCSulCrrYovOE5FlxE/eBgkK7WdGF4rRWDESrB5QAtUA+AawYA2NZ+
-	/j3hrXUte4BhmZXwStYojhPNxqMuA/HkQhJcQDA==
-X-Google-Smtp-Source: AGHT+IGJaQPKULBRKwom8yBScA6iZBIqZ91f3P5FmgQwZCLuAnfKfifGfvdvenmLvSeYDN939jyjfi7/aTwKnk/aEzU=
-X-Received: by 2002:a05:6870:1649:b0:221:45a1:b72a with SMTP id
- c9-20020a056870164900b0022145a1b72amr2439591oae.35.1709881796686; Thu, 07 Mar
- 2024 23:09:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794502E3E4;
+	Fri,  8 Mar 2024 07:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709881959; cv=fail; b=rYIl7OoyCL95FdjY4wMVePve7F2svDjBLbjCXLIauY/mUXfN2ZorilM4nDVx+hz0HuYbbRYhaxzaKavnwRWe/Pss9Jp8CVHhmatZgoLMG14e6vHt77e3oJ8fP88fPh2cy4LvvdY2oYTQSpf+iAPm7PUfAIYp0N9vdez2fGetYVI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709881959; c=relaxed/simple;
+	bh=Q9onVWUgxzOrYnrDj2JM6NnTwcw7d6dEgkJJxzgHzIo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Au+rnfU7F1Tf4XeDnBpOZXU9dCDMxIxixwmNLnvU/30/AMoEH4nXWPckjpXjykE+Ea8JpUjBbQYDLx+QRIrVwLg7YOMdVlvcpIaDA7GH8Pf3atF9t969o6WC1+Ur5h/FimiOgHN4b4f9upxAmeNtUj9kLluBqlZj8TCjZxLVSpM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=jue+IQCv; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Ef0RA7+4; arc=fail smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709881957; x=1741417957;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Q9onVWUgxzOrYnrDj2JM6NnTwcw7d6dEgkJJxzgHzIo=;
+  b=jue+IQCvG/HBCbz31OivgSYCxJ6yU00O8OnIhkfNOJPpmJiMM7aIN3Q+
+   Cvgx3hdOu7gV7uek2f0dXGFVEiV/JNu1/Rg4M8XDOvf1NHbzYAs7kG82D
+   yEfj1RXsBC6gXCX5HCxGTtoOLm/FWfxWaHiALfRZpVPnDMzUpe+albpeJ
+   xGSe3KHhjwBHgxz7zIgQ6VMj4e7+iqRYqbvNoxlNERabaJtKMEJ6cG18k
+   +EugMwnFPlM4w4w8fMYqE7lIBYWYCLOz0CFWF1nNi+intta6QjqrJZ+Qg
+   56aYf3MqU/16S5yhv/XN6fYfNuMF4FBSiVd8BvFbhLwIVQwPAvQ4Fr7vl
+   A==;
+X-CSE-ConnectionGUID: SPiBj3hbRUu0v9NOP4wn5Q==
+X-CSE-MsgGUID: boyG+1BUQyKgB1vQcm2oWw==
+X-IronPort-AV: E=Sophos;i="6.07,108,1708412400"; 
+   d="scan'208";a="17925623"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Mar 2024 00:12:34 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Mar 2024 00:12:16 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 8 Mar 2024 00:12:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ViSfHQvAOW+atbjw4aMnw6P8wR4JUDp1L0Rm2W8staGuC+iF1aEegPLICQ1o/Ja61eHMdh0ZuKfURRbkQBW1NmmZhZWmVNIDiFKZbxotQHqexrBsYlgnK4qSdLJQCAqBxnN4XXIZ8l1nZh8dLx123qy8IAf90mI3rxfbdQAevVRKT0k1c/G7CvLQPQ1P/X8XtoWyztfIwfJzMcNIlrF53kRExqfS+Q0RyvQoeKaAM/fAsPb2FgIqzYTUl5/J08qKTXc5Ea8GCi8ibFB8Gesci5AK0FEodQ9iL7A15KV8wt+DvG3s/IiyUS08dLktEVZEZyiEgBJEsTV3XpF1gs5Hbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Q9onVWUgxzOrYnrDj2JM6NnTwcw7d6dEgkJJxzgHzIo=;
+ b=FatQz511LzXXApybiLAM66XqyyuPctpf/VrETWCTnKBeAfet6sR3zaG21/rK/l5QLdaxGgi2o6yIfhwDdCVVYIUwCLEOsvNV/nNEp9+p1MJjufmwV9Wv3e4S7K9jJIqXTdtDl21iFWguQr0GCHHL2Pu5/bJ6jrsAtuLixeGAjicZWEr4jddMIuXU4aZynZONapNL7qAg9oVVBrNsiRN0mJn1WT7gBb+2nXIS67uTgXLA1HQovJ/YrKgp8KP8pPXDvuWRW2es6uy5JenJ3gGup/Vw0uGf6BmhgFt8VWXRqcX9Y0+GvfPBd+0trl0AihNFHKSYsbcNN2D4HPXTiH0Fqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q9onVWUgxzOrYnrDj2JM6NnTwcw7d6dEgkJJxzgHzIo=;
+ b=Ef0RA7+4byDkb5MT033yjMyms5UuC4ZorIobDE4/Xnzh+mNr3Y94vOtTpDnGeAvh6HbJ2t1pl7B0WE+Wy9KaSqYI05tFAcG9Mjo0kKbsBhlDmCIbBd2FM9MFlx2/gvwZUtbPkVuVsAjZQ7Eg0mISFB+7JKJPtxD/zGkQUrw8ZyD6YdugW6Eyz85hCuTfyrgR5WLadFyAKyzyGGaTiNWc0bq8eLgCO3I7d+KCwZhN1UYpnLWBW86Yh+3fJXPGdt7pImMXFxDEbj7QdXRCgGVj252vb1M1T5N2MgLGCGm7e3SH3Xqw00WpzHgOrwEkVVRk9Rn77ySndA2TqRCel5AApA==
+Received: from SA1PR11MB8278.namprd11.prod.outlook.com (2603:10b6:806:25b::19)
+ by CH3PR11MB8467.namprd11.prod.outlook.com (2603:10b6:610:1bd::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Fri, 8 Mar
+ 2024 07:12:12 +0000
+Received: from SA1PR11MB8278.namprd11.prod.outlook.com
+ ([fe80::f633:b9d4:f539:177d]) by SA1PR11MB8278.namprd11.prod.outlook.com
+ ([fe80::f633:b9d4:f539:177d%6]) with mapi id 15.20.7386.006; Fri, 8 Mar 2024
+ 07:12:12 +0000
+From: <Parthiban.Veerasooran@microchip.com>
+To: <andrew@lunn.ch>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <horms@kernel.org>, <saeedm@nvidia.com>,
+	<anthony.l.nguyen@intel.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <corbet@lwn.net>,
+	<linux-doc@vger.kernel.org>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<devicetree@vger.kernel.org>, <Horatiu.Vultur@microchip.com>,
+	<ruanjinjie@huawei.com>, <Steen.Hegelund@microchip.com>,
+	<vladimir.oltean@nxp.com>, <UNGLinuxDriver@microchip.com>,
+	<Thorsten.Kummermehr@microchip.com>, <Pier.Beruto@onsemi.com>,
+	<Selvamani.Rajagopal@onsemi.com>, <Nicolas.Ferre@microchip.com>,
+	<benjamin.bigler@bernformulastudent.ch>
+Subject: Re: [PATCH net-next v3 03/12] net: ethernet: oa_tc6: implement
+ register read operation
+Thread-Topic: [PATCH net-next v3 03/12] net: ethernet: oa_tc6: implement
+ register read operation
+Thread-Index: AQHab6N33BKSiButbU+b9vGzVOsXAbEraxEAgABw/QCAAGmdAIABKuyA
+Date: Fri, 8 Mar 2024 07:12:12 +0000
+Message-ID: <07d3d73b-c920-4503-ad6a-d59fb1b5458a@microchip.com>
+References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+ <20240306085017.21731-4-Parthiban.Veerasooran@microchip.com>
+ <48b65759-6e69-46ef-a2ed-857d04eadac8@lunn.ch>
+ <83e0b340-521e-4d60-90bb-92d2ca6f5abe@microchip.com>
+ <d2f254b9-7e7a-46ed-a979-00bdf92899ac@lunn.ch>
+In-Reply-To: <d2f254b9-7e7a-46ed-a979-00bdf92899ac@lunn.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR11MB8278:EE_|CH3PR11MB8467:EE_
+x-ms-office365-filtering-correlation-id: 88ccfb7d-8c0a-4372-aae9-08dc3f3f13ab
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KucZGWzI9WrzfoLNBLinTQ4vU4TO07VJMTSxcyppZ5n0AnUpJCUfmN+LqBE8/ObTfc8gV/QYcgY8x1W7khUjsWqCgRf15NjkECowGT47jwm3aMv8bokaKVlLiiy2L6SEbzrBG1KRaXLbdp3vVPDOHy3FDKDL8nzw7Pb+OKKGjDj6jSXG+hdlIzIya8H65UCpWfWkeUlk5fR2ZQuwPN0AcD+z22TqOJjbNG4A2jtqkxMfnKMZF/aHaOHqRFuFuoWwndUXosSJsx3Y2MOhuvpVZEUY/2bqo6ZwSnR7oQVB8QnJNjC+2FLhgNWMO5CVijrlA+fvik9J8rqMJKSJi8tsAqjIQbYFZKv3T477is6hiafV8wpYTmJceHsjrhlZ7+PFtCMJJYpIohAqEoukU+r3taHjD+SWcG9quEQjYUNeDOWZb4iriz5nr5SOQdcPLqo9VaPzCGwMEVuOFBG+32BSvTsE2xEkHsaEf//NJdvW+QOq5qyL/UWb0PoOPYlhagJJ212zAmB4lqVXtXq/7KUvvr1Ehxp9qSw6Yk8CFXgt+6OZmv193WAPPzH+r6FffpIeygfDlGbzZcLKsHyPIFmRU2AqLkgm6rmbsOd/S1Uniabji0ok09kyURMC+DnPle81U9akGSXALcD3Nxy0hp/ODlzzx6Pao7+3Tip979cw24YDDqRNSd811YCX7YHy8ALsh/xkVIsIenWCJBzuWGq9DpmPq1982mpBBFrrF47Glrw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB8278.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WEdTSEJHKzdJaDFqNGwwYTYxNGh4OEdXekVUYU4yVVJtNmFqYzRSM3FpZVdJ?=
+ =?utf-8?B?NDI3djRGd1lseGZvakh3ekZoa1c0YUNNcGFHR2dSVUhoMXZjbzZOK3NIOUIw?=
+ =?utf-8?B?eHpWaTdtNTlkZlo2YnNXWkM0UC9xNy9tV0tkdUZZVXlnNTRHYWhzeEFaeWU2?=
+ =?utf-8?B?dGJmeDlkano1YTJDU3daQkNpTTlPVVd5dnJsV2g0UkUrdnRSdkRlbEJPcE5l?=
+ =?utf-8?B?MlZqTE4rakIwSFpFL1BJaUFJR25vN2l1STBXdkthS09jbS9PcE5FQnJ4MU4x?=
+ =?utf-8?B?bWpGa29kNkhzTUFLL013akxOcVl1MTVQcmc0c0VocWdJbU9ZVXV6Ry9VVnRn?=
+ =?utf-8?B?WVJvaW9obFZpM1ZDUzdXQUU2QXJhMGhCRHpkc1FrUm9yOVpPUG5aazh0ckpi?=
+ =?utf-8?B?R0F4a0kvL2RBd05jM0JSclBFVGFKSGxkY1JBZWJ5Qk5mdjdxN1VsMlVaYkZE?=
+ =?utf-8?B?dVhPUkswZndmeXU0c1NBeS9jd01BRUVBZXIzTE9DWHpONHNENmlkMUdtY2F3?=
+ =?utf-8?B?VjZBUkN1anNJdnVKTzNzakNxVTV5VVNtbUREc2kxL0FHLy9pS3V1dURKQWFr?=
+ =?utf-8?B?RGRXUzN3cFo1Y1RQRVg1UzJNbDNqenFsbkt2Y0dBL1RMTnRsbTdLNElJM2FP?=
+ =?utf-8?B?NnJQKzg2Mk02OEFaS3p6TU92L2hZYlVuL252ZktFRFhXU1ZpblRyc0wxTmFp?=
+ =?utf-8?B?UWw2VmJoN212M3BneHRXWHdzelNkRGlvcDFXZWs3ZWdKcC9CKzluV1pZTzcy?=
+ =?utf-8?B?UVF1SHlGZ2hjWWFjOGE2WlNEMTk5TkFnUytDMGJLV3BOdlVteEpCbktvWStR?=
+ =?utf-8?B?VHFuZHhRVHNHai92d0o2WUZHT3pmUkhXN2NJT0tQdnJ4VE15SkNKZ1ZzeHZV?=
+ =?utf-8?B?QngzdHJJN2dxbjJ1SWNLaUhCUENvSXc3b0FDdC9KT29vRGVLd1JwdHVNMEdt?=
+ =?utf-8?B?bmVHZDJhZ3hxNW5mYWQ0dE5yaWtjWHlRcm5IekRneTFXWVNWajdDbnQxNEpN?=
+ =?utf-8?B?NDNETVM2TlJwQVdROFlwUStPQkZGQ2VNVjRlT3NIZDdmL1FvYkhWdlkwdE1q?=
+ =?utf-8?B?TXd1MFVMNGZGTEtJRnZBT1dISDQ4YnBISUVzbWFIVktUQWFyNVFuUFhQbTM0?=
+ =?utf-8?B?bUJKWmQvSkxzelZ2eVo1azc2YVFmazQxS1NMd2dWQ0R3NGdWNUZIWVpMdjlV?=
+ =?utf-8?B?a3c0QnFZNHV0aG8rU3lKSmxFaWJlTm1tenVqQlhIQ0doajFDMjE2WVB6SzNN?=
+ =?utf-8?B?Vk5SQ1g5bi9QalN2S3hiZWkwbk5MRlBpdk5BaTM1L0xvY0NBaENZbUdXZnZ6?=
+ =?utf-8?B?Skllayt0WHl3b0lRY3pBY1BFdGpFOEhNMUpKZkdqcEJWVUhMU1dGcmk4WWZk?=
+ =?utf-8?B?RDJBTThOSUhzcU5WbjdEdGtSU0FicHlMZkNaaE9Id3l4R3RXcTRMZVB0bGdm?=
+ =?utf-8?B?cy82aXJhdnNGcllFNFEyM1Y5M0s2SG5DOVdDUm5FbjdnUForVlJaVVVjMUFG?=
+ =?utf-8?B?enAyU0VOM0JtcTZTR0Z5bEJSQUliZFlBUDhzdVhIOFZHUzNNQnpjeWZQbHcx?=
+ =?utf-8?B?NWgrNWliRjRzTlV0NGIzRXAxYmxyTExvbGE5Wk82V1ZFRFRmaW9ucnB4SE01?=
+ =?utf-8?B?ZE91dWhqWlg4TWo4TlB0aTlvSVNudDhCTVNFSXI0T2VEN0JWWTF4Nml0aHRT?=
+ =?utf-8?B?N3hIQU51SlNxU013dGJySU9Rc09NdGRsYmJzV3NzRWlVZm9RWXlTYnFmYUdj?=
+ =?utf-8?B?Q1VCWCtjVDJIL0JFNmhhNWFoY1BFUnJpYmdTM1QzKzZobzg1UEN6d3ZSM2ZP?=
+ =?utf-8?B?UnN5STVEK0xzN2F2bURDcGJIbVk5VkVBSWVkNTlBeGEwc3dVYjNhVEhHY0Mv?=
+ =?utf-8?B?R096TXlzdXo3NEVGYWlTL0ExNjE4aUFJUjlLdmdPRDZLdzVySklwOXdtd2lo?=
+ =?utf-8?B?QitlSUpmSTVjWHp4eW41T20vdjJtckdGeHV1Ukh1cSsrOVZGbGhsUUU3MWg1?=
+ =?utf-8?B?WGNCUTEvRWxLUDBGcGdhdlQ1Z2R4NkJha1FySERUeEs3SE5ERmxwK0V1aThQ?=
+ =?utf-8?B?dnQvZHJUYWptTFhXTnlCQXpBREd0T2hrckY4Zjg4YnpCbzd0OTdlNkxnWEN1?=
+ =?utf-8?B?UVlkZ2JpMUdOcnRlL0tSZXlEelM5YjlibjBzTFdidGpzSU1GVytpY3pDcy9P?=
+ =?utf-8?B?RUE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C87D3FC4A62B1140BA43D6612E439CEE@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMj1kXH1oMbONoHFMPaatfaqrHNE2ryfrG7kw-7J-eFsuXkK-Q@mail.gmail.com>
- <mhng-c53211c1-4708-459a-bdc5-6e013c2adaee@palmer-ri-x1c9>
- <CAMj1kXEFqMx8qUHQEbg=OqbG-H0Zpj-nWu=a6qhhvNEZPO7f4Q@mail.gmail.com>
- <CAMj1kXG4SXsBfNqWMRUJ+AVv=6trWUAow-f8Mk5oKCpO=WueFg@mail.gmail.com>
- <CAEEQ3wkN3HDUuPDfWTn4kTxKH03OaRxBTFru3jJzZgW+BVhABg@mail.gmail.com> <CAMj1kXHuKbaXqWuFuMXhfL1_2w05CfJrk2uAPOW2HNHdpEnxXA@mail.gmail.com>
-In-Reply-To: <CAMj1kXHuKbaXqWuFuMXhfL1_2w05CfJrk2uAPOW2HNHdpEnxXA@mail.gmail.com>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Fri, 8 Mar 2024 15:09:45 +0800
-Message-ID: <CAEEQ3wnv47x+FXYQ1=DdQdgRrp_EgX+C9eH+-JMPWh5p2450Zw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 3/3] efistub: fix missed the initialization
- of gp
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, 
-	xuzhipeng.1973@bytedance.com, alexghiti@rivosinc.com, samitolvanen@google.com, 
-	bp@alien8.de, xiao.w.wang@intel.com, jan.kiszka@siemens.com, 
-	kirill.shutemov@linux.intel.com, nathan@kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org, Conor Dooley <conor@kernel.org>, 
-	Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB8278.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88ccfb7d-8c0a-4372-aae9-08dc3f3f13ab
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 07:12:12.5160
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9wlOgRFt5E8NHIm785ER85NHKmEGuZ5av3w3S2+O0YdxUHHe1xmgcg1VretEvyj13leWEGFc5DMYemwaVtAfabR+U+qRajp5dWKtgAJ3dRglVxPHPVV6Ps/7aHn7bOLA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8467
 
-Hi Ard,
-
-On Fri, Mar 8, 2024 at 12:49=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> wr=
-ote:
->
-> On Thu, 7 Mar 2024 at 04:19, yunhui cui <cuiyunhui@bytedance.com> wrote:
-> >
-> > Hi Ard,
-> >
-> > On Thu, Mar 7, 2024 at 12:15=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org=
-> wrote:
-> > >
-> > > On Wed, 6 Mar 2024 at 16:44, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > >
-> > > > On Wed, 6 Mar 2024 at 16:21, Palmer Dabbelt <palmer@dabbelt.com> wr=
-ote:
-> > > > >
-> > > > > On Wed, 06 Mar 2024 05:09:07 PST (-0800), Ard Biesheuvel wrote:
-> > > > > > On Wed, 6 Mar 2024 at 14:02, Ard Biesheuvel <ardb@kernel.org> w=
-rote:
-> > > > > >>
-> > > > > >> On Wed, 6 Mar 2024 at 13:34, yunhui cui <cuiyunhui@bytedance.c=
-om> wrote:
-> > > > > >> >
-> > > > > >> > Hi Ard,
-> > > > > >> >
-> > > > > >> > On Wed, Mar 6, 2024 at 5:36=E2=80=AFPM Ard Biesheuvel <ardb@=
-kernel.org> wrote:
-> > > > > >> > >
-> > > > > >> > > On Wed, 6 Mar 2024 at 09:56, Yunhui Cui <cuiyunhui@bytedan=
-ce.com> wrote:
-> > > > > >> > > >
-> > > > > >> > > > Compared with gcc version 12, gcc version 13 uses the gp
-> > > > > >> > > > register for compilation optimization, but the efistub m=
-odule
-> > > > > >> > > > does not initialize gp.
-> > > > > >> > > >
-> > > > > >> > > > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
-> > > > > >> > > > Co-Developed-by: Zhipeng Xu <xuzhipeng.1973@bytedance.co=
-m>
-> > > > > >> > >
-> > > > > >> > > This needs a sign-off, and your signoff needs to come afte=
-r.
-> > > > > >> > >
-> > > > > >> > > > ---
-> > > > > >> > > >  arch/riscv/kernel/efi-header.S | 11 ++++++++++-
-> > > > > >> > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > > > >> > > >
-> > > > > >> > > > diff --git a/arch/riscv/kernel/efi-header.S b/arch/riscv=
-/kernel/efi-header.S
-> > > > > >> > > > index 515b2dfbca75..fa17c08c092a 100644
-> > > > > >> > > > --- a/arch/riscv/kernel/efi-header.S
-> > > > > >> > > > +++ b/arch/riscv/kernel/efi-header.S
-> > > > > >> > > > @@ -40,7 +40,7 @@ optional_header:
-> > > > > >> > > >         .long   __pecoff_data_virt_end - __pecoff_text_e=
-nd      // SizeOfInitializedData
-> > > > > >> > > >  #endif
-> > > > > >> > > >         .long   0                                       =
-// SizeOfUninitializedData
-> > > > > >> > > > -       .long   __efistub_efi_pe_entry - _start         =
-// AddressOfEntryPoint
-> > > > > >> > > > +       .long   _efistub_entry - _start         // Addre=
-ssOfEntryPoint
-> > > > > >> > > >         .long   efi_header_end - _start                 =
-// BaseOfCode
-> > > > > >> > > >  #ifdef CONFIG_32BIT
-> > > > > >> > > >         .long  __pecoff_text_end - _start               =
-// BaseOfData
-> > > > > >> > > > @@ -121,4 +121,13 @@ section_table:
-> > > > > >> > > >
-> > > > > >> > > >         .balign 0x1000
-> > > > > >> > > >  efi_header_end:
-> > > > > >> > > > +
-> > > > > >> > > > +       .global _efistub_entry
-> > > > > >> > > > +_efistub_entry:
-> > > > > >> > >
-> > > > > >> > > This should go into .text or .init.text, not the header.
-> > > > > >> > >
-> > > > > >> > > > +       /* Reload the global pointer */
-> > > > > >> > > > +       load_global_pointer
-> > > > > >> > > > +
-> > > > > >> > >
-> > > > > >> > > What is supposed to happen here if CONFIG_SHADOW_CALL_STAC=
-K=3Dy? The EFI
-> > > > > >> > > stub Makefile removes the SCS CFLAGS, so the stub will be =
-built
-> > > > > >> > > without shadow call stack support, which I guess means tha=
-t it might
-> > > > > >> > > use GP as a global pointer as usual?
-> > > > > >> > >
-> > > > > >> > > > +       call __efistub_efi_pe_entry
-> > > > > >> > > > +       ret
-> > > > > >> > > > +
-> > > > > >> > >
-> > > > > >> > > You are returning to the firmware here, but after modifyin=
-g the GP
-> > > > > >> > > register. Shouldn't you restore it to its old value?
-> > > > > >> > There is no need to restore the value of the gp register. Wh=
-ere gp is
-> > > > > >> > needed, the gp register must first be initialized. And here =
-is the
-> > > > > >> > entry.
-> > > > > >> >
-> > > > > >>
-> > > > > >> But how should the firmware know that GP was corrupted after c=
-alling
-> > > > > >> the kernel's EFI entrypoint? The EFI stub can return to the fi=
-rmware
-> > > > > >> if it encounters any errors while still running in the EFI boo=
-t
-> > > > > >> services.
-> > > > > >>
-> > > > > >
-> > > > > > Actually, I wonder if GP can be modified at all before
-> > > > > > ExitBootServices(). The EFI timer interrupt is still live at th=
-is
-> > > > > > point, and so the firmware is being called behind your back, an=
-d might
-> > > > > > rely on GP retaining its original value.
-> > > > >
-> > > > > [A few of us are talking on IRC as I'm writing this...]
-> > > > >
-> > > > > The UEFI spec says "UEFI firmware must neither trust the
-> > > > > values of tp and gp nor make an assumption of owning the write ac=
-cess to
-> > > > > these register in any circumstances".  It's kind of vague what "U=
-EFI
-> > > > > firmware" means here, but I think it's reasonable to assume that =
-the
-> > > > > kernel (and thus the EFI stub) is not included there.
-> > > > >
-> > > > > So under that interpretation, the kernel (including the EFI stub)=
- would
-> > > > > be allowed to overwrite GP with whatever it wants.
-> > > > >
-> > > >
-> > > > OK, so even if the UEFI spec seems to suggest that using GP in EFI
-> > > > applications such as the Linux EFI stub should be safe, I'd still l=
-ike
-> > > > to understand why this change is necessary. The patches you are
-> > > > reverting are supposed to ensure that a) the compiler does not
-> > > > generate references that can be relaxed to GP based ones, and b) no
-> > > > R_RISCV_RELAX relocations are present in any of the code that runs =
-in
-> > > > the context of the EFI firmware.
-> > > >
-> > > > Are you still seeing GP based symbol references? Is there C code th=
-at
-> > > > gets pulled into the EFI stub that uses GP based relocations perhap=
-s?
-> > > > (see list below). If any of those are implemented in C, they should
-> > > > not be used by the EFI stub directly unless they are guaranteed to =
-be
-> > > > uninstrumented and callable at arbitrary offsets other than the one
-> > > > they were linked to run at.
-> > > >
-> > > >
-> > > > __efistub_memcmp         =3D memcmp;
-> > > > __efistub_memchr         =3D memchr;
-> > > > __efistub_memcpy         =3D memcpy;
-> > > > __efistub_memmove        =3D memmove;
-> > > > __efistub_memset         =3D memset;
-> > > > __efistub_strlen         =3D strlen;
-> > > > __efistub_strnlen        =3D strnlen;
-> > > > __efistub_strcmp         =3D strcmp;
-> > > > __efistub_strncmp        =3D strncmp;
-> > > > __efistub_strrchr        =3D strrchr;
-> > > > __efistub___memcpy       =3D memcpy;
-> > > > __efistub___memmove      =3D memmove;
-> > > > __efistub___memset       =3D memset;
-> > > > __efistub__start         =3D _start;
-> > > > __efistub__start_kernel  =3D _start_kernel;
-> > > >
-> > > > (from arch/riscv/kernel/image-vars.h)
-> > >
-> > > Uhm never mind - these are all gone now, I was looking at a v6.1
-> > > kernel source tree.
-> > >
-> > > So that means that, as far as I can tell, the only kernel C code that
-> > > executes in the context of the EFI firmware is built with -mno-relax
-> > > and is checked for the absence of R_RISCV_RELAX relocations. So I fai=
-l
-> > > to see why these changes are needed.
-> > >
-> > > Yunhui, could you please explain the reason for this series?
-> >
-> > From the logic of binutils, if "__global_pointer$" exists, it is
-> > possible to use GP for optimization. For RISC-V, "__global_pointer$"
-> > was introduced in commit "fbe934d69eb7e". Therefore, for the system as
-> > a whole, we should keep using GP uniformly.
->
-> There is no 'system as a whole' that can use GP 'uniformly'
->
-> The EFI stub is a separate executable that runs from a different
-> mapping of memory, in an execution context managed by the firmware. It
-> happens to be linked into the same executable as the vmlinux kernel.
->
-> > The root cause of this
-> > problem is that GP is not loaded, rather than "On RISC-V, we also
-> > avoid GP based relocations..." as commit "d2baf8cc82c17" said.
->
-> GP is not loaded because in the EFI firmware context, there is no safe
-> way to rely on it.
->
-> > We need
-> > to address problems head-on, rather than avoid them.
-> >
->
-> So what solution are you proposing for the potential GP conflicts
-> between the boot loader, the Linux EFI stub and the firmware?
-
-
-The GP register values are now loaded in the arch/riscv/kernel/head.S
-and arch/riscv/kernel/suspend_entry.S files.
-
-Let's think about EFI runtimeservice. If the EFI firmware code uses GP
-registers but the compiler does not avoid GP, and kernel uses the
-callback function provided by EFI, is there a problem? Is it possible
-to solve the problem only by making the firmware code not use GP at
-all and compiling options to avoid using GP?
-
-The same goes for efistub.
-
-So the way to solve this problem is that the firmware does not use GP
-optimization. Does this allow efistub to load the GP register?
-
-
-Thanks,
-Yunhui
+SGkgQW5kcmV3LA0KDQpPbiAwNy8wMy8yNCA2OjUyIHBtLCBBbmRyZXcgTHVubiB3cm90ZToNCj4g
+RVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVu
+bGVzcyB5b3Uga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBPbiBUaHUsIE1hciAwNywg
+MjAyNCBhdCAwNzowNDoyMEFNICswMDAwLCBQYXJ0aGliYW4uVmVlcmFzb29yYW5AbWljcm9jaGlw
+LmNvbSB3cm90ZToNCj4+IEhpIEFuZHJldywNCj4+DQo+PiBPbiAwNy8wMy8yNCA1OjQ5IGFtLCBB
+bmRyZXcgTHVubiB3cm90ZToNCj4+PiBFWFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtz
+IG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUN
+Cj4+Pg0KPj4+PiAgICBlbnVtIG9hX3RjNl9yZWdpc3Rlcl9vcCB7DQo+Pj4+ICsgICAgIE9BX1RD
+Nl9DVFJMX1JFR19SRUFEID0gMCwNCj4+Pj4gICAgICAgICBPQV9UQzZfQ1RSTF9SRUdfV1JJVEUg
+PSAxLA0KPj4+PiAgICB9Ow0KPj4+DQo+Pj4gSSB0aG91Z2h0IGl0IGxvb2tlZCBhIGxpdHRsZSBv
+ZGQgd2hlbiB0aGUgZW51bSB3YXMgYWRkZWQgaW4gdGhlDQo+Pj4gcHJldmlvdXMgcGF0Y2ggd2l0
+aCB0aGUgZmlyc3QgdmFsdWUgb2YgMSwgYW5kIG9ubHkgb25lIHZhbHVlLiBOb3cgaXQNCj4+PiBt
+YWtlcyBtb3JlIHNlbnNlLg0KPj4gT2suDQo+Pj4NCj4+PiBUaGUgYWN0dWFsIHZhbHVlIGFwcGVh
+cnMgdG8gbm90IG1hdHRlcj8gSXQgaXMgYWx3YXlzDQo+Pj4NCj4+Pj4gKyAgICAgaWYgKHJlZ19v
+cCA9PSBPQV9UQzZfQ1RSTF9SRUdfV1JJVEUpDQo+Pj4NCj4+PiBTbyBpIHdvdWxkIGRyb3AgdGhl
+IG51bWJlcmluZywgYW5kIGxlYXZlIGl0IHRvIHRoZSBjb21waWxlci4gVGhlDQo+Pj4gcGF0Y2hl
+cyB3aWxsIHRoZW4gbG9vayBsZXNzIG9kZC4NCj4+ICJkcm9wIHRoZSBudW1iZXJpbmciLCBkbyB5
+b3UgcmVmZXIgdG8gdGhpcyBwYXRjaCBhbG9uZSBvciBwcmV2aW91cyBwYXRjaA0KPj4gYWxzbz8g
+SWYgaXQgaXMgZm9yIHRoaXMgcGF0Y2ggYWxvbmUgdGhlbiBpdCBtYWtlcyBzZW5zZSBhcyB0aGV5
+IGFyZQ0KPj4gZ29pbmcgdG8gYmUgMCBhbmQgMSBhbnl3YXkuIEJ1dCBpZiB3ZSBkcm9wIHRoZSBu
+dW1iZXJpbmcgaW4gdGhlIHByZXZpb3VzDQo+PiBwYXRjaCBpdCB3aWxsIGJlY29tZSAwIHdoaWNo
+IHdpbGwgY3JlYXRlIGFuIGlzc3VlIGluIHRoZSBiZWxvdyBsaW5lIGFzDQo+PiBpdCBuZWVkcyAx
+LA0KPj4NCj4+IEZJRUxEX1BSRVAoT0FfVEM2X0NUUkxfSEVBREVSX1dSSVRFLCByZWdfb3ApDQo+
+IA0KPiBUaGF0IGlzIHdoeSBpIGFza2VkOg0KPiANCj4+IFRoZSBhY3R1YWwgdmFsdWUgYXBwZWFy
+cyB0byBub3QgbWF0dGVyPyBJdCBpcyBhbHdheXMNCj4+DQo+PiArICAgICBpZiAocmVnX29wID09
+IE9BX1RDNl9DVFJMX1JFR19XUklURSkNCj4gDQo+IFNvIHRoZSBhY3R1YWwgdmFsdWUgZG9lcyBt
+YXR0ZXIsIHNvIGtlZXAgaXQgaW4gdGhlIHByZXZpb3VzIHBhdGNoLg0KPiBEb2VzIHRoZSB2YWx1
+ZSBvZiBPQV9UQzZfQ1RSTF9SRUdfUkVBRCBtYXR0ZXI/IElzIGl0IGFsc28gdXNlZCBpbg0KPiBG
+SUVMRF9QUkVQIGV0Yz8gSWYgbm90LCB0YWtpbmcgYXdheSB0aGUgPSAwIHdpbGwgZW1waGFzaXNl
+IHRoYXQNCj4gT0FfVEM2X0NUUkxfUkVHX1dSSVRFIGhhcyB0byBiZSAxLg0KU29ycnksIEkgaGF2
+ZSBkb25lIGEgbWlzdGFrZSBoZXJlIHRoYXQncyBjb25mdXNpbmcuIFRoZSBkZWZpbmUgbmFtZSAN
+Ck9BX1RDNl9DVFJMX0hFQURFUl9XUklURSBpbiB0aGUgRklFTERfUFJFUCBpcyBzdXBwb3NlZCB0
+byBiZSANCk9BX1RDNl9DVFJMX0hFQURFUl9XUklURV9OT1RfUkVBRC4gVGhpcyBiaXQgZmllbGQg
+aW4gdGhlIGNvbnRyb2wgY29tbWFuZCANCmhlYWRlciBkaWZmZXJlbnRpYXRlcyB0aGUgdHlwZSBv
+ZiBvcGVyYXRpb24uIElmIGl0IGlzIDAsIHRoZW4gcmVnaXN0ZXIgDQpyZWFkIGNvbW1hbmQgYW5k
+IGlmIGl0IGlzIDEsIHRoZW4gcmVnaXN0ZXIgd3JpdGUgY29tbWFuZC4gU28gcmVnb3AgaW4gDQp0
+aGUgRklFTERfUFJFUCBhY3R1YWxseSBzZXRzIHRoZSB0eXBlIG9mIG9wZXJhdGlvbi4NCg0KVGhl
+IHZhbHVlcyBvZiBib3RoIE9BX1RDNl9DVFJMX1JFR19SRUFEIGFuZCBPQV9UQzZfQ1RSTF9SRUdf
+V1JJVEUgYXJlIA0KbWF0dGVycyBoZXJlLiBTbyBsZXQncyBrZWVwIHRoZSBudW1iZXJpbmcgZm9y
+IGJvdGggYXMgaXQgaXMgbm93LiBCdXQgSSANCndpbGwgY2hhbmdlIHRoZSBiaXQgZmllbGQgZGVm
+aW5lIG5hbWUgYXMgDQpPQV9UQzZfQ1RSTF9IRUFERVJfV1JJVEVfTk9UX1JFQUQgaW4gdGhlIG5l
+eHQgdmVyc2lvbi4gSG9wZSB5b3UgYXJlIGZpbmUgDQp3aXRoIGl0Pw0KDQpCZXN0IHJlZ2FyZHMs
+DQpQYXJ0aGliYW4gVg0KPiANCj4gICAgICAgICAgQW5kcmV3DQo+IA0KDQo=
 
