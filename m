@@ -1,345 +1,187 @@
-Return-Path: <linux-kernel+bounces-97432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DDA8876A66
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:04:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D792876A6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:04:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C69A428503D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:04:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 167161C213D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A10E50251;
-	Fri,  8 Mar 2024 18:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B01F55E78;
+	Fri,  8 Mar 2024 18:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="bmJ/6ZMu"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="NqcoGwTs"
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8738158137
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 18:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BAE5102A;
+	Fri,  8 Mar 2024 18:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709921018; cv=none; b=OkbMJMz6s93uzEc/mUyGLGhedzTB5bQaW/pQHcodC7tCGMJpJri9NMHdMZBNYsIYYGF6zSv40W39SBJll382QP+j53KNOXK9xwh7fcyV+Rz//lAp5MaM1Z2nA9hdi6YTKCfrhgMdzEL6CcBcXTCnMBRToAhio603zVUeqOhJlCA=
+	t=1709921036; cv=none; b=qeFWNCmJWtlVO4kkM7RwopwQhqjvcCTWqmJxbXESgDBBmSqePX8/m+5lQaDSXVlaj4tn/8VPhVZPpj9pHAAvXypp0XMIKEDUrMmR3KMxCaB+qyfg+hH6OmIIz2RWLkRS+vCpwHVl4PNFtbLQgzwFxXCgUnbIs6Pdy6KSBdhwxnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709921018; c=relaxed/simple;
-	bh=3LVj4/dvr7RiYytJk6zXL+ousuVGoUmlE+T+FQANLJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ac+43athvgrOVYMS1+OX6YYG7LcaJtDa+ER/ck8ZPkBTGA0dm3ZH81/5xP9zEQtXFKeNm5tmRyIG+dLELDvTmta8oitiO6IZSNeIinVL74O4b8EZTuftwR/8Ti5GAg7gqVfhhzhONnW6LusWJUx/mmbrpLA20sJlOf9kKlbEBvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=bmJ/6ZMu; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-21fb368b468so1344717fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 10:03:35 -0800 (PST)
+	s=arc-20240116; t=1709921036; c=relaxed/simple;
+	bh=PAzm2GiniLKpKFC+LeDesWIkkjP8990bk01Z8PFogq4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=urK3yLA9iIT26cdXrVXmmqmmSVJ1AJLAmVTwtiR28n5SzqENWEmYOXHSKMep+3J9ctab0ea4x96/8dn/s51X/j0CE4OK9u3TVtoyUSHIgQw/lGsdEIF7GN9Lcr9ZI+Hp6Y1+zwWpnHrbguqpVUSfBzQnCiG1rp0DSP1blNz0alk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=NqcoGwTs; arc=none smtp.client-ip=52.119.213.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1709921014; x=1710525814; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oZzrM6BbRqgMpeBTx8YDf05PpuvDd3fYcXNtVCqPsiw=;
-        b=bmJ/6ZMu8msGDrIzBFPPkJbqr1xMbc7jbVfwgxwEJYt9r/7DNcGEBC0Ka9tEq53IRB
-         pwLR3x5u14av4BoGkO6RRSF5m7jHvoFI1SNKQqUNCA9B7i749AriqFIm2dZ8K/sJ/4bU
-         RA0VO8hvTdVCQWFwqTBX3zUUpLrdpX9J7TfezfdaUxU8fIT6fzLDVmnnWOtUjZJVAP59
-         rnvNY0cjYliRFXm5pVD8iaVsWak9Mkp8B+vPWknNojTtuKrRPBKv3Pd8oZUk8TSZ220q
-         ekHKhfzCFseb7Rz+uYOYA3yV87iVGzj86O7Itafz6arHNSuRVMdQuHMZD9Ypxz3w9zlg
-         BXVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709921014; x=1710525814;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oZzrM6BbRqgMpeBTx8YDf05PpuvDd3fYcXNtVCqPsiw=;
-        b=POpxm9Qu57Bd6rKMqaPi2+XmSTFgFyvHOxeKPNIGwtiOwb3JaXkn4Q8b1TqqHAQVWA
-         T4CUGVXSLwHfpTCA70wiFbIFPlrMmtr6IZTzQlVkkuTFG0antLSDZaUOvho0XsUSLVQO
-         sCqgW8dDsShHF1eTFcGzcbkEG75+NQ/aGCR671edqaJSuaKbIlvNjNyigrWueLxyoVHH
-         c2h00G5Qq8Efab9PyqTVPh2KfVH6pEHPVdNNaQJ8EKu8hNFZAs39JuVwUKzGM1cLcVdd
-         ulP2e1ASZLgCqrFd4sbY1vwJQjJKY2iW8ymqx/XJZ4BC3Pz6a3tbW8lOaXOdHfBhtlA3
-         QKjg==
-X-Forwarded-Encrypted: i=1; AJvYcCXtxv2vGwDs9KVx25sl36UbHSzCoGrWs8/bYVs8vsqgnv2wJYe2NflwkKEiGgGhTVUE3rkfmUYrrXxryJiFPxYKKgCy+qxKWH6u8CUB
-X-Gm-Message-State: AOJu0Yz1fBocpMTWs0RohXbwsmJUm9L8Jf/uF6EclgHIUt0IwKiBv1eP
-	bB9vsxmVTfeAKzxZM8RDVM7S03nRsyTe8FvjouAX3Qcx8GZqmVjfuZ+XCQjCago=
-X-Google-Smtp-Source: AGHT+IF7pWjtuz8Xb3cQKQtapSRXtT6lbKWY4ydmQ4LB9QhAYAFvk6sa+sebdrqQhb+hD17nUWsTIA==
-X-Received: by 2002:a05:6870:171a:b0:21e:c3a4:8dd9 with SMTP id h26-20020a056870171a00b0021ec3a48dd9mr3833215oae.10.1709921014517;
-        Fri, 08 Mar 2024 10:03:34 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id oo24-20020a0568715a9800b0022138173901sm1968607oac.45.2024.03.08.10.03.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 10:03:34 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rieZA-007b0V-V9;
-	Fri, 08 Mar 2024 14:03:32 -0400
-Date: Fri, 8 Mar 2024 14:03:32 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
-	virtualization@lists.linux-foundation.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/8] iommufd: Add iommufd fault object
-Message-ID: <20240308180332.GX9225@ziepe.ca>
-References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
- <20240122073903.24406-5-baolu.lu@linux.intel.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1709921034; x=1741457034;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=QveIAf1ldaT9oI1wUssG+IX1MKZ+YUw+EkppgFFt6QA=;
+  b=NqcoGwTswY6PVMrJyF+nsub2VdvocfzPzD6132LAduq/Ns0PiMIMqHUp
+   ecOHW8pvc8ONZuk40nk9JLLuiNVU5933px8srRqJ0t9vOllBc/hZJOd+a
+   SdYAChA9eMF9mybaLCuI0c+nHv6NRgUxZb3LM1zvJRAR3g9mkWlnGJ7El
+   0=;
+X-IronPort-AV: E=Sophos;i="6.07,110,1708387200"; 
+   d="scan'208";a="618388821"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 18:03:51 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.7.35:37089]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.117:2525] with esmtp (Farcaster)
+ id b5ba1483-0e78-4d17-989b-b009b39c3e3d; Fri, 8 Mar 2024 18:03:51 +0000 (UTC)
+X-Farcaster-Flow-ID: b5ba1483-0e78-4d17-989b-b009b39c3e3d
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 8 Mar 2024 18:03:50 +0000
+Received: from 88665a182662.ant.amazon.com (10.142.235.16) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 8 Mar 2024 18:03:48 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <edumazet@google.com>
+CC: <davem@davemloft.net>, <dsahern@kernel.org>, <kuba@kernel.org>,
+	<kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <pabeni@redhat.com>,
+	<syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com>,
+	<syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [net?] WARNING in sk_nulls_del_node_init_rcu
+Date: Fri, 8 Mar 2024 10:03:39 -0800
+Message-ID: <20240308180339.53907-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CANn89iKXHAoJqVkxSGtFep3Ww+A-v9NeExzgfTKubVo7wYX7_Q@mail.gmail.com>
+References: <CANn89iKXHAoJqVkxSGtFep3Ww+A-v9NeExzgfTKubVo7wYX7_Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122073903.24406-5-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EX19D033UWA002.ant.amazon.com (10.13.139.10) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On Mon, Jan 22, 2024 at 03:38:59PM +0800, Lu Baolu wrote:
-> --- /dev/null
-> +++ b/drivers/iommu/iommufd/fault.c
-> @@ -0,0 +1,255 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (C) 2024 Intel Corporation
-> + */
-> +#define pr_fmt(fmt) "iommufd: " fmt
-> +
-> +#include <linux/file.h>
-> +#include <linux/fs.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/iommufd.h>
-> +#include <linux/poll.h>
-> +#include <linux/anon_inodes.h>
-> +#include <uapi/linux/iommufd.h>
-> +
-> +#include "iommufd_private.h"
-> +
-> +static int device_add_fault(struct iopf_group *group)
-> +{
-> +	struct iommufd_device *idev = group->cookie->private;
-> +	void *curr;
-> +
-> +	curr = xa_cmpxchg(&idev->faults, group->last_fault.fault.prm.grpid,
-> +			  NULL, group, GFP_KERNEL);
-> +
-> +	return curr ? xa_err(curr) : 0;
-> +}
-> +
-> +static void device_remove_fault(struct iopf_group *group)
-> +{
-> +	struct iommufd_device *idev = group->cookie->private;
-> +
-> +	xa_store(&idev->faults, group->last_fault.fault.prm.grpid,
-> +		 NULL, GFP_KERNEL);
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 8 Mar 2024 18:36:45 +0100
+> On Fri, Mar 8, 2024 at 6:34 PM syzbot
+> <syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    c055fc00c07b net/rds: fix WARNING in rds_conn_connect_if_d..
+> > git tree:       net
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=16aa17f2180000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=fad652894fc96962
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=12c506c1aae251e70449
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/c39eb6fb3ad1/disk-c055fc00.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/110f1226eb89/vmlinux-c055fc00.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/1303e2df5cc4/bzImage-c055fc00.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com
+> >
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> > R13: 000000000000000b R14: 00007f3b817abf80 R15: 00007ffd3beb57b8
+> >  </TASK>
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 0 PID: 23948 at include/net/sock.h:799 sk_nulls_del_node_init_rcu+0x166/0x1a0 include/net/sock.h:799
+> > Modules linked in:
+> > CPU: 0 PID: 23948 Comm: syz-executor.2 Not tainted 6.8.0-rc6-syzkaller-00159-gc055fc00c07b #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> > RIP: 0010:sk_nulls_del_node_init_rcu+0x166/0x1a0 include/net/sock.h:799
+> > Code: e8 7f 71 c6 f7 83 fb 02 7c 25 e8 35 6d c6 f7 4d 85 f6 0f 95 c0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 1b 6d c6 f7 90 <0f> 0b 90 eb b2 e8 10 6d c6 f7 4c 89 e7 be 04 00 00 00 e8 63 e7 d2
+> > RSP: 0018:ffffc900032d7848 EFLAGS: 00010246
+> > RAX: ffffffff89cd0035 RBX: 0000000000000001 RCX: 0000000000040000
+> > RDX: ffffc90004de1000 RSI: 000000000003ffff RDI: 0000000000040000
+> > RBP: 1ffff1100439ac26 R08: ffffffff89ccffe3 R09: 1ffff1100439ac28
+> > R10: dffffc0000000000 R11: ffffed100439ac29 R12: ffff888021cd6140
+> > R13: dffffc0000000000 R14: ffff88802a9bf5c0 R15: ffff888021cd6130
+> > FS:  00007f3b823f16c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007f3b823f0ff8 CR3: 000000004674a000 CR4: 00000000003506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <TASK>
+> >  __inet_hash_connect+0x140f/0x20b0 net/ipv4/inet_hashtables.c:1139
+> >  dccp_v6_connect+0xcb9/0x1480 net/dccp/ipv6.c:956
+> >  __inet_stream_connect+0x262/0xf30 net/ipv4/af_inet.c:678
+> >  inet_stream_connect+0x65/0xa0 net/ipv4/af_inet.c:749
+> >  __sys_connect_file net/socket.c:2048 [inline]
+> >  __sys_connect+0x2df/0x310 net/socket.c:2065
+> >  __do_sys_connect net/socket.c:2075 [inline]
+> >  __se_sys_connect net/socket.c:2072 [inline]
+> >  __x64_sys_connect+0x7a/0x90 net/socket.c:2072
+> >  do_syscall_64+0xf9/0x240
+> >  entry_SYSCALL_64_after_hwframe+0x6f/0x77
+> > RIP: 0033:0x7f3b8167dda9
+> > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007f3b823f10c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+> > RAX: ffffffffffffffda RBX: 00007f3b817abf80 RCX: 00007f3b8167dda9
+> > RDX: 000000000000001c RSI: 0000000020000040 RDI: 0000000000000003
+> > RBP: 00007f3b823f1120 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> > R13: 000000000000000b R14: 00007f3b817abf80 R15: 00007ffd3beb57b8
+> >  </TASK>
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
+> > If the report is already addressed, let syzbot know by replying with:
+> > #syz fix: exact-commit-title
+> >
+> > If you want to overwrite report's subsystems, reply with:
+> > #syz set subsystems: new-subsystem
+> > (See the list of subsystem names on the web dashboard)
+> >
+> > If the report is a duplicate of another one, reply with:
+> > #syz dup: exact-subject-of-another-report
+> >
+> > If you want to undo deduplication, reply with:
+> > #syz undup
+> 
+> CC Kuniyuki, because this is probably caused by
+> 
+> commit 66b60b0c8c4a163b022a9f0ad6769b0fd3dc662f
+> Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Date:   Wed Feb 14 11:13:08 2024 -0800
+> 
+>     dccp/tcp: Unhash sk from ehash for tb2 alloc failure after
+> check_estalblished().
 
-xa_erase ?
+I'll look into it.
 
-Is grpid OK to use this way? Doesn't it come from the originating
-device?
-
-> +void iommufd_fault_destroy(struct iommufd_object *obj)
-> +{
-> +	struct iommufd_fault *fault = container_of(obj, struct iommufd_fault, obj);
-> +	struct iopf_group *group, *next;
-> +
-> +	mutex_lock(&fault->mutex);
-> +	list_for_each_entry_safe(group, next, &fault->deliver, node) {
-> +		list_del(&group->node);
-> +		iopf_group_response(group, IOMMU_PAGE_RESP_INVALID);
-> +		iopf_free_group(group);
-> +	}
-> +	list_for_each_entry_safe(group, next, &fault->response, node) {
-> +		list_del(&group->node);
-> +		device_remove_fault(group);
-> +		iopf_group_response(group, IOMMU_PAGE_RESP_INVALID);
-> +		iopf_free_group(group);
-> +	}
-> +	mutex_unlock(&fault->mutex);
-> +
-> +	mutex_destroy(&fault->mutex);
-
-It is really weird to lock a mutex we are about to destroy? At this
-point the refcount on the iommufd_object is zero so there had better
-not be any other threads with access to this pointer!
-
-> +static ssize_t iommufd_fault_fops_read(struct file *filep, char __user *buf,
-> +				       size_t count, loff_t *ppos)
-> +{
-> +	size_t fault_size = sizeof(struct iommu_hwpt_pgfault);
-> +	struct iommufd_fault *fault = filep->private_data;
-> +	struct iommu_hwpt_pgfault data;
-> +	struct iommufd_device *idev;
-> +	struct iopf_group *group;
-> +	struct iopf_fault *iopf;
-> +	size_t done = 0;
-> +	int rc;
-> +
-> +	if (*ppos || count % fault_size)
-> +		return -ESPIPE;
-> +
-> +	mutex_lock(&fault->mutex);
-> +	while (!list_empty(&fault->deliver) && count > done) {
-> +		group = list_first_entry(&fault->deliver,
-> +					 struct iopf_group, node);
-> +
-> +		if (list_count_nodes(&group->faults) * fault_size > count - done)
-> +			break;
-> +
-> +		idev = (struct iommufd_device *)group->cookie->private;
-> +		list_for_each_entry(iopf, &group->faults, list) {
-> +			iommufd_compose_fault_message(&iopf->fault, &data, idev);
-> +			rc = copy_to_user(buf + done, &data, fault_size);
-> +			if (rc)
-> +				goto err_unlock;
-> +			done += fault_size;
-> +		}
-> +
-> +		rc = device_add_fault(group);
-
-See I wonder if this should be some xa_alloc or something instead of
-trying to use the grpid?
-
-> +	while (!list_empty(&fault->response) && count > done) {
-> +		rc = copy_from_user(&response, buf + done, response_size);
-> +		if (rc)
-> +			break;
-> +
-> +		idev = container_of(iommufd_get_object(fault->ictx,
-> +						       response.dev_id,
-> +						       IOMMUFD_OBJ_DEVICE),
-> +				    struct iommufd_device, obj);
-
-It seems unfortunate we do this lookup for every iteration of the loop,
-I would lift it up and cache it..
-
-> +		if (IS_ERR(idev))
-> +			break;
-> +
-> +		group = device_get_fault(idev, response.grpid);
-
-This looks locked wrong, it should hold the fault mutex here and we
-should probably do xchng to zero it at the same time we fetch it.
-
-> +		if (!group ||
-> +		    response.addr != group->last_fault.fault.prm.addr ||
-> +		    ((group->last_fault.fault.prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID) &&
-> +		      response.pasid != group->last_fault.fault.prm.pasid)) {
-
-Why? If grpid is unique then just trust it.
-
-> +			iommufd_put_object(fault->ictx, &idev->obj);
-> +			break;
-> +		}
-> +
-> +		iopf_group_response(group, response.code);
-> +
-> +		mutex_lock(&fault->mutex);
-> +		list_del(&group->node);
-> +		mutex_unlock(&fault->mutex);
-> +
-> +		device_remove_fault(group);
-> +		iopf_free_group(group);
-> +		done += response_size;
-> +
-> +		iommufd_put_object(fault->ictx, &idev->obj);
-> +	}
-> +
-> +	return done;
-> +}
-> +
-> +static __poll_t iommufd_fault_fops_poll(struct file *filep,
-> +					struct poll_table_struct *wait)
-> +{
-> +	struct iommufd_fault *fault = filep->private_data;
-> +	__poll_t pollflags = 0;
-> +
-> +	poll_wait(filep, &fault->wait_queue, wait);
-> +	mutex_lock(&fault->mutex);
-> +	if (!list_empty(&fault->deliver))
-> +		pollflags = EPOLLIN | EPOLLRDNORM;
-> +	mutex_unlock(&fault->mutex);
-> +
-> +	return pollflags;
-> +}
-> +
-> +static const struct file_operations iommufd_fault_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.open		= nonseekable_open,
-> +	.read		= iommufd_fault_fops_read,
-> +	.write		= iommufd_fault_fops_write,
-> +	.poll		= iommufd_fault_fops_poll,
-> +	.llseek		= no_llseek,
-> +};
-
-No release? That seems wrong..
-
-> +static int get_fault_fd(struct iommufd_fault *fault)
-> +{
-> +	struct file *filep;
-> +	int fdno;
-> +
-> +	fdno = get_unused_fd_flags(O_CLOEXEC);
-> +	if (fdno < 0)
-> +		return fdno;
-> +
-> +	filep = anon_inode_getfile("[iommufd-pgfault]", &iommufd_fault_fops,
-> +				   fault, O_RDWR);
-                                   ^^^^^^
-
-See here you stick the iommufd_object into the FD but we don't
-refcount it...
-
-And iommufd_fault_destroy() doesn't do anything about this, so it just
-UAFs the fault memory in the FD.
-
-You need to refcount the iommufd_object here and add a release
-function for the fd to put it back
-
-*and* this FD needs to take a reference on the base iommufd_ctx fd too
-as we can't tolerate them being destroyed out of sequence.
-
-> +int iommufd_fault_alloc(struct iommufd_ucmd *ucmd)
-> +{
-> +	struct iommu_fault_alloc *cmd = ucmd->cmd;
-> +	struct iommufd_fault *fault;
-> +	int rc;
-> +
-> +	if (cmd->flags)
-> +		return -EOPNOTSUPP;
-> +
-> +	fault = iommufd_object_alloc(ucmd->ictx, fault, IOMMUFD_OBJ_FAULT);
-> +	if (IS_ERR(fault))
-> +		return PTR_ERR(fault);
-> +
-> +	fault->ictx = ucmd->ictx;
-> +	INIT_LIST_HEAD(&fault->deliver);
-> +	INIT_LIST_HEAD(&fault->response);
-> +	mutex_init(&fault->mutex);
-> +	init_waitqueue_head(&fault->wait_queue);
-> +
-> +	rc = get_fault_fd(fault);
-> +	if (rc < 0)
-> +		goto out_abort;
-
-And this is ordered wrong, fd_install has to happen after return to
-user space is guarenteed as it cannot be undone.
-
-> +	cmd->out_fault_id = fault->obj.id;
-> +	cmd->out_fault_fd = rc;
-> +
-> +	rc = iommufd_ucmd_respond(ucmd, sizeof(*cmd));
-> +	if (rc)
-> +		goto out_abort;
-> +	iommufd_object_finalize(ucmd->ictx, &fault->obj);
-
-fd_install() goes here
-
-> +	return 0;
-> +out_abort:
-> +	iommufd_object_abort_and_destroy(ucmd->ictx, &fault->obj);
-> +
-> +	return rc;
-> +}
-
-Jason
+Thanks!
 
