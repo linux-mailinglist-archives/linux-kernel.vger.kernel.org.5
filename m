@@ -1,54 +1,47 @@
-Return-Path: <linux-kernel+bounces-97004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEA77876451
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:29:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7310876455
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7781F281A58
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:29:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 771711F21D1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9FC35786E;
-	Fri,  8 Mar 2024 12:29:09 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49E656456;
-	Fri,  8 Mar 2024 12:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957738BEF;
+	Fri,  8 Mar 2024 12:30:59 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A8A367;
+	Fri,  8 Mar 2024 12:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709900949; cv=none; b=Ab0m2mOPit7Lhmzs1O+8R5UaW9W2gqqAEf7tySQm+v/p0RqR92OyXfHL5XBpVrbivfUuTN+z469lDhZD4HtVOP6Qe+kCM3BK2Uj2EOkXZkIW09JpiA5PIDULPWzX8lwT1bsR9z4VD2hbwP9knc0ffpj6kPhQCd1gljIz1PBVuuY=
+	t=1709901059; cv=none; b=fcdOP5+2Li+zILVnmy6wlV83Tz+eZFqFmPTQAH91cSM+1CQXV5BHHA828vCMvVGBi/SDU3scL176WbEL3aWSTr4vEXmobSemfwUDAvp6zr0kIWCELwA9pk2vB92uplccqOz5MGDLA5YDamYSFdZwJEBPlM25dzkwPbwHLKOsakg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709900949; c=relaxed/simple;
-	bh=J1WQUOExGT2BUFKbzdvuQXj04tR/Nr0MoFLS79WMU+M=;
+	s=arc-20240116; t=1709901059; c=relaxed/simple;
+	bh=S9r92EF9YDawhMvl/5KLi6FPSda8xf63QQBg3qAs0UQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ugFfHJA72BDA8B94uM48OvsXPVOIf1L0JLzjtze3tJ2QHR7SfP5s+CgG17GdbXSe/LUeOmpCgPN57HabGlVUsFhcVbnmrv1YMsWEMhnYYNfSCptxcuKzXSBAZnKMwpfWqhkMmHgXnKpnx1y9mc56FiqpigbhFR56WwM1iybkkSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 002B0C15;
-	Fri,  8 Mar 2024 04:29:43 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0520F3F73F;
-	Fri,  8 Mar 2024 04:29:03 -0800 (PST)
-Date: Fri, 8 Mar 2024 12:29:01 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: abdellatif.elkhlifi@arm.com, Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Rob Herring <robh+dt@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Drew.Reed@arm.com,
-	Adam.Johnston@arm.com, linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH 3/3] dt-bindings: remoteproc: Add Arm remoteproc
-Message-ID: <ZesEjbl4IITA4Yie@bogus>
-References: <20240301164227.339208-4-abdellatif.elkhlifi@arm.com>
- <9fcebf32-a3da-49ab-b3d9-9450fb7e1985@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=C8JXyaJ2ZZtxUr/Yq8WmQMh8Ff8RvMWGxuUyjrjj4jEI464QDXlePNZaaWzXYjNwuukGQAPFOyYAkexrkmtlNHkPiSSUCQ8x1nbOMZZrUyAgGAEMa9ERRh8GIfwCXFRExyRXoFH4VGvXwWRa2uPrniH62U0HKxQu1jzWBnt3US0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F77EC433C7;
+	Fri,  8 Mar 2024 12:30:56 +0000 (UTC)
+Date: Fri, 8 Mar 2024 12:30:54 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Christoffer Dall <cdall@cs.columbia.edu>,
+	Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	Mark Brown <broonie@kernel.org>
+Subject: Re: linux-next: manual merge of the kvm-arm tree with the arm64 tree
+Message-ID: <ZesE_v3BrCrWq2PE@arm.com>
+References: <20240308125433.134c0dbe@canb.auug.org.au>
+ <ZeqvVtdca_I6ooYe@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,46 +50,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9fcebf32-a3da-49ab-b3d9-9450fb7e1985@linaro.org>
+In-Reply-To: <ZeqvVtdca_I6ooYe@linux.dev>
 
-On Fri, Mar 01, 2024 at 08:30:43PM +0100, Krzysztof Kozlowski wrote:
-> On 01/03/2024 17:42, abdellatif.elkhlifi@arm.com wrote:
-> > From: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
+On Fri, Mar 08, 2024 at 06:25:26AM +0000, Oliver Upton wrote:
+> On Fri, Mar 08, 2024 at 12:54:33PM +1100, Stephen Rothwell wrote:
+> > Today's linux-next merge of the kvm-arm tree got a conflict in:
 > > 
-> > introduce the bindings for Arm remoteproc support.
+> >   arch/arm64/kernel/cpufeature.c
 > > 
-> > Signed-off-by: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
-> > ---
-> >  .../bindings/remoteproc/arm,rproc.yaml        | 69 +++++++++++++++++++
-> >  MAINTAINERS                                   |  1 +
-> 
-> Fix order of patches - bindings are always before the user (see
-> submitting bindings doc).
-> 
-> >  2 files changed, 70 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/arm,rproc.yaml
+> > between commits:
 > > 
-> > diff --git a/Documentation/devicetree/bindings/remoteproc/arm,rproc.yaml b/Documentation/devicetree/bindings/remoteproc/arm,rproc.yaml
-> > new file mode 100644
-> > index 000000000000..322197158059
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/remoteproc/arm,rproc.yaml
-> > @@ -0,0 +1,69 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/remoteproc/arm,rproc.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Arm Remoteproc Devices
+> >   203f2b95a882 ("arm64/fpsimd: Support FEAT_FPMR")
+> >   9cce9c6c2c3b ("arm64: mm: Handle LVA support as a CPU feature")
+> >   352b0395b505 ("arm64: Enable 52-bit virtual addressing for 4k and 16k granule configs")
+> >   2aea7b77aabc ("arm64: Use Signed/Unsigned enums for TGRAN{4,16,64} and VARange")
+> > 
+> > from the arm64 tree and commit:
+> > 
+> >   da9af5071b25 ("arm64: cpufeature: Detect HCR_EL2.NV1 being RES0")
+> > 
+> > from the kvm-arm tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary.
 > 
-> That's quite generic... does it applied to all ARM designs?
+> Thanks for reporting these Stephen. Fix looks good to me.
 > 
+> Catalin -- I think the conflicts are pretty simple here, but if we
+> wanted to do something it'd probably be easiest if you pulled my
+> kvm-arm64/feat_e2h0 branch. Looks like changes are coming from multiple
+> topic branches in your tree.
+> 
+> No strong opinions either way, but I plan on sending the kvmarm PR
+> tomorrow.
 
-Nope, it is platform specific. It can't just generically be referred as
-Arm Remoteproc for sure.
+I'm happy to live with the conflicts really, Linus normally fixes those
+at merge time.
 
 -- 
-Regards,
-Sudeep
+Catalin
 
