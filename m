@@ -1,304 +1,245 @@
-Return-Path: <linux-kernel+bounces-97546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36EEB876BC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:23:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 715F1876BD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:26:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B924F1F21DB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:23:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 270602825C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC4A5FDAF;
-	Fri,  8 Mar 2024 20:22:37 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7881E5D725;
+	Fri,  8 Mar 2024 20:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HIIiIm6p"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C285E06E;
-	Fri,  8 Mar 2024 20:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265FC51C33;
+	Fri,  8 Mar 2024 20:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709929355; cv=none; b=NVHcvD+b4vYtTG3gGk6Dc+ESQ6OAUqSCNVTVFLu8FAYcu0ts/kNttxTql8iwmo+O7k62D7w9lTiRPnD0MUjslRVeRtHZCZr9VX+elJLq5gfmGkAMa0AAPKyUb9CGu7D4giw4Y+sKfNsrFQBL4vW/1OpwAzXbbxBcW4d6QEYQxik=
+	t=1709929555; cv=none; b=G7VRtmKlInVK6bliE48K/4YWBPThhN3B1ptC3zLWBeU7GNIvtL9HR+A7CQmc8Uwp2KqxBXG528OjEO6k55LWqMEeb3bJoeyp+Qeal2SxUmz54YnKc2E3pssMn4Xd+17RZISzJZjs7p/YjcjbWjIvJw2bhtODEXWSsR9BfMk7lbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709929355; c=relaxed/simple;
-	bh=nJ/wrHpgBX5oVgJnVXfCRoTe+d97YXazgxDiH/YeWNk=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=nVmFBGWdy5brD+hqAdeKnyrU4idD98ThVWHiRjynuj967YI+kF2hvWEP5z3xr1R5/fZG+Ue/w0GrG4rcDbvFQ+pO6sjwf1P6LEn8f6/WSgD4J1MxfMqHAia99HVHI9NTqsPPUJNvj/+Y9V3C6Wbc5qxCiBwBLma/HAr0HAQf9t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B564DC4166A;
-	Fri,  8 Mar 2024 20:22:34 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1riglc-00000000yt5-33ty;
-	Fri, 08 Mar 2024 15:24:32 -0500
-Message-ID: <20240308202432.591339104@goodmis.org>
-User-Agent: quilt/0.67
-Date: Fri, 08 Mar 2024 15:24:08 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- joel@joelfernandes.org,
- linke li <lilinke99@qq.com>,
- Rabin Vincent <rabin@rab.in>,
- stable@vger.kernel.org
-Subject: [PATCH v2 6/6] tracing/ring-buffer: Fix wait_on_pipe() race
-References: <20240308202402.234176464@goodmis.org>
+	s=arc-20240116; t=1709929555; c=relaxed/simple;
+	bh=rJdPwcztBz8X4vt5HGAw0qqMXtzhifyWt9yLAdzhfTI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=P+OuuACXxj6Sl9PwqlX0Z3I9hf6Nf+cQ7UF9UICmW49Ox4N7Wk+vWf6iAcacxyJ884QhWFr+S+aZLRbIwhQFE9pxJsucZV/8S1sw8DOtorVodQJ9cqS8GkPHf215q1PbLQsAds4PW0djMWPiUB9xltJJHtXrTeFxIisfFku56m8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HIIiIm6p; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so2102814a12.1;
+        Fri, 08 Mar 2024 12:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709929553; x=1710534353; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GXaGS2OWhnhbczoRRrQrWo6yetFGH8X8azzOfrjbE6g=;
+        b=HIIiIm6pEhD2EzqpccRMPkzBVIOq/NRQ76OKeQM3Tqz3oH4nbWd8aupHlYC5Qz/Yww
+         4pu+tCLO7+wIM4JbpBFGTg18R98ch3blbJIsNIwv/aZ12EAEzQJ/n6EGNjvt7vFL8iop
+         +dh1oElFvfkaohWBfmSA0zeIvHJsGJ5Qr/bwrH/l2QL+kVrcBW3K3ETXr/gJnnXS4Ue8
+         8LpP7VWQvs9EbrHr4MFgjoaaAgEISHGEf5AGDmsx+4YBX8lVnon66O2DikGc33GqHbSa
+         P2L8+kSzrpRC/O/3iOWDJ4QGYzKA6twSKmPhFdd0uyZ+2Pq3sdC5L3Oy8rD7vJDxYv34
+         MkiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709929553; x=1710534353;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GXaGS2OWhnhbczoRRrQrWo6yetFGH8X8azzOfrjbE6g=;
+        b=FxsDVVfasyO8SWPEw2V2y8t/u7QtQJXccjPa/+vxClCi6aq5QXf59Ymve723ZLIEfQ
+         afvr/2rF/qgPaLJynDNSHdy3LdPXI5YE0wfZ2h+T2I1H0/6hDRMbT89OMLC27WloYV0u
+         k23OH6ovqbWU/cgSK1DcJJ6j0U4jsninLnMBTz3XH3rg4gC3tek9exN3G5uD/9n2AjV7
+         eo5r0/epeid8H1anEtvIowQZPtbPhqoAnGRKKt2IdvYdG6ykOZWCF18kBJlQSie3SAiJ
+         UGKamOmJkE1vVUL4ld7Z0oXii3ozMMjxZckf8RQg2LpY7sHjqcJc772owkYeHOeArn3U
+         s3+A==
+X-Forwarded-Encrypted: i=1; AJvYcCX0YZveGJ3RM8GI0qBcnzIkiY22PCb0av/lpmwZpy3oqbhAuVgZPOf8fQiCc9vi8g91vcAZ7umb4Kfw6I17wbwupSvn7uhqKsdh8VjlMNUCQMm85f1IwmOs4JJW5S5QKLJnHcnfGvJlsXDADafuzI8zCcSua03RRKLcenYo1FDT7ITtXamxYm8=
+X-Gm-Message-State: AOJu0YyR4ts+jLJgNyjT9gYVtZDs8NpbjLWA+uc9CpHiOBTyk0ki9P2t
+	vXeyh236gJrGMI4zD7XSdIJQGh96IMwEMFNCuiYnirBGFpdWc93a
+X-Google-Smtp-Source: AGHT+IF4C0L0MiiUU+0bie1dyOAt1ABfQ6/ycb8CLKRaB7hHeTGez0urqm3/an0rbiHzL1EqsyqpHw==
+X-Received: by 2002:a17:90a:ad0c:b0:29b:b15d:5353 with SMTP id r12-20020a17090aad0c00b0029bb15d5353mr278722pjq.31.1709929553345;
+        Fri, 08 Mar 2024 12:25:53 -0800 (PST)
+Received: from dw-tp.. ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id ob4-20020a17090b390400b0029ba7731d38sm147186pjb.7.2024.03.08.12.25.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 12:25:52 -0800 (PST)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: John Garry <john.g.garry@oracle.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Cc: Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Dave Chinner <david@fromorbit.com>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [RFC] ext4: Add support for ext4_map_blocks_atomic()
+Date: Sat,  9 Mar 2024 01:55:42 +0530
+Message-ID: <3a417188e5abe3048afac3d31ebbf11588b6d68d.1709927824.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <e4bd58d4-723f-4c94-bf46-826bceeb6a8d@oracle.com>
+References: <e4bd58d4-723f-4c94-bf46-826bceeb6a8d@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Currently ext4 exposes [fsawu_min, fsawu_max] size as
+[blocksize, clustersize] (given the hw block device constraints are
+larger than FS atomic write units).
 
-When the trace_pipe_raw file is closed, there should be no new readers on
-the file descriptor. This is mostly handled with the waking and wait_index
-fields of the iterator. But there's still a slight race.
+That means a user should be allowed to -
+1. pwrite 0 4k /mnt/test/f1
+2. pwrite 0 16k /mnt/test/f1
 
-     CPU 0				CPU 1
-     -----				-----
- wait_woken_prepare()
-    if (waking)
-       woken = true;
-    index = wait_index;
-				   wait_woken_set()
-				      waking = true
-				      wait_index++;
-				   ring_buffer_wake_waiters();
- wait_on_pipe()
-    ring_buffer_wait();
+w/o this patch the second atomic write will fail. Since current
+ext4_map_blocks() will just return the already allocated extent length
+to the iomap (which is less than the user requested write length).
 
-The ring_buffer_wait() will miss the wakeup from CPU 1. The problem is
-that the ring_buffer_wait() needs the logic of:
+So add ext4_map_blocks_atomic() function which can allocate full
+requested length for doing an atomic write before returning to iomap.
+With this we have - 
 
-	prepare_to_wait();
-	if (!condition)
-		schedule();
+1. touch /mnt1/test/f2
+2. chattr +W /mnt1/test/f2
+3. xfs_io -dc "pwrite -b 4k -A -V 1 0 4k" /mnt1/test/f2
+	wrote 4096/4096 bytes at offset 0
+	4 KiB, 1 ops; 0.0320 sec (124.630 KiB/sec and 31.1575 ops/sec)
+4. filefrag -v /mnt1/test/f2
+	Filesystem type is: ef53
+	File size of /mnt1/test/f2 is 4096 (1 block of 4096 bytes)
+	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+	   0:        0..       0:       9728..      9728:      1:             last,eof
+	/mnt1/test/f2: 1 extent found
+5. xfs_io -dc "pwrite -b 16k -A -V 1 0 16k" /mnt1/test/f2
+	wrote 16384/16384 bytes at offset 0
+	16 KiB, 1 ops; 0.0337 sec (474.637 KiB/sec and 29.6648 ops/sec)
+6. filefrag -v /mnt1/test/f2
+	Filesystem type is: ef53
+	File size of /mnt1/test/f2 is 16384 (4 blocks of 4096 bytes)
+	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+	   0:        0..       3:       9728..      9731:      4:             last,eof
+	/mnt1/test/f2: 1 extent found
 
-Where the missing condition check is the iter->waking.
-
-Either that condition check needs to be passed to ring_buffer_wait() or
-the function needs to be broken up into three parts. This chooses to do
-the break up.
-
-Break ring_buffer_wait() into:
-
-	ring_buffer_prepare_to_wait();
-	ring_buffer_wait();
-	ring_buffer_finish_wait();
-
-Now wait_on_pipe() can have:
-
-	ring_buffer_prepare_to_wait();
-	if (!iter->waking)
-		ring_buffer_wait();
-	ring_buffer_finish_wait();
-
-And this will catch the above race, as the waiter will either see waking,
-or already have been woken up.
-
-Link: https://lore.kernel.org/all/CAHk-=whs5MdtNjzFkTyaUy=vHi=qwWgPi0JgTe6OYUYMNSRZfg@mail.gmail.com/
-
-Cc: stable@vger.kernel.org
-Fixes: f3ddb74ad0790 ("tracing: Wake up ring buffer waiters on closing of the file")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 ---
- include/linux/ring_buffer.h |  4 ++
- kernel/trace/ring_buffer.c  | 88 ++++++++++++++++++++++++++-----------
- kernel/trace/trace.c        | 14 +++++-
- 3 files changed, 78 insertions(+), 28 deletions(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index fa802db216f9..e5b5903cdc21 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -98,7 +98,11 @@ __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *k
- 	__ring_buffer_alloc((size), (flags), &__key);	\
- })
- 
-+int ring_buffer_prepare_to_wait(struct trace_buffer *buffer, int cpu, int *full,
-+				struct wait_queue_entry *wait);
- int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
-+void ring_buffer_finish_wait(struct trace_buffer *buffer, int cpu, int full,
-+				 struct wait_queue_entry *wait);
- __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
- 			  struct file *filp, poll_table *poll_table, int full);
- void ring_buffer_wake_waiters(struct trace_buffer *buffer, int cpu);
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 856d0e5b0da5..fa7090f6b4fc 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -868,29 +868,29 @@ rb_get_work_queue(struct trace_buffer *buffer, int cpu, int *full)
+Please note, that this is very minimal tested. But it serves as a PoC of what
+can be done within ext4 to allow the usecase which John pointed out.
+
+This also shows that every filesystem can have a different ways of doing aligned
+allocations to support atomic writes. So lifting extent size hints to iomap
+perhaps might become very XFS centric? Althouh as long as other filesystems are 
+not forced to follow that, I don't think it should be a problem.
+
+
+ fs/ext4/ext4.h  |  2 ++
+ fs/ext4/inode.c | 40 +++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 39 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 529ca32b9813..1e9adc5d6569 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3702,6 +3702,8 @@ extern int ext4_convert_unwritten_io_end_vec(handle_t *handle,
+ 					     ext4_io_end_t *io_end);
+ extern int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 			   struct ext4_map_blocks *map, int flags);
++extern int ext4_map_blocks_atomic(handle_t *handle, struct inode *inode,
++				  struct ext4_map_blocks *map, int flags);
+ extern int ext4_ext_calc_credits_for_single_extent(struct inode *inode,
+ 						   int num,
+ 						   struct ext4_ext_path *path);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index ea009ca9085d..db273c7faf36 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -453,6 +453,29 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
  }
+ #endif /* ES_AGGRESSIVE_TEST */
  
- /**
-- * ring_buffer_wait - wait for input to the ring buffer
-+ * ring_buffer_prepare_to_wait - Prepare to wait for data on the ring buffer
-  * @buffer: buffer to wait on
-  * @cpu: the cpu buffer to wait on
-- * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-+ * @full: wait until the percentage of pages are available,
-+ *         if @cpu != RING_BUFFER_ALL_CPUS. It may be updated via this function.
-+ * @wait: The wait queue entry.
-  *
-- * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-- * as data is added to any of the @buffer's cpu buffers. Otherwise
-- * it will wait for data to be added to a specific cpu buffer.
-+ * This must be called before ring_buffer_wait(). It calls the prepare_to_wait()
-+ * on @wait for the necessary wait queue defined by @buffer, @cpu, and @full.
-  */
--int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
-+int ring_buffer_prepare_to_wait(struct trace_buffer *buffer, int cpu, int *full,
-+				 struct wait_queue_entry *wait)
- {
- 	struct rb_irq_work *rbwork;
--	DEFINE_WAIT(wait);
--	int ret = 0;
++int ext4_map_blocks_atomic(handle_t *handle, struct inode *inode,
++			   struct ext4_map_blocks *map, int flags)
++{
++	unsigned int mapped_len = 0, m_len = map->m_len;
++	ext4_lblk_t m_lblk = map->m_lblk;
++	int ret;
++
++	WARN_ON(!(flags & EXT4_GET_BLOCKS_CREATE));
++
++	do {
++		ret = ext4_map_blocks(handle, inode, map, flags);
++		if (ret < 0)
++			return ret;
++		mapped_len += map->m_len;
++		map->m_lblk += map->m_len;
++		map->m_len = m_len - mapped_len;
++	} while (mapped_len < m_len);
++
++	map->m_lblk = m_lblk;
++	map->m_len = mapped_len;
++	return mapped_len;
++}
++
+ /*
+  * The ext4_map_blocks() function tries to look up the requested blocks,
+  * and returns if the blocks are already mapped.
+@@ -3315,7 +3338,10 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
+ 	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+ 		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
  
--	rbwork = rb_get_work_queue(buffer, cpu, &full);
-+	rbwork = rb_get_work_queue(buffer, cpu, full);
- 	if (IS_ERR(rbwork))
- 		return PTR_ERR(rbwork);
- 
--	if (full)
--		prepare_to_wait(&rbwork->full_waiters, &wait, TASK_INTERRUPTIBLE);
-+	if (*full)
-+		prepare_to_wait(&rbwork->full_waiters, wait, TASK_INTERRUPTIBLE);
- 	else
--		prepare_to_wait(&rbwork->waiters, &wait, TASK_INTERRUPTIBLE);
-+		prepare_to_wait(&rbwork->waiters, wait, TASK_INTERRUPTIBLE);
+-	ret = ext4_map_blocks(handle, inode, map, m_flags);
++	if (flags & IOMAP_ATOMIC)
++		ret = ext4_map_blocks_atomic(handle, inode, map, m_flags);
++	else
++		ret = ext4_map_blocks(handle, inode, map, m_flags);
  
  	/*
- 	 * The events can happen in critical sections where
-@@ -912,30 +912,66 @@ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
- 	 * that is necessary is that the wake up happens after
- 	 * a task has been queued. It's OK for spurious wake ups.
- 	 */
--	if (full)
-+	if (*full)
- 		rbwork->full_waiters_pending = true;
- 	else
- 		rbwork->waiters_pending = true;
- 
--	if (rb_watermark_hit(buffer, cpu, full))
--		goto out;
-+	return 0;
-+}
- 
--	if (signal_pending(current)) {
--		ret = -EINTR;
--		goto out;
--	}
-+/**
-+ * ring_buffer_finish_wait - clean up of ring_buffer_prepare_to_wait()
-+ * @buffer: buffer to wait on
-+ * @cpu: the cpu buffer to wait on
-+ * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-+ * @wait: The wait queue entry.
-+ *
-+ * This must be called after ring_buffer_prepare_to_wait(). It cleans up
-+ * the @wait for the queue defined by @buffer, @cpu, and @full.
-+ */
-+void ring_buffer_finish_wait(struct trace_buffer *buffer, int cpu, int full,
-+				 struct wait_queue_entry *wait)
-+{
-+	struct rb_irq_work *rbwork;
-+
-+	rbwork = rb_get_work_queue(buffer, cpu, &full);
-+	if (WARN_ON_ONCE(IS_ERR(rbwork)))
-+		return;
- 
--	schedule();
-- out:
- 	if (full)
--		finish_wait(&rbwork->full_waiters, &wait);
-+		finish_wait(&rbwork->full_waiters, wait);
- 	else
--		finish_wait(&rbwork->waiters, &wait);
-+		finish_wait(&rbwork->waiters, wait);
-+}
- 
--	if (!ret && !rb_watermark_hit(buffer, cpu, full) && signal_pending(current))
--		ret = -EINTR;
-+/**
-+ * ring_buffer_wait - wait for input to the ring buffer
-+ * @buffer: buffer to wait on
-+ * @cpu: the cpu buffer to wait on
-+ * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-+ *
-+ * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-+ * as data is added to any of the @buffer's cpu buffers. Otherwise
-+ * it will wait for data to be added to a specific cpu buffer.
-+ *
-+ * ring_buffer_prepare_to_wait() must be called before this function
-+ * and ring_buffer_finish_wait() must be called after.
-+ */
-+int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
-+{
-+	if (rb_watermark_hit(buffer, cpu, full))
-+		return 0;
- 
--	return ret;
-+	if (signal_pending(current))
-+		return -EINTR;
-+
-+	schedule();
-+
-+	if (!rb_watermark_hit(buffer, cpu, full) && signal_pending(current))
-+		return -EINTR;
-+
-+	return 0;
- }
- 
- /**
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index a184dbdf8e91..2d6bc6ee8a58 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1984,7 +1984,8 @@ static bool wait_woken_prepare(struct trace_iterator *iter, int *wait_index)
- 	spin_lock(&wait_lock);
- 	if (iter->waking)
- 		woken = true;
--	*wait_index = iter->wait_index;
-+	if (wait_index)
-+		*wait_index = iter->wait_index;
- 	spin_unlock(&wait_lock);
- 
- 	return woken;
-@@ -2019,13 +2020,22 @@ static void wait_woken_clear(struct trace_iterator *iter)
- 
- static int wait_on_pipe(struct trace_iterator *iter, int full)
- {
-+	struct trace_buffer *buffer;
-+	DEFINE_WAIT(wait);
+ 	 * We cannot fill holes in indirect tree based inodes as that could
+@@ -3339,6 +3365,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
  	int ret;
+ 	struct ext4_map_blocks map;
+ 	u8 blkbits = inode->i_blkbits;
++	unsigned int orig_len;
  
- 	/* Iterators are static, they should be filled or empty */
- 	if (trace_buffer_iter(iter, iter->cpu_file))
- 		return 0;
+ 	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
+ 		return -EINVAL;
+@@ -3352,6 +3379,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 	map.m_lblk = offset >> blkbits;
+ 	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
+ 			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
++	orig_len = map.m_len;
  
--	ret = ring_buffer_wait(iter->array_buffer->buffer, iter->cpu_file, full);
-+	buffer = iter->array_buffer->buffer;
+ 	if (flags & IOMAP_WRITE) {
+ 		/*
+@@ -3362,9 +3390,15 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 		 */
+ 		if (offset + length <= i_size_read(inode)) {
+ 			ret = ext4_map_blocks(NULL, inode, &map, 0);
+-			if (ret > 0 && (map.m_flags & EXT4_MAP_MAPPED))
+-				goto out;
++			if (map.m_flags & EXT4_MAP_MAPPED) {
++				if ((flags & IOMAP_ATOMIC && ret >= orig_len) ||
++				   (!(flags & IOMAP_ATOMIC) && ret > 0))
++					goto out;
 +
-+	ret = ring_buffer_prepare_to_wait(buffer, iter->cpu_file, &full, &wait);
-+	if (ret < 0)
-+		return ret;
-+	if (!wait_woken_prepare(iter, NULL))
-+		ret = ring_buffer_wait(buffer, iter->cpu_file, full);
-+	ring_buffer_finish_wait(buffer, iter->cpu_file, full, &wait);
- 
- #ifdef CONFIG_TRACER_MAX_TRACE
- 	/*
++			}
+ 		}
++		WARN_ON(map.m_lblk != offset >> blkbits);
++		map.m_len = orig_len;
+ 		ret = ext4_iomap_alloc(inode, &map, flags);
+ 	} else {
+ 		ret = ext4_map_blocks(NULL, inode, &map, 0);
 -- 
-2.43.0
-
+2.39.2
 
 
