@@ -1,167 +1,194 @@
-Return-Path: <linux-kernel+bounces-96960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68E138763B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:54:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D23BD8763B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E300B2143D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:54:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 620641F21767
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7E1156743;
-	Fri,  8 Mar 2024 11:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wwSm0Wk2"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630E056745;
+	Fri,  8 Mar 2024 11:55:20 +0000 (UTC)
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695CA56467
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B802F2C1A2;
+	Fri,  8 Mar 2024 11:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709898856; cv=none; b=GBNeVhqxOfLA4EmmuCuZdXiMzQga4eAsIYX880A8NjZ2TmKM9EnAU5EoTuq16vW+Ixeu9tPwqqUiHBCi1c8vxenmbs+dCMIzX4o6k2Im4o4ifKjSuLw/A3FIZZ1P/vvT2olXeUJn8+hsyp8Dh6hHF0qZhCsO3oKdXCiwsiWHps8=
+	t=1709898919; cv=none; b=DrpDVsoPVQfbht+MGC4HsWCpafffKJQLT8nazpZ1u32ePsW6H82TBoSd+SOXd2RNVBqKQCdvS/Hbru2Ipuxoc75dmA5gB7B5ijBGLo7BtBjTRIs4pSLguSqDJI53YTQ1WBSQJYM/EJnHIMJuPxT9bkO/fHRqEgsQYnW/+yIV9OI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709898856; c=relaxed/simple;
-	bh=/VQiwZdXPfh3lN8CjKQo7Bv5mXhm0CmkWNd807BkdSs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jj6pzoEw+SlxVB21KMwWUI3w/TyQ2+vVUjAl0tV+dHAhVa+j+t4Ej9o2wEXhlVK6NtTdupFs8q43ojdTD3DsoxXKT/I4hWAjb5eRBL9eMikKFdadw8UIjZYBYUN79wSZ6ieYUVJayRSzrP0wGcuj5QzfDYywv/B7bw/LiyOJBmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wwSm0Wk2; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso817949276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709898853; x=1710503653; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AJqfP1AAZ8opcqsCNeYdbwalcWiPkzV/nLiirCz1Z4g=;
-        b=wwSm0Wk2Xe/XMv8xlVdYUiklz6GJj54etMW6TFGN3GZhBZsVhyTuLmH6KfZF7wXGxq
-         +83fx2rzRf3B8ftEf/dyB0UEf9lrN8L8us12rCwiNghkk6VpJvakoBQRHUYVkHmfme1U
-         dA/qeJ8sprIzxHZDtZVidvNH2R0njkhayVyl3fsDlbf/++J65WiDPuLVdKd447RpwD22
-         EUXdlvDxuckul9IGnVroqCpKpuJlKDLTI1WYAskbD/qP9Z8REJGLt+YGmgX8/NbP6iVi
-         9wh+iGfOtK5jRtgdr1Xqq4BUF0mJqsstP0FAWiDWf4n5m7JIPAVqxIkSVAYAUQcJJNh8
-         n3Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709898853; x=1710503653;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AJqfP1AAZ8opcqsCNeYdbwalcWiPkzV/nLiirCz1Z4g=;
-        b=b8b9IOCj1m/fi5i0R0Lh0qxa0iZ/Xg5AXa4qz859rHNNjCBkWqPe5WiKVJzs0nF/Gt
-         dbteGuoQv3nkVYQmgP4yQNl6uifQ0xAM08LdRYG7G8ewIwv9I+7Uzxl/Vn7Pz1CT1WaT
-         fCY1R+1mSPmxHf9RQMGfvZ9JUy11tTDPqW3urK2yVjtgga6hEoNmphhFSXEF3dHSXtHW
-         bp6zWomAZ2saIzGU3/o+GSKQ676wR2QL6FBsgCJtiF8Bojyml9kgmo1Er1qyze33dTkz
-         6zAbHmb9F+2ZEBwcWgxyZswD0Q3PZ39zMcio5vZgvACTBEVSc7jiDIa+66lDYjTAlG4W
-         01ow==
-X-Forwarded-Encrypted: i=1; AJvYcCUasolxIiLZKd/InAWzj06GQYBlWM4gvQm5bJPj31vfufEmwuDDSi6QNhiCWUNTHDawo1Dzz/tDq6KacfarrVDFSbadR69/7bXGgwZG
-X-Gm-Message-State: AOJu0YwzaOTNVAL8ggSUiJWVSIvNZB0wiPs4Zq3hpYn9UgAeHTNXme/y
-	wF1lplaj6eh+w/GRUqDHMySN7tAcWZScXyCgI4/hpa8/a2H0eOktvGyLqTWqk2K6Ldg/9UrOCFn
-	t+73QoZKl66S48NN5ep4Tiq+JqSeSUms6RMxf5g==
-X-Google-Smtp-Source: AGHT+IGP2ARwJiuBZcymnXJV+Xt44d1Hys7QasIbFgms8QtGVNvpSeqesp2i1294OGHSHgDc7jaFfgX0Os/hrKIfuf0=
-X-Received: by 2002:a25:8b01:0:b0:dcb:be59:25e1 with SMTP id
- i1-20020a258b01000000b00dcbbe5925e1mr18074057ybl.30.1709898853391; Fri, 08
- Mar 2024 03:54:13 -0800 (PST)
+	s=arc-20240116; t=1709898919; c=relaxed/simple;
+	bh=EbeuyHMf7cqWISlltIAPJ/9bpRlnrmVKQt4kVAcX4Tg=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QWEOI0yaqA/8movwpKKnM005IvOekHujhw8Dm3o79BC2Po3kGQn3nX4rDkl79PmPk3ULlixKpSD7OTxByOmGrpnLipgTH6t/beQrsGvNTPg9taDBMmGF7iZg5SnALjGSDViavNv71bMTThFhdh+YEM7Ojr4XcXo573zzMijTg10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 082375202BC;
+	Fri,  8 Mar 2024 12:55:12 +0100 (CET)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 8 Mar
+ 2024 12:55:11 +0100
+Date: Fri, 8 Mar 2024 12:55:06 +0100
+From: Hardik Gajjar <hgajjar@de.adit-jv.com>
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+CC: Hardik Gajjar <hgajjar@de.adit-jv.com>, <gregkh@linuxfoundation.org>,
+	<maze@google.com>, <linux-usb@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <guofeng.li@gm.com>,
+	<hardik.gajjar@bosch.com>, <eugeniu.rosca@bosch.com>
+Subject: Re: [PATCH] usb: gadget: f_ncm: Fix Kernel Panic due to access of
+ invalid gadget ptr
+Message-ID: <20240308115506.GA5631@vmlxhi-118.adit-jv.com>
+References: <20240307161849.9145-1-hgajjar@de.adit-jv.com>
+ <8d116b78-9227-4e48-8d37-3a0cb0465dfd@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
- <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
- <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org> <83fd1995-a06e-b76a-d91b-de1c1a6ab0ea@quicinc.com>
- <4817a5b0-5407-4437-b94a-fc8a1bfcd25d@linaro.org> <e2627a99-307f-1e10-abfd-ce688cc2ec03@quicinc.com>
-In-Reply-To: <e2627a99-307f-1e10-abfd-ce688cc2ec03@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 8 Mar 2024 13:54:02 +0200
-Message-ID: <CAA8EJpogCOQ4W26hkBm6v_yemZ2F30z2TsO5vLKLUqRKkfYxvg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] clk: qcom: Add camera clock controller driver for SM8150
-To: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-Cc: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Stephen Boyd <sboyd@codeaurora.org>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, Ajit Pandey <quic_ajipan@quicinc.com>, 
-	Imran Shaik <quic_imrashai@quicinc.com>, Taniya Das <quic_tdas@quicinc.com>, 
-	Jagadeesh Kona <quic_jkona@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <8d116b78-9227-4e48-8d37-3a0cb0465dfd@quicinc.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 
-On Fri, 8 Mar 2024 at 12:47, Satya Priya Kakitapalli (Temp)
-<quic_skakitap@quicinc.com> wrote:
->
->
-> On 3/6/2024 7:25 PM, Bryan O'Donoghue wrote:
-> > On 06/03/2024 08:30, Satya Priya Kakitapalli (Temp) wrote:
-> >>>
-> >>> Anyway I suspect the right thing to do is to define a
-> >>> titan_top_gdsc_clk with shared ops to "park" the GDSC clock to 19.2
-> >>> MHz instead of turning it off.
-> >>>
-> >>> You can get rid of the hard-coded always-on and indeed represent the
-> >>> clock in /sysfs - which is preferable IMO to just whacking registers
-> >>> to keep clocks always-on in probe anyway.
-> >>>
-> >>> Please try to define the titan_top_gdsc_clk as a shared_ops clock
-> >>> instead of hard coding to always on.
-> >>>
-> >>
-> >> Defining the gdsc clk allows consumers to control it, we do not want
-> >> this clock to be disabled/controlled from consumers. Hence it is
-> >> better to not model this clock and just keep it always on from probe.
-> >
-> > Not if you mark it critical
-> >
->
-> Marking the clock as critical keeps the associated power domain
-> always-on which impacts power. For this reason we are not using
-> CLK_IS_CRITICAL and instead making them always on from probe.
+On Thu, Mar 07, 2024 at 11:12:07PM +0530, Krishna Kurapati PSSNV wrote:
+> 
+> On 3/7/2024 9:48 PM, Hardik Gajjar wrote:
+> > In the scenario where the system enters suspend to RAM mode (STR) triggers
+> > the disconnection of Dual Role USB Hub, and the UDC platform driver calls
+> > usb_del_gadget_udc() to cleanup and delete the associated gadget.
+> > 
+> > However, at this point, the usb0 interface is not yet deleted, leading to
+> > a race condition with the TCP/IP stack attempting to access the network
+> > device parent (gadget pointer), through operations like the GETLINK net
+> > message.
+> > 
+> > This patch addresses the issue by clearing the netdevice's parent device
+> > pointer when the ncm unbinds, effectively preventing the race condition
+> > during this critical phase.
+> > 
+> 
+> Hi Hardik,
+> 
+>  Would this the case be same with other network functions as well ? I see
+> that for all gadget functions, the network interface exists although the
+> unbind is done and deleted only upon function instance removal. Should we
+> move the gether_cleanup at unbind as a reverse operation of what we do on
+> first bind ? If we do so, I think this current problem too would be gone.
+> 
+> Greg, if you have idea why we don't destroy the network interface upon
+> unbind and keep it till the lifetime of the function instance, can you help
+> with that info. I was trying to see if we can move the gether_cleanup call
+> to unbind, but I don't know why it was kept in free_inst to begin with, so I
+> didn't touch that part of code so far.
+> 
+> Regards,
+> Krishna,
 
-Please consider using pm_clk instead. This is a cleaner solution
-compared to keeping the clocks always on.
+Hi Krishna, 
 
-> > static struct clk_branch cam_cc_gdsc_clk = {
-> >         .halt_reg = 0xc1e4,
-> >         .halt_check = BRANCH_HALT,
-> >         .clkr = {
-> >                 .enable_reg = 0xc1e4,
-> >                 .enable_mask = BIT(0),
-> >                 .hw.init = &(struct clk_init_data){
-> >                         .name = "cam_cc_gdsc_clk",
-> >                         .parent_hws = (const struct clk_hw*[]){
-> >                                 &cam_cc_xo_clk_src.clkr.hw
-> >                         },
-> >                         .num_parents = 1,
-> >                         .flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-> >                         .ops = &clk_branch2_ops,
-> >                 },
-> >         },
-> > };
-> >
-> > and then add this to your camss clocks
-> >
-> > <&clock_camcc CAM_CC_GDSC_CLK>;
-> >
-> > The practice we have of just whacking clocks always-on in the probe()
-> > of the clock driver feels lazy to me, leaving the broken cleanups we
-> > have aside.
-> >
-> > As a user of the system I'd rather see correct/complete data in
-> > /sys/kernel/debug/clk/clk_summary
-> >
-> > Anyway I'm fine with setting the clock always on, I can always send
-> > out a series to address this bug-bear myself.
-> >
-> > So yeah just fix the cleanup and then please feel free to add my
-> >
-> > Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->
+I believe using gether_cleanup altogether may not be an optimal solution.
+The creation and deletion of network interfaces should align with the behavior of each specific network driver.
 
+For instance, in the case of NCM, the usb0 interface is created upon the creation of a directory
+in config/usb_gadget/gX/functions/ncm.usb0, and it is removed when the corresponding directory
+is deleted. This follows a standard flow observed in many network drivers, where interfaces are
+created during driver loading/probing and deleted during removal.
 
--- 
-With best wishes
-Dmitry
+Typically, deleting the gadget on every disconnection is not considered a good practice, as it can
+negatively impact the user experience when accessing the gadget.
+
+In our specific scenario, retaining the usb0 network interface has proven to enhance performance
+and stabilize connections. Previous attempts to remove it resulted in an observed increase in time of 300ms,
+particularly at the start of Apple CarPlay sessions.
+
+Furthermore, it's important to highlight that in Qualcomm products and msm kernels, the inclusion of gether_cleanup
+in the unbind process was eventually reverted. While the specific reason for reverting the patch is unknown,
+it suggests that the addition may not have yielded the intended or required results
+
+Following is the revert patch details in msm-5.4 kernel, if you want check it.
+
+Revert "usb: gadget: f_ncm: allocate/free net device upon driver bind/unbind"
+
+This reverts commit 006d8adf555a8c6d34113f564ade312d68abd3b3.
+
+Move back the allocation of netdevice to alloc_inst(), one-time
+registration to bind(), deregistration and free to rm_inst(). The
+UI update issue will be taken up with proper stakeholders.
+
+Change-Id: I56448b08f6796a43ec5b0dfe0dd2d42cdc0eec14
+
+Thanks,
+Hardik
+ 
+
+> 
+> > Followinfg is the backtrace of such race condition
+> > [ 3566.105792] Call trace:
+> > [ 3566.105984] if_nlmsg_size+0x48/0x3b0
+> > [ 3566.107497] rtnetlink_rcv_msg+0x1cc/0x408
+> > [ 3566.107905] netlink_rcv_skb+0x12c/0x164
+> > [ 3566.108264] rtnetlink_rcv+0x18/0x24
+> > [ 3566.108851] netlink_unicast_kernel+0xc4/0x14c
+> > [ 3566.109192] netlink_unicast+0x210/0x2b0
+> > [ 3566.109606] netlink_sendmsg+0x2ec/0x360
+> > [ 3566.110046] __sys_sendto+0x1b8/0x25c
+> > [ 3566.111594] __arm64_sys_sendto+0x28/0x38
+> > [ 3566.112599] el0_svc_common+0xb4/0x19c
+> > [ 3566.112978] el0_svc_handler+0x74/0x98
+> > [ 3566.113269] el0_svc+0x8/0xc
+> > 
+> > - code: if_nlmsg_size call the following function
+> > 
+> > static inline int rtnl_vfinfo_size(const struct net_device *dev,
+> > 				   u32 ext_filter_mask)
+> > {
+> > 	// dev->dev.parent is not NULL
+> > 	if (dev->dev.parent && (ext_filter_mask & RTEXT_FILTER_VF)) {
+> > 		// dev_num_vf use the dev->dev.parent->bus lead to kernel panic.
+> > 		int num_vfs = dev_num_vf(dev->dev.parent);
+> > 		size_t size = nla_total_size(0);
+> > 		size += num_vfs *
+> > 			(nla_total_size(0) +
+> > 			 nla_total_size(sizeof(struct ifla_vf_mac)) +
+> > 			 nla_total_size(sizeof(struct ifla_vf_vlan)) +
+> > 			 nla_total_size(0) + /* nest IFLA_VF_VLAN_LIST *
+> > 
+> > Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> > ---
+> >   drivers/usb/gadget/function/f_ncm.c | 7 +++++++
+> >   1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+> > index e2a059cfda2c..fdfb5b3460c7 100644
+> > --- a/drivers/usb/gadget/function/f_ncm.c
+> > +++ b/drivers/usb/gadget/function/f_ncm.c
+> > @@ -1728,9 +1728,12 @@ static void ncm_free(struct usb_function *f)
+> >   static void ncm_unbind(struct usb_configuration *c, struct usb_function *f)
+> >   {
+> >   	struct f_ncm *ncm = func_to_ncm(f);
+> > +	struct f_ncm_opts   *ncm_opts;
+> >   	DBG(c->cdev, "ncm unbind\n");
+> > +	ncm_opts = container_of(f->fi, struct f_ncm_opts, func_inst);
+> > +
+> >   	hrtimer_cancel(&ncm->task_timer);
+> >   	kfree(f->os_desc_table);
+> > @@ -1746,6 +1749,10 @@ static void ncm_unbind(struct usb_configuration *c, struct usb_function *f)
+> >   	kfree(ncm->notify_req->buf);
+> >   	usb_ep_free_request(ncm->notify, ncm->notify_req);
+> > +
+> > +	mutex_lock(&ncm_opts->lock);
+> > +	SET_NETDEV_DEV(ncm_opts->net, NULL);
+> > +	mutex_unlock(&ncm_opts->lock);
+> >   }
+> >   static struct usb_function *ncm_alloc(struct usb_function_instance *fi)
 
