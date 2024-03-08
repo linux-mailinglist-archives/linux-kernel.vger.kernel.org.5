@@ -1,165 +1,120 @@
-Return-Path: <linux-kernel+bounces-96608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8121E875EDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:54:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 006FA875EE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 221DF1F21613
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:54:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 615E3B20B5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:54:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAD651031;
-	Fri,  8 Mar 2024 07:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6694F606;
+	Fri,  8 Mar 2024 07:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BynHUM00";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RoFfSx5D";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BynHUM00";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RoFfSx5D"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bfk9iVLJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6A7E555
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8162F1CD09
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709884420; cv=none; b=XqWPm9ExGeR7rKrSxnJlk3Fr/171m26FYv5+DIz06haYdRl+kQ45rj78xOD+E97LK+dcgvff5gTd0+4sko2OcleI0lXITC/BtRrJYlRN0DXB/KcVIXpTfvvmyfsgRAs6jzuQs0afWH5FnH31s4Vsf6z+4+Myt7eeArLgpXwEOMI=
+	t=1709884488; cv=none; b=M8mNlDr8bhO64KAzLkgzfqwZ/iGcj1M6/T48P5LJdCqkZwKKQr/tMP+3yoqyorTh5qf/DHBum2odfQU2/bfoAAxsdAONAt7nc1xlRKASGeJqsRKqM7XuD6CCPpofvlr+MjnSVF620CaB3aPwwyFL+RIIUn8YPwAGmlL5k4rFO4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709884420; c=relaxed/simple;
-	bh=VNV5swdqrI0DNG2HieLkadUPj8pYn3qTQRRk2ARvEzk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DiG70sJraahGMNYd6QKUoEra7J9TTeqWA8GlE0lidUExzBE71gi78ZxyWx971MxGeZgj0kG651QvbfmPjdoEznM6t0l1sxaOubMWCvrd4jch8L3j0N7J5VBpkWIQuCeLCTcHGETBK6Rs5Lfxrj9yMZJ6yez9pQwYNlE5qK70p60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BynHUM00; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RoFfSx5D; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BynHUM00; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RoFfSx5D; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 299F120383;
-	Fri,  8 Mar 2024 07:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709884416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rp1D2QYjHNl+iUq7FT+HRREVK4qqEoRgZESSZNDJq4Q=;
-	b=BynHUM00jAgdskbp4wm6oemibVk3XPcOt9jA9PXU8Nrx09OF7i6r7WML6HkJ+fIFPY4IYo
-	RpeIGguI1CYb/wKTvtqP7YKMMX6XYbR1Dfz6EkRpwMLH1GF2sMVfQsLNQ44XyxmiqpZAAS
-	Pz7HWY6tJ1VvUvTzskoHceVw8dFITuY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709884416;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rp1D2QYjHNl+iUq7FT+HRREVK4qqEoRgZESSZNDJq4Q=;
-	b=RoFfSx5DnDMbTHqN1emARAv2MMV+7MlyKvgLo+oyUhmCRxJyLSxbPDane3A3m6TaZdAnAM
-	HdUBjJPO0ZgJV0DQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709884416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rp1D2QYjHNl+iUq7FT+HRREVK4qqEoRgZESSZNDJq4Q=;
-	b=BynHUM00jAgdskbp4wm6oemibVk3XPcOt9jA9PXU8Nrx09OF7i6r7WML6HkJ+fIFPY4IYo
-	RpeIGguI1CYb/wKTvtqP7YKMMX6XYbR1Dfz6EkRpwMLH1GF2sMVfQsLNQ44XyxmiqpZAAS
-	Pz7HWY6tJ1VvUvTzskoHceVw8dFITuY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709884416;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rp1D2QYjHNl+iUq7FT+HRREVK4qqEoRgZESSZNDJq4Q=;
-	b=RoFfSx5DnDMbTHqN1emARAv2MMV+7MlyKvgLo+oyUhmCRxJyLSxbPDane3A3m6TaZdAnAM
-	HdUBjJPO0ZgJV0DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0715813310;
-	Fri,  8 Mar 2024 07:53:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kPG5AADE6mUNSAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 08 Mar 2024 07:53:36 +0000
-Message-ID: <cce858b3-cd8c-4b11-9564-d3c38eb8d536@suse.cz>
-Date: Fri, 8 Mar 2024 08:53:35 +0100
+	s=arc-20240116; t=1709884488; c=relaxed/simple;
+	bh=6aetVt5pJf5SLmzLY38Fa4qD7/eAZvCvftnw107cvXc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=sTCJaaza4ocaw7KjiF7fDRMZ/nFRFXeJkSIL8AasVby7F2ft8BDC6T6c4MJab5RFXOAJxW1KavsX3m8T1WSbmJdlB9CmmwmmMg8WIHJhYMkvaHTwMuuhBeBBkSK7DwTpNoYJPOeatdUqxVJ77/aI6BYrtR1U8U/0a0/FCGyADLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bfk9iVLJ; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709884486; x=1741420486;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=6aetVt5pJf5SLmzLY38Fa4qD7/eAZvCvftnw107cvXc=;
+  b=bfk9iVLJUxozWD8VwtIfv+HdW26O9vpTBeJyhkExzzgfW4gaH/MgFX/d
+   ELJuzHD4tlBk2CYHAPt3xsxIw17u8chQrSED8U0M+URu5r23rQSsguyb8
+   ixeWB/t0Q8EsEW3dzQISRYReIW54WPmCvu18G3jsm/Fu5bm+2EYhJR4B3
+   i3x291GSfqTOTjHxaDBpBjlU5h8P+y0tGFLaQctNjQPuw78ae481y1VoO
+   bHp5lfRsNwuNafw7YR3Wkr4eEWC+kCg4biHgw6oiXMIR5r56u6ebC9i2J
+   BBn5gb5tttGqIYWnfBd2n2yAJTTOGNZoIF89kSBOKq4V692eorxKYB5Ok
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15315638"
+X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
+   d="scan'208";a="15315638"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 23:54:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
+   d="scan'208";a="15062933"
+Received: from tofferse-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.212])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 23:54:43 -0800
+From: Jani Nikula <jani.nikula@intel.com>
+To: Randy Dunlap <rdunlap@infradead.org>, R SUNDAR
+ <prosunofficial@gmail.com>, airlied@gmail.com, daniel@ffwll.ch,
+ lyude@redhat.com, imre.deak@intel.com, mripard@kernel.org,
+ ville.syrjala@linux.intel.com, Wayne.Lin@amd.com
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Removed vcpi field description to fix kernel doc warning
+In-Reply-To: <9199ed28-ba15-4d50-b8a6-7f6a32aeb3bb@infradead.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240308025152.17297-1-prosunofficial@gmail.com>
+ <9199ed28-ba15-4d50-b8a6-7f6a32aeb3bb@infradead.org>
+Date: Fri, 08 Mar 2024 09:54:38 +0200
+Message-ID: <87msr9upj5.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm,page_owner: Drop unnecesary check
-Content-Language: en-US
-To: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240306123217.29774-1-osalvador@suse.de>
- <20240306123217.29774-3-osalvador@suse.de>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240306123217.29774-3-osalvador@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.32
-X-Spamd-Result: default: False [-3.32 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-2.03)[95.25%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+Content-Type: text/plain
 
-On 3/6/24 13:32, Oscar Salvador wrote:
-> stackdepot only saves stack_records which size is greather than 0,
-> so we cannot possibly have empty stack_records.
-> Drop the check.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+On Thu, 07 Mar 2024, Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 3/7/24 18:51, R SUNDAR wrote:
+>> For linux-next repo
+>> 
+>> /include/drm/display/drm_dp_mst_helper.h:156: warning: Excess struct member 'vcpi' description in 'drm_dp_mst_port'
+>> 
+>> Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
+>
+> or
+> https://lore.kernel.org/lkml/20240106032321.28596-1-rdunlap@infradead.org/
+>
+> but I would be happy to see either of them merged.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>---
->  mm/page_owner.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index 7163a1c44ccf..e7139952ffd9 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -865,8 +865,7 @@ static int stack_print(struct seq_file *m, void *v)
->  	entries = stack_record->entries;
->  	stack_count = refcount_read(&stack_record->count) - 1;
->  
-> -	if (!nr_entries || nr_entries < 0 || stack_count < 1 ||
-> -	    stack_count < page_owner_stack_threshold)
-> +	if (stack_count < 1 || stack_count < page_owner_stack_threshold)
->  		return 0;
->  
->  	for (i = 0; i < nr_entries; i++)
+That has fallen through the cracks, apologies, but I merged this
+yesterday to drm-misc-next:
 
+ca892057e03e ("drm/dp_mst: fix drm_dp_mst_helper.h kernel-doc")
+
+BR,
+Jani.
+
+>
+> Thanks.
+>
+>> ---
+>>  include/drm/display/drm_dp_mst_helper.h | 1 -
+>>  1 file changed, 1 deletion(-)
+>> 
+>> diff --git a/include/drm/display/drm_dp_mst_helper.h b/include/drm/display/drm_dp_mst_helper.h
+>> index 9b19d8bd520a..3ae88a383a41 100644
+>> --- a/include/drm/display/drm_dp_mst_helper.h
+>> +++ b/include/drm/display/drm_dp_mst_helper.h
+>> @@ -83,7 +83,6 @@ struct drm_dp_mst_branch;
+>>   * @passthrough_aux: parent aux to which DSC pass-through requests should be
+>>   * sent, only set if DSC pass-through is possible.
+>>   * @parent: branch device parent of this port
+>> - * @vcpi: Virtual Channel Payload info for this port.
+>>   * @connector: DRM connector this port is connected to. Protected by
+>>   * &drm_dp_mst_topology_mgr.base.lock.
+>>   * @mgr: topology manager this port lives under.
+
+-- 
+Jani Nikula, Intel
 
