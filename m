@@ -1,104 +1,135 @@
-Return-Path: <linux-kernel+bounces-96434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB11875C10
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:46:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66965875C13
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:48:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B66B51F21BEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:46:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 074C3B2184E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2251E22EED;
-	Fri,  8 Mar 2024 01:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585052377A;
+	Fri,  8 Mar 2024 01:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Iwd7Qkay"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="jUZ5AzYd"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED613225D4
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 01:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5617224EF;
+	Fri,  8 Mar 2024 01:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709862404; cv=none; b=HlBQVY3Z2rm5worq8msUrdQwMwG5ZLfcjoi9YXZcmLTfaVQ8pwq3xZo0xmUeBHI6nntoRSRbYKnfTpFYUpYvh7wckv4ETWnQPuHGfrti0eCdiE0X5V07xRyczTn/Inlv+PvFZh2NUve+vz6iNJGBoWiwj0L8CzAa+ApFb0vKw6o=
+	t=1709862465; cv=none; b=LQooEjDB3SroaMQ0j5sWzD0h4Me/qsJV81Y9fwvz0aOtwN3VguR1uba9BwSgZikRz32+4+fFQvPRbWnAOwTf2lxLHIWyN/VPS5s8jU/Atl43842B2ZB2OpEgtNexJsvb48KWUYETi3um7TKdRBTPpCI/h59awiUxMWUmpdxQmrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709862404; c=relaxed/simple;
-	bh=IVPq8N2j/iOv1/7Yev/gBsEV7HoD32GIq2O/4f9aOlE=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=tlsdtO/e4hxMdotrTcUg7yAcDIEWmkdZjIEsG33CYAuo083XkjdaNK3fv/OuIRUo8/+THipO2tsQe12EUwtr92hVX5BfMeUiqsVKdU912omQGQEm8oy6AAclYXJBdz982aLOUnmn8iTikuNp4tCCJcYZXJyqsYK8ViH/VJXGHZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Iwd7Qkay; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709862404; x=1741398404;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=IVPq8N2j/iOv1/7Yev/gBsEV7HoD32GIq2O/4f9aOlE=;
-  b=Iwd7Qkay4GCvI0cct6QMrdhf3Gud2dPVvjcoAJQlH/i4pM8cI2VwYzsY
-   chFRPUbPkPBWjnAqGoM2emYM3TTWisyF2lVpukLhaEU1PYw2SL8e/E/Tz
-   QDc9kzO/VJ93t65SeFf2hGGoMFWbqHwE8PAK3CfrVoEU8OyiFbUa2WRzb
-   Wqg+18swkFM9hye3RZMYiZncAhkOfDmolYiEck/LjsIGLgLW2DuqG27OB
-   tHmlXhSvl+TGCQ/jQXv/2TJ/GWmZaugUsbM4ftiRykmokUE+CmIUnPdg4
-   t7SfjmiN2fTWJOHTQdyx0o265OTNrQp8Bz5QfcgUD5HeMCjWZZhdsOj4l
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4498342"
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="4498342"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 17:46:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="10244795"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa010.fm.intel.com with ESMTP; 07 Mar 2024 17:46:38 -0800
-Message-ID: <6afb82b4-379d-4a6c-8cc0-00fc72caa72e@linux.intel.com>
-Date: Fri, 8 Mar 2024 09:40:30 +0800
+	s=arc-20240116; t=1709862465; c=relaxed/simple;
+	bh=qnucwu8sC+b5UCLM9QazJeTUSkl3RvfDeIUyhAnL+GY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=m+d1x5eR4mK+ufFjKVson0r3iLn6aAarblfsPhr2BMdH+hxYFUt9mUh2sM5bN7MK2+oPtPN5o2QJA0IEpyiD03HhczJyZgi+15AKcHAPfQtfK41GIR/leAnnGsxEInL+qs0uBkLaW7ICjxw9A0pfKWkRiV/RAvE35DVDex61vvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=jUZ5AzYd; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709862454;
+	bh=qAbAssxvhgRYu6NVeoFSc//1sLgqbgjwD49nQyyyh2I=;
+	h=Date:From:To:Cc:Subject:From;
+	b=jUZ5AzYd6fSljeswlwQ7oyinqWQYzTBEvbhvAyk0Hg5i8fKemgZwdkhiHM0+Bi8ig
+	 PJdrkiTmb5sN17HTkDKFlI4zM9tJj9NEF6Cg2A9zTAd8vmTKO/WqHfiDquP58vKmKl
+	 sYvkuH+zF4Uo+mTKe4gmzgUw2q0ABnStPgLIPJsAkhoenTf6ZBx23Z+mqBwbfLnA5A
+	 mMrxBQtmzT/7p2Zb6mAtWHVVDvc3UBe9a7+CmCF/vgCJUsDq3geNjB1jrcscpvtH+S
+	 WzluQO3KV03U71kAuQmORIG/yaxZABcxI3+qt8aWEt1eYAXUYQm/EEBZ8ryj3u/l5N
+	 CO3HaDqfik9FQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TrTZF5y4Pz4wb0;
+	Fri,  8 Mar 2024 12:47:33 +1100 (AEDT)
+Date: Fri, 8 Mar 2024 12:47:31 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Christoffer Dall <cdall@cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>
+Subject: linux-next: manual merge of the kvm-arm tree with the arm64 tree
+Message-ID: <20240308124731.098502b1@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, haifeng.zhao@linux.intel.com,
- iommu@lists.linux.dev, jgg@ziepe.ca, jiaqing.huang@intel.com,
- joro@8bytes.org, kevin.tian@intel.com, linux-kernel@vger.kernel.org,
- robin.murphy@arm.com, will@kernel.org
-Subject: Re: [PATCH] iommu: fix compilation without CONFIG_IOMMU_INTEL
-Content-Language: en-US
-To: Bert Karwatzki <spasswolf@web.de>
-References: <20240307194419.15801-1-spasswolf@web.de>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240307194419.15801-1-spasswolf@web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/yUSZTzhEF0rOIcqwwxU2xH5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 3/8/24 3:44 AM, Bert Karwatzki wrote:
-> When the kernel is comiled with CONFIG_IRQ_REMAP=y but without
-> CONFIG_IOMMU_INTEL compilation fails since commit def054b01a8678 with an
-> undefined reference to device_rbtree_find(). This patch makes sure that
-> intel specific code is only compiled with CONFIG_IOMMU_INTEL=y.
-> 
-> Fixes: def054b01a8678 ("iommu/vt-d: Use device rbtree in iopf reporting path")
+--Sig_/yUSZTzhEF0rOIcqwwxU2xH5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I think it should fix below commit:
+Hi all,
 
-Fixes: 80a9b50c0b9e ("iommu/vt-d: Improve ITE fault handling if target 
-device isn't present")
+Today's linux-next merge of the kvm-arm tree got a conflict in:
 
-> 
-> Signed-off-by: Bert Karwatzki<spasswolf@web.de>
+  arch/arm64/include/asm/kvm_arm.h
 
-For users who want a configuration with interrupt remapping and without
-DMA remapping, they can achieve this by selecting
-IOMMU_DEFAULT_PASSTHROUGH or using kernel command "iommu.passthrough=1".
+between commit:
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+  b6c0b424cb91 ("arm64/fpsimd: Enable host kernel access to FPMR")
 
-Best regards,
-baolu
+from the arm64 tree and commit:
 
+  84de212d739e ("KVM: arm64: Make FEAT_MOPS UNDEF if not advertised to the =
+guest")
 
+from the kvm-arm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/include/asm/kvm_arm.h
+index 7f45ce9170bb,a1769e415d72..000000000000
+--- a/arch/arm64/include/asm/kvm_arm.h
++++ b/arch/arm64/include/asm/kvm_arm.h
+@@@ -102,10 -102,8 +102,8 @@@
+  #define HCR_HOST_NVHE_PROTECTED_FLAGS (HCR_HOST_NVHE_FLAGS | HCR_TSC)
+  #define HCR_HOST_VHE_FLAGS (HCR_RW | HCR_TGE | HCR_E2H)
+ =20
+- #define HCRX_GUEST_FLAGS \
+- 	(HCRX_EL2_SMPME | HCRX_EL2_TCR2En | \
+- 	 (cpus_have_final_cap(ARM64_HAS_MOPS) ? (HCRX_EL2_MSCEn | HCRX_EL2_MCE2)=
+ : 0))
++ #define HCRX_GUEST_FLAGS (HCRX_EL2_SMPME | HCRX_EL2_TCR2En)
+ -#define HCRX_HOST_FLAGS (HCRX_EL2_MSCEn | HCRX_EL2_TCR2En)
+ +#define HCRX_HOST_FLAGS (HCRX_EL2_MSCEn | HCRX_EL2_TCR2En | HCRX_EL2_EnFP=
+M)
+ =20
+  /* TCR_EL2 Registers bits */
+  #define TCR_EL2_DS		(1UL << 32)
+
+--Sig_/yUSZTzhEF0rOIcqwwxU2xH5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXqbjMACgkQAVBC80lX
+0GytMwf/Wt4r7IPuELrFWWrxuNxwXwMbkS8EdIxLkDqfTyq3DSOV8hly/M+gfRjC
+xQQmlgPBcdnL1T1CG9HrPZIvkWQeHRbDHvMmmkzHBWLV4Gh2yz4eSxvHux+6Eu43
+HTo3OsvZQ0RqikJ4gtoh+A966iVP/g4BO9khGv1eP81UAkKdxb/ZF2gG1DHtkL2Z
+6Y+Ec86cLRGu/LOzUFrri2VQuIDD/1+GPwa/YhhT8FVlyklFlK1OI++Gc1qUHcYb
+iifXsi691xVWwlFJotF391UgQPyClg8dfrJkeoJVB0b8vjcIDaU9RPG9dqO7Y/4v
+GDf5cW4ijOgJooje7b1wcZovuQratQ==
+=qKbr
+-----END PGP SIGNATURE-----
+
+--Sig_/yUSZTzhEF0rOIcqwwxU2xH5--
 
