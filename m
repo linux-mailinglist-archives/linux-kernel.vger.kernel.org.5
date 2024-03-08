@@ -1,293 +1,204 @@
-Return-Path: <linux-kernel+bounces-97191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429578766B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:51:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD4E18766AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:50:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9DD2820F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:51:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 588A91F23CA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94A65234;
-	Fri,  8 Mar 2024 14:51:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E252E1DDD5;
+	Fri,  8 Mar 2024 14:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ipMkZbK6"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JqOY7WHs"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E8315D0
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6031D558;
+	Fri,  8 Mar 2024 14:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709909492; cv=none; b=E1ox18D0ax0N7O0ET0rGnyz5TnbvJGFYIWX3cjHFrenOb3TWFEUXSSORAB+uE5ExVG4OT5tVfTn5SghnltO4xaN36OrohtmVp4VMcfhN/2vqU9+wv2Zaz/fobxGwqUB38V45m8EmYZ6A6boH6+sYma+mAujh87XG8Sem1i6m8ek=
+	t=1709909386; cv=none; b=BWRHkVf+g+ZlHRC+noW4X0zquJ2uhnBFo+wCOa+JcpqchJrh10WgVVEijow4FXS4wkJoFVpNO7TbOWaL+a8ZPZpSh8a5tn3o+q8n8GvML2bx2MRiKEQk4SIdQq4RJVCANHCJZcBSTBz1XwhmrJY2xhYDW8ZCjAsPJ0Kq1KJ0j6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709909492; c=relaxed/simple;
-	bh=o5R28wo1j5yA4yxUQwa0nYdZ/B/7PlrJWZdj4kQ/lyw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gYJMp6+6mmNKqsL811bxqf/cSkgXX5+po/rQMuEZyeyRZkfNiLrmE5PLsm+NfJlpMgfoIGyU5oRESru+EEnixjvUAEXNIocP/Bhhn4n9jwoAmnZE2UYpHmc73WeJhRebndPAswb4T+GTZ/tHpC4XUOJoRua3gvkpb1oNAWHD0pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ipMkZbK6; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428DwAUS016158;
-	Fri, 8 Mar 2024 14:51:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mNKr1aY4tr6ItgDy271C6SAxOqLBFZSiO32Am6yndb4=;
- b=ipMkZbK6SriI1GneiHJ6BsegQnuiCY7iEDb5HRRGM5fmwnkvjestm1bXPdDlFx6s4QsR
- 8ACYNaW/3G03KMTB2LF+9yg5jbKv/+WLwePbk2yssec7H4cD/Ig/YwWkZW++sdsXEu3j
- s+Kfgy6zMOfQtWWn+gof+iY3T3YZoHlHZeCbULVZIB/8w32iwgASFmRGlVXgdEswnFCQ
- LM39wKoVKPb0aAXtVN1hprRJ5mXYoHQL+cfEEJc5gq6RXAZxcGBrj0EX8Vzwdf/xSgVW
- +hPuYvzuSrE6uaB+aBHTzuvmn2vDirphbiRu8WjR3bld/k3vJUupifA5E8XT2HR2J9pP Cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr414s08r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 14:51:16 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 428EpFa6013051;
-	Fri, 8 Mar 2024 14:51:15 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr414s06f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 14:51:15 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428DkgGE010913;
-	Fri, 8 Mar 2024 14:48:24 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmh52vhak-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 14:48:24 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428EmLsM46137848
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 8 Mar 2024 14:48:23 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F177158059;
-	Fri,  8 Mar 2024 14:48:20 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 75D4658043;
-	Fri,  8 Mar 2024 14:48:18 +0000 (GMT)
-Received: from [9.43.68.167] (unknown [9.43.68.167])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  8 Mar 2024 14:48:18 +0000 (GMT)
-Message-ID: <41e11090-a100-48a7-a0dd-c989772822d7@linux.ibm.com>
-Date: Fri, 8 Mar 2024 20:18:17 +0530
+	s=arc-20240116; t=1709909386; c=relaxed/simple;
+	bh=YLwNG4ks4uquD6ezqQSUc9idKRgCGv1a6DYhg9Loufc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZMuy9+SRpXDhkmC/i42tE0GFMBh0Q7hCI0eeOyNXm4yZrUMAiQ7sItNkXHILD+sETmyZkwW7T+baNm4WFkvsO6vgyaWjwAmDWluzr/qzCrp+5TVNQG8AiBFM0x0Zmq/8xh7mWRc2PgtSG6o77lNsxyJvp/S/4z4CeLPBSSeONZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JqOY7WHs; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709909382;
+	bh=YLwNG4ks4uquD6ezqQSUc9idKRgCGv1a6DYhg9Loufc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JqOY7WHsabCwCSD7TWrek2H9lotzYfofsA5Ea0lIfThtMCbMdXr5NwtzLSE6qQwuH
+	 kWePg8cGL2acGgta6kFvgiBy4MlbKbLSR8tRUZocpDC2TYyeJV5GgBIna51AQX3U8q
+	 91uP/mvP15KGWNPRMZyCey86Y9McRxsPmOch4Sd5Ob+kyVGBSvwHpcz77vz2q5g1cI
+	 3Y8e4WBBmpd6krpJDnDitA/isQaU93O8LBD5u1wyAEMKsJs+aH2Uv3DsUj2syhODRv
+	 gLHgbSlbT8BTcWsn7ZCSkqJP+x5Tj5PCKLZMc9PNF7bQZScq3sJ59vHi8XfhLh1fCP
+	 3pxaO07AluZWg==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: laura.nao)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6D0FE37820F2;
+	Fri,  8 Mar 2024 14:49:41 +0000 (UTC)
+From: Laura Nao <laura.nao@collabora.com>
+To: rafael@kernel.org,
+	lenb@kernel.org,
+	shuah@kernel.org
+Cc: dan.carpenter@linaro.org,
+	broonie@kernel.org,
+	groeck@chromium.org,
+	kernel@collabora.com,
+	kernelci@lists.linux.dev,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	robh+dt@kernel.org,
+	saravanak@google.com,
+	davidgow@google.com,
+	Tim.Bird@sony.com,
+	dianders@chromium.org,
+	Laura Nao <laura.nao@collabora.com>
+Subject: [RFC PATCH v2 0/2] Add a test to verify device probing on ACPI platforms
+Date: Fri,  8 Mar 2024 15:49:31 +0100
+Message-Id: <20240308144933.337107-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/9] sched/balancing: Switch the
- 'DEFINE_SPINLOCK(balancing)' spinlock into an 'atomic_t
- sched_balance_running' flag
-Content-Language: en-US
-To: Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Valentin Schneider <vschneid@redhat.com>
-References: <20240304094831.3639338-1-mingo@kernel.org>
- <20240304094831.3639338-2-mingo@kernel.org>
- <bf612672-f7c3-4585-ac31-e02a1ebf614c@linux.ibm.com>
- <Zer1Hkxh/UMxs3xs@gmail.com>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <Zer1Hkxh/UMxs3xs@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OrO-E_HYdWmR55ah_cR2SGMeWJGZmd_S
-X-Proofpoint-ORIG-GUID: i7ZagJP1pphcK0XFWn907U_imEKtXy24
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- spamscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
- phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2403080119
+Content-Transfer-Encoding: 8bit
 
+Hello,
 
+This v2 addresses some issues observed when running the ACPI probe
+kselftest proposed in v1[1] across various devices and improves the overall
+reliability of the test.
 
-On 3/8/24 4:53 PM, Ingo Molnar wrote:
-> 
-> * Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
-> 
->> system is at 75% load		<-- 	25.6% contention
->> 113K probe:rebalance_domains_L37
->> 84K probe:rebalance_domains_L55
->>
->> 87
->> system is at 100% load		<--	87.5% contention.
->> 64K probe:rebalance_domains_L37
->> 8K probe:rebalance_domains_L55
->>
->>
->> A few reasons for contentions could be: 
->>
->> 1. idle load balance is running and some other cpu is becoming idle, and 
->>    tries newidle_balance.
->>
->> 2. when system is busy, every CPU would do busy balancing, it would 
->>    contend for the lock. It will not do balance as should_we_balance says 
->>    this CPU need not balance. It bails out and release the lock.
-> 
-> Thanks, these measurements are really useful!
-> 
-> Would it be possible to disambiguate these two cases?
+The acpi-extract-ids script has been improved to:
+- Parse both .c and .h files
+- Add an option to print only IDs matched by a driver (i.e. defined in an
+ACPI match tables or in lists of IDs provided by the drivers)
 
-I think its not case 1, since newidle_balance doesnt even take that lock. So 
-likely its case 2. 
+The test_unprobed_devices.sh script relies on sysfs information to
+determine if a device was successfully bound to a driver. Not all devices
+listed in /sys/devices are expected to have a driver folder, so the script
+has been adjusted to handle these cases and avoid generating false
+negatives.
 
-> 
-> I think we should probably do something about this contention on this large 
-> system: especially if #2 'no work to be done' bailout is the common case.
-> 
+The test_unprobed_devices.sh test script logic has been modified to:
+- Check the status attribute (when available) to exclusively test hardware
+  devices that are physically present, enabled and operational
+- Traverse only ACPI objects with a physical_node* link, to ensure testing
+  of correctly enumerated devices
+- Skip devices whose HID or CID are not matched by any driver, as
+  determined by the list generated through the acpi-extract-ids script
+- Skip devices with HID or CID listed in the ignored IDs list. This list
+  has been added to contain IDs of devices that don't require a driver or
+  cannot be represented as platform devices (e.g. ACPI container and module
+  devices).
+- Skip devices that are natively enumerated and don't need a driver, such
+  as certain PCI bridges
+- Skip devices unassigned to any subsystem, devices linked to other devices
+  and class devices
 
+Some of the heuristics used by the script are suboptimal and might require
+adjustments over time. This kind of tests would greatly benefit from a
+dedicated interface that exposes information about devices expected to be
+matched by drivers and their probe status. Discussion regarding this matter
+was initiated in v1.
 
-I have been thinking would it be right to move this balancing trylock/atomic after 
-should_we_balance(swb). This does reduce the number of times this checked/updated 
-significantly. Contention is still present. That's possible at higher utilization 
-when there are multiple NUMA domains. one CPU in each NUMA domain can contend if their invocation
-is aligned. 
+As of now, I have not identified a suitable method for exposing this
+information; I plan on submitting a separate RFC to propose some options
+and engage in discussion. Meanwhile, this v2 focuses on utilizing already
+available information to provide an ACPI equivalent of the existing DT
+kselftest [2].
 
-That makes sense since, Right now a CPU takes lock, checks if it can balance, do balance if yes and
- then releases the lock. If the lock is taken after swb then also, CPU checks if it can balance, 
-tries to take the lock and releases the lock if it did. If lock is contended, it bails out of 
-load_balance. That is the current behaviour as well, or I am completely wrong. 
+Adding in CC the people involved in the discussion at Plumbers [3], feel
+free to add anyone that might be interested in this.
 
-Not sure in which scenarios that would hurt. we could do this after this series. 
-This may need wider functional testing to make sure we don't regress badly in some cases. 
-This is only an *idea* as of now. 
+This series depends on:
+- https://lore.kernel.org/all/20240102141528.169947-1-laura.nao@collabora.com/T/#u
+- https://lore.kernel.org/all/20240131-ktap-sh-helpers-extend-v1-0-98ffb468712c@collabora.com/
 
-Perf probes at spin_trylock and spin_unlock codepoints on the same 224CPU, 6 NUMA node system. 
-6.8-rc6                                                                         
------------------------------------------                                       
-idle system:                                                                    
-449 probe:rebalance_domains_L37                                                 
-377 probe:rebalance_domains_L55                                                 
-stress-ng --cpu=$(nproc) -l 51     << 51% load                                               
-88K probe:rebalance_domains_L37                                                 
-77K probe:rebalance_domains_L55                                                 
-stress-ng --cpu=$(nproc) -l 100    << 100% load                                             
-41K probe:rebalance_domains_L37                                                 
-10K probe:rebalance_domains_L55                                                 
-                                                                                
-+below patch                                                                          
-----------------------------------------                                        
-idle system:                                                                    
-462 probe:load_balance_L35                                                      
-394 probe:load_balance_L274                                                     
-stress-ng --cpu=$(nproc) -l 51      << 51% load                                            
-5K probe:load_balance_L35                       	<<-- almost 15x less                                
-4K probe:load_balance_L274                                                      
-stress-ng --cpu=$(nproc) -l 100     << 100% load                                            
-8K probe:load_balance_L35                                                       
-3K probe:load_balance_L274 				<<-- almost 4x less
+Thanks,
 
+Laura
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 62f247bdec86..3a8de7454377 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11272,6 +11272,7 @@ static int should_we_balance(struct lb_env *env)
- 	return group_balance_cpu(sg) == env->dst_cpu;
- }
+[1] https://lore.kernel.org/all/20230925155806.1812249-2-laura.nao@collabora.com/T/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/dt
+[3] https://www.youtube.com/watch?v=oE73eVSyFXQ&t=9377s
 
-+static DEFINE_SPINLOCK(balancing);
- /*
-  * Check this_cpu to ensure it is balanced within domain. Attempt to move
-  * tasks if there is an imbalance.
-@@ -11286,6 +11287,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
- 	struct rq *busiest;
- 	struct rq_flags rf;
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(load_balance_mask);
-+	int need_serialize;
- 	struct lb_env env = {
- 		.sd		= sd,
- 		.dst_cpu	= this_cpu,
-@@ -11308,6 +11310,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
- 		goto out_balanced;
- 	}
+Original cover letter:
 
-+	need_serialize = sd->flags & SD_SERIALIZE;
-+	if (need_serialize) {
-+		if (!spin_trylock(&balancing))
-+			goto lockout;
-+	}
-+
- 	group = find_busiest_group(&env);
- 	if (!group) {
- 		schedstat_inc(sd->lb_nobusyg[idle]);
-@@ -11434,6 +11442,8 @@ static int load_balance(int this_cpu, struct rq *this_rq,
- 			if (!cpumask_subset(cpus, env.dst_grpmask)) {
- 				env.loop = 0;
- 				env.loop_break = SCHED_NR_MIGRATE_BREAK;
-+				if (need_serialize)
-+					spin_unlock(&balancing);
- 				goto redo;
- 			}
- 			goto out_all_pinned;
-@@ -11540,7 +11550,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
- 	     sd->balance_interval < MAX_PINNED_INTERVAL) ||
- 	    sd->balance_interval < sd->max_interval)
- 		sd->balance_interval *= 2;
-+
- out:
-+	if (need_serialize)
-+		spin_unlock(&balancing);
-+
-+lockout:
- 	return ld_moved;
- }
+Regressions that prevent a driver from probing a device can significantly
+affect the functionality of a platform.
 
-@@ -11665,7 +11680,6 @@ static int active_load_balance_cpu_stop(void *data)
- 	return 0;
- }
+A kselftest to verify if devices on a DT-based platform are probed
+correctly was recently introduced [4], but no such generic test is
+available for ACPI platforms yet. bootrr [5]  provides device probe
+testing, but relies on a pre-defined list of the peripherals present on
+each DUT.
 
--static DEFINE_SPINLOCK(balancing);
+On ACPI based hardware, a complete description of the platform is
+provided to the OS by the system firmware. ACPI namespace objects are
+mapped by the Linux ACPI subsystem into a device tree in
+/sys/devices/LNXSYSTEM:00; the information in this subtree can be parsed
+to build a list of the hw peripherals present on the DUT dynamically.
 
- /*
-  * Scale the max load_balance interval with the number of CPUs in the system.
-@@ -11716,7 +11730,7 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
- 	/* Earliest time when we have to do rebalance again */
- 	unsigned long next_balance = jiffies + 60*HZ;
- 	int update_next_balance = 0;
--	int need_serialize, need_decay = 0;
-+	int need_decay = 0;
- 	u64 max_cost = 0;
+This series adds a test to verify if the devices declared in the ACPI
+namespace and supported by the kernel are probed correctly.
 
- 	rcu_read_lock();
-@@ -11741,12 +11755,6 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
+This work follows a similar approach to [4], adapted for the ACPI use
+case.
 
- 		interval = get_sd_balance_interval(sd, busy);
+The first patch introduces a script that builds a list of all ACPI device
+IDs supported by the kernel, by inspecting the acpi_device_id structs in
+the sources. This list can be used to avoid testing ACPI-enumerated
+devices that don't have a matching driver in the kernel. This script was
+highly inspired by the dt-extract-compatibles script [6].
 
--		need_serialize = sd->flags & SD_SERIALIZE;
--		if (need_serialize) {
--			if (!spin_trylock(&balancing))
--				goto out;
--		}
--
- 		if (time_after_eq(jiffies, sd->last_balance + interval)) {
- 			if (load_balance(cpu, rq, sd, idle, &continue_balancing)) {
- 				/*
-@@ -11760,9 +11768,7 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
- 			sd->last_balance = jiffies;
- 			interval = get_sd_balance_interval(sd, busy);
- 		}
--		if (need_serialize)
--			spin_unlock(&balancing);
--out:
-+
- 		if (time_after(next_balance, sd->last_balance + interval)) {
- 			next_balance = sd->last_balance + interval;
- 			update_next_balance = 1;
+In the second patch, a new kselftest is added. It parses the
+/sys/devices/LNXSYSTEM:00 tree to obtain a list of all platform
+peripherals and verifies which of those, if supported, are correctly
+bound to a driver.
 
+Feedback is much appreciated,
 
+Thank you,
+
+Laura
+
+[4] https://lore.kernel.org/all/20230828211424.2964562-1-nfraprado@collabora.com/
+[5] https://github.com/kernelci/bootr
+[6] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/dtc/dt-extract-compatibles
+
+Laura Nao (2):
+  acpi: Add script to extract ACPI device ids in the kernel
+  kselftest: Add test to detect unprobed devices on ACPI platforms
+
+ MAINTAINERS                                   |   2 +
+ scripts/acpi/acpi-extract-ids                 |  99 +++++++++++++
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/acpi/.gitignore       |   1 +
+ tools/testing/selftests/acpi/Makefile         |  21 +++
+ tools/testing/selftests/acpi/id_ignore_list   |   3 +
+ .../selftests/acpi/test_unprobed_devices.sh   | 138 ++++++++++++++++++
+ 7 files changed, 265 insertions(+)
+ create mode 100755 scripts/acpi/acpi-extract-ids
+ create mode 100644 tools/testing/selftests/acpi/.gitignore
+ create mode 100644 tools/testing/selftests/acpi/Makefile
+ create mode 100644 tools/testing/selftests/acpi/id_ignore_list
+ create mode 100755 tools/testing/selftests/acpi/test_unprobed_devices.sh
+
+-- 
+2.30.2
 
 
