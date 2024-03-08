@@ -1,169 +1,158 @@
-Return-Path: <linux-kernel+bounces-97558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FAE7876BE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:36:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D072B876BEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:37:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CAE4B21F1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:36:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D7A42830D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A02F5E094;
-	Fri,  8 Mar 2024 20:36:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5735E087;
+	Fri,  8 Mar 2024 20:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PeYY5oGy"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="HLshlY0J"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE511D52D;
-	Fri,  8 Mar 2024 20:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E6A5D90F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709930167; cv=none; b=V6GCLxr9yhPvfMhW/B3n6qtCrdIsOTKHgcrTmcGdkzaLfUzKFdq2P8cCbS4RfazcsuuzpeadjcdgMu0nA2Pn+hufkf6iS79fnt5vDPQS+aGdhXrBWUs5NWhIyU9m5J7dbMyev0c9hezO5kJRUuXSs8433mnKC9zlmRP4OfN0ki8=
+	t=1709930240; cv=none; b=MjnIXNb6J77ibXFB9g8A+IC7l3bln1hgGHo9BKxJvQRev2DfnwTwIbC5bm0r9wK7ud6kWPYTH1+v84ktNfUUQvgNcnRe14YSDV6fohuLlEAl7c4yrEbTuahA9pwga79iZQTIpdxy5Dfo2FywMtWztVFArIXYNgzhyz8GrS6SQdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709930167; c=relaxed/simple;
-	bh=2DJgVA5hEWcv6uQ9ADvTEvGHCBiB/9lOyZUdjddNE1w=;
+	s=arc-20240116; t=1709930240; c=relaxed/simple;
+	bh=Bi3P4E1LMVNI9ICHZizJgPWFi1cAG6MJcwmbCUE+tB0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TWMTEkJVKtfk/LBQQPIh3ZVJ++W+uNAbYvXfxDyw5S9mNAd+H30wuuyZeXBGAEPCrf1s1RUN9pvrFjPS9hVnx4LXVqFRUjtQf/dy+shXi53hdWq1CLmnvGxwjLuoXWzPQzWj9AiEF7lO4RvfTvf3QjyyXUVEXypyu4AbR2fyl/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PeYY5oGy; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e62c65865cso2127241b3a.2;
-        Fri, 08 Mar 2024 12:36:05 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=dB4nARsuQ2dt7OS7L3ifEz8YZf3EctJg0A51fMXYpAJMELcm51LfTTzuOuxH+K1P23griY9DgUtz6yXsQAdTRw9xSHcJX3Qvll8fvh6YvXzghPsLQG4736S3bcudpajko3IcztVELiVxZBpFXYtqoP4ANxdYJXHYMYjEFA2eV28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=HLshlY0J; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a1cba5d46fso426623eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 12:37:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709930165; x=1710534965; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1709930237; x=1710535037; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5KLgrDjMCRpuO7WBfnDia6NDpj8Onfdt2Teu/Yvj1Oo=;
-        b=PeYY5oGyBC1yeeK/Tw/CVQkPLIYXaPkDh0IaWmXvsHxqAINOyKDSrKW7EfQ0pvmjPP
-         EX+0NXcOeE2X04OGbOH0Und6s7ONheBF4O49gCRo6qvJm3YZTeQ99SN52/Cnhw0z0uoZ
-         /XLtXaA7YlaKQ3D6h43IB/MpoWDRVptYF/WJqQ8myzmwQTIicQ+rXyB7xoOeMhmbOzcj
-         M/RnqipAMQbZNnp5ytijQjK9J0mrwwvFUSQN1X/s83JL15fMVO11Eam4MCwYFli1u/62
-         7sgUe5kgu26LhjOWM9cdm9bN0lKrVLTAAor9Ro8NOVHMcq/qGsKyXGCSs3oOQbZIseM6
-         rbHA==
+        bh=jjWpdrEe1CBSB6fUsA969odLMNfAGSgF6jvNlFE06WQ=;
+        b=HLshlY0JdEldHta3JUKzPHooseYZMDrj2DHryLYDs5peuYjAuXzdIHxf1El6VBnEzY
+         ksY0Rv2pL6VWtrierriq21rd9UsObnawXA4p4AIgBlizBDnz9aN1Vh/qFXOdoilqfmdl
+         2Msr1y8zrAmn+ef3dwTz7cREbJzefJTqGBtl0lcciyj0SoinX7jsRrdF+1eBzX5YjImP
+         lj65zjhX8XvLydEBSxgTC0EZyrS7BlRIo9qZVM1T2PbyOJ3DUyJDTxQMaUlsRBWWeQGO
+         R4A1v7dzeGxbht847VPfHRQHWbUApaKkCZJcU9B6aNAtLgR36Z1fZ1yNTw+AOPWOkl7S
+         ddug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709930165; x=1710534965;
+        d=1e100.net; s=20230601; t=1709930237; x=1710535037;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5KLgrDjMCRpuO7WBfnDia6NDpj8Onfdt2Teu/Yvj1Oo=;
-        b=bt7hB+TKQ9+Xge1k7d+LjbrFq7eLLip0YgyB6DknaNi6PT24BqUegQuCB/gXl4ebcF
-         cYDBNcQLrKtiMNHJV9CA+kohNwrNwENfYVFP4kprOlp0l1xFxLpON/lhr6eJ6sWkIe8t
-         SXy/y/xB6Gpy3brEtL0Cug+i6T3rAkucdkexrp7Vi27Cj7kuUyK401pCQRfmneEHqPLF
-         /1fg8WhOy0eduBM7WqC0KTJWbiQbaJ1hfUFo8Vu2vAx/hl1fRXg6nbZVHbS7EfLwQ8On
-         auzN5BEfhFV6NbcBzqgTp1QzqEQtwMsreMHTnfqdqu081izQ8i/nWqm8N2NIiSJ6uTvL
-         b2Gg==
-X-Forwarded-Encrypted: i=1; AJvYcCXDoKTRN8LvBAAVNpnuwV542No8sWU3mf8Y3512KPbLHmAUhP1ZKBpLvbcA8f+uQVnZHN8pBFO9Y91afDXM7qhd31B7fHQiG/azWd9c0RlR3zPQtakYYjuukY9IYoGrbGAy4uQvnMKyg8wMNYoNoXQogHRxVcAS9HR3GNY0yz/y9Q==
-X-Gm-Message-State: AOJu0YzWwdP4GW/BbouVN9rks3tKUWMMjCm/p4OhEKn8pIRTyIjUBTPH
-	8lHdWiGY2WfnIdNSy6IOqF2RhVct3riEcAXwXIqsemMeI4dWYi4B
-X-Google-Smtp-Source: AGHT+IGPH4hm9U5ivGtNFAgXMPMjIph/C46hT5a647tMtgPEKrAlzMz9Ca/0FZJBDPhbjbwTce6o9Q==
-X-Received: by 2002:a05:6a21:3985:b0:1a1:4c8f:fdc0 with SMTP id ad5-20020a056a21398500b001a14c8ffdc0mr101628pzc.43.1709930165026;
-        Fri, 08 Mar 2024 12:36:05 -0800 (PST)
-Received: from gmail.com ([192.184.166.229])
-        by smtp.gmail.com with ESMTPSA id r2-20020aa79ec2000000b006e31f615af6sm114076pfq.17.2024.03.08.12.36.03
+        bh=jjWpdrEe1CBSB6fUsA969odLMNfAGSgF6jvNlFE06WQ=;
+        b=R+rgN4Eqc+oBGMj0+AqhWz8LDa28H1q2StvxVPwEh02DeE830OOwV8GfPgAdk8zyAj
+         924zZzorfZ/kO0CCNoFsXFqwlLiV+FOIqQ5Q9mW138IU0u3fnr+WfnSJqoY+Fj7SzxFP
+         hSLEr2bg+C8uBATypNwyXpniJsgEHk7uXXNLy2VNb8CE5s8itsZ0lZU4bfs8jYG3qLhn
+         fooB1R2IEUdqblNXNT3PjdKI9hNmF7GdxfdhdCmv3pXgI2L2Wz+h/Xe/mx9P7S+PgsLc
+         z9G+FVGlpAGmoPbcHOdnecfHOh1tYJ7RRq+XRokmS72ukdyVFxECmlJ2k1Ld/lIhc4wU
+         +o2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVT8q8njBUA4SxWA3+L3SUuRyLnNKpQlorae8BwFq7KQC2+E74M7g/a1vPevbMcOR56caWjrB2EQ65Q/s2UK+4BljlYE9XO3Oh9fFOY
+X-Gm-Message-State: AOJu0YwaIARuZvbPNaOnRWj3nc5qRzPFQ3c04uackC0+L3+VdmbIeIpH
+	4edl8mnch9CddMJWdI4Vw0gnYt3V5LDpZKSnPoWZJVUM3KweXaWXEGMi1oHpqiI=
+X-Google-Smtp-Source: AGHT+IEqmZ/bPScFDErmd2Bdge5ElcWmdcXhPkDOr+1siQATWKStEMzgbLHSA9vyfoc0LpJeGpIgyw==
+X-Received: by 2002:a4a:2b11:0:b0:5a1:25fc:7be0 with SMTP id i17-20020a4a2b11000000b005a125fc7be0mr413338ooa.3.1709930236902;
+        Fri, 08 Mar 2024 12:37:16 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id bi3-20020a05682008c300b005a0859a4a01sm19059oob.36.2024.03.08.12.37.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 12:36:04 -0800 (PST)
-Date: Fri, 8 Mar 2024 12:36:02 -0800
-From: Calvin Owens <jcalvinowens@gmail.com>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Naveen N Rao <naveen.n.rao@linux.ibm.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	David S Miller <davem@davemloft.net>,
-	Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
-	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 3/4] kprobes: Allow kprobes with CONFIG_MODULES=n
-Message-ID: <Zet2ssRGrOLVqZq-@gmail.com>
-References: <cover.1709676663.git.jcalvinowens@gmail.com>
- <2af01251ca21d79fa29092505d192f1f1b746cff.1709676663.git.jcalvinowens@gmail.com>
- <ZelrH2hiUmaomDv2@kernel.org>
+        Fri, 08 Mar 2024 12:37:16 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rigxv-007xzf-Er;
+	Fri, 08 Mar 2024 16:37:15 -0400
+Date: Fri, 8 Mar 2024 16:37:15 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Matthew Rosato <mjrosato@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
+Message-ID: <20240308203715.GA9225@ziepe.ca>
+References: <cover.1707493264.git.robin.murphy@arm.com>
+ <202fcca3269201bc9c4a8198253f195433d0c4ff.1707493264.git.robin.murphy@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZelrH2hiUmaomDv2@kernel.org>
+In-Reply-To: <202fcca3269201bc9c4a8198253f195433d0c4ff.1707493264.git.robin.murphy@arm.com>
 
-On Thursday 03/07 at 09:22 +0200, Mike Rapoport wrote:
-> On Wed, Mar 06, 2024 at 12:05:10PM -0800, Calvin Owens wrote:
-> > If something like this is merged down the road, it can go in at leisure
-> > once the module_alloc change is in: it's a one-way dependency.
-> > 
-> > Signed-off-by: Calvin Owens <jcalvinowens@gmail.com>
-> > ---
-> >  arch/Kconfig                |  2 +-
-> >  kernel/kprobes.c            | 22 ++++++++++++++++++++++
-> >  kernel/trace/trace_kprobe.c | 11 +++++++++++
-> >  3 files changed, 34 insertions(+), 1 deletion(-)
+On Fri, Feb 09, 2024 at 04:50:03PM +0000, Robin Murphy wrote:
+> It's somewhat hard to see, but arm64's arch_setup_dma_ops() should only
+> ever call iommu_setup_dma_ops() after a successful iommu_probe_device(),
+> which means there should be no harm in achieving the same order of
+> operations by running it off the back of iommu_probe_device() itself.
+> This then puts it in line with the x86 and s390 .probe_finalize bodges,
+> letting us pull it all into the main flow properly. As a bonus this lets
+> us fold in and de-scope the PCI workaround setup as well.
 > 
-> When I did this in my last execmem posting, I think I've got slightly less
-> ugly ifdery, you may want to take a look at that:
+> At this point we can also then pull the call up inside the group mutex,
+> and avoid having to think about whether iommu_group_store_type() could
+> theoretically race and free the domain if iommu_setup_dma_ops() ran just
+> *before* iommu_device_use_default_domain() claims it... Furthermore we
+> replace one .probe_finalize call completely, since the only remaining
+> implementations are now one which only needs to run once for the initial
+> boot-time probe, and two which themselves render that path unreachable.
 > 
-> https://lore.kernel.org/all/20230918072955.2507221-13-rppt@kernel.org
+> This leaves us a big step closer to realistically being able to unpick
+> the variety of different things that iommu_setup_dma_ops() has been
+> muddling together, and further streamline iommu-dma into core API flows
+> in future.
+> 
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+> v2: Shuffle around to make sure the iommu_group_do_probe_finalize() case
+>     is covered as well, with bonus side-effects as above.
+> v3: *Really* do that, remembering the other two probe_finalize sites too.
+> ---
+>  arch/arm64/mm/dma-mapping.c  |  2 --
+>  drivers/iommu/amd/iommu.c    |  8 --------
+>  drivers/iommu/dma-iommu.c    | 18 ++++++------------
+>  drivers/iommu/dma-iommu.h    | 14 ++++++--------
+>  drivers/iommu/intel/iommu.c  |  7 -------
+>  drivers/iommu/iommu.c        | 20 +++++++-------------
+>  drivers/iommu/s390-iommu.c   |  6 ------
+>  drivers/iommu/virtio-iommu.c | 10 ----------
+>  include/linux/iommu.h        |  7 -------
+>  9 files changed, 19 insertions(+), 73 deletions(-)
 
-Thanks Mike, I definitely agree. I'm annoyed at myself for not finding
-your patches, I spent some time looking for prior work and I really
-don't know how I missed it...
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index cfc24ced16dd..e60ce984d095 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -52,8 +52,8 @@ config GENERIC_ENTRY
-> >  
-> >  config KPROBES
-> >  	bool "Kprobes"
-> > -	depends on MODULES
-> >  	depends on HAVE_KPROBES
-> > +	select MODULE_ALLOC
-> >  	select KALLSYMS
-> >  	select TASKS_RCU if PREEMPTION
-> >  	help
-> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > index 9d9095e81792..194270e17d57 100644
-> > --- a/kernel/kprobes.c
-> > +++ b/kernel/kprobes.c
-> > @@ -1556,8 +1556,12 @@ static bool is_cfi_preamble_symbol(unsigned long addr)
-> >  		str_has_prefix("__pfx_", symbuf);
-> >  }
-> >  
-> > +#if IS_ENABLED(CONFIG_MODULES)
-> >  static int check_kprobe_address_safe(struct kprobe *p,
-> >  				     struct module **probed_mod)
-> > +#else
-> > +static int check_kprobe_address_safe(struct kprobe *p)
-> > +#endif
-> >  {
-> >  	int ret;
-> >  
-> > @@ -1580,6 +1584,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
-> >  		goto out;
-> >  	}
-> >  
-> > +#if IS_ENABLED(CONFIG_MODULES)
-> 
-> Plain #ifdef will do here and below. IS_ENABLED is for usage withing the
-> code, like
-> 
-> 	if (IS_ENABLED(CONFIG_MODULES))
-> 		;
-> 
-> >  	/* Check if 'p' is probing a module. */
-> >  	*probed_mod = __module_text_address((unsigned long) p->addr);
-> >  	if (*probed_mod) {
-> 
-> -- 
-> Sincerely yours,
-> Mike.
+Jason
 
