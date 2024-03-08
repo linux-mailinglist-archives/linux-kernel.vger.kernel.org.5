@@ -1,106 +1,104 @@
-Return-Path: <linux-kernel+bounces-96433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D58F8875C0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:36:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB11875C10
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1307C1C21013
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:36:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B66B51F21BEA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4C42263A;
-	Fri,  8 Mar 2024 01:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2251E22EED;
+	Fri,  8 Mar 2024 01:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="molgs+v+"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Iwd7Qkay"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C869210EC;
-	Fri,  8 Mar 2024 01:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED613225D4
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 01:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709861771; cv=none; b=doy5xct7Ki80/dnq65L07y4FcRmvSEiQzwoKT1IeQy+VRxcFu5iv74pIVL4iqnGACjjy4HvE6e0tx58tAgL5qVCPDOUUQet7h0HkFku1I7vSbY6IUWNrF/lMLTf/1MHQMJbf8wnvyZFQpr5yWMi5Hz0mA4yhY4MbiBE8mKxFXNw=
+	t=1709862404; cv=none; b=HlBQVY3Z2rm5worq8msUrdQwMwG5ZLfcjoi9YXZcmLTfaVQ8pwq3xZo0xmUeBHI6nntoRSRbYKnfTpFYUpYvh7wckv4ETWnQPuHGfrti0eCdiE0X5V07xRyczTn/Inlv+PvFZh2NUve+vz6iNJGBoWiwj0L8CzAa+ApFb0vKw6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709861771; c=relaxed/simple;
-	bh=xbGto3fk4Wl8w2TSsqYZ5+LuoyoD0/16Q7GhKQ4m+RQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TnYd6vylMUBNh7YV+ydCLlVw4o+xkcaOBF4t4sl8OgH5JT4GNNHM6jar44XBMfO3i6ERRn0yuqH8J7eHseDkSkHxRBdcrqpLFlLkOGUcQomJYWGrLt5CDLGHy0PBYiQkqjtEqPjL7bgYyDdoKpB4nW3BVJIb2JBpbTRSFGNKadw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=molgs+v+; arc=none smtp.client-ip=198.175.65.20
+	s=arc-20240116; t=1709862404; c=relaxed/simple;
+	bh=IVPq8N2j/iOv1/7Yev/gBsEV7HoD32GIq2O/4f9aOlE=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=tlsdtO/e4hxMdotrTcUg7yAcDIEWmkdZjIEsG33CYAuo083XkjdaNK3fv/OuIRUo8/+THipO2tsQe12EUwtr92hVX5BfMeUiqsVKdU912omQGQEm8oy6AAclYXJBdz982aLOUnmn8iTikuNp4tCCJcYZXJyqsYK8ViH/VJXGHZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Iwd7Qkay; arc=none smtp.client-ip=198.175.65.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709861769; x=1741397769;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xbGto3fk4Wl8w2TSsqYZ5+LuoyoD0/16Q7GhKQ4m+RQ=;
-  b=molgs+v+eUFK5GpH3C6FKosQ3kNqTINMlNSs6HnHa0BqN5bEQoxWmA2w
-   vMIL/9ddK6MzZkaAFq4tmkkNMu8PC4iyFIOp9l1kl3S87uJWUpMBazr5I
-   g4XiWgrhktTXOIiIHFQ7Xul2C8cdJfa9lnit508TEdnXhRHUrX7jYz5mN
-   nB6BRmh0OCixxOHxVxQDQP1C4YYuAzTLWxsHOFU5U8OWCnBfQVG0HwhD7
-   7wj4j5XxdiJy27r5eG8yg6oVncyX5KrjxkdKnK7rzvN37RcFfIW98ev/x
-   WZ8lBWG0o69K0bKcJ0Y2GbmBS7J9IHrTIBoo2S/nXfEEeS3v4J3uYmiav
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4449832"
+  t=1709862404; x=1741398404;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=IVPq8N2j/iOv1/7Yev/gBsEV7HoD32GIq2O/4f9aOlE=;
+  b=Iwd7Qkay4GCvI0cct6QMrdhf3Gud2dPVvjcoAJQlH/i4pM8cI2VwYzsY
+   chFRPUbPkPBWjnAqGoM2emYM3TTWisyF2lVpukLhaEU1PYw2SL8e/E/Tz
+   QDc9kzO/VJ93t65SeFf2hGGoMFWbqHwE8PAK3CfrVoEU8OyiFbUa2WRzb
+   Wqg+18swkFM9hye3RZMYiZncAhkOfDmolYiEck/LjsIGLgLW2DuqG27OB
+   tHmlXhSvl+TGCQ/jQXv/2TJ/GWmZaugUsbM4ftiRykmokUE+CmIUnPdg4
+   t7SfjmiN2fTWJOHTQdyx0o265OTNrQp8Bz5QfcgUD5HeMCjWZZhdsOj4l
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4498342"
 X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="4449832"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 17:36:08 -0800
+   d="scan'208";a="4498342"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 17:46:43 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="41227121"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 17:36:08 -0800
-Date: Thu, 7 Mar 2024 17:36:07 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Vishal Annapurve <vannapurve@google.com>,
-	Jim Mattson <jmattson@google.com>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	Xiaoyao Li <xiaoyao.li@intel.com>, isaku.yamahata@gmail.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v3 3/4] KVM: X86: Add a capability to configure bus
- frequency for APIC timer
-Message-ID: <20240308013607.GL368614@ls.amr.corp.intel.com>
-References: <cover.1702974319.git.isaku.yamahata@intel.com>
- <f393da364d3389f8e65c7fae3e5d9210ffe7a2db.1702974319.git.isaku.yamahata@intel.com>
- <ZdjzIgS6EAeCsUue@google.com>
+   d="scan'208";a="10244795"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa010.fm.intel.com with ESMTP; 07 Mar 2024 17:46:38 -0800
+Message-ID: <6afb82b4-379d-4a6c-8cc0-00fc72caa72e@linux.intel.com>
+Date: Fri, 8 Mar 2024 09:40:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZdjzIgS6EAeCsUue@google.com>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, haifeng.zhao@linux.intel.com,
+ iommu@lists.linux.dev, jgg@ziepe.ca, jiaqing.huang@intel.com,
+ joro@8bytes.org, kevin.tian@intel.com, linux-kernel@vger.kernel.org,
+ robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH] iommu: fix compilation without CONFIG_IOMMU_INTEL
+Content-Language: en-US
+To: Bert Karwatzki <spasswolf@web.de>
+References: <20240307194419.15801-1-spasswolf@web.de>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240307194419.15801-1-spasswolf@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23, 2024 at 11:33:54AM -0800,
-Sean Christopherson <seanjc@google.com> wrote:
-
-> On Tue, Dec 19, 2023, Isaku Yamahata wrote:
-> > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> > index 7025b3751027..cc976df2651e 100644
-> > --- a/Documentation/virt/kvm/api.rst
-> > +++ b/Documentation/virt/kvm/api.rst
-> > @@ -7858,6 +7858,20 @@ This capability is aimed to mitigate the threat that malicious VMs can
-> >  cause CPU stuck (due to event windows don't open up) and make the CPU
-> >  unavailable to host or other VMs.
-> >  
-> > +7.34 KVM_CAP_X86_BUS_FREQUENCY_CONTROL
+On 3/8/24 3:44 AM, Bert Karwatzki wrote:
+> When the kernel is comiled with CONFIG_IRQ_REMAP=y but without
+> CONFIG_IOMMU_INTEL compilation fails since commit def054b01a8678 with an
+> undefined reference to device_rbtree_find(). This patch makes sure that
+> intel specific code is only compiled with CONFIG_IOMMU_INTEL=y.
 > 
-> BUS_FREQUENCY_CONTROL is simultaneously too long, yet not descriptive enough.
-> Depending on whether people get hung up on nanoseconds not being a "frequency",
-> either KVM_CAP_X86_APIC_BUS_FREQUENCY or KVM_CAP_X86_APIC_BUS_CYCLES_NS.
-> 
-> Also, this series needs to be rebased onto kvm-x86/next.
+> Fixes: def054b01a8678 ("iommu/vt-d: Use device rbtree in iopf reporting path")
 
-Thanks for the feedback with the concrete change to the patch.
-I agree with those for the next respin.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+I think it should fix below commit:
+
+Fixes: 80a9b50c0b9e ("iommu/vt-d: Improve ITE fault handling if target 
+device isn't present")
+
+> 
+> Signed-off-by: Bert Karwatzki<spasswolf@web.de>
+
+For users who want a configuration with interrupt remapping and without
+DMA remapping, they can achieve this by selecting
+IOMMU_DEFAULT_PASSTHROUGH or using kernel command "iommu.passthrough=1".
+
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+
+Best regards,
+baolu
+
+
 
