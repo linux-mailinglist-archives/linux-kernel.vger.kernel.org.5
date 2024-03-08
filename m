@@ -1,158 +1,118 @@
-Return-Path: <linux-kernel+bounces-96380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22396875B72
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:15:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4A8F875B76
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:19:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCC66282CF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:15:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7152C1F225B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E829A36D;
-	Fri,  8 Mar 2024 00:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19808632;
+	Fri,  8 Mar 2024 00:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Hyh3bylB"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lfrtRmJG"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4172163
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 00:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED868163
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 00:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709856943; cv=none; b=qf2dQqRENA5a/wJvawnrulHtLINSodO1JKIX8f025EfEYcufJ23kju4osTbaA/pS9soy5c8a54C1zsK/zKc4l37aMloTfaQ8Vx5ab75vRhsmYlyNK04JX9yTjYZjoB4P5eWUm49RgRHaHz3wl62inEihcuV+r/TOD0sTWeJyEI8=
+	t=1709857176; cv=none; b=fypDdxxbysf934GC1X2/FmlvA3Nuc9jD49Nnt1FgUOY5waY4CxBImtbBzKTJqiVIT5ixSdtyw1D7pzzFLuq4VhnELSHD4KJt9Gra9wuVqBcfrCwVv4WDg0l8TJbIEAPBSxmlz+wrQpzzDP91aG6X5+rJOrRcmEpXtTiAdoPNg7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709856943; c=relaxed/simple;
-	bh=xJPLGsVemfosgv0QRjqqWnuk2pS+67uug1PLq8NcP0E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qddIlZpOooLTkyMS+WEtHWcmGXulu7KLi4epy0HVhTcCMrvIhlBsH/gyn1/NQmtQuMIZ1fD/CLCBnqSWlW0K1KEMohlvwnGejmGjUYI6Rde93L1bWhWRt2J3+1EAxN5HI0kRUtN7v4sPmc7+n4yl/q28l94d4Iy5oVv43RjCwTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Hyh3bylB; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-788455430easo114650885a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 16:15:41 -0800 (PST)
+	s=arc-20240116; t=1709857176; c=relaxed/simple;
+	bh=41OGcxDXHE9reRyhpUNhOqjp5DIntWx9erI9QUJZ7zM=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=B8MYrtY0cgcaM9a+42tSF6O2QV94o2nz5XPNcb88sSP0R2Nmm7s4zBs2c0SaZLXsl1fsdxQU16oAVJRcwDHpb/NFbLZZ1C/ikaxZfBuNQgLrN7wk+Uo2Q3LALzxEDUgOUoOueJnaOKO1fkDR4OPXNnW+nqVzN2KiDOaFlVm18pM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lfrtRmJG; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcdc3db67f0so3035391276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 16:19:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709856940; x=1710461740; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2g3WO5+msuqPwUongZ64JdfNkP/yMHqkJk39jhbAg0w=;
-        b=Hyh3bylByHGpyfTQdi50/juVl13sCyrVMl5es/cMjZ7DXzk2QEmUJOGryQEJik1GeK
-         YQoeKFOsRn0XMcCsFYTtnW46JyyAAR4dtMzf4QaTMxcGBd3cCoHnxFHHT71srDTBLwpz
-         5SOwrjR9U5ixfZ5Swo95LU3SiBH2zrpAvn4uI=
+        d=google.com; s=20230601; t=1709857174; x=1710461974; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=De+xXG9LErpx0jsehLOAYTZORpUzSmU7F+YMDvAGffE=;
+        b=lfrtRmJGg9W8iRwkRhBBdvZpYoH+RwfbIKDOAp+IjVKwyl19jfUOTy0F9+0qGR4mG9
+         ari+gJ0P/aKFPVa1l+EIGJrXGCJdQJV4YyToA6qV7m93/vrC+RzqFya5ZP74PDnpzCf3
+         eQiOOJbqONhh/ENrWi53ej6pupp0vo0vCRYR4Y7094buNYsVtucbjkwyrk0lp5xgbls7
+         U1f4mw2smZNQG2nClM9dbHA0e/e2aLtqRIL47sJvvV9AJzEjE3AH+aX98osWwafANe9k
+         58UxjFw0rqd2Ac5K1zUwxsiha/4K1LXFj5YuNZUvbCypUnWsC9Eq1rIt8R6mrEXkkbLq
+         FwOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709856940; x=1710461740;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2g3WO5+msuqPwUongZ64JdfNkP/yMHqkJk39jhbAg0w=;
-        b=ZwU/0ame0IcayJ75rzJmxNKiioorHtSW/QuEOaMlwWmjW2HTfb77p4RiBL33XTOc0y
-         sUS9//RjoxS5MfUZ5cqqYSufbYlmVMwn/dCEFoFtiTyRmPg3S3nMPs1mhWJWdcJW7yzr
-         HaRPpbLbciH7u0MtYEycB0iQEr2Y9Qlbw8/6MywqY449OqLfibEVCSFEE/SERHwWNEDY
-         HKpze2oaNsb5UH/apryLBIE4mUSmMoBwVwZ6QwsFRToNgUzBGxaydInWnQCDdPV4gQ8M
-         Qs455xa9S+dGjefv8H2Ailerc7u7YbZfjM/HthoYP1gJfQdPCjtcsmV7wzYmwnBseblP
-         YZLA==
-X-Forwarded-Encrypted: i=1; AJvYcCWivkVAgwBdkbZcwIfeF+ga/bDkDu4JQNP74I41Jn2l0SD3ltBbHaniHlE1nMqmJTRqrDvE+J2BAV+xXBJhbh4Z3SuRjCrxz66PvxPK
-X-Gm-Message-State: AOJu0Yx0EzskWN8cYskCzFVnV06qkyO0r34K8emFzYQtmX+UPDUbA6Or
-	EagSqwgddLGxstQkHyDWiegu8mxu+o9WmVM+EpsljeJl4YMBcQKBkWS0QtXrvm0=
-X-Google-Smtp-Source: AGHT+IHHdRbs0FV8IXyoGTMlW835kfuS0MJp/ft3ciJVpmmJQxHbZXbr7CWn0W7Vj+FB61Qny0BzUA==
-X-Received: by 2002:a05:620a:178b:b0:788:3ec4:bb2a with SMTP id ay11-20020a05620a178b00b007883ec4bb2amr5359066qkb.1.1709856940334;
-        Thu, 07 Mar 2024 16:15:40 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.189])
-        by smtp.gmail.com with ESMTPSA id o13-20020ae9f50d000000b00788269e5d5fsm4926037qkg.94.2024.03.07.16.15.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 16:15:39 -0800 (PST)
-Message-ID: <d956c2e9-492d-4559-b9f9-400f37f523bf@joelfernandes.org>
-Date: Thu, 7 Mar 2024 19:15:35 -0500
+        d=1e100.net; s=20230601; t=1709857174; x=1710461974;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=De+xXG9LErpx0jsehLOAYTZORpUzSmU7F+YMDvAGffE=;
+        b=cfU53pnKW3Yjy9SqNRWJLpsXQ1TWVFo3Xl9L3xev/7mQpuWH2YOXvcrVZik9YSPplk
+         B26fdxrlNu7bsu5dqF1vSqyz2aH51le6PzhDl0pK4QZjc5D+ry9CCC0x/yOtK++4MPOD
+         51JrmCdzrfI6r/2Rk6Tl5PVYTqObLK1T5kGIEWoAwvmNhxyL0nhn8jNexFsoIaFWxcaF
+         8VbpCuKyEaqT7fWxRXqrjRyCkYy3PzkWLoFXk4XxAkS+mu1xiHHe2/Bisp5mkAvuzzvt
+         q77uRUbxNpjmsUpGNpp5An4uspFWR1DCkZYWZKqapduAXAbV9rOL1qYchtLwchbPEpuL
+         EeJw==
+X-Forwarded-Encrypted: i=1; AJvYcCWlzb9VIqBDcSr9RaU8kt3ZPi3VbWYg1sKLKJCyXcdk0N8o3UgYxQJ3wydgmsKwbYc+v0k1aPtIjWEhLwdvzWarEX5MrgORiOFhOv5q
+X-Gm-Message-State: AOJu0YzBD9ynq9kbpjjI1CYDQ96v1Zggzskx1ibIeStCCmZXtWEDoviP
+	Yx14qRbK5kHJFPIdtwOnz9EWN4z1rc8JB2O8qaAYavUjRoKhCH/p5Qnzd7vPUtRExsSoyi2hiQa
+	TBmt/hA==
+X-Google-Smtp-Source: AGHT+IHNsQE0fEVEtOu1phuNJbGl8EvuyfUoDyFIcxYP78HmFEzRfUDobphGohVDT9DtbXgpL2DDOGV/1fHt
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:218f:92ee:d543:c1a2])
+ (user=irogers job=sendgmr) by 2002:a25:310a:0:b0:dc6:b7c2:176e with SMTP id
+ x10-20020a25310a000000b00dc6b7c2176emr84209ybx.4.1709857173521; Thu, 07 Mar
+ 2024 16:19:33 -0800 (PST)
+Date: Thu,  7 Mar 2024 16:19:09 -0800
+Message-Id: <20240308001915.4060155-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 26/30] sched: handle preempt=voluntary under PREEMPT_AUTO
-Content-Language: en-US
-To: paulmck@kernel.org
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, peterz@infradead.org, torvalds@linux-foundation.org,
- akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
- dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
- juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
- mgorman@suse.de, jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
- andrew.cooper3@citrix.com, bristot@kernel.org,
- mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
- glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
- mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
- David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
- jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
- boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-27-ankur.a.arora@oracle.com>
- <65e3cd87.050a0220.bc052.7a29@mx.google.com> <87frx514jz.fsf@oracle.com>
- <12a20651-5429-43df-88d7-9d01ff6212c6@joelfernandes.org>
- <63380f0a-329c-43df-8e6c-4818de5eb371@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <63380f0a-329c-43df-8e6c-4818de5eb371@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v3 0/6] Extra verbose/perf-list details
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	James Clark <james.clark@arm.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Add more encoding detail and raw event details in perf list. Add PMU
+name and reverse lookup from config to event name to
+perf_event_attr_fprintf. This makes the verbose output easier to read,
+and the perf list information more specific.
 
+v3. Fix to reverse lookup to ensure or aliases are loaded and if
+    getting the config value fails for an event/alias just continue to
+    the next one.
+v2. Address feedback from Kan Liang, "Raw hardware event descriptor"
+    becomes "Raw event descriptor" add assert to keep term numbers in
+    sync, fix a commit message.
 
-On 3/7/2024 2:01 PM, Paul E. McKenney wrote:
-> On Wed, Mar 06, 2024 at 03:42:10PM -0500, Joel Fernandes wrote:
->> Hi Ankur,
->>
->> On 3/5/2024 3:11 AM, Ankur Arora wrote:
->>>
->>> Joel Fernandes <joel@joelfernandes.org> writes:
->>>
->> [..]
->>>> IMO, just kill 'voluntary' if PREEMPT_AUTO is enabled. There is no
->>>> 'voluntary' business because
->>>> 1. The behavior vs =none is to allow higher scheduling class to preempt, it
->>>> is not about the old voluntary.
->>>
->>> What do you think about folding the higher scheduling class preemption logic
->>> into preempt=none? As Juri pointed out, prioritization of at least the leftmost
->>> deadline task needs to be done for correctness.
->>>
->>> (That'll get rid of the current preempt=voluntary model, at least until
->>> there's a separate use for it.)
->>
->> Yes I am all in support for that. Its less confusing for the user as well, and
->> scheduling higher priority class at the next tick for preempt=none sounds good
->> to me. That is still an improvement for folks using SCHED_DEADLINE for whatever
->> reason, with a vanilla CONFIG_PREEMPT_NONE=y kernel. :-P. If we want a new mode
->> that is more aggressive, it could be added in the future.
-> 
-> This would be something that happens only after removing cond_resched()
-> might_sleep() functionality from might_sleep(), correct?
+Ian Rogers (6):
+  perf list: Add tracepoint encoding to detailed output
+  perf pmu: Drop "default_core" from alias names
+  perf list: Allow wordwrap to wrap on commas
+  perf list: Give more details about raw event encodings
+  perf tools: Use pmus to describe type from attribute
+  perf tools: Add/use PMU reverse lookup from config to name
 
-Firstly, Maybe I misunderstood Ankur completely. Re-reading his comments above,
-he seems to be suggesting preempting instantly for higher scheduling CLASSES
-even for preempt=none mode, without having to wait till the next
-scheduling-clock interrupt. Not sure if that makes sense to me, I was asking not
-to treat "higher class" any differently than "higher priority" for preempt=none.
+ tools/perf/builtin-list.c                 | 21 ++++-
+ tools/perf/util/perf_event_attr_fprintf.c | 26 +++++--
+ tools/perf/util/pmu.c                     | 82 +++++++++++++++++++-
+ tools/perf/util/pmu.h                     |  4 +
+ tools/perf/util/pmus.c                    | 94 +++++++++++++++++++++++
+ tools/perf/util/pmus.h                    |  1 +
+ tools/perf/util/print-events.c            | 55 +++++++------
+ 7 files changed, 242 insertions(+), 41 deletions(-)
 
-And if SCHED_DEADLINE has a problem with that, then it already happens so with
-CONFIG_PREEMPT_NONE=y kernels, so no need special treatment for higher class any
-more than the treatment given to higher priority within same class. Ankur/Juri?
-
-Re: cond_resched(), I did not follow you Paul, why does removing the proposed
-preempt=voluntary mode (i.e. dropping this patch) have to happen only after
-cond_resched()/might_sleep() modifications?
-
-thanks,
-
- - Joel
-
-
-
-
-
-
-
+-- 
+2.44.0.278.ge034bb2e1d-goog
 
 
