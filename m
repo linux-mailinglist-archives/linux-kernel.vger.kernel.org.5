@@ -1,55 +1,90 @@
-Return-Path: <linux-kernel+bounces-96768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A2C287612D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:45:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DDB687612F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:45:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 145D3281482
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:45:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEE4628310C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E263A53E17;
-	Fri,  8 Mar 2024 09:44:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3914535D9;
+	Fri,  8 Mar 2024 09:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BjKtxVRa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CI3YoPx1"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CACB53E02
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 09:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6527C535A2;
+	Fri,  8 Mar 2024 09:45:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709891087; cv=none; b=ILAv4l+V6VuINgEBgFYQBeSdg+sfjq4Ua4PKJGFJOGzeiW3B7E3xFRxUuJ9NQBoCKbNx2VQPf/uB2oYF2Gni71DehsswT7WU4Gu4Fh8F/C0OAe/NUikOLfcbYnip2Cv1pSmJC2osuen6l9YqDENEs8DXPsgtD/KBPaHuTlJDRpU=
+	t=1709891114; cv=none; b=sHb4X904xpZEuVg8tBEtsVPjp2uMgyWaGq3Y4b/EQ9QLwTZdalhNAji/BXa36m4x+GZ1zWLaJg9CXPg1PtmyYo12hyY6WlK8gauPyWHOOtOstfKhd1h2gC866Tj8z60OxSbvXhV0oZzDVoVEx/1D+vK6sz43BGDPmGvynIstVGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709891087; c=relaxed/simple;
-	bh=dhCRHUOf+No5thmyInV2kItMPlwlkJ39kGLp27sVq+s=;
+	s=arc-20240116; t=1709891114; c=relaxed/simple;
+	bh=/Lhwy+X9ULFVVfFyESIFQcsEbTbTUD/pnfSCBIEkS44=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ELOZxCDlpXy2QDOZQWXQtRHG+XZ6fQ3FA6CkmXYZGOpjCRn3W5tS+ETObrRCN10RYQX+32+ZinVrQKD+dQJl8pWxKhQSWoz/7LAnR4T/oiZ1kzRuLD3LqpEOVX9yXluQOkdHJnJ4fp7HtuHhVGig6TLgHDVSaHTlb8P9MZJhtXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BjKtxVRa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CAF4C433F1;
-	Fri,  8 Mar 2024 09:44:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709891085;
-	bh=dhCRHUOf+No5thmyInV2kItMPlwlkJ39kGLp27sVq+s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BjKtxVRaIV/9UKxC/7pMrd8ucfWvFjfyVCEM2bwcSPO+4LK0Z5DboJ8GDP0K4YG+E
-	 CblwNV1U9CoVUAmW0MSfaqcmTSFD0HZ5RcEBqj6w78dUmyrCMMYyPpkwYYZ95hOfow
-	 5dG1EDmI7UQjmOWUP/1SEjGHictZ6OKyc3lCR0raZcaA2Hzkxn8SC7iEm7bMQ5fnhi
-	 /Ih4g/5W8crbOh1hrj95YHEdBzEjp6H1BfQ42Pzt7ev7F/wZPkjEOzBXQ6JweAxa5M
-	 wrJtwQWdjiu+Dq0BSW1Eydi5jz7KvViG56q50Xiw/+rics0XLW4dwlykb6KIyJBEy/
-	 PQATOQe6jDERw==
-Date: Fri, 8 Mar 2024 10:44:40 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Jens Wiklander <jens.wiklander@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Marc Bonnici <marc.bonnici@arm.com>,
-	Olivier Deprez <Olivier.Deprez@arm.com>
-Subject: Re: [PATCH] firmware: arm_ffa: support running as a guest in a vm
-Message-ID: <ZereCD7kJxP+vzHN@lpieralisi>
-References: <20240307092132.943881-1-jens.wiklander@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HzNHptFHyZxbjJHRDLPbtc+4ae6b2n74R/8t3zpXwqVyPE9cOSeAZKejfs1DwomlAED43fjnXr4n4lHS2bIonKmZwSyyNRUX2g+pbTz+Etx+6eHmtha+0j/gDTW516Jc+dwgSzwzPPISbeRGPwK21wQ44BMoKm7FAZF1RIaEpqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CI3YoPx1; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a458eb7db13so273458466b.2;
+        Fri, 08 Mar 2024 01:45:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709891111; x=1710495911; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Md0nxRb1z8L2XHTAy0exP+QIBZlMMn1Du5z5th9g9iQ=;
+        b=CI3YoPx1RoSfURe7D2tqK6bxIxcPE5+5YGMkn/IYtYS8OMCXvmDCkMhL+bJLn6isku
+         4AnyBupn7VtiSd/a4geA+S97epgcdlcpxSRPCglDRK2nkz0F1iCR6hH7XBhSErwwzc2l
+         WIemZ/NiYjrIBYjC3dx5OQUPe6/Yxkru3E0H4GlWAVUptvLmlbkElERanf6cGGZjg2RK
+         w7AWYv466Y0AV/iqRKtew0yIDIW1DXQzBylp8d0Y3YzYZ4Fvns9yEQdPGCSBKGPVAhGP
+         0GGeKPAa86rBYUI5D1HUZEEzvuKk6iRHUxMsT9EO41HhpgFWcSLqwDNMw4VXT2tRa2t0
+         Jkuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709891111; x=1710495911;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Md0nxRb1z8L2XHTAy0exP+QIBZlMMn1Du5z5th9g9iQ=;
+        b=P/PivyENz2+wSdU79wqK7jYdFcuTp/S2CLeUF0R+am6BrTw4MbrmE0VuAQOapxpUSX
+         0oQIGY4F+WoE78QKBAWK/4HSGH8I00GwWDwvayyrr/3d3HHGNO2pnxaXjyGbJ4clBFfB
+         kG1BhPLb8wIFTORu81drI8IOpq8Y80tOWne7j4YTwH1ianvExadTdMuqjFcxiLego2GO
+         cuXXSsI2x0wbhGpb4X47FL+M05MzLmzxy/TBSk+CDGyyiPKWKKxgQtX2jQRaW0qZjtuf
+         tZL+MznuJS/F6KxhXB14xSVLUlF3k5HhFVxLPvpDsHvYgKqDMWS+3udy9Kg9wzYffiF9
+         0i5A==
+X-Forwarded-Encrypted: i=1; AJvYcCV8a+ZYpgdED/zJI/FvWmAVnGbzdK5QoGoGuV+xyz3fFgmiFKscENvMq8kQJts/eXnEY0fqJg5YkC+LXxV+bUnB+4TuJ72A+feWcOSJ
+X-Gm-Message-State: AOJu0YxXvPviZu87zO4Rd76NcJb6Wy4KFOhOv0OAh1unkjX/F1SXJTj0
+	5jbGgg2q93GKD0mRS5TZBnBHPf3XW6u2pI1Brh+NZvyiQMCWcEq1Hhs1aiWi9iU=
+X-Google-Smtp-Source: AGHT+IHqMwAAT8S9tUvZY9s2vCkqoaScqOw14chReMUBWmrBit1xmm+OPkS3vTLE65lGBydV3d3eKw==
+X-Received: by 2002:a17:906:bcef:b0:a40:18ad:3fcc with SMTP id op15-20020a170906bcef00b00a4018ad3fccmr13112761ejb.36.1709891110482;
+        Fri, 08 Mar 2024 01:45:10 -0800 (PST)
+Received: from skbuf ([2a02:2f04:d207:f600::b2c])
+        by smtp.gmail.com with ESMTPSA id qw16-20020a1709066a1000b00a3edb758561sm9068086ejc.129.2024.03.08.01.45.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 01:45:10 -0800 (PST)
+Date: Fri, 8 Mar 2024 11:45:07 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Pawel Dembicki <paweldembicki@gmail.com>
+Cc: netdev@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+	Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v6 12/16] net: dsa: vsc73xx: introduce tag 8021q
+ for vsc73xx
+Message-ID: <20240308094507.larnhixusidgqspm@skbuf>
+References: <20240301221641.159542-1-paweldembicki@gmail.com>
+ <20240301221641.159542-1-paweldembicki@gmail.com>
+ <20240301221641.159542-13-paweldembicki@gmail.com>
+ <20240301221641.159542-13-paweldembicki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,139 +93,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307092132.943881-1-jens.wiklander@linaro.org>
+In-Reply-To: <20240301221641.159542-13-paweldembicki@gmail.com>
+ <20240301221641.159542-13-paweldembicki@gmail.com>
 
-On Thu, Mar 07, 2024 at 10:21:32AM +0100, Jens Wiklander wrote:
-> Add support for running the driver in a guest to a hypervisor. The main
-> difference is that the notification interrupt is retrieved
-> with FFA_FEAT_NOTIFICATION_PENDING_INT and that
-> FFA_NOTIFICATION_BITMAP_CREATE doesn't need to be called.
-
-I have a couple of questions about these changes, comments below.
-
-> FFA_FEAT_NOTIFICATION_PENDING_INT gives the interrupt the hypervisor has
-> chosen to notify its guest of pending notifications.
+On Fri, Mar 01, 2024 at 11:16:34PM +0100, Pawel Dembicki wrote:
+> This commit introduces a new tagger based on 802.1q tagging.
+> It's designed for the vsc73xx driver. The VSC73xx family doesn't have
+> any tag support for the RGMII port, but it could be based on VLANs.
 > 
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 > ---
->  drivers/firmware/arm_ffa/driver.c | 45 ++++++++++++++++++-------------
->  1 file changed, 27 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-> index f2556a8e9401..c183c7d39c0f 100644
-> --- a/drivers/firmware/arm_ffa/driver.c
-> +++ b/drivers/firmware/arm_ffa/driver.c
-> @@ -1306,17 +1306,28 @@ static void ffa_sched_recv_irq_work_fn(struct work_struct *work)
->  	ffa_notification_info_get();
->  }
->  
-> +static int ffa_get_notif_intid(int *intid)
-> +{
-> +	int ret;
-> +
-> +	ret = ffa_features(FFA_FEAT_SCHEDULE_RECEIVER_INT, 0, intid, NULL);
-> +	if (!ret)
-> +		return 0;
-> +	ret = ffa_features(FFA_FEAT_NOTIFICATION_PENDING_INT, 0, intid, NULL);
-> +	if (!ret)
-> +		return 0;
 
-I think that both interrupts should be probed in eg a host and the
-actions their handlers should take are different.
+With Florian's feedback addressed:
 
-> +
-> +	pr_err("Failed to retrieve one of scheduler Rx or notif pending interrupts\n");
-> +	return ret;
-> +}
-> +
->  static int ffa_sched_recv_irq_map(void)
->  {
-> -	int ret, irq, sr_intid;
-> +	int ret, irq, intid;
->  
-> -	/* The returned sr_intid is assumed to be SGI donated to NS world */
-> -	ret = ffa_features(FFA_FEAT_SCHEDULE_RECEIVER_INT, 0, &sr_intid, NULL);
-> -	if (ret < 0) {
-> -		if (ret != -EOPNOTSUPP)
-> -			pr_err("Failed to retrieve scheduler Rx interrupt\n");
-> +	ret = ffa_get_notif_intid(&intid);
-> +	if (ret)
->  		return ret;
-> -	}
->  
->  	if (acpi_disabled) {
->  		struct of_phandle_args oirq = {};
-> @@ -1329,12 +1340,12 @@ static int ffa_sched_recv_irq_map(void)
->  
->  		oirq.np = gic;
->  		oirq.args_count = 1;
-> -		oirq.args[0] = sr_intid;
-> +		oirq.args[0] = intid;
->  		irq = irq_create_of_mapping(&oirq);
->  		of_node_put(gic);
->  #ifdef CONFIG_ACPI
->  	} else {
-> -		irq = acpi_register_gsi(NULL, sr_intid, ACPI_EDGE_SENSITIVE,
-> +		irq = acpi_register_gsi(NULL, intid, ACPI_EDGE_SENSITIVE,
->  					ACPI_ACTIVE_HIGH);
->  #endif
-
-This means that for both schedule receiver interrupt and notification
-pending interrupt we would end up calling FFA_NOTIFICATION_INFO_GET (?),
-which is not correct AFAIK, for many reasons.
-
-If there is a pending notification for a VM, a scheduler receiver
-interrupt is triggered in the host. This would end up calling
-FFA_NOTIFICATION_INFO_GET(), that is destructive (calling it again in
-the notified *guest* - in the interrupt handler triggered by the
-hypervisor - would not return the pending notifications for it).
-
-Therefore, the action for the pending notification interrupt should
-be different and should just call FFA_NOTIFICATION_GET.
-
-Please let me know if that matches your understanding, this
-hunk is unclear to me.
-
->  	}
-> @@ -1442,17 +1453,15 @@ static void ffa_notifications_setup(void)
->  	int ret, irq;
->  
->  	ret = ffa_features(FFA_NOTIFICATION_BITMAP_CREATE, 0, NULL, NULL);
-> -	if (ret) {
-> -		pr_info("Notifications not supported, continuing with it ..\n");
-> -		return;
-> -	}
-> +	if (!ret) {
->  
-> -	ret = ffa_notification_bitmap_create();
-> -	if (ret) {
-> -		pr_info("Notification bitmap create error %d\n", ret);
-> -		return;
-> +		ret = ffa_notification_bitmap_create();
-> +		if (ret) {
-> +			pr_err("notification_bitmap_create error %d\n", ret);
-> +			return;
-> +		}
-> +		drv_info->bitmap_created = true;
->  	}
-> -	drv_info->bitmap_created = true;
-
-This boils down to saying that FFA_NOTIFICATION_BITMAP_CREATE is not
-implemented for a VM (because the hypervisor should take care of issuing
-that call before the VM is created), so if the feature is not present
-that does not mean that notifications aren't supported.
-
-It is just about removing a spurious log.
-
-Is that correct ?
-
-Thanks,
-Lorenzo
-
->  
->  	irq = ffa_sched_recv_irq_map();
->  	if (irq <= 0) {
-> -- 
-> 2.34.1
-> 
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
