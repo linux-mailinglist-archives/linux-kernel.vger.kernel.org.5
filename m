@@ -1,105 +1,124 @@
-Return-Path: <linux-kernel+bounces-96879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6014887628A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:59:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADF7887628F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F2DB1F24C2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:59:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E2F61F24D0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A07755E65;
-	Fri,  8 Mar 2024 10:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025DE55E6F;
+	Fri,  8 Mar 2024 10:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="jiG4NjSa"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nSogPcg0"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550A855789
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B2B5577F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709895531; cv=none; b=JntMRY/Qz6aVrZNyZ95cpm7UhKPs56rU8PtfzI6CD3eqlnv/mZNVMbggJ/Obd+nk4nj/pNcWegu6E7zNaHBjoVL+67yvToYzWkRiWC7XrvwG2XYVE75A8YZ97UZT4wOj6ryvgElYPXR/MB6RhWMNsYS330DvOTvQl0K+KdWlV3I=
+	t=1709895558; cv=none; b=PdEDyu88qab61JhX3FgT45ghyeGctut83VuvgU+bVLZ8s4rxg52ZTuKZVWpb4d202OGi0D35RMt4WWcU8+odAPBL78UZ9dA/KVU31jow1h9BtiA78q8fLaNV+D1XDlt8/0/khY8diydnWJTrPU1u5etxLFtmv0szwVMHcZShmmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709895531; c=relaxed/simple;
-	bh=j7G07rF5/qvRZWgaArKh9DuTk6kGf7x2mY/Ypg38FPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WG7JYeZwIt/Pob3U5OQyghPx2At5iCrcj8bROqj9sZOufMnRH6OJlhAOebzg2soOKK5Qv6fMXzwJC2QEza5DcR6YXjpvttj31j6O4eiMCg2FYa9V0XDHAH0pMQes86kuFbBSKPvs64C7hakXtWvQXcFpXLTD+tZO1Ncx15/Wt2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=jiG4NjSa; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso549094666b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 02:58:49 -0800 (PST)
+	s=arc-20240116; t=1709895558; c=relaxed/simple;
+	bh=8uKN17tChLLcjDRGC147sf1KRTEmRbskDyS1Pa5JRJU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ym6tz1Id6SP6ZleJU/wII2nZpaWlEeqOP9Uy1OAPw1B5M3SQ8Wb8V+XR/TDEINuZhhfaDZEyUg9F5eQCuJcVBhvQh/U2q7uDvFf59L2IxKVrZ9NuT0oYD3aYTgGEX2Te0BoPEDTgwDqWUDyw6inKoNrz4MuXsz9WtGF2olH7P/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nSogPcg0; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d3f4fef377so25643811fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 02:59:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709895528; x=1710500328; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o9ZDQ9dYVt/GB3TB7EM7j0NoesZx4c/e+/0wwo1wOtI=;
-        b=jiG4NjSaJME195fX4YTLQd2bh8DISg6w4cxeCoT73uQHBz83G1Y4aDJ/5WQgL+vepj
-         pEs0QqSL9c0wlrHPC/JFDAhHsd0gfc3LNWfqV5BfO2PVXJybyz9To9AA8FrT1tAmDBZ7
-         BHVgOIkM0zoq5GEW+PQHvUGnKAzxOWoSgQFjvMvqVyLAic9NaLoghHwFini7mXL6FZY/
-         M+iJ+nPtNc74PRjQptqwunFU44BA6eUw80aOZLxXYhAPYLSWfTX1KZ7x5K4ovARLS4ui
-         gNFykuro2pptHIuVVr/y5xD3MJ1fd5AdH457IUpYXYC1p5L5rpjixXMMXJ80op4sIU6G
-         Wjsw==
+        d=gmail.com; s=20230601; t=1709895554; x=1710500354; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=cXUYa1i1leTPNo3lpu0cyAI33Y6OlWwEUI1tp05/Ppg=;
+        b=nSogPcg0W/FmQ1ILownHobFz2N8SShXtqxq4Df/bh7Qoh8a22TMVJ8WnYcJrZ3//ej
+         MLAlXVTZH+vPP1l5NFVU34kpd9my5tGZCxR9ldGjJMp3p5LJIqAWEJOKXbYX+eR6XPh8
+         HVB5W9xpopyN6TZ6rWW5DZ1PO4XFgdHz2Y8R4vbKyf6O54rcDmHbwU29NpuyVzwF3qjN
+         Zz6H0zZgmbfRu7Z1TRgyd22EGeVr3AsQXK9SpHzlq2kltK2UlgjvYWVKyWQC8MQedYh7
+         IztJuvOaClzG3E2QNS3wBQBRUtqP7UZB0IiS5MY9QlQbTP91CFVZQMnZjQrtPszm45gy
+         dHUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709895528; x=1710500328;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o9ZDQ9dYVt/GB3TB7EM7j0NoesZx4c/e+/0wwo1wOtI=;
-        b=Ucr2IO5EEtciQ+FIe1yzrglgHUS6QCginBww0lzMiJT8Mv8IMaD7CDOJul9GFGSby5
-         0g85qatBd/cK9Uc8vrFf/qtTANieeEH8wnQp1GExwtS9wwhlURfydLj1D5RzdxOwG+r6
-         CUaE0jF47qdFuFF1lcl8nqtg+MK4JDY7XAOK1WL6K3B2Uab22fwTjEGNVHmjTjS3sKL3
-         z0/G9iCHD08whZT52Z5peS39khPVzVFHtDYK18gceax5gcZhFT8dYYulqBO5zb203+kX
-         r0YRwuhalRss68Exnkr/B9LB8hUpEGA1i3vzPP2YTLlNxXUKj5QZ17fwJfqyfyygd/0R
-         m7vw==
-X-Forwarded-Encrypted: i=1; AJvYcCU56DYE8JpgiAblJT3y6gC3pwUSYljv8Txos0LM/XC0PUcd46f6azrcYFpGKRNXxrSWUUZttv5tG3P5coksPosYA0RIrfShOneVe59b
-X-Gm-Message-State: AOJu0Yy8zOvtrrPnJSCbbDLf+7FzDWTrkoVuoVn+ih89t8nvvgKpYztY
-	O6dIQH8st/BmqVceRdX5qcMYsFMKYysDUx7vdjGjTgZqzhUDQOh4M5UjL9hebzA=
-X-Google-Smtp-Source: AGHT+IEuGPCmm1l6Pc17qKl4y/MCqtzZjxctHOZUnHumatu0wq8QD8SWmXsEqSyRxQ9F8cZs/y1oYw==
-X-Received: by 2002:a17:907:1041:b0:a45:a2cc:eb93 with SMTP id oy1-20020a170907104100b00a45a2cceb93mr2537617ejb.4.1709895527485;
-        Fri, 08 Mar 2024 02:58:47 -0800 (PST)
-Received: from [192.168.1.70] ([84.102.31.43])
-        by smtp.gmail.com with ESMTPSA id gy15-20020a170906f24f00b00a45f3cd8c5fsm241704ejb.116.2024.03.08.02.58.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 02:58:47 -0800 (PST)
-Message-ID: <fc2d22a2-0db3-46ea-b283-1de53382d12a@baylibre.com>
-Date: Fri, 8 Mar 2024 11:58:44 +0100
+        d=1e100.net; s=20230601; t=1709895554; x=1710500354;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cXUYa1i1leTPNo3lpu0cyAI33Y6OlWwEUI1tp05/Ppg=;
+        b=nn55cXT4fFWCU1C5+fVWTYUe04iX88w6UvVvh5U2FTDe/f5QU+JCaa3Za84DZDHJVv
+         6w4IyRE08Yv3qB+I7Rm74OEA8YuSBMHhevkjvrwpp4nSvhaHVFunnJMn8r+/1kuUVQX5
+         k9CVbZ/e+jp+8He+JLI9v/SJFMp8jg3USIvEV0zvZydTTcWtBBn/X4ZmEwafRM5bfElf
+         vFTcebl6q9boPfbOEHJXtR3yxi7WbS6fArqf8ML9aJy8+R7lAxE+WbKAc6rdue4ZfEW+
+         trraLHzeCUU/03gi7pPwRr/kkU/sVVzevY2VUEnKshto0EP79sGvx5VZbuLAwnmYX2J7
+         x9eg==
+X-Gm-Message-State: AOJu0YyxcxyKSMVAbRrM8Hz8ShKbpqV6Az8/2ahgOSUNLD/j5M0gOffK
+	8yBa/yv0JisCcqP6vO7Na1pScquEveHHcQICJXfryBsh0D6PxB1ekjS762WhM7w=
+X-Google-Smtp-Source: AGHT+IHzQlc0VCFTjHOYxh2RRupNoYpsOBtMcfww5k5aKaFunGwNXa8KivWSpsdxMXtiIlqnixQr2g==
+X-Received: by 2002:a05:651c:1a24:b0:2d4:22d9:b016 with SMTP id by36-20020a05651c1a2400b002d422d9b016mr237249ljb.6.1709895554308;
+        Fri, 08 Mar 2024 02:59:14 -0800 (PST)
+Received: from kepler.redhat.com (1F2EF3E5.nat.pool.telekom.hu. [31.46.243.229])
+        by smtp.gmail.com with ESMTPSA id g20-20020a05600c4ed400b00412f679bae1sm5632382wmq.26.2024.03.08.02.59.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 02:59:13 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+From: Ingo Molnar <mingo@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH -v4 00/10] sched/balancing: Misc updates & cleanups
+Date: Fri,  8 Mar 2024 11:58:51 +0100
+Message-Id: <20240308105901.1096078-1-mingo@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 08/11] misc: tps6594-pfsm: Add TI TPS65224 PMIC PFSM
-Content-Language: en-US
-To: Bhargav Raviprakash <bhargav.r@ltts.com>, linux-kernel@vger.kernel.org
-Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
- lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com,
- vigneshr@ti.com, kristo@kernel.org, eblanc@baylibre.com
-References: <20240308103455.242705-1-bhargav.r@ltts.com>
- <20240308103455.242705-9-bhargav.r@ltts.com>
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <20240308103455.242705-9-bhargav.r@ltts.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/8/24 11:34, Bhargav Raviprakash wrote:
-> Add support for TPS65224 PFSM in the TPS6594 PFSM driver as they share
-> significant functionality.
->
-> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
-> ---
->   drivers/misc/tps6594-pfsm.c | 48 +++++++++++++++++++++++++++----------
->   1 file changed, 35 insertions(+), 13 deletions(-)
+Improve a handful of things I noticed while looking through the
+scheduler balancing code. No change in functionality intended.
 
-Acked-by: Julien Panis <jpanis@baylibre.com>
+Changes in -v4:
+
+ - Incorporate review feedback
+ - Bump SCHEDSTAT_VERSION to 16, due to the changed order of colums
+ - Allow CONFIG_SCHEDSTAT builds more widely
+
+Thanks,
+
+     Ingo
+
+==============================>
+Ingo Molnar (9):
+  sched/balancing: Switch the 'DEFINE_SPINLOCK(balancing)' spinlock into an 'atomic_t sched_balance_running' flag
+  sched/balancing: Change 'enum cpu_idle_type' to have more natural definitions
+  sched/debug: Increase SCHEDSTAT_VERSION to 16
+  sched/debug: Allow CONFIG_SCHEDSTATS even on !KERNEL_DEBUG kernels
+  sched/balancing: Change comment formatting to not overlap Git conflict marker lines
+  sched/balancing: Fix comments (trying to) refer to NOHZ_BALANCE_KICK
+  sched/balancing: Update run_rebalance_domains() comments
+  sched/balancing: Vertically align the comments of 'struct sg_lb_stats' and 'struct sd_lb_stats'
+  sched/balancing: Update comments in 'struct sg_lb_stats' and 'struct sd_lb_stats'
+
+Shrikanth Hegde (1):
+  sched/balancing: Remove reliance on 'enum cpu_idle_type' ordering when iterating [CPU_MAX_IDLE_TYPES] arrays in show_schedstat()
+
+ include/linux/sched/idle.h |   2 +-
+ kernel/sched/fair.c        | 103 +++++++++++++++++++++++++++++++++++++----------------------------
+ kernel/sched/stats.c       |   5 ++--
+ lib/Kconfig.debug          |   2 +-
+ 4 files changed, 62 insertions(+), 50 deletions(-)
+
+-- 
+2.40.1
 
 
