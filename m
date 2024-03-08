@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-97047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB7088764DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:16:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D891D8764DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 386001F24243
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:16:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE0B11C20382
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18B5381C1;
-	Fri,  8 Mar 2024 13:16:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441514503D;
+	Fri,  8 Mar 2024 13:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dKkQwqht"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OYhgJIC1"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4033FBA3;
-	Fri,  8 Mar 2024 13:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B8E3BBD4;
+	Fri,  8 Mar 2024 13:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709903764; cv=none; b=WfWSIZ5dpi8OKYGkJgzSPiF63WHf1LXwGoCL3NOezfYyJ/XqGshlO9Pym7uEdYvSNLoCy1I4j+0R7drD6aTME7igm7T9Y/QM0+wAS55THd/+tnr+x92tfveRxTkRwirStAGUjeJmdbDblhccLD3PihbOhbL2BQ4JCy9hAa/ikKI=
+	t=1709903772; cv=none; b=pircRuc4KJSBe8hMvYe0S9fBBngSHEAKqalL0IBBIB+7TQCVbkkBEciIMHkXhMjvW4AbvhSZws51xZdGUQnDujL3KyOF1K9f+CnbCZPlcquZGntCVkTP2QKcvZHvQ4Nq/4RddWQ8cxXGH+BdxUoo5Bqsyxp/92aMZjLRzL1zXjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709903764; c=relaxed/simple;
-	bh=LAWkJDgSOoQXttIOaNX5OjXrKNZqw1gNI6g5JMXltWY=;
+	s=arc-20240116; t=1709903772; c=relaxed/simple;
+	bh=Exf/ex05wg/ZdHrQtagsjpQZFoomRp7dCTSrSntMNmc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CmHZqrJBBNKdBY3oKfVqvq9dqSurSlE4dXvez/7FRZ7P44PbGpvKjTb7OCWaW31rzJzA/xJxBfAScdEwOSJIHUkdXgJOPy9oOoRFuYKJsW0n0Y/dzWEXQs6xse5ZNiFVWJ2aoaX4XJZvn0kBQdjTNewiWmBIsbQKlxhm49uNkOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dKkQwqht; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version; b=KMKFLY1MVV0vGxdOpyuE5KYnEChCxfhJFUrXoWuyDPBDQFG4gd6597xzl1CgnOKH2Kbcf4gUuwBTi8ZGu8CIL8OoY7qwZozP0atKfFa++oD69u15pcpvClQJQqV/qLluUCzgC7pVA9VUSWfYpcYFQS1mwcMjryNMOFkYUjy8Fk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OYhgJIC1; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709903763; x=1741439763;
+  t=1709903771; x=1741439771;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=LAWkJDgSOoQXttIOaNX5OjXrKNZqw1gNI6g5JMXltWY=;
-  b=dKkQwqhtq7hi+RivoAFGfQlxov+s7gDXrTtI3l1nemA7D7hPSZ7OoAug
-   9lcVHg2rHWicohP6AbvPe5yaKsYiXJ8D64XJsaHn7Vn2CLY+DPtZsGGee
-   F3umKTMckNOIyU0x2F18q3d2QL8ZUFbI+jIpxTg2TWZRXRrwR6b09YkT5
-   VixNKbJb3qgmGpxD0xPlvaLR6GtsT3eFOIvDyEbC+yNsTcvhZaJPBin79
-   7PfiK0WUOCOlVYcyQW0+WmRSb4gQ1R9wYmHVS1zhZb4DCajF+eMk3Iec3
-   PHgNieXTm5Z37U6gk3cR0AnF2uEFi6t2DnFBs0xUYN3bm0g+JlI8cStPH
+  bh=Exf/ex05wg/ZdHrQtagsjpQZFoomRp7dCTSrSntMNmc=;
+  b=OYhgJIC1etTv9J1TYIuQSauCnvt9vh4Bl+wecQFvcVd8ndT6qVN4KYGn
+   z8nD2VSe9/hRizhPvHvbg77VgTjwiipgWCfR8p5dc0ycfkIdSseqmM2YU
+   0hWnZ2oAbAgSI0d8mQ7az8HmuJJ3fcB8CdatWWICZ9WDU/PBaaJqOHjit
+   wGD/26H10F4odAGnwc8SEr/AvdnsOpdwhwAaUTiN1YJs9XjOVaSCqVKup
+   sfabu/kNQyK1kIgU2AlC1FSUoMQVcmaGrk/iuJ6E3zIDaA3EM88ww7zjR
+   pzYQlAxxl4Fk8RQVSMFalTaSoucyi/+z0qEbASlRTChrkbshu/I2run83
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15342493"
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15342539"
 X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="15342493"
+   d="scan'208";a="15342539"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:02 -0800
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:10 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="15161388"
+   d="scan'208";a="15161409"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.249.46.63])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:15:55 -0800
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:02 -0800
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: Michael Ellerman <mpe@ellerman.id.au>,
@@ -82,9 +82,9 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH 05/19] vdso: math64: Provide mul_u64_u32_add_u64_shr()
-Date: Fri,  8 Mar 2024 15:14:58 +0200
-Message-Id: <20240308131512.44324-6-adrian.hunter@intel.com>
+Subject: [PATCH 06/19] vdso: Add vdso_data::max_cycles
+Date: Fri,  8 Mar 2024 15:14:59 +0200
+Message-Id: <20240308131512.44324-7-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240308131512.44324-1-adrian.hunter@intel.com>
 References: <20240308131512.44324-1-adrian.hunter@intel.com>
@@ -97,79 +97,59 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Provide mul_u64_u32_add_u64_shr() which is a calculation that will be used
-by timekeeping and VDSO.
+Add vdso_data::max_cycles in preparation to use it to detect potential
+multiplication overflow.
 
-Place #include <vdso/math64.h> after #include <asm/div64.h> to allow
-architecture-specific overrides, at least for the kernel.
-
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- include/linux/math64.h |  2 +-
- include/vdso/math64.h  | 38 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+), 1 deletion(-)
+ include/vdso/datapage.h | 4 ++++
+ kernel/time/vsyscall.c  | 6 ++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/include/linux/math64.h b/include/linux/math64.h
-index fd13622b2056..d34def7f9a8c 100644
---- a/include/linux/math64.h
-+++ b/include/linux/math64.h
-@@ -4,8 +4,8 @@
+diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
+index 5d5c0b8efff2..6c3d67d6b758 100644
+--- a/include/vdso/datapage.h
++++ b/include/vdso/datapage.h
+@@ -67,6 +67,7 @@ struct vdso_timestamp {
+  * @seq:		timebase sequence counter
+  * @clock_mode:		clock mode
+  * @cycle_last:		timebase at clocksource init
++ * @max_cycles:		maximum cycles which won't overflow 64bit multiplication
+  * @mask:		clocksource mask
+  * @mult:		clocksource multiplier
+  * @shift:		clocksource shift
+@@ -98,6 +99,9 @@ struct vdso_data {
  
- #include <linux/types.h>
- #include <linux/math.h>
--#include <vdso/math64.h>
- #include <asm/div64.h>
-+#include <vdso/math64.h>
- 
- #if BITS_PER_LONG == 64
- 
-diff --git a/include/vdso/math64.h b/include/vdso/math64.h
-index 7da703ee5561..22ae212f8b28 100644
---- a/include/vdso/math64.h
-+++ b/include/vdso/math64.h
-@@ -21,4 +21,42 @@ __iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder)
- 	return ret;
- }
- 
-+#if defined(CONFIG_ARCH_SUPPORTS_INT128) && defined(__SIZEOF_INT128__)
-+
-+#ifndef mul_u64_u32_add_u64_shr
-+static __always_inline u64 mul_u64_u32_add_u64_shr(u64 a, u32 mul, u64 b, unsigned int shift)
-+{
-+	return (u64)((((unsigned __int128)a * mul) + b) >> shift);
-+}
-+#endif /* mul_u64_u32_add_u64_shr */
-+
-+#else
-+
-+#ifndef mul_u64_u32_add_u64_shr
-+#ifndef mul_u32_u32
-+static inline u64 mul_u32_u32(u32 a, u32 b)
-+{
-+	return (u64)a * b;
-+}
-+#define mul_u32_u32 mul_u32_u32
+ 	s32			clock_mode;
+ 	u64			cycle_last;
++#ifdef CONFIG_GENERIC_VDSO_OVERFLOW_PROTECT
++	u64			max_cycles;
 +#endif
-+static __always_inline u64 mul_u64_u32_add_u64_shr(u64 a, u32 mul, u64 b, unsigned int shift)
-+{
-+	u32 ah = a >> 32, al = a;
-+	bool ovf;
-+	u64 ret;
-+
-+	ovf = __builtin_add_overflow(mul_u32_u32(al, mul), b, &ret);
-+	ret >>= shift;
-+	if (ovf && shift)
-+		ret += 1ULL << (64 - shift);
-+	if (ah)
-+		ret += mul_u32_u32(ah, mul) << (32 - shift);
-+
-+	return ret;
-+}
-+#endif /* mul_u64_u32_add_u64_shr */
-+
+ 	u64			mask;
+ 	u32			mult;
+ 	u32			shift;
+diff --git a/kernel/time/vsyscall.c b/kernel/time/vsyscall.c
+index f0d5062d9cbc..9193d6133e5d 100644
+--- a/kernel/time/vsyscall.c
++++ b/kernel/time/vsyscall.c
+@@ -22,10 +22,16 @@ static inline void update_vdso_data(struct vdso_data *vdata,
+ 	u64 nsec, sec;
+ 
+ 	vdata[CS_HRES_COARSE].cycle_last	= tk->tkr_mono.cycle_last;
++#ifdef CONFIG_GENERIC_VDSO_OVERFLOW_PROTECT
++	vdata[CS_HRES_COARSE].max_cycles	= tk->tkr_mono.clock->max_cycles;
 +#endif
-+
- #endif /* __VDSO_MATH64_H */
+ 	vdata[CS_HRES_COARSE].mask		= tk->tkr_mono.mask;
+ 	vdata[CS_HRES_COARSE].mult		= tk->tkr_mono.mult;
+ 	vdata[CS_HRES_COARSE].shift		= tk->tkr_mono.shift;
+ 	vdata[CS_RAW].cycle_last		= tk->tkr_raw.cycle_last;
++#ifdef CONFIG_GENERIC_VDSO_OVERFLOW_PROTECT
++	vdata[CS_RAW].max_cycles		= tk->tkr_raw.clock->max_cycles;
++#endif
+ 	vdata[CS_RAW].mask			= tk->tkr_raw.mask;
+ 	vdata[CS_RAW].mult			= tk->tkr_raw.mult;
+ 	vdata[CS_RAW].shift			= tk->tkr_raw.shift;
 -- 
 2.34.1
 
