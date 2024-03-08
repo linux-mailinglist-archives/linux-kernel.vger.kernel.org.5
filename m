@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-97474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 213CD876AD7
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1B81876AD8
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:39:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3B4A282093
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:39:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC1E7B21F92
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3D55B5A2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0BE5B04B;
 	Fri,  8 Mar 2024 18:38:10 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104332BD12;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324742DF7D;
 	Fri,  8 Mar 2024 18:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709923090; cv=none; b=AUSwuPR1P/yADDcvfwKbYrBqRF2uaVfS6rtfCi1HuM7iifkg05UIobL9DO+1O9/I8jzBm+QuwsiOWXINtrD7x+gbJT6lugOujOaTKV6Oksm+e229FOABdYDcvTVRX88KNc7izob81mfWnLs6bMIvOoK4nw44u52krc2oGUsU0lM=
+	t=1709923090; cv=none; b=K6D8ZVH/D4j9OTQLDEmWXxaeFm81ZaCyuFfhWMxU4mmSp6YKvcY81m01pHuX/xO4PB0DdvJH6AlXVKWzaPsP/LGBy3fz4sHYEq5xZSnQQ70WFO2aKa86bB88syT/5+xn175PRgbPdQ5cmQ0Xn6ZejZZeXTSto0XIExADh1iz6ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709923090; c=relaxed/simple;
-	bh=r46s1KKgH/Sznd2W3PttlYa1kDm8+z7ysNUjjpJi6YE=;
+	bh=WlJxuaLbEgyrwoXX2qT0epUEFu6umRv3bWcrjuPguEw=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=C+ex6UucvEtWz7+ts2jTpEv3RPG/Z9PCdIE7lOLFKEqqEFi4D510uXUmTwWd4uAXTYS+n/JQnBJjYD8pxQVEY6YqeZxW8EEYP1T/ZHC9M7qbn8aXhXYeVAyj6Xans516hRBDTY+pMEyL+H+JqDq/Yt4Ct6krR6CrXolWXAOQe/0=
+	 Content-Type; b=U3xruzvpcwKvvSpoCbfOD/hWC9WkdY83tAFMaPD8LicaIFVOKDZ6C4NLKAz/I7gDLo+pYWrIUc7FgDx6jc32hU5Q6JVHciI9k5Tah1PaNTQZ6RtcPrZy6wGM+4sXiGtL6I6K11chDXzA/tx6eBQcAoRdljh9n8s5T4pMPSAwPhg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B06A6C43390;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D39C0C433A6;
 	Fri,  8 Mar 2024 18:38:09 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rif8Z-00000000xWG-1wzS;
+	id 1rif8Z-00000000xWk-2cnE;
 	Fri, 08 Mar 2024 13:40:07 -0500
-Message-ID: <20240308184007.322683965@goodmis.org>
+Message-ID: <20240308184007.485732758@goodmis.org>
 User-Agent: quilt/0.67
-Date: Fri, 08 Mar 2024 13:38:17 -0500
+Date: Fri, 08 Mar 2024 13:38:18 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -46,8 +46,8 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  joel@joelfernandes.org,
  linke li <lilinke99@qq.com>,
  Rabin Vincent <rabin@rab.in>,
- stable@vger.kernel.org
-Subject: [PATCH 1/6] ring-buffer: Fix waking up ring buffer readers
+ stable@vger.kerenl.org
+Subject: [PATCH 2/6] ring-buffer: Fix resetting of shortest_full
 References: <20240308183816.676883229@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,237 +59,100 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-A task can wait on a ring buffer for when it fills up to a specific
-watermark. The writer will check the minimum watermark that waiters are
-waiting for and if the ring buffer is past that, it will wake up all the
-waiters.
+The "shortest_full" variable is used to keep track of the waiter that is
+waiting for the smallest amount on the ring buffer before being woken up.
+When a tasks waits on the ring buffer, it passes in a "full" value that is
+a percentage. 0 means wake up on any data. 1-100 means wake up from 1% to
+100% full buffer.
 
-The waiters are in a wait loop, and will first check if a signal is
-pending and then check if the ring buffer is at the desired level where it
-should break out of the loop.
+As all waiters are on the same wait queue, the wake up happens for the
+waiter with the smallest percentage.
 
-If a file that uses a ring buffer closes, and there's threads waiting on
-the ring buffer, it needs to wake up those threads. To do this, a
-"wait_index" was used.
+The problem is that the smallest_full on the cpu_buffer that stores the
+smallest amount doesn't get reset when all the waiters are woken up. It
+does get reset when the ring buffer is reset (echo > /sys/kernel/tracing/trace).
 
-Before entering the wait loop, the waiter will read the wait_index. On
-wakeup, it will check if the wait_index is different than when it entered
-the loop, and will exit the loop if it is. The waker will only need to
-update the wait_index before waking up the waiters.
+This means that tasks may be woken up more often then when they want to
+be. Instead, have the shortest_full field get reset just before waking up
+all the tasks. If the tasks wait again, they will update the shortest_full
+before sleeping.
 
-This had a couple of bugs. One trivial one and one broken by design.
+Also add locking around setting of shortest_full in the poll logic, and
+change "work" to "rbwork" to match the variable name for rb_irq_work
+structures that are used in other places.
 
-The trivial bug was that the waiter checked the wait_index after the
-schedule() call. It had to be checked between the prepare_to_wait() and
-the schedule() which it was not.
-
-The main bug is that the first check to set the default wait_index will
-always be outside the prepare_to_wait() and the schedule(). That's because
-the ring_buffer_wait() doesn't have enough context to know if it should
-break out of the loop.
-
-The loop itself is not needed, because all the callers to the
-ring_buffer_wait() also has their own loop, as the callers have a better
-sense of what the context is to decide whether to break out of the loop
-or not.
-
-Just have the ring_buffer_wait() block once, and if it gets woken up, exit
-the function and let the callers decide what to do next.
-
-Link: https://lore.kernel.org/all/CAHk-=whs5MdtNjzFkTyaUy=vHi=qwWgPi0JgTe6OYUYMNSRZfg@mail.gmail.com/
-
-Cc: stable@vger.kernel.org
-Fixes: e30f53aad2202 ("tracing: Do not busy wait in buffer splice")
+Cc: stable@vger.kerenl.org
+Fixes: 2c2b0a78b3739 ("ring-buffer: Add percentage of ring buffer full to wake up reader")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 139 ++++++++++++++++++-------------------
- 1 file changed, 68 insertions(+), 71 deletions(-)
+ kernel/trace/ring_buffer.c | 30 +++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 0699027b4f4c..3400f11286e3 100644
+index 3400f11286e3..aa332ace108b 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -384,7 +384,6 @@ struct rb_irq_work {
- 	struct irq_work			work;
- 	wait_queue_head_t		waiters;
- 	wait_queue_head_t		full_waiters;
--	long				wait_index;
- 	bool				waiters_pending;
- 	bool				full_waiters_pending;
- 	bool				wakeup_full;
-@@ -798,14 +797,40 @@ void ring_buffer_wake_waiters(struct trace_buffer *buffer, int cpu)
- 		rbwork = &cpu_buffer->irq_work;
+@@ -755,8 +755,19 @@ static void rb_wake_up_waiters(struct irq_work *work)
+ 
+ 	wake_up_all(&rbwork->waiters);
+ 	if (rbwork->full_waiters_pending || rbwork->wakeup_full) {
++		/* Only cpu_buffer sets the above flags */
++		struct ring_buffer_per_cpu *cpu_buffer =
++			container_of(rbwork, struct ring_buffer_per_cpu, irq_work);
++
++		/* Called from interrupt context */
++		raw_spin_lock(&cpu_buffer->reader_lock);
+ 		rbwork->wakeup_full = false;
+ 		rbwork->full_waiters_pending = false;
++
++		/* Waking up all waiters, they will reset the shortest full */
++		cpu_buffer->shortest_full = 0;
++		raw_spin_unlock(&cpu_buffer->reader_lock);
++
+ 		wake_up_all(&rbwork->full_waiters);
+ 	}
+ }
+@@ -934,28 +945,33 @@ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
+ 			  struct file *filp, poll_table *poll_table, int full)
+ {
+ 	struct ring_buffer_per_cpu *cpu_buffer;
+-	struct rb_irq_work *work;
++	struct rb_irq_work *rbwork;
+ 
+ 	if (cpu == RING_BUFFER_ALL_CPUS) {
+-		work = &buffer->irq_work;
++		rbwork = &buffer->irq_work;
+ 		full = 0;
+ 	} else {
+ 		if (!cpumask_test_cpu(cpu, buffer->cpumask))
+ 			return EPOLLERR;
+ 
+ 		cpu_buffer = buffer->buffers[cpu];
+-		work = &cpu_buffer->irq_work;
++		rbwork = &cpu_buffer->irq_work;
  	}
  
--	rbwork->wait_index++;
--	/* make sure the waiters see the new index */
--	smp_wmb();
--
- 	/* This can be called in any context */
- 	irq_work_queue(&rbwork->work);
- }
- 
-+static bool rb_watermark_hit(struct trace_buffer *buffer, int cpu, int full)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer;
-+	bool ret = false;
-+
-+	/* Reads of all CPUs always waits for any data */
-+	if (cpu == RING_BUFFER_ALL_CPUS)
-+		return !ring_buffer_empty(buffer);
-+
-+	cpu_buffer = buffer->buffers[cpu];
-+
-+	if (!ring_buffer_empty_cpu(buffer, cpu)) {
+ 	if (full) {
+-		poll_wait(filp, &work->full_waiters, poll_table);
+-		work->full_waiters_pending = true;
 +		unsigned long flags;
-+		bool pagebusy;
 +
-+		if (!full)
-+			return true;
++		poll_wait(filp, &rbwork->full_waiters, poll_table);
 +
 +		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-+		pagebusy = cpu_buffer->reader_page == cpu_buffer->commit_page;
-+		ret = !pagebusy && full_hit(buffer, cpu, full);
-+
-+		if (!cpu_buffer->shortest_full ||
-+		    cpu_buffer->shortest_full > full)
-+			cpu_buffer->shortest_full = full;
++		rbwork->full_waiters_pending = true;
+ 		if (!cpu_buffer->shortest_full ||
+ 		    cpu_buffer->shortest_full > full)
+ 			cpu_buffer->shortest_full = full;
 +		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-+	}
-+	return ret;
-+}
-+
- /**
-  * ring_buffer_wait - wait for input to the ring buffer
-  * @buffer: buffer to wait on
-@@ -821,7 +846,6 @@ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
- 	struct ring_buffer_per_cpu *cpu_buffer;
- 	DEFINE_WAIT(wait);
- 	struct rb_irq_work *work;
--	long wait_index;
- 	int ret = 0;
+ 	} else {
+-		poll_wait(filp, &work->waiters, poll_table);
+-		work->waiters_pending = true;
++		poll_wait(filp, &rbwork->waiters, poll_table);
++		rbwork->waiters_pending = true;
+ 	}
  
  	/*
-@@ -840,81 +864,54 @@ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
- 		work = &cpu_buffer->irq_work;
- 	}
- 
--	wait_index = READ_ONCE(work->wait_index);
--
--	while (true) {
--		if (full)
--			prepare_to_wait(&work->full_waiters, &wait, TASK_INTERRUPTIBLE);
--		else
--			prepare_to_wait(&work->waiters, &wait, TASK_INTERRUPTIBLE);
--
--		/*
--		 * The events can happen in critical sections where
--		 * checking a work queue can cause deadlocks.
--		 * After adding a task to the queue, this flag is set
--		 * only to notify events to try to wake up the queue
--		 * using irq_work.
--		 *
--		 * We don't clear it even if the buffer is no longer
--		 * empty. The flag only causes the next event to run
--		 * irq_work to do the work queue wake up. The worse
--		 * that can happen if we race with !trace_empty() is that
--		 * an event will cause an irq_work to try to wake up
--		 * an empty queue.
--		 *
--		 * There's no reason to protect this flag either, as
--		 * the work queue and irq_work logic will do the necessary
--		 * synchronization for the wake ups. The only thing
--		 * that is necessary is that the wake up happens after
--		 * a task has been queued. It's OK for spurious wake ups.
--		 */
--		if (full)
--			work->full_waiters_pending = true;
--		else
--			work->waiters_pending = true;
--
--		if (signal_pending(current)) {
--			ret = -EINTR;
--			break;
--		}
--
--		if (cpu == RING_BUFFER_ALL_CPUS && !ring_buffer_empty(buffer))
--			break;
--
--		if (cpu != RING_BUFFER_ALL_CPUS &&
--		    !ring_buffer_empty_cpu(buffer, cpu)) {
--			unsigned long flags;
--			bool pagebusy;
--			bool done;
--
--			if (!full)
--				break;
--
--			raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
--			pagebusy = cpu_buffer->reader_page == cpu_buffer->commit_page;
--			done = !pagebusy && full_hit(buffer, cpu, full);
-+	if (full)
-+		prepare_to_wait(&work->full_waiters, &wait, TASK_INTERRUPTIBLE);
-+	else
-+		prepare_to_wait(&work->waiters, &wait, TASK_INTERRUPTIBLE);
- 
--			if (!cpu_buffer->shortest_full ||
--			    cpu_buffer->shortest_full > full)
--				cpu_buffer->shortest_full = full;
--			raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
--			if (done)
--				break;
--		}
-+	/*
-+	 * The events can happen in critical sections where
-+	 * checking a work queue can cause deadlocks.
-+	 * After adding a task to the queue, this flag is set
-+	 * only to notify events to try to wake up the queue
-+	 * using irq_work.
-+	 *
-+	 * We don't clear it even if the buffer is no longer
-+	 * empty. The flag only causes the next event to run
-+	 * irq_work to do the work queue wake up. The worse
-+	 * that can happen if we race with !trace_empty() is that
-+	 * an event will cause an irq_work to try to wake up
-+	 * an empty queue.
-+	 *
-+	 * There's no reason to protect this flag either, as
-+	 * the work queue and irq_work logic will do the necessary
-+	 * synchronization for the wake ups. The only thing
-+	 * that is necessary is that the wake up happens after
-+	 * a task has been queued. It's OK for spurious wake ups.
-+	 */
-+	if (full)
-+		work->full_waiters_pending = true;
-+	else
-+		work->waiters_pending = true;
- 
--		schedule();
-+	if (rb_watermark_hit(buffer, cpu, full))
-+		goto out;
- 
--		/* Make sure to see the new wait index */
--		smp_rmb();
--		if (wait_index != work->wait_index)
--			break;
-+	if (signal_pending(current)) {
-+		ret = -EINTR;
-+		goto out;
- 	}
- 
-+	schedule();
-+ out:
- 	if (full)
- 		finish_wait(&work->full_waiters, &wait);
- 	else
- 		finish_wait(&work->waiters, &wait);
- 
-+	if (!ret && !rb_watermark_hit(buffer, cpu, full) && signal_pending(current))
-+		ret = -EINTR;
-+
- 	return ret;
- }
- 
 -- 
 2.43.0
 
