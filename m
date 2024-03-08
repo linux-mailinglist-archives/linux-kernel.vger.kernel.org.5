@@ -1,176 +1,178 @@
-Return-Path: <linux-kernel+bounces-96868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBF8876266
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:47:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3474C876262
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DC22B2151D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:47:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FD0D1C20FF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9369155789;
-	Fri,  8 Mar 2024 10:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B0855769;
+	Fri,  8 Mar 2024 10:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="L3dNZ1t4"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FhdxbPQs"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AD352F78;
-	Fri,  8 Mar 2024 10:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3253553E3F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709894823; cv=none; b=R4uJTxke7nDnXeX5JtwydLtBjsP7KL904G8v9x6xB6cTWdnPqT7BamOytLqWsZyaAaHIJ4M80TNcZYanQoBc5lUdckg4UPTWpooDkTkOFfuliXzwTrtNXa1aI4GDliuLjdElUCxs3Q5V1eOC5jLhZyOnGRfU0v21YMrUCb/4u5k=
+	t=1709894794; cv=none; b=BnZ5F+TkFFf0vz3y4G4GfOP3bE0AlXEnrKjDyhUy1IqtJixvJEw8hE7m2JKaxW3tGKpKZsQA76VJV8KlSjjEv6pQle1oWuECBuZhElG9org0/VL0GcuWkS1FVIyjrzHU7u7Rsdufz7Tseu9eLxF3nHysldDyWBf+DAP1RG9zAnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709894823; c=relaxed/simple;
-	bh=qGuNmFIrWtA9X3fyhwALvI8fPjVC7Ln9CYT40Amik7M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=kkhUYOBjE0RJSdzaFrMRMGhI2vr33nfeQ65ajax82mTRr9hF4YZSRH9FP2L7GIs0VtFLICY1bsu+GbdW/CEuxhop5WiosxyUJ7zmktMToe3n+6aElaQNmKXdUJ81H//mANqWMYl4XhgY7J4g55Hwa82R9+zQu/MSNy1u2a2RNj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=L3dNZ1t4; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4281c37p021785;
-	Fri, 8 Mar 2024 10:46:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=TxLG4r38U4Rqr7eWXm57lb0YnIZAjlRbQoaRcINMcyg=; b=L3
-	dNZ1t4Fmf2oLy5IvbPxlNtF1v1fClf+2asThy47dVQU853+yNm3z33N3L1GOWItz
-	sA2yvwUKdJYrncaJvfQW/Zwb9hdY5DyTItkXUuVdl+AeiXnHxNb7/+64xoMsBewD
-	Xzvobrw6yFbfWs1Lyn5d3gIg/sGZkyv1/8lDCAXliLW7voX/VbAhx1ImnFlTSwlY
-	0SUt16zwWwNqCt8G7FDdQErxH7nIa2MGncWyZg2ZpVqJJ+Z7Hr/vPaM+ldJ0Dyy7
-	p0arcF5jUmQ9FCC/tOujnAuLUdPVKUDnlTwfXiWmRuEtFtwmkE9tRB25cjT19src
-	Hvzdrb7zTzqCTXsOJHQw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqn8m1gv0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 10:46:24 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 428AkOUF015567
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 8 Mar 2024 10:46:24 GMT
-Received: from [10.216.7.18] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Mar
- 2024 02:46:18 -0800
-Message-ID: <e2627a99-307f-1e10-abfd-ce688cc2ec03@quicinc.com>
-Date: Fri, 8 Mar 2024 16:16:14 +0530
+	s=arc-20240116; t=1709894794; c=relaxed/simple;
+	bh=8MosYBhE5riFfkSnxDEG266Cx1MumuoXdlWUNzqfQ1c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KYfuL7/k8BJ1/PKBcdbF9MhQ6UK0dtee4kYbdyhzAbqgZCD7s1OidpLv8vPyEFrPG1xBRmcIuvF3CKu3aQ/HT3cZOKsRjSYzCcF/12b4KEdbElw9MaSEWdbtlvHeHmrqmhC0lRozCfcOuzxqZRSpz1H6vn+zTgYBBLub2OD5U58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FhdxbPQs; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709894792; x=1741430792;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8MosYBhE5riFfkSnxDEG266Cx1MumuoXdlWUNzqfQ1c=;
+  b=FhdxbPQsgIU955Uqo7wY5zcIfOY2OaEevUgjt0kuaUJh+w/v/L/OwjII
+   d/tFuPyINBLEvig7zjk6wdeusuuk1QKtFUJz8wvUBlFPX/w7hQW/zaMwA
+   Xy6950Z08aeSdSmz3NzF/JqigANa2R4zDDM+hUSRmnL+zly2P0rMvkbSE
+   zzBXscaoOdijMYIsMdNkntq6sBpM63zYW7SfXjVT8wT7pN2YUThDheT4B
+   jHQTzQQliDlqnIPelp0eEM60g1rXpMojcQbbE+7r6wTyMyU4OCccgqR/m
+   XLur03EIplJiqZULow+yM6ZNfA8swqdX/ggl1FRqq8yjftpjwpqBFdOpZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4778370"
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
+   d="scan'208";a="4778370"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 02:46:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
+   d="scan'208";a="10835315"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 02:46:27 -0800
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+	by kekkonen.fi.intel.com (Postfix) with ESMTP id 7B65411F819;
+	Fri,  8 Mar 2024 12:46:24 +0200 (EET)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
+	(envelope-from <sakari.ailus@linux.intel.com>)
+	id 1riXk8-00GrgK-1V;
+	Fri, 08 Mar 2024 12:46:24 +0200
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Tomas Winkler <tomas.winkler@intel.com>,
+	wentong.wu@intel.com,
+	"Reported-by : Dominik Brodowski" <linux@dominikbrodowski.net>
+Subject: [PATCH 1/1] mei: vsc: Mark the driver BROKEN
+Date: Fri,  8 Mar 2024 12:46:14 +0200
+Message-Id: <20240308104614.4019592-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 4/5] clk: qcom: Add camera clock controller driver for
- SM8150
-Content-Language: en-US
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Michael
- Turquette" <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: Stephen Boyd <sboyd@codeaurora.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>,
-        "Imran
- Shaik" <quic_imrashai@quicinc.com>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
- <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
- <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
- <83fd1995-a06e-b76a-d91b-de1c1a6ab0ea@quicinc.com>
- <4817a5b0-5407-4437-b94a-fc8a1bfcd25d@linaro.org>
-From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <4817a5b0-5407-4437-b94a-fc8a1bfcd25d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Vs23r503-2j_3oJbNZklU5g0YtVaVSnp
-X-Proofpoint-ORIG-GUID: Vs23r503-2j_3oJbNZklU5g0YtVaVSnp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- malwarescore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 impostorscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403080085
 
+The MEI VSC driver currently oopses and may crash the system on suspend.
+The other drivers required to use MEI VSC driver's services are not in
+upstream yet, disable the MEI VSC driver by marking it BROKEN until it is
+fixed.
 
-On 3/6/2024 7:25 PM, Bryan O'Donoghue wrote:
-> On 06/03/2024 08:30, Satya Priya Kakitapalli (Temp) wrote:
->>>
->>> Anyway I suspect the right thing to do is to define a 
->>> titan_top_gdsc_clk with shared ops to "park" the GDSC clock to 19.2 
->>> MHz instead of turning it off.
->>>
->>> You can get rid of the hard-coded always-on and indeed represent the 
->>> clock in /sysfs - which is preferable IMO to just whacking registers 
->>> to keep clocks always-on in probe anyway.
->>>
->>> Please try to define the titan_top_gdsc_clk as a shared_ops clock 
->>> instead of hard coding to always on.
->>>
->>
->> Defining the gdsc clk allows consumers to control it, we do not want 
->> this clock to be disabled/controlled from consumers. Hence it is 
->> better to not model this clock and just keep it always on from probe.
->
-> Not if you mark it critical
->
+--------8<------------
+[  554.624659] intel_vsc intel_vsc: wait fw ready failed: -110
+[  554.624672] intel_vsc intel_vsc: hw_start failed ret = -110 fw status =
+[  554.625016] intel_vsc intel_vsc: unexpected reset: dev_state = RESETTING fw status =
+[  554.628623] snd_hda_intel 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040100
+[  554.628863] snd_hda_intel 0000:00:1f.3: SoundWire enabled on CannonLake+ platform, using SOF driver
+[  554.628909] sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040100
+[  554.628943] sof-audio-pci-intel-tgl 0000:00:1f.3: SoundWire enabled on CannonLake+ platform, using SOF driver
+[  554.629603] sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040100
+[  554.629606] OOM killer enabled.
+[  554.629611] Restarting tasks ... done.
+[  554.631243] random: crng reseeded on system resumption
+[  554.631373] intel_ipu6_isys.isys intel_ipu6.isys.40: ltr: value 1023 scale 5, did: value 1023 scale 2
+[  554.680511] ACPI Warning: \_SB.PC00.SPI1.SPFD.CVFD.SID: Insufficient arguments - Caller passed 0, method requires 1 (20230628/nsarguments-232)
+[  554.684521] intel_vsc intel_vsc: silicon stepping version is 0:2
+[  554.815307] PM: suspend exit
+[  564.652519] BUG: unable to handle page fault for address: 0000001800070c19
+[  564.652537] #PF: supervisor read access in kernel mode
+[  564.652543] #PF: error_code(0x0000) - not-present page
+[  564.652548] PGD 0 P4D 0
+[  564.652556] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[  564.652566] CPU: 2 PID: 261 Comm: kworker/2:2 Not tainted 6.8.0-rc2+ #1983
+[  564.652575] Hardware name: Dell Inc. XPS 9315/0WWXF6, BIOS 1.3.0 08/16/2022
+[  564.652579] Workqueue: events mei_reset_work [mei]
+[  564.652629] RIP: 0010:mei_cl_set_disconnected+0xc/0x270 [mei]
+[  564.652675] Code: c3 cc cc cc cc 0f 0b eb 97 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 55 48 89 e5 41 54 53 <8b> 47 18 4c 8b 67 10 83 f8 07 0f 84 45 01 00 00 83 f8 01 0f 86 3c
+[  564.652682] RSP: 0018:ffff9f97807cbd40 EFLAGS: 00010213
+[  564.652689] RAX: 0000000000000000 RBX: 0000001800070c01 RCX: 0000000000000000
+[  564.652695] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000001800070c01
+[  564.652699] RBP: ffff9f97807cbd50 R08: 0000000000000000 R09: 0000000000000000
+[  564.652703] R10: 0000000000000000 R11: 0000000000000000 R12: ffff926a016760e8
+[  564.652707] R13: 0000000000000000 R14: ffff926a00151401 R15: ffff926a01676e00
+[  564.652711] FS:  0000000000000000(0000) GS:ffff926b87680000(0000) knlGS:0000000000000000
+[  564.652717] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  564.652722] CR2: 0000001800070c19 CR3: 000000014c03c000 CR4: 0000000000750ef0
+[  564.652728] PKRU: 55555554
+[  564.652731] Call Trace:
+[  564.652736]  <TASK>
+[  564.652744]  ? show_regs+0x6d/0x80
+[  564.652761]  ? __die+0x24/0x80
+[  564.652770]  ? page_fault_oops+0x156/0x4b0
+[  564.652783]  ? do_user_addr_fault+0x2f9/0x6c0
+[  564.652793]  ? exc_page_fault+0x83/0x1b0
+[  564.652803]  ? asm_exc_page_fault+0x27/0x30
+[  564.652818]  ? mei_cl_set_disconnected+0xc/0x270 [mei]
+[  564.652857]  mei_cl_all_disconnect+0x27/0x40 [mei]
+[  564.652893]  mei_reset+0x18a/0x550 [mei]
+[  564.652927]  ? __synchronize_irq+0x31/0xb0
+[  564.652940]  mei_reset_work+0x55/0xe0 [mei]
+[  564.652975]  process_one_work+0x16c/0x350
+[  564.652985]  worker_thread+0x306/0x440
+[  564.652993]  ? __pfx_worker_thread+0x10/0x10
+[  564.653000]  kthread+0xef/0x120
+[  564.653013]  ? __pfx_kthread+0x10/0x10
+[  564.653023]  ret_from_fork+0x44/0x70
+[  564.653034]  ? __pfx_kthread+0x10/0x10
+[  564.653044]  ret_from_fork_asm+0x1b/0x30
+[  564.653054]  </TASK>
+--------8<------------
 
-Marking the clock as critical keeps the associated power domain 
-always-on which impacts power. For this reason we are not using 
-CLK_IS_CRITICAL and instead making them always on from probe.
+Reported-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: <stable@vger.kernel.org> # for 6.8
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+---
+Hi Greg,
 
+It'd be nice to have this in 6.8 or if that fails, merge it in early
+stable releases. This issue causes crashes on Tiger lake, Alderlake and
+others on system suspend.
 
-> static struct clk_branch cam_cc_gdsc_clk = {
->         .halt_reg = 0xc1e4,
->         .halt_check = BRANCH_HALT,
->         .clkr = {
->                 .enable_reg = 0xc1e4,
->                 .enable_mask = BIT(0),
->                 .hw.init = &(struct clk_init_data){
->                         .name = "cam_cc_gdsc_clk",
->                         .parent_hws = (const struct clk_hw*[]){
->                                 &cam_cc_xo_clk_src.clkr.hw
->                         },
->                         .num_parents = 1,
->                         .flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
->                         .ops = &clk_branch2_ops,
->                 },
->         },
-> };
->
-> and then add this to your camss clocks
->
-> <&clock_camcc CAM_CC_GDSC_CLK>;
->
-> The practice we have of just whacking clocks always-on in the probe() 
-> of the clock driver feels lazy to me, leaving the broken cleanups we 
-> have aside.
->
-> As a user of the system I'd rather see correct/complete data in 
-> /sys/kernel/debug/clk/clk_summary
->
-> Anyway I'm fine with setting the clock always on, I can always send 
-> out a series to address this bug-bear myself.
->
-> So yeah just fix the cleanup and then please feel free to add my
->
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+As the driver isn't used for anything (in upstream) quite yet, the patch
+marks it BROKEN for now.
+
+- Sakari
+
+ drivers/misc/mei/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/misc/mei/Kconfig b/drivers/misc/mei/Kconfig
+index 67d9391f1855..d72e06d51b69 100644
+--- a/drivers/misc/mei/Kconfig
++++ b/drivers/misc/mei/Kconfig
+@@ -60,6 +60,7 @@ config INTEL_MEI_GSC
+ 
+ config INTEL_MEI_VSC_HW
+ 	tristate "Intel visual sensing controller device transport driver"
++	depends on BROKEN
+ 	depends on ACPI && SPI
+ 	depends on GPIOLIB || COMPILE_TEST
+ 	help
+-- 
+2.39.2
+
 
