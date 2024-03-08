@@ -1,243 +1,124 @@
-Return-Path: <linux-kernel+bounces-97612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCC67876C77
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:39:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0736F876C78
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:39:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDAEF1C21178
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:39:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B59122826E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 821E25FDD1;
-	Fri,  8 Mar 2024 21:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4026F5FB8B;
+	Fri,  8 Mar 2024 21:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UJ/IzyeA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="g7Kz0q5D"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F765F578
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCFA604A4
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709933941; cv=none; b=I37vZCt8IpVVaDvxexYw77uteJHUwFK59WaKM1oqIpqjVDfyZ61jvVZqSt7JloXuIrsHFPWum1LxBQ2JoBrrKY0q0KWk4G4Sjebpnpd4EoA8Aywn9Z9gJlX1Lo2SBxo/pKFV52OyfcHPDEgT0VEiwp9XyL8cn9bqNXwgFrUNjU8=
+	t=1709933976; cv=none; b=UH9U3WfChdcLWPWH3BP/gDvbeJjoM1hn5WJuQakV6VvNdFid42nMt2LvNq4JadpiR3xHnVzDDBoXVIqIopBYUu0Wkc+EIfQGQC+NIA+d95p92FjnGddeeDWP/h8J920Ppm9+G3waYSzcbHYwdiaUJgOEyyq1PcWxLS1UEOHLRzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709933941; c=relaxed/simple;
-	bh=5+syQIWZZ3Wnr9rjayrBOZvvjhoz7t4wc/c7M6jQ40Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ARWI2g6KRKG9JfCufViXQcl0ztpKTyYIUJG2Vnuy0nTYO4jTEzP8r2dW5XmgQTzhXseqYkkME3zB7EvNKpY2hdesDxq2p2bGhJmSFkxK6Ke/H8j3x/VrlGuCDXMoMwecKIX4WoaP6X6dgFTfHCQIAcPTGwkDwtFLb9aAhQzLig8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UJ/IzyeA; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709933940; x=1741469940;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=5+syQIWZZ3Wnr9rjayrBOZvvjhoz7t4wc/c7M6jQ40Y=;
-  b=UJ/IzyeARVxl1ef27ivgjE2cc3x1g7zLeuFYqUZZLxmhhkR4r6yUKJD8
-   H46hHFABb410uCdtvp+URq/tXPJgH2QbvZTfYf8Xup2I16HE21H4mID6I
-   at9Q5pi/wc9iBbUO6YmlwbXrMYpONO9hgUvpgVNGJawsLlUsw/uJiMBlb
-   cg4tHNMynE+QFeO3IU7JL0j6XLy2rQ7U0v/QdCxX7m4ljw2aO9VgC/z+0
-   QMhTnUBwdRNyD2xzTz3YqPxSrgu4CAgkOMpezHSj+8/pb+jsxFwXUPwO5
-   ShH1ZKNNmMZkdTDHDPNLLr/SEoDjqWrkbM3T5dzcUAr1s7UKZQj5Apxkj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11007"; a="4811416"
-X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
-   d="scan'208";a="4811416"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 13:38:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
-   d="scan'208";a="15295091"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 13:38:57 -0800
-From: Tony Luck <tony.luck@intel.com>
-To: "Chatre, Reinette" <reinette.chatre@intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	James Morse <james.morse@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Yu, Fenghua" <fenghua.yu@intel.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	H Peter Anvin <hpa@zytor.com>,
-	Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com,
-	lcherian@marvell.com,
-	bobo.shaobowang@huawei.com,
-	tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>,
-	peternewman@google.com,
-	dfustini@baylibre.com,
-	amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-Subject: [PATCH v5 2/2] x86/resctrl: Simplify call convention for MSR update functions
-Date: Fri,  8 Mar 2024 13:38:46 -0800
-Message-ID: <20240308213846.77075-3-tony.luck@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240308213846.77075-1-tony.luck@intel.com>
-References: <ZdZPht8hY4J9uIOz@agluck-desk3>
- <20240308213846.77075-1-tony.luck@intel.com>
+	s=arc-20240116; t=1709933976; c=relaxed/simple;
+	bh=a7v96kmQhDkc8Kx+zJIfhWvdsBlkGzLICy5mfG0ttH4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GGDeM78IRxGTSmSifjOTvcNTEEk6qk66POYaK8yalPxCh4jnY/47vUo4hh1J8p+FfCyNYAEWJqTN/JyTPO/9muFpHfs7lVznGVcKD0gELjJp9lKaEogX+uPtEDNfZf9GTrAjKArBqUttR2zlx+o9OQetjgaTSiT57Oet+yUfM7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=g7Kz0q5D; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d2ab9c5e83so24812261fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 13:39:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709933972; x=1710538772; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ivKkfUleh9PGqoywIX/iRlhl8v/B2TOp1fqf3Qv6buM=;
+        b=g7Kz0q5DpZYrPg3eHabd2YVDBEIDCZu384/Cu9FPlKF7xXFL2Cbi8ir9IhEvJ5cKAH
+         2I9bH0HdzshhRxNiLNBBV17DVAtFZv5f/X/ccSJ/HiqPaTIqMumw/SZFvwICTQ2Bk88/
+         aBcATymiHtMHEhdCiUcVI5Lh1Ox/ZSSd1YwgY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709933972; x=1710538772;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ivKkfUleh9PGqoywIX/iRlhl8v/B2TOp1fqf3Qv6buM=;
+        b=fd64ZGju9z2u2NFmHwiqy1ODh51G8Lms24v80PS2H7D8Mh+8Xia+lCtd4+9lwdwOdf
+         cHg2ol8pkHxlJqxFWHmhHa3hPiNgJyudDNM/+elYPI8rH5oCBRY7w8zW+A7DMz8bz+2d
+         CPcWSOSO0bsUcj0dboKFlPbTgiZZLyn3VFAGwZ20GuuF+FHbby9WgVmbdzR6FpdX97Gn
+         27fbsmQD6AKVpsLLKwein4APGmn1tMx+i16dD+xwfZSWkOK/WOloXJTj8E+W2R8lKhxV
+         q6rbbUgnAPhDrvTuF4njzjIDrZ3z7NIyvSH5yMFsGhzJym4h9U5gFjOxat2+xyalJ1dH
+         Gwgg==
+X-Gm-Message-State: AOJu0YylAwlMrxi8BBwfIFWljXobfHH/UljW0IPpVXdoKF+8+WH6dPJo
+	PzUcSXRkh0dbogAmVCE8m/qr5Djj73Y7F3MH0bE4xubOx2R+BuAEH8TgsIsk81DYkzUAT1XcvFL
+	w92gBbg==
+X-Google-Smtp-Source: AGHT+IHJ1eu1jJyuhrshXN+mCzgRc4cikF6ozquGUj+NBCErOzUtz0qaI3ui+NVU48oKdHLYjxqqFA==
+X-Received: by 2002:a05:6512:324c:b0:513:26b5:139a with SMTP id c12-20020a056512324c00b0051326b5139amr156294lfr.23.1709933972289;
+        Fri, 08 Mar 2024 13:39:32 -0800 (PST)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id k20-20020a17090627d400b00a453b2261b4sm189597ejc.184.2024.03.08.13.39.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 13:39:31 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a45bb2a9c20so326959166b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 13:39:31 -0800 (PST)
+X-Received: by 2002:a17:906:f6c9:b0:a3f:ac54:5aa1 with SMTP id
+ jo9-20020a170906f6c900b00a3fac545aa1mr180745ejb.21.1709933971409; Fri, 08 Mar
+ 2024 13:39:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240308183816.676883229@goodmis.org> <CAHk-=wgsNgewHFxZAJiAQznwPMqEtQmi1waeS2O1v6L4c_Um5A@mail.gmail.com>
+ <20240308163528.3980c639@gandalf.local.home>
+In-Reply-To: <20240308163528.3980c639@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 8 Mar 2024 13:39:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whaVBe14mbW4QWNuywBP_ZvGJYRZ3dbgx9-ebSxnNTXiQ@mail.gmail.com>
+Message-ID: <CAHk-=whaVBe14mbW4QWNuywBP_ZvGJYRZ3dbgx9-ebSxnNTXiQ@mail.gmail.com>
+Subject: Re: [PATCH 0/6] tracing/ring-buffer: Fix wakeup of ring buffer waiters
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	joel@joelfernandes.org, linke li <lilinke99@qq.com>, Rabin Vincent <rabin@rab.in>
+Content-Type: text/plain; charset="UTF-8"
 
-The per-resource MSR update functions cat_wrmsr(), mba_wrmsr_intel(),
-and mba_wrmsr_amd() all take three arguments:
+On Fri, 8 Mar 2024 at 13:33, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> There's two layers:
+>
+> 1) the ring buffer has the above simple producer / consumer.
+>    Where the wake ups can happen at the point of where the buffer has
+>    the amount filled that the consumer wants to start consuming with.
+>
+> 2) The tracing layer; Here on close of a file, the consumers need to be
+>    woken up and not wait again. And just take whatever was there to finish
+>    reading.
+>
+>    There's also another case that the ioctl() just kicks the current
+>    readers out, but doesn't care about new readers.
 
-  (struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r)
+But that's the beauty of just using the wait_event() model.
 
-struct msr_param contains pointers to both struct rdt_resource and struct
-rdt_domain, thus only struct msr_param is necessary.
+Just add that "exit" condition to the condition.
 
-Pass struct msr_param as a single parameter. Clean up formatting and
-fix some fir tree declaration ordering.
+So the above "complexity" is *literally* just changing the
 
-No functional change.
+                  (new = atomic_read_acquire(&my->seq)) != old
 
-Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Tested-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
----
- arch/x86/kernel/cpu/resctrl/internal.h    |  3 +-
- arch/x86/kernel/cpu/resctrl/core.c        | 40 +++++++++--------------
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  2 +-
- 3 files changed, 18 insertions(+), 27 deletions(-)
+condition to
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index bc999471f072..8f40fb35db78 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -444,8 +444,7 @@ struct rdt_hw_resource {
- 	struct rdt_resource	r_resctrl;
- 	u32			num_closid;
- 	unsigned int		msr_base;
--	void (*msr_update)	(struct rdt_domain *d, struct msr_param *m,
--				 struct rdt_resource *r);
-+	void			(*msr_update)(struct msr_param *m);
- 	unsigned int		mon_scale;
- 	unsigned int		mbm_width;
- 	unsigned int		mbm_cfg_mask;
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index acf52aa185e0..7751eea19fd2 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -56,14 +56,9 @@ int max_name_width, max_data_width;
-  */
- bool rdt_alloc_capable;
- 
--static void
--mba_wrmsr_intel(struct rdt_domain *d, struct msr_param *m,
--		struct rdt_resource *r);
--static void
--cat_wrmsr(struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r);
--static void
--mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m,
--	      struct rdt_resource *r);
-+static void mba_wrmsr_intel(struct msr_param *m);
-+static void cat_wrmsr(struct msr_param *m);
-+static void mba_wrmsr_amd(struct msr_param *m);
- 
- #define domain_init(id) LIST_HEAD_INIT(rdt_resources_all[id].r_resctrl.domains)
- 
-@@ -309,12 +304,11 @@ static void rdt_get_cdp_l2_config(void)
- 	rdt_get_cdp_config(RDT_RESOURCE_L2);
- }
- 
--static void
--mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r)
-+static void mba_wrmsr_amd(struct msr_param *m)
- {
-+	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(m->res);
-+	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(m->dom);
- 	unsigned int i;
--	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
--	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
- 
- 	for (i = m->low; i < m->high; i++)
- 		wrmsrl(hw_res->msr_base + i, hw_dom->ctrl_val[i]);
-@@ -334,25 +328,22 @@ static u32 delay_bw_map(unsigned long bw, struct rdt_resource *r)
- 	return r->default_ctrl;
- }
- 
--static void
--mba_wrmsr_intel(struct rdt_domain *d, struct msr_param *m,
--		struct rdt_resource *r)
-+static void mba_wrmsr_intel(struct msr_param *m)
- {
-+	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(m->res);
-+	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(m->dom);
- 	unsigned int i;
--	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
--	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
- 
- 	/*  Write the delay values for mba. */
- 	for (i = m->low; i < m->high; i++)
--		wrmsrl(hw_res->msr_base + i, delay_bw_map(hw_dom->ctrl_val[i], r));
-+		wrmsrl(hw_res->msr_base + i, delay_bw_map(hw_dom->ctrl_val[i], m->res));
- }
- 
--static void
--cat_wrmsr(struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r)
-+static void cat_wrmsr(struct msr_param *m)
- {
-+	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(m->res);
-+	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(m->dom);
- 	unsigned int i;
--	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
--	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
- 
- 	for (i = m->low; i < m->high; i++)
- 		wrmsrl(hw_res->msr_base + i, hw_dom->ctrl_val[i]);
-@@ -384,7 +375,7 @@ void rdt_ctrl_update(void *arg)
- 	struct msr_param *m = arg;
- 
- 	hw_res = resctrl_to_arch_res(m->res);
--	hw_res->msr_update(m->dom, m, m->res);
-+	hw_res->msr_update(m);
- }
- 
- /*
-@@ -457,10 +448,11 @@ static int domain_setup_ctrlval(struct rdt_resource *r, struct rdt_domain *d)
- 	hw_dom->ctrl_val = dc;
- 	setup_default_ctrlval(r, dc);
- 
-+	m.res = r;
- 	m.dom = d;
- 	m.low = 0;
- 	m.high = hw_res->num_closid;
--	hw_res->msr_update(d, &m, r);
-+	hw_res->msr_update(&m);
- 	return 0;
- }
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-index 165d8d453c04..b7291f60399c 100644
---- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-+++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-@@ -289,7 +289,7 @@ int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_domain *d,
- 	msr_param.dom = d;
- 	msr_param.low = idx;
- 	msr_param.high = idx + 1;
--	hw_res->msr_update(d, &msr_param, r);
-+	hw_res->msr_update(&msr_param);
- 
- 	return 0;
- }
--- 
-2.43.0
+                  should_exit ||
+                  (new = atomic_read_acquire(&my->seq)) != old
 
+(replace "should_exit" with whatever that condition is, of course) and
+the wait_event() logic will take care of the rest.
+
+             Linus
 
