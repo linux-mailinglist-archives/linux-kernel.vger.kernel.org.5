@@ -1,119 +1,117 @@
-Return-Path: <linux-kernel+bounces-96714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31F4C876071
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:58:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA1887606F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6E841F25752
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:58:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D015F1C21FA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD374535A1;
-	Fri,  8 Mar 2024 08:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB79052F79;
+	Fri,  8 Mar 2024 08:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="BlZ0xaQi"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fSSGiIhj"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A311F5338C
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 08:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F4DCA78;
+	Fri,  8 Mar 2024 08:57:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709888271; cv=none; b=Qz06lSzvlZ5b5B9jT+Dlx+BegQYdtK069rCYFx4RjrED8oC0kq8IL7cepzQfGXWcBDtQMemCAgZ1ay+kGvLuRFkQ7f/t3SKcj84FAQUVQMu1ZHZtcy9Kr8saxQUo08U4LU+iSkxJCkJziTeGcI7zkW+swB9NvzPqsd7PdG2d8bk=
+	t=1709888266; cv=none; b=kHLjeExHCwntr0r21LX/1Rju1gnNEiCwvcAplwvwOik1QarbgFwgzTEKV72bC3yZrn8jqpoQsRsq/9Wy0RxrWrTWdxz7Eg94Ld+RDEWDe6ADSExpA3myzAjM4LqUvylUMOC7hoy3aeutIGOz/9NQs9sCUPmzGNjEoPZvI3WskuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709888271; c=relaxed/simple;
-	bh=jajimP3j5lC4XyZuV2Qeuj7jzP25wkYstevIdyZy0es=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IYjwu19ranpIO1KVPa11DwJCggN5MDYkJ3aDsy/rEJLaPeFwl69XM9N4qIIcP+YKEc8ob39EA5HoNsnSsmwYSe7A4h6a2DpRINiECf0NQTqpkks3AFxL0QCHRd6GZlNUQGfA4h1MjRExHBDU5+2Ki9IdoMeNyq97R9VJnMm9GdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=BlZ0xaQi; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4DE6D40E01F7;
-	Fri,  8 Mar 2024 08:57:46 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id WC3h695uH_Jp; Fri,  8 Mar 2024 08:57:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709888263; bh=whg7S48qxi62u64g7hpTKEWyyjWtaN8l7RWfYvb+8FQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BlZ0xaQiyEun3ErVrAtwl9gVpdVjHxpsFrG/4uDRZxzR8omzuP2Pa3WonsQfaWQO+
-	 dNDyP8/RfVERsPn8RKjzZBqnFD8i43Izf0qHJGGv/XEG5WL0psrbKLys2jJzewiRcw
-	 uoSG/OxexnXSS742Ruwv23BLV2fttqaGqlIwiA7FpJEYXw1J6GgrotIYL4obNWz0lX
-	 T7nqIFNkKlPj0typlf2hnP2T4F46aWk6GRBk+yQqKVBhxUZvjVaVxJPsBGqOvSS1zp
-	 97cQ7ZaMtAGMleJo6aCIVkue4gi9Kr+G2xc8wtja6SF7BTRFIPlRjG22VQ00wn7bGr
-	 Y/k+dCe9hCAUGYEDwTwGe7Nb22tFAyhxV7iET+I0j3vh6e5OoV2RN5Ry7AsQ0yw6A+
-	 wrVGaZ+CscJEo7dk0BW1IkoLiI82tiyiSUlFNFSutbCFH9GpgrmjvEciV7a2ymIRBO
-	 qW0F0UeQViiSf9b+AxIWJ/lnif3ian4pwzKl50iw4K1YWmnSnBij+pi26MFTvOPuwH
-	 qpV7ni0l4rjPqPii4jzbq1CP8rvB7NxBzdcht0X6f6Ssfl2NUU//cjSTVXfwnMsdNn
-	 FYIssrwoB2JrvK/TPa9k+eazxL364wAsEFbEPpygIQrib8t4MYCpwMI1s3lpTgUgT/
-	 fBr5bytrnBMMPUEi8f5YZa1c=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4431F40E016B;
-	Fri,  8 Mar 2024 08:57:37 +0000 (UTC)
-Date: Fri, 8 Mar 2024 09:57:36 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com,
-	pbonzini@redhat.com, tglx@linutronix.de, x86@kernel.org
-Subject: Re: [RFC][PATCH 03/34] x86/pci: Assume that clflush size is always
- provided
-Message-ID: <20240308085736.GCZerTAHhN5-PEmVfB@fat_crate.local>
-References: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
- <20240222183930.18D74E8B@davehans-spike.ostc.intel.com>
+	s=arc-20240116; t=1709888266; c=relaxed/simple;
+	bh=uJ3EyYuTfpSTSeJvokr2q70eVIcyAYGuvsrPShpdwLk=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=AZEHgHB44XTx9/E95N6crSAygnvzRIGRDAx1aYnLluSLKW8Py/r+/8eZf9MdByx86ZVPeC7yCi+oO/yOZ7+SzYuXkC7ivYiJ7sA+jxvW0jxMfOxQqyk6n60zXEdpCmCmZcpuBgnY4SyxnBDi2hYftFk5TPFLIecwvfVA5LCXIWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fSSGiIhj; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 261D5240012;
+	Fri,  8 Mar 2024 08:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709888260;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6wpE0Hg9jSaOaaAHVX5lz1UQTKT/gbia9ZxM7ce23zk=;
+	b=fSSGiIhjdhlTXL7ypsCX8Q/rGBtXrmUC+3UmYox8nwCoFM+QtNq05DuKpwfjwAgwjDeQ87
+	+dMbqmsTqmv9bjhkIPw9lxpasMEL+liUQNJiyBxSqUmQPn6N8D3J6H3pRZTYZR16dDW/i3
+	DyzzmTr6FT60wlkCts2xU9tP5muwJW0cJ9ir5wCQzVcqdjmWNdiPt4WFI4frZq99DYk5iL
+	PANweUx4Sw3BBo8Hw9VVbo3IAE+k8kTSxQ99WCJUs1dxkCVHK6oHdkfzh44hEPN2xLxQCi
+	yAonmeerihXrGFRu/4e0+DKdlgKHApehOnlARjjGme2WUhMTfqZzaVO2P1rr5Q==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240222183930.18D74E8B@davehans-spike.ostc.intel.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 08 Mar 2024 09:57:39 +0100
+Message-Id: <CZO8SUELNP4R.230VKX59UIHC8@bootlin.com>
+Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Andi Shyti" <andi.shyti@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v3 03/11] i2c: nomadik: simplify IRQ masking logic
+X-Mailer: aerc 0.15.2
+References: <20240306-mbly-i2c-v3-0-605f866aa4ec@bootlin.com>
+ <20240306-mbly-i2c-v3-3-605f866aa4ec@bootlin.com>
+ <422szb2dtgnq56xznfqsqtqs3dai2jipnntrp6yb2og353whs7@g4ia5ynnmqu6>
+In-Reply-To: <422szb2dtgnq56xznfqsqtqs3dai2jipnntrp6yb2og353whs7@g4ia5ynnmqu6>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Thu, Feb 22, 2024 at 10:39:30AM -0800, Dave Hansen wrote:
-> 
-> From: Dave Hansen <dave.hansen@linux.intel.com>
-> 
-> The early boot code always sets _some_ clflush size.  Use that fact
+Hello,
 
-s/clflush/CLFLUSH/g
+On Fri Mar 8, 2024 at 12:01 AM CET, Andi Shyti wrote:
+> Hi Theo,
+>
+> On Wed, Mar 06, 2024 at 06:59:23PM +0100, Th=C3=A9o Lebrun wrote:
+> > IRQ_MASK and I2C_CLEAR_ALL_INTS both mask available interrupts. IRQ_MAS=
+K
+> > removes top options (bits 29-31). I2C_CLEAR_ALL_INTS removes reserved
+> > options including top bits. Keep the latter.
+> >=20
+> > 31  29  27  25  23  21  19  17  15  13  11  09  07  05  03  01
+> >   30  28  26  24  22  20  18  16  14  12  10  08  06  04  02  00
+> > --- IRQ_MASK: --------------------------------------------------
+> >       1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+> > 0 0 0
+> > --- I2C_CLEAR_ALL_INTS: ----------------------------------------
+> >       1     1 1       1 1 1 1 1                   1 1 1 1 1 1 1
+> > 0 0 0   0 0     0 0 0           0 0 0 0 0 0 0 0 0
+> >=20
+> > Notice I2C_CLEAR_ALL_INTS is more restrictive than IRQ_MASK.
+> >=20
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+>
+> You did answer my question in v2, thanks, Theo!
 
-as it is an insn mnemonic.
+Oops my mailer syntax is telling me that the lines starting with '---'
+might cause issue as it might mark the end of commit messages. I'll fix
+that in next revision. If it gets applied before that it should be
+checked that part of the message doesn't get lost.
 
-> to avoid handling the case where it is not set.
-> 
-> There may have been a time when the Xen PV call in here way too
-> early.  But it calls get_cpu_address_sizes() before calling here
-> now.  It should also be safe.
-> 
-> Note: This series will eventually return sane defaults even very
-> early in boot.  I believe this is safe now, but it becomes *really*
-> safe later on.
+Thanks Andi,
 
-This should probably be ...
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
-> 
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> ---
-
-<--- ... here as when applied, "this series" means nothing.
-
-With that:
-
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
