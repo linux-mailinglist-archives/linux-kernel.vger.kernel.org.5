@@ -1,244 +1,182 @@
-Return-Path: <linux-kernel+bounces-97127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08D538765DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:00:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 401918765CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:59:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A695B2265B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:00:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E6A02822F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E6656B7F;
-	Fri,  8 Mar 2024 13:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542463FB8D;
+	Fri,  8 Mar 2024 13:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="W5iYzO1D"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jl2Cc8pv"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2070.outbound.protection.outlook.com [40.107.101.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB78640853;
-	Fri,  8 Mar 2024 13:59:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906364; cv=none; b=ez4LqffcbGaZ3JKB/kqF2r7tYhdCcPlUDP0hDabwdDn2N2pUaIqRoTizqyBjTqa/aXts4qCSFWwykEHWrUL13BcuF0fpFQGX+PFJKVPUKs7hiPGRmPsZhhU5TkNUCO5erVkApqVR+jFeCWtqni7iYGGt0UFKslDN+AY011w8o1A=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906364; c=relaxed/simple;
-	bh=o8K012Oem4PHVj4ZW/iWzvsRClfJhAeRFi3fTA52p4w=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ppF0N9KYUq447oWG93DHr5QxBUOxzocpUhdrs+L2OwodvlEJHm46tq5woYb5q3QlKj6Brs2iOZDuQKi45dRbxWnYE0WVi7vuv05RwemetGyxVAhWkuxRF3HTZ2OuhSGzekibVKFkDUFF+bT+2ijMdSSgpyi6bgpqFP5N2Qe7jxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=W5iYzO1D; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4286juhU000826;
-	Fri, 8 Mar 2024 07:59:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=rqN71B10n1AW4Euf1b7rwX3hAjupKeEilhu8pUKsMlg=; b=
-	W5iYzO1DqWQ9A0ndo4nmPxvgsnKjYdadRJMIEKAb4RSFeebnaW2Ros/IjcFJguqb
-	Ufn/iR5bLskfNvECFfNio6kdxAnO3UL7o0MuCbhdMZ1/cKpR/jnuYQFB4HOXH0+G
-	zmKYsCWEEI4Kk8Pf0vAA7K6xkGyN6xNwEm9B9gRXjniZSx6CHJnvTZqdPXA8tXTZ
-	faysQlEuV9BuSiScS9S95qcx+b51ELHDQokq2cvJ4xTP7dqQmtyaQ65M+hWd3Gl9
-	aWPECPiWwNY6ycnqUoEOA4LBCaGbbWRd2Qh3LLLg+cwQ+ykLom/atrKlLbyT1T9C
-	rn/khyfZsABrSebn2X+vGA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wpn933f32-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 07:59:03 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 8 Mar 2024
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDD73D3B9
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:59:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.70
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709906346; cv=fail; b=Yr8xJg+o8VIWVSKAFCXUjwxPk7aIvrwPufvWHHkGLE4Ka1sTdvzjFZaxkDs21ff6UOFC4/1FQy2gO0Vovn3Mf2nUqUuJvSx5nFJDIXkxmQJt5IXerqvZQ+0FTYWb3mzZZ3MfssmLCkLiZiTKpfx3wiOv+DxajZMceurm7wulKNI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709906346; c=relaxed/simple;
+	bh=eZtooRgVWVgZ2MK/tkKqQs1NyOqeuRr/1rYMw/sUbRo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Vay0PL4nLdAHqvYdSo9a1rDe3f74lVazw1iNGXLDKeOJh2S8s4o1u/GdGOLa/D1/wpacC9OsUWrln+Lb5+jbIarO1vF2nrVhARautjBHlSEypia9YGnXzifVycnH46uiNgSoIkEzSsFqXL0TVFaC2/rTK/TKuVS01EKiX6GSXsQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jl2Cc8pv; arc=fail smtp.client-ip=40.107.101.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WFk/v+QQh3Oh2WTvMqmAGx8Jldl1qpBcXqZtMuxhUs9uo6xmxPWOHUrk02FxXf9opWws3wTQ5TjkG3wNDua/OSviK7aA6uAmrCF/k0e5RKVNRocbUHZ+nEZzlVr3DvlYf28FNu6SZD40kn1MYFYxWGSfsTx+CBkhSe9nv0jJQowVVNKpCmDvMNcQMomm+zCn7Hf3wQc1387BevwK6LFMNPWf+DAr+xt8fqrNqdlj6Cl6n9G4YtS2BVtwBm0+OW81NW2btPd8PZ71LoG13pNUT3ZhUDalOGw7GeBQzkSCkW26dgTVdRtEbgTC78OMI8kCglAdp6EbZVvtHCvMYf4Atg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WZEm1DR5gqtVSKh4uOKLZI6+qo8J8I9u4ky9Q07SAjU=;
+ b=DrWPftkVbRLX4RSJFvQQLVcYXxAdBGKJ+gZnBKohv3SJykMMhEZlPFCdzBm+XtrX+k4UrvMFMGeU+DQmL6akOy8XiZsA0/vvzERH4KXweoxhmaciqpZQ8/0Fb5Fma1zQnYulAhQT1OrEZBH4FNpUSl3BjeY4j67vi7lVMVZRlzfW6PPUtKtMQPb6jfClQ5o764SKgwhV5T0rA4mAmyf4YFNQBev9A4xMB1E4hIn+ReBD68zNUpe1HI1oeawYXrn3O2yohA1kFhGeeJRphBIaurVoROYTYzsN1DtrRXmpmMP2gMLOvjci4B0EJY9zEwcOxXj27WS5dFPVu8w+AFoDIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WZEm1DR5gqtVSKh4uOKLZI6+qo8J8I9u4ky9Q07SAjU=;
+ b=jl2Cc8pvbSMhkFrSKPD9ARNqtZCUXncDmMzdFBFSKsf2fKpeOiPcO4ZkEkM3c4malZzFArH5Okvg3BuDFCzUgwQvXvC5OqwQRvofMu23zCtifcSYBZMIXcWWba12bzP3uv4FYV+GanRH0Jmt4eRY42+R7EsQVDCsQI8YGye4ELMUylazCbkrF75jH1ei1x98q+KewWOQzxPLuTdddR18oZiLjTUTdR1FJ7KM5cyrOCxXFfFshakA4wPLb7527q8PIP8062DMSFr+KrQyMO4C8903MypyUvpnzwhTwkPOCMZcrZXdcpLNHROigypWG0vlebc1Txz0w95jZpy3HXqgqg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by MN6PR12MB8566.namprd12.prod.outlook.com (2603:10b6:208:47c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.29; Fri, 8 Mar
+ 2024 13:59:01 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7362.019; Fri, 8 Mar 2024
  13:59:01 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.4 via Frontend Transport; Fri, 8 Mar 2024 13:59:00 +0000
-Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id C971B82024D;
-	Fri,  8 Mar 2024 13:59:00 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>, <tiwai@suse.com>, <hdegoede@redhat.com>,
-        <lenb@kernel.org>, <rafael@kernel.org>
-CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        <platform-driver-x86@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        "Simon
- Trimmer" <simont@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH 2/3] ALSA: hda: cs35l56: Add support for CS35L54 and CS35L57
-Date: Fri, 8 Mar 2024 13:58:59 +0000
-Message-ID: <20240308135900.603192-3-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240308135900.603192-1-rf@opensource.cirrus.com>
-References: <20240308135900.603192-1-rf@opensource.cirrus.com>
+Date: Fri, 8 Mar 2024 09:58:59 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc: linux-kernel@vger.kernel.org, iommu@lists.linux.dev, joro@8bytes.org,
+	yi.l.liu@intel.com, kevin.tian@intel.com, nicolinc@nvidia.com,
+	eric.auger@redhat.com, vasant.hegde@amd.com, jon.grimm@amd.com,
+	santosh.shukla@amd.com, Dhaval.Giani@amd.com, pandoh@google.com,
+	loganodell@google.com
+Subject: Re: [RFCv2 PATCH 5/7] iommufd: Introduce data struct for AMD nested
+ domain allocation
+Message-ID: <20240308135859.GM9179@nvidia.com>
+References: <20240112000646.98001-1-suravee.suthikulpanit@amd.com>
+ <20240112000646.98001-6-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112000646.98001-6-suravee.suthikulpanit@amd.com>
+X-ClientProxiedBy: DM6PR06CA0040.namprd06.prod.outlook.com
+ (2603:10b6:5:54::17) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 6EWp8g6Yp6Keh7-6X84ADc-3WCvnAnYj
-X-Proofpoint-ORIG-GUID: 6EWp8g6Yp6Keh7-6X84ADc-3WCvnAnYj
-X-Proofpoint-Spam-Reason: safe
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|MN6PR12MB8566:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4260134a-71ea-485f-607c-08dc3f77e87d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UlfglqRN8TsYnm9KEwdiQmefn3BlEbc35xNRku97Tp2UzpUhI/bnS1q1rFeWY9Kb4gS5vMw9p0A7jFpao4WowwQiZincCfXbFlhID2d0y9BjiORGh9IqrfiR9cDqNiMjCdikLNcpheZBxCey6ATgZhw5EDovMOyZ2UY+wU3+od96DtwRKdueXHIFze06bhG8zGyNrQZRhG6tkr/2p1Q+t3/8/hPAKGaH1Zdi+0AiW1Wl7pdsgGE2gbpI5DO7kx4fCXhzMnZeoWbhms4FiEYLfK/6vJ6WmIITeR9ZiV9HlOdNiAE9LbS5XVDGx0VwDJf39A1j8PZhlWaw6yJziFIEZ+3jTDPB7La7qt+pHbhSRxHA5LQasf/Rhg51oKbv45mpvSDbYkVDoUQ+HfTSkVMzWHO94cha4RdRmocpD2wsMQi0+OIyOQf637kIRFcVDcL9YQYHISrZ6f+qQyXHNfbZc1F5XD3hHYYbd8p09bGPhksLudmSxZ/CHZMpeUO0my2Q3onmrZ6hh6IoFmvK/U82NiDQU9u3qYvqUoqf94zL4VQXbB0bX3Vncj7uni5bP05eHXfwhHyizUlJ4K2HoEzgchB6eZp8wY7UDoeQ7/hri0vL/qRgnSQFmCDGpXXWz0aW3REXJzhyKnPk+y2FYhszKBpmetG47MVistKr/0oc9kw=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?L7NKDGUlDAJLRIK9+zK1pmf7qIqUJRavYhw+QPCco35s1oR5r4WImQzdv8jC?=
+ =?us-ascii?Q?LF4BFcne9xmcZcbNktyZvFCasao5O9DiymcQz//H0RoJVPtPvVDzS/4OVz1J?=
+ =?us-ascii?Q?73Oq4XlQqmme44alkeiI7lwldmYspoAzr6XK6GXAq7akUnxKvB+vXTxGKK2P?=
+ =?us-ascii?Q?8/WR19HcmzwLYppGF6+21td5a4GItAI6uw9ZAGhytPGC9SuPM+5M/QPdADt/?=
+ =?us-ascii?Q?xaFyHUO8gZ9qKtA3LSG/ixbkCv3ozF96o75znHjeG6LYYgeZVj5hRXChE1eY?=
+ =?us-ascii?Q?BOfDjjOnWXgDP8F53bt6wJuNsENJBOAsNtMmKtnALs4luhS4R0IDcGyElUh4?=
+ =?us-ascii?Q?2+wOjrN58S7GpBhW5EIxbSsBoTyfs3NKF8ze8Lx3GCpoPN0iLRI6DnpyoocX?=
+ =?us-ascii?Q?kDx9LjNPkYY8dWxGSQ+STzn/Jy+sRyGZ0fo3oSXnZ24uZkgieKAREW/NaEP2?=
+ =?us-ascii?Q?3e4xmagc8TVd4KmA7fQiWHzKYNtPd4nF9nHF/uSYrx4NF2ZN2V5ubi2lTZt6?=
+ =?us-ascii?Q?6qD4rZdPaCWRdgVkW7d0yJD5Y7J4D6jU7eJV/vPS/8gYeP0lnNHwRvAAYxQh?=
+ =?us-ascii?Q?nfrHzXsVeJ19ykOGxUISA49s2W1c8jLfh0nH70tfYIrxPvgi8dqVPvwPXCSd?=
+ =?us-ascii?Q?U+aDKTLLC+bgmQoF4acVGLqd2EiDWQHnWKmSvtUGOXmBCJ8bHDP0q28d6+8B?=
+ =?us-ascii?Q?c7nzobrGC9KFDzocA7Xsfue/jv844vzvVMCw8ptwcQVoNIFo2U4W7BGdnbGM?=
+ =?us-ascii?Q?JtbhEbCXMdUvrH56zSBeiitl7oK89liQhMvfu3311JeYyXLqZ46CjTS7gL7v?=
+ =?us-ascii?Q?gZR+YeEaSdc4PFaf4rrLHJz0LzI7x1vRwqMugmAJlKDEEwBMsX6e1DGQpg6U?=
+ =?us-ascii?Q?wQbpLgziWFeACwY+QgIt2NyuLDoosv5FMIe50QKIyfJO1NWKum5RDyemKxRQ?=
+ =?us-ascii?Q?4QoTZUVLWWyrFpX/tnd2SEaoIvBREqBnRC334OPohpBC3McJuBtTTPqxeGps?=
+ =?us-ascii?Q?e2TAR/rRjUMTq//Yg/+IWKL4MaIR6XW8WxV9dJPDX7sFerCfkwci7DtE/aFZ?=
+ =?us-ascii?Q?QayLDr+iXTMHW6NH3/VFQEptvlWxL6FXOswC5JU0KECcLqeSOYdnKdubdgz6?=
+ =?us-ascii?Q?HoyUenc2H8NlgbxtzWcsX57TRMJxFC5erS6YcY7Wfz5EGlEEoG1HcOlS3b20?=
+ =?us-ascii?Q?CRCBWGJG4N8nT4YNuIZM4oF6T57WhitcLKvoDY03aWhaR32zSUE+E3vJXGW9?=
+ =?us-ascii?Q?ZgiE483owepcft5eXzxjWP9HSZkRogbRQUcao1EX8aQbtKIL1eRfequ9xhjV?=
+ =?us-ascii?Q?fJrt1Qpsacz1I9J+kfiZnau9WBknjZUXzpRrDGD/HsGRg/CdUDwQILRsuTDU?=
+ =?us-ascii?Q?btPUOcsjSWq+kfYwgf6STNMBiAYFhhiBxYIEx6rPxD/VWEd4d6EeRCu8jbx7?=
+ =?us-ascii?Q?P8/v/4LSr8uKLdKPRPhykJ+vNS6cllYrcw1ur3CAtjczVHz6TeS/rFXhjKU/?=
+ =?us-ascii?Q?Ah4AYQ351jtu/4eJyyF839RyZaoZ0s61n5DB1D09GUSKo7hupuqK8y2yLSBV?=
+ =?us-ascii?Q?pJi4hKjOQ+lYaZLrmUw=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4260134a-71ea-485f-607c-08dc3f77e87d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 13:59:01.5055
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CvdSyKlxqwyw+pO2G2gpSbeB7iyBL0RpqUk+QefzdL32xM3wVZX8pAhPqGBE6r0Q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8566
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+On Thu, Jan 11, 2024 at 06:06:44PM -0600, Suravee Suthikulpanit wrote:
+> Introduce IOMMU_HWPT_DATA_AMD_V2 data type for AMD IOMMU v2 page table,
+> which is used for stage-1 in nested translation. The data structure
+> contains information necessary for setting up the AMD HW-vIOMMU support.
+> 
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> ---
+>  include/uapi/linux/iommufd.h | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
+> index 9901b9f4abe2..b28ec5947571 100644
+> --- a/include/uapi/linux/iommufd.h
+> +++ b/include/uapi/linux/iommufd.h
+> @@ -389,14 +389,39 @@ struct iommu_hwpt_vtd_s1 {
+>  	__u32 __reserved;
+>  };
+>  
+> +/**
+> + * struct iommu_hwpt_amd_v2 - AMD IOMMU specific user-managed
+> + *                            v2 I/O page table data
+> + * @gcr3: GCR3 guest physical ddress
+> + * @flags.glx: GCR3 table levels
+> + * @flags.giov: GIOV mode
+> + * @flags.guest_paging_mode: Guest v2 page table paging mode
+> + * @flags.reserved : Must be 0
+> + * @gdom_id: Guest domain ID
+> + * @__reserved: Must be 0
+> + */
+> +struct iommu_hwpt_amd_v2 {
+> +	__aligned_u64 gcr3;
+> +	struct {
+> +		__aligned_u64 glx  : 1,
+> +			      giov : 1,
+> +			      guest_paging_mode : 2,
+> +			      reserved : 60;
+> +	} flags;
 
-Add the HID for the CS35L54 and CS35L57 Boosted Smart Amplifiers. These
-have the same control interface as the CS35L56 so are handled by the
-cs35l56-hda driver.
+IIRC you should not put bitfileds in UAPI headers..
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/pci/hda/cs35l56_hda.c     | 16 ++++++++++------
- sound/pci/hda/cs35l56_hda.h     |  2 +-
- sound/pci/hda/cs35l56_hda_i2c.c |  7 +++++--
- sound/pci/hda/cs35l56_hda_spi.c |  7 +++++--
- 4 files changed, 21 insertions(+), 11 deletions(-)
+I suggest this should just be something like:
 
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 5ad76d6914c3..41974b3897a7 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -459,13 +459,15 @@ static void cs35l56_hda_request_firmware_files(struct cs35l56_hda *cs35l56,
- 
- 	if (preloaded_fw_ver) {
- 		snprintf(base_name, sizeof(base_name),
--			 "cirrus/cs35l56-%02x%s-%06x-dsp1-misc",
-+			 "cirrus/cs35l%02x-%02x%s-%06x-dsp1-misc",
-+			 cs35l56->base.type,
- 			 cs35l56->base.rev,
- 			 cs35l56->base.secured ? "-s" : "",
- 			 preloaded_fw_ver & 0xffffff);
- 	} else {
- 		snprintf(base_name, sizeof(base_name),
--			 "cirrus/cs35l56-%02x%s-dsp1-misc",
-+			 "cirrus/cs35l%02x-%02x%s-dsp1-misc",
-+			 cs35l56->base.type,
- 			 cs35l56->base.rev,
- 			 cs35l56->base.secured ? "-s" : "");
- 	}
-@@ -852,9 +854,10 @@ static int cs35l56_hda_system_resume(struct device *dev)
- 	return 0;
- }
- 
--static int cs35l56_hda_read_acpi(struct cs35l56_hda *cs35l56, int id)
-+static int cs35l56_hda_read_acpi(struct cs35l56_hda *cs35l56, int hid, int id)
- {
- 	u32 values[HDA_MAX_COMPONENTS];
-+	char hid_string[8];
- 	struct acpi_device *adev;
- 	const char *property, *sub;
- 	size_t nval;
-@@ -865,7 +868,8 @@ static int cs35l56_hda_read_acpi(struct cs35l56_hda *cs35l56, int id)
- 	 * the serial-multi-instantiate driver, so lookup the node by HID
- 	 */
- 	if (!ACPI_COMPANION(cs35l56->base.dev)) {
--		adev = acpi_dev_get_first_match_dev("CSC3556", NULL, -1);
-+		snprintf(hid_string, sizeof(hid_string), "CSC%04X", hid);
-+		adev = acpi_dev_get_first_match_dev(hid_string, NULL, -1);
- 		if (!adev) {
- 			dev_err(cs35l56->base.dev, "Failed to find an ACPI device for %s\n",
- 				dev_name(cs35l56->base.dev));
-@@ -953,14 +957,14 @@ static int cs35l56_hda_read_acpi(struct cs35l56_hda *cs35l56, int id)
- 	return ret;
- }
- 
--int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int id)
-+int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int hid, int id)
- {
- 	int ret;
- 
- 	mutex_init(&cs35l56->base.irq_lock);
- 	dev_set_drvdata(cs35l56->base.dev, cs35l56);
- 
--	ret = cs35l56_hda_read_acpi(cs35l56, id);
-+	ret = cs35l56_hda_read_acpi(cs35l56, hid, id);
- 	if (ret)
- 		goto err;
- 
-diff --git a/sound/pci/hda/cs35l56_hda.h b/sound/pci/hda/cs35l56_hda.h
-index 6e5bc5397db5..464e4aa63cd1 100644
---- a/sound/pci/hda/cs35l56_hda.h
-+++ b/sound/pci/hda/cs35l56_hda.h
-@@ -42,7 +42,7 @@ struct cs35l56_hda {
- 
- extern const struct dev_pm_ops cs35l56_hda_pm_ops;
- 
--int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int id);
-+int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int hid, int id);
- void cs35l56_hda_remove(struct device *dev);
- 
- #endif /*__CS35L56_HDA_H__*/
-diff --git a/sound/pci/hda/cs35l56_hda_i2c.c b/sound/pci/hda/cs35l56_hda_i2c.c
-index a9ef6d86de83..13beee807308 100644
---- a/sound/pci/hda/cs35l56_hda_i2c.c
-+++ b/sound/pci/hda/cs35l56_hda_i2c.c
-@@ -13,6 +13,7 @@
- 
- static int cs35l56_hda_i2c_probe(struct i2c_client *clt)
- {
-+	const struct i2c_device_id *id = i2c_client_get_device_id(clt);
- 	struct cs35l56_hda *cs35l56;
- 	int ret;
- 
-@@ -33,7 +34,7 @@ static int cs35l56_hda_i2c_probe(struct i2c_client *clt)
- 		return ret;
- 	}
- 
--	ret = cs35l56_hda_common_probe(cs35l56, clt->addr);
-+	ret = cs35l56_hda_common_probe(cs35l56, id->driver_data, clt->addr);
- 	if (ret)
- 		return ret;
- 	ret = cs35l56_irq_request(&cs35l56->base, clt->irq);
-@@ -49,7 +50,9 @@ static void cs35l56_hda_i2c_remove(struct i2c_client *clt)
- }
- 
- static const struct i2c_device_id cs35l56_hda_i2c_id[] = {
--	{ "cs35l56-hda", 0 },
-+	{ "cs35l54-hda", 0x3554 },
-+	{ "cs35l56-hda", 0x3556 },
-+	{ "cs35l57-hda", 0x3557 },
- 	{}
- };
- 
-diff --git a/sound/pci/hda/cs35l56_hda_spi.c b/sound/pci/hda/cs35l56_hda_spi.c
-index 080426de9083..a3b2fa76663d 100644
---- a/sound/pci/hda/cs35l56_hda_spi.c
-+++ b/sound/pci/hda/cs35l56_hda_spi.c
-@@ -13,6 +13,7 @@
- 
- static int cs35l56_hda_spi_probe(struct spi_device *spi)
- {
-+	const struct spi_device_id *id = spi_get_device_id(spi);
- 	struct cs35l56_hda *cs35l56;
- 	int ret;
- 
-@@ -33,7 +34,7 @@ static int cs35l56_hda_spi_probe(struct spi_device *spi)
- 		return ret;
- 	}
- 
--	ret = cs35l56_hda_common_probe(cs35l56, spi_get_chipselect(spi, 0));
-+	ret = cs35l56_hda_common_probe(cs35l56, id->driver_data, spi_get_chipselect(spi, 0));
- 	if (ret)
- 		return ret;
- 	ret = cs35l56_irq_request(&cs35l56->base, spi->irq);
-@@ -49,7 +50,9 @@ static void cs35l56_hda_spi_remove(struct spi_device *spi)
- }
- 
- static const struct spi_device_id cs35l56_hda_spi_id[] = {
--	{ "cs35l56-hda", 0 },
-+	{ "cs35l54-hda", 0x3554 },
-+	{ "cs35l56-hda", 0x3556 },
-+	{ "cs35l57-hda", 0x3557 },
- 	{}
- };
- 
--- 
-2.30.2
+__aligned_u64 dte[3];
 
+And you actually just copy bits directly from the vDTE to the pDTE.
+
+Jason
 
