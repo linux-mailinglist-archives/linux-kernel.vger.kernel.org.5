@@ -1,99 +1,156 @@
-Return-Path: <linux-kernel+bounces-96547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A23875DE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:12:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8C1875DE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:12:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31838B2226E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:12:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6681C2138C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E0736129;
-	Fri,  8 Mar 2024 06:12:09 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3443612C;
+	Fri,  8 Mar 2024 06:12:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iKmSszgG"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29FC2E821
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 06:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3603631A83;
+	Fri,  8 Mar 2024 06:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709878329; cv=none; b=aZ3zq5ioKrdwGgtUqyDrbUq4rqGD0Xc1Hd0wTWICkTugvWCuC/PA4dOn5ewK1/k+nqqZo/WSLp7qOI+Paj4qkqmYQTzNpOD47hDZerec90yD7nD6KktrjppwPtrC1tSf+jq7j1qY4V1izr1K3dy9EO9PHXn1W/wiRgHVX7ruJEE=
+	t=1709878338; cv=none; b=emLhnrACurWZlN8Jt/7MO0omJXgqOgCIW7QFdcnWa84ZityrFeh7LGm4RiR/0ryEJqBhnxnxpMpaQe1FLxRpvzKiAItgyNdSM4xRX0vS5k5egjLVC1/qeCOUSP1xu97uXam0NuAUauRLk+DQHW1+GNUfPH0KYMXnDsqbtxrt+lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709878329; c=relaxed/simple;
-	bh=k44BMiSeroU1V/o+VX/N436qBMDRBdEAkXKdBxhugrU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SzzmwEN/xk23eSdmc78+eaHjKujVLJY5+WNwCc0Vx0uR/0YA2GkQI37ywqcSlO71Ptu6ThuK2ZXQR4Ex4sxOOcZXQFn7+eh/AtY0OwsOi+qLgHu7+4Ri0TAKiGinSkqAjUEgA/EWmnNMaphST8VRStlJS/y2rSe/vPJ00is64W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TrbNm4FxdzXhln;
-	Fri,  8 Mar 2024 14:09:44 +0800 (CST)
-Received: from kwepemd100007.china.huawei.com (unknown [7.221.188.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id C6E9E1400FD;
-	Fri,  8 Mar 2024 14:12:02 +0800 (CST)
-Received: from kwepemd100011.china.huawei.com (7.221.188.204) by
- kwepemd100007.china.huawei.com (7.221.188.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 8 Mar 2024 14:12:02 +0800
-Received: from M910t (10.110.54.157) by kwepemd100011.china.huawei.com
- (7.221.188.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 8 Mar
- 2024 14:12:01 +0800
-Date: Fri, 8 Mar 2024 14:10:54 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Borislav Petkov <bp@alien8.de>
-CC: Changbin Du <changbin.du@huawei.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, Andy Lutomirski
-	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Alexander Potapenko <glider@google.com>, Andrew Morton
-	<akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-	<kasan-dev@googlegroups.com>
-Subject: Re: [PATCH] x86: kmsan: fix boot failure due to instrumentation
-Message-ID: <20240308061054.54zxik32u4w2bynd@M910t>
-References: <20240308044401.1120395-1-changbin.du@huawei.com>
- <20240308054532.GAZeql_HPGb5lAU-jx@fat_crate.local>
+	s=arc-20240116; t=1709878338; c=relaxed/simple;
+	bh=vSwfvROycalTrWsfEvpuc/s08WPs5wOEZjtOQ8CR5wg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XAnPVaiqU+TwbeoMt8f1Vb+oj46CUfhwDQohazlGi0I5VXg1OMeKgN5R4NAcIr7Zty3N/85MPuddIoJkG8ymnnSZ5LLXRXgDGOFoIAGGD6VbtCoe9FF0ZvaoP+WWBy7MWRAoHDIU2PIPJt/cIiljGGQ+1wE3JABF3DZY37GqLKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iKmSszgG; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4281BpuP020439;
+	Fri, 8 Mar 2024 06:11:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=A2ExPmuonZNV/uJ3RLmu+8R8Ou4s0VcktqkyFiHukFU=; b=iK
+	mSszgGcglD808sZg4SbrtZ3kKwEHHYQ43rT5RI+dU0zNs+uLTq52xF8jS73/vuu3
+	bANyesno90jhJ1eFqU5xDBeZ7BDbuIbjMR5rylGam+xgaN5elIZOgczMkYV3QZOb
+	uNo6qD+D8AIhaIshUQOALputVxrlC5VJ6wbBFyJcV2WQ19U6VTEw/J8ftjrrinNi
+	dV1eYeKl15eHV5ewx/tu4bdbhm+rf88goy72smFWaITyk9HgoQh2vliVOw5g7YlD
+	sHY0u8ho0SWqo1MOEXYdY5K1gRcDKArohqTvn8Kh47wUCVXN2PIn1B5ak9NEQPua
+	IOe3gKbtqz83vt6f4Qfw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqn8q8wb2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 06:11:27 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4286BQme031252
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 8 Mar 2024 06:11:26 GMT
+Received: from [10.232.65.248] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
+ 2024 22:11:24 -0800
+Message-ID: <87fa307d-85cc-4fc0-bf66-234bd97ac377@quicinc.com>
+Date: Fri, 8 Mar 2024 14:11:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240308054532.GAZeql_HPGb5lAU-jx@fat_crate.local>
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd100011.china.huawei.com (7.221.188.204)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] workqueue: add function in event of
+ workqueue_activate_work
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
+CC: <mhiramat@kernel.org>, <mathieu.desnoyers@efficios.com>,
+        <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>
+References: <20240308021818.2306176-1-quic_yingangl@quicinc.com>
+ <20240307212356.2e4d77d7@gandalf.local.home>
+From: Kassey Li <quic_yingangl@quicinc.com>
+In-Reply-To: <20240307212356.2e4d77d7@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SvURxEWDZ0MKI4dwFkRRyXat0m2wKHXZ
+X-Proofpoint-ORIG-GUID: SvURxEWDZ0MKI4dwFkRRyXat0m2wKHXZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-08_04,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 clxscore=1011 priorityscore=1501
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403080046
 
-On Fri, Mar 08, 2024 at 06:45:32AM +0100, Borislav Petkov wrote:
-> On Fri, Mar 08, 2024 at 12:44:01PM +0800, Changbin Du wrote:
-> > Instrumenting sev.c and mem_encrypt_identity.c with KMSAN will result in
-> > kernel being unable to boot. Some of the code are invoked too early in
-> > boot stage that before kmsan is ready.
+
+
+On 2024/3/8 10:23, Steven Rostedt wrote:
+> On Fri, 8 Mar 2024 10:18:18 +0800
+> Kassey Li <quic_yingangl@quicinc.com> wrote:
 > 
-> How do you trigger this?
->
-I run the kernel in qemu. One of the calltrace is:
-(gdb) bt
-#0  find_cc_blob (bp=0x14700 <exception_stacks+30464>) at arch/x86/kernel/sev.c:2067
-#1  0x0000000003daeaab in snp_init (bp=0x14700 <exception_stacks+30464>) at arch/x86/kernel/sev.c:2098
-#2  0x0000000003db3d69 in sme_enable (bp=0x14700 <exception_stacks+30464>) at arch/x86/mm/mem_encrypt_identity.c:516
-#3  0x000000000100003e in startup_64 () at arch/x86/kernel/head_64.S:99
-#4  0x0000000000000000 in ?? ()
-
-find_cc_blob() has instrumentation enabled and panic when accessing shadow
-memory.
-
-> -- 
-> Regards/Gruss,
->     Boris.
+>> The trace event "workqueue_activate_work" only print work struct.
+>> However, function is the region of interest in a full sequence of work.
+>> Current workqueue_activate_work trace event output:
+>>
+>>      workqueue_activate_work: work struct ffffff88b4a0f450
+>>
+>> With this change, workqueue_activate_work will print the function name,
+>> align with workqueue_queue_work/execute_start/execute_end event.
+>>
+>>      workqueue_activate_work: work struct ffffff80413a78b8 function=vmstat_update
+>>
+>> Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
+>> ---
+>> Changelog:
+>> v1: https://lore.kernel.org/all/20240308010929.1955339-1-quic_yingangl@quicinc.com/
+>> v1->v2:
+>> - do not follow checkpatch in TRACE_EVENT() macros
+>> - add sample "workqueue_activate_work: work struct ffffff80413a78b8 function=vmstat_update"
 > 
-> https://people.kernel.org/tglx/notes-about-netiquette
+>  From a tracing POV,
+> 
+> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> 
+> -- Steve
 
--- 
-Cheers,
-Changbin Du
+thank you Steve.
+
+add Tejun to review this change.
+
+> 
+>> ---
+>>   include/trace/events/workqueue.h | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/trace/events/workqueue.h b/include/trace/events/workqueue.h
+>> index 262d52021c23..6ef5b7254070 100644
+>> --- a/include/trace/events/workqueue.h
+>> +++ b/include/trace/events/workqueue.h
+>> @@ -64,13 +64,15 @@ TRACE_EVENT(workqueue_activate_work,
+>>   
+>>   	TP_STRUCT__entry(
+>>   		__field( void *,	work	)
+>> +		__field( void *,	function)
+>>   	),
+>>   
+>>   	TP_fast_assign(
+>>   		__entry->work		= work;
+>> +		__entry->function	= work->func;
+>>   	),
+>>   
+>> -	TP_printk("work struct %p", __entry->work)
+>> +	TP_printk("work struct %p function=%ps ", __entry->work, __entry->function)
+>>   );
+>>   
+>>   /**
+> 
 
