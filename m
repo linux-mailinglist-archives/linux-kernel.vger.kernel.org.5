@@ -1,234 +1,371 @@
-Return-Path: <linux-kernel+bounces-97136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F18C8765F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:05:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 058DC8765F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:05:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E719FB22572
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:05:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85E771F25F8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977B74597E;
-	Fri,  8 Mar 2024 14:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF733FBAF;
+	Fri,  8 Mar 2024 14:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="FHQUoAda"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2047.outbound.protection.outlook.com [40.107.244.47])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fZ93+G6h"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B473FBA2
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:04:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906687; cv=fail; b=hwT5J5cd9ouenPlHT4/Bn9aZZ/ztQua+UjBEVspAjI5/ryZgkxo040e4nMEkcxta3d6sHFOjUj3lHt1E9qoRFw6VbhTNbNFnT5Mlfrs/5zvEP1R9xA9KDh34PfzrEBV0WcUVGRVjABFlknRV1+clK4HmOirL7jiv7E843aXIWXE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906687; c=relaxed/simple;
-	bh=4GhkANg8FvtMo2Wo94MfzWTU/UWUZnR6yOqhiQkGsYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=RehXYI+6WuMqV2fkndZqupIXYgF0yNfc+1927bN4pg1NqzeRVXsc+5M+LFMU/QTPbVjwInYGMQcOnZmpjTL5RMpfye0ai9/+lY/02QsSS/5S47rIPEyCjoigy/Dh4mv2UhnCdJMT/rL9NGFc4mcnapOL0YuYp+Haj6XDIlbRBfI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=FHQUoAda; arc=fail smtp.client-ip=40.107.244.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LvEnwYDhZm8Y8dmApZkCOraLEugSGCrxPRaHMWTMwNoTKFvzF/giGg36l/tjh3Ijy0RXg/T2cSe01QHv+s/+nzympDj6pfIP0x0Xwfzg6YTr4lyeTVM7919baa41E9pIX/MhkSa/Pi+3gd3kWooiFtv5FdGDcJQGapzrfXfO/IvfyayAsPQPreWnyE5BBbUqaZr6L/UP2xf408TBNKXmvwPWkC2wrUgbBDseF2PvZAaprwP5ZiPm4tPxFQF91GxAyc/wGOJZ62a5Y/RN/CNIOmLqm5BaNp66iIy9jo2D92myYvW1PIZ48zefqLkQ5BZPRbNypsIYah8pLrzagh77gQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5c/LMVknU82XBOGqzQx0l2l/1kvJS7ub6qbOLOJm81A=;
- b=TcykUc5KNqH7FcmobhPI6Ym/5noV1K4vrmw5mt0FPNKhhdrTbBpYaIBhUaXDm1SUB/6iD5ZfPwtTjQy+UTOvu1lf84tXCyrMcw/ryyRE0MwcE0x13zTXn7yelsSgYVO/yidGlRNQaqRR/cGRc9MyBhUQFqknZfxUzb2MVyj8zJjytNagwZJVNP2Z/6ZDhNSGKD21mDvULzi+lMemkL9qGsWLji9yNi8ODX5+WnSgRl+I/YrRBCdrSusZNdmP/wdPjX/ZD4WcpnoqPXew3Q761KlT0IdF2HkWd9XcM2aTuHHRyU0CqDgX6k4KXVeVXsbbibWiVB2E315cFZwfoX8CLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5c/LMVknU82XBOGqzQx0l2l/1kvJS7ub6qbOLOJm81A=;
- b=FHQUoAdaf1h3ZxAIz730wJ9pNPl7MVzzct3bcuhxFalC3JtH+vhdGPZH12yBGrsYtD38HC/zYQjKnCi1OM1bWcfZkSBd9Yaos+r9cnAqP6iT4ZAAxpZiJRxWkgvvm/gW7ga+q1pJE9d5lcTJ/eYx7wtLDtQcWOZbVN7Pcwgftkmpn4buWk6iLF8zoXfT4PQ/6VbXEiNvMXiDiBmbmenG7eN6Fg2gJfAz2eh/3YvDcKN/bpNsmhKOCVwOXf4TerwFNVCDFEIOwGd5IJOy1N9rHT3XInyot4ceqoiopReZEQBuzc4MiAn5bfzbArQ9LYS+YXdfz5+elaJijF3O7eXMBQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by MN6PR12MB8566.namprd12.prod.outlook.com (2603:10b6:208:47c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.29; Fri, 8 Mar
- 2024 14:04:43 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7362.019; Fri, 8 Mar 2024
- 14:04:43 +0000
-Date: Fri, 8 Mar 2024 10:04:40 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc: linux-kernel@vger.kernel.org, iommu@lists.linux.dev, joro@8bytes.org,
-	yi.l.liu@intel.com, kevin.tian@intel.com, nicolinc@nvidia.com,
-	eric.auger@redhat.com, vasant.hegde@amd.com, jon.grimm@amd.com,
-	santosh.shukla@amd.com, Dhaval.Giani@amd.com, pandoh@google.com,
-	loganodell@google.com
-Subject: Re: [RFCv2 PATCH 6/7] iommu/amd: Add nested domain allocation support
-Message-ID: <20240308140440.GN9179@nvidia.com>
-References: <20240112000646.98001-1-suravee.suthikulpanit@amd.com>
- <20240112000646.98001-7-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112000646.98001-7-suravee.suthikulpanit@amd.com>
-X-ClientProxiedBy: DM6PR07CA0085.namprd07.prod.outlook.com
- (2603:10b6:5:337::18) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47923FBB3
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709906740; cv=none; b=UkFsLO7NRGAwUdBpX6mDnrWgbb3ypiSUcPN7P/jEgD8d/W/2lXyAuDcC1noFLX3Mo3HTy9YXHRgH3mnTzqtVucvGWxfsZq3amweO8YPY+Ru6I3nIgZ211ArocE6EsTS5hQjQ03jgbKopI2bdaff5wVv+2HhnUAmDgk38A9LKDTk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709906740; c=relaxed/simple;
+	bh=3bNaGsTQaX57W6302QNmcHBrfrgBv5LKbPPTrEpuh4c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KGLfQVa3rHq966IT/w6FJ8jm5pW1znwE+p4kWH6Y/UStSywUnDocljlLilXNRvK19kolxyU4DjxZ46a3vifpD0d5rkxTS9ZzMVCTzt9jNEPVrT0jMgaSr6bdMrMffG9VtC95bYYW2APDHwP7WaUwktdw9OsCJbGXNZzT3TC2/RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fZ93+G6h; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709906739; x=1741442739;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3bNaGsTQaX57W6302QNmcHBrfrgBv5LKbPPTrEpuh4c=;
+  b=fZ93+G6hvBkVDmNRUq7RIkiB+GtVYr1qPFcSY/Qk+VgUaKPem1fe6wEt
+   CcKo+TnxJiW1cr65G+H6rM1EM+RQCGX3NscjzyW01WkrxdIbjKBBQruIc
+   hAANHh08CceJZqCNz6a4QhLDpIlROXqkw6lAjJyxaGudLefsxUhypzBbj
+   YiE9Jai8WmKuhQVeOHvzLUWc015iDnC1WhPCdvNeRvI1FkUtzHI54Cq1m
+   h565d6qa3n0dY5hzw4lULu2sIH6rxRFnKL4rgqvOp6qMAkCUUt61Uuq1A
+   D9RSGK6DMGbiPDDZaM1m6OHb5U6g6QEuK5UbL9TWjIbEfYsa7vC1JDi4B
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4484452"
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
+   d="scan'208";a="4484452"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 06:05:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937047523"
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
+   d="scan'208";a="937047523"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Mar 2024 06:05:34 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 390B11F1; Fri,  8 Mar 2024 16:05:33 +0200 (EET)
+Date: Fri, 8 Mar 2024 16:05:33 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andy Lutomirski <luto@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@intel.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
+	the arch/x86 maintainers <x86@kernel.org>, linux-mm@kvack.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/3] x86/mm: make sure LAM is up-to-date during
+ context switching
+Message-ID: <3h7wb3sai4ael74njzrxrdh66y3vo4bp2u5yuvcdoq4j657hgw@q3k2n3hmtv6a>
+References: <20240307133916.3782068-1-yosryahmed@google.com>
+ <20240307133916.3782068-3-yosryahmed@google.com>
+ <420fcb06-c3c3-4e8f-a82d-be2fb2ef444d@app.fastmail.com>
+ <ZepuO5bDoE-5T0RB@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|MN6PR12MB8566:EE_
-X-MS-Office365-Filtering-Correlation-Id: b250b6de-3d42-477c-860c-08dc3f78b3cd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Ax8SfbipC44PGxTR7G7SPXdq+f3MJeB5QYTDnp0DO9mos3n8J+ja3uX074Bcn+Y/kc8y8be66laEAY5IO382ccvvwi22oXe1KguqE7OD2DTLiMv8Oxau/vtQH/aUUR3IEoRimUGpdDlrDJ7+wYCmVuqc5DvwxA1U1pi+Qzqp2ZBTVn2h9sJFpgJKEQZerH8yXlqOscmGFzv6laAISdBm6rwA1UMVsiSRPZy1UCwYQRwopiNvwWmMs5qt7k1pQrXLHCTZ3zXsWqrryk2TQYmILzZYwGrehRWG/G56jYxmYb8lmdYEaj2Xn0KK6/rAmv8szjPZE9/0P5uTUchFoYAUrbVkUquXGOmKpMQ6XGG3hw/Wt3GpyL9rdbnUkb6Uex4Wln5GrTCfsCQUsNbqDaGJ+xuMqg9g5xBPevHLhIKFZHwlSEY+GwdX0zqTjNaRYTRnXAfGs2DGk4OR+cpSk5QbSvh1b//IVVM+SCOENNBHIH/ch+w2JSgioxH95eUSMq3KccQ6TcPURwa2Dc0mPq8OCPCWG7ktnvt2lOpO3SMnH63aoYPDCW7ZdB4JQ73E7uc0Qqohvdi3L6WzllonZPq6C7LIdFeyU51NYt9w6nhF6GLWhDlEua0JKXrIn2+BqKF26aEqUzBpKyF3MQ4WE962zYD2RGVaMyh3qlDf2+aCywM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?v2BsVG52RObY/MVT8Eu5Q7o3CgMOAxhtiVBLTe+PCYOur0XEURusoS8r64F1?=
- =?us-ascii?Q?5pJk/BVArg0ffXBsZRBYSbXSvG1HCwFUbUADBRoz9/Jx6pkOzV0Yhlkr7Q1y?=
- =?us-ascii?Q?EyytpKyEHqVI7l1TT/1kHwxNu7oR2xb6/jXSENZq2q8+hLpvuupaPxG8Wnif?=
- =?us-ascii?Q?ZVEthDLMRpiXcPGIpGflDElux77yJ8j0CEIIW/Uj0S9iJhkMvZcfBDffM2sz?=
- =?us-ascii?Q?0iawygUVEoIZLYdmWYWY9vyh1V+5jgHqSmNXvFpbLzu6FJEMt7lnEjWaBfAY?=
- =?us-ascii?Q?l6+TpZ5pLpX/JAAhe/oa0dWLq/KFsgRV//fBpog75EFIzZNJnuAhqtCD+Lof?=
- =?us-ascii?Q?6+ugARC3YXBxgKvVjH6n4G9MW0CUEsgekCCqFLTwX3w3elgHZkdggB/4Jy+N?=
- =?us-ascii?Q?ya4jYb09Wm2/n39R6jWPZST4yZI8RxJBJnAdroGbDH0DTEiJx7rkFBvvxpjc?=
- =?us-ascii?Q?UcsLrpTNz85He92FZIZUN4b7evwLznLk8BKifwreqiPK1DqoabEArgsilaRg?=
- =?us-ascii?Q?FuJkmghgAUYJL/7ty9P0KQScgqMYu9hWKJBa0TaVAQx8seNenxXKnTe0gjmv?=
- =?us-ascii?Q?tY3MSwk6IyI9YNUrVbB4o4EbckiC9qpcQAvW40dkDGCbSorV/6LMD4WjShL2?=
- =?us-ascii?Q?t61b/NlxoYWLmkSAn56AP8PBCp0fWG8AKUtJ1/GdnAT3JSv0Mnp0H88UbzXg?=
- =?us-ascii?Q?qtzNEwVT0RQubywiB43k9fH6uGV3pJr1MbeHwXSr2bcb7iTTmA3tD97s44gk?=
- =?us-ascii?Q?7AHCJDTIY8asOe/TUbir5cYl4P9JKuDaY0ozJqM+UYihv0VaILeQmY91ZveZ?=
- =?us-ascii?Q?D3MoUtrR34ZcBq0SUg2hU2oTxsy39xDsUszMMQXMFdal8RFipxXIKANFld/7?=
- =?us-ascii?Q?GemYlNJ7wtk1iT3eXWY99NfolW3Mx9xdzXCrRYe4owa/wB9VHEpK1gmLRxoc?=
- =?us-ascii?Q?sAT0c41bwKriD34W+MJ23Mj3L59kiqVAosOrnDQLm6er9Av9b/p/Dt/Dll9y?=
- =?us-ascii?Q?TBL8BqXfFcsHrHJwF6kBcP5fIt/0uXnBJnzX8LHFYgJjXye3Puk5yQdwA4a3?=
- =?us-ascii?Q?RiTnp1E5t8xb0/zD54uk4KtGZ5tMQBa1EbbkA/V+I6rSo9bUSarC25oj9Unh?=
- =?us-ascii?Q?NCcylzKgSkIOQ8fMsPWl8Xogbw1iFAJlRbmHAB1rCH+p2Xz8OnwHSep7tbRf?=
- =?us-ascii?Q?F4pGau8tSJRJQEqO/hihL9ncOZ5jmSWnu/LauiRK7JE+Pj27KNw3BbiHLn41?=
- =?us-ascii?Q?FJ5WsWtJDKsrS+nXOGW8+G4WdgFcwczanq6WYNETzLB5fvAUWTwxjf8kg3wA?=
- =?us-ascii?Q?wv1St1zMza0eVAUAzcVGB+geEgY0/H1x0QbVRSmd8v1EBH+1TstTWnjfD8oR?=
- =?us-ascii?Q?AfK2pT/rCv4xIXvRAwjwhwtMBTFGSrx4QYL7blfvq1TkfddIIS6Mnd2IodaZ?=
- =?us-ascii?Q?J2mis03J9l0nKwS6eArzrMhkFHjCTo30fuCM/Vr/bFllNCuVP+mtRFxmHR+M?=
- =?us-ascii?Q?gzObd6tjs2xjhG9E99X88r/SIU0qXeBrBldqo1Wvee2f+UOcZSqYKGFxJatk?=
- =?us-ascii?Q?vXPQWL9lrC6Uvkg8PMM=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b250b6de-3d42-477c-860c-08dc3f78b3cd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 14:04:42.6668
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WOUZkjP9XEn2JDjg1WKufaZokUJ0lVjV3UWKwURs/ithiAhUuVcKLBtqmGixWZcu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8566
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZepuO5bDoE-5T0RB@google.com>
 
-On Thu, Jan 11, 2024 at 06:06:45PM -0600, Suravee Suthikulpanit wrote:
-> @@ -2367,8 +2372,9 @@ static struct protection_domain *protection_domain_alloc(unsigned int type)
->  	domain->nid = NUMA_NO_NODE;
->  
->  	switch (type) {
-> -	/* No need to allocate io pgtable ops in passthrough mode */
-> +	/* No need to allocate io pgtable ops in passthrough and nested mode */
->  	case IOMMU_DOMAIN_IDENTITY:
-> +	case IOMMU_DOMAIN_NESTED:
+On Fri, Mar 08, 2024 at 01:47:39AM +0000, Yosry Ahmed wrote:
+> I like it very much. The problem now is, as I told Dave, I realized I
+> cannot do any testing beyond compilation due to lack of hardware. I am
+> happy to send a next version if this is acceptable or if someone else
+> can test.
 
-These constants should not show up in the driver, it needs to be
-reorganized to use the new allocation APIs to avoid this.
+I have non-upstreamable QEMU patch that adds LAM emulation, if it helps:
 
-> -static struct iommu_domain *do_iommu_domain_alloc(unsigned int type,
-> +static const struct iommu_domain_ops nested_domain_ops = {
-> +	.attach_dev = amd_iommu_attach_device,
-> +	.free = amd_iommu_domain_free,
-> +};
-
-I would expect nesting to have its own attach function too, because it
-should be quite different.
-
->  static struct iommu_domain *
->  amd_iommu_domain_alloc_user(struct device *dev, u32 flags,
->  			    struct iommu_domain *parent,
->  			    const struct iommu_user_data *user_data)
-> -
->  {
-> +	struct iommu_domain *dom;
-> +	struct iommu_dev_data *dev_data;
->  	unsigned int type = IOMMU_DOMAIN_UNMANAGED;
-> +	bool nested_parent = flags & IOMMU_HWPT_ALLOC_NEST_PARENT;
-> +
-> +	if (parent) {
-> +		int ret;
-> +		struct iommu_hwpt_amd_v2 hwpt;
-> +
-> +		if (parent->ops != amd_iommu_ops.default_domain_ops)
-> +			return ERR_PTR(-EINVAL);
-> +
-> +		ret = udata_to_iommu_hwpt_amd_v2(user_data, &hwpt);
-> +		if (ret)
-> +			return ERR_PTR(ret);
->  
-> -	if ((flags & ~IOMMU_HWPT_ALLOC_DIRTY_TRACKING) || parent || user_data)
-> +		return amd_iommu_nested_domain_alloc(dev, type, flags,
-> +						     &hwpt, parent);
-> +	}
-> +
-> +	/* Check supported flags */
-> +	if ((flags & ~amd_iommu_hwpt_supported_flags) ||
-> +	    !check_nested_support(flags))
->  		return ERR_PTR(-EOPNOTSUPP);
->  
-> -	return do_iommu_domain_alloc(type, dev, flags);
-> +	dev_data = dev_iommu_priv_get(dev);
-> +
-> +	/*
-> +	 * When allocated nested parent domain, the device may already
-> +	 * have been attached to a domain. For example, a device is already
-> +	 * attached to the domain allocated by VFIO, which contains GPA->SPA mapping.
-> +	 * In such case, return reference to the same domain.
-> +	 */
-
-What? No! This would break all the lifecycle model. Domain allocation must
-always allocate. qemu needs to allocate the nested partent domain type
-from the very start.
-
-> +static int nested_gcr3_update(struct iommu_hwpt_amd_v2 *hwpt,
-> +			      struct protection_domain *pdom,
-> +			      struct protection_domain *ppdom,
-> +			      struct device *dev)
-> +{
-> +	struct pci_dev *pdev;
-> +	struct iommu_dev_data *dev_data = dev_iommu_priv_get(dev);
-> +
-> +	pdev = to_pci_dev(dev);
-> +	if (!pdev)
-> +		return -EINVAL;
-> +
-> +	/* Note: Currently only support GCR3TRPMode with nested translation */
-> +	if (!check_feature2(FEATURE_GCR3TRPMODE))
-> +		return -EOPNOTSUPP;
-> +
-> +	pdom->parent = ppdom;
-> +	pdom->guest_domain_id = hwpt->gdom_id;
-> +	pdom->guest_paging_mode = hwpt->flags.guest_paging_mode;
-> +
-> +	dev_data->gcr3_info.trp_gpa = hwpt->gcr3;
-> +	dev_data->gcr3_info.glx = hwpt->flags.glx;
-> +	dev_data->gcr3_info.giov = hwpt->flags.giov;
-
-Here again, this is just data copied from the vDTE to the pDTE - the
-guest's gcr3 related parameters are just bits being flowed through
-
-And as before "alloc" shouldn't touch anything outside the
-iommu_domain being allocated, touching dev_data here is completely
-wrong.
-
-Jason
+diff --git a/accel/tcg/cputlb.c b/accel/tcg/cputlb.c
+index 93b1ca810bf4..fe887a86a156 100644
+--- a/accel/tcg/cputlb.c
++++ b/accel/tcg/cputlb.c
+@@ -1295,6 +1295,19 @@ void tlb_set_page(CPUState *cpu, vaddr addr,
+                             prot, mmu_idx, size);
+ }
+ 
++
++static vaddr clean_addr(CPUState *cpu, vaddr addr)
++{
++    CPUClass *cc = CPU_GET_CLASS(cpu);
++
++    if (cc->tcg_ops->do_clean_addr) {
++        addr = cc->tcg_ops->do_clean_addr(cpu, addr);
++    }
++
++    return addr;
++}
++
++
+ /*
+  * Note: tlb_fill() can trigger a resize of the TLB. This means that all of the
+  * caller's prior references to the TLB table (e.g. CPUTLBEntry pointers) must
+@@ -1867,9 +1880,10 @@ static bool mmu_lookup(CPUState *cpu, vaddr addr, MemOpIdx oi,
+  * Probe for an atomic operation.  Do not allow unaligned operations,
+  * or io operations to proceed.  Return the host address.
+  */
+-static void *atomic_mmu_lookup(CPUState *cpu, vaddr addr, MemOpIdx oi,
++static void *atomic_mmu_lookup(CPUState *cpu, vaddr address, MemOpIdx oi,
+                                int size, uintptr_t retaddr)
+ {
++    vaddr addr = clean_addr(cpu, address);
+     uintptr_t mmu_idx = get_mmuidx(oi);
+     MemOp mop = get_memop(oi);
+     int a_bits = get_alignment_bits(mop);
+@@ -2002,10 +2016,11 @@ static void *atomic_mmu_lookup(CPUState *cpu, vaddr addr, MemOpIdx oi,
+  * The bytes are concatenated in big-endian order with @ret_be.
+  */
+ static uint64_t int_ld_mmio_beN(CPUState *cpu, CPUTLBEntryFull *full,
+-                                uint64_t ret_be, vaddr addr, int size,
++                                uint64_t ret_be, vaddr address, int size,
+                                 int mmu_idx, MMUAccessType type, uintptr_t ra,
+                                 MemoryRegion *mr, hwaddr mr_offset)
+ {
++    vaddr addr = clean_addr(cpu, address);
+     do {
+         MemOp this_mop;
+         unsigned this_size;
+@@ -2543,10 +2558,11 @@ static Int128 do_ld16_mmu(CPUState *cpu, vaddr addr,
+  * return the bytes of @val_le beyond @p->size that have not been stored.
+  */
+ static uint64_t int_st_mmio_leN(CPUState *cpu, CPUTLBEntryFull *full,
+-                                uint64_t val_le, vaddr addr, int size,
++                                uint64_t val_le, vaddr address, int size,
+                                 int mmu_idx, uintptr_t ra,
+                                 MemoryRegion *mr, hwaddr mr_offset)
+ {
++    vaddr addr = clean_addr(cpu, address);
+     do {
+         MemOp this_mop;
+         unsigned this_size;
+diff --git a/include/hw/core/tcg-cpu-ops.h b/include/hw/core/tcg-cpu-ops.h
+index bf8ff8e3eec1..eaa8e09a6226 100644
+--- a/include/hw/core/tcg-cpu-ops.h
++++ b/include/hw/core/tcg-cpu-ops.h
+@@ -140,6 +140,12 @@ struct TCGCPUOps {
+                                            MMUAccessType access_type,
+                                            int mmu_idx, uintptr_t retaddr);
+ 
++
++    /**
++     * @do_clean_addr: Callback for clearing metadata/tags from the address.
++     */
++    vaddr (*do_clean_addr)(CPUState *cpu, vaddr addr);
++
+     /**
+      * @adjust_watchpoint_address: hack for cpu_check_watchpoint used by ARM
+      */
+diff --git a/target/i386/cpu.c b/target/i386/cpu.c
+index 2666ef380891..1bbfd31042b2 100644
+--- a/target/i386/cpu.c
++++ b/target/i386/cpu.c
+@@ -739,7 +739,7 @@ void x86_cpu_vendor_words2str(char *dst, uint32_t vendor1,
+ #define TCG_7_0_EDX_FEATURES (CPUID_7_0_EDX_FSRM | CPUID_7_0_EDX_KERNEL_FEATURES)
+ 
+ #define TCG_7_1_EAX_FEATURES (CPUID_7_1_EAX_FZRM | CPUID_7_1_EAX_FSRS | \
+-          CPUID_7_1_EAX_FSRC | CPUID_7_1_EAX_CMPCCXADD)
++          CPUID_7_1_EAX_FSRC | CPUID_7_1_EAX_CMPCCXADD | CPUID_7_1_EAX_LAM)
+ #define TCG_7_1_EDX_FEATURES 0
+ #define TCG_7_2_EDX_FEATURES 0
+ #define TCG_APM_FEATURES 0
+@@ -968,7 +968,7 @@ FeatureWordInfo feature_word_info[FEATURE_WORDS] = {
+             "fsrc", NULL, NULL, NULL,
+             NULL, NULL, NULL, NULL,
+             NULL, "amx-fp16", NULL, "avx-ifma",
+-            NULL, NULL, NULL, NULL,
++            NULL, NULL, "lam", NULL,
+             NULL, NULL, NULL, NULL,
+         },
+         .cpuid = {
+diff --git a/target/i386/cpu.h b/target/i386/cpu.h
+index 952174bb6f52..6ef9afd443b7 100644
+--- a/target/i386/cpu.h
++++ b/target/i386/cpu.h
+@@ -238,6 +238,9 @@ typedef enum X86Seg {
+ #define CR0_CD_MASK  (1U << 30)
+ #define CR0_PG_MASK  (1U << 31)
+ 
++#define CR3_LAM_U57  (1ULL << 61)
++#define CR3_LAM_U48  (1ULL << 62)
++
+ #define CR4_VME_MASK  (1U << 0)
+ #define CR4_PVI_MASK  (1U << 1)
+ #define CR4_TSD_MASK  (1U << 2)
+@@ -261,6 +264,7 @@ typedef enum X86Seg {
+ #define CR4_SMAP_MASK   (1U << 21)
+ #define CR4_PKE_MASK   (1U << 22)
+ #define CR4_PKS_MASK   (1U << 24)
++#define CR4_LAM_SUP    (1U << 28)
+ 
+ #define CR4_RESERVED_MASK \
+ (~(target_ulong)(CR4_VME_MASK | CR4_PVI_MASK | CR4_TSD_MASK \
+@@ -269,7 +273,8 @@ typedef enum X86Seg {
+                 | CR4_OSFXSR_MASK | CR4_OSXMMEXCPT_MASK | CR4_UMIP_MASK \
+                 | CR4_LA57_MASK \
+                 | CR4_FSGSBASE_MASK | CR4_PCIDE_MASK | CR4_OSXSAVE_MASK \
+-                | CR4_SMEP_MASK | CR4_SMAP_MASK | CR4_PKE_MASK | CR4_PKS_MASK))
++                | CR4_SMEP_MASK | CR4_SMAP_MASK | CR4_PKE_MASK | CR4_PKS_MASK \
++                | CR4_LAM_SUP ))
+ 
+ #define DR6_BD          (1 << 13)
+ #define DR6_BS          (1 << 14)
+@@ -932,6 +937,8 @@ uint64_t x86_cpu_get_supported_feature_word(FeatureWord w,
+ #define CPUID_7_1_EAX_AMX_FP16          (1U << 21)
+ /* Support for VPMADD52[H,L]UQ */
+ #define CPUID_7_1_EAX_AVX_IFMA          (1U << 23)
++/* Linear Address Masking */
++#define CPUID_7_1_EAX_LAM               (1U << 26)
+ 
+ /* Support for VPDPB[SU,UU,SS]D[,S] */
+ #define CPUID_7_1_EDX_AVX_VNNI_INT8     (1U << 4)
+@@ -2525,6 +2532,24 @@ static inline bool hyperv_feat_enabled(X86CPU *cpu, int feat)
+     return !!(cpu->hyperv_features & BIT(feat));
+ }
+ 
++static inline uint64_t cr3_reserved_bits(CPUX86State *env)
++{
++    uint64_t reserved_bits;
++
++    if (!(env->efer & MSR_EFER_LMA)) {
++        return 0;
++    }
++
++    reserved_bits = (~0ULL) << env_archcpu(env)->phys_bits;
++
++    if (env->features[FEAT_7_1_EAX] & CPUID_7_1_EAX_LAM) {
++        reserved_bits &= ~(CR3_LAM_U48 | CR3_LAM_U57);
++    }
++
++    return reserved_bits;
++}
++
++
+ static inline uint64_t cr4_reserved_bits(CPUX86State *env)
+ {
+     uint64_t reserved_bits = CR4_RESERVED_MASK;
+diff --git a/target/i386/helper.c b/target/i386/helper.c
+index 2070dd0dda1f..4901c9c17b1e 100644
+--- a/target/i386/helper.c
++++ b/target/i386/helper.c
+@@ -262,7 +262,7 @@ hwaddr x86_cpu_get_phys_page_attrs_debug(CPUState *cs, vaddr addr,
+             }
+ 
+             if (la57) {
+-                pml5e_addr = ((env->cr[3] & ~0xfff) +
++                pml5e_addr = ((env->cr[3] & PG_ADDRESS_MASK) +
+                         (((addr >> 48) & 0x1ff) << 3)) & a20_mask;
+                 pml5e = x86_ldq_phys(cs, pml5e_addr);
+                 if (!(pml5e & PG_PRESENT_MASK)) {
+diff --git a/target/i386/tcg/helper-tcg.h b/target/i386/tcg/helper-tcg.h
+index effc2c1c9842..11f75ea475e3 100644
+--- a/target/i386/tcg/helper-tcg.h
++++ b/target/i386/tcg/helper-tcg.h
+@@ -84,6 +84,7 @@ bool x86_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
+ G_NORETURN void x86_cpu_do_unaligned_access(CPUState *cs, vaddr vaddr,
+                                             MMUAccessType access_type,
+                                             int mmu_idx, uintptr_t retaddr);
++vaddr x86_cpu_clean_addr(CPUState *cpu, vaddr addr);
+ #endif
+ 
+ /* cc_helper.c */
+diff --git a/target/i386/tcg/sysemu/excp_helper.c b/target/i386/tcg/sysemu/excp_helper.c
+index 8f7011d96631..1bc71170e6a3 100644
+--- a/target/i386/tcg/sysemu/excp_helper.c
++++ b/target/i386/tcg/sysemu/excp_helper.c
+@@ -163,7 +163,7 @@ static bool mmu_translate(CPUX86State *env, const TranslateParams *in,
+                 /*
+                  * Page table level 5
+                  */
+-                pte_addr = (in->cr3 & ~0xfff) + (((addr >> 48) & 0x1ff) << 3);
++                pte_addr = (in->cr3 & PG_ADDRESS_MASK) + (((addr >> 48) & 0x1ff) << 3);
+                 if (!ptw_translate(&pte_trans, pte_addr)) {
+                     return false;
+                 }
+@@ -638,3 +638,30 @@ G_NORETURN void x86_cpu_do_unaligned_access(CPUState *cs, vaddr vaddr,
+     X86CPU *cpu = X86_CPU(cs);
+     handle_unaligned_access(&cpu->env, vaddr, access_type, retaddr);
+ }
++
++
++static inline int64_t sign_extend64(uint64_t value, int index)
++{
++    int shift = 63 - index;
++    return (int64_t)(value << shift) >> shift;
++}
++
++vaddr x86_cpu_clean_addr(CPUState *cs, vaddr addr)
++{
++    CPUX86State *env = &X86_CPU(cs)->env;
++    bool la57 = env->cr[4] & CR4_LA57_MASK;
++
++    if (addr >> 63) {
++        if (env->cr[4] & CR4_LAM_SUP) {
++            return sign_extend64(addr, la57 ? 56 : 47);
++        }
++    } else {
++        if (env->cr[3] & CR3_LAM_U57) {
++            return sign_extend64(addr, 56);
++        } else if (env->cr[3] & CR3_LAM_U48) {
++            return sign_extend64(addr, 47);
++        }
++    }
++
++    return addr;
++}
+diff --git a/target/i386/tcg/sysemu/misc_helper.c b/target/i386/tcg/sysemu/misc_helper.c
+index edb7c3d89408..aecb523e777d 100644
+--- a/target/i386/tcg/sysemu/misc_helper.c
++++ b/target/i386/tcg/sysemu/misc_helper.c
+@@ -98,8 +98,7 @@ void helper_write_crN(CPUX86State *env, int reg, target_ulong t0)
+         cpu_x86_update_cr0(env, t0);
+         break;
+     case 3:
+-        if ((env->efer & MSR_EFER_LMA) &&
+-                (t0 & ((~0ULL) << env_archcpu(env)->phys_bits))) {
++        if (t0 & cr3_reserved_bits(env)) {
+             cpu_vmexit(env, SVM_EXIT_ERR, 0, GETPC());
+         }
+         if (!(env->efer & MSR_EFER_LMA)) {
+diff --git a/target/i386/tcg/sysemu/svm_helper.c b/target/i386/tcg/sysemu/svm_helper.c
+index 5d6de2294fa1..e981b124d975 100644
+--- a/target/i386/tcg/sysemu/svm_helper.c
++++ b/target/i386/tcg/sysemu/svm_helper.c
+@@ -305,8 +305,7 @@ void helper_vmrun(CPUX86State *env, int aflag, int next_eip_addend)
+         cpu_vmexit(env, SVM_EXIT_ERR, 0, GETPC());
+     }
+     new_cr3 = x86_ldq_phys(cs, env->vm_vmcb + offsetof(struct vmcb, save.cr3));
+-    if ((env->efer & MSR_EFER_LMA) &&
+-            (new_cr3 & ((~0ULL) << cpu->phys_bits))) {
++    if (new_cr3 & cr3_reserved_bits(env)) {
+         cpu_vmexit(env, SVM_EXIT_ERR, 0, GETPC());
+     }
+     new_cr4 = x86_ldq_phys(cs, env->vm_vmcb + offsetof(struct vmcb, save.cr4));
+diff --git a/target/i386/tcg/tcg-cpu.c b/target/i386/tcg/tcg-cpu.c
+index cca19cd40e81..8ceeb954364e 100644
+--- a/target/i386/tcg/tcg-cpu.c
++++ b/target/i386/tcg/tcg-cpu.c
+@@ -118,6 +118,7 @@ static const TCGCPUOps x86_tcg_ops = {
+     .record_sigbus = x86_cpu_record_sigbus,
+ #else
+     .tlb_fill = x86_cpu_tlb_fill,
++    .do_clean_addr = x86_cpu_clean_addr,
+     .do_interrupt = x86_cpu_do_interrupt,
+     .cpu_exec_halt = x86_cpu_exec_halt,
+     .cpu_exec_interrupt = x86_cpu_exec_interrupt,
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
