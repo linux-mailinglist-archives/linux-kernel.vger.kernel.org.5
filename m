@@ -1,203 +1,130 @@
-Return-Path: <linux-kernel+bounces-97122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A83788765C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:58:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FD058765C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19DC8B23A77
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:58:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55BEF1C2187E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD593FBB9;
-	Fri,  8 Mar 2024 13:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7AB3FB97;
+	Fri,  8 Mar 2024 13:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="SRSXzERu"
-Received: from outgoing1.flk.host-h.net (outgoing1.flk.host-h.net [188.40.0.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GofPnRJp"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B666D38387;
-	Fri,  8 Mar 2024 13:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F61D38DF9
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906271; cv=none; b=BGQdIOtyeXd7/fifhc6a/4MJ3g9RiklRGAVXKCW+pvwELXJbUd8AuWslHrZ3HtwUGzrLezKdwoPb/XOistknV1kHe6RHnmSRj56jfmFOx7uP2C3QU1fAp6HTlzCATCB+3+gSBUKrGoV2v8cJqRNdSrvOce8sknUF5mUrhtKiSuw=
+	t=1709906328; cv=none; b=X8mKRXNFSXKKOyNZqkNjDJ1ydXsqFT/niYF24iw6+z7EjcYpQWDzue1hqaJI9zOjsXKDKf2NlMVR20GmrJpA+FrKGVvfLa9x8vdgBDAYqGQgjID6e3AQISzahYQ4YS4RWYMvK0pM+OHjR6lBbtYmwy7LBC4ja3TETCYA1B8xxq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906271; c=relaxed/simple;
-	bh=s1yRWFU/8a5J/AuyuFdQnIru5Py6AN63sQIEhF2K4Z4=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
-	 References:Message-ID; b=WMt7eaPUFjemhvHe0onNMcCUX1yptA8pMqpLlqmGz5I9flxR7onqgDgg7aTrwb2eOzC/HhmF8Q728D46MbnXcqlvt4l3wbRmCf4qo5VFVhJShgSPJgsbs2njHoXI5curRuwPeCksS1xyJWS4tsPQs41SswNa2IyK8WdezG6+GIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=SRSXzERu; arc=none smtp.client-ip=188.40.0.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
-	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
-	sender:bcc; bh=mblih+4aRiBhJNw99bnE5slZmsY2YvDP13y7ErXtuoU=; b=SRSXzERuTXXSsb
-	AeuUkB8vc5rker87kqmefLj1SruVVlLnyP6JkTWSTxKuSTO3KZYsGzcajBzNFJQDxoEzmLk/B3bnA
-	OhwjnPDupK2CM/bPj7zTUgmoTQbcxTiJDiurAhN7LkiN8WTqKrXWiPEeRqgzBhDvtV0JkPt28jjw2
-	YWOftRtv0QRvsb04zWpyJMi3dspNYb3quHySberinV3A5dJmdXdqeTqBro7gsRfCl5Q2iTCSsWDjw
-	LL6vnAIbsWlZDIgpfpE/1Qh+qK7nCNEMeFx0V/ib+IFHRmoZORfs2Xij037RfoslogfMCCiLrIZFW
-	k3Ebe8K9o5dEJXSbauKg==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam3-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1riajH-0054fZ-My; Fri, 08 Mar 2024 15:57:45 +0200
-Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
-	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1riajH-0007lj-3t; Fri, 08 Mar 2024 15:57:43 +0200
+	s=arc-20240116; t=1709906328; c=relaxed/simple;
+	bh=A5c9YnK1XD9ztw+bdW/Fk6cIH6yGwP9iehA1nCjEi4I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LzxXVDgSZ/N3riZOn2YzN9SuHwuZEEep66eWRIyNdCYppHTtMgebG33XUmmwoeOlhA3vcg6y7YubIPbUIOPoAOK72iL3sMY7J5mbEG5KnGVuZG5i0vJwEIBAroGIBeS6q1jj5yLemt9iZJVUCF0ezm90kVTd7xb6DPtuO9b/DPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GofPnRJp; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so9485a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 05:58:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709906325; x=1710511125; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iBuF/mE2iPFE868dDTOlE0JcE/uZlhA0RB3KdQyjGQw=;
+        b=GofPnRJpRAfaOK58ko4ChMpBx/aS11ZXqFvb7fUSY9kZXk5K1MuLMJNUE15/1KG8g7
+         COo7E9ORzGYycnnGOImLmnnkBbl27GsfV73XwgTbmN1aNAQmzkGHsu/LyidsADujVHSw
+         cMcOvyw2aTn8H9pDGKztWeOqIRhE1nPlk7BImZC1KShyJf0CYe1kz/kIp504ABx+BLvj
+         Fp+X8EtpIuvPwoxfycwiJrHteuoco7ZMP/299TPptctFABkVGIfZrhChj5r4+PdKQ97P
+         7MVawTIa2yNhi4nZqK4dH7wlt6apWgEHkKvvxc0usfVJXrsbPGAEaEPpz233B8NxyzpE
+         dxOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709906325; x=1710511125;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iBuF/mE2iPFE868dDTOlE0JcE/uZlhA0RB3KdQyjGQw=;
+        b=Nue9RovBnNiavy6O4363+U0DHJevwsYxlw5s6dy7PhZzJgKhFo3uTGQ7RElrOugAmj
+         xM95Vt0oldb6LjBfRjP5J1dRijGEDuciRMwFULL/UlQezVM11dRbYFXqKmDIIrAw5eCA
+         h64WaoQqtZc0osTIIhVeWalbVKxPT0Gy0Y1iA6BHfhNIVQIxye9rMPfXhLMK8np/eb3p
+         AIww6k7Z4sj2gBrThxRYWuvBxh/SLtkM2E+pDi1WJ1tJgJEkT9f71ijg4wSDgeaHrGiE
+         e6y3F3Wl+bHW4pFCl/U8vS07o45uooqoRWxUZGG6Hb7WrFFnSx8zIJ3xT56p87bXXWVd
+         aRKg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+b/6OT4P5SgRAV/AY8xhJo7QaGPSAu2NIdtd+0T7sF6MWPzyhY/Uyy0aK3xz1N92ukniVjnssGzAYH6Q1Yfczi+JjPsRF3mXNpxhM
+X-Gm-Message-State: AOJu0YwpfHIOgAp+PpLx7wcsxszokiRwic8HkAcMfrLp7bHaQg5Kv/xu
+	+0cDWV/SidiuJQdfoM0++THLbfPgskv1ohQx72yIOVnGQrrMXL1OJuzQEbJnEJxhEx07eiP34nS
+	H8oC1BFENDhQDVhyT/LdQhHWl6GHJBQHc10kH
+X-Google-Smtp-Source: AGHT+IEPWOFnbJg6WMrmkfNOZFtD9RE1AXOQNc1JoZLoDt1clsy51MvKrKJBXMcXzd9Ed4AvBLsruItkGrALYbUZqEg=
+X-Received: by 2002:a05:6402:5202:b0:567:eb05:6d08 with SMTP id
+ s2-20020a056402520200b00567eb056d08mr490497edd.6.1709906324710; Fri, 08 Mar
+ 2024 05:58:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Fri, 08 Mar 2024 15:57:42 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger
- <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2] mips: dts: ralink: mt7621: add cell count properties
- to usb
-In-Reply-To: <7e9221ae-e53b-475f-9b6f-4cab58b2d109@arinc9.com>
-References: <0001-mips-dts-ralink-mt7621-add-cell-count-properties-to-.patch>
- <20240307223756.31643-1-justin.swartz@risingedge.co.za>
- <c445fd12-f8a8-41df-bee8-8b126b26110b@arinc9.com>
- <067071a9d57ffb09f437718cf905b121@risingedge.co.za>
- <7e9221ae-e53b-475f-9b6f-4cab58b2d109@arinc9.com>
-Message-ID: <59b0b2084ea1322c3db2bfe9f2c2c702@risingedge.co.za>
-X-Sender: justin.swartz@risingedge.co.za
-User-Agent: Roundcube Webmail/1.3.17
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.02)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT91LYmA7WyhHcEQsf7WsZ3VPUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
- Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
- 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
- vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
- nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
- oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3FDRRzisL1oin/zKhywqX9/w
- bOl0qtP5EgfDRdSDhnwOLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
- ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz30+tdk6yIuh9K7v+Nq0Cm3JVhle6
- F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
- PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
- WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
- fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
- URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
- dBMSQgQtiTUcJp5roVy0aSDnJVDNCxo62e2RFzS2kkd4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
- F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV5Pc
- rZPg14lcNaSs4Fwukty8QMQa7L0bD+vL0NiZJ28dIbtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
- Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
- SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
- qo05MS+4ayUpOtEhdxekWDmK9g==
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+References: <20240308115722.14671-1-gakula@marvell.com>
+In-Reply-To: <20240308115722.14671-1-gakula@marvell.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 8 Mar 2024 14:58:31 +0100
+Message-ID: <CANn89iJ2euG8SgmTpifRK2DV1N+PSPAgiSoZP-W+7YWE3Ygv6w@mail.gmail.com>
+Subject: Re: [net PATCH] octeontx2-pf: Do not use HW TSO when gso_size < 16bytes
+To: Geetha sowjanya <gakula@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org, 
+	davem@davemloft.net, pabeni@redhat.com, sgoutham@marvell.com, 
+	sbhatta@marvell.com, hkelam@marvell.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-03-08 15:48, Arınç ÜNAL wrote:
-> On 8.03.2024 16:21, Justin Swartz wrote:
->> 
->> On 2024-03-08 14:01, Arınç ÜNAL wrote:
->>> On 8.03.2024 01:37, Justin Swartz wrote:
->>>> Add default #address-cells and #size-cells properties to the
->>>> usb node, which should be suitable for hubs and devices without
->>>> explicitly declared interface nodes, as:
->>>> 
->>>>    "#address-cells":
->>>>      description: should be 1 for hub nodes with device nodes,
->>>>        should be 2 for device nodes with interface nodes.
->>>>      enum: [1, 2]
->>>> 
->>>>    "#size-cells":
->>>>      const: 0
->>>> 
->>>> -- Documentation/devicetree/bindings/usb/usb-device.yaml
->>>> 
->>>> This version of the patch places the properties according to
->>>> the order recommended by:
->>>> 
->>>>     Documentation/devicetree/bindings/dts-coding-style.rst
->>>> 
->>>> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
->>>> ---
->>>>   arch/mips/boot/dts/ralink/mt7621.dtsi | 4 ++--
->>>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>> 
->>>> diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi 
->>>> b/arch/mips/boot/dts/ralink/mt7621.dtsi
->>>> index 5a89f0b8c..7532e17dd 100644
->>>> --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
->>>> +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
->>>> @@ -289,10 +289,10 @@ usb: usb@1e1c0000 {
->>>>           reg = <0x1e1c0000 0x1000
->>>>                  0x1e1d0700 0x0100>;
->>>>           reg-names = "mac", "ippc";
->>>> -
->>>> +        #address-cells = <1>;
->>>> +        #size-cells = <0>;
->>>>           clocks = <&sysc MT7621_CLK_XTAL>;
->>>>           clock-names = "sys_ck";
->>>> -
->>> 
->>> Please keep the empty lines. It's easier to read. I don't see 
->>> anything on
->>> the Devicetree Sources (DTS) Coding Style that would restrict this.
->> 
->> The reason I removed them was due to the SoC DTSI example shown in [1]
->> lacking empty lines between properties, but then using them instead as
->> visual separation between properties and child nodes, or at least 
->> that's
->> how I understood it when I looked at it.
->> 
->> Personally, I prefer the look of the SoC DTSI example - but I don't 
->> mind
->> recreating the patch set with the empty lines between the properties 
->> left
->> entact.
->> 
->> As there is a mix of property spacing and ordering styles in 
->> mt7621.dtsi
->> already - what is the consensus on what a node in this file should 
->> look
->> like?
-> 
-> There's no precise spacing style I maintain here. I simply group 
-> together
-> properties that describe a single attribute, and separate those that
-> describe different attributes.
+On Fri, Mar 8, 2024 at 12:57=E2=80=AFPM Geetha sowjanya <gakula@marvell.com=
+> wrote:
+>
+> Hardware doesn't support packet segmentation when segment size
+> is < 16 bytes. Hence add an additional check and use SW
+> segmentation in such case.
+>
+> Fixes: 86d7476078b8 ("octeontx2-pf: TCP segmentation offload support").
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/dri=
+vers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> index f828d32737af..2ac56abb3a0e 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> @@ -967,6 +967,13 @@ static bool is_hw_tso_supported(struct otx2_nic *pfv=
+f,
+>  {
+>         int payload_len, last_seg_size;
+>
+> +       /* Due to hw issue segment size less than 16 bytes
+> +        * are not supported. Hence do not offload such TSO
+> +        * segments.
+> +        */
+> +       if (skb_shinfo(skb)->gso_size < 16)
+> +               return false;
+> +
+>         if (test_bit(HW_TSO, &pfvf->hw.cap_flag))
+>                 return true;
 
-I'll recreate v3 accordingly.
+How is this driver doing SW segmentation at this stage ?
 
+You might perform this check in ndo_features_check() instead ?
 
->> I also don't mind following that pattern and cleaning up the whole 
->> dtsi
->> according to that if it'll save us all time and energy in future.
-> 
-> If you'd like to improve the ordering style of the MT7621 device tree
-> sources accordingly with
-> Documentation/devicetree/bindings/dts-coding-style.rst, I'd be happy to
-> review those patches.
+otx2_sq_append_skb() is also forcing a linearization if
+skb_shinfo(skb)->nr_frags >=3D OTX2_MAX_FRAGS_IN_SQE
 
-Thanks, I'll make an attempt at this sometime soon.
+This is quite bad, this one definitely should use ndo_features_check()
+to mask NETIF_F_GSO_MASK for GSO packets.
 
-
-Regards
-Justin
+Look at typhoon_features_check() for an example.
 
