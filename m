@@ -1,187 +1,324 @@
-Return-Path: <linux-kernel+bounces-97577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD220876C13
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:57:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DAAC876C12
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:57:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24B531F21E5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:57:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F1B31C20FFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A715FB8A;
-	Fri,  8 Mar 2024 20:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F035F478;
+	Fri,  8 Mar 2024 20:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5j5YHkbm"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2087.outbound.protection.outlook.com [40.107.220.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LOJKqfeT"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9435F852
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:57:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709931432; cv=fail; b=WyxUjYD/osChFLZAAMsiCNTO8RAhmihZgIsxiegr4tbZLHyBPHz/il0OEzr2+mlVDqxDmUi9Tpj/aet/GKMXwPfWnm9Ggzk/8WD7FjcR+KDmnP4VIS0OeTafvMu2xm0jc6rtsbMvDZmINLW6k0L5eAxQqXI+iurkqHC61mfzQbE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709931432; c=relaxed/simple;
-	bh=8m+Jwd8z93Ng+dajSfnwDpu36ZqI41gbo+FjfwgR8EQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=LY4Exs+/+YLZCcXVgrT1k5+awJGa38zcuwX54ot8x//xWO6s3zEj8aPGCn4xG2nJo2S3XnjMal39t7rmIraQrcUCiNar5cpsEsR5U6W+F+r69yEDHhPHEXi7ln9IkEr88MgVzliOA821htmZl/A5nJZjrCgqDX2Sia1b4IxrHPc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=5j5YHkbm; arc=fail smtp.client-ip=40.107.220.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jj1nlXePJbXu+Tl4lXmpFnYEGkiusxtBVMjwr8mNmSkwTaVAMEipe3EkRabwWZoVva75hVPw6UQ+S0lANUqd7BLCNYvn8HrtnyyuEWQczlbH/F6gMMRqRz0WnvN+n60tBe11aHajic2HGNKnsoVJnvb6L/kSVh5AqlGg9qA/wGwJLAsVaeqcPH/p/C7H+AK6J8JTWR09OqMrlqkVvBhQ0zs2U7qjr9KLmt1FOtnkr22eeojS4/2t9G3SSE0fCHd8XquM8Vpn28Hu25NQ8hZ7EaGFTUP9hwMiG2iMkCyRRzkxcNQmi+MYzI/cG3gNLOpDMznXgOQPm0MjCQ6dy8wGXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oM+pHZuC9K8LNQSZO+qrilvDBWB/5aukgyGmJ6ZIBNs=;
- b=apoteti6hF4Q+ArTcgP9z+QvpMR3AcodkLLK0ETnMiMybtBu//V/RR4og8hMiP+V1cX1WR/azwoJPp0bHRzvcaQXIW1eSthEOm9pUNAjS+kwT9hdGrvVRh/nyI646RpduptGXzQzs3iEUoEwslgGW+p47hs4ox4445WZ1mofJqII8fjT0zcusWH3Y+LOVOr6O7lBuPVROIHU9B3NLRiDVJrx52czpzLDxMgbc/+Rr+8B1B0JK4jEeK9XzM68mFUpqqD5zlDDl+Vo/cFY/UwoHdyDWJuM6yGsKCtwNtpwEy3KEMCK5scgZQWyFmU1AgSaStz/BGW6zg0Ip42D5Ya+8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oM+pHZuC9K8LNQSZO+qrilvDBWB/5aukgyGmJ6ZIBNs=;
- b=5j5YHkbmbft1VLeceEYDBm0gpltok2v6KPFTrxYL05vC8ppaPRpyjQOhywKiCDaxqeND79MsB0B9uQni4y0eiRbw5L4liF50kUBqFHSBEElK8OHdvZ/3L7AkwESvdmY6/z7PhKiErXx01tstwy8BsT2MolQ+luIM+0bBKh3UFLI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by MN2PR12MB4373.namprd12.prod.outlook.com (2603:10b6:208:261::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Fri, 8 Mar
- 2024 20:57:07 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::6c3b:75a3:6af2:8bf4]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::6c3b:75a3:6af2:8bf4%6]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
- 20:57:06 +0000
-Message-ID: <0255d007-6929-4366-b47e-0826e13b86e8@amd.com>
-Date: Fri, 8 Mar 2024 15:57:00 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] drm: Fix drm_fixp2int_round() making it add 0.5
-Content-Language: en-US
-To: Arthur Grillo <arthurgrillo@riseup.net>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- pekka.paalanen@haloniitty.fi, Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com, Pekka Paalanen <pekka.paalanen@collabora.com>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
- <20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
-From: Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQXPR0101CA0042.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:14::19) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20F35B20C;
+	Fri,  8 Mar 2024 20:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709931427; cv=none; b=Tub1KxeGjGqhXVogPkP+eWUELDOUp+vD0gcucr3bOGi8I0xp7/y5vozOL0bA+/ygiKBkSgF498hkgOKGxY3ZKTRaur2TLzCM2Q29AuUyMvzgMlHK/uXXNNx0vXLfyod3O7VSCTbHPu+eGNuek2+ihAKXZv/MK89rF5XLsDSaRHo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709931427; c=relaxed/simple;
+	bh=VOH0uGjlamTkGKWBUFzaUSvLcg+ZgjEUF3K2hEsJEkc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r24RwYSkrs8Vm9Hn+12PizvTv9VJ1GZWAWeF0TG3P6R50uefqVqlIQ7m5xoE+/djqtCm6/074ZWww6cAy/m760Z+ltX6yq+iNLRP/L6MWO4dsaucSMNCDCAKNFtPfConB/+ssFJ/nEGWVhQnDLglmeIcyRq7u1a8QNU2EewSBQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LOJKqfeT; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dd5df90170so15540665ad.0;
+        Fri, 08 Mar 2024 12:57:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709931425; x=1710536225; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LZ1lttaPT6oImPNItYzV/eS/q/nsl7IAM97Yp19qF10=;
+        b=LOJKqfeTGeojhVOlPSrT4kQFHIVD7BIN3Q4C7V9cEc/EiGWdHA6/+HsMWC0PNwnEza
+         StJhf1tK2ygdgHd12X2Q//O0uIzzzJL1q+qhQ+p1QrA/CX33ugZmxlkBRkWqGMS0QBe4
+         YAywsu4epasZTkCkDwNjKC8F8+rpUqyBjzMVyYcUrkrluC3CXBcWOPd/isVscCNcSNtv
+         V5CL/ElbU0UXTfACCVvE8eTm/M+AqW1HMHBCZ+Xu/drnIRCv8T7Sjn8R0hxnjrYyh/3F
+         D1LgO5XbKh4UdNUWSdnsk9KL1u0ly7rEkAM/C4nbeDl02cAINL1+Zi1CgEB3ISdDhqxe
+         CdJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709931425; x=1710536225;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LZ1lttaPT6oImPNItYzV/eS/q/nsl7IAM97Yp19qF10=;
+        b=SiNYMrefjycYTm9dtX0WQKHeenKMTDGXiNTb9HtpHi2/BjTDsYYCCWcogtFEU/WNGn
+         +V3gfCfiCEu41/r3PgC3OSCKcVkrhzH/nJjFH0/HudwjiCePdasvCEjHJBXkHQmbriEA
+         U8l6Z+xeMW4Q31B8if8XkSqcsuC/Tv9OYgwpLe3YXpbKFZld534HSbmF6pob28sAlTUL
+         Cxa9ElUtn3qeLQflh5lGkJoJtIxW1wJPvJiNj4TiksSs2PQpGrYklpdUMUOUsziHK+6Y
+         1PZV2A0c2TDwEkJG2dIQEuIlrkkaNpHMIpfhK42YhIiSKHKZCGSAq/qXRQABS64zVsSj
+         qDkA==
+X-Forwarded-Encrypted: i=1; AJvYcCXR7fC6NGIFYxOzDbzeheSo8dBudt/Ifsxit0TxLsGBnByzdAF/YIn3BA/jXy5r/zm0DIkUfSH6DXOtgqL/WAbCnjlqth0KnH5sQ2LNPBO4vJ07eb966+vcuUyPpi001d+C0uOXKXjfhJF87W4jZnJn47aRuE2Lw7ZzuZuMrLHrTg==
+X-Gm-Message-State: AOJu0YxpdV2+mdY9/zPiDw7VrwWjcQDgS8eo+EOdSgAfUr1YOhSAb87m
+	mMJ1GXMvm9sw21ksWekVToRsErMISM7968yGLc+Cv5cCGw68Mlqw
+X-Google-Smtp-Source: AGHT+IEvgUBojpUpbkDB25bGHd4TvdI+WTXfgYQ8kdQhv6hkv/khHthg5hmriSusZDYwDOf7ZsikBg==
+X-Received: by 2002:a17:902:c942:b0:1dd:91c:249f with SMTP id i2-20020a170902c94200b001dd091c249fmr496165pla.24.1709931424783;
+        Fri, 08 Mar 2024 12:57:04 -0800 (PST)
+Received: from gmail.com ([192.184.166.229])
+        by smtp.gmail.com with ESMTPSA id o11-20020a17090323cb00b001dcc0d06959sm69529plh.245.2024.03.08.12.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 12:57:04 -0800 (PST)
+Date: Fri, 8 Mar 2024 12:57:02 -0800
+From: Calvin Owens <jcalvinowens@gmail.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Naveen N Rao <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	David S Miller <davem@davemloft.net>,
+	Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
+	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 3/4] kprobes: Allow kprobes with CONFIG_MODULES=n
+Message-ID: <Zet7nsiStlbNx0km@gmail.com>
+References: <cover.1709676663.git.jcalvinowens@gmail.com>
+ <2af01251ca21d79fa29092505d192f1f1b746cff.1709676663.git.jcalvinowens@gmail.com>
+ <20240308114603.289720cf17ed75ba7bce8779@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|MN2PR12MB4373:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad1ec340-bd88-44a2-699c-08dc3fb25012
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	N2sTxWAOh4sCcD26CI6earh7NxgmGhGwOlGXBcCCC1HhvAmWaxzKGrl8d5Vvt+14JPDIuAxE41upSg5J53fZ1krLwtIfJeeaMfu7umc+ucDwigIwMmymAdX4OCNeBX2eNZfnQN+4BvLFZ23XkU/G9oOIngMOuvFcf1qxOFpSiYOjrQWU2irciICDns5zddws4uEbaIR9WI9tRkdApMNuUIA5ty6vzYtoeb+2zVXQUvsBeXOCwRu7WbHLLDodwI0XzxjFpzqCT9/8N/vZuuf1m+o1j3rmXuJc3vPXKSTXZxL6PmpRikHaahPpibGMDJblrNjpgsMaBjiUVDWMn44qjLzN9nPQ/vdId4x4uu++EHhQ7e2USZB7Od/87QYDln2KC33pxuYwqtZucnxYJBhjdDPxDEECvOwlxMdJ10tLr0SszZaB1eKGPRppLoPtCE7SmVUk2andXOg8LiqJwsj4CvjrCK0ckY2OLMJ28L8hFDb/iTZ1Nmy4yE3vSv823BSGjFeidjrXa6kGksxSXGa8yy3I6rrXBVS7jOq5SGOwF+fU/dOy2UwiR6JB7UeswGKk7+Y+b04+A0rsul5mTeFsGJQBbNDRybsIhw6eL6gB8YJLWnVo3aUfa89PudRPIdNVmn0AnLxbiOjyYj1qSBG1YciO8ud/WVvgXknN9l3Gd3E=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SEVsWTdZbjdUaG1ZanpNNEUyZjdlTU9NUGNISjJzS3FjNVVITDdDa1FvemRy?=
- =?utf-8?B?T1ZBTjZDY2dQR0pGczhzU3FZMHM4bFpWd0VxQUVlUUV3MWdITTF4K0VYK1Fw?=
- =?utf-8?B?RWZKWC92RFNpMUZkM3ZOdS9hT2ZNaGdVMkgvUERTRkFzdWxML2plczVDdkNu?=
- =?utf-8?B?bHZRclVXN2JuWWVESFNhbC90VTVlTlZYeTlaZlVoMkVLT0x6S1hyNHFxTURK?=
- =?utf-8?B?cDI2NnljZG5JeVl0dGhOUmMxL3dpV3RaVGVLbFdCUVVhMERJRTJ6MVpXdUtz?=
- =?utf-8?B?S3JCWGxsOUZ2VGg4enh2TkdHVllKVzlXYUxNcUgzblQ4RkNWMU11ZjNnVldS?=
- =?utf-8?B?OHBMUXhuVklrV1hQcFFKcy91VGJ3V0IrZ2xnc01Ud1JTMUwwRWZZMW1Wejl6?=
- =?utf-8?B?NjhhWnl1VER4STd2aERPVzlYYWtiM3ozNkVzRzdjeVh6VlcyK1hoTS9Yb2lY?=
- =?utf-8?B?SGFvSmhGVitsQjRVdXJva2VYUDZjS2psMG9zbm4xbk9xc0JWOVBsbTRnMkNB?=
- =?utf-8?B?SzhHZzl5N0tMc0xnY01lNmRrcEc2b3ZxY3pmbHRVckRHY0p0bEx3ejN1eFZx?=
- =?utf-8?B?c2w3OTJXbzc5UzRncThiVGF2UzB3a0JWZmMzcWsvd01pekRVU2orQVFPYkJE?=
- =?utf-8?B?ZVZJQi9XRFdtcDQwbHdvcWxoM3lhM2RBREZzYmNuaC9CM0ZTcXlMMjNLY2dw?=
- =?utf-8?B?bDZTQ0UrZGFIZVZEY1BuOWFFQVVqY3kyb2xONzk0TVJUZkJReTMraCtmcUg0?=
- =?utf-8?B?eVFlOHcwSEt4bDliSERxclRaQjBibzJnQWMzSGZVMXh4bkhyR1JyZGVPSVhu?=
- =?utf-8?B?cjV1eHdmM2Z5VGo2bG5ldFZDT3RNekJaaEcrdEZYZkZ6a0h5RFFPYnpWMTl0?=
- =?utf-8?B?aEc2MHA4Y3BiQm1KOHB5NUxMQy9RbkdVRGJtcFVsOEplMkl6SGRyRjRXSGo5?=
- =?utf-8?B?ZjIxcnhZSGpoWUlGMndqNFF4T3QweVR1RktJTkF1QUNaV2lpK1k5YUNWMWsr?=
- =?utf-8?B?dThyKzNrUzl3bmt6cHJkRUw3NWNLc0RHbmlhU1VpMXZVRHFWY0h6ZUVHUUVL?=
- =?utf-8?B?aFBack1pT2FEZ2oyRzFLWFM3SGhmK1JQM1l6MFBKakhjemRoWnJrSjZjSEFJ?=
- =?utf-8?B?a1Yyb3dXbytpcmVPNWxZT2pqVWxMaGtBdWFFbEhWSW14cmpQckFnS05IN3I1?=
- =?utf-8?B?cjVkb3dFcU1CWHdOV0ZRYkdqK2hyVkVsNy8xRnZYNHJVaXZrekJiZ0VMOFU5?=
- =?utf-8?B?Rzh5WGxTZk1HRDYzdkJvNVZITkNCSDE5bjZBNFZCT09ZOHltOUhaV3dneGNi?=
- =?utf-8?B?a3FJUjVGeDRLZTB2dEUzaFRYb2dySWd3aGxHZ3lFU2Jhc2xaeHRVYVhjSG9Y?=
- =?utf-8?B?UnNmL2ZLb2xNMmNBOFcwMmlldVlhN3VGcDF2clNrcDRDdzBQQVY2dWluZUh3?=
- =?utf-8?B?TUZPVnBKbEl0RFp6eXNOdWRHTjVIWGpEWWkzRWxKUEVyZW9KL3k2TDBmZ0lI?=
- =?utf-8?B?MVo1dTJjcVJHSDZna2RrVFhPRzRXU2JIbkhWN1BQZWhJVDZmMXVKOGQ1NzJs?=
- =?utf-8?B?VmJwcjI1OXBsLzI5ZGc0bjd2NGVPc2loYlZXRXFKUXBnTitBeVVJVWYzQ1dI?=
- =?utf-8?B?Y3g2bWZJbTJJMHZ1MWdxUG1ZOWhVM1ZadU5ZTnpMeGVjSVhJWGdzOU9Md1Y4?=
- =?utf-8?B?aEhxSDBBSGMrM0tCZGtobDBHRkV1V0xlV1pDWVR3TDd5bDFYc3lIRlVYc2Rw?=
- =?utf-8?B?OE1NdXpMelhVejhXaVNablJrYnRBVTFvaDU4cVVTR2I2WmduOHRkZHE2RzB2?=
- =?utf-8?B?ZFlMYlJJcjNZOFlwU1FGeituYkZCc2ZHeW1OaDdyeG1QSXFJNGdza1lrRmFn?=
- =?utf-8?B?Y0lreTVxRkFKT01DSG1qZFg3TjhzdVBzWjl2WXFjQ280MTh2WmtHNVM2c0gw?=
- =?utf-8?B?ZkxVK0d1aEQ0RUh4Y054NjcwcTBQTXZSeFR4S0dyanpjbTdwNEVlTUlOdHBa?=
- =?utf-8?B?L1RISnh4T3NuYjFXa1BPaU5uM21oUE96NDNialNpNDl3VExYQi9PL284M0E4?=
- =?utf-8?B?eGJHVUovWXltSjFCWlA0M2VnRGpZTFp6Y0c3L3lLMldXQXU5KzcyRHhEaGtJ?=
- =?utf-8?Q?Ds1sYCAwXPyWz392ncqWPebD/?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad1ec340-bd88-44a2-699c-08dc3fb25012
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 20:57:06.1575
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QemGvLDKP8dmvgQibB2AmL1+AJsFIH2SufWVz6gHY/0zCGL/05nPQTxCrwSKBHqdbbsXTJwJUERtdBdQcwGJEg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4373
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240308114603.289720cf17ed75ba7bce8779@kernel.org>
 
-On 2024-03-06 15:03, Arthur Grillo wrote:
-> As well noted by Pekka[1], the rounding of drm_fixp2int_round is wrong.
-> To round a number, you need to add 0.5 to the number and floor that,
-> drm_fixp2int_round() is adding 0.0000076. Make it add 0.5.
+On Friday 03/08 at 11:46 +0900, Masami Hiramatsu wrote:
+> On Wed,  6 Mar 2024 12:05:10 -0800
+> Calvin Owens <jcalvinowens@gmail.com> wrote:
 > 
-> [1]: https://lore.kernel.org/all/20240301135327.22efe0dd.pekka.paalanen@collabora.com/
+> > If something like this is merged down the road, it can go in at leisure
+> > once the module_alloc change is in: it's a one-way dependency.
+> > 
+> > Signed-off-by: Calvin Owens <jcalvinowens@gmail.com>
+> > ---
+> >  arch/Kconfig                |  2 +-
+> >  kernel/kprobes.c            | 22 ++++++++++++++++++++++
+> >  kernel/trace/trace_kprobe.c | 11 +++++++++++
+> >  3 files changed, 34 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index cfc24ced16dd..e60ce984d095 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -52,8 +52,8 @@ config GENERIC_ENTRY
+> >  
+> >  config KPROBES
+> >  	bool "Kprobes"
+> > -	depends on MODULES
+> >  	depends on HAVE_KPROBES
+> > +	select MODULE_ALLOC
 > 
-> Suggested-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-
-I had a different jab at this [1], but your patch is cleaner.
-
-https://patchwork.freedesktop.org/patch/579978/?series=123446&rev=4
-
-Harry
-
-> ---
->   include/drm/drm_fixed.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> OK, if we use EXEC_ALLOC,
 > 
-> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
-> index 0c9f917a4d4b..de3a79909ac9 100644
-> --- a/include/drm/drm_fixed.h
-> +++ b/include/drm/drm_fixed.h
-> @@ -90,7 +90,7 @@ static inline int drm_fixp2int(s64 a)
->   
->   static inline int drm_fixp2int_round(s64 a)
->   {
-> -	return drm_fixp2int(a + (1 << (DRM_FIXED_POINT_HALF - 1)));
-> +	return drm_fixp2int(a + DRM_FIXED_ONE / 2);
->   }
->   
->   static inline int drm_fixp2int_ceil(s64 a)
+> config EXEC_ALLOC
+> 	depends on HAVE_EXEC_ALLOC
 > 
+> And 
+> 
+>   config KPROBES
+>   	bool "Kprobes"
+> 	depends on MODULES || EXEC_ALLOC
+> 	select EXEC_ALLOC if HAVE_EXEC_ALLOC
+> 
+> then kprobes can be enabled either modules supported or exec_alloc is supported.
+> (new arch does not need to implement exec_alloc)
+> 
+> Maybe we also need something like
+> 
+> #ifdef CONFIG_EXEC_ALLOC
+> #define module_alloc(size) exec_alloc(size)
+> #endif
+> 
+> in kprobes.h, or just add `replacing module_alloc with exec_alloc` patch.
+> 
+> Thank you,
+
+The example was helpful, thanks. I see what you mean with
+HAVE_EXEC_ALLOC, I'll implement it like that in the next verison.
+
+> >  	select KALLSYMS
+> >  	select TASKS_RCU if PREEMPTION
+> >  	help
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index 9d9095e81792..194270e17d57 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -1556,8 +1556,12 @@ static bool is_cfi_preamble_symbol(unsigned long addr)
+> >  		str_has_prefix("__pfx_", symbuf);
+> >  }
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  static int check_kprobe_address_safe(struct kprobe *p,
+> >  				     struct module **probed_mod)
+> > +#else
+> > +static int check_kprobe_address_safe(struct kprobe *p)
+> > +#endif
+> >  {
+> >  	int ret;
+> >  
+> > @@ -1580,6 +1584,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+> >  		goto out;
+> >  	}
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  	/* Check if 'p' is probing a module. */
+> >  	*probed_mod = __module_text_address((unsigned long) p->addr);
+> >  	if (*probed_mod) {
+> > @@ -1603,6 +1608,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
+> >  			ret = -ENOENT;
+> >  		}
+> >  	}
+> > +#endif
+> > +
+> >  out:
+> >  	preempt_enable();
+> >  	jump_label_unlock();
+> > @@ -1614,7 +1621,9 @@ int register_kprobe(struct kprobe *p)
+> >  {
+> >  	int ret;
+> >  	struct kprobe *old_p;
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  	struct module *probed_mod;
+> > +#endif
+> >  	kprobe_opcode_t *addr;
+> >  	bool on_func_entry;
+> >  
+> > @@ -1633,7 +1642,11 @@ int register_kprobe(struct kprobe *p)
+> >  	p->nmissed = 0;
+> >  	INIT_LIST_HEAD(&p->list);
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  	ret = check_kprobe_address_safe(p, &probed_mod);
+> > +#else
+> > +	ret = check_kprobe_address_safe(p);
+> > +#endif
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > @@ -1676,8 +1689,10 @@ int register_kprobe(struct kprobe *p)
+> >  out:
+> >  	mutex_unlock(&kprobe_mutex);
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  	if (probed_mod)
+> >  		module_put(probed_mod);
+> > +#endif
+> >  
+> >  	return ret;
+> >  }
+> > @@ -2482,6 +2497,7 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+> >  	return 0;
+> >  }
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  /* Remove all symbols in given area from kprobe blacklist */
+> >  static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+> >  {
+> > @@ -2499,6 +2515,7 @@ static void kprobe_remove_ksym_blacklist(unsigned long entry)
+> >  {
+> >  	kprobe_remove_area_blacklist(entry, entry + 1);
+> >  }
+> > +#endif
+> >  
+> >  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+> >  				   char *type, char *sym)
+> > @@ -2564,6 +2581,7 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+> >  	return ret ? : arch_populate_kprobe_blacklist();
+> >  }
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  static void add_module_kprobe_blacklist(struct module *mod)
+> >  {
+> >  	unsigned long start, end;
+> > @@ -2665,6 +2683,7 @@ static struct notifier_block kprobe_module_nb = {
+> >  	.notifier_call = kprobes_module_callback,
+> >  	.priority = 0
+> >  };
+> > +#endif /* IS_ENABLED(CONFIG_MODULES) */
+> >  
+> >  void kprobe_free_init_mem(void)
+> >  {
+> > @@ -2724,8 +2743,11 @@ static int __init init_kprobes(void)
+> >  	err = arch_init_kprobes();
+> >  	if (!err)
+> >  		err = register_die_notifier(&kprobe_exceptions_nb);
+> > +
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  	if (!err)
+> >  		err = register_module_notifier(&kprobe_module_nb);
+> > +#endif
+> >  
+> >  	kprobes_initialized = (err == 0);
+> >  	kprobe_sysctls_init();
+> > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> > index c4c6e0e0068b..dd4598f775b9 100644
+> > --- a/kernel/trace/trace_kprobe.c
+> > +++ b/kernel/trace/trace_kprobe.c
+> > @@ -102,6 +102,7 @@ static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
+> >  	return kprobe_gone(&tk->rp.kp);
+> >  }
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+> >  						 struct module *mod)
+> >  {
+> > @@ -129,6 +130,12 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+> >  
+> >  	return ret;
+> >  }
+> > +#else
+> > +static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+> > +{
+> > +	return true;
+> > +}
+> > +#endif
+> >  
+> >  static bool trace_kprobe_is_busy(struct dyn_event *ev)
+> >  {
+> > @@ -670,6 +677,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+> >  	return ret;
+> >  }
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  /* Module notifier call back, checking event on the module */
+> >  static int trace_kprobe_module_callback(struct notifier_block *nb,
+> >  				       unsigned long val, void *data)
+> > @@ -704,6 +712,7 @@ static struct notifier_block trace_kprobe_module_nb = {
+> >  	.notifier_call = trace_kprobe_module_callback,
+> >  	.priority = 1	/* Invoked after kprobe module callback */
+> >  };
+> > +#endif /* IS_ENABLED(CONFIG_MODULES) */
+> >  
+> >  static int count_symbols(void *data, unsigned long unused)
+> >  {
+> > @@ -1897,8 +1906,10 @@ static __init int init_kprobe_trace_early(void)
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +#if IS_ENABLED(CONFIG_MODULES)
+> >  	if (register_module_notifier(&trace_kprobe_module_nb))
+> >  		return -EINVAL;
+> > +#endif
+> >  
+> >  	return 0;
+> >  }
+> > -- 
+> > 2.43.0
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
