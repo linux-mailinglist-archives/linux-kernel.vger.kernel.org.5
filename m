@@ -1,115 +1,220 @@
-Return-Path: <linux-kernel+bounces-97573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9A7F876C07
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:52:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B724E876C0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:53:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16B4D1C2127F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:52:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D0E41C216D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:53:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC9C5E08E;
-	Fri,  8 Mar 2024 20:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B54E5F463;
+	Fri,  8 Mar 2024 20:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z9zkNYND"
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nhh3jga4"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D308A1EF1E
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029A55E077;
+	Fri,  8 Mar 2024 20:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709931148; cv=none; b=JG6zkXcC/fjk8jBp1oRBy5wRJuORnAmbXP3DCk0hac839vUT/pJStAccM+SaCa8LyygNvyDczdfVHcoOjK/DplPq+5C8r6O6ksc3Wkpa20yaeeAmqs5RsoTnKf8eBI0YdD2qSrQbC8ugJdKoYWCQv6X6jtaAQxeGkbjenp2gg2M=
+	t=1709931226; cv=none; b=nXQCBTPtF0nhg04F3ClM9s1tsZRbWH41uVwb4tl+7gEs1Y5tvYAi8pJT4PAVdoO5srDQR+enVj4xtb7F7E3f9LgGTUdwMzLlXZt30vJoakkxysemqFyej5Zjuyp1BqpkeIUgUzbWB7+OmeFqb6qo9oEFrcrJx9JK8oy+ri8/cXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709931148; c=relaxed/simple;
-	bh=j2rwAOJRo4LYcXeDY/WUYHfb4+0+9qA2Hm/60uUoEdY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Lmob9FBwwQWdEVbPeuNO62a61YSTvtJ/XWGvztTXduYVb2m4rTmMQi2GSvAiiNNGy9fsrhqXaivCcD6j3XUArdjLcgdLlUSI6Xxip7maRTh/Jp5kOvBjUeRsllLqxmrXjNlsjK69g9MxeDkYKvAKH89GoE7gMKWx7xyQL6a4RkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=z9zkNYND; arc=none smtp.client-ip=209.85.222.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7db1a21e83fso714295241.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 12:52:26 -0800 (PST)
+	s=arc-20240116; t=1709931226; c=relaxed/simple;
+	bh=mZHwASnNiA+0JOdqGd28VuUM0QHLH5hUItAzYpemHCU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j/zWzKbDN6NYRH3lPZe85DXjRhxlsAOtPeB3sGrP24lV5MBz7204WNMWExj+jQg4zTXZYEbSheJayJbp+Y8/C5q6h5QImFMnRR+ruyLUfCzbM0BWw6bl3zOQ5AFnFs8oRKKUo4G6RbZPh7taKTmvI2Z2aVV5e+OQuM+A9XybJyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nhh3jga4; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dd6198c4e2so14357785ad.2;
+        Fri, 08 Mar 2024 12:53:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709931146; x=1710535946; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JIbSa45F0sbbEQNxZfvGwr7gnFgJqOFTDI+EfPdvz1M=;
-        b=z9zkNYND9UIpwbtaasfHE+K+7uEVHpNP2bEtbgLp0XgH0zlCLAukbH9tMVxwChpMsv
-         8CcI/mSGOQVxijIxE+b2+b010oXE244oO248T7KgIv3A8yCCAt8EVgV15QGN6EQ9V6S7
-         WwKbApT+FhGmYjbZIj7DdJV1vjOchZYZOxhgbSxOGPlPq8Vi4zgH/w86VnXP24QQNmxm
-         GhhZc+fr5Gf/dBJH2b3yRUv+NoMnoZd20X7NVuf/1ltnzh5Ebdctjk4Ggigd7wXwgFGm
-         VXyo2hbK7iYebb8U2XrsuOQr5k942LRWmr6X0/XCazRRwWbKfivFyV8VMln+COxhwEib
-         IUAw==
+        d=gmail.com; s=20230601; t=1709931224; x=1710536024; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=k3FyJJXkStTdlH41VSk6TL63Vo5zy8Q5BFHWuyAluFE=;
+        b=nhh3jga4KeoJy1eXXTHVeyA+1IvpRSwrr/CojtFG9UnPsYabh6q6pwHqtlH129ZK5S
+         4zKL+GfgtMch8SJb/XT+oXQ0xxFH41aNZm1zWpivqrMuXiZ+LFwd/dVzMHqmxnhJbOTK
+         7vPOgSwZI3GI075dlXGXIK9N17CG2KoqV4LwJQyuk8DpcsO8rBF1UNB6cG5APy/bBxwm
+         nPH0sg1P8S/+dRs+KsDElBCAjFBA+czkKCyzaZ+r2AJnWT/s3AsCvsrubd28qMaxqk0+
+         5eaI+43nZd5pOd8f4GUl8hCOmpXhnfqpU6cjju7FUkgMciOQVo3jW+O7NNkF8gmDRGNO
+         iW2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709931146; x=1710535946;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JIbSa45F0sbbEQNxZfvGwr7gnFgJqOFTDI+EfPdvz1M=;
-        b=ViP6QpKrbl9hoeccQ9QjO43UzAbPrh5quzf5IFKj9DLKHvx1xwcplGcX01bKQnaxEZ
-         aPIyWHYFmk5mDa5msBrSaAzHocX0JyxuD8zOfBN+jdz8I0nz41kAvbicVElNl3vlNFqD
-         e3feZynow7tz73fytjJtyivIRZu+L8BY8qgGApgOQP97Ou+hqbgXEr9VUx0LerCe8j7D
-         4HaacjFU4QJzXlGeaLf/5GgXqA8QB2AG+1pQ7RKiJOc+3ZiqrBVQ6JzvWDuWmbqvf1r7
-         hFoT2snj4AIszc6OuoKwQb0Q6qLCLteNaly1Fr2wNWY/7Wgbx+q17drMx9oRp+KdVOqv
-         6pgg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmRmGPeCOVUcrJMCy/0N5aWCCxU5FUPlinGwWDj81U67GFp88sI3CXqgQ4ySGfJufv1ecYHFQP/jPPm9/Hw1rroPYosAKt96adOe+b
-X-Gm-Message-State: AOJu0YwJjQF0mJrDey1mUWJMt+aA1TnQ48FitYxT3H6vZkDz2FHia1J8
-	NP2riyY7IxB0m++2uAAJQvuursd66AFPlI1uTEcot+PIkUBhhAacSPxS0NUnrNZk9gN40KsY8L0
-	mXmf+G8hJvol9tfh+0SghDlHx799mZ1AKf9WN
-X-Google-Smtp-Source: AGHT+IHi7Oud5ysHq9CgQrZBqlgkk+ZUvKe1KS7qoSHtq5TTT8mP5c7o9KkShcg8eu23GC0V/keL51QjkCc9dUbzAC0=
-X-Received: by 2002:a05:6102:1886:b0:472:eb81:ef29 with SMTP id
- ji6-20020a056102188600b00472eb81ef29mr138917vsb.23.1709931145717; Fri, 08 Mar
- 2024 12:52:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709931224; x=1710536024;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k3FyJJXkStTdlH41VSk6TL63Vo5zy8Q5BFHWuyAluFE=;
+        b=cenyBycBcZ//nh4YamNGhcQjVa744Uf7DZeq3kwRyz9r3wN5yQaRva1Gss33HPgVeS
+         svPOycCynsKZskE4P0qEhE+o7yKfKI+UIsm3y/04/W+cmwKRVlwPcB5uMRBkeIB1oDlX
+         RWgfZtjgft/6nAmFWhBemFyRWDNEFVeeJ4xu0Ue9Pgv6HM+Z2O7vSeZ8x/0sK5df5/fB
+         CvOI3I19bX/TYOxW1+0A+JZE73HVyUsvzG8yN7K8m488KkH8jF2/fy/cqo/6RsuvZSfm
+         WsRnGs4nQluI+EoySHJ41ckGQ4ZFlPNswufNqRsQWc7VjDj/v2oOx0FcVo6zttVWdnxR
+         ek0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWMnZ0CW1Rv1mpZfLdvvuhtnCePCYMWzFoJEmxlEyJBTYsleN8X/psnOQI8J9Mrye2gkDvrtSTTCWniyHLNUL8cRDOEL071qcKd2NTdxzG4MYfAMryVI1FUpeTf4hbZfmmEvRXi4NxCslrnO8CiSYiOWSJ9mEikux+gX0wqvW9JSA==
+X-Gm-Message-State: AOJu0Ywi4lY5OIDBcKd9xz8OeHHkR1q16zQcLXTzccQxrG7xGxnQaUoU
+	wstBvcW5lz8U5zEyg+krNVJfA8FdPaVoT/FB6St1OwxSz7b+89rk
+X-Google-Smtp-Source: AGHT+IEZ4C7lx2v17kFxsEX8KT9D5zuIweUrqZ5jV/dRO0aBQtjZ/MWRfKM9TJEsG4RM1AcT5MH8nw==
+X-Received: by 2002:a17:903:41c3:b0:1dc:bb8e:d28f with SMTP id u3-20020a17090341c300b001dcbb8ed28fmr249406ple.66.1709931224231;
+        Fri, 08 Mar 2024 12:53:44 -0800 (PST)
+Received: from gmail.com ([192.184.166.229])
+        by smtp.gmail.com with ESMTPSA id u6-20020a170902e80600b001da001aed18sm73346plg.54.2024.03.08.12.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 12:53:43 -0800 (PST)
+Date: Fri, 8 Mar 2024 12:53:41 -0800
+From: Calvin Owens <jcalvinowens@gmail.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Luis Chamberlain <mcgrof@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Naveen N Rao <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	David S Miller <davem@davemloft.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH 1/4] module: mm: Make module_alloc() generally
+ available
+Message-ID: <Zet61a2jTaSV1eF0@gmail.com>
+References: <cover.1709676663.git.jcalvinowens@gmail.com>
+ <a6b162aed1e6fea7f565ef9dd0204d6f2284bcce.1709676663.git.jcalvinowens@gmail.com>
+ <267d9173-2a0e-4006-a858-4e94aeff94df@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAGdbjmK9WoOQSbKUvcTdLJDW-RB=qe2tHFDZ-MeD266xZOxh7w@mail.gmail.com>
- <20240222202404.36206-1-kevinloughlin@google.com> <CAMj1kXFsX1HZ3=x1cjN0-7i5EV9LXkSrAW22dc1wERUaTdAMaA@mail.gmail.com>
- <20240308110043.GEZerv21Qj10Q7-8p5@fat_crate.local>
-In-Reply-To: <20240308110043.GEZerv21Qj10Q7-8p5@fat_crate.local>
-From: Kevin Loughlin <kevinloughlin@google.com>
-Date: Fri, 8 Mar 2024 15:52:14 -0500
-Message-ID: <CAGdbjm+RMy6M=_PRg_L70g+EZ1FXi0BVub60KT4-GHuv6wLa2Q@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/kernel: skip ROM range scans and validation for
- SEV-SNP guests
-To: Borislav Petkov <bp@alien8.de>
-Cc: Ard Biesheuvel <ardb@kernel.org>, acdunlap@google.com, 
-	alexander.shishkin@linux.intel.com, andrisaar@google.com, bhe@redhat.com, 
-	brijesh.singh@amd.com, dave.hansen@linux.intel.com, dionnaglaze@google.com, 
-	grobler@google.com, hpa@zytor.com, jacobhxu@google.com, jpoimboe@kernel.org, 
-	kai.huang@intel.com, linux-kernel@vger.kernel.org, michael.roth@amd.com, 
-	mingo@redhat.com, peterz@infradead.org, pgonda@google.com, 
-	ross.lagerwall@citrix.com, sidtelang@google.com, tglx@linutronix.de, 
-	thomas.lendacky@amd.com, x86@kernel.org, ytcoode@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <267d9173-2a0e-4006-a858-4e94aeff94df@csgroup.eu>
 
-On Fri, Mar 8, 2024 at 6:01=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrote=
-:
->
-> On Fri, Mar 08, 2024 at 11:30:50AM +0100, Ard Biesheuvel wrote:
-> > Agree with the analysis and the conclusion. However, this will need to
-> > be split into generic and x86 specific changes, given that the DMI
-> > code is shared between all architectures, and explicitly checking for
-> > SEV-SNP support in generic code is not appropriate.
-> >
-> > So what we will need is:
->
-> I was actually thinking of:
->
->         x86_init.resources.probe_roms =3D snp_probe_roms;
->
-> and snp_probe_roms() is an empty stub.
->
-> Problem solved without ugly sprinkling of checks everywhere.
+On Thursday 03/07 at 14:43 +0000, Christophe Leroy wrote:
+> Hi Calvin,
+> 
+> Le 06/03/2024 à 21:05, Calvin Owens a écrit :
+> > [Vous ne recevez pas souvent de courriers de jcalvinowens@gmail.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+> > 
+> > Both BPF_JIT and KPROBES depend on CONFIG_MODULES, but only require
+> > module_alloc() itself, which can be easily separated into a standalone
+> > allocator for executable kernel memory.
+> 
+> Easily maybe, but not as easily as you think, see below.
+> 
+> > 
+> > Thomas Gleixner sent a patch to do that for x86 as part of a larger
+> > series a couple years ago:
+> > 
+> >      https://lore.kernel.org/all/20220716230953.442937066@linutronix.de/
+> > 
+> > I've simply extended that approach to the whole kernel.
+> > 
+> > Signed-off-by: Calvin Owens <jcalvinowens@gmail.com>
+> > ---
+> >   arch/Kconfig                     |   2 +-
+> >   arch/arm/kernel/module.c         |  35 ---------
+> >   arch/arm/mm/Makefile             |   2 +
+> >   arch/arm/mm/module_alloc.c       |  40 ++++++++++
+> >   arch/arm64/kernel/module.c       | 127 ------------------------------
+> >   arch/arm64/mm/Makefile           |   1 +
+> >   arch/arm64/mm/module_alloc.c     | 130 +++++++++++++++++++++++++++++++
+> >   arch/loongarch/kernel/module.c   |   6 --
+> >   arch/loongarch/mm/Makefile       |   2 +
+> >   arch/loongarch/mm/module_alloc.c |  10 +++
+> >   arch/mips/kernel/module.c        |  10 ---
+> >   arch/mips/mm/Makefile            |   2 +
+> >   arch/mips/mm/module_alloc.c      |  13 ++++
+> >   arch/nios2/kernel/module.c       |  20 -----
+> >   arch/nios2/mm/Makefile           |   2 +
+> >   arch/nios2/mm/module_alloc.c     |  22 ++++++
+> >   arch/parisc/kernel/module.c      |  12 ---
+> >   arch/parisc/mm/Makefile          |   1 +
+> >   arch/parisc/mm/module_alloc.c    |  15 ++++
+> >   arch/powerpc/kernel/module.c     |  36 ---------
+> >   arch/powerpc/mm/Makefile         |   1 +
+> >   arch/powerpc/mm/module_alloc.c   |  41 ++++++++++
+> 
+> Missing several powerpc changes to make it work. You must audit every 
+> use of CONFIG_MODULES inside powerpc. Here are a few exemples:
+> 
+> Function get_patch_pfn() to enable text code patching.
+> 
+> arch/powerpc/Kconfig : 	select KASAN_VMALLOC			if KASAN && MODULES
+> 
+> arch/powerpc/include/asm/kasan.h:
+> 
+> #if defined(CONFIG_MODULES) && defined(CONFIG_PPC32)
+> #define KASAN_KERN_START	ALIGN_DOWN(PAGE_OFFSET - SZ_256M, SZ_256M)
+> #else
+> #define KASAN_KERN_START	PAGE_OFFSET
+> #endif
+> 
+> arch/powerpc/kernel/head_8xx.S and arch/powerpc/kernel/head_book3s_32.S: 
+> InstructionTLBMiss interrupt handler must know that there is executable 
+> kernel text outside kernel core.
+> 
+> Function is_module_segment() to identified segments used for module text 
+> and set NX (NoExec) MMU flag on non-module segments.
 
-Agreed, this is nicer; we can just add dmi_setup to x86_init as well
-to implement the same concept for all checks we need.
+Thanks Christophe, I'll fix that up.
+
+I'm sure there are many other issues like this in the arch stuff here,
+I'm going to run them all through QEMU to catch everything I can before
+the next respin.
+
+> >   arch/riscv/kernel/module.c       |  11 ---
+> >   arch/riscv/mm/Makefile           |   1 +
+> >   arch/riscv/mm/module_alloc.c     |  17 ++++
+> >   arch/s390/kernel/module.c        |  37 ---------
+> >   arch/s390/mm/Makefile            |   1 +
+> >   arch/s390/mm/module_alloc.c      |  42 ++++++++++
+> >   arch/sparc/kernel/module.c       |  31 --------
+> >   arch/sparc/mm/Makefile           |   2 +
+> >   arch/sparc/mm/module_alloc.c     |  31 ++++++++
+> >   arch/x86/kernel/ftrace.c         |   2 +-
+> >   arch/x86/kernel/module.c         |  56 -------------
+> >   arch/x86/mm/Makefile             |   2 +
+> >   arch/x86/mm/module_alloc.c       |  59 ++++++++++++++
+> >   fs/proc/kcore.c                  |   2 +-
+> >   kernel/module/Kconfig            |   1 +
+> >   kernel/module/main.c             |  17 ----
+> >   mm/Kconfig                       |   3 +
+> >   mm/Makefile                      |   1 +
+> >   mm/module_alloc.c                |  21 +++++
+> >   mm/vmalloc.c                     |   2 +-
+> >   42 files changed, 467 insertions(+), 402 deletions(-)
+> 
+> ...
+> 
+> > diff --git a/mm/Kconfig b/mm/Kconfig
+> > index ffc3a2ba3a8c..92bfb5ae2e95 100644
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -1261,6 +1261,9 @@ config LOCK_MM_AND_FIND_VMA
+> >   config IOMMU_MM_DATA
+> >          bool
+> > 
+> > +config MODULE_ALLOC
+> > +       def_bool n
+> > +
+> 
+> I'd call it something else than CONFIG_MODULE_ALLOC as you want to use 
+> it when CONFIG_MODULE is not selected.
+> 
+> Something like CONFIG_EXECMEM_ALLOC or CONFIG_DYNAMIC_EXECMEM ?
+> 
+> 
+> 
+> Christophe
 
