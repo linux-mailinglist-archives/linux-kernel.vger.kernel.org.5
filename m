@@ -1,167 +1,293 @@
-Return-Path: <linux-kernel+bounces-97182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BC1B876698
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:48:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 429578766B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D17F1F23B0A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:48:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9DD2820F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9340539C;
-	Fri,  8 Mar 2024 14:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94A65234;
+	Fri,  8 Mar 2024 14:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="X3H313rJ"
-Received: from SG2PR03CU006.outbound.protection.outlook.com (mail-southeastasiaazolkn19010001.outbound.protection.outlook.com [52.103.65.1])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ipMkZbK6"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1587B15C0;
-	Fri,  8 Mar 2024 14:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.65.1
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709909297; cv=fail; b=m7E37ZuFp3ak6b7E+6IDXB3hJfmppgPSkDGyzCm5+A927mKOc4W/47wW9lQhUAW0zADYeUoxkO+pPmQltfd3llSOVixkBzO2mugQhOt6DItt4NJ8/fG1ccG1sYGbAgtnyBfcB8Nob1OrkmZdWR60Enw5XIR2haPNQrJHQsRNkDA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709909297; c=relaxed/simple;
-	bh=I/LVOABpBIhGpOJewgnOWAVS8WHnCUGSKQvAmwLurpY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=lDb3ZDUXBVyZAKcVDTR8xjY0hqkfBBZZkKiaANbQbk/lPHybU7F2HIuInci/I/3dvcXSCbYcXmfoUq0D0YecAq0xAyazdzjKcgXsenwMbJVSctmjaTZIEoXW6n4aAdLL8MENhUPgGjrmkQr/0plpGjvAOxbJnZp3S8e0UrT9WXY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=X3H313rJ; arc=fail smtp.client-ip=52.103.65.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TkAkY4Kr8nSeXHeR7fCw420Z5A7WHlEw9vZzcQbXkzK/cI+1D72NcHy4TjpxqF0h6fkixyJQ4eaRkpuwPpV7UXmReKRXljNjdsmxXFxp19oWZQMA2z3NbCinU1t7QnX9nlnJ8sb7pzhk3rIBFWMpUogJfik6Up9eSItjIXRAfE4eaAER+BC/TIYFc7BHu1EFBXe3Hi8Ms0tIpZtgsTZjkKK7uftypkTrblC+OAeGyCa7CyVFnoUHXR4yuLQJNaXveoBKHluvg+SeGbWTrRKlOU6dr/shKs1e2XxR63feVA1hPOPf+VqWR41NNIjomK9Gd9jn0wpxEU9F7zKW48lcqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GiT58Q4cET/MzgqeOywdikNJvyBwpjE0MrYdYLcfZMc=;
- b=NDG8SnKmriNd7UHciI5PtUo3SFN73lLkfrF8xs+96EljJmZZ3Pl9kCMlnzE1NKPna0AKR2CyuoTfWZqmjdOsJBqq3S1cMigcdKtlAMJpSRAvVH8dkkK89S9ZCE/t7LIj1bLgEu7PItAddvP/UqxxmojOSNLW6xruEH9f0qwrOppMgjF8w5nCfYSSJRkvzD+8tgKOsWlB3m5n+QfQzrMYTZIKnNlSAs0/EYVKGDRICJRcGr0lEcEoC5xFtv3BUfjsNMvrN60tzkx4JLfNXz0y6Zbfx39U/18ssrNQse18UacA2UimJZAqz9jLQ5K734C9m6VG9jkmqLzxAiXsh/Nukw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GiT58Q4cET/MzgqeOywdikNJvyBwpjE0MrYdYLcfZMc=;
- b=X3H313rJQIQSy+p/ytwtJp5m/ea5obbo/gx3BhaOgOko+LnzGf4Cy0bB74F5TzFFj2bEfsA0qtg+L5AXAjrjdEwSGM/DwhCMe+J4TWdc02fgYrgplXnDJRqQfKF5V6IohqO6ybS+aL0kFpMeaRzNSuHXgu6YZKwELgpmhZ8la+wJnIrDg2N/Z40l/ffd02hwl1j6zOSKn9W3zC+NiYBLLJW/rWI91zxK3+925uC38pJU/KQ7xipfG3wJ4J2nuRwU6+CHL42nPXy3diGKWf2iP0cIxSX15zvHk8Upo/V2CFG+0S38NG2kziKRY0jfZGYG9Q5XSzG5lerF/VrfpUMPgA==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by SEZPR06MB5590.apcprd06.prod.outlook.com (2603:1096:101:c8::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Fri, 8 Mar
- 2024 14:48:08 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::aced:cbb9:4616:96d8]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::aced:cbb9:4616:96d8%2]) with mapi id 15.20.7339.035; Fri, 8 Mar 2024
- 14:48:07 +0000
-Message-ID:
- <SEZPR06MB6959494293D7F46397EEF6EE96272@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Fri, 8 Mar 2024 22:48:01 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v10 0/8] net: hisi-femac: add support for
- Hi3798MV200, remove unmaintained compatibles
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
- <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240308-net-v10-0-3684df40897e@outlook.com>
- <16b79c94-2de7-43fc-8e43-75025120c523@linaro.org>
-Content-Language: en-US
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <16b79c94-2de7-43fc-8e43-75025120c523@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [E+g8kFus4NaLIX7dOxom38CGDkDygwrGKHRe/tbdz728KHZrGq4OD8TMlHbtdZIO]
-X-ClientProxiedBy: SG2PR04CA0153.apcprd04.prod.outlook.com (2603:1096:4::15)
- To SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <e9a676d1-fdd7-4e7f-8ea3-4f9c267e3af8@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E8315D0
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709909492; cv=none; b=E1ox18D0ax0N7O0ET0rGnyz5TnbvJGFYIWX3cjHFrenOb3TWFEUXSSORAB+uE5ExVG4OT5tVfTn5SghnltO4xaN36OrohtmVp4VMcfhN/2vqU9+wv2Zaz/fobxGwqUB38V45m8EmYZ6A6boH6+sYma+mAujh87XG8Sem1i6m8ek=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709909492; c=relaxed/simple;
+	bh=o5R28wo1j5yA4yxUQwa0nYdZ/B/7PlrJWZdj4kQ/lyw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gYJMp6+6mmNKqsL811bxqf/cSkgXX5+po/rQMuEZyeyRZkfNiLrmE5PLsm+NfJlpMgfoIGyU5oRESru+EEnixjvUAEXNIocP/Bhhn4n9jwoAmnZE2UYpHmc73WeJhRebndPAswb4T+GTZ/tHpC4XUOJoRua3gvkpb1oNAWHD0pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ipMkZbK6; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428DwAUS016158;
+	Fri, 8 Mar 2024 14:51:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mNKr1aY4tr6ItgDy271C6SAxOqLBFZSiO32Am6yndb4=;
+ b=ipMkZbK6SriI1GneiHJ6BsegQnuiCY7iEDb5HRRGM5fmwnkvjestm1bXPdDlFx6s4QsR
+ 8ACYNaW/3G03KMTB2LF+9yg5jbKv/+WLwePbk2yssec7H4cD/Ig/YwWkZW++sdsXEu3j
+ s+Kfgy6zMOfQtWWn+gof+iY3T3YZoHlHZeCbULVZIB/8w32iwgASFmRGlVXgdEswnFCQ
+ LM39wKoVKPb0aAXtVN1hprRJ5mXYoHQL+cfEEJc5gq6RXAZxcGBrj0EX8Vzwdf/xSgVW
+ +hPuYvzuSrE6uaB+aBHTzuvmn2vDirphbiRu8WjR3bld/k3vJUupifA5E8XT2HR2J9pP Cg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr414s08r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 14:51:16 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 428EpFa6013051;
+	Fri, 8 Mar 2024 14:51:15 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr414s06f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 14:51:15 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428DkgGE010913;
+	Fri, 8 Mar 2024 14:48:24 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmh52vhak-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 14:48:24 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428EmLsM46137848
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 8 Mar 2024 14:48:23 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F177158059;
+	Fri,  8 Mar 2024 14:48:20 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 75D4658043;
+	Fri,  8 Mar 2024 14:48:18 +0000 (GMT)
+Received: from [9.43.68.167] (unknown [9.43.68.167])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  8 Mar 2024 14:48:18 +0000 (GMT)
+Message-ID: <41e11090-a100-48a7-a0dd-c989772822d7@linux.ibm.com>
+Date: Fri, 8 Mar 2024 20:18:17 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SEZPR06MB5590:EE_
-X-MS-Office365-Filtering-Correlation-Id: 548a660f-5af0-415d-d087-08dc3f7ec44c
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ibC9qyiG0vC2TtZPvXQUSPjYAQ5aiBuYTKnD9NL/ifzNF3aZ8M/AcUIFaYrKUiM23OAEo57Nt/Cn+P7qWZibq9dgDkcb7bmOD+o/YFu1b8xhprKRTvXPPqaUOk3iKxarSngqWas3FfhXNx42Z8plL0OY5qRBCQ1ew7B6oIiQ5SOIEiCUL/cATXfkQLfS6OWCxBwdUCdBEVSYzav8T0QO4SAuUbLKEvsgUh03oPgvu3rUAopntbHdGDIWPbFzTsRpRDYNrAz/Ophohi+wvJlEUOcAkixOoobthVKLwLwe8C3j17qciXdWHf977dZKDmOFt/LGoXJcdHqL5MoNvUOudCXmxCnHzjeJnC1g7Po3eFeQiB6bnyqh09xbvb8sZvRrzunl8FvY6oT8SHbEzayqk/Nr3GSGOIU2B0HKZoSLIW/qR9QkgDNjhVkqoApxpF+R9dFZgxMPnLu24vbkmUOT6wbudwwOCYpft35gIFkBA3INo76uXVDg2eVDUf9yxeJsVjGL07hAmGO7lRZ4WG5/Mx6DNs3xUyIjIoasSnStAyaTT3TM18/Gjov6FbXKevPGIhpcvhsXKGm8bDkTuMo0wT8355yRN37oR10nL2NYaJE=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?V2NpZDVZTndvUnB6WU1FT0o4bzBLbENrQzYrL3J0TmV6L0RlWmlHOEluRnhk?=
- =?utf-8?B?Mm1hK0U5SkRkVWtvUFhrTUtzNzdDRHpTY01BY1VZbjI2eXhnakMwYUJBSzdS?=
- =?utf-8?B?SFN3SUU5T0JrY3VqQ3Z6c2J4N1FlcDI5TjBVd2h6L3JtRHBnM0ZScThqTzN3?=
- =?utf-8?B?bFo2K3BNcVcrZkppejNuUkFEN0VFRG5lL3Bnc21hdndrWGdxQXQxWmJacTQ3?=
- =?utf-8?B?bjBmZ1ZoNEJwdm4zVG1ONTM4ZGZSMlA4M1hka0FpOThubS9CMk5QdnprRWE3?=
- =?utf-8?B?Qjg0dHNpKzhEdE9jK0RIN00yS3hGVGljd2FzVHJNWEtZNDMrR2txMnZVc0dV?=
- =?utf-8?B?UTlUY0RJV0hRMGVQd281TS9EYTlOT013aTZrQjFyaENFTk54SGxtcnhnbHZ1?=
- =?utf-8?B?enVMMUhVbDAzczZFSzFsdnF1S2tqZ1VaQng0TUtuYUw0REh0azJrL2tWdjdw?=
- =?utf-8?B?QnJySnBZSkhvcDlJOU1nU0ZjbmVEaEw1WXQyY20vV2NwNm9JZGhjNGJTU2po?=
- =?utf-8?B?NXJBRkQwYU9MZWY0OGJGV1NBb2JwbXdQUnpEMlMvR2tyTHBrakpiWWJ4SVNR?=
- =?utf-8?B?RHZKZ2g3QUVYVG5ZMUZiMnNVaUxUdTdQTXRHaEx0QW5jQzBFL29zaERLWVRO?=
- =?utf-8?B?TWROOGMwMzVySTZtQVpIQ0JJY2MvbjQ1V0g0ZUdTTXBzdmRzOEZzTmxtS0JC?=
- =?utf-8?B?MnNxTjRJRHlOZGJDVktCYWg2Wkt1dFczbDZxaUtEQjlZUDJLY3lVamp5ZHNJ?=
- =?utf-8?B?c1FSU01yZDZvYThkTzVKb0Y3a1FzbGc1QkIxSTR1NXJCNXpMUURId0g1YkR5?=
- =?utf-8?B?cU14WDRCNFJ2TUEyaElSbkxSeCs4UXdEMC9xSXgwR251aWRxZElUWm1xM0tZ?=
- =?utf-8?B?MWthYjBBbTRJSXBmb2FhWmIxNktMb2xrMkVGT0F4bHlCWXdUVzRIa2NCRTZn?=
- =?utf-8?B?QUFFaXdoSENmcHVwTHZSQWlMa1JTY2lMTUVqWXE4Y0tEaXAwREM0U2pEOTYr?=
- =?utf-8?B?UXFqS01Yc1VmYWppRTVVZzBEZ3RGbG9rZ1NpZFV6V08waXFWbW9LdHd0Q0xF?=
- =?utf-8?B?cEE4OCt5ajFCQThoSk9YVXVBOGNIWXkrcUFUWE5wUjhTcGM2ckw0SGoxNENm?=
- =?utf-8?B?M1RNZVlrd0d1NENsRGZCSVBiUytjOFN3ZVV2bFMxTCtwU3MrN1kzWjZTcld1?=
- =?utf-8?B?cnJ0YUxFWXVsR3dtb0Erb1FJNmV2czl0Wkx1V0NxRGhuN0lUNis0RWpqN3pD?=
- =?utf-8?B?RUFFL1NFbTBteUxlT2x3S0tZcXBrSkxoVitiV1p5R2ZKM05VQmVQSFY1cVNV?=
- =?utf-8?B?SzZzYW9wU0JaVGhFQmJWS1loSkpYUTdVSXBONldzaHRwQ3RQUmpITVBCUnVh?=
- =?utf-8?B?cExpeklvcXMzZ2FCaTRpNTFwbklZY01yampmQTFNQ0c5U3dESTRDM0R2R3pp?=
- =?utf-8?B?bERVd2hvWkR0cTFPUTdoZVZXTmFwRW9RZ3hHaTdHbkV4eDdrdmdxSG1TZE5i?=
- =?utf-8?B?RzFZeS9Sclc0ZnBUKzBuRTdwSElObmNoL0x3aE9FYXZZNDk4N0ttK0kxdWE2?=
- =?utf-8?B?US9iUWR3OEZPWm5XUEMrQ2lxOUVNMHdsQWhuNkpiZUEyQ1FDYlVYNlNVZmg0?=
- =?utf-8?B?cFdTZTdTbXorL2VCZE9qeG85OUtIQlZEWUJaMGtneEJIREl6aHFGYis4U1ll?=
- =?utf-8?B?eG93dWtldEpWa2luVzViZWJlN3pMMG5SbkRLY3orS0lQd1d1OUFsbUxLK1pu?=
- =?utf-8?Q?RslKM2bcUXX8n4Xhd+vCi2QbMfcXs6HyvAoiozJ?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 548a660f-5af0-415d-d087-08dc3f7ec44c
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 14:48:07.4107
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5590
-
-On 3/8/2024 10:43 PM, Krzysztof Kozlowski wrote:
-> On 08/03/2024 09:39, Yang Xiwen via B4 Relay wrote:
->> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->> ---
->> Changes in v10:
->> - binding: make hi3516cv300 the fallback compatible (Krzysztof Kozlowski)
->> - driver: drop mv200 match string (Krzysztof Kozlowski)
->> - commit msg: remove #conflicts
->> - Link to v9: https://lore.kernel.org/r/20240307-net-v9-0-6e0cf3e6584d@outlook.com
-> You dropped one patch without explanation.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] sched/balancing: Switch the
+ 'DEFINE_SPINLOCK(balancing)' spinlock into an 'atomic_t
+ sched_balance_running' flag
+Content-Language: en-US
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Valentin Schneider <vschneid@redhat.com>
+References: <20240304094831.3639338-1-mingo@kernel.org>
+ <20240304094831.3639338-2-mingo@kernel.org>
+ <bf612672-f7c3-4585-ac31-e02a1ebf614c@linux.ibm.com>
+ <Zer1Hkxh/UMxs3xs@gmail.com>
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+In-Reply-To: <Zer1Hkxh/UMxs3xs@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: OrO-E_HYdWmR55ah_cR2SGMeWJGZmd_S
+X-Proofpoint-ORIG-GUID: i7ZagJP1pphcK0XFWn907U_imEKtXy24
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ spamscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2403080119
 
 
-You are right. It's a stupid mistake. That's the key patch in this 
-patchset. I think i was going to only remove the new compatible in that 
-commit but somehow dropped the entire commit.
+
+On 3/8/24 4:53 PM, Ingo Molnar wrote:
+> 
+> * Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
+> 
+>> system is at 75% load		<-- 	25.6% contention
+>> 113K probe:rebalance_domains_L37
+>> 84K probe:rebalance_domains_L55
+>>
+>> 87
+>> system is at 100% load		<--	87.5% contention.
+>> 64K probe:rebalance_domains_L37
+>> 8K probe:rebalance_domains_L55
+>>
+>>
+>> A few reasons for contentions could be: 
+>>
+>> 1. idle load balance is running and some other cpu is becoming idle, and 
+>>    tries newidle_balance.
+>>
+>> 2. when system is busy, every CPU would do busy balancing, it would 
+>>    contend for the lock. It will not do balance as should_we_balance says 
+>>    this CPU need not balance. It bails out and release the lock.
+> 
+> Thanks, these measurements are really useful!
+> 
+> Would it be possible to disambiguate these two cases?
+
+I think its not case 1, since newidle_balance doesnt even take that lock. So 
+likely its case 2. 
+
+> 
+> I think we should probably do something about this contention on this large 
+> system: especially if #2 'no work to be done' bailout is the common case.
+> 
 
 
->
-> Best regards,
-> Krzysztof
->
+I have been thinking would it be right to move this balancing trylock/atomic after 
+should_we_balance(swb). This does reduce the number of times this checked/updated 
+significantly. Contention is still present. That's possible at higher utilization 
+when there are multiple NUMA domains. one CPU in each NUMA domain can contend if their invocation
+is aligned. 
 
--- 
-Regards,
-Yang Xiwen
+That makes sense since, Right now a CPU takes lock, checks if it can balance, do balance if yes and
+ then releases the lock. If the lock is taken after swb then also, CPU checks if it can balance, 
+tries to take the lock and releases the lock if it did. If lock is contended, it bails out of 
+load_balance. That is the current behaviour as well, or I am completely wrong. 
+
+Not sure in which scenarios that would hurt. we could do this after this series. 
+This may need wider functional testing to make sure we don't regress badly in some cases. 
+This is only an *idea* as of now. 
+
+Perf probes at spin_trylock and spin_unlock codepoints on the same 224CPU, 6 NUMA node system. 
+6.8-rc6                                                                         
+-----------------------------------------                                       
+idle system:                                                                    
+449 probe:rebalance_domains_L37                                                 
+377 probe:rebalance_domains_L55                                                 
+stress-ng --cpu=$(nproc) -l 51     << 51% load                                               
+88K probe:rebalance_domains_L37                                                 
+77K probe:rebalance_domains_L55                                                 
+stress-ng --cpu=$(nproc) -l 100    << 100% load                                             
+41K probe:rebalance_domains_L37                                                 
+10K probe:rebalance_domains_L55                                                 
+                                                                                
++below patch                                                                          
+----------------------------------------                                        
+idle system:                                                                    
+462 probe:load_balance_L35                                                      
+394 probe:load_balance_L274                                                     
+stress-ng --cpu=$(nproc) -l 51      << 51% load                                            
+5K probe:load_balance_L35                       	<<-- almost 15x less                                
+4K probe:load_balance_L274                                                      
+stress-ng --cpu=$(nproc) -l 100     << 100% load                                            
+8K probe:load_balance_L35                                                       
+3K probe:load_balance_L274 				<<-- almost 4x less
+
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 62f247bdec86..3a8de7454377 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11272,6 +11272,7 @@ static int should_we_balance(struct lb_env *env)
+ 	return group_balance_cpu(sg) == env->dst_cpu;
+ }
+
++static DEFINE_SPINLOCK(balancing);
+ /*
+  * Check this_cpu to ensure it is balanced within domain. Attempt to move
+  * tasks if there is an imbalance.
+@@ -11286,6 +11287,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+ 	struct rq *busiest;
+ 	struct rq_flags rf;
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(load_balance_mask);
++	int need_serialize;
+ 	struct lb_env env = {
+ 		.sd		= sd,
+ 		.dst_cpu	= this_cpu,
+@@ -11308,6 +11310,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+ 		goto out_balanced;
+ 	}
+
++	need_serialize = sd->flags & SD_SERIALIZE;
++	if (need_serialize) {
++		if (!spin_trylock(&balancing))
++			goto lockout;
++	}
++
+ 	group = find_busiest_group(&env);
+ 	if (!group) {
+ 		schedstat_inc(sd->lb_nobusyg[idle]);
+@@ -11434,6 +11442,8 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+ 			if (!cpumask_subset(cpus, env.dst_grpmask)) {
+ 				env.loop = 0;
+ 				env.loop_break = SCHED_NR_MIGRATE_BREAK;
++				if (need_serialize)
++					spin_unlock(&balancing);
+ 				goto redo;
+ 			}
+ 			goto out_all_pinned;
+@@ -11540,7 +11550,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+ 	     sd->balance_interval < MAX_PINNED_INTERVAL) ||
+ 	    sd->balance_interval < sd->max_interval)
+ 		sd->balance_interval *= 2;
++
+ out:
++	if (need_serialize)
++		spin_unlock(&balancing);
++
++lockout:
+ 	return ld_moved;
+ }
+
+@@ -11665,7 +11680,6 @@ static int active_load_balance_cpu_stop(void *data)
+ 	return 0;
+ }
+
+-static DEFINE_SPINLOCK(balancing);
+
+ /*
+  * Scale the max load_balance interval with the number of CPUs in the system.
+@@ -11716,7 +11730,7 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
+ 	/* Earliest time when we have to do rebalance again */
+ 	unsigned long next_balance = jiffies + 60*HZ;
+ 	int update_next_balance = 0;
+-	int need_serialize, need_decay = 0;
++	int need_decay = 0;
+ 	u64 max_cost = 0;
+
+ 	rcu_read_lock();
+@@ -11741,12 +11755,6 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
+
+ 		interval = get_sd_balance_interval(sd, busy);
+
+-		need_serialize = sd->flags & SD_SERIALIZE;
+-		if (need_serialize) {
+-			if (!spin_trylock(&balancing))
+-				goto out;
+-		}
+-
+ 		if (time_after_eq(jiffies, sd->last_balance + interval)) {
+ 			if (load_balance(cpu, rq, sd, idle, &continue_balancing)) {
+ 				/*
+@@ -11760,9 +11768,7 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
+ 			sd->last_balance = jiffies;
+ 			interval = get_sd_balance_interval(sd, busy);
+ 		}
+-		if (need_serialize)
+-			spin_unlock(&balancing);
+-out:
++
+ 		if (time_after(next_balance, sd->last_balance + interval)) {
+ 			next_balance = sd->last_balance + interval;
+ 			update_next_balance = 1;
+
+
 
 
