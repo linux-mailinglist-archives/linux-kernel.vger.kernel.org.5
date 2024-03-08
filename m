@@ -1,184 +1,153 @@
-Return-Path: <linux-kernel+bounces-96624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD74875F0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:05:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76933875EE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0268B1F21C7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:05:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30A9828300E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5705651009;
-	Fri,  8 Mar 2024 08:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="uwbJryeQ"
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA89A5027B;
+	Fri,  8 Mar 2024 07:56:28 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B798481DC;
-	Fri,  8 Mar 2024 08:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0FF44F61C
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709885090; cv=none; b=mmgtuW2HpyMCQ6X0Ws+SrBCifiTqxwnfPZ5vnTBgcBwsCcuuHAaOqtmdaJUfWH+H5kgfmKcQRV59/+Vm9VRaubSgCM9oDz7YV0I+ZhB8+wan/hgormosgi4lbgimnqkxBikJgxnSI3Go1HfQEas3NlXDTW0xhZHfIxhmyV+OuLo=
+	t=1709884588; cv=none; b=YMWhsD89WfT01cDkQoOv/5FIN0MsxQtW2AhAcH+87SySjnrffg3F29aGLQfetjRV4pN/ZUHnMFXTas8xjBHdsQXAR9gFl6iO+PD+ccNTnEJyp/6pxAk6PGdbRIg0Y1rqyV0jrRo+LtajViJq51MwndmO/bNxKnAtNQdli03chq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709885090; c=relaxed/simple;
-	bh=QZTAxiGWwpEexgLFe9jZSIY9NbeDwvSTqVQZnYmTvI4=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=MRqIfpAkpm1Eb8i7FMuyZdbZLYAT9DWijx97qmpiflCvCtLhwi4Uf8CL8Ds0/yny3M+DnWSr/CPJNcZzh/CphzJlF1DLLVz3jpL2rqEy9bKTOAVruS0B2cUJKb5BmS2DjS0FYch1jYyE6LETpcI2TQTkv8AkfjIGWDHUxpYn/Tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=uwbJryeQ; arc=none smtp.client-ip=193.238.174.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-	by mg.ssi.bg (Proxmox) with ESMTP id 3DAD4210EA;
-	Fri,  8 Mar 2024 09:55:40 +0200 (EET)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-	by mg.ssi.bg (Proxmox) with ESMTPS id 21A7D20E79;
-	Fri,  8 Mar 2024 09:55:40 +0200 (EET)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by ink.ssi.bg (Postfix) with ESMTPSA id 840543C0439;
-	Fri,  8 Mar 2024 09:55:34 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-	t=1709884536; bh=QZTAxiGWwpEexgLFe9jZSIY9NbeDwvSTqVQZnYmTvI4=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References;
-	b=uwbJryeQTqOraXtDwW0CqiNcFIwZl1Qg5NaS2QLFcunSAsCGPap9cjb43fPYdi53l
-	 yiO1mtQ2jGfow6vIwAd/dSXxzzMFuiOQJuUkprRvsRYVwrlCIWyOd1yjJGAJfYFHrM
-	 MLoG9QLnx96tgCc/7vAyISjjV9S7n3/rKy9GQ6pc=
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 4287tOn7014553;
-	Fri, 8 Mar 2024 09:55:26 +0200
-Date: Fri, 8 Mar 2024 09:55:24 +0200 (EET)
-From: Julian Anastasov <ja@ssi.bg>
-To: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-cc: Simon Horman <horms@verge.net.au>, gyroidos@aisec.fraunhofer.de,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipvs: allow netlink configuration from non-initial user
- namespace
-In-Reply-To: <20240307203107.63815-1-michael.weiss@aisec.fraunhofer.de>
-Message-ID: <e1c8e477-ae59-48de-4aa8-e6df09013831@ssi.bg>
-References: <20240307203107.63815-1-michael.weiss@aisec.fraunhofer.de>
+	s=arc-20240116; t=1709884588; c=relaxed/simple;
+	bh=2+BbuL8rUlPJeNCPQtLsGDwZHHZX44F9NZJvGA4Digk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aoGVT6ZmvO/Upd9rl/OK4/qrRlVaoAylf2nanL9bKIoFoE8f5Ebi7j0iz4+AEKOjMM3mSZQequbSiTRocpwkSDOSbaWs/LNkd9SIm5bByy5UgbJyhIjbd8CGczAVMFXpg9JOtEo4o36dm4tBAQ7ivpVOpAIH5akJF5PbYvJTkp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riV5Z-00040m-MZ; Fri, 08 Mar 2024 08:56:21 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riV5Y-0055tI-L2; Fri, 08 Mar 2024 08:56:20 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riV5Y-0021Vz-1p;
+	Fri, 08 Mar 2024 08:56:20 +0100
+Date: Fri, 8 Mar 2024 08:56:20 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v1 0/5] w1: gpio: A set of cleanups
+Message-ID: <spc5otfv7s2wtunhbxdorm5bh5snvfbggoaqghowrxm2osbeoz@b2dsqa3amvtg>
+References: <20240307143644.3787260-1-andriy.shevchenko@linux.intel.com>
+ <vsaqquulifmpk5fanl4i67nzag5huyibzy5lfr2jdsgk2dv7t3@5i4opts7npsj>
+ <ZenuzMtybS4CzwHv@smile.fi.intel.com>
+ <46qzdowo2om2bbuokiksah27x4qok7hffiefwsj4bihz2xg62y@hxrag6h55zw7>
+ <Zen_7fDQghq6GJ_s@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811672-396118792-1709884526=:4390"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="djpsrzmcypk6c5jq"
+Content-Disposition: inline
+In-Reply-To: <Zen_7fDQghq6GJ_s@smile.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
----1463811672-396118792-1709884526=:4390
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+--djpsrzmcypk6c5jq
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hello Andy,
 
-	Hello,
+On Thu, Mar 07, 2024 at 07:57:01PM +0200, Andy Shevchenko wrote:
+> On Thu, Mar 07, 2024 at 06:12:46PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Thu, Mar 07, 2024 at 06:43:56PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Mar 07, 2024 at 05:38:54PM +0100, Uwe Kleine-K=F6nig wrote:
+>=20
+> ...
+>=20
+> > > > I wonder about your choice of recipients. I would have added Krzysz=
+tof
+> > > > to To and me at most to Cc:.
+> > >=20
+> > > It's automatically generated using get_maintainers.pl.
+> > > See details in the source of the script [1] I'm using.
+> > >=20
+> > > [1]: https://github.com/andy-shev/home-bin-tools/blob/master/ge2maint=
+ainer.sh
+> >=20
+> > Getting something wrong automatically isn't an excuse for getting it
+> > wrong :-)
+>=20
+> I'm not sure why you think it's wrong. You worked on the code lately and =
+Git
+> heuristics considered that over threshold of 67%.
 
-On Thu, 7 Mar 2024, Michael Weiß wrote:
+When I send a patch I send it "to" the maintainers, because it's them
+who I want an action from. This also matches the semantic of M: in
+MAINTAINERS which requests to use these contaces in "To:".
 
-> Configuring ipvs in a non-initial user namespace using the genl
-> netlink interface, e.g., by 'ipvsadm' is currently resulting in an
-> '-EPERM'. This is due to the use of GENL_ADMIN_PERM flag in
-> 'ip_vs_ctl.c'.
-> 
-> Similarly to other genl interfaces, we switch to the use of
-> GENL_UNS_ADMIN_PERM flag which allows connection from non-initial
-> user namespace. Thus, it would be feasible to configure ipvs using
-> the genl interface also from within an unprivileged system container.
-> 
-> Since adding of new services and new dests are triggered from
-> userspace, accounting for the corresponding memory allocations in
-> ip_vs_new_dest() and ip_vs_add_service() is activated.
-> 
-> We tested this by simply running some samples from "man ipvsadm"
-> within an unprivileged user namespaced system container in GyroidOS.
-> Further, we successfully passed an adapted version of the ipvs
-> selftest in 'tools/testing/selftests/netfilter/ipvs.sh' using
-> preliminary created network namespaces from unprivileged GyroidOS
-> containers.
+> > That scripts has:
+> >=20
+> > to=3D$(git show -$count "$COMMIT" | scripts/get_maintainer.pl $OPTS --n=
+o-m --no-r)
+> > cc=3D$(git show -$count "$COMMIT" | scripts/get_maintainer.pl $OPTS --n=
+o-l)
+> >=20
+> > I recommend to swap the values for to and cc here to make sure you have
+> > the maintainer in $to and the relevant lists in $cc.
 
-	I planned such change but as followup patchset to other
-work which converts many structures to be per-netns.
+Thinking again, this is wrong. I'd recommend:
 
-	There is a RFC v2 patchset for reference:
+	to=3D$(git show -$count "$COMMIT" | scripts/get_maintainer.pl $OPTS --no-r=
+ --no-l)
+	cc=3D$(git show -$count "$COMMIT" | scripts/get_maintainer.pl $OPTS --no-m)
 
-https://archive.linuxvirtualserver.org/html/lvs-devel/2023-12/index.html
+> Btw, you are the first one for the entire life cycle of that script (3 ye=
+ars?)
+> who complains about such details... So, patches are welcome! :-)
 
-	My goal was to isolate the different namespaces as much as
-possible: different structures, different kthreads, etc. with the
-goal to reduce the security risks of giving power to unprivileged roots.
-Such isolation should help when namespaces are served from different CPUs.
+I won't do more than the above hint here.
 
-	May be I should push fresh v3 soon, so that we can later use
-GFP_KERNEL_ACCOUNT not only for services and dests but also
-for allocations by schedulers, estimators, etc. The access to
-sysctl vars should be enabled too, around comment
-"Don't export sysctls to unprivileged users",
-alloc_percpu => alloc_percpu_gfp(,GFP_KERNEL_ACCOUNT),
-SLAB_ACCOUNT for kmem_cache_create, not sure about __GFP_NOWARN and
-__GFP_NORETRY usage too.
+Best regards
+Uwe
 
-	Not sure about the sysctl vars: now they are cloned from
-init_net, do we give full access for writing, some can be privileged,
-etc.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-	I didn't push such changes yet because I'm not sure what
-is needed: looks like, for now, what was needed is root from init_net to 
-control rules in different netns and there was no demand from the 
-virtualization world to extend this. If we can clearly define what is 
-good and what is bad from security perspective, we can go with such 
-changes after pushing the above patchset, i.e. the GENL_UNS_ADMIN_PERM
-change should follow all other changes.
+--djpsrzmcypk6c5jq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
-> ---
->  net/netfilter/ipvs/ip_vs_ctl.c | 36 +++++++++++++++++-----------------
->  1 file changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-> index 143a341bbc0a..d39120c64207 100644
-> --- a/net/netfilter/ipvs/ip_vs_ctl.c
-> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-> @@ -1080,7 +1080,7 @@ ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
->  			return -EINVAL;
->  	}
->  
-> -	dest = kzalloc(sizeof(struct ip_vs_dest), GFP_KERNEL);
-> +	dest = kzalloc(sizeof(struct ip_vs_dest), GFP_KERNEL_ACCOUNT);
->  	if (dest == NULL)
->  		return -ENOMEM;
->  
-> @@ -1421,7 +1421,7 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
->  		ret_hooks = ret;
->  	}
->  
-> -	svc = kzalloc(sizeof(struct ip_vs_service), GFP_KERNEL);
-> +	svc = kzalloc(sizeof(struct ip_vs_service), GFP_KERNEL_ACCOUNT);
->  	if (svc == NULL) {
->  		IP_VS_DBG(1, "%s(): no memory\n", __func__);
->  		ret = -ENOMEM;
-> @@ -4139,98 +4139,98 @@ static const struct genl_small_ops ip_vs_genl_ops[] = {
->  	{
->  		.cmd	= IPVS_CMD_NEW_SERVICE,
->  		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
-> -		.flags	= GENL_ADMIN_PERM,
-> +		.flags	= GENL_UNS_ADMIN_PERM,
->  		.doit	= ip_vs_genl_set_cmd,
-..
+-----BEGIN PGP SIGNATURE-----
 
-Regards
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXqxKMACgkQj4D7WH0S
+/k74SggAsufoZoLLydlPozRRoUjVIvHER/jsy1iw/q11jz+zCHg3t7LfeMLXO9UJ
+CYJcjY8MFO01BldAV0qEhOa9SLZmjpDmUmryAgnAkw390rpeEgWYbVMbcdmUBZXZ
+2FZ3vi9JMKcqvNsb+rxeYJONixMvUg22nBcPZbzkrfpJlqfJZQH+Dt+mJwbXQbHh
+FOUhmWxVLkJQJYwjrEoN1NNe6IRYQO0hGT6pof53a9v8NbRILtRLovGQ+U+fT1BX
+MdsYl2vZHRfYn5EC8+5dVGgfZrL/VtVaOT/gz0jXDQlgSpW+wLZCUaB4j/JA3WH/
+kqeA3tCln6zzKZnyMK3rVuu0EclBIg==
+=s+ms
+-----END PGP SIGNATURE-----
 
---
-Julian Anastasov <ja@ssi.bg>
----1463811672-396118792-1709884526=:4390--
-
+--djpsrzmcypk6c5jq--
 
