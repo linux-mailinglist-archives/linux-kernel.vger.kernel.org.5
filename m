@@ -1,154 +1,174 @@
-Return-Path: <linux-kernel+bounces-97041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 494E08764CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:12:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 038928764D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1C922811A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:12:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 631C3B212FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392B71EF0D;
-	Fri,  8 Mar 2024 13:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2510A1F61C;
+	Fri,  8 Mar 2024 13:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OFUZ6dr3"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J1qUcPK/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29DC1D52B;
-	Fri,  8 Mar 2024 13:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABFC10A34;
+	Fri,  8 Mar 2024 13:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709903520; cv=none; b=BEtPQ+PvLeJ4tf/LEjmky9ZvRmC0KY8v8bBM6kRTYwEweKkL8VKSxjGVxgRNCmltvqcHEf9P6mepPkD4WFvvmC1mKD4bvjT3rITMy8rTqZ11bhk+/3YXAwoPqaCGNaNyyx038+RfrQwx3DaZfiGZeWQH2OIv8fbtTE46tl3QA38=
+	t=1709903739; cv=none; b=dR7Rl+Rj9WrXIHjzYmK4641kE0ltKoN0m0T358HjjAnaIkqFNlG/6Hwr1AyVXa7h1mdadLuDvLRl/9u/elZ+zbboxWjb5GP0kG5YwF+xaA01GbnEWNTkHPKkKRak+RI1SP1cw4rsjzXXxSQzHpE5NxDf0c1gqQyjs7ATAeqOabE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709903520; c=relaxed/simple;
-	bh=gcumVgz1ssgz9ZPeWgypFCiLt/j3KSXG86VjjMzVmFE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AhfGo3ObUPs563mEzH4f4OYiSF9RCR1CxlCZ8A3SfVFq0uDVZMme1+BeUZxyyhMOSmcmxGpChKluerlQlJTfdMeBtjsruCV8Jep6oViTtZJwUyVXlUKJyDUrMXbKZtBcsPa4GKRHlFBJtqPSo7ygJ/mMdhAlod1/RMGSLPgiQHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OFUZ6dr3; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709903517;
-	bh=gcumVgz1ssgz9ZPeWgypFCiLt/j3KSXG86VjjMzVmFE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OFUZ6dr3F1lEsOdziSh5iwWY+UOvrol7INXFb/YVJoPZcr/67tN5ElJO33CONLEwu
-	 jdM7ILmp+yEkVvAMZK3viS9V45N2da7WyUONURr75CvqnkVAJgZx7LmVmTTssmB2od
-	 za0WZfOE8ZXuIjBG+nk/+6pZJ5wGkSykYFNDG8RwV6fF9B6SUysRdR+uHUwtm1ivTI
-	 2lpr6Xe4bCkPOisjUdxKQX/f5IMNvPYoAZJWISRZqN5ERMj72XH9SPdxNQpgaknzsm
-	 QdM3OzAy8y6lYc914cbvFdGRghvUJaLlMpT17BelaN52+YhG16pvVoQVB0bdcfJ9pe
-	 kEbMUAG4ClaDQ==
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0BFE837813CA;
-	Fri,  8 Mar 2024 13:11:55 +0000 (UTC)
-Date: Fri, 8 Mar 2024 08:11:53 -0500
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Sebastian Reichel <sre@kernel.org>, kernel@collabora.com,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: sbs-battery: Handle unsupported
- PROP_TIME_TO_EMPTY_NOW
-Message-ID: <58fbe746-528f-4761-99ae-a42fe2c41c38@notapiano>
-References: <20240307-sbs-time-empty-now-error-v1-1-18d0f8702330@collabora.com>
- <3a0910c4-87f4-4c0f-b6b6-3f7bf553a5f0@collabora.com>
+	s=arc-20240116; t=1709903739; c=relaxed/simple;
+	bh=2lv2DSARDuw3tSavxV9vS0kFJqwJfAopismVczk0YdI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AtDG+atmSuAcbwpRPmsRvHJ0aXinJuWcWyCV9QEJnYHYCWzDML4RnL9OzlvI23dYYtE1ZNUQbaeHiNGJmvoC+yAOBYWuiR4WR1D9KpQRfZLZmzx1Mrx5xnyETwloq1qMbHQK45UUVcLv+2u8VXsV2EW3cUETmTe6Qp3YrnFigqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J1qUcPK/; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709903738; x=1741439738;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2lv2DSARDuw3tSavxV9vS0kFJqwJfAopismVczk0YdI=;
+  b=J1qUcPK/FUyAMDMA+hcfhfeSTmcgixouhnOwdzLUdXP6TO3FHzEsNcKJ
+   zzeajFyVeWnTcjcobvbJD0WCniNzi00vPfbCtytllS3E+h87ZcyAo1vcK
+   hL/w2PqSXeFNeP6Px2YRgDdZ2VGXfSIqltpnFOAZLO93Yg30SMCU5IgNe
+   OAA3LdCoikSq2sCOjTGvnKyj+hAnFPQrkTD7VrP4wCWPi0oR2MYMGwIOl
+   GqKMczhzBExDAoapqLs4w1MxgTdMAowFdYzxcZD2IHDGMXhsuUClI226G
+   DVvi6cqqmRNbDLMcrzPk04C9EyXhc7FF8eX0J5yOjFbpL6nQwmmaNSt4o
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15342335"
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
+   d="scan'208";a="15342335"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:15:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
+   d="scan'208";a="15161335"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.249.46.63])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:15:20 -0800
+From: Adrian Hunter <adrian.hunter@intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	John Stultz <jstultz@google.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org
+Subject: [PATCH 00/19] timekeeping: Handle potential multiplication overflow
+Date: Fri,  8 Mar 2024 15:14:53 +0200
+Message-Id: <20240308131512.44324-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3a0910c4-87f4-4c0f-b6b6-3f7bf553a5f0@collabora.com>
 
-On Fri, Mar 08, 2024 at 10:26:29AM +0100, AngeloGioacchino Del Regno wrote:
-> Il 07/03/24 23:05, Nícolas F. R. A. Prado ha scritto:
-> > Despite the RunTimeToEmpty() (0x11) function being defined in the SBS
-> > specification as required, it seems that not all batteries implement it.
-> > On platforms with such batteries, reading the property will cause an
-> > error to be printed:
-> > 
-> > power_supply sbs-8-000b: driver failed to report `time_to_empty_now' property: -5
-> > 
-> > This not only pollutes the log, distracting from real problems on the
-> > device, but also prevents the uevent file from being read since it
-> > contains all properties, including the faulty one.
-> > 
-> > The following table summarizes the findings for a handful of platforms:
-> > 
-> > Platform                                Status  Manufacturer    Model
-> > ------------------------------------------------------------------------
-> > mt8186-corsola-steelix-sku131072        OK      BYD             L22B3PG0
-> > mt8195-cherry-tomato-r2                 NOT OK  PANASON         AP16L5J
-> > mt8192-asurada-spherion-r0              NOT OK  PANASON         AP15O5L
-> > mt8183-kukui-jacuzzi-juniper-sku16      NOT OK  LGC KT0         AP16L8J
-> > mt8173-elm-hana                         OK      Sunwoda         L18D3PG1
-> > sc7180-trogdor-lazor-limozeen-nots-r5   NOT OK  Murata          AP18C4K
-> > sc7180-trogdor-kingoftown               NOT OK  333-AC-0D-A     GG02047XL
-> > rk3399-gru-kevin                        OK      SDI             4352D51
-> > 
-> > Identify during probe, based on the battery model, if this is one of the
-> > quirky batteries, and if so, don't register the
-> > POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW property.
-> > 
-> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> > ---
-> >   drivers/power/supply/sbs-battery.c | 45 ++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 45 insertions(+)
-> > 
-> > diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
-> > index a6c204c08232..85ff331cf87a 100644
-> > --- a/drivers/power/supply/sbs-battery.c
-> > +++ b/drivers/power/supply/sbs-battery.c
-> > @@ -1112,6 +1112,49 @@ static const struct power_supply_desc sbs_default_desc = {
-> >   	.external_power_changed = sbs_external_power_changed,
-> >   };
-> > +static const char * const unsupported_time_to_empty_now_models[] = {
-> > +	"AP16L5J", "AP15O5L", "AP16L8J", "AP18C4K", "GG02047XL"
-> > +};
-> 
-> I think that you must make sure that this is seen as a quirk, rather than
-> "something normal" because - as you said - the SBS specification says that
-> the TIME_TO_EMPTY_NOW is *required*, so, this is a *deviation* from the spec
-> (so, the SBS implementation in those devices is *out of spec*!).
-> 
-> static const char * const quirk_remove_time_to_empty_now_models
-> or                        quirk_unsupported_time_to_empty_now_models
-> 
-> ...the former, if you want to avoid having a variable name that is 5000 characters
-> long (:-P); the latter, if you don't care about that (there's no rule anyway).
+Hi
 
-(and I just noticed I forgot the usual sbs_ prefix here, so it'll get a few more
-characters ;P)
+Kernel timekeeping calculates a clock value by keeping a base value and
+adding the number of nanoseconds since that time. Those nanoseconds are
+calculated from the clocksource delta. Then periodically, the base value is
+moved forwards (refer timekeeping_advance()) which is done by the local
+timer interrupt handler. It is designed such that there will always be a
+timer interrupt before the delta becomes big enough to overflow the 64-bit
+multiplication used in the conversion of delta to nanoseconds (refer
+timekeeping_delta_to_ns()). Obviously if timer interrupts are stopped, then
+the multiplication does eventually overflow.
 
-> 
-> 
-> Besides that, since I didn't like what I just saw, I looked for different
-> alternatives; the only other one is to de-constify the sbs_properties[] array,
-> which is something that I also dislike anyway.
-> 
-> I'm not sure if deconstifying that could be acceptable, but if it would, you
-> would be able to remove-reorder without copies of this and that.
+Timekeeping multiplication overflow results in a "time loop", typically
+cycling about every 15 minutes with x86 TSC, for example starting at 10:00:
 
-Personally I don't see an issue with creating a new struct and copying things
-over - this will only happen during probe and for the quirky batteries anyway -
-and it's nice to keep things const for the common case.
+  10:00, 10:01, 10:02 ... 10:15, 10:00, 10:01, ... 10:15, 10:00, 10:01 ...
 
-> 
-> Anyway - the only thing I really want here is to make sure that this is seen
-> as a quirk and a clear deviation from the specification - everything else is
-> a plus, and not really a blocker for me.
+Because a VMM can deliberately stop timer interrupts for a guest, a virtual
+machine can be exposed to this issue.
 
-Yep, and you're right on that. I'll make sure to slap the "quirk" sticker on the
-variable and function for next version.
+TDX maintains a monotonically increasing virtual TSC for a TDX guest, so
+the overflow is allowing a backwards movement of timekeeping that would not
+happen otherwise.
 
-Thanks,
-Nícolas
+It is considered this could break security of cryptographic protocols that
+rely on the timestamps for freshness / replay protection, and consequently
+the kernel should prevent such a time loop.
+
+Handle multiplication overflows by falling back to higher precision
+calculation when the possibility of an overflow is detected.
+
+Extend the facility also to VDSO, dependent on new config option
+GENERIC_VDSO_OVERFLOW_PROTECT which is selected by x86 only, so other
+architectures are not affected. The result is a calculation that has
+similar performance as before. Most machines showed performance benefit,
+except Skylake-based hardware such as Intel Kaby Lake which was seen <1%
+worse.
+
+
+Adrian Hunter (19):
+      vdso: Consolidate vdso_calc_delta()
+      vdso: Consolidate nanoseconds calculation
+      vdso: Add CONFIG_GENERIC_VDSO_OVERFLOW_PROTECT
+      math64: Tidy mul_u64_u32_shr()
+      vdso: math64: Provide mul_u64_u32_add_u64_shr()
+      vdso: Add vdso_data::max_cycles
+      vdso: Make delta calculation overflow safe
+      x86/vdso: Make delta calculation overflow safe
+      timekeeping: Move timekeeping helper functions
+      timekeeping: Rename fast_tk_get_delta_ns() to __timekeeping_get_ns()
+      timekeeping: Tidy timekeeping_cycles_to_ns() slightly
+      timekeeping: Reuse timekeeping_cycles_to_ns()
+      timekeeping: Refactor timekeeping helpers
+      timekeeping: Consolidate timekeeping helpers
+      timekeeping: Fold in timekeeping_delta_to_ns()
+      timekeeping: Prepare timekeeping_cycles_to_ns() for overflow safety
+      timekeeping: Make delta calculation overflow safe
+      timekeeping: Let timekeeping_cycles_to_ns() handle both under and overflow
+      clocksource: Make watchdog and suspend-timing multiplication overflow safe
+
+ arch/powerpc/include/asm/vdso/gettimeofday.h |  17 +----
+ arch/s390/include/asm/vdso/gettimeofday.h    |   7 +-
+ arch/x86/Kconfig                             |   1 +
+ arch/x86/include/asm/vdso/gettimeofday.h     |  42 +++++++----
+ include/linux/math64.h                       |   8 +-
+ include/vdso/datapage.h                      |   4 +
+ include/vdso/math64.h                        |  38 ++++++++++
+ kernel/time/clocksource.c                    |  42 +++++------
+ kernel/time/timekeeping.c                    | 106 ++++++++++++++-------------
+ kernel/time/vsyscall.c                       |   6 ++
+ lib/vdso/Kconfig                             |   7 ++
+ lib/vdso/gettimeofday.c                      |  55 +++++++++-----
+ 12 files changed, 199 insertions(+), 134 deletions(-)
+
+
+Regards
+Adrian
 
