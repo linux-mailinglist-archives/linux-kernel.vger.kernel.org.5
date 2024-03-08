@@ -1,114 +1,105 @@
-Return-Path: <linux-kernel+bounces-97554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34B20876BDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:32:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43016876BE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 642811C21894
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:32:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73EEC1C2174C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25D555E071;
-	Fri,  8 Mar 2024 20:32:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2161A5E077;
+	Fri,  8 Mar 2024 20:33:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WtRHIJfP"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Y9f9RbSq";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MOUx0g/2"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323423610A;
-	Fri,  8 Mar 2024 20:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE6E31A66;
+	Fri,  8 Mar 2024 20:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709929926; cv=none; b=Zr4w4DC4bamRffbknaHE/GPe03FnXmSOv5t36gA2sw/LSajSi/UOwvGyF7JJ3Pp5CGXFTzzugJC8grPmvn2i4++Qix7kEVlgEAAHiYPHymXM0KWW9cW8sxx84oiY1Y+zvKIa60U6v2Gv5bbfHUKlUHFX41O+PhfRLxxIC29S7g8=
+	t=1709930014; cv=none; b=Qi3ePBDTcPylSN0z8WBFv0gYP/1zfGynknf2KWY/6IZjXNuD+JLJfFMmIknRlF5yDWajAT6/ntLmoUrlBReI+5m8DAPnAj1LDW2AVWBEZCaUajct9GYa4A6eK0uje88AAyXog66cDzrMWl9OJ2Wo4cqDesymIvC0cJoZnZ590co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709929926; c=relaxed/simple;
-	bh=SuGLD/ItYBvvW6ON69TwJnG0wH12j7uSmEc/7cNf2sE=;
+	s=arc-20240116; t=1709930014; c=relaxed/simple;
+	bh=mbU8isap81SxzNzDKLf+EXRxnmhyRYSIpTTrNxuafgw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OejpKHiRJ0NrH5Nf8/6oYuemByFnLb16hPPb1ApcEC0dCkAuI44ZNW1Wn7fjZxMO61o9OvRb9rJaPqvERUud6ym82R2FUsi4KSabRtOOkzuOi2DUMl/a59uR2hGHOBAT3QVIQwG6hIz4DfwgIgAvGXueOV4QTmMhGqggFhTstzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WtRHIJfP; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709929924; x=1741465924;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SuGLD/ItYBvvW6ON69TwJnG0wH12j7uSmEc/7cNf2sE=;
-  b=WtRHIJfPY69sZrXTXn8TQuSjBoCzNaCvdh4S+AxyttcNQhlrA1vHa1wz
-   Cj0yT4ohaIRd9JvI059E9VHDjnsvUuS9N3r3bBp/Iq7fEUGK0irqVRqtI
-   D02Jf3k1/LAqWeo1xDX6/mbW7dZwBqm0Stc8Km+s5W6wKO7wgTgMbRNnc
-   gQqLodnKUU1fxHPIwrgv1PRUbWGN5VPg89ON7cIlG7Y203AWDtntETsQn
-   DGnRNuMJ8u0IBa2eiOiqwmxe8Sb72kFLkKeNSY2aXzR/++CapFp5vgsgJ
-   YpoIVDAjf/ZQpI5DiP64I7AZX+C574mrk2m2fn+HGJCbhMccfgXl6csCK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11007"; a="30107725"
-X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
-   d="scan'208";a="30107725"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 12:32:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
-   d="scan'208";a="10664435"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 08 Mar 2024 12:32:01 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rigso-0006gP-3D;
-	Fri, 08 Mar 2024 20:31:58 +0000
-Date: Sat, 9 Mar 2024 04:31:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Umang Jain <umang.jain@ideasonboard.com>, linux-media@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Alexander Shiyan <eagle.alexander923@gmail.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	Umang Jain <umang.jain@ideasonboard.com>
-Subject: Re: [PATCH 1/5] media: imx335: Support 2 or 4 lane operation modes
-Message-ID: <202403090439.t4lCQSzv-lkp@intel.com>
-References: <20240306081038.212412-2-umang.jain@ideasonboard.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sOPzkLyt2YfrcOF+ESaSSsTYP+honxhjr9I2onevDVCYaZQ9ZJAF7d9KI9po0melq34ghTpneR0XlAFmPQR2paXK/wNuLDLMEOHmdxfIF2yKexcrr2nGRFziqLBzVcnZ/6l4ExxPOey8UpoRvZZaPM1ML1qQgMb018OIS0Ehr+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Y9f9RbSq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MOUx0g/2; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 8 Mar 2024 21:33:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709930010;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vwt+VDLDRvl/LmacdV+mArgWDFVTfPr6L4CGq1jg7iM=;
+	b=Y9f9RbSqdey9V8dfdCvfDsnukOebtoJo+6d2pQKjR7kElvsby2DO2FvbgifxygGaG6lWZS
+	Ju8mCG9/05W3bHjnk+GD4SeMi2yIjHt+UYM1CvCRHEKZm0ntRs+qJAMWeh7ta+s3YlIseu
+	Wj3UNnRnSyAC5Fg8Z35dJu1hZXKwOjWd0biYGjnihXAq+1Hw56B9wPO1Qbfag96ZKDLl+k
+	wBNHhNyOixrZuoVwuQ/gQXESQ02d/o4Q2oNOBQRiyfQJIb9F+gBWSEH7RRGhzcr3vOej/F
+	oxOKYImAFl85qeUIjI4l2y1ZlZOjM0DiiUQgYCazCGJl1yHrEIgW5a5diGuBsQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709930010;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vwt+VDLDRvl/LmacdV+mArgWDFVTfPr6L4CGq1jg7iM=;
+	b=MOUx0g/2AvvcSiTbU8MX33za3/D88DDcKUIh16xlqY3skmnxiyrhRHlAgdgLf2qsj2+Ce/
+	q5/pd0mZvSVkZ/Aw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+	Paul Rosswurm <paulros@microsoft.com>,
+	Alireza Dabagh <alid@microsoft.com>,
+	Sharath George John <sgeorgejohn@microsoft.com>
+Subject: Re: RE: [PATCH] net :mana : Add per-cpu stats for MANA device
+Message-ID: <20240308203328.IvakSEHd@linutronix.de>
+References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240307072923.6cc8a2ba@kernel.org>
+ <DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
+ <20240307090145.2fc7aa2e@kernel.org>
+ <CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
+ <20240308112244.391b3779@kernel.org>
+ <CH2PR21MB1480D4AE8D329B5F00B184A7CA272@CH2PR21MB1480.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240306081038.212412-2-umang.jain@ideasonboard.com>
+In-Reply-To: <CH2PR21MB1480D4AE8D329B5F00B184A7CA272@CH2PR21MB1480.namprd21.prod.outlook.com>
 
-Hi Umang,
+On 2024-03-08 19:43:57 [+0000], Haiyang Zhang wrote:
+> > Do you have experimental data showing this making a difference
+> > in production?
+> Shradha, could you please add some data before / after enabling irqbalancer 
+> which changes cpu affinity?
 
-kernel test robot noticed the following build errors:
+so you have one queue and one interrupt and then the irqbalancer is
+pushing the interrupt from CPU to another. What kind of information do
+you gain from per-CPU counters here?
 
-[auto build test ERROR on linuxtv-media-stage/master]
-[cannot apply to media-tree/master sailus-media-tree/streams linus/master v6.8-rc7 next-20240308]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Thanks,
+> - Haiyang
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Umang-Jain/media-imx335-Support-2-or-4-lane-operation-modes/20240306-161903
-base:   https://git.linuxtv.org/media_stage.git master
-patch link:    https://lore.kernel.org/r/20240306081038.212412-2-umang.jain%40ideasonboard.com
-patch subject: [PATCH 1/5] media: imx335: Support 2 or 4 lane operation modes
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20240309/202403090439.t4lCQSzv-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240309/202403090439.t4lCQSzv-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403090439.t4lCQSzv-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   m68k-linux-ld: drivers/media/i2c/imx335.o: in function `imx335_init_controls.constprop.0':
->> imx335.c:(.text+0x33c): undefined reference to `__divdi3'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sebastian
 
