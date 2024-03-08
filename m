@@ -1,130 +1,118 @@
-Return-Path: <linux-kernel+bounces-97123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FD058765C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:58:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 210DC8765D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55BEF1C2187E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:58:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF67A284DFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7AB3FB97;
-	Fri,  8 Mar 2024 13:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D60438DF9;
+	Fri,  8 Mar 2024 13:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GofPnRJp"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="WkjmJMD9"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F61D38DF9
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B0F3DBBF;
+	Fri,  8 Mar 2024 13:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906328; cv=none; b=X8mKRXNFSXKKOyNZqkNjDJ1ydXsqFT/niYF24iw6+z7EjcYpQWDzue1hqaJI9zOjsXKDKf2NlMVR20GmrJpA+FrKGVvfLa9x8vdgBDAYqGQgjID6e3AQISzahYQ4YS4RWYMvK0pM+OHjR6lBbtYmwy7LBC4ja3TETCYA1B8xxq4=
+	t=1709906363; cv=none; b=OD+Vjp37mICm9MgX6Fo3LjmG3hUXYjKU1cK3XL7mWbjUkGnGTQwkGCNzbUXWkiIARBpXAPswjliVe3sON03QL+cU5kuZ56w6L9mfWQchUQRw4BWnHCfKlWCBkxyzPGwzK9noDUdbNTe/Na/PNSqlsUqMwUJ69WZfVgz8ue/NuIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906328; c=relaxed/simple;
-	bh=A5c9YnK1XD9ztw+bdW/Fk6cIH6yGwP9iehA1nCjEi4I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LzxXVDgSZ/N3riZOn2YzN9SuHwuZEEep66eWRIyNdCYppHTtMgebG33XUmmwoeOlhA3vcg6y7YubIPbUIOPoAOK72iL3sMY7J5mbEG5KnGVuZG5i0vJwEIBAroGIBeS6q1jj5yLemt9iZJVUCF0ezm90kVTd7xb6DPtuO9b/DPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GofPnRJp; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so9485a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 05:58:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709906325; x=1710511125; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iBuF/mE2iPFE868dDTOlE0JcE/uZlhA0RB3KdQyjGQw=;
-        b=GofPnRJpRAfaOK58ko4ChMpBx/aS11ZXqFvb7fUSY9kZXk5K1MuLMJNUE15/1KG8g7
-         COo7E9ORzGYycnnGOImLmnnkBbl27GsfV73XwgTbmN1aNAQmzkGHsu/LyidsADujVHSw
-         cMcOvyw2aTn8H9pDGKztWeOqIRhE1nPlk7BImZC1KShyJf0CYe1kz/kIp504ABx+BLvj
-         Fp+X8EtpIuvPwoxfycwiJrHteuoco7ZMP/299TPptctFABkVGIfZrhChj5r4+PdKQ97P
-         7MVawTIa2yNhi4nZqK4dH7wlt6apWgEHkKvvxc0usfVJXrsbPGAEaEPpz233B8NxyzpE
-         dxOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709906325; x=1710511125;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iBuF/mE2iPFE868dDTOlE0JcE/uZlhA0RB3KdQyjGQw=;
-        b=Nue9RovBnNiavy6O4363+U0DHJevwsYxlw5s6dy7PhZzJgKhFo3uTGQ7RElrOugAmj
-         xM95Vt0oldb6LjBfRjP5J1dRijGEDuciRMwFULL/UlQezVM11dRbYFXqKmDIIrAw5eCA
-         h64WaoQqtZc0osTIIhVeWalbVKxPT0Gy0Y1iA6BHfhNIVQIxye9rMPfXhLMK8np/eb3p
-         AIww6k7Z4sj2gBrThxRYWuvBxh/SLtkM2E+pDi1WJ1tJgJEkT9f71ijg4wSDgeaHrGiE
-         e6y3F3Wl+bHW4pFCl/U8vS07o45uooqoRWxUZGG6Hb7WrFFnSx8zIJ3xT56p87bXXWVd
-         aRKg==
-X-Forwarded-Encrypted: i=1; AJvYcCU+b/6OT4P5SgRAV/AY8xhJo7QaGPSAu2NIdtd+0T7sF6MWPzyhY/Uyy0aK3xz1N92ukniVjnssGzAYH6Q1Yfczi+JjPsRF3mXNpxhM
-X-Gm-Message-State: AOJu0YwpfHIOgAp+PpLx7wcsxszokiRwic8HkAcMfrLp7bHaQg5Kv/xu
-	+0cDWV/SidiuJQdfoM0++THLbfPgskv1ohQx72yIOVnGQrrMXL1OJuzQEbJnEJxhEx07eiP34nS
-	H8oC1BFENDhQDVhyT/LdQhHWl6GHJBQHc10kH
-X-Google-Smtp-Source: AGHT+IEPWOFnbJg6WMrmkfNOZFtD9RE1AXOQNc1JoZLoDt1clsy51MvKrKJBXMcXzd9Ed4AvBLsruItkGrALYbUZqEg=
-X-Received: by 2002:a05:6402:5202:b0:567:eb05:6d08 with SMTP id
- s2-20020a056402520200b00567eb056d08mr490497edd.6.1709906324710; Fri, 08 Mar
- 2024 05:58:44 -0800 (PST)
+	s=arc-20240116; t=1709906363; c=relaxed/simple;
+	bh=QXNA9tK+wmD2HHQFcTyFQ7nNugKbTesrK1cHl52yxac=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=d7tles/CWsHhTiv+qLfQLELeKazwJvSmZ9fHJjZMDu3FFnLXd+rMMljDNA7ALKjeDWb6IbtYH1rsUAUH3Ga+oKwp7D0Se8rGNDxxFvk4liEg0LFba4aLtIHjWoO4w6m+jb2QPACchsoSMWIvmTGPEMlgFpOZnWETl7fO9Ja2C8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=WkjmJMD9; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4286juhT000826;
+	Fri, 8 Mar 2024 07:59:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=d
+	yH+H0ET4bfpETq9uSfKDHwS0TiJSVm0/9UjiFrw1Jc=; b=WkjmJMD9A5Sz8dkxo
+	FD1JGeB7zDA6cxNieh+CJIwTTkOWEy57p0d+6Ppi2TZeBb1we138EGpnvdmij37z
+	Ey2L2NOIEiUKWcwINcG/dbe1QfjGU6ONNnJKKMNAsJU/nHSTpFGiMT09ofXoo5NW
+	xaw+NLcIBegx/zgWB4ArskBCQuMs6Awfa9dunQkc/P8Yx6GVO/TP1L16e3yL/uBi
+	Ufr004L8mfJ95rcEsMMWNyH1+kaXCrcnMm1q4/GdZmo09RLo/mUiffXsWI3BN/T4
+	bJc89x6nR6/BGhg6qGs5x+W2EKqgyMr1+Y1qbybH9Uf6ycpq2ISZ30wqxthBpMD1
+	zmzlA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wpn933f32-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 07:59:02 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 8 Mar 2024
+ 13:59:00 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.4 via Frontend Transport; Fri, 8 Mar 2024 13:59:00 +0000
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id B4D59820242;
+	Fri,  8 Mar 2024 13:59:00 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>, <hdegoede@redhat.com>,
+        <lenb@kernel.org>, <rafael@kernel.org>
+CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        <platform-driver-x86@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH 0/3] ALSA: Add support for Cirrus Logic CS35L54 and CS35L57
+Date: Fri, 8 Mar 2024 13:58:57 +0000
+Message-ID: <20240308135900.603192-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308115722.14671-1-gakula@marvell.com>
-In-Reply-To: <20240308115722.14671-1-gakula@marvell.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 8 Mar 2024 14:58:31 +0100
-Message-ID: <CANn89iJ2euG8SgmTpifRK2DV1N+PSPAgiSoZP-W+7YWE3Ygv6w@mail.gmail.com>
-Subject: Re: [net PATCH] octeontx2-pf: Do not use HW TSO when gso_size < 16bytes
-To: Geetha sowjanya <gakula@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org, 
-	davem@davemloft.net, pabeni@redhat.com, sgoutham@marvell.com, 
-	sbhatta@marvell.com, hkelam@marvell.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 3Pz0AOdoologX1j2pdPnX3OURDvv61KF
+X-Proofpoint-ORIG-GUID: 3Pz0AOdoologX1j2pdPnX3OURDvv61KF
+X-Proofpoint-Spam-Reason: safe
 
-On Fri, Mar 8, 2024 at 12:57=E2=80=AFPM Geetha sowjanya <gakula@marvell.com=
-> wrote:
->
-> Hardware doesn't support packet segmentation when segment size
-> is < 16 bytes. Hence add an additional check and use SW
-> segmentation in such case.
->
-> Fixes: 86d7476078b8 ("octeontx2-pf: TCP segmentation offload support").
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/dri=
-vers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> index f828d32737af..2ac56abb3a0e 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> @@ -967,6 +967,13 @@ static bool is_hw_tso_supported(struct otx2_nic *pfv=
-f,
->  {
->         int payload_len, last_seg_size;
->
-> +       /* Due to hw issue segment size less than 16 bytes
-> +        * are not supported. Hence do not offload such TSO
-> +        * segments.
-> +        */
-> +       if (skb_shinfo(skb)->gso_size < 16)
-> +               return false;
-> +
->         if (test_bit(HW_TSO, &pfvf->hw.cap_flag))
->                 return true;
+The CS35L54 and CS35L57 are Boosted Smart Amplifiers. The CS35L54 has
+I2C/SPI control and I2S/TDM audio. The CS35L57 also has SoundWire
+control and audio.
+    
+The hardware differences between L54, L56 and L57 do not affect the
+driver control interface so they can all be handled by the same driver.
 
-How is this driver doing SW segmentation at this stage ?
+The HDA patch has build dependencies on the ASoC patch.
 
-You might perform this check in ndo_features_check() instead ?
+The final patch updates serial-multi-instantiate and scan.c to trap
+the ACPI HID for HDA systems that declare multiple amps all under one
+Device() node. This patch does not have any build dependency on the
+first two patches so can be taken separately.
 
-otx2_sq_append_skb() is also forcing a linearization if
-skb_shinfo(skb)->nr_frags >=3D OTX2_MAX_FRAGS_IN_SQE
+Simon Trimmer (3):
+  ASoC: cs35l56: Add support for CS35L54 and CS35L57
+  ALSA: hda: cs35l56: Add support for CS35L54 and CS35L57
+  platform/x86: serial-multi-instantiate: Add support for CS35L54 and
+    CS35L57
 
-This is quite bad, this one definitely should use ndo_features_check()
-to mask NETIF_F_GSO_MASK for GSO packets.
+ drivers/acpi/scan.c                           |  2 ++
+ .../platform/x86/serial-multi-instantiate.c   | 28 +++++++++++++++++++
+ include/sound/cs35l56.h                       |  1 +
+ sound/pci/hda/cs35l56_hda.c                   | 16 +++++++----
+ sound/pci/hda/cs35l56_hda.h                   |  2 +-
+ sound/pci/hda/cs35l56_hda_i2c.c               |  7 +++--
+ sound/pci/hda/cs35l56_hda_spi.c               |  7 +++--
+ sound/soc/codecs/cs35l56-sdw.c                |  3 +-
+ sound/soc/codecs/cs35l56-shared.c             |  8 ++++--
+ sound/soc/codecs/cs35l56.c                    | 14 +++++++++-
+ 10 files changed, 73 insertions(+), 15 deletions(-)
 
-Look at typhoon_features_check() for an example.
+-- 
+2.30.2
+
 
