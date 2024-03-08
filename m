@@ -1,132 +1,137 @@
-Return-Path: <linux-kernel+bounces-96430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67D93875C06
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:30:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DD95875C08
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:32:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F42E1F22663
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:30:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1F0CB21180
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C272376D;
-	Fri,  8 Mar 2024 01:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D498F225CC;
+	Fri,  8 Mar 2024 01:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WuK2qD6w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HyXrqq+0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF4523748;
-	Fri,  8 Mar 2024 01:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B66210EC
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 01:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709861443; cv=none; b=acwvILkXcLHMUu0rcqAYldOMXb21DFHE2Q6OcwEuFaQeNd76YMSBoY0gzv4GLFngisTUnB2PMh4CM5iTT05LV0YeCdkjIxoc7gWuLyjQd5Ru2Fm4MAXvBYjKMrMDszZ1G0Ivv1ZysAQPeNgOJHX8vkEMzqV2f2EtnzTCj6u6QH0=
+	t=1709861536; cv=none; b=uRdfY0JhVKVbWiuNzsxKFWB6w2dmO05IyXZii5LyhZ+77xHUJ7NAkb3JarFVLBGKNz7CTw3HA7B22+/df75LUMZHt1N42f2eJnuxeZ1bjajoZmo4s9pepHARgP6pHpSgXIupxhojkTp41zmv6Qa/FAiXQ0F5zT5v8iBT++3oTsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709861443; c=relaxed/simple;
-	bh=pWLPfbMGjAqOMIxZXwrouf7NrYnQYoQSjURpmCc84iU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BUYzwCOWas4t/4pTxnKmSP76T6Pb26ePU3ArqJPJ23CzwBFvlyl4EjADLRoflsCUSV6SghsVn6Nf18MrvElfDi/41s15rTgcp2rZwjZk2xbyRzaGPGCedGSUHNvc4UfQozlkP45UYEvFdoHHrb4PR87jz6Lq47L/85nyHmYLeP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WuK2qD6w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AD44C433F1;
-	Fri,  8 Mar 2024 01:30:40 +0000 (UTC)
+	s=arc-20240116; t=1709861536; c=relaxed/simple;
+	bh=/CDV+2dRV4X6axNFjM+r3jClmsEGO3DjPHzIMX8xf74=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MzscEOlnvrx7nAVq3FEFJ+iXW4NzwA4mKDUinUfVzn3Fa9m4ENUiucRV3dmQY+9zeXXK8cB2C+5tLudAehtWjeBFB52GwZnPZM5PJF31GPXsusjC+gSV7SMNyIv31/V1o+X5SZtA5F72rde41TwrvC+8hCmh1x4qQd9h4Yr7AVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HyXrqq+0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C8D0C433F1;
+	Fri,  8 Mar 2024 01:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709861442;
-	bh=pWLPfbMGjAqOMIxZXwrouf7NrYnQYoQSjURpmCc84iU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WuK2qD6wyzgEpkNGU94oUn6yHcPXxuUo3uJrLGDTiIGph4N/vCBqNc4nDv471KEn3
-	 sm7aoyIlj2FlbTUAzqmFeQZ3jZxx8uq02/lwxrUs6Fs5ne1P7sc9b+jogdt2cNh5om
-	 yy2pPOnMcP+HAkFrHyi8JDY6iodalicwb81v6rzeU0un9tw4HNH9vVQNofxBnlf4+6
-	 iDppG8XOmWfXjccjhAEBc5TroehEx0EzshUNRujMpMwMXGGAQ6kBNOJtKint9xVpy2
-	 SaraH4eSezKXfORbglRhjRO/jH8oAebaFTPdwegjG2bPLQMw9csoNK+YHGu0qpYXyY
-	 O/jGEtvZeHEeQ==
-Date: Thu, 7 Mar 2024 17:30:39 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, Sumit
- Semwal <sumit.semwal@linaro.org>, "Christian =?UTF-8?B?S8O2bmln?="
- <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, David
- Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeelb@google.com>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v6 01/15] queue_api: define queue api
-Message-ID: <20240307173039.00e6fbb7@kernel.org>
-In-Reply-To: <20240305020153.2787423-2-almasrymina@google.com>
-References: <20240305020153.2787423-1-almasrymina@google.com>
-	<20240305020153.2787423-2-almasrymina@google.com>
+	s=k20201202; t=1709861535;
+	bh=/CDV+2dRV4X6axNFjM+r3jClmsEGO3DjPHzIMX8xf74=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=HyXrqq+0KpueMRhIj1Qtdj9gAvudVWt9UOp3Jq+R5H6kfeNH38elINv/QnXb6R5No
+	 z+1aTdPaEFBtMRGTRX7cTjELGdx/OGx3HVpAAdTzFCqal5UWqTfcfqTU9avWL+BAt8
+	 JPvXuxEmDq+wdR0ZUARKksQmfNgN4YkA8CN/TKOJYRN9+4RJjjGoxbixRVIuGhkG5e
+	 bW7BleXO9om6mBUjaMnYMi7nu7p9gc9gb5qhG+Av4rabh7C84PSjsOOz4/NAlVpfzy
+	 6jJEnk+WsqlH9I/inKC7+XYqMjEKobMrh6SiPXpEV4gKn9Ataok3zsyHSzdGGa2q6f
+	 jN16H8g9i9wfQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 214DECE0716; Thu,  7 Mar 2024 17:32:15 -0800 (PST)
+Date: Thu, 7 Mar 2024 17:32:15 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: linux-kernel@vger.kernel.org, x86@kernel.org
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, leitao@debian.org
+Subject: [PATCH x86/nmi] Upgrade NMI backtrace stall checks
+Message-ID: <ab4d70c8-c874-42dc-b206-643018922393@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon,  4 Mar 2024 18:01:36 -0800 Mina Almasry wrote:
-> + * void *(*ndo_queue_mem_alloc)(struct net_device *dev, int idx);
-> + *	Allocate memory for an RX queue. The memory returned in the form of
-> + *	a void * can be passed to ndo_queue_mem_free() for freeing or to
-> + *	ndo_queue_start to create an RX queue with this memory.
-> + *
-> + * void	(*ndo_queue_mem_free)(struct net_device *dev, void *);
-> + *	Free memory from an RX queue.
-> + *
-> + * int (*ndo_queue_start)(struct net_device *dev, int idx, void *);
-> + *	Start an RX queue at the specified index.
-> + *
-> + * int (*ndo_queue_stop)(struct net_device *dev, int idx, void **);
-> + *	Stop the RX queue at the specified index.
->   */
->  struct net_device_ops {
->  	int			(*ndo_init)(struct net_device *dev);
-> @@ -1679,6 +1693,16 @@ struct net_device_ops {
->  	int			(*ndo_hwtstamp_set)(struct net_device *dev,
->  						    struct kernel_hwtstamp_config *kernel_config,
->  						    struct netlink_ext_ack *extack);
-> +	void *			(*ndo_queue_mem_alloc)(struct net_device *dev,
-> +						       int idx);
-> +	void			(*ndo_queue_mem_free)(struct net_device *dev,
-> +						      void *queue_mem);
-> +	int			(*ndo_queue_start)(struct net_device *dev,
-> +						   int idx,
-> +						   void *queue_mem);
-> +	int			(*ndo_queue_stop)(struct net_device *dev,
-> +						  int idx,
-> +						  void **out_queue_mem);
+Commit 344da544f177 ("x86/nmi: Print reasons why backtrace NMIs are
+ignored") has shown value, but widespread use has also identified a
+few opportunities for improvement.  The systems have (as usual) shown
+far more creativity than that commit's author, demonstrating yet again
+that failing CPUs can do whatever they want.  In addition, the current
+message format is less friendly than one might like to those attempting
+to use these messages to identify failing CPUs.
 
-The queue configuration object was quite an integral part of the design,
-I'm slightly worried that it's not here :) Also we may want to rename
-the about-to-be-merged ops from netdev_stat_ops and netdev_queue_ops,
-and add these there?
+Therefore, separately flag CPUs that, during the full time that the
+stack-backtrace request was waiting, were always in an NMI handler,
+were never in an NMI handler, or exited one NMI handler.  Also, split
+the message identifying the CPU and the time since that CPU's last
+NMI-related activity so that a single line identifies the CPU without
+any other variable information, greatly reducing the processing overhead
+required to identify repeat-offender CPUs.
 
-https://lore.kernel.org/all/20240306195509.1502746-2-kuba@kernel.org/
+Co-developed-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: <x86@kernel.org>
 
-Very excited to hear that you made progress on this and ported GVE over!
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index 6e738ad474dcf..d6c9fe9b20c4a 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -582,7 +582,7 @@ EXPORT_SYMBOL_GPL(asm_exc_nmi_kvm_vmx);
+ 
+ static char *nmi_check_stall_msg[] = {
+ /*									*/
+-/* +--------- nsp->idt_seq_snap & 0x1: CPU is in NMI handler.		*/
++/* +--------- nmi_seq & 0x1: CPU is currently in NMI handler.		*/
+ /* | +------ cpu_is_offline(cpu)					*/
+ /* | | +--- nsp->idt_calls_snap != atomic_long_read(&nsp->idt_calls):	*/
+ /* | | |	NMI handler has been invoked.				*/
+@@ -630,22 +630,26 @@ void nmi_backtrace_stall_check(const struct cpumask *btp)
+ 		nmi_seq = READ_ONCE(nsp->idt_nmi_seq);
+ 		if (nsp->idt_nmi_seq_snap + 1 == nmi_seq && (nmi_seq & 0x1)) {
+ 			msgp = "CPU entered NMI handler function, but has not exited";
+-		} else if ((nsp->idt_nmi_seq_snap & 0x1) != (nmi_seq & 0x1)) {
+-			msgp = "CPU is handling NMIs";
+-		} else {
+-			idx = ((nsp->idt_seq_snap & 0x1) << 2) |
++		} else if (nsp->idt_nmi_seq_snap == nmi_seq ||
++			   nsp->idt_nmi_seq_snap + 1 == nmi_seq) {
++			idx = ((nmi_seq & 0x1) << 2) |
+ 			      (cpu_is_offline(cpu) << 1) |
+ 			      (nsp->idt_calls_snap != atomic_long_read(&nsp->idt_calls));
+ 			msgp = nmi_check_stall_msg[idx];
+ 			if (nsp->idt_ignored_snap != READ_ONCE(nsp->idt_ignored) && (idx & 0x1))
+ 				modp = ", but OK because ignore_nmis was set";
+-			if (nmi_seq & 0x1)
+-				msghp = " (CPU currently in NMI handler function)";
+-			else if (nsp->idt_nmi_seq_snap + 1 == nmi_seq)
++			if (nsp->idt_nmi_seq_snap + 1 == nmi_seq)
+ 				msghp = " (CPU exited one NMI handler function)";
++			else if (nmi_seq & 0x1)
++				msghp = " (CPU currently in NMI handler function)";
++			else
++				msghp = " (CPU was never in an NMI handler function)";
++		} else {
++			msgp = "CPU is handling NMIs";
+ 		}
+-		pr_alert("%s: CPU %d: %s%s%s, last activity: %lu jiffies ago.\n",
+-			 __func__, cpu, msgp, modp, msghp, j - READ_ONCE(nsp->recv_jiffies));
++		pr_alert("%s: CPU %d: %s%s%s\n", __func__, cpu, msgp, modp, msghp);
++		pr_alert("%s: last activity: %lu jiffies ago.\n",
++			 __func__, j - READ_ONCE(nsp->recv_jiffies));
+ 	}
+ }
+ 
 
