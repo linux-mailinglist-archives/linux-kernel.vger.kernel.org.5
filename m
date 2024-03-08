@@ -1,93 +1,129 @@
-Return-Path: <linux-kernel+bounces-97283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B268387683D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:18:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 601B087683F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:19:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3A9A1C21DA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:18:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3C1CB20A13
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504942D058;
-	Fri,  8 Mar 2024 16:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62602D029;
+	Fri,  8 Mar 2024 16:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="dl/SRWri"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="H3mmWpjE"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5B517745;
-	Fri,  8 Mar 2024 16:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EAFC366;
+	Fri,  8 Mar 2024 16:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709914696; cv=none; b=o85wnzUQW4J1tPyf2uRbBST7oVTEH8Z/aItGBqBjTHzoCmEVeFB5S6BDMiWC5MD3BR0o3UIVBNnDW4X36OktIuYMD1FA190ONDstG37z1HZ1lCDnwOTjcMxxdjZ1RCKB9EqrVC32AQemtmnpQg9bVPKfo4Xb+YuVh7tSZhK7waQ=
+	t=1709914782; cv=none; b=HyHewhphFBEt/hr7fmsDVOJGD6XHvhYm8cREpki5zSI5vOZuiv92YXtvOGWUAHbBQ8lh7fRMjVVfG/jP/6xDWjjdsoA2ToPRwU7eSlZQBAfht3xMAqq5aSN9uEfNzuyuA/e9Vfp2bJ3j4x4aogOy4lVCuq0lqe6VwVsFr1Cb8pM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709914696; c=relaxed/simple;
-	bh=+5j6dBCMMraYYQcFTDRpMYe5DxL2zEk3x6zrkGGMBUI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oEUIh2iuZSkHzUSu8WCFATOvbOGnSLTL/oMyrEE8KgFKppyOu4dE3+/S7oxTDq0PLCZkDAu/m7WwQGEMmmYZu5UoyZUrHTF2bP362yBqBkN6Pc5IArpmrbogSB0rtTZF6jGQWH/cHcQCQz/XqWHxe2uZkolTrRKnvnb2G4leenE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=dl/SRWri; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 43189FF807;
-	Fri,  8 Mar 2024 16:18:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1709914691;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0S6dSKiB8zFSBf1O2VOcQH4KdQm9Wkws/HG1/AEyaY8=;
-	b=dl/SRWriu4aZz/xXON+51qcKE3Wa9xX44fyBVTqwjx62WLp2cPcwmcB4rol6BG9SDlZCgu
-	qb5/tY0+A100U8vav/gMSdEYGamy5nYAZq66AiSAj9iZfH/uMBvjTTF75H/YVGOfupO2rF
-	iT6ITCb4MA6mGilxDFIiM74BCTaz4aUE5rKWQ5/5LAV0yfIvQuLlt3orv6ptTlKtnffZOm
-	nayMa5MdBxBTLMpEIzB9MwlFgE8eCPaCrBMuC/2mJBaR+yk346cuP5S/u5pMvi/6534opV
-	PcR92F3GD/hg5OA3MLlRduW9Oi11a8kLJStD5Fcu2fIQevrAg7uy4aA+Rv7pZQ==
-Message-ID: <1a76dc7d-d0d2-4f11-8408-f60d7fd8b6d6@arinc9.com>
-Date: Fri, 8 Mar 2024 19:18:01 +0300
+	s=arc-20240116; t=1709914782; c=relaxed/simple;
+	bh=VwKU32SQzCD7f0r4iWSLv7o1A/bneCJg9/Su2issv1M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=VHCV99WAdJWcnNAiODmZC9AuYpQnClBMYdPPuJMmJALF+9wgPsRIFc/v/NosGxEoqzy5yo0VPHd0/6Ns5D8sJtwPbLOc8LnmGN7k3DjfWZD8s1iisPkZYYW7P/+SPJdghTfa59sVHcxBoCWrRQyEoJQnkMcA/NRCnPTcS+krcC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=H3mmWpjE; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428G25sS023981;
+	Fri, 8 Mar 2024 16:19:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=8LHt9Nf2yj7BSVusITolUKNG+T02aIoq8SsB6ZGGRTQ=;
+ b=H3mmWpjE2w4NLtAacezuptpfd9xJVIYou/ePhmvRSbrJvrjHz7mOgsnNWQCf8EvNETQ7
+ PvxdbbEBbdQz0ILrjz0w5kn+hgdLK0Uy8+kVbo4ACvP15FIF1eCMQTyvOzUltynSDBRc
+ 5oCVOlxPd8pLev5MM1WPgT+6rbnfCJFxwewVi1dAAWW1dKKMlkujc2dw1HOrGvuauWer
+ eCcwKNXhJnzo2ZAJU3qjjnZLGj1CtKAK6f9VBmHfJDnxApFEg6WOVA7nr+n7QeknJpS7
+ PEw0mewu3NbT+MLu5GaK7rAaaMUfeAxyS2yGm7WynV7pMlzZJ673fWymS19P0rm6EREJ 9Q== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr5ub0bes-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 16:19:36 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428DUA44024160;
+	Fri, 8 Mar 2024 16:19:34 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wpjwsrq2w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 16:19:34 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428GJTqF11927888
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 8 Mar 2024 16:19:31 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1EAB52004B;
+	Fri,  8 Mar 2024 16:19:29 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8972820040;
+	Fri,  8 Mar 2024 16:19:28 +0000 (GMT)
+Received: from osiris (unknown [9.171.32.39])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  8 Mar 2024 16:19:28 +0000 (GMT)
+Date: Fri, 8 Mar 2024 17:19:27 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Harald Freudenberger <freude@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/6] s390: constify struct class usage
+Message-ID: <20240308161927.26074-H-hca@linux.ibm.com>
+References: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: MJh3Iq6EtVLnKM7yAa1penUKigB4fh9Z
+X-Proofpoint-GUID: MJh3Iq6EtVLnKM7yAa1penUKigB4fh9Z
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] mips: dts: ralink: mt7621: reorder serial0
- properties
-Content-Language: en-GB
-To: Justin Swartz <justin.swartz@risingedge.co.za>,
- Sergio Paracuellos <sergio.paracuellos@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240308155616.11742-1-justin.swartz@risingedge.co.za>
- <20240308155616.11742-3-justin.swartz@risingedge.co.za>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240308155616.11742-3-justin.swartz@risingedge.co.za>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=805 spamscore=0 mlxscore=0 phishscore=0 adultscore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2403080131
 
-On 08/03/2024 18:56, Justin Swartz wrote:
-> Reorder serial0 properties according to the guidelines laid
-> out in Documentation/devicetree/bindings/dts-coding-style.rst
+On Tue, Mar 05, 2024 at 08:25:18AM -0300, Ricardo B. Marliere wrote:
+> This is a simple and straight forward cleanup series that aims to make the
+> class structures in s390 constant. This has been possible since 2023 [1].
 > 
-> Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+> [1]: https://lore.kernel.org/all/2023040248-customary-release-4aec@gregkh/
+> 
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+> Ricardo B. Marliere (6):
+>       s390: zcrypt: make zcrypt_class constant
+>       s390: vmur: make vmur_class constant
+>       s390: vmlogrdr: make vmlogrdr_class constant
+>       s390: tape: make tape_class constant
+>       s390: raw3270: improve raw3270_init() readability
+>       s390: raw3270: make class3270 constant
+> 
+>  drivers/s390/char/fs3270.c       |  8 ++++----
+>  drivers/s390/char/raw3270.c      | 32 ++++++++++++++++++++------------
+>  drivers/s390/char/raw3270.h      |  2 +-
+>  drivers/s390/char/tape_class.c   | 17 ++++++++---------
+>  drivers/s390/char/vmlogrdr.c     | 19 +++++++++----------
+>  drivers/s390/char/vmur.c         | 18 +++++++++---------
+>  drivers/s390/crypto/zcrypt_api.c | 33 +++++++++++++++++----------------
+>  7 files changed, 68 insertions(+), 61 deletions(-)
 
-Reviewed-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-
-Arınç
+Series applied, thanks!
 
