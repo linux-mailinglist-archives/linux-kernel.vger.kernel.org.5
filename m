@@ -1,85 +1,79 @@
-Return-Path: <linux-kernel+bounces-96794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A05A87618B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:09:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4491487618E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13C6D28334C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:09:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D83981F2324B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8853D53E34;
-	Fri,  8 Mar 2024 10:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n/VWkXj+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A8654BE4;
+	Fri,  8 Mar 2024 10:09:54 +0000 (UTC)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF663535DA;
-	Fri,  8 Mar 2024 10:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9251854BD7
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709892583; cv=none; b=GffwH8k90gnt4VDYVENXOu+EMQgHPRb2qwBjZGuBVDnVRRl4GCsXq0V5w5gfkwi2rF4YvKa0jYmzU3Pgs7G9INZP0jZhYHO9hgWcZuLTa+aInDQY6uXo8LDHHi/l2bVLtYzFIGM9kkxXSLqcgmg+pfa8Inc7m4RUQWv3MGnFXkU=
+	t=1709892594; cv=none; b=aPzDpmJy4Try/psWyBvwpjQYX2DmE5jWJzyaaXqWGee3cMvvM7rHZIdYok72Z+4zECWlL7g1Q18ND0JzDtFcKlaf3zF9q0WJtxTj1VzK6IT2WX6te4nDpyJZc1SRMDRjc0qnjeD/c9DU8wWY1l5RfeWwefqfhBxdYY7XWqDW28M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709892583; c=relaxed/simple;
-	bh=+G8orH8im1fJ7rNQbGZr86/Bi7x7EOtVKN/WfGSAwUI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ODKRBWYkwsVPIYpIuEDFdbYdQ2YJIuCc+UaQHoleHCRaX7VKZX3KUbbHb+0El2miCD/GLKzq5wTewfywWz7a1mq5aEuuY83ak8nqHLlkaLNB53pWIH7zV9ysMjH/2AG26xnTj4YN/5Edh6aOI7NSV4m1UwD3yH9nD45p08oNkLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n/VWkXj+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05D64C43394;
-	Fri,  8 Mar 2024 10:09:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709892583;
-	bh=+G8orH8im1fJ7rNQbGZr86/Bi7x7EOtVKN/WfGSAwUI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n/VWkXj+igndGIpNlIdjJ1TwUnm+GV3D+6xboeaHUaDB8HCj13W9/JX9RKwshYRst
-	 t02pM+xwRLGhVKYRUEGoWe6+S3e30jMu8LcXn2+d1iC1hq2CAHgrUvKxhVwaHDjJUV
-	 5nu+paQJozztApZEqs2MrUi4xJhJ996gLP6gh+U/qzn8tp2+Lo6ZVhCj8ltvUGxQj7
-	 MGeVWtiTVJvlcr3RSv7n/538rMPkENtu5kXPWDBi9zG3961kQck2zmGO5mBGy6tO3q
-	 cwznp8zVcVGxNfHSgIIq72Id9SkNKTB2COn7F4gu7EhdcSU5XbpgraSKMC4xKhXeaP
-	 St5Y/Kja1NKhQ==
-Date: Fri, 8 Mar 2024 11:09:36 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Igor Pylypiv <ipylypiv@google.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Jason Yan <yanaijie@huawei.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Jack Wang <jinpu.wang@cloud.ionos.com>,
-	Hannes Reinecke <hare@suse.de>,
-	Xiang Chen <chenxiang66@hisilicon.com>,
-	Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 4/7] scsi: mvsas: Add libsas SATA sysfs attributes
- group
-Message-ID: <Zerj4NRFLpp3zPCj@ryzen>
-References: <20240307214418.3812290-1-ipylypiv@google.com>
- <20240307214418.3812290-5-ipylypiv@google.com>
+	s=arc-20240116; t=1709892594; c=relaxed/simple;
+	bh=iqZQrV/XzwOsxRcoa9RzarjdIIcoC8TyED19bYZr0Wc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O3ASOx08Gn2aGGvqLpoYtbpz5w+wWq75Tsuggi7mKYk5uJtYEA2/4gyoHlidyNzWwmhqR9wZ52m9qnq+wTig3qk3MZe0H1qCMsuLHMdeUEKytxUlYf8P7l+oBhq5i4T0QK0N0EoiljyW9/TuQjNFM2yiIaidskoMcHL7G8VQarU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33e79eca772so31444f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 02:09:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709892591; x=1710497391;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iqZQrV/XzwOsxRcoa9RzarjdIIcoC8TyED19bYZr0Wc=;
+        b=dREeCGlaHuCFAkZ2bG3POwR1/rDjis6W7rUoLM3/UPoeWSCC7guYmGrlM2BgMmtg3k
+         YcgeOxrbmWYqw6nYlGIVwi5vyQOStTWSV64ApBX3Oz1UK46nX5tDmIiD+F/FgEzQdHJk
+         7GORcnLcJHK0mmUgOIleKX6dU08qDN9BtFnQ9+Demcg955WwSj6+65v4Yap8x79W5zXc
+         eGaosll3kid7vAvQQE25DCGgIzGD33gdQt9D8bhiB15fzMBJ6C6vtz8OhBDvu5q9eKB6
+         wFupiIncQWGa6r2NYBEOnjiSf5faWddJBM5YL6w0anZL1RRpwN73ITukySFFrCh6yS6c
+         NUeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWG1iiNqP9eWKuaJ6QsgtPJdNpW0DHNZo0MmhbVsDVQeRECdX5r4NGA/kdGcgNhMWd6hxJ2bgJ90zCD9zH/N6fmDd11dMlkYtPBckNI
+X-Gm-Message-State: AOJu0Yx2VwII6qljaDwtrf7mCp9IwXl08+jEsunqPAnsur3s91Kp7z+G
+	i0C+fWuuW+Pv0EmclDBcYg5/UNh2SxG12g4dgJ83JgVJ+WfmnGAM
+X-Google-Smtp-Source: AGHT+IGPiOezysgKiskWm4w6mYNdeHoKKtPk5JWEyQfa75/eSn4zbs2x/KvaANk5jvOWJ/MpzqaJ6A==
+X-Received: by 2002:a05:600c:5009:b0:412:f887:644f with SMTP id n9-20020a05600c500900b00412f887644fmr1023843wmr.0.1709892590718;
+        Fri, 08 Mar 2024 02:09:50 -0800 (PST)
+Received: from [10.100.102.74] (46-117-80-176.bb.netvision.net.il. [46.117.80.176])
+        by smtp.gmail.com with ESMTPSA id ba27-20020a0560001c1b00b0033e68338fbasm3537593wrb.81.2024.03.08.02.09.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 02:09:50 -0800 (PST)
+Message-ID: <2bed335b-b5d4-4dc5-a934-f0f04f9c54f7@grimberg.me>
+Date: Fri, 8 Mar 2024 12:09:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307214418.3812290-5-ipylypiv@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] nvme: Re-word D3 Entry Latency message
+Content-Language: he-IL, en-US
+To: Len Brown <lenb@kernel.org>, kbusch@kernel.org,
+ linux-nvme@lists.infradead.org
+Cc: maxg@mellanox.com, axboe@kernel.dk, hch@lst.de,
+ linux-kernel@vger.kernel.org, Len Brown <len.brown@intel.com>
+References: <63ff4f9aedcb73ec5d8cc7f3e77ec4c72d72b4ae.1709839023.git.len.brown@intel.com>
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <63ff4f9aedcb73ec5d8cc7f3e77ec4c72d72b4ae.1709839023.git.len.brown@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 07, 2024 at 01:44:15PM -0800, Igor Pylypiv wrote:
-> The added sysfs attributes group enables the configuration of NCQ Priority
-> feature for HBAs that rely on libsas to manage SATA devices.
-> 
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
-> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-> Reviewed-by: Jason Yan <yanaijie@huawei.com>
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
-> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
-> ---
+Whatever is taken...
 
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 
