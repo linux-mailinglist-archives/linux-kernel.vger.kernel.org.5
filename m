@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-96908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11EE7876302
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:18:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F38D9876307
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BAF71F21A4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:18:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A92E22823BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF4456456;
-	Fri,  8 Mar 2024 11:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649D656746;
+	Fri,  8 Mar 2024 11:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BbX+QNir"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UT5QjhRs"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 761C83C24
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B94E5576D
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709896716; cv=none; b=KrTNozhi0pK3vi9JO5kS3LbiSmPl6wfe0KNme0GQtdsTirhqICzBd/D4UgDtOt+dI0GWPRT/iBG+2xS+poahtZz+YngqsmFB+6RGp3JPvHx63bgXpgwRBdJpinErNGGf/v16AO27hpB66pj903JV4NpJPGsydfta2kraCUM7lC0=
+	t=1709896717; cv=none; b=LpYKotAFk+JhOgiFHS2GdeJ8ExhDreXj52pQinyHQIwWrcotRk8kg8xN4i+maufcZTgEFez3K20zT4JP+cVnzaEplH8YZwjKySaNlZwloKVSIzqBjhNUzEjfRQDBQQtL3xm5qvEuFlpQpH/SWoT0kppLLYM+fdxUeVYDp48+vmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709896716; c=relaxed/simple;
-	bh=mZXA0w0qbcZUUB8hRyDOhH4UKVb+9IvvzRfXr3AcBko=;
+	s=arc-20240116; t=1709896717; c=relaxed/simple;
+	bh=j4tkfHZPzR5kYz6YVI0BTP7qRQhgw5O0GU29Ku4YX+s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YzhZoJAcVb7u8vKkVt+21xZZyrOFVY7vuXtCup/OdM0rNeOjHJuKfUFCjs0FEaByTBypOISf5aazsLRGtVe4wqTF8g/DndUMCdLMRzqyauLWiBk2Mz3ff0omKpUlznL+1PddcNtiq65UV9L7Pze0sGBq27/f6gO/q7XFySVkcqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BbX+QNir; arc=none smtp.client-ip=209.85.221.53
+	 MIME-Version:Content-Type; b=IbC+AhBWUjukKvm3SdfyqBKS4CbeUy4F4T58msi4iSkYKam0GOctnOEfgqCA6W2n6hmSqYOstnM5ZRrp9boFwx9RzeGpeI0apDsInplSrk7Eu3sUG3HoWcTPpdUhsRCjkA3CZThDmkgnoJDhDHwPtctXoqsXFNsZzWe+KqsRD8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UT5QjhRs; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e65ed1c3aso601665f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:18:34 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33e796cc90dso157136f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:18:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709896713; x=1710501513; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709896714; x=1710501514; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BSOz+7Sts53Qhe5VQivnL2JCHzBJY0rk8TTBQBo3Arw=;
-        b=BbX+QNirP775M957hWGqOHlOZ1vbuBeba2MxtlQa1mOX6MSdpQ6wmYmELsQ4LzSaqa
-         AhT2v4TwmwDddMclYNGdjvYFdV+SmTUfL8yJdL8MajK9/xP1SocDY1UWF+32aUEiWqub
-         aDze7JKF/XlUhq/EALLFNc7CpppXQel9X2QfG0WhTlNFFURVNjaunOzv0zUou3wL0yHo
-         VLpH4PvKtqUN/S0dsb9jjhgRiZs5CpKI6fjjU4zmzPUokMl5GHi0Iw1PA686FEiRb7NM
-         IlkNZyILPBxTxr+Z4CZ0eY1o24g/HoA68ZODdEdPvahkj3qb+zTizJ//0MR20PixDjBu
-         lBiQ==
+        bh=JvyMn6IbB+KgK6NP2mWjU8ehV/x2G+Dw3KFHSdNlX1g=;
+        b=UT5QjhRsf1XcHocriWIyrXCVUsaQFnNkLWrTgz+lqMq/lez7LwE1KVajXkUwNPnF9q
+         ptN731h/LYisog++uSXPy1/+8NW1lnGC+0VRSfmVP9COlAHPZf5SbVuYIXehck5+uI45
+         egysOOi0KyTMURAzoBMtMlZVHa2o/3j4m6DiAKWgviuySdhPri5Nup3EK4oyvgoqIuIZ
+         BDupjCmJiDytgr0ePIlqUnHjNW0xpjPYdJV0CVLTyTo6bdHD+ice8PfVO95/oXJuT4WY
+         g5Baq+lPed3Bw43hd1Fa+KAoFpD6/Iyfu2UFkjjNuyh3FTrL8kTgfqtgMCAcPUGh9DEC
+         TadQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709896713; x=1710501513;
+        d=1e100.net; s=20230601; t=1709896714; x=1710501514;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=BSOz+7Sts53Qhe5VQivnL2JCHzBJY0rk8TTBQBo3Arw=;
-        b=ObsT545IUMmViKerPWf4+OjZ5xS5n29dfjpjTXMEOosPsZib8LPTGC3m35FVkG6RZg
-         dcDbrYeJDC54gVkm5R8G+gSGXIX7L/8kUQROGx1vRxyKlEuNwezOPUrtnaX2bfEX3Y8p
-         D0wKCGw/FGOAOmau2sDu0JoUn9aDnN4oNw/8tHAoBq15aLqNX1amJ7491ptg5l8ZIWmF
-         bGhbHktVZublfDQVjuHcRr00GsLUIH3cyNWI6ox1LssgmDjd1BB9axOwiVE+ItcIsHFI
-         QmruBQP71/0SPStvO/GQzz/YlETJxT1BcvpAU1/J2IBZL/7KQgPTzD/5atzKUtAnXy5f
-         eJnQ==
-X-Gm-Message-State: AOJu0YwEE1TSITYyfh3rqeSfjo2hQBTk0+p06rJXhXgE9SOBGMsb/IZ/
-	CDQuuKdtd3cNWCoYh8CqaFVuE/DNP+TjzP/dCkh0TXDVAgyexH3lrB2QJT0SQEc=
-X-Google-Smtp-Source: AGHT+IE3Upszx1vJaZQz8ncMoS66zlztFZT6PSSeXv2PBr0o9lI/XnNzJ5pm0IO/7nK0nJcVoMs3bQ==
-X-Received: by 2002:a05:6000:1a51:b0:33e:47d3:a6cd with SMTP id t17-20020a0560001a5100b0033e47d3a6cdmr8019786wry.68.1709896712564;
-        Fri, 08 Mar 2024 03:18:32 -0800 (PST)
+        bh=JvyMn6IbB+KgK6NP2mWjU8ehV/x2G+Dw3KFHSdNlX1g=;
+        b=D9btWZsP/19X2ieNUwpoIot8Xz+LvatVVIPO3m5ligS8zvtFSjx0Hj91mOKzvgcKEW
+         LSj/ROrCC9NxrYsSWujpGng3weqlOQ7emOhhul+gpUaRZcCKi0YN+BkwGoywRoIOtmDu
+         J8tZdcXK4e6YN2tAccFZi32CNGQMFpbM0ljHTE5YtU7KZia55s+gWTv4nMXD/BbHeLU5
+         egkmWXZl66PpAZ8ovpO16EiqbJn0fz6uyYoQtaifRNNXpQQ2+S2Nd1FwXYO5rkBqBJSP
+         gheOfrGLv0UY+r/GHdIZZJCpk4p1mSSy+4q7wEsfkWo0FYMYlPuOi8njELAP9pvAXEeJ
+         bRxw==
+X-Gm-Message-State: AOJu0YzPIk4IfH3EZN2xl0vUnU5iKDTNdV4jepo2sX9zeHueL/hKhiVp
+	KnRklSSIoc4E9RK4A20StaIpKG0Q94VLLGeF+SUkutsU1ywdGuwA7m9GWup7TTg=
+X-Google-Smtp-Source: AGHT+IG7+5UMPEvH5Oacvt/WcYRlEnGbJxeTsUdHC9mR1cYCMJ5Eq0Ty7lh0yo62vdbFk3vHghxQrA==
+X-Received: by 2002:adf:ef0f:0:b0:33e:7637:51fd with SMTP id e15-20020adfef0f000000b0033e763751fdmr992319wro.48.1709896713607;
+        Fri, 08 Mar 2024 03:18:33 -0800 (PST)
 Received: from kepler.redhat.com (1F2EF3E5.nat.pool.telekom.hu. [31.46.243.229])
-        by smtp.gmail.com with ESMTPSA id v9-20020adfedc9000000b0033e712b1d9bsm2523884wro.77.2024.03.08.03.18.31
+        by smtp.gmail.com with ESMTPSA id v9-20020adfedc9000000b0033e712b1d9bsm2523884wro.77.2024.03.08.03.18.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 03:18:32 -0800 (PST)
+        Fri, 08 Mar 2024 03:18:33 -0800 (PST)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
 From: Ingo Molnar <mingo@kernel.org>
 To: linux-kernel@vger.kernel.org
@@ -74,9 +74,9 @@ Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
 	Shrikanth Hegde <sshegde@linux.ibm.com>,
 	Valentin Schneider <vschneid@redhat.com>,
 	Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 01/13] sched/balancing: Rename run_rebalance_domains() => sched_balance_softirq()
-Date: Fri,  8 Mar 2024 12:18:07 +0100
-Message-Id: <20240308111819.1101550-2-mingo@kernel.org>
+Subject: [PATCH 02/13] sched/balancing: Rename scheduler_tick() => sched_tick()
+Date: Fri,  8 Mar 2024 12:18:08 +0100
+Message-Id: <20240308111819.1101550-3-mingo@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240308111819.1101550-1-mingo@kernel.org>
 References: <20240308111819.1101550-1-mingo@kernel.org>
@@ -89,74 +89,158 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-run_rebalance_domains() is a misnomer, as it doesn't only
-run rebalance_domains(), but since the introduction of the
-NOHZ code it also runs nohz_idle_balance().
+- Standardize on prefixing scheduler-internal functions defined
+  in <linux/sched.h> with sched_*() prefix. scheduler_tick() was
+  the only function using the scheduler_ prefix. Harmonize it.
 
-Rename it to sched_balance_softirq(), reflecting its more
-generic purpose and that it's a softirq handler.
+- The other reason to rename it is the NOHZ scheduler tick
+  handling functions are already named sched_tick_*().
+  Make the 'git grep sched_tick' more meaningful.
 
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+Acked-by: Valentin Schneider <vschneid@redhat.com>
 Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Shrikanth Hegde <sshegde@linux.ibm.com>
 Cc: Vincent Guittot <vincent.guittot@linaro.org>
 ---
- Documentation/scheduler/sched-domains.rst                    | 2 +-
- Documentation/translations/zh_CN/scheduler/sched-domains.rst | 2 +-
- kernel/sched/fair.c                                          | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ Documentation/scheduler/sched-domains.rst                            | 4 ++--
+ Documentation/translations/zh_CN/scheduler/sched-domains.rst         | 4 ++--
+ include/linux/sched.h                                                | 2 +-
+ kernel/sched/core.c                                                  | 4 ++--
+ kernel/sched/loadavg.c                                               | 2 +-
+ kernel/time/timer.c                                                  | 2 +-
+ kernel/workqueue.c                                                   | 2 +-
+ tools/testing/selftests/ftrace/test.d/ftrace/func_set_ftrace_file.tc | 2 +-
+ 8 files changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/Documentation/scheduler/sched-domains.rst b/Documentation/scheduler/sched-domains.rst
-index e57ad28301bd..6577b068f921 100644
+index 6577b068f921..541d6c617971 100644
 --- a/Documentation/scheduler/sched-domains.rst
 +++ b/Documentation/scheduler/sched-domains.rst
-@@ -34,7 +34,7 @@ out of balance are tasks moved between groups.
+@@ -32,13 +32,13 @@ load of each of its member CPUs, and only when the load of a group becomes
+ out of balance are tasks moved between groups.
+ 
  In kernel/sched/core.c, trigger_load_balance() is run periodically on each CPU
- through scheduler_tick(). It raises a softirq after the next regularly scheduled
+-through scheduler_tick(). It raises a softirq after the next regularly scheduled
++through sched_tick(). It raises a softirq after the next regularly scheduled
  rebalancing event for the current runqueue has arrived. The actual load
--balancing workhorse, run_rebalance_domains()->rebalance_domains(), is then run
-+balancing workhorse, sched_balance_softirq()->rebalance_domains(), is then run
+ balancing workhorse, sched_balance_softirq()->rebalance_domains(), is then run
  in softirq context (SCHED_SOFTIRQ).
  
  The latter function takes two arguments: the runqueue of current CPU and whether
+-the CPU was idle at the time the scheduler_tick() happened and iterates over all
++the CPU was idle at the time the sched_tick() happened and iterates over all
+ sched domains our CPU is on, starting from its base domain and going up the ->parent
+ chain. While doing that, it checks to see if the current domain has exhausted its
+ rebalance interval. If so, it runs load_balance() on that domain. It then checks
 diff --git a/Documentation/translations/zh_CN/scheduler/sched-domains.rst b/Documentation/translations/zh_CN/scheduler/sched-domains.rst
-index e814d4c01141..fbc326668e37 100644
+index fbc326668e37..fa0c0bcc6ba5 100644
 --- a/Documentation/translations/zh_CN/scheduler/sched-domains.rst
 +++ b/Documentation/translations/zh_CN/scheduler/sched-domains.rst
-@@ -36,7 +36,7 @@ CPU共享。任意两个组的CPU掩码的交集不一定为空，如果是这
+@@ -34,12 +34,12 @@ CPU共享。任意两个组的CPU掩码的交集不一定为空，如果是这
+ 调度域中的负载均衡发生在调度组中。也就是说，每个组被视为一个实体。组的负载被定义为它
+ 管辖的每个CPU的负载之和。仅当组的负载不均衡后，任务才在组之间发生迁移。
  
- 在kernel/sched/core.c中，trigger_load_balance()在每个CPU上通过scheduler_tick()
+-在kernel/sched/core.c中，trigger_load_balance()在每个CPU上通过scheduler_tick()
++在kernel/sched/core.c中，trigger_load_balance()在每个CPU上通过sched_tick()
  周期执行。在当前运行队列下一个定期调度再平衡事件到达后，它引发一个软中断。负载均衡真正
--的工作由run_rebalance_domains()->rebalance_domains()完成，在软中断上下文中执行
-+的工作由sched_balance_softirq()->rebalance_domains()完成，在软中断上下文中执行
+ 的工作由sched_balance_softirq()->rebalance_domains()完成，在软中断上下文中执行
  （SCHED_SOFTIRQ）。
  
- 后一个函数有两个入参：当前CPU的运行队列、它在scheduler_tick()调用时是否空闲。函数会从
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 116a640534b9..953f39deb68e 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12415,7 +12415,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-  * - indirectly from a remote scheduler_tick() for NOHZ idle balancing
-  *   through the SMP cross-call nohz_csd_func()
+-后一个函数有两个入参：当前CPU的运行队列、它在scheduler_tick()调用时是否空闲。函数会从
++后一个函数有两个入参：当前CPU的运行队列、它在sched_tick()调用时是否空闲。函数会从
+ 当前CPU所在的基调度域开始迭代执行，并沿着parent指针链向上进入更高层级的调度域。在迭代
+ 过程中，函数会检查当前调度域是否已经耗尽了再平衡的时间间隔，如果是，它在该调度域运行
+ load_balance()。接下来它检查父调度域（如果存在），再后来父调度域的父调度域，以此类推。
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index ffe8f618ab86..739e32ead24b 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -301,7 +301,7 @@ enum {
+ 	TASK_COMM_LEN = 16,
+ };
+ 
+-extern void scheduler_tick(void);
++extern void sched_tick(void);
+ 
+ #define	MAX_SCHEDULE_TIMEOUT		LONG_MAX
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a76c7095f736..3affa9a6b249 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5651,7 +5651,7 @@ static inline u64 cpu_resched_latency(struct rq *rq) { return 0; }
+  * This function gets called by the timer code, with HZ frequency.
+  * We call it with interrupts disabled.
   */
--static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
-+static __latent_entropy void sched_balance_softirq(struct softirq_action *h)
+-void scheduler_tick(void)
++void sched_tick(void)
  {
- 	struct rq *this_rq = this_rq();
- 	enum cpu_idle_type idle = this_rq->idle_balance;
-@@ -13216,7 +13216,7 @@ __init void init_sched_fair_class(void)
+ 	int cpu = smp_processor_id();
+ 	struct rq *rq = cpu_rq(cpu);
+@@ -6574,7 +6574,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+  *      paths. For example, see arch/x86/entry_64.S.
+  *
+  *      To drive preemption between tasks, the scheduler sets the flag in timer
+- *      interrupt handler scheduler_tick().
++ *      interrupt handler sched_tick().
+  *
+  *   3. Wakeups don't really cause entry into schedule(). They add a
+  *      task to the run-queue and that's it.
+diff --git a/kernel/sched/loadavg.c b/kernel/sched/loadavg.c
+index 52c8f8226b0d..ca9da66cc894 100644
+--- a/kernel/sched/loadavg.c
++++ b/kernel/sched/loadavg.c
+@@ -379,7 +379,7 @@ void calc_global_load(void)
+ }
+ 
+ /*
+- * Called from scheduler_tick() to periodically update this CPU's
++ * Called from sched_tick() to periodically update this CPU's
+  * active count.
+  */
+ void calc_global_load_tick(struct rq *this_rq)
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 352b161113cd..ec003ad18b2d 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -2089,7 +2089,7 @@ void update_process_times(int user_tick)
+ 	if (in_irq())
+ 		irq_work_tick();
  #endif
- 	}
+-	scheduler_tick();
++	sched_tick();
+ 	if (IS_ENABLED(CONFIG_POSIX_TIMERS))
+ 		run_posix_cpu_timers();
+ }
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 7b482a26d741..8aa3a0829dd4 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1324,7 +1324,7 @@ void wq_worker_sleeping(struct task_struct *task)
+  * wq_worker_tick - a scheduler tick occurred while a kworker is running
+  * @task: task currently running
+  *
+- * Called from scheduler_tick(). We're in the IRQ context and the current
++ * Called from sched_tick(). We're in the IRQ context and the current
+  * worker's fields which follow the 'K' locking rule can be accessed safely.
+  */
+ void wq_worker_tick(struct task_struct *task)
+diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func_set_ftrace_file.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func_set_ftrace_file.tc
+index 25432b8cd5bd..073a748b9380 100644
+--- a/tools/testing/selftests/ftrace/test.d/ftrace/func_set_ftrace_file.tc
++++ b/tools/testing/selftests/ftrace/test.d/ftrace/func_set_ftrace_file.tc
+@@ -19,7 +19,7 @@ fail() { # mesg
  
--	open_softirq(SCHED_SOFTIRQ, run_rebalance_domains);
-+	open_softirq(SCHED_SOFTIRQ, sched_balance_softirq);
+ FILTER=set_ftrace_filter
+ FUNC1="schedule"
+-FUNC2="scheduler_tick"
++FUNC2="sched_tick"
  
- #ifdef CONFIG_NO_HZ_COMMON
- 	nohz.next_balance = jiffies;
+ ALL_FUNCS="#### all functions enabled ####"
+ 
 -- 
 2.40.1
 
