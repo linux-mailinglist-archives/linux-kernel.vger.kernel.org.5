@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-97049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D891D8764DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:17:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BB068764E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE0B11C20382
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:17:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B88C7281C75
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441514503D;
-	Fri,  8 Mar 2024 13:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF72C3BBF5;
+	Fri,  8 Mar 2024 13:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OYhgJIC1"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="diYBaxQV"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B8E3BBD4;
-	Fri,  8 Mar 2024 13:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797FC3BBE0;
+	Fri,  8 Mar 2024 13:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709903772; cv=none; b=pircRuc4KJSBe8hMvYe0S9fBBngSHEAKqalL0IBBIB+7TQCVbkkBEciIMHkXhMjvW4AbvhSZws51xZdGUQnDujL3KyOF1K9f+CnbCZPlcquZGntCVkTP2QKcvZHvQ4Nq/4RddWQ8cxXGH+BdxUoo5Bqsyxp/92aMZjLRzL1zXjQ=
+	t=1709903778; cv=none; b=VUSEHVgXS4Np+paUL73vwoFt8/EDbAOp2BvqOPvxRis3ZPf/8aWUR7xj4avQ3KykPTAFA8ODIHvie72tAu1Vok9DdpAU2ljWuOZC0In25yTy3Hv6DmVCbnMTRzTLcY/Rj5zzsstuCpQcorgJYBCS38U/+SRrrXX1y4shGUKGPqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709903772; c=relaxed/simple;
-	bh=Exf/ex05wg/ZdHrQtagsjpQZFoomRp7dCTSrSntMNmc=;
+	s=arc-20240116; t=1709903778; c=relaxed/simple;
+	bh=Zjh6IUndlImHk90vhCoelXOI1d7rMagiowI5tzl77NQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KMKFLY1MVV0vGxdOpyuE5KYnEChCxfhJFUrXoWuyDPBDQFG4gd6597xzl1CgnOKH2Kbcf4gUuwBTi8ZGu8CIL8OoY7qwZozP0atKfFa++oD69u15pcpvClQJQqV/qLluUCzgC7pVA9VUSWfYpcYFQS1mwcMjryNMOFkYUjy8Fk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OYhgJIC1; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version; b=eUaoqblTdJwU92vTP02KtVICQflYuaraO4IcXoJszNAmogrve51GNccufOE+rK9xUZelpCZDNE/37qbu0GZJPDXYi++9dtxmb1F+J/6Q9z25Mn3xXJ73IW+SgFsb+Cwo0fzXZSSjpYbdor/DSxTCjIUPesb2vux5QdY4raJPUa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=diYBaxQV; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709903771; x=1741439771;
+  t=1709903777; x=1741439777;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Exf/ex05wg/ZdHrQtagsjpQZFoomRp7dCTSrSntMNmc=;
-  b=OYhgJIC1etTv9J1TYIuQSauCnvt9vh4Bl+wecQFvcVd8ndT6qVN4KYGn
-   z8nD2VSe9/hRizhPvHvbg77VgTjwiipgWCfR8p5dc0ycfkIdSseqmM2YU
-   0hWnZ2oAbAgSI0d8mQ7az8HmuJJ3fcB8CdatWWICZ9WDU/PBaaJqOHjit
-   wGD/26H10F4odAGnwc8SEr/AvdnsOpdwhwAaUTiN1YJs9XjOVaSCqVKup
-   sfabu/kNQyK1kIgU2AlC1FSUoMQVcmaGrk/iuJ6E3zIDaA3EM88ww7zjR
-   pzYQlAxxl4Fk8RQVSMFalTaSoucyi/+z0qEbASlRTChrkbshu/I2run83
+  bh=Zjh6IUndlImHk90vhCoelXOI1d7rMagiowI5tzl77NQ=;
+  b=diYBaxQV8nYBFa2FFhkrINNiKgQELbj4e+fe0P+H0Cs9EG0kLwXn6hEJ
+   X7h/vL0ufYtVdvrfxAteRW3u8LIzHAiCLyrboyRD5kz7OsU/8xycBimXs
+   HPovD1cht86BtfK3WtiRZDx7HlW7Q9YMF5IG7CQ95pH77lFxfxmKpXzJe
+   KL+3EnrywT9BjEZ8JMNHlw2xugwdQ4GVz8hFKFx5KTts1k67UpxZQ5Tv4
+   CuZU2vXiCFmNbSJyzOxJdGcBumA/yxbNWCmFsb/xFE3w4wO51rYHCnEGd
+   JR8r7prvCZME+vCPH7z5UmD4y01mOS1H1COKC8UrwS9v05kcH5RDPZyP2
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15342539"
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15342569"
 X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="15342539"
+   d="scan'208";a="15342569"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:10 -0800
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:16 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="15161409"
+   d="scan'208";a="15161445"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.249.46.63])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:02 -0800
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:16:09 -0800
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: Michael Ellerman <mpe@ellerman.id.au>,
@@ -82,9 +82,9 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH 06/19] vdso: Add vdso_data::max_cycles
-Date: Fri,  8 Mar 2024 15:14:59 +0200
-Message-Id: <20240308131512.44324-7-adrian.hunter@intel.com>
+Subject: [PATCH 07/19] vdso: Make delta calculation overflow safe
+Date: Fri,  8 Mar 2024 15:15:00 +0200
+Message-Id: <20240308131512.44324-8-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240308131512.44324-1-adrian.hunter@intel.com>
 References: <20240308131512.44324-1-adrian.hunter@intel.com>
@@ -97,59 +97,56 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Add vdso_data::max_cycles in preparation to use it to detect potential
-multiplication overflow.
+Kernel timekeeping is designed to keep the change in cycles (since the last
+timer interrupt) below max_cycles, which prevents multiplication overflow
+when converting cycles to nanoseconds. However, if timer interrupts stop,
+the calculation will eventually overflow.
+
+Add protection against that, enabled by config option
+CONFIG_GENERIC_VDSO_OVERFLOW_PROTECT. Check against max_cycles, falling
+back to a slower higher precision calculation.
 
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- include/vdso/datapage.h | 4 ++++
- kernel/time/vsyscall.c  | 6 ++++++
- 2 files changed, 10 insertions(+)
+ lib/vdso/gettimeofday.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
-index 5d5c0b8efff2..6c3d67d6b758 100644
---- a/include/vdso/datapage.h
-+++ b/include/vdso/datapage.h
-@@ -67,6 +67,7 @@ struct vdso_timestamp {
-  * @seq:		timebase sequence counter
-  * @clock_mode:		clock mode
-  * @cycle_last:		timebase at clocksource init
-+ * @max_cycles:		maximum cycles which won't overflow 64bit multiplication
-  * @mask:		clocksource mask
-  * @mult:		clocksource multiplier
-  * @shift:		clocksource shift
-@@ -98,6 +99,9 @@ struct vdso_data {
+diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
+index 9fa90e0794c9..9c3a8d2440c9 100644
+--- a/lib/vdso/gettimeofday.c
++++ b/lib/vdso/gettimeofday.c
+@@ -13,6 +13,18 @@
+ # define VDSO_DELTA_MASK(vd)	(vd->mask)
+ #endif
  
- 	s32			clock_mode;
- 	u64			cycle_last;
 +#ifdef CONFIG_GENERIC_VDSO_OVERFLOW_PROTECT
-+	u64			max_cycles;
++static __always_inline bool vdso_delta_ok(const struct vdso_data *vd, u64 delta)
++{
++	return delta < vd->max_cycles;
++}
++#else
++static __always_inline bool vdso_delta_ok(const struct vdso_data *vd, u64 delta)
++{
++	return true;
++}
 +#endif
- 	u64			mask;
- 	u32			mult;
- 	u32			shift;
-diff --git a/kernel/time/vsyscall.c b/kernel/time/vsyscall.c
-index f0d5062d9cbc..9193d6133e5d 100644
---- a/kernel/time/vsyscall.c
-+++ b/kernel/time/vsyscall.c
-@@ -22,10 +22,16 @@ static inline void update_vdso_data(struct vdso_data *vdata,
- 	u64 nsec, sec;
++
+ #ifndef vdso_shift_ns
+ static __always_inline u64 vdso_shift_ns(u64 ns, u32 shift)
+ {
+@@ -28,7 +40,10 @@ static __always_inline u64 vdso_calc_ns(const struct vdso_data *vd, u64 cycles,
+ {
+ 	u64 delta = (cycles - vd->cycle_last) & VDSO_DELTA_MASK(vd);
  
- 	vdata[CS_HRES_COARSE].cycle_last	= tk->tkr_mono.cycle_last;
-+#ifdef CONFIG_GENERIC_VDSO_OVERFLOW_PROTECT
-+	vdata[CS_HRES_COARSE].max_cycles	= tk->tkr_mono.clock->max_cycles;
-+#endif
- 	vdata[CS_HRES_COARSE].mask		= tk->tkr_mono.mask;
- 	vdata[CS_HRES_COARSE].mult		= tk->tkr_mono.mult;
- 	vdata[CS_HRES_COARSE].shift		= tk->tkr_mono.shift;
- 	vdata[CS_RAW].cycle_last		= tk->tkr_raw.cycle_last;
-+#ifdef CONFIG_GENERIC_VDSO_OVERFLOW_PROTECT
-+	vdata[CS_RAW].max_cycles		= tk->tkr_raw.clock->max_cycles;
-+#endif
- 	vdata[CS_RAW].mask			= tk->tkr_raw.mask;
- 	vdata[CS_RAW].mult			= tk->tkr_raw.mult;
- 	vdata[CS_RAW].shift			= tk->tkr_raw.shift;
+-	return vdso_shift_ns((delta * vd->mult) + base, vd->shift);
++	if (likely(vdso_delta_ok(vd, delta)))
++		return vdso_shift_ns((delta * vd->mult) + base, vd->shift);
++
++	return mul_u64_u32_add_u64_shr(delta, vd->mult, base, vd->shift);
+ }
+ #endif /* vdso_calc_ns */
+ 
 -- 
 2.34.1
 
