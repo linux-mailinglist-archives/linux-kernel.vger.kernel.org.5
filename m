@@ -1,140 +1,143 @@
-Return-Path: <linux-kernel+bounces-96899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF7388762BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DB28762BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:09:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D27091C2149D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:08:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96F8C1C214A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:09:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9713355C3E;
-	Fri,  8 Mar 2024 11:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hpaY0AEn"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5FB55C3A;
+	Fri,  8 Mar 2024 11:09:08 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505D554746;
-	Fri,  8 Mar 2024 11:08:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958EB54746
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709896098; cv=none; b=sh/co3er/6gzUqt44NTAR4JTUMT8g62L6gtFrLanLDsmu/mtPWRVKtfCrtDD0Ud7fhslK3R3LTpM0oVNMEoA7tLBTxjIsZbhnTYF1XWuxogOJpWZ9jpY0ioQF54D3m1fil+ciy61VIF0llON1C0HJ7jhq6uqWYsqSmxvSoBPyA4=
+	t=1709896148; cv=none; b=gC2AdmAdTcH7Y1ThAIXr43J3RNMFCJtXju2xguDqAR53ta+cX+9rw8Hus+Q/aJuwbR4XgjCOMkjqEjL0g4rwX711zwXGvpMbUxasJru8G9Lqyzk3kprzEVejRNRohVxRW+y/XAj3GpMDHvPHgh8I5zRIKJqJKYOg89LDrldv0oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709896098; c=relaxed/simple;
-	bh=OR4ng6hQvro7ZBsX1o3XaRMRvF5ODFgK2Hn0v+CtAUQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZWfdkx2L6H56F7CHnwlntVkT5OpYpzsvP1rmQ38O3a1VFJV2n1WYBGuM0mSgYaKLhCqbODLf1l5KKNsQfo1GYDd9a/EwW6YLi//Bap1LvZVuD6WzYIDBtnZyZLtomWd28c8FFxY7VPfMUcRbYQWUnE57iakcgzPc/7seG60m5TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hpaY0AEn; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5682ecd1f81so536171a12.0;
-        Fri, 08 Mar 2024 03:08:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709896095; x=1710500895; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zjS1T5EZDkISTMFA/Hv7zuCa3iq95DmRVfFX3p+XzvU=;
-        b=hpaY0AEnPMgxMXhuNcBnbsd1jfk3ddRkv2ED884gpjWpopJR93RMCzWSVoP69UpAMF
-         vTgHecXEL3TuwpzAaL7BWuN+S1jTeVnvTv95lYHXzSexUIMPgzlCRfNgtWwxsMlNOBSK
-         ukDuhoURE/qCotx/KKalihyEv0NPK1Yik5OLRtT9WfiZMSbBU0XvDkJOsKU/1S+Bj1dJ
-         OTdDo5RTfJHz56muoYADiKvjKi05kZnl7LwXgY1dM01ZwtfD8ALP0h3WQzL6fQ9/6kpb
-         1Sb67eP92urQACAUVf1xidX9zJbW7a4QQBwdckD9Yp5Tk1+mNtIROfBkdh3B2NnbD7dw
-         x3GQ==
+	s=arc-20240116; t=1709896148; c=relaxed/simple;
+	bh=InVsPlGa/oC2mWvE7uuhw6EB0RATtgGeOqDFzW91fP8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Kz1JwvJIuR7O/YmApYrb4aeI2kEZKK67kjwoNhmwps3DEzwOIt5wZKYFLm3H5wyJdHeNBWU+uh2hHSJDmHLyHpxC6ObXp8uzicIVjrFZc0OtyVcmzCqH/isIf6WvMPTJa5i4yb3T7reIUrBqCwDKwDfxOCD58N8ixdnhqIeFrgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c873aa5a95so202007539f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:09:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709896095; x=1710500895;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zjS1T5EZDkISTMFA/Hv7zuCa3iq95DmRVfFX3p+XzvU=;
-        b=PvCppUFXoJX+D8Z/QoxhVBdStZPSx/XMnzbzy+U7i+zeXKWmmt1LRs5dTL0MicYfjH
-         X8LzQaypr/JyR0wrKWARDI57p8shpWdqwIqZoUBqx9rojzFa4HuUqadkqLQvWuX9izpI
-         vyqJIBil12bftT5BVfo5bHgKO9EdMrytdxYsOJkq8EY80PCpZBxixqoaoyUD0nuIl3K+
-         iZ/fRcbBlDXYAkZGXY41yPTLOxu5ATmtyN2l6vntCYtD4RUS1aeRIKML43En6BDvfIvw
-         E4NMn2TFrlFIQDIvxd8QU20OKH/uwlZeg4EcqEAUMOaj1WpvGz05qNTzNDZK/lQcvHMS
-         nnVw==
-X-Forwarded-Encrypted: i=1; AJvYcCXDf4H7bJBpmLzIKVMA+7Ctp+DsOhQ3RARn4pdOOa/GLQdL4DN7WBMfC1Dn8zwt/ZFhi8sV8zoOyVx7wonhThPOCDKxWUJk3icBqJrN
-X-Gm-Message-State: AOJu0YxgEEwFW9lDerklGfv+IJMdh3/kZArOyZCvBdP7g4GDwoozDJG7
-	ov5sQeflpoCc1y2Qw5YrOPU5U5UcK6RQz4SnqmzrDC/smUqoTEMp
-X-Google-Smtp-Source: AGHT+IGk6W9uxK5/rvUyc8vN77jtOzbhtn24rU49IHJ+Xu0E2oDpp9jlYhrnZfUh8NrfGEr4noAHLg==
-X-Received: by 2002:a50:cc43:0:b0:567:dea:c3bf with SMTP id n3-20020a50cc43000000b005670deac3bfmr1415625edi.41.1709896095312;
-        Fri, 08 Mar 2024 03:08:15 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-49-82.cust.vodafonedsl.it. [188.217.49.82])
-        by smtp.gmail.com with ESMTPSA id p13-20020a05640210cd00b00568233e2fbbsm1040874edu.44.2024.03.08.03.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 03:08:14 -0800 (PST)
-Date: Fri, 8 Mar 2024 12:08:13 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Umang Jain <umang.jain@ideasonboard.com>
-Cc: linux-media@vger.kernel.org,
-	Alexander Shiyan <eagle.alexander923@gmail.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>
-Subject: Re: [PATCH v2 4/6] media: imx335: Use integer values for size
- registers
-Message-ID: <ZerxncwhQLgm3PMP@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20240308083312.90279-1-umang.jain@ideasonboard.com>
- <20240308083312.90279-5-umang.jain@ideasonboard.com>
+        d=1e100.net; s=20230601; t=1709896145; x=1710500945;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bEbuChj5eIZGQlWrDZYJUG+HqnhIBLeST7zZy/quj04=;
+        b=bjwKYhTNWJO9gUfuBCVuiACI00LVCYPU20QXf/bcpsxKefep9tbN0AbE2AxAtMdfsh
+         7m/QuteQGmysYD7DuAQCp++MnRqJjfaGNImRse9Zzx4OS3QpSQXQ74Itdx5rp1K9+s8Z
+         0lbLk74Nyf4qBSuXHfBwejKRZofcLLUhxsscHII3AWOWn4S5NajVvDUdEadepPfUk1J0
+         HONXG4skjzmuq4o5jLfbnyOKzT/ThqNG+ned4Zv7kdpRbfTOKkyKv8BZgSycr0sRpAkk
+         /S7owhoq5Z0NvVHffkPhx6lbnj2wyd0CiiK97wBtGC/4agd6XaeegcEvNKks+BRiIkPP
+         DsuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXC0B5hm935D/6DAMvXjko7PxH8LgZ31W6GeGXhN07KMwul7I0t3m35zhYup3nQHiTwKvMjmZPzOBjcYnd8Bhpe16ETbFYRiBqjs4jJ
+X-Gm-Message-State: AOJu0YzISdJX4lfvYBXoEYY0fQEgNOY24y1VJdrLPBepdwFvcF5wTzgi
+	kpnwPYe8eei3FqHDwuENLcFkbB721xtD318MNyHw9uY49gR/m6Ixuv2FvfpW2KOajZ5pIl7rnJr
+	XgWwa3MribbvKhgOCaMHTVW6IKOVkqVdAQuhQ42al+BAcKzDUOW942Q0=
+X-Google-Smtp-Source: AGHT+IEJycdb1fTd51Ph8XJ+JPS0/dBQIqO4aBtp/iCnQ3v2YnJfnKnzMsQnCsb7C0tpT3MkmpLazuU5zr0sRwULQOrADVKjb9vL
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308083312.90279-5-umang.jain@ideasonboard.com>
+X-Received: by 2002:a05:6638:144e:b0:474:ebfd:1749 with SMTP id
+ l14-20020a056638144e00b00474ebfd1749mr768384jad.0.1709896145793; Fri, 08 Mar
+ 2024 03:09:05 -0800 (PST)
+Date: Fri, 08 Mar 2024 03:09:05 -0800
+In-Reply-To: <20240308105058.1649-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005f8a2c061324380f@google.com>
+Subject: Re: [syzbot] [netfilter?] KASAN: slab-use-after-free Read in ip_skb_dst_mtu
+From: syzbot <syzbot+e5167d7144a62715044c@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Umang,
+Hello,
 
-On Fri, Mar 08, 2024 at 02:03:10PM +0530, Umang Jain wrote:
-> Consider integer values for registers that are related to various
-> sizes in the register map. This helps in improving the overall
-> readability.
-> 
-> No functional changes intended in this patch.
-> 
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-> ---
->  drivers/media/i2c/imx335.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-> index ec27035586f3..3c593538f727 100644
-> --- a/drivers/media/i2c/imx335.c
-> +++ b/drivers/media/i2c/imx335.c
-> @@ -250,12 +250,12 @@ static const struct cci_reg_sequence mode_2592x1940_regs[] = {
->  	{IMX335_REG_MODE_SELECT, 0x01},
->  	{IMX335_REG_MASTER_MODE, 0x00},
->  	{IMX335_REG_WINMODE, 0x04},
-> -	{IMX335_REG_HTRIMMING_START, 0x0180},
-> -	{IMX335_REG_HNUM, 0x0a20},
-> -	{IMX335_REG_Y_OUT_SIZE, 0x0794},
-> -	{IMX335_REG_AREA3_ST_ADR_1, 0x00b0},
-> -	{IMX335_REG_AREA3_WIDTH_1, 0x0f58},
-> -	{IMX335_REG_OPB_SIZE_V, 0x00},
-> +	{IMX335_REG_HTRIMMING_START, 384},
-> +	{IMX335_REG_HNUM, 2592},
-> +	{IMX335_REG_Y_OUT_SIZE, 1940},
-> +	{IMX335_REG_AREA3_ST_ADR_1, 176},
-> +	{IMX335_REG_AREA3_WIDTH_1, 3928},
-> +	{IMX335_REG_OPB_SIZE_V, 0},
->  	{IMX335_REG_XVS_XHS_DRV, 0x00},
->  	{CCI_REG8(0x3288), 0x21}, /* undocumented */
->  	{CCI_REG8(0x328a), 0x02}, /* undocumented */
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: null-ptr-deref Write in ipvlan_process_v4_outbound
 
-Looks good to me.
-Reviwed-by: Tommaso Merciai <tomm.merciai@gmail.com>
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
+BUG: KASAN: null-ptr-deref in __refcount_add include/linux/refcount.h:182 [inline]
+BUG: KASAN: null-ptr-deref in __refcount_inc include/linux/refcount.h:239 [inline]
+BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:256 [inline]
+BUG: KASAN: null-ptr-deref in ipvlan_process_v4_outbound+0x3f6/0x7b0 drivers/net/ipvlan/ipvlan_core.c:444
+Write of size 4 at addr 0000000000000274 by task syz-executor.0/5580
 
-Thanks & Regards,
-Tommaso
+CPU: 0 PID: 5580 Comm: syz-executor.0 Not tainted 6.8.0-rc7-syzkaller-g3aaa8ce7a335-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ print_report+0xe6/0x540 mm/kasan/report.c:491
+ kasan_report+0x142/0x180 mm/kasan/report.c:601
+ kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
+ instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+ atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
+ __refcount_add include/linux/refcount.h:182 [inline]
+ __refcount_inc include/linux/refcount.h:239 [inline]
+ refcount_inc include/linux/refcount.h:256 [inline]
+ ipvlan_process_v4_outbound+0x3f6/0x7b0 drivers/net/ipvlan/ipvlan_core.c:444
+ ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:544 [inline]
+ ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:606 [inline]
+ ipvlan_queue_xmit+0xaa2/0x11f0 drivers/net/ipvlan/ipvlan_core.c:672
+ ipvlan_start_xmit+0x4a/0x150 drivers/net/ipvlan/ipvlan_main.c:222
+ __netdev_start_xmit include/linux/netdevice.h:4986 [inline]
+ netdev_start_xmit include/linux/netdevice.h:5000 [inline]
+ xmit_one net/core/dev.c:3547 [inline]
+ dev_hard_start_xmit+0x242/0x770 net/core/dev.c:3563
+ sch_direct_xmit+0x2b6/0x5f0 net/sched/sch_generic.c:342
+ qdisc_restart net/sched/sch_generic.c:407 [inline]
+ __qdisc_run+0xbed/0x2150 net/sched/sch_generic.c:415
+ __dev_xmit_skb net/core/dev.c:3839 [inline]
+ __dev_queue_xmit+0xfc6/0x3b10 net/core/dev.c:4317
+ packet_snd net/packet/af_packet.c:3081 [inline]
+ packet_sendmsg+0x47f4/0x6240 net/packet/af_packet.c:3113
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ __sys_sendto+0x3a4/0x4f0 net/socket.c:2191
+ __do_sys_sendto net/socket.c:2203 [inline]
+ __se_sys_sendto net/socket.c:2199 [inline]
+ __x64_sys_sendto+0xde/0x100 net/socket.c:2199
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f5d1287dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5d136b40c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007f5d129abf80 RCX: 00007f5d1287dda9
+RDX: 0000000000005c13 RSI: 0000000020000280 RDI: 0000000000000003
+RBP: 00007f5d128ca47a R08: 0000000000000000 R09: 000000000000002f
+R10: 0000000000000806 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f5d129abf80 R15: 00007fffdca46778
+ </TASK>
+==================================================================
 
-> -- 
-> 2.43.0
-> 
-> 
+
+Tested on:
+
+commit:         3aaa8ce7 Merge tag 'mm-hotfixes-stable-2024-03-07-16-1..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=12503a49180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=165e1d0fff4d3c47
+dashboard link: https://syzkaller.appspot.com/bug?extid=e5167d7144a62715044c
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=154b4001180000
+
 
