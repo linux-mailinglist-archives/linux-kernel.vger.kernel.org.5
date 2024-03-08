@@ -1,165 +1,78 @@
-Return-Path: <linux-kernel+bounces-96428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D898C875BF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:28:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF44A875BF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:29:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07E751C21128
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:28:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 768891F225B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6A62261D;
-	Fri,  8 Mar 2024 01:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4E3225DD;
+	Fri,  8 Mar 2024 01:29:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z3eMkDpS"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNlPW6O1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E321F139F
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 01:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8AF23B0;
+	Fri,  8 Mar 2024 01:29:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709861304; cv=none; b=DECOeQOHtzYUORja7EilY65JcmsfoLsM+RiBvnYe1mfJ73Z59jSPE6qsUL7248arW27mNNJ9Zq4uqXTv/iKtu8MGRQgLJyIfEjxBuRbVABwITM/swM2X8cvw/KtguUBVWEvW8uAuXDrHQ4UsyE7EY9aj3tb0eIr5caDZ3y5e3Qk=
+	t=1709861388; cv=none; b=hezIuHDgfNevn+gmaXyv5VzaQxGdAmN68KseMWDk48s6n+mcBmM8Zvp+0ZYsoBsMpBkWhUgQ7YiKnfmC2jHwW5ohe+CpiL8vJMYAJvSFtN2NL13V+Y0sOcSVP9f22UcNRgTI+095y8SlFwAgE8IcV4GUdyw4cm/o9xW43WVewY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709861304; c=relaxed/simple;
-	bh=WdRzAXoOjri8cM1mBf2nyZ1olyPeorHKC2ja6oHUC8w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=CSz5Gh5xc+VsF5vfdLo/TG+uJFqP2Rz5ltt+nF9LVJYiZW83J396EcjPA5mTnmntwlJO6Aq+1QUZkTpOAoz6oO2ItjrR1h3GWRCUvod3tqKgmV5b9hzVM94pU4NS9bQiFB7jRqApoUgFwD2XC3TWEbIUawRNrxoHiinznRqh/FY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=z3eMkDpS; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e64f08bddaso1427671b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 17:28:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709861302; x=1710466102; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Q7HJDONtRmF9iMvjCwghqWgvN0CigeogTDpvGQ69zI=;
-        b=z3eMkDpS/6+PetwDBmlpRG7eOoJ7Yj2yffijPFTBRNMv8KatRYJpOndk24nc1kc8Yh
-         mSG6DwOaG1HZZwRZb8J5qB2qcxHBMPXLQaQuuUCi9byCqvijNj9/sEFj0PuWZibUuURD
-         aQywtjzDegzBpLk6xbOqZdpSTSCJ4KzjvfiEsyluBFQAdFHJ96jHCY8gkbsjbRX7uTNm
-         AJJqeLknQBb4NNPLQ8j4u3PZBrCtbWlxsQUNALHWlFZwE3TBo1ha1LziDMcqe+lhoIom
-         A8g/QYhi+H5QGMOcP+8gIwxpUhPhlQxMHbzevdpPltsipTpxbMqO0/wq/Etgu6GBKu6S
-         4xdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709861302; x=1710466102;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Q7HJDONtRmF9iMvjCwghqWgvN0CigeogTDpvGQ69zI=;
-        b=EopDkzwCVL5YhCFJ/FJVNee6Da9fiAuo/206X/M29tkjgXRGIxVCNzvl7CZ46rkOWu
-         /Y4kd4KJ2Xa+zUfygpWkrQdGXn/Q8lQfnmxtPPBkzC1dCyTrpzxe69KxCUkT/OQ/gXig
-         w9aT1WnNQOsHpJoBvYpRHp7BEStsbkMjZD9x0V077prhn84QZAr0hMdtsR7M4C9MVbF3
-         yKsmGOefNkqBQzosjQnh2st5ASAIhHYCxEd5Q+fWyh2EoNH26kBiriUla54fibyze40j
-         WAiEvC6R69icgINdNxnewcBaxJ98vRVIEWychgMRbXh+r4hxoDnTeNMDPw9j3BcBE0Xg
-         zKjw==
-X-Forwarded-Encrypted: i=1; AJvYcCXwRZcU6WiY0sRvBvVBS9EuiW7EfcaAXFjPNANzQVchV5qmzKkLUbTt4Z2chKNtRWGe1jDMFOIqmcvGgMsWL4YeBRloLWoTceew/+f2
-X-Gm-Message-State: AOJu0Yxh/Upu8h3oEHjcauCaMUDTUP1uZsbxXuZaHSuLQfrNOSow1mT+
-	C0x+a3hsLz83nSx9F5ZEZgfhT+xuAGL2BGlxoj4FSIisguDiEH5imhVSaeQ3zWyUiW/5TIWnk4V
-	L4g==
-X-Google-Smtp-Source: AGHT+IHdYWUzvYdf15FnyNO896HQz1OFemDtQKuALNWeOLBq+TJIPqRQI68uDP5g8qHfZP4vcbtwxAcqddw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:9398:b0:6e5:35c8:eefa with SMTP id
- ka24-20020a056a00939800b006e535c8eefamr382394pfb.2.1709861302144; Thu, 07 Mar
- 2024 17:28:22 -0800 (PST)
-Date: Thu, 7 Mar 2024 17:28:20 -0800
-In-Reply-To: <ZepiU1x7i-ksI28A@google.com>
+	s=arc-20240116; t=1709861388; c=relaxed/simple;
+	bh=tukQ8PJbFYzuhglG3bgjuKipBqcjA69LgbygXnieDrw=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Dt7lyDo+aLKbfsu1/T3oLRbctgbcKKfMNaYIr7i7JxPW7NwJZPhStc28IGo7ak8xBAcyjDnPAbF8/lDQ79gX4IBGtUXVEBsQ/FtRyYUoZWlqQ6jSopRB/Lhl5upeBsemjtmZlAYPHqm/bkhhHnjQCyFfBENXSdNUTUGXkOoNM9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNlPW6O1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C13D2C433F1;
+	Fri,  8 Mar 2024 01:29:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709861387;
+	bh=tukQ8PJbFYzuhglG3bgjuKipBqcjA69LgbygXnieDrw=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=jNlPW6O1NAmPMOd/tobrJ0G3HGCvL6dISUgE/rcB9XYGwF50Gpjn+C9gXdrpoQT9b
+	 SgD+sJ6nOLI5m8+316yZJ4exc9PA135Ozh0i4zk1GRubcp0M1/5P4FsR1qhMbxW9Ny
+	 5TUF4Swz5OO5qbghN9E5niwEomYriVN9AYp5me3ufowRmkgZpZ9vdkNFy9Mnj9xII8
+	 oV+qtuwH1+XS0SJItnkMRxRCp8Qt59TC6rEVHg9AAyYVvEvS6Yd2de2dJr5+6waimP
+	 HZkxHubQVRBgbuekwru2NawjX0mP4I8cRlgzTET3hrdF878+C2xTT60WMeMcc1fA0q
+	 PpNtamIgC1bYw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AF2BBC04D3F;
+	Fri,  8 Mar 2024 01:29:47 +0000 (UTC)
+Subject: Re: [GIT PULL] hotfixes for 6.8
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240307162059.88fcc2a013c9ce1f3f72042d@linux-foundation.org>
+References: <20240307162059.88fcc2a013c9ce1f3f72042d@linux-foundation.org>
+X-PR-Tracked-List-Id: <linux-mm.kvack.org>
+X-PR-Tracked-Message-Id: <20240307162059.88fcc2a013c9ce1f3f72042d@linux-foundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2024-03-07-16-17
+X-PR-Tracked-Commit-Id: ded79af42f114bb89f8e90c8e7337f5b7bb5f015
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3aaa8ce7a3350d95b241046ae2401103a4384ba2
+Message-Id: <170986138770.3360.16836002430977814085.pr-tracker-bot@kernel.org>
+Date: Fri, 08 Mar 2024 01:29:47 +0000
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <c50dc98effcba3ff68a033661b2941b777c4fb5c.1709288671.git.isaku.yamahata@intel.com>
- <9f8d8e3b707de3cd879e992a30d646475c608678.camel@intel.com>
- <20240307203340.GI368614@ls.amr.corp.intel.com> <35141245-ce1a-4315-8597-3df4f66168f8@intel.com>
- <ZepiU1x7i-ksI28A@google.com>
-Message-ID: <ZepptFuo5ZK6w4TT@google.com>
-Subject: Re: [RFC PATCH 1/8] KVM: Document KVM_MAP_MEMORY ioctl
-From: Sean Christopherson <seanjc@google.com>
-To: David Matlack <dmatlack@google.com>
-Cc: Kai Huang <kai.huang@intel.com>, Isaku Yamahata <isaku.yamahata@linux.intel.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	"federico.parola@polito.it" <federico.parola@polito.it>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, "michael.roth@amd.com" <michael.roth@amd.com>
-Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Mar 07, 2024, David Matlack wrote:
-> On 2024-03-08 01:20 PM, Huang, Kai wrote:
-> > > > > +:Parameters: struct kvm_memory_mapping(in/out)
-> > > > > +:Returns: 0 on success, <0 on error
-> > > > > +
-> > > > > +KVM_MAP_MEMORY populates guest memory without running vcpu.
-> > > > > +
-> > > > > +::
-> > > > > +
-> > > > > +  struct kvm_memory_mapping {
-> > > > > +	__u64 base_gfn;
-> > > > > +	__u64 nr_pages;
-> > > > > +	__u64 flags;
-> > > > > +	__u64 source;
-> > > > > +  };
-> > > > > +
-> > > > > +  /* For kvm_memory_mapping:: flags */
-> > > > > +  #define KVM_MEMORY_MAPPING_FLAG_WRITE         _BITULL(0)
-> > > > > +  #define KVM_MEMORY_MAPPING_FLAG_EXEC          _BITULL(1)
-> > > > > +  #define KVM_MEMORY_MAPPING_FLAG_USER          _BITULL(2)
-> > > > 
-> > > > I am not sure what's the good of having "FLAG_USER"?
-> > > > 
-> > > > This ioctl is called from userspace, thus I think we can just treat this always
-> > > > as user-fault?
-> > > 
-> > > The point is how to emulate kvm page fault as if vcpu caused the kvm page
-> > > fault.  Not we call the ioctl as user context.
-> > 
-> > Sorry I don't quite follow.  What's wrong if KVM just append the #PF USER
-> > error bit before it calls into the fault handler?
-> > 
-> > My question is, since this is ABI, you have to tell how userspace is
-> > supposed to use this.  Maybe I am missing something, but I don't see how
-> > USER should be used here.
-> 
-> If we restrict this API to the TDP MMU then KVM_MEMORY_MAPPING_FLAG_USER
-> is meaningless, PFERR_USER_MASK is only relevant for shadow paging.
+The pull request you sent on Thu, 7 Mar 2024 16:20:59 -0800:
 
-+1
+> git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2024-03-07-16-17
 
-> KVM_MEMORY_MAPPING_FLAG_WRITE seems useful to allow memslots to be
-> populated with writes (which avoids just faulting in the zero-page for
-> anon or tmpfs backed memslots), while also allowing populating read-only
-> memslots.
-> 
-> I don't really see a use-case for KVM_MEMORY_MAPPING_FLAG_EXEC.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3aaa8ce7a3350d95b241046ae2401103a4384ba2
 
-It would midly be interesting for something like the NX hugepage mitigation.
+Thank you!
 
-For the initial implementation, I don't think the ioctl() should specify
-protections, period.
-
-VMA-based mappings, i.e. !guest_memfd, already have a way to specify protections.
-And for guest_memfd, finer grained control in general, and long term compatibility
-with other features that are in-flight or proposed, I would rather userspace specify
-RWX protections via KVM_SET_MEMORY_ATTRIBUTES.  Oh, and dirty logging would be a
-pain too.
-
-KVM doesn't currently support execute-only (XO) or !executable (RW), so I think
-we can simply define KVM_MAP_MEMORY to behave like a read fault.  E.g. map RX,
-and add W if all underlying protections allow it.
-
-That way we can defer dealing with things like XO and RW *if* KVM ever does gain
-support for specifying those combinations via KVM_SET_MEMORY_ATTRIBUTES, which
-will likely be per-arch/vendor and non-trivial, e.g. AMD's NPT doesn't even allow
-for XO memory.
-
-And we shouldn't need to do anything for KVM_MAP_MEMORY in particular if
-KVM_SET_MEMORY_ATTRIBUTES gains support for RWX protections the existing RWX and
-RX combinations, e.g. if there's a use-case for write-protecting guest_memfd
-regions.
-
-We can always expand the uAPI, but taking away functionality is much harder, if
-not impossible.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
