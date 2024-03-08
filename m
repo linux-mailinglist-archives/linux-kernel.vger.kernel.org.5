@@ -1,167 +1,127 @@
-Return-Path: <linux-kernel+bounces-97078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D50B3876538
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:25:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E23A876546
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:27:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FD1A285CBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:25:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46CE8283552
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:27:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9407D4CE05;
-	Fri,  8 Mar 2024 13:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B457364AB;
+	Fri,  8 Mar 2024 13:26:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kCQZriwB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qna8pR9R"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E5B3BBF9;
-	Fri,  8 Mar 2024 13:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6E33BBC1
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709904288; cv=none; b=X/Lu017eGdC9XYBpKsGMI9YzpMvhjmawd0erC4SMDuiqhr6G5jXK/fPd7X+0qRKipDEgGMA55qhYeYQejlQYtwN5PO7v0nURQ0ivaOT3sUp85KGRRZ8MY/BS126wtzGnDSk0t5f4ApVcT8mxrVE3eKnpAR6hPH8rC800kw3hTps=
+	t=1709904389; cv=none; b=rT3GbY8AKM9B0D4MyvxY1NLWOaqY7BzDOFMHS7EJsCvxGSt8Yjt4ykjur1Uxguoxz1ciKddzBIhE4lvMV2auaTQsZ4h5s7EdjKDInL0bVJXOqtQ9mbNCpcSFePCOhnx681UsmeLshJ0AeBv3WXNgq5/QariOAvkWfw89sJE8WAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709904288; c=relaxed/simple;
-	bh=LAdBrFiiqpPIYb+1fEVGEmGjUltxM7IwFgH3jq/rJDo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sWs1gBpQrDmPZFRvQmcKlXTRtphwNVhkUZmWn1VEmANWLVfMIEGYCkDCyShiJ9BibxBhDQuTGsHmzFP2VaJrhprP0zZ8TO61cf4OhzllvWSdefDb7GseAO1nfLFpWSiu5X0GeeAylulGMUl8tQnQMyfGIidhIe4Cf+PibHFFf64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kCQZriwB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7CB0C433F1;
-	Fri,  8 Mar 2024 13:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709904288;
-	bh=LAdBrFiiqpPIYb+1fEVGEmGjUltxM7IwFgH3jq/rJDo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kCQZriwBir8HdF7tMJnCbXC/StQ5ZubtkrurJ/hNH5ABeLm3oUkbkLT4RFyY2E8eO
-	 WhEOBptb0FP//rwCm3NEOkHagnEj5gf5qMnmPMe/qNH0seeYsh4AqBQsrYd+RbrnH6
-	 pDRLKSmQdbkECwUTmu2Qx8EiSpSPwjGi1C/wfhV39qWSt9mOUDcyucPUwdWxl7RKKL
-	 r8to3P6b356iIL9jCR8K8bfo8pwwI6jmqw7KiebRFq4G0i2mjya0l5XV7KTfiYE85w
-	 umqtSbSKWbmwfLY0nu5JqX3tCAiDkKwWTsmoxH+sE6t5e8phFPQm6vRX5Q9girR6xc
-	 MZOTZB3+scaNQ==
-Date: Fri, 8 Mar 2024 14:24:35 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com, Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v9 07/10] PCI: dwc: ep: Remove "core_init_notifier" flag
-Message-ID: <ZesRk5Dg4KEASD3U@ryzen>
-References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
- <20240304-pci-dbi-rework-v9-7-29d433d99cda@linaro.org>
+	s=arc-20240116; t=1709904389; c=relaxed/simple;
+	bh=T4mgYWIxiTfuwZ09Vexg+mUkAPMYEV07jO59q4ZGk9g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A7WfDtICfw/ku3y2dr/n9zcXsdu/Pi1BtsYYp6C/K5QeE05PXuVpPuNsVo5dKB1y44UbHPjqVclBgF0CsyHnfGZZHDKsDB1j5F/huRKMuU9jKQwecSvrGuv1l7K7PoBJlmWlyDq3KnWMyYB2zpukoRrB8GrnGXuOK4EAS/N+EQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qna8pR9R; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso552235a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 05:26:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709904387; x=1710509187; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SZUX/MJM+g7s3/c5nEwMVnxHOynzt0A7HHdgK/jj9I4=;
+        b=qna8pR9Rxeyg/t+ZpuvWcB3E3EELhCKmg8PR7hzCSuvj0jmMHYwRwuoEAdgcqLUyUY
+         Ggm448aNZZEnMZciTJIudPq/bMj5Is9YjgOErhiyUvpW4Ehn6g84TzV/YpPnUy8Ax+yD
+         t5Pv4/XkOTs0G6X6mCI98Gf/wQpTWZBdf14LaulkSSWh7lye61x2vwdUnRH6lSnhId1c
+         2wlQgWBl7oa2xcWy1Ol3RQTyOm7EQrBEl0PDOFr5+ClCdTigNo6rRaXeEwEtLdpQjmXi
+         kRxWVhUKi05xfWi/TSWiFwoKxHGMEMdV7WsxBF/Y/c56QtDCHJhjnb9hO5hLgTtHh55W
+         GC6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709904387; x=1710509187;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SZUX/MJM+g7s3/c5nEwMVnxHOynzt0A7HHdgK/jj9I4=;
+        b=JxSb0Gvkx6LYH8WvAxG37HQRLAlja9otHNdDIMqyGfK8f2KBOi69tChGpLyRdwqEwm
+         rvyqn2a+2VV/6DYbdLaSbJXoIn2VhFyuobu2Yo8JsxMye4y1fGnFvh4FREYvYGQNZXuE
+         +vv8n5QSZwY6fir2gSSGa2ceHDy+A2IKcnY83Y7F0K2W1KHbg23SWT3j+dUgpPdwxzM7
+         JeIv/H8HMDTyTpTPZ1qnIGlIpFMFeqTrI/Z1m+zCzZ+0u9IE71k5J0oXx4ZSeigfelRe
+         /psVWtV+Im0SaXuBfaPd4liJUaqM3DZO6ZTdTS6dq0GVzAO95h2w6JVxKIjnf11/Lp3p
+         K39w==
+X-Gm-Message-State: AOJu0Yzz4bAyzbvZV4PDjzVF5fwnY4qvUWx0MDqAGhseVdFWtvAhNtI/
+	NQ/mF1+vCv8Ii8ZeXEu2L15bvfbnFrR/ptWo26yiI573ihBBuycgE3YlxNp3XH9GueD83WudNsB
+	MkZFHpb3mDfcN0EUZWFgpDAYpsi5vTpJSPJkDpw==
+X-Google-Smtp-Source: AGHT+IGFMs0YCfp4JUyIvx5B4iy48/FVoDLSrjIhZkglbFujXNqbl+4cjA1ozadZubPbn88RffAj1ozMNmSHIcr7OGc=
+X-Received: by 2002:a17:90b:249:b0:29b:c1af:ffca with SMTP id
+ fz9-20020a17090b024900b0029bc1afffcamr95468pjb.31.1709904387269; Fri, 08 Mar
+ 2024 05:26:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304-pci-dbi-rework-v9-7-29d433d99cda@linaro.org>
+References: <20240308105901.1096078-1-mingo@kernel.org> <20240308105901.1096078-3-mingo@kernel.org>
+In-Reply-To: <20240308105901.1096078-3-mingo@kernel.org>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 8 Mar 2024 14:26:16 +0100
+Message-ID: <CAKfTPtAFQZHxzgju2As6qAmi+VxWk1H_5L44UX+XcbqYHSneCQ@mail.gmail.com>
+Subject: Re: [PATCH 02/10] sched/balancing: Remove reliance on 'enum
+ cpu_idle_type' ordering when iterating [CPU_MAX_IDLE_TYPES] arrays in show_schedstat()
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Shrikanth Hegde <sshegde@linux.ibm.com>, Valentin Schneider <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 04, 2024 at 02:52:19PM +0530, Manivannan Sadhasivam wrote:
-> "core_init_notifier" flag is set by the glue drivers requiring refclk from
-> the host to complete the DWC core initialization. Also, those drivers will
-> send a notification to the EPF drivers once the initialization is fully
-> completed using the pci_epc_init_notify() API. Only then, the EPF drivers
-> will start functioning.
-> 
-> For the rest of the drivers generating refclk locally, EPF drivers will
-> start functioning post binding with them. EPF drivers rely on the
-> 'core_init_notifier' flag to differentiate between the drivers.
-> Unfortunately, this creates two different flows for the EPF drivers.
-> 
-> So to avoid that, let's get rid of the "core_init_notifier" flag and follow
-> a single initialization flow for the EPF drivers. This is done by calling
-> the dw_pcie_ep_init_notify() from all glue drivers after the completion of
-> dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
-> send the notification to the EPF drivers once the initialization is fully
-> completed.
-> 
-> Only difference here is that, the drivers requiring refclk from host will
-> send the notification once refclk is received, while others will send it
-> during probe time itself.
-> 
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> index 18c80002d3bd..fc0282b0d626 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> @@ -927,21 +928,12 @@ static int pci_epf_test_bind(struct pci_epf *epf)
->  	if (ret)
->  		return ret;
+On Fri, 8 Mar 2024 at 11:59, Ingo Molnar <mingo@kernel.org> wrote:
 >
+> From: Shrikanth Hegde <sshegde@linux.ibm.com>
+>
+> show_schedstat() output breaks and doesn't print all entries
+> if the ordering of the definitions in 'enum cpu_idle_type' is changed,
+> because show_schedstat() assumes that 'CPU_IDLE' is 0.
+>
+> Fix it before we change the definition order & values.
+>
+> [ mingo: Added changelog. ]
+>
+> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Valentin Schneider <vschneid@redhat.com>
 
-Hello Mani,
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Since you asked for testing, I gave your series a spin
-(with a driver without .core_init_notifier).
-
-
-There seems to be a problem that pci_epc_write_header() is never called.
-
-Debugging this, it seems that .core_init in pci-epf-test is never called.
-
-If I add debug prints in pci_epc_init_notify(), I see that it does not
-notify a single EPF driver.
-
-It appears that the patch in $subject will call pci_epc_init_notify()
-at EPC driver .probe() time, and at that point in time, there are no
-EPF drivers registered.
-
-They get registered later, when doing the configfs write.
-
-
-I would say that it is the following change that breaks things:
-
-> -	if (!core_init_notifier) {
-> -		ret = pci_epf_test_core_init(epf);
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
-
-Since without this code, pci_epf_test_core_init() will no longer be called,
-as there is currently no one that calls epf->core_init() for a EPF driver
-after it has been bound. (For drivers that call dw_pcie_ep_init_notify() in
-probe())
-
-I guess one way to solve this would be for the EPC core to keep track of
-the current EPC "core state" (up/down). If the core is "up" at EPF .bind()
-time, notify the EPF driver directly after .bind()?
-
-
-Kind regards,
-Niklas
+> ---
+>  kernel/sched/stats.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
+> index 857f837f52cb..85277953cc72 100644
+> --- a/kernel/sched/stats.c
+> +++ b/kernel/sched/stats.c
+> @@ -150,8 +150,7 @@ static int show_schedstat(struct seq_file *seq, void *v)
+>
+>                         seq_printf(seq, "domain%d %*pb", dcount++,
+>                                    cpumask_pr_args(sched_domain_span(sd)));
+> -                       for (itype = CPU_IDLE; itype < CPU_MAX_IDLE_TYPES;
+> -                                       itype++) {
+> +                       for (itype = 0; itype < CPU_MAX_IDLE_TYPES; itype++) {
+>                                 seq_printf(seq, " %u %u %u %u %u %u %u %u",
+>                                     sd->lb_count[itype],
+>                                     sd->lb_balanced[itype],
+> --
+> 2.40.1
+>
 
