@@ -1,96 +1,77 @@
-Return-Path: <linux-kernel+bounces-97273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E649B87681B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F22E876820
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2218B1C21F4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:09:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 708B71C21FAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD712C862;
-	Fri,  8 Mar 2024 16:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5872D029;
+	Fri,  8 Mar 2024 16:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SrmBzkAZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CsV/vZBW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EAC366;
-	Fri,  8 Mar 2024 16:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E31B567A;
+	Fri,  8 Mar 2024 16:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709914157; cv=none; b=qIagXEqbN7wFqkoF5S+PewQSE78Vw26p4bT/1Yj8tkM2J0D4fUn/VuJqVhLjB+UbqhXEUG2y0i2aAtr3Vs28Ugo3q+XLVDlwVtjpvBYZTdgDkSvnsCOGoc4F7lpeWvuCNrbxQTf8hkq4nG9Ris6cR+HDNoRBlInkpSqydfCxH2c=
+	t=1709914226; cv=none; b=gGm0NapA/J7o//GHCfb/MiR1NE9dlA9GjtsJiRPma0VMw4Zh1ODQHBIy/IyppVP/zxnbVuwexCqt73uBbfpJWnj5sd8Ib4uM/RbZVPIiSQ0YVzqVPo8NN1XmNs72OnFNdZuU4PGHzvbTVCcgieMYxotdXabstSWMaFVjT2fhzUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709914157; c=relaxed/simple;
-	bh=ZSBaVvNvf0DteLyJ6qgFq5sexlcun2hzmzZGkgLZegY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gLTUF6bfwGs4e7xHDjUn6QtBgHT6nghmJkA3ESKBxT41L6g4XAIBokvWHjfg5QH0rzPvq8ORCxD95J+BqvvapS8bCBV27eF72wpFX+AVINatPEgHZWi6H/4+xCAA/jvtK4AqVy4hCiExmPP4aDTY+oe/Ov6FqOth5d/x1jmi1Cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SrmBzkAZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ADCAC433C7;
-	Fri,  8 Mar 2024 16:09:12 +0000 (UTC)
+	s=arc-20240116; t=1709914226; c=relaxed/simple;
+	bh=KmsqKvGg1bfnD6ZWCtDSJd3r55FEshEujbRcG6v2Tmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YL2BJBZ3yuJ4BjK8uq37I4PoFlZaG0Pn08KK6fkq7PGmcEpDwv/KgbluqchJNGkq8aPyxPrVy+oGlAZUPuDVWYmArT9C0fKGCSsxyVf6cqJ2IeDvm/ntWAGPYAuldhQOgD/ISRZoRQcRbKyr9W7iLXqngDhLc/QmXPl4Wzl3JzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CsV/vZBW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ADB6C433C7;
+	Fri,  8 Mar 2024 16:10:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709914157;
-	bh=ZSBaVvNvf0DteLyJ6qgFq5sexlcun2hzmzZGkgLZegY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SrmBzkAZsbSCAfnhSR1X0yXEKr23ym6SvHxkA0cbIEwzzp1FC+RDhliEw3qJhhvhi
-	 g84El0q676S3dSLbCny5Yh2x19A7YQYblDI9C8jQ/D7wej7qkRvZeXBYY7WJaUtA1p
-	 gDsJNgZ++RurRn1si/S/OHh2t3MPOCRqjX7IdOzKG230FZxF9ckSx6QR7/xLesqq3p
-	 6DEezmPc1zufyNd77gmPCFymAEYR+vAAIaTGk5AwdVc+A+D4NgBN1eEwyWc55ZTeEK
-	 4BFvK2IgA8UfQJ2RoKsdab4jOXpcIr/2eH14Cj+Fdm5GQDqLPq/s3RwTpfyRS74eGc
-	 uru1rwmkMF0Mg==
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v4 0/5] arm64: dts: qcom: sc8280xp: PCIe fixes and GICv3 ITS enable
-Date: Fri,  8 Mar 2024 17:09:08 +0100
-Message-Id: <170991411487.455768.7609004144728540136.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240306095651.4551-1-johan+linaro@kernel.org>
-References: <20240306095651.4551-1-johan+linaro@kernel.org>
+	s=k20201202; t=1709914225;
+	bh=KmsqKvGg1bfnD6ZWCtDSJd3r55FEshEujbRcG6v2Tmk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CsV/vZBWwqNZq6COaZEWyHqD5mMFn3HoreLxtd9kU6LJnmyh7I6ZLuU+pNyeaSYDG
+	 vtTjWNqDvlOcEK5136OtQIBlGXXBLC5OguE20zjk4sFUa8dAyZcl1VA4Ajh0E7oPxv
+	 8JvOpwt4c0OUOij+oe3rGx2r85ddYBGc/+o7LCIq61K5zmzp7ks9lS+ZbC5vW1NKco
+	 zD0ek4qKbzlqkNRaSLmpqDBZeZy6PoFVDsiefaeKNSu1xMCsWNghH1x9CyvoHZc2gE
+	 oqXEY5DrpvtifFlJdCAcCHd3uaXtO7F320LV4s2zDeWEBJynm7MFnJzWsj20FBsxut
+	 2HXGTYRml1cSg==
+Date: Fri, 8 Mar 2024 08:10:24 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ajay Sharma
+ <sharmaajay@microsoft.com>, Leon Romanovsky <leon@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang
+ Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+ <decui@microsoft.com>, Long Li <longli@microsoft.com>, Shradha Gupta
+ <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v2] net :mana : Add per-cpu stats for MANA device
+Message-ID: <20240308081024.6fde961f@kernel.org>
+In-Reply-To: <1709894671-1018-1-git-send-email-shradhagupta@linux.microsoft.com>
+References: <1709894671-1018-1-git-send-email-shradhagupta@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, 06 Mar 2024 10:56:46 +0100, Johan Hovold wrote:
-> This series addresses a few problems with the sc8280xp PCIe
-> implementation.
-> 
-> The DWC PCIe controller can either use its internal MSI controller or an
-> external one such as the GICv3 ITS. Enabling the latter allows for
-> assigning affinity to individual interrupts, but results in a large
-> amount of Correctable Errors being logged on both the Lenovo ThinkPad
-> X13s and the sc8280xp-crd reference design.
-> 
-> [...]
+On Fri,  8 Mar 2024 02:44:31 -0800 Shradha Gupta wrote:
+> Extend 'ethtool -S' output for mana devices to include per-CPU packet
+> stats
 
-Applied to controller/qcom, thanks!
-
-[1/5] dt-bindings: PCI: qcom: Allow 'required-opps'
-      https://git.kernel.org/pci/pci/c/c8073025c0e4
-[2/5] dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
-      https://git.kernel.org/pci/pci/c/545e88cb41a6
-[3/5] PCI: qcom: Disable ASPM L0s for sc8280xp, sa8540p and sa8295p
-      https://git.kernel.org/pci/pci/c/d1997c987814
-
-Thanks,
-Lorenzo
+You haven't answered the questions on v1 and haven't addressed all 
+the feedback.
+-- 
+pw-bot: cr
+pv-bot: feedback
 
