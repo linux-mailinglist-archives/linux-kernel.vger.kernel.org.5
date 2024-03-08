@@ -1,201 +1,128 @@
-Return-Path: <linux-kernel+bounces-96409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AACC875BBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:00:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBB48875BBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:04:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1D68283544
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:00:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 930AE283436
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B8D22333;
-	Fri,  8 Mar 2024 00:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE7521353;
+	Fri,  8 Mar 2024 01:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JiwTGHVO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QM/6Wbyp"
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61839219F0;
-	Fri,  8 Mar 2024 00:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2A121103
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 01:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709859531; cv=none; b=WjCX87rSzCx12UdP5Y/kvU2PbsmgUB7d7t9CInGVa5/c12INMN/LKCj65V6/xB5aTXM3+3HtTIO1OmK8g1+tp4CY6t5/RJ7/zZxe52T5J2Xyu3xy6ZvPEV/3j7mPlYXkzKVhRshacyw10yastFNOnwozMW7Gzb9vYYGSi0NTcIM=
+	t=1709859836; cv=none; b=M9GrvmO7wM7mDcpWVn2yEpAjhAdOnBsJr6+ezhtOAx/RdHsE+YYr0KxtCwukfb03VZ+9UDn+3AxNLwF7LkU4eG4NS/9LsBUVJ/tOTNkjY2RQT0/VLKSvVn/s+6jvoxQSfymHb/+LgOIN/5hZN3xwpnzocBGkVwL7LVq/y7ZLXAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709859531; c=relaxed/simple;
-	bh=ZPyNgw50IlMj3ZZ9BFxPHhxLNMbM6ym6HoTafz/JF0c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oGWubKew99022mTMS2qqNk84+L+R7ATCUbgdKJaPnhimX2cDNdOsb2+KBK2L+V3DjLJM6LAftOMdxImELLh7riLHkc1CBsDBznZ6TUFLfaybj/80LySazH5ZO3PMRLOn2vQrkwov6ZfwF8jqbzYS73nRwMBXc0pqGduR3cf7jDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JiwTGHVO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C65F8C433F1;
-	Fri,  8 Mar 2024 00:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709859530;
-	bh=ZPyNgw50IlMj3ZZ9BFxPHhxLNMbM6ym6HoTafz/JF0c=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=JiwTGHVOguV9FSNQ3ANzjq1D6UTnKbnaJQNIOVCH/xER5PeTG+JaUxQABsm2Mwx42
-	 PPxUQuNiZv6HWLrOzIj5/6V/ShiiB4Mhd1Ehlh7zLvprQLRiIPkzOjj/T4LfxxVY8V
-	 NM35WC+MxQRvwyS7aGtc1jeeMgtLOSIdQen6xcIOESgHunqq9mE2OLGkWJsOSETous
-	 pk8CVatOWHLjZDzSouDyikl8lCNRyLGEGGiePtKV7URo5KvRWjb/fotsoH+qw07maA
-	 wuD62nRBDbnstHtgTSwblP9Am2fbYo7BeZWu2om1PwmxKiZMx8LoZrclg5EdmDG+qC
-	 Lg63C/OnC+RDA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6D32ACE0716; Thu,  7 Mar 2024 16:58:50 -0800 (PST)
-Date: Thu, 7 Mar 2024 16:58:50 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
-	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
-	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
-	quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-Message-ID: <c3b94335-cf11-456d-bec7-4e4262235868@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <20240306142738.7b66a716@rorschach.local.home>
- <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
- <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
- <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
- <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
- <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
- <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
- <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
- <2721d70f-67a8-428f-903b-1c7c6c6da7f9@efficios.com>
+	s=arc-20240116; t=1709859836; c=relaxed/simple;
+	bh=dL3JJMCUiw12MUhjl8AX46HNwJj4h0AxngXLsUvjSkc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V3yFhD54nXuMqnhH/2YVaWy30mo3ePXEZ9ispoEZlxVgQU5ACeytT9LQEzGGxwZFER+kgcr/KyGx+eUAaLimTyPG1p6G/0fAGexSexr3cV9pkNucuh77mXAi/S1vXT+oXMB99IgY+evqhqK5/2fsQyjDzG2KP6UCSbiy6y9SqX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QM/6Wbyp; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fe323c90-bda3-4837-8daa-372073014446@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709859832;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gC74MGn3Y3tSFbRYc+uvNsgQvmrsRYHxqYo53nKvO0Y=;
+	b=QM/6Wbyp7018YakXgblFggvzTz1idd5bTi7zwCH+0X9UX+PlZp2nhO1xNHUS+PdLRMGiZ1
+	DZC1sX0g1+CHxpYgOkUJmXNEQ/4b6vpHOs0eAIN4lIipmYhDHWQidJ1bnDY2mGuPeubccm
+	mUDwqnYtH/TxAYUvscmUp0auaCwclA4=
+Date: Thu, 7 Mar 2024 17:03:43 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2721d70f-67a8-428f-903b-1c7c6c6da7f9@efficios.com>
+Subject: Re: [PATCH] tools/testing/selftests/bpf/test_tc_tunnel.sh: Prevent
+ client connect before server bind
+Content-Language: en-US
+To: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
+Cc: Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andrii Nakryiko <andrii@kernel.org>, Shuah Khan <shuah@kernel.org>
+References: <20240229140000.175274-1-alessandro.carminati@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240229140000.175274-1-alessandro.carminati@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Mar 07, 2024 at 02:53:43PM -0500, Mathieu Desnoyers wrote:
-> On 2024-03-07 14:47, Paul E. McKenney wrote:
-> > On Thu, Mar 07, 2024 at 08:53:05AM -0500, Mathieu Desnoyers wrote:
-> > > On 2024-03-06 22:37, Paul E. McKenney wrote:
-> > > > On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
-> > > [...]
-> > > > 
-> > > > > As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
-> > > > > is concerned, the only valid use-case I can think of is
-> > > > > split counters or RCU implementations where there is a
-> > > > > single updater doing the increment, and one or more
-> > > > > concurrent reader threads that need to snapshot a
-> > > > > consistent value with READ_ONCE().
-> > > > 
-> > > [...]
-> > > > 
-> > > > So what would you use that pattern for?
-> > > > 
-> > > > One possibility is a per-CPU statistical counter in userspace on a
-> > > > fastpath, in cases where losing the occasional count is OK.  Then learning
-> > > > your CPU (and possibly being immediately migrated to some other CPU),
-> > > > READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
-> > > > make sense.
-> > > > 
-> > > > I suppose the same in the kernel if there was a fastpath so extreme you
-> > > > could not afford to disable preemption.
-> > > > 
-> > > > At best, very niche.
-> > > > 
-> > > > Or am I suffering a failure of imagination yet again?  ;-)
-> > > 
-> > > The (niche) use-cases I have in mind are split-counters and RCU
-> > > grace period tracking, where precise counters totals are needed
-> > > (no lost count).
-> > > 
-> > > In the kernel, this could be:
-> > 
-> > Thank you for looking into this!
-> > 
-> > > - A per-cpu counter, each counter incremented from thread context with
-> > >    preemption disabled (single updater per counter), read concurrently by
-> > >    other threads. WRITE_ONCE/READ_ONCE is useful to make sure there
-> > >    is no store/load tearing there. Atomics on the update would be stronger
-> > >    than necessary on the increment fast-path.
-> > 
-> > But if preemption is disabled, the updater can read the value without
-> > READ_ONCE() without risk of concurrent update.  Or are you concerned about
-> > interrupt handlers?  This would have to be a read from the interrupt
-> > handler, given that an updated from the interrupt handler could result
-> > in a lost count.
-> 
-> You are correct that the updater don't need READ_ONCE there. It would
-> however require a WRITE_ONCE() to match READ_ONCE() from concurrent
-> reader threads.
-> 
-> > 
-> > > - A per-thread counter (e.g. within task_struct), only incremented by the
-> > >    single thread, read by various threads concurrently.
-> > 
-> > Ditto.
-> 
-> Right, only WRITE_ONCE() on the single updater, READ_ONCE() on readers.
-> 
-> > 
-> > > - A counter which increment happens to be already protected by a lock, read
-> > >    by various threads without taking the lock. (technically doable, but
-> > >    I'm not sure I see a relevant use-case for it)
-> > 
-> > In that case, the lock would exclude concurrent updates, so the lock
-> > holder would not need READ_ONCE(), correct?
-> 
-> Correct.
-> 
-> > 
-> > > In user-space:
-> > > 
-> > > - The "per-cpu" counter would have to use rseq for increments to prevent
-> > >    inopportune migrations, which needs to be implemented in assembler anyway.
-> > >    The counter reads would have to use READ_ONCE().
-> > 
-> > Fair enough!
-> > 
-> > > - The per-thread counter (Thread-Local Storage) incremented by a single
-> > >    thread, read by various threads concurrently, is a good target
-> > >    for WRITE_ONCE()/READ_ONCE() pairing. This is actually what we do in
-> > >    various liburcu implementations which track read-side critical sections
-> > >    per-thread.
-> > 
-> > Agreed, but do any of these use WRITE_ONCE(x, READ_ONCE(x) + 1) or
-> > similar?
-> 
-> Not quite, I recall it's more like WRITE_ONCE(x, READ_ONCE(y)) or such,
-> so we can grab the value of the current gp counter and store it into a
-> TLS variable.
+On 2/29/24 6:00 AM, Alessandro Carminati (Red Hat) wrote:
+> In some systems, the netcat server can incur in delay to start listening.
+> When this happens, the test can randomly fail in various points.
+> This is an example error message:
+>     # ip gre none gso
+>     # encap 192.168.1.1 to 192.168.1.2, type gre, mac none len 2000
+>     # test basic connectivity
+>     # Ncat: Connection refused.
 
-Good point, you could use that pattern to grab a shared snapshot.
+This explained what is the issue. Please also explain how the patch solves it.
 
-Still sounds niche, but you never know!  ;-)
+> 
+> Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+> ---
+>   tools/testing/selftests/bpf/test_tc_tunnel.sh | 19 ++++++++++++++++++-
+>   1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+> index 910044f08908..01c0f4b1a8c2 100755
+> --- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
+> +++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+> @@ -72,7 +72,6 @@ cleanup() {
+>   server_listen() {
+>   	ip netns exec "${ns2}" nc "${netcat_opt}" -l "${port}" > "${outfile}" &
+>   	server_pid=$!
+> -	sleep 0.2
+>   }
+>   
+>   client_connect() {
+> @@ -93,6 +92,22 @@ verify_data() {
+>   	fi
+>   }
+>   
+> +wait_for_port() {
+> +	local digits=8
+> +	local port2check=$(printf ":%04X" $1)
+> +	local prot=$([ "$2" == "-6" ] && echo 6 && digits=32)
+> +
+> +	for i in $(seq 20); do
+> +		if ip netns exec "${ns2}" cat /proc/net/tcp${prot} | \
+> +			sed -r 's/^[ \t]+[0-9]+: ([0-9A-F]{'${digits}'}:[0-9A-F]{4}) .*$/\1/' | \
+> +			grep -q "${port2check}"; then
 
-							Thanx, Paul
+The idea is to check if there is socket listening on port 8888?
 
-> > > - Same as for the kernel, a counter increment protected by a lock which
-> > >    needs to be read from various threads concurrently without taking
-> > >    the lock could be a valid use-case, though I fail to see how it is
-> > >    useful due to lack of imagination on my part. ;-)
-> > 
-> > In RCU, we have "WRITE_ONCE(*sp, *sp + 1)" for this use case, though
-> > here we have the WRITE_ONCE() but not the READ_ONCE() because we hold
-> > the lock excluding any other updates.
-> 
-> You are right, the READ_ONCE() is not needed in this case for the
-> updater, only for the concurrent readers.
-> 
-> Thanks,
-> 
-> Mathieu
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
-> 
+May be something simpler like "ss -OHtl src :$1" instead?
+
+--
+pw-bot: cr
+
+The check-and-wait fix in this patch is fine to get your test environment going.
+
+Eventually, it will be good to see the test_tc_tunnel.sh test moved to 
+test_progs. The test_tc_tunnel.sh is not run by bpf CI and issue like this got 
+unnoticed. Some other "*.sh" tests have already been moved to test_progs.
+
+
 
