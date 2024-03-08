@@ -1,342 +1,269 @@
-Return-Path: <linux-kernel+bounces-96806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20AA8761AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:13:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19C408761AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F09281671
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:13:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A1481F23312
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF0D54773;
-	Fri,  8 Mar 2024 10:13:15 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB70A53E32;
+	Fri,  8 Mar 2024 10:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LkRiCyOC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE95953E02
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB3B524CC;
+	Fri,  8 Mar 2024 10:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709892794; cv=none; b=h7jnClNAmaFqcoFaWjd0EiTPVxS/ZGAvuvryITyFMKZREFe7MZZwDcrIuvFNcRjXZ7KGpiKTH6lnQWJmFsByNqkZ1GaNVgoMdSxP4UqfUoKeuE5YbDoVxOCxDW5KK0jiJZv7k2zOIcOUIdOOb2NGQCH+29nEUUrva/NlwFlJ/0M=
+	t=1709892844; cv=none; b=Iy3DdWVqYo72ZXQymHd3501dssIWwE3e/Lws61Z/XWkA7c6aqlleF2FzPago+CjcUlbmk7GCAwh1yA5fno+rU6OzlN0+IPw/yQf9KRoCkM9LaU598JV27ocPmxjvSMsmAtCzwaM5SA2EyZupcQXPvpmFkZCO6sZWU1VWHAKbH8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709892794; c=relaxed/simple;
-	bh=7k8WPTEeiS2r5DqwA1UaykwUi4lGNl80XV5DxjFL7kI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J3ojbWjpT8FhRlEyikjkHauYxRk0/kLKtHiqR1iiK+ARRZVDO2o/GlCvF/f1IZfMrFzqkLGzG7kqW0dpyPfsWvZKHKyZqL89BL1kXe3KKToTkV0nEy4ibEfGw3fgx5dONubLvvlj4LXLLquBmHOf4X+bkB+cegpuVRxicq4J7fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 428ACf4w067951;
-	Fri, 8 Mar 2024 18:12:41 +0800 (+08)
-	(envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Trhlq5Ttjz2L3SH2;
-	Fri,  8 Mar 2024 18:11:35 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Fri, 8 Mar 2024 18:12:39 +0800
-From: Zhiguo Niu <zhiguo.niu@unisoc.com>
-To: <jaegeuk@kernel.org>, <chao@kernel.org>
-CC: <linux-f2fs-devel@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
-        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>,
-        <hongyu.jin@unisoc.com>
-Subject: [PATCH 2/2] f2fs: fix to handle error paths of {new,change}_curseg()
-Date: Fri, 8 Mar 2024 18:12:33 +0800
-Message-ID: <1709892753-27461-2-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1709892753-27461-1-git-send-email-zhiguo.niu@unisoc.com>
-References: <1709892753-27461-1-git-send-email-zhiguo.niu@unisoc.com>
+	s=arc-20240116; t=1709892844; c=relaxed/simple;
+	bh=wLHITFIk4LEoGaWRHY2bZCqHCqdzsyz5t+z3zGnZCWM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cpwrj+3pdI7NylQFIietsFPz16ZMg1RJhmRwTZjAYnzp+qD/hP7R+O2rUhb0s9+d2fscltM9E+LwPGWkA1s06ahbT9zlLda8tx4RFFNvp4jyDpX2JP/C4YorsIUG7clgfceq5UtYxD03DfTKG1qe//WFjAauqbRfUJnee+nCtsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LkRiCyOC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 011B9C433F1;
+	Fri,  8 Mar 2024 10:14:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709892844;
+	bh=wLHITFIk4LEoGaWRHY2bZCqHCqdzsyz5t+z3zGnZCWM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LkRiCyOCnGhxC4e47aIVyLbv0qKIjnYBV+ewm0u05sL/Iu5+HErNCZLbCErW0toVi
+	 8Xfs3QecUic7LxCpi8MSF5+SkBP4nXxyskrTHjnPgTyHxdIObX0maSRRU4k7DLcyG5
+	 3kbOpuB4bfg6tfYQp7KdYfbfFZFng+/f2VuEt4nysoWjkrAgY3qHoxLis08Hp85T2z
+	 q5lCAxdS/Nbb2UH/gfAwpHEoGw40rxl/Omuoc9IDWqvm8mzO54WRPZCsDVJJTOZKwo
+	 WRgDUYVdMjlK67u4Tz4PGJWJaWdzUEpQBCtaiJvfU2XnxuFbtRQxCoQt8qZsl/ui44
+	 gfOVlsIet86Vw==
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] vfs pidfd
+Date: Fri,  8 Mar 2024 11:13:50 +0100
+Message-ID: <20240308-vfs-pidfd-b106369f5406@brauner>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 428ACf4w067951
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9201; i=brauner@kernel.org; h=from:subject:message-id; bh=wLHITFIk4LEoGaWRHY2bZCqHCqdzsyz5t+z3zGnZCWM=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaS+evKwY0P5O/4twWc//1DVEhE4vKKGYYHZk8V3A6OZu reEq9ps6ihlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjI3VpGhpkLm5+vbCq3/25i 8Kz4uUR566bn1/JPOarzzl/ZO2n+MWmGf+bRE7gu8Z8vYTTzmLy4LLfGr+DQguX9UzmYnov+aJC 8xw8A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-{new,change}_curseg() may return error in some special cases,
-error handling should be did in their callers, and this will also
-facilitate subsequent error path expansion in {new,change}_curseg().
+Hey Linus,
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/extent_cache.c |  2 +-
- fs/f2fs/f2fs.h         |  4 ++--
- fs/f2fs/gc.c           |  7 +++++--
- fs/f2fs/segment.c      | 57 +++++++++++++++++++++++++++++++-------------------
- fs/f2fs/super.c        |  4 +++-
- 5 files changed, 46 insertions(+), 28 deletions(-)
+/* Summary */
+This contains updates for pidfds:
 
-diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
-index 48048fa..dce00cf 100644
---- a/fs/f2fs/extent_cache.c
-+++ b/fs/f2fs/extent_cache.c
-@@ -988,7 +988,7 @@ bool f2fs_lookup_read_extent_cache_block(struct inode *inode, pgoff_t index,
- 
- void f2fs_update_read_extent_cache(struct dnode_of_data *dn)
- {
--	return __update_extent_cache(dn, EX_READ);
-+	__update_extent_cache(dn, EX_READ);
- }
- 
- void f2fs_update_read_extent_cache_range(struct dnode_of_data *dn,
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 4836e7c..7beb074 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3700,10 +3700,10 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
- void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
- int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
- bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
--void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
-+int f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
- void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
- void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
--void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
-+int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 					unsigned int start, unsigned int end);
- int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
- int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index ca1bf41..8852814 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -2035,8 +2035,11 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
- 	mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
- 
- 	/* Move out cursegs from the target range */
--	for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++)
--		f2fs_allocate_segment_for_resize(sbi, type, start, end);
-+	for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++) {
-+		err = f2fs_allocate_segment_for_resize(sbi, type, start, end);
-+		if (err)
-+			goto out;
-+	}
- 
- 	/* do GC to move out valid blocks in the range */
- 	err = f2fs_gc_range(sbi, start, end, dry_run, 0);
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 4e4a51a..c1c1308 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2863,7 +2863,7 @@ bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
-  * This function always allocates a used segment(from dirty seglist) by SSR
-  * manner, so it should recover the existing segment information of valid blocks
-  */
--static void change_curseg(struct f2fs_sb_info *sbi, int type)
-+static int change_curseg(struct f2fs_sb_info *sbi, int type)
- {
- 	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
- 	struct curseg_info *curseg = CURSEG_I(sbi, type);
-@@ -2888,21 +2888,23 @@ static void change_curseg(struct f2fs_sb_info *sbi, int type)
- 	if (IS_ERR(sum_page)) {
- 		/* GC won't be able to use stale summary pages by cp_error */
- 		memset(curseg->sum_blk, 0, SUM_ENTRY_SIZE);
--		return;
-+		return PTR_ERR(sum_page);
- 	}
- 	sum_node = (struct f2fs_summary_block *)page_address(sum_page);
- 	memcpy(curseg->sum_blk, sum_node, SUM_ENTRY_SIZE);
- 	f2fs_put_page(sum_page, 1);
-+	return 0;
- }
- 
- static int get_ssr_segment(struct f2fs_sb_info *sbi, int type,
- 				int alloc_mode, unsigned long long age);
- 
--static void get_atssr_segment(struct f2fs_sb_info *sbi, int type,
-+static int get_atssr_segment(struct f2fs_sb_info *sbi, int type,
- 					int target_type, int alloc_mode,
- 					unsigned long long age)
- {
- 	struct curseg_info *curseg = CURSEG_I(sbi, type);
-+	int ret = 0;
- 
- 	curseg->seg_type = target_type;
- 
-@@ -2910,38 +2912,41 @@ static void get_atssr_segment(struct f2fs_sb_info *sbi, int type,
- 		struct seg_entry *se = get_seg_entry(sbi, curseg->next_segno);
- 
- 		curseg->seg_type = se->type;
--		change_curseg(sbi, type);
-+		ret = change_curseg(sbi, type);
- 	} else {
- 		/* allocate cold segment by default */
- 		curseg->seg_type = CURSEG_COLD_DATA;
--		new_curseg(sbi, type, true);
-+		ret = new_curseg(sbi, type, true);
- 	}
- 	stat_inc_seg_type(sbi, curseg);
-+	return ret;
- }
- 
--static void __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
-+static int __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
- {
- 	struct curseg_info *curseg = CURSEG_I(sbi, CURSEG_ALL_DATA_ATGC);
-+	int ret = 0;
- 
- 	if (!sbi->am.atgc_enabled)
--		return;
-+		return 0;
- 
- 	f2fs_down_read(&SM_I(sbi)->curseg_lock);
- 
- 	mutex_lock(&curseg->curseg_mutex);
- 	down_write(&SIT_I(sbi)->sentry_lock);
- 
--	get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC, CURSEG_COLD_DATA, SSR, 0);
-+	ret = get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC,
-+					CURSEG_COLD_DATA, SSR, 0);
- 
- 	up_write(&SIT_I(sbi)->sentry_lock);
- 	mutex_unlock(&curseg->curseg_mutex);
- 
- 	f2fs_up_read(&SM_I(sbi)->curseg_lock);
--
-+	return ret;
- }
--void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
-+int f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
- {
--	__f2fs_init_atgc_curseg(sbi);
-+	return __f2fs_init_atgc_curseg(sbi);
- }
- 
- static void __f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi, int type)
-@@ -3069,11 +3074,12 @@ static bool need_new_seg(struct f2fs_sb_info *sbi, int type)
- 	return false;
- }
- 
--void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
-+int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 					unsigned int start, unsigned int end)
- {
- 	struct curseg_info *curseg = CURSEG_I(sbi, type);
- 	unsigned int segno;
-+	int ret = 0;
- 
- 	f2fs_down_read(&SM_I(sbi)->curseg_lock);
- 	mutex_lock(&curseg->curseg_mutex);
-@@ -3084,9 +3090,9 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 		goto unlock;
- 
- 	if (f2fs_need_SSR(sbi) && get_ssr_segment(sbi, type, SSR, 0))
--		change_curseg(sbi, type);
-+		ret = change_curseg(sbi, type);
- 	else
--		new_curseg(sbi, type, true);
-+		ret = new_curseg(sbi, type, true);
- 
- 	stat_inc_seg_type(sbi, curseg);
- 
-@@ -3100,6 +3106,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 
- 	mutex_unlock(&curseg->curseg_mutex);
- 	f2fs_up_read(&SM_I(sbi)->curseg_lock);
-+	return ret;
- }
- 
- static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
-@@ -3486,14 +3493,17 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 	bool from_gc = (type == CURSEG_ALL_DATA_ATGC);
- 	struct seg_entry *se = NULL;
- 	bool segment_full = false;
-+	int ret = 0;
- 
- 	f2fs_down_read(&SM_I(sbi)->curseg_lock);
- 
- 	mutex_lock(&curseg->curseg_mutex);
- 	down_write(&sit_i->sentry_lock);
- 
--	if (curseg->segno == NULL_SEGNO)
-+	if (curseg->segno == NULL_SEGNO) {
-+		ret = -ENOSPC;
- 		goto out_err;
-+	}
- 
- 	if (from_gc) {
- 		f2fs_bug_on(sbi, GET_SEGNO(sbi, old_blkaddr) == NULL_SEGNO);
-@@ -3546,17 +3556,17 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 		}
- 
- 		if (from_gc) {
--			get_atssr_segment(sbi, type, se->type,
-+			ret = get_atssr_segment(sbi, type, se->type,
- 						AT_SSR, se->mtime);
- 		} else {
- 			if (need_new_seg(sbi, type))
--				new_curseg(sbi, type, false);
-+				ret = new_curseg(sbi, type, false);
- 			else
--				change_curseg(sbi, type);
-+				ret = change_curseg(sbi, type);
- 			stat_inc_seg_type(sbi, curseg);
- 		}
- 
--		if (curseg->segno == NULL_SEGNO)
-+		if (ret)
- 			goto out_err;
- 	}
- 
-@@ -3599,7 +3609,7 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 	up_write(&sit_i->sentry_lock);
- 	mutex_unlock(&curseg->curseg_mutex);
- 	f2fs_up_read(&SM_I(sbi)->curseg_lock);
--	return -ENOSPC;
-+	return ret;
- 
- }
- 
-@@ -3829,7 +3839,8 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
- 	/* change the current segment */
- 	if (segno != curseg->segno) {
- 		curseg->next_segno = segno;
--		change_curseg(sbi, type);
-+		if (change_curseg(sbi, type))
-+			goto out_unlock;
- 	}
- 
- 	curseg->next_blkoff = GET_BLKOFF_FROM_SEG0(sbi, new_blkaddr);
-@@ -3855,12 +3866,14 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
- 	if (recover_curseg) {
- 		if (old_cursegno != curseg->segno) {
- 			curseg->next_segno = old_cursegno;
--			change_curseg(sbi, type);
-+			if (change_curseg(sbi, type))
-+				goto out_unlock;
- 		}
- 		curseg->next_blkoff = old_blkoff;
- 		curseg->alloc_type = old_alloc_type;
- 	}
- 
-+out_unlock:
- 	up_write(&sit_i->sentry_lock);
- 	mutex_unlock(&curseg->curseg_mutex);
- 	f2fs_up_write(&SM_I(sbi)->curseg_lock);
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 78a7658..f2b6d3f 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4685,7 +4685,9 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 	if (err)
- 		goto free_meta;
- 
--	f2fs_init_inmem_curseg(sbi);
-+	err = f2fs_init_inmem_curseg(sbi);
-+	if (err)
-+		goto sync_free_meta;
- 
- 	/* f2fs_recover_fsync_data() cleared this already */
- 	clear_sbi_flag(sbi, SBI_POR_DOING);
--- 
-1.9.1
+* Until now pidfds could only be created for thread-group leaders but
+  not for threads. There was no technical reason for this. We simply had
+  no users that needed support for this. Now we do have users that need
+  support for this.
 
+  This introduces a new PIDFD_THREAD flag for pidfd_open(). If that flag
+  is set pidfd_open() creates a pidfd that refers to a specific thread.
+
+  In addition, we now allow clone() and clone3() to be called with
+  CLONE_PIDFD | CLONE_THREAD which wasn't possible before.
+
+  A pidfd that refers to an individual thread differs from a pidfd that
+  refers to a thread-group leader:
+
+  (1) Pidfs are pollable. A task may poll a pidfd and get notified when
+      the task has exited.
+
+      For thread-group leader pidfds the polling task is woken if the
+      thread-group is empty. In other words, if the thread-group leader
+      task exits when there are still threads alive in its thread-group
+      the polling task will not be woken when the thread-group leader
+      exits but rather when the last thread in the thread-group exits.
+
+      For thread-specific pidfds the polling task is woken if the thread
+      exits.
+
+  (2) Passing a thread-group leader pidfd to pidfd_send_signal() will
+      generate thread-group directed signals like kill(2) does.
+
+      Passing a thread-specific pidfd to pidfd_send_signal() will
+      generate thread-specific signals like tgkill(2) does.
+
+      The default scope of the signal is thus determined by the type of
+      the pidfd.
+
+      Since use-cases exist where the default scope of the provided
+      pidfd needs to be overriden the following flags are added to
+      pidfd_send_signal():
+
+      - PIDFD_SIGNAL_THREAD
+        Send a thread-specific signal.
+
+      - PIDFD_SIGNAL_THREAD_GROUP
+        Send a thread-group directed signal.
+
+      - PIDFD_SIGNAL_PROCESS_GROUP
+        Send a process-group directed signal.
+
+      The scope change will only work if the struct pid is actually used
+      for this scope. For example, in order to send a thread-group
+      directed signal the provided pidfd must be used as a thread-group
+      leader and similarly for PIDFD_SIGNAL_PROCESS_GROUP the struct pid
+      must be used as a process group leader.
+
+* Move pidfds from the anonymous inode infrastructure to a tiny
+  pseudo filesystem. This will unblock further work that we weren't able
+  to do simply because of the very justified limitations of anonymous
+  inodes. Moving pidfds to a tiny pseudo filesystem allows for statx on
+  pidfds to become useful for the first time. They can now be compared
+  by inode number which are unique for the system lifetime.
+
+  Instead of stashing struct pid in file->private_data we can now stash
+  it in inode->i_private. This makes it possible to introduce concepts
+  that operate on a process once all file descriptors have been closed.
+  A concrete example is kill-on-last-close. Another side-effect is that
+  file->private_data is now freed up for per-file options for pidfds.
+
+  Now, each struct pid will refer to a different inode but the same
+  struct pid will refer to the same inode if it's opened multiple times.
+  In contrast to now where each struct pid refers to the same inode.
+
+  The tiny pseudo filesystem is not visible anywhere in userspace
+  exactly like e.g., pipefs and sockfs. There's no lookup, there's no
+  complex inode operations, nothing. Dentries and inodes are always
+  deleted when the last pidfd is closed.
+
+  We allocate a new inode and dentry for each struct pid and we reuse
+  that inode and dentry for all pidfds that refer to the same struct
+  pid. The code is entirely optional and fairly small. If it's not
+  selected we fallback to anonymous inodes. Heavily inspired by nsfs.
+
+  The dentry and inode allocation mechanism is moved into generic
+  infrastructure that is now shared between nsfs and pidfs. The
+  path_from_stashed() helper must be provided with a stashing location,
+  an inode number, a mount, and the private data that is supposed to be
+  used and it will provide a path that can be passed to dentry_open().
+
+  The helper will try retrieve an existing dentry from the provided
+  stashing location. If a valid dentry is found it is reused. If not a
+  new one is allocated and we try to stash it in the provided location.
+  If this fails we retry until we either find an existing dentry or the
+  newly allocated dentry could be stashed. Subsequent openers of the
+  same namespace or task are then able to reuse it.
+
+* Currently it is only possible to get notified when a task has exited,
+  i.e., become a zombie and userspace gets notified with EPOLLIN. We now
+  also support waiting until the task has been reaped, notifying
+  userspace with EPOLLHUP.
+
+* Ensure that ESRCH is reported for getfd if a task is exiting instead
+  of the confusing EBADF.
+
+* Various smaller cleanups to pidfd functions.
+
+/* Testing */
+clang: Debian clang version 16.0.6 (19)
+gcc: (Debian 13.2.0-7) 13.2.0
+
+All patches are based on v6.8-rc1 and have been sitting in linux-next.
+No build failures or warnings were observed.
+
+/* Conflicts */
+
+Merge conflicts with other trees
+================================
+
+[1] linux-next: manual merge of the vfs-brauner tree with the mm tree
+    https://lore.kernel.org/linux-next/20240221103200.165d8cd5@canb.auug.org.au
+
+[2] linux-next: manual merge of the vfs-brauner tree with the cifs tree
+    https://lore.kernel.org/linux-next/20240226110343.28e340eb@canb.auug.org.au
+
+Merge conflicts with mainline
+=============================
+
+No known conflicts.
+
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9.pidfd
+
+for you to fetch changes up to e9c5263ce16d96311c118111ac779f004be8b473:
+
+  libfs: improve path_from_stashed() (2024-03-01 22:31:40 +0100)
+
+Please consider pulling these changes from the signed vfs-6.9.pidfd tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+vfs-6.9.pidfd
+
+----------------------------------------------------------------
+Christian Brauner (9):
+      pidfd: allow to override signal scope in pidfd_send_signal()
+      pidfd: move struct pidfd_fops
+      pidfd: add pidfs
+      libfs: add path_from_stashed()
+      nsfs: convert to path_from_stashed() helper
+      pidfs: convert to path_from_stashed() helper
+      libfs: improve path_from_stashed() helper
+      libfs: add stashed_dentry_prune()
+      libfs: improve path_from_stashed()
+
+Oleg Nesterov (11):
+      pidfd: cleanup the usage of __pidfd_prepare's flags
+      pidfd: don't do_notify_pidfd() if !thread_group_empty()
+      pidfd: implement PIDFD_THREAD flag for pidfd_open()
+      pidfd_poll: report POLLHUP when pid_task() == NULL
+      pidfd: kill the no longer needed do_notify_pidfd() in de_thread()
+      pid: kill the obsolete PIDTYPE_PID code in transfer_pid()
+      pidfd: change do_notify_pidfd() to use __wake_up(poll_to_key(EPOLLIN))
+      pidfd: exit: kill the no longer used thread_group_exited()
+      pidfd: clone: allow CLONE_THREAD | CLONE_PIDFD together
+      signal: fill in si_code in prepare_kill_siginfo()
+      pidfd: change pidfd_send_signal() to respect PIDFD_THREAD
+
+Tycho Andersen (2):
+      pidfd: getfd should always report ESRCH if a task is exiting
+      selftests: add ESRCH tests for pidfd_getfd()
+
+Wang Jinchao (1):
+      fork: Using clone_flags for legacy clone check
+
+ fs/Kconfig                                       |   7 +
+ fs/Makefile                                      |   2 +-
+ fs/exec.c                                        |   1 -
+ fs/internal.h                                    |   7 +
+ fs/libfs.c                                       | 142 +++++++++++
+ fs/nsfs.c                                        | 121 +++-------
+ fs/pidfs.c                                       | 290 +++++++++++++++++++++++
+ include/linux/ns_common.h                        |   2 +-
+ include/linux/pid.h                              |  10 +-
+ include/linux/pidfs.h                            |   9 +
+ include/linux/proc_ns.h                          |   2 +-
+ include/linux/sched/signal.h                     |   2 -
+ include/uapi/linux/magic.h                       |   1 +
+ include/uapi/linux/pidfd.h                       |   8 +-
+ init/main.c                                      |   2 +
+ kernel/exit.c                                    |  31 +--
+ kernel/fork.c                                    | 147 ++----------
+ kernel/nsproxy.c                                 |   2 +-
+ kernel/pid.c                                     |  57 +++--
+ kernel/signal.c                                  | 110 ++++++---
+ tools/testing/selftests/pidfd/pidfd_getfd_test.c |  31 ++-
+ 21 files changed, 686 insertions(+), 298 deletions(-)
+ create mode 100644 fs/pidfs.c
+ create mode 100644 include/linux/pidfs.h
 
