@@ -1,204 +1,169 @@
-Return-Path: <linux-kernel+bounces-97597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84685876C59
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:22:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEF11876C5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:26:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39712281809
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:22:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0755C1C21034
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DF04085D;
-	Fri,  8 Mar 2024 21:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FAC25FB81;
+	Fri,  8 Mar 2024 21:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="NhY887xU"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OcQ2gZG9"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C2353373
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7FF53373;
+	Fri,  8 Mar 2024 21:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709932938; cv=none; b=kZnQ+KEsza2zqEw64VKPg4o6VNBy5OmVB+4vyWuOEms4YxyKTQL+S8yDrALTqlI6Vk8VCJjnsyV/OV9ZcjUs+bB8zwOqW2Jyy8xjLIMq37rDYxkQO06NqDPZ4vqhWXwJxeGMtBgb0jNHuicbEHxWHpoSUOnhxZv4fY5pIYMi/dk=
+	t=1709933193; cv=none; b=cjVTfKamYqmB8e9YGawcMmKz87Cnu6dxcSe7zW2DAU/T7buy1kNXWGeEc0Z7vMFU0IgVIIsVxuBiKGhizn03CKVN0KvZTr4lvMX+ANX44tAbzJb0wxkK/XO7jg6lngknwBRCQCf7vZ8Hr5eJ+PhbnOuXCDaJhNh854bTCkWbDEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709932938; c=relaxed/simple;
-	bh=etIcExCJKSr7h1nDa+rmExMmNvZNyxCOFxa/98KM4ts=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n4o9BNWj2SHCHQ3/8S7TW2TRhsgQJdRkSRcLxmMNDTdiqZKgByMxggp1FBSCpw91lpDA1MCpE31O0ahdjJWIaxMmp1lHdqlV+4o4eRDdytRP9X6cfg1mxyk3NCcbsVaXh5Jz6wSd/8v6dwNmJHBrt8LRnpKHWrCnBCifzmdd4eQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=NhY887xU; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7dae66def19so1256446241.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 13:22:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1709932934; x=1710537734; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XL80Q/LEC1hNeoVDgvQ1NRtgFUnKBazWk6zXTz/pdtI=;
-        b=NhY887xUlHxzJTnVnQXjma5B4qLWCsH6xC6Bz6pbtSQRhqKpnSVUCdT64gDNUu0tCj
-         cKNGa3WyXiSe7PPj0blKh80bnr80pfuwNKuLElHh68m1RaDjhFHMJcuDj45bVPL5hlJL
-         mRzGnPOcXy5U+kdrGloZLt3YtUSlKn5aouelti8l77X4z9fIAo5omIFh9/WxNvJYRIAf
-         jzsMj5RuowMLtIorTyYBC4s8ZvhQm0ZhOPsM0Mwu/Uchg5lXfuov5Pw2RxTN3FusY0ll
-         LH+LsGB+9/w0lbZRpNtqMMJDg7tSd5zrAuqo6rkGqIrvuNVi4EmWbXCr+YVrhkcYm79w
-         PGIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709932934; x=1710537734;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XL80Q/LEC1hNeoVDgvQ1NRtgFUnKBazWk6zXTz/pdtI=;
-        b=eG0ugggQRyi0b1sRbehj1O16pLmRcGEzTMRXziw672d0ait8aPfrQ3PX0/iva9O0ZU
-         KJZ8P0e1LV2t9Ur52NpFM9LChz/8D8uZuk83KlOZAgC0osolCRhSMiBtmp+lTJf9Qq0I
-         U4sz0vUj64rJrv/bdg+T5qSE16BXiT2Knjl81OCrbiXhVYtsmKENiS5/sYuUYNZk215R
-         CcLymn/gLrRtEk1UZeeF8ha9Pw11J+usGPKgaqaRbKNwPgfPycDPiSoh5H7DDrzae2Jd
-         CXTfUCqoNE0tcqmd+8TRrzx3aFfemubqGf9aJAu6HehCN6f45NSMnZSxE4OYeRgwYJnK
-         DXMA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQQsi33MhSFAwv+hyGGdTUpo/VZEt4K2dOjL5TiGN2qvdxZ2z3Ki8H5QyOTeVlQrWNTWhqLnzW351kNbEsqpVSzl3fAwwFMCM7HssT
-X-Gm-Message-State: AOJu0Yz7J9uRA/WxvmD0gkbnXZwM45rpM92NE+cur/aMWLN6PrvKyYr5
-	9oWyCeXdVbv3UYaDiKABxNIxZ7BscqkqO9BDMeB/KGexpzXLOJFpWdUyQ4chEhI=
-X-Google-Smtp-Source: AGHT+IEwQHXBgf936c0Xa021NeRFaNfDWXzdfuhZY3RXu2CzjdaZ96VxQTmJPXIO3pIeRXQSm9EaYQ==
-X-Received: by 2002:a05:6122:1784:b0:4d1:4e40:bd6f with SMTP id o4-20020a056122178400b004d14e40bd6fmr592980vkf.10.1709932933927;
-        Fri, 08 Mar 2024 13:22:13 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id ej5-20020ad45a45000000b0068fc8e339b8sm122593qvb.136.2024.03.08.13.22.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 13:22:13 -0800 (PST)
-Date: Fri, 8 Mar 2024 16:22:12 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Chris Down <chris@chrisdown.name>, cgroups@vger.kernel.org,
-	kernel-team@fb.com, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, yuzhao@google.com
-Subject: Re: MGLRU premature memcg OOM on slow writes
-Message-ID: <20240308212212.GA38843@cmpxchg.org>
-References: <ZcWOh9u3uqZjNFMa@chrisdown.name>
- <20240229235134.2447718-1-axelrasmussen@google.com>
- <ZeEhvV15IWllPKvM@chrisdown.name>
- <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
+	s=arc-20240116; t=1709933193; c=relaxed/simple;
+	bh=TtftsKrq64OL+gn3neLgZsHm14djxEaeQKGGyi5rUOM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bwozFpgoEcNqy9vwNezzZOL8k3Eq/un/1L4X496DukrovIoroPdZjJqbfDOzFhGu4epKv54xa9B4f80u8G4COOfu0fJSvNPAz60Lq4sEmd7BQE0vn+r4TJemnBJZsdTVr95RkMwDwlnHagwFbC8i5bkMHLlOWPo8I6uSiHqBvLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OcQ2gZG9; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428LM1tu004777;
+	Fri, 8 Mar 2024 21:26:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=s0gkiRNbL6HNjdy/CztATN5tw8vtyHslfldPjeW+FVE=;
+ b=OcQ2gZG9vzn+KBzfpWPwbWrp7wjpm0FCxpNKraU9rfDyOK7FoJA7GQ8pa5gubZpuga3B
+ EDRUozHwTe93A9Sln9uGjzakEIhKIYS+hCwaKX560qnv7icCMtkxAgyRslGnopRL/O4e
+ ZKH9P9tC7UP29FKhg4IRXtFvVy5vfVgg297ZTNenLqCHacobD9r6aaMEjmXLfb+0NbJ4
+ svizvgigTceh/n52CSSPETzpVjSTQFmrYRfhitarVLtiTNV7P/zp2lG9ohDfbRtefyVY
+ 4NOMUuH8ulvpQZM+lGog/cuGl5j/nckpFLp3CcS0ORlW6v8b12RWruyvXsHmH+q+ohur kA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wraav8637-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 21:26:13 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 428LPDdX016123;
+	Fri, 8 Mar 2024 21:26:13 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wraav862v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 21:26:13 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428JsfXZ026296;
+	Fri, 8 Mar 2024 21:26:12 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmfepf16d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 21:26:12 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428LQ9L743057558
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 8 Mar 2024 21:26:11 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2799058063;
+	Fri,  8 Mar 2024 21:26:09 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 839CF5805A;
+	Fri,  8 Mar 2024 21:26:08 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  8 Mar 2024 21:26:08 +0000 (GMT)
+Message-ID: <5a980105-b148-4e4e-9a6e-7905e5598b7e@linux.ibm.com>
+Date: Fri, 8 Mar 2024 16:26:08 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
+ with linux,sml-log
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, linux-integrity@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        jarkko@kernel.org, rnsastry@linux.ibm.com, peterhuewe@gmx.de,
+        viparash@in.ibm.com
+References: <20240306155511.974517-1-stefanb@linux.ibm.com>
+ <20240306155511.974517-2-stefanb@linux.ibm.com> <87jzmenx2c.fsf@mail.lhotse>
+ <20240307215214.GB3110385-robh@kernel.org>
+ <851536a5-ad8f-4d65-8c33-707e2fe762df@linux.ibm.com>
+ <20240308205751.GA1249866-robh@kernel.org>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240308205751.GA1249866-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7q-L3xuWuOOMUzbxJJqSYGId0nLfueMR
+X-Proofpoint-ORIG-GUID: 6Wjl17oKeA-UIxLKOhsgiWygrA9LW2Kh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1015 phishscore=0 bulkscore=0 spamscore=0
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2403080169
 
-On Fri, Mar 08, 2024 at 11:18:28AM -0800, Axel Rasmussen wrote:
-> On Thu, Feb 29, 2024 at 4:30 PM Chris Down <chris@chrisdown.name> wrote:
-> >
-> > Axel Rasmussen writes:
-> > >A couple of dumb questions. In your test, do you have any of the following
-> > >configured / enabled?
-> > >
-> > >/proc/sys/vm/laptop_mode
-> > >memory.low
-> > >memory.min
-> >
-> > None of these are enabled. The issue is trivially reproducible by writing to
-> > any slow device with memory.max enabled, but from the code it looks like MGLRU
-> > is also susceptible to this on global reclaim (although it's less likely due to
-> > page diversity).
-> >
-> > >Besides that, it looks like the place non-MGLRU reclaim wakes up the
-> > >flushers is in shrink_inactive_list() (which calls wakeup_flusher_threads()).
-> > >Since MGLRU calls shrink_folio_list() directly (from evict_folios()), I agree it
-> > >looks like it simply will not do this.
-> > >
-> > >Yosry pointed out [1], where MGLRU used to call this but stopped doing that. It
-> > >makes sense to me at least that doing writeback every time we age is too
-> > >aggressive, but doing it in evict_folios() makes some sense to me, basically to
-> > >copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
-> >
-> > Thanks! We may also need reclaim_throttle(), depending on how you implement it.
-> > Current non-MGLRU behaviour on slow storage is also highly suspect in terms of
-> > (lack of) throttling after moving away from VMSCAN_THROTTLE_WRITEBACK, but one
-> > thing at a time :-)
-> 
-> 
-> Hmm, so I have a patch which I think will help with this situation,
-> but I'm having some trouble reproducing the problem on 6.8-rc7 (so
-> then I can verify the patch fixes it).
-> 
-> If I understand the issue right, all we should need to do is get a
-> slow filesystem, and then generate a bunch of dirty file pages on it,
-> while running in a tightly constrained memcg. To that end, I tried the
-> following script. But, in reality I seem to get little or no
-> accumulation of dirty file pages.
-> 
-> I thought maybe fio does something different than rsync which you said
-> you originally tried, so I also tried rsync (copying /usr/bin into
-> this loop mount) and didn't run into an OOM situation either.
-> 
-> Maybe some dirty ratio settings need tweaking or something to get the
-> behavior you see? Or maybe my test has a dumb mistake in it. :)
-> 
-> 
-> 
-> #!/usr/bin/env bash
-> 
-> echo 0 > /proc/sys/vm/laptop_mode || exit 1
-> echo y > /sys/kernel/mm/lru_gen/enabled || exit 1
-> 
-> echo "Allocate disk image"
-> IMAGE_SIZE_MIB=1024
-> IMAGE_PATH=/tmp/slow.img
-> dd if=/dev/zero of=$IMAGE_PATH bs=1024k count=$IMAGE_SIZE_MIB || exit 1
-> 
-> echo "Setup loop device"
-> LOOP_DEV=$(losetup --show --find $IMAGE_PATH) || exit 1
-> LOOP_BLOCKS=$(blockdev --getsize $LOOP_DEV) || exit 1
-> 
-> echo "Create dm-slow"
-> DM_NAME=dm-slow
-> DM_DEV=/dev/mapper/$DM_NAME
-> echo "0 $LOOP_BLOCKS delay $LOOP_DEV 0 100" | dmsetup create $DM_NAME || exit 1
-> 
-> echo "Create fs"
-> mkfs.ext4 "$DM_DEV" || exit 1
-> 
-> echo "Mount fs"
-> MOUNT_PATH="/tmp/$DM_NAME"
-> mkdir -p "$MOUNT_PATH" || exit 1
-> mount -t ext4 "$DM_DEV" "$MOUNT_PATH" || exit 1
-> 
-> echo "Generate dirty file pages"
-> systemd-run --wait --pipe --collect -p MemoryMax=32M \
->         fio -name=writes -directory=$MOUNT_PATH -readwrite=randwrite \
->         -numjobs=10 -nrfiles=90 -filesize=1048576 \
->         -fallocate=posix \
->         -blocksize=4k -ioengine=mmap \
->         -direct=0 -buffered=1 -fsync=0 -fdatasync=0 -sync=0 \
->         -runtime=300 -time_based
 
-By doing only the writes in the cgroup, you might just be running into
-balance_dirty_pages(), which wakes the flushers and slows the
-writing/allocating task before hitting the cg memory limit.
 
-I think the key to what happens in Chris's case is:
+On 3/8/24 15:57, Rob Herring wrote:
+> On Fri, Mar 08, 2024 at 07:23:35AM -0500, Stefan Berger wrote:
+>>
+>>
+>> On 3/7/24 16:52, Rob Herring wrote:
+>>> On Thu, Mar 07, 2024 at 09:41:31PM +1100, Michael Ellerman wrote:
+>>>> Stefan Berger <stefanb@linux.ibm.com> writes:
+>>>>> linux,sml-base holds the address of a buffer with the TPM log. This
+>>>>> buffer may become invalid after a kexec and therefore embed the whole TPM
+>>>>> log in linux,sml-log. This helps to protect the log since it is properly
+>>>>> carried across a kexec with both of the kexec syscalls.
+>>>>>
+>>>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>>>>> ---
+>>>>>    arch/powerpc/kernel/prom_init.c | 8 ++------
+>>>>>    1 file changed, 2 insertions(+), 6 deletions(-)
+>>>>>
+>>
+>>>
+>>>
+>>>> Also adding the new linux,sml-log property should be accompanied by a
+>>>> change to the device tree binding.
+>>>>
+>>>> The syntax is not very obvious to me, but possibly something like?
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+>>>> index 50a3fd31241c..cd75037948bc 100644
+>>>> --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+>>>> +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+>>>> @@ -74,8 +74,6 @@ required:
+>>>>      - ibm,my-dma-window
+>>>>      - ibm,my-drc-index
+>>>>      - ibm,loc-code
+>>>> -  - linux,sml-base
+>>>> -  - linux,sml-size
+>>>
+>>> Dropping required properties is an ABI break. If you drop them, an older
+>>> OS version won't work.
+>>
+>> 1) On PowerVM and KVM on Power these two properties were added in the Linux
+>> code. I replaced the creation of these properties with creation of
+>> linux,sml-log (1/2 in this series). I also replaced the handling of
+>> these two (2/2 in this series) for these two platforms but leaving it for
+>> powernv systems where the firmware creates these.
+> 
+> Okay, I guess your case is not a ABI break if the kernel is populating
+> it and the same kernel consumes it.
+> 
+> You failed to answer my question on using /reserved-memory. Again, why
 
-1) The cgroup has a certain share of dirty pages, but in aggregate
-they are below the cgroup dirty limit (dirty < mdtc->avail * ratio)
-such that no writeback/dirty throttling is triggered from
-balance_dirty_pages().
+I am not familiar with /reserved-memory and whether it is supported on 
+the targeted platforms.
 
-2) An unthrottled burst of (non-dirtying) allocations causes reclaim
-demand that suddenly exceeds the reclaimable clean pages on the LRU.
-
-Now you get into a situation where allocation and reclaim rate exceeds
-the writeback rate and the only reclaimable pages left on the LRU are
-dirty. In this case reclaim needs to wake the flushers and wait for
-writeback instead of blowing through the priority cycles and OOMing.
-
-Chris might be causing 2) from the read side of the copy also being in
-the cgroup. Especially if he's copying larger files that can saturate
-the readahead window and cause bigger allocation bursts. Those
-readahead pages are accounted to the cgroup and on the LRU as soon as
-they're allocated, but remain locked and unreclaimable until the read
-IO finishes.
 
