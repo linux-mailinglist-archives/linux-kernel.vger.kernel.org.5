@@ -1,137 +1,129 @@
-Return-Path: <linux-kernel+bounces-97351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46CF887694B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:05:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ACF287694D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78D5C1C225C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:05:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 451B2286F13
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F0920DE9;
-	Fri,  8 Mar 2024 17:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F0020B10;
+	Fri,  8 Mar 2024 17:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="CifkeWXt"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="DDurbmA3"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13DAF2031E
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:05:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6398A200BE
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709917510; cv=none; b=uohhZzCmN5yyrYdSXYWj7P+UWe2Cch9lrqsFEkAbnwUyavxRs6P5HcFQlBNroXcoGelA++jpTQaGRmLsy0yuKEd7zD45GSxNIzV+V4WWyCX6I42+sGQan561lGmCcZkTzLlJBxCPS/xKLFbGNS4uuXQJRMoKKGPoX0rxli6xdxs=
+	t=1709917551; cv=none; b=HJXvugESxKbGy7JERxlv9Lz5/xk57/NYj5M6DEHF8SXs8e8imJ36Dg2/cMiVd6XrGC6UEcLqTyLDclJkQmfMqJ3X1n+n2RuhVDt+Z+u9SliptXjiqZu+P14WRAJpS5POjGuDbzWfy3UiAmWQpMNWHnciAEkdq7exOJr+K5ShHgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709917510; c=relaxed/simple;
-	bh=a9B1XKf5v4a+2i7pOUkHcFgBwp8ihsYwhnXpzw194+g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OJvE4+OBuys/0LqT1psLXiDlC/2xHtOBDFQwtnOa+ppA8jVNf/uEtPHxoSa68r3j0cPLuicV0iKseBgXMQiUgz7yo4nQBTjaPASN+aOuWffVog28bOwJqhclDO4KB4UNyFrA0FbTC+Y9zwbdGx5Q7E5F+qhs2SiSFJ4wAQTkKm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=CifkeWXt; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c876b9d070so34932939f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:05:07 -0800 (PST)
+	s=arc-20240116; t=1709917551; c=relaxed/simple;
+	bh=V6KJTShdwT+mkrh0tNjho/v1spFJQp+mhN1u9pDoGUg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NcZaSf5intdtuxddXteUjq0vSgXMFS7aIIuzMQ7wN3CTmBC8anJiaD4zgDsqfou101LJQBqNOVAn68Ca+T3+l/u/Mz9U6sbUyDWZgrqzRHGRomZFdGOVvOsV3im/25P0JTYWuOTokPQW2hgwA1g3Jprbqf+D0diZdBDsJNIo7oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=DDurbmA3; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c21a3120feso436343b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:05:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709917507; x=1710522307; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pt9oq3K3EFlza+ec+x3ugAytq31JzWCtDXSc9tgPdyg=;
-        b=CifkeWXt8MULvB0rh2Dw87gIpnVZZqyT7d2k7PkQM70LVlq09Ocbye/u5g+rAPLkgE
-         h+oujU74OO3HbSvlSUUVytFD5TbM1rCBXAluJFbWwPX3HoVa3WdKQJ2z3c7kDz74p9TO
-         wJAPt9W+fdrrMLzUdUFBhRk4IF9wNlxeG1jgoWlCcWv/Np3UsvP+XlrfMOzlxvyXYjRo
-         y3zwKg3Hy53trImEqDc4ZI6GP01ftaZsmPzaHZc49tbVn8hHb6+F0FptA8CshLYgL2tq
-         k2CUelT9GKovtIrloNGQXy1+v71K2GrBSFIIyURb5EWJj5ar3V9pyGd7s46u9qIQxu5o
-         6w5w==
+        d=ziepe.ca; s=google; t=1709917548; x=1710522348; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M1AjcWBSkItGUiNsU5CP48uMxnVb158nfN7iDwmiCRM=;
+        b=DDurbmA3S6btZn2V8KtaQVOAeU8XJtj2r2bxnzLWx/bXgBtqnKFzitf+UKd3O+C8Sf
+         GzSEE5xJX6ZJwq+cgIT9I+GoVPReBCKzUqa3diO4WI2esw9hE4l4Ybc+d1u+FQmA+2ru
+         /t6/zSUaORfxu+qRugu+U6q6pVMItxiwHgC6N5VdfO8aP01mvm0otMqzG0VW9GPaKvym
+         w9RnhV2zf+ykqTh/UWxYdF4koZZy375vi2K90ej2Dpn9zybrsvP6NTGj3BBH2Ougo0Yh
+         YrKZkb53J0xmtuSnehL9IeWufuOOeF20AX4aowrlITKI1CoGUICBc2F16BYKP+z5pCAV
+         gfKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709917507; x=1710522307;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pt9oq3K3EFlza+ec+x3ugAytq31JzWCtDXSc9tgPdyg=;
-        b=i7MOHr7kFnwZLOB3IRM+QWITeOp02su6ripoIbl541Ov6pr0qxo7vf4nzUWvN7NE4P
-         OxWc07jg6Y0uAl/t6CGDDKcsTdCGFhSWXrFSs21qiwM/uAj9WH677tpZBc6iV1L153gi
-         kT3TeDA9ltEbyazjEag9G5OnEZXJfNtOyBBOUbZX/EJKkgf9z4c4nsNNRVyUlmf2TwjJ
-         C1pjcJiEt0fSJcaOZ6v8Z7JDMr0sMupjGweE9JLynF/b+TdjKuOCJ577koqmgNqPSGXZ
-         2z8L/MaeBB9cwJy0X/IYC95/Bax7G59wbNrsT1pUyWQJWXWPhkyEB67PGofYbC+aJdTY
-         QL4w==
-X-Forwarded-Encrypted: i=1; AJvYcCXBpZztV276GsnZdcZw82D+YOYYdUMzCFplHwll7crCOPyItBmavmRI1pJs1dhkor5+kG6IZS0Ylz0R2yp02mC/UIyTZZ6+HqOwSvF9
-X-Gm-Message-State: AOJu0YziQu6dOemL8xB0bReEfdJ7Vku8K0FafLAZEBXzYaR9lu251jJO
-	/CYRCD9rJysWPvVLjwroDV+NyRJokIvXIZpwcs1j5y6Cpv3bLBs5lvHZtcJxqEo=
-X-Google-Smtp-Source: AGHT+IF7mIwvt3cedayTCmkSThguzKrWUC+b8e/OGO4yRw2KQGJBO/bSFddqcKtpqeOPe1BOt1/DQg==
-X-Received: by 2002:a05:6e02:1a43:b0:365:224b:e5f7 with SMTP id u3-20020a056e021a4300b00365224be5f7mr2793675ilv.1.1709917507163;
-        Fri, 08 Mar 2024 09:05:07 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id y8-20020a029508000000b0047477265b90sm4767944jah.24.2024.03.08.09.05.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 09:05:06 -0800 (PST)
-Message-ID: <eef12540-84b6-4591-a797-6cfea7b28d48@kernel.dk>
-Date: Fri, 8 Mar 2024 10:05:04 -0700
+        d=1e100.net; s=20230601; t=1709917548; x=1710522348;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M1AjcWBSkItGUiNsU5CP48uMxnVb158nfN7iDwmiCRM=;
+        b=IhmpdKCbBQoskrr7j/xLH0N9ubNE/XK/ZZHHGdgnUh8SqP7eHTpeeRO/QWOWVALEHv
+         HSYLemttRv+8d+2GIVPYvmz1MEupwQlWm3DH9lVCN4TGskc9j+wiZtraPPo/vv55ESE1
+         0M4CWCeKLzI/p8dLDvUkbw+r32O5Mz4oV3Vj5zNaI0gUxuj2p3VfihdSnXGCUmwjvGjS
+         cYl7tR11/Nm3uKhnUg3Plk2PCmys6JqZ5wnR7JPFfWq03ffFUdjDap+1TjYzKDc9MKMm
+         eg0JfT/rJdDmCeQmsaMBVCOCaeavhzfQuSrh8rQOZRUQnaYf46Ftx7+uT1fnGCaiiSau
+         k41A==
+X-Forwarded-Encrypted: i=1; AJvYcCU56DcQFZxctgucDygiMe+8jHqmINeqMDVqTImyrfiqFLLLMBtr2k3/e7bScrt+04HVH7+Xss/3hHHVKD70+4ZIxY2jBqLPJ5AxXofM
+X-Gm-Message-State: AOJu0YxmZjRo6XxZ6vb/ve1vVsdNH3mCP8QF7YscM8fcBHHB4CbxHeww
+	rcjC+M3XIeg+MAbiKdP3qfRofqnqRbcAU0uD51GeJipmBTXv0GddkCMSc1t6weo=
+X-Google-Smtp-Source: AGHT+IFmpdDM8Yw9rLFEeWGGVYCMO+qikKXQROcwg2THfy528Bht9EXOGogx2z63mdDKX9uCapRecg==
+X-Received: by 2002:a05:6808:1393:b0:3c2:3a02:2731 with SMTP id c19-20020a056808139300b003c23a022731mr106904oiw.5.1709917548441;
+        Fri, 08 Mar 2024 09:05:48 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id v2-20020a544482000000b003c1ec2c3fa5sm1655913oiv.42.2024.03.08.09.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 09:05:47 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1ridfG-007SKN-Rm;
+	Fri, 08 Mar 2024 13:05:46 -0400
+Date: Fri, 8 Mar 2024 13:05:46 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: "Tian, Kevin" <kevin.tian@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"eric.auger@redhat.com" <eric.auger@redhat.com>,
+	"clg@redhat.com" <clg@redhat.com>,
+	"Chatre, Reinette" <reinette.chatre@intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/7] vfio/pci: Disable auto-enable of exclusive INTx IRQ
+Message-ID: <20240308170546.GS9225@ziepe.ca>
+References: <20240306211445.1856768-1-alex.williamson@redhat.com>
+ <20240306211445.1856768-2-alex.williamson@redhat.com>
+ <BL1PR11MB527189373E8756AA8697E8D78C202@BL1PR11MB5271.namprd11.prod.outlook.com>
+ <20240307132348.5dbc57dc.alex.williamson@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 03/10] fs: Initial atomic write support
-Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>, kbusch@kernel.org, hch@lst.de,
- sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com,
- djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
- dchinner@redhat.com, jack@suse.cz
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
- ojaswin@linux.ibm.com, linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
- io-uring@vger.kernel.org, nilay@linux.ibm.com, ritesh.list@gmail.com,
- Prasad Singamsetty <prasad.singamsetty@oracle.com>
-References: <20240226173612.1478858-1-john.g.garry@oracle.com>
- <20240226173612.1478858-4-john.g.garry@oracle.com>
- <1f68ab8c-e8c2-4669-a59a-65a645e568a3@kernel.dk>
- <67aa0476-e449-414c-8953-a5d3d0fe6857@oracle.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <67aa0476-e449-414c-8953-a5d3d0fe6857@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307132348.5dbc57dc.alex.williamson@redhat.com>
 
-On 3/8/24 9:52 AM, John Garry wrote:
-> On 08/03/2024 16:34, Jens Axboe wrote:
->> On 2/26/24 10:36 AM, John Garry wrote:
->>> diff --git a/io_uring/rw.c b/io_uring/rw.c
->>> index d5e79d9bdc71..099dda3ff151 100644
->>> --- a/io_uring/rw.c
->>> +++ b/io_uring/rw.c
->>> @@ -719,7 +719,7 @@ static int io_rw_init_file(struct io_kiocb *req, fmode_t mode)
->>>       struct kiocb *kiocb = &rw->kiocb;
->>>       struct io_ring_ctx *ctx = req->ctx;
->>>       struct file *file = req->file;
->>> -    int ret;
->>> +    int ret, rw_type = (mode == FMODE_WRITE) ? WRITE : READ;
->>>         if (unlikely(!file || !(file->f_mode & mode)))
->>>           return -EBADF;
->>> @@ -728,7 +728,7 @@ static int io_rw_init_file(struct io_kiocb *req, fmode_t mode)
->>>           req->flags |= io_file_get_flags(file);
->>>         kiocb->ki_flags = file->f_iocb_flags;
->>> -    ret = kiocb_set_rw_flags(kiocb, rw->flags);
->>> +    ret = kiocb_set_rw_flags(kiocb, rw->flags, rw_type);
->>>       if (unlikely(ret))
->>>           return ret;
->>>       kiocb->ki_flags |= IOCB_ALLOC_CACHE;
->> Not sure why you took the lazy way out here rather than just pass it in,
->> now there's another branhc in the hot path. NAK.
+On Thu, Mar 07, 2024 at 01:23:48PM -0700, Alex Williamson wrote:
+> On Thu, 7 Mar 2024 08:39:16 +0000
+> "Tian, Kevin" <kevin.tian@intel.com> wrote:
 > 
-> Are you saying to change io_rw_init_file() to this:
+> > > From: Alex Williamson <alex.williamson@redhat.com>
+> > > Sent: Thursday, March 7, 2024 5:15 AM
+> > > 
+> > > Currently for devices requiring masking at the irqchip for INTx, ie.
+> > > devices without DisINTx support, the IRQ is enabled in request_irq()
+> > > and subsequently disabled as necessary to align with the masked status
+> > > flag.  This presents a window where the interrupt could fire between
+> > > these events, resulting in the IRQ incrementing the disable depth twice.
+> > > This would be unrecoverable for a user since the masked flag prevents
+> > > nested enables through vfio.
+> > > 
+> > > Instead, invert the logic using IRQF_NO_AUTOEN such that exclusive INTx
+> > > is never auto-enabled, then unmask as required.
+> > > 
+> > > Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+> > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>  
+> > 
+> > CC stable?
 > 
-> io_rw_init_file(struct io_kiocb *req, fmode_t mode, int rw_type)
-> 
-> And the callers can hardcode rw_type?
+> I've always found that having a Fixes: tag is sufficient to get picked
+> up for stable, so I typically don't do both.  If it helps out someone's
+> process I'd be happy to though.  Thanks,
 
-Yep, basically making the change identical to the aio one. Not sure why
-you did it differently in those two spots.
+It helps other distros in the ecosystem to flag patches that really
+should be backported. Not everyone runs their backport trees as
+agressively as a stable does.
 
--- 
-Jens Axboe
-
+Jason
 
