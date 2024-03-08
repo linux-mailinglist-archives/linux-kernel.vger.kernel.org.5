@@ -1,50 +1,70 @@
-Return-Path: <linux-kernel+bounces-97199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 545DC8766D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:57:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1208766D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A2D91F21600
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:57:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243E11F23805
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:57:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99DA9524A;
-	Fri,  8 Mar 2024 14:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560A0568A;
+	Fri,  8 Mar 2024 14:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="UlbljNRT"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="N4RJhAQR"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FADD139B;
-	Fri,  8 Mar 2024 14:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1697139B
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709909855; cv=none; b=QT9W/Nev+QPFY7x5b7ImWffC/zQVNEgBJKn/vrjaQAd8hqIZvpRu/W/WAfxdQ9QlSdEYGWTOd1LfDSuidWvAhBx+QnZlaH0vEQA//80Txuz7CidQ36Udk8IB/xs7GrBO/VgeDTRdaweahx1rPLhS+UnRtUyw3DoTS6rh3X+glA0=
+	t=1709909869; cv=none; b=LVS8/71+PIhMxYWHGKOPYELABGoGQlwNwOVlktJjbPbNlHe+zI+r1Bn5kI3JDLLU6v6FJNPa7PXftvyMwZu5yuI+htti3d5yo61HVCaJH5Iit9MuSwhlwRxlxOq/oGny9/t+NrBLl7Wr6vB/5+D+T71Xj2YBbRAhHttAiBToxy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709909855; c=relaxed/simple;
-	bh=SoBP5zdgJWYtt7+AXt9ixFnf+qarEoVQ+eVaOaf4HfM=;
-	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=ppdKAcpNxJN/PVjhRT39lhPHvU9m7Jj43dVFaJd0ZIodrRtarIgCMkqQm1U7elgPsVmvRG9lkhDlriDYvwlsEKZRB9DqZs/BlHsSIid/EBo0weCnOyvuer/ldBonh1fm/iCO6Xi9YOnx+CIv+3pJYDhIDDGQSM61yAvpNYHjXyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=UlbljNRT; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:Subject
-	:Cc:To:Reply-To:From:MIME-Version:Date:Message-ID:From:Sender:Reply-To:
-	Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=SoBP5zdgJWYtt7+AXt9ixFnf+qarEoVQ+eVaOaf4HfM=; t=1709909853;
-	x=1710341853; b=UlbljNRTZWGCN7M4RmludKLlq9ABJVw11bVBJKR2wJBGT5P1NZBQwInAZB/nf
-	jht1m7QT3z7i2w7yu43FxIiT8ndls9iB+kCgDiy16TCmBg+DDKyl3sxVcaPr2sw635OtuZwOoqE4g
-	r1fjODltr3kD1upYy42zy5qsUQuYVTei9nw8tYirStw0a7bsUqR/r6GAVs4NMBXfYmSLzHAgP9ojO
-	FOse0V8iYFJYnsGhKl+Llfie2y0MsdhhmYj9w2bysa8KhT5dY18wKCk7YyLqfYjxKOr8KEQH8EhUN
-	/YDj0h/YnEep5ZTqS+1hEehLQUmhfaJ8jtMMpvOI+n3GvD4bmA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1ribf8-0001bq-Uw; Fri, 08 Mar 2024 15:57:31 +0100
-Message-ID: <d85b8998-f7b8-465d-b5f0-d8fbb5382cce@leemhuis.info>
-Date: Fri, 8 Mar 2024 15:57:30 +0100
+	s=arc-20240116; t=1709909869; c=relaxed/simple;
+	bh=nOGmeeP+S2YSHfBnNQyo6hO5u9KbbN1gVrn38SWkjnQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AvK1dQG5EKWQYlcagv4Mvpn430tfxM3MpGexRycaLyGshy6k/m8zzjNGAFOK2n7sPXvXH9DSbB58iESAgQrVyB8Ty/A8nQIeG7yuSUkzy0wdo5FZgtJwWzDR1sM70Pf1c/eFWmY0BL+L0KzJiDYVVSFb/LTN6WzK2RCRC2oQk2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=N4RJhAQR; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-690bba32309so897456d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 06:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709909865; x=1710514665; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zHs25ksJpqEeOp1pNTzGqltTuGv83hVjOZuwqlpctzQ=;
+        b=N4RJhAQRNYjprM5Oc/LTMkhucHpItkaaL3kdHBw/ASALJjUMcpIP8S1YjCfTV3jj2f
+         FXfe5D6VRNEgt2MyVANgmZn0WGN/7qdUNme9KAnUixDA8hKDd5An7/dz1ksJCkP5kJDi
+         Y/f4akqndp09xzE8xC5GWUc33S5m+BEPeR7Sw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709909865; x=1710514665;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zHs25ksJpqEeOp1pNTzGqltTuGv83hVjOZuwqlpctzQ=;
+        b=TZnUXxQSzLXjwUivFZ2hO6aa1hbUK/ITaTjTmsysI7pUsrEidXYRvLD4vNpsI4nZfC
+         IP+Nt9BbzwcrvIHObfjUzdqr48uxzDHwNgbHNtjJSc2Nm0Y39298nmmtNBNhkArL/dtC
+         7aY5cU0of5v6ipUY07dt3C0v5edJfZ2Y7b8Sl+6BSENfVqHwcEEaIVcDrf0w7pup+WVC
+         NzyJVELPmxX1i195/10YykiD48APYJKgJokGhgfANFiU/IY1u4dOokTUaRbR8jC6T0sU
+         3FqC2Fjz+NyG+qrQEY9KHs86KkcbVJqdLUaveMULDrRZ/Zz+ECqaBqJuL7xK5uY+CNbR
+         83MQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvEoW0AcCsKm5Z3NbjHaQCthprj4phE/74BFbV3WmCDp25YGYt5aL5xVxkVi4F/KrRGaufuShjnv4HaIInGQIceyFIPOtINSJZCOYW
+X-Gm-Message-State: AOJu0Ywxtn8vs93CffAEeBcS8FjLFS0TCe5mN49WO2JmX05m0tfqHwwS
+	augdBcrrbr4tdmjcZUPFNqU856lZgbYxLuDuTLNoeCklFwB2NAAWnHWrCyvlnQs=
+X-Google-Smtp-Source: AGHT+IFgMYXjfmNrjnOEWaK0ByL3HTUskDb8AyXDaoxRYm0ZxLkEmiG2mFQnS6LbDZxo9RDmgpMRMQ==
+X-Received: by 2002:a05:6214:a63:b0:690:7dc5:a9bc with SMTP id ef3-20020a0562140a6300b006907dc5a9bcmr12454963qvb.29.1709909865438;
+        Fri, 08 Mar 2024 06:57:45 -0800 (PST)
+Received: from [10.5.0.2] ([91.196.69.182])
+        by smtp.gmail.com with ESMTPSA id ld8-20020a056214418800b0068fef1264f6sm9765794qvb.101.2024.03.08.06.57.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 06:57:44 -0800 (PST)
+Message-ID: <bce79497-52c5-4241-aaf6-2a95dc459041@joelfernandes.org>
+Date: Fri, 8 Mar 2024 09:57:42 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,95 +72,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US, de-DE
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux kernel regressions list <regressions@lists.linux.dev>,
- LKML <linux-kernel@vger.kernel.org>
-Subject: "Extra" Linux regressions report for mainline slightly ahead of
- 6.8-rc8/final
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+To: Stefan Wiehler <stefan.wiehler@nokia.com>,
+ Russell King <linux@armlinux.org.uk>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
+ Boqun Feng <boqun.feng@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+Content-Language: en-US
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709909853;57c071e1;
-X-HE-SMSGID: 1ribf8-0001bq-Uw
-
-Hi Linus, here is a quick manual extra regression report due to the
-nearing 6.8 release:
-
-
-# Fixes for regressions from this cycle afaics unlikely to reach 6.8
-
-* 3445139e3a594b ("Revert "Revert "md/raid5: Wait for
-MD_SB_CHANGE_PENDING in raid5d""") in next, which reverts a commits from
-6.8-rc1; Song thinks it's better to merge this revert for 6.9 and then
-backport to 6.8:
-https://lore.kernel.org/all/CAPhsuW51ND4qH4My8Uz1XaZSdvAjDR7eL7O-RLr5wKmFJA0XMQ@mail.gmail.com/
-Report: https://lore.kernel.org/all/20240123005700.9302-1-dan@danm.net/
-
-* 0d7dfc79fb9b4b ("drm/msm/a6xx: specify UBWC config for sc7180" in
-next. No reply to my recent inquiry why this fix for a commit from this
-cycle was queued for 6.9:
-https://lore.kernel.org/all/4e55f6fd-8875-4a61-9070-f0ecad8082ea@leemhuis.info/
-Report: https://gitlab.freedesktop.org/drm/msm/-/issues/49 and
-https://lore.kernel.org/all/85581fad-da8f-4550-a1c8-8f2996425dcd@lausen.nl/
 
 
 
-# Regressions fixes sitting on the list awaiting review:
+On 3/7/2024 11:09 AM, Stefan Wiehler wrote:
+> With CONFIG_PROVE_RCU_LIST=y and by executing
+> 
+>   $ echo 0 > /sys/devices/system/cpu/cpu1/online
+> 
+> one can trigger the following Lockdep-RCU splat on ARM:
+> 
+>   =============================
+>   WARNING: suspicious RCU usage
+>   6.8.0-rc7-00001-g0db1d0ed8958 #10 Not tainted
+>   -----------------------------
+>   kernel/locking/lockdep.c:3762 RCU-list traversed in non-reader section!!
+> 
+>   other info that might help us debug this:
+> 
+>   RCU used illegally from offline CPU!
+>   rcu_scheduler_active = 2, debug_locks = 1
+>   no locks held by swapper/1/0.
+> 
+>   stack backtrace:
+>   CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc7-00001-g0db1d0ed8958 #10
+>   Hardware name: Allwinner sun8i Family
+>    unwind_backtrace from show_stack+0x10/0x14
+>    show_stack from dump_stack_lvl+0x60/0x90
+>    dump_stack_lvl from lockdep_rcu_suspicious+0x150/0x1a0
+>    lockdep_rcu_suspicious from __lock_acquire+0x11fc/0x29f8
+>    __lock_acquire from lock_acquire+0x10c/0x348
+>    lock_acquire from _raw_spin_lock_irqsave+0x50/0x6c
+>    _raw_spin_lock_irqsave from check_and_switch_context+0x7c/0x4a8
+>    check_and_switch_context from arch_cpu_idle_dead+0x10/0x7c
+>    arch_cpu_idle_dead from do_idle+0xbc/0x138
+>    do_idle from cpu_startup_entry+0x28/0x2c
+>    cpu_startup_entry from secondary_start_kernel+0x11c/0x124
+>    secondary_start_kernel from 0x401018a0
+> 
+> The CPU is already reported as offline from RCU perspective in
+> cpuhp_report_idle_dead() before arch_cpu_idle_dead() is invoked. Above
+> RCU-Lockdep splat is then triggered by check_and_switch_context() acquiring the
+> ASID spinlock.
+> 
+> Avoid the false-positive Lockdep-RCU splat by briefly reporting the CPU as
+> online again while the spinlock is held.
+> 
+> Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
+> ---
+>  arch/arm/kernel/smp.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> index 3431c0553f45..6875e2c5dd50 100644
+> --- a/arch/arm/kernel/smp.c
+> +++ b/arch/arm/kernel/smp.c
+> @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
+>  {
+>  	unsigned int cpu = smp_processor_id();
+>  
+> +	/*
+> +	 * Briefly report CPU as online again to avoid false positive
+> +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
+> +	 * spinlock.
+> +	 */
+> +	rcutree_report_cpu_starting(cpu);
+>  	idle_task_exit();
+> +	rcutree_report_cpu_dead();
 
-* Fix divide-by-zero on DP unplug with nouveau
-https://lore.kernel.org/regressions/ZeoAPFIF6NClUl4P@debian.local/
+I agree with the problem but disagree with the patch because it feels like a
+terrible workaround.
 
-* u64_stats: fix u64_stats_init() for lockdep when used repeatedly in
-one file
-https://lore.kernel.org/lkml/20240306111157.29327-1-petr@tesarici.cz/
+Can we just use arch_spin_lock() for the cpu_asid_lock? This might require
+acquiring the raw_lock within the raw_spinlock_t, but there is precedent:
 
-* drm/nouveau: keep DMA buffers required for suspend/resume
-https://lore.kernel.org/dri-devel/20240229175822.30613-1-sidpranjale127@protonmail.com/
+arch/powerpc/kvm/book3s_hv_rm_mmu.c:245:
+arch_spin_lock(&kvm->mmu_lock.rlock.raw_lock);
 
+IMO, lockdep tracking of this lock is not necessary or possible considering the
+hotplug situation.
 
+Or is there a reason you need lockdep working for the cpu_asid_lock?
 
-# Regression reports where no fix is in sight afaics
+thanks,
 
-* dmaengine: CPU stalls while loading bluetooth module
-https://lore.kernel.org/lkml/ZYhQ2-OnjDgoqjvt@wens.tw/ and
-https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
-See also:
-https://lore.kernel.org/all/000001da7140%246a0f1570%243e2d4050%24@samsung.com/
-Revert might be counter-productive.
-
-* drm/msm: Thinkpad X13s hard resets disconnecting external displays (
-https://lore.kernel.org/lkml/Zd3kvD02Qvsh2Sid@hovoldconsulting.com/
-See also: lore.kernel.org/all/ZesK1SKUB9BVKouF%40hovoldconsulting.com
-and https://lore.kernel.org/lkml/ZesH21DcfOldRD9g@hovoldconsulting.com/
-Maybe the whole series that causes this should have been reverted a week
-ago...
-
-* x86/mm/ident_map: kexec now leads to reboot
-https://lore.kernel.org/stable/3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com/
-https://lore.kernel.org/all/CAJbxNHe3EJ88ABB1aZ8bYZq=a36F0TFST1Fqu4fkugvyU_fjhw@mail.gmail.com/
-A revert apparently could fix this.
-
-
-
-# For completeness: fixes that I assume will make it to you soon
-
-* I assume Dmitry will send 7105e92c60c9cc ("Revert "Input: bcm5974 -
-check endpoint type before starting traffic"") soon.
-
-* I assume Greg will send ac3e0384073b24 ("misc: lis3lv02d_i2c: Fix
-regulators getting en-/dis-abled twice on suspend/resume") soon.
-
-* Not totally sure, but I assume the Btrfs folks will send
-978b63f7464abc ("btrfs: fix race when detecting delalloc ranges during
-fiemap") and 1cab1375ba6d53 ("btrfs: reuse cloned extent buffer during
-fiemap to avoid re-allocations") to you, too.
-
-
-Ciao, Thorsten
-
-Side note: /me hopes this mail is not classified as spam due to all the
-links...
+ - Joel
 
