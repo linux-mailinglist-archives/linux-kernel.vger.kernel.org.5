@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-97663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EA01876D3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:39:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D25E876D40
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8096B1C21822
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:39:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D68081F227C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB44C5D8F0;
-	Fri,  8 Mar 2024 22:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0C8604C0;
+	Fri,  8 Mar 2024 22:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3fBf2xKm"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BnGj5Avo"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7350C481A8
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655BE5B5DD
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709937441; cv=none; b=sF5VHFVjNrdm6o8hjaAzVKZgNQit4apLrLbaSe5b3Ogf5nTfR+6wKpU7O9WS2DCC7NKs//wY2KOChQJMI8t/raI5eVZ2VlREx/JuxDp7XwqZywW90JyguPwCt4khi/974UBES/tIwapzLJ+5UTOZzhkLmMlEqC5Upg96k8ywUzg=
+	t=1709937442; cv=none; b=jDrHdqIkSxguhlyFjZDTB/wiJGDNHz0ZINmgnvKCfdRCsAfpab57YGkilzvET/Co4OewbgWebCtsmwlnqUBXPOTLwXHKuwAzg8peB/fXFTujQtad59VtRxIo3jckf0x7Hx2usZe7fHGjqlUVvW1nwejpcU2MzYNCgssysX4NWeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709937441; c=relaxed/simple;
-	bh=IHkAWM8Bsx+VfJRZIYMmESxXShX5sefkocQEmr3ATY0=;
+	s=arc-20240116; t=1709937442; c=relaxed/simple;
+	bh=oTLsXBJGTvQNP+F8nz36ySwkn2KtuRMCfbbJ8DJjo7c=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=loLfXBHbhFV/x7i2/jD9sHAU+xPZtXfoyQWjt+ChZ8P7kGoi/nqU9iqGX1cpfT/z/lJhTsLLak+fHrY+AgtBcMvdGPbURv01oY1oTRjD/8b5SngjbPqhmUotJnQQSKA9WoO8yKe+yWG7gahv5ZB5qp52Q7paurgzgqMzOf/HI2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3fBf2xKm; arc=none smtp.client-ip=209.85.210.202
+	 To:Cc:Content-Type; b=FV+CvEw3RKW7CCF3MKQrAeTx5K58nj8+lcwQg62b2AMF6d5ENNXAddwrSv576iQtsQ55bTb0FO2NcdXxfINpGprRLToZYaLbRiC21OGgakiQJ56Q9qW3oJiFd+ZiJi1T28Stve12+BKYOdh8MD675ryhE4X9Ifovl/sRjYhYnIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BnGj5Avo; arc=none smtp.client-ip=209.85.215.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e678cd2f25so145073b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:37:19 -0800 (PST)
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5dcab65d604so1160839a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:37:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709937439; x=1710542239; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709937441; x=1710542241; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=LOPgQup6F0h+Ij6sYWAHH/M666uh+NTVfASk5SQVjok=;
-        b=3fBf2xKm09OkSwtX6Ni0r0TXTpFjHeZ49MzgEd74Mj4TZE1eeWYG96lbX8YXJMutm0
-         LKZbjCbiMrNUIQXVc4QS/mhQcWGD3STeyG/izbNEPveiZgtBqCZBjyfXIwzkweb0qRnG
-         9DsNRG3fOMJ+mgxsHudmJxQlrg4OS8/LO6wYhP2NGRHI/TKjnxZq0lhlR1+BpV+2H37i
-         rmEjrxfVOeF2tGexuiEGfx3/edQdpJ3t3SYyCdxrs8OZ4AN1rBhS5uvKU2QUApoxTev/
-         is9Z6y3j+zuB8FAW5HiZc/SFahYwzTEV6pvaL/21cTttuRPGUoYQIdSxpZP+fSzmTJrG
-         E/6A==
+        bh=lWMLAd4YRkj0/Z7k3uFBUD+qopQGspHfKAITmgx51bs=;
+        b=BnGj5Avon2P3lufFihIPPONNUz+2sqeAsO97Jb4Old8BCu0dztoReaPUe6uBS5smca
+         aP/2842DSi1kBVxjPnziLzPLmFttwe6uZ/XquwoypVZGpsq+j5BRrS92pDF/pGqyIZ9T
+         c+o7CYeuI8MwwaEpt+e8sgHn61jkdTcYl7wAwIk3oG8Y25tTT8d+U8oHMQ5DYFPDADl0
+         JQgKaRrZcSe+FCQOQE6n+JxkFq1emOMWpEOAGylsWmtuVqVEeitMQpH/h8c9JXrxZM6/
+         xHLqFY/zNkvEe0GY0FbSu8ockJkzvqgRvo/F/Z3h/Zb5DIDAVwpNp3Cz/zIfVOuMyPWo
+         XYPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709937439; x=1710542239;
+        d=1e100.net; s=20230601; t=1709937441; x=1710542241;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LOPgQup6F0h+Ij6sYWAHH/M666uh+NTVfASk5SQVjok=;
-        b=iLUlRxtA7sXBijMDLBxf1bdLqPGFvGwDpceNBza44SFwsCBds0n2boLMvUxmeEHX1W
-         I3bUyTovhsjkD1bM8izY5X//atKvN1xVPOcPlIimr4K+BdxYGD4BOsMdjcrcomWoHqu7
-         lEms8P6TwTZcKBSC5Kaa2564Wmbj+AvG8agibo/6BBF7cwb+VjJCHtyZaGt9UtytE1OV
-         jglz40A0d3OtC73NQWRwxGarFF7ooqq51r6Yts9qTqM4AiheylR3bdKfUmaLWCSlY1Ne
-         i6sa/in6hlDFm4AjjLnDxAnTmY08A0htmSE18qnmv3zIZnNYhvfdGkTTLcGfM1lbHmUj
-         P7Cw==
-X-Forwarded-Encrypted: i=1; AJvYcCU13cCCAgiOHriKEGr3AfX84GWarR4yIgwc1isuM/vBuYu3wAhaEwsbvGA5fswKVDLxYKfR3Vxh8CSgGfUpHW0Ai05OmAJCM3+6bKLh
-X-Gm-Message-State: AOJu0YzuWFxfQ1zmkVVaEaYpeERoTvbZvVtSFTvJbyxH8/o3ecK0yoqN
-	zxKmIAmvldPzPSNWRtAnbxpZuPFZcyjXvQc9pTzSv7wN2AmMHbFBQxjywZ3U1phjas14r9xweIt
-	RWQ==
-X-Google-Smtp-Source: AGHT+IE+bRWrHBgfuwBsG6dtY85gAaVpOrnfiadQmUNlGYDrf9yDIsmazJJkMMBobyviU9ZOhjenSlHkL0o=
+        bh=lWMLAd4YRkj0/Z7k3uFBUD+qopQGspHfKAITmgx51bs=;
+        b=hqlsKgOEB1JERZe3KGOf+qeH+TIYJk7uPUJx+r9Eri2uqeqJw2WN5s8W561oUt3BmS
+         AlZrwuUnSKIqYl2DaM2+MCxY1k1kv5hqFyYEntKnG+nDZNNBR0LBG8s3yyqyKlMHD/zZ
+         j71Zr++32H3c9kawAdzlgJej1QBWoIjnEZ+o8wyD7aaueDkUiC+u8gMmtFb+TE8dBUts
+         WjcXR8eEGsDrOB0646pFKzzWzr7og6wo1P/AUZuRBKbUvBm15unK+Yx67I1/aovgcFJH
+         VlJzowmoqXk4Bl8iUh2Z38GX/m4iqhMR22VXkjq+cINGAWE3maP4XnbNc8iGlWmmaZvQ
+         440g==
+X-Forwarded-Encrypted: i=1; AJvYcCUpRUWEjv/5rM8d7A36cKF/Ex1dqNqDvJSuITpzQcdNAMHiCNsuxyaGGY58fFeRw5CXQfsuTdeIOeu9rGLEZfoHK4XIL/A+/LM+Bjoe
+X-Gm-Message-State: AOJu0YwNqOVwqAMkQa6/JDKI6E2r8wJA+lzSL0Yx8zYu0VFy4uXFHp4h
+	z4CypormplnccBexwDfyOhrBiXJcGKDChkPEGHtH9idaxA+6j9u5Qb09Bc16+ewqH5O1OAkVI9k
+	xXQ==
+X-Google-Smtp-Source: AGHT+IHTEuDAeIruT3PfeRAeByE5iiR+I9sZhT3PrPc6Dx/SCkZhPZ13wb0W6yoxMOnZsUHNLvIP6VFn9b8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2291:b0:6e5:94b0:68be with SMTP id
- f17-20020a056a00229100b006e594b068bemr21598pfe.2.1709937438717; Fri, 08 Mar
- 2024 14:37:18 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a63:b0b:0:b0:5dc:555a:c9d1 with SMTP id
+ 11-20020a630b0b000000b005dc555ac9d1mr811pgl.3.1709937440665; Fri, 08 Mar 2024
+ 14:37:20 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  8 Mar 2024 14:36:59 -0800
+Date: Fri,  8 Mar 2024 14:37:00 -0800
 In-Reply-To: <20240308223702.1350851-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,135 +75,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240308223702.1350851-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240308223702.1350851-7-seanjc@google.com>
-Subject: [GIT PULL] KVM: x86: Selftests changes for 6.9
+Message-ID: <20240308223702.1350851-8-seanjc@google.com>
+Subject: [GIT PULL] KVM: x86: VMX changes for 6.9
 From: Sean Christopherson <seanjc@google.com>
 To: Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add SEV(-ES) smoke tests, and start building out infrastructure to utilize the
-"core" selftests harness and TAP.  In addition to provide TAP output, using the
-infrastructure reduces boilerplate code and allows running all testscases in a
-test, even if a previous testcase fails (compared with today, where a testcase
-failure is terminal for the entire test).
+A small series for Dongli to cleanup the passthrough MSR bitmap code, and a
+handful of one-off changes.
 
-As noted in the PMU pull request, the "Use TAP interface" changes have a few
-conflicts.  3 of 4 are relatively straightforward, but the one in
-userspace_msr_exit_test.c's test_msr_filter_allow() is a pain.  At least, I
-thought so as I botched it at least twice.  (LOL, make that three times, as I
-just botched my test merge resolution).
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
-The code should end up looking like this:
-
----
-KVM_ONE_VCPU_TEST_SUITE(user_msr);
-
-KVM_ONE_VCPU_TEST(user_msr, msr_filter_allow, guest_code_filter_allow)
-{
-	struct kvm_vm *vm = vcpu->vm;
-	uint64_t cmd;
-	int rc;
-
-	sync_global_to_guest(vm, fep_available);
-
-	rc = kvm_check_cap(KVM_CAP_X86_USER_SPACE_MSR);
----
-
-The resolutions I've been using can be found in kvm-x86/next.
-
-
-The following changes since commit db7d6fbc10447090bab8691a907a7c383ec66f58:
-
-  KVM: remove unnecessary #ifdef (2024-02-08 08:41:06 -0500)
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
 
 are available in the Git repository at:
 
-  https://github.com/kvm-x86/linux.git tags/kvm-x86-selftests-6.9
+  https://github.com/kvm-x86/linux.git tags/kvm-x86-vmx-6.9
 
-for you to fetch changes up to e9da6f08edb0bd4c621165496778d77a222e1174:
+for you to fetch changes up to 259720c37d51aae21f70060ef96e1f1b08df0652:
 
-  KVM: selftests: Explicitly close guest_memfd files in some gmem tests (2024-03-05 13:31:20 -0800)
-
-----------------------------------------------------------------
-KVM selftests changes for 6.9:
-
- - Add macros to reduce the amount of boilerplate code needed to write "simple"
-   selftests, and to utilize selftest TAP infrastructure, which is especially
-   beneficial for KVM selftests with multiple testcases.
-
- - Add basic smoke tests for SEV and SEV-ES, along with a pile of library
-   support for handling private/encrypted/protected memory.
-
- - Fix benign bugs where tests neglect to close() guest_memfd files.
+  KVM: VMX: Combine "check" and "get" APIs for passthrough MSR lookups (2024-02-27 12:29:46 -0800)
 
 ----------------------------------------------------------------
-Ackerley Tng (1):
-      KVM: selftests: Add a macro to iterate over a sparsebit range
+KVM VMX changes for 6.9:
 
-Dongli Zhang (1):
-      KVM: selftests: Explicitly close guest_memfd files in some gmem tests
+ - Fix a bug where KVM would report stale/bogus exit qualification information
+   when exiting to userspace due to an unexpected VM-Exit while the CPU was
+   vectoring an exception.
 
-Michael Roth (2):
-      KVM: selftests: Make sparsebit structs const where appropriate
-      KVM: selftests: Add support for protected vm_vaddr_* allocations
+ - Add a VMX flag in /proc/cpuinfo to report 5-level EPT support.
 
-Peter Gonda (5):
-      KVM: selftests: Add support for allocating/managing protected guest memory
-      KVM: selftests: Explicitly ucall pool from shared memory
-      KVM: selftests: Allow tagging protected memory in guest page tables
-      KVM: selftests: Add library for creating and interacting with SEV guests
-      KVM: selftests: Add a basic SEV smoke test
+ - Clean up the logic for massaging the passthrough MSR bitmaps when userspace
+   changes its MSR filter.
 
-Sean Christopherson (4):
-      KVM: selftests: Move setting a vCPU's entry point to a dedicated API
-      KVM: selftests: Extend VM creation's @shape to allow control of VM subtype
-      KVM: selftests: Use the SEV library APIs in the intra-host migration test
-      KVM: selftests: Add a basic SEV-ES smoke test
+----------------------------------------------------------------
+Chao Gao (1):
+      KVM: VMX: Report up-to-date exit qualification to userspace
 
-Thomas Huth (7):
-      KVM: selftests: x86: sync_regs_test: Use vcpu_run() where appropriate
-      KVM: selftests: x86: sync_regs_test: Get regs structure before modifying it
-      KVM: selftests: Add a macro to define a test with one vcpu
-      KVM: selftests: x86: Use TAP interface in the sync_regs test
-      KVM: selftests: x86: Use TAP interface in the fix_hypercall test
-      KVM: selftests: x86: Use TAP interface in the vmx_pmu_caps test
-      KVM: selftests: x86: Use TAP interface in the userspace_msr_exit test
+Dongli Zhang (2):
+      KVM: VMX: fix comment to add LBR to passthrough MSRs
+      KVM: VMX: return early if msr_bitmap is not supported
 
- tools/testing/selftests/kvm/Makefile               |   2 +
- tools/testing/selftests/kvm/guest_memfd_test.c     |   3 +
- .../selftests/kvm/include/aarch64/kvm_util_arch.h  |   7 ++
- .../selftests/kvm/include/kvm_test_harness.h       |  36 ++++++
- .../testing/selftests/kvm/include/kvm_util_base.h  |  61 +++++++++--
- .../selftests/kvm/include/riscv/kvm_util_arch.h    |   7 ++
- .../selftests/kvm/include/s390x/kvm_util_arch.h    |   7 ++
- tools/testing/selftests/kvm/include/sparsebit.h    |  56 +++++++---
- .../selftests/kvm/include/x86_64/kvm_util_arch.h   |  23 ++++
- .../selftests/kvm/include/x86_64/processor.h       |   8 ++
- tools/testing/selftests/kvm/include/x86_64/sev.h   | 107 ++++++++++++++++++
- .../testing/selftests/kvm/lib/aarch64/processor.c  |  24 +++-
- tools/testing/selftests/kvm/lib/kvm_util.c         |  67 ++++++++++--
- tools/testing/selftests/kvm/lib/riscv/processor.c  |   9 +-
- tools/testing/selftests/kvm/lib/s390x/processor.c  |  13 ++-
- tools/testing/selftests/kvm/lib/sparsebit.c        |  48 ++++----
- tools/testing/selftests/kvm/lib/ucall_common.c     |   3 +-
- tools/testing/selftests/kvm/lib/x86_64/processor.c |  45 +++++++-
- tools/testing/selftests/kvm/lib/x86_64/sev.c       | 114 +++++++++++++++++++
- .../selftests/kvm/x86_64/fix_hypercall_test.c      |  27 +++--
- .../kvm/x86_64/private_mem_conversions_test.c      |   2 +
- .../selftests/kvm/x86_64/sev_migrate_tests.c       |  60 +++-------
- .../testing/selftests/kvm/x86_64/sev_smoke_test.c  |  88 +++++++++++++++
- .../testing/selftests/kvm/x86_64/sync_regs_test.c  | 121 +++++++++++++++------
- .../selftests/kvm/x86_64/userspace_msr_exit_test.c |  52 +++------
- .../selftests/kvm/x86_64/vmx_pmu_caps_test.c       |  52 ++-------
- 26 files changed, 802 insertions(+), 240 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h
- create mode 100644 tools/testing/selftests/kvm/include/kvm_test_harness.h
- create mode 100644 tools/testing/selftests/kvm/include/riscv/kvm_util_arch.h
- create mode 100644 tools/testing/selftests/kvm/include/s390x/kvm_util_arch.h
- create mode 100644 tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
- create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev.h
- create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev.c
- create mode 100644 tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
+Sean Christopherson (2):
+      x86/cpu: Add a VMX flag to enumerate 5-level EPT support to userspace
+      KVM: VMX: Combine "check" and "get" APIs for passthrough MSR lookups
+
+ arch/x86/include/asm/vmxfeatures.h |  1 +
+ arch/x86/kernel/cpu/feat_ctl.c     |  2 ++
+ arch/x86/kvm/vmx/vmx.c             | 72 ++++++++++++++++----------------------
+ 3 files changed, 34 insertions(+), 41 deletions(-)
 
