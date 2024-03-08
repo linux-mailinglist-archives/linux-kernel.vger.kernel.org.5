@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-97419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A511876A38
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:51:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70184876A39
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:51:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D7E72849DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:51:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9364C1C210ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7958B56473;
-	Fri,  8 Mar 2024 17:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B461B59B5D;
+	Fri,  8 Mar 2024 17:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iOj7JgwD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pzgAEnwl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A1957884;
-	Fri,  8 Mar 2024 17:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810EE40861;
+	Fri,  8 Mar 2024 17:51:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709920264; cv=none; b=Zd7iTwVF0Y5JkTN242C1qfNs4t1CmCdwj/1XwvOY7tSfAJ+SEGvfwwv9cpSzRtmxS4Z1SlF1/k+ln5W2dVatPdwjtHE920i8Av3wviA13VKLwgdVBp+UBXv/kntcBrEv0sD9QKP0DND6wXPVgRFq8SVGn7MUNB2Tielh4Mnhofw=
+	t=1709920267; cv=none; b=kMYi1YAL6m6xr0GCjjX9j2N9ypoLbhfL+EkaKdz+b6TdpTKsLjMU4dmYB0XpeZCF4+hAuHPL0Mb9k+00Eqs6E20HsIDNFCkJFlctYbOKxzDMemJvvbzNyNvWAxDfxMtO1ebkPPKxYnzyJWbhTNoj1p3LT3fGEk0q4ZDLAlMTdfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709920264; c=relaxed/simple;
-	bh=RvTQckd0B1r1ZUSaFbewd9meNrt2FQBgjrY++IhkN54=;
+	s=arc-20240116; t=1709920267; c=relaxed/simple;
+	bh=U7ovKfLRIYFJUwuZaRirQPDoHS5KI6+npWpf/Nm676E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jJJ/tRpaU5kjFx9EgBzveszBinCqYbK7r9jVlvK+cUO6cCJaYviDfR1NM0pUCvzUSaYFvcgkTuPcoactJFqFGadAgfVx97fzcaasspikt+gb8FK4bsL3HLC8oMcpYkejZybNsykLMAAwlun7kEu72x6X9ifcEoYgyXLYD2LV0NA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iOj7JgwD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC8D5C433C7;
-	Fri,  8 Mar 2024 17:51:01 +0000 (UTC)
+	 MIME-Version; b=fXxHTp4sNyw+InnXWXbe2D+7qcJ1vXREkLI9p4V2ssNYnT/GiMf1/36SIzqjuUPiWNH76HwJwtPf4+wpTt2Ic0zlTP47wr3jlQTKuBmuxDo7463aG0N3NCrK3VXTKWyBY6QwQRqp2d59s/kujP1A3HL3ul/WfXXORu8SeiF+9J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pzgAEnwl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A606BC43390;
+	Fri,  8 Mar 2024 17:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709920264;
-	bh=RvTQckd0B1r1ZUSaFbewd9meNrt2FQBgjrY++IhkN54=;
+	s=k20201202; t=1709920267;
+	bh=U7ovKfLRIYFJUwuZaRirQPDoHS5KI6+npWpf/Nm676E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iOj7JgwDYvYupg8Cpe8FBU2ARcVXJO5TnJXVraFvkIbC+Db2O+NYO0eDFjI/kAXgL
-	 fC/bj/UXi2Z8f8543PBI4wkaJMA7NkR6xemP7P/yEBsFFOOKmFmGwu2NK/vGdkcUro
-	 8l7wrtU7F7cPGCKsAkSlIIAVOk7tKlw/A8XTMYiT7ilawG7whYtaLeWdpj3IfKY84h
-	 y5dtR2z9hZTKOMtEwB6/j6jXOXdQbDtncBYLHBIBYMpC1H+/j927EnrJiWHkpfqMT1
-	 NzakEKjxLFAaPwUxv7IQzdzQSqAoUbtSttyvsVh506DS6HBrkPrEj/pPgSDu0Jh9YM
-	 /9W5tNUZ39ohg==
+	b=pzgAEnwlchuzUtAVbIbotYkI4nXkFBYn2fVOgmzfdkJFIZPb4Rv+wOd6BDuRg0ZJx
+	 mvx2D8jgtRm5GsqNToP8LNQh65yFjYIjmwR5rNOKKkHxN103+fhnLaqQal5/uOFTmt
+	 UhE6AuhT4edCDHHkqQhpN/5EmlxdremoUswvNPl7GRpjJNLue6gOs/x1MwkTex1s24
+	 gq9FvVSGWpJtagLYh5xvQRmqxO3Kk+OnM9G1U/91biA8OvG9s8m5Q6jea/aFO9g7pS
+	 WsVaG0NXJdk7vjMkEdjxxmkxpQUaAD81rM1neYezbIJ0TayBb1U4csyEY2JxSoD1aY
+	 K41h7Yx8DFY/Q==
 From: Daniel Bristot de Oliveira <bristot@kernel.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -52,9 +52,9 @@ Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
 	linux-perf-users@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] tools/verification: Use tools/build makefiles on rv
-Date: Fri,  8 Mar 2024 18:50:44 +0100
-Message-ID: <9335f720b5aae9b2ae1f35ebcdf3b1e1490f857e.1709914259.git.bristot@kernel.org>
+Subject: [PATCH 3/3] tools/rtla: Use tools/build makefiles to build rtla
+Date: Fri,  8 Mar 2024 18:50:45 +0100
+Message-ID: <facb7d2e23dbf5e8a411a9e9d02b7c8baab99b88.1709914259.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1709914259.git.bristot@kernel.org>
 References: <cover.1709914259.git.bristot@kernel.org>
@@ -66,46 +66,71 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use tools/build/ makefiles to build rv, inheriting the benefits of
+Use tools/build/ makefiles to build rtla, inheriting the benefits of
 it. For example, having a proper way to handle dependencies.
+
+rtla is built using perf infra-structure when building inside the
+kernel tree.
+
+At this point, rtla diverges from perf in two points: Documentation
+and tarball generation/build.
+
+At the documentation level, rtla is one step ahead, placing the
+documentation at Documentation/tools/rtla/, using the same build
+tools as kernel documentation. The idea is to move perf
+documentation to the same scheme and then share the same makefiles.
+
+rtla has a tarball target that the (old) RHEL8 uses. The tarball was
+kept using a simple standalone makefile for compatibility. The
+standalone makefile shares most of the code, e.g., flags, with
+regular buildings.
+
+The tarball method was set as deprecated. If necessary, we can make
+a rtla tarball like perf, which includes the entire tools/build.
+But this would also require changes in the user side (the directory
+structure changes, and probably the deps to build the package).
+
+Inspired on perf and objtool.
 
 Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/verification/rv/.gitignore      |   2 +
- tools/verification/rv/Build           |   1 +
- tools/verification/rv/Makefile        | 166 +++++---------------------
- tools/verification/rv/Makefile.config |  44 +++++++
- tools/verification/rv/Makefile.rv     |  49 ++++++++
- tools/verification/rv/src/Build       |   4 +
- 6 files changed, 133 insertions(+), 133 deletions(-)
- create mode 100644 tools/verification/rv/.gitignore
- create mode 100644 tools/verification/rv/Build
- create mode 100644 tools/verification/rv/Makefile.config
- create mode 100644 tools/verification/rv/Makefile.rv
- create mode 100644 tools/verification/rv/src/Build
+ tools/tracing/rtla/.gitignore          |   4 +-
+ tools/tracing/rtla/Build               |   1 +
+ tools/tracing/rtla/Makefile            | 177 +++++--------------------
+ tools/tracing/rtla/Makefile.config     |  44 ++++++
+ tools/tracing/rtla/Makefile.rtla       |  77 +++++++++++
+ tools/tracing/rtla/Makefile.standalone |  24 ++++
+ tools/tracing/rtla/src/Build           |  11 ++
+ 7 files changed, 193 insertions(+), 145 deletions(-)
+ create mode 100644 tools/tracing/rtla/Build
+ create mode 100644 tools/tracing/rtla/Makefile.config
+ create mode 100644 tools/tracing/rtla/Makefile.rtla
+ create mode 100644 tools/tracing/rtla/Makefile.standalone
+ create mode 100644 tools/tracing/rtla/src/Build
 
-diff --git a/tools/verification/rv/.gitignore b/tools/verification/rv/.gitignore
-new file mode 100644
-index 000000000000..a446aca35eb2
---- /dev/null
-+++ b/tools/verification/rv/.gitignore
-@@ -0,0 +1,2 @@
-+rv
+diff --git a/tools/tracing/rtla/.gitignore b/tools/tracing/rtla/.gitignore
+index e9df32419b2b..9ec8a142e157 100644
+--- a/tools/tracing/rtla/.gitignore
++++ b/tools/tracing/rtla/.gitignore
+@@ -1 +1,3 @@
+-/rtla
++rtla
++rtla-static
 +FEATURE-DUMP
-diff --git a/tools/verification/rv/Build b/tools/verification/rv/Build
+diff --git a/tools/tracing/rtla/Build b/tools/tracing/rtla/Build
 new file mode 100644
-index 000000000000..a44c22349d4b
+index 000000000000..6c9d5b36a315
 --- /dev/null
-+++ b/tools/verification/rv/Build
++++ b/tools/tracing/rtla/Build
 @@ -0,0 +1 @@
-+rv-y += src/
-diff --git a/tools/verification/rv/Makefile b/tools/verification/rv/Makefile
-index 485f8aeddbe0..da16b7c4db0f 100644
---- a/tools/verification/rv/Makefile
-+++ b/tools/verification/rv/Makefile
-@@ -1,146 +1,46 @@
--NAME	:=	rv
++rtla-y += src/
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index afd18c678ff5..1064b02bd735 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -1,157 +1,46 @@
+-NAME	:=	rtla
 -# Follow the kernel version
 -VERSION :=	$(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
 +# SPDX-License-Identifier: GPL-2.0
@@ -123,7 +148,7 @@ index 485f8aeddbe0..da16b7c4db0f 100644
 -    $(eval $(1) = $(2)))
 -endef
 +VERSION		:= $(shell sh -c "make -sC ../../.. kernelversion | grep -v make")
-+DOCSRC		:= ../../../Documentation/tools/rv/
++DOCSRC		:= ../../../Documentation/tools/rtla/
  
 -# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
 -$(call allow-override,CC,$(CROSS_COMPILE)gcc)
@@ -150,7 +175,7 @@ index 485f8aeddbe0..da16b7c4db0f 100644
 -
 -TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
 -
--CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS) $(EXTRA_CFLAGS) -I include
+-CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS) $(EXTRA_CFLAGS)
 -LDFLAGS	:=	-flto=auto -ggdb $(EXTRA_LDFLAGS)
 -LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
 -
@@ -171,20 +196,20 @@ index 485f8aeddbe0..da16b7c4db0f 100644
 -
 -# If running from the tarball, man pages are stored in the Documentation
 -# dir. If running from the kernel source, man pages are stored in
--# Documentation/tools/rv/.
+-# Documentation/tools/rtla/.
 -ifneq ($(wildcard Documentation/.*),)
 -DOCSRC	=	Documentation/
 +ifeq ($(V),1)
 +  Q =
  else
--DOCSRC	=	$(SRCTREE)/../../../Documentation/tools/rv/
+-DOCSRC	=	$(SRCTREE)/../../../Documentation/tools/rtla/
 -endif
 -
 -LIBTRACEEVENT_MIN_VERSION = 1.5
 -LIBTRACEFS_MIN_VERSION = 1.3
 -
 -.PHONY:	all warnings show_warnings
--all:	warnings rv
+-all:	warnings rtla
 -
 -TEST_LIBTRACEEVENT = $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEEVENT_MIN_VERSION) libtraceevent > /dev/null 2>&1 || echo n")
 -ifeq ("$(TEST_LIBTRACEEVENT)", "n")
@@ -200,9 +225,8 @@ index 485f8aeddbe0..da16b7c4db0f 100644
 -MISSING_LIBS += echo "**   libtracefs version $(LIBTRACEFS_MIN_VERSION) or higher";
 -MISSING_PACKAGES += "libtracefs-devel"
 -MISSING_SOURCE += echo "**  https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/ ";
-+  Q = @
- endif
- 
+-endif
+-
 -define show_dependencies
 -	@echo "********************************************";				\
 -	echo "** NOTICE: Failed build dependencies";					\
@@ -227,31 +251,43 @@ index 485f8aeddbe0..da16b7c4db0f 100644
 -
 -warnings: $(WARNINGS)
 -	$(ERROR_OUT)
--endif
-+rv:
++  Q = @
+ endif
  
--rv: $(OBJ)
--	$(CC) -o rv $(LDFLAGS) $(OBJ) $(LIBS)
+-rtla: $(OBJ)
+-	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS)
++rtla:
+ 
+-static: $(OBJ)
+-	$(CC) -o rtla-static $(LDFLAGS) --static $(OBJ) $(LIBS) -lpthread -ldl
 +include $(srctree)/tools/build/Makefile.include
 +include $(srctree)/tools/build/Makefile.feature
 +include $(srctree)/tools/scripts/Makefile.include
-+include Makefile.rv
++include Makefile.rtla
 +include Makefile.config
  
 -.PHONY: install
 -install: doc_install
 -	$(MKDIR) -p $(DESTDIR)$(BINDIR)
--	$(INSTALL) rv -m 755 $(DESTDIR)$(BINDIR)
--	$(STRIP) $(DESTDIR)$(BINDIR)/rv
+-	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
+-	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
+-	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || rm $(DESTDIR)$(BINDIR)/osnoise
+-	ln -s rtla $(DESTDIR)$(BINDIR)/osnoise
+-	@test ! -f $(DESTDIR)$(BINDIR)/hwnoise || rm $(DESTDIR)$(BINDIR)/hwnoise
+-	ln -s rtla $(DESTDIR)$(BINDIR)/hwnoise
+-	@test ! -f $(DESTDIR)$(BINDIR)/timerlat || rm $(DESTDIR)$(BINDIR)/timerlat
+-	ln -s rtla $(DESTDIR)$(BINDIR)/timerlat
 +CFLAGS		+= $(INCLUDES) $(LIB_INCLUDES)
 +export CFLAGS	:= $(CFLAGS)
  
 -.PHONY: clean tarball
 -clean: doc_clean
--	@test ! -f rv || rm rv
+-	@test ! -f rtla || rm rtla
+-	@test ! -f rtla-static || rm rtla-static
+-	@test ! -f src/rtla.o || rm src/rtla.o
 -	@test ! -f $(TARBALL) || rm -f $(TARBALL)
 -	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
-+rv: rv-in.o
++rtla: rtla-in.o
 +	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $^ $(EXTLIBS)
  
 -tarball: clean
@@ -259,36 +295,36 @@ index 485f8aeddbe0..da16b7c4db0f 100644
 -	echo $(VERSION) > $(NAME)-$(VERSION)/VERSION
 -	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
 -	mkdir $(NAME)-$(VERSION)/Documentation/
--	cp -rp $(SRCTREE)/../../../Documentation/tools/rv/* $(NAME)-$(VERSION)/Documentation/
+-	cp -rp $(SRCTREE)/../../../Documentation/tools/rtla/* $(NAME)-$(VERSION)/Documentation/
 -	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
 -	rm -rf $(NAME)-$(VERSION)
-+static: rv-in.o
++static: rtla-in.o
 +	$(eval LDFLAGS += -static)
-+	$(QUIET_LINK)$(CC) $(LDFLAGS) -o rv-static $^ $(EXTLIBS)
++	$(QUIET_LINK)$(CC) -static $(LDFLAGS) -o rtla-static $^ $(EXTLIBS)
  
 -.PHONY: doc doc_clean doc_install
 -doc:
 -	$(MAKE) -C $(DOCSRC)
-+rv.%: fixdep FORCE
++rtla.%: fixdep FORCE
 +	make -f $(srctree)/tools/build/Makefile.build dir=. $@
  
 -doc_clean:
 -	$(MAKE) -C $(DOCSRC) clean
-+rv-in.o: fixdep FORCE
-+	make $(build)=rv
++rtla-in.o: fixdep FORCE
++	make $(build)=rtla
  
 -doc_install:
 -	$(MAKE) -C $(DOCSRC) install
 +clean: doc_clean fixdep-clean
-+	$(call QUIET_CLEAN, rv)
++	$(call QUIET_CLEAN, rtla)
 +	$(Q)find . -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete
-+	$(Q)rm -f rv rv-static FEATURE-DUMP rv-*
++	$(Q)rm -f rtla rtla-static FEATURE-DUMP rtla-*
 +.PHONY: FORCE clean
-diff --git a/tools/verification/rv/Makefile.config b/tools/verification/rv/Makefile.config
+diff --git a/tools/tracing/rtla/Makefile.config b/tools/tracing/rtla/Makefile.config
 new file mode 100644
 index 000000000000..5ab13af94bde
 --- /dev/null
-+++ b/tools/verification/rv/Makefile.config
++++ b/tools/tracing/rtla/Makefile.config
 @@ -0,0 +1,44 @@
 +STOP_ERROR :=
 +LIBTRACEEVENT_MIN_VERSION = 1.5
@@ -334,12 +370,12 @@ index 000000000000..5ab13af94bde
 +ifeq ($(STOP_ERROR),1)
 +  $(error Please, check the errors above.)
 +endif
-diff --git a/tools/verification/rv/Makefile.rv b/tools/verification/rv/Makefile.rv
+diff --git a/tools/tracing/rtla/Makefile.rtla b/tools/tracing/rtla/Makefile.rtla
 new file mode 100644
-index 000000000000..805e4e8f5772
+index 000000000000..87223ec68b64
 --- /dev/null
-+++ b/tools/verification/rv/Makefile.rv
-@@ -0,0 +1,49 @@
++++ b/tools/tracing/rtla/Makefile.rtla
+@@ -0,0 +1,77 @@
 +define allow-override
 +  $(if $(or $(findstring environment,$(origin $(1))),\
 +            $(findstring command line,$(origin $(1)))),,\
@@ -361,14 +397,15 @@ index 000000000000..805e4e8f5772
 +		-Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
 +
 +ifeq ($(CC),clang)
-+  FOPTS	:=	$(filter-out -flto=auto -ffat-lto-objects, $(FOPTS))
-+  WOPTS	:=	$(filter-out -Wno-maybe-uninitialized, $(WOPTS))
++  FOPTS :=	$(filter-out -flto=auto -ffat-lto-objects, $(FOPTS))
++  WOPTS :=	$(filter-out -Wno-maybe-uninitialized, $(WOPTS))
 +endif
 +
-+INCLUDE	:=	-Iinclude/
-+CFLAGS	:=	-g -DVERSION=\"$(VERSION)\" $(FOPTS) $(WOPTS) $(EXTRA_CFLAGS) $(INCLUDE)
-+LDFLAGS	:=	-ggdb $(EXTRA_LDFLAGS)
++CFLAGS	:=	-g -DVERSION=\"$(VERSION)\" $(FOPTS) $(WOPTS) $(CFLAGS)
++LDFLAGS	:=	-ggdb $(LDFLAGS)
 +
++RM	=	rm -rf
++LN	=	ln -s
 +INSTALL	=	install
 +MKDIR	=	mkdir
 +STRIP	=	strip
@@ -377,8 +414,14 @@ index 000000000000..805e4e8f5772
 +.PHONY: install
 +install: doc_install
 +	@$(MKDIR) -p $(DESTDIR)$(BINDIR)
-+	$(call QUIET_INSTALL,rv)$(INSTALL) rv -m 755 $(DESTDIR)$(BINDIR)
-+	@$(STRIP) $(DESTDIR)$(BINDIR)/rv
++	$(call QUIET_INSTALL,rtla)$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
++	@$(STRIP) $(DESTDIR)$(BINDIR)/rtla
++	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || $(RM) $(DESTDIR)$(BINDIR)/osnoise
++	@$(LN) rtla $(DESTDIR)$(BINDIR)/osnoise
++	@test ! -f $(DESTDIR)$(BINDIR)/hwnoise || $(RM) $(DESTDIR)$(BINDIR)/hwnoise
++	@$(LN) -s rtla $(DESTDIR)$(BINDIR)/hwnoise
++	@test ! -f $(DESTDIR)$(BINDIR)/timerlat || $(RM) $(DESTDIR)$(BINDIR)/timerlat
++	@$(LN) -s rtla $(DESTDIR)$(BINDIR)/timerlat
 +
 +.PHONY: doc doc_clean doc_install
 +doc:
@@ -389,16 +432,74 @@ index 000000000000..805e4e8f5772
 +
 +doc_install:
 +	$(MAKE) -C $(DOCSRC) install
-diff --git a/tools/verification/rv/src/Build b/tools/verification/rv/src/Build
++
++# This section is neesary for the tarball, when the tarball
++# support is removed, we can delete these entries.
++NAME	:=	rtla
++DIRS	:=	src
++FILES	:=	Makefile README.txt
++CEXT	:=	bz2
++TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
++TAROPTS	:=	-cvjf $(TARBALL)
++SRCTREE	:=	$(or $(BUILD_SRC),$(CURDIR))
++
++tarball: clean
++	$(RM) $(NAME)-$(VERSION) && $(MKDIR) $(NAME)-$(VERSION)
++	echo $(VERSION) > $(NAME)-$(VERSION)/VERSION
++	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
++	$(MKDIR) $(NAME)-$(VERSION)/Documentation/
++	cp -rp $(SRCTREE)/../../../Documentation/tools/$(NAME)/* $(NAME)-$(VERSION)/Documentation/
++	cp Makefile.standalone $(NAME)-$(VERSION)/Makefile
++	cp Makefile.$(NAME) $(NAME)-$(VERSION)/
++	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
++	$(RM) $(NAME)-$(VERSION)
+diff --git a/tools/tracing/rtla/Makefile.standalone b/tools/tracing/rtla/Makefile.standalone
 new file mode 100644
-index 000000000000..d781983c1a79
+index 000000000000..51c6cf79cb46
 --- /dev/null
-+++ b/tools/verification/rv/src/Build
-@@ -0,0 +1,4 @@
-+rv-y += trace.o
-+rv-y += utils.o
-+rv-y += in_kernel.o
-+rv-y += rv.o
++++ b/tools/tracing/rtla/Makefile.standalone
+@@ -0,0 +1,24 @@
++VERSION		:= $(shell cat VERSION)
++CFLAGS		+= $$($(PKG_CONFIG) --cflags libtracefs)
++EXTLIBS		+= $$($(PKG_CONFIG) --libs libtracefs)
++
++rtla:
++
++include Makefile.rtla
++
++SRC		:= $(wildcard src/*.c)
++HDR		:= $(wildcard src/*.h)
++OBJ		:= $(SRC:.c=.o)
++DOCSRC		:= Documentation/
++
++rtla: $(OBJ)
++	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS) $(EXTLIBS)
++	$(info This is a deprecated method to compile RTLA, please compile from Linux kernel source)
++
++.PHONY: clean tarball
++clean: doc_clean
++	@test ! -f rtla || rm rtla
++	@test ! -f rtla-static || rm rtla-static
++	@test ! -f src/rtla.o || rm src/rtla.o
++	@test ! -f $(TARBALL) || rm -f $(TARBALL)
++	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
+diff --git a/tools/tracing/rtla/src/Build b/tools/tracing/rtla/src/Build
+new file mode 100644
+index 000000000000..dbed9e31829b
+--- /dev/null
++++ b/tools/tracing/rtla/src/Build
+@@ -0,0 +1,11 @@
++rtla-y += trace.o
++rtla-y += utils.o
++rtla-y += osnoise.o
++rtla-y += osnoise_top.o
++rtla-y += osnoise_hist.o
++rtla-y += timerlat.o
++rtla-y += timerlat_top.o
++rtla-y += timerlat_hist.o
++rtla-y += timerlat_u.o
++rtla-y += timerlat_aa.o
++rtla-y += rtla.o
 -- 
 2.44.0
 
