@@ -1,239 +1,215 @@
-Return-Path: <linux-kernel+bounces-96809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41938761B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:15:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5F7A8761BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:16:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BC561F233A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:15:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98DC4281A9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7DE53E3C;
-	Fri,  8 Mar 2024 10:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD63953E1A;
+	Fri,  8 Mar 2024 10:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PcPgGZ61"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="aerF9VBM"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947125381E;
-	Fri,  8 Mar 2024 10:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DFC2CCB3;
+	Fri,  8 Mar 2024 10:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709892929; cv=none; b=eYHhfojmK4K1c1J0k99/IQZC4BgODhvVoQNc8MfSLOJ1ca3H1np5LgwcWZ5eFMXNK9jO596o9oxISii+Nob62yYT0VeRTwoIuCCnHtNWoVkV04RhHTeVulSm+8/CkwU1119euPLcjWoZ9tE+J/HZfmjUMfPV6aiQjuJaEEkHkJI=
+	t=1709892980; cv=none; b=VUkjZsygmCwVcYde4wm9xWqVj82UFccQTsewiw70BmumG5WDDTLRtAOaor+GFGWe+z9rWKNrcUIBcxZhbwEgrzArBWKT1FH5IUkob2BPteXhThUuBg60gJDrTXpgaHI/nTT0IPvuF37BrIhjA8gda1pTUMgdFT4H122vHbhSzgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709892929; c=relaxed/simple;
-	bh=3VnK8HwzGKlhdlzy8zBy5yNylnxU0bOWUgzxnz9BpWQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i6VxE5XREaKVwXPQa+vX/UR1fR3/RU+Ma85IHE8gF+g/d7C8Tm+M7LbeRl6A42U4dx5CCKEWJNp3c2LKiBJ5QPqa0/T5ECJHsfI5NUdSZeD8dxq3TDdMpAdv4nwe+QRf0YUXbXXqSIfyo3GZNanbYiPhdzgbesxfddTBniDw9m8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PcPgGZ61; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5FEAC433C7;
-	Fri,  8 Mar 2024 10:15:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709892929;
-	bh=3VnK8HwzGKlhdlzy8zBy5yNylnxU0bOWUgzxnz9BpWQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PcPgGZ61XofzoXSOrb2StQfomCdKNnezFOua1NzXQch+/bttQJWNWJS5pYZ2gWz6E
-	 +aV21XDUp1gFU4xf5/fVl2vAcRwflntjBDo7/Wq1+/4viSyd6L/tJ2anIdLy7E82sz
-	 JY8/PpBvk9T7RwEPOGhL5r3oPmUaki/YA1ER2jW3nHN0Oo47S1yPHFNTmB5pl+LKQV
-	 BHM6djbOWlxtgJbEcNBOK6v+26YasWp3Z1OlsnpO16WnBOlnpmaK3nWU6+xoH1Viky
-	 e7BPqcCvswhmhuWRiwStGi+RUbL4EccmdEoKiA1f9pwwMRIqPJGLILeYmVo/8pcgoE
-	 n0yZbWbpVTf2A==
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] vfs filelock
-Date: Fri,  8 Mar 2024 11:15:17 +0100
-Message-ID: <20240308-vfs-filelock-5711cd242ea9@brauner>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709892980; c=relaxed/simple;
+	bh=Q8cQjBrAEx7ffkcBZwFyj+7ctJtXOoVmf2a9mz1sm6U=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AfmFmcTDFHkgCBEZ644f4Fuxf2kFV4aCsVLQe/JqAdH2tHQ9WX+3foTXPu8BK4xoeqa4hCMOjevgVUWH03W7Hi2AoZEV0omzcj3u2OfTIDHjTK3dfndl7xFxwUXH19Vs/wIYigw0Y41mE79myQLrhpPDAByGGC8r4DyS+Mj/eq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=aerF9VBM; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709892978; x=1741428978;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Q8cQjBrAEx7ffkcBZwFyj+7ctJtXOoVmf2a9mz1sm6U=;
+  b=aerF9VBMCuHlcJnQ9yrfR1g3Y+jOh49mr9OF+O3HD19dAsrLOJS2lOBH
+   Dw8N6NsO/JBdUvAuHP4AqivSNnCSHzuLA2pFtokuMof7HORWdestW/Qyj
+   OwH42FZ0rJcBxpjd4ON0y78Pyl8LsdSCq1QHlh3C4DGGZ/2b+dDfxa/ve
+   3VSaalp6wlroo84UbNTdE9uCnOWeg2icYSztDhDu5kENVQapxs1Pgm4Z8
+   8fz4I3/vWFwpSinagIGIznLAhig+hW9M7UB8piVjsHABP9QvHc98aaR6f
+   AEPJXlTeyvWTodYVbIEv1VQ8CI/TZDQWwHE1+K/2212YZUlCwYJRaQh1R
+   A==;
+X-CSE-ConnectionGUID: GYN+Phv8SneCqTAifiO+dQ==
+X-CSE-MsgGUID: A8+JuFB9QEC81NKv8EN3gA==
+X-IronPort-AV: E=Sophos;i="6.07,109,1708412400"; 
+   d="asc'?scan'208";a="248162359"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Mar 2024 03:16:10 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Mar 2024 03:16:05 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 8 Mar 2024 03:16:02 -0700
+Date: Fri, 8 Mar 2024 10:15:18 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: <Varshini.Rajendran@microchip.com>
+CC: <claudiu.beznea@tuxon.dev>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<tglx@linutronix.de>, <Nicolas.Ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <andre.przywara@arm.com>, <mani@kernel.org>,
+	<shawnguo@kernel.org>, <Durai.ManickamKR@microchip.com>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 29/39] irqchip/atmel-aic5: Add support to get nirqs
+ from DT for sam9x60 & sam9x7
+Message-ID: <20240308-reissue-badass-9f8883b4e2e6@wendy>
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+ <20240223172905.673053-1-varshini.rajendran@microchip.com>
+ <f1f9c53f-b11a-4fe1-9541-356ea75e883c@tuxon.dev>
+ <ba7a59ae-d377-4514-89e7-86991420507c@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7941; i=brauner@kernel.org; h=from:subject:message-id; bh=3VnK8HwzGKlhdlzy8zBy5yNylnxU0bOWUgzxnz9BpWQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaS+emohzr26f/FRho4X+k4BK1e+vc0g/E8mRcS5xneZc d2aDx0TOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACais5Thr+jiAIuTL/TkAneE L7f9vDRy1pOPrbN9P5s4X1Ph3bfGRZfhf2n8zGN30j9qi3CsmXP4+OOMefZh5oVlkuLaxy8Ee76 ZwAUA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/QFzMk5rsZSajjp0"
+Content-Disposition: inline
+In-Reply-To: <ba7a59ae-d377-4514-89e7-86991420507c@microchip.com>
 
-Hey Linus,
+--/QFzMk5rsZSajjp0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-/* Summary */
-A few years ago struct file_lock_context was added to allow for separate
-lists to track different types of file locks instead of using a
-singly-linked list for all of them.
+On Fri, Mar 08, 2024 at 08:50:43AM +0000, Varshini.Rajendran@microchip.com =
+wrote:
+> On 03/03/24 5:51 pm, claudiu beznea wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
+the content is safe
+> >=20
+> > On 23.02.2024 19:29, Varshini Rajendran wrote:
+> >> Add support to get number of IRQs from the respective DT node for sam9=
+x60
+> >> and sam9x7 devices. Since only this factor differs between the two SoC=
+s,
+> >> this patch adds support for the same. Adapt the sam9x60 dtsi
+> >> accordingly.
+> >>
+> >> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+> >> ---
+> >> Changes in v4:
+> >> - Changed the implementation to fetch the NIRQs from DT as per the
+> >>    comment to avoid introducing a new compatible when this is the only
+> >>    difference between the SoCs related to this IP.
+> >> ---
+> >>   arch/arm/boot/dts/microchip/sam9x60.dtsi |  1 +
+> >>   drivers/irqchip/irq-atmel-aic5.c         | 11 ++++++++---
 
-Now leases no longer need to be tracked using struct file_lock. However,
-a lot of the infrastructure is identical for leases and locks so
-separating them isn't trivial.
+Driver and binding changes should be in different patches. Having them
+in the same patch is usually a red flag for ABI breakage.
 
-This pull request splits a group of fields used by both file locks and
-leases into a new struct file_lock_core. The new core struct is embedded
-in struct file_lock. Coccinelle was used to convert a lot of the callers
-to deal with the move, with the remaining 25% or so converted by hand.
+> >>   2 files changed, 9 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/arch/arm/boot/dts/microchip/sam9x60.dtsi b/arch/arm/boot/=
+dts/microchip/sam9x60.dtsi
+> >> index 73d570a17269..e405f68c9f54 100644
+> >> --- a/arch/arm/boot/dts/microchip/sam9x60.dtsi
+> >> +++ b/arch/arm/boot/dts/microchip/sam9x60.dtsi
+> >> @@ -1201,6 +1201,7 @@ aic: interrupt-controller@fffff100 {
+> >>                                interrupt-controller;
+> >>                                reg =3D <0xfffff100 0x100>;
+> >>                                atmel,external-irqs =3D <31>;
+> >> +                             microchip,nr-irqs =3D <50>;
+> >>                        };
+> >>
+> >>                        dbgu: serial@fffff200 {
+> >> diff --git a/drivers/irqchip/irq-atmel-aic5.c b/drivers/irqchip/irq-at=
+mel-aic5.c
+> >> index 145535bd7560..5d96ad8860d3 100644
+> >> --- a/drivers/irqchip/irq-atmel-aic5.c
+> >> +++ b/drivers/irqchip/irq-atmel-aic5.c
+> >> @@ -398,11 +398,16 @@ static int __init sama5d4_aic5_of_init(struct de=
+vice_node *node,
+> >>   }
+> >>   IRQCHIP_DECLARE(sama5d4_aic5, "atmel,sama5d4-aic", sama5d4_aic5_of_i=
+nit);
+> >>
+> >> -#define NR_SAM9X60_IRQS              50
+> >> -
+> >>   static int __init sam9x60_aic5_of_init(struct device_node *node,
+> >>                                       struct device_node *parent)
+> >>   {
+> >> -     return aic5_of_init(node, parent, NR_SAM9X60_IRQS);
+> >> +     int ret, nr_irqs;
+> >> +
+> >> +     ret =3D of_property_read_u32(node, "microchip,nr-irqs", &nr_irqs=
+);
+> >> +     if (ret) {
+> >> +             pr_err("Not found microchip,nr-irqs property\n");
+> >=20
+> > This breaks the ABI. You should ensure old device trees are still worki=
+ng
+> > with this patch.
+>=20
+> The only older device that uses this API is sam9x60 and the newly added=
+=20
+> sam9x7. This change has been tested to be working fine in both the=20
+> devices.
 
-Afterwards several internal functions in fs/locks.c are made to work
-with struct file_lock_core. Ultimately this allows to split struct
-file_lock into struct file_lock and struct file_lease. The file lease
-APIs are then converted to take struct file_lease.
+Does it still work for a sam9x60 that does not have "microchip,nr-irqs"?
+I can't see how it would, because you remove the define and return an
+error. That's a pretty clear ABI breakage to me and I don't think it is
+justified.
 
-/* Testing */
-clang: Debian clang version 16.0.6 (19)
-gcc: (Debian 13.2.0-7) 13.2.0
+> If you still want me to use the macros as a fallback in the=20
+> failure case I can do it. But this change was proposed to avoid adding=20
+> macros in the first place. I can remove the error check just like they=20
+> do while getting other device tree properties. Or if this is just a=20
+> concern of the old devices working with the new change, then sam9x60=20
+> works. Please let me know how to proceed.
 
-All patches are based on v6.8-rc1 and have been sitting in linux-next.
-No build failures or warnings were observed.
+I just noticed that this property is not documented in a binding. The
+first thing you would will be asked when trying to add that is "why can
+this not be determined based on the compatible", which means back to
+having a define in the driver.
+That said, having specific $soc_aic5_of_init() functions for each SoC
+seems silly when usually only the number of interrupts changes. The
+number of IRQs could be in the match data and you could use
+aic5_of_init in your IRQCHIP_DECLARE directly.
 
-/* Conflicts */
+> >> +             return ret;
+> >> +     }
+> >> +     return aic5_of_init(node, parent, nr_irqs);
+> >>   }
+> >>   IRQCHIP_DECLARE(sam9x60_aic5, "microchip,sam9x60-aic", sam9x60_aic5_=
+of_init);
+>=20
+> --=20
+> Thanks and Regards,
+> Varshini Rajendran.
+>=20
 
-Merge conflicts with other trees
-================================
+--/QFzMk5rsZSajjp0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[1] linux-next: manual merge of the vfs-brauner tree with the nfsd tree
-    https://lore.kernel.org/linux-next/20240207114118.23541d8c@canb.auug.org.au
+-----BEGIN PGP SIGNATURE-----
 
-[2] linux-next: manual merge of the vfs-brauner tree with the cifs tree
-    https://lore.kernel.org/linux-next/20240208095906.18567844@canb.auug.org.au
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZerlKQAKCRB4tDGHoIJi
+0pT9AQD3Y7yDIjab/erLnSk3oz54G8s2/Z1B0YCajxnyEsOP3wEApgIrOU1U1kkV
+5w39xuPTAXOMj04cpNxFVJM+dJ9rowc=
+=stem
+-----END PGP SIGNATURE-----
 
-[3] linux-next: build failure after merge of the vfs-brauner tree
-    https://lore.kernel.org/linux-next/20240219104450.4d258995@canb.auug.org.au
-
-[4] linux-next: manual merge of the vfs-brauner tree with the fuse tree
-    https://lore.kernel.org/linux-next/20240307102332.6793fbc7@canb.auug.org.au
-
-Merge conflicts with mainline
-=============================
-
-No known conflicts.
-
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9.file
-
-for you to fetch changes up to 14786d949a3b8cf00cc32456363b7db22894a0e6:
-
-  filelock: fix deadlock detection in POSIX locking (2024-02-20 09:53:33 +0100)
-
-Please consider pulling these changes from the signed vfs-6.9.file tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-vfs-6.9.file
-
-----------------------------------------------------------------
-Christian Brauner (1):
-      Merge series 'filelock: split file leases out of struct file_lock' of https://lore.kernel.org/r/20240131-flsplit-v3-0-c6129007ee8d@kernel.org
-
-Jeff Layton (50):
-      filelock: fl_pid field should be signed int
-      filelock: rename some fields in tracepoints
-      filelock: rename fl_pid variable in lock_get_status
-      filelock: add some new helper functions
-      9p: rename fl_type variable in v9fs_file_do_lock
-      afs: convert to using new filelock helpers
-      ceph: convert to using new filelock helpers
-      dlm: convert to using new filelock helpers
-      gfs2: convert to using new filelock helpers
-      lockd: convert to using new filelock helpers
-      nfs: convert to using new filelock helpers
-      nfsd: convert to using new filelock helpers
-      ocfs2: convert to using new filelock helpers
-      smb/client: convert to using new filelock helpers
-      smb/server: convert to using new filelock helpers
-      filelock: drop the IS_* macros
-      filelock: split common fields into struct file_lock_core
-      filelock: have fs/locks.c deal with file_lock_core directly
-      filelock: convert more internal functions to use file_lock_core
-      filelock: make posix_same_owner take file_lock_core pointers
-      filelock: convert posix_owner_key to take file_lock_core arg
-      filelock: make locks_{insert,delete}_global_locks take file_lock_core arg
-      filelock: convert locks_{insert,delete}_global_blocked
-      filelock: make __locks_delete_block and __locks_wake_up_blocks take file_lock_core
-      filelock: convert __locks_insert_block, conflict and deadlock checks to use file_lock_core
-      filelock: convert fl_blocker to file_lock_core
-      filelock: clean up locks_delete_block internals
-      filelock: reorganize locks_delete_block and __locks_insert_block
-      filelock: make assign_type helper take a file_lock_core pointer
-      filelock: convert locks_wake_up_blocks to take a file_lock_core pointer
-      filelock: convert locks_insert_lock_ctx and locks_delete_lock_ctx
-      filelock: convert locks_translate_pid to take file_lock_core
-      filelock: convert seqfile handling to use file_lock_core
-      9p: adapt to breakup of struct file_lock
-      afs: adapt to breakup of struct file_lock
-      ceph: adapt to breakup of struct file_lock
-      dlm: adapt to breakup of struct file_lock
-      gfs2: adapt to breakup of struct file_lock
-      fuse: adapt to breakup of struct file_lock
-      lockd: adapt to breakup of struct file_lock
-      nfs: adapt to breakup of struct file_lock
-      nfsd: adapt to breakup of struct file_lock
-      ocfs2: adapt to breakup of struct file_lock
-      smb/client: adapt to breakup of struct file_lock
-      smb/server: adapt to breakup of struct file_lock
-      filelock: remove temporary compatibility macros
-      filelock: split leases out of struct file_lock
-      filelock: don't do security checks on nfsd setlease calls
-      filelock: always define for_each_file_lock()
-      filelock: fix deadlock detection in POSIX locking
-
-NeilBrown (1):
-      smb: remove redundant check
-
- fs/9p/vfs_file.c                |  40 +-
- fs/afs/flock.c                  |  60 +--
- fs/ceph/locks.c                 |  74 ++--
- fs/dlm/plock.c                  |  44 +-
- fs/fuse/file.c                  |  14 +-
- fs/gfs2/file.c                  |  16 +-
- fs/libfs.c                      |   2 +-
- fs/lockd/clnt4xdr.c             |  14 +-
- fs/lockd/clntlock.c             |   2 +-
- fs/lockd/clntproc.c             |  65 +--
- fs/lockd/clntxdr.c              |  14 +-
- fs/lockd/svc4proc.c             |  10 +-
- fs/lockd/svclock.c              |  64 +--
- fs/lockd/svcproc.c              |  10 +-
- fs/lockd/svcsubs.c              |  24 +-
- fs/lockd/xdr.c                  |  14 +-
- fs/lockd/xdr4.c                 |  14 +-
- fs/locks.c                      | 894 ++++++++++++++++++++++------------------
- fs/nfs/delegation.c             |   4 +-
- fs/nfs/file.c                   |  22 +-
- fs/nfs/nfs3proc.c               |   2 +-
- fs/nfs/nfs4_fs.h                |   2 +-
- fs/nfs/nfs4file.c               |   2 +-
- fs/nfs/nfs4proc.c               |  39 +-
- fs/nfs/nfs4state.c              |  22 +-
- fs/nfs/nfs4trace.h              |   4 +-
- fs/nfs/nfs4xdr.c                |   8 +-
- fs/nfs/write.c                  |   8 +-
- fs/nfsd/filecache.c             |   4 +-
- fs/nfsd/nfs4callback.c          |   2 +-
- fs/nfsd/nfs4layouts.c           |  35 +-
- fs/nfsd/nfs4state.c             | 124 +++---
- fs/ocfs2/locks.c                |  12 +-
- fs/ocfs2/stack_user.c           |   2 +-
- fs/open.c                       |   2 +-
- fs/posix_acl.c                  |   4 +-
- fs/smb/client/cifsfs.c          |   5 +-
- fs/smb/client/cifssmb.c         |   8 +-
- fs/smb/client/file.c            |  78 ++--
- fs/smb/client/smb2file.c        |   2 +-
- fs/smb/server/smb2pdu.c         |  44 +-
- fs/smb/server/vfs.c             |  14 +-
- include/linux/filelock.h        | 129 ++++--
- include/linux/fs.h              |   5 +-
- include/linux/lockd/lockd.h     |   8 +-
- include/linux/lockd/xdr.h       |   2 +-
- include/trace/events/afs.h      |   4 +-
- include/trace/events/filelock.h | 102 ++---
- 48 files changed, 1117 insertions(+), 957 deletions(-)
+--/QFzMk5rsZSajjp0--
 
