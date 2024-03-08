@@ -1,138 +1,128 @@
-Return-Path: <linux-kernel+bounces-96394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9C5F875B91
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:42:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3E4C875B99
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 668ACB21C8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:42:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F39FD1C20FF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFFC6AD9;
-	Fri,  8 Mar 2024 00:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE20B648;
+	Fri,  8 Mar 2024 00:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PVAxHzf+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=huaqin-corp-partner-google-com.20230601.gappssmtp.com header.i=@huaqin-corp-partner-google-com.20230601.gappssmtp.com header.b="nJEX4FqH"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C8A333DF
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 00:42:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3288C6AC0
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 00:48:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709858561; cv=none; b=e/eLmuLSTdSDTpddXFupUCa0UYkD+cDAGMLFJEQo7/mCnQBtFUFA1ObvqZ7VYt5s/7nZvSL7DhwGenRw8itzPgs2uVQ8eqbVEsGagHhqCvXCAFn0UFFeP+4CVSxYGeFqxS/fcc9tgkKHKG7L66YU8YjH8pMdMWJiMb34SSsWa58=
+	t=1709858894; cv=none; b=rFNiQQLhHBsNcYLJyexiY4vF1Oo4VLJwlZz9cv741D+9aoY6a5KVqLMknrSVotM1ulJeG0im3vv5Fs7Dw/xJLDB3D9q1Y8acBo8nqd+FA/3G8UCbIO3VULukvFFOdF3mwpXpgng/Hi7s7CL41kEsciS9ecWya1XyL9PvUpmfDR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709858561; c=relaxed/simple;
-	bh=GpY9dw+ustLRfoL+aEbC4Nk0SbRKW1jvdATueqqLNU4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SsNzEX5meYwQHVCOyty54bbW/Dv+tOs9gsp6/1q4TxXjayxoZVKneYRErAiXLTta9KO/UNYCxY4EQTq2RxSb13Klydr++rMNnMzu/aTNMI4UfDLe9Tl0eVovAf6nAqwgJsnzfjbMHTMFfVN1ZKCrkiVUCY6JpmrKongIyuZVn6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PVAxHzf+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75977C433C7;
-	Fri,  8 Mar 2024 00:42:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709858560;
-	bh=GpY9dw+ustLRfoL+aEbC4Nk0SbRKW1jvdATueqqLNU4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=PVAxHzf+LqtwpIC2hN6Ji430+hk8drUgIDwrd2ZarG7v/0R7FqwbPyXaYkys2SVHd
-	 2lJV3VFkrrVCwa2ZQvklFmR08cJRUzXO0c4CYSM5Fyegb6fJT35Q+JUIrSktJR/d6v
-	 AhDaB/OL3HGPdvyOOJBNg62xio9WWO113CYb/kmJcoqM8QmLaUURdFGm1B50neeg6y
-	 z6lFNayNqEyEpRCSmmITfzbaxYooUbWWTgFzVu4/cTmPlbBGAR8jsqQlURoJ28Gpej
-	 zM8AsGYIyofcbNf2tDJNH+mbkJomumHwrZ8tXhr0VgX6F+09RI78398NcjKkEodtbq
-	 agIZwXlWBHOQg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1D7B2CE0716; Thu,  7 Mar 2024 16:42:40 -0800 (PST)
-Date: Thu, 7 Mar 2024 16:42:40 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
-	andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
-	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
-	mattst88@gmail.com, krypton@ulrich-teichert.org,
-	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
-	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
-	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com
-Subject: Re: [PATCH 26/30] sched: handle preempt=voluntary under PREEMPT_AUTO
-Message-ID: <6054a8e0-eb95-45a3-9901-fe2a31b6fe4e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-27-ankur.a.arora@oracle.com>
- <65e3cd87.050a0220.bc052.7a29@mx.google.com>
- <87frx514jz.fsf@oracle.com>
- <12a20651-5429-43df-88d7-9d01ff6212c6@joelfernandes.org>
- <63380f0a-329c-43df-8e6c-4818de5eb371@paulmck-laptop>
- <d956c2e9-492d-4559-b9f9-400f37f523bf@joelfernandes.org>
+	s=arc-20240116; t=1709858894; c=relaxed/simple;
+	bh=x7i795oc4v+t1eVSTstgC0hgt1XNgHMNLBknwKT8gn0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z+84MmYfnIwz9e45JdUNsyg3T/SKGkvv+f3dz+ZJWmohJN3RUPCxv0urLnd4tC3S/qhU8X5jweT6tXtlQ+5+DgOusC+687l8lVSF83uG1zdH+3++NZgL2RAwLapJcGnRUw+V3cBgXh9vcaqqmXmumGnJ1E5IzX6MhUi03Iadu48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com; dkim=pass (2048-bit key) header.d=huaqin-corp-partner-google-com.20230601.gappssmtp.com header.i=@huaqin-corp-partner-google-com.20230601.gappssmtp.com header.b=nJEX4FqH; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d944e8f367so13139855ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 16:48:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1709858890; x=1710463690; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cRm8D61etT1wEE9ZqTXPR465tYE154OjnBr2zkyvLfY=;
+        b=nJEX4FqHrGjltlxLD73vtmkl0M3EHI+vCIf9xQi9a7zNkf7mMpuncQisYybtaA4M2e
+         liyiPN+1QbaQ5Ujiyd4yhXiRBJZ6sctn9YzG0b53dGGkOqYsyIo3TKdo/SoVzCPAoDCY
+         wQTP5rOeoaPhedpr7HJ3QWNwF2sGtg/tiOD6vuVb50v7KkGX0Oowy6jUcFWfUYikHNVC
+         gjSF6DZD3haaEgGe0gilWykHKhaCI5OmvPG757uas2plUTe+/nUyiiQ7Bt3wTIS8foKj
+         sUP0pHvGWz6pibdG+ABBXzKpn1b9B3+8+XEBoC6/jJD92k8X5kxGWM85dIYJ5el6+XoU
+         ZPAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709858890; x=1710463690;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cRm8D61etT1wEE9ZqTXPR465tYE154OjnBr2zkyvLfY=;
+        b=SjVyYdaXhb1esOa7AWGsFYHKWIIOy2mbM/kX9blvqnrhlbOLYNTnWBgn4yjAOpqdN5
+         ciehOWM4flA4sqXsdS6O/N7PtCU5FJEMWateWN1svuW9/b8l4gpFdJFZKG1bxbgIQ9AG
+         PGjLjdQ+reC/39XNNvcGrK5boVTnCdco9TmbTH0BhprL1ge8oce2nX+O+Sq79mohqVd+
+         3TVoorop2EKHZN0iqTl5h7v8GriWdPjMklLrA/G/IbBsOauMekisQ8I/sG0VpJkrw3L1
+         Jjnu4XhthNoGZ9mPb24QX+B9KFY58hVSHD7Vb+dTsLs2ExJpteTQoLyn7CZtZmleeie+
+         Vl3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXtK6iCkXhD/JLs+EypQDxpd53bXhzFVoHJdICYaDYMEVc3EvALp4Y2+e9A5kZf/lOWZHGTPfZ9/bIkRslqgO61kh089kPxhpFDzNtg
+X-Gm-Message-State: AOJu0YzWA19IwbL3baB+NELG2nToR+OnxI1X+eOmtUlOsTV5LFVKtTod
+	HwFrNZ1fuHxtflTT9KFPyDx9BScrokPy80Zx2UnCiKxgDOyqvOJlwPbSiGPWeeM=
+X-Google-Smtp-Source: AGHT+IENi1OtAYtCq66iswHj76HX1V9umjMChq2vno/A5VuNp8Xeqzs/a0D0DwP3R6xNOwINfRfFcg==
+X-Received: by 2002:a17:902:f705:b0:1dc:a844:a38b with SMTP id h5-20020a170902f70500b001dca844a38bmr10788072plo.67.1709858890503;
+        Thu, 07 Mar 2024 16:48:10 -0800 (PST)
+Received: from xu.huaqin.com ([116.66.212.162])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170902c38c00b001dc819f157dsm15233055plg.251.2024.03.07.16.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 16:48:10 -0800 (PST)
+From: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+To: sam@ravnborg.org,
+	neil.armstrong@linaro.org,
+	daniel@ffwll.ch,
+	dianders@google.com,
+	hsinyi@google.com
+Cc: dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>,
+	Douglas Anderson <dianders@chromium.org>
+Subject: [V2] drm/panel-edp: Add BOE NT116WHM-N44 and CMN N116BCA-EA1
+Date: Fri,  8 Mar 2024 08:47:57 +0800
+Message-Id: <20240308004757.1048284-1-xuxinxiong@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d956c2e9-492d-4559-b9f9-400f37f523bf@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 07, 2024 at 07:15:35PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 3/7/2024 2:01 PM, Paul E. McKenney wrote:
-> > On Wed, Mar 06, 2024 at 03:42:10PM -0500, Joel Fernandes wrote:
-> >> Hi Ankur,
-> >>
-> >> On 3/5/2024 3:11 AM, Ankur Arora wrote:
-> >>>
-> >>> Joel Fernandes <joel@joelfernandes.org> writes:
-> >>>
-> >> [..]
-> >>>> IMO, just kill 'voluntary' if PREEMPT_AUTO is enabled. There is no
-> >>>> 'voluntary' business because
-> >>>> 1. The behavior vs =none is to allow higher scheduling class to preempt, it
-> >>>> is not about the old voluntary.
-> >>>
-> >>> What do you think about folding the higher scheduling class preemption logic
-> >>> into preempt=none? As Juri pointed out, prioritization of at least the leftmost
-> >>> deadline task needs to be done for correctness.
-> >>>
-> >>> (That'll get rid of the current preempt=voluntary model, at least until
-> >>> there's a separate use for it.)
-> >>
-> >> Yes I am all in support for that. Its less confusing for the user as well, and
-> >> scheduling higher priority class at the next tick for preempt=none sounds good
-> >> to me. That is still an improvement for folks using SCHED_DEADLINE for whatever
-> >> reason, with a vanilla CONFIG_PREEMPT_NONE=y kernel. :-P. If we want a new mode
-> >> that is more aggressive, it could be added in the future.
-> > 
-> > This would be something that happens only after removing cond_resched()
-> > might_sleep() functionality from might_sleep(), correct?
-> 
-> Firstly, Maybe I misunderstood Ankur completely. Re-reading his comments above,
-> he seems to be suggesting preempting instantly for higher scheduling CLASSES
-> even for preempt=none mode, without having to wait till the next
-> scheduling-clock interrupt. Not sure if that makes sense to me, I was asking not
-> to treat "higher class" any differently than "higher priority" for preempt=none.
-> 
-> And if SCHED_DEADLINE has a problem with that, then it already happens so with
-> CONFIG_PREEMPT_NONE=y kernels, so no need special treatment for higher class any
-> more than the treatment given to higher priority within same class. Ankur/Juri?
-> 
-> Re: cond_resched(), I did not follow you Paul, why does removing the proposed
-> preempt=voluntary mode (i.e. dropping this patch) have to happen only after
-> cond_resched()/might_sleep() modifications?
+Add support for the following 2 panels:
+1. BOE NT116WHM-N44
+2. CMN N116BCA-EA1
 
-Because right now, one large difference between CONFIG_PREEMPT_NONE
-an CONFIG_PREEMPT_VOLUNTARY is that for the latter might_sleep() is a
-preemption point, but not for the former.
+Signed-off-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-But if might_sleep() becomes debug-only, then there will no longer be
-this difference.
+---
+Changes in V2:
+  - Updated the subject of commit message.
+link to V1: https://patchwork.freedesktop.org/patch/msgid/20240307094433.3440431-1-xuxinxiong@huaqin.corp-partner.google.com
+---
+ drivers/gpu/drm/panel/panel-edp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-							Thanx, Paul
+diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
+index a0b6f69b916f..e21b4bb2bb3c 100644
+--- a/drivers/gpu/drm/panel/panel-edp.c
++++ b/drivers/gpu/drm/panel/panel-edp.c
+@@ -1952,6 +1952,7 @@ static const struct edp_panel_entry edp_panels[] = {
+ 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0b43, &delay_200_500_e200, "NV140FHM-T09"),
+ 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0b56, &delay_200_500_e80, "NT140FHM-N47"),
+ 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0c20, &delay_200_500_e80, "NT140FHM-N47"),
++	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0cb6, &delay_200_500_e200, "NT116WHM-N44"),
+ 
+ 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1132, &delay_200_500_e80_d50, "N116BGE-EA2"),
+ 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1138, &innolux_n116bca_ea1.delay, "N116BCA-EA1-RC4"),
+@@ -1963,6 +1964,7 @@ static const struct edp_panel_entry edp_panels[] = {
+ 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1154, &delay_200_500_e80_d50, "N116BCA-EA2"),
+ 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1157, &delay_200_500_e80_d50, "N116BGE-EA2"),
+ 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x115b, &delay_200_500_e80_d50, "N116BCN-EB1"),
++	EDP_PANEL_ENTRY('C', 'M', 'N', 0x115e, &delay_200_500_e80_d50, "N116BCA-EA1"),
+ 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1247, &delay_200_500_e80_d50, "N120ACA-EA1"),
+ 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x142b, &delay_200_500_e80_d50, "N140HCA-EAC"),
+ 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x144f, &delay_200_500_e80_d50, "N140HGA-EA1"),
+-- 
+2.40.1
+
 
