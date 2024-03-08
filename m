@@ -1,226 +1,249 @@
-Return-Path: <linux-kernel+bounces-97497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AE97876B0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:11:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91182876B12
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:13:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDFD61C20FF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:11:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0FB6B21901
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702F55916D;
-	Fri,  8 Mar 2024 19:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A3C45A0E9;
+	Fri,  8 Mar 2024 19:13:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="FeJ7rCBT"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2042.outbound.protection.outlook.com [40.107.20.42])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nHaE0xSO"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF8858AC5;
-	Fri,  8 Mar 2024 19:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709925108; cv=fail; b=QJ8h3lOE2kMkXpXr4eGfjf3A/CHlMaMcoLvMQC3ezMrrTu4Nq0G35J7UdrL/ZIakIJY9j1RbrZDbnd+onpIJ1KBVrDt2Xl3gurYNfBI6/7jaR2YxaW91TNImJr6Vuqp8JCDGVAOc3rqm3wanBXuPxR9HJI9zNxacXSDpFUvvukY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709925108; c=relaxed/simple;
-	bh=nbwIbRsHpjhVdgOu8mQxdHH5VpUoyegi2uGJz5NwBcw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=km0v351shnO34kJFdjmkX1WYgadC7ImJKNCVzE+JefDuLsh6vgsOdLwA2ti6YKkqolAHJHIAAJ41R8agy/E9ljjJYpvyXQ8HyOLul8qQu1G1ARFEdiy6pOU8Omhswr8sheP6VkruXxU8F9YiRkCKhDJw/eBB9P8xz/e6ywCYaSM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=FeJ7rCBT; arc=fail smtp.client-ip=40.107.20.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ec0/ApShpKE1UO21NMWBqPip91My7YJv0F6QOmPabZe/jtmlt8lttov7+jSPwS8AHDhQHI2JgygSJiAcrfrw4vgqKKzlUTPwDSCFJ7OdU8vWTrMZpmpr1pBq5xe9/ETT4tIFCN28HjA4EVjlYkQ9vZle8vYa+1VBWRF8S6+ZQ7ESHqPv9jb06ACA3Grq5NdPELNs7tPwPoLm9w/QREOUqNq/WP7xIbPoEvaiMjSmWdSCFmRKVAHK8JLcWsv70Nx5VYDl73Yc/ElJQ2c239rn9x+S9y4+TBMSM9vMZs/qyucM4miq+MM6DoJHQyndOjnQBEHj5TA2gXLSsbLAtGwyMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P/shYkFSPQCFmtRw8GMa2DZdUvaX3XK+N2FCFCD0FbI=;
- b=RJkQ6L1cF7w+uxYqYbYYn8JY5LWzNF6haZKPTbGXV2/X+l+AgsW3rRkJM1GhWOSu82a7gtd38zvfwYmCjDbD4BkJRwwaSHZEc45G0dWV83xr8aZOFDZuOfZWq10GpV8BXv6TXvCIYcANZwoqJ/Y4qGfFXSZD+sYp1l4NSvD6obbZlgwx9ecCFr91di/3O3yE2qTGOteIfG/z6v86fhNdFmoZys+29D5FpSILmwS2HMKs4tiS16zyEfTtcb8qpd6YgbDgiuSDMGMW/MMrKk618VTYpXbscgZ2axBLMVyE+3OKIV/dSvSCRZZztIq4y7g+YtYX5bOuHhy9G2MnTMoQPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P/shYkFSPQCFmtRw8GMa2DZdUvaX3XK+N2FCFCD0FbI=;
- b=FeJ7rCBT8gwelvoYbtZ75Vwoi6Yby1NETS/L5cUDVxe5PbbOlX3ZHeLMbdkqaQu1jY109Lr6NKs2mCGBQpsKiIyX4UvGsGKkapOwMhMN3IlCytPUfmcPw5qQxkkHpz8rz9dRg7xg62Nk6CsZGFVle8S4xcivvZ9STqX9xQHktnM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PAWPR04MB9742.eurprd04.prod.outlook.com (2603:10a6:102:389::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.26; Fri, 8 Mar
- 2024 19:11:43 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
- 19:11:42 +0000
-Date: Fri, 8 Mar 2024 14:11:34 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v6 2/4] ASoC: dt-bindings: fsl,imx-asrc: update max
- interrupt numbers
-Message-ID: <Zeti5mFUUh9UedAx@lizhi-Precision-Tower-5810>
-References: <20240308-asrc_8qxp-v6-0-e08f6d030e09@nxp.com>
- <20240308-asrc_8qxp-v6-2-e08f6d030e09@nxp.com>
- <20240308181103.GA855753-robh@kernel.org>
- <ZetgiaZ1+wt5lCkB@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZetgiaZ1+wt5lCkB@lizhi-Precision-Tower-5810>
-X-ClientProxiedBy: SJ0PR05CA0057.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::32) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B3A75646E;
+	Fri,  8 Mar 2024 19:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709925214; cv=none; b=cF3xvSKvA8WmleBollQyMhuhMh5wEy0cyqyANnkEhsDetsQbkfvRU4py8erKGQ+GvfRtQ6kK3ywXKz1/Alleo0jlbypPo3NgqbB80uSwnI8euUYKmnDrqlsfmK72BpE3pG8asnTEFAiPVZgZ+3Xbjrear7mmZ8lNrpOKmMpByXc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709925214; c=relaxed/simple;
+	bh=kwgPPbpvouyuDS8Eo3OIniBCtnmeLQU5eUCY8b6JMAk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=P8U5KQIZZ44f9jFFfDB2fi4eXcea6s6ppm8W9eoxqoB++JMYlWtN3VZXFc2sHbf5y7LcuC+UoJhoHjwvVFjj1xPTiPwTS6l165GECbEKO1J8n03VbIgtgRN8uMWFDyZj5M5QpBTsjbkrwctHcq8xTfhCbzFLzX+YdBFZ41taZQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nHaE0xSO; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 428EaM2C025654;
+	Fri, 8 Mar 2024 19:12:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=ug01h1H
+	XOZQ1AbxiHTbfVZmebe8pNNeRyUicWT59fLQ=; b=nHaE0xSOR9nJ89bmx7uJh0a
+	awlOwJTQANO2cjqHeKN7iEgUDgIMPruow/MPAerr4fRiNmlSeIE5FVmcx7/eB/32
+	Rgp8FPxmOZwHimdi5XbSF5e964JDoRunio0IZ/hJLUT58JzL3Ze6UGrdXCOz8Ok4
+	rncHhk71Vuep7FD04JKkbg4pMB7VO21ibxJDUk2VnxJx3clc2CJGdVgSzIW033Jy
+	x6xivxWq92wwAJqjM95foGb3crdd0hKpyR2srFv0c0SsGIUwIh6bhICHJSYj81Bj
+	qRpjWu0bzvrq3kRuRCn9Gflw2bwGw7hTnEW+vsgPGl7kPNpZRz6vyhTiMe+whxg=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wr1wj0yfa-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 19:12:30 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 428JCSGA030010
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 8 Mar 2024 19:12:28 GMT
+Received: from hu-obabatun-lv.qualcomm.com (10.49.16.6) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 8 Mar 2024 11:12:25 -0800
+From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+To: <catalin.marinas@arm.com>, <will@kernel.org>, <robh+dt@kernel.org>,
+        <frowand.list@gmail.com>, <vgupta@kernel.org>, <arnd@arndb.de>,
+        <olof@lixom.net>, <soc@kernel.org>, <guoren@kernel.org>,
+        <monstr@monstr.eu>, <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
+        <dinguyen@kernel.org>, <chenhuacai@kernel.org>,
+        <tsbogend@alpha.franken.de>, <jonas@southpole.se>,
+        <stefan.kristiansson@saunalahti.fi>, <shorne@gmail.com>,
+        <mpe@ellerman.id.au>, <ysato@users.sourceforge.jp>, <dalias@libc.org>,
+        <glaubitz@physik.fu-berlin.de>, <richard@nod.at>,
+        <anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
+        <chris@zankel.net>, <jcmvbkbc@gmail.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <kernel@quicinc.com>, Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+Subject: [PATCH v4 0/4] Dynamic Allocation of the reserved_mem array
+Date: Fri, 8 Mar 2024 11:12:00 -0800
+Message-ID: <20240308191204.819487-1-quic_obabatun@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAWPR04MB9742:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2bd0ae21-1d14-4818-86d1-08dc3fa3972a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	D6VVGZGdEUCQj3wAx84uL1x/BwDxFc2B+85Q80pC//A3rbrUf7Tyq3MelKvQi9OEUGRBvndaoUkkZIWxT9ntvMP/h5SKd7/vuOTxL8me42kjh3UpkWbybaPG+hWQTdywO8a139C5YpEoYcVXA/mah28GlZpTipB/jXGw2BSH55tyfVJsQQetm9+Mk+JRcj9AsgG161yRV22EN23MdWur+AJx0G8U0HGMucNcsi9l2d+IxIL9NcOpbMvyA5MmlGfNicqGk/sIAABSNuVKBKSwOn2ez1hjROgEaHE97RH0g4HqfT3Jw3zAEE5UqIaQCP4g7SyByG07V9G+U/brRv+0BiEjcM9OqedIbvAMcBGZewbJKnk1nhWvMKaPj2QDy4YvvzgPermtTPFoswMk7b17OvwHIXuyWSuRjE2qSC7Qb74lJjDLoefv0KH+7r+WkBLXpQ1rsDfPoVrLBGP7sVk2DJnpfQpuPs6e4jUpVmfU6y+/aynj5zO4jLn7fLHZgJcqqgouLlAFBTbLcPbgnGizfBYVTw+A1DiM34b6HFQx1f9GGH2BxrNXyT6yktVyXRsq6YwnVs44B7c6OP1ywbiKyBMtpXMCO48/oIHTkPUiLcxjOs+W0ge8lVBkuolJ+TNlVvW8rbrwruQgwGDaYbkVa/+5WFgvHo2FZbjMUV3PtdQ=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(376005)(7416005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?UPBRnFS1t0Um3plx8EEhjsWfsTOquEjRMFFFQiWIUwzArBc2HYtJxqF0vogf?=
- =?us-ascii?Q?gOg6UsuwKxoaV/xID/hxK+4qSbwRpHqYkQ8UjHHCv7dlQSWXFe6tF72uKvsV?=
- =?us-ascii?Q?j5NYrHkPUpcp2E6s2f71CBXQxRM8HschIOgo51ZNmhCau/bFmP7y+kaRpMvk?=
- =?us-ascii?Q?eC+2TZpDEuQNYXDJRiYUusm2n2k3KRRN3SpbcUXVkKYTE37ElULgw6+qXP1D?=
- =?us-ascii?Q?P53chY/QJsCbV7MmBqpYaFUm+wpU49vPJnkEZf2928OUov22Y6CF/3jAM7u+?=
- =?us-ascii?Q?L3l7H7sKO0j7FkCQgHDAg90wvhZSSN2WR2dsXEbc1YCIXSl4aUR5cL965/KQ?=
- =?us-ascii?Q?nrfFqy4jEbwTW5M6889wwjigl7GFzajct+xft6S1gIC/xgqQ/OBOwQPqHJZh?=
- =?us-ascii?Q?BYi+i3mfzdhxesLlj2v58NcxqFvDZjeqHVOKNkDxhQ2EZT4gN1PnoLWcp/M9?=
- =?us-ascii?Q?OubZhyu8ABJBw/F4ROoufFIM+lbSn1vXuVC1xrG/03uiwshaFzlsX56kal6v?=
- =?us-ascii?Q?YEWazlUFxkoChU6KBD6pV7P7CKz58QuRy4PuAPE77d8TY66l4ak/9HBCA/Uw?=
- =?us-ascii?Q?RL0xT379CNyqY0zHLEHTC1yay7dsDeKT8po2KwOGeXTpcKYL4M5URsXiDLLD?=
- =?us-ascii?Q?+n0jEa/wQVaJMPi1RQ9U/D9YYRzLJqcXV6sgd6iKp38COIn92xlzoFmD5kLk?=
- =?us-ascii?Q?1VLLRlFiIzHYg+xwO4gMIY0gnhlxLHr0eETMjGfpUwRwFTOwCKLu2vdk1GUD?=
- =?us-ascii?Q?dfoID/gLlJ3zYXoTgWDPQ67KKzs8riEQDt4exCpVHSMyVIIUgX5fociu8sg0?=
- =?us-ascii?Q?Siu+lTRTfNr9y2eceMzqvthqz+6Di+GQtB4CgzH9EMbgbMf6QTuzvU/Usp76?=
- =?us-ascii?Q?H6V3fTVeH19UOQ6YH3rZO3swVuEfRZnEuKPsrs+jAkKA0JGeXHZOuHStnMPJ?=
- =?us-ascii?Q?zoLdao0yKT/sGpTCp/p/rIpyqRNRDOTGwiHICRNuDk9Kp9DaTsGBs9dXDW+h?=
- =?us-ascii?Q?A8nsX7EzweRRrUsdfyuTAHqAmEPvPLmBFSp05e1QSDthT3+dWfBJU7GT6hCO?=
- =?us-ascii?Q?H32WF2dPBINPsbFBE7muCZK5yKnKX7nqZAxlEHOnY30Q/FIy8XXmB74xlaR3?=
- =?us-ascii?Q?nrCb8LdvZ8Jk5n7pwhbnYIYLUOpC1z9oWf3KhPxVNgRMZtejb36oTvbLorWE?=
- =?us-ascii?Q?DfVa2T0L2819zcxlU0LqIDliEsH/KVK9SPVCX87z1AyDBLwd552u72ra1QJ/?=
- =?us-ascii?Q?I8A0sOtmgD/A1XbPDStiFt0kUjvk4TxZEGVQ9UNnLm6M/L4Wf5MeM/uBdi42?=
- =?us-ascii?Q?O8ghTxERk5WUQztTBchlZfYl5fAo3x0vjvO9IV/fsyC6CQhPw5u37FW4WTF7?=
- =?us-ascii?Q?3SVJLHHgr2TRIFzS/IVYc2SLKYu0XycqdmwZv5y/yMXYN2GRKc+XDvwc7kjV?=
- =?us-ascii?Q?9+8w+qw7EVBb4w1ExEKaOB8yFPv3yz8328eXBqA02F1321f6BXjieQcq7IX1?=
- =?us-ascii?Q?5aYsTCERfKqYC0XCHKf4N+YEXLbnuSb2+958o37L2FPPvjJmKjSifok2YXv6?=
- =?us-ascii?Q?7KYA9W/iOqQ23NVYfI9DRQg0LOb7DQpFbTOiYxYg?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bd0ae21-1d14-4818-86d1-08dc3fa3972a
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 19:11:42.8984
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J/kqAm5x0GhDArMYuhiMNlJHkrxsjnt9znsuyPddXDyQ7v8ooz2MEEqDBsjzEIA2ber1ykfn+YBlAMj2t+29Kg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9742
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: -Lw1lQ0KqaOLCZx-Qhuu3U0EjzpKzBvd
+X-Proofpoint-GUID: -Lw1lQ0KqaOLCZx-Qhuu3U0EjzpKzBvd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ mlxscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403080152
 
-On Fri, Mar 08, 2024 at 02:01:29PM -0500, Frank Li wrote:
-> On Fri, Mar 08, 2024 at 12:11:03PM -0600, Rob Herring wrote:
-> > On Fri, Mar 08, 2024 at 10:30:51AM -0500, Frank Li wrote:
-> > > fsl,imx8qxp-spdif and fsl,imx8qm-spdif have 2 interrupts. Other platforms
-> > > have 1 interrupt.
-> > > 
-> > > Increase max interrupt number to 2 and add restriction for platforms except
-> > > i.MX8QXP and i.MX8QM.
-> > > 
-> > > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  .../devicetree/bindings/sound/fsl,spdif.yaml        | 21 ++++++++++++++++++++-
-> > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> > > index 56f8c0c8afdea..a242f68f99f18 100644
-> > > --- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> > > +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> > > @@ -31,7 +31,11 @@ properties:
-> > >      maxItems: 1
-> > >  
-> > >    interrupts:
-> > > -    maxItems: 1
-> > > +    minItems: 1
-> > > +    maxItems: 2
-> > > +    items:
-> > > +      - description: Combined or receive interrupt
-> > > +      - description: Transmit interrupt
-> > 
-> > Test your patches please because this will have warnings. Or, you can 
-> > put in *exactly* what I provided because this is not it.
-> > 
-> > If you continue to just toss crap at us at the rate you are, the DT 
-> > maintainers will either just start ignoring your patches or require some 
-> > trusted review by another NXP colleague first (offhand, not sure who 
-> > that would be which is part of the problem).
-> 
-> Sorry, I run wrong command to check another dtb file. So have not catch
-> this problem.
+The reserved_mem array is used to store data for the different
+reserved memory regions defined in the DT of a device.  The array
+stores information such as region name, node reference, start-address,
+and size of the different reserved memory regions.
 
-Strange when I run second time, spdif warning disappeared.
+The array is currently statically allocated with a size of
+MAX_RESERVED_REGIONS(64). This means that any system that specifies a
+number of reserved memory regions greater than MAX_RESERVED_REGIONS(64)
+will not have enough space to store the information for all the regions.
 
-make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  CHECK_DTBS=y freescale/imx8dxl-evk.dtb
-  DTC_CHK arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: /: fixedregulator@101: 'anyOf' conditional failed, one must be fixed:
-	'reg' is a required property
-	'ranges' is a required property
-	from schema $id: http://devicetree.org/schemas/root-node.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: bus@34000000: clock-cm40-ipg: {'compatible': ['fixed-clock'], '#clock-cells': [[0]], 'clock-frequency': [[132000000]], 'clock-output-names': ['cm40_ipg_clk'], 'phandle': [[15]]} should not be valid under {'type': 'object'}
-	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: intmux@37400000: 'power-domains' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/interrupt-controller/fsl,intmux.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-controller@591f0000: 'clocks' is a required property
-	from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-controller@591f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
-	from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-controller@599f0000: 'clocks' is a required property
-	from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-controller@599f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
-	from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: serial@5a070000: Unevaluated properties are not allowed ('resets' was unexpected)
-	from schema $id: http://devicetree.org/schemas/serial/fsl-lpuart.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-controller@5a1f0000: 'clocks' is a required property
-	from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-controller@5a1f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
-	from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-controller@5a9f0000: 'clocks' is a required property
-	from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-controller@5a9f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
-	from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: bus@5b000000: clock-conn-bch: {'compatible': ['fixed-clock'], '#clock-cells': [[0]], 'clock-frequency': [[400000000]], 'clock-output-names': ['conn_bch_clk']} should not be valid under {'type': 'object'}
-	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-apbh@5b810000: $nodename:0: 'dma-apbh@5b810000' does not match '^dma-controller(@.*)?$'
-	from schema $id: http://devicetree.org/schemas/dma/fsl,mxs-dma.yaml#
-/home/lizhi/source/linux-upstream-dts/arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: dma-apbh@5b810000: 'clock-names', 'interrupt-names', 'power-domains' do not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/dma/fsl,mxs-dma.yaml#
+This can be fixed by making the reserved_mem array a dynamically sized
+array which is allocated using memblock_alloc() based on the exact
+number of reserved memory regions defined in the DT.
+
+On architectures such as arm64, memblock allocated memory is not
+writable until after the page tables have been setup.
+This is an issue because the current implementation initializes the
+reserved memory regions and stores their information in the array before
+the page tables are setup. Hence, dynamically allocating the
+reserved_mem array and attempting to write information to it at this
+point will fail.
+
+Therefore, the allocation of the reserved_mem array will need to be done
+after the page tables have been setup, which means that the reserved
+memory regions will also need to wait until after the page tables have
+been setup to be stored in the array.
+
+When processing the reserved memory regions defined in the DT, these
+regions are marked as reserved by calling memblock_reserve(base, size).
+Where:  base = base address of the reserved region.
+	size = the size of the reserved memory region.
+
+Depending on if that region is defined using the "no-map" property,
+memblock_mark_nomap(base, size) is also called.
+
+The "no-map" property is used to indicate to the operating system that a
+mapping of the specified region must NOT be created. This also means
+that no access (including speculative accesses) is allowed on this
+region of memory except when it is coming from the device driver that
+this region of memory is being reserved for.[1]
+
+Therefore, it is important to call memblock_reserve() and
+memblock_mark_nomap() on all the reserved memory regions before the
+system sets up the page tables so that the system does not unknowingly
+include any of the no-map reserved memory regions in the memory map.
+
+There are two ways to define how/where a reserved memory region is
+placed in memory:
+i) Statically-placed reserved memory regions
+i.e. regions defined with a set start address and size using the
+     "reg" property in the DT.
+ii) Dynamically-placed reserved memory regions.
+i.e. regions defined by specifying a range of addresses where they can
+     be placed in memory using the "alloc_ranges" and "size" properties
+     in the DT.
+
+The dynamically-placed reserved memory regions get assigned a start
+address only at runtime. And this needs to  be done before the page
+tables are setup so that memblock_reserve() and memblock_mark_nomap()
+can be called on the allocated region as explained above.
+Since the dynamically allocated reserved_mem array can only available
+after the page tables have been setup, the information for the
+dynamically-placed reserved memory regions needs to be stored somewhere
+temporarily until the reserved_mem array is available.
+
+Therefore, this series makes use of a temporary static array to store
+the information of the dynamically-placed reserved memory regions until
+the reserved_mem array is allocated.
+Once the reserved_mem array is available, the information is copied over
+from the temporary array into the reserved_mem array, and the memory for
+the temporary array is freed back to the system.
+
+The information for the statically-placed reserved memory regions does
+not need to be stored in a temporary array because their starting
+address is already stored in the devicetree.
+Hence, the only thing that needs to be done for these regions before the
+page tables are setup is to call memblock_reserve() and
+memblock_mark_nomap().
+Once the reserved_mem array is allocated, the information for the
+statically-placed reserved memory regions is added to the array.
+
+Note:
+Because of the use of a temporary array to store the information of the
+dynamically-placed reserved memory regions, there still exists a
+limitation of 64 for this particular kind of reserved memory regions.
+From my observation, these regions are typically small in number and
+hence I expect this to not be an issue for now.
+
+Dependency:
+This series is dependent on the acceptance of the below patchset for
+proper behavior on openrisc and sh architecture. The patchset has
+already been sent out and is pending review from the openrisc and sh
+maintainters.
+https://lore.kernel.org/all/1707524971-146908-1-git-send-email-quic_obabatun@quicinc.com/
+
+Patch Versions:
+v4 (Current Patchset):
+- Move fdt_init_reserved_mem() back into the unflatten_device_tree()
+  function.
+- Fix warnings found by Kernel test robot:
+  https://lore.kernel.org/all/202401281219.iIhqs1Si-lkp@intel.com/
+  https://lore.kernel.org/all/202401281304.tsu89Kcm-lkp@intel.com/
+  https://lore.kernel.org/all/202401291128.e7tdNh5x-lkp@intel.com/
+
+v3:
+https://lore.kernel.org/all/20240126235425.12233-1-quic_obabatun@quicinc.com/
+- Make use of __initdata to delete the temporary static array after
+  dynamically allocating memory for reserved_mem array using memblock.
+- Move call to fdt_init_reserved_mem() out of the
+  unflatten_device_tree() function and into architecture specific setup
+  code.
+- Breaking up the changes for the individual architectures into separate
+  patches.
+
+v2:
+https://lore.kernel.org/all/20231204041339.9902-1-quic_obabatun@quicinc.com/
+- Extend changes to all other relevant architectures by moving
+  fdt_init_reserved_mem() into the unflatten_device_tree() function.
+- Add code to use unflatten devicetree APIs to process the reserved
+  memory regions.
+
+v1:
+https://lore.kernel.org/all/20231019184825.9712-1-quic_obabatun@quicinc.com/
 
 
+References:
+[1]
+https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/reserved-memory/reserved-memory.yaml#L79
 
-> 
-> Frank
-> 
-> > 
-> > Rob
+Oreoluwa Babatunde (4):
+  of: reserved_mem: Restruture how the reserved memory regions are
+    processed
+  of: reserved_mem: Add code to dynamically allocate reserved_mem array
+  of: reserved_mem: Use the unflatten_devicetree APIs to scan reserved
+    mem. nodes
+  of: reserved_mem: Rename fdt_* functions to refelct use of
+    unflatten_devicetree APIs
+
+ drivers/of/fdt.c                |  39 +++++--
+ drivers/of/of_private.h         |   5 +-
+ drivers/of/of_reserved_mem.c    | 186 +++++++++++++++++++++++---------
+ include/linux/of_reserved_mem.h |  11 +-
+ kernel/dma/coherent.c           |   8 +-
+ kernel/dma/contiguous.c         |   8 +-
+ kernel/dma/swiotlb.c            |  10 +-
+ 7 files changed, 193 insertions(+), 74 deletions(-)
+
+-- 
+2.34.1
+
 
