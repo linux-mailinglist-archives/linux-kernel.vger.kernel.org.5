@@ -1,107 +1,96 @@
-Return-Path: <linux-kernel+bounces-97671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD8BE876D5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:55:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 562DA876DAF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 00:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 931041F2266C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:55:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 114F3282F9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:03:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740FF39FC0;
-	Fri,  8 Mar 2024 22:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EUiglckr"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058B93B79C;
+	Fri,  8 Mar 2024 23:03:33 +0000 (UTC)
+Received: from 13.mo584.mail-out.ovh.net (13.mo584.mail-out.ovh.net [178.33.251.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3598936139;
-	Fri,  8 Mar 2024 22:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE18311707
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 23:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.33.251.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709938537; cv=none; b=XFXvBbuQEfZe5gk1WyFaEWA1/K3/zBBSEVXS+Y7F6+x9zuWORwl2fTbDG1oGed+rLfilKbfMayrb7l+R1iewOIY8LVPKEXsrRQimvuHYKaWZDKeykmmKgzpYSqWwEPTIkMf8harR0cpjM7vpTl0OXKZbU52Ak/8SgOtS7bsKhkM=
+	t=1709939012; cv=none; b=dKdYohFM8AizJjNfCy2d4SpK2O269WjObG0lM5AY4/j6Xt5ofKMXzCk0hI2nbUlpyPSeJd8uepQyK981iFMW9tNtm8Kp5DeYfT+LrmFUwzh7t/hP/2hiQryKuYv8I0GO+dL1untpHfqTIFYW1zzXjNP7DkP7D4LfkYN5kVu+tnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709938537; c=relaxed/simple;
-	bh=pfSg6It/BB7aJ2Ztply1ld0UBZWdSEmCaafMV+dOaHg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JjCYgzwHJ8rPayrM2magsSdY5hLAYwhrKU3e2xLZEsJSpI0rpTjbV6ub6zhlJ1FbW+RxYpnsATLHr1s6kwVT8c9XXvnqybOPkJPNtUOTOErndETzO75sCQeFZqgBhYdBQAOqVXQyQQsqgnSPBpQ49oOhpnQxtffIdvm8tfKX1/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EUiglckr; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d38c9ca5bso1448646f8f.2;
-        Fri, 08 Mar 2024 14:55:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709938534; x=1710543334; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NYEGJ3+KsY3Gr5UtdEMMKdOU2b2xTlEcMdWaY9cKiX0=;
-        b=EUiglckrfWJ7v0RsvoRfOu+y5LTjRjq0gVrUda6+gtHHiY4cql9ui1WFFXEew81Lpn
-         hBA0bNDdIpvuQd1HRsc9HOi5aGxPTa+n4h301KUUVR3Tw+6nSyxAGAxQqYa3P2wXXq0u
-         0XslnrILKxVFtmOdBjXVUKRXpOUp/Ce3582OEQLLV770mMqMKmnxnW+GvB6kzHtKjdZs
-         2X45o+hzIqtSCVgdZSoaZX/eP+mqEwSTmIGaw1cMSQpM1aw5QgWTPRzjqbvRnDdvcR9X
-         MiGmsHub1lC61aLkYS2b6SkPAQR+WnnA+MpiIbGX3K1HSLv4bRoyM9Rli/2RdcMLY8yI
-         2G0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709938534; x=1710543334;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NYEGJ3+KsY3Gr5UtdEMMKdOU2b2xTlEcMdWaY9cKiX0=;
-        b=uARq8VsGgRWDUtjkfte8I6H98rCkms5gmXiJGWwEIOGrRYNuTR5jY/FdKW13g9/FcE
-         UIom7qmjOc0pwusrPohH6CENzLFBT4mAqH77uvoxEhwS0top5f1W0+b6L1HxZO3R56KU
-         x2ph4FBpoXHs37wiXjRCXCpWb9fJs6KAIsBJaVMsPnY5S8hqg5sV2uBjK0mSZ9LCER3k
-         1exauWTGRmmiHryxzHzBS/QYt7qz0bHPwwa5dqWipR/invx8F5MF+bqZ3f1QRBwwF/rF
-         NQ0a7MVUIVKwp9owAEbMYkiHZVD0ZuiJA6iFIkk/pvB6jjbAl6EDsmnOeEAziV2hGCCP
-         ToOA==
-X-Forwarded-Encrypted: i=1; AJvYcCVytFiwfVypg7lun199DHYWXixHnmRnNkMeWQUG70HPlv5RoMIJkIjmoWUKSPQPGX2KbO0R4x5VdtCbo265vIhbzztcCQZMsD37OCH9
-X-Gm-Message-State: AOJu0YwgxXzIweg20q0NouQ0GmUY6vrIVhlWtl1y9daFUYaO6FXNTTqR
-	ni1T3/XN+fF93QFLo0w5aDuJwKREzKdpqJCfN5IYmF0ScstCdZQMn7zUVa/2
-X-Google-Smtp-Source: AGHT+IHPETF3Ift0Imjx2qP+woHemr9mwseZ/sG4FNO4Tgl7m0MVLd4Ar45Yui8oflOwdkPKAqxIYg==
-X-Received: by 2002:a05:6000:24f:b0:33d:6ef6:8762 with SMTP id m15-20020a056000024f00b0033d6ef68762mr326282wrz.29.1709938534350;
-        Fri, 08 Mar 2024 14:55:34 -0800 (PST)
-Received: from localhost.localdomain (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
-        by smtp.gmail.com with ESMTPSA id q27-20020a056000137b00b0033e72e104c5sm473743wrz.34.2024.03.08.14.55.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 14:55:32 -0800 (PST)
-From: Ilya Dryomov <idryomov@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: ceph-devel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fix for 6.8-rc8
-Date: Fri,  8 Mar 2024 23:55:14 +0100
-Message-ID: <20240308225519.2098316-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.41.0
+	s=arc-20240116; t=1709939012; c=relaxed/simple;
+	bh=ea/FMOT+LuvBUIf6Z9oNmYg5v6oX6zLSUSAj65JmdWo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Gvmk2D9G3h0uhB9iaYFsm+E0Y3CPU4llbmnHuqzoBygLO/MyjZxidawuHXO9DYkDD8kvC8nPPpYOvpZYjaSQF2MdqEEhCbgli4nOGuxvqR4RCYD5ua2xPL93cRFJxl6Wsevxtc3Uv/LG+TkIY8rED/jowbUaApED+V+Z/z2Mtf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=etezian.org; arc=none smtp.client-ip=178.33.251.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etezian.org
+Received: from director7.ghost.mail-out.ovh.net (unknown [10.108.25.169])
+	by mo584.mail-out.ovh.net (Postfix) with ESMTP id 4Ts1kV4SKSz1C74
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:56:34 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-7mrq4 (unknown [10.110.178.91])
+	by director7.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 0BF541FD79;
+	Fri,  8 Mar 2024 22:56:34 +0000 (UTC)
+Received: from etezian.org ([37.59.142.98])
+	by ghost-submission-6684bf9d7b-7mrq4 with ESMTPSA
+	id 53omAKKX62XQVgUAplAmPw
+	(envelope-from <andi@etezian.org>); Fri, 08 Mar 2024 22:56:33 +0000
+Authentication-Results:garm.ovh; auth=pass (GARM-98R0028d618e52-d2b1-40c7-9d69-95ea762b9783,
+                    2D11F706EFA52336831762ECFB2C8F5C1953C755) smtp.auth=andi@etezian.org
+X-OVh-ClientIp:89.217.109.169
+From: Andi Shyti <andi.shyti@kernel.org>
+To: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org, 
+ wsa@kernel.org, linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
+ Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Cc: quic_vdadhani@quicinc.com
+In-Reply-To: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
+References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
+Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c
+ GSI mode
+Message-Id: <170993858923.2618408.4667207790973009000.b4-ty@kernel.org>
+Date: Fri, 08 Mar 2024 23:56:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
+X-Ovh-Tracer-Id: 10926295649741245147
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrieeigddtfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvvegjfhfukfffgggtgffosehtjeertdertdejnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihdrshhhhihtiheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpeffteehudffvdfhudfgffdugfejjeduheehgeefgeeuhfeiuefghffgueffvdfgfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduvdejrddtrddtrddupdekledrvddujedruddtledrudeiledpfeejrdehledrudegvddrleeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpegrnhguihesvghtvgiiihgrnhdrohhrghdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekgedpmhhouggvpehsmhhtphhouhht
 
-Hi Linus,
+Hi
 
-The following changes since commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72:
+On Fri, 08 Mar 2024 02:25:39 +0530, Mukesh Kumar Savaliya wrote:
+> I2C driver currently reports "DMA txn failed" error even though it's
+> NACK OR BUS_PROTO OR ARB_LOST. Detect NACK error when no device ACKs
+> on the bus instead of generic transfer failure which doesn't give any
+> specific clue.
+> 
+> Make Changes inside i2c driver callback handler function
+> i2c_gpi_cb_result() to parse these errors and make sure GSI driver
+> stores the error status during error interrupt.
+> 
+> [...]
 
-  Linux 6.8-rc7 (2024-03-03 13:02:52 -0800)
+Applied to i2c/i2c-host on
 
-are available in the Git repository at:
+git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-6.8-rc8
+Thank you,
+Andi
 
-for you to fetch changes up to 321e3c3de53c7530cd518219d01f04e7e32a9d23:
+Patches applied
+===============
+[1/1] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI mode
+      commit: 313d6aa4c64875ed8a10339a2db8766f49108efb
 
-  libceph: init the cursor when preparing sparse read in msgr2 (2024-03-06 12:43:01 +0100)
-
-----------------------------------------------------------------
-A follow-up for sparse read fixes that went into -rc4 -- msgr2 case was
-missed and is corrected here.
-
-----------------------------------------------------------------
-Xiubo Li (1):
-      libceph: init the cursor when preparing sparse read in msgr2
-
- net/ceph/messenger_v2.c | 3 +++
- 1 file changed, 3 insertions(+)
 
