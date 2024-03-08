@@ -1,128 +1,144 @@
-Return-Path: <linux-kernel+bounces-96976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA878876405
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:09:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5191E876406
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:10:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 069DD2829DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:09:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5DA4B223E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80DAF56B60;
-	Fri,  8 Mar 2024 12:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MIqkmyMZ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A483535CA;
+	Fri,  8 Mar 2024 12:09:52 +0000 (UTC)
+Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFD61535CA;
-	Fri,  8 Mar 2024 12:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4618557880
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 12:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709899776; cv=none; b=JfGVB+GrFbwIeuE3DQrYonaRc1pZTfTCpDq/0EUJdxayvcevvzPNWG+bcKL8rRUF0wnn6D9MS3GW/jy/W7yBelu/M1BHXqBAppYo+hcnsBxg7RQ+pnSBAbv1SYOIygs0Zrawtvl54p3nmNmhUPZXEdX7XvrQvqiImUXxyb/EtXA=
+	t=1709899791; cv=none; b=VWofeN+Y5OckW5bZAO1Jcoye1v4X24Ae3jMgIC/QHFElxA0xD21bC98ZzzXk3wYAVpHwVjoRHgRxwLEnT54mZjlgdrGthER28/HpMCBDhQJMAhBfIDitvlAzhCuz5N+LN9DIM/fmG3H9dv22DjtjTOjNXa9mJGB+8lvZrDJuYOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709899776; c=relaxed/simple;
-	bh=47pcurjwzPpbUDu63TliTFtfRuG+YF86mZd6kUPfo2M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SJ5si2yT9p5/Kz+qpAefaihH+f0HfcPNXfpkMYWzC+vFQdPSdssBSUG3jBC+B6uo7CdYwUNMUYKWffQVp1XF7JAz93aqwMbc+HXHpZtjr9zNcNGqe2gK2oHZACLUJ/Lou2RMVVQZ1Zh3yBMKMRWcQ80eVDO+1Gek8eDrEr4uEBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MIqkmyMZ; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709899775; x=1741435775;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=47pcurjwzPpbUDu63TliTFtfRuG+YF86mZd6kUPfo2M=;
-  b=MIqkmyMZaWOrBrbYOOkLyPd7VF1MZf9fiYVbfVtpdM98O11ksx1G0FIz
-   boV3fIkVVgzqYOYzS7ZfX1Uh+lbeycijk0eUsTuWdNiXzG21YXrbLHbA+
-   m4JBb5DH1PZSNQ5gxB/XTA5dcEF0PrnEO7PT5DE7hBREsVhy0i62ePzID
-   sKeogHpnEnMs6efw4YFNKr96labs0iJZBvoi+NKAl8QDjX9gSWepPPhCG
-   xapENMc8MHaaFOkVdnL0IbxjG+1QzOIpEl7v0aFxAt9zPMnk5gAFCX1E7
-   HnaKExYCdd6CDwz7YBAU74f3CzV4YtFQwo3pYi1qUsIjueLStVQXhZngZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="30058154"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="30058154"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 04:09:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="914244912"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="914244912"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 04:09:28 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1riZ2T-0000000Apo3-2KVa;
-	Fri, 08 Mar 2024 14:09:25 +0200
-Date: Fri, 8 Mar 2024 14:09:25 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-	Siddharth Vadapalli <s-vadapalli@ti.com>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Yue Wang <yue.wang@amlogic.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v1 1/1] PCI: dwc: Remove unused of_gpio.h
-Message-ID: <Zer_9VTVJqCNoOFG@smile.fi.intel.com>
-References: <20240307122840.3682287-1-andriy.shevchenko@linux.intel.com>
- <20240308095547.GI3789@thinkpad>
+	s=arc-20240116; t=1709899791; c=relaxed/simple;
+	bh=qAjGdgYAZ5gXnXvfvJoY9hUIxV78LOQSHo/7T1A2Ln0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Z+2m9EepYtxbJ6T+fW1/SC539825NFcMSCGQpanhc1OTbv8U3d4ktCYEBLfc1R3NghzJxmgWN5Bvka8VSuNOiVRCh1v0KJWKUmAiY3BKtIfi9JGAYHapARAaqHOVVho65fkBYkWv2Pof35Uxh0mxxKxpOBBK64bEYGPotBC2OgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.10.223])
+	by sina.com (172.16.235.24) with ESMTP
+	id 65EB0002000041DB; Fri, 8 Mar 2024 20:09:40 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 82321545089465
+X-SMAIL-UIID: F6EE870248784DB281733AB3491D99A0-20240308-200940-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+a68ef3b1f46bc3aced5c@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode (2)
+Date: Fri,  8 Mar 2024 20:09:30 +0800
+Message-Id: <20240308120930.1718-1-hdanton@sina.com>
+In-Reply-To: <000000000000081ff305f0b14072@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308095547.GI3789@thinkpad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 08, 2024 at 03:25:47PM +0530, Manivannan Sadhasivam wrote:
-> On Thu, Mar 07, 2024 at 02:28:40PM +0200, Andy Shevchenko wrote:
-> > of_gpio.h is deprecated and subject to remove.
-> > The driver doesn't use it, simply remove the unused header.
-
-> What about the rest?
+On Sun, 25 Dec 2022 17:42:37 -0800
+> syzbot has found a reproducer for the following issue on:
 > 
-> drivers/pci/controller/dwc/pcie-kirin.c
-> drivers/pci/controller/dwc/pci-imx6.c
+> HEAD commit:    72a85e2b0a1e Merge tag 'spi-fix-v6.2-rc1' of git://git.ker..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12569d7f880000
 
-Have you chance to look at them?
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-> There is also one non-dwc driver:
-> 
-> drivers/pci/controller/pci-aardvark.c
-
-Keyword: non-dwc.
-This patch is for DesignWare controllers that confirmed not using the header.
-
-> It is better to remove it from all PCI drivers in a single patch.
-
-I disagree on this. These are different drivers and even inside DesignWare not
-all of them can be converted with a simple change like this one.
-
-That said, please consider applying this one as is.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--- x/drivers/media/rc/imon.c
++++ y/drivers/media/rc/imon.c
+@@ -1758,6 +1758,7 @@ static void usb_rx_callback_intf0(struct
+ 
+ 	switch (urb->status) {
+ 	case -ENOENT:		/* usbcore unlink successful! */
++	case -EPROTO:
+ 		return;
+ 
+ 	case -ESHUTDOWN:	/* transport endpoint was shut down */
+--- x/net/batman-adv/network-coding.c
++++ y/net/batman-adv/network-coding.c
+@@ -397,6 +397,7 @@ static void batadv_nc_purge_orig_hash(st
+ 	struct hlist_head *head;
+ 	struct batadv_orig_node *orig_node;
+ 	u32 i;
++	int loop = 0;
+ 
+ 	if (!hash)
+ 		return;
+@@ -406,9 +407,14 @@ static void batadv_nc_purge_orig_hash(st
+ 		head = &hash->table[i];
+ 
+ 		rcu_read_lock();
+-		hlist_for_each_entry_rcu(orig_node, head, hash_entry)
++		hlist_for_each_entry_rcu(orig_node, head, hash_entry) {
+ 			batadv_nc_purge_orig(bat_priv, orig_node,
+ 					     batadv_nc_to_purge_nc_node);
++			if (++loop > 20) {
++				rcu_read_unlock();
++				return;
++			}
++		}
+ 		rcu_read_unlock();
+ 	}
+ }
+@@ -433,6 +439,7 @@ static void batadv_nc_purge_paths(struct
+ 	struct batadv_nc_path *nc_path;
+ 	spinlock_t *lock; /* Protects lists in hash */
+ 	u32 i;
++	int loop = 0;
+ 
+ 	for (i = 0; i < hash->size; i++) {
+ 		head = &hash->table[i];
+@@ -441,6 +448,10 @@ static void batadv_nc_purge_paths(struct
+ 		/* For each nc_path in this bin */
+ 		spin_lock_bh(lock);
+ 		hlist_for_each_entry_safe(nc_path, node_tmp, head, hash_entry) {
++			if (++loop > 20) {
++				spin_unlock_bh(lock);
++				return;
++			}
+ 			/* if an helper function has been passed as parameter,
+ 			 * ask it if the entry has to be purged or not
+ 			 */
+@@ -675,6 +686,7 @@ batadv_nc_process_nc_paths(struct batadv
+ 	struct batadv_nc_path *nc_path;
+ 	bool ret;
+ 	int i;
++	int loop = 0;
+ 
+ 	if (!hash)
+ 		return;
+@@ -686,6 +698,10 @@ batadv_nc_process_nc_paths(struct batadv
+ 		/* Loop coding paths */
+ 		rcu_read_lock();
+ 		hlist_for_each_entry_rcu(nc_path, head, hash_entry) {
++			if (++loop > 20) {
++				rcu_read_unlock();
++				return;
++			}
+ 			/* Loop packets */
+ 			spin_lock_bh(&nc_path->packet_list_lock);
+ 			list_for_each_entry_safe(nc_packet, nc_packet_tmp,
+--
 
