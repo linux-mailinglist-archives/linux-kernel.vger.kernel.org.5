@@ -1,126 +1,174 @@
-Return-Path: <linux-kernel+bounces-97118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 979828765B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:55:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 397AF8765BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:56:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEB4F1C217A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:55:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CADAA282479
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87639446DE;
-	Fri,  8 Mar 2024 13:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C593FB2F;
+	Fri,  8 Mar 2024 13:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MFDe9mKk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="tSTBbVjA"
+Received: from outgoing4.flk.host-h.net (outgoing4.flk.host-h.net [188.40.0.90])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A9F4086D;
-	Fri,  8 Mar 2024 13:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C940238387;
+	Fri,  8 Mar 2024 13:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906116; cv=none; b=nTY+EMNflgX0YLnNrxS0k8oTCiOsxLNiM8KJ13YZCoZpDoaQH9KbdNFsT/8u40k9ofwQoYcv3Cm6CaBKWAxURVx2QFL7C5kSBNwkJ9SvI5quTqfSYhTqDqz+JMBj5LjyA/InZnlc7aXgmfWo0uAiiUn+cFPOjV8zwNQZhvKMpcg=
+	t=1709906184; cv=none; b=bRZENZBGwPewsqW5xsFS9NIHw9ytrakHK7GtTGY0UcrQqL4nKF+nF6YlQfGS2qM04xjtJvoBgive5qbml2bThkXn8Ly2g2oB16BGbm4UNignG57sZmwyHJe6Y9SC9WYQMVu7ATQtTVn+yrWqPJ2JJM1Yx8kIiZCU4YofFjHjSdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906116; c=relaxed/simple;
-	bh=AGDElk8B3tL42Shz+clnRrV4J7k7xruCRry267aVvvs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IMY4gswgIs6vDDbhBC1ZlsBLxoKZHrGrSqp+/KqB+SWg5IRfXCpgfcJO0J8xfNM+dmThuDFtYPaA7s0Iqh85ouZTgCYQsWDLJURevJlhVH/52iA90Z2DBLVn7yWoZvJukRFmP0n9/OYzwDyTYu0YXjRjzgF4O3Z9FCzAU/WG0vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MFDe9mKk; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709906115; x=1741442115;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AGDElk8B3tL42Shz+clnRrV4J7k7xruCRry267aVvvs=;
-  b=MFDe9mKk+p6h42vGFqImOdnFvY154m/2I5DJLLQKFzOMf8BPAjPoJ4Ya
-   rcSXJD9QZFYO1eQqg4U2fqfqFb8xaIraB5kAMEOL1Cxe0SI92K4UWx28c
-   61nFlid47CxttTI8efoAI26YX1f38bsux3N6lHuQSq8SgEQZziHz3AZ2P
-   H7G1WYvsY6QY44FgrUc5hINDIzGLrmDEe2IojUAcgpTQAvkQ7qZObUlMH
-   NB8kcLwJqX9Cc7AUFdXWIpEvWu2t6lrT/ujhFOvsdN5RtaTgLBQkxAyn0
-   ukLLJBl6GFAQkB8b6llbkQpf9ZbF/INY3VOWrOXCA/iOjd3dV1KQXqFwm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4495046"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="4495046"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:55:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="914247235"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="914247235"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:55:13 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1riago-0000000Ar4c-2OQL;
-	Fri, 08 Mar 2024 15:55:10 +0200
-Date: Fri, 8 Mar 2024 15:55:10 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Michal Simek <michal.simek@amd.com>
-Cc: linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1 3/3] spi: xilinx: Make num_chipselect 8-bit in the
- struct xspi_platform_data
-Message-ID: <ZesYvnwiSMPMq98s@smile.fi.intel.com>
-References: <20240307154510.3795380-1-andriy.shevchenko@linux.intel.com>
- <20240307154510.3795380-4-andriy.shevchenko@linux.intel.com>
- <f7a882c8-5858-4d6b-8a70-0702c3170661@amd.com>
- <ZesTS2LDEYz_bbPK@smile.fi.intel.com>
- <1e35a288-0a11-4df6-b7c5-82e5cb6e1d3c@amd.com>
+	s=arc-20240116; t=1709906184; c=relaxed/simple;
+	bh=FwI2aak8o20FvJzemZzUkCOs3kuiCZG1aMtWkrLj2wc=;
+	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
+	 References:Message-ID; b=CYT7ANP+5d9d25f6a5BH/bAh2BgIiT2kE62DRGOcLefdo3GchTJb5/crn+dLfM2ynAjVzr3ni/rBdNJFIEH7m3V7sZ3HdaqnOSFhK4g1kmtpaC7l2JwfWsGXryKP5gpIr9vcFwR/VFdwjQRvr0XrRAKPGfhCvvvW9pWsN4TE4uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=tSTBbVjA; arc=none smtp.client-ip=188.40.0.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
+	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
+	sender:bcc; bh=GyHi9/MigBIRg5aZyIo+L6RPdjUEn2Ih3s7Mk2WHRVA=; b=tSTBbVjADXYNGk
+	EHoal7ydCLvx+eT45xlkO/RlvZYGN/GyDIKDuUafYYhELNqSb+h/y5Oh3WI55NmKXtPXwuNfZlUmE
+	oodFoLPkAFjbXx1EtAzBWYTEmZ5/LL9JMJT4ERgJKr605oif4WWit16/3dtjAY8kZHy/eJXgepSBi
+	iAtSnP0jgNEEy+gsoY41SzQPocW0ZJOG+P1n8194gvUFUvKkBBWLT0GtTNJEq8EG8O2KSSxu5P2TE
+	tuhmU1DtO+I5AlTXUCQ/pvqpeXS2ZCUDvIcvJXRc9Qyzb904qnU6cWAAY++bwUvAP8OhRKwem2kpB
+	bbbe9zIISbBp6rR+K2Tw==;
+Received: from www31.flk1.host-h.net ([188.40.1.173])
+	by antispam1-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1riaho-009Xv3-PA; Fri, 08 Mar 2024 15:56:15 +0200
+Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
+	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1riahm-0007Fy-RA; Fri, 08 Mar 2024 15:56:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1e35a288-0a11-4df6-b7c5-82e5cb6e1d3c@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Fri, 08 Mar 2024 15:56:10 +0200
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger
+ <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 3/3] mips: dts: ralink: mt7621: add serial1 and serial2
+ nodes
+In-Reply-To: <55f6ee5c-84af-4976-a66c-63800f733f8f@arinc9.com>
+References: <CAMhs-H_eUKm7C40oCzuKwwEMZAcOJ-g4MghAfkGAmxRM0AXPUw@mail.gmail.com>
+ <20240307190408.23443-1-justin.swartz@risingedge.co.za>
+ <20240307190408.23443-3-justin.swartz@risingedge.co.za>
+ <55f6ee5c-84af-4976-a66c-63800f733f8f@arinc9.com>
+Message-ID: <f88bd12a52875fa6772b4d69991cc0cc@risingedge.co.za>
+X-Sender: justin.swartz@risingedge.co.za
+User-Agent: Roundcube Webmail/1.3.17
+X-Authenticated-Sender: justin.swartz@risingedge.co.za
+X-Virus-Scanned: Clear
+X-SpamExperts-Domain: risingedge.co.za
+X-SpamExperts-Username: 
+Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.02)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8V1IGHx95V+LuqAIKp0A7dPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
+ WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
+ 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
+ Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
+ 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
+ vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
+ nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
+ oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3NKpXjUWRUPmWaYqa98uuB9K
+ ZR2tNRPIxp/vINc/oXVULtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
+ ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz308HFwsY4DWIzjhTYXUG8GBZhle6
+ F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
+ PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
+ WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
+ fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
+ URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
+ ZMexQ8VxpTDmnfa+pzT1vTjrWAqX6CaqW6mpuqL4oTR4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
+ F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV2rH
+ cg9OLgJ5YOxfUpiW0+V+BI7fngshFOJ8BMQh1ij/Ibtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
+ Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
+ SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
+ qo05MS+4ayUpOtEhdxekWDmK9g==
+X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-On Fri, Mar 08, 2024 at 02:48:04PM +0100, Michal Simek wrote:
-> On 3/8/24 14:31, Andy Shevchenko wrote:
-> > On Fri, Mar 08, 2024 at 09:20:23AM +0100, Michal Simek wrote:
-> > > On 3/7/24 16:43, Andy Shevchenko wrote:
-
-..
-
-> > > >    struct xspi_platform_data {
-> > > > -	u16 num_chipselect;
-> > > > -	u8 bits_per_word;
-> > > > -	struct spi_board_info *devices;
-> > > > -	u8 num_devices;
-> > > >    	bool force_irq;
-> > > > +	u8 num_chipselect;
-> > > > +	u8 bits_per_word;
-> > > > +	u8 num_devices;
-> > > 
-> > > all above have 32bits. It means on 64bit cpu you have 32bit gap here.
-> > 
-> > > > +	struct spi_board_info *devices;
-> > 
-> > On all architectures? I mean do all 64-bit architecture ABIs _require_
-> > the pointer to be aligned at 8-byte boundary? Even if so, the struct
-> > itself can be aligned on 4-byte boundary.
+On 2024-03-08 15:50, Arınç ÜNAL wrote:
+> On 7.03.2024 22:04, Justin Swartz wrote:
+>> Add serial1 and serial2 nodes to define the existence of
+>> the MT7621's second and third UARTs.
+>> 
+>> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+>> ---
+>>   arch/mips/boot/dts/ralink/mt7621.dtsi | 28 
+>> +++++++++++++++++++++++++++
+>>   1 file changed, 28 insertions(+)
+>> 
+>> diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi 
+>> b/arch/mips/boot/dts/ralink/mt7621.dtsi
+>> index 3ad4e2343..5a89f0b8c 100644
+>> --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
+>> +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
+>> @@ -124,6 +124,34 @@ serial0: serial@c00 {
+>>   			pinctrl-0 = <&uart1_pins>;
+>>   		};
+>>   +		serial1: serial@d00 {
+>> +			compatible = "ns16550a";
+>> +			reg = <0xd00 0x100>;
+>> +			reg-io-width = <4>;
+>> +			reg-shift = <2>;
+>> +			clocks = <&sysc MT7621_CLK_UART2>;
+>> +			interrupt-parent = <&gic>;
+>> +			interrupts = <GIC_SHARED 27 IRQ_TYPE_LEVEL_HIGH>;
+>> +			no-loopback-test;
+>> +			pinctrl-names = "default";
+>> +			pinctrl-0 = <&uart2_pins>;
+>> +			status = "disabled";
+>> +		};
 > 
-> I am not able to tell if toolchain enforce 8byte alignment by default/by
-> setup on all 64bit systems.
-> I am using pahole to check this which was recommended by Greg in past which
-> reports gap in the middle.
+> I would group this:
+> 
+> 		serial1: serial@d00 {
+> 			compatible = "ns16550a";
+> 			reg = <0xd00 0x100>;
+> 
+> 			reg-io-width = <4>;
+> 			reg-shift = <2>;
+> 
+> 			clocks = <&sysc MT7621_CLK_UART2>;
+> 
+> 			interrupt-parent = <&gic>;
+> 			interrupts = <GIC_SHARED 27 IRQ_TYPE_LEVEL_HIGH>;
+> 
+> 			no-loopback-test;
+> 
+> 			pinctrl-names = "default";
+> 			pinctrl-0 = <&uart2_pins>;
+> 
+> 			status = "disabled";
+> 		};
+> 
+> Same goes for patch 2.
 
-I see, thanks for explanation.
+Thanks for the example.
 
-Yes, it's likely that in some cases it will be a gap on 64-bit platforms, but
-after this patch no gap on 32-bit. Do you still want me to reshuffle that as
-you suggested?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Regards
+Justin
 
