@@ -1,115 +1,111 @@
-Return-Path: <linux-kernel+bounces-96728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D37E08760B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:16:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC098760BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EE4D1F21FFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:16:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 860A1282BB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55FEA53391;
-	Fri,  8 Mar 2024 09:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4BF53385;
+	Fri,  8 Mar 2024 09:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dIMn+Hks"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="gE/ITZH/"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9E052F95;
-	Fri,  8 Mar 2024 09:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6316D52F98;
+	Fri,  8 Mar 2024 09:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709889408; cv=none; b=fcxzD3FwMZa4rPev3GTwB8VXPAh4q4vCzwJE86h8VQ9pxg+N8YnaZA5GHyov7KQ9vdCrYofk+U+6yVu6wTKFckKrdtD6grYXcx9+CMfSKvGrrVAZEsiQkqYefLSi2sOf3IwTa95s0HxDQQGl8jG7Nu2C/KdjhLm4lhnvk5kn0sY=
+	t=1709889441; cv=none; b=clwJYTZgVm0VyunMi4CTi/oWMuA8oAV14lYryv42PmCWur4OG2KPp+3AS+WHe6DhEhxTJlQd9CQiu+XOgCuipoDfIUL/48hjcHRYwkQxr2XKIxsvHVzekJG89N2+Xhcvm5jKOYsJ778rorydTmcw3ZoRuaALeL7O2G30YyKB1Lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709889408; c=relaxed/simple;
-	bh=xbVhZnJdLgAXSnZlSiHw/Fm8YwHdcJLQZLzGDlbumec=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=sOkrgOzjKa6ghXeExyM3q/cgWCQrpV+f8jup95Frl7pKjawieMt1vv5Alx0RBy8lBNkICUJyRQ/v1hJ6X313xMBqTJ0TqpLda18O4LYG1FLUBWb8w8sI1QsTAwAUMZvcEmdv27PY5+7jeHw+tSwOPJB9QybTnvU/gLRnQxReCGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dIMn+Hks; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EF36F2000B;
-	Fri,  8 Mar 2024 09:16:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709889403;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x/eUvvh3JLX5kacQMX2jRA//mYfxfj755OY+r82KgEE=;
-	b=dIMn+Hks7A6pLjEQgAaTNQSMOrYLL1yAQ7Cq7N9THIxDan38wv2QLOt7iLPwLriXl/bhMA
-	f1obrhB1UvqQwpGDnbA52fSBK56DtwxpVreXh0EGatGiDV/mymaWca1s3Njckz4FY583h4
-	WpAJRR9/Rsm/Irt/BVEHCl1WcUy7hVMKz3I40Q0OcOQVecXKKvdMrqOwzQuYWAa4g1UTX3
-	p4r5CLXElTeG2KGd5+fnScBog5l1LkUmnUFhuAsn4QTif+3dubjg8NxxRB5p9cKzS5tGNy
-	O4oCFsor/bG5brACEA35oTPDjxAAOvuGSfk/g5fYkU7Dz3oUiFYihe0/46bn5Q==
+	s=arc-20240116; t=1709889441; c=relaxed/simple;
+	bh=FhoXnmbvJ/5Ze5LmyD3TLnD76vV2iEIiuYBq7n4hA5E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qc3md9jAmk/ECd5wE5PSAfOQmA+f1Hs/HpvhDxAg9Bxbx3+RYV47/6pYMiz50MGPv7ErCfuC3TcdjBb8eKZPIEmjXV03JcWKUHGOn6vlw3u5Pmsm5FY/ctQe22KIZO0/8Xhap9FBojSmrseiqQsthJFZTJrGChmtOGP/p1ntq/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=gE/ITZH/; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A0F1940E016C;
+	Fri,  8 Mar 2024 09:17:16 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id coCnuob10XuF; Fri,  8 Mar 2024 09:17:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709889434; bh=rLdbM51hSGI1Ma2ufrENxid6dczjAu6sT0Aq+BYgJqA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gE/ITZH/UBUGSX1Bk49cyH26HZBbc5DuNXtsPYkIs28B5gtI9niplQDMOgIoiGbfM
+	 jiK48JKuVnaklGnMPaqlT4qt6AhHA8uSyMY47PeTOQXPJBLjqnp5bDTe4TpzZRJvxa
+	 +7g9Z8XGTPn4ZIbP0HYi8SgOvdtylbprCRwECdeXsulezqIniJdG+PZg6Suyi4B050
+	 oPXiu0qAuDwBiIJSCJjZ5G1npMRE1EaMSHlKLEPqnGYQDsbs36rdPkhZCLEeWlO96v
+	 Ls1OnvRcI+RTql4xKc5JfqXE7duAs2DxmoNaDFoXjs63DC/JUbZlL8dJpHUtaf/JY0
+	 Fz9D9mKOtNopiP4746nuo5kfH79Y44edmE2X3iQFyQaLhb1YjKd56tvGcSLS1ulGZF
+	 qDexEvfl/cpv0TkspPYR+9PrjbrSNX28QmZq4+IP/3CkCbsfsiUdemPH6MuMXV9Lpy
+	 NLzrt8C80NynUPjHzP1wnlaySiUvJ7DAp7b9hAX50e/KaNmlZcj0zpzScWdJ1M2Gjl
+	 JyCm2k3r6UjWzQYpnh+jaYbUEpz5d9UK8R1ZICu7wS5gv3BfJuGr5zPQjZtyKN5Rp8
+	 H0hnh0NnOkXdUJpbVK10VDcb+FV1SSBhdVZzfTYyQD9FCozn0elqLmpnXvbiNv3f/R
+	 edKB8XKAteWQ7LCCL8/f2Lxs=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F286B40E0173;
+	Fri,  8 Mar 2024 09:16:50 +0000 (UTC)
+Date: Fri, 8 Mar 2024 10:16:45 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Douglas Thompson <dougthompson@xmission.com>,
+	James Morse <james.morse@arm.com>, Jan Luebbe <jlu@pengutronix.de>,
+	Johannes Thumshirn <morbidrsa@gmail.com>,
+	Khuong Dinh <khuong@os.amperecomputing.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-edac@vger.kernel.org,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michal Simek <michal.simek@amd.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Robert Richter <rric@kernel.org>,
+	Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+	Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+	Tony Luck <tony.luck@intel.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH 0/7] EDAC: remove unused structure members
+Message-ID: <20240308091645.GDZerXfQ_XIKq0CKFL@fat_crate.local>
+References: <20240213112051.27715-1-jirislaby@kernel.org>
+ <c46cc960-1b7c-4e61-977a-f22ea5fdd944@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 08 Mar 2024 10:16:42 +0100
-Message-Id: <CZO97FHGERJG.37RVSW2CIYP7R@bootlin.com>
-Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Andi Shyti" <andi.shyti@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v3 08/11] i2c: nomadik: support Mobileye EyeQ5 I2C
- controller
-X-Mailer: aerc 0.15.2
-References: <20240306-mbly-i2c-v3-0-605f866aa4ec@bootlin.com>
- <20240306-mbly-i2c-v3-8-605f866aa4ec@bootlin.com>
- <xy2nxcjxkw6pkprrjx2sol62xvq2nr3ukdwpn4h3wuwpnnu43j@2djyqtkdpcwc>
-In-Reply-To: <xy2nxcjxkw6pkprrjx2sol62xvq2nr3ukdwpn4h3wuwpnnu43j@2djyqtkdpcwc>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c46cc960-1b7c-4e61-977a-f22ea5fdd944@kernel.org>
 
-Hello Andi,
+On Fri, Mar 08, 2024 at 10:01:14AM +0100, Jiri Slaby wrote:
+> Any plans on looking into/commenting/merging this :)?
 
-On Fri Mar 8, 2024 at 12:11 AM CET, Andi Shyti wrote:
-> Hi Theo,
->
-> ...
->
-> > +static inline u8 nmk_i2c_readb(const struct nmk_i2c_dev *priv,
-> > +			       unsigned long reg)
-> > +{
-> > +	if (priv->has_32b_bus)
-> > +		return readl(priv->virtbase + reg);
-> > +	else
-> > +		return readb(priv->virtbase + reg);
-> > +}
->
-> you forgot to remove the else... not a problem, it's coherent
-> with its writeb counterpart.
+Plans: yes, time: none.
 
-Yes I enjoy symmetry. :-)
+You're on the todo list tho.
 
-[...]
+-- 
+Regards/Gruss,
+    Boris.
 
-> Looks good!
->
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-
-Thanks Andi! Any chance of seeing this series queued for v6.9?
-
-Regards,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
