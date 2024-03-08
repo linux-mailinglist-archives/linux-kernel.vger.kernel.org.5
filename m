@@ -1,160 +1,153 @@
-Return-Path: <linux-kernel+bounces-97561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1595B876BF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:39:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B82BD876BF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6ACEB21D87
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:39:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24290B21D87
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 428035E068;
-	Fri,  8 Mar 2024 20:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEF85E071;
+	Fri,  8 Mar 2024 20:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="P+psoRYM"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="bfbySoMt"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402311D52D
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:38:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175B11D52D
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709930338; cv=none; b=PGbHwUjVGlnfaWda6Z7lSjvLzAnw3fw54+vzgGbg6aE+7yDRIv2jqbpe1VEAx2NG2cFJa6Dy9+j7hq8FYmtZnUpq7lm1Rwf1PZJFzjFQtqW+3Vw6TsZBTI/+EFnMrNw/RUWJRTa6wP8adXJCQvbMf/0wxpKuVRZhEa+Gt3EsMq0=
+	t=1709930373; cv=none; b=PqytOwOCJw1QHMeh3qR1GwDyrdv6Il14Z6oUoxfn6dg4ljobclgBFXwazf2sb8mkCNiEhHT4KNQlcqeF5hPoi+Ve5n/JD5YNZofwdq7NAf2eqTWsLRdkCITyKTDdwl4rdU5D6CiJO2kZYM8ReJqp6Qfemt6xmOneY8aGjVYNmX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709930338; c=relaxed/simple;
-	bh=NCx5LITqLfd5IR5H/1MZ4bqNFQ5kjpffWRsXWLwGrH8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Dpj1vt1rrNn9dwkl+OP8a34nl8T5Pi9ngQ5VPS2+kKchDFdGwT6MjbgV6axKM+LSxR/ReKcVh56lhuV755Kx1aSKef+oJkCcXbLvQ/iQZo2XmsaAZSoddLInU8E+abxSqOJamZzZjCkBeOl9rzNOduChSrNEhSdgUUPqYeem9M4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=P+psoRYM; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=/47zSNS8X3eOPzjZdvlkdHcgjIKBxlrq4BUs8maJTKI=; b=P+psoRYM5z3lfXYWFwEz/bAINB
-	OPOxutLt5xDfXAWdDKQpYEoteejZVcbRTgwcL5gWxB6YQBIlcM928wCP3ORY0SB6AtDgpXfRmfJ6W
-	O6WiGduHj8ETWuoDJElwDFkf7KtsF01vYBDlglzNb5jy9s3fp/XVi7qNDiYiAKJXJxduI9SBwA5AG
-	FGFY6sBpwcAXQ+UjRfQ0IDlv5ENI+LPo1yeB6ObG0g9KgE3rMTNIrIsW0V9zYbLRlSnZ42GKeKc6p
-	gmO20XmEZYn5mFQEt6pd/HVxnHy2yiQes02adum0ST3BaFnT7KbtZJHN9jpiiivU1aBZ0YPBbpQMY
-	5YSHJUKg==;
-Received: from [186.230.26.74] (helo=[10.39.29.45])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rigyw-007xOC-Fz; Fri, 08 Mar 2024 21:38:18 +0100
-Message-ID: <4b01ba61-9184-4a17-9fe6-59eb88a21214@igalia.com>
-Date: Fri, 8 Mar 2024 17:38:07 -0300
+	s=arc-20240116; t=1709930373; c=relaxed/simple;
+	bh=UogInE1oek8uNz978Fr2Y00YKfvATmfN6x91AoetXLg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WXleQRpcfpJVK47WdMqyvaVIwdz72rcJXckuU8TKofs71KCRf84KNNGyVIAdFXQB54+F5j2LGfQJtnNOJiOq3QYlO/mHwjXNVivZB9x537F/xK9G4zSBMg/2iLgwIggkrgTFdcvIbdJwY4THvSUBCxv2lie/ektZVSXDMTa9XY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=bfbySoMt; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51380c106d9so1502925e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 12:39:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709930369; x=1710535169; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wwaztDR+5Lsp5aM9L+iH7awTig0xm/0SM0pTAJYMRCo=;
+        b=bfbySoMthMQ4qHeppHq9Sn7ImelW/diIyajn3wJ39BsRUNU/edzx2ff9YbNntSX5XD
+         pvE0s2SjG0XZlgV29qv+MZIdr4RYa1J/SeeMTcSLp+5u2EhPyXkxMlO1XGPK5fC7WYyx
+         QJJep9jWGMG/JhbjPg2qUQRaZlIVOSi4Lbhis=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709930369; x=1710535169;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wwaztDR+5Lsp5aM9L+iH7awTig0xm/0SM0pTAJYMRCo=;
+        b=AisxtKCJyhQ/1kG9Y++IhRVpz1jJ8AaDGhJkj+a4T3kH4yctiZ6DTRu3DX8Tspqtz/
+         4OzNA84II9DUgV352nKNhnjpaHzsrsRcsfdR3xYwnLJAT8wBkbLyd2McmxjUrAXyLsiA
+         QzlQmxVfsUrM6Tdk5WANTXlas0SOIyjOMqe+vkfATNVA3SIogNkulcOeL8mj4Jw6iC5R
+         uBzmbZ1nj2TOTxDUXV+ilLxkUYR/O1iSxPCOppUpkxdPRWipvqO5zbZG1xwOaG250vvy
+         hyD5bU5TlUrivEYGLLY23v9QmVVYyP0TC0gnIoP/szwl3WuvNcvPFWt/s7LP2G0hMNJu
+         vPIg==
+X-Gm-Message-State: AOJu0Yx3hIY4gPjQsryyrDbTSpKl+fEowE23+nQBkbsLkvTg6QKCe+KE
+	dd//1yApUFG1P6t27Sr1x1xpIXDe282/WVFzUwoxtCMSjwLQMf4pwUUPkD/QQ4okzoTgo7A6e2J
+	ZDtpr3A==
+X-Google-Smtp-Source: AGHT+IFgCMskNPMlpzXg66VtlY9pNAkouMNliqdDgyti0vkgTw72LQ6rMrUD5pqU6sYLNrWtYa7JKA==
+X-Received: by 2002:ac2:41ce:0:b0:513:1aa4:a374 with SMTP id d14-20020ac241ce000000b005131aa4a374mr87639lfi.2.1709930368982;
+        Fri, 08 Mar 2024 12:39:28 -0800 (PST)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id o3-20020a1709061b0300b00a45646a9e18sm150303ejg.76.2024.03.08.12.39.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 12:39:27 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4467d570cdso152970866b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 12:39:27 -0800 (PST)
+X-Received: by 2002:a17:906:4f82:b0:a45:5be1:6e20 with SMTP id
+ o2-20020a1709064f8200b00a455be16e20mr91471eju.23.1709930367225; Fri, 08 Mar
+ 2024 12:39:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/7] Additions to "Reimplement line-per-line pixel
- conversion for plane reading" series
-Content-Language: en-US
-To: Arthur Grillo <arthurgrillo@riseup.net>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- pekka.paalanen@haloniitty.fi, Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com, Pekka Paalanen <pekka.paalanen@collabora.com>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240308183816.676883229@goodmis.org>
+In-Reply-To: <20240308183816.676883229@goodmis.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 8 Mar 2024 12:39:10 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgsNgewHFxZAJiAQznwPMqEtQmi1waeS2O1v6L4c_Um5A@mail.gmail.com>
+Message-ID: <CAHk-=wgsNgewHFxZAJiAQznwPMqEtQmi1waeS2O1v6L4c_Um5A@mail.gmail.com>
+Subject: Re: [PATCH 0/6] tracing/ring-buffer: Fix wakeup of ring buffer waiters
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	joel@joelfernandes.org, linke li <lilinke99@qq.com>, Rabin Vincent <rabin@rab.in>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Arthur,
+On Fri, 8 Mar 2024 at 10:38, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> A patch was sent to "fix" the wait_index variable that is used to help with
+> waking of waiters on the ring buffer. The patch was rejected, but I started
+> looking at associated code. Discussing it on IRC with Mathieu Desnoyers
+> we discovered a design flaw.
 
-Would it be possible for you to coordinate with Louis and create a
-single series with all the modification?
+Honestly, all of this seems excessively complicated.
 
-I don't see a reason to submit fixes to a series that it is still
-on review.
+And your new locking shouldn't be necessary if you just do things much
+more simply.
 
-Best Regards,
-- Maíra
+Here's what I *think* you should do:
 
-On 3/6/24 17:03, Arthur Grillo wrote:
-> These are some patches that add some fixes/features to the series by
-> Louis Chauvet[1], it was based on top of the patches from v4.
-> 
-> Patches #2 and #3 should be amended to "[PATCH v4 11/14] drm/vkms: Add
-> YUV support". To make patch #3 work, we need patch #1. So, please, add
-> it before the patch that #2 and #3 amend to.
-> 
-> Patches #4 to #6 should be amended to "[PATCH v4 14/14] drm/vkms: Create
-> KUnit tests for YUV conversions". While doing the additions, I found
-> some compilation issues, so I fixed them (patch #4). That's when I
-> thought that it would be good to add some documentation on how to run
-> them (patch #7), this patch should be added to the series as new patch.
-> 
-> [1]: https://lore.kernel.org/r/20240304-yuv-v4-0-76beac8e9793@bootlin.com
-> 
-> To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> To: Melissa Wen <melissa.srw@gmail.com>
-> To: Maíra Canal <mairacanal@riseup.net>
-> To: Haneen Mohammed <hamohammed.sa@gmail.com>
-> To: Daniel Vetter <daniel@ffwll.ch>
-> To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> To: Maxime Ripard <mripard@kernel.org>
-> To: Thomas Zimmermann <tzimmermann@suse.de>
-> To: David Airlie <airlied@gmail.com>
-> To: arthurgrillo@riseup.net
-> To: Jonathan Corbet <corbet@lwn.net>
-> To: pekka.paalanen@haloniitty.fi
-> To: Louis Chauvet <louis.chauvet@bootlin.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: jeremie.dautheribes@bootlin.com
-> Cc: miquel.raynal@bootlin.com
-> Cc: thomas.petazzoni@bootlin.com
-> Cc: seanpaul@google.com
-> Cc: marcheu@google.com
-> Cc: nicolejadeyee@google.com
-> 
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> ---
-> Arthur Grillo (7):
->        drm: Fix drm_fixp2int_round() making it add 0.5
->        drm/vkms: Add comments
->        drm/vkmm: Use drm_fixed api
->        drm/vkms: Fix compilation issues
->        drm/vkms: Add comments to format tests
->        drm/vkms: Change the gray RGB representation
->        drm/vkms: Add how to run the Kunit tests
-> 
->   Documentation/gpu/vkms.rst                    |  11 +++
->   drivers/gpu/drm/vkms/tests/vkms_format_test.c |  81 +++++++++++++++++++--
->   drivers/gpu/drm/vkms/vkms_drv.h               |   4 +
->   drivers/gpu/drm/vkms/vkms_formats.c           | 101 +++++++++++++++++++-------
->   include/drm/drm_fixed.h                       |   2 +-
->   5 files changed, 165 insertions(+), 34 deletions(-)
-> ---
-> base-commit: 9658aba38ae9f3f3068506c9c8e93e85b500fcb4
-> change-id: 20240306-louis-vkms-conv-61362ff12ab8
-> 
-> Best regards,
+  struct xyz {
+        ...
+        atomic_t seq;
+        struct wait_queue_head seq_wait;
+        ...
+  };
+
+with the consumer doing something very simple like this:
+
+        int seq = atomic_read_acquire(&my->seq);
+        for (;;) {
+                .. consume outstanding events ..
+                seq = wait_for_seq_change(seq, my);
+        }
+
+and the producer being similarly trivial, just having a
+"add_seq_event()" at the end:
+
+        ... add whatever event ..
+        add_seq_event(my);
+
+And the helper functions for this are really darn simple:
+
+  static inline int wait_for_seq_change(int old, struct xyz *my)
+  {
+        int new;
+        wait_event(my->seq_wait,
+                (new = atomic_read_acquire(&my->seq)) != old);
+        return new;
+  }
+
+  static inline void add_seq_event(struct xyz *my)
+  {
+        atomic_fetch_inc_release(&my->seq);
+        wake_up(&my->seq_wait);
+  }
+
+Note how you don't need any new locks, and note how "wait_event()"
+will do all the required optimistic stuff for you (ie it will check
+that "has seq changed" before even bothering to add itself to the wait
+queue etc).
+
+So the above is not only short and sweet, it generates fairly good
+code too, and doesn't it look really simple and fairly understandable?
+
+And - AS ALWAYS - the above isn't actually tested in any way, shape or form.
+
+                 Linus
 
