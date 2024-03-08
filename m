@@ -1,360 +1,136 @@
-Return-Path: <linux-kernel+bounces-96973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75D6C8763F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:07:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F32D8763FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997A91C2102A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:07:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21BB0B21B8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 807CB56763;
-	Fri,  8 Mar 2024 12:06:52 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F965675B;
+	Fri,  8 Mar 2024 12:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cgv0mAg3"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DF656479;
-	Fri,  8 Mar 2024 12:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CA656444;
+	Fri,  8 Mar 2024 12:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709899611; cv=none; b=eu6zkUS08Rm70Hm3OnC9q3G5pHOyxttiKWcOPy8tVsfNWcL51TrqRMLCgJi4yHUIGR++23z1crzSOJ5cv+Sx2cohM35EcjlzS29GmQlQB2zJo0woGXn0YKAn0qIf9v6MImBm12QfQ0qhvTYFQ40Hb6hw+FIZ+wna5fnPsQr+OZM=
+	t=1709899651; cv=none; b=Dl/ijSDxityaQrwJYc644h/gr5YVHhNE0PTuJEL6l345ASzB53KpJPkhCuxd8e0JRl3E2DyGhAaO9+YuB4OZCwIWz4Z+PGaMw8tUX4DKHQ0L+F7QZUi18mkPzNiK4+4UnPZrU2XUSsLb7Zmd0ezYPO/a90fSGQVhmOoeXz1c4BQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709899611; c=relaxed/simple;
-	bh=lDiJ+OuhkNNnrDaX3PW12FBioVoG/J+HJD7BBgLPdgo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kiG3NDBVLumFnjEgMHwPXdMQ/c7i8NsN2cjdnp22BDHUG1mExUci5DNm+i9MioRqhM/O2LUM5OTu+xNs3TPXgU+Oq2IvPZ5GAjrnXZIbZdj73lUoZEhZNBkv/xG5VrDbSat4MzMJycDAPj/Bj3kAoil2UnysOrGQiwD8SlLCTmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D87FFC433C7;
-	Fri,  8 Mar 2024 12:06:47 +0000 (UTC)
-Message-ID: <56368a0d-6ada-4ab6-8389-b4bd20d6efc4@xs4all.nl>
-Date: Fri, 8 Mar 2024 13:06:46 +0100
+	s=arc-20240116; t=1709899651; c=relaxed/simple;
+	bh=xpgMoZKks9BX+yecW9htcqCKyTMNBB0o2ne0EdbkE/s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=O13bVdE+tmkpR+cQDYOrlJxmVkC+4EN4SrysTzggrAN1ptFF4e6Pfb99tJuCHEmLvrQz3VrnDbDNCKmV4TPkNl4czrnOzaDIXx/MdJ4ENGAmW4ikkBroQ8Cpf6J7o28sg0IoW83sSyTWoHBYyyQDK0zSEmlW5Kv7i0nMA0lamlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cgv0mAg3; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33e2248948bso1285658f8f.0;
+        Fri, 08 Mar 2024 04:07:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709899648; x=1710504448; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bJ1KNA3ECIGK6xtavH6nbPGIymjpc0HF4am1jvZwZlA=;
+        b=Cgv0mAg3MJeTFRGnDVaJewgI//5c0j44A9JS9B5taTmEC1Uu0iNFQgx25UO+FS7qfe
+         UKRrzfVXOoKHmT/erWzrR5GVceaPV1BJwr4L86TInU43ZwtKswaK05naC4WB1jOvmLPW
+         tDoB29ArlNmYJopAvS2W7Q0RsEiPFLWvFMqPhFSXAf+cihw12m7Jfnqs7pSuA9Nyd2NH
+         zspERffsMTgY2VHRBzjWZ7EqPPdYAVlsAnqF/auRBce3v7RLPj3UcpqBNLm26MqI/cRb
+         on9Hbn3KoXCX4joLIQAtE2CCE16Gaie/2OsMdtNQApcep6qBxFotrMu1ba8gDMeqEIYr
+         k+fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709899648; x=1710504448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bJ1KNA3ECIGK6xtavH6nbPGIymjpc0HF4am1jvZwZlA=;
+        b=Z6CU8GM331ry6i31reldYjRfoDAbHh3ul3ccNxpmlO8LRsRkeBQ+SgqrX8bxgsY7E/
+         PkU7gmkpv+a59rNJ/qkrnQeQbMICsJFcYsXJlU4l1SUlC5FTV2L2B+sqjssIE1R6jOA5
+         XyIcKKrN7ydDiFTZJZbMVYETlvY2xuG1E3gZuDTo+HS4Pb7c/PfG5fZ2awLgREwv9dGM
+         YWitCMolUw7VOBvghf5+jyF/YIKFai6YJrtDHqKckvYVWmt0T26UvFlIuYum7LE+XSgY
+         L9pGvrUJ2hQ23C4Ff06gZVBj/RkWNf7XhA/9q7kv2oUW7dUxONe8nbde8j58vyxV5nPt
+         zcHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDu8WZSNlxhkVzg5uJN6O9UwSdML7XXRaTTniApbvX86XJpw5B+faaX+0oN0BVXFibPbCI1XdghtL+wehZ4x2GOjJau0f6Kqzctf2nmiJjYunRIL31KFPeLmiqRM5VnxU3
+X-Gm-Message-State: AOJu0YyArWxppgDnKw4ubL9Yi1Yeqw7P/qanu0pDNe2pWbDCDccFYGSW
+	r+eBJ5D+6zOe7Xux/nKcQssijLpexpblZYId1skM7CB65mF50kk7
+X-Google-Smtp-Source: AGHT+IEYmiZPNYb4tb5aFQEwdgg7/WvYPJsIJNgKu5Iem/TEUBVrAivU1wZ85SOt2jPziDMQcIyaxg==
+X-Received: by 2002:adf:da48:0:b0:33e:1f94:7aa5 with SMTP id r8-20020adfda48000000b0033e1f947aa5mr15921901wrl.54.1709899647638;
+        Fri, 08 Mar 2024 04:07:27 -0800 (PST)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id bs3-20020a056000070300b0033d4c3b0beesm23297364wrb.19.2024.03.08.04.07.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Mar 2024 04:07:26 -0800 (PST)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next] bpf: cap BPF_PROG_PACK_SIZE to 2MB * num_possible_nodes()
+Date: Fri,  8 Mar 2024 12:07:12 +0000
+Message-Id: <20240308120712.88122-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 09/16] media: uapi: Define audio sample format fourcc
- type
-Content-Language: en-US, nl
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
- tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-References: <1708936109-11587-1-git-send-email-shengjiu.wang@nxp.com>
- <1708936109-11587-10-git-send-email-shengjiu.wang@nxp.com>
- <df05261f-2f0e-490f-883b-72ad8a02d11b@xs4all.nl>
- <CAA+D8AMJOCfp6WdqYqy7KSj=mX9o_D5U-aF6Wn=3cOnhWg7VDg@mail.gmail.com>
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <CAA+D8AMJOCfp6WdqYqy7KSj=mX9o_D5U-aF6Wn=3cOnhWg7VDg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 08/03/2024 12:52 pm, Shengjiu Wang wrote:
-> On Fri, Mar 8, 2024 at 3:34 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>
->> Hi Shengjiu,
->>
->> After thinking it over I think this patch can be improved:
->>
->> On 26/02/2024 9:28 am, Shengjiu Wang wrote:
->>> The audio sample format definition is from alsa,
->>> the header file is include/uapi/sound/asound.h, but
->>> don't include this header file directly, because in
->>> user space, there is another copy in alsa-lib.
->>> There will be conflict in userspace for include
->>> videodev2.h & asound.h and asoundlib.h
->>>
->>> Here still use the fourcc format.
->>>
->>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
->>> ---
->>>  .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++++
->>>  .../userspace-api/media/v4l/pixfmt.rst        |  1 +
->>>  drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
->>>  include/uapi/linux/videodev2.h                | 23 +++++
->>>  4 files changed, 124 insertions(+)
->>>  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
->>>
->>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
->>> new file mode 100644
->>> index 000000000000..04b4a7fbd8f4
->>> --- /dev/null
->>> +++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
->>> @@ -0,0 +1,87 @@
->>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
->>> +
->>> +.. _pixfmt-audio:
->>> +
->>> +*************
->>> +Audio Formats
->>> +*************
->>> +
->>> +These formats are used for :ref:`audiomem2mem` interface only.
->>
->> Here you should also document that all these fourccs start with 'AU' and are
->> reserved for mappings of the snd_pcm_format_t type.
->>
->> Also document the v4l2_fourcc_to_audfmt define and the v4l2_audfmt_to_fourcc
->> define (see also below).
-> 
-> How about below description?
-> '
-> All these fourccs starting with 'AU' are reserved for mappings
+On some architectures like ARM64, PMD_SIZE can be really large in some
+configurations. Like with CONFIG_ARM64_64K_PAGES=y the PMD_SIZE is
+512MB.
 
-All these fourccs -> All FourCCs
+Use 2MB * num_possible_nodes() as the upper limit for allocations done
+through the prog pack allocator.
 
-> of the snd_pcm_format_t type.
-> 
-> The v4l2_audfmt_to_fourcc() is defined to convert snd_pcm_format_t
+Fixes: ea2babac63d4 ("bpf: Simplify bpf_prog_pack_[size|mask]")
+Reported-by: "kernelci.org bot" <bot@kernelci.org>
+Closes: https://lore.kernel.org/all/7e216c88-77ee-47b8-becc-a0f780868d3c@sirena.org.uk/
+Suggested-by: Song Liu <song@kernel.org>
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ kernel/bpf/core.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-convert -> convert the
-
-> type to fourcc. The first character is 'A', the second character
-
-fourcc -> a FourCC
-
-> is 'U', the third character is ten's digit of snd_pcm_format_t,
-> the fourth character is unit's digit of snd_pcm_format_t.
-
-"is 'U', and the remaining two characters is the snd_pcm_format_t
-value in ASCII. Example: SNDRV_PCM_FORMAT_S16_LE (with value 2)
-maps to 'AU02' and SNDRV_PCM_FORMAT_S24_3LE (with value 32) maps
-to 'AU32'."
-
-> 
-> The v4l2_fourcc_to_audfmt() is defined to convert these fourccs to
-
-fourccs -> FourCCs
-
-> snd_pcm_format_t type.
-
-BTW, given the way snd_pcm_format_t is defined I am fairly certain
-some casts are needed for the v4l2_audfmt_to_fourcc define.
-
-Regards,
-
-	Hans
-
-> '
-> Best regards
-> Shengjiu Wang
->>
->>> +
->>> +.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
->>> +
->>> +.. cssclass:: longtable
->>> +
->>> +.. flat-table:: Audio Format
->>> +    :header-rows:  1
->>> +    :stub-columns: 0
->>> +    :widths:       3 1 4
->>> +
->>> +    * - Identifier
->>> +      - Code
->>> +      - Details
->>> +    * .. _V4L2-AUDIO-FMT-S8:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_S8``
->>> +      - 'S8'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-S16-LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_S16_LE``
->>> +      - 'S16_LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_S16_LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-U16-LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_U16_LE``
->>> +      - 'U16_LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_U16_LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-S24-LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_S24_LE``
->>> +      - 'S24_LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_S24_LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-U24-LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_U24_LE``
->>> +      - 'U24_LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_U24_LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-S32-LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_S32_LE``
->>> +      - 'S32_LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_S32_LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-U32-LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_U32_LE``
->>> +      - 'U32_LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_U32_LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-FLOAT-LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_FLOAT_LE``
->>> +      - 'FLOAT_LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_FLOAT_LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-IEC958-SUBFRAME-LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE``
->>> +      - 'IEC958_SUBFRAME_LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-S24-3LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_S24_3LE``
->>> +      - 'S24_3LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-U24-3LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_U24_3LE``
->>> +      - 'U24_3LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_U24_3LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-S20-3LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_S20_3LE``
->>> +      - 'S20_3LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
->>> +    * .. _V4L2-AUDIO-FMT-U20-3LE:
->>> +
->>> +      - ``V4L2_AUDIO_FMT_U20_3LE``
->>> +      - 'U20_3LE'
->>> +      - Corresponds to SNDRV_PCM_FORMAT_U20_3LE in ALSA
->>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt.rst b/Documentation/userspace-api/media/v4l/pixfmt.rst
->>> index 11dab4a90630..2eb6fdd3b43d 100644
->>> --- a/Documentation/userspace-api/media/v4l/pixfmt.rst
->>> +++ b/Documentation/userspace-api/media/v4l/pixfmt.rst
->>> @@ -36,3 +36,4 @@ see also :ref:`VIDIOC_G_FBUF <VIDIOC_G_FBUF>`.)
->>>      colorspaces
->>>      colorspaces-defs
->>>      colorspaces-details
->>> +    pixfmt-audio
->>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
->>> index 961abcdf7290..be229c69e991 100644
->>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
->>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
->>> @@ -1471,6 +1471,19 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
->>>       case V4L2_PIX_FMT_Y210:         descr = "10-bit YUYV Packed"; break;
->>>       case V4L2_PIX_FMT_Y212:         descr = "12-bit YUYV Packed"; break;
->>>       case V4L2_PIX_FMT_Y216:         descr = "16-bit YUYV Packed"; break;
->>> +     case V4L2_AUDIO_FMT_S8:         descr = "8-bit Signed"; break;
->>> +     case V4L2_AUDIO_FMT_S16_LE:     descr = "16-bit Signed LE"; break;
->>> +     case V4L2_AUDIO_FMT_U16_LE:             descr = "16-bit Unsigned LE"; break;
->>> +     case V4L2_AUDIO_FMT_S24_LE:             descr = "24(32)-bit Signed LE"; break;
->>> +     case V4L2_AUDIO_FMT_U24_LE:             descr = "24(32)-bit Unsigned LE"; break;
->>> +     case V4L2_AUDIO_FMT_S32_LE:             descr = "32-bit Signed LE"; break;
->>> +     case V4L2_AUDIO_FMT_U32_LE:             descr = "32-bit Unsigned LE"; break;
->>> +     case V4L2_AUDIO_FMT_FLOAT_LE:           descr = "32-bit Float LE"; break;
->>> +     case V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE: descr = "32-bit IEC958 LE"; break;
->>> +     case V4L2_AUDIO_FMT_S24_3LE:            descr = "24(24)-bit Signed LE"; break;
->>> +     case V4L2_AUDIO_FMT_U24_3LE:            descr = "24(24)-bit Unsigned LE"; break;
->>> +     case V4L2_AUDIO_FMT_S20_3LE:            descr = "20(24)-bit Signed LE"; break;
->>> +     case V4L2_AUDIO_FMT_U20_3LE:            descr = "20(24)-bit Unsigned LE"; break;
->>>
->>>       default:
->>>               /* Compressed formats */
->>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->>> index 2c03d2dfadbe..673a6235a029 100644
->>> --- a/include/uapi/linux/videodev2.h
->>> +++ b/include/uapi/linux/videodev2.h
->>> @@ -843,6 +843,29 @@ struct v4l2_pix_format {
->>>  #define V4L2_META_FMT_RK_ISP1_PARAMS v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
->>>  #define V4L2_META_FMT_RK_ISP1_STAT_3A        v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
->>>
->>> +/*
->>> + * Audio-data formats
->>> + * All these audio formats use a fourcc starting with 'AU'
->>> + * followed by the SNDRV_PCM_FORMAT_ value from asound.h.
->>
->> Also document here that fourccs starting with 'AU' are reserved for
->> the snd_pcm_format_t to fourcc mappings.
->>
->> That to avoid that someone adds a 'AUXX' fourcc later.
->>
->>> + */
->>> +#define V4L2_AUDIO_FMT_S8                    v4l2_fourcc('A', 'U', '0', '0')
->>> +#define V4L2_AUDIO_FMT_S16_LE                        v4l2_fourcc('A', 'U', '0', '2')
->>> +#define V4L2_AUDIO_FMT_U16_LE                        v4l2_fourcc('A', 'U', '0', '4')
->>> +#define V4L2_AUDIO_FMT_S24_LE                        v4l2_fourcc('A', 'U', '0', '6')
->>> +#define V4L2_AUDIO_FMT_U24_LE                        v4l2_fourcc('A', 'U', '0', '8')
->>> +#define V4L2_AUDIO_FMT_S32_LE                        v4l2_fourcc('A', 'U', '1', '0')
->>> +#define V4L2_AUDIO_FMT_U32_LE                        v4l2_fourcc('A', 'U', '1', '2')
->>> +#define V4L2_AUDIO_FMT_FLOAT_LE                      v4l2_fourcc('A', 'U', '1', '4')
->>> +#define V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE    v4l2_fourcc('A', 'U', '1', '8')
->>> +#define V4L2_AUDIO_FMT_S24_3LE                       v4l2_fourcc('A', 'U', '3', '2')
->>> +#define V4L2_AUDIO_FMT_U24_3LE                       v4l2_fourcc('A', 'U', '3', '4')
->>> +#define V4L2_AUDIO_FMT_S20_3LE                       v4l2_fourcc('A', 'U', '3', '6')
->>> +#define V4L2_AUDIO_FMT_U20_3LE                       v4l2_fourcc('A', 'U', '3', '8')
->>> +
->>> +#define v4l2_fourcc_to_audfmt(fourcc)        \
->>> +     (__force snd_pcm_format_t)(((((fourcc) >> 16) & 0xff) - '0') * 10  \
->>> +                                + ((((fourcc) >> 24) & 0xff) - '0'))
->>> +
->>
->> As I suggested in an earlier reply, add this:
->>
->> #define v4l2_audfmt_to_fourcc(audfmt) \
->>         v4l2_fourcc('A', 'U', '0' + (audfmt) / 10, '0' + (audfmt) % 10)
->>
->> Even though it is not used in the drivers, since this is a public header used
->> by drivers and applications, it makes sense to provide the reverse mapping as well.
->>
->> Please test it in actual code to make sure there are no compilation warnings.
->>
->> Regards,
->>
->>         Hans
->>
->>>  /* priv field value to indicates that subsequent fields are valid. */
->>>  #define V4L2_PIX_FMT_PRIV_MAGIC              0xfeedcafe
->>>
->>
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 134b7979f537..83a3b6964e54 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -893,8 +893,17 @@ static LIST_HEAD(pack_list);
+  * CONFIG_MMU=n. Use PAGE_SIZE in these cases.
+  */
+ #ifdef PMD_SIZE
++/*
++ * PMD_SIZE is really big for some archs. It doesn't make sense to
++ * reserve too much memory in one allocation. Cap BPF_PROG_PACK_SIZE to
++ * 2MiB * num_possible_nodes().
++ */
++#if PMD_SIZE <= (1 << 21)
+ #define BPF_PROG_PACK_SIZE (PMD_SIZE * num_possible_nodes())
+ #else
++#define BPF_PROG_PACK_SIZE ((1 << 21) * num_possible_nodes())
++#endif
++#else
+ #define BPF_PROG_PACK_SIZE PAGE_SIZE
+ #endif
+ 
+-- 
+2.40.1
 
 
