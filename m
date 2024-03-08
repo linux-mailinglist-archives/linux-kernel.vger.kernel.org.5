@@ -1,104 +1,192 @@
-Return-Path: <linux-kernel+bounces-96390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34EC8875B82
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:22:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5277F875B89
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C09E71F21CEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:22:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 771021C20EDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:25:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4712DA95B;
-	Fri,  8 Mar 2024 00:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12380ED0;
+	Fri,  8 Mar 2024 00:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Z/u8FdXh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RHvKvv5h"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6536B7FA;
-	Fri,  8 Mar 2024 00:21:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD6E163;
+	Fri,  8 Mar 2024 00:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709857260; cv=none; b=o1uzKrLFlSzmktDglYtex29lnJQyoJpZJ+zTbJSmBlH6DhgrcVMbjP7m3w5Yw00c0EcdzpvOzqclubbh29bIS3R1V9tkLftZLMrFkP+hwZGs7m/N6xACvwrRt0FRGzh6tMbgEXL98JKQKVBs44q4Hiy/5mO3gg/vCvZjTlvzy+s=
+	t=1709857531; cv=none; b=l5RsBzneC67X1x5IJOcCiSAZVdnIcS5uPDqr8YguD8id6aNZBQReTE5DOCbAlxpAdMh45qncE1IIGZqpR1JHaN1QyDkEfcr7N6E9MBdL+db9lN1IyKYbaacuQ5lQZBo8aPWVBV/K5YtKSOrzBdxjTVGB2WkW2kAenyUoCI90aOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709857260; c=relaxed/simple;
-	bh=+DB3tcg7Y6Q7phULhwzq4x6wxv0/xrGVKJN9EcGfwpQ=;
-	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type; b=iN/k/5qU7pIMwlPJpzPRsvoFV4tE4wcgSRxPRxB3ww9GUHqU1EMgMvf/TiBbr2f0GZ1uHjuai3U6ylbXq4X3LOBFRDgdAAO+avhderXjzK7cnmXPS1vV41mVeLsjkTuR2ici0AZUF9PwrGPVAIBtzCOw3T963kP8D5rsxOu03+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Z/u8FdXh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD70EC433C7;
-	Fri,  8 Mar 2024 00:20:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1709857259;
-	bh=+DB3tcg7Y6Q7phULhwzq4x6wxv0/xrGVKJN9EcGfwpQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Z/u8FdXhN9aKSGIqwDk49GmtVvQq6jSu1gopB9bJZ6kGBinGn2FAesHXkXOWYcBXv
-	 3xlNUCfnZiU1S/WPugFQRis9oLIhOwS3SJH7S09Zt9RljSX9CNsgI0fRsaDooY1tpI
-	 nc5hqx6hMBSd64ontCuznJbjMvUGKG8xq9fm6Tag=
-Date: Thu, 7 Mar 2024 16:20:59 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- mm-commits@vger.kernel.org
-Subject: [GIT PULL] hotfixes for 6.8
-Message-Id: <20240307162059.88fcc2a013c9ce1f3f72042d@linux-foundation.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709857531; c=relaxed/simple;
+	bh=NoWiEoGffuJezyZWQ17Um+qaB1+8zBLrVs97fy9ve34=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BDSHklF7/qBACaj/PdG6StH+WFOQhwGh/7/yVq97ycYHiRflhxhG4q+F62/SaMO1QPSSiuHS2AykjK4T3ycSjtMA/giJAVNm1weQTfFdW/BUJdbakXNRqvzsZ6fRLUwnFY/92eZCC/tsJCu5bvPKm1vN9JF2l4CQMPIjHPxjJy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RHvKvv5h; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e55b33ad14so943978b3a.1;
+        Thu, 07 Mar 2024 16:25:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709857527; x=1710462327; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fGA5+tZzMeOjlHUhcX3WLJZzgdRHTP/pyb/RcLBJvao=;
+        b=RHvKvv5hWIpIKkiqAgBaX/3R7rCX9f48N4UK193aoLf8F5L+SZ+cbwpnO5cJBnmSEL
+         zWFF4maCXqwirfq53NZh6M3OPxVvBl9ZEAOxpHzyZm6p7klv36q2y76kFA+VpwQZDBRO
+         adYWmQKPJY23DbHTmTHmzVsB45MQkyUusQoGA6SexiPVgSkeJvxH8aNAQeqsB6DJCYkk
+         +U2sdCC0Whb7qIFFXHiXVs5FPMRMSjNxdqPs/sssTN2uGSVUCODwwfiZ8529rNagXa36
+         vd9jAUBEoAftRboSFJwcw2oA2QOfk+YgDJ1y92ASq4glDOccga1bptS0abt147696cCH
+         BWPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709857527; x=1710462327;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fGA5+tZzMeOjlHUhcX3WLJZzgdRHTP/pyb/RcLBJvao=;
+        b=TyuhsAPuo2L2vCbFNgDzeciNTjDOZEkglShFZ5WMaQIBSZoglShqaT1ikYg7izeFAq
+         pz7AqMrXqbnrHDz18KmWu37vwZVl/L9/rKUwN2GQ7dy/4aBvy8mtp7+eib92lqd2KMC8
+         z9p4UisYphZskiVFKGgXLppUNMCDMlcL1LW6ASgJb9b6RjPMHlLzKjZrVzWv3Gj7ysPf
+         H738axSAUB+l734Mbx7jbdo5TlvYKhv9suQnQLiiSG84S3xguJzsh64bl+oTv/W4DNDQ
+         jCJH9h2uSelkqNrxxc9S74PxDD3WX3ubug9EyafXzl9SwR4Ek33yJT7aAxZ+TFlSY0sU
+         OhkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdyRljzXFUxt+LFFXIDW/ZGJIqASgeLgbsPjq+JIo6rJb0+8kj9cKfruekijicZzCsKQut9E/VKfrwZxX+YmDxmAE3hjyPPV6oXjWbb97h70H+adiyOoUdPzj+tkuN5laurBIAAkBl
+X-Gm-Message-State: AOJu0YyC57z/NdYkLdoiI4i2/RfUnan4WD93kEfPj71anfNqJGtT1U04
+	kAbXIspsO1ZjPi4WIoBvMAYqAk4ZZYxHmoLN9dbOFf3oyPFGtUmI
+X-Google-Smtp-Source: AGHT+IE1/ntw3jlhoAiRluZaxPT+dxi/Syac8xM/yjVl3j8vj5lcBMBvjRqmvZOc1eiTyLawL98Fgg==
+X-Received: by 2002:a05:6a20:a106:b0:1a1:82fc:94e2 with SMTP id q6-20020a056a20a10600b001a182fc94e2mr145477pzk.44.1709857527115;
+        Thu, 07 Mar 2024 16:25:27 -0800 (PST)
+Received: from localhost ([2601:644:9381:2f20::5510])
+        by smtp.gmail.com with ESMTPSA id p12-20020aa7860c000000b006e50e79f155sm13050105pfn.60.2024.03.07.16.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 16:25:26 -0800 (PST)
+From: Matthew Wood <thepacketgeek@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Breno Leitao <leitao@debian.org>
+Cc: netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v4] net: netconsole: Add continuation line prefix to userdata messages
+Date: Thu,  7 Mar 2024 16:25:24 -0800
+Message-ID: <20240308002525.248672-1-thepacketgeek@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
+Add a space (' ') prefix to every userdata line to match docs for
+dev-kmsg. To account for this extra character in each userdata entry,
+reduce userdata entry names (directory name) from 54 characters to 53.
 
-Linus, please merge this small batch of hotfixes, thanks.
+According to the dev-kmsg docs, a space is used for subsequent lines to
+mark them as continuation lines.
 
+> A line starting with ' ', is a continuation line, adding
+> key/value pairs to the log message, which provide the machine
+> readable context of the message, for reliable processing in
+> userspace.
 
-The following changes since commit 720da1e593b85a550593b415bf1d79a053133451:
+Testing for this patch::
 
-  mm/debug_vm_pgtable: fix BUG_ON with pud advanced test (2024-02-23 17:27:13 -0800)
+ cd /sys/kernel/config/netconsole && mkdir cmdline0
+ cd cmdline0
+ mkdir userdata/test && echo "hello" > userdata/test/value
+ mkdir userdata/test2 && echo "hello2" > userdata/test2/value
+ echo "message" > /dev/kmsg
 
-are available in the Git repository at:
+Outputs::
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2024-03-07-16-17
+ 6.8.0-rc5-virtme,12,493,231373579,-;message
+  test=hello
+  test2=hello2
 
-for you to fetch changes up to ded79af42f114bb89f8e90c8e7337f5b7bb5f015:
+And I confirmed all testing works as expected from the original patchset
 
-  scripts/gdb/symbols: fix invalid escape sequence warning (2024-03-07 16:14:19 -0800)
+Fixes: df03f830d099 ("net: netconsole: cache userdata formatted string in netconsole_target")
+Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+---
+ Documentation/networking/netconsole.rst |  8 ++++----
+ drivers/net/netconsole.c                | 12 +++++++-----
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
-----------------------------------------------------------------
-6 hotfixes.  4 are cc:stable and the remainder pertain to post-6.7
-issues or aren't considered to be needed in earlier kernel versions.
-
-----------------------------------------------------------------
-Andrew Ballance (1):
-      scripts/gdb/symbols: fix invalid escape sequence warning
-
-Kees Cook (1):
-      init/Kconfig: lower GCC version check for -Warray-bounds
-
-Niklas Cassel (1):
-      mailmap: fix Kishon's email
-
-Qi Zheng (1):
-      mm: userfaultfd: fix unexpected change to src_folio when UFFDIO_MOVE fails
-
-Vlastimil Babka (2):
-      mm, vmscan: prevent infinite loop for costly GFP_NOIO | __GFP_RETRY_MAYFAIL allocations
-      mm, mmap: fix vma_merge() case 7 with vma_ops->close
-
- .mailmap                     |  1 +
- include/linux/gfp.h          |  9 +++++++++
- init/Kconfig                 |  6 +++---
- mm/compaction.c              |  7 +------
- mm/mmap.c                    | 10 +++++++++-
- mm/page_alloc.c              | 10 ++++++----
- mm/userfaultfd.c             |  6 +++---
- mm/vmscan.c                  |  5 ++++-
- scripts/gdb/linux/symbols.py |  2 +-
- 9 files changed, 37 insertions(+), 19 deletions(-)
+diff --git a/Documentation/networking/netconsole.rst b/Documentation/networking/netconsole.rst
+index b28c525e5d1e..d55c2a22ec7a 100644
+--- a/Documentation/networking/netconsole.rst
++++ b/Documentation/networking/netconsole.rst
+@@ -180,7 +180,7 @@ Custom user data can be appended to the end of messages with netconsole
+ dynamic configuration enabled. User data entries can be modified without
+ changing the "enabled" attribute of a target.
+ 
+-Directories (keys) under `userdata` are limited to 54 character length, and
++Directories (keys) under `userdata` are limited to 53 character length, and
+ data in `userdata/<key>/value` are limited to 200 bytes::
+ 
+  cd /sys/kernel/config/netconsole && mkdir cmdline0
+@@ -197,8 +197,8 @@ Messages will now include this additional user data::
+ Sends::
+ 
+  12,607,22085407756,-;This is a message
+- foo=bar
+- qux=baz
++  foo=bar
++  qux=baz
+ 
+ Preview the userdata that will be appended with::
+ 
+@@ -218,7 +218,7 @@ The `qux` key is omitted since it has no value::
+ 
+  echo "This is a message" > /dev/kmsg
+  12,607,22085407756,-;This is a message
+- foo=bar
++  foo=bar
+ 
+ Delete `userdata` entries with `rmdir`::
+ 
+diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+index 0de108a1c0c8..d7070dd4fe73 100644
+--- a/drivers/net/netconsole.c
++++ b/drivers/net/netconsole.c
+@@ -42,12 +42,14 @@ MODULE_AUTHOR("Maintainer: Matt Mackall <mpm@selenic.com>");
+ MODULE_DESCRIPTION("Console driver for network interfaces");
+ MODULE_LICENSE("GPL");
+ 
+-#define MAX_PARAM_LENGTH	256
+-#define MAX_USERDATA_NAME_LENGTH	54
+-#define MAX_USERDATA_VALUE_LENGTH	200
++#define MAX_PARAM_LENGTH		256
+ #define MAX_USERDATA_ENTRY_LENGTH	256
++#define MAX_USERDATA_VALUE_LENGTH	200
++/* The number 3 comes from userdata entry format characters (' ', '=', '\n') */
++#define MAX_USERDATA_NAME_LENGTH	(MAX_USERDATA_ENTRY_LENGTH - \
++					MAX_USERDATA_VALUE_LENGTH - 3)
+ #define MAX_USERDATA_ITEMS		16
+-#define MAX_PRINT_CHUNK		1000
++#define MAX_PRINT_CHUNK			1000
+ 
+ static char config[MAX_PARAM_LENGTH];
+ module_param_string(netconsole, config, MAX_PARAM_LENGTH, 0);
+@@ -671,7 +673,7 @@ static void update_userdata(struct netconsole_target *nt)
+ 		 * checked to not exceed MAX items with child_count above
+ 		 */
+ 		complete_idx += scnprintf(&nt->userdata_complete[complete_idx],
+-					  MAX_USERDATA_ENTRY_LENGTH, "%s=%s\n",
++					  MAX_USERDATA_ENTRY_LENGTH, " %s=%s\n",
+ 					  item->ci_name, udm_item->value);
+ 	}
+ 	nt->userdata_length = strnlen(nt->userdata_complete,
+-- 
+2.44.0
 
 
