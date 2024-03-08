@@ -1,84 +1,122 @@
-Return-Path: <linux-kernel+bounces-96437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09665875C16
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:48:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03AB9875C17
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AAE51C2152D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:48:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B42FB282DDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A2E23741;
-	Fri,  8 Mar 2024 01:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QM/8XK+E"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DEC2263A;
+	Fri,  8 Mar 2024 01:48:50 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395222134A;
-	Fri,  8 Mar 2024 01:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3142420B;
+	Fri,  8 Mar 2024 01:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709862513; cv=none; b=KS0ozCJshmCQmTu9oefgUoLlHE7/FJMIo7hX1FMpP+sYE9V/kT3Nsw7xOMu/kc7HJtQEHOiYkWXtln9Kx3S/HGR9g+zGzxN7RAbMY3Ox+UR78OdZyEE+/nUcprp2vm+/a+t/WzG8ntbXT+H049GDs2Rmms2DpTBgTtq5Z80gFY4=
+	t=1709862530; cv=none; b=F8X6ZiHyPQtH1PGGs1xMtgcrsQKdk8HxiIzEMTzuHONvWbc1Wa/SOu4kjTZT+JVSD8Oa24JPFfEpCBtGhvmtbprTBqhFgl/5YJ0UHuvh6WUzCmTsvJo5rmigFTbV9pMlsAvWLyYNMFo6L3IJk39ozn/m/AKrUbPawsRpzRZ1kWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709862513; c=relaxed/simple;
-	bh=kZ5SHKDJ8Skr/N7XxcifcmmAO0LJXEYjTOAY6vdiggs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MnT2j9WSpuaNEwL5kVraq8tvn9wxKZZBJlWgqtHnNfNagNR+WrJSIb00uRw5Yw1EpLqlbHGeTCbziXnQr6KLjd+J2GFN51c/EtaCrimeyUHAzyc4EzrQ8EYOzbSLxZVwoGicfU/rJiX3Ct44OuqV6tSX8J7WDMJo7ppHwzYXIIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QM/8XK+E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06B46C433C7;
-	Fri,  8 Mar 2024 01:48:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709862513;
-	bh=kZ5SHKDJ8Skr/N7XxcifcmmAO0LJXEYjTOAY6vdiggs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=QM/8XK+E9TR9WeXmOjIg73Ojis85ecaIVjttRIzp4JfgbTgsdSUJeIETrh9surixT
-	 lg4juEIB4OCdkC4hQ45FbQBwGP8eQ7c+IsJoFl4YaCW3MeKPwKUr79lkn0RF+wsdEj
-	 hdAb2ltaW7cT2U/cKUu1uTun9DXFt8YK63eIUGq+EmLNRxK6QW5k+I6+JbFQhrsy/o
-	 aSxFikWEoBNgBRyGB476K8s7ZCfuXerwM/zQglv6BuyUfyldDbcMOD7Rr3tmQcitxl
-	 PRmPmrVFtRkPPSBZ52ya7M8YC4NZ0urD77x6FT1q2ldx2Dt/fwFE5SMw8bz9hw/6UC
-	 fKYoTQ4DSWaVQ==
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d208be133bso3644581fa.2;
-        Thu, 07 Mar 2024 17:48:32 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV5EDN5WbQvAepGT/0j92xM1rJcyeU6z/uYESslkl5VCBd8PuQ+Zio79qgEBWoK7X8mu6l/8njSgQhyLE6FB7lj0x+Npf05OAaJgZvjPrhL6uL1aY94xodlUR/g8vcN4K5QqSNLuRFs5EZJa6NMf3XVbCVhg+/ZH9kUsKijf6bPcpObTnlU
-X-Gm-Message-State: AOJu0YzKXuhgiTQcW2dfW7VfZXlleDxngdtiz8vGURjOEUAscySrxDZJ
-	C5q3gkJhe1+t/tOnqTDCQqstCgVivp+2rTr9EIU0ExO7PI2Lv8sXZB5EGhmHqt8pygGkDnqUcIg
-	XLQObzjanI6+2mwsw5TzHfywpuds=
-X-Google-Smtp-Source: AGHT+IHVXAjkM9sta9OiKBdvLifC7AinwKanBZx08/VEzYkb61ZLfoxNF6qOes4GMWiCSbDnzeTOgz2gB9Leq+qrp5Y=
-X-Received: by 2002:a2e:7815:0:b0:2d2:6d19:75ff with SMTP id
- t21-20020a2e7815000000b002d26d1975ffmr2372320ljc.50.1709862511109; Thu, 07
- Mar 2024 17:48:31 -0800 (PST)
+	s=arc-20240116; t=1709862530; c=relaxed/simple;
+	bh=ofSIEp5CwaZZFkWkQrZ9LK1wrqP7l0qC/vb6L14yvhE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=g0talkvn9mxUeL4qeX8lbLrT20eHFQlwnVkF0BRIxJyLoTYk3iZ8hWvOYSlTL7+gKI8KravHiU/QqykSEbAtdN2yK+c8rLRJYIrqO+rzzGttUxH/kH9RRefaafZKKOrH+H2jj/JMStVivc5tiPeMTn8m7N9j+ftwLsFIlbpSqnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60945C433C7;
+	Fri,  8 Mar 2024 01:48:49 +0000 (UTC)
+Date: Thu, 7 Mar 2024 20:50:44 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Kassey Li <quic_yingangl@quicinc.com>
+Cc: <mhiramat@kernel.org>, <mathieu.desnoyers@efficios.com>,
+ <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>
+Subject: Re: [PATCH] workqueue: add function in event of
+ workqueue_activate_work
+Message-ID: <20240307205044.1caf9fe2@gandalf.local.home>
+In-Reply-To: <20240308010929.1955339-1-quic_yingangl@quicinc.com>
+References: <20240308010929.1955339-1-quic_yingangl@quicinc.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117031946.2324519-1-linan666@huaweicloud.com> <1dec5d5d-fb4b-8203-82ca-dc1ee92132bb@huaweicloud.com>
-In-Reply-To: <1dec5d5d-fb4b-8203-82ca-dc1ee92132bb@huaweicloud.com>
-From: Song Liu <song@kernel.org>
-Date: Thu, 7 Mar 2024 17:48:19 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7HJD28Q9GUqQ_eP4SZETzfFeRPm8Mo5jhTJOzivuEE0w@mail.gmail.com>
-Message-ID: <CAPhsuW7HJD28Q9GUqQ_eP4SZETzfFeRPm8Mo5jhTJOzivuEE0w@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] md: fix is_mddev_idle()
-To: Li Nan <linan666@huaweicloud.com>
-Cc: axboe@kernel.dk, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-block@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com, 
-	houtao1@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 7, 2024 at 5:12=E2=80=AFPM Li Nan <linan666@huaweicloud.com> wr=
-ote:
->
-> friendly ping ...
+On Fri, 8 Mar 2024 09:09:29 +0800
+Kassey Li <quic_yingangl@quicinc.com> wrote:
 
-I am sorry that I somehow missed this (or archived it in patchwork). I thin=
-k
-we gonna ship this to 6.10 kernel. I will work on it later.
+> The trace event "workqueue_activate_work" only print work struct.
+> However, function is the region of interest in a full sequence of work.
+> Current workqueue_activate_work trace event output:
+> 
+>     workqueue_activate_work: work struct ffffff88b4a0f450
+> 
+> With this change, workqueue_activate_work will print the function name,
+> align with workqueue_queue_work/execute_start/execute_end event.
+> 
+> checkpatch.pl will report below error for the space:
+> 
+> 	ERROR: space prohibited after that open parenthesis '('
+> 	#28: FILE: include/trace/events/workqueue.h:67:
+> 	+               __field( void *,        function)
+> 
+> 	total: 1 errors, 0 warnings, 16 lines checked
+> 
+> fix this error.
+> 
+> Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
+> ---
+>  include/trace/events/workqueue.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/trace/events/workqueue.h b/include/trace/events/workqueue.h
+> index 262d52021c23..a42c1a293459 100644
+> --- a/include/trace/events/workqueue.h
+> +++ b/include/trace/events/workqueue.h
+> @@ -63,14 +63,16 @@ TRACE_EVENT(workqueue_activate_work,
+>  	TP_ARGS(work),
+>  
+>  	TP_STRUCT__entry(
+> -		__field( void *,	work	)
+> +		__field(void *,	work)
+> +		__field(void *,	function)
 
-Thanks,
-Song
+Note, please do not follow checkpatch in TRACE_EVENT() macros. It simply
+doesn't understand it. The above is supposed to be similar to structure
+formatting.
+
+ie:
+	struct __entry {
+		void		*work;
+		void		*function;
+	};
+
+	TP_STRUCT__entry(
+		__field( void *,	work		)
+		__field( void *,	function	)
+  	),
+
+That looks much better.
+
+-- Steve
+
+
+>  
+>  	TP_fast_assign(
+>  		__entry->work		= work;
+> +		__entry->function	= work->func;
+>  	),
+>  
+> -	TP_printk("work struct %p", __entry->work)
+> +	TP_printk("work struct %p function=%ps ", __entry->work, __entry->function)
+>  );
+>  
+>  /**
+
 
