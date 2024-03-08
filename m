@@ -1,191 +1,136 @@
-Return-Path: <linux-kernel+bounces-97492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAB5E876B02
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:02:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51B03876B06
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51A48B218B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:02:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F4591C212BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDAEC58230;
-	Fri,  8 Mar 2024 19:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA6D58AC5;
+	Fri,  8 Mar 2024 19:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="cYp1JAvw"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2043.outbound.protection.outlook.com [40.92.19.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="bAatpVc+"
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEAC225D4
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 19:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.19.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709924546; cv=fail; b=mPSBjjEn3fdaXbsZxagO7V/twnY+ZgXzyCYy4m2pV2TinUvRZPDqbWUY2knb8BygXS7tnncukTpbv4vF2rcxTx5NPLe8J6gQz4TYeC0nzpBVN3A+wToLfmfoma9X/a2NdA0oi/E0Pxls0A0YAUjgg3a92+fxoHAQqW6jCZPKlxM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709924546; c=relaxed/simple;
-	bh=EGW0D9qqdINcQpeWyWhl9kJk+cU8rwnKIgqwzgZdqts=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=oQwex6iqBWFrenbDqvMfDSNUZI0PXVtjAxbGagBI/19tOE6viQxvqFn7oqHm8SRYtVdhUye8nEZhbM4bPML++Y+kuUSa7ukUMVbk0UmAcd9nbK/UuNq9avezOGo5K48FpWyfz3LMhQtqMJnAc/xqttiXELfn7LHKYmM4mBV8Tn0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=cYp1JAvw; arc=fail smtp.client-ip=40.92.19.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hs7qVVrT9Nk7WSxZiTluTvdO4Rmq+eeQ41DGItq9mlxZ6Ul9E+2BuUvPi0phhk1lhFj17+vJJEgs2EBMJVGV/IML8Ph1lYThqH/Q0FCpjQ7L0kO4VQhsgEA/mJQjBL+Hq+UWf+Bugn4Nhjg6qkY8PcsZiZBaoknKaiEoHls9U8dCCFiGbeaF+PZfZcgjiJHDfMx5a2FOwX4WhyPtTvf9vFyy+5fZK3QEJzuHc/yFwNKMQ+rizKvzDPgyMpsmf/ZAGvkI70COsK4Bwd3mDKX7owbXc58wqOnSiJa1Qo22C1VquqnM9o5vP4nmJomrXvWIpAoP9PMZOWHWKSmh2sF+qA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7VG8Ld8k0CeIikLDC8K4VkB8lTJyb6pElm/nq39FUk8=;
- b=IgVBoiYCT/K/AVTHlZytLlEmxHpbJaYKHEphR+doWObie40ce8hwYdWhCgpnZi0l+R5xCm+nObzuVh2ZDGuAiJ57M6njDF1/n1HlyuMZuT16ydYQrpwJ4/lmIFz/yKhycfXwRAl2C4HodkEDdbmRHmHhcoHIrzNRBMV5Dw8EmSeNY4hYEb6AzUXp01IIadgo99MSnkzvA2sfUGqI+6FaO26QGNLey6TgYId9t7mLPDWbqpqLzps8fosb7K8KJ6my5fzV7jWHlzxNQvbwo/sQsUe3Weos4oxlcTQjIhk2UQ5AhQKvxQrU7mXd/I+R8/8dFHXImt9z7fR135KPL0V94w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7VG8Ld8k0CeIikLDC8K4VkB8lTJyb6pElm/nq39FUk8=;
- b=cYp1JAvwxQcEg+SCSYK1Csr56s0Qpyu9draJC22q8FVxppkYCxmTQSRHJxs5SfxjhEsbGzrp6/DxQEYavgy34XBaJxyrjcLduSLBYXZF7n96KBshrA25MpwJIBt0EkDdSPOv6fgYOy2kjohCzF79/QACqAK0zfyk8ju5NJTLH5VxQUtB91nM6HsyvrvhiS+1a21g10+MGvbosJJwnTfipKNuVkgbIy1yycL8pIntSJQgImEiBlvluQGjA8o/vzA7LgXyA3JM7yrUzb43HyilpjwWzS373aU1kXXInxHPFRVDkjvh8Dd9SFoLsqf5dyGI5ICShU91JcZQkBAp7c6uEA==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by LV3PR02MB10152.namprd02.prod.outlook.com (2603:10b6:408:194::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Fri, 8 Mar
- 2024 19:02:22 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
- 19:02:22 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Will Deacon <will@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: "kernel-team@android.com" <kernel-team@android.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, Christoph Hellwig
-	<hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
-	<robin.murphy@arm.com>, Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-Subject: RE: [PATCH v6 6/6] swiotlb: Reinstate page-alignment for mappings >=
- PAGE_SIZE
-Thread-Topic: [PATCH v6 6/6] swiotlb: Reinstate page-alignment for mappings >=
- PAGE_SIZE
-Thread-Index: AQHacW1Xe8drQ9jqnUu26if2JOMrnrEuMy1A
-Date: Fri, 8 Mar 2024 19:02:21 +0000
-Message-ID:
- <SN6PR02MB4157DBE41292B3E1B380D9F0D4272@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240308152829.25754-1-will@kernel.org>
- <20240308152829.25754-7-will@kernel.org>
-In-Reply-To: <20240308152829.25754-7-will@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [mHyMT9635YLi3cJz0GV0fdAWLrrLyvVI]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|LV3PR02MB10152:EE_
-x-ms-office365-filtering-correlation-id: 8015f6a1-0f9e-48aa-3599-08dc3fa248dc
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- gCB4HEdo7kBkSKHYGrTjKlL4EmotdwG0hxibCk1HFqdt48iJZbtz7vkOCOe+T4GNMZFg6x0ulcSEwhuK2rP0WuQunyMM0vKLdx+vvtuPbEfqfQFKiemKvgsFqUR18ibmcRAp0Ermw1keVTNV38UtziaNyDlhXCe9qushc1/SnaOMEVQ+URTYb2ZaHOu9aiwoCFWslVFpbxC8QktZ/le9xMSUo7LY46Ja1T76DDtFhdXE/whb9axeW4lemKYxc8U/8fPEsutAnx08O49ewmOXH8IOYubghewwq9+t05Gb0lpA9PiTnyA+40pOvRKQgzt4fii1L+YFB+zny3ucal8Yv8ZLJBh19MV3op3snhpMAXzvCGHzH1x5RbGfmIMpSL3Fxg6VcRM56PrgJOLFD1JlE08x4wjCMbuLfpYn/Ky+nHEzwu6DBfXDVjZ/SJ0/tZkc2pm+Zg0O2Beuahq+0Gqs8HBdrb3Uy2kXDLK4mQ3nKVArwBuWwgbjGD8h1VvP4karESCh7Frhzo1zeYZl8Y/TsyqLotirMA/TtJQBQ3yC4Jnh0Q6x0ypVWqWPgDBJRYLl
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?hfGUoj+sT6P+PpTqlMrGRChamlRiXep1zeEdnRVP84CQgXY5ePKSV/kkTrrn?=
- =?us-ascii?Q?HjuZdvKP8UwEY3XUSqb0X0mMh0KlnoGl5eB4Kof5mED+lovWGsRra4eeFz9E?=
- =?us-ascii?Q?Mdbpp4YMUsBPD2B8OlVWs28+oag2m99p8rDEVpWmUiYvRqZrB06d2lX5yJjP?=
- =?us-ascii?Q?QhPi5p/Zr2Uvt/jU6ddV0KDD2NhT+l/xmDAuUf1dpDhA5ETRdxm+FayqQRID?=
- =?us-ascii?Q?Nzk+Mfl+IooUJltSC7r0pYhzKNn2MKhrt7o/atqC0QigZmk3MOy9CDan47uB?=
- =?us-ascii?Q?nrwsqL/WFqPOWYOZnxXjsS4ctrNsb6wPawkgwVpEGdhRKUA8qhs+P8tLfj5Z?=
- =?us-ascii?Q?NxLsgvi5tdmdTUXjngA1a37Yg/w3QFr+ndvvfiiE+lVS8e0Vsq+uR55cKkSb?=
- =?us-ascii?Q?Du5ViwgSoBMt6eDraG5WTRDQncQ5lfk3uGRMaJwgjlLusSmGmtZvz4vnDzsD?=
- =?us-ascii?Q?XkDZCdOPv9B43spA5QGrGSbTnriL+2bEDY3oUzbN1Y47e7pMcWFcnmFn6iPH?=
- =?us-ascii?Q?n2aQkWnpkZOTtKHgw5M1Ayk/MScEoO4wxp65DsU0drYsoDvyAwH6UAUPsWh1?=
- =?us-ascii?Q?PPu/RlEFFvoVhXIUTrIMmoBxxCHJ1TH/BNwsjjIMQr8g5VboWV8dpiAP2hUd?=
- =?us-ascii?Q?u8WVD0xaH9tfGDjvTGmS+ZtQLl0Qic5AG/PIcgJyeDU3S7foDhMesb3o7G/k?=
- =?us-ascii?Q?LKhwl/yzkXfOPRkRzm86Ow5WTdSKEHnh5+0yKFU2fDp9Pn8QnWfLU98AzVm2?=
- =?us-ascii?Q?y6SMA9cVlvwDnpcGjUYG68mej4n3+RaQtiCr8+1ffdzr8oXaL23r2fsSQhSK?=
- =?us-ascii?Q?OUAmxWYKZSrBknnKwzZnJFtLpauiNzLRZ9sADmXkdmp/ophrDc8AykWiiVAu?=
- =?us-ascii?Q?OTr0IToZ5HBEfNW54W/jo3GdIOInZz5MIobM0aRO6BVWu5gAZI+rw8YZ4JM+?=
- =?us-ascii?Q?RBz+TE2YQDhXCXA1XSlPKSMiK7dy7m7SSWmkAXdHOu77G2JhNQhFlcOqW/Xs?=
- =?us-ascii?Q?8O4XF8PvMfv83nCUdgZN6I7aSJHphWwyqaais9qrnJISTATeDini8qEr/xRW?=
- =?us-ascii?Q?rtXINHQQgi0g1ZB7y+PsTcblOc90o0CeUWAxNGKQcnqSwEo6nS/oVROlDtgS?=
- =?us-ascii?Q?extaJcNp/X0tmPbM9Mkve4K1pyJKeEnTrO/+8/JkrsB11oRoodAVCARWxdtw?=
- =?us-ascii?Q?7YTeXyfIzfwatnO2SdwKqa2NBZ2+e78ejUDxtA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C479958123
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 19:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709924743; cv=none; b=FOSwmGhrF4sWv/2EQoET4WyuJ0wf9E4SwmywUYxs33/UQoVWM3MWz5vJwCD8fUqzRfYZV975LGUh5pgQAYV1LPJ5C2U++nYWtMdI59KJxIURFHKtsgzyIJFP2jwwbVMq+u4mt6Jbq4qTZc3sRQ7kKNcbP0tl1muKWH0/tTep9zY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709924743; c=relaxed/simple;
+	bh=ILaKu4J8rSQrN8d6WmZQitsoeFgh+zPlpkPgOdLz644=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fEzS5nNdpcWixDRxgfL4wKwCxleB4zAuxH8oJkWDKZb+YwPIxvhwEmLTUwxjivi63UTPxTEoGPQ6dBVqIFQ/UQAIUS8zX+Vwdy2HAF35mo0yBBnbVVmvwfCe0YDBFJiR36vG7gxa+rNxvlQqQguycjF8RnbUF2AgoxVByVbvPz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=bAatpVc+; arc=none smtp.client-ip=209.85.160.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-221816e3ab9so970678fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 11:05:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1709924740; x=1710529540; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7qMRR7sLkZVUANHdEsXoEoSh+RPGbp+63DXPrOksx9o=;
+        b=bAatpVc+vOhV0VmHHIrK9SUqyLiFVcMU/JvhP3Vxv3lAiCXJ6ARUcWMojn3m9bIPWt
+         NbZNG+Kx93Sw41lIKiA2FPzIiJFGiokN0WjcgecwANkXZnxrOZGrFKi61w/px7ag3zRV
+         rlJWcb0sDyOtkPrxdq3W3XKD1P7rTdj2WRE/4WiATpSroEfBBYhzqI+vv8/xWZSSWRM7
+         IAXJKl0BJJj3zgoUPRruiOq8XlExcJ7HUXrH9yYKSlbV62+N7hchKC7+i4K3o2ceKtbC
+         mcxwTnX3c9NNz2+dG4YSZXKZ0vZkAW0eyThJ3Oo5I7O5+zkEFeJJwMoyqdLRuffskMkB
+         Vlug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709924740; x=1710529540;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7qMRR7sLkZVUANHdEsXoEoSh+RPGbp+63DXPrOksx9o=;
+        b=Qs+mbFcBBJPx2x3F9nDHejk1wr89M9PCwIuVHXwaZtRzPAVimWFF+keJuMCqzDNnub
+         I9XS7G2FKjU5N6RzFd7JpiMIcjEqvyDd4t3d/+TJfQDtsACPN28V71vrKdrBP2mrOlRx
+         janlu0+FwL3vUTEEEFTFL4YnHua11ujeUVeyPTcTTu0pBBnNuCVkZUpHgWNdr8fythFn
+         FkY42XjpP1MO3FEpagkKxPDu5xbTU5+p7M/AKTFhXzr97Q5OIzpl/wYEBGAeuloeWYjn
+         Eqy6R5a5qPtFxE/2oHZTUXDVEQAfgI+ugwdlSjQYWb0HcT3B0pK6N9pw86EnhwN4rVvG
+         k4HA==
+X-Forwarded-Encrypted: i=1; AJvYcCX+UQT1EW+Wy/Cy+Mkn5azHbXaAQUkWDZ0yAzPKHNLLaXtBPlM9f+cLvEaGLvqVid4OFavnLHE1ZUEP7Nl18Gj/g4V3BxS7YNljIN84
+X-Gm-Message-State: AOJu0YwrdEcGMpM0VAZ/orwq/iouDfle6RltJBB54yzeQ1cknXftS8sR
+	5y8T9+ugNcmNdomR1cpYr7/0TgEG+P9+lvoxWeOOgK2r3drk9mzLdh/GVm+Zrjo=
+X-Google-Smtp-Source: AGHT+IFDoglDB8jr4C0bRLZGs90q16mK5wPOyxs6caLbupPbYv27tZdKsh1cc0oiSg/2ojAvVJQeAA==
+X-Received: by 2002:a05:6870:844f:b0:220:fc89:db73 with SMTP id n15-20020a056870844f00b00220fc89db73mr42008oak.0.1709924740712;
+        Fri, 08 Mar 2024 11:05:40 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id la12-20020a056871410c00b00221847430e2sm1485oab.30.2024.03.08.11.05.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 11:05:40 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rifXH-007kGb-7w;
+	Fri, 08 Mar 2024 15:05:39 -0400
+Date: Fri, 8 Mar 2024 15:05:39 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/8] iommufd: Associate fault object with
+ iommufd_hw_pgtable
+Message-ID: <20240308190539.GY9225@ziepe.ca>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+ <20240122073903.24406-6-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8015f6a1-0f9e-48aa-3599-08dc3fa248dc
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 19:02:21.9336
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR02MB10152
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122073903.24406-6-baolu.lu@linux.intel.com>
 
-From: Will Deacon <will@kernel.org> Sent: Friday, March 8, 2024 7:28 AM
->=20
-> For swiotlb allocations >=3D PAGE_SIZE, the slab search historically
-> adjusted the stride to avoid checking unaligned slots. This had the
-> side-effect of aligning large mapping requests to PAGE_SIZE, but that
-> was broken by 0eee5ae10256 ("swiotlb: fix slot alignment checks").
->=20
-> Since this alignment could be relied upon drivers, reinstate PAGE_SIZE
-> alignment for swiotlb mappings >=3D PAGE_SIZE.
->=20
-> Reported-by: Michael Kelley <mhklinux@outlook.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
+On Mon, Jan 22, 2024 at 03:39:00PM +0800, Lu Baolu wrote:
 
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+> @@ -411,6 +414,8 @@ enum iommu_hwpt_data_type {
+>   * @__reserved: Must be 0
+>   * @data_type: One of enum iommu_hwpt_data_type
+>   * @data_len: Length of the type specific data
+> + * @fault_id: The ID of IOMMUFD_FAULT object. Valid only if flags field of
+> + *            IOMMU_HWPT_FAULT_ID_VALID is set.
+>   * @data_uptr: User pointer to the type specific data
+>   *
+>   * Explicitly allocate a hardware page table object. This is the same object
+> @@ -441,6 +446,7 @@ struct iommu_hwpt_alloc {
+>  	__u32 __reserved;
+>  	__u32 data_type;
+>  	__u32 data_len;
+> +	__u32 fault_id;
+>  	__aligned_u64 data_uptr;
+>  };
 
-> ---
->  kernel/dma/swiotlb.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
->=20
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index c381a7ed718f..c5851034523f 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -992,6 +992,17 @@ static int swiotlb_search_pool_area(struct device *d=
-ev, struct io_tlb_pool *pool
->  	BUG_ON(!nslots);
->  	BUG_ON(area_index >=3D pool->nareas);
->=20
-> +	/*
-> +	 * Historically, swiotlb allocations >=3D PAGE_SIZE were guaranteed to =
-be
-> +	 * page-aligned in the absence of any other alignment requirements.
-> +	 * 'alloc_align_mask' was later introduced to specify the alignment
-> +	 * explicitly, however this is passed as zero for streaming mappings
-> +	 * and so we preserve the old behaviour there in case any drivers are
-> +	 * relying on it.
-> +	 */
-> +	if (!alloc_align_mask && !iotlb_align_mask && alloc_size >=3D PAGE_SIZE=
-)
-> +		alloc_align_mask =3D PAGE_SIZE - 1;
+?? We can't add fault_id in the middle of the struct??
+
+> +	if (cmd->flags & IOMMU_HWPT_FAULT_ID_VALID) {
+> +		struct iommufd_fault *fault;
 > +
->  	/*
->  	 * Ensure that the allocation is at least slot-aligned and update
->  	 * 'iotlb_align_mask' to ignore bits that will be preserved when
-> @@ -1006,13 +1017,6 @@ static int swiotlb_search_pool_area(struct device =
-*dev, struct io_tlb_pool *pool
->  	 */
->  	stride =3D get_max_slots(max(alloc_align_mask, iotlb_align_mask));
->=20
-> -	/*
-> -	 * For allocations of PAGE_SIZE or larger only look for page aligned
-> -	 * allocations.
-> -	 */
-> -	if (alloc_size >=3D PAGE_SIZE)
-> -		stride =3D umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
-> -
->  	spin_lock_irqsave(&area->lock, flags);
->  	if (unlikely(nslots > pool->area_nslabs - area->used))
->  		goto not_found;
-> --
-> 2.44.0.278.ge034bb2e1d-goog
+> +		fault = iommufd_get_fault(ucmd, cmd->fault_id);
+> +		if (IS_ERR(fault)) {
+> +			rc = PTR_ERR(fault);
+> +			goto out_hwpt;
+> +		}
+> +		hwpt->fault = fault;
+> +		hwpt->domain->iopf_handler = iommufd_fault_iopf_handler;
+> +		hwpt->domain->fault_data = hwpt;
+> +		hwpt->fault_capable = true;
 
+I wonder if there should be an iommu API to make a domain fault
+capable?
+
+Jason
 
