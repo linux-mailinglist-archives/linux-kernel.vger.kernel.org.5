@@ -1,296 +1,202 @@
-Return-Path: <linux-kernel+bounces-97403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F61876A0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:37:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEB6876A0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:37:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B06D01F221E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:37:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDC17B23238
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7CB4CDE0;
-	Fri,  8 Mar 2024 17:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76EE455E40;
+	Fri,  8 Mar 2024 17:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="f8hRn8W1"
-Received: from TY3P286CU002.outbound.protection.outlook.com (mail-japaneastazon11011009.outbound.protection.outlook.com [52.101.229.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pdN8uy+7"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C29568A;
-	Fri,  8 Mar 2024 17:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.229.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709919409; cv=fail; b=eABZPGnC/Mc9mXotDBtns9E17jF4WPFUfeKBMQEFWDoT1Hli01j6BS5ky0AGs+2XMmaIQVKwgVhVZbmrZY3UprEZt3M8CafAnV5vOyAu/Pg9MsQPpo0OHUNFczvD4EImWMX7wjSFAzSuiNwC5mGhq9uBp0U83gOEbnbV1eB7cJg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709919409; c=relaxed/simple;
-	bh=zx6tIALMf10UtvePPGLTJEsJZPJXeTOTknl63MYvWPQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=NEuQZIPglvBFsB55hVZU9D0tfRLEdtb/kVyXM30otGYAly3uo1vMQMwICDlyNAuas5UifyeV/jQuMkJ8KP8hxOn1RwNzQuTsE436z/76Biyys0KWsMFWWsdlEAsHa8EkH4Eg52X18JfrZc7gMXC7v9jO/5SuN/YDC3o+214pZP0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=f8hRn8W1; arc=fail smtp.client-ip=52.101.229.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ToNNOVzdmth225oY5yIe5Fceoq+znDFFysNMYorZReRCQu6zGkBI4ULZXh+wqkrX0MdaJoAH6fWzeWCmKCniPJw00PhDTuxP8wL0D6gyMWbsdLEP/2KAqtY0W3sTyMdLWxYjyGW25KtX9Esufq3ooHT3Xj+Zug9gxnUMYrOMjjZssDpBLm/FxSyjdI4h3w/4QnNXHh4Id0PeZEuIqP1JbA4bhnMko4P2TtNoRTtsGaXE9aMniZtsVQvtKenKQd89OlARyO34KFJ+Vumaltx6BjabqJXqDzqWKomVKGbx4eWuzalp0Kkkp6zwn/g4vdH+W3zWdHFa0xzwEo2NQ0Ekqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4MLo2gvnWifgTmm4HevldVU/SMBLcGmyUaQtJkx7BEM=;
- b=mRauAl1cgKyuV43KtW9v0j4U5ksAaErXg7Sj1Vt6Z9WlbttyP5k3x4IqyKuV+FtoAx/E83Jl+5HKkKhiQvFcP8ZDLRIBVirCffQke2okmkLTSR8rmHl9Gz4IYk0y+fgXYwl/an1hlBI550pbf8Qe7edMA468NaCQiqz5APSTjfSWhzTpRufqlXIQR01JdO0Dzw84mnRkFkSfkmEcwucBJb8b4M6zP+yfLtXUUR3xbbYTwWM/UZjgY4yhWEqUlhCGvLhG4cuae3ICXUTlD9hDCYpLD4QEEUHRXo4mXOw8UnpXRRaR+OP+J3pEyUsTZvZYPpO2LOA6OR6zgJ6gc0Zm8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4MLo2gvnWifgTmm4HevldVU/SMBLcGmyUaQtJkx7BEM=;
- b=f8hRn8W1xuulsJqKAJ8ZeYx5Ww9s9GUABZ3pDL1x+juaTTmIZEA+Iof0LHP4SLuEF8Y+0nNkCJXwDgvwKBDpEyRqOwYcVC2TERo6ZpG9FUB2J1r4+aMMjk1CIA1NjQ5T5nycGj0VpJl4g8KE7Rkfv6mZ7rZAe3XTndpEWbwOLEo=
-Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com (2603:1096:603:2e::16)
- by OS3PR01MB6167.jpnprd01.prod.outlook.com (2603:1096:604:d5::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.31; Fri, 8 Mar
- 2024 17:36:41 +0000
-Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com
- ([fe80::5ff4:8ba7:96e5:7a5b]) by OSAPR01MB1587.jpnprd01.prod.outlook.com
- ([fe80::5ff4:8ba7:96e5:7a5b%7]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
- 17:36:32 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Prabhakar <prabhakar.csengg@gmail.com>, Geert Uytterhoeven
-	<geert+renesas@glider.be>, Chris Brandt <Chris.Brandt@renesas.com>, Andi
- Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang
-	<wsa+renesas@sang-engineering.com>
-CC: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
-	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Fabrizio
- Castro <fabrizio.castro.jz@renesas.com>, Prabhakar Mahadev Lad
-	<prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: RE: [PATCH 4/5] i2c: riic: Pass register offsets and chip details as
- OF data
-Thread-Topic: [PATCH 4/5] i2c: riic: Pass register offsets and chip details as
- OF data
-Thread-Index: AQHacX4tmFc1CI8ipE+h03wpRb2Q9LEuGoKg
-Date: Fri, 8 Mar 2024 17:36:32 +0000
-Message-ID:
- <OSAPR01MB1587CFE774834B31820E7D5486272@OSAPR01MB1587.jpnprd01.prod.outlook.com>
-References: <20240308172726.225357-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240308172726.225357-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240308172726.225357-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OSAPR01MB1587:EE_|OS3PR01MB6167:EE_
-x-ms-office365-filtering-correlation-id: f16e81a0-5e3d-49fb-3837-08dc3f964b9b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- WAHZqhOFxK4qV12Nb58gnANhgldOWifpl1Mv4f3KMSihoQ3BHkSRESTNYrYirs2qHZYPjB2sE8YTNgH9GwM4iWIopXTDbg+6Rpe8J5uq4qJfb9y60yfEJVBHLczxE7ZQpwW5uOwuvkxrqi/8kUEDcXOuL14QIWRLLGV/y7h7LKv5xe7c7IcwrsM3+/YHx9dioBqxtSm0siWf4vbytd9fEW3eVEBHaMHOdzfeifWjQpWn+1Rh4fyF7TxwSHyc//fykzbTOOZ285JOYQDqY9Tk/JGiLpeuz1NucGxw1zvraWZfRRI66l7IquGFdstcM7yD4wYiVmTPumF2oNVddAS0PntHdb3Yij+3VoJgPhAdlDS2GP3DkEF7yQMm5Ni4quRTVSi8TpRtJABe+fC7+N6smbpL0RvNvLy3ZejRIS9gFGUIU7rOz2VFT8C9l9NMRP8ESAV0kQQM/uvqaqJe5FuLRPWODHH5JcLleJAmDL0kpC/vvbXK0ASYb7HyQe8EO9onSjdLXvkAa7W0Ofn90lKpBzuN1qKNE86seA22zKKDTY0iULPrbX3o+xRP9ZGleDyIMwRNQZ4rpKzRYM+kSgcm0UbLfOv6rjr9rKs537Eehiniz0DiT3Oroo0J2m1n7YHQbm4fo/tRArLwzzWMNNTyUgVaCpasj77y6WksKwBNoYJVUNpeP+i6I8dbvmGn2YF2rkWXCxo53DLBZsK05PD2PfoPFRdKPsMqNW563iHCx6Q=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB1587.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?tuBDkR2bH1/jcdac4j77ZrP/SvMY6g4KpqrACXXxHO14Wdsv817j5+bOYNm6?=
- =?us-ascii?Q?mZw7D2gqkrAMZsGKzlmTtFbzrf58ss7KUsJnDzr1TBE8O1E9APve+yjCtCyK?=
- =?us-ascii?Q?Zb2ztttdBPGCcWaJcILFWItOQHiFi2jAaVxk7g8LK87Bu99UZ4gwFKh9qFzQ?=
- =?us-ascii?Q?0kylAxFYjNruPq3a3JC7lbbuUQY8OpxYNzUytHRcwTBWjd33xzL8g35fl49R?=
- =?us-ascii?Q?c59fc396red+NtGdloq7plZjB6+7XSssr/5yMkTMym4PEyLsdXjg9D+t1aKd?=
- =?us-ascii?Q?b0CuW/qrrIrDPSdOXjK2aqLlA7H98CZgEj5ot6IdpuZnX29OYgAeAmgqwViR?=
- =?us-ascii?Q?ET2hF7A2uNS9lkf3JnTMww7V2WIUSSbzzyBXvJFrOAHJT2ZLcC4339YF99De?=
- =?us-ascii?Q?4EQWXotoIVxRIVCTDH/l/WhAEwKxlstByXbyuZ19/Ez7azQgfZCg30266zLp?=
- =?us-ascii?Q?MWRWU+pwbEl2TjFbMrQZcQa9iavjJYE5vpFDxQ5SyhTLVpvG0bmoJAeE2UXR?=
- =?us-ascii?Q?4r/H+ey9CUqcSTW+cj8Ghp9BMzaX8GmgEqWcw7WebH2y+JSJ8gm7RJWxrW3c?=
- =?us-ascii?Q?Y/JQRaBM+2UntIpBum5uNWjkelzHzL3k9PnMcCiL7r5euuGieqvps+h8BdBc?=
- =?us-ascii?Q?Jp3EuYH2GayVKV/G7rqNi2m4FVxMxlvFO2VcL3+312YcV1m584xhjcAGoF4p?=
- =?us-ascii?Q?BtmaBku/XBpoguK4ZOQz77DiBwaWKl1QeQ3k25Va2bWwoQCu3YxxLHQX6rip?=
- =?us-ascii?Q?97MOXo+zYQc7XEXZy9MABhQDyNnX/i+DT7G8lz4Wbwm9hATKg91PNrVbuTQm?=
- =?us-ascii?Q?iboEQ2tMj+ha7CiDC9BnsNJybgyspZeuFLryLxOu6Cj6pz2U/fj0/OwZkQ5r?=
- =?us-ascii?Q?GQ7CNZu134kZ6WFshlC/D5pctsFkxEupJZ5TY/K3klL3B16NbBEh83F9weAA?=
- =?us-ascii?Q?jj50Uj0dgOcUWEN7LtCb+oNDdEOEI+S5U8/D5z9YpV3P9TfU04+SVjyV6ZRW?=
- =?us-ascii?Q?0SzM2Ydw//HZ/mAj9sU4pUReZPdhZBDtaz/dYYQ0LFOdKt+bdPRhk9XMk2/D?=
- =?us-ascii?Q?WKaMptUSSp4UXm58BRYfDpIY6pbL2YyfA1U+CoPZjUBRrQXFkSISzDTcjCEC?=
- =?us-ascii?Q?BcYsS12qH+2hNb1N2rrzNQAq7x7anEDn4w43k0/OIznEbzoYI9EJhnEFA9d2?=
- =?us-ascii?Q?NRccsrCgOwNNTtNSiLnLZaROaIuwHsLt5K9V5V0i1XAnC/Zt0avf3gTuSK3p?=
- =?us-ascii?Q?Z88tnqsRozXB7FCEvHlwBn+hHhB3DfXqwZCQ+UNjSxrHMxo3QlE3g480io4x?=
- =?us-ascii?Q?DsfE19+BSchaJ8wbp62gVokWzZTS80ivwwHlHb3GVthfBm4XFRS9zqHyKWl+?=
- =?us-ascii?Q?qQGq+Jwm7eIzluxmc77Ujj6YXcvBNx/rnOLdTNhzWc7J5Y3W6NvUlRRBPoxy?=
- =?us-ascii?Q?3NYV/zeqoY2La1tD2AkEHqdYUFCWaX7LDxkKXyKCThL0/ZyhhwTzGx7cpEyi?=
- =?us-ascii?Q?+U03Y3G/2EUUl7tkCc0gzWfmDwhuGvD7iNzH/0Td15OXige1LkIaHR5UIg26?=
- =?us-ascii?Q?FQBig0AQgWyNBUi8e1r2kF8ZlFz9oJpxCPnwyDNlFG6u+RNnY747Di+Mnvyl?=
- =?us-ascii?Q?5A=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA9956459
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709919420; cv=none; b=kYDstghMZ1Bz5tCaoGFBLpVNJ/jEIIaS23nlgSELRQP/Lawx8COwgs/DWWg3pzyQJWkkEAJzqFxdhaG2IufU2P/xYUitZWjoKn5MjNouuFGVg3PPj6BdeIXfUczlkreTLQR+Wd4J24IZc9AKr3LlBV5HL65FF15ErUdNQgGIkbQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709919420; c=relaxed/simple;
+	bh=l8ig6M9gcnemk3m+1mdkbFeLLXHKjO71JU9tHp2LBn0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mUKm2905QBVORoZmR8XMdzAPRmiJbHIP8He9tRAlnkKFig1VJ05cCZoeDFKRITBbs9EVrIAiiZ1zHrJEF8yqspNChF9Usw1DBY/ZnRXDtLEyjpqD+2YWixut/1RE4X2ESw9es/30P1wfPEq4UoxS4Tk4V4MLFxoWnwuqLjc6B6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pdN8uy+7; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-568251882d7so184a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:36:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709919417; x=1710524217; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L1BX4eo9ip+KEtjNM1Gly2femqk+NvdyZ2sHleIDLI8=;
+        b=pdN8uy+7L+XbVx1WURRUnD5h/dbTjhG99qVltJdv2iJ9s7Bc2J9bQCoyAQqw0k/S7Y
+         zSkTYvLQUt79n93kp0/zqC6LRyeOB89jQBNQzdsTAPiiAB9X/DiMO1FYwv1cV+P4kf0Z
+         E9IFsFVlZNELC7m+AqN6o7bfxkPVS99cNSYf1o8WLvQp55PfNvriLvo37xNTffjBskHa
+         UrEpYxs+aT9cPzqm2onDUhiDq6IGaaLZQn8ZMN9sR1dqsQODxmb5FnVmb92S2FQJSnc9
+         xISejMaKHX/2+dEn2RXUtqu45kkiSZiXEd4xLDM8YDPWwkMgum+0S8YKUard95kFfoQr
+         q8+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709919417; x=1710524217;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L1BX4eo9ip+KEtjNM1Gly2femqk+NvdyZ2sHleIDLI8=;
+        b=uzkJn6mK+44pGbJitmBtGPeg2//WpYVqmuMLy2anjNmGLl1HSCXI/oyyDZeR7qcyWf
+         6NWj1+6W8Nggr9vxdrFiQxiIStHOLuyNzJeSFnryZOpMgsalfCZDNltba/w0wsbGGA/b
+         +bU9xS9oLIxNq5dNjHu9VlJcqf1XOzGVbD+gsPrsYBbfR0vuoyIGgr3fb5GkqZhxl+SQ
+         TkB0QQUaqgBDWJPPYAMdnaiao83jpRW1HGEgfgeizxsV+2vWiYhd2YGNltL3AeMfRnHf
+         0bSofal/Dd04EQzSR8OtmUECBLZ7TXaHf2k2Lly0qVV3MEKqKXFgFYhxtZiBxz5WC4lk
+         p4Rg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCHATCLTuW3++pYpMa9dzDxDqyyCHUb37ahGZqqIi0SVDEsb35o01lB1HXQpB4/f8TXmMOzzrhYhfCY4IttLpKgxO+eiOQbXGu8ANN
+X-Gm-Message-State: AOJu0YxRfkCsYhxkXEgGnfYqYAOVS14MV7YlbvZZVgbbsivjCALs5it9
+	/8rB0j153sAguu0/Xf6U3kpEpqOiXllHHQwfNXS1oI+y6ZFIvjZfPFJtnxWipWz7Ue4bnA1dLF5
+	QmiLdOikxToAptGxcgwDfhtrmuymxwKoCMYZ4
+X-Google-Smtp-Source: AGHT+IGl1hYC4CfQ2KvqCm0EMC8nd3+j8n1jTiwvjdE8DyirSHqPOzsLuM+BSUM4Smz7h5AqzM46IdnAFhbwwWgdO00=
+X-Received: by 2002:a05:6402:349:b0:568:257a:482f with SMTP id
+ r9-20020a056402034900b00568257a482fmr280416edw.3.1709919416893; Fri, 08 Mar
+ 2024 09:36:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB1587.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f16e81a0-5e3d-49fb-3837-08dc3f964b9b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 17:36:32.5504
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Gc6WWXUQNubB4HGZDdbTbPrjFUM8Qso2T9RKPXk5Punbsv+ivh0s3nsF9kvyFuCYo2abW4b4SWt8vb6fR5VW/Vsi8G/K2XJdNYizrdke4vo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB6167
+References: <00000000000094b65a0613299ae7@google.com>
+In-Reply-To: <00000000000094b65a0613299ae7@google.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 8 Mar 2024 18:36:45 +0100
+Message-ID: <CANn89iKXHAoJqVkxSGtFep3Ww+A-v9NeExzgfTKubVo7wYX7_Q@mail.gmail.com>
+Subject: Re: [syzbot] [net?] WARNING in sk_nulls_del_node_init_rcu
+To: syzbot <syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Prabhakar,
-
-Thanks for the patch.
-
-> -----Original Message-----
-> From: Prabhakar <prabhakar.csengg@gmail.com>
-> Sent: Friday, March 8, 2024 5:27 PM
-> Subject: [PATCH 4/5] i2c: riic: Pass register offsets and chip details as=
- OF data
->=20
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->=20
-> With an increasing number of SoCs reusing this driver, each with slight v=
-ariations in the RIIC IP, it
-> becomes necessary to support passing these details as OF data. This appro=
-ach simplifies the extension
-> of the driver for other SoCs.
->=20
-> This patch lays the groundwork for adding support for the Renesas RZ/V2H =
-SoC.
->=20
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+On Fri, Mar 8, 2024 at 6:34=E2=80=AFPM syzbot
+<syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    c055fc00c07b net/rds: fix WARNING in rds_conn_connect_if_=
+d..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16aa17f218000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dfad652894fc96=
+962
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D12c506c1aae251e=
+70449
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
+ian) 2.40
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/c39eb6fb3ad1/dis=
+k-c055fc00.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/110f1226eb89/vmlinu=
+x-c055fc00.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/1303e2df5cc4/b=
+zImage-c055fc00.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com
+>
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 000000000000000b R14: 00007f3b817abf80 R15: 00007ffd3beb57b8
+>  </TASK>
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 23948 at include/net/sock.h:799 sk_nulls_del_node_in=
+it_rcu+0x166/0x1a0 include/net/sock.h:799
+> Modules linked in:
+> CPU: 0 PID: 23948 Comm: syz-executor.2 Not tainted 6.8.0-rc6-syzkaller-00=
+159-gc055fc00c07b #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/25/2024
+> RIP: 0010:sk_nulls_del_node_init_rcu+0x166/0x1a0 include/net/sock.h:799
+> Code: e8 7f 71 c6 f7 83 fb 02 7c 25 e8 35 6d c6 f7 4d 85 f6 0f 95 c0 5b 4=
+1 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 1b 6d c6 f7 90 <0f> 0b 90 eb b2=
+ e8 10 6d c6 f7 4c 89 e7 be 04 00 00 00 e8 63 e7 d2
+> RSP: 0018:ffffc900032d7848 EFLAGS: 00010246
+> RAX: ffffffff89cd0035 RBX: 0000000000000001 RCX: 0000000000040000
+> RDX: ffffc90004de1000 RSI: 000000000003ffff RDI: 0000000000040000
+> RBP: 1ffff1100439ac26 R08: ffffffff89ccffe3 R09: 1ffff1100439ac28
+> R10: dffffc0000000000 R11: ffffed100439ac29 R12: ffff888021cd6140
+> R13: dffffc0000000000 R14: ffff88802a9bf5c0 R15: ffff888021cd6130
+> FS:  00007f3b823f16c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f3b823f0ff8 CR3: 000000004674a000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  __inet_hash_connect+0x140f/0x20b0 net/ipv4/inet_hashtables.c:1139
+>  dccp_v6_connect+0xcb9/0x1480 net/dccp/ipv6.c:956
+>  __inet_stream_connect+0x262/0xf30 net/ipv4/af_inet.c:678
+>  inet_stream_connect+0x65/0xa0 net/ipv4/af_inet.c:749
+>  __sys_connect_file net/socket.c:2048 [inline]
+>  __sys_connect+0x2df/0x310 net/socket.c:2065
+>  __do_sys_connect net/socket.c:2075 [inline]
+>  __se_sys_connect net/socket.c:2072 [inline]
+>  __x64_sys_connect+0x7a/0x90 net/socket.c:2072
+>  do_syscall_64+0xf9/0x240
+>  entry_SYSCALL_64_after_hwframe+0x6f/0x77
+> RIP: 0033:0x7f3b8167dda9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f3b823f10c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+> RAX: ffffffffffffffda RBX: 00007f3b817abf80 RCX: 00007f3b8167dda9
+> RDX: 000000000000001c RSI: 0000000020000040 RDI: 0000000000000003
+> RBP: 00007f3b823f1120 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 000000000000000b R14: 00007f3b817abf80 R15: 00007ffd3beb57b8
+>  </TASK>
+>
+>
 > ---
->  drivers/i2c/busses/i2c-riic.c | 59 ++++++++++++++++++++++++++---------
->  1 file changed, 44 insertions(+), 15 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-riic.c b/drivers/i2c/busses/i2c-riic.=
-c index
-> 49a12f1ecdf9..3398d639b754 100644
-> --- a/drivers/i2c/busses/i2c-riic.c
-> +++ b/drivers/i2c/busses/i2c-riic.c
-> @@ -46,18 +46,6 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/reset.h>
->=20
-> -#define RIIC_ICCR1	0x00
-> -#define RIIC_ICCR2	0x04
-> -#define RIIC_ICMR1	0x08
-> -#define RIIC_ICMR3	0x10
-> -#define RIIC_ICSER	0x18
-> -#define RIIC_ICIER	0x1c
-> -#define RIIC_ICSR2	0x24
-> -#define RIIC_ICBRL	0x34
-> -#define RIIC_ICBRH	0x38
-> -#define RIIC_ICDRT	0x3c
-> -#define RIIC_ICDRR	0x40
-> -
->  #define ICCR1_ICE	0x80
->  #define ICCR1_IICRST	0x40
->  #define ICCR1_SOWP	0x10
-> @@ -87,6 +75,13 @@
->=20
->  #define RIIC_INIT_MSG	-1
->=20
-> +#define RIIC_RZ_A_TYPE	0
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
 
-> +
-> +struct riic_of_data {
-> +	u8 family;
+CC Kuniyuki, because this is probably caused by
 
-Do you need family as compatible have this information?
+commit 66b60b0c8c4a163b022a9f0ad6769b0fd3dc662f
+Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+Date:   Wed Feb 14 11:13:08 2024 -0800
 
-> +	u8 regs[];
-> +};
-> +
->  struct riic_dev {
->  	void __iomem *base;
->  	u8 *buf;
-> @@ -94,6 +89,7 @@ struct riic_dev {
->  	int bytes_left;
->  	int err;
->  	int is_last;
-> +	const struct riic_of_data *info;
->  	struct completion msg_done;
->  	struct i2c_adapter adapter;
->  	struct clk *clk;
-> @@ -105,14 +101,28 @@ struct riic_irq_desc {
->  	char *name;
->  };
->=20
-> +enum riic_reg_list {
-> +	RIIC_ICCR1 =3D 0,
-> +	RIIC_ICCR2,
-> +	RIIC_ICMR1,
-> +	RIIC_ICMR3,
-> +	RIIC_ICSER,
-> +	RIIC_ICIER,
-> +	RIIC_ICSR2,
-> +	RIIC_ICBRL,
-> +	RIIC_ICBRH,
-> +	RIIC_ICDRT,
-> +	RIIC_ICDRR,
-> +};
-> +
->  static inline void riic_writeb_reg(u8 val, struct riic_dev *riic, u8 off=
-set)  {
-> -	writeb(val, riic->base + offset);
-> +	writeb(val, riic->base + riic->info->regs[offset]);
->  }
->=20
->  static inline u8 riic_readb_reg(struct riic_dev *riic, u8 offset)  {
-> -	return readb(riic->base + offset);
-> +	return readb(riic->base + riic->info->regs[offset]);
->  }
->=20
->  static inline void riic_clear_set_bit(struct riic_dev *riic, u8 clear, u=
-8 set, u8 reg) @@ -453,6
-> +463,8 @@ static int riic_i2c_probe(struct platform_device *pdev)
->  		}
->  	}
->=20
-> +	riic->info =3D of_device_get_match_data(&pdev->dev);
-> +
->  	adap =3D &riic->adapter;
->  	i2c_set_adapdata(adap, riic);
->  	strscpy(adap->name, "Renesas RIIC adapter", sizeof(adap->name)); @@ -49=
-7,8 +509,25 @@ static void
-> riic_i2c_remove(struct platform_device *pdev)
->  	pm_runtime_disable(&pdev->dev);
->  }
->=20
-> +static const struct riic_of_data riic_rz_a_info =3D {
-> +	.family =3D RIIC_RZ_A_TYPE,
-> +	.regs =3D {
-> +		[RIIC_ICCR1] =3D 0x00,
-> +		[RIIC_ICCR2] =3D 0x04,
-> +		[RIIC_ICMR1] =3D 0x08,
-> +		[RIIC_ICMR3] =3D 0x10,
-> +		[RIIC_ICSER] =3D 0x18,
-> +		[RIIC_ICIER] =3D 0x1c,
-> +		[RIIC_ICSR2] =3D 0x24,
-> +		[RIIC_ICBRL] =3D 0x34,
-> +		[RIIC_ICBRH] =3D 0x38,
-> +		[RIIC_ICDRT] =3D 0x3c,
-> +		[RIIC_ICDRR] =3D 0x40,
-> +	},
-> +};
-> +
->  static const struct of_device_id riic_i2c_dt_ids[] =3D {
-> -	{ .compatible =3D "renesas,riic-rz", },
-> +	{ .compatible =3D "renesas,riic-rz", .data =3D &riic_rz_a_info },
->  	{ /* Sentinel */ },
->  };
->=20
-> --
-> 2.34.1
->=20
-
+    dccp/tcp: Unhash sk from ehash for tb2 alloc failure after
+check_estalblished().
 
