@@ -1,173 +1,176 @@
-Return-Path: <linux-kernel+bounces-97218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 070FA876720
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:15:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC826876725
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:16:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 292551C217E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:15:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FC8F281ACF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3571DDEC;
-	Fri,  8 Mar 2024 15:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35401DFFD;
+	Fri,  8 Mar 2024 15:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LKu7UM+b"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CUB1koLv"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE931D558
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 15:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5367E1DDF5;
+	Fri,  8 Mar 2024 15:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709910920; cv=none; b=tADEJ32vrYiX3ol+lCET0GfyVTjYNdBNz34Sh/c5Gnp2D12Bw/Co16+UFxLQjey+ZqRFNuifjNapZSfLqKRRaQ58vaDNpBIzgvZ5H96HwOJCk20For+LJpiBhAAcCRVHLB0XPQfJYUEdP0KT/wvtqnQfosNZyf/7gCt3wnY7fxY=
+	t=1709910965; cv=none; b=LHafwtYfTYcKCrT88Q6dKQ2HS63VfTtB+VCUBR2nqpZC6uNm8jG0k3Rnfohqal5iUqcl/wy2aEWHdVQOQ75k09Qmzg8NCgNjhfTZiPP7pTq9htwVkRMVlmnJnD1gcA2c45gZywPgNAPrgOGRlahU3gn2MoOHCu06oLMDVTxH6/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709910920; c=relaxed/simple;
-	bh=rJzYSeO0H4v56T2ViP7YycjjefILvdxT+aXh7NvK4nk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DIUhjLcLr4HBHRUzUh/jt81g3+JRDs0NUWRJBFLyB3/jM+rkhRRn0+x6v1vnnpfWad/B850brzaqlF2XgfYM/2RqnCYc9s0qfdtvJb8pRvLodA8hDUeAAuAEm4maVApicvhpAwAzxkMJcy+9AHyepecKqbkCoQaI2R6tSaH1+vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LKu7UM+b; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709910917;
-	bh=rJzYSeO0H4v56T2ViP7YycjjefILvdxT+aXh7NvK4nk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LKu7UM+bb/Gu7eYxmvTIwgpjMqUMGT/0M7KixOm1Oi0/XLcX74YUmmYrxnuUdDaxM
-	 IHBEBfqfTnWVF/bkFAhrB9Zdh1RyzIhxr7wwOyw3ygJw0lGJrmsubp73i9qTi+MBXE
-	 /wHv86WS7L+q1ND66rMWY1gcqgut6ZjluLCT1J+YjbYaAcWZpSBVblDzoekcJH2uSt
-	 TTsja37AkbIZQKhhON1qky2uZ3tF1XMhQcLaNaovAslLVbqztHroX9YtrJM0+GJTGx
-	 CMMbwxr0e5ntf1cGZ9Fuii+vqCGcGmd8b5BJ+QjtX07FLCLQeRq4GNL2uIO3i7PiHy
-	 VbT51AtWXvkCQ==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 78FE137820F2;
-	Fri,  8 Mar 2024 15:15:16 +0000 (UTC)
-Date: Fri, 8 Mar 2024 16:15:15 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Liviu Dudau <liviu.dudau@arm.com>
-Cc: =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>, Steven
- Price <steven.price@arm.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Mihail
- Atanassov <Mihail.Atanassov@arm.com>
-Subject: Re: [PATCH] drm/panthor: Add support for performance counters
-Message-ID: <20240308161515.1d74fd55@collabora.com>
-In-Reply-To: <ZesYErFVdqLyjblW@e110455-lin.cambridge.arm.com>
-References: <20240305165820.585245-1-adrian.larumbe@collabora.com>
-	<ZesYErFVdqLyjblW@e110455-lin.cambridge.arm.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709910965; c=relaxed/simple;
+	bh=UlGThBL0mype8rKMqVUNZdexbUttWPD0gQWs6oSKUJE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FIelDlFA8M7iXWmXer2nNZnTY6VdxLiluWzlhXux3FWTnWwSy1+aQQLlgNmCpzqGLOASL1ydXYmvf4ymMXuakjHIqkuqqW76tsNNJxldU6kA+IxOoyI2zTyV1a5gmvqP3f+CD0HAgTyqyuf9DjfvzS22sg613J6GA1difXeoR8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CUB1koLv; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33e17342ea7so586946f8f.2;
+        Fri, 08 Mar 2024 07:16:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709910961; x=1710515761; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IBHHEvGHLyfPz090SoS5964VXYbgui3sU4Q98yLZgC4=;
+        b=CUB1koLvFYbYgHbdnuoRF/aJJJKkFWhCYpjx7nZhjuhBNy0LS5GaLLgnLDVVtF6owO
+         gMvvxbNY4LPa7HwDUJqi9/l4GHC+hK0xn0alx8yFehxpMnoqfGLZWwfEh06/UG+Bwxre
+         Od3I8e6L3HbhuYVMl/xWPiACqOj0n/Pldi2gG/MPq8Pm9810VyEK7suaiC81FWRUVNHn
+         kbc1U4rJxgNiax1uygWze0hXudaqW7dtuZGCuxMsYJJpugJP1mPr84HpgrsqYoFDzIWI
+         BhSRwVFeY/0nlXkJsFfspizfi4orFeaSlMi+U0w2oqtGgw6O5D5JJcYX3U6IynzoBv32
+         ho0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709910961; x=1710515761;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IBHHEvGHLyfPz090SoS5964VXYbgui3sU4Q98yLZgC4=;
+        b=RnH250x4QEtLmB2Xycc0kbIZ5wJG7aPPc0+nd/Eo05W61glkfXheg3Ofx1nu0hJCnq
+         WXYBY2TYpI/Rmh25D6CckLNg2BqxiHe1Vnymp3biq1NnObI78AyIS4gtt0xUcS2vgifN
+         yPqTQ9608TDLFo4u6oB9pJ/LXxbIgNvbLSePZOZca3QkX660JsMRwDInLA+1+s9cc6zP
+         gIkNCrZ0rFI0miTILhXKO4Fvs9xpTdbOrfferRAra3yMjzNMVUmFh2VYyrBqBry67+hx
+         7Qw7l2R7xYheFsUo702TEGpLRhhBZQ2XWnPtF2PFZSqmF3jmq3rJ5kDOrbu+6oA8ZBUD
+         SbqA==
+X-Forwarded-Encrypted: i=1; AJvYcCVLsMCBYBzonBZCc2Guig5YHTI1qXOjrgWcdysCT9oWRYzyxQV9WBZPheHtdw3DM3EYBAZQLV/5NVMRLqWkBQ07jz4aVrwIxLbHDlTZaJghxRvWdE5UlRDuS4ju5DgQzl+rdOYVTYx27h47s02/sd269+D8c6B7ooevgHf2QSTbihxeuAuk9ycanCM7ZpxiyFzGv/yxNgR/
+X-Gm-Message-State: AOJu0Yw7HmZwEAzqaIC4AE5hpdJ5KyRYxBt3k9Wr2sIAhSvIhJsoBfHb
+	0r/a/RTpel3nCnpIb+EszuK63Pj+1RDlYHiyH+REBomybzjSXUd+gN4lpCDfcUo=
+X-Google-Smtp-Source: AGHT+IEW9ecarcYMf0OiMd2G9kSzOy6AtLX3CbznekksoC0zEyu0vBNGlgxia6oA6TfJSJGMCc4z8Q==
+X-Received: by 2002:a05:6000:18af:b0:33e:78d8:34fa with SMTP id b15-20020a05600018af00b0033e78d834famr1352072wri.17.1709910961299;
+        Fri, 08 Mar 2024 07:16:01 -0800 (PST)
+Received: from vitor-nb.. ([2001:8a0:e60f:3100:f642:8b0a:d2f8:3e61])
+        by smtp.gmail.com with ESMTPSA id z17-20020a5d44d1000000b0033e5b28c97csm6282636wrr.37.2024.03.08.07.16.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 07:16:00 -0800 (PST)
+From: Vitor Soares <ivitro@gmail.com>
+To: mkl@pengutronix.de,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Thomas Kopp <thomas.kopp@microchip.com>,
+	Wolfgang Grandegger <wg@grandegger.com>
+Cc: Vitor Soares <vitor.soares@toradex.com>,
+	linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH v2] can: mcp251xfd: fix infinite loop when xmit fails
+Date: Fri,  8 Mar 2024 15:15:23 +0000
+Message-Id: <20240308151523.191860-1-ivitro@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, 8 Mar 2024 13:52:18 +0000
-Liviu Dudau <liviu.dudau@arm.com> wrote:
+From: Vitor Soares <vitor.soares@toradex.com>
 
-> Hi Adri=C3=A1n,
->=20
-> Thanks for the patch and appologies for taking a bit longer to respond,
-> I was trying to gather some internal Arm feedback before replying.
->=20
-> On Tue, Mar 05, 2024 at 04:58:16PM +0000, Adri=C3=A1n Larumbe wrote:
-> > This brings in support for Panthor's HW performance counters and queryi=
-ng
-> > them from UM through a specific ioctl(). The code is inspired by existi=
-ng
-> > functionality for the Panfrost driver, with some noteworthy differences:
-> >=20
-> >  - Sample size is now reported by the firmware rather than having to re=
-ckon
-> >  it by hand
-> >  - Counter samples are chained in a ring buffer that can be accessed
-> >  concurrently, but only from threads within a single context (this is
-> >  because of a HW limitation).
-> >  - List of enabled counters must be explicitly told from UM
-> >  - Rather than allocating the BO that will contain the perfcounter valu=
-es
-> >  in the render context's address space, the samples ring buffer is mapp=
-ed
-> >  onto the MCU's VM.
-> >  - If more than one thread within the same context tries to dump a samp=
-le,
-> >  then the kernel will copy the same frame to every single thread that w=
-as
-> >  able to join the dump queue right before the FW finished processing the
-> >  sample request.
-> >  - UM must provide a BO handle for retrieval of perfcnt values rather
-> >  than passing a user virtual address.
-> >=20
-> > The reason multicontext access to the driver's perfcnt ioctl interface
-> > isn't tolerated is because toggling a different set of counters than the
-> > current one implies a counter reset, which also messes up with the ring
-> > buffer's extraction and insertion pointers. This is an unfortunate
-> > hardware limitation. =20
->=20
-> There are a few issues that we would like to improve with this patch.
->=20
-> I'm not sure what user space app has been used for testing this (I'm gues=
-sing
-> gputop from igt?) but whatever is used it needs to understand the counters
-> being exposed.
+When the mcp251xfd_start_xmit() function fails, the driver stops
+processing messages and the interrupt routine does not return,
+running indefinitely even after killing the running application.
 
-We are using perfetto to expose perfcounters.
+Error messages:
+[  441.298819] mcp251xfd spi2.0 can0: ERROR in mcp251xfd_start_xmit: -16
+[  441.306498] mcp251xfd spi2.0 can0: Transmit Event FIFO buffer not empty. (seq=0x000017c7, tef_tail=0x000017cf, tef_head=0x000017d0, tx_head=0x000017d3).
+.. and repeat forever.
 
-> In your patch there is no information given to the user space
-> about the layout of the counters and / or their order. Where is this being
-> planned to be defined?
+The issue can be triggered when multiple devices share the same
+SPI interface. And there is concurrent access to the bus.
 
-That's done on purpose. We want to keep the kernel side as dumb as
-possible so we don't have to maintain a perfcounter database there. All
-the kernel needs to know is how much data it should transfer pass to
-userspace, and that's pretty much it.
+The problem occurs because tx_ring->head increments even if
+mcp251xfd_start_xmit() fails. Consequently, the driver skips one
+TX package while still expecting a response in
+mcp251xfd_handle_tefif_one().
 
-> Long term, I think it would be good to have details
-> about the counters available.
+This patch resolves the issue by decreasing tx_ring->head if
+mcp251xfd_start_xmit() fails. With the fix, if we trigger the issue and
+the err = -EBUSY, the driver returns NETDEV_TX_BUSY. The network stack
+retries to transmit the message.
+Otherwise, it prints an error and discards the message.
 
-The perfcounter definitions are currently declared in mesa (see the G57
-perfcounter definitions for instance [1]). Mesa also contains a perfetto
-datasource for Panfrost [2].
+Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
+Cc: stable@vger.kernel.org
+Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
+---
 
->=20
-> The other issue we can see is with the perfcnt_process_sample() and its
-> handling of threshold event and overflows. If the userspace doesn't sample
-> quick enough and we cross the threshold we are going to lose samples and
-> there is no mechanism to communicate to user space that the values they
-> are getting have gaps. I believe the default mode for the firmware is to
-> give you counter values relative to the last read value, so if you drop
-> samples you're not going to make any sense of the data.
+V1->V2:
+  - Return NETDEV_TX_BUSY if mcp251xfd_tx_obj_write() == -EBUSY
+  - Rework the commit message to address the change above
+  - Change can_put_echo_skb() to be called after mcp251xfd_tx_obj_write() succeed. Otherwise, we get Kernel NULL pointer dereference error.
 
-If we get relative values, that's indeed a problem. I thought we were
-getting absolute values though, in which case, if you miss two 32-bit
-wraparounds, either your sampling rate is very slow, or events occur at
-a high rate.
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c | 29 +++++++++++---------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
->=20
-> The third topic that is worth discussing is the runtime PM. Currently your
-> patch will increment the runtime PM usage count when the performance
-> counter dump is enabled, which means you will not be able to instrument
-> your power saving modes. It might not be a concern for the current users
-> of the driver, but it is worth discussing how to enable that workflow
-> for future.
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+index 160528d3cc26..0fdaececebdd 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+@@ -181,25 +181,28 @@ netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+ 	tx_obj = mcp251xfd_get_tx_obj_next(tx_ring);
+ 	mcp251xfd_tx_obj_from_skb(priv, tx_obj, skb, tx_ring->head);
+ 
+-	/* Stop queue if we occupy the complete TX FIFO */
+ 	tx_head = mcp251xfd_get_tx_head(tx_ring);
+-	tx_ring->head++;
+-	if (mcp251xfd_get_tx_free(tx_ring) == 0)
+-		netif_stop_queue(ndev);
+-
+ 	frame_len = can_skb_get_frame_len(skb);
+-	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
+-	if (!err)
+-		netdev_sent_queue(priv->ndev, frame_len);
++
++	tx_ring->head++;
+ 
+ 	err = mcp251xfd_tx_obj_write(priv, tx_obj);
+-	if (err)
+-		goto out_err;
++	if (err) {
++		tx_ring->head--;
+ 
+-	return NETDEV_TX_OK;
++		if (err == -EBUSY)
++			return NETDEV_TX_BUSY;
+ 
+- out_err:
+-	netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
++		netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
++	} else {
++		can_put_echo_skb(skb, ndev, tx_head, frame_len);
++
++		/* Stop queue if we occupy the complete TX FIFO */
++		if (mcp251xfd_get_tx_free(tx_ring) == 0)
++			netif_stop_queue(ndev);
++
++		netdev_sent_queue(priv->ndev, frame_len);
++	}
+ 
+ 	return NETDEV_TX_OK;
+ }
+-- 
+2.34.1
 
-I guess we could add a flags field to drm_panthor_perfcnt_config and
-declare a DRM_PANTHOR_PERFCNT_CFG_ALLOW_GPU_SUSPEND flag to support this
-use case.
-
-[1]https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/src/panfrost/perf/G=
-57.xml?ref_type=3Dheads
-[2]https://gitlab.freedesktop.org/mesa/mesa/-/tree/main/src/panfrost/ds?ref=
-_type=3Dheads
 
