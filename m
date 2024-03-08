@@ -1,121 +1,141 @@
-Return-Path: <linux-kernel+bounces-96601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB725875ECD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:46:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 872AD875EEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:56:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27E15B23092
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:46:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B90C41C220BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268364F5F8;
-	Fri,  8 Mar 2024 07:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Nc8xtVoV"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E64C51C4B
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D464F61D;
+	Fri,  8 Mar 2024 07:56:39 +0000 (UTC)
+Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4B74EB43;
+	Fri,  8 Mar 2024 07:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709883987; cv=none; b=VbVYcBMpdcNdqIFKawXFTdrpAGdldI9NTI9UJ3/iZq3j6olAUBj4amoro1DAH+3lj3AqFLtSKsJdOLwhX4eLFqYqlrF0hP8xmf8ATpyvSekFoOR6ufpNpp2yhhz1fznL+dvxu3Pe4xMcVLyVV34dsOHoJtAHVbn4r1VZoj47KME=
+	t=1709884599; cv=none; b=ePA0xhn/vcmK74k8HXf6wL6TaD78Ieki/OfgG/xdOj8EUzETjCzxK9NwsSssqICTEzPrJIfc20ZEHXFFL/IBogB4sewCyM0uStPBOWtIhBMD9vnQ4JUdAL6neVtjj4XxJWi7vU1h+ZqyKnyQCblEqLR+IXFhFYJzvQZfL7tdC3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709883987; c=relaxed/simple;
-	bh=apa7drqXC+sUspJkxMBeLhvktxd4lLh4aXftu3PNjRA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IBfTDpjJbihOANKiQ/5foWOyhaBcbGwJKhnn2jgLeOkL6S7+Q2DhjIDFY54n2rXp0SElYQhabW6OiF8/s5Sh/1EPXg5ssy744A6SAK8jmVDee/QklvibDROPUCXxZ6rHXSq+YgnIRpEAH1itVd/tZNv1F9n3GR2pGwH25ih4+H8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Nc8xtVoV; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 02CDA40004;
-	Fri,  8 Mar 2024 07:46:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709883977;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=rh/TMFw6/2TpSgFOITs518M418uS/FqGdKrbo+fGdeI=;
-	b=Nc8xtVoVpS8MI7y8AubYuIQRHEo70NEsK0ci1FASAXmfJIaqYhzeni0fPfZeupKoo2WKTz
-	GuAK4gcvX9oLICtDx3/QFK4ohzMFpTNjibclgWx61urSH8hoAcQXeM5cUpaBWpivaGXkw1
-	Wtxmz5LwjAbHx5MNtEkHx5qFE66QR+3hkk30ERZ1vtNAnoQnqAv5AWhX5UHRAwVMbg01xG
-	/jepdawxKCv/qU+4SxsJbDY4ljMLb868ya2RaI5OGwMYQy91G6b7jUHibzBMTg0UBiiwfh
-	dOil7lSAcLdgWAPBeHUT/bmBvBYXL34iypOal/nYJqMLyDKGrORvpFP1rhvjIA==
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	herver.codina@bootlin.com,
-	christophercordahi@nanometrics.ca,
-	Bastien Curutchet <bastien.curutchet@bootlin.com>
-Subject: [PATCH 1/1] mtd: rawnand: davinci: Add dummy read after sending command
-Date: Fri,  8 Mar 2024 08:46:09 +0100
-Message-ID: <20240308074609.9056-1-bastien.curutchet@bootlin.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1709884599; c=relaxed/simple;
+	bh=77y5yz7tvTPJlsDrybYtETDg+H02RhwsEJCmIwEOSqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HpNkUhcJ8LB08+3IvPLjX1H8I3mqtyrtIWuuYqALUyj6i9RciqIJOWmQYYgcllMfATxhnVkS3/dcSjAOICYdXL9FHvVWiy1NImBIQi/enTHqjQswNaIl0sD94Ov08N+uGwkBUOxXFeQEEL3zKAC6b3PAp7GFF1etHacWIqgNCxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+	by vmicros1.altlinux.org (Postfix) with ESMTP id EEBCD72C980;
+	Fri,  8 Mar 2024 10:48:42 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+	by imap.altlinux.org (Postfix) with ESMTPSA id DFA9436D0168;
+	Fri,  8 Mar 2024 10:48:42 +0300 (MSK)
+Date: Fri, 8 Mar 2024 10:48:42 +0300
+From: Vitaly Chikunov <vt@altlinux.org>
+To: Jarkko Sakkinen <jarkko@kernel.org>,
+	Stefan Berger <stefanb@linux.ibm.com>
+Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+	herbert@gondor.apana.org.au, davem@davemloft.net,
+	linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br,
+	lukas@wunner.de
+Subject: Re: [PATCH v5 09/12] crypto: ecdsa - Rename keylen to bufsize where
+ necessary
+Message-ID: <20240308074842.g25bsphtbwdzzo4l@altlinux.org>
+References: <20240306222257.979304-1-stefanb@linux.ibm.com>
+ <20240306222257.979304-10-stefanb@linux.ibm.com>
+ <CZNR9UY8J7Q0.2R1YYTOO4Z92G@kernel.org>
+ <571aa199-00cc-4153-9424-0012d20dc6f6@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <571aa199-00cc-4153-9424-0012d20dc6f6@linux.ibm.com>
 
-Sometimes, writes fail because the tWB_max is not correctly observed
-after sending PAGEPROG. It leads to the R/B pin to be read as in
-the "ready" state right after sending the command, thus preventing the
-normal tPROG delay to be actually observed. This happens because the
-ndelay() that waits for tWB_max starts before the command reaches the
-NAND chip.
+Jarkko,
 
-Add a dummy read when a delay is requested at the end of the executed
-instruction to make sure that the sent command is received by the NAND
-before starting the short ndelay() (<1us but rounded up to 1us in
-practice). This read is done on the control register area because
-doing it on the Async Data area would change the NAND's RE pin state.
-This is not perfect as the two areas are behind two different
-devm_ioremap_resource() and could possibly be located on different
-interconnects (I did not find more details). This means either the
-additional latency due to the load operation is enough impacting, or it
-has the expected behavior of ensuring the write has been received.
+On Thu, Mar 07, 2024 at 02:20:12PM -0500, Stefan Berger wrote:
+> On 3/7/24 14:13, Jarkko Sakkinen wrote:
+> > On Thu Mar 7, 2024 at 12:22 AM EET, Stefan Berger wrote:
+> > > In some cases the name keylen does not reflect the purpose of the variable
+> > > anymore once NIST P521 is used but it is the size of the buffer. There-
+> > > for, rename keylen to bufsize where appropriate.
+> > > 
+> > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> > > Tested-by: Lukas Wunner <lukas@wunner.de>
+> > > ---
+> > >   crypto/ecdsa.c | 12 ++++++------
+> > >   1 file changed, 6 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
+> > > index 4daefb40c37a..4e847b59622a 100644
+> > > --- a/crypto/ecdsa.c
+> > > +++ b/crypto/ecdsa.c
+> > > @@ -35,8 +35,8 @@ struct ecdsa_signature_ctx {
+> > >   static int ecdsa_get_signature_rs(u64 *dest, size_t hdrlen, unsigned char tag,
+> > >   				  const void *value, size_t vlen, unsigned int ndigits)
+> > >   {
+> > > -	size_t keylen = ndigits * sizeof(u64);
+> > 
+> > nit: still don't get why "* sizeof(u64)" would ever be more readable
+> > thean "* 8".
+> 
+> Because existing code in crypto uses sizeof(u64) when converting ndigits to
+> number of bytes and '8' is not used for converting to bytes. Do we need to
+> change this now ? No, I think it's better to conform to existing code.
 
-This has been tested on two platforms designed off of the
-DAVINCI/OMAP-L138. The first uses a Toshiba NAND Flash (TC58NYG2S3EBAI5),
-the other a Macronix one (MX30UF4G18AC).
+`sizeof(u64)` is easily read as `8` by reviewers, but just `8` will
+require inline comments because it's magic number isn't it? So this will
+not even decrease number of letters.
 
-Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
----
-nandtest utility sometimes fails because of write failures. It is likely
-that these failures are due to a non respect of the tPROG delay
-after sending PAGEPROG. I could not manage to fully prove this because
-adding debugging to the code makes the failure disappear. As these
-timings are really tiny, I can't measure them precisely.
+`sizeof(u64)` is self-documenting code and you don't even need to
+interpret it as `8` for review as you don't need number from any
+sizeof(struct ..).
 
- drivers/mtd/nand/raw/davinci_nand.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Also, possible we need to calculate number of bits in the big number, so
+this would become `* 8 * 8`, in that case how would you distinguish
+omission of one `* 8` by a typo.
 
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index e75d81cf8c21..051deea768db 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -671,8 +671,11 @@ static int davinci_nand_exec_instr(struct davinci_nand_info *info,
- 		break;
- 	}
- 
--	if (instr->delay_ns)
-+	if (instr->delay_ns) {
-+		/* Dummy read to be sure that command is sent before ndelay starts */
-+		davinci_nand_readl(info, 0);
- 		ndelay(instr->delay_ns);
-+	}
- 
- 	return 0;
- }
--- 
-2.43.2
+Overall it's quite common in the whole tree
 
+  linux/torvalds$ git grep -e '\* sizeof(u64)' -e 'sizeof(u64) \*' | wc -l
+  551
+
+So this is perhaps acceptable and depends on point of view. crypto
+subsystem coders seems to prefer not to save on letters and type
+`sizeof(u64)`.
+
+Thanks,
+
+> 
+> # grep -rI ndigits crypto/ | grep sizeof\(u64\)
+> crypto/ecrdsa.c:        unsigned int ndigits = req->dst_len / sizeof(u64);
+> crypto/ecrdsa.c:            req->dst_len != ctx->curve->g.ndigits *
+> sizeof(u64) ||
+> crypto/ecrdsa.c:        vli_from_be64(r, sig + ndigits * sizeof(u64),
+> ndigits);
+> crypto/ecrdsa.c:            ctx->curve->g.ndigits * sizeof(u64) !=
+> ctx->digest_len)
+> crypto/ecrdsa.c:            ctx->key_len != ctx->curve->g.ndigits *
+> sizeof(u64) * 2)
+> crypto/ecrdsa.c:        ndigits = ctx->key_len / sizeof(u64) / 2;
+> crypto/ecrdsa.c:        vli_from_le64(ctx->pub_key.y, ctx->key + ndigits *
+> sizeof(u64),
+> crypto/ecrdsa.c:        return ctx->pub_key.ndigits * sizeof(u64);
+> crypto/ecdh.c:      params.key_size > sizeof(u64) * ctx->ndigits)
+> crypto/ecc.c:   size_t len = ndigits * sizeof(u64);
+> crypto/ecc.c:           num_bits = sizeof(u64) * ndigits * 8 + 1;
+> crypto/ecdsa.c: size_t bufsize = ndigits * sizeof(u64);
+> crypto/ecdsa.c: size_t bufsize = ctx->curve->g.ndigits * sizeof(u64);
+> crypto/ecdsa.c: ndigits = DIV_ROUND_UP(digitlen, sizeof(u64));
+> 
+>    Stefan
+> 
+> > 
+> > BR, Jarkko
 
