@@ -1,142 +1,159 @@
-Return-Path: <linux-kernel+bounces-96555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0451B875E0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:50:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B74AA875E0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BBC8B22695
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:50:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 405712832EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25DEA4EB29;
-	Fri,  8 Mar 2024 06:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8674EB20;
+	Fri,  8 Mar 2024 06:54:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V9/TbEuY"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DJUI8PVN"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A93441F
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 06:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497D61D699
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 06:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709880636; cv=none; b=ksIgdc62ZpKiVVRdYXND5+uH5flxnKv7CFYCARQk2dCDrnWMsJBJmH6Zi3cQj0Iip8Uf2yzd//LHbmow08uwaTOpmK6vdgWE0JJUarIa1GWqk+2Yp1tnQ568MWMAhwH6DKlqcHeIQaKO/xNrPuMl56aK57zW1efRUu33og7NUsw=
+	t=1709880865; cv=none; b=gL9tnifWOkoMwAVEoUnAAO5/xmEDOD3Y6fcOaXsqllAok5xSRgDqvmPEfQJ3clxhzVTi4TKRRJnnSZlieMU6SSx5zp+UN5r3ie6TfaK+Z0jlpVZAi18xTuRSpN2sGvZe4w5iNorNojkBa585pCO7V0vdUL1Wt0nMrp5JOQcLSg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709880636; c=relaxed/simple;
-	bh=icevmjjQzy7T8gdOkFpqgnXBgi/VX04oIsM5bIcpiN4=;
+	s=arc-20240116; t=1709880865; c=relaxed/simple;
+	bh=xuIF277pS+y5c3blkDWZHPXDqgniXKzFLfOr8v4pbp4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U27VY7NGC6H0Ag/hQyl+GXqbwwUzj0gCel5lU0GeSHDpnv9rm9wVILAl55BHAkqig1ttXjqDn6P0u3EWukAZ1nYjnq59FXtZoEkQYkcbyNFOWzjbNS8jvYcQ1Vg4TEPagrDj73DeuF8P2DgWggDuPXnkAthRMYNu9+SQEXSG/BM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V9/TbEuY; arc=none smtp.client-ip=170.10.133.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=fQkMpAi3+7uwM7MMyGxSroo/UHLq2Cj+0YsArRXiO6P8EKtHH/hcWsxtDICWpB34y102cZ7JhIZQXR3ntTflzpd/IbAezt+BEPDUuiuaBcpSp2I2wx5cGjxRZOzWcNE9dGK19a4HV6ucNoVNo4lbMNfYAi8J/6cJFrxWqjReAnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DJUI8PVN; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709880633;
+	s=mimecast20190719; t=1709880863;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=epRg3dGewUcblPePlS+KzZdY/GgoToAmRabId8Bpp4I=;
-	b=V9/TbEuYrZMfR05zpGMs6kOM93WEA9kdJDMKKbjRxJi8UOuzlft06EXzvMKJ7UTFAmNw+6
-	pMl/V0Gnbvkl1Ra/NfzBUOBZyI8gWQfCcHA2CS+y+nqDLfnHyIEkxMuO7e8LxIum2845kz
-	uaY7JGDe+1uPEZjD6Z1oPsHLTWzHbPY=
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
- [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=xuIF277pS+y5c3blkDWZHPXDqgniXKzFLfOr8v4pbp4=;
+	b=DJUI8PVNRyTQAaStfsYJ6r2edt73lZnsR/C+mPGGUnPA3GZ4/MDJbzhETmbKNmrKLH4Ntq
+	9XD6RU3KIVxmfL9d2jWJSyLnso5GF3x+VXSqVsJOBqb7xnvlPfmKT2yBNjQDa8ha0F9Jfc
+	Fzm+uNF9s3+DPrBPXpnaWTjtIG9x+ms=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-96-FxMdvHrzMCqKmKj-wGEaUg-1; Fri, 08 Mar 2024 01:50:31 -0500
-X-MC-Unique: FxMdvHrzMCqKmKj-wGEaUg-1
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-221994722b9so148915fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 22:50:31 -0800 (PST)
+ us-mta-464-xnGrOeTrN0mJ-F6xoco7Qw-1; Fri, 08 Mar 2024 01:54:19 -0500
+X-MC-Unique: xnGrOeTrN0mJ-F6xoco7Qw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33d19951a9bso139302f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 22:54:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709880631; x=1710485431;
+        d=1e100.net; s=20230601; t=1709880858; x=1710485658;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=epRg3dGewUcblPePlS+KzZdY/GgoToAmRabId8Bpp4I=;
-        b=ieMNZ32hER/A96kVlPAsPt8Y1mrjiCUPvjz24QEGgzQZanIrRgqKdbGTZAjD6juvnU
-         jpLeJHwCwMnNowRTgs2NygFddh891mc7eTWKXxcwqx8BOxLmIEA/Tsz8Oho99vYYU6UR
-         y6pIEQHezyR3+9p65k+zvlox+SlnzTNmJsh5htncKpDnOarvxhjXKuBmIctCiVIRgCZc
-         URzOHRTqAf2dAxVMMF0LpzBh0F0CnCWoaxEbezLPETHbLMh+OaYUCTOJswn3auiEl0Hx
-         cKq7Ji7sfP/jF5Fr2nRJ+RCuYflHfZe+OTq07GYhCdTDBAxFxrycn5oMB4zWXqyGK9iW
-         IOQg==
-X-Forwarded-Encrypted: i=1; AJvYcCXupvbnC1eSm6DVQ4KDL+golZsbR8obGIXdASkZVH5xwFeU2mP4hQR2Ti0Lr7VdeyAeijN5VcbCVdekrwvdZy/ISm2Ou7E8KoVGGFzY
-X-Gm-Message-State: AOJu0YxgBy/CnAof5N3tjyVk+RQyrqD3veyd+Kx23c3bnLQWCvcetcOw
-	qefHFJ96KZaTBmW3lIuNfwh/OF7sGlpdW/whEkrTscXEqJCIxfgqdQX/pIeJjc8uuLGe6mC4X3C
-	VE2Zl2GpBe2eZ4k9e/26DNvQrtHtmJiuX+jvZ5VWZUe7YGkD034MWCRSefr0hrw==
-X-Received: by 2002:a05:6870:911f:b0:221:9798:22ce with SMTP id o31-20020a056870911f00b00221979822cemr1235676oae.5.1709880630970;
-        Thu, 07 Mar 2024 22:50:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF5WJ4Hs7BOa4+cQmkVKBMn/KDqWDXIuEQmCh9SbFC/cz4o3SLGxNN1BrH2AJEolH8ck0I8Eg==
-X-Received: by 2002:a05:6870:911f:b0:221:9798:22ce with SMTP id o31-20020a056870911f00b00221979822cemr1235655oae.5.1709880630429;
-        Thu, 07 Mar 2024 22:50:30 -0800 (PST)
-Received: from x1n ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id r37-20020a632065000000b005dcc075d5edsm13621982pgm.60.2024.03.07.22.50.26
+        bh=xuIF277pS+y5c3blkDWZHPXDqgniXKzFLfOr8v4pbp4=;
+        b=YISEIv53OVwD9OnBFl8JW2TeOujLESKfoE52UQLBji7NuUS8sj8h8gsjUuSZq11g1h
+         wQHPvw8OkEEn5VLD0VwezlUbBC2LioVcaPp0ft7X5cl33KpylKp1LillB8f7K52seCS6
+         CG5rwwTsHEvLAgomyhKkzjwh8KU+Pq8AlM+Cjbh2ywywHNCzQCfETs12juM2hqDP20om
+         U6CkqkQmWUOMalFvc1ei/oQCrzGhV51kQ+e86siMorri2MeRR1+BHElJgjcNRETW66Ik
+         3XNmbLwqmv3efNs5nw/pKd89G2uLf5mlScN3YmusyFUY6SZwya5LYFAhfd8bUHovdv1J
+         WiMg==
+X-Forwarded-Encrypted: i=1; AJvYcCX31K1WljqwCUg0cYvjlnJKYIJPIEM4fTScFEOwrGnlIb6B2gJVyXUwLeLukZsskEe7VBh3LjSy95k6zCn7Q6d6K+bnbl3DbXSxVRgG
+X-Gm-Message-State: AOJu0YxPHPFCTpakDbYT6yJh2jWn9+isiRV2/PfTYgJUryYrpD0Tiy5D
+	INXJqVV3RcJUp5nKWyK+e0Z+eUs6g+MpR2J1P2Td/MVfoQ5l3EuNaVivCOv7x4rtWuxwIsz77y1
+	weBGbZnAqYGadQXf4fbREWRei8dNeTKMw01LPy6o/QNG9OCN5aiVYFw5aB7TBhw==
+X-Received: by 2002:a5d:5651:0:b0:33d:6bd5:9f00 with SMTP id j17-20020a5d5651000000b0033d6bd59f00mr13722711wrw.41.1709880858518;
+        Thu, 07 Mar 2024 22:54:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHIkNCg8dS5+UGICKGXMGApzhV6Hrk7DKyKGQ9+Rcd2E4JwkHDtrlxvL3WtchQu0F7ibaof5g==
+X-Received: by 2002:a5d:5651:0:b0:33d:6bd5:9f00 with SMTP id j17-20020a5d5651000000b0033d6bd59f00mr13722692wrw.41.1709880858169;
+        Thu, 07 Mar 2024 22:54:18 -0800 (PST)
+Received: from localhost.localdomain ([176.206.22.187])
+        by smtp.gmail.com with ESMTPSA id b12-20020a05600003cc00b0033e451a9b64sm10813308wrg.61.2024.03.07.22.54.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 22:50:30 -0800 (PST)
-Date: Fri, 8 Mar 2024 14:50:20 +0800
-From: Peter Xu <peterx@redhat.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>, x86@kernel.org,
-	sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Alistair Popple <apopple@nvidia.com>
-Subject: Re: [PATCH RFC 01/13] mm/hmm: Process pud swap entry without
- pud_huge()
-Message-ID: <Zeq1LNValPosuWgw@x1n>
-References: <20240306104147.193052-1-peterx@redhat.com>
- <20240306104147.193052-2-peterx@redhat.com>
- <20240307181233.GD9179@nvidia.com>
+        Thu, 07 Mar 2024 22:54:17 -0800 (PST)
+Date: Fri, 8 Mar 2024 07:54:13 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de,
+	peterz@infradead.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
+	andrew.cooper3@citrix.com, bristot@kernel.org,
+	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+	mattst88@gmail.com, krypton@ulrich-teichert.org,
+	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
+	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
+	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+	konrad.wilk@oracle.com
+Subject: Re: [PATCH 26/30] sched: handle preempt=voluntary under PREEMPT_AUTO
+Message-ID: <Zeq2FUkU4nVSjY7I@localhost.localdomain>
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-27-ankur.a.arora@oracle.com>
+ <65e3cd87.050a0220.bc052.7a29@mx.google.com>
+ <87frx514jz.fsf@oracle.com>
+ <12a20651-5429-43df-88d7-9d01ff6212c6@joelfernandes.org>
+ <63380f0a-329c-43df-8e6c-4818de5eb371@paulmck-laptop>
+ <d956c2e9-492d-4559-b9f9-400f37f523bf@joelfernandes.org>
+ <87edclqt6a.fsf@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307181233.GD9179@nvidia.com>
+In-Reply-To: <87edclqt6a.fsf@oracle.com>
 
-On Thu, Mar 07, 2024 at 02:12:33PM -0400, Jason Gunthorpe wrote:
-> On Wed, Mar 06, 2024 at 06:41:35PM +0800, peterx@redhat.com wrote:
-> > From: Peter Xu <peterx@redhat.com>
-> > 
-> > Swap pud entries do not always return true for pud_huge() for all archs.
-> > x86 and sparc (so far) allow it, but all the rest do not accept a swap
-> > entry to be reported as pud_huge().  So it's not safe to check swap entries
-> > within pud_huge().  Check swap entries before pud_huge(), so it should be
-> > always safe.
-> > 
-> > This is the only place in the kernel that (IMHO, wrongly) relies on
-> > pud_huge() to return true on pud swap entries.  The plan is to cleanup
-> > pXd_huge() to only report non-swap mappings for all archs.
-> > 
-> > Cc: Alistair Popple <apopple@nvidia.com>
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >  mm/hmm.c | 7 +------
-> >  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> > @@ -424,7 +424,7 @@ static int hmm_vma_walk_pud(pud_t *pudp, unsigned long start, unsigned long end,
-> >  	walk->action = ACTION_CONTINUE;
-> >  
-> >  	pud = READ_ONCE(*pudp);
-> > -	if (pud_none(pud)) {
-> > +	if (pud_none(pud) || !pud_present(pud)) {
-> 
-> Isn't this a tautology? pud_none always implies !present() ?
+On 07/03/24 19:49, Ankur Arora wrote:
+> Joel Fernandes <joel@joelfernandes.org> writes:
 
-Hmm yes I think so, afact, it should be "all=none+swap+present". I still
-remember I missed that once previously, it's not always obvious when
-preparing such patches. :( I'll simplify this and also on patch 3.
+..
+
+> > Firstly, Maybe I misunderstood Ankur completely. Re-reading his comments above,
+> > he seems to be suggesting preempting instantly for higher scheduling CLASSES
+> > even for preempt=none mode, without having to wait till the next
+> > scheduling-clock interrupt.
+>
+> Yes, that's what I was suggesting.
+>
+> > Not sure if that makes sense to me, I was asking not
+> > to treat "higher class" any differently than "higher priority" for preempt=none.
+>
+> Ah. Understood.
+>
+> > And if SCHED_DEADLINE has a problem with that, then it already happens so with
+> > CONFIG_PREEMPT_NONE=y kernels, so no need special treatment for higher class any
+> > more than the treatment given to higher priority within same class. Ankur/Juri?
+>
+> No. I think that behaviour might be worse for PREEMPT_AUTO.
+>
+> PREEMPT_NONE=y (or PREEMPT_VOLUNTARY=y for that matter) don't
+> quite have a policy around when preemption happens. Preemption
+> might happen quickly, might happen slowly based on when the next
+> preemption point is found.
+>
+> The PREEMPT_AUTO, preempt=none policy in this series will always
+> cause preemption to be at user exit or the next tick. Seems like
+> it would be worse for higher scheduling classes more often.
+>
+> But, I wonder what Juri thinks about this.
+
+As I was saying in my last comment in the other discussion, I'm honestly
+not sure, mostly because I'm currently fail to see what type of users
+would choose preempt=none and have tasks scheduled with SCHED_DEADLINE
+(please suggest example usecases, as I'm pretty sure I'm missing
+something :). With that said, if the purpose of preempt=none is to have
+a model which is super conservative wrt preemptions, having to wait one
+tick to possibly schedule a DEADLINE task still seems kind of broken for
+DEADLINE, but at least is predictably broken (guess one needs to account
+for that somehow when coming up with parameters :).
 
 Thanks,
-
--- 
-Peter Xu
+Juri
 
 
