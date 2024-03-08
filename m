@@ -1,73 +1,58 @@
-Return-Path: <linux-kernel+bounces-96514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC84C875D58
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90151875D4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D53FB22452
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:58:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FEFFB21A19
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:57:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBF72E821;
-	Fri,  8 Mar 2024 04:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C919E2E62B;
+	Fri,  8 Mar 2024 04:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FfgQrOcX"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T4CRU/Hk"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F9BC2D608;
-	Fri,  8 Mar 2024 04:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B721CFB2
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 04:56:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709873918; cv=none; b=eb7B+wQXuLPVh+H7g4ZJvgQaAMVeX0VB7Wg51n+eONPd+pRzx2sntaHQiJxQClLpp9pe7GrZE20ugMQK1aP6EWHV4idIJosGj+fxMQKLLFMDBtpUKNOrOmOz8rWOqj75KsUWWJ5vImSCEjdUkpcS0QPVtrKEnAUzRzNP7rUTaNg=
+	t=1709873813; cv=none; b=seXkI+W0bvCkAvYnQ1btB+NyBI2ylVJF/x6RZNyYEJM3DDaXvVRLfVUPRJFQYYSj8+DNUMKNySUUUwhLPmSbGiZRhtsZzWxlgSvWKiEMbWrzyWUbhotxtnZnclOVwzEde8JAkHxMuOHTxap+RThJdfnBNRmdARipye5szC7qO9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709873918; c=relaxed/simple;
-	bh=jy0XW6HpXLjNKng6SUOk46z3P56Zbsjo+182MvNZfNQ=;
+	s=arc-20240116; t=1709873813; c=relaxed/simple;
+	bh=3wClNudqM5whTwW4VLZGzH3ML+XgAjUTBLrIe1VPYrc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FdWd+2u2kqlRVjQOMUj6+oOTnKRf9krIAxosZ/PeJ78nfK6yKJmqr4xqcexmxTSxdOsF/Kq2R7IvlmZmD0OmsNGg9FR7kALTryzIwEXBYn3eUQ6zJB7PgNrq25tTdVLwKvza90VfLlI9+YtETwrJfM5Awkyq5DVgpJjzUovZlVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FfgQrOcX; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709873916; x=1741409916;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jy0XW6HpXLjNKng6SUOk46z3P56Zbsjo+182MvNZfNQ=;
-  b=FfgQrOcXxMJKfCJC8EBFf2vjhn/q1GqXnsy6QZ05oGtlpZjPK0XqyB6Q
-   qYWhGwwOzEUQVrycKb7t5NiKIVOb9FJgII9ON1+sfqFznBWK9BNJE1+UX
-   4CIh978wR6+LYW2oKI8MFTqVwLi9gxZNTc9kxsAbBNOSXKL6Hpf1Kuzgu
-   faeGsZb5C3uXtRIHOkjhX5JJ+ju1FvmsWgx9Q+cZk2CmNeGiFvbznu9o9
-   m7KIx9Z7JizbBPHvPjynR3HS0NY+C/uWJaMEVI/bfFyieJFkymuyS9OQ0
-   ONn/HALPK5Ly/u0RRMn8qgrDNXnqc2b1wxCBopCggbSsuaq9ouvFtX1w8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="16013259"
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="16013259"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 20:58:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="15022427"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa004.jf.intel.com with ESMTP; 07 Mar 2024 20:58:33 -0800
-Date: Fri, 8 Mar 2024 12:54:16 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
-	Isaku Yamahata <isaku.yamahata@intel.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Yu Zhang <yu.c.zhang@linux.intel.com>,
-	Chao Peng <chao.p.peng@linux.intel.com>,
-	Fuad Tabba <tabba@google.com>, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 09/16] KVM: x86/mmu: Move private vs. shared check above
- slot validity checks
-Message-ID: <ZeqZ+BDTN5bIx0rm@yilunxu-OptiPlex-7050>
-References: <20240228024147.41573-1-seanjc@google.com>
- <20240228024147.41573-10-seanjc@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UBXOqQYMx24FYDIfbzlnpI8m7XYLx9ROFCcJksZpORxpcc3qgDdj7Eysq3NgE4XrAEEPddsIdGm3zJzpFgnBkPbZupIDGrB6W1Y3SyNiymeYvrFGNDaiedWo6MrLwSZcHULtZ1wyWFUmUUV7uAfG/1PE5zRt983O6l5UW5QErds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T4CRU/Hk; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=FpAzxbK4c61fYlxUcROxFoZVfcD/2ddhJfA1Sk/q7Y8=; b=T4CRU/HkppN1YdmOI1o79jRpwo
+	8lkIaoPUIavYephzeW+DqvejzhfiF5EF43G7i1t+h2z6ka+Lc96wTIyzWCa1CAPous7m/tXQ5J9lq
+	BrjbbugCuMC+/GkVcdo3JQVAKYK1PNFdvf2rEWumSzjWTXa3cS+vY7wQpUok92Jbq2iiEbJSoKg6J
+	UeJL2RBHTm2cPMzZOA+rUA6JqjFN42qIoG//W0xDFuc9pc4pzrpxNsbLEBg43dOwHIS+DPR3WI1wB
+	6abFKCRW0cO9s63i+/7r9pGbf0ihv/z8l3hnYmhcYFQzbtGGza9hraeK4VitikeroWg3L75ENcxUg
+	0bqU2JqA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1riSHm-0000000Akts-1dMG;
+	Fri, 08 Mar 2024 04:56:46 +0000
+Date: Fri, 8 Mar 2024 04:56:46 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: lipeifeng@oppo.com
+Cc: 21cnbao@gmail.com, akpm@linux-foundation.org, david@redhat.com,
+	osalvador@suse.de, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH v2 0/2] reclaim contended folios asynchronously instead
+ of promoting them
+Message-ID: <ZeqajmATLj5gm6Bv@casper.infradead.org>
+References: <20240308031126.750-1-lipeifeng@oppo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,69 +61,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240228024147.41573-10-seanjc@google.com>
+In-Reply-To: <20240308031126.750-1-lipeifeng@oppo.com>
 
-On Tue, Feb 27, 2024 at 06:41:40PM -0800, Sean Christopherson wrote:
-> Prioritize private vs. shared gfn attribute checks above slot validity
-> checks to ensure a consistent userspace ABI.  E.g. as is, KVM will exit to
-> userspace if there is no memslot, but emulate accesses to the APIC access
-> page even if the attributes mismatch.
-> 
-> Fixes: 8dd2eee9d526 ("KVM: x86/mmu: Handle page fault for private memory")
-> Cc: Yu Zhang <yu.c.zhang@linux.intel.com>
-> Cc: Chao Peng <chao.p.peng@linux.intel.com>
-> Cc: Fuad Tabba <tabba@google.com>
-> Cc: Michael Roth <michael.roth@amd.com>
-> Cc: Isaku Yamahata <isaku.yamahata@intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 9206cfa58feb..58c5ae8be66c 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4365,11 +4365,6 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
->  			return RET_PF_EMULATE;
->  	}
->  
-> -	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
-> -		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> -		return -EFAULT;
-> -	}
-> -
->  	if (fault->is_private)
->  		return kvm_faultin_pfn_private(vcpu, fault);
->  
-> @@ -4410,6 +4405,16 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
->  	fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
->  	smp_rmb();
->  
-> +	/*
-> +	 * Check for a private vs. shared mismatch *after* taking a snapshot of
-> +	 * mmu_invalidate_seq, as changes to gfn attributes are guarded by the
-> +	 * invalidation notifier.
+On Fri, Mar 08, 2024 at 11:11:24AM +0800, lipeifeng@oppo.com wrote:
+> Commit 6d4675e60135 ("mm: don't be stuck to rmap lock on reclaim path")
+> prevents the reclaim path from becoming stuck on the rmap lock. However,
+> it reinserts those folios at the head of the LRU during shrink_folio_list,
+> even if those folios are very cold.
 
-I didn't see how mmu_invalidate_seq influences gfn attribute judgement.
-And there is no synchronization between the below check and
-kvm_vm_set_mem_attributes(), the gfn attribute could still be changing
-after the snapshot.  So why this comment?
+This seems like a lot of new code.  Did you consider something simpler
+like this?
 
-Thanks,
-Yilun
+Also, this is Minchan's patch you're complaining about.  Add him to the
+cc.
 
-> +	 */
-> +	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
-> +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> +		return -EFAULT;
-> +	}
-> +
->  	/*
->  	 * Check for a relevant mmu_notifier invalidation event before getting
->  	 * the pfn from the primary MMU, and before acquiring mmu_lock.
-> -- 
-> 2.44.0.278.ge034bb2e1d-goog
-> 
-> 
++++ b/mm/vmscan.c
+@@ -817,6 +817,7 @@ enum folio_references {
+        FOLIOREF_RECLAIM,
+        FOLIOREF_RECLAIM_CLEAN,
+        FOLIOREF_KEEP,
++       FOLIOREF_RESCAN,
+        FOLIOREF_ACTIVATE,
+ };
+
+@@ -837,9 +838,9 @@ static enum folio_references folio_check_references(struct folio *folio,
+        if (vm_flags & VM_LOCKED)
+                return FOLIOREF_ACTIVATE;
+
+-       /* rmap lock contention: rotate */
++       /* rmap lock contention: keep at the tail */
+        if (referenced_ptes == -1)
+-               return FOLIOREF_KEEP;
++               return FOLIOREF_RESCAN;
+
+        if (referenced_ptes) {
+                /*
+@@ -1164,6 +1165,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+                case FOLIOREF_ACTIVATE:
+                        goto activate_locked;
+                case FOLIOREF_KEEP:
++               case FOLIOREF_RESCAN:
+                        stat->nr_ref_keep += nr_pages;
+                        goto keep_locked;
+                case FOLIOREF_RECLAIM:
+@@ -1446,7 +1448,10 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+ keep_locked:
+                folio_unlock(folio);
+ keep:
+-               list_add(&folio->lru, &ret_folios);
++               if (references == FOLIOREF_RESCAN)
++                       list_add(&folio->lru, &rescan_folios);
++               else
++                       list_add(&folio->lru, &ret_folios);
+                VM_BUG_ON_FOLIO(folio_test_lru(folio) ||
+                                folio_test_unevictable(folio), folio);
+        }
+
 
