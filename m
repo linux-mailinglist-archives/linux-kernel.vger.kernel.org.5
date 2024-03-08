@@ -1,76 +1,81 @@
-Return-Path: <linux-kernel+bounces-96757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED537876110
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:40:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F875876111
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95176B21F8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:40:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0E8A1C229BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD30535B7;
-	Fri,  8 Mar 2024 09:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268DE53801;
+	Fri,  8 Mar 2024 09:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bqCsbdPo"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DVECx4yQ"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D50452F89
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 09:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173BE537FB
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 09:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709890833; cv=none; b=RCUTI0iXeki/jbe699wFzyOsqgKKJKufqItnlBKEQDUC5wftck7oaOx4Xp3wDHgmNdgEsN4em48KY+I2vKXX1k1qCgjYfROVx+0WHZL6T9xPT2ORNyJTo2i95qzbzqZs1vBxbFIz8aUaMfmCCg7p9g/sdgzVi9koEBzp60AkNuc=
+	t=1709890838; cv=none; b=Ix/woTAeI3hDCBgteNtdagBYDX3DGa7VhZQkSzNOk1mx81HL/FhHE4diG9QOTqxk4BYrXqe0D5VnI5kQ8hUkFYAsh4ltYrMLr/nrPX4M9ocWxpoqKp6YoDdrLWaSQ8cDc0AILkcCTFA2UFwi8Nt4YKXxsJo/h5PdAgNZhGUEVB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709890833; c=relaxed/simple;
-	bh=DElne2Gkjn4z8oemrarE/fUztT15L2tk3hBrUdMeoIg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EiZ24e5NLCMlLiZ9saBPr1QA5HaMaqpSuV4Ys72Y8qTpjirbWISsSPHUtVqbFt4usxHarpEKWFoxGFZO0mA0k+E2SWv1l7uwPrkr22/xkxIqzNpvLZIkEg0Pb0Y9d2RUO54vjIdAdw0W+kyyLIwVE/iuvOZNgFSmnBx3aHt2Blg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bqCsbdPo; arc=none smtp.client-ip=209.85.215.178
+	s=arc-20240116; t=1709890838; c=relaxed/simple;
+	bh=TfCEx/cMmnXx0f0SqmccleKorZLVMxlT9yGrsWUUDf8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=PZQewFKkymE7e1ISGI4uuIWWBJ7ZTmdHZ9inKcd5bdtiLW/H3mbtjTGGR2bu7DqpBkRDlXaTCGgA0BTC2fVCauz2cmcGzWjTluxul36TVJSeY6ac4aj4q+9Vq+5Q5qk2MTIkq2z5IoYbOz+UV/Td2DSPIGHjAx1KLr0Y1lHRXGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DVECx4yQ; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso1536619a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 01:40:32 -0800 (PST)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e622b46f45so563336b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 01:40:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709890831; x=1710495631; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=33mEcmSEfEQlJqpXQuHN8Aso2S/mym0SCRxX2k8PMY0=;
-        b=bqCsbdPo4nr0UmUwWphUQ1cjpjJeZA/KK0lU9HUEHavZK5f/YA+2uZOgkaeNetWddh
-         EZ+K/IGeKtLwV1gxBOqt5YDdHbcELHUnapHeqWdatOT8xCPW/oDUdgDldp0N6SA1ByYF
-         mD9oRvDbeQKftLe+FJioTHMy5hkYK9rybAY+LUZiW23UnlQu9aN9R51z2/2tZzGQ7DbC
-         7yEdO3rh2xbxbrgUaruVnESrd1/74CYXspxVhqUpYHBCvqtqf/blkU/R4kHiJYE9Q16Z
-         juZM7jk2fftKtP+G9yWla9w3qwMPdEGg47quS2b2gzXsrnlQyL0o42iHMYsP0Fn1ai8u
-         ri+g==
+        d=gmail.com; s=20230601; t=1709890836; x=1710495636; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mkA8EskXvnyqySxL+sveNVRb40uEpQ//fvo+W4nBex0=;
+        b=DVECx4yQXzEqAWorFenBelyTfvTJzZljzeH5x4RZ7QChE/wWRsCI1rzzu0OqfGBy3W
+         Mbv18UIY/QhbmxtgEci/GTOpkwvs5qna9Pg0Jka/xSdKhUcwFJ8jJ2IkuCyfh3zRPYm/
+         VwsAKuBdCh5dEtHd3HDJUKqfexgYePkxOBlLwL91iMnu6QY8aYPhh62kJRRo0FVJUg34
+         ej6pSwdi4qVDAE0Q3is4AkG0cb7AzsyM5+ppxYLlMxTYnZUn3Sd75WToToMDzfngdrh0
+         LAoKp2soV/GURt39VkaG97lNqPOiSAKZuw0abO/ixc3CgdlOj+BO5C1OkqDosE50138F
+         b+RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709890831; x=1710495631;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=33mEcmSEfEQlJqpXQuHN8Aso2S/mym0SCRxX2k8PMY0=;
-        b=NI7ciHqzBUq4WvD2S0q+9kwBcnqLdM9scugDFblt7aMJDf9OAIPFZ4fXDyEuW4HUx5
-         HzWGmOvlk9ZE+PyVRDqO9Ud+f338bdgyVaD2N675579lDNMM3rxVKqzOwa8YHTfk69yU
-         Bi1yGxdytxLN78aaKZUXzgkfrPDBr3MSBsgfDdX6WaNv0BN1/nGblYOgyK0ZAbRktW4o
-         GPAJzLx8zB9e5FcfTEOQIM+3UxPUl45ZZ75i2C3q9YrfW5hb/+9bkkZc+SDgImgf3890
-         B3D0uNZSUoFLSDU4H0CqJ+tPYQKzeVuhbzm65RyN0esEwUDoai2Mdn7zGt3KcfCWtNCq
-         snLA==
-X-Gm-Message-State: AOJu0Yzk7KYU/G+ylyCNPK92OPzVe7nWia13ttWLb/gSwsMGiXIuSRY4
-	GMwKXng6FalYRcHZJona+bLRKIUq2Ui2kX44iNrgLdkHCauVhqT1LEB3SGg1
-X-Google-Smtp-Source: AGHT+IGMkipKwtUtZJr++8vhFG/1NrSW628yS6QQxQjAl6Xl9hzvRWyzDH9wXdGMuRtPhu2mnKa29Q==
-X-Received: by 2002:a05:6a20:9c90:b0:1a1:667c:eece with SMTP id mj16-20020a056a209c9000b001a1667ceecemr9196680pzb.2.1709890831027;
-        Fri, 08 Mar 2024 01:40:31 -0800 (PST)
-Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id gx1-20020a056a001e0100b006e59a311e2dsm13956231pfb.92.2024.03.08.01.40.30
+        d=1e100.net; s=20230601; t=1709890836; x=1710495636;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mkA8EskXvnyqySxL+sveNVRb40uEpQ//fvo+W4nBex0=;
+        b=IMjObbURYytOq+IslBmMGXqmMZ6Vb8CaCHEf2gP+dBoiAztjqsOE9MGIbF4rmlPxQH
+         z1GiGcEKTzCUeMA4D6XjzBqfzarkMJCOn1y9EJAYMItqmkfDm5Ps+bvndgx3kZMwNEge
+         WzdojHaiv9JU/i55MB4uyxqnt/Lk2KW83p8VNZG+6LqJy7vR1bJD1kU39P9tiPc+xd11
+         Efu1iousr9rHnjDGBLHDyd6Zxh0oxyoynteTMWRUUp4B8KurI7fjN8iPR7RI55F6CtpL
+         V3saK98gDW7XlBE602KVMBCTLQqxc8s54KVuzKlJt7iRnNJHKX56xmIlJfic4xFQVFnp
+         OrcQ==
+X-Gm-Message-State: AOJu0YwkZMCphhjxbDjT88tVhbE24vI22LCGyAaeDAhVJtQdRruy6VQM
+	Wst1pA5aO6JNgrvvY6PdFGyI4uPDSN2VHd0jBjyOdz6ax+nscHxYeh365AVS
+X-Google-Smtp-Source: AGHT+IEqkjZiSb72PsFoGZxfC81G5oaveugRna0h3wD9+TQwhAooRu4zZ/8MhptrNrNsIlZefynzqQ==
+X-Received: by 2002:a05:6a20:e107:b0:1a1:5000:225a with SMTP id kr7-20020a056a20e10700b001a15000225amr11634158pzb.9.1709890835949;
+        Fri, 08 Mar 2024 01:40:35 -0800 (PST)
+Received: from localhost ([47.254.32.37])
+        by smtp.gmail.com with ESMTPSA id s59-20020a17090a69c100b0029981c0d5c5sm3109403pjj.19.2024.03.08.01.40.35
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Mar 2024 01:40:30 -0800 (PST)
+        Fri, 08 Mar 2024 01:40:35 -0800 (PST)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>
-Subject: [PATCH 0/4] workqueue: Some cleanups
-Date: Fri,  8 Mar 2024 17:42:49 +0800
-Message-Id: <20240308094253.2104-1-jiangshanlai@gmail.com>
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: [PATCH 1/4] workqueue: Use INIT_WORK_ONSTACK in workqueue_softirq_dead()
+Date: Fri,  8 Mar 2024 17:42:50 +0800
+Message-Id: <20240308094253.2104-2-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20240308094253.2104-1-jiangshanlai@gmail.com>
+References: <20240308094253.2104-1-jiangshanlai@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,19 +86,26 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-Some simple cleanups.
+dead_work is a stack variable.
 
-Lai Jiangshan (4):
-  workqueue: Use INIT_WORK_ONSTACK in workqueue_softirq_dead()
-  workqueue: Reorder the fields in struct workqueue_attrs
-  workqueue: Move attrs->cpumask out of worker_pool's properties when
-    attrs->affn_strict
-  workqueue: Use list_last_entry() to get the last idle worker
+Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+---
+ kernel/workqueue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- include/linux/workqueue.h | 27 +++++++++++++++------------
- kernel/workqueue.c        | 19 +++++++++++--------
- 2 files changed, 26 insertions(+), 20 deletions(-)
-
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index a60eb65955e7..3ff91243322d 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -3687,7 +3687,7 @@ void workqueue_softirq_dead(unsigned int cpu)
+ 		if (!need_more_worker(pool))
+ 			continue;
+ 
+-		INIT_WORK(&dead_work.work, drain_dead_softirq_workfn);
++		INIT_WORK_ONSTACK(&dead_work.work, drain_dead_softirq_workfn);
+ 		dead_work.pool = pool;
+ 		init_completion(&dead_work.done);
+ 
 -- 
 2.19.1.6.gb485710b
 
