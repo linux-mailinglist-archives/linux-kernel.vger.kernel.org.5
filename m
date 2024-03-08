@@ -1,151 +1,204 @@
-Return-Path: <linux-kernel+bounces-97596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AADE876C53
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:20:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84685876C59
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93929B211D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:20:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39712281809
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:22:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDAE85FBA7;
-	Fri,  8 Mar 2024 21:20:13 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DF04085D;
+	Fri,  8 Mar 2024 21:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="NhY887xU"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D3C5E08E
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C2353373
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709932813; cv=none; b=hjugEAG3IMQBlDUgaJEkMRo0D6htazRnX0vN/mjS/rHTZvDs4bGxaVI5Uj2YI4PZHoBcPq6m1d4u+fP4NpBZbKdwZzQd6CW8N5ASDkxtszG9/kB9U07YmZ5LsFWfBHWp5hV4IO469parPuFbyIRt+S0Jk1VC92NAAWx2dXS/p2Q=
+	t=1709932938; cv=none; b=kZnQ+KEsza2zqEw64VKPg4o6VNBy5OmVB+4vyWuOEms4YxyKTQL+S8yDrALTqlI6Vk8VCJjnsyV/OV9ZcjUs+bB8zwOqW2Jyy8xjLIMq37rDYxkQO06NqDPZ4vqhWXwJxeGMtBgb0jNHuicbEHxWHpoSUOnhxZv4fY5pIYMi/dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709932813; c=relaxed/simple;
-	bh=8TKM2G1utLgMWASRIHyb76DCmGBEYaEoOZTLkFlHcKk=;
+	s=arc-20240116; t=1709932938; c=relaxed/simple;
+	bh=etIcExCJKSr7h1nDa+rmExMmNvZNyxCOFxa/98KM4ts=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RL9kbHxPsuE7dOlSYgRqAA3aoX5uiVzxLglOVRimHqmJ8JqheDNSJHHyzBimrPIuwiL34y7ugvi7qTm1ZIaXRKKFMSOTsM9u2qO98TnvueW/OJZMX9fDkV9ZFoN+lIM4raJsRUtCJVk99//WFYWsjBPSv3FLv2xwT38RKnwe3Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rihdO-00081X-JV; Fri, 08 Mar 2024 22:20:06 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rihdO-005Cz6-2V; Fri, 08 Mar 2024 22:20:06 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rihdN-002WI0-3B;
-	Fri, 08 Mar 2024 22:20:05 +0100
-Date: Fri, 8 Mar 2024 22:20:05 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Thorsten Scherer <t.scherer@eckelmann.de>, 
-	linux-kernel@vger.kernel.org, Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: [PULL] siox changes for 6.9
-Message-ID: <o52ptgjxknpxhtyemb5xdjyobidejvzluicsoc5ceajy4pz4xy@6e3aecoiz7eh>
-References: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
- <ad141dd22c7d95ad0bd347f257ce586e1afb22a4.1708328466.git.u.kleine-koenig@pengutronix.de>
- <ftvih5huvc72a76s7fe4zisrqtaax5tcgoukqoi2bkz47zcrq2@4fixszonixgl>
- <2024030732-ocean-handbook-161f@gregkh>
- <nuchb5aaywc5vr6cof4gqbavq4rkte3hvzgs6au3lbg6s6wlq4@bvbjevbum7kc>
+	 Content-Type:Content-Disposition:In-Reply-To; b=n4o9BNWj2SHCHQ3/8S7TW2TRhsgQJdRkSRcLxmMNDTdiqZKgByMxggp1FBSCpw91lpDA1MCpE31O0ahdjJWIaxMmp1lHdqlV+4o4eRDdytRP9X6cfg1mxyk3NCcbsVaXh5Jz6wSd/8v6dwNmJHBrt8LRnpKHWrCnBCifzmdd4eQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=NhY887xU; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7dae66def19so1256446241.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 13:22:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1709932934; x=1710537734; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XL80Q/LEC1hNeoVDgvQ1NRtgFUnKBazWk6zXTz/pdtI=;
+        b=NhY887xUlHxzJTnVnQXjma5B4qLWCsH6xC6Bz6pbtSQRhqKpnSVUCdT64gDNUu0tCj
+         cKNGa3WyXiSe7PPj0blKh80bnr80pfuwNKuLElHh68m1RaDjhFHMJcuDj45bVPL5hlJL
+         mRzGnPOcXy5U+kdrGloZLt3YtUSlKn5aouelti8l77X4z9fIAo5omIFh9/WxNvJYRIAf
+         jzsMj5RuowMLtIorTyYBC4s8ZvhQm0ZhOPsM0Mwu/Uchg5lXfuov5Pw2RxTN3FusY0ll
+         LH+LsGB+9/w0lbZRpNtqMMJDg7tSd5zrAuqo6rkGqIrvuNVi4EmWbXCr+YVrhkcYm79w
+         PGIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709932934; x=1710537734;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XL80Q/LEC1hNeoVDgvQ1NRtgFUnKBazWk6zXTz/pdtI=;
+        b=eG0ugggQRyi0b1sRbehj1O16pLmRcGEzTMRXziw672d0ait8aPfrQ3PX0/iva9O0ZU
+         KJZ8P0e1LV2t9Ur52NpFM9LChz/8D8uZuk83KlOZAgC0osolCRhSMiBtmp+lTJf9Qq0I
+         U4sz0vUj64rJrv/bdg+T5qSE16BXiT2Knjl81OCrbiXhVYtsmKENiS5/sYuUYNZk215R
+         CcLymn/gLrRtEk1UZeeF8ha9Pw11J+usGPKgaqaRbKNwPgfPycDPiSoh5H7DDrzae2Jd
+         CXTfUCqoNE0tcqmd+8TRrzx3aFfemubqGf9aJAu6HehCN6f45NSMnZSxE4OYeRgwYJnK
+         DXMA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQQsi33MhSFAwv+hyGGdTUpo/VZEt4K2dOjL5TiGN2qvdxZ2z3Ki8H5QyOTeVlQrWNTWhqLnzW351kNbEsqpVSzl3fAwwFMCM7HssT
+X-Gm-Message-State: AOJu0Yz7J9uRA/WxvmD0gkbnXZwM45rpM92NE+cur/aMWLN6PrvKyYr5
+	9oWyCeXdVbv3UYaDiKABxNIxZ7BscqkqO9BDMeB/KGexpzXLOJFpWdUyQ4chEhI=
+X-Google-Smtp-Source: AGHT+IEwQHXBgf936c0Xa021NeRFaNfDWXzdfuhZY3RXu2CzjdaZ96VxQTmJPXIO3pIeRXQSm9EaYQ==
+X-Received: by 2002:a05:6122:1784:b0:4d1:4e40:bd6f with SMTP id o4-20020a056122178400b004d14e40bd6fmr592980vkf.10.1709932933927;
+        Fri, 08 Mar 2024 13:22:13 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id ej5-20020ad45a45000000b0068fc8e339b8sm122593qvb.136.2024.03.08.13.22.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 13:22:13 -0800 (PST)
+Date: Fri, 8 Mar 2024 16:22:12 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Chris Down <chris@chrisdown.name>, cgroups@vger.kernel.org,
+	kernel-team@fb.com, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, yuzhao@google.com
+Subject: Re: MGLRU premature memcg OOM on slow writes
+Message-ID: <20240308212212.GA38843@cmpxchg.org>
+References: <ZcWOh9u3uqZjNFMa@chrisdown.name>
+ <20240229235134.2447718-1-axelrasmussen@google.com>
+ <ZeEhvV15IWllPKvM@chrisdown.name>
+ <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kfwe5w54khiwgr55"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <nuchb5aaywc5vr6cof4gqbavq4rkte3hvzgs6au3lbg6s6wlq4@bvbjevbum7kc>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
 
+On Fri, Mar 08, 2024 at 11:18:28AM -0800, Axel Rasmussen wrote:
+> On Thu, Feb 29, 2024 at 4:30 PM Chris Down <chris@chrisdown.name> wrote:
+> >
+> > Axel Rasmussen writes:
+> > >A couple of dumb questions. In your test, do you have any of the following
+> > >configured / enabled?
+> > >
+> > >/proc/sys/vm/laptop_mode
+> > >memory.low
+> > >memory.min
+> >
+> > None of these are enabled. The issue is trivially reproducible by writing to
+> > any slow device with memory.max enabled, but from the code it looks like MGLRU
+> > is also susceptible to this on global reclaim (although it's less likely due to
+> > page diversity).
+> >
+> > >Besides that, it looks like the place non-MGLRU reclaim wakes up the
+> > >flushers is in shrink_inactive_list() (which calls wakeup_flusher_threads()).
+> > >Since MGLRU calls shrink_folio_list() directly (from evict_folios()), I agree it
+> > >looks like it simply will not do this.
+> > >
+> > >Yosry pointed out [1], where MGLRU used to call this but stopped doing that. It
+> > >makes sense to me at least that doing writeback every time we age is too
+> > >aggressive, but doing it in evict_folios() makes some sense to me, basically to
+> > >copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
+> >
+> > Thanks! We may also need reclaim_throttle(), depending on how you implement it.
+> > Current non-MGLRU behaviour on slow storage is also highly suspect in terms of
+> > (lack of) throttling after moving away from VMSCAN_THROTTLE_WRITEBACK, but one
+> > thing at a time :-)
+> 
+> 
+> Hmm, so I have a patch which I think will help with this situation,
+> but I'm having some trouble reproducing the problem on 6.8-rc7 (so
+> then I can verify the patch fixes it).
+> 
+> If I understand the issue right, all we should need to do is get a
+> slow filesystem, and then generate a bunch of dirty file pages on it,
+> while running in a tightly constrained memcg. To that end, I tried the
+> following script. But, in reality I seem to get little or no
+> accumulation of dirty file pages.
+> 
+> I thought maybe fio does something different than rsync which you said
+> you originally tried, so I also tried rsync (copying /usr/bin into
+> this loop mount) and didn't run into an OOM situation either.
+> 
+> Maybe some dirty ratio settings need tweaking or something to get the
+> behavior you see? Or maybe my test has a dumb mistake in it. :)
+> 
+> 
+> 
+> #!/usr/bin/env bash
+> 
+> echo 0 > /proc/sys/vm/laptop_mode || exit 1
+> echo y > /sys/kernel/mm/lru_gen/enabled || exit 1
+> 
+> echo "Allocate disk image"
+> IMAGE_SIZE_MIB=1024
+> IMAGE_PATH=/tmp/slow.img
+> dd if=/dev/zero of=$IMAGE_PATH bs=1024k count=$IMAGE_SIZE_MIB || exit 1
+> 
+> echo "Setup loop device"
+> LOOP_DEV=$(losetup --show --find $IMAGE_PATH) || exit 1
+> LOOP_BLOCKS=$(blockdev --getsize $LOOP_DEV) || exit 1
+> 
+> echo "Create dm-slow"
+> DM_NAME=dm-slow
+> DM_DEV=/dev/mapper/$DM_NAME
+> echo "0 $LOOP_BLOCKS delay $LOOP_DEV 0 100" | dmsetup create $DM_NAME || exit 1
+> 
+> echo "Create fs"
+> mkfs.ext4 "$DM_DEV" || exit 1
+> 
+> echo "Mount fs"
+> MOUNT_PATH="/tmp/$DM_NAME"
+> mkdir -p "$MOUNT_PATH" || exit 1
+> mount -t ext4 "$DM_DEV" "$MOUNT_PATH" || exit 1
+> 
+> echo "Generate dirty file pages"
+> systemd-run --wait --pipe --collect -p MemoryMax=32M \
+>         fio -name=writes -directory=$MOUNT_PATH -readwrite=randwrite \
+>         -numjobs=10 -nrfiles=90 -filesize=1048576 \
+>         -fallocate=posix \
+>         -blocksize=4k -ioengine=mmap \
+>         -direct=0 -buffered=1 -fsync=0 -fdatasync=0 -sync=0 \
+>         -runtime=300 -time_based
 
---kfwe5w54khiwgr55
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+By doing only the writes in the cgroup, you might just be running into
+balance_dirty_pages(), which wakes the flushers and slows the
+writing/allocating task before hitting the cg memory limit.
 
-Hello Greg,
+I think the key to what happens in Chris's case is:
 
-On Thu, Mar 07, 2024 at 09:38:07AM +0100, Uwe Kleine-K=F6nig wrote:
-> On Thu, Mar 07, 2024 at 07:29:59AM +0000, Greg Kroah-Hartman wrote:
-> > Can you send me a "real" git pull request so that I can verify it is
-> > what you say it is (ideally with a signed tag)?
->=20
-> Sure, can do. I will do that tomorrow when (and if) my branch is in next
-> and so got a bit more exposure.
+1) The cgroup has a certain share of dirty pages, but in aggregate
+they are below the cgroup dirty limit (dirty < mdtc->avail * ratio)
+such that no writeback/dirty throttling is triggered from
+balance_dirty_pages().
 
-That has worked so far. So here comes the requested pull request. I
-dropped the two patches you collected in the meantime in your
-char-misc-next branch. The two branches (i.e. your char-misc-next and
-this PR's tag) merge without conflict.
+2) An unthrottled burst of (non-dirtying) allocations causes reclaim
+demand that suddenly exceeds the reclaimable clean pages on the LRU.
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+Now you get into a situation where allocation and reclaim rate exceeds
+the writeback rate and the only reclaimable pages left on the LRU are
+dirty. In this case reclaim needs to wake the flushers and wait for
+writeback instead of blowing through the priority cycles and OOMing.
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git tags/s=
-iox/for-greg-6.9-rc1
-
-for you to fetch changes up to db418d5f1ca5b7bafc8eaa9393ea18a7901bb0ed:
-
-  siox: bus-gpio: Simplify using devm_siox_* functions (2024-03-08 22:01:10=
- +0100)
-
-Please pull this for the 6.9-rc1 merge window.
-
-Thanks
-Uwe
-
-----------------------------------------------------------------
-SIOX changes for 6.9-rc1
-
-These patches rework how siox device registration works. This allows to
-simplify the gpio bus driver using two new devm functions.
-
-----------------------------------------------------------------
-Uwe Kleine-K=F6nig (4):
-      siox: Don't pass the reference on a master in siox_master_register()
-      siox: Provide a devm variant of siox_master_alloc()
-      siox: Provide a devm variant of siox_master_register()
-      siox: bus-gpio: Simplify using devm_siox_* functions
-
- drivers/siox/siox-bus-gpio.c | 62 ++++++++++++++--------------------------=
-----
- drivers/siox/siox-core.c     | 46 ++++++++++++++++++++++++++++++++
- drivers/siox/siox.h          |  4 +++
- 3 files changed, 70 insertions(+), 42 deletions(-)
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---kfwe5w54khiwgr55
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXrgQQACgkQj4D7WH0S
-/k5gmQf/fMpsx2ugsO8+79yEYNO5NU6YEAOSDsboapH9aqL3/8C6pRHArpoIJdTv
-WklB1GQHrrsvVf/Utl3ejNbtP3TlAJR1RU8aJ+OFFBinppdaK9zRAmZBDlvytcTk
-jU+0pKwq9hs5y91IzUlVPr/yykY9cNuG8SyBi8Bwmt8XwSzpi56w2cCcFTJZCU1J
-jYRFZJEZ8HwZzk+nZO8PdW5OWw4p2fIzFbrHSRqD38+3PKz4+GndPoseNww5Tg+E
-AsQ73ej0jPUlH522vzR3hGCPNjvNv5AY75blYQ3+9W4g2jFn5FVxGiunG9sEIVJF
-TgVtF4pEm97fGoYcJSxw/KGLlkYeSQ==
-=jwSB
------END PGP SIGNATURE-----
-
---kfwe5w54khiwgr55--
+Chris might be causing 2) from the read side of the copy also being in
+the cgroup. Especially if he's copying larger files that can saturate
+the readahead window and cause bigger allocation bursts. Those
+readahead pages are accounted to the cgroup and on the LRU as soon as
+they're allocated, but remain locked and unreclaimable until the read
+IO finishes.
 
