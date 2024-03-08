@@ -1,184 +1,149 @@
-Return-Path: <linux-kernel+bounces-97490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01A95876AFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:01:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA274876B01
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:02:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2417C1C2160D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:01:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E643F1C21880
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239AF58AAF;
-	Fri,  8 Mar 2024 19:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B04E59140;
+	Fri,  8 Mar 2024 19:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="K101Ld0X"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2062.outbound.protection.outlook.com [40.107.21.62])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="gMfmjehV"
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810D0225D4;
-	Fri,  8 Mar 2024 19:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709924503; cv=fail; b=SSrJhA1eTzpjt8tUfCQEXN0VO4iU/22ONw4h2Bvt6+nSehiOM4/NTRh2G73DZkBOUHszbbSTihR8ULAkE2ugZOqU/kNjSkwBpYdk9OAEzY5NeHeABdgB7li4DjUFGvZbKpl2l2D3Hsy1SREj/TCVWPoyv6+/0FKatERaNEafmK4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709924503; c=relaxed/simple;
-	bh=gYy/qjjO1zQ+pWUO3NeN4LwP7K+tAh9GXgpc9WIxZnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=dbQ/m3osxGBm7r0E05bJF9b/KbyLv4h7AWTLek1fpK0MTSoq7cLJzvpIN1yYfRop3hH0STFJuTOZM4wsN+mI5+cIyUfMSxAyJ44rgPOAskzxmN4q/mDEWuPbF5MHEf6P5tLPBw1Kj81bD9i5fTuHrOind84FiDZK8AOXVvqeh0o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=K101Ld0X; arc=fail smtp.client-ip=40.107.21.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nc4ZAt2t+p17v42BGpMbTQ1u/oyaX3EfEhENPSdS1jH78PRBDipmYlYvrgXj+qyRN90xys7sQUemnNveM13xVcXtx7700GADu6Nl4ANforp94p3AXvaHEl8DdRBt2WdZQCRtetN/ZcaLVJthrCFp6R74f2eFGP9lZuvTY+ZpxmKTXJnWcgAZx96+gq6sblz19Df/NVA0TFiLwGFqyqzMFLTc56Z7yRqNnFcOu361FT0IjLbahss552q8nxElyuv9KFyAo6zQil0UoGUqH5SsfxGhxcWW6bIYzgjUmP8rpFZfaEVNumPrF9UrMRtwSNXiKWKgCr2u61+mX79XI8GQtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U+ntK8z2Wgpp5dGyGZxcQCFN9alXH1rCnQC79IK7CdQ=;
- b=S1vncN1ZjSe0dHa1mFsfY0QCrbNQjOJbd6UopxwuqZtvfsIYWURURUSy6A1BlOuksyQ0pGg+FpuHttzr0AHvEELMUgq5djXW9N9uuP5fJ7vAivSyh05F3WCe7DGhYzt4yPZrLrfeIGeZA7+0xL/AeeLQtgOjMou/6T8hsO6xzguKZMS4zlztEBbY3EbPGE0S9beuBiZTQq8IFHzpuV3pLuu7iFQaJTl18DAge/bat09YCYEbxPUdhK3MWLKo4r/nzu6DgmIkrjWHMEqsIzHAkFgPwAqs/F+slNGG44sqpxgIowB+G9r91ZqisnTXgxKgH046+0be41+z7Y0PsdJrDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U+ntK8z2Wgpp5dGyGZxcQCFN9alXH1rCnQC79IK7CdQ=;
- b=K101Ld0XVM4ycURSE8K3iqtrpnOlHBhISUiVmEftTSrcSkgtr477AZB9uQmrEoOFrl/PDaVabmm7sddNe02K5clNZrjbVqnmi6WulKUGSXVGs58/ilujO1prlSwyOO23Fipbr8P/gtZUM27r8z1Uz3nLTUie9x1IShFvHoOL/V4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DUZPR04MB9869.eurprd04.prod.outlook.com (2603:10a6:10:4ad::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.26; Fri, 8 Mar
- 2024 19:01:37 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
- 19:01:37 +0000
-Date: Fri, 8 Mar 2024 14:01:29 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v6 2/4] ASoC: dt-bindings: fsl,imx-asrc: update max
- interrupt numbers
-Message-ID: <ZetgiaZ1+wt5lCkB@lizhi-Precision-Tower-5810>
-References: <20240308-asrc_8qxp-v6-0-e08f6d030e09@nxp.com>
- <20240308-asrc_8qxp-v6-2-e08f6d030e09@nxp.com>
- <20240308181103.GA855753-robh@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308181103.GA855753-robh@kernel.org>
-X-ClientProxiedBy: BYAPR02CA0021.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::34) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02EBC225D4;
+	Fri,  8 Mar 2024 19:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709924515; cv=none; b=n4j95crvv7QzwlEDy46ctULa+LyKg3gOmZaTMB7F0IJM47H1dJyblxDQ28P4OwANsYmyvSH/FOMJacjecC7dB4QOgTX/gUD8QfGakEhYlJSWFQjOGtkc7e2Yt9d5EfzwTmSpn9gs65lAZChm3QQGUtDF7Ho+Fun/4UdK4/l6QNw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709924515; c=relaxed/simple;
+	bh=m+eeRPdseEbp1q6czC2WNsFEAQDLt512Oea/8oYoztg=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RRG9KHm9KpLOmdgwYLOvuzvYdz5SAiBPjC6bFViQUjPE3wqGgeO0xlOe9tn4DOVfTX7aC8iEsGZlmyoA2eLGOSM809Z70vGouBC/CXfYPs+EwayeA9KGaX4j1MRYunzggzzLm3Pc+jyMTU9rZV1+N1W+/wzRRWeejEY8Z1fL1Z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=gMfmjehV; arc=none smtp.client-ip=99.78.197.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1709924513; x=1741460513;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=zl4aK2NfwrOO4Bg03NI8PJKDWOogDZuHv69Wgg9Jrz8=;
+  b=gMfmjehVR0GBL6m71xP3rULc4KQTuB6pW6Hu5J7V8+ipm34w5oomzKio
+   2z0b+NtnXCNPjzeq6N3N7j10IxWkcjjSdG0NSVIT3CMIrAohKUT6SRxwB
+   oKCBAfPobe3oNlD0aEKkYNmEj9Vm37AiE2UUwfR/j8uu4+J3QOz+aTlNs
+   k=;
+X-IronPort-AV: E=Sophos;i="6.07,110,1708387200"; 
+   d="scan'208";a="71838891"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 19:01:48 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:41067]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.28.13:2525] with esmtp (Farcaster)
+ id dd49f6fc-2db3-465e-ac57-09b636006db0; Fri, 8 Mar 2024 19:01:48 +0000 (UTC)
+X-Farcaster-Flow-ID: dd49f6fc-2db3-465e-ac57-09b636006db0
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 8 Mar 2024 19:01:44 +0000
+Received: from 88665a182662.ant.amazon.com (10.142.235.16) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.28;
+ Fri, 8 Mar 2024 19:01:42 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com>
+CC: <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
+	<kuba@kernel.org>, <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [net?] WARNING in sk_nulls_del_node_init_rcu
+Date: Fri, 8 Mar 2024 11:01:34 -0800
+Message-ID: <20240308190134.58475-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <00000000000094b65a0613299ae7@google.com>
+References: <00000000000094b65a0613299ae7@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DUZPR04MB9869:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61b04cb3-6091-42ff-e80f-08dc3fa22e17
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NNB1I8fRMSDr4jytv6tu0AeyLc/xBscMnll+GaDHc63hVefq9k1azQ0ZFFLo6ELfK+9Fn99B1gCsPje20/xsl82srlwj1n593yIKve1CFNG7bhP3Iw7Y/dcRMBsM7AMbG1cIS53tTvnoxAn382t2rKeCGSPimh6fSmCx+ptxP+brUJzL0/ITqhfpmUNlQulNXbhmomoyR2isVllTULSBeTFDOmACC/CdDAj9GvrXit/+f0Z7P/+cMA1gjxLQk6WrRB3OtecWB6C5Vrm5WIC2BsjpC3tb7f+gO7HXzss9HwLzCZU4SyOjCui3mzr52K9qBZF3QQC7pH2NBwF6xwKrrg+SPBnmgJ67b5I3taO5kZuohnbt/WJfy5dg2nEFVUC3O+2xszQNeX15sNChHfALDVVDM+e3WVoHbyCuiGBgAq9ACMq8vXqiQ5e8tme6vEw0shyushCVJUFTfzv70Hrl1j8a33YU76qIPTUUFG41KbfEEtB1jjS2cwa7gcCrrsxUObbS4HIOeRzLNv57BavbOdyZO/HRyfQMbG1G4Nc5NQS5y7A2RkOQznTurdAlr3t3jsSCDvycUSuWE9SvBnT1m/MdmEHs5LtwQT7PSsTV/FkXN0LcgucQOpDNJFRQyzYGxS3QPhQjLquTa3b6NXSemfRhBEQFsHY4FLgjxdIbJKA/ayACrIFv5T7PaGk5D6kgvqzllY4FxC4ZozCZaUsc/q+7/f/z4QdYqta9/KcIx/0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(376005)(7416005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?BTS2vBDq4dq1atuiMQLzAtyKzhD2qa5/B1txylMSidotnf8ckZQHPIq8xGrG?=
- =?us-ascii?Q?8X/hMfS+v2dhYfOHIgamdHWmhUl+sycl5Zpqr9xYU3Y/5yb+ypZBgXJRSuAs?=
- =?us-ascii?Q?2ZHuRLbm34c1APZ3JhKorny1bWy0HOrphimIAujlle9kJ0r1Z+SPs7SQFJkv?=
- =?us-ascii?Q?vcxxw/tpGHTPQv5bBI3QjISfxr7oVgv1hD4An8JFUdN1YrxFXnSRzm0+FOvq?=
- =?us-ascii?Q?CV+dYqpgkDmsgx7qfx6Owv9vf7mUsDzU7tBhlwlbRqA7GqAzgNJZexbqE+2q?=
- =?us-ascii?Q?WGH6+NFExeh1T+cCPzqjDrcjxOWbzTScKCgREYqAc8WAoFJCnvUVWt1saCUl?=
- =?us-ascii?Q?qyQUFM2cqqSub2zTPgnTPUZdcfDn/gltWYMUDIO8Bvy+IQRgwVFxO45TsJ73?=
- =?us-ascii?Q?gQmtvraK/xMDYVhiDjVL2wb5Vp1j7eWnDHZMqiQ/HOxJ8oe6ejHTP3Pye4ge?=
- =?us-ascii?Q?JYLKI99VY10cn39GqI34kcRoQe1FOb7Nydk9ihOyDfxL3eD2UTh8fp7UfHBI?=
- =?us-ascii?Q?VnXoMAtzCR1FxNJ2CcNVykimjLMXMOcwdqGnbyAkiNhRLcofXmCQo0iyimel?=
- =?us-ascii?Q?TwGwRGNucnphtfal23zPg8AvHpsHSIjknBTFJSjrAPLFW03cs9/6KncM9QDA?=
- =?us-ascii?Q?pZJqWcttabU1/GrPsWwHxnWfr+p4FkabsAaNNfusXy6LlZ0tc6PGxuhk2aAt?=
- =?us-ascii?Q?G2sAMDfa12/kNYZidRucuksDH6sRDD4OxLHeNjRdVQpUWPlVABLC8s4nEHW0?=
- =?us-ascii?Q?uAiHeo1GqAS3R5ssgZNwVB7Wn1y6XunTP8QEZjaaJWUlyXGSIAx5AgLTWzxx?=
- =?us-ascii?Q?j5IjZgz9QUKIfKK+TCp7l8UggjHpW7F3d5CCcZjf4NMVZXx9nVRV/fGN09Wk?=
- =?us-ascii?Q?0ISdBIvDzBEKoW/gx6mutI1LUKP4lkBn/ZFYO4KOE+3oWc9K0besEsN+M2Tb?=
- =?us-ascii?Q?7CorymQ9Se0SRmeZBXUHV7Sz7FG5rxU8WM0ttu/N+iCwcfqyTqOUR4olIcLX?=
- =?us-ascii?Q?iT+MKbIZbr7lYHH+/Db1iAJkrybkDNsxZ03+LXnJRGtloNj86BUADsxhUEVS?=
- =?us-ascii?Q?448gy/nK160cc0YFLRa3eiUYxNmEhCd6IjxhugV6V+gnzck6ctJRb4ObVCyx?=
- =?us-ascii?Q?scbbhmTnBsIWXSpOLMVOgNEMdfcnSnJ+i0BoP7NuHouaMoZvhRfFxhP+DshR?=
- =?us-ascii?Q?LhANXpF5I0EFbW8DD2OWlYJCHgSROHb1HQuN8CVR5eju4bgTpsaC8SPG0IQ1?=
- =?us-ascii?Q?l7C1OU4TEyp5m8RfEYsJy3cfW0s0oaskNlMz+MpCsZGhK5/e54RVqraYzyJm?=
- =?us-ascii?Q?lJp9/gVd48IRE4pb9XlIxYd48hER/WKLHakXLFGKGEmdSlpFwgVBpQMlHybG?=
- =?us-ascii?Q?k3H94J/I2T4Vq+YVpuU7OZH6kTrcbwbGGwBTlIgvhZq2b16UiPYXrAz+cfvl?=
- =?us-ascii?Q?NQGj3gwFdKLkEY7wryjsOVj946KmEd04ilJbsvvHOyuk7wc9R9ztY360fLMt?=
- =?us-ascii?Q?lR2BrRdp3FxRG+l132eifZAVISBlgrfw9S6hy2AnEagyS+uZEEo1Am9NvHDY?=
- =?us-ascii?Q?ouVIHNfiMPxdIdmzaKCVmCC2zT56+q7w1YiBVx1e?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61b04cb3-6091-42ff-e80f-08dc3fa22e17
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 19:01:37.1745
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FwtejvAJ7ag/q+SBqu81h9sY1ZEM2CK9xj19T7SsAQYGOnQoPPpfUNKF2eIfzYkq3dObn5+6fWjkUIieLoT+hA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB9869
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D037UWC004.ant.amazon.com (10.13.139.254) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On Fri, Mar 08, 2024 at 12:11:03PM -0600, Rob Herring wrote:
-> On Fri, Mar 08, 2024 at 10:30:51AM -0500, Frank Li wrote:
-> > fsl,imx8qxp-spdif and fsl,imx8qm-spdif have 2 interrupts. Other platforms
-> > have 1 interrupt.
-> > 
-> > Increase max interrupt number to 2 and add restriction for platforms except
-> > i.MX8QXP and i.MX8QM.
-> > 
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> >  .../devicetree/bindings/sound/fsl,spdif.yaml        | 21 ++++++++++++++++++++-
-> >  1 file changed, 20 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> > index 56f8c0c8afdea..a242f68f99f18 100644
-> > --- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> > +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> > @@ -31,7 +31,11 @@ properties:
-> >      maxItems: 1
-> >  
-> >    interrupts:
-> > -    maxItems: 1
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +    items:
-> > +      - description: Combined or receive interrupt
-> > +      - description: Transmit interrupt
+From: syzbot <syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com>
+Date: Fri, 08 Mar 2024 09:34:28 -0800
+> Hello,
 > 
-> Test your patches please because this will have warnings. Or, you can 
-> put in *exactly* what I provided because this is not it.
+> syzbot found the following issue on:
 > 
-> If you continue to just toss crap at us at the rate you are, the DT 
-> maintainers will either just start ignoring your patches or require some 
-> trusted review by another NXP colleague first (offhand, not sure who 
-> that would be which is part of the problem).
-
-Sorry, I run wrong command to check another dtb file. So have not catch
-this problem.
-
-Frank
-
+> HEAD commit:    c055fc00c07b net/rds: fix WARNING in rds_conn_connect_if_d..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16aa17f2180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fad652894fc96962
+> dashboard link: https://syzkaller.appspot.com/bug?extid=12c506c1aae251e70449
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 > 
-> Rob
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/c39eb6fb3ad1/disk-c055fc00.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/110f1226eb89/vmlinux-c055fc00.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/1303e2df5cc4/bzImage-c055fc00.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com
+> 
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 000000000000000b R14: 00007f3b817abf80 R15: 00007ffd3beb57b8
+>  </TASK>
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 23948 at include/net/sock.h:799 sk_nulls_del_node_init_rcu+0x166/0x1a0 include/net/sock.h:799
+> Modules linked in:
+> CPU: 0 PID: 23948 Comm: syz-executor.2 Not tainted 6.8.0-rc6-syzkaller-00159-gc055fc00c07b #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> RIP: 0010:sk_nulls_del_node_init_rcu+0x166/0x1a0 include/net/sock.h:799
+> Code: e8 7f 71 c6 f7 83 fb 02 7c 25 e8 35 6d c6 f7 4d 85 f6 0f 95 c0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 1b 6d c6 f7 90 <0f> 0b 90 eb b2 e8 10 6d c6 f7 4c 89 e7 be 04 00 00 00 e8 63 e7 d2
+> RSP: 0018:ffffc900032d7848 EFLAGS: 00010246
+> RAX: ffffffff89cd0035 RBX: 0000000000000001 RCX: 0000000000040000
+> RDX: ffffc90004de1000 RSI: 000000000003ffff RDI: 0000000000040000
+> RBP: 1ffff1100439ac26 R08: ffffffff89ccffe3 R09: 1ffff1100439ac28
+> R10: dffffc0000000000 R11: ffffed100439ac29 R12: ffff888021cd6140
+> R13: dffffc0000000000 R14: ffff88802a9bf5c0 R15: ffff888021cd6130
+> FS:  00007f3b823f16c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f3b823f0ff8 CR3: 000000004674a000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  __inet_hash_connect+0x140f/0x20b0 net/ipv4/inet_hashtables.c:1139
+
+Here I had to use non-refcnt variant as check_established() doesn't
+increment it.
+
+I'll post a fix soon.
+
+---8<---
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 308ff34002ea..4e470f18487f 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -1136,7 +1136,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 		sock_prot_inuse_add(net, sk->sk_prot, -1);
+ 
+ 		spin_lock(lock);
+-		sk_nulls_del_node_init_rcu(sk);
++		__sk_nulls_del_node_init_rcu(sk);
+ 		spin_unlock(lock);
+ 
+ 		sk->sk_hash = 0;
+---8<---
 
