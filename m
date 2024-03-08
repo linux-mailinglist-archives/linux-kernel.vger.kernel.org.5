@@ -1,142 +1,130 @@
-Return-Path: <linux-kernel+bounces-96963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 205888763DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:58:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D958763E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:58:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C87D81F21C8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:58:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 793091C20CB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0E5755E67;
-	Fri,  8 Mar 2024 11:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1AA56742;
+	Fri,  8 Mar 2024 11:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FYyY1e8H"
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VooACwFN"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F11556471;
-	Fri,  8 Mar 2024 11:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E5F5645C
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709899074; cv=none; b=T+B2R+2dJkAZFC5hy6Mj9dMDTKQvCV9H5l0CdI9rA6mF7Cb3422PdMRV8yznxwocZqCIyAn1V4Kf0iC5E1M2KrJmFH4Oh+1F+XbZGdJ/aHCOynDPVm+lNHGIE4kqohFIyfAWdTsvrTQ0U8V30ta4OBQw75zx9zbmR5tnECm1AxU=
+	t=1709899088; cv=none; b=GsKIb4zNZGHNf714PC+v0nf4KbqAM+QTCrcJaldUyLGqc/WDCukdh1zL3mkxtIqyMp6Jf7FJbYRdaYAObSx4a7aKFuKW+PN3j1+NIKPEvrgGhd5fSbl/wCa40YqEdOHMaYLCWjmlFFnlzpesixY/I5UeXEJu22p6DHfeB+9tnX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709899074; c=relaxed/simple;
-	bh=R2I6P5DZQH2SX13IhgnDgZJqBst0fT5mk8J2V9I1+FY=;
+	s=arc-20240116; t=1709899088; c=relaxed/simple;
+	bh=tBAwUGRbXq59I/dWai3Bt85iAagt+HvpW8FxlvtMZps=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j5WLay2f4hvTViA1Db3ewJh/1kOfPQ6s7WU9X/tuuYn0dNaaPVSOye+M72UhkYbVpxbY6QhcvMlthElEBtUuq3f/BBaAB0sDZdJP4E+cnO5gBphS69S5xRUIAoQuc+ksmqsC8LzeXvj48rmg12YJnnaWSJK7ari58vES7yVWc/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FYyY1e8H; arc=none smtp.client-ip=209.85.217.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-4729da13d05so677201137.3;
-        Fri, 08 Mar 2024 03:57:52 -0800 (PST)
+	 To:Cc:Content-Type; b=OYEESiEwkL3hcrjzdNSM/DWiI5SVqX30x1viyLG6GQH4Lo5u6plrIF/2GBsBcbVOyA1V2YHCgq09SmBEOup/DS3wlP6h4GdYvsnr1d2W/6+afr3dfM+2NHLv2l2PZasDL3pII4MBgbOpr61pgAgPGtGrDD00hxwgAyAdYDqp/hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VooACwFN; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-29a8911d11cso1278056a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:58:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709899071; x=1710503871; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DpLZe2hcB9flMvKtGZYykmOP+UhfIqyfryfyFk51Q5A=;
-        b=FYyY1e8HFFi+5MKREOuHPODN5clxjD75IMfRZEhRFd7qsH0fMJMAl8nwbncvFrwTwq
-         1KyO4oFijrcIwfqdl4AJs0OHtKvmfDwmYkiZqpRo1U7eL5+l/n8lX3er09wNnNzIBxPL
-         ysprxVGmDcciGKQJpavnTW+vRSPBjP7C8XRnTnl/Re9LsY70LAzWf5/27LI2XWUo73oe
-         XU+5/HV8HrbtEDAEAzdy5xj/EAAVN32ZMLjogWvPnMD3q5W81CTLZ0j+U4VH0upHuuG5
-         9XMm6X8vZ2a6PZGIQ6+F9ftkxemD52Cci5NTanocl/RT8RwDZh1k16oNOp4+XRWUh/Iy
-         +Ldg==
+        d=linaro.org; s=google; t=1709899086; x=1710503886; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=toCza1XInuOraHxuy2SmQIYltdK3DEIguvFMU6ymn7Q=;
+        b=VooACwFNIqEO6OcFC92hk7o4dXYWHi5KmPbrwQHA/52UfIdCx506gq/5P8j5MNEwvf
+         ujScx5ItnvK/tEf2cBefXdm3azqJumqguXPJkbx7GRxAZkiNENRmkUYOG4nypbyu8/Hs
+         yNbjMmhrCwfU0FM7u7dKybvC4dRmdQJQMY6MUQGOjgvn901vlZgcwJkanQTt0XQGi3DT
+         g6+JTYeVTyj80Vm4+xO7pBVM81E84qqTeVzUJHXsAahnMGiYlPm6qnzlq116lRzLCl4X
+         nxN4GrFKtlrej57JbOkztSIR60gx5OqwoKI45KC4QzdZ7YubZwbVeScJuVMuC9+bmm1r
+         lcOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709899071; x=1710503871;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DpLZe2hcB9flMvKtGZYykmOP+UhfIqyfryfyFk51Q5A=;
-        b=MBYX5Em8bxZXhFxZ9uxfaUWovdP6Gb++MOL4ZwencBa9YmcQEwZ+Y3TIolgD8y2AZr
-         1TGWaqkEs0TeI1emU72oZ5bmXICtk3rag7duyFsk3D61le1ZjtKGw9+oNmhZCg3wud+U
-         dHHcvatw/ChR5hvsd7qdZSbOi8Iv6DIRKta4/8Ia8f2fnEGM/mshR2aAaAR8qySMYtYM
-         xfQ5hUjscGB7NYWf15yvlhPCDOuapg7tm2DXH0nf8ePhXXvfbTXx5zZKTApzojh0a03t
-         5MozVj3d5ND2tLqr07ershrISwP04QDQiv4wA4KzdwFdMEU5ge8I9SOz/WuquTzPKstz
-         3qIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXprxdUeAODpgKb2RZVmhW5skD1cMWn5cw0pAyNz0EGpeSrNh1CFYtSBJwRPQR0kl/8ccUmEAP67yofejWSYzHIxCCiJ/ocktxQHJXzv1YZEuYp8KirYK+f1s22e6tVx09P097iMNPuXwng
-X-Gm-Message-State: AOJu0Yx7G5zeItpKvObW8TfZJFIJRrFgkJya/rJi9ztWaAHOnfFkqtYz
-	gU9WJT0HI7TBhCPNJ4MRcoYtW5ZmkITAFwraJUw9lWLwPgh/ojGVLreJMZg0Cw+GL7y8QdPkC5z
-	TTtzfK65HtcU9HDLRX9qCSeQ5RD4=
-X-Google-Smtp-Source: AGHT+IHkaoOcEi8CFjru+qwmdcjDwYSPtHeTY6nRgbwgxx4xGSdOd/MnYct0qhYxQA/YYbOO6Brvkpi6ydOO0VshCEA=
-X-Received: by 2002:a67:e952:0:b0:470:564e:a58e with SMTP id
- p18-20020a67e952000000b00470564ea58emr9877194vso.2.1709899069862; Fri, 08 Mar
- 2024 03:57:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709899086; x=1710503886;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=toCza1XInuOraHxuy2SmQIYltdK3DEIguvFMU6ymn7Q=;
+        b=WM4J8wJlc1gu/knoRVvebEtjHUu4OdQZc6FvdskqTkb1cPkbJFS9mWpp12APCPHIN1
+         /BpQS1UeR1zPNFeHHv2No56LBByzvlbQl+GdhBvUxBSY6kYSkHXdXy0C8KwJH68MG8P8
+         9XQ2u+YRZix2cWq8sYw8rQz3mouytbedIdWY+PLF/Ph44I79llm/FK4xsr7uh2QFUEDP
+         84wbSJaCIQcf9RnbstFEeuCRpb93eePvNDz3M4VF1Q6bZLV1W77zgLa3apQBl6yP379S
+         p8Ys/6g/0Jlgv8TYl3rrRZzSXIM0G8JFlroVgM3pTND4dZDj0l8wrD3zV1adHZcikAcY
+         EuaA==
+X-Forwarded-Encrypted: i=1; AJvYcCV0x0BJ2ecPzrqhhhPdKhYIvM2rpcoMQjUiaqE9alZ+WJAJhNJxh3nxdDZIyIccLAOzNiKGq4MyU3I6RFgy5FTbxcjDDCmddGJ3LRCK
+X-Gm-Message-State: AOJu0YwRyApdH4f9q5snv06KEEtaO0ydOQq9cEqo+mI1/IS7YUI4Q33o
+	JrR4WMMxWsMdzLyffgMOJ1WK6HX7E87oYp5TSLENJ8WOjpOOPw2WQ2SdUB9H+ugPt9R4uAObeKo
+	GMzcql3VmkCTM4EOFvQBkfTgEam/+Ita8MWGQvg==
+X-Google-Smtp-Source: AGHT+IFaxX+qgK6PnYUhIWTkawo4oWOqMv+nsZ0Bq6fJaPNdk5lpumWA4F58ozA4HYNfA+YqA596LG8DmZ8P9fOsJPE=
+X-Received: by 2002:a17:90b:1bd0:b0:29b:3d08:c644 with SMTP id
+ oa16-20020a17090b1bd000b0029b3d08c644mr14900070pjb.9.1709899085761; Fri, 08
+ Mar 2024 03:58:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222081135.173040-1-21cnbao@gmail.com>
-In-Reply-To: <20240222081135.173040-1-21cnbao@gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Fri, 8 Mar 2024 19:57:38 +0800
-Message-ID: <CAGsJ_4wMGNDcgc3pqSUicYoH7Z_miczkT=uwZU+yhDF0fd57Rg@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] zswap: remove the memcpy if acomp is not sleepable
-To: akpm@linux-foundation.org, herbert@gondor.apana.org.au
-Cc: chriscli@google.com, chrisl@kernel.org, ddstreet@ieee.org, 
-	linux-kernel@vger.kernel.org, sjenning@redhat.com, vitaly.wool@konsulko.com, 
-	Barry Song <v-songbaohua@oppo.com>, davem@davemloft.net, hannes@cmpxchg.org, 
-	linux-crypto@vger.kernel.org, linux-mm@kvack.org, zhouchengming@bytedance.com, 
-	nphamcs@gmail.com, yosryahmed@google.com
+References: <20240304094831.3639338-1-mingo@kernel.org> <20240304094831.3639338-7-mingo@kernel.org>
+ <xhsmhbk7tdkac.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <CAKfTPtCNnTVFdf85sRdJxPhdNZxc8qKcnHL3sznjg-KBVn8Bew@mail.gmail.com> <ZerlUU4kAv580rLh@gmail.com>
+In-Reply-To: <ZerlUU4kAv580rLh@gmail.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 8 Mar 2024 12:57:54 +0100
+Message-ID: <CAKfTPtAwh-khpNw-=oku3VU8xR6qVpoL2hrzEF6u1AZ7WQ+3Cw@mail.gmail.com>
+Subject: Re: [PATCH 6/9] sched/balancing: Update run_rebalance_domains() comments
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org, 
+	Shrikanth Hegde <sshegde@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Andrew,
-
-On Thu, Feb 22, 2024 at 4:11=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
-e:
+On Fri, 8 Mar 2024 at 11:15, Ingo Molnar <mingo@kernel.org> wrote:
 >
-> From: Barry Song <v-songbaohua@oppo.com>
 >
-> In zswap, if we use zsmalloc, we cannot sleep while we map the
-> compressed memory, so we copy it to a temporary buffer. By
-> knowing the alg won't sleep can help zswap to avoid the
-> memcpy.
-> Thus we introduce an API in crypto to expose if acomp is async,
-> and zswap can use it to decide if it can remove copying to the
-> tmp buffer.
+> * Vincent Guittot <vincent.guittot@linaro.org> wrote:
 >
-> -v6:
->  * add acked-by of Herbert, Thanks!
->  * remove patch 3/3 from the series, as that one will go
->    through crypto
+> > > """
+> > > The run_rebalance_domains() softirq handler is triggered via SCHED_SOFTIRQ
+> > > from two places:
+> > >
+> > > - directly from trigger_load_balance() in scheduler_tick(), for periodic
+> > >   load balance
+> > >
+> > > - indirectly from kick_ilb() (invoked down the scheduler_tick() too), which
+> > >   issues an SMP cross-call to nohz_csd_func() which will itself raise the
+> > >   softirq, for NOHZ idle balancing.
+> >
+> > I'm not sure that we should provide too many details of the path as
+> > this might change in the future. What about the below ?
+> >
+> >  - directly from the local scheduler_tick() for periodic load balance
+> >
+> > - indirectly from a remote scheduler_tick() for NOHZ idle balancing
+> > through the SMP cross-call nohz_csd_func()
+>
+> Okay - I updated it to:
+>
+>   /*
+>    * This softirq handler is triggered via SCHED_SOFTIRQ from two places:
+>    *
+>    * - directly from the local scheduler_tick() for periodic load balancing
+>    *
+>    * - indirectly from a remote scheduler_tick() for NOHZ idle balancing
+>    *   through the SMP cross-call nohz_csd_func()
+>    */
+>   static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
+>
+> Does this work with everyone?
 
-Can you please pull this into mm-tree? This used to have 3 patches.
-
-3/3 was separated according to Herbert's requirements and has
-been in a crypto tree.
-crypto: scomp - remove memcpy if sg_nents is 1 and pages are lowmem
-https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/c=
-ommit/?id=3D77292bb8ca
-
-Two drivers fixes(patch 1 needs) have also been in crypto tree:
-crypto: hisilicon/zip - fix the missing CRYPTO_ALG_ASYNC in cra_flags
-https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/c=
-ommit/?id=3Ddb8ac88385
-
-crypto: iaa - fix the missing CRYPTO_ALG_ASYNC in cra_flags
-https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/c=
-ommit/?id=3D30dd94dba35
-
-So it should be quite safe to pull this series into mm-tree now.
+yes looks good for me
 
 >
-> Barry Song (2):
->   crypto: introduce: acomp_is_async to expose if comp drivers might
->     sleep
->   mm/zswap: remove the memcpy if acomp is not sleepable
+> Thanks,
 >
->  include/crypto/acompress.h | 6 ++++++
->  mm/zswap.c                 | 6 ++++--
->  2 files changed, 10 insertions(+), 2 deletions(-)
->
-> --
-> 2.34.1
-
-Thanks
-Barry
+>         Ingo
 
