@@ -1,98 +1,146 @@
-Return-Path: <linux-kernel+bounces-96543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB03875DD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:46:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97414875DE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A00291F21BEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:46:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B6C2283B1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F50C32C9C;
-	Fri,  8 Mar 2024 05:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D0036122;
+	Fri,  8 Mar 2024 06:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="BBOXMGXy"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SctkfN6N"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007B42564
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 05:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E5A1E4A4
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 06:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709876761; cv=none; b=Z58QLp4cNb6tt5QaR9fjpTq8q+GHWHCKrWLL9UkVlmxFE62CRj6B429DNPuMzkvqEdXS5s12TOUkZ5kNfjvWo2uGXAeH/rlcntt8fWbHxa8XN1ytpOz+p6OMPKJ5GkZ/QyBuY1vRqE3PSMf8/ARl227bxhWCUxQvJ7OuNA1H0fs=
+	t=1709878082; cv=none; b=GC66gDYVytVWliXLFP5+7i66t9VG/fpQ/jtjU2AdiZjz1QprOsinyxP46gpAyP/0fcdVjA1e4fxGdwbCUVLSHmQeJX+Lfs4R86bxALMN9ZIm4LsFheAHR6keISVxKmCHo2oO0b/ckTjQRCYVWitLyj45Q0gdB8GyNPadqkQ67E8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709876761; c=relaxed/simple;
-	bh=jfEzWTSQXbRFhwMd3qNl7Trxa7yy3NJ9+kuWmILOIqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ya/WuexBd/tDvNr4ZUxBPks59207P5Z8iRWCNZoiY1wnOmvYXnrj5hI5EThrT1pB8m7+HyDYxE4GG3LfqbUy241CrPH/ezAg77TPYk/UKWSmXCBav0FGQUa+53wFH9ji/Vr1laHtQ1rJ4YnHapd3BFjnd4loNFS7SLmIszs7zv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=BBOXMGXy; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8B95340E0185;
-	Fri,  8 Mar 2024 05:45:54 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 2ctcx-lkY7Jc; Fri,  8 Mar 2024 05:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709876751; bh=FKsdy0bUX5Q/9NG8GdgiRx0riUw7WOmPGga/MBUabv4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BBOXMGXyRzAvYZiRVuMzTMmwXmzvwt+YY4FsWy408k6v/+KAZVBMKddy/dIE/L3qV
-	 TwbIpuf9m+gw3UZC37b9Z0aWwEWm0bIURxyU2VuYczafpTdbgixwhVBtWTP2GZSQI0
-	 g1k/7dRg3UVIMcBKVOImKcsxenv3aO4LJv+EUtlqFwv2M+Ah9VPN0lMvX33+64hiiw
-	 +GnlMiH7PTOMnJTFmi67Oa/jtoNpQKOa3RCvmKluJKvPQfxaKWPAHB8/pfGUClAPId
-	 iY8KImKlY899mmAUETIc6Sss8CyqfakGm9ZB/M2JVjVzUa3txRInQAIa40BnxufFKV
-	 s0dWZDYTJX4zEOaDW9S7k/6cfC12cJaoH0Xzq4y+msRY/cWpwJweHJdaEgLS8kEDx3
-	 jjLQEGvMHLm23rd+Xk7YeXEtxEiPfRFWQCG4i/UEhS+QvakkJ+OzZ1QZviWy1upR1J
-	 oEy6JlBH67KKegv3rmQo4B9R6v3S1MVpFCUYx/fNuw+lh9FJ236EoDrufoi0a2wPvL
-	 09mKbG2gKpFi0DOVTpxteM3g8JQz3hhroefhOEtz7d+rt3CcpU99hX1D3rVzwCyNEs
-	 qpN5SBK1topBvdfS/nilgRZ50qdjPpxxHZdugQhJSMbx2HI24mNcQHm48sxSvCRGHe
-	 KA499DZy48Je4n/XaiBe+HkE=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0155740E016C;
-	Fri,  8 Mar 2024 05:45:38 +0000 (UTC)
-Date: Fri, 8 Mar 2024 06:45:32 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Changbin Du <changbin.du@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH] x86: kmsan: fix boot failure due to instrumentation
-Message-ID: <20240308054532.GAZeql_HPGb5lAU-jx@fat_crate.local>
-References: <20240308044401.1120395-1-changbin.du@huawei.com>
+	s=arc-20240116; t=1709878082; c=relaxed/simple;
+	bh=yAYwAe6qEsAeNiOqFJZgN170LNpSGpFkEbfZshwvHMM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dlQDx+RZRDkeoU81LVKu4VbJiwqy591ifoPi1ee3fYZ2+R571airCrMR+VvnS5gt5SEJ9dsL8cI0NbAVMJuOSrjMRJW1q5Ibc9E3o4rzMqqLY7hHnB9qmVc3U7XN9SNkviz0ABtCNAG3aP2cgt7Zeb+gymfqiSE/fa5JlE6pi8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SctkfN6N; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709878080;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H/4Biu2R85f0cuL1kJQyJ2DRVnushj+5L95Ki/9bvU8=;
+	b=SctkfN6Nr0TGa8DaLH7lue9FmDQeVpwKa8OEKs3V6IVfyBE7zkGVcX+VmoIfkOGfRUL7CE
+	n0CWDZ8DZaV6erju06uzQ1dWaoPZRoVE7JC3b5f941K3W/6NBdwEDSr6v6kKyg207jH0Pb
+	3DDl5yZtn1vo8OSw3Yy/iHzuNKj1agk=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-655-f5jPDFYbNsa_J2vwLB-jmw-1; Fri, 08 Mar 2024 01:07:58 -0500
+X-MC-Unique: f5jPDFYbNsa_J2vwLB-jmw-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5d8dbe37d56so1524203a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 22:07:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709878077; x=1710482877;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H/4Biu2R85f0cuL1kJQyJ2DRVnushj+5L95Ki/9bvU8=;
+        b=CPf19RTBzaDvJb3GhDOHPGDm7mj9xC4hZrIx+ICR+pEHSvnzKJyZuwKMSjLkdkDK4S
+         D0dtn20qfkjpVWb+uvq6Lbi0cfMdreO0MGqgBuyz5LpbPO6hcdZRSb5mcy3Rh25H8v8n
+         YLJx58/ehem49Xz11LmfxFm0mmdPq0bLaMc0+ds6wVWIa39TFYOlzBuGvYCuOaN85x2M
+         85DY2YSmq68UO/u6Du5SZwFSty8MEFf6/cKwk2AapbsWsBMahfstVbaIi/U3o3v4T91T
+         KgLRl5nYIIf3CL4phuNuIU9j0hncjUgsYVBuBHoyufZfxAWoLyJN2QBf7VFXwkvn1STR
+         Y/5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUxA2DOOQsLlLLxCbq9F9msvzMFtOLtmg0avKt1ElGdXJSmXgZdUMtiwbHVEj4QjrPJ/VplutuIwacCJFz5yaq8cwbMte+Bp6p3tBPe
+X-Gm-Message-State: AOJu0YwbyE7wDN/2VTirsaDZYFvyRJy6HAUQ++uZ4t+1ofQhj6bwQeA7
+	diMJpDTlMURX0WnNZQxu6R3VbQLBG241K9Jmo/7N05guj33bWe35Tt8JHHbQNQAypSp424Xtz5z
+	MmeZjXLTTCuNTMliB/e6amJGt3QnrlDcik07pbyRr5gH/TdCPHmE5ZwM+GGPGRhrURa7GAUFio6
+	PbHd7J9oQAfaLJ4Lp7/E/FCW8mi+xyI5y7WEcY
+X-Received: by 2002:a05:6a20:a10c:b0:1a1:8312:6dfb with SMTP id q12-20020a056a20a10c00b001a183126dfbmr775285pzk.58.1709878077578;
+        Thu, 07 Mar 2024 22:07:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFaNNejLKzT4KKQINTYDqnElsjZzYqgFJT5Xyckons4B4ocKKV9tMkW7/CVWoPbzwV7uGWSuIfeeT4JqFDKqNs=
+X-Received: by 2002:a05:6a20:a10c:b0:1a1:8312:6dfb with SMTP id
+ q12-20020a056a20a10c00b001a183126dfbmr775276pzk.58.1709878077290; Thu, 07 Mar
+ 2024 22:07:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240308044401.1120395-1-changbin.du@huawei.com>
+References: <20240207054701.616094-1-lulu@redhat.com>
+In-Reply-To: <20240207054701.616094-1-lulu@redhat.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Fri, 8 Mar 2024 14:07:46 +0800
+Message-ID: <CACGkMEtb941fJ481xtaGvjF10r_iq53FoTtmAr9jHwvqXssFrw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] vduse: Add support for reconnection
+To: Cindy Lu <lulu@redhat.com>
+Cc: mst@redhat.com, xieyongji@bytedance.com, linux-kernel@vger.kernel.org, 
+	maxime.coquelin@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 08, 2024 at 12:44:01PM +0800, Changbin Du wrote:
-> Instrumenting sev.c and mem_encrypt_identity.c with KMSAN will result in
-> kernel being unable to boot. Some of the code are invoked too early in
-> boot stage that before kmsan is ready.
+On Wed, Feb 7, 2024 at 1:47=E2=80=AFPM Cindy Lu <lulu@redhat.com> wrote:
+>
+> Here is the reconnect support in vduse,
+>
+> Kernel will allocate pages for reconnection.
+> Userspace needs to use mmap to map the memory to userspace and use these =
+pages to
+> save the reconnect information.
+>
+> test passd in vduse+dpdk-testpmd
+>
+> change in V2
+> 1. Address the comments from v1
+> 2. Add the document for reconnect process
+>
+> change in V3
+> 1. Move the vdpa_vq_state to the uAPI.  vduse will use this to synchroniz=
+e the vq info between the kernel and userspace app.
+> 2. Add a new ioctl VDUSE_DEV_GET_CONFIG. userspace app use this to get co=
+nfig space
+> 3. Rewrite the commit message.
+> 4. Only save the address for the page address and remove the index.
+> 5. remove the ioctl VDUSE_GET_RECONNECT_INFO, userspace app will use uAPI=
+ VDUSE_RECONNCT_MMAP_SIZE to mmap
+> 6. Rewrite the document for the reconnect process to make it clearer.
+>
+> change in v4
+> 1. Change the number of map pages to VQ numbers. UserSpace APP can define=
+ and maintain the structure for saving reconnection information in userspac=
+e. The kernel will not maintain this information.
 
-How do you trigger this?
+So this means the structure (e.g inflight descriptors) are application
+specific, we can't do cross application reconnection?
 
--- 
-Regards/Gruss,
-    Boris.
+Thanks
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> 2. Rewrite the document for the reconnect process to make it clearer.
+> 3. add the new ioctl for VDUSE_DEV_GET_CONFIG/VDUSE_DEV_GET_STATUS
+>
+> Cindy Lu (5):
+>   vduse: Add new ioctl VDUSE_DEV_GET_CONFIG
+>   vduse: Add new ioctl VDUSE_DEV_GET_STATUS
+>   vduse: Add function to get/free the pages for reconnection
+>   vduse: Add file operation for mmap
+>   Documentation: Add reconnect process for VDUSE
+>
+>  Documentation/userspace-api/vduse.rst |  32 +++++++
+>  drivers/vdpa/vdpa_user/vduse_dev.c    | 125 ++++++++++++++++++++++++++
+>  include/uapi/linux/vduse.h            |   5 ++
+>  3 files changed, 162 insertions(+)
+>
+> --
+> 2.43.0
+>
+
 
