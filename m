@@ -1,127 +1,158 @@
-Return-Path: <linux-kernel+bounces-97179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A824876689
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:45:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3570787668B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:45:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7EC6B21643
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:45:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5804C1C21CB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E93210D;
-	Fri,  8 Mar 2024 14:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41644A2A;
+	Fri,  8 Mar 2024 14:45:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OYCh9/aT"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qKCHTOIi"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0775B4400;
-	Fri,  8 Mar 2024 14:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480881865
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:45:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709909096; cv=none; b=Zmd1pzBjLm3KUndpURigNlAIKiepqamyyLz3Y27uBzG8ABuaGVAvh9S3njgktICYSXEcKuMmGwnQ3rHy5nZ4/lurS+k4VofxEz5QgtEX8G/B3YpenFFFYTBujFE3dyXK1EUVG0Xir+coBWkioUjwk6AcvyUFQAVfGli+R1Nepw0=
+	t=1709909145; cv=none; b=Dh5JWaeyGAxsfUH4ZTuwLkPivOhW6vj/wnWCWbJ3iU1SCCrZyuT0pOVotQLAJWEFOenkXV9RJi0SIWLLwywu2dlKaadJPlaj/fyiZF15DbBDR4EAH3/xQyJpovEJYxH5BAWI0M5nGmvN/yTYXJfO8BDd9HUBq5BnIBYogqAA3zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709909096; c=relaxed/simple;
-	bh=D5DUjp1tW/+gvyaRcPRqbMQ4vhu6x7pNv2ECqevSKT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ASHvsiKatZ/8+36N3V5UkxF2w0kPlIkw7AoXftfbxVMSUtcCMSi8kV8HJOXAFanhsU69QP8/XYEa5COgeQAtHvjO2vYRWad4uULcBjyLxVzl7KEy8stGDip26L69OZlIzuMOXGS5pMFcnkshwCt6hv/aFL1p0bPvkHDYLr93Ivc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OYCh9/aT; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428EYSUc007236;
-	Fri, 8 Mar 2024 14:44:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=0XsPBrQ6qk46Lg2rFw8u91fbHtUJiwLkjPnktZHJZPs=;
- b=OYCh9/aTS9eShuDINZNFGyXvgM3PSwHuDMILI+PFAtbqpXZoxEkP0JvB26OQS/6pLiCJ
- ZRfOkyrYdHp7iqsp1TfTQADwbm/UGgWydM3cB+55FmjSeB75EKRNnrvZVwL4ZlAdy6P1
- CiX4vJpyqoyJXYH0MnnEqN31uvxOPodDHU3hQRGTIHaGphH/51OEwcRGGp1HUOOszt9c
- 40qfNS+HPqSxK++gfY5PsGsU6PkVVtFc0n6EVU4pM92wQVgbFPX0Fg6lH2KJoChWiyhD
- tIAalv9DUIE3h0uimktiGnIURDTF6UMSVXpwhCM4G4O/xdutSYc7bo4Lbz3QpJ5nJ1wT mA== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr4j0r614-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 14:44:45 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428DkgFJ010913;
-	Fri, 8 Mar 2024 14:44:44 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmh52vgug-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 14:44:44 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428EidUD21168792
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 8 Mar 2024 14:44:41 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3C3C72004B;
-	Fri,  8 Mar 2024 14:44:39 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BC9DB2006C;
-	Fri,  8 Mar 2024 14:44:38 +0000 (GMT)
-Received: from osiris (unknown [9.171.32.39])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri,  8 Mar 2024 14:44:38 +0000 (GMT)
-Date: Fri, 8 Mar 2024 15:44:37 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Harald Freudenberger <freude@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/6] s390: zcrypt: make zcrypt_class constant
-Message-ID: <20240308144437.26074-G-hca@linux.ibm.com>
-References: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
- <20240305-class_cleanup-s390-v1-1-c4ff1ec49ffd@marliere.net>
- <84263def1d38584cd83558a33bb52f22@linux.ibm.com>
- <nh5d7ock5gb4zttfmq354si3iewm4u2zxqquzg3erl55jxjhuo@5yveroq4li4s>
+	s=arc-20240116; t=1709909145; c=relaxed/simple;
+	bh=Em1F929Mn1mPrn47t685mqMI8vaGLknlocnaygZx4Hs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OVf/btrkfotUOzvkIDSDYS7OF7IzKKu8KVPiEWpGSidqzNpdBr8ZSRnv7WEoc0rK95JeTwTV7PmsNFhVRjtszs4oQ4IhJfjqrgDc1LZADPkrK6uWU3sKM4yYgnz/SsP4ywmU6jPxSM2xZSF6vEO+RfJdRM1Z9rrq0zpw6O8jqYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qKCHTOIi; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a458eb7db13so318774866b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 06:45:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709909141; x=1710513941; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zP41Zi/mvVoGN7hu7NP8sEaRzDXJMEZcIHHfHI2Tt3E=;
+        b=qKCHTOIi20QQc7RHat9XMt8Njeo4p0xsM+oKsVQ8FmGpPtV24jLZXqpDyMvfyQOxyy
+         HJQR36rvZYQWSDJeRLql8XQ3ZmslOptcf17uC3XMhC/2hmkc/vdVPhizHhX0v2XdmLzI
+         Wm/ML31Y23EMU7xOyxxJ5fOpff5u3hksCDPjnqd5ZmOIJVZ0IsOd6r1pM/EOgBiBBEzS
+         i4ObaMnaykFrSV6KdV76cokD1aasz+HAg3/BwdvyT0yKRvLG3fkLlb367v0677HbL4ry
+         a6FCiF+Mw2MXHCS9uA3JF76gF6huM8e59kaGKTBag1S9k7MzOZSS3KoLaq4zMFKFipMt
+         2G3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709909141; x=1710513941;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zP41Zi/mvVoGN7hu7NP8sEaRzDXJMEZcIHHfHI2Tt3E=;
+        b=YUZp5tL2elpbpRMqF/9oM/Vz1CCClAkENQUSSx4vSdLmRwtlqtr3y1LTN8ZPzdO6LR
+         s5jZdsCR0U1WAbCQTzoekdRNv1iVbyj/rCoxB9mLOVsD9iDppnlDXgimf36qwvCMND+n
+         mqDHFHoqjDasl+4AvkAWN+UXCkDYl/muqc0bfFm/rRbROhQKsRTWI4YZvPGjGt9JwBLw
+         RVfj54rmANooP8kbiF0MvoRP3V8KgpNENdJ4Yjtr3hLYc+pbLkiYonamsbavKugR6rKo
+         YfR4xoHDJOn5Isib5GbUSbFoHPD/YflmRLoqlTr0AXpc1hYz+RQdI0y6hZkhwGctBaP+
+         HOkg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDOGupP1KsCLKHAHuRD62iKoNQ0ampHFdSLMu7JF0Gfa3bx8NVHaYCYAH/iMf7RHTdNhxT+NE/U4AD3Zb6ehWsjboUGTUj5ZFP7WIS
+X-Gm-Message-State: AOJu0YyixA/aCwnIp0qj2NBxiASSPv3pWUdnlBpZJt2u6xHbjRMcM2Rh
+	Dr/jalJ1R+W2c8L4b6mYNof4YzgvFwCPUXglar+7Ti5xli/uLcmK43DeZFmzALU=
+X-Google-Smtp-Source: AGHT+IFzr7uIBzprrII6sDcFB9zm6dRvFyrKG7ykYhwxdSAW3eP/ZuRLedW0GrFDNK30PIfI2/mYVQ==
+X-Received: by 2002:a17:906:1cc2:b0:a44:4578:c79d with SMTP id i2-20020a1709061cc200b00a444578c79dmr13044343ejh.4.1709909141616;
+        Fri, 08 Mar 2024 06:45:41 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id me14-20020a170906aece00b00a45c9474442sm2096353ejb.18.2024.03.08.06.45.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 06:45:41 -0800 (PST)
+Message-ID: <72f29fd6-9d83-4a69-957e-bf3630878784@linaro.org>
+Date: Fri, 8 Mar 2024 15:45:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nh5d7ock5gb4zttfmq354si3iewm4u2zxqquzg3erl55jxjhuo@5yveroq4li4s>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: bS1TgzZ0LcUhZLvkew1eOnILrEd10Y0N
-X-Proofpoint-GUID: bS1TgzZ0LcUhZLvkew1eOnILrEd10Y0N
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 clxscore=1015 mlxscore=0 mlxlogscore=626
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403080118
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 1/4] dt-bindings: arm: qcom: Document QCS8550 SoC and
+ the AIM300 AIoT board
+Content-Language: en-US
+To: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ dmitry.baryshkov@linaro.org
+Cc: keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ kernel@quicinc.com
+References: <20240308070432.28195-1-quic_tengfan@quicinc.com>
+ <20240308070432.28195-2-quic_tengfan@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240308070432.28195-2-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 08, 2024 at 11:38:14AM -0300, Ricardo B. Marliere wrote:
-> > Thanks Ricardo, nice work.
-> > The only thing I would do is to rename the label "out_class_create_failed"
-> > with "out_class_register_failed".
+On 08/03/2024 08:04, Tengfei Fan wrote:
+> Document QCS8550 SoC and the AIM300 AIoT board bindings.
+> QCS8550 is derived from SM8550. The difference between SM8550 and
+> QCS8550 is QCS8550 doesn't have modem RF system. QCS8550 is mainly used
+> in IoT scenarios.
+> AIM300 Series is a highly optimized family of modules designed to
+> support AIoT applications. It integrates QCS8550 SoC, UFS and PMIC chip
+> etc.
+> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
 > 
-> Ah, indeed. Thanks for catching that. I will wait for more feedback on
-> the other patches and send a v2 if required.
-> 
-> > 
-> > Who will pick this patch? As this is part of a bundle of fixes, Richardo
-> > do you have a way to push this into the kernel? Otherwise as the AP/zcrypt
-> > maintainer I would pick only this patch and forward it to the s390
-> > subsystem.
-> 
-> I have no ways of pushing this, sorry. The series is based on
-> s390/linux.git/for-next, so perhaps the s390 maintainers can pick this
-> one along with the others with your Acked-by: provided? :) 
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 
-I will pick up the whole series, but need some more time.
 
-There is no need to send a v2 for this patch - I'll change the label as
-requested by Harald.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
 
