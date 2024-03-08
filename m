@@ -1,140 +1,135 @@
-Return-Path: <linux-kernel+bounces-97696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874D1876DF6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 00:50:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC056876E05
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 00:53:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9A211C21DCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:50:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 880D0283AF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FD73FB85;
-	Fri,  8 Mar 2024 23:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="mPotTeRv"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4093F9F8;
+	Fri,  8 Mar 2024 23:53:10 +0000 (UTC)
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A6D11707
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 23:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8B623769;
+	Fri,  8 Mar 2024 23:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709941802; cv=none; b=A5+uD3d7PV4BYBO1IQx7WT5x4MGLQO2trEOap1lJ5Ct93Z23owRX/sl8gWJweMTeqdYAPL+6TgmEghLZ+KF5p41YbS65KCZe48cNKzNx8o2TwA6FH0UyzyI6J/0pkAaDS0vsOeF4exHQJxNWv6cir5N73x5+JTubwSbyEePxXaQ=
+	t=1709941989; cv=none; b=mEsCvpZO/xGxHdy54eTcpxT9qN8sraMn1Cs5lZa2/8ykPFAEnWsbN0vaJ4NVgCLfDdBJrQ3XLOhMw+GMDe0L/TbOy0zeJqm+0/9WcaSaZ1Awhkw+Cr0hTZIA8UL7sKRoRqAcE6o4r9C73S2AkZZihEBDMBq2KLptrv2Dd0YqGb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709941802; c=relaxed/simple;
-	bh=VwVDweM7A7hBcYergFPFJeBgGs3atd09plR0EB3F2zQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mztLPexj+fpl8rOvoCwToaUImi8LJxzKyad+1fttMJ3971wosL00EeXwOfobDLSbZJhJy01MTx4CXOIJgVLPUTKd85xRpkwhzfzUfZqLMykX/LJ92Bn6ri3ykReyyNU7DLVGrgevS4mhokfB9ve3DqP0VxeCWH8b32wv0KBvXvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=mPotTeRv; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dc0d11d1b7so22262635ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 15:50:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1709941800; x=1710546600; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bvvVxFJORKVGOnQydvxT4JtEYCtE1bHbtR+qPjK456A=;
-        b=mPotTeRvQwqY6EHIe3q2V6h1UY+84lzJjRtlCPyDJEZe9KpKLa0HZ4HTqbLCFaZa/S
-         qYREF8qbVbHU212nLPexx/76nVA/nW7BWFzGSd2miGv2VTJ6oKRF4mGRooYxWtuOxXB4
-         ZVS7UOfGhge2fTJYrjWI21lxUtR5+uD9vTmIapbXkPeX7wvFZUTDMOfc80AqNAzPN1rq
-         x2LCplBdBaRcvNBepfYT8Zw5PXEtH3DRcCSAzZbTNHK8iqOrq0MzkvaXMxhXk8qJGmkb
-         08deXPimO+EpCMZegfM+ddekFJPMPf7Txp4tl4mMN736AdpkZy5nJ6YYcTdd2n2/omo7
-         3yEw==
+	s=arc-20240116; t=1709941989; c=relaxed/simple;
+	bh=t8OA91R3kyR2UyyWnJ2g3tEc5o5p3PwzgyzGpkHmokU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SuRbDiUIYOX9Ps5JO0FjehJ4zPdugp8aTf8K/m6oyjM6S2WQUwVl/kUL/0q8H5Ukmvoh80xREkX/kqRlGMF+XSh/io0VmBSMorI8EidpOe+hBCEPAGmH/ScPieA/V0oynobYsWOds2zoJ0fo2pn2TxpywcGJqB46QDnvzD1roYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso2154395a12.3;
+        Fri, 08 Mar 2024 15:53:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709941800; x=1710546600;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bvvVxFJORKVGOnQydvxT4JtEYCtE1bHbtR+qPjK456A=;
-        b=O6urvLu7taHjVB7WAHWf5AUy8uvMdT3mZ5gJQG1vliyYMyxafm59gIq11ZW4MjVFcm
-         2iv55AIkZwWfm+0c6KUIqBk/SfpHqlWI6pPVmYNkc7oV3gM/HoXGnaRDnbZJUP5C+KFM
-         UUlCGzA6+PHHdIR4qsu10J9D0qK8ruAGEx1ysUYtZynuN1/l+cNNNdDiIFnDdTClSSaD
-         hPec0rXekxc1SqQNsY7pbPXIGoMnsG6Y5Nwo+VnOBHngXuFbdbpPTwnuUeVzqfFC9czu
-         BsYiC07LAoniYOEn6aMsZw5Rmhd1HDmJQYdBPJVMG4YeLW5h0gvpEzUuXtGwayCRuQb1
-         lKIA==
-X-Forwarded-Encrypted: i=1; AJvYcCUvtopGMzhOKIzOleeBGyTNbVyesR+1M0MkVrVUs6OHHAvDcS3Y0698qOMFPJLrf40I77hkDq7bRZAhVDTMgi7v7ln412aNFq1C15C/
-X-Gm-Message-State: AOJu0YzahWTgwzKtOFYxrf+vF2Hyi8QsllsK39mm3zScYu/e6MI1x3sP
-	4mUaoLiiOfYrTxYMj96lLWjyJH5QskInJ0pMkpWkinDf+scbnsePKKLDXbx8jqs=
-X-Google-Smtp-Source: AGHT+IELbp+iVaux9dMAj3AwSjMmEB91AkVFjRihINKGUpZLZJOnpRotYIK+RS+5A3yxMzoBQZHlSw==
-X-Received: by 2002:a17:902:d4c5:b0:1dc:7845:537c with SMTP id o5-20020a170902d4c500b001dc7845537cmr232003plg.1.1709941800017;
-        Fri, 08 Mar 2024 15:50:00 -0800 (PST)
-Received: from ?IPV6:2a03:83e0:1156:1:1cbd:da2b:a9f2:881? ([2620:10d:c090:500::5:2342])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170902a38400b001dd63e22484sm199196pla.135.2024.03.08.15.49.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 15:49:59 -0800 (PST)
-Message-ID: <8adb69f3-b0c0-42bf-b386-51b2be76cbb4@davidwei.uk>
-Date: Fri, 8 Mar 2024 15:49:58 -0800
+        d=1e100.net; s=20230601; t=1709941988; x=1710546788;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qAaAtnWUg1rxpdk1BKsVfiXox0rISjedblr07JGTkYA=;
+        b=IDgKU9tNmT0Ao7TVwJZGynHeYEsQpbEvgk4C9AZk7O4NcxU4TH8sVaWgwdN3ErLqw8
+         jjUm3TvSX97sHxUhZVFcCjS1b4j70K3nmVhUdW6Jj1N8YxdHsLOAktGTT8cY3rylMyPh
+         BowQ74/w7Zk5C9/7c9tTHsRXrDfIvq9N5AsNdDmqiG9VYkNIOdyMTTupcD/lxEDuYv3y
+         K5WsVXWRwCWYcrFoJ0rY4NHHMREN7l0MQOR4dvq/am4LTbrHhTppn5xNXWB2qx/qoXXy
+         c+/fiSHE/1Cf8fxnFMSol/DYUReKP1YbhkCeY3P2Glao0GYQQoC7pm+Pv5ohqJWEVsto
+         cglg==
+X-Forwarded-Encrypted: i=1; AJvYcCWP5TAuy+NeQ7TRVXuav/21idlIT6CnYpEOErjLOcFpCz0AJtWxZi+gc0yROTwEubM+Uiaa5aDmAZp3wKlvi0fGEbQkfAVE48Cs7onUEy4L7Ut8uLlFbSrgAgDUMjZNffV2d9LP5vJt236C3SVWUDc3h2R5jhYDmSGEi5W6IhNqcSFvN92LhQ==
+X-Gm-Message-State: AOJu0YyiqhcnNIaHFNMjMAKXdaQ/e+ezStIt1XfcMgEqecgdvBhfOC1Y
+	fGXxFllgO7smG6vspWyDpyJ3JfaIzwrNhoqK4hHaNTHJU9yCLM96
+X-Google-Smtp-Source: AGHT+IF+FeulvTo1o6BjAN2xTdMb8Ul/K+KciGeAVDA7XkD632jeGsz0rIvfuwgHV41dXl5zLmsguw==
+X-Received: by 2002:a05:6a20:3424:b0:1a1:2fda:e785 with SMTP id i36-20020a056a20342400b001a12fdae785mr223595pzd.23.1709941987631;
+        Fri, 08 Mar 2024 15:53:07 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id u9-20020a62d449000000b006e57a3bf0e9sm263058pfl.82.2024.03.08.15.53.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 15:53:07 -0800 (PST)
+Date: Fri, 8 Mar 2024 23:53:02 +0000
+From: Wei Liu <wei.liu@kernel.org>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: "wei.liu@kernel.org" <wei.liu@kernel.org>,
+	"haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"decui@microsoft.com" <decui@microsoft.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"hpa@zytor.com" <hpa@zytor.com>, "arnd@arndb.de" <arnd@arndb.de>,
+	"tytso@mit.edu" <tytso@mit.edu>,
+	"Jason@zx2c4.com" <Jason@zx2c4.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	Saurabh Singh Sengar <ssengar@microsoft.com>,
+	Long Li <longli@microsoft.com>
+Subject: Re: [PATCH 1/1] x86/hyperv: Use Hyper-V entropy to seed guest random
+ number generator
+Message-ID: <Zeuk3ixlvMFg1CDo@liuwe-devbox-debian-v2>
+References: <20240122160003.348521-1-mhklinux@outlook.com>
+ <SN6PR02MB4157B61CA09C0DAF0BB994E1D4212@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v1] net: page_pool: factor out page_pool recycle
- check
-Content-Language: en-GB
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Yunsheng Lin <linyunsheng@huawei.com>
-References: <20240308204500.1112858-1-almasrymina@google.com>
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20240308204500.1112858-1-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR02MB4157B61CA09C0DAF0BB994E1D4212@SN6PR02MB4157.namprd02.prod.outlook.com>
 
-On 2024-03-08 12:44, Mina Almasry wrote:
-> The check is duplicated in 2 places, factor it out into a common helper.
+On Wed, Mar 06, 2024 at 05:43:41PM +0000, Michael Kelley wrote:
+> From: wei.liu@kernel.org @ 2024-03-04  6:57 UTC
+> > 
+> > > +void __init ms_hyperv_late_init(void)
+> > > +{
+> > > +	struct acpi_table_header *header;
+> > > +	acpi_status status;
+> > > +	u8 *randomdata;
+> > > +	u32 length, i;
+> > > +
+> > > +	/*
+> > > +	 * Seed the Linux random number generator with entropy provided by
+> > > +	 * the Hyper-V host in ACPI table OEM0.  It would be nice to do this
+> > > +	 * even earlier in ms_hyperv_init_platform(), but the ACPI subsystem
+> > > +	 * isn't set up at that point. Skip if booted via EFI as generic EFI
+> > > +	 * code has already done some seeding using the EFI RNG protocol.
+> > > +	 */
+> > > +	if (!IS_ENABLED(CONFIG_ACPI) || efi_enabled(EFI_BOOT))
+> > > +		return;
+> > > +
+> > > +	status = acpi_get_table("OEM0", 0, &header);
+> > > +	if (ACPI_FAILURE(status) || !header) {
+> > > +		pr_info("Hyper-V: ACPI table OEM0 not found\n");
+> > 
+> > I would like this to be a pr_debug() instead of pr_info(), considering
+> > using the negative case may cause users to think not having this table
+> > can be problematic.
+> > 
+> > Alternatively, we can remove this message here, and then ...
+> > 
+> > > +		return;
+> > > +	}
+> > > +
+> > 
+> > ... add a pr_debug() here to indicate that the table was found.
+> > 
+> > 	pr_info("Hyper-V: Seeding randomness with data from ACPI table OEM0\n");
 > 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> Reviewed-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->  net/core/page_pool.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index d706fe5548df..dd364d738c00 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -657,6 +657,11 @@ static bool page_pool_recycle_in_cache(struct page *page,
->  	return true;
->  }
->  
-> +static bool __page_pool_page_can_be_recycled(const struct page *page)
+> You wrote the code as "pr_info()" but your comment suggests "pr_debug()".
+> I'm assuming pr_debug() is better because we don't really need any output
 
-Could this be made inline?
+Yes, I meant to use pr_debug() here. Sorry for the confusion. The
+pr_info() was a c&p error.
 
-> +{
-> +	return page_ref_count(page) == 1 && !page_is_pfmemalloc(page);
-> +}
-> +
->  /* If the page refcnt == 1, this will try to recycle the page.
->   * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
->   * the configured size min(dma_sync_size, pool->max_len).
-> @@ -678,7 +683,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->  	 * page is NOT reusable when allocated when system is under
->  	 * some pressure. (page_is_pfmemalloc)
->  	 */
-> -	if (likely(page_ref_count(page) == 1 && !page_is_pfmemalloc(page))) {
-> +	if (likely(__page_pool_page_can_be_recycled(page))) {
->  		/* Read barrier done in page_ref_count / READ_ONCE */
->  
->  		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> @@ -793,7 +798,7 @@ static struct page *page_pool_drain_frag(struct page_pool *pool,
->  	if (likely(page_pool_unref_page(page, drain_count)))
->  		return NULL;
->  
-> -	if (page_ref_count(page) == 1 && !page_is_pfmemalloc(page)) {
-> +	if (__page_pool_page_can_be_recycled(page)) {
->  		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->  			page_pool_dma_sync_for_device(pool, page, -1);
->  
+Thanks,
+Wei.
 
