@@ -1,92 +1,136 @@
-Return-Path: <linux-kernel+bounces-96504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88B4B875D29
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:30:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF3EA875D34
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A2631F21F38
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:30:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28D94B21816
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:36:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E1A2E84F;
-	Fri,  8 Mar 2024 04:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uCULTRvG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC9F2DF73;
+	Fri,  8 Mar 2024 04:36:06 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88A02134B;
-	Fri,  8 Mar 2024 04:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A455518E01
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 04:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709872229; cv=none; b=Du2pyxoBH1So4I4PjNE0SmLJQFiD7hSUE87XX6aEbxsluwF298Au7NcwYMcvoU97NvIOw0TMiGzHG55IH05Q7tH8m2hPSgCtpuvGwU8zNJ9M6j8qLxlZoELuCUbCHRA3gP79Y3wC5HGgJYGtrh1jezxxN8MbQPS2JqlQFZl67qw=
+	t=1709872566; cv=none; b=SKMYVHLPWv8fWhW73jZ79+lio38P80ZkIE+XOV3aHH5ugTvkxSt5tiTdUDYKbV+Ccy5SED2hi8bZGuCe3nPxh2EC1gFB0BlJJKJNzdiy0zdafUK/aMi6bCTt8bllNvTVWANQYo0NDVWDVoXoJgOhF1SH+Sz7w/DQwkj3SQOrgXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709872229; c=relaxed/simple;
-	bh=Bhr4Dtpl623FH4HAMUZOgSXCCm8xgmxDleW5A1X397Q=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=BB1/oa8Cny2GL0+PzMGrUH+8XhJw5tE9XEDqvxTCTzXq/aA62O3KKomQ0/ARMUswRpcjRTyKypLJB9N1OP4K8SRUOCt3EpCdWhTintiaug+PzWmr1d6ySDR7aJyDbEh6auuXnzJzGr/xl+C5UXi84oS+iZSW3fFptLhIkAfG6Ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uCULTRvG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4C10BC43394;
-	Fri,  8 Mar 2024 04:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709872229;
-	bh=Bhr4Dtpl623FH4HAMUZOgSXCCm8xgmxDleW5A1X397Q=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=uCULTRvGMHIapWzkUMeWz+mn1kZZKPuDWSz2n/Dji1x/ucOz9rKUVl+PiRZx83xRw
-	 R4cJP0u5JMiSYiXdVRjsY+YSxlwCUpREVp6vPE7oddTHDmpA+JITtuAQTmh93RcoLF
-	 f1+AhINduqEIkNUPiN/S51QqRH8mqcOTkmWWxjnsg2rC5yenJvj68G+6p7fSR2ptUK
-	 XgA4uisaDVpePuirTEAq4v3RsJe84EVLHmjRRVf/g5fJRzHfbdpvJoTEQlkDdy0UeR
-	 MsuRIixPXmeleCLcX14vKiC2huG+dTzlO3smGVivZ5AO3ZiAUd4vGU+PxCcNFUQShC
-	 H1KScnrQ5uawA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 30FD8D84BC1;
-	Fri,  8 Mar 2024 04:30:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709872566; c=relaxed/simple;
+	bh=0usxjDEZiIZM0VtulQTH8zHq7XHMasZx1wCE2IspjoY=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ENjZAIR0eSE8W7qXoTqHTsmp0OfycckXvS4savTF0lqrU2ahXQ9FhP5fcNxSSS1rs1T9vMml34OOHGU2FlwVJum1UE9C4+myVPgw6Ia3xF5kj7Vl57LVQC4S/y7jJTEs5Bx5H4TU8joaCN/4ZUGe19M5LobnVGUT8nncHvkVSmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TrYFn5DkPz1h1Zw;
+	Fri,  8 Mar 2024 12:33:33 +0800 (CST)
+Received: from kwepemd100005.china.huawei.com (unknown [7.221.188.91])
+	by mail.maildlp.com (Postfix) with ESMTPS id 34A9E14011B;
+	Fri,  8 Mar 2024 12:35:56 +0800 (CST)
+Received: from kwepemd100011.china.huawei.com (7.221.188.204) by
+ kwepemd100005.china.huawei.com (7.221.188.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 8 Mar 2024 12:35:55 +0800
+Received: from M910t (10.110.54.157) by kwepemd100011.china.huawei.com
+ (7.221.188.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 8 Mar
+ 2024 12:35:55 +0800
+Date: Fri, 8 Mar 2024 12:34:48 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+CC: <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <changbin.du@huawei.com>
+Subject: [BUG] kmsan: instrumentation recursion problems
+Message-ID: <20240308043448.masllzeqwht45d4j@M910t>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: x25: remove dead links from Kconfig
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170987222919.2034.12421653557670790951.git-patchwork-notify@kernel.org>
-Date: Fri, 08 Mar 2024 04:30:29 +0000
-References: <20240306112659.25375-1-justin.swartz@risingedge.co.za>
-In-Reply-To: <20240306112659.25375-1-justin.swartz@risingedge.co.za>
-To: Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: ms@dev.tdt.de, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, linux-x25@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd100011.china.huawei.com (7.221.188.204)
 
-Hello:
+Hey, folks,
+I found two instrumentation recursion issues on mainline kernel.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+1. recur on preempt count.
+__msan_metadata_ptr_for_load_4() -> kmsan_virt_addr_valid() -> preempt_disable() -> __msan_metadata_ptr_for_load_4()
 
-On Wed,  6 Mar 2024 13:26:59 +0200 you wrote:
-> Remove the "You can read more about X.25 at" links provided in
-> Kconfig as they have not pointed at any relevant pages for quite
-> a while.
-> 
-> An old copy of https://www.sangoma.com/tutorials/x25/ can be
-> retrieved via https://archive.org/web/ but nothing useful seems
-> to have been preserved for http://docwiki.cisco.com/wiki/X.25
-> 
-> [...]
+2. recur in lockdep and rcu
+__msan_metadata_ptr_for_load_4() -> kmsan_virt_addr_valid() -> pfn_valid() -> rcu_read_lock_sched() -> lock_acquire() -> rcu_is_watching() -> __msan_metadata_ptr_for_load_8()
 
-Here is the summary with links:
-  - net: x25: remove dead links from Kconfig
-    https://git.kernel.org/netdev/net-next/c/7a04ff127786
 
-You are awesome, thank you!
+Here is an unofficial fix, I don't know if it will generate false reports.
+
+$ git show
+commit 7f0120b621c1cbb667822b0f7eb89f3c25868509 (HEAD -> master)
+Author: Changbin Du <changbin.du@huawei.com>
+Date:   Fri Mar 8 20:21:48 2024 +0800
+
+    kmsan: fix instrumentation recursions
+
+    Signed-off-by: Changbin Du <changbin.du@huawei.com>
+
+diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
+index 0db4093d17b8..ea925731fa40 100644
+--- a/kernel/locking/Makefile
++++ b/kernel/locking/Makefile
+@@ -7,6 +7,7 @@ obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
+
+ # Avoid recursion lockdep -> sanitizer -> ... -> lockdep.
+ KCSAN_SANITIZE_lockdep.o := n
++KMSAN_SANITIZE_lockdep.o := n
+
+ ifdef CONFIG_FUNCTION_TRACER
+ CFLAGS_REMOVE_lockdep.o = $(CC_FLAGS_FTRACE)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index b2bccfd37c38..8935cc866e2d 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -692,7 +692,7 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+  * Make notrace because it can be called by the internal functions of
+  * ftrace, and making this notrace removes unnecessary recursion calls.
+  */
+-notrace bool rcu_is_watching(void)
++notrace __no_sanitize_memory bool rcu_is_watching(void)
+ {
+        bool ret;
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9116bcc90346..33aa4df8fd82 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5848,7 +5848,7 @@ static inline void preempt_latency_start(int val)
+        }
+ }
+
+-void preempt_count_add(int val)
++void __no_sanitize_memory preempt_count_add(int val)
+ {
+ #ifdef CONFIG_DEBUG_PREEMPT
+        /*
+@@ -5880,7 +5880,7 @@ static inline void preempt_latency_stop(int val)
+                trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
+ }
+
+-void preempt_count_sub(int val)
++void __no_sanitize_memory preempt_count_sub(int val)
+ {
+ #ifdef CONFIG_DEBUG_PREEMPT
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Cheers,
+Changbin Du
 
