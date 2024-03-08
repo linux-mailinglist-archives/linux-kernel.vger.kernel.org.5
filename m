@@ -1,375 +1,192 @@
-Return-Path: <linux-kernel+bounces-97036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4224E8764B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:05:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 423AD8764BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:08:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 656891C21B73
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:05:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB26E284C60
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD3661D545;
-	Fri,  8 Mar 2024 13:05:10 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9126D17551
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:05:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709903109; cv=none; b=k4MIpSUQiA/L6k0Q2ZK++J9jCsMirX61LLL8v39LJsEcnSxR5T3qkPEWbw3afdBTfHnbQtTxqjcQrDBKskpW8A39LsgJoXSAIg9AjZuIK+K1h+taR8NF5wGMv19WVtk2iv0sabPcgxZhouhETpP3AYCsQljgxBjbhAenl1hq+Xs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709903109; c=relaxed/simple;
-	bh=c5ZBgFk2lxlht9LflS5ALAop/xuWMX6Rmc/HzSvUu0I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GbBNbobgmIjyDzMXvRK/Z9tF5+Ki21wqVLFtnU41+2rkI0g3tNCK/uNEZIX5HW/zMpEXjua64yaQsbWk29qhf3CDhiXz7hhb1rF8OVJ2bAGvLngciftccRfjwRlY0441vT1dbMtYgXkQ2RknU+LcCXdAwn1SgnQmw2Yn4A3N2Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A00EAC15;
-	Fri,  8 Mar 2024 05:05:43 -0800 (PST)
-Received: from [10.57.70.163] (unknown [10.57.70.163])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F0593F762;
-	Fri,  8 Mar 2024 05:05:02 -0800 (PST)
-Message-ID: <60dc7309-cb38-45e3-b2c0-ff0119202a12@arm.com>
-Date: Fri, 8 Mar 2024 13:05:00 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0187D1F944;
+	Fri,  8 Mar 2024 13:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Yh3pZan2"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2020.outbound.protection.outlook.com [40.92.74.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492481CD06;
+	Fri,  8 Mar 2024 13:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.74.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709903295; cv=fail; b=JG6vgMcLN2jUkvu9tjeVX4DqbT84jOQS547JkuDG70ZxigONC04xMVU9A/yzxmvI9/2ruyWZ0hhxm6mf+5xrRmQ+TQz+zf9Jk2cnSSXHWz8m5R71VlzPlhRuFxHKjjbS973OzjvjYNzZzp3UcE3VuDLUDTEK3JCXL5tO/alLW2U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709903295; c=relaxed/simple;
+	bh=JeQwoqLYiVeyV+3baROZxz/Sk+j2fgc8ITTbDLMBCrc=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Rn+4fYM5wWch+5/0T23MtopQ0lCpB4TIYVHG4J26a10n4ZdrWuvWuQI7fFEdghDgvR4jcnhwH9NWWdMQ4VC2F89QTuZWjbO8jcJC5ET56l8F7h1a7nCgJrROU7E/P/eSCmLOVm+0zUG3JeMuOhqFHhkE4gUQ35tV0Rt8IAx9DeI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Yh3pZan2; arc=fail smtp.client-ip=40.92.74.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ChEYlC0Fbc6CCeKn/DyIGKYv9DxWV3aainKHjNCJDLIBt3OhgNIqcbjCnBHnymggDm1J/EywvmRth2pBq9GxhX0Oezo06KaX/Plhn9/HAcJi1XCOEdf9BGaVcbe3x/w56KP+/20Z/Mlild6jCt290/iQvcRYaWLlRa2bcrJzbGmQhfdXE7k7oNZN4HsinatEniWs98/dB+14ApLl6dYN0bvztdQ/mpTAxDrNWHDg+R8SwHbhjzUH3tQXweOqlMxL3Rk57Wr0mt1qVdjajK1XGO47gVuj6d0LOTsAjqTOSTiWHUJnG5J3WnrPRWNQMMDw6R4glJyAcV9N7TVTHB1cQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FiYA2Xas9rmR6UR6ocGlQ9axajmHXjBn4fc6kz0dHXw=;
+ b=hS9SbHpzENDL9LnqPO1o8JJuhfsXbNFzHrSvYbh/9DalY4ju6jG21lzHaxxh5BOrRLshjFJ0VWC+5AXl+9heEhCJgrrEwdOXnGOVHMzmVhlE/GAJ/qvGIMx4AvTd8r2MACXeCE5sy6U/9HSRvlX42XBId3OSMA8kOozVAQbvoLPUy8WXy2Ff8TiOtsjPraNjGT1ZsJTZ3sZgLLxflaBDiT2lPw+V8I4EBcpifsXPM9ObU3jRz+zdNSvrC6MN7G7udYyAzntQfyubkL36O44QTwgkVcTEa7Ir6t+YHlcq3eI/gDILXPvY6lrevvtRHl3e7IYbn2P1ELC5ZPkIFq3WYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FiYA2Xas9rmR6UR6ocGlQ9axajmHXjBn4fc6kz0dHXw=;
+ b=Yh3pZan2OvhqbXBSbveTT5TY3TU089TAHoP4Bqe3Vx/sWdFtoWHo7SEwfiSlJe1RMXLx8iN6xQKpQlTQ2+doyiwjBJTRUfCHdArJFQyxUDqI8ERigBDe2pRqP7Fi5CREfflzi4xYRjjWacvHOEcs08bu6uVteljb7lNEBt6CH9qAD3hPXv8AIVWFjkEud335y0DCoWrSJ1slheLehBLvuk44kvYkiCKEjx21QRINbfwIws0XfKIm2X4a2zlfa7OrqSla8QAOBOwqmXROXGszDosvNmTpWUljuCn+TInF4Dl6DDDP4Lk/dI5XpZLP7ylGJ4PUP5BmVuIiV/iydsZYdw==
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
+ by PAVPR03MB10177.eurprd03.prod.outlook.com (2603:10a6:102:32a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Fri, 8 Mar
+ 2024 13:08:10 +0000
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::58d5:77b7:b985:3a18]) by AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::58d5:77b7:b985:3a18%7]) with mapi id 15.20.7362.028; Fri, 8 Mar 2024
+ 13:08:10 +0000
+From: Juntong Deng <juntong.deng@outlook.com>
+To: willemdebruijn.kernel@gmail.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3] net/packet: Add getsockopt support for PACKET_COPY_THRESH
+Date: Fri,  8 Mar 2024 13:06:36 +0000
+Message-ID:
+ <AM6PR03MB58487A9704FD150CF76F542899272@AM6PR03MB5848.eurprd03.prod.outlook.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [rWDDBPyATA4xNMx1o8BEcMZ6S+Mi8TKU]
+X-ClientProxiedBy: LO4P123CA0676.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:351::14) To AM6PR03MB5848.eurprd03.prod.outlook.com
+ (2603:10a6:20b:e4::10)
+X-Microsoft-Original-Message-ID:
+ <20240308130636.34343-1-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
- madvise_free
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: David Hildenbrand <david@redhat.com>, Lance Yang <ioworker0@gmail.com>,
- Vishal Moola <vishal.moola@gmail.com>, akpm@linux-foundation.org,
- zokeefe@google.com, shy828301@gmail.com, mhocko@suse.com,
- fengwei.yin@intel.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com,
- songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240307061425.21013-1-ioworker0@gmail.com>
- <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
- <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
- <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
- <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
- <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
- <501c9f77-1459-467a-8619-78e86b46d300@arm.com>
- <8f84c7d6-982a-4933-a7a7-3f640df64991@redhat.com>
- <e6bc142e-113d-4034-b92c-746b951a27ed@redhat.com>
- <d24f8553-33f2-4ae7-a06d-badaf9462d84@arm.com>
- <CAGsJ_4za-2xpg21phWi2WWLF1iPXhoc1xM__FDTwYYBBKsTPgw@mail.gmail.com>
- <a07deb2c-49e1-4324-8e70-e897605faa9d@redhat.com>
- <b1bf4b62-8e9b-470f-a300-d13c24177688@arm.com>
- <b174d4e1-e1ef-4766-91bc-de822eee30fb@redhat.com>
- <CAGsJ_4xXS0MsxRVTbf74DY_boQVUE2oP=AP6JmdXZSqsAOZzRQ@mail.gmail.com>
- <f3b1cb43-cb33-4db4-a3dd-0c787e30b113@arm.com>
- <CAGsJ_4wGe9SdMvojw_2XchEttrbww3RttoOENoF-O4bLWUd_rw@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4wGe9SdMvojw_2XchEttrbww3RttoOENoF-O4bLWUd_rw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|PAVPR03MB10177:EE_
+X-MS-Office365-Filtering-Correlation-Id: 79ecd0c6-bbba-4c2b-637e-08dc3f70ce28
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UZDLL53z8/5XrTn4yMR73G0TwEtSfKYn3cVHozuoM1gbh8FmPOKhY3Q86kU15fxPJS8zktaiGU+NxY2YQOwCHiY0zMn1Qrlqo6XdCo5z/4ofL2hGPSis0/Cl0GXP+DsIzP5nECLwGvviVHU2D1E9x2NK5x6CHTYA3D0g7lphKDdKr+yemoyVhMSv6hn7PI9GEbtRQ5TudNy+yMGCcX7lQUT9ZJNDza20mUYf3m1bibpicv/lTxLzzKLo56Jeg6WoWPzBQBB+isU40u3X5OJb7q+m+ho41WlXKoudNrx3/8UFZZKGo7CcVGNCAavJWsqDVRWfgJ5lj4rul8t/53N2d6izb8d2gOIvmu2r7/+L0as5xiucvJISiuxPryO2CSFQyw80zVT98EqZON/qzeiocH8CzaDmdfj48TX2xjcpoFe3OChcne+f/QEW2US/qWKMvIxBaZE/Tq9YlSWWkuT2NhHkSs3xSFxierPUwUo6sJYh7BFoxFEZ00PLMrftEUHJ0FtHHpkigpdECnLEUIec4qAtfisqFMnFVyny3R5SUmWQxeKAn3JXJNpNvvXu3OU9
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?tiwq55SIoAr8TtzlTT1CeH5+51K+Pz4gIboz+4Zn64GQGyZ+53JHdINbex+T?=
+ =?us-ascii?Q?UwOL63SR3UnNu6Kvi5kDPwC5ZmnVA6GVNMgNTazPmhnA5F0e8tppH9WDOQdw?=
+ =?us-ascii?Q?LsBFOH9fwZIy3B1s9iIg/08Xci4nK2Up6ULNPYI96AhwnsBXwAoGAtA6njXj?=
+ =?us-ascii?Q?2/Ucw9BLW+KNUNF5YvXUevjvN+HrIHC/BwuQovnwx7VnBeUxyX6EtDicTKi+?=
+ =?us-ascii?Q?VPcX624wvtSaDBwthJOJkEc5FHAEvZGSWsssGhr/3poYhnkphewE7o4LAq7E?=
+ =?us-ascii?Q?SDtcPYyw3t5VXte/81BvlPEz0T8CjqQzC338fw9S5ceqK/b/77XZT+kR0408?=
+ =?us-ascii?Q?drtEJUo3G9dWYR2LYF9QJFgs+eqNvEfn3xmnSHFeXTt/x59Y948xgh+DniVj?=
+ =?us-ascii?Q?p2LQqiLhz7dsnF4LB4ow0Evp4QeHrHdhk5nKRMLstcJDUHOLY2j/LiLecV/+?=
+ =?us-ascii?Q?qCZiKv3gbPMXvxHFrqxTOmiU94RWZVX9Jnzne91CayNbJPA1qh6ePf3XJ/xk?=
+ =?us-ascii?Q?+JceQfaHMvOTZ2XGSZO81m3VyG9W81SfiZjnreTbbdAcSCWrVrsv2mg0e8Kl?=
+ =?us-ascii?Q?T65el7xhiJEVPSLL++Q8zbRH5qklanjfOYnhhS1psGL8YxkJPneHUIdzRvUR?=
+ =?us-ascii?Q?gw3HnC0YxtPxCTcnlY5YRYo0qgkd/GoGZMeniLgpX4Rke/wCUVtq0kfv5lJh?=
+ =?us-ascii?Q?ybaQLv14FrtcpiTUxlDAp4mXC8gPQyJKBNI9x6ozn/sFdJegCHoTLeoaN2Lh?=
+ =?us-ascii?Q?/9u9vYaDvj0uo0Uoxgmr+gyt4CXveoVTbqXW1abWXezK/eVmqpixkN0DkLFo?=
+ =?us-ascii?Q?gzmUI7dO7Z37aB766EO/LqQLwSuXVtggOIGId4HMmeLJRatMk2n734wkqbL9?=
+ =?us-ascii?Q?HLRo8BFvJJNwoeN8mQOhAHXa62vu+eQrWqXgV4y9ZGUus7vRlZQoCHo81Jib?=
+ =?us-ascii?Q?xviz74cg9+9fAFRFEKyyrlLiWsjOsa2codRW2e0FEtjs63boMYibJStIHyI9?=
+ =?us-ascii?Q?TgW5jvymo+3FHKWCKENbezOKK/XnNkTjiFI1VybZdqsyU//XdGCBPF8SwpSr?=
+ =?us-ascii?Q?oSrLl01U5j19RB3f6C9ZuJeZCCgp87E3wG9hB/n8PYNZ9/9ltdPSR4HBxAgw?=
+ =?us-ascii?Q?7+pfnzuDITVT8BVTDxzAvj0XJf3Leoq9vE8BO7egO3fnpklI133NZrjJz4Rq?=
+ =?us-ascii?Q?6zY8JMeUhvcTyRwGjWkehnnmOUJu9VnrRsROGqiVTxxyv2n79L/vznQ22AZ1?=
+ =?us-ascii?Q?2QvEt+MYeRtxxDmD5iHR?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79ecd0c6-bbba-4c2b-637e-08dc3f70ce28
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 13:08:10.8914
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR03MB10177
 
-On 07/03/2024 18:54, Barry Song wrote:
-> On Fri, Mar 8, 2024 at 12:31 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 07/03/2024 12:01, Barry Song wrote:
->>> On Thu, Mar 7, 2024 at 7:45 PM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 07.03.24 12:42, Ryan Roberts wrote:
->>>>> On 07/03/2024 11:31, David Hildenbrand wrote:
->>>>>> On 07.03.24 12:26, Barry Song wrote:
->>>>>>> On Thu, Mar 7, 2024 at 7:13 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>>>>
->>>>>>>> On 07/03/2024 10:54, David Hildenbrand wrote:
->>>>>>>>> On 07.03.24 11:54, David Hildenbrand wrote:
->>>>>>>>>> On 07.03.24 11:50, Ryan Roberts wrote:
->>>>>>>>>>> On 07/03/2024 09:33, Barry Song wrote:
->>>>>>>>>>>> On Thu, Mar 7, 2024 at 10:07 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>>>>>>>>>
->>>>>>>>>>>>> On 07/03/2024 08:10, Barry Song wrote:
->>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 9:00 PM Lance Yang <ioworker0@gmail.com> wrote:
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> Hey Barry,
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> Thanks for taking time to review!
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 3:00 PM Barry Song <21cnbao@gmail.com> wrote:
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 7:15 PM Lance Yang <ioworker0@gmail.com> wrote:
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> [...]
->>>>>>>>>>>>>>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned long addr,
->>>>>>>>>>>>>>>>> +                                                struct folio *folio,
->>>>>>>>>>>>>>>>> pte_t *start_pte)
->>>>>>>>>>>>>>>>> +{
->>>>>>>>>>>>>>>>> +       int nr_pages = folio_nr_pages(folio);
->>>>>>>>>>>>>>>>> +       fpb_t flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
->>>>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>>>> +       for (int i = 0; i < nr_pages; i++)
->>>>>>>>>>>>>>>>> +               if (page_mapcount(folio_page(folio, i)) != 1)
->>>>>>>>>>>>>>>>> +                       return false;
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> we have moved to folio_estimated_sharers though it is not precise, so
->>>>>>>>>>>>>>>> we don't do
->>>>>>>>>>>>>>>> this check with lots of loops and depending on the subpage's mapcount.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> If we don't check the subpage’s mapcount, and there is a cow folio
->>>>>>>>>>>>>>> associated
->>>>>>>>>>>>>>> with this folio and the cow folio has smaller size than this folio,
->>>>>>>>>>>>>>> should we still
->>>>>>>>>>>>>>> mark this folio as lazyfree?
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> I agree, this is true. However, we've somehow accepted the fact that
->>>>>>>>>>>>>> folio_likely_mapped_shared
->>>>>>>>>>>>>> can result in false negatives or false positives to balance the
->>>>>>>>>>>>>> overhead.  So I really don't know :-)
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Maybe David and Vishal can give some comments here.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> BTW, do we need to rebase our work against David's changes[1]?
->>>>>>>>>>>>>>>> [1]
->>>>>>>>>>>>>>>> https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat.com/
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> Yes, we should rebase our work against David’s changes.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>>>> +       return nr_pages == folio_pte_batch(folio, addr, start_pte,
->>>>>>>>>>>>>>>>> +                                        ptep_get(start_pte), nr_pages,
->>>>>>>>>>>>>>>>> flags, NULL);
->>>>>>>>>>>>>>>>> +}
->>>>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>>>>      static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>>>>>>>>>>>>>>>                                     unsigned long end, struct mm_walk
->>>>>>>>>>>>>>>>> *walk)
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t *pmd,
->>>>>>>>>>>>>>>>> unsigned long addr,
->>>>>>>>>>>>>>>>>                      */
->>>>>>>>>>>>>>>>>                     if (folio_test_large(folio)) {
->>>>>>>>>>>>>>>>>                             int err;
->>>>>>>>>>>>>>>>> +                       unsigned long next_addr, align;
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> -                       if (folio_estimated_sharers(folio) != 1)
->>>>>>>>>>>>>>>>> -                               break;
->>>>>>>>>>>>>>>>> -                       if (!folio_trylock(folio))
->>>>>>>>>>>>>>>>> -                               break;
->>>>>>>>>>>>>>>>> +                       if (folio_estimated_sharers(folio) != 1 ||
->>>>>>>>>>>>>>>>> +                           !folio_trylock(folio))
->>>>>>>>>>>>>>>>> +                               goto skip_large_folio;
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> I don't think we can skip all the PTEs for nr_pages, as some of them
->>>>>>>>>>>>>>>> might be
->>>>>>>>>>>>>>>> pointing to other folios.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> for example, for a large folio with 16PTEs, you do MADV_DONTNEED(15-16),
->>>>>>>>>>>>>>>> and write the memory of PTE15 and PTE16, you get page faults, thus PTE15
->>>>>>>>>>>>>>>> and PTE16 will point to two different small folios. We can only skip
->>>>>>>>>>>>>>>> when we
->>>>>>>>>>>>>>>> are sure nr_pages == folio_pte_batch() is sure.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> Agreed. Thanks for pointing that out.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>>>> +                       align = folio_nr_pages(folio) * PAGE_SIZE;
->>>>>>>>>>>>>>>>> +                       next_addr = ALIGN_DOWN(addr + align, align);
->>>>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>>>> +                       /*
->>>>>>>>>>>>>>>>> +                        * If we mark only the subpages as lazyfree, or
->>>>>>>>>>>>>>>>> +                        * cannot mark the entire large folio as
->>>>>>>>>>>>>>>>> lazyfree,
->>>>>>>>>>>>>>>>> +                        * then just split it.
->>>>>>>>>>>>>>>>> +                        */
->>>>>>>>>>>>>>>>> +                       if (next_addr > end || next_addr - addr !=
->>>>>>>>>>>>>>>>> align ||
->>>>>>>>>>>>>>>>> +                           !can_mark_large_folio_lazyfree(addr, folio,
->>>>>>>>>>>>>>>>> pte))
->>>>>>>>>>>>>>>>> +                               goto split_large_folio;
->>>>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>>>> +                       /*
->>>>>>>>>>>>>>>>> +                        * Avoid unnecessary folio splitting if the
->>>>>>>>>>>>>>>>> large
->>>>>>>>>>>>>>>>> +                        * folio is entirely within the given range.
->>>>>>>>>>>>>>>>> +                        */
->>>>>>>>>>>>>>>>> +                       folio_clear_dirty(folio);
->>>>>>>>>>>>>>>>> +                       folio_unlock(folio);
->>>>>>>>>>>>>>>>> +                       for (; addr != next_addr; pte++, addr +=
->>>>>>>>>>>>>>>>> PAGE_SIZE) {
->>>>>>>>>>>>>>>>> +                               ptent = ptep_get(pte);
->>>>>>>>>>>>>>>>> +                               if (pte_young(ptent) ||
->>>>>>>>>>>>>>>>> pte_dirty(ptent)) {
->>>>>>>>>>>>>>>>> +                                       ptent =
->>>>>>>>>>>>>>>>> ptep_get_and_clear_full(
->>>>>>>>>>>>>>>>> +                                               mm, addr, pte,
->>>>>>>>>>>>>>>>> tlb->fullmm);
->>>>>>>>>>>>>>>>> +                                       ptent = pte_mkold(ptent);
->>>>>>>>>>>>>>>>> +                                       ptent = pte_mkclean(ptent);
->>>>>>>>>>>>>>>>> +                                       set_pte_at(mm, addr, pte,
->>>>>>>>>>>>>>>>> ptent);
->>>>>>>>>>>>>>>>> +                                       tlb_remove_tlb_entry(tlb, pte,
->>>>>>>>>>>>>>>>> addr);
->>>>>>>>>>>>>>>>> +                               }
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Can we do this in batches? for a CONT-PTE mapped large folio, you are
->>>>>>>>>>>>>>>> unfolding
->>>>>>>>>>>>>>>> and folding again. It seems quite expensive.
->>>>>>>>>>>>>
->>>>>>>>>>>>> I'm not convinced we should be doing this in batches. We want the initial
->>>>>>>>>>>>> folio_pte_batch() to be as loose as possible regarding permissions so
->>>>>>>>>>>>> that we
->>>>>>>>>>>>> reduce our chances of splitting folios to the min. (e.g. ignore SW bits
->>>>>>>>>>>>> like
->>>>>>>>>>>>> soft dirty, etc). I think it might be possible that some PTEs are RO and
->>>>>>>>>>>>> other
->>>>>>>>>>>>> RW too (e.g. due to cow - although with the current cow impl, probably not.
->>>>>>>>>>>>> But
->>>>>>>>>>>>> its fragile to assume that). Anyway, if we do an initial batch that ignores
->>>>>>>>>>>>> all
->>>>>>>>>>>>
->>>>>>>>>>>> You are correct. I believe this scenario could indeed occur. For instance,
->>>>>>>>>>>> if process A forks process B and then unmaps itself, leaving B as the
->>>>>>>>>>>> sole process owning the large folio.  The current wp_page_reuse() function
->>>>>>>>>>>> will reuse PTE one by one while the specific subpage is written.
->>>>>>>>>>>
->>>>>>>>>>> Hmm - I thought it would only reuse if the total mapcount for the folio
->>>>>>>>>>> was 1.
->>>>>>>>>>> And since it is a large folio with each page mapped once in proc B, I thought
->>>>>>>>>>> every subpage write would cause a copy except the last one? I haven't
->>>>>>>>>>> looked at
->>>>>>>>>>> the code for a while. But I had it in my head that this is an area we need to
->>>>>>>>>>> improve for mTHP.
->>>>>>>
->>>>>>> So sad I am wrong again 😢
->>>>>>>
->>>>>>>>>>
->>>>>>>>>> wp_page_reuse() will currently reuse a PTE part of a large folio only if
->>>>>>>>>> a single PTE remains mapped (refcount == 0).
->>>>>>>>>
->>>>>>>>> ^ == 1
->>>>>>>
->>>>>>> seems this needs improvement. it is a waste the last subpage can
->>>>>>
->>>>>> My take that is WIP:
->>>>>>
->>>>>> https://lore.kernel.org/all/20231124132626.235350-1-david@redhat.com/T/#u
->>>>>>
->>>>>>> reuse the whole large folio. i was doing it in a quite different way,
->>>>>>> if the large folio had only one subpage left, i would do copy and
->>>>>>> released the large folio[1]. and if i could reuse the whole large folio
->>>>>>> with CONT-PTE, i would reuse the whole large folio[2]. in mainline,
->>>>>>> we don't have this cont-pte luxury exposed to mm, so i guess we can
->>>>>>> not do [2] easily, but [1] seems to be an optimization.
->>>>>>
->>>>>> Yeah, I had essentially the same idea: just free up the large folio if most of
->>>>>> the stuff is unmapped. But that's rather a corner-case optimization, so I did
->>>>>> not proceed with that.
->>>>>>
->>>>>
->>>>> I'm not sure it's a corner case, really? - process forks, then both parent and
->>>>> child and write to all pages in what was previously a fully & contiguously
->>>>> mapped large folio?
->>>>
->>>> Well, with 2 MiB my assumption was that while it can happen, it's rather
->>>> rare. With smaller THP it might get more likely, agreed.
->>>>
->>>>>
->>>>> Reggardless, why is it an optimization to do the copy for the last subpage and
->>>>> syncrhonously free the large folio? It's already partially mapped so is on the
->>>>> deferred split list and can be split if memory is tight.
->>>
->>> we don't want reclamation overhead later. and we want memories immediately
->>> available to others.
->>
->> But by that logic, you also don't want to leave the large folio partially mapped
->> all the way until the last subpage is CoWed. Surely you would want to reclaim it
->> when you reach partial map status?
-> 
-> To some extent, I agree. But then we will have two many copies. The last
-> subpage is small, and a safe place to copy instead.
-> 
-> We actually had to tune userspace to decrease partial map as too much
-> partial map both unfolded CONT-PTE and wasted too much memory. if a
-> vma had too much partial map, we disabled mTHP on this VMA.
+Currently getsockopt does not support PACKET_COPY_THRESH,
+and we are unable to get the value of PACKET_COPY_THRESH
+socket option through getsockopt.
 
-I actually had a whacky idea around introducing selectable page size ABI
-per-process that might help here. I know Android is doing work to make the
-system 16K page compatible. You could run most of the system processes with 16K
-ABI on top of 4K kernel. Then those processes don't even have the ability to
-madvise/munmap/mprotect/mremap anything less than 16K alignment so that acts as
-an anti-fragmentation mechanism while allowing non-16K capable processes to run
-side-by-side. Just a passing thought...
+This patch adds getsockopt support for PACKET_COPY_THRESH.
 
-> 
->>
->>> reclamation will always cause latency and affect User
->>> experience. split_folio is not cheap :-)
->>
->> But neither is memcpy(4K) I'd imagine. But I get your point.
-> 
-> In a real product scenario, we need to consider the success rate of
-> allocating large folios.
-> Currently, it's only 7%, as reported here[1], with no method to keep
-> large folios intact in a
-> buddy system.
+In addition, this patch converts access to copy_thresh to
+READ_ONCE/WRITE_ONCE.
 
-Yes I saw that email - interesting. Is that 7% number for the Oppo
-implementation or upstream implementation? (I think Oppo?). Do you know how the
-other one compares (my guess is that upstream isn't complete enough yet to give
-viable numbers)? And I'm guessing you are running on a kernel/fs that doesn't
-support large folios in the page cache? What about large folio swap? My feeling
-is that once we have all these features, that number should significantly
-increase because you can create a system that essentially uses large quantities
-of a couple of sizes of page (e.g. 4K & (16K | 64K)) and fragmentation will be
-less of a problem. Perhaps that's wishful thinking though.
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+V2 -> V3: Fix pdiag_put_info().
 
-> 
-> Yu's TAO[2] chose to release the large folio entirely after copying
-> the mapped parts
-> onto smaller folios in vmscan,
+V1 -> V2: Use READ_ONCE/WRITE_ONCE.
 
-Yes, TAO looks very interesting! It essentially partitions the memory IIUC?
+ net/packet/af_packet.c | 7 +++++--
+ net/packet/diag.c      | 2 +-
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-> 
-> [1] https://lore.kernel.org/linux-mm/20240305083743.24950-1-21cnbao@gmail.com/
-> [2] https://lore.kernel.org/linux-mm/20240229183436.4110845-1-yuzhao@google.com/
-> 
->>
->>> if the number of this kind of
->>> large folios
->>> is huge, the waste can be huge for some while.
->>>
->>> it is not a corner case for large folio swap-in. while someone writes
->>> one subpage, I swap-in a large folio, wp_reuse will immediately
->>> be called. This can cause waste quite often. One outcome of this
->>> discussion is that I realize I should investigate this issue immediately
->>> in the swap-in series as my off-tree code has optimized reuse but
->>> mainline hasn't.
->>>
->>>>
->>>> At least for 2 MiB THP, it might make sense to make that large folio
->>>> available immediately again, even without memory pressure. Even
->>>> compaction would not compact it.
->>>
->>> It is also true for 64KiB. as we want other processes to allocate
->>> 64KiB successfully as much as possible, and reduce the rate of
->>> falling back to small folios. by releasing 64KiB directly to buddy
->>> rather than splitting and returning 15*4KiB in shrinker, we reduce
->>> buddy fragmentation too.
->>>
->>>>
->>>> --
->>>> Cheers,
->>>>
->>>> David / dhildenb
-> 
-> Thanks
-> Barry
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 0db31ca4982d..61270826b9ac 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -2318,7 +2318,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
+ 	}
+ 	if (po->tp_version <= TPACKET_V2) {
+ 		if (macoff + snaplen > po->rx_ring.frame_size) {
+-			if (po->copy_thresh &&
++			if (READ_ONCE(po->copy_thresh) &&
+ 			    atomic_read(&sk->sk_rmem_alloc) < sk->sk_rcvbuf) {
+ 				if (skb_shared(skb)) {
+ 					copy_skb = skb_clone(skb, GFP_ATOMIC);
+@@ -3836,7 +3836,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, sockptr_t optval,
+ 		if (copy_from_sockptr(&val, optval, sizeof(val)))
+ 			return -EFAULT;
+ 
+-		pkt_sk(sk)->copy_thresh = val;
++		WRITE_ONCE(pkt_sk(sk)->copy_thresh, val);
+ 		return 0;
+ 	}
+ 	case PACKET_VERSION:
+@@ -4090,6 +4090,9 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
+ 	case PACKET_VNET_HDR_SZ:
+ 		val = READ_ONCE(po->vnet_hdr_sz);
+ 		break;
++	case PACKET_COPY_THRESH:
++		val = READ_ONCE(pkt_sk(sk)->copy_thresh);
++		break;
+ 	case PACKET_VERSION:
+ 		val = po->tp_version;
+ 		break;
+diff --git a/net/packet/diag.c b/net/packet/diag.c
+index b3bd2f6c2bf7..47f69f3dbf73 100644
+--- a/net/packet/diag.c
++++ b/net/packet/diag.c
+@@ -17,7 +17,7 @@ static int pdiag_put_info(const struct packet_sock *po, struct sk_buff *nlskb)
+ 	pinfo.pdi_index = po->ifindex;
+ 	pinfo.pdi_version = po->tp_version;
+ 	pinfo.pdi_reserve = po->tp_reserve;
+-	pinfo.pdi_copy_thresh = po->copy_thresh;
++	pinfo.pdi_copy_thresh = READ_ONCE(po->copy_thresh);
+ 	pinfo.pdi_tstamp = READ_ONCE(po->tp_tstamp);
+ 
+ 	pinfo.pdi_flags = 0;
+-- 
+2.39.2
 
 
