@@ -1,238 +1,125 @@
-Return-Path: <linux-kernel+bounces-97172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32CAE876674
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 505D3876683
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:43:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCFC12836F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:38:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05756281767
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA6C1852;
-	Fri,  8 Mar 2024 14:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDF11FBA;
+	Fri,  8 Mar 2024 14:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="AMkyxkhp"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FXlU7QKk"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621271C10;
-	Fri,  8 Mar 2024 14:38:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111431FB3
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709908702; cv=none; b=e60bnYYML0YEgFvAaM7/mEn5thMb7A3IJRkAyaTRHe33dyCVzmvinIaIEoYd2oaVTl9Sya3xkFNx7Njs9BZ9VKJYeEuJhsgVuvptOsNIGTv9ftXwtNdeQNYEpLmLgZ22SqLFAQhh9qVOpRR3n3sqXGrIs7MkCDllB3MepTL+doE=
+	t=1709909030; cv=none; b=pFsMiF9VVzQu26Ix/KC82e1yRzZI3Q/fYPJtpeAsi7aysees4/ALvsbRJiyKjGskPHMQE0H20VlWubV+LWFDhFAORc1IU0ABUbAGNbr40E8zclg6k8Ab0yYvKZH9fK9UHPawJ6GODVn0uowf1h7jHVujo2KNqxekjI6wvRubi1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709908702; c=relaxed/simple;
-	bh=AWU8JZzww9lm6MMcdbopN83Emhpz7ZofASAw35I91Rs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=el40jgx4a9viN94tIXm7t+CtdfgUCUi4ZsB2d8IvAkIFRrV/C06kXSU0ts5p8oAWkQHclHU+HwEA30tZh3n6WmPCcS9bRKmzo/+KONm4UuvUso9InzajHUqdEwLM5qP+794Q5hy+Yonc821ejjzbGzR7EpV5N7kX1C0koqjDrj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=AMkyxkhp; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5e42b4bbfa4so614424a12.1;
-        Fri, 08 Mar 2024 06:38:20 -0800 (PST)
+	s=arc-20240116; t=1709909030; c=relaxed/simple;
+	bh=7iffp7NKdMt6+1LEyhqfNIQkXZGhElssFGA20qTN1jY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P+gMEzQOU/EJBXUeZV4C6hkvbGZXXDfGGRW9P/GPe+Fm+rmRHvjAHtBvRxXYxm7JN5IE4OF/UsgOG3QT9tvS12rpnxBJv5vP+OrWrnd0/aEi3sMHvlgSavO/tdZgytCXiAjxYbvZ521NlJV2WqMbGq5LDLIwV5D3mTFWY7PJfM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FXlU7QKk; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd59b95677so7005435ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 06:43:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709909027; x=1710513827; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rfUzWRFLFY+rkoyDqY8l5et5GO0+hQpyzOAN51RCdxI=;
+        b=FXlU7QKk9JUuIL2pXoUyZ76KKYTjv3zud2xJ91W9tjP4QcxI9k79VtMNpZSWaEVvR/
+         w4sg5VKTwb0F41rm8jsQv3F9EWfB227cF7w2tA5kKMGrOThijNKuVSpiCgGChJMKa5k9
+         V0ZLR3SwBwH33GU/vVLRmcqkQB/ljoxw/4900=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709908699; x=1710513499;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+L02QjpMQRZ069rkHNYFfs2NyDQEigdeN50RLq0y49c=;
-        b=LfjR1hyyRg/668taFQ345FxdZA6neNxN1ifHaPRY0xhUJt2cM+KJcBnY1idLW3V3OX
-         uqOmWwbYJ6Z3vHGQUHZud1Rz3rJDOXjFZWfd6ezpgZZ0xnfD0GBP4r5cGe+2HK1aLzLg
-         le9bEmQNc2KT3y3NDezPskXGo66wygGLlVoVd6/1FdQ+9hdw2ulb/wGV3CSzzhpDlAat
-         aByfBemQ436MyyrwSlBRxEukhXG0Rq64w68VCYwmkDcX3dVNfqdnjaLJIka9A3CRcWNR
-         10Z6rrk45Es2PaWXbg7bi2NStYdt1sanPcXtP127a2mclh9pYjC8/h1BcvHocMesaoua
-         +D7g==
-X-Forwarded-Encrypted: i=1; AJvYcCUauDwvUjmX4stuWKXCXoJPBTJrgJmCjBnhkk0jOncSVAL/4SyKo+zhAgUc4mxSfhPrAs4TlgnBCFBXS9OAOUi8TybCiYX2xMXEoV6q4AF0HdM8B5dVu2XBCgfk0CxArDDzGtNREz4BTg==
-X-Gm-Message-State: AOJu0Yzyw9pUMZYiJLdj+sbhopdb0FjMoPVg4If7fZQd4F/CMjtWbdew
-	04KIH4OMcBWY3cwMJKl9MiWsi7yQqMSai6VEVaEGjq/svSd9raRnueLXwI95DrQZfg==
-X-Google-Smtp-Source: AGHT+IGd9CcgNL4AyW+WdK1pSzf58ougf2hPga9oEH4y7yiPLhfFX9Y6k+Hn9V1sgO0e8Mce7n34ng==
-X-Received: by 2002:a05:6a20:2e26:b0:1a1:4b57:4e9b with SMTP id be38-20020a056a202e2600b001a14b574e9bmr8979143pzb.60.1709908699406;
-        Fri, 08 Mar 2024 06:38:19 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id s68-20020a635e47000000b005b458aa0541sm14184838pgb.15.2024.03.08.06.38.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 06:38:18 -0800 (PST)
-Date: Fri, 8 Mar 2024 11:38:14 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709908697;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+L02QjpMQRZ069rkHNYFfs2NyDQEigdeN50RLq0y49c=;
-	b=AMkyxkhp27aNrIpRbxDO2+so1h6RG8mwZo2r2cRTZlI5s3Htzy4B5Gd8KGyIgOGp+9LJ0R
-	v7cP1ifymhhZw2/CYPzi8y9ucatTr7hBe26TweqWUynh0dveVG2pOgyPAyg44H661ux84f
-	A5X9LxVCtOYCW59y9bKuXYG9o8PumUXw5gPgbDDV5tBZtn1/bBuKM9EkT3sFdytjNj9Aon
-	FHqX4OdDba8go4W+smrmBPbf0e7GKwkMtas0xvBnGkbc+A8Fe2s8VkAFI7eEnXD5T6vbo+
-	jXodc4j19vm8VpPSUhtlR/FEAkfD6W9VkqMQP+HDzFbER/NiNUiUYxGtVkoZ1A==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Harald Freudenberger <freude@linux.ibm.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/6] s390: zcrypt: make zcrypt_class constant
-Message-ID: <nh5d7ock5gb4zttfmq354si3iewm4u2zxqquzg3erl55jxjhuo@5yveroq4li4s>
-References: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
- <20240305-class_cleanup-s390-v1-1-c4ff1ec49ffd@marliere.net>
- <84263def1d38584cd83558a33bb52f22@linux.ibm.com>
+        d=1e100.net; s=20230601; t=1709909027; x=1710513827;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rfUzWRFLFY+rkoyDqY8l5et5GO0+hQpyzOAN51RCdxI=;
+        b=ClZXbrgC8/r5z9sPwdCwDnLm9k3fF+U2y5JXVDqhqDd5rBpv+3XDZTdABgTs55dRYz
+         c917MVrGmqeVy+joHvE/BLyPHu6KtuU+hw0i1bDN1A1gfw0879KEY+5Pq+TYhhreXaO8
+         vT8OGDQlL9fx5ROoj/0vWfUiuHi5emHgvR0Qd+qUIzBd4+aCJR6Ig21E0QYt4CLiqQCI
+         vBqc3L0M0VvYfZMoiHbLgmyijdTTT9ggxPaphxoKCzy26d7wnrU4cKrCLNjfHiLfDMq5
+         rKz79d/kj/AzhokRDfJ4OX0rhTy+oFL1BCm+zLh5xNsGrbjN2CEY5U6S54xdTwZQObJi
+         fu1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVVs9GkFRTs8IbY6Ox23MX8/gj+jNdxXDKedxdKHOqLSsrM68Gdua6e6qvVqh2oCuDN6qFlXj7b4O6otWSonF5DxNlP3kYpRLUgAodt
+X-Gm-Message-State: AOJu0YzCz2vAb/+L1Y6wgCwMG4DteO05B3mUqGiZzyNM1jXUam1YN7W2
+	aVYNaT5Qa7mB4f5a15Py4EpA24/xd8c668SlxZYHx04w/B9pKhILEbt3qB+QZcL6ba4nuRrQOCs
+	=
+X-Google-Smtp-Source: AGHT+IF22nCE/5BMCU7u7q9aD6FHyQy8M5CmnolpLHpneCyRIjZCVnrDevt0y3LoglW8RLm8PjzuDw==
+X-Received: by 2002:a17:902:7845:b0:1db:51ee:8677 with SMTP id e5-20020a170902784500b001db51ee8677mr10129579pln.59.1709909027616;
+        Fri, 08 Mar 2024 06:43:47 -0800 (PST)
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com. [209.85.214.176])
+        by smtp.gmail.com with ESMTPSA id u11-20020a170903124b00b001db2b8b2da7sm16230140plh.122.2024.03.08.06.43.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 06:43:47 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dcd07252d9so123125ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 06:43:47 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW2VGxShmyR/JBE9e0b5ys0vvvYLHO/0OZWjob0+LpUKJdBpa0Po0bmx9Ri/Y0CBlHOU6rgvBJmOBKZdUsXkgwcTNi5hGFTI2htgoyS
+X-Received: by 2002:a05:622a:1a25:b0:42e:b6df:819d with SMTP id
+ f37-20020a05622a1a2500b0042eb6df819dmr680036qtb.24.1709908714154; Fri, 08 Mar
+ 2024 06:38:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84263def1d38584cd83558a33bb52f22@linux.ibm.com>
+References: <20240307230653.1807557-1-hsinyi@chromium.org> <20240307230653.1807557-3-hsinyi@chromium.org>
+ <87jzmduoy8.fsf@intel.com>
+In-Reply-To: <87jzmduoy8.fsf@intel.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 8 Mar 2024 06:38:18 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VsTq_Yy14n5Ygbxqn4pnguG3wC2AQforP8vdX-Wgn0Dw@mail.gmail.com>
+Message-ID: <CAD=FV=VsTq_Yy14n5Ygbxqn4pnguG3wC2AQforP8vdX-Wgn0Dw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/5] drm/edid: Add a function to match EDID with identity
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On  8 Mar 15:19, Harald Freudenberger wrote:
-> On 2024-03-05 12:25, Ricardo B. Marliere wrote:
-> > Since commit 43a7206b0963 ("driver core: class: make class_register()
-> > take
-> > a const *"), the driver core allows for struct class to be in read-only
-> > memory, so move the zcrypt_class structure to be declared at build time
-> > placing it into read-only memory, instead of having to be dynamically
-> > allocated at boot time.
-> > 
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > ---
-> >  drivers/s390/crypto/zcrypt_api.c | 33 +++++++++++++++++----------------
-> >  1 file changed, 17 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/s390/crypto/zcrypt_api.c
-> > b/drivers/s390/crypto/zcrypt_api.c
-> > index e8742757085b..d0358bb6ccf2 100644
-> > --- a/drivers/s390/crypto/zcrypt_api.c
-> > +++ b/drivers/s390/crypto/zcrypt_api.c
-> > @@ -116,7 +116,11 @@ EXPORT_SYMBOL(zcrypt_msgtype);
-> > 
-> >  struct zcdn_device;
-> > 
-> > -static struct class *zcrypt_class;
-> > +static void zcdn_device_release(struct device *dev);
-> > +static const struct class zcrypt_class = {
-> > +	.name = ZCRYPT_NAME,
-> > +	.dev_release = zcdn_device_release,
-> > +};
-> >  static dev_t zcrypt_devt;
-> >  static struct cdev zcrypt_cdev;
-> > 
-> > @@ -139,7 +143,7 @@ static int zcdn_destroy(const char *name);
-> >   */
-> >  static inline struct zcdn_device *find_zcdndev_by_name(const char
-> > *name)
-> >  {
-> > -	struct device *dev = class_find_device_by_name(zcrypt_class, name);
-> > +	struct device *dev = class_find_device_by_name(&zcrypt_class, name);
-> > 
-> >  	return dev ? to_zcdn_dev(dev) : NULL;
-> >  }
-> > @@ -151,7 +155,7 @@ static inline struct zcdn_device
-> > *find_zcdndev_by_name(const char *name)
-> >   */
-> >  static inline struct zcdn_device *find_zcdndev_by_devt(dev_t devt)
-> >  {
-> > -	struct device *dev = class_find_device_by_devt(zcrypt_class, devt);
-> > +	struct device *dev = class_find_device_by_devt(&zcrypt_class, devt);
-> > 
-> >  	return dev ? to_zcdn_dev(dev) : NULL;
-> >  }
-> > @@ -405,7 +409,7 @@ static int zcdn_create(const char *name)
-> >  		goto unlockout;
-> >  	}
-> >  	zcdndev->device.release = zcdn_device_release;
-> > -	zcdndev->device.class = zcrypt_class;
-> > +	zcdndev->device.class = &zcrypt_class;
-> >  	zcdndev->device.devt = devt;
-> >  	zcdndev->device.groups = zcdn_dev_attr_groups;
-> >  	if (name[0])
-> > @@ -2067,12 +2071,9 @@ static int __init zcdn_init(void)
-> >  	int rc;
-> > 
-> >  	/* create a new class 'zcrypt' */
-> > -	zcrypt_class = class_create(ZCRYPT_NAME);
-> > -	if (IS_ERR(zcrypt_class)) {
-> > -		rc = PTR_ERR(zcrypt_class);
-> > +	rc = class_register(&zcrypt_class);
-> > +	if (rc)
-> >  		goto out_class_create_failed;
-> > -	}
-> > -	zcrypt_class->dev_release = zcdn_device_release;
-> > 
-> >  	/* alloc device minor range */
-> >  	rc = alloc_chrdev_region(&zcrypt_devt,
-> > @@ -2088,35 +2089,35 @@ static int __init zcdn_init(void)
-> >  		goto out_cdev_add_failed;
-> > 
-> >  	/* need some class specific sysfs attributes */
-> > -	rc = class_create_file(zcrypt_class, &class_attr_zcdn_create);
-> > +	rc = class_create_file(&zcrypt_class, &class_attr_zcdn_create);
-> >  	if (rc)
-> >  		goto out_class_create_file_1_failed;
-> > -	rc = class_create_file(zcrypt_class, &class_attr_zcdn_destroy);
-> > +	rc = class_create_file(&zcrypt_class, &class_attr_zcdn_destroy);
-> >  	if (rc)
-> >  		goto out_class_create_file_2_failed;
-> > 
-> >  	return 0;
-> > 
-> >  out_class_create_file_2_failed:
-> > -	class_remove_file(zcrypt_class, &class_attr_zcdn_create);
-> > +	class_remove_file(&zcrypt_class, &class_attr_zcdn_create);
-> >  out_class_create_file_1_failed:
-> >  	cdev_del(&zcrypt_cdev);
-> >  out_cdev_add_failed:
-> >  	unregister_chrdev_region(zcrypt_devt, ZCRYPT_MAX_MINOR_NODES);
-> >  out_alloc_chrdev_failed:
-> > -	class_destroy(zcrypt_class);
-> > +	class_unregister(&zcrypt_class);
-> >  out_class_create_failed:
-> >  	return rc;
-> >  }
-> > 
-> >  static void zcdn_exit(void)
-> >  {
-> > -	class_remove_file(zcrypt_class, &class_attr_zcdn_create);
-> > -	class_remove_file(zcrypt_class, &class_attr_zcdn_destroy);
-> > +	class_remove_file(&zcrypt_class, &class_attr_zcdn_create);
-> > +	class_remove_file(&zcrypt_class, &class_attr_zcdn_destroy);
-> >  	zcdn_destroy_all();
-> >  	cdev_del(&zcrypt_cdev);
-> >  	unregister_chrdev_region(zcrypt_devt, ZCRYPT_MAX_MINOR_NODES);
-> > -	class_destroy(zcrypt_class);
-> > +	class_unregister(&zcrypt_class);
-> >  }
-> > 
-> >  /*
-> 
-> Thanks Ricardo, nice work.
-> The only thing I would do is to rename the label "out_class_create_failed"
-> with "out_class_register_failed".
+Hi,
 
-Ah, indeed. Thanks for catching that. I will wait for more feedback on
-the other patches and send a v2 if required.
+On Fri, Mar 8, 2024 at 12:07=E2=80=AFAM Jani Nikula <jani.nikula@linux.inte=
+l.com> wrote:
+>
+> On Thu, 07 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> > Create a type drm_edid_ident as the identity of an EDID. Currently it
+> > contains panel id and monitor name.
+> >
+> > Create a function that can match a given EDID and an identity:
+> > 1. Reject if the panel id doesn't match.
+> > 2. If name is not null in identity, try to match it in the detailed tim=
+ing
+> >    blocks. Note that some panel vendors put the monitor name after
+> >    EDID_DETAIL_MONITOR_STRING.
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+>
+> The series seems good to go. Thanks Hsin-Yi and Douglas for the
+> constructive collaboration! I believe the end result is better now.
 
-> 
-> Who will pick this patch? As this is part of a bundle of fixes, Richardo
-> do you have a way to push this into the kernel? Otherwise as the AP/zcrypt
-> maintainer I would pick only this patch and forward it to the s390
-> subsystem.
+Thanks! Unless there are any objections in the meantime, I'll plan to
+apply the whole series to drm-misc-next late next week.
 
-I have no ways of pushing this, sorry. The series is based on
-s390/linux.git/for-next, so perhaps the s390 maintainers can pick this
-one along with the others with your Acked-by: provided? :) 
-
-Thank you,
--	Ricardo.
-
-
-> 
-> Acked-by: Harald Freudenberger <freude@linux.ibm.com>
-> 
+-Doug
 
