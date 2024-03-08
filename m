@@ -1,135 +1,167 @@
-Return-Path: <linux-kernel+bounces-96444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B53875C4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:18:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DDC0875C4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F03AB21F9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:18:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AC921F21F47
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B12A23757;
-	Fri,  8 Mar 2024 02:18:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114B72377D;
+	Fri,  8 Mar 2024 02:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PHK59pfb"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xwaUisIj"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA3E139F;
-	Fri,  8 Mar 2024 02:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D54C1D546
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 02:18:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709864325; cv=none; b=N8juqPV/s3lJyAxtJaSMOnCZfGPnZF5suexejcr1ZQpeSCNHRBARXfQfD4ociZjakUajeQGGJ1UljH2gMIOsmfpmE+XT3GyQwRVE0k/lwwkDPX3+VUgh15oa20s/zyGPPW12amf705qud+SxUFMPgL3Up9wqvJoHuqS0IPf9Gz4=
+	t=1709864326; cv=none; b=YyEHAMW8yDm9ekVuQstIOdVgC4zpE4vCGQfGEVusdGOeB9fw4oy/AEqi1EFuIf/jGwltuuciCqcz2OCWfEAIuT73tyxdvrqDy40qDHN9hfCHiElhf8cZiVKXunMH81bAeLJ4NeVRVuIZpmkmOTuZeOn4yKLKSy/B75ED9JLHeoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709864325; c=relaxed/simple;
-	bh=bywYpKyGb8Sirxl0IhlArhlGMgpB8tAblYWIh3Sho5w=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=P4lCfQ5z4AERtStWI3R7RKa+tfXcF/4zgZx90ruv6TtWWTo/v0bQGbZko/EyqUtHVgp91Kuh4yTM9HJly7GBuh1sk6o9p9J3DkOq4gntBMIj48zE05wk4Hl4qKpeO2YTlL5KjZTWxX5GuWq0E1hDF22I83PAj6MljCFIngt5vMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PHK59pfb; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4281If8J004043;
-	Fri, 8 Mar 2024 02:18:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=W39k49f
-	Y0eK5MNpdhOpAeNh7xbdfZg2QC+MT/mSBsiQ=; b=PHK59pfbc1nl4EUDl/cY+ev
-	Yq7xyDRpTPfIWGbB2guZ+1ijWiR+QeoLXw98vAlq6CHrAu6/FesDF8s5xf/UUgjd
-	AfBc9XBxcA89z708zpYpVDT+6OI/C+GgQdoDCR+ClbaN1uj8PfQ3gKQwhPu2bocD
-	oa6KMwdCrlKVvYT1YExsmPCEGk656tGG7gej3lnn+eOZhT8jwDMcws1DDHy4WHsj
-	zzAuHvDANUf6Ao7+Z9/Cv1tXgmnl7d2YxsnxL3yRJpGNMoXxz7Q0KAGK/vMCrjmZ
-	rapfaxMIelD78Awx7ptmwSn7SaAwcebnl6XFm0dYstzB9tTr91WzRn7sab7YUxQ=
-	=
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqn8n8gny-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 02:18:32 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4282IVSv016858
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 8 Mar 2024 02:18:31 GMT
-Received: from maow2-gv.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 7 Mar 2024 18:18:29 -0800
-From: Kassey Li <quic_yingangl@quicinc.com>
-To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-        <mathieu.desnoyers@efficios.com>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-CC: <quic_yingangl@quicinc.com>
-Subject: [PATCH v2] workqueue: add function in event of workqueue_activate_work
-Date: Fri, 8 Mar 2024 10:18:18 +0800
-Message-ID: <20240308021818.2306176-1-quic_yingangl@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709864326; c=relaxed/simple;
+	bh=nEwH4yfP4vqXQbZOO7lJhENGHFgNWar4jxiwuKlg7Us=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IN3j0SFGA5wOfuQ08+2Xc7Y8Ei8avbXW2rCFuxK+fZPPDFyOHTq1jcTezld+GoeimEfYPelxkZ9VHUcPUVUIlcvQp3lPgslEWnlpjlrz2uT3FoTTI6TujwVf00IgJMLozwYtkLgr034k3tpS0TYxmHKsFfDCqfYiGHXRSnjDzFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xwaUisIj; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 7 Mar 2024 21:18:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709864322;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tLxjIs8f/lnLvJoE5R+baInSbYa4ox3iynZ8gnuCrEc=;
+	b=xwaUisIjy/cj/mNY5MLxtwBhEG+kOE1pjEA/ITKL9zJkd1mSJn+xQYI5JqbQOfa4gbNHgn
+	1ksclDjfKdRKb4o4L2cZk0h7fCDoXvtJYCe2Q6N4X5LJLmeqpMHYaoiJ405iBpFwbD4lfD
+	9N8Kgm9ey0EY6ip0U8RY72DRjLzPCAw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Hongbo Li <lihongbo22@huawei.com>, Brian Foster <bfoster@redhat.com>, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] bcachefs: chardev: make bch_chardev_class constant
+Message-ID: <5odqpww3sjv6ffj3hpmhx25q4fdacstfr5qn7seb3mwrclynpi@drhj7xa2cfyj>
+References: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
+ <d1209aa3-b8d4-4509-9689-4882bc079ffd@huawei.com>
+ <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: tmbZ4J3a6OyeZu8ZJMcomtVxBBmTs2FI
-X-Proofpoint-ORIG-GUID: tmbZ4J3a6OyeZu8ZJMcomtVxBBmTs2FI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_01,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- adultscore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=880 bulkscore=0 phishscore=0 impostorscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403080017
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
+X-Migadu-Flow: FLOW_OUT
 
-The trace event "workqueue_activate_work" only print work struct.
-However, function is the region of interest in a full sequence of work.
-Current workqueue_activate_work trace event output:
+On Wed, Mar 06, 2024 at 08:50:04AM -0300, Ricardo B. Marliere wrote:
+> On  6 Mar 09:23, Hongbo Li wrote:
+> > On 2024/3/6 4:21, Ricardo B. Marliere wrote:
+> > > Since commit 43a7206b0963 ("driver core: class: make class_register() take
+> > > a const *"), the driver core allows for struct class to be in read-only
+> > > memory, so move the bch_chardev_class structure to be declared at build
+> > > time placing it into read-only memory, instead of having to be dynamically
+> > > allocated at boot time.
+> > > 
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > > ---
+> > >   fs/bcachefs/chardev.c | 23 ++++++++++++-----------
+> > >   1 file changed, 12 insertions(+), 11 deletions(-)
+> > > 
+> > > diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+> > > index 226b39c17667..af587453fd3d 100644
+> > > --- a/fs/bcachefs/chardev.c
+> > > +++ b/fs/bcachefs/chardev.c
+> > > @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
+> > >   };
+> > >   
+> > >   static int bch_chardev_major;
+> > > -static struct class *bch_chardev_class;
+> > > +static const struct class bch_chardev_class = {
+> > > +	.name = "bcachefs",
+> > > +};
+> > >   static struct device *bch_chardev;
+> > >   
+> > >   void bch2_fs_chardev_exit(struct bch_fs *c)
+> > > @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
+> > >   	if (c->minor < 0)
+> > >   		return c->minor;
+> > >   
+> > > -	c->chardev = device_create(bch_chardev_class, NULL,
+> > > +	c->chardev = device_create(&bch_chardev_class, NULL,
+> > >   				   MKDEV(bch_chardev_major, c->minor), c,
+> > >   				   "bcachefs%u-ctl", c->minor);
+> > >   	if (IS_ERR(c->chardev))
+> > > @@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
+> > >   
+> > >   void bch2_chardev_exit(void)
+> > >   {
+> > > -	if (!IS_ERR_OR_NULL(bch_chardev_class))
+> > > -		device_destroy(bch_chardev_class,
+> > > -			       MKDEV(bch_chardev_major, U8_MAX));
+> > > -	if (!IS_ERR_OR_NULL(bch_chardev_class))
+> > > -		class_destroy(bch_chardev_class);
+> > > +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
+> > > +	class_unregister(&bch_chardev_class);
+> > >   	if (bch_chardev_major > 0)
+> > >   		unregister_chrdev(bch_chardev_major, "bcachefs");
+> > >   }
+> > >   
+> > >   int __init bch2_chardev_init(void)
+> > >   {
+> > > +	int ret;
+> > > +
+> > >   	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
+> > >   	if (bch_chardev_major < 0)
+> > >   		return bch_chardev_major;
+> > >   
+> > > -	bch_chardev_class = class_create("bcachefs");
+> > > -	if (IS_ERR(bch_chardev_class))
+> > > -		return PTR_ERR(bch_chardev_class);
+> > > +	ret = class_register(&bch_chardev_class);
+> > > +	if (ret)
+> > Here, I think you should call class_unregister to relase resource which 
+> > allocated before. And the same thing shoud be done in other exception exit.
+> 
+> Hi Hongbo,
+> 
+> Thank you for the feedback. Did you mean that bch_chardev_major should
+> be unregistered if the class_register() call fails? Because if it does,
+> there is no need to call class_unregister().
 
-    workqueue_activate_work: work struct ffffff88b4a0f450
+Hongbo is correct, if bch2_chardev_init() fails it needs to clean up
+anything it did.
 
-With this change, workqueue_activate_work will print the function name,
-align with workqueue_queue_work/execute_start/execute_end event.
-
-    workqueue_activate_work: work struct ffffff80413a78b8 function=vmstat_update
-
-Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
----
-Changelog:
-v1: https://lore.kernel.org/all/20240308010929.1955339-1-quic_yingangl@quicinc.com/
-v1->v2:
-- do not follow checkpatch in TRACE_EVENT() macros
-- add sample "workqueue_activate_work: work struct ffffff80413a78b8 function=vmstat_update"
----
- include/trace/events/workqueue.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/include/trace/events/workqueue.h b/include/trace/events/workqueue.h
-index 262d52021c23..6ef5b7254070 100644
---- a/include/trace/events/workqueue.h
-+++ b/include/trace/events/workqueue.h
-@@ -64,13 +64,15 @@ TRACE_EVENT(workqueue_activate_work,
- 
- 	TP_STRUCT__entry(
- 		__field( void *,	work	)
-+		__field( void *,	function)
- 	),
- 
- 	TP_fast_assign(
- 		__entry->work		= work;
-+		__entry->function	= work->func;
- 	),
- 
--	TP_printk("work struct %p", __entry->work)
-+	TP_printk("work struct %p function=%ps ", __entry->work, __entry->function)
- );
- 
- /**
--- 
-2.25.1
-
+> 
+> > > +		return ret;
+> > >   
+> > > -	bch_chardev = device_create(bch_chardev_class, NULL,
+> > > +	bch_chardev = device_create(&bch_chardev_class, NULL,
+> > >   				    MKDEV(bch_chardev_major, U8_MAX),
+> > >   				    NULL, "bcachefs-ctl");
+> > >   	if (IS_ERR(bch_chardev))
+> > like here..
+> 
+> Can you please elaborate?
+> 
+> Best regards,
+> -	Ricardo.
+> 
+> 
+> > > 
+> > > ---
+> > > base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+> > > change-id: 20240305-bcachefs-27a4bb8b9f4f
+> > > 
+> > > Best regards,
 
