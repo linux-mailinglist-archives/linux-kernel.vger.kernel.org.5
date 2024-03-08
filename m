@@ -1,320 +1,92 @@
-Return-Path: <linux-kernel+bounces-96513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9514875D57
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:58:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B8E2875D64
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:01:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2468FB21E9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:58:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1254B22A97
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:01:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6164D32C96;
-	Fri,  8 Mar 2024 04:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA23D37171;
+	Fri,  8 Mar 2024 05:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="WHOLKf9i"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TXo6oWW2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A9C32C89
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 04:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEA12E85A;
+	Fri,  8 Mar 2024 05:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709873876; cv=none; b=n+Ba3TxeQqSWqFW59hk4sadfG/zxfT9kfRYRJgcQ7TCFP+cR0LGKRLideummQQNquOszfHR5ifmDzvy+mhb7QX/JI6rPE+k6nGPtevOh2bWOMBbRb1fTeqhFuWDFb2n9RMkMuuVFtfcB59a4+aFC/rELmnTskPkdixsr264T79s=
+	t=1709874038; cv=none; b=m0Z9Nazr9EqF973vn060Z4pNOtOIYgy8rPUzVZi9H6T39wWlQFsJMnt5gYeIFTgw6Oog2TeUhAImig2inmZ8RR9o4GLqHD3t0ZDe1/F7aiSgKqp0K3R36Z291TCzJBSDidPka0bhomO0nrr+3amIaYdCPMGwz83IJ/OwcMRxymI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709873876; c=relaxed/simple;
-	bh=YHgLhGo9u/GaA4wjmsG1D7h2kk3KAbiuEeepwyKoTyA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bYv9KJlkRgspkfFQJ1/DiAFZaXcnLqLK4vuq1dNvmdqNgzMjtXUdUU4TbGbEbRbQA5634EDxxLkWQ4vkjcgPNCjqGmZE8LJTo9YwKqE1zePxe35DJ5fG08GYUSRO6Xe3KyEmyrUFcvd9g4DuQ6qp2BKIDtUBBAT/QsmucX3nw9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=WHOLKf9i; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a14d7f0e66so801293eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 20:57:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1709873872; x=1710478672; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hd5eSIOo7us1LbsNzpdstrnvo/0BBPJxonyWDnWYOdI=;
-        b=WHOLKf9iGdgVvKTjQmxXbGWwIT9aW9o9hEq9U+lj49TYZ42wh7OW8mGicrRGPFBWec
-         GQXHXEEy7tPbKwC1FHg8zUZWXZfzhZPY7eTptlAxCYMCrZISnWijtPow38TPk+467WQI
-         C+SLrK5dNJPHk+1cx98faF71o72UvdNKhUddExLhLHqSlNl82akiFzavl0puT4+AmRFJ
-         Ec9bN9cNgCHYY85wXTpFf//96AeQfDdV8fpasYXN1atMrFSxm0GJhpfw8m5MlTIrmThy
-         aDpFbpiasRW10nZIRqfeXavPvZw0dJn5/4Gc7DZtaG5mAlYsF39ActGfINqVsFI27Zds
-         3LKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709873872; x=1710478672;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hd5eSIOo7us1LbsNzpdstrnvo/0BBPJxonyWDnWYOdI=;
-        b=g/Ks23QJrFIbAtDAM0mTP1pO6cv9X4K3Fnnu055jFdSRL3DhSJ/6hG1zMsPCbkKXpx
-         QZyVrDyv+KIEsc4xMPM6EaLGiw+Ufqe96qYMz5FTL7ZSMTRoA6s/7CwBm5sd5vqEixr9
-         84L/cH10lDphBKkJdxQhQxQI4PMKQ8gfW82kyvAc/+rNczwtNBI2l3YFPtcQHrXPYZeP
-         tVvJUqYHr7rm80eeWDIGn7M3cWdgBZNm8N01rxbzU8dyHMJd75tuxBVpduEKB1zxCuaS
-         Pm1bJRDwq0I1lq5J2qwUrcIcEsV4prfj7fww5U2iwsSY5QOVMOB69RliVOdpMpSUYEyw
-         o3Gg==
-X-Forwarded-Encrypted: i=1; AJvYcCWhbKIvfMC0qSdSrPi42kQ8zk0AG9kYU5RUqGmVRnJiu0Ei8aZCFu96eGV3wsbHTiIokMOhnm53mswjYKI58sikMyggwdcvfxZgjw8D
-X-Gm-Message-State: AOJu0YyAZ6nBHlOR9eHebNsoYLboAZgGR2VhN91PuTxXmTxQmiq+ghzH
-	aXEo7mhD96wKo/VnmUqBJEt8syNXWt0EH79+YIPM89msjh35lDC5G+dNXhSIahA=
-X-Google-Smtp-Source: AGHT+IGD+SMzrtIqxos2BUylU1ihI6jHOpxBRUaDnHcmTxvqFG6hCKlO2aW2yjsKNPG+MnRLXz5+kA==
-X-Received: by 2002:a05:6358:70b:b0:176:40d5:2bd5 with SMTP id e11-20020a056358070b00b0017640d52bd5mr10614876rwj.6.1709873871879;
-        Thu, 07 Mar 2024 20:57:51 -0800 (PST)
-Received: from [192.168.1.24] (71-212-18-124.tukw.qwest.net. [71.212.18.124])
-        by smtp.gmail.com with ESMTPSA id k76-20020a633d4f000000b005dc8702f0a9sm13477127pga.1.2024.03.07.20.57.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 20:57:51 -0800 (PST)
-Message-ID: <15625bac-dfec-4c4e-a828-d11424f7aced@davidwei.uk>
-Date: Thu, 7 Mar 2024 20:57:49 -0800
+	s=arc-20240116; t=1709874038; c=relaxed/simple;
+	bh=5C1CPdakz9h1M2QOj502KAmjWGdW2B9uCUojD3Ao9+Y=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=E8Vu0uzyYln1VTmuzjMh20NLX5xlADxGgeFVxGnwwjHp8QhBqCWfmp18/K5xKPUBlno0QJkElsreyNvw/F4mCx95awBoFUzqQcAwoibpIqN8XGPeHhX4YAaxFIoNVovVzdrZRomnlr6NZhwdP72mKbsW4ZBm1Iqs5AzfCDwezcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TXo6oWW2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A6ACBC41679;
+	Fri,  8 Mar 2024 05:00:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709874037;
+	bh=5C1CPdakz9h1M2QOj502KAmjWGdW2B9uCUojD3Ao9+Y=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=TXo6oWW2vAR9lVW8YGthY+5zGlfYYyXeLgw6zuhy0hYkm++pynxyA494DbjAwzOCL
+	 ERtCkdjHSNEj3dISDN3sk5ie/KiAOtYztve1G6dDeHZvbgfstcFU8P6Yoyf+sbNbd3
+	 ijpuxV72NkstXBd+Wvs6/g1wJYbBnCpOikbOcFnAm5PFHf4yB2Oav/h8+yaHvd4Vyh
+	 uJ8d5wKTmdiy5LIL2apS/A25ML2HgM8VgSC/FQ1dBMS43cvULYw+ECtbJMKV/vaDQs
+	 koxwj/TfP8jFUZoH1R8wWSxWu1GdQH/xgllf2H1AwFtNfI4BWe8I1z/pRvpaEQ9tmS
+	 lpCyV5XBt7KUg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 92B9DD84BD9;
+	Fri,  8 Mar 2024 05:00:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
- custom page providers
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Jeroen de Borst <jeroendb@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>
-References: <20240305020153.2787423-1-almasrymina@google.com>
- <20240305020153.2787423-3-almasrymina@google.com>
-Content-Language: en-GB
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20240305020153.2787423-3-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/2] isdn: constify struct class usage
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170987403759.8362.17894165442379063106.git-patchwork-notify@kernel.org>
+Date: Fri, 08 Mar 2024 05:00:37 +0000
+References: <20240305-class_cleanup-isdn-v1-0-6f0edca75b61@marliere.net>
+In-Reply-To: <20240305-class_cleanup-isdn-v1-0-6f0edca75b61@marliere.net>
+To: Ricardo B. Marliere <ricardo@marliere.net>
+Cc: isdn@linux-pingi.de, gregkh@linuxfoundation.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On 2024-03-04 18:01, Mina Almasry wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> 
-> The page providers which try to reuse the same pages will
-> need to hold onto the ref, even if page gets released from
-> the pool - as in releasing the page from the pp just transfers
-> the "ownership" reference from pp to the provider, and provider
-> will wait for other references to be gone before feeding this
-> page back into the pool.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
-> ---
-> 
-> This is implemented by Jakub in his RFC:
-> https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@redhat.com/T/
-> 
-> I take no credit for the idea or implementation; I only added minor
-> edits to make this workable with device memory TCP, and removed some
-> hacky test code. This is a critical dependency of device memory TCP
-> and thus I'm pulling it into this series to make it revewable and
-> mergeable.
-> 
-> RFC v3 -> v1
-> - Removed unusued mem_provider. (Yunsheng).
-> - Replaced memory_provider & mp_priv with netdev_rx_queue (Jakub).
-> 
-> ---
->  include/net/page_pool/types.h | 12 ++++++++++
->  net/core/page_pool.c          | 43 +++++++++++++++++++++++++++++++----
->  2 files changed, 50 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-> index 5e43a08d3231..ffe5f31fb0da 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -52,6 +52,7 @@ struct pp_alloc_cache {
->   * @dev:	device, for DMA pre-mapping purposes
->   * @netdev:	netdev this pool will serve (leave as NULL if none or multiple)
->   * @napi:	NAPI which is the sole consumer of pages, otherwise NULL
-> + * @queue:	struct netdev_rx_queue this page_pool is being created for.
->   * @dma_dir:	DMA mapping direction
->   * @max_len:	max DMA sync memory size for PP_FLAG_DMA_SYNC_DEV
->   * @offset:	DMA sync address offset for PP_FLAG_DMA_SYNC_DEV
-> @@ -64,6 +65,7 @@ struct page_pool_params {
->  		int		nid;
->  		struct device	*dev;
->  		struct napi_struct *napi;
-> +		struct netdev_rx_queue *queue;
->  		enum dma_data_direction dma_dir;
->  		unsigned int	max_len;
->  		unsigned int	offset;
-> @@ -126,6 +128,13 @@ struct page_pool_stats {
->  };
->  #endif
->  
-> +struct memory_provider_ops {
-> +	int (*init)(struct page_pool *pool);
-> +	void (*destroy)(struct page_pool *pool);
-> +	struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
-> +	bool (*release_page)(struct page_pool *pool, struct page *page);
-> +};
+Hello:
 
-Separate question as I try to adapt bnxt to this and your queue
-configuration API.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-How does GVE handle the need to allocate kernel pages for headers and
-dmabuf for payloads?
+On Tue, 05 Mar 2024 17:04:46 -0300 you wrote:
+> This is a simple and straight forward cleanup series that aims to make the
+> class structures in isdn constant. This has been possible since 2023 [1].
+> 
+> [1]: https://lore.kernel.org/all/2023040248-customary-release-4aec@gregkh/
+> 
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> 
+> [...]
 
-Reading the code, struct gve_rx_ring is the main per-ring object with a
-page pool. gve_queue_page_lists are filled with page pool netmem
-allocations from the page pool in gve_alloc_queue_page_list(). Are these
-strictly used for payloads only?
+Here is the summary with links:
+  - [1/2] isdn: mISDN: make elements_class constant
+    https://git.kernel.org/netdev/net-next/c/479b4bc867b9
+  - [2/2] isdn: capi: make capi_class constant
+    https://git.kernel.org/netdev/net-next/c/12fbd67ea3f4
 
-I found a struct gve_header_buf in both gve_rx_ring and struct
-gve_per_rx_queue_mem_dpo. This is allocated in gve_rx_queue_mem_alloc()
-using dma_alloc_coherent(). Is this where GVE stores headers?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-IOW, GVE only uses page pool to allocate memory for QPLs, and QPLs are
-used by the device for split payloads. Is my understanding correct?
 
-> +
->  struct page_pool {
->  	struct page_pool_params_fast p;
->  
-> @@ -176,6 +185,9 @@ struct page_pool {
->  	 */
->  	struct ptr_ring ring;
->  
-> +	void *mp_priv;
-> +	const struct memory_provider_ops *mp_ops;
-> +
->  #ifdef CONFIG_PAGE_POOL_STATS
->  	/* recycle stats are per-cpu to avoid locking */
->  	struct page_pool_recycle_stats __percpu *recycle_stats;
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index d706fe5548df..8776fcad064a 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -25,6 +25,8 @@
->  
->  #include "page_pool_priv.h"
->  
-> +static DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
-> +
->  #define DEFER_TIME (msecs_to_jiffies(1000))
->  #define DEFER_WARN_INTERVAL (60 * HZ)
->  
-> @@ -177,6 +179,7 @@ static int page_pool_init(struct page_pool *pool,
->  			  int cpuid)
->  {
->  	unsigned int ring_qsize = 1024; /* Default */
-> +	int err;
->  
->  	memcpy(&pool->p, &params->fast, sizeof(pool->p));
->  	memcpy(&pool->slow, &params->slow, sizeof(pool->slow));
-> @@ -248,10 +251,25 @@ static int page_pool_init(struct page_pool *pool,
->  	/* Driver calling page_pool_create() also call page_pool_destroy() */
->  	refcount_set(&pool->user_cnt, 1);
->  
-> +	if (pool->mp_ops) {
-> +		err = pool->mp_ops->init(pool);
-> +		if (err) {
-> +			pr_warn("%s() mem-provider init failed %d\n",
-> +				__func__, err);
-> +			goto free_ptr_ring;
-> +		}
-> +
-> +		static_branch_inc(&page_pool_mem_providers);
-> +	}
-> +
->  	if (pool->p.flags & PP_FLAG_DMA_MAP)
->  		get_device(pool->p.dev);
->  
->  	return 0;
-> +
-> +free_ptr_ring:
-> +	ptr_ring_cleanup(&pool->ring, NULL);
-> +	return err;
->  }
->  
->  static void page_pool_uninit(struct page_pool *pool)
-> @@ -546,7 +564,10 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
->  		return page;
->  
->  	/* Slow-path: cache empty, do real allocation */
-> -	page = __page_pool_alloc_pages_slow(pool, gfp);
-> +	if (static_branch_unlikely(&page_pool_mem_providers) && pool->mp_ops)
-> +		page = pool->mp_ops->alloc_pages(pool, gfp);
-> +	else
-> +		page = __page_pool_alloc_pages_slow(pool, gfp);
->  	return page;
->  }
->  EXPORT_SYMBOL(page_pool_alloc_pages);
-> @@ -603,10 +624,13 @@ void __page_pool_release_page_dma(struct page_pool *pool, struct page *page)
->  void page_pool_return_page(struct page_pool *pool, struct page *page)
->  {
->  	int count;
-> +	bool put;
->  
-> -	__page_pool_release_page_dma(pool, page);
-> -
-> -	page_pool_clear_pp_info(page);
-> +	put = true;
-> +	if (static_branch_unlikely(&page_pool_mem_providers) && pool->mp_ops)
-> +		put = pool->mp_ops->release_page(pool, page);
-> +	else
-> +		__page_pool_release_page_dma(pool, page);
->  
->  	/* This may be the last page returned, releasing the pool, so
->  	 * it is not safe to reference pool afterwards.
-> @@ -614,7 +638,10 @@ void page_pool_return_page(struct page_pool *pool, struct page *page)
->  	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
->  	trace_page_pool_state_release(pool, page, count);
->  
-> -	put_page(page);
-> +	if (put) {
-> +		page_pool_clear_pp_info(page);
-> +		put_page(page);
-> +	}
->  	/* An optimization would be to call __free_pages(page, pool->p.order)
->  	 * knowing page is not part of page-cache (thus avoiding a
->  	 * __page_cache_release() call).
-> @@ -884,6 +911,12 @@ static void __page_pool_destroy(struct page_pool *pool)
->  
->  	page_pool_unlist(pool);
->  	page_pool_uninit(pool);
-> +
-> +	if (pool->mp_ops) {
-> +		pool->mp_ops->destroy(pool);
-> +		static_branch_dec(&page_pool_mem_providers);
-> +	}
-> +
->  	kfree(pool);
->  }
->  
 
