@@ -1,109 +1,84 @@
-Return-Path: <linux-kernel+bounces-97001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C332876447
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:27:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B0C2876466
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:38:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFF061F21D13
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:27:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41A9C1F22AA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24D857332;
-	Fri,  8 Mar 2024 12:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iT86/EPm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9644C84;
-	Fri,  8 Mar 2024 12:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B42E61429E;
+	Fri,  8 Mar 2024 12:38:14 +0000 (UTC)
+Received: from chinatelecom.cn (smtpnm6-09.21cn.com [182.42.152.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B0581F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 12:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=182.42.152.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709900857; cv=none; b=cjtuxErSVyBl4Jd8PIS+0f97ZOKYjlBBQACE/hsxtAhWXynsG+HHKoHhpyPkrdgsSMZyhQqB71JGEZzv9PciPkfjHoFkTbWb6gN+j0lfTtL3w51o28SofYrmuD3FasIvmK0gLERXow1i2zYRdVR46i1Hwsn6Nh6BeOUmtBwci9E=
+	t=1709901494; cv=none; b=M1QuVYhbfHCfhABrjLZUJTRNzsVLjh4peqgTBuBtMEnTb/ZNJ9Bc2QtT+HjMR9XkKs8PrNRiMsGgdjdd73A4fvwv75sVMi8JJn4DACNLP7G75fTQB+xagWNnBD51+DUnwGNDICenCBAc3F5vLL9XwaPvFhwG79bHSnrHk5I3k6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709900857; c=relaxed/simple;
-	bh=9aWRkRp0aXxu1FToQ1QE8fJZnNk6EJp6E8aVbwyrDP0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r4GHDAL7SDit4ceNNuF8DRITNpFE+B7YHuXSAdtzqKX1+CMxk0p15bIbAaIygvy6HNQNqIDZAJ9tQIKbR/rCsT4WRPTbSsGoshARjd0IaJY1vnPtbfieBU5tS0cg+r6K6LujJWioBCPJOmNnuUgnrO312M+yCMxxAfRbTYs9xsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iT86/EPm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1186BC433C7;
-	Fri,  8 Mar 2024 12:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709900856;
-	bh=9aWRkRp0aXxu1FToQ1QE8fJZnNk6EJp6E8aVbwyrDP0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iT86/EPm5LHZwza+SQqVakxv6gjc5AGIgV0djoqUqkPu9XXrYq5Y+nnwcjEEipodv
-	 0aN07GYrVHXA2whdiMbqINTItGFTGNDeoj2TRHocHSpN2zEixiT4o0s9+WBxYhMxY5
-	 /QJrfWmiCM0RJUjpbxCAXRxsKbifep3nC3xYfk0o3ZvARqVC/NuDuDydqujQ38DDfJ
-	 M+pyLQoBSSh6tSdW2q1F5M2cLfz/sUKFQlWpdki2YehLfBQVLuzBH0KzKeFXmqUK86
-	 dYegQdStk7x25XwRK/BprvQJfaMXezwQybLbNoT1md3kuoNEmTw+UeLdUKJgquCREy
-	 GuWrk5G0AnIxw==
-Date: Fri, 8 Mar 2024 13:27:33 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
-	Gregory Clement <gregory.clement@bootlin.com>, Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v3 03/11] i2c: nomadik: simplify IRQ masking logic
-Message-ID: <3f7zpl4yu5gsojmfhdrbieev3gatfcgag5tnmgmrv3u46y4pny@tamjf6cq5g3v>
-References: <20240306-mbly-i2c-v3-0-605f866aa4ec@bootlin.com>
- <20240306-mbly-i2c-v3-3-605f866aa4ec@bootlin.com>
- <422szb2dtgnq56xznfqsqtqs3dai2jipnntrp6yb2og353whs7@g4ia5ynnmqu6>
- <CZO8SUELNP4R.230VKX59UIHC8@bootlin.com>
+	s=arc-20240116; t=1709901494; c=relaxed/simple;
+	bh=pvx+gCC6jI5B6hoAV10utHkbSF0byqV7a/fUtmag/aU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QZ6pPhCG+uVlmFc7pJeRVl3FWcPvDZ5Yr+383f5xlx6sV0tVpm/d2/qxlZfohd4PtKt7MfmMD8Tu7ajQVp53Ts8SfgPhI1Z8ENJYfN2oXAHXEIg8FCq7gYdb0PGYlvD6iG4YZRt/0aJUYafV3Y4zN6Y5ChejDA6AiXsBvUsSFNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn; spf=pass smtp.mailfrom=chinatelecom.cn; arc=none smtp.client-ip=182.42.152.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chinatelecom.cn
+HMM_SOURCE_IP:192.168.138.117:1741.1211802803
+HMM_ATTACHE_NUM:0000
+HMM_SOURCE_TYPE:SMTP
+Received: from clientip-10.133.8.31 (unknown [192.168.138.117])
+	by chinatelecom.cn (HERMES) with SMTP id F158E111064AF;
+	Fri,  8 Mar 2024 20:27:59 +0800 (CST)
+X-189-SAVE-TO-SEND: +sibs@chinatelecom.cn
+Received: from  ([10.133.8.31])
+	by gateway-ssl-dep-77bc75f6c8-sfvft with ESMTP id 9439230eb9e0458b890b8d3a43501b50 for tglx@linutronix.de;
+	Fri, 08 Mar 2024 20:28:11 CST
+X-Transaction-ID: 9439230eb9e0458b890b8d3a43501b50
+X-Real-From: sibs@chinatelecom.cn
+X-Receive-IP: 10.133.8.31
+X-MEDUSA-Status: 0
+Sender: sibs@chinatelecom.cn
+From: Bingsong Si <sibs@chinatelecom.cn>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: Bingsong Si <sibs@chinatelecom.cn>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/cpu: Clear TME feature flag if TME is not enabled by BIOS
+Date: Fri,  8 Mar 2024 20:27:52 +0800
+Message-Id: <20240308122752.3342-1-sibs@chinatelecom.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CZO8SUELNP4R.230VKX59UIHC8@bootlin.com>
 
-Hi Theo,
+Signed-off-by: Bingsong Si <sibs@chinatelecom.cn>
+---
+ arch/x86/kernel/cpu/intel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Fri, Mar 08, 2024 at 09:57:39AM +0100, Théo Lebrun wrote:
-> Hello,
-> 
-> On Fri Mar 8, 2024 at 12:01 AM CET, Andi Shyti wrote:
-> > Hi Theo,
-> >
-> > On Wed, Mar 06, 2024 at 06:59:23PM +0100, Théo Lebrun wrote:
-> > > IRQ_MASK and I2C_CLEAR_ALL_INTS both mask available interrupts. IRQ_MASK
-> > > removes top options (bits 29-31). I2C_CLEAR_ALL_INTS removes reserved
-> > > options including top bits. Keep the latter.
-> > > 
-> > > 31  29  27  25  23  21  19  17  15  13  11  09  07  05  03  01
-> > >   30  28  26  24  22  20  18  16  14  12  10  08  06  04  02  00
-> > > --- IRQ_MASK: --------------------------------------------------
-> > >       1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-> > > 0 0 0
-> > > --- I2C_CLEAR_ALL_INTS: ----------------------------------------
-> > >       1     1 1       1 1 1 1 1                   1 1 1 1 1 1 1
-> > > 0 0 0   0 0     0 0 0           0 0 0 0 0 0 0 0 0
-> > > 
-> > > Notice I2C_CLEAR_ALL_INTS is more restrictive than IRQ_MASK.
-> > > 
-> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > > Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> >
-> > You did answer my question in v2, thanks, Theo!
-> 
-> Oops my mailer syntax is telling me that the lines starting with '---'
-> might cause issue as it might mark the end of commit messages. I'll fix
-> that in next revision. If it gets applied before that it should be
-> checked that part of the message doesn't get lost.
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index a927a8fc9624..22f0c829784d 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -526,6 +526,7 @@ static void detect_tme(struct cpuinfo_x86 *c)
+ 	if (!TME_ACTIVATE_LOCKED(tme_activate) || !TME_ACTIVATE_ENABLED(tme_activate)) {
+ 		pr_info_once("x86/tme: not enabled by BIOS\n");
+ 		mktme_status = MKTME_DISABLED;
++		clear_cpu_cap(c, X86_FEATURE_TME);
+ 		return;
+ 	}
+ 
+-- 
+2.34.1
 
-mmhhh... right! No need to resend, if nothing else is needed from
-the series, please paste the commit message here and I will fix
-it.
-
-Andi
 
