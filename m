@@ -1,158 +1,227 @@
-Return-Path: <linux-kernel+bounces-97180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3570787668B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:45:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF7AE876694
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:47:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5804C1C21CB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:45:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45BE51F23CB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:47:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41644A2A;
-	Fri,  8 Mar 2024 14:45:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qKCHTOIi"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007455234;
+	Fri,  8 Mar 2024 14:47:15 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480881865
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D1215D0;
+	Fri,  8 Mar 2024 14:47:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709909145; cv=none; b=Dh5JWaeyGAxsfUH4ZTuwLkPivOhW6vj/wnWCWbJ3iU1SCCrZyuT0pOVotQLAJWEFOenkXV9RJi0SIWLLwywu2dlKaadJPlaj/fyiZF15DbBDR4EAH3/xQyJpovEJYxH5BAWI0M5nGmvN/yTYXJfO8BDd9HUBq5BnIBYogqAA3zw=
+	t=1709909234; cv=none; b=n7QbI4g+xoiYb6WEOljOBAFfUY5m9F+4OfWnXadX/fdNsIqyMSf2EQsyMnpzHZyrI7ooGYFTRRkW+Y56US6cUEPZtKZKEcFI++mCcJVE0S7Gi2yC+f+Qr9xthsyyAP5fO3FPzK+9KuTtpNrIlEryXQhWn656Je03nj36huQGFAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709909145; c=relaxed/simple;
-	bh=Em1F929Mn1mPrn47t685mqMI8vaGLknlocnaygZx4Hs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OVf/btrkfotUOzvkIDSDYS7OF7IzKKu8KVPiEWpGSidqzNpdBr8ZSRnv7WEoc0rK95JeTwTV7PmsNFhVRjtszs4oQ4IhJfjqrgDc1LZADPkrK6uWU3sKM4yYgnz/SsP4ywmU6jPxSM2xZSF6vEO+RfJdRM1Z9rrq0zpw6O8jqYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qKCHTOIi; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a458eb7db13so318774866b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 06:45:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709909141; x=1710513941; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zP41Zi/mvVoGN7hu7NP8sEaRzDXJMEZcIHHfHI2Tt3E=;
-        b=qKCHTOIi20QQc7RHat9XMt8Njeo4p0xsM+oKsVQ8FmGpPtV24jLZXqpDyMvfyQOxyy
-         HJQR36rvZYQWSDJeRLql8XQ3ZmslOptcf17uC3XMhC/2hmkc/vdVPhizHhX0v2XdmLzI
-         Wm/ML31Y23EMU7xOyxxJ5fOpff5u3hksCDPjnqd5ZmOIJVZ0IsOd6r1pM/EOgBiBBEzS
-         i4ObaMnaykFrSV6KdV76cokD1aasz+HAg3/BwdvyT0yKRvLG3fkLlb367v0677HbL4ry
-         a6FCiF+Mw2MXHCS9uA3JF76gF6huM8e59kaGKTBag1S9k7MzOZSS3KoLaq4zMFKFipMt
-         2G3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709909141; x=1710513941;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zP41Zi/mvVoGN7hu7NP8sEaRzDXJMEZcIHHfHI2Tt3E=;
-        b=YUZp5tL2elpbpRMqF/9oM/Vz1CCClAkENQUSSx4vSdLmRwtlqtr3y1LTN8ZPzdO6LR
-         s5jZdsCR0U1WAbCQTzoekdRNv1iVbyj/rCoxB9mLOVsD9iDppnlDXgimf36qwvCMND+n
-         mqDHFHoqjDasl+4AvkAWN+UXCkDYl/muqc0bfFm/rRbROhQKsRTWI4YZvPGjGt9JwBLw
-         RVfj54rmANooP8kbiF0MvoRP3V8KgpNENdJ4Yjtr3hLYc+pbLkiYonamsbavKugR6rKo
-         YfR4xoHDJOn5Isib5GbUSbFoHPD/YflmRLoqlTr0AXpc1hYz+RQdI0y6hZkhwGctBaP+
-         HOkg==
-X-Forwarded-Encrypted: i=1; AJvYcCVDOGupP1KsCLKHAHuRD62iKoNQ0ampHFdSLMu7JF0Gfa3bx8NVHaYCYAH/iMf7RHTdNhxT+NE/U4AD3Zb6ehWsjboUGTUj5ZFP7WIS
-X-Gm-Message-State: AOJu0YyixA/aCwnIp0qj2NBxiASSPv3pWUdnlBpZJt2u6xHbjRMcM2Rh
-	Dr/jalJ1R+W2c8L4b6mYNof4YzgvFwCPUXglar+7Ti5xli/uLcmK43DeZFmzALU=
-X-Google-Smtp-Source: AGHT+IFzr7uIBzprrII6sDcFB9zm6dRvFyrKG7ykYhwxdSAW3eP/ZuRLedW0GrFDNK30PIfI2/mYVQ==
-X-Received: by 2002:a17:906:1cc2:b0:a44:4578:c79d with SMTP id i2-20020a1709061cc200b00a444578c79dmr13044343ejh.4.1709909141616;
-        Fri, 08 Mar 2024 06:45:41 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id me14-20020a170906aece00b00a45c9474442sm2096353ejb.18.2024.03.08.06.45.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 06:45:41 -0800 (PST)
-Message-ID: <72f29fd6-9d83-4a69-957e-bf3630878784@linaro.org>
-Date: Fri, 8 Mar 2024 15:45:39 +0100
+	s=arc-20240116; t=1709909234; c=relaxed/simple;
+	bh=8sEuRsJPVP6JYey+Crp6djns8NX106DrBWF16iCScXI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oOo7yXOz3GqYkhvw/DMvBVebTv/AtqN3zUlKLm20xITYJBpUcTJcBA982K7PRBnNkJi9ThnCEmvbukb6kLpVE/BaDMpBazdMu2EAlW+yjfIHzN6ZrrRhoUsb9KD4BPIVLzqINpt/FiVEaiOJVO9sR4nIDxFMrUQjVCE6FKhcciA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1ribUk-0000Uk-1r;
+	Fri, 08 Mar 2024 14:46:46 +0000
+Date: Fri, 8 Mar 2024 14:46:33 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] net: dsa: mt7530: disable LEDs before reset
+Message-ID: <ZeskyfVuKECkZB1I@makrotopia.org>
+References: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
+ <6064ba52-2470-4c56-958c-35632187f148@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/4] dt-bindings: arm: qcom: Document QCS8550 SoC and
- the AIM300 AIoT board
-Content-Language: en-US
-To: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- dmitry.baryshkov@linaro.org
-Cc: keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- kernel@quicinc.com
-References: <20240308070432.28195-1-quic_tengfan@quicinc.com>
- <20240308070432.28195-2-quic_tengfan@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240308070432.28195-2-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6064ba52-2470-4c56-958c-35632187f148@arinc9.com>
 
-On 08/03/2024 08:04, Tengfei Fan wrote:
-> Document QCS8550 SoC and the AIM300 AIoT board bindings.
-> QCS8550 is derived from SM8550. The difference between SM8550 and
-> QCS8550 is QCS8550 doesn't have modem RF system. QCS8550 is mainly used
-> in IoT scenarios.
-> AIM300 Series is a highly optimized family of modules designed to
-> support AIoT applications. It integrates QCS8550 SoC, UFS and PMIC chip
-> etc.
-> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
+On Fri, Mar 08, 2024 at 12:51:15PM +0300, Arınç ÜNAL wrote:
+> Hey Justin.
 > 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> I couldn't find anything on the MT7621 Giga Switch Programming Guide v0.3
+> document regarding which pin corresponds to which bit on the HWTRAP
+> register. There's only this mention on the LED controller section,
+> "hardware traps and LEDs share the same pins in GSW". But page 16 of the
+> schematics document for Banana Pi BPI-R2 [1] fully documents this.
+> 
+> The HWTRAP register is populated right after power comes back after the
+> switch chip is reset [2]. This means any active link before the reset will
+> go away so the high/low state of the pins will go back to being dictated by
+> the bootstrapping design of the board. The HWTRAP register will be
+> populated before a link can be set up.
+> 
+> In conclusion, I don't see any need to disable the LED controller before
+> resetting the switch chip.
+> 
+> [1] https://wiki.banana-pi.org/Banana_Pi_BPI-R2#Documents
+> 
+> [2] I've tested it on my MT7621AT board with a 40MHz XTAL frequency and a
+> board with standalone MT7530 with 25MHz XTAL frequency.
+
+How many times did you repeat this test to conclude that there is no
+need to disable LEDs before reset?
+
+As Justin is decribing a probabilistic phenomenon ("[...] chance of an
+unintended HT_XTAL_FSEL value is reduced.") I believe running a single
+test is not enough to conlcude anything.
+
+I have a hard time believing that he was working on this patch without
+any reason to do so...
 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+> 
+> While the kernel was booting, before the DSA subdriver kicks in:
+> - For the board with 40 MHz XTAL: I've connected a Vcc pin to ESW_P3_LED_0
+>   to set it high.
+> - For the board with 25 MHz XTAL: I've connected a GND pin to ESW_P3_LED_0
+>   to set it low.
+> 
+> Board with 40 MHz XTAL:
+> [    2.359428] mt7530-mdio mdio-bus:1f: MT7530 adapts as multi-chip module
+> [    2.374918] mt7530-mdio mdio-bus:1f: xtal is 25MHz
+> 
+> Board with 25 MHz XTAL:
+> [    4.324672] mt7530-mdio mdio-bus:1f: xtal is 40MHz
+> 
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 51d7b816dd02..beab5e5558d0 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -2216,6 +2216,15 @@ mt7530_setup(struct dsa_switch *ds)
+>  		return ret;
+>  	}
+> +	if ((val & HWTRAP_XTAL_MASK) == HWTRAP_XTAL_25MHZ)
+> +		dev_info(priv->dev, "xtal is 25MHz\n");
+> +
+> +	if ((val & HWTRAP_XTAL_MASK) == HWTRAP_XTAL_40MHZ)
+> +		dev_info(priv->dev, "xtal is 40MHz\n");
+> +
+> +	if ((val & HWTRAP_XTAL_MASK) == HWTRAP_XTAL_20MHZ)
+> +		dev_info(priv->dev, "xtal is 20MHz\n");
+> +
+>  	id = mt7530_read(priv, MT7530_CREV);
+>  	id >>= CHIP_NAME_SHIFT;
+>  	if (id != MT7530_ID) {
+> 
+> Arınç
+> 
+> On 5.03.2024 07:39, Justin Swartz wrote:
+> > Disable LEDs just before resetting the MT7530 to avoid
+> > situations where the ESW_P4_LED_0 and ESW_P3_LED_0 pin
+> > states may cause an unintended external crystal frequency
+> > to be selected.
+> > 
+> > The HT_XTAL_FSEL (External Crystal Frequency Selection)
+> > field of HWTRAP (the Hardware Trap register) stores a
+> > 2-bit value that represents the state of the ESW_P4_LED_0
+> > and ESW_P4_LED_0 pins (seemingly) sampled just after the
+> > MT7530 has been reset, as:
+> > 
+> >      ESW_P4_LED_0    ESW_P3_LED_0    Frequency
+> >      -----------------------------------------
+> >      0               1               20MHz
+> >      1               0               40MHz
+> >      1               1               25MHz
+> > 
+> > The value of HT_XTAL_FSEL is bootstrapped by pulling
+> > ESW_P4_LED_0 and ESW_P3_LED_0 up or down accordingly,
+> > but:
+> > 
+> >    if a 40MHz crystal has been selected and
+> >    the ESW_P3_LED_0 pin is high during reset,
+> > 
+> >    or a 20MHz crystal has been selected and
+> >    the ESW_P4_LED_0 pin is high during reset,
+> > 
+> >    then the value of HT_XTAL_FSEL will indicate
+> >    that a 25MHz crystal is present.
+> > 
+> > By default, the state of the LED pins is PHY controlled
+> > to reflect the link state.
+> > 
+> > To illustrate, if a board has:
+> > 
+> >    5 ports with active low LED control,
+> >    and HT_XTAL_FSEL bootstrapped for 40MHz.
+> > 
+> > When the MT7530 is powered up without any external
+> > connection, only the LED associated with Port 3 is
+> > illuminated as ESW_P3_LED_0 is low.
+> > 
+> > In this state, directly after mt7530_setup()'s reset
+> > is performed, the HWTRAP register (0x7800) reflects
+> > the intended HT_XTAL_FSEL (HWTRAP bits 10:9) of 40MHz:
+> > 
+> >    mt7530-mdio mdio-bus:1f: mt7530_read: 00007800 == 00007dcf
+> > 
+> >    >>> bin(0x7dcf >> 9 & 0b11)
+> >    '0b10'
+> > 
+> > But if a cable is connected to Port 3 and the link
+> > is active before mt7530_setup()'s reset takes place,
+> > then HT_XTAL_FSEL seems to be set for 25MHz:
+> > 
+> >    mt7530-mdio mdio-bus:1f: mt7530_read: 00007800 == 00007fcf
+> > 
+> >    >>> bin(0x7fcf >> 9 & 0b11)
+> >    '0b11'
+> > 
+> > Once HT_XTAL_FSEL reflects 25MHz, none of the ports
+> > are functional until the MT7621 (or MT7530 itself)
+> > is reset.
+> > 
+> > By disabling the LED pins just before reset, the chance
+> > of an unintended HT_XTAL_FSEL value is reduced.
+> > 
+> > Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+> > ---
+> >   drivers/net/dsa/mt7530.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> > index 3c1f65759..8fa113126 100644
+> > --- a/drivers/net/dsa/mt7530.c
+> > +++ b/drivers/net/dsa/mt7530.c
+> > @@ -2238,6 +2238,12 @@ mt7530_setup(struct dsa_switch *ds)
+> >   		}
+> >   	}
+> > +	/* Disable LEDs before reset to prevent the MT7530 sampling a
+> > +	 * potentially incorrect HT_XTAL_FSEL value.
+> > +	 */
+> > +	mt7530_write(priv, MT7530_LED_EN, 0);
+> > +	usleep_range(1000, 1100);
+> > +
+> >   	/* Reset whole chip through gpio pin or memory-mapped registers for
+> >   	 * different type of hardware
+> >   	 */
 
