@@ -1,114 +1,154 @@
-Return-Path: <linux-kernel+bounces-97095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 373C987656B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:34:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44250876565
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:33:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 695671C21D3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:34:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 456271C21D49
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:33:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5707238389;
-	Fri,  8 Mar 2024 13:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B14938DCD;
+	Fri,  8 Mar 2024 13:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="pUolcqdL"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="n3GgmtTR"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4C23612C;
-	Fri,  8 Mar 2024 13:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D94F63612C;
+	Fri,  8 Mar 2024 13:33:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709904856; cv=none; b=Fi7Hwd3d2WnFRsdXH8v3c3lVBdgbc9sqNOJQbWMt6uSvBeELdZy3TNApSfmiIQz4yp2bPTMzYlc4C/xVGkD3KWXpBw/iv3DD/Wk3PX0o4jxEZav1cZTeeGdJC6FhQcarTSz+juOaZTK9pVncK/q/zcZ+mXxqfy4ZG429aCRBJlM=
+	t=1709904818; cv=none; b=PJ5QAaETipA/i10a+suLeCbcVkZajodf08fujBqsbU/vDQ3YYyxq6iD5y92bTrIUAdQXjRqYD86bE0x+IgG9AD/5WltRyKkvCitCs2zbozqVNahhfcRZFIWK+ltE6/vqJUxR1BIYnlfCOovygVGnR2kcSxC+ZDyVjs4AeWq0C60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709904856; c=relaxed/simple;
-	bh=wtzrEfjCpn2S+S3f35TVkH99zb8AiS5TmWJuuoHXmU4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Koj30o6Bdf6W4xBMLpC2+bVSA3xRk1dqTphfhSct3pg9ooWc8t5boQ2ik1F23/26kPuMn1ZRuBzJ6Jr7j2Dd+XkKSPJhW033GFAW3gPLILUVQhV2lInFaLyKFWP9NxTdCpVxMIWn1EgLhuwWU85tmrDXl1LPQRaw9mgO9YbeJ8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=pUolcqdL; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709904854; x=1741440854;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wtzrEfjCpn2S+S3f35TVkH99zb8AiS5TmWJuuoHXmU4=;
-  b=pUolcqdLC4Cj+xKA2seYYw09dvpiEdJyyX+G5WIjdvgv5YfKK7wubiKP
-   X0MVHL77LOWLvstaQRLdnrfedrMg9IMZSH+kOhUns02uUfgmBg/LLdoVl
-   EuAfhTm16Y8cTcIHGJlAa1X9Fe90gdy8tb4jOq61gVbHNC/B+Qyh1Y8qW
-   gOfpIn2HPdS/6G2Y2rqO//IJfgrKSX5GwF5yUx2b/f53gdS6nUjIZ6wth
-   jQIKAgdz5gxjqG9YULWqJcb98Bp+XfQ1YImbVkwQSwsLw3BVD2wPs8/OP
-   IF2Pz0iZ5/HawbQwuqPi23RxznycAtuq4Oa17tNycmd64raxBUBiD9rl3
-   Q==;
-X-CSE-ConnectionGUID: VD82c0PPRy2Nn/u1qslXzg==
-X-CSE-MsgGUID: o6a2Q6TZS8aGv9j+QzMa4Q==
-X-IronPort-AV: E=Sophos;i="6.07,109,1708412400"; 
-   d="asc'?scan'208";a="184672992"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Mar 2024 06:34:12 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 8 Mar 2024 06:34:06 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 8 Mar 2024 06:34:03 -0700
-Date: Fri, 8 Mar 2024 13:33:19 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: <stable@vger.kernel.org>, <patches@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
-	<akpm@linux-foundation.org>, <linux@roeck-us.net>, <shuah@kernel.org>,
-	<patches@kernelci.org>, <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-	<jonathanh@nvidia.com>, <f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>,
-	<srw@sladewatkins.net>, <rwarsow@gmx.de>, <conor@kernel.org>,
-	<allen.lkml@gmail.com>
-Subject: Re: [PATCH 6.1 000/219] 6.1.77-rc1 review
-Message-ID: <20240308-unpaved-greeter-d665418b2e1d@wendy>
-References: <20240203035317.354186483@linuxfoundation.org>
+	s=arc-20240116; t=1709904818; c=relaxed/simple;
+	bh=4ZkVUBLSDeUXcXi2xTKcJ3cUsQWPzbrJXOQ/A/i5e8M=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=cC8ad9crVhuwBgjHfS+deqyImaCuwVTtq6TiXZUJgKpkhSSLdNf3QM508Ue9DdcuypqG5+eT77KvtILAg29cnnGdlRz1BGt32S+54EkKqPUOFL5NQfr3CDiOTrNbcpjmaJUiobjzlcrCmL1rl6SZbMMISRlf1Kr8CKSEYSaqoCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=n3GgmtTR; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3F72D2000E;
+	Fri,  8 Mar 2024 13:33:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709904812;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+tBfmX+8Hgk/BqOXaahZwNbPUrMVY004ZkuW+uwmjpE=;
+	b=n3GgmtTRXmnfqEFds89oU7qvJ81y9dnJTg5OsTvBofsNDrGeSfEkLisSpN84LTsHdIL588
+	OK1JPm8/P/E+EgaiZpA0xtFfS2Nfu5VEFlw8Pum/M3sb+PcwADsGcW6/l/i6jLZjHIG73t
+	UGDe4W6wzxpL2CUnXsqDzhk0JmmN6UCwfhvWMEkhGbfWc5BUtuWZihy41fiLEZH2WBKkcs
+	l+DiD2k4dGfWHt7tF2ZQeRJT6iK3CbFWWi3Ev/EYzjIXgsAFYrSZShBUBI1bg6g/14/psR
+	2hcdmZ45nMUIJF4ep813D4z9sqGS24K/OiNTwW/Nb6jGul/gz38hWXnn5tYrmg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dzUFsazBGNPyODmn"
-Content-Disposition: inline
-In-Reply-To: <20240203035317.354186483@linuxfoundation.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 08 Mar 2024 14:33:31 +0100
+Message-Id: <CZOEO2E13Q67.1LQ5HNWPYU647@bootlin.com>
+Subject: Re: [PATCH v3 03/11] i2c: nomadik: simplify IRQ masking logic
+Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Andi Shyti" <andi.shyti@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240306-mbly-i2c-v3-0-605f866aa4ec@bootlin.com>
+ <20240306-mbly-i2c-v3-3-605f866aa4ec@bootlin.com>
+ <422szb2dtgnq56xznfqsqtqs3dai2jipnntrp6yb2og353whs7@g4ia5ynnmqu6>
+ <CZO8SUELNP4R.230VKX59UIHC8@bootlin.com>
+ <3f7zpl4yu5gsojmfhdrbieev3gatfcgag5tnmgmrv3u46y4pny@tamjf6cq5g3v>
+In-Reply-To: <3f7zpl4yu5gsojmfhdrbieev3gatfcgag5tnmgmrv3u46y4pny@tamjf6cq5g3v>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
---dzUFsazBGNPyODmn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hello,
 
-On Fri, Feb 02, 2024 at 08:02:53PM -0800, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.77 release.
-> There are 219 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri Mar 8, 2024 at 1:27 PM CET, Andi Shyti wrote:
+> Hi Theo,
+>
+> On Fri, Mar 08, 2024 at 09:57:39AM +0100, Th=C3=A9o Lebrun wrote:
+> > Hello,
+> >=20
+> > On Fri Mar 8, 2024 at 12:01 AM CET, Andi Shyti wrote:
+> > > Hi Theo,
+> > >
+> > > On Wed, Mar 06, 2024 at 06:59:23PM +0100, Th=C3=A9o Lebrun wrote:
+> > > > IRQ_MASK and I2C_CLEAR_ALL_INTS both mask available interrupts. IRQ=
+_MASK
+> > > > removes top options (bits 29-31). I2C_CLEAR_ALL_INTS removes reserv=
+ed
+> > > > options including top bits. Keep the latter.
+> > > >=20
+> > > > 31  29  27  25  23  21  19  17  15  13  11  09  07  05  03  01
+> > > >   30  28  26  24  22  20  18  16  14  12  10  08  06  04  02  00
+> > > > --- IRQ_MASK: --------------------------------------------------
+> > > >       1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+> > > > 0 0 0
+> > > > --- I2C_CLEAR_ALL_INTS: ----------------------------------------
+> > > >       1     1 1       1 1 1 1 1                   1 1 1 1 1 1 1
+> > > > 0 0 0   0 0     0 0 0           0 0 0 0 0 0 0 0 0
+> > > >=20
+> > > > Notice I2C_CLEAR_ALL_INTS is more restrictive than IRQ_MASK.
+> > > >=20
+> > > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > >
+> > > You did answer my question in v2, thanks, Theo!
+> >=20
+> > Oops my mailer syntax is telling me that the lines starting with '---'
+> > might cause issue as it might mark the end of commit messages. I'll fix
+> > that in next revision. If it gets applied before that it should be
+> > checked that part of the message doesn't get lost.
+>
+> mmhhh... right! No need to resend, if nothing else is needed from
+> the series, please paste the commit message here and I will fix
+> it.
 
-Again, I'm super late here but I did test this the other day..
-Tested-by: Conor Dooley <conor.dooley@microchip.com>
+The message would become the following (tab-indented). Both '---' turned
+into '--' in the bit table. I confirmed `git am` does not truncate this
+updated message.
 
-Thanks,
-Conor.
+	i2c: nomadik: simplify IRQ masking logic
 
---dzUFsazBGNPyODmn
-Content-Type: application/pgp-signature; name="signature.asc"
+	IRQ_MASK and I2C_CLEAR_ALL_INTS both mask available interrupts. IRQ_MASK
+	removes top options (bits 29-31). I2C_CLEAR_ALL_INTS removes reserved
+	options including top bits. Keep the latter.
 
------BEGIN PGP SIGNATURE-----
+	31  29  27  25  23  21  19  17  15  13  11  09  07  05  03  01
+	  30  28  26  24  22  20  18  16  14  12  10  08  06  04  02  00
+	-- IRQ_MASK: ---------------------------------------------------
+	      1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+	0 0 0
+	-- I2C_CLEAR_ALL_INTS: -----------------------------------------
+	      1     1 1       1 1 1 1 1                   1 1 1 1 1 1 1
+	0 0 0   0 0     0 0 0           0 0 0 0 0 0 0 0 0
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZesTnwAKCRB4tDGHoIJi
-0rfEAQCNKqC+fC+rw8+CbZLtht2tc29yoTm26p2VIAy31JFFdQD+Ma9jKC5Q3zB9
-YfeKWtS6nxOGy0+KWn/D8m4HyFLESAA=
-=8rQb
------END PGP SIGNATURE-----
+	Notice I2C_CLEAR_ALL_INTS is more restrictive than IRQ_MASK.
 
---dzUFsazBGNPyODmn--
+	Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+	Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+
+Thanks for the quick follow-up!
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
