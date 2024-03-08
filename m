@@ -1,86 +1,90 @@
-Return-Path: <linux-kernel+bounces-97414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90CA7876A2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:49:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7899C876A2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:50:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 469681F22918
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:49:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F7C31C20C0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3BA3BBD2;
-	Fri,  8 Mar 2024 17:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF39C4085D;
+	Fri,  8 Mar 2024 17:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWfnL+V4"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="g1t4A1/F"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9806A36D
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0A820B04
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709920192; cv=none; b=tl5PV3ggF505aeGVqZrztSDnLaz9wQIIg3mCZpPufffze3sxD/yqjMp28UfgDy3b2xIHIK/fP5CNtGBn30GAF9B1tRG96jC+6OhnOhmcXLJaX6DSOtSgXDllEum3mqRayr6HfResozvpVi79siJWbIMDaypiIX4E8eLPfsvdeX8=
+	t=1709920213; cv=none; b=B54thTyWd6t/49SAYE4cNmBZoQLy3TBzGBv5trygIMtMF+z3zd3VnYL1B7MqfDr6PRiRWodjXJTB6L9OS3pbdVGKZjCH/612H+3uB7776FjSR33eEn2UWy6fDJSlZZQ9DweMu1A64uopqFmWLIUXDZW8RYv36Tmzsy1vKJLlleQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709920192; c=relaxed/simple;
-	bh=NTw5m8QSmuC8XRFb3K66IhdRGyQIJPdjQ/WpbkkdhwA=;
+	s=arc-20240116; t=1709920213; c=relaxed/simple;
+	bh=D4lAezz1Fe85IAGC56X4pGJ4Or5jTbAWiToJS9KUs+U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tFHp+wHxTO+yOVgP9wrVQJgMiBKFejP/r7z196BXGtugJaiWSaeUn7o8Qi5Xu7ZmYbtzEPTLFMLBb9ALgYbVWR4WIsQAuF2M1XsKH/hOTqQy9vMWLWjJ31fhGD4OPUK6cLQNZzvUAhpuzmKZQTxRHL/rcHm01xLtmP09NWZZDxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWfnL+V4; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51340e89df1so2534942e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:49:50 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=OZQ3bcWWXQ3JXIfpcx9tBEgpwo9WtBuxbi0pYj0AqgTVutU7x0lr985A7Ih5L/w+wwrJ4RkWE+IAkOtmPRX7lNZL1ZE3ZDpW8s76R0Htt+Ra1mjTfOy1lC1vnbG/YhXi8rem6UjbDh/UuKMbjPb4Alp2Wi5U3PYBEBmxvKueJ+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=g1t4A1/F; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c213690558so427656b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:50:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709920189; x=1710524989; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1709920211; x=1710525011; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RVmtGOEyddruZt6xQ1RfZdJH7pbb7KXfKgWyAx5uUDQ=;
-        b=YWfnL+V4j45sLmy3QZzqTtBdtdBHlFqfA7UAVXd0hzegSdOy2AapG2EntMJoJqaDYE
-         qMXacLJ1Lrc3xeLY2H5o2h8upfIYdFJ4pfivyLiDv4reQI2ISpSijaAUQ3LMCb8uADHA
-         Z7SkFXc6TAtsJSMKR+LlZg9pndHvxngtjFr8k35dCR7f5uaWfAe0lR6kHWok2pn9R2I9
-         uEqq9A8Uy7Vx5bhvqjOlcMT946BVBe1/2vPJ62QT9Dgji2Ov8G3fH0CY+x/ztcK5VEj0
-         YX8+2OiGWpZgxCvCZYISGib0aHKJFg45+F8rK79dTgAA8zOxb0S6xw1IImfv2fnNeemE
-         FrTw==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ExG2PAh8KBxjdV5p9HMOJ0D9TzLucoEgJI4R5jjzcnY=;
+        b=g1t4A1/F3VBoXhwgA47Z/5SI1la55bjbx0dPpr6r1kj06r8XTRuDs0GnXT3UqiyYx5
+         0QJswKUHTruZxalRUFswV3qWq0O/nOHrc22YDEcAqx3KFFczwyPMZSBlMkEBWvbJUOhq
+         e6ISKN2bOIG4yTohIPygo2XT1XJoczuCn7DyMTtjxBUBTJR/42CORcXW7hnZeFYZNzX0
+         5deY0j3aUunes8ne1P0XFtdmb6sVtuR/3jnQPyQdBWyvv7KPw+9B088I+RJTPHBX0Mgk
+         niTF7Wefk3Dop1xqg3+t2h1qXI5gtXdfFvauQ5xqVHADCYjGbpav+IuNgJsSX4Im9ob4
+         oB1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709920189; x=1710524989;
+        d=1e100.net; s=20230601; t=1709920211; x=1710525011;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RVmtGOEyddruZt6xQ1RfZdJH7pbb7KXfKgWyAx5uUDQ=;
-        b=TRQRJ4Be0uzG9n1wPQNeUZqAqRDuWO6K5B0+MbjVOBWL7UPwGOGVLkAlzXzHr/19hp
-         efJHAhSolcmrS8jAgEjfi/d0jKK5o3Vl4y/jhLmrKyq1OgYnL9hmqsPi8uDPSPvOhgni
-         0pnuqJGL9hTatj+ei6m7Vmiaq8l9lnAWOVUfQk2baGq6faCxFn5a/4gWs0LA6pr1Ih53
-         0/b+h6KHN4IKQNGX/ULB7goM2R/KeJHjb2jtUz7U6bOIZsiJgC+iDAbF3bni/JgxmW+7
-         D8S3a+Y1yZvBazl+ulKsCHmYgV+l/oH2DoUJTL3cwgUGpq/ciRisvDcuCKhEMrYFw3iL
-         uM8g==
-X-Gm-Message-State: AOJu0Yx3aaMs4AWm1Qzd6ZDu0/g+zrcRcZIgxurFn4zuKMTDtbnB4kn3
-	YFqQSYs6tvy24wQliupxeFTzmRT4K2q/RdR3CNna3qt5Cx99b+HD
-X-Google-Smtp-Source: AGHT+IHljeVg803lDBelaITeYO1VPSVJ6Uvq+MWi9caz/+htaUyyZyk7fFzg7gPoIof60mTczN6whw==
-X-Received: by 2002:a05:6512:20c1:b0:512:fe1f:da5b with SMTP id u1-20020a05651220c100b00512fe1fda5bmr3355366lfr.57.1709920188236;
-        Fri, 08 Mar 2024 09:49:48 -0800 (PST)
-Received: from gmail.com (1F2EF3E5.nat.pool.telekom.hu. [31.46.243.229])
-        by smtp.gmail.com with ESMTPSA id i20-20020a05600c355400b004131035d28csm6034473wmq.23.2024.03.08.09.49.47
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ExG2PAh8KBxjdV5p9HMOJ0D9TzLucoEgJI4R5jjzcnY=;
+        b=bjxw1op4+jJOrC4xJ21SeWK3hqYDuIrFQO59P4luIS/jT8POJ+2iIFNbElVLg+8EO7
+         czsFJ0JEVD669KFPvS7kyGJ4a57spkbera5pJmPfV+0eW9zcSnrwXaNajt7wAST3bjqJ
+         YQrJg+StXtgG++Dk9pcqmIGhvrbYmRZgxlDV/A4ZaKM5UjBsGd6rlTU/BHfHwk6Jy6Eo
+         zMp62x1NSnt2+MVtKQqLc9vB8qihBl/xtUM62kdAmQCG2egcU0peuo3W1CJWDfJ+Lu+I
+         YrdfLDAAGjGYjRr5yXnSmflGMxCCCuIPCqt4Bu2KGtyhzCZEC/8X+55U2w+o7KcLoBmP
+         rhLg==
+X-Forwarded-Encrypted: i=1; AJvYcCWBJH+EmeP2zNDAqZcUaQ0fH9hapU8xnLJUxLUlqEMjA5w1YIC+kdNxbbRtI4pdnA/98GJWXB77cRWgoiJP4OXhWL+ytjVMz5N3zBoq
+X-Gm-Message-State: AOJu0Yy8kkS4AmWQ9VJTesy2TAf5doRNW/IMsMDyKMkHZxafviWYMi3/
+	S4hCpxSilvcnckH2tQ2gtAPx+TGQCAcVA83PdQEQ4s+LqlkqBmYpi1bXcCqCVBA=
+X-Google-Smtp-Source: AGHT+IHqotrzjMlulGgfxn/O3daDWLB1M/i0FqmA6MZtfAe0W8HVLP0YT6jYEI77fyNP3sENbK2zQA==
+X-Received: by 2002:a54:4781:0:b0:3c1:ebff:89a2 with SMTP id o1-20020a544781000000b003c1ebff89a2mr10704452oic.55.1709920209271;
+        Fri, 08 Mar 2024 09:50:09 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id t11-20020a0568080b2b00b003c1f461d1cbsm1447808oij.37.2024.03.08.09.50.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 09:49:47 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Fri, 8 Mar 2024 18:49:45 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux-kernel@vger.kernel.org,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: Re: [PATCH 07/13] sched/balancing: Rename find_src_rq() =>
- sched_balance_find_src_rq()
-Message-ID: <ZetPub9pYESpcvms@gmail.com>
-References: <20240308111819.1101550-1-mingo@kernel.org>
- <20240308111819.1101550-8-mingo@kernel.org>
- <CAKfTPtAdoZJEWB=ty-uNiPESCgk3wD_GR6mW+ABMGcWthAwNGQ@mail.gmail.com>
+        Fri, 08 Mar 2024 09:50:08 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rieMB-007Z0m-Os;
+	Fri, 08 Mar 2024 13:50:07 -0400
+Date: Fri, 8 Mar 2024 13:50:07 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/8] iommufd: Add fault and response message
+ definitions
+Message-ID: <20240308175007.GW9225@ziepe.ca>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+ <20240122073903.24406-4-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,26 +93,90 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtAdoZJEWB=ty-uNiPESCgk3wD_GR6mW+ABMGcWthAwNGQ@mail.gmail.com>
+In-Reply-To: <20240122073903.24406-4-baolu.lu@linux.intel.com>
 
+On Mon, Jan 22, 2024 at 03:38:58PM +0800, Lu Baolu wrote:
 
-* Vincent Guittot <vincent.guittot@linaro.org> wrote:
+> +/**
+> + * enum iommu_hwpt_pgfault_flags - flags for struct iommu_hwpt_pgfault
+> + * @IOMMU_PGFAULT_FLAGS_PASID_VALID: The pasid field of the fault data is
+> + *                                   valid.
+> + * @IOMMU_PGFAULT_FLAGS_LAST_PAGE: It's the last fault of a fault group.
+> + */
+> +enum iommu_hwpt_pgfault_flags {
+> +	IOMMU_PGFAULT_FLAGS_PASID_VALID		= (1 << 0),
+> +	IOMMU_PGFAULT_FLAGS_LAST_PAGE		= (1 << 1),
+> +};
+> +
+> +/**
+> + * enum iommu_hwpt_pgfault_perm - perm bits for struct iommu_hwpt_pgfault
+> + * @IOMMU_PGFAULT_PERM_READ: request for read permission
+> + * @IOMMU_PGFAULT_PERM_WRITE: request for write permission
+> + * @IOMMU_PGFAULT_PERM_EXEC: request for execute permission
+> + * @IOMMU_PGFAULT_PERM_PRIV: request for privileged permission
 
-> On Fri, 8 Mar 2024 at 12:18, Ingo Molnar <mingo@kernel.org> wrote:
-> >
-> > Standardize scheduler load-balancing function names on the
-> > sched_balance_() prefix.
-> 
-> This patch renames the renaming done by the previous one. They could
-> be merged in one
-> 
-> sched/balancing: Rename find_busiest_queue() => find_src_rq()
-> sched/balancing: Rename find_src_rq() => sched_balance_find_src_rq()
+You are going to have to elaborate what PRIV is for.. We don't have
+any concept of this in the UAPI for iommufd so what is a userspace
+supposed to do if it hits this? EXEC is similar, we can't actually
+enable exec permissions from userspace IIRC..
 
-Yeah - I already did that in the 00/13 summary description,
-have done it in the series as well.
+> +enum iommu_hwpt_pgfault_perm {
+> +	IOMMU_PGFAULT_PERM_READ			= (1 << 0),
+> +	IOMMU_PGFAULT_PERM_WRITE		= (1 << 1),
+> +	IOMMU_PGFAULT_PERM_EXEC			= (1 << 2),
+> +	IOMMU_PGFAULT_PERM_PRIV			= (1 << 3),
+> +};
+> +
+> +/**
+> + * struct iommu_hwpt_pgfault - iommu page fault data
+> + * @size: sizeof(struct iommu_hwpt_pgfault)
+> + * @flags: Combination of enum iommu_hwpt_pgfault_flags
+> + * @dev_id: id of the originated device
+> + * @pasid: Process Address Space ID
+> + * @grpid: Page Request Group Index
+> + * @perm: Combination of enum iommu_hwpt_pgfault_perm
+> + * @addr: page address
+> + */
+> +struct iommu_hwpt_pgfault {
+> +	__u32 size;
+> +	__u32 flags;
+> +	__u32 dev_id;
+> +	__u32 pasid;
+> +	__u32 grpid;
+> +	__u32 perm;
+> +	__u64 addr;
+> +};
 
-Thanks,
+Do we need an addr + size here? I've seen a few things where I wonder
+if that might become an enhancment someday.
 
-	Ingo
+> +/**
+> + * struct iommu_hwpt_page_response - IOMMU page fault response
+> + * @size: sizeof(struct iommu_hwpt_page_response)
+> + * @flags: Must be set to 0
+> + * @dev_id: device ID of target device for the response
+> + * @pasid: Process Address Space ID
+> + * @grpid: Page Request Group Index
+> + * @code: response code. The supported codes include:
+> + *        0: Successful; 1: Response Failure; 2: Invalid Request.
+
+This should be an enum
+
+> + * @addr: The fault address. Must match the addr field of the
+> + *        last iommu_hwpt_pgfault of a reported iopf group.
+> + */
+> +struct iommu_hwpt_page_response {
+> +	__u32 size;
+> +	__u32 flags;
+> +	__u32 dev_id;
+> +	__u32 pasid;
+> +	__u32 grpid;
+> +	__u32 code;
+> +	__u64 addr;
+> +};
+
+Do we want some kind of opaque ID value from the kernel here to match
+request with response exactly? Or is the plan to search on the addr?
+
+Jason
 
