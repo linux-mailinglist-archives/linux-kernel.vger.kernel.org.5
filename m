@@ -1,187 +1,208 @@
-Return-Path: <linux-kernel+bounces-96467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF924875C92
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A19875CAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:22:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD063B217CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:09:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEB72B21878
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF95629D01;
-	Fri,  8 Mar 2024 03:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810C22C190;
+	Fri,  8 Mar 2024 03:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="U8C6qLJc"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="IWHT8prZ"
+Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E12B1CFB5;
-	Fri,  8 Mar 2024 03:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0942206E
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 03:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.236
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709867358; cv=none; b=rhC6B3L2ZQ6L/NZjd2eD40AkHpT9UZaDCEw/CITk80/hUklw7IaugfmkeZgfgfI55yvp6IGLZgsgzdEASYNDwXTmP8r27eiddR4lwDhZ9qBDqeTb7ywYboks2+dmjV+0nnDLQM/mIXwFYaPl/gzv3s9V+DaqewBRrp0ZJUBOZ0I=
+	t=1709868164; cv=none; b=MFnZhKvt4t+VlF30ZFI4SMC2EjVQqisc8vo4C7HU5WOdg/3CYIfKBsn6irhByy0g9Z/jEYlr5HFD8uCfnjNpMpWcrARuLUq5GoGt6kORVUCgdHzFFGyZD8Pg1MhG7aquvN+ouRdBjwCqLrTLIuE5BKtL3jnqXbJP5odHfftTCzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709867358; c=relaxed/simple;
-	bh=f9cqgc6EofVeo+oTsMNSF+u55WfFESfvv7lq6Pl1hG4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Wpr6bIT9D0+fWc36sZ+aj2FowIIiXVNTKRoBC2XpjP7qhjs5CI00EN4D/LSr3Vl5yWx9R9kQRaLDQoSuVVCxRe/AMSTVWhRDP2y5YLWjgVKrcQZ6Z1dVOcmPTNhQqlW+uzq7pzHczUn2gWkH6vwSTahzQhIFWn6nKiAbIC23RPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=U8C6qLJc; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4282TQp4019873;
-	Fri, 8 Mar 2024 03:09:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=JgzMyM7eqHzbroMRm9aZ0Mdd0JyjIWl25BdSwhb/aAU=; b=U8
-	C6qLJcvP+e4/g88jlFUOJouTWouYzXm7/e6x+/h5DdHsqssTrSZ8U1GXIBLj6IZO
-	LEb6VklyPJAwf0FSkidw+p90c/VyhrHp46ebaco17HsgIRm6ih3agYCIQ0vlR023
-	dSdhbIn/fm0xfmfOA8dxbbY9Wz60PxywXDhplFHusRoKNrF6fee1lWN5wYnq0YCM
-	M3wooucUxP0bGj0l4br9aRUh8E+36KOh/MNnWzVUHPefwEpeLBLDJtYMf8xo48KR
-	3gIYTe+LcDU2/f+Ff3aSEN0NV0YXtRi2PbYiZY3wyDh7c49mFl31z1ssTMJdTdi2
-	O89WjgS86s8AicGJ8E0Q==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqn8n0kfy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 03:09:02 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 428392oG013851
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 8 Mar 2024 03:09:02 GMT
-Received: from [10.216.20.61] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
- 2024 19:08:56 -0800
-Message-ID: <e83ed3e5-0c31-cfae-6f75-211709e79aa5@quicinc.com>
-Date: Fri, 8 Mar 2024 08:38:52 +0530
+	s=arc-20240116; t=1709868164; c=relaxed/simple;
+	bh=N1LcdT9YFlU2zvycug7Dn/0juEHxMXKluboRi+yLDFQ=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BXyphJ4NB+M1LKY4esp/zYya3BKaXwQilgKs9Fwl3jMQaoCysfe7a9LCz2GEbxiKIb7/ZE3ohT4M0JzhX6SSeF2JekUamOjZ/GHJis/lEqOOUpb+HlKvbMrvKVXyFG2UpVoP480WHL8tj0L4f64kvusG5N+DfrlkTjkZDc/QRbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=IWHT8prZ; arc=none smtp.client-ip=203.205.221.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1709867851;
+	bh=slXgo+HOlUPrCb1TxJcdKdnvyfK0OpgNKTsBjp23Inc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=IWHT8prZjvpzwixelSI4CaSewOFPqhFO3pMoz8034VJonhkt0fLzpO1hB6eYLJ+9+
+	 Rh0MY+yLI68CJ91XbMTxWuiSlan2RPDT4NLGh1jbPhkfsA/f3eYeqzmptqsua4r32D
+	 +HB2DvoTgyJzKvmf0B0pbau1ObqHtS/ZAfft5rDU=
+Received: from localhost ([223.104.61.45])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id 2DC1B072; Fri, 08 Mar 2024 11:11:28 +0800
+X-QQ-mid: xmsmtpt1709867488tivk0zmnn
+Message-ID: <tencent_3FCF3AA5E98BC9395F98803764A6B2F7CC07@qq.com>
+X-QQ-XMAILINFO: MIQUMGBCngpGsHw/U5Dd179VQ3iTXPldXhmUVn2fd3NuVpqyQ3w5KjycopU522
+	 v+QSazWVZgjBuhJTsTDEQ89MU1GArIrm5nlGsq3hZecjtWTh44Q7A6JYLhQFYR+3JHsMWYLfJW/c
+	 NbikDas75mvZbDPLSKuzGzy57o4M3DuRu9FJ+HRBb+A1viE9W5HRdjJGWOwIJhLj1YRZArpW/z9i
+	 vzNBQRFiuVrbYZjJAm+JBU1wdoADfnWNZHzQoqHyCSW5+ioMHLN1Aqvgn9kYSdP1YGNhtF9zIkY0
+	 1F4CobcMmXpnTt5dHR4GWanvy5eBGGkru+RkHay4D96G/KQYX4970dkJ18+fa0VVaVS0/eXENcOl
+	 wMFfHaP/vK7qgcUbgfa06C0O0KUiz5GwDyezR0R/Fys7e6y3oZAPmi8w77ItRzonAKDnZi2Ytmi6
+	 +5yMc5pq9AQ9jywLBPE6JzyWOI2EdJ1JLpom6GFyhuRVowd8X0B53lZ9+QVxdWcNzyI4xQgAoORy
+	 YTmj56enXdRoTlnWRvq08V1dH8bOFksLgWBsDsQ2WLbqItaHDXhn5IPhqFNXNAr7wPsygYWK6lVh
+	 083r4a3swOgvaY14eLNA/z+6SWnYL8h2uKwNoJ+23VyKTnqMrwef20xRXbl3I6zTlRmLig4jjz4n
+	 et/b28rGMEvAJFEElwEJ1BvaC1HgYX2+nm6l/9HZpmLVYxVEEWg6W62kFCAM2SZSzfKh+qXNNpjX
+	 uAMM1BdW/bZXQ0pvCFhh3XMhs9i7jhi3rczM+1mbnkKO4goyyaW0Wm5wq8mfc8LOXIlYqc0ZLL5m
+	 mD/LW9P4lKPGJFW+JKbxIT1hDxXR6U2HvUP7d5dDp2VYXGV4VsKDvvQYMW+EOKHumDGAFbZ3Y+Li
+	 Xh2MTIP4GNhSG9TXBTilmk5WStS34bhchbXmvRzL0GbyRtBUS0tuO9U0GmxrH+Wg==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+Sender: kenneth-lee-2012@foxmail.com
+Date: Fri, 8 Mar 2024 11:10:21 +0800
+From: Kenneth-Lee-2012@foxmail.com
+To: Andrea Parri <parri.andrea@gmail.com>
+Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
+	paulmck@kernel.org
+Subject: Re: Question about PB rule of LKMM
+X-OQ-MSGID: <20240308031001.gumudf4xcixxuued@kllt01>
+References: <Zedd18wiAkK68Lzr@andrea>
+ <tencent_744E0AF832049C200F96FD6582D5114D7F0A@qq.com>
+ <ZeipiSVLR01jmM6b@andrea>
+ <e05fa6a9-c810-46cb-b033-b91ae7a5c382@rowland.harvard.edu>
+ <ZejC+lutRuwXQrMz@andrea>
+ <Zenip+8BDM3p+MUh@andrea>
+ <eb8f2a21-d388-424d-8504-ccd7bdb53a93@rowland.harvard.edu>
+ <ZeoFBkB1BeTdEQsn@andrea>
+ <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
+ <ZeoQvj3l6moF9KdQ@andrea>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v2] PCI: dwc: Enable runtime pm of the host bridge
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>,
-        "Rafael J. Wysocki"
-	<rjw@rjwysocki.net>
-CC: Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel
-	<gustavo.pimentel@synopsys.com>,
-        Manivannan Sadhasivam
-	<manivannan.sadhasivam@linaro.org>,
-        Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?=
-	<kw@linux.com>,
-        Rob Herring <robh@kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_parass@quicinc.com>
-References: <20240307215505.GA632869@bhelgaas>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240307215505.GA632869@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Zr3Z94GuKV4sm2K3ytlSAPueUTSiyLlz
-X-Proofpoint-GUID: Zr3Z94GuKV4sm2K3ytlSAPueUTSiyLlz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_02,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- adultscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- impostorscore=0 malwarescore=0 suspectscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403080024
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeoQvj3l6moF9KdQ@andrea>
 
-
-
-On 3/8/2024 3:25 AM, Bjorn Helgaas wrote:
-> [+to Rafael, sorry, another runtime PM question, beginning of thread:
-> https://lore.kernel.org/r/20240305-runtime_pm_enable-v2-1-a849b74091d1@quicinc.com]
+On Thu, Mar 07, 2024 at 08:08:46PM +0100, Andrea Parri wrote:
+> Date: Thu, 7 Mar 2024 20:08:46 +0100
+> From: Andrea Parri <parri.andrea@gmail.com>
+> To: Alan Stern <stern@rowland.harvard.edu>
+> Cc: Kenneth-Lee-2012@foxmail.com, linux-kernel@vger.kernel.org,
+>  paulmck@kernel.org
+> Subject: Re: Question about PB rule of LKMM
 > 
-> On Thu, Mar 07, 2024 at 07:28:54AM +0530, Krishna Chaitanya Chundru wrote:
->> On 3/6/2024 1:27 AM, Bjorn Helgaas wrote:
->>> On Tue, Mar 05, 2024 at 03:19:01PM +0530, Krishna chaitanya chundru wrote:
->>>> The Controller driver is the parent device of the PCIe host bridge,
->>>> PCI-PCI bridge and PCIe endpoint as shown below.
->>>>
->>>> 	PCIe controller(Top level parent & parent of host bridge)
->>>> 			|
->>>> 			v
->>>> 	PCIe Host bridge(Parent of PCI-PCI bridge)
->>>> 			|
->>>> 			v
->>>> 	PCI-PCI bridge(Parent of endpoint driver)
->>>> 			|
->>>> 			v
->>>> 		PCIe endpoint driver
->>>>
->>>> Since runtime PM is disabled for host bridge, the state of the child
->>>> devices under the host bridge is not taken into account by PM framework
->>>> for the top level parent, PCIe controller. So PM framework, allows
->>>> the controller driver to enter runtime PM irrespective of the state
->>>> of the devices under the host bridge.
->>>
->>> IIUC this says that we runtime suspend the controller even though
->>> runtime PM is disabled for the host bridge?  I have a hard time
->>> parsing this; can you cite a function that does this or some relevant
->>> documentation about how this part of runtime PM works?
->>>
->> Generally controller should go to runtime suspend when endpoint client
->> drivers and pci-pci host bridge drivers goes to runtime suspend as the
->> controller driver is the parent, but we are observing controller driver
->> goes to runtime suspend even when client drivers and PCI-PCI bridge are
->> in active state.
+> > > I'd disagree with these premises: certain instructions can and do execute
+> > > at the same time.
+> > 
+> > Can you give an example?
 > 
-> It surprises me that a device could be suspended while children are
-> active.  A PCI-PCI bridge must be in D0 for any devices below it to be
-> active.  The controller is a platform device, not a PCI device, but I
-> am similarly surprised that we would suspend it when children are
-> active, which makes me think we didn't set the hierarchy up correctly.
+> I think I'm starting to see where this is going..., but to address the
+> question: really any example where the LKMM doesn't know better, say
 > 
-> It doesn't seem like we should need to enable runtime PM for a parent
-> to keep it from being suspended when children are active.
-Here we are not enabling runtime PM of the controller device, we are
-enabling runtime PM for the bridge device which is maintained by the
-PCIe framework. The bridge device is the parent of the PCI-PCI bridge
-and child of the controller device. As the bridge device's runtime
-PM is not enabled the PM framework is ignoring the child's runtime
-status.
+> C test
+> 
+> {}
+> 
+> P0(int *x)
+> {
+> 	*x = 1;
+> }
+> 
+> P1(int *x)
+> {
+> 	*x = 2;
+> }
+> 
 
-- Krishna Chaitanya.
+TBH, the concept "execute-before" gave me a lot of trouble when I read
+explanation.txt at the very beginning. The name hints an absolute and
+global timeline over everything. But that makes no sense because no one
+can observe that order at all. So till now, I still need to translate
+the concept to an order by particular observer , such as a CPU or the
+memory system, for further understanding.
 
->>>> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
->>>> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
->>>> @@ -16,6 +16,7 @@
->>>>   #include <linux/of_pci.h>
->>>>   #include <linux/pci_regs.h>
->>>>   #include <linux/platform_device.h>
->>>> +#include <linux/pm_runtime.h>
->>>>
->>>>   #include "../../pci.h"
->>>>   #include "pcie-designware.h"
->>>> @@ -505,6 +506,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
->>>>          if (pp->ops->post_init)
->>>>                  pp->ops->post_init(pp);
->>>>
->>>> +       pm_runtime_set_active(&bridge->dev);
->>>> +       pm_runtime_enable(&bridge->dev);
->>>> +
->>>>          return 0;
->>>>
->>>>   err_stop_link:
+And speaking of example, can I ask another question?: 
+
+In the "THE HAPPENS-BEFORE RELATION: hb" section of explanation.txt,
+it uses the following example to explain the prop relation:
+
+	P0()
+	{
+		int r1;
+
+		WRITE_ONCE(x, 1);
+		r1 = READ_ONCE(x);
+	}
+
+	P1()
+	{
+		WRITE_ONCE(x, 8);
+	}
+
+if r1 = 8, we can deduce P0:Wx1 ->coe P1:Wx8 ->rfe P0:Rx, this can be
+explained with the operational model. But according to the definition of
+prop,
+
+  let prop = [Marked] ; (overwrite & ext)? ; cumul-fence* ; [Marked] ; rfe? ; [Marked]
+
+The link should contain a cumul-fence, which doesn't exist in the
+example.
+
+This also makes me confuse on what explanation.txt explains: the
+dependable rule/link deduced from operational model, or the physical
+meaning of the concepts used in the cat definition?
+
+Alan's discussion make feel the answer is former. If it is, my question is
+closed. But I feel it should be latter. In this case, I think we cannot
+just explain "it can be explained in the operational model";)
+
+(CC Alan: I couldn't receive your previous email in this topic, I think
+it is because I'm not a subscriber of lkml. I would be very grateful if
+you could cc me in the follow-up email)
+
 > 
-> Bjorn
+> > >  FWIW, in the formal model, it is not that difficult to
+> > > provide examples of "(not F ->xb E) and (not E ->xb F)".
+> > 
+> > That's because the xb relation in the formal model does not fully 
+> > capture our intuitive notion of "executes at the same time" in the 
+> > informal operational model.
+> > 
+> > Also, it's important to distinguish between:
+> > 
+> > (1)	Two instructions that are forced (say by a dependency) or known 
+> > 	(say by an rfe link) to execute in a particular order; versus
+> > 
+> > (2)	Two instructions that may execute in either order but do execute
+> > 	in some particular order during a given run of the program.
+> > 
+> > The formal xb relation corresponds more to (1), whereas the informal 
+> > notion corresponds more to (2).
+> 
+> This appears to be the key observation.  For if, in the operational model,
+> (not F ->xb E) implies (E ->xb F) then I'll apologize for the noise.  :-)
+> 
+> 
+> > > > The new text says the same thing as the original, just in a more 
+> > > > condensed way.  It skips the detailed explanation of why E must execute 
+> > > > before W propagates to E's CPU, merely saying that it is because "W is 
+> > > > coherence-later than E".  I'm not sure this is an improvement; the 
+> > > > reader might want to know exactly how this reasoning goes.
+> > > 
+> > > The current text relies on an argument by contradiction.  A contradiction
+> > > is reached by "forcing" (F ->xb E), hence all it can be concluded is that
+> > > (not F ->xb E).  Again, AFAICS, this doesn't match the claim in the text.
+> > 
+> > That's why I suggested adding an extra sentence to the paragraph (which 
+> > you did not quote in your reply).  That sentence gave a direct argument.
+> 
+> Well, I read that sentence but stopped at "These contradictions show that"
+> for the reason I detailed above.
+> 
+>   Andrea
+
+-- 
+			-Kenneth Lee (Hisilicon)
+
 
