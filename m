@@ -1,134 +1,71 @@
-Return-Path: <linux-kernel+bounces-97125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 648468765CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:59:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FE708765E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:01:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11B2E1F22697
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:59:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C907B25B83
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4033FBBF;
-	Fri,  8 Mar 2024 13:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gUy2SIkG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759164779F;
-	Fri,  8 Mar 2024 13:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0555A7BB;
+	Fri,  8 Mar 2024 13:59:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E945A79C;
+	Fri,  8 Mar 2024 13:59:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906352; cv=none; b=lVX1KTivf9CYW3vGR5Ouhn70449hhKZgip7gS7J5fV5jUBfnFpSG3jZS3dsdW2AxvwKAFtjV2w6TXckvrau0ITfxamQyqp+MBKhkPol9rjpA2LjqwMNbeqBiSGeIvqgcL8CqE7gd9G+WBGk97o/l16/JT5M02XVDWb0sxvH8NXs=
+	t=1709906374; cv=none; b=ErEsY76lVUPvrbRuov9qDDBkoDVHNF9rcx69Zl5Yimf1HglX0nb/EaPYjd1AyB/tvYtpIHoWDoqiU9XjiVBqYgcFkfiyltLLe/VYMxEGPh7sMYTBEFdYuMIIBvdetj9+ejqI8edngQV6Pqs0rSoQExF+15Hwx/3m1no/BGJ59dE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906352; c=relaxed/simple;
-	bh=iQ3n49AeOSkqOZc0ifDVP4WSTm2rWSyNDdWitFB/NJA=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ao6uf29Oqpr20+oJpvXM3A+5bEEx6dVZ2CI6Zpu210dE1IJM1zAwIzwffSCxfT5YizlBfsvjcHLc1fUarZRvlxoQY76srmdKAwG/7kROQWfDu7VdNYmOMaf+lrCbDrv79ZfPxoo9Zk8M87DUaJ+jeDvr8d/tgNEUzxO3D2xczlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gUy2SIkG; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709906351; x=1741442351;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=iQ3n49AeOSkqOZc0ifDVP4WSTm2rWSyNDdWitFB/NJA=;
-  b=gUy2SIkGyaxd1wkSnJcCOt/XUWhCPqTvDuzSEPWBb75WXhqHXqDAFcbs
-   gyz2f6DoDAW2O7oVfbThP1c1e0OCGgB8LskZzp8ppcjkVTBCmvhD9/XIT
-   7OgP6YDvolPCnqYFJI+EWtcSKMCEL1f42amR4LRNPXcZV4RyVGAxBn+uY
-   LDWvEMmJeKXRsOXS4CXFPId0jELB/QOntphhiCJeb+S5FDfWGGyw7NxZd
-   yf9npTji9u3WzrInqNnMiM/EejeY5QVvAIqFyUGlSKkHrfxU+8SuyhQoy
-   /x7CqGzqqZdt+zxddy07F67RrynMaj321kGOHxPoiNpCeJf2Gl0qvQN3W
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4470238"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="4470238"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:59:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="41445552"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.186])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:59:06 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 8 Mar 2024 15:59:02 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: Fenghua Yu <fenghua.yu@intel.com>, 
-    Reinette Chatre <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>, 
-    tony.luck@intel.com, "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>, 
-    LKML <linux-kernel@vger.kernel.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/4] selftests/resctrl: SNC support for CMT
-In-Reply-To: <6181937a-54b4-8b17-0c24-734764a205d1@linux.intel.com>
-Message-ID: <5983d1aa-6e1e-fb49-b95a-429a9decfe7f@linux.intel.com>
-References: <cover.1709721159.git.maciej.wieczor-retman@intel.com> <75849cb145429798b21c23b6be4abd7ece9df57b.1709721159.git.maciej.wieczor-retman@intel.com> <6181937a-54b4-8b17-0c24-734764a205d1@linux.intel.com>
+	s=arc-20240116; t=1709906374; c=relaxed/simple;
+	bh=SRfdLg5n8IYvB/LXF9I6PRuHNqVFh+8x4mkOX53oHrk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KnlgHk0/mcuYVhPdn6z7TLJNU19pVU46koerfCaXgMwUQ5TL9N4kNKTJDdLwRhmfnqC+FrU1LlWCR3Lq3J9D46qDHrO7Rbd9jp06xexSKL7j8scM8VjUksPYTL/9ZLfO6L+m128ddJMYu2MYixhi3Qw6uaWbo7zJywQVSmWzbys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD2D8C15;
+	Fri,  8 Mar 2024 06:00:08 -0800 (PST)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12A203F762;
+	Fri,  8 Mar 2024 05:59:29 -0800 (PST)
+Date: Fri, 8 Mar 2024 13:59:27 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Sibi Sankar <quic_sibis@quicinc.com>
+Cc: <cristian.marussi@arm.com>, <rafael@kernel.org>,
+	<viresh.kumar@linaro.org>, <morten.rasmussen@arm.com>,
+	<dietmar.eggemann@arm.com>, <lukasz.luba@arm.com>,
+	<sboyd@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<quic_mdtipton@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+	<nm@ti.com>
+Subject: Re: [PATCH V3 1/2] firmware: arm_scmi: Add support for marking
+ certain frequencies as boost
+Message-ID: <ZesZv9uFJBKIrQSC@bogus>
+References: <20240308104410.385631-1-quic_sibis@quicinc.com>
+ <20240308104410.385631-2-quic_sibis@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-330930196-1709906342=:9765"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308104410.385631-2-quic_sibis@quicinc.com>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, Mar 08, 2024 at 04:14:09PM +0530, Sibi Sankar wrote:
+> All opps above the sustained level/frequency are treated as boost, so mark
+> them accordingly.
+> 
+> Suggested-by: Sudeep Holla <sudeep.holla@arm.com>
 
---8323328-330930196-1709906342=:9765
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
 
-On Fri, 8 Mar 2024, Ilpo J=E4rvinen wrote:
-
-> On Wed, 6 Mar 2024, Maciej Wieczor-Retman wrote:
->=20
-> > Cache Monitoring Technology (CMT) works by measuring how much data in L=
-3
-> > cache is occupied by a given process identified by its Resource
-> > Monitoring ID (RMID).
-> >=20
-> > On systems with Sub-Numa Clusters (SNC) enabled, a process can occupy
-> > not only the cache that belongs to its own NUMA node but also pieces of
-> > other NUMA nodes' caches that lie on the same socket.
-> >=20
-> > A simple correction to make the CMT selftest NUMA-aware is to sum value=
-s
-> > reported by all nodes on the same socket for a given RMID.
-> >=20
-> > Reported-by: "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>
-> > Closes: https://lore.kernel.org/all/TYAPR01MB6330B9B17686EF426D2C3F308B=
-25A@TYAPR01MB6330.jpnprd01.prod.outlook.com/
-> > Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> > ---
-
-> > @@ -828,6 +828,8 @@ int resctrl_val(const struct resctrl_test *test,
-> >  =09sleep(1);
-> > =20
-> >  =09/* Test runs until the callback setup() tells the test to stop. */
-> > +=09get_domain_id("L3", uparams->cpu, &res_id);
->=20
-> Hardcoding L3 here limits the genericness of this function. You don't eve=
-n=20
-> need to do it, get_domain_id() does "MB" -> "L3" transformation implicitl=
-y=20
-> for you so you can just pass test->resource instead.
->=20
-> Also, I don't understand why you now again make the naming inconsistent=
-=20
-> with "res_id".
->=20
-> If you based this on top of the patches I just posted, resctl_val()=20
-> already the domain_id variable.
-
-Ah, I retract what I said. I see you actually want it only from L3.
-
-> > +     res_id *=3D snc_ways();
-
-I don't understand what this is trying to achieve and how.
-
---=20
- i.
-
---8323328-330930196-1709906342=:9765--
+--
+Regards,
+Sudeep
 
