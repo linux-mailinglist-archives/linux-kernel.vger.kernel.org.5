@@ -1,169 +1,139 @@
-Return-Path: <linux-kernel+bounces-96598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C5D875EC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:43:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 207BB875ECC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:46:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 055C01C215CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:43:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B39491F23C1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8914B4F5F9;
-	Fri,  8 Mar 2024 07:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E66851005;
+	Fri,  8 Mar 2024 07:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="D1EDDlTR"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="WFpgjz8y"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007862AD39
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243D04F1FB
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709883788; cv=none; b=C6rCbTInw9j87PUVZh6bCTTN+c7FHKvxKI536LWGb5gCyVytuvQ5yJGrRG8YkYpYtR4lhOc12XZMMqmHEi6IIGMo6TRepTZL5LgaHbSW/87hwP0Kr9UId5bSXGPgzYLcBOUQkZbhorL++IfauNFPl6pYRhsZZTXnlRCJVWws/dk=
+	t=1709883974; cv=none; b=DSFhU2hg1wYqRZ6ugL/zD//aOnacFTGDdZ6ww+af3sdMxsr2214r1tsZ1LPvdb1u1Hie2qR9eyakrLD+Py8PSdQJnr2gELvXwZITbrzSMu/nX6dUiJA3gl3YEYxCrOcBg5EwbtTn8VyfYVOhYjIc91VUkXAvknjuo5ScD0Q1EwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709883788; c=relaxed/simple;
-	bh=gAzhbqGYaUFA9Soc4JFCbArH4M6I4PLhli+YuD73UvI=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=klLFfZWGA9e+lmztc4bjBredidi8JpERB4CCVqN4slwS2ToZDDJTR3lyocClYPJ1bdCpZUvUEZYEGEkaHdCYKGHhukwEcLwgZhb6WLYidtfmxj5BJtgZQMbmPLd9AALOmuOYcVspfaLym/auPDYVtkZYz9gG7/+qyXnRX5aB9uQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=D1EDDlTR; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1709883974; c=relaxed/simple;
+	bh=qYxU7vhVFFHlVFqvJ2Oik7p3vX515hPOju269hebVfc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bvofBmFJgOrjp6/Sl/8+KsjuS5f/SiW8ZM84jSASPrb3Ov4EI0LuCZlpYz0Our/HJGFSIo1KkEOOVYTntv9nkT2ntI1+n0Gq7MUELytaRVDmkubz+3N9zP73RMqFpI77Dm1N+P/BESDgti7yg4XELiIrOmtWL5jteTgam1hhfAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=WFpgjz8y; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a449c5411e1so230581366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 23:46:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1709883785; x=1741419785;
-  h=from:to:cc:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding:subject;
-  bh=KIogUl6yzQKUaleo4f1Dbqfw0xuGtCV1uUQgHKZg8Ao=;
-  b=D1EDDlTRDrrVKlfMy+JGGHKWDKRdc+UCe1s7fmjS/Pb2eOKSGfZDKJUz
-   t5t6q0m76SEOxs5H8PmwnZjD6VDHTSCDzBNeR1GTxmKzhE+SvuilfRp5k
-   jYvpiEttw5KXhbkhPTVjajePxQCwBcUdfGhpQzQDWmjZsDLxLD3WREoiT
-   XNAJjdr9d+/Fjri0K553Y6uIP/6G4B1ykH9UDhXNGpmPB023zk5vWl65v
-   7JXlOwGfp6eAt4+CLd2r+oavueMZhEbfWqKLww31D4hLxJMkDWODdt5Cr
-   MBnai0zvnem7g6unHxWmXjgr5ywxIyZOKGT5p/ZJ8viHILjb8fNKKBmpt
-   w==;
-X-IronPort-AV: E=Sophos;i="6.07,108,1708383600"; 
-   d="scan'208";a="35801333"
-Subject: Re: [PATCH] Revert "drm/bridge: ti-sn65dsi83: Fix enable error path"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 08 Mar 2024 08:42:57 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id C201928007C;
-	Fri,  8 Mar 2024 08:42:56 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Fri, 08 Mar 2024 08:42:58 +0100
-Message-ID: <3552711.iIbC2pHGDl@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20240306-ti-sn65dsi83-regulator-imbalance-v1-1-a3cea5f3e5b3@bootlin.com>
-References: <20240306-ti-sn65dsi83-regulator-imbalance-v1-1-a3cea5f3e5b3@bootlin.com>
+        d=ionos.com; s=google; t=1709883969; x=1710488769; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=40cCzbisoVSkufWvb0+W2WVn4MdIoueSCxQxubT81k8=;
+        b=WFpgjz8ySfrpVIe48XcbICjX1O0k9GAcgbtyqEo0e7j5DxA3zTxFRm7tuT7QyOZHR+
+         0ORRhfF8kjdKpS3xRG+xw+RTgOrO5HZUpjwLNVlOpWOkHsj3h+TALRth1tknrF7n4sOv
+         6sqdai8CJTYIEr6G93LBC5QqsF07WpNGxyiMJbiFoQdNzhe0oybd3pbdOuuv3WqtF8p3
+         OpeJaD0tV+SL0ABLRlVxiY/ON3blKOlR44bqtYyVjf9t+CU2r4PanQDIwLTnD3nBJhDi
+         GyEFAUXOhAPqsg+0/CJr6upIlO41ckHQ3eB6ABuUWWs5JzBn4fUzp4wqjX9YSAGIWnOK
+         7zuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709883969; x=1710488769;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=40cCzbisoVSkufWvb0+W2WVn4MdIoueSCxQxubT81k8=;
+        b=r7MDCitl4gfwZPDmEmhSaBzkrrbIkiyep+PIxlxoUHZSUdS0WayFOFdpshlZ7WyOhG
+         9qoieBtU10K2QXVujD1icgCmzTtVhzJ6m382ITeGgQitw3SxROdnhC5M7K3OSDY/9hVD
+         p2tW4tX/rSoyLckl4y71DuVSsJA/tEYGpaibPQrBzjrhXWmptnHttqdDMcobG5QKC0nb
+         G/HIHH77SW1qd8Ypmhnr7OJ8iZ/YqkNCuTIfY8rim/gulUifLO9ake4YXaureHe/7iOz
+         926Qp+4AtM+AHPjd8EuEvCswnF5lqKN/3IDZymCZyQZAFf1qxM6o8I4iDeTteAsK04JJ
+         2mZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWdIfAG6AbldxfgvutjUPvD/nUFzsym2iHrQ/5AP9epQ3ziFOCidux0b5dyMYMqME6Kz8qJ+uV+47moxGJDZNws/7+Kq9BDyQqXRQo8
+X-Gm-Message-State: AOJu0YwF/D5mh19q2HrVpo0xzP+OnHGlIkvFeJuQ7Paq185lvC4K1Z38
+	XNN6Yf7j5AQlD6khSMDKcByyG4ll4UbePgPMakxseXCvz/0wEEYNj37I4dj3i10=
+X-Google-Smtp-Source: AGHT+IFxqxzhFl5fls7nuPQ3N6O0+2LnS2lPOt/oJpZRwzM4JKXx8cqtXXb20+EoKTDV9oeuAPfRTQ==
+X-Received: by 2002:a17:906:2b52:b0:a45:bdbd:5a1b with SMTP id b18-20020a1709062b5200b00a45bdbd5a1bmr4570721ejg.42.1709883969480;
+        Thu, 07 Mar 2024 23:46:09 -0800 (PST)
+Received: from raven.blarg.de (p200300dc6f010900023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f01:900:230:64ff:fe74:809])
+        by smtp.gmail.com with ESMTPSA id zh14-20020a170906880e00b00a456573f9c5sm4915505ejb.0.2024.03.07.23.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 23:46:09 -0800 (PST)
+From: Max Kellermann <max.kellermann@ionos.com>
+To: chenhuacai@kernel.org,
+	kernel@xen0n.name,
+	lienze@kylinos.cn,
+	yangtiezhu@loongson.cn,
+	tglx@linutronix.de,
+	arnd@arndb.de,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Max Kellermann <max.kellermann@ionos.com>
+Subject: [PATCH] loongarch/pgtable.h: move {dmw,tlb}_virt_to_page() to page.h
+Date: Fri,  8 Mar 2024 08:46:00 +0100
+Message-Id: <20240308074600.3294338-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-Hi Luca,
+These functions are implemented in pgtable.c, and they are needed only
+by the virt_to_pfn() macro in page.h.  Having the prototypes in
+pgtable.h causes a circular dependency between page.h and pgtable.h,
+because page.h's virt_to_pfn() needs pgtable.h for these two
+functions, and pgtable.h needs various definitions from page.h
+(e.g. pte_t and pgt_t).
 
-Am Mittwoch, 6. M=E4rz 2024, 13:39:20 CET schrieb Luca Ceresoli:
-> This reverts commit 8a91b29f1f50ce7742cdbe5cf11d17f128511f3f.
->=20
-> The regulator_disable() added by the original commit solves one kind of
-> regulator imbalance but adds another one as it allows the regulator to be
-> disabled one more time than it is enabled in the following scenario:
->=20
->  1. Start video pipeline -> sn65dsi83_atomic_pre_enable -> regulator_enab=
-le
->  2. PLL lock fails -> regulator_disable
->  3. Stop video pipeline -> sn65dsi83_atomic_disable -> regulator_disable
->=20
-> The reason is clear from the code flow, which looks like this (after
-> removing unrelated code):
->=20
->   static void sn65dsi83_atomic_pre_enable()
->   {
->       regulator_enable(ctx->vcc);
->=20
->       if (PLL failed locking) {
->           regulator_disable(ctx->vcc);  <---- added by patch being revert=
-ed
->           return;
->       }
->   }
->=20
->   static void sn65dsi83_atomic_disable()
->   {
->       regulator_disable(ctx->vcc);
->   }
->=20
-> The use case for introducing the additional regulator_disable() was
-> removing the module for debugging (see link below for the discussion). If
-> the module is removed after a .atomic_pre_enable, i.e. with an active
-> pipeline from the DRM point of view, .atomic_disable is not called and th=
-us
-> the regulator would not be disabled.
->=20
-> According to the discussion however there is no actual use case for
-> removing the module with an active pipeline, except for
-> debugging/development.
->=20
-> On the other hand, the occurrence of a PLL lock failure is possible due to
-> any physical reason (e.g. a temporary hardware failure for electrical
-> reasons) so handling it gracefully should be supported. As there is no way
-> for .atomic[_pre]_enable to report an error to the core, the only clean w=
-ay
-> to support it is calling regulator_disabled() only in .atomic_disable,
-> unconditionally, as it was before.
->=20
-> Link: https://lore.kernel.org/all/15244220.uLZWGnKmhe@steina-w/
-> Fixes: 8a91b29f1f50 ("drm/bridge: ti-sn65dsi83: Fix enable error path")
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+I suggest avoiding this circular dependency by moving the function
+prototypes to page.h, even though that is slightly incorrect, because
+they are not implemented in page.c but pgtable.c, but it's the
+simplest possible solution to this problem and the functions not used
+anywhere else.
 
-This is reasonable and explanation is great. Thanks.
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+---
+ arch/loongarch/include/asm/page.h    | 3 +++
+ arch/loongarch/include/asm/pgtable.h | 3 ---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-> ---
-> Many thanks to Alexander for the discussion.
-> ---
->  drivers/gpu/drm/bridge/ti-sn65dsi83.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/brid=
-ge/ti-sn65dsi83.c
-> index e3501608aef9..12fb22d4cd23 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> @@ -499,7 +499,6 @@ printk(KERN_ERR "%s: LVDS in fallback (24/SPWG)\n", _=
-_func__);
->  		dev_err(ctx->dev, "failed to lock PLL, ret=3D%i\n", ret);
->  		/* On failure, disable PLL again and exit. */
->  		regmap_write(ctx->regmap, REG_RC_PLL_EN, 0x00);
-> -		regulator_disable(ctx->vcc);
->  		return;
->  	}
-> =20
->=20
-> ---
-> base-commit: a71e4adac20bfe852d269addfef340923ce23a4c
-> change-id: 20240306-ti-sn65dsi83-regulator-imbalance-10e217fd302c
->=20
-> Best regards,
->=20
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
+diff --git a/arch/loongarch/include/asm/page.h b/arch/loongarch/include/asm/page.h
+index afb6fa16b826..44027060c54a 100644
+--- a/arch/loongarch/include/asm/page.h
++++ b/arch/loongarch/include/asm/page.h
+@@ -75,6 +75,9 @@ typedef struct { unsigned long pgprot; } pgprot_t;
+ #define pfn_to_kaddr(pfn)	__va((pfn) << PAGE_SHIFT)
+ #define sym_to_pfn(x)		__phys_to_pfn(__pa_symbol(x))
+ 
++struct page *dmw_virt_to_page(unsigned long kaddr);
++struct page *tlb_virt_to_page(unsigned long kaddr);
++
+ #define virt_to_pfn(kaddr)	PFN_DOWN(PHYSADDR(kaddr))
+ 
+ #define virt_to_page(kaddr)								\
+diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
+index 8b5df1bbf9e9..af3acdf3481a 100644
+--- a/arch/loongarch/include/asm/pgtable.h
++++ b/arch/loongarch/include/asm/pgtable.h
+@@ -363,9 +363,6 @@ static inline void pte_clear(struct mm_struct *mm, unsigned long addr, pte_t *pt
+ extern pgd_t swapper_pg_dir[];
+ extern pgd_t invalid_pg_dir[];
+ 
+-struct page *dmw_virt_to_page(unsigned long kaddr);
+-struct page *tlb_virt_to_page(unsigned long kaddr);
+-
+ /*
+  * The following only work if pte_present() is true.
+  * Undefined behaviour if not..
+-- 
+2.39.2
 
 
