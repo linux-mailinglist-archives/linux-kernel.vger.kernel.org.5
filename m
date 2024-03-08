@@ -1,229 +1,109 @@
-Return-Path: <linux-kernel+bounces-97142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB2FD876604
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BB648765FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22ADD1C219C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:09:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACFE31C20A56
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6025740856;
-	Fri,  8 Mar 2024 14:09:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4473E3FBB8;
+	Fri,  8 Mar 2024 14:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NaRSpBCc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aEUog5mX"
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90BE63B8;
-	Fri,  8 Mar 2024 14:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF0763B8;
+	Fri,  8 Mar 2024 14:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906948; cv=none; b=hFTNxw8YdtNe2/WZWvOVdRfyLSocBNeIBE2PfzPNml/+CLQ9xvtw35HHlwGzckNx8WoGkWA0P7bwV6SjCUcWeEL6hrn9cBnlQM6P2ExMS8dYo8DgOHyrDPuPtG7d+NlgiAJDBWfhMgl9xJEnZ7JcF2+gQOyrjIQNyOPDFflt0oE=
+	t=1709906855; cv=none; b=I5piY3WJEEZ4y5ASz0NZncWP41odHHc/S6aFRScFBrKLi3+fL1bvwztLh0htYVUmE4vch9ZUCW+nwM2iZ6HtPieMlMUYyBU6uUzm1g9gbX8bKI0sFFLsvwL15jHFrc4cxUk6DQaMW6ylI/8PB73Tk7FSaqy0jP17m4/kVym1Vuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906948; c=relaxed/simple;
-	bh=laXx+w8ApSTKlr0+uxTd3nFWByofVxkALdnTQ9VuY44=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ALp72aOWzdCxx++c+/19t+ik1v+56/nnWoDDOUbiwX/b3qewvWcp9BNzWxr6TlOMxXcx1VTIc/E0+wezRCitrornmP35wU7iuSwEDC9PAyYwx3d+QDlrJPawG3hyBO4qJ4JwRR3QcJ6+CmljTjQG59o7E2gdlF/G7Yo+dW+tXiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NaRSpBCc; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709906947; x=1741442947;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=laXx+w8ApSTKlr0+uxTd3nFWByofVxkALdnTQ9VuY44=;
-  b=NaRSpBCcBrV+L5YhlrWbkM8r+krICBM+DWaB/unAe50Vyeclc/S4QYcx
-   WYXrMMCJP1jZbnG8KBs7XCKpIBn19Vv8PuvepAT8G15inKJda4uHjWmTr
-   s3nOBRP90DDVQXCQ9vZa1068A70cxbO2C34Siy76EmZpFzqwEfEOAxrpl
-   O+6yJYhihwXta0mm3z1rOqjg98qvfjoZOkJBdaLXO+F1zLGZHhkLu63yx
-   mtSWtpN6QT09YEfmoLwr25+uHB0v/Deky17uXmMNa/i+eXzX90k8T5atP
-   0IKXEFYAircqAgX+OEjcT4TD7187U1YE1SZ2orz42JcjpAjjbuzWo0cu8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="22080033"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="22080033"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 06:07:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="33609806"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.186])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 06:07:10 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 8 Mar 2024 16:07:05 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: Fenghua Yu <fenghua.yu@intel.com>, 
-    Reinette Chatre <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>, 
-    tony.luck@intel.com, "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>, 
-    LKML <linux-kernel@vger.kernel.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 3/4] selftests/resctrl: SNC support for MBM
-In-Reply-To: <def02de22a4747ed56ddc28f334e55872ba95f13.1709721159.git.maciej.wieczor-retman@intel.com>
-Message-ID: <37bd082c-a187-43de-892b-c5fa32a8b3f2@linux.intel.com>
-References: <cover.1709721159.git.maciej.wieczor-retman@intel.com> <def02de22a4747ed56ddc28f334e55872ba95f13.1709721159.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1709906855; c=relaxed/simple;
+	bh=9aUV0lwshQLHEQidMvGenU5qEAn4ekLdhlVdJOvmEVM=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=G5914BH9XB3awSAGoTA5iFhiHY8DofaiF2Gmpae+a/AdylsWaKiwtObpDHyJKiiJ+/CHNLUqhh5dxv70EsoPgIr9tXt2nmq2oRHefsOxSWdztPUhuFV3y/tDgcBhomGkELvLaqJQ0wm3KbIwCNXFfzSihPeVrzcyqFzFae+hwLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aEUog5mX; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7885980949eso9022185a.2;
+        Fri, 08 Mar 2024 06:07:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709906853; x=1710511653; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=miDE/vGMqieyhqNZidg/4W9UPLe/m+Xym9XBjZr29EI=;
+        b=aEUog5mXX9EoQGHD+FFSxMZJ0hcFz1UGoCYO7pIJbl0f21BkxcOSc4Wi33F30i1cjh
+         Chj1DqmR/sr/N4xbCDlXaQU9vhKiTo4XPYTCvdejN6zCeXcW0s1JVo3l9S3zfgEPM2Y9
+         83+uQVq/CTUSNHLhy1yc+g39Xr2N4ZmPbNy0rqAeV4lfVrZp5X85tSZO0k+xzmaTAblC
+         xh47xrqlFSSR9RVYcl3UaHDHAMIhHruTOZkibM8ett/ukFGzT9kWCLmVDhnpEQtTi+NJ
+         mgTCnhZWrLIr8h61DOxFshhU0xfWckLjhhPQnIqK9M/3jJvR7xA8Pgz+xZcBeF8pdKcS
+         QQ9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709906853; x=1710511653;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=miDE/vGMqieyhqNZidg/4W9UPLe/m+Xym9XBjZr29EI=;
+        b=pC08huff2rJQ6GWjbODbB+S7ueCetl51QWFVubKDdzqNEdFs9tx7WnC7THXnWjGc7I
+         Odnibxazgz1DWkOFXxZsrP1a9dRPHQGzXHy7Mrn7MfAPd5gGdc9R29pVCuZ/DsPD3zm3
+         JAJHL5/LVBOhOQycWHnE8CyVC7Pf5+w16b6w15ObZp/zZelDkJP/edWGO1XcAca09VuR
+         TESKrsqrtG25BK2cowEznSrolKCYhJ2mQvDpi45DtbKISGyZXPWCo2fMAHDtv+v3KNmk
+         cryvUmP31/M7o7DWgpmuenKv/T6dj8K/L3E8MejcR9PloA8GoHjXT6WL4H/tICih+64T
+         CR7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUce3AZbRaxOmC5HnYanC4tg0w/jypezvFMeJ2orxqQM2SIdqUNYQVuX04BreFrynJAFF/XWaCGag1gAY6GZQnrPk2dJABWNo7Wyok1
+X-Gm-Message-State: AOJu0YyIRLYTLJku/uVAJ57RIWOC0yyKMVXQPz1zQa3jjcvxATelXmnA
+	DwnYwb36PU7VJGRiuxvqDF54PTy1jY4QpRdBmJnYYfG+jcKOASPk
+X-Google-Smtp-Source: AGHT+IG9j6mjgo76J5OeV5SD5e7xMfgBlsTSpRJX2Qb9wIEmBbRYm75ViLHHb4pGhOX2XVUONOsLNw==
+X-Received: by 2002:a0c:eb4b:0:b0:68f:5ab1:a135 with SMTP id c11-20020a0ceb4b000000b0068f5ab1a135mr12139815qvq.47.1709906852936;
+        Fri, 08 Mar 2024 06:07:32 -0800 (PST)
+Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id ks3-20020a056214310300b0068ff0778895sm9847843qvb.81.2024.03.08.06.07.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 06:07:32 -0800 (PST)
+Date: Fri, 08 Mar 2024 09:07:32 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Juntong Deng <juntong.deng@outlook.com>, 
+ willemdebruijn.kernel@gmail.com, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com
+Cc: netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Message-ID: <65eb1ba4956d_14430d294ec@willemb.c.googlers.com.notmuch>
+In-Reply-To: <AM6PR03MB58487A9704FD150CF76F542899272@AM6PR03MB5848.eurprd03.prod.outlook.com>
+References: <AM6PR03MB58487A9704FD150CF76F542899272@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Subject: Re: [PATCH net-next v3] net/packet: Add getsockopt support for
+ PACKET_COPY_THRESH
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 6 Mar 2024, Maciej Wieczor-Retman wrote:
-
-> Memory Bandwidth Monitoring (MBM) measures how much data flows between
-> cache levels. Only the flow for a process specified with a Resource
-> Monitoring ID (RMID) is measured.
+Juntong Deng wrote:
+> Currently getsockopt does not support PACKET_COPY_THRESH,
+> and we are unable to get the value of PACKET_COPY_THRESH
+> socket option through getsockopt.
 > 
-> Sub-Numa Clustering (SNC) causes MBM selftest to fail because the
-> increased amount of NUMA nodes per socket is not taken into account.
-> That in turn makes the test use incorrect values for the start and end
-> of the measurement by tracking the wrong node.
+> This patch adds getsockopt support for PACKET_COPY_THRESH.
 > 
-> For the MBM selftest to be NUMA-aware it needs to track the start and end
-> values of a measurement not for a single node but for all nodes on the
-> same socket. Then summing all measured values comes out as the real
-> bandwidth used by the process.
+> In addition, this patch converts access to copy_thresh to
+> READ_ONCE/WRITE_ONCE.
 > 
-> Reported-by: "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>
-> Closes: https://lore.kernel.org/lkml/TYAPR01MB6330A4EB3633B791939EA45E8B39A@TYAPR01MB6330.jpnprd01.prod.outlook.com/
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> ---
->  tools/testing/selftests/resctrl/mba_test.c    |  1 -
->  tools/testing/selftests/resctrl/resctrl_val.c | 37 ++++++++++++-------
->  2 files changed, 23 insertions(+), 15 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-> index 7946e32e85c8..fc31a61dab0c 100644
-> --- a/tools/testing/selftests/resctrl/mba_test.c
-> +++ b/tools/testing/selftests/resctrl/mba_test.c
-> @@ -147,7 +147,6 @@ static int mba_run_test(const struct resctrl_test *test, const struct user_param
->  	struct resctrl_val_param param = {
->  		.resctrl_val	= MBA_STR,
->  		.ctrlgrp	= "c1",
-> -		.mongrp		= "m1",
->  		.filename	= RESULT_FILE_NAME,
->  		.bw_report	= "reads",
->  		.setup		= mba_setup
-> diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-> index e75e3923ebe2..2fe9f8bb4a45 100644
-> --- a/tools/testing/selftests/resctrl/resctrl_val.c
-> +++ b/tools/testing/selftests/resctrl/resctrl_val.c
-> @@ -595,9 +595,10 @@ static void initialize_llc_occu_resctrl(const char *ctrlgrp, const char *mongrp,
->  
->  static int measure_vals(const struct user_params *uparams,
->  			struct resctrl_val_param *param,
-> -			unsigned long *bw_resc_start)
-> +			unsigned long *bw_resc_start,
-> +			int res_id)
->  {
-> -	unsigned long bw_resc, bw_resc_end;
-> +	unsigned long bw_resc = 0, bw_resc_sum = 0, bw_resc_end;
->  	float bw_imc;
->  	int ret;
->  
-> @@ -612,17 +613,19 @@ static int measure_vals(const struct user_params *uparams,
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = get_mem_bw_resctrl(&bw_resc_end);
-> -	if (ret < 0)
-> -		return ret;
-> +	for (int i = 0 ; i < snc_ways() ; i++) {
-> +		set_mbm_path(param->ctrlgrp, strlen(param->mongrp) > 0 ? param->mongrp : NULL,
-> +			     res_id + i);
-> +		ret = get_mem_bw_resctrl(&bw_resc_end);
-> +		bw_resc = (bw_resc_end - bw_resc_start[i]) / MB;
-> +		bw_resc_sum += bw_resc;
-> +		bw_resc_start[i] = bw_resc_end;
-> +	}
->  
-> -	bw_resc = (bw_resc_end - *bw_resc_start) / MB;
-> -	ret = print_results_bw(param->filename, bm_pid, bw_imc, bw_resc);
-> +	ret = print_results_bw(param->filename, bm_pid, bw_imc, bw_resc_sum);
->  	if (ret)
->  		return ret;
->  
-> -	*bw_resc_start = bw_resc_end;
-> -
->  	return 0;
->  }
->  
-> @@ -697,12 +700,16 @@ int resctrl_val(const struct resctrl_test *test,
->  		struct resctrl_val_param *param)
->  {
->  	char *resctrl_val = param->resctrl_val;
-> -	unsigned long bw_resc_start = 0;
->  	int res_id, ret = 0, pipefd[2];
-> +	unsigned long *bw_resc_start;
->  	struct sigaction sigact;
->  	char pipe_message = 0;
->  	union sigval value;
->  
-> +	bw_resc_start = calloc(snc_ways(), sizeof(unsigned long));
+> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 
-While correct, this seems a bit overkill given is MAX_SNC = 4, not 
-something large or unbounded.
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 
-This patch would be be much simpler on top of my resctrl_val() cleanup 
-patches because bw_resc_start is only local to the measurement function.
-
--- 
- i.
-
-> +	if (!bw_resc_start)
-> +		return -1;
-> +
->  	if (strcmp(param->filename, "") == 0)
->  		sprintf(param->filename, "stdio");
->  
-> @@ -710,7 +717,7 @@ int resctrl_val(const struct resctrl_test *test,
->  	    !strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR))) {
->  		ret = validate_bw_report_request(param->bw_report);
->  		if (ret)
-> -			return ret;
-> +			goto out_free;
->  	}
->  
->  	/*
-> @@ -721,7 +728,7 @@ int resctrl_val(const struct resctrl_test *test,
->  
->  	if (pipe(pipefd)) {
->  		ksft_perror("Unable to create pipe");
-> -
-> +		free(bw_resc_start);
->  		return -1;
->  	}
->  
-> @@ -733,7 +740,7 @@ int resctrl_val(const struct resctrl_test *test,
->  	bm_pid = fork();
->  	if (bm_pid == -1) {
->  		ksft_perror("Unable to fork");
-> -
-> +		free(bw_resc_start);
->  		return -1;
->  	}
->  
-> @@ -841,7 +848,7 @@ int resctrl_val(const struct resctrl_test *test,
->  
->  		if (!strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)) ||
->  		    !strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR))) {
-> -			ret = measure_vals(uparams, param, &bw_resc_start);
-> +			ret = measure_vals(uparams, param, bw_resc_start, res_id);
->  			if (ret)
->  				break;
->  		} else if (!strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR))) {
-> @@ -855,6 +862,8 @@ int resctrl_val(const struct resctrl_test *test,
->  
->  out:
->  	kill(bm_pid, SIGKILL);
-> +out_free:
-> +	free(bw_resc_start);
->  
->  	return ret;
->  }
-
+Thanks for addressing the READ_ONCE/WRITE_ONCE.
 
