@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-96969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13FA08763ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:02:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 294308763EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:03:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36D401C210ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:02:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A07FFB21A2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:03:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68CBA5647A;
-	Fri,  8 Mar 2024 12:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFE856479;
+	Fri,  8 Mar 2024 12:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yelj7KCq"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cHfelmDe"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40FD856478
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 12:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED485579D
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 12:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709899343; cv=none; b=u9RAKZyDDW2il8xc6SRs2OvS8K5qA8gKy5b4qoshNwR21L0HBaOrZYwu05Or6G1Rbr/q2Kutc4syO6hhYMDjvKqOrzdZXX0ct6/sKqxRdxA1WRc5W6oEsY8K2HodU82kKOxcRJfWBMu7mDNgJ95L1kX5Ua3BueR611S9cycEDrY=
+	t=1709899406; cv=none; b=UuJ4sczx8vielYSuo8JcfuSHv7L56UyVreh0KZDiOdfY9dMoPPLuySRBZ3VulsBY7CZKgzEGuAGR8F2zEPykGaWiL1SejxysZATAWb2YDs+Q0d0leQhTmjZtwfYhivBz1jnMEj80IIrA0nsL4qQrfAXTGyBYagO9hkh+q8+nm/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709899343; c=relaxed/simple;
-	bh=FLDz2NpyC6Myn7sIgxl303jihh2YBhuOLWWFLwNNCBc=;
+	s=arc-20240116; t=1709899406; c=relaxed/simple;
+	bh=ETgP2lj760pIFPdZqiPAus+1NeMvzLtFCePmbZ3NWYY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UpSL9et2m3VvtqYbdYS2FcQuLR4Aec22gilm/0KIMNCJPlLixg7LqKU02iS3itrUXKeRJDtACThIovhTlQ79YZRTuFHBE9q8ydLritlCLkTMysU+JaUwlNt4zkGsvU+CXBHxXiqoVdPLVD6Br7ukm8DG0zIpWurlHhARN7uHLN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yelj7KCq; arc=none smtp.client-ip=209.85.210.176
+	 To:Cc:Content-Type; b=rFms7pJ4kr+V4qe70IIcyi3iaDQpshQiplMYXUglGtlJBebxpW06pwAG295+kaP4v71PJ4k8dE9noAu173v+NVvLOz94+eLQJDdkgNzyKkceQTWddiw6zqd3hdSGIB8qZplxkZXfgatsYhQ6v8cCDkdERYvJ0s9fgn68+qNpxQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cHfelmDe; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e655a12c81so1615527b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 04:02:22 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29b780569d1so556353a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 04:03:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709899341; x=1710504141; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709899404; x=1710504204; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=d9ZCbf/93pqQbLM7ea+Cwydkxajd4ef/mXSYYru8Nq0=;
-        b=yelj7KCqV5HRdRvdoVJN4nXnP7+g6GvjWVS9b/bUyIyg87Kc7UVSjqShN4oFJ0UivH
-         kxCICBcYKWIXT4uK3p1LJXEvPPL5gjBjlf50wWXRTfsUBBNYutrR/77Yq1XVhCOoK88O
-         nwsv48umtjyu06w2Z8bfMR7UbDQn6/wpVkNh6sYBdabEJ2M2LokZ4YqWCPljypw70iL/
-         wVJ2PZRd6uqKTl6XegnNdjaOoeZCQ/Y9fquq2Rob7JpQbNBfV2+0B3Nes5Jilm1y8qn8
-         ie3WLPoUWkwRhPE/8MYZmZjrG1Gu5AMshnnXqbkGCkbxKFrhpo3W/5bM+iV5MgFSEaU3
-         zPUw==
+        bh=RmI6aRkHLUk924FwSbrPosO853X8+438VxPHVQo7rOg=;
+        b=cHfelmDeuotJbdFwyQWQsxQ25fwf6hmDrHLGxc/18vN4K9ygBk/ErYrdQOOQjsszbC
+         vsigK0XNRNtC3vVPHowX0x6WlL6NiWvMjeyHmBeb4PE3VLz7nM+jfHU6vJ3UE/t8CiqE
+         mouQO9LiDKnXBZI3YpPVzXUI7Vql57h7tQ83gjlNBlZHrO6fTg8nBjAwdCWqf/vP1UZA
+         1t39QVuVCX7CJQaYODOUtcNE/WFEHSraG5Xu4VS9bo/iO0RbXuVcdPZMxA2B9gcK0Kl9
+         LH+ndpIDC9OHCPPcDGj67B44qjaF1rdle57Eka3xcX/KeX7FTzclFNOGKshd3A03qNa/
+         yRCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709899341; x=1710504141;
+        d=1e100.net; s=20230601; t=1709899404; x=1710504204;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=d9ZCbf/93pqQbLM7ea+Cwydkxajd4ef/mXSYYru8Nq0=;
-        b=F5Ilk4oMVChK//4rhSaXl180T77tZQ92wRMytcs41G2ufIdodw7T+QO1L8K2IHAB+p
-         BelnYw+kSCpHl4no/ljMTunMsDLo0nDP5kSZ0pGGBBk1XqVAyLD9m34iDgJrZWYePlBk
-         HGLpQHYF07qkqnWGtYaXqjd8YqYFCQ/JIjS9cTK11QYVkCkIb8w/g56BWU5ebpweSQ0r
-         KU/J4Odp45XMlGKq6OJnNQs207ACaUnbfJQFjbx2zZDW7EodLLRfrr8piIiLZB0NeYyp
-         YuPobdO1bJqWFhxNnR4zDT2pQdIkLsAx5IV7g5u3nGYvCW71zga0ysAiFm85h6RSp+6k
-         nh3A==
-X-Gm-Message-State: AOJu0Yx9Y1/fCRQnFCqPqqOeZUVdyZpPuYP1pOI/jmrZOMiunTRXE+eB
-	0z4QvpuobwIUjVToKLaG/9TiFdGF4ovkXQmcjBexfoqsroT0g6YP3iY36KY+HlPlIbRpznMPFyk
-	1m4XzmaVYmn729p9ep8AXFfF4Woe3Y6FI0eHMxw==
-X-Google-Smtp-Source: AGHT+IFMVoCZdad1KTo+x1jkUMxOXJo3fL6t0MAoyoldEaATm+eGvl9KgTUdmYq4h4g9cz2FvJ74TvaTBEm3mD39PC0=
-X-Received: by 2002:a17:90a:e2c5:b0:29b:1ab3:ed77 with SMTP id
- fr5-20020a17090ae2c500b0029b1ab3ed77mr24447pjb.21.1709899341488; Fri, 08 Mar
- 2024 04:02:21 -0800 (PST)
+        bh=RmI6aRkHLUk924FwSbrPosO853X8+438VxPHVQo7rOg=;
+        b=p7/9o2g4DKHC8mTuvD1MLpQB5i3vfKoqZYo6cF3LaobO6llHBfJGst0qZ74qJXeNC4
+         8Vr3/3DjWCbIT/y3FqL4uPREd8YL60p7LFJaoRPeONwf/GGyBKET5JaTsdVxbqGAItXI
+         TWvv1mtBrsNcx5YIr2VywcSyf+BXrMmbPmkpGL6vNuiGmwhQ+VqjRkPlon9J77VHfeGB
+         3+Vi6ddbOVjUHvdaKb0mCES+t0Bu8kKJePec1VUzU1rqBbXQJtZtfrtH4OJVp/HMIBCE
+         8lh1R+DNuuEcsYslyphtrvicfXIUpAIlNyZry22kmfAjhMCtcJ9dHSR8kox4PczOBPoY
+         Ydlg==
+X-Gm-Message-State: AOJu0YwQslHGamhc75/YPFgcYuTRMJ8LCmVg5huZ10uyNv7/D/rpnM2w
+	5SdWQpCOqxWH6Dy1Wz6HQT6iC8tMbCuWDS19w+vbuCUChsEu2H7GguRJOu9TI/zbG+2QFFF/z9N
+	rDzIE4pp4GCPYj9/6SRe1mJDtl8TcAbBZZNklNA==
+X-Google-Smtp-Source: AGHT+IHX+0P2Su8rKDk+l+4x6Wxs839b5aud7/EMgejxk7fCyaCiBcqpcbehuLGyapXgDv5ynVuB3sfBX7lFQAbuI6g=
+X-Received: by 2002:a17:90a:1082:b0:29b:b5b1:aaf3 with SMTP id
+ c2-20020a17090a108200b0029bb5b1aaf3mr834125pja.9.1709899403813; Fri, 08 Mar
+ 2024 04:03:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308105901.1096078-1-mingo@kernel.org> <20240308105901.1096078-9-mingo@kernel.org>
-In-Reply-To: <20240308105901.1096078-9-mingo@kernel.org>
+References: <20240308105901.1096078-1-mingo@kernel.org> <20240308105901.1096078-8-mingo@kernel.org>
+In-Reply-To: <20240308105901.1096078-8-mingo@kernel.org>
 From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 8 Mar 2024 13:02:10 +0100
-Message-ID: <CAKfTPtD_Bi5FYCyQVCOmFhxGzByLBDxqFa4Ai4S8qZJ2URfLfQ@mail.gmail.com>
-Subject: Re: [PATCH 08/10] sched/balancing: Update run_rebalance_domains() comments
+Date: Fri, 8 Mar 2024 13:03:12 +0100
+Message-ID: <CAKfTPtCoxBNWfdNJeqkO6qA9YumgYSjzQEDqHty2zw1grM1Gdg@mail.gmail.com>
+Subject: Re: [PATCH 07/10] sched/balancing: Fix comments (trying to) refer to NOHZ_BALANCE_KICK
 To: Ingo Molnar <mingo@kernel.org>
 Cc: linux-kernel@vger.kernel.org, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
 	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
@@ -82,52 +82,52 @@ Content-Type: text/plain; charset="UTF-8"
 
 On Fri, 8 Mar 2024 at 11:59, Ingo Molnar <mingo@kernel.org> wrote:
 >
-> The first sentence of the comment explaining run_rebalance_domains()
-> is historic and not true anymore:
+> Fix two typos:
 >
->     * run_rebalance_domains is triggered when needed from the scheduler tick.
+>  - There's no such thing as 'nohz_balancing_kick', the
+>    flag is named 'BALANCE' and is capitalized:  NOHZ_BALANCE_KICK.
 >
-> ... contradicted/modified by the second sentence:
->
->     * Also triggered for NOHZ idle balancing (with NOHZ_BALANCE_KICK set).
->
-> Avoid that kind of confusion straight away and explain from what
-> places sched_balance_softirq() is triggered.
+>  - Likewise there's no such thing as a 'pending nohz_balance_kick'
+>    either, the NOHZ_BALANCE_KICK flag is all upper-case.
 >
 > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
 > Cc: Linus Torvalds <torvalds@linux-foundation.org>
 > Cc: Peter Zijlstra <peterz@infradead.org>
 > Cc: Shrikanth Hegde <sshegde@linux.ibm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
 > Cc: Vincent Guittot <vincent.guittot@linaro.org>
 
 Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 > ---
->  kernel/sched/fair.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+>  kernel/sched/fair.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
 > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index f3c03c6db3c8..b567c0790f44 100644
+> index 84d4791cf628..f3c03c6db3c8 100644
 > --- a/kernel/sched/fair.c
 > +++ b/kernel/sched/fair.c
-> @@ -12409,9 +12409,12 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+> @@ -12409,15 +12409,16 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
 >  }
 >
 >  /*
-> - * This softirq may be triggered from the scheduler tick, or by
-> - * any of the flags in NOHZ_KICK_MASK: NOHZ_BALANCE_KICK,
-> - * NOHZ_STATS_KICK or NOHZ_NEXT_KICK.
-> + * This softirq handler is triggered via SCHED_SOFTIRQ from two places:
-> + *
-> + * - directly from the local scheduler_tick() for periodic load balancing
-> + *
-> + * - indirectly from a remote scheduler_tick() for NOHZ idle balancing
-> + *   through the SMP cross-call nohz_csd_func()
+> - * run_rebalance_domains is triggered when needed from the scheduler tick.
+> - * Also triggered for nohz idle balancing (with nohz_balancing_kick set).
+> + * This softirq may be triggered from the scheduler tick, or by
+> + * any of the flags in NOHZ_KICK_MASK: NOHZ_BALANCE_KICK,
+> + * NOHZ_STATS_KICK or NOHZ_NEXT_KICK.
 >   */
 >  static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
 >  {
+>         struct rq *this_rq = this_rq();
+>         enum cpu_idle_type idle = this_rq->idle_balance;
+>         /*
+> -        * If this CPU has a pending nohz_balance_kick, then do the
+> +        * If this CPU has a pending NOHZ_BALANCE_KICK, then do the
+>          * balancing on behalf of the other idle CPUs whose ticks are
+>          * stopped. Do nohz_idle_balance *before* rebalance_domains to
+>          * give the idle CPUs a chance to load balance. Else we may
 > --
 > 2.40.1
 >
