@@ -1,90 +1,130 @@
-Return-Path: <linux-kernel+bounces-96815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 006EC8761C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:19:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F678761CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:19:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A017628279C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:19:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7891D1F21406
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 008A853E3C;
-	Fri,  8 Mar 2024 10:19:14 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C4954F87;
+	Fri,  8 Mar 2024 10:19:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q8bySy8z"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79FBA5380F;
-	Fri,  8 Mar 2024 10:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84AC54BC9;
+	Fri,  8 Mar 2024 10:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709893153; cv=none; b=EJJlf1pB3e3+a8CXMiYbBcvmHlq0gWDGTOwmVCdcM733XWhZDrJfpedhbNNga7PFsstKg1+kwO9OMH2E54JF3zvsn4vwqn/Z06fTf3vfcWaXzao4zMaYihLhPnGKwV2Zur5/rEVPeGi2hx1FNB90o+YQUgNQr/+8PgNLFaCEY4E=
+	t=1709893158; cv=none; b=IfWYPrt+HqkC+Gq21bhMzgYcyShWXggeXR+lb9Uv3cDV1bmGUxAVBCRuEkDvxEVUX2VFR4c5PEoQ4dg1BH6M1Y7CdVAPsSzt3ng7i7tFY7qYZPOVNVnRtleeOCL4+Ga34iTWpsifsckH8jsXiPq3DLQa+ZqtKRpN5wecupXcxVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709893153; c=relaxed/simple;
-	bh=o4kROZZaMlT9MHw4rxVnPT0wK6D0X294PyFRuzqQc9A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=H9wMe97cmoWBDgebBfUKRaPIaNIyZs69iXRu/WZSB8Yl5HcfJfd4BhGDXzDGdNLdxiM2BBtI3GlfcziIcuMBggcAzC0d0NuhpD67djRNt6U3JaR1tJ2vmx7JYdA/y6TIMV1fVSltcm1XIblBvMRR1fdRnCiokryRk9v2YkmvnI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1riXJP-004rex-4M; Fri, 08 Mar 2024 18:18:48 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 08 Mar 2024 18:19:02 +0800
-Date: Fri, 8 Mar 2024 18:19:02 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: WangYuli <wangyuli@uniontech.com>
-Cc: davem@davemloft.net, chenhuacai@kernel.org, kernel@xen0n.name,
-	linux-crypto@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org, wangyuli@uniontech.com,
-	guanwentao@uniontech.com
-Subject: Re: [PATCH v2] LoongArch/crypto: Clean up useless assignment
- operations
-Message-ID: <ZermFgvsJymZkz4u@gondor.apana.org.au>
+	s=arc-20240116; t=1709893158; c=relaxed/simple;
+	bh=E/Q+GHdbHP3Gvf5ExMiosmeZbCccda9G4PEoZsYPqh8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DiQoCCZQ7yxF4zqJgXi4t5mLEeCbO/LX+YWD0EqxHdk8QojhbYsr4Z/IzVAlLqWRHDbC/OIYpRIqnPKOjcT2k4qZsuNjBYKRj59b7vVDkmt0U9XOkJxvAo2GihatIZUZkDFmSbCEcWsOHkOr5Q7bINt8RD6C1o23xRA7pPH8ZcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q8bySy8z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BCE5C43394;
+	Fri,  8 Mar 2024 10:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709893157;
+	bh=E/Q+GHdbHP3Gvf5ExMiosmeZbCccda9G4PEoZsYPqh8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=q8bySy8zYBiGxzpPlzYyiyuIAl8sVR6k2uiDHCVmDcVxU7p+mF9C7u3gOqPAsfM+C
+	 l73E58AO3rLtOmjEGbker3jxpIyGiMl0TWr6S4qrY4ePXCsF3YfzLHK/3xwbBys4lO
+	 0xulfy+9wn+SbiuIAxbrFATtCt9++1bagtZmzuHBt3ietOujJ/+dMhKZPoKcuVSTYC
+	 HSLfjc4zm0JjxJUr5AsSYTAGxf10qhIkIpczP+l7dib2fL09yztaIisr3QenUNbMSt
+	 7kzwsGBcBuTNTsI4K5rPewp69udL8PJaCSetqeaKELObvNCYPF1LtQQP8mw8yu09c0
+	 W3XkL4X21mtSQ==
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] vfs uuid
+Date: Fri,  8 Mar 2024 11:19:05 +0100
+Message-ID: <20240308-vfs-uuid-f917b2acae70@brauner>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79D75E042AE5B03F+20240229100449.1001261-1-wangyuli@uniontech.com>
-X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2860; i=brauner@kernel.org; h=from:subject:message-id; bh=E/Q+GHdbHP3Gvf5ExMiosmeZbCccda9G4PEoZsYPqh8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaS+eib3319G5MeaisSE5eXzq+2WLd+zctqnIpPjzLuOb /t6ymCxYUcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBE2Ocz/GafWLmJ7dr1Dd8m f1jKv/nhtlDpuVH7ylXEz12WPvBYLPwEI8MJ3as936eUsvsGmgTrfX5UyPLylajL72s7HC59PrH +5DRGAA==
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-WangYuli <wangyuli@uniontech.com> wrote:
-> The LoongArch CRC32 hw acceleration is based on
-> arch/mips/crypto/crc32-mips.c. While the MIPS code supports both
-> MIPS32 and MIPS64, LA32 lacks the CRC instruction. As a result,
-> "line len -= sizeof(u32)" is unnecessary.
-> 
-> Removing it can make context code style more unified and improve
-> code readability.
-> 
-> Suggested-by: Guan Wentao <guanwentao@uniontech.com>
-> Signed-off-by: WangYuli <wangyuli@uniontech.com>
-> ---
-> arch/loongarch/crypto/crc32-loongarch.c | 2 --
-> 1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/loongarch/crypto/crc32-loongarch.c b/arch/loongarch/crypto/crc32-loongarch.c
-> index a49e507af38c..3eebea3a7b47 100644
-> --- a/arch/loongarch/crypto/crc32-loongarch.c
-> +++ b/arch/loongarch/crypto/crc32-loongarch.c
-> @@ -44,7 +44,6 @@ static u32 crc32_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
-> 
->                CRC32(crc, value, w);
->                p += sizeof(u32);
-> -               len -= sizeof(u32);
->        }
+Hey Linus,
 
-This makes no sense whatsoever.  Please review this patch carefully
-before you resubmit.
+/* Summary */
+This adds two new ioctl()s for getting the filesystem uuid and
+retrieving the sysfs path based on the path of a mounted filesystem. The
+bcachefs pull request should include a merge of this as well as it
+depends on the two new ioctls. Getting the filesystem uuid has been
+implemented in filesystem specific code for a while it's now lifted as a
+generic ioctl.
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+/* Testing */
+clang: Debian clang version 16.0.6 (19)
+gcc: (Debian 13.2.0-7) 13.2.0
+
+All patches are based on v6.8-rc1 and have been sitting in linux-next.
+No build failures or warnings were observed.
+
+/* Conflicts */
+At the time of creating this PR no merge conflicts were reported from
+linux-next and no merge conflicts showed up doing a test-merge with
+current mainline.
+
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9.uuid
+
+for you to fetch changes up to 01edea1bbd1768be41729fd018a82556fa1810ec:
+
+  Merge series "filesystem visibility ioctls" of https://lore.kernel.org/r/20240207025624.1019754-1-kent.overstreet@linux.dev (2024-02-12 13:14:21 +0100)
+
+Please consider pulling these changes from the signed vfs-6.9.uuid tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+vfs-6.9.uuid
+
+----------------------------------------------------------------
+Christian Brauner (1):
+      Merge series "filesystem visibility ioctls" of https://lore.kernel.org/r/20240207025624.1019754-1-kent.overstreet@linux.dev
+
+Kent Overstreet (6):
+      fs: super_set_uuid()
+      ovl: convert to super_set_uuid()
+      fs: FS_IOC_GETUUID
+      fat: Hook up sb->s_uuid
+      fs: add FS_IOC_GETFSSYSFSPATH
+      xfs: add support for FS_IOC_GETFSSYSFSPATH
+
+ Documentation/userspace-api/ioctl/ioctl-number.rst |  3 +-
+ fs/ext4/super.c                                    |  2 +-
+ fs/f2fs/super.c                                    |  2 +-
+ fs/fat/inode.c                                     |  3 ++
+ fs/gfs2/ops_fstype.c                               |  2 +-
+ fs/ioctl.c                                         | 33 ++++++++++++++
+ fs/kernfs/mount.c                                  |  4 +-
+ fs/ocfs2/super.c                                   |  4 +-
+ fs/overlayfs/util.c                                | 18 +++++---
+ fs/ubifs/super.c                                   |  2 +-
+ fs/xfs/xfs_mount.c                                 |  4 +-
+ include/linux/fs.h                                 | 52 ++++++++++++++++++++++
+ include/uapi/linux/fs.h                            | 25 +++++++++++
+ mm/shmem.c                                         |  4 +-
+ 14 files changed, 141 insertions(+), 17 deletions(-)
 
