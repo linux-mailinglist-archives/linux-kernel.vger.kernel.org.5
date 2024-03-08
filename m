@@ -1,128 +1,255 @@
-Return-Path: <linux-kernel+bounces-97422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96640876A4A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:55:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F2C4876A4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:56:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5182D284EAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:55:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 714361C21054
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7EF40861;
-	Fri,  8 Mar 2024 17:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B6E15380F;
+	Fri,  8 Mar 2024 17:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="zcfC6NeS"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Co8inQyq"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA1F4779F
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B818136D;
+	Fri,  8 Mar 2024 17:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709920500; cv=none; b=a+aWNuVgUQYQ+JCjqGmsSnFICl/FUJxEjGgX9hMzLAhYmoDYu0LlKvudvV4hu0Wz6PQ1qnTGXsG0MDMtT4Jcn69VrWboZQO2fS7CkUFm2w/D/xrR/ZLld31KKD7mcc8rcsNvYxyhLfwp0lrDImCWXKU7/h6On7e8t/CCGcB5P9o=
+	t=1709920605; cv=none; b=ODMlhCd2i97wGpIQcc7SgrGaMg/LNP0XUNI5sS8bYB3qQDqIxfba4duTHcgCMAuJRPuAOg7HvpDuDK4LkQwq/pX99DcGq3LgrfwIjiZhjJPnAbtacyvM11ADUIzkEHxicBYUnbdb1mwOI4GwC9yK+DJInTcFnA6yQvuJy1NC2po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709920500; c=relaxed/simple;
-	bh=PqbYnoeebkLlNwNR80jokddThH4j13xSW/+xyPtw1Jc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mID6fMOvjl6i8YYk8WIiGjk2o4idxq+IzuPLDJ7FDef5oONZ/CG/LQDAfEuEk4/fCFXj16pq8cxIffv7EeAB6CT8rGKp0VjnKhEv7YO13mYxa60gowOZ0BXyfI42EMjzhONiFeQnsF0ae8UWxc8am8LBt5sUVYYZwLiGspibHCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=zcfC6NeS; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dc75972f25so19432295ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:54:57 -0800 (PST)
+	s=arc-20240116; t=1709920605; c=relaxed/simple;
+	bh=C3/OQ3lvmtWM5Fk2NQ/zYD5f1oUYWVti/SktEx2bsrM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VaGGcj+IlI4da48F3QAQ0EKhba8zonTf0cAjd5QmAogwuZw0k2GReBJMjh8HckJ4w3pnP0xwvz4blI+MGvN+lpT5HMHtWOyLl9wppFQ3S/g63rweC8mFbq/UE0cNb13v/EIbNJJt7yH3+Z3cP2QYFOF8gDE86Jqgk6VP6P8fEf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Co8inQyq; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1599356a12.0;
+        Fri, 08 Mar 2024 09:56:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709920497; x=1710525297; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EamBEUqzL9Iiqztd/HotFBvV3nM4Pbfu8Iqoqukog0c=;
-        b=zcfC6NeSUDVSOX0DFih3g4kWmr7Ctro4sCUJX9fmd6mc9kgIGqbv6HU9kDYCg8ZeE+
-         9/61adcgjPa2mYjYPCHvFC7Z8uWtmUYPC0iw4ubJUGpT3ApskHDtgz1+3CfjVpr8IbLB
-         Q+3z3lRAsmgv6CtQfe9M4r4dEx6YE8ZJwyJMG927g2MytjivZxoP7lFxwp0NzNEkxwnp
-         5gPJSITjOH9e3nTIv3a5JJ2s+JKFzEE4y8QkHFBV1VjIJU9KD+U3WAf13sNIeUBfTTMF
-         FxSslFwKZ6pmWbQPDpm8vMtHxEu2+ewaL6qFgS7LSN614+3MqWV87HWBBTNJOdGHYL32
-         ywDw==
+        d=gmail.com; s=20230601; t=1709920603; x=1710525403; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OgXSP3d/pfH7TPIm6gVXNmyWtFVxa9g4fw/sbjv/wQ8=;
+        b=Co8inQyqmXSWrH9vIqskfxCxRB2/TjWpJT4W+1s7vq1uEgQJBBlkoG4vJcXhy1OaRr
+         oyprVVFoTivyThl3QtxX2Y7WSvrfT1p7MBrPOdHTBshQMK/m+9rwSz0HGbFRj43+dtGw
+         /GSWQHb6g4AIqPFye3IvKSn0E73EEqClCKxqoIqUtue4bIH02omn27qOmderTnXcm3Ih
+         dyZ/08VE1ErAHVzARtV2E4lagS2mwL9IQH9WzvfPY7tNZDBM26E62/YrB35SeCvl7g3Y
+         W0RkcbvGRotO/xaUMlDQttYw1AUMRFSoLiqbREsqbshU95v+UWxF9dB7X6dS5ZkCDZ6T
+         8tIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709920497; x=1710525297;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EamBEUqzL9Iiqztd/HotFBvV3nM4Pbfu8Iqoqukog0c=;
-        b=XizdWDgDIAdEqdVeOIU5Bv5pVsK3MO0ckdsp9W0c0mshzyVqnXzLc4CXt90KlaQCDI
-         LgFkB2O1KbCgfrNZT1IEXsuA96yozKUQszBFXT7brLdix8xUEHJ1Tvr/4IY1xuRqmks/
-         hAeW7uWhAW+V+HwVud9BzqnTZ2GHOnBxvSRQGeJgRMqmcCV0BZ2VbhGQnFkZt+ZVVALU
-         YRDxvVSO+LE8dhCKxRaIF2s5sbtAjGr5osa3+sJGuHqLUzKITvxcxUUkkaAHG4DU05nX
-         Veqe2hDxA+Iar1936WO18poAFOs8FUS5Om2dOov9X0114Q/5RIJgr4VameKlEHuMk062
-         3fZg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKF1pGz2ARaaBMoHD/dyVvEqnvvk4zdQv0ntES2LUAyfsHOSun933RmiigBtjxx9GTqZr6JmQA3fgwaa/Wx5xVacUfgaaU4wGpgFiy
-X-Gm-Message-State: AOJu0Yw4yiUm2bgaiXtAA1Z1dMfNz8O9DSbug3qLgnl37QMEvtYjPth4
-	q9EsZ4+q6dwaZj3Iz2PgfpFpEyGjZCuzjYatjFjKK85V8jX2F50hXkQLSWnNARE=
-X-Google-Smtp-Source: AGHT+IHA4RG5j/V//vGz+610MDvs64AMo45dipHrCspxD7J7JXQra4JvVWAZSTY7TNiNzGWiYg9wog==
-X-Received: by 2002:a17:902:db0a:b0:1dd:a34:7321 with SMTP id m10-20020a170902db0a00b001dd0a347321mr14382430plx.25.1709920497123;
-        Fri, 08 Mar 2024 09:54:57 -0800 (PST)
-Received: from localhost (71-212-63-227.tukw.qwest.net. [71.212.63.227])
-        by smtp.gmail.com with ESMTPSA id d14-20020a170903230e00b001da15580ca8sm16565649plh.52.2024.03.08.09.54.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 09:54:56 -0800 (PST)
-From: Kevin Hilman <khilman@baylibre.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
- <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Jerome Brunet
- <jbrunet@baylibre.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 2/2] dt-bindings: arm: amlogic: add Neil, Martin and
- Jerome as maintainers
-In-Reply-To: <20240224084030.5867-2-krzysztof.kozlowski@linaro.org>
-References: <20240224084030.5867-1-krzysztof.kozlowski@linaro.org>
- <20240224084030.5867-2-krzysztof.kozlowski@linaro.org>
-Date: Fri, 08 Mar 2024 09:54:56 -0800
-Message-ID: <7ha5n8pq1b.fsf@baylibre.com>
+        d=1e100.net; s=20230601; t=1709920603; x=1710525403;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OgXSP3d/pfH7TPIm6gVXNmyWtFVxa9g4fw/sbjv/wQ8=;
+        b=XUNXnJ7WkkMP45iBdTtFxP9JJ6EViCmJo22ka/pTlhiXvyWi0Ww9CZMGHjzMqdAnYt
+         Qw3Z68DrwsePh67hvzGetrA8/ppl3ugRpq0zVeNh9r0rbUJ3jpObWhCvQCl2tFkuszSB
+         Zc3kqLafuqBo6lzoqGL7JXhZjOu6b3XuUhWDUACTYWIAVpSnR13dI3jf0pxMlir5YDcf
+         3CFzxR5hO5B9OlEvGLt7NhTjQVmPAVz5AcI7x3dhvFM5wO/BQ4EW5l7l8C0vElLcq5QJ
+         lP72p8thXlnnxCd3oa7I1EF5Fbry8gN3EWxzOMVzkOgdk4kUAkK1qZ80vO3F5mNJk5GP
+         2Ozw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDn7tF6Nx766qefFsE5Ar1wlR7/rzqZGKMF9vmZScqqj8y4zeMqQuCISA31PKbgfwslraRQRbkbxfVabqM0mNU0vG9J8bLgXzvxOKMkJNo4gBfD6PjBn28lMHNRP7Er35iHV+XwTx2UQ==
+X-Gm-Message-State: AOJu0YxPKeexHdSp1Qtg0fEXTm/2fFardJ3bE4Dt9+ur43p3e4nhxAUp
+	Tbyh2gMRHPdd0DX8rzq/9Pi5w/NHsf+rM8NJfJY+lYAFAENMscc8
+X-Google-Smtp-Source: AGHT+IEjLZQEiki14E+8+WuQTj2DOEDO9pnd9LRofgXc5k2m0gMxe8g0kXRmMDI4Og1HNoFRHiM7HQ==
+X-Received: by 2002:a17:90a:8d85:b0:29b:6da4:277e with SMTP id d5-20020a17090a8d8500b0029b6da4277emr801752pjo.1.1709920602765;
+        Fri, 08 Mar 2024 09:56:42 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id cx12-20020a17090afd8c00b0029bc28b8cedsm27722pjb.28.2024.03.08.09.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 09:56:42 -0800 (PST)
+Message-ID: <9bb24a9b-4c95-49f9-8afb-2fdeeed64198@gmail.com>
+Date: Fri, 8 Mar 2024 09:56:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/2] net: stmmac: dwmac-imx: add support for PHY
+ WOL
+Content-Language: en-US
+To: POPESCU Catalin <catalin.popescu@leica-geosystems.com>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com"
+ <pabeni@redhat.com>, "robh@kernel.org" <robh@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "festevam@gmail.com" <festevam@gmail.com>,
+ "xiaoning.wang@nxp.com" <xiaoning.wang@nxp.com>,
+ "linux-imx@nxp.com" <linux-imx@nxp.com>,
+ "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+ "joabreu@synopsys.com" <joabreu@synopsys.com>,
+ "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "imx@lists.linux.dev" <imx@lists.linux.dev>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-stm32@st-md-mailman.stormreply.com"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>,
+ "m.felsch@pengutronix.de" <m.felsch@pengutronix.de>
+References: <20240306172409.878928-1-catalin.popescu@leica-geosystems.com>
+ <20240306172409.878928-2-catalin.popescu@leica-geosystems.com>
+ <bbe3e611-a310-41f5-a037-4b7d5e914b94@gmail.com>
+ <ddd2f984-e5e7-4708-a013-bfd668794466@leica-geosystems.com>
+ <a25d4d76-a49a-4423-8916-5d7d9303b87a@gmail.com>
+ <917f5cea-69d2-4ce2-a5a3-184332415fe5@leica-geosystems.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <917f5cea-69d2-4ce2-a5a3-184332415fe5@leica-geosystems.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
+On 3/8/24 09:48, POPESCU Catalin wrote:
+> On 07.03.24 19:52, Florian Fainelli wrote:
+>> [Some people who received this message don't often get email from
+>> f.fainelli@gmail.com. Learn why this is important at
+>> https://aka.ms/LearnAboutSenderIdentification ]
+>>
+>> This email is not from Hexagon’s Office 365 instance. Please be
+>> careful while clicking links, opening attachments, or replying to this
+>> email.
+>>
+>>
+>> On 3/7/2024 1:13 AM, POPESCU Catalin wrote:
+>>> On 06.03.24 18:41, Florian Fainelli wrote:
+>>>> [Some people who received this message don't often get email from
+>>>> f.fainelli@gmail.com. Learn why this is important at
+>>>> https://aka.ms/LearnAboutSenderIdentification ]
+>>>>
+>>>> This email is not from Hexagon’s Office 365 instance. Please be
+>>>> careful while clicking links, opening attachments, or replying to this
+>>>> email.
+>>>>
+>>>>
+>>>> On 3/6/24 09:24, Catalin Popescu wrote:
+>>>>> Add support for PHY WOL capability into dwmac-imx MAC driver.
+>>>>> This is required to enable WOL feature on a platform where MAC
+>>>>> WOL capability is not sufficient and WOL capability built into
+>>>>> the PHY is actually needed.
+>>>>>
+>>>>> Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
+>>>>
+>>>> Nope, this is not about how to do this. You use a Device Tree property
+>>>> as a policy rather than properly describe your systems capabilities.
+>>> I'm not sure what policy means in that context.
+>>> BTW, dwmac-mediatek does the same with binding "mediatek,mac-wol" which
+>>> is a commit from 03/2022.
+>>
+>> Policy here means you want a certain behavior from the OS that is
+>> consuming the Device Tree, and that behavior is encoded via a Device
+>> Tree property. This is different from describing how the hardware works
+>> which does not make any provisions for getting a behavior out of the OS.
+>>
+>>> I understand this way of doing became "unacceptable" since then ??
+>>
+>> It was not acceptable then, but there is only a limited reviewer time,
+>> and it is easy unfortunately to sneak through reviewers.
+>>
+>>>>
+>>>> What sort of Wake-on-LAN do you want to be done by the PHY exactly?
+>>>> Does
+>>>> the PHY have packet matching capabilities, or do you want to wake-up
+>>>> from a PHY event like link up/down/any interrupt?
+>>>
+>>> PHY is TI dp83826 and has secure magic packet capability. For the wakeup
+>>> we rely on a external MCU which is signaled through a PHY's GPIO which
+>>> toggles only on magic packet reception.
+>>> We want to wakeup _only_ on magic packet reception.
+>>
+>> Then you need to represent that wake-up GPIO line in the Device Tree,
+>> associate it with the PHY's Device Tree node for starters and add in a
+>> 'wakeup-source' property in the Device Tree.
+> The GPIO I was referring to is a PHY GPIO not a SOC GPIO, so there's no
+> way to describe it into the DT.
 
-> Add rest of Linux Amlogic Meson SoC maintainers and reviewers to the
-> Amlogic board/SoC binding maintainers.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> ---
->
-> Entries ordered by lastname.
-> ---
->  Documentation/devicetree/bindings/arm/amlogic.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
-> index edbc21159588..949537cea6be 100644
-> --- a/Documentation/devicetree/bindings/arm/amlogic.yaml
-> +++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
-> @@ -7,6 +7,9 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->  title: Amlogic SoC based Platforms
->  
->  maintainers:
-> +  - Neil Armstrong <neil.armstrong@linaro.org>
-> +  - Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> +  - Jerome Brunet <jbrunet@baylibre.com>
->    - Kevin Hilman <khilman@baylibre.com>
+Well, technically there is, it's just that the PHY is not registered 
+with Linux as a GPIO controller/provider, nothing prevents you from 
+doing that, but it starts raising the bar.
 
-Acked-by: Kevin Hilman <khilman@baylibre.com>
+> The PHY is connected on the SOC MDIO bus, so the SOC programs the PHY,
+> but the PHY wakes up the external MCU which in turn wakes up the SOC.
 
-FWIW, I still believe "stable DT" is an oxymoron, but I don't care
-enough anymore to fight this battle, so happy to see the other
-maintainers listed & recognized for the great work they're doing.
+OK, but that still needs to be described somehow, otherwise you are just 
+cutting corners and assuming that the pin from the PHY to the external 
+MCU is only driven when the PHY drives it, how about other wake-up 
+sources to the MCU?
 
-Thanks,
+> 
+>>
+>> Now the PHY driver can know about the existence of a GPIO and it can
+>> know the PHY is a system wake-up source, so the driver can call
+>> device_set_wakeup_capable().
+>>
+>> In user-space you have to configure the network interface with
+>> WAKE_MAGICSECURE which needs to propagate to the PHY driver for adequate
+>> configuration. Still in user-space you need to make the PHY device
+>> wake-up *enabled* by doing:
+>>
+>> echo "enable" > /sys/class/net/ethX/attached_phydev/power/wakeup
+>>
+>> If both WAKE_MAGICSECURE is enabled and the PHY device in sysfs reports
+>> that it is wake-up enabled would you wake-up from the PHY's GPIO. Your
+>> PHY driver ought to be modified to check for both
+>>
+>> device_wakeup_enabled() and wolopts being non-zero to call
+>> enable_irq_wake() on the GPIO interrupt line.
+>>
+>> That's how I would go about doing this, yes it's a tad more complicated
+>> than adding an ad-hoc Device Tree property, but it's more flexible and
+>> it's transposable to other configurations, too. Whether that sort of
+>> encoding needs to be in the individual PHY drivers or somewhere in the
+>> PHY library can be decided if we have more than one similar
+>> configuration to support.
+>>
+> Yes, it's more complicated and it doesn't apply to our platform.
+> But, this doesn't really matter in the end, the problem I'm trying to
+> address here is to allow stmac for IMX to support PHY WOL.
+> Since the binding is not acceptable, I guess the only option here is to
+> remove flag STMMAC_FLAG_USE_PHY_WOL from stmac driver and replace it
+> with a call to phylink_ethtool_get_wol to identify whether the PHY is
+> WOL capable or not.
+> Then, how should we allow the platform to choose b/w MAC WOL and PHY WOL
+> if both are supported ?
 
-Kevin
+We don't have a good way to configure that decision consistently and 
+across *all* device drivers currently, what I can think of as the least 
+bad solution is to intersect between the PHY supported WOL modes, the 
+MAC supported WOL modes, and checking which of those is a wake-up enable 
+device via device_wakeup_enabled() and use that one with a preference 
+for the PHY since that is the closest to the wire. But this might be 
+good for me and you, maybe not for others.
+
+> AFAIK ethtool only knows about MAC WOL capability since it interrogates
+> the MAC interface. ethtool doesn't know anything about the PHY, or does
+> it ??
+
+No we don't, and until Maxime's patches about PHY topology land upstream:
+
+https://lwn.net/Articles/961959/
+
+we do not want to invent many different ways of specifying which of the 
+MAC or the PHY should be used for WOL. FWIW, I have a similar need:
+
+https://www.spinics.net/lists/netdev/msg751196.html
+
+https://lore.kernel.org/all/20231026224509.112353-1-florian.fainelli@broadcom.com/
+-- 
+Florian
 
 
