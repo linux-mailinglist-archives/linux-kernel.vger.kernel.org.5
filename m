@@ -1,140 +1,128 @@
-Return-Path: <linux-kernel+bounces-97377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A2768769B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:21:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19D2E8769BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B07DB23B03
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:21:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C31751F250CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:22:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673EF2D627;
-	Fri,  8 Mar 2024 17:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A82353813;
+	Fri,  8 Mar 2024 17:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="dBaP8mSR"
-Received: from outgoing6.flk.host-h.net (outgoing6.flk.host-h.net [188.40.0.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="PVh//E0x"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D272282E1;
-	Fri,  8 Mar 2024 17:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1FE3FBAD
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709918384; cv=none; b=k2LwKnBkhEHE5zjcH5ysM+DqEdZiQ3iH0HiKGTmrVBR+8Hh0//m51V2xHIFzWDbikQoSDmA7vH8udhuf/7py7PjDN+9cV8covmNgPS0MrkiFkxALf9e5M9N3z5iQ5qoEUs3BOYkE21K0ExhzcgbNX6rjV3xJHytyZGHyXeQle2Y=
+	t=1709918388; cv=none; b=qRf2pAxYA94BIKeniBEhfoK2TG/dRvyUIAxfo9ZQyGz3ysTa46D6LSaqhnPgAThTTiCBsr+kLS9rO0QpcwntWo0Cq7DYtoQrqF+jpesQRZ4nVwhK2gAsFrsZnT259pUE4YMg7d3Xsi8i3L4rb7PRwJeiJumRoxifaM7jkKTDqhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709918384; c=relaxed/simple;
-	bh=pu2djzYCt+PJn5YBXm8TLI2sMKIP9W9f6BUNV602+hI=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
-	 References:Message-ID; b=fL8Dv44n/mWRmD25Wci4m4Z0H99NHDtkOGk8I1oecBvXgqUJ1Hzdu6ttE60dv/Q2OM+jWMsFY7sYd5bKRZ71mh4uHnWEX+VS0q/BHYh/vhH4qUHXYi2/Uzh7CjBzgummFxit48MUx2FEZn+lGVIS/FWm+94kQZYsvKMcNx4AJR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=dBaP8mSR; arc=none smtp.client-ip=188.40.0.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
-	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
-	sender:bcc; bh=a/vpHfNPzt7TGK8d8dpGB4WwTK9WQCuP3uAyqQISEGU=; b=dBaP8mSRxS4lEh
-	GjSu90TDy9meTMekBLoEETSGJKVQBi0b/AW97xPPf57MxSW3J5rxw9NCeTPn1JaIT2HNHhtsr0KtF
-	Gk6aloHiLLFM6fFHsFS4ztSXtFk6SMBsVQcVoLnPBfDWsT9nUbneatAR/jesh+fdBPtFhereWT17F
-	qdQV4Ot2qVtE+C5bc1ZNbWD+iOrDN60fWpcUpYmFME4ONWJVjiKXJo075hI30XK4NFf8UnkTEi5HC
-	Ynyu3URiYC8wievULGd5b3QG93hU/Nx8WE/RuhnlHOpTrXZTE3oQChFfbdRUDjFuc9H9BRYxMBdKT
-	c8+/MvAjLZWq6NYA0URA==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam2-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1ridsc-00EpVe-3q; Fri, 08 Mar 2024 19:19:36 +0200
-Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
-	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1ridsa-0007Bk-MV; Fri, 08 Mar 2024 19:19:32 +0200
+	s=arc-20240116; t=1709918388; c=relaxed/simple;
+	bh=JzkeDh5AwdfJCEuCQJCZYQvR6O/baYk0o5Ac9VAu/wQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ei/7FK6OOwfrcCvzN6ypD7B3BJZg95xKTNaDeW1u3rGgrFC3MySh9dF36e5D22WaB24bPqeochG5Y2EQZIZHyqtjmwXJvbfA1iQjbI8+kHVZV+3nCVvOVF1PKFQjTRgVriWmrywzj6By0VRyHhJ/iOHNS27o/k5ksUO/hLywbys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=PVh//E0x; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a1a069bd16so576530eaf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1709918386; x=1710523186; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QyfvgQ7g3k3inQ55L9jhBCdrQml4NQHWxp+tVzvR3qY=;
+        b=PVh//E0xuXkuPOSoLEsjjg07Dervkk0fc/V5iY4C1Oqa2XAe93VXbBAIu1QABHwB+V
+         sWfUb96BF7dKhPfY7gmH7ojjhcO/4KztKBI7wUAG9SnnTs1cwp8RdTu5xLwlSwoJY7PI
+         RdpATlC1oon6Tznniekpp4QgDpbw/FgR5htxh0Ao34cPtb5/B75HXy15dTd/mhv+g2p9
+         xDqVcAaMTt3RCJhO55JbKGRafa7jETPPb6tyWp2DcjPDHkCmT+KqJbgFTE/tFYknrzxt
+         QzxK6cG1ZYERqvDJdFAwPM1KdCg7AlnnzWrgj9EXOwWYMlXHNq82FcYuU6fzioLRQmC2
+         Co0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709918386; x=1710523186;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QyfvgQ7g3k3inQ55L9jhBCdrQml4NQHWxp+tVzvR3qY=;
+        b=vbChHgrqxnbbRjg8OkmYctZeuFFrxzg5FpZ1wot13D57Yb0W41Z7XNijX1UTiRB5EB
+         oEC0LfuXBp88154S8QUcWzJylbrqQElnCr8XbVodHVxZK1XXXlgSrvOVgHJrZFcpIYgA
+         ROA5+iox+kCDtJWsuGVWIgmvqRA/YFKps1Inwy+F+M2HDsaf1oCaTKCcgaxCY9vSGzxU
+         XtGRzspV0BOncQ3O2X8boBT0Wb9jT/88j/92mm4repBMTTgKBWvGlZmKh4L8gbUJlzwt
+         Dzu1dSbolR0oPiGRH7nAO+CjILtinwjbC0ldK/w60cFcP7uHQIj4efyj0Okvief90wrh
+         DNjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUPvkcwZKQL+gMzMdkMJcTRBrOuJrijb4Ms3XBT33bLIesIsQFP+iAwl+adVNsjTkyY3LPKaqwmoi0200d3/aQ0z+QxFjH5Hg1iQNuV
+X-Gm-Message-State: AOJu0Yz92KhwsCD1WyrE87mXU2jdAJPSi+r2ZkGDvcOPOc0x1AG0aL77
+	ZzsvNkWIsoIod6m/AaIjcykjsBkOwId/5PAI5VVY+FeHYdcVaRMQ5Xedd0Muxgo=
+X-Google-Smtp-Source: AGHT+IHGXwED6hQvAWGBvs0kxPiSJ0tL8OBtEwFzgQm9eQ3JplhnsbF7jKSfoG/okjgvLWcpY+GZ4g==
+X-Received: by 2002:a05:6820:229b:b0:5a1:c935:2eca with SMTP id ck27-20020a056820229b00b005a1c9352ecamr2575641oob.6.1709918386043;
+        Fri, 08 Mar 2024 09:19:46 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id bs18-20020a056820179200b005a12e140fa2sm490330oob.22.2024.03.08.09.19.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 09:19:45 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1ridsm-007URd-IT;
+	Fri, 08 Mar 2024 13:19:44 -0400
+Date: Fri, 8 Mar 2024 13:19:44 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Baolu Lu <baolu.lu@linux.intel.com>
+Cc: Zhangfei Gao <zhangfei.gao@linaro.org>,
+	Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/8] iommufd: Associate fault object with
+ iommufd_hw_pgtable
+Message-ID: <20240308171944.GU9225@ziepe.ca>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+ <20240122073903.24406-6-baolu.lu@linux.intel.com>
+ <CABQgh9FwOVsFe3+5VG0_rDruJVW0ueHTcsnxUcVAvFqrF4Vz6Q@mail.gmail.com>
+ <CABQgh9G5yFZ_p+tfvnJqOQo+Be62rMDatsEX1rhD_oTiXDaw5w@mail.gmail.com>
+ <20240306160120.GN9225@ziepe.ca>
+ <74d6f11a-9415-48e5-a165-7b9f5b87873d@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Fri, 08 Mar 2024 19:19:32 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, Sergio
- Paracuellos <sergio.paracuellos@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger
- <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] mips: dts: ralink: mt7621: associate uart1_pins
- with serial0
-In-Reply-To: <eec5be72-e27f-4068-ac7a-566605f3256c@linaro.org>
-References: <20240308155616.11742-1-justin.swartz@risingedge.co.za>
- <20240308155616.11742-2-justin.swartz@risingedge.co.za>
- <70822db4-d642-4180-9db8-eb0aa5728ef1@arinc9.com>
- <bec06da5c4099898d9e531181d0797ca@risingedge.co.za>
- <eec5be72-e27f-4068-ac7a-566605f3256c@linaro.org>
-Message-ID: <0ad4df2896fe0a3db06d3bcacbcf5931@risingedge.co.za>
-X-Sender: justin.swartz@risingedge.co.za
-User-Agent: Roundcube Webmail/1.3.17
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.06)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8Wv6VWwHFMFDV5KaGg4k2APUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
- Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
- 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
- vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
- nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
- oNmH4nRQzHQazgY7lmveanvOdQzf6IMJvXeR9sWP3X7B861DTGeXmiBZB5ABM5ibrJKBc41fzX2f
- c4dPBW7pWChw4uEjGhn8NxWJwjYpP3+Q3/7iG2wtXpUcDQ6SyB7RUHhtw6evVjjgo+5B/jmqOvZj
- iTeRCozF+pjfbFrzHCaFHgNTrYhVbBAqR8ZRvY88PgTw/yJlftBcHX6tS8NW54gm54VAvfk9VDzu
- 2DWvs648c5Z9erCJvQs7NHJCRvPPwtX/YZRy1/6kBVM18TehOmSn2kZRt3z8CHTZnKdQqcB0QMMU
- IPF3mL0sZmYqDqSi6Ubx7BN0H0IaZOsZnP36dPZwQWhvr8FGGENbqE9x654AXkUfGHPAHnWD1MEm
- 8zNnsSuSxjl6RVTXva2Jl4AHe5oTGEWuK7wQuHiJKcf5Sqd6P3zHxU4Ham35bIM7+pzQRR2+p5za
- 8H1gUaDJZGpg6c2oigrh+YcF3SeOS5epce2vBFQn8BLQG4wdJz5OZPl/85ViK8Ea0fe5iniRDU9a
- IkFLX1Ne1hGTitUHsPftyxriH1hAvmSO1crrLwiF2BozUnkjKLcelPzx2oqVYjg7pBU6N7n2Xnf9
- ORWrllgKtBSNx6xUC0rhukb6/HI5FFTbPOoZF9qxZ4vf24IFf3S/QstrsvmHry2RQMdJZ93srF2r
- +35mEt2FC3cXutruHTpS87YkskBoFo6eZ5Uv5yUh4sH+KRvQOJ2675fcuW/3lDmDZZ7XgBhunFdj
- VYxKH3qWyoySMt2NXQeSeCQL64BFVPTx/kcAi/BxxCuBHKZE9WCF1zdBVVT8jZUewdfxHtr3FaH+
- eXAry2dy2DNwOgV373pfDhBQ21Od8BCsodKtWDQizmRHoSVjKnexcCkQ+p5zWKzxeWKxLCyS8776
- l4RSwc4z5cqDb97hdiFVwaP90eVaqnDphEW4xEWnj3iKGpP30awjRzKpQ4kPl+3D1YhNMZlGTB68
- YWMe6VM9RYQVmV8q7nN/oibcn491jt+pt12gBHaGoo19huz2OKHH5lr9xXvSM4nM3avg
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <74d6f11a-9415-48e5-a165-7b9f5b87873d@linux.intel.com>
 
-On 2024-03-08 19:13, Krzysztof Kozlowski wrote:
-> On 08/03/2024 18:01, Justin Swartz wrote:
->> On 2024-03-08 18:14, Arınç ÜNAL wrote:
->>> On 08/03/2024 18:56, Justin Swartz wrote:
->>>> Add missing pinctrl-name and pinctrl-0 properties to declare
->>>> that the uart1_pins group is associated with serial0.
->>>> 
->>>> Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
->>>> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
->>> 
->>> Reviewed-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->>> 
->>> Please add the trailers from previous patch versions from now on.
->> 
->> What do you mean by trailers?
+On Thu, Mar 07, 2024 at 09:54:53AM +0800, Baolu Lu wrote:
+> On 2024/3/7 0:01, Jason Gunthorpe wrote:
+> > On Wed, Mar 06, 2024 at 11:15:50PM +0800, Zhangfei Gao wrote:
+> > > Double checked, this does not send flags, 0 is OK,
+> > > Only domain_alloc_user in iommufd_hwpt_paging_alloc requires flags.
+> > > 
+> > > In my debug, I need this patch, otherwise NULL pointer errors happen
+> > > since SVA is not set.
+> > This is some driver bug, we need to get rid of these
+> > iommu_dev_enable_feature() requirements.
 > 
-> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+> Yes. Especially iopf should be independent of SVA.
+> 
+> The problem in the arm smmu v3 driver is that enabling iopf is actually
+> done in the enabling SVA path, while the enabling iopf path does nothing
+> except for some checks. It doesn't matter if iopf is tied with SVA, but
+> when it comes to delivering iopf to user space, we need to decouple it.
 
-Thanks, Krzysztof.
+Yes. Each driver is going to need to get a to a NOP for the feature
+things then we can remove them.
 
-I thought I had done this with this patchset on all three patches,
-but if I've accidentally left anyone out - sorry about that.
+I did half the ARM driver in my part 2, the iopf bit still needs
+doing there.
 
-Regards
-Justin
+Jason
 
