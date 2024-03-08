@@ -1,67 +1,79 @@
-Return-Path: <linux-kernel+bounces-97617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87121876C81
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:52:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9C61876C93
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4656282B18
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:52:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F07341C20FA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9223B5FB99;
-	Fri,  8 Mar 2024 21:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rewK1cN9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE135FB9B;
+	Fri,  8 Mar 2024 21:58:29 +0000 (UTC)
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BB35FB8A;
-	Fri,  8 Mar 2024 21:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9053F5EE96
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:58:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709934725; cv=none; b=rK6OexFKfMV01q1dO3wjL9obgrY9DIFjeQkCvPKc3CE32kcflO287cajdNYMTBKmGFmt6wMIzcNHhvSRLGwW+JSBZa3CtgXtf1HqFOidfqSjUeStnwZCprlO6EVOWngDxC9pOYdvy4cpJR+SG7oaDB7iWg8Xn+leop5aGwHtsF8=
+	t=1709935109; cv=none; b=h2WIfIxyIXS/tXRwuBeVFpLIfE/mlEVyovbgeyR+cgayae3H+ljkGgQU3UF4z8JQlRcqusWo6FQQGQHKm++dHOo5pBsPHsDT1UswfdkJui3ojLZrHG9mDI/vWh//zaTWxkfNvhvrwylsw0oZac1uzQLwUCNu69QYoDFFg31Svzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709934725; c=relaxed/simple;
-	bh=dbXkGWO24AcaqW30+bWpUykQ8s/OPhFTkOUOiAbXrr0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cS7IgJjHDFLkdkE67QdvpJEuSvP53I4ZQwcs0pI/fktVcloe5RaYkY9CT/axox26UK2SCZU1mBW+I185/HsLkwruvA6NV/5JlTVV4O0elfO/vVxr3nxamtuzIfmQX5rBKah0g1Af6jGs1mhDABldLe6oqYpHIg9+ZjcT0JauR0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rewK1cN9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5666FC433F1;
-	Fri,  8 Mar 2024 21:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709934725;
-	bh=dbXkGWO24AcaqW30+bWpUykQ8s/OPhFTkOUOiAbXrr0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=rewK1cN96yTC30A1Dsk2GivqNSpEhDRJI8qw2saB6PRX2GFjpd3iYtD5uMoBpEIsS
-	 RlxNDbT6CirSso3TWQaUlHdPf4tCVUIg7H3ApN07G9GGg+Pb5OudVn8lbb6PhBf2x/
-	 uhUPjIUF2QTCNjAMqdWYpIfqYbWXH+/RErw1VWSc2kySpzb5KYKLqwR55Gq9rGPmXO
-	 WN46Mk/GyYaHHpGsHbHV5CDonjx+uETPDe/w0wxrcXQrwPHfLSJL0BtXJZwbgM4lbV
-	 hUAr96R85X84byUqE91+cGf5QWPdTeQpfiZPfAGdbcSCiJf1DitM0MfJqHziNhFZjN
-	 XNoZo2qV30lOA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 06E5DCE0548; Fri,  8 Mar 2024 13:52:05 -0800 (PST)
-Date: Fri, 8 Mar 2024 13:52:05 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>, linux-kernel@vger.kernel.org,
-	frederic@kernel.org, boqun.feng@gmail.com, neeraj.iitr10@gmail.com,
-	rcu@vger.kernel.org, rostedt@goodmis.org,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH] [RFC] rcu/tree: Reduce wake up for synchronize_rcu()
- common case
-Message-ID: <d75fd0b2-f6e0-4102-a5d2-11c7c5487949@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240307234852.2132637-1-joel@joelfernandes.org>
- <CAEXW_YQ-TZB-1gpxvf7v+QAZhHtzV5waBA1VemtgEwNktSp=ww@mail.gmail.com>
- <ccbdf4d4-6972-430c-a479-0d20b318213b@paulmck-laptop>
- <ZespK0CrkVFCu6_p@pc636>
- <ZetNHb6MrmHkQKJN@pc636>
+	s=arc-20240116; t=1709935109; c=relaxed/simple;
+	bh=jdRp3ycnJ2inLRjB5QbGRF0M5UnIWgjy+M+stLJdElI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=IcMXtrrHX6qJOiC2oDF0X4CAzAYW/kZD7TTd3RwmGyBByz8RwB2IQnwIvyppxSE/Khfi8N35D0S/UksHV1dnb/c/RJh49CNkVYKk1qmaf8Io15WE/WFL/Lxy/c4c0au0xr2l4Q23Xuker7cwCbJj+7iCCUmoc1ABtcT6uFUCEts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=baylibre.com; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e61851dbaeso1649847b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 13:58:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709935107; x=1710539907;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ssskNoWRSgCf0JIsEmdc/9vm6xbNQG/h290+Hjyy4Ms=;
+        b=CWR4INm4s8NSNvjIVc5EohvkrEqThODQRQdTAfO2KCa3JstOM7NQb3R0nZBAcddM8z
+         CX/ODtWZqcWd6XuLVRY6CLBO3ocxon6rp99u7ovksFVKC4kB2fKT13RUgAMPt32foOWv
+         dNwpb0Tmzd40ThmcxXhY3bW6mEl7s0h/daH71lAdJD7b6o5AlFeLBnW3d/GAqeuXqzkZ
+         9HAHzwN8Fvg2cEk6PLtqdxmB1kFz+nCRXDjmvS9xc/z4WwKNPjd2IJQqkkqVxIgC6oXI
+         vKFr8H8vl5KyKroETlEyoM7bWyTf1ALENhMwhyzQKC6kB/u+W8/dD3Z6bcksEftQYqog
+         xDzw==
+X-Forwarded-Encrypted: i=1; AJvYcCWEytTrPoL0sXKDJYCtxXlKkNqMVD5VzIZLej8IWWMePMRsGi7NXL3OsUZFRC2sAL7/5J+4Dig8lQBljpD08zuY5qnTcTeXFRk84egn
+X-Gm-Message-State: AOJu0YyER9DJwHuNhQq0QreiouWLm/x+2EW9ZeVpjiDt4S5CSl/pBSHg
+	OhjhP8ueKDma/mzQi5icWxiBrdK4Fqa5X5rRdWw/eKnPFSr+7TqJ1TJD1QCl/Qo=
+X-Google-Smtp-Source: AGHT+IFZ/B9Q9BM4+JaRrVPqYSOZwZirEIB9Olp87R9nCLM6pykqEyS178FOw4nQALVX/Vp33qnx1A==
+X-Received: by 2002:a05:6a20:1454:b0:1a0:e944:15b7 with SMTP id a20-20020a056a20145400b001a0e94415b7mr357270pzi.5.1709935106742;
+        Fri, 08 Mar 2024 13:58:26 -0800 (PST)
+Received: from localhost (71-212-63-227.tukw.qwest.net. [71.212.63.227])
+        by smtp.gmail.com with ESMTPSA id g19-20020a631113000000b005cd8044c6fesm167442pgl.23.2024.03.08.13.58.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 13:58:26 -0800 (PST)
+From: Kevin Hilman <khilman@kernel.org>
+To: =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>, Greg
+ Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Roger Quadros <rogerq@kernel.org>, Peter Chen
+ <peter.chen@kernel.org>, Pawel Laszczak <pawell@cadence.com>, Nishanth
+ Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo
+ <kristo@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, =?utf-8?Q?Gr=C3=A9gor?=
+ =?utf-8?Q?y?= Clement
+ <gregory.clement@bootlin.com>, Alan Stern <stern@rowland.harvard.edu>,
+ linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ =?utf-8?Q?Th=C3=A9o?=
+ Lebrun <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v4 4/9] usb: cdns3-ti: support reset-on-resume behavior
+In-Reply-To: <20240307-j7200-usb-suspend-v4-4-5ec7615431f3@bootlin.com>
+References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
+ <20240307-j7200-usb-suspend-v4-4-5ec7615431f3@bootlin.com>
+Date: Fri, 08 Mar 2024 13:58:25 -0800
+Message-ID: <7h4jdgperi.fsf@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,54 +81,96 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZetNHb6MrmHkQKJN@pc636>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 08, 2024 at 06:38:37PM +0100, Uladzislau Rezki wrote:
-> On Fri, Mar 08, 2024 at 04:05:15PM +0100, Uladzislau Rezki wrote:
-> > On Thu, Mar 07, 2024 at 04:06:06PM -0800, Paul E. McKenney wrote:
-> > > On Thu, Mar 07, 2024 at 06:52:14PM -0500, Joel Fernandes wrote:
-> > > > On Thu, Mar 7, 2024 at 6:48 PM Joel Fernandes (Google)
-> > > > <joel@joelfernandes.org> wrote:
-> > > > >
-> > > > > In the synchronize_rcu() common case, we will have less than
-> > > > > SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
-> > > > > is pointless just to free the last injected wait head since at that point,
-> > > > > all the users have already been awakened.
-> > > > >
-> > > > > Introduce a new counter to track this and prevent the wakeup in the
-> > > > > common case.
-> > > > >
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > ---
-> > > > 
-> > > > Forgot to mention, this is based on the latest RCU -dev branch and
-> > > > passes light rcutorture testing on all configs. Heavier rcutorture
-> > > > testing (60 minutes) was performed on TREE03.
-> > > 
-> > > Very good, thank you!
-> > > 
-> > > Uladzislau, could you please pull this into the next series you send?
-> > > I can then replace your commits in -rcu with the updated series.
-> > > 
-> > Absolutely. I will go through it and send out the next version!
-> > 
-> 
-> Joel, i sent out the v6: [PATCH v6 0/6] Reduce synchronize_rcu() latency(v6)
-> 
-> Could you please rework the patch on latest tip once the series i sent is
-> settled on Paul's dev?
+Th=C3=A9o Lebrun <theo.lebrun@bootlin.com> writes:
 
-It is there now.
+> Add match data support, with one boolean to indicate whether the
+> hardware resets after a system-wide suspend. If hardware resets, we
+> force execute ->runtime_resume() at system-wide resume to run the
+> hardware init sequence.
 
-							Thanx, Paul
+Is "whether the hardware resets after a system-wide suspend" really a
+function of the IP itself, or rather whether the IP is in a power domain
+that might power down?
 
-> I have not sent your patch because it is not cleanly applied and needs some
-> review.
-> 
-> Thank you in advance!
-> 
-> --
-> Uladzislau Rezki
+> No compatible exploits this functionality, just yet.
+>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  drivers/usb/cdns3/cdns3-ti.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>
+> diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
+> index 4c8a557e6a6f..f76327566798 100644
+> --- a/drivers/usb/cdns3/cdns3-ti.c
+> +++ b/drivers/usb/cdns3/cdns3-ti.c
+> @@ -57,9 +57,14 @@ struct cdns_ti {
+>  	unsigned vbus_divider:1;
+>  	struct clk *usb2_refclk;
+>  	struct clk *lpm_clk;
+> +	const struct cdns_ti_match_data *match_data;
+>  	int usb2_refclk_rate_code;
+>  };
+>=20=20
+> +struct cdns_ti_match_data {
+> +	bool reset_on_resume;
+> +};
+> +
+>  static const int cdns_ti_rate_table[] =3D {	/* in KHZ */
+>  	9600,
+>  	10000,
+> @@ -101,6 +106,7 @@ static int cdns_ti_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, data);
+>=20=20
+>  	data->dev =3D dev;
+> +	data->match_data =3D device_get_match_data(dev);
+>=20=20
+>  	data->usbss =3D devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(data->usbss)) {
+> @@ -220,8 +226,29 @@ static int cdns_ti_runtime_resume(struct device *dev)
+>  	return 0;
+>  }
+>=20=20
+> +static int cdns_ti_suspend(struct device *dev)
+> +{
+> +	struct cdns_ti *data =3D dev_get_drvdata(dev);
+> +
+> +	if (data->match_data && data->match_data->reset_on_resume)
+> +		return pm_runtime_force_suspend(dev);
+> +	else
+> +		return 0;
+> +}
+> +
+> +static int cdns_ti_resume(struct device *dev)
+> +{
+> +	struct cdns_ti *data =3D dev_get_drvdata(dev);
+> +
+> +	if (data->match_data && data->match_data->reset_on_resume)
+> +		return pm_runtime_force_resume(dev);
+> +	else
+> +		return 0;
+> +}
+
+Conditionally forcing runtime suspend/resume based on a property of the
+IP doesn't feel right to me.
+
+IMO, the device should always runtime suspend/resume, and in the
+runtime PM hooks is where the conditional logic should be.
+
+And speaking of the conditional logic... let's go back to whether
+"resets_on_resume" is a property of the IP or the enclosing power
+domain.
+
+Instead of having an IP-specific flag, another way of approaching this
+when ->runtime_resume() is called every time is simply for that hook to
+check if a reset has happend.  Sometimes you can tell this simply by
+reading a register that has been previously programmed by the driver but
+has a known reset.  Simply check that regisister and you can tell
+whether context has been lost.
+
+Doing it this way makes the driver "smart" and then you don't have to
+rely on bool flag based on the IP and dependent on the DT compatible.
+
+Kevin
 
