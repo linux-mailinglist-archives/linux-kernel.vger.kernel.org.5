@@ -1,333 +1,190 @@
-Return-Path: <linux-kernel+bounces-97190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08958766B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:50:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D158766B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:51:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8460A2821C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:50:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B9E71F243B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D34249F5;
-	Fri,  8 Mar 2024 14:49:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="wULQIMkC"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB25539C;
+	Fri,  8 Mar 2024 14:51:51 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C15200C1;
-	Fri,  8 Mar 2024 14:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721C11DFC5;
+	Fri,  8 Mar 2024 14:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709909392; cv=none; b=EiGRPzsCALXav1UuCeL4OrBejYjFcjSmWrBEK6l2aKmcihwZnCgIkx3yKwEcyfLOE3j12J0Km96qW9/3i+kQbzlO2J5nI4dbL+Tbw4UaDRkKzl/oqC+sOAHdsSfwDYvf/gysBni1KDXTJDC8/U6JPkaQF8Z8X07F/0xu9LqRahs=
+	t=1709909511; cv=none; b=eUEBnIkLev569OYZ34FGTDDA7msvax4ID983LQRsWdcXY74uuzE22clbm0EH5VPd+d2ng8XYRWuDQnlPfeATObz9vIr9q3R2VkISMCh5A6LFKmJEs+iX2Hdn7d5V3DvD1au0+vH+tpfn2N/T1zD8BEgiAdB04la/tvchr16mTCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709909392; c=relaxed/simple;
-	bh=WY/qS/ckGhQLvKky6SlRpqOjuzNXZYS0fZnkGAFszI0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=u4J1q1cWoJdEODfchvBfvd7zQzON0r3Xd3zg+KAyvj6jSXwL6+ccDMv/NcIUf9UNz4/pUT16hNOydoHp2GrWl8RR9GCl9kTNKq2Su9tzhW08otvLUcZu2hN0DuoJC2Zg/Iz3HVpzKB8vWY2d8PWPBiVfrSYM/Xln4xOK05XtHJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=wULQIMkC; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709909389;
-	bh=WY/qS/ckGhQLvKky6SlRpqOjuzNXZYS0fZnkGAFszI0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=wULQIMkCxXx4EE5m3lJFejVUnirWj/2tNP5kGhXXhKYnP2NAe3v/zVr2ixIxRu79m
-	 opjUYf4gVvC84wdh1Gz/MImANci1fObGdhWJL8m7UjTVhrgaCCg8Cm+KwEjQFCEdWU
-	 JjcNUK7u57x8/TSrsnXHz7DsVxoKk6ajslWyOpBZx8jcEBtmMDXOxAyvECgq2fG2SF
-	 V52ppxHKFUcg+kfuDKoArsdU02zJrUPw0GnDapG2qc/4ZJusX4WzJXX0AAs7N4qswp
-	 eXu1bWzbJ9aWg6o3ra61WKtlvQht6EcYSc0idHRtMobjRkENC9FNGW0IcpVvnbh1r+
-	 0AOHTS4J4W3mQ==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: laura.nao)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0599337820F1;
-	Fri,  8 Mar 2024 14:49:47 +0000 (UTC)
-From: Laura Nao <laura.nao@collabora.com>
-To: rafael@kernel.org,
-	lenb@kernel.org,
-	shuah@kernel.org
-Cc: dan.carpenter@linaro.org,
-	broonie@kernel.org,
-	groeck@chromium.org,
-	kernel@collabora.com,
-	kernelci@lists.linux.dev,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	robh+dt@kernel.org,
-	saravanak@google.com,
-	davidgow@google.com,
-	Tim.Bird@sony.com,
-	dianders@chromium.org,
-	Laura Nao <laura.nao@collabora.com>
-Subject: [RFC PATCH v2 2/2] kselftest: Add test to detect unprobed devices on ACPI platforms
-Date: Fri,  8 Mar 2024 15:49:33 +0100
-Message-Id: <20240308144933.337107-3-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240308144933.337107-1-laura.nao@collabora.com>
-References: <20240308144933.337107-1-laura.nao@collabora.com>
+	s=arc-20240116; t=1709909511; c=relaxed/simple;
+	bh=Tz6KwaY4wnYO1nF9pvINazsOvVULoLiR0sNzUkZKMvY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GXFSHxBK+q0UX4RQVGNHlWSd/g0oaMJ5hVSs+AU3IPyhLip2aBbTFozGoFiLzR2UyBI2tQ3rpgFXH+O06EpvVnmqwZuKgYwHorhQb/pplgFAM2eb58xf6FinMHvHYVX8X6VXyZjYtV2fwab7ppAvW/36RIcy4womAHFbFHedHyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F0DDC433F1;
+	Fri,  8 Mar 2024 14:51:46 +0000 (UTC)
+Date: Fri, 8 Mar 2024 14:51:44 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: "Christoph Lameter (Ampere)" <cl@gentwo.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <vireshk@kernel.org>, Will Deacon <will@kernel.org>,
+	Jonathan.Cameron@huawei.com, Matteo.Carlini@arm.com,
+	Valentin.Schneider@arm.com, akpm@linux-foundation.org,
+	anshuman.khandual@arm.com, Eric Mackay <eric.mackay@oracle.com>,
+	dave.kleikamp@oracle.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux@armlinux.org.uk, robin.murphy@arm.com,
+	vanshikonda@os.amperecomputing.com, yang@os.amperecomputing.com,
+	Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
+ supported CPUs to 512
+Message-ID: <ZesmAO1jJfEjTwxd@arm.com>
+References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
+ <CGME20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f@eucas1p1.samsung.com>
+ <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
 
-Add new kselftest that tests whether devices declared in the ACPI
-namespace and supported by the kernel are correctly bound
-to a driver.
+On Fri, Mar 08, 2024 at 03:01:28PM +0100, Marek Szyprowski wrote:
+> This patch landed in today's linux-next as commit 0499a78369ad ("ARM64: 
+> Dynamically allocate cpumasks and increase supported CPUs to 512"). 
+> Unfortunately it triggers the following warning during boot on most of 
+> my ARM64-based test boards. Here is an example from Odroid-N2 board:
+> 
+>   ------------[ cut here ]------------
+>   WARNING: CPU: 4 PID: 63 at drivers/opp/core.c:2554 
+> dev_pm_opp_set_config+0x390/0x710
+>   Modules linked in: dw_hdmi_i2s_audio meson_gxl smsc onboard_usb_hub(+) 
+> rtc_pcf8563 panfrost snd_soc_meson_axg_sound_card drm_shmem_helper 
+> crct10dif_ce dwmac_generic snd_soc_meson_card_utils gpu_sched 
+> snd_soc_meson_g12a_toacodec snd_soc_meson_g12a_tohdmitx rc_odroid 
+> snd_soc_meson_codec_glue pwm_meson ao_cec_g12a meson_gxbb_wdt meson_ir 
+> snd_soc_meson_axg_frddr snd_soc_meson_axg_toddr snd_soc_meson_axg_tdmin 
+> meson_vdec(C) v4l2_mem2mem videobuf2_dma_contig snd_soc_meson_axg_tdmout 
+> videobuf2_memops axg_audio videobuf2_v4l2 sclk_div videodev 
+> reset_meson_audio_arb snd_soc_meson_axg_fifo clk_phase dwmac_meson8b 
+> stmmac_platform videobuf2_common mdio_mux_meson_g12a meson_drm 
+> meson_dw_hdmi rtc_meson_vrtc stmmac meson_ddr_pmu_g12 mc dw_hdmi 
+> drm_display_helper pcs_xpcs snd_soc_meson_t9015 meson_canvas gpio_fan 
+> display_connector snd_soc_meson_axg_tdm_interface 
+> snd_soc_simple_amplifier snd_soc_meson_axg_tdm_formatter nvmem_meson_efuse
+>   hub 1-1:1.0: USB hub found
+>   CPU: 4 PID: 63 Comm: kworker/u12:5 Tainted: G         C 6.8.0-rc3+ #14677
+>   Hardware name: Hardkernel ODROID-N2 (DT)
+>   Workqueue: events_unbound deferred_probe_work_func
+>   pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>   pc : dev_pm_opp_set_config+0x390/0x710
+>   lr : dev_pm_opp_set_config+0x5c/0x710
+>   ...
+>   Call trace:
+>    dev_pm_opp_set_config+0x390/0x710
+>    dt_cpufreq_probe+0x268/0x480
+>    platform_probe+0x68/0xd8
+>    really_probe+0x148/0x2b4
+>    __driver_probe_device+0x78/0x12c
+>    driver_probe_device+0xdc/0x164
+>    __device_attach_driver+0xb8/0x138
+>    bus_for_each_drv+0x84/0xe0
+>    __device_attach+0xa8/0x1b0
+>    device_initial_probe+0x14/0x20
+>    bus_probe_device+0xb0/0xb4
+>    deferred_probe_work_func+0x8c/0xc8
+>    process_one_work+0x1ec/0x53c
+>    worker_thread+0x298/0x408
+>    kthread+0x124/0x128
+>    ret_from_fork+0x10/0x20
+>   irq event stamp: 317178
+>   hardirqs last  enabled at (317177): [<ffff8000801788d4>] 
+> ktime_get_coarse_real_ts64+0x10c/0x110
+>   hardirqs last disabled at (317178): [<ffff800081222030>] el1_dbg+0x24/0x8c
+>   softirqs last  enabled at (315802): [<ffff800080010a60>] 
+> __do_softirq+0x4a0/0x4e8
+>   softirqs last disabled at (315793): [<ffff8000800169b0>] 
+> ____do_softirq+0x10/0x1c
+>   ---[ end trace 0000000000000000 ]---
+>   cpu cpu2: error -EBUSY: failed to set regulators
+>   cpufreq-dt: probe of cpufreq-dt failed with error -16
+> 
+> It looks that cpufreq-dt and/or opp drivers needs some adjustments 
+> related with this change.
 
-The test traverses the ACPI sysfs tree to get a list of all the devices
-defined in the ACPI namespace and verifies whether the physical devices
-linked to each ACPI object are bound to a driver.
-The test relies on two lists to skip devices not expected to be bound
-to a driver:
-- List generated by the acpi-extract-ids script: includes the ACPI IDs
-  matched by a driver
-- Manual list of ignored IDs: includes the ID of devices that may be
-  discovered only via the platform firmware and that don't require a
-  driver or cannot be represented as platform devices
+That's strange. Is this with defconfig? I wonder whether NR_CPUS being
+larger caused the issue with this specific code. Otherwise
+CPUMASK_OFFSTACK may not work that well on arm64.
 
-The test also examines the sysfs attributes of the target device objects
-linked by physical_node* to exclude other devices that should not be
-bound to a driver. This includes:
-- Devices not assigned to any subsystem
-- Devices that are linked to other devices
-- Class devices
-- Specific PCI bridges that do not require a driver
+> 
+> 
+> > ---
+> >
+> >
+> > Original post: https://www.spinics.net/lists/linux-mm/msg369701.html
+> > V2: https://lkml.org/lkml/2024/2/7/505
+> >
+> >
+> > V1->V2
+> >
+> > - Keep quotation marks
+> > - Remove whiltespace damage
+> > - Add tested by
+> >
+> > V2->V3:
+> > - Add test results
+> > - Rework descriptions
+> >
+> >
+> >  arch/arm64/Kconfig | 16 +++++++++++++++-
+> >  1 file changed, 15 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index aa7c1d435139..4e767dede47d 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -1427,7 +1427,21 @@ config SCHED_SMT
+> >  config NR_CPUS
+> >      int "Maximum number of CPUs (2-4096)"
+> >      range 2 4096
+> > -    default "256"
+> > +    default "512"
+> > +
+> > +#
+> > +# Determines the placement of cpumasks.
+> > +#
+> > +# With CPUMASK_OFFSTACK the cpumasks are dynamically allocated.
+> > +# Useful for machines with lots of core because it avoids increasing
+> > +# the size of many of the data structures in the kernel.
+> > +#
+> > +# If this is off then the cpumasks have a static sizes and are
+> > +# embedded within data structures.
+> > +#
+> > +    config CPUMASK_OFFSTACK
+> > +    def_bool y
+> > +    depends on NR_CPUS > 256
+> >
+> >  config HOTPLUG_CPU
+> >      bool "Support for hot-pluggable CPUs"
+> 
+> Best regards
+> -- 
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+> 
 
-Signed-off-by: Laura Nao <laura.nao@collabora.com>
----
- MAINTAINERS                                   |   1 +
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/acpi/.gitignore       |   1 +
- tools/testing/selftests/acpi/Makefile         |  21 +++
- tools/testing/selftests/acpi/id_ignore_list   |   3 +
- .../selftests/acpi/test_unprobed_devices.sh   | 138 ++++++++++++++++++
- 6 files changed, 165 insertions(+)
- create mode 100644 tools/testing/selftests/acpi/.gitignore
- create mode 100644 tools/testing/selftests/acpi/Makefile
- create mode 100644 tools/testing/selftests/acpi/id_ignore_list
- create mode 100755 tools/testing/selftests/acpi/test_unprobed_devices.sh
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8333ead448c4..1f58949c9e51 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -294,6 +294,7 @@ F:	include/linux/fwnode.h
- F:	include/linux/fw_table.h
- F:	lib/fw_table.c
- F:	scripts/acpi/acpi-extract-ids
-+F:	tools/testing/selftests/acpi/
- F:	tools/power/acpi/
- 
- ACPI APEI
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index e1504833654d..3107301ea4f3 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
-+TARGETS += acpi
- TARGETS += alsa
- TARGETS += amd-pstate
- TARGETS += arm64
-diff --git a/tools/testing/selftests/acpi/.gitignore b/tools/testing/selftests/acpi/.gitignore
-new file mode 100644
-index 000000000000..3c520e8a1962
---- /dev/null
-+++ b/tools/testing/selftests/acpi/.gitignore
-@@ -0,0 +1 @@
-+id_list
-diff --git a/tools/testing/selftests/acpi/Makefile b/tools/testing/selftests/acpi/Makefile
-new file mode 100644
-index 000000000000..b80d4fb797ac
---- /dev/null
-+++ b/tools/testing/selftests/acpi/Makefile
-@@ -0,0 +1,21 @@
-+PY3 = $(shell which python3 2>/dev/null)
-+
-+ifneq ($(PY3),)
-+
-+TEST_PROGS := test_unprobed_devices.sh
-+TEST_GEN_FILES := id_list
-+TEST_FILES := id_ignore_list
-+
-+include ../lib.mk
-+
-+$(OUTPUT)/id_list:
-+	$(top_srcdir)/scripts/acpi/acpi-extract-ids -d $(top_srcdir) > $@
-+
-+else
-+
-+all: no_py3_warning
-+
-+no_py3_warning:
-+	@echo "Missing python3. This test will be skipped."
-+
-+endif
-\ No newline at end of file
-diff --git a/tools/testing/selftests/acpi/id_ignore_list b/tools/testing/selftests/acpi/id_ignore_list
-new file mode 100644
-index 000000000000..86ddf4b0a55a
---- /dev/null
-+++ b/tools/testing/selftests/acpi/id_ignore_list
-@@ -0,0 +1,3 @@
-+PNP0A05
-+PNP0A06
-+ACPI0004
-\ No newline at end of file
-diff --git a/tools/testing/selftests/acpi/test_unprobed_devices.sh b/tools/testing/selftests/acpi/test_unprobed_devices.sh
-new file mode 100755
-index 000000000000..23e52833c475
---- /dev/null
-+++ b/tools/testing/selftests/acpi/test_unprobed_devices.sh
-@@ -0,0 +1,138 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (c) 2023 Collabora Ltd
-+#
-+# Inspired by the tools/testing/selftests/dt/test_unprobed_devices.sh
-+# script, adapted for the ACPI use case.
-+#
-+# This script checks whether devices declared in the ACPI namespace and
-+# supported by the kernel are correctly bound to a driver.
-+#
-+# To do this, two lists are used:
-+# * a list of ACPI IDs matched by existing drivers
-+# * a list of IDs that should be ignored
-+#
-+
-+DIR="$(dirname "$(readlink -f "$0")")"
-+
-+KTAP_HELPERS="${DIR}/../kselftest/ktap_helpers.sh"
-+if ! source "$KTAP_HELPERS"; then
-+	exit 4
-+fi
-+
-+ACPI_SYSTEM_DIR="/sys/devices/LNXSYSTM:00"
-+ID_IGNORE_LIST="${DIR}"/id_ignore_list
-+ID_LIST="${DIR}"/id_list
-+
-+PCI_CLASS_BRIDGE_HOST="0x0600"
-+PCI_CLASS_BRIDGE_ISA="0x0601"
-+
-+ktap_print_header
-+
-+if [[ ! -d "${ACPI_SYSTEM_DIR}" ]]; then
-+	ktap_skip_all "${ACPI_SYSTEM_DIR} doesn't exist."
-+	exit "${KSFT_SKIP}"
-+fi
-+
-+# The ACPI specification mandates that ACPI objects representing devices on
-+# non-enumerable and enumerable busses contain a _HID or an _ADR
-+# identification object respectively. Get a list of devices of both types,
-+# by searching the ACPI sysfs subtree for directories containing a hid or
-+# adr attribute.
-+supp_dev_paths=$(while IFS=$'\n' read -r dev_path; do
-+	if [ ! -f "${dev_path}"/hid ] && [ ! -f "${dev_path}"/adr ]; then
-+		continue
-+	fi
-+
-+	# Check if the device is present, enabled, and functioning properly
-+	status="${dev_path}/status"
-+	if [ -f "${status}" ]; then
-+		status_hex=$(($(cat "${status}")))
-+
-+		if [ $((status_hex & 1)) -eq 0 ] ||
-+			[ $((status_hex >> 1 & 1)) -eq 0 ] ||
-+			[ $((status_hex >> 3 & 1)) -eq 0 ]; then
-+			continue
-+		fi
-+	fi
-+
-+	if [ -n "$(find -L "${dev_path}" -maxdepth 1 -name "physical_node*" -print -quit)" ]; then
-+		for node in "${dev_path}"/physical_node*; do
-+			# Ignore devices without a subsystem, devices that link to
-+			# other devices, and class devices
-+			if [ ! -d "${node}/subsystem" ] ||
-+				[ -d "${node}/device" ] ||
-+				[[ "$(readlink -f "${node}/subsystem")" == /sys/class/* ]]; then
-+				continue
-+			fi
-+
-+			echo "${node}"
-+		done
-+	fi
-+done < <(find ${ACPI_SYSTEM_DIR} -name uevent -exec dirname {} \;))
-+
-+supp_dev_paths_num=$(echo "${supp_dev_paths}" | wc -w)
-+ktap_set_plan "${supp_dev_paths_num}"
-+
-+# Iterate over ACPI devices
-+for dev_path in ${supp_dev_paths}; do
-+	if [ -f "${dev_path}/firmware_node/path" ]; then
-+		acpi_path="$(<"${dev_path}"/firmware_node/path)"
-+	fi
-+
-+	dev_link=$(readlink -f "${dev_path}")
-+	desc="${acpi_path}-${dev_link#/sys/devices/}"
-+
-+	if [ -f "${dev_path}/firmware_node/hid" ]; then
-+		hid="$(<"${dev_path}"/firmware_node/hid)"
-+
-+		if [ -f "${dev_path}/firmware_node/modalias" ]; then
-+			modalias=$(<"${dev_path}/firmware_node/modalias")
-+			cid=$(echo "${modalias}" | cut -d':' -f3)
-+
-+			# Skip devices with ignored HID/CID
-+			if ignored_id=$(grep -i "${hid}" "${ID_IGNORE_LIST}" ||
-+				{ [ -n "${cid}" ] && grep -i "${cid}" "${ID_IGNORE_LIST}"; }); then
-+				ktap_print_msg "ID ${ignored_id} ignored [SKIP]"
-+				ktap_test_skip "${desc}"
-+				continue
-+			fi
-+			# Skip devices with unsupported HID/CID
-+			if [[ "${hid}" != LNX* ]] && ! grep -x -q -i "${hid}" "${ID_LIST}"; then
-+				if [ -z "${cid}" ] || ! grep -x -q -i "${cid}" "${ID_LIST}"; then
-+					ktap_print_msg "no match for ${hid}${cid:+:${cid}} found \
-+						in the supported IDs list [SKIP]"
-+					ktap_test_skip "${desc}"
-+					continue
-+				fi
-+			fi
-+		fi
-+	fi
-+
-+	# Skip bridges that don't require a driver
-+	if [ -f "${dev_path}/class" ]; then
-+		class=$(<"${dev_path}"/class)
-+		if [[ ${class} == ${PCI_CLASS_BRIDGE_HOST}* ]] ||
-+			[[ ${class} == ${PCI_CLASS_BRIDGE_ISA}* ]]; then
-+			ktap_print_msg "device linked to ${desc} does not require a driver [SKIP]"
-+			ktap_test_skip "${desc}"
-+			continue
-+		fi
-+	fi
-+
-+	# Search for the driver in both the device folder and the companion's folder
-+	if [ -d "${dev_path}/driver" ] || [ -d "${dev_path}/firmware_node/driver" ]; then
-+		ktap_test_pass "${desc}"
-+	# Skip char devices
-+	elif [ -f "${dev_path}/dev" ]; then
-+		ktap_print_msg "${desc} is a char device [SKIP]"
-+		ktap_test_skip "${desc}"
-+		continue
-+	else
-+		ktap_test_fail "${desc}"
-+	fi
-+
-+done
-+
-+ktap_finished
 -- 
-2.30.2
-
+Catalin
 
