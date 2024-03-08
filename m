@@ -1,154 +1,207 @@
-Return-Path: <linux-kernel+bounces-96572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 870F7875E57
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:18:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49910875E5D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 290FF1F22570
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:18:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD22C1F23172
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B112D4EB5C;
-	Fri,  8 Mar 2024 07:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C324F1E0;
+	Fri,  8 Mar 2024 07:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b="wY2EXBE3"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L+rBuwGM"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA7E4EB44
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E8C4E1DC;
+	Fri,  8 Mar 2024 07:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709882270; cv=none; b=EMosKe3uwSovJwI5BIzy/6s9a9gl39JX7OdOdDmdjSMnWBxuOUziNTjU3y5k9oUlMP0rDRzXDNOlXCBSzM4hW1UODub+AloehEv2yfvaakLZ45YqVgKfA9RJASeCTdlmeZ9zT693UfAe3EjlKgeTxled8X5wIBsKD9BGhoLombE=
+	t=1709882399; cv=none; b=k4cCYouyAFkGy1AhBPnSSUFJ+7YAEwx7EfG8ZOCqrluKOlwkcpsf6Xe+kMTxE8utWwXJeaRzkLIJBNNn5rz7CwswAWdJxYYs05qynIJfcdmkH/yxUCKwmWopbOTxI954XS/iz3k7njFPo6qGnBmpZgSkjTHL5jNuXoc866S1n2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709882270; c=relaxed/simple;
-	bh=7YvX8bPEV2BI0BpF/k+pwUbl0NZXlnKf36uLhchuK3c=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=tPadfrWSu7BaGqxISgpa9UB49xdClQArU9wtON9DTVZ+E4drg3rIWXS9gaJncz6FwkUvxVX1TUAw6YxltdEdQQJCGy0W84taBXYk/2b7yzfs7Cy5UVm+598VudYd3Z73+3nPPdsiHR2/rgTcjn30BUSUaPCUM0O74wpgNyNS7D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at; spf=pass smtp.mailfrom=sigma-star.at; dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b=wY2EXBE3; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sigma-star.at
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a45c006ab82so238017966b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 23:17:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1709882267; x=1710487067; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7YvX8bPEV2BI0BpF/k+pwUbl0NZXlnKf36uLhchuK3c=;
-        b=wY2EXBE3RgnvRgIRgvNXAu0XaxznWS/lRKYE/yZan4fyg5gNzBdcUrM04WdkGqHVB2
-         mjQZaq4d1yfvCqEuFK90mCV88VaUxF7hXrtsiJjPs70czaeKzim1k14JncL+ocDaEgcn
-         2UMDciaIaSSChda5IM78oSxkGOBtmHfXsGbWkkjYnG+UtJyMITmL+a21fGtdgm1LIFfY
-         hoghNkLCbD0R3yj1h6fMTBEa4p6aP33cgR+h/MHI/v0YR7xWVh+rHKSLoF9D1/xZW6t1
-         p6e3rtX0xTONQuGCN5B5niLgD3J4t9L8WA5FiopdLHuJjKJD31MDladddp3JQPUcIZ2M
-         +I6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709882267; x=1710487067;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7YvX8bPEV2BI0BpF/k+pwUbl0NZXlnKf36uLhchuK3c=;
-        b=RdtwaPj0TBmnhcyayFL1n7tXSn00C/XQrC9Gb3/oh43XMm+ywLD+XHooE6pBsuMeES
-         FIrH2S3zazWZxHZlZjg8AlUV/r0bZQ6yMysUVXPbhvnWPPXSsgR16TZHd1f/sceB0QE2
-         9TBu6HzOdo+VCdGgKhkFW2OJ99mKs8DlWY+5oUVNNxFRqmDnatWzBoak5RiL36VkZKZ0
-         GVVIE77MnZyztwTilclxG7ePrEHgPe3lExWLR8cSZ0w79rajEQyGHiEKKCik3E8rcIra
-         pJZWPQtGARwUy+cawIaflAkEqPYH8soAtUy/kiFQVqv1IZISGWycaf3Xd0TDsQU7SzGf
-         cDWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/eQ7TTnfLlM0HYpCnuqZQkYYiOirwkfJdE22EJrakMhhVRiCW6eKJJev7ldIVyGCn5sFbPohdQGhOJY9S+MzFDcNWAirILESMPekV
-X-Gm-Message-State: AOJu0YxY7q7TD97H31SnBysQf5AMMhLJBqHD00IPWgAlZKTTrti9Hwts
-	5mtOom2wCW6oPvfNgVjCNi9l/5XF0x81ETBzBh7mavPrUVWeq5Tuqen6iPfNgE8=
-X-Google-Smtp-Source: AGHT+IGiGod9W2YM4YZ6sUKkrNh7qVjymDesOFOXF8mtdCcbqIFTzGM2YQaR07gH4KtP9j0849dGZQ==
-X-Received: by 2002:a17:906:339a:b0:a44:ff95:3911 with SMTP id v26-20020a170906339a00b00a44ff953911mr11831490eja.66.1709882267100;
-        Thu, 07 Mar 2024 23:17:47 -0800 (PST)
-Received: from smtpclient.apple (clnet-p106-198.ikbnet.co.at. [83.175.106.198])
-        by smtp.gmail.com with ESMTPSA id f27-20020a170906085b00b00a44ef54b6b6sm6582541ejd.58.2024.03.07.23.17.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Mar 2024 23:17:46 -0800 (PST)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1709882399; c=relaxed/simple;
+	bh=357MfJ9e26p5+MssqPfVRuHaEyIQzNN1PO/smLcqBAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zq9EubZfkKpt9ek/UWNQVpiActjsFq6BBsOB8DQSNczspl/IxP+Spmpe38nE1QozcApiY4IoCeApLv3v6hpHf7xX8xxW751bSsXWYgwvouyWGfpiZREW2uumJKwkk1Q//UTyGfYwu9PSuli4RZrkCAxHykK+SrnYQ+5dnJvkMc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=L+rBuwGM; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4286vg73030867;
+	Fri, 8 Mar 2024 07:19:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=DacinbEWQALdubakrIQd7g1cRfgEMG5/c5O61RBr34s=;
+ b=L+rBuwGMcclW1MZj0Wo7aqYNQNaChMOlKYgEna3ROYhPw104ND/41SN6X/omwsh02T8l
+ i4WEwfUp2VZCI1UFQO6ijfL+Mt9eWmG/m0d7lLTMVrmiC/NkIC2PkCKNOCEEHscSK+M5
+ bXfKqwUqi3X11itNPjFQYRu+PlyhPRchzh7f45Z6jPIGjGFj5rAiuWe2bsPTdGzMUr3e
+ S8kzHvF9b387/yglX/pefHE6lijXv6Mg6pfhzSxvRekZaaCZK/wTlXCVKO2QS7i+3DGE
+ RJc+t/ROryg8denVCbS0C0hdW+MczvCmMZWyhIlXSSVmatNfUS/bzPH8234xlcXoCbnp hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wqwv0g96d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 07:19:27 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4287CX5S002226;
+	Fri, 8 Mar 2024 07:19:27 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wqwv0g965-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 07:19:27 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4287F6vs010913;
+	Fri, 8 Mar 2024 07:19:26 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmh52tf7w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 07:19:26 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4287JM4S35651974
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 8 Mar 2024 07:19:24 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5E5CB2004B;
+	Fri,  8 Mar 2024 07:19:22 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 89AF92004D;
+	Fri,  8 Mar 2024 07:19:17 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  8 Mar 2024 07:19:17 +0000 (GMT)
+Date: Fri, 8 Mar 2024 12:49:13 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        John Garry <john.g.garry@oracle.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/8] fs: Reserve inode flag FS_ATOMICWRITES_FL for atomic
+ writes
+Message-ID: <Zeq78Ud5AJ+w2Atj@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <555cc3e262efa77ee5648196362f415a1efc018d.1709361537.git.ritesh.list@gmail.com>
+ <4c687c1c5322b4eaf0bb173f0b5d58b38fdaa847.1709361537.git.ritesh.list@gmail.com>
+ <ZeUc1ipKMrh+pOn6@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH v6 3/6] KEYS: trusted: Introduce NXP DCP-backed trusted
- keys
-From: David Gstir <david@sigma-star.at>
-In-Reply-To: <CZNRMR5YZPQO.1QBLW62A6S840@kernel.org>
-Date: Fri, 8 Mar 2024 08:17:35 +0100
-Cc: Mimi Zohar <zohar@linux.ibm.com>,
- James Bottomley <jejb@linux.ibm.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>,
- Shawn Guo <shawnguo@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>,
- NXP Linux Team <linux-imx@nxp.com>,
- Ahmad Fatoum <a.fatoum@pengutronix.de>,
- sigma star Kernel Team <upstream+dcp@sigma-star.at>,
- David Howells <dhowells@redhat.com>,
- Li Yang <leoyang.li@nxp.com>,
- Paul Moore <paul@paul-moore.com>,
- James Morris <jmorris@namei.org>,
- "Serge E. Hallyn" <serge@hallyn.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Tejun Heo <tj@kernel.org>,
- "Steven Rostedt (Google)" <rostedt@goodmis.org>,
- linux-doc@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
- "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
- "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org,
- "linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>,
- Richard Weinberger <richard@nod.at>,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <655221B7-634C-4493-A781-CF014DFFC8BF@sigma-star.at>
-References: <20240307153842.80033-1-david@sigma-star.at>
- <20240307153842.80033-4-david@sigma-star.at>
- <CZNRMR5YZPQO.1QBLW62A6S840@kernel.org>
-To: Jarkko Sakkinen <jarkko@kernel.org>
-X-Mailer: Apple Mail (2.3774.400.31)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeUc1ipKMrh+pOn6@dread.disaster.area>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: QB3bg-oUgrbEE8YWM7dsSu48CL-Cpwms
+X-Proofpoint-ORIG-GUID: fayCa-oKvr-9Tqy4-stvhPAL3Ce9ibt-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-08_05,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 impostorscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403080056
 
-Hi Jarkko,
+On Mon, Mar 04, 2024 at 11:59:02AM +1100, Dave Chinner wrote:
+> On Sat, Mar 02, 2024 at 01:11:59PM +0530, Ritesh Harjani (IBM) wrote:
+> > This reserves FS_ATOMICWRITES_FL for flags and adds support in
+> > fileattr to support atomic writes flag & xflag needed for ext4
+> > and xfs.
+> > 
+> > Co-developed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> > ---
+> >  fs/ioctl.c               | 4 ++++
+> >  include/linux/fileattr.h | 4 ++--
+> >  include/uapi/linux/fs.h  | 1 +
+> >  3 files changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/ioctl.c b/fs/ioctl.c
+> > index 76cf22ac97d7..e0f7fae4777e 100644
+> > --- a/fs/ioctl.c
+> > +++ b/fs/ioctl.c
+> > @@ -481,6 +481,8 @@ void fileattr_fill_xflags(struct fileattr *fa, u32 xflags)
+> >  		fa->flags |= FS_DAX_FL;
+> >  	if (fa->fsx_xflags & FS_XFLAG_PROJINHERIT)
+> >  		fa->flags |= FS_PROJINHERIT_FL;
+> > +	if (fa->fsx_xflags & FS_XFLAG_ATOMICWRITES)
+> > +		fa->flags |= FS_ATOMICWRITES_FL;
+> >  }
+> >  EXPORT_SYMBOL(fileattr_fill_xflags);
+> >  
+> > @@ -511,6 +513,8 @@ void fileattr_fill_flags(struct fileattr *fa, u32 flags)
+> >  		fa->fsx_xflags |= FS_XFLAG_DAX;
+> >  	if (fa->flags & FS_PROJINHERIT_FL)
+> >  		fa->fsx_xflags |= FS_XFLAG_PROJINHERIT;
+> > +	if (fa->flags & FS_ATOMICWRITES_FL)
+> > +		fa->fsx_xflags |= FS_XFLAG_ATOMICWRITES;
+> >  }
+> >  EXPORT_SYMBOL(fileattr_fill_flags);
+> >  
+> > diff --git a/include/linux/fileattr.h b/include/linux/fileattr.h
+> > index 47c05a9851d0..ae9329afa46b 100644
+> > --- a/include/linux/fileattr.h
+> > +++ b/include/linux/fileattr.h
+> > @@ -7,12 +7,12 @@
+> >  #define FS_COMMON_FL \
+> >  	(FS_SYNC_FL | FS_IMMUTABLE_FL | FS_APPEND_FL | \
+> >  	 FS_NODUMP_FL |	FS_NOATIME_FL | FS_DAX_FL | \
+> > -	 FS_PROJINHERIT_FL)
+> > +	 FS_PROJINHERIT_FL | FS_ATOMICWRITES_FL)
+> >  
+> >  #define FS_XFLAG_COMMON \
+> >  	(FS_XFLAG_SYNC | FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND | \
+> >  	 FS_XFLAG_NODUMP | FS_XFLAG_NOATIME | FS_XFLAG_DAX | \
+> > -	 FS_XFLAG_PROJINHERIT)
+> > +	 FS_XFLAG_PROJINHERIT | FS_XFLAG_ATOMICWRITES)
+> 
+> I'd much prefer that we only use a single user API to set/clear this
+> flag.
 
-> On 07.03.2024, at 20:30, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+Hi Dave,
 
-[...]
+So right now we have 2 ways to mark this flag in ext4:
 
->> +
->> +static int trusted_dcp_init(void)
->> +{
->> + int ret;
->> +
->> + if (use_otp_key)
->> + pr_info("Using DCP OTP key\n");
->> +
->> + ret =3D test_for_zero_key();
->> + if (ret) {
->> + pr_err("Test for zero'ed keys failed: %i\n", ret);
->=20
-> I'm not sure whether this should err or warn.
->=20
-> What sort of situations can cause the test the fail (e.g.
-> adversary/interposer, bad configuration etc.).
+1. SETFLAGS ioctl() w/ FS_ATOMICWRITES_FL -> set EXT4_ATOMICWRITES_FL on inode
+2. SETXFLAGS ioctl() w/ FS_XFLAG_ATOMICWRITES -> translate to FS_ATOMICWRITES_FL -> set EXT4_ATOMICWRITES_FL on inode
 
-This occurs when the hardware is not in "secure mode". I.e. it=E2=80=99s =
-a bad configuration issue.
-Once the board is properly configured, this will never trigger again.
-Do you think a warning is better for this then?
+IIUC you want to only keep 2. and not support 1. so the user space only
+has a single ioctl to use, correct?
 
-Thanks,
-- David
+One thing I see is that the ext4_fileattr_set() is not XFLAGS aware
+at all and right now it expects the XFLAGS to already be translated to 
+SETFLAG equivalent before setting it in the inode. Maybe we'll need
+to add that logic however it'll be more of an exception than the usual 
+pattern.
 
+> 
+> This functionality is going to be tied to using extent size hints on
+> XFS to indicate preferred atomic IO alignment/size, so applications
+> are going to have to use the FS_IOC_FS{G,S}ETXATTR APIs regardless
+> of whether it's added to the FS_IOC_{G,S}ETFLAGS API.
+
+Hmm that's right, I'm not sure how we'll handle it in ext4 yet since we
+don't have a per file extent size hint, the closest we have is bigalloc
+that is more of an mkfs time, FS wide feature. 
+
+Regards,
+ojasw
+> 
+> Also, there are relatively few flags left in the SETFLAGS 32-bit
+> space, so this duplication seems like a waste of the few flags
+> that are remaining.
+
+> 
+> -Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
 
