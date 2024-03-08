@@ -1,109 +1,196 @@
-Return-Path: <linux-kernel+bounces-96605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9A35875ED9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:53:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4FD3875EDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70CEA2846CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:53:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4386A1F21778
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D166350A70;
-	Fri,  8 Mar 2024 07:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B8550A64;
+	Fri,  8 Mar 2024 07:53:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="rOFY+bfK"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oBA29ilh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/ssvpF3u";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oBA29ilh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/ssvpF3u"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445834F616
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2842F4F606
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709884380; cv=none; b=vD+CO9MxBZS++jUfHL9/8Ptbwpvy8V3BYZPp0/vyM/hJR4RDG0LlRnQ+JxCqp5Gv3WbYQXUdhaEwGgh8mwBObevhS90T0nVwdA1ajx6Uyn+7slF10GyGjxCVZOM0GJzkXQwJUf+T/OocKfTC0AJiYoJ1RDIwnaehNbTgySsc9lc=
+	t=1709884391; cv=none; b=OTZ+OdCdG5IIONbqNjx0bGqqXzs1uQHm/MfpSXNCgUylI/A2XrEoCiwZFTERvvAR3/Y5gRC+RXoKCV+Kp2x+QStAGVttFCnnUzgf1cl7opJsjMYI5HL1K/JIGbMuN+AjAkrBojEZgwij2LMkcS/N8Dd8hEV914PYFiHe22zcf9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709884380; c=relaxed/simple;
-	bh=sH4bAKDnIswJKnbTcqpk0Pb3FW7/UPFUpIR+aBApz4U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R4eNpgo59n+D3Z3cOvUFXsD0gzLn8SnYhp3z4TxsJMtXnL8h75dEQHgIUcuqZayrw1ctYLHuF+sxd8iTIO2XhOtcM0e2E4LTp/9GRWZj+YaUnYtRvnXcCAwsHbUxpX1NFntKf6Jt8STkNi9XyHZW8CivxViZ37S9tPZeVknYMzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=rOFY+bfK; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a44628725e3so214892566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 23:52:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1709884376; x=1710489176; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hrvCXGaVO3HhvR4A5xt8TDit+qLJ9i7NLCGUzaXWqIQ=;
-        b=rOFY+bfK+k8+GVG7m5U9B3i2k0CHJlG1bQPzVjFG6hEfEKbfsJ8ty0BXbr/l8SOZ36
-         b1Libwo+P0O519HMzwnrc3bSvuLYAc66Jox3XPUV0AROzk+X5APywrZbmKaVqdPlGnQq
-         7kG4z9LIM0C0AGbXlcZ2+ka7IFIvl7RVsyKAs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709884376; x=1710489176;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hrvCXGaVO3HhvR4A5xt8TDit+qLJ9i7NLCGUzaXWqIQ=;
-        b=ai6VKpiOIg445P6zscZu96xLqiY71hl/g0H1OJXwomQWQ14o1ja5wWykDErf5/7sAk
-         SVOLYutCRtRpdLMFkhFiyyuQB+Fkb84cvWuG8rPa7hT2gS8KUwRH847yBAY1xfW6zjLB
-         9DlTvigvTB2VjMzL4hR4Axx4f3ScNCHgULrs8uQ1lD1Qe2BaeGzNbJp58xZ3KEJ8koaq
-         pIwtH6a2M+ZZVNAohc992WPiaA2D58MOfz9uUUjgOyUWEl77c/I/31iZMCEIQcQUH5JV
-         ifwq66ajXlRx5BmWDu2kINGxb6uvNFMVB7fDk8YlPVf55YarIlTzR9CkD0FzrVu13/vN
-         XveA==
-X-Forwarded-Encrypted: i=1; AJvYcCUz/5BpqiOPNuyWJ3wbCNYbeoPUBSDyekIe24pXx1b78e8Ycu2GGYeB2cVxV0uHJiV+LUuwNBaoxXH70Jruk6iTPK8Ylwp6pk2J3dB/
-X-Gm-Message-State: AOJu0YzwfrJu/2Z2Sh5xv2zJV+amnaKCbDGNVSRpg9QblWN5S880CJXR
-	AbkpWTqp+S1oXKOM/T6QAWGzYyMp+LMvI1PYixd7f8Ue7p+t/C/7qybyUggkMf1F+R6VqVyZR1A
-	qVqqTxX5hatgsiM9/3b8bpa9sZs+LCc+VJXHoTg==
-X-Google-Smtp-Source: AGHT+IGfxe+G6Hzhhm3qO2+tkAluEdwQIf++vT61Cv18s0V9jevPsUAy++K+ZRtxdczK/SgeeJRbLSjfJGJhUS+augI=
-X-Received: by 2002:a17:906:a2cf:b0:a44:488d:8e42 with SMTP id
- by15-20020a170906a2cf00b00a44488d8e42mr13783793ejb.66.1709884376420; Thu, 07
- Mar 2024 23:52:56 -0800 (PST)
+	s=arc-20240116; t=1709884391; c=relaxed/simple;
+	bh=1u1yoZkuur5fK5XMHKjD+QWaDuFGmhnSKT3vLp+Dkv8=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Sa5vzxJGwK5wbFQY6ZWGuXUDtemFgfbrAMYp06xrCOwkKtK1w7+cPC3/xnUjY05/gpOshV2ucUiZIO0rEvkRe7QGb35hne734OHzMIuwbhH7+Sv/6+IyVLhowwREAnPE/YRtx+9o5iwQQG52mMj+ca1DkEmqGbEtymwAKnQ6vMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oBA29ilh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/ssvpF3u; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oBA29ilh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/ssvpF3u; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 112375D273;
+	Fri,  8 Mar 2024 07:53:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709884386; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TEzBdz5tlejxHIWRu4GFOXa0dCDGc6JHxZ8PAzaMiFQ=;
+	b=oBA29ilhTB7HfBl6EYJt+liQQqFP+LB3mSqcHguimEdxgW3ZJwT0XacI2JN5Mmat8NizN6
+	OA8fBO3z5wG97ahOECA0/z9qHD6uPOUpRlzi1DFUMuK71H08HQ5vsW4FXDw9wYSxHxAm4o
+	ch7+X6c1kVLAihKpPjqzhBM2BzIqNdk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709884386;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TEzBdz5tlejxHIWRu4GFOXa0dCDGc6JHxZ8PAzaMiFQ=;
+	b=/ssvpF3uoes9ULrACOYM6H9o6VQH2ASD9Rwx0o4dvAd5CfpSpehnwpSBPvItk5XSo/zQJi
+	TOShrmYSIh5jHACg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709884386; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TEzBdz5tlejxHIWRu4GFOXa0dCDGc6JHxZ8PAzaMiFQ=;
+	b=oBA29ilhTB7HfBl6EYJt+liQQqFP+LB3mSqcHguimEdxgW3ZJwT0XacI2JN5Mmat8NizN6
+	OA8fBO3z5wG97ahOECA0/z9qHD6uPOUpRlzi1DFUMuK71H08HQ5vsW4FXDw9wYSxHxAm4o
+	ch7+X6c1kVLAihKpPjqzhBM2BzIqNdk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709884386;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TEzBdz5tlejxHIWRu4GFOXa0dCDGc6JHxZ8PAzaMiFQ=;
+	b=/ssvpF3uoes9ULrACOYM6H9o6VQH2ASD9Rwx0o4dvAd5CfpSpehnwpSBPvItk5XSo/zQJi
+	TOShrmYSIh5jHACg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED3EB13310;
+	Fri,  8 Mar 2024 07:53:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Th58OeHD6mUNSAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 08 Mar 2024 07:53:05 +0000
+Message-ID: <d6d8aef5-9ebf-4a38-bdb5-f1daf7818873@suse.cz>
+Date: Fri, 8 Mar 2024 08:53:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1668172.1709764777@warthog.procyon.org.uk> <ZelGX3vVlGfEZm8H@casper.infradead.org>
- <1831809.1709807788@warthog.procyon.org.uk>
-In-Reply-To: <1831809.1709807788@warthog.procyon.org.uk>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Fri, 8 Mar 2024 08:52:44 +0100
-Message-ID: <CAJfpegv8X0PY7PvxEF=zEwRbdZ7yZZcwB80iDO+XLverognx+g@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: Replace ->launder_folio() with flush and wait
-To: David Howells <dhowells@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, 
-	Christoph Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	netfs@lists.linux.dev, v9fs@lists.linux.dev, linux-afs@lists.infradead.org, 
-	ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, devel@lists.orangefs.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 1/2] mm,page_owner: Check for null stack_record before
+ bumping its refcount
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ kernel test robot <oliver.sang@intel.com>
+References: <20240306123217.29774-1-osalvador@suse.de>
+ <20240306123217.29774-2-osalvador@suse.de>
+Content-Language: en-US
+In-Reply-To: <20240306123217.29774-2-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=oBA29ilh;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/ssvpF3u"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.98 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-0.48)[79.54%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com,intel.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -1.98
+X-Rspamd-Queue-Id: 112375D273
+X-Spam-Flag: NO
 
-On Thu, 7 Mar 2024 at 11:36, David Howells <dhowells@redhat.com> wrote:
+On 3/6/24 13:32, Oscar Salvador wrote:
+> Although the retrieval of the stack_records for {dummy,failure}_handle
+> happen when page_owner gets initialized, there seems to be some situations
+> where stackdepot space has been already depleted by then, so we get
+> 0-handles which make stack_records being NULL for those cases.
+> 
+> Be careful to 1) only bump stack_records refcount and 2) only access
+> stack_record fields if we actually have a non-null stack_record between
+> hands.
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202403051032.e2f865a-lkp@intel.com
+> Fixes: 4bedfb314bdd ("mm,page_owner: implement the tracking of the stacks count")
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
->  (2) invalidate_inode_pages2() is used in some places to effect invalidation
->      of the pagecache in the case where the server tells us that a third party
->      modified the server copy of a file.  What the right behaviour should be
->      here, I'm not sure, but at the moment, any dirty data will get laundered
->      back to the server.  Possibly it should be simply invalidated locally or
->      the user asked how they want to handle the divergence.
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-Skipping ->launder_page will mean there's a window where the data
-*will* be lost, AFAICS.
+> ---
+>  mm/page_owner.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index 033e349f6479..7163a1c44ccf 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -107,8 +107,10 @@ static __init void init_page_owner(void)
+>  	/* Initialize dummy and failure stacks and link them to stack_list */
+>  	dummy_stack.stack_record = __stack_depot_get_stack_record(dummy_handle);
+>  	failure_stack.stack_record = __stack_depot_get_stack_record(failure_handle);
+> -	refcount_set(&dummy_stack.stack_record->count, 1);
+> -	refcount_set(&failure_stack.stack_record->count, 1);
+> +	if (dummy_stack.stack_record)
+> +		refcount_set(&dummy_stack.stack_record->count, 1);
+> +	if (failure_stack.stack_record)
+> +		refcount_set(&failure_stack.stack_record->count, 1);
+>  	dummy_stack.next = &failure_stack;
+>  	stack_list = &dummy_stack;
+>  }
+> @@ -856,6 +858,9 @@ static int stack_print(struct seq_file *m, void *v)
+>  	unsigned long nr_entries;
+>  	struct stack_record *stack_record = stack->stack_record;
+>  
+> +	if (!stack->stack_record)
+> +		return 0;
+> +
+>  	nr_entries = stack_record->size;
+>  	entries = stack_record->entries;
+>  	stack_count = refcount_read(&stack_record->count) - 1;
 
-Of course concurrent cached writes on different hosts against the same
-region (the size of which depends on how the caching is done) will
-conflict.
-
-But if concurrent writes are to different regions, then they shouldn't
-be lost, no?  Without the current ->launder_page thing I don't see how
-that could be guaranteed.
-
-Thanks,
-Miklos
 
