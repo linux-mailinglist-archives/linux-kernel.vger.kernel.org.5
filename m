@@ -1,132 +1,119 @@
-Return-Path: <linux-kernel+bounces-97335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16EA18768F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:55:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CEB68768F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4922B1C2037A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:55:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC61A283C38
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:56:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE8091CA97;
-	Fri,  8 Mar 2024 16:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BB81C295;
+	Fri,  8 Mar 2024 16:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LLFeSBnd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="XsOfXz8H";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KK1Jby4P"
+Received: from fout2-smtp.messagingengine.com (fout2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9939E572;
-	Fri,  8 Mar 2024 16:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A753215D0;
+	Fri,  8 Mar 2024 16:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916929; cv=none; b=aIRa0zRwnGh28H2v0toS9XNSQ3X1CpB9HeigU2uWK5MypzEaIGC1i4qDVygslJRe8jDF/uRLqkDFioCLfwexmVx/dFA4tnckVR9a/ogtOi86KMoOLev/aECSU/8Fjj8eG7oUkT92yTEElnEvKVqQB6WVyJ6Vo6KubXoupYtxtk4=
+	t=1709916973; cv=none; b=CEAC49sq0fQx8e21ZKRBnIimTgAbRAJxPWGG9xiNngLetHtVexen/iPhqJKs7jJTAFFwh7s4u8VC8HLAePckULOOrNkZtL8rqMiykFdPeHJt2eOw56fT3tDwRP1d5KnJdE/zrJYcu283EQ/km0W2aVxB6NXavp0Z8W3UGC+mwCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916929; c=relaxed/simple;
-	bh=DbchbOqFFVKBM2t0Qy3IghyGibkgCCKQjmqp5ugPh1g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hplqJp60Aragg6JpyGAmEJotUOZYgZJIFPfAgTBE3WYy3UH4musVRrAgC3/+cDKxCl9FxS++Wmz+0MtyMna8LfsStPAGrtq/yojNcjaBnQ/ZdYNqYGVnR3tgPiZ+I84nUTZL2v+03L29QtIdhKoxFKGl1cVdeEQd0IcFy0d3kV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LLFeSBnd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92F03C433C7;
-	Fri,  8 Mar 2024 16:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709916928;
-	bh=DbchbOqFFVKBM2t0Qy3IghyGibkgCCKQjmqp5ugPh1g=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=LLFeSBndw8GfNsV/ySmEPb5MqncBTviKxOluPa3GeNUNPE7PW/7eS7ltnD24mVaQY
-	 3SO/vhD3cKrAbGjjdXAQ2/KoRyHxBGNA51GFG1ID3SRv6B6pJCqDgetjAbzFi8nMla
-	 LDmhe5L4LC6+HUF+Olv9TL+LWkq1wbI0xJLS6GFc9thzV3uJCXlkTmDLwga7B+hwHs
-	 krAj3CRlzDm/b0C7IdxRoImFX2HikydcA13mTo6DWyMzJpeN7syTlWS6eH+4yNQOp8
-	 TIjGX87e82srNLEhoTWSVp0aC67JysMYXcjtzgpSJG8BM9Ct0jdNqI0wZk51I/lLRv
-	 4Ahwn/JiEVMSA==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513298d6859so2200271e87.3;
-        Fri, 08 Mar 2024 08:55:28 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWPRLJb3JIhXrVHG69VIVb6fFVhORu45bviN/FhpKm+4A5HeNORK3T8Xs5vtxGxLDz+zYcv90I37A4tRacKbKgwt7KcN3CeTNZ5K9Sle5sZmIyZrjCSpwpOzZYfzSnUEfzV
-X-Gm-Message-State: AOJu0YwxM/IH6ov44HnN08c0UzTNfB4Gw9ptDOTd2pHJgGe9/sCezNbF
-	LtiNSRRT8KEnkkDcDtiHk9AYk4/+/fq0wFTT+irG8imyLN5eBEzXA746U0Np6aigGSxyY4snxca
-	gi8dezkpXjHY84mdCsNJtmk2Ni34=
-X-Google-Smtp-Source: AGHT+IEvLk7UHtO38Nms4JK1shCpzamyjWivk7RaeHiTPVJ29LLn/xdDEywWh2pxUZUB8z7i+GezLd7z0oD+SCjNhGQ=
-X-Received: by 2002:a05:6512:711:b0:513:2900:1f5c with SMTP id
- b17-20020a056512071100b0051329001f5cmr3428004lfs.59.1709916926779; Fri, 08
- Mar 2024 08:55:26 -0800 (PST)
+	s=arc-20240116; t=1709916973; c=relaxed/simple;
+	bh=r6uhChX0M6c6VxGFVC7vM450cA6B04bHqZgorw1HNmM=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=M4rKr9i6RiCF2vQSEZmvNYjDUouEqu3FrHZotrfJ0J8SrFoD7rm7nlvfojAn36sGSQF83vhWC0wOANfSDJ7UVblsN7YpLd/By4hXtxozKjiga45dQteuk4FkxMIzOnPV/3DqW4SH4trb840ayd5S/YmaNKxNQkPu4vUy+LWmz+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=XsOfXz8H; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KK1Jby4P; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id AF35713800AB;
+	Fri,  8 Mar 2024 11:56:09 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 08 Mar 2024 11:56:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1709916969; x=1710003369; bh=xnhX7BeGxm
+	k4GyXvpk9AHkxVWY0R4hFv5lV38tPGFzQ=; b=XsOfXz8Hrc3z3uQcnfV4LZHI0p
+	cg8hl+yYhAS7op9WmmA/y5q5dtBYZuICP5MKa/WErMm2861Aku/SD3+F21VrY5k6
+	UoRlYFSBZUio7pHYjXoX6W0X8CdtD/BnMv3mDLQ75wiM4Bgjiy9ppeIuvFCSJv91
+	vfqLg8G3YaUiRsRkmu/gxhSjQeUpI58/wGxXUZQ0dR6qR9amiVRJLA7JWPerf/sw
+	fhCwIZcaLz8TLTPvk5PIbe83Mjj5zr4WiKz50YKekxy1qNA7zHygmS4G+66jbi6d
+	WEONHu/uoc0zMync+OCisR8u74QUcbQk3GlyEr3VQ+MY58qNfLSxryWZLAAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709916969; x=1710003369; bh=xnhX7BeGxmk4GyXvpk9AHkxVWY0R
+	4hFv5lV38tPGFzQ=; b=KK1Jby4PfnfUScWKuMK4MSoC077hXEs8ssf+0Ietjz4Z
+	cM1yLUhGzuLAA8bpZmnmdr3fycJkYHPvUe0vFmm3GVXimU1yz8KaDTGk+Nfqnifz
+	3Mz/hgjH9z0lat62clYSbtszh+6RyZ8OeHwtRDwZBNXAem/r3t4XfVH2XStIZmE5
+	X+wBapjIetzTU7rMeoqCOpwOugo9M7j/H2RNi4oSGAqfJgza6a1PQJmrb7T3IgrN
+	zTLPWC1O7ZMl9bi7CI7Qc1uR+BgUxlgM8Wr0lI7JkQMNCX5oeEsNk8WiRnKRRmmL
+	528NUjFiDAOlI3bPaL+qvvM0LNMnzRhf3g7e4xr/DA==
+X-ME-Sender: <xms:KUPrZb-77X0uixuahGbxkTeUwfr41D-T2l2kZ4JXkyKGOsRiOWF6jQ>
+    <xme:KUPrZXum8DLdNzxAsgOtv4Z7rKtpUWodo49nGzZEbESB79rSa0x_uhTYLlrF6jfi1
+    1ciwlicWFlG6tmrvgM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieehgdelgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:KUPrZZC8zQB-_8yI-wlBzI72EA9xJ4U66zYsllKF9HB7Rt4gqdYlQw>
+    <xmx:KUPrZXcVpihXYHImq6WqC1vQFolXY-3w6S3ccRxZ0KwDpBIcv-nTNA>
+    <xmx:KUPrZQPS973zsoDqZvM79gBaqaSzYVaegO-TPyFHl0AVwrj7yxL8uA>
+    <xmx:KUPrZRjppHjw9ExvAyjG00wrX2gJA1ggoy0-fbjwF6GeWYvnm5-C2g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 10EAFB6008D; Fri,  8 Mar 2024 11:56:09 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308120712.88122-1-puranjay12@gmail.com>
-In-Reply-To: <20240308120712.88122-1-puranjay12@gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Fri, 8 Mar 2024 08:55:15 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7Do8c8cA6rVykhVnFRgKA0s6nO8JyGXkEB7gm94KR7Mw@mail.gmail.com>
-Message-ID: <CAPhsuW7Do8c8cA6rVykhVnFRgKA0s6nO8JyGXkEB7gm94KR7Mw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: cap BPF_PROG_PACK_SIZE to 2MB * num_possible_nodes()
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <d43790a0-d6a3-4178-a298-a86db68918e5@app.fastmail.com>
+In-Reply-To: <ZesoygjRoCR9HO_V@smile.fi.intel.com>
+References: <20240307195056.4059864-1-andriy.shevchenko@linux.intel.com>
+ <20240307195056.4059864-4-andriy.shevchenko@linux.intel.com>
+ <ZesoygjRoCR9HO_V@smile.fi.intel.com>
+Date: Fri, 08 Mar 2024 17:55:48 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Cc: "Mark Brown" <broonie@kernel.org>, "Daniel Mack" <daniel@zonque.org>,
+ "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+ "Robert Jarzmik" <robert.jarzmik@free.fr>,
+ "Russell King" <linux@armlinux.org.uk>
+Subject: Re: [PATCH v3 3/3] spi: pxa2xx: Use proper SSP header in soc/pxa/ssp.c
+Content-Type: text/plain
 
-On Fri, Mar 8, 2024 at 4:07=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.com=
-> wrote:
+On Fri, Mar 8, 2024, at 16:03, Andy Shevchenko wrote:
+> On Thu, Mar 07, 2024 at 09:47:47PM +0200, Andy Shevchenko wrote:
+>> There is nothing from pxa2xx_spi.h used by soc/pxa/ssp.c.
+>> Replace it with pxa2xx_ssp.h.
 >
-> On some architectures like ARM64, PMD_SIZE can be really large in some
-> configurations. Like with CONFIG_ARM64_64K_PAGES=3Dy the PMD_SIZE is
-> 512MB.
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 >
-> Use 2MB * num_possible_nodes() as the upper limit for allocations done
-> through the prog pack allocator.
+> P.S.
+> I dared to add Arnd's tag from previous version as this patch
+> hasn't been changed.
 >
-> Fixes: ea2babac63d4 ("bpf: Simplify bpf_prog_pack_[size|mask]")
-> Reported-by: "kernelci.org bot" <bot@kernelci.org>
-> Closes: https://lore.kernel.org/all/7e216c88-77ee-47b8-becc-a0f780868d3c@=
-sirena.org.uk/
-> Suggested-by: Song Liu <song@kernel.org>
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  kernel/bpf/core.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 134b7979f537..83a3b6964e54 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -893,8 +893,17 @@ static LIST_HEAD(pack_list);
->   * CONFIG_MMU=3Dn. Use PAGE_SIZE in these cases.
->   */
->  #ifdef PMD_SIZE
-> +/*
-> + * PMD_SIZE is really big for some archs. It doesn't make sense to
-> + * reserve too much memory in one allocation. Cap BPF_PROG_PACK_SIZE to
-> + * 2MiB * num_possible_nodes().
-> + */
 
-In BPF code, we prefer a different style of multiple line comments:
+Thanks, I mixed up the two messages and thought I had replied to v3.
 
-/* PMD_SIZE is really big for some archs. It doesn't make sense to
- * reserve too much memory in one allocation. Cap BPF_PROG_PACK_SIZE to
- * 2MiB * num_possible_nodes().
- */
-
-Other than this, this looks good to me.
-
-Acked-by: Song Liu <song@kernel.org>
-
-Thanks,
-Song
-
-> +#if PMD_SIZE <=3D (1 << 21)
->  #define BPF_PROG_PACK_SIZE (PMD_SIZE * num_possible_nodes())
->  #else
-> +#define BPF_PROG_PACK_SIZE ((1 << 21) * num_possible_nodes())
-> +#endif
-> +#else
->  #define BPF_PROG_PACK_SIZE PAGE_SIZE
->  #endif
+    Arnd
 
