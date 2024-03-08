@@ -1,143 +1,160 @@
-Return-Path: <linux-kernel+bounces-97560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E4E0876BEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:37:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1595B876BF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC531282B43
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:37:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6ACEB21D87
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCD31D52D;
-	Fri,  8 Mar 2024 20:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 428035E068;
+	Fri,  8 Mar 2024 20:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="SzrPtdCt"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="P+psoRYM"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B88B5D8E4
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402311D52D
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709930260; cv=none; b=mguuIfwN2b9By6eUjsda48Zw9k8HO7X/Eikk5NInxZN074e/DPF9He38IOjkdxiM7IKlchGepiPz28VSEVrDGffRYT4edy7DcJsZIfWMB3VfGbs2xiB/OcrHTrgJYvgdVsDoMqjI4AvuDN+PWMRbiUOisR26f6XY0qwYzwv3Q5c=
+	t=1709930338; cv=none; b=PGbHwUjVGlnfaWda6Z7lSjvLzAnw3fw54+vzgGbg6aE+7yDRIv2jqbpe1VEAx2NG2cFJa6Dy9+j7hq8FYmtZnUpq7lm1Rwf1PZJFzjFQtqW+3Vw6TsZBTI/+EFnMrNw/RUWJRTa6wP8adXJCQvbMf/0wxpKuVRZhEa+Gt3EsMq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709930260; c=relaxed/simple;
-	bh=QVuJYBg7eAXpV6Ijtmm49xelHY48E81cS9xdFZ2y8ww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oLuRbDJwT58YmY+/NcT0DiOOmV16Noo6cvMY/+YD8uB7EWqKimRuqAcrl7JEGTBMbIF6laLqq9QSjxOcoS1Ur+cp2QoDhkpeCN5ajinI2vG51Iemx9Xtoy06QlrlCNfWVpvsrl4kaC5f2pkWORhdrL9VTNvYThE34VWtHqY2U30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=SzrPtdCt; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-221a37a29f5so462057fac.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 12:37:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1709930258; x=1710535058; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8AtBhhUJsX7iCjuz60QlnI9oeTh8ox4hiuWAL+2qFxI=;
-        b=SzrPtdCtETYaH+fXoFNcVZ674Y60rUoV24SHjrWWDyPuffz3hHq4no4/0zSaV3YAOd
-         3pITU2krQ+XDZV8KTm8DbbDUxfHgTrcSBp72H+2XuUj2wSERwR6Oq5tIbH84/e8violY
-         XBkz2lEi58aCBxCQXU+EnRkfJyyex8DnTmOfPlrkwUAUEBulOTXwb4wB6svmuAjMCBrv
-         vNqwD49cXpsvWh6R50V+4fN8EusTzt9GcGUyuuTKPnJDEHlTeqpvynw0A/KxKFND/6gd
-         PScL6wYo2bwUE7ZOCdsUUCPHc/JvD2GTo+8RU/G8n2zK0OU/XMH7/nnXo0bRNxpOXj3g
-         mn9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709930258; x=1710535058;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8AtBhhUJsX7iCjuz60QlnI9oeTh8ox4hiuWAL+2qFxI=;
-        b=Q2FlxmCctECMb73Q8snd8wapxxOOs/XmALS18WodVfIto36LLTLbxz9IS9O9xFqyfq
-         /4alaMoslPBXALcR5yWbbJX2wF1VmxGJVu/JOUymjZFeTI6LDGBIIm6/MAdkRyhwAza1
-         eWDXdKtfsRnsPXGMDcHm0E7IgvkNbadFufultiBGP178sFEwkcAq1Rqh15IReqvQDm8I
-         OrvxMPWRcmi+uCnmBPVvT5tBJFZfUphhubXbhPzGV2iIJFlb5y08Csy00bmZqGMWekGi
-         9XHQJOiwJwmMMI/K2ENZuZv7K3ebM39K5slFV2dFONnYdxsN81MkM5C9xZI2UK/Xyv+o
-         ZANA==
-X-Forwarded-Encrypted: i=1; AJvYcCUeIXQpNKFI3FsfGg/c0YwVM+hy+pdIJ1UQLjLsu71bJlYO7fkCGTRqRdYr0UmcMSdX8jsDFAHRfIH4QXi1obJrBtq5A4ctI4mUnmsB
-X-Gm-Message-State: AOJu0YwtoHwyNSkPXpAcz9B1FzHrLLH1+UXtC4B7lEMoccBadYhQmxk9
-	UCx5BsEbfmfPG5RRh6ax7sbTujECm/KD8MMpDS63lpsYdGDzs1k79KVKWHpD9vU=
-X-Google-Smtp-Source: AGHT+IFbgpl0pB6g2XaoyrWZZStUAXJBL7gQEaHjPXP/ruZgANeVKSb/3hxLcl0YhzvyQSM42+vm+A==
-X-Received: by 2002:a05:6870:7a0d:b0:21f:ab17:44c3 with SMTP id hf13-20020a0568707a0d00b0021fab1744c3mr272908oab.24.1709930258434;
-        Fri, 08 Mar 2024 12:37:38 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id gu19-20020a056870ab1300b0022154dd4eb0sm47251oab.4.2024.03.08.12.37.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 12:37:38 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rigyH-007y3a-Aw;
-	Fri, 08 Mar 2024 16:37:37 -0400
-Date: Fri, 8 Mar 2024 16:37:37 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Lu Baolu <baolu.lu@linux.intel.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
-	devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>,
-	Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 7/7] dma-mapping: Simplify arch_setup_dma_ops()
-Message-ID: <20240308203737.GB9225@ziepe.ca>
-References: <cover.1707493264.git.robin.murphy@arm.com>
- <f0ea76846c89a65dfe42933d78d770004bb3de01.1707493264.git.robin.murphy@arm.com>
+	s=arc-20240116; t=1709930338; c=relaxed/simple;
+	bh=NCx5LITqLfd5IR5H/1MZ4bqNFQ5kjpffWRsXWLwGrH8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Dpj1vt1rrNn9dwkl+OP8a34nl8T5Pi9ngQ5VPS2+kKchDFdGwT6MjbgV6axKM+LSxR/ReKcVh56lhuV755Kx1aSKef+oJkCcXbLvQ/iQZo2XmsaAZSoddLInU8E+abxSqOJamZzZjCkBeOl9rzNOduChSrNEhSdgUUPqYeem9M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=P+psoRYM; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=/47zSNS8X3eOPzjZdvlkdHcgjIKBxlrq4BUs8maJTKI=; b=P+psoRYM5z3lfXYWFwEz/bAINB
+	OPOxutLt5xDfXAWdDKQpYEoteejZVcbRTgwcL5gWxB6YQBIlcM928wCP3ORY0SB6AtDgpXfRmfJ6W
+	O6WiGduHj8ETWuoDJElwDFkf7KtsF01vYBDlglzNb5jy9s3fp/XVi7qNDiYiAKJXJxduI9SBwA5AG
+	FGFY6sBpwcAXQ+UjRfQ0IDlv5ENI+LPo1yeB6ObG0g9KgE3rMTNIrIsW0V9zYbLRlSnZ42GKeKc6p
+	gmO20XmEZYn5mFQEt6pd/HVxnHy2yiQes02adum0ST3BaFnT7KbtZJHN9jpiiivU1aBZ0YPBbpQMY
+	5YSHJUKg==;
+Received: from [186.230.26.74] (helo=[10.39.29.45])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rigyw-007xOC-Fz; Fri, 08 Mar 2024 21:38:18 +0100
+Message-ID: <4b01ba61-9184-4a17-9fe6-59eb88a21214@igalia.com>
+Date: Fri, 8 Mar 2024 17:38:07 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f0ea76846c89a65dfe42933d78d770004bb3de01.1707493264.git.robin.murphy@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/7] Additions to "Reimplement line-per-line pixel
+ conversion for plane reading" series
+Content-Language: en-US
+To: Arthur Grillo <arthurgrillo@riseup.net>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ pekka.paalanen@haloniitty.fi, Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com, Pekka Paalanen <pekka.paalanen@collabora.com>
+References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
+From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+Autocrypt: addr=mcanal@igalia.com; keydata=
+ xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
+ H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
+ hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
+ GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
+ rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
+ s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
+ GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
+ pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
+In-Reply-To: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 09, 2024 at 04:50:04PM +0000, Robin Murphy wrote:
-> The dma_base, size and iommu arguments are only used by ARM, and can
-> now easily be deduced from the device itself, so there's no need to pass
-> them through the callchain as well.
+Hi Arthur,
+
+Would it be possible for you to coordinate with Louis and create a
+single series with all the modification?
+
+I don't see a reason to submit fixes to a series that it is still
+on review.
+
+Best Regards,
+- Maíra
+
+On 3/6/24 17:03, Arthur Grillo wrote:
+> These are some patches that add some fixes/features to the series by
+> Louis Chauvet[1], it was based on top of the patches from v4.
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> Patches #2 and #3 should be amended to "[PATCH v4 11/14] drm/vkms: Add
+> YUV support". To make patch #3 work, we need patch #1. So, please, add
+> it before the patch that #2 and #3 amend to.
+> 
+> Patches #4 to #6 should be amended to "[PATCH v4 14/14] drm/vkms: Create
+> KUnit tests for YUV conversions". While doing the additions, I found
+> some compilation issues, so I fixed them (patch #4). That's when I
+> thought that it would be good to add some documentation on how to run
+> them (patch #7), this patch should be added to the series as new patch.
+> 
+> [1]: https://lore.kernel.org/r/20240304-yuv-v4-0-76beac8e9793@bootlin.com
+> 
+> To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+> To: Melissa Wen <melissa.srw@gmail.com>
+> To: Maíra Canal <mairacanal@riseup.net>
+> To: Haneen Mohammed <hamohammed.sa@gmail.com>
+> To: Daniel Vetter <daniel@ffwll.ch>
+> To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> To: Maxime Ripard <mripard@kernel.org>
+> To: Thomas Zimmermann <tzimmermann@suse.de>
+> To: David Airlie <airlied@gmail.com>
+> To: arthurgrillo@riseup.net
+> To: Jonathan Corbet <corbet@lwn.net>
+> To: pekka.paalanen@haloniitty.fi
+> To: Louis Chauvet <louis.chauvet@bootlin.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: jeremie.dautheribes@bootlin.com
+> Cc: miquel.raynal@bootlin.com
+> Cc: thomas.petazzoni@bootlin.com
+> Cc: seanpaul@google.com
+> Cc: marcheu@google.com
+> Cc: nicolejadeyee@google.com
+> 
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
 > ---
-> v2: Make sure the ARM changes actually build (oops...)
+> Arthur Grillo (7):
+>        drm: Fix drm_fixp2int_round() making it add 0.5
+>        drm/vkms: Add comments
+>        drm/vkmm: Use drm_fixed api
+>        drm/vkms: Fix compilation issues
+>        drm/vkms: Add comments to format tests
+>        drm/vkms: Change the gray RGB representation
+>        drm/vkms: Add how to run the Kunit tests
+> 
+>   Documentation/gpu/vkms.rst                    |  11 +++
+>   drivers/gpu/drm/vkms/tests/vkms_format_test.c |  81 +++++++++++++++++++--
+>   drivers/gpu/drm/vkms/vkms_drv.h               |   4 +
+>   drivers/gpu/drm/vkms/vkms_formats.c           | 101 +++++++++++++++++++-------
+>   include/drm/drm_fixed.h                       |   2 +-
+>   5 files changed, 165 insertions(+), 34 deletions(-)
 > ---
->  arch/arc/mm/dma.c               |  3 +--
->  arch/arm/mm/dma-mapping-nommu.c |  3 +--
->  arch/arm/mm/dma-mapping.c       | 16 +++++++++-------
->  arch/arm64/mm/dma-mapping.c     |  3 +--
->  arch/mips/mm/dma-noncoherent.c  |  3 +--
->  arch/riscv/mm/dma-noncoherent.c |  3 +--
->  drivers/acpi/scan.c             |  7 +------
->  drivers/hv/hv_common.c          |  6 +-----
->  drivers/of/device.c             |  4 +---
->  include/linux/dma-map-ops.h     |  6 ++----
->  10 files changed, 19 insertions(+), 35 deletions(-)
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+> base-commit: 9658aba38ae9f3f3068506c9c8e93e85b500fcb4
+> change-id: 20240306-louis-vkms-conv-61362ff12ab8
+> 
+> Best regards,
 
