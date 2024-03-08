@@ -1,220 +1,177 @@
-Return-Path: <linux-kernel+bounces-96397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6074F875B9F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E27FF875BA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 175B5282F16
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:55:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 256392830E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4780B2134B;
-	Fri,  8 Mar 2024 00:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10D721342;
+	Fri,  8 Mar 2024 00:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XGREz/gF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="cS2E3nzt"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B9A21101
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 00:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1588F21105;
+	Fri,  8 Mar 2024 00:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709859335; cv=none; b=XAZ9Y+OJLJVilcOWObWoCc+RcWsIQw/eD70jHsgMntClyd8TeV44FQ6LbymHAaOu57YRHkDoRSGdQIEpQLJ0w8m7xkmFl+ewUgcx3E3Erg3q9cVaPtxOMto6rq5/RGlS17NlteRmcC0PJBGiGKDvy8Qfm5Rr536/GE0PAqCHNkM=
+	t=1709859361; cv=none; b=L39FmmQ9mMsy3k7Fih6FPc5dwJNWCgonXwVL8jzOgyjmct/+p3GMRZNdXLl9gbk4AHvX8bJbOloETYtneHF/2mwqBY/Oqzt0LD/lsSmxwJ8w7SuX1YKF6kFLzWtsN/5lXjL1daj2nCJlpulKj6wM3gLFdqg4cczFBLTH2ECC7fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709859335; c=relaxed/simple;
-	bh=e0ccYedOJCgEkhN+ZKip6Y2Wg4KOHk1fAiTFxhhILoU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t+gdsYhkvXQqO2sJYGOezWPH25DDEZWfDRkGBEbkofKgbQ4GWPakk4dpXMx0QEKuRFtp1qWMyrNrnR9WvRtiCxsmLus6gjoPVf/qxsuxoIOUx61JvIZlioLo28EDwMaZf7Sff1K2/HkK+EeyOjgcO5ECLN/AtY3ci2tWElCZjIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XGREz/gF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16806C433F1;
-	Fri,  8 Mar 2024 00:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709859334;
-	bh=e0ccYedOJCgEkhN+ZKip6Y2Wg4KOHk1fAiTFxhhILoU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XGREz/gF4eq/YRDqV7Ao6RgZ7MpE/xqApokBvdQ5PrQb2SXpxBBnt0r8263bpM8D/
-	 fYnr3kCI8JEuF0+0DMsJF03P4GRuZ8u4guRAY8aNqdl/9UVRXSxCdX8LRx7xfwuymt
-	 RodQndq+27/22PdVul1PDxqSqhpcT4gj0/NydCnxVuBpd8OsppqSwPLYAvzJoMwpcS
-	 h0B6XR+2ZE112Wfl/yNZH0NglxX8xhd0UKlpcedHPpbHv2BhAMxEljLK8lPo0HN+zT
-	 TufD6Bq7VBq/s/t/65pE+7ApImBeIGTIgYgp7EKp8LL+kFICnGK3nm+TJfL4XKD1o1
-	 GLFzC0dMWGNWg==
-Message-ID: <2c8ef129-9381-4c82-a421-57b698a18291@kernel.org>
-Date: Fri, 8 Mar 2024 08:55:30 +0800
+	s=arc-20240116; t=1709859361; c=relaxed/simple;
+	bh=EoD/N7fyy6v3G07GLxBqUhJ65YYXjv4B0t9Gs9DK9KY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YxNNsie4jOfjb6jxBLTXRFNnVuQ7DTqjyBh/Ll4/5Zdl33L+maejn2t1Q0AD990uTyejUaiWSNrf3P0FRC/+TiSmrPQr5nYdk3MyKMWRT22FfFfscqE5Y9hgByoSxdAji2c22NE9aXk54tpIFAncwJgYA/UigFBgBc19DMz/INA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=cS2E3nzt; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 427JiHs3019537;
+	Fri, 8 Mar 2024 00:55:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=iJqdbRpjEP9Anm7UG3DB2OPgXYyaZ6u1AAaa+B1m9xQ=;
+ b=cS2E3nzto7hWNLCpjAajLTrBRTl+urpmQvDdVXCMYXmgJoEDykOx0PCnCqGq6pvSAq/O
+ TOGnUCoQqelVk5gudH5w/WVDj8fY+f8XDZwjPBvus4gr+vCc9AozECGhmwJJEuvz8M2c
+ FmZcmuviv+fj4zR0FHTNA7O6WVMFWnvbS997qm5M92nFqRlB4SqY+5Lv7KDofV57K2ta
+ hpt6BcVjT8sNCFzVt9PxJvHL7bG40LQz8jVDM7QpA2I7B+nEr13iI7YgjDA0ugUNQCOz
+ SXSXVcZ5c8H1G6qboU8AvBmpjgADyg1Du6HbIQSpHdAhmgkmt5K3/TQDFK0GJXUIEKB1 7Q== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wku1cmtk6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 08 Mar 2024 00:55:56 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42804JE4027502;
+	Fri, 8 Mar 2024 00:55:55 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wktjchx1k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 08 Mar 2024 00:55:55 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4280tt2U031590;
+	Fri, 8 Mar 2024 00:55:55 GMT
+Received: from mbpatil.us.oracle.com (mbpatil.us.oracle.com [10.211.44.53])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3wktjchx18-1;
+	Fri, 08 Mar 2024 00:55:55 +0000
+From: Manjunath Patil <manjunath.b.patil@oracle.com>
+To: dledford@redhat.com, jgg@ziepe.ca
+Cc: manjunath.b.patil@oracle.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rama.nichanamatlu@oracle.com
+Subject: [PATCH] RDMA/cm: add timeout to cm_destroy_id wait
+Date: Thu,  7 Mar 2024 16:55:53 -0800
+Message-Id: <20240308005553.440065-1-manjunath.b.patil@oracle.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: fix to truncate meta inode pages forcely
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20240307151235.3864725-1-chao@kernel.org>
- <ZeoJa705xDrPRNQY@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <ZeoJa705xDrPRNQY@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_18,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403080005
+X-Proofpoint-ORIG-GUID: c3XN_BC7ZM1TM6zc6QL0zHRQN2hSfuV7
+X-Proofpoint-GUID: c3XN_BC7ZM1TM6zc6QL0zHRQN2hSfuV7
 
-On 2024/3/8 2:37, Jaegeuk Kim wrote:
-> On 03/07, Chao Yu wrote:
->> Below race case can cause data corruption:
->>
->> Thread A				GC thread
->> - f2fs_inplace_write_data
->> 					- gc_data_segment
->> 					 - ra_data_block
->> 					  - locked meta_inode page
->>   - invalidate_mapping_pages
->>   : fail to invalidate meta_inode page
->>     due to lock failure or dirty|writeback
->>     status
-> 
-> Wasn't the original data page locked in both cases?
+Add timeout to cm_destroy_id, so that userspace can trigger any data
+collection that would help in analyzing the cause of delay in destroying
+the cm_id.
 
-Oh, the race case needs to fixed as below:
+New noinline function helps dtrace/ebpf programs to hook on to it.
+Existing functionality isn't changed except triggering a probe-able new
+function at every timeout interval.
 
-Thread A				GC thread
-					- gc_data_segment
-					 - ra_data_block
-					  - locked meta_inode page
-- f2fs_inplace_write_data
-  - invalidate_mapping_pages
-  : fail to invalidate meta_inode page
-    due to lock failure or dirty|writeback
-    status
-  - f2fs_submit_page_bio
-  : write last dirty data to old blkaddr
-					 - move_data_block
-					  - load old data from meta_inode page
-					  - f2fs_submit_page_write
-					  : write old data to new blkaddr
+We have seen cases where CM messages stuck with MAD layer (either due to
+software bug or faulty HCA), leading to cm_id getting stuck in the
+following call stack. This patch helps in resolving such issues faster.
 
-There is a hole in between ra_data_block() and move_data_block(),
-in where the data page is unlocked.
+kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
+..
+	Call Trace:
+	__schedule+0x2bc/0x895
+	schedule+0x36/0x7c
+	schedule_timeout+0x1f6/0x31f
+ 	? __slab_free+0x19c/0x2ba
+	wait_for_completion+0x12b/0x18a
+	? wake_up_q+0x80/0x73
+	cm_destroy_id+0x345/0x610 [ib_cm]
+	ib_destroy_cm_id+0x10/0x20 [ib_cm]
+	rdma_destroy_id+0xa8/0x300 [rdma_cm]
+	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
+	ucma_write+0xe0/0x160 [rdma_ucm]
+	__vfs_write+0x3a/0x16d
+	vfs_write+0xb2/0x1a1
+	? syscall_trace_enter+0x1ce/0x2b8
+	SyS_write+0x5c/0xd3
+	do_syscall_64+0x79/0x1b9
+	entry_SYSCALL_64_after_hwframe+0x16d/0x0
 
-Thanks,
+Orabug: 36280065
 
-> 
->>   - f2fs_submit_page_bio
->>   : write last dirty data to old blkaddr
->> 					 - move_data_block
->> 					  - load old data from meta_inode page
->> 					  - f2fs_submit_page_write
->> 					  : write old data to new blkaddr
->>
->> Because invalidate_mapping_pages() will skip invalidating page when the
->> page has unclear status including locked, dirty, writeback and so on, so
->> we need to use truncate_inode_pages_range() instead of
->> invalidate_mapping_pages() to make sure meta_inode page will be dropped.
->>
->> Fixes: 6aa58d8ad20a ("f2fs: readahead encrypted block during GC")
->> Fixes: e3b49ea36802 ("f2fs: invalidate META_MAPPING before IPU/DIO write")
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   fs/f2fs/checkpoint.c    |  5 +++--
->>   fs/f2fs/f2fs.h          | 28 +++++++++++++++++++++++++++-
->>   fs/f2fs/segment.c       |  5 ++---
->>   include/linux/f2fs_fs.h |  1 +
->>   4 files changed, 33 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->> index a09a9609e228..55b7d2cf030f 100644
->> --- a/fs/f2fs/checkpoint.c
->> +++ b/fs/f2fs/checkpoint.c
->> @@ -1598,8 +1598,9 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
->>   	 */
->>   	if (f2fs_sb_has_encrypt(sbi) || f2fs_sb_has_verity(sbi) ||
->>   		f2fs_sb_has_compression(sbi))
->> -		invalidate_mapping_pages(META_MAPPING(sbi),
->> -				MAIN_BLKADDR(sbi), MAX_BLKADDR(sbi) - 1);
->> +		f2fs_bug_on(sbi,
->> +			invalidate_inode_pages2_range(META_MAPPING(sbi),
->> +				MAIN_BLKADDR(sbi), MAX_BLKADDR(sbi) - 1));
->>   
->>   	f2fs_release_ino_entry(sbi, false);
->>   
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index 4836e7cb0efe..9814e5981a6a 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -4655,10 +4655,36 @@ static inline bool f2fs_is_readonly(struct f2fs_sb_info *sbi)
->>   	return f2fs_sb_has_readonly(sbi) || f2fs_readonly(sbi->sb);
->>   }
->>   
->> +static inline void f2fs_truncate_meta_inode_pages(struct f2fs_sb_info *sbi,
->> +					block_t blkaddr, unsigned int cnt)
->> +{
->> +	bool need_submit = false;
->> +	int i = 0;
->> +
->> +	do {
->> +		struct page *page;
->> +
->> +		page = find_get_page(META_MAPPING(sbi), blkaddr + i);
->> +		if (page) {
->> +			if (PageWriteback(page))
->> +				need_submit = true;
->> +			f2fs_put_page(page, 0);
->> +		}
->> +	} while (++i < cnt && !need_submit);
->> +
->> +	if (need_submit)
->> +		f2fs_submit_merged_write_cond(sbi, sbi->meta_inode,
->> +							NULL, 0, DATA);
->> +
->> +	truncate_inode_pages_range(META_MAPPING(sbi),
->> +			F2FS_BLK_TO_BYTES((loff_t)blkaddr),
->> +			F2FS_BLK_END_BYTES((loff_t)(blkaddr + cnt - 1)));
->> +}
->> +
->>   static inline void f2fs_invalidate_internal_cache(struct f2fs_sb_info *sbi,
->>   								block_t blkaddr)
->>   {
->> -	invalidate_mapping_pages(META_MAPPING(sbi), blkaddr, blkaddr);
->> +	f2fs_truncate_meta_inode_pages(sbi, blkaddr, 1);
->>   	f2fs_invalidate_compress_page(sbi, blkaddr);
->>   }
->>   
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index 4ff3b2d14ddf..20af48d7f784 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -3741,8 +3741,7 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
->>   	}
->>   
->>   	if (fio->post_read)
->> -		invalidate_mapping_pages(META_MAPPING(sbi),
->> -				fio->new_blkaddr, fio->new_blkaddr);
->> +		f2fs_truncate_meta_inode_pages(sbi, fio->new_blkaddr, 1);
->>   
->>   	stat_inc_inplace_blocks(fio->sbi);
->>   
->> @@ -3932,7 +3931,7 @@ void f2fs_wait_on_block_writeback_range(struct inode *inode, block_t blkaddr,
->>   	for (i = 0; i < len; i++)
->>   		f2fs_wait_on_block_writeback(inode, blkaddr + i);
->>   
->> -	invalidate_mapping_pages(META_MAPPING(sbi), blkaddr, blkaddr + len - 1);
->> +	f2fs_truncate_meta_inode_pages(sbi, blkaddr, len);
->>   }
->>   
->>   static int read_compacted_summaries(struct f2fs_sb_info *sbi)
->> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
->> index 755e9a41b196..a357287eac1e 100644
->> --- a/include/linux/f2fs_fs.h
->> +++ b/include/linux/f2fs_fs.h
->> @@ -27,6 +27,7 @@
->>   
->>   #define F2FS_BYTES_TO_BLK(bytes)	((bytes) >> F2FS_BLKSIZE_BITS)
->>   #define F2FS_BLK_TO_BYTES(blk)		((blk) << F2FS_BLKSIZE_BITS)
->> +#define F2FS_BLK_END_BYTES(blk)		(F2FS_BLK_TO_BYTES(blk + 1) - 1)
->>   
->>   /* 0, 1(node nid), 2(meta nid) are reserved node id */
->>   #define F2FS_RESERVED_NODE_NUM		3
->> -- 
->> 2.40.1
+Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
+---
+ drivers/infiniband/core/cm.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index ff58058aeadc..00a16b08c7e2 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -34,6 +34,7 @@ MODULE_AUTHOR("Sean Hefty");
+ MODULE_DESCRIPTION("InfiniBand CM");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
++static unsigned long cm_destroy_id_wait_timeout_sec = 10;
+ static const char * const ibcm_rej_reason_strs[] = {
+ 	[IB_CM_REJ_NO_QP]			= "no QP",
+ 	[IB_CM_REJ_NO_EEC]			= "no EEC",
+@@ -1025,10 +1026,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
+ 	}
+ }
+ 
++static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
++{
++	struct cm_id_private *cm_id_priv;
++
++	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
++	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
++	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
++}
++
+ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ {
+ 	struct cm_id_private *cm_id_priv;
+ 	struct cm_work *work;
++	int ret;
+ 
+ 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+ 	spin_lock_irq(&cm_id_priv->lock);
+@@ -1135,7 +1146,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 
+ 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
+ 	cm_deref_id(cm_id_priv);
+-	wait_for_completion(&cm_id_priv->comp);
++	do {
++		ret = wait_for_completion_timeout(&cm_id_priv->comp,
++						  msecs_to_jiffies(
++				cm_destroy_id_wait_timeout_sec * 1000));
++		if (!ret) /* timeout happened */
++			cm_destroy_id_wait_timeout(cm_id);
++	} while (!ret);
++
+ 	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
+ 		cm_free_work(work);
+ 
+-- 
+2.31.1
+
 
