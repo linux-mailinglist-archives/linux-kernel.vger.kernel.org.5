@@ -1,213 +1,204 @@
-Return-Path: <linux-kernel+bounces-97556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72E27876BE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:34:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2961A876BE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:36:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95F8F1C21288
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:34:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BA51B218A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:36:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9177B5E070;
-	Fri,  8 Mar 2024 20:34:15 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id DC92B50A80
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30AA15E062;
+	Fri,  8 Mar 2024 20:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lUkMKDgE"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FB23610A
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709930055; cv=none; b=NkML2CNnw++vRh7hu9M4GtNksYvXatwexzgS4S1V935LD0V1oUpxibdwSiiCatFpQYPwClTekU38QliSwCK3gcDlFRazwHp61V1ul77/QdsEqEzlJ9ouOtIkn3LXULAodb4Um64LzpFSumYRjLWbKMfSSRzpANFkMm2Q0H4piMs=
+	t=1709930166; cv=none; b=VfMD0vPUShh80rmuOCnysrAskJ7oQD7toDpLfqxDQQn/jF7XwD4ZD1uq2NekWWH7qKpHYJmWm4FV9spuXrnRe4GDq06AMJknTiXAY2y18YXeUIPn2ob0mSrZB6widR6JJ99YWS9ylS8ovFS7+KP4NuMqdODkzrX2hYXnaD4mzyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709930055; c=relaxed/simple;
-	bh=IZaH6aC/i1n7v7img2naof+9A7gZ7xNYIB9VhpQKeaA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FAvfOx36aAmkTvlG7E4AbLFDeS55QbaTifDrUKGtI6LKUB2WHdFBdKhZTv4C2JEicrduOtiTwHz0Kj1Rjggs4uWDgd9xUsYkJdZO9jHr1VBJGuAbUYZUifvDLKpGcFzZ4tl7RQ+fInV5YrqjtJ1qxOR2kxgDynVXZi2iHPo2n6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 271622 invoked by uid 1000); 8 Mar 2024 15:34:04 -0500
-Date: Fri, 8 Mar 2024 15:34:04 -0500
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Dingyan Li <18500469033@163.com>
-Cc: gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] USB: Use EHCI control transfer pid macros instead of
- constant values.
-Message-ID: <37bdd932-07a4-4514-a5cc-b70d48c962a6@rowland.harvard.edu>
-References: <1e7f57d6-a4c1-4a3d-8cff-f966c89a8140@rowland.harvard.edu>
- <20240308010859.81987-1-18500469033@163.com>
+	s=arc-20240116; t=1709930166; c=relaxed/simple;
+	bh=E0NNBqxsc4cbxH61hlcPNWm/2/7BCORB3R+PXqcIu6U=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=E9Q6qseDDXErO7PGMsnT5QnLH44YB154hj0KjqPfNdZ29/RHJljH1J1Rj2bMcZSPWuPBjTK1KW+7MdYeJLL7XQKnBrf1CRa2Kg+OHNbzU7lIsrF3635OZhr8AftKDR2gSNT2Kz1IKVYDVA/1S7NNtoKVU/923snD6Mi2UcgUPn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lUkMKDgE; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709930164; x=1741466164;
+  h=date:from:to:cc:subject:message-id;
+  bh=E0NNBqxsc4cbxH61hlcPNWm/2/7BCORB3R+PXqcIu6U=;
+  b=lUkMKDgExM73UVAwALp5ZHYvPwKSWT9kem6Zg1nsu8s65ZBIJ4fcdzhI
+   l8OwG2aBItWROcxufMJot2Gm5+a1IU6lodGa1M3G7owaT6Aa2BXPzCz5s
+   pW+0wIS73TPN31iTZdQHYycAOESEBnUZA/TWtzPkZiUqMw0gQ459kMKHz
+   CqHGx4Nzrn1RE58BvqG8QuOTL0CN44RBxWaR+M6cHrq0NC1b+oXyQxa0u
+   9bKe2wGWG2PGZxYGVRf7s356uenAK9iLqaqRA8Y6s0LQpj72vhuSxINV4
+   /5Qj25Lk3bPUTwXIcoG4QbwQS97HW2DUdFqo1W2zwpfI0jKQ4LrnAdvDk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11007"; a="4837112"
+X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
+   d="scan'208";a="4837112"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 12:36:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
+   d="scan'208";a="41505293"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 08 Mar 2024 12:36:02 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rigwh-0006h1-0l;
+	Fri, 08 Mar 2024 20:35:59 +0000
+Date: Sat, 09 Mar 2024 04:35:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/sev] BUILD SUCCESS
+ c0935fca6ba4799e5efc6daeee37887e84707d01
+Message-ID: <202403090454.VcU9dQby-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308010859.81987-1-18500469033@163.com>
 
-On Fri, Mar 08, 2024 at 09:08:59AM +0800, Dingyan Li wrote:
-> Macros with good names offer better readability. Besides, also move
-> the definition to ehci.h.
-> 
-> Signed-off-by: Dingyan Li <18500469033@163.com>
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sev
+branch HEAD: c0935fca6ba4799e5efc6daeee37887e84707d01  x86/sev: Disable KMSAN for memory encryption TUs
 
-You found some things that I missed!  Good for you.  When you resubmit 
-with a list of changes from the original version, you can add:
+elapsed time: 750m
 
-Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
+configs tested: 116
+configs skipped: 3
 
->  drivers/usb/host/ehci-dbg.c | 10 +++++-----
->  drivers/usb/host/ehci-q.c   | 20 ++++++++------------
->  drivers/usb/host/ehci.h     |  8 +++++++-
->  3 files changed, 20 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/usb/host/ehci-dbg.c b/drivers/usb/host/ehci-dbg.c
-> index c063fb042926..435001128221 100644
-> --- a/drivers/usb/host/ehci-dbg.c
-> +++ b/drivers/usb/host/ehci-dbg.c
-> @@ -430,13 +430,13 @@ static void qh_lines(struct ehci_hcd *ehci, struct ehci_qh *qh,
->  				mark = '/';
->  		}
->  		switch ((scratch >> 8) & 0x03) {
-> -		case 0:
-> +		case PID_CODE_OUT:
->  			type = "out";
->  			break;
-> -		case 1:
-> +		case PID_CODE_IN:
->  			type = "in";
->  			break;
-> -		case 2:
-> +		case PID_CODE_SETUP:
->  			type = "setup";
->  			break;
->  		default:
-> @@ -602,10 +602,10 @@ static unsigned output_buf_tds_dir(char *buf, struct ehci_hcd *ehci,
->  	list_for_each_entry(qtd, &qh->qtd_list, qtd_list) {
->  		temp++;
->  		switch ((hc32_to_cpu(ehci, qtd->hw_token) >> 8)	& 0x03) {
-> -		case 0:
-> +		case PID_CODE_OUT:
->  			type = "out";
->  			continue;
-> -		case 1:
-> +		case PID_CODE_IN:
->  			type = "in";
->  			continue;
->  		}
-> diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
-> index 666f5c4db25a..ba37a9fcab92 100644
-> --- a/drivers/usb/host/ehci-q.c
-> +++ b/drivers/usb/host/ehci-q.c
-> @@ -27,10 +27,6 @@
->  
->  /*-------------------------------------------------------------------------*/
->  
-> -/* PID Codes that are used here, from EHCI specification, Table 3-16. */
-> -#define PID_CODE_IN    1
-> -#define PID_CODE_SETUP 2
-> -
->  /* fill a qtd, returning how much of the buffer we were able to queue up */
->  
->  static unsigned int
-> @@ -230,7 +226,7 @@ static int qtd_copy_status (
->  			/* fs/ls interrupt xfer missed the complete-split */
->  			status = -EPROTO;
->  		} else if (token & QTD_STS_DBE) {
-> -			status = (QTD_PID (token) == 1) /* IN ? */
-> +			status = (QTD_PID(token) == PID_CODE_IN) /* IN ? */
->  				? -ENOSR  /* hc couldn't read data */
->  				: -ECOMM; /* hc couldn't write data */
->  		} else if (token & QTD_STS_XACT) {
-> @@ -606,7 +602,7 @@ qh_urb_transaction (
->  		/* SETUP pid */
->  		qtd_fill(ehci, qtd, urb->setup_dma,
->  				sizeof (struct usb_ctrlrequest),
-> -				token | (2 /* "setup" */ << 8), 8);
-> +				token | (PID_CODE_SETUP << 8), 8);
->  
->  		/* ... and always at least one more pid */
->  		token ^= QTD_TOGGLE;
-> @@ -620,7 +616,7 @@ qh_urb_transaction (
->  
->  		/* for zero length DATA stages, STATUS is always IN */
->  		if (len == 0)
-> -			token |= (1 /* "in" */ << 8);
-> +			token |= (PID_CODE_IN << 8);
->  	}
->  
->  	/*
-> @@ -642,7 +638,7 @@ qh_urb_transaction (
->  	}
->  
->  	if (is_input)
-> -		token |= (1 /* "in" */ << 8);
-> +		token |= (PID_CODE_IN << 8);
->  	/* else it's already initted to "out" pid (0 << 8) */
->  
->  	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
-> @@ -709,7 +705,7 @@ qh_urb_transaction (
->  
->  		if (usb_pipecontrol (urb->pipe)) {
->  			one_more = 1;
-> -			token ^= 0x0100;	/* "in" <--> "out"  */
-> +			token ^= (PID_CODE_IN << 8);	/* "in" <--> "out"  */
->  			token |= QTD_TOGGLE;	/* force DATA1 */
->  		} else if (usb_pipeout(urb->pipe)
->  				&& (urb->transfer_flags & URB_ZERO_PACKET)
-> @@ -1203,7 +1199,7 @@ static int ehci_submit_single_step_set_feature(
->  		/* SETUP pid, and interrupt after SETUP completion */
->  		qtd_fill(ehci, qtd, urb->setup_dma,
->  				sizeof(struct usb_ctrlrequest),
-> -				QTD_IOC | token | (2 /* "setup" */ << 8), 8);
-> +				QTD_IOC | token | (PID_CODE_SETUP << 8), 8);
->  
->  		submit_async(ehci, urb, &qtd_list, GFP_ATOMIC);
->  		return 0; /*Return now; we shall come back after 15 seconds*/
-> @@ -1216,7 +1212,7 @@ static int ehci_submit_single_step_set_feature(
->  	token ^= QTD_TOGGLE;   /*We need to start IN with DATA-1 Pid-sequence*/
->  	buf = urb->transfer_dma;
->  
-> -	token |= (1 /* "in" */ << 8);  /*This is IN stage*/
-> +	token |= (PID_CODE_IN << 8);  /*This is IN stage*/
->  
->  	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
->  
-> @@ -1229,7 +1225,7 @@ static int ehci_submit_single_step_set_feature(
->  	qtd->hw_alt_next = EHCI_LIST_END(ehci);
->  
->  	/* STATUS stage for GetDesc control request */
-> -	token ^= 0x0100;        /* "in" <--> "out"  */
-> +	token ^= (PID_CODE_IN << 8);        /* "in" <--> "out"  */
->  	token |= QTD_TOGGLE;    /* force DATA1 */
->  
->  	qtd_prev = qtd;
-> diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
-> index 1441e3400796..d7a3c8d13f6b 100644
-> --- a/drivers/usb/host/ehci.h
-> +++ b/drivers/usb/host/ehci.h
-> @@ -321,10 +321,16 @@ struct ehci_qtd {
->  	size_t			length;			/* length of buffer */
->  } __aligned(32);
->  
-> +/* PID Codes that are used here, from EHCI specification, Table 3-16. */
-> +#define PID_CODE_OUT   0
-> +#define PID_CODE_IN    1
-> +#define PID_CODE_SETUP 2
-> +
->  /* mask NakCnt+T in qh->hw_alt_next */
->  #define QTD_MASK(ehci)	cpu_to_hc32(ehci, ~0x1f)
->  
-> -#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && QTD_PID(token) == 1)
-> +#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && \
-> +						QTD_PID(token) == PID_CODE_IN)
->  
->  /*-------------------------------------------------------------------------*/
->  
-> -- 
-> 2.25.1
-> 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240309   gcc  
+arc                   randconfig-002-20240309   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240309   clang
+arm                   randconfig-002-20240309   gcc  
+arm                   randconfig-003-20240309   clang
+arm                   randconfig-004-20240309   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240309   gcc  
+arm64                 randconfig-002-20240309   clang
+arm64                 randconfig-003-20240309   clang
+arm64                 randconfig-004-20240309   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240309   gcc  
+csky                  randconfig-002-20240309   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240309   clang
+hexagon               randconfig-002-20240309   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240308   clang
+i386         buildonly-randconfig-002-20240308   clang
+i386         buildonly-randconfig-003-20240308   gcc  
+i386         buildonly-randconfig-004-20240308   gcc  
+i386         buildonly-randconfig-005-20240308   gcc  
+i386         buildonly-randconfig-006-20240308   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240308   clang
+i386                  randconfig-002-20240308   clang
+i386                  randconfig-003-20240308   clang
+i386                  randconfig-004-20240308   gcc  
+i386                  randconfig-005-20240308   clang
+i386                  randconfig-006-20240308   clang
+i386                  randconfig-011-20240308   gcc  
+i386                  randconfig-012-20240308   clang
+i386                  randconfig-013-20240308   clang
+i386                  randconfig-014-20240308   clang
+i386                  randconfig-015-20240308   gcc  
+i386                  randconfig-016-20240308   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240309   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
