@@ -1,108 +1,126 @@
-Return-Path: <linux-kernel+bounces-96965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B9958763E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:01:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDB08763E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:01:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9E3B281B7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:01:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0089A1F21A64
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0BFC5674F;
-	Fri,  8 Mar 2024 12:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19AB25645C;
+	Fri,  8 Mar 2024 12:01:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W97ON/Ls"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="RqQcen2r"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A6D5645C;
-	Fri,  8 Mar 2024 12:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5601C56471;
+	Fri,  8 Mar 2024 12:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709899257; cv=none; b=sybCZFKsQwFbyr8SfX73cXlPbr1e7DOkdUYoqVtlAm6z4cL5fmEeZ1sG03bKyMSXsuzOcbA041YRVJ4QFpoRY71we4MhRwM9EVf006zXg4q4xqba/JcBSYcucGc05xUjnxVsIQ2nx4OPklSGV1j34+KutTZJgzzVINBPuV4sQuA=
+	t=1709899276; cv=none; b=aaOavy84v2//TM/BDbZ2lAi0SgR/+iYQrI2+LFBPEO6mLn3BdfySGuWN/2+XHvkppdt5PH4x4e74oxqtUGxSehDAN2+cAiiiQ/Et10TeRlQlJvS7lwsPvum/wZW760Rv1fpfqNYvZxKKkusMmOacJRZ+V0R3BpDFP5xV1EqMjOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709899257; c=relaxed/simple;
-	bh=LWR/498Kq6rWVdryO0v1b1PSggeQr7N6MpR1wJl067U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nSOM/ZbC3fhOs8VCUVtZVQ4bIgnIYrXMaFhAWqTiUUaLb4fIk5cVVIHBwMoohGJlUFJVZGHqORVreFS75Lie9neMv/ze1GZ84GIan6rkI1LkOowm/m/xd71aoxSepyK0b2BenuBQYSqTIcUupwd50BEGsUeecv8hjn3QS8t0FyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W97ON/Ls; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F73FC433F1;
-	Fri,  8 Mar 2024 12:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709899256;
-	bh=LWR/498Kq6rWVdryO0v1b1PSggeQr7N6MpR1wJl067U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=W97ON/LsH20ncTfxxUqSWOkOYpd0BhJEkl8fgQfPySxsw0gJetxHxtGAtkcpVq4HD
-	 io9mF/6xV3QiRu0Xo6TglH/B5u9Z9O4PlQFz4irLpWtzqsQv6wE+IJGtQyJrvWYUOd
-	 TW8QQEKuRmcBGN1kbBWh99Kx80oEIkl5o1RfISsEYChqQFX5BUwZHn+lQzFXHALWtx
-	 9/WX87FKrWhm9vb7Fy3r1xB+uaQL9Jvcfrraj7Ls6+korh8RKOZxsxaB73g7qMMg1n
-	 hkU6zuFzbnFz5x0iTEcyg4fauar8m4FkSFgPjJnzFA2SfqrcLMzI930C4sbci4FSr3
-	 WtpMIB/2Tntrg==
-Date: Fri, 8 Mar 2024 13:00:53 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-Cc: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org, 
-	wsa@kernel.org, linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, quic_vdadhani@quicinc.com
-Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
- mode
-Message-ID: <tbbpjk7ddpqnbtdu26pdcj3kzpanbih7cnok6vudbjq32qeoly@rrdsi2mgfsfp>
-References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
- <cmtru4nvoab6g5emp2yrxnvfpvtrcsuna6dqsyewpagg3qmkau@r2zoj6vgslet>
- <9dbe987a-fdd1-4bec-b350-5936abf69b1b@quicinc.com>
- <yocn3rjxn37c7qniv2kkawgg2k7ghdwvrxcf77tdlpujnul3du@6oqvt5v4ykno>
- <6bacd2be-14d4-49cc-9c98-7010a5f9f9bc@quicinc.com>
+	s=arc-20240116; t=1709899276; c=relaxed/simple;
+	bh=V7A96oraRe9YWxYqcMUNe5v9rhQHsYIqyuX4fkycyss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XCtFriYzH14Wvrojs7FqKHY9VwvSA/fxoR8N+RzHAgctJE/MnWcfR9UGDS9vGEh1E/DGBRLOeyWqZjwqSynzDYRJ32yLLRnKd0pkEzCWGVfMXuJ9cER/hQkDGSFMWNoOCl9ZcyUNd/tJkqk8mdNNP5OvEgWhkhuefoUNzRNwtzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=RqQcen2r; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EFDF7240003;
+	Fri,  8 Mar 2024 12:01:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1709899271;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GQFLpfmyEqeXPKgqckeD2rd+DY5hIF5n/f8YwLuQ74w=;
+	b=RqQcen2rU6DljnjLVlUeNiNNuf9fm3lZOkjI55/yyHCmvShczq9vN3ZJ14+nSt8BMKYGO1
+	wKRlLOr/UwG6pcKGVVXYtqKBKJL9hj7nmvuYeniwqbILC6NzGJ1m/UFSYqIYNIXkKn6BXk
+	p/pwpdcOoNLZVpShHlBCBJRqXD4FDL98f54Zo5C8rADOrLZFa59wIpTeLsg6UluaoRE9VB
+	uUGZzD/WTi5GYch6f73VKRaOFHdopxNAzh4Y75Z+2Eb1DqHjlsOiIes9VJQuKdibJg2kV0
+	xpBWX+oGOy72hio8Eq00BRTwk7XUkBj3lNL7XoDx7eSPyNtapfA5++IhfvhNEQ==
+Message-ID: <c445fd12-f8a8-41df-bee8-8b126b26110b@arinc9.com>
+Date: Fri, 8 Mar 2024 15:01:00 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6bacd2be-14d4-49cc-9c98-7010a5f9f9bc@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mips: dts: ralink: mt7621: add cell count properties
+ to usb
+Content-Language: en-US
+To: Justin Swartz <justin.swartz@risingedge.co.za>,
+ Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <0001-mips-dts-ralink-mt7621-add-cell-count-properties-to-.patch>
+ <20240307223756.31643-1-justin.swartz@risingedge.co.za>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240307223756.31643-1-justin.swartz@risingedge.co.za>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-Hi Mukesh,
-
-> > > > > Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
-> > > > 
-> > > > I still don't understand what's the fix here. You are making a
-> > > > generic DMA error to be more specific... where is the bug? What
-> > > > exactly is broken now?
-> > > > 
-> > > This is about being particular while reporting specific error.
-> > > Like i mentioned, instead of generic DMA transfer error, it should be
-> > > particular error 1) NACK 2) BUT_PROTO 3)ARB_LOST.
-> > > Ofcourse when data transfer via DMA fails, it can be considered as
-> > > DMA Txfer fail.
-> > > In summary so far driver was considering all failure as txfer failure,
-> > > but i2c has errors which are kind of response/condition on the bus.
-> > 
-> > I understand that, but what I need to know is: does the system
-> > crash? does the system act in unexpected way?
-> > 
-> > Moving from "you received an error" to "you received a nack" is
-> > not a fix, it's an improvement and it should not have the Fixes
-> > tag.
-> > 
-> > Having the Fixes tag decides which path this patch will take to
-> > to reach upstream. It's important because after it gets to
-> > upstream other people will take your patch and backport it older
-> > kernels.
-> > 
-> > I want to avoid this extra work when not necessary.
-> > 
+On 8.03.2024 01:37, Justin Swartz wrote:
+> Add default #address-cells and #size-cells properties to the
+> usb node, which should be suitable for hubs and devices without
+> explicitly declared interface nodes, as:
 > 
-> Sure, then i think i should be removing fixes tag. It's not a crash but
-> it's an improvement. That being said, i think don't need to CC stable kernel
-> list and i should remove fixes tag ?
+>    "#address-cells":
+>      description: should be 1 for hub nodes with device nodes,
+>        should be 2 for device nodes with interface nodes.
+>      enum: [1, 2]
+> 
+>    "#size-cells":
+>      const: 0
+> 
+> -- Documentation/devicetree/bindings/usb/usb-device.yaml
+> 
+> This version of the patch places the properties according to
+> the order recommended by:
+> 
+>     Documentation/devicetree/bindings/dts-coding-style.rst
+> 
+> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+> ---
+>   arch/mips/boot/dts/ralink/mt7621.dtsi | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
+> index 5a89f0b8c..7532e17dd 100644
+> --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
+> +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
+> @@ -289,10 +289,10 @@ usb: usb@1e1c0000 {
+>   		reg = <0x1e1c0000 0x1000
+>   		       0x1e1d0700 0x0100>;
+>   		reg-names = "mac", "ippc";
+> -
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+>   		clocks = <&sysc MT7621_CLK_XTAL>;
+>   		clock-names = "sys_ck";
+> -
 
-yes, don't need to do anything else, I will take care of
-everything from now on. If Wolfram accepts a last minute pull
-request, I can queue this up for 6.9.
+Please keep the empty lines. It's easier to read. I don't see anything on
+the Devicetree Sources (DTS) Coding Style that would restrict this.
 
-Thank you,
-Andi
+Arınç
 
