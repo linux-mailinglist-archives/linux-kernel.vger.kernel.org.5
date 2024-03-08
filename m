@@ -1,145 +1,129 @@
-Return-Path: <linux-kernel+bounces-97607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C38DB876C70
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:33:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A2E0876C74
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:38:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 097A01C21504
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:33:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B30841C213E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740D65FB8B;
-	Fri,  8 Mar 2024 21:33:33 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A745F848;
+	Fri,  8 Mar 2024 21:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FpS2LeFy"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7BC367;
-	Fri,  8 Mar 2024 21:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0858367
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709933613; cv=none; b=pQmaj3ep3TO76v4LNFaiTFzAvMn5TpF1bCPuPpzkUWeN0Xl+BxaFK7zFpvUa92SPlPgz3mIBwJZzlmqESnsSghKuSSgbgJaWq/XZ8HfPjRmUl9994Vxp/Gq2kmRYYDXCOaV4Fc4f/v1fvx8YgtR5Sgo10r9od0JfIdLs/g6gd6Q=
+	t=1709933895; cv=none; b=WyMXKeqzdsiHgrNLAaOzvGSyXLCpwLfGVf2UOQoUCXthMQE1fWd+74prD6vGA+fro5SSbBghrzpEspldYi/F9GmQZHuW1y/tl74cdZD5whTKz7+p51O2lCDqoKAQOQk8mSMUR1gPw+glZd+OCSWYbHDPY0BkKdTLslhdra9iyL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709933613; c=relaxed/simple;
-	bh=Yha+fPwbcej5M8bdK/rgXFFhOwjR40UW0ADd4AO86+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JgVcZaj0WVeGghQy+9k5+gfLTZdLSQkAlbzrvfhNp48TsKgpg7KDDTtKL4rBL9wlwwEhtC7V6B5FaPukH2PYzfKDjUwVITRUFFnbDSf/ecZTLcyMNBY8ba0arzMIQVws/vV89KXBhR0fSU6rfs87PI0lEO0IUHyvZYhwD96iKV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BAD7C433C7;
-	Fri,  8 Mar 2024 21:33:31 +0000 (UTC)
-Date: Fri, 8 Mar 2024 16:35:28 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
- Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, joel@joelfernandes.org, linke li
- <lilinke99@qq.com>, Rabin Vincent <rabin@rab.in>
-Subject: Re: [PATCH 0/6] tracing/ring-buffer: Fix wakeup of ring buffer
- waiters
-Message-ID: <20240308163528.3980c639@gandalf.local.home>
-In-Reply-To: <CAHk-=wgsNgewHFxZAJiAQznwPMqEtQmi1waeS2O1v6L4c_Um5A@mail.gmail.com>
-References: <20240308183816.676883229@goodmis.org>
-	<CAHk-=wgsNgewHFxZAJiAQznwPMqEtQmi1waeS2O1v6L4c_Um5A@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709933895; c=relaxed/simple;
+	bh=WwpLATMHSHcGIYdzotaP25I/LYMac7JZ2C3/OiMToDI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jEJjmH5r/MBBa5GB255kLGCjMN0xTKU7EDjWrYczycoOFebahuHPGU/ytpZs3W+f2xXm36Dn3BCWicDz89dyhlZx9kvJjQgR4pweyI2bpAv14ic5nrPJwMR/R8xGlM7pXyLe8fVMnWhq122H5+FFSiR2PLsvVUOCltUfQMb04X0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FpS2LeFy; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-564fd9eea75so3518606a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 13:38:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709933892; x=1710538692; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=C5vHRjCeO4bwXd9VgTdyqvaIa5JQzoplykKkt0qJuAw=;
+        b=FpS2LeFyGCvALf9AO/LYkDiSwq3u5Klh4VGrNl9IMyksJXiwn1IAI2Ez7+EdxLXRh8
+         /oePCFzXT/jVPRThpR4f8M3JKvMBXzUoKeBxsaBaJ6zTwpyTurjBzAyVfYkgYSUUKsCk
+         9mprnhJsvz+VP9YO5yY5J4ziurbMSvMhbqXC9oSZwEhi6EdFMuLxI7LifSOgMsu6r57q
+         fpSjDagIZixAPDiKdJmmcoOLU4PmsY8ryiRzjdZWlhZy0LYLpU8nWfLTZPP5TNgoNXgZ
+         cVBEvY5DNooFX+MDym+v4hvLuBMlJDSc41cnrWn+fA9FC4xYr1uCHJi7SdtK2md63DCg
+         Jzjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709933892; x=1710538692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C5vHRjCeO4bwXd9VgTdyqvaIa5JQzoplykKkt0qJuAw=;
+        b=L4WfHZcRZG5J5PsemVkfbII4lam90NEl52b67LY0csRrlQoDtkqgfRD3U43n1zCChR
+         Vwj6Qs4OnQMWkkJuKrf+cSlRhD94EaArT/i8KQVeIwwTPFdWowbS2PPASbUBuZPb8BS8
+         E8JeL21OSNkQbzwbjuGeMgCsZDUFJhaPkthgNdfKlYvkcNkD2bKRk6TeOemtRuxHnKq5
+         TKTIXP4nJ0D6Eee4yvYYz7eWKRDoqgB4KQzEnAq1qm+4fzu63aX7/rXm3mGIAHFxK5zS
+         Id5VJqiixgi9ZCxzVcm0sC4v2hMhsyueCDytl+POXTCpi4H2lSTjs+7Y9LqBv6PQ7L+b
+         RiWg==
+X-Forwarded-Encrypted: i=1; AJvYcCVyqVANDVBT4Lxwuend7rDF80D3AA63cUgbj0cF8ljlzHbOW380Q5v8VVTJow8j6sbYJ/PH0Jaq7tpCc0tRFYLNoXyFAav7xa3iLyV0
+X-Gm-Message-State: AOJu0YzdVjMl6lymglpquL3hY0poKeMgbU8UXueXSXEAlutZiSxN6Y47
+	N8uTyeT3tJtmgtireJmH1aY8H0lO1NfcQPTGDRaSzhisGF8DPIGTUm0cBHBB
+X-Google-Smtp-Source: AGHT+IFTFjNnoCdcMcUnL9iB5Dv1T1XNqt9/pyHkPbDxRK6LvjdBTLlprpUQwwXkrHl599u7h7JCdg==
+X-Received: by 2002:a50:d541:0:b0:566:f5d6:4b4 with SMTP id f1-20020a50d541000000b00566f5d604b4mr266667edj.12.1709933891881;
+        Fri, 08 Mar 2024 13:38:11 -0800 (PST)
+Received: from andrea ([31.189.122.3])
+        by smtp.gmail.com with ESMTPSA id fg3-20020a056402548300b005656bbb5b3fsm158817edb.63.2024.03.08.13.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 13:38:11 -0800 (PST)
+Date: Fri, 8 Mar 2024 22:38:09 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Kenneth-Lee-2012@foxmail.com
+Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
+	paulmck@kernel.org
+Subject: Re: Question about PB rule of LKMM
+Message-ID: <ZeuFQdk/zcjkILbC@andrea>
+References: <tencent_744E0AF832049C200F96FD6582D5114D7F0A@qq.com>
+ <ZeipiSVLR01jmM6b@andrea>
+ <e05fa6a9-c810-46cb-b033-b91ae7a5c382@rowland.harvard.edu>
+ <ZejC+lutRuwXQrMz@andrea>
+ <Zenip+8BDM3p+MUh@andrea>
+ <eb8f2a21-d388-424d-8504-ccd7bdb53a93@rowland.harvard.edu>
+ <ZeoFBkB1BeTdEQsn@andrea>
+ <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
+ <ZeoQvj3l6moF9KdQ@andrea>
+ <tencent_3FCF3AA5E98BC9395F98803764A6B2F7CC07@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_3FCF3AA5E98BC9395F98803764A6B2F7CC07@qq.com>
 
-On Fri, 8 Mar 2024 12:39:10 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Fri, 8 Mar 2024 at 10:38, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > A patch was sent to "fix" the wait_index variable that is used to help with
-> > waking of waiters on the ring buffer. The patch was rejected, but I started
-> > looking at associated code. Discussing it on IRC with Mathieu Desnoyers
-> > we discovered a design flaw.  
+> In the "THE HAPPENS-BEFORE RELATION: hb" section of explanation.txt,
+> it uses the following example to explain the prop relation:
 > 
-> Honestly, all of this seems excessively complicated.
+> 	P0()
+> 	{
+> 		int r1;
 > 
-> And your new locking shouldn't be necessary if you just do things much
-> more simply.
-
-You mean to replace the wait_woken_*() code (that has the new locking)?
-
+> 		WRITE_ONCE(x, 1);
+> 		r1 = READ_ONCE(x);
+> 	}
 > 
-> Here's what I *think* you should do:
+> 	P1()
+> 	{
+> 		WRITE_ONCE(x, 8);
+> 	}
 > 
->   struct xyz {
->         ...
->         atomic_t seq;
->         struct wait_queue_head seq_wait;
->         ...
->   };
+> if r1 = 8, we can deduce P0:Wx1 ->coe P1:Wx8 ->rfe P0:Rx, this can be
+> explained with the operational model. But according to the definition of
+> prop,
 > 
-> with the consumer doing something very simple like this:
+>   let prop = [Marked] ; (overwrite & ext)? ; cumul-fence* ; [Marked] ; rfe? ; [Marked]
 > 
->         int seq = atomic_read_acquire(&my->seq);
->         for (;;) {
->                 .. consume outstanding events ..
->                 seq = wait_for_seq_change(seq, my);
->         }
-> 
-> and the producer being similarly trivial, just having a
-> "add_seq_event()" at the end:
-> 
->         ... add whatever event ..
->         add_seq_event(my);
-> 
-> And the helper functions for this are really darn simple:
-> 
->   static inline int wait_for_seq_change(int old, struct xyz *my)
->   {
->         int new;
->         wait_event(my->seq_wait,
->                 (new = atomic_read_acquire(&my->seq)) != old);
+> The link should contain a cumul-fence, which doesn't exist in the
+> example.
 
-But the index isn't the only condition for it to wake up to. If the file is
-closing, it want's to know that too. Or if it's just being kicked out to
-consume whatever is there and ignore the watermark.
+Remark that, in the CAT language, the identity relation ({(e, e) : each event e})
+is a subset of R* (the _reflexive_-transitive closure of R) for any relation R.
 
->         return new;
->   }
-> 
->   static inline void add_seq_event(struct xyz *my)
->   {
->         atomic_fetch_inc_release(&my->seq);
->         wake_up(&my->seq_wait);
->   }
+The link at stake, (P0:Wx1, P0:Rx), is the result of the following composition:
 
-But it's not only the producer that does the wakeup. That part wasn't
-broken.
+  [Marked]         ; (overwrite & ext)? ; cumul-fence*     ; [Marked]          ; rfe?            ; [Marked]
+  (P0:Wx1, P0:Wx1)   (P0:Wx1, P1:Wx8)     (P1:Wx8, P1:Wx8)   (P1:Wx8, P1:Wx8))   (P1:Wx8, P0:Rx)   (P0:Rx, P0:Rx)
 
-The broken part is a third party that comes along and wants to wake up the
-consumer and tell them to just consume what's there and exit.
-
-There's two layers:
-
-1) the ring buffer has the above simple producer / consumer.
-   Where the wake ups can happen at the point of where the buffer has
-   the amount filled that the consumer wants to start consuming with.
-
-2) The tracing layer; Here on close of a file, the consumers need to be
-   woken up and not wait again. And just take whatever was there to finish
-   reading.
-
-   There's also another case that the ioctl() just kicks the current
-   readers out, but doesn't care about new readers.
-
-I'm not sure how the seq can handle both there being enough data to wake up
-the consumer and the case that another task just wants the consume to wake
-up and ignore the watermark.
-
-The wake_woken_*() code was only for the second part (to wake up consumers
-and tell them to no longer wait for the producer), and had nothing to do
-with the produce/consumer part.
-
--- Steve
+  Andrea
 
