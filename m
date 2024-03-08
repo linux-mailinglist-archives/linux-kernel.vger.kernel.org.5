@@ -1,145 +1,222 @@
-Return-Path: <linux-kernel+bounces-96776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E07287614F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D5787615A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:55:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B77BD1F21B15
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:53:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E6351F229D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:55:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA9A53801;
-	Fri,  8 Mar 2024 09:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA08353E1B;
+	Fri,  8 Mar 2024 09:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtH6iBRE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eCh/g4jq"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21F3535BC;
-	Fri,  8 Mar 2024 09:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69137535A3;
+	Fri,  8 Mar 2024 09:54:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709891611; cv=none; b=PySgpcBlh6DCNMHyzvpl974gTy4VHGU9N2NTDBUxgn4hUl3TyD5QD5hWAfvFCoRSrYM2B4vjBLthLGPeobnGuRwIjXLmoT393YjiO+4Xu2Ne80ywSJKAJoN4dn4SENP1q2F1k8+5nR5WBVMdW1xZQki1d9sr2HwcXmCzCgSEFi0=
+	t=1709891689; cv=none; b=Wvszyko43yUQqi5+rFQ+NYwx4Yr345zUPa8QGxXESvYUS8aB/rSRpXMLq981F/YGUtd5YIcRAb3S6epYFy5Th7tU+nKnFFs3eZnQwHXK3YuMZoFv+sABwNtBGVNIOE1BjmdMPZFFXO6s+9v8g2yvd2OU4QSvboekHXz21d3H27s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709891611; c=relaxed/simple;
-	bh=QmRLKVLKdt30yVzpTeSE0AYS+PV/cT94dyjGByHQZGI=;
+	s=arc-20240116; t=1709891689; c=relaxed/simple;
+	bh=9+F2N1xirgPO1B/K5OKBxAdcA6ZxVjinMYU43eppFog=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rkG5ZmLzU7dlBOOFMZNfXgKaXHZLC2fISJRJS9z4sGZLzxMfBt8hvvRNl2JqEmugwYIVAnxoVqczBGT9CJEuGXRbPm5PiVktKuzMzOMp2MjPqg8MMhqiDu22Zsj9ImYWVBFqFJcs+8Dl8yIszRjlkSpATb03MN86bNdspdDnoL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XtH6iBRE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F71FC43399;
-	Fri,  8 Mar 2024 09:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709891611;
-	bh=QmRLKVLKdt30yVzpTeSE0AYS+PV/cT94dyjGByHQZGI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XtH6iBREN3fVVbo0N98tpdhelBvJwfta1zM+gE/yvF18IO5iE87HFY4lXF56SGXBC
-	 kfA/twpwFNN6zkz9o5kHiYAIigkaQWNx1W625GlLF0ECkUajoYcHp+5D7ex0cpOEUd
-	 sEYKQ3DkTH72v7llSvb3nIRzJsR/IxsWbzs/xRevqAVtCc30bIc8TcGQUFjcwuWW27
-	 OHAKUnSrl2Vq3SBUSQXLvr2Op7avFBjDWLafKD56EP9l5GOtlMwkAs3Cz/C/qTaV7A
-	 iXKRr01hwuLcx5zDqGxrCDLJoW9eIw/4OwGCpqHmra+EUNn0rnVAQduOepaSxxcbHI
-	 SuzZNHn2+YKkA==
-Date: Fri, 8 Mar 2024 10:53:25 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Luis Henriques <lhenriques@suse.de>, Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] fs_parser: handle parameters that can be empty and
- don't have a value
-Message-ID: <20240308-fahrdienst-torten-eae8f3eed3b4@brauner>
-References: <20240229163011.16248-1-lhenriques@suse.de>
- <20240229163011.16248-2-lhenriques@suse.de>
- <20240301-gegossen-seestern-683681ea75d1@brauner>
- <87il269crs.fsf@suse.de>
- <20240307151356.ishrtxrsge2i5mjn@quack3>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MtvT7YfW4n5PqNcUqyrvsxC5qQzcetkAE1crvukdsnBysTBr2/wxUidlzBbcDPO9ksTcvQ1XFDdqla0nEhXvq2hWwTy22wDcfLia7MpFKtxjJajJTeSOjFwqe+yre6tIEFsHfD9PPA0SxqK1GT2JfJC4R98bdpU/XBNPBef1jC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eCh/g4jq; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28a6cef709so97677466b.1;
+        Fri, 08 Mar 2024 01:54:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709891686; x=1710496486; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lx3npHykkw1gOdQqXLW5o/F+B78jLU3tilBWulRgUu0=;
+        b=eCh/g4jqDMU+DIb1Xuo1g8UFa5GVdj/eOurzpE/mpP1FGEPS3sUsGP4obd4q3jv0ot
+         Ynuj/+oUSaGg/8tnJx9tpbMj6k+McA5J9dUiuu8DcNz5hGiltVHHO+ekneafIo2ibRVi
+         n9Lugq8Bl+Ylthl0D0tTCTDiGNd5GsvC0Id2y2i/CK9eEH72RkUoNZ1MMVbqNBUgc/0I
+         bkQhNx8GxFynienzKMMQ6ZoEdzniNdzY4Ib39m8zgfkT5TAZnKcvllhhEQbwSa9oC/D4
+         GTqUICVsz1b2cfLAk2DOpHsp2JhEbLL43/y/VCTNyO3/KQR87q6vzLZzopl3SLsOHqZF
+         M9VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709891686; x=1710496486;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lx3npHykkw1gOdQqXLW5o/F+B78jLU3tilBWulRgUu0=;
+        b=Bz4UJb4PISRHtTtyfKhH/3uHeNNsZOeYH62EYfphS7QiE6sXOsRaeAr//rDFdi+42B
+         Pg1sSRRaEG1wOFr+juEINd5SFuMmewExqZoeLnMMid2OJndF/+57MVB3/V1IygZnCIZb
+         5k/wa3uCRYms4nVovBs0snaOTORPIlMMZnqYGVq/jswzTpKvIvnhRLS3zKaMo2LB3Lag
+         PQwoCAF6Pz8DfgISSCqzrZr+ylZZh7O3iFPZDMLb0UknBzbxTVEeZNaSeuDy5NuzFCuf
+         OnfV61gARZpVqGHyQgp38IYwJbnyrXBwxtL/ATAiC2MOqHcJxKv50nZdCAVj2QRK2QUM
+         FZtA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOdGh1bgpA2CX7qwRB3VcORWFEU28VUPR4Ikpi1drSPejaOK+90I/g0slGPNjDFAzrURmY9rOpdm47oACZT59A7R7MM+Zms7IbZPIo
+X-Gm-Message-State: AOJu0YzF/ULrOdMRgXUuwm6K+yPGBK7OrjxKRHBnPMdmCrsmei8oIaIw
+	DAupka6vS/JM9FevwAm0c7PqA0EUrL0xAbaqmoqLpGvK4V8b1Lq2
+X-Google-Smtp-Source: AGHT+IF38PLd9vqK/V55Sk1fgDRHT28mC+PYjI17HoOSs0pCHtJdQhnEXF3SzRGotS0o/cQ2MQuZAg==
+X-Received: by 2002:a17:906:f850:b0:a45:bdc0:7f00 with SMTP id ks16-20020a170906f85000b00a45bdc07f00mr4849698ejb.46.1709891685642;
+        Fri, 08 Mar 2024 01:54:45 -0800 (PST)
+Received: from skbuf ([2a02:2f04:d207:f600::b2c])
+        by smtp.gmail.com with ESMTPSA id cm26-20020a170906f59a00b00a3ca56e9bcfsm9199309ejd.187.2024.03.08.01.54.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 01:54:45 -0800 (PST)
+Date: Fri, 8 Mar 2024 11:54:42 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Pawel Dembicki <paweldembicki@gmail.com>
+Cc: netdev@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+	Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v6 06/16] net: dsa: vsc73xx: add
+ port_stp_state_set function
+Message-ID: <20240308095442.ug4pmh4entgah5l3@skbuf>
+References: <20240301221641.159542-1-paweldembicki@gmail.com>
+ <20240301221641.159542-1-paweldembicki@gmail.com>
+ <20240301221641.159542-7-paweldembicki@gmail.com>
+ <20240301221641.159542-7-paweldembicki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307151356.ishrtxrsge2i5mjn@quack3>
+In-Reply-To: <20240301221641.159542-7-paweldembicki@gmail.com>
+ <20240301221641.159542-7-paweldembicki@gmail.com>
 
-On Thu, Mar 07, 2024 at 04:13:56PM +0100, Jan Kara wrote:
-> On Fri 01-03-24 15:45:27, Luis Henriques wrote:
-> > Christian Brauner <brauner@kernel.org> writes:
-> > 
-> > > On Thu, Feb 29, 2024 at 04:30:08PM +0000, Luis Henriques wrote:
-> > >> Currently, only parameters that have the fs_parameter_spec 'type' set to
-> > >> NULL are handled as 'flag' types.  However, parameters that have the
-> > >> 'fs_param_can_be_empty' flag set and their value is NULL should also be
-> > >> handled as 'flag' type, as their type is set to 'fs_value_is_flag'.
-> > >> 
-> > >> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > >> ---
-> > >>  fs/fs_parser.c | 3 ++-
-> > >>  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >> 
-> > >> diff --git a/fs/fs_parser.c b/fs/fs_parser.c
-> > >> index edb3712dcfa5..53f6cb98a3e0 100644
-> > >> --- a/fs/fs_parser.c
-> > >> +++ b/fs/fs_parser.c
-> > >> @@ -119,7 +119,8 @@ int __fs_parse(struct p_log *log,
-> > >>  	/* Try to turn the type we were given into the type desired by the
-> > >>  	 * parameter and give an error if we can't.
-> > >>  	 */
-> > >> -	if (is_flag(p)) {
-> > >> +	if (is_flag(p) ||
-> > >> +	    (!param->string && (p->flags & fs_param_can_be_empty))) {
-> > >>  		if (param->type != fs_value_is_flag)
-> > >>  			return inval_plog(log, "Unexpected value for '%s'",
-> > >>  				      param->key);
-> > >
-> > > If the parameter was derived from FSCONFIG_SET_STRING in fsconfig() then
-> > > param->string is guaranteed to not be NULL. So really this is only
-> > > about:
-> > >
-> > > FSCONFIG_SET_FD
-> > > FSCONFIG_SET_BINARY
-> > > FSCONFIG_SET_PATH
-> > > FSCONFIG_SET_PATH_EMPTY
-> > >
-> > > and those values being used without a value. What filesystem does this?
-> > > I don't see any.
-> > >
-> > > The tempting thing to do here is to to just remove fs_param_can_be_empty
-> > > from every helper that isn't fs_param_is_string() until we actually have
-> > > a filesystem that wants to use any of the above as flags. Will lose a
-> > > lot of code that isn't currently used.
-> > 
-> > Right, I find it quite confusing and I may be fixing the issue in the
-> > wrong place.  What I'm seeing with ext4 when I mount a filesystem using
-> > the option '-o usrjquota' is that fs_parse() will get:
-> > 
-> >  * p->type is set to fs_param_is_string
-> >    ('p' is a struct fs_parameter_spec, ->type is a function)
-> >  * param->type is set to fs_value_is_flag
-> >    ('param' is a struct fs_parameter, ->type is an enum)
-> > 
-> > This is because ext4 will use the __fsparam macro to set define a
-> > fs_param_spec as a fs_param_is_string but will also set the
-> > fs_param_can_be_empty; and the fsconfig() syscall will get that parameter
-> > as a flag.  That's why param->string will be NULL in this case.
+On Fri, Mar 01, 2024 at 11:16:28PM +0100, Pawel Dembicki wrote:
+> This isn't a fully functional implementation of 802.1D, but
+> port_stp_state_set is required for a future tag8021q operations.
 > 
-> So I'm a bit confused here. Valid variants of these quota options are like
-> "usrjquota=<filename>" (to set quota file name) or "usrjquota=" (to clear
-> quota file name). The variant "usrjquota" should ideally be rejected
-> because it doesn't make a good sense and only adds to confusion. Now as far
-> as I'm reading fs/ext4/super.c: parse_options() (and as far as my testing
-> shows) this is what is happening so what is exactly the problem you're
-> trying to fix?
+> This implementation handles properly all states, but vsc73xx doesn't
+> forward STP packets.
+> 
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+> ---
+> v6:
+>   - fix inconsistent indenting
+> v5:
+>   - remove unneeded 'RECVMASK' operations
+>   - reorganise vsc73xx_refresh_fwd_map function
+> v4:
+>   - fully reworked port_stp_state_set
+> v3:
+>   - use 'VSC73XX_MAX_NUM_PORTS' define
+>   - add 'state == BR_STATE_DISABLED' condition
+>   - fix style issues
+> v2:
+>   - fix kdoc
+> 
+>  drivers/net/dsa/vitesse-vsc73xx-core.c | 99 +++++++++++++++++++++++---
+>  1 file changed, 88 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
+> index 425999d7bf41..d1e84a9a83d1 100644
+> --- a/drivers/net/dsa/vitesse-vsc73xx-core.c
+> +++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
+> @@ -1036,6 +1029,89 @@ static void vsc73xx_phylink_get_caps(struct dsa_switch *dsa, int port,
+>  	config->mac_capabilities = MAC_SYM_PAUSE | MAC_10 | MAC_100 | MAC_1000;
+>  }
+>  
+> +static void vsc73xx_refresh_fwd_map(struct dsa_switch *ds, int port, u8 state)
+> +{
+> +	struct dsa_port *other_dp, *dp = dsa_to_port(ds, port);
+> +	struct vsc73xx *vsc = ds->priv;
+> +	u16 mask;
+> +
+> +	if (state != BR_STATE_FORWARDING) {
+> +		/* Ports that aren't in the forwarding state must not
+> +		 * forward packets anywhere.
+> +		 */
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +				    VSC73XX_SRCMASKS + port,
+> +				    VSC73XX_SRCMASKS_PORTS_MASK, 0);
+> +
+> +		dsa_switch_for_each_available_port(other_dp, ds) {
+> +			if (other_dp == dp)
+> +				continue;
+> +			vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +					    VSC73XX_SRCMASKS + other_dp->index,
+> +					    BIT(port), 0);
+> +		}
+> +
+> +		return;
+> +	}
+> +
+> +	/* Forwarding ports must forward to the CPU and to other ports
+> +	 * in the same bridge
+> +	 */
+> +	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +			    VSC73XX_SRCMASKS + CPU_PORT, BIT(port), BIT(port));
+> +
+> +	mask = BIT(CPU_PORT);
+> +
+> +	if (dp->bridge) {
+> +		dsa_switch_for_each_user_port(other_dp, ds) {
+> +			if (other_dp->bridge == dp->bridge &&
 
-mount(8) has no way of easily knowing that for something like
-mount -o usrjquota /dev/sda1 /mnt that "usrjquota" is supposed to be
-set as an empty string via FSCONFIG_SET_STRING. For mount(8) it is
-indistinguishable from a flag because it's specified without an
-argument. So mount(8) passes FSCONFIG_SET_FLAG and it seems strange that
-we should require mount(8) to know what mount options are strings or no.
-I've ran into this issue before myself when using the mount api
-programatically.
+You could use dsa_port_bridge_same(dp, other_dp) and that could
+eliminate the extra "if (dp->bridge)" condition, because it explicitly
+makes standalone ports isolated from other standalone ports.
+
+> +			    other_dp->index != port &&
+
+You could move the "int other_port" definition to dsa_switch_for_each_user_port()
+scope, and thus reuse it here.
+
+> +			    other_dp->stp_state == BR_STATE_FORWARDING) {
+
+You could "continue" on the negated condition, and reduce the
+indentation one level further.
+
+> +				int other_port = other_dp->index;
+> +
+> +				mask |= BIT(other_port);
+> +				vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER,
+> +						    0,
+> +						    VSC73XX_SRCMASKS +
+> +						    other_port,
+> +						    BIT(port), BIT(port));
+> +			}
+> +		}
+> +	}
+
+All in all, I would have written this as:
+
+	dsa_switch_for_each_user_port(other_dp, ds) {
+		int other_port = other_dp->index;
+
+		if (port == other_port || !dsa_port_bridge_same(dp, other_dp) ||
+		    other_dp->stp_state != BR_STATE_FORWARDING)
+			continue;
+
+		mask |= BIT(other_port);
+
+		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+				    VSC73XX_SRCMASKS + other_port,
+				    BIT(port), BIT(port));
+	}
+
+Anyway this does not affect functionality, and it is up to you if you
+integrate these suggestions or not.
+
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+
+> +
+> +	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +			    VSC73XX_SRCMASKS + port,
+> +			    VSC73XX_SRCMASKS_PORTS_MASK, mask);
+> +}
 
