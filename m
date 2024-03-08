@@ -1,506 +1,91 @@
-Return-Path: <linux-kernel+bounces-97420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70184876A39
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:51:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AF73876A50
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9364C1C210ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:51:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07BAA284DB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B461B59B5D;
-	Fri,  8 Mar 2024 17:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EE2E54BC1;
+	Fri,  8 Mar 2024 17:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pzgAEnwl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="S0RyszwI";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mKcWA01d"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810EE40861;
-	Fri,  8 Mar 2024 17:51:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0F6282EB;
+	Fri,  8 Mar 2024 17:58:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709920267; cv=none; b=kMYi1YAL6m6xr0GCjjX9j2N9ypoLbhfL+EkaKdz+b6TdpTKsLjMU4dmYB0XpeZCF4+hAuHPL0Mb9k+00Eqs6E20HsIDNFCkJFlctYbOKxzDMemJvvbzNyNvWAxDfxMtO1ebkPPKxYnzyJWbhTNoj1p3LT3fGEk0q4ZDLAlMTdfc=
+	t=1709920703; cv=none; b=pN8k8ausbc3rssdXAr8MCKDvFjvGkVL49IYGCAYZaCk4Ew6VzOkUilF2sJGnMMuAMIlJ8oI0YZUsS7vSEvHNlbKOHanm313HKZ2Yd5z2aCJIU7CQFHGgMvpqKr1xp9RkmOHOLsgWrrv1+qj4dIk7SdqUHSWU75U7OuFqUlA2XsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709920267; c=relaxed/simple;
-	bh=U7ovKfLRIYFJUwuZaRirQPDoHS5KI6+npWpf/Nm676E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fXxHTp4sNyw+InnXWXbe2D+7qcJ1vXREkLI9p4V2ssNYnT/GiMf1/36SIzqjuUPiWNH76HwJwtPf4+wpTt2Ic0zlTP47wr3jlQTKuBmuxDo7463aG0N3NCrK3VXTKWyBY6QwQRqp2d59s/kujP1A3HL3ul/WfXXORu8SeiF+9J4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pzgAEnwl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A606BC43390;
-	Fri,  8 Mar 2024 17:51:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709920267;
-	bh=U7ovKfLRIYFJUwuZaRirQPDoHS5KI6+npWpf/Nm676E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pzgAEnwlchuzUtAVbIbotYkI4nXkFBYn2fVOgmzfdkJFIZPb4Rv+wOd6BDuRg0ZJx
-	 mvx2D8jgtRm5GsqNToP8LNQh65yFjYIjmwR5rNOKKkHxN103+fhnLaqQal5/uOFTmt
-	 UhE6AuhT4edCDHHkqQhpN/5EmlxdremoUswvNPl7GRpjJNLue6gOs/x1MwkTex1s24
-	 gq9FvVSGWpJtagLYh5xvQRmqxO3Kk+OnM9G1U/91biA8OvG9s8m5Q6jea/aFO9g7pS
-	 WsVaG0NXJdk7vjMkEdjxxmkxpQUaAD81rM1neYezbIJ0TayBb1U4csyEY2JxSoD1aY
-	 K41h7Yx8DFY/Q==
-From: Daniel Bristot de Oliveira <bristot@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	John Kacur <jkacur@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
+	s=arc-20240116; t=1709920703; c=relaxed/simple;
+	bh=rb4j/fngEBckvfiSTCJqL9xaGeMYTtosqeRUGbOZKI0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LarfHqCz5xnk//SbwYkP1o48BKAgHPDKfhqnfsDp7pfUHOfNLMpGFS0YwyeImwalh+QmrSwwFBoewj7X6O0tQfJyxf4sZm6MMDU1jHpVWF2VMGLdbx2qGuhOKsIVeLBRV1WlaOHbEhEPtLGF/EM5d8DVic4J6FfjgJyERzRCpCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=S0RyszwI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mKcWA01d; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709920699;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=rb4j/fngEBckvfiSTCJqL9xaGeMYTtosqeRUGbOZKI0=;
+	b=S0RyszwIUN4ilqUtNGWL2DoIBFS6HL3AXshFOKdIcBylQs6EmgeURpOvx5LDYdv42LUJpQ
+	qJu1PJho/gvB9Bsp4uAX4oMXjUD1Zzsy6bVinq+nK9+Z8EiPXvi/xoDy8TWXKe3Jh9uWH4
+	C0BSXcD/O9qFIOXEt0UOIEkEvqqI+P+b19R808XEfljK5mEYPhH1oczU5CFoGzIThZWo8W
+	2Mfgjfndktq/OwdUHQt3RBLtdOgcAt7hhuPlNJlpl157wZ8txOpTLde1kISwZwD6cICUsJ
+	nTSp0IF2b/2SSiU7L7WpqvTrT966U4GScwfdhmnJu/B5ZZf0BzKaZBholojHDw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709920699;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=rb4j/fngEBckvfiSTCJqL9xaGeMYTtosqeRUGbOZKI0=;
+	b=mKcWA01d/b7ypBUfma0R9lss93FkwXKYdDbSzqtz8La0U2PjByiAQmwx6vN5QbIlDN10pn
+	obZEJa4AtCBTeKBg==
+To: linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] tools/rtla: Use tools/build makefiles to build rtla
-Date: Fri,  8 Mar 2024 18:50:45 +0100
-Message-ID: <facb7d2e23dbf5e8a411a9e9d02b7c8baab99b88.1709914259.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1709914259.git.bristot@kernel.org>
-References: <cover.1709914259.git.bristot@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/4] perf: Make SIGTRAP and __perf_pending_irq() work on RT.
+Date: Fri,  8 Mar 2024 18:51:26 +0100
+Message-ID: <20240308175810.2894694-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-Use tools/build/ makefiles to build rtla, inheriting the benefits of
-it. For example, having a proper way to handle dependencies.
+Hi,
 
-rtla is built using perf infra-structure when building inside the
-kernel tree.
+Arnaldo reported that "perf test sigtrap" fails on PREEMPT_RT. Sending
+the signal gets delayed until event_sched_out() which then uses
+task_work_add() for its delivery. This breaks on PREEMPT_RT because the
+signal is delivered with disabled preemption.
 
-At this point, rtla diverges from perf in two points: Documentation
-and tarball generation/build.
+While looking at this, I also stumbled upon __perf_pending_irq() which
+requires disabled interrupts but this is not the case on PREEMPT_RT.
 
-At the documentation level, rtla is one step ahead, placing the
-documentation at Documentation/tools/rtla/, using the same build
-tools as kernel documentation. The idea is to move perf
-documentation to the same scheme and then share the same makefiles.
+This series aim to address both issues while not introducing a new issue
+at the same time ;)
+Any testing is appreciated.
 
-rtla has a tarball target that the (old) RHEL8 uses. The tarball was
-kept using a simple standalone makefile for compatibility. The
-standalone makefile shares most of the code, e.g., flags, with
-regular buildings.
-
-The tarball method was set as deprecated. If necessary, we can make
-a rtla tarball like perf, which includes the entire tools/build.
-But this would also require changes in the user side (the directory
-structure changes, and probably the deps to build the package).
-
-Inspired on perf and objtool.
-
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- tools/tracing/rtla/.gitignore          |   4 +-
- tools/tracing/rtla/Build               |   1 +
- tools/tracing/rtla/Makefile            | 177 +++++--------------------
- tools/tracing/rtla/Makefile.config     |  44 ++++++
- tools/tracing/rtla/Makefile.rtla       |  77 +++++++++++
- tools/tracing/rtla/Makefile.standalone |  24 ++++
- tools/tracing/rtla/src/Build           |  11 ++
- 7 files changed, 193 insertions(+), 145 deletions(-)
- create mode 100644 tools/tracing/rtla/Build
- create mode 100644 tools/tracing/rtla/Makefile.config
- create mode 100644 tools/tracing/rtla/Makefile.rtla
- create mode 100644 tools/tracing/rtla/Makefile.standalone
- create mode 100644 tools/tracing/rtla/src/Build
-
-diff --git a/tools/tracing/rtla/.gitignore b/tools/tracing/rtla/.gitignore
-index e9df32419b2b..9ec8a142e157 100644
---- a/tools/tracing/rtla/.gitignore
-+++ b/tools/tracing/rtla/.gitignore
-@@ -1 +1,3 @@
--/rtla
-+rtla
-+rtla-static
-+FEATURE-DUMP
-diff --git a/tools/tracing/rtla/Build b/tools/tracing/rtla/Build
-new file mode 100644
-index 000000000000..6c9d5b36a315
---- /dev/null
-+++ b/tools/tracing/rtla/Build
-@@ -0,0 +1 @@
-+rtla-y += src/
-diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-index afd18c678ff5..1064b02bd735 100644
---- a/tools/tracing/rtla/Makefile
-+++ b/tools/tracing/rtla/Makefile
-@@ -1,157 +1,46 @@
--NAME	:=	rtla
--# Follow the kernel version
--VERSION :=	$(shell cat VERSION 2> /dev/null || make -sC ../../.. kernelversion | grep -v make)
-+# SPDX-License-Identifier: GPL-2.0
-+export srctree	:= $(abspath ../../..)
- 
--# From libtracefs:
--# Makefiles suck: This macro sets a default value of $(2) for the
--# variable named by $(1), unless the variable has been set by
--# environment or command line. This is necessary for CC and AR
--# because make sets default values, so the simpler ?= approach
--# won't work as expected.
--define allow-override
--  $(if $(or $(findstring environment,$(origin $(1))),\
--            $(findstring command line,$(origin $(1)))),,\
--    $(eval $(1) = $(2)))
--endef
-+VERSION		:= $(shell sh -c "make -sC ../../.. kernelversion | grep -v make")
-+DOCSRC		:= ../../../Documentation/tools/rtla/
- 
--# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
--$(call allow-override,CC,$(CROSS_COMPILE)gcc)
--$(call allow-override,AR,$(CROSS_COMPILE)ar)
--$(call allow-override,STRIP,$(CROSS_COMPILE)strip)
--$(call allow-override,PKG_CONFIG,pkg-config)
--$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
--$(call allow-override,LDCONFIG,ldconfig)
-+FEATURE_TESTS	:= libtraceevent
-+FEATURE_TESTS	+= libtracefs
-+FEATURE_DISPLAY	:= libtraceevent
-+FEATURE_DISPLAY	+= libtracefs
- 
--INSTALL	=	install
--MKDIR	=	mkdir
--FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
--		-fasynchronous-unwind-tables -fstack-clash-protection
--WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
--
--ifeq ($(CC),clang)
--  FOPTS := $(filter-out -ffat-lto-objects, $(FOPTS))
--  WOPTS := $(filter-out -Wno-maybe-uninitialized, $(WOPTS))
--endif
--
--TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
--
--CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS) $(EXTRA_CFLAGS)
--LDFLAGS	:=	-flto=auto -ggdb $(EXTRA_LDFLAGS)
--LIBS	:=	$$($(PKG_CONFIG) --libs libtracefs)
--
--SRC	:=	$(wildcard src/*.c)
--HDR	:=	$(wildcard src/*.h)
--OBJ	:=	$(SRC:.c=.o)
--DIRS	:=	src
--FILES	:=	Makefile README.txt
--CEXT	:=	bz2
--TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
--TAROPTS	:=	-cvjf $(TARBALL)
--BINDIR	:=	/usr/bin
--DATADIR	:=	/usr/share
--DOCDIR	:=	$(DATADIR)/doc
--MANDIR	:=	$(DATADIR)/man
--LICDIR	:=	$(DATADIR)/licenses
--SRCTREE	:=	$(or $(BUILD_SRC),$(CURDIR))
--
--# If running from the tarball, man pages are stored in the Documentation
--# dir. If running from the kernel source, man pages are stored in
--# Documentation/tools/rtla/.
--ifneq ($(wildcard Documentation/.*),)
--DOCSRC	=	Documentation/
-+ifeq ($(V),1)
-+  Q =
- else
--DOCSRC	=	$(SRCTREE)/../../../Documentation/tools/rtla/
--endif
--
--LIBTRACEEVENT_MIN_VERSION = 1.5
--LIBTRACEFS_MIN_VERSION = 1.3
--
--.PHONY:	all warnings show_warnings
--all:	warnings rtla
--
--TEST_LIBTRACEEVENT = $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEEVENT_MIN_VERSION) libtraceevent > /dev/null 2>&1 || echo n")
--ifeq ("$(TEST_LIBTRACEEVENT)", "n")
--WARNINGS = show_warnings
--MISSING_LIBS += echo "**   libtraceevent version $(LIBTRACEEVENT_MIN_VERSION) or higher";
--MISSING_PACKAGES += "libtraceevent-devel"
--MISSING_SOURCE += echo "**  https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/ ";
--endif
--
--TEST_LIBTRACEFS = $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEFS_MIN_VERSION) libtracefs > /dev/null 2>&1 || echo n")
--ifeq ("$(TEST_LIBTRACEFS)", "n")
--WARNINGS = show_warnings
--MISSING_LIBS += echo "**   libtracefs version $(LIBTRACEFS_MIN_VERSION) or higher";
--MISSING_PACKAGES += "libtracefs-devel"
--MISSING_SOURCE += echo "**  https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/ ";
--endif
--
--define show_dependencies
--	@echo "********************************************";				\
--	echo "** NOTICE: Failed build dependencies";					\
--	echo "**";									\
--	echo "** Required Libraries:";							\
--	$(MISSING_LIBS)									\
--	echo "**";									\
--	echo "** Consider installing the latest libtracefs from your";			\
--	echo "** distribution, e.g., 'dnf install $(MISSING_PACKAGES)' on Fedora,";	\
--	echo "** or from source:";							\
--	echo "**";									\
--	$(MISSING_SOURCE)								\
--	echo "**";									\
--	echo "********************************************"
--endef
--
--show_warnings:
--	$(call show_dependencies);
--
--ifneq ("$(WARNINGS)", "")
--ERROR_OUT = $(error Please add the necessary dependencies)
--
--warnings: $(WARNINGS)
--	$(ERROR_OUT)
-+  Q = @
- endif
- 
--rtla: $(OBJ)
--	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS)
-+rtla:
- 
--static: $(OBJ)
--	$(CC) -o rtla-static $(LDFLAGS) --static $(OBJ) $(LIBS) -lpthread -ldl
-+include $(srctree)/tools/build/Makefile.include
-+include $(srctree)/tools/build/Makefile.feature
-+include $(srctree)/tools/scripts/Makefile.include
-+include Makefile.rtla
-+include Makefile.config
- 
--.PHONY: install
--install: doc_install
--	$(MKDIR) -p $(DESTDIR)$(BINDIR)
--	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
--	$(STRIP) $(DESTDIR)$(BINDIR)/rtla
--	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || rm $(DESTDIR)$(BINDIR)/osnoise
--	ln -s rtla $(DESTDIR)$(BINDIR)/osnoise
--	@test ! -f $(DESTDIR)$(BINDIR)/hwnoise || rm $(DESTDIR)$(BINDIR)/hwnoise
--	ln -s rtla $(DESTDIR)$(BINDIR)/hwnoise
--	@test ! -f $(DESTDIR)$(BINDIR)/timerlat || rm $(DESTDIR)$(BINDIR)/timerlat
--	ln -s rtla $(DESTDIR)$(BINDIR)/timerlat
-+CFLAGS		+= $(INCLUDES) $(LIB_INCLUDES)
-+export CFLAGS	:= $(CFLAGS)
- 
--.PHONY: clean tarball
--clean: doc_clean
--	@test ! -f rtla || rm rtla
--	@test ! -f rtla-static || rm rtla-static
--	@test ! -f src/rtla.o || rm src/rtla.o
--	@test ! -f $(TARBALL) || rm -f $(TARBALL)
--	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
-+rtla: rtla-in.o
-+	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $^ $(EXTLIBS)
- 
--tarball: clean
--	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
--	echo $(VERSION) > $(NAME)-$(VERSION)/VERSION
--	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
--	mkdir $(NAME)-$(VERSION)/Documentation/
--	cp -rp $(SRCTREE)/../../../Documentation/tools/rtla/* $(NAME)-$(VERSION)/Documentation/
--	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
--	rm -rf $(NAME)-$(VERSION)
-+static: rtla-in.o
-+	$(eval LDFLAGS += -static)
-+	$(QUIET_LINK)$(CC) -static $(LDFLAGS) -o rtla-static $^ $(EXTLIBS)
- 
--.PHONY: doc doc_clean doc_install
--doc:
--	$(MAKE) -C $(DOCSRC)
-+rtla.%: fixdep FORCE
-+	make -f $(srctree)/tools/build/Makefile.build dir=. $@
- 
--doc_clean:
--	$(MAKE) -C $(DOCSRC) clean
-+rtla-in.o: fixdep FORCE
-+	make $(build)=rtla
- 
--doc_install:
--	$(MAKE) -C $(DOCSRC) install
-+clean: doc_clean fixdep-clean
-+	$(call QUIET_CLEAN, rtla)
-+	$(Q)find . -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete
-+	$(Q)rm -f rtla rtla-static FEATURE-DUMP rtla-*
-+.PHONY: FORCE clean
-diff --git a/tools/tracing/rtla/Makefile.config b/tools/tracing/rtla/Makefile.config
-new file mode 100644
-index 000000000000..5ab13af94bde
---- /dev/null
-+++ b/tools/tracing/rtla/Makefile.config
-@@ -0,0 +1,44 @@
-+STOP_ERROR :=
-+LIBTRACEEVENT_MIN_VERSION = 1.5
-+LIBTRACEFS_MIN_VERSION = 1.3
-+
-+define lib_setup
-+  $(eval LIB_INCLUDES += $(shell sh -c "$(PKG_CONFIG) --cflags lib$(1)"))
-+  $(eval EXTLIBS += -l$(1))
-+endef
-+
-+$(call feature_check,libtraceevent)
-+ifeq ($(feature-libtraceevent), 1)
-+  $(call detected,CONFIG_LIBTRACEEVENT)
-+
-+  TEST = $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEEVENT_MIN_VERSION) libtraceevent > /dev/null 2>&1 && echo y || echo n")
-+  ifeq ($(TEST),n)
-+    $(info libtraceevent version is too low, it must be at least $(LIBTRACEEVENT_MIN_VERSION))
-+    STOP_ERROR := 1
-+  endif
-+
-+  $(call lib_setup,traceevent)
-+else
-+  STOP_ERROR := 1
-+  $(info libtraceevent is missing. Please install libtraceevent-dev/libtraceevent-devel)
-+endif
-+
-+$(call feature_check,libtracefs)
-+ifeq ($(feature-libtracefs), 1)
-+  $(call detected,CONFIG_LIBTRACEFS)
-+
-+  TEST = $(shell sh -c "$(PKG_CONFIG) --atleast-version $(LIBTRACEFS_MIN_VERSION) libtracefs > /dev/null 2>&1 && echo y || echo n")
-+  ifeq ($(TEST),n)
-+    $(info libtracefs version is too low, it must be at least $(LIBTRACEFS_MIN_VERSION))
-+    STOP_ERROR := 1
-+  endif
-+
-+  $(call lib_setup,tracefs)
-+else
-+  STOP_ERROR := 1
-+  $(info libtracefs is missing. Please install libtracefs-dev/libtracefs-devel)
-+endif
-+
-+ifeq ($(STOP_ERROR),1)
-+  $(error Please, check the errors above.)
-+endif
-diff --git a/tools/tracing/rtla/Makefile.rtla b/tools/tracing/rtla/Makefile.rtla
-new file mode 100644
-index 000000000000..87223ec68b64
---- /dev/null
-+++ b/tools/tracing/rtla/Makefile.rtla
-@@ -0,0 +1,77 @@
-+define allow-override
-+  $(if $(or $(findstring environment,$(origin $(1))),\
-+            $(findstring command line,$(origin $(1)))),,\
-+    $(eval $(1) = $(2)))
-+endef
-+
-+# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
-+$(call allow-override,CC,$(CROSS_COMPILE)gcc)
-+$(call allow-override,AR,$(CROSS_COMPILE)ar)
-+$(call allow-override,STRIP,$(CROSS_COMPILE)strip)
-+$(call allow-override,PKG_CONFIG,pkg-config)
-+$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
-+$(call allow-override,LDCONFIG,ldconfig)
-+export CC AR STRIP PKG_CONFIG LD_SO_CONF_PATH LDCONFIG
-+
-+FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong	\
-+		-fasynchronous-unwind-tables -fstack-clash-protection
-+WOPTS	:=	-O -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 		\
-+		-Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
-+
-+ifeq ($(CC),clang)
-+  FOPTS :=	$(filter-out -flto=auto -ffat-lto-objects, $(FOPTS))
-+  WOPTS :=	$(filter-out -Wno-maybe-uninitialized, $(WOPTS))
-+endif
-+
-+CFLAGS	:=	-g -DVERSION=\"$(VERSION)\" $(FOPTS) $(WOPTS) $(CFLAGS)
-+LDFLAGS	:=	-ggdb $(LDFLAGS)
-+
-+RM	=	rm -rf
-+LN	=	ln -s
-+INSTALL	=	install
-+MKDIR	=	mkdir
-+STRIP	=	strip
-+BINDIR	:=	/usr/bin
-+
-+.PHONY: install
-+install: doc_install
-+	@$(MKDIR) -p $(DESTDIR)$(BINDIR)
-+	$(call QUIET_INSTALL,rtla)$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
-+	@$(STRIP) $(DESTDIR)$(BINDIR)/rtla
-+	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || $(RM) $(DESTDIR)$(BINDIR)/osnoise
-+	@$(LN) rtla $(DESTDIR)$(BINDIR)/osnoise
-+	@test ! -f $(DESTDIR)$(BINDIR)/hwnoise || $(RM) $(DESTDIR)$(BINDIR)/hwnoise
-+	@$(LN) -s rtla $(DESTDIR)$(BINDIR)/hwnoise
-+	@test ! -f $(DESTDIR)$(BINDIR)/timerlat || $(RM) $(DESTDIR)$(BINDIR)/timerlat
-+	@$(LN) -s rtla $(DESTDIR)$(BINDIR)/timerlat
-+
-+.PHONY: doc doc_clean doc_install
-+doc:
-+	$(MAKE) -C $(DOCSRC)
-+
-+doc_clean:
-+	$(MAKE) -C $(DOCSRC) clean
-+
-+doc_install:
-+	$(MAKE) -C $(DOCSRC) install
-+
-+# This section is neesary for the tarball, when the tarball
-+# support is removed, we can delete these entries.
-+NAME	:=	rtla
-+DIRS	:=	src
-+FILES	:=	Makefile README.txt
-+CEXT	:=	bz2
-+TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
-+TAROPTS	:=	-cvjf $(TARBALL)
-+SRCTREE	:=	$(or $(BUILD_SRC),$(CURDIR))
-+
-+tarball: clean
-+	$(RM) $(NAME)-$(VERSION) && $(MKDIR) $(NAME)-$(VERSION)
-+	echo $(VERSION) > $(NAME)-$(VERSION)/VERSION
-+	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
-+	$(MKDIR) $(NAME)-$(VERSION)/Documentation/
-+	cp -rp $(SRCTREE)/../../../Documentation/tools/$(NAME)/* $(NAME)-$(VERSION)/Documentation/
-+	cp Makefile.standalone $(NAME)-$(VERSION)/Makefile
-+	cp Makefile.$(NAME) $(NAME)-$(VERSION)/
-+	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
-+	$(RM) $(NAME)-$(VERSION)
-diff --git a/tools/tracing/rtla/Makefile.standalone b/tools/tracing/rtla/Makefile.standalone
-new file mode 100644
-index 000000000000..51c6cf79cb46
---- /dev/null
-+++ b/tools/tracing/rtla/Makefile.standalone
-@@ -0,0 +1,24 @@
-+VERSION		:= $(shell cat VERSION)
-+CFLAGS		+= $$($(PKG_CONFIG) --cflags libtracefs)
-+EXTLIBS		+= $$($(PKG_CONFIG) --libs libtracefs)
-+
-+rtla:
-+
-+include Makefile.rtla
-+
-+SRC		:= $(wildcard src/*.c)
-+HDR		:= $(wildcard src/*.h)
-+OBJ		:= $(SRC:.c=.o)
-+DOCSRC		:= Documentation/
-+
-+rtla: $(OBJ)
-+	$(CC) -o rtla $(LDFLAGS) $(OBJ) $(LIBS) $(EXTLIBS)
-+	$(info This is a deprecated method to compile RTLA, please compile from Linux kernel source)
-+
-+.PHONY: clean tarball
-+clean: doc_clean
-+	@test ! -f rtla || rm rtla
-+	@test ! -f rtla-static || rm rtla-static
-+	@test ! -f src/rtla.o || rm src/rtla.o
-+	@test ! -f $(TARBALL) || rm -f $(TARBALL)
-+	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
-diff --git a/tools/tracing/rtla/src/Build b/tools/tracing/rtla/src/Build
-new file mode 100644
-index 000000000000..dbed9e31829b
---- /dev/null
-+++ b/tools/tracing/rtla/src/Build
-@@ -0,0 +1,11 @@
-+rtla-y += trace.o
-+rtla-y += utils.o
-+rtla-y += osnoise.o
-+rtla-y += osnoise_top.o
-+rtla-y += osnoise_hist.o
-+rtla-y += timerlat.o
-+rtla-y += timerlat_top.o
-+rtla-y += timerlat_hist.o
-+rtla-y += timerlat_u.o
-+rtla-y += timerlat_aa.o
-+rtla-y += rtla.o
--- 
-2.44.0
-
+Sebastian
 
