@@ -1,126 +1,93 @@
-Return-Path: <linux-kernel+bounces-96892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 085B08762A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:02:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B9DB8762A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:02:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B23CE282D22
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:02:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 085ADB23FCA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E3D5E06E;
-	Fri,  8 Mar 2024 10:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5BE5E089;
+	Fri,  8 Mar 2024 10:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="M54ZAGHC"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qc9/YQLJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADB45E065
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D42E55E50;
+	Fri,  8 Mar 2024 10:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709895575; cv=none; b=YNQ/Pw1uCCzAAkAlXJEGbe/HYQvfwSVAfTrOR13B/KNG9eSaAOlq4A2T1B367CtU8RCYKyIcy+BS9sc7xY7Q7/FcjbRmY6EBVUcow/9+MhfHNuUK78kKGb28qzGcpJQEOEqY+4Trj94GVwWsIp67wBiyh82JTG30We65NMbLx6s=
+	t=1709895582; cv=none; b=sZ63lAd/x17ET9X9P4869ktzMxssLk+ngQY2vA1+U/eXEp3S3K2eUXGHnHJUWCzfow4dqZN4FUGClRJs2T3/ZUvLr9Gn/DtJABSQGAQwI01pPIVs+2Fuc7mnwMafmvJBUnbiF8GC9LRYx11ys0gRXU8L4RuVb7HJN2tWgJKCxWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709895575; c=relaxed/simple;
-	bh=gemIrESpguSYN6OepWccmGb17BJE1nCs+Iub7NEFhbc=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=C3XZV58XcSHIY72m7PlWMlPeqA9hcxemRrPIvDQZGMcl2NAqgkfqIswcIdktXGlBqpIBObT3cXZisbixr3rrqs+8dvUie3RA7IZ+cee/vuSImWIoalxmnwo/AxKRGHSRfcbvxqMNL2Cta2ZH7hSn4khYLWuvmTNQ1j7TaDQs2Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=M54ZAGHC; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33ddd1624beso1176437f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 02:59:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709895572; x=1710500372; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aPNyNWRZu1nwETUpCWarY8zMeCye3qN0o1wbR3I/W7Y=;
-        b=M54ZAGHCTytt6+aonD6RL4Zu/GKuOKRvbOMEUcnUYi2QmVbKVp/ASFkcL9W27b67FI
-         GRp0nzlaLmfTu5FUQu6LTOoSmS0ds4v7+tsFTO93YUzKm21q/1Ov8CELsjc9OUkC1EHB
-         HQz4L5doJGiUWvgUC03D8NJi+d3eeFL2eFxS/axLi6X1/+Q43THRuZwXtz+j29yNFb3s
-         0ME0KQoAJBG+Odj8ilL97RUxec4S+RN6CXF6vwczjLnaGHoNOR9cDCR3bL4Z8l9Du3a5
-         pAruBzf/T+aJLiYXNqzDHJ2GXeJ0c9gltvki72dkqyZXqLs6LV3VPvcD/ObEwMzXkJ4a
-         uRZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709895572; x=1710500372;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aPNyNWRZu1nwETUpCWarY8zMeCye3qN0o1wbR3I/W7Y=;
-        b=Qy0zVRFB4tuXnK+EH4Hv1RD8XWv3jD2EyV8D6cgNd42rKUtPSU7UDqPmvzY4Gi2NPO
-         F1SBM7LkPB5y286aU9ylDG7YEIsWwnvq+nOUS++6gBTIGkp7V9+BcZzJDKsKI47tVX1f
-         3J7ajr7Fce/QaIlVbwekHAt5i8rjysaHqf8BOqAalZbtssr+rYkGW8CEt1XVmwaDAoW1
-         ONZoYfJqJXeDx5VcrKRIC9qmqFJ+6SRjkwctdRra7QfqgLvVvNMO22MYWhiIlG5rpL5H
-         qaVzW4ZmtbwwBT9Veg4waY9cYIAY745kwLzdElfNOhOBFZU3yZcHnN+AoGR5l+rKhU2m
-         6hPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWmeI7ZBlCHNEf0DgIS0rx0bJcQXRg5g79h8EqjS9eORPlkHJ1aetr62SaAtxzmbUvU3AjQQ/fiB1drhOqZJNdOepTKEfohj4r6km1b
-X-Gm-Message-State: AOJu0Yx5qzQVV9Ke/kV3eEE482J0/sCJ89aUwlOOZluV0KOA5pyAfmPb
-	06qz6h+B7DU43iqBxQsSz+bCF3pij1oC1YIV9HN5SDWpqsazeF1piXG9ePzoDmA=
-X-Google-Smtp-Source: AGHT+IHZeGISz5BBijJBfDZAHNoLpL5CAxwaU/Dl6mZ/DmniaLPju1ROj/aubPlQlzA2BTZg6QiD8w==
-X-Received: by 2002:a5d:5010:0:b0:33e:6612:dfaf with SMTP id e16-20020a5d5010000000b0033e6612dfafmr3687501wrt.1.1709895571857;
-        Fri, 08 Mar 2024 02:59:31 -0800 (PST)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id by1-20020a056000098100b0033e22341942sm20086822wrb.78.2024.03.08.02.59.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 02:59:31 -0800 (PST)
-Message-ID: <35a7ad40-aaf4-476e-8582-b83bac284881@linaro.org>
-Date: Fri, 8 Mar 2024 10:59:30 +0000
+	s=arc-20240116; t=1709895582; c=relaxed/simple;
+	bh=XCx6rBF5QXE5ljZ6dgmSjPlktK82y9NFAFmToHiY3rM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MCJBrzKuaoVLuXbSKWCVmrDUIQdMKqR99ph2no0ygSUF6YfuyM7aZrep7Dx9TVhdIHRbN3lDEX8KhtCXqY28YAEvHWq07IS1cF4inQyOut5rTB1O05DGvgUVDIVt+bPglifXLVtWJ9I9mpG3gN6CF6eDCoX4xwxuk7Aamzgc/p4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qc9/YQLJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1A1C433C7;
+	Fri,  8 Mar 2024 10:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709895581;
+	bh=XCx6rBF5QXE5ljZ6dgmSjPlktK82y9NFAFmToHiY3rM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Qc9/YQLJqkDldT6nTmCJ9jNzgiOZI4nHUSHkFPdsNoG2yuVaomoPar+KYppkc5q3y
+	 yoHfW+OfBFS1ZJZUp47J76Noncnw71Loxw8R+PvRKf4oebIptJtXoAm1ZlKpf7qj+3
+	 +tlfLfOGAuxn8uEYuGXHYlWsP8KJuFFXcZ1mPkHpG7uh5EdaU8jT0T7zIGYG4oSyOo
+	 GyxaRoQQ+8uP77ICDPDbjiRIKGOikgR7rgMftZw24JUOpjXfvxQplJ5QfbWKxmMGjq
+	 IJQRbV2bvumrCOimGX+9/Jt67pGPPobSTq5jb7yEYhPfPpWof8XGfw9ei8BDhi6oDT
+	 ARQqftLEDHxuA==
+Date: Fri, 8 Mar 2024 11:59:37 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Miklos Szeredi <mszeredi@redhat.com>, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH] statx: stx_vol
+Message-ID: <20240308-vorkam-aufgearbeitet-44ed64f7de69@brauner>
+References: <20240302220203.623614-1-kent.overstreet@linux.dev>
+ <20240304-konfus-neugierig-5c7c9d5a8ad6@brauner>
+ <xqazmch5ybt7fatipwkuk7lnouwwdn55cirvaiuypjmy3y4fte@6vwyvv3uurl5>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] clk: qcom: Add camera clock controller driver for
- SM8150
-Content-Language: en-US
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Stephen Boyd <sboyd@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Ajit Pandey <quic_ajipan@quicinc.com>,
- Imran Shaik <quic_imrashai@quicinc.com>, Taniya Das <quic_tdas@quicinc.com>,
- Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
- <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
- <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
- <83fd1995-a06e-b76a-d91b-de1c1a6ab0ea@quicinc.com>
- <4817a5b0-5407-4437-b94a-fc8a1bfcd25d@linaro.org>
- <e2627a99-307f-1e10-abfd-ce688cc2ec03@quicinc.com>
- <d893e8f8-66a7-4460-9468-0f3a359cece7@linaro.org>
-In-Reply-To: <d893e8f8-66a7-4460-9468-0f3a359cece7@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <xqazmch5ybt7fatipwkuk7lnouwwdn55cirvaiuypjmy3y4fte@6vwyvv3uurl5>
 
-On 08/03/2024 10:58, Bryan O'Donoghue wrote:
-> On 08/03/2024 10:46, Satya Priya Kakitapalli (Temp) wrote:
->>>
->>> Not if you mark it critical
->>>
->>
->> Marking the clock as critical keeps the associated power domain 
->> always-on which impacts power. For this reason we are not using 
->> CLK_IS_CRITICAL and instead making them always on from probe.
+On Thu, Mar 07, 2024 at 12:39:58PM -0500, Kent Overstreet wrote:
+> On Mon, Mar 04, 2024 at 10:18:22AM +0100, Christian Brauner wrote:
+> > On Sat, Mar 02, 2024 at 05:02:03PM -0500, Kent Overstreet wrote:
+> > > Add a new statx field for (sub)volume identifiers.
+> > > 
+> > > This includes bcachefs support; we'll definitely want btrfs support as
+> > > well.
+> > > 
+> > > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > Cc: Josef Bacik <josef@toxicpanda.com>
+> > > Cc: Miklos Szeredi <mszeredi@redhat.com>
+> > > Cc: Christian Brauner <brauner@kernel.org>
+> > > Cc: David Howells <dhowells@redhat.com>
+> > > ---
+> > 
+> > As I've said many times before I'm supportive of this and would pick up
+> > a patch like this. There's definitely a lot of userspace that would make
+> > use of this that I'm aware of. If the btrfs people could provide an Ack
+> > on this to express their support here that would be great.
+> > 
+> > And it would be lovely if we could expand the commit message a bit and
+> > do some renaming/bikeshedding. Imho, STATX_SUBVOLUME_ID is great and
+> > then stx_subvolume_id or stx_subvol_id. And then subvolume_id or
+> > subvol_id for the field in struct kstat.
 > 
-> How does the clock do anything _useful_ if the power-domain gets 
-> switched off ?
-> 
-> ---
-> bod
+> _id is too redundant for me, can we just do STATX_SUBVOL/statx.subvol?
 
-i.e. the clock can't be running "always-on" if it has no power..
-
----
-bod
+Fine by me.
 
