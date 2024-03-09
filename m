@@ -1,225 +1,149 @@
-Return-Path: <linux-kernel+bounces-97935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EA5A8771E6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:25:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC978771E9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:26:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4761B281BEC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:25:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EEA91C20BCB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95027446AB;
-	Sat,  9 Mar 2024 15:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DDAD446B2;
+	Sat,  9 Mar 2024 15:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="t7394YiG"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Epnv8dLy"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E092179DB
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 15:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DC340870;
+	Sat,  9 Mar 2024 15:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709997936; cv=none; b=kRjWr+XGcn72Ukvy+m8sSNAU8gWSimbtl9EgBcDqt0yqgrPK5TGJ6fkehF8MMAo02z4LabJS+zQNIwZ0HEAK2sCG6nHpVKviHG4tflKgOu67MOhYSWbbO4LmpJYm9Y10CBdOvJtnAX8dwgwrPjDqQ6/uDc4eVPdcAQAziWHkfKE=
+	t=1709998005; cv=none; b=DqFV28hmKVKe0GkUp7vGXZ3itMkLlrWMh5P7vC7YxFiYmSCMbkXCDE1AOtLCViEBtdXIWR6WNdfTLXGAZlzcEPY7M1MX2K+zwgjBSXciqcs5v0Nc49MkMdCVIwaiHRQIanQUxOMODkgQ7DcLRpv1FBISwHn6NYQKP1MI+LhPU7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709997936; c=relaxed/simple;
-	bh=0UwmfO5RRX5K7e+tmfHszthgcR6oyH3gGXOBE7AUpFA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fJgPPtBd+7VQvpPizySURrwsQauGvJq7u/nRsqWLbI+HDLVVftH3Ft3VPRIAn722cjgtYwrtyc0/FDYLvRge39EEiEsH3kJ1dpyRE33YBrwlAIxeJQb1NsFCPdjyLfkNmlbmUpFa+R4wKRkKNjY1cjefEPb9YCSmSw2A3Yf5uI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=t7394YiG; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso3844a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 07:25:34 -0800 (PST)
+	s=arc-20240116; t=1709998005; c=relaxed/simple;
+	bh=YjDS8iGJhtfuA0RgbPEdCTzn6QGfPrzGPSUWMFR51kA=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=JpKRd/tD3stssDSRNcMYA3vzMcIeUFykzHZlpT6zJ1D1l9JRanKS5hRJWKJmKfO1bgF3Ilf3+xOpFfOjpjQaKnI5CrRgakEnIBeGt5SqNsxcgRQvHnxIelRWeByVonEVK/K2zIla6Pf5koeXpnzHbYCAhxbx+XqylixTdHB4tj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Epnv8dLy; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41318e93a08so10568795e9.0;
+        Sat, 09 Mar 2024 07:26:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709997933; x=1710602733; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BTJLH4mDVz3M4yn8EO/cWNGsLIV4kzC5628kHJEpky4=;
-        b=t7394YiG521Vj3YVtbkn4kw7kTUqvf54bmBmtAnu5460Ao+x1pi3mQKTkR8wb+n9EB
-         aEO63vV4a4oWeU3taiMU4OyXuurK7Y8Yd8wfCdta5RJUTWyjp/KZPdgOfRhuoQVAXLdC
-         aBj4I/VJXd8SW/MBLOmLZBs6FaMQdn0L12Q3fp3TQvb1/fC7lMm/lzvSrbh1C8JZyGBY
-         EBmWMNJmfE/6obfVddWFX6gyOdwt57bFB7Nige5B65UyD4N3IpDmsBBAeKjlYGhH5oX5
-         zHg+dE+hMxDvPXxq38LbDGuGfa6LWC9SmBjuQTxAKm3q3p9/brwONXM0nPjr63KvmsW6
-         EYHg==
+        d=gmail.com; s=20230601; t=1709998002; x=1710602802; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:from:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=f/ddNOX2QllMjNIQC+nbdaiJ3K9z+QOijB5+nySnxPA=;
+        b=Epnv8dLyz3vVPUnauLK179HEv0diKy9WBhKlRNf3NK+x2WMlhVwnfIWN/V5UJYC5hi
+         fmxbRFQiO1SQEU7B0xnLz8d5LpNOFXFK63iGVkZ08+HzBWDrvNkz6/H3IzlraCQYG32j
+         uAOvXufbGJueFVa3Fum87+cuPaTgHR3wKo5UoHdlw8l8DROjT2fHPO3eaxM5eUQ61yg3
+         Y9EhxECguStdzm0HBP3Dnzi94taFiB2FnmrYMBtpY80Q12uEiZihIcjoilUrnCyEC2Np
+         g4ucrrLDOrVYflTt7XjE7YT6y0s4L4rFSpBRVpWeBC7T05p4p3qbN4MiGokNx8541Hmk
+         nlHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709997933; x=1710602733;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BTJLH4mDVz3M4yn8EO/cWNGsLIV4kzC5628kHJEpky4=;
-        b=YghdqsDEo1twubrN0dWvA/NNkq2qcEeXL4vuzl9bV9KCZmyB36zSmLxiPAz7ME41l+
-         +4mWJcWcmKe+vzlTDHWQ2WQQTRgEOSDO5N+fQEErgiHXgAkr7gDFwxppV2LzvE9kjPvI
-         YQFPH3xYFcdqGqxFn9TyIkup+R0TkLLl0mXvG9kEXXXKrNtbCkm01lo9oIYkTQ5B64zL
-         DeydetlQPfB9bizzsZ1/8elfRcA+tEfjRMeofQbcOiO9ruuLo9MJoJrgQ4ryIseCr3jb
-         P/wDlidoI6VcCo+cn7QZiU/F/HfPKEC9F8X9s7IIf0pId2KoxwFTprIg7wLA98/Xz0OW
-         eZsA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQkVo3AiAl7eVrXqK1JcND6rcQ+PHTzXAbaP62EHn4woxPZZ5AbBFEZrNpmvIk7XPTNvlnlns1AmgGWBcqe7FxLMukGAWzqYu+buEZ
-X-Gm-Message-State: AOJu0YzxIibDQd04c8y0xJzdJZ7MWzaxekidiSv+cq1rEo9rKf1vqA0C
-	bzIRDJs8gAXKXR6ImiAev+UDLb+PmQXSAnEJznCfkoAFMTEvunYptDF21MbkY7zQ3oOEj2ZlCfw
-	e2gGlm3J7LIr4MoEq/2IgB6eAahqNQocir69KxKbk6lP2u0nGWKIl
-X-Google-Smtp-Source: AGHT+IGA7N6gwTj7tMXKDfKFGR+0DjiRRR0m2jfdfXcIG6qjz+0TTb6dBePHeO75KOeVR1ZV24IyHGm6jPC0g6rG6jk=
-X-Received: by 2002:aa7:d4d7:0:b0:568:2efb:ddfd with SMTP id
- t23-20020aa7d4d7000000b005682efbddfdmr238775edr.5.1709997932984; Sat, 09 Mar
- 2024 07:25:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709998002; x=1710602802;
+        h=content-transfer-encoding:to:subject:from:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f/ddNOX2QllMjNIQC+nbdaiJ3K9z+QOijB5+nySnxPA=;
+        b=BQslsxig3CaXxhUpCZDVu3SbNiR786h9UriIw5+kDMutkCTtTsv+sk4YftlG4r40Fo
+         UkjeTbHP341E7pcvlNoNYY7e+6bZvcFUHEFTvSIDQIhoqbg8PIZIWZ/WoFfuzoLLbRj4
+         Fbfy6yWuXngal24N7zEoei0BufZgKlsQQpVjl7ghDzWMR72VIVdLYPZqX9WvxkVgTr5P
+         7ZrkIT1Wv4x44hOJmEfWCFpP1Rrd6Bd6dE5XRQWmYPM1T6Dhjx6xuu9SpVyWE6fXWkv/
+         L08KGIXNGJiP+9IGfUQDK65bpGao+Op2eBgnZIfSl7F2q+zbPV8De64n1kF7ARfemvBE
+         O/BQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUICnY8S9UAp06X0e6BY3eQ+WDh3Zm6+Ru77tOetK8lCFkINxIAveJrEXyQ6xWK2jTIsC4kgoZP0UfyogBScsfkfrXfADBwVK8VmCW3s9/KEf5B+j9tjEhVKijPsNIEXNg4hwNzr/nuRHUmCEVULo6XHq6woiDtYQVYbHn30gUBJVwmNDHi
+X-Gm-Message-State: AOJu0YwNp+cIGZWdsj7TRU71+VVPTWXIxxBjQzdUxoG8WaWgi7AXMEGk
+	x1xqRTp34oRCKk9ugzxOr7425LSoZ8LJ7OCk6lIcMqSLN2n0qZJv
+X-Google-Smtp-Source: AGHT+IHrDGMadli9epBpxggQmI/6QpQUD9CaKMpPchEVFeJw39z1KdjaJQhtalPO3f7WKAcp8EwqCw==
+X-Received: by 2002:a05:600c:1c03:b0:413:1d7b:1cd8 with SMTP id j3-20020a05600c1c0300b004131d7b1cd8mr1685998wms.33.1709998001813;
+        Sat, 09 Mar 2024 07:26:41 -0800 (PST)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id r4-20020a05600c35c400b004130c1dc29csm2840162wmq.22.2024.03.09.07.26.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Mar 2024 07:26:41 -0800 (PST)
+Message-ID: <f939c84a-2322-4393-a5b0-9b1e0be8ed8e@gmail.com>
+Date: Sat, 9 Mar 2024 16:26:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000088981b06133bc07b@google.com>
-In-Reply-To: <00000000000088981b06133bc07b@google.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Sat, 9 Mar 2024 16:25:18 +0100
-Message-ID: <CANn89iKLAOJ+HG_y7M27-tx+9HSLUyDaf_NtrJMjs2bZ52KZbA@mail.gmail.com>
-Subject: Re: [syzbot] [net?] kernel BUG in __nla_validate_parse
-To: syzbot <syzbot+65bb09a7208ce3d4a633@syzkaller.appspotmail.com>, 
-	Petr Machata <petrm@nvidia.com>
-Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Richard Gobert <richardbgobert@gmail.com>
+Subject: [PATCH net-next v3 0/4] net: gro: encapsulation bug fix and flush
+ checks improvements
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, willemdebruijn.kernel@gmail.com, dsahern@kernel.org,
+ xeb@mail.ru, shuah@kernel.org, idosch@nvidia.com, razor@blackwall.org,
+ amcohen@nvidia.com, petrm@nvidia.com, jbenc@redhat.com, bpoirier@nvidia.com,
+ b.galvani@gmail.com, gavinl@nvidia.com, liujian56@huawei.com,
+ horms@kernel.org, linyunsheng@huawei.com, richardbgobert@gmail.com,
+ therbert@google.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 9, 2024 at 4:13=E2=80=AFPM syzbot
-<syzbot+65bb09a7208ce3d4a633@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    2f901582f032 Merge tag 'for-net-next-2024-03-08' of git:/=
-/..
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D112f130a18000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D63afafeedf00e=
-f8f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D65bb09a7208ce3d=
-4a633
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/b03984cb5619/dis=
-k-2f901582.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/41787ac7c9d9/vmlinu=
-x-2f901582.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/da7931fd36f6/b=
-zImage-2f901582.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+65bb09a7208ce3d4a633@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> kernel BUG at lib/nlattr.c:411!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> CPU: 1 PID: 14369 Comm: syz-executor.2 Not tainted 6.8.0-rc7-syzkaller-02=
-415-g2f901582f032 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 02/29/2024
-> RIP: 0010:validate_nla lib/nlattr.c:411 [inline]
-> RIP: 0010:__nla_validate_parse+0x2f61/0x2f70 lib/nlattr.c:635
-> Code: 48 8b 4c 24 18 80 e1 07 38 c1 0f 8c e0 f7 ff ff 48 8b 7c 24 18 e8 f=
-f 0e 1d fd e9 d1 f7 ff ff e8 d5 c2 91 06 e8 50 64 ba fc 90 <0f> 0b 66 2e 0f=
- 1f 84 00 00 00 00 00 0f 1f 00 90 90 90 90 90 90 90
-> RSP: 0018:ffffc90003c1eec0 EFLAGS: 00010287
-> RAX: ffffffff84d90ad0 RBX: ffffffff8caa11b0 RCX: 0000000000040000
-> RDX: ffffc9000499a000 RSI: 000000000000065e RDI: 000000000000065f
-> RBP: ffffc90003c1f100 R08: ffffffff84d8df5b R09: 0000000000000000
-> R10: ffffc90003c1f1a0 R11: fffff52000783e46 R12: 0000000000000008
-> R13: 1ffff1100f9c4183 R14: 000000000000006e R15: 0000000000000005
-> FS:  00007f5fe2d916c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000440 CR3: 00000000229a2000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __nla_parse+0x40/0x60 lib/nlattr.c:732
->  __nlmsg_parse include/net/netlink.h:756 [inline]
->  nlmsg_parse include/net/netlink.h:777 [inline]
->  rtm_del_nexthop+0x257/0x6d0 net/ipv4/nexthop.c:3256
->  rtnetlink_rcv_msg+0x89b/0x10d0 net/core/rtnetlink.c:6595
->  netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2556
->  netlink_unicast_kernel net/netlink/af_netlink.c:1335 [inline]
->  netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1361
->  netlink_sendmsg+0x8e0/0xcb0 net/netlink/af_netlink.c:1902
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg+0x221/0x270 net/socket.c:745
->  ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
->  ___sys_sendmsg net/socket.c:2638 [inline]
->  __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
->  do_syscall_64+0xf9/0x240
->  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-> RIP: 0033:0x7f5fe207dda9
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f=
-7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
- ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f5fe2d910c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007f5fe21abf80 RCX: 00007f5fe207dda9
-> RDX: 0000000000000000 RSI: 0000000020000440 RDI: 0000000000000003
-> RBP: 00007f5fe20ca47a R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 000000000000000b R14: 00007f5fe21abf80 R15: 00007fff7d5a1278
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:validate_nla lib/nlattr.c:411 [inline]
-> RIP: 0010:__nla_validate_parse+0x2f61/0x2f70 lib/nlattr.c:635
-> Code: 48 8b 4c 24 18 80 e1 07 38 c1 0f 8c e0 f7 ff ff 48 8b 7c 24 18 e8 f=
-f 0e 1d fd e9 d1 f7 ff ff e8 d5 c2 91 06 e8 50 64 ba fc 90 <0f> 0b 66 2e 0f=
- 1f 84 00 00 00 00 00 0f 1f 00 90 90 90 90 90 90 90
-> RSP: 0018:ffffc90003c1eec0 EFLAGS: 00010287
-> RAX: ffffffff84d90ad0 RBX: ffffffff8caa11b0 RCX: 0000000000040000
-> RDX: ffffc9000499a000 RSI: 000000000000065e RDI: 000000000000065f
-> RBP: ffffc90003c1f100 R08: ffffffff84d8df5b R09: 0000000000000000
-> R10: ffffc90003c1f1a0 R11: fffff52000783e46 R12: 0000000000000008
-> R13: 1ffff1100f9c4183 R14: 000000000000006e R15: 0000000000000005
-> FS:  00007f5fe2d916c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000c00104bb94 CR3: 00000000229a2000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
+This series fixes a bug in the complete phase of UDP in GRO, in which
+socket lookup fails due to using network_header when parsing encapsulated
+packets. The fix is to pass p_off parameter in *_gro_complete.
 
-Petr, can you take a look ?
+Next, the fields network_offset and inner_network_offset are added to
+napi_gro_cb, and are both set during the receive phase of GRO. This is then
+leveraged in the next commit to remove flush_id state from napi_gro_cb, and
+stateful code in {ipv6,inet}_gro_receive which may be unnecessarily
+complicated due to encapsulation support in GRO.
 
-Thanks !
+In addition, udpgro_fwd selftest is adjusted to include the socket lookup
+case for vxlan. This selftest will test its supposed functionality once
+local bind support is merged (https://lore.kernel.org/netdev/df300a49-7811-4126-a56a-a77100c8841b@gmail.com/).
 
+v2 -> v3:
+ - Use napi_gro_cb instead of skb->{offset}
+ - v2:
+   https://lore.kernel.org/netdev/2ce1600b-e733-448b-91ac-9d0ae2b866a4@gmail.com/
 
-commit 2118f9390d83cf942de8b34faf3d35b54f9f4eee
-Author: Petr Machata <petrm@nvidia.com>
-Date:   Wed Mar 6 13:49:15 2024 +0100
+v1 -> v2:
+ - Pass p_off in *_gro_complete to fix UDP bug
+ - Remove more conditionals and memory fetches from inet_gro_flush
+ - v1:
+   https://lore.kernel.org/netdev/e1d22505-c5f8-4c02-a997-64248480338b@gmail.com/
 
-    net: nexthop: Adjust netlink policy parsing for a new attribute
+Richard Gobert (4):
+  net: gro: add p_off param in *_gro_complete
+  selftests/net: add local address bind in vxlan selftest
+  net: gro: add {inner_}network_offset to napi_gro_cb
+  net: gro: move L3 flush checks to tcp_gro_receive
+
+ drivers/net/geneve.c                      |  7 +-
+ drivers/net/vxlan/vxlan_core.c            | 11 ++--
+ include/linux/etherdevice.h               |  2 +-
+ include/linux/netdevice.h                 |  3 +-
+ include/linux/udp.h                       |  2 +-
+ include/net/gro.h                         | 36 +++++++----
+ include/net/inet_common.h                 |  2 +-
+ include/net/tcp.h                         |  6 +-
+ include/net/udp.h                         |  8 +--
+ include/net/udp_tunnel.h                  |  2 +-
+ net/8021q/vlan_core.c                     |  6 +-
+ net/core/gro.c                            |  6 +-
+ net/ethernet/eth.c                        |  5 +-
+ net/ipv4/af_inet.c                        | 49 ++------------
+ net/ipv4/fou_core.c                       |  9 +--
+ net/ipv4/gre_offload.c                    |  6 +-
+ net/ipv4/tcp_offload.c                    | 79 ++++++++++++++++++-----
+ net/ipv4/udp.c                            |  3 +-
+ net/ipv4/udp_offload.c                    | 26 ++++----
+ net/ipv6/ip6_offload.c                    | 41 +++++-------
+ net/ipv6/tcpv6_offload.c                  |  7 +-
+ net/ipv6/udp.c                            |  3 +-
+ net/ipv6/udp_offload.c                    | 13 ++--
+ tools/testing/selftests/net/udpgro_fwd.sh | 10 ++-
+ 24 files changed, 187 insertions(+), 155 deletions(-)
+
+-- 
+2.36.1
+
 
