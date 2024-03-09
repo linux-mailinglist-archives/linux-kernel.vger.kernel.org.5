@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-97757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CFB3876F04
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:55:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92164876F07
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 136771F21AFD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 03:55:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 460932825CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 03:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A70D36124;
-	Sat,  9 Mar 2024 03:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEFA836126;
+	Sat,  9 Mar 2024 03:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sM4Qs9ET"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jq4balvW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 665E21DFE8;
-	Sat,  9 Mar 2024 03:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8113218B;
+	Sat,  9 Mar 2024 03:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709956531; cv=none; b=gzmqFiZ3kh56dLACDiwqycnUyHLLd8XbyqwTvNPFQNe2cJmoQ3gHpshUL6D6A3jal1ExkFANKO5sbmO8J0s96hxGyvDasOuEGUkhaxcYThWxuZHnZ0EctltsKVvWLNe+/Ma4syD63plPavd58P0PzLKzDyiWPNiuOgTKWh38SJY=
+	t=1709956625; cv=none; b=YhhoxA4Yh/BnU6a2hDv08yiQJYxYTXt15h/SSdIHm++/RZq9URenaSamVjg3YiZgHJuxc1LL5amJtOhQRZr48tCyb32VxWibocDEq/Fi4+pnfSHGSH8GIjrBXbwkbYsZtllz9YMjSWkhbG6x9KxUWkI2O+VFPAGmVhFN+E+zJs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709956531; c=relaxed/simple;
-	bh=cqxnRONxFqoFUHeLlMQOk9RLWMYU12XehXtvW+dv3SU=;
+	s=arc-20240116; t=1709956625; c=relaxed/simple;
+	bh=e/myOlJjPvoMk8xBCponcF+t0IYuRQviePbYNIlftyg=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r7JgGpwVdR7RjDBbgPw5KWVREkyIVkNvAuWRrnuHxUTqonbredHyvNYJxjYZGTmb8lCr75O+QgFclhdgd6P80SvQC639H8AaZUMIAkkuComUXRYD0IQtnf0CgH3RIDwAGQ6M4Bli7Fm8ex326LSKrm4aXREC+TsB0ERDWEN/8yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sM4Qs9ET; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BD52C433F1;
-	Sat,  9 Mar 2024 03:55:30 +0000 (UTC)
+	 MIME-Version:Content-Type; b=tpDRKnnRbCz7jRVng2UnCTKH+Dgtyyw5ReJPRNzNnj2TyERoDH10X0PoPuyihCtn54/0irj0kuI7sTrjf1+vYHRNt7I6bqbuJwuUZZRjAzVAvW3N5DRVeP0fMYSsqpe38HyZPL2PdfPm6MYg4tNbHqgiFk9sNOyvsvFqfzLcCrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jq4balvW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6217EC433C7;
+	Sat,  9 Mar 2024 03:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709956530;
-	bh=cqxnRONxFqoFUHeLlMQOk9RLWMYU12XehXtvW+dv3SU=;
+	s=k20201202; t=1709956624;
+	bh=e/myOlJjPvoMk8xBCponcF+t0IYuRQviePbYNIlftyg=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sM4Qs9ETo7lFcytqB+dUZRGcitywoe5QpVnTaB+Gb1qLUPghLmhmX6uZfF9Q9SspY
-	 49vo6v5lhGzBOKbolRDTxPweK0n5BUYO57gIfpAYlCTOfvJPO+tZ2/4F68jvFF6YAh
-	 Zv+mdyJWhO+n/rrHFMigEPhNepDiOhnBwNtlR6p4/4QoL+KiOY0nV7y/baUdeJJ9is
-	 MmMCG33JFuzorRhylVORKkJticmBJ0FiYHvRzRt8n6sGT4jesrgcS2EElPCpeKfPmN
-	 EFu6qHhJsSdjnqOz+kgjP7WO+fmojNwH2taMyHFfIT0WFlkmXubUw6TYcMxpdORLul
-	 wN9zMfntaM78Q==
-Date: Fri, 8 Mar 2024 19:55:29 -0800
+	b=jq4balvWByXHxrSni31UNEfCTvNK5Tg2uLEAj2NNqWHb6CemCe5wDSg+ap7NVWRtB
+	 X22t7GtQHwGRhhepXVGSef9cpbz8rCK3JbeWeuN+pera4HjWp+ZpHR0R0Z0PAhFxHD
+	 AtHHTmlefl1If0VVOa8uqbYDAn+ubrCYfmgZBMyDB8ME+fpr6efDuhZ57ZWiPY57GN
+	 RfAqDUA5DtrJPCu5kaXuJs23VyUlw7wyNn/+VgKTTFUawsco1Z5/6NMyngQoSWdIcJ
+	 7+Th2NcSyIJomsq39c1TUaVC3eXnN/nqmCb2uEp8DUGG5Md2KErSkiebTXEWDIuHhF
+	 d71tSAU2P+Afg==
+Date: Fri, 8 Mar 2024 19:57:03 -0800
 From: Jakub Kicinski <kuba@kernel.org>
-To: Leone Fernando <leone4fernando@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- dsahern@kernel.org, willemb@google.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/4] net: dst_cache: add input_dst_cache API
-Message-ID: <20240308195529.57b1a4fa@kernel.org>
-In-Reply-To: <20240307171202.232684-3-leone4fernando@gmail.com>
-References: <20240307171202.232684-1-leone4fernando@gmail.com>
-	<20240307171202.232684-3-leone4fernando@gmail.com>
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, Eric Dumazet <edumazet@google.com>,
+ Frederic Weisbecker <frederic@kernel.org>, Valentin Schneider
+ <vschneid@redhat.com>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next -v5] net/core/dev.c: enable timestamp static
+ key if CPU isolation is configured
+Message-ID: <20240308195703.3e77c27f@kernel.org>
+In-Reply-To: <Zen126EYArNCxIYz@tpad>
+References: <Zen126EYArNCxIYz@tpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,17 +61,13 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu,  7 Mar 2024 18:12:00 +0100 Leone Fernando wrote:
-> +static inline u64 create_dst_cache_key_ip4(const struct sk_buff *skb)
-> +{
-> +	struct iphdr *iphdr = ip_hdr(skb);
-> +
-> +	return (((u64)iphdr->daddr) << 8) | iphdr->tos;
+On Thu, 7 Mar 2024 14:14:03 -0300 Marcelo Tosatti wrote:
+> net/core/dev.c: enable timestamp static key if CPU isolation is configured
 
-Sparse complains that you're ignoring bitwise types:
+Doesn't apply to net-next, please respin.
 
-include/net/dst_cache.h:170:19: warning: cast from restricted __be32
-include/net/dst_cache.h:170:19: warning: cast from restricted __be32
+When you do, one more nit: please use net: as the prefix,
+instead of net/code/dev.c. No need to state the entire file path.
 -- 
 pw-bot: cr
 
