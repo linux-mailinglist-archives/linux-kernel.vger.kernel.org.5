@@ -1,144 +1,93 @@
-Return-Path: <linux-kernel+bounces-98044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66140877401
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 22:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA75877404
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 22:19:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F0941C20DDF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:11:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C68181C2134A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F6350A70;
-	Sat,  9 Mar 2024 21:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EB+VOcDl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E3851021;
+	Sat,  9 Mar 2024 21:19:07 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAAE64AEE8;
-	Sat,  9 Mar 2024 21:10:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3527550243
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 21:19:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710018652; cv=none; b=ZGtzZK+Lxo7qPSQ2ge/TEDGVyTp1s2rhc0L3bQ5XOo8F1w+IVUu6Eku6L8gVq6FRx0DC8JNUowFCglaEUkx8MRTpWbCjmKBM22QhembCP1pCHFazOJrveuuq8qxWS2aoGsRZezr3N7RJK6MUp1UcA46MwkrWxMxg3q7xDOy3iJY=
+	t=1710019146; cv=none; b=GGD0bF31+2l5OOux0LQGzd15QTa//dcBQOiqpbjgsijtYvOFsu9cLUE/ei0hGiLo2Hib0xtp5jEEVfhYb7FzawjkdSnQv1mvTvlnZkPe1micPyYVTK3JmMjKRlEYlyD8OkCCNP+QOZe3UzKCgQCwpgevizpqt3izkUdTBX3U3+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710018652; c=relaxed/simple;
-	bh=Rl7tD8xxzur5fGawhrLhrE5uAeLD7c995cPg+u795XM=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=afADBVGLXI+7tPYxqGtfGg3HYyANeooXO/rXLRmc+gfiCM+Zy1eK06ZwdSFksZdfhFurM5tIrVwCLGm2sSrWVXYGmPvKzVrGZJfO18j9p3eg/G4baJJ8ZUc6E0Rv4dmRqc/WM1eihdeRik2iWBVA39g2HPQ5sWxzt6Sxcl5SjkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EB+VOcDl; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710018651; x=1741554651;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=Rl7tD8xxzur5fGawhrLhrE5uAeLD7c995cPg+u795XM=;
-  b=EB+VOcDldo4hFjbBn4xV1XdKU3Rzn+84+B6jXe91Y/DOUKBPij4HHrVn
-   9XgUZaeJWrxQymzScqfxsgA/v4K9LLyn23vS5Gsu7pNOtCpGUuy1EpRNo
-   U1ILElCOHG7pnQ/n2HEJgeemmO3q/tmtMQlAr9TV8PSQcbBFHZWQWbXM0
-   GAqFxzkVmQifgmtxM2O9F8A7LzFAV91Ji9SCq0gKihpo1m17uzYdIGPrM
-   gAYnUTtcYLZ6NivK9MwthUO/XfoDU/ObbonzRXhoSm6oey0mk9vKFcr54
-   mthR1hLSY1aZ7S1hL9XkiG4qbiAd4I6aZNM09IuuMjWSw1pvy3x6GJmjh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="4900907"
-X-IronPort-AV: E=Sophos;i="6.07,113,1708416000"; 
-   d="scan'208";a="4900907"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 13:10:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,113,1708416000"; 
-   d="scan'208";a="11215621"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 09 Mar 2024 13:10:47 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>, "Haitao Huang"
- <haitao.huang@linux.intel.com>
-Cc: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com,
- zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v9 04/15] x86/sgx: Implement basic EPC misc cgroup
- functionality
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-5-haitao.huang@linux.intel.com>
- <7u3intene6yvlkuks5bix3tx27wog3da6ki5w2l5flaod5mjrq@flgmfdd4fbei>
- <op.2jtkxougwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Date: Sat, 09 Mar 2024 15:10:44 -0600
+	s=arc-20240116; t=1710019146; c=relaxed/simple;
+	bh=Pa7sx8/xOTjjXflylsOjtScryyrbysvuk/h52s9G43g=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=mdqpclhgu2lDm9WYAfUZE7Swwh2K83viYybm6l39b9JVQ34OWYJRtkUxY6RJASrs+aGY850Hj8cZfpr6XJ7Ht8ncu/zW5gRAETeX43YxzjTPIUMybuLFphYHP9tN2LIq6Zf4xXampkFTcV+O3NH4sU0qU4mbX7+tBBlcMQj/7R8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c8aa6723e7so27545239f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 13:19:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710019144; x=1710623944;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PRFBXIh18wCLBO2+SM4FmreOxz5t2k1uDB7yZ8xEagg=;
+        b=FGAUaFGVni9AfFQwK3xXVNxBgtmH2JmFlkLOJcrigDNi9Eaa8I/DlMGJVz56en0S4K
+         hrMZSWo5BKu3n/7RH3MzS9dKMWEB2I85DnQS6hUUbA0o/d8Hkc4ZVmZjp8GlSFH4Mato
+         65JZ/dm8KnZ8++zEOI3nVxtjJQMVzXw13Tm3oJZ7k38qq++YZ994wzRGE92MwvVq5fDN
+         ir7I13c1gN2VZKUZauS0fXhytZ3sYPmqIHV/URfCFEP02Rbp2TVdC+fkflC9cghs5xu2
+         psvsuz1AJoIBUxy/GuLPi29nseKaerqthTafqyyljUiC0kbDIrb8KFrfQIVqRZ8PzH6y
+         qKxw==
+X-Forwarded-Encrypted: i=1; AJvYcCX7ujCACxxnpfO83YQgvROcxxoiH8cFd8+uBKDTGD0ZWEuDQc4E/ihK2BOJoIFlSFIEJupJg8Xcnz4O+c2Rcli4vTzniYry92v/Hlcw
+X-Gm-Message-State: AOJu0YxDcsx45quggqsEzwNqxe0JIw40lY3MGWc9yS/YGZcDLnpZJm3G
+	I74Seb5Z0aTzrm8bDUQrYS3+iN6jM35bUalAk6UCYyt58rudHiXb8zHkppVRxiqVS47mQfX/7x9
+	JCSgquCi13A4z483etBj9kEkzHK1H9cXPyp/UA34Kvkbu8FOXtXpwELU=
+X-Google-Smtp-Source: AGHT+IFQgC/Y/uWGVhcWmNcl2ho4MafDLtAn5gwYRiBKdk1E4x8S2kf/9BZ6o500V0XRqam5OriFuXksXHwaP1QMt52X96IwDuf6
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2kdw36otwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2jtkxougwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+X-Received: by 2002:a05:6602:1653:b0:7c8:4198:c430 with SMTP id
+ y19-20020a056602165300b007c84198c430mr36002iow.2.1710019144429; Sat, 09 Mar
+ 2024 13:19:04 -0800 (PST)
+Date: Sat, 09 Mar 2024 13:19:04 -0800
+In-Reply-To: <0000000000000149eb05dd3de8cc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a9c150061340dbc9@google.com>
+Subject: Re: [syzbot] [ntfs3?] KASAN: slab-out-of-bounds Read in ntfs_iget5
+From: syzbot <syzbot+b4084c18420f9fad0b4f@syzkaller.appspotmail.com>
+To: almaz.alexandrovich@paragon-software.com, axboe@kernel.dk, 
+	brauner@kernel.org, jack@suse.cz, kari.argillander@gmail.com, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com, 
+	ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com, trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 27 Feb 2024 15:35:38 -0600, Haitao Huang  =
+syzbot suspects this issue was fixed by commit:
 
-<haitao.huang@linux.intel.com> wrote:
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-> On Mon, 26 Feb 2024 12:25:58 -0600, Michal Koutn=FD <mkoutny@suse.com>=
-  =
+    fs: Block writes to mounted block devices
 
-> wrote:
->
->> On Mon, Feb 05, 2024 at 01:06:27PM -0800, Haitao Huang  =
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1649668e180000
+start commit:   3800a713b607 Merge tag 'mm-hotfixes-stable-2022-09-26' of ..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=755695d26ad09807
+dashboard link: https://syzkaller.appspot.com/bug?extid=b4084c18420f9fad0b4f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ccc59c880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10928774880000
 
->> <haitao.huang@linux.intel.com> wrote:
->>> +static int sgx_epc_cgroup_alloc(struct misc_cg *cg);
->>> +
->>> +const struct misc_res_ops sgx_epc_cgroup_ops =3D {
->>> +	.alloc =3D sgx_epc_cgroup_alloc,
->>> +	.free =3D sgx_epc_cgroup_free,
->>> +};
->>> +
->>> +static void sgx_epc_misc_init(struct misc_cg *cg, struct  =
+If the result looks correct, please mark the issue as fixed by replying with:
 
->>> sgx_epc_cgroup *epc_cg)
->>> +{
->>> +	cg->res[MISC_CG_RES_SGX_EPC].priv =3D epc_cg;
->>> +	epc_cg->cg =3D cg;
->>> +}
->>
->> This is a possibly a nit pick but I share it here for consideration.
->>
->> Would it be more prudent to have the signature like
->>   alloc(struct misc_res *res, struct misc_cg *cg)
->> so that implementations are free of the assumption of how cg and res =
-are
->> stored?
->>
->>
->> Thanks,
->> Michal
->
-> Will do.
->
-> Thanks
-> Haitao
->
-Actually, because the root node is initialized in sgx_cgroup_init(), whi=
-ch  =
+#syz fix: fs: Block writes to mounted block devices
 
-only has access to misc_cg_root() so we can't pass a misc_res struct  =
-
-without knowing cg->res relationship. We could hide it with a getter, bu=
-t  =
-
-I think it's a little overkill at the moment. I can sign up for adding  =
-
-this improvement if we feel it needed in future.
-
-Thanks
-Haitao
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
