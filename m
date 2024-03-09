@@ -1,145 +1,300 @@
-Return-Path: <linux-kernel+bounces-97775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91066876F41
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:08:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 154F2876F44
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2F521C20B2A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:08:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78050B213B6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882A32D604;
-	Sat,  9 Mar 2024 05:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA2133070;
+	Sat,  9 Mar 2024 05:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HWjoNmev"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gjoQp1I7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3941C6AD;
-	Sat,  9 Mar 2024 05:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C37208A8;
+	Sat,  9 Mar 2024 05:18:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709960908; cv=none; b=PoRGdIZnEjCdfJLf6Dz3SxmMRyBB3VHOAze2h+t6iwzq9Y9WSUZfu1zuwrbP/aIp0TVmBsuuTz4ZpqnY8zrOMdA4Vh7tzEPKFXsMoWK2MA2m1M/r38aHEBy+NcnIW/DHk1nUqrsbf7wgP961ggnjf04aD8VlDYs8YddkTK3P55k=
+	t=1709961524; cv=none; b=BX58rZlXcEgZHAlT/pdUixa87/Lg1D4WnEpk1l4M4srcLWY8Jue/7KZUOjwZG+gOamNZqIMZTcmpY9ge4iELi1z8EhV6NxKZOV8Yx5TaZxaoMsoZkqpdfLsOaTgIlkp8grMv4ijUwRBkI9Mx0gF8Xy9COm4MkjrebCkHQedk2yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709960908; c=relaxed/simple;
-	bh=TyQDeia3/fwrZ+mismUACXsOv3nfAHZTSyRsrbLpCcc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DfFPnJMm4m3HkvoZxq2UPiDlFBsXM5wlz8AVTiTWoKgCBO1aIMUmF1J7UjJNlSkkON/AUGa+cOj+hEBHfof/YulvdyXdOlY/FbARPnKz7Tw7w6tyfG9vxUr/boDQLWFvZ0il2eO8117tWvj/xiroeoJjiur/NYCN2ZNgRfaDV2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HWjoNmev; arc=none smtp.client-ip=209.85.222.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7db797c5c93so847498241.0;
-        Fri, 08 Mar 2024 21:08:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709960906; x=1710565706; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C3Ne36dcKUp5dKO89MEhMA2kgBQTra2ujtbNnpNKHJ4=;
-        b=HWjoNmevWcwnuX+13CjJ8e94Lo3/F63U8RhKBy34TS/W/NByX3EZV3lRgqaT2lTaCS
-         IanRfQy7Qogu54znoVhLhTqjZYTzoqbGod/Ux7t2EuA30ShiZW1xiF+PO0ymQrpSLFu1
-         gHx1o2Ef7nYvMy+PcdHO8j7s1EGi3+9jTdn/toR1pX1eg6BXd5lSmf5+ADSHYQWedmve
-         DZr/bKU+UDOmr6j2vNYhLnztC1NYcmi5fEYaeRg6BPFJydpommP9bXENfsEMJNECtqdv
-         ELlv2Ew0JQF2O+zPoEYNg/841WMRJ5i6M1yAAzk6yPFfp17E/n222F2IVegZQXOOjTUx
-         KqRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709960906; x=1710565706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C3Ne36dcKUp5dKO89MEhMA2kgBQTra2ujtbNnpNKHJ4=;
-        b=BconNgpMBlfZ4cA2SIkLzSFC+6Gc8fXBg3ehBCAWaoBY1d1GRA0NTYVoX0cuygTy61
-         Y1YVtKgIkIZbBJlG7w4xft+5fcUUW8PHx2i6jA5bj8VcAUUgmMvk757HCu7krCDFdkS6
-         kTq89QNXBCL7l1qBtVdSGRX5aagXwYHD+o+wAzSd/WXV/IfYkl3JJrWhxjkaYzb7YznN
-         Attq73rwxjK12YBxK+pgo+aRyxjl/jhUkpVJ37eazuRVYxKKjDNoBmj9YLMI1pl+KHwc
-         syWYHBvalMwlVpKcvPzxBJeGjLcFLWvziNCaV4j+qcxBrPnCEE7pWGBID11PBQoE9FzH
-         BqTw==
-X-Forwarded-Encrypted: i=1; AJvYcCUaKtVYZjWS9ZBZo1X269y5oqMbeq3mmpnDVyClIXlSlHb0JXAjDWWPFz0Yexe+d/U9MiXRxSxwKPUnEETbH1yL6CFQhI5BCzzJKwgbUVZEFyJQXjiCLoQ2WFQA/iMl+hFu24wTC3X2JbrD
-X-Gm-Message-State: AOJu0Yy1Sx2BrbmVNxyvd9tLVA1/VQsYREkIRn0npZ9Zihb60ZghBVXt
-	tR/kOHiuSHVWTHcwGLiEO6x+YNH82P9YOVeHzd5UVeqgJqHjNvkUHCpHhfK2j1ktegtagAKExvM
-	IeGa6El7/kC3zwmPbkR5BBMFjF14=
-X-Google-Smtp-Source: AGHT+IG7/pySYCmBlupSm8NrazejiIUUebLfJGUmtfsFXcoXvUFaBM12ciZAsVZJVELPx7TmORBqRHwUVLzXxhjowbY=
-X-Received: by 2002:a05:6122:421c:b0:4d3:9a8d:c736 with SMTP id
- cm28-20020a056122421c00b004d39a8dc736mr1045077vkb.8.1709960906120; Fri, 08
- Mar 2024 21:08:26 -0800 (PST)
+	s=arc-20240116; t=1709961524; c=relaxed/simple;
+	bh=LeOJqDDWbMWGLP8JBd1IaDSDKpHShxQbboLI47HRF54=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lif9m+M7aW6kKLyDc4ZEfVCkwj4Q9qwJUSWI9Igjb9KUKlIoXb9tB6x7tIZXfr3FT9dGkq0UtGJZ1kTl4WqMmSO24xp5ITHLHelLJlyWAbZYteh1Q4ENx1LroXGjJYWlkWfgJmGGIBFhL0A1z9XGXfLFaaj4V04AoeO3hk/9gWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gjoQp1I7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B593C433F1;
+	Sat,  9 Mar 2024 05:18:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709961524;
+	bh=LeOJqDDWbMWGLP8JBd1IaDSDKpHShxQbboLI47HRF54=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gjoQp1I7j/FQbeAKrfTRBH0jvejb9O1X+5/SoY+smWzMo5piP2vEBpD6P6UWwU2nN
+	 cqGS6nOubiS4t7BVkiIMfuFKwpS1YU1RIvcAwtGMuxMBfINfoNdYaMeQj11ZT1P4o1
+	 m/RYS3DSi2vup+bcYb4jawuCEps1Zz1hAyI650Tp34D2dI5cdjYpr3kKXC/SVMXydh
+	 zr5h+KpXa/NsMEqSp0YQvR4wVkpcXaIXgardsM/aDz7IUqpcHcwMu3bkHzoH1rAkLr
+	 J1CI3QX3/d7sszxxdZ7EBIUR6mRzDGLBeu74Q1XhFQrYWKso0DEKVPNQ9naKcmKPNn
+	 UVwrMzSpqTRVg==
+Date: Fri, 8 Mar 2024 21:18:42 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>, mwojtas@chromium.org
+Subject: Re: [PATCH net-next v10 07/13] net: ethtool: Introduce a command to
+ list PHYs on an interface
+Message-ID: <20240308211842.6d64b5bc@kernel.org>
+In-Reply-To: <20240304151011.1610175-8-maxime.chevallier@bootlin.com>
+References: <20240304151011.1610175-1-maxime.chevallier@bootlin.com>
+	<20240304151011.1610175-8-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222081135.173040-1-21cnbao@gmail.com> <CAGsJ_4wMGNDcgc3pqSUicYoH7Z_miczkT=uwZU+yhDF0fd57Rg@mail.gmail.com>
- <20240308192334.845b27504a663ec8af4f2aad@linux-foundation.org>
- <CAGsJ_4xSwNZmHN5GvipS-1kELX2NBwHxoGE=aG4sekm1LcYVPw@mail.gmail.com>
- <20240308203641.7fbe7e939b3483bd83b9769d@linux-foundation.org>
- <20240308204251.43d7e518ba95fb4ce22f8d4d@linux-foundation.org> <CAGsJ_4xYUSdEV4N8i3KqNL+dz2kWx3JWgqtMypk0KW539M4SVQ@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xYUSdEV4N8i3KqNL+dz2kWx3JWgqtMypk0KW539M4SVQ@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sat, 9 Mar 2024 13:08:14 +0800
-Message-ID: <CAGsJ_4zRM1Epk-OqRmm6ZfB_FA1TyNBtOA=soz_5cZB=_CsrgA@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] zswap: remove the memcpy if acomp is not sleepable
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: herbert@gondor.apana.org.au, chriscli@google.com, chrisl@kernel.org, 
-	ddstreet@ieee.org, linux-kernel@vger.kernel.org, sjenning@redhat.com, 
-	vitaly.wool@konsulko.com, Barry Song <v-songbaohua@oppo.com>, davem@davemloft.net, 
-	hannes@cmpxchg.org, linux-crypto@vger.kernel.org, linux-mm@kvack.org, 
-	zhouchengming@bytedance.com, nphamcs@gmail.com, yosryahmed@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 9, 2024 at 12:56=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
-e:
->
-> On Sat, Mar 9, 2024 at 12:42=E2=80=AFPM Andrew Morton <akpm@linux-foundat=
-ion.org> wrote:
-> >
-> > On Fri, 8 Mar 2024 20:36:41 -0800 Andrew Morton <akpm@linux-foundation.=
-org> wrote:
-> >
-> > > > Okay, I understand. Since this patch improves zswap's performance, =
-I wanted
-> > > > it to be integrated sooner to contribute. However, I'm perfectly wi=
-lling to
-> > > > respect your concerns and adhere to the community's best practices.
-> > > >
-> > >
-> > > OK.  I very much doubt if anyone is running those drivers on mm.git, =
-so
-> > > adding it now isn't likely to hurt.
-> > >
-> > > So I'll merge it now and shall aim to get it upstream very late in th=
-e
-> > > next merge window.
-> >
-> > Nope.  mm.git won't build without acomp_is_async().
-> >
-> > We can merge the zswap patch via the crypto tree.  Acked-by: me.
->
-> Herbert Acked the acomp_is_async() patch in v5 instead of picking it up
-> into crypto:
-> https://lore.kernel.org/linux-mm/ZdWKz43tTz2XY4ca@gondor.apana.org.au/
+On Mon,  4 Mar 2024 16:10:03 +0100 Maxime Chevallier wrote:
+> +PHY_GET
+> +=======
+> +
+> +Retrieve information about a given Ethernet PHY sitting on the link. As there
+> +can be more than one PHY, the DUMP operation can be used to list the PHYs
+> +present on a given interface, by passing an interface index or name in
+> +the dump request
 
-More details: Herbert acked the acomp_is_async in v5 [1], while he requeste=
-d
-that patch 3/3 of v5 be split from the series and applied by crypto
-[2]. Patch 3/3
-of v5 can function independently of 1/3 and 2/3, and it has already
-been included
-in the crypto tree.
+Could be worth re-stating the default behavior of the DO request?
+That the DO will return the dev->phydev by default and if PHY_INDEX
+is specified in the header, the particular PHY with that index?
 
-That is why v6 has only two left.
+> +	if (phydev->drv && nla_put_string(skb, ETHTOOL_A_PHY_DRVNAME, phydev->drv->name))
 
-[1] https://lore.kernel.org/linux-mm/ZdWKz43tTz2XY4ca@gondor.apana.org.au/
-[2] https://lore.kernel.org/linux-mm/ZdWLim6zYSl%2Fx1Bk@gondor.apana.org.au=
-/
+could you break the lines at 80 where it doesn't hurt readability?
+This way:
 
+	if (phydev->drv && 
+	    nla_put_string(skb, ETHTOOL_A_PHY_DRVNAME, phydev->drv->name))
 
->
-> >
-> > Or please just resend the zswap change after 6.9-rc1 is released.
+> +		return -EMSGSIZE;
+> +
+> +	if (ptype == PHY_UPSTREAM_PHY) {
+> +		struct phy_device *upstream = pdn->upstream.phydev;
+> +		const char *sfp_upstream_name;
+> +
+> +		/* Parent index */
+> +		if (nla_put_u32(skb, ETHTOOL_A_PHY_UPSTREAM_INDEX, upstream->phyindex))
+> +			return -EMSGSIZE;
+> +
+> +		if (pdn->parent_sfp_bus) {
+> +			sfp_upstream_name = sfp_get_name(pdn->parent_sfp_bus);
+> +			if (sfp_upstream_name && nla_put_string(skb,
+> +								ETHTOOL_A_PHY_UPSTREAM_SFP_NAME,
+> +								sfp_upstream_name))
 
-Thanks
-Barry
+ditto
+
+> +				return -EMSGSIZE;
+> +		}
+> +	}
+
+> +int ethnl_phy_doit(struct sk_buff *skb, struct genl_info *info)
+> +{
+> +	struct phy_req_info req_info = {};
+> +	struct nlattr **tb = info->attrs;
+> +	struct sk_buff *rskb;
+> +	void *reply_payload;
+> +	int reply_len;
+> +	int ret;
+> +
+> +	ret = ethnl_parse_header_dev_get(&req_info.base,
+> +					 tb[ETHTOOL_A_PHY_HEADER],
+> +					 genl_info_net(info), info->extack,
+> +					 true);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	rtnl_lock();
+> +
+> +	ret = ethnl_phy_parse_request(&req_info.base, tb);
+> +	if (ret < 0)
+> +		goto err_unlock_rtnl;
+> +
+> +	/* No PHY, return early */
+> +	if (!req_info.pdn.phy)
+> +		goto err_unlock_rtnl;
+> +
+> +	ret = ethnl_phy_reply_size(&req_info.base, info->extack);
+> +	if (ret < 0)
+> +		goto err_unlock_rtnl;
+> +	reply_len = ret + ethnl_reply_header_size();
+> +
+> +	rskb = ethnl_reply_init(reply_len, req_info.base.dev,
+> +				ETHTOOL_MSG_PHY_GET_REPLY,
+> +				ETHTOOL_A_PHY_HEADER,
+> +				info, &reply_payload);
+> +	if (!rskb) {
+> +		ret = -ENOMEM;
+> +		goto err_unlock_rtnl;
+> +	}
+> +
+> +	ret = ethnl_phy_fill_reply(&req_info.base, rskb);
+> +	if (ret)
+> +		goto err_free_msg;
+> +
+> +	rtnl_unlock();
+> +	ethnl_parse_header_dev_put(&req_info.base);
+> +	genlmsg_end(rskb, reply_payload);
+> +
+> +	return genlmsg_reply(rskb, info);
+> +
+> +err_free_msg:
+> +	nlmsg_free(rskb);
+> +err_unlock_rtnl:
+> +	rtnl_unlock();
+> +	ethnl_parse_header_dev_put(&req_info.base);
+> +	return ret;
+> +}
+> +
+> +struct ethnl_phy_dump_ctx {
+> +	struct phy_req_info	*phy_req_info;
+> +	unsigned long ifindex;
+> +	unsigned long phy_index;
+> +};
+> +
+> +int ethnl_phy_start(struct netlink_callback *cb)
+> +{
+> +	const struct genl_dumpit_info *info = genl_dumpit_info(cb);
+
+You can save some chars by using genl_info_dump() here
+
+> +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
+> +	struct nlattr **tb = info->info.attrs;
+
+then you can ditch this
+
+> +	int ret;
+> +
+> +	BUILD_BUG_ON(sizeof(*ctx) > sizeof(cb->ctx));
+> +
+> +	ctx->phy_req_info = kzalloc(sizeof(*ctx->phy_req_info), GFP_KERNEL);
+> +	if (!ctx->phy_req_info)
+> +		return -ENOMEM;
+> +
+> +	ret = ethnl_parse_header_dev_get(&ctx->phy_req_info->base,
+> +					 tb[ETHTOOL_A_PHY_HEADER],
+
+and:
+
+					 info->attrs[ETHTOOL_A_PHY_HEADER],
+
+> +					 sock_net(cb->skb->sk), cb->extack,
+> +					 false);
+
+leaking ctx->phy_req_info on error?
+
+> +	ctx->ifindex = 0;
+> +	ctx->phy_index = 0;
+> +	return ret;
+> +}
+
+> +static int ethnl_phy_dump_one_dev(struct sk_buff *skb, struct net_device *dev,
+> +				  struct netlink_callback *cb)
+> +{
+> +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
+> +	struct phy_req_info *pri = ctx->phy_req_info;
+> +	struct phy_device_node *pdn;
+> +	int ret = 0;
+> +	void *ehdr;
+> +
+> +	pri->base.dev = dev;
+> +
+> +	xa_for_each_start(&dev->link_topo->phys, ctx->phy_index, pdn, ctx->phy_index) {
+> +		ehdr = ethnl_dump_put(skb, cb,
+> +				      ETHTOOL_MSG_PHY_GET_REPLY);
+
+this one OTOH fits on a line :)
+
+> +		if (!ehdr) {
+> +			ret = -EMSGSIZE;
+> +			break;
+> +		}
+> +
+> +		ret = ethnl_fill_reply_header(skb, dev,
+> +					      ETHTOOL_A_PHY_HEADER);
+
+ditto
+
+> +		if (ret < 0) {
+> +			genlmsg_cancel(skb, ehdr);
+> +			break;
+> +		}
+> +
+> +		memcpy(&pri->pdn, pdn, sizeof(*pdn));
+> +		ret = ethnl_phy_fill_reply(&pri->base, skb);
+
+On a DO fill() shouldn't fail, because we size the skb, but if we pack
+many entries into the skb on a DUMP it can. So:
+
+		if (ret < 0) {
+			genlmsg_cancel(skb, ehdr);
+			break;
+		}
+
+no?
+
+> +		genlmsg_end(skb, ehdr);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
+> +{
+> +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
+> +	struct net *net = sock_net(skb->sk);
+> +	struct net_device *dev;
+> +	int ret = 0;
+> +
+> +	rtnl_lock();
+> +
+> +	if (ctx->phy_req_info->base.dev) {
+> +		ret = ethnl_phy_dump_one_dev(skb, ctx->phy_req_info->base.dev, cb);
+> +	} else {
+> +		for_each_netdev_dump(net, dev, ctx->ifindex) {
+> +			ret = ethnl_phy_dump_one_dev(skb, dev, cb);
+> +			if (ret)
+> +				break;
+> +
+> +			ctx->phy_index = 0;
+> +		}
+> +	}
+> +	rtnl_unlock();
+> +
+> +	if (ret == -EMSGSIZE && skb->len)
+> +		return skb->len;
+
+you can remove this if thanks to (very recent) commit b5a899154aa9
+
+> +	return ret;
+> +}
+
+Very sorry for the late review, BTW :(
 
