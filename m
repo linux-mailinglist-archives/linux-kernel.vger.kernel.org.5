@@ -1,136 +1,122 @@
-Return-Path: <linux-kernel+bounces-97783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A18876F5D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:57:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 875E0876F5E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 07:15:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B8601C20CB5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:57:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40D842821DA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:15:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A201F364C7;
-	Sat,  9 Mar 2024 05:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fxkm1ZjY"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E951A364DC;
+	Sat,  9 Mar 2024 06:15:02 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80AD233CF1
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 05:57:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34E116423
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 06:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709963846; cv=none; b=Opo4EQU/IV8zwpm9xVKVeatrr5u1kzz50ePq51Xe/iBoMWK27wLFZuAsPw/xAHHKlL05ya+XShuufqMDElhOuU6+Xao2vEGEWfdlOA9t3FYSm1DNi25ly7V6anQh9xQojB/2Z0VOcRUb/zqEbKZlyhh1nJKnqR6C6RDyFJYL/OU=
+	t=1709964902; cv=none; b=g141RXnMZKDacKEEIEtLrcJPrm9kQE8hGlS4WwFwioqBWKKQOyH+i35REW8bwZEsmMhrUs9TNxVS5YCsL/WBdMGVxGnK+OIP+Aoc+yjVlW9CdJhY5+Z9aL7lawKxUt4XlIT6qftL7cLc6s0YTwPuAnnNGOz8nLu4dYw6IKe9Qow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709963846; c=relaxed/simple;
-	bh=QNC6MLowYJQ7WrQiTaExvXyU7M4ZEOEd7qjVzVWX+FQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=X+yEk+MpYgOiJwPlIFKPVJjiSjAoIDalaScfU2EHKHdcmVQFVHTUAzRwf9vMcO1zs7UYYChrNfFJ4KcRtHYhjJCGWMI7zWQxBaRt4eUSbppiMGFbrqKofjb4t9w9Nca77iAbVANelxrweJ+vlw/Rvo1y0YDcEDAFapRyRMgRX9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fxkm1ZjY; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-609fb447f55so22472307b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 21:57:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709963842; x=1710568642; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ikzoZBuKoqEC94gAKswpz3yYXyOYx8dWrhoyNRyBiYk=;
-        b=Fxkm1ZjYEo28OsvjEsMQVclDOHjOMsKOdNUush0wtqS8EbzS6Iamig8z9vZ/gBz86f
-         GGh0Gl7XdRHZt5ZyQkyzp3lVXXCkdi1423v/fyd1jgunM/e9nhd8DpJWD1UgNyCBLbr5
-         G4grJ6fKgZMQX/9kKaAbqdvIX5RhDTsfBTmeBScu1VetmNUl7U8ngsdkQZwuNgxDwDJu
-         K1ZjKN3ZXBHuxlPtqWar0ddd8l2W/XQFnOIUod/bF26CHfU3nk2gPJPCGZk8CdU1I0HG
-         AXArfHvDx4cITbZ6d+RqD/AUus02UhmIrZxbHNKu4kSphjLqWZglNLpidUWMFPcmsEbC
-         JdZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709963842; x=1710568642;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ikzoZBuKoqEC94gAKswpz3yYXyOYx8dWrhoyNRyBiYk=;
-        b=CP9gr9zte4ryB4eYe6ti30gmroqa3sfgO+intPTmOXMdd1IJC2DrKA4x1FQUEJgXyf
-         E+ojM6iTtrhKBXkQNh7PMmLAtYwA7DAbo9wy2ZL3UTEe8Fsc7OhOjiyBCH3/jX6VcCMG
-         gm+f2QG0DFdRcx9iALx5xjq1rMtTiKa8UMJOYF1NQ00WfLDOYKHJsZ3CuPH0QWgS0p2q
-         d9iS+uolLne6GhItKRDpCGEzC4klBJcoN+lKDpEAAMaR5GbA/OPojqE1zUeH4zvSgIZy
-         qX/d3NlhLo+MvrI/JMj0zdWwEtjEGJmhygg/deyII9i8jENRgaK5SozXzj1sUD4nUaKK
-         qUpQ==
-X-Gm-Message-State: AOJu0Yw0jpBixftMoSSo0OcNdZCcbHEDWq9yXSkGWTbYI2HqofTmEqQJ
-	ZTNlR/a6tTk0SD29WpRbF9xaWYUB43hVdVXzdr7vOZdbBeapH7A4/TYs8LpeSbQ=
-X-Google-Smtp-Source: AGHT+IH03dg0jEy3qpc1hA3fIB8ySYDaS2MFsYVtkyzy86e3Yz2dd9snxIoM1x44m4PB3JFgpX58rA==
-X-Received: by 2002:a0d:dd89:0:b0:60a:6f7:d5f2 with SMTP id g131-20020a0ddd89000000b0060a06f7d5f2mr1224269ywe.9.1709963842574;
-        Fri, 08 Mar 2024 21:57:22 -0800 (PST)
-Received: from blackforest.ics.uci.edu (blackforest.ics.uci.edu. [128.195.4.234])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170902784800b001d8a93fa5b1sm591371pln.131.2024.03.08.21.57.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 21:57:22 -0800 (PST)
-From: =?UTF-8?q?Andr=C3=A9=20R=C3=B6sti?= <an.roesti@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: an.roesti@gmail.com,
-	tglx@linutronix.de,
-	peterz@infradead.org,
-	luto@kernel.org
-Subject: [PATCH] Respect system call number changes by sys_enter probes
-Date: Sat,  9 Mar 2024 05:53:12 +0000
-Message-Id: <20240309055311.2144-1-an.roesti@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709964902; c=relaxed/simple;
+	bh=pRDbbMiFpecWIYDj1/yyHTleUCERTy6qkobkci/nWJg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=gAIc7iUeQqwyapaSGB5AcAV1cIgylVa+XN/vJAyU3OMCk10YwJxlgta6CK+9dToeqKGA5GnBhLrDIAXKlum0azByOKE0vGbQT7uaJt/ZnJ4BpGvYFExzmEPMKFQY4J4ReEMQJqC7TWZCMXD3IK543G+pTxp+7SKH+LhiZVhUmYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TsCPV5b0FzXhh0;
+	Sat,  9 Mar 2024 14:12:30 +0800 (CST)
+Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7F793140121;
+	Sat,  9 Mar 2024 14:14:50 +0800 (CST)
+Received: from [10.67.109.211] (10.67.109.211) by
+ dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Sat, 9 Mar 2024 14:14:50 +0800
+Message-ID: <42892794-7668-4eb0-8d2f-c78ca0daf370@huawei.com>
+Date: Sat, 9 Mar 2024 14:14:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-next v2] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Fangrui
+ Song <maskray@google.com>
+CC: Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, Andrew
+ Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov"
+	<kirill.shutemov@linux.intel.com>, Geert Uytterhoeven
+	<geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, Mike Rapoport
+	<rppt@kernel.org>, Rob Herring <robh@kernel.org>, Thomas Gleixner
+	<tglx@linutronix.de>, Linus Walleij <linus.walleij@linaro.org>,
+	<llvm@lists.linux.dev>
+References: <20240307151231.654025-1-liuyuntao12@huawei.com>
+ <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com>
+From: "liuyuntao (F)" <liuyuntao12@huawei.com>
+In-Reply-To: <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemd100004.china.huawei.com (7.185.36.20)
 
-When a probe  is registered at the `trace_sys_enter` tracepoint, and
-that probe changes the system call number, the old system call still
-gets executed on x86_64 (and potentially other architectures). This
-is inconsistent with how ARM64 (and potentially other architectures)
-handles this, and inconsistent with the tracepoint semantics prior to
-change b6ec41346103 (core/entry: Report syscall correctly for trace
-and audit).
 
-With this patch, the semantics are restored to be the same as before
-the aforementioned change (and thus made consistent with ARM64). The
-change adds one line to re-read the system call number register into
-the `syscall` variable. By reading twice, the benefits of the
-aforementioned change b6ec41346103 are kept.
 
-There should be no performance impact if no sys_enter tracepoints are
-registered, since re-reading the system call number from `regs` is
-only done conditonally if the tracepoint is in use. If a probe is
-registered, the performance impact should still be minimal, since the
-additional call to `syscall_get_nr` amounts to only an inlined read
-of `regs->orig_ax` (on x86_64).
+On 2024/3/8 21:15, Arnd Bergmann wrote:
+> On Thu, Mar 7, 2024, at 16:12, Yuntao Liu wrote:
+>> The current arm32 architecture does not yet support the
+>> HAVE_LD_DEAD_CODE_DATA_ELIMINATION feature. arm32 is widely used in
+>> embedded scenarios, and enabling this feature would be beneficial for
+>> reducing the size of the kernel image.
+>>
+>> In order to make this work, we keep the necessary tables by annotating
+>> them with KEEP, also it requires further changes to linker script to KEEP
+>> some tables and wildcard compiler generated sections into the right place.
+>>
+>> It boots normally with defconfig, vexpress_defconfig and tinyconfig.
+>>
+>> The size comparison of zImage is as follows:
+>> defconfig       vexpress_defconfig      tinyconfig
+>> 5137712         5138024                 424192          no dce
+>> 5032560         4997824                 298384          dce
+>> 2.0%            2.7%                    29.7%           shrink
+>>
+>> When using smaller config file, there is a significant reduction in the
+>> size of the zImage.
+>>
+>> We also tested this patch on a commercially available single-board
+>> computer, and the comparison is as follows:
+>> a15eb_config
+>> 2161384         no dce
+>> 2092240         dce
+>> 3.2%            shrink
+>>
+>> The zImage size has been reduced by approximately 3.2%, which is 70KB on
+>> 2.1M.
+>>
+>> Signed-off-by: Yuntao Liu <liuyuntao12@huawei.com>
+> 
+> I've retested with both gcc-13 and clang-18, and so no
+> more build issues. Your previous version already worked
+> fine for me.
+> 
+> I did some tests combining this with CONFIG_TRIM_UNUSED_KSYMS,
+> which showed a significant improvement as expected. I also
+> tried combining it with an experimental CONFIG_LTO_CLANG
+> patch, but that did not show any further improvements.
+> 
 
-Signed-off-by: André Rösti <an.roesti@gmail.com>
----
-@Thomas Gleixner: You may have received this e-mail twice. My apologies!
-This is my first attempt to contribute, and I made a mistake using git
-send-email. Thanks for your work maintaining this and sorry again.
----
- kernel/entry/common.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 88cb3c88aaa5..89b14ba9ed14 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -57,8 +57,11 @@ long syscall_trace_enter(struct pt_regs *regs, long syscall,
- 	/* Either of the above might have changed the syscall number */
- 	syscall = syscall_get_nr(current, regs);
- 
--	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
-+	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT)) {
- 		trace_sys_enter(regs, syscall);
-+		/* Tracers may have changed system call number as well */
-+		syscall = syscall_get_nr(current, regs);
-+	}
- 
- 	syscall_enter_audit(regs, syscall);
- 
-
-base-commit: 221a164035fd8b554a44bd7c4bf8e7715a497561
--- 
-2.34.1
-
+Thanks for the tests, CONFIG_LD_DEAD_CODE_DATA_ELIMINATION and 
+CONFIG_TRIM_UNUSED_KSYMS do indeed result in a significant improvement.
+I found that arm32 still doesn't support CONFIG_LTO_CLANG. I've done 
+some work on it, but without success. I'd like to learn more about the 
+CONFIG_LTO_CLANG patch. Do you have any relevant links?
 
