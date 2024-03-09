@@ -1,188 +1,229 @@
-Return-Path: <linux-kernel+bounces-97890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD79877135
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:51:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE384877136
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:56:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AAAB281B0E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 12:51:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EBBD1F21725
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 12:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406173BBD8;
-	Sat,  9 Mar 2024 12:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D38D3BBE3;
+	Sat,  9 Mar 2024 12:56:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I2F8pFDs"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="VKslXP3A"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03E21BDF4
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 12:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD61364C0;
+	Sat,  9 Mar 2024 12:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709988661; cv=none; b=rTu+sgFA/1Ce2HXeqzYGPbCpZ1BXThqNghJzW4WMbxPTJlCP/JCjdkXbw3EbgMWf7O/GZfoHZfbgFVBM3oEpZYh5mk2YYxOC8d/C/I4MddOU00u2DSB06BCpo/GTl7riY7+atLUfTBlARk/51qdHUxlCnKRpl9v/n7LGq7BVyyg=
+	t=1709988971; cv=none; b=HrEa25f4O7D0wYgfPQGVXyZ9DvCp+7Hh6qDhxt6pVbk2dcr4Dabg2g4hqsLDbjEDakWquoQwDlcUMse6Fd8cVvPIGJxHcP+4FltDvfxF2H2cVGL6QHKlcjI7wUM7wh8ECvLa1CeFt8alNCKqIj7Jgtb3lW7Zknv7kTAlgjnAHUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709988661; c=relaxed/simple;
-	bh=4V9xgRJtIxeDbMzKIrPVPo05iJQHnN0c6lIUZl7V4V8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VkMoqbV5JaUcvYlFnZelmZaBFeKnNHSp7UohUYcFlVoHVP5WXtLY3/1Au3er2zZXOUK0N2uvRRJGRtamzjNtJxfQnOIhwksp1A6ThucSHtBSr9COu2cHhAed4ut0CchbdFt3G3ct1ZUUfDscEHg2psfD9VEnp1IB4Wam0d/ZBXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=I2F8pFDs; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so2849361276.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 04:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709988659; x=1710593459; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FpdDui4dtfTDgXa3V4vSwAx/FAfCbg9OZ3d9WLKbM+w=;
-        b=I2F8pFDsEDfk1zbRegAgqkNgTntvbQTwxtsS8Fipss3PGCCHNBs4j29fRw3eTnR+YX
-         DHFI9bnB+TT1EzbH0nDqmiiKiQGExEzSBP+K55nAHW2zHpUexjBEVxeQVF9AdcGXUFVP
-         H1P7Ld68tq/336gNPr9KstOjpPOuwFhhEqUE2DW6wYRrYo3pJMI3uy7KEfa6jcHW5GgF
-         v2tdmiiyRJ6sMVeuPzg2RsqZi8+g8se7Xc2/W93uVty62ki+PdZ6ftliA63d0s5miXFJ
-         CwgHYc39YxPa41qmUs0UOjjL03ZcDSddBeK+jCuisrAkL+7qYSsbmRcTWSyHYT2F+lFm
-         klRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709988659; x=1710593459;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FpdDui4dtfTDgXa3V4vSwAx/FAfCbg9OZ3d9WLKbM+w=;
-        b=DcEqMXav2j8b5B8160DvPxGDDISmb81iY1OFsl4Y1gXWS5vlWR5Ur1JiAh1+FVLSYB
-         DmTkjfKikwSY/LI6F6G0UleSQLdrAzseQOZl8HBj+XAB8g9Tlj7oLvgOBcUOJjEURBiY
-         vGnXKXibl6+MwRHsDmL/TkUadepcjUxA7J03Bx6F1bVhqpfzuI6qXD/r+ClkNmMXleeN
-         CLYbOMe/bh3B0Ep42nwGnGaZpJTyrwFm3Dt2IurEJRR1D7VzOq7yqwF0Cbswi3TLNTmM
-         VEFxsbyQSAMlI8yIq07QABt8lvEINrcT6x54SHTmsV1AAhMmRk5ENRVT7absCYLgGBBK
-         Fg8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW+Oi9MSG9T/9L1Rygws9Ha0f/0pvMV8bgFSs2fh/m6nfwmfwvfr2fnhtrGCrmcxlkHwCklWZii22zg0RRQFRQ7YouJy9nWaHPYQoM/
-X-Gm-Message-State: AOJu0Yyg+i363QRvEj3mCGNWt+h8OD+9rwqbX1TX832pZo2afmGqKhbI
-	lPmQbS3aXoglRSU3u6h0nZfRfTLgnXbPaGt/efMZ3k5uvdvd4P/IjT1KnmjWZCY9tIGyDUgLL54
-	JqhGFITZOc2c0wI8GiHmK9YASIONBjSf+9RMC/A==
-X-Google-Smtp-Source: AGHT+IGnUYF0gCMHLcf1QFwa56sieLf++DhvZeij5X23g7go7ltIIcQm14JZowxQn+1PenGYypISbvzmUaJpUZPWAgM=
-X-Received: by 2002:a25:ac93:0:b0:dc7:8c3a:4e42 with SMTP id
- x19-20020a25ac93000000b00dc78c3a4e42mr1076338ybi.30.1709988658836; Sat, 09
- Mar 2024 04:50:58 -0800 (PST)
+	s=arc-20240116; t=1709988971; c=relaxed/simple;
+	bh=ElLfEFnJ6xG3gz8E1eLHKtA0poaBTMqxkUvb3LCp40o=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uWzrMrzLi88SxVQ6cdMZTla0USrrbtAw94HTxGpHTYHY2ADROPav/em4PW7ZfndZAUQEo3eQzAe6RRADzewKRJvyX1YTAJOg8h51mhXqfpsmhe/SGTxd3TeXSTtCoR4s7VmSUtwBgBsCSJPKOy9sZX2JJsT4pvnXC3i02GIRbps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=VKslXP3A; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1709988963; x=1710248163;
+	bh=QKG7Og4r8P88E0N1YInQ/WJ0SZGm9r7NkKPA5RX/JQg=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=VKslXP3A5rB0GXrXOtmAgqr7iSu5DaPUaZbdRIsukN7+B5A70FJTiY12TndIf1/0U
+	 EqOemI7ofG401W9P8rTCnamYpigDpnmdSExQLtB+DqduIQgp+v1/kdTkyYqZDmH2fV
+	 NsNxwhAFtKKRQDmk1hX76+KzbCqiGjuoHED2Yn5sjIjQj8HqZgPXefOtNGQTSVnn1/
+	 tCw6oSkV4brRjyiet/DaQPh5yvT6ke8y0avvV3eov3sqKVLMb3fJPge9Rma2gtuAoB
+	 ixd6KhPY4PogSNy3jjkbrmQNY1OMNBNPuzgyHljkt+H7mRJVq1JJA8ietmlllGu3ES
+	 sRMpixq5h0iCA==
+Date: Sat, 09 Mar 2024 12:55:35 +0000
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] rust: sync: add `ArcBorrow::from_raw`
+Message-ID: <e09ed8fc-d305-4740-8c6e-7308a634b822@proton.me>
+In-Reply-To: <20240228-arc-for-list-v2-1-ae93201426b4@google.com>
+References: <20240228-arc-for-list-v2-0-ae93201426b4@google.com> <20240228-arc-for-list-v2-1-ae93201426b4@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307172334.1753343-1-sui.jingfeng@linux.dev>
- <20240307172334.1753343-2-sui.jingfeng@linux.dev> <CAA8EJpp8tsHi0RhsJXG+r6nOsV3AUC_n6jNHL0Cr6Ku2h3NMog@mail.gmail.com>
- <45f59f31-1f03-4a96-adb6-25c7cdd5e8a1@linux.dev> <CAA8EJpqq1-cEke6wEFZFDnpz4tFBcL6HF3=Qtf-8Q3WbogLS8A@mail.gmail.com>
- <c84fcdba-af50-4212-a8e3-f492c2b02ce4@linux.dev> <CAA8EJppTcPO3j7GpGcGbKPUjQ=3rTMMOrU1SYR3mtkWLztf2qQ@mail.gmail.com>
- <7535b3ba-6bbb-411c-82a4-cd4ac45de1a6@linux.dev> <CAA8EJpp3yd33pYweL_exrXMJ3g-m7-yjJrjiVMVMevOadBtt8g@mail.gmail.com>
- <b573ec32-fe07-498c-abe7-f9a16bdc1c21@linux.dev>
-In-Reply-To: <b573ec32-fe07-498c-abe7-f9a16bdc1c21@linux.dev>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 9 Mar 2024 14:50:47 +0200
-Message-ID: <CAA8EJpo1Zk5Z80Jh24ygJH-djfHrLK7wVC8AFe99AOetWpmUgw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] drm/bridge: Add fwnode based helpers to get the
- next bridge
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 9 Mar 2024 at 13:25, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->
-> Hi,
->
->
-> On 2024/3/9 18:39, Dmitry Baryshkov wrote:
-> > On Sat, 9 Mar 2024 at 11:33, Sui Jingfeng <sui.jingfeng@linux.dev> wrot=
-e:
-> >> Hi,
-> >>
-> >>
-> >> On 2024/3/8 04:40, Dmitry Baryshkov wrote:
-> >>>>> But really, there is nothing so hard about it:
-> >>>>> - Change of_node to fw_node, apply an automatic patch changing this=
- in
-> >>>>> bridge drivers.
-> >>>>> - Make drm_of_bridge functions convert passed of_node and comp
-> >>>>>
-> >>>>> After this we can start cleaning up bridge drivers to use fw_node A=
-PI
-> >>>>> natively as you did in your patches 2-4.
-> >>>> Yes, it's not so hard. But I'm a little busy due to other downstream=
- developing
-> >>>> tasks. Sorry, very sorry!
-> >>>>
-> >>>> During the talk with you, I observed that you are very good at fwnod=
-e domain.
-> >>>> Are you willing to help the community to do something? For example, =
-currently
-> >>>> the modern drm bridge framework is corrupted by legacy implement, is=
- it possible
-> >>>> for us to migrate them to modern? Instead of rotting there? such as =
-the lontium-lt9611uxc.c
-> >>>> which create a drm connector manually, not modernized yet and it's D=
-T dependent.
-> >>>> So, there are a lot things to do.
-> >>> Actually, lontium-lt9611uxc.c does both of that =F0=9F=98=89 It suppo=
-rts
-> >>> creating a connector and it as well supports attaching to a chain
-> >>> without creating a connector. Pretty nice, isn't it?
-> >>
-> >> But why the drm_bridge_connector helpers and/or the drm_connector brid=
-ge can't suit you need?
-> >> Coding this way just add boilerplate into drm bridge subsystem, right?
-> > Because there are platforms, like iMX LCDIF which can use the
-> > lt9611uxc bridge, but do not make use of the drm_bridge_connector yet.
-> >
->
-> Well, I have just grepped across the drm-tip kernel branch, but I don't f=
-ind
-> iMX LCDIF you mentioned. See the search results pasted at bellow.
+On 2/28/24 14:00, Alice Ryhl wrote:
+> Allows access to a value in an `Arc` that is currently held as a raw
+> pointer due to use of `Arc::into_raw`, without destroying or otherwise
+> consuming that raw pointer.
+>=20
+> This is a dependency of the linked list that Rust Binder uses. The
+> linked list uses this method when iterating over the linked list.
+>=20
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
+>   rust/kernel/sync/arc.rs | 76 +++++++++++++++++++++++++++++++++++++-----=
+-------
+>   1 file changed, 58 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+> index 7d4c4bf58388..53addb8876c2 100644
+> --- a/rust/kernel/sync/arc.rs
+> +++ b/rust/kernel/sync/arc.rs
+> @@ -137,6 +137,39 @@ struct ArcInner<T: ?Sized> {
+>       data: T,
+>   }
+>=20
+> +impl<T: ?Sized> ArcInner<T> {
+> +    /// Converts a pointer to the contents of an [`Arc`] into a pointer =
+to the [`ArcInner`].
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// `ptr` must have been returned by a previous call to [`Arc::into_=
+raw`], and the `Arc` must
+> +    /// not yet have been destroyed.
+> +    unsafe fn container_of(ptr: *const T) -> NonNull<ArcInner<T>> {
+> +        let refcount_layout =3D Layout::new::<bindings::refcount_t>();
+> +        // SAFETY: The caller guarantees that the pointer is valid.
+> +        let val_layout =3D Layout::for_value(unsafe { &*ptr });
+> +        // SAFETY: We're computing the layout of a real struct that exis=
+ted when compiling this
+> +        // binary, so its layout is not so large that it can trigger ari=
+thmetic overflow.
+> +        let val_offset =3D unsafe { refcount_layout.extend(val_layout).u=
+nwrap_unchecked().1 };
+> +
+> +        // Pointer casts leave the metadata unchanged. This is okay beca=
+use the metadata of `T` and
+> +        // `ArcInner<T>` is the same since `ArcInner` is a struct with `=
+T` as its last field.
+> +        //
+> +        // This is documented at:
+> +        // <https://doc.rust-lang.org/std/ptr/trait.Pointee.html>.
+> +        let ptr =3D ptr as *const ArcInner<T>;
+> +
+> +        // SAFETY: The pointer is in-bounds of an allocation both before=
+ and after offsetting the
+> +        // pointer, since it originates from a previous call to `Arc::in=
+to_raw` on an `Arc` that is
+> +        // still valid.
+> +        let ptr =3D unsafe { ptr.byte_sub(val_offset) };
+> +
+> +        // SAFETY: The pointer can't be null since you can't have an `Ar=
+cInner<T>` value at the null
+> +        // address.
+> +        unsafe { NonNull::new_unchecked(ptr.cast_mut()) }
+> +    }
+> +}
+> +
+>   // This is to allow [`Arc`] (and variants) to be used as the type of `s=
+elf`.
+>   impl<T: ?Sized> core::ops::Receiver for Arc<T> {}
+>=20
+> @@ -232,27 +265,13 @@ pub fn into_raw(self) -> *const T {
+>       /// `ptr` must have been returned by a previous call to [`Arc::into=
+_raw`]. Additionally, it
+>       /// must not be called more than once for each previous call to [`A=
+rc::into_raw`].
+>       pub unsafe fn from_raw(ptr: *const T) -> Self {
+> -        let refcount_layout =3D Layout::new::<bindings::refcount_t>();
+> -        // SAFETY: The caller guarantees that the pointer is valid.
+> -        let val_layout =3D Layout::for_value(unsafe { &*ptr });
+> -        // SAFETY: We're computing the layout of a real struct that exis=
+ted when compiling this
+> -        // binary, so its layout is not so large that it can trigger ari=
+thmetic overflow.
+> -        let val_offset =3D unsafe { refcount_layout.extend(val_layout).u=
+nwrap_unchecked().1 };
+> -
+> -        // Pointer casts leave the metadata unchanged. This is okay beca=
+use the metadata of `T` and
+> -        // `ArcInner<T>` is the same since `ArcInner` is a struct with `=
+T` as its last field.
+> -        //
+> -        // This is documented at:
+> -        // <https://doc.rust-lang.org/std/ptr/trait.Pointee.html>.
+> -        let ptr =3D ptr as *const ArcInner<T>;
+> -
+> -        // SAFETY: The pointer is in-bounds of an allocation both before=
+ and after offsetting the
+> -        // pointer, since it originates from a previous call to `Arc::in=
+to_raw` and is still valid.
+> -        let ptr =3D unsafe { ptr.byte_sub(val_offset) };
+> +        // SAFETY: The caller promises that this pointer originates from=
+ a call to `into_raw` on an
+> +        // `Arc` that is still valid.
+> +        let ptr =3D unsafe { ArcInner::container_of(ptr) };
+>=20
+>           // SAFETY: By the safety requirements we know that `ptr` came f=
+rom `Arc::into_raw`, so the
+>           // reference count held then will be owned by the new `Arc` obj=
+ect.
+> -        unsafe { Self::from_inner(NonNull::new_unchecked(ptr.cast_mut())=
+) }
+> +        unsafe { Self::from_inner(ptr) }
+>       }
+>=20
+>       /// Returns an [`ArcBorrow`] from the given [`Arc`].
+> @@ -453,6 +472,27 @@ unsafe fn new(inner: NonNull<ArcInner<T>>) -> Self {
+>               _p: PhantomData,
+>           }
+>       }
+> +
+> +    /// Creates an [`ArcBorrow`] to an [`Arc`] that has previously been =
+deconstructed with
+> +    /// [`Arc::into_raw`].
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// * The provided pointer must originate from a call to [`Arc::into=
+_raw`].
+> +    /// * For the duration of the lifetime annotated on this `ArcBorrow`=
+, the reference count must
+> +    ///   not hit zero.
+> +    /// * For the duration of the lifetime annotated on this `ArcBorrow`=
+, there must not be a
+> +    ///   [`UniqueArc`] reference to this value.
 
-Please take a look at the commit 8ddce13ae696 ("drm/bridge: lt9611: Do
-not generate HFP/HBP/HSA and EOT packet"). As you can see from the
-description, Marek has been using this bridge with th iMX8MM / iMX8MP
-boards. As soon as mxsfb has been updated to pass
-DRM_BRIDGE_ATTACH_NO_CONNECTOR, we can drop corresponding code from
-LT9611UXC driver.
-
-> $ find . -name "*.dts" -type f | xargs grep "lontium,lt9611uxc"
-> ./arm64/boot/dts/qcom/sm8450-hdk.dts:           compatible =3D "lontium,l=
-t9611uxc";
-> ./arm64/boot/dts/qcom/qrb5165-rb5.dts:          compatible =3D "lontium,l=
-t9611uxc";
-> ./arm64/boot/dts/qcom/qrb2210-rb1.dts:          compatible =3D "lontium,l=
-t9611uxc";
-> ./arm64/boot/dts/qcom/qrb4210-rb2.dts:          compatible =3D "lontium,l=
-t9611uxc";
-> ./arm64/boot/dts/qcom/sm8350-hdk.dts:           compatible =3D "lontium,l=
-t9611uxc";
->
->
-> So I can't see the drm driver that you refer to, can you pointed it out f=
-or study
-> purpose? Even it's exist, however, back to that time, why don't you posti=
-ng a patch
-> to switch it to the canonical design as you mentioned and give the commun=
-ity a clean
-> design?
-
-If you have iMX8 hardware, please do it. I don't have these boards and
-I do not have an intention of acquiring them.
-
-> And those are just *reasons*, from the viewpoint of the *result*.
-> The merged patch results in a 'side-by-side' implement and boilerplate ad=
-ded
-> into drm bridges subsystem, the results doesn't change no matter what the
-> reason is, right?
+I am a bit confused, this feels to me like it should be guaranteed by
+`UniqueArc` and not by this function. Currently there is not even a way
+of getting a `*const T` from a `UniqueArc`.
+So I think we can remove this requirement and instead have the
+requirement for creating `UniqueArc` that not only the refcount is
+exactly 1, but also that no `ArcBorrow` exists.
 
 --=20
-With best wishes
-Dmitry
+Cheers,
+Benno
+
+> +    pub unsafe fn from_raw(ptr: *const T) -> Self {
+> +        // SAFETY: The caller promises that this pointer originates from=
+ a call to `into_raw` on an
+> +        // `Arc` that is still valid.
+> +        let ptr =3D unsafe { ArcInner::container_of(ptr) };
+> +
+> +        // SAFETY: The caller promises that the value remains valid sinc=
+e the reference count must
+> +        // not hit zero, and no mutable reference will be created since =
+that would involve a
+> +        // `UniqueArc`.
+> +        unsafe { Self::new(ptr) }
+> +    }
+>   }
+>=20
+>   impl<T: ?Sized> From<ArcBorrow<'_, T>> for Arc<T> {
+>=20
+> --
+> 2.44.0.rc1.240.g4c46232300-goog
+>=20
+
 
