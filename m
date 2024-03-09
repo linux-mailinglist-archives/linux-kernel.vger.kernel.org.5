@@ -1,45 +1,73 @@
-Return-Path: <linux-kernel+bounces-97901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B84E877158
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:24:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD6E87715B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:25:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A92941C20A0C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:24:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6267281C6D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:25:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FC93BBE4;
-	Sat,  9 Mar 2024 13:24:32 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F013BBF0;
+	Sat,  9 Mar 2024 13:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NZGV/jlr"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1429C36AF9
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 13:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA6973BBC2
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 13:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709990672; cv=none; b=iu2GJc1N3fvyMEMmkMVdXkgwmW/UOjnVmZbengzmHAW4EgsDJUlSlaPUIaB98n1fk2LHXowopLT5i/k8lI4tQg2brcj5w9/s6t7Gk262xKtrEhh+45mJKj9Z/hd4Aj+FkjMrB2FhIOXfKDjbwEHjyhvnHQAl72jjGdLx1LoNKRc=
+	t=1709990731; cv=none; b=bHqHTUu+IKZbwxIXdxMtIs4X4kz4+FTNvm15mjvuHUBaQ/afrrqjWqMflZ7u1pnhzPa625xXf/chEDNELhHkoS/LHGP54zGM3gntE1NGyfCJBNFAQS0WciBp6nUCR0CiIIm99DwiLSxcWbb+T/QBtn5TkTyi5sMGkxI5enBgw2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709990672; c=relaxed/simple;
-	bh=DZAXdDJegZdcErY4U3Wlr5RwaMFdtP3+j0WDzDiIPzc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NsE4kpq1DqZ7oeFqFSUqsA0SxkvyLTXWySuD6cMjEU316S6oFBtFU4abHnSM4Bj53agNhYbumULuFMKmwDGI2uSvlNy8sbmuWjko+pvZBHHOqXFZ1ichgYcGVDTdthk1QXfAMf01uB2URqNg3974Z3CmJozftk6pgS30hjnvK9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TsNz50hyKz3F0D3;
-	Sat,  9 Mar 2024 21:23:45 +0800 (CST)
-Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
-	by mail.maildlp.com (Postfix) with ESMTPS id A42571A016C;
-	Sat,  9 Mar 2024 21:24:26 +0800 (CST)
-Received: from [10.67.109.211] (10.67.109.211) by
- dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Sat, 9 Mar 2024 21:24:26 +0800
-Message-ID: <346e15e5-49e9-4a7f-b163-c3316225baab@huawei.com>
-Date: Sat, 9 Mar 2024 21:24:26 +0800
+	s=arc-20240116; t=1709990731; c=relaxed/simple;
+	bh=LHB6rFgP2ZQBJqCKzNVyKTDcpYrfFT5IZ++abJMN94M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SiQVUnr/8GARqenD5odpgIzxx5/0irxzmVtL2VfjTotTlBu2C+TP8xnoe+Xce/NsFrExd+Ilgk/gof1q8AiuBzya3WKLLB9sWFnQcVORxdp9wT7QZonRezC9Yuujsk8I06F6931d1mrBo3xNXIwE4qFMiBA/L5r3KB+XwbjPJGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NZGV/jlr; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a456ab934eeso415382966b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 05:25:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709990728; x=1710595528; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yDiQvphz9r/4tswvU3DLnkYQoFIGQ/fVX+Hfug55pYU=;
+        b=NZGV/jlru5r433VqTgFMOiobtVy0QPavoPFuJ73L/uJpTFC3GxjjkzxWtzjLWDTumm
+         VnTLe0WwiUH16wL4/lPzPICJcg4eYVeg+xM5kPgzgigwb/MkOugnqwbrmeakUEI1CY/R
+         /tGAH2s7CVV0vxj/DD6BK1r6KT6nZ9OWaNK700XzePCc3PcZEPaht6wBV8k4IyjZaWbd
+         M9lMwKZIdvx6hQAHRCF7oZDbTkT+/SVZ6ysOGu4cqCPu9sxoyWNPI84vrWyDP/DkunHe
+         NOfW+mYdkeL4VEpc4Ji3pZiyS0/DWKcnmsRHPpdvJ7xAGX1qkytcjTvcK0kKG5xTZw42
+         uZIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709990728; x=1710595528;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yDiQvphz9r/4tswvU3DLnkYQoFIGQ/fVX+Hfug55pYU=;
+        b=QJpfAPJ+wp0XaWISE8kGdHItssrhWRFbZcDakjzICBuVUYQL2gDXJFQ7ddczUXedQN
+         jZvB6vD0gyIuxaxtc2tVjGY8/7CEg5Yxr0uDqiPCruK3QJ16DKqbmLeUBIkytNiIGMzU
+         b7WBKLFFs4GpFEgB/DEdpA4Lih6/9PbdgRcWPTTiySs8TLpj69GkMgMIjbnGmDca6VJS
+         Q6AiDeAV/XFBYkiPNMrw33mc3bMAyh/B2vMnlpMjX6AAh7+W/CS6d7s70YnBjot2xHqB
+         rnO23qVsjVVDYUDPuUpyJ8sjhfBc9junUGyD2FlZJqtTUw85pAN+RIJk7phd8ESPaZdg
+         1pPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW9kfEwYZlnLheu1D2KhKC86irshTbfjqFnVypKNZJzZWNeqwGTCDtt65/9PITTKf4fsyNSfZMpIWO1dS2UnnVP9vJHJBCMW1vfOE+Z
+X-Gm-Message-State: AOJu0YwUZkYtcAZHuqoW6dqQepg2j07utS0Vx9so7KOyE4NkRVEeD+sP
+	alK/KaHa4XFgZo+hcZL33ejdYE53hUbvPoErteoHoMQPsILvShClEtIfRH5gssU=
+X-Google-Smtp-Source: AGHT+IEqMUeTbIwEJMFFWcxPSCURfWjwaIR3Ho9n40MtX5g6Fu+gZKAk5/hreEtCMYPdV7ZxgdwHUQ==
+X-Received: by 2002:a17:906:f8da:b0:a45:902b:3cb0 with SMTP id lh26-20020a170906f8da00b00a45902b3cb0mr1019082ejb.58.1709990728160;
+        Sat, 09 Mar 2024 05:25:28 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id lr1-20020a170906fb8100b00a442e2940fdsm887802ejb.179.2024.03.09.05.25.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Mar 2024 05:25:27 -0800 (PST)
+Message-ID: <fb78bdda-2ec7-4fcc-888e-233905a9386c@linaro.org>
+Date: Sat, 9 Mar 2024 14:25:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,156 +75,231 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-next v2] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Subject: Re: [PATCH v12 2/4] dt-bindings: remoteproc: add Tightly Coupled
+ Memory (TCM) bindings
 Content-Language: en-US
-To: Arnd Bergmann <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Fangrui
- Song <maskray@google.com>
-CC: Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, Andrew
- Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov"
-	<kirill.shutemov@linux.intel.com>, Geert Uytterhoeven
-	<geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, Mike Rapoport
-	<rppt@kernel.org>, Rob Herring <robh@kernel.org>, Thomas Gleixner
-	<tglx@linutronix.de>, Linus Walleij <linus.walleij@linaro.org>,
-	<llvm@lists.linux.dev>
-References: <20240307151231.654025-1-liuyuntao12@huawei.com>
- <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com>
- <42892794-7668-4eb0-8d2f-c78ca0daf370@huawei.com>
- <2a90581c-f1df-4d6b-8f0b-8e7cbf150ed9@app.fastmail.com>
-From: "liuyuntao (F)" <liuyuntao12@huawei.com>
-In-Reply-To: <2a90581c-f1df-4d6b-8f0b-8e7cbf150ed9@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemd100004.china.huawei.com (7.185.36.20)
+To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
+ mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+References: <20240301181638.814215-1-tanmay.shah@amd.com>
+ <20240301181638.814215-3-tanmay.shah@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240301181638.814215-3-tanmay.shah@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 2024/3/9 16:20, Arnd Bergmann wrote:
-> On Sat, Mar 9, 2024, at 07:14, liuyuntao (F) wrote:
->> On 2024/3/8 21:15, Arnd Bergmann wrote:
->>> On Thu, Mar 7, 2024, at 16:12, Yuntao Liu wrote:
->>
->> Thanks for the tests, CONFIG_LD_DEAD_CODE_DATA_ELIMINATION and
->> CONFIG_TRIM_UNUSED_KSYMS do indeed result in a significant improvement.
->> I found that arm32 still doesn't support CONFIG_LTO_CLANG. I've done
->> some work on it, but without success. I'd like to learn more about the
->> CONFIG_LTO_CLANG patch. Do you have any relevant links?
+On 01/03/2024 19:16, Tanmay Shah wrote:
+> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
 > 
-> I did not try to get it to boot and gave up when I did not see
-> any size improvement. I think there were previous attempts to
-> do it elsewhere, which I did not try to find.
+> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+> UltraScale+ platform. It will help in defining TCM in device-tree
+> and make it's access platform agnostic and data-driven.
 > 
-
-I tested this patch, the size improvement was only about one 
-ten-thousandth, and the compilation time had increased by about a quarter,
-and the kernel did not boot.
-
-Strangely, LTO has actually increased the compilation time 
-significantly, which seems contrary to its purpose.
-
-           +          +trim      +dce       +trim+dce
-no lto    5995384    5858720    5841024    5299032
-lto       5990040    5854544    5839992    5289576
-shrink    8.9‱     7.1‱     1.7‱     17.8‱
-
-
-           +          +trim      +dce       +trim+dce
-no lto    34.616     33.03      36.093     32.211
-lto       46.881     45.324     47.247     43.246
-increase  26.20%     27.10%     23.60%     25.50%
-
-
-
-> The patch below makes it build, but it still requires disabling
-> CONFIG_THUMB2_KERNEL, which totally defeats the purpose of shrinking
-> the kernel as it adds some 40% size overhead in the vmlinux.
-> There are probably also runtime bugs that get introduced by this.
+> Tightly-coupled memories(TCMs) are low-latency memory that provides
+> predictable instruction execution and predictable data load/store
+> timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
 > 
->       Arnd
-> > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index de78ceb821df..7ebfda4839e8 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -2,6 +2,8 @@
->   config ARM
->   	bool
->   	default y
-> +	select ARCH_SUPPORTS_LTO_CLANG
-> +	select ARCH_SUPPORTS_LTO_CLANG_THIN
->   	select ARCH_32BIT_OFF_T
->   	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE if HAVE_KRETPROBES && FRAME_POINTER && !ARM_UNWIND
->   	select ARCH_HAS_BINFMT_FLAT
-> diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-> index 726ecabcef09..f2ddce451ab9 100644
-> --- a/arch/arm/boot/compressed/Makefile
-> +++ b/arch/arm/boot/compressed/Makefile
-> @@ -9,6 +9,8 @@ OBJS		=
->   
->   HEAD	= head.o
->   OBJS	+= misc.o decompress.o
-> +CFLAGS_REMOVE_misc.o += $(CC_FLAGS_LTO)
-> +CFLAGS_REMOVE_decompress.o += $(CC_FLAGS_LTO)
+> The TCM resources(reg, reg-names and power-domain) are documented for
+> each TCM in the R5 node. The reg and reg-names are made as required
+> properties as we don't want to hardcode TCM addresses for future
+> platforms and for zu+ legacy implementation will ensure that the
+> old dts w/o reg/reg-names works and stable ABI is maintained.
+> 
+> It also extends the examples for TCM split and lockstep modes.
+> 
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> ---
+> 
+> Changes in v12:
+>   - add "reg", "reg-names" and "power-domains" in pattern properties
+>   - add "reg" and "reg-names" in required list
+>   - keep "power-domains" in required list as it was before the change
+> 
+> Changes in v11:
+>   - Fix yamllint warning and reduce indentation as needed
+> 
+>  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 188 ++++++++++++++++--
+>  1 file changed, 168 insertions(+), 20 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+> index 78aac69f1060..dc6ce308688f 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+> @@ -20,9 +20,21 @@ properties:
+>    compatible:
+>      const: xlnx,zynqmp-r5fss
+>  
+> +  "#address-cells":
+> +    const: 2
+> +
+> +  "#size-cells":
+> +    const: 2
+> +
+> +  ranges:
+> +    description: |
+> +      Standard ranges definition providing address translations for
+> +      local R5F TCM address spaces to bus addresses.
+> +
+>    xlnx,cluster-mode:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [0, 1, 2]
+> +    default: 1
+>      description: |
+>        The RPU MPCore can operate in split mode (Dual-processor performance), Safety
+>        lock-step mode(Both RPU cores execute the same code in lock-step,
+> @@ -37,7 +49,7 @@ properties:
+>        2: single cpu mode
+>  
+>  patternProperties:
+> -  "^r5f-[a-f0-9]+$":
+> +  "^r5f@[0-9a-f]+$":
+>      type: object
+>      description: |
+>        The RPU is located in the Low Power Domain of the Processor Subsystem.
+> @@ -54,8 +66,17 @@ patternProperties:
+>        compatible:
+>          const: xlnx,zynqmp-r5f
+>  
+> +      reg:
+> +        minItems: 1
+> +        maxItems: 4
+> +
+> +      reg-names:
+> +        minItems: 1
+> +        maxItems: 4
+> +
+>        power-domains:
+> -        maxItems: 1
+> +        minItems: 2
+> +        maxItems: 5
+>  
+>        mboxes:
+>          minItems: 1
+> @@ -101,35 +122,162 @@ patternProperties:
+>  
+>      required:
+>        - compatible
+> +      - reg
+> +      - reg-names
+>        - power-domains
+>  
+> -    unevaluatedProperties: false
+> -
+>  required:
+>    - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - ranges
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        xlnx,cluster-mode:
+> +          enum:
+> +            - 1
+> +    then:
+> +      patternProperties:
+> +        "^r5f@[0-9a-f]+$":
+> +          type: object
+> +
+> +          properties:
+> +            reg:
+> +              minItems: 1
+> +              items:
+> +                - description: ATCM internal memory
+> +                - description: BTCM internal memory
+> +                - description: extra ATCM memory in lockstep mode
+> +                - description: extra BTCM memory in lockstep mode
+> +
+> +            reg-names:
+> +              minItems: 1
+> +              items:
+> +                - const: atcm0
+> +                - const: btcm0
+> +                - const: atcm1
+> +                - const: btcm1
 
-Wow, I've encountered this issue before and didn't think to solve it in 
-this way. You really have a thorough understanding of these parameters. 
-On a side note, if CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is enabled, but 
-only a few rodata sections are removed and no functions are eliminated, 
-are there any compiler or linker options that can control this behavior?
-thanks.
+Why power domains are flexible?
 
->   ifeq ($(CONFIG_DEBUG_UNCOMPRESS),y)
->   OBJS	+= debug.o
->   AFLAGS_head.o += -DDEBUG
-> diff --git a/arch/arm/mm/flush.c b/arch/arm/mm/flush.c
-> index d19d140a10c7..aee9e13023a8 100644
-> --- a/arch/arm/mm/flush.c
-> +++ b/arch/arm/mm/flush.c
-> @@ -38,15 +38,14 @@ EXPORT_SYMBOL(arm_heavy_mb);
->   static void flush_pfn_alias(unsigned long pfn, unsigned long vaddr)
->   {
->   	unsigned long to = FLUSH_ALIAS_START + (CACHE_COLOUR(vaddr) << PAGE_SHIFT);
-> -	const int zero = 0;
->   
->   	set_top_pte(to, pfn_pte(pfn, PAGE_KERNEL));
->   
-> -	asm(	"mcrr	p15, 0, %1, %0, c14\n"
-> -	"	mcr	p15, 0, %2, c7, c10, 4"
-> +	asm("mcrr	p15, 0, %1, %0, c14"
->   	    :
-> -	    : "r" (to), "r" (to + PAGE_SIZE - 1), "r" (zero)
-> +	    : "r" (to), "r" (to + PAGE_SIZE - 1)
->   	    : "cc");
-> +	dsb();
->   }
->   
->   static void flush_icache_alias(unsigned long pfn, unsigned long vaddr, unsigned long len)
-> @@ -68,11 +67,11 @@ void flush_cache_mm(struct mm_struct *mm)
->   	}
->   
->   	if (cache_is_vipt_aliasing()) {
-> -		asm(	"mcr	p15, 0, %0, c7, c14, 0\n"
-> -		"	mcr	p15, 0, %0, c7, c10, 4"
-> +		asm("mcr	p15, 0, %0, c7, c14, 0"
->   		    :
->   		    : "r" (0)
->   		    : "cc");
-> +		dsb();
->   	}
->   }
->   
-> @@ -84,11 +83,11 @@ void flush_cache_range(struct vm_area_struct *vma, unsigned long start, unsigned
->   	}
->   
->   	if (cache_is_vipt_aliasing()) {
-> -		asm(	"mcr	p15, 0, %0, c7, c14, 0\n"
-> -		"	mcr	p15, 0, %0, c7, c10, 4"
-> +		asm("mcr	p15, 0, %0, c7, c14, 0"
->   		    :
->   		    : "r" (0)
->   		    : "cc");
-> +		dsb();
->   	}
->   
->   	if (vma->vm_flags & VM_EXEC)
+> +
+> +    else:
+> +      patternProperties:
+> +        "^r5f@[0-9a-f]+$":
+> +          type: object
+> +
+> +          properties:
+> +            reg:
+> +              minItems: 1
+> +              items:
+> +                - description: ATCM internal memory
+> +                - description: BTCM internal memory
+> +
+> +            reg-names:
+> +              minItems: 1
+> +              items:
+> +                - const: atcm0
+> +                - const: btcm0
+> +
+> +            power-domains:
+> +              maxItems: 3
+
+Please list power domains.
+
+>  
+>  additionalProperties: false
+
+
+Best regards,
+Krzysztof
+
 
