@@ -1,125 +1,135 @@
-Return-Path: <linux-kernel+bounces-97950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47DA0877237
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:28:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4274787723B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79A001C20ABF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:28:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECFE8281985
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6902145C04;
-	Sat,  9 Mar 2024 16:28:01 +0000 (UTC)
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E3345BE0;
+	Sat,  9 Mar 2024 16:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X64LriDP"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8988E383BE;
-	Sat,  9 Mar 2024 16:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8A44439F;
+	Sat,  9 Mar 2024 16:28:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710001681; cv=none; b=WZrkiaPOjdHTGdqN0MnbYltiS7o8UDD1O9bakkMbXtzfeclOXAW8cKcUQgZGCrBZdipiWvbg+9ONKfjU6ZRQpEv7LZkoqKNUGa+VLcsjjUu1EKB7QBaus4zSeXnZnVLtwWiMBtLvU7zQhzGsNXJdXfJP5PVunGeJyL4sSl4lbZs=
+	t=1710001717; cv=none; b=X2L0AjpnBXI9sBEXqKrbCcVudoTapeKOn7TYAW7omW6DCnXW6O5vLVEixhBsoWswYMJPcAx1maWtZ+pvuWb3SsIWCoTG8v8apOmKlJvb9elJEE+gr9Jg6SiWIq+7q+LaxepJBfRu6euDmnDEHqvWoE5EvlDJRHYCLzjSPEEJRr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710001681; c=relaxed/simple;
-	bh=gawdx09fEWv77uFcSaCOqsu/CQ1Zy2ufMmqIGkv3hpY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QkpggEMqgHV/Dvb3pHfONm8DVplG7/ctzHQdFtv1cLAKHry8+OzNc4dB4JEvN0GcJ6sda1CtvEBbGgA0e/0Bv1pB1jGKtpP+OwQLZEpvObCi1mnazcBwZxJJIyR8i+H/rJKhVpHeXfthc0Tgy/EpHT1xR0ccI9ng/4Fpi/RQiZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+	s=arc-20240116; t=1710001717; c=relaxed/simple;
+	bh=smky8eK+mpaxLg9vvUAeDfkDihmOy7wpuSWlE1kx4L0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eSvx44S2HORqZIc7PI3U2A8C3YckS+ZPf55C8ZsGb2MWLCksGGvAJf3sJnmFa4cnVJppvg9eG5liVtZoBr4DqP6dIbhjhoeA5aBW3UEJzX+3mPGcrErKFA/TMnh6Ehz9oVItq91Vddsp4zgLQj2YFfiZLUaa1uMwRWXRX4AgZ9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X64LriDP; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e62c65865cso2642848b3a.2;
-        Sat, 09 Mar 2024 08:27:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710001679; x=1710606479;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5682e8f21a7so2221708a12.3;
+        Sat, 09 Mar 2024 08:28:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710001713; x=1710606513; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XngN9Yh6PJNjzunlynrOgFFMvdhheJ+fAGDHAv8VoSo=;
-        b=SMZrobtuuF9JlVPAPK+FN3GduyqAiyQ6HoA+tX8YlKbh/VxFuoUQqIUYma8MwX6Afj
-         fY8zdQYIluP3/Wvfr/ANRlMSdyq07RrLRFOqd2gkzZ6VpwyoJ3+D/id01Lr29oWKEQvk
-         oyuhav/qQypnqJ9cBm1X6JoZ5mMrDScwNxmqzkwE8r3IkX1zsnsSfWEuQgm01NGrBqkn
-         1yCE108ukOgNFVjQN//JiYYr1RP/Bbv04WiaqwMhnVpuGTV5ZeRE9NMO8fDuo1wq+npC
-         qHu56d0FMXqmsMzzJ0bLpgkkoZ6B9mSZMs4kH9tig4JOpJ3JGnvhVycThbF5cMRcH4IA
-         T0OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXoaMrJjePz91t+IzcGDOOm2IvyrTdzHBOx+oqB3YCaNjRbwdwjlRxr2Kfze8kcQBF4uXElwHYMnyQ98Ctr/yD5db+kQrKD7Bg9oupCO5nJDr1WGxVyglKkUb/r4/PIzFGSrnVDPyVUYUSYyU8fFGHz4ckV8AmvhWl3mH5eTGfgAUQdLJCGOgEbEYPiaSHYszQ9/BiWAT7ZcL18zcbtRmZokmg=
-X-Gm-Message-State: AOJu0YxUL6sTLLWewzQmMr4eyS305+zAVlpqBetQC+x1vyA6wFiK0iMu
-	sjsH04l4eHUgmFd/dwujJu6DjWw50IOZXBoAg5bKfWL91u85SGa9
-X-Google-Smtp-Source: AGHT+IEoZjJjChi0ytw88tfb9H2v1HQ/DS+m0c5yt85oP0DWVaiwKZ+/hEH5s3Ge0OK7urWxBkXZRQ==
-X-Received: by 2002:a05:6a20:49af:b0:1a1:7cec:4c37 with SMTP id fs47-20020a056a2049af00b001a17cec4c37mr1751210pzb.52.1710001678747;
-        Sat, 09 Mar 2024 08:27:58 -0800 (PST)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id x18-20020a17090aca1200b00298e11b600dsm1410796pjt.27.2024.03.09.08.27.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Mar 2024 08:27:58 -0800 (PST)
-Date: Sun, 10 Mar 2024 01:27:56 +0900
-From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rob Herring <robh@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v3 0/6] dt-bindings: PCI: qcom: move to dedicated schema
- (part one)
-Message-ID: <20240309162756.GA229940@rocinante>
-References: <20240126-dt-bindings-pci-qcom-split-v3-0-f23cda4d74c0@linaro.org>
+        bh=xR3Q9ZDfuXFwx5nhQ21SINlsMoWawyf7bpuFRxJi820=;
+        b=X64LriDP2T92GenP4UjbEJb8qKnhCdc7sd3Xr9XRWW1/W8YkVhhpizhig6MtjSF1KU
+         acggKX10QGKfWfRVuC0/85wMPDNGiYvSeFCRoOiZhO7m5LKZYkujhT+lJPkBDjGs8AiU
+         JbsuBi3bQ9zirOIYm394PF8GKui6Dy9GQTgJWIgsSto0COpmmvmUK3qxIDhg3vWxQhIV
+         TOWYkgRaNtHhwxnwJ1miA236Y0x+3vzkSMxbJOLj9qqA3WZfO0pat+5PJquOwMS1gsy0
+         nW1yeBix22Frtije89F8FDk3vz05ELoOA1d7eTrNSa6yNYpGEw3WojybGINCN2ukp7NZ
+         dOmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710001713; x=1710606513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xR3Q9ZDfuXFwx5nhQ21SINlsMoWawyf7bpuFRxJi820=;
+        b=ISoVEo5PfMppiu25NbE/OIVsTiasUJx8lLL72NC6VOxM0vSyY49Ibyh3DzjKi1Mr9/
+         VJ3MiysJCjMLeeJTrRChSRKeSPwxSVhm2QAAgPZHEKnYw9Cnd8ykOzM68bxv8TA9IZ0Q
+         APXZm/PWazbJMXkmo1s+dji/GUf2JTi18dCcz0Zv+6huUQ8EofVBiM/tUz/AYCdz97nE
+         6UzjIeSEYw82Bl7kOyd/JQXaaD26I2T3SoclIqXnTXo/2K0w6GnvPlM6dgblO9sI0IpG
+         kUtS8SvBlQdLX42vdLsnIw5khi+GVfSnZU9QFFSQo6e8EXrOJP6/72fb2o3DtTYtvI3O
+         3qkg==
+X-Forwarded-Encrypted: i=1; AJvYcCX3MLbc0uCgqpbhuFFIXCvc5QY98kn4IuyrNLba+YGtYL3jhcQKfa0rx2YqDc+EHpM/guAcFl0NkkG6r476g4ynmTFP8gZf3ZQS2I2l
+X-Gm-Message-State: AOJu0YyYdVC4LrnuA+qlqKsHC4Noim/oOZqJ8ngIelCtA06ygC7/MJRV
+	KMg69tf7zewqoIgq5F0Uw/mCt0sZu3JmTQo3F+k44g8tfiEtrDEsFdC8ie5ynfB4L9NiDCsnv57
+	EaqUqsApeqYqP/NulcKdsjuol+Bs=
+X-Google-Smtp-Source: AGHT+IGJ8T+BlICUm6CpJVvufFFc6uZ8GgNGRjAhkFuXuOejmdQutDzao0gjZRvUB19ikZ8PhKPMaR2a6RBpH3w/A5I=
+X-Received: by 2002:a17:906:b110:b0:a45:c9fb:86d7 with SMTP id
+ u16-20020a170906b11000b00a45c9fb86d7mr1203104ejy.54.1710001713236; Sat, 09
+ Mar 2024 08:28:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126-dt-bindings-pci-qcom-split-v3-0-f23cda4d74c0@linaro.org>
+References: <20240303121410.240761-1-andy.shevchenko@gmail.com> <63c898e4-fedf-44eb-8887-ffda4a81e1e6@wanadoo.fr>
+In-Reply-To: <63c898e4-fedf-44eb-8887-ffda4a81e1e6@wanadoo.fr>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sat, 9 Mar 2024 18:27:56 +0200
+Message-ID: <CAHp75VfDNrDcLbBwHpn52qFEH=wFdnG1sx2jrU25oYJQ6OHGHA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] clk: fractional-divider: Move mask calculations
+ out of lock
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Sat, Mar 9, 2024 at 9:19=E2=80=AFAM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+> Le 03/03/2024 =C3=A0 13:14, Andy Shevchenko a =C3=A9crit :
 
-> Changes in v3:
-> - sm8450: add missing allOf: to common schema, which also fixes issue
->   reported by Rob's robot.
-> - Link to v2: https://lore.kernel.org/r/20240125-dt-bindings-pci-qcom-split-v2-0-6b58efd91a7a@linaro.org
-> 
-> Changes in v2:
-> - Switch on SM8[123456]50 to 8 MSI interrupts.
-> - Simplify SM8450 clocks.
-> - Add Acks/Rb.
-> - Link to v1: https://lore.kernel.org/r/20240108-dt-bindings-pci-qcom-split-v1-0-d541f05f4de0@linaro.org
-> 
-> DTS fixes for interrupts will be send separately
-> 
-> The qcom,pcie.yaml containing all devices results in huge allOf: section
-> with a lot of if:then: clauses making review and changes quite
-> difficult.
-> 
-> Split common parts into common schema and then move few devices to
-> dedicated files, so that each file will be easier to review.
-> 
-> I did not split/move all devices yet, so if this gets accepted I plan to
-> send more patches.
+..
 
-Applied to qcom, thank you!
+> > @@ -195,14 +195,14 @@ static int clk_fd_set_rate(struct clk_hw *hw, uns=
+igned long rate,
+> >               n--;
+> >       }
+> >
+> > +     mmask =3D GENMASK(fd->mwidth - 1, 0) << fd->mshift;
+> > +     nmask =3D GENMASK(fd->nwidth - 1, 0) << fd->nshift;
 
-[01/06] dt-bindings: PCI: qcom,pcie-sm8550: Move SM8550 to dedicated schema
-        https://git.kernel.org/pci/pci/c/b8d3404058a6
-[02/06] dt-bindings: PCI: qcom,pcie-sm8450: Move SM8450 to dedicated schema
-        https://git.kernel.org/pci/pci/c/88c9b3af4e31
-[03/06] dt-bindings: PCI: qcom,pcie-sm8250: Move SM8250 to dedicated schema
-        https://git.kernel.org/pci/pci/c/4891b66185c1
-[04/06] dt-bindings: PCI: qcom,pcie-sm8150: Move SM8150 to dedicated schema
-        https://git.kernel.org/pci/pci/c/51bc04d5b49d
-[05/06] dt-bindings: PCI: qcom,pcie-sm8350: Move SM8350 to dedicated schema
-        https://git.kernel.org/pci/pci/c/2278b8b54773
-[06/06] dt-bindings: PCI: qcom,pcie-sc8280xp: Move SC8280XP to dedicated schema
-        https://git.kernel.org/pci/pci/c/c007a5505504
+> if this is a hot path, you could maybe even compute:
 
-	Krzysztof
+It's not. set_rate() may be called only on disabled (and unprepared?)
+clocks, which makes it already a too slow operation.
+
+>     mask =3D ~(GENMASK(fd->mwidth - 1, 0) << fd->mshift |
+>              GENMASK(fd->nwidth - 1, 0) << fd->nshift)
+>
+> unless gcc is smart enough to do it by itself.
+>
+> >       if (fd->lock)
+> >               spin_lock_irqsave(fd->lock, flags);
+> >       else
+> >               __acquire(fd->lock);
+> >
+> > -     mmask =3D GENMASK(fd->mwidth - 1, 0) << fd->mshift;
+> > -     nmask =3D GENMASK(fd->nwidth - 1, 0) << fd->nshift;
+> > -
+> >       val =3D clk_fd_readl(fd);
+> >       val &=3D ~(mmask | nmask);
+>
+>     val &=3D mask;
+>
+> >       val |=3D (m << fd->mshift) | (n << fd->nshift);
+>
+> and pre-compute "(m << fd->mshift) | (n << fd->nshift)" outside of the
+> lock too.
+
+All of these sound to me as premature optimisations. I only wanted to
+get back to the status quo.
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
