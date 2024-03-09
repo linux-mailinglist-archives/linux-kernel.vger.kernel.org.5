@@ -1,218 +1,205 @@
-Return-Path: <linux-kernel+bounces-97804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFF08876FBA
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:12:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BC05876FC2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 504FF281E18
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 08:12:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 922DA1C20A0D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 08:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860BC39855;
-	Sat,  9 Mar 2024 08:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB823717B;
+	Sat,  9 Mar 2024 08:20:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="WqOu0B6a"
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="D1MVVyTa";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="TTAM/JVG"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219B13984D;
-	Sat,  9 Mar 2024 08:11:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90411249F5
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 08:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709971890; cv=none; b=i/6qz9WPDj9xSF4nebVkKVyVnbrrWRbhIEWephKpwQbH3Xx1UPB7ChmEnXBzJdEPHaF9xHSx3Cpx/uHNlyPqGBrOOr7j2sgSwPKxas3Z+0Z/4/T3BnnrebTUtyJALHOKsjWSoxhpL21Xy/xUGD0T1EFgGNFDt0Y8Kse53qkhn9M=
+	t=1709972452; cv=none; b=sgFPSJXgqmchQGCmoUKpFWf4ExjgQSoDFQXr1UfK3FH1JBXzXBVFUka544fqY0e5IpPOjzeHlIj0piprKeIiKia/xijx1WBNJx/Tywm5wx/fqBSDqkxaPUzHfgMVcnp82xTyK00pX2ND9ryMlic2PonbldyROnqxvdZ0u/ZaoC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709971890; c=relaxed/simple;
-	bh=uadfvdvO0FsBtO9hlkzFwsaQ5dtQnfR/kEXn95ySToQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q087f6PynV9HwYRYlw6oPiDP8eROZdNyE/ihMxngl//FoTktxbxj+jO5nkkmRnXauUoXye5ixJ7O4NtYG8uaGDK0/pXJdhgzc56vppprB6ggHv+EoFtatHdZ0eFLYnd2KjBzLFpgC797fQ/RIG0rOO32bXmq3RVhOqrKsd61x5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=WqOu0B6a; arc=none smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1709971888; x=1741507888;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=uadfvdvO0FsBtO9hlkzFwsaQ5dtQnfR/kEXn95ySToQ=;
-  b=WqOu0B6as9pl2wNQns9DI+MB39l0YDrcyyDJ9slGKW300qEB9AEaM0wA
-   q5oM0+9+QBxec8f3E9UiiMtYxfP6k2Y+Y+q/oR8D3yTYk76/dXVwH4XxX
-   8QoZ93kmuq5DCw6xVUNlaNeLM8Tg5Br6FdS3Ilsv0roGQc4rbybRj4tPY
-   PVeqNhFGtf43lR6GZvJbrUgJY6pDap6eoWeSst7hFxcXFPJsLwsKmcvjG
-   VoKAfqHbKg/gunRDVbmlSvcPa0F2QleNBnk4KN2Ewkm4YINHfxbZQysVK
-   JSpnOvgiOiZL9SHJNFij9f2NdWXf1GKIzVqoQg2EdQIfE3jhIlwpcclZm
-   w==;
-X-CSE-ConnectionGUID: zU+d437dQj6Km4i8WAPvEg==
-X-CSE-MsgGUID: XjPh+jYcQya9qy4fCDO61w==
-X-IronPort-AV: E=Sophos;i="6.07,112,1708358400"; 
-   d="scan'208";a="11183751"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Mar 2024 16:11:28 +0800
-IronPort-SDR: fwKyYgGLeYGjL2FVEu/2PFYcLYpZ5tUwkVDdDjhI44lEeCvkW294BW533MRzeSKsmPmlwN/33a
- GgDlik1L4NUQ==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Mar 2024 23:14:54 -0800
-IronPort-SDR: 3S8WZlXJkENcITQYGTvEn/frCW1kzgAWWegGBr/UgL1pd9Vlj+0agPcJUZ1+aLex8bGO0ZTKtI
- q3w3UyUVbYIQ==
-WDCIronportException: Internal
-Received: from 87h6l33.ad.shared (HELO BXYGM33.ad.shared) ([10.225.32.8])
-  by uls-op-cesaip01.wdc.com with ESMTP; 09 Mar 2024 00:11:27 -0800
-From: Avri Altman <avri.altman@wdc.com>
-To: "James E . J . Bottomley" <jejb@linux.ibm.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>
-Cc: Bart Van Assche <bvanassche@acm.org>,
-	Bean Huo <beanhuo@micron.com>,
-	linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v3 4/4] scsi: ufs: Re-use compose_devman_upiu
-Date: Sat,  9 Mar 2024 10:11:02 +0200
-Message-ID: <20240309081104.5006-5-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240309081104.5006-1-avri.altman@wdc.com>
-References: <20240309081104.5006-1-avri.altman@wdc.com>
+	s=arc-20240116; t=1709972452; c=relaxed/simple;
+	bh=yflydMTLwkTf9u1r8dKppMT9BpeV+YA/TPw9GxCivlI=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=W5FsVIZnrEn0lwO4culP6/xxsZFHkCKsy0lvJu8fFpS9xEAsiU5SuODQ94XW8kLSDhfHYCsB2wLsU/2kcE7nsI7jWkI/LMT/Dk1QqFYubRho2EQphG8wGh2wVb86VhCkbO8K6xnO5iKtCC9JGNssCQ5p4irXo+PXXXjOJSNex1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=D1MVVyTa; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=TTAM/JVG; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 59D56320094F;
+	Sat,  9 Mar 2024 03:20:47 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Sat, 09 Mar 2024 03:20:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1709972446; x=1710058846; bh=O/clYP0WT8
+	TUfViTy/TttNTQQUBUVKt6xrQJBXMtImQ=; b=D1MVVyTaCd9rPXCWN4kBea+RoR
+	rThRfAAc7XEsLNRPm9dthQw0ev3LoiXkkQZ/3v5wZL4vjqF49ijxdeY/eKX4zapj
+	VjR+op9PjCymkw+Ax2+lLLm93AWCEy+66OdL4o9RX2YYCOyB8N50awH/gfXdeQZ9
+	43whi1JZvcCaYP/PpXmyLhgm67RW88PXCGD8Ucg6IGR/VnKArdptCxjoMU63rSm8
+	pwP/P3GbKFAhpJt59jX9Bg4uw2JtqXj9+3klUXkLF65xPVKHEHUnPXmSSu2AlVtA
+	fvoVqYpV7PCLexwQ4eXNYT5XefT3k7OYFP5AHZpSOCIi26nbBVFEERs3YjDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709972446; x=1710058846; bh=O/clYP0WT8TUfViTy/TttNTQQUBU
+	VKt6xrQJBXMtImQ=; b=TTAM/JVGEx2vhnSHIkGonKp8wJBC8rlsGkn6rs9pZirS
+	1wpobtGRPEUpwuDHlWmt/NIwn9c47WITKiOm5+6um49vG2Mfzkr5/mxNYhqfLkTo
+	+PKCZhyqiMKrvEGUJiYd3RMoy7ob20YCxI6hKZf5JB2xkxalHFde6rznBJAxu1bT
+	n/GhhKuaQ2UOxvA26TKuzLCe3nLnv2i+gQOyOR6/EClICxqkkYG/al9fsZf2PcwD
+	b4Xwv8xNZ4/2dhCmtT1OU7oVhN+g2BulZb0dw0W0r61310ELr72Xdp1rFaus2iFz
+	qLRpWvMc/sHQDI2egDDA13HkS4cOSv1xcwfVhtL5bg==
+X-ME-Sender: <xms:3RvsZUm2KLpBMakmCTmMXKcBihTbCvJ7oxsg0R6VMZLKa6qF5zYQYQ>
+    <xme:3RvsZT1PXXjMdUhmIRwP6Q6B0XIVh3tBNi0uDOV9POp2ncQxZhnWoSDvizM_K85C1
+    R608e_yW6WXBVU4w9c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieeigdduudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:3RvsZSrjh_4PDYRwoph-2-li7CGQPaCO7Slb52rqeKuIDuHSPJmiHA>
+    <xmx:3RvsZQnhjpFogUHUCMnewOzcnQiwTRxQiYgpNv0j26MH1zQxtjXMlw>
+    <xmx:3RvsZS2rk9ZJdqPJGURPz3ud6ZPV5wP2yW2S2yYWYu8zOZC8Wm8T5g>
+    <xmx:3hvsZcOWj8LsWlwahjvA6n_Keg6GU-v9Acb4UGtmPDiPFx_wO_ZLaw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 8AA17B6008D; Sat,  9 Mar 2024 03:20:45 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-Id: <2a90581c-f1df-4d6b-8f0b-8e7cbf150ed9@app.fastmail.com>
+In-Reply-To: <42892794-7668-4eb0-8d2f-c78ca0daf370@huawei.com>
+References: <20240307151231.654025-1-liuyuntao12@huawei.com>
+ <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com>
+ <42892794-7668-4eb0-8d2f-c78ca0daf370@huawei.com>
+Date: Sat, 09 Mar 2024 09:20:15 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Yuntao Liu" <liuyuntao12@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Ard Biesheuvel" <ardb@kernel.org>, "Fangrui Song" <maskray@google.com>
+Cc: "Russell King" <linux@armlinux.org.uk>, "Andrew Davis" <afd@ti.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ "Geert Uytterhoeven" <geert+renesas@glider.be>,
+ "Jonathan Corbet" <corbet@lwn.net>, "Mike Rapoport" <rppt@kernel.org>,
+ "Rob Herring" <robh@kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>,
+ "Linus Walleij" <linus.walleij@linaro.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH-next v2] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Content-Type: text/plain
 
-Move some code fragments into ufshcd_prepare_req_desc_hdr so it can
-be used throughout.
+On Sat, Mar 9, 2024, at 07:14, liuyuntao (F) wrote:
+> On 2024/3/8 21:15, Arnd Bergmann wrote:
+>> On Thu, Mar 7, 2024, at 16:12, Yuntao Liu wrote:
+>
+> Thanks for the tests, CONFIG_LD_DEAD_CODE_DATA_ELIMINATION and 
+> CONFIG_TRIM_UNUSED_KSYMS do indeed result in a significant improvement.
+> I found that arm32 still doesn't support CONFIG_LTO_CLANG. I've done 
+> some work on it, but without success. I'd like to learn more about the 
+> CONFIG_LTO_CLANG patch. Do you have any relevant links?
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/ufs/core/ufshcd.c | 49 ++++++++++++++-------------------------
- include/ufs/ufshci.h      |  2 +-
- 2 files changed, 18 insertions(+), 33 deletions(-)
+I did not try to get it to boot and gave up when I did not see
+any size improvement. I think there were previous attempts to
+do it elsewhere, which I did not try to find.
 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index c9c2b7f99758..36cbcd30470f 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -2710,18 +2710,27 @@ static void ufshcd_disable_intr(struct ufs_hba *hba, u32 intrs)
- /**
-  * ufshcd_prepare_req_desc_hdr - Fill UTP Transfer request descriptor header according to request
-  * descriptor according to request
-+ * @hba: per adapter instance
-  * @lrbp: pointer to local reference block
-  * @upiu_flags: flags required in the header
-  * @cmd_dir: requests data direction
-  * @ehs_length: Total EHS Length (in 32‐bytes units of all Extra Header Segments)
-+ * @legacy_type: UTP_CMD_TYPE_SCSI or UTP_CMD_TYPE_DEV_MANAGE
-  */
--static void ufshcd_prepare_req_desc_hdr(struct ufshcd_lrb *lrbp, u8 *upiu_flags,
--					enum dma_data_direction cmd_dir, int ehs_length)
-+static void
-+ufshcd_prepare_req_desc_hdr(struct ufs_hba *hba, struct ufshcd_lrb *lrbp,
-+			    u8 *upiu_flags, enum dma_data_direction cmd_dir,
-+			    int ehs_length, enum utp_cmd_type legacy_type)
+The patch below makes it build, but it still requires disabling
+CONFIG_THUMB2_KERNEL, which totally defeats the purpose of shrinking
+the kernel as it adds some 40% size overhead in the vmlinux.
+There are probably also runtime bugs that get introduced by this.
+
+     Arnd
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index de78ceb821df..7ebfda4839e8 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -2,6 +2,8 @@
+ config ARM
+ 	bool
+ 	default y
++	select ARCH_SUPPORTS_LTO_CLANG
++	select ARCH_SUPPORTS_LTO_CLANG_THIN
+ 	select ARCH_32BIT_OFF_T
+ 	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE if HAVE_KRETPROBES && FRAME_POINTER && !ARM_UNWIND
+ 	select ARCH_HAS_BINFMT_FLAT
+diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+index 726ecabcef09..f2ddce451ab9 100644
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -9,6 +9,8 @@ OBJS		=
+ 
+ HEAD	= head.o
+ OBJS	+= misc.o decompress.o
++CFLAGS_REMOVE_misc.o += $(CC_FLAGS_LTO)
++CFLAGS_REMOVE_decompress.o += $(CC_FLAGS_LTO)
+ ifeq ($(CONFIG_DEBUG_UNCOMPRESS),y)
+ OBJS	+= debug.o
+ AFLAGS_head.o += -DDEBUG
+diff --git a/arch/arm/mm/flush.c b/arch/arm/mm/flush.c
+index d19d140a10c7..aee9e13023a8 100644
+--- a/arch/arm/mm/flush.c
++++ b/arch/arm/mm/flush.c
+@@ -38,15 +38,14 @@ EXPORT_SYMBOL(arm_heavy_mb);
+ static void flush_pfn_alias(unsigned long pfn, unsigned long vaddr)
  {
- 	struct utp_transfer_req_desc *req_desc = lrbp->utr_descriptor_ptr;
- 	struct request_desc_header *h = &req_desc->header;
- 	enum utp_data_direction data_direction;
+ 	unsigned long to = FLUSH_ALIAS_START + (CACHE_COLOUR(vaddr) << PAGE_SHIFT);
+-	const int zero = 0;
  
-+	if (hba->ufs_version <= ufshci_version(1, 1))
-+		lrbp->command_type = legacy_type;
-+	else
-+		lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
-+
- 	*h = (typeof(*h)){ };
+ 	set_top_pte(to, pfn_pte(pfn, PAGE_KERNEL));
  
- 	if (cmd_dir == DMA_FROM_DEVICE) {
-@@ -2854,12 +2863,8 @@ static int ufshcd_compose_devman_upiu(struct ufs_hba *hba,
- 	u8 upiu_flags;
- 	int ret = 0;
+-	asm(	"mcrr	p15, 0, %1, %0, c14\n"
+-	"	mcr	p15, 0, %2, c7, c10, 4"
++	asm("mcrr	p15, 0, %1, %0, c14"
+ 	    :
+-	    : "r" (to), "r" (to + PAGE_SIZE - 1), "r" (zero)
++	    : "r" (to), "r" (to + PAGE_SIZE - 1)
+ 	    : "cc");
++	dsb();
+ }
  
--	if (hba->ufs_version <= ufshci_version(1, 1))
--		lrbp->command_type = UTP_CMD_TYPE_DEV_MANAGE;
--	else
--		lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
-+	ufshcd_prepare_req_desc_hdr(hba, lrbp, &upiu_flags, DMA_NONE, 0, UTP_CMD_TYPE_DEV_MANAGE);
+ static void flush_icache_alias(unsigned long pfn, unsigned long vaddr, unsigned long len)
+@@ -68,11 +67,11 @@ void flush_cache_mm(struct mm_struct *mm)
+ 	}
  
--	ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags, DMA_NONE, 0);
- 	if (hba->dev_cmd.type == DEV_CMD_TYPE_QUERY)
- 		ufshcd_prepare_utp_query_req_upiu(hba, lrbp, upiu_flags);
- 	else if (hba->dev_cmd.type == DEV_CMD_TYPE_NOP)
-@@ -2882,13 +2887,8 @@ static void ufshcd_comp_scsi_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 	unsigned int ioprio_class = IOPRIO_PRIO_CLASS(req_get_ioprio(rq));
- 	u8 upiu_flags;
+ 	if (cache_is_vipt_aliasing()) {
+-		asm(	"mcr	p15, 0, %0, c7, c14, 0\n"
+-		"	mcr	p15, 0, %0, c7, c10, 4"
++		asm("mcr	p15, 0, %0, c7, c14, 0"
+ 		    :
+ 		    : "r" (0)
+ 		    : "cc");
++		dsb();
+ 	}
+ }
  
--	if (hba->ufs_version <= ufshci_version(1, 1))
--		lrbp->command_type = UTP_CMD_TYPE_SCSI;
--	else
--		lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
--
--	ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags,
--				    lrbp->cmd->sc_data_direction, 0);
-+	ufshcd_prepare_req_desc_hdr(hba, lrbp, &upiu_flags,
-+				    lrbp->cmd->sc_data_direction, 0, UTP_CMD_TYPE_SCSI);
- 	if (ioprio_class == IOPRIO_CLASS_RT)
- 		upiu_flags |= UPIU_CMD_FLAGS_CP;
- 	ufshcd_prepare_utp_scsi_cmd_upiu(lrbp, upiu_flags);
-@@ -7228,16 +7228,11 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
+@@ -84,11 +83,11 @@ void flush_cache_range(struct vm_area_struct *vma, unsigned long start, unsigned
+ 	}
  
- 	ufshcd_setup_dev_cmd(hba, lrbp, cmd_type, 0, tag);
+ 	if (cache_is_vipt_aliasing()) {
+-		asm(	"mcr	p15, 0, %0, c7, c14, 0\n"
+-		"	mcr	p15, 0, %0, c7, c10, 4"
++		asm("mcr	p15, 0, %0, c7, c14, 0"
+ 		    :
+ 		    : "r" (0)
+ 		    : "cc");
++		dsb();
+ 	}
  
--	if (hba->ufs_version <= ufshci_version(1, 1))
--		lrbp->command_type = UTP_CMD_TYPE_DEV_MANAGE;
--	else
--		lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
-+	ufshcd_prepare_req_desc_hdr(hba, lrbp, &upiu_flags, DMA_NONE, 0, UTP_CMD_TYPE_DEV_MANAGE);
- 
- 	/* update the task tag in the request upiu */
- 	req_upiu->header.task_tag = tag;
- 
--	ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags, DMA_NONE, 0);
--
- 	/* just copy the upiu request as it is */
- 	memcpy(lrbp->ucd_req_ptr, req_upiu, sizeof(*lrbp->ucd_req_ptr));
- 	if (desc_buff && desc_op == UPIU_QUERY_OPCODE_WRITE_DESC) {
-@@ -7378,24 +7373,14 @@ int ufshcd_advanced_rpmb_req_handler(struct ufs_hba *hba, struct utp_upiu_req *r
- 	u8 upiu_flags;
- 	u8 *ehs_data;
- 	u16 ehs_len;
-+	int ehs = (hba->capabilities & MASK_EHSLUTRD_SUPPORTED) ? 2 : 0;
- 
- 	/* Protects use of hba->reserved_slot. */
- 	ufshcd_dev_man_lock(hba);
- 
- 	ufshcd_setup_dev_cmd(hba, lrbp, DEV_CMD_TYPE_RPMB, UFS_UPIU_RPMB_WLUN, tag);
- 
--	/* Advanced RPMB starts from UFS 4.0, so its command type is UTP_CMD_TYPE_UFS_STORAGE */
--	lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
--
--	/*
--	 * According to UFSHCI 4.0 specification page 24, if EHSLUTRDS is 0, host controller takes
--	 * EHS length from CMD UPIU, and SW driver use EHS Length field in CMD UPIU. if it is 1,
--	 * HW controller takes EHS length from UTRD.
--	 */
--	if (hba->capabilities & MASK_EHSLUTRD_SUPPORTED)
--		ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags, dir, 2);
--	else
--		ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags, dir, 0);
-+	ufshcd_prepare_req_desc_hdr(hba, lrbp, &upiu_flags, DMA_NONE, ehs, UTP_CMD_TYPE_DEV_MANAGE);
- 
- 	/* update the task tag */
- 	req_upiu->header.task_tag = tag;
-diff --git a/include/ufs/ufshci.h b/include/ufs/ufshci.h
-index a196e1c4c3bb..88193f5540e5 100644
---- a/include/ufs/ufshci.h
-+++ b/include/ufs/ufshci.h
-@@ -426,7 +426,7 @@ union ufs_crypto_cfg_entry {
-  */
- 
- /* Transfer request command type */
--enum {
-+enum utp_cmd_type {
- 	UTP_CMD_TYPE_SCSI		= 0x0,
- 	UTP_CMD_TYPE_UFS		= 0x1,
- 	UTP_CMD_TYPE_DEV_MANAGE		= 0x2,
--- 
-2.42.0
-
+ 	if (vma->vm_flags & VM_EXEC)
 
