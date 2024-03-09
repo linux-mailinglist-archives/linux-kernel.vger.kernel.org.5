@@ -1,135 +1,94 @@
-Return-Path: <linux-kernel+bounces-97833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A80877022
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:57:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2D74877025
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87C551C20BA1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:57:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AB8B1F217B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C143B381C8;
-	Sat,  9 Mar 2024 09:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="cqpEppfx"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9615F38390;
+	Sat,  9 Mar 2024 09:59:05 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88AE6376F4;
-	Sat,  9 Mar 2024 09:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACD537707
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 09:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709978251; cv=none; b=jVvW5ZMFfMkmS/vjpfSZbQIR3WzV61wOcvizrcjZTbtjlHXyG3R6987HElRqxvua3wi0/bfH/XKni9RWVFcVz34YXKC+90B5U9KLPFY0kAndBwxVOl6G44aVlAVNlTje2wD3paDjZ4lBupyvPb4xyiJztPw8fzc02HR0CXRnNkc=
+	t=1709978345; cv=none; b=AyjcERl7pIuAIvI8fkonCLoB06qAMOt6XY9v8kYjf6xASZXioe0cB2BcX0GRyANK72OuBG6+fIALvdCg+4HEGU3ny7qw4AAr/9x8wXJUMgg6UsQacg9f6k/kAKDIIS4SxmHTC06YYBvmfwlyMwGBsOL1e2ZNlFThleK92IGlItY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709978251; c=relaxed/simple;
-	bh=Yq9LyfrM+ZjOvLE3P+ftgi/HA04Rc4K991bsHVDHfKI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CrJVoplDqDH1C6Km4z6hkK/fB//dAledmjn4Bz8Kwqktz/9x58wEG+acX+U2z+iAimdSPwQmKcwjK3gfvfcC9053NqXEgFj5ej+tptBtWsVrHYboNFole4WRkNDTa+xarEXWoJP4C4uEswM17HjXURsgIx53nELeAqkqnt+jzxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=cqpEppfx; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ssepVLzl5NKMIkC/PseMyPpZmZ3pHbZYAJxnB3I/oWA=; b=cqpEppfxsrFkAyaR43ERaanrhE
-	i2+Q8haXzU+0LKmPKF6ZLU/G8InKTOlGgDmamP9KKJ3q8c56Zw3iMLahKznCii6yCRKX2C8/C2oK/
-	VQzyUDZ0se9zgG1YHqPZJlj0qFVTWkwwma26tK8b64tyjVoL5WfkeGwneg4zfpehcqbmMt7c/u29f
-	AhQCbYFLypCEvQa2zdmM/KHL4iLTYrQiXK0VqVCcuEIZH0/SaXnY6VQnXvGH4VmDoJOYGDNN0t6l+
-	/NnE7Juk7NgP4tzwArfKwhVCgD0wOTzIw9k6WG02F7MuN2FX+CAZSTxIhlQ/wAR8xFTSBvjAC43OL
-	MRFBau2A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51170)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1ritS0-0003cn-2j;
-	Sat, 09 Mar 2024 09:57:08 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1ritRw-0000fu-Mi; Sat, 09 Mar 2024 09:57:04 +0000
-Date: Sat, 9 Mar 2024 09:57:04 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Stefan Wiehler <stefan.wiehler@nokia.com>,
-	Will Deacon <will@kernel.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
- splat
-Message-ID: <ZewycILled+mZhwe@shell.armlinux.org.uk>
-References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
- <bce79497-52c5-4241-aaf6-2a95dc459041@joelfernandes.org>
- <66fdce3a-c7f6-4ef4-ab56-7c9ece0b00e2@nokia.com>
+	s=arc-20240116; t=1709978345; c=relaxed/simple;
+	bh=asn96ezzDe7z4cS9Xr9t03l6ZD3ftiEfDmD7qxHPWR4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=MIAV9+MfGDgYjXWsQh4Rt3rLslDZU3rdcNSRKZs8+u2CNyCJaL3ZX8EU7RxVAsjrChd4Aa84ucTtsagRXrvHE2jzwRo24UGZqLiy3m/ggg6wwia/jBMbRLOw7lVNCxdY08/NgLbapepplBLaJUfDvfctm2FZuDaOXmCL4GkLNOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3657abf644fso28621005ab.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 01:59:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709978343; x=1710583143;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fVYUoCeuZ1fyxODvD3L6XZXHBvcIymgYiHpvfaB7YME=;
+        b=O4r7mAhXzYmJdD7mOd64VbgS/dTUi7rmoQmWbUat12j2s8MihVcCfwGKyvM0rB/IM4
+         h7OK3wxv5vcwYXFs9BBtANiFEX61l3qB9XbHPthhrr87Lr4P9dQY3ZvbXbArgoKUiGX+
+         IBHvOMVS+UFgB8beG85x0zeqvKL3DXVFJbJqE92T/1Mv3L+ywRcWV9SccHre1pSNlhoA
+         mw4/3RwulZkaPrPbfjYev77jmDsmnhCsL8bknBLGWNWw6d+FeXEOhYWZXulxkpERut+I
+         RIE5ch5qMJZAEfEdzJMVRdJ7RSdGq1lJSpO1eG4nTAIx7xngM6VjIQxo4ZK+YBwNss8i
+         Qnaw==
+X-Forwarded-Encrypted: i=1; AJvYcCXlAD/to0tSKnWCzhaT2wykNWQgV1jdqgj3xazxtgPK3AL/bML+DWPbXKwwzGyfr7P/LF4c+n1pNS0OPI4v1f0s8xm6FbZMquN+00RJ
+X-Gm-Message-State: AOJu0YyW5VwWhurIxcfd9m9tEvnfhga11F38rZw5UUCeo9ANPYi5c1Og
+	yuzTdfV/F/ZAk2qmQDXuBIH3WM2imw5ihxVoqRu2uHeL3zN8R/lbL6K2yRYbsIIQyIinrs+b3KH
+	OU1BG2WxUuzCs/3qxGip1gB0ct/dA/UeqmLJNdVmVNcrVd5B2MYfgnOU=
+X-Google-Smtp-Source: AGHT+IE1qe21EYraqy1mF2HjTY4C7GyobmyXlxUrrhxJTThu1W+Kf+RgPU89aqiaYRwYdp0pyncoVYWN7fk62Y1+CPuhsAXE2nyz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66fdce3a-c7f6-4ef4-ab56-7c9ece0b00e2@nokia.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Received: by 2002:a05:6e02:214c:b0:365:147b:fb44 with SMTP id
+ d12-20020a056e02214c00b00365147bfb44mr62585ilv.0.1709978343080; Sat, 09 Mar
+ 2024 01:59:03 -0800 (PST)
+Date: Sat, 09 Mar 2024 01:59:03 -0800
+In-Reply-To: <000000000000cfe6f305ee84ff1f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b6989a0613375b88@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in reiserfs_dirty_inode
+From: syzbot <syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, hdanton@sina.com, jack@suse.cz, 
+	jeffm@suse.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, paul@paul-moore.com, 
+	reiserfs-devel@vger.kernel.org, roberto.sassu@huawei.com, 
+	roberto.sassu@huaweicloud.com, syzkaller-bugs@googlegroups.com, 
+	syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Mar 09, 2024 at 08:45:35AM +0100, Stefan Wiehler wrote:
-> > I agree with the problem but disagree with the patch because it feels like a
-> > terrible workaround.
-> > 
-> > Can we just use arch_spin_lock() for the cpu_asid_lock? This might require
-> > acquiring the raw_lock within the raw_spinlock_t, but there is precedent:
-> > 
-> > arch/powerpc/kvm/book3s_hv_rm_mmu.c:245:
-> > arch_spin_lock(&kvm->mmu_lock.rlock.raw_lock);
-> > 
-> > IMO, lockdep tracking of this lock is not necessary or possible considering the
-> > hotplug situation.
-> > 
-> > Or is there a reason you need lockdep working for the cpu_asid_lock?
-> 
-> I was not aware of this possibility to bypass lockdep tracing, but this seems
-> to work and indeed looks like less of a workaround:
-> 
-> diff --git a/arch/arm/mm/context.c b/arch/arm/mm/context.c
-> index 4204ffa2d104..4fc2c559f1b6 100644
-> --- a/arch/arm/mm/context.c
-> +++ b/arch/arm/mm/context.c
-> @@ -254,7 +254,8 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
->             && atomic64_xchg(&per_cpu(active_asids, cpu), asid))
->                 goto switch_mm_fastpath;
-> 
-> -       raw_spin_lock_irqsave(&cpu_asid_lock, flags);
-> +       local_irq_save(flags);
-> +       arch_spin_lock(&cpu_asid_lock.raw_lock);
->         /* Check that our ASID belongs to the current generation. */
->         asid = atomic64_read(&mm->context.id);
->         if ((asid ^ atomic64_read(&asid_generation)) >> ASID_BITS) {
-> @@ -269,7 +270,8 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
-> 
->         atomic64_set(&per_cpu(active_asids, cpu), asid);
->         cpumask_set_cpu(cpu, mm_cpumask(mm));
-> -       raw_spin_unlock_irqrestore(&cpu_asid_lock, flags);
-> +       arch_spin_unlock(&cpu_asid_lock.raw_lock);
-> +       local_irq_restore(flags);
-> 
->  switch_mm_fastpath:
->         cpu_switch_mm(mm->pgd, mm);
-> 
-> @Russell, what do you think?
+syzbot suspects this issue was fixed by commit:
 
-I think this is Will Deacon's code, so we ought to hear from Will...
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+    fs: Block writes to mounted block devices
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11750da6180000
+start commit:   90b0c2b2edd1 Merge tag 'pinctrl-v6.7-1' of git://git.kerne..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=93ac5233c138249e
+dashboard link: https://syzkaller.appspot.com/bug?extid=c319bb5b1014113a92cf
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113f3717680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154985ef680000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
