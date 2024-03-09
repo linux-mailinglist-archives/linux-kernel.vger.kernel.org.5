@@ -1,80 +1,60 @@
-Return-Path: <linux-kernel+bounces-97908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE2E87716C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:35:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA15787716D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 264DF1F21746
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:35:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E84DCB20F02
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7225F3C467;
-	Sat,  9 Mar 2024 13:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374973C6BA;
+	Sat,  9 Mar 2024 13:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="AITJw5sn"
-Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MreaFjVz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023501BDF4;
-	Sat,  9 Mar 2024 13:35:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB8338F97;
+	Sat,  9 Mar 2024 13:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709991334; cv=none; b=nPmU6VE+XGbCSt3gbV7GORH5FgKJEaLOS/1kBqc+PUtaxBFifNKZYVUN+HZLx5cR6Pu/2RnwKdiIzY64KuUVajjAbZ+OfaAkMd7vpYMKzuz8SV9ENZdnlOKBj671AbtGAhH8VLavWsMP7cSYo8mKbQFFKGUc7pS58gkzytQDpDI=
+	t=1709991510; cv=none; b=ALewSJOfo/jPEMILLBM8DRFwMbDPXEl0Q/Hq5ZRReEyfp/2m4x2RyMZqE2LwDVyDIf254EMctWydYBPQbejJz17epQ2HrNEJXcJw0GQPIZKU41K0IzSQtVoVH8ikBCAs12B32X9PpDj7LMWIEXS2v3emlZqyE/YODub3C15EpB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709991334; c=relaxed/simple;
-	bh=i4kQuAnoQeqypHuwMZ5OqixyBUFX6jZIIa7F8n2+mkU=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=oRUBI+EmY1k3wV3/LlCTYAK1CcT6rLp99UL1d6Wdh/LDSW/HMioMISnW/kWp/DtL+sB0Z6fCwxZCT5HWMsSH3JP9C9EXLO9MBje+/06ObgdRr/LZHSiuyp1EKDCaMc7LJBZAsy/lf6wn4rcABxbHztYf6ZY6K4fqBQ7fwlw27Dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=AITJw5sn; arc=none smtp.client-ip=203.205.221.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709991319; bh=JMJZZGhWptagNBPaY3ce0VzBpB5bhSnhY8q1A69wfqY=;
-	h=From:To:Cc:Subject:Date;
-	b=AITJw5snACaYV5znEiAektOXX8O4Da0g2VuVbaVAfnc0fKDRrNH8pjqupHsR7jcn8
-	 Y4laKQM+MFE3acqtFwlOmv+m+YsKVAvrWcmu6+i7qcZaLfmWEzNlZoGp5ntcp5driS
-	 /tAZaXNTMEkcyoZdo4DFMelSp44xpnQfWkFCTM+I=
-Received: from localhost.localdomain ([58.213.8.163])
-	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
-	id 8CF87847; Sat, 09 Mar 2024 21:35:15 +0800
-X-QQ-mid: xmsmtpt1709991315t3dwksqcz
-Message-ID: <tencent_DC4901C65DB41D86CD613F3ACC41EA143808@qq.com>
-X-QQ-XMAILINFO: NvH2zBBgt3uT+kfoe/499o2G21ybEH6CIxd21cVVkXPbT/F/r+w8/YH+9VZgrL
-	 MqsAtBLT0sFgV0dUTf8JJ932HwN45u0yIjh1k0VPIduK4hFIZaukEFYWuRd8FxzOUJZOhDUMbkgJ
-	 qhZ/TGPRrryANjn9fIUIgq9ucdOL1pLT7QwM5w1UZE6TUiXucuX9JWK/giiHD2oU3DKXlFsLN/tI
-	 5Nn5Yc91wl/mStke/F3i5QDaD1SJ/UK6vT7hRY8gUUdCBAkbA5TajnTi6FSRJRG2DqYznfja7hqY
-	 ZXY/aEWlxzBjUbKiqDOFXxSd8v0zoTKcaVU2D83y0HDxWVO/nKVkWaJMTENfpiUKF/6c8VdaP1zP
-	 A8ix2sqYYy3oTzUK4c49e8uo7A0xTfx/AL7K/JHSB2hFiE/cfqeGk3R9ALd+4mHmevCfjQrbzNCX
-	 DZttcjGb8kI//vx8XqIAOldipwg2VMMfcbIbwrw5i5FfiHEFcE5q1LMxLtZq3mERSkoSqE5JiWwt
-	 0MJJLj89XfHq/4TonNctw+XXJCqQ7F8z8J3D3hxPueK5gas8gaXeSQQ2mJojRwN7YjHnTXqDbpCq
-	 wCTyoxNHaaDRRuNS7VRfrLeRbAZ2KUM17CieqwXftpHYeAHIZdVAZoGNuSMKRpds4vKsrPvEGv36
-	 rFniflqNSXzUcFwqQB0cPm+01FTetN4UEJuCqaT2yVO4nfSmVhUPLmd2vKrD5w4pwYwbM1bmTJyB
-	 PNpwlDvvwX2VJTII4v50D0Nrf303ZUkwBpdv9Xpds4yyTe/x+mQzxxqixzGJMxtEoH1VSMdKX//6
-	 eTYU+g9NVVmPZ0UukOVZNkqSJZt7jbrL66Es3ukLpu2SJH3gmpxLtBiyTTD2RtscBPsCidYN/cY0
-	 tLdAIt2HtMkFPQhINIBOg0FgyNhRh8wRdDqDloYcNx8HGJ4gX3QTjWduSE+PmKwIHnepCZyZy5dl
-	 hb21oXZeZOUQMeQrM5d6PECYjQjQbtI+aJsxjOnYiaBFo6PUESJ8m2vWrYDsSoy1X2ogTerg4QLj
-	 8u+31VZrkEdOLcSgkwkrRUCUA2K+d5t00v2byNtKDYAS/jl0ZdITFH0M/3Img=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: linke li <lilinke99@qq.com>
-To: 
-Cc: lilinke99@qq.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Breno Leitao <leitao@debian.org>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	David Howells <dhowells@redhat.com>,
-	netdev@vger.kernel.org,
+	s=arc-20240116; t=1709991510; c=relaxed/simple;
+	bh=LJZLWpPMSIn8dh1JkUG1cS5BSZ5kFeQDO1hkDSXzojg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rUIEIm5XIxSC9RU2BCYRgdgBTZCZeQ9gfPDgl3EBJoJSO2t6oZ27ZCIJiG4OFqDlrIE73x7BjrJxQeIbb2ioySwnUEZLJMqE++qRYLklqkJKU3EDGk3Brh/IKD8qGpt/Y817oc7fAJ0LB90YKRDkm0J5WW/sCOYAgn+PiCysXI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MreaFjVz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDB36C433F1;
+	Sat,  9 Mar 2024 13:38:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709991509;
+	bh=LJZLWpPMSIn8dh1JkUG1cS5BSZ5kFeQDO1hkDSXzojg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=MreaFjVzERgzC1DJyk9D02nAQuCvD0WxKjTNyED8mTOcCiuQCcy+6MvGMlgRDGLax
+	 6Mp3YZBW82RNm0qirCokhpPjL6inkshCMQ+yA+cDdQt8azb3mAwJ8yrWF9aT60WIzb
+	 Nrara0XF/h/MD86pilXcELMp0zoeWN2LkenjJwv/96m8VDs4MAqvSDFQimEsL+M/vv
+	 VWQ+OKkTTV4yzSBB4ZVa9KoBWEW4Yf13iYo6ZvD3PKyHBCwtR/KIutN3o9I/Z+BEh3
+	 rbayphEYuJ5REzWjyg6E6LxbyoTAJAei4SWeXku6YjRZ8Det8e3gKR67KFdxenW4+T
+	 SRd8pHoVpNWmQ==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	rust-for-linux@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] net: mark racy access on sk->sk_rcvbuf
-Date: Sat,  9 Mar 2024 21:34:40 +0800
-X-OQ-MSGID: <20240309133444.56863-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+Subject: [GIT PULL] Rust for v6.9
+Date: Sat,  9 Mar 2024 14:38:17 +0100
+Message-ID: <20240309133817.335439-1-ojeda@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,31 +63,178 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-sk->sk_rcvbuf can be changed by other threads. Mark this as benign using
-READ_ONCE. 
+Hi Linus,
 
-This patch is aimed at reducing the number of benign races reported by
-KCSAN in order to focus future debugging effort on harmful races.
+This is the next round of the Rust support.
 
-Signed-off-by: linke li <lilinke99@qq.com>
----
- net/core/sock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+All the commits have been in linux-next for more than a week.
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 5e78798456fd..4c5524e70534 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -551,7 +551,7 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
- 
- 	skb->dev = NULL;
- 
--	if (sk_rcvqueues_full(sk, sk->sk_rcvbuf)) {
-+	if (sk_rcvqueues_full(sk, READ_ONCE(sk->sk_rcvbuf))) {
- 		atomic_inc(&sk->sk_drops);
- 		goto discard_and_relse;
- 	}
--- 
-2.39.3 (Apple Git-146)
+A small conflict with the arm64 pull expected, as well as a trivial one
+with the mm-nonmm. Both are resolved in linux-next in the rust-next
+merge. No changes to the C side.
 
+You will likely get Rust support for arm64, the first kselftest for Rust
+and a couple improvements for Rust net PHY through their respective
+trees as well. LoongArch, RISC-V and VFS pull requests could carry
+something too, but probably on the next one.
+
+Please pull for v6.9 -- thanks!
+
+Cheers,
+Miguel
+
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  https://github.com/Rust-for-Linux/linux.git tags/rust-6.9
+
+for you to fetch changes up to 768409cff6cc89fe1194da880537a09857b6e4db:
+
+  rust: upgrade to Rust 1.76.0 (2024-02-29 22:18:05 +0100)
+
+----------------------------------------------------------------
+Rust changes for v6.9
+
+Another routine one in terms of features. We got two version upgrades
+this time, but in terms of lines, 'alloc' changes are not very large.
+
+Toolchain and infrastructure:
+
+ - Upgrade to Rust 1.76.0.
+
+   This time around, due to how the kernel and Rust schedules have
+   aligned, there are two upgrades in fact. These allow us to remove two
+   more unstable features ('const_maybe_uninit_zeroed' and
+   'ptr_metadata') from the list, among other improvements.
+
+ - Mark 'rustc' (and others) invocations as recursive, which fixes a new
+   warning and prepares us for the future in case we eventually take
+   advantage of the Make jobserver.
+
+'kernel' crate:
+
+ - Add the 'container_of!' macro.
+
+ - Stop using the unstable 'ptr_metadata' feature by employing the now
+   stable 'byte_sub' method to implement 'Arc::from_raw()'.
+
+ - Add the 'time' module with a 'msecs_to_jiffies()' conversion function
+   to begin with, to be used by Rust Binder.
+
+ - Add 'notify_sync()' and 'wait_interruptible_timeout()' methods to
+   'CondVar', to be used by Rust Binder.
+
+ - Update integer types for 'CondVar'.
+
+ - Rename 'wait_list' field to 'wait_queue_head' in 'CondVar'.
+
+ - Implement 'Display' and 'Debug' for 'BStr'.
+
+ - Add the 'try_from_foreign()' method to the 'ForeignOwnable' trait.
+
+ - Add reexports for macros so that they can be used from the right
+   module (in addition to the root).
+
+ - A series of code documentation improvements, including adding
+   intra-doc links, consistency improvements, typo fixes...
+
+'macros' crate:
+
+ - Place generated 'init_module()' function in '.init.text'.
+
+Documentation:
+
+ - Add documentation on Rust doctests and how they work.
+
+----------------------------------------------------------------
+Alice Ryhl (6):
+      rust: sync: add `CondVar::notify_sync`
+      rust: time: add msecs to jiffies conversion
+      rust: sync: add `CondVar::wait_timeout`
+      rust: sync: update integer types in CondVar
+      rust: kernel: add reexports for macros
+      rust: kernel: stop using ptr_metadata feature
+
+Charalampos Mitrodimas (1):
+      rust: sync: `CondVar` rename "wait_list" to "wait_queue_head"
+
+Dirk Behme (2):
+      docs: rust: Move testing to a separate page
+      docs: rust: Add description of Rust documentation test as KUnit ones
+
+Miguel Ojeda (3):
+      rust: upgrade to Rust 1.75.0
+      kbuild: mark `rustc` (and others) invocations as recursive
+      rust: upgrade to Rust 1.76.0
+
+Mika Westerberg (1):
+      rust: bindings: Order headers alphabetically
+
+Obei Sideg (1):
+      rust: types: add `try_from_foreign()` method
+
+Thomas Bertschinger (1):
+      rust: module: place generated init_module() function in .init.text
+
+Valentin Obst (12):
+      rust: kernel: fix multiple typos in documentation
+      rust: error: improve unsafe code in example
+      rust: ioctl: end top-level module docs with full stop
+      rust: kernel: add srctree-relative doclinks
+      rust: str: use `NUL` instead of 0 in doc comments
+      rust: str: move SAFETY comment in front of unsafe block
+      rust: kernel: unify spelling of refcount in docs
+      rust: kernel: mark code fragments in docs with backticks
+      rust: kernel: add blank lines in front of code blocks
+      rust: kernel: add doclinks
+      rust: kernel: remove unneeded doclink targets
+      rust: locked_by: shorten doclink preview
+
+Wedson Almeida Filho (1):
+      rust: add `container_of!` macro
+
+Yutaro Ohno (1):
+      rust: str: implement `Display` and `Debug` for `BStr`
+
+ Documentation/process/changes.rst          |   2 +-
+ Documentation/rust/general-information.rst |  24 ----
+ Documentation/rust/index.rst               |   1 +
+ Documentation/rust/testing.rst             | 135 ++++++++++++++++++++
+ Makefile                                   |   4 +-
+ rust/Makefile                              |  48 +++----
+ rust/alloc/alloc.rs                        |  12 +-
+ rust/alloc/boxed.rs                        |  34 +++--
+ rust/alloc/collections/mod.rs              |   1 +
+ rust/alloc/lib.rs                          |   9 +-
+ rust/alloc/raw_vec.rs                      |  77 +++++++++---
+ rust/alloc/vec/into_iter.rs                |  16 ++-
+ rust/alloc/vec/mod.rs                      |  81 +++++++++---
+ rust/bindings/bindings_helper.h            |   5 +-
+ rust/kernel/allocator.rs                   |   2 +-
+ rust/kernel/error.rs                       |  10 +-
+ rust/kernel/init.rs                        |  22 ++--
+ rust/kernel/ioctl.rs                       |   6 +-
+ rust/kernel/lib.rs                         |  37 +++++-
+ rust/kernel/str.rs                         | 193 +++++++++++++++++++++++++++--
+ rust/kernel/sync.rs                        |   5 +-
+ rust/kernel/sync/arc.rs                    |  30 +++--
+ rust/kernel/sync/condvar.rs                | 110 ++++++++++++----
+ rust/kernel/sync/lock.rs                   |  19 ++-
+ rust/kernel/sync/lock/mutex.rs             |   3 +-
+ rust/kernel/sync/lock/spinlock.rs          |   5 +-
+ rust/kernel/sync/locked_by.rs              |   7 +-
+ rust/kernel/task.rs                        |  24 +++-
+ rust/kernel/time.rs                        |  20 +++
+ rust/kernel/types.rs                       |  22 ++++
+ rust/kernel/workqueue.rs                   |  78 ++++++------
+ rust/macros/module.rs                      |   7 +-
+ scripts/Makefile.build                     |   8 +-
+ scripts/Makefile.host                      |   2 +-
+ scripts/min-tool-version.sh                |   2 +-
+ 35 files changed, 809 insertions(+), 252 deletions(-)
+ create mode 100644 Documentation/rust/testing.rst
+ create mode 100644 rust/kernel/time.rs
 
