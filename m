@@ -1,67 +1,76 @@
-Return-Path: <linux-kernel+bounces-97949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D9FA877229
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:14:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47DA0877237
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDE55281AD4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:14:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79A001C20ABF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719EA46447;
-	Sat,  9 Mar 2024 16:14:33 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6902145C04;
+	Sat,  9 Mar 2024 16:28:01 +0000 (UTC)
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6004439F;
-	Sat,  9 Mar 2024 16:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8988E383BE;
+	Sat,  9 Mar 2024 16:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710000873; cv=none; b=EEy1UtV9lfjqUe0EgZJYRs/DhmaoC1gMYPZ48tEwCHnLOmTWdSP+iB2x/dsibk17NvgxdW8jKrt0hYAv7hinNl3dQ4S5FDl+SVbzNVfTPXKVlpLIdvONPTFBgMt/Dn2Oj679gk4uG+3F2Lgw4LHrxJlE27ouqXEqQYD1XNSgXnQ=
+	t=1710001681; cv=none; b=WZrkiaPOjdHTGdqN0MnbYltiS7o8UDD1O9bakkMbXtzfeclOXAW8cKcUQgZGCrBZdipiWvbg+9ONKfjU6ZRQpEv7LZkoqKNUGa+VLcsjjUu1EKB7QBaus4zSeXnZnVLtwWiMBtLvU7zQhzGsNXJdXfJP5PVunGeJyL4sSl4lbZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710000873; c=relaxed/simple;
-	bh=I+7esQ6+7JWFVXLFfl3zXTTqxKwmpRLYFXlpXXMY+wg=;
+	s=arc-20240116; t=1710001681; c=relaxed/simple;
+	bh=gawdx09fEWv77uFcSaCOqsu/CQ1Zy2ufMmqIGkv3hpY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tNXvnl+se3xWBiNr8gZyRkURdkWRoV9Lr9QdnxT7nfdaf7kTACbBYDedGdowGCkpOVKFGcIydJqlPRX3/goVbpQUkV26OSH7yXrovYXQWhFACjqAgx86vzZ7BSYsxdbQg/VuFzZScYA2WdQdCt2mqUEhBioll3Gf5LDdQcrwYdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id B0C9D68BFE; Sat,  9 Mar 2024 17:14:18 +0100 (CET)
-Date: Sat, 9 Mar 2024 17:14:18 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
- steps
-Message-ID: <20240309161418.GA27113@lst.de>
-References: <20240306144416.GB19711@lst.de> <20240306154328.GM9225@ziepe.ca> <20240306162022.GB28427@lst.de> <20240306174456.GO9225@ziepe.ca> <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca> <20240307150505.GA28978@lst.de> <20240307210116.GQ9225@ziepe.ca> <20240308164920.GA17991@lst.de> <20240308202342.GZ9225@ziepe.ca>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QkpggEMqgHV/Dvb3pHfONm8DVplG7/ctzHQdFtv1cLAKHry8+OzNc4dB4JEvN0GcJ6sda1CtvEBbGgA0e/0Bv1pB1jGKtpP+OwQLZEpvObCi1mnazcBwZxJJIyR8i+H/rJKhVpHeXfthc0Tgy/EpHT1xR0ccI9ng/4Fpi/RQiZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e62c65865cso2642848b3a.2;
+        Sat, 09 Mar 2024 08:27:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710001679; x=1710606479;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XngN9Yh6PJNjzunlynrOgFFMvdhheJ+fAGDHAv8VoSo=;
+        b=SMZrobtuuF9JlVPAPK+FN3GduyqAiyQ6HoA+tX8YlKbh/VxFuoUQqIUYma8MwX6Afj
+         fY8zdQYIluP3/Wvfr/ANRlMSdyq07RrLRFOqd2gkzZ6VpwyoJ3+D/id01Lr29oWKEQvk
+         oyuhav/qQypnqJ9cBm1X6JoZ5mMrDScwNxmqzkwE8r3IkX1zsnsSfWEuQgm01NGrBqkn
+         1yCE108ukOgNFVjQN//JiYYr1RP/Bbv04WiaqwMhnVpuGTV5ZeRE9NMO8fDuo1wq+npC
+         qHu56d0FMXqmsMzzJ0bLpgkkoZ6B9mSZMs4kH9tig4JOpJ3JGnvhVycThbF5cMRcH4IA
+         T0OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoaMrJjePz91t+IzcGDOOm2IvyrTdzHBOx+oqB3YCaNjRbwdwjlRxr2Kfze8kcQBF4uXElwHYMnyQ98Ctr/yD5db+kQrKD7Bg9oupCO5nJDr1WGxVyglKkUb/r4/PIzFGSrnVDPyVUYUSYyU8fFGHz4ckV8AmvhWl3mH5eTGfgAUQdLJCGOgEbEYPiaSHYszQ9/BiWAT7ZcL18zcbtRmZokmg=
+X-Gm-Message-State: AOJu0YxUL6sTLLWewzQmMr4eyS305+zAVlpqBetQC+x1vyA6wFiK0iMu
+	sjsH04l4eHUgmFd/dwujJu6DjWw50IOZXBoAg5bKfWL91u85SGa9
+X-Google-Smtp-Source: AGHT+IEoZjJjChi0ytw88tfb9H2v1HQ/DS+m0c5yt85oP0DWVaiwKZ+/hEH5s3Ge0OK7urWxBkXZRQ==
+X-Received: by 2002:a05:6a20:49af:b0:1a1:7cec:4c37 with SMTP id fs47-20020a056a2049af00b001a17cec4c37mr1751210pzb.52.1710001678747;
+        Sat, 09 Mar 2024 08:27:58 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id x18-20020a17090aca1200b00298e11b600dsm1410796pjt.27.2024.03.09.08.27.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Mar 2024 08:27:58 -0800 (PST)
+Date: Sun, 10 Mar 2024 01:27:56 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v3 0/6] dt-bindings: PCI: qcom: move to dedicated schema
+ (part one)
+Message-ID: <20240309162756.GA229940@rocinante>
+References: <20240126-dt-bindings-pci-qcom-split-v3-0-f23cda4d74c0@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,23 +79,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240308202342.GZ9225@ziepe.ca>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20240126-dt-bindings-pci-qcom-split-v3-0-f23cda4d74c0@linaro.org>
 
-On Fri, Mar 08, 2024 at 04:23:42PM -0400, Jason Gunthorpe wrote:
-> > The DMA API callers really need to know what is P2P or not for
-> > various reasons.  And they should generally have that information
-> > available, either from pin_user_pages that needs to special case
-> > it or from the in-kernel I/O submitter that build it from P2P and
-> > normal memory.
+Hello,
+
+> Changes in v3:
+> - sm8450: add missing allOf: to common schema, which also fixes issue
+>   reported by Rob's robot.
+> - Link to v2: https://lore.kernel.org/r/20240125-dt-bindings-pci-qcom-split-v2-0-6b58efd91a7a@linaro.org
 > 
-> I think that is a BIO thing. RDMA just calls with FOLL_PCI_P2PDMA and
-> shoves the resulting page list into in a scattertable. It never checks
-> if any returned page is P2P - it has no reason to care. dma_map_sg()
-> does all the work.
+> Changes in v2:
+> - Switch on SM8[123456]50 to 8 MSI interrupts.
+> - Simplify SM8450 clocks.
+> - Add Acks/Rb.
+> - Link to v1: https://lore.kernel.org/r/20240108-dt-bindings-pci-qcom-split-v1-0-d541f05f4de0@linaro.org
+> 
+> DTS fixes for interrupts will be send separately
+> 
+> The qcom,pcie.yaml containing all devices results in huge allOf: section
+> with a lot of if:then: clauses making review and changes quite
+> difficult.
+> 
+> Split common parts into common schema and then move few devices to
+> dedicated files, so that each file will be easier to review.
+> 
+> I did not split/move all devices yet, so if this gets accepted I plan to
+> send more patches.
 
-Right now it does, but that's not really a good interface.  If we have
-a pin_user_pages variant that only pins until the next relevant P2P
-boundary and tells you about we can significantly simplify the overall
-interface.
+Applied to qcom, thank you!
+
+[01/06] dt-bindings: PCI: qcom,pcie-sm8550: Move SM8550 to dedicated schema
+        https://git.kernel.org/pci/pci/c/b8d3404058a6
+[02/06] dt-bindings: PCI: qcom,pcie-sm8450: Move SM8450 to dedicated schema
+        https://git.kernel.org/pci/pci/c/88c9b3af4e31
+[03/06] dt-bindings: PCI: qcom,pcie-sm8250: Move SM8250 to dedicated schema
+        https://git.kernel.org/pci/pci/c/4891b66185c1
+[04/06] dt-bindings: PCI: qcom,pcie-sm8150: Move SM8150 to dedicated schema
+        https://git.kernel.org/pci/pci/c/51bc04d5b49d
+[05/06] dt-bindings: PCI: qcom,pcie-sm8350: Move SM8350 to dedicated schema
+        https://git.kernel.org/pci/pci/c/2278b8b54773
+[06/06] dt-bindings: PCI: qcom,pcie-sc8280xp: Move SC8280XP to dedicated schema
+        https://git.kernel.org/pci/pci/c/c007a5505504
+
+	Krzysztof
 
