@@ -1,116 +1,171 @@
-Return-Path: <linux-kernel+bounces-97968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F5387727F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:47:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 331F5877285
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B22611F21A81
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:47:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B999D282155
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FB723769;
-	Sat,  9 Mar 2024 17:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B5825779;
+	Sat,  9 Mar 2024 17:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TOtyUy9j"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qrMGJaHi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECA722325
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 17:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C6F2375B;
+	Sat,  9 Mar 2024 17:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710006465; cv=none; b=LeaNEeCjuOKaMWOZNqt1BYlFVa+ZK0kaZTegzWM0Y9JKjfWXUhFUK+GYn6f264MYsyIVifnz6s5XL1MiAY+XSTGZ1hTcvK2dY+xB2dIbmJMVZm4SbE+TBg6HnalDRU91bww6jpCdTsYu2A74FNKbY55oQFp9lwBx/PXPEXyvbJg=
+	t=1710006669; cv=none; b=XRYT2rfavA1ddONIbwerntCF1ycKpocW2PpomdDcigXwLt2qS4UK59JMlwXmxZ0op1Lui6sJ3nTWc7dx3mK+nAIO2tc3E0LrVCINlZNhW0wnwWMoBYsMUqA9WS4CgNwGfmmsPBxyHVltY475HDX8oGBkJhGkuXzydUY5SfKcaSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710006465; c=relaxed/simple;
-	bh=/pfdieOOOArzQ/G+FxSqr7X6O+DxBVN8AQi5AqPqfxQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dlEJCBVNqjcGwbzkjKx9SUrS31tdOb9V0txvYCmEUY0jH+PTRVOxn8HvXe9lmDdqa4iPuseVIm9IZSgNbMGMGRPM/dwAhTAZjwV1CriF1F2epdb60vuFIoPURl2gnG0gLWZe2PLQvc7yDUxhFaAZk4G45BM+l65TKrfgfpyVphY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TOtyUy9j; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33e8abc8a84so162116f8f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 09:47:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710006462; x=1710611262; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fpryfr5/lV8PUno+vpvTtNWwBYk3RmCy3kDaW2apis0=;
-        b=TOtyUy9jjXhBwpzyqo+eEcshKGEUoogINFCEITeot9VWi6FBA4lKasICjjq/GW0WmJ
-         Ey96IoOv0gWDvtylI6ZkAC/4I+09Ty0MDzRtdzwmVsQuGJ2Afcx5oKG6tO0pyVNCHeoX
-         1TDTsgTPr8+5YPpAvJ/KUWrGhJ22R1tmXc63QCJuP4SJ2N8HVxXh/nqTOTuLBi0eR9bA
-         PntuLw2NoOcy7B+a4aCUPJxgA/5aUCSgBWiCRrYQn8vo7vz1O1NXvgUsVNvPhdFc6DUz
-         dwWVDsTx+XQgnXRr0kROqbwJuwyx6b5rCITxwfgpacURTbrMLV4i6T8Nm8taKICz3uFh
-         vv/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710006462; x=1710611262;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fpryfr5/lV8PUno+vpvTtNWwBYk3RmCy3kDaW2apis0=;
-        b=um45J4G4R89Nm+SmASp15MtI+EzK6yxN3WRanLx7w5np0EpKH6XtjVAzxuSBY6U1rP
-         Nr/wM+GdMI5EZynYFTTAMZlZQHHuBOWUdVCFBpz2FBafbsrjr1YOJYDTTjHgUz5jAIuV
-         0cS6klNmYvRtmkh/G05UucFIs6ySbv/rwz0PUcpbCZ+jxzh9GLe6wK/CAmuAv040wQ27
-         L5b1QpjfyXi+ACvKBCT/t3BGWG5Dh7+3Z6PN+e/8ulr1AGcRnQExBChVgGFtEvLkFKbb
-         xRhDj/VtTXWjJ4Gql87/049svAF/OWxwqlyck4uMuQShSRucL/bI7nkuoqY8QwXuVkZK
-         sxwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxeCisQVstnpeTJsj9/OokxDQuYJMAcOlVDy3XTr8jmH6oz/Wz+EV+QD20CjRs3TcOYxuM5gmmBllHj3WpzYLskilNVDEEiyTmCVii
-X-Gm-Message-State: AOJu0YynRXc5gjdUIJ7PwPJ/Y2rvmK4AszzEt8DwWgfQzHymAhyEk+jy
-	SKuoQ0MIR92SIWnujYg9s2quQHUhADjrYks6NQHGgzM9v1GkDqp8
-X-Google-Smtp-Source: AGHT+IHiEcGuvfJ2MCWLK7gjgZs3FQVeaR2Wj/XwdVbSVRTzJqWafwPTc+Z4Qb79NEiGubeXlLtjSg==
-X-Received: by 2002:a5d:4a0d:0:b0:33e:20a:99d with SMTP id m13-20020a5d4a0d000000b0033e020a099dmr1778552wrq.30.1710006461591;
-        Sat, 09 Mar 2024 09:47:41 -0800 (PST)
-Received: from ubuntu2004.cynet.local (vpn1382.cynet.com. [84.110.53.106])
-        by smtp.gmail.com with ESMTPSA id p11-20020a05600c358b00b00412ebd587ebsm9727434wmq.3.2024.03.09.09.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Mar 2024 09:47:41 -0800 (PST)
-From: Ariel Silver <arielsilver77@gmail.com>
-To: gregkh@linuxfoundation.org,
-	philipp.g.hortmann@gmail.com,
-	yogi.kernel@gmail.com,
-	straube.linux@gmail.com,
-	dan.carpenter@linaro.org
-Cc: linux-staging@lists.linux.de,
-	linux-kernel@vger.kernel.org,
-	Ariel Silver <arielsilver77@gmail.com>
-Subject: [PATCH v3] Staging: rtl8192e: Declare variable with static
-Date: Sat,  9 Mar 2024 19:47:22 +0200
-Message-Id: <20240309174722.3463-1-arielsilver77@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710006669; c=relaxed/simple;
+	bh=48FuxJYRobyq9zL7gLnlB6u3+I5puPcnQ7hwrjEettQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=N9qD0ese7uCQQDjTkOqHNSz4fYftjogJkTDvgXl8MnZ88AIWZsIWms19h5gZVlCXI4lhD9imFO7eqv8ECJFpa8USeySkkqaOm8zJLkxqz7HWxYj0lAIfMfbDR8BJIYHW5cYsixKqiFWSWFcHpgb+1R2AJK1ha4DgPOMhqTGPR2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qrMGJaHi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B252C433C7;
+	Sat,  9 Mar 2024 17:51:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710006669;
+	bh=48FuxJYRobyq9zL7gLnlB6u3+I5puPcnQ7hwrjEettQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qrMGJaHir/TdQZnTw3lW6X9p4veg8SIrGCUoWFR6l2GzgARyzY7EOgLuvcZQs5D4r
+	 rD2rljRiFkrmWi9qA51iS+CabXLW/aUr3DkjzDGZy4NTY6we5WA6A7XtmDnSGZVrsn
+	 8c7CMkthDDPlHitSTh6wXcd8/Sf8G58Fy/Fa36BPtrq/3wtOBN5Ax3dDoEYpY24va5
+	 g0TLf3G9ZVox5rXHvbCr3Shak8YKScDbUBRMqTZflZKzfrDr8Fn8WGM05yv1JoBHAg
+	 bUdYCpYT+T80fCXkIKgs4JKVQMvHry8fQv2ANdWyqBO0ey5RiYvG+52jI/f1mZDCIL
+	 7lHV5UhRbDh1A==
+Date: Sat, 9 Mar 2024 17:50:56 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ linux-iio@vger.kernel.org, Shreeya Patel <shreeya.patel@collabora.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Paul
+ Gazzillo <paul@pgazz.com>, Rob Herring <robh+dt@kernel.org>, Dmitry
+ Osipenko <dmitry.osipenko@collabora.com>, linux-kernel@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v7 0/5] Support ROHM BU27034 ALS sensor
+Message-ID: <20240309175056.3862630f@jic23-huawei>
+In-Reply-To: <ff8d6d14-6b48-4347-8525-e05eeb9721ff@gmail.com>
+References: <cover.1680263956.git.mazziesaccount@gmail.com>
+	<ff8d6d14-6b48-4347-8525-e05eeb9721ff@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Fixed sparse warning:
-"'dm_rx_path_sel_table' was not declared. Should it be static?"
-As dm_rx_path_sel_table is used only in rtl_dm.c it should be static.
+On Mon, 4 Mar 2024 14:38:38 +0200
+Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-Signed-off-by: Ariel Silver <arielsilver77@gmail.com>
----
-V2 -> V3: add patch version number and changelog
-V1 -> V2: fix checkpatch.pl warnings
----
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi deee Ho peeps!
+> 
+> On 3/31/23 15:40, Matti Vaittinen wrote:
+> > Support ROHM BU27034 ALS sensor
+> > 
+> > This series adds support for ROHM BU27034 Ambient Light Sensor.  
+> 
+> I have one word for all of you who worked to get the ROHM BU27034NUC 
+> driver working in upstream.
+> 
+> Meh.
+> 
+> I just found out that the BU27034 sensor which was developed when I 
+> wrote this driver had some "manufacturing issues"... The full model 
+> number was BU27034NUC. The has been cancelled, and, as far as I know, no 
+> significant number of those were manufactured.
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-index 330dafd62656..5b52bc992a61 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-@@ -144,7 +144,7 @@ const u8 dm_cck_tx_bb_gain_ch14[CCK_TX_BB_GAIN_TABLE_LEN][8] = {
- /*------------------------Define global variable-----------------------------*/
- struct dig_t dm_digtable;
- 
--struct drx_path_sel dm_rx_path_sel_table;
-+static struct drx_path_sel dm_rx_path_sel_table;
- /*------------------------Define global variable-----------------------------*/
- 
- 
--- 
-2.25.1
+ouch. We all have some cancelled products in our history!
+When that happens I usually go eat cake and moan at anyone standing
+near by. At least this seems like there will be some direct use of
+the work done (sometimes you just have to list the things learnt along
+the way).
+
+> 
+> The issues of BU27034NUC were solved, and new model BU27034ANUC was 
+> developed and is available in the ROHM catalog.
+> 
+> I did also learn that this new model BU27034ANUC is _not_ functionally 
+> equivalent to the BU27034NUC. I am currently clarifying all the 
+> differences, and I have requested the HQ to send me a sample for driver 
+> development and verification work.
+> 
+> This far I've come to know at least following differences:
+> 
+> - The DATA2 (IR) channel is removed. So is the gain setting for it. This
+>    should very much simplify the gain logic.
+> - Some of the gains were removed.
+> - The 5ms integration time was removed. (The support of 5ms was severely
+>    limited on original BU27034NUC too so driver did not support that
+>    anyways).
+> - The light sensitivity curves had changed so the lux calculation will
+>    be changed.
+> 
+> One thing that has _not_ changed though is the part-id :rolleyes:
+
+*sigh* Not even a version number?  Even unreleased / prototype parts should have
+different IDs if anything in the interface changed.
+
+> 
+> My preferred approach would be to convert the in-tree bu27034 driver to 
+> support this new variant. I think it makes sense because:
+> - (I expect) the amount of code to review will be much smaller this way
+>    than it would be if current driver was completely removed, and new one
+>    submitted.
+> - This change will not break existing users as there should not be such
+>    (judging the statement that the original BU27034NUC was cancelled
+>    before it was sold "en masse").
+> 
+> It sure is possible to drop the existing driver and submit a new one 
+> too, but I think it will be quite a bit more work with no strong benefits.
+
+Agreed, modify the existing driver. Just needs a clear statement in
+patch descriptions that the original part is not expected to be in the wild.
+
+> 
+> I expect the rest of the information to be shared to me during the next 
+> couple of days, and I hope I can start testing the driver immediately 
+> when I get the HW.
+> 
+> My question is, do you prefer the changes to be sent as one "support 
+> BU27034ANUC patch, of would you rather see changes splitted to pieces 
+> like: "adapt lux calculation to support BU27034ANUC", "remove obsolete 
+> DATA2 channel", "remove unsupported gains"...? Furthermore, the DT 
+> compatible was just rohm,bu27034 and did not include the ending "nuc". 
+
+Separate patches preferred for each feature / type of change. Mostly
+they'll hopefully be trivial to review.
+
+> Should that compatible be removed and a new one with "anuc"-suffix be 
+> added to denote the new sensor?
+
+Yes. The binding patch in particular will need a really clear statement
+that we believe there are none in products in the wild.
+
+> 
+> I am truly sorry for all the unnecessary reviewing and maintenance work 
+> you guys did. I can assure you I didn't go through it for fun either - 
+> even if the coding was fun :) I guess even the "upstream early" process 
+> has it's weaknesses...
+
+True enough. It's always 'interesting' to not know if / when a product
+you've upstreamed code for will launch.
+
+Jonathan
+
+> 
+> Yours,
+> 	-- Matti
+> 
 
 
