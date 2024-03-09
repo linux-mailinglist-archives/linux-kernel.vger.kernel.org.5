@@ -1,109 +1,104 @@
-Return-Path: <linux-kernel+bounces-97767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC973876F26
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:28:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9541876F2A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:36:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E70011C20BCA
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:27:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F77E281EE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BE1364D8;
-	Sat,  9 Mar 2024 04:27:51 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28D41E864;
+	Sat,  9 Mar 2024 04:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="OUKjhYfo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418953612D;
-	Sat,  9 Mar 2024 04:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0383016FF33;
+	Sat,  9 Mar 2024 04:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709958470; cv=none; b=gEleJ+eqx8Q4lk5hX0qJ7CR6K+WOH+uOSDLdW6agpiuSFdqVALZ6brP+6pfbK+CnaBLcwCK2I4ggQD8cZIa4y6AGymHeEJzuraJ8UJOswvhCKgfVIVS59YkPNTT/RofKv4VSv6GhgX03E5n/dlUIGYLwR74ytiB2WGyOd/6D2eQ=
+	t=1709959003; cv=none; b=JMNSgODyxKkToCbigOo7tuFiLkGN2XSrOYliCCsImQUrBUHMOO1JzMMI0K1k+3MnrXCOMd2AZUZdQQ9MEXgWNwcA3ZVsGk/godIJyoVjgfXJZnp/wn96+TeoYDICyC2ZQwcxzZfXmAailWta3ecyjXko1brlTaWZn3HIW4io2VY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709958470; c=relaxed/simple;
-	bh=s9lzqrPDk9j8gcGT1nVVajiJKR4b1xN8/LcICY6fQy4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=tDiZswnmRx8k9ZFJWhC+Y8tlGOKuKCSJ4vaH47GlQBQLtYZV6z8Xi+E1rfezI5+rFpkJ1brpQV1KxAjxBp0RaA38ilHngyLospqhdgzyWDNRB57+15kOsI7fbqgCb+4RGmeCMOc+d7MvVa+sbKnza5HN0BIYq4/LYxRJL+Y/W4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Ts94T1wWYz4f3l1W;
-	Sat,  9 Mar 2024 12:27:37 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id D764C1A0172;
-	Sat,  9 Mar 2024 12:27:44 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgC3w5tA5etlC_4kGQ--.6806S2;
-	Sat, 09 Mar 2024 12:27:44 +0800 (CST)
-Subject: Re: [PATCH v2 3/6] virtiofs: factor out more common methods for
- argbuf
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: linux-fsdevel@vger.kernel.org, Vivek Goyal <vgoyal@redhat.com>,
- Stefan Hajnoczi <stefanha@redhat.com>,
- Bernd Schubert <bernd.schubert@fastmail.fm>,
- "Michael S . Tsirkin" <mst@redhat.com>, Matthew Wilcox
- <willy@infradead.org>, Benjamin Coddington <bcodding@redhat.com>,
- linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
- houtao1@huawei.com
-References: <20240228144126.2864064-1-houtao@huaweicloud.com>
- <20240228144126.2864064-4-houtao@huaweicloud.com>
- <CAJfpegsSHfO6yMpNAxaZVMvLNub_Kv5rhZQaDuJHNgHpWhpteg@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <4eed238d-f6c1-f170-797f-5b4b172b59e4@huaweicloud.com>
-Date: Sat, 9 Mar 2024 12:27:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1709959003; c=relaxed/simple;
+	bh=i0OAAR81212W4woDBe/PQ8uKcxC/93Z5iRmjo8Evf0s=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=ftgtuDLPapD3TJik2p8sX/k128GHWwuPYl2JCZz9W3ym76C0cEzz/emlM5n6d10X36EElOs3GCvCxlxE86wcy1hEPZCwWhseWaiI0Zo8DYahWDFr8ceb8OL+p7H1SEZ0JkIumuN4lsPykkge1i2PgUkTnH4SeJPDspqWNFY9s10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=OUKjhYfo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C3EEC433F1;
+	Sat,  9 Mar 2024 04:36:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1709959002;
+	bh=i0OAAR81212W4woDBe/PQ8uKcxC/93Z5iRmjo8Evf0s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=OUKjhYfoqkhazCLlSOcQ5sAPFfiGlfOEe/6b6hODcZr1w8kJH60KN+GpUlwsrUCuP
+	 toG0QwbzNc0R/HA/CbygibGknOWjLzMa44zmSHf7m0gkupcFCDrA/UmXXI0YL++00o
+	 XPdtjYna8bJJp8KYNZD0IJT7H8xZ8N1JLHuPeikU=
+Date: Fri, 8 Mar 2024 20:36:41 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: herbert@gondor.apana.org.au, chriscli@google.com, chrisl@kernel.org,
+ ddstreet@ieee.org, linux-kernel@vger.kernel.org, sjenning@redhat.com,
+ vitaly.wool@konsulko.com, Barry Song <v-songbaohua@oppo.com>,
+ davem@davemloft.net, hannes@cmpxchg.org, linux-crypto@vger.kernel.org,
+ linux-mm@kvack.org, zhouchengming@bytedance.com, nphamcs@gmail.com,
+ yosryahmed@google.com
+Subject: Re: [PATCH v6 0/2] zswap: remove the memcpy if acomp is not
+ sleepable
+Message-Id: <20240308203641.7fbe7e939b3483bd83b9769d@linux-foundation.org>
+In-Reply-To: <CAGsJ_4xSwNZmHN5GvipS-1kELX2NBwHxoGE=aG4sekm1LcYVPw@mail.gmail.com>
+References: <20240222081135.173040-1-21cnbao@gmail.com>
+	<CAGsJ_4wMGNDcgc3pqSUicYoH7Z_miczkT=uwZU+yhDF0fd57Rg@mail.gmail.com>
+	<20240308192334.845b27504a663ec8af4f2aad@linux-foundation.org>
+	<CAGsJ_4xSwNZmHN5GvipS-1kELX2NBwHxoGE=aG4sekm1LcYVPw@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <CAJfpegsSHfO6yMpNAxaZVMvLNub_Kv5rhZQaDuJHNgHpWhpteg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgC3w5tA5etlC_4kGQ--.6806S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFW3Gr1fKF48XF45Zr4rGrg_yoW3AFX_uF
-	Wvkry5JayUG3WfAr4kAr1agwsrCayftF109343A3929F15GFWYvF1xXryFg3Z8Xa17Ar47
-	GrW3tan5trySgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
-	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	89N3UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
+On Sat, 9 Mar 2024 11:58:39 +0800 Barry Song <21cnbao@gmail.com> wrote:
 
-On 3/1/2024 10:24 PM, Miklos Szeredi wrote:
-> On Wed, 28 Feb 2024 at 15:41, Hou Tao <houtao@huaweicloud.com> wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> Factor out more common methods for bounce buffer of fuse args:
->>
->> 1) virtio_fs_argbuf_setup_sg: set-up sgs for bounce buffer
->> 2) virtio_fs_argbuf_copy_from_in_arg: copy each in-arg to bounce buffer
->> 3) virtio_fs_argbuf_out_args_offset: calc the start offset of out-arg
->> 4) virtio_fs_argbuf_copy_to_out_arg: copy bounce buffer to each out-arg
->>
->> These methods will be used to implement bounce buffer backed by
->> scattered pages which are allocated separatedly.
-> Why is req->argbuf not changed to being typed?
+> > >
+> > > So it should be quite safe to pull this series into mm-tree now.
+> >
+> > But this zswap chage requires the presence of the other patches, yes?
+> 
+> As far as I understand, we rely on two driver fixes because those drivers didn't
+> set the correct cra_flags needed by our patch1. Without those fixes implemented,
+> two platforms might encounter issues: Intel with IAA (Intel Analytics
+> Accelerator)
+> and Hisilicon with ZIP. Other platforms should be unaffected.
+> 
+> The two driver fixes have been merged into the crypto tree.
+> 
+> >
+> > So the mm.git tree alone will be buggy?  And if mm.git merges ahead of
+> > the other trees, there will be a window where mainline will be buggy?
+> 
+> Before 6.9-rc1, there might be issues if mm enters Linus' tree before Herbert's
+> crypto tree. However, by 6.9-rc1, everything should be fine.
+> 
+> >
+> > If so, I think it wuold be better to merge the zswap patch in the next
+> > merge window.
+> >
+> 
+> Okay, I understand. Since this patch improves zswap's performance, I wanted
+> it to be integrated sooner to contribute. However, I'm perfectly willing to
+> respect your concerns and adhere to the community's best practices.
+> 
 
-Will update in next revision. Thanks for the suggestion.
->
-> Thanks,
-> Miklos
+OK.  I very much doubt if anyone is running those drivers on mm.git, so
+adding it now isn't likely to hurt.
 
+So I'll merge it now and shall aim to get it upstream very late in the
+next merge window.
 
