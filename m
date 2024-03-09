@@ -1,163 +1,200 @@
-Return-Path: <linux-kernel+bounces-97960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C28E487725D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A3A877264
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:07:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 463E61F21396
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:49:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 272AE1F2153C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2ED71D522;
-	Sat,  9 Mar 2024 16:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E26AB20B12;
+	Sat,  9 Mar 2024 17:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TeivA6P3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mQSCTd+e"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F486BE4F
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 16:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1D215BE;
+	Sat,  9 Mar 2024 17:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710002977; cv=none; b=pU4w/ActRGoOuWVIG+kZ1ZesdG7ExKRAbrAUwF8d+GChT9IagroWOX3EolSphnXbiJKA+td87DEQtVXOZhAbMCHPraSLPjoCM7qaMQVz/QnYJceuLD6AwCbcG4VUJukZ6hIYiHf9hkPj9cV8wYTABaPP5PBGrl1pnTv9+CRTKyg=
+	t=1710004053; cv=none; b=TZdeSTHm6ca0cuja0ZB48701gAomZlULeQwny2ZOVff94hzvUaPOzyFwLVEaCHx5pRuoIthn22SI63/AX5xCtgOk6FWZxHKm51SbMF1Cm+4nz3Yb7pxBor6AJu9C4cmzq68apvUQtwFBnw3q9ZsVQ4NpotlEN+Vl45keVQYtKwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710002977; c=relaxed/simple;
-	bh=vEjrS5jTBnIZ5FzwO9lUX33siNiNs4wHlGKklMXdwVM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i46x5DeXPWePQMV88I2Q4nUC6ibh9wUhgoXbcMNTz8fBTbv58faikkisR5PlPQCPq6M1qXy0NTrPtHlaKdBN20GozfznOWvUbcWpy0jYYrQxXHk+hiMeuNJDXByfDoHaqXpm0HmGjWipKwWDVfyNFkZcjzEcQ50d1yYYqgKgv4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TeivA6P3; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710002974;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hxzKd5BY5dUVKboeSWBZqfH96IBVGZX3rTxUjkAuefw=;
-	b=TeivA6P3QuK/5H7e1xv8lQyucv2SgM2Ia4LEFsG8sXi9CeI3lNbtlf52PcnjD+tE+OCcjK
-	2OzOwSNz3pGKO29V9/5ESdIXrgw10AGGPYAYf/FARMT+TzK4VU9P3kd1W1L/a+CIG3hj0d
-	HsLkhtXPsU0fRJVmq1Srx4m/km0SIvU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-671-Gp_AZQ1GPCa5pOya6Z33vQ-1; Sat, 09 Mar 2024 11:49:32 -0500
-X-MC-Unique: Gp_AZQ1GPCa5pOya6Z33vQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40fb505c97aso9203805e9.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 08:49:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710002971; x=1710607771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hxzKd5BY5dUVKboeSWBZqfH96IBVGZX3rTxUjkAuefw=;
-        b=Yw/40veIm8mAEUou7fCHWb8sWVrjJvqQWpM4eE0mruUkyn65Z9yrhYYxjawV2W19zp
-         WQo7ziQcE0N8fdV98VyZd1knkT9p9SYIeTjsMJ/BVAZ3JhNjo//Mb6buPp2CazkreFCj
-         uLYauJq9kC/nwv1nLjkBzSAEaw+9x+TNImGfHqpBPzkpf70HmoTTr7iLYCwSud+t0QdQ
-         XH0eoEz7wrihqMRkZneRpHtmcpR61hvIE+81j56HeOXVZ/RW4x6r5okFPZ9oz0Rir8Y6
-         0rtcPhuMW94gHtWtY3RwfdEhSUkPWpTtrsoouE2gzeiDbxpB8Do35X8QB2OA3ReRTFeM
-         JCKg==
-X-Forwarded-Encrypted: i=1; AJvYcCUt1cHBPk4no6RGGD7Efa86p50IGC/++KiN9O2o6k6UuR1+XaeFDQNuXgrL1okEPceqKrGSz+K3i7C1j+bOhsYbxpAvbAm+0gOTUcG4
-X-Gm-Message-State: AOJu0YwcL3fvo4uA9Z6UxW9oVZ/YiiUDszah4AGN7C+ZyG1Xwj849x2p
-	qZ4wJbzlvWOw62vhdsEHOoJvcXzn5vCRMuDzaZ279aUrinkb61NwEgDZgQ9/6wFgVbfkLxMntua
-	up4jdo9tj9CHwklnQ3e/72D/rFiN80X+q1xUa2scrlu7EkKw70g6zU8Hr/7+k5ieAGC8yxRxPUt
-	xIftrofcRLTrgG14+vHmA18IkQOYT+kKzZh7PN
-X-Received: by 2002:a05:600c:4708:b0:413:1606:ba64 with SMTP id v8-20020a05600c470800b004131606ba64mr1760583wmo.26.1710002970952;
-        Sat, 09 Mar 2024 08:49:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHeFrOz4NEDXcHS/tILDPmiHsy4NjPvEdxzi2dFwo7mGr98s579GNUjAqDqDJUrZJcl3mwsZpbS0k/uTM4hFMY=
-X-Received: by 2002:a05:600c:4708:b0:413:1606:ba64 with SMTP id
- v8-20020a05600c470800b004131606ba64mr1760573wmo.26.1710002970575; Sat, 09 Mar
- 2024 08:49:30 -0800 (PST)
+	s=arc-20240116; t=1710004053; c=relaxed/simple;
+	bh=3E7oqw6/EdZcH3vXneiO51C/GvwyGjp97u7WZeIrrgU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AGtSwcco9AMsA/yDEP7DgfcvZenZ9jCf0UqSTASz99C3tGRN8TQLPgI/wVjuiT5dQZTsnXdxAZJ4I9C2TVM745X3Gb/PrG9SbgiJsEnsczcw+SdMxjHyG/X/WF9z+cjqJ6pMSVoXr8Xa47l+y4NdChYHRy486odB3qZDtMyAdFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mQSCTd+e; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710004052; x=1741540052;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=3E7oqw6/EdZcH3vXneiO51C/GvwyGjp97u7WZeIrrgU=;
+  b=mQSCTd+ejzXcZ8DDIA8Sr//zJQPABU5hqOWqj4A+TpkqYAmOFAF80zbH
+   bz2XXM/xDQrAs8MB245rBuwRPX3h8H0ZLom5PbAfC3QeqLMplDcXZWSUx
+   3V1hIXXkdXhbMwBBCf78Tj3X+dOZOggr13wX99NRBFl6QibyUs/eHrPpL
+   vsjNbpyUzWS8ehKAlJVBzXhC8L5TxQnusJr4wiZos06cyWCqQ7qK/tgkk
+   zszomEUoSvkVZcuQtmA/f/jP5Et6bGkBGUP0+eg1C5zjW21ICeJwUgNT5
+   7JyabnAbqmK+vqktBoy20xvFYgcVV+a04Du9vFfsWL2Mg7ZZqpfjEnozS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="8531413"
+X-IronPort-AV: E=Sophos;i="6.07,112,1708416000"; 
+   d="scan'208";a="8531413"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 09:07:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,112,1708416000"; 
+   d="scan'208";a="15409298"
+Received: from chengyin-mobl.amr.corp.intel.com (HELO [10.209.27.224]) ([10.209.27.224])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 09:07:30 -0800
+Message-ID: <a6152da8-5f3a-458b-bc48-4bc654677ece@linux.intel.com>
+Date: Sat, 9 Mar 2024 09:07:30 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223211508.3348529-1-seanjc@google.com>
-In-Reply-To: <20240223211508.3348529-1-seanjc@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Sat, 9 Mar 2024 17:49:18 +0100
-Message-ID: <CABgObfYjcP1hN-SZgCKBcoAStYAouRfzdGFdbyqhZMak6DKKCg@mail.gmail.com>
-Subject: Re: [GIT PULL] KVM: x86: MMU(ish) fixes for 6.8
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] platform/x86: wmi: Support reading/writing 16 bit
+ EC values
+Content-Language: en-US
+To: Armin Wolf <W_Armin@gmx.de>, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com
+Cc: rafael@kernel.org, lenb@kernel.org, mario.limonciello@amd.com,
+ linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240308210519.2986-1-W_Armin@gmx.de>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240308210519.2986-1-W_Armin@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23, 2024 at 10:15=E2=80=AFPM Sean Christopherson <seanjc@google=
-com> wrote:
->
-> Two more MMU-related fixes for 6.8.  The first, and worst, fixes a data
-> corruption bug during live migration due to KVM failing to mark a memslot
-> dirty when emulating an atomic access.  Luckily, our userspace caught the
-> corruption during checksumming after the final pause, but I've no idea if
-> QEMU-based VMs have such protection.
->
-> The second fixes a long-standing, but recently exposed, issue where yield=
-ing
-> mmu_lock to vCPUs attempting to fault in memory that is _currently_ being
-> zapped/modified can bog down the invalidation task due it constantly yiel=
-ding
-> to vCPUS (which end up doing nothing).
->
-> The following changes since commit 9895ceeb5cd61092f147f8d611e2df575879dd=
-6f:
->
->   Merge tag 'kvmarm-fixes-6.8-2' of git://git.kernel.org/pub/scm/linux/ke=
-rnel/git/kvmarm/kvmarm into HEAD (2024-02-16 12:02:38 -0500)
->
-> are available in the Git repository at:
->
->   https://github.com/kvm-x86/linux.git tags/kvm-x86-fixes-6.8-2
->
-> for you to fetch changes up to d02c357e5bfa7dfd618b7b3015624beb71f58f1f:
->
->   KVM: x86/mmu: Retry fault before acquiring mmu_lock if mapping is chang=
-ing (2024-02-23 10:14:34 -0800)
 
-Pulled, thanks.
+On 3/8/24 1:05 PM, Armin Wolf wrote:
+> The ACPI EC address space handler currently only supports
+> reading/writing 8 bit values. Some firmware implementations however
+> want to access for example 16 bit values, which is prefectly legal
+> according to the ACPI spec.
+>
+> Add support for reading/writing such values.
+>
+> Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
+>
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
+> Changes since v3:
+> - change type of variable i to size_t
+>
+> Changes since v2:
+> - fix address overflow check
+>
+> Changes since v1:
+> - use BITS_PER_BYTE
+> - validate that number of bytes to read/write does not overflow the
+>   address
+> ---
+>  drivers/platform/x86/wmi.c | 49 ++++++++++++++++++++++++++++++--------
+>  1 file changed, 39 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> index 1920e115da89..d9bf6d452b3a 100644
+> --- a/drivers/platform/x86/wmi.c
+> +++ b/drivers/platform/x86/wmi.c
+> @@ -1153,6 +1153,34 @@ static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *pdev)
+>  	return 0;
+>  }
+>
+> +static int ec_read_multiple(u8 address, u8 *buffer, size_t bytes)
+> +{
+> +	size_t i;
+> +	int ret;
+> +
+> +	for (i = 0; i < bytes; i++) {
+> +		ret = ec_read(address + i, &buffer[i]);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
 
-Paolo
+Why not use ec_transaction?
 
-> ----------------------------------------------------------------
-> KVM x86 fixes for 6.8, round 2:
+> +
+> +static int ec_write_multiple(u8 address, u8 *buffer, size_t bytes)
+> +{
+> +	size_t i;
+> +	int ret;
+> +
+> +	for (i = 0; i < bytes; i++) {
+> +		ret = ec_write(address + i, buffer[i]);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+
+Same as above.
+> +
+>  /*
+>   * WMI can have EmbeddedControl access regions. In which case, we just want to
+>   * hand these off to the EC driver.
+> @@ -1162,27 +1190,28 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physical_address address,
+>  			  u32 bits, u64 *value,
+>  			  void *handler_context, void *region_context)
+>  {
+> -	int result = 0;
+> -	u8 temp = 0;
+> +	int bytes = bits / BITS_PER_BYTE;
+> +	int ret;
+> +
+> +	if (!value)
+> +		return AE_NULL_ENTRY;
 >
->  - When emulating an atomic access, mark the gfn as dirty in the memslot
->    to fix a bug where KVM could fail to mark the slot as dirty during liv=
-e
->    migration, ultimately resulting in guest data corruption due to a dirt=
-y
->    page not being re-copied from the source to the target.
+> -	if ((address > 0xFF) || !value)
+> +	if (!bytes || bytes > sizeof(*value))
+>  		return AE_BAD_PARAMETER;
 >
->  - Check for mmu_notifier invalidation events before faulting in the pfn,
->    and before acquiring mmu_lock, to avoid unnecessary work and lock
->    contention.  Contending mmu_lock is especially problematic on preempti=
-ble
->    kernels, as KVM may yield mmu_lock in response to the contention, whic=
-h
->    severely degrades overall performance due to vCPUs making it difficult
->    for the task that triggered invalidation to make forward progress.
+> -	if (function != ACPI_READ && function != ACPI_WRITE)
+> +	if (address > U8_MAX || address + bytes - 1 > U8_MAX)
+>  		return AE_BAD_PARAMETER;
 >
->    Note, due to another kernel bug, this fix isn't limited to preemtible
->    kernels, as any kernel built with CONFIG_PREEMPT_DYNAMIC=3Dy will yiel=
-d
->    contended rwlocks and spinlocks.
+> -	if (bits != 8)
+
+Since you want to support only 16 bit reads/writes, can you check for >16
+
+> +	if (function != ACPI_READ && function != ACPI_WRITE)
+>  		return AE_BAD_PARAMETER;
 >
->    https://lore.kernel.org/all/20240110214723.695930-1-seanjc@google.com
+>  	if (function == ACPI_READ) {
+> -		result = ec_read(address, &temp);
+> -		*value = temp;
+> +		ret = ec_read_multiple(address, (u8 *)value, bytes);
+>  	} else {
+> -		temp = 0xff & *value;
+> -		result = ec_write(address, temp);
+> +		ret = ec_write_multiple(address, (u8 *)value, bytes);
+>  	}
 >
-> ----------------------------------------------------------------
-> Sean Christopherson (2):
->       KVM: x86: Mark target gfn of emulated atomic instruction as dirty
->       KVM: x86/mmu: Retry fault before acquiring mmu_lock if mapping is c=
-hanging
+> -	switch (result) {
+> +	switch (ret) {
+>  	case -EINVAL:
+>  		return AE_BAD_PARAMETER;
+>  	case -ENODEV:
+> --
+> 2.39.2
 >
->  arch/x86/kvm/mmu/mmu.c   | 42 ++++++++++++++++++++++++++++++++++++++++++
->  arch/x86/kvm/x86.c       | 10 ++++++++++
->  include/linux/kvm_host.h | 26 ++++++++++++++++++++++++++
->  3 files changed, 78 insertions(+)
 >
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
