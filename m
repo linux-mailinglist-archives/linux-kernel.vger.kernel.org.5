@@ -1,60 +1,66 @@
-Return-Path: <linux-kernel+bounces-97969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 331F5877285
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:51:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7459877292
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:54:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B999D282155
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:51:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FF6A1F21FEB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B5825779;
-	Sat,  9 Mar 2024 17:51:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A101A2C6B4;
+	Sat,  9 Mar 2024 17:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qrMGJaHi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fg4QbmRn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C6F2375B;
-	Sat,  9 Mar 2024 17:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82361F614;
+	Sat,  9 Mar 2024 17:54:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710006669; cv=none; b=XRYT2rfavA1ddONIbwerntCF1ycKpocW2PpomdDcigXwLt2qS4UK59JMlwXmxZ0op1Lui6sJ3nTWc7dx3mK+nAIO2tc3E0LrVCINlZNhW0wnwWMoBYsMUqA9WS4CgNwGfmmsPBxyHVltY475HDX8oGBkJhGkuXzydUY5SfKcaSI=
+	t=1710006858; cv=none; b=pGK9sbIgXsz16yi/Mofb5pWY8b3ZvsnIeNFgeKZSHX7s2f914MSasFLvcx386idUUMxIVexj5wjWl8tXN+H3yrC4Ca9aV1r7RFZ2VL+BEzOGCqe/ncykY5bPipZhE+C/+32HUAmlNH0k4L9ooXrfbHdEpy5u/mYBPBfHP1YOchc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710006669; c=relaxed/simple;
-	bh=48FuxJYRobyq9zL7gLnlB6u3+I5puPcnQ7hwrjEettQ=;
+	s=arc-20240116; t=1710006858; c=relaxed/simple;
+	bh=dJutrtW99BrcCsPyZ56zPa48zO/PCkDYMKsPiscIP+Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=N9qD0ese7uCQQDjTkOqHNSz4fYftjogJkTDvgXl8MnZ88AIWZsIWms19h5gZVlCXI4lhD9imFO7eqv8ECJFpa8USeySkkqaOm8zJLkxqz7HWxYj0lAIfMfbDR8BJIYHW5cYsixKqiFWSWFcHpgb+1R2AJK1ha4DgPOMhqTGPR2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qrMGJaHi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B252C433C7;
-	Sat,  9 Mar 2024 17:51:06 +0000 (UTC)
+	 MIME-Version:Content-Type; b=qv4LlUrMwiznBF+B5X/GwXNVMueXAs14hYaIhm7ZY7t7pBFZKHi6AJfl69Z4Y6UOjdOx/dQvmWfoLUeIZmnvstKEtnspKN3jOjBbz76gJkup/8s+IfVI4UJJDiOlEnNNvSgCVNtBswVmJYomOLYInpL2NdZa5tpnkO76I6TpOK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fg4QbmRn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB67DC433F1;
+	Sat,  9 Mar 2024 17:54:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710006669;
-	bh=48FuxJYRobyq9zL7gLnlB6u3+I5puPcnQ7hwrjEettQ=;
+	s=k20201202; t=1710006857;
+	bh=dJutrtW99BrcCsPyZ56zPa48zO/PCkDYMKsPiscIP+Q=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qrMGJaHir/TdQZnTw3lW6X9p4veg8SIrGCUoWFR6l2GzgARyzY7EOgLuvcZQs5D4r
-	 rD2rljRiFkrmWi9qA51iS+CabXLW/aUr3DkjzDGZy4NTY6we5WA6A7XtmDnSGZVrsn
-	 8c7CMkthDDPlHitSTh6wXcd8/Sf8G58Fy/Fa36BPtrq/3wtOBN5Ax3dDoEYpY24va5
-	 g0TLf3G9ZVox5rXHvbCr3Shak8YKScDbUBRMqTZflZKzfrDr8Fn8WGM05yv1JoBHAg
-	 bUdYCpYT+T80fCXkIKgs4JKVQMvHry8fQv2ANdWyqBO0ey5RiYvG+52jI/f1mZDCIL
-	 7lHV5UhRbDh1A==
-Date: Sat, 9 Mar 2024 17:50:56 +0000
+	b=Fg4QbmRn9nIu4qW52splGHZJ/LGHQegLpnlvFh8yI/caYD4oXyfpB5rK+Mg2WrfZK
+	 FFEa+/GXSh2xGBjRacWzDfkgI9Og07B7+tRq9lWeT9Ne14+T4LYqqA3LMDnJZ6cx4x
+	 LLxrqWO3SnlMmfDvJ7uj7OViSjPaHb4C4BmY7DeceFs1TitdpWZGjcnk48+4v1f5LB
+	 WG33NqdmkOvysyREBwLT4ABcDGoksAdoC9b+zivVqyX9kgqyLtNcSa/tH6VcPueZwG
+	 SGFtJ9vWMroCcIhW3RlmyqVAYzCDr6P1NILjLEmZRVAjgtmEs2oCpNSJv/YZY2wU16
+	 u7K6GZbNXYFCw==
+Date: Sat, 9 Mar 2024 17:54:02 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- linux-iio@vger.kernel.org, Shreeya Patel <shreeya.patel@collabora.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Paul
- Gazzillo <paul@pgazz.com>, Rob Herring <robh+dt@kernel.org>, Dmitry
- Osipenko <dmitry.osipenko@collabora.com>, linux-kernel@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v7 0/5] Support ROHM BU27034 ALS sensor
-Message-ID: <20240309175056.3862630f@jic23-huawei>
-In-Reply-To: <ff8d6d14-6b48-4347-8525-e05eeb9721ff@gmail.com>
-References: <cover.1680263956.git.mazziesaccount@gmail.com>
-	<ff8d6d14-6b48-4347-8525-e05eeb9721ff@gmail.com>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>,
+ Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Frank Rowand
+ <frowand.list@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, Uwe
+ =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>, Jonathan
+ Corbet <corbet@lwn.net>, linux-spi@vger.kernel.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, David Jander <david@protonic.nl>
+Subject: Re: [PATCH 01/13] spi: add core support for controllers with
+ offload capabilities
+Message-ID: <20240309175402.22de577d@jic23-huawei>
+In-Reply-To: <CAMknhBHP+x4e0kTmNTn6JNKv=VCosZhBWce1MjjFW4MZ+K2Hcg@mail.gmail.com>
+References: <20240109-axi-spi-engine-series-3-v1-0-e42c6a986580@baylibre.com>
+	<20240109-axi-spi-engine-series-3-v1-1-e42c6a986580@baylibre.com>
+	<2c74aad9-3cb9-4222-8072-e72120c2658e@sirena.org.uk>
+	<CAMknhBHP+x4e0kTmNTn6JNKv=VCosZhBWce1MjjFW4MZ+K2Hcg@mail.gmail.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -62,110 +68,58 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 4 Mar 2024 14:38:38 +0200
-Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+On Mon, 4 Mar 2024 17:21:21 -0600
+David Lechner <dlechner@baylibre.com> wrote:
 
-> Hi deee Ho peeps!
-> 
-> On 3/31/23 15:40, Matti Vaittinen wrote:
-> > Support ROHM BU27034 ALS sensor
-> > 
-> > This series adds support for ROHM BU27034 Ambient Light Sensor.  
-> 
-> I have one word for all of you who worked to get the ROHM BU27034NUC 
-> driver working in upstream.
-> 
-> Meh.
-> 
-> I just found out that the BU27034 sensor which was developed when I 
-> wrote this driver had some "manufacturing issues"... The full model 
-> number was BU27034NUC. The has been cancelled, and, as far as I know, no 
-> significant number of those were manufactured.
+> On Wed, Jan 10, 2024 at 3:36=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
+rote:
+> >
+> > On Wed, Jan 10, 2024 at 01:49:42PM -0600, David Lechner wrote: =20
+> > > This adds a feature for specialized SPI controllers that can record
+> > > a series of SPI transfers, including tx data, cs assertions, delays,
+> > > etc. and then play them back using a hardware trigger without CPU
+> > > intervention. =20
+> > =20
+> > > The intended use case for this is with the AXI SPI Engine to capture
+> > > data from ADCs at high rates (MSPS) with a stable sample period. =20
+> > =20
+> > > Most of the implementation is controller-specific and will be handled=
+ by
+> > > drivers that implement the offload_ops callbacks. The API follows a
+> > > prepare/enable pattern that should be familiar to users of the clk
+> > > subsystem. =20
+> >
+> > This is a lot to do in one go, and I think it's a bit too off on the
+> > side and unintegrated with the core.  There's two very high level bits
+> > here, there's the pre-cooking a message for offloading to be executed by
+> > a hardware engine and there's the bit where that's triggered by some
+> > hardwar event rather than by software.
+> > =20
+>=20
+> ...
+>=20
+> >
+> > The bit where messages are initiated by hardware is a step beyond that,
+> > I think we need a bit more API for connecting up the triggers and we
+> > also need to have something handling what happens with normal operation
+> > of the device while these triggers are enabled.  I think it could be
+> > useful to split this bit out since there's a lot more to work out there
+> > in terms of interfaces. =20
+>=20
+> Now that we have addressed the pre-cooking messages bit [1] I'm coming
+> back to the hardware trigger bit. Since the hardware trigger part
+> hasn't been discussed in the past, it's not so clear to me what is
+> being requested here (also see specific questions below).
+>=20
+> [1]: https://lore.kernel.org/linux-spi/20240219-mainline-spi-precook-mess=
+age-v2-0-4a762c6701b9@baylibre.com/T/#t
 
-ouch. We all have some cancelled products in our history!
-When that happens I usually go eat cake and moan at anyone standing
-near by. At least this seems like there will be some direct use of
-the work done (sometimes you just have to list the things learnt along
-the way).
+Mark took the spi patches so we don't need to do anything complex next
+cycle. Just need the IIO driver with these additions as by the time we hit
+rc1 all the dependencies will be available.
 
-> 
-> The issues of BU27034NUC were solved, and new model BU27034ANUC was 
-> developed and is available in the ROHM catalog.
-> 
-> I did also learn that this new model BU27034ANUC is _not_ functionally 
-> equivalent to the BU27034NUC. I am currently clarifying all the 
-> differences, and I have requested the HQ to send me a sample for driver 
-> development and verification work.
-> 
-> This far I've come to know at least following differences:
-> 
-> - The DATA2 (IR) channel is removed. So is the gain setting for it. This
->    should very much simplify the gain logic.
-> - Some of the gains were removed.
-> - The 5ms integration time was removed. (The support of 5ms was severely
->    limited on original BU27034NUC too so driver did not support that
->    anyways).
-> - The light sensitivity curves had changed so the lux calculation will
->    be changed.
-> 
-> One thing that has _not_ changed though is the part-id :rolleyes:
-
-*sigh* Not even a version number?  Even unreleased / prototype parts should have
-different IDs if anything in the interface changed.
-
-> 
-> My preferred approach would be to convert the in-tree bu27034 driver to 
-> support this new variant. I think it makes sense because:
-> - (I expect) the amount of code to review will be much smaller this way
->    than it would be if current driver was completely removed, and new one
->    submitted.
-> - This change will not break existing users as there should not be such
->    (judging the statement that the original BU27034NUC was cancelled
->    before it was sold "en masse").
-> 
-> It sure is possible to drop the existing driver and submit a new one 
-> too, but I think it will be quite a bit more work with no strong benefits.
-
-Agreed, modify the existing driver. Just needs a clear statement in
-patch descriptions that the original part is not expected to be in the wild.
-
-> 
-> I expect the rest of the information to be shared to me during the next 
-> couple of days, and I hope I can start testing the driver immediately 
-> when I get the HW.
-> 
-> My question is, do you prefer the changes to be sent as one "support 
-> BU27034ANUC patch, of would you rather see changes splitted to pieces 
-> like: "adapt lux calculation to support BU27034ANUC", "remove obsolete 
-> DATA2 channel", "remove unsupported gains"...? Furthermore, the DT 
-> compatible was just rohm,bu27034 and did not include the ending "nuc". 
-
-Separate patches preferred for each feature / type of change. Mostly
-they'll hopefully be trivial to review.
-
-> Should that compatible be removed and a new one with "anuc"-suffix be 
-> added to denote the new sensor?
-
-Yes. The binding patch in particular will need a really clear statement
-that we believe there are none in products in the wild.
-
-> 
-> I am truly sorry for all the unnecessary reviewing and maintenance work 
-> you guys did. I can assure you I didn't go through it for fun either - 
-> even if the coding was fun :) I guess even the "upstream early" process 
-> has it's weaknesses...
-
-True enough. It's always 'interesting' to not know if / when a product
-you've upstreamed code for will launch.
-
-Jonathan
-
-> 
-> Yours,
-> 	-- Matti
-> 
-
+Rest were questions for Mark I think.
 
