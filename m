@@ -1,70 +1,117 @@
-Return-Path: <linux-kernel+bounces-97765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A061A876F1C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:17:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF33C876F23
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:27:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D616C28255B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:17:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E76E1F21A10
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B4136AEC;
-	Sat,  9 Mar 2024 04:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gxjs36Kr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B75F364CD;
+	Sat,  9 Mar 2024 04:27:07 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1DC4241E2;
-	Sat,  9 Mar 2024 04:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41E93612D;
+	Sat,  9 Mar 2024 04:27:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709957850; cv=none; b=jWSzoSCH8iBw2+0Lo7VPrr1SMfi7BlhWy4090TT2jcmQ8Qz5tipccFrNfbc2Ro9U0eWXVyq0PleG/RbEB45l/avKSOq9d+RroU2/hIsiO8eRKIDRmY8zlS9hg4Dg1P6K0QQz2jyLMrZYSOG0z+Ml8+Xe50div+hXKYAwVsBMovE=
+	t=1709958427; cv=none; b=VU5WHD5sy6UJwzZ2wiy+sg45EVgdYsmMvLK6W0w4rg9eYWxrnigNUwrGsmNc8EGwpXtv8I+O0Vy+kpq9RyhiTtWQlZdCcdcbMbTFvSncjZ+zxun4L/jHp8aB0wPelN2a+srLESivaeGXNJAAswUOusNSHmEBZ5MAU4tm2qcpnr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709957850; c=relaxed/simple;
-	bh=tyzSXJgpPTfUPd2ogPeJIwbYgRW4+h6K0zmCJkzehkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WaDXAWpAGMnEBRmyL2/1GZWzAwahlzxvx4zKqIK0DJX54J5uXe3I/a+cltLNIDMuVxlBpOfqTofDM1ogqvhZH8ZKQZjqi7Y0mt/Bhvq/GgfkFyYORtC48+8kOv3qI4k/wgbiIq19nDV89TGZZrxk0Yr1XHdE1rsG/Xw9XYIjwSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gxjs36Kr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE418C433C7;
-	Sat,  9 Mar 2024 04:17:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709957850;
-	bh=tyzSXJgpPTfUPd2ogPeJIwbYgRW4+h6K0zmCJkzehkQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=gxjs36KrENkTb5op63Tf6+cdzG8qzeJVtw5L6RujJ7HNizkIzy8srqki84avaVXTz
-	 Pd8mufS8dQ+sKLodsi/HbWj5nV9mt6txdRTmCxUpYMaKjwSTVouv/IGJlWZb6kAbyA
-	 fZlHEfaAA31UjMXOQHohFnDkqm8afj28PQ2/NsMKWICVutfma25LcfCd0MaPs44zts
-	 sl88WRUeql7TLBn29ZDkF9pffDm2fvIleYOFxStB+uMOd+iQrCIPeWLJyAmmvMocLP
-	 p8Ur6rcJ64uSnvfcSeoeQOesT2vGwnLQaosDdFHJw56oe6NmREAGNjYR3Zs4XEFJzk
-	 5PP7QGHR/iBeA==
-Date: Fri, 8 Mar 2024 20:17:28 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Matthew Wood <thepacketgeek@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v4] net: netconsole: Add continuation line
- prefix to userdata messages
-Message-ID: <20240308201728.59e2e0ff@kernel.org>
-In-Reply-To: <20240308002525.248672-1-thepacketgeek@gmail.com>
-References: <20240308002525.248672-1-thepacketgeek@gmail.com>
+	s=arc-20240116; t=1709958427; c=relaxed/simple;
+	bh=N+KnjBwKqaHY3vVj7jATXyz/61YdvrbVC+n/8jaT0Tw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=aNNhSXWSYRcumr+WTmLNnsnznjyS4ZwWkWhdB6M5u1pWJhpSObhvJKZVOb5C0FVAito+wvg8TwyJG4Vw9o/Ls2VMUM5dZ0+wkgaG5jvCQ22jJ/HFA3n4yzcdLART8agBPhor6MQwbl6m1bRrL0KK4gO1Vt/TzFqptD/423VCcuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Ts93Z3DtDz4f3jsY;
+	Sat,  9 Mar 2024 12:26:50 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 066EC1A0D46;
+	Sat,  9 Mar 2024 12:26:56 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgA3Q5sM5etlZO4kGQ--.6539S2;
+	Sat, 09 Mar 2024 12:26:55 +0800 (CST)
+Subject: Re: [PATCH v2 1/6] fuse: limit the length of ITER_KVEC dio by
+ max_pages
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-fsdevel@vger.kernel.org, Vivek Goyal <vgoyal@redhat.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>,
+ Bernd Schubert <bernd.schubert@fastmail.fm>,
+ "Michael S . Tsirkin" <mst@redhat.com>, Matthew Wilcox
+ <willy@infradead.org>, Benjamin Coddington <bcodding@redhat.com>,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ houtao1@huawei.com
+References: <20240228144126.2864064-1-houtao@huaweicloud.com>
+ <20240228144126.2864064-2-houtao@huaweicloud.com>
+ <CAJfpegtMhkKG-Hk5vQ5gi6bSqwb=eMG9_TzcW7b08AtXBmnQXQ@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <8f21c92f-5456-7a2e-59af-1a02d8a10c24@huaweicloud.com>
+Date: Sat, 9 Mar 2024 12:26:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAJfpegtMhkKG-Hk5vQ5gi6bSqwb=eMG9_TzcW7b08AtXBmnQXQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgA3Q5sM5etlZO4kGQ--.6539S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW8XrWUWr1fCw4UtrWxXrb_yoW8JF4xpF
+	4fta1xWwnIqFy7Aw1xGw4xuF92kan3G3WrJ34kZr9xCr15Zr9a9ryrGa90qrZ7Xrn3Aw10
+	qF4qvF9Ivw4Yv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
+	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IUbPEf5UUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Thu,  7 Mar 2024 16:25:24 -0800 Matthew Wood wrote:
-> Fixes: df03f830d099 ("net: netconsole: cache userdata formatted string in netconsole_target")
-> Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+Hi,
 
-Breno, LG?
+On 3/1/2024 9:42 PM, Miklos Szeredi wrote:
+> On Wed, 28 Feb 2024 at 15:40, Hou Tao <houtao@huaweicloud.com> wrote:
+>
+>> So instead of limiting both the values of max_read and max_write in
+>> kernel, capping the maximal length of kvec iter IO by using max_pages in
+>> fuse_direct_io() just like it does for ubuf/iovec iter IO. Now the max
+>> value for max_pages is 256, so on host with 4KB page size, the maximal
+>> size passed to kmalloc() in copy_args_to_argbuf() is about 1MB+40B. The
+>> allocation of 2MB of physically contiguous memory will still incur
+>> significant stress on the memory subsystem, but the warning is fixed.
+>> Additionally, the requirement for huge physically contiguous memory will
+>> be removed in the following patch.
+> So the issue will be fixed properly by following patches?
+>
+> In that case this patch could be omitted, right?
+
+Sorry for the late reply. Being busy with off-site workshop these days.
+
+No, this patch is still necessary and it is used to limit the number of
+scatterlist used for fuse request and reply in virtio-fs. If the length
+of out_args[0].size is not limited, the number of scatterlist used to
+map the fuse request may be greater than the queue size of virtio-queue
+and the fuse request may hang forever.
+
+>
+> Thanks,
+> Miklos
+
 
