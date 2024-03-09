@@ -1,135 +1,112 @@
-Return-Path: <linux-kernel+bounces-97874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1610C877102
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:16:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 785DA877108
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:22:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47BC91C20AD9
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 12:16:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F6781F21664
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 12:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA3F39850;
-	Sat,  9 Mar 2024 12:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEAEA39FC5;
+	Sat,  9 Mar 2024 12:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="and6M29Y"
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nEfRE17A"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA7D38F9C;
-	Sat,  9 Mar 2024 12:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8170A28E22;
+	Sat,  9 Mar 2024 12:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709986558; cv=none; b=BqowBNjtU0N81o2f3zKSLaASwxPwDYMq9AG0+TSjyudxNEu3RkskbRTDAb4wqE8+L0FGNKtXjDQXx9c7ESsIlQRiWs/9y93FzhlmPP0a/3LHQSrdnjSwDl/EH4B8svPNrAtRI+eVF2LtqOJd0Tqtd08qeZUzaGbjn9KhL9w5vr8=
+	t=1709986961; cv=none; b=ErLeAu/N3jW3oMTW6TlDbyznaOeofWx89vsvfRvyYStStj5opyS6aQ6KhGyYzinVyWNmuuUYfZCCKSQz6o60fEdtaqzhqbOot/wk8OHHXwyDc0I/6diTuCNWeZqj2Mzsi29StiPqGWz0zIEMXYpGUlucfrdltDAd9on99mZ2XHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709986558; c=relaxed/simple;
-	bh=LLk+nM0K2NXga73NICfooQV982tp97pwncsTG7QQzso=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vl8MK/5FPFFHzG7RLxz5lUqIPEXBcJBzOLWn6AmCMBGMJWSRqijRX7S2UTwI/fF50tuA6qTN4P14X+5KRu8M7VKRfDOiKU0G0nppPbJX5NxvBsoCcoBs8IGvpNP1j8ub9dJZyhL/8oSZt7OyPoGyJDoI+JM81M08VtMWCNLuyGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=and6M29Y; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 9 Mar 2024 07:15:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709986554;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ztZwkYv2v4Kz4rLl8cXQntBezHYMi/iU5TaojHjCtJM=;
-	b=and6M29Y4UnPQ+rzg7Nxgqh1IeRjVdT3hbZWP0Ca6cKWf2x3vvO7E8n+QDrKYTIM/wnd/f
-	nAhaSj3gw47THDf7k9Odv0beydGzcubRy4GZ3pBWqkrDvZYe1P3I/NioyxOkhnql0BR1jO
-	OVYbbtbOnMF82SjTcrslweCY4lOTNwM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, Neal Gompa <neal@gompa.dev>, 
-	linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Miklos Szeredi <mszeredi@redhat.com>, Christian Brauner <brauner@kernel.org>, 
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Message-ID: <yi6fha4mz325222zfud5mlxypvl6clkkh7ko3eoyofiz3oltf2@5mhb6jqmiqtb>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
- <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
- <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
- <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
- <20240308165633.GO6184@frogsfrogsfrogs>
- <6czkpcm4gxcjik3drcy6eys6lannfk55oowdesem2qr3gfgobw@lblo3vzck43e>
- <4517677900bd6a29f4763abe868ab953b477772b.camel@kernel.org>
+	s=arc-20240116; t=1709986961; c=relaxed/simple;
+	bh=oNYQwGlIdWa98UCMqvaJ9MllMewccvT4qth27BxGmc8=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=pRM6GiyUWPhiLGLrXYSZw8Gm38zIyHIeWt7Zhb9IGr21hZNF4n48EvJnJ7l11NA8KD5+WmsIacFPhEZ5eQOyK4FV0iaoAWwhl/21eGYkNVoNun+aDCIFulkpRVYB9rrMLQOM5zshIY4DRVlJ5tFgUzVTKtbNaNfgOczIadnfDnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nEfRE17A; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56829f41f81so2399311a12.2;
+        Sat, 09 Mar 2024 04:22:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709986958; x=1710591758; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:cc:to:from:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oNYQwGlIdWa98UCMqvaJ9MllMewccvT4qth27BxGmc8=;
+        b=nEfRE17AaH8f/rbJn34eXM6QPerrL0LzSZAd1IwJ9tdNzf2p7FeAXLOXbKwRbGl37j
+         rj1CeR3jBw2OYqKXG5TkhMS3CosoOEa8oUZU4K4isUGtcFN58qBBne/t7WU0iZXjs6fN
+         5Fi56fk6OLL0J31ZK8kTTbueIFibQrBTizgW+B1FGlQc8PG1zP8o+S1WtMIZ2BacNXws
+         OWMz2taqGReFrc4AMmwlnBTjEcJE1fy7N/rcC4w8gD6bloSpnNJqWHCTjqIugtkvxDeF
+         aL6MwuYbrAE3op1h9YrBCVDEAn7KOe+iiBK7pcGkIpFkY5RjLbKSsaJcLzPx30I5GqLo
+         MFHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709986958; x=1710591758;
+        h=content-transfer-encoding:subject:cc:to:from:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oNYQwGlIdWa98UCMqvaJ9MllMewccvT4qth27BxGmc8=;
+        b=jC9NQAr1iUZXTxfCMYiWrUSg9JDDeQmvXLKzItVMEbBOFglWj9e8csH2ZKdPZuhoQN
+         b3eeZEw/Qy8fvFK1ZaF6T/QVaIU8fZiAuMsO8Z0hMbNaywmZ0t3zGBNGjNfNsTHROf5T
+         xjR3k/3UluHWl+ZoJ8htcScBVhOfP9v7PWXD3pZeaQ1K1z5PV3ru+aq/vF9YqVX6Wlr1
+         C6iIiA97HvDcWfUqy49eOVIbPk9yLycx0QFqUb1Dg8f0lVpo6W3nGDDdB4KTYmelvlvk
+         18VGMUtIYt1Aq+fECMMQZSGlEFE7xu6CtHhBl0mbLH6UNY/TpehbG2Mn5W9Y3i4ZsJj3
+         YpRA==
+X-Forwarded-Encrypted: i=1; AJvYcCVaxZpbPlEW5EgBn9I/Zjo+aStyxyndcDBtQLYYI+mCO/yY05hMtaU32qjq6rpINbjJ7W/pA5VsdjRJ4YXZ56yBBywwOavmJAs2nbch
+X-Gm-Message-State: AOJu0YxJELJaIcxWZyGc14tXawrq+CfQSlmKiQxeXazb8so4LDhkH+ZL
+	aIXQhvZ69Q57UcYE+jlAJQwdhDOttuXKY36RDHN2XDbJpeEjFHcc
+X-Google-Smtp-Source: AGHT+IEUca7ZcqUqXbHOOt6OjhcKZUpFwfipvJ+J2TU1ZrnLvzJnR8M3xcXsMwDVV/HR5pSgB8qRzQ==
+X-Received: by 2002:a50:f686:0:b0:568:260b:e502 with SMTP id d6-20020a50f686000000b00568260be502mr1262150edn.13.1709986957633;
+        Sat, 09 Mar 2024 04:22:37 -0800 (PST)
+Received: from ?IPV6:2a02:8389:41cf:e200:3599:7594:d284:9242? (2a02-8389-41cf-e200-3599-7594-d284-9242.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:3599:7594:d284:9242])
+        by smtp.gmail.com with ESMTPSA id es20-20020a056402381400b005667b411c38sm810293edb.65.2024.03.09.04.22.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Mar 2024 04:22:37 -0800 (PST)
+Message-ID: <1ee8fc6f-5299-4ba5-bb61-14b4351c0708@gmail.com>
+Date: Sat, 9 Mar 2024 13:22:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4517677900bd6a29f4763abe868ab953b477772b.camel@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+To: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: trivial-devices with vdd-supply: true
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 09, 2024 at 06:46:54AM -0500, Jeff Layton wrote:
-> On Fri, 2024-03-08 at 12:13 -0500, Kent Overstreet wrote:
-> > On Fri, Mar 08, 2024 at 08:56:33AM -0800, Darrick J. Wong wrote:
-> > > On Fri, Mar 08, 2024 at 11:48:31AM -0500, Kent Overstreet wrote:
-> > > > It's a new feature, not a bugfix, this should never get backported. And
-> > > > I the bcachefs maintainer wrote the patch, and I'm submitting it to the
-> > > > VFS maintainer, so if it's fine with him it's fine with me.
-> > > 
-> > > But then how am I supposed to bikeshed the structure of the V2 patchset
-> > > by immediately asking you to recombine the patches and spit out a V3?
-> > > 
-> > > </sarcasm>
-> > > 
-> > > But, seriously, can you update the manpage too?
-> > 
-> > yeah, where's that at?
-> > 
-> 
->     https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
-> 
-> 
-> > > Is stx_subvol a u64
-> > > cookie where userspace mustn't try to read anything into its contents?
-> > > Just like st_ino and st_dev are (supposed) to be?
-> > 
-> > Actually, that's up for debate. I'm considering having the readdir()
-> > equivalent for walking subvolumes return subvolume IDs, and then there'd
-> > be a separate call to open by ID.
-> > 
-> > Al's idea was to return open fds to child subvolumes, then userspace can
-> > get the path from /proc; that's also a possibility.
-> > 
-> > The key thing is that with subvolumes it's actually possible to do an
-> > open_by_id() call with correct security checks on pathwalking - because
-> > we don't have hardlinks so there's no ambiguity.
-> > 
-> > Or we might do it getdents() style and return the path directly.
-> > 
-> > But I think userspace is going to want to work with the volume
-> > identifiers directly, which is partly why I'm considering why other
-> > options might be cleaner.
-> > 
-> > Another thing to consider: where we're going with this is giving
-> > userspace a good efficient interrface for recursive tree traversal of
-> > subvolumes, but it might not be a bad idea to do that for mountpoints as
-> > well - similar problems, similar scalability issues that we might want
-> > to solve eventually.
-> > 
-> 
-> All of that's fine, but Darrick's question is about whether we should
-> ensure that these IDs are considered _opaque_. I think they should be.
-> 
-> We don't want to anyone to fall into the trap of trying to convey extra
-> info to userland about the volumes via this value. It should only be
-> good for uniquely identifying the volume.
-> 
-> We'll also need to document the scope of uniqueness. I assume we'll want
-> to define this as only being unique within a single filesystem? IOW, if
-> I have 2 bcachefs filesystems that are on independent devices, these
-> values may collide? Someone wanting to uniquely identify a subvolume on
-> a system will need to check both the st_dev and the st_vol, correct?
+Hi,
 
-they're small integers, not UUIDs, so yes
+I am trying to figure out the current policy to add trivial devices
+(I2C/SPI devices with at most one interrupt) to trivial-devices.yaml or
+include a dedicated file.
+
+Apparently, bindings for the same sort of devices where "vdd-supply" is
+provided require their own file, and I wonder why there is no
+"vdd/supplied/whatever-trivial-devices.yaml".
+
+Instead, files with trivial bindings + "vdd-supply: true" are added on a
+regular basis. That property is not saying anything specific about the
+device beyond that it needs a supply, which is very common. Is that
+intended and no more generic bindings are desired?
+
+On the other hand, trivial-devices.yaml includes several devices that do
+require a single supply (e.g. several sensors), but it is not explicitly
+documented. Did the requirement of providing vdd-supply arise after
+those devices were added to trivial-devices? I think that some devices
+that were added to trivial-devices in the last months could have also
+had a vdd-supply property, so I am not sure about the rules to choose
+one way or another.
+
+Thanks and best regards,
+Javier Carrasco
 
