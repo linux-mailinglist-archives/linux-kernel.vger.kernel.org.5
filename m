@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-97845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61AF2877071
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 11:32:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F39FE877070
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 11:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17C45281936
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:32:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 813D3281CB7
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1B52D04F;
-	Sat,  9 Mar 2024 10:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16389286AD;
+	Sat,  9 Mar 2024 10:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="UENNEBn2"
-Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="DHCXEYDV"
+Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15D414294
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 10:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A64125DC
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 10:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709980328; cv=none; b=Oi36mzI2Bdz6S/Xbifif7diDUPZZufNi9qBPov8BUxR32duCVjPWQg0+knF67z7t1Qs1icHnJy29oZmHDZB+BcKhMT3d8AEVQ50qwq071DtTH9itIFHk/6MMEMiEZcEMCeV6MVtkXbT8M075wxLnEw9CxZgW1B5zcfxfbDBy7jc=
+	t=1709980327; cv=none; b=jpbS489U8WWdDOS3wNdrWO3MY6tK9GzYxfQT3AC6AsjJfry2XsIz0X/ZyrV5mkdDsd+kPVF8/NUE3wOuSAsMET90VpommvfOTSBnnzYVcW/7MnlRhTSXbHolz0jIPSlXsHlyqKa8hLXOlzz4x+VEOjD3nYV6U3AAAtCixLRPvAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709980328; c=relaxed/simple;
-	bh=7sRfioFmtmF5F5YgminWOfmHP22Uae5P7Pyi525wbTA=;
+	s=arc-20240116; t=1709980327; c=relaxed/simple;
+	bh=9Gz2RXz51oHRw8OR/4Cz4VUaTiWu8pStV9bUPdYwH/A=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=jmkC5yp4mMgUQaIw9x6kGSCskR7EYszqDjdsj12NXeUOGoFqYqXNAKyUfTBBOtkV0uKp4T/+EcLNs9VDKEduCdgZORl/D8bvTAGdkjcERMC6J6j+S7rI0WRE0aMi5pvkmtntMk3bd2h6MnHdy4OcoyHVTt9oFOfIp7d2Ts3bVug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=UENNEBn2; arc=none smtp.client-ip=203.205.221.153
+	 MIME-Version; b=JLuIDNRgcPRnWozYvksC9Rxkk5SYmwX/coLOcZNCoNvSDqIFkuCj/WVyNBfmJ4Z/8Okf73NAFjaXkWD1XT++IJjRQkpMXdKxzCeszOWT8sHGwXWCqSkZbk9aifnwtPBi8TSzjJ8OUGCgNlA93GhMrcFQhckWnPZV+CFHCP0GfOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=DHCXEYDV; arc=none smtp.client-ip=203.205.221.205
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1709980317;
-	bh=9UgUOj1ogZO5bIld9wyvdw1ttRAAZG74D3bk6rSCtuI=;
+	s=s201512; t=1709980322;
+	bh=pzUshAmwIhfns0JHddsR8oSXiooWQ8z0An7EKzxYuC0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=UENNEBn2eiyxOnUq8XdtiHJKTGsuHSEAcIuRWvmTzf6hNi+fiAa/tXAd0T8kgh0Bb
-	 wDjog3ZXfdJ2uU0cZHr0EvTx/EkPbf4Ei2cO8fwRn2Xs0ZNVo6/Ql84UjsfIfmk2xG
-	 I/IjeOD78TKoU7jfZoZwAo3sz7W9EXZV1JGSXuBM=
+	b=DHCXEYDV4Tv6o7ZSU0ajiGHqpTOrg8n+C1rt7I9DaDztLppGL5VykMwede96gikRG
+	 H7uDSTr22RM+BcAu/DK2ZV0j4fEh4UjTZjRyWrbAVj9DV6T+5Pehgw6KeaD7+KNVMx
+	 Bklj3PL7M46G4TS/ItcvLEXaejCvxY/KenqumACE=
 Received: from localhost.localdomain ([2409:8961:2a0b:4ad8:c972:9bc3:984f:98a9])
 	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
 	id 7EF8DC9A; Sat, 09 Mar 2024 18:31:47 +0800
-X-QQ-mid: xmsmtpt1709980314tjkyv9h75
-Message-ID: <tencent_0BABB4A98B82F82601D38999FBFD4C9EB709@qq.com>
-X-QQ-XMAILINFO: OKkKo7I1HxIesaiix6IN1yS5ygEoqXXyN+IslzLUtY+Er5oA+1n9G1snUkEK8T
-	 Ocd5Xcvxc3fvMlzlqGGfRhUTAHl3ybUlvlB2j/NZx2rpwvO25c/rfN4Iow+0NsG7KFukMleZomTM
-	 kqAAunIQFChuxPcMyRWm6H2kr7SPcTk9zgD/txg4WRwsCKUWaMijjykFbnFtJ9lGigin492R+m1k
-	 46u1sOM8MYAIK01SQHRjT4D6lGTlBlY5az27U4ONWE4cAPUnKkp3IQ7EBFb9O28k35GKEZE7UaKN
-	 DdNaixnhe5qD5yrzAVZBD2DfDmU8cwRbD2Nn5Z2eavqX3b0uiu9BgW+X6yL2wFhFl3IQ4URZwtcC
-	 zE4+nG/rnKfxGrHJimPlQYR2D3BufBR0NN+XcDpLBtdR2FK/3nhATWWlcgB4wJSgMfeRJf6VW5bL
-	 nBBJ3kz9GHcHgH1U6vLvxP+ZACBFlrW/BS08yxWRINwy1XxkbKUDYZWtFVUiibv3dRXLwrnaxOsa
-	 tE7at/nk0q3XI187Z7nFEtZ9KUPmjEmKdMmI+kvXql/IGtCEBSKScM1yqdJYqmVFVPGpKlMzfK39
-	 jk/oUwpxx+tvHB5DFrmyM5y0GUlWYS9XsVR9LWZSMPNefdk//saIlqPCsCyZ5GLh8jfwlq4zGRko
-	 Ft4Fq97VuntqFmIiltGXo2LoKQH5be4mo2qsZJGyiwaP21xWNtBvdG80GeLgmKDOjkMuKerJ/81n
-	 l0AM1kcYgh/NNyTrf+iPhUvfaSVp2hTMfvSFnf8TQPbJn6iohgo/Rq0k/h/jCEAnmOejTj1dIcHm
-	 b8LdWHOeuu+LUBGyHYi+toFC6s3zWUvsO2CWcgKYJMXkzvIPiL9k4hICFQOwywnKxqMzoTYT7w0x
-	 QcouPJbREwUNL2dQcGH3Ri+6mx2N+Th+b+ZOpVFPmta0uonqY2bJG1Q3qxOZiq2G4LyB/htBA0V4
-	 xtNqTEEPd1P8RkzjZIglDjwj3PEhTwzoT6v+QDzDfwSPprMrBwrGkXw+fUQ97PBWK1Ah0cblDbQ+
-	 sDUH3aNrXpBy40UjWgQv/qhAZPIUo=
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+X-QQ-mid: xmsmtpt1709980317tc1clnse3
+Message-ID: <tencent_C7DFF5F3429508354390FDA4487A15F3A506@qq.com>
+X-QQ-XMAILINFO: MOwr6TNsEdeBaFuGYQn6N6N5DE6victwVjx6SYJUhQk2/KEqC1f9KqP1J1vVNh
+	 9E4tl4A4o58EWyvfGqQmxbBQAUD8sspF9haa4ySYaYaT/Wtn/FZamP6S1GVz1nxwtxH+7zVnhfNT
+	 b10igqksu6avnjW+OQZcjRjsBIHGb/Dd8CGTSd0DuvHHfmi7ugA5Cp69SOQMGGP+jNqE271FQrXN
+	 RhZJ2z46DUu+I0zLp0/zHt2Ld5ZTGELPNr2qZF3VWKoKAFQXDtCvwD7gCM26yz0tqpsX40wzB/zJ
+	 1PaosVn/Ce/zwF6XVyXyL2DXBiShDshvD26dXPMrcVX6qS9GnJ7kSBX8rCi5nycnH9FILvwGRu8c
+	 afGCyP4c9TpOGy9J173kAICuP03KBgI2FTP9td2U47NeIaYCNxWXJVlZiMJPQcmHwrym7aJB+Z2x
+	 nAm8FjV9ABjhbnwVwXSLUf/MFjjn4s6EjqmQ3gyJer95GDXhyOl2oaNbwHm+96Wf4m5Vl8l/sIJ4
+	 BaHVzyTLO9zitqrQlMo6Dw2dpKN++07hmefXTBOu/2AR0VPKNGX7SepvlCt97t3GSfQ21j4oSF9G
+	 IyWqclpqjShpQAZcpxkomzJvm/4XnEM6xRJAKScC+0GY+OWCwmF9I4PjIUsmKDc8lUq2SjovngEB
+	 GO/H5Nr16vw+wr51ScYg0aorxPN6gFOfXPhBVFMHUNCGn66aFT+GR2nM1uZ6PEXDqJUKOQgT07do
+	 q9rQ/Fk3du/kRV5CLFAYZesfv47lCf93lpllZPMjxnDNoKB0zwUF/l7GQoRbGEwQxx8Xtnx3JaT7
+	 5qKFy1DnBaS+Lna4nPm70lulZ51ixMZD5o/VAbkd7MVQ8EtC9bqpXuiCEPYVIe9C2qoA+wjMnNCw
+	 6OszVBLi7Rk7bQOuxNNnhy8uPqa1F3YRK7XjdyL1zeZXRbMeV857lC652QmubnK11IMcIcNh672z
+	 hJY4e+GnM0n2svGP/AKvsoKKwzU889TFhbjllBwrXM0stztFXRU/EjM5Cdw7XASrGUknZwQzfM2E
+	 G6pCggPCADxgcJekK7HHB223gvW6bg80kJO4slRWVoRX6GdKt91CAKbfBnTN78RBPMcFfugQ==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
 From: wenyang.linux@foxmail.com
 To: "Eric W . Biederman" <ebiederm@xmission.com>,
 	Luis Chamberlain <mcgrof@kernel.org>,
@@ -65,11 +65,16 @@ To: "Eric W . Biederman" <ebiederm@xmission.com>,
 	Joel Granados <j.granados@samsung.com>,
 	Christian Brauner <brauner@kernel.org>
 Cc: Wen Yang <wenyang.linux@foxmail.com>,
-	Iurii Zaikin <yzaikin@google.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/9] kernel/sysctl-test: add some kunit test cases for min/max detection
-Date: Sat,  9 Mar 2024 18:31:19 +0800
-X-OQ-MSGID: <2eca088f772b719a2919687b11e10a0d6e964447.1709978655.git.wenyang.linux@foxmail.com>
+Subject: [PATCH v2 3/9] rxrpc: delete these unnecessary static variables n_65535, four, max_500, etc
+Date: Sat,  9 Mar 2024 18:31:20 +0800
+X-OQ-MSGID: <c46b595b880e655e52db427bb0ba2a130595c2d8.1709978655.git.wenyang.linux@foxmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1709978655.git.wenyang.linux@foxmail.com>
 References: <cover.1709978655.git.wenyang.linux@foxmail.com>
@@ -83,9 +88,8 @@ Content-Transfer-Encoding: 8bit
 
 From: Wen Yang <wenyang.linux@foxmail.com>
 
-Add some kunit test cases and explicitly check the newly added min/max
-initialization behavior. Including basic parsing tests, min/max overflow,
-and writing data, etc
+Delete unnecessary static variables(n_65535, four, max_500, etc.)
+and encode them directly in the table entry.
 
 Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
 Cc: Eric W. Biederman <ebiederm@xmission.com>
@@ -93,328 +97,208 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Kees Cook <keescook@chromium.org>
 Cc: Joel Granados <j.granados@samsung.com>
 Cc: Christian Brauner <brauner@kernel.org>
-Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Marc Dionne <marc.dionne@auristor.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
 Cc: linux-kernel@vger.kernel.org
 ---
- kernel/sysctl-test.c | 300 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 300 insertions(+)
+ net/rxrpc/sysctl.c | 169 +++++++++++++++++++--------------------------
+ 1 file changed, 70 insertions(+), 99 deletions(-)
 
-diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
-index 6ef887c19c48..0a2b19ae2a8c 100644
---- a/kernel/sysctl-test.c
-+++ b/kernel/sysctl-test.c
-@@ -367,6 +367,300 @@ static void sysctl_test_api_dointvec_write_single_greater_int_max(
- 	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
- }
+diff --git a/net/rxrpc/sysctl.c b/net/rxrpc/sysctl.c
+index ecaeb4ecfb58..26ec6eff8402 100644
+--- a/net/rxrpc/sysctl.c
++++ b/net/rxrpc/sysctl.c
+@@ -11,15 +11,6 @@
+ #include "ar-internal.h"
  
-+/*
-+ * Test that writing the int value and check if the min/max are met
-+ */
-+static void sysctl_test_api_dointvec_write_single_with_minmax_check(
-+		struct kunit *test)
-+{
-+	int data = 0;
-+	struct ctl_table table = CTL_TABLE_ENTRY_MINMAX("foo",
-+							&data,
-+							sizeof(int),
-+							0644,
-+							proc_dointvec_minmax,
-+							SYSCTL_NUMERIC_NEG_ONE,
-+							SYSCTL_NUMERIC_ONE_HUNDRED);
-+	size_t max_len = 32, len;
-+	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
-+	char __user *user_buffer = (char __user *)buffer;
-+	loff_t pos = 0;
-+	int i;
-+
-+	for (i = SYSCTL_NUMERIC_NEG_ONE; i <= SYSCTL_NUMERIC_ONE_HUNDRED; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, 0,
-+				proc_dointvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, i, data);
-+	}
-+
-+	data = 0;
-+	for (i = -10; i < SYSCTL_NUMERIC_NEG_ONE; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, -EINVAL,
-+				proc_dointvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, 0, data);
-+	}
-+
-+	for (i = SYSCTL_NUMERIC_ONE_HUNDRED + 1; i < 110; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, -EINVAL,
-+				proc_dointvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, 0, data);
-+	}
-+}
-+
-+/*
-+ * Test that writing the int value and check if the min is met
-+ */
-+static void sysctl_test_api_dointvec_write_single_with_min_check(
-+		struct kunit *test)
-+{
-+	size_t max_len = 32, len;
-+	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
-+	char __user *user_buffer = (char __user *)buffer;
-+	int data = 0, i;
-+	loff_t pos = 0;
-+	struct ctl_table table = CTL_TABLE_ENTRY_MIN("bar",
-+			&data,
-+			sizeof(int),
-+			0644,
-+			proc_dointvec_minmax,
-+			-10);
-+
-+	for (i = -10; i <= SYSCTL_NUMERIC_ONE_HUNDRED; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, 0,
-+				proc_dointvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, i, data);
-+	}
-+
-+	data = 0;
-+	for (i = -20; i < -10; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, -EINVAL,
-+				proc_dointvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, 0, data);
-+	}
-+}
-+
-+/*
-+ * Test that writing the int value and check if the max is met
-+ */
-+static void sysctl_test_api_dointvec_write_single_with_max_check(
-+		struct kunit *test)
-+{
-+	size_t max_len = 32, len;
-+	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
-+	char __user *user_buffer = (char __user *)buffer;
-+	loff_t pos = 0;
-+	int data = 0, i;
-+	struct ctl_table table = CTL_TABLE_ENTRY_MAX("qux",
-+			&data,
-+			sizeof(int),
-+			0644,
-+			proc_dointvec_minmax,
-+			SYSCTL_NUMERIC_ONE_HUNDRED);
-+
-+	for (i = -20; i <= SYSCTL_NUMERIC_ONE_HUNDRED; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, 0,
-+				proc_dointvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, i, data);
-+	}
-+
-+	data = 0;
-+	for (i = SYSCTL_NUMERIC_ONE_HUNDRED + 1; i < SYSCTL_NUMERIC_TWO_HUNDRED; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, -EINVAL,
-+				proc_dointvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, 0, data);
-+	}
-+}
-+
-+/*
-+ * Test that writing the unsigned int value and check if the min/max are met
-+ */
-+static void sysctl_test_api_douintvec_write_single_with_minmax_check(
-+		struct kunit *test)
-+{
-+	unsigned int data = 0;
-+	struct ctl_table table1 = CTL_TABLE_ENTRY_MINMAX("foo",
-+							 &data,
-+							 sizeof(unsigned int),
-+							 0644,
-+							 proc_douintvec_minmax,
-+							 SYSCTL_NUMERIC_ZERO,
-+							 SYSCTL_NUMERIC_ONE_THOUSAND);
-+	size_t max_len = 32, len;
-+	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
-+	char __user *user_buffer = (char __user *)buffer;
-+	loff_t pos = 0;
-+	int i;
-+
-+	for (i = SYSCTL_NUMERIC_ZERO; i <= SYSCTL_NUMERIC_ONE_THOUSAND; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, 0, proc_douintvec_minmax(&table1, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, i, data);
-+	}
-+
-+	data = 0;
-+	for (i = -10; i < 0; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, -EINVAL, proc_douintvec_minmax(&table1, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, 0, data);
-+	}
-+
-+	for (i = SYSCTL_NUMERIC_ONE_THOUSAND + 1; i < SYSCTL_NUMERIC_ONE_THOUSAND + 10; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%d", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, -EINVAL, proc_douintvec_minmax(&table1, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, 0, data);
-+	}
-+}
-+
-+/*
-+ * Test that writing the unsigned int value and check if the min is met
-+ */
-+static void sysctl_test_api_douintvec_write_single_with_min_check(
-+		struct kunit *test)
-+{
-+	size_t max_len = 32, len;
-+	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
-+	char __user *user_buffer = (char __user *)buffer;
-+	loff_t pos = 0;
-+	unsigned int data = 0, i;
-+	struct ctl_table table = CTL_TABLE_ENTRY_MIN("bar",
-+			&data,
-+			sizeof(unsigned int),
-+			0644,
-+			proc_douintvec_minmax,
-+			SYSCTL_NUMERIC_FOUR);
-+
-+	for (i = SYSCTL_NUMERIC_FOUR; i <= SYSCTL_NUMERIC_ONE_THOUSAND; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%u", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, 0,
-+				proc_douintvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, i, data);
-+	}
-+
-+	data = 0;
-+	for (i = SYSCTL_NUMERIC_ZERO; i < SYSCTL_NUMERIC_FOUR; i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%u", i),
-+				max_len);
-+		len = strlen(buffer);
-+
-+		KUNIT_EXPECT_EQ(test, -EINVAL,
-+				proc_douintvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, 0, data);
-+	}
-+}
-+
-+/*
-+ * Test that writing the unsigned int value and check if the max is met
-+ */
-+static void sysctl_test_api_douintvec_write_single_with_max_check(
-+		struct kunit *test)
-+{
-+	size_t max_len = 32, len;
-+	char *buffer = kunit_kzalloc(test, max_len, GFP_USER);
-+	char __user *user_buffer = (char __user *)buffer;
-+	loff_t pos = 0;
-+	unsigned int data = 0, i;
-+	struct ctl_table table = CTL_TABLE_ENTRY_MAX("bar",
-+			&data,
-+			sizeof(unsigned int),
-+			0644,
-+			proc_douintvec_minmax,
-+			SYSCTL_NUMERIC_TWO_THOUSAND);
-+
-+	for (i = SYSCTL_NUMERIC_ONE_THOUSAND; i <= SYSCTL_NUMERIC_TWO_THOUSAND;
-+			i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%u", i),
-+				max_len);
-+		len = strlen(buffer);
-+		KUNIT_EXPECT_EQ(test, 0,
-+				proc_douintvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, i, data);
-+	}
-+
-+	data = 0;
-+	for (i = SYSCTL_NUMERIC_TWO_THOUSAND + 1;
-+			i <  SYSCTL_NUMERIC_THREE_THOUSAND;
-+			i++) {
-+		pos = 0;
-+		KUNIT_ASSERT_LT(test,
-+				(size_t)snprintf(buffer, max_len, "%u", i),
-+				max_len);
-+		len = strlen(buffer);
-+
-+		KUNIT_EXPECT_EQ(test, -EINVAL,
-+				proc_douintvec_minmax(&table, KUNIT_PROC_WRITE,
-+					user_buffer, &len, &pos));
-+		KUNIT_EXPECT_EQ(test, 0, data);
-+	}
-+}
-+
- static struct kunit_case sysctl_test_cases[] = {
- 	KUNIT_CASE(sysctl_test_api_dointvec_null_tbl_data),
- 	KUNIT_CASE(sysctl_test_api_dointvec_table_maxlen_unset),
-@@ -378,6 +672,12 @@ static struct kunit_case sysctl_test_cases[] = {
- 	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_negative),
- 	KUNIT_CASE(sysctl_test_api_dointvec_write_single_less_int_min),
- 	KUNIT_CASE(sysctl_test_api_dointvec_write_single_greater_int_max),
-+	KUNIT_CASE(sysctl_test_api_dointvec_write_single_with_minmax_check),
-+	KUNIT_CASE(sysctl_test_api_dointvec_write_single_with_min_check),
-+	KUNIT_CASE(sysctl_test_api_dointvec_write_single_with_max_check),
-+	KUNIT_CASE(sysctl_test_api_douintvec_write_single_with_minmax_check),
-+	KUNIT_CASE(sysctl_test_api_douintvec_write_single_with_min_check),
-+	KUNIT_CASE(sysctl_test_api_douintvec_write_single_with_max_check),
- 	{}
+ static struct ctl_table_header *rxrpc_sysctl_reg_table;
+-static const unsigned int four = 4;
+-static const unsigned int max_backlog = RXRPC_BACKLOG_MAX - 1;
+-static const unsigned int n_65535 = 65535;
+-static const unsigned int n_max_acks = 255;
+-static const unsigned long one_jiffy = 1;
+-static const unsigned long max_jiffies = MAX_JIFFY_OFFSET;
+-#ifdef CONFIG_AF_RXRPC_INJECT_RX_DELAY
+-static const unsigned long max_500 = 500;
+-#endif
+ 
+ /*
+  * RxRPC operating parameters.
+@@ -29,102 +20,82 @@ static const unsigned long max_500 = 500;
+  */
+ static struct ctl_table rxrpc_sysctl_table[] = {
+ 	/* Values measured in milliseconds but used in jiffies */
+-	{
+-		.procname	= "soft_ack_delay",
+-		.data		= &rxrpc_soft_ack_delay,
+-		.maxlen		= sizeof(unsigned long),
+-		.mode		= 0644,
+-		.proc_handler	= proc_doulongvec_ms_jiffies_minmax,
+-		.extra1		= (void *)&one_jiffy,
+-		.extra2		= (void *)&max_jiffies,
+-	},
+-	{
+-		.procname	= "idle_ack_delay",
+-		.data		= &rxrpc_idle_ack_delay,
+-		.maxlen		= sizeof(unsigned long),
+-		.mode		= 0644,
+-		.proc_handler	= proc_doulongvec_ms_jiffies_minmax,
+-		.extra1		= (void *)&one_jiffy,
+-		.extra2		= (void *)&max_jiffies,
+-	},
+-	{
+-		.procname	= "idle_conn_expiry",
+-		.data		= &rxrpc_conn_idle_client_expiry,
+-		.maxlen		= sizeof(unsigned long),
+-		.mode		= 0644,
+-		.proc_handler	= proc_doulongvec_ms_jiffies_minmax,
+-		.extra1		= (void *)&one_jiffy,
+-		.extra2		= (void *)&max_jiffies,
+-	},
+-	{
+-		.procname	= "idle_conn_fast_expiry",
+-		.data		= &rxrpc_conn_idle_client_fast_expiry,
+-		.maxlen		= sizeof(unsigned long),
+-		.mode		= 0644,
+-		.proc_handler	= proc_doulongvec_ms_jiffies_minmax,
+-		.extra1		= (void *)&one_jiffy,
+-		.extra2		= (void *)&max_jiffies,
+-	},
++	CTL_TABLE_ENTRY_MINMAX("soft_ack_delay",
++			       &rxrpc_soft_ack_delay,
++			       sizeof(unsigned long),
++			       0644,
++			       proc_doulongvec_ms_jiffies_minmax,
++			       SYSCTL_NUMERIC_ONE,
++			       MAX_JIFFY_OFFSET),
++	CTL_TABLE_ENTRY_MINMAX("idle_ack_delay",
++			       &rxrpc_idle_ack_delay,
++			       sizeof(unsigned long),
++			       0644,
++			       proc_doulongvec_ms_jiffies_minmax,
++			       SYSCTL_NUMERIC_ONE,
++			       MAX_JIFFY_OFFSET),
++	CTL_TABLE_ENTRY_MINMAX("idle_conn_expiry",
++			       &rxrpc_conn_idle_client_expiry,
++			       sizeof(unsigned long),
++			       0644,
++			       proc_doulongvec_ms_jiffies_minmax,
++			       SYSCTL_NUMERIC_ONE,
++			       MAX_JIFFY_OFFSET),
++	CTL_TABLE_ENTRY_MINMAX("idle_conn_fast_expiry",
++			       &rxrpc_conn_idle_client_fast_expiry,
++			       sizeof(unsigned long),
++			       0644,
++			       proc_doulongvec_ms_jiffies_minmax,
++			       SYSCTL_NUMERIC_ONE,
++			       MAX_JIFFY_OFFSET),
+ 
+ 	/* Values used in milliseconds */
+ #ifdef CONFIG_AF_RXRPC_INJECT_RX_DELAY
+-	{
+-		.procname	= "inject_rx_delay",
+-		.data		= &rxrpc_inject_rx_delay,
+-		.maxlen		= sizeof(unsigned long),
+-		.mode		= 0644,
+-		.proc_handler	= proc_doulongvec_minmax,
+-		.extra1		= (void *)SYSCTL_LONG_ZERO,
+-		.extra2		= (void *)&max_500,
+-	},
++	CTL_TABLE_ENTRY_MINMAX("inject_rx_delay",
++			       &rxrpc_inject_rx_delay,
++			       sizeof(unsigned long),
++			       0644,
++			       proc_doulongvec_minmax,
++			       SYSCTL_NUMERIC_ZERO,
++			       SYSCTL_NUMERIC_FIVE_HUNDRED),
+ #endif
+ 
+ 	/* Non-time values */
+-	{
+-		.procname	= "reap_client_conns",
+-		.data		= &rxrpc_reap_client_connections,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)SYSCTL_ONE,
+-		.extra2		= (void *)&n_65535,
+-	},
+-	{
+-		.procname	= "max_backlog",
+-		.data		= &rxrpc_max_backlog,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)&four,
+-		.extra2		= (void *)&max_backlog,
+-	},
+-	{
+-		.procname	= "rx_window_size",
+-		.data		= &rxrpc_rx_window_size,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)SYSCTL_ONE,
+-		.extra2		= (void *)&n_max_acks,
+-	},
+-	{
+-		.procname	= "rx_mtu",
+-		.data		= &rxrpc_rx_mtu,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)SYSCTL_ONE,
+-		.extra2		= (void *)&n_65535,
+-	},
+-	{
+-		.procname	= "rx_jumbo_max",
+-		.data		= &rxrpc_rx_jumbo_max,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= (void *)SYSCTL_ONE,
+-		.extra2		= (void *)&four,
+-	},
++	CTL_TABLE_ENTRY_MINMAX("reap_client_conns",
++			       &rxrpc_reap_client_connections,
++			       sizeof(unsigned int),
++			       0644,
++			       proc_dointvec_minmax,
++			       SYSCTL_NUMERIC_ONE,
++			       SYSCTL_NUMERIC_U16_MAX),
++	CTL_TABLE_ENTRY_MINMAX("max_backlog",
++			       &rxrpc_max_backlog,
++			       sizeof(unsigned int),
++			       0644,
++			       proc_dointvec_minmax,
++			       SYSCTL_NUMERIC_FOUR,
++			       RXRPC_BACKLOG_MAX - 1),
++	CTL_TABLE_ENTRY_MINMAX("rx_window_size",
++			       &rxrpc_rx_window_size,
++			       sizeof(unsigned int),
++			       0644,
++			       proc_dointvec_minmax,
++			       SYSCTL_NUMERIC_ONE,
++			       SYSCTL_NUMERIC_U8_MAX),
++	CTL_TABLE_ENTRY_MINMAX("rx_mtu",
++			       &rxrpc_rx_mtu,
++			       sizeof(unsigned int),
++			       0644,
++			       proc_dointvec_minmax,
++			       SYSCTL_NUMERIC_ONE,
++			       SYSCTL_NUMERIC_U16_MAX),
++	CTL_TABLE_ENTRY_MINMAX("rx_jumbo_max",
++			       &rxrpc_rx_jumbo_max,
++			       sizeof(unsigned int),
++			       0644,
++			       proc_dointvec_minmax,
++			       SYSCTL_NUMERIC_ONE,
++			       SYSCTL_NUMERIC_FOUR),
+ 	{ }
  };
  
 -- 
