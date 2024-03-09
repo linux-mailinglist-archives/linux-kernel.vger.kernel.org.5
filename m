@@ -1,91 +1,232 @@
-Return-Path: <linux-kernel+bounces-97915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B4B3877194
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:09:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD30D877199
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:25:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B69C91C20C6C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:09:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BA1F1F21529
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6D040BEF;
-	Sat,  9 Mar 2024 14:09:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EFA40874;
+	Sat,  9 Mar 2024 14:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X/8AKRg3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52431BDF4
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 14:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D92C3C08E;
+	Sat,  9 Mar 2024 14:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709993346; cv=none; b=OsWBgRvzmKet/UoarWUYWSfkExhf0zPP0ii028g+NCZj231WxvD73hUB+JW5r0SJNIDkmE40+Pd5INlGlbcCQCN3UxbzHsnosisxqaSfyDD4Nwc/J/eq/K+dYps6e/SafY9LeVuJ4mzLNUXPDfPcAyQQAhmvteSS2L3W1SaO7nM=
+	t=1709994307; cv=none; b=bVbyh16fn+bgtk5R/PeDCQgwpqLfNhNTRW6CMPp9S43lQVyqX0qEEejoau4N7i6jtOaJMQEgOJNTg85aFHJlNJYkLp2m8FTLz9Q9VrYM5y2wp+UFIhOEEGQubJILVG2596/3uteIif4WH2N3qJnp9Uaqqn/wu0N6kC/00s/ujKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709993346; c=relaxed/simple;
-	bh=2+frEfNY9kCZ1DL3xeqyryfAD6b5yyHATCqZqM5CrB8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=SNFKfUCcJYdi1nJ8kZCS7BNHpiwmJMpLm61F4mfvIuccgzbF7Ws//zjKoEiFjDQgX9Q2spsl7JFrskIaMzK76Z9Oql+PltA5/oG06lM8tKOvuG1oqQeMLgR/MbIufbjE5+Pb9bk0CptsR82BkTNttsBuWGDGL1efWgPAqp1/A+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c84b3570cfso299467639f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 06:09:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709993344; x=1710598144;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2LGzq8t2cO0APm/rv1jJdipgtRW0jr2Ew9T+G34Z8Vk=;
-        b=tWUHI/rMi4ZxS5jV+Y8hd6J99l9Dnk2VM97wt2QQCIQ3rMP2lbQRslzZAbyeAPBtG6
-         FMRgf4rZR2x8dSpabiAHaVwKhtA26rkKLrYLSVbyEzV1RKDzDY04JQNlrvUvyaJlJVgs
-         5dDJ7U+mXAZ/j2HUKUWqV8gTPF2L3HbqU+cnSiCLcIa/GbFYi5t2X1CCpwSq4khpG5bg
-         UQ64EaVKRO4SPzZjMez3wbOjMDtEBvcI/4vWvbyweL39ev2CY2k5KZwdLp11TFyozGe4
-         GcAbN8Fdzl8eaAa000RHD8fueBmFECqFw3Q+pEEv2b0cJm10khVK89g1PQED9YSsu1lM
-         tFJw==
-X-Forwarded-Encrypted: i=1; AJvYcCWKW3s8pAqSbJcWFvmDb7PJEZbYppIACXvv6MJCmhwpdVjFrN+1BGkfRZrAYg52gdKSHPKIAVTZraHhpkBk3q+e8xKE4kTqBCtAFv2K
-X-Gm-Message-State: AOJu0YxkNRlH2dYcnK0hwLUd7heo019iVkDDD4nZZVEcCV78aDIV1y6n
-	5pP8Moo+//TRM/GVhEUPZuz0Wt/mxYgUdO9ASSUoJZY4VTcV6/yUKmldla9t+SeHjbzXEgYOECo
-	G+CTKOF5LUppyl2Y9fnTS8iUiNWpBBcBbBC5UUN6/jAxG3sOyThjRzc0=
-X-Google-Smtp-Source: AGHT+IEwvoaxIjpkkmAaqdrdf8pyKru+spENnqat1cc0Qzw8RLRm6Fge27YlG5LX18apnrqnwtvO3b/C7CB8oBa7ib0ryoatqXZ2
+	s=arc-20240116; t=1709994307; c=relaxed/simple;
+	bh=aNVgWD8ilbHhgD7lp+ZEhfwJD+ID/RdcVUU+nXM53v8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SCsbsK62NCZFqmMN066wM765T5WmoghCGWyGh5QvLvgFsqIoyIgi6gtU2nNkd0t9n8yP9tSyjJ2vhl77AnZgOY1aig29VT6SYt0490JloL91p9xVsLfuFA+k0vF9zD1j0fVQsJ7Ls1CFePdXazIV+wt/bbI9+nb2H9A9r/WeLGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X/8AKRg3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 134A1C433F1;
+	Sat,  9 Mar 2024 14:25:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709994307;
+	bh=aNVgWD8ilbHhgD7lp+ZEhfwJD+ID/RdcVUU+nXM53v8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=X/8AKRg3FJlZyozYdI+Qp4tehKkeBDHvC7nEbT7tt+dNqUCNGJGnrbg5QnK8Wzmzd
+	 8Q/aCvZozAAwButDuLgnqk54qhrFkPlGv74d85EO2SY2YXWNxRSTF8D3URqvJoEZVb
+	 X7lRYqTfW3Fh2+WAq/4kqhuYF/Wk+D/z2XN3AopI/RBJSb8x7yXfoDFySzDkB5k3YO
+	 j5mihan9DZq8EkTrrXrIjvkWnWsTPwxpm21BLEEE9fhRaJRnLzulx6D2QcS9ueHGCS
+	 QBx87ntrjgJeaONHr6IRnLEcqLGiVJM2sqbcajer792a0TIiiYo/4kpVyYz7uPhVJL
+	 LaVMWLGmH4Mxw==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5135ab96dcbso3253491e87.1;
+        Sat, 09 Mar 2024 06:25:06 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU6ZtpoEqiEbCl5cIaV4Gq6AOs6h7o6ZJThUZUTX4F/VqdkG+t3idaMsHBmDPp/yY9cPdYYKCZRZYOX7PJBIXTo3zBXeq1uIq79kb7ZKW0V72MDXSM3vw27GWdwK3MFB/jl4F5UdwQGm8JP
+X-Gm-Message-State: AOJu0YxoyeiT7pJa40qtbuK+57C96k0ZQ5YTDHKhtMC3BntMxTRbgHB/
+	wJNmyzmxYnbY0y4FuqMBRwKt/UwLJo8dDCX2vnrihpHRRVJoI5HZSVqkkkZWBWEP1TpE3ThtVoa
+	34GYGNoIZk8y7puGa1sCW6t+BjBs=
+X-Google-Smtp-Source: AGHT+IGv0Ycu6AT5vUmNTCfmv5w8PuFh6nXpl0xiTZtF7HgfclsOa+bV+utpZPu8MhIKbyM6Lxgkmsr2Qg91dYfWH8c=
+X-Received: by 2002:ac2:4d8e:0:b0:513:3b3e:c361 with SMTP id
+ g14-20020ac24d8e000000b005133b3ec361mr1136256lfe.2.1709994305575; Sat, 09 Mar
+ 2024 06:25:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1654:b0:476:d5dc:b729 with SMTP id
- a20-20020a056638165400b00476d5dcb729mr79848jat.4.1709993344002; Sat, 09 Mar
- 2024 06:09:04 -0800 (PST)
-Date: Sat, 09 Mar 2024 06:09:03 -0800
-In-Reply-To: <000000000000f250a605ec981d41@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d682ec06133ad9d2@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in mnt_want_write_file
-From: syzbot <syzbot+1047e42179f502f2b0a2@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, hdanton@sina.com, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20240305110915.184868-1-jtornosm@redhat.com>
+In-Reply-To: <20240305110915.184868-1-jtornosm@redhat.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 9 Mar 2024 23:24:29 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ6_kr0Q1RB0dELiGUObFJ4HEEu3XTErGf6FaNntKMnTg@mail.gmail.com>
+Message-ID: <CAK7LNAQ6_kr0Q1RB0dELiGUObFJ4HEEu3XTErGf6FaNntKMnTg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: rpm-pkg: add dtb files in kernel rpm
+To: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+Cc: nathan@kernel.org, nicolas@fjasle.eu, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot suspects this issue was fixed by commit:
+On Tue, Mar 5, 2024 at 8:09=E2=80=AFPM Jose Ignacio Tornos Martinez
+<jtornosm@redhat.com> wrote:
+>
+> Some architectures, like aarch64 ones, need a dtb file to configure the
+> hardware. The default dtb file can be preloaded from u-boot, but the fina=
+l
+> and/or more complete dtb file needs to be able to be loaded later from
+> rootfs.
+>
+> Add the possible dtb files to the kernel rpm and mimic Fedora shipping
+> process, storing the dtb files in the module directory. These dtb files
+> will be copied to /boot directory by the install scripts, but add fallbac=
+k
+> just in case, checking if the content in /boot directory is correct.
+>
+> Mark the files installed to /boot as %ghost to make sure they will be
+> removed when the package is uninstalled.
+>
+> Tested with Fedora Rawhide (x86_64 and aarch64) with dnf and rpm tools.
+> In addition, fallback was also tested after modifying the install scripts=
+.
+>
+> Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+> ---
+>  scripts/package/kernel.spec | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
+> index c256b73cca3e..5c4c1ffcba6c 100644
+> --- a/scripts/package/kernel.spec
+> +++ b/scripts/package/kernel.spec
+> @@ -61,6 +61,9 @@ cp $(%{make} %{makeflags} -s image_name) %{buildroot}/l=
+ib/modules/%{KERNELRELEAS
+>  %{make} %{makeflags} INSTALL_HDR_PATH=3D%{buildroot}/usr headers_install
+>  cp System.map %{buildroot}/lib/modules/%{KERNELRELEASE}
+>  cp .config %{buildroot}/lib/modules/%{KERNELRELEASE}/config
+> +if [ -d "${srctree}/arch/${SRCARCH}/boot/dts" ];then
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
 
-    fs: Block writes to mounted block devices
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164f208e180000
-start commit:   ac865f00af29 Merge tag 'pci-v6.7-fixes-2' of git://git.ker..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b
-dashboard link: https://syzkaller.appspot.com/bug?extid=1047e42179f502f2b0a2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116d8055e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15687d81e80000
+${srctree} and ${SRCARCH} are not always defined in kernel.spec.
 
-If the result looks correct, please mark the issue as fixed by replying with:
 
-#syz fix: fs: Block writes to mounted block devices
+They are not defined if you directly run 'rpmbuild -rb <SRPM>'.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+The following will correctly check the presence of
+${srctree}/arch/${SRCARCH}/boot/dts.
+
+
+if %{make} %{makeflags} run-command KBUILD_RUN_COMMAND=3D'test -d
+${srctree}/arch/${SRCARCH}/boot/dts'; then
+
+
+
+
+
+
+
+
+> +       %{make} %{makeflags} INSTALL_DTBS_PATH=3D%{buildroot}/lib/modules=
+/%{KERNELRELEASE}/dtb dtbs_install
+> +fi
+>  ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KER=
+NELRELEASE}/build
+>  %if %{with_devel}
+>  %{make} %{makeflags} run-command KBUILD_RUN_COMMAND=3D'${srctree}/script=
+s/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELRELEASE=
+}'
+> @@ -81,6 +84,14 @@ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}=
+/lib/modules/%{KERNELRELEA
+>                 echo "%ghost /boot/${x}-%{KERNELRELEASE}"
+>         done
+>
+> +       if [ -d "%{buildroot}/lib/modules/%{KERNELRELEASE}/dtb" ];then
+> +               echo "/lib/modules/%{KERNELRELEASE}/dtb"
+> +               for x in $(find "%{buildroot}/lib/modules/%{KERNELRELEASE=
+}/dtb" -name "*" \
+> +                               -exec realpath --relative-to "%{buildroot=
+}/lib/modules/%{KERNELRELEASE}/dtb" {} \;); do
+> +                       echo "%ghost /boot/dtb-%{KERNELRELEASE}/${x}"
+> +               done
+
+
+Instead of the for-loop, you can write it in one command:
+
+
+  find "%{buildroot}/lib/modules/%{KERNELRELEASE}/dtb" -printf
+"%%%ghost /boot/dtb-%{KERNELRELEASE}/%%P\n"
+
+
+Is the escaping % complex?
+
+
+
+
+
+
+
+
+
+
+
+
+
+> +       fi
+> +
+>         echo "%exclude /lib/modules/%{KERNELRELEASE}/build"
+>  } > %{buildroot}/kernel.list
+>
+> @@ -96,6 +107,12 @@ for file in vmlinuz System.map config; do
+>                 cp "/lib/modules/%{KERNELRELEASE}/${file}" "/boot/${file}=
+-%{KERNELRELEASE}"
+>         fi
+>  done
+> +if [ -d "/lib/modules/%{KERNELRELEASE}/dtb" ]; then
+> +       if ! diff -rq "/lib/modules/%{KERNELRELEASE}/dtb" "/boot/dtb-%{KE=
+RNELRELEASE}" &>/dev/null; then
+
+
+I do not recommend the bash'ism "&>/dev/null".
+
+The scriptlet is executed by /bin/sh, which
+may not be bash, although on most RPM-based
+distro, it is a symlink to bash.
+
+
+You can squash the nested if-conditionals:
+
+
+if [ -d "/lib/modules/%{KERNELRELEASE}/dtb" ] && \
+   ! diff -rq "/lib/modules/%{KERNELRELEASE}/dtb"
+"/boot/dtb-%{KERNELRELEASE}" >/dev/null 2>&1; then
+        ...
+fi
+
+
+
+
+
+> +               rm -rf "/boot/dtb-%{KERNELRELEASE}"
+> +               cp -r "/lib/modules/%{KERNELRELEASE}/dtb" "/boot/dtb-%{KE=
+RNELRELEASE}"
+> +       fi
+> +fi
+>  if [ ! -e "/lib/modules/%{KERNELRELEASE}/modules.dep" ]; then
+>         /usr/sbin/depmod %{KERNELRELEASE}
+>  fi
+> --
+> 2.43.2
+>
+>
+
+
+--
+Best Regards
+
+
+
+Masahiro Yamada
 
