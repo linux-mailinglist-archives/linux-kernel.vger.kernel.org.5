@@ -1,94 +1,130 @@
-Return-Path: <linux-kernel+bounces-97834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2D74877025
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:59:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D7A1877032
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 11:06:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AB8B1F217B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:59:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF5E71C20B4C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9615F38390;
-	Sat,  9 Mar 2024 09:59:05 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2F73FBAC;
+	Sat,  9 Mar 2024 10:05:32 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACD537707
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 09:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35EDF3D970;
+	Sat,  9 Mar 2024 10:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709978345; cv=none; b=AyjcERl7pIuAIvI8fkonCLoB06qAMOt6XY9v8kYjf6xASZXioe0cB2BcX0GRyANK72OuBG6+fIALvdCg+4HEGU3ny7qw4AAr/9x8wXJUMgg6UsQacg9f6k/kAKDIIS4SxmHTC06YYBvmfwlyMwGBsOL1e2ZNlFThleK92IGlItY=
+	t=1709978732; cv=none; b=KoadVjyIwcASE5jg4aWlMMO20+fmL9cDENr1C0J1mgXgPDvxkhiPXfQkcFWdUInBr65bGnrtesc1jsnSbvvQiFNFv+7MynqRxN/xWyDp2ZA+5KsTGXChRgYAciQBG92nMUMQA4JcIdon+l4IyTV/sb958y5C+57aFmPW3dxtBr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709978345; c=relaxed/simple;
-	bh=asn96ezzDe7z4cS9Xr9t03l6ZD3ftiEfDmD7qxHPWR4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=MIAV9+MfGDgYjXWsQh4Rt3rLslDZU3rdcNSRKZs8+u2CNyCJaL3ZX8EU7RxVAsjrChd4Aa84ucTtsagRXrvHE2jzwRo24UGZqLiy3m/ggg6wwia/jBMbRLOw7lVNCxdY08/NgLbapepplBLaJUfDvfctm2FZuDaOXmCL4GkLNOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3657abf644fso28621005ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 01:59:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709978343; x=1710583143;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fVYUoCeuZ1fyxODvD3L6XZXHBvcIymgYiHpvfaB7YME=;
-        b=O4r7mAhXzYmJdD7mOd64VbgS/dTUi7rmoQmWbUat12j2s8MihVcCfwGKyvM0rB/IM4
-         h7OK3wxv5vcwYXFs9BBtANiFEX61l3qB9XbHPthhrr87Lr4P9dQY3ZvbXbArgoKUiGX+
-         IBHvOMVS+UFgB8beG85x0zeqvKL3DXVFJbJqE92T/1Mv3L+ywRcWV9SccHre1pSNlhoA
-         mw4/3RwulZkaPrPbfjYev77jmDsmnhCsL8bknBLGWNWw6d+FeXEOhYWZXulxkpERut+I
-         RIE5ch5qMJZAEfEdzJMVRdJ7RSdGq1lJSpO1eG4nTAIx7xngM6VjIQxo4ZK+YBwNss8i
-         Qnaw==
-X-Forwarded-Encrypted: i=1; AJvYcCXlAD/to0tSKnWCzhaT2wykNWQgV1jdqgj3xazxtgPK3AL/bML+DWPbXKwwzGyfr7P/LF4c+n1pNS0OPI4v1f0s8xm6FbZMquN+00RJ
-X-Gm-Message-State: AOJu0YyW5VwWhurIxcfd9m9tEvnfhga11F38rZw5UUCeo9ANPYi5c1Og
-	yuzTdfV/F/ZAk2qmQDXuBIH3WM2imw5ihxVoqRu2uHeL3zN8R/lbL6K2yRYbsIIQyIinrs+b3KH
-	OU1BG2WxUuzCs/3qxGip1gB0ct/dA/UeqmLJNdVmVNcrVd5B2MYfgnOU=
-X-Google-Smtp-Source: AGHT+IE1qe21EYraqy1mF2HjTY4C7GyobmyXlxUrrhxJTThu1W+Kf+RgPU89aqiaYRwYdp0pyncoVYWN7fk62Y1+CPuhsAXE2nyz
+	s=arc-20240116; t=1709978732; c=relaxed/simple;
+	bh=+iWHO6GcgleJjy5o5wNtL3f5KainhCIUvXYCx/6tCOA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mUB+bB+QxFcEzDaiJ0tl3RZogXoA5zbpScd2a3TVIl+cg2bqg/v9vD8kuJUo92ESER3w/yZ9CbWjI70bieXFfQPa1I9T5KZScQmzPPUEMXzWdbGn+Q0oE32PreEdlklCMaxFMCxn8syR+EEDIyU75Dfk7c/sPc5BRNw26ru7YH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TsJX23gYTz1xqVy;
+	Sat,  9 Mar 2024 18:03:30 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6EB581400CF;
+	Sat,  9 Mar 2024 18:05:11 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 9 Mar 2024 18:05:10 +0800
+From: Jijie Shao <shaojijie@huawei.com>
+To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <jiri@resnulli.us>
+CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH V5 net-next 0/4] Support some features for the HNS3 ethernet driver
+Date: Sat, 9 Mar 2024 18:00:40 +0800
+Message-ID: <20240309100044.2351166-1-shaojijie@huawei.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:214c:b0:365:147b:fb44 with SMTP id
- d12-20020a056e02214c00b00365147bfb44mr62585ilv.0.1709978343080; Sat, 09 Mar
- 2024 01:59:03 -0800 (PST)
-Date: Sat, 09 Mar 2024 01:59:03 -0800
-In-Reply-To: <000000000000cfe6f305ee84ff1f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b6989a0613375b88@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in reiserfs_dirty_inode
-From: syzbot <syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, hdanton@sina.com, jack@suse.cz, 
-	jeffm@suse.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, paul@paul-moore.com, 
-	reiserfs-devel@vger.kernel.org, roberto.sassu@huawei.com, 
-	roberto.sassu@huaweicloud.com, syzkaller-bugs@googlegroups.com, 
-	syzkaller@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-syzbot suspects this issue was fixed by commit:
+Currently, the hns3 driver does not have the trace
+of the command queue. As a result, it is difficult to
+locate the communication between the driver and firmware.
+Therefore, the trace function of the command queue is
+added in this patch set to facilitate the locating of
+communication problems between the driver and firmware.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+If a RAS occurs, the driver will automatically reset to attempt
+to recover the RAS. Therefore, to locate the cause of the RAS,
+it is necessary to save the values of some RAS-related dfx
+registers before the reset. So we added a patch in
+this patch set to print these information.
 
-    fs: Block writes to mounted block devices
+---
+changeLog:
+v4 -> v5:
+  - Delete a patch about dump pfc frame statistics in tx timeout log by dmesg,
+    suggested by Jiri Pirko
+  - Rewrite the log message of patch about command queue trace, suggested by Jiri Pirko
+  - Add a new patch about querying scc version by devlink info
+  v4: https://lore.kernel.org/all/20240105010119.2619873-1-shaojijie@huawei.com/
+v3 -> v4:
+  - Adjuste the patches sequence in this patch set, suggested by Simon Horman
+  v3: https://lore.kernel.org/all/20231216070018.222798-1-shaojijie@huawei.com/
+v2 -> v3:
+  - Fix the incorrect use of byte order in patch
+    "net: hns3: add command queue trace for hns3" suggested by Simon Horman
+  - Add a new patch to move constants from hclge_debugfs.h
+    to hclge_debugfs.c suggested by Simon Horman
+  v2: https://lore.kernel.org/all/20231214141135.613485-1-shaojijie@huawei.com/
+v1 -> v2:
+  - Delete a patch for ethtool -S to dump page pool statistics, suggested by Jakub Kicinski
+  - Delete two patches about CMIS transceiver modules because
+    ethtool get_module_eeprom_by_page op is not implemented, suggested by Jakub Kicinski
+  v1: https://lore.kernel.org/all/20231211020816.69434-1-shaojijie@huawei.com/
+---
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11750da6180000
-start commit:   90b0c2b2edd1 Merge tag 'pinctrl-v6.7-1' of git://git.kerne..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=93ac5233c138249e
-dashboard link: https://syzkaller.appspot.com/bug?extid=c319bb5b1014113a92cf
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113f3717680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154985ef680000
+Hao Chen (1):
+  net: hns3: add support to query scc version by devlink info
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Hao Lan (1):
+  net: hns3: add command queue trace for hns3
 
-#syz fix: fs: Block writes to mounted block devices
+Jijie Shao (1):
+  net: hns3: move constants from hclge_debugfs.h to hclge_debugfs.c
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Peiyang Wang (1):
+  net: hns3: dump more reg info based on ras mod
+
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  13 +
+ .../hns3/hns3_common/hclge_comm_cmd.c         |  19 +
+ .../hns3/hns3_common/hclge_comm_cmd.h         |  24 +-
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 646 +++++++++++++++++-
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.h     | 643 +----------------
+ .../hisilicon/hns3/hns3pf/hclge_devlink.c     |  44 +-
+ .../hisilicon/hns3/hns3pf/hclge_devlink.h     |   2 +
+ .../hisilicon/hns3/hns3pf/hclge_err.c         | 434 +++++++++++-
+ .../hisilicon/hns3/hns3pf/hclge_err.h         |  36 +
+ .../hisilicon/hns3/hns3pf/hclge_main.c        |  63 ++
+ .../hisilicon/hns3/hns3pf/hclge_main.h        |   1 +
+ .../hisilicon/hns3/hns3pf/hclge_trace.h       |  94 +++
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c      |  40 ++
+ .../hisilicon/hns3/hns3vf/hclgevf_trace.h     |  50 ++
+ 14 files changed, 1457 insertions(+), 652 deletions(-)
+
+-- 
+2.30.0
+
 
