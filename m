@@ -1,100 +1,100 @@
-Return-Path: <linux-kernel+bounces-97708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B71BA876E2C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 01:34:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E5F876E2F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 01:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64CA01F231E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 00:34:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A116C28327D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 00:36:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D44315BA;
-	Sat,  9 Mar 2024 00:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1CF15AF;
+	Sat,  9 Mar 2024 00:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SPug1NqD"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MVoVrmAE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82DCDA921;
-	Sat,  9 Mar 2024 00:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DA7627;
+	Sat,  9 Mar 2024 00:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709944470; cv=none; b=MrDU6JR1McMEpbOUbSF2dAnkr+QfZOTd6a6D/dUkTElC1Z/7N/Juo+1Gmk44gZZHwfakdhMcXrlVhWHtsgm5b9qqsEp6hegz4VqZUlWoazj5FK/ZGHSCyiTt4+KHp0CtXTZi3aZWth9xYvj91ImNgNfwzTb8YvHqf7U+FOPLPTI=
+	t=1709944577; cv=none; b=GZtrwdA6N9r0BRCViv8k2tVdvavhZVDHJTMnmXqUTV/waYZWhe0mVvFJBCDaDwe2C+BvLoz/Veu5cXxuddUJ7XAYyJCuiiRwpaHyqtt9CRdAAxgnOWmlMJvmVwH3/M34wQdEJxCZjCwwuR8AmSLUgr7Gyk655DddNyssjjY2qUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709944470; c=relaxed/simple;
-	bh=q4z0JBKtHiuuo11OV6hJdZdX8sEzI8QeCNwfqdbmNiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X1EWVosc0GwycZQsBrI1OSJ5H81cxebBCGIn+0VRz5vpjFwFfBDfa4L6RSeFt7RmDRpj46PM9PAiyZrLRe+bKO35EEPtmnsqDFnSZ5N875Gy43jFBUD3CXhy6ndb8Zw06VyTJ7+iHZx0uFJyT8K+eXbbFIyFMkC7zO1++0IMp+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SPug1NqD; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5d8b519e438so2273726a12.1;
-        Fri, 08 Mar 2024 16:34:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709944469; x=1710549269; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gfto3PH7OgXOdEBTnJiQU8idIpmlC2PcZAHMX1LkysE=;
-        b=SPug1NqDQ14J+lKq9d99zmcC7fxwixAb6W98Vk5I8WpGMGc47kIYfZWypoM7Dkbi3w
-         sfph2xFtODbeSiBGVpBslrM7NVHQ0WWxhqQ2dHlOTc5HLQY/d2d1aYLqbONijHsNcruU
-         I+sJW5zaq+0Ql2bknQ4pWQsRKemqbe6zNh6PjfatN/OSD/9eAfR+PUVlFkMcdic9ublT
-         wIDeW5K/iZfrTY3KoW8I+ajd9n8vmtiRHwxDtPdzOy7grwW3fXsgOHSvvrzegZqHBufC
-         q7Ss72jtYARhgzzyH41Y9LEBM22zuycDfogom6E9IGhen/S6Vu2MqQUT1RSqwG/1rtWL
-         Nrng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709944469; x=1710549269;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gfto3PH7OgXOdEBTnJiQU8idIpmlC2PcZAHMX1LkysE=;
-        b=bx0qv+pqsS4GtNY1zp9KBRFfb993X5hxKCnAX/lQ0tEMpPbe6nMCqvuXAcKzkeCEh0
-         53W9zyKksRTZMj+IUIZdNYwJpiqCwn+JwAwtAPJaSgg5EaOZ3biAKjquF0f01DpJqbs8
-         4mZr2BCpevkJgc0iooafvwx6lvYj/7G6RHubBx7gDyd9D/E/alZutQEVe5E4cCwDhVo8
-         BJ/xJcMZwFvlQPolmxVtw1B/Hdwjd16m0ON7siiWBGDNp9AMs6ssC4oPVgh3K+j5shsd
-         SnZSaMYYpp6IYlpm+/+G7LPnQzAdmD9QzhFMdePmtBJUptljVOuQCuhEyHUYtQP42qxw
-         mHMg==
-X-Forwarded-Encrypted: i=1; AJvYcCXOrbEe+CO1jJ9lqux/tzdXm63g+tB+6c4nKbkFQgA1/Raz8Q9IEVBisc9OOd7rfLFIm0jNSa8iOBpmK0gSW0FwW67POep1QIiMj3DRGPpD5YNa1cHJX7kGJ3Fr6iVUyq/hUdcst+RMF7v83CENi5gyfAVU/bhnIxLQDEHCME1C1rgoJqsw
-X-Gm-Message-State: AOJu0YwBPCHVe5l3BA8pS+DuU/peZYHXIpFFzaG/y7Hy//4s0V6jEqCg
-	8ukFCZGWglz3WZMzTuv7Mu6Hj+FpvgD3CkZUKXmNSPqIi1hVqIVJ
-X-Google-Smtp-Source: AGHT+IFs3hzvyY4O/JtyWuRJxKBnq5s8GOuRyNAOPC0O14RH8LjLu7ZnxPlIEUzThPXzP9CP0jVtLw==
-X-Received: by 2002:a05:6a21:3a48:b0:1a1:48f7:a621 with SMTP id zu8-20020a056a213a4800b001a148f7a621mr284306pzb.40.1709944468714;
-        Fri, 08 Mar 2024 16:34:28 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:f556:b889:3e89:5ec3])
-        by smtp.gmail.com with ESMTPSA id ie21-20020a17090b401500b0029b5f69830dsm302858pjb.22.2024.03.08.16.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 16:34:28 -0800 (PST)
-Date: Fri, 8 Mar 2024 16:34:25 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Dharma Balasubiramani <dharma.b@microchip.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	hari.prasathge@microchip.com
-Subject: Re: [PATCH v2] dt-bindings: input: atmel,captouch: convert bindings
- to YAML
-Message-ID: <ZeuukSCMBqYEosNd@google.com>
-References: <20240209064755.47516-1-dharma.b@microchip.com>
+	s=arc-20240116; t=1709944577; c=relaxed/simple;
+	bh=Bng1q+YJswEAXf80mAEaFjx8w+gbJ2x3xqqQcut85fo=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=fRtrCRHymnWov7S3GKzZhJOR/QVU/8unzo2XNdgbjvoW8KccQllSa0MTyNLc+R3p0VAxe0BPYB3452Cm4jfjNVNVYkdBlDLdPf3FvhZd9+8V5mmZNBLzMhYAa0n4NHXN1NhT3tx8jVzoX13gPVDIJ4fKxQWap+zDYSDFUjT3TRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MVoVrmAE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85F13C433F1;
+	Sat,  9 Mar 2024 00:36:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709944576;
+	bh=Bng1q+YJswEAXf80mAEaFjx8w+gbJ2x3xqqQcut85fo=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=MVoVrmAEPP7/qY+yUiy5AAWJhzqgmxORvnh1AbY4b81TvTIW9Jf7UChHZAjPgdJFp
+	 Nepch4g0iSfcCGbzM14T4zKl8Qh+DX/ecOyYdfmAl4J2/PHD2AedHKVd6D1kOimSgc
+	 Y1s3WVb3WBqh2n37w/F2S1wBP71BCc+dkqslvWGzaNpx2MUfhY1vwHitRJep00VSJ3
+	 jWYsnn6ruJJpDPr9AYukJt13KgZHFvAUdQ0pUbWGD3OtvpDT0FPDG+Do44y7Kyud0k
+	 EZ+wLCzKyG4YCiEWT6Ad2k7aTh3WplRNuUOResFTQeu30+8VM2MTo2gvBqKb/SJkE8
+	 iAjDfX8EKDMhQ==
+Message-ID: <b809a691de642231b687358eb4bc03aa.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209064755.47516-1-dharma.b@microchip.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240302-linux-next-24-03-01-simple-clock-fixes-v1-1-25f348a5982b@linaro.org>
+References: <20240302-linux-next-24-03-01-simple-clock-fixes-v1-0-25f348a5982b@linaro.org> <20240302-linux-next-24-03-01-simple-clock-fixes-v1-1-25f348a5982b@linaro.org>
+Subject: Re: [PATCH 1/2] clk: Fix clk_core_get NULL dereference
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson <andersson@kernel.org>, Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rajendra Nayak <quic_rjendra@quicinc.com>
+Date: Fri, 08 Mar 2024 16:36:13 -0800
+User-Agent: alot/0.10
 
-On Fri, Feb 09, 2024 at 12:17:55PM +0530, Dharma Balasubiramani wrote:
-> Convert the Atmel capacitive touchscreen bindings to YAML format.
-> 
-> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+Quoting Bryan O'Donoghue (2024-03-01 16:52:14)
+> It is possible for clk_core_get to dereference a NULL in the following
+> sequence:
+>=20
+> clk_core_get()
+>     of_clk_get_hw_from_clkspec()
+>         __of_clk_get_hw_from_provider()
+>             __clk_get_hw()
+>=20
+> __clk_get_hw() can return NULL which is dereferenced by clk_core_get() at
+> hw->core.
+>=20
+> Prior to commit dde4eff47c82 ("clk: Look for parents with clkdev based
+> clk_lookups") the check IS_ERR_OR_NULL() was performed which would have
+> caught the NULL.
+>=20
+> Reading the description of this function it talks about returning NULL but
+> that cannot be so at the moment.
+>=20
+> Update the function to check for hw before dereferencing it and return NU=
+LL
+> if hw is NULL.
+>=20
+> Fixes: dde4eff47c82 ("clk: Look for parents with clkdev based clk_lookups=
+")
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
 
-Applied, thank you.
+I dug through a bunch of old patches and this looks right. I'm not sure
+why a provider would ever return NULL though. A NULL pointer means that
+the parent is never going to appear so we shouldn't treat this clk as
+orphaned in case the clk needs to be clk_get()able and change parents.
+This was all part of my plan to introduce a clk_parent_hw() clk op that
+returns a pointer and then implement probe defer through clk_get() when
+a clk is orphaned. A NULL clk also means a clk is optional and not
+there.
 
--- 
-Dmitry
+Anyway, I've applied this to clk-next. I hope to send out the
+clk_parent_hw clk op series soon.
 
