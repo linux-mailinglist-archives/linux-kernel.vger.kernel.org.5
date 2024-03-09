@@ -1,321 +1,181 @@
-Return-Path: <linux-kernel+bounces-97842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C464877054
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 11:20:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BB3887705C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 11:24:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B1231C20B5A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:20:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0EB8B20F46
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 952FB38391;
-	Sat,  9 Mar 2024 10:19:58 +0000 (UTC)
-Received: from mail114-240.sinamail.sina.com.cn (mail114-240.sinamail.sina.com.cn [218.30.114.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E5538397;
+	Sat,  9 Mar 2024 10:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="lAEI3SJD"
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2073.outbound.protection.outlook.com [40.92.99.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829BA381DA
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 10:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.240
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709979597; cv=none; b=dsN9FbrDx+y5j++66RzQe1MvlLdV2dOVptJnXOA/LkoA7HIMyZIoH8zWJKQ3yU81w/VzY92fhxKqaGKZWnJnYTfeZwr6wz4CIff6PpLkwk3gvYuP9k4sgqoojA95VrkleuFu5dUBXRrnyGAd37JtvvwwI/7FiB+TZvm9Lr8q5Ws=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709979597; c=relaxed/simple;
-	bh=mr9CJOYnpBJJHiZbZawfFNTHJ3JgVS0pvIujUF/snrs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cLG9kPp6btL1jXhCmjNWOk/85QSmXrrTuVI+J8gZaThMJMuijZdkJIb4Vb4GbM/lcSq3Pu32oclFevOGbWCsZHfAVpZszXhhgpHsNWjjZt+J4gZAwr8mPYF2J43mSM37t+zYy1YHLARtxAL3huLcy7zyAVfmJjn7SDvfLgzRrsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.49.120])
-	by sina.com (172.16.235.24) with ESMTP
-	id 65EC37B900003ACC; Sat, 9 Mar 2024 18:19:39 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 65107045089305
-X-SMAIL-UIID: 7263A743163644BFB93521B979DD4484-20240309-181939-1
-From: Hillf Danton <hdanton@sina.com>
-To: Frederic Weisbecker <frederic@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzbot <syzbot+e5167d7144a62715044c@syzkaller.appspotmail.com>,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [netfilter?] KASAN: slab-use-after-free Read in ip_skb_dst_mtu
-Date: Sat,  9 Mar 2024 18:19:26 +0800
-Message-Id: <20240309101926.1994-1-hdanton@sina.com>
-In-Reply-To: <0000000000002e5b66061336b7df@google.com>
-References: 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465B44C90;
+	Sat,  9 Mar 2024 10:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.99.73
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709979888; cv=fail; b=cOP1ebV4dcX3SX0/SAtltErnFqZqhAQti5E8KvIva40gKpgwfqsSRb0+ZRO4VgWSxNuiqzTKf1V66jMu9nQ65d1yFkHphev9douoQUVMPQuJXtL8MYQO3mOtm1a9Vdz9qbG0pvs8ETtGDdvGutt34oBYy6dFbT7cZ20vD6d7pAo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709979888; c=relaxed/simple;
+	bh=O0RQAFbKHonigJv17Mi5J4NfG89cllJQofZW5X8XKXA=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=D8QkRPfF0/TX5YVglH6v5ZTtXdZR6/ZM+M65nXhD4rKnsTkbJD9+vp1+3NSTxVTSJRyOP738Jyu9/1b5mIXPZ5AxNzsBoMwXOT9phQS7FPnXw3HG2GXQhxHMguQgIohfNDY+JLBSx6MrRznt/5Mc/+iPxN1s7RrJD/+pwLU49JQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=lAEI3SJD; arc=fail smtp.client-ip=40.92.99.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a3d5GZtpDbLY9yj3VsC7Hc6U+pwugwjTVhabtVyZ7kgoJhV+DXpOBukmTkvdAc6hCRQa2jR1E68ovfpOgyooTSK9xyks8lD5u7PUgXDFAcEVzgBJZs7H20v4yBDz4Tr0je57iWq6nld/W/2XoR6Il9hh4aaJsphzffEj5PrlTQoJIZRU80FZuadmJYhi/fAGBaQMMfJhfBn8wdzQmPmvVEM81H3Pnyle7Fzyy8bnbF0xaiIqY7i54nue4+9c5VvoaY4VGE6PiLmIOGT+vbo1jDtiHOl9k+UTJrtY1hI1UlVMo/UkhbMO5q1kladCe6/5yRyud47IpQDJjSmr8WTh1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pNhCd+CMIb3+/agr2Y29GjSyjRtgQslucuFWFClCjNQ=;
+ b=mgUIiMVyJO9ryB47wAlmRina2hjJ9RVnEXLBzJRNen1OZfB8p4KLFr/xwHaOqqQxqckHglzvLvApKCMAF7u5jog5QQyo3tYP3mG50xnDJB37z+RePsbWDE+qw5uWr3n6X78TsbO1bfLf9Jwo7vCowoTRHu8MPhKp/Pig0a4hPjGRnpJ2lqEZkkAys9PQzz0zI8eqMEbFkqMUJ3J8GCQpUpQActs6z7PyNFzyTYFtBOxRsQaMWQ3xATkuCfmQXXRWiA3meBoO79IUSLTCZaJhMZUfaBzaBChWmd6lKSl8BFeynklx4DuKDQGxzER0vpoKXzNo66m3qZ7mJ0tqbQMI+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pNhCd+CMIb3+/agr2Y29GjSyjRtgQslucuFWFClCjNQ=;
+ b=lAEI3SJDJCatQmydfzrx/seNqWri6XdG1KBrczo5r1LiMspBjWDesO2i9RedYeFI0xZe8+EiyRiKRAJLWmD5FJOxzlUZzCoKOa1V0e4X0Qhb7NURdK7SCdOgTLK4RUpJYv8qJjAQVj5uN4j6HhGfSf/eUQDblWTEz5b6aVMhHX80M6e1PKpFJO87sbkNYrdClh0YGnomO7YX5Y3yTVjXIgNSp2EAZ0Edhce9XTZit+dcwjqVlySbsJGz3X++bjjP11LREdB0kkkTYscK845PRUSQcn3NwBfcXrXOLNRdl3TQTpWhjS8/ogm3ihpe/CfRgI2pwMJ4qLjuSUf3IAPyHg==
+Received: from TY3P286MB3567.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:3b6::10)
+ by OS3P286MB1879.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:171::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.32; Sat, 9 Mar
+ 2024 10:24:43 +0000
+Received: from TY3P286MB3567.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::e959:a431:1b57:faf6]) by TY3P286MB3567.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::e959:a431:1b57:faf6%7]) with mapi id 15.20.7362.031; Sat, 9 Mar 2024
+ 10:24:43 +0000
+From: Dawei Li <set_pte_at@outlook.com>
+To: jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com
+Cc: linux-openrisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dawei Li <set_pte_at@outlook.com>
+Subject: [PATCH] openrisc: Use asm-generic's version of fix_to_virt() & virt_to_fix()
+Date: Sat,  9 Mar 2024 18:24:07 +0800
+Message-ID:
+ <TY3P286MB35670C95140EEC4DD181AEE4CA262@TY3P286MB3567.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [iI73yfNiUJuEzeCTMstO/fBx9TWNLoSO]
+X-ClientProxiedBy: SI2PR04CA0002.apcprd04.prod.outlook.com
+ (2603:1096:4:197::17) To TY3P286MB3567.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:3b6::10)
+X-Microsoft-Original-Message-ID:
+ <20240309102407.403962-1-set_pte_at@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TY3P286MB3567:EE_|OS3P286MB1879:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07ed8ed3-5d6b-446a-5012-08dc40232284
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	YkZVZ+duttPNG3arx27rHDpGYl4uNXklkkZB8+lr038OVzS1EQS5ZJhoLjk+SZ2hDRlWm7kFKqXo9WHUCmslXuhyJfy9+LouIpvbxXuUFUwCVos6xT/HgosT0RanmcCibV7E4mk387wRzvnfEez4uB3gW5v91RiV2d2P0CJn2lLKU7ay9gqQgG2NB2nZNFkDqzXiQ1upJfjP8e549hmJl/BMWbzwEwD7k/HL+rxl8C6kPD5rvKjhjQTNsuIVnjQZHhps7LwHTsmrTGZwt8FOvOnHbdNUZJS/RrUf9I0Yh6pv3U1CX3zBBj+ZgG+DgGJKaTn8vIORaENB222QWX7kcnH36Pb6EvXPozxyR2jLORKZT1pCcI7JNQf/tLDLDWG3iDwdTel/3tuj1lwzeSFNnRTuitnRGhyvfJxSrebLbsWprSu9pHGWtU75DM3JdPAW8OjfFX0lRhhWyBs5YzfBsn2YxYHGI/oRlCiC+qJ2V6ysSm1+mou7PAy8/h+vemC9h8gEcpjXr8qYpxwci/ylHDxkzEMUgV5WW/s/oZyrwFVcOWFmdHKERa/jnFkGTeRPJ/M0wV0xDzyzqeoicckgR84DKPftRzGnURNCGtH6CTWT2HQxC07t0j1OjmkLJHkg
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?t8iiS5erEejrwhrtJEmRjwBDI7Va5ZH8o6FSXoyiWlTezWktVKjJZmRyVZuu?=
+ =?us-ascii?Q?guMAf0s4+X7JVEF4X6fd9sFyhc8UT0fdMONA5aALwuHjkzpbP00iFA8ILUY5?=
+ =?us-ascii?Q?zjQpmr3WoTz4PklseR1Gq+orvDR5vNyJP1wLBHs2jT7M2nDvsx/jcr5ilEX1?=
+ =?us-ascii?Q?YDueWpCeJGNR2VgDkqKXgspcwky7sXG5QgwX162RFFAU7jIPxFk8IbsS8CEW?=
+ =?us-ascii?Q?2SQH3fO/498/YkLb7JRKWnuSqBUWBlUuhOhkCrhAB+VmgdSLXiUZy0SmAp+u?=
+ =?us-ascii?Q?qhxrO/b232SSjXUGgBSO2SBW5zIfhr0jjk5wC0q5OxLUqxfPC6BxLJZQPW+s?=
+ =?us-ascii?Q?ITIdvEeSUryeZ/U/L9wqFBEWRgk0SMIgtZflxy9uHHhSPuMU5J/ukPm+7VzS?=
+ =?us-ascii?Q?4WWyvIFetW4NkCosGDwZYwZ9KQk8IxIiLrAmVlKcxjt6iVK3AkdSNoigoNbo?=
+ =?us-ascii?Q?GZ+ii3FiaHwLCGPxewNfhco/IVVhzvvLtE9pHRqpCtmm6y3dPPtbfR8Tv1z9?=
+ =?us-ascii?Q?vb9bE+5YpkDylZtkq1V+7S1i1bzn/Uqn+HIgsoK+RqSP/2sSRJ1FzzmgLzd7?=
+ =?us-ascii?Q?HnkcKzyBTJ8eIQSE7Xt89ZFuqh876K22sO8yPM7+qsM/HTlNzGHfwtOtbYbZ?=
+ =?us-ascii?Q?FFEI6T/Tamg36q4+RVpx6h1jYdyzVEazXHjfkPO9q/HpOIM6JmD0nFjJO0lE?=
+ =?us-ascii?Q?BtLm711ItUW5wwbJ+d9DLl9ewtcJ43e3DKORrZeXO2cHOr0t+yFquDmCqukT?=
+ =?us-ascii?Q?sQSLVE+AP6ZLN5lUa+3yaV7b+2CM8GENqTgrRzggqmdLfxIoQZbibr1jbZQ2?=
+ =?us-ascii?Q?juMIDmIFJRCdMedcBh93sPTDmCDaUINsVkyQ1XKRW4syMX+sqQb5qTyAmrvz?=
+ =?us-ascii?Q?UqsStSSbZJZqpCHqbfGyh1S81QBJtoeRnSN8fY3FZitdm+tuc1HTTZiBQB3f?=
+ =?us-ascii?Q?layKZLNg0mr1sR5+GIczry6TdfaTZD3JwVuEseewsjC4QaDfDeUvn2YwUS+r?=
+ =?us-ascii?Q?4pRiMwR1wYqjYoojbgWmqcSz05dMe5LKLXh21SalK1WmYLvMIoH27APFVAFF?=
+ =?us-ascii?Q?Y+aRUXd39t5wkhBo4quglZTgoF3f9ag3fTmarCGouL918wm1c764ZBu7R25C?=
+ =?us-ascii?Q?mdCDBtl5yOzBRlR6sq9BX+Esw1bvklZm39gBP4m32xMuSnlnUWgEzpHukvnK?=
+ =?us-ascii?Q?T9XB3w3K3d3LVGY/rg2Ebrp4ZBRoh8s8cAxPDDaB4HUSLUUu0T0M6pUwdas?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07ed8ed3-5d6b-446a-5012-08dc40232284
+X-MS-Exchange-CrossTenant-AuthSource: TY3P286MB3567.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2024 10:24:43.3425
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3P286MB1879
 
-On Sat, 09 Mar 2024 01:13:02 -0800
-> Hello,
-> 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> INFO: task hung in switchdev_deferred_process_work
+Openrisc's implementation of fix_to_virt() & virt_to_fix() share same
+functionality with ones of asm generic.
 
-Task hung [0] again with Frederic's fix [1] applied [2].
+Plus, generic version of fix_to_virt() can trap invalid index at compile
+time.
 
-	kworker/1:2:783		kworker/u4:5/146
-	---			---
-				lock rtnl_mutex
-	lock rtnl_mutex		synchronize_rcu_expedited()
+Thus, Replace the arch-specific implementations with asm generic's ones.
 
-[0] Subject: Re: [syzbot] [bluetooth?] INFO: task hung in hci_conn_failed
-https://lore.kernel.org/lkml/Zbnq5o_HJOMIIK-c@Boquns-Mac-mini.home/
+Signed-off-by: Dawei Li <set_pte_at@outlook.com>
+---
+ arch/openrisc/include/asm/fixmap.h | 31 +-----------------------------
+ 1 file changed, 1 insertion(+), 30 deletions(-)
 
-[1] Subject: [PATCH 8/8] rcu/exp: Remove rcu_par_gp_wq
-https://lore.kernel.org/lkml/20240129232349.3170819-9-boqun.feng@gmail.com/
+diff --git a/arch/openrisc/include/asm/fixmap.h b/arch/openrisc/include/asm/fixmap.h
+index ad78e50b7ba3..ecdb98a5839f 100644
+--- a/arch/openrisc/include/asm/fixmap.h
++++ b/arch/openrisc/include/asm/fixmap.h
+@@ -50,35 +50,6 @@ enum fixed_addresses {
+ /* FIXADDR_BOTTOM might be a better name here... */
+ #define FIXADDR_START		(FIXADDR_TOP - FIXADDR_SIZE)
+ 
+-#define __fix_to_virt(x)	(FIXADDR_TOP - ((x) << PAGE_SHIFT))
+-#define __virt_to_fix(x)	((FIXADDR_TOP - ((x)&PAGE_MASK)) >> PAGE_SHIFT)
+-
+-/*
+- * 'index to address' translation. If anyone tries to use the idx
+- * directly without tranlation, we catch the bug with a NULL-deference
+- * kernel oops. Illegal ranges of incoming indices are caught too.
+- */
+-static __always_inline unsigned long fix_to_virt(const unsigned int idx)
+-{
+-	/*
+-	 * this branch gets completely eliminated after inlining,
+-	 * except when someone tries to use fixaddr indices in an
+-	 * illegal way. (such as mixing up address types or using
+-	 * out-of-range indices).
+-	 *
+-	 * If it doesn't get removed, the linker will complain
+-	 * loudly with a reasonably clear error message..
+-	 */
+-	if (idx >= __end_of_fixed_addresses)
+-		BUG();
+-
+-	return __fix_to_virt(idx);
+-}
+-
+-static inline unsigned long virt_to_fix(const unsigned long vaddr)
+-{
+-	BUG_ON(vaddr >= FIXADDR_TOP || vaddr < FIXADDR_START);
+-	return __virt_to_fix(vaddr);
+-}
++#include <asm-generic/fixmap.h>
+ 
+ #endif
+-- 
+2.25.1
 
-[2] https://github.com/fbq/linux.git rcu-exp.2024.01.29b
-> 
-> INFO: task kworker/1:2:783 blocked for more than 143 seconds.
->       Not tainted 6.8.0-rc1-syzkaller-00009-gdd85149da01f-dirty #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/1:2     state:D stack:21872 pid:783   tgid:783   ppid:2      flags:0x00004000
-> Workqueue: events switchdev_deferred_process_work
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x17d1/0x49f0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6874
->  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
->  __mutex_lock+0x6a3/0xd70 kernel/locking/mutex.c:752
->  switchdev_deferred_process_work+0xe/0x20 net/switchdev/switchdev.c:75
->  process_one_work kernel/workqueue.c:2633 [inline]
->  process_scheduled_works+0x913/0x1420 kernel/workqueue.c:2706
->  worker_thread+0xa5f/0x1000 kernel/workqueue.c:2787
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
->  </TASK>
-> INFO: task dhcpcd:4739 blocked for more than 143 seconds.
->       Not tainted 6.8.0-rc1-syzkaller-00009-gdd85149da01f-dirty #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:dhcpcd          state:D stack:20952 pid:4739  tgid:4739  ppid:4738   flags:0x00004002
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x17d1/0x49f0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6874
->  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
->  __mutex_lock+0x6a3/0xd70 kernel/locking/mutex.c:752
->  rtnl_lock net/core/rtnetlink.c:79 [inline]
->  rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6612
->  netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
->  netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
->  netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
->  netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg+0x221/0x270 net/socket.c:745
->  ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
->  ___sys_sendmsg net/socket.c:2638 [inline]
->  __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
->  do_syscall_64+0xf9/0x240
->  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-> RIP: 0033:0x7f85a0637a4b
-> RSP: 002b:00007ffebbd31e68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007f85a055f6c0 RCX: 00007f85a0637a4b
-> RDX: 0000000000000000 RSI: 00007ffebbd46018 RDI: 000000000000000f
-> RBP: 000000000000000f R08: 0000000000000000 R09: 00007ffebbd46018
-> R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-> R13: 00007ffebbd46018 R14: 0000000000000030 R15: 0000000000000001
->  </TASK>
-> INFO: task kworker/0:3:5086 blocked for more than 143 seconds.
->       Not tainted 6.8.0-rc1-syzkaller-00009-gdd85149da01f-dirty #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:3     state:D stack:21872 pid:5086  tgid:5086  ppid:2      flags:0x00004000
-> Workqueue: events linkwatch_event
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x17d1/0x49f0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6874
->  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
->  __mutex_lock+0x6a3/0xd70 kernel/locking/mutex.c:752
->  linkwatch_event+0xe/0x60 net/core/link_watch.c:281
->  process_one_work kernel/workqueue.c:2633 [inline]
->  process_scheduled_works+0x913/0x1420 kernel/workqueue.c:2706
->  worker_thread+0xa5f/0x1000 kernel/workqueue.c:2787
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
->  </TASK>
-> INFO: task syz-executor.0:14954 blocked for more than 144 seconds.
->       Not tainted 6.8.0-rc1-syzkaller-00009-gdd85149da01f-dirty #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:syz-executor.0  state:D stack:19888 pid:14954 tgid:14954 ppid:1      flags:0x00004006
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x17d1/0x49f0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6874
->  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
->  __mutex_lock+0x6a3/0xd70 kernel/locking/mutex.c:752
->  rtnl_lock net/core/rtnetlink.c:79 [inline]
->  rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6612
->  netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
->  netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
->  netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
->  netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg+0x221/0x270 net/socket.c:745
->  __sys_sendto+0x3a4/0x4f0 net/socket.c:2191
->  __do_sys_sendto net/socket.c:2203 [inline]
->  __se_sys_sendto net/socket.c:2199 [inline]
->  __x64_sys_sendto+0xde/0x100 net/socket.c:2199
->  do_syscall_64+0xf9/0x240
->  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-> RIP: 0033:0x7f2a1c07fa9c
-> RSP: 002b:00007ffc5dd132a0 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-> RAX: ffffffffffffffda RBX: 00007f2a1ccd4620 RCX: 00007f2a1c07fa9c
-> RDX: 0000000000000028 RSI: 00007f2a1ccd4670 RDI: 0000000000000003
-> RBP: 0000000000000000 R08: 00007ffc5dd132f4 R09: 000000000000000c
-> R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
-> R13: 0000000000000000 R14: 00007f2a1ccd4670 R15: 0000000000000000
->  </TASK>
-> 
-> Showing all locks held in the system:
-> 3 locks held by kworker/0:1/8:
->  #0: ffff88802ae89d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #0: ffff88802ae89d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #1: ffffc900000d7d20 ((work_completion)(&(&net->ipv6.addr_chk_work)->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #1: ffffc900000d7d20 ((work_completion)(&(&net->ipv6.addr_chk_work)->work)){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #2: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_verify_work+0x19/0x30 net/ipv6/addrconf.c:4671
-> 1 lock held by khungtaskd/29:
->  #0: ffffffff8e1308e0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
->  #0: ffffffff8e1308e0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
->  #0: ffffffff8e1308e0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
-> 5 locks held by kworker/u4:5/146:
->  #0: ffff8880162f0938 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #0: ffff8880162f0938 ((wq_completion)netns){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #1: ffffc90002e6fd20 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #1: ffffc90002e6fd20 (net_cleanup_work){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #2: ffffffff8f3673d0 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0xf5/0xb90 net/core/net_namespace.c:580
->  #3: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: default_device_exit_batch+0xdb/0x650 net/core/dev.c:11596
->  #4: ffffffff8e136278 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:291 [inline]
->  #4: ffffffff8e136278 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x39a/0x820 kernel/rcu/tree_exp.h:939
-> 3 locks held by kworker/1:2/783:
->  #0: ffff888014c8cd38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #0: ffff888014c8cd38 ((wq_completion)events){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #1: ffffc9000408fd20 (deferred_process_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #1: ffffc9000408fd20 (deferred_process_work){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #2: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: switchdev_deferred_process_work+0xe/0x20 net/switchdev/switchdev.c:75
-> 1 lock held by dhcpcd/4739:
->  #0: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
->  #0: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6612
-> 2 locks held by getty/4822:
->  #0: ffff88802b64a0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
->  #1: ffffc90002f162f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b4/0x1e10 drivers/tty/n_tty.c:2201
-> 3 locks held by kworker/1:4/5083:
->  #0: ffff88802ae89d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #0: ffff88802ae89d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #1: ffffc90003f6fd20 ((work_completion)(&(&net->ipv6.addr_chk_work)->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #1: ffffc90003f6fd20 ((work_completion)(&(&net->ipv6.addr_chk_work)->work)){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #2: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_verify_work+0x19/0x30 net/ipv6/addrconf.c:4671
-> 3 locks held by kworker/0:3/5086:
->  #0: ffff888014c8cd38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #0: ffff888014c8cd38 ((wq_completion)events){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #1: ffffc90003fafd20 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
->  #1: ffffc90003fafd20 ((linkwatch_work).work){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
->  #2: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xe/0x60 net/core/link_watch.c:281
-> 1 lock held by syz-executor.0/14954:
->  #0: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
->  #0: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6612
-> 1 lock held by syz-executor.0/14991:
->  #0: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
->  #0: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6612
-> 1 lock held by syz-executor.0/14998:
->  #0: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
->  #0: ffffffff8f373948 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6612
-> 
-> =============================================
-> 
-> NMI backtrace for cpu 0
-> CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.8.0-rc1-syzkaller-00009-gdd85149da01f-dirty #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
->  nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
->  nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
->  trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
->  check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
->  watchdog+0xfaf/0xff0 kernel/hung_task.c:379
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
->  </TASK>
-> Sending NMI from CPU 0 to CPUs 1:
-> NMI backtrace for cpu 1
-> CPU: 1 PID: 14994 Comm: kworker/u4:1 Not tainted 6.8.0-rc1-syzkaller-00009-gdd85149da01f-dirty #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-> Workqueue: events_unbound toggle_allocation_gate
-> RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:26 [inline]
-> RIP: 0010:check_preemption_disabled+0x20/0x120 lib/smp_processor_id.c:16
-> Code: 90 90 90 90 90 90 90 90 90 90 41 57 41 56 41 54 53 48 83 ec 10 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 65 8b 1d 7c 23 9e 74 <65> 8b 05 71 23 9e 74 a9 ff ff ff 7f 74 26 65 48 8b 04 25 28 00 00
-> RSP: 0018:ffffc9000a8ef668 EFLAGS: 00000082
-> RAX: 7e9a76b27b63e200 RBX: 0000000000000001 RCX: 0000000000000000
-> RDX: dffffc0000000000 RSI: ffffffff8bfe5f40 RDI: ffffffff8bfe5f00
-> RBP: ffffc9000a8ef770 R08: ffff888014c80627 R09: 1ffff110029900c4
-> R10: dffffc0000000000 R11: ffffed10029900c5 R12: 0000000000000001
-> R13: 00000000000327bf R14: ffff8880b953c0c0 R15: 000000000000000c
-> FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000561393482ff8 CR3: 000000000df32000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <NMI>
->  </NMI>
->  <TASK>
->  get_flush_tlb_info arch/x86/mm/tlb.c:987 [inline]
->  flush_tlb_mm_range+0x23f/0x5c0 arch/x86/mm/tlb.c:1021
->  __text_poke+0x95b/0xd30 arch/x86/kernel/alternative.c:1949
->  text_poke arch/x86/kernel/alternative.c:1986 [inline]
->  text_poke_bp_batch+0x8cd/0xb30 arch/x86/kernel/alternative.c:2375
->  text_poke_flush arch/x86/kernel/alternative.c:2488 [inline]
->  text_poke_finish+0x30/0x50 arch/x86/kernel/alternative.c:2495
->  arch_jump_label_transform_apply+0x1c/0x30 arch/x86/kernel/jump_label.c:146
->  static_key_enable_cpuslocked+0x136/0x260 kernel/jump_label.c:205
->  static_key_enable+0x1a/0x20 kernel/jump_label.c:218
->  toggle_allocation_gate+0xb5/0x250 mm/kfence/core.c:826
->  process_one_work kernel/workqueue.c:2633 [inline]
->  process_scheduled_works+0x913/0x1420 kernel/workqueue.c:2706
->  worker_thread+0xa5f/0x1000 kernel/workqueue.c:2787
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
->  </TASK>
-> 
-> 
-> Tested on:
-> 
-> commit:         dd85149d rcu/exp: Remove rcu_par_gp_wq
-> git tree:       https://github.com/fbq/linux.git rcu-exp.2024.01.29b
-> console output: https://syzkaller.appspot.com/x/log.txt?x=174332fa180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4151600db6ca0ae1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e5167d7144a62715044c
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> patch:          https://syzkaller.appspot.com/x/patch.diff?x=103a2c1a180000
 
