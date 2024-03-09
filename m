@@ -1,149 +1,116 @@
-Return-Path: <linux-kernel+bounces-97739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 687AD876E9F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 02:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2886C876EA8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 02:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFD0E28264A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 01:37:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8505B281F66
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 01:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52A62D03B;
-	Sat,  9 Mar 2024 01:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3357D171AA;
+	Sat,  9 Mar 2024 01:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1um5wWwV"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b="HmWNhxv6"
+Received: from smtp1.math.uni-bielefeld.de (smtp1.math.uni-bielefeld.de [129.70.45.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938DD22F07
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 01:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C496E208A8
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 01:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.70.45.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709948210; cv=none; b=LkVH4/otgjWCssaembt4vnpG3tfOcTQxK0Gl1H9uAlag/LOaCHxkwThLqfL89PImp8uA2cP68QtPJy8JZk5KqoDcLNZKt3TMn/+sI4jxkK98Nac5R5P43YKj8I9HbnOr30aeTxIZjizC0GOnsFC/gW3kRauujnu4LMwozrPEOiU=
+	t=1709949499; cv=none; b=THs3Ugt8fOkDEdURgiw5NKpYTSbPFRAt07wFyi7PeAyJqdynMdT9e1UWGphJguZdu5xop13MptlQQbOQZi440N4RdrdK/0HYqG8/KnLVpTNLApqHeRfQtjhly2yaiizNJIHV1PNmbwZy4Ex7JBSZ8whfqokk7RVwIqER42sV+10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709948210; c=relaxed/simple;
-	bh=SWsPpADQLluvQvp2PRySI9bpj5F6vQcm7E3y70V4Wao=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=USIlB3d8BBVPghac4LMgtq6gscuWS6RAwIYa/nM3heG0Xnt/NqIuGQUGHMsgAhHiyOMSbHQYr/OdNJBRqxLYe6eYJrTy9/nARnjFDOLUhb0p3VH83sH6r1VOxfs8NV9V5XihL8Dk3e0hlDEZb7QRhG8pOWwcIgAb6mQt+AQ0TB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1um5wWwV; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcf22e5b70bso2651854276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 17:36:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709948207; x=1710553007; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=rCwYO/7ilSpOBa4ppOSKCckO3uqB/kQ100+4pH+GXZY=;
-        b=1um5wWwVzvKeIcQ4osLWCCjiUOwsPI8wZM+fFTDqJeGa3S5wAEA45vMVF4QvlTOvq6
-         0Hj24Hu/hHbZ1SEUCy+IuWQM43KaPE79KFDduwdeoo/ymuCe0krgG7mqfQY1Z/99JQt5
-         7NGSGkdtzaOLLEddIjY8WwMhgvvD2/9f8niXya6omOzXkWP0oXKUSlEbvaH6Z65LLjAC
-         KK9q8LSX4z9BQ6rJfk+ZhsMnNvAs6m42/GG157FGg81jtc1RA7luBv7xdpOop43RwqGE
-         gKtS38CzNrcGpG11inBe3vrMHOCZFffTdstcedBLbrO6BKHYMhFuBPHhzKQvwPfN/4/p
-         hNPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709948207; x=1710553007;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rCwYO/7ilSpOBa4ppOSKCckO3uqB/kQ100+4pH+GXZY=;
-        b=OaoYgYtgtgGO7tUxc2kqgUoAnNxqfbwWDm05FsapH8wpNU25hY+iwdOEL7kzkAuYKj
-         2n/jBTYw6iqGxSw9CNsUnF1P7A+knreAuKtFlxqKKhR/k5ARKna+ZLjN+orp7Ncsd0Wa
-         4B2wXJGiPfIFw+R2E+ZpwE9AefbzcEeg3a4cgs3yJ8OS00qKAem6mcTY/sSOf+1b9vcb
-         Q0vWovmhBvZRdrCy9r+Pvww5uAOkpi3xY0hM2TeGDEnWTY9boEb14V339zvu/mVJkaet
-         +d+D/O75mqgf4KVeHZ5zRIUzRMrLI2dmtT145iP3ps8m4L57WrUjIiC7Z+sRamjK4FZg
-         M60A==
-X-Forwarded-Encrypted: i=1; AJvYcCVWRn5hzb4WoHtIG4geyFO9K66BdGZXjpdkGsbaFqnmDG5EbauTRBaEdFDbnn2UhseHrDdmmJAhPhucKgyTEK27KIH03tZweymTsjSv
-X-Gm-Message-State: AOJu0Yw3UZTjF2+ckZk0S7D/qm3qqqf13SyTopIF83A11vmLemOq7eia
-	o5nua0V8KX9B1QF8n/e7o0EhzqSpBZyJhqjkq+xH+JtLIPf5vW/sXPaZyKpcaUpR8kYGgGzhVTE
-	bQA==
-X-Google-Smtp-Source: AGHT+IFvwDv/b0ydhsjPUXHw+jUb9gLdfBmL+i1F0ATMcxKeC9RIVzkgTlzWkZAwh4wYWsQF1XGiHgwcQwY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:100d:b0:dcc:8be2:7cb0 with SMTP id
- w13-20020a056902100d00b00dcc8be27cb0mr40937ybt.0.1709948207688; Fri, 08 Mar
- 2024 17:36:47 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  8 Mar 2024 17:36:41 -0800
-In-Reply-To: <20240309013641.1413400-1-seanjc@google.com>
+	s=arc-20240116; t=1709949499; c=relaxed/simple;
+	bh=PCk2Dugx8SMjdQeWG4SwcfaPM24toHIy+7Yggf23EOY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NHfbRaxhhbcqAjj/ug0+sPitxmGTy2Bb+SSYmUNaQkT1vvxAc2HAU88U8kuBpiWTgK7/bUSX75sHX0fHVUwDFq56Ph0/8FRWABpKqerIB1909Uqwo2SI90gN9sDUcNNENU/DRaQ6+ACST2pFMgUDv+kny9F1fckzCLlMAQjDqqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de; spf=pass smtp.mailfrom=math.uni-bielefeld.de; dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b=HmWNhxv6; arc=none smtp.client-ip=129.70.45.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=math.uni-bielefeld.de
+Received: from localhost (dslb-094-217-220-071.094.217.pools.vodafone-ip.de [94.217.220.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by smtp1.math.uni-bielefeld.de (Postfix) with ESMTPSA id A894F60AB6;
+	Sat,  9 Mar 2024 02:48:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=math.uni-bielefeld.de; s=default; t=1709948899;
+	bh=PCk2Dugx8SMjdQeWG4SwcfaPM24toHIy+7Yggf23EOY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=HmWNhxv6lEJ0BxRBPxi3BqczESunuyX/oRe8UOU906evQpJNg2abwr8q2R+7+/3h6
+	 V+0Jwdmec+Y6s1Z0fC2NwAqdJxkrCSQETryA4JqZ1WNoRf/NOzExQrOCNoXc8fRlms
+	 f7rJvNbb1ggX355y2jSfRvGfvX0jDjFVocAUkOFutOFUKxbvpClKmffAkKQYHh8rxD
+	 rh8x9zzIQ7pYIYnKPiAK+GHlofVK3xfLs3vNmlzeypwIQYwV+SIlHA6aA/QX4SukvS
+	 GwrtBe8YywjnU07+O0LLbBOUsZB0EyaUK64KnCosu0IzGPEOGplrk0RdQoSyAzDk+s
+	 csqu4d8iRgJzw==
+From: tjakobi@math.uni-bielefeld.de
+To: Harry Wentland <harry.wentland@amd.com>,
+	Leo Li <sunpeng.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>
+Cc: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/display: Add MSF panel to DPCD 0x317 patch list
+Date: Sat,  9 Mar 2024 02:47:32 +0100
+Message-ID: <20240309014732.722139-1-tjakobi@math.uni-bielefeld.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309013641.1413400-1-seanjc@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240309013641.1413400-3-seanjc@google.com>
-Subject: [PATCH 2/2] KVM: selftests: Verify post-RESET value of
- PERF_GLOBAL_CTRL in PMCs test
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Babu Moger <babu.moger@amd.com>, Sandipan Das <sandipan.das@amd.com>, 
-	Like Xu <like.xu.linux@gmail.com>, Mingwei Zhang <mizhang@google.com>, 
-	Dapeng Mi <dapeng1.mi@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Add a guest assert in the PMU counters test to verify that KVM stuffs
-the vCPU's post-RESET value to globally enable all general purpose
-counters.  Per Intel's SDM,
+From: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
 
-  IA32_PERF_GLOBAL_CTRL:  Sets bits n-1:0 and clears the upper bits.
+This 8.4 inch panel is integrated in the Ayaneo Kun handheld
+device. The panel resolution is 2560×1600, i.e. it has
+portrait dimensions.
 
-and
+Decoding the EDID shows:
+Manufacturer: MSF
+Model: 4099
+Display Product Name: 'TV080WUM-NL0 '
 
-  Where "n" is the number of general-purpose counters available in
-  the processor.
+Judging from the product name this might be a clone of a
+BOE panel, but with larger dimensions.
 
-For the edge case where there are zero GP counters, follow the spirit
-of the architecture, not the SDM's literal wording, which doesn't account
-for this possibility and would require the CPU to set _all_ bits in
-PERF_GLOBAL_CTRL.
+Panel frequently shows non-functional backlight control. Adding
+some debug prints to update_connector_ext_caps() shows that
+something the OLED bit of ext_caps is set, and then the driver
+assumes that backlight is controlled via AUX.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Forcing backlight control to PWM via amdgpu.backlight=0 restores
+backlight operation.
+
+Signed-off-by: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
 ---
- .../selftests/kvm/x86_64/pmu_counters_test.c  | 20 ++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-index 29609b52f8fa..26c85815f7e9 100644
---- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-@@ -416,12 +416,30 @@ static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters
- 
- static void guest_test_gp_counters(void)
- {
-+	uint8_t pmu_version = guest_get_pmu_version();
- 	uint8_t nr_gp_counters = 0;
- 	uint32_t base_msr;
- 
--	if (guest_get_pmu_version())
-+	if (pmu_version)
- 		nr_gp_counters = this_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
- 
-+	/*
-+	 * For v2+ PMUs, PERF_GLOBAL_CTRL's architectural post-RESET value is
-+	 * "Sets bits n-1:0 and clears the upper bits", where 'n' is the number
-+	 * of GP counters.  If there are no GP counters, require KVM to leave
-+	 * PERF_GLOBAL_CTRL '0'.  This edge case isn't covered by the SDM, but
-+	 * follow the spirit of the architecture and only globally enable GP
-+	 * counters, of which there are none.
-+	 */
-+	if (pmu_version > 1) {
-+		uint64_t global_ctrl = rdmsr(MSR_CORE_PERF_GLOBAL_CTRL);
-+
-+		if (nr_gp_counters)
-+			GUEST_ASSERT_EQ(global_ctrl, GENMASK_ULL(nr_gp_counters - 1, 0));
-+		else
-+			GUEST_ASSERT_EQ(global_ctrl, 0);
-+	}
-+
- 	if (this_cpu_has(X86_FEATURE_PDCM) &&
- 	    rdmsr(MSR_IA32_PERF_CAPABILITIES) & PMU_CAP_FW_WRITES)
- 		base_msr = MSR_IA32_PMC0;
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+index 7a09a72e182f..5a017ba94e3c 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+@@ -68,6 +68,7 @@ static void apply_edid_quirks(struct edid *edid, struct dc_edid_caps *edid_caps)
+ 	case drm_edid_encode_panel_id('A', 'U', 'O', 0xE69B):
+ 	case drm_edid_encode_panel_id('B', 'O', 'E', 0x092A):
+ 	case drm_edid_encode_panel_id('L', 'G', 'D', 0x06D1):
++	case drm_edid_encode_panel_id('M', 'S', 'F', 0x1003):
+ 		DRM_DEBUG_DRIVER("Clearing DPCD 0x317 on monitor with panel id %X\n", panel_id);
+ 		edid_caps->panel_patch.remove_sink_ext_caps = true;
+ 		break;
 -- 
-2.44.0.278.ge034bb2e1d-goog
+2.43.0
 
 
