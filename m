@@ -1,103 +1,91 @@
-Return-Path: <linux-kernel+bounces-97914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E9F877190
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B4B3877194
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47F681C20A5F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:06:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B69C91C20C6C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A102540870;
-	Sat,  9 Mar 2024 14:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="VoW/Q4px"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6D040BEF;
+	Sat,  9 Mar 2024 14:09:06 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1C31BDF4;
-	Sat,  9 Mar 2024 14:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52431BDF4
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 14:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709993209; cv=none; b=kJEJBbrd/cmweBhEIajX5G8wvyuijh89qypQrKFysafFPD+3ourxC4oN3pnZMiUOe28aYYgpCwkkoB1PcCikpKgza8PlAEEQlbLyOpz1CKsEFaIjGOWhl9wQWJpBL6iMzPJRGLo+KtW8bW3RIpyYtDz+lyfWDdNDbuDA9qMYO6w=
+	t=1709993346; cv=none; b=OsWBgRvzmKet/UoarWUYWSfkExhf0zPP0ii028g+NCZj231WxvD73hUB+JW5r0SJNIDkmE40+Pd5INlGlbcCQCN3UxbzHsnosisxqaSfyDD4Nwc/J/eq/K+dYps6e/SafY9LeVuJ4mzLNUXPDfPcAyQQAhmvteSS2L3W1SaO7nM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709993209; c=relaxed/simple;
-	bh=DRLJ4cBuxvF0fY5uEWgVJE771EWuG5ot5GbzGWoLM8A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lxkjH0OnpXWWDkoX3yDJEXnBuKpbXZssC+0p6515JX7DBv+oyn80lYTFfFBwO0mlaa16VEA5uhBjOPK293qwNnOLkbtSKYtCfTt1nk7628s+Zx1yD0HfwjI2I3/PMRVKzBG8v7n5Og5Ln7Yw0te3erxoneo73f8V5hyXrTS4BYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=VoW/Q4px; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=Tw2VS+QsVfGXZiZF1IkS/2FHF2jIkdONTN9aFBFDJco=; t=1709993207;
-	x=1710425207; b=VoW/Q4pxBpnYhwN1FjFf/rZ0yfISfiuRhIylFAfoIlV8BB90wjqBJHAmkEJdb
-	4xEc22hUDxlX3nlfGxMjBmH3Eg8twNLRal/M047kigODfN34SZV9ctR71rQQDrh4sGUYQLBVc1X//
-	JcSxrNhwz+XMIM+Hb9fXdyqHfybffe0kL0c9kpEMgx1ez4PFLVi3NbedrEIRUmOjK7dPAIW40ixNk
-	veP7GZxVUbRPJqXJNsWQaA2eNc5oVaU9gADwDfO74FC28bnatPeRbABeq7JK8QUMq+lIxUqIvRJnf
-	gEheFW1DWNm7m87AwS6fghoGJynhVc3XnUoZUSG6/vwi2EmbVw==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rixLT-0007yp-Dn; Sat, 09 Mar 2024 15:06:39 +0100
-Message-ID: <b888cbe2-6071-4445-91cd-8ce7cc9cc8f4@leemhuis.info>
-Date: Sat, 9 Mar 2024 15:06:38 +0100
+	s=arc-20240116; t=1709993346; c=relaxed/simple;
+	bh=2+frEfNY9kCZ1DL3xeqyryfAD6b5yyHATCqZqM5CrB8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=SNFKfUCcJYdi1nJ8kZCS7BNHpiwmJMpLm61F4mfvIuccgzbF7Ws//zjKoEiFjDQgX9Q2spsl7JFrskIaMzK76Z9Oql+PltA5/oG06lM8tKOvuG1oqQeMLgR/MbIufbjE5+Pb9bk0CptsR82BkTNttsBuWGDGL1efWgPAqp1/A+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c84b3570cfso299467639f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 06:09:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709993344; x=1710598144;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2LGzq8t2cO0APm/rv1jJdipgtRW0jr2Ew9T+G34Z8Vk=;
+        b=tWUHI/rMi4ZxS5jV+Y8hd6J99l9Dnk2VM97wt2QQCIQ3rMP2lbQRslzZAbyeAPBtG6
+         FMRgf4rZR2x8dSpabiAHaVwKhtA26rkKLrYLSVbyEzV1RKDzDY04JQNlrvUvyaJlJVgs
+         5dDJ7U+mXAZ/j2HUKUWqV8gTPF2L3HbqU+cnSiCLcIa/GbFYi5t2X1CCpwSq4khpG5bg
+         UQ64EaVKRO4SPzZjMez3wbOjMDtEBvcI/4vWvbyweL39ev2CY2k5KZwdLp11TFyozGe4
+         GcAbN8Fdzl8eaAa000RHD8fueBmFECqFw3Q+pEEv2b0cJm10khVK89g1PQED9YSsu1lM
+         tFJw==
+X-Forwarded-Encrypted: i=1; AJvYcCWKW3s8pAqSbJcWFvmDb7PJEZbYppIACXvv6MJCmhwpdVjFrN+1BGkfRZrAYg52gdKSHPKIAVTZraHhpkBk3q+e8xKE4kTqBCtAFv2K
+X-Gm-Message-State: AOJu0YxkNRlH2dYcnK0hwLUd7heo019iVkDDD4nZZVEcCV78aDIV1y6n
+	5pP8Moo+//TRM/GVhEUPZuz0Wt/mxYgUdO9ASSUoJZY4VTcV6/yUKmldla9t+SeHjbzXEgYOECo
+	G+CTKOF5LUppyl2Y9fnTS8iUiNWpBBcBbBC5UUN6/jAxG3sOyThjRzc0=
+X-Google-Smtp-Source: AGHT+IEwvoaxIjpkkmAaqdrdf8pyKru+spENnqat1cc0Qzw8RLRm6Fge27YlG5LX18apnrqnwtvO3b/C7CB8oBa7ib0ryoatqXZ2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Probe regression of efuse@11f10000 on
- mt8183-kukui-jacuzzi-juniper-sku16 running next-20240202
-Content-Language: en-US, de-DE
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Chen-Yu Tsai <wenst@chromium.org>
-Cc: regressions@lists.linux.dev, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com
-References: <47cdeac1-121d-4b1a-a3ac-e2affc7a2fc3@notapiano>
- <c4416256-eedc-4c9b-b968-3a02490c4c09@notapiano>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <c4416256-eedc-4c9b-b968-3a02490c4c09@notapiano>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709993207;077ff1e8;
-X-HE-SMSGID: 1rixLT-0007yp-Dn
+X-Received: by 2002:a05:6638:1654:b0:476:d5dc:b729 with SMTP id
+ a20-20020a056638165400b00476d5dcb729mr79848jat.4.1709993344002; Sat, 09 Mar
+ 2024 06:09:04 -0800 (PST)
+Date: Sat, 09 Mar 2024 06:09:03 -0800
+In-Reply-To: <000000000000f250a605ec981d41@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d682ec06133ad9d2@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in mnt_want_write_file
+From: syzbot <syzbot+1047e42179f502f2b0a2@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, hdanton@sina.com, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 08.03.24 15:31, Nícolas F. R. A. Prado wrote:
-> On Tue, Feb 06, 2024 at 11:11:00AM -0500, Nícolas F. R. A. Prado wrote:
->>
->> KernelCI has identified a regression [1] on the
->> mt8183-kukui-jacuzzi-juniper-sku16 machine running on next-20240202 compared to
->> next-20240118:
->>
->> #regzbot introduced next-20240118..next-20240202
-> 
-> Not sure why this got filed by regzbot under the mainline tab rather than next.
-> Maybe it was the missing collon? 
+syzbot suspects this issue was fixed by commit:
 
-No, I guess that is a bug in regzbot: the support for -next is there,
-but not much tested. Will need to take a closer look, will do so in the
-next few days.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-> In any case, the fix has already made it to linux-next, so this should close the
-> regression:
->
-> #regzbot fix: nvmem: mtk-efuse: Drop NVMEM device name
+    fs: Block writes to mounted block devices
 
-Out of interest: Is involving regzbot worth it in case the fix is
-already in -next? Or is that primarily to keep track of "we found a
-regression and a fix was already available in next". I don't mind if
-it's the latter, just curious.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164f208e180000
+start commit:   ac865f00af29 Merge tag 'pci-v6.7-fixes-2' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b
+dashboard link: https://syzkaller.appspot.com/bug?extid=1047e42179f502f2b0a2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116d8055e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15687d81e80000
 
-Ciao, Thorsten
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
