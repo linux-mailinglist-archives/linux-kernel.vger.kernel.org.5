@@ -1,108 +1,124 @@
-Return-Path: <linux-kernel+bounces-97885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 691EB877126
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:28:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A561387712A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93F221C20B6A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 12:28:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 600DE281D3E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 12:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6FEC47F7E;
-	Sat,  9 Mar 2024 12:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC8A039FF4;
+	Sat,  9 Mar 2024 12:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tG6Yu/Fp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Hg6Y2d6t"
+Received: from out203-205-251-59.mail.qq.com (out203-205-251-59.mail.qq.com [203.205.251.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3513C6BA;
-	Sat,  9 Mar 2024 12:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596F9383B5;
+	Sat,  9 Mar 2024 12:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.59
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709987185; cv=none; b=S/yZ+Cs4tB41vU7G5Gx0Hm/ghGAOeOfHf/1Y3utD0qAlEb3eEwWhEMVkx5xvLqUDEI4UEk/zbiMLVB2NSuXDXlweu+acK3X21NL5Cdi4u4gekg80LHYrQ5PoeWwBiQekM4Iiie/J/a/03gLsoSz3eJfn95qndemflA4F/8cmG9I=
+	t=1709987274; cv=none; b=Ngv1T/lRWTNy3CoGC6f1Y0iTzN1L2AGTD9K/g1jUAn2rzxbQg7R502zWlu6M3LfPBABtY00tSnwpLaw50XoTsuxHK1aq9SO+ved2LRJTjmN6qrHJzDRvxTbzZUWwwej/hxPON5IxhIaEPwFg1Qd8w8f2PLuHT1fLrT0kw6YyEjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709987185; c=relaxed/simple;
-	bh=lSKWeMSp6hiaBqDIHd2zETyiJuHGSONXfIQS0i6E3Cw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=llHmoPg+r6VNsIJgv56Ad+h63IUPwMTBk4rzevymv9WNTD3HvO6DrjVg5AmQ6te6buGML1+qjp9/2x43236Nv9lSRq2WvUG5ZPDRF6nU18Ww2ty631xFUqoFMHddStlU8V4IlCz+DFtrLLTY8OHC1b6rmJ+uhyYsaHaeSluKiDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tG6Yu/Fp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A8EEAC32786;
-	Sat,  9 Mar 2024 12:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709987184;
-	bh=lSKWeMSp6hiaBqDIHd2zETyiJuHGSONXfIQS0i6E3Cw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=tG6Yu/Fp1cau7HoYkFQrIpJgUoMW5Sk9IqwQYnl6XYYMj+vFak63YeCTS9v6qR1W4
-	 GKMAmFzuK1dxdZiD8u7mSSAH9WMSYG2J2HGzLotUnR9KCgWFXa04ExRH9m/1g+Mbvb
-	 kQnjjUyZtcqI6oeMaBF418s7zMHN//amODoH4PX/pI8Bcnt2r5kXUE87Ksz/20vDPD
-	 uS3i6XDictmsSBYrA3l56eqUeNqXR4D9KdaUd7LNgsrT4kBQlMz1IzaTVLsR6ozYdq
-	 WGaa5ZkO0ZN/KjB1Wwt1fej0jJUUP7qrzMp2XnHtJugf4aoj2ps91LT3gZtHlbS8di
-	 NB8l/f4ri6Wyw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B3CCC54E5D;
-	Sat,  9 Mar 2024 12:26:24 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Sat, 09 Mar 2024 20:26:31 +0800
-Subject: [PATCH net-next v11 9/9] net: hisi_femac: remove unneeded
- MODULE_ALIAS()
+	s=arc-20240116; t=1709987274; c=relaxed/simple;
+	bh=yyHJI+i8YTw2Aotpj/dejaVqSVyw4wQdRc2NjI1BysY=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=NGYL2WXALSxQ8H7oSqSq4QHXIumhcSOAmd56+Ug9Ku5zL+Dz7aVinzMg9kv2FPiErQ9KZoIvolqkMrigFPvQTNij6lo3WZUmu1mPcQkKOGXOYLwQddhmIBWGW2lPlR+GWbrY2+8CN7nntURX0PsfmmK9+AX2NvpktLQ0ukGE20I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Hg6Y2d6t; arc=none smtp.client-ip=203.205.251.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709987258; bh=XEGyaJ+kCmmZhZFVWlD1MMdKR2X8OhuRS+vIOPo518c=;
+	h=From:To:Cc:Subject:Date;
+	b=Hg6Y2d6tTpKXk51dBycFCehLr9RpYTOLkpALRSlUcu69losoh/YqtPTyoiAamGDZV
+	 kMXJhVIlZFZDG8zgiQR1tiuD0dDiJv+rjv6ofM7X3GlCRE5nnqhcWN++bNksfE5aEi
+	 sx5nGerzAadhHBF3qB8r6BCAnENNqqaLsqgPqprE=
+Received: from localhost.localdomain ([58.213.8.163])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 6E4874DF; Sat, 09 Mar 2024 20:27:36 +0800
+X-QQ-mid: xmsmtpt1709987256tzodkmkla
+Message-ID: <tencent_32C3AEB0599DF0A0010A862439636CDA2707@qq.com>
+X-QQ-XMAILINFO: MmPNY57tR1XnXVRJMLsi2St93kTXMHZDv9XOtN6QXUCt17MhWfoztaSxFUWTti
+	 NGvIQO/0OK+86B+DaF94LQqsTOQTyeDowjon/yqBcs7fVBZ8Tiaf5RPqRzLtJ7CQK/wIanfFqKiD
+	 oZc47qHOQEEtTbpi6nyR5uMziAJJPjYrwhR9YbaEoXwUcvHieGse+IFlvinsw12hTFtL5Sq6ZxUc
+	 aRNH1lIEO6KKQoZ7xnIY+i1gwqD62/SFUFRzLWgt+rmSnQ0qUWSKtj1UQPDW4goRts/hABqws1Us
+	 ZdZ+oWk9RSl9cs7n40nGMELoz/+H0awRebUJT05j5hQE/WzZSW+JlqRHgh3S6aLNKtUTWC5OML9u
+	 CpI8TjizY3U0btH6WACG4I5GGHtvqRt96+AOzRdhQksXNdpAp/dNHPGzsqTLmSwljMEe2hljE6Ro
+	 9dWr+4KUXIVBXg5ZSgGus//CxhXykO25w7fWMNBQSBrflOb5fCmo2SIRi4wSEDoBXQvDa9Uz7/7J
+	 P7ZvM5mzOggv08Xr7QX4P2uVHLgW4W9b/PK+hijvVvUFbIYbK5f/6Da2aHgguk2oEEMo5v/+9Rcg
+	 NJn+Q4qPQbmDNxffzt1eWfBk7N71qY2yWvczxaw+wGq+X9bLr+KplQZaKuD/tTXk+45OZGjBTh0d
+	 pPzZwXUz9bi1AkXClQcohAQSWg+sJX+sLvso7epWO0IjiVILPmaAUCRt/038hs6X5MNHQP/9T1M7
+	 GCYHt8pqNkitiL7ave3mLZWUUS7afJrurhtz6Hwv7+gZUEMC7pFjKOjAq4+MqSoBvq4axQNDQhQi
+	 NzI7fnXlFAcBUapiuMao3Dt71hau7LlPNpqbvhTVe2a1C74rw0iurPuJIBAbhn7AD0u0q4F+aJG8
+	 H5HJE4C3Pkzxe93HGvrMHT352G5m31xd+DTMv3M5FjQVka6guH1/8CyOQ6124U6yjdLmiLT2wnVI
+	 rz54xqcXRjRL3v9WvtRYA+/Fcmp5x0X2SvjVvVfgh2qcpQsoQ6xqOW/LPbLv4xQFaQGqWlqf3Fa7
+	 4YToBChTCecAk2TSnO9hSId6HVLS30t/nhVqGfpxnW6QuVQNjPpsoVJ84DTZwnlAYZLKFBHQ==
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: linke li <lilinke99@qq.com>
+To: 
+Cc: lilinke99@qq.com,
+	Bernard Metzler <bmt@zurich.ibm.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of re-reading it
+Date: Sat,  9 Mar 2024 20:27:16 +0800
+X-OQ-MSGID: <20240309122717.54920-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240309-net-v11-9-eb99b76e4a21@outlook.com>
-References: <20240309-net-v11-0-eb99b76e4a21@outlook.com>
-In-Reply-To: <20240309-net-v11-0-eb99b76e4a21@outlook.com>
-To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
- Salil Mehta <salil.mehta@huawei.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
- Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709987182; l=761;
- i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=5asUwtns0o/WnZUMxP/lMUTHZU/9R+BsisaTEtLgTiE=;
- b=a4D3ssZqzk2x3t1Nh/7G1qhSCn7dESniI29GS3APQfCyQ1jVI6fYO/IoAq/ILo/DGERlDdF20
- 6JdNhtQtlK3AFDkf2iUq+GdFR9tcfe1QTkZxgTa5fa1c9XqNIhd2Hss
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+Content-Transfer-Encoding: 8bit
 
-From: Yang Xiwen <forbidden405@outlook.com>
+In siw_orqe_start_rx, the orqe's flag in the if condition is read using
+READ_ONCE, checked, and then re-read, voiding all guarantees of the
+checks. Reuse the value that was read by READ_ONCE to ensure the
+consistency of the flags throughout the function.
 
-We already have MODULE_DEVICE_TABLE() that creates the correct alias.
-Remove unneeded MODULE_ALIAS().
-
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+Signed-off-by: linke li <lilinke99@qq.com>
 ---
- drivers/net/ethernet/hisilicon/hisi_femac.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/infiniband/sw/siw/siw_qp_rx.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hisi_femac.c b/drivers/net/ethernet/hisilicon/hisi_femac.c
-index e873a4140a62..f434a3beaae7 100644
---- a/drivers/net/ethernet/hisilicon/hisi_femac.c
-+++ b/drivers/net/ethernet/hisilicon/hisi_femac.c
-@@ -1014,4 +1014,3 @@ module_platform_driver(hisi_femac_driver);
- MODULE_DESCRIPTION("Hisilicon Fast Ethernet MAC driver");
- MODULE_AUTHOR("Dongpo Li <lidongpo@hisilicon.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:hisi-femac");
-
+diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+index ed4fc39718b4..f5f69de56882 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_rx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+@@ -740,6 +740,7 @@ static int siw_orqe_start_rx(struct siw_qp *qp)
+ {
+ 	struct siw_sqe *orqe;
+ 	struct siw_wqe *wqe = NULL;
++	u16 orqe_flags;
+ 
+ 	if (unlikely(!qp->attrs.orq_size))
+ 		return -EPROTO;
+@@ -748,7 +749,8 @@ static int siw_orqe_start_rx(struct siw_qp *qp)
+ 	smp_mb();
+ 
+ 	orqe = orq_get_current(qp);
+-	if (READ_ONCE(orqe->flags) & SIW_WQE_VALID) {
++	orqe_flags = READ_ONCE(orqe->flags);
++	if (orqe_flags & SIW_WQE_VALID) {
+ 		/* RRESP is a TAGGED RDMAP operation */
+ 		wqe = rx_wqe(&qp->rx_tagged);
+ 		wqe->sqe.id = orqe->id;
+@@ -756,7 +758,7 @@ static int siw_orqe_start_rx(struct siw_qp *qp)
+ 		wqe->sqe.sge[0].laddr = orqe->sge[0].laddr;
+ 		wqe->sqe.sge[0].lkey = orqe->sge[0].lkey;
+ 		wqe->sqe.sge[0].length = orqe->sge[0].length;
+-		wqe->sqe.flags = orqe->flags;
++		wqe->sqe.flags = orqe_flags;
+ 		wqe->sqe.num_sge = 1;
+ 		wqe->bytes = orqe->sge[0].length;
+ 		wqe->processed = 0;
 -- 
-2.43.0
+2.39.3 (Apple Git-146)
+
 
 
