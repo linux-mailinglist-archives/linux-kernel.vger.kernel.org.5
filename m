@@ -1,433 +1,142 @@
-Return-Path: <linux-kernel+bounces-97778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CAE2876F48
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:21:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9378876F51
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:27:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00A18281B26
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:21:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 765821F21AE8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:27:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B975D31A94;
-	Sat,  9 Mar 2024 05:21:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2191D335C7;
+	Sat,  9 Mar 2024 05:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZx0C8/z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b2ZGK//s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC279B656;
-	Sat,  9 Mar 2024 05:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A88364A4;
+	Sat,  9 Mar 2024 05:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709961697; cv=none; b=j9lTh0CyAz5DYuxH7mG5EvTOGAN1E8l/E0Bf1/Gv3uY19ebYdsl+xELZhUCOn+cWG7etSnBXaLiT3YAQdl7eZnbcRB5SNKJCseQVK+/YE+qUFuObeL05cL+NZ6S+gK/PKRJTI9jWh+UxvjaeopWkZKkYf7OmTuGzsFm1yN3R48E=
+	t=1709962026; cv=none; b=jWL87JEwVsyXojbxaH2GMEZXWaggZEYumGWOkecHvcUimxhvgJI6NPpf26rv3Fl4yZ/ZIBoJdCe6mVMzfCM/almNQtO6bYdAAh4FlhpNh3mUzob/0wy/OpX3mgwep06czWGJ/PDJwAyJMkzigjkvfotnxNJll4q2LZWXOYHzprY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709961697; c=relaxed/simple;
-	bh=tqY4JVDtTjXz4kbJkAYJ+KcUDc570PmGen8k2hpbpBU=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=rsfeeISM9m8Z7VnXuwmUkGHUrIQjPUK1dBfwoOlvwQGwEEVIV+HUVh1EAvjyf4IDglntIN19hO1VZUoWLMRZEF5KvDxuqk0s35vNgCoLB3txC6Wj+gRy1L3oJYRcScngmJtmZl8HRStzODP/fH0UWU9Sk1kZ+9LYq5kKjSzFVPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GZx0C8/z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14F34C433C7;
-	Sat,  9 Mar 2024 05:21:36 +0000 (UTC)
+	s=arc-20240116; t=1709962026; c=relaxed/simple;
+	bh=kKwe57YoGVcoyss0ap390jlp9pG9+fYB0DFZcYPltOE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O0INCehedNLzJqKQyFZAYl0kMRiG8C30OncTIXtmjSSZDCYNHClqjQfQlSXGsXC44pZY5zZRXM7VPwOuXxHpHvRT7ea7gGF63D0/gqyLmfa5CgZUrW4wmdo1NC5TlRS0AMIOSOmEz1iwMwg2bvzwWsT/QT/fqOnMhtmKpMD4vxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b2ZGK//s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E977C433F1;
+	Sat,  9 Mar 2024 05:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709961697;
-	bh=tqY4JVDtTjXz4kbJkAYJ+KcUDc570PmGen8k2hpbpBU=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=GZx0C8/zLHn49Fbe/alM0hhq763Bha3aaoB2N6cdez2gYXeDO/sdP/ZFaPqP3+nuV
-	 TFl0tGNmoLp57fFvStiBZ2KqEO6lzOBI2lHFNXOJeb6DLhG7AweD99XR+04NW4OMrm
-	 fLCCAx+wC31Tro+Iw9umL2ObeIIOjjSxtgFk+c0/hin+gkRjL5vtc3U1jImCud2lkk
-	 EGLZeAA+ryX8oTaMW2lYmw7qLOzkPZOtKx3aYlUfpz82gONLC7QNSiOwVKccUmiizc
-	 Mle405ajB6zi0AnP4rpGlqxwSuZ7ASCwFTtyOvrXwnzj1z1mHfhr206Aj4e+J/kG6t
-	 xK6ml6v16AOEw==
-Message-ID: <55a896bcb94af629bb58c304268ac7ec.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1709962026;
+	bh=kKwe57YoGVcoyss0ap390jlp9pG9+fYB0DFZcYPltOE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=b2ZGK//sZVoGCK02BOQX1N2SWoVYhLNLuWKRrK4U2EvKKX2lkalC9BAVxWqqfHz63
+	 Y1oUqjkEcMiGdHBElb2WXygtEzxODSEpDjkOSPlXpnwdkx54xnG9hnxgSTmEXcZxnP
+	 0KvUJ1QY4H4WYpPZV+peQ/SXK8vH70uohDLr/WE39uHCNnPgrW1kkMNhOqpHZEiDwI
+	 SyrMGz6xMePCwJgmd6+XflwN809gbAHED+OHMZTx1HlG4BQd+0ND84XmgKrmlcLJh1
+	 CBrJPerRgAFKe158Twx8qOSO4IXKrbSJyzIpYd4Zn+45vO+X5/bpg1fVXoJbLlUKao
+	 SyKUcdJ7uvKJw==
+Date: Fri, 8 Mar 2024 21:27:04 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>, mwojtas@chromium.org
+Subject: Re: [PATCH net-next v10 13/13] Documentation: networking: document
+ phy_link_topology
+Message-ID: <20240308212704.02766ff6@kernel.org>
+In-Reply-To: <20240304151011.1610175-14-maxime.chevallier@bootlin.com>
+References: <20240304151011.1610175-1-maxime.chevallier@bootlin.com>
+	<20240304151011.1610175-14-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <IA1PR20MB4953925533ACD65B32D423D9BB4F2@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB4953366482FEBFC5E7F6F34BBB4F2@IA1PR20MB4953.namprd20.prod.outlook.com> <IA1PR20MB4953925533ACD65B32D423D9BB4F2@IA1PR20MB4953.namprd20.prod.outlook.com>
-Subject: Re: [PATCH v8 2/8] clk: sophgo: Add CV1800/SG2000 series clock controller driver skeleton
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Jisheng Zhang <jszhang@kernel.org>, Liu Gui <kenneth.liu@sophgo.com>, Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-To: Albert Ou <aou@eecs.berkeley.edu>, Chao Wei <chao.wei@sophgo.com>, Chen Wang <unicorn_wang@outlook.com>, Conor Dooley <conor+dt@kernel.org>, Inochi Amaoto <inochiama@outlook.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Rob Herring <robh+dt@kernel.org>
-Date: Fri, 08 Mar 2024 21:21:34 -0800
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Quoting Inochi Amaoto (2024-02-13 00:22:34)
-> diff --git a/drivers/clk/sophgo/Kconfig b/drivers/clk/sophgo/Kconfig
-> new file mode 100644
-> index 000000000000..d67009fa749f
-> --- /dev/null
-> +++ b/drivers/clk/sophgo/Kconfig
-> @@ -0,0 +1,12 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +# common clock support for SOPHGO SoC family.
-> +
-> +config CLK_SOPHGO_CV1800
-> +       tristate "Support for the Sophgo CV1800 series SoCs clock control=
-ler"
-> +       default m
+We should :ref: to this doc from the PHY_GET in the ethtool one as well?
 
-Please remove any default and set it in the defconfig instead.
+On Mon,  4 Mar 2024 16:10:09 +0100 Maxime Chevallier wrote:
+> +An Ethernet Interface from userspace's point of view is nothing but a
 
-> +       depends on ARCH_SOPHGO || COMPILE_TEST
-> +       help
-> +         This driver supports clock controller of Sophgo CV18XX series S=
-oC.
-> +         The driver require a 25MHz Oscillator to function generate cloc=
-k.
-> +         It includes PLLs, common clock function and some vendor clock f=
-or
-> +         IPs of CV18XX series SoC
-> diff --git a/drivers/clk/sophgo/clk-cv1800.c b/drivers/clk/sophgo/clk-cv1=
-800.c
-> new file mode 100644
-> index 000000000000..7183e67f20bf
-> --- /dev/null
-> +++ b/drivers/clk/sophgo/clk-cv1800.c
-> @@ -0,0 +1,113 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/io.h>
-> +#include <linux/spinlock.h>
-> +
-> +#include "clk-cv18xx-common.h"
-> +
-> +struct cv1800_clk_ctrl;
-> +
-> +struct cv1800_clk_desc {
-> +       struct clk_hw_onecell_data      *clks_data;
-> +
-> +       int (*pre_init)(struct device *dev, void __iomem *base,
-> +                       struct cv1800_clk_ctrl *ctrl,
-> +                       const struct cv1800_clk_desc *desc);
-> +};
-> +
-> +struct cv1800_clk_ctrl {
-> +       const struct cv1800_clk_desc    *desc;
-> +       spinlock_t                      lock;
-> +};
-> +
-> +static int cv1800_clk_init_ctrl(struct device *dev, void __iomem *reg,
-> +                               struct cv1800_clk_ctrl *ctrl,
-> +                               const struct cv1800_clk_desc *desc)
-> +{
-> +       int i, ret;
-> +
-> +       ctrl->desc =3D desc;
-> +       spin_lock_init(&ctrl->lock);
-> +
-> +       for (i =3D 0; i < desc->clks_data->num; i++) {
-> +               struct clk_hw *hw =3D desc->clks_data->hws[i];
-> +               struct cv1800_clk_common *common;
-> +               const char *name;
-> +
-> +               if (!hw)
-> +                       continue;
-> +
-> +               name =3D hw->init->name;
-> +
-> +               common =3D hw_to_cv1800_clk_common(hw);
-> +               common->base =3D reg;
-> +               common->lock =3D &ctrl->lock;
-> +
-> +               ret =3D devm_clk_hw_register(dev, hw);
-> +               if (ret) {
-> +                       dev_err(dev, "Couldn't register clock %d - %s\n",
-> +                               i, name);
-> +                       return ret;
-> +               }
-> +       }
-> +
-> +       ret =3D devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
-> +                                         desc->clks_data);
-> +
-> +       return ret;
+interface
 
-Just return devm...
+> +:c:type:`struct net_device <net_device>`, which exposes configuration options
+> +through the legacy ioctls and the ethool netlink commands. The base assumption
 
-> +}
-> +
-> +static int cv1800_clk_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev =3D &pdev->dev;
-> +       void __iomem *reg;
-> +       int ret;
-> +       const struct cv1800_clk_desc *desc;
-> +       struct cv1800_clk_ctrl *ctrl;
-> +
-> +       reg =3D devm_platform_ioremap_resource(pdev, 0);
-> +       if (IS_ERR(reg))
-> +               return PTR_ERR(reg);
-> +
-> +       desc =3D device_get_match_data(dev);
-> +       if (!desc) {
-> +               dev_err(dev, "no match data for platform\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       ctrl =3D devm_kmalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+ethtool
 
-Why not devm_kzalloc?
+> +when designing these configuration channels were that the link looked
 
-> +       if (!ctrl)
-> +               return -ENOMEM;
-> +
-> +       if (desc->pre_init) {
-> +               ret =3D desc->pre_init(dev, reg, ctrl, desc);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
-> +       ret =3D cv1800_clk_init_ctrl(dev, reg, ctrl, desc);
-> +
-> +       return ret;
+nit: s/channels/APIs/ channels sometimes means IRQs/queues in netdev :S
+s/looked/looks/
 
-This is return cv1800_clk_init_ctrl(...
+> +something like this ::
 
-> +}
-> +
-> +static const struct of_device_id cv1800_clk_ids[] =3D {
-> +       { }
+s/this//
 
-Don't do this. Just send the whole driver as one patch.
+> +  +-----------------------+        +----------+      +--------------+
+> +  | Ethernet Controller / |        | Ethernet |      | Connector /  |
+> +  |       MAC             | ------ |   PHY    | ---- |    Port      | ---... to LP
+> +  +-----------------------+        +----------+      +--------------+
+> +  struct net_device               struct phy_device
+> +
+> +Commands that needs to configure the PHY will go through the net_device.phydev
+> +field to reach the PHY and perform the relevant configuration.
+> +
+> +This assumption falls apart in more complex topologies that can arise when,
+> +for example, using SFP transceivers (although that's not the only specific case).
 
-> +};
-> +MODULE_DEVICE_TABLE(of, cv1800_clk_ids);
-> +
-> +static struct platform_driver cv1800_clk_driver =3D {
-> +       .probe  =3D cv1800_clk_probe,
-> +       .driver =3D {
-> +               .name                   =3D "cv1800-clk",
-> +               .suppress_bind_attrs    =3D true,
-> +               .of_match_table         =3D cv1800_clk_ids,
-> +       },
-> +};
-> +module_platform_driver(cv1800_clk_driver);
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/clk/sophgo/clk-cv18xx-common.c b/drivers/clk/sophgo/=
-clk-cv18xx-common.c
-> new file mode 100644
-> index 000000000000..cbcdd88f0e23
-> --- /dev/null
-> +++ b/drivers/clk/sophgo/clk-cv18xx-common.c
-> @@ -0,0 +1,66 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-> + */
-> +
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/bug.h>
-> +
-> +#include "clk-cv18xx-common.h"
-> +
-> +int cv1800_clk_setbit(struct cv1800_clk_common *common,
-> +                     struct cv1800_clk_regbit *field)
-> +{
-> +       u32 mask =3D BIT(field->shift);
-> +       u32 value;
-> +       unsigned long flags;
-> +
-> +       spin_lock_irqsave(common->lock, flags);
-> +
-> +       value =3D readl(common->base + field->reg);
-> +       writel(value | mask, common->base + field->reg);
-> +
-> +       spin_unlock_irqrestore(common->lock, flags);
-> +
-> +       return 0;
-> +}
-> +
-> +int cv1800_clk_clearbit(struct cv1800_clk_common *common,
-> +                       struct cv1800_clk_regbit *field)
-> +{
-> +       u32 mask =3D BIT(field->shift);
-> +       u32 value;
-> +       unsigned long flags;
-> +
-> +       spin_lock_irqsave(common->lock, flags);
-> +
-> +       value =3D readl(common->base + field->reg);
-> +       writel(value & ~mask, common->base + field->reg);
-> +
-> +       spin_unlock_irqrestore(common->lock, flags);
-> +
-> +       return 0;
-> +}
-> +
-> +int cv1800_clk_checkbit(struct cv1800_clk_common *common,
-> +                       struct cv1800_clk_regbit *field)
-> +{
-> +       return readl(common->base + field->reg) & BIT(field->shift);
-> +}
-> +
-> +#define PLL_LOCK_TIMEOUT_US    (200 * 1000)
-> +
-> +void cv1800_clk_wait_for_lock(struct cv1800_clk_common *common,
-> +                             u32 reg, u32 lock)
-> +{
-> +       void __iomem *addr =3D common->base + reg;
-> +       u32 regval;
-> +
-> +       if (!lock)
-> +               return;
-> +
-> +       WARN_ON(readl_relaxed_poll_timeout(addr, regval, regval & lock,
-> +                                          100, PLL_LOCK_TIMEOUT_US));
-> +}
-> diff --git a/drivers/clk/sophgo/clk-cv18xx-common.h b/drivers/clk/sophgo/=
-clk-cv18xx-common.h
-> new file mode 100644
-> index 000000000000..2bfda02b2064
-> --- /dev/null
-> +++ b/drivers/clk/sophgo/clk-cv18xx-common.h
-> @@ -0,0 +1,81 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-> + */
-> +
-> +#ifndef _CLK_SOPHGO_CV18XX_IP_H_
-> +#define _CLK_SOPHGO_CV18XX_IP_H_
-> +
-> +#include <linux/compiler.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/bitfield.h>
-> +
-> +struct cv1800_clk_common {
-> +       void __iomem    *base;
-> +       spinlock_t      *lock;
-> +       struct clk_hw   hw;
-> +       unsigned long   features;
-> +};
-> +
-> +#define CV1800_CLK_COMMON(_name, _parents, _op, _flags)                 =
-       \
-> +       {                                                               \
-> +               .hw.init =3D CLK_HW_INIT_PARENTS_DATA(_name, _parents,   =
- \
-> +                                                   _op, _flags),       \
-> +       }
-> +
-> +static inline struct cv1800_clk_common *
-> +hw_to_cv1800_clk_common(struct clk_hw *hw)
-> +{
-> +       return container_of(hw, struct cv1800_clk_common, hw);
-> +}
-> +
-> +struct cv1800_clk_regbit {
-> +       u16             reg;
-> +       s8              shift;
-> +};
-> +
-> +struct cv1800_clk_regfield {
-> +       u16             reg;
-> +       u8              shift;
-> +       u8              width;
-> +       s16             initval;
-> +       unsigned long   flags;
-> +};
-> +
-> +#define CV1800_CLK_BIT(_reg, _shift)   \
-> +       {                               \
-> +               .reg =3D _reg,            \
-> +               .shift =3D _shift,        \
-> +       }
-> +
-> +#define CV1800_CLK_REG(_reg, _shift, _width, _initval, _flags) \
-> +       {                                                       \
-> +               .reg =3D _reg,                                    \
-> +               .shift =3D _shift,                                \
-> +               .width =3D _width,                                \
-> +               .initval =3D _initval,                            \
-> +               .flags =3D _flags,                                \
-> +       }
-> +
-> +#define cv1800_clk_regfield_genmask(_reg) \
-> +       GENMASK((_reg)->shift + (_reg)->width - 1, (_reg)->shift)
-> +#define cv1800_clk_regfield_get(_val, _reg) \
-> +       (((_val) >> (_reg)->shift) & GENMASK((_reg)->width - 1, 0))
-> +#define cv1800_clk_regfield_set(_val, _new, _reg)    \
-> +       (((_val) & ~cv1800_clk_regfield_genmask((_reg))) | \
-> +        (((_new) & GENMASK((_reg)->width - 1, 0)) << (_reg)->shift))
-> +
-> +#define _CV1800_SET_FIELD(_reg, _val, _field) \
-> +       (((_reg) & ~(_field)) | FIELD_PREP((_field), (_val)))
-> +
-> +int cv1800_clk_setbit(struct cv1800_clk_common *common,
-> +                     struct cv1800_clk_regbit *field);
-> +int cv1800_clk_clearbit(struct cv1800_clk_common *common,
-> +                       struct cv1800_clk_regbit *field);
-> +int cv1800_clk_checkbit(struct cv1800_clk_common *common,
-> +                       struct cv1800_clk_regbit *field);
-> +
-> +void cv1800_clk_wait_for_lock(struct cv1800_clk_common *common,
-> +                             u32 reg, u32 lock);
-> +
-> +#endif // _CLK_SOPHGO_CV18XX_IP_H_
-> diff --git a/drivers/clk/sophgo/clk-cv18xx-ip.c b/drivers/clk/sophgo/clk-=
-cv18xx-ip.c
-> new file mode 100644
-> index 000000000000..cd397d102442
-> --- /dev/null
-> +++ b/drivers/clk/sophgo/clk-cv18xx-ip.c
-> @@ -0,0 +1,98 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/io.h>
-> +#include <linux/gcd.h>
-> +#include <linux/spinlock.h>
-> +
-> +#include "clk-cv18xx-ip.h"
-> +
-> +/* GATE */
-> +const struct clk_ops cv1800_clk_gate_ops =3D {
-> +       .disable =3D NULL,
-> +       .enable =3D NULL,
-> +       .is_enabled =3D NULL,
-> +
-> +       .recalc_rate =3D NULL,
-> +       .round_rate =3D NULL,
-> +       .set_rate =3D NULL,
-> +};
+s/specific/such/
 
-Everything is NULL. What are you trying to do? Point out what will come
-later? Please squash patches.
+> +Here, we have 2 basic scenarios. Either the MAC is able to output a serialized
+> +interface, that can directly be fed to an SFP cage, such as SGMII, 1000BaseX,
+> +10GBaseR, etc.
 
+The "Either" makes me expect and "or" at some state in this paragraph..
+
+> +The link topology then looks like this (when an SFP module is inserted) ::
 > +
-> +/* DIV */
-> +const struct clk_ops cv1800_clk_div_ops =3D {
-> +       .disable =3D NULL,
-> +       .enable =3D NULL,
-> +       .is_enabled =3D NULL,
+> +  +-----+  SGMII  +------------+
+> +  | MAC | ------- | SFP Module |
+> +  +-----+         +------------+
 > +
-> +       .determine_rate =3D NULL,
-> +       .recalc_rate    =3D NULL,
-> +       .set_rate =3D NULL,
-> +};
+> +Knowing that some modules embed a PHY, the actual link is more like ::
 > +
-> +const struct clk_ops cv1800_clk_bypass_div_ops =3D {
-> +       .disable =3D NULL,
-> +       .enable =3D NULL,
-> +       .is_enabled =3D NULL,
+> +  +-----+  SGMII   +--------------+
+> +  | MAC | -------- | PHY (on SFP) |
+> +  +-----+          +--------------+
 > +
-> +       .determine_rate =3D NULL,
+> +In this case, the SFP PHY is handled by phylib, and registered by phylink through
+> +its SFP upstream ops.
+> +
+> +Now some Ethernet controllers aren't able to output a serialized interface, so
+> +we can't directly connect them to an SFP cage. However, some PHYs can be used
+
+s/However, some/In such cases, certain/
+
+> +as media-converters, to translate the non-serialized MAC MII interface to a
+> +serialized MII interface fed to the SFP ::
+> +
+> +  +-----+  RGMII  +-----------------------+  SGMII  +--------------+
+> +  | MAC | ------- | PHY (media converter) | ------- | PHY (on SFP) |
+> +  +-----+         +-----------------------+         +--------------+
 
