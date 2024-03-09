@@ -1,220 +1,93 @@
-Return-Path: <linux-kernel+bounces-97815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E546876FDF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:46:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F880876FE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:47:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894B228203F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 08:46:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80FF61C20C7D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 08:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221BA3FB8C;
-	Sat,  9 Mar 2024 08:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mlsi86uw"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2044.outbound.protection.outlook.com [40.107.244.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DBE0374FE;
+	Sat,  9 Mar 2024 08:45:55 +0000 (UTC)
+Received: from mail115-24.sinamail.sina.com.cn (mail115-24.sinamail.sina.com.cn [218.30.115.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A54B3839D;
-	Sat,  9 Mar 2024 08:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709973908; cv=fail; b=nUIJUgm0Az48f80+Z1+NvGoTlxSa3SWMSOUQG8Bv7SPR7S7oMp/3bQtPDgyv96KcNIzGWlO1uOzUVRdOEEpF+mhglAl/Ro+lLwHjWjCnMp4ThrA0mdN1MQJQcHNm+XMWXlgbevDOKLJSPG9VqwehAzSyprfUz2YH4xt1+bO83w0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709973908; c=relaxed/simple;
-	bh=h1BqVMbyqCstV3fz1rbJlr2tJLOfEoJS7bPuFTsMyOw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dXOXrsc+YNIAHl8QPoFoQfDCvV51xk4tyKMXD8qqopl4GKbVKPduZjnzpbanmu7J+219U6YjK1ATami3A8kxVDZxeGytjkzFIgbJGYaoqlvnJQHPXh8Px5EZrwAcwlwtRJPBH+6kw6zQyefBP1xa0PS65SFma2OH/LTUAi6FnR4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mlsi86uw; arc=fail smtp.client-ip=40.107.244.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V28BDd7kXFbyNKpkg8X/w7xLHohqtu6OaR2ordJsXqSF/oDhjnVdAr7svs5jhd29GRrEKlSgCP3WkuUpKkeaHy6YP3TiJTWzVfYnFYALQCIXpcJbGDA126Bm3B6/JdMxjlYA9pN+2tWZ6CwUN/ejZsh29kc+Zo4fGJmj9Q57a3d0reFCvX8DfEzAlPDHtYphNwDjLfSIkCEOHX6tTyAiq03tC5yVEY2n74zsfSr9U2DbAonMGkdS4ndZs14bOZ7Opo6jqu59B+JrKxvBbycnX8LxeBqwzRnG7Z6/OndnyJ+7TwJ6YVEv2kSJy4WMLqQn/AbLm8sg3s+8JBpGqfcEPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h8Z0RuwzlbvHvuvBzKaYz9Jq06PE5Uj1SUo9cOuL+Cs=;
- b=kcOhFyQsaKexxX5fTfL1/lDheA3u8RB8h3Zx+upbrxPFgsuM9/2LnqUYHcLFuKMzCbWeeiPwIwq0ezVeE32FIPTye2hstCq5OsDDIuBPvzbTgWekdah+pjQjaCsyF5VjxJxi/FiwDmYaLZHZoli63Uw4LFTzDPWqLsHiOrImctk2kiIZxb7XxuS37OKs9tP8ki2yIdNllFSeiKL9MZt3GDW40OfDcNmlQACqzYhwUMl2VHgYjfw02m2NZhh861QyFXh9xfBgAGvi5ObpqEaT3p7rxzo7jTNgJUJb/PA7KiTlO3lZZ/NWz36ZJibc9cZlF5/GP99GM+PFwAbyDqf7aA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h8Z0RuwzlbvHvuvBzKaYz9Jq06PE5Uj1SUo9cOuL+Cs=;
- b=mlsi86uwLlF0X3XR+WCPhsHa+Bfnu+ZQfPpavPc6EPUURHKQoP/iTHj/LXqsOl7ybcqqZOx29w1XoMKHAVbOeU319BXPni6J+WKwI8H5w/2oxFMq18QzWYX2V/EzHbMXY5uM1RN3Deboj9bsjab9hGH2xor6EMOHrsXyrLyZHQfOJzPx8kVxw+m6ZmSkfUqBsZde8+qlihwNh5XYS7OQf0XQf21LjXG28zsiYG2TwzZF8LcmsnE9Lhw0ZSCsb2mFwgaTwCaU1RPkJ6P7tVBzr302ADar+Kte3OxjztBHU0CMjPaHNgITGi9599km0ZuGEumGH7OqujKIsssKv/o5KA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by CH3PR12MB9394.namprd12.prod.outlook.com (2603:10b6:610:1cf::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.29; Sat, 9 Mar
- 2024 08:45:00 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7362.024; Sat, 9 Mar 2024
- 08:45:00 +0000
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: rrameshbabu@nvidia.com
-Cc: ahmed.zaki@intel.com,
-	aleksander.lobakin@intel.com,
-	alexandre.torgue@foss.st.com,
-	andrew@lunn.ch,
-	corbet@lwn.net,
-	davem@davemloft.net,
-	dtatulea@nvidia.com,
-	edumazet@google.com,
-	gal@nvidia.com,
-	hkallweit1@gmail.com,
-	jacob.e.keller@intel.com,
-	jiri@resnulli.us,
-	joabreu@synopsys.com,
-	justinstitt@google.com,
-	kory.maincent@bootlin.com,
-	kuba@kernel.org,
-	leon@kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	liuhangbin@gmail.com,
-	maxime.chevallier@bootlin.com,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	paul.greenwalt@intel.com,
-	przemyslaw.kitszel@intel.com,
-	rdunlap@infradead.org,
-	richardcochran@gmail.com,
-	saeed@kernel.org,
-	tariqt@nvidia.com,
-	vadim.fedorenko@linux.dev,
-	vladimir.oltean@nxp.com,
-	wojciech.drewek@intel.com
-Subject: [PATCH RFC v2 6/6] tools: ynl: ethtool.py: Output timestamping statistics from tsinfo-get operation
-Date: Sat,  9 Mar 2024 00:44:40 -0800
-Message-ID: <20240309084440.299358-7-rrameshbabu@nvidia.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240309084440.299358-1-rrameshbabu@nvidia.com>
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
- <20240309084440.299358-1-rrameshbabu@nvidia.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR01CA0033.prod.exchangelabs.com (2603:10b6:a02:80::46)
- To BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF8A1DA58
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 08:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.24
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709973954; cv=none; b=uRG8Tzn+3c1HlSN5Anr3E5m0D26GwGrZcehZ1v6QGPguf5OnndAoHmXtmlik0tps1z4n1jCtDWNjZ9QtEITPPQtm2ZmnpUcNXtOwYH61uyp0N+DO1H37QEBv+GO1D3nxjsSubua0V0Kfda2CLsqKZQngxn6yRrq2uBH2pjHhD9A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709973954; c=relaxed/simple;
+	bh=z0vziq730r0rbGxpWWfEs2MxuHCDeJDqpQf7hapyd3M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=rGZfIxU1bAodXoQM+PPg0jOoAWpU3Dw6q8hBVq8iybiX45PFMTfT9bXf9BSbIkHAAHSfUQYnuCKkybgDd6KJ+xAQhLdZM9wtcd3kaJJrd+DMFvNPF1m31oUBR5f/K6lrP/HGzkDBOGzfXJnPr7O7xJzBKjkY/8E/dhZlgcBoLJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.88.49.120])
+	by sina.com (10.75.12.45) with ESMTP
+	id 65EC21B100000E77; Sat, 9 Mar 2024 16:45:42 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 78475331457290
+X-SMAIL-UIID: 1E7A401DEEEE444C935E6B9CC412C67D-20240309-164542-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+e5167d7144a62715044c@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [netfilter?] KASAN: slab-use-after-free Read in ip_skb_dst_mtu
+Date: Sat,  9 Mar 2024 16:45:27 +0800
+Message-Id: <20240309084527.1943-1-hdanton@sina.com>
+In-Reply-To: <0000000000008b9c410612fbd266@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|CH3PR12MB9394:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6d1e0d06-fee7-4277-af08-08dc40153492
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NxN2PdfMq9od5FJCJhVxoOaLFcDDbtWy5kpXa7d125TicTKjF0XScbg8nepKrqHdHddKDhU2uZVjg5C7p+jVKmT2LlojmwimaCJTWFrpoR4ymghzijJMAs8ZUT+qdyHcfgTiJUeX6hcD6SUnJ4fVyknMzBvozbyew01/CbmZf9Rhu2THwifVqSTtdurp5VNNbU2LPSxrJ6Xv7npCcl3p1BIWglWOQHU99tscNMRk5Teg8Gtr5fkrOzugC456oDWW0RPJsurCr2L9+N4M7vtUOE4qXQpfy/Ul6x4KbSDQoN9Z7sjMkEWs+u42GDbWhNE4L40jHLxDhzwh4cybkVG9Tb3+d5UqRLQzvh11SeFwBft8qPKOWuVJCDPILbSaRMf53JvVjuqb9LRSfP/qF5qmise6mILWUcwwHpoR+eD97ohgCnVw5KYzFiVWJWOihNEE/oErOAERBwhbXesr4ka0ZHeg4EAQP9zhQhIGYXyZ4QA/uS2kYKTek/VaAHT4q3bOOBMZTQ78B0k8J4RZUy1+LKdWOHcr8a+Hlb01YDYAvTKv5IB4irilx4AZpXzORvcR3agNOWnun9v7ZO/8bnyv7gQ0fOurgFrq8AUBXnnv00fwgK7C12gWKKidwz4ZBu0QpiSX4Wep/cI7A/dDdYKlW8mdFn9cE0vH741Xtl3GDrs=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?KrCkdH7ZYp3RftRDmMScrYzm/9PV194NabIwHI5ZZ9gvePcKcfxsZjqnlg3p?=
- =?us-ascii?Q?QJiUzzWR0pTkEDgWc/y5Sms8nUUVGoLStLm57oz7Sx6DCGw0dK3lZxgdyPaK?=
- =?us-ascii?Q?S9zqEUykbVFpmdB94cdGTMJwfBKX68wzLytJUsyb+uA/QeyW8tS3N0/30VbA?=
- =?us-ascii?Q?tF2ulPo96laoBBOnNi6CPeTN5AXv1HAJT1fra6FtOZkCXOMcRiYZpbZl+v2q?=
- =?us-ascii?Q?UeVRNvKV3KhB+2JejkKrDuFMBLAxjXrrw4ilkeD1QPz8eabBULqqu0dmmaSU?=
- =?us-ascii?Q?xj0u5hKTBNu99jiGQYVSSeMMaCi5pGJ2D8gbjsdykmKOZ/Xy4XDtRItJr3He?=
- =?us-ascii?Q?trh5LVKj2c4rshkK+GBIqDzjKsKXg5oEQ4SVNxEIS7aJg1gWh57V5GAFKRQY?=
- =?us-ascii?Q?6E8zze5p7dvFKEohs0U7oZBWxhSgn4SNHTfG/f7LfJQx6ERnpozaX9gF9TLM?=
- =?us-ascii?Q?gjVT4nMiUVpAKI4zpM74t2GsC1l6FuBARXB8n4YJVFa5AQLWjWYBZdSvf/MZ?=
- =?us-ascii?Q?z8zcWBvFNl1GIBr77bVlfTLVTVSw3megqM2bcZmC7bvOO34eRJXCTs86ZCiw?=
- =?us-ascii?Q?NQgL38a18CQ80gHzfIt1fmQrc4Y6tC47au1XIOeGhZOJwOuCEfljutC3kw4E?=
- =?us-ascii?Q?yxu7cQW1EnbQzLJtZWCJgq9lCMbaEMzDUAs/aJOhdhz39HqRKAg7zWzLfpfG?=
- =?us-ascii?Q?B9ic0KMXXygiGlQUM1jH+FerhSJj5sPIXyIAwrd6KbHiqUeR1ZfhUwFdAPd1?=
- =?us-ascii?Q?P8KLDNEa5C0P264KfOPnyF2mnRgu1F4VGQ7hERQUIadS8nCrdM1bgnvx4W/1?=
- =?us-ascii?Q?CJzaXSn8W/qJ2sQ3xbrrMdQMOj+3XpD4Khac+qedV4pTSC3eh/iNGR9fA75k?=
- =?us-ascii?Q?f+mDJPOqNcZ9XuJnE5jVN0T0zwFXhsODXCwb+RCZ/nKyBltT8HUGS1qtvexs?=
- =?us-ascii?Q?FTkqXCeF3QBhLuMxfRowR0gApyofK3GXZ6+5rzXnliWrHOHbvX1rx0MqGpnY?=
- =?us-ascii?Q?a7J84/MMc87R1snlfBi7uZMwxxwFKbtIxJsfUJskLmBYptVofbIbK8nqZwmr?=
- =?us-ascii?Q?u8il9Dz0RCtBAq2Ffnk48xXUGj0T66efTDeuh1zdq8dmFnoJ1OCK/nGTR7Is?=
- =?us-ascii?Q?f5wd1sRtv+H57I/IN20j1OiL7phSZ3oqv0IJYxzdEp2jqsKUpT0JxCaxvKTz?=
- =?us-ascii?Q?3KRenPz9AXxrK8e1U+i0C76PgJbxseAlrK0JfzozpXKDV426yoUuNFRXbaKl?=
- =?us-ascii?Q?huY3jpvWwcEYRJSR4RPP3UrNXbo7XfvbvTlSTXE6jYOpCatupK8qpm6YKZoO?=
- =?us-ascii?Q?mS+eFf0KaTntwgDWJdnqxWNCMW1NTouItS/bxTWQUGW+lgD2H3cddOrrh7Ip?=
- =?us-ascii?Q?VhZnbtcp4seGSyzbokkVwrpgoR9L3+M3Hsum0M+YzxW60lBejhImw7/yI/Op?=
- =?us-ascii?Q?xbV4ToqVYYdFvErwtaWRENbbx7JcUwVilZ5d03VLGqwXZeC3zLAfqiT5yy3K?=
- =?us-ascii?Q?Nbryj+5gpZsqRrIYFlZg1uaO/jEx82r1W65qF2LSyTx9mYm5vo2wcs6KLJEH?=
- =?us-ascii?Q?H1b+2JiMPpMFrxfWnjtWRU3DVl8emnjD2Q/44hVGXUvf1n5Cg3K9Y/ix+Tlg?=
- =?us-ascii?Q?kQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d1e0d06-fee7-4277-af08-08dc40153492
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2024 08:45:00.1439
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uqeZ3+5DtsBhpcidu0G8W6dn8Q358NCstGKGMU/N+exNs3t+Ox1BHNqZqAUih96PkmQ2i5n5yIs3LnxJ4v6wfw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9394
+Content-Transfer-Encoding: 8bit
 
-Print the nested stats attribute containing timestamping statistics when
-the --show-time-stamping flag is used.
+On Wed, 06 Mar 2024 02:57:18 -0800
+> syzbot found the following issue on:
+> 
+> HEAD commit:    805d849d7c3c Merge tag 'acpi-6.8-rc7' of git://git.kernel...
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1025fa6a180000
 
-  [root@binary-eater-vm-01 linux-ethtool-ts]# ./tools/net/ynl/ethtool.py --show-time-stamping mlx5_1
-  Time stamping parameters for mlx5_1:
-  Capabilities:
-    hardware-transmit
-    hardware-receive
-    hardware-raw-clock
-  PTP Hardware Clock: 0
-  Hardware Transmit Timestamp Modes:
-    off
-    on
-  Hardware Receive Filter Modes:
-    none
-    all
-  Statistics:
-    tx-pkts: 8
-    tx-lost: 0
-    tx-err: 0
+#syz test https://github.com/fbq/linux.git  rcu-exp.2024.01.29b
 
-Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
----
- tools/net/ynl/ethtool.py | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/tools/net/ynl/ethtool.py b/tools/net/ynl/ethtool.py
-index 44ba3ba58ed9..193399e7fbd1 100755
---- a/tools/net/ynl/ethtool.py
-+++ b/tools/net/ynl/ethtool.py
-@@ -324,7 +324,13 @@ def main():
-         return
+--- x/drivers/net/ipvlan/ipvlan_core.c
++++ y/drivers/net/ipvlan/ipvlan_core.c
+@@ -426,6 +426,7 @@ static noinline_for_stack int ipvlan_pro
+ 		.daddr = ip4h->daddr,
+ 		.saddr = ip4h->saddr,
+ 	};
++	struct sock *sk;
  
-     if args.show_time_stamping:
--        tsinfo = dumpit(ynl, args, 'tsinfo-get')
-+        req = {
-+          'header': {
-+            'flags': 1 << 2,
-+          },
-+        }
-+
-+        tsinfo = dumpit(ynl, args, 'tsinfo-get', req)
+ 	rt = ip_route_output_flow(net, &fl4, NULL);
+ 	if (IS_ERR(rt))
+@@ -439,7 +440,12 @@ static noinline_for_stack int ipvlan_pro
  
-         print(f'Time stamping parameters for {args.device}:')
+ 	memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
  
-@@ -338,6 +344,9 @@ def main():
- 
-         print('Hardware Receive Filter Modes:')
-         [print(f'\t{v}') for v in bits_to_dict(tsinfo['rx-filters'])]
-+
-+        print('Statistics:')
-+        [print(f'\t{k}: {v}') for k, v in tsinfo['stats'].items()]
-         return
- 
-     print(f'Settings for {args.device}:')
--- 
-2.42.0
-
++	sk = skb->sk;
++	if (!sk)
++		goto err;
++	refcount_inc(&sk->sk_wmem_alloc);
+ 	err = ip_local_out(net, skb->sk, skb);
++	sk_free(sk);
+ 	if (unlikely(net_xmit_eval(err)))
+ 		DEV_STATS_INC(dev, tx_errors);
+ 	else
+--
 
