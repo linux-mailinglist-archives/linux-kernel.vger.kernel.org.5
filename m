@@ -1,129 +1,146 @@
-Return-Path: <linux-kernel+bounces-97773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC379876F39
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:57:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDC12876F3D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EF66282360
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:57:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7309BB20E20
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A299262B6;
-	Sat,  9 Mar 2024 04:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102E32D051;
+	Sat,  9 Mar 2024 05:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y0BDGP7h"
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eGvsp244"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD2E18E01;
-	Sat,  9 Mar 2024 04:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5441F1DDF5;
+	Sat,  9 Mar 2024 05:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709960221; cv=none; b=AMrgLPPo2tLc2oZWkSIAFrn2ry6r56bBFQT30eCaxbWHSaNwPq9lqvmDMwUn6mAPUvBDFVNfZRj4XQBq6Ab3ACTw7Fbft/LPaZAFeW7oRRmBZbzv20VbZjsaMe9dalgCaeb5I08h6oVzlKsnT4a8E52duxzuTzRjLm659MVdbQ0=
+	t=1709960483; cv=none; b=LzTxn/X69xkNQNMw/L95HPdKkDoAoZbQaZDrKVLFPNfAOv5YRZ4yryc9pRaCFqnaWr6InUl3fhB882CUYIrbO3PwuWXX76a/gDfALfcv2ZZE77bY2GeccNZeP1q4c0cc+dN5WGnXZ8CtOBkJPhn+TEkTbQEmnaalFUn5bD6NpZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709960221; c=relaxed/simple;
-	bh=d9fTii0v4jXPGCNKSpMW3BW0Oh5wmwA6rFnVlNFT3pA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s4ZwZoT6Co1V0Gq/xL0N4d6MM/h6rSBjkOENMune7VxuYOZRA+aMtAVpUZNucfkh+bae3TFmBmY+UKtZRPxFDlQ54PEBNhkEAlwUAMEW8j0buM2R7kF3mSnJT6aynngOBSTTjrvChto2FMLJ5iCUbuO5Pjqcs1cfVzlfcdOGPKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y0BDGP7h; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7db68ed7bb1so1137835241.2;
-        Fri, 08 Mar 2024 20:56:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709960219; x=1710565019; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=osWZlmBqOmSJdGGGdtztOJyldzmIVm2zqkCVbfLVzA4=;
-        b=Y0BDGP7hly6pdJxinZ9Eg/P4glR44Lh+cTKlhzN6yDZ7o6LNWBfjcEXaX9Gv04S08r
-         yErCS3zipI4VNQTCeUnWyvJBqj8FgrTOope4lK5DRYek2hO0RsnZZQEmmGXuQs+ZpqKr
-         49DmnE4vToWixOSm3vO1c89prU0DFASx4bXhNxdzFOWwvMcv7fvb5Df0YpcjThOc6AXi
-         5kcy2vu58einN5/qGlb734ONbAlajL6zfpt2ySVfjMEXPt00MWDgTfy9w7z8tAMIWwfh
-         MURUyyJNbN9yNQhV2XHAq1b00IqU1jD1ZnbENXgQMd9DBN0znjd1x+d+JI98l/PRq5Ad
-         IrVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709960219; x=1710565019;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=osWZlmBqOmSJdGGGdtztOJyldzmIVm2zqkCVbfLVzA4=;
-        b=i50NRCPwgPsUsqzFUu1zaA1WIbFRYlTCO3S1PW6aIjNrS6RzfhvMbe47AjMVF3ZXkp
-         nAjFK1MHKOcbertz1/tqZbsCF9QeAXH+X0ftmlxPk9X8d/w+eYAycU5AmFWZC3OEoly8
-         TtPfG+2it6wGyrmecTwZYENLlOkxNBEKsJVnsaZM1a4C14d+kO+hIfqvVMcNn0ZHLSsM
-         /J+2CqU78NFUwb5MdbJHxhOCs3E5J41j0TjfvTRCMaL9BAPBXF3TeZ6RIPU0G/o8obWw
-         VNVXRJ7+LfbW+tNItfhxnJlzz15m5ENyhGC+HOx9puGrIhEoHTsXBqhRjE1MMfDd2Ibj
-         934Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUKj19/udj3dTtNBjCn4vAM0fVlTBTy30v5YlRT+9APqBpOy/ReYf8m+SpsFLtuttD/W4ost6Ux3fxHcnfkOHnCq7+mR7FSrQsaqzbgsU0Phdoq4FF3vA1HoRyU0zWktfniqVGuFi7YBKWQ
-X-Gm-Message-State: AOJu0YzIgXcTwKyfr/l0+Y/+A0tjdFSJFNMt6txRPtmhfJzO0A5NLKlQ
-	EJ0HWtb83PtwLI9EnBkWDA8mmmjAfvwliIVSYA04Dj0b/Wn+JgTxQKuFD5H0di32gbhG74xw00f
-	bujFrTw1hJuF8eFouSyFQpvlKxGE=
-X-Google-Smtp-Source: AGHT+IEfPvgGnvOmPfBz0ryFMzUkH06078cz1HC6iNd3lI3FsufJVZobQkeMZtVIXfrhk9y3sc87ratO3Pr925fF/94=
-X-Received: by 2002:a05:6102:9a1:b0:472:eeb3:5c34 with SMTP id
- f1-20020a05610209a100b00472eeb35c34mr849041vsb.9.1709960218874; Fri, 08 Mar
- 2024 20:56:58 -0800 (PST)
+	s=arc-20240116; t=1709960483; c=relaxed/simple;
+	bh=M8WzXsIw4eiekdfMBQOV1EE+w+xXtWIPGcGgOy2XVZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=erYNiyi2UQs9z360Bexli7xpTUxn8Gd37rP4gTmRtm/h7Pw48x/HNWibhQwfs2Sw7ubHO881lHjI9Dmc6touKRuaGNHEF3kOiZlKO7iY8loXIJLKBfiEC4eAseeCCok1HHm3YIntY1Bf9i1vrO8PW8UWMmiZVeu5XJksQFaozYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eGvsp244; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 088EAC433C7;
+	Sat,  9 Mar 2024 05:01:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709960482;
+	bh=M8WzXsIw4eiekdfMBQOV1EE+w+xXtWIPGcGgOy2XVZg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=eGvsp2445SIEWJOB/eilitOYMaKkKywyIDgLixJUdT9E71GLyD3ftl0yqD7um3gIs
+	 IEdJcdDrE7XBkzO5j1FC2Jy4iqLuUP+nBzeYhg23mAxJV4OoiBqit7Zy1NdS76kmR7
+	 GDEXg0kQkhVBeBFfyZMhldFtgtlpZjNCXLNuLh2jxeqH6+W/BSidtxspMLy7ENZDYz
+	 +zpraxRKLYhUccWA2Mk+4j9SrAmi3bOlEGpK0hGSlIjqkKHUAjnV4kpgkpKJciFzuZ
+	 O0uLiBZyZkpcZRgCxhIo+L3jr8GYe0vRpnlTUyanewzZPLcwB4LXiF/D+P0Boib53U
+	 cFTbXwcjDg3hQ==
+Date: Fri, 8 Mar 2024 21:01:21 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>, mwojtas@chromium.org
+Subject: Re: [PATCH net-next v10 05/13] net: ethtool: Allow passing a phy
+ index for some commands
+Message-ID: <20240308210121.0c6a33f9@kernel.org>
+In-Reply-To: <20240304151011.1610175-6-maxime.chevallier@bootlin.com>
+References: <20240304151011.1610175-1-maxime.chevallier@bootlin.com>
+	<20240304151011.1610175-6-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222081135.173040-1-21cnbao@gmail.com> <CAGsJ_4wMGNDcgc3pqSUicYoH7Z_miczkT=uwZU+yhDF0fd57Rg@mail.gmail.com>
- <20240308192334.845b27504a663ec8af4f2aad@linux-foundation.org>
- <CAGsJ_4xSwNZmHN5GvipS-1kELX2NBwHxoGE=aG4sekm1LcYVPw@mail.gmail.com>
- <20240308203641.7fbe7e939b3483bd83b9769d@linux-foundation.org> <20240308204251.43d7e518ba95fb4ce22f8d4d@linux-foundation.org>
-In-Reply-To: <20240308204251.43d7e518ba95fb4ce22f8d4d@linux-foundation.org>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sat, 9 Mar 2024 12:56:47 +0800
-Message-ID: <CAGsJ_4xYUSdEV4N8i3KqNL+dz2kWx3JWgqtMypk0KW539M4SVQ@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] zswap: remove the memcpy if acomp is not sleepable
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: herbert@gondor.apana.org.au, chriscli@google.com, chrisl@kernel.org, 
-	ddstreet@ieee.org, linux-kernel@vger.kernel.org, sjenning@redhat.com, 
-	vitaly.wool@konsulko.com, Barry Song <v-songbaohua@oppo.com>, davem@davemloft.net, 
-	hannes@cmpxchg.org, linux-crypto@vger.kernel.org, linux-mm@kvack.org, 
-	zhouchengming@bytedance.com, nphamcs@gmail.com, yosryahmed@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 9, 2024 at 12:42=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Fri, 8 Mar 2024 20:36:41 -0800 Andrew Morton <akpm@linux-foundation.or=
-g> wrote:
->
-> > > Okay, I understand. Since this patch improves zswap's performance, I =
-wanted
-> > > it to be integrated sooner to contribute. However, I'm perfectly will=
-ing to
-> > > respect your concerns and adhere to the community's best practices.
-> > >
-> >
-> > OK.  I very much doubt if anyone is running those drivers on mm.git, so
-> > adding it now isn't likely to hurt.
-> >
-> > So I'll merge it now and shall aim to get it upstream very late in the
-> > next merge window.
->
-> Nope.  mm.git won't build without acomp_is_async().
->
-> We can merge the zswap patch via the crypto tree.  Acked-by: me.
+On Mon,  4 Mar 2024 16:10:01 +0100 Maxime Chevallier wrote:
+> +``ETHTOOL_A_HEADER_PHY_INDEX`` identify the ethernet PHY the message relates to.
 
-Herbert Acked the acomp_is_async() patch in v5 instead of picking it up
-into crypto:
-https://lore.kernel.org/linux-mm/ZdWKz43tTz2XY4ca@gondor.apana.org.au/
+identifies
+Ethernet
 
->
-> Or please just resend the zswap change after 6.9-rc1 is released.
->
+> +As there are numerous commands that are related to PHY configuration, and because
+> +we can have more than one PHY on the link, the PHY index can be passed in the
 
-Thanks
-Barry
+we can have -> there may be
 
+> +request for the commands that needs it. It is however not mandatory, and if it
 
+commas around however
 
-Thanks
-Barry
+> +is not passed for commands that target a PHY, the net_device.phydev pointer
+> +is used, as a fallback that keeps the legacy behaviour.
+
+s/ that keeps the legacy behaviour// feels more like a default than
+legacy TBH
+
+> @@ -104,7 +124,7 @@ int ethnl_parse_header_dev_get(struct ethnl_req_info *req_info,
+>  	/* No validation here, command policy should have a nested policy set
+>  	 * for the header, therefore validation should have already been done.
+>  	 */
+> -	ret = nla_parse_nested(tb, ARRAY_SIZE(ethnl_header_policy) - 1, header,
+> +	ret = nla_parse_nested(tb, ARRAY_SIZE(ethnl_header_policy_phy) - 1, header,
+>  			       NULL, extack);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -145,6 +165,26 @@ int ethnl_parse_header_dev_get(struct ethnl_req_info *req_info,
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (dev) {
+> +		if (tb[ETHTOOL_A_HEADER_PHY_INDEX]) {
+> +			u32 phy_index = nla_get_u32(tb[ETHTOOL_A_HEADER_PHY_INDEX]);
+> +
+> +			phydev = phy_link_topo_get_phy(dev->link_topo,
+> +						       phy_index);
+> +			if (!phydev) {
+> +				NL_SET_ERR_MSG_ATTR(extack, header,
+> +						    "no phy matches phy index");
+> +				return -EINVAL;
+
+You can drop the msg, and use ENODEV?
+Also point at the index, not header:
+
+			struct nl_attr *phyid;
+
+			phyid = tb[ETHTOOL_A_HEADER_PHY_INDEX];
+			phydev = phy_link_topo_get_phy(dev->link_topo,
+						       nla_get_u32(phyid));
+			if (!...
+				NL_SET_ERR_ATTR(extack, phyid);
+				return -ENODEV;
+
+> +			}
+> +		} else {
+> +			/* If we need a PHY but no phy index is specified, fallback
+> +			 * to dev->phydev
+> +			 */
+> +			phydev = dev->phydev;
+> +		}
+> +	}
+
+else if (tb[ETHTOOL_A_HEADER_PHY_INDEX]) {
+	NL_SET_ERR_MSG_ATTR("can't target a PHY without a netdev")
+	...
+
+? just in case someone calls this with _phy policy and no dev required?
 
