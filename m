@@ -1,94 +1,116 @@
-Return-Path: <linux-kernel+bounces-98052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C09D877419
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 23:20:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A5387741E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 23:45:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C38C2817E8
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 22:20:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4913C1F21930
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 22:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0151524AE;
-	Sat,  9 Mar 2024 22:20:05 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB5C5338A;
+	Sat,  9 Mar 2024 22:45:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iZV3SkMM"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1238E47F47
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 22:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE3C20B22;
+	Sat,  9 Mar 2024 22:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710022805; cv=none; b=YCe9BlbAQoM367UBU8Ie21jGgtkbMANQ+VWXecMTl4h2Uaco7QHtohJHEJINod1pWHtv6JzfPBH4nkYI6SFsHo/80/3IbdLlJ/qDYWzux8nPXZobAXs5XIywYLTr33Gx9ryGp6Q4iHme89d5iTFmiuHnWlWM7EC2I3XIMhse3/o=
+	t=1710024350; cv=none; b=FOlwUesg9rFk/wArOsfr8npMYwT2wK7QCadjIU8Nh8bwhDLGrcp4wCXmvYgEiz21wKKMMEyUOyoa8r44CaMJPZstb5757HjQnLKhwyiQUvprM8obZ7FAe/0GPosbF3GWGZhZ8cYhItXjxAVs175SSAJ9QtQxT55JtYq4nembIZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710022805; c=relaxed/simple;
-	bh=zFhNXKbHLt203SwwQ+ckq7WpijojBJ+o7aN23dGfPCo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=VOva9j2LXV6XohdKjJOzBG/wk2lmORTI7+1n06jV3RNa02O2zrjiISITOhQTwGFORUmVxN52cG6riDgteD9j+BC+DAWQUAyZ0QwBUXG8LcSrpXPEIRiwB4qjUXYlAQEkhCLBQpNQVT8vEVXo2xUsI1GGamYtcxUMQOOH7BE/F1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c84b3570cfso323124939f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 14:20:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710022803; x=1710627603;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TPIQ5P+kw5ZjaCXLN4LFGtLM3L78K1ihJHtxoWuotIA=;
-        b=Ew7pSwpZ2tLTQC598vvzG+Fw93EhhZzLbqGjPzkoFApqVr6xjxJiZ40oeIm4WsgKZ0
-         DAhVTR5uznRH0ZHR6NiTTDEiHTk5Gs5Cp8HwTyxGCt+Tlbp/7mo4UEYMMrCFvFENvitm
-         Y+oCw2PqBjggiCnARyU24as3BZw2VRBEGFbP8jyADPxk/CeK7rk7RsZ2MgmV8BJMjSeE
-         Z4480Q1YPHWnLb9b2nAVTILxUGssdcxNKzweEZvsEodx6cQRQVeOaxff4/oCXNjvC4C7
-         n+hgwkixyzAAk61W2tLsmzHTZZ4yIQiZnh/DNSaVUfsYON411qQwGuoZlK1BtMP8tB66
-         uokg==
-X-Forwarded-Encrypted: i=1; AJvYcCX9zxG4asi3SRYXmYmiReamfmc75GHgf3H51CS5iOduevUW/iF501F/zHKdykcmIBd+3S3X16leQAZzVtowX14IcWQLVgESRBfzt+jv
-X-Gm-Message-State: AOJu0Yxvwlu3VCNmHRHVnl7xLOYLaQWzHOg8Ru7oKXa9RHp/daX3Hwl7
-	+9eySpa11Rg77gL0MTZKZq0TY3xqbJgk5p0jNz4FEGv3R3Jbae2LQabwF5ijfzgy0Bd3SoUbVIM
-	2mV+atuMQHsvNpZFZGg2s06gV17pNi7AnNCiIJyYftPrtz08eyROzDro=
-X-Google-Smtp-Source: AGHT+IGSVfooHSgQwTj5YVYCcfxioZPTQ9PhJk3trwjRuYHiOmZVPRfAANHZslMUL0ge14sAYcOQNmNuc8GVHbuxjaDiEEOQB1Xi
+	s=arc-20240116; t=1710024350; c=relaxed/simple;
+	bh=0wr76cui/63QHQTpUDqkmMkTQ9ZdNWUNuERh1WcLqU4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IXAAHc6+MsosQvx4fDy8I3sVyiRYe6BEh1urOHEBROp04EpHJdHLGZ+CjxcwgjgUkVDp7LvKnJFXS0v0tEjla9NefiZpmUvMgzosvwTz/hsFj4NwXyE6Rbw4AzWvP4WHXRVqrV/94I/x4E0B9CllZpQEwaciQd3TGBi3ln6azcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iZV3SkMM; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=fknmEs34Vbnx707+0zwgSmO1iUI8E7zWqIKhyAXJOyQ=; b=iZV3SkMMIQNrWwlVZkQzDsG9Zs
+	xNSudEPMlkhUJrQKKoaUE9lU2gLoi/uacJ5/2gv7a5rtJHZzLYoryD+eJgYl9ViqpysD5eGSJDF9g
+	3pZ+3mpFciJeh66gOxLqJF8F/KXOQLkTzNUr9oCb6D0uLGYjAHkJHYdfiOTFCM5vmXA4XWo1f4tSM
+	YueAxWpQ/7SS02j+ly+oENU0qfwQyIlCdF/LdZdtwRNEgSCOCEgsf2SXP0WonoCRqEFF6CQravRJU
+	iY/t/r0Qi0mAMqpQ1aPZV9bvmfePVX+dX/N3Di3RXfuSB4bHyf102+EbcDyb1OvBjZecX7Q6h9Dku
+	E6eyD7ug==;
+Received: from [50.53.50.0] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rj5Rm-0000000EP0O-1Or5;
+	Sat, 09 Mar 2024 22:45:42 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Ying Sun <sunying@isrc.iscas.ac.cn>,
+	=?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>,
+	linux-wireless@vger.kernel.org,
+	Kalle Valo <kvalo@kernel.org>
+Subject: [PATCH] ssb: drop use of non-existing CONFIG_SSB_DEBUG symbol
+Date: Sat,  9 Mar 2024 14:45:38 -0800
+Message-ID: <20240309224540.22682-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2b09:b0:474:8aed:36d2 with SMTP id
- fm9-20020a0566382b0900b004748aed36d2mr204238jab.2.1710022803352; Sat, 09 Mar
- 2024 14:20:03 -0800 (PST)
-Date: Sat, 09 Mar 2024 14:20:03 -0800
-In-Reply-To: <0000000000007bedb605f119ed9f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c07a08061341b549@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in open_xa_dir
-From: syzbot <syzbot+8fb64a61fdd96b50f3b8@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, hdanton@sina.com, jack@suse.cz, 
-	jeffm@suse.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	mingo@redhat.com, paul@paul-moore.com, peterz@infradead.org, 
-	reiserfs-devel@vger.kernel.org, roberto.sassu@huawei.com, 
-	roberto.sassu@huaweicloud.com, syzkaller-bugs@googlegroups.com, 
-	will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-syzbot suspects this issue was fixed by commit:
+CONFIG_SSB_DEBUG is used in one header file and nowhere else, so
+remove it and the now-empty inline function that contained it. Also
+remove the call to the empty inline function. The empty "default:"
+case is kept to prevent 2 compiler warnings:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+  drivers/ssb/main.c:1133:9: warning: enumeration value 'SSB_BUSTYPE_PCMCIA' not handled in switch [-Wswitch]
+  drivers/ssb/main.c:1133:9: warning: enumeration value 'SSB_BUSTYPE_SDIO' not handled in switch [-Wswitch]
 
-    fs: Block writes to mounted block devices
+Reported-by: Ying Sun <sunying@isrc.iscas.ac.cn>
+Link: https://lore.kernel.org/lkml/4e8525fe.607e2.18a8ddfdce8.Coremail.sunying@isrc.iscas.ac.cn/
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Michael Büsch <m@bues.ch>
+Cc: linux-wireless@vger.kernel.org
+Cc: Kalle Valo <kvalo@kernel.org>
+---
+This Closes only 1 of the 3 issues reported in the Link.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11c28556180000
-start commit:   5eff55d725a4 Merge tag 'platform-drivers-x86-v6.7-7' of gi..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b
-dashboard link: https://syzkaller.appspot.com/bug?extid=8fb64a61fdd96b50f3b8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d80b99e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148cccdee80000
+ drivers/ssb/main.c      |    1 -
+ include/linux/ssb/ssb.h |    8 --------
+ 2 files changed, 9 deletions(-)
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff -- a/include/linux/ssb/ssb.h b/include/linux/ssb/ssb.h
+--- a/include/linux/ssb/ssb.h
++++ b/include/linux/ssb/ssb.h
+@@ -621,14 +621,6 @@ extern u32 ssb_dma_translation(struct ss
+ #define SSB_DMA_TRANSLATION_MASK	0xC0000000
+ #define SSB_DMA_TRANSLATION_SHIFT	30
+ 
+-static inline void __cold __ssb_dma_not_implemented(struct ssb_device *dev)
+-{
+-#ifdef CONFIG_SSB_DEBUG
+-	printk(KERN_ERR "SSB: BUG! Calling DMA API for "
+-	       "unsupported bustype %d\n", dev->bus->bustype);
+-#endif /* DEBUG */
+-}
+-
+ #ifdef CONFIG_SSB_PCIHOST
+ /* PCI-host wrapper driver */
+ extern int ssb_pcihost_register(struct pci_driver *driver);
+diff -- a/drivers/ssb/main.c b/drivers/ssb/main.c
+--- a/drivers/ssb/main.c
++++ b/drivers/ssb/main.c
+@@ -1144,7 +1144,6 @@ u32 ssb_dma_translation(struct ssb_devic
+ 				return SSB_PCI_DMA;
+ 		}
+ 	default:
+-		__ssb_dma_not_implemented(dev);
+ 	}
+ 	return 0;
+ }
 
