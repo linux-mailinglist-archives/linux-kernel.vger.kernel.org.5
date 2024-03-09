@@ -1,130 +1,129 @@
-Return-Path: <linux-kernel+bounces-98030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E1C98773D7
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:25:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 932ED8773DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:32:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A98A281D85
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 20:25:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EDFEB20F50
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 20:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5717E4EB4C;
-	Sat,  9 Mar 2024 20:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA5537169;
+	Sat,  9 Mar 2024 20:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YX3h28jB"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="COoPRRPA"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3056416FF30
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 20:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC1316FF49
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 20:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710015893; cv=none; b=vEcGxsPMQpwHMcZsoF9+By9mQ/hEPbzHDBEMNjKB5L5UyeO3/XFvvMujeDUMmfETSd/28yG0NAuaSw7qdp1FsEVRv7ZgfRIZJccW+GktBz/OtlFbx1RIQD0gjL0UkkZyVMguRMsah13kH0wfv02UcB5xsgneqgsSZszJ6NBH3wM=
+	t=1710016368; cv=none; b=iVgSo0zwHDwFR1mWF4OPaeUPqpJ7A+yyjc0mEZcn1iY1l/GHzjEixfeo07qb3Jy3yc4mZCMn6cwUIDj9Tzj7hC+FisN6MJlpNph5kPXZrofvk/iu+qWzxoay+k3wggKvkTl8GWqfAFlaxa/Xnx24PA9pwUUlqBib2h/YxCyD9CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710015893; c=relaxed/simple;
-	bh=K9RoT73X71QnB+uU8sWtSEx1Mtsrf1E5zhfyiv3p1ZE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DTvy3KzbtTw5fJ7mraJIwpaPZSgK32ikbhcTotQb1vzuzoVzpYLq/hnmO0ECCT0gvbaN8uH2rAu6cC1BEgkE2FXvQVWLdkP16ztjgVQ0TK8Q2imDkQeCcf/hl7QZO4xH/23wcWBhsMgwkKKb6VOvDMmqTWl4RLzamv3MaYFMkFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YX3h28jB; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1710016368; c=relaxed/simple;
+	bh=Rjri3ieAXjiF3QC4d8XL08f7tFXcsnCGE3JiXZ7x5Pk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hTvXo1jeUhr92McaqIx0CI0RF2z1bKMXSm7eg1YQ89zQsg81DSfvE/vh/fQ3c/eKtslcO5/7fG2WV9cVrGI2u8xV+bT9hGR7f7XFOqQjSt/SpQOZoZOaBIyFRTk8sbN16ZkwLIVdNdCeW9CqF7T1ZZ6j0I1ZIhNmrv4ks0ZjWqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=COoPRRPA; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dd10ae77d8so26162875ad.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 12:24:51 -0800 (PST)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29bd0669781so326582a91.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 12:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710015891; x=1710620691; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pzdoSSC7M3Gn4nXch6enCVEFVBAir+v+I5+bn35uJJU=;
-        b=YX3h28jB4WRGi8wJ7maxuIUdu3IA/SyxGwsGyKSysTuUxqt4RdCWISSRKrBb73+omm
-         8LrXJU8Q152eXWTVi2ap6yN+wg1jxk38dZHEfU/1xDUPkdqEwEyCqBHFVAoO1FrqnZbv
-         ccDXNWMXlkJiG1ACdvW+Ay71rFBL8lSPTFkr8=
+        d=chromium.org; s=google; t=1710016366; x=1710621166; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/OTMXNhmX4O6lceZQYHXvvgYFS14rznJ5JJ4O2NR9B8=;
+        b=COoPRRPAFdy+cz1+6KCb8xTwFCugnIQPeG2yF77/JikCm4CvPPWgheFLlPohShXh6v
+         ofogxqN0z1g4fgZhKjhElx5gnXba/OzYK5hTRcIGLEGzP61NNZzIk8czMXvrLTSpra2I
+         R8gnSqmP1w3hQCMkDvD0aZB9Vf4nb1zgHUSj8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710015891; x=1710620691;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pzdoSSC7M3Gn4nXch6enCVEFVBAir+v+I5+bn35uJJU=;
-        b=HCUT6KTpknH73hzc/ie3XORFRtTXs4Es8mYYl+FXNXRW2iD72ReJq2tnZCaSlDw8Jd
-         4hS3ZIfyD1jpQFwws+jG5b5jKFyOWgCvvSiNa+LABAvXiV/rfBwSA6vqmtfuDq7QZ7KQ
-         ySjHjEJzRX3F9hwh4Ec99241ijOR4G/7Zl3UUR3hbVCOrOcTy7stny7RKZEl6zalt6Mz
-         kyq0DDoIaMsFf7l4O+Ef26Rv90EuI1bUHExoC3eAbv1sfqbIwSLxwC/NTnU4yP5Zs52C
-         4CNzV8JCvV5Pu4YXoWq615QC3nldREcUUJPpo4SOLK45Ve8ezaFcjHAl42IoEQC0jpsM
-         2HRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWkJh9PyktQN+e99MTalg5ECOYVt3KkeB1hNOWcTUcbD5aw+0d6qOilAidiBGEglYa9mrjEnw8vCJ/ncs2+S70mpTjQweKCCvOmhNfO
-X-Gm-Message-State: AOJu0YymHyVOqNPVdw/T5IyG6h7hPDinsQU8Cis+jSPIaa78cgjetaPp
-	IIZghkW1Ealq4jn4DGRVruQ/XdYaiHdf3xBZASJl6G6ahNlbjETQ1XIqvaKjag==
-X-Google-Smtp-Source: AGHT+IHS3V/gDLEjjvi9Itvln/GKgAbneox6bx5epnt2P+RSO7WF1SQOAKdmHYGasuxFgTMM+KSrxg==
-X-Received: by 2002:a17:902:ee51:b0:1dc:abf0:14ee with SMTP id 17-20020a170902ee5100b001dcabf014eemr1783343plo.22.1710015891485;
-        Sat, 09 Mar 2024 12:24:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1710016366; x=1710621166;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/OTMXNhmX4O6lceZQYHXvvgYFS14rznJ5JJ4O2NR9B8=;
+        b=wzKI1DKlypEzdRruT6wsXvUX/i0e2eobnrtb5ui7nsn4eeQ0sej9S98n43UY0flBMx
+         qcBzqrsxFQa8aiCZJ0UvBwrRHdBk8adjDMF2bDUrX5RsaZi4wheyRafa14zpvN976Ocx
+         QVjp4g/IqpgJ36HZR0AoAER6jLl2KVI1jejXXQku8G/3W8Cobj9pI+ranDNVkzLsT+VI
+         xIDPDLyUEWvIh/Z5TiaKQTCR+4NLYDTTZEvqAmNGmTH0ZyGSbp/ElXKU+cP5CCnOVFNF
+         vQ9xVcho/bAaTny40KEiLNL5OPpOceRgcC15kNZlm8zwY51c/6XjL9omNFm2/Ekqo/OU
+         Qgnw==
+X-Forwarded-Encrypted: i=1; AJvYcCWVX0cm+1C71+ZQ/7iqv7YDmlSxh7az7wYKVSETHN4CBFMsHAu+5p+0/Qrv5xiwQQ+UDZFbhdaET0NxkTTHmeROHHr1aQ59X46zJpTu
+X-Gm-Message-State: AOJu0YwbinlKJSIsKUW/bEfJ4ecKdcdMWUJQOG8HVZsBTKqAohGVrbc0
+	Ke1Mkp134EXtksSbUCPH3gAfhn5LZ+W7mr6IaZhTkfBO5c0bvu+i2R3zZXc4pw==
+X-Google-Smtp-Source: AGHT+IGQkvj/tf7BRo0+9QPNS1Oh6nikqb9cyPmTEPrdArJNXrYufFGDu4ArsCBeCVR+xUAj9syNog==
+X-Received: by 2002:a17:90a:1347:b0:29b:7fe8:be84 with SMTP id y7-20020a17090a134700b0029b7fe8be84mr1876129pjf.41.1710016366573;
+        Sat, 09 Mar 2024 12:32:46 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kv13-20020a17090328cd00b001dc91b4081dsm1689004plb.271.2024.03.09.12.24.50
+        by smtp.gmail.com with ESMTPSA id m12-20020a17090a34cc00b0029a8a599584sm1797656pjf.13.2024.03.09.12.32.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Mar 2024 12:24:51 -0800 (PST)
+        Sat, 09 Mar 2024 12:32:46 -0800 (PST)
+Date: Sat, 9 Mar 2024 12:32:45 -0800
 From: Kees Cook <keescook@chromium.org>
-To: Jeremy Linton <jeremy.linton@arm.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Arnd Bergmann <arnd@arndb.de>,
+To: Simon Horman <horms@kernel.org>
+Cc: Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
 	linux-hardening@vger.kernel.org,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] randomize_kstack: Improve entropy diffusion
-Date: Sat,  9 Mar 2024 12:24:48 -0800
-Message-Id: <20240309202445.work.165-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH v2] overflow: Change DEFINE_FLEX to take __counted_by
+ member
+Message-ID: <202403091230.ACF639521@keescook>
+References: <20240306235128.it.933-kees@kernel.org>
+ <20240308202018.GC603911@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1133; i=keescook@chromium.org;
- h=from:subject:message-id; bh=K9RoT73X71QnB+uU8sWtSEx1Mtsrf1E5zhfyiv3p1ZE=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl7MWQSFajPauij2zI2NqidKesJzjt4bPzfLCaH
- yknBCinsCGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZezFkAAKCRCJcvTf3G3A
- Jmw7D/9F0pyXIKqu9kZmrjuYv8/kfrd8EBz4K3EsSJ877q3bmqlQxMfJwm/KOL/Wt6HVE0a/P8a
- dHAS5wUM14FBGvPkoEmUPu2kuxeegqRC2FCKCuvx2JiiXFVoQ/YF3RHw6XNosQUi465oFMZHf7i
- wArtIwAloVlVK5fvYEvDoYP/fmZ+cgUxuraqrTDQZRQq637paFp+HGthtvdQd81bV4mrwDoKrpm
- FFPbq5uvAKued3ymyZ4XFRYy7ryBz8reIgIyxACSnBX8PG5ZY/JX9eFX5Dgglyd+epZ+wkeOV3Q
- y8mk8G+7vK/3CInx+EXsjU2biIIRKgHSYaCa2G79XRL6YiJH5y4HgONJVCZ5EgG2F91yhGuCYsi
- zyNVm77/4EQ1EFjhP0qSritGVorn3HavQlWvSnk//b2z+VcZVQ5168aImJCyhI5IbTdKyjjxfGC
- WnPMAnkqPIkPvhM2o9C8I7fP5FLY09G/hcZNW7pz+3G7tbOd5eEe4NqaUKqchu4KT+/3gnuWYE6
- pmEruvww9YJn5ZcMteecUkWWHrUDMOwLu/lROpmnh00fUcs0zfg58ynqC1v0UPacrXxZH31MYzW
- YnRnu++vJJEhejWU18Lxkc8JugyphNk95dSlnqhKjCnXnvU5qgxbV4ieXmq4OWM6J3uhbLHAZEr
- aXbZzcE j2hbFSUQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308202018.GC603911@kernel.org>
 
-The kstack_offset variable was really only ever using the low bits for
-kernel stack offset entropy. Add a ror32() to increase bit diffusion.
+On Fri, Mar 08, 2024 at 08:20:18PM +0000, Simon Horman wrote:
+> On Wed, Mar 06, 2024 at 03:51:36PM -0800, Kees Cook wrote:
+> > The norm should be flexible array structures with __counted_by
+> > annotations, so DEFINE_FLEX() is updated to expect that. Rename
+> > the non-annotated version to DEFINE_RAW_FLEX(), and update the
+> > few existing users.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> Hi Kees,
+> 
+> I'm unclear what this is based on, as it doesn't appear to apply
+> cleanly to net-next or the dev-queue branch of the iwl-next tree.
+> But I manually applied it to the latter and ran some checks.
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 39218ff4c625 ("stack: Optionally randomize kernel stack offset each syscall")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Cc: Jeremy Linton <jeremy.linton@arm.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-hardening@vger.kernel.org
----
- include/linux/randomize_kstack.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It was based on v6.8-rc2, but it no longer applies cleanly to iwl-next:
+https://lore.kernel.org/linux-next/20240307162958.02ec485c@canb.auug.org.au/
 
-diff --git a/include/linux/randomize_kstack.h b/include/linux/randomize_kstack.h
-index 5d868505a94e..6d92b68efbf6 100644
---- a/include/linux/randomize_kstack.h
-+++ b/include/linux/randomize_kstack.h
-@@ -80,7 +80,7 @@ DECLARE_PER_CPU(u32, kstack_offset);
- 	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,	\
- 				&randomize_kstack_offset)) {		\
- 		u32 offset = raw_cpu_read(kstack_offset);		\
--		offset ^= (rand);					\
-+		offset = ror32(offset, 5) ^ (rand);			\
- 		raw_cpu_write(kstack_offset, offset);			\
- 	}								\
- } while (0)
+Is this something iwl-next can take for the v6.9 merge window? I can
+send a rebased patch if that helps?
+
+> > @@ -396,9 +396,9 @@ static inline size_t __must_check size_sub(size_t minuend, size_t subtrahend)
+> >   * @name: Name for a variable to define.
+> >   * @member: Name of the array member.
+> >   * @count: Number of elements in the array; must be compile-time const.
+> > - * @initializer: initializer expression (could be empty for no init).
+> > + * @initializer...: initializer expression (could be empty for no init).
+> 
+> Curiously kernel-doc --none seems happier without the line above changed.
+
+I've fixed this up too:
+https://lore.kernel.org/linux-next/202403071124.36DC2B617A@keescook/
+
 -- 
-2.34.1
-
+Kees Cook
 
