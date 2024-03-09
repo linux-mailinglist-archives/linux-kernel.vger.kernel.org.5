@@ -1,107 +1,85 @@
-Return-Path: <linux-kernel+bounces-98033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E9318773E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:34:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20F798773F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C92071F21808
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 20:34:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1385281BB9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 20:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7594D10A;
-	Sat,  9 Mar 2024 20:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="H0VGmGZX"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0B2E4F20A;
+	Sat,  9 Mar 2024 20:46:01 +0000 (UTC)
+Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BF422F07
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 20:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C7941C6A
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 20:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710016437; cv=none; b=tvVcXyuByOcVk+hLb1Fe3p3zEAyEgjUUbDk4tEdR9X1nty+jW7iU5zUsogmTxjqm7oFlXFp6dK5pn9Qf3gpuKY1jF028n34ngf2RMIFg0oAsgTsuLDynBIvjWuRcb9pan1dJ6qJNyOTNGUHvXkkivs9wyszvYBx+SmQNzse9q+o=
+	t=1710017161; cv=none; b=T3iNMhmVRdCxuGDxSMNMdLBIL5hsU1gp7rvKCZK2iXw7yPuSToE2ToHhlV2QwXw5CIQKif2BZSqMHekCQB9drFDT4Ectd5LV/P+mWP31VxJK6ZkzPvTJxQeO+N9/dTSq4+zut1uVi0/lI3luKfI8eoYHKSR6PAKSZ78g3dg4xPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710016437; c=relaxed/simple;
-	bh=EcVIXfIICY3Ok2eDXhdHjNP9eppBGwoPoBbQbWCdGQs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GvjWiv58EEASa3l6nsLTGphskyQki1SEfivj1xH/yO3+UxWjXWb3Grye8O7L+6jI3Z6QAdusmrTqrcdKMlWai1sPswllFd0zOqfEA1tfUQ1uIUAmJInilOA859oVx5UQknSOW7NygnhDOSzVbJrSlOZyi6L50eW6cZFgVREE1C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=H0VGmGZX; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so2722507a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 12:33:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710016435; x=1710621235; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wsLvds74XFvPRZt+5SLhXxXFTA14aJAZhNEVhjPIrvk=;
-        b=H0VGmGZXyUF+OV3/clYF/ovjxWbHc2nKovGKsUKXgr4m0F4BoSTLxopfmw7MHCxtJS
-         Qf384rAFnF8rjq+UkIiawNKdPbYQytf8KSQAl8XnilBaIEKmxR84O4F8DTBPjC9KoslF
-         3L0f/k9BPEJqOdpVWpBiJaTXmfgwoZieyRfVE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710016435; x=1710621235;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wsLvds74XFvPRZt+5SLhXxXFTA14aJAZhNEVhjPIrvk=;
-        b=IHRnbzq0kBfnUfGlo/LpDPk/13AGvNlssc5u3t4rKpjQ90fLiJZxE3oizdgqFSxegJ
-         wX4739MUr3PSL5r6OaSuqioaYXYpyi+0gZeTADTuUjnYN0eaIoXZgRyrBCodkurj+Dir
-         tna4Ukr7YIjHIn5Zi4t5Fcj2QbEHtc89j4f5ztij26U6FWaBGUf8ee0To2avpvhuqSGD
-         YR7ADA7cONrpfrFF1AC6UmH2FSOrGslYb1SH5bcpnjkVZsZOv2liKGzZzcDPDZujxwis
-         UnA0tPePjMuYv7sYrFiy1nmNvemda7U1BrWDf76IvmWY3TT4q1pPAC0SeoFq/bf1hA5e
-         af0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWLyjwmkGLKjrcXZNAtwATwojWyQOLx9R8CWYZRi5H8P/dGJGwjA+Y5aqQX/Xd0Q5wKnhd2fXUvgCK9lSAkszOiOO4felNDIo4fJajv
-X-Gm-Message-State: AOJu0Yz/8hjIlMxs2w6L1/wmz1Hd6AsoMMWImYo7PJIhFenOO3b2ALOW
-	55SOXv6M0HJ6GXxXL64WDrYHNSVIhOtTWdck/Ns6eQs1gbnJ7zn2Q9rur1igzw==
-X-Google-Smtp-Source: AGHT+IGs8pUXb5mDGS8kHPviqknzo+hzJ7Te+hq+G7yo5xcEkhGPpfVIqG3exWqTnYNB4l5GZuju7w==
-X-Received: by 2002:a05:6a20:72a6:b0:1a3:11b7:a0de with SMTP id o38-20020a056a2072a600b001a311b7a0demr317316pzk.15.1710016434950;
-        Sat, 09 Mar 2024 12:33:54 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a18-20020a637f12000000b005e49bf50ff9sm1644000pgd.0.2024.03.09.12.33.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Mar 2024 12:33:54 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Kees Cook <keescook@chromium.org>,
-	linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] pstore/zone: Don't clear memory twice
-Date: Sat,  9 Mar 2024 12:33:51 -0800
-Message-Id: <171001642971.4101342.15404186717889149238.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <fa2597400051c18c6ca11187b0e4b906729991b2.1709972649.git.christophe.jaillet@wanadoo.fr>
-References: <fa2597400051c18c6ca11187b0e4b906729991b2.1709972649.git.christophe.jaillet@wanadoo.fr>
+	s=arc-20240116; t=1710017161; c=relaxed/simple;
+	bh=ZPLcAC1idEQsrEeiIpSoNAiCCJvbQ4JoAxAN+zaBGQ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=gvvvRt6AecxcreZnDxxFmGBKLib79rBFfo4nvzSizsMUHMsTIAzTiHjGhmfYppSzx1W54R7mnEES7WaMih9IVNR3iiLMUqgI0ESblKzKNoQWcBKU/xuEX/7cjComi0nt/Jkzm21AmE/9LvfM/73AePcCxqfjNB+SmuTppBpw5tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
+Received: from localhost (localhost [127.0.0.1])
+	by sonata.ens-lyon.org (Postfix) with ESMTP id A00C7A02B9;
+	Sat,  9 Mar 2024 21:35:50 +0100 (CET)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id eP4BFBAT6w_l; Sat,  9 Mar 2024 21:35:50 +0100 (CET)
+Received: from begin (aamiens-653-1-111-57.w83-192.abo.wanadoo.fr [83.192.234.57])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by sonata.ens-lyon.org (Postfix) with ESMTPSA id 3C28CA02B8;
+	Sat,  9 Mar 2024 21:35:50 +0100 (CET)
+Received: from samy by begin with local (Exim 4.97)
+	(envelope-from <samuel.thibault@ens-lyon.org>)
+	id 1rj3Q5-00000001EM3-3UMS;
+	Sat, 09 Mar 2024 21:35:49 +0100
+Date: Sat, 9 Mar 2024 21:35:49 +0100
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+To: gregkh@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org, speakup@linux-speakup.org
+Subject: [PATCH] speakup: Fix warning for label at end of compound statement
+Message-ID: <20240309203549.jj2l6epnznyjsrje@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	speakup@linux-speakup.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20170609 (1.8.3)
 
-On Sat, 09 Mar 2024 09:24:27 +0100, Christophe JAILLET wrote:
-> There is no need to call memset(..., 0, ...) on memory allocated by
-> kcalloc(). It is already zeroed.
-> 
-> Remove the redundant call.
-> 
-> 
+Label at end of compound statements is a C2x extension, so add an empty instruction.
 
-Applied to for-next/pstore, thanks!
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 807977260ae4 ("speakup: Add /dev/synthu device")
+Closes: https://lore.kernel.org/oe-kbuild-all/202403090122.cpUNsozM-lkp@intel.com/
 
-[1/1] pstore/zone: Don't clear memory twice
-      https://git.kernel.org/kees/c/c8d25d696f52
-
-Take care,
-
--- 
-Kees Cook
-
+Index: linux-6.4/drivers/accessibility/speakup/devsynth.c
+===================================================================
+--- linux-6.4.orig/drivers/accessibility/speakup/devsynth.c
++++ linux-6.4/drivers/accessibility/speakup/devsynth.c
+@@ -108,6 +108,7 @@ static ssize_t speakup_file_writeu(struc
+ 				break;
+ 			}
+ drop:
++			;
+ 		}
+ 
+ 		count -= bytes;
 
