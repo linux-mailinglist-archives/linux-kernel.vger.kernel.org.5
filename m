@@ -1,164 +1,136 @@
-Return-Path: <linux-kernel+bounces-97782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86FCF876F58
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40A18876F5D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 06:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE82A1C20C9C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:50:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B8601C20CB5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 05:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8164134545;
-	Sat,  9 Mar 2024 05:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A201F364C7;
+	Sat,  9 Mar 2024 05:57:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="OCykpqa9"
-Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fxkm1ZjY"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A902B1E4BF
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 05:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80AD233CF1
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 05:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709963400; cv=none; b=scvvHqjFhR2P3YZtPe42ky503h1Ichezwx4EcUn6+eDs2+CQzbzR2yKQzheR7zCq/rFVBaF+PAJw95eO4K0PH6uGsgPBSsvwqkkY5tmi+Kn4IE2Ra39JY0CfTXEA0miSKIOCr/9dzTMXXVKyqWwYjnawN92VB4PpGjVZ+51w6zQ=
+	t=1709963846; cv=none; b=Opo4EQU/IV8zwpm9xVKVeatrr5u1kzz50ePq51Xe/iBoMWK27wLFZuAsPw/xAHHKlL05ya+XShuufqMDElhOuU6+Xao2vEGEWfdlOA9t3FYSm1DNi25ly7V6anQh9xQojB/2Z0VOcRUb/zqEbKZlyhh1nJKnqR6C6RDyFJYL/OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709963400; c=relaxed/simple;
-	bh=Sf01tby/HsI0x6djHx9YKGING5/ChXguT5bMR/VsmFI=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bmR1NE009FmhK4BBV307z/EOYHd21o8MKlxoL8jcTZYfkp1HeuxFK15yUbn+2Zqrc0w60Fj9TJlx/c7UkwNU2V4CBDw+LAIMDMB82qLJ4J3A1cW4Di1RD9AxUaFz6MTx+IRPVEduDMpuK5QQOxMGMWG2YIH3XdH67OjOPomXcmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=OCykpqa9; arc=none smtp.client-ip=203.205.251.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1709963090;
-	bh=pCLjBaeiPVFwIzRBB35XWHwHENyvOQLiNixCS1/03hM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=OCykpqa9V5//aeyyebI1EkUcn1wR01CJlMgh5i+LmA5Lo8vSdzSLXPT5hDkcfh7Ml
-	 HKVhNZp4igqoKxfd77xTTXHNR8YrTgAIg+GcG6apn0XlyNWpQIbUCsJotUB5d3YvkD
-	 tjp6oFV0733lKTkoz39c8hqUuhgYsGJqJUZlLKuY=
-Received: from localhost ([124.240.57.156])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id B313CCA0; Sat, 09 Mar 2024 13:44:49 +0800
-X-QQ-mid: xmsmtpt1709963089tpq18eyb7
-Message-ID: <tencent_454C12FBD6076C20C3955565E6D6354E4F0A@qq.com>
-X-QQ-XMAILINFO: MyirvGjpKb1j1j9H9bNeiVdK2EQnxlnDGFZTXzqEmJbmdF6EckqrYj2hq2lLR7
-	 /ghc8++F+/puNc1UZTVpXonuIIeDpewGcgIQijv7iE9u4z5arUR1oCP9vyw8L0g1UKC9ZSgnVvVJ
-	 jbViqRNTETEyP0/GRmG/YiETZnZDk1tG2MqS4Y2AtKvrGQ9AlxsyG6thbHlwJIuphgxXEUJYUXJ0
-	 bk4rFXZSEEYmRcAHfFMdsSCRmbd8Bq3TzaW7/pst93ZmduBp2Tdd4BzxcsRu7irt2lO4vtuJutbe
-	 F6dLxS1do7R2oBgI8JBhyfqOkoNRGcRK1SEHpzzkSl3eTcpT/vywd1899qIXzAd1CsPssOGGNyMc
-	 1IC87NUfvIiSRUOrWEiQmd1YjpHDxjJIsIMcqVCEOrSjMw/g+900yBhOdlwZn56iA4Arbb+DB91q
-	 SguQUtPKJvuN0rUA6W5VxGtMVd1Aw31s/XgLe78vJUxiRUdQQoTaRqRbcM56JNCV0SNlDbaBMLQV
-	 oz6mvUAfNv3f8orewd66OitXwJRFe93/+/FCk5zlWrhfB+/Z9TFmTodDAaFnrOBNQqn/Pz/KT/Xc
-	 uZqRvXrhK0mbmZ6iRQQuSgQweFuSvxyMusNBdvjjEX/urBWcTDMHF41pCW3giZZrgDwzZfJafOA1
-	 au2B/qLux9MZNNBDvkBUBMvUCeoapoqtAiH67wXrrO9o8RiS5O7Br8x/hX5uQAyIPitarmQrSucx
-	 nr8a1Gj2Mr7fYrp5Q/oCn+Es13pY/Xk2vWs+ND/SvLevvbQsCeRLhMxG3UeDHIlv79q+oh0GXXUp
-	 0mryKnlxOPe87tgIPAfMA1ooJF7LiP9nn52R36ccKc65WAI4gTWRSG8qC3Ab+D4GsUzB6UpD6orj
-	 duSLR2Tq/8usYQCyvy2TLa6ziLdXxH//sQGNSABjgyTE5woOGF3HmtY2X72BU9QSodnX9PKOriRA
-	 HmrAdB+nNovpzaQUWQTela4Ka2BKD+
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-Sender: kenneth-lee-2012@foxmail.com
-Date: Sat, 9 Mar 2024 13:43:41 +0800
-From: Kenneth-Lee-2012@foxmail.com
-To: Andrea Parri <parri.andrea@gmail.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
-	paulmck@kernel.org
-Subject: Re: Question about PB rule of LKMM
-X-OQ-MSGID: <20240309054341.kjypsfuyosqpvvr3@kllt01>
-References: <ZeipiSVLR01jmM6b@andrea>
- <e05fa6a9-c810-46cb-b033-b91ae7a5c382@rowland.harvard.edu>
- <ZejC+lutRuwXQrMz@andrea>
- <Zenip+8BDM3p+MUh@andrea>
- <eb8f2a21-d388-424d-8504-ccd7bdb53a93@rowland.harvard.edu>
- <ZeoFBkB1BeTdEQsn@andrea>
- <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
- <ZeoQvj3l6moF9KdQ@andrea>
- <tencent_3FCF3AA5E98BC9395F98803764A6B2F7CC07@qq.com>
- <ZeuFQdk/zcjkILbC@andrea>
+	s=arc-20240116; t=1709963846; c=relaxed/simple;
+	bh=QNC6MLowYJQ7WrQiTaExvXyU7M4ZEOEd7qjVzVWX+FQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=X+yEk+MpYgOiJwPlIFKPVJjiSjAoIDalaScfU2EHKHdcmVQFVHTUAzRwf9vMcO1zs7UYYChrNfFJ4KcRtHYhjJCGWMI7zWQxBaRt4eUSbppiMGFbrqKofjb4t9w9Nca77iAbVANelxrweJ+vlw/Rvo1y0YDcEDAFapRyRMgRX9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fxkm1ZjY; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-609fb447f55so22472307b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 21:57:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709963842; x=1710568642; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ikzoZBuKoqEC94gAKswpz3yYXyOYx8dWrhoyNRyBiYk=;
+        b=Fxkm1ZjYEo28OsvjEsMQVclDOHjOMsKOdNUush0wtqS8EbzS6Iamig8z9vZ/gBz86f
+         GGh0Gl7XdRHZt5ZyQkyzp3lVXXCkdi1423v/fyd1jgunM/e9nhd8DpJWD1UgNyCBLbr5
+         G4grJ6fKgZMQX/9kKaAbqdvIX5RhDTsfBTmeBScu1VetmNUl7U8ngsdkQZwuNgxDwDJu
+         K1ZjKN3ZXBHuxlPtqWar0ddd8l2W/XQFnOIUod/bF26CHfU3nk2gPJPCGZk8CdU1I0HG
+         AXArfHvDx4cITbZ6d+RqD/AUus02UhmIrZxbHNKu4kSphjLqWZglNLpidUWMFPcmsEbC
+         JdZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709963842; x=1710568642;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ikzoZBuKoqEC94gAKswpz3yYXyOYx8dWrhoyNRyBiYk=;
+        b=CP9gr9zte4ryB4eYe6ti30gmroqa3sfgO+intPTmOXMdd1IJC2DrKA4x1FQUEJgXyf
+         E+ojM6iTtrhKBXkQNh7PMmLAtYwA7DAbo9wy2ZL3UTEe8Fsc7OhOjiyBCH3/jX6VcCMG
+         gm+f2QG0DFdRcx9iALx5xjq1rMtTiKa8UMJOYF1NQ00WfLDOYKHJsZ3CuPH0QWgS0p2q
+         d9iS+uolLne6GhItKRDpCGEzC4klBJcoN+lKDpEAAMaR5GbA/OPojqE1zUeH4zvSgIZy
+         qX/d3NlhLo+MvrI/JMj0zdWwEtjEGJmhygg/deyII9i8jENRgaK5SozXzj1sUD4nUaKK
+         qUpQ==
+X-Gm-Message-State: AOJu0Yw0jpBixftMoSSo0OcNdZCcbHEDWq9yXSkGWTbYI2HqofTmEqQJ
+	ZTNlR/a6tTk0SD29WpRbF9xaWYUB43hVdVXzdr7vOZdbBeapH7A4/TYs8LpeSbQ=
+X-Google-Smtp-Source: AGHT+IH03dg0jEy3qpc1hA3fIB8ySYDaS2MFsYVtkyzy86e3Yz2dd9snxIoM1x44m4PB3JFgpX58rA==
+X-Received: by 2002:a0d:dd89:0:b0:60a:6f7:d5f2 with SMTP id g131-20020a0ddd89000000b0060a06f7d5f2mr1224269ywe.9.1709963842574;
+        Fri, 08 Mar 2024 21:57:22 -0800 (PST)
+Received: from blackforest.ics.uci.edu (blackforest.ics.uci.edu. [128.195.4.234])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170902784800b001d8a93fa5b1sm591371pln.131.2024.03.08.21.57.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 21:57:22 -0800 (PST)
+From: =?UTF-8?q?Andr=C3=A9=20R=C3=B6sti?= <an.roesti@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: an.roesti@gmail.com,
+	tglx@linutronix.de,
+	peterz@infradead.org,
+	luto@kernel.org
+Subject: [PATCH] Respect system call number changes by sys_enter probes
+Date: Sat,  9 Mar 2024 05:53:12 +0000
+Message-Id: <20240309055311.2144-1-an.roesti@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeuFQdk/zcjkILbC@andrea>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 08, 2024 at 10:38:09PM +0100, Andrea Parri wrote:
-> Date: Fri, 8 Mar 2024 22:38:09 +0100
-> From: Andrea Parri <parri.andrea@gmail.com>
-> To: Kenneth-Lee-2012@foxmail.com
-> Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
->  paulmck@kernel.org
-> Subject: Re: Question about PB rule of LKMM
-> 
-> > In the "THE HAPPENS-BEFORE RELATION: hb" section of explanation.txt,
-> > it uses the following example to explain the prop relation:
-> > 
-> > 	P0()
-> > 	{
-> > 		int r1;
-> > 
-> > 		WRITE_ONCE(x, 1);
-> > 		r1 = READ_ONCE(x);
-> > 	}
-> > 
-> > 	P1()
-> > 	{
-> > 		WRITE_ONCE(x, 8);
-> > 	}
-> > 
-> > if r1 = 8, we can deduce P0:Wx1 ->coe P1:Wx8 ->rfe P0:Rx, this can be
-> > explained with the operational model. But according to the definition of
-> > prop,
-> > 
-> >   let prop = [Marked] ; (overwrite & ext)? ; cumul-fence* ; [Marked] ; rfe? ; [Marked]
-> > 
-> > The link should contain a cumul-fence, which doesn't exist in the
-> > example.
-> 
-> Remark that, in the CAT language, the identity relation ({(e, e) : each event e})
-> is a subset of R* (the _reflexive_-transitive closure of R) for any relation R.
-> 
-> The link at stake, (P0:Wx1, P0:Rx), is the result of the following composition:
-> 
->   [Marked]         ; (overwrite & ext)? ; cumul-fence*     ; [Marked]          ; rfe?            ; [Marked]
->   (P0:Wx1, P0:Wx1)   (P0:Wx1, P1:Wx8)     (P1:Wx8, P1:Wx8)   (P1:Wx8, P1:Wx8))   (P1:Wx8, P0:Rx)   (P0:Rx, P0:Rx)
-> 
+When a probe  is registered at the `trace_sys_enter` tracepoint, and
+that probe changes the system call number, the old system call still
+gets executed on x86_64 (and potentially other architectures). This
+is inconsistent with how ARM64 (and potentially other architectures)
+handles this, and inconsistent with the tracepoint semantics prior to
+change b6ec41346103 (core/entry: Report syscall correctly for trace
+and audit).
 
-So the cumul-fence relation includes the same Store? This is hard to
-understand, because it is defined as:
+With this patch, the semantics are restored to be the same as before
+the aforementioned change (and thus made consistent with ARM64). The
+change adds one line to re-read the system call number register into
+the `syscall` variable. By reading twice, the benefits of the
+aforementioned change b6ec41346103 are kept.
 
-  let cumul-fence = [Marked] ; (A-cumul(strong-fence | po-rel) | wmb |
-	po-unlock-lock-po) ; [Marked] ; rmw-sequence
+There should be no performance impact if no sys_enter tracepoints are
+registered, since re-reading the system call number from `regs` is
+only done conditonally if the tracepoint is in use. If a probe is
+registered, the performance impact should still be minimal, since the
+additional call to `syscall_get_nr` amounts to only an inlined read
+of `regs->orig_ax` (on x86_64).
 
-There is at lease a rmw-sequence in the relation link.
+Signed-off-by: André Rösti <an.roesti@gmail.com>
+---
+@Thomas Gleixner: You may have received this e-mail twice. My apologies!
+This is my first attempt to contribute, and I made a mistake using git
+send-email. Thanks for your work maintaining this and sorry again.
+---
+ kernel/entry/common.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I doubt we have different understanding on the effect of
-reflexive operator. Let's discuss this with an example. Say we have two
-relation r1 and r2. r1 have (e1, e2) while r2 have (e2, e3). Then we got
-(e1, e3) for (r1;r2). The (;) operator joins r1's range to r2's domain.
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 88cb3c88aaa5..89b14ba9ed14 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -57,8 +57,11 @@ long syscall_trace_enter(struct pt_regs *regs, long syscall,
+ 	/* Either of the above might have changed the syscall number */
+ 	syscall = syscall_get_nr(current, regs);
+ 
+-	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
++	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT)) {
+ 		trace_sys_enter(regs, syscall);
++		/* Tracers may have changed system call number as well */
++		syscall = syscall_get_nr(current, regs);
++	}
+ 
+ 	syscall_enter_audit(regs, syscall);
+ 
 
-If we upgrade (r1;r2) to  (r1?;r2), (r1?) become {(m1, m1), (m1, m2), (m2,
-m2)}, it is r1 plus all identity of all elements used in r1's relations.
-
-So (r1?;r2) is {(m1, m3), (m2, m3)}. If we consider this link:
-
-  e1 ->r1 ->e2 ->r2 e3
-
-A question mark on r1 means both (e1, e3) and (e2, e3) are included in
-the final definition. The r1 is ignore-able in the definition. The event
-before or behind the ignore-able relation both belong to the definition.
-
-But this doesn't means r1 is optional. If r1 is empty, (r1?;r2) will
-become empty, because there is no event element in r1's relations.
-
-So I think the reflexive-transitive operation on cumul-fence cannot make
-this relation optional. You should first have such link in the code.
-
--Kenneth
-
->   Andrea
+base-commit: 221a164035fd8b554a44bd7c4bf8e7715a497561
+-- 
+2.34.1
 
 
