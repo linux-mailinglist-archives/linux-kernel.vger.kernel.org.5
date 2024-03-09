@@ -1,84 +1,132 @@
-Return-Path: <linux-kernel+bounces-97925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0CD8771BA
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:56:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBA6B8771BB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:58:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 151B6281BFD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:56:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEF201C203B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ACEE43ACD;
-	Sat,  9 Mar 2024 14:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MYB331rD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FB743ACD;
+	Sat,  9 Mar 2024 14:58:23 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B361BDF4;
-	Sat,  9 Mar 2024 14:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9447A3FB9F
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 14:58:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709996176; cv=none; b=J+l39YNEwrKNFh64Cj1pKdoU0GB8Y/XlxAH9ZqfJgQCwCId+7qKhhhlqyXNmTtso2RYv12jRMcU6XaMge8oB9px+ujdsE+Vx45LHTqzHBk2QOCCe29Tu6FkaUQJi8CPX3ZA4dvmRXNvs0V2ypWHWTnKp+GaonHcibNrK1qAax7o=
+	t=1709996303; cv=none; b=PfMekROO0J2X3+Ibbr6meqsk5ITXEQlws6XTvs9X6gMvCJOIaxJDM1t5Y3uvtxgHFzhjku/M3vAvB+Ade7sxa/vgXSUGsY3f+0xQPFoWiJr78JMogzBa6oRIykmunfGF5qDsAt5Ip40e3Q+7s4dXwZrfleTrRE/Zeu+AVe+QR7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709996176; c=relaxed/simple;
-	bh=KBygGl79mgaURge7K4LetcAdkwIssOLeohMMAFX3q2M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tY9OUYj5piy4uoUNp5QTpVUV0VKifILrkzsO97/tVlx/pfPM0dHqdDL+bxA7N0C942duBdoPqtJPRqYw8G1q74S0/mjdmCVq8Lr/ThhbVOGrFNORSfKILLckbjXr4mdP6tDxKQXoQjILhjFMv6kp3oVaVC2rbVLh3g3p5VXmofM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MYB331rD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF47BC433C7;
-	Sat,  9 Mar 2024 14:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709996175;
-	bh=KBygGl79mgaURge7K4LetcAdkwIssOLeohMMAFX3q2M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MYB331rDgVyzvJ1jxivyu5GlC+MMjdqMpT7ZkmjFbpJzVEITaXblE30IrFvzl5Twd
-	 5Po7ocReeh8BJtW758Xgh+6Zfr4vL9i3txE8JkPcv38+uuuw2jmqUidU8ZzDL10g1s
-	 JBACl93u+Md2A1dbt9DDl+eGifPnCxF8NnFQNgrjL0rR1i8abFkogZ/hn4b93q9kBc
-	 DmCcspTxmRW59OO6wdmV7kPC8HHLp7HG9zWRijZ1ZQKmplqGZXP/Uynd5zSWEi++uI
-	 cFZqOIjIlqft9sBl3yHKmACnDrC9o9s2zBcGHes/MX4k5MCnkapS/umNcXsOUHOZ8E
-	 TCDPSoXkeRzGw==
-Date: Sat, 9 Mar 2024 14:54:41 +0000
-From: Simon Horman <horms@kernel.org>
-To: thomas.perrot@bootlin.com
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: macb: remove change_mtu callback
-Message-ID: <20240309145441.GA4701@kernel.org>
-References: <20240308155330.1610616-1-thomas.perrot@bootlin.com>
+	s=arc-20240116; t=1709996303; c=relaxed/simple;
+	bh=/X7H1ggJXyw8oZM2tEuo8CdkdavfIrnwt00+d/TQK+U=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=qnjdgGmlnh2jxbHYFoGEefmWgOhivoXyO97ax7UbnAP2S0VktPm8L8wm+3QJ/KaBMNjUYKZ56gLiH2bPGXiNluhpzw/Wf67AdSk11huolWPBmqmP6fviy1HFf4K4gPVGVQHVkz2BujJs3EDG2nbacyME07DaSUYV0vPUWpqyAHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-156-mu8viMgRPXKNX4dY6V6FnA-1; Sat, 09 Mar 2024 14:58:11 +0000
+X-MC-Unique: mu8viMgRPXKNX4dY6V6FnA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 9 Mar
+ 2024 14:58:25 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 9 Mar 2024 14:58:25 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Russell King' <linux@armlinux.org.uk>, Josh Poimboeuf
+	<jpoimboe@kernel.org>
+CC: Jiangfeng Xiao <xiaojiangfeng@huawei.com>, Kees Cook
+	<keescook@chromium.org>, Jann Horn <jannh@google.com>,
+	"gustavoars@kernel.org" <gustavoars@kernel.org>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>, "peterz@infradead.org" <peterz@infradead.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "nixiaoming@huawei.com"
+	<nixiaoming@huawei.com>, "kepler.chenxin@huawei.com"
+	<kepler.chenxin@huawei.com>, "wangbing6@huawei.com" <wangbing6@huawei.com>,
+	"wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
+	"douzhaolei@huawei.com" <douzhaolei@huawei.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, Ard Biesheuvel <ardb@kernel.org>
+Subject: RE: [PATCH] usercopy: delete __noreturn from usercopy_abort
+Thread-Topic: [PATCH] usercopy: delete __noreturn from usercopy_abort
+Thread-Index: AQHab6wYEHIoKEvMpEWW5WbAwswgILEvgkBg
+Date: Sat, 9 Mar 2024 14:58:25 +0000
+Message-ID: <15437f635ba94224b6ed808bd6f42065@AcuMS.aculab.com>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <CAG48ez1h9X7Qv-5OR6hAhwnSOng6_PSXBaR6cT7xrk2Wzu39Yg@mail.gmail.com>
+ <202403040938.D770633@keescook>
+ <77bb0d81-f496-7726-9495-57088a4c0bfc@huawei.com>
+ <202403050129.5B72ACAA0D@keescook>
+ <b274b545-9439-7ff8-e3ed-604a9ac81f65@huawei.com>
+ <20240305175846.qnyiru7uaa7itqba@treble>
+ <Zeg8wRYFemMjcCxG@shell.armlinux.org.uk>
+In-Reply-To: <Zeg8wRYFemMjcCxG@shell.armlinux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308155330.1610616-1-thomas.perrot@bootlin.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 08, 2024 at 04:53:30PM +0100, thomas.perrot@bootlin.com wrote:
-> From: Thomas Perrot <thomas.perrot@bootlin.com>
-> 
-> Because it doesn't allow MTU changes when the interface is up, although
-> it is not necessary.
-> 
-> This callback has been added to add in a first implementation of the Jumbo
-> support [1],since it has been reworked and moved to the probe [2].
-> 
-> [1] commit a5898ea09aad ("net: macb: Add change_mtu callback with
->     jumbo support")
-> [2] commit 44770e1180de ("ethernet: use core min/max MTU checking")
-> 
-> Signed-off-by: Thomas Perrot <thomas.perrot@bootlin.com>
+From: Russell King
+> Sent: 06 March 2024 09:52
+>=20
+> On Tue, Mar 05, 2024 at 09:58:46AM -0800, Josh Poimboeuf wrote:
+> > This is an off-by-one bug which is common in unwinders, due to the fact
+> > that the address on the stack points to the return address rather than
+> > the call address.
+> >
+> > So, for example, when the last instruction of a function is a function
+> > call (e.g., to a noreturn function), it can cause the unwinder to
+> > incorrectly try to unwind from the function *after* the callee.
+>=20
+> I suppose this can only happen in __noreturn functions because that
+> can be:
+>=20
+> foo:
+> ..
+> =09bl=09bar
+> .. end of function and thus next function ...
+>=20
+> which results in LR pointing into the next function.
+>=20
+> Would it make better sense to lookup the LR value winding it back by
+> one instruction like ORC on x86 does (as you mention) rather than
+> the patch you proposed which looks rather large and complicated?
 
-Hi Thomas,
+Is it even possible to always reliably get a stack trace from
+a no-return function on a cpu that uses a 'lr'?
 
-Perhaps it is worth mentioning that after this patch the core will set the
-MTU, regardless of if the interface is up or not.
+If the function doesn't return then the compiler need not save
+'lr' on stack and can still use it as a temporary register.
+Without a valid 'lr' I think all you can do is search the stack
+for a likely code address?
+
+Am I missing something?
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
