@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-98026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7E148773CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:14:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E45B8773CF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:14:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02AD1B20D1D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 20:14:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4990EB20EF5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 20:14:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9298E524D3;
-	Sat,  9 Mar 2024 20:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0D2524C3;
+	Sat,  9 Mar 2024 20:13:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="qJTw/elu"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Y0B69+Lr"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE7B4EB47;
-	Sat,  9 Mar 2024 20:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E59C524AE;
+	Sat,  9 Mar 2024 20:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710015214; cv=none; b=fdAVaSOgs9p56Tb4p+x8drxa8m97YN18/ygneUQ7KiH+hfoyjzMvGW30OLvtMD5995yNWqEZN8E/HtrAY5wvO6FPQ4XP3/e+zgS5UZcHcC03JWscOh2Rgp99U3N5dSA6yOWt4C4NWe5ANjqw7xusEmNoxGkY5240N0PHA/TUeY4=
+	t=1710015217; cv=none; b=H2bL5wJUx4KmBJoN1hwpLl63cuQoGfRVSFkvKXu6IHw8InQbMKFs1C/qhN64sZ1cBLz3sJBdxwtj4OeWrJ3kyvliOBkT3YE0RkqpPBtdHfZUthbsu3WkedOjDi7CQkcRk5qR/5nyLQC10qeFEh85xlrKdfPlCLUs6AGk11rROVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710015214; c=relaxed/simple;
-	bh=XWLZ2rgpQpSaO4G+ifVKeg4eQCMQ6Yp+R6eWcIJepGE=;
+	s=arc-20240116; t=1710015217; c=relaxed/simple;
+	bh=h7As2GoZ0kc5nMuNQ2K/Q6VQcUC5YXNL19J+2NPAfT8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XbxMrGud0vFqWdv+qgvbr/DJB7mbszgIHh9IV21tXiUaB4iH4E8mEkNc7qQwDhttwKQHLP/yoWcppZXp57hj+QI3unoGFmkEcxL9+0EQ3WAqOS/HKfCaNXBce3uNpTSBxZCIGI6aRJ7Tcv+2UhRTh4biEodTBoqQyHw8HL1wn8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=qJTw/elu; arc=none smtp.client-ip=212.227.17.22
+	 MIME-Version; b=oU8XSpftwdakSSkcivUtNcM66rPykqnH7IDxspCWY7XiK2ol3abg6AWJ/lAItle58zV0lluSxxePXLH13NNpTV4ezFrtGgW4qgZmuUtZLByTJ/Tc6f6CsckkhLcTC6qyVr9ncb6hdbzHjILCsLIOL0T1gcJS6E4Rl7xQt6cZpEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Y0B69+Lr; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1710015206; x=1710620006; i=w_armin@gmx.de;
-	bh=XWLZ2rgpQpSaO4G+ifVKeg4eQCMQ6Yp+R6eWcIJepGE=;
+	t=1710015209; x=1710620009; i=w_armin@gmx.de;
+	bh=h7As2GoZ0kc5nMuNQ2K/Q6VQcUC5YXNL19J+2NPAfT8=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=qJTw/eluzR1HyXjWlOHnvPVAKmmU8mYeayVGCIeh/xKnyg1AG98epeCCiKuU554x
-	 2oRmIeNQ7L7lLolBMUk0ZRwOxbd3zDCQsSORoFgxyaSN8u0scpvYtHQZobhwtiZfW
-	 aDut94vT2iz0bcnjSUO9ibC4pmKnIRX/qB0RtItuKdPhpUL+JISpkVD7uPWM6NmsL
-	 9A0IhveTmIQB1+LTPrzy3dn2qOBM9vAbb2AN/wfDVd6XhiHCT27PsIjDsc/EZrqS4
-	 AuUnWDvjP4S8V5JTfL/xB90QeCZkLB6PgfmB6tqi4tjC4f//mvnHc4Q3oY0GfDcfi
-	 PD7rvuYrctkP8sHKuA==
+	b=Y0B69+LrJqT450AJgDoNJ1lR57FIalwYDCBeks71ZbMurg6Vq+L4lA1HhPsFKvTN
+	 xj4cLgZoWv5sJGTNV+Zk4h6rPohJynXQnOzY76hJFp9Iya1hviRacFu4rAwBEsgrC
+	 q1FUf5l3HQQeNO4ljIG9J+GNosKp9GuhK25f5W2xfu8ZvNjcN6UHY+SmLvcU8z98N
+	 DZTy7ikihAFu9guX3VemAr81Ao7SZ57fcQaiA2sNUsadkBzY6Xy2pMmGCcuhtW8qw
+	 cycBGM3LWQiT5qpz464ve4FUWg8Vk8wQsC3V7aIAUDLarGhGKBfwIsjgYQjPJx8hA
+	 V3WpY9nujgFWG0uKdg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1M1Hdq-1rhPB61nsw-002lw8; Sat, 09 Mar 2024 21:13:26 +0100
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MXGrE-1rKIFT1ZGQ-00YgdU; Sat, 09 Mar 2024 21:13:29 +0100
 From: Armin Wolf <W_Armin@gmx.de>
 To: rafael@kernel.org,
 	lenb@kernel.org
 Cc: linux-acpi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] ACPI: bus: Indicate support for more than 16 p-states thru _OSC
-Date: Sat,  9 Mar 2024 21:13:07 +0100
-Message-Id: <20240309201310.7548-3-W_Armin@gmx.de>
+Subject: [PATCH 3/5] ACPI: bus: Indicate support for the Generic Event Device thru _OSC
+Date: Sat,  9 Mar 2024 21:13:08 +0100
+Message-Id: <20240309201310.7548-4-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240309201310.7548-1-W_Armin@gmx.de>
 References: <20240309201310.7548-1-W_Armin@gmx.de>
@@ -63,31 +63,33 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0qO7cBk4t1+ClaeNpEJmIBUVYnAjaZTPk0gclbEcnPiP9mQ/SRv
- DlAsPnxwpipGYvU+bj6aAStZTWZroWS9xEqVhsdrQmIAyYzVRmOd+FEpxJ2cIHXualF12bu
- k60PGTe0JqzIwwhHjAMh/t0VXBN9ACwNrxwGKyOUzhom53r5Wa0VhWtXCzfCfv4MOQl5Z6H
- +S/JX6wLMQwYGDJBKW5Jw==
+X-Provags-ID: V03:K1:VM6+TPnokB3vj8sl1fSmOpeuD2WdF77iFdD1I6kvwdhRdIIEHCe
+ 7aQuyl5LrWwzDTfl36ttYa9wIQofVj2v9xw0JuiS3AAaWYHPYD1tqMTqh/p9T6kponFwDLD
+ c457tU27/Rr4MTSM6rCMkHsku9ovYanaiDt6ZStMkXv1Bd2XHb/LEYbeoa+IIDVF1T5HEWa
+ hWfrX83LAmbRZ9Td8ymdA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:zQRWBD0d07Q=;SxaHJllzkx3QVfBVoRrhRAOXbXD
- /iWRV3Dg35t3OZ+FW3TgdIlz3fLqTO72miGOnW0D+XWgJbEPl6OOXjkUH/i1ZY/Vq6GCfTTpK
- 1KL+LC3A3do8N/K7Eb5QCLYZk/QJL6AK0jYOepmH5ZEqHPl1EqXbOok/uC+fSthKS5ixCiim/
- 4wsusKEDPv/QGc0CLj7v1UpUp3/5tnJ+p9rfO4UnXYj9LjPMLENKzeUCrJMLL/EHoDeUP+XTY
- 91EPlEui6NL7mopkCk/7N+aQSczp/W3RHrTavZRUkK9w95KAo8I+lZrcFJTYkWG0WtEbMyjud
- qdaVLQV+lfPaiwcITMsVHNJYYDhrh0x0yyVC3pn5qyiKvldiQuNk2aiQsN6dmMPK1rTHqzi2k
- LZkWyx/bs2nu+M4/LIu909EIeUfuIZhTfODlnuFdoBXgbJ/YctmTHXlgULIlD2BL4LJulYvrG
- KmnmMGwRjZciPCK+cNFSSKaHpfeAP8CmE6muUh1Un9eA6Yx3IhPMO0Z1UKLsW2ZJjIJ4UsaT1
- 3I+lNrHhbqsUYJTt4FtQIClG/19d0vT1kwdaBuuS24C8S8hGeKNkBSyo5gxWHiJkYFnPCswEX
- y8CJOlHk8C4R457TkFpEJM0Ioy0Yl/eYV36TqvhkccPV5nm1mmG83tq6HGS0G/kCJzzKwY8jE
- jsXU4U6NTVN2qN9DrzFoEizB/UXw7mHJfySAm1s7A0jRbnwZx931IWqCO77yPPoHWvQFS8oJX
- SAgu+6mtvSu1XGaf83k69bMZWN1lSrhJ799Dz122b8IjKhf8Yf8rCoonQ3qs2jL6rbiJBzR9D
- 1jjFkgcAi51RDdtYPq+X2cdyxWY+jTPIhF0cqY11Bmc/8=
+UI-OutboundReport: notjunk:1;M01:P0:qlVnVpWaAyw=;r7njhLsw6csIgn8JbulqJlfZoHq
+ Bu02f3y2wImHuJwv9K5GaIkFs7j5Zx7hMlA9zX6R+ILHxuiEW11A86PapTo1NZ3QJrGEA3tsg
+ rX1CJa4hf+MBUvAe57/8JS1o0+VmkKKMbig+LQRDVqsiZOViylKehaIJT2D7BYmk7sjUDQOGA
+ BdjMyaeEy6NE4mZPJiMHf6No0mZafuqFP8G+YMUHHiXfrXPaAb7nKUZPn3XGfuuXwG14qlG+r
+ K59pyrDiWk7fek/gDDP6kR+u4fWzoFNMuMvBCZ6Op5i8zq27ab4GvYU2BAfS+0RnOwEu1Bpvh
+ Kv7EQ1MRRdultsUqQrGkffTndU/BjW7VuhBYdrlTanUaT+7jXRYAeon6Zvv0Ug8FsEOVMCfwz
+ K9pHdPI2nGfEDIIdCHMkr+EpU4JJoK/cFaUwIQ2e5eOHHOtWS/49XYiRSHf+iQAhXxhZzfnAw
+ j6+QUfym/WXh/WXkiwAFEcpX4qBKagTQ4HD0fP02sLnYsax2b0ezIBVfdV9DtIls1i+iRUVtH
+ A6oNLHyN9FYVwr04X6QEjrVaad8FUZUrFHLwLobMkJShC/1exHNwSnLoMuAfE5XrIz+UyAMJG
+ E+fqX/y+b2f1BQpjuxV1q75wiDygvOUi+erH4dLi/CYZnhcuUnE8yOu/HjDZc4aIyGQ0hyvzO
+ OaQ7v+kWpG/Vj0A1F2TtGNByl1X9OsG9GopfWyQvxLrOWYb2BCLuOpdH70jA9fMtmN4u37PFK
+ uW3GEakFnPR+swdPfd9+lqa4mdQvyJISQqAiwA6530H47GwPYV5H1Ub9FowptsA7l9qvcOR9k
+ qy7sdCXfgKE4r426/k6suAq4BglFn/fKminTYgubksEcQ=
 
-The code responsible for parsing the available p-states should
-have no problems handling more than 16 p-states.
+A device driver for the Generic Event Device (ACPI0013) already
+exists for quite some time, but support for it was never reported
+thru _OSC.
 
-Indicate this by setting bit 10 ("Greater Than 16 p-state support")
-when evaluating _OSC.
+Fix this by setting bit 11 ("Generic Event Device support") when
+evaluating _OSC.
 
+Fixes: 3db80c230da1 ("ACPI: implement Generic Event Device")
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
  drivers/acpi/bus.c   | 1 +
@@ -95,28 +97,28 @@ Signed-off-by: Armin Wolf <W_Armin@gmx.de>
  2 files changed, 2 insertions(+)
 
 diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 9c13a4e43fa8..d5b0e80dc48e 100644
+index d5b0e80dc48e..0c48b603098a 100644
 =2D-- a/drivers/acpi/bus.c
 +++ b/drivers/acpi/bus.c
-@@ -321,6 +321,7 @@ static void acpi_bus_osc_negotiate_platform_control(vo=
+@@ -322,6 +322,7 @@ static void acpi_bus_osc_negotiate_platform_control(vo=
 id)
-
  	capbuf[OSC_SUPPORT_DWORD] |=3D OSC_SB_HOTPLUG_OST_SUPPORT;
  	capbuf[OSC_SUPPORT_DWORD] |=3D OSC_SB_PCLPI_SUPPORT;
-+	capbuf[OSC_SUPPORT_DWORD] |=3D OSC_SB_OVER_16_PSTATES_SUPPORT;
+ 	capbuf[OSC_SUPPORT_DWORD] |=3D OSC_SB_OVER_16_PSTATES_SUPPORT;
++	capbuf[OSC_SUPPORT_DWORD] |=3D OSC_SB_GED_SUPPORT;
  	if (IS_ENABLED(CONFIG_ACPI_PRMT))
  		capbuf[OSC_SUPPORT_DWORD] |=3D OSC_SB_PRM_SUPPORT;
  	if (IS_ENABLED(CONFIG_ACPI_FFH))
 diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 7727ebbc4219..baa07b5a717f 100644
+index baa07b5a717f..aa26259a28b8 100644
 =2D-- a/include/linux/acpi.h
 +++ b/include/linux/acpi.h
-@@ -574,6 +574,7 @@ acpi_status acpi_run_osc(acpi_handle handle, struct ac=
+@@ -575,6 +575,7 @@ acpi_status acpi_run_osc(acpi_handle handle, struct ac=
 pi_osc_context *context);
- #define OSC_SB_PCLPI_SUPPORT			0x00000080
  #define OSC_SB_OSLPI_SUPPORT			0x00000100
  #define OSC_SB_FAST_THERMAL_SAMPLING_SUPPORT	0x00000200
-+#define OSC_SB_OVER_16_PSTATES_SUPPORT		0x00000400
+ #define OSC_SB_OVER_16_PSTATES_SUPPORT		0x00000400
++#define OSC_SB_GED_SUPPORT			0x00000800
  #define OSC_SB_CPC_DIVERSE_HIGH_SUPPORT		0x00001000
  #define OSC_SB_GENERIC_INITIATOR_SUPPORT	0x00002000
  #define OSC_SB_CPC_FLEXIBLE_ADR_SPACE		0x00004000
