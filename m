@@ -1,113 +1,112 @@
-Return-Path: <linux-kernel+bounces-97751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE1F876ED3
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 03:37:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33EBE876EE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED2C828286D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 02:37:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B04DC1F21BC3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 03:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34192E40F;
-	Sat,  9 Mar 2024 02:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB2B2E413;
+	Sat,  9 Mar 2024 03:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMtotnxW"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	dkim=pass (2048-bit key) header.d=ucsb.edu header.i=@ucsb.edu header.b="XrCMyGEM"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB35B2CAB;
-	Sat,  9 Mar 2024 02:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E9F208A8
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 03:11:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709951852; cv=none; b=Tv47O/yKwiuEtyK/1n/896/sHgW6O/XxmG5gBdBAI6HkGK9D2JLKrq1v7rk5SMcD3hGgxx85Inh8GBE0slflmy7gwW3TZwcgP0djsMIfAe5Dmlf9h9K0bT97k3G71E435TVmXC5eEtq2/6enP14MwZCiwLU5V54wj63NhKdlp4o=
+	t=1709953894; cv=none; b=TE1T4c2yppaBgQg5/q37Xhj0VJpt2edy8LbNv97IXoq+C5HSwm/5m107IzoduwjTFTAIRGs40OiqQUcFr6RR/2kASQfMdIYtOdBEmgIUvPKK+Rsc/crcAXXgaalie2gjif1jNMj0tASFeuMd1/OAVBOtHCndNOPhk/lp+Z/Ip+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709951852; c=relaxed/simple;
-	bh=+V5eYFbW9Pi34yqv4WG/8jsaw5ZIuEVqrbU/JjZq1UM=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=b25pb1y9hyHXwEmfLB5fI4bjdSqru8nBRPpb4dQUOHfgNoWan7xG9YunDO6TJGpqi12mKSHvzfiPHQwjeakYfG9jhs3ecCFkczh+wCE2Cx+QDYLWOIEjrYARFS/1umqmWfLjtpUPlRj1OkNcKSJz8bYBQg+7vidSXzKIJ5ihuCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMtotnxW; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso2334817a12.0;
-        Fri, 08 Mar 2024 18:37:30 -0800 (PST)
+	s=arc-20240116; t=1709953894; c=relaxed/simple;
+	bh=Q6E9+dYSr0fhaeQjSEhHj3BczivbK9viTEpD8N0C3ec=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=QzY0j1GQhZ9Ow+ocBF+fnEU9+dfQv1/7/mw4UqeIIDp8CFTvE2dzq83tdzPst7XYxbVUDuZqjEy925EgJNkQoHe1clDTKKTBdI/Ga/nxS6GIunDeokHt6vnD9ywtGB7uOCbTb1MuDnABJj0ueOiwg9kuQtsfl4mTjipkOHcfYW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucsb.edu; spf=pass smtp.mailfrom=ucsb.edu; dkim=pass (2048-bit key) header.d=ucsb.edu header.i=@ucsb.edu header.b=XrCMyGEM; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucsb.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucsb.edu
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d269b2ff48so38683111fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 19:11:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709951850; x=1710556650; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+        d=ucsb.edu; s=google; t=1709953889; x=1710558689; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=EPqIY44RfomfvdSfs4exdvUnb+SWr+WBXQBqExXLvyw=;
-        b=gMtotnxWP62Phz8+WkTq+HZyBKCSDqzDbgcOzZgiCl7qeew09EAJY7U5EbDrlcKq3u
-         3X7pRw+quiwtF5aypyrwSjBHHdXylYFBQ4sbghXc5zFpcGE8gaTkcGg4V2pfJ65o+d3G
-         mBiGerHW7oGTxMej8FFVvyV3CJr0WnyygdJyCRIxVhFVwGUHMcp4Ww12q9AQg9CvPOiF
-         9uVr99IF1GXHMywp0EuX5aatSRhmSXHElkH+lUYsBQoPoVpmkotYUnMHoH5apLEU6ydE
-         kIG1TLXCh342hP/UhlJERJlPhmXBbq1ZxvQDxnv2Z+c0J03LbE8fSepEVZi/dJ5PYWEN
-         mPHA==
+        bh=NM++cL11vPCn+hCFoCMkkYKOJmCX+xzCAsUEVOz/s1w=;
+        b=XrCMyGEMZY5ZY1WRn3R0/VnOaOTxyt0H53oUs7LfrVj9kKwaBTwKVdeUyWiwxOH1qP
+         ldqR2WWkrFN0e+j/1LAB67xIWUAb9FtbmBpr2T0jOVG5+bSb5SDTADMAzX8jJ5JEDnA/
+         B+/spFRURP9rWk+X4z/up7gMKNBwSqXol2TjoSFPcdnYDKn+Jujmb3sXHXew+00906I7
+         6mTclVBGVMS8iNdsMwyh2r6hLhEeM/KLcYUUMkRMNGAakxPoe5Jxy4Q8smo65OdXMF4Q
+         m3j7n96XmC42+UbFd/5Ecxc3KdskzcHrwvKD2+xyBjaBE+vtZEcItmTS4C3wsULZ+HDg
+         Bjlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709951850; x=1710556650;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+        d=1e100.net; s=20230601; t=1709953889; x=1710558689;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=EPqIY44RfomfvdSfs4exdvUnb+SWr+WBXQBqExXLvyw=;
-        b=gN9JQ1PxNZaRPlIRPnM4YYq0xoX4RW31pVR0g4AoSziXpnQsjRwRHBo2fRccmZxmLa
-         TaMAvKexZXBmnkGJVCItc08w8R28pLqN+vE1EHhrgyF/LI+Gw1IHG8xxDF2fFfn+sbw9
-         apWweR9GhOHRiXfD36o4c/kUBKSfB8lg4e8yiuhVDtZ/Vr1ZGGDpCkedUUEwvcNgGuan
-         G0KTJ2OW8paI8LpdXdYDv0kAoFfM7NFYO19M4KlGOmdiaee+j67hvIf9r84FGHKSk6au
-         pMz93XVd9lCADnbZXPfP4vaSqmyr0KhMK5VQxm+8VHs1NDKVlLfu3AYHmsU4hIQ1hA0t
-         LNBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWcO4beqqmtHubDJBWPH+kizn8BXrPXqwFeUZwy7O8TfmX9SQl5HWGAX6L7IkoPJN1BmgW7hO5dY8vq/iqlpCZYtWIJnQFtlY306jbxJQwG7sOdwExqhRA4a2VSUnpUZkb8kZAgOJmW3CfJxIHWzz7SMvVH59iJVbFZZ5QXccK2Zmld6Ax0Ktw=
-X-Gm-Message-State: AOJu0Yz9ejLmYYaKFPH89og/6zUDw+QEJ27pq/XIR9jb0l8Ub2HfU5Sb
-	k8Nw3s7yTcAerXolHPUnlqQvqHaRVLiipc3PmyNqoFHd1kTqJmZ6
-X-Google-Smtp-Source: AGHT+IHbZjFqte6ZkYyboZObXPWHpvViry8+kZzGaw7+ymEUBiEFIgOonRtxY9n8+VrkaZiYg0xORw==
-X-Received: by 2002:a17:902:7403:b0:1dd:e34:d820 with SMTP id g3-20020a170902740300b001dd0e34d820mr718053pll.28.1709951849852;
-        Fri, 08 Mar 2024 18:37:29 -0800 (PST)
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id z13-20020a170903018d00b001dd7c2ea323sm142391plg.114.2024.03.08.18.37.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 18:37:29 -0800 (PST)
-Date: Sat, 09 Mar 2024 08:07:19 +0530
-Message-Id: <87msr85dwg.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Matthew Wilcox <willy@infradead.org>, "Darrick J . Wong" <djwong@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org, Dave Chinner <david@fromorbit.com>
-Subject: Re: [RFC] ext4: Add support for ext4_map_blocks_atomic()
-In-Reply-To: <3a417188e5abe3048afac3d31ebbf11588b6d68d.1709927824.git.ritesh.list@gmail.com>
+        bh=NM++cL11vPCn+hCFoCMkkYKOJmCX+xzCAsUEVOz/s1w=;
+        b=vzF8RiRUQYUPG1hqpYPz+rPJY63PVtreGrxahrQ1sHlolepyjKvDCi7JBXOcR05RAu
+         0T+ptBtRuxqwmwdgKsk8B/Ulh4vVzJbrWYqikDXLuywrn3hDYunhDFF5I1/I10HLBjE6
+         /ZC1BL12TALhgJE/8AZILHEMP9QcFUprwx0x/qXhhXED6jLudKMmaGijqDI5xADLfDAI
+         KdVj8Z8EMzj7a6AEGkM5Fd+1STZHhMpE5ddyUrIoiF8gAeu0s3LgMmZcVe9MtTA6N81L
+         hFMq323WqOmI9wDCqbLuFNRhbw3+63q7sr386nZzM7D8ZhzPi3xU7MjMSi7jzJWTbBHK
+         sXJA==
+X-Gm-Message-State: AOJu0YwNvqzjQwxBz+HQRB9Mcnt87zFZSiakT8tTUrRmXb+VkWNq5PxK
+	I1zH+JJ/yBj2oplfgNV4J2eMZJ686pI14kfijP0HncUfCiRUjCRbQ2pRgQMjYUOZWGy0I1TJBY5
+	3P+c7wJpoucwZTAcUJXZ9v9qVBs/l9Hl99xNJh6zQlzzYPFB0m6c=
+X-Google-Smtp-Source: AGHT+IFAclsq4nqt7I7P4zscgpJ92Q+VYcExoVAvJJHU++U2M8LkuuRdwlDJVKHbxrhGN8/2M0aMG+0+rh4rou4/TPM=
+X-Received: by 2002:a2e:8007:0:b0:2d3:dcb0:56d9 with SMTP id
+ j7-20020a2e8007000000b002d3dcb056d9mr635323ljg.29.1709953889519; Fri, 08 Mar
+ 2024 19:11:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+From: Nazerke Turtayeva <nturtayeva@ucsb.edu>
+Date: Fri, 8 Mar 2024 19:11:18 -0800
+Message-ID: <CAHY78BqCpMQptPN0SMaXuRqHOhYi+wnMEUSTYt7OHDZih4e7yQ@mail.gmail.com>
+Subject: Question about unpacking large initramfs (>2G)
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-"Ritesh Harjani (IBM)" <ritesh.list@gmail.com> writes:
+Dear kernel community,
 
-> +int ext4_map_blocks_atomic(handle_t *handle, struct inode *inode,
-> +			   struct ext4_map_blocks *map, int flags)
-> +{
-> +	unsigned int mapped_len = 0, m_len = map->m_len;
-> +	ext4_lblk_t m_lblk = map->m_lblk;
-> +	int ret;
-> +
-> +	WARN_ON(!(flags & EXT4_GET_BLOCKS_CREATE));
-> +
-> +	do {
-> +		ret = ext4_map_blocks(handle, inode, map, flags);
-> +		if (ret < 0)
-> +			return ret;
-> +		mapped_len += map->m_len;
-> +		map->m_lblk += map->m_len;
-> +		map->m_len = m_len - mapped_len;
-> +	} while (mapped_len < m_len);
-> +
-> +	map->m_lblk = m_lblk;
-> +	map->m_len = mapped_len;
-> +	return mapped_len;
+Recently I was testing LLMs for RISC-V on Linux plus Buildroot plus
+OpenSBI and Spike ISA Simulator. Nevertheless, given my rootfs end up
+being pretty large, 3.6GB at the moment, my linux boot falls short
+with "Initramfs unpacking failed: write error". I was trying to debug
+this problem last week, but got confused with code complexity :(.
 
-ouch! 
-1. I need to make sure map.m_pblk is updated properly.
-2. I need to make sure above call only happens with bigalloc.
+Nevertheless, following my earlier debug attempts I suspect this
+xwrite's 2G-4K write limitation to be the main cause of unpacking to
+rootfs, write buffer and do copy functions falling. In more detail, I
+see expected initrd_start and initrd_end values being reserved at the
+start of boot process and being transferred as unpacking to rootfs
+arguments, however within that function body len is being assigned to
+random numbers less than 2G until the very last moment when it
+suddenly tries to write almost 3GBs of data at once. To work around
+this problem, I was thinking about whether to do multiple unpacking to
+rootfs of my large initramfs in smaller chunks.  Another idea was to
+try to understand how internal FSM works and avoid body len to be
+assigned to arbitrarily large numbers. However, after I test these two
+ideas I end up with "junk at the end of compressed archive" error. As
+a result I have following questions:
 
-Sorry about that. Generally not a good idea to send something that late
-at night.
-But I guess this can be fixed easily. so hopefully the algorithm should
-still remain, more or less the same for ext4_map_blocks_atomic().
+1) In this regard, do you by chance have any recommendations on how I
+can enable safe unpacking of my large rootfs?
+2) Is it actually possible?
+3) Or can errors be coming from the Spike simulator's side? What
+should I be looking for particularly?
+4) If an error might be coming from visually arbitrary assignment of
+body len values, can you guys explain how the write buffer FSM works?
+I got a bit confused with that part of the code :(
 
--ritesh
+Hope for your kind understanding!
+
+Thanks,
+Best wishes
 
