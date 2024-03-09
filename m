@@ -1,122 +1,94 @@
-Return-Path: <linux-kernel+bounces-98051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DC9487740F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 23:09:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C09D877419
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 23:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE16DB2199A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 22:09:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C38C2817E8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 22:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B88451C4B;
-	Sat,  9 Mar 2024 22:09:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mrAOruxk"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0151524AE;
+	Sat,  9 Mar 2024 22:20:05 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D99E433B6
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 22:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1238E47F47
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 22:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710022168; cv=none; b=Ahe1seOEFZksyeqE7FGen4/L85+ZEG+pHJIFJ0bGQvjL5c6y7AgeMHaJ1SmsXSb5i5BFuZVMwn3B/DmrI8QXHkObpKsOGRSFYRsRsco1elMO8Lamc0iiwq9+thglTO5qjPsjHjOSbX5E/1Kq/RABn68saZXysYVa/fT+5tgdPBI=
+	t=1710022805; cv=none; b=YCe9BlbAQoM367UBU8Ie21jGgtkbMANQ+VWXecMTl4h2Uaco7QHtohJHEJINod1pWHtv6JzfPBH4nkYI6SFsHo/80/3IbdLlJ/qDYWzux8nPXZobAXs5XIywYLTr33Gx9ryGp6Q4iHme89d5iTFmiuHnWlWM7EC2I3XIMhse3/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710022168; c=relaxed/simple;
-	bh=doQPr5qE7jmCw02bjSdKCIowfe++8fhb9Kqtk30RSHQ=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=uWPD6mcQfSxubWWE57S66R4izWilzeHEB/cfYXKcGb0JX+KNhmv0f1q1eO61yOwvydG8xZFT6wc1yqji8n9OM5wBwEPeoh9TSde/OdSyNlrt1jWzjJSla/8jcCwKyAL9T1/ubV7wN9Q6z41oGf5DLDTfwNl8sgKFaS38pA6qwIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mrAOruxk; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565c4d0fa48so1676884a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 14:09:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710022165; x=1710626965; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qoUSCQi/eFDOlpUwRftgrlRLAzvhB9clzneZL40gpr0=;
-        b=mrAOruxkVx+7RLKbHJiUmfo/B7BRm6LXnoPS/3EtDWX0kplBv8WodM3jX20/lctjyG
-         YUM2xWhohfObzECXm9+HJj7i1E8uClBBvulKR+EaIyJXrMtfvMXaajBO1P2sjnO841NT
-         WXvjJnoEbstj4FeSGIIl/cYGNtiPe11x70BH5iC3sNCyHXSOuzjsM1VP94fmrJVXBGpk
-         BSoOZoPNxWyhBJdAciH+uKd5ox4uZ0q/H5XVLYbtc4eFlBlMmkixXpUCXIyz0SADOurq
-         t0cEJaMoPsER0VxFBaIabsO9Y3IXvrDSPlCMrNoFwQ3xXHy8ibjNeZE/mgULcGz7TeZd
-         Pfxg==
+	s=arc-20240116; t=1710022805; c=relaxed/simple;
+	bh=zFhNXKbHLt203SwwQ+ckq7WpijojBJ+o7aN23dGfPCo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=VOva9j2LXV6XohdKjJOzBG/wk2lmORTI7+1n06jV3RNa02O2zrjiISITOhQTwGFORUmVxN52cG6riDgteD9j+BC+DAWQUAyZ0QwBUXG8LcSrpXPEIRiwB4qjUXYlAQEkhCLBQpNQVT8vEVXo2xUsI1GGamYtcxUMQOOH7BE/F1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c84b3570cfso323124939f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 14:20:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710022165; x=1710626965;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qoUSCQi/eFDOlpUwRftgrlRLAzvhB9clzneZL40gpr0=;
-        b=t2jIjr2kE625Mqwe6bzndN7if8zS2ptbQ/pzkJ72HtB3BvxttvqLFoy7qzsMi5qFSL
-         RZ8fXaAq9YuPPv5Jb0Ii3r95JVmy55dj3lRu4JZFAHDa3hRLbrsjxR5s0UFjXizru6sO
-         GAvHOmMJX6JMf9+o8WOQTVY3qK+3Ha6gQ2KyZ6iEzKsqHO82oXuGsBDOasO5nlJxZVq4
-         mc8hg2WjGcUy5a1ez3mS7mCx7ErbZB29MkY+fP8bF8DeTq0wJjgPiDjjQGmFL7DIy/zV
-         pufC7vnyq0DuBhWEpwsyceXke2anbIkt4S5LcjAkBuAUlm6nSopR+hm7Ea1fFUmCvLzt
-         CsBA==
-X-Forwarded-Encrypted: i=1; AJvYcCVGQbbbTUwkmMLXHkahbvfYK6edYgKo6lQJo7pkXcDSqY9fd9AotlecttsEUMTC3hzDjUt+3VwLEA8ADGwANGSB+VGEUirc3icycGpV
-X-Gm-Message-State: AOJu0Yxcrs10QGa1Qew9MsBXrLVsmGG/7AARLo0fAKFZiFDO83XVRDRp
-	XumWe0IebYahyMuTuE0CzSO9dnTtL/jx4GDOJl3RcYBRSk8b3zql
-X-Google-Smtp-Source: AGHT+IHq/zSw/ri/GPhvDZJiXlfMIVOElyVsyuzxM/D06auLvoCaLZ4Fsg9EH/vkQ4WdeY3Md8hNvA==
-X-Received: by 2002:a05:6402:4485:b0:568:4bbe:b3bc with SMTP id er5-20020a056402448500b005684bbeb3bcmr535255edb.0.1710022165258;
-        Sat, 09 Mar 2024 14:09:25 -0800 (PST)
-Received: from [192.168.0.102] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id n23-20020a5099d7000000b005682f47aea7sm1324392edb.94.2024.03.09.14.09.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Mar 2024 14:09:24 -0800 (PST)
-Message-ID: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
-Date: Sat, 9 Mar 2024 23:09:24 +0100
+        d=1e100.net; s=20230601; t=1710022803; x=1710627603;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TPIQ5P+kw5ZjaCXLN4LFGtLM3L78K1ihJHtxoWuotIA=;
+        b=Ew7pSwpZ2tLTQC598vvzG+Fw93EhhZzLbqGjPzkoFApqVr6xjxJiZ40oeIm4WsgKZ0
+         DAhVTR5uznRH0ZHR6NiTTDEiHTk5Gs5Cp8HwTyxGCt+Tlbp/7mo4UEYMMrCFvFENvitm
+         Y+oCw2PqBjggiCnARyU24as3BZw2VRBEGFbP8jyADPxk/CeK7rk7RsZ2MgmV8BJMjSeE
+         Z4480Q1YPHWnLb9b2nAVTILxUGssdcxNKzweEZvsEodx6cQRQVeOaxff4/oCXNjvC4C7
+         n+hgwkixyzAAk61W2tLsmzHTZZ4yIQiZnh/DNSaVUfsYON411qQwGuoZlK1BtMP8tB66
+         uokg==
+X-Forwarded-Encrypted: i=1; AJvYcCX9zxG4asi3SRYXmYmiReamfmc75GHgf3H51CS5iOduevUW/iF501F/zHKdykcmIBd+3S3X16leQAZzVtowX14IcWQLVgESRBfzt+jv
+X-Gm-Message-State: AOJu0Yxvwlu3VCNmHRHVnl7xLOYLaQWzHOg8Ru7oKXa9RHp/daX3Hwl7
+	+9eySpa11Rg77gL0MTZKZq0TY3xqbJgk5p0jNz4FEGv3R3Jbae2LQabwF5ijfzgy0Bd3SoUbVIM
+	2mV+atuMQHsvNpZFZGg2s06gV17pNi7AnNCiIJyYftPrtz08eyROzDro=
+X-Google-Smtp-Source: AGHT+IGSVfooHSgQwTj5YVYCcfxioZPTQ9PhJk3trwjRuYHiOmZVPRfAANHZslMUL0ge14sAYcOQNmNuc8GVHbuxjaDiEEOQB1Xi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc: Larry.Finger@lwfinger.net, johannes@sipsolutions.net, kvalo@kernel.org,
- arnd@arndb.de
-From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Subject: [RFC] staging: wlan-ng: Driver broken since kernel 5.15
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:2b09:b0:474:8aed:36d2 with SMTP id
+ fm9-20020a0566382b0900b004748aed36d2mr204238jab.2.1710022803352; Sat, 09 Mar
+ 2024 14:20:03 -0800 (PST)
+Date: Sat, 09 Mar 2024 14:20:03 -0800
+In-Reply-To: <0000000000007bedb605f119ed9f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c07a08061341b549@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in open_xa_dir
+From: syzbot <syzbot+8fb64a61fdd96b50f3b8@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, hdanton@sina.com, jack@suse.cz, 
+	jeffm@suse.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mingo@redhat.com, paul@paul-moore.com, peterz@infradead.org, 
+	reiserfs-devel@vger.kernel.org, roberto.sassu@huawei.com, 
+	roberto.sassu@huaweicloud.com, syzkaller-bugs@googlegroups.com, 
+	will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+syzbot suspects this issue was fixed by commit:
 
-I would remove the driver from the mainline kernel. What are your thoughts?
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-I bought two WLAN devices (DUT: D-Link DWL-122 and T-Sinus 111 data) 
-that are supported by wlan-ng driver. Issue is that the driver is not 
-working anymore.
+    fs: Block writes to mounted block devices
 
-The error picture is that the device does not receive any packets.
-The dmesg says:
-[  123.695917] prism2_usb 2-1.6:1.0 wlan0: Unknown mgmt request message 
-0x0e4f9800
-[  127.508211] prism2_usb 2-1.6:1.0 wlan0: Unknown mgmt request message 
-0x04f0d000
-..
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11c28556180000
+start commit:   5eff55d725a4 Merge tag 'platform-drivers-x86-v6.7-7' of gi..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b
+dashboard link: https://syzkaller.appspot.com/bug?extid=8fb64a61fdd96b50f3b8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d80b99e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148cccdee80000
 
-A working commit 8fc4fb1728855a22f9149079ba51877f5ee61fc9 (HEAD) Date: 
-Mon Jul 5 11:16:28 2021 -0700
-A failing commit  d980cc0620ae77ab2572235a1300bf22519f2e86 (HEAD) Date: 
-  Fri Jul 16 19:08:09 2021 -0700
+If the result looks correct, please mark the issue as fixed by replying with:
 
-This means that the devices are unusable since kernel 5.15.
+#syz fix: fs: Block writes to mounted block devices
 
-A look into the bitrates shows that only up to 11MBits are supported.
-static const struct ieee80211_rate prism2_rates[] = {
-..
-	{ .bitrate = 110 }
-};
-
-Would be interesting to see why this happened. But it is difficult for 
-me to find it.
-
-Thanks for your support.
-
-Bye Philipp
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
