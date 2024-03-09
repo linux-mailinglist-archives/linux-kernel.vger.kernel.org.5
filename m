@@ -1,225 +1,155 @@
-Return-Path: <linux-kernel+bounces-97828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5677287700F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:19:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4780F877011
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AECAFB21156
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:19:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC10528203A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 09:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A7037714;
-	Sat,  9 Mar 2024 09:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="L+9RcUc+"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 891911B812;
-	Sat,  9 Mar 2024 09:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D18E381AF;
+	Sat,  9 Mar 2024 09:21:39 +0000 (UTC)
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1A837143;
+	Sat,  9 Mar 2024 09:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.243.71.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709975944; cv=none; b=M9pZk602Tq+3NXXIWI3hkZEISARYOHWOfJL/UhpeK566QyQ8RQv6vU8fbVmmXZZmvI/02V/TZ4KLahUKDfDLXqXcVP/czpvAbZGUjtaLEfM2t4RoWvSyqA479Kdd7rDsuTijj72pgNfj1EZ0fHUKoJFFWftMbNhgbx2I3t25QNw=
+	t=1709976098; cv=none; b=cIpPgkFsjtlz8vyV33NuA0JYO560wwi3l1QYGWoui3RpQt49yZK1RvQhSQ0jokSQiYe7Q+S67fNIucLePnzolHcwJ1GVKGzQSLALskI7ZKWabz9lX0fwiqPCQci6H1+Opwj0BDUMFkPKs/XrEtFrriRtPlZVMN3Qy/bYW5Eyv9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709975944; c=relaxed/simple;
-	bh=Ux0WJFeowGt5yrDIThy56GSZqM+v/sxv/NpN68swGo8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nZDh7c8D3G4RNEQSo/0ic2NnkwFQnOjesY2OPXC2oVKDIVqeP8oNMmnCyzC0EPiBfqXv+zgo/0p+XC86jmeGgzlWELFeiCVQx94rs9kx2MZV1E1oqWy4ZFzpgynwaszy29t4ugsVdUnAc65/yr3eHgRcDgrbAHPrRvUHX4b8sZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=L+9RcUc+; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=MwVxH
-	y+Aa4RRxGA7ldVvcg1WnIJ94XpygDkHKQfLlvY=; b=L+9RcUc+JW1igVmiaptVl
-	iRCh2BPnIZxEKytBwVfo+Lctf3OsKuTzsBNgvd3fRHMG7+v9OF4EyXFr1r28WL4Z
-	wh15h7IBa9l84eanjnASAT3YFVn7I3Lmzp5ghn576J/bPocz8TXeCFTbmxHdoo8p
-	PfUoNzcZhwqvwvRHpD/P9Q=
-Received: from localhost.localdomain (unknown [114.250.139.10])
-	by gzga-smtp-mta-g2-0 (Coremail) with SMTP id _____wD3_5ZoKexlgzFyAQ--.23868S2;
-	Sat, 09 Mar 2024 17:18:35 +0800 (CST)
-From: Dingyan Li <18500469033@163.com>
-To: stern@rowland.harvard.edu,
-	gregkh@linuxfoundation.org
-Cc: linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] USB: Use EHCI control transfer pid macros instead of constant values.
-Date: Sat,  9 Mar 2024 17:18:31 +0800
-Message-Id: <20240309091831.93395-1-18500469033@163.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-In-Reply-To: <2024030910-hurled-ibuprofen-1b52@gregkh>
-References: <2024030910-hurled-ibuprofen-1b52@gregkh>
+	s=arc-20240116; t=1709976098; c=relaxed/simple;
+	bh=qu1SVhckDWVGJDdfG0lqncAupnFVlU4EWMvXGIuWYIE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YOYJaYGWk2WFOnjL+QtTK7aJKjl1ULhYrn0F4JWagUhn3B891pNMxPZLH8jtY1KMgBkBO8ALV7og7TgDoH399Kfi8rEIUyz/JA9pyLezogQN18bIXuxLKQSLqNnkUmxL9C8b0WsqK4XeEadMLOMlmDbVOHigJ3QOq9JOToRlQL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dominikbrodowski.net; spf=pass smtp.mailfrom=dominikbrodowski.net; arc=none smtp.client-ip=136.243.71.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dominikbrodowski.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dominikbrodowski.net
+Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
+	by isilmar-4.linta.de (Postfix) with ESMTPSA id 916AF200307;
+	Sat,  9 Mar 2024 09:21:25 +0000 (UTC)
+Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
+	id 2A548A006A; Sat,  9 Mar 2024 10:20:08 +0100 (CET)
+Date: Sat, 9 Mar 2024 10:20:08 +0100
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+To: "Wu, Wentong" <wentong.wu@intel.com>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
+	"Winkler, Tomas" <tomas.winkler@intel.com>,
+	"mchehab@kernel.org" <mchehab@kernel.org>,
+	"hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: v6.8.0-rc6: mei_ace_probe / mei_vsc_probe: do not call blocking
+ ops when !TASK_RUNNING
+Message-ID: <ZewpyJ3d7gx3dSvA@shine.dominikbrodowski.net>
+References: <Zd9wUv1zSJ59WS8i@shine.dominikbrodowski.net>
+ <Zd-BVmoFOiCxA632@kekkonen.localdomain>
+ <ZeAwhhW7DSEazs0F@shine.dominikbrodowski.net>
+ <ZeAymVVsI-CNj6Pc@kekkonen.localdomain>
+ <ZeC2jss4IAM4aPWy@shine.dominikbrodowski.net>
+ <MW5PR11MB5787E3A96C8EFF3C9F8BC8908D272@MW5PR11MB5787.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3_5ZoKexlgzFyAQ--.23868S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxtF1fAryUXw47ury3Zr4fZrb_yoW7GFyrpF
-	W3WFW7tayUJr4YqwnrGFsYyF1rJw13Ja4qgFW29397Cr4vyr15GF17KFWftr9rXrykur1a
-	qr43Xr98urs7JFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uidb8UUUUU=
-X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/1tbiQBecy2VOBz0h7QAAsd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW5PR11MB5787E3A96C8EFF3C9F8BC8908D272@MW5PR11MB5787.namprd11.prod.outlook.com>
 
-Macros with good names offer better readability. Besides, also move
-the definition to ehci.h.
+Hi Wetong,
 
-Signed-off-by: Dingyan Li <18500469033@163.com>
-Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
----
-V1 -> V2: Replacement in more places where Alan pointed out.
-V2 -> V3: Add Reviewed-by for Alan
+Am Fri, Mar 08, 2024 at 11:45:44PM +0000 schrieb Wu, Wentong:
+> Did you try master branch (v6.8) without IPU6 driver? There
+> should be problems with the IPU6 driver you use as below:
+> 
+> > intel-ipu6 0000:00:05.0: Found supported sensor OVTI01A0:00
+> > intel-ipu6 0000:00:05.0: Connected 1 cameras
+> 
+> If not, could you please help try it on your side?
 
- drivers/usb/host/ehci-dbg.c | 10 +++++-----
- drivers/usb/host/ehci-q.c   | 20 ++++++++------------
- drivers/usb/host/ehci.h     |  8 +++++++-
- 3 files changed, 20 insertions(+), 18 deletions(-)
+Branch master from https://git.linuxtv.org/sailus/media_tree.git/ causes a
+WARNING during boot; some extracts from dmesg:
 
-diff --git a/drivers/usb/host/ehci-dbg.c b/drivers/usb/host/ehci-dbg.c
-index c063fb042926..435001128221 100644
---- a/drivers/usb/host/ehci-dbg.c
-+++ b/drivers/usb/host/ehci-dbg.c
-@@ -430,13 +430,13 @@ static void qh_lines(struct ehci_hcd *ehci, struct ehci_qh *qh,
- 				mark = '/';
- 		}
- 		switch ((scratch >> 8) & 0x03) {
--		case 0:
-+		case PID_CODE_OUT:
- 			type = "out";
- 			break;
--		case 1:
-+		case PID_CODE_IN:
- 			type = "in";
- 			break;
--		case 2:
-+		case PID_CODE_SETUP:
- 			type = "setup";
- 			break;
- 		default:
-@@ -602,10 +602,10 @@ static unsigned output_buf_tds_dir(char *buf, struct ehci_hcd *ehci,
- 	list_for_each_entry(qtd, &qh->qtd_list, qtd_list) {
- 		temp++;
- 		switch ((hc32_to_cpu(ehci, qtd->hw_token) >> 8)	& 0x03) {
--		case 0:
-+		case PID_CODE_OUT:
- 			type = "out";
- 			continue;
--		case 1:
-+		case PID_CODE_IN:
- 			type = "in";
- 			continue;
- 		}
-diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
-index 666f5c4db25a..ba37a9fcab92 100644
---- a/drivers/usb/host/ehci-q.c
-+++ b/drivers/usb/host/ehci-q.c
-@@ -27,10 +27,6 @@
- 
- /*-------------------------------------------------------------------------*/
- 
--/* PID Codes that are used here, from EHCI specification, Table 3-16. */
--#define PID_CODE_IN    1
--#define PID_CODE_SETUP 2
--
- /* fill a qtd, returning how much of the buffer we were able to queue up */
- 
- static unsigned int
-@@ -230,7 +226,7 @@ static int qtd_copy_status (
- 			/* fs/ls interrupt xfer missed the complete-split */
- 			status = -EPROTO;
- 		} else if (token & QTD_STS_DBE) {
--			status = (QTD_PID (token) == 1) /* IN ? */
-+			status = (QTD_PID(token) == PID_CODE_IN) /* IN ? */
- 				? -ENOSR  /* hc couldn't read data */
- 				: -ECOMM; /* hc couldn't write data */
- 		} else if (token & QTD_STS_XACT) {
-@@ -606,7 +602,7 @@ qh_urb_transaction (
- 		/* SETUP pid */
- 		qtd_fill(ehci, qtd, urb->setup_dma,
- 				sizeof (struct usb_ctrlrequest),
--				token | (2 /* "setup" */ << 8), 8);
-+				token | (PID_CODE_SETUP << 8), 8);
- 
- 		/* ... and always at least one more pid */
- 		token ^= QTD_TOGGLE;
-@@ -620,7 +616,7 @@ qh_urb_transaction (
- 
- 		/* for zero length DATA stages, STATUS is always IN */
- 		if (len == 0)
--			token |= (1 /* "in" */ << 8);
-+			token |= (PID_CODE_IN << 8);
- 	}
- 
- 	/*
-@@ -642,7 +638,7 @@ qh_urb_transaction (
- 	}
- 
- 	if (is_input)
--		token |= (1 /* "in" */ << 8);
-+		token |= (PID_CODE_IN << 8);
- 	/* else it's already initted to "out" pid (0 << 8) */
- 
- 	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
-@@ -709,7 +705,7 @@ qh_urb_transaction (
- 
- 		if (usb_pipecontrol (urb->pipe)) {
- 			one_more = 1;
--			token ^= 0x0100;	/* "in" <--> "out"  */
-+			token ^= (PID_CODE_IN << 8);	/* "in" <--> "out"  */
- 			token |= QTD_TOGGLE;	/* force DATA1 */
- 		} else if (usb_pipeout(urb->pipe)
- 				&& (urb->transfer_flags & URB_ZERO_PACKET)
-@@ -1203,7 +1199,7 @@ static int ehci_submit_single_step_set_feature(
- 		/* SETUP pid, and interrupt after SETUP completion */
- 		qtd_fill(ehci, qtd, urb->setup_dma,
- 				sizeof(struct usb_ctrlrequest),
--				QTD_IOC | token | (2 /* "setup" */ << 8), 8);
-+				QTD_IOC | token | (PID_CODE_SETUP << 8), 8);
- 
- 		submit_async(ehci, urb, &qtd_list, GFP_ATOMIC);
- 		return 0; /*Return now; we shall come back after 15 seconds*/
-@@ -1216,7 +1212,7 @@ static int ehci_submit_single_step_set_feature(
- 	token ^= QTD_TOGGLE;   /*We need to start IN with DATA-1 Pid-sequence*/
- 	buf = urb->transfer_dma;
- 
--	token |= (1 /* "in" */ << 8);  /*This is IN stage*/
-+	token |= (PID_CODE_IN << 8);  /*This is IN stage*/
- 
- 	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
- 
-@@ -1229,7 +1225,7 @@ static int ehci_submit_single_step_set_feature(
- 	qtd->hw_alt_next = EHCI_LIST_END(ehci);
- 
- 	/* STATUS stage for GetDesc control request */
--	token ^= 0x0100;        /* "in" <--> "out"  */
-+	token ^= (PID_CODE_IN << 8);        /* "in" <--> "out"  */
- 	token |= QTD_TOGGLE;    /* force DATA1 */
- 
- 	qtd_prev = qtd;
-diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
-index 1441e3400796..d7a3c8d13f6b 100644
---- a/drivers/usb/host/ehci.h
-+++ b/drivers/usb/host/ehci.h
-@@ -321,10 +321,16 @@ struct ehci_qtd {
- 	size_t			length;			/* length of buffer */
- } __aligned(32);
- 
-+/* PID Codes that are used here, from EHCI specification, Table 3-16. */
-+#define PID_CODE_OUT   0
-+#define PID_CODE_IN    1
-+#define PID_CODE_SETUP 2
-+
- /* mask NakCnt+T in qh->hw_alt_next */
- #define QTD_MASK(ehci)	cpu_to_hc32(ehci, ~0x1f)
- 
--#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && QTD_PID(token) == 1)
-+#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && \
-+						QTD_PID(token) == PID_CODE_IN)
- 
- /*-------------------------------------------------------------------------*/
- 
--- 
-2.25.1
 
+mei_me 0000:00:16.0: enabling device (0000 -> 0002)
+mei_hdcp 0000:00:16.0-b638ab7e-94e2-4ea2-a552-d1c54b627f04: bound 0000:00:02.0 (ops i915_hdcp_ops)
+mei_pxp 0000:00:16.0-fbf6fcf1-96cf-4e2e-a6a6-1bab8cbe36b1: bound 0000:00:02.0 (ops i915_pxp_tee_component_ops)
+intel_vsc intel_vsc: silicon stepping version is 0:2
+------------[ cut here ]------------
+do not call blocking ops when !TASK_RUNNING; state=2 set at [<000000001b97ea26>] prepare_to_wait_event+0x54/0x1a0
+WARNING: CPU: 5 PID: 124 at kernel/sched/core.c:10099 __might_sleep+0x59/0x60
+Modules linked in:
+CPU: 5 PID: 124 Comm: kworker/u24:2 Tainted: G                T  6.8.0-rc2+ #2
+Hardware name: Dell Inc. XPS 9315/00KRKP, BIOS 1.1.3 05/11/2022
+Workqueue: events_unbound deferred_probe_work_func
+RIP: 0010:__might_sleep+0x59/0x60
+Code: ee 48 89 df 5b 31 d2 5d e9 24 fd ff ff 48 8b 90 60 15 00 00 48 c7 c7 a8 3e aa 84 c6 05 6f b3 47 03 01 48 89 d1 e8 b7 6c fb ff <0f> 0b eb d1 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffbd3ec1287a98 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffffffff84a07d0f RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000ea5 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: ffffa224892a3028 R14: ffffa22494ac1028 R15: 00000000c1287b00
+FS:  0000000000000000(0000) GS:ffffa22bef680000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557ffdf03148 CR3: 00000002b645c000 CR4: 0000000000f50ef0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ ? __might_sleep+0x59/0x60
+ ? __warn+0x80/0x170
+ ? __might_sleep+0x59/0x60
+ ? report_bug+0x182/0x1b0
+ ? handle_bug+0x40/0x80
+ ? exc_invalid_op+0x17/0x80
+ ? asm_exc_invalid_op+0x1a/0x20
+ ? __might_sleep+0x59/0x60
+ ? __might_sleep+0x59/0x60
+ gpiod_get_value_cansleep+0x19/0x60
+ vsc_tp_xfer+0x177/0x570
+ ? __pfx_autoremove_wake_function+0x10/0x10
+ mei_vsc_write+0xe5/0x1d0
+ mei_hbm_cl_flow_control_req+0x84/0xd0
+ mei_cl_read_start+0x23b/0x330
+ mei_cldev_register_rx_cb+0xf5/0x140
+ mei_ace_probe+0x11f/0x390
+ ? kernfs_add_one+0x146/0x180
+ ? really_probe+0x166/0x300
+ really_probe+0x166/0x300
+ ? __pfx___device_attach_driver+0x10/0x10
+ __driver_probe_device+0x6e/0x120
+ driver_probe_device+0x1a/0x90
+ __device_attach_driver+0x8e/0xd0
+ bus_for_each_drv+0x90/0xf0
+ __device_attach+0xac/0x1a0
+ ? process_one_work+0x19c/0x500
+ bus_probe_device+0x93/0xb0
+ ? process_one_work+0x19c/0x500
+ deferred_probe_work_func+0x96/0xd0
+ process_one_work+0x205/0x500
+ worker_thread+0x1dc/0x3e0
+ ? __pfx_worker_thread+0x10/0x10
+ kthread+0xea/0x120
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x2c/0x50
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork_asm+0x1b/0x30
+ </TASK>
+irq event stamp: 1166879
+hardirqs last  enabled at (1166885): [<ffffffff81cb6348>] console_unlock+0x118/0x170
+hardirqs last disabled at (1166890): [<ffffffff81cb632d>] console_unlock+0xfd/0x170
+softirqs last  enabled at (1166640): [<ffffffff81c1333e>] irq_exit_rcu+0x7e/0xa0
+softirqs last disabled at (1166635): [<ffffffff81c1333e>] irq_exit_rcu+0x7e/0xa0
+---[ end trace 0000000000000000 ]---
+mei intel_vsc-5db76cf6-0a68-4ed6-9b78-0361635e2447: deferred probe pending: (reason unknown)
+mei intel_vsc-92335fcf-3203-4472-af93-7b4453ac29da: deferred probe pending: (reason unknown)
+
+
+Best,
+	Dominik
 
