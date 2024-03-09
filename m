@@ -1,98 +1,84 @@
-Return-Path: <linux-kernel+bounces-97924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71D538771B5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:51:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0CD8771BA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2587A1F215C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:51:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 151B6281BFD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB06743ADE;
-	Sat,  9 Mar 2024 14:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ACEE43ACD;
+	Sat,  9 Mar 2024 14:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TuPmQ3l8"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MYB331rD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D049E79DB;
-	Sat,  9 Mar 2024 14:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B361BDF4;
+	Sat,  9 Mar 2024 14:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709995884; cv=none; b=PiZk0hP9TzuHq4QLFxnzTZvzM4kDNjv5nbVfMeOimt5nuiIzygARe27iAnslHT+eF9GPECR/FyE5m5eRqD425t6z5PG3jpe/9jCO96xEXJDffCptHlp9FUbAsi9fwo9ZiGLgWvtMXwWKF+wOPHIF82Z8XqhCm77VSfwFnZZmKLU=
+	t=1709996176; cv=none; b=J+l39YNEwrKNFh64Cj1pKdoU0GB8Y/XlxAH9ZqfJgQCwCId+7qKhhhlqyXNmTtso2RYv12jRMcU6XaMge8oB9px+ujdsE+Vx45LHTqzHBk2QOCCe29Tu6FkaUQJi8CPX3ZA4dvmRXNvs0V2ypWHWTnKp+GaonHcibNrK1qAax7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709995884; c=relaxed/simple;
-	bh=D5J5SEP+6OfPVRUu5s1VyefzTSu8eHTF9vyDlwm9kt4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nnZPUzlXxnpRv8jqH3fySQuzUieVxURoxB7LMwS/tmKv7eWWpBqsItZfs2XSX6ijy5hcdYPoNozmBJaJ37WsdYnxu7Hq7N8hFLchA0xxtktRqv0lJosiYgVGeQ9w9HN5EQ953mIRx6a1ZgQVxg3ABMVkG4pulYkLx5/S/aAwpIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TuPmQ3l8; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dd74a009bdso3874165ad.0;
-        Sat, 09 Mar 2024 06:51:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709995882; x=1710600682; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D5J5SEP+6OfPVRUu5s1VyefzTSu8eHTF9vyDlwm9kt4=;
-        b=TuPmQ3l8KRMKQV3Qm5XXfU39Z28e0NMI+Vhx+9y0XJKfp7oMCIwKOplC7i1GR3vTSx
-         ibtu54gypdNhGmeHTlSX3gyz5A92UA+eCQdEDAQ7oN9MF4tDGEttZsv+9t+/OOphXI0Z
-         nw/7lSK+xqXUetkdvQzYGiM7kxePMpxpOrs321dhrtCg8zuCvmajC2IvhIhJQPRyvc7Q
-         oCF37qRbjBC4TKb2bHZzbIoy+mf3e8nbDtI5YD433aZWaveh7X4ja2yJP0KAZ+59yJBC
-         is62r2Xj7U688G8lPBGFLX4xacHzEtd2I2WNp4qx4MTv93PLYhSebks1L0ZEAYfOCYv3
-         UNAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709995882; x=1710600682;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D5J5SEP+6OfPVRUu5s1VyefzTSu8eHTF9vyDlwm9kt4=;
-        b=xAZuqqr/SaSAkvU+Qkvo1TBBKmAWbhlfTkuRquKbYgq+7liP4+x8c4wTQtwx/0D23M
-         OYLM7CDClAIKfiboLxFLjixzhbX1ugGC40NwAzwyEkwGnOUMWgrcFFrPtW2d3oZfJObY
-         0IF0RqrdG7EcsUlAGk8rz/MgpZaW4OXihb/+9bfxOO58lf/oOaF6Cy7V0aHA/lf3ibrg
-         Vs9sYpqA3ricz9Rsmob8BWlI3x7RSZEwRfLbSLbn8B2OYM4JLeBHzru0zQGfnE1XJ4Bq
-         iq5aGvNsOBvGnGQb/IQ6VMcCfCgtheY8WEEYGqmc7W0rrOO6ZbSuENuwmlY9bqiFxbn/
-         CNGg==
-X-Forwarded-Encrypted: i=1; AJvYcCULpkYW/k/DpOg/RtG+0xRl+jHoGBKM6hDgE0ukHF6BRkklCLOGESUEaQahWP/KFze5bUZxxwUsmC98quRvyDYAFMNhgneRA3aQAWLb3AL1ZafubvlNA5vkuxI5D+pyCHniIDKbfrhSPneJvralnbQYClIpUKKRI7cexVVMKR0BtiJnGg==
-X-Gm-Message-State: AOJu0YzyK+RSBn46LXMHEf6slTjMjxHqA3m7V8GoLQCGeluXcBdR6Kdw
-	//RSKuPfdZRAa5b4w2HNbrZjV11Ec+JJ6HG+PfhEi2FVZlO5dELqST1KenYYMawPu+r0k8ePlHX
-	cEnz4eOa9PTUY3EWLne89Z9S30UI=
-X-Google-Smtp-Source: AGHT+IFQxtlBXHLMRdmxNIjXa7EVDuQgFAeVlY7V5pJP8BZdLTgqtdoQFyopNoe8BJC5z3geiv23qh8UI6MzwDaqh9Y=
-X-Received: by 2002:a17:90a:e64b:b0:29b:780c:bc6f with SMTP id
- ep11-20020a17090ae64b00b0029b780cbc6fmr1614117pjb.0.1709995882225; Sat, 09
- Mar 2024 06:51:22 -0800 (PST)
+	s=arc-20240116; t=1709996176; c=relaxed/simple;
+	bh=KBygGl79mgaURge7K4LetcAdkwIssOLeohMMAFX3q2M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tY9OUYj5piy4uoUNp5QTpVUV0VKifILrkzsO97/tVlx/pfPM0dHqdDL+bxA7N0C942duBdoPqtJPRqYw8G1q74S0/mjdmCVq8Lr/ThhbVOGrFNORSfKILLckbjXr4mdP6tDxKQXoQjILhjFMv6kp3oVaVC2rbVLh3g3p5VXmofM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MYB331rD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF47BC433C7;
+	Sat,  9 Mar 2024 14:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709996175;
+	bh=KBygGl79mgaURge7K4LetcAdkwIssOLeohMMAFX3q2M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MYB331rDgVyzvJ1jxivyu5GlC+MMjdqMpT7ZkmjFbpJzVEITaXblE30IrFvzl5Twd
+	 5Po7ocReeh8BJtW758Xgh+6Zfr4vL9i3txE8JkPcv38+uuuw2jmqUidU8ZzDL10g1s
+	 JBACl93u+Md2A1dbt9DDl+eGifPnCxF8NnFQNgrjL0rR1i8abFkogZ/hn4b93q9kBc
+	 DmCcspTxmRW59OO6wdmV7kPC8HHLp7HG9zWRijZ1ZQKmplqGZXP/Uynd5zSWEi++uI
+	 cFZqOIjIlqft9sBl3yHKmACnDrC9o9s2zBcGHes/MX4k5MCnkapS/umNcXsOUHOZ8E
+	 TCDPSoXkeRzGw==
+Date: Sat, 9 Mar 2024 14:54:41 +0000
+From: Simon Horman <horms@kernel.org>
+To: thomas.perrot@bootlin.com
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: macb: remove change_mtu callback
+Message-ID: <20240309145441.GA4701@kernel.org>
+References: <20240308155330.1610616-1-thomas.perrot@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <81e42a64-03c5-4372-914d-9f2df517dcf7@linaro.org>
- <20240309134810.352428-1-animeshagarwal28@gmail.com> <CAOMZO5BBWmbKBJQS48R6Lfa4ua=vhdseHd0vSC+t+OOZ3QHHUg@mail.gmail.com>
- <CAE3Oz80xEpdnUq6JkqXgf_LAM5dJP0TbCHkuPW-KzRVUD95FhA@mail.gmail.com>
-In-Reply-To: <CAE3Oz80xEpdnUq6JkqXgf_LAM5dJP0TbCHkuPW-KzRVUD95FhA@mail.gmail.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Sat, 9 Mar 2024 11:51:11 -0300
-Message-ID: <CAOMZO5D_F8enKAyCkvU5hFuET_U+u0gviiWCe=Oq1FhAQzPqjg@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: imx-pata: Convert to dtschema
-To: Animesh Agarwal <animeshagarwal28@gmail.com>
-Cc: dlemoal@kernel.org, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>, linux-ide@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308155330.1610616-1-thomas.perrot@bootlin.com>
 
-On Sat, Mar 9, 2024 at 11:44=E2=80=AFAM Animesh Agarwal
-<animeshagarwal28@gmail.com> wrote:
->
-> fsl,imx51-pata isn't present in the txt binding as well. Should i add it?
+On Fri, Mar 08, 2024 at 04:53:30PM +0100, thomas.perrot@bootlin.com wrote:
+> From: Thomas Perrot <thomas.perrot@bootlin.com>
+> 
+> Because it doesn't allow MTU changes when the interface is up, although
+> it is not necessary.
+> 
+> This callback has been added to add in a first implementation of the Jumbo
+> support [1],since it has been reworked and moved to the probe [2].
+> 
+> [1] commit a5898ea09aad ("net: macb: Add change_mtu callback with
+>     jumbo support")
+> [2] commit 44770e1180de ("ethernet: use core min/max MTU checking")
+> 
+> Signed-off-by: Thomas Perrot <thomas.perrot@bootlin.com>
 
-Yes, you need to add it and make sure to test it with 'make dt_binding_chec=
-k'.
+Hi Thomas,
+
+Perhaps it is worth mentioning that after this patch the core will set the
+MTU, regardless of if the interface is up or not.
 
