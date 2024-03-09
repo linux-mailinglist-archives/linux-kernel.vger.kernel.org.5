@@ -1,123 +1,95 @@
-Return-Path: <linux-kernel+bounces-97957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95CE987724D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:31:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D81877253
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:34:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7B101C20BC1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:31:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 496E71C20D59
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 16:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D5B1CD23;
-	Sat,  9 Mar 2024 16:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CtftAZmq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D604C1D522;
+	Sat,  9 Mar 2024 16:34:08 +0000 (UTC)
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B219EBF
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 16:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0DE15D4;
+	Sat,  9 Mar 2024 16:34:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710001881; cv=none; b=TGRZmQfkJJ1GC+siWg9pAEf94jf+QdS2wWJfJElS6gubUT3Bc2mgzHFSuW0S64RbXBTC8v2Vz+grVmtI2i5ndWrrjnQVnyHqWssiXpnguP52QmK/6lcF13kb6fFFdPZA10T983WbyDArYivxGHk8fl0ihnJUyAQY4rX/kexsDpQ=
+	t=1710002048; cv=none; b=Ig2SMf+vvvAKdtfoeoOCzFWpuCucQeECtguZTWcg5/s5ksPWl0vDgEAzMIKSFUzPaUejoAuDdcDNnYRWfD1y4W0dZmCb68FGiYXIF07Gvd6rUowBnhCz4lDG42ZG9No7OSynmlo7WFFXUUvfPuNHSElYAtOupGLp5S0/lpEIYF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710001881; c=relaxed/simple;
-	bh=UQc3izrgQr12h3Xm9t3aa7jRiYIq8O1PvIR3W3XHYC0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=tZoyCI4SX4cynErgeZE+bFkRa21O5WZ4bgrXJ3YzE9CLkprwTQ3XO0YxNp55vz8KzhD1xJT6xc+vwIxL+VOrANDCkZAGj4pO2JSFZnGMc89H5YspvRa+pOEgPtHosZuhQF7dfSwkVx8G5p8ZU1TYROC+BOvNNMCw60bBRgmEa/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CtftAZmq; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710001878;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=U/gHXMil7a5VrcnGbVUk1+YLbdf6KR/XO3UxnJ9TTQQ=;
-	b=CtftAZmqvJyjvh62DKZXo+PNb71mecoOdea40xh/cN4ztR1GumyrlaH1aiaebDNBDmRNUs
-	FwNAxXwuAVM14oadT5QdKsZMoICFgkT2wJuBjMipTIFVz2rpIapuqMVPtaJR+/d+Amr0p+
-	tStOjUlKpYVfzXxngu/fNa9pVDNy86I=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-673-s-jvVsfJNZ2UCQRK9TVDZQ-1; Sat,
- 09 Mar 2024 11:31:15 -0500
-X-MC-Unique: s-jvVsfJNZ2UCQRK9TVDZQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E4E2C3C025D0;
-	Sat,  9 Mar 2024 16:31:14 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id BEDC3200E28D;
-	Sat,  9 Mar 2024 16:31:14 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: seanjc@google.com,
-	stable@vger.kernel.org
-Subject: [PATCH] SEV: disable SEV-ES DebugSwap by default
-Date: Sat,  9 Mar 2024 11:31:14 -0500
-Message-Id: <20240309163114.2368452-1-pbonzini@redhat.com>
+	s=arc-20240116; t=1710002048; c=relaxed/simple;
+	bh=wOxas9zQBEk8MEgIDUeQdmT6LSWMnnNmMi1Iiu4hutI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DVa17JogT19GFc9lQ5oxkPh3K4kNzTgB8oQthbMwfBbc1BqWRwzbRt/g0KPzlFA7CW+fkN6ZF3TpDIYCRFthQ9JfL5R0MP/9RRiZGeszkl0fI0koNLbG9JGIL2IcqhdnCgebhaddmLVGoT35IjI4ewKU6pH+OQMqKLySKPAAxRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so1998582a12.3;
+        Sat, 09 Mar 2024 08:34:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710002046; x=1710606846;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BYZp9jddQkF0UARYHJ3+5xAgWFAWRoZaLT/NQI28+QM=;
+        b=nzbfRnUG6D95EgcrrU1PvGuGyw6nNUzmiSvqS1QCv56rbJ2yJWlFTlwggx1kY5HO0L
+         XStc7xcdyDlr7YpUC6QJ2qS0D6d5ixEMjwxIm+IZjmTE4XXi9sMvNnFZ9EDtfXi+eyuo
+         eF67BwDNdbQAFMSJoKqhnksv7PUh/ilCbTXb09NIy1bL1FzPx6QgrtKmNEAvOtKsENst
+         zr44RX2FfFIiKeM5lDBIO5r8iCf3ne9Pjz8tLggbow31xHlKM1UP/wZNkpaJSl2UcwNK
+         SLSD9CeDGfAdn1+SvrDMKITavITx520VN0FROb2SX01xr7IKxO5ikwM/ecXhYJv9QCKd
+         mqrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWTu3D8cNik/DHMo8+qU9diqTxKNJQ6BMJvsGDt6x5xF8EGfI8ozRwQri+HNAYfr2XWilul9jRPkUufIhQLM5trpZ97PlOQUUnNwUXnJBLZ+mvuTFbUG2RVNHDjSzE3FEatmE0iQ3MjagArXa+EdEa0spbIwu7PPOrlfP3PtalV3d59JvXXqIB8pTznC0DCwgWPhsszAthEcG+C5X/rKWHeNkg=
+X-Gm-Message-State: AOJu0YzWFmERgJa5c/n7TDTftksPpePO23JrdIMU99jXBaGG5IsXgC4A
+	HjpUpiIq4J20Tn+dPg/vkKetZvF79AVRttg9CP37nLqxqDFPCqx1
+X-Google-Smtp-Source: AGHT+IH6QYEMBet29Snx7A1/EzWQv1G1V8qVQ1b4eMiUZJS86zsmr7KJ8OeTFHw1wpQ7/2n2vrT6HQ==
+X-Received: by 2002:a05:6a20:e108:b0:1a1:4fce:8eeb with SMTP id kr8-20020a056a20e10800b001a14fce8eebmr1290706pzb.8.1710002046495;
+        Sat, 09 Mar 2024 08:34:06 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id t28-20020a62d15c000000b006e674ef94b2sm1498312pfl.159.2024.03.09.08.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Mar 2024 08:34:06 -0800 (PST)
+Date: Sun, 10 Mar 2024 01:34:04 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v3 0/6] dt-bindings: PCI: qcom: move to dedicated schema
+ (part one)
+Message-ID: <20240309163404.GC229940@rocinante>
+References: <20240126-dt-bindings-pci-qcom-split-v3-0-f23cda4d74c0@linaro.org>
+ <90a50ab4-a513-48af-b13a-bba082e49540@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90a50ab4-a513-48af-b13a-bba082e49540@linaro.org>
 
-The DebugSwap feature of SEV-ES provides a way for confidential guests to use
-data breakpoints.  However, because the status of the DebugSwap feature is
-recorded in the VMSA, enabling it by default invalidates the attestation
-signatures.  In 6.10 we will introduce a new API to create SEV VMs that
-will allow enabling DebugSwap based on what the user tells KVM to do.
-Contextually, we will change the legacy KVM_SEV_ES_INIT API to never
-enable DebugSwap.
+Hello,
 
-For compatibility with kernels that pre-date the introduction of DebugSwap,
-as well as with those where KVM_SEV_ES_INIT will never enable it, do not enable
-the feature by default.  If anybody wants to use it, for now they can enable
-the sev_es_debug_swap_enabled module parameter, but this will result in a
-warning.
+> Krzysztof W., Bjorn H., Lorenzo,
+> 
+> Any comments from your side? If not, could you apply the series? I
+> already have work on top of this and other people are sending patches
+> touching same diff-context, so they should rebase on top of this.
 
-Fixes: d1f85fbe836e ("KVM: SEV: Enable data breakpoints in SEV-ES")
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/sev.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Both series were applied some time ago.  Apologies for the delay.
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index f760106c31f8..69b37956c1c8 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -57,7 +57,7 @@ static bool sev_es_enabled = true;
- module_param_named(sev_es, sev_es_enabled, bool, 0444);
- 
- /* enable/disable SEV-ES DebugSwap support */
--static bool sev_es_debug_swap_enabled = true;
-+static bool sev_es_debug_swap_enabled = false;
- module_param_named(debug_swap, sev_es_debug_swap_enabled, bool, 0444);
- #else
- #define sev_enabled false
-@@ -612,8 +612,11 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
- 	save->xss  = svm->vcpu.arch.ia32_xss;
- 	save->dr6  = svm->vcpu.arch.dr6;
- 
--	if (sev_es_debug_swap_enabled)
-+	if (sev_es_debug_swap_enabled) {
- 		save->sev_features |= SVM_SEV_FEAT_DEBUG_SWAP;
-+		pr_warn_once("Enabling DebugSwap with KVM_SEV_ES_INIT. "
-+			     "This will not work starting with Linux 6.10\n");
-+	}
- 
- 	pr_debug("Virtual Machine Save Area (VMSA):\n");
- 	print_hex_dump_debug("", DUMP_PREFIX_NONE, 16, 1, save, sizeof(*save), false);
--- 
-2.39.1
-
+	Krzysztof
 
