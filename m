@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-97850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311B0877076
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 11:33:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA513877077
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 11:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6164E1C20CB0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:33:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 799512821CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 10:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2889E364DC;
-	Sat,  9 Mar 2024 10:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8340A383AB;
+	Sat,  9 Mar 2024 10:32:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="ggmmh192"
-Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="NlC1BB4n"
+Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC4B364D2
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 10:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7EE6381DD
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 10:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709980351; cv=none; b=f22f3lZn8I3ntOoHoEkNWSxZ08LJW1YROY9JmkFW3N2475sS7IXWUTQckLaHv2dwuGPcbhqwQU8SA1uZTyTt49NQJ5sMlqGZs8xnahKgyKYqM8sXnpJdx4D0+QOu0svXlOJWlA2UDdL/ud19KHx+bJzb/0wG1t4D37su1Ad4xz8=
+	t=1709980364; cv=none; b=DSilv6dqHoMiCXhCLhEuuSiwi8GmGX6F5pGDC34ADqmaYdZyktkWO28e3m1dGya8cqxKKHiUrw2mJQX8sdYYeJypN6+30PZU7Qw0mGuswiaZlz7cV/BAARYJHGzwciHKDFBA88NCHnAdtOyn45HCLlpIRsvMewP6ArfUj4j1tFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709980351; c=relaxed/simple;
-	bh=QR8o9Mcgvrzherax7/FJrNBWYgpyY+GvlXzWcNGeXh8=;
+	s=arc-20240116; t=1709980364; c=relaxed/simple;
+	bh=4Q8Y0s/DZIIeCtVh1+2DKNHiVdkiYLAYibyrXczYUCg=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=t4jMHqSR/e8mtnlLygKMD1FMeSIGmeASsrhYiQGwP6Q8J2jpKzYPyVE/94Waf4PhUPLaVIU3d67gJfeHj2iJFwi0t7PDgBRp/kngHJqB6i82TdT7xIxga/5u5DMzxCks7WWIM9/ZQRayRbUdKVEcVy2Uw8DUz80cx8OVpdkYDiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=ggmmh192; arc=none smtp.client-ip=203.205.221.231
+	 MIME-Version; b=eIC+REDTPg4IeBqJiYHPH+6nGfzy2HP0srzNqWHKPlZUtzVv7PC7pzqM0fm6HIdnfHWESFLtuzHNZG0l1nor/AHFkf7syPmDVx/cWPVJla7SJFi4E8kaEFCw7t1zUFA/mcPvdSp+/vM9HhuaJW1Tquu5eHn+jfZGZrZAcddXByk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=NlC1BB4n; arc=none smtp.client-ip=203.205.251.60
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1709980332;
-	bh=MsTIA1SBG/LU6BZyGBZ5+mArLqd1qw6l69p4VmMQUDc=;
+	s=s201512; t=1709980355;
+	bh=hluYQ3X6fPxKYVqiVUP3UTXquwXzlkOf6HmiAExCtQo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ggmmh192r35eDTqOMtw4xoQ3Cj6wRstFIi9ANaI4MKaVFqkEwaqdXpU+0wzB6gHlc
-	 3z/kln79oGYIIGg/Nf1vNQTOqhgl21T7ZBq6bKvKYrpC2icGeR1h941cFobUktQjMp
-	 /IQfL5fALUVWuYgVcjihQaJqnIxGFVQkEk0rsh00=
+	b=NlC1BB4ndYwETnE4X4e4RAcJntT9b4ifI0WV05Nm2WWyEtDguW3nvKOW+W2tNxjT4
+	 cPITc8vs+kMDpuJ0i5k5xvqmxLrI79PdGJzjYwFYrav6r5myFMnRs6TXcQR6YUPcZc
+	 dGQxtxlbQWWi44a/iIJqCihexUl3c0VBVuGpEzz4=
 Received: from localhost.localdomain ([2409:8961:2a0b:4ad8:c972:9bc3:984f:98a9])
 	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
 	id 7EF8DC9A; Sat, 09 Mar 2024 18:31:47 +0800
-X-QQ-mid: xmsmtpt1709980328tgnbh093x
-Message-ID: <tencent_397E9514756A90C62460BA00F3801FF9F306@qq.com>
-X-QQ-XMAILINFO: OATpkVjS499uJulMZ083zhfPdJS1+llPuecrFAJnWrGhtr6Hl86UVITqWN33zn
-	 DDtNL4r7PI2c3bcOP31XATKjo2HADax8ahG25Fe+oEw963Mve5F8VOzshDzFa64IqUNA0jt+mlpe
-	 wCWZXZ9xb2YAHk4PBqvczwg1ccSlcDaVpuKPSYe8PW7JkGwMdClTWelXRGswTl8rpxK5ojc0l0k1
-	 bEemxs9OnXnnXvqMDFjj+4/J6I2sC8T5Hsr6hrI5fg7aDShjaeLVPwZi30jkHRCpSe18Ol+ArBL4
-	 4TRfY3HJPzDNS0Gkv1KjdtibQnzWT/VxGVvt3TbDxHFr/BtUcuVFC6yzzKNpuapknRbGVIIxPlbq
-	 KPl6tbQlqO9ILQkNSGSz54kTTRVxsYCx/2C/fxTIqJzIKD8SGnRFM/6hw5IdMfaM4ZB2vJc20dcv
-	 nRhpWAh32v4u/jls0SODZWegSizH7tCEUFTHIoMWeC/kdeIxGcnOs4jwHm5BcR34qwDqDsks937V
-	 L4UGnguQ/zR9qCXgr9ivpuk9lMXLnG6Mc0VhCRyQ1/BB3iIBIrh1Yotxc8f2ody/BLh+JrpB9jOw
-	 CEa4P+QzkBngo9csPUzwXNmCjQ5+zIobepKoGs6QDLpFKjRZu3T4+TBFfg4OtUgG2g/5zap+5GOl
-	 mE9bEV1y2Sg7SQNXBUwgr+byxjzWH4LbcmV5US/1CtPxucVloWlJFQyiFGzn0HYlxeI24omlxKpM
-	 i2KovRFHR5v/5mc4kpHmyogTqAN7rhRAG1gtBmHBdEXD+nbzV4KKEzJ9tg9L7ikDM+0nt1PRwBuh
-	 1+8aqECRwbJoNdzgVlvBX0kUUOJ/twBHkx6XssSmGD46Hfft+Oo9wg51Rd+RW286zN0aTGfs93cg
-	 iLhVCW2oz1Dm+AGwsMen/h0VnctO1EEYXWjsLyuTstI/wtq37dteWQHp2Mai7R0beIKelQmQtUkC
-	 qyCuh/HToHCEkKiUGWQx7RgcCgBWF3lQ6KaN4ACjBDZ6jOmTeMTSoqTr+/9V572halu29cuclCWC
-	 5CSZ3JlhjsP2xpRUYKBhvFdcFUeVNWtt/MdVqpfqw8C9RuMPnMSryi8hAVU4nBUwGBNmq7xDswPS
-	 xwyJyjf8X2If32nqSC9RgtptzJxQ==
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+X-QQ-mid: xmsmtpt1709980331tv2e6m911
+Message-ID: <tencent_8A661504B57950D1A4423A387393DFD63306@qq.com>
+X-QQ-XMAILINFO: OEwe1wxmQPEpANXkgHi6haVwpa29YLB4RBR/9RtiThrN9AG84nUF6jTkijhv6K
+	 l7APvLnM2VmhgUrFRJh3XLcOatM5wx0WRl25km5Njc29ZvcIbGGx00w1i0hSXDNcFU/NZ7Nhr2Hv
+	 R2EzjL4jJCkcPlwl829RrtdTNriQYF8dqtrTSXCEetLEJZXm617CSY3dKFu7lqwUmgmNY6jUitfL
+	 hjAba+wowNY1T5BHXQX5Pe8JvznlyhcPOgKC0ppsevOOXJhodPNUSkKd+1MdPDiLZ1MXkvNcEAWx
+	 Dv5Nyz4qI63oxufqFUvoe/2ZhQ7wth/Oaaeg2c7v2kEt0BZdlNYqGpR8lczU2ptR8x909jGrCZ4n
+	 bS2Nt6c9OXfbsaNx6aoliSqv3OjmauLyXqfSFhtCHa50I6RhUfo3D6a4Hma2ZbAjrhm1B3O4R0LO
+	 Xf7jBpu4RoU1UZYgvncAnzNmwDThqQpXxzcwqcwaUQgtYIEZ2bqfGYk08FiWmSezgrR2jclmXLWZ
+	 yqHHCiLPo2BsplMlz6nVlgIgqKcd+nYk4ZUpW0Bj1DIIQ6Z0pFyktrDklwR5vAai+veVMPQC7Zz9
+	 yqwRBwFJ2eHjG2ZMOXzKrSk/UZ+JE1OmiQL5hPtufggapHyJ7vkq/V1/lG6NgGIY2oVxkMg16lBT
+	 JwOjzK7f0qAMS62llqBlBh9cosqNt0pb4jIjnhw84QhKezYEFMgo7ya40SHRZe1XnW6OIP3wKdfx
+	 b7YIAitKJ1I8gd0wsx6f4BvXPeFF4ud5mzBj4NnSGu/e34eSPbShD2OxMiakSmqgBVMSa8zWEugb
+	 EmlUin5pwkNZXiKrWOWxoIF/0GNx0oOWz6m6Q9hERyEIzVMX7ZWEVgcN8b2VxjeWfY3+vzBUt8Hq
+	 uiWQDOLCduWEwwY6X9yf/DEBYdrmXjJf66vK3M73e7m7MW9hKrv1osD+NTn/VoQEI0X2WtDDAIQW
+	 UnRh6axH13SDn4kZeGRzB6mrYtIR0D3eIJqnWiVxCP93+LE25iKe3Mouq4S0UMeHbLw64ABykp9o
+	 FBzMFhClAxtUVGLIDEhy7MYWh2AlMhDPKQvKf8GCMR0ktNJeQ2NlPomsfSKMjdSlF2F/lNwUf/om
+	 QpgVL0At32CkJjmMYzFxjtrtK02fHuU5VfhLYVLO66ar3ePxQ=
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
 From: wenyang.linux@foxmail.com
 To: "Eric W . Biederman" <ebiederm@xmission.com>,
 	Luis Chamberlain <mcgrof@kernel.org>,
@@ -66,10 +66,12 @@ To: "Eric W . Biederman" <ebiederm@xmission.com>,
 	Joel Granados <j.granados@samsung.com>,
 	Christian Brauner <brauner@kernel.org>
 Cc: Wen Yang <wenyang.linux@foxmail.com>,
+	Jan Kara <jack@suse.cz>,
+	"Darrick J. Wong" <djwong@kernel.org>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/9] sysctl: delete these unnecessary static variables i_zero and i_one_hundred
-Date: Sat,  9 Mar 2024 18:31:23 +0800
-X-OQ-MSGID: <785ff7de640d74184ed74908b832f5abcc11964c.1709978655.git.wenyang.linux@foxmail.com>
+Subject: [PATCH v2 7/9] epoll: delete these unnecessary static variables long_zero and long_max
+Date: Sat,  9 Mar 2024 18:31:24 +0800
+X-OQ-MSGID: <946ba0c1970cfc96ebf9ce732d7bb67f237ebfa2.1709978655.git.wenyang.linux@foxmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1709978655.git.wenyang.linux@foxmail.com>
 References: <cover.1709978655.git.wenyang.linux@foxmail.com>
@@ -83,7 +85,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Wen Yang <wenyang.linux@foxmail.com>
 
-Delete unnecessary static variables (i_zero and i_one_hundred)
+Delete unnecessary static variables (long_zero and long_max)
 and encode them directly in the table entry.
 
 Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
@@ -92,48 +94,44 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Kees Cook <keescook@chromium.org>
 Cc: Joel Granados <j.granados@samsung.com>
 Cc: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: "Darrick J. Wong" <djwong@kernel.org>
 Cc: linux-kernel@vger.kernel.org
 ---
- lib/test_sysctl.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/eventpoll.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-diff --git a/lib/test_sysctl.c b/lib/test_sysctl.c
-index 9321d850931f..cf298f25d686 100644
---- a/lib/test_sysctl.c
-+++ b/lib/test_sysctl.c
-@@ -26,8 +26,6 @@
- #include <linux/delay.h>
- #include <linux/vmalloc.h>
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index 3534d36a1474..7cfc4fb0ca3c 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -309,19 +309,14 @@ static void unlist_file(struct epitems_head *head)
  
--static int i_zero;
--static int i_one_hundred = 100;
- static int match_int_ok = 1;
+ #include <linux/sysctl.h>
  
+-static long long_zero;
+-static long long_max = LONG_MAX;
+-
+ static struct ctl_table epoll_table[] = {
+-	{
+-		.procname	= "max_user_watches",
+-		.data		= &max_user_watches,
+-		.maxlen		= sizeof(max_user_watches),
+-		.mode		= 0644,
+-		.proc_handler	= proc_doulongvec_minmax,
+-		.extra1		= &long_zero,
+-		.extra2		= &long_max,
+-	},
++	CTL_TABLE_ENTRY_MINMAX("max_user_watches",
++				&max_user_watches,
++				sizeof(max_user_watches),
++				0644,
++				proc_doulongvec_minmax,
++				SYSCTL_NUMERIC_ZERO,
++				SYSCTL_NUMERIC_LONG_MAX),
+ };
  
-@@ -78,8 +76,9 @@ static struct ctl_table test_table[] = {
- 		.maxlen		= sizeof(int),
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= &i_zero,
--		.extra2         = &i_one_hundred,
-+		.min		= SYSCTL_NUMERIC_ZERO,
-+		.max		= SYSCTL_NUMERIC_ONE_HUNDRED,
-+		.extra_flags	= SYSCTL_TABLE_EXTRA_LONG_INIT_MINMAX,
- 	},
- 	{
- 		.procname	= "int_0002",
-@@ -108,8 +107,9 @@ static struct ctl_table test_table[] = {
- 		.maxlen		= sizeof(test_data.boot_int),
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
--		.extra1		= SYSCTL_ZERO,
--		.extra2         = SYSCTL_ONE,
-+		.min		= SYSCTL_NUMERIC_ZERO,
-+		.max		= SYSCTL_NUMERIC_ONE,
-+		.extra_flags	= SYSCTL_TABLE_EXTRA_LONG_INIT_MINMAX,
- 	},
- 	{
- 		.procname	= "uint_0001",
+ static void __init epoll_sysctls_init(void)
 -- 
 2.25.1
 
