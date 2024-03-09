@@ -1,127 +1,210 @@
-Return-Path: <linux-kernel+bounces-98006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC11087733C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 19:27:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B8F387733E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 19:29:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A1B8281EF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:27:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B1D41F21B6B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A29D2D03B;
-	Sat,  9 Mar 2024 18:27:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0DA2E410;
+	Sat,  9 Mar 2024 18:28:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ilo0nbVK"
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n3fYRFtY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC9922F1E
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 18:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F403E22F1E;
+	Sat,  9 Mar 2024 18:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710008872; cv=none; b=FXob4pKatec7MsvHUVAMdAElJOLTDgkOa/n+UoUz8ii7adlRE8uC0L6kJbNXaWc12JG6efFUOT3f7iPQ8/cmHjmzXsMLwaeqVjylklTvehNRANEIJkBnqkLnR26E37suuCp8peVXYnh8JIzgNKK0sKyITrsYsFUwXAwuJS2s2Gk=
+	t=1710008935; cv=none; b=FwmaMfWi+oifl0gieK+uyRpoQx2r15Ls7Qfy++6FX4zV8yIWLiayBfDn/59CCsIFuLV1N14Mmj8TARdfjrRF918avoPh9BybnJGgOLA9gaD3D8aMng5I6maQi4CBjYXkErboTbEfROXG0yGCyVZo3sYy1oIw79E22s6XEeypvp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710008872; c=relaxed/simple;
-	bh=UT5UKKqI3JhatKWw06rgyLOKL/bMTE4lGB3wDOzIlP0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XvbUnDS6mceGAMySDiWw5czCp5Bq3PoHDH2PidqBmEXbKP02CxNWpcbFhsbYQRLmfWC7SQKqV1IFPy19XvCfJaczt+SLG64BCz+wmzZndFK3cB8NI+9ZLMgoh8eW/unLR0EE/UhedDhNsgqTDaMHGZpCMMrVTAUfZiTxJfYnOQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ilo0nbVK; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-220ef791617so1107643fac.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 10:27:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710008870; x=1710613670; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+hdmVQAZZGFR9Y18bB9O0i3U2pUIXff4YlnZ+QydkXI=;
-        b=Ilo0nbVKaMgoPimYFUPUTfmB5+Q6mcFnwTqARkJncMFbkIeDo6mY6Q8q8QpU5WZf0w
-         dtZ7wu4/o9JHofT2njqlIqNpxSg73aV9/NESKgwZVCeMDYdnnVZBxjGlSU/yfrbR354v
-         bzVd3AxHGSH5lMGYrsvGhBqu6Q0EfnZwv0cI0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710008870; x=1710613670;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+hdmVQAZZGFR9Y18bB9O0i3U2pUIXff4YlnZ+QydkXI=;
-        b=Hpj0ovmpUSWBE8UDsb6VPJIQS6pijlkJBW5imjCHvCynqJKEDM7IHt9j/jRjXWmZ3h
-         ykDA3BGejRs5U6BK3RHBY5z9iGyh/pU73FIOGF26fUidsJ6IasCWQG9AJtpaXxesPweT
-         JwBh5BReKzSN9VMoRnwLDIDHaPHqeyZSqysQZr2fFr2fUfDyVelRAv553EvKlY336SiT
-         j03ihn/JuN0BxErBIB7NrJJLc10QOpuWMCHU47X/tckV9OcnQqCOXNGx8fQY37x7VcCv
-         bH4z6ZMkYKKwkwmzIt/5UmvojqpA0HA4BroUOR2T/7ZJBdat7DrRSH2M730M3L0tPciC
-         NI1Q==
-X-Gm-Message-State: AOJu0YwA/qCKL7NRIxcm+L9Ro2Phk0Qppcx2kTtYVmErzhIMy3N6Jvuf
-	o0iEo592cbvWa1x+xjodpemvqnZ67QZ6mK/K73jA3dywDDZJYIzp7xqalnUGHg==
-X-Google-Smtp-Source: AGHT+IGxZtzWNivFdgVHDWpNlpQ/lu01OgPXiVw7KzUnwX4jEYkkp7/lm9ChhLTcVqG+wSVYRXtNNg==
-X-Received: by 2002:a05:6870:a68f:b0:21e:459a:1fb6 with SMTP id i15-20020a056870a68f00b0021e459a1fb6mr2614600oam.23.1710008869899;
-        Sat, 09 Mar 2024 10:27:49 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a28-20020a62d41c000000b006e537e90f91sm1588802pfh.131.2024.03.09.10.27.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Mar 2024 10:27:48 -0800 (PST)
-Date: Sat, 9 Mar 2024 10:27:47 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vincent Donnefort <vdonnefort@google.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, suleiman@google.com,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vineeth Pillai <vineeth@bitbyteword.org>,
-	Youssef Esmat <youssefesmat@google.com>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Alexander Graf <graf@amazon.com>, Baoquan He <bhe@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 0/8] tracing: Persistent traces across a reboot or crash
-Message-ID: <202403091016.5CDF0E2EE@keescook>
-References: <20240306015910.766510873@goodmis.org>
+	s=arc-20240116; t=1710008935; c=relaxed/simple;
+	bh=L2wcmhVQaFqLWuk8FiLWZYZW1meGlQie24CMyuszByI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=phDDZpgVRSET+Qdjmqx3q1BzqJS1x8PfjJq6iZdWhdHNjNfWUh1ukRyo89JdLT1hSzvIBcB0h0dCa3ELI6kOYW+RaSGSaNRA9qRUMqJC8eHb69P/0lZl+hLtElfKF+/9HEsu5KMV3x7rp5VJ5b49UjODk+zGbE4qMqfEeSuH0mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n3fYRFtY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4050DC433C7;
+	Sat,  9 Mar 2024 18:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710008934;
+	bh=L2wcmhVQaFqLWuk8FiLWZYZW1meGlQie24CMyuszByI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=n3fYRFtY6B2ykMQMKc9V0O7oABQikIpa+P9sEEvHOGogTe3xbIXXpT/uKMWrQmZgQ
+	 1/CpoQ51vCvShNX8nNhR1xdJmogVPWALnL+eJK75/jPXNlitKE+mPzR9RpHk+9CQPF
+	 AbnT7bYe3G8tJquv3MCZ/+wSoLzJkXJ1SUOXKKOW/EndG8vFEpNamIK7pkj6nEkwIp
+	 QZPBid9T0Pg2TFXhUW6aQR/iePxZqWAKR+WSXcPAN677PI/tmo/3BVpPXDlRo2OwmU
+	 dPiP59qQFUr5rAkOKbQV65fkZLBApwMO0IOV+/3xSjJYTmXzwl6ge122pP4Xsuy/8F
+	 GhJQR+jbFx1gQ==
+Date: Sat, 9 Mar 2024 18:28:42 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: lars@metafoo.de, andriy.shevchenko@linux.intel.com,
+ ang.iglesiasg@gmail.com, mazziesaccount@gmail.com, ak@it-klinger.de,
+ petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] iio: pressure: Add scale value for channels
+Message-ID: <20240309182842.1fc7b676@jic23-huawei>
+In-Reply-To: <20240303165300.468011-3-vassilisamir@gmail.com>
+References: <20240303165300.468011-1-vassilisamir@gmail.com>
+	<20240303165300.468011-3-vassilisamir@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306015910.766510873@goodmis.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 05, 2024 at 08:59:10PM -0500, Steven Rostedt wrote:
-> This is a way to map a ring buffer instance across reboots.
+On Sun,  3 Mar 2024 17:52:58 +0100
+Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
 
-As mentioned on Fedi, check out the persistent storage subsystem
-(pstore)[1]. It already does what you're starting to construct for RAM
-backends (but also supports reed-solomon ECC), and supports several
-other backends including EFI storage (which is default enabled on at
-least Fedora[2]), block devices, etc. It has an existing mechanism for
-handling reservations (including via device tree), and supports multiple
-"frontends" including the Oops handler, console output, and even ftrace
-which does per-cpu recording and event reconstruction (Joel wrote this
-frontend).
+> Add extra IIO_CHAN_INFO_SCALE in order to be able to have the scales
+> for the values in userspace. Can be used for triggered buffers.
+> 
+> Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
 
-It should be pretty straight forward to implement a new frontend if the
-ftrace one isn't flexible enough. It's a bit clunky still to add one,
-but search for "ftrace" in fs/pstore/ram.c to see how to plumb a new
-frontend into the RAM backend.
+So providing scale and processed is a mess. With hindsight this should have
+always provided raw + scale, but too late :(
 
-I continue to want to lift the frontend configuration options up into
-the pstore core, since it would avoid a bunch of redundancy, but this is
-where we are currently. :)
+This retrofitting buffered code onto a drive that does processed channels
+is one of the few reasons I'll let through channels that do both processed and raw.
+So add raw as well. Hopefully raw * scale always equals processed.
 
--Kees
+The reason is that for a channel doing processed only - assumption is
+normally that the buffer is processed as well. We can't remove processed
+as that would be ABI breakage, but we can add raw.
 
-[1] CONFIG_PSTORE et. al. in fs/pstore/ https://docs.kernel.org/admin-guide/ramoops.html
-[2] https://www.freedesktop.org/software/systemd/man/latest/systemd-pstore.service.html
+Jonathan
 
--- 
-Kees Cook
+> ---
+>  drivers/iio/pressure/bmp280-core.c | 70 ++++++++++++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+> 
+> diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+> index 29a8b7195076..acdf6138d317 100644
+> --- a/drivers/iio/pressure/bmp280-core.c
+> +++ b/drivers/iio/pressure/bmp280-core.c
+> @@ -138,16 +138,19 @@ static const struct iio_chan_spec bmp280_channels[] = {
+>  	{
+>  		.type = IIO_PRESSURE,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+>  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+>  	},
+>  	{
+>  		.type = IIO_TEMP,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+>  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+>  	},
+>  	{
+>  		.type = IIO_HUMIDITYRELATIVE,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+>  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+>  	},
+>  };
+> @@ -156,6 +159,7 @@ static const struct iio_chan_spec bmp380_channels[] = {
+>  	{
+>  		.type = IIO_PRESSURE,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+>  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+>  		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+>  					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
+> @@ -163,6 +167,7 @@ static const struct iio_chan_spec bmp380_channels[] = {
+>  	{
+>  		.type = IIO_TEMP,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+>  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+>  		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+>  					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
+> @@ -170,6 +175,7 @@ static const struct iio_chan_spec bmp380_channels[] = {
+>  	{
+>  		.type = IIO_HUMIDITYRELATIVE,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+>  				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+>  		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+>  					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
+> @@ -487,6 +493,70 @@ static int bmp280_read_raw(struct iio_dev *indio_dev,
+>  			break;
+>  		}
+>  		break;
+> +	case IIO_CHAN_INFO_SCALE:
+> +		switch (chan->type) {
+> +		case IIO_HUMIDITYRELATIVE:
+> +			if (!strcmp(indio_dev->name, "bme280")) {
+> +				*val = 1000;
+> +				*val2 = 1024;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else {
+> +				ret = -EINVAL;
+> +			}
+> +			break;
+> +		case IIO_PRESSURE:
+> +			if ((!strcmp(indio_dev->name, "bmp085")) ||
+> +			    (!strcmp(indio_dev->name, "bmp180")) ||
+> +			    (!strcmp(indio_dev->name, "bmp181"))) {
+> +				*val = 1;
+> +				*val2 = 1000;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if ((!strcmp(indio_dev->name, "bmp280")) ||
+> +				   (!strcmp(indio_dev->name, "bme280"))) {
+> +				*val = 1;
+> +				*val2 = 256000;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if (!strcmp(indio_dev->name, "bmp380")) {
+> +				*val = 1;
+> +				*val2 = 100000;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if (!strcmp(indio_dev->name, "bmp580")) {
+> +				*val = 1;
+> +				*val2 = 64000;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else {
+> +				ret = -EINVAL;
+> +			}
+> +			break;
+> +		case IIO_TEMP:
+> +			if ((!strcmp(indio_dev->name, "bmp085")) ||
+> +			    (!strcmp(indio_dev->name, "bmp180")) ||
+> +			    (!strcmp(indio_dev->name, "bmp181"))) {
+> +				*val = 100;
+> +				*val2 = 1;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if ((!strcmp(indio_dev->name, "bmp280")) ||
+> +				   (!strcmp(indio_dev->name, "bme280"))) {
+> +				*val = 10;
+> +				*val2 = 1;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if (!strcmp(indio_dev->name, "bmp380")) {
+> +				*val = 10;
+> +				*val2 = 1;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if (!strcmp(indio_dev->name, "bmp580")) {
+> +				*val = 1000;
+> +				*val2 = 16;
+> +				ret = IIO_VAL_FRACTIONAL_LOG2;
+> +			} else {
+> +				ret = -EINVAL;
+> +			}
+> +			break;
+> +		default:
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +		break;
+>  	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+>  		switch (chan->type) {
+>  		case IIO_HUMIDITYRELATIVE:
+
 
