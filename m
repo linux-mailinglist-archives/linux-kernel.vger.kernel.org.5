@@ -1,110 +1,83 @@
-Return-Path: <linux-kernel+bounces-97753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D877876EF2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:23:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56BCF876EFC
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 04:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42A3EB2148A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 03:23:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED991C20C16
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 03:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FCA2033A;
-	Sat,  9 Mar 2024 03:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E4B3308A;
+	Sat,  9 Mar 2024 03:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="W0sZ8yKg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mqaANVVl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1050B208A9;
-	Sat,  9 Mar 2024 03:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5854212E5B;
+	Sat,  9 Mar 2024 03:36:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709954617; cv=none; b=dPVOPHtw7EEqg84Ccrnx0uNPiPuF4voprXL0Z4Uot3CSInV+SA6Z5tP1YCo+ffZJf/XCtKm9hMlRimrq0Ae5v5/qhFX9V4VCTMJ/8JpyOQka0C4SwPriNM5Tv7mE6Ts/YKGkpHmyDfpRjRLisifjK7YzILwyPpsMzDhxk7SV9nw=
+	t=1709955395; cv=none; b=PsEltIhGvvX4dBQy3bl60+wA3do3Nk6AminVMg1I2y1Fp/7EzLZgNU3tItizPiZDv6KV+icZtujYVLUsT/3o3qmgVOTUugWlfwXqUQiy+LrNZf1wxfiqUS7REZgsKnw699cEY5jO0a+1PWfhmTtK49OS3b/9HtxxUBaZ7317oig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709954617; c=relaxed/simple;
-	bh=bSwSfWYlj9F7+5cVfSd2Y34uxjt9xC2p8EkDBAvcXVc=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=a/dFi5IwCXKRgt4WnNiHiC2ZrvZJn2Lkc76WwoOoggV5TN9YWB962xJg12kQ2EDLMDo2aSnsGrHt93aSFm5a4jT3rNFIQzdGjUBeZo7mQ1AuYsPNQhwAsPMbCJaqwUQEO5DZUHS3TcElwIky8aOmQP96PM8/QSuMMTbFPMkDskk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=W0sZ8yKg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1983BC433F1;
-	Sat,  9 Mar 2024 03:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1709954616;
-	bh=bSwSfWYlj9F7+5cVfSd2Y34uxjt9xC2p8EkDBAvcXVc=;
+	s=arc-20240116; t=1709955395; c=relaxed/simple;
+	bh=lLn6OOrz7gmP48Oh35CDpxbACMTCrCw+ctxvAb98+Uk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Nf/ZuyNyGGRd5kexYbPQ53S89M2fIekW9LF+rx0D77BLZDGSCVMv+np5if198jSNTd81LeY2Wn+lCAWsTFDg1T8R7kqM+csxtTETNw1PON6QCCuMSHjCzzaiOdt3KFah4afJvRVAqenvcwkijdSAkjIcepN+Jiv+5tWJcvuP3yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mqaANVVl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08EE0C433F1;
+	Sat,  9 Mar 2024 03:36:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709955394;
+	bh=lLn6OOrz7gmP48Oh35CDpxbACMTCrCw+ctxvAb98+Uk=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=W0sZ8yKgVOMnY3zF8BvGAaQCSuCbkb6zj46ry8OzVPGsV0oWBesXhsp7pVHkTLEPN
-	 Zp0QW6McgLgRuK3FiP3Kg3MqPqAU3DmFSC+mWPZAvQeb1x/2BfuyGhOKyElRpWF1tl
-	 qJB/nvoFCrMM6ns8p1TYqvrYVmBckvkUgodQ/HiU=
-Date: Fri, 8 Mar 2024 19:23:34 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Barry Song <21cnbao@gmail.com>
-Cc: herbert@gondor.apana.org.au, chriscli@google.com, chrisl@kernel.org,
- ddstreet@ieee.org, linux-kernel@vger.kernel.org, sjenning@redhat.com,
- vitaly.wool@konsulko.com, Barry Song <v-songbaohua@oppo.com>,
- davem@davemloft.net, hannes@cmpxchg.org, linux-crypto@vger.kernel.org,
- linux-mm@kvack.org, zhouchengming@bytedance.com, nphamcs@gmail.com,
- yosryahmed@google.com
-Subject: Re: [PATCH v6 0/2] zswap: remove the memcpy if acomp is not
- sleepable
-Message-Id: <20240308192334.845b27504a663ec8af4f2aad@linux-foundation.org>
-In-Reply-To: <CAGsJ_4wMGNDcgc3pqSUicYoH7Z_miczkT=uwZU+yhDF0fd57Rg@mail.gmail.com>
-References: <20240222081135.173040-1-21cnbao@gmail.com>
-	<CAGsJ_4wMGNDcgc3pqSUicYoH7Z_miczkT=uwZU+yhDF0fd57Rg@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	b=mqaANVVlKWfUxM9PlxRgsdjRkOrg3Jkc7oPqzWTUbZvx04x/1cYRNF3P+VXIKijag
+	 E4NUmiz3bBjfL9lAizdsXBZSmscGMeEp9h/p/sqyzDUFO9oMI9IlBsgjjTwW8cxUfW
+	 Kw5IEh9OHXAG47izsjv00pXaK1HY6sgvmsqtujqG1soURdCHj/haDoOXMyCoLSl9Cw
+	 VuhPjnL8tjLyINJekqUutnANno5gWdwbSlAnGm/bw5j9PFoctYsCh/24OOL6UTxDxQ
+	 rK88cfYz00RLkCkrLWGLDzl8vk0yvOmSnasKC03uvIkTy7lt6avJ5J+mw00rjFtcAn
+	 y+NveqC5bUT7g==
+Date: Fri, 8 Mar 2024 19:36:32 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Daniel Golle <daniel@makrotopia.org>, Bc-bocun Chen
+ <bc-bocun.chen@mediatek.com>, Steven Liu <steven.liu@mediatek.com>, John
+ Crispin <john@phrozen.org>, Chunfeng Yun <chunfeng.yun@mediatek.com>, Vinod
+ Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, Qingfang Deng
+ <dqfext@gmail.com>, SkyLake Huang <SkyLake.Huang@mediatek.com>, Philipp
+ Zabel <p.zabel@pengutronix.de>, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] phy: add driver for MediaTek XFI T-PHY
+Message-ID: <20240308193632.158b3c42@kernel.org>
+In-Reply-To: <ZevJwSq-A43vqO6k@makrotopia.org>
+References: <745f8b46f676e94c1a396df8c46aefe0e8b4771c.1707530671.git.daniel@makrotopia.org>
+	<3bb95f1d795eede63284dbcb224e06ea6886b421.1707530671.git.daniel@makrotopia.org>
+	<ZevJwSq-A43vqO6k@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, 8 Mar 2024 19:57:38 +0800 Barry Song <21cnbao@gmail.com> wrote:
+On Sat, 9 Mar 2024 02:30:25 +0000 Daniel Golle wrote:
+> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>  
+> 
+> It's been a month since this patch was posted. Maybe it has somehow
+> slipped under the table (or even under the carpet)?
 
-> Hi Andrew,
-> 
-> On Thu, Feb 22, 2024 at 4:11 PM Barry Song <21cnbao@gmail.com> wrote:
-> >
-> > From: Barry Song <v-songbaohua@oppo.com>
-> >
-> > In zswap, if we use zsmalloc, we cannot sleep while we map the
-> > compressed memory, so we copy it to a temporary buffer. By
-> > knowing the alg won't sleep can help zswap to avoid the
-> > memcpy.
-> > Thus we introduce an API in crypto to expose if acomp is async,
-> > and zswap can use it to decide if it can remove copying to the
-> > tmp buffer.
-> >
-> > -v6:
-> >  * add acked-by of Herbert, Thanks!
-> >  * remove patch 3/3 from the series, as that one will go
-> >    through crypto
-> 
-> Can you please pull this into mm-tree? This used to have 3 patches.
-> 
-> 3/3 was separated according to Herbert's requirements and has
-> been in a crypto tree.
-> crypto: scomp - remove memcpy if sg_nents is 1 and pages are lowmem
-> https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/commit/?id=77292bb8ca
-> 
-> Two drivers fixes(patch 1 needs) have also been in crypto tree:
-> crypto: hisilicon/zip - fix the missing CRYPTO_ALG_ASYNC in cra_flags
-> https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/commit/?id=db8ac88385
-> 
-> crypto: iaa - fix the missing CRYPTO_ALG_ASYNC in cra_flags
-> https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/commit/?id=30dd94dba35
-> 
-> So it should be quite safe to pull this series into mm-tree now.
-
-But this zswap chage requires the presence of the other patches, yes?
-
-So the mm.git tree alone will be buggy?  And if mm.git merges ahead of
-the other trees, there will be a window where mainline will be buggy?
-
-If so, I think it wuold be better to merge the zswap patch in the next
-merge window.
-
+Lots of people in To:, lets direct the question to Vinod? 
+Most active generic PHY maintainer according to git, Vinod?
 
