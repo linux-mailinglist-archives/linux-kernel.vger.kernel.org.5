@@ -1,96 +1,135 @@
-Return-Path: <linux-kernel+bounces-97919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF71E87719F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:29:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F099F8771A3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 15:35:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64136281B8A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:29:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 672ACB20DFA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A6A04087E;
-	Sat,  9 Mar 2024 14:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="v/CGk8qZ";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="ItXgBku6"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D8D3BBC4;
+	Sat,  9 Mar 2024 14:35:04 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FAA1E498;
-	Sat,  9 Mar 2024 14:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9702F22
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 14:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709994587; cv=none; b=JvcZO8PVt7WF7WKP8K86EQ88rEuHpNVuv0gTYCK2HtMuFwL7ahUXczTiKMRHA88fd6jf2Rhoc9ZHRJmojF5S4s1zbBcANLy73khY9tV52A9PqeFybr2qcwW4AN0TIiTBBOUO7BSLn2hfktMp3lhn0+eLsfRSfEVn31MhveZh3zE=
+	t=1709994903; cv=none; b=Ivo3o1ke8XxVxvuQ4ELdMuKgwhYn3Og4buhdNOZcY76pFBf8DldaRpUp5ifl995kD0+pqoyWtoqVRH+xaS3OlZlYlwnTKCo4T/oz/nJjcM8gkBlF7pEexq34bl5iFCXoyx8+M0G7ZIgTh6MXrD/r0jvv6tctGLDQ0JjFH7ynug0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709994587; c=relaxed/simple;
-	bh=wTj/Z/kBhcFhDz57sChY8g+8iv5HKc19ElDHM2opLEo=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=uN601bnkhLVh+8nEjkBHOqxgCsuA0f50lrxdfX/G57F/6lX+ANjUv7+D0WCxlxw/c74Wr1ORw65BgtGKSOxAXnlY1uZKX9Dt1m8JFOaLDYiK1rBFASZM42iSHVMVwITACoSFJk24x52L91v9NPkRUCCBDSQ0jv5GR/ethuOtCsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=v/CGk8qZ; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=ItXgBku6; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 66472601A1;
-	Sat,  9 Mar 2024 15:29:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1709994582; bh=wTj/Z/kBhcFhDz57sChY8g+8iv5HKc19ElDHM2opLEo=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=v/CGk8qZOF7jy8cvN7DK8qR0QUFeRjmj6UJRVyyIzyyRhhS12xbD/ShamJlmfrXmA
-	 i8t4DRVVbxTw6zt+p1s6grJ4aCizm/yDk52oBsDI+sD782ajMgXaGfaBrJQiEeiD9E
-	 WDUW09wYKetyoBR77nLxOb5nBq/XxZcUS3t58IFEF0vzV9uH7d4oekQizXn/VfbL21
-	 lkYl0ouIuERoH8j1XTd1NTReiCEG5zIX+Egf5slcGoiX+5AY6T3UDzbu2BsxTgnCA0
-	 c+sE9Kaz/srJ8RIU2wkRMAvehaCANH79pzyu8vT2CrWR8OZ0aodnaWBppPGb+eO9Cw
-	 84m4qFq9OGE5g==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id GhwdfwEdLrrI; Sat,  9 Mar 2024 15:29:40 +0100 (CET)
-Received: from [192.168.178.20] (dh207-40-27.xnet.hr [88.207.40.27])
-	by domac.alu.hr (Postfix) with ESMTPSA id 422E960189;
-	Sat,  9 Mar 2024 15:29:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1709994580; bh=wTj/Z/kBhcFhDz57sChY8g+8iv5HKc19ElDHM2opLEo=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=ItXgBku63zr7NJpWQIPH3qsO4neoLIzw/bn5z3H1KX38+u97fwQm3J0WwUDU8mg+y
-	 1lrAyO23Z2pC5ZGSinrRyaC8EljTdysYEcV7ofmWZmNlUNH3Vqczql0wNpdNrP4qKd
-	 bTwg4RLyp1/o65tO7NMBoMxVVXrgPP3LKbmFjHwfFzBlnYDAhSFqqeV04EZWQGXkA6
-	 EGH5YlkF+YjogAnCp3Jx51VBbACJa5S7RBu/uTzxcx8tQZD9/Kr7p4zfrPiUaepNXt
-	 dLJibQBdCdQAKC+ktAoZDlricdE3vgtDte8mtFVCMQSTVL24DR9HUdcs66h/31oD3x
-	 358SvLl0IqQdA==
-Message-ID: <c6aab6b2-79a7-456c-b640-1ba175b05a87@alu.unizg.hr>
-Date: Sat, 9 Mar 2024 15:29:39 +0100
+	s=arc-20240116; t=1709994903; c=relaxed/simple;
+	bh=ds0BIkru2EQH9Tc9HwHJJTJfwfJeUmksK9jbB2Cr3Ac=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=PTZNs3aoS14Nt1UUN4ZI6TgIzLmD6VFskZotYSE2Id+7mHyFg7BSCKxyF9z68+fGV4j5YqOBwQkaUkUdkN4Zm8TvfsE+M5ld8otWn+lVBbp/z2sdMOkEe6nw0ijDTMQa/MkDGXy6Z18qFo1pc5FkpYbW3TzkEgnJZjT/tRqGaVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-253-14N-Did4PAW8hIsoNs_d-Q-1; Sat, 09 Mar 2024 14:33:12 +0000
+X-MC-Unique: 14N-Did4PAW8hIsoNs_d-Q-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 9 Mar
+ 2024 14:33:26 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 9 Mar 2024 14:33:26 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Maxime Ripard' <mripard@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+CC: Naresh Kamboju <naresh.kamboju@linaro.org>, open list
+	<linux-kernel@vger.kernel.org>, Linux ARM
+	<linux-arm-kernel@lists.infradead.org>, "linux-sunxi@lists.linux.dev"
+	<linux-sunxi@lists.linux.dev>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "lkft-triage@lists.linaro.org"
+	<lkft-triage@lists.linaro.org>, Dave Airlie <airlied@redhat.com>, "Dan
+ Carpenter" <dan.carpenter@linaro.org>, Ard Biesheuvel <ardb@kernel.org>
+Subject: RE: arm: ERROR: modpost: "__aeabi_uldivmod"
+ [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] undefined!
+Thread-Topic: arm: ERROR: modpost: "__aeabi_uldivmod"
+ [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] undefined!
+Thread-Index: AQHabimenIC0ADhmjUqxSQo36gIP17EvfaYA
+Date: Sat, 9 Mar 2024 14:33:26 +0000
+Message-ID: <85b807289ff2400ea5887ced63655862@AcuMS.aculab.com>
+References: <CA+G9fYvG9KE15PGNoLu+SBVyShe+u5HBLQ81+kK9Zop6u=ywmw@mail.gmail.com>
+ <338c89bb-a70b-4f35-b71b-f974e90e3383@app.fastmail.com>
+ <20240304-brawny-goshawk-of-sorcery-860cef@houat>
+In-Reply-To: <20240304-brawny-goshawk-of-sorcery-860cef@houat>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG net-next selftests/pidfd] Hang in ./pidfd_setns_test
- pidfd_send_signal()
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <e2ba3f8c-80e6-477d-9cea-1c9af820e0ed@alu.unizg.hr>
-In-Reply-To: <e2ba3f8c-80e6-477d-9cea-1c9af820e0ed@alu.unizg.hr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-P.S.
+From: Maxime Ripard
+> Sent: 04 March 2024 11:46
+>=20
+> On Mon, Mar 04, 2024 at 12:11:36PM +0100, Arnd Bergmann wrote:
+> > On Mon, Mar 4, 2024, at 09:07, Naresh Kamboju wrote:
+> > > The arm defconfig builds failed on today's Linux next tag next-202403=
+04.
+> > >
+> > > Build log:
+> > > ---------
+> > > ERROR: modpost: "__aeabi_uldivmod"
+> > > [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] undefined!
+> > >
+> >
+> > Apparently caused by the 64-bit division in 358e76fd613a
+> > ("drm/sun4i: hdmi: Consolidate atomic_check and mode_valid"):
+> >
+> >
+> > +static enum drm_mode_status
+> > +sun4i_hdmi_connector_clock_valid(const struct drm_connector *connector=
+,
+> > +                                const struct drm_display_mode *mode,
+> > +                                unsigned long long clock)
+> >  {
+> > -       struct sun4i_hdmi *hdmi =3D drm_encoder_to_sun4i_hdmi(encoder);
+> > -       unsigned long rate =3D mode->clock * 1000;
+> > -       unsigned long diff =3D rate / 200; /* +-0.5% allowed by HDMI sp=
+ec */
+> > +       const struct sun4i_hdmi *hdmi =3D drm_connector_to_sun4i_hdmi(c=
+onnector);
+> > +       unsigned long diff =3D clock / 200; /* +-0.5% allowed by HDMI s=
+pec */
+> >         long rounded_rate;
+> >
+> > This used to be a 32-bit division. If the rate is never more than
+> > 4.2GHz, clock could be turned back into 'unsigned long' to avoid
+> > the expensive div_u64().
+>=20
+> I sent a fix for it this morning:
+> https://lore.kernel.org/r/20240304091225.366325-1-mripard@kernel.org
+>=20
+> The framework will pass an unsigned long long because HDMI character
+> rates can go up to 5.9GHz.
 
-Please consider this additional dmesg diagnostics possibly coinciding with the kill -KILL <stale pids>:
+You could do:
+=09/* The max clock is 5.9GHz, split the divide */
+=09u32 diff =3D (u32)(clock / 8) / (200/8);
 
-[Sat Mar  9 15:18:05 2024] proc-empty-vm[1007004] vsyscall read attempt denied -- look up the vsyscall kernel parameter if you need a workaround ip:5a0754238702 cs:33 sp:7ffed57b6ec0 ax:0 si:0 di:0
-[Sat Mar  9 15:18:06 2024] proc-pid-vm[1007025] vsyscall read attempt denied -- look up the vsyscall kernel parameter if you need a workaround ip:5cf038710e22 cs:33 sp:7ffc3cc4ee60 ax:0 si:0 di:0
-[Sat Mar  9 15:18:08 2024] ICMPv6: process `read' is using deprecated sysctl (syscall) net.ipv6.neigh.default.base_reachable_time - use net.ipv6.neigh.default.base_reachable_time_ms instead
-[Sat Mar  9 15:18:09 2024] sysrq: HELP : loglevel(0-9) reboot(b) crash(c) terminate-all-tasks(e) memory-full-oom-kill(f) kill-all-tasks(i) thaw-filesystems(j) sak(k) show-backtrace-all-active-cpus(l) show-memory-usage(m) nice-all-RT-tasks(n) poweroff(o) show-registers(p) show-all-timers(q) unraw(r) sync(s) show-task-states(t) unmount(u) force-fb(v) show-blocked-tasks(w) dump-ftrace-buffer(z)
-[Sat Mar  9 15:18:55 2024] signal: openat2_test[1025119] overflowed sigaltstack
-[Sat Mar  9 15:18:55 2024] signal: resolve_test[1025139] overflowed sigaltstack
+The code should really use u32 and u64.
+Otherwise the sizes are different on 32bit.
 
-Best regards,
-Mirsad Todorovac
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
