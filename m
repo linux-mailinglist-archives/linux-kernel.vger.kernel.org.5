@@ -1,154 +1,122 @@
-Return-Path: <linux-kernel+bounces-98050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D1B87740D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 22:48:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DC9487740F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 23:09:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A9631C21784
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:48:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE16DB2199A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 22:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749D851C43;
-	Sat,  9 Mar 2024 21:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B88451C4B;
+	Sat,  9 Mar 2024 22:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="am4H5s3i"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mrAOruxk"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BA44F1EA
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 21:48:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D99E433B6
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 22:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710020915; cv=none; b=k8FLDzB8SvupkuzS1wRglWn2mXSC+BcYhvrqtfisQSFwjnPIghl0Yy8hHno9GcpFE4S9Ju/Q8/iBZLDcx6VJZogd9jI6n4wBkvu8Tauxm6NboQt+ZVvmPad30tKQ1+gZ3Qq95iJBvvxvj+rCcqmL/OJm4HThCmbZLdfSjLpzUwk=
+	t=1710022168; cv=none; b=Ahe1seOEFZksyeqE7FGen4/L85+ZEG+pHJIFJ0bGQvjL5c6y7AgeMHaJ1SmsXSb5i5BFuZVMwn3B/DmrI8QXHkObpKsOGRSFYRsRsco1elMO8Lamc0iiwq9+thglTO5qjPsjHjOSbX5E/1Kq/RABn68saZXysYVa/fT+5tgdPBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710020915; c=relaxed/simple;
-	bh=TlbeLRS6KIxUGIuaEwI09g/BKrurDk428JKg+03aOWE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dshfwtBCHUymIusL9QDL22qcm3otWZSUFHkCPEPQiWhVEC7T71rsfROk22kDYNRq6NdAGnId/i7JBaMazoTaX2n1ZRcrMZ2wI81g80Ft1aoGHlOgsDZCyYV6qBQ7k0ACjCZ1IAH6CQzsXdAs/pP67l9mt1ChAVvnRMwSqhpZtVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=am4H5s3i; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dd611d5645so18362655ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 13:48:34 -0800 (PST)
+	s=arc-20240116; t=1710022168; c=relaxed/simple;
+	bh=doQPr5qE7jmCw02bjSdKCIowfe++8fhb9Kqtk30RSHQ=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=uWPD6mcQfSxubWWE57S66R4izWilzeHEB/cfYXKcGb0JX+KNhmv0f1q1eO61yOwvydG8xZFT6wc1yqji8n9OM5wBwEPeoh9TSde/OdSyNlrt1jWzjJSla/8jcCwKyAL9T1/ubV7wN9Q6z41oGf5DLDTfwNl8sgKFaS38pA6qwIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mrAOruxk; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565c4d0fa48so1676884a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 14:09:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710020914; x=1710625714; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ij4dl6s+fU5V8GRSIdSDyUxEbjNq2rinUUwBlPc9zv8=;
-        b=am4H5s3i5gsv96Zqq4crWTeB9+EM8EF5wLsYzbI019n65LOBuVxM9Ji01cwmdX2qCC
-         glhU+chp+IG65qcPFmFp+HTM5vMw3TPuClv3qvnP2bSMyE+wPCBLcCeUadTiXN+mIuZF
-         VwbfjmCbNZWY6ndooJvFJ9fRi6w223DfhoG44=
+        d=gmail.com; s=20230601; t=1710022165; x=1710626965; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qoUSCQi/eFDOlpUwRftgrlRLAzvhB9clzneZL40gpr0=;
+        b=mrAOruxkVx+7RLKbHJiUmfo/B7BRm6LXnoPS/3EtDWX0kplBv8WodM3jX20/lctjyG
+         YUM2xWhohfObzECXm9+HJj7i1E8uClBBvulKR+EaIyJXrMtfvMXaajBO1P2sjnO841NT
+         WXvjJnoEbstj4FeSGIIl/cYGNtiPe11x70BH5iC3sNCyHXSOuzjsM1VP94fmrJVXBGpk
+         BSoOZoPNxWyhBJdAciH+uKd5ox4uZ0q/H5XVLYbtc4eFlBlMmkixXpUCXIyz0SADOurq
+         t0cEJaMoPsER0VxFBaIabsO9Y3IXvrDSPlCMrNoFwQ3xXHy8ibjNeZE/mgULcGz7TeZd
+         Pfxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710020914; x=1710625714;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ij4dl6s+fU5V8GRSIdSDyUxEbjNq2rinUUwBlPc9zv8=;
-        b=DbG7wXUqRAgP0gXMcT7OxQIna1Qsegk/zWiS11xf2tD2q6Y4UrBgVECPZhYhkgiFnK
-         1xbBLfUPnwKyLRB6JLV1C5kqG6PPdxg1bGKY8IpHgmN31GHO8PNln/SpYa9nUQhA7JFE
-         E+q7lktS04yz/bjknQ8ijXIyGuWk1ZoltootnsZSgrhJgJtNLTj2Grqq6OVMpLKFPP+G
-         0JiLDQ1bGUT2vaU5cVxhQ3Z1k8n7p9v8EFJ3Kp74AZeILblae7VoWpNv2aatmTY/p2T+
-         421DF6a9DYpSa8BDoM/Vr/py3TIlXezhuPQFiG/RL1iFP0QH5Le/5SwhFf4rGY95Zpj/
-         tLog==
-X-Forwarded-Encrypted: i=1; AJvYcCXGX8DJnW6d8sePwajqe9t5lKkpo+/0Un1DhFa0UAjurz08jSWdbCALfECA76RDwHWtOpI4WxhqIMfNhiZxwBBP2G4GslsYx+CKp+0S
-X-Gm-Message-State: AOJu0YxORa6h0FQAED2nf6H4G2qvc61WBqYu2/rDhOnz/Dlcc4+NHITQ
-	/ub+gCuAGefNzBSqmSa3TrFl3WhjtA/RPgd4uXXoUlR+RECVcsaSNlCWCuRM6w==
-X-Google-Smtp-Source: AGHT+IE03Bnsaj7XifM5/uMKxOJjyFpeQ9/fOFvr/AdwuuzOscOuC+xbByKTNfiifwemz2iFWjiZxQ==
-X-Received: by 2002:a17:903:2305:b0:1dc:b64:13cd with SMTP id d5-20020a170903230500b001dc0b6413cdmr3672457plh.27.1710020913729;
-        Sat, 09 Mar 2024 13:48:33 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id i14-20020a17090332ce00b001dd621111e2sm1729518plr.194.2024.03.09.13.48.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Mar 2024 13:48:32 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Eric Biederman <ebiederm@xmission.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] exec: Simplify remove_arg_zero() error path
-Date: Sat,  9 Mar 2024 13:48:30 -0800
-Message-Id: <20240309214826.work.449-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1710022165; x=1710626965;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qoUSCQi/eFDOlpUwRftgrlRLAzvhB9clzneZL40gpr0=;
+        b=t2jIjr2kE625Mqwe6bzndN7if8zS2ptbQ/pzkJ72HtB3BvxttvqLFoy7qzsMi5qFSL
+         RZ8fXaAq9YuPPv5Jb0Ii3r95JVmy55dj3lRu4JZFAHDa3hRLbrsjxR5s0UFjXizru6sO
+         GAvHOmMJX6JMf9+o8WOQTVY3qK+3Ha6gQ2KyZ6iEzKsqHO82oXuGsBDOasO5nlJxZVq4
+         mc8hg2WjGcUy5a1ez3mS7mCx7ErbZB29MkY+fP8bF8DeTq0wJjgPiDjjQGmFL7DIy/zV
+         pufC7vnyq0DuBhWEpwsyceXke2anbIkt4S5LcjAkBuAUlm6nSopR+hm7Ea1fFUmCvLzt
+         CsBA==
+X-Forwarded-Encrypted: i=1; AJvYcCVGQbbbTUwkmMLXHkahbvfYK6edYgKo6lQJo7pkXcDSqY9fd9AotlecttsEUMTC3hzDjUt+3VwLEA8ADGwANGSB+VGEUirc3icycGpV
+X-Gm-Message-State: AOJu0Yxcrs10QGa1Qew9MsBXrLVsmGG/7AARLo0fAKFZiFDO83XVRDRp
+	XumWe0IebYahyMuTuE0CzSO9dnTtL/jx4GDOJl3RcYBRSk8b3zql
+X-Google-Smtp-Source: AGHT+IHq/zSw/ri/GPhvDZJiXlfMIVOElyVsyuzxM/D06auLvoCaLZ4Fsg9EH/vkQ4WdeY3Md8hNvA==
+X-Received: by 2002:a05:6402:4485:b0:568:4bbe:b3bc with SMTP id er5-20020a056402448500b005684bbeb3bcmr535255edb.0.1710022165258;
+        Sat, 09 Mar 2024 14:09:25 -0800 (PST)
+Received: from [192.168.0.102] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id n23-20020a5099d7000000b005682f47aea7sm1324392edb.94.2024.03.09.14.09.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Mar 2024 14:09:24 -0800 (PST)
+Message-ID: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
+Date: Sat, 9 Mar 2024 23:09:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1307; i=keescook@chromium.org;
- h=from:subject:message-id; bh=TlbeLRS6KIxUGIuaEwI09g/BKrurDk428JKg+03aOWE=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl7NkuHimbUFvP3Wujjd+L1DSMiaEMK4gLNVck8
- Sc0MmkSs/OJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZezZLgAKCRCJcvTf3G3A
- JgXtEACOtfBcv83tcJRDanJKvoKkTfWWrjQSKpdkksCWC6yENNwJql9scRvASM5S6DzURuhkq2d
- N7/W42guz9FpQ+L1UDXoskzaaVCzXOwq3YzF/xTmtrRyXE6GC9NIUJVtE+S3vQGA8WzDo6y8uT2
- WGHvgzK8ddIuVI4SkIr1K0hGRNUyu41RamOTeoLSdb8yQgF6x7Eew0Iukiloqi888aKm7Qpje+S
- +zM4zlnvwtVfmxZzVrszoxqrYJtldziDtD0Pfn9L5wU8lC5BeUw5Dj402JtJeKTP251+QY5MqH4
- NgFGPzm/+xgntTpVCtsqBuiqmqozIOfOPByEycZWnYGIaeA8ICgCkwQEdQbP5ynYqHikt1JG71Q
- 2z3rZHyt3ESV387UNCRVbmaPXWE1Erx0hLLfIppSPltc8zNi9wz8KsnRVdaSDKZ1stl3/IHCr7V
- pPGOf9pbrMW4J55FC7s8KbxiTMiUNjOLFb7a24F9HBB6zfnONbPDqkJKKTp/TfeFbr090JYw8lk
- reVExDRQdz8TVr756XON8JmKFpty+iaTzNDKtz/ip7qquwfy3PrgIwtIx6ESfGWJxDRQIsKBrBp
- QcPjLoqkeYf2/HHpBGOgv+3pgBWJtKdxqyiXbp8F5sc4dAVPZm+XFcfJshWtCQ8OHMM3D8pzAxk
- dFhwp4R FAveH4jg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: Larry.Finger@lwfinger.net, johannes@sipsolutions.net, kvalo@kernel.org,
+ arnd@arndb.de
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Subject: [RFC] staging: wlan-ng: Driver broken since kernel 5.15
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-We don't need the "out" label any more, so remove "ret" and return
-directly on error.
+Hi,
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Cc: Eric Biederman <ebiederm@xmission.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: linux-mm@kvack.org
-Cc: linux-fsdevel@vger.kernel.org
----
- fs/exec.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+I would remove the driver from the mainline kernel. What are your thoughts?
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 715e1a8aa4f0..e7d9d6ad980b 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1720,7 +1720,6 @@ static int prepare_binprm(struct linux_binprm *bprm)
-  */
- int remove_arg_zero(struct linux_binprm *bprm)
- {
--	int ret = 0;
- 	unsigned long offset;
- 	char *kaddr;
- 	struct page *page;
-@@ -1731,10 +1730,8 @@ int remove_arg_zero(struct linux_binprm *bprm)
- 	do {
- 		offset = bprm->p & ~PAGE_MASK;
- 		page = get_arg_page(bprm, bprm->p, 0);
--		if (!page) {
--			ret = -EFAULT;
--			goto out;
--		}
-+		if (!page)
-+			return -EFAULT;
- 		kaddr = kmap_local_page(page);
- 
- 		for (; offset < PAGE_SIZE && kaddr[offset];
-@@ -1748,8 +1745,7 @@ int remove_arg_zero(struct linux_binprm *bprm)
- 	bprm->p++;
- 	bprm->argc--;
- 
--out:
--	return ret;
-+	return 0;
- }
- EXPORT_SYMBOL(remove_arg_zero);
- 
--- 
-2.34.1
+I bought two WLAN devices (DUT: D-Link DWL-122 and T-Sinus 111 data) 
+that are supported by wlan-ng driver. Issue is that the driver is not 
+working anymore.
 
+The error picture is that the device does not receive any packets.
+The dmesg says:
+[  123.695917] prism2_usb 2-1.6:1.0 wlan0: Unknown mgmt request message 
+0x0e4f9800
+[  127.508211] prism2_usb 2-1.6:1.0 wlan0: Unknown mgmt request message 
+0x04f0d000
+..
+
+A working commit 8fc4fb1728855a22f9149079ba51877f5ee61fc9 (HEAD) Date: 
+Mon Jul 5 11:16:28 2021 -0700
+A failing commit  d980cc0620ae77ab2572235a1300bf22519f2e86 (HEAD) Date: 
+  Fri Jul 16 19:08:09 2021 -0700
+
+This means that the devices are unusable since kernel 5.15.
+
+A look into the bitrates shows that only up to 11MBits are supported.
+static const struct ieee80211_rate prism2_rates[] = {
+..
+	{ .bitrate = 110 }
+};
+
+Would be interesting to see why this happened. But it is difficult for 
+me to find it.
+
+Thanks for your support.
+
+Bye Philipp
 
