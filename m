@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-97999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4D9187732F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 19:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D62BA877330
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 19:22:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B60F28211A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:22:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 876DB2821C0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D2B433BF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B339743AB8;
 	Sat,  9 Mar 2024 18:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="geazRmGB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Whi9m4oH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB744D9E8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6366C4D9F0;
 	Sat,  9 Mar 2024 18:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710008150; cv=none; b=U2aKjqI3zqjTd+oDJpGirR9HH8WdL8vwlGrjBsvEmMGDnMicXtASnnu5A7WwNPul4EgKrZVWMoMXoxsKOjKl08CUyQ+LE62q+aPNjh3UDiKwtzyDlCs+8byR58ZBIU5V43WIDf8dxcLns8bLn5BjattVOcg/bPpztdtxXoF4PTw=
+	t=1710008150; cv=none; b=hgmr0zmInLQTCi/vcskcIKGPJJSz+h6pGnJ1kC5ub+3R0heVZtbctaTIX+EzgiL/i3qX2wC0QpTyZw5Fyx51cNAyi8ESOAmSlpY4tjsOS2bepIKXvUsjA31001j6JZH/Vp09PXbUzzIHEZ4Yj3rAFCDeMMaYqLaX0bK1NhUTFtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710008150; c=relaxed/simple;
-	bh=JLQwl/UHsY+aHo17JEmQzXfnkZwaCG6DW0NVMXTp7mg=;
+	bh=oteOorL3FqzdofvOQQ1VXiLXazZ8X7yRtPyx+uh5rEU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aD7HvczJABUlkJ/44WO8QostYsFokS9zRr5krRr3Zn7QCjTg12SkdeJPf4hL5AfwAWRWq4gNq6K0Bvbni6Z/lrsFahoykGLBmtL4iUc5J2Ee4Rso7M9LzgGwSy8UBxoe4IeSlv0BW+Qjmh8Mnb/xs8UElczY12e5R10omsOfDWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=geazRmGB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3741CC4163D;
+	 In-Reply-To:To:Cc; b=luhQ2stbMJTnjvO1RKnENTm34Hk+rdb8hMEMM9q74VJ9hrC6X92Wbjk1ouFbVBM7O2ZEpe8XAi7FV76MBMR1KArBSM1aXwcuLHOx6kaa5NQFVJ9s2zpjcy1i/Hy34gRbDb6jhkDnUcsgViw2DBPKVATEl38GgMektmR7JYlBKH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Whi9m4oH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3C782C4AF4F;
 	Sat,  9 Mar 2024 18:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710008150;
-	bh=JLQwl/UHsY+aHo17JEmQzXfnkZwaCG6DW0NVMXTp7mg=;
+	bh=oteOorL3FqzdofvOQQ1VXiLXazZ8X7yRtPyx+uh5rEU=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=geazRmGBfaoPqB1QTazgdlJykm6XcaniAzk1db8E3udmM8vNqdWfpVMb5xQswPt2E
-	 qjW2zSojZJXxQei+xhvjGkwgAOeqlPPI2Zl4Zst4bB5N0cQnDi2yfLVhVsRcQSh2j/
-	 C1OBvL6V1UTT2pqlTGOQa0C8FH+d7k7KUUQYHyrv1EgDJLN24syfRHD0Ofj+fzB8u3
-	 Bep2ALiEMIT7E+PGRJB/BkVhUz7G52L/g1z/+C1eA5WscPrEPgOmv2CW7xlGkP/BBn
-	 zMuk1CrIgBnVqFMGyf23zTkSmadnoLPb76bsHBwWxxstuKKAE3LiIB6dqsRtYOsPYE
-	 sSuBa/G2/cEXQ==
+	b=Whi9m4oHq9aoMjaQ2vkvVB7pn6w8IyzvFIFmFc6+iGNxgFrPM6i0AHMkJWDU2QMj9
+	 fpjn8g5Elb7NC1VTqSYkvdyWVXSjUF53nX0R8x/x6okTi1s1F7ysDbaoL+wN1/bRmZ
+	 lsCBGuNRz6VedTKSbAOF67M3OLn9nm+06mNXB9NIPAMeVp5FnmB7isYB9jnp4pJDLU
+	 Znwet0NDo/cMVmwDKqm1VeSOpQ4WWbXMaJJ1N3PVXURx3YzvWQQwzr5yIyFVI9TlRb
+	 XVgTI4WyIhsk+ztGerjNFLtaVcdUEiQ5iz23TH/oj8VEtHFOCe4lti0mXy3PIyjQ50
+	 Wzo+6xJYYrcEQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FDA7C54E60;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B482C54E67;
 	Sat,  9 Mar 2024 18:15:50 +0000 (UTC)
 From: Sam Ravnborg via B4 Relay <devnull+sam.ravnborg.org@kernel.org>
-Date: Sat, 09 Mar 2024 19:15:45 +0100
-Subject: [PATCH v2 24/28] sparc32: Drop unused trampoline code
+Date: Sat, 09 Mar 2024 19:15:46 +0100
+Subject: [PATCH v2 25/28] sparc32: Drop config SPARC_LEON
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,7 +54,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240309-sunset-v2-24-f09912574d2c@ravnborg.org>
+Message-Id: <20240309-sunset-v2-25-f09912574d2c@ravnborg.org>
 References: <20240309-sunset-v2-0-f09912574d2c@ravnborg.org>
 In-Reply-To: <20240309-sunset-v2-0-f09912574d2c@ravnborg.org>
 To: "David S. Miller" <davem@davemloft.net>, 
@@ -71,11 +71,11 @@ Cc: Helge Deller <deller@gmx.de>, Randy Dunlap <rdunlap@infradead.org>,
  linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
  linux-sound@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710008145; l=4170;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710008145; l=4537;
  i=sam@ravnborg.org; s=20230107; h=from:subject:message-id;
- bh=c5JlRnNyr4+VYyBORaVjsB7QUl3QI6l2C8IE0ln5DUY=; =?utf-8?q?b=3Dl6EUYlmnUPNt?=
- =?utf-8?q?dsB+bKwXdZOEt8xiJ7SrTLQCr/R6i71EDE1zz9sTLxbAMDlF+UiC0G/sdkvuP+gO?=
- zDbMRTiiAmglyaivSCy9ar3OVriFGdyUlI5ptqSf7QcJ1WsKH4Y1
+ bh=x6fXD2u/meCzQH4Fww92bNdCJhGF0eHHgImzcjy0qVw=; =?utf-8?q?b=3D4WBva/PWjmdJ?=
+ =?utf-8?q?st11SBptKR3dL87dHQCXr0uhIFn93aC/c/9NlqVcAA9f+FQYRUNpDOqO68S8h/uq?=
+ npyYFl9UDrfM2at7pFHFk0WL6vGFOsZyIwzjfMahgGKRmYKyh4PM
 X-Developer-Key: i=sam@ravnborg.org; a=ed25519;
  pk=R0+pqV7BRYOAeOIGkyOrSNke7arx5y3LkEuNi37YEyU=
 X-Endpoint-Received: by B4 Relay for sam@ravnborg.org/20230107 with auth_id=22
@@ -84,180 +84,149 @@ Reply-To: <sam@ravnborg.org>
 
 From: Sam Ravnborg <sam@ravnborg.org>
 
-Drop the sun4m and sun4d code from trampoline_32
+The only supported sparc32 CPU is LEON, so there is no need for a
+config option to select it.
 
 Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
 Acked-by: Arnd Bergmann <arnd@kernel.org>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org> #For the USB stuff
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Arnd Bergmann <arnd@kernel.org>
 Cc: Andreas Larsson <andreas@gaisler.com>
 ---
- arch/sparc/kernel/kernel.h        |   3 +-
- arch/sparc/kernel/trampoline_32.S | 127 +-------------------------------------
- 2 files changed, 3 insertions(+), 127 deletions(-)
+ arch/sparc/Kconfig                   | 27 +++++++++------------------
+ arch/sparc/configs/sparc32_defconfig |  1 -
+ drivers/usb/host/Kconfig             |  2 +-
+ drivers/usb/host/ehci-hcd.c          |  4 ++--
+ drivers/usb/host/uhci-hcd.c          |  2 +-
+ 5 files changed, 13 insertions(+), 23 deletions(-)
 
-diff --git a/arch/sparc/kernel/kernel.h b/arch/sparc/kernel/kernel.h
-index c2aaddedf097..2c57677770ff 100644
---- a/arch/sparc/kernel/kernel.h
-+++ b/arch/sparc/kernel/kernel.h
-@@ -112,8 +112,7 @@ extern unsigned int real_irq_entry[];
- extern unsigned int smp4d_ticker[];
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index 19ee7bc0b2ea..e4e2548c1f1f 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -9,6 +9,10 @@ config 64BIT
  
- /* trampoline_32.S */
--extern unsigned long sun4m_cpu_startup;
--extern unsigned long sun4d_cpu_startup;
-+void leon_smp_cpu_startup(int boot_cpu);
+ 	  Say yes to build a 64-bit kernel - formerly known as sparc64
+ 	  Say no to build a 32-bit kernel - formerly known as sparc
++	  The 32-bit kernel target the synthesizable LEON SPARC processor.
++	  LEON is a part of the GRLIB collection of IP cores that are
++	  distributed under GPL. GRLIB can be downloaded from www.gaisler.com.
++	  You can download a sparc-linux cross-compilation toolchain at www.gaisler.com.
  
- /* signal_32.c */
- asmlinkage void do_sigreturn(struct pt_regs *regs);
-diff --git a/arch/sparc/kernel/trampoline_32.S b/arch/sparc/kernel/trampoline_32.S
-index 82fafeeb3a62..685b20923f6b 100644
---- a/arch/sparc/kernel/trampoline_32.S
-+++ b/arch/sparc/kernel/trampoline_32.S
-@@ -15,136 +15,12 @@
- #include <asm/contregs.h>
- #include <asm/thread_info.h>
+ config SPARC
+ 	bool
+@@ -62,6 +66,10 @@ config SPARC32
+ 	select HAVE_UID16
+ 	select LOCK_MM_AND_FIND_VMA
+ 	select OLD_SIGACTION
++	select USB_EHCI_BIG_ENDIAN_MMIO
++	select USB_EHCI_BIG_ENDIAN_DESC
++	select USB_UHCI_BIG_ENDIAN_MMIO
++	select USB_UHCI_BIG_ENDIAN_DESC
+ 	select ZONE_DMA
  
--	.globl sun4m_cpu_startup
--	.globl sun4d_cpu_startup
--
--	.align 4
--
- /* When we start up a cpu for the first time it enters this routine.
-  * This initializes the chip from whatever state the prom left it
-  * in and sets PIL in %psr to 15, no irqs.
-  */
--
--sun4m_cpu_startup:
--cpu1_startup:
--	sethi	%hi(trapbase_cpu1), %g3
--	b	1f
--	 or	%g3, %lo(trapbase_cpu1), %g3
--
--cpu2_startup:
--	sethi	%hi(trapbase_cpu2), %g3
--	b	1f
--	 or	%g3, %lo(trapbase_cpu2), %g3
--
--cpu3_startup:
--	sethi	%hi(trapbase_cpu3), %g3
--	b	1f
--	 or	%g3, %lo(trapbase_cpu3), %g3
--
--1:
--	/* Set up a sane %psr -- PIL<0xf> S<0x1> PS<0x1> CWP<0x0> */
--	set	(PSR_PIL | PSR_S | PSR_PS), %g1
--	wr	%g1, 0x0, %psr		! traps off though
--	WRITE_PAUSE
--
--	/* Our %wim is one behind CWP */
--	mov	2, %g1
--	wr	%g1, 0x0, %wim
--	WRITE_PAUSE
--
--	/* This identifies "this cpu". */
--	wr	%g3, 0x0, %tbr
--	WRITE_PAUSE
--
--	/* Give ourselves a stack and curptr. */
--	set	current_set, %g5
--	srl	%g3, 10, %g4
--	and	%g4, 0xc, %g4
--	ld	[%g5 + %g4], %g6
--
--	sethi	%hi(THREAD_SIZE - STACKFRAME_SZ), %sp
--	or	%sp, %lo(THREAD_SIZE - STACKFRAME_SZ), %sp
--	add	%g6, %sp, %sp
--
--	/* Turn on traps (PSR_ET). */
--	rd	%psr, %g1
--	wr	%g1, PSR_ET, %psr	! traps on
--	WRITE_PAUSE
--
--	/* Init our caches, etc. */
--	set	poke_srmmu, %g5
--	ld	[%g5], %g5
--	call	%g5
--	 nop
--
--	/* Start this processor. */
--	call	smp_callin
--	 nop
--
--	b,a	smp_panic
--
- 	.text
- 	.align	4
--
--smp_panic:
--	call	cpu_panic
--	 nop
--
--/* CPUID in bootbus can be found at PA 0xff0140000 */
--#define SUN4D_BOOTBUS_CPUID	0xf0140000
--
--	.align	4
--
--sun4d_cpu_startup:
--	/* Set up a sane %psr -- PIL<0xf> S<0x1> PS<0x1> CWP<0x0> */
--	set	(PSR_PIL | PSR_S | PSR_PS), %g1
--	wr	%g1, 0x0, %psr		! traps off though
--	WRITE_PAUSE
--
--	/* Our %wim is one behind CWP */
--	mov	2, %g1
--	wr	%g1, 0x0, %wim
--	WRITE_PAUSE
--
--	/* Set tbr - we use just one trap table. */
--	set	trapbase, %g1
--	wr	%g1, 0x0, %tbr
--	WRITE_PAUSE
--
--	/* Get our CPU id out of bootbus */
--	set	SUN4D_BOOTBUS_CPUID, %g3
--	lduba	[%g3] ASI_M_CTL, %g3
--	and	%g3, 0xf8, %g3
--	srl	%g3, 3, %g1
--	sta	%g1, [%g0] ASI_M_VIKING_TMP1
--
--	/* Give ourselves a stack and curptr. */
--	set	current_set, %g5
--	srl	%g3, 1, %g4
--	ld	[%g5 + %g4], %g6
--
--	sethi	%hi(THREAD_SIZE - STACKFRAME_SZ), %sp
--	or	%sp, %lo(THREAD_SIZE - STACKFRAME_SZ), %sp
--	add	%g6, %sp, %sp
--
--	/* Turn on traps (PSR_ET). */
--	rd	%psr, %g1
--	wr	%g1, PSR_ET, %psr	! traps on
--	WRITE_PAUSE
--
--	/* Init our caches, etc. */
--	set	poke_srmmu, %g5
--	ld	[%g5], %g5
--	call	%g5
--	 nop
--
--	/* Start this processor. */
--	call	smp_callin
--	 nop
--
--	b,a	smp_panic
--
--	.align	4
-         .global leon_smp_cpu_startup, smp_penguin_ctable
+ config SPARC64
+@@ -344,22 +352,6 @@ config SERIAL_CONSOLE
  
- leon_smp_cpu_startup:
-@@ -198,4 +74,5 @@ leon_smp_cpu_startup:
- 	call	smp_callin
- 	 nop
+ 	  If unsure, say N.
  
--	b,a	smp_panic
-+	b,a	cpu_panic
-+	 nop
+-config SPARC_LEON
+-	bool "Sparc Leon processor family"
+-	depends on SPARC32
+-	select USB_EHCI_BIG_ENDIAN_MMIO
+-	select USB_EHCI_BIG_ENDIAN_DESC
+-	select USB_UHCI_BIG_ENDIAN_MMIO
+-	select USB_UHCI_BIG_ENDIAN_DESC
+-	help
+-	  If you say Y here if you are running on a SPARC-LEON processor.
+-	  The LEON processor is a synthesizable VHDL model of the
+-	  SPARC-v8 standard. LEON is  part of the GRLIB collection of
+-	  IP cores that are distributed under GPL. GRLIB can be downloaded
+-	  from www.gaisler.com. You can download a sparc-linux cross-compilation
+-	  toolchain at www.gaisler.com.
+-
+-if SPARC_LEON
+ menu "U-Boot options"
+ 
+ config UBOOT_LOAD_ADDR
+@@ -390,7 +382,6 @@ config UBOOT_ENTRY_ADDR
+ 	 Kernel.
+ 
+ endmenu
+-endif
+ 
+ endmenu
+ 
+@@ -412,7 +403,7 @@ config SUN_LDOMS
+ 
+ config LEON_PCI
+ 	bool
+-	depends on PCI && SPARC_LEON
++	depends on PCI && SPARC32
+ 	default y
+ 
+ config SPARC_GRPCI1
+diff --git a/arch/sparc/configs/sparc32_defconfig b/arch/sparc/configs/sparc32_defconfig
+index 71273fc578bf..dfd326f20876 100644
+--- a/arch/sparc/configs/sparc32_defconfig
++++ b/arch/sparc/configs/sparc32_defconfig
+@@ -10,7 +10,6 @@ CONFIG_BLK_DEV_INITRD=y
+ # CONFIG_RD_ZSTD is not set
+ CONFIG_SMP=y
+ CONFIG_HZ_100=y
+-CONFIG_SPARC_LEON=y
+ CONFIG_SUN_OPENPROMFS=y
+ CONFIG_SUN_OPENPROMIO=y
+ # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 4448d0ab06f0..c5f94c70482f 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -595,7 +595,7 @@ config USB_UHCI_HCD
+ 
+ config USB_UHCI_SUPPORT_NON_PCI_HC
+ 	bool
+-	default y if (SPARC_LEON || USB_UHCI_PLATFORM)
++	default y if (SPARC32 || USB_UHCI_PLATFORM)
+ 
+ config USB_UHCI_PLATFORM
+ 	bool
+diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+index 802bfafb1012..5011bc8348bb 100644
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -1329,7 +1329,7 @@ MODULE_LICENSE ("GPL");
+ #include "ehci-xilinx-of.c"
+ #endif
+ 
+-#ifdef CONFIG_SPARC_LEON
++#ifdef CONFIG_SPARC32
+ #include "ehci-grlib.c"
+ #endif
+ 
+@@ -1343,7 +1343,7 @@ static struct platform_driver * const platform_drivers[] = {
+ #ifdef CONFIG_XPS_USB_HCD_XILINX
+ 	&ehci_hcd_xilinx_of_driver,
+ #endif
+-#ifdef CONFIG_SPARC_LEON
++#ifdef CONFIG_SPARC32
+ 	&ehci_grlib_driver,
+ #endif
+ };
+diff --git a/drivers/usb/host/uhci-hcd.c b/drivers/usb/host/uhci-hcd.c
+index fd2408b553cf..7cb820963988 100644
+--- a/drivers/usb/host/uhci-hcd.c
++++ b/drivers/usb/host/uhci-hcd.c
+@@ -846,7 +846,7 @@ static const char hcd_name[] = "uhci_hcd";
+ #define	PCI_DRIVER		uhci_pci_driver
+ #endif
+ 
+-#ifdef CONFIG_SPARC_LEON
++#ifdef CONFIG_SPARC32
+ #include "uhci-grlib.c"
+ #define PLATFORM_DRIVER		uhci_grlib_driver
+ #endif
 
 -- 
 2.34.1
