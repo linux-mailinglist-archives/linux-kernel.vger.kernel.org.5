@@ -1,112 +1,117 @@
-Return-Path: <linux-kernel+bounces-98023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 206818773C5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 20:47:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F5618773C9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 21:13:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79DB9B20CBD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 19:47:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0A7F1F21A24
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 20:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5134E1DA;
-	Sat,  9 Mar 2024 19:47:20 +0000 (UTC)
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF8D4EB4C;
+	Sat,  9 Mar 2024 20:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="GcELflsL"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E235B4A2A
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 19:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082E34D9EC;
+	Sat,  9 Mar 2024 20:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710013639; cv=none; b=uZ3HqbNBTNMLi3P/4PyrsEQUnQSNKwYnrmFbKsdCNL69M02Wpw46B55xz5JajNgF0ecYgEpBfK/CYIbUecPl2XeuXocoWsMqojCCK33e67qgeYEwLzm49nWUhdBvDkj9aWbwHEUgl1z1AUj9kl/ZeOaLIAmov1HcxmufZEaI9h8=
+	t=1710015212; cv=none; b=DiEizPQD1CI+VzZafhonK8G/lecAqli9jyyzoYfgb4N3QJh9E95DrNLP6ZL9N15Q8dP7+chf5YlQg47jcfssc+deCdE7h0VNo3kMM1DCJ0g4UnG8FqHaGA03fhK1/z681wEe4RE/ujqX8r2FpghnYP3bkxVcea+8FrZCTZEoCK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710013639; c=relaxed/simple;
-	bh=3R+0csDhG6gey7ea/bKNU4aS4ofQ2RaPOlBMidRGHHA=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=oFNOC8mYSgyA/e8VB3uhQhQtMS+6c0Bh/WumkrlmVUKigb30yw4OERXsEKxa9vivAj+PR7x9NFP9rCM1qaa1Yn9bW0JdFXucZYSaZgpE9ShkPnnMWItARxRnilW5xmyBcEVx6G8WHPJ8dB12exwYwf0OnezrFDRSGOfic1P2Gww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay01.hostedemail.com (Postfix) with ESMTP id 6354E1C0BB9;
-	Sat,  9 Mar 2024 19:47:16 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 353472002C;
-	Sat,  9 Mar 2024 19:47:14 +0000 (UTC)
-Message-ID: <0967032faf79111417b2014ccb80077a804859ce.camel@perches.com>
-Subject: Re: [RFC PATCH 1/1] checkpatch: Add warning for msleep with
- durations suitable for ssleep
-From: Joe Perches <joe@perches.com>
-To: Li Chen <me@linux.beauty>, Andy Whitcroft <apw@canonical.com>, Dwaipayan
-	Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
+	s=arc-20240116; t=1710015212; c=relaxed/simple;
+	bh=DDC1CBqfrgPh109rJsO3aoCX8S+FPW2MUiqgY2AF9rM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qS1ifmHMv1HHhtfmx73h8Y/J2iXhoPoseEpZp9xKavthNPyMwCju/SSIGlSn7EAGItFaxBXdTH1ZNRWHl7TAx1CZMUno6ygTMIbkCgUMnPDMHeUZ0D9wizv3uMunckQY2TdBYLRtGzD+6OQDQa9D/v5oCxhikRd7aoRoYmXYIL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=GcELflsL; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1710015203; x=1710620003; i=w_armin@gmx.de;
+	bh=DDC1CBqfrgPh109rJsO3aoCX8S+FPW2MUiqgY2AF9rM=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=GcELflsLOy5f67IKtlHLrqz3LZ4eyiVuk32fZJQjgWCfQAPRG53HNIDlwzdVvoic
+	 o9FeByXfZiX80d+nUvLN3iLtM86wwYIBIWQgr1q2+BTzrMZ8qEUwsOu04SmDnWIi8
+	 VbUEPdy8me30uj9z1A5KG/7T8bw3ZnDGeMT/QE248EV6F9xEqTBO7yfoCTHIkZwaW
+	 U1XT8WTTvpB+F0RWkr2lc/W82L0cT3hAJjXA+4QgN6zyU7ek4QCXSrkHwKCH9Eo2Z
+	 YYpIeIu+Tv0JawfL5ZYkuN4FzsDEpBjumkm+mjsz9BquumJ+ela/8FbRXyRv6yjb4
+	 vPybz+7nOno14OVW3Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MHGCu-1rehTn1hdQ-00DFGl; Sat, 09 Mar 2024 21:13:23 +0100
+From: Armin Wolf <W_Armin@gmx.de>
+To: rafael@kernel.org,
+	lenb@kernel.org
+Cc: linux-acpi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Date: Sat, 09 Mar 2024 11:47:13 -0800
-In-Reply-To: <87edcor88b.wl-me@linux.beauty>
-References: <87frx4r8dt.wl-me@linux.beauty> <87edcor88b.wl-me@linux.beauty>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+Subject: [PATCH 0/5] ACPI: bus: _OSC fixes
+Date: Sat,  9 Mar 2024 21:13:05 +0100
+Message-Id: <20240309201310.7548-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 353472002C
-X-Rspamd-Server: rspamout08
-X-Stat-Signature: 43smzccc34rwso3e84mezkqz9xayf3tp
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+zL9aLh8ZMUMRHmeimmRNlejVVDWsQ0/E=
-X-HE-Tag: 1710013634-412339
-X-HE-Meta: U2FsdGVkX1+3g0pWzUlTTrDnDU7o/Tyy/55R5S1irzy2eQdJQJuX3OUgBaQdg+PAi0iDAoKsB/5UTRSr9tp9KLB81i2/guDBSV8riiYSBVdUCES2Pws/6k+CK2MK8BNckAh3mFhwJMeXRLYGqHAf5m6wHRp5TYt8lv6YYXwUAawGdF3kkqU5relw+vmvP/xQVkpEXK+HINxUo28cAfBs/RQoNNHgPK4x4SK+7tK9LXF0vKIwmJmuAvLqIp9WJhlDE/uvzID0CFD2SMeyfb+76IXFjlfbLgEFDa8RMvLttCtJNFipNZduo1QnF5WWGYj6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hcAHVwh3puWdFWCzTNLQb11Nb//DTgywMjaP/u392ecCA8J2ja6
+ LkzeLC//34oOdOLMv+AwhUh1ORztMdAP1B4hD5w1gj66NX04uin6adadO6yU7emiuALkoV/
+ pPk/I52liAaB+BWmRL3wrbmOCXbLbUUHrjh2Jpbg6bDhqYJ5/I1YMpYk4xWw/LG//Ab3HUq
+ 1vkSQ19aEQ3ZEeM8Ek+hA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:apj0qsU2eTg=;RtOeomMluZg0R4FowefKrNuIJAO
+ 3R1jTzdS2TisXRi/4kTc3h3dDt5ljBnHgI1FYWpEKXgpoEtI0zhf+1V/MUlhmJ3abigH2IFS8
+ cc9/X4UtKsRjnyuV0ejksGrORLGHMv+GtFfWTSaarnBpBvbVqkrgV9N2MPaqrK6gJyHgyN7cu
+ Zp/u3T2XeF74g6rv5zCP3MZ6YceDlRHme7oWnhOjB2Z2NvQmCk60K4VFpj43p0HgxLKcAy8Ne
+ caBRThNgFhX/vI6ra0Zr7bCtC/tENwcZSvxKEEy/oGhhFa+jdm6k/mj6QajjoP+h7ZnXPxTU6
+ aDYfbRMqrZ6d+6m0vGkURUwHocG00QfUke80GV1lTg3DkI61ahUyxlJTcYzzT/xBGgakyezxW
+ 8zAWEOH4BRwAY6K0gcWf1vKd+cbPKkHSErL4SgO+anV5Sie/7fzVLRmeSzOyAPdcoWothRYmr
+ esPKocOProQEsxVMznKpawUmHT9jzd/yG7Sfpb1cqx9S5zhazRtJKN0FEdokHJxFXLxKPtF5J
+ bttN2usGahuyBwUPAq4Hd1g2TpotQIkp2m2pkzwcwL1LhwbePxg999wCtMOqvYP28B/3uFqjB
+ D+aPX7VgreKlOLhxqGCc7amIWOn3ZBmWHnRm/g8RxTkslGMSnWd00B3oE0PJmaBYluxOkAUtX
+ rmaL2fKHt9Uc53wxfiYVCk+tmT4zrN0dn/6QotfBxjYYRoC7/Z4OeK/anHn84tvSJOyLRzjGA
+ RBCHUDINI03UKQCChHh364HDQVrqQIRgrRDBfPjzb7jcFNCn6jdrLRZS9J/MHvyySHLYtZMF/
+ Gzb+WAsWke+P6YzWTuZ5wdkK2CR+y77s+q/wXIhooaeis=
 
-On Tue, 2024-03-05 at 23:47 +0800, Li Chen wrote:
-> From: Li Chen <chenl311@chinatelecom.cn>
-[]
-> Warn when msleep(x000); can be replaced with ssleep(x);
+This patch series fixes the handling of various ACPI features bits
+when evaluating _OSC.
 
-While I don't really see the point as msleep is trivial
-to read and ssleep is just msleep * 1000 and there are
-already 3:1 more msleep(n*1000) uses than there are ssleep(n)
+The first three patches fix the reporting of various features supported
+by the kernel, while the fourth patch corrects the feature bit used to
+indicate support for the "Generic Initiator Affinity" in SRAT.
 
-$ git grep -P '\bmsleep\s*\(\s*\d+000\s*\)' | wc -l
-267
-$ git grep -P '\bssleep\s*\(\s*\d+\s*\)' | wc -l
-89
+The last patch fixes the reporting of IRQ ResourceSource support. Unlike
+the other feature bits, the ACPI specification states that this feature
+bit might be used by the ACPI firmware to indicate whether or not it
+supports the usage of IRQ ResourceSource:
 
-And about the patch itself:
+	"If not set, the OS may choose to ignore the ResourceSource
+	 parameter in the extended interrupt descriptor."
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -6599,6 +6599,16 @@ sub process {
->  			}
->  		}
-> =20
-> +# warn about msleep() calls with durations that should use ssleep()
-> +if ($line =3D~ /\bmsleep\s*\((\d+)\);/) {
+Since the code responsible for parsing IRQ ResourceSource already checks
+if ResourceSource is present, i assumed that we can omit taking this
+into account.
 
-This indentation is incorrect.
-And this would be more sensible using
-		if ($line =3D~ /\bmsleep\s*\(\s*(\d+)000\s*\)/) {
+All patches where tested on a Asus Prime B650-Plus and a Dell Inspiron
+3505.
 
-to avoid the extra tests below
+Armin Wolf (5):
+  ACPI: bus: Indicate support for _TFP thru _OSC
+  ACPI: bus: Indicate support for more than 16 p-states thru _OSC
+  ACPI: bus: Indicate support for the Generic Event Device thru _OSC
+  ACPI: Fix Generic Initiator Affinity _OSC bit
+  ACPI: bus: Indicate support for IRQ ResourceSource thru _OSC
 
-> +    my $ms_duration =3D $1;
-> +    if ($ms_duration >=3D 1000 && ($ms_duration % 1000) =3D=3D 0) {
-> +        my $ss_duration =3D $ms_duration / 1000;
-> +        WARN("SSLEEP",
-> +             "Prefer ssleep($ss_duration) over msleep($ms_duration);\n" =
- $herecurr);
+ drivers/acpi/bus.c   | 5 +++++
+ include/linux/acpi.h | 6 +++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-And please add a $fix to this so:
-
-		if ($line =3D~ /\bmsleep\s*\(\s*(\d+)000\s*\)/) {
-			$secs =3D $1;
-			if (WARN("SSLEEP",
-				 "Prefer ssleep($secs) over msleep(${secs}000\n") &&
-			    $fix) {
-				$fixed[$fixlinenr] =3D~ s/\bmsleep\s*\(\s*${secs}000\s*\)/ssleep($secs)=
-/;
-			}
+=2D-
+2.39.2
 
 
