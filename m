@@ -1,150 +1,127 @@
-Return-Path: <linux-kernel+bounces-97904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3C4687715F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:29:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 096AE877164
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 14:31:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0533B20C5F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:29:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B32061F21634
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 13:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956523BBF0;
-	Sat,  9 Mar 2024 13:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA3C3C482;
+	Sat,  9 Mar 2024 13:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dkmZvcOJ"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AX6Edpw5"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2CB3BBD9
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 13:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B6853BBE4
+	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 13:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709990983; cv=none; b=VdJ8Wj8VRT7nYZ/N8X6RG3FEXd6YzbXxYLPEejhRjqNETgr+RkJroJ9bANuEuQRWmKX9on0YRb914W5JOltJ0evPJQHhYPbQ8L2wWNDGbMP5damwUKK3CLT1JgfiWem4acFiKf1DIBSFZbwEFxovTxNvSu6MnhRIXefBLUcqCVk=
+	t=1709991102; cv=none; b=g0CddPhey1Yn4iiLUAo7dvpnA+8DIm3qzo3FSP9zt5L0bDTK70qKBXY21df743ARRLcYAjjdScJ7lGwwebc6aP2B7RO0hSQIMtv2eTNr8Lqa9QYMny4gyQ1o22fnF9rsVUIIcWbRINvyJs8y/RYHlo+lVh1W6wCUSo3fO86dj4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709990983; c=relaxed/simple;
-	bh=wpeTafZoG+IWibX3z4YnnI9yy1jUzKvTPGkS7+ekOfI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eYxZrGpPuA+HKreJ4KJr9VRNjU5ZVWX8CaN+L6IQ++Kps4MzLGfMkdT3AHIijD7Rb17JP52n1hQFS0KbKwK7WtFUPlzmn8Azehu9BxCnxd4vpQ6mhhmF/cKDPQ3VDeREKtyiSu1qWeFokoC1+t7FomQ1B9tb1qM6/hejx2etQU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dkmZvcOJ; arc=none smtp.client-ip=209.85.219.180
+	s=arc-20240116; t=1709991102; c=relaxed/simple;
+	bh=3PPGy1YGHaSdumT4F8l8zt/zKWZM90Ind2PI+taBgZw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=dQEp9lzAcW0jbVviDO0L/zwQtkRBZYNxYm1CiTlnFARGajdjIQtRevcxHVc75iXGIWu8CyUhoT+Yg5DQiduwAiIqSlt+Ajzmi4ASrIquTRlVadQRBv/ArfcY+H2pOHHGItE5Tc0ZpmbeCJ7RrmIoaZKQISzWusGe09A9UeWQ0KI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AX6Edpw5; arc=none smtp.client-ip=209.85.208.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so1752752276.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 05:29:42 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d40fe2181dso20366371fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 05:31:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709990981; x=1710595781; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q7Taks8J4Q9sFVLRwiypdMlNYDVyNw9PbFVLyOKOfmc=;
-        b=dkmZvcOJFAg6Ho4FRj973t6eDHy+M6De98udIoVZZI+IVx7weRcfEWBH0ZS82uztYz
-         smElu04+O60KrwRFvJYJnPppB7E0QPOHUA38bAO9nGc28suW4jV8sUra8sWv3PtKRvk/
-         2lNelZgoP+DB3vnrM9a1qzcfhhq8MSXFaHS1dArb9244BnO5c5Z/UovcGmKqkORLg9Pw
-         G1dftDmg2jMIcCa3px9WjGkJndKbA6IAUF6tbk6mV4qk83JujGxbdP8XW7LdBHnuvSn7
-         tfRrbkYCig0z6L8wCT4UWoKCRri87WQa07/9I78lo2IrmXOK3MwzTmPWeXisK/ZF3s/v
-         EGMA==
+        d=linaro.org; s=google; t=1709991099; x=1710595899; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cKCIWQzokuJrHNFcpWWWhUjMkEYBjpikwqy95obUdnA=;
+        b=AX6Edpw50p8hCL+FGZfk1HS0xFK9qvOxiC0hZSk2q+3MDkHf2zjpmSJYDwiG1NyKI6
+         x1207OcYkq7Ho8vshL2FuMlTxZIjFbiG0J8s6x6FpqYSyXdIbPCqF0kIP89tBgcDeKpr
+         BS1kiVs1rnGia2zT2G8t+yGCI6dhcGgiVtbnBDKHSMdyZsBr9rwqq463X27VCr/QCTHG
+         FgFQHOl20FRk8A5e762mOdIcY7juDf7h10ihhCA7Sh+MHs4a4yKCEYf93nlfjcycS+c9
+         ya+wsV4P9WEn5LtQ01sL/6ofemQ198u+Z5yIh3NDHw1SPMiOnx8kFZW9EQT+jaV4rX2M
+         mB/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709990981; x=1710595781;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1709991099; x=1710595899;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Q7Taks8J4Q9sFVLRwiypdMlNYDVyNw9PbFVLyOKOfmc=;
-        b=qdvu/Zw1V/DoHssP7ad026GRNUAaV9m/eIDgwBk+4HoMSnuf04CxQRNS/XVui9KKBs
-         AuFhXtB6HzmfqVETxxcvPhLhrHPZObOTCwnjMoWCjU0/aSANCINeDFSagZ/nFk0YPdQ7
-         7iqYSSXop8GGfyjl9sZWonU/rnW5TyVHp792yFXfn70pHY7PARktCJdJW1s5L4IpSquJ
-         cutRf4pV2soSEJc2X+wIMw7NeQE/o7Y7fQFmogF9wIeoO9xNOho1IG/1uTrD8tyTqVgH
-         E31WX8TT//Q4sE5yZMn5H1vedKZ28zejItFBJEcnc1ZtDx1rZRXSLoVOV0qymE2lHffy
-         DKuw==
-X-Forwarded-Encrypted: i=1; AJvYcCUvD7yxeFXYbw5etle+C9MzlNOrz6qL9q+G9/GgdHPOcvf7ARGxeQzulmdzcOrc3B4aDpa5AT4wfT+e91FA/I7jn/RG9So1LiwSmHTI
-X-Gm-Message-State: AOJu0YxeVkydZ4H1SQrrsxXiZxOs6Q6hGnqgKe06j0wlc8xldHOM/M8X
-	u+y5n6dFKWbQUiNAp/P4KHfdmZ/ak9yyJz4vu/Hgie0uvrOnJ1pOLIxjj3vQC3s7ir+k9Ss5GQP
-	iUlH8Q14R2t3itHnwLVgJpyZEW6CqkKbtYoaw2w==
-X-Google-Smtp-Source: AGHT+IEU99pr/n1rIb3maLzCnZ8v4EqdMm5b+eo+nyeZpNwNODRAEJabBbvcmArDjxlPH5orGzupS8f8fkVQ6IaybiE=
-X-Received: by 2002:a25:aa84:0:b0:dd0:467:2e48 with SMTP id
- t4-20020a25aa84000000b00dd004672e48mr984517ybi.40.1709990981142; Sat, 09 Mar
- 2024 05:29:41 -0800 (PST)
+        bh=cKCIWQzokuJrHNFcpWWWhUjMkEYBjpikwqy95obUdnA=;
+        b=wydHgzpNrcNjE4f9Q8QKDwgya9pfgQG6NL96kH0atSXoOoVUVJQyomGOQYIyOE/Z2o
+         dzThhwyBoNpfFTaKnuIGAML6TQjx8xW0TKKVUvK7GJTNOJc6bLlxLwPeJ1Me+LB4N/ow
+         uSlfFhVnpEoaf8WRiI2mOGeS1k5GnkKjopNw2dXc7cXME64V+tG1HIDCjx2kzD2HK9xa
+         Dcf3YsxkqWpTC7S3+e+M5WFqlwwckhYMjh0lBL+uJLSMhLkEalDtrdbXtuaX3V5jsnnF
+         CU33xR5kFQqi2iETk/u8fOQXJVsY33lPiS6t2q59f2olCafkbD9zlbH9Ym/PWy9buoX9
+         5Ygw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6mYcwcCtIvjTE6pkJ8Y9r1UWNroUi4kUf6NgL4+iXPNYlLWzCBDHay9PqRYTNeAi6bPXFETgz8SwSn9mMizJ/E8iVQsX/Ift9BCRk
+X-Gm-Message-State: AOJu0Ywd8ugGcJAMMtRQetvpKrB65luqsQjPZFcAddqcjwKe42k6BIvt
+	4HCzGKra2TnSwEd3h5UgMys7K1pgjbMz9QeBEHeMMyinZnXkxMzhAuJlRZ3e0FHYTfRQgRXLCZZ
+	UWEQ=
+X-Google-Smtp-Source: AGHT+IEzC7Rp20E6bhvNP3S3wyi1hQB7gbrbf/iWVD1sKJ4sYtswRuJi1mSZprYsBF0BW6EFy4eQUw==
+X-Received: by 2002:a2e:928c:0:b0:2d2:7813:6ca3 with SMTP id d12-20020a2e928c000000b002d278136ca3mr1139418ljh.9.1709991098793;
+        Sat, 09 Mar 2024 05:31:38 -0800 (PST)
+Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id t27-20020a2e8e7b000000b002d08f3640b5sm298524ljk.11.2024.03.09.05.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Mar 2024 05:31:38 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v2 0/2] Describe SC8280XP PCIe SMMU
+Date: Sat, 09 Mar 2024 14:31:08 +0100
+Message-Id: <20231219-topic-8280_smmuv3-v2-0-c67bd3226687@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307172334.1753343-1-sui.jingfeng@linux.dev>
- <20240307172334.1753343-2-sui.jingfeng@linux.dev> <CAA8EJpp8tsHi0RhsJXG+r6nOsV3AUC_n6jNHL0Cr6Ku2h3NMog@mail.gmail.com>
- <45f59f31-1f03-4a96-adb6-25c7cdd5e8a1@linux.dev> <CAA8EJpqq1-cEke6wEFZFDnpz4tFBcL6HF3=Qtf-8Q3WbogLS8A@mail.gmail.com>
- <c84fcdba-af50-4212-a8e3-f492c2b02ce4@linux.dev> <CAA8EJppTcPO3j7GpGcGbKPUjQ=3rTMMOrU1SYR3mtkWLztf2qQ@mail.gmail.com>
- <7535b3ba-6bbb-411c-82a4-cd4ac45de1a6@linux.dev> <CAA8EJpp3yd33pYweL_exrXMJ3g-m7-yjJrjiVMVMevOadBtt8g@mail.gmail.com>
- <28492cfb-5327-46d5-8c08-233f1786ff44@linux.dev>
-In-Reply-To: <28492cfb-5327-46d5-8c08-233f1786ff44@linux.dev>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 9 Mar 2024 15:29:29 +0200
-Message-ID: <CAA8EJpphapGxz9ztD7FUE5y_CVuuz=gySbOJquNXSw29vexKgQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] drm/bridge: Add fwnode based helpers to get the
- next bridge
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJxk7GUC/32NQQqDMBAAvyJ7bopJSNWe+o8iJYmrLmgiiYYW8
+ e9NfUCPMzDMDhEDYYR7sUPARJG8yyAuBdhRuwEZdZlBlEJywRu2+oUsq0VdvuI8b0kyxbu6apT
+ uK7SQO6MjMhO0s2Mu3TZNWS4Be3qfo2ebeaS4+vA5v4n/7L9F4owz7NFIYcRNKfOYyOngrz4M0
+ B7H8QVcNBu5yAAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>, 
+ Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>, 
+ Rob Herring <robh@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ iommu@lists.linux.dev, Johan Hovold <johan+linaro@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709991097; l=804;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=3PPGy1YGHaSdumT4F8l8zt/zKWZM90Ind2PI+taBgZw=;
+ b=GGkbYbxDkQuoMPokNfWOq17o4bOTMTzIETydZjsZu78FIhnI/OCk7sXZeWxNZGzsEzWoMMsY7
+ UeGZUINREJLB/csm2Vbx8FNPeWzwgBaaNKZYrU9UdxYYENvkFK0Mw4y
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On Sat, 9 Mar 2024 at 14:03, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->
-> Hi,
->
->
-> On 2024/3/9 18:39, Dmitry Baryshkov wrote:
-> >> The code path of "creating a connector" plus the code path of "not creating a connector"
-> >> forms a 'side-by-side' implementation imo.
-> >>
-> >> Besides, I have repeated many times: the DT already speak everything.
-> >> Device drivers can completely know if there is a display connector OF device created and how many
-> >> display bridges in the whole chain. If there are connector device node in the DT, then it should
-> >> has a device driver bound to it(instead of create it manually) for a perfect implementation. As
-> >> you told me we should not*over play*  the device-driver model, right?
-> > Please, don't mix the connector node in DT and the drm_connector. If
-> > you check the code, you will see that the driver for hdmi-connector,
-> > dp-connector and other such devices creates a drm_bridge.
->
->
-> OK, I'm not mixed them, I'm very clear from the very beginning. I have checked
-> the code years ago. Let's make it clear by iterating one more time:
->
-> If DT contains one or more HDMI connector node, then there will be one or
-> more display connector platform devices created by OF core, Then, according to
-> your "don't overplay device-driver model" criterion or modern drm bridge standard,
-> we shouldn't create a display connector instance in the drm birdge driver, right?
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v2:
+- Explicitly call the thing the PCIe SMMU, rewrite the commit msg
+- Add 8280-specific bindings
+- Link to v1: https://lore.kernel.org/r/20231219-topic-8280_smmuv3-v1-1-efeb32b2655b@linaro.org
 
-Yeah, if the platform is updated, yes, we do. If there is an
-hdmi-connector node, I can only assume that the DRM driver also has
-been updated to pass the DRM_BRIDGE_ATTACH_NO_CONNECTOR. In such case
-the lt9611uxc driver will not create the drm_connector and everything
-works as expected. If this is one of the legacy platforms, the DRM
-driver will not pass the DRM_BRIDGE_ATTACH_NO_CONNECTOR flag, but at
-the same time the DT will not have the connector node.
+---
+Konrad Dybcio (2):
+      dt-bindings: iommu: arm,smmu-v3: Add SC8280XP compatible
+      arm64: dts: qcom: sc8280xp: Describe the PCIe SMMUv3
 
->
-> As otherwise we will have two display connector driver (or code) for a single entity,
-> right?
->
-> Another side effect is that
-> when you create a hdmi display connector instance manually without reference to the
-> DT, then *you made an assumption!*. But there are users who have don't a different
-> need(or  different typology), for example, they need to read edid directly from the
-> KMS driver side. This may because the i2c bus is directly connected to the connector
-> part, but the display bridge's I2C slave interface. sii9022, it66121 and tfp410 support
-> this kind of usage.
->
-> So the real problem is that it is a policy level code  when you creating a hdmi
-> display connector instance manually without reference to the DT in a common drm bridge
-> driver, not a mechanism.
+ Documentation/devicetree/bindings/iommu/arm,smmu-v3.yaml |  6 +++++-
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi                   | 16 ++++++++++++++++
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+---
+base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
+change-id: 20231219-topic-8280_smmuv3-51d8795af7ec
 
-Only if requested by the DRM driver itself.
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
---
-With best wishes
-Dmitry
 
