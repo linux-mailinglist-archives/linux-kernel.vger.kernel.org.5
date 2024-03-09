@@ -1,104 +1,140 @@
-Return-Path: <linux-kernel+bounces-97966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86897877271
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:25:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C1087726D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 18:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D7AB1F21B25
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:25:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C37C1F21BF5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 17:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224CB1CD1D;
-	Sat,  9 Mar 2024 17:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6B01F951;
+	Sat,  9 Mar 2024 17:16:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="fBqUOdLc"
-Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28CCC208CE
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 17:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.27
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bP1M/C3s"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9781C15BE;
+	Sat,  9 Mar 2024 17:16:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710005108; cv=none; b=n2ZVwEiddVdXhQ06cx19sk8AVUC0j9v8rhF4gpeR0o0epfNvUiY4CYqqmAuckxRZEA1HTyeBpE9hGK2hqTX4wVXaYw4tAMH+nB3T7hedrFxwHCS5MFnY66Mgnkx+lupqruu58fIxJRTFSx2g5GXkbgVLGqvbgLnsaPIqqwRF6Do=
+	t=1710004607; cv=none; b=YDqoRzSk9Mz6hlqlelZaemLquwBD8Pa0aXq+Sdc+poA614r1D1swZsDd6KLP/ClLelWbT3dcZK7yaQw1SQIK3W3JlLLl3c0ix48HzVAA8BMtwVeEuDsC/RLx2eJ6CWkiM6Kib8BlP8wIjPKMc/WUsVJuvm4inTPOnUEfC0JZZJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710005108; c=relaxed/simple;
-	bh=ak74sgUl+aMNO+lsUKmolXguWnH/yTGMWgBb6ApRz8g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kC6cL0nRIy/AYtcAeSrRtXQ2eIWCOJ7SuxUeOiubfXPyFo9MXxLlPo+nvOrn/R2WvjYRjoL2b1maxJg/dMayt6P1lQgJDjwh+xeh5AZSTguM4vpMKjs0Fo31QdrUltVcKEXyQfbUJjxiN8bwTFkpTwJVg7fIiLGjgRu1gzJD3tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=fBqUOdLc; arc=none smtp.client-ip=80.12.242.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id j0Idrpm7o3j4bj0IdrdmP9; Sat, 09 Mar 2024 18:15:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1710004558;
-	bh=twgFwiWdCdGqs18zIHruAf9EVb8e90jI3WiOBiux4bk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=fBqUOdLc/4+MFbFoxiZPHXzi2P2f5lifzbjAygl1kUrlkFzffsFX/9Lu1vDnuIB2D
-	 KeUgqCxTTQDz1Y3CFVrbwL3qiRzR5iP2bnE0MyD01L2MMn76KmgxMzAlj7PPW4ySJG
-	 yo1uMbZoI1246YMwi4ORWmdHycakc8GYyIHNo2hs2PqjAWMFMjQAYWUPYhfAImmWh6
-	 RbW8oiU7jGzyi0MLJtYV7yf0ySSZb56/FqcZ2gP1Ct0Aqy/Rhr2wFP7xR3wN+rSqQ0
-	 kx08y9GgKyxXyMuj8SULQGXCsuh8kYlC942CTQRi0XumF03uL8aVtz9iNeYxqnusst
-	 IJwauTyteHjhQ==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 09 Mar 2024 18:15:58 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	kvm@vger.kernel.org
-Subject: [PATCH] KVM: SVM: Remove a useless zeroing of allocated memory
-Date: Sat,  9 Mar 2024 18:15:45 +0100
-Message-ID: <c7619a3d3cbb36463531a7c73ccbde9db587986c.1710004509.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710004607; c=relaxed/simple;
+	bh=Gbz+cxLuyOtnA+RIxFo50o+nglcJ03qORgDy6B41CsE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=plkKTY8q2FTw6+8NKKq13MgrxJeN/2wXrw2n44BpiKVohM5Xsu8viBqy8EdZ3J+auThOVbuOZhx8vLg5XYIOKWLfqJEqVEaTCUVNMmBboocMUfts3Z4nHVOm/AAbV3rznkp4vx2dqfIwgVsM6eBWhwsjo3tWsSoiJemXKzcBKho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bP1M/C3s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D2C9C433C7;
+	Sat,  9 Mar 2024 17:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710004607;
+	bh=Gbz+cxLuyOtnA+RIxFo50o+nglcJ03qORgDy6B41CsE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=bP1M/C3sr0wdbazaRUOtMJU7109XabI42RxgLXSvy/MvUBWuBTwODDn8y8GA9Tfi3
+	 2VK8nyWk1SBhjoCDDgWP66w6T5Kpj1VC8d8w6RR1OiohDy6qc1e5i9wnxpR/PaGsZ0
+	 twZy6zwVTXyHUFQboeGRwr41PxgDBMsWLcjC7AsDCiimEhBUYTzNKFMuomMioAY+GK
+	 vv/kokUcpryQRcXpZ9u1qFiB6vTLP9rl75+9gRoVaelYd4//RmLjWASX5BKATHon1P
+	 MdAV36qNW7FB5XOJjgvbxXG7S1/0d/Ky9BLuAAJlPf9u9WhjnbgdaE/7bZYgbldhv/
+	 HfH3gYdW3z7Tw==
+Date: Sat, 9 Mar 2024 18:16:43 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andi Shyti <andi.shyti@kernel.org>
+Subject: [PULL REQUEST] i2c-for-6.8-rc8
+Message-ID: <ZeyZe92K9AnHD1SI@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andi Shyti <andi.shyti@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oTHSrGHp0gzkTZwr"
+Content-Disposition: inline
 
-Depending of the memory size needed, we clear or not the allocated memory.
-This is not consistent.
 
-So remove the zeroing of the memory in the __vmalloc() case.
+--oTHSrGHp0gzkTZwr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This is just a guess.
+The following changes since commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72:
 
-I don't know this code at all, but because of KVM, it is maybe safer to
-clear the memory in both cases?
-So, maybe it is better to use kzalloc() in the other path.
----
- arch/x86/kvm/svm/sev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  Linux 6.8-rc7 (2024-03-03 13:02:52 -0800)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 722186601c03..afd9485bef5a 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -434,7 +434,7 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
- 	/* Avoid using vmalloc for smaller buffers. */
- 	size = npages * sizeof(struct page *);
- 	if (size > PAGE_SIZE)
--		pages = __vmalloc(size, GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-+		pages = __vmalloc(size, GFP_KERNEL_ACCOUNT);
- 	else
- 		pages = kmalloc(size, GFP_KERNEL_ACCOUNT);
- 
--- 
-2.44.0
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.8-rc8
+
+for you to fetch changes up to ac168d6770aa12ee201c7474e1361810d5fc723a:
+
+  i2c: aspeed: Fix the dummy irq expected print (2024-03-08 10:10:27 +0100)
+
+----------------------------------------------------------------
+Two patches from Heiner for the i801 are targeting muxes
+discovered while working on some other features. Essentially,
+there is a reordering when adding optional slaves and proper
+cleanup upon registering a mux device.
+
+Christophe fixes the exit path in the wmt driver that was leaving
+the clocks hanging, and the last fix from Tommy avoids false
+error reports in IRQ.
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      i2c: wmt: Fix an error handling path in wmt_i2c_probe()
+
+Heiner Kallweit (2):
+      i2c: i801: Fix using mux_pdev before it's set
+      i2c: i801: Avoid potential double call to gpiod_remove_lookup_table
+
+Tommy Huang (1):
+      i2c: aspeed: Fix the dummy irq expected print
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Andi Shyti (2):
+      (Rev.) i2c: i801: Avoid potential double call to gpiod_remove_lookup_table
+      (Rev.) i2c: i801: Fix using mux_pdev before it's set
+
+Linus Walleij (1):
+      (Rev.) i2c: i801: Avoid potential double call to gpiod_remove_lookup_table
+
+ drivers/i2c/busses/i2c-aspeed.c | 1 +
+ drivers/i2c/busses/i2c-i801.c   | 6 ++++--
+ drivers/i2c/busses/i2c-wmt.c    | 6 +++++-
+ 3 files changed, 10 insertions(+), 3 deletions(-)
+
+--oTHSrGHp0gzkTZwr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXsmXsACgkQFA3kzBSg
+KbYTgRAAqfVpsh99g6hzvKGcCEFKx/jE0E3gbowBnO9WdgFBLws6vKmr7ek/iJSg
+IDac7EsdTstmtzug+ox6k0Xpxl5nSSHPZ4PWK0sWUBrIuR0UgSZ6BD1qRwD4NsYx
+kHgeSbyYjmtZWPrAL3G5TNx97/Z6yRg57fCgs1vDJP1TMXFpGpwdJ6sOLA3hT+Ps
+pkf7xKYNG4Eq/j36N6SnKdkNIt/RnzhMqe6LNna96smUCmE9Kb+6xV21U7GhlX/p
+daL49YhNRmlRPeIfFxj9zNQsDujBl2z33DrqsvPD/DLoAUzB2lZybhmvfc0rStIZ
+pTdov/V+PHns+ybp6x1UTME1TWTcSByt91TxlGCsg/LLzEnwfD8/XEHvwOfvoAoV
+qpm5XeAEhlYYfklmplw8XPJJjyKreSQf2WwJe38vWyJVo/ZoE14uTxBr3ELO512V
+LynZ8Y/epJQeReLqeh70Q2g8fAk8ABqu4uvcNVukVQI6uJDlTJXZfOo52/NgbLOX
+Lm0NU1Vh2SJAgXHlNnWTAjU9Ivel7rypnWNqKxvwTLolQl+eop778/9ICiTyBd9t
+w4BaEFVbSGmsTF3oPrDNi7m0PRUs9vKbLqQFBN9kWKez6aeh41bXt5AA4rLBowF0
+0XZixS5BO3lFYUcJg7IZR7khj2mU+bbCVzvxk65NLoVQeLJIbhw=
+=2wB2
+-----END PGP SIGNATURE-----
+
+--oTHSrGHp0gzkTZwr--
 
