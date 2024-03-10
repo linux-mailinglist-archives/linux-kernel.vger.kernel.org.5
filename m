@@ -1,169 +1,178 @@
-Return-Path: <linux-kernel+bounces-98109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D703F87753E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 04:56:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDBB877540
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:12:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A2821F21CCC
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:56:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40ABF1C20EDB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 04:12:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1653214A84;
-	Sun, 10 Mar 2024 03:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230BF13AC0;
+	Sun, 10 Mar 2024 04:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WI5O7dor"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="IIngjn+6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QG9EU2wm"
+Received: from wfhigh7-smtp.messagingengine.com (wfhigh7-smtp.messagingengine.com [64.147.123.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6712F13AC0
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 03:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EA21170B;
+	Sun, 10 Mar 2024 04:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710042975; cv=none; b=jsFmZFhQ5CKg0HxcrnSzCvx3SIojnjT1Wk7FOpig9PPa5mo4kKNnNYnF95yCUnj2dQdhvtnfURik2PAYvOAqj2g++I6ApiyT5Nw0lMWKv39/xX0h03seA3pL5Or+VQttEom9RS2TxvMeojD9uma3j5U/jUUoAsbJ6hDrKOJLxrg=
+	t=1710043926; cv=none; b=lXxtrzCiILwM6Y4oyD69RVTi+95TJVE+/TuEiNSm1xPEGy6+S7e6ennBZZqz2dQBx/sqSrZacfQk8KY4ouZibY75iP7CyPiAEyEVbtGMIrpY7pkf1JzrQqXep9tTnGzsX15hMo4DlSxTEENxQvm1GntqZXMDIo2s9MRZz9JTQjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710042975; c=relaxed/simple;
-	bh=urx6qSaUobpEfgmflt0mR3zGUlajfE+WZMxiq7Kf6MQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kyXB/GjwYEOPIcl4v1upD5TapA+9lqFHP/W43mrHyQsh8PUjbiS2B3spyLQw479E2EyXxxusEqq2hqZo7/h4sZsLIwXv+4ocqT37uWGPySXJpj161eX/bJx5pCU7T7xrUUwBYNv10DkVcoHrjmXz3CPL+sOHJHID/SgJFch4C9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WI5O7dor; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710042974; x=1741578974;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=urx6qSaUobpEfgmflt0mR3zGUlajfE+WZMxiq7Kf6MQ=;
-  b=WI5O7dorT5C2ZerDRQy7kixbUY3i02z1p8z0hhnjVq/X9qwDWGHTEQLe
-   1drguZTaIW73QmpgQybITDmgYuuwkCPxB1smtiiSjBJWy80uOFAb3thYo
-   kBiTI4/qGrC+O8i/IwRrne0oSdf7dzDMLZ1OMS6KSm8uy8M7m6SlhzteQ
-   9tI4w4tzJN+h+caKB9zK2yx4hoJvpumoi7MCiSnRuGMSrvIq5+l99ysDX
-   Nu8/1FS0VjTs/VOGxBHod5wSvwndgVzByRK8G29vVgnXhTdYsBpy3vsMv
-   oz+o2hn6lsajywOlKPT85KEB+hpWaTaz1weLehracyqqpE8X96qSo2QU/
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="27200167"
-X-IronPort-AV: E=Sophos;i="6.07,113,1708416000"; 
-   d="scan'208";a="27200167"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 19:56:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,113,1708416000"; 
-   d="scan'208";a="41762842"
-Received: from chengyin-mobl.amr.corp.intel.com (HELO [10.209.27.224]) ([10.209.27.224])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 19:56:12 -0800
-Message-ID: <95ba9bb3-7c48-4d99-b05e-5a45a796af3c@linux.intel.com>
-Date: Sat, 9 Mar 2024 19:56:11 -0800
+	s=arc-20240116; t=1710043926; c=relaxed/simple;
+	bh=bZJRFPdOlX+idhTE4m/nqAYeZ09IMIb1p4XUCC2Qiqc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mZllHtjKwJbvzL7S4wkBb+tDQbU+3ARqcuEZWqENzzYZfnblu+ZHL9Lx29ZwXVlzuwDhwQu61jc7aqFYZvczdL6miy86JH0JEOUzKLNQtbnmwkFsD0f+pbB5uJGfDqVURUauFEiG621LHHd7ooha6VMSaQxeoehV2or2myoCUXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=IIngjn+6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QG9EU2wm; arc=none smtp.client-ip=64.147.123.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 407701800070;
+	Sat,  9 Mar 2024 23:12:02 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 09 Mar 2024 23:12:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1710043921; x=1710130321; bh=ww8f7l9ZjuwJeMsYmqKPs
+	DDdnpoOaqxy8bHZ/0881gA=; b=IIngjn+67FZt8QmWnsHl1ncDCxOkqMBGcXSfH
+	FLhUPaG16PD19+IgcRPbxSFDwXcx1N46mKmKjcsaAMFh51DRGYreofHr0mLmZRwa
+	P4F8bXQmt7pkHvuZQh4NRVUeZF4rCW/Me3CbZ+gxK+2yYoRvfsWg9d8fhz2SAXaZ
+	BDyI429/CnS9sa18oazukvX3lsDQwrQ4DEMun+iTaPVoqWnL10dEKgDQJeUqiYkG
+	qhXptsYPDirKfPef//4gJJX0jTr+2MLodDpfaVCCh9Lq9Yyku+LLFN/0udD0VTqK
+	tn0fwOQhmFMfax6+zpGotlhgeSgEQTLIvnhZBrGtnZF5dTX5A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1710043921; x=1710130321; bh=ww8f7l9ZjuwJeMsYmqKPsDDdnpoO
+	aqxy8bHZ/0881gA=; b=QG9EU2wmTNYq/raXYpVCt9MDhfpWNWclOprbyTxWCdz/
+	jcEMLI5JYgLaPBfHYdam2q9tTBeNGRQxyBivJAoEoEunBUhgLQ+Kkm0igGE+lDEM
+	ztrf+PXnqFIkzBldp4JcPoaO0p6SF1Ube4ZHUQzW0RVyVAZFDGuoNwwXFHSs3MWX
+	foJjLT/QpJUBePVxGLlIGEsM5v4KU6RpH44Ps5UxWj0Pio7nNZQfYWm5cZ5I4wqe
+	iRo8dAqHEullX/80ExTNpMTbpknyZSf6PJbw9Q9gp48LoTBXNTjIpXJ1SgVrvx9p
+	Ufm2Xaxwwf8iwQWRpAJfz01UrCIGlaupIJpgwZQrWA==
+X-ME-Sender: <xms:ETPtZTOMFCU_zKCocshPT9s2x7OtzrzK2hMQgSyjsVyFm9RwpJu60g>
+    <xme:ETPtZd-frwCMe_HCd7WLJIInIeEg4LCrpHTZrnHN5QJVw_6RpLfxwmpUkw6jE_3VF
+    LtARaGTNM57AvBxxWo>
+X-ME-Received: <xmr:ETPtZSTEXc9-hZvFt_I08nk6gXKeq3y1UFnr_5XRRDZ90Wnb8nJsf6pONtY_>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieekgdeijecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
+    vghsrdguvghvqeenucggtffrrghtthgvrhhnpefgudejtdfhuddukefffeekiefftddtvd
+    fhgeduudeuffeuhfefgfegfeetvedvgeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:ETPtZXtHONdKfhNNyU3UMz6aFnjiyuYpn7ItP5gRrocbKNEjScSfsA>
+    <xmx:ETPtZbe11v59ck4nYw90pAM_K3c-xDlPLMY2P24VA3Uk38rCqM65mQ>
+    <xmx:ETPtZT1lSCCQRi8fqMazD51a8SS1j7PxVcnD0Kg_zJygEqga7XzAAA>
+    <xmx:ETPtZS46MoAka8DzybLNiRkdcIgVdN6AU4kvAI0L500QuyiUfd1dLZaupnA>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 9 Mar 2024 23:11:59 -0500 (EST)
+From: "Luke D. Jones" <luke@ljones.dev>
+To: platform-driver-x86@vger.kernel.org
+Cc: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	"Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH] platform/x86: asus-wmi: add support for Vivobook GPU MUX
+Date: Sun, 10 Mar 2024 17:11:52 +1300
+Message-ID: <20240310041152.75413-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] x86/tdx: Enable ENUM_TOPOLOGY
-Content-Language: en-US
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@intel.com
-Cc: hpa@zytor.com, seanjc@google.com, ele.reshetova@intel.com,
- rick.p.edgecombe@intel.com, x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20240309210230.239045-1-kirill.shutemov@linux.intel.com>
- <20240309210230.239045-5-kirill.shutemov@linux.intel.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240309210230.239045-5-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Adjust existing MUX support to select whichever MUX support is available
+so that ASUS Vivobook MUX can also be used if detected.
 
-On 3/9/24 1:02 PM, Kirill A. Shutemov wrote:
-> TDX 1.0 generates a #VE when accessing topology-related CPUID leafs
-> (0xB and 0x1F) and the X2APIC_APICID MSR. The kernel returns all
-> zeros on CPUID #VEs. In practice, this means that the kernel can only
-> boot with a plain topology. Any complications will cause problems.
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+---
+ drivers/platform/x86/asus-wmi.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-Is this issue only for TDX 1.0? What about TDX > 1.0?
-
->
-> The ENUM_TOPOLOGY feature allows the VMM to provide topology
-> information to the guest in a safe manner. Enabling the feature
-> eliminates topology-related #VEs: the TDX module virtualizes
-> accesses to the CPUID leafs and the MSR.
->
-> Enable ENUM_TOPOLOGY if it is available.
-
-I cant find the ENUM_TOPOLOGY in ABI spec (https://cdrdv2.intel.com/v1/dl/getContent/795381).
-
-Can you point me to the correct document?
-
->
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
->  arch/x86/coco/tdx/tdx.c           | 20 ++++++++++++++++++++
->  arch/x86/include/asm/shared/tdx.h |  3 +++
->  2 files changed, 23 insertions(+)
->
-> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> index d9ea82f8772d..291e45db8d54 100644
-> --- a/arch/x86/coco/tdx/tdx.c
-> +++ b/arch/x86/coco/tdx/tdx.c
-> @@ -280,6 +280,26 @@ static void tdx_setup(u64 *cc_mask)
->  		else
->  			tdx_panic(msg);
->  	}
-> +
-> +	/*
-> +	 * TDX 1.0 generates a #VE when accessing topology-related CPUID leafs
-> +	 * (0xB and 0x1F) and the X2APIC_APICID MSR. The kernel returns all
-> +	 * zeros on CPUID #VEs. In practice, this means that the kernel can only
-> +	 * boot with a plain topology. Any complications will cause problems.
-> +	 *
-> +	 * The ENUM_TOPOLOGY feature allows the VMM to provide topology
-> +	 * information to the guest in a safe manner. Enabling the feature
-> +	 * eliminates topology-related #VEs: the TDX module virtualizes
-> +	 * accesses to the CPUID leafs and the MSR.
-> +	 *
-> +	 * Enable ENUM_TOPOLOGY if it is available.
-> +	 */
-
-Why are we overriding it in guest? Why can't this by done by TDX Module
-or QEMU during initialization?
-
-> +	if ((features & TDX_FEATURES0_ENUM_TOPOLOGY) &&
-> +	    tdg_vm_rd(TDCS_TOPOLOGY_ENUM_CONFIGURED)) {
-> +		tdg_vm_wr(TDCS_TD_CTLS,
-> +			  TD_CTLS_ENUM_TOPOLOGY,
-> +			  TD_CTLS_ENUM_TOPOLOGY);
-> +	}
->  }
->  
->  /*
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index 29a61c72e4dd..2964c506b241 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -27,15 +27,18 @@
->  #define TDCS_CONFIG_FLAGS		0x1110000300000016
->  #define TDCS_TD_CTLS			0x1110000300000017
->  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
-> +#define TDCS_TOPOLOGY_ENUM_CONFIGURED	0x9100000000000019
->  
->  /* TDCS_TDX_FEATURES0 bits */
->  #define TDX_FEATURES0_PENDING_EPT_VIOLATION_V2	BIT_ULL(16)
-> +#define TDX_FEATURES0_ENUM_TOPOLOGY		BIT_ULL(20)
->  
->  /* TDCS_CONFIG_FLAGS bits */
->  #define TDCS_CONFIG_FLEXIBLE_PENDING_VE	BIT_ULL(1)
->  
->  /* TDCS_TD_CTLS bits */
->  #define TD_CTLS_PENDING_VE_DISABLE	BIT_ULL(0)
-> +#define TD_CTLS_ENUM_TOPOLOGY		BIT_ULL(1)
->  
->  /* TDX hypercall Leaf IDs */
->  #define TDVMCALL_MAP_GPA		0x10001
-
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 94cc589607b3..2cf695289655 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -268,6 +268,7 @@ struct asus_wmi {
+ 	bool egpu_connect_available;
+ 	bool dgpu_disable_available;
+ 	bool gpu_mux_mode_available;
++	u32 gpu_mux_dev;
+ 
+ 	/* Tunables provided by ASUS for gaming laptops */
+ 	bool ppt_pl2_sppt_available;
+@@ -682,7 +683,7 @@ static ssize_t dgpu_disable_store(struct device *dev,
+ 		return -EINVAL;
+ 
+ 	if (asus->gpu_mux_mode_available) {
+-		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_GPU_MUX);
++		result = asus_wmi_get_devstate_simple(asus, asus->gpu_mux_dev);
+ 		if (result < 0)
+ 			/* An error here may signal greater failure of GPU handling */
+ 			return result;
+@@ -748,7 +749,7 @@ static ssize_t egpu_enable_store(struct device *dev,
+ 	}
+ 
+ 	if (asus->gpu_mux_mode_available) {
+-		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_GPU_MUX);
++		result = asus_wmi_get_devstate_simple(asus, asus->gpu_mux_dev);
+ 		if (result < 0) {
+ 			/* An error here may signal greater failure of GPU handling */
+ 			pr_warn("Failed to get gpu mux status: %d\n", result);
+@@ -801,7 +802,7 @@ static ssize_t gpu_mux_mode_show(struct device *dev,
+ 	struct asus_wmi *asus = dev_get_drvdata(dev);
+ 	int result;
+ 
+-	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_GPU_MUX);
++	result = asus_wmi_get_devstate_simple(asus, asus->gpu_mux_dev);
+ 	if (result < 0)
+ 		return result;
+ 
+@@ -847,7 +848,7 @@ static ssize_t gpu_mux_mode_store(struct device *dev,
+ 		}
+ 	}
+ 
+-	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_GPU_MUX, optimus, &result);
++	err = asus_wmi_set_devstate(asus->gpu_mux_dev, optimus, &result);
+ 	if (err) {
+ 		dev_err(dev, "Failed to set GPU MUX mode: %d\n", err);
+ 		return err;
+@@ -4507,7 +4508,6 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 	asus->egpu_enable_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_EGPU);
+ 	asus->egpu_connect_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_EGPU_CONNECTED);
+ 	asus->dgpu_disable_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_DGPU);
+-	asus->gpu_mux_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_GPU_MUX);
+ 	asus->kbd_rgb_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE);
+ 	asus->kbd_rgb_state_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_STATE);
+ 	asus->ppt_pl2_sppt_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PPT_PL2_SPPT);
+@@ -4529,6 +4529,14 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 		asus->mini_led_dev_id = ASUS_WMI_DEVID_MINI_LED_MODE2;
+ 	}
+ 
++	if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_GPU_MUX)) {
++		asus->gpu_mux_mode_available = true;
++		asus->gpu_mux_dev = ASUS_WMI_DEVID_GPU_MUX;
++	} else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_GPU_MUX_VIVO)) {
++		asus->gpu_mux_mode_available = true;
++		asus->gpu_mux_dev = ASUS_WMI_DEVID_GPU_MUX_VIVO;
++	}
++
+ 	err = fan_boost_mode_check_present(asus);
+ 	if (err)
+ 		goto fail_fan_boost_mode;
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.44.0
 
 
