@@ -1,118 +1,139 @@
-Return-Path: <linux-kernel+bounces-98279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588FC8777CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 18:45:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D96DD8777D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 18:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B6EC2812EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 17:45:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158671C20BD1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 17:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C32A39AC7;
-	Sun, 10 Mar 2024 17:45:47 +0000 (UTC)
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6846E39863;
+	Sun, 10 Mar 2024 17:46:17 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C71B21115;
-	Sun, 10 Mar 2024 17:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EA622095
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 17:46:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710092746; cv=none; b=e8/I4fv+sjYdR4hx3q0bPAor2djXiIx4cpSO/3ogMHHOSIoDzGitY8ZhSqwilq9fF9nyHTFF3dZSZeyDdlZrpfqF9X8mQ+qDfBsG8RsXZQqjh0xcUrZXepyrgotHUUXeuGoUWjiNxc2oVjLine2OeGHjrBu7OMnCcDQpuUkj9Yg=
+	t=1710092777; cv=none; b=gpatwqQ5NtT2C5Fxt3BvEgNQhgSJ1BVRDuVyrFa5ovL4gmbO527pvSCLBsyXMdYwZQ1OYVRuVjfwf84AeAtJoLDs+R4qIJSeYIzg9eL2Be0778mVFKPabTg0NSTzbmFHVlw2cJMzqgFxo0mbOyQa2wn40KExek+mH1mDSFBOyv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710092746; c=relaxed/simple;
-	bh=hrQnUxJLirdyrN46Viu7HBOjLYptBIcrVHgHTEz5FvI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LBWaLukqt2onftfdiVIkmb4hiMpV1AJbbdFWtNHFBo7+E8jTBe8dXRwyq9Xf8yGT9oMkGO8mBzqsMVBlG4LW/jlBt5sv7+4cLO1Nn9fEjcMG958iTsHsX59j70118KWeBWefw429hR8vgrBR/wfWaSuxxAI2uM8P2L0+0vE1fCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ddf26eba3cso2824790a34.0;
-        Sun, 10 Mar 2024 10:45:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710092744; x=1710697544;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S7iPTCl8r4EkA4EfZ5hPRJf4v1rg1K2hUgK6qm67XQU=;
-        b=pq65PE40YWaeoc1lsDTD4P9ekbP5WOqEdGE8FYI8IvfCSjHU2wYEXirtpw2tqK+fkl
-         ZPMU2Bu8e3yKBhabnM9/aCtJYsthTk4t0+snwJlASXm8Nwi7a3/tzN6TeH77CoUlENBn
-         ywIrpX9fu+eAo5CbppmCghyGR2r5n+dfqiDXwdazI7+8DEdbGLOGiK7To1u69VixBWMl
-         srR1XGMQiKMWrYs/MEge+AHYtyndUJDobo3eaQQAZ8XDbAsvYwpXMJyBskx/GcRqk36w
-         uRcVh1Lu+1I15X5iT0Fu6FqdCf0rVF/7F+eZJiI8KcDuNCrC+gC17H3vmBfSAlpVxl8R
-         kEog==
-X-Forwarded-Encrypted: i=1; AJvYcCXmSVxQBQAL1uJRKncLR8/nNRJxwUnZEiarhTklSzyWk9x/rdAIpYqpB7Jc25wnrZRek8mwdeQr/nlxyKIEip6LwWcH27xIDoaaRn5OZzXHyEcKeoP0I2xw26OB+yapOxbRg/5vyXsBzGrFLrGqL+9dlJlUp6R+4ZxQ5Lx7DIm7Kg+95F4fhLI2Chq+FATyrfZyztIQq2S7grtWk76znA==
-X-Gm-Message-State: AOJu0Ywvd0OS3NIHgRf+tuYM8Ur7QQ7WZDNx8m9BH1US33Ux7Nu/cvMa
-	NKHb4YNZSkQfeGdNmVVDMD8++f4IArEPLbfYFVe687ipKCdlqyV5I/oC7W+xWLYw+A==
-X-Google-Smtp-Source: AGHT+IEcfNjhsv73rREw3FDt64vqTpH5i74RFUwWehwR6mOMV0r1WNXFeD8Aop5kBWRwiJ04EI+nvg==
-X-Received: by 2002:a9d:69cc:0:b0:6e5:5cd:6b08 with SMTP id v12-20020a9d69cc000000b006e505cd6b08mr6147920oto.32.1710092744079;
-        Sun, 10 Mar 2024 10:45:44 -0700 (PDT)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id c13-20020a63350d000000b0059b2316be86sm2733363pga.46.2024.03.10.10.45.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 10:45:43 -0700 (PDT)
-Date: Mon, 11 Mar 2024 02:45:41 +0900
-From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] PCI: qcom: Enable BDF to SID translation properly
-Message-ID: <20240310174541.GA2765217@rocinante>
-References: <20240307-pci-bdf-sid-fix-v1-1-9423a7e2d63c@linaro.org>
+	s=arc-20240116; t=1710092777; c=relaxed/simple;
+	bh=lB8sugSUXfFyv+Sre1/DGzaB1T5lAslkw2tMj3pndpc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=HsOKmx/CEOKrHlC/mvgJVweXThJkfyR0pnyuDwp7YMbCXAEzQhwmw1lBNrFFWeGxHHghI9VPCn439IV/Frf/KAE8CLnPBCsu450UQ0RPGnhV/oC7dQJVUbn2ghqpuwGoTbWComXt6Flqc8P1pAJOKShPKdLbEjU/GzFGLULAmaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-114-TNp10J7jNWOsLS4FIbmhqQ-1; Sun, 10 Mar 2024 17:46:05 +0000
+X-MC-Unique: TNp10J7jNWOsLS4FIbmhqQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 10 Mar
+ 2024 17:46:15 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 10 Mar 2024 17:46:15 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Roman Smirnov' <r.smirnov@omp.ru>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	"Chao Yu" <chao@kernel.org>
+CC: Sergey Shtylyov <s.shtylyov@omp.ru>, Karina Yankevich
+	<k.yankevich@omp.ru>, "linux-f2fs-devel@lists.sourceforge.net"
+	<linux-f2fs-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "lvc-project@linuxtesting.org"
+	<lvc-project@linuxtesting.org>
+Subject: RE: [PATCH] f2fs: Cast expression type to unsigned long in
+ __count_extent_cache()
+Thread-Topic: [PATCH] f2fs: Cast expression type to unsigned long in
+ __count_extent_cache()
+Thread-Index: AQHabtSs8qQLngIY8Ey8WBtnYc/JqbExQp7Q
+Date: Sun, 10 Mar 2024 17:46:14 +0000
+Message-ID: <b4f9780714e243a6af9f77ab00593ec1@AcuMS.aculab.com>
+References: <20240305080943.6922-1-r.smirnov@omp.ru>
+In-Reply-To: <20240305080943.6922-1-r.smirnov@omp.ru>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307-pci-bdf-sid-fix-v1-1-9423a7e2d63c@linaro.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+From: Roman Smirnov
+> Sent: 05 March 2024 08:10
+>=20
+> Cast expression type to unsigned long in __count_extent_cache()
+> to prevent integer overflow.
+>=20
+> Found by Linux Verification Center (linuxtesting.org) with Svace.
 
-> Qcom SoCs making use of ARM SMMU require BDF to SID translation table in
-> the driver to properly map the SID for the PCIe devices based on their BDF
-> identifier. This is currently achieved with the help of
-> qcom_pcie_config_sid_1_9_0() function for SoCs supporting the 1_9_0 config.
-> 
-> But With newer Qcom SoCs starting from SM8450, BDF to SID translation is
-> set to bypass mode by default in hardware. Due to this, the translation
-> table that is set in the qcom_pcie_config_sid_1_9_0() is essentially
-> unused and the default SID is used for all endpoints in SoCs starting from
-> SM8450.
-> 
-> This is a security concern and also warrants swapping the DeviceID in DT
-> while using the GIC ITS to handle MSIs from endpoints. The swapping is
-> currently done like below in DT when using GIC ITS:
-> 
-> 			/*
-> 			 * MSIs for BDF (1:0.0) only works with Device ID 0x5980.
-> 			 * Hence, the IDs are swapped.
-> 			 */
-> 			msi-map = <0x0 &gic_its 0x5981 0x1>,
-> 				  <0x100 &gic_its 0x5980 0x1>;
-> 
-> Here, swapping of the DeviceIDs ensure that the endpoint with BDF (1:0.0)
-> gets the DeviceID 0x5980 which is associated with the default SID as per
-> the iommu mapping in DT. So MSIs were delivered with IDs swapped so far.
-> But this also means the Root Port (0:0.0) won't receive any MSIs (for PME,
-> AER etc...)
-> 
-> So let's fix these issues by clearing the BDF to SID bypass mode for all
-> SoCs making use of the 1_9_0 config. This allows the PCIe devices to use
-> the correct SID, thus avoiding the DeviceID swapping hack in DT and also
-> achieving the isolation between devices.
+Another broken analysis tool :-)
 
-Applied to controller/qcom, thank you!
+> Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+> ---
+>  fs/f2fs/shrinker.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/fs/f2fs/shrinker.c b/fs/f2fs/shrinker.c
+> index 83d6fb97dcae..bb86a06c5d5e 100644
+> --- a/fs/f2fs/shrinker.c
+> +++ b/fs/f2fs/shrinker.c
+> @@ -33,7 +33,7 @@ static unsigned long __count_extent_cache(struct f2fs_s=
+b_info *sbi,
+>  {
+>  =09struct extent_tree_info *eti =3D &sbi->extent_tree[type];
+>=20
+> -=09return atomic_read(&eti->total_zombie_tree) +
+> +=09return (unsigned long)atomic_read(&eti->total_zombie_tree) +
+>  =09=09=09=09atomic_read(&eti->total_ext_node);
 
-[1/1] PCI: qcom: Enable BDF to SID translation properly
-      https://git.kernel.org/pci/pci/c/b9bc750e1193
+Makes diddly-squit difference.
 
-	Krzysztof
+Both total_zombie_tree and totat_ext_node are 'int'.
+If they are large enough that their sum wraps then the values
+can individually wrap (to negative values).
+
+You really don't want to cast 'int' to 'unsigned long' here
+at all - implicitly or explicitly.
+The cast will first promote 'int' to 'signed long'.
+So a negative value will get sign extended to a very big value.
+
+The best you can hope for is a 33bit result from wrapped 32bit
+signed counters.
+To get that you need to convert 'int' =3D> 'unsigned int' =3D> 'unsigned lo=
+ng'.
+One way would be:
+=09return (atomic_read(&eti->total_zombie_tree) + 0u + 0ul) +
+=09=09(atomic_read(&eti->total_ext_node) + 0u);
+
+Although changing the return type to 'unsigned int' would probably
+be better.
+I don't know what the values are, but if they are stats counters
+then that would give a value that nicely wraps at 2^32 rather
+that the strange wrap that the sum of two wrapping 32bit counters
+has.
+
+OTOH it may be that they are counts - and just can't get any where
+near that big.
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
