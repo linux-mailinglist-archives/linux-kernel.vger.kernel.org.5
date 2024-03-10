@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-98071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D529B8774B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:04:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 866AA8774B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76A5A1F21451
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:04:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E02BB281941
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:05:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA49101EB;
-	Sun, 10 Mar 2024 01:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35852A5F;
+	Sun, 10 Mar 2024 01:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUvTOJmq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NrnrDQ3t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF04FBF0
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7921B7FB
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710032646; cv=none; b=Zbdg68b8EkyJBaWT4QdHhQOz3Ik0lQfQWtb3a25eHUzhvKqKDVS8W1cSnXI6qzAKUwVBjHqC6+gYj8LXiqScbOVxduWmO5UoTaSrmhme2z41zVJoDlWa4CPY9C88j5JGYzeSQ3qXF4TMb7QQcp+fEpXQIPjP7vnlwMFDBtBLeFw=
+	t=1710032749; cv=none; b=HrHTzRA+NKioNCquGDfqCEtim/bRfmfCavDmgtNb7saEWE36gB6wlH4aSEF87qlt3ugQSOI1gBY6rERZd3x5qFDvrkD/GwcW8DKwHh87pVc+6AorJkNIezeg4gCux7d7HNGZhzs0kZ/gQ5PYDabJrGsSIcQTvlvic1cCHQN7v+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710032646; c=relaxed/simple;
-	bh=8cO9/OxY4mMQABE2pDv/6JXKXRCbw1XZOzFtsmShyMs=;
+	s=arc-20240116; t=1710032749; c=relaxed/simple;
+	bh=1VkdHdy7CmbrqPeEZMqTx358Nwn0tzSe0cTikMP/Q8A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CrHNDJfNFqmdRXSk1fTbgEwjBOR0BqgwWSjcDJy8QyUBGJduPvsImiImG2mO+pRfv7Pn6e+/qnPBAFMgkYZHiYgL0oXMrU+PSa+JNuTy2O8tst2PIcCjs0bWloU4bIVOQ32MGyZRXDMSXb9nOJvJS3yKqKG+nvjSGqCe5YPZtvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IUvTOJmq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B728C433F1;
-	Sun, 10 Mar 2024 01:04:05 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=P05DJaoT+9DfNY0+mribp/dx8//s4j8nVTpE/4ZqdWIiVzocI4GX3DkYKJxD0m8uIlWtKrVtwRqSARPMgGjLfY8Ms6Xzfz24jakw3QhqU+xnXV5Ms/IiVW0GBw+DAVFzjhPhREYKfAibtwD5kIxgru3tESIQQFEQCh0nHt5Csic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NrnrDQ3t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B29FC433C7;
+	Sun, 10 Mar 2024 01:05:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710032646;
-	bh=8cO9/OxY4mMQABE2pDv/6JXKXRCbw1XZOzFtsmShyMs=;
+	s=k20201202; t=1710032749;
+	bh=1VkdHdy7CmbrqPeEZMqTx358Nwn0tzSe0cTikMP/Q8A=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IUvTOJmqZxkClqupkAAufq/Ho7z4HCbPvLfE0NtXw0hF0SiilGx2iNpi1/mNoaWH6
-	 AEwl4aMmvuBvU4iITAd5XIx972/wGH/p3SdRlAYVw5wHsbcfIjwZB3eaae82IxBBz2
-	 k7UzDAKmlcUOptyf/cr095ADJO3HsOkA3XtdeD4iMUO2ouHMjRHVJLmbQvG4wKmomR
-	 9n0CAn9cBRg82JTibEKZwzQESbFL7V0USB/E5rz9bxKCG2wmVZ6XWTEGUrKT6X8Owa
-	 kSE1wTEaRJtICWJj5GSEVYKKdSsQtPM5oBLlVXe4KHTVX57VmlrxgxlBpacYHzxne/
-	 aNgt36OFbtwqw==
-Message-ID: <1f627768-5654-405c-b042-804fcc58f465@kernel.org>
-Date: Sun, 10 Mar 2024 09:04:07 +0800
+	b=NrnrDQ3tqYS364fiTOZhGAEVo6Gvnpv5e0lN4NGxBH0rPGXHOdEogeHCGTQI/nKpN
+	 ZLPGXKu5N23bMGUI/rQsqzfqueYw1JrxqUAA/o9dUevM31Zu2g3Bz2e6d/5oft+2EK
+	 gSeRvT2z/rjkVTBxuTkOVmpgASwihDnFXLmXdZ4GYk7NblBOQqxMMJYbL8CbLlu+4N
+	 zjpCFjX8UTs1FdnhmbBHtd7U/YG/vl1hN3TRivfxo8+j4ph9LlEwHpws8erIkh9gnS
+	 6krL6C1/zhMbqY2SJ+t5LrVeeYsgN+5M7mWJInC7f8Ufw0dUq99Iww3YdECc5dM06Q
+	 xJvMrDWA5UG/A==
+Message-ID: <414e869a-ea41-476e-8121-b1d6a75e418b@kernel.org>
+Date: Sun, 10 Mar 2024 09:05:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,12 +49,12 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] erofs: convert z_erofs_do_read_page() to folios
+Subject: Re: [PATCH 3/6] erofs: get rid of `justfound` debugging tag
 Content-Language: en-US
 To: Gao Xiang <hsiangkao@linux.alibaba.com>, linux-erofs@lists.ozlabs.org
 Cc: LKML <linux-kernel@vger.kernel.org>
 References: <20240305091448.1384242-1-hsiangkao@linux.alibaba.com>
- <20240305091448.1384242-2-hsiangkao@linux.alibaba.com>
+ <20240305091448.1384242-3-hsiangkao@linux.alibaba.com>
 From: Chao Yu <chao@kernel.org>
 Autocrypt: addr=chao@kernel.org; keydata=
  xsFNBFYs6bUBEADJuxYGZRMvAEySns+DKVtVQRKDYcHlmj+s9is35mtlhrLyjm35FWJY099R
@@ -98,13 +98,17 @@ Autocrypt: addr=chao@kernel.org; keydata=
  92Qh98hAj3cMFKtEVbLKJvrc2AO+mQlS7zl1qWblEhpZnXi05S1AoT0gDW2lwe54VfT3ySon
  8Klpbp5W4eEoY21tLwuNzgUMxmycfM4GaJWNCncKuMT4qGVQO9SPFs0vgUrdBUC5Pn5ZJ46X
  mZA0DUz0S8BJtYGI0DUC/jAKhIgy1vAx39y7sAshwu2VILa71tXJ
-In-Reply-To: <20240305091448.1384242-2-hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240305091448.1384242-3-hsiangkao@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 2024/3/5 17:14, Gao Xiang wrote:
-> It is a straight-forward conversion. Besides, it's renamed as
-> z_erofs_scan_folio().
+> `justfound` is introduced to identify cached folios that are just added
+> to compressed bvecs so that more checks can be applied in the I/O
+> submission path.
+> 
+> EROFS is quite now stable compared to the codebase at that stage.
+> `justfound` becomes a burden for upcoming features.  Drop it.
 > 
 > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
