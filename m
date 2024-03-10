@@ -1,117 +1,137 @@
-Return-Path: <linux-kernel+bounces-98075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCBF58774BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:09:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 822008774C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 988322818F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:09:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BD4C1C20CDF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89EDBEC5;
-	Sun, 10 Mar 2024 01:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCBC1381;
+	Sun, 10 Mar 2024 01:14:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fz2Qe9eT"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L4zzl7Sq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D237FB
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:09:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A521510EB
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710032951; cv=none; b=SX4y90LllS6c6/NwI0p5ljQvGdF56Z9q+U2abMvqb+ZLY9LwVI5RCB05+tk3W/YWUSvUM9iPYkKRk7Xg/Zg4zle3GoZRwnsvRE+7LlgYtWuO76yTLEH6DmbxRKofTVdQ7GVG0+rGnKcVROGB4CJMPwj+NJ/vMHkZEYUn6i2zyH4=
+	t=1710033278; cv=none; b=XHjWzn86o6Jaq3MS94IImGvbvqclkQWK1sEdX98FDZJ4A2fk59UmzGc7fdLUY9mnG0VlGO3cVNLPHgj3kmUhXjUFrpVtp0X57ORHlQbTz009FiqK75G94klQp/fFJHH4bHkJAcWrlyVzf4bRkF8tH4R2v8fxgEmFGu1A8CgT9Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710032951; c=relaxed/simple;
-	bh=Q8EFRaCrSNuDWMDU1mx9VgcVnpDcUlTY7wMZ/CXtpTo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=If88Le3cCcM7r4iptPUEe0w3nyrSy3DKyRYo70nikkS4hos0K7msmsEklipsKPkTwf6ZbCA9V9SyC+VBvXp/vOjEhuTh7m4xYJIUyfcSfnsI4IFDBextjGPSW8zrhwYbwR7oKY7trLzRUH2BO8oBJtWOmvGVWt9jGMSCFUrgq7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fz2Qe9eT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4932EC433C7;
-	Sun, 10 Mar 2024 01:09:10 +0000 (UTC)
+	s=arc-20240116; t=1710033278; c=relaxed/simple;
+	bh=6O/34PjFcS71csnsOEjl3K28HUWbJIH0EfXrtk1ettM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QbbewqXu9aFWY9fF82LiBMcbJyTjc5EpG/OFTT9/3RSts2ipjPxxGrtbs9NFSinfnQupuduAukC3tlvOo+Acx/5NCJWHWvZ5Y/Ie+swuQ8Bepftww716rJ+5uQiKBSLPQsC2S+ddR4BqpnAyQp6bkykP3fdDMW9ch5GRCKQkUBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L4zzl7Sq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 299BBC433C7
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710032950;
-	bh=Q8EFRaCrSNuDWMDU1mx9VgcVnpDcUlTY7wMZ/CXtpTo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fz2Qe9eTK4kcDj3S2fVdZn3juJGpVYdcR1CYW1fimAHmu70s46Ru/UpkhtwBNAsZw
-	 odbLUvoAOWLcFkhvDm93Ddeegws3T6zCVqB9G9ZHOZZAa2i+eJqHddr6CJ1Eq3XaID
-	 HZDrFwrPShlqbaq2SVVmYJ4E3Pk6ibJ7FB6FtoK0mrCGBZMf4AoacXrkO/4oxkzNT6
-	 urEXoUIEFhpWxcMJlJPD/hP3NXgXmzS3r2BE0t9+oVgndOYd8jyXAvvrut3ip23r6a
-	 +RWTA9lLxnBBPJOkHJ0tP9DIMBMqjFXCt4BT7jVYlT757ptWMVTA0SFkZO7rbYHB8U
-	 9RBjvZ8n112MA==
-Message-ID: <776717ac-f433-46b9-ad4a-97bde6f392e1@kernel.org>
-Date: Sun, 10 Mar 2024 09:09:12 +0800
+	s=k20201202; t=1710033278;
+	bh=6O/34PjFcS71csnsOEjl3K28HUWbJIH0EfXrtk1ettM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=L4zzl7SqpN2YALvGBSUSLpL5DsUOhFt2wTrn6GCniRbi/Ac5OWYpvck6smODym9E4
+	 Mz/iohTMOY0dCLcY28V/Bsxjq1vsR3e1gASf8qC6SZriLGeGSedScdWH9UDdcxlO4g
+	 J2X2egnqX9RNES16Igk3XmWJEfXcaARQt+uk7ncFJ4DyBa5uE9kpzVxTKtI7mS91y5
+	 oJMiBdDebFB/67z81wFPJs5luh57EU5tQVr6AQcFmXtiih7NDo2J802+kI5PeKvAmH
+	 QejAvhQqpS8Evl3WgZ8ywYY2LPNYBp8p3I4hnMWTaOH4z++ljYzg5mf3xf9RIDIIMS
+	 raPIZPjpXWrIg==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51341a5aafbso3673372e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 17:14:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV7mJup5ZqKYmoICdi7y729y1G00K4XhlDMhdIvwMggV6ALVWv2fMbUfmVPOW052C4bIVAhTXun0CXpYA4Sps/LVhm8pZTJhNZIzLIT
+X-Gm-Message-State: AOJu0YyA2hJkUIgBR/cyJDt6Htb2o8/rJad48x9PXUb/4Pq3A95bY4B1
+	Uikq0wqIucH0bhsEFnGGCHXfP2pD5Xw2l+r5vHVTeh7xCpppm9xfwpCvU9n4LTN7CiDbeMclM/x
+	Yszzhg4TzCO4UC2FgRY8TozJnhUA=
+X-Google-Smtp-Source: AGHT+IFUT9/jcoCRAOiZQYyzdoQx2ox/XQpSlfwRPS3OLnoUueu3HoXgT7cswxHoxfc5Q2euG8xieFbqZQrPIRBbxkg=
+X-Received: by 2002:a05:6512:2316:b0:512:f59d:7612 with SMTP id
+ o22-20020a056512231600b00512f59d7612mr2226880lfu.57.1710033276283; Sat, 09
+ Mar 2024 17:14:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/6] erofs: refine managed cache operations to folios
-Content-Language: en-US
-To: Gao Xiang <hsiangkao@linux.alibaba.com>, linux-erofs@lists.ozlabs.org
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240305091448.1384242-1-hsiangkao@linux.alibaba.com>
- <20240305091448.1384242-6-hsiangkao@linux.alibaba.com>
-From: Chao Yu <chao@kernel.org>
-Autocrypt: addr=chao@kernel.org; keydata=
- xsFNBFYs6bUBEADJuxYGZRMvAEySns+DKVtVQRKDYcHlmj+s9is35mtlhrLyjm35FWJY099R
- 6DL9bp8tAzLJOMBn9RuTsu7hbRDErCCTiyXWAsFsPkpt5jgTOy90OQVyTon1i/fDz4sgGOrL
- 1tUfcx4m5i5EICpdSuXm0dLsC5lFB2KffLNw/ZfRuS+nNlzUm9lomLXxOgAsOpuEVps7RdYy
- UEC81IYCAnweojFbbK8U6u4Xuu5DNlFqRFe/MBkpOwz4Nb+caCx4GICBjybG1qLl2vcGFNkh
- eV2i8XEdUS8CJP2rnp0D8DM0+Js+QmAi/kNHP8jzr7CdG5tje1WIVGH6ec8g8oo7kIuFFadO
- kwy6FSG1kRzkt4Ui2d0z3MF5SYgA1EWQfSqhCPzrTl4rJuZ72ZVirVxQi49Ei2BI+PQhraJ+
- pVXd8SnIKpn8L2A/kFMCklYUaLT8kl6Bm+HhKP9xYMtDhgZatqOiyVV6HFewfb58HyUjxpza
- 1C35+tplQ9klsejuJA4Fw9y4lhdiFk8y2MppskaqKg950oHiqbJcDMEOfdo3NY6/tXHFaeN1
- etzLc1N3Y0pG8qS/mehcIXa3Qs2fcurIuLBa+mFiFWrdfgUkvicSYqOimsrE/Ezw9hYhAHq4
- KoW4LQoKyLbrdOBJFW0bn5FWBI4Jir1kIFHNgg3POH8EZZDWbQARAQABzRlDaGFvIFl1IDxj
- aGFvQGtlcm5lbC5vcmc+wsF3BBMBCgAhBQJWLOm1AhsDBQsJCAcDBRUKCQgLBRYCAwEAAh4B
- AheAAAoJEKTPgB1/p52Gm2MP/0zawCU6QN7TZuJ8R1yfdhYr0cholc8ZuPoGim69udQ3otet
- wkTNARnpuK5FG5la0BxFKPlazdgAU1pt+dTzCTS6a3/+0bXYQ5DwOeBPRWeFFklm5Frmk8sy
- wSTxxEty0UBMjzElczkJflmCiDfQunBpWGy9szn/LZ6jjIVK/BiR7CgwXTdlvKcCEkUlI7MD
- vTj/4tQ3y4Vdx+p7P53xlacTzZkP+b6D2VsjK+PsnsPpKwaiPzVFMUwjt1MYtOupK4bbDRB4
- NIFSNu2HSA0cjsu8zUiiAvhd/6gajlZmV/GLJKQZp0MjHOvFS5Eb1DaRvoCf27L+BXBMH4Jq
- 2XIyBMm+xqDJd7BRysnImal5NnQlKnDeO4PrpFq4JM0P33EgnSOrJuAb8vm5ORS9xgRlshXh
- 2C0MeyQFxL6l+zolEFe2Nt2vrTFgjYLsm2vPL+oIPlE3j7ToRlmm7DcAqsa9oYMlVTTnPRL9
- afNyrsocG0fvOYFCGvjfog/V56WFXvy9uH8mH5aNOg5xHB0//oG9vUyY0Rv/PrtW897ySEPh
- 3jFP/EDI0kKjFW3P6CfYG/X1eaw6NDfgpzjkCf2/bYm/SZLV8dL2vuLBVV+hrT1yM1FcZotP
- WwLEzdgdQffuQwJHovz72oH8HVHD2yvJf2hr6lH58VK4/zB/iVN4vzveOdzlzsFNBFYs6bUB
- EADZTCTgMHkb6bz4bt6kkvj7+LbftBt5boKACy2mdrFFMocT5zM6YuJ7Ntjazk5z3F3IzfYu
- 94a41kLY1H/G0Y112wggrxem6uAtUiekR9KnphsWI9lRI4a2VbbWUNRhCQA8ag7Xwe5cDIV5
- qb7r7M+TaKaESRx/Y91bm0pL/MKfs/BMkYsr3wA1OX0JuEpV2YHDW8m2nFEGP6CxNma7vzw+
- JRxNuyJcNi+VrLOXnLR6hZXjShrmU88XIU2yVXVbxtKWq8vlOSRuXkLh9NQOZn7mrR+Fb1EY
- DY1ydoR/7FKzRNt6ejI8opHN5KKFUD913kuT90wySWM7Qx9icc1rmjuUDz3VO+rl2sdd0/1h
- Q2VoXbPFxi6c9rLiDf8t7aHbYccst/7ouiHR/vXQty6vSUV9iEbzm+SDpHzdA8h3iPJs6rAb
- 0NpGhy3XKY7HOSNIeHvIbDHTUZrewD2A6ARw1VYg1vhJbqUE4qKoUL1wLmxHrk+zHUEyLHUq
- aDpDMZArdNKpT6Nh9ySUFzlWkHUsj7uUNxU3A6GTum2aU3Gh0CD1p8+FYlG1dGhO5boTIUsR
- 6ho73ZNk1bwUj/wOcqWu+ZdnQa3zbfvMI9o/kFlOu8iTGlD8sNjJK+Y/fPK3znFqoqqKmSFZ
- aiRALjAZH6ufspvYAJEJE9eZSX7Rtdyt30MMHQARAQABwsFfBBgBCgAJBQJWLOm1AhsMAAoJ
- EKTPgB1/p52GPpoP/2LOn/5KSkGHGmdjzRoQHBTdm2YV1YwgADg52/mU68Wo6viStZqcVEnX
- 3ALsWeETod3qeBCJ/TR2C6hnsqsALkXMFFJTX8aRi/E4WgBqNvNgAkWGsg5XKB3JUoJmQLqe
- CGVCT1OSQA/gTEfB8tTZAGFwlw1D3W988CiGnnRb2EEqU4pEuBoQir0sixJzFWybf0jjEi7P
- pODxw/NCyIf9GNRNYByUTVKnC7C51a3b1gNs10aTUmRfQuu+iM5yST5qMp4ls/yYl5ybr7N1
- zSq9iuL13I35csBOn13U5NE67zEb/pCFspZ6ByU4zxChSOTdIJSm4/DEKlqQZhh3FnVHh2Ld
- eG/Wbc1KVLZYX1NNbXTz7gBlVYe8aGpPNffsEsfNCGsFDGth0tC32zLT+5/r43awmxSJfx2P
- 5aGkpdszvvyZ4hvcDfZ7U5CBItP/tWXYV0DDl8rCFmhZZw570vlx8AnTiC1v1FzrNfvtuxm3
- 92Qh98hAj3cMFKtEVbLKJvrc2AO+mQlS7zl1qWblEhpZnXi05S1AoT0gDW2lwe54VfT3ySon
- 8Klpbp5W4eEoY21tLwuNzgUMxmycfM4GaJWNCncKuMT4qGVQO9SPFs0vgUrdBUC5Pn5ZJ46X
- mZA0DUz0S8BJtYGI0DUC/jAKhIgy1vAx39y7sAshwu2VILa71tXJ
-In-Reply-To: <20240305091448.1384242-6-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240308074600.3294338-1-max.kellermann@ionos.com>
+In-Reply-To: <20240308074600.3294338-1-max.kellermann@ionos.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Sun, 10 Mar 2024 09:14:24 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6O02es7ZsDRjWfO=9hz8owa1SWZXkyZ=p3BO28D+ix6A@mail.gmail.com>
+Message-ID: <CAAhV-H6O02es7ZsDRjWfO=9hz8owa1SWZXkyZ=p3BO28D+ix6A@mail.gmail.com>
+Subject: Re: [PATCH] loongarch/pgtable.h: move {dmw,tlb}_virt_to_page() to page.h
+To: Max Kellermann <max.kellermann@ionos.com>
+Cc: kernel@xen0n.name, lienze@kylinos.cn, yangtiezhu@loongson.cn, 
+	tglx@linutronix.de, arnd@arndb.de, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/3/5 17:14, Gao Xiang wrote:
-> Convert erofs_try_to_free_all_cached_pages() and
-> z_erofs_cache_release_folio().
-> 
-> Besides, erofs_page_is_managed() is moved to zdata.c and renamed
-> as erofs_folio_is_managed().
-> 
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Hi, Max,
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Could you please share what kind of configuration will cause a build error?
 
-Thanks,
+Huacai
+
+On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Max Kellermann <max.kellermann@ionos=
+com> wrote:
+>
+> These functions are implemented in pgtable.c, and they are needed only
+> by the virt_to_pfn() macro in page.h.  Having the prototypes in
+> pgtable.h causes a circular dependency between page.h and pgtable.h,
+> because page.h's virt_to_pfn() needs pgtable.h for these two
+> functions, and pgtable.h needs various definitions from page.h
+> (e.g. pte_t and pgt_t).
+>
+> I suggest avoiding this circular dependency by moving the function
+> prototypes to page.h, even though that is slightly incorrect, because
+> they are not implemented in page.c but pgtable.c, but it's the
+> simplest possible solution to this problem and the functions not used
+> anywhere else.
+>
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> ---
+>  arch/loongarch/include/asm/page.h    | 3 +++
+>  arch/loongarch/include/asm/pgtable.h | 3 ---
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/loongarch/include/asm/page.h b/arch/loongarch/include/a=
+sm/page.h
+> index afb6fa16b826..44027060c54a 100644
+> --- a/arch/loongarch/include/asm/page.h
+> +++ b/arch/loongarch/include/asm/page.h
+> @@ -75,6 +75,9 @@ typedef struct { unsigned long pgprot; } pgprot_t;
+>  #define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
+>  #define sym_to_pfn(x)          __phys_to_pfn(__pa_symbol(x))
+>
+> +struct page *dmw_virt_to_page(unsigned long kaddr);
+> +struct page *tlb_virt_to_page(unsigned long kaddr);
+> +
+>  #define virt_to_pfn(kaddr)     PFN_DOWN(PHYSADDR(kaddr))
+>
+>  #define virt_to_page(kaddr)                                             =
+               \
+> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/includ=
+e/asm/pgtable.h
+> index 8b5df1bbf9e9..af3acdf3481a 100644
+> --- a/arch/loongarch/include/asm/pgtable.h
+> +++ b/arch/loongarch/include/asm/pgtable.h
+> @@ -363,9 +363,6 @@ static inline void pte_clear(struct mm_struct *mm, un=
+signed long addr, pte_t *pt
+>  extern pgd_t swapper_pg_dir[];
+>  extern pgd_t invalid_pg_dir[];
+>
+> -struct page *dmw_virt_to_page(unsigned long kaddr);
+> -struct page *tlb_virt_to_page(unsigned long kaddr);
+> -
+>  /*
+>   * The following only work if pte_present() is true.
+>   * Undefined behaviour if not..
+> --
+> 2.39.2
+>
+>
 
