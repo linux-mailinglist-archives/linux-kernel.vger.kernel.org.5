@@ -1,120 +1,124 @@
-Return-Path: <linux-kernel+bounces-98187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7920877638
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:21:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98E3087763A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:22:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90B3A281449
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:21:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470EA1F21271
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404B3200B7;
-	Sun, 10 Mar 2024 11:21:03 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB381EB52;
+	Sun, 10 Mar 2024 11:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WzicIIED"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC691EB23
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 11:21:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28ED91EB23
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 11:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710069662; cv=none; b=tGqtWv59utmvE/TK833In0SeiI+fD+lMRH3BIvMdCy/nxmmmxoaJuRMJC/CxWw8DDWahxQ8HQUNojlYzVgOouPe0PxoLh9haOqb36iqDevXIkZQPjOQ8iYjror0J8QXwCBGWAhcRCH5qbPX+uA1T3f3Powk9AsOA9G3mo7C1tRE=
+	t=1710069717; cv=none; b=bU97BDQvARJHmn+fOL4Cl5fAfeGFtkW+PdHG3u8Br2+HZWbei+2tV9p4kJyA71ASaHF+ANwBQEF3ZKrjKDObu03O/ZcyoeO68epa4eVfuKG+m6NTMdrTIgGPM/WaVsDT1b8+ojpY0wCFGuwimMgCWR68brhZILrwxZfx2nrQb8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710069662; c=relaxed/simple;
-	bh=1lo6Ufa9Y9sMpEkHeCVyy0nzTlREwq9VUjUqovb3NiM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fk70lhCljqqcHWQVhFvLq41W/6QoBmb8iHyg7cU8fKJEGNmSCB4Ji4Csoj6OFwlFPPlWd9mMehrjtGCR7lCHfBjEZ8o0HMpEZSfZExJ2f3WVdmKTOSSZlysieM4Wyuey0+vL84LuohhOJljVgWybJmc5/irzE7sZ1vq6CircGS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rjHEQ-0001CI-P0; Sun, 10 Mar 2024 12:20:42 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rjHEP-005VO1-1y; Sun, 10 Mar 2024 12:20:41 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rjHEO-003OnK-35;
-	Sun, 10 Mar 2024 12:20:40 +0100
-Date: Sun, 10 Mar 2024 12:20:40 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Roy Huang <roy.huang@analog.com>, Ash Aziz <ash.aziz@plxtech.com>, 
-	Mike Frysinger <vapier@gentoo.org>, Seth Levy <seth.levy@plxtech.com>, linux-usb@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next][V2] usb: gadget: net2272: Use irqflags in the call
- to net2272_probe_fin
-Message-ID: <hycmac4toie3uk7xvgrgqrcw5f2vi2sm4j45ca5coc4qs7orec@gtigekcag6d6>
-References: <20240307181734.2034407-1-colin.i.king@gmail.com>
+	s=arc-20240116; t=1710069717; c=relaxed/simple;
+	bh=fJX7SNlyxXTuJOiq0rTDaoI8T9zWS4yZQ9PVya9yaD0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FJ2ytpiAD604nQc9ze0yxM59Craj/N4JJVCkjs35xyeNDaq4/SunR5Sezbhq1BpQs8SQ0Qn7zkl0a57KuMfmkhkIYK/K1El1je580awsD4sAmqCgSU47qNnJh1IfXRYoPKrLGbG4WTLYOGGQyhaRSEsFYVjCzmc5FPgIzVyxCiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WzicIIED; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-413287eb997so1093745e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 04:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710069714; x=1710674514; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dYLKnCQ+boTnvHIesYL7Tn/a9S/O0zd748SDOPYnP/0=;
+        b=WzicIIEDsaKH3Shu36ulwEYVwnYGP8uUARXOeFpW1un+KZ9TLY1VtKfE3f/mTlhcDk
+         szhBjd+LTO5GdcJ1/nBy9IRLpN1DUdVhGEhnx+wEbD1jBQxgGkHG0NgCBAS+yrmq7T+G
+         qKVaTseG8FA6UsVqWEs89BqRpvM5aETBuWFSA33OKlikUIscILSzR48i4iUWz1v7aORi
+         7zpRbMw1z+RFFJsfHQ/YeqO4d1iPV2gnRI/4A0Xe/pVJL44Q+Wxn++guZPPa8p31S+Je
+         3ViQDKxjKwk8n0BSyGCLcWzzeDWxAA0F3nUo1VFMHPDMxPNkixS6s5ea6/hR4opgIl51
+         9nuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710069714; x=1710674514;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dYLKnCQ+boTnvHIesYL7Tn/a9S/O0zd748SDOPYnP/0=;
+        b=v8Glz4Cx6IObxatodXgnWWgcCTqsxgjoZPosAXjzQKKbjv76wVK6sKYrufDrchyIvs
+         37HqIFyfkr476AnU9lT4UU4VDv50PMt5nWoIMkSS+K29fV7YeHTMOf0OSt77gQXmUH4l
+         /uMSoX7bWkuOFpMxfwFgzXtN69C96mwg6Oa+C6OjEwapJMe81w4/MT29SwpypvpWE2eK
+         jJUay625/0LvrNAySUDx2pi01kS2QDMDjRz7TvmShSAMzX1fp8nOLD6WdmiOEeHnxYS9
+         qwj8pr4LEEZmUWtvKh14CeIh3Dg7ExDwEuaBiOFEo+USczCQKA+MvBRJFAEcBFB47fIR
+         ixXg==
+X-Gm-Message-State: AOJu0Yy4X83nYDid1lYFs7V7qBRzC89ojBAX9rO/farJV5sNrlClmlpa
+	eISu9bOc4AQ8fK3uuYJX2VoUaslDPWv2t5UUvkLr2Z2lLem8ktJ4C23ItCQ+5sQi/A==
+X-Google-Smtp-Source: AGHT+IESTdbtcJfx38eBuDs4OoN6CRhqQNHqQYLxjQ2Qu5Q+ItfkC7K28QXNPe4PiZTsTend2glLjg==
+X-Received: by 2002:adf:e98d:0:b0:33e:7029:96bf with SMTP id h13-20020adfe98d000000b0033e702996bfmr2860785wrm.58.1710069713316;
+        Sun, 10 Mar 2024 04:21:53 -0700 (PDT)
+Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
+        by smtp.gmail.com with ESMTPSA id l15-20020a05600012cf00b0033ce727e728sm3788144wrx.94.2024.03.10.04.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 04:21:52 -0700 (PDT)
+From: Stafford Horne <shorne@gmail.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Stafford Horne <shorne@gmail.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Guo Ren <guoren@kernel.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH] riscv: Remove unused asm/signal.h file
+Date: Sun, 10 Mar 2024 11:21:26 +0000
+Message-ID: <20240310112129.376134-1-shorne@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nsvuqs7gnggucupu"
-Content-Disposition: inline
-In-Reply-To: <20240307181734.2034407-1-colin.i.king@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
+When riscv moved to common entry the definition and usage of
+do_work_pending was removed.  This unused header file remains.
 
---nsvuqs7gnggucupu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Remove the header file as it is not used.
 
-Hello,
+I have tested compiling the kernel with this patch applied and saw no
+issues.  Noticed when auditing how different ports handle signals
+related to saving FPU state.
 
-On Thu, Mar 07, 2024 at 06:17:34PM +0000, Colin Ian King wrote:
-> Currently the variable irqflags is being set but is not being used,
-> it appears it should be used in the call to net2272_probe_fin
-> rather than IRQF_TRIGGER_LOW being used. Kudos to Uwe Kleine-K=F6nig
-> for suggesting the fix.
->=20
-> Cleans up clang scan build warning:
-> drivers/usb/gadget/udc/net2272.c:2610:15: warning: variable 'irqflags'
-> set but not used [-Wunused-but-set-variable]
->=20
-> Fixes: ceb80363b2ec ("USB: net2272: driver for PLX NET2272 USB device con=
-troller")
->=20
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+---
+ arch/riscv/include/asm/signal.h | 12 ------------
+ 1 file changed, 12 deletions(-)
+ delete mode 100644 arch/riscv/include/asm/signal.h
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-Suggested-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+diff --git a/arch/riscv/include/asm/signal.h b/arch/riscv/include/asm/signal.h
+deleted file mode 100644
+index 956ae0a01bad..000000000000
+--- a/arch/riscv/include/asm/signal.h
++++ /dev/null
+@@ -1,12 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-
+-#ifndef __ASM_SIGNAL_H
+-#define __ASM_SIGNAL_H
+-
+-#include <uapi/asm/signal.h>
+-#include <uapi/asm/ptrace.h>
+-
+-asmlinkage __visible
+-void do_work_pending(struct pt_regs *regs, unsigned long thread_info_flags);
+-
+-#endif
+-- 
+2.41.0
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---nsvuqs7gnggucupu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXtl4cACgkQj4D7WH0S
-/k4YHQf8Dde9ohuB8pl8cPyQtzLgarlGSXTb6nDXSoQO1UA128zHw7Aj2rGHThMq
-xeeodRSsqpQRLpz/ANWuDpCgBRSGcDagzYBDCKFj2oBfIzmNOkAGVFBq2Sf1K6Ai
-Mj+lObCZFRG5vLAENcII3I2bghO8hPSnbZEwgvYbKaTdZwXKExf/oxJzb+KyxlpT
-AS+FNRu/ZxYajiL9nZbWjSmMNVuzGdUFrYJP8IQmLCgGj6JYsf7ur7v1/dFy3S4G
-E5SokdH9QlDoJyJ1Vx1sXsVVU6m//YGF0F/IOGpQuwhKwImjpF4tdy/zvbnlf9fh
-5Ehlr5FfggTzLqNWnkWOrOOwuaJaFQ==
-=POC+
------END PGP SIGNATURE-----
-
---nsvuqs7gnggucupu--
 
