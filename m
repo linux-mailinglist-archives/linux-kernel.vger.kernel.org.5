@@ -1,334 +1,229 @@
-Return-Path: <linux-kernel+bounces-98098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B531A87751F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:10:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C6B877525
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D83C11C209EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:10:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E74881F213A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:20:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0633D3B78D;
-	Sun, 10 Mar 2024 02:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C971381;
+	Sun, 10 Mar 2024 02:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hV39oof8"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="j8wV+0Xi";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LpSfTKK5"
+Received: from wfhigh6-smtp.messagingengine.com (wfhigh6-smtp.messagingengine.com [64.147.123.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A203A8C0
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800A7EC5;
+	Sun, 10 Mar 2024 02:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710036368; cv=none; b=DAG57cyZ0Q3vQv1Jz2f34wnNKa5y2jEslhLTrSCsZEE5hZQ7KkNzKaUIrswy87BS/3I3AGwtvyXwl97TIbZcvWciBbE7TTvUqrVrOIq/QuDNPc8OF3a2iGl1t+EAPVaMkyPECdAD/LFkbRUmx7mq4AgrQPEqEo8+UopATer8e4M=
+	t=1710037240; cv=none; b=VqOAPm3TZ436IWPgjoOmrL/Tuw5O8vg+yUxbpfsEtAlKnbMAQRnO030y0G+5YEhzfITUGNihL9qJ1raKIrVJGjm5XuEdHnm1sTdqZiaT+wmB471YBnLT0IwGjaET28ZfTb217sfSnBjSJSI/sSvYmO+8CLNp0s3oMMPed3HEiug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710036368; c=relaxed/simple;
-	bh=qvu80I2tuIwczv3ewDN5Kf8bkfHfC9IP72lON4Zzmek=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Cc:Content-Type; b=cTJtAJUokLnlVSnb+DDBhyLuyO3ZC5IBuD/j7cXva6tpFKTg7PdVOwz4ByZo4UUlSGgeKaI0/A2bXQ1v9Jx9AhuTf4Q8wgE1prlBfqHS261JkKdrMvzPMx1g70PQSBcI+eJcHpUjxMaL+ZGJbArabHV3oTe5497JP7nPjir6fxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hV39oof8; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd94cc48a1so5346747276.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:06:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710036365; x=1710641165; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z2TI3BR52BOETJMkXQVYiCvqxjFYb61EnnuV6r2EGgU=;
-        b=hV39oof8n6gQYhpoRdQBNKXrF9luve4Gjjy1Iibfj18oWaFulJIcW/K0a+36t6prcz
-         c2TirRz8836CT+nuHJYaKfcP8O3elPqWrHmJdhPhrYbIebqJVgH2tC4zE2I3VeLdlg23
-         ihbhVIuMkt4Fo+motqOpBgLeIqMlgh6bVwkPGzIwr78rsxBOM839rKLVNIweb/bB37oC
-         bee/hJw0Psd6q4+giekuPYhNzCCyOGVouxE66vuCTKa3h+WcMmDafItdyLDBzhIC+mvw
-         yus2gBGtfrawoxBl/bS0bvetjFoluac4zdUvlbymAVId8gCuS3ZZ+LOeQ0GGcBYxc1wG
-         mt4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710036365; x=1710641165;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z2TI3BR52BOETJMkXQVYiCvqxjFYb61EnnuV6r2EGgU=;
-        b=VZdn24Qs0/T6pnVYJFVi4789+RFIK9/gXbH/OM5zxJQ3T/9pQGxOZhNk9c8qh7mAxz
-         Ctphm/G/X+LDU5jAAbXU5Yee1xiX6WZfO7/9Q/mKKdB8J3sc77twOut4fyale679rRHS
-         OQXqMf4wuPDvTUnmlzhiEjoBeDmzt3QC7uGp1wwfZcoOdEFAPofg45nNCUJ9RJs7xUtX
-         6rpPT9n/hvvfsFOFCObTrWmWt15TKn8/QQnyoOXnaUQ7MakrCmocMCfkUyPk4kjN4f/F
-         zWCVVB74EfkMgL9rLcJE/RblKVKXgN5HLZy/i9ELVQA6bmLfQhoGnyoW9ubtIe+YTI1m
-         xUoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/N94kuR1fTVZDbfJYtsiQr1Zub+JVZp9E/1W/z1TAjTBRMYiiJn61t9tudCLH/ZR/BGncVBMUa/3CGvO2Sof3+dPqiOs9d2WqsBZb
-X-Gm-Message-State: AOJu0YzQgQjAi1gNLLZZRqqh9ipyZ9cjhDRXt54dG2apiAR9QIbqyYdd
-	cvGNXLQu52UjDnc71t7kvFKX0VWjy8V0VS+1A0zcaMqWMzM1Fw6nmF1nBlHGCHr68iwRvdCW8/6
-	XcPWvmA==
-X-Google-Smtp-Source: AGHT+IHg84e8jFIAgnoZrRiN8Pu+L19uE2B6rig+tSx4eREFwobOlwuHge4FvzAmOSQKYE9pLZGbcXyYmOgE
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a63d:1b65:e810:3ad3])
- (user=irogers job=sendgmr) by 2002:a05:6902:18c9:b0:dc6:fec4:1c26 with SMTP
- id ck9-20020a05690218c900b00dc6fec41c26mr897542ybb.1.1710036365375; Sat, 09
- Mar 2024 18:06:05 -0800 (PST)
-Date: Sat,  9 Mar 2024 18:05:08 -0800
-In-Reply-To: <20240310020509.647319-1-irogers@google.com>
-Message-Id: <20240310020509.647319-14-irogers@google.com>
+	s=arc-20240116; t=1710037240; c=relaxed/simple;
+	bh=lU2FEXjQf5ULWlJGjC6beHT2szn5igv6p/kvrR7y6o4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nvxq3hQ+qk7ywRJejjxWah4CJ+2LTnzhxsPx6wNA2yvNHP7Rr+oR2g/fm3uGckaKy7FiU39b/hmn3IyqLvGNI0hU1ssspb0rpa7Qo6+6kP2EK614j769fXoCDWEEibPj9RTp09qot2+7LhwNVHBEOu8sDVblCySDkZ6iQ9nBUNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=j8wV+0Xi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LpSfTKK5; arc=none smtp.client-ip=64.147.123.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 2392D1800086;
+	Sat,  9 Mar 2024 21:20:36 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sat, 09 Mar 2024 21:20:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1710037235; x=1710123635; bh=t1ZldjZTYg9N6JKMzIXtm
+	D68rf620xDzEz43/gNhjtM=; b=j8wV+0Xibu+aH5VIqFA29L94vIkvxB84BshcS
+	pEq6LOYuOp5ftyEtpPhUroG1zhkCy5SRqfLGjwTtB1xzsqem7Dh/w2nMuqQWIzlu
+	FGQSJwpBIVDv+Li1H+5ppEyfXZ9m+SQw0jGiUEoeBifHQiEmZffXcogBvkRnvkvE
+	RqLL2BBBSv0lkT7Ck85Gjyx1bL2XipDvkbGCmVywSkZBEexXXlfbFbsBdf83c9gf
+	On/DDe42YJ/VKT6FB0Ss7NqbcraBvTCgQGG/yZKa/muNBe0IRh0pI4BGhpD42Exu
+	5x0iAyIgpRI4AAkBhbKvFTn/9VIGjc4tJkqFRJCO6JFLXucaA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1710037235; x=1710123635; bh=t1ZldjZTYg9N6JKMzIXtmD68rf62
+	0xDzEz43/gNhjtM=; b=LpSfTKK5xXlFJnukAgZhUAYI0uywdQOnFxOeOfYarZee
+	8DaOjcyosOONFVYU/EEe+oPS0XtCb+H3lgTQ/hG6Phz0Hw2Ov2W/Xogo0iiB9RBZ
+	icqmXIz9M9OvSUo8KZw4dmr0HkehdClD33h7OydC86I4DBVdF2UGEZdDfEjfdrvk
+	O31PmXgR4Aeut1z2qvSiF/99sJsLWjzHCt1LPAOMfJH1PWZ8Fb/8429rt1sMi0E/
+	dy3yiyQbuFwNmDiggaEPdjnMvFE2BGytKJaugvSTZVG7Q9XvZFb8uDXDy3XcdtQh
+	27l77JKHh49bq/yDLm7eyN2xwcKQYxkEMMxSWq7yrg==
+X-ME-Sender: <xms:8xjtZerybfPyvJFLiPuM_yDiY9-uEqPOI_qYPvJtGZAJZtEkvLEhpw>
+    <xme:8xjtZcrFvJFCa_YYTbdTKBSMMaBYgnrTe5ec7bCqqnxaRiALKP2PKLHZ1mWJNSV3U
+    a31rmPNIk-h8vHjKNk>
+X-ME-Received: <xmr:8xjtZTMLrCCKSW8SkvgcXCjMowwTaOZ8J0YM-JEiMjivF0Q4h0Yg1Gt8k8Iq>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieekgdeggecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
+    vghsrdguvghvqeenucggtffrrghtthgvrhhnpefgudejtdfhuddukefffeekiefftddtvd
+    fhgeduudeuffeuhfefgfegfeetvedvgeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:8xjtZd4COE0jJgUkZ_JE_SCJvRakf-feQfRYVVnIFTGS7Pd4FNU7IQ>
+    <xmx:8xjtZd5wWJg4vYR1lpNcD1PrHSj-ie1qshMq13D49blzz4pR1GRGtw>
+    <xmx:8xjtZdgenmSxDj_cbR5XlMX0XL1xdvCaVkJxsE_iCztqnuhP9OfL0A>
+    <xmx:8xjtZQ0EMn31ZK17Cg-Xb5JGl31zRFT9rh6qPFgv5JA7Cv9Ib0WwByUP8oA>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 9 Mar 2024 21:20:32 -0500 (EST)
+From: "Luke D. Jones" <luke@ljones.dev>
+To: platform-driver-x86@vger.kernel.org
+Cc: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	"Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH] platform/x86: asus-wmi: add support for 2024 ROG Mini-LED
+Date: Sun, 10 Mar 2024 15:20:26 +1300
+Message-ID: <20240310022026.69841-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240310020509.647319-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1 13/13] tools headers: Rename noinline to __noinline
-From: Ian Rogers <irogers@google.com>
-To: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	David Laight <David.Laight@ACULAB.COM>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
-	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
-	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
-	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
-	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
-	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
-	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
-	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	llvm@lists.linux.dev
-Cc: Christopher Di Bella <cjdb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-An issue was reported with clang and llvm libc where the noinline
-attribute [1] was being expanded due to the #define in
-linux/compiler.h (now in compiler_attributes.h). The expansion caused
-the __attribute__ to appear twice and break the build. To avoid this
-conflict, rename noinline to __noinline which is more consistent with
-other compiler attributes.
+Support the 2024 mini-led backlight and adjust the related functions
+to select the relevant dev-id. Also add `available_mini_led_mode` to the
+platform sysfs since the available mini-led levels can be different.
 
-[1] https://clang.llvm.org/docs/AttributeReference.html#noinline
-Reported-by: Christopher Di Bella <cjdb@google.com>
-
-Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
 ---
- tools/include/linux/compiler_attributes.h |  4 ++--
- tools/perf/arch/x86/tests/bp-modify.c     |  4 ++--
- tools/perf/bench/find-bit-bench.c         |  2 +-
- tools/perf/tests/bp_account.c             |  2 +-
- tools/perf/tests/bp_signal.c              |  2 +-
- tools/perf/tests/bp_signal_overflow.c     |  2 +-
- tools/perf/tests/dwarf-unwind.c           | 12 ++++++------
- tools/perf/tests/workloads/leafloop.c     |  8 ++++----
- tools/perf/tests/workloads/thloop.c       |  4 ++--
- 9 files changed, 20 insertions(+), 20 deletions(-)
+ .../ABI/testing/sysfs-platform-asus-wmi       |  8 ++++
+ drivers/platform/x86/asus-wmi.c               | 37 +++++++++++++++++--
+ include/linux/platform_data/x86/asus-wmi.h    |  1 +
+ 3 files changed, 42 insertions(+), 4 deletions(-)
 
-diff --git a/tools/include/linux/compiler_attributes.h b/tools/include/linux/compiler_attributes.h
-index 9bfaec783e48..1ff3d85f5af3 100644
---- a/tools/include/linux/compiler_attributes.h
-+++ b/tools/include/linux/compiler_attributes.h
-@@ -267,12 +267,12 @@
- # define __flatten			__attribute__((flatten))
+diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+index 8a7e25bde085..e32b4f0ae15f 100644
+--- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
++++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+@@ -126,6 +126,14 @@ Description:
+ 		Change the mini-LED mode:
+ 			* 0 - Single-zone,
+ 			* 1 - Multi-zone
++			* 2 - Multi-zone strong (available on newer generation mini-led)
++
++What:		/sys/devices/platform/<platform>/avilable_mini_led_mode
++Date:		Jun 2023
++KernelVersion:	6.9
++Contact:	"Luke Jones" <luke@ljones.dev>
++Description:
++		List the available mini-led modes.
  
- /*
-- * Note the missing underscores.
-+ * Note, the kernel version is missing the underscores.
-  *
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-noinline-function-attribute
-  * clang: mentioned
-  */
--#define   noinline                      __attribute__((__noinline__))
-+#define   __noinline                      __attribute__((__noinline__))
+ What:		/sys/devices/platform/<platform>/ppt_pl1_spl
+ Date:		Jun 2023
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 18be35fdb381..94cc589607b3 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -297,6 +297,7 @@ struct asus_wmi {
  
- /*
-  * Optional: only supported since gcc >= 8
-diff --git a/tools/perf/arch/x86/tests/bp-modify.c b/tools/perf/arch/x86/tests/bp-modify.c
-index 0924ccd9e36d..65493ff7a76f 100644
---- a/tools/perf/arch/x86/tests/bp-modify.c
-+++ b/tools/perf/arch/x86/tests/bp-modify.c
-@@ -15,13 +15,13 @@
- #include "tests/tests.h"
- #include "arch-tests.h"
+ 	bool panel_overdrive_available;
+ 	bool mini_led_mode_available;
++	u32 mini_led_dev_id;
  
--static noinline int bp_1(void)
-+static __noinline int bp_1(void)
- {
- 	pr_debug("in %s\n", __func__);
- 	return 0;
+ 	struct hotplug_slot hotplug_slot;
+ 	struct mutex hotplug_lock;
+@@ -2109,7 +2110,7 @@ static ssize_t mini_led_mode_show(struct device *dev,
+ 	struct asus_wmi *asus = dev_get_drvdata(dev);
+ 	int result;
+ 
+-	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
++	result = asus_wmi_get_devstate_simple(asus, asus->mini_led_dev_id);
+ 	if (result < 0)
+ 		return result;
+ 
+@@ -2129,10 +2130,15 @@ static ssize_t mini_led_mode_store(struct device *dev,
+ 	if (result)
+ 		return result;
+ 
+-	if (mode > 1)
++	if (mode > 1 && asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE)
+ 		return -EINVAL;
++	if (mode > 2 && asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2)
++		return -EINVAL;
++	// Remap the mode values to match previous generation mini-led
++	if (asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2)
++		mode = mode == 2 ? 1 : mode == 0 ? 2 : 0;
+ 
+-	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_MINI_LED_MODE, mode, &result);
++	err = asus_wmi_set_devstate(asus->mini_led_dev_id, mode, &result);
+ 
+ 	if (err) {
+ 		pr_warn("Failed to set mini-LED: %d\n", err);
+@@ -2150,6 +2156,21 @@ static ssize_t mini_led_mode_store(struct device *dev,
  }
+ static DEVICE_ATTR_RW(mini_led_mode);
  
--static noinline int bp_2(void)
-+static __noinline int bp_2(void)
- {
- 	pr_debug("in %s\n", __func__);
- 	return 0;
-diff --git a/tools/perf/bench/find-bit-bench.c b/tools/perf/bench/find-bit-bench.c
-index 7e25b0e413f6..dd97a51649bc 100644
---- a/tools/perf/bench/find-bit-bench.c
-+++ b/tools/perf/bench/find-bit-bench.c
-@@ -31,7 +31,7 @@ static const char *const bench_usage[] = {
- static unsigned int accumulator;
- static unsigned int use_of_val;
++static ssize_t available_mini_led_mode_show(struct device *dev,
++				  struct device_attribute *attr, char *buf)
++{
++	struct asus_wmi *asus = dev_get_drvdata(dev);
++
++	if (asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE)
++		return sysfs_emit(buf, "0 1\n");
++	if (asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2)
++		return sysfs_emit(buf, "0 1 2\n");
++
++	return sysfs_emit(buf, "0\n");
++}
++
++static DEVICE_ATTR_RO(available_mini_led_mode);
++
+ /* Quirks *********************************************************************/
  
--static noinline void workload(int val)
-+static __noinline void workload(int val)
- {
- 	use_of_val += val;
- 	accumulator++;
-diff --git a/tools/perf/tests/bp_account.c b/tools/perf/tests/bp_account.c
-index 6f921db33cf9..459f61752a71 100644
---- a/tools/perf/tests/bp_account.c
-+++ b/tools/perf/tests/bp_account.c
-@@ -34,7 +34,7 @@
+ static void asus_wmi_set_xusb2pr(struct asus_wmi *asus)
+@@ -4174,6 +4195,7 @@ static struct attribute *platform_attributes[] = {
+ 	&dev_attr_nv_temp_target.attr,
+ 	&dev_attr_panel_od.attr,
+ 	&dev_attr_mini_led_mode.attr,
++	&dev_attr_available_mini_led_mode.attr,
+ 	NULL
+ };
  
- static volatile long the_var;
+@@ -4496,10 +4518,17 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 	asus->nv_dyn_boost_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_DYN_BOOST);
+ 	asus->nv_temp_tgt_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_THERM_TARGET);
+ 	asus->panel_overdrive_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PANEL_OD);
+-	asus->mini_led_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
+ 	asus->ally_mcu_usb_switch = acpi_has_method(NULL, ASUS_USB0_PWR_EC0_CSEE)
+ 						&& dmi_match(DMI_BOARD_NAME, "RC71L");
  
--static noinline int test_function(void)
-+static __noinline int test_function(void)
- {
- 	return 0;
- }
-diff --git a/tools/perf/tests/bp_signal.c b/tools/perf/tests/bp_signal.c
-index 1f2908f02389..484a7e7f96ee 100644
---- a/tools/perf/tests/bp_signal.c
-+++ b/tools/perf/tests/bp_signal.c
-@@ -59,7 +59,7 @@ static void __test_function(volatile long *ptr)
- }
- #endif
++	if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE)) {
++		asus->mini_led_mode_available = true;
++		asus->mini_led_dev_id = ASUS_WMI_DEVID_MINI_LED_MODE;
++	} else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE2)) {
++		asus->mini_led_mode_available = true;
++		asus->mini_led_dev_id = ASUS_WMI_DEVID_MINI_LED_MODE2;
++	}
++
+ 	err = fan_boost_mode_check_present(asus);
+ 	if (err)
+ 		goto fail_fan_boost_mode;
+diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
+index ab1c7deff118..9cadce10ad9a 100644
+--- a/include/linux/platform_data/x86/asus-wmi.h
++++ b/include/linux/platform_data/x86/asus-wmi.h
+@@ -71,6 +71,7 @@
+ #define ASUS_WMI_DEVID_LID_FLIP		0x00060062
+ #define ASUS_WMI_DEVID_LID_FLIP_ROG	0x00060077
+ #define ASUS_WMI_DEVID_MINI_LED_MODE	0x0005001E
++#define ASUS_WMI_DEVID_MINI_LED_MODE2	0x0005002E
  
--static noinline int test_function(void)
-+static __noinline int test_function(void)
- {
- 	__test_function(&the_var);
- 	the_var++;
-diff --git a/tools/perf/tests/bp_signal_overflow.c b/tools/perf/tests/bp_signal_overflow.c
-index 4e897c2cf26b..9436bf2973f8 100644
---- a/tools/perf/tests/bp_signal_overflow.c
-+++ b/tools/perf/tests/bp_signal_overflow.c
-@@ -30,7 +30,7 @@
- 
- static int overflows;
- 
--static noinline int test_function(void)
-+static __noinline int test_function(void)
- {
- 	return time(NULL);
- }
-diff --git a/tools/perf/tests/dwarf-unwind.c b/tools/perf/tests/dwarf-unwind.c
-index d01aa931fe81..a669c69a9242 100644
---- a/tools/perf/tests/dwarf-unwind.c
-+++ b/tools/perf/tests/dwarf-unwind.c
-@@ -109,7 +109,7 @@ static int unwind_entry(struct unwind_entry *entry, void *arg)
- 	return strcmp((const char *) symbol, funcs[idx]);
- }
- 
--NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__thread(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE __noinline int test_dwarf_unwind__thread(struct thread *thread)
- {
- 	struct perf_sample sample;
- 	unsigned long cnt = 0;
-@@ -140,7 +140,7 @@ NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__thread(struct thread *thr
- 
- static int global_unwind_retval = -INT_MAX;
- 
--NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__compare(void *p1, void *p2)
-+NO_TAIL_CALL_ATTRIBUTE __noinline int test_dwarf_unwind__compare(void *p1, void *p2)
- {
- 	/* Any possible value should be 'thread' */
- 	struct thread *thread = *(struct thread **)p1;
-@@ -159,7 +159,7 @@ NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__compare(void *p1, void *p
- 	return p1 - p2;
- }
- 
--NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_3(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE __noinline int test_dwarf_unwind__krava_3(struct thread *thread)
- {
- 	struct thread *array[2] = {thread, thread};
- 	void *fp = &bsearch;
-@@ -178,7 +178,7 @@ NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_3(struct thread *th
- 	return global_unwind_retval;
- }
- 
--NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_2(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE __noinline int test_dwarf_unwind__krava_2(struct thread *thread)
- {
- 	int ret;
- 
-@@ -187,7 +187,7 @@ NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_2(struct thread *th
- 	return ret;
- }
- 
--NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_1(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE __noinline int test_dwarf_unwind__krava_1(struct thread *thread)
- {
- 	int ret;
- 
-@@ -196,7 +196,7 @@ NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_1(struct thread *th
- 	return ret;
- }
- 
--noinline int test__dwarf_unwind(struct test_suite *test __maybe_unused,
-+__noinline int test__dwarf_unwind(struct test_suite *test __maybe_unused,
- 				int subtest __maybe_unused)
- {
- 	struct machine *machine;
-diff --git a/tools/perf/tests/workloads/leafloop.c b/tools/perf/tests/workloads/leafloop.c
-index 1bf5cc97649b..89d2cec2f461 100644
---- a/tools/perf/tests/workloads/leafloop.c
-+++ b/tools/perf/tests/workloads/leafloop.c
-@@ -4,18 +4,18 @@
- #include "../tests.h"
- 
- /* We want to check these symbols in perf script */
--noinline void leaf(volatile int b);
--noinline void parent(volatile int b);
-+__noinline void leaf(volatile int b);
-+__noinline void parent(volatile int b);
- 
- static volatile int a;
- 
--noinline void leaf(volatile int b)
-+__noinline void leaf(volatile int b)
- {
- 	for (;;)
- 		a += b;
- }
- 
--noinline void parent(volatile int b)
-+__noinline void parent(volatile int b)
- {
- 	leaf(b);
- }
-diff --git a/tools/perf/tests/workloads/thloop.c b/tools/perf/tests/workloads/thloop.c
-index 457b29f91c3e..e252efb76203 100644
---- a/tools/perf/tests/workloads/thloop.c
-+++ b/tools/perf/tests/workloads/thloop.c
-@@ -9,14 +9,14 @@
- static volatile sig_atomic_t done;
- 
- /* We want to check this symbol in perf report */
--noinline void test_loop(void);
-+__noinline void test_loop(void);
- 
- static void sighandler(int sig __maybe_unused)
- {
- 	done = 1;
- }
- 
--noinline void test_loop(void)
-+__noinline void test_loop(void)
- {
- 	while (!done);
- }
+ /* Storage */
+ #define ASUS_WMI_DEVID_CARDREADER	0x00080013
 -- 
-2.44.0.278.ge034bb2e1d-goog
+2.44.0
 
 
