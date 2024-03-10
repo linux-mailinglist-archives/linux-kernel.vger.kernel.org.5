@@ -1,84 +1,139 @@
-Return-Path: <linux-kernel+bounces-98209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CDBC87768E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 13:16:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EB8B877693
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 13:34:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 275DFB20CED
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:15:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 707381C209F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576062134B;
-	Sun, 10 Mar 2024 12:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E4622F1E;
+	Sun, 10 Mar 2024 12:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="RPAuJPvk"
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="XrZGVqiL";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="m3RslpyQ"
+Received: from mailrelay4-1.pub.mailoutpod2-cph3.one.com (mailrelay4-1.pub.mailoutpod2-cph3.one.com [46.30.211.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7E51F958;
-	Sun, 10 Mar 2024 12:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DC31CD1C
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 12:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710072949; cv=none; b=WknA37ZQTE6IK82cVOEtvfOvIl67/bPDaF6Ld7bwsLjJtf668tovXzTI7jI2YhVgdURUZ+BawZkWM8cvxaH7y1p3h2Q6nGWWX9FZ0zm3AZN9e0crKUKTOjJrkbXEDs7mxdX4+ilg2OxKhRWLhbVdKwY6dyntXG9CliZa0IvlzYc=
+	t=1710074077; cv=none; b=DtdA1bbIx2ChfkkoVWYOdS7OkXJKdoL7zZr8vKiZSwEndpOrrIreG2gmT3As8rA+Pz8CBN3L40XXsem0AfNZDkXPPSrHmaH3+aS4+PCIHKWBoR+G00pZGecZKU+jGvQO7sKUGelKPvMrCSTHQ1aNMRwRLVk0ny0UMthM9XHEbmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710072949; c=relaxed/simple;
-	bh=PXdQJn47uPDxklgoRlzOz3Dfx+P5Ya2f6dtyNnSQMLU=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=oQPo54P/hmDyQoOvNFTy0EGrV4l7iBEQ5p+AzOeukpT23sbzPb1y7IGMIbUo2sGsTz9BC3CbfbX2F0irJewfj8oGlwUG8QnVr169mofA7L1lSlHCKFjt50hEruNBmi1mfWP/vU616aA2F63GdRUsvyTpjosNkkyLRGB328KiFkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=RPAuJPvk; arc=none smtp.client-ip=162.62.57.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710072929; bh=PXdQJn47uPDxklgoRlzOz3Dfx+P5Ya2f6dtyNnSQMLU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=RPAuJPvkK4xobNX+xwRZndIyQh4WYzAS31qjBqDjJRbNk+0yVsGjVU3a4WOKn9ZRC
-	 X4FOirO6ekedeNQlHJkiQFU/LEpp2xub5hOmrF9Am94ALlxZBy4rUV1MIsk3s1HFtp
-	 R+78Q93fUGPHsIXOYYGbb/oGTgwQALdYGv50+MNc=
-Received: from localhost.localdomain ([58.213.8.163])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 3DB94874; Sun, 10 Mar 2024 20:15:27 +0800
-X-QQ-mid: xmsmtpt1710072927tapy58yra
-Message-ID: <tencent_49503CC554528271302D9D214218898E4206@qq.com>
-X-QQ-XMAILINFO: N7h1OCCDntuj8pej+XGSvtDwRXZAJYG4PotQTByHKu3P87vcDs+lwaqswZ15TZ
-	 tMfY2f1P9+z7BFOwJ3XAZH0oamwPF2pIJqfLXnStARVdsggvqf8QiPsycedMyKhiUUor1TTcOc+J
-	 CWBRfO8SbwZKGWp1FIYpZRGcro6OFNqU/iX5Zv0h3K2Nif35Wy1T0C8fYvmAnUzLVarTwUtsIeFh
-	 VkV5JYNr7TJeMjaLUCk9Lhob3Qa8iXBobT+pzMNb8Xg8K/1Ztycsl3vJ3ZME/dcSEmQS0EKWrQaO
-	 Eh+d71nFhmBI6U4ete2k2H9Apr2oLj2H/kKZ4YOBsDys0QuW4Na8u0PO3eKzJjc91dZTC0XMZ7Jc
-	 0ZO1jFRKYWXcbmEkK+055Q4Axs6pfS1tnkQTUjERnYSg5LdRPJhWP/ju+xMMfddxpf5wEbxLEzIR
-	 x3S1aTX4WOgYzFYB25ehb49wizcA2296rPkH0lC2N5NTCFPLSg4wC/ehwfY/U4GN3kFgMBymQkfa
-	 IZAInFCK19wvsWyDDBmiOsWmi1YHSWG4YhEQRjlciqAFp9ShHie4wRf6lYXTVuAm7VXHITsZOdxo
-	 L/QZWUFds70c7VcDmS4sxUvSaEh7BG3fYSPpEI6QgYRraSdqG11hayJLI58Em1jvsVXjnCeRyMm4
-	 +16nmPt/DDYtPDEv0FlvQel2HvjSKKhOb6zrBqiU72osobQNz+ZWXDD8ZTlD2jbHGSglm6SJ7dHH
-	 m6Hmbguu2fKucQzoPW02Q6mGfgVBWjk94tvhWSh6P0FPaY8P87Sl3QQJe19lRj9Y+j4/PbGMoX7V
-	 HIx10jzI5zUb6H16fP6aMDi0TgpW3n4coMi5f1MpuFC6PYZOz9281ICh0VmRwkj2VdMHHQPFUiGw
-	 as5O8xivMmWj9x6lSGIR9BNC8gAAVgwzco7ve2aUcQya/R9awt0X4fH8rf76PF0oU34JGsDUAWWZ
-	 H9EC9K+X0aReb8xn85yq+3wheyosx5B1voXmpGV1+1t3WFMoTethqpY+bZCepj
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: linke li <lilinke99@qq.com>
-To: leon@kernel.org
-Cc: bmt@zurich.ibm.com,
-	jgg@ziepe.ca,
-	lilinke99@qq.com,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of re-reading it
-Date: Sun, 10 Mar 2024 20:15:25 +0800
-X-OQ-MSGID: <20240310121525.68804-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240310113306.GF12921@unreal>
-References: <20240310113306.GF12921@unreal>
+	s=arc-20240116; t=1710074077; c=relaxed/simple;
+	bh=eVb3cFCjq/wLYohZULzNmR4wY1wWmg+rXCBfYx/lovk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fT0duPM4C0c9JepMfMB+Zr9oK3BQaCbH9XsdpEvJ8cYZMlXkm4m7/qvatDOEQLgdd/tSUchq1uXwdRsWfQso4x7INKXoV4GSiM/qIYEP34gPeJzX/xvHHfA71Wa0+j9Jh4F5y90e1Y7R4jGbfBQjIsg0l13zBOg5kaV9aE5u5Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=XrZGVqiL; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=m3RslpyQ; arc=none smtp.client-ip=46.30.211.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=YPj7mJSOmbCaNiEGC/t0Gr13wSnOz33kScWhnHNog2A=;
+	b=XrZGVqiLZ7HmxgauHv34KliKYg3bdIPWco3WbmOUS/lB8zsCC5CO+ZmGjgOxo2GjOG74rWmUTzeTD
+	 b/mY6sUBDEHan3+MiNqavhep1+qPHkyBDaWl6exwf4yZnQXZflm2ZNKhjgrSRP7oI7myR7O69SGebo
+	 XlYfPZUDqofK/AVeAQ8SbwF/6PyanxchTuw/gVeaNJjgYIqCt52w0/UnbwyIPRtB3Doc3R096J0hgI
+	 65BFZAHEQ6DOTY5XCc3HExn3ycYD4hb6fzaL/ouKN7wTNatsDLSWPfo0LIq8G88c92fKpkXAryb068
+	 idmG4syFCwOqfBYTzt3xyh947vR51BQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=YPj7mJSOmbCaNiEGC/t0Gr13wSnOz33kScWhnHNog2A=;
+	b=m3RslpyQ6rat08/y9fWoWhKLFFXulH2lxA/XDZXt362zndzEJbzwHFpTAVufQTF1BKRUZp5V6l5Ws
+	 lWldjHQAQ==
+X-HalOne-ID: 84422ca7-deda-11ee-9cef-31e85a7fa845
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay4.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id 84422ca7-deda-11ee-9cef-31e85a7fa845;
+	Sun, 10 Mar 2024 12:34:22 +0000 (UTC)
+Date: Sun, 10 Mar 2024 13:34:20 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: kernel test robot <lkp@intel.com>
+Cc: Sam Ravnborg via B4 Relay <devnull+sam.ravnborg.org@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Arnd Bergmann <arnd@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	Helge Deller <deller@gmx.de>, Randy Dunlap <rdunlap@infradead.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>,
+	Kjetil Oftedal <oftedal@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH v2 14/28] sparc32: Drop unused mmu models
+Message-ID: <20240310123420.GA989676@ravnborg.org>
+References: <20240309-sunset-v2-14-f09912574d2c@ravnborg.org>
+ <202403101854.Z94SAU13-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202403101854.Z94SAU13-lkp@intel.com>
 
-I want to emphasize that if the value of orqe->flags has changed by the
-time of the second read, the value read will not satisfy the if condition,
-causing inconsistency. Given that there is already a READ_ONCE.
+Hi kernel test robot et al.
 
+On Sun, Mar 10, 2024 at 06:37:53PM +0800, kernel test robot wrote:
+> Hi Sam,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on 84b76d05828a1909e20d0f66553b876b801f98c8]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Sam-Ravnborg-via-B4-Relay/sparc32-Update-defconfig-to-LEON-SMP/20240310-021717
+> base:   84b76d05828a1909e20d0f66553b876b801f98c8
+> patch link:    https://lore.kernel.org/r/20240309-sunset-v2-14-f09912574d2c%40ravnborg.org
+> patch subject: [PATCH v2 14/28] sparc32: Drop unused mmu models
+> config: sparc-randconfig-r113-20240310 (https://download.01.org/0day-ci/archive/20240310/202403101854.Z94SAU13-lkp@intel.com/config)
+> compiler: sparc-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20240310/202403101854.Z94SAU13-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202403101854.Z94SAU13-lkp@intel.com/
+> 
+> sparse warnings: (new ones prefixed by >>)
+> >> arch/sparc/mm/srmmu.c:49:5: sparse: sparse: symbol 'vac_line_size' was not declared. Should it be static?
+> 
+> vim +/vac_line_size +49 arch/sparc/mm/srmmu.c
+> 
+> accf032cfa582e Sam Ravnborg   2012-05-19  46  
+> ^1da177e4c3f41 Linus Torvalds 2005-04-16  47  int vac_cache_size;
+> 9d262d95114cf2 Guenter Roeck  2017-04-01  48  EXPORT_SYMBOL(vac_cache_size);
+> ^1da177e4c3f41 Linus Torvalds 2005-04-16 @49  int vac_line_size;
+> ^1da177e4c3f41 Linus Torvalds 2005-04-16  50  
+
+vac_line_size is no longer used and can be deleted.
+vac_cache_size is never written to and can be deleted too.
+
+vac_cache_size is used in shmparam_32.h like this:
+#define SHMLBA (vac_cache_size ? vac_cache_size : PAGE_SIZE)
+
+The same file has:
+#define __ARCH_FORCE_SHMLBA	1
+
+If I understand it right then when SHMLBA equals PAGE_SIZE then there is
+no need to define __ARCH_FORCE_SHMLBA and sparc32 can use the asm-generic
+variant of shmparam.h
+
+I will do this change in v3.
+
+	Sam
 
