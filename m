@@ -1,509 +1,93 @@
-Return-Path: <linux-kernel+bounces-98094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9BE487750D
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:09:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 235828774DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 194E21C20CF1
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:09:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B71D31F213BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F12E339AEC;
-	Sun, 10 Mar 2024 02:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Et8oLd0U"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30EBC20E4;
+	Sun, 10 Mar 2024 02:05:07 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C027381C2
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F3B15C4
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710036357; cv=none; b=F6WteHlYrIEanFVP7awZUTm5MZio2HmB3x5WBPWMQYAln1xNp0K8IHiUSoCDk3MbHsbGk/V2Q+YnXCVeflDP9IoLT+EUlCPM/CLOe/nVf3MCZR/XaF/2bB4/UniYupnBKBtTwT2RKy/N+Ptw97XvrjP8WgAwZxh+MQBiCsYZFdo=
+	t=1710036306; cv=none; b=ptTfsPmzvQjU9WC+olX3SKBdFLxPZG3IXAbuFt67+i8pOAE/2/u1mhBk6/pGbiYwW4ZdPFa4wQEWeSvityGLRhKL2nK3lDappEVaU6zu/YLCwnzJaSfNlXBeABokxej9awwtu6EvfIsfJ6XZHM9BGSpuTbvMDpJEYjhkZB2+B0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710036357; c=relaxed/simple;
-	bh=Fq4lcFad9HT9JmjkJEm98VVUDFCHd+jm9iRP80ik0Qk=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=aa3NnH4BSyhXl02hSxtq7kBuiTk1hBAz+wWV30exSLDlb7H3Xm1gopirwyJ0oOOguti1tFcSXGJU82ZDanJkzP/qqFOlF0adu+Z9GLozIJhgNc/illTGr28wCtekfUScVUPxAO7Bq17LC8oex8XTVDXtRZVe937fRA53FnamVwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Et8oLd0U; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b5d1899eso5900393276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:05:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710036354; x=1710641154; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EfWQCgRQvC61dW45rBVZGuz4IKfn5r36xpIYwQ99OM0=;
-        b=Et8oLd0Uuwwe4+7kI3T6ViWYA6cGKXI7GR4TrQvRkiTDQYe/9R5M+ZfD2kWjDZvRbh
-         X9CZYfs9El9ORL0q4RbfIWLW0QB4VriOmBvSW5cm9KsvKdimt3+rxA+ILZyat14alDI+
-         kdBPW1hPBca7cHrzJeFFsZ47zB3LuwqJjoGY+xMp1SFZIACbxh+P9x4u6vGiqqs2UKnn
-         Tm2EscMTADk8ui3t0JiF0wxcs0P9EvfiH/VoRFLrT4dm6T4pbP+WZf+FPL0m/lZe0Utc
-         JT6jgNebAvTjy9xU8z4MQmxi5+4xZ4dh461NZ30LZ76+3AXvAOpZcEsV6kOiWkuUhk4Z
-         1dvQ==
+	s=arc-20240116; t=1710036306; c=relaxed/simple;
+	bh=AB9oIgX15HDPukZy2QrbAYWK+ICd94A+UY4Tldqk2xs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=qSR/vJwHZmWrMger+0iDsGEPT5iRUaMahm4nMWM0BxWQfKfiCKPjC5y+qcM1lDbATQkGyhcAgdE838Hz+AnCz6pq6D72u/Pmp/PNHaO7/4kxGhRJrEe0J4YD7xOnmHiqIvveUA8p49Q4xXsUF8ExTMj9fXeTEPhHriB5ur9t6V8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c86ecb5b37so339556939f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:05:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710036354; x=1710641154;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+        d=1e100.net; s=20230601; t=1710036304; x=1710641104;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EfWQCgRQvC61dW45rBVZGuz4IKfn5r36xpIYwQ99OM0=;
-        b=O2VvH77a/WQQf/v1yYKkHMiieEy783yDIfBpTb2XljsAfVEr+5vjDgobDBhNNM5p0V
-         S+M7VkkI5YjKl0Ro/vSRcOhkFbVbBR7s8NyvM/QriNtmvl2j4frFw6XHaXbndFNoFdOd
-         xop3NdY2vYGOfwiilqG5pfuWUy9RPgQIHPEtUYKMOLLQhofvxbtoWDJkyksH7FgIJWcv
-         l7xTBN/OvzBFisA5nycQjqWUn9I+45/wB1D7Bm7nCTXxrymaV3+qYxqeIhBR69U8/JcF
-         qG2Y/sKxQoDPBS2u85P7Y2Q24a8sWi4mOcmcoQpsr1Po1eJn/JKSdaJwF38cGN5k8yf8
-         qBWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVHLod15+Gp2cCjCMBhdCQw6Q2ethE2DqGj4uPgiFv6+mGBw3h8gNUmrib6kWv4rzCOdcv7UJ8dn4aEPmJ2Xkcl5x5un6IN0e3kf0HE
-X-Gm-Message-State: AOJu0YyyarzW31LKb/WSFRPibCxZIBFq05W/nS6O7wLoLTEWKrymcyCQ
-	mpd9n929Gm4P/kkghmwuOzXXOe3L/U5gJdDb17d6SpnOGCgHCU/J7UarpERR/T/Zob6cDuAsKZz
-	hQa03Eg==
-X-Google-Smtp-Source: AGHT+IEbgF9/L10MqEQsfT/YgldjotiYAys6nVxOfaOObgpu5qrtCsaN68T0Sw/VHfW+vmC7K4OzTmNsXC8h
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a63d:1b65:e810:3ad3])
- (user=irogers job=sendgmr) by 2002:a05:6902:10c2:b0:dbd:b4e8:1565 with SMTP
- id w2-20020a05690210c200b00dbdb4e81565mr1091906ybu.4.1710036354130; Sat, 09
- Mar 2024 18:05:54 -0800 (PST)
-Date: Sat,  9 Mar 2024 18:05:04 -0800
-In-Reply-To: <20240310020509.647319-1-irogers@google.com>
-Message-Id: <20240310020509.647319-10-irogers@google.com>
+        bh=eAtcZ0jcmff76E8g+uUmd6ptddX0gjsk2MQCSo48DN0=;
+        b=lqRGgJOpLRi+v1nzlXlpvRRXfKgCSOH9ZS0ioAJTaJVJEdDqGFQBOFoeCNFQPKhq7J
+         MZ7dCNtQfD4pAHSaHteuUw7y8htCQA3ZdBQfET0o+3+xFhpJDbSweJf5rNzj+/OG/2ob
+         iTgj2i0RWDMfTAzx46UKdP+oFtPk6is+uxRWdiiwGdLmNfUrO2x0NBGLrCkRmCAdLxg2
+         gxsuEmlvmcfAmWthXrn2Ad/E+Kyr89/IhDJIDvfYSKXz58dVmNBXsZisn6Ic8Povhrj8
+         Bazfq30SNvdziqjl2ayuZxuLwNNnNiw7WaydmOiTrDcW8PYJ7ZQvEuwIiO8u7vLJ6EBs
+         qbMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX8FR6G5QetI9dOBKmxv8B2sK4fhgDYR5L3+w8Dx5fEvq9ZB+ob0+VE/t9Htl3IUHNagIqmyc8V4a4NENXrXrjGb1dORoHCc7bcnWIL
+X-Gm-Message-State: AOJu0Yyo5gbNCHFX4kGWzgbszz18U6seHJNuSc90nU5EK1stzy8ZA8vE
+	pFfaG5qIbhMJ3Z4KTP+9g53VEQV7Bu2A0S3MyYtwUXnSXmVjigkLVkE0c7vl92aE+6FicG518qr
+	ZICKv7Tlb5wsu533OW9LcjSS5UOKdcuBmhPz3YkMrnqC0FQ9ebV/iDQg=
+X-Google-Smtp-Source: AGHT+IE6e/IIewGxQAV4bqB6X0atmmjTjDjRrTeEujE/9OhtcHQe4bLNbPc1G6ogefC3EoR0pjUbedvrrFrSIyeg1cQ727HyyOZJ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240310020509.647319-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1 09/13] tools headers: Rewrite linux/atomic.h using C11's stdatomic.h
-From: Ian Rogers <irogers@google.com>
-To: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	David Laight <David.Laight@ACULAB.COM>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
-	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
-	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
-	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
-	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
-	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
-	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
-	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	llvm@lists.linux.dev
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:2dc5:b0:7c8:b219:4547 with SMTP id
+ l5-20020a0566022dc500b007c8b2194547mr3316iow.2.1710036304535; Sat, 09 Mar
+ 2024 18:05:04 -0800 (PST)
+Date: Sat, 09 Mar 2024 18:05:04 -0800
+In-Reply-To: <0000000000002a6cba05eb5c7fbd@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007c3484061344da08@google.com>
+Subject: Re: [syzbot] [ntfs3?] possible deadlock in map_mft_record
+From: syzbot <syzbot+cb1fdea540b46f0ce394@syzkaller.appspotmail.com>
+To: almaz.alexandrovich@paragon-software.com, anton@tuxera.com, 
+	axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Code in tools tries to follow the patterns of the kernel, so the
-atomic functions names match. However, having include/linux/atomic.h
-in tools complicates building code in tools as assembly and other
-functions are necessary - these are often configured in the kernel
-using CONFIG options. As tools C code is compiled with the -std=gnu11
-flag, it is possible to use stdatomic.h and move the build and other
-complications to the compiler/libc.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/arch/x86/include/asm/atomic.h           |  84 --------------
- tools/include/asm-generic/atomic-gcc.h        |  95 ----------------
- tools/include/asm/atomic.h                    |  11 --
- tools/include/linux/atomic.h                  | 107 ++++++++++++++++--
- tools/include/linux/types.h                   |  15 ++-
- .../selftests/kvm/include/kvm_util_base.h     |   3 +-
- 6 files changed, 110 insertions(+), 205 deletions(-)
- delete mode 100644 tools/arch/x86/include/asm/atomic.h
- delete mode 100644 tools/include/asm-generic/atomic-gcc.h
- delete mode 100644 tools/include/asm/atomic.h
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-diff --git a/tools/arch/x86/include/asm/atomic.h b/tools/arch/x86/include/asm/atomic.h
-deleted file mode 100644
-index 365cf182df12..000000000000
---- a/tools/arch/x86/include/asm/atomic.h
-+++ /dev/null
-@@ -1,84 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _TOOLS_LINUX_ASM_X86_ATOMIC_H
--#define _TOOLS_LINUX_ASM_X86_ATOMIC_H
--
--#include <linux/compiler.h>
--#include <linux/types.h>
--#include "rmwcc.h"
--
--#define LOCK_PREFIX "\n\tlock; "
--
--#include <asm/asm.h>
--#include <asm/cmpxchg.h>
--
--/*
-- * Atomic operations that C can't guarantee us.  Useful for
-- * resource counting etc..
-- */
--
--#define ATOMIC_INIT(i)	{ (i) }
--
--/**
-- * atomic_read - read atomic variable
-- * @v: pointer of type atomic_t
-- *
-- * Atomically reads the value of @v.
-- */
--static inline int atomic_read(const atomic_t *v)
--{
--	return READ_ONCE((v)->counter);
--}
--
--/**
-- * atomic_set - set atomic variable
-- * @v: pointer of type atomic_t
-- * @i: required value
-- *
-- * Atomically sets the value of @v to @i.
-- */
--static inline void atomic_set(atomic_t *v, int i)
--{
--	v->counter = i;
--}
--
--/**
-- * atomic_inc - increment atomic variable
-- * @v: pointer of type atomic_t
-- *
-- * Atomically increments @v by 1.
-- */
--static inline void atomic_inc(atomic_t *v)
--{
--	asm volatile(LOCK_PREFIX "incl %0"
--		     : "+m" (v->counter));
--}
--
--/**
-- * atomic_dec_and_test - decrement and test
-- * @v: pointer of type atomic_t
-- *
-- * Atomically decrements @v by 1 and
-- * returns true if the result is 0, or false for all other
-- * cases.
-- */
--static inline int atomic_dec_and_test(atomic_t *v)
--{
--	GEN_UNARY_RMWcc(LOCK_PREFIX "decl", v->counter, "%0", "e");
--}
--
--static __always_inline int atomic_cmpxchg(atomic_t *v, int old, int new)
--{
--	return cmpxchg(&v->counter, old, new);
--}
--
--static inline int test_and_set_bit(long nr, unsigned long *addr)
--{
--	GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(bts), *addr, "Ir", nr, "%0", "c");
--}
--
--static inline int test_and_clear_bit(long nr, unsigned long *addr)
--{
--	GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(btc), *addr, "Ir", nr, "%0", "c");
--}
--
--#endif /* _TOOLS_LINUX_ASM_X86_ATOMIC_H */
-diff --git a/tools/include/asm-generic/atomic-gcc.h b/tools/include/asm-generic/atomic-gcc.h
-deleted file mode 100644
-index 9b3c528bab92..000000000000
---- a/tools/include/asm-generic/atomic-gcc.h
-+++ /dev/null
-@@ -1,95 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __TOOLS_ASM_GENERIC_ATOMIC_H
--#define __TOOLS_ASM_GENERIC_ATOMIC_H
--
--#include <linux/compiler.h>
--#include <linux/types.h>
--#include <linux/bitops.h>
--
--/*
-- * Atomic operations that C can't guarantee us.  Useful for
-- * resource counting etc..
-- *
-- * Excerpts obtained from the Linux kernel sources.
-- */
--
--#define ATOMIC_INIT(i)	{ (i) }
--
--/**
-- * atomic_read - read atomic variable
-- * @v: pointer of type atomic_t
-- *
-- * Atomically reads the value of @v.
-- */
--static inline int atomic_read(const atomic_t *v)
--{
--	return READ_ONCE((v)->counter);
--}
--
--/**
-- * atomic_set - set atomic variable
-- * @v: pointer of type atomic_t
-- * @i: required value
-- *
-- * Atomically sets the value of @v to @i.
-- */
--static inline void atomic_set(atomic_t *v, int i)
--{
--        v->counter = i;
--}
--
--/**
-- * atomic_inc - increment atomic variable
-- * @v: pointer of type atomic_t
-- *
-- * Atomically increments @v by 1.
-- */
--static inline void atomic_inc(atomic_t *v)
--{
--	__sync_add_and_fetch(&v->counter, 1);
--}
--
--/**
-- * atomic_dec_and_test - decrement and test
-- * @v: pointer of type atomic_t
-- *
-- * Atomically decrements @v by 1 and
-- * returns true if the result is 0, or false for all other
-- * cases.
-- */
--static inline int atomic_dec_and_test(atomic_t *v)
--{
--	return __sync_sub_and_fetch(&v->counter, 1) == 0;
--}
--
--#define cmpxchg(ptr, oldval, newval) \
--	__sync_val_compare_and_swap(ptr, oldval, newval)
--
--static inline int atomic_cmpxchg(atomic_t *v, int oldval, int newval)
--{
--	return cmpxchg(&(v)->counter, oldval, newval);
--}
--
--static inline int test_and_set_bit(long nr, unsigned long *addr)
--{
--	unsigned long mask = BIT_MASK(nr);
--	long old;
--
--	addr += BIT_WORD(nr);
--
--	old = __sync_fetch_and_or(addr, mask);
--	return !!(old & mask);
--}
--
--static inline int test_and_clear_bit(long nr, unsigned long *addr)
--{
--	unsigned long mask = BIT_MASK(nr);
--	long old;
--
--	addr += BIT_WORD(nr);
--
--	old = __sync_fetch_and_and(addr, ~mask);
--	return !!(old & mask);
--}
--
--#endif /* __TOOLS_ASM_GENERIC_ATOMIC_H */
-diff --git a/tools/include/asm/atomic.h b/tools/include/asm/atomic.h
-deleted file mode 100644
-index 8c9bfffd4191..000000000000
---- a/tools/include/asm/atomic.h
-+++ /dev/null
-@@ -1,11 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __TOOLS_LINUX_ASM_ATOMIC_H
--#define __TOOLS_LINUX_ASM_ATOMIC_H
--
--#if defined(__i386__) || defined(__x86_64__)
--#include "../../arch/x86/include/asm/atomic.h"
--#else
--#include <asm-generic/atomic-gcc.h>
--#endif
--
--#endif /* __TOOLS_LINUX_ASM_ATOMIC_H */
-diff --git a/tools/include/linux/atomic.h b/tools/include/linux/atomic.h
-index 01907b33537e..2cf4791ddd5d 100644
---- a/tools/include/linux/atomic.h
-+++ b/tools/include/linux/atomic.h
-@@ -2,14 +2,107 @@
- #ifndef __TOOLS_LINUX_ATOMIC_H
- #define __TOOLS_LINUX_ATOMIC_H
- 
--#include <asm/atomic.h>
-+#include <stdatomic.h>
-+#include <linux/types.h>  // For atomic_t
- 
--void atomic_long_set(atomic_long_t *v, long i);
-+/*
-+ * Reimplementation of the kernel's atomic.h using C11's stdatomic.h to avoid
-+ * build logic around compilers, inline assembler, etc.
-+ */
- 
--/* atomic_cmpxchg_relaxed */
--#ifndef atomic_cmpxchg_relaxed
--#define  atomic_cmpxchg_relaxed		atomic_cmpxchg
--#define  atomic_cmpxchg_release         atomic_cmpxchg
--#endif /* atomic_cmpxchg_relaxed */
-+#define ATOMIC_OP(op, c_op)						\
-+static inline void generic_atomic_##op(int i, atomic_t *v)		\
-+{									\
-+	atomic_fetch_##op(v, i);				\
-+}
-+
-+#define ATOMIC_OP_RETURN(op, c_op)					\
-+static inline int generic_atomic_##op##_return(int i, atomic_t *v)	\
-+{									\
-+	int c =	atomic_fetch_##op(v, i);			\
-+									\
-+	return c c_op i;						\
-+}
-+
-+#define ATOMIC_FETCH_OP(op, c_op)					\
-+static inline int generic_atomic_fetch_##op(int i, atomic_t *v)		\
-+{									\
-+	return atomic_fetch_##op(v, i);			\
-+}
-+
-+static inline int generic_atomic_read(const atomic_t *v)
-+{
-+	return atomic_load(v);
-+}
-+
-+static inline void generic_atomic_set(atomic_t *v, int i)
-+{
-+	atomic_store(v, i);
-+}
-+
-+static inline int generic_atomic_cmpxchg_relaxed(atomic_t *v, int old, int new)
-+{
-+	int expected = old;
-+
-+	atomic_compare_exchange_weak_explicit(v, &expected, new,
-+					memory_order_relaxed, memory_order_relaxed);
-+	return expected;
-+}
-+
-+static inline int generic_atomic_cmpxchg_release(atomic_t *v, int old, int new)
-+{
-+	int expected = old;
-+
-+	/*
-+	 * Note, the stricter memory_order_seq_cst is used as
-+	 * memory_order_release fails with an invalid-memory-model error.
-+	 */
-+	atomic_compare_exchange_weak_explicit(v, &expected, new,
-+					memory_order_seq_cst, memory_order_seq_cst);
-+	return expected;
-+}
-+
-+ATOMIC_OP_RETURN(add, +)
-+ATOMIC_OP_RETURN(sub, -)
-+
-+ATOMIC_FETCH_OP(add, +)
-+ATOMIC_FETCH_OP(sub, -)
-+ATOMIC_FETCH_OP(and, &)
-+ATOMIC_FETCH_OP(or, |)
-+ATOMIC_FETCH_OP(xor, ^)
-+
-+ATOMIC_OP(add, +)
-+ATOMIC_OP(sub, -)
-+ATOMIC_OP(and, &)
-+ATOMIC_OP(or, |)
-+ATOMIC_OP(xor, ^)
-+
-+#undef ATOMIC_FETCH_OP
-+#undef ATOMIC_OP_RETURN
-+#undef ATOMIC_OP
-+
-+#define arch_atomic_add_return			generic_atomic_add_return
-+#define arch_atomic_sub_return			generic_atomic_sub_return
-+
-+#define arch_atomic_fetch_add			generic_atomic_fetch_add
-+#define arch_atomic_fetch_sub			generic_atomic_fetch_sub
-+#define arch_atomic_fetch_and			generic_atomic_fetch_and
-+#define arch_atomic_fetch_or			generic_atomic_fetch_or
-+#define arch_atomic_fetch_xor			generic_atomic_fetch_xor
-+
-+#define arch_atomic_add				generic_atomic_add
-+#define arch_atomic_sub				generic_atomic_sub
-+#define arch_atomic_and				generic_atomic_and
-+#define arch_atomic_or				generic_atomic_or
-+#define arch_atomic_xor				generic_atomic_xor
-+
-+#define arch_atomic_read(v)			generic_atomic_read(v)
-+#define arch_atomic_set(v, i)			generic_atomic_set(v, i)
-+#define atomic_set(v, i)			generic_atomic_set(v, i)
-+#define atomic_read(v)				generic_atomic_read(v)
-+#define atomic_cmpxchg_relaxed(v, o, n)		generic_atomic_cmpxchg_relaxed(v, o, n)
-+#define atomic_cmpxchg_release(v, o, n)		generic_atomic_cmpxchg_release(v, o, n)
-+#define atomic_inc(v)				generic_atomic_add(1, v)
-+#define atomic_dec(v)				generic_atomic_sub(1, v)
- 
- #endif /* __TOOLS_LINUX_ATOMIC_H */
-diff --git a/tools/include/linux/types.h b/tools/include/linux/types.h
-index 8519386acd23..cb1f44f1ed5e 100644
---- a/tools/include/linux/types.h
-+++ b/tools/include/linux/types.h
-@@ -74,13 +74,16 @@ typedef u64 phys_addr_t;
- typedef u32 phys_addr_t;
- #endif
- 
--typedef struct {
--	int counter;
--} atomic_t;
-+#ifndef __cplusplus
-+/* C++17 doesn't support stdatomic.h but C++23 does. */
-+#include <stdatomic.h>
- 
--typedef struct {
--	long counter;
--} atomic_long_t;
-+typedef atomic_int atomic_t;
-+
-+#define ATOMIC_INIT(i) (i)
-+
-+typedef atomic_long atomic_long_t;
-+#endif
- 
- #ifndef __aligned_u64
- # define __aligned_u64 __u64 __attribute__((aligned(8)))
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index 9e5afc472c14..7c81da425abc 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -9,6 +9,7 @@
- 
- #include "test_util.h"
- 
-+#include <linux/atomic.h>
- #include <linux/compiler.h>
- #include "linux/hashtable.h"
- #include "linux/list.h"
-@@ -17,8 +18,6 @@
- #include "linux/rbtree.h"
- #include <linux/types.h>
- 
--#include <asm/atomic.h>
--
- #include <sys/ioctl.h>
- 
- #include "sparsebit.h"
--- 
-2.44.0.278.ge034bb2e1d-goog
+    fs: Block writes to mounted block devices
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b28b99180000
+start commit:   e4cf7c25bae5 Merge tag 'kbuild-fixes-v6.2' of git://git.ke..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4
+dashboard link: https://syzkaller.appspot.com/bug?extid=cb1fdea540b46f0ce394
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=151db82a480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f0e670480000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
