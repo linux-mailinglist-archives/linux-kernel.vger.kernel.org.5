@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-98331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92A28877881
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 21:35:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 068E9877887
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 21:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 489F7281454
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:35:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 747C61F212F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32D93A268;
-	Sun, 10 Mar 2024 20:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A52993A29C;
+	Sun, 10 Mar 2024 20:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NyJ28+u1"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="Nidc7Dnj"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7B3374C2
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 20:35:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB5739FEF
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 20:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710102943; cv=none; b=t6Uy966MJHaaZkVNLgFiYE+2zCCMz3nI9a8dZaIrjyKZyEK2uRU8L9/ZKKq05ZEgoaUexAhC+ccIsKwVsZClV/JZ2etCaEgyw8mk4c7rExoxk+tD3UfTVNUIKZi+8WxvO21JmSNbGwTGWpIrBDGT5vHmrNSpaMkEzUcuthpVQuU=
+	t=1710103988; cv=none; b=A+mpEUBstOaTp9cCzrRc7TLgtjOgmfXUQymFUnetgSkQLURoBrXzio2Vbw7UsxqHXZDOx20KQcNYsPt9z0DJQs7PnH4+e8CLeY43f8M6Hig2CbIhSZmlNRAqgzwuIFvApAD29Mo4UkJ9mJ+sLcCcm6Vab2ZR6qh3k09OSS2lcKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710102943; c=relaxed/simple;
-	bh=e70bg/e1BS2jVywk5zKGgumV9mPuOOtP93ieLTvedjE=;
+	s=arc-20240116; t=1710103988; c=relaxed/simple;
+	bh=frxuvVcUFE3n0LsEt2HQl02eTQPGunwmknVSe8KFctQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RE8dzYO1fdkcz98rHzQeOVuHhYvEAAu6lD/LSsPnFeAsA9NbrTl+DkdfacA9HlZiPTsUReNjYJiNwgl9ZnwgMTX72tM/gx3ZD2iPOttQhSKjYlfDBCP6kqstrJ8Ehts4FEJbRlYo0agtdXorSUyCK8XxD34Y8rYzOUujvjlwSKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NyJ28+u1; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4132add50ffso445675e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 13:35:40 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=NkrfhYMwTZDh+wooQlOjAsuxip6jhm3Jz2LeY8asjjCOg+eQ+NUW3oC//iVFDZQYJGyeQ3heYC/YK5KOoCQBKuMvdGVTCJGyoY4B0XC1WYgIB6dN4jnJsex7/AwmXkK344qpLPROQoUkaAxXi5vww4BzQQnGiTSogy1XNCn87MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=Nidc7Dnj; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dd5df90170so24841055ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 13:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710102939; x=1710707739; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=tweaklogic.com; s=google; t=1710103986; x=1710708786; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hLuyOAUfakNiTmfRz2436v7ufbiP6S7z3xGi1kKPoaE=;
-        b=NyJ28+u1hNf9hBj//WKMR4yJcD8RcKa+m4q9ggmQuMdBhL37pPpOGLWomdvwifY+rH
-         uPkzbbZGp6Mq2YNj1e7vVhnkvinZlbUO+MMlapZOwgMEGDzZCyMa+sIgbkmYQEBNSQci
-         nBMuoDRnMGZbzl2TNFLsy/OStp5Njy6Z++bAY556itMjAvxITgrDAIsW/x1na4zWzILa
-         Gjoi8YLZOS7hHum56Se2vW91h3kEz/QLyrUayTtWJNRndEZHIxtXhcJ9UaMuac/Q5LJH
-         km9wBamevr804BZCERxonkS0P6plvtF9SMoLTM5rjQE1A1rFJNPnAVUXCiE5L0jYCKE3
-         M33g==
+        bh=9eh/L4jnp3P9JkldJjrWGMupxrpCciyDkMmG2Xv6fIY=;
+        b=Nidc7DnjkYIQGQDmOdHjFdybO4d/tALcw5YKuzRRxmktd1UQriEAnHHGQP0TlPN7TO
+         7NYofk+gR0/1BZzwXmUXl/YoJh/8FABqLcFx+fxJi44/Z8KyihJR0H5roubiaWkte+iX
+         BI8f4ByApfz8SduC7WKMF57eiQgBzPyt20itbOIlE/tidazUU4wFY0QdmAEO0Zni7dgR
+         74MtICoGqFRmqq5aGdPFkauORaztmaZqG4Wa8dMOxpOM1THFceuxeOn6aYoa3rwdbPhk
+         /Sgjv22bemKO7jH1c5UhU5/qYnPTvTVS2P30AWsEMfFKLOVFMVGs5xQ2Ai0EHPTPRCCW
+         aLMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710102939; x=1710707739;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1710103986; x=1710708786;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hLuyOAUfakNiTmfRz2436v7ufbiP6S7z3xGi1kKPoaE=;
-        b=VE1XjlpK1kpIwOaPZwE03kbYHar57UAw3v5wnuOfh7VM/uSLBNGiHxwGXtSy4wPeft
-         aJFhTa8eZS3/40dmwNCqBwPnbHJ0F0TDs8yMYM1VofmbAjSIHVYAUMNP/Xi8TcW8TQi9
-         RNjJ/DwPpOopHvXstbGIg3pTPsf7PtmlRGH9fbkUuV2aEH5gBTaF7A8vyIX+p3l0ZmpY
-         xEIJhwEb83ZphyR/HJYS+8NTEioFmsWNDjidtbpm6IbOnPg+ByV3b+1CkeGMO3emeEb1
-         0CknjhK9OBieiL4KphZVJ0vh17pN3fuV/ksF0atW73CxiztUUXnDO2fuYeCecHTine9l
-         Zkyw==
-X-Forwarded-Encrypted: i=1; AJvYcCU7axWbbtOUJ3H+y9jUXIypGUSLT2v5+MSv+s8Hnfu057rjdrv7sbmkhFON+ar5kXLlLlYeWx/JvpUaZgsSYoP9bb7Fj5CBSF9PAZyH
-X-Gm-Message-State: AOJu0Yz7QkVrpt+6gtc2yH/eOwYIFgP+fj0YcGNaftQ1pP6sBVy7BQUU
-	mpbjPnWwpXunUXVyHE6Y9SDJuHB8F5eQyGkIeS2GCDNPinSoD/FSSjT3kg4doxo=
-X-Google-Smtp-Source: AGHT+IGwoVzQmaIuC9catL7JO+dbjx4CAeAUQWIHrknNzg8KTrQrmKOMUWfvzyEDcvXpmiYHyfWfMQ==
-X-Received: by 2002:a05:600c:5253:b0:413:166e:ad51 with SMTP id fc19-20020a05600c525300b00413166ead51mr3670556wmb.2.1710102939596;
-        Sun, 10 Mar 2024 13:35:39 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id j20-20020a05600c191400b00412f016a151sm6778963wmq.9.2024.03.10.13.35.37
+        bh=9eh/L4jnp3P9JkldJjrWGMupxrpCciyDkMmG2Xv6fIY=;
+        b=URF16d48C5el1lmZkJAxQ/3kD5Jxd+PigPYEXXsj0FVTXt/s0A9nzVg6lLRgYNXhyb
+         SfcBnCok7vjBodHB2E9mBuZtP41McfIHMrK/S1tXfiQ6ad2aMbRfh27NG9MO4PVE1kcP
+         D/DHp7avc+icmuCIxrNiZC/wrHRd2JqqagEsZLReYTlKLGiz2BAYe0NWcYBaUilAPEdC
+         klOa1aeH/kx4mf0WaquSLefuZN8wkbQlqj6yhqSyucUvXjMM4pAqK3x60i9jKrEi6eIk
+         EQ/hkanWf1zt31xfhR1CWV670gkO9qjT/KViD4SNN1cmt2M2W2/tipO06tlVqbhv2I2i
+         NshA==
+X-Forwarded-Encrypted: i=1; AJvYcCUgvcUJLC1+rUahoCmgu8vmAE+vFbIweUL5LQxIaVi6FlYOB0lr+CYyyxQvJx2sVU9o5qVvtIWonPqScMxSsPvM1kGlWP4knx0C5/n4
+X-Gm-Message-State: AOJu0YwlwfyEEBPlYEsLxzC1qtnr3Vz6cLGRZulmZoD35wvJiIsCq4KN
+	SlJrT0Tri9laikxqWNBDlkVyesHr/raXsxnBrmmSusIz+mAjBhc3jUA4Hzdrv8A=
+X-Google-Smtp-Source: AGHT+IG8+eAJ1v1PdTnMZSx6KVr2Kimd2P/DvL1NRB9VDSL2T+mhTMgPo+Gibtu01PBp7SDUQ8fjBw==
+X-Received: by 2002:a17:903:32d2:b0:1dd:619e:aeaf with SMTP id i18-20020a17090332d200b001dd619eaeafmr5571936plr.22.1710103986567;
+        Sun, 10 Mar 2024 13:53:06 -0700 (PDT)
+Received: from [192.168.20.11] ([180.150.112.31])
+        by smtp.gmail.com with ESMTPSA id b10-20020a170902650a00b001db6da30331sm3159582plk.86.2024.03.10.13.53.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Mar 2024 13:35:39 -0700 (PDT)
-Message-ID: <3601a374-4161-40e1-8a80-9bbfdae5bd8a@linaro.org>
-Date: Sun, 10 Mar 2024 21:35:36 +0100
+        Sun, 10 Mar 2024 13:53:06 -0700 (PDT)
+Message-ID: <e61c6117-e03e-4d1d-8a3a-d4c56918169b@tweaklogic.com>
+Date: Mon, 11 Mar 2024 07:22:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,143 +75,158 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 4/5] input: add onkey driver for Marvell 88PM886
- PMIC
-Content-Language: en-US
-To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+Subject: Re: [PATCH v9 5/5] iio: light: Add support for APDS9306 Light Sensor
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
- =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
- ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20240303101506.4187-1-karelb@gimli.ms.mff.cuni.cz>
- <20240303101506.4187-5-karelb@gimli.ms.mff.cuni.cz>
- <ZeTgEmjJc_VhYpLm@google.com>
- <CZL8ZSZAVEBI.349BV2Y6AKIPN@gimli.ms.mff.cuni.cz>
- <ZeZxI_spu4vwxrs7@google.com>
- <CZQ1EP61IDOC.1PPYGMIOINGND@gimli.ms.mff.cuni.cz>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CZQ1EP61IDOC.1PPYGMIOINGND@gimli.ms.mff.cuni.cz>
-Content-Type: text/plain; charset=UTF-8
+ Conor Dooley <conor+dt@kernel.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Matt Ranostay <matt@ranostay.sg>,
+ Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240309105031.10313-1-subhajit.ghosh@tweaklogic.com>
+ <20240309105031.10313-6-subhajit.ghosh@tweaklogic.com>
+ <20240310124237.52fa8a56@jic23-huawei>
+Content-Language: en-US
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <20240310124237.52fa8a56@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 10/03/2024 12:35, Karel Balej wrote:
-> Dmitry Torokhov, 2024-03-04T17:10:59-08:00:
->> On Mon, Mar 04, 2024 at 09:28:45PM +0100, Karel Balej wrote:
->>> Dmitry,
->>>
->>> Dmitry Torokhov, 2024-03-03T12:39:46-08:00:
->>>> On Sun, Mar 03, 2024 at 11:04:25AM +0100, Karel Balej wrote:
->>>>> From: Karel Balej <balejk@matfyz.cz>
->>>>>
->>>>> Marvell 88PM886 PMIC provides onkey among other things. Add client
->>>>> driver to handle it. The driver currently only provides a basic support
->>>>> omitting additional functions found in the vendor version, such as long
->>>>> onkey and GPIO integration.
->>>>>
->>>>> Signed-off-by: Karel Balej <balejk@matfyz.cz>
->>>>> ---
->>>>>
->>>>> Notes:
->>>>>     RFC v3:
->>>>>     - Drop wakeup-source.
->>>>>     RFC v2:
->>>>>     - Address Dmitry's feedback:
->>>>>       - Sort includes alphabetically.
->>>>>       - Drop onkey->irq.
->>>>>       - ret -> err in irq_handler and no initialization.
->>>>>       - Break long lines and other formatting.
->>>>>       - Do not clobber platform_get_irq error.
->>>>>       - Do not set device parent manually.
->>>>>       - Use input_set_capability.
->>>>>       - Use the wakeup-source DT property.
->>>>>       - Drop of_match_table.
->>>>
->>>> I only said that you should not be using of_match_ptr(), but you still
->>>> need to have of_match_table set and have MODULE_DEVICE_TABLE() for the
->>>> proper module loading support.
->>>
->>> I removed of_match_table because I no longer need compatible for this --
->>> there are no device tree properties and the driver is being instantiated
->>> by the MFD driver.
->>>
->>> Is the MODULE_DEVICE_TABLE() entry needed for the driver to probe when
->>> compiled as module? If that is the case, given what I write above, am I
->>> correct that MODULE_DEVICE_TABLE(platform,...) would be the right thing
->>> to use here?
->>
->> Yes, if uevent generated for the device is "platform:<name>" then
->> MODULE_DEVICE_TABLE(platform,...) will suffice. I am not sure how MFD
->> sets it up (OF modalias or platform), but you should be able to check
->> the format looking at the "uevent" attribute for your device in sysfs
->> (/sys/devices/bus/platform/...). 
 > 
-> The uevent is indeed platform.
+>> +
+>> +static int apds9306_write_event_config(struct iio_dev *indio_dev,
+>> +				       const struct iio_chan_spec *chan,
+>> +				       enum iio_event_type type,
+>> +				       enum iio_event_direction dir,
+>> +				       int state)
+>> +{
+>> +	struct apds9306_data *data = iio_priv(indio_dev);
+>> +	struct apds9306_regfields *rf = &data->rf;
+>> +	int ret, val;
+>> +
+>> +	state = !!state;
+>> +
+>> +	switch (type) {
+>> +	case IIO_EV_TYPE_THRESH: {
+>> +		guard(mutex)(&data->mutex);
+>> +
+>> +		/*
+>> +		 * If interrupt is enabled, the channel is set before enabling
+>> +		 * the interrupt. In case of disable, no need to switch
+>> +		 * channels. In case of different channel is selected while
+>> +		 * interrupt in on, just change the channel.
+>> +		 */
+>> +		if (state) {
+>> +			if (chan->type == IIO_LIGHT)
+>> +				val = 1;
+>> +			else if (chan->type == IIO_INTENSITY)
+>> +				val = 0;
+>> +			else
+>> +				return -EINVAL;
+>> +
+>> +			ret = regmap_field_write(rf->int_src, val);
+>> +			if (ret)
+>> +				return ret;
+>> +		}
+>> +
+>> +		ret = regmap_field_read(rf->int_en, &val);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		if (val == state)
+>> +			return 0;
+>> +
+>> +		ret = regmap_field_write(rf->int_en, state);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		if (state)
+>> +			return pm_runtime_resume_and_get(data->dev);
+>> +
+>> +		pm_runtime_mark_last_busy(data->dev);
+>> +		pm_runtime_put_autosuspend(data->dev);
+> Note this isn't a reason to do a v10, just a possible suggestion for
+> what I think is more readable code.
 > 
-> But since there is only one device, perhaps having a device table is
-> superfluous and using `MODULE_ALIAS("platform:88pm886-onkey")` is more
-> fitting?
-
-Adding aliases for standard IDs and standard cases is almost never
-correct. If you need module alias, it means your ID table is wrong (or
-missing, which is usually wrong).
-
+> Flow here is complex, maybe we'd have been better with skipping the
+> state = !!state, rename val to more explicit enabled
+> above and something like..
 > 
-> Although I don't understand why this is even necessary when the driver
-> name is such and the module is registered using
-> `module_platform_driver`...
+> 		ret = regmap_field_read(rf->int_en, &enabled);
+> 		if (ret)
+> 			return ret;
+> 
+> 		if (state) {
+> 			if (chan->type == IIO_LIGHT)
+> 				ret = regmap_field_write(rf->int_src, 1);
+> 			else if (chan->type == IIO_INTENSITY)
+> 				ret = regmap_field_write(rf->int_src, 0);
+> 			else
+> 				return -EINVAL;
+> 
+> 			if (ret)
+> 				return ret;
+> 			if (enabled) /* Already enabled */
+> 				return 0;		
+> 			
+> 			ret = regmap_field_write(rf->int_en, 1);
+> 			if (ret)
+> 				return ret;
+> 
+> 			return pm_runtime_resume_and_get(data->dev);
+> 		} else {  // Could drop this else but I think it's useful to show the either or flow.
+> 			if (!enabled)
+> 				return 0;		
+> 
+> 			ret = regmap_field_write(rf->int_en, 0);
+> 			if (ret)
+> 				return ret;
+> 			pm_runtime_mark_last_busy(data->dev);
+> 			pm_runtime_put_autosuspend(data->dev);
+> 
+> 			return 0;
+> 		}
+> 	}	
+Yes, this is much simpler and readable. I will prepare a follow up patch for this.
 
-ID table and MODULE_DEVICE_TABLE() are necessary for modprobe to work.
-Just run `modinfo`.
+Thank you for reviewing and applying the series.
 
-Best regards,
-Krzysztof
+Regards,
+Subhajit Ghosh
+>> +
+>> +		return 0;
+>> +	}
+>> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
+>> +		return regmap_field_write(rf->int_thresh_var_en, state);
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +}
+> 
+>> +
+>> +static void apds9306_powerdown(void *ptr)
+>> +{
+>> +	struct apds9306_data *data = (struct apds9306_data *)ptr;
+>> +	struct apds9306_regfields *rf = &data->rf;
+>> +	int ret;
+>> +
+>> +	ret = regmap_field_write(rf->int_thresh_var_en, 0);
+>> +	if (ret)
+>> +		return;
+>> +
+>> +	ret = regmap_field_write(rf->int_en, 0);
+>> +	if (ret)
+>> +		return;
+>> +
+>> +	apds9306_power_state(data, false);
+>> +}
+> 
+> ...
+> 
 
 
