@@ -1,128 +1,321 @@
-Return-Path: <linux-kernel+bounces-98254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22FAD877779
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 16:25:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A258287777B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 16:27:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD40F28156F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 15:25:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ED201C20B6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 15:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62684383A0;
-	Sun, 10 Mar 2024 15:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EAzEJqGU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69CB37708;
+	Sun, 10 Mar 2024 15:27:27 +0000 (UTC)
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C8836B00;
-	Sun, 10 Mar 2024 15:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFB3374C3
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 15:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710084297; cv=none; b=R3rGIK78jUlEy2OEYNv2BAmW7jWGAAr1arCHVD6K9Nd1+i+jn6skmD3c3g0YKfA4fY94SuuMoDXUaIwIUBMizWUMHw30FGYFLwgr/Sg02ujVfd7VaWPG4X0i0F5KRmZyje9DJJHlQk3XKTPv4eigx1sl9xTBzXmDjBhMZ3Y3uM4=
+	t=1710084447; cv=none; b=nrHeR9Z94tB/mzAVXv+889MKigYGzEZPLWjYvsxOKPxnjefggsFg3BQEHzgdW5FXrdMAWfIyd0rVhYAeLNoTlZHRH3enfMStzAkVOJID1VjGRdtiWddEOc0THIK807SMCbOO8HWi93PNNqaz+i4MGgsO5tveAZQvYw8Z/PprsVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710084297; c=relaxed/simple;
-	bh=6OIM+bhAgRt4x8cQAnblfO3WazqD7uQhJ07X0yZgtcg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ek5T6krh74reXJNEWs3+Cnb+bXQxpdHjIzyX6tmu3P4cxi+NU9079c1UZy4i1kDEK3MCL8NDo2eBFLIH4zNlsXpvmXs2ouCC2ZzmcM43+v4mKQCzA6zKhxS88RolSTTrL14coIxpLt5ftNfUHKa8fDZQXAoEmsS83xchl/XwX/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EAzEJqGU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F9ADC433F1;
-	Sun, 10 Mar 2024 15:24:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710084297;
-	bh=6OIM+bhAgRt4x8cQAnblfO3WazqD7uQhJ07X0yZgtcg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EAzEJqGUOIG/oauO2Vs+SxEbmbeGv3rZAgmCaXt9BRIqUt4JKoCkGerF/flr/5NmJ
-	 dN72UDRytMtraa8fMK/7SUW/if5YWiTQW7JqFvrrYsx+5k0DvhcVf0wHvnQlKiF9jd
-	 eMkvumo7feiIkITaHJv+OnZUFFiMlS6cQzlrs7/zy3Z7465f9RPyDmLGLg2VO5558F
-	 UKYgfvXuv+Ur+U+HMnNzKo/r+Qy4CjWAZ8iUqkDnmxv15uetbu6kIfSBzgmr9vWrnU
-	 q7UuYLfjDc9liRaciB6ohTX1dmrOkQZpW9eu7EBGrtnkSN5pUl+wm5cD0cyZWuruOC
-	 47M8fREDfAxdQ==
-Date: Sun, 10 Mar 2024 15:24:43 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v3 0/3] iio: humidity: hdc3020: add power and reset
- management
-Message-ID: <20240310152443.4cbd7c4e@jic23-huawei>
-In-Reply-To: <20240303-hdc3020-pm-v3-0-48bc02b5241b@gmail.com>
-References: <20240303-hdc3020-pm-v3-0-48bc02b5241b@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710084447; c=relaxed/simple;
+	bh=Rck4rwY08vZeNb1x+s931KSI5QX6vz9bgu+V5718KSs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VwgBqgcQyihDQkMZo8hwezfU/1xH6zIPMlzo4Kaa0OrkAt5XEBGvTpnzXUHttNe8OBaa5/QXykza4CZCS/9c/okOzDUyVdMAbHrBVEb0fxPvMlL48lQfK9ppOLeah96j49/vkwd+bZHYtw/kd6e7NaUJgm+KRe8IbggGJv+QmUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a1f24cc010so382350eaf.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 08:27:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710084444; x=1710689244;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z0jH7J8SOz0u+8/iaO3ej/C+SWNNjTuhnH0u4Q10V/4=;
+        b=AsUBtdRX2Wbi9epGmDeiX4dAlzLmHHDTVbxrEzh1Vgxr7NJBi1jy0x0uzKs06OSTHP
+         WdEbv0QtoxuFg3YRkRgVN/AcKCzmg0Jd/7+ntNOhyc6ZN7sfmxlC+NImRnAdsQD3rLYp
+         rPcE3srWAQ1lUqQGzdhuuoyGR+UlSvX45jhUvIJ+SyVoUMAaObM6WEjrrBqhXlY8hHDL
+         U/N1gl5zpw0TA1/i3jaDR2OW2XIkuFRR/FRAHCwsBGQfp8AayhQaU8ObTV2WCQ3Y6XEj
+         J7X77oxQOXXR6I+GDrSvxMfMqpMCxpvRAnHBiFqCdmBE+8NQQFghmh2ahGQaV/d6ccE0
+         NC4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUzyTq6GcHMBqOS+Db2AW7bnRYpRMRNlnsHml/3FaBtYEA+osm9RxkCDh9tbgMCXxosxDlKAtO5YvavDLmm4/8lLBSkGHDwXJj7X2Pg
+X-Gm-Message-State: AOJu0YxSWQk8PQUO933hRJKPDz9y0E03IpzpkY2qWbSAxCC3z0Ll29BW
+	soe6JIX+sdwW1tsvxxAEQFckl1LoIg4rILR7akggJn0COzwQD6CkWSOKZcwZ/g==
+X-Google-Smtp-Source: AGHT+IGYUkq3gxg50FkSC4WUlF8CNyihxMgMs26xBOhvmMCLc0J5UkBi4OAXO1/ieDvaAV4027kADg==
+X-Received: by 2002:a05:6358:5f14:b0:17b:583c:c4b7 with SMTP id y20-20020a0563585f1400b0017b583cc4b7mr6033787rwn.3.1710084444218;
+        Sun, 10 Mar 2024 08:27:24 -0700 (PDT)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id b5-20020ac844c5000000b0042c61b99f42sm1905588qto.46.2024.03.10.08.27.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 08:27:23 -0700 (PDT)
+Date: Sun, 10 Mar 2024 11:27:22 -0400
+From: Mike Snitzer <snitzer@kernel.org>
+To: Ming Lei <ming.lei@redhat.com>
+Cc: Patrick Plenefisch <simonpatp@gmail.com>,
+	Goffredo Baroncelli <kreijack@inwind.it>,
+	linux-kernel@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
+	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	regressions@lists.linux.dev, dm-devel@lists.linux.dev,
+	linux-btrfs@vger.kernel.org
+Subject: Re: LVM-on-LVM: error while submitting device barriers
+Message-ID: <Ze3RWqLvG18cQ4dz@redhat.com>
+References: <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
+ <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it>
+ <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
+ <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
+ <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
+ <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
+ <ZedaKUge-EBo4CuT@redhat.com>
+ <ZeiS/bjJaRcrerWW@fedora>
+ <CAOCpoWeoQMh_-MxzxGBnK2Kf5EhvTLs=GrGwJ5XcfGVRTp73Eg@mail.gmail.com>
+ <Ze2azGlb1WxVFv7Z@fedora>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Ze2azGlb1WxVFv7Z@fedora>
 
-On Sun, 03 Mar 2024 22:54:19 +0100
-Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
+On Sun, Mar 10 2024 at  7:34P -0400,
+Ming Lei <ming.lei@redhat.com> wrote:
 
-> This series adds power management for the hdc3020 humidity and
-> temperature sensor as well as control over the reset signal the device
-> provides.
+> On Sat, Mar 09, 2024 at 03:39:02PM -0500, Patrick Plenefisch wrote:
+> > On Wed, Mar 6, 2024 at 11:00 AM Ming Lei <ming.lei@redhat.com> wrote:
+> > >
+> > > On Tue, Mar 05, 2024 at 12:45:13PM -0500, Mike Snitzer wrote:
+> > > > On Thu, Feb 29 2024 at  5:05P -0500,
+> > > > Goffredo Baroncelli <kreijack@inwind.it> wrote:
+> > > >
+> > > > > On 29/02/2024 21.22, Patrick Plenefisch wrote:
+> > > > > > On Thu, Feb 29, 2024 at 2:56 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
+> > > > > > >
+> > > > > > > > Your understanding is correct. The only thing that comes to my mind to
+> > > > > > > > cause the problem is asymmetry of the SATA devices. I have one 8TB
+> > > > > > > > device, plus a 1.5TB, 3TB, and 3TB drives. Doing math on the actual
+> > > > > > > > extents, lowerVG/single spans (3TB+3TB), and
+> > > > > > > > lowerVG/lvmPool/lvm/brokenDisk spans (3TB+1.5TB). Both obviously have
+> > > > > > > > the other leg of raid1 on the 8TB drive, but my thought was that the
+> > > > > > > > jump across the 1.5+3TB drive gap was at least "interesting"
+> > > > > > >
+> > > > > > >
+> > > > > > > what about lowerVG/works ?
+> > > > > > >
+> > > > > >
+> > > > > > That one is only on two disks, it doesn't span any gaps
+> > > > >
+> > > > > Sorry, but re-reading the original email I found something that I missed before:
+> > > > >
+> > > > > > BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
+> > > > > > 0, rd 0, flush 1, corrupt 0, gen 0
+> > > > > > BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
+> > > > >                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > > > > > tolerance is 0 for writable mount
+> > > > > > BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
+> > > > > > failure (errors while submitting device barriers.)
+> > > > >
+> > > > > Looking at the code, it seems that if a FLUSH commands fails, btrfs
+> > > > > considers that the disk is missing. The it cannot mount RW the device.
+> > > > >
+> > > > > I would investigate with the LVM developers, if it properly passes
+> > > > > the flush/barrier command through all the layers, when we have an
+> > > > > lvm over lvm (raid1). The fact that the lvm is a raid1, is important because
+> > > > > a flush command to be honored has to be honored by all the
+> > > > > devices involved.
+> > >
+> > > Hello Patrick & Goffredo,
+> > >
+> > > I can trigger this kind of btrfs complaint by simulating one FLUSH failure.
+> > >
+> > > If you can reproduce this issue easily, please collect log by the
+> > > following bpftrace script, which may show where the flush failure is,
+> > > and maybe it can help to narrow down the issue in the whole stack.
+> > >
+> > >
+> > > #!/usr/bin/bpftrace
+> > >
+> > > #ifndef BPFTRACE_HAVE_BTF
+> > > #include <linux/blkdev.h>
+> > > #endif
+> > >
+> > > kprobe:submit_bio_noacct,
+> > > kprobe:submit_bio
+> > > / (((struct bio *)arg0)->bi_opf & (1 << __REQ_PREFLUSH)) != 0 /
+> > > {
+> > >         $bio = (struct bio *)arg0;
+> > >         @submit_stack[arg0] = kstack;
+> > >         @tracked[arg0] = 1;
+> > > }
+> > >
+> > > kprobe:bio_endio
+> > > /@tracked[arg0] != 0/
+> > > {
+> > >         $bio = (struct bio *)arg0;
+> > >
+> > >         if (($bio->bi_flags & (1 << BIO_CHAIN)) && $bio->__bi_remaining.counter > 1) {
+> > >                 return;
+> > >         }
+> > >
+> > >         if ($bio->bi_status != 0) {
+> > >                 printf("dev %s bio failed %d, submitter %s completion %s\n",
+> > >                         $bio->bi_bdev->bd_disk->disk_name,
+> > >                         $bio->bi_status, @submit_stack[arg0], kstack);
+> > >         }
+> > >         delete(@submit_stack[arg0]);
+> > >         delete(@tracked[arg0]);
+> > > }
+> > >
+> > > END {
+> > >         clear(@submit_stack);
+> > >         clear(@tracked);
+> > > }
+> > >
+> > 
+> > Attaching 4 probes...
+> > dev dm-77 bio failed 10, submitter
+> >        submit_bio_noacct+5
+> >        __send_duplicate_bios+358
+> >        __send_empty_flush+179
+> >        dm_submit_bio+857
+> >        __submit_bio+132
+> >        submit_bio_noacct_nocheck+345
+> >        write_all_supers+1718
+> >        btrfs_commit_transaction+2342
+> >        transaction_kthread+345
+> >        kthread+229
+> >        ret_from_fork+49
+> >        ret_from_fork_asm+27
+> > completion
+> >        bio_endio+5
+> >        dm_submit_bio+955
+> >        __submit_bio+132
+> >        submit_bio_noacct_nocheck+345
+> >        write_all_supers+1718
+> >        btrfs_commit_transaction+2342
+> >        transaction_kthread+345
+> >        kthread+229
+> >        ret_from_fork+49
+> >        ret_from_fork_asm+27
+> > 
+> > dev dm-86 bio failed 10, submitter
+> >        submit_bio_noacct+5
+> >        write_all_supers+1718
+> >        btrfs_commit_transaction+2342
+> >        transaction_kthread+345
+> >        kthread+229
+> >        ret_from_fork+49
+> >        ret_from_fork_asm+27
+> > completion
+> >        bio_endio+5
+> >        clone_endio+295
+> >        clone_endio+295
+> >        process_one_work+369
+> >        worker_thread+635
+> >        kthread+229
+> >        ret_from_fork+49
+> >        ret_from_fork_asm+27
+> > 
+> > 
+> > For context, dm-86 is /dev/lvm/brokenDisk and dm-77 is /dev/lowerVG/lvmPool
 > 
-> The hdc3020 carries out measurements automatically, which is not
-> necessary in low-power modes. Furthermore, if the low-power
-> configuration turns off the device, proper initialization is required to
-> account for the setup times and initial status register value.
+> io_status is 10(BLK_STS_IOERR), which is produced in submission code path on
+> /dev/dm-77(/dev/lowerVG/lvmPool) first, so looks it is one device mapper issue.
 > 
-> This device provides an active low reset signal that must be handled if
-> connected. This signal can be used by the driver to keep the device
-> under minimal power consumption during low-power modes if the power
-> supply stays active.
+> The error should be from the following code only:
 > 
-> This series uses char-misc-next as basis to include the last additions
-> to the driver to handle events [1] as well as the fix to include the
-> entries in the Makefile and Kconfig files [2].
+> static void __map_bio(struct bio *clone)
 > 
-> [1] https://lore.kernel.org/linux-iio/20240214085350.19382-1-dima.fedrau@gmail.com/
-> [2] https://lore.kernel.org/linux-iio/20240121135123.71506-1-jic23@kernel.org/
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Applied to the togreg-normal branch of iio.git and pushed out for 0-day to
-see what it can find.  Note this is now 6.10 material and I'll be rebasing
-on rc1 once available. It won't go into a tree next picks up until after that.
+> 	...
+> 	if (r == DM_MAPIO_KILL)
+> 		dm_io_dec_pending(io, BLK_STS_IOERR);
+> 	else
+> 		dm_io_dec_pending(io, BLK_STS_DM_REQUEUE);
+>     break;
 
-Thanks,
+I agree that the above bpf stack traces for dm-77 indicate that
+dm_submit_bio failed, which would end up in the above branch if the
+target's ->map() returned DM_MAPIO_KILL or DM_MAPIO_REQUEUE.
 
-Jonathan
+But such an early failure speaks to the flush bio never being
+submitted to the underlying storage. No?
 
-> ---
-> Changes in v3:
-> - Drop unnecessary casting to void in dev_set_drvdata.
-> - Call devm_add_action_or_reset right after powering on.
-> - Link to v2: https://lore.kernel.org/r/20240226-hdc3020-pm-v2-0-cec6766086e8@gmail.com
-> 
-> Changes in v2:
-> - Trigger power off sequence if the power on sequence fails.
-> - Check return value of hdc3020_power_on() in the probe.
-> - Remove type casting for void pointer.
-> - Link to v1: https://lore.kernel.org/r/20240220-hdc3020-pm-v1-0-d8e60dbe79e9@gmail.com
-> 
-> ---
-> Javier Carrasco (3):
->       iio: humidity: hdc3020: add power management
->       dt-bindings: iio: humidity: hdc3020: add reset-gpios
->       iio: humidity: hdc3020: add reset management
-> 
->  .../bindings/iio/humidity/ti,hdc3020.yaml          |   5 +
->  drivers/iio/humidity/hdc3020.c                     | 111 +++++++++++++++++----
->  2 files changed, 97 insertions(+), 19 deletions(-)
-> ---
-> base-commit: d4551c189d6e6a3fcf7f625bd4b273e770fad35a
-> change-id: 20240217-hdc3020-pm-177983de3cab
-> 
-> Best regards,
+dm-raid.c:raid_map does return DM_MAPIO_REQUEUE with:
 
+        /*
+         * If we're reshaping to add disk(s)), ti->len and
+         * mddev->array_sectors will differ during the process
+         * (ti->len > mddev->array_sectors), so we have to requeue
+         * bios with addresses > mddev->array_sectors here or
+         * there will occur accesses past EOD of the component
+         * data images thus erroring the raid set.
+         */
+        if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
+                return DM_MAPIO_REQUEUE;
+
+But a flush doesn't have an end_sector (it'd be 0 afaik).. so it seems
+weird relative to a flush.
+
+> Patrick, you mentioned lvmPool is raid1, can you explain how lvmPool is
+> built? It is dm-raid1 target or over plain raid1 device which is
+> build over /dev/lowerVG?
+
+In my earlier reply I asked Patrick for both:
+lsblk
+dmsetup table
+
+Picking over the described IO stacks provided earlier (or Goffredo's
+interpretation of it, via ascii art) isn't really a great way to see
+the IO stacks that are in use/question.
+
+> Mike, the logic in the following code doesn't change from v5.18-rc2 to
+> v5.19, but I still can't understand why STS_IOERR is set in
+> dm_io_complete() in case of BLK_STS_DM_REQUEUE && !__noflush_suspending(),
+> since DMF_NOFLUSH_SUSPENDING is only set in __dm_suspend() which
+> is supposed to not happen in Patrick's case.
+> 
+> dm_io_complete()
+> 	...
+> 	if (io->status == BLK_STS_DM_REQUEUE) {
+> 	        unsigned long flags;
+> 	        /*
+> 	         * Target requested pushing back the I/O.
+> 	         */
+> 	        spin_lock_irqsave(&md->deferred_lock, flags);
+> 	        if (__noflush_suspending(md) &&
+> 	            !WARN_ON_ONCE(dm_is_zone_write(md, bio))) {
+> 	                /* NOTE early return due to BLK_STS_DM_REQUEUE below */
+> 	                bio_list_add_head(&md->deferred, bio);
+> 	        } else {
+> 	                /*
+> 	                 * noflush suspend was interrupted or this is
+> 	                 * a write to a zoned target.
+> 	                 */
+> 	                io->status = BLK_STS_IOERR;
+> 	        }
+> 	        spin_unlock_irqrestore(&md->deferred_lock, flags);
+> 	}
+
+Given the reason from dm-raid.c:raid_map returning DM_MAPIO_REQUEUE
+I think the DM device could be suspending without flush.
+
+But regardless, given you logged BLK_STS_IOERR lets assume it isn't,
+the assumption that "noflush suspend was interrupted" seems like a
+stale comment -- especially given that target's like dm-raid are now
+using DM_MAPIO_REQUEUE without concern for the historic tight-coupling
+of noflush suspend (which was always the case for the biggest historic
+reason for this code: dm-multipath, see commit 2e93ccc1933d0 from
+2006 -- predates my time with developing DM).
+
+So all said, this code seems flawed for dm-raid (and possibly other
+targets that return DM_MAPIO_REQUEUE).  I'll look closer this week.
+
+Mike
 
