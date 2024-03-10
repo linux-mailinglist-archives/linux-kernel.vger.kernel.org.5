@@ -1,29 +1,30 @@
-Return-Path: <linux-kernel+bounces-98151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89168775BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 890188775BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:06:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74B481F21D22
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:06:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D1101F213ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E201DA3A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C324C1EB22;
 	Sun, 10 Mar 2024 08:06:29 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9CD4179BF
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 08:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9728A171A1
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 08:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710057988; cv=none; b=Tz53Abf+z4OATv1tP/+vTU6oK8FdzKLSOXY0TxocJIdxbQbFLqP7rUJSskbuTBDQzBWlBk05XgGj3txlBpHc9auOHThMHkVc7NDXQAZt+yiNb+LLyMCbrp8WbvjN3AFcoAOTd5ZX0i/vl7JC4EARl5jmD3DfvBCoyWBg0rGVZDU=
+	t=1710057989; cv=none; b=rZHR13dK+eEOIkNeDWxTOtnq5eOsC0fPKfjaDi5VLgpz37F2ypYmCMfXmUr5nXPSVTLjm5LcbZ5v+nqio78B0YiYUtg747qnrhnbG1DtZyUiIfQJ7aY0ZFutujnIzyd/bgIy7DHyAQ3MH0yZvMgZS4aTEaI9Xcvxkv5phYCEhjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710057988; c=relaxed/simple;
-	bh=6oRLyYOr0K8Fr6EOJdxUdCudAZbuqk+EFlXQ5Gmzn7s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pYD0ip2SnLjTEr2CnfLP5PpJwOCJRTYoui8qeTUBoDXLg6IXsMRnq3tMD9S8RE/dSZMvwhaQ2wg1Egn7okSlav5PiTQemMhm2n+b6NCPWe47zIj5sWU9UbNHgSQOryzayle7JrD/D4xEd2QlqafCkher8Qbe2SjA/gzo11g7iXA=
+	s=arc-20240116; t=1710057989; c=relaxed/simple;
+	bh=Y3iVEuUnTxadv+2Xsne2ZqFIPCWIinyeZaatYcGXFmw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LErPmfQyvxqlI7CgthHJwIrsHbr5iJco/H/AIJ5MLW6iOY2d2og+VYOQ3n7H4yY4A+6j7QC7JkDDZ4CxFC4Al6MH9DH+hK8T7vLNsO74yCMsaOkbUWeqgNa7nRzSssduT4rwh8SwTnX1zMGdAhRVVChtBBuBwrUt5o7J92/YEbA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -31,15 +32,15 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rjECC-00073P-Vx; Sun, 10 Mar 2024 09:06:13 +0100
+	id 1rjECC-00073Q-Vw; Sun, 10 Mar 2024 09:06:12 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rjECB-005Txq-Pp; Sun, 10 Mar 2024 09:06:11 +0100
+	id 1rjECB-005Txt-WB; Sun, 10 Mar 2024 09:06:12 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rjECB-003KQr-2H;
+	id 1rjECB-003KQv-2w;
 	Sun, 10 Mar 2024 09:06:11 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: William Breathitt Gray <william.gray@linaro.org>
@@ -48,12 +49,13 @@ Cc: Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-iio@vger.kernel.org,
 	linux-omap@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de,
-	David Lechner <david@lechnology.com>
-Subject: [PATCH 0/2] counter: Convert to platform remove callback returning void
-Date: Sun, 10 Mar 2024 09:06:05 +0100
-Message-ID: <cover.1710057753.git.u.kleine-koenig@pengutronix.de>
+	kernel@pengutronix.de
+Subject: [PATCH 1/2] counter: ti-ecap-capture: Convert to platform remove callback returning void
+Date: Sun, 10 Mar 2024 09:06:06 +0100
+Message-ID:  <f70902b2aabecaa9295c28629cd7a8a0e6eb06d0.1710057753.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1710057753.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1710057753.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,7 +63,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=898; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=6oRLyYOr0K8Fr6EOJdxUdCudAZbuqk+EFlXQ5Gmzn7s=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl7Wnup/dsCC3NnmEbHrjLyg2n4oZbjkZkeMS8R 8UFshIAuieJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZe1p7gAKCRCPgPtYfRL+ TtWrCACg60zMWv6NCg+YdADaWbrO42BDBpBcW/+q2pCUPsBBQAeWEtF+LrRoh+4kYQihD3NlRUk znayd/IDcVovSoJ/X7GS2Fj98lu6Hohkci9ufcomkbEIHHK0w5PHl5qbkPOEP00nllU31idQ6/p jeq3/IFhaSo/s21Bh4x4e9SW+k8lx3SqDY1nVWHKUiQb7gEMa2i0Qpp4wuXTfLn84syuJDA2U2b tPbX1BSID7mBmJFHfhXkPPwyBG8B+ypcMR0nkPlYaLWjBvUT9rYX1Fr2ULW4tgZNPw0zyN5pqZs L9gjCwiGYBFvc4D0UDBvedy9B29Spj81BdfrFsZO95DxwGtH
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1863; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=Y3iVEuUnTxadv+2Xsne2ZqFIPCWIinyeZaatYcGXFmw=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl7WnvQ6MhD8ir6vlj0K8bS/UVG6qXp8reE73Xx SkmyEVNDfeJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZe1p7wAKCRCPgPtYfRL+ Tp04B/9JZ66umIX0fdbWIsAqswZ0vtG8Va9k8cSYwBIwxf8u0roWV9DCJnH+iM5UrbYqGnTbv2j 6nxM40CZZTbasN7E5PPLOw8fuD6hzVh5TcNUx/jkA3Qjn9mlnMV9Dyi01+3N7b0bJiqbNZMTHAJ Epzn/3xD/MozpLPFe0IonGoopq6KEb1I9zyHeELLfT5zVjZyE08oauRtlH3xmNi7j5Sk8AJeMbT RJSEsIS5sxkjKqzn5L7gNPU9AuYjI9jjpPquXTdjHOOV5kHKnm85BvUhSlFuenSHcNPxkhC0Ved yfzcbOzps4yhDQJEhLP+h+5rUnEj4wPjIo2WDTmNlrSmDAkg
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -69,32 +71,54 @@ X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hello,
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-this series converts all platform drivers below drivers/counter to stop
-using struct platform_driver::remove(). See commit 5c5a7680e67b
-("platform: Provide a remove callback that returns no value") for an
-extended explanation and the eventual goal.
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-Both conversations are trivial, because the driver's .remove() callbacks
-returned zero unconditionally.
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-There are no interdependencies between these patches, still I'd expect
-them to be picked up together.
-
-Best regards
-Uwe
-
-Uwe Kleine-König (2):
-  counter: ti-ecap-capture: Convert to platform remove callback
-    returning void
-  counter: ti-eqep: Convert to platform remove callback returning void
-
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
  drivers/counter/ti-ecap-capture.c | 6 ++----
- drivers/counter/ti-eqep.c         | 6 ++----
- 2 files changed, 4 insertions(+), 8 deletions(-)
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
+diff --git a/drivers/counter/ti-ecap-capture.c b/drivers/counter/ti-ecap-capture.c
+index fb1cb1774674..d33d35055b91 100644
+--- a/drivers/counter/ti-ecap-capture.c
++++ b/drivers/counter/ti-ecap-capture.c
+@@ -537,15 +537,13 @@ static int ecap_cnt_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int ecap_cnt_remove(struct platform_device *pdev)
++static void ecap_cnt_remove(struct platform_device *pdev)
+ {
+ 	struct counter_device *counter_dev = platform_get_drvdata(pdev);
+ 	struct ecap_cnt_dev *ecap_dev = counter_priv(counter_dev);
+ 
+ 	if (ecap_dev->enabled)
+ 		ecap_cnt_capture_disable(counter_dev);
+-
+-	return 0;
+ }
+ 
+ static int ecap_cnt_suspend(struct device *dev)
+@@ -600,7 +598,7 @@ MODULE_DEVICE_TABLE(of, ecap_cnt_of_match);
+ 
+ static struct platform_driver ecap_cnt_driver = {
+ 	.probe = ecap_cnt_probe,
+-	.remove = ecap_cnt_remove,
++	.remove_new = ecap_cnt_remove,
+ 	.driver = {
+ 		.name = "ecap-capture",
+ 		.of_match_table = ecap_cnt_of_match,
 -- 
 2.43.0
 
