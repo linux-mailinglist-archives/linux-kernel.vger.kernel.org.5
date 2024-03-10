@@ -1,365 +1,245 @@
-Return-Path: <linux-kernel+bounces-98138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6C3887758A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 07:29:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 688FD87758C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 07:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6560B28367E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:29:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48DBFB21905
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE061C6AD;
-	Sun, 10 Mar 2024 06:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32396FBED;
+	Sun, 10 Mar 2024 06:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="huC9GH0W"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K9PQEQ9O"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C8C125CB;
-	Sun, 10 Mar 2024 06:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710052145; cv=none; b=IEPedzFOVcJgZpufkgE8uKhsL+XLdJHeI2xu1m95asH2BC+CN8t6atI1bXRm7S7CWOGM9b6lrsHW1mpa5uUUctF9Xix8yBGbQeGytIWR7d3VsLwWYGYcxlb6nhIgWifEizkTyCNoznD/6yR7l0RcH3f3KkCCmuv/ngKoqp/oRzM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710052145; c=relaxed/simple;
-	bh=01m+kPN27F7ulBBXRzWG+6qNsRfLAik1JnnMPebFFRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sbjvoBOrGUyZ7/D1UPL5r+nrmFql+ExBbfNrE9FkO1HNN/tePj5OhkearRmrJdalylL7pRAeq4+M2oc1ZMenhtiIwY3rC4NOqIDswLY2hSyQh7mIDDan0wvdsyYzalFU+xyXZ9H09vD61Iyw0tiMqo8nk/+bUS4zgn918tA0IjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=huC9GH0W; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67085EA4;
+	Sun, 10 Mar 2024 06:40:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710052823; cv=fail; b=DvQvzA5AvWYeffC6jyWE07EtB/mSE+veyD66RnaijlZERd5WpJh+BRJMt+Mx2/RIFoq9jJZ+y/h15PmvVwRUqio0v+frkY/WpbiVGeSiEuk5/S/c7m8cwXFT05+tC7wjnP5ncDZ4D6lE2RgYlsONiwDNPAU1Xd3Y2lYV7EfK0II=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710052823; c=relaxed/simple;
+	bh=1P74SRpaVwSo5sJA0iUra/4bDFejOOHW1Ig7p07HPGI=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=PuZNDozrvuSjbeGVR4h55IRYKm86hC59d8tL+9+vLIOdDOY1P08xryiZyOcFvp9n01cdnHioN3h9xZ3ELKrA6//fkJeBit7qhalp5VSX8X27ClYwbpVP4yCguj5/vyHYZDwLpiNgDw9jm0Tx9Eca6rGxcRUrZgIw1EoPKaglwws=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K9PQEQ9O; arc=fail smtp.client-ip=198.175.65.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710052144; x=1741588144;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=01m+kPN27F7ulBBXRzWG+6qNsRfLAik1JnnMPebFFRQ=;
-  b=huC9GH0WMPRb5dpGXhKVo16JWHqqWqzV3pWa2Lyv4pA4VwAzdD1kAWJM
-   VxlGXT5Rg1IuqrsW0qRXpEmbbozFrKkLvlD+iYkiwqcqVMG6dU2wDks4A
-   OENVz/y/5iGkzLKqEcF3hMO651RRYZo7/4BYDY3P2QzE3RdjsyHaFNgA2
-   rixcwdJozJWnybDASks5PFBqAxhbI3tVUfuLlJpCMbxH7Xy0qSUI7mh76
-   3Pejry96D4BtCJo3kzXsfd6xISuK1Sc5cL4Y3Ka/4DjMqFUSpVyD4JqRy
-   9PUBTvXoKpB/INUY9/oLCzzomS3Ln++FxtDI08sAy9OXVJWn0kPwb5RaE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="5329036"
+  t=1710052821; x=1741588821;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=1P74SRpaVwSo5sJA0iUra/4bDFejOOHW1Ig7p07HPGI=;
+  b=K9PQEQ9OJTuFW/W/7XBheFpiuD/UOwbehzvdCgCC5uUZ2n9L/8JMH4k6
+   ThVn/mrVdxmANNntDqRmPr1faDmYgscb58DlCBBl3XMiYapW4qUJnuynO
+   YVrt8/b8Z8VkhmJ6JSTFLynI+vVKnADzi1jrqDAnEnVTikMDTsiwQFXc2
+   P4sHH4QIXQpT6ZXZICn+OaEqiseodnOiBLE1af0Xu7TaDwZwhhyP7A6/k
+   XyvLkI1dSK/Ta9GV4z/2kHnuuvo3KI7ixrJopG1zaRCaT+BO6QvRU7LoZ
+   Y4bvRi1bG1BQ2rGBYEeG235aYdJjSY3anLCrTdPfrK4f04ATOMjv+CW7W
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="4658125"
 X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
-   d="scan'208";a="5329036"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 22:29:02 -0800
+   d="scan'208";a="4658125"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 22:40:14 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
-   d="scan'208";a="11253614"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 09 Mar 2024 22:28:58 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rjCg3-00080Z-0T;
-	Sun, 10 Mar 2024 06:28:55 +0000
-Date: Sun, 10 Mar 2024 14:27:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Howard Yen <howardyen@google.com>, gregkh@linuxfoundation.org,
-	rafael@kernel.org, mathias.nyman@intel.com, hch@lst.de,
-	m.szyprowski@samsung.com, robin.murphy@arm.com,
-	andriy.shevchenko@linux.intel.com, petr.tesarik.ext@huawei.com,
-	broonie@kernel.org, james@equiv.tech, james.clark@arm.com,
-	masahiroy@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, iommu@lists.linux.dev,
-	Howard Yen <howardyen@google.com>
-Subject: Re: [PATCH v4 2/2] usb: host: xhci-plat: add support for multi
- memory regions
-Message-ID: <202403101400.PHmsnLOh-lkp@intel.com>
-References: <20240308095320.1961469-3-howardyen@google.com>
+   d="scan'208";a="15354997"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Mar 2024 22:40:11 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 9 Mar 2024 22:40:10 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sat, 9 Mar 2024 22:40:10 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 9 Mar 2024 22:40:10 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hvZGr7vEkqRlnpgDgG7vkpbfbyp7To9KFxEaF0Ul+FR5M28q3U1CUU3kouIt8dnfn3tWHE7VCimNkkuCCbN639udpzG2MTGlcCX7ub9TaupbkvfBVfMDnG3j3ju5Cm0Qo9y681ungHgmr2eI+Y+1SJZFAlNMBMaNKzppo5BpOCGIPKzOtwB89ttTCrIiQPKgyLoUFlbGrRhTPldD8nOyBzab1xb/x/22nMhDyJHrRuTwLrG+Hti2lLWwdxboJL43SXL08h43PiUjh06Huu/comK0nfrT8kFjWiKcFXxEaNGyNpemtPo0RE15PwgHk4zXMdmYe453fk6yq9V7Brnqpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C8/8kNy0KBXMRVbQQM3+UbP8aS/V9CesLIRQFq+/xCA=;
+ b=LOxFyNkscvhoupqg6WQwPxLhL/2puOjqxCaoNMivT74HAr8pJ7/SM/+905L8eevsccU3DUkga5FiFpUSOm7UPeNzUqodXWH22AT/0Pr9mM29SlkhxcvMJCJrnIE9PMmvqOXzSHqwSdp6DcfzhXRDhe8FnuJXLS8cal0bwtYxnQnsaJ7opT69uOVHGzbYNSLchjCOFHIyRmDAvHXuo7bOnEsOrsetTs8avWcmw9cfb6J350znj/Wz83CgGJ+OobLOCtDVn7rTN/Nc0vnCBLur/g4QkK8VLokYBcDZiNNfqqGImXur3iIXXm2mx9c7MHyHxVyo34CBJPkwYgxuh4nbIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+ by DS0PR11MB6399.namprd11.prod.outlook.com (2603:10b6:8:c8::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.14; Sun, 10 Mar 2024 06:40:08 +0000
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::65ce:9835:2c02:b61b]) by CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::65ce:9835:2c02:b61b%7]) with mapi id 15.20.7386.013; Sun, 10 Mar 2024
+ 06:40:08 +0000
+Message-ID: <561465df-1370-4519-abe3-3998bd78233f@intel.com>
+Date: Sun, 10 Mar 2024 14:40:00 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [linus:master] [readahead] ab4443fe3c: vm-scalability.throughput
+ -21.4% regression
+To: Jan Kara <jack@suse.cz>
+CC: Yujie Liu <yujie.liu@intel.com>, Oliver Sang <oliver.sang@intel.com>,
+	<oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox
+	<willy@infradead.org>, Guo Xuenan <guoxuenan@huawei.com>,
+	<linux-fsdevel@vger.kernel.org>, <ying.huang@intel.com>,
+	<feng.tang@intel.com>
+References: <202402201642.c8d6bbc3-oliver.sang@intel.com>
+ <20240221111425.ozdozcbl3konmkov@quack3>
+ <ZdakRFhEouIF5o6D@xsang-OptiPlex-9020>
+ <20240222115032.u5h2phfxpn77lu5a@quack3>
+ <20240222183756.td7avnk2srg4tydu@quack3> <ZeVVN75kh9Ey4M4G@yujie-X299>
+ <dee823ca-7100-4289-8670-95047463c09d@intel.com>
+ <20240307092308.u54fjngivmx23ty3@quack3>
+Content-Language: en-US
+From: "Yin, Fengwei" <fengwei.yin@intel.com>
+In-Reply-To: <20240307092308.u54fjngivmx23ty3@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR02CA0047.apcprd02.prod.outlook.com
+ (2603:1096:4:196::14) To CO1PR11MB4820.namprd11.prod.outlook.com
+ (2603:10b6:303:6f::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308095320.1961469-3-howardyen@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|DS0PR11MB6399:EE_
+X-MS-Office365-Filtering-Correlation-Id: d4824035-0052-4c6f-b1b9-08dc40cced93
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M7z6G8S93yRPjDyaBcaP5L1L/4Z1UpF7ZYNtC69IIxjrLQCDJV16yeq8jxnMyzx5O9GAqbZ86RCY8FUrXFB0tq3sLfHxeJeXTED2d1a02Ng9ihE4hJyQmdvRCCyOsnowzaNtIfUvog3WWSMb8nosblCS9Xp7aDXSZ9aeqq7Z9+r3o3zj61gi4ti6QI7/vxC+Z83t94mZeTei8O31QWnRrFO8LSVwQlyh3prGi/aE5Yz9ZP06WUlK5Pq9ijpQr3uygz78ob36+FoGdSf4Qra+FWcLBt0LX+X3iKahkj704RuQjhA6hPb/tMWHFxirZvMc3+ti2FgagEKc00POPIvxtdttGTz7gxIpyoQqhrHX69mNF1kQCN+V1Yn5Ejblbv00nKLsuJqBY/6mkIbtMf74EPicHOcTnjO+hZJF63EzN7ZHKCPQOgYd5l2G6NLtFbC/WIfSvPWC2ZXaHc3dVlT7nazf9vh7x/3JBoaQlJ7MG1E/NImZHQFvcUm7HCG78ux4quBbCuck9/R1Qk980VPnYm3D+F3+05Hg/EbOcdOBiH/H+03wSFUwR895FCWMsmiomp+Q/TFN47BfdHWx22rIxY0lzZBbktY5cPs2b4PGezYjy0dug/mJ5Td/goKLkcDRh0iHM5VUiqiZjsDu1N3khG2LjLrCR710nmSB2gUeJnU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eE5uWUM2RUo5OUxWK1BSVllpcXJqSENJdjRXNUNCdHREdnVZSUxsc0ZuZmY4?=
+ =?utf-8?B?dU5SNElKQTAxdE5lVys0WnQvQmZBS1FUNGJndlYxdHBTdE1Sa2JtNmwvM2kv?=
+ =?utf-8?B?cXZVZjhCNWlVVjJFbEJ6N2RrY3NEeW1VZWZOK2pxdWcyMlVadHQxTE0vQ1o4?=
+ =?utf-8?B?bFllRjdKV2Y3ZG5hZ0E2Tk5VNUMzREp0dk14N3hTYnI5RTFLdVMwOWVKckFF?=
+ =?utf-8?B?ZkQzWkRhQk1MNjRxd3k4SUpVKzljMjlweXg5TDZnTkhpMjlialFVN0U5Zzg1?=
+ =?utf-8?B?TU5mcW43TzQvbFNYcmkwbzh2OVhmWllwcHFqeFJ5VUlKejRaeld4dVY2a29Y?=
+ =?utf-8?B?UEFsOFlDQ1gzVlJhc3F4aW0rNXY1Y1BXSjV0M1B6SE5zczBjMVpPZmZrcytV?=
+ =?utf-8?B?YUFVMS9UYW96NkgwS1c5VndRKzRxZ2daNTdDSU9uV0FDNHMwK01kSWJYallk?=
+ =?utf-8?B?YitBV0xPbFpTbGlVYkZQK0J2R1JabC85T3hzbzg2NlV4dXoyL2ttaVpRT09y?=
+ =?utf-8?B?MjZReFAxWkVMT3lMZEx0ZjFSa21yRHRqQnFkekVKbTczakVTRncxa3M5cTZY?=
+ =?utf-8?B?MlNOdFlrTlJjZ1FtWmNiTFJxdEJ2TCs3anBTRjBrdEhQUnRvazc4Z2VPRVVX?=
+ =?utf-8?B?Y2R3N21hSVNEWDRWMm5pWWtnaEIzajNtTERRUlZoT1NvZFZjdVNxRit4TFJC?=
+ =?utf-8?B?RGVML0FJdXNtME1CNDNSOW0wTmxhTEMyUkdnc01JTHZkZjhRZHk5U0lDWG01?=
+ =?utf-8?B?KzZHc280aEJKbElCN3padGEyY3cwSGNPWGUxcityUUdmZ3hXclBHbnM2L0hS?=
+ =?utf-8?B?aWF3OTZFVHlhKysxWGd0K29UN0lCUE5mUk9EMHNKWDBkZDVsWXl2b2Vvcjlw?=
+ =?utf-8?B?SUlzQzhxeko5ZXlzRGhtUWVxdjRLbkVCaXd2bUl5V0g5aFZSM1lHM01jeCtT?=
+ =?utf-8?B?UnVzQTdQRDdCZzRGVFlNMGxuU3VaUytuS0k5TlNESWRhTzJEWmdEZUJWMEVC?=
+ =?utf-8?B?ZG1tSlE5M3JBNktlc09xQ0lXQ2FyVW5paVNMeldDOFdMZlRCZzVIWkUxU2lY?=
+ =?utf-8?B?R2xPNWVxaC9UUHFvbkRBcndRcXhqQ0NXbjZ1QjB1VzdiYU9iQVZQK0pBSjNl?=
+ =?utf-8?B?NGF3R0xRMENTYXdBTm5HeS8wcjNVOGxaeUkzN1h5dU00RFdBV2dmY1AwNXNR?=
+ =?utf-8?B?UkI2emdLZkVKRHg4dnlyMWszdGs3MlExb2tpWHNmRVp0a0dabnFvcWhJbzJX?=
+ =?utf-8?B?RkZvUTFsTC80WjhBcGsxNnJOb3JGenlKdnA4V3M3U1JtTmxzc1RpL2FlRzFC?=
+ =?utf-8?B?aVdzc3o5NDE2aXB0QjFmcDhwOG9Jd2ZzbHZXRitIcW9pajZwa25IRk9BTzBK?=
+ =?utf-8?B?VGs3ZkNKemdqQ3JjNHgvZXJtUnNLS3A0RmkzRjVsSHEzVWIwVUdZaExiTGJ2?=
+ =?utf-8?B?U25vNzhtQ0ZvQ3ZOcTlyWjlFM3hhWmNzS0dhYVlyeVQvbU9WbkEyUEtnTFgw?=
+ =?utf-8?B?QlVLVGJoVXZrZFV0b1Z2b20rYnNiZHNpc1Q5QXVBZG43cG82c1F1MURUN2NC?=
+ =?utf-8?B?Tkd1WWVNaEk5bkV1TWMzVjV6Tms4ZjV1RXR4Um1wN3VMVE1ZajlCQ1dmdHdV?=
+ =?utf-8?B?ZXpWMTRxL0xNNjJkSlRvQm1hYWloM2wrMU9FMExqK0dvNEs2MFF3WEhkUHBt?=
+ =?utf-8?B?MGZwSzN1Q3VwSnMxVzFjQ3BONW1vYWpqb29aRXpjbk81TXZUcm1ab0xQM2k5?=
+ =?utf-8?B?dnpqZFcxVVlTazNJWU9EN0JDMVZlaVc2bXNQMzd0REJqMytKOVFiVUFXckRU?=
+ =?utf-8?B?NGhYV0RkZEJUelVvK2VUM2QxKzRUK1RVWDdmWFlkNE9zd1FFZ01rcE1GMFNa?=
+ =?utf-8?B?NXNYUmk3ZXNPd1BOWElaejV1bWpxUUVvMlpsS090LzRyNVl6SXcrTm9WVGFz?=
+ =?utf-8?B?RUdMaUJpTVdnVWY2eTArSFh2VVdtdHBCOU5jNWhTUzhDL1hpZFNSVkpVSzNY?=
+ =?utf-8?B?Z0tFaVVUMDMyNXNQMWRzSmo5b3pkSjZRNDJ2Nk1LVGNuSU5HNDRCK1IwRTR0?=
+ =?utf-8?B?TDIzNHV2dzQ0NnFKbDQySzdINGVQYmJjYjQyaWxwVE5FWTNTbW03bGVKQXVS?=
+ =?utf-8?Q?oSdLeDjtnAIRk1bThXgWhWhwG?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4824035-0052-4c6f-b1b9-08dc40cced93
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2024 06:40:08.6033
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JuV5j1wDH8ZE50Zb227Ffo0ATYccTosrNbXig9xKzVCYLyyRxJBqyHjDSfm35JRuy9h6WOW/rpKCOZQwe/sXIA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6399
+X-OriginatorOrg: intel.com
 
-Hi Howard,
+On 3/7/2024 5:23 PM, Jan Kara wrote:
+> Thanks for testing! This is an interesting result and certainly unexpected
+> for me. The readahead code allocates naturally aligned pages so based on
+> the distribution of allocations it seems that before commit ab4443fe3ca6
+> readahead window was at least 32 pages (128KB) aligned and so we allocated
+> order 5 pages. After the commit, the readahead window somehow ended up only
+> aligned to 20 modulo 32. To follow natural alignment and fill 128KB
+> readahead window we allocated order 2 page (got us to offset 24 modulo 32),
+> then order 3 page (got us to offset 0 modulo 32), order 4 page (larger
+> would not fit in 128KB readahead window now), and order 2 page to finish
+> filling the readahead window.
+> 
+> Now I'm not 100% sure why the readahead window alignment changed with
+> different rounding when placing readahead mark - probably that's some
+> artifact when readahead window is tiny in the beginning before we scale it
+> up (I'll verify by tracing whether everything ends up looking correctly
+> with the current code). So I don't expect this is a problem in ab4443fe3ca6
+> as such but it exposes the issue that readahead page insertion code should
+> perhaps strive to achieve better readahead window alignment with logical
+> file offset even at the cost of occasionally performing somewhat shorter
+> readahead. I'll look into this once I dig out of the huge heap of email
+> after vacation...
+Hi Jan,
+I am also curious to this behavior and add tried add logs to understand
+the behavior here. Here is something difference w/o ab4443fe3ca6:
+  - with ab4443fe3ca6:
+  You are right about the folio order as the readahead window is 0x20.
+  The folio order sequence is like order 2, order 4, order3, order2.
 
-kernel test robot noticed the following build errors:
+  But different thing is always mark the first order 2 folio readahead.
+  So the max order is boosted to 4 in page_cache_ra_order(). The code
+  path always hit
+     if (index == expected || index == (ra->start + ra->size))
+  in ondemand_readahead().
 
-[auto build test ERROR on usb/usb-testing]
-[also build test ERROR on usb/usb-next usb/usb-linus char-misc/char-misc-testing char-misc/char-misc-next char-misc/char-misc-linus driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.8-rc7 next-20240308]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+  If just change the round_down() to round_up() in ra_alloc_folio(),
+  the major folio order will be restored to 5.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Howard-Yen/dma-coherent-add-support-for-multi-coherent-rmems-per-dev/20240308-175649
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20240308095320.1961469-3-howardyen%40google.com
-patch subject: [PATCH v4 2/2] usb: host: xhci-plat: add support for multi memory regions
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240310/202403101400.PHmsnLOh-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240310/202403101400.PHmsnLOh-lkp@intel.com/reproduce)
+  - without ab4443fe3ca6:
+  at the beginning, the folio order sequence is same like 2, 4, 3, 2.
+  But besides the first order2 folio, order4 folio will be marked as
+  readahead also. So it's possible the order boosted to 5.
+  Also, not just path
+     if (index == expected || index == (ra->start + ra->size))
+  is hit. but also
+      if (folio) {
+  can be hit (I didn't check other path as this testing is sequential
+  read).
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403101400.PHmsnLOh-lkp@intel.com/
+  There are some back and forth between 5 and 2,4,3,2, the order is
+  stabilized on 5.
 
-All errors (new ones prefixed by >>):
-
-   drivers/usb/host/xhci-plat.c: In function 'xhci_plat_probe':
->> drivers/usb/host/xhci-plat.c:201:23: error: implicit declaration of function 'of_reserved_mem_device_init_by_idx' [-Werror=implicit-function-declaration]
-     201 |                 ret = of_reserved_mem_device_init_by_idx(sysdev, sysdev->of_node, i);
-         |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/usb/host/xhci-plat.c:205:33: error: implicit declaration of function 'of_reserved_mem_device_release' [-Werror=implicit-function-declaration]
-     205 |                                 of_reserved_mem_device_release(sysdev);
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+  I didn't fully understand the whole thing and will dig deeper. The
+  above is just what the log showed.
 
 
-vim +/of_reserved_mem_device_init_by_idx +201 drivers/usb/host/xhci-plat.c
+Hi Matthew,
+I noticed one thing when readahead folio order is being pushed forward,
+there are several times readahead trying to allocate and add folios to
+page cache. But failed as there is folio inserted to page cache cover
+the requested index already. Once the folio order is correct, there is
+no such case anymore. I suppose this is expected.
 
-   144	
-   145	int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const struct xhci_plat_priv *priv_match)
-   146	{
-   147		const struct hc_driver	*driver;
-   148		struct device		*tmpdev;
-   149		struct xhci_hcd		*xhci;
-   150		struct resource         *res;
-   151		struct usb_hcd		*hcd, *usb3_hcd;
-   152		int			i, count, ret;
-   153		int			irq;
-   154		struct xhci_plat_priv	*priv = NULL;
-   155		bool			of_match;
-   156	
-   157		if (usb_disabled())
-   158			return -ENODEV;
-   159	
-   160		driver = &xhci_plat_hc_driver;
-   161	
-   162		irq = platform_get_irq(pdev, 0);
-   163		if (irq < 0)
-   164			return irq;
-   165	
-   166		if (!sysdev)
-   167			sysdev = &pdev->dev;
-   168	
-   169		ret = dma_set_mask_and_coherent(sysdev, DMA_BIT_MASK(64));
-   170		if (ret)
-   171			return ret;
-   172	
-   173		pm_runtime_set_active(&pdev->dev);
-   174		pm_runtime_enable(&pdev->dev);
-   175		pm_runtime_get_noresume(&pdev->dev);
-   176	
-   177		hcd = __usb_create_hcd(driver, sysdev, &pdev->dev,
-   178				       dev_name(&pdev->dev), NULL);
-   179		if (!hcd) {
-   180			ret = -ENOMEM;
-   181			goto disable_runtime;
-   182		}
-   183	
-   184		hcd->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-   185		if (IS_ERR(hcd->regs)) {
-   186			ret = PTR_ERR(hcd->regs);
-   187			goto put_hcd;
-   188		}
-   189	
-   190		hcd->rsrc_start = res->start;
-   191		hcd->rsrc_len = resource_size(res);
-   192	
-   193		xhci = hcd_to_xhci(hcd);
-   194	
-   195		xhci->allow_single_roothub = 1;
-   196	
-   197		count = of_property_count_elems_of_size(sysdev->of_node, "memory-region",
-   198							sizeof(u32));
-   199	
-   200		for (i = 0; i < count; i++) {
- > 201			ret = of_reserved_mem_device_init_by_idx(sysdev, sysdev->of_node, i);
-   202			if (ret) {
-   203				dev_err(sysdev, "Could not get reserved memory\n");
-   204				if (i > 0)
- > 205					of_reserved_mem_device_release(sysdev);
-   206	
-   207				return ret;
-   208			}
-   209		}
-   210	
-   211		/*
-   212		 * Not all platforms have clks so it is not an error if the
-   213		 * clock do not exist.
-   214		 */
-   215		xhci->reg_clk = devm_clk_get_optional(&pdev->dev, "reg");
-   216		if (IS_ERR(xhci->reg_clk)) {
-   217			ret = PTR_ERR(xhci->reg_clk);
-   218			goto put_hcd;
-   219		}
-   220	
-   221		xhci->clk = devm_clk_get_optional(&pdev->dev, NULL);
-   222		if (IS_ERR(xhci->clk)) {
-   223			ret = PTR_ERR(xhci->clk);
-   224			goto put_hcd;
-   225		}
-   226	
-   227		xhci->reset = devm_reset_control_array_get_optional_shared(&pdev->dev);
-   228		if (IS_ERR(xhci->reset)) {
-   229			ret = PTR_ERR(xhci->reset);
-   230			goto put_hcd;
-   231		}
-   232	
-   233		ret = reset_control_deassert(xhci->reset);
-   234		if (ret)
-   235			goto put_hcd;
-   236	
-   237		ret = clk_prepare_enable(xhci->reg_clk);
-   238		if (ret)
-   239			goto err_reset;
-   240	
-   241		ret = clk_prepare_enable(xhci->clk);
-   242		if (ret)
-   243			goto disable_reg_clk;
-   244	
-   245		if (priv_match) {
-   246			priv = hcd_to_xhci_priv(hcd);
-   247			/* Just copy data for now */
-   248			*priv = *priv_match;
-   249		}
-   250	
-   251		device_set_wakeup_capable(&pdev->dev, true);
-   252	
-   253		xhci->main_hcd = hcd;
-   254	
-   255		/* imod_interval is the interrupt moderation value in nanoseconds. */
-   256		xhci->imod_interval = 40000;
-   257	
-   258		/* Iterate over all parent nodes for finding quirks */
-   259		for (tmpdev = &pdev->dev; tmpdev; tmpdev = tmpdev->parent) {
-   260	
-   261			if (device_property_read_bool(tmpdev, "usb2-lpm-disable"))
-   262				xhci->quirks |= XHCI_HW_LPM_DISABLE;
-   263	
-   264			if (device_property_read_bool(tmpdev, "usb3-lpm-capable"))
-   265				xhci->quirks |= XHCI_LPM_SUPPORT;
-   266	
-   267			if (device_property_read_bool(tmpdev, "quirk-broken-port-ped"))
-   268				xhci->quirks |= XHCI_BROKEN_PORT_PED;
-   269	
-   270			if (device_property_read_bool(tmpdev, "xhci-sg-trb-cache-size-quirk"))
-   271				xhci->quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
-   272	
-   273			device_property_read_u32(tmpdev, "imod-interval-ns",
-   274						 &xhci->imod_interval);
-   275		}
-   276	
-   277		/*
-   278		 * Drivers such as dwc3 manages PHYs themself (and rely on driver name
-   279		 * matching for the xhci platform device).
-   280		 */
-   281		of_match = of_match_device(pdev->dev.driver->of_match_table, &pdev->dev);
-   282		if (of_match) {
-   283			hcd->usb_phy = devm_usb_get_phy_by_phandle(sysdev, "usb-phy", 0);
-   284			if (IS_ERR(hcd->usb_phy)) {
-   285				ret = PTR_ERR(hcd->usb_phy);
-   286				if (ret == -EPROBE_DEFER)
-   287					goto disable_clk;
-   288				hcd->usb_phy = NULL;
-   289			} else {
-   290				ret = usb_phy_init(hcd->usb_phy);
-   291				if (ret)
-   292					goto disable_clk;
-   293			}
-   294		}
-   295	
-   296		hcd->tpl_support = of_usb_host_tpl_support(sysdev->of_node);
-   297	
-   298		if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
-   299			hcd->skip_phy_initialization = 1;
-   300	
-   301		if (priv && (priv->quirks & XHCI_SG_TRB_CACHE_SIZE_QUIRK))
-   302			xhci->quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
-   303	
-   304		ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
-   305		if (ret)
-   306			goto disable_usb_phy;
-   307	
-   308		if (!xhci_has_one_roothub(xhci)) {
-   309			xhci->shared_hcd = __usb_create_hcd(driver, sysdev, &pdev->dev,
-   310							    dev_name(&pdev->dev), hcd);
-   311			if (!xhci->shared_hcd) {
-   312				ret = -ENOMEM;
-   313				goto dealloc_usb2_hcd;
-   314			}
-   315	
-   316			if (of_match) {
-   317				xhci->shared_hcd->usb_phy = devm_usb_get_phy_by_phandle(sysdev,
-   318											"usb-phy", 1);
-   319				if (IS_ERR(xhci->shared_hcd->usb_phy)) {
-   320					xhci->shared_hcd->usb_phy = NULL;
-   321				} else {
-   322					ret = usb_phy_init(xhci->shared_hcd->usb_phy);
-   323					if (ret)
-   324						dev_err(sysdev, "%s init usb3phy fail (ret=%d)\n",
-   325							__func__, ret);
-   326				}
-   327			}
-   328	
-   329			xhci->shared_hcd->tpl_support = hcd->tpl_support;
-   330		}
-   331	
-   332		usb3_hcd = xhci_get_usb3_hcd(xhci);
-   333		if (usb3_hcd && HCC_MAX_PSA(xhci->hcc_params) >= 4)
-   334			usb3_hcd->can_do_streams = 1;
-   335	
-   336		if (xhci->shared_hcd) {
-   337			ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
-   338			if (ret)
-   339				goto put_usb3_hcd;
-   340		}
-   341	
-   342		device_enable_async_suspend(&pdev->dev);
-   343		pm_runtime_put_noidle(&pdev->dev);
-   344	
-   345		/*
-   346		 * Prevent runtime pm from being on as default, users should enable
-   347		 * runtime pm using power/control in sysfs.
-   348		 */
-   349		pm_runtime_forbid(&pdev->dev);
-   350	
-   351		return 0;
-   352	
-   353	
-   354	put_usb3_hcd:
-   355		usb_put_hcd(xhci->shared_hcd);
-   356	
-   357	dealloc_usb2_hcd:
-   358		usb_remove_hcd(hcd);
-   359	
-   360	disable_usb_phy:
-   361		usb_phy_shutdown(hcd->usb_phy);
-   362	
-   363	disable_clk:
-   364		clk_disable_unprepare(xhci->clk);
-   365	
-   366	disable_reg_clk:
-   367		clk_disable_unprepare(xhci->reg_clk);
-   368	
-   369	err_reset:
-   370		reset_control_assert(xhci->reset);
-   371	
-   372	put_hcd:
-   373		usb_put_hcd(hcd);
-   374	
-   375	disable_runtime:
-   376		pm_runtime_put_noidle(&pdev->dev);
-   377		pm_runtime_disable(&pdev->dev);
-   378	
-   379		return ret;
-   380	}
-   381	EXPORT_SYMBOL_GPL(xhci_plat_probe);
-   382	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards
+Yin, Fengwei
 
