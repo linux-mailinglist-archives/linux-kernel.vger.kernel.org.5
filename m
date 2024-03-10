@@ -1,232 +1,125 @@
-Return-Path: <linux-kernel+bounces-98082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A738774D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:38:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C4008774D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:39:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59EC41C20992
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:38:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98DA11C209A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D01D1115;
-	Sun, 10 Mar 2024 01:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151221366;
+	Sun, 10 Mar 2024 01:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VI3jRqHX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CKXm00mK"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D856EC5;
-	Sun, 10 Mar 2024 01:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0845310E9;
+	Sun, 10 Mar 2024 01:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710034681; cv=none; b=QHq0tVGHB6IzYbD70rpGhlqcCqtE5NLoP8J+kLo7JCdN/Q4P8SIRGoEiSqPRHN4cHiMi2eZ8sRYzLUY8QxnwRcWDd9pVVbYXFqfCp4hMkMLm8K14+rcnvYfJ9PaIUM+UVVIwMt9jFJV0D4r1rBM46b7CC5K3KJ4JRt4wQQHWTEk=
+	t=1710034766; cv=none; b=K3Hf0JWoppiR0vJ1vDOehpqCHCI3+B5k4F5/YyLMVEs+dIcAr/IpG9FzqGah9A36T/NqWCNaZWRLW26SzMq4HJcan4bfzIGyGSf6Qh8+8D/lcU08jMU+DNC9lL9Ejp/F+XK0WnHnjrddlFqv97t+w0BZ/n29USn6j3PLmZO2yOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710034681; c=relaxed/simple;
-	bh=mLysYKJMnp+csqFKfyy0BM0x56EkfLIUO0ZrRPScLJE=;
+	s=arc-20240116; t=1710034766; c=relaxed/simple;
+	bh=Hbv5dKqaLqBrgXClL9twOnok0X7YsUM8U4SrM79+aEc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pw1AFhlLFUVXnlWpzOcJzbXrJ/V+bg2RHVt7QCdTe6YG8y86vI22/Oqly9WfRAOsN149gpWAmpCAypFVGO8ZbxNvchL9BYRQ9fJp0Eph6AdXKENNtWiXB7MvJIY9/ohMPX+dtnKHfJMxNeaAydcMRw2oKMVdWyYGpSoTxhUOTNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VI3jRqHX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC111C433F1;
-	Sun, 10 Mar 2024 01:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710034680;
-	bh=mLysYKJMnp+csqFKfyy0BM0x56EkfLIUO0ZrRPScLJE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VI3jRqHX/kHfxrP0VnhRu3y7u0mu3xQ8TIoyJmBFZNx941GnzQV8toeJaP36FC+DH
-	 HEueSM7E64MbMnMr60kH22/WYUmzgioKEc/Nck9e5kAsV61lW2RiuCH/50nyRVMpcU
-	 znIT/4zIf/62xcCXme/FgoGoeQskQG4fvKXX79W9trkq69ZwsdfINM7xfySEoWrzmV
-	 z+dhzvqVLAGAGt6UV2HfoRBlb9oNXl+ocV/hT5MoXiN33gD9bgnzIeRrJjPQ2+dtQx
-	 qGH+rfFK4oaBpurYC0XVJDase4EAC8qoDeegclHz0svqH6+rftsXciktdh5Vn6vXCf
-	 bTWzAWA/P6V9A==
-Date: Sat, 9 Mar 2024 20:37:51 -0500
-From: Guo Ren <guoren@kernel.org>
-To: Andy Chiu <andy.chiu@sifive.com>
-Cc: Puranjay Mohan <puranjay12@gmail.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-	Deepak Gupta <debug@rivosinc.com>,
-	Sia Jee Heng <jeeheng.sia@starfivetech.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-	Song Shuai <suagrfillet@gmail.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Jisheng Zhang <jszhang@kernel.org>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
-Message-ID: <Ze0O77ze56DGffzD@gmail.com>
-References: <20240306165904.108141-1-puranjay12@gmail.com>
- <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
- <CANk7y0gbQdYw0V+CEv-z8wFGXnki8KSn4c8+i0iZ1UFNCg7wJQ@mail.gmail.com>
- <CABgGipUJU_joVOjPi4WZ4JJM72zaSrCA1QUAaP8hob3+LXkS0g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HAEo4k7b9BL8h61zPICfMhyMZgfO2Rch/81OtEiVl05gtUIZDexN3fwhu95i/tVsyD/WZ4CPvpM3NBUKeekCNHT2RJyXx78p3T8miSIF9UK13S9qZn1O0PqUtytTOLfadNxxaulihNyQ1XTmkJRd/uVtDYKqGrJonxx4JTiPzO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CKXm00mK; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a1cba5d46fso950513eaf.0;
+        Sat, 09 Mar 2024 17:39:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710034764; x=1710639564; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=89dICWtcTgU7rYBclVDfmBzPExpeafeUhsNwlxxomUo=;
+        b=CKXm00mKDeW2qxdbGXESAIJMau/mZmTF9uVBQkuv7OnXpn4BBnStryaFYhZZpBh0T7
+         0Kbtn7YO0aTWaX37EphV69dx93j/+/EinVXicPkkMlv9bZduv6EJq5OeKj3HlTkATRtD
+         K2pCif5RWvAiQ718xk5reP0ohZjMbjqQwlLmowUSL5B0OZOgCkl8/9VXm7KusiutSG0J
+         yhEc1VNOsBF0A2WH+ifHCotAg64OjTyXqbNzyxLsVQMecs1p9fQr5Ip04GGcVUMRvssY
+         UIieBo6SnB5qWr5eGB+FieMkzdgMhHHDxDE41gwKV0rb7LBtOssT0AdM0g4GH+ZR/PJY
+         Q1NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710034764; x=1710639564;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=89dICWtcTgU7rYBclVDfmBzPExpeafeUhsNwlxxomUo=;
+        b=X6YsyTnI3Ejky+9BBnAUPNRFIowhGs+jNluZXYOJ/lXeETq7rxrVYqe3HXr4rHIzRU
+         QRkirElW4kP7yyDjvyTW9/ugctJPllu+Jw/4ES+SUVt9e7qSwy3y4Lpiqy5CTbRtlXeF
+         UWIZxQSZbq5LKBf47ZE+eOAYGj5ggjce24aHR3Ti4VdaEbxNravO5BRfjVJy6S4Xh9oX
+         F3RJjkTsj5EA3yFiFEd+MQ91472DKm+iIlBoYsT2IEM/BG1x5+DsRyojDz8inmfMvlgP
+         cdVt/lcOrq1WApVwxzGi7i/4MQf/YaP3nT9SHeP7PW6jDXfLm96k3Rtft3e6TYb3TIuO
+         ojow==
+X-Forwarded-Encrypted: i=1; AJvYcCUq6O7KLfJtTf4ZB8S22CNAM3elolxq+89wJZi7YdLRT1F+aV+NKwGs6yY4F5imRRBFep8CZwKvvH8oW1kueJ6MdKSPbnTbkLGqJ6+U67HlYhZEyqYM46w5iMcxtmib9S16Hj4C69Mxu5spB9Ndz2KdPAhzYHjz5dz6JqAP37Amy6RHm016pqD+VVfLe0Pv
+X-Gm-Message-State: AOJu0Yz+eASjh6Z7mUyjkKSWZiInmuIxBEk0C7Gnaa6qw4nbzvia6YGH
+	NguVnVW8KbTQlCUvyFcpyabyj/oWjZlHh0IvvwohliLhLuVboC1dMJgWRVI/
+X-Google-Smtp-Source: AGHT+IGa8LWghdsW4lGPMtbGDh64RIJVuU6q8Za08bnTmcCJbvG41L+9ZGzUXxOEHKCRwucHSW9QvA==
+X-Received: by 2002:a05:6808:3994:b0:3c1:b335:12bc with SMTP id gq20-20020a056808399400b003c1b33512bcmr5386225oib.5.1710034763803;
+        Sat, 09 Mar 2024 17:39:23 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:5296:fec3:1fa8:a601])
+        by smtp.gmail.com with ESMTPSA id w33-20020a17090a6ba400b0029bb5dc7c77sm1990101pjj.23.2024.03.09.17.39.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Mar 2024 17:39:23 -0800 (PST)
+Date: Sat, 9 Mar 2024 17:39:21 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Ike Panhc <ike.pan@canonical.com>, Hans de Goede <hdegoede@redhat.com>,
+	Philipp Jungkamp <p.jungkamp@gmx.net>, Gergo Koteles <soyer@irl.hu>,
+	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-input@vger.kernel.org
+Subject: Re: [PATCH 0/2] map Fn + R key on newer Yogas and Legions
+Message-ID: <Ze0PSaOQSJMxL_Ln@google.com>
+References: <cover.1708399689.git.soyer@irl.hu>
+ <170895405312.2243.4199399921923370447.b4-ty@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgGipUJU_joVOjPi4WZ4JJM72zaSrCA1QUAaP8hob3+LXkS0g@mail.gmail.com>
+In-Reply-To: <170895405312.2243.4199399921923370447.b4-ty@linux.intel.com>
 
-On Fri, Mar 08, 2024 at 05:18:21PM +0800, Andy Chiu wrote:
-> Hi Puranjay,
+On Mon, Feb 26, 2024 at 03:27:33PM +0200, Ilpo J�rvinen wrote:
+> On Tue, 20 Feb 2024 04:39:34 +0100, Gergo Koteles wrote:
 > 
-> On Fri, Mar 8, 2024 at 3:53 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
-> >
-> > Hi Björn,
-> >
-> > On Thu, Mar 7, 2024 at 8:27 PM Björn Töpel <bjorn@kernel.org> wrote:
-> > >
-> > > Puranjay!
-> > >
-> > > Puranjay Mohan <puranjay12@gmail.com> writes:
-> > >
-> > > > This patch enables support for DYNAMIC_FTRACE_WITH_CALL_OPS on RISC-V.
-> > > > This allows each ftrace callsite to provide an ftrace_ops to the common
-> > > > ftrace trampoline, allowing each callsite to invoke distinct tracer
-> > > > functions without the need to fall back to list processing or to
-> > > > allocate custom trampolines for each callsite. This significantly speeds
-> > > > up cases where multiple distinct trace functions are used and callsites
-> > > > are mostly traced by a single tracer.
-> > > >
-> > > > The idea and most of the implementation is taken from the ARM64's
-> > > > implementation of the same feature. The idea is to place a pointer to
-> > > > the ftrace_ops as a literal at a fixed offset from the function entry
-> > > > point, which can be recovered by the common ftrace trampoline.
-> > >
-> > > Not really a review, but some more background; Another rationale (on-top
-> > > of the improved per-call performance!) for CALL_OPS was to use it to
-> > > build ftrace direct call support (which BPF uses a lot!). Mark, please
-> > > correct me if I'm lying here!
-> > >
-> > > On Arm64, CALL_OPS makes it possible to implement direct calls, while
-> > > only patching one BL instruction -- nice!
-> > >
-> > > On RISC-V we cannot use use the same ideas as Arm64 straight off,
-> > > because the range of jal (compare to BL) is simply too short (+/-1M).
-> > > So, on RISC-V we need to use a full auipc/jal pair (the text patching
-> > > story is another chapter, but let's leave that aside for now). Since we
-> > > have to patch multiple instructions, the cmodx situation doesn't really
-> > > improve with CALL_OPS.
-> > >
-> > > Let's say that we continue building on your patch and implement direct
-> > > calls on CALL_OPS for RISC-V as well.
-> > >
-> > > From Florent's commit message for direct calls:
-> > >
-> > >   |    There are a few cases to distinguish:
-> > >   |    - If a direct call ops is the only one tracing a function:
-> > >   |      - If the direct called trampoline is within the reach of a BL
-> > >   |        instruction
-> > >   |         -> the ftrace patchsite jumps to the trampoline
-> > >   |      - Else
-> > >   |         -> the ftrace patchsite jumps to the ftrace_caller trampoline which
-> > >   |            reads the ops pointer in the patchsite and jumps to the direct
-> > >   |            call address stored in the ops
-> > >   |    - Else
-> > >   |      -> the ftrace patchsite jumps to the ftrace_caller trampoline and its
-> > >   |         ops literal points to ftrace_list_ops so it iterates over all
-> > >   |         registered ftrace ops, including the direct call ops and calls its
-> > >   |         call_direct_funcs handler which stores the direct called
-> > >   |         trampoline's address in the ftrace_regs and the ftrace_caller
-> > >   |         trampoline will return to that address instead of returning to the
-> > >   |         traced function
-> > >
-> > > On RISC-V, where auipc/jalr is used, the direct called trampoline would
-> > > always be reachable, and then first Else-clause would never be entered.
-> > > This means the the performance for direct calls would be the same as the
-> > > one we have today (i.e. no regression!).
-> > >
-> > > RISC-V does like x86 does (-ish) -- patch multiple instructions, long
-> > > reach.
-> > >
-> > > Arm64 uses CALL_OPS and patch one instruction BL.
-> > >
-> > > Now, with this background in mind, compared to what we have today,
-> > > CALL_OPS would give us (again assuming we're using it for direct calls):
-> > >
-> > > * Better performance for tracer per-call (faster ops lookup) GOOD
-> >
-> > ^ this was the only motivation for me to implement this patch.
-> >
-> > I don't think implementing direct calls over call ops is fruitful for
-> > RISC-V because once
-> > the auipc/jalr can be patched atomically, the direct call trampoline
-> > is always reachable.
+> > This patch series adds a new KEY_FN_R input event code and map the
+> > Fn + R key to it in the ideapad-laptop driver.
+> > 
+> > It affects two WMI keycodes and I couldn't try the 0x0a, but I couldn't
+> > find any indication that the refresh rate toggle should not be Fn + R.
+> > 
+> > Regards,
+> > Gergo
+> > 
+> > [...]
 > 
-> Yes, the auipc/jalr instruction pair can be patched atomically just as
-> long as their size is naturally aligned on. However, we cannot prevent
-> 2 instructions from being fetched atomically :P
-There are some micro-arch optimization methods here, such as:
- - Disable interrupt when auipc retired.
- - When auipc -> auipc, the second one still could cause an
-   interruption.
+> 
+> Thank you for your contribution, it has been applied to my local
+> review-ilpo branch. Note it will show up in the public
+> platform-drivers-x86/review-ilpo branch only once I've pushed my
+> local branch there, which might take a while.
+> 
+> The list of commits applied:
+> [1/2] Input: allocate keycode for Fn + R
+>       commit: 4e45fa464aeef4e803412b5dcce73aad48c94b0e
 
-> 
-> > Solving the atomic text patching problem would be fun!! I am eager to
-> > see how it will be
-> > solved.
-> 
-> I have a patch series to solve the atomic code patching issue, which I
-> am about to respin [1]. The idea is to solve it with yet another layer
-> of indirection. We add a 8-B aligned space at each function entry. The
-> space is a pointer to the ftrace entry. During boot, each function
-> entry code is updated to perform a load and then take the jump from
-> the 8-B space. When ftrace is disabled, we patch the first 4B-aligned
-> instruction to a jump so as to skip the ftrace entry.
-> 
-> We are still discussing with Alex to see if we have a better way to do
-> it. If not then I'd update the patchset and re-send it. There's a
-> pending improvement in the series to reduce complexity. The 8-B
-> aligned space can be added before the function entry (just like your
-> patch).
-> 
-> >
-> > > * Larger text size (function alignment + extra nops) BAD
-> > > * Same direct call performance NEUTRAL
-> > > * Same complicated text patching required NEUTRAL
-> > >
-> > > It would be interesting to see how the per-call performance would
-> > > improve on x86 with CALL_OPS! ;-)
-> >
-> > If I remember from Steven's talk, x86 uses dynamically allocated trampolines
-> > for per callsite tracers, would CALL_OPS provide better performance than that?
-> >
-> > >
-> > > I'm trying to wrap my head if it makes sense to have it on RISC-V, given
-> > > that we're a bit different from Arm64. Does the scale tip to the GOOD
-> > > side?
-> > >
-> > > Oh, and we really need to see performance numbers on real HW! I have a
-> > > VF2 that I could try this series on.
-> >
-> > It would be great if you can do it :D.
-> >
-> > Thanks,
-> > Puranjay
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
-> - [1] https://yhbt.net/lore/all/CAJF2gTSn3_cDYsF9D8dt-br2Wf_M8y02A09xgRq8kXi91sN3Aw@mail.gmail.com/T/
-> 
-> Regards,
-> Andy
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+I am sorry for the delay, but instead of defining a generic name we should define
+a proper keycode for concrete action even if nothing is printed on a
+particular key on a particular device.
+
+Please drop this patch.
+
+Thanks.
+
+-- 
+Dmitry
 
