@@ -1,257 +1,365 @@
-Return-Path: <linux-kernel+bounces-98137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A83A877588
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 07:28:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6C3887758A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 07:29:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E3E71C21FF3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:27:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6560B28367E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB2D1804A;
-	Sun, 10 Mar 2024 06:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE061C6AD;
+	Sun, 10 Mar 2024 06:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="qLQNttj/"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="huC9GH0W"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B8611723;
-	Sun, 10 Mar 2024 06:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C8C125CB;
+	Sun, 10 Mar 2024 06:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710052070; cv=none; b=A7Bjoisk0RvW3jyYjl8kdLDJC/ktlprJxQasUUwwuUSoKbpG07bSzmj2MrmFiqFtGXaUth88I54fJ5fyCE+Jeimapx+YpWGPWIyuuuO12zc5M+EOMIPOcoRKy2o/91CaQyoCQW6faaguHSqyyZAJGxz6hjHT3Q7kCCB+TmgwSc0=
+	t=1710052145; cv=none; b=IEPedzFOVcJgZpufkgE8uKhsL+XLdJHeI2xu1m95asH2BC+CN8t6atI1bXRm7S7CWOGM9b6lrsHW1mpa5uUUctF9Xix8yBGbQeGytIWR7d3VsLwWYGYcxlb6nhIgWifEizkTyCNoznD/6yR7l0RcH3f3KkCCmuv/ngKoqp/oRzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710052070; c=relaxed/simple;
-	bh=DyLgsmM96BmqfyVZoTdyh2YQQOsjw3sgd/mTOm/5Yl0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d9PMYFF9NeHktAGMsMfLjE3h2qDVKjBEDpNsLtx4mqmY2Ogit/AN5gPdu6LfDgYiK0fzFXZyRhl6AW674B0ZtWClr7NABbMzfGx3wEH6Xx/t2mQTGSiwHEnn4ebK3ThibgFmeFnLw1RqXjY5R31N68l1RvmfTF2ALB0YVxzZob8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=qLQNttj/; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1710052051; x=1710656851; i=w_armin@gmx.de;
-	bh=DyLgsmM96BmqfyVZoTdyh2YQQOsjw3sgd/mTOm/5Yl0=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=qLQNttj/GxnmA1i/Zto9Q/zaEATcqpVydej6VpDg5Tun+6STQIPTOfd7/YcVH4c9
-	 XqOLfJYe+4vpxGIKGDmSWij1ku5jIxfOP9ZrfDIUcv1Jxn1E9BqYQTo/2VrVIE2qT
-	 wpXjnJo+qsZsJu+5aDRO6gN+9yOWaYuNyui1TO4bfxWjjf7RiY+2rGwzChkwdgf3A
-	 SfytEZ4KrtRllZEvTrvj3cpQ5uyjy/OlWZJne4cTr/IEzfGrfw8U/1QsG+AkKoI2q
-	 wfgl0CAVf4O+Kz2N4Ff5miPUTFxUehtI1UqVlvAyIoRDSZ2nRWGy+anXvexMNfttZ
-	 m/OgYI8x+3g4hxlang==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MoO6C-1r3ZJj1vvE-00olWv; Sun, 10
- Mar 2024 07:27:31 +0100
-Message-ID: <f23e2390-a054-4958-98a1-103327fb6bd5@gmx.de>
-Date: Sun, 10 Mar 2024 07:27:29 +0100
+	s=arc-20240116; t=1710052145; c=relaxed/simple;
+	bh=01m+kPN27F7ulBBXRzWG+6qNsRfLAik1JnnMPebFFRQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sbjvoBOrGUyZ7/D1UPL5r+nrmFql+ExBbfNrE9FkO1HNN/tePj5OhkearRmrJdalylL7pRAeq4+M2oc1ZMenhtiIwY3rC4NOqIDswLY2hSyQh7mIDDan0wvdsyYzalFU+xyXZ9H09vD61Iyw0tiMqo8nk/+bUS4zgn918tA0IjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=huC9GH0W; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710052144; x=1741588144;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=01m+kPN27F7ulBBXRzWG+6qNsRfLAik1JnnMPebFFRQ=;
+  b=huC9GH0WMPRb5dpGXhKVo16JWHqqWqzV3pWa2Lyv4pA4VwAzdD1kAWJM
+   VxlGXT5Rg1IuqrsW0qRXpEmbbozFrKkLvlD+iYkiwqcqVMG6dU2wDks4A
+   OENVz/y/5iGkzLKqEcF3hMO651RRYZo7/4BYDY3P2QzE3RdjsyHaFNgA2
+   rixcwdJozJWnybDASks5PFBqAxhbI3tVUfuLlJpCMbxH7Xy0qSUI7mh76
+   3Pejry96D4BtCJo3kzXsfd6xISuK1Sc5cL4Y3Ka/4DjMqFUSpVyD4JqRy
+   9PUBTvXoKpB/INUY9/oLCzzomS3Ln++FxtDI08sAy9OXVJWn0kPwb5RaE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="5329036"
+X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
+   d="scan'208";a="5329036"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 22:29:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
+   d="scan'208";a="11253614"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 09 Mar 2024 22:28:58 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rjCg3-00080Z-0T;
+	Sun, 10 Mar 2024 06:28:55 +0000
+Date: Sun, 10 Mar 2024 14:27:55 +0800
+From: kernel test robot <lkp@intel.com>
+To: Howard Yen <howardyen@google.com>, gregkh@linuxfoundation.org,
+	rafael@kernel.org, mathias.nyman@intel.com, hch@lst.de,
+	m.szyprowski@samsung.com, robin.murphy@arm.com,
+	andriy.shevchenko@linux.intel.com, petr.tesarik.ext@huawei.com,
+	broonie@kernel.org, james@equiv.tech, james.clark@arm.com,
+	masahiroy@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, iommu@lists.linux.dev,
+	Howard Yen <howardyen@google.com>
+Subject: Re: [PATCH v4 2/2] usb: host: xhci-plat: add support for multi
+ memory regions
+Message-ID: <202403101400.PHmsnLOh-lkp@intel.com>
+References: <20240308095320.1961469-3-howardyen@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] platform/x86: wmi: Support reading/writing 16 bit
- EC values
-To: sathyanarayanan.kuppuswamy@linux.intel.com
-Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com, rafael@kernel.org,
- lenb@kernel.org, mario.limonciello@amd.com, linux-acpi@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240308210519.2986-1-W_Armin@gmx.de>
- <a6152da8-5f3a-458b-bc48-4bc654677ece@linux.intel.com>
- <2fcd7176-108a-47dc-8096-99a5b6a69641@gmx.de>
- <CAC41dw88TfH472rFG2+WnG=BuHThBXSUfWOzRV0aJacdYHjFOQ@mail.gmail.com>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <CAC41dw88TfH472rFG2+WnG=BuHThBXSUfWOzRV0aJacdYHjFOQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Pt77kOH82n/uRUyYM0r1VGD6aqmBdWLV6bXm6Qr2snNJiWwYx6x
- A0aQHdtH3KLMZItgbRVpo3VqV1JX3uWf63OS1pci//XHADouohoSvqJgTJgS5PO6J5wqYEp
- bo7LmWogviwBg4Zd4xAh7DKxXmUjlFXEEZ+FkSJTOTC8lx5LXOSXRGpNCgobaD3fEu7g9In
- NFg1dcenDsh5r4tC7aIVw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:iFk5KlLPr8w=;4aPoaGbHCA1tww3bw20A+WPNalQ
- HcSTlOLgb7YNvJ923Od0dq2paLBi8zgq9Em+GHY73jdWLz5kluG66jRJ/xIgEDQm7xpvjIHp8
- zFX8E93dPFbc5M7lnMzRjVzgqKe7tuaUqOUiHpLvKQHHCJDulzODKgH34fVYqhNJQqNKCVm34
- nYhTkqTZad67WFOnjxl7epd5VuMzQJ/GK/eyPnxhE+bUtsk04b9Qc1k3Ds72Cy/UuzraCeY2M
- M7KuQG86m5KMMPKnC/MKdO5CAOyES2fUcP3nWNRDPmP1XEZVyU/UAOOGdjh8dnCL6G8k1MnbP
- FJOND4Zy1DmspVzFQbyEk8noUoov0o7C2Fl3Yu+ETHNEfj85AzxMGuFsCE6JnzX3VQ/Lzb5io
- vJaGPYwyw1bS4G/YYR+EHBVQGQaAxkxipFTXLWNdECicGl8BRfhe3g30Ii873esWebMj5VFg8
- jtJKM53NpMmkLEX/dw1+RcdqvLfsWQKAAn+VfklmDju2lYC6qkr1jRbOcXsg7xDrbl2Pu2/ln
- DAVkOhRihKE3Z8wk7i8mrChR3qvwOf/2CituAbAmOS2a9o5SnOeY0PhXRejYVpEg23cMhBL4h
- CjgkzPsBNyenm1fcTB2AwoT8XA4iTKggm0GPJlZ8jFp29t40RIvXZnRJnJe+AtvX3eIhZqWox
- cJXdt8aCJ/zJOfN1SVLL75WiNgPGrgfXEHZCKirf/3F6O6uU7t2gUTqduW1vk5GioS7AEM23J
- xrcSQKXAPNHmlbm2kDvmfRL8HJDv5jMB+PjUjBQ7i0VI/mt5ydpww8TevA+A7e3DrDpxEU19B
- ZnlxGiF5Nq0PZeMNXGMZ+tl175FE4CVykyxHu0TrYr/as=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308095320.1961469-3-howardyen@google.com>
 
-Am 10.03.24 um 03:39 schrieb Kuppuswamy Sathyanarayanan:
+Hi Howard,
 
-> On Sat, Mar 9, 2024 at 11:17=E2=80=AFAM Armin Wolf <W_Armin@gmx.de> wrot=
-e:
->> Am 09.03.24 um 18:07 schrieb Kuppuswamy Sathyanarayanan:
->>
->>> On 3/8/24 1:05 PM, Armin Wolf wrote:
->>>> The ACPI EC address space handler currently only supports
->>>> reading/writing 8 bit values. Some firmware implementations however
->>>> want to access for example 16 bit values, which is prefectly legal
-> /s/prefectly/perfectly
->
->>>> according to the ACPI spec.
->>>>
->>>> Add support for reading/writing such values.
->>>>
->>>> Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
->>>>
->>>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
->>>> ---
->>>> Changes since v3:
->>>> - change type of variable i to size_t
->>>>
->>>> Changes since v2:
->>>> - fix address overflow check
->>>>
->>>> Changes since v1:
->>>> - use BITS_PER_BYTE
->>>> - validate that number of bytes to read/write does not overflow the
->>>>     address
->>>> ---
->>>>    drivers/platform/x86/wmi.c | 49 ++++++++++++++++++++++++++++++----=
-----
->>>>    1 file changed, 39 insertions(+), 10 deletions(-)
->>>>
->>>> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
->>>> index 1920e115da89..d9bf6d452b3a 100644
->>>> --- a/drivers/platform/x86/wmi.c
->>>> +++ b/drivers/platform/x86/wmi.c
->>>> @@ -1153,6 +1153,34 @@ static int parse_wdg(struct device *wmi_bus_de=
-v, struct platform_device *pdev)
->>>>       return 0;
->>>>    }
->>>>
->>>> +static int ec_read_multiple(u8 address, u8 *buffer, size_t bytes)
->>>> +{
->>>> +    size_t i;
->>>> +    int ret;
->>>> +
->>>> +    for (i =3D 0; i < bytes; i++) {
->>>> +            ret =3D ec_read(address + i, &buffer[i]);
->>>> +            if (ret < 0)
->>>> +                    return ret;
->>>> +    }
->>>> +
->>>> +    return 0;
->>>> +}
->>> Why not use ec_transaction?
->> Hi,
->>
->> because ec_transaction() is meant to send raw commands to the EC. And A=
-FAIK read/write transactions can only transfer a
->> single byte at once, so using ec_transaction() would yield no benefit h=
-ere.
->  From the implementation, I don't see any length restriction. If it is
-> a functional restriction, then fine.
->
-> int ec_transaction(u8 command,
->                     const u8 *wdata, unsigned wdata_len,
->                     u8 *rdata, unsigned rdata_len)
-> {
->          struct transaction t =3D {.command =3D command,
->                                  .wdata =3D wdata, .rdata =3D rdata,
->                                  .wlen =3D wdata_len, .rlen =3D rdata_le=
-n};
->
->          if (!first_ec)
->                  return -ENODEV;
->
->          return acpi_ec_transaction(first_ec, &t);
-> }
-> EXPORT_SYMBOL(ec_transaction);
+kernel test robot noticed the following build errors:
 
-Since we are using the ACPI_EC_COMMAND_READ/_WRITE, we can only read/write=
- a single byte, as specified
-in ACPI (12.3.1 and 12.3.2).
+[auto build test ERROR on usb/usb-testing]
+[also build test ERROR on usb/usb-next usb/usb-linus char-misc/char-misc-testing char-misc/char-misc-next char-misc/char-misc-linus driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.8-rc7 next-20240308]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-Armin Wolf
+url:    https://github.com/intel-lab-lkp/linux/commits/Howard-Yen/dma-coherent-add-support-for-multi-coherent-rmems-per-dev/20240308-175649
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+patch link:    https://lore.kernel.org/r/20240308095320.1961469-3-howardyen%40google.com
+patch subject: [PATCH v4 2/2] usb: host: xhci-plat: add support for multi memory regions
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240310/202403101400.PHmsnLOh-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240310/202403101400.PHmsnLOh-lkp@intel.com/reproduce)
 
->>>> +
->>>> +static int ec_write_multiple(u8 address, u8 *buffer, size_t bytes)
->>>> +{
->>>> +    size_t i;
->>>> +    int ret;
->>>> +
->>>> +    for (i =3D 0; i < bytes; i++) {
->>>> +            ret =3D ec_write(address + i, buffer[i]);
->>>> +            if (ret < 0)
->>>> +                    return ret;
->>>> +    }
->>>> +
->>>> +    return 0;
->>>> +}
->>> Same as above.
->>>> +
->>>>    /*
->>>>     * WMI can have EmbeddedControl access regions. In which case, we =
-just want to
->>>>     * hand these off to the EC driver.
->>>> @@ -1162,27 +1190,28 @@ acpi_wmi_ec_space_handler(u32 function, acpi_=
-physical_address address,
->>>>                         u32 bits, u64 *value,
->>>>                         void *handler_context, void *region_context)
->>>>    {
->>>> -    int result =3D 0;
->>>> -    u8 temp =3D 0;
->>>> +    int bytes =3D bits / BITS_PER_BYTE;
->>>> +    int ret;
->>>> +
->>>> +    if (!value)
->>>> +            return AE_NULL_ENTRY;
->>>>
->>>> -    if ((address > 0xFF) || !value)
->>>> +    if (!bytes || bytes > sizeof(*value))
->>>>               return AE_BAD_PARAMETER;
->>>>
->>>> -    if (function !=3D ACPI_READ && function !=3D ACPI_WRITE)
->>>> +    if (address > U8_MAX || address + bytes - 1 > U8_MAX)
->>>>               return AE_BAD_PARAMETER;
->>>>
->>>> -    if (bits !=3D 8)
->>> Since you want to support only 16 bit reads/writes, can you check for =
->16
->> The 16 bit reads/writes where meant as an example, ACPI code can reques=
-t much larger values.
->> The WMI EC handler should be able to handle those, just like the regula=
-r ACPI EC handler.
->>
-> Got it.
->
->> Thanks,
->> Armin Wolf
->>
->>>> +    if (function !=3D ACPI_READ && function !=3D ACPI_WRITE)
->>>>               return AE_BAD_PARAMETER;
->>>>
->>>>       if (function =3D=3D ACPI_READ) {
->>>> -            result =3D ec_read(address, &temp);
->>>> -            *value =3D temp;
->>>> +            ret =3D ec_read_multiple(address, (u8 *)value, bytes);
->>>>       } else {
->>>> -            temp =3D 0xff & *value;
->>>> -            result =3D ec_write(address, temp);
->>>> +            ret =3D ec_write_multiple(address, (u8 *)value, bytes);
->>>>       }
->>>>
->>>> -    switch (result) {
->>>> +    switch (ret) {
->>>>       case -EINVAL:
->>>>               return AE_BAD_PARAMETER;
->>>>       case -ENODEV:
->>>> --
->>>> 2.39.2
->>>>
->>>>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403101400.PHmsnLOh-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/usb/host/xhci-plat.c: In function 'xhci_plat_probe':
+>> drivers/usb/host/xhci-plat.c:201:23: error: implicit declaration of function 'of_reserved_mem_device_init_by_idx' [-Werror=implicit-function-declaration]
+     201 |                 ret = of_reserved_mem_device_init_by_idx(sysdev, sysdev->of_node, i);
+         |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/usb/host/xhci-plat.c:205:33: error: implicit declaration of function 'of_reserved_mem_device_release' [-Werror=implicit-function-declaration]
+     205 |                                 of_reserved_mem_device_release(sysdev);
+         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/of_reserved_mem_device_init_by_idx +201 drivers/usb/host/xhci-plat.c
+
+   144	
+   145	int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const struct xhci_plat_priv *priv_match)
+   146	{
+   147		const struct hc_driver	*driver;
+   148		struct device		*tmpdev;
+   149		struct xhci_hcd		*xhci;
+   150		struct resource         *res;
+   151		struct usb_hcd		*hcd, *usb3_hcd;
+   152		int			i, count, ret;
+   153		int			irq;
+   154		struct xhci_plat_priv	*priv = NULL;
+   155		bool			of_match;
+   156	
+   157		if (usb_disabled())
+   158			return -ENODEV;
+   159	
+   160		driver = &xhci_plat_hc_driver;
+   161	
+   162		irq = platform_get_irq(pdev, 0);
+   163		if (irq < 0)
+   164			return irq;
+   165	
+   166		if (!sysdev)
+   167			sysdev = &pdev->dev;
+   168	
+   169		ret = dma_set_mask_and_coherent(sysdev, DMA_BIT_MASK(64));
+   170		if (ret)
+   171			return ret;
+   172	
+   173		pm_runtime_set_active(&pdev->dev);
+   174		pm_runtime_enable(&pdev->dev);
+   175		pm_runtime_get_noresume(&pdev->dev);
+   176	
+   177		hcd = __usb_create_hcd(driver, sysdev, &pdev->dev,
+   178				       dev_name(&pdev->dev), NULL);
+   179		if (!hcd) {
+   180			ret = -ENOMEM;
+   181			goto disable_runtime;
+   182		}
+   183	
+   184		hcd->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+   185		if (IS_ERR(hcd->regs)) {
+   186			ret = PTR_ERR(hcd->regs);
+   187			goto put_hcd;
+   188		}
+   189	
+   190		hcd->rsrc_start = res->start;
+   191		hcd->rsrc_len = resource_size(res);
+   192	
+   193		xhci = hcd_to_xhci(hcd);
+   194	
+   195		xhci->allow_single_roothub = 1;
+   196	
+   197		count = of_property_count_elems_of_size(sysdev->of_node, "memory-region",
+   198							sizeof(u32));
+   199	
+   200		for (i = 0; i < count; i++) {
+ > 201			ret = of_reserved_mem_device_init_by_idx(sysdev, sysdev->of_node, i);
+   202			if (ret) {
+   203				dev_err(sysdev, "Could not get reserved memory\n");
+   204				if (i > 0)
+ > 205					of_reserved_mem_device_release(sysdev);
+   206	
+   207				return ret;
+   208			}
+   209		}
+   210	
+   211		/*
+   212		 * Not all platforms have clks so it is not an error if the
+   213		 * clock do not exist.
+   214		 */
+   215		xhci->reg_clk = devm_clk_get_optional(&pdev->dev, "reg");
+   216		if (IS_ERR(xhci->reg_clk)) {
+   217			ret = PTR_ERR(xhci->reg_clk);
+   218			goto put_hcd;
+   219		}
+   220	
+   221		xhci->clk = devm_clk_get_optional(&pdev->dev, NULL);
+   222		if (IS_ERR(xhci->clk)) {
+   223			ret = PTR_ERR(xhci->clk);
+   224			goto put_hcd;
+   225		}
+   226	
+   227		xhci->reset = devm_reset_control_array_get_optional_shared(&pdev->dev);
+   228		if (IS_ERR(xhci->reset)) {
+   229			ret = PTR_ERR(xhci->reset);
+   230			goto put_hcd;
+   231		}
+   232	
+   233		ret = reset_control_deassert(xhci->reset);
+   234		if (ret)
+   235			goto put_hcd;
+   236	
+   237		ret = clk_prepare_enable(xhci->reg_clk);
+   238		if (ret)
+   239			goto err_reset;
+   240	
+   241		ret = clk_prepare_enable(xhci->clk);
+   242		if (ret)
+   243			goto disable_reg_clk;
+   244	
+   245		if (priv_match) {
+   246			priv = hcd_to_xhci_priv(hcd);
+   247			/* Just copy data for now */
+   248			*priv = *priv_match;
+   249		}
+   250	
+   251		device_set_wakeup_capable(&pdev->dev, true);
+   252	
+   253		xhci->main_hcd = hcd;
+   254	
+   255		/* imod_interval is the interrupt moderation value in nanoseconds. */
+   256		xhci->imod_interval = 40000;
+   257	
+   258		/* Iterate over all parent nodes for finding quirks */
+   259		for (tmpdev = &pdev->dev; tmpdev; tmpdev = tmpdev->parent) {
+   260	
+   261			if (device_property_read_bool(tmpdev, "usb2-lpm-disable"))
+   262				xhci->quirks |= XHCI_HW_LPM_DISABLE;
+   263	
+   264			if (device_property_read_bool(tmpdev, "usb3-lpm-capable"))
+   265				xhci->quirks |= XHCI_LPM_SUPPORT;
+   266	
+   267			if (device_property_read_bool(tmpdev, "quirk-broken-port-ped"))
+   268				xhci->quirks |= XHCI_BROKEN_PORT_PED;
+   269	
+   270			if (device_property_read_bool(tmpdev, "xhci-sg-trb-cache-size-quirk"))
+   271				xhci->quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
+   272	
+   273			device_property_read_u32(tmpdev, "imod-interval-ns",
+   274						 &xhci->imod_interval);
+   275		}
+   276	
+   277		/*
+   278		 * Drivers such as dwc3 manages PHYs themself (and rely on driver name
+   279		 * matching for the xhci platform device).
+   280		 */
+   281		of_match = of_match_device(pdev->dev.driver->of_match_table, &pdev->dev);
+   282		if (of_match) {
+   283			hcd->usb_phy = devm_usb_get_phy_by_phandle(sysdev, "usb-phy", 0);
+   284			if (IS_ERR(hcd->usb_phy)) {
+   285				ret = PTR_ERR(hcd->usb_phy);
+   286				if (ret == -EPROBE_DEFER)
+   287					goto disable_clk;
+   288				hcd->usb_phy = NULL;
+   289			} else {
+   290				ret = usb_phy_init(hcd->usb_phy);
+   291				if (ret)
+   292					goto disable_clk;
+   293			}
+   294		}
+   295	
+   296		hcd->tpl_support = of_usb_host_tpl_support(sysdev->of_node);
+   297	
+   298		if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
+   299			hcd->skip_phy_initialization = 1;
+   300	
+   301		if (priv && (priv->quirks & XHCI_SG_TRB_CACHE_SIZE_QUIRK))
+   302			xhci->quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
+   303	
+   304		ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+   305		if (ret)
+   306			goto disable_usb_phy;
+   307	
+   308		if (!xhci_has_one_roothub(xhci)) {
+   309			xhci->shared_hcd = __usb_create_hcd(driver, sysdev, &pdev->dev,
+   310							    dev_name(&pdev->dev), hcd);
+   311			if (!xhci->shared_hcd) {
+   312				ret = -ENOMEM;
+   313				goto dealloc_usb2_hcd;
+   314			}
+   315	
+   316			if (of_match) {
+   317				xhci->shared_hcd->usb_phy = devm_usb_get_phy_by_phandle(sysdev,
+   318											"usb-phy", 1);
+   319				if (IS_ERR(xhci->shared_hcd->usb_phy)) {
+   320					xhci->shared_hcd->usb_phy = NULL;
+   321				} else {
+   322					ret = usb_phy_init(xhci->shared_hcd->usb_phy);
+   323					if (ret)
+   324						dev_err(sysdev, "%s init usb3phy fail (ret=%d)\n",
+   325							__func__, ret);
+   326				}
+   327			}
+   328	
+   329			xhci->shared_hcd->tpl_support = hcd->tpl_support;
+   330		}
+   331	
+   332		usb3_hcd = xhci_get_usb3_hcd(xhci);
+   333		if (usb3_hcd && HCC_MAX_PSA(xhci->hcc_params) >= 4)
+   334			usb3_hcd->can_do_streams = 1;
+   335	
+   336		if (xhci->shared_hcd) {
+   337			ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
+   338			if (ret)
+   339				goto put_usb3_hcd;
+   340		}
+   341	
+   342		device_enable_async_suspend(&pdev->dev);
+   343		pm_runtime_put_noidle(&pdev->dev);
+   344	
+   345		/*
+   346		 * Prevent runtime pm from being on as default, users should enable
+   347		 * runtime pm using power/control in sysfs.
+   348		 */
+   349		pm_runtime_forbid(&pdev->dev);
+   350	
+   351		return 0;
+   352	
+   353	
+   354	put_usb3_hcd:
+   355		usb_put_hcd(xhci->shared_hcd);
+   356	
+   357	dealloc_usb2_hcd:
+   358		usb_remove_hcd(hcd);
+   359	
+   360	disable_usb_phy:
+   361		usb_phy_shutdown(hcd->usb_phy);
+   362	
+   363	disable_clk:
+   364		clk_disable_unprepare(xhci->clk);
+   365	
+   366	disable_reg_clk:
+   367		clk_disable_unprepare(xhci->reg_clk);
+   368	
+   369	err_reset:
+   370		reset_control_assert(xhci->reset);
+   371	
+   372	put_hcd:
+   373		usb_put_hcd(hcd);
+   374	
+   375	disable_runtime:
+   376		pm_runtime_put_noidle(&pdev->dev);
+   377		pm_runtime_disable(&pdev->dev);
+   378	
+   379		return ret;
+   380	}
+   381	EXPORT_SYMBOL_GPL(xhci_plat_probe);
+   382	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
