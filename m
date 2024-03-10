@@ -1,152 +1,155 @@
-Return-Path: <linux-kernel+bounces-98111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 711C4877544
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:22:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B92877548
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:52:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6FCF2822F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 04:22:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17FE91C21236
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 04:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAD817556;
-	Sun, 10 Mar 2024 04:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F42EEAB;
+	Sun, 10 Mar 2024 04:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="AWrc1Ahm";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eFYOOjlX"
-Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hdduhlcN"
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8907A200A6;
-	Sun, 10 Mar 2024 04:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95AF37FE;
+	Sun, 10 Mar 2024 04:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710044540; cv=none; b=P1txaR9Vb0tlQc6rHozh5N9fwcSAu7Qgtxqr5XxQhmHkMihKGTIINNA3KfaH0s6CwiB+XCpeT702nnQt9LU5NKveI26g7c934ycRb3o15/u9ccow5pHQAtGj/c/OQplTYR13///Ohb8a36AhZhy4UHq5nkoWxPlWgwZiDHs7p40=
+	t=1710046334; cv=none; b=Bo2b1jIESXZVeqfruewIdEzUmOpWbyLkcRy94M4A4QbrNWe49f6i/Pz77uDy1p2IIIHYssI764Esky70KchewTAwjlorOONhDd9v8Wr5+qAGKoEpuu0SjVjalCkEjDA/Of7mnDwNIEq2gaY9+mxGwtk7lMhM1MQMlOsahpnMEhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710044540; c=relaxed/simple;
-	bh=6x4rOujCk6PjmetK1+thfv9gMafF0qqaZsS56g2DwnU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EhRDifayWeVXwM0+DeP+e/B2KNZzCUqhueYgiSY1uy/sbIeiq+qZhBYUkGHoXB24uCcX69On40MAOpguC6SiAktXctYPuZ0c+Yxsq6d6TKONalUArJQfpRqcGVwrypGvi+qVmahLYec44a18KPK0udqbdPYcL/VTYE3raB39V2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=AWrc1Ahm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eFYOOjlX; arc=none smtp.client-ip=64.147.123.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.west.internal (Postfix) with ESMTP id 20F201C0007B;
-	Sat,  9 Mar 2024 23:22:17 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sat, 09 Mar 2024 23:22:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1710044536; x=1710130936; bh=pP1xzu5THbxC+z+FgZ5lH
-	zlSutCRYC/t015Db/fFKrM=; b=AWrc1Ahm9TVCQIdyPBguZcxbVtoQrHiQSWS/g
-	gEIpYwVgYv22W1q/89v5NSfzKscUIn/0CYL7i5+eUU5bHKzzpxyLBiPJ1EvQzK51
-	6J4rmKdsqagxJxuL6PEawliIkfMPqkir1tB1Xrf3+D1wcsPg+Pql72+L6S+TZouv
-	q9ldnThjB5S3YYMxL5otfh/aZR4UQ3iCmO7RbNGMNMC9jpEJAfS/YjiriNSnhzwU
-	eh/7Kv8fZUkojhMtzFfidTlVDtktKWZlhKk4+xyi8e7J4HAciWtrWw6TQ+b9IwS3
-	LUPcAj6eiwt4B/i682QUlF/XMYN7NVoNJ8ICV0JkGLjsHXL1w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710044536; x=1710130936; bh=pP1xzu5THbxC+z+FgZ5lHzlSutCR
-	YC/t015Db/fFKrM=; b=eFYOOjlXxHUIX5Y1ZfPR7q466upv+H1hhCi5vaxRBELS
-	BoQpJ4STc9O6luBubasohwqhO9WJK17SYBm/NmzGWCGcXqsa6K3HczxQn7tEQnBM
-	ku8UbbI6avyGfQOfSWHOL2U0AkTSwXTKTHIXSBDs+xloE/aAQYRmbTsFWCw+SjgC
-	f7uzS6F6K34Zu1vb7Ye5ttjgFzF8zJyIItiXigFSRYbkgImFq8WiD+A7XWHEq8Z/
-	HVlAxzhUf22iqzyFEs+wXOvkcHm1E/M7Cz+X0PE26kNc/PCbx07BJdgRLhYe2Aao
-	+myyV7FLBx12JZQYpcdw2olI4wPoP/5gQ8R4rN1MgQ==
-X-ME-Sender: <xms:eDXtZRlhq82iNz5Xug7eV1h2EMNhfNUf_TDk-R6Wnh9GK3bWUiC6Rg>
-    <xme:eDXtZc3pNgToO_uqCfe_3N6gukH2WOlZcqjBVNRF6HhGT4WRXno41_-OE0dbWh3Yg
-    ZylNDx8Q-HioO6Gnms>
-X-ME-Received: <xmr:eDXtZXoSzGf3mDPFNe_NzGLSxmRLFnT2N9efETXDMq7Lnc-Az9sWexSkQwF7>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieekgdeilecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
-    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
-    vghsrdguvghvqeenucggtffrrghtthgvrhhnpefgudejtdfhuddukefffeekiefftddtvd
-    fhgeduudeuffeuhfefgfegfeetvedvgeenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:eDXtZRnm2KM7RQQYluBPA74HSSpRgkSyZQFQeUnDpljju5naOID3xA>
-    <xmx:eDXtZf0yZKswfBAz2gxl4gPSYcThCWy_6BdStfDIuoeBTI4IYWlmQA>
-    <xmx:eDXtZQugm-doUM1o-KviYf-NQPFbRiXbTj2DHuLwM9n3s-VGHdX-3Q>
-    <xmx:eDXtZaQYxT__sANUbXaGupFE2taXKUL5Ij2e37ZF7WrNCGXxLBJAFmiu6u8>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 9 Mar 2024 23:22:14 -0500 (EST)
-From: "Luke D. Jones" <luke@ljones.dev>
-To: platform-driver-x86@vger.kernel.org
-Cc: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH] platform/x86: asus-wmi: add support variant of TUF RGB
-Date: Sun, 10 Mar 2024 17:22:08 +1300
-Message-ID: <20240310042208.80062-1-luke@ljones.dev>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710046334; c=relaxed/simple;
+	bh=rnZBnPJXAGMiv3hAs+IMwlsVDiOimgyYd0AQtEQwYQ0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rhrR5HHIk6NP/QUr0N2fSh80xN1WqN33tFbjkrGiamc9eOVt60NEGDDIAhBm/vrY8s5Znm8BGfnX3HnvzDKrDMiZVaWajVHFqZEpFqAWeq5g34/6NkV/pfppYph9/3WANKBxtT1JjLjgFF1MP1lhLCFpVxvsmxyPqb69QiRgGXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hdduhlcN; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-22181888b88so2601276fac.1;
+        Sat, 09 Mar 2024 20:52:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710046331; x=1710651131; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e39ug9A3ukLDXoGd4+CBUyAmYkxnieiDNoXwF240hBs=;
+        b=hdduhlcNU3FvE0K+wqFCSdNRdQ5wpzP4hFAs3cZOe7ziXhE0pYoWKl+EK5il6d+z+j
+         z1s6yPOPj/+US8u6QqIlCMAVs2npNFa1MBpK2CEf2abUKgFzpJclYiXvp777kHQCvxUp
+         vkpw2mzQKjFQeZlGcHFOYfwJhVL8Q3i0r+AcZ1HqnlX8ldJafC8IyVTcGH4Vs1r3ka5v
+         ihT6NH1w8Be6c78KiTVvQUXTT0JTvLeulGyFki3dwtEerOE+DyBzVL+ZEmt0Ecj36/gB
+         z9nSsmWvGu+N9OXVir0bNYiI1t9BLdlLXOsdyhowqL+Cc0Opfm/OvZFJ7C3Ow3UqwsDy
+         dByg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710046331; x=1710651131;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e39ug9A3ukLDXoGd4+CBUyAmYkxnieiDNoXwF240hBs=;
+        b=gnTNLKoWMbGGT+y1dWcYD5Wx/Z/q+i/V4oPgIgQFCv/EAfC6D4TCRKPlH/nuDVG7EV
+         N5Q/ThUXygpO/nfnBtoisqT6FvrnqdUPPc0QZKabeuEGv/NyB35YCMPzePUNGcVfNm1x
+         O9uTOCk892VzIk1u7xgAsCMWZxURyhOV1OuZxmTXXXbZtKbV6yYbjz5VSZ5HXuA7SoHg
+         WePKehVblnBa6vND2HJU1YvgFrlwruBlbXFdjxOCG2PPVCR6RufsiEw0IkAFBnpEMbqj
+         WR7FwswtTPjCfXWU45mT3R12V2Bk/lKQ8opw+ZSYbQSH3U1/ZIlCnNYN5cXwETHnDesN
+         Prag==
+X-Forwarded-Encrypted: i=1; AJvYcCXEDtYBHX6OHehgl+Wdwfwq0wYrZMmCoyLTdIb2xN0owAFfN8Pc8NZfiLQd6jQTHy/VK7nvPeWCsBHLIhXplLt2qv2kZRG6RMkZ1/ZQexqhtyLv1mO7VhwH5E1oijEtlU8S/6n19OBdkg==
+X-Gm-Message-State: AOJu0YyQV1nRLoY6D1k/9pdaYNyG7KV5QeKfMHzYc4zaDVtEGvkT6vKw
+	8BSyXq3+HaF+Ftno9Oa4NTp+zvAx+W3G7y1Hx3Ek7U0pDsGgTKUu
+X-Google-Smtp-Source: AGHT+IH5LLU/u/cQ7yF6/mCXiOI4Ui0zwopOeA4lWCTqcZf2+jyBLCPeco+OEP2URzT0XSiiuBRP9w==
+X-Received: by 2002:a05:6870:a709:b0:221:c58f:a8b with SMTP id g9-20020a056870a70900b00221c58f0a8bmr2718734oam.17.1710046331584;
+        Sat, 09 Mar 2024 20:52:11 -0800 (PST)
+Received: from tresc054937.tre-sc.gov.br ([2804:3b0:4104:200:2be:43ff:febc:c2fb])
+        by smtp.gmail.com with ESMTPSA id e11-20020a63e00b000000b005dc48e56191sm1984659pgh.11.2024.03.09.20.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Mar 2024 20:52:10 -0800 (PST)
+From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Subject: [PATCH net-next 0/4] net: dsa: realtek: fix LED support for
+ rtl8366
+Date: Sun, 10 Mar 2024 01:51:57 -0300
+Message-Id: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG087WUC/x3MSwqAMAxF0a1Ixga0fkC3Ig6CPjUoVdoiBXHvF
+ odncO9DHk7hqc8ecrjV62kTyjyjaRO7gnVOJlOYujClYQc5AnY+MLO0bSOoOummhlJxOSwa/9t
+ AFoEtYqDxfT/HorxUZwAAAA==
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Luiz Angelo Daros de Luca <luizluca@gmail.com>, devicetree@vger.kernel.org
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2258; i=luizluca@gmail.com;
+ h=from:subject:message-id; bh=rnZBnPJXAGMiv3hAs+IMwlsVDiOimgyYd0AQtEQwYQ0=;
+ b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBl7Tx2bRUkh1Rqj+L30uudk4LMjxkBp5s6EgSZC
+ G1b0eljfMaJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZe08dgAKCRC7Edu60Qc7
+ VvcqCACbcZpA9vlXsdmIQnr2ellxRNzxmSYnz0WXfwE38MzGfGB+JnzlnUZ0OIHbEfj0mDJX8EI
+ PVCDmrM2y04jYTcEeoazXZXiRgP72LHf1ZrjUktoBc2c4upAMBby33kFnBV4n446swJhxNyBN82
+ 9sCL01ZIRZ/tb+cAq7iBX2Y12a21z7x95uQko48Xc3H+Vgm7hly2h1dstRH4d0QhuUJlQ7jVhhA
+ X37PnX1tADgfePyc/SztGh/YwzCNqmJPIYYAdZy0Hy+ROL3be3RxNwoCUS41XHNxh/1h0ZznQNe
+ SuRuHZ7kKUx6NooS2MUcXxSATE2ophEi6xsmwgDThb1Jjq+j
+X-Developer-Key: i=luizluca@gmail.com; a=openpgp;
+ fpr=1107284785CD5B3A12FA2FF8BB11DBBAD1073B56
 
-Adds support for a second TUF RGB wmi call that some versions of the TUF
-laptop come with. Also adjusts existing support to select whichever is
-available.
+This series fixes the LED support for rtl8366. The existing code was not
+tested in a device with switch LEDs and it was using a flawed logic.
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
+The driver now keeps the default LED configuration if nothing requests a
+different behavior. This may be enough for most devices. This can be
+achieved either by omitting the LED from the device-tree or configuring
+all LEDs in a group with the default state set to "keep".
+
+The hardware trigger for LEDs in Realtek switches is shared among all
+LEDs in a group. This behavior doesn't align well with the Linux LED
+API, which controls LEDs individually. Once the OS changes the
+brightness of a LED in a group still triggered by the hardware, the
+entire group switches to software-controlled LEDs. This shared behavior
+also prevents offloading the trigger to the hardware as it would require
+an orchestration between LEDs in a group, not currently present in the
+LED API.
+
+The assertion of device hardware reset during driver removal was removed
+because it was causing an issue with the LED release code. Devres
+devices are released after the driver's removal is executed. Asserting
+the reset at that point was causing timeout errors during LED release
+when it attempted to turn off the LED.
+ 
+
+Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
 ---
- drivers/platform/x86/asus-wmi.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Changes in v1:
+- Rebased on new relatek DSA drivers
+- Improved commit messages
+- Added commit to remove the reset assert during .remove
+- Link to RFC: https://lore.kernel.org/r/20240106184651.3665-1-luizluca@gmail.com
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 2cf695289655..ca8c73c15fcc 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -280,6 +280,7 @@ struct asus_wmi {
- 	bool nv_temp_tgt_available;
- 
- 	bool kbd_rgb_mode_available;
-+	u32 kbd_rgb_dev;
- 	bool kbd_rgb_state_available;
- 
- 	bool throttle_thermal_policy_available;
-@@ -870,6 +871,7 @@ static ssize_t kbd_rgb_mode_store(struct device *dev,
- 				 struct device_attribute *attr,
- 				 const char *buf, size_t count)
- {
-+	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	u32 cmd, mode, r, g, b, speed;
- 	int err;
- 
-@@ -906,7 +908,7 @@ static ssize_t kbd_rgb_mode_store(struct device *dev,
- 		speed = 0xeb;
- 	}
- 
--	err = asus_wmi_evaluate_method3(ASUS_WMI_METHODID_DEVS, ASUS_WMI_DEVID_TUF_RGB_MODE,
-+	err = asus_wmi_evaluate_method3(ASUS_WMI_METHODID_DEVS, asus->kbd_rgb_dev,
- 			cmd | (mode << 8) | (r << 16) | (g << 24), b | (speed << 8), NULL);
- 	if (err)
- 		return err;
-@@ -4537,6 +4539,14 @@ static int asus_wmi_add(struct platform_device *pdev)
- 		asus->gpu_mux_dev = ASUS_WMI_DEVID_GPU_MUX_VIVO;
- 	}
- 
-+	if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE)) {
-+		asus->kbd_rgb_mode_available = true;
-+		asus->kbd_rgb_dev = ASUS_WMI_DEVID_TUF_RGB_MODE;
-+	} else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE2)) {
-+		asus->kbd_rgb_mode_available = true;
-+		asus->kbd_rgb_dev = ASUS_WMI_DEVID_TUF_RGB_MODE2;
-+	}
-+
- 	err = fan_boost_mode_check_present(asus);
- 	if (err)
- 		goto fail_fan_boost_mode;
+---
+Luiz Angelo Daros de Luca (4):
+      dt-bindings: net: dsa: realtek: describe LED usage
+      net: dsa: realtek: keep default LED state in rtl8366rb
+      net: dsa: realtek: do not assert reset on remove
+      net: dsa: realtek: add LED drivers for rtl8366rb
+
+ .../devicetree/bindings/net/dsa/realtek.yaml       |  46 +++
+ drivers/net/dsa/realtek/rtl8366rb.c                | 341 ++++++++++++++++-----
+ drivers/net/dsa/realtek/rtl83xx.c                  |   7 +-
+ 3 files changed, 306 insertions(+), 88 deletions(-)
+---
+base-commit: d7e14e534493328cc5f67baaff2b0c23d32b0a57
+change-id: 20240212-realtek-led-a665ae39a9c5
+
+Best regards,
 -- 
-2.44.0
+Luiz Angelo Daros de Luca <luizluca@gmail.com>
 
 
