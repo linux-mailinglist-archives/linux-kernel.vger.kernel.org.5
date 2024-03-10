@@ -1,133 +1,175 @@
-Return-Path: <linux-kernel+bounces-98077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7B068774C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:25:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB6238774C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:28:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D13BC1C20A7B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:25:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2152BB20E25
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0189ED8;
-	Sun, 10 Mar 2024 01:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FF21102;
+	Sun, 10 Mar 2024 01:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gzL89X0M"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="BvrBEEYR"
+Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2018.outbound.protection.outlook.com [40.92.103.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED827FB
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:25:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710033939; cv=none; b=XrSUeJZuHm5HCy283gccDthPeYyIguUf/VXeL5UrJz05kuRl07ZgpsSgHhuZ6LHKkZqF6/tonNyMar1Itf9mE4ocFK5K/OGk7HX85p8x9S0w5wkYTfj0uwSVj5GgFIQYG3h4tyht85Vq18sl2WTmPBFReCNXJv0AN6oeqmR2jBc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710033939; c=relaxed/simple;
-	bh=G40V4vpPRhyixM7l44qRiTMIVlsMvJ2N4QjvotB9vtg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=QJM0MHG+vlp0jrLwPI2iBq6oOWI5V5ImShD1Xs62MNIlxZheiJujwZm4eT2ecZlEkzVhng4tNBcdlrO+ooWPos4hR6tvzArFzDIlqydxXn/63mw4p1JMK6bw8ptZwIj0MsXPvi628RaZq/ixv7pTRNy9kpIzN1NEMeDKbrSdd9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gzL89X0M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48667C433C7;
-	Sun, 10 Mar 2024 01:25:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710033938;
-	bh=G40V4vpPRhyixM7l44qRiTMIVlsMvJ2N4QjvotB9vtg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=gzL89X0MUOzZfAHmgAH2AUvQ1p9AYy6Y7dgcGvWbHWwnzil45oavNvtc97VJli/k7
-	 lJzNYz7C+pUylhduMlA6nBjLK57Pl0vXy2fEI5HTLNyGbA9SSj79hFKOs7qKisGkJT
-	 asX+hTHA/nRQNx5dSDO4ggnfI8wlkHpNKxt/dOJ309DrId7LCP6HUQc2fkP4e03PgF
-	 PB2TLLKSYSb70n1crPU4JiL+2rtTV9+YcsDJGftPdLof0nvgOsrf1XoW4+TUaXw8F9
-	 pO3Aeo3KWv37JtusdK7W6RYNsOIFB5DScH6tymFGaxNwyDGImtoSNNWWipzua5P2pS
-	 XGw9xjqRwd7mg==
-Date: Sun, 10 Mar 2024 10:25:34 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] bootconfig: do not put quotes on cmdline items
- unless necessary
-Message-Id: <20240310102534.cf79e09037df23b4f51981b0@kernel.org>
-In-Reply-To: <20240308124401.1702046-1-linux@rasmusvillemoes.dk>
-References: <20240308124401.1702046-1-linux@rasmusvillemoes.dk>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F935A3D;
+	Sun, 10 Mar 2024 01:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.103.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710034120; cv=fail; b=MztnVTfRGLEZoH1EHP4G6Zh2sbtctix+PsJMV2QKEuXOXNDjE3LF45ODxV6aK+J3TXYGwVt+65FTgjjU1KPDTN8GcJtCS/zrM62bB7GCvN0eBJXxJID+5cNuHiyair6Glzo0w7s4q9HS+c3+WYnJo3A1NQIy6u9fpt5OHHYbkLo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710034120; c=relaxed/simple;
+	bh=3Rsv84CeNI9Pa0gyOgOt852LsxFS1qmw6Too6XFhGvY=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=dIMrGXvdwxXai7wZqnPcbSXEX0DqOHtXsJF4Y6ZoCL7JQck6JQvqrEkHbAnQw1s/et6p1lVE0B+H6nVSlcx1usto7Pqeyt9baE1waKGUNC3wNa2Ys6HuEN5/8qC9L+CTKnlO+ukvwtiBLhj5JwNUpCTDSK/CdcMJezcrmqEdack=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=BvrBEEYR; arc=fail smtp.client-ip=40.92.103.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OPRxi2WXYjuYHneeJ4CMVnO7P1LsDU2TT/BhDwAr3WWOuHN2ekiSObcN5jdtF8PMd6hiP8IH4yl0FsaFmCSJGfOQYKFUvM8fpYPW7U4Xwawp675yljt0DnxmIrGoI7tkI++BA+H5QsBufwtXnbS0wcOJ9RJILg3LpDw9jqljyy2Ktea0YcktStA+hzVYITVoB9Th6jz2sw2EoXp1x9p9acgavOD06dLoYKapIzH+QZqTenRScMJMbe58KcCGWnph9pUIuz1fAPhYhkBYVuNAD5vVKddtfGnPxu+RRmC/yhtUKdZ6OPVE4Pch9WSzAcO0dt7+Rk+6RDy4NHKz1Q7YSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=unwKB+ApOlk/LurKUV01ETkGXytqqN8x6Ibxt+bEHgo=;
+ b=hHHpuXwgWlFA5iWv85ner3DslD/zkj5ZE1p3FKt7jku5/Q8azG8EzCQWu59ETX4eME7OR4JakYkY3Do1QZeRMSaTOndVA1vkylQg/ZvHaphaFhIYTxwAMY8jefuASfAR9XJozd6s9aivsqWnb/Qr0um1yq/LxltrKRK+IAXcCPQ5TKgVUxy7oHRoSbk/hHiaj66EjOpB2aXpHINXuJHSMm5MI7t3V8Hj2vMS6ZkVcjTkBq5ifDQQlErg4/liPLJU+Gst44JoMG1dsBS+pevcr83qTfBYHOMfiroXDE3bJP5LoBFWaN5MoqOKaG18ENtUCFsUFIQZ3aH+UcFStCGBEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=unwKB+ApOlk/LurKUV01ETkGXytqqN8x6Ibxt+bEHgo=;
+ b=BvrBEEYRFf3upNxDetg/zZSzbhncf2C1TSmVhXJ9f60ckoEgNJUxK0J5ButD5Q3ZRAegDyJSB0rh63ZPJa3Y866WviztcPHaRo67bT2sMo5qx2SBCet7CG7VD0427sBrvEv2AMiiY7vUk2HQzL7WpkTnWoMSnNzeEFpERpELIa2UjAt96k7oecb+J702cyA5lPl8zDJaQ88gx03fOmrTmOLAtIeQFJlMXDivOlxp1A+ALzxrfR+DPpIdWlY8q4rMKbcES0NjqJR0/RDzQQV/s0JdzvLGTxxMr8dsERG8pOlgzoIl0wfT7/+o9vdBO5N1DkiLTN5VaM8ugbtKtmp3Wg==
+Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
+ by PN3P287MB2059.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1cd::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.34; Sun, 10 Mar
+ 2024 01:28:29 +0000
+Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ ([fe80::7397:fc50:6da4:7328]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ ([fe80::7397:fc50:6da4:7328%7]) with mapi id 15.20.7362.031; Sun, 10 Mar 2024
+ 01:28:29 +0000
+Message-ID:
+ <MA0P287MB2822F618BC80219AF15358A2FE252@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Date: Sun, 10 Mar 2024 09:28:21 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 2/5] dt-bindings: clock: sophgo: add RP gate clocks
+ for SG2042
+To: Stephen Boyd <sboyd@kernel.org>, Chen Wang <unicornxw@gmail.com>,
+ aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+ devicetree@vger.kernel.org, guoren@kernel.org, haijiao.liu@sophgo.com,
+ inochiama@outlook.com, jszhang@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+ richardcochran@gmail.com, robh+dt@kernel.org, samuel.holland@sifive.com,
+ xiaoguang.xing@sophgo.com
+References: <cover.1708397315.git.unicorn_wang@outlook.com>
+ <49faf8ff209673e27338d4b83948ade86b3c66e4.1708397315.git.unicorn_wang@outlook.com>
+ <066c6fa4b537561ae6b20388a5497d9e.sboyd@kernel.org>
+From: Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <066c6fa4b537561ae6b20388a5497d9e.sboyd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [TK0ap0Ci9p/YhxBGnnsB4bVGg0bkscQn]
+X-ClientProxiedBy: SGAP274CA0005.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::17)
+ To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
+X-Microsoft-Original-Message-ID:
+ <17b0fb41-35f9-475e-996e-40ec9c4717b1@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN3P287MB2059:EE_
+X-MS-Office365-Filtering-Correlation-Id: a789eb73-156e-497b-e377-08dc40a16288
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	epuNRpP8eWCQFL5zb41LjnJ5xqYUsOges9/3TOpb3gDxshBVbHgRHDmWUej+SJ+Tp0ZnuX6qZ7OVkliWrNi15aJlVHDhEGx4ohfjvoBjWECOjkDjmkUWrOsjozy02YLuawME2kgZAIRze2NaTAl1kK3AOUETaHXhV/9Bbd+IoHlo9SSSQyuLNeL06PCPOltfmmXZfXb53VKra6PZsSayvYmDmEtalD/OP7vBNtT8SCOapy4DvofT1aFU+C87464W8J0SbVY+du1YKDBm7CR0Ik2Wm+1ZCsB0rYJlmVgd164MEIBmnGlqvpTU1InH+erbWP22jdcD1WG8fHZhx1kgO3HdGFXW4CTOxsswweZkIKCZFtOh4Kmz1TQuxyAXhk3mAZNMmHH3ztdbNWQONL3N4r1untG4PLFoFDFbXxBv8BNDFA4UvILnMFb7L5BUgUmjB2Cc0jn3XidI1TWDvuj4+nzFXpZw5hB5OXdEMvOkwmuQiBQ8NPONkbT9knuKe/uinbwOsuphBP9JzXfa/kywy3utPlJUNoKUeTPwp2nepyvVsgGNYBPVR5DOLFBnDPMI
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?b0Nrc3Q2UDhEbXRJcXlSSjRhV1gxV3dWMmVjOWRzOHM5cllyM2xSZDZrVFJp?=
+ =?utf-8?B?VnFDSCtvWWJTd2wrZlorZGpXTG41ZUJJZVZPYWRuUTVXaVJ4TXNtazRiaTZk?=
+ =?utf-8?B?VC8yOEdUb1FuVzJGbXh1SnpWY1F4emZod2lBaUVGUkRtZVFHaHJkcHlybkRv?=
+ =?utf-8?B?N2MzZ3ZMVldhSEpza1BwejluRUpZdENYVitVWHFMTWsxcUpQRi9rcUtwT0Fw?=
+ =?utf-8?B?VmhpcUIzcWJLYkFoVVRkdHJRUFRZSUtOU3NGU2NydlJMMzlCK0VRdTU5S2Er?=
+ =?utf-8?B?NHhKNXRSU05lWFN1a3A3bm5pMkdrWHlQcmpKd2dlWWw2VVZqVXovR1VOSmhx?=
+ =?utf-8?B?bkJDdDJQdkZRcWN0d29qdFUrNHR0QU9EbXZIMytERHRQdmhnNUd2YW9HRk9X?=
+ =?utf-8?B?RzdLeEJYdVdnRzRTcVBQQkwrNUR5ZUZPTVN6clFvSFZRWFBRM0kwbXczN2VV?=
+ =?utf-8?B?VHpZalAzZGJHQ2dmWDFuTUNrTW9DeU15YzlhTURaU1A3M2ZKUUVLN1U5L0s1?=
+ =?utf-8?B?VDF6akVmYTQ1K2xXQkQ3U0NrbGV5dUdvaWpCa3ZjUk5HN25jNnc3Z1FVQ1I4?=
+ =?utf-8?B?ZU5SeVY0TzdoM1N3UStjVjc4aHpqRk9ZWjRmWkhYZTRiK1hxN2tLeXBEOXJv?=
+ =?utf-8?B?SDdhSktaY3REcmRHTnFhVkN0Sk5ENFVjM3p1NS9mdFl6bzNpbndPdlNVNEVx?=
+ =?utf-8?B?MVQ4cEMrMTlIdFlNWG9zaXZEZE9LWG9iRGNjejRqTk54S1BxQ29yaEs0V0c1?=
+ =?utf-8?B?RVY0SE5zVlNaUEp5SjhGMXVNVzhtTlhaeFlxbjRncGszWWkxZWxuVGN0M0I1?=
+ =?utf-8?B?M1l5cFlEWmJHeHZiK0xkVWRpaFFTSTJ4dGlDT0U4UDNoa2UrTVU4UnExMGVl?=
+ =?utf-8?B?bTlvVUZsdzQ2dkZyT0ZKVGtra0xUcCtPTlh0U0syRk1EMGExSzM4MWtpVkxD?=
+ =?utf-8?B?ZnVXTmEzeG8wUGJ3U2ZQTGxIL01OdmEyUHlhaFplV0JHYXNLSkd6VzNZejZr?=
+ =?utf-8?B?a0ZGczBoTFk5QlBuQWNUWjQ3VkxFZHluM3FFbisrTzUraHBmV0FXSXU4TTBw?=
+ =?utf-8?B?VVZ4Z1pLd1g1UHUzN0dwdG1Xb1RWbjZCQXRvVTNrZVlxYnVDUURac3VkWnNI?=
+ =?utf-8?B?bjBKeHNrbE1Uc0hYOUVNdDVGVXFnaVBBQVQ5L0VvdmlTbEhlNFA4MU56NHdL?=
+ =?utf-8?B?SGNTMGlLcGxZSlFWRzEwSkxxczNRS29INE1UWnFmTUlsRm1TYXgxbDJKanU0?=
+ =?utf-8?B?ZUxobGs2aitWUFEvLytET01aY0tjd2FjaElqbXV4eFJBYWdwdkRpL3Nua1VU?=
+ =?utf-8?B?TkFsV1pzdUtiVk5mMldSRi90QnJUam5ya0NIZ2U3VG1ReXRCdXRYSFBOZ1oy?=
+ =?utf-8?B?aWpLRkcrb3NiNSs4VDJiV2lkMUZSVmMvYXZyUzBYbGJKVDkrWFdCaXJTUXVt?=
+ =?utf-8?B?WjZQME1aQ1gvNlNyL2h0VmcvQnYwUmZIMEpWdkdOTVBuOTR0MG5WK0RSUW11?=
+ =?utf-8?B?TkpGd1dVQXNxVXV4alo2UHM5UEYxYkp1bGRVLzYwb3krUWtmR1dLYnFSRFR0?=
+ =?utf-8?B?c29DNWN3V2E3Tmd5dWVyTmRMK1pCN1d2K25pVTJoQW1mTWhTZzh4MGh1ZCtO?=
+ =?utf-8?B?Ry9pd2t4MkpzQTVjS1RDOVMzUVhPK1o3bUxwdXE5cXNzdmJqRklScDlkSVZh?=
+ =?utf-8?Q?yL+luMSwYAhJ4WbHdj9z?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a789eb73-156e-497b-e377-08dc40a16288
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2024 01:28:28.3899
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB2059
 
-On Fri,  8 Mar 2024 13:44:01 +0100
-Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
 
-> When trying to migrate to using bootconfig to embed the kernel's and
-> PID1's command line with the kernel image itself, and so allowing
-> changing that without modifying the bootloader, I noticed that
-> /proc/cmdline changed from e.g.
-> 
->   console=ttymxc0,115200n8 cma=128M quiet -- --log-level=notice
-> 
-> to
-> 
->   console="ttymxc0,115200n8" cma="128M" quiet -- --log-level="notice"
-> 
-> The kernel parameters are parsed just fine, and the quotes are indeed
-> stripped from the actual argv[] given to PID1. However, the quoting
-> doesn't really serve any purpose and looks excessive, and might
-> confuse some (naive) userspace tool trying to parse /proc/cmdline. So
-> do not quote the value unless it contains whitespace.
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
-> 
-> v2: use strpbrk(, " \t\r\n") instead of a loop doing isspace().
-> Technically not quite equivalent, but much more readable, and it's
-> quite unlikely anybody has \f or \v or 0xa0 bytes in kernel command
-> line arguments. Perhaps \r and \n, and maybe even \t, could also be
-> dropped from that list, but those at least have some chance of
-> appearing in the wild.
-> 
->  init/main.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/init/main.c b/init/main.c
-> index e24b0780fdff..3dd630132209 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -324,7 +324,7 @@ static int __init xbc_snprint_cmdline(char *buf, size_t size,
->  {
->  	struct xbc_node *knode, *vnode;
->  	char *end = buf + size;
-> -	const char *val;
-> +	const char *val, *q;
->  	int ret;
->  
->  	xbc_node_for_each_key_value(root, knode, val) {
-> @@ -342,8 +342,9 @@ static int __init xbc_snprint_cmdline(char *buf, size_t size,
->  			continue;
->  		}
->  		xbc_array_for_each_value(vnode, val) {
-> -			ret = snprintf(buf, rest(buf, end), "%s=\"%s\" ",
-> -				       xbc_namebuf, val);
+On 2024/3/9 10:15, Stephen Boyd wrote:
+> Quoting Chen Wang (2024-02-19 19:08:59)
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - '#clock-cells'
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    clock-controller@10000000 {
+> This is the same address as the pll binding before this. How does that
+> work? It's the same register area as the pll node. The resulting DTB
+> should only have one compatible for this node.
 
-Can you add a comment that why strpbrk(," \t\r\n") is used here?
-Such comment will help when we change how to parse the cmdline options.
+Hi, Stephen,
+
+This is just examples in bindings file, it should be no problem. The 
+resulting DTS/DTB will have different addresses.
+
+And I see you mentined you have alreay applied this binding to clk-next 
+in another email. right?
 
 Thanks,
 
-> +			q = strpbrk(val, " \t\r\n") ? "\"" : "";
-> +			ret = snprintf(buf, rest(buf, end), "%s=%s%s%s ",
-> +				       xbc_namebuf, q, val, q);
->  			if (ret < 0)
->  				return ret;
->  			buf += ret;
-> -- 
-> 2.40.1.1.g1c60b9335d
-> 
+Chen
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+>> +      compatible = "sophgo,sg2042-rpgate";
+>> +      reg = <0x10000000 0x10000>;
+>> +      clocks = <&clkgen 85>;
+>> +      #clock-cells = <1>;
+>> +    };
 
