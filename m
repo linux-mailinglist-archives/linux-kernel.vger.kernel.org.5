@@ -1,139 +1,100 @@
-Return-Path: <linux-kernel+bounces-98210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB8B877693
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 13:34:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 256A887769A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 13:37:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 707381C209F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:34:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A975FB21105
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E4622F1E;
-	Sun, 10 Mar 2024 12:34:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4372225605;
+	Sun, 10 Mar 2024 12:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="XrZGVqiL";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="m3RslpyQ"
-Received: from mailrelay4-1.pub.mailoutpod2-cph3.one.com (mailrelay4-1.pub.mailoutpod2-cph3.one.com [46.30.211.179])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="lC0KogEM"
+Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DC31CD1C
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 12:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0F316FF23;
+	Sun, 10 Mar 2024 12:36:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710074077; cv=none; b=DtdA1bbIx2ChfkkoVWYOdS7OkXJKdoL7zZr8vKiZSwEndpOrrIreG2gmT3As8rA+Pz8CBN3L40XXsem0AfNZDkXPPSrHmaH3+aS4+PCIHKWBoR+G00pZGecZKU+jGvQO7sKUGelKPvMrCSTHQ1aNMRwRLVk0ny0UMthM9XHEbmA=
+	t=1710074214; cv=none; b=bDNh87do+c1ghCPPj/GynvoFUvXA+FJBWsXFBBPxoAOEB2y/3o7FtrMg1UPg3nwXQJb77Qvg5xYsvFLESLytxyO85Xnd69S9aohOHF/Widn4D2W6yZ7cDcl9rukOETjorQhSjqV06FqjEubYBBJvwfdXbrgZ1e5DmLFMTwc5mZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710074077; c=relaxed/simple;
-	bh=eVb3cFCjq/wLYohZULzNmR4wY1wWmg+rXCBfYx/lovk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fT0duPM4C0c9JepMfMB+Zr9oK3BQaCbH9XsdpEvJ8cYZMlXkm4m7/qvatDOEQLgdd/tSUchq1uXwdRsWfQso4x7INKXoV4GSiM/qIYEP34gPeJzX/xvHHfA71Wa0+j9Jh4F5y90e1Y7R4jGbfBQjIsg0l13zBOg5kaV9aE5u5Kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=XrZGVqiL; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=m3RslpyQ; arc=none smtp.client-ip=46.30.211.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=YPj7mJSOmbCaNiEGC/t0Gr13wSnOz33kScWhnHNog2A=;
-	b=XrZGVqiLZ7HmxgauHv34KliKYg3bdIPWco3WbmOUS/lB8zsCC5CO+ZmGjgOxo2GjOG74rWmUTzeTD
-	 b/mY6sUBDEHan3+MiNqavhep1+qPHkyBDaWl6exwf4yZnQXZflm2ZNKhjgrSRP7oI7myR7O69SGebo
-	 XlYfPZUDqofK/AVeAQ8SbwF/6PyanxchTuw/gVeaNJjgYIqCt52w0/UnbwyIPRtB3Doc3R096J0hgI
-	 65BFZAHEQ6DOTY5XCc3HExn3ycYD4hb6fzaL/ouKN7wTNatsDLSWPfo0LIq8G88c92fKpkXAryb068
-	 idmG4syFCwOqfBYTzt3xyh947vR51BQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=YPj7mJSOmbCaNiEGC/t0Gr13wSnOz33kScWhnHNog2A=;
-	b=m3RslpyQ6rat08/y9fWoWhKLFFXulH2lxA/XDZXt362zndzEJbzwHFpTAVufQTF1BKRUZp5V6l5Ws
-	 lWldjHQAQ==
-X-HalOne-ID: 84422ca7-deda-11ee-9cef-31e85a7fa845
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay4.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id 84422ca7-deda-11ee-9cef-31e85a7fa845;
-	Sun, 10 Mar 2024 12:34:22 +0000 (UTC)
-Date: Sun, 10 Mar 2024 13:34:20 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: kernel test robot <lkp@intel.com>
-Cc: Sam Ravnborg via B4 Relay <devnull+sam.ravnborg.org@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Arnd Bergmann <arnd@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	Helge Deller <deller@gmx.de>, Randy Dunlap <rdunlap@infradead.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>,
-	Kjetil Oftedal <oftedal@gmail.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH v2 14/28] sparc32: Drop unused mmu models
-Message-ID: <20240310123420.GA989676@ravnborg.org>
-References: <20240309-sunset-v2-14-f09912574d2c@ravnborg.org>
- <202403101854.Z94SAU13-lkp@intel.com>
+	s=arc-20240116; t=1710074214; c=relaxed/simple;
+	bh=FHkI/XTtwAO2bphz0FP9YeV3o6idfDLKkX3YyUFYqv0=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=buo48tZermijYUiXKfQnZbZnZfAscQifQdWIJxxfmAozfpe/Dw7bZxAEpwFM+JE/6Jfo04Qz9+//GC9jEs/CQoDB3sUqsqmlkhDGOlsR5OHXT5v6lckM0ZLpWX7L43abHvJAOtI3hAagx2ZxHbdYL1J3D+EBWJ139T5Rhcw+/Qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=lC0KogEM; arc=none smtp.client-ip=203.205.251.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710074198; bh=xhILMpXmjh62wZTAFQ4UaRzNQOPst+CVs6ZuyVeh/8A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=lC0KogEMEb/4iYqtfE1JaBUbZWTUCwNNxfLA9Ts4s+z1SQaN3GFMYxE0M+lW1Ss6H
+	 dwZrAcjiFJD3MIn5iR0dJqH4KmTGUKFQS5p1ut6TsGSa18AL01rXlGFra4jMeXqKk5
+	 5iXtxpcC/6LsVVrHbXkgZr3uBDLjVQxUm+WN35Zc=
+Received: from localhost.localdomain ([58.213.8.163])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 9241D2F1; Sun, 10 Mar 2024 20:36:36 +0800
+X-QQ-mid: xmsmtpt1710074196tfumjurs7
+Message-ID: <tencent_688B20450ABBA409637C5A4BC3A7B0191D07@qq.com>
+X-QQ-XMAILINFO: OGvgEoGelOUdHurlUnToO+m81M24ckg367b+/dp254AnKIZvlDyeKxKrO/gMk8
+	 b91c0QhLa5yZIEWaZh9v7Jna9+dCVnEERKBOevSHhyAy9cLOjQXANaCddOL8ZN8JxILN6U77Xru1
+	 QVbA1f5m4AWaWg8VNZwSVf4ivmkfO2+5gFrX4jr+nV09E3FxBBQ4u6VwvyndyaZuDumDHRHT6Rnw
+	 QCIWlmKPLfcY+b+eCN+9AmfpYwTNJXGtA2Yhp4RnoYHAtaRmoukCnXxERtuft+UC7ZbLJ3pzPRQ6
+	 COp9Lslu2Amk+GjOuzVWPvtG231gXP4JL2hDI0heS49SenvKdRC327Sg98reVIZyrVg2LRBHupc0
+	 DFvu48aDs+avBWS04mdOfGt6WkTx8PRtaFy6m7dGfSKP4ZnRcjlcV56OxAkEcKNP2YG8iswWFA+k
+	 1tZuo1RwGB+hz6ZhtLOTGGX9vcFa7L9aKebO+MUIz+8cu/drP55USYMxPcfkW5Hr+lQDTXq4YsBq
+	 5GqXmIv/Xfo/VU9RBFtXUBLfJ+Qt6SxKX1cGt3cIklWdFi7sVq8ZWNw5rZB1ij1v47+TkROWTo6f
+	 wKU75smHb4x/vYy4FJlNoryWlDEPxkoax1fR5c+EP1nPVmvc51HdkdWEElJ1pECC7n326Y96POZd
+	 bqDEOAFojecnMyXy6LosOIKIptAJ1qneXQcadj1e2K7F6ZY/eRL3QCr0Cdm73Z0/dryH9AsDtDrq
+	 Qdv55k9Zvlfa35nM3i5x2V2bMEDLxUFanzM8fzw95w80MyBUG3sT1Cxdf9a2S+vh8xlGvuO6pm7P
+	 dazVStddgY89245lLr1oETDaWRMBSw+2Bu2toXkkv46iRNYFWNdjTnPNXiZPq5YZ4tg1zdBy5Q06
+	 BuDznGL0Ph6M+JnKnRvILKKA8EsRsadp733EfZM9lV6Hgta3HhXQehONeCYBIaDOfGu478YKhVDX
+	 REoSyXMrLQQiGlT7pq0OCi/Qp8Jp75MKfJVlWI3N7P+7cFB3gkNwMn1P5xzlyGzIMaxrmNmIkOvL
+	 UyABIfAswCiZ4ta8uqFMo8/Rhy1aXie9A289yM+9yGHxykl5nQRri+B6oO0eMZBs33dCnR5A==
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: linke li <lilinke99@qq.com>
+To: yanjun.zhu@linux.dev
+Cc: bmt@zurich.ibm.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	lilinke99@qq.com,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of re-reading it
+Date: Sun, 10 Mar 2024 20:36:34 +0800
+X-OQ-MSGID: <20240310123634.69189-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <2d508574-c2b8-489b-a26d-71b1c36961cf@linux.dev>
+References: <2d508574-c2b8-489b-a26d-71b1c36961cf@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403101854.Z94SAU13-lkp@intel.com>
+Content-Transfer-Encoding: 8bit
 
-Hi kernel test robot et al.
+> In a complicated environment, for example, this function is called many 
+> times at the same time and orqe->flags is changed at the same time, I am 
+> not sure if this will introduce risks or not.
 
-On Sun, Mar 10, 2024 at 06:37:53PM +0800, kernel test robot wrote:
-> Hi Sam,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on 84b76d05828a1909e20d0f66553b876b801f98c8]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Sam-Ravnborg-via-B4-Relay/sparc32-Update-defconfig-to-LEON-SMP/20240310-021717
-> base:   84b76d05828a1909e20d0f66553b876b801f98c8
-> patch link:    https://lore.kernel.org/r/20240309-sunset-v2-14-f09912574d2c%40ravnborg.org
-> patch subject: [PATCH v2 14/28] sparc32: Drop unused mmu models
-> config: sparc-randconfig-r113-20240310 (https://download.01.org/0day-ci/archive/20240310/202403101854.Z94SAU13-lkp@intel.com/config)
-> compiler: sparc-linux-gcc (GCC) 13.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20240310/202403101854.Z94SAU13-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202403101854.Z94SAU13-lkp@intel.com/
-> 
-> sparse warnings: (new ones prefixed by >>)
-> >> arch/sparc/mm/srmmu.c:49:5: sparse: sparse: symbol 'vac_line_size' was not declared. Should it be static?
-> 
-> vim +/vac_line_size +49 arch/sparc/mm/srmmu.c
-> 
-> accf032cfa582e Sam Ravnborg   2012-05-19  46  
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16  47  int vac_cache_size;
-> 9d262d95114cf2 Guenter Roeck  2017-04-01  48  EXPORT_SYMBOL(vac_cache_size);
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16 @49  int vac_line_size;
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16  50  
+I think one function of READ_ONCE is to read a valid value while the value
+may change concurrently. And there is a smp() above the READ_ONCE, which
+means that the READ_ONCE is well ordered. I think it is kind of safe here.
 
-vac_line_size is no longer used and can be deleted.
-vac_cache_size is never written to and can be deleted too.
+> if you need to ensure the consistency of the flags throughout the function, not sure if the following is better or not.
 
-vac_cache_size is used in shmparam_32.h like this:
-#define SHMLBA (vac_cache_size ? vac_cache_size : PAGE_SIZE)
+> if (((orqe_flags=READ_ONCE(orqe->flags))) & SIW_WQE_VALID) {
 
-The same file has:
-#define __ARCH_FORCE_SHMLBA	1
+This patch looks like exactly do the same things. The only difference I
+think is the code style.
 
-If I understand it right then when SHMLBA equals PAGE_SIZE then there is
-no need to define __ARCH_FORCE_SHMLBA and sparc32 can use the asm-generic
-variant of shmparam.h
+Thanks,
+Linke
 
-I will do this change in v3.
-
-	Sam
 
