@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-98332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 068E9877887
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 21:53:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5410F87788A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 21:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 747C61F212F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:53:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F74828145A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A52993A29C;
-	Sun, 10 Mar 2024 20:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21ACE3A29E;
+	Sun, 10 Mar 2024 20:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="Nidc7Dnj"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dd16Y25g"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB5739FEF
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 20:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8651E502;
+	Sun, 10 Mar 2024 20:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710103988; cv=none; b=A+mpEUBstOaTp9cCzrRc7TLgtjOgmfXUQymFUnetgSkQLURoBrXzio2Vbw7UsxqHXZDOx20KQcNYsPt9z0DJQs7PnH4+e8CLeY43f8M6Hig2CbIhSZmlNRAqgzwuIFvApAD29Mo4UkJ9mJ+sLcCcm6Vab2ZR6qh3k09OSS2lcKw=
+	t=1710104244; cv=none; b=DoIUiiraFnQjL+kieM5Uz9K6PAHWcF1fnWSsdVG+TgMeP9hV9YQ5OukUWoTg79ywkRuht+GnnzNZ8cF/n3VbywPc/NhBRWetDdqLsEMcPXJV5H+JhVQmOpLdtEHIVuNYqjlPNQ+AwRC5uWNGdkuXZoLPeRz6rkpg+XBLMORLl5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710103988; c=relaxed/simple;
-	bh=frxuvVcUFE3n0LsEt2HQl02eTQPGunwmknVSe8KFctQ=;
+	s=arc-20240116; t=1710104244; c=relaxed/simple;
+	bh=m/OvAdgkzvKcDTlmlp/NmzDaiiBJqqOm3dJ9tQ1F92k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NkrfhYMwTZDh+wooQlOjAsuxip6jhm3Jz2LeY8asjjCOg+eQ+NUW3oC//iVFDZQYJGyeQ3heYC/YK5KOoCQBKuMvdGVTCJGyoY4B0XC1WYgIB6dN4jnJsex7/AwmXkK344qpLPROQoUkaAxXi5vww4BzQQnGiTSogy1XNCn87MM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=Nidc7Dnj; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dd5df90170so24841055ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 13:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1710103986; x=1710708786; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9eh/L4jnp3P9JkldJjrWGMupxrpCciyDkMmG2Xv6fIY=;
-        b=Nidc7DnjkYIQGQDmOdHjFdybO4d/tALcw5YKuzRRxmktd1UQriEAnHHGQP0TlPN7TO
-         7NYofk+gR0/1BZzwXmUXl/YoJh/8FABqLcFx+fxJi44/Z8KyihJR0H5roubiaWkte+iX
-         BI8f4ByApfz8SduC7WKMF57eiQgBzPyt20itbOIlE/tidazUU4wFY0QdmAEO0Zni7dgR
-         74MtICoGqFRmqq5aGdPFkauORaztmaZqG4Wa8dMOxpOM1THFceuxeOn6aYoa3rwdbPhk
-         /Sgjv22bemKO7jH1c5UhU5/qYnPTvTVS2P30AWsEMfFKLOVFMVGs5xQ2Ai0EHPTPRCCW
-         aLMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710103986; x=1710708786;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9eh/L4jnp3P9JkldJjrWGMupxrpCciyDkMmG2Xv6fIY=;
-        b=URF16d48C5el1lmZkJAxQ/3kD5Jxd+PigPYEXXsj0FVTXt/s0A9nzVg6lLRgYNXhyb
-         SfcBnCok7vjBodHB2E9mBuZtP41McfIHMrK/S1tXfiQ6ad2aMbRfh27NG9MO4PVE1kcP
-         D/DHp7avc+icmuCIxrNiZC/wrHRd2JqqagEsZLReYTlKLGiz2BAYe0NWcYBaUilAPEdC
-         klOa1aeH/kx4mf0WaquSLefuZN8wkbQlqj6yhqSyucUvXjMM4pAqK3x60i9jKrEi6eIk
-         EQ/hkanWf1zt31xfhR1CWV670gkO9qjT/KViD4SNN1cmt2M2W2/tipO06tlVqbhv2I2i
-         NshA==
-X-Forwarded-Encrypted: i=1; AJvYcCUgvcUJLC1+rUahoCmgu8vmAE+vFbIweUL5LQxIaVi6FlYOB0lr+CYyyxQvJx2sVU9o5qVvtIWonPqScMxSsPvM1kGlWP4knx0C5/n4
-X-Gm-Message-State: AOJu0YwlwfyEEBPlYEsLxzC1qtnr3Vz6cLGRZulmZoD35wvJiIsCq4KN
-	SlJrT0Tri9laikxqWNBDlkVyesHr/raXsxnBrmmSusIz+mAjBhc3jUA4Hzdrv8A=
-X-Google-Smtp-Source: AGHT+IG8+eAJ1v1PdTnMZSx6KVr2Kimd2P/DvL1NRB9VDSL2T+mhTMgPo+Gibtu01PBp7SDUQ8fjBw==
-X-Received: by 2002:a17:903:32d2:b0:1dd:619e:aeaf with SMTP id i18-20020a17090332d200b001dd619eaeafmr5571936plr.22.1710103986567;
-        Sun, 10 Mar 2024 13:53:06 -0700 (PDT)
-Received: from [192.168.20.11] ([180.150.112.31])
-        by smtp.gmail.com with ESMTPSA id b10-20020a170902650a00b001db6da30331sm3159582plk.86.2024.03.10.13.53.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Mar 2024 13:53:06 -0700 (PDT)
-Message-ID: <e61c6117-e03e-4d1d-8a3a-d4c56918169b@tweaklogic.com>
-Date: Mon, 11 Mar 2024 07:22:58 +1030
+	 In-Reply-To:Content-Type; b=Dv/8j6xHIQNOO5F4BzGKt0RyhA0BV2rsL858Yw8P6pBHEdQoVzLw+gTs87cptsmnLH4PiYRc8tpzU++1E6jgCUM8MO/+UnFjIbm3F1A+ejNrf5pQiBsRBRViyevEc+hR45s+ICzAQbf08UMI2H0iqC/ckM3pGt1Qe8W0xJK4PG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dd16Y25g; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710104243; x=1741640243;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=m/OvAdgkzvKcDTlmlp/NmzDaiiBJqqOm3dJ9tQ1F92k=;
+  b=Dd16Y25gzOt5xbPoM3jkGpdIKU++FDpHgTclu3vmwmVVUMAON4a7KJrM
+   /l8Z4Rjcxq9HLtYTaiAGTPI07FPoywV2E6LGsfYzzy3nKMKT5+oSC6LKQ
+   KAqI6X0uX10D2uoHpSS1uH8Hnb2sOFn4n/QyuShkGYkb/azzM6hWbXwGJ
+   XjRQI99/co91VXRGZE2rmCxSYQwAx2qKHXSOEqbpvcRTOGI9t+aNt0eit
+   9t37XUJSH7qH+hnBv6ui9zHkZbmKTIGjzgRLtOp1GZ8k4/zs2ncMkEb5R
+   QgzuxyWAQhiJDSL529TeQIjv4JpMSDBbR/q0rUEAUqy0tzmT2alT8dWzd
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="16191457"
+X-IronPort-AV: E=Sophos;i="6.07,115,1708416000"; 
+   d="scan'208";a="16191457"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2024 13:57:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,115,1708416000"; 
+   d="scan'208";a="15469051"
+Received: from rniessen-mobl.amr.corp.intel.com (HELO [10.209.61.201]) ([10.209.61.201])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2024 13:57:21 -0700
+Message-ID: <769f8b03-b9c4-4d41-b534-545cd080f47b@linux.intel.com>
+Date: Sun, 10 Mar 2024 13:57:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,158 +62,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 5/5] iio: light: Add support for APDS9306 Light Sensor
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Matti Vaittinen <mazziesaccount@gmail.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
- Javier Carrasco <javier.carrasco.cruz@gmail.com>,
- Matt Ranostay <matt@ranostay.sg>,
- Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240309105031.10313-1-subhajit.ghosh@tweaklogic.com>
- <20240309105031.10313-6-subhajit.ghosh@tweaklogic.com>
- <20240310124237.52fa8a56@jic23-huawei>
+Subject: Re: [PATCH v4 2/2] platform/x86: wmi: Avoid returning AE_OK upon
+ unknown error
 Content-Language: en-US
-From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <20240310124237.52fa8a56@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Armin Wolf <W_Armin@gmx.de>, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com
+Cc: rafael@kernel.org, lenb@kernel.org, mario.limonciello@amd.com,
+ linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240308210519.2986-1-W_Armin@gmx.de>
+ <20240308210519.2986-2-W_Armin@gmx.de>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240308210519.2986-2-W_Armin@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> 
->> +
->> +static int apds9306_write_event_config(struct iio_dev *indio_dev,
->> +				       const struct iio_chan_spec *chan,
->> +				       enum iio_event_type type,
->> +				       enum iio_event_direction dir,
->> +				       int state)
->> +{
->> +	struct apds9306_data *data = iio_priv(indio_dev);
->> +	struct apds9306_regfields *rf = &data->rf;
->> +	int ret, val;
->> +
->> +	state = !!state;
->> +
->> +	switch (type) {
->> +	case IIO_EV_TYPE_THRESH: {
->> +		guard(mutex)(&data->mutex);
->> +
->> +		/*
->> +		 * If interrupt is enabled, the channel is set before enabling
->> +		 * the interrupt. In case of disable, no need to switch
->> +		 * channels. In case of different channel is selected while
->> +		 * interrupt in on, just change the channel.
->> +		 */
->> +		if (state) {
->> +			if (chan->type == IIO_LIGHT)
->> +				val = 1;
->> +			else if (chan->type == IIO_INTENSITY)
->> +				val = 0;
->> +			else
->> +				return -EINVAL;
->> +
->> +			ret = regmap_field_write(rf->int_src, val);
->> +			if (ret)
->> +				return ret;
->> +		}
->> +
->> +		ret = regmap_field_read(rf->int_en, &val);
->> +		if (ret)
->> +			return ret;
->> +
->> +		if (val == state)
->> +			return 0;
->> +
->> +		ret = regmap_field_write(rf->int_en, state);
->> +		if (ret)
->> +			return ret;
->> +
->> +		if (state)
->> +			return pm_runtime_resume_and_get(data->dev);
->> +
->> +		pm_runtime_mark_last_busy(data->dev);
->> +		pm_runtime_put_autosuspend(data->dev);
-> Note this isn't a reason to do a v10, just a possible suggestion for
-> what I think is more readable code.
-> 
-> Flow here is complex, maybe we'd have been better with skipping the
-> state = !!state, rename val to more explicit enabled
-> above and something like..
-> 
-> 		ret = regmap_field_read(rf->int_en, &enabled);
-> 		if (ret)
-> 			return ret;
-> 
-> 		if (state) {
-> 			if (chan->type == IIO_LIGHT)
-> 				ret = regmap_field_write(rf->int_src, 1);
-> 			else if (chan->type == IIO_INTENSITY)
-> 				ret = regmap_field_write(rf->int_src, 0);
-> 			else
-> 				return -EINVAL;
-> 
-> 			if (ret)
-> 				return ret;
-> 			if (enabled) /* Already enabled */
-> 				return 0;		
-> 			
-> 			ret = regmap_field_write(rf->int_en, 1);
-> 			if (ret)
-> 				return ret;
-> 
-> 			return pm_runtime_resume_and_get(data->dev);
-> 		} else {  // Could drop this else but I think it's useful to show the either or flow.
-> 			if (!enabled)
-> 				return 0;		
-> 
-> 			ret = regmap_field_write(rf->int_en, 0);
-> 			if (ret)
-> 				return ret;
-> 			pm_runtime_mark_last_busy(data->dev);
-> 			pm_runtime_put_autosuspend(data->dev);
-> 
-> 			return 0;
-> 		}
-> 	}	
-Yes, this is much simpler and readable. I will prepare a follow up patch for this.
 
-Thank you for reviewing and applying the series.
+On 3/8/24 1:05 PM, Armin Wolf wrote:
+> If an error code other than EINVAL, ENODEV or ETIME is returned
+> by ec_read()/ec_write(), then AE_OK is wrongly returned.
+>
+> Fix this by only returning AE_OK if the return code is 0, and
+> return AE_ERROR otherwise.
+>
+> Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
+>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
 
-Regards,
-Subhajit Ghosh
->> +
->> +		return 0;
->> +	}
->> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
->> +		return regmap_field_write(rf->int_thresh_var_en, state);
->> +	default:
->> +		return -EINVAL;
->> +	}
->> +}
-> 
->> +
->> +static void apds9306_powerdown(void *ptr)
->> +{
->> +	struct apds9306_data *data = (struct apds9306_data *)ptr;
->> +	struct apds9306_regfields *rf = &data->rf;
->> +	int ret;
->> +
->> +	ret = regmap_field_write(rf->int_thresh_var_en, 0);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = regmap_field_write(rf->int_en, 0);
->> +	if (ret)
->> +		return;
->> +
->> +	apds9306_power_state(data, false);
->> +}
-> 
-> ...
-> 
+Looks good to me.
+
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+>  drivers/platform/x86/wmi.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> index d9bf6d452b3a..84d1ccf6bc14 100644
+> --- a/drivers/platform/x86/wmi.c
+> +++ b/drivers/platform/x86/wmi.c
+> @@ -1218,8 +1218,10 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physical_address address,
+>  		return AE_NOT_FOUND;
+>  	case -ETIME:
+>  		return AE_TIME;
+> -	default:
+> +	case 0:
+>  		return AE_OK;
+> +	default:
+> +		return AE_ERROR;
+>  	}
+>  }
+>
+> --
+> 2.39.2
+>
+>
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
