@@ -1,145 +1,139 @@
-Return-Path: <linux-kernel+bounces-98103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B30F187752F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:41:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA50A877531
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:49:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 722091F217FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:41:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17C7A1C2095B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:49:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A6810A26;
-	Sun, 10 Mar 2024 02:41:44 +0000 (UTC)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D781097B;
+	Sun, 10 Mar 2024 02:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gaS+EMht"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E6B3F503;
-	Sun, 10 Mar 2024 02:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D0E08480
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710038504; cv=none; b=uh3l9EFzpdxFWT/nH91dWFFU1FefM/9kHGyZ6jCgmF/k/O0PUkLMHTj1P7r9AdCCdhPUtTasYJVDrXefEYeOLSPoNcjwnsdELPl8a73QJm9vDQG02YEvxgOEmha5Ejucshd8MpMZ+fbOt0C2CQq6vAo2/Njx+1xMWeV2j3Q+2yY=
+	t=1710038989; cv=none; b=Mp6ntNFNEk5FEaZvZMEMw3Tcx9zHyFhu4v5gXfhoIXW7QRAr6oekssxMXn5gQiMyIaIOKMoRnIDQLsMftOzw5yQuZ8Dy6d30owfKBJkBC7quw2BkB0Lo0l5O8NpQ857MBHK0wzslkTgoMqzvi2dqFfihAd97rP83C5MKFQfpmyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710038504; c=relaxed/simple;
-	bh=66Y5qag4Fo0ap9z/IV7T/7k7EdEpd6gS16wKWMFuh1w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CGoglCsvUexynZP4zWLuiDQRUrBTzWtgjrWryNbT/1cCQktf70RmysR0XYj9AUlnz8xVSErMgPufspgrtZVy70/muVK0wuPpkxbSNkwiP+UfB8uRLdkKQV0Q8GmAobImuDtcQ+ybRkItfvD4bUxFU91ZqsCok3azCwmActiDj/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso46799821fa.2;
-        Sat, 09 Mar 2024 18:41:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710038500; x=1710643300;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qQvaxw+Y3V1NHy0Tzp6P8M9Pv6okqvjXC3TYBcH3uZ8=;
-        b=rKWKi31Wxn6r9NLcbx556fENmfJ6v7Ij7OxlrxrBLJ1NPMlBhgyh0l3MYecktU2Lc4
-         jm6WXHCJ+7/duojYH3kTIRrIfNiHRIlOWc8OQjjmwI/xkH4GWTwIYGVgEb8RlEvmEnoC
-         UZ31KFUpzYyfpZdYlQ5DjQp/t5zUPnkbi/O15wJdLvjn52TugqgiuXnDDASp9D/88ps3
-         JQCN8mRsV/luOwZITMxUbh1FOsDV/IA3pO19eQGFMezZf4WAJX3sfoe5KBV/TZl1wAXH
-         P20VhTJ1FzxBSS7AJ7E9kcH7U7hRuNFBmRj3uGNI4fGkT/wL8mTNMLNQNcmtSASS06IB
-         cFVA==
-X-Forwarded-Encrypted: i=1; AJvYcCUsU6oMpacW5ge8DYSjc5RhZgicLGTMuwgK06chPYVRJ/ZuOK3F0M8qCdLT21TzZv3VBwx51OUITiarSAc5dpl2J5SBTTcGD36KuILKgbWPyCzHgWgQJbiL0Ege/v643mOMSJaopXIjzSuInZ/UxRpQ7YWKoJ0C6BJBwlf715z4y9yDi1DnsigkuIFplz8=
-X-Gm-Message-State: AOJu0YwuO086LfOPVURFTqzEeXKDG1ZtM7y5JpAUVGlcA4whs5UKeQQ/
-	M9tinnlnsbtrUcBkOr/OX9HfDPNe/ANHnPNhGT9D/K3ieqerNWWDsa00URq2ty4=
-X-Google-Smtp-Source: AGHT+IFSehV2ROwdDwWGOLVyb8jCNrjb+37FLRhmS8H/lcXohDHqiIJFQh7B0LcIoyi1qe+CkSzJtg==
-X-Received: by 2002:ac2:4834:0:b0:513:54e6:e174 with SMTP id 20-20020ac24834000000b0051354e6e174mr1692983lft.37.1710038499640;
-        Sat, 09 Mar 2024 18:41:39 -0800 (PST)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id f23-20020a19ae17000000b005134bfbf9a7sm502654lfc.153.2024.03.09.18.41.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Mar 2024 18:41:39 -0800 (PST)
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso46799601fa.2;
-        Sat, 09 Mar 2024 18:41:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVXZglmyiG+x5ml4ynD1YhM/K+8tA311+bEXqrtuO+HX+W3RkG/Gtdyjb2VmItrUqrMEKdsigMO71m9MhB3DYE/gtUOUsD120gbEQGDdN+JJUKIpxsrz/Q4bB90zZRBTsmOE/ccR6b88BG3UQ83Fd1vPfXau3Zgg7DMcHNclkDPAuIaUSL75YHnJh7oO20=
-X-Received: by 2002:a2e:9b58:0:b0:2d3:1bd0:6bcf with SMTP id
- o24-20020a2e9b58000000b002d31bd06bcfmr1860058ljj.8.1710038499246; Sat, 09 Mar
- 2024 18:41:39 -0800 (PST)
+	s=arc-20240116; t=1710038989; c=relaxed/simple;
+	bh=WgLB+opCEDzMviIFJRketQCowWRnc73bSza5E3/T0ec=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P4x0JJ380RfIOpfkemYLw3Z9eaWpakHT6kG0Y+0JDi1TXALQKmjkypvFHtxL7TPsKWKdwBbYG7NSq/nN7Y8s2qXZc4LKGv44F2OkRxPjRruSJuQkOjr5pE5ek6EAoJq/XWb8H5XPhFlOchUtHGxnKXbB90sJCt/Ws2V3UCcr6AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gaS+EMht; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710038987; x=1741574987;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WgLB+opCEDzMviIFJRketQCowWRnc73bSza5E3/T0ec=;
+  b=gaS+EMhtqdffzGngvDG5J5KPZqz0x3MERCE3xtnYWEb1SLd33sYBFcxl
+   G1tRZelxVHjd4XR2ZQx2EvK+ArDLpvhr5nMe+rKHGxImt/HY1B/nfwR2T
+   /joJjfEvKxzt0ptNohVMbV1jyY86hHfaN5fWEPuzlzOW68g0TXe6reH54
+   6IKWT+9+zXWCvhUlXQBjmTjanoq8cZ6o0nP2pqbWRuLrOPycrYspuuC0a
+   Zu859/ifntFSm3QR67IdIiis01iR5HlAv/36K05+Fo83q+K4tvLY0pE38
+   Ffp5iD91MB9Y0phmF54ZfMN8L6UqccPm+iHaDoENkx4DLy0RP4wkcI6bc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="8549010"
+X-IronPort-AV: E=Sophos;i="6.07,113,1708416000"; 
+   d="scan'208";a="8549010"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 18:49:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,113,1708416000"; 
+   d="scan'208";a="15432216"
+Received: from chengyin-mobl.amr.corp.intel.com (HELO [10.209.27.224]) ([10.209.27.224])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 18:49:46 -0800
+Message-ID: <7c8e8216-cb49-4b5a-a547-5e807fa96214@linux.intel.com>
+Date: Sat, 9 Mar 2024 18:49:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308210519.2986-1-W_Armin@gmx.de> <20240308210519.2986-2-W_Armin@gmx.de>
- <42aa0678-4472-4964-b84e-33beb0a23058@linux.intel.com> <232dcca6-d4b0-4c5a-9e17-d9c194a67a71@gmx.de>
-In-Reply-To: <232dcca6-d4b0-4c5a-9e17-d9c194a67a71@gmx.de>
-Reply-To: sathyanarayanan.kuppuswamy@linux.intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] x86/tdx: Rename tdx_parse_tdinfo() to tdx_setup()
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@intel.com
+Cc: hpa@zytor.com, seanjc@google.com, ele.reshetova@intel.com,
+ rick.p.edgecombe@intel.com, x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20240309210230.239045-1-kirill.shutemov@linux.intel.com>
+ <20240309210230.239045-3-kirill.shutemov@linux.intel.com>
+Content-Language: en-US
 From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Date: Sat, 9 Mar 2024 18:41:28 -0800
-X-Gmail-Original-Message-ID: <CAC41dw-rfEN798=t=oWfX6rZFqAv6CxGw8vA7B98X1bWk2AFMw@mail.gmail.com>
-Message-ID: <CAC41dw-rfEN798=t=oWfX6rZFqAv6CxGw8vA7B98X1bWk2AFMw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] platform/x86: wmi: Avoid returning AE_OK upon
- unknown error
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com, rafael@kernel.org, 
-	lenb@kernel.org, mario.limonciello@amd.com, linux-acpi@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240309210230.239045-3-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 9, 2024 at 11:10=E2=80=AFAM Armin Wolf <W_Armin@gmx.de> wrote:
->
-> Am 09.03.24 um 18:41 schrieb Kuppuswamy Sathyanarayanan:
->
-> > On 3/8/24 1:05 PM, Armin Wolf wrote:
-> >> If an error code other than EINVAL, ENODEV or ETIME is returned
-> >> by ec_read()/ec_write(), then AE_OK is wrongly returned.
-> >>
-> >> Fix this by only returning AE_OK if the return code is 0, and
-> >> return AE_ERROR otherwise.
-> >>
-> >> Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
-> >>
-> >> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> >> Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> >> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> >> ---
 
-Got it.
+On 3/9/24 1:02 PM, Kirill A. Shutemov wrote:
+> Rename tdx_parse_tdinfo() to tdx_setup() and move setting NOTIFY_ENABLES
+> there.
+>
+> The function will be extended to adjust TD configuration.
+>
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
 
-Reviewed-by: Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com>
+Looks good to me.
 
-> >>   drivers/platform/x86/wmi.c | 4 +++-
-> >>   1 file changed, 3 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> >> index d9bf6d452b3a..84d1ccf6bc14 100644
-> >> --- a/drivers/platform/x86/wmi.c
-> >> +++ b/drivers/platform/x86/wmi.c
-> >> @@ -1218,8 +1218,10 @@ acpi_wmi_ec_space_handler(u32 function, acpi_ph=
-ysical_address address,
-> >>              return AE_NOT_FOUND;
-> >>      case -ETIME:
-> >>              return AE_TIME;
-> >> -    default:
-> >> +    case 0:
-> >>              return AE_OK;
-> >> +    default:
-> >> +            return AE_ERROR;
-> >>      }
-> > After checking the callers of acpi_wmi_ec_space_handler() it looks like=
- there is no benefit in returning different ACPI status per error values. I=
-t is not being used. why no just return for result < 0 AE_ERROR and return =
-for other cases?
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+>  arch/x86/coco/tdx/tdx.c | 13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
 >
-> Hi,
->
-> those handler functions are being called in acpi_ev_address_space_dispatc=
-h(), which uses the return value to print error messages.
-> So it makes sense to return different ACPI error values here.
->
-> Thanks,
-> Armin Wolf
->
-> >>   }
-> >>
-> >> --
-> >> 2.39.2
-> >>
-> >>
+> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> index 5ffe5ef99536..afdaf46cabb9 100644
+> --- a/arch/x86/coco/tdx/tdx.c
+> +++ b/arch/x86/coco/tdx/tdx.c
+> @@ -181,7 +181,7 @@ static void __noreturn tdx_panic(const char *msg)
+>  		__tdx_hypercall(&args);
+>  }
+>  
+> -static void tdx_parse_tdinfo(u64 *cc_mask)
+> +static void tdx_setup(u64 *cc_mask)
+>  {
+>  	struct tdx_module_args args = {};
+>  	unsigned int gpa_width;
+> @@ -206,6 +206,9 @@ static void tdx_parse_tdinfo(u64 *cc_mask)
+>  	gpa_width = args.rcx & GENMASK(5, 0);
+>  	*cc_mask = BIT_ULL(gpa_width - 1);
+>  
+> +	/* Kernel does not use NOTIFY_ENABLES and does not need random #VEs */
+> +	tdg_vm_wr(TDCS_NOTIFY_ENABLES, 0, -1ULL);
+> +
+>  	/*
+>  	 * The kernel can not handle #VE's when accessing normal kernel
+>  	 * memory.  Ensure that no #VE will be delivered for accesses to
+> @@ -930,11 +933,11 @@ void __init tdx_early_init(void)
+>  	setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
+>  
+>  	cc_vendor = CC_VENDOR_INTEL;
+> -	tdx_parse_tdinfo(&cc_mask);
+> -	cc_set_mask(cc_mask);
+>  
+> -	/* Kernel does not use NOTIFY_ENABLES and does not need random #VEs */
+> -	tdg_vm_wr(TDCS_NOTIFY_ENABLES, 0, -1ULL);
+> +	/* Configure the TD */
+> +	tdx_setup(&cc_mask);
+> +
+> +	cc_set_mask(cc_mask);
+>  
+>  	/*
+>  	 * All bits above GPA width are reserved and kernel treats shared bit
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
 
