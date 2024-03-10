@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-98147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BDC08775AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48B4B8775AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:02:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FB2D1C20937
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:02:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A7441C20E50
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80ED17745;
-	Sun, 10 Mar 2024 08:01:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0F717BA4;
+	Sun, 10 Mar 2024 08:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BTM29pPX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5+E/0eQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3DB5FBED;
-	Sun, 10 Mar 2024 08:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300F4111A1;
+	Sun, 10 Mar 2024 08:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710057715; cv=none; b=QmF+y+acfnTeEXYPllwWlqd1fcXYUijPS5rYsexx0JuykMz1IzkhnT4miU/UAGJ5BoAsm4oOQ65vEMuIwMKH3tsnJIExhTSsxoxZcMIsnIRfmPbdjiPWYdAqxZYnZHtwbipCAdQdBtaSSz4zFesdkK0yraIkZvx+aZkWV8NeXEc=
+	t=1710057748; cv=none; b=N4NTqp2LjWLruY2OV7SMCu4o7BosvHOs5/kdlGJ+cyjdRRUD+GJcJsQ+gYO/w5sOIkV2Wc4KudcGmpyvCT25bjN9oJRKDLQutgwVo0jW2qr7HFXjR++MMI0+bP6+faE4c1U0ZAt1VvJzjmb2c2/MOv8MZ+6/RuBBa5aOVsEDUuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710057715; c=relaxed/simple;
-	bh=E+MxDKe+KsHvPmTBqM2DlpPwW2CIuyWdH49cjntutmM=;
+	s=arc-20240116; t=1710057748; c=relaxed/simple;
+	bh=or3Sro/KI5eZgOzU2rxwbRh5kkJTQswE6RZfe0KbjYs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lmFfneJuV21gukMUqH9AmRQGRhO8GocuNsy+e5VRSujP0UyY966sqNGcEfrQaogmkvw7ePdIxUFTQO3ZMIynjch+ZV89CDwMrgZgnT/OLYH2JB/eYENG4Ra0kUR0KIbx9D0nJstZiZE0HmSpWtWWGM+MKjaJ9AKxJPyqjp54A50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BTM29pPX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E8B8C433F1;
-	Sun, 10 Mar 2024 08:01:50 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=eLiAEQmaxlJXhRUB8vmCKSbTggRDa/VhiUj62iVWsg2GyIbodNQnU7Tt9XCGE8LTHQRD1ByPK8RNQcCo4hmMWLzUrC//fTNsHoKaywTmlQ3zegGNKxJXr0JtSE3e7wqG+D/tnlloKHr10lksHKUhqVQH+eK369AgABzusPBN0/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B5+E/0eQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC7FC433C7;
+	Sun, 10 Mar 2024 08:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710057714;
-	bh=E+MxDKe+KsHvPmTBqM2DlpPwW2CIuyWdH49cjntutmM=;
+	s=k20201202; t=1710057747;
+	bh=or3Sro/KI5eZgOzU2rxwbRh5kkJTQswE6RZfe0KbjYs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BTM29pPXzOQTpyAHRPKU0QJU36DOLFVueJxGoagskCfVBYukYDCYdXotdsL9ZGB7l
-	 Wns2j8gZgTtC2Zv76ZfLU/0Q/rUATM86YNGoX+Th4OAeD8btpUxCqEsmiIgVrPkr37
-	 gMCDFCO77cjUh4IxZ7yCoMeYJeFEZuZvmoOFudSUu8oLEHmfzu7s/w8t22zCDAJRnM
-	 TzhxZcZzniS8IBs+Xjr46JUSxrI5aK81Vt2j6KMB1hyfs7ALjbQkQWqJ0vOmucPjIA
-	 67oC/x9sslk7GuvzQsfrw9X0qn5WVFrq2wc7TWYSiOzbNu+IZRHSvPOM3XdZvjj52A
-	 ZEKD4fviV1Z4w==
-Message-ID: <388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
-Date: Sun, 10 Mar 2024 09:01:46 +0100
+	b=B5+E/0eQQuyywzUxcgt1i2idkrWQ5BoW+q0AvwI+3YzGEqnrYqdMF2iWSKaZ/SNn8
+	 WI+OQS1UOV/7XAkNoZkyqvDPQtirbD3Q7cGYm5NNyXRg02DzG+L1c3ApV1OP2SDyJ1
+	 3j4Nzag8HGNPzXVzNDyCYBdgYDu8qRVVBuZ7CI4XNjBa5n6RClRtQPCO1DiVAbVq8U
+	 Hq5eDyR1mdKj+opgkfjnwW5OO5x8vnoq4ZjcKEQwqn8VkFLDAVobWtGNcd0pUkctXt
+	 8WVdE212AZ4bBeyhnI1C/RYRyZ04LLExECLgvXtBjBX1SbKSyuRMFYo/vpRXF0iXWd
+	 NaQKhji2qKswA==
+Message-ID: <760b371e-7b02-423f-9ef6-b26ba3ccaf59@kernel.org>
+Date: Sun, 10 Mar 2024 09:02:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,7 +49,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/4] net: dsa: realtek: keep default LED state in
+Subject: Re: [PATCH net-next 4/4] net: dsa: realtek: add LED drivers for
  rtl8366rb
 Content-Language: en-US
 To: Luiz Angelo Daros de Luca <luizluca@gmail.com>,
@@ -61,7 +61,7 @@ To: Luiz Angelo Daros de Luca <luizluca@gmail.com>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
- <20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
+ <20240310-realtek-led-v1-4-4d9813ce938e@gmail.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -106,50 +106,28 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
+In-Reply-To: <20240310-realtek-led-v1-4-4d9813ce938e@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 10/03/2024 05:51, Luiz Angelo Daros de Luca wrote:
-> This switch family supports four LEDs for each of its six ports. Each
-> LED group is composed of one of these four LEDs from all six ports. LED
-> groups can be configured to display hardware information, such as link
-> activity, or manually controlled through a bitmap in registers
-> RTL8366RB_LED_0_1_CTRL_REG and RTL8366RB_LED_2_3_CTRL_REG.
+On 10/03/2024 05:52, Luiz Angelo Daros de Luca wrote:
+> This commit introduces LED drivers for rtl8366rb, enabling LEDs to be
+> described in the device tree using the same format as qca8k. Each port
+> can configure up to 4 LEDs.
 > 
-> After a reset, the default LED group configuration for groups 0 to 3
-> indicates, respectively, link activity, link at 1000M, 100M, and 10M, or
-> RTL8366RB_LED_CTRL_REG as 0x5432. These configurations are commonly used
-> for LED indications. However, the driver was replacing that
-> configuration to use manually controlled LEDs (RTL8366RB_LED_FORCE)
-> without providing a way for the OS to control them. The default
-> configuration is deemed more useful than fixed, uncontrollable turned-on
-> LEDs.
+> If all LEDs in a group use the default state "keep", they will use the
+> default behavior after a reset. Changing the brightness of one LED,
+> either manually or by a trigger, will disable the default hardware
+> trigger and switch the entire LED group to manually controlled LEDs.
+> Once in this mode, there is no way to revert to hardware-controlled LEDs
+> (except by resetting the switch).
 > 
-> The driver was enabling/disabling LEDs during port_enable/disable.
-> However, these events occur when the port is administratively controlled
-> (up or down) and are not related to link presence. Additionally, when a
-> port N was disabled, the driver was turning off all LEDs for group N,
-> not only the corresponding LED for port N in any of those 4 groups. In
-> such cases, if port 0 was brought down, the LEDs for all ports in LED
-> group 0 would be turned off. As another side effect, the driver was
-> wrongly warning that port 5 didn't have an LED ("no LED for port 5").
-> Since showing the administrative state of ports is not an orthodox way
-> to use LEDs, it was not worth it to fix it and all this code was
-> dropped.
-> 
-> The code to disable LEDs was simplified only changing each LED group to
-> the RTL8366RB_LED_OFF state. Registers RTL8366RB_LED_0_1_CTRL_REG and
-> RTL8366RB_LED_2_3_CTRL_REG are only used when the corresponding LED
-> group is configured with RTL8366RB_LED_FORCE and they don't need to be
-> cleaned. The code still references an LED controlled by
-> RTL8366RB_INTERRUPT_CONTROL_REG, but as of now, no test device has
-> actually used it. Also, some magic numbers were replaced by macros.
+> Software triggers function as expected with manually controlled LEDs.
 > 
 > Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
 > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-This is the first version, so where did review happen?
+Again, this is the first version, so how could you have a review?
 
 Best regards,
 Krzysztof
