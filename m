@@ -1,832 +1,92 @@
-Return-Path: <linux-kernel+bounces-98133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2079687757F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 07:07:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1A4A877580
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 07:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0C0B283436
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:07:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3981B21F81
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C8E11CA1;
-	Sun, 10 Mar 2024 06:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ejwc029p"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 883EA1427B;
+	Sun, 10 Mar 2024 06:12:39 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A5233D8
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 06:07:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710050828; cv=fail; b=IIIvOF1rJnUM6T9EllLzNTr60m+FfljeOpeF9FvNDADEtEjinX5huYhVxBkklU+mCQXEKIvDA9MvcvmeDq9zqIDnpXETW5Lvr2TB+q07Fc2u0r+FCTUnLiX/2+h8uwnH75r3zl6wwsMRl1tPb3g2+wCUsycC40dbHCNkeW3xzFQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710050828; c=relaxed/simple;
-	bh=u4hDWr3c9a16cgq3A8k/0N7Ty2RAt+csmXz98Oa83j8=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Kf+sNicjhR6ECwMwmFYX8wwT+7QK7J7YAaB+iVeQ93KBbqLzxwb9jlRMXQJzB8Nd04+ckfcrZVBRkPdAzQjH3Xah4ciTAlA19In28TptjD8fZ39wuX384hAxuqmeB7sf+iBY27Ra7Ab7IDWPhU/UvaRoGNw9P/Sh0NULbwDgnYE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ejwc029p; arc=fail smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710050825; x=1741586825;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=u4hDWr3c9a16cgq3A8k/0N7Ty2RAt+csmXz98Oa83j8=;
-  b=ejwc029p/dgMidEqIy4lHq/9L+Eg6OSzdF+FOZ30jGE0kmczzBfvyVuc
-   u/3Nua1q1BU22KIkk7pSha2eYOQQCOruOcas/v3U6Kdtkk0l55k+WajCj
-   sWPMyKLRihMDR9Ez0oEhFBhWwtzxhGgIeBJsQtAtTSNbSIgtZ6d5F/oC9
-   8Xu/W15BJ69+T0ITQ7w4WWrZQK9k9/JPWwVwdwZfZ0DJ7iNBFIyou/Bha
-   cc/Ewt6ZLmnLh9ZXNeMt++ZxQ9VM4FEVxuydxnYJpQN4yQRBISaxXjL72
-   LU9kpOWJuWuqU4rllZsyT+uEUFW/iqymumHatiOO/m1OBNAO2CAtmo4r2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="30177482"
-X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
-   d="scan'208";a="30177482"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 22:07:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
-   d="scan'208";a="10941712"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Mar 2024 22:07:03 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 9 Mar 2024 22:07:02 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 9 Mar 2024 22:07:02 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sat, 9 Mar 2024 22:07:02 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 9 Mar 2024 22:07:02 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Anv+UNa+EwHO2QtFQrreh9BrOATCYP7ABOzjhqUEtEWEZOz9/coFQaaVRUtlIH7smza1h/evm6exp0/Y+JlOU/9rEIlxmwQ5EtsAb8iqiIElfyNkUeuoeHOIe1pn+w87at1H4or3OS+c598WQZ4dXUuz6B8V4VmVb1SX28olt/5Gc/rbT8oX3OLEkZsBf2XzRX2m1HKHp/TgTF7n4kP2qMX+M8AzmmqxsB4fC2VmT1ixZGfgnBZWgSpf1TNDV5lfpZT2NZelMTMiXgHMYpCInWTe+RqEu/IcIxRRx5aLQcN6mYpcFANBlP7pWWqnUJutvNE8g+fxE7hdXRent+yXNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lA29SOhOmWH9Gec2dJFxSRpY0AX78GyQBNYF2fEnQEs=;
- b=J477q7QJpPK+pws4SbRYl9c8mLChmbFFNcLsrxZmcjQ1b5KnSXtScx4SnTw2Pu8506YUL0OR0hhpv/1S/pVtuj4fo64YBUOyT32RSobslUGd3RIEjvN/U5KUeMbvCjG5WB3veV+S8L8k5HRcWkT6kZN59GhPI118la7B+OF8E44t7zrBfQJJHCjB5YFGH1gVpZ0sNd9TogNcO1uJ34dkFteN5OX4d9BdbeGvxe4p6S6OcWIC/7bNteodUEDzvI87pW+7nUXVGF6Gz1eC9HHGqFeW3+wepHOCMxf8NTOWWqOj/axpJuQBstqY5dGXcQmJ3ALi5FoR8SNqKxQ5UrgWgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB8279.namprd11.prod.outlook.com (2603:10b6:806:25c::10)
- by SJ0PR11MB5214.namprd11.prod.outlook.com (2603:10b6:a03:2df::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.14; Sun, 10 Mar
- 2024 06:06:59 +0000
-Received: from SA1PR11MB8279.namprd11.prod.outlook.com
- ([fe80::a196:98ba:164e:99f9]) by SA1PR11MB8279.namprd11.prod.outlook.com
- ([fe80::a196:98ba:164e:99f9%5]) with mapi id 15.20.7386.013; Sun, 10 Mar 2024
- 06:06:59 +0000
-Message-ID: <93f36ae1-35b3-4852-8b36-3277f250408e@intel.com>
-Date: Sat, 9 Mar 2024 22:06:56 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/14] x86/sev: Extend the config-fs attestation
- support for an SVSM
-Content-Language: en-US
-To: Tom Lendacky <thomas.lendacky@amd.com>, <linux-kernel@vger.kernel.org>,
-	<x86@kernel.org>
-CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Peter
- Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
-	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
-References: <cover.1709922929.git.thomas.lendacky@amd.com>
- <a6d236e247c4a0258e5e28c7378350389997cc59.1709922929.git.thomas.lendacky@amd.com>
-From: "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
-In-Reply-To: <a6d236e247c4a0258e5e28c7378350389997cc59.1709922929.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR02CA0002.namprd02.prod.outlook.com
- (2603:10b6:303:16d::10) To SA1PR11MB8279.namprd11.prod.outlook.com
- (2603:10b6:806:25c::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B58C611CA1
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 06:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710051159; cv=none; b=EMTzsC10MkPFGud2XpApGWsCWI+zKkFw9k/paxump9vzm84xAi0K4bg37JZSilfO4f7QSBieVjbJTg/SziSvtGwQSUIKPZki/QnaGNI4M/N71GuzlGtUYWTwNHXuz2dE1zU5WbjEy2JnD271JJnaIcgkbyKscDNmFapguIpBT6Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710051159; c=relaxed/simple;
+	bh=qyv+3bFpMsnOWu4GkWao8mUjvPOobkOEDpIQmoQI3wM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=mw9RxWRxIMx8x6HqmI+vuFJ3xJK7w7z1HdBcNCfDuqafcm7cjmDgmkb7BRLmTCob2AaFRFhKTF9OU4zPFsXfd4PwHjqFjVN3T3n523PLjvQs9jCeFs5nlEGt5xjcoHDDtpp41Mq0P8chb8Rjn0ZcyGY78DyMrDbAxWFxoFfpGCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c8a7e92815so58808539f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 22:12:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710051157; x=1710655957;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j042LY744r6SWA/GKdXvGpeG3Iax2CVpuA1/grVDnkE=;
+        b=CzC7PqllalfjSeVjYgdo2e0dA2NvZ9NEfi5NxvFgY9Bar6bJG+WCpiyhH1rHr0AnBn
+         FTZmUt+M4hDzmiT5FrCnp1zDGLqlw1w3qEcvMASHUYwoEwfk+MJCixwVEVbHM6x5uaJ+
+         zT61SJWk7h2i7nvqrdvPoP9J+XtVVdAlZJrbwPEcFqV33XASfzaosY5Dt0Bo/lRzB6xz
+         BiL025pUcH2eyp+KVSmC6VQc4LNcOEm9MsI42qRHUoyxUG8wMSdxtORD5NiedFlTHwDS
+         SfCs2S9jwYrB9be9jhWBxySGYzk3N+ZwAye/dtToJUlEwwtKvIW/MqgqGTPtgiiJwr0I
+         4O4g==
+X-Gm-Message-State: AOJu0YwJPawjhiZts+YmuSkF1vqKvyzMO+8N3FZ4TrPAKekJAsJgvrlk
+	f5SJmxSuKsYxs7RU901DCbybhpgMUJ+ztAX7az8gDjkOv9V1vCu9bU/aytxBPTIZYM7hcC3bova
+	MZsliVwr+2SzWWIzZJYfh5HuO83uvm6pxkgBGW7FBCYkWShc3/0w41GBvNA==
+X-Google-Smtp-Source: AGHT+IH193EDJbatGmXDiPcezS3dkKG0DTNraN023YTOATKeSdOM8JeYy1ETm26FK3X6a63MtlrGTihGnHDGyEsgovKPZhjcxYzN
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB8279:EE_|SJ0PR11MB5214:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3c568a6-2c90-4b01-21c6-08dc40c84bbd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2c4edV8xGODJugazTxIDeOjafNTIdSwZe/T88nHXIAD9ZznLw5qkiiS9IrtrEGTLXgH5CIwry5RBCcO+YvsiOU5x8VE0TzGgGnXt14mLeqy9Gp42ycHnfXBEAcmANXlsni/GWj4a+5lo3QNNyeNOw5Kd6krJzKA/Bqq1wOrZUkXxooW8YbP5NDjDnyoIxFAMygWcQgyXSx3t02+sVlXKg7u3KzZRabDNUU6cAs86GJdiIyehPfF/vVI8di1LvBn2BDZ0ZXwaqH8VUtO9Ge1+CbYjkL8kJEH/hUBzB/X7C8vVdBkGqhcPLW8SLQa2Ed+7ACYtMZ8xzm3Au57yNgXouNKJUjfUFdy+9UZFWYTjzcdr6V6nrDmjLVtsiemN+vJrsoz/bl+X7Ea0y5O12Wm8FYjqBeBmn2GUHViGDbU2lVGlswXwUjCpcXluD7TioFxVAVrANMtG6fu1CjiPBQFOvC8g1UaK1ZzenFf/6hmlXFTCls/1WAUzbbvvu1s3fDhLlIveech2QAQuxiBAf+6lYIYnR133/zaDlPUIiJm3k3RwsLPhN5T90YcoiJ8J7r0eSgRctt+7riGS+pWtePhQ0DQn14kBqtSvuSSx6eDyz1gjjy2bVJXVgxnqEglOS1vl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB8279.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TlB2OXpOaFZPMnlyb2NIc0JORVV0Y2lDc2dlS21PRnIrMHJ6U0ZZaFczMDVP?=
- =?utf-8?B?MGNIS0VxaWo1MWxuNkZVNTFTRTBOUXNrd2E3a2N4M0VGNkVFcGhGdHlDSUdY?=
- =?utf-8?B?SFZCTFNGU1g4VHdoRFI5ODR1d2VqTnJGQWJxbURVclhWSFVKRS9odE9NS2U2?=
- =?utf-8?B?SDgyMUVwR0dGZ1N4WDhnRDc3QUN0VlMwYTdRa3NmTG80aHVybUVIUUl1THlJ?=
- =?utf-8?B?VUwwZTRtUjlJZzdiUXVobW1mSVdmVzJxeGxHWE84d0wyaGhRVHR2TE1Wazlo?=
- =?utf-8?B?ZEJ2OUk5bnBGYTdhcHFuellja3g5Wll2TUMzYUh3MUpWTXRFQ0JEZjBXYit6?=
- =?utf-8?B?YkN5NkR6bkNXeFY2YndQVzBCdUVzRHZUeEdMZXNDcVN5SytYRjhMTWpid2Z6?=
- =?utf-8?B?THg2SStDWmc2M2hVbzEySkh0c1plNEJQdkRUd3JldllYL2hYc0hUVHVhTGh1?=
- =?utf-8?B?T2daT2F3Uk5OMk9Mdm92QzU1V3hNR2pyakRyL09FTE5mbFQ3WVpnbUVlQzlE?=
- =?utf-8?B?S0FhVmhvV01QSUZSQXZPWU05YUlzSkwyaDFCYmNlUHAzbUl3dEtsZGdwY1B4?=
- =?utf-8?B?ckhhQVJtTnhCdXZtZnBBMzNMcVluM0U2Vkt1OSt3aHFuaHJ0SkhpN08zWDQ2?=
- =?utf-8?B?cktvbzNFNjRMTXBiTm1UY3Brc0JFaUFBQm1FcHF4NFh5ZUpBMml3VzRqSTJk?=
- =?utf-8?B?RUM2ZVEyT3ZjVk9tT21nQkx1Und0NjJUZHkwLzZzZktJNmtyTjJzK2FsR3pm?=
- =?utf-8?B?T0pRLzVSMGsxOWtNMnFkZnlCQ1FXd1Yxb3h3UU1wVVVBckF5YWxDeHpqZ1Bs?=
- =?utf-8?B?Y2g5Rkg3ekVTN2JFZ25oWlA5WWg1RGpMd3NQZ2k0Z1ljMkZoV3FBWGN0Vjh3?=
- =?utf-8?B?aUt4Tkpha2czL3RzV3Fra1phbEs1dVlVWEFMS2htYndkaXdGa0hWV3VwRFFC?=
- =?utf-8?B?UXVpOC9UTVRlVGduTmd6NjNPZHZxcHE5TksrUE1nWjFwOE1HSmhLeWxNU1FX?=
- =?utf-8?B?VkZtanZadEdWTWJOR1lGL3EzNW5oekVZR3RQcURlREJLci9jTVViN1R0ODd3?=
- =?utf-8?B?c1dNMVQyTVVuRmpEN3BFbGcvR016NldxV1o0dFI5MWhWRHVLSnZLSWxMTll3?=
- =?utf-8?B?Z1lCL2ZONVRUSXRNd05vUWhoQ2QwN1NZdFhFaXJLRVExM1J2UlVRdjk2Z1h6?=
- =?utf-8?B?cUlodmR2OS9xQXd5Z1gyR1NoVzlzbk9Jb0N5Q0tkR0MvYjk3bUlIL29vUTBT?=
- =?utf-8?B?elA3akFxSjFKcnJoSm5RTmNUR0M0dzUrdWNLSS96UEk3UWsrOE1QOEtTcWNX?=
- =?utf-8?B?d1dya2tMVXp1Z082ekJKL29JQll6S2k1RGxEV3NCMkxIOXJPOVJwOGJOYUNx?=
- =?utf-8?B?Umx1WFNGNzN3R2F3cGVGbGtWMDdYRFM0V2ZQblZOMzdNSDVBSHRSZmlvdzJt?=
- =?utf-8?B?cGdtRE1FVUV1cENjeFZUTVBuWGJXNGY0d1lVTzIrSHQ5RUhoRWdGaFE1d2JH?=
- =?utf-8?B?akJGUVVkZmFkUnp5Q0t4azNnRDhSOXRhd096c3kvTWozZElGUEhEYXZjVWpu?=
- =?utf-8?B?clV2dndsanpkVVVWZE1zNlJDMzF1ZktzYVpOeVpEeDlrUGI4ODcxM2tlcUl4?=
- =?utf-8?B?YWRNdFhzY25lZjF4ZE9tc0FrUm84VktwbkZQRTV1NFo5UkpOZmtIWm9MbDlP?=
- =?utf-8?B?a3djNk1QNFYrUWYvWXRFeGZSVGpqZ3YrdzdLTXNXNDh4V2RqODdsSHU2Q0FK?=
- =?utf-8?B?Q3A2STMyQWZQOThORDB3VUxzYWU0VHBuM1ZIcCtES2tDNDhSc2Rrd3ZJakdk?=
- =?utf-8?B?Zjd2OGJYUXh5Vy8wWXhYSjNOcVk5aFVGcFl0TmtTTCtzQVdHc1UzYzNaQjJK?=
- =?utf-8?B?dVA4K3FZVzV6RllaVXkwUjlhVzBHYzJqNWFIYnU1MFluZmQ1RmlPUVQzbE0z?=
- =?utf-8?B?dVRyRzVnQWdUb0xzVVNVQkVMSGN2YjdvZUt1MGpjRWNFUjBQUVZ4OGx5cmlu?=
- =?utf-8?B?Y3ptUHZoclpuZUxCc2t2U3ZVWGtuSTNFSFBHbjVTKzJWQ2pITHVpcU14eGw0?=
- =?utf-8?B?WmlMTkI1TlBNQ0YwMkxDWWZUdDZnb0xnSFhvcDR2clhIcDJua2gwcFpqbDlO?=
- =?utf-8?B?ZTFVdmR2NGlxQjFGWVZCbVArdGdMSGRqZVNxd3lrMzIvbldxNnk1bGJnVEFs?=
- =?utf-8?B?OGxEbUJqRjNRSGlhRVRQbjQ0WVJ6aEF3Q3ZBbFhjaEFXRGFnVm5XN09tZGV1?=
- =?utf-8?Q?8XDwKzxnebrOndfAETJhwbO2DiVCPyHurXNAS5LG5g=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3c568a6-2c90-4b01-21c6-08dc40c84bbd
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB8279.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2024 06:06:58.9629
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2YBDqaejWnmVUOXMablPfhOi3wANR5sRoe0OMmrUUwB64hM3v7EoyQFMjd3HH5Ic1YR0r2kgyDTvKk6q6sipRzviLV3DMehJHpms+MTqW9emc9u82nY1KviqxmbMS0sY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5214
-X-OriginatorOrg: intel.com
+X-Received: by 2002:a05:6638:2109:b0:474:edd2:1ffe with SMTP id
+ n9-20020a056638210900b00474edd21ffemr205173jaj.3.1710051156898; Sat, 09 Mar
+ 2024 22:12:36 -0800 (PST)
+Date: Sat, 09 Mar 2024 22:12:36 -0800
+In-Reply-To: <000000000000169132060fc66db3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c148a70613484f3b@google.com>
+Subject: Re: [syzbot] [PATCH net] nfc: nci: Fix uninit-value in nci_dev_up
+From: syzbot <syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-On 3/8/24 10:35 AM, Tom Lendacky wrote:
-> When an SVSM is present, the guest can also request attestation reports
-> from the SVSM. These SVSM attestation reports can be used to attest the
-> SVSM and any services running within the SVSM.
->
-> Extend the config-fs attestation support to allow for an SVSM attestation
-> report. This involves creating four (4) new config-fs attributes:
->
->   - 'svsm' (input)
->     This attribute is used to determine whether the attestation request
->     should be sent to the SVSM or to the SEV firmware.
->
->   - 'service_guid' (input)
->     Used for requesting the attestation of a single service within the
->     SVSM. A null GUID implies that the SVSM_ATTEST_SERVICES call should
->     be used to request the attestation report. A non-null GUID implies
->     that the SVSM_ATTEST_SINGLE_SERVICE call should be used.
->
->   - 'service_manifest_version' (input)
->     Used with the SVSM_ATTEST_SINGLE_SERVICE call, the service version
->     represents a specific service manifest version be used for the
->     attestation report.
->
->   - 'manifestblob' (output)
->     Used to return the service manifest associated with the attestation
->     report.
->
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  Documentation/ABI/testing/configfs-tsm  |  59 ++++++++++
->  arch/x86/include/asm/sev.h              |  31 ++++-
->  arch/x86/kernel/sev.c                   |  50 ++++++++
->  drivers/virt/coco/sev-guest/sev-guest.c | 147 ++++++++++++++++++++++++
->  drivers/virt/coco/tsm.c                 |  95 ++++++++++++++-
->  include/linux/tsm.h                     |  11 ++
->  6 files changed, 390 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/ABI/testing/configfs-tsm b/Documentation/ABI/testing/configfs-tsm
-> index dd24202b5ba5..a4663610bf7c 100644
-> --- a/Documentation/ABI/testing/configfs-tsm
-> +++ b/Documentation/ABI/testing/configfs-tsm
-> @@ -31,6 +31,21 @@ Description:
->  		Standardization v2.03 Section 4.1.8.1 MSG_REPORT_REQ.
->  		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/56421.pdf
->  
-> +What:		/sys/kernel/config/tsm/report/$name/manifestblob
-> +Date:		January, 2024
-> +KernelVersion:	v6.9
-> +Contact:	linux-coco@lists.linux.dev
-> +Description:
-> +		(RO) Optional supplemental data that a TSM may emit, visibility
-> +		of this attribute depends on TSM, and may be empty if no
-> +		manifest data is available.
-> +
-> +		When @provider is "sev_guest" and the "svsm" attribute is set
-> +		this file contains the service manifest used for the SVSM
-> +		attestation report from Secure VM Service Module for SEV-SNP
-> +		Guests v1.00 Section 7.
-> +		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
-> +
->  What:		/sys/kernel/config/tsm/report/$name/provider
->  Date:		September, 2023
->  KernelVersion:	v6.7
-> @@ -80,3 +95,47 @@ Contact:	linux-coco@lists.linux.dev
->  Description:
->  		(RO) Indicates the minimum permissible value that can be written
->  		to @privlevel.
-> +
-> +What:		/sys/kernel/config/tsm/report/$name/svsm
-> +Date:		January, 2024
-> +KernelVersion:	v6.9
-> +Contact:	linux-coco@lists.linux.dev
-> +Description:
-> +		(WO) Attribute is visible if a TSM implementation provider
-> +		supports the concept of attestation reports for TVMs running
-> +		under an SVSM, like SEV-SNP. Specifying a 1 (or other boolean
+***
 
-Since service_guid can be used for non SVSM services as well, can we use
-a generic term "service" here? And let user specify the service type
-(like service=svsm)
+Subject: [PATCH net] nfc: nci: Fix uninit-value in nci_dev_up
+Author: ryasuoka@redhat.com
 
-> +		equivalent, e.g. "Y") implies that the attestation report
-> +		should come from the SVSM.
-> +		Secure VM Service Module for SEV-SNP Guests v1.00 Section 7.
-> +		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
-> +
-> +What:		/sys/kernel/config/tsm/report/$name/service_guid
-> +Date:		January, 2024
-> +KernelVersion:	v6.9
-> +Contact:	linux-coco@lists.linux.dev
-> +Description:
-> +		(WO) Attribute is visible if a TSM implementation provider
-> +		supports the concept of attestation reports for TVMs running
-> +		under an SVSM, like SEV-SNP. Specifying a empty or null GUID
-> +		(00000000-0000-0000-0000-000000) requests all active services
-> +		within the SVSM be part of the attestation report. Specifying
-> +		a non-null GUID requests an attestation report of just the
-> +		specified service using the manifest form specified by the
-> +		service_manifest_version attribute.
-> +		Secure VM Service Module for SEV-SNP Guests v1.00 Section 7.
-> +		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
-> +
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e
 
-I think it will be useful to the user if there is a attribute to list the service GUIDs
-supported. It can help prevent user using incorrect or unsupported GUIDs.
-
-> +What:		/sys/kernel/config/tsm/report/$name/service_manifest_version
-> +Date:		January, 2024
-> +KernelVersion:	v6.9
-> +Contact:	linux-coco@lists.linux.dev
-> +Description:
-> +		(WO) Attribute is visible if a TSM implementation provider
-> +		supports the concept of attestation reports for TVMs running
-> +		under an SVSM, like SEV-SNP. Indicates the service manifest
-> +		version requested for the attestation report. If this field
-> +		is not set by the user, the default manifest version of the
-> +		service (the service's initial/first manifest version) is
-> +		returned. The initial manifest version is always available.
-> +		Secure VM Service Module for SEV-SNP Guests v1.00 Section 7.
-> +		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
-> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> index 34bc84aee969..76fabc7b5e97 100644
-> --- a/arch/x86/include/asm/sev.h
-> +++ b/arch/x86/include/asm/sev.h
-> @@ -209,6 +209,27 @@ struct svsm_pvalidate_call {
->  	struct svsm_pvalidate_entry entry[];
->  };
->  
-> +/*
-> + * The SVSM Attestation related structures
-> + */
-> +struct svsm_location_entry {
-> +	u64 pa;
-> +	u32 len;
-> +	u8 rsvd[4];
-> +};
-> +
-> +struct svsm_attestation_call {
-> +	struct svsm_location_entry report_buffer;
-> +	struct svsm_location_entry nonce;
-> +	struct svsm_location_entry manifest_buffer;
-> +	struct svsm_location_entry certificates_buffer;
-> +
-> +	/* For attesting a single service */
-> +	u8 service_guid[16];
-> +	u32 service_manifest_version;
-> +	u8 rsvd[4];
-> +};
-> +
->  /*
->   * SVSM protocol structure
->   */
-> @@ -232,6 +253,10 @@ struct svsm_call {
->  #define SVSM_CORE_CREATE_VCPU		2
->  #define SVSM_CORE_DELETE_VCPU		3
->  
-> +#define SVSM_ATTEST_CALL(x)		((1ULL << 32) | (x))
-> +#define SVSM_ATTEST_SERVICES		0
-> +#define SVSM_ATTEST_SINGLE_SERVICE	1
-> +
->  #ifdef CONFIG_AMD_MEM_ENCRYPT
->  extern void __sev_es_ist_enter(struct pt_regs *regs);
->  extern void __sev_es_ist_exit(void);
-> @@ -302,6 +327,7 @@ void snp_set_wakeup_secondary_cpu(void);
->  bool snp_init(struct boot_params *bp);
->  void __noreturn snp_abort(void);
->  int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct snp_guest_request_ioctl *rio);
-> +int snp_issue_svsm_attestation_request(u64 call_id, struct svsm_attestation_call *input);
->  void snp_accept_memory(phys_addr_t start, phys_addr_t end);
->  u64 snp_get_unsupported_features(u64 status);
->  u64 sev_get_status(void);
-> @@ -333,7 +359,10 @@ static inline int snp_issue_guest_request(u64 exit_code, struct snp_req_data *in
->  {
->  	return -ENOTTY;
->  }
-> -
-> +static inline int snp_issue_svsm_attestation_request(u64 call_id, struct svsm_attestation_call *input)
-> +{
-> +	return -ENOTTY;
-> +}
->  static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
->  static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
->  static inline u64 sev_get_status(void) { return 0; }
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 8682af55802c..4e460d9eba77 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -2402,6 +2402,56 @@ static int __init init_sev_config(char *str)
->  }
->  __setup("sev=", init_sev_config);
->  
-> +static void update_attestation_input(struct svsm_call *call, struct svsm_attestation_call *input)
-> +{
-> +	/* If (new) lengths have been returned, propograte them up */
-> +	if (call->rcx_out != call->rcx)
-> +		input->manifest_buffer.len = call->rcx_out;
-> +
-> +	if (call->rdx_out != call->rdx)
-> +		input->certificates_buffer.len = call->rdx_out;
-> +
-> +	if (call->r8_out != call->r8)
-> +		input->report_buffer.len = call->r8_out;
-> +}
-> +
-> +int snp_issue_svsm_attestation_request(u64 call_id, struct svsm_attestation_call *input)
-> +{
-> +	struct svsm_attestation_call *attest_call;
-> +	struct svsm_call call = {};
-> +	unsigned long flags;
-> +	u64 attest_call_pa;
-> +	int ret;
-> +
-> +	if (!vmpl)
-> +		return -EINVAL;
-> +
-> +	local_irq_save(flags);
-> +
-> +	call.caa = __svsm_get_caa();
-> +
-> +	attest_call = (struct svsm_attestation_call *)call.caa->svsm_buffer;
-> +	attest_call_pa = __svsm_get_caa_pa() + offsetof(struct svsm_ca, svsm_buffer);
-> +
-> +	*attest_call = *input;
-> +
-> +	/*
-> +	 * Set input registers for the request and set RDX and R8 to known
-> +	 * values in order to detect length values being returned in them.
-> +	 */
-> +	call.rax = call_id;
-> +	call.rcx = attest_call_pa;
-> +	call.rdx = -1;
-> +	call.r8 = -1;
-> +	ret = svsm_protocol(&call);
-> +	update_attestation_input(&call, input);
-> +
-> +	local_irq_restore(flags);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(snp_issue_svsm_attestation_request);
-> +
->  int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct snp_guest_request_ioctl *rio)
->  {
->  	struct ghcb_state state;
-> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-> index bba6531cb606..9daec0ea386e 100644
-> --- a/drivers/virt/coco/sev-guest/sev-guest.c
-> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
-> @@ -38,6 +38,8 @@
->  #define SNP_REQ_MAX_RETRY_DURATION	(60*HZ)
->  #define SNP_REQ_RETRY_DELAY		(2*HZ)
->  
-> +#define SVSM_MAX_RETRIES		3
-> +
->  struct snp_guest_crypto {
->  	struct crypto_aead *tfm;
->  	u8 *iv, *authtag;
-> @@ -783,6 +785,148 @@ struct snp_msg_cert_entry {
->  	u32 length;
->  };
->  
-> +static int sev_svsm_report_new(struct tsm_report *report, void *data)
-> +{
-> +	unsigned int report_len, manifest_len, certificates_len;
-> +	void *report_blob, *manifest_blob, *certificates_blob;
-> +	struct svsm_attestation_call attest_call = {};
-> +	struct tsm_desc *desc = &report->desc;
-> +	unsigned int retry_count;
-> +	unsigned int size;
-> +	bool try_again;
-> +	void *buffer;
-> +	u64 call_id;
-> +	int ret;
-> +
-> +	/*
-> +	 * Allocate pages for the request:
-> +	 * - Report blob (4K)
-> +	 * - Manifest blob (4K)
-> +	 * - Certificate blob (16K)
-> +	 *
-> +	 * Above addresses must be 4K aligned
-> +	 */
-> +	report_len = SZ_4K;
-> +	manifest_len = SZ_4K;
-> +	certificates_len = SEV_FW_BLOB_MAX_SIZE;
-> +
-> +	retry_count = 0;
-> +
-> +retry:
-> +	size = report_len + manifest_len + certificates_len;
-> +	buffer = alloc_pages_exact(size, __GFP_ZERO);
-> +	if (!buffer)
-> +		return -ENOMEM;
-> +
-> +	report_blob = buffer;
-> +	attest_call.report_buffer.pa = __pa(report_blob);
-> +	attest_call.report_buffer.len = report_len;
-> +
-> +	manifest_blob = report_blob + report_len;
-> +	attest_call.manifest_buffer.pa = __pa(manifest_blob);
-> +	attest_call.manifest_buffer.len = manifest_len;
-> +
-> +	certificates_blob = manifest_blob + manifest_len;
-> +	attest_call.certificates_buffer.pa = __pa(certificates_blob);
-> +	attest_call.certificates_buffer.len = certificates_len;
-> +
-> +	attest_call.nonce.pa = __pa(desc->inblob);
-> +	attest_call.nonce.len = desc->inblob_len;
-> +
-> +	if (guid_is_null(&desc->service_guid)) {
-> +		call_id = SVSM_ATTEST_CALL(SVSM_ATTEST_SERVICES);
-> +	} else {
-> +		export_guid(attest_call.service_guid, &desc->service_guid);
-> +		attest_call.service_manifest_version = desc->service_manifest_version;
-> +
-> +		call_id = SVSM_ATTEST_CALL(SVSM_ATTEST_SINGLE_SERVICE);
-> +	}
-
-Above initialization will not change during retry, right? Why not move it above
-retry?
-
-> +
-> +	ret = snp_issue_svsm_attestation_request(call_id, &attest_call);
-> +	switch (ret) {
-> +	case SVSM_SUCCESS:
-> +		break;
-> +	case SVSM_ERR_INVALID_PARAMETER:
-> +		ret = -EINVAL;
-> +
-> +		if (retry_count >= SVSM_MAX_RETRIES)
-> +			goto error;
-> +
-> +		try_again = false;
-> +
-> +		if (attest_call.report_buffer.len > report_len) {
-> +			report_len = PAGE_ALIGN(attest_call.report_buffer.len);
-> +			try_again = true;
-> +		}
-> +
-> +		if (attest_call.manifest_buffer.len > manifest_len) {
-> +			manifest_len = PAGE_ALIGN(attest_call.manifest_buffer.len);
-> +			try_again = true;
-> +		}
-> +
-> +		if (attest_call.certificates_buffer.len > certificates_len) {
-> +			certificates_len = PAGE_ALIGN(attest_call.certificates_buffer.len);
-> +			try_again = true;
-> +		}
-> +
-> +		/* If one of the buffers wasn't large enough, retry the request */
-> +		if (try_again) {
-> +			free_pages_exact(buffer, size);
-> +			retry_count++;
-> +			goto retry;
-> +		}
-> +
-> +		goto error;
-> +	case SVSM_ERR_BUSY:
-> +		ret = -EAGAIN;
-> +		goto error;
-> +	default:
-> +		pr_err_ratelimited("SVSM attestation request failed (%#x)\n", ret);
-> +		ret = -EINVAL;
-> +		goto error;
-> +	}
-> +
-> +	ret = -ENOMEM;
-> +
-> +	report_len = attest_call.report_buffer.len;
-> +	void *rbuf __free(kvfree) = kvzalloc(report_len, GFP_KERNEL);
-> +	if (!rbuf)
-> +		goto error;
-> +
-> +	memcpy(rbuf, report_blob, report_len);
-> +	report->outblob = no_free_ptr(rbuf);
-> +	report->outblob_len = report_len;
-> +
-> +	manifest_len = attest_call.manifest_buffer.len;
-> +	void *mbuf __free(kvfree) = kvzalloc(manifest_len, GFP_KERNEL);
-> +	if (!mbuf)
-> +		goto error;
-> +
-> +	memcpy(mbuf, manifest_blob, manifest_len);
-> +	report->manifestblob = no_free_ptr(mbuf);
-> +	report->manifestblob_len = manifest_len;
-> +
-> +	certificates_len = attest_call.certificates_buffer.len;
-> +	if (!certificates_len)
-> +		goto success;
-> +
-> +	void *cbuf __free(kvfree) = kvzalloc(certificates_len, GFP_KERNEL);
-> +	if (!cbuf)
-> +		goto error;
-> +
-> +	memcpy(cbuf, certificates_blob, certificates_len);
-> +	report->auxblob = no_free_ptr(cbuf);
-> +	report->auxblob_len = certificates_len;
-> +
-> +success:
-> +	ret = 0;
-> +
-> +error:
-> +	free_pages_exact(buffer, size);
-> +
-> +	return ret;
-> +}
-> +
->  static int sev_report_new(struct tsm_report *report, void *data)
->  {
->  	struct snp_msg_cert_entry *cert_table;
-> @@ -797,6 +941,9 @@ static int sev_report_new(struct tsm_report *report, void *data)
->  	if (desc->inblob_len != SNP_REPORT_USER_DATA_SIZE)
->  		return -EINVAL;
->  
-> +	if (desc->svsm)
-> +		return sev_svsm_report_new(report, data);
-> +
->  	void *buf __free(kvfree) = kvzalloc(size, GFP_KERNEL);
->  	if (!buf)
->  		return -ENOMEM;
-> diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
-> index d1c2db83a8ca..07b4c95ce704 100644
-> --- a/drivers/virt/coco/tsm.c
-> +++ b/drivers/virt/coco/tsm.c
-> @@ -35,7 +35,7 @@ static DECLARE_RWSEM(tsm_rwsem);
->   * The attestation report format is TSM provider specific, when / if a standard
->   * materializes that can be published instead of the vendor layout. Until then
->   * the 'provider' attribute indicates the format of 'outblob', and optionally
-> - * 'auxblob'.
-> + * 'auxblob' and 'manifestblob'.
->   */
->  
->  struct tsm_report_state {
-> @@ -48,6 +48,7 @@ struct tsm_report_state {
->  enum tsm_data_select {
->  	TSM_REPORT,
->  	TSM_CERTS,
-> +	TSM_MANIFEST,
->  };
->  
->  static struct tsm_report *to_tsm_report(struct config_item *cfg)
-> @@ -119,6 +120,77 @@ static ssize_t tsm_report_privlevel_floor_show(struct config_item *cfg,
->  }
->  CONFIGFS_ATTR_RO(tsm_report_, privlevel_floor);
->  
-> +static ssize_t tsm_report_svsm_store(struct config_item *cfg,
-> +				     const char *buf, size_t len)
-> +{
-> +	struct tsm_report *report = to_tsm_report(cfg);
-> +	bool val;
-> +	int rc;
-> +
-> +	rc = kstrtobool(buf, &val);
-> +	if (rc)
-> +		return rc;
-> +
-> +	guard(rwsem_write)(&tsm_rwsem);
-> +	rc = try_advance_write_generation(report);
-> +	if (rc)
-> +		return rc;
-> +	report->desc.svsm = val;
-> +
-> +	return len;
-> +}
-> +CONFIGFS_ATTR_WO(tsm_report_, svsm);
-> +
-> +static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
-> +					     const char *buf, size_t len)
-> +{
-> +	struct tsm_report *report = to_tsm_report(cfg);
-> +	size_t guid_len;
-> +	int rc;
-> +
-> +	guard(rwsem_write)(&tsm_rwsem);
-> +	rc = try_advance_write_generation(report);
-> +	if (rc)
-> +		return rc;
-> +
-> +	/* Obtain the GUID string length */
-> +	guid_len = (len && buf[len - 1] == '\n') ? len - 1 : len;
-> +	if (guid_len && guid_len != UUID_STRING_LEN)
-> +		return -EINVAL;
-> +
-
-I don't think you need above checks. I think guid_parse will fail, if it is not
-a valid GUID.
-
-> +	if (guid_len == UUID_STRING_LEN) {
-> +		rc = guid_parse(buf, &report->desc.service_guid);
-> +		if (rc)
-> +			return rc;
-> +	} else {
-> +		report->desc.service_guid = guid_null;
-
-I think the default value will be guid_null right, why reset it to NULL for every failed attempt?
-
-> +	}
-> +
-> +	return len;
-> +}
-> +CONFIGFS_ATTR_WO(tsm_report_, service_guid);
-> +
-> +static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg,
-> +							 const char *buf, size_t len)
-> +{
-> +	struct tsm_report *report = to_tsm_report(cfg);
-> +	unsigned int val;
-> +	int rc;
-> +
-> +	rc = kstrtouint(buf, 0, &val);
-> +	if (rc)
-> +		return rc;
-> +
-> +	guard(rwsem_write)(&tsm_rwsem);
-> +	rc = try_advance_write_generation(report);
-> +	if (rc)
-> +		return rc;
-> +	report->desc.service_manifest_version = val;
-> +
-> +	return len;
-> +}
-> +CONFIGFS_ATTR_WO(tsm_report_, service_manifest_version);
-> +
->  static ssize_t tsm_report_inblob_write(struct config_item *cfg,
->  				       const void *buf, size_t count)
->  {
-> @@ -163,6 +235,9 @@ static ssize_t __read_report(struct tsm_report *report, void *buf, size_t count,
->  	if (select == TSM_REPORT) {
->  		out = report->outblob;
->  		len = report->outblob_len;
-> +	} else if (select == TSM_MANIFEST) {
-> +		out = report->manifestblob;
-> +		len = report->manifestblob_len;
->  	} else {
->  		out = report->auxblob;
->  		len = report->auxblob_len;
-> @@ -188,7 +263,7 @@ static ssize_t read_cached_report(struct tsm_report *report, void *buf,
->  
->  	/*
->  	 * A given TSM backend always fills in ->outblob regardless of
-> -	 * whether the report includes an auxblob or not.
-> +	 * whether the report includes an auxblob/manifestblob or not.
->  	 */
->  	if (!report->outblob ||
->  	    state->read_generation != state->write_generation)
-> @@ -224,8 +299,10 @@ static ssize_t tsm_report_read(struct tsm_report *report, void *buf,
->  
->  	kvfree(report->outblob);
->  	kvfree(report->auxblob);
-> +	kvfree(report->manifestblob);
->  	report->outblob = NULL;
->  	report->auxblob = NULL;
-> +	report->manifestblob = NULL;
->  	rc = ops->report_new(report, provider.data);
->  	if (rc < 0)
->  		return rc;
-> @@ -252,6 +329,15 @@ static ssize_t tsm_report_auxblob_read(struct config_item *cfg, void *buf,
->  }
->  CONFIGFS_BIN_ATTR_RO(tsm_report_, auxblob, NULL, TSM_OUTBLOB_MAX);
->  
-> +static ssize_t tsm_report_manifestblob_read(struct config_item *cfg, void *buf,
-> +					    size_t count)
-> +{
-> +	struct tsm_report *report = to_tsm_report(cfg);
-> +
-> +	return tsm_report_read(report, buf, count, TSM_MANIFEST);
-> +}
-> +CONFIGFS_BIN_ATTR_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX);
-> +
->  #define TSM_DEFAULT_ATTRS() \
->  	&tsm_report_attr_generation, \
->  	&tsm_report_attr_provider
-> @@ -265,6 +351,9 @@ static struct configfs_attribute *tsm_report_extra_attrs[] = {
->  	TSM_DEFAULT_ATTRS(),
->  	&tsm_report_attr_privlevel,
->  	&tsm_report_attr_privlevel_floor,
-> +	&tsm_report_attr_svsm,
-> +	&tsm_report_attr_service_guid,
-> +	&tsm_report_attr_service_manifest_version,
->  	NULL,
->  };
->  
-> @@ -280,6 +369,7 @@ static struct configfs_bin_attribute *tsm_report_bin_attrs[] = {
->  static struct configfs_bin_attribute *tsm_report_bin_extra_attrs[] = {
->  	TSM_DEFAULT_BIN_ATTRS(),
->  	&tsm_report_attr_auxblob,
-> +	&tsm_report_attr_manifestblob,
->  	NULL,
->  };
->  
-> @@ -288,6 +378,7 @@ static void tsm_report_item_release(struct config_item *cfg)
->  	struct tsm_report *report = to_tsm_report(cfg);
->  	struct tsm_report_state *state = to_state(report);
->  
-> +	kvfree(report->manifestblob);
->  	kvfree(report->auxblob);
->  	kvfree(report->outblob);
->  	kfree(state);
-> diff --git a/include/linux/tsm.h b/include/linux/tsm.h
-> index 50c5769657d8..c4aed3059500 100644
-> --- a/include/linux/tsm.h
-> +++ b/include/linux/tsm.h
-> @@ -4,6 +4,7 @@
->  
->  #include <linux/sizes.h>
->  #include <linux/types.h>
-> +#include <linux/uuid.h>
->  
->  #define TSM_INBLOB_MAX 64
->  #define TSM_OUTBLOB_MAX SZ_32K
-> @@ -19,11 +20,17 @@
->   * @privlevel: optional privilege level to associate with @outblob
->   * @inblob_len: sizeof @inblob
->   * @inblob: arbitrary input data
-> + * @svsm: optional indicator of where to obtain the tsm report blob
-> + * @service_guid: optional SVSM service guid to attest
-> + * @service_manifest_version: optional SVSM service manifest version requested
->   */
->  struct tsm_desc {
->  	unsigned int privlevel;
->  	size_t inblob_len;
->  	u8 inblob[TSM_INBLOB_MAX];
-> +	bool svsm;
-> +	guid_t service_guid;
-> +	unsigned int service_manifest_version;
->  };
->  
->  /**
-> @@ -33,6 +40,8 @@ struct tsm_desc {
->   * @outblob: generated evidence to provider to the attestation agent
->   * @auxblob_len: sizeof(@auxblob)
->   * @auxblob: (optional) auxiliary data to the report (e.g. certificate data)
-> + * @manifestblob_len: sizeof(@manifestblob)
-> + * @manifestblob: (optional) manifest data associated with the report
->   */
->  struct tsm_report {
->  	struct tsm_desc desc;
-> @@ -40,6 +49,8 @@ struct tsm_report {
->  	u8 *outblob;
->  	size_t auxblob_len;
->  	u8 *auxblob;
-> +	size_t manifestblob_len;
-> +	u8 *manifestblob;
->  };
->  
->  /**
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+diff --git a/net/nfc/nci/ntf.c b/net/nfc/nci/ntf.c
+index 994a0a1efb58..efdd733fc676 100644
+--- a/net/nfc/nci/ntf.c
++++ b/net/nfc/nci/ntf.c
+@@ -759,6 +759,9 @@ void nci_ntf_packet(struct nci_dev *ndev, struct sk_buff *skb)
+ {
+ 	__u16 ntf_opcode = nci_opcode(skb->data);
+ 
++	if (unlikely(!nci_plen(skb->data)))
++		goto end;
++
+ 	pr_debug("NCI RX: MT=ntf, PBF=%d, GID=0x%x, OID=0x%x, plen=%d\n",
+ 		 nci_pbf(skb->data),
+ 		 nci_opcode_gid(ntf_opcode),
 
 
