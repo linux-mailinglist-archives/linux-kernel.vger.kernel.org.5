@@ -1,92 +1,83 @@
-Return-Path: <linux-kernel+bounces-98343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B478778A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 22:49:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD6E18778A6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 22:57:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09A0228147B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 21:49:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 474C62817FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 21:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A51B3A8CB;
-	Sun, 10 Mar 2024 21:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83DD3B2BF;
+	Sun, 10 Mar 2024 21:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGQVc6i2"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jEPG2W2b"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E354200A6;
-	Sun, 10 Mar 2024 21:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5F91EB22;
+	Sun, 10 Mar 2024 21:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710107341; cv=none; b=oDnGNrpkdnEHiv1mRDfKCojnRq/gzf7QkyFo4EyGeEuMPIoE6Twc+AZH42n/fOF2qPhshSlkGrbodMXiGA1U3481lcSYFpzwveL1+8GbLp4DlMFq0mlr4BLgCyd8r4MPCkiwirJ2kE4x4BrIs1REDkl9LDzcw3npB4G8BJHSmZs=
+	t=1710107860; cv=none; b=kq0XIYxZ5bpwWncuNuH+hVcAgZ+4H1CbQ0wK9/eBL94lMWai9ooEaldXWGffTo3v1YV14ssLwa9tltHEFu6HwbnPmdEv0BHICURlpwVBhrprGfkGsDbSJ8DKCltbS2s0W9oHr5D3pV0yB0AcNFcOLsmEQvOVBwZQMnJ3aW2dsmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710107341; c=relaxed/simple;
-	bh=uiNUIQwX6BYiGbEKIo6u+t0/etIbRR33V5TSPTk94m0=;
+	s=arc-20240116; t=1710107860; c=relaxed/simple;
+	bh=UuKAE3fq6r+4LIXCVTaVa7ghgZrfPk/16dMZRzjVRs4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SYKIs5ydFn0rpQMuIsp6Ux3M+sHgfeQwo1asr74tpf4NaM+jsUdFmcG7Jsb/WVkayvpBQM8HVlGdU3IIYeXzA5aO/xS7/Efa5e1JJNiGXBzHG4+G4OvyFbTDTO2YKGhdUCROTRMrw4O80A53TIT0q9z6gO/SP1DnUZmX2vOOpaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EGQVc6i2; arc=none smtp.client-ip=209.85.214.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=nEbPBaBAsjDI8Nz/PjhZbadnx9m+vOy+pkXjLppolEIg9jn2RhgUi8b4b2gh7EiT3bDDDKVBEcESB7U1dmV0ezppbPCsVFTWq+2Imrlm3gb4ktgLjFbpEkvuuae1aCSFkSp6gU/SzQV6tZvyd7IAbT5h/ROF1irb4mYMGvuYtPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jEPG2W2b; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dd68d4cff1so16395875ad.2;
-        Sun, 10 Mar 2024 14:48:59 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4132a436086so1836545e9.2;
+        Sun, 10 Mar 2024 14:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710107338; x=1710712138; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710107857; x=1710712657; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=peiS13bUuIETlTVlJrUnJS9cAypcX9YXgZEjm2ZHlXk=;
-        b=EGQVc6i2U7tItUa2Prnhd0di4K5hx19ZKfAM4A95LRb5bllQziS8Yv5sA6SaDJ+cZB
-         fJCc3O5K4GO1Qc3/SeP79oKt96JKvrqkaNOHUBkADrQYFtcCrVS/E9JKp6npfTcc55Y0
-         m/WuhA6asZpOO2Mc05Uf/5ARtNdH5Oy1rew/JukU98Eaz35W+GA9Zsab8W1aAu+THtJ5
-         DP+/GxSHb9a5vquYivEvwU2iM/oq57sdWSPpi0GteTPPHe2ob0ovffxsKEd5QsYYfSUO
-         zwMJk4Qx5n9sLbF/1qz6avXyIIN+VvBJ0Cv7j/53ya7tpUIq3CRdAVcT+kr3jTzfpyZe
-         6u8Q==
+        bh=J/sYS0NJb4DqNjgdYB+tGj5LpDFuv9Mhfne0wLLGGD4=;
+        b=jEPG2W2bP/tw0ls2QJ3IRMp9LBVejV3wwmF092bv1I03g35nqHy0zk5IeSCYvf2WUu
+         3f4JvW78wIGd/p4iNrLPJVxy3VElYfD37ds0sr1VL8+GJySTiuT5zOuniyEFbMbbSiDt
+         QTG2/JM1k+Sqh10+G6vD51Md451iWq69G4oQwW5DNQ0QwHqlfFCceiTeMrSkZMuiEytv
+         qX56nf6gk1m5RbY+MsYZbMyN5ZVFxf6nN6G94APBHTeXSmPXHnh4h4qQ0F7b9vMYsqRw
+         lLX3EwORgtfkIrCKUioChflcF8EzH2v68TW2QlDYocgo3Mg8X5Rd3AmvsCeEf5io2hyR
+         vfxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710107338; x=1710712138;
+        d=1e100.net; s=20230601; t=1710107857; x=1710712657;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=peiS13bUuIETlTVlJrUnJS9cAypcX9YXgZEjm2ZHlXk=;
-        b=hMJqZYJ+rokbgt02arEW39IiC17ArDzGno2UNWUeqdwl1uss8aQSVr95Wy3o51lhER
-         VETRrkyhBa/6dux+zXIHBW/NkHww7WK/Z8DFerB0stzpD/tcdCnoE5E+J8/q9Vd0ysXd
-         AfZCPiFt4EMo6gNP+jt7Qkwhnc9kZALTET+SEZVQM1Ap4JiZsGybDxKl7ZMCdNlk8tnc
-         RZnYVcGeeIpe4kLaEeUkSvZnw7ZLfVCZRi0GSBmCpAwKc2STZWzEoP4jLZjYg+muGpMl
-         vvC50EWqiCrdh4lHIyPEgvxkiDzxrhuNirdHAwf0Q3MNTZ9LzU0i/AG27sFsBUwyhQry
-         hGAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVy1e/no/CCS/nnyCa3GSliKamgxdZN4oaNnHXqVpgqMBGhkj+T6XCB3AqzSyky4smZIs4/ymjArE3E1phNjbLGFuPUqPwR2ulLvDgIk4VIUdoN441fahY6w57qKTLCEVhwqtiFeTJ57z46ndviH4A2nHGzabjvvXm/enezBkotq1KCugUAMpYRMlxExZ/rYVRFP9WIEvLBDDKijL8WVzQq9x8=
-X-Gm-Message-State: AOJu0Ywoj0EvC7WuJ4d6x8+/jVPbyAns8T6ZdUyN3+w9OTGkAdFUYdf2
-	yCc7MApmopr377EhrSD3AqNQ+f9M3T0lRSVBn49p2++Kq2MM67enkkghRCeI
-X-Google-Smtp-Source: AGHT+IEWxxer7+GvZpSyC+KpPXhxra7vrWGJ3a2rsApHjdYvzkJ+rmWD+x1uxlAnk84alJSOjVn32w==
-X-Received: by 2002:a17:902:e5ca:b0:1dd:a36e:3204 with SMTP id u10-20020a170902e5ca00b001dda36e3204mr47580plf.67.1710107338535;
-        Sun, 10 Mar 2024 14:48:58 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:fa9b:d52c:840:abd4])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170902e54900b001d949393c50sm3120067plf.187.2024.03.10.14.48.57
+        bh=J/sYS0NJb4DqNjgdYB+tGj5LpDFuv9Mhfne0wLLGGD4=;
+        b=FITyaDrh2nb2zped9HgupaIq+T3E/PGDnxgd59yodnKyv7k36QpTc76uP5rapUL9F4
+         4/K3XgT80OjOcimZqvOLxK6ZykHbrtisHNBs/6kl4JSvCrZzEtSpU3ETsz5ofli2UGek
+         Tgs00W2ZR/QQLGEtr9/OwS54YNAMGgPfiPRoyCUBZzjwb3rCto5JVw1ITwsLBuCltpE4
+         mZ6kyIrcq0suS6lus2di70xyHjohBZO79zz3N6lFx29wRiHqOBmuxBK9bGsFd8yIWGl2
+         3fVmtY74QtaP3DsBoQg71xPNCLEFYt/a+bOt/yjawoRJwqAsk9/ZmAjVHqrkK2aklaf+
+         +OdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNxitez14uS1sYLLc+9gGx+deSwspNBet5NlG7hTl3g6JQfg9ilhXxRuDPrPKhlFyTKM4KxEhENwjpx7higWBHfBNAsHIJ8s/Fz/dDxoREf06Ijjnuedy1mqq9Mm5sbd5yl49Q+5ga9vwa7SXFM5rswndn1WXjjzUbEgh17Jw/UWMTLqw4tg==
+X-Gm-Message-State: AOJu0YxzoqDefXFTG/RcxuORFNZSCzflWXOYUB0nStOYqTMluGZ8bwzM
+	4/ScdCg1RzzOsuxGYL3h5Hy+gc0/TpYazM1IciYhn13OwC3Ilb77
+X-Google-Smtp-Source: AGHT+IGLPOT973/rTUf1pEj4J67Zt68S7FpNg8KHeXcNkLm8rUad4WXpY2RIHz/ES7oT49cPkJeawQ==
+X-Received: by 2002:a05:600c:1987:b0:412:eff3:8497 with SMTP id t7-20020a05600c198700b00412eff38497mr4518127wmq.1.1710107856392;
+        Sun, 10 Mar 2024 14:57:36 -0700 (PDT)
+Received: from localhost (host86-164-143-89.range86-164.btcentralplus.com. [86.164.143.89])
+        by smtp.gmail.com with ESMTPSA id fb4-20020a05600c520400b00413294ddb72sm1820037wmb.20.2024.03.10.14.57.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 14:48:58 -0700 (PDT)
-Date: Sun, 10 Mar 2024 14:48:55 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Karel Balej <karelb@gimli.ms.mff.cuni.cz>, Lee Jones <lee@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 4/5] input: add onkey driver for Marvell 88PM886
- PMIC
-Message-ID: <Ze4qx9KQEPU9U8JN@google.com>
-References: <20240303101506.4187-1-karelb@gimli.ms.mff.cuni.cz>
- <20240303101506.4187-5-karelb@gimli.ms.mff.cuni.cz>
- <ZeTgEmjJc_VhYpLm@google.com>
- <CZL8ZSZAVEBI.349BV2Y6AKIPN@gimli.ms.mff.cuni.cz>
- <ZeZxI_spu4vwxrs7@google.com>
- <CZQ1EP61IDOC.1PPYGMIOINGND@gimli.ms.mff.cuni.cz>
- <3601a374-4161-40e1-8a80-9bbfdae5bd8a@linaro.org>
+        Sun, 10 Mar 2024 14:57:35 -0700 (PDT)
+Date: Sun, 10 Mar 2024 21:55:21 +0000
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	upstream+pagemap@sigma-star.at, adobriyan@gmail.com,
+	wangkefeng.wang@huawei.com, ryan.roberts@arm.com, hughd@google.com,
+	peterx@redhat.com, david@redhat.com, avagin@google.com,
+	vbabka@suse.cz, akpm@linux-foundation.org,
+	usama.anjum@collabora.com, corbet@lwn.net
+Subject: Re: [PATCH 1/2] [RFC] proc: pagemap: Expose whether a PTE is writable
+Message-ID: <Ze4sSR0DJaR2Hy6v@devil>
+References: <20240306232339.29659-1-richard@nod.at>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,84 +86,90 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3601a374-4161-40e1-8a80-9bbfdae5bd8a@linaro.org>
+In-Reply-To: <20240306232339.29659-1-richard@nod.at>
 
-On Sun, Mar 10, 2024 at 09:35:36PM +0100, Krzysztof Kozlowski wrote:
-> On 10/03/2024 12:35, Karel Balej wrote:
-> > Dmitry Torokhov, 2024-03-04T17:10:59-08:00:
-> >> On Mon, Mar 04, 2024 at 09:28:45PM +0100, Karel Balej wrote:
-> >>> Dmitry,
-> >>>
-> >>> Dmitry Torokhov, 2024-03-03T12:39:46-08:00:
-> >>>> On Sun, Mar 03, 2024 at 11:04:25AM +0100, Karel Balej wrote:
-> >>>>> From: Karel Balej <balejk@matfyz.cz>
-> >>>>>
-> >>>>> Marvell 88PM886 PMIC provides onkey among other things. Add client
-> >>>>> driver to handle it. The driver currently only provides a basic support
-> >>>>> omitting additional functions found in the vendor version, such as long
-> >>>>> onkey and GPIO integration.
-> >>>>>
-> >>>>> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> >>>>> ---
-> >>>>>
-> >>>>> Notes:
-> >>>>>     RFC v3:
-> >>>>>     - Drop wakeup-source.
-> >>>>>     RFC v2:
-> >>>>>     - Address Dmitry's feedback:
-> >>>>>       - Sort includes alphabetically.
-> >>>>>       - Drop onkey->irq.
-> >>>>>       - ret -> err in irq_handler and no initialization.
-> >>>>>       - Break long lines and other formatting.
-> >>>>>       - Do not clobber platform_get_irq error.
-> >>>>>       - Do not set device parent manually.
-> >>>>>       - Use input_set_capability.
-> >>>>>       - Use the wakeup-source DT property.
-> >>>>>       - Drop of_match_table.
-> >>>>
-> >>>> I only said that you should not be using of_match_ptr(), but you still
-> >>>> need to have of_match_table set and have MODULE_DEVICE_TABLE() for the
-> >>>> proper module loading support.
-> >>>
-> >>> I removed of_match_table because I no longer need compatible for this --
-> >>> there are no device tree properties and the driver is being instantiated
-> >>> by the MFD driver.
-> >>>
-> >>> Is the MODULE_DEVICE_TABLE() entry needed for the driver to probe when
-> >>> compiled as module? If that is the case, given what I write above, am I
-> >>> correct that MODULE_DEVICE_TABLE(platform,...) would be the right thing
-> >>> to use here?
-> >>
-> >> Yes, if uevent generated for the device is "platform:<name>" then
-> >> MODULE_DEVICE_TABLE(platform,...) will suffice. I am not sure how MFD
-> >> sets it up (OF modalias or platform), but you should be able to check
-> >> the format looking at the "uevent" attribute for your device in sysfs
-> >> (/sys/devices/bus/platform/...). 
-> > 
-> > The uevent is indeed platform.
-> > 
-> > But since there is only one device, perhaps having a device table is
-> > superfluous and using `MODULE_ALIAS("platform:88pm886-onkey")` is more
-> > fitting?
-> 
-> Adding aliases for standard IDs and standard cases is almost never
-> correct. If you need module alias, it means your ID table is wrong (or
-> missing, which is usually wrong).
-> 
-> > 
-> > Although I don't understand why this is even necessary when the driver
-> > name is such and the module is registered using
-> > `module_platform_driver`...
-> 
-> ID table and MODULE_DEVICE_TABLE() are necessary for modprobe to work.
-> Just run `modinfo`.
+On Thu, Mar 07, 2024 at 12:23:38AM +0100, Richard Weinberger wrote:
+> Is a PTE present and writable, bit 58 will be set.
+> This allows detecting CoW memory mappings and other mappings
+> where a write access will cause a page fault.
 
-MODULE_DEVICE_TABLE() and MODULE_ALIAS() reduce to the same thing, but I
-agree that we should not try to be too clever and simply use the ID
-table.
+I think David has highlighted it elsewhere in the thread, but this
+explanation definitely needs bulking up.
 
-Thanks.
+Need to emphsaise that we detect cases where a fault will occur (_possibly_
+CoW, _possibly_ write notify clean file-backed page, _possibly_ other cases
+where we need write fault tracking).
 
--- 
-Dmitry
+Very important to differentiate between a _page table_ read/write flag
+being set and the mapping being read-only, it's a concern that being loose
+on this might confuse people somewhat.
+
+>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  fs/proc/task_mmu.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 3f78ebbb795f..7c7e0e954c02 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1341,6 +1341,7 @@ struct pagemapread {
+>  #define PM_SOFT_DIRTY		BIT_ULL(55)
+>  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
+>  #define PM_UFFD_WP		BIT_ULL(57)
+> +#define PM_WRITE		BIT_ULL(58)
+
+As an extension of the above comment re: confusion, I really dislike
+PM_WRITE. Something like PM_PTE_WRITABLE might be better?
+
+>  #define PM_FILE			BIT_ULL(61)
+>  #define PM_SWAP			BIT_ULL(62)
+>  #define PM_PRESENT		BIT_ULL(63)
+> @@ -1417,6 +1418,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+>  			flags |= PM_SOFT_DIRTY;
+>  		if (pte_uffd_wp(pte))
+>  			flags |= PM_UFFD_WP;
+> +		if (pte_write(pte))
+> +			flags |= PM_WRITE;
+>  	} else if (is_swap_pte(pte)) {
+>  		swp_entry_t entry;
+>  		if (pte_swp_soft_dirty(pte))
+> @@ -1483,6 +1486,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
+>  				flags |= PM_SOFT_DIRTY;
+>  			if (pmd_uffd_wp(pmd))
+>  				flags |= PM_UFFD_WP;
+> +			if (pmd_write(pmd))
+> +				flags |= PM_WRITE;
+>  			if (pm->show_pfn)
+>  				frame = pmd_pfn(pmd) +
+>  					((addr & ~PMD_MASK) >> PAGE_SHIFT);
+> @@ -1586,6 +1591,9 @@ static int pagemap_hugetlb_range(pte_t *ptep, unsigned long hmask,
+>  		if (huge_pte_uffd_wp(pte))
+>  			flags |= PM_UFFD_WP;
+>
+> +		if (pte_write(pte))
+
+This should be huge_pte_write(). It amounts to the same thing, but for
+consistency :)
+
+> +			flags |= PM_WRITE;
+> +
+>  		flags |= PM_PRESENT;
+>  		if (pm->show_pfn)
+>  			frame = pte_pfn(pte) +
+> --
+> 2.35.3
+>
+
+Overall I _really_ like the idea of exposing this. Not long ago I wanted to
+be able to assess whether private mappings were CoW'd or not 'at a glance'
+and couldn't find any means of doing this (of course I might have missed
+something but I don't think there is anything).
+
+So I think a single bit in /proc/$pid/pagemap is absolutely worthwhile to
+get this information.
+
+I'd like to see a non-RFC version submitted :) as discussed on irc,
+probably best after merge window!
 
