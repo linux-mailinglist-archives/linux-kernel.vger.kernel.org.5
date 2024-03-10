@@ -1,125 +1,129 @@
-Return-Path: <linux-kernel+bounces-98271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FAEA8777AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 18:06:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 632C38777B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 18:12:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D01EC1F21965
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 17:06:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0209D1F21696
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 17:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F34381B9;
-	Sun, 10 Mar 2024 17:06:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B666376E5;
+	Sun, 10 Mar 2024 17:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AU9jDPBY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bTrsAev+"
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F40C1D6BD
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 17:06:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4606D10EB
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 17:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710090393; cv=none; b=tGUTjiUwOgWHFWfGMa+wDWXNtcR7M1MKB5DEsfZNu2n2CXBZv+15RlyexobCvF0cqjdF0W4C5d76Wf8BIvFV+nXAnsijA3ek/pv7UwjRrDJfpu3nms39Rils58K3AlvDLe9UnC8A+XkKFBVFmRaC1k52GuAyludGP0Lx2s3IU4s=
+	t=1710090766; cv=none; b=sb/moXy2j7xpXJ4Nl+F9BPPRu4/YovFSMJlWl+cVbYHtFbiM6E/PRPiB7Ni0Va+LxhsXxOPNCcFPXshe/ulnduxo+8bEB3Uv4dgIGH/xgPadz6RcWNWVsFUk/3F9S2ko7x0oQ3r4BSmi13nKIufHv5rkH2rqAigfBDgN+FYjNe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710090393; c=relaxed/simple;
-	bh=hZNW8IxLh80QkFa8j9FkpxrhA1XGfVP7w1PTFU82GXc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=mFJ51Nfx/0aWwfrsxNNZ9HnGiAWf+orgIgC89x3B08mPaLWUoPOA+jFs/u7xxvmyP6/CvxB5dPmdPGhn7Sige9b9YSXgefUlGsUUFxMHC19Nq84f0U+B+PuiQlKPT1pCB5xJQt+jdo/DM6Oe9dxoKvHa7/hePCCdrgjlHW7xjkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AU9jDPBY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FBBCC433C7;
-	Sun, 10 Mar 2024 17:06:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710090393;
-	bh=hZNW8IxLh80QkFa8j9FkpxrhA1XGfVP7w1PTFU82GXc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=AU9jDPBYEx5MY4FjfrcRmiA942SUID4PExiBaKpow8WAlSLuSB7UcAoMzjZ5IKTDU
-	 2zIxCIJG0mfV0KpvmnBvjt6n498NuLMADE+cNTy8yvp6DWRRK2uB3Nl+ggcQbU1RhD
-	 xjHIiTJDQDeTRGIFmBYLBRHFzcyvafGCoE50WsM+yhnh6U9F5/loRSniM1RC9N/8OP
-	 uiJUjmTRDxEnNqy7OhDivRrCNgmM4cjL/ATPRtpokU9CKRddnGy2EDf3cOGca4I95E
-	 V0i1GXeYLX8f22So+BYHXcMwpbxQXouR+8SMhTZs/LFLJqQKfEbpNhzyWBvZcv9MfU
-	 d+zK54MrIUNXw==
-Date: Sun, 10 Mar 2024 22:36:28 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: Generic phy fixes for v6.8
-Message-ID: <Ze3olI5SfqS-1RJ0@matsya>
+	s=arc-20240116; t=1710090766; c=relaxed/simple;
+	bh=GvvHLwc+BXWQnptpXvsBcJKrD43F0EoxW/Nt3khI8Gs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KuLEuwSSZErxsUjtb41WxO7RJxiS4RsomW2imvGp7IOCcCO49khuN03yzHNhfXpRMx5ph2t00lyGrQgdkjejrLA+6kk0z8j4cxPWEdr0HnHspBwyEvFvmYBMjCVXDTJtEwucu+IBjeNI13px6V79hPywJUG0pgzMGBMd4oL5oj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bTrsAev+; arc=none smtp.client-ip=209.85.210.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6ddf26eba3cso2810401a34.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 10:12:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710090764; x=1710695564; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BLDFBpE9g7B2rHNzujysZLg4IwIC9TaXs9R31Os7xQs=;
+        b=bTrsAev+lwcaGROviY7q/ZR9yeeiCxZBDJTsJFKfXSrWlRGzlMDbP+8W23xXYI2U7G
+         DSegd2QUPLBceq9iQW06Q4cEhrNWtyaib5uJfMz6lylzCm25xdXEYgg7M6psL9GnD7kN
+         UJMLfD8TV3k4qCLuB6F0JicbCuyd5DFvLbp5YMy1f+C1whhR+g0bJUgzlaJJkSyvj0ca
+         iBZxfYJL5tgVs/Hqf3UtHzSu7uqOi/o2sAqfgMF2yX8u8hucW5kQt7Sr54VDfqzqgR/4
+         VooGFMY7q4zcINkph1XnEZUPz02ujALyb55ztYnL0rjHLycuAnqOt1WuNmFt0tCBsJKX
+         yEfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710090764; x=1710695564;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BLDFBpE9g7B2rHNzujysZLg4IwIC9TaXs9R31Os7xQs=;
+        b=jAUNxxPnDowfV9vpzaXqgFS17nV7Lko5bmZBaveshqidoQRynuShdM/fbk/+PWARVW
+         BtlpEIU2YZMXiMjZBn/ZZ/C9Ccrl+s7RtXadZTda3HZtaKmIzodXJcNRVcPXS9YU4k16
+         v6GgdZ+fArUsvW0vEHOjaGOTiulfbqHdGxTYmeSLcvbUQDIG8gClVxMlq+UMnrN+bZ/t
+         DTScwq6odVVkFRAK1GaehGIDi2r2zHhpIppU/P3A58Kr9/3auoqtF+58l68m/T6xXcna
+         i0R1pY6xBiMBf1iV4JlZhm/ROA9m8pQuQWCOxJqrMqlKCcfindXt7hiGKzENVbWWtrSX
+         dYfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVbTVyDyFfpDqlKxVusmORzws547AR0HC/+N0WhTbDK98R+A8A7lWlstO6OT/fhJiNHSiNYAX5CYU1WRB2w3NhA1AQUBYt+WB+pB6Bg
+X-Gm-Message-State: AOJu0Yy5Xci/724hMRid8NSuT0m8tJ1AjEsbohKQ+OF54NTX8GAVCj7O
+	+to0/j7lAl2N2l8DJqZO5AyWCmPinFHCpN8jFuoOjfJuMbH+mCQ3eXH4wHY02RicW3ZUNdJwfJY
+	8jnrNg5WM4fHlbW9V0k8OibrigXU99lJURv7Q
+X-Google-Smtp-Source: AGHT+IG0PSdkGjK42DSA7kdGjkF6UWHQ39d31Q9DmHNsq4FyJQOhXVJ4Sa5htBItt5EQbltndjRfT/RM/9CYILqVs6g=
+X-Received: by 2002:a05:6830:3101:b0:6e4:e675:a92c with SMTP id
+ b1-20020a056830310100b006e4e675a92cmr7240903ots.16.1710090764101; Sun, 10 Mar
+ 2024 10:12:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Rwkr5RC2FO1XHBk+"
-Content-Disposition: inline
-
-
---Rwkr5RC2FO1XHBk+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CAGdbjmK9WoOQSbKUvcTdLJDW-RB=qe2tHFDZ-MeD266xZOxh7w@mail.gmail.com>
+ <20240222202404.36206-1-kevinloughlin@google.com> <CAMj1kXFsX1HZ3=x1cjN0-7i5EV9LXkSrAW22dc1wERUaTdAMaA@mail.gmail.com>
+ <20240308110043.GEZerv21Qj10Q7-8p5@fat_crate.local> <CAMj1kXFe48dUtNkCDG0PcmeGhYfvr5HJ8sucuNGwCJ1XDKw03Q@mail.gmail.com>
+In-Reply-To: <CAMj1kXFe48dUtNkCDG0PcmeGhYfvr5HJ8sucuNGwCJ1XDKw03Q@mail.gmail.com>
+From: Kevin Loughlin <kevinloughlin@google.com>
+Date: Sun, 10 Mar 2024 10:12:32 -0700
+Message-ID: <CAGdbjmKC+tTBHLPZ6bqCXvu45Gbout+0QrNemDqxY-nKAo_3gg@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/kernel: skip ROM range scans and validation for
+ SEV-SNP guests
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>, acdunlap@google.com, alexander.shishkin@linux.intel.com, 
+	andrisaar@google.com, bhe@redhat.com, brijesh.singh@amd.com, 
+	dave.hansen@linux.intel.com, dionnaglaze@google.com, grobler@google.com, 
+	hpa@zytor.com, jacobhxu@google.com, jpoimboe@kernel.org, kai.huang@intel.com, 
+	linux-kernel@vger.kernel.org, michael.roth@amd.com, mingo@redhat.com, 
+	peterz@infradead.org, pgonda@google.com, ross.lagerwall@citrix.com, 
+	sidtelang@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
+	x86@kernel.org, ytcoode@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hello Linus,
+On Fri, Mar 8, 2024 at 3:44=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> wro=
+te:
+>
+> On Fri, 8 Mar 2024 at 12:01, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Fri, Mar 08, 2024 at 11:30:50AM +0100, Ard Biesheuvel wrote:
+> > > Agree with the analysis and the conclusion. However, this will need t=
+o
+> > > be split into generic and x86 specific changes, given that the DMI
+> > > code is shared between all architectures, and explicitly checking for
+> > > SEV-SNP support in generic code is not appropriate.
+> > >
+> > > So what we will need is:
+> >
+> > I was actually thinking of:
+> >
+> >         x86_init.resources.probe_roms =3D snp_probe_roms;
+> >
+> > and snp_probe_roms() is an empty stub.
+> >
+> > Problem solved without ugly sprinkling of checks everywhere.
+> >
+>
+> Indeed. Setting the override could be done in
+> init_hypervisor_platform(), which is called right before from
+> setup_arch().
 
-Please pull this late fix for Generic phy subsystem to fix the
-regression on X13s laptop displays.
-
-The following changes since commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72:
-
-  Linux 6.8-rc7 (2024-03-03 13:02:52 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-fixes3-6.8
-
-for you to fetch changes up to 47b412c1ea77112f1148b4edd71700a388c7c80f:
-
-  phy: qcom-qmp-combo: fix type-c switch registration (2024-03-06 20:37:37 =
-+0530)
-
-----------------------------------------------------------------
-phy third set of fixes for 6.8
-
- - fixes for Qualcomm qmp-combo driver for ordering of drm and type-c
-   switch registartion due to drivers might not probe defer
-   after having registered child devices to avoid triggering a probe
-   deferral loop. This fixes internal display on Lenovo ThinkPad X13s
-
-----------------------------------------------------------------
-Johan Hovold (2):
-      phy: qcom-qmp-combo: fix drm bridge registration
-      phy: qcom-qmp-combo: fix type-c switch registration
-
- drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-=20
---=20
-~Vinod
-
---Rwkr5RC2FO1XHBk+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmXt6JMACgkQfBQHDyUj
-g0defxAAlTvjND1AhM7bN5ZyhZJ+bTwFSovO3jw7Hyn25+Y2Gz6EGx+35xJ/pDjN
-UW4pm2pNVwKMm/X2MVvB2dCLNpP/iebu8s37qHXMXRdmkc77thBjTPwZXyRJdMLf
-suarQLgwggNsAsh+UaI9h4gyzAGXB/EGJcdxpT9mXOEUx1ga1tiIYLXcOHvUxUbh
-HL7YA+VyzJIbCbMSgXSYPypdFP9MuWbydgWsUtoJ1YX3oKOkTlwt+m0u96nLbSaC
-HwUwE3EAbZOE6E2P7f+RHNjs5usRcLefR8TgLD6iL2W7DK/RVy3juda2q1aNMvsw
-KKJUIC9m+4N11gNHz67yanOiGWD1dWsP4V4OL7X3Wtimide/xZnB4scOQDFB6bzs
-J8smB+bQZZqLJB24+sa7fJqgaydffG7HnpZq3mvMguH4WHNkHnZpbQjMlTHKHvsV
-T8i3BP9M10NE1ZfPrylrIw7386bXuLHLKoCA4DZ0gt5CN2lGhQqfrkAJbgVDEY0V
-MrAGiDRyGGHk9Ih080K8EQWfVqLmFgTc/DkhZcQi27voqnA+mGy9M2c/uVQ0KwP0
-hPNoLhA94AJU+A1E/vg1fQKZGJIMWbunRDnt4fGUMTLyeWFlIG/dpft17SF9RZpv
-YxasYrk9FkqBTIUdvHN71pSCTTsN+4J1DHbOI+spVCCA9SHcQRA=
-=zdeA
------END PGP SIGNATURE-----
-
---Rwkr5RC2FO1XHBk+--
+The call to init_hypervisor_platform() has a comment saying it must
+come after dmi_setup() (i.e., init_hypervisor_platform() would *not*
+work for doing a dmi_setup() override), so I'm currently planning to
+do the overrides at the end of snp_init() in arch/x86/kernel/sev.c
+instead (which comes before both). This would be somewhat similar to
+how there are early setup functions for specific platforms that
+perform init overrides for different reasons (example:
+x86_ce4100_early_setup()). Open to other locations of course.
 
