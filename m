@@ -1,124 +1,130 @@
-Return-Path: <linux-kernel+bounces-98188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E3087763A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4C687763E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470EA1F21271
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:22:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A9E91F212B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB381EB52;
-	Sun, 10 Mar 2024 11:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B16420326;
+	Sun, 10 Mar 2024 11:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WzicIIED"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ra1kyVDS"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28ED91EB23
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 11:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF07B1EA8A;
+	Sun, 10 Mar 2024 11:25:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710069717; cv=none; b=bU97BDQvARJHmn+fOL4Cl5fAfeGFtkW+PdHG3u8Br2+HZWbei+2tV9p4kJyA71ASaHF+ANwBQEF3ZKrjKDObu03O/ZcyoeO68epa4eVfuKG+m6NTMdrTIgGPM/WaVsDT1b8+ojpY0wCFGuwimMgCWR68brhZILrwxZfx2nrQb8U=
+	t=1710069913; cv=none; b=X7d6S2MyVHUpm5wnVUyIAE33NFyEDEkUjEjdH4CUmvgpdeptb2qfTeeNlKIOIvRgnRGvgV8gEu9n7Jet8baFuY3NQDtRle6pQpzkGc+EMxiP1FpLOYUZTc/mu25zsv0P3oI7Dz1WnT2PWTEE9wlCHFF/U5KkXc17y26Z/UC5k2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710069717; c=relaxed/simple;
-	bh=fJX7SNlyxXTuJOiq0rTDaoI8T9zWS4yZQ9PVya9yaD0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FJ2ytpiAD604nQc9ze0yxM59Craj/N4JJVCkjs35xyeNDaq4/SunR5Sezbhq1BpQs8SQ0Qn7zkl0a57KuMfmkhkIYK/K1El1je580awsD4sAmqCgSU47qNnJh1IfXRYoPKrLGbG4WTLYOGGQyhaRSEsFYVjCzmc5FPgIzVyxCiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WzicIIED; arc=none smtp.client-ip=209.85.128.43
+	s=arc-20240116; t=1710069913; c=relaxed/simple;
+	bh=VBF7ceh6Wlntn/A4CWCSAEFwD5jlbuVTv/NZRlllrR8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QI+DmQOJJF0K+InbHX8KBOMcirigkWYA6uRtBHuIx0sF5JofGkGXMxt7IAIEGjEOYJ0IR7kkj1WTFyeEne6iktutAU7QLDZxYsnQiDihI2D5ZefEiDi/Jzk7ago5OZ/aPVcrkn6KAWkT21esrJyPe7B6rJc82Qo2vE1mc8LTLm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ra1kyVDS; arc=none smtp.client-ip=209.85.167.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-413287eb997so1093745e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 04:21:55 -0700 (PDT)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c23a477b10so793429b6e.3;
+        Sun, 10 Mar 2024 04:25:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710069714; x=1710674514; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dYLKnCQ+boTnvHIesYL7Tn/a9S/O0zd748SDOPYnP/0=;
-        b=WzicIIEDsaKH3Shu36ulwEYVwnYGP8uUARXOeFpW1un+KZ9TLY1VtKfE3f/mTlhcDk
-         szhBjd+LTO5GdcJ1/nBy9IRLpN1DUdVhGEhnx+wEbD1jBQxgGkHG0NgCBAS+yrmq7T+G
-         qKVaTseG8FA6UsVqWEs89BqRpvM5aETBuWFSA33OKlikUIscILSzR48i4iUWz1v7aORi
-         7zpRbMw1z+RFFJsfHQ/YeqO4d1iPV2gnRI/4A0Xe/pVJL44Q+Wxn++guZPPa8p31S+Je
-         3ViQDKxjKwk8n0BSyGCLcWzzeDWxAA0F3nUo1VFMHPDMxPNkixS6s5ea6/hR4opgIl51
-         9nuA==
+        d=gmail.com; s=20230601; t=1710069911; x=1710674711; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=avm3XWtxN2Lye/3JBQf5W3p/Z1/Vl4Xh6t59AfJ6d/M=;
+        b=Ra1kyVDSbxGSWI0JV8eptgxsrmvu4++SJsATQwUsDUCokWE9FwS42PmU71T9eoyYCe
+         rMpgqjB4+weLt+kHXWef2SrNh5cPOz/RrYDL+DkHQH6Y3pHplxMBYRzMRlqrQ6FBHRx0
+         bQk5dgBuYTfm1AzOV2hPkDZml9ogwEfwDYEXDfS2XUkn4a++kgPQep/j4++X5zsXDkPO
+         qlEQpDs3e6zedm/sDRzn6xmW7vezZeAgXjJZaJ/R6GFl/lufkxj/WPprMA9UJ39VYWxL
+         zUnrtwPuibyuFxSj8SSdeeeVxaosStLHXgYDbSbKlSOI324HL9KGo6TBkZtamBM/RFh6
+         a0Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710069714; x=1710674514;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dYLKnCQ+boTnvHIesYL7Tn/a9S/O0zd748SDOPYnP/0=;
-        b=v8Glz4Cx6IObxatodXgnWWgcCTqsxgjoZPosAXjzQKKbjv76wVK6sKYrufDrchyIvs
-         37HqIFyfkr476AnU9lT4UU4VDv50PMt5nWoIMkSS+K29fV7YeHTMOf0OSt77gQXmUH4l
-         /uMSoX7bWkuOFpMxfwFgzXtN69C96mwg6Oa+C6OjEwapJMe81w4/MT29SwpypvpWE2eK
-         jJUay625/0LvrNAySUDx2pi01kS2QDMDjRz7TvmShSAMzX1fp8nOLD6WdmiOEeHnxYS9
-         qwj8pr4LEEZmUWtvKh14CeIh3Dg7ExDwEuaBiOFEo+USczCQKA+MvBRJFAEcBFB47fIR
-         ixXg==
-X-Gm-Message-State: AOJu0Yy4X83nYDid1lYFs7V7qBRzC89ojBAX9rO/farJV5sNrlClmlpa
-	eISu9bOc4AQ8fK3uuYJX2VoUaslDPWv2t5UUvkLr2Z2lLem8ktJ4C23ItCQ+5sQi/A==
-X-Google-Smtp-Source: AGHT+IESTdbtcJfx38eBuDs4OoN6CRhqQNHqQYLxjQ2Qu5Q+ItfkC7K28QXNPe4PiZTsTend2glLjg==
-X-Received: by 2002:adf:e98d:0:b0:33e:7029:96bf with SMTP id h13-20020adfe98d000000b0033e702996bfmr2860785wrm.58.1710069713316;
-        Sun, 10 Mar 2024 04:21:53 -0700 (PDT)
-Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
-        by smtp.gmail.com with ESMTPSA id l15-20020a05600012cf00b0033ce727e728sm3788144wrx.94.2024.03.10.04.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 04:21:52 -0700 (PDT)
-From: Stafford Horne <shorne@gmail.com>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Stafford Horne <shorne@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Guo Ren <guoren@kernel.org>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH] riscv: Remove unused asm/signal.h file
-Date: Sun, 10 Mar 2024 11:21:26 +0000
-Message-ID: <20240310112129.376134-1-shorne@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1710069911; x=1710674711;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=avm3XWtxN2Lye/3JBQf5W3p/Z1/Vl4Xh6t59AfJ6d/M=;
+        b=wYKAIpEw6l3+uozF3tGfNJgt/PNJCf/muGTXa7xbfpo8m2NKS5f6AN5+3+ZBVmT8Pn
+         gfV8Tz8B3EwsMh0EX+0yC6s2pQVtbQUlHvGD+6J18pzFWRt8Ys9QVP0AM/uFgOrzVDZp
+         I40cRWSQThVDgJzcGWss84oSRYNM9criPmgDv4DcS4JuBCR1r8V54mjT3XD4RQG90DmR
+         ecuEMJDFsgHwRLfqaKXudyKcwj/sKb0n3QK5jhxJ5DiELzqc5J02kme0qz3RjwwVgAE9
+         G7xJAooc2z5cJgaSWk1lF9EAEW0c54s2ae1RN3gTRZpg5JxCXNSZkCLF6IdseuqidCh/
+         Xngw==
+X-Forwarded-Encrypted: i=1; AJvYcCVlcrbPzqcouiDBt9xRITsRmAnkIp96RTxOHtwaDqdCGd74oAkK+Ta/Hk8X2tkNsNsdeTEdtvzwWNCQ2J6O8LKGgU4YFsZ4eLUSPVHr34cRqQXS5nkc766J3XO0vSgQdPJam8gJDU8quWVpGcxkzlmBRaPt+n3TP4POdOrFOHvFqeqj5xYqs7OBL2OGOBOl9BVfoiSEkbQraF1YoxhXrnmZbZ6X5vYg97B01O5E/uTHaM1i5/CjvtQKzoWZSbqCp6bYUDZJqZLS/Djjim10CpHBMobfQr/a2MQEBLKXZmm8iRuWY2zpSuksCdUJu9gkpywD04uEfLs=
+X-Gm-Message-State: AOJu0YyuTxfi3z2+0/Z8lspfBz7YejjimRFM3NLMgK1AtvI6/dv80CJY
+	UXJ5D9Uu5fMzOvWpkbazhy5usbTL6GZ5c2gIn3PdekG/YrVzQWW+ERUzBfkQ7TkuAAfesIcko04
+	2PDJTqMREeAZxJBxBHcr6RD+kuC8=
+X-Google-Smtp-Source: AGHT+IHRwZqAtW6dN5aHOohpsFvhfbVT3D5XN/0uJW5CX5DEg34V+Etke50PKB8IcZncs9dx0y+ep2z+6siBNnLrohY=
+X-Received: by 2002:a05:6808:1188:b0:3c2:31eb:d2c7 with SMTP id
+ j8-20020a056808118800b003c231ebd2c7mr5425808oil.20.1710069910963; Sun, 10 Mar
+ 2024 04:25:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240310020509.647319-1-irogers@google.com> <20240310020509.647319-14-irogers@google.com>
+In-Reply-To: <20240310020509.647319-14-irogers@google.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sun, 10 Mar 2024 12:24:58 +0100
+Message-ID: <CANiq72=rgXk6oz65wb57ZP+jmSoD-a4SSVzU6s6SZLubV3cvBw@mail.gmail.com>
+Subject: Re: [PATCH v1 13/13] tools headers: Rename noinline to __noinline
+To: Ian Rogers <irogers@google.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
+	David Laight <David.Laight@aculab.com>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
+	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
+	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
+	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
+	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
+	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
+	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
+	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	llvm@lists.linux.dev, Christopher Di Bella <cjdb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When riscv moved to common entry the definition and usage of
-do_work_pending was removed.  This unused header file remains.
+On Sun, Mar 10, 2024 at 3:06=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> [1] https://clang.llvm.org/docs/AttributeReference.html#noinline
+> Reported-by: Christopher Di Bella <cjdb@google.com>
 
-Remove the header file as it is not used.
+Out of curiosity, was this due to the `[[gnu::noinline]]` or similar
+in e.g. `src/string/memset_explicit.h`?
 
-I have tested compiling the kernel with this patch applied and saw no
-issues.  Noticed when auditing how different ports handle signals
-related to saving FPU state.
+> -#define   noinline                      __attribute__((__noinline__))
+> +#define   __noinline                      __attribute__((__noinline__))
 
-Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
-Signed-off-by: Stafford Horne <shorne@gmail.com>
----
- arch/riscv/include/asm/signal.h | 12 ------------
- 1 file changed, 12 deletions(-)
- delete mode 100644 arch/riscv/include/asm/signal.h
+I guess it does not matter since I don't see it used in `tools/`, but
+should the one inside `__fix_address` be updated too? Or is the idea
+to keep the diff as minimal as possible?
 
-diff --git a/arch/riscv/include/asm/signal.h b/arch/riscv/include/asm/signal.h
-deleted file mode 100644
-index 956ae0a01bad..000000000000
---- a/arch/riscv/include/asm/signal.h
-+++ /dev/null
-@@ -1,12 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--
--#ifndef __ASM_SIGNAL_H
--#define __ASM_SIGNAL_H
--
--#include <uapi/asm/signal.h>
--#include <uapi/asm/ptrace.h>
--
--asmlinkage __visible
--void do_work_pending(struct pt_regs *regs, unsigned long thread_info_flags);
--
--#endif
--- 
-2.41.0
-
+Cheers,
+Miguel
 
