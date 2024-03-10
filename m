@@ -1,196 +1,101 @@
-Return-Path: <linux-kernel+bounces-98127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 458B4877573
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:45:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CCE2877576
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5687B2190E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:45:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DFF21C216A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D3611187;
-	Sun, 10 Mar 2024 05:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="MQ6CGgKU";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OaEHpFM+"
-Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2282317550;
-	Sun, 10 Mar 2024 05:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D6014011;
+	Sun, 10 Mar 2024 05:52:40 +0000 (UTC)
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6F016FF54;
+	Sun, 10 Mar 2024 05:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710049526; cv=none; b=VhS7+Dqw43slnDH94b/nxsvb1UVBP3ZRvbKAM9uWe1JQCCEUGr0r022H/LfoEtZLNYsW+gQExNz8aXN3YXqT+z2jlFFwK4be8Tvsl3woIFxO27YNs5so0w8q4ouuaRaoRKt3qae9G0YjL13dqhNwtMK0CFoa33qDpiYBt45yn6w=
+	t=1710049960; cv=none; b=M3teIGNk9JSW+aNEw1pxvnsz5qivnqZX0WJrZxbKTsLficdXJEwC6t7ZJyMSVzolTlQJPz1c5hwcx4kwtgNyFzT0iCQCS2y8WwmWKGp8cA9aQAdKQYw+knvMts4B8Pvz5uarZIImk+O+oEaI1agoZ3ZKkpp6dHFz1Wj9S2lAGGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710049526; c=relaxed/simple;
-	bh=jM3W7oyEIGZtvFbs0jdRxwqTdVYD5+zHO6IbTe7uYSc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kfNcec8v7pP+n/b/FcoO5Ntc1lVzW7ncGAHU3X2dE5qci5veNHLeVxfqz7Us1w+VoGFyuQobHMT6QBbH4srF7rriKecyhgQAxgTJJ13HCs3gVLxp0TRFR/78pp3SRwkNkX4EPkaXSzSxmXilhp4GXbtkWvRFP4msRdHNb28gR/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=MQ6CGgKU; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OaEHpFM+; arc=none smtp.client-ip=64.147.123.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.west.internal (Postfix) with ESMTP id D79B61C0007B;
-	Sun, 10 Mar 2024 00:45:23 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sun, 10 Mar 2024 00:45:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1710049523; x=
-	1710135923; bh=iNGEngSWEAntTRUMP+C0LJTifEPw1RuXRNqGR65xM2Y=; b=M
-	Q6CGgKUGkP28h+cHiHuyl7ZHU537mIHN+vzGDWnfkcdwxkPdJXHmC0UP2ogklwl4
-	PPGcAfqWhof6HWuDduUuj/zUcKFoLtCjk1d7TJdbkmk4/Y5uDKRriAQWK2Mmjywx
-	Xat7l/ncS0o0U34Z0vG5XqIf/yEay+jBL/76uw2cns75xvk8OM22rbPr+NBjm7XJ
-	7TtaMGI982jsy60H4suquXwTFGRNijXOZbSjH9LQQrclazQXX6zFc2wIz5PTBSa2
-	4x/Hrjr8DyPhuu0wj/LV4JMK0u/v+82oUpFJVbX0fAWo5sYUyMdIQ2XTHCf3tcin
-	KZnq77U4gz8grqwfmf8dQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710049523; x=
-	1710135923; bh=iNGEngSWEAntTRUMP+C0LJTifEPw1RuXRNqGR65xM2Y=; b=O
-	aEHpFM+qewq0heKD2JJcmE5eXcAgDG7HqBhHYYYVPoFkg5cFN5koFih29eUfOyYL
-	d5TJXUZuuabiewkNsp8m/6z56QMxRYVlO+KmskzJNehnw5W6zfTlvfhVy8/dOCUy
-	I/5nsyB1liBG7QDYLwltbifYQ3kCT2wnddoY9Iyduvps96p3bKCReD9jTABWfVT2
-	IS1ApJZht9vKUbKFg15n9Cr5GsA3qs/7RMqadp2PbItKp02j11snCBxyuwaK7glf
-	SRzxJ2dGD2H2PKMFz0UMNlmGbc6AFT5pN8M4s60jSsLikokEblOR/jtATqbBkbBc
-	Xg2ZKwQjnJ/TFOYSChaKQ==
-X-ME-Sender: <xms:8kjtZX5Avnm48PFNwiceh2wIkRdu8AW0VoFWv-0Uv75tEOQRsC8MDg>
-    <xme:8kjtZc7FEMQHcnd3oPC_-iLiEXvpOQVBomVEllEpJLTGA1SgO5giL_Jkwfn5v8kxj
-    faXBMl-KTAjhe-mBVc>
-X-ME-Received: <xmr:8kjtZeekI4J-bZLwp19gzQNeG8s7iVzWTbcJhuwXtkJ5IuSQYr17GquZaDL5>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieekgdekjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhj
-    ohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpefgteefudfgteduueehteejhfeugf
-    fgleeltedvveethfeuueejfedvgeelveehgfenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:8kjtZYIsLAtBguOowU7sqa5xj8-6U1Ftq27qrQAy23XieUvl6rTh6g>
-    <xmx:8kjtZbKD53HbjFGb2xcYP2XiK2xt_Cp_492pkzImbGd9VkrhNst7uA>
-    <xmx:8kjtZRyb48TldilTrVW8UA615XSz1JmdQHzuDdCNo0xviMDW3lffQw>
-    <xmx:80jtZYGvWFEJwFSHNbAv_T-4I2eMds54gYHriMSfAcoesNCXNGf-Doq4AHA>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 10 Mar 2024 00:45:20 -0500 (EST)
-From: "Luke D. Jones" <luke@ljones.dev>
-To: platform-driver-x86@vger.kernel.org
-Cc: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH v1 1/1] platform/x86: asus-wmi: add support for Vivobook GPU MUX
-Date: Sun, 10 Mar 2024 18:45:08 +1300
-Message-ID: <20240310054508.8528-2-luke@ljones.dev>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240310054508.8528-1-luke@ljones.dev>
-References: <20240310054508.8528-1-luke@ljones.dev>
+	s=arc-20240116; t=1710049960; c=relaxed/simple;
+	bh=A9LW5U9UCJNGxciKUSGPD7E5AULsadj2d4L30+gwoGU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Yc47rR+iXtz1k/lqaj4Eq6e7S4n5liqsgwpyJ3qAU+6fBLSdFc/YTYi7WPy4i3YSAM2ffUSXMm7h2NOiObsOjNttgq1MUfiJVNQJ/NmvSzsqXz5yQhMFxP1GVVyIxj+ibLh1OkgyV80YkGOG74TOE4xWx8DP4bCqAQQzGhKhy4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; arc=none smtp.client-ip=210.171.160.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+	by mail.parknet.co.jp (Postfix) with ESMTPSA id 358C5205DB9A;
+	Sun, 10 Mar 2024 14:52:30 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42A5qRD9134432
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Sun, 10 Mar 2024 14:52:28 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42A5qRJl710650
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Sun, 10 Mar 2024 14:52:27 +0900
+Received: (from hirofumi@localhost)
+	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 42A5qR0w710649;
+	Sun, 10 Mar 2024 14:52:27 +0900
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gwendal
+ Grignou <gwendal@chromium.org>, dlunev@chromium.org
+Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
+In-Reply-To: <Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br> (Thadeu Lima de
+	Souza Cascardo's message of "Wed, 28 Feb 2024 06:10:22 -0300")
+References: <20240222203013.2649457-1-cascardo@igalia.com>
+	<87bk88oskz.fsf@mail.parknet.co.jp>
+	<Zdf8qPN5h74MzCQh@quatroqueijos.cascardo.eti.br>
+	<874jdzpov7.fsf@mail.parknet.co.jp>
+	<87zfvroa1c.fsf@mail.parknet.co.jp>
+	<ZdhsYAUCe9GVMnYE@quatroqueijos.cascardo.eti.br>
+	<87v86fnz2o.fsf@mail.parknet.co.jp>
+	<Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
+	<87le75s1fg.fsf@mail.parknet.co.jp>
+	<Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
+Date: Sun, 10 Mar 2024 14:52:26 +0900
+Message-ID: <87h6hek50l.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Adjust existing MUX support to select whichever MUX support is available
-so that ASUS Vivobook MUX can also be used if detected.
+Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
----
- drivers/platform/x86/asus-wmi.c            | 18 +++++++++++++-----
- include/linux/platform_data/x86/asus-wmi.h |  1 +
- 2 files changed, 14 insertions(+), 5 deletions(-)
+>> Can you share the image somehow? And fsck (chkdsk, etc.) works without
+>> any complain?
+>
+> Checking the filesystem on Windows runs without any complains, but it turns the
+> directory into an useless lump of data. Without checking the filesystem,
+> creating and reading files from that directory works just fine.
+>
+> I tried to use gzip or xz to compress the very sparse filesystem image that I
+> got, but they made it larger on disk than it really was. So here is a script
+> and pieces of the filesystem that will create a sparse 8GB image.
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 94cc589607b3..2cf695289655 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -268,6 +268,7 @@ struct asus_wmi {
- 	bool egpu_connect_available;
- 	bool dgpu_disable_available;
- 	bool gpu_mux_mode_available;
-+	u32 gpu_mux_dev;
- 
- 	/* Tunables provided by ASUS for gaming laptops */
- 	bool ppt_pl2_sppt_available;
-@@ -682,7 +683,7 @@ static ssize_t dgpu_disable_store(struct device *dev,
- 		return -EINVAL;
- 
- 	if (asus->gpu_mux_mode_available) {
--		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_GPU_MUX);
-+		result = asus_wmi_get_devstate_simple(asus, asus->gpu_mux_dev);
- 		if (result < 0)
- 			/* An error here may signal greater failure of GPU handling */
- 			return result;
-@@ -748,7 +749,7 @@ static ssize_t egpu_enable_store(struct device *dev,
- 	}
- 
- 	if (asus->gpu_mux_mode_available) {
--		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_GPU_MUX);
-+		result = asus_wmi_get_devstate_simple(asus, asus->gpu_mux_dev);
- 		if (result < 0) {
- 			/* An error here may signal greater failure of GPU handling */
- 			pr_warn("Failed to get gpu mux status: %d\n", result);
-@@ -801,7 +802,7 @@ static ssize_t gpu_mux_mode_show(struct device *dev,
- 	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	int result;
- 
--	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_GPU_MUX);
-+	result = asus_wmi_get_devstate_simple(asus, asus->gpu_mux_dev);
- 	if (result < 0)
- 		return result;
- 
-@@ -847,7 +848,7 @@ static ssize_t gpu_mux_mode_store(struct device *dev,
- 		}
- 	}
- 
--	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_GPU_MUX, optimus, &result);
-+	err = asus_wmi_set_devstate(asus->gpu_mux_dev, optimus, &result);
- 	if (err) {
- 		dev_err(dev, "Failed to set GPU MUX mode: %d\n", err);
- 		return err;
-@@ -4507,7 +4508,6 @@ static int asus_wmi_add(struct platform_device *pdev)
- 	asus->egpu_enable_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_EGPU);
- 	asus->egpu_connect_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_EGPU_CONNECTED);
- 	asus->dgpu_disable_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_DGPU);
--	asus->gpu_mux_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_GPU_MUX);
- 	asus->kbd_rgb_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE);
- 	asus->kbd_rgb_state_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_STATE);
- 	asus->ppt_pl2_sppt_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PPT_PL2_SPPT);
-@@ -4529,6 +4529,14 @@ static int asus_wmi_add(struct platform_device *pdev)
- 		asus->mini_led_dev_id = ASUS_WMI_DEVID_MINI_LED_MODE2;
- 	}
- 
-+	if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_GPU_MUX)) {
-+		asus->gpu_mux_mode_available = true;
-+		asus->gpu_mux_dev = ASUS_WMI_DEVID_GPU_MUX;
-+	} else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_GPU_MUX_VIVO)) {
-+		asus->gpu_mux_mode_available = true;
-+		asus->gpu_mux_dev = ASUS_WMI_DEVID_GPU_MUX_VIVO;
-+	}
-+
- 	err = fan_boost_mode_check_present(asus);
- 	if (err)
- 		goto fail_fan_boost_mode;
-diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-index 9cadce10ad9a..b0320cb5ebe3 100644
---- a/include/linux/platform_data/x86/asus-wmi.h
-+++ b/include/linux/platform_data/x86/asus-wmi.h
-@@ -131,6 +131,7 @@
- 
- /* TUF laptop RGB modes/colours */
- #define ASUS_WMI_DEVID_TUF_RGB_MODE	0x00100056
-+#define ASUS_WMI_DEVID_TUF_RGB_MODE2	0x0010005a
- 
- /* TUF laptop RGB power/state */
- #define ASUS_WMI_DEVID_TUF_RGB_STATE	0x00100057
+I tested a your image with some tweaks. Windows's chkdsk complains about
+"BADDIR" directory, and it was fixed by converting it to normal
+file. Probably, chkdsk thought that "BADDIR" got ATTR_DIR bit by
+corruption.  IOW, Windows FATFS driver may accept this image, but
+Windows also think this image as corrupt, like chkdsk says.
+
+I think the app that make this should be fixed. Windows accepts more
+than linux though, it looks also think as corrupt.
+
+If we really want to accept this image, we have to change the fat driver
+without affecting good image.  And your patch affects to good image,
+because that patch doesn't count directory correctly, so bad link count.
+
+Thanks.
 -- 
-2.44.0
-
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
