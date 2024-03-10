@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-98070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C1B8774B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:03:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D529B8774B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:04:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1571B20DBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:03:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76A5A1F21451
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3334EC2C2;
-	Sun, 10 Mar 2024 01:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA49101EB;
+	Sun, 10 Mar 2024 01:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wvtv7VMd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUvTOJmq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F83C134
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF04FBF0
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710032618; cv=none; b=eL+6KMFp2vG8fDka8UFODaFFILeMnO1KVf+2hCni08mEgKq+5pd4qU+zCm0WQN1/it3vlzcYAL9RiI0Z7NdlE1cdVEgk+uh+vUsjBuYXF2ytYv/e9/E7twt3iRmMtYQOgy4mXGS7P/SHdb7Nc4TjHrrtB4RPKOBAMHEzd5z+Jd8=
+	t=1710032646; cv=none; b=Zbdg68b8EkyJBaWT4QdHhQOz3Ik0lQfQWtb3a25eHUzhvKqKDVS8W1cSnXI6qzAKUwVBjHqC6+gYj8LXiqScbOVxduWmO5UoTaSrmhme2z41zVJoDlWa4CPY9C88j5JGYzeSQ3qXF4TMb7QQcp+fEpXQIPjP7vnlwMFDBtBLeFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710032618; c=relaxed/simple;
-	bh=YPzc6cOPeXjd03+yw6nbxe7t5hQzPCC7uNPzmvYO6sw=;
+	s=arc-20240116; t=1710032646; c=relaxed/simple;
+	bh=8cO9/OxY4mMQABE2pDv/6JXKXRCbw1XZOzFtsmShyMs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AZwQahM4aFuK1tjomIftKNKSaWAXJx2ebLXkJypekeea9rpUWrhCupNV43Z5o7VgUE3sMbTufwfTMYQR6LxtBqus0xgW1hQRwD/jHWbzNzwJi0GKv4AQRx0y83uCLAPqbrGZG4q+ikGFvkCm8VI+Qyo41UlLPDX4cadJmzPPPLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wvtv7VMd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F221C433C7;
-	Sun, 10 Mar 2024 01:03:37 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=CrHNDJfNFqmdRXSk1fTbgEwjBOR0BqgwWSjcDJy8QyUBGJduPvsImiImG2mO+pRfv7Pn6e+/qnPBAFMgkYZHiYgL0oXMrU+PSa+JNuTy2O8tst2PIcCjs0bWloU4bIVOQ32MGyZRXDMSXb9nOJvJS3yKqKG+nvjSGqCe5YPZtvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IUvTOJmq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B728C433F1;
+	Sun, 10 Mar 2024 01:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710032618;
-	bh=YPzc6cOPeXjd03+yw6nbxe7t5hQzPCC7uNPzmvYO6sw=;
+	s=k20201202; t=1710032646;
+	bh=8cO9/OxY4mMQABE2pDv/6JXKXRCbw1XZOzFtsmShyMs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Wvtv7VMdmCttwWGagwYjcCiYTXvpvZ7aeVbGQpn+ldffvbI+G0lq+eOE8jSMcZqF6
-	 Cn/ko0rATSIpwSICP3zVcOFAvlXAhur7IQEKnmP42m8m40QH90d5D9E4kntZdpqls1
-	 yyAQnUhgjkTUWenwPEh6RWnhPJrOuCFmweR0iL75glH4j1dcjFPLEdtagqYsqPZO2f
-	 mc7DSF6aTdhfjs5HTD5TXaUKzL1nqfTp8ZJi5RosJPgWPJBX8V4Hj4yBMbNd+DV21G
-	 z8oMFacB0lQSU6tGc3Omgw7AhOE0Cb37sjB90+dUtUZEEpJv2o43NgQ97GuDDCPtIn
-	 pwVj76G69LcJQ==
-Message-ID: <cb5d900e-4fc2-40a0-ae28-5e02d6cbcdf6@kernel.org>
-Date: Sun, 10 Mar 2024 09:03:35 +0800
+	b=IUvTOJmqZxkClqupkAAufq/Ho7z4HCbPvLfE0NtXw0hF0SiilGx2iNpi1/mNoaWH6
+	 AEwl4aMmvuBvU4iITAd5XIx972/wGH/p3SdRlAYVw5wHsbcfIjwZB3eaae82IxBBz2
+	 k7UzDAKmlcUOptyf/cr095ADJO3HsOkA3XtdeD4iMUO2ouHMjRHVJLmbQvG4wKmomR
+	 9n0CAn9cBRg82JTibEKZwzQESbFL7V0USB/E5rz9bxKCG2wmVZ6XWTEGUrKT6X8Owa
+	 kSE1wTEaRJtICWJj5GSEVYKKdSsQtPM5oBLlVXe4KHTVX57VmlrxgxlBpacYHzxne/
+	 aNgt36OFbtwqw==
+Message-ID: <1f627768-5654-405c-b042-804fcc58f465@kernel.org>
+Date: Sun, 10 Mar 2024 09:04:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,11 +49,12 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] erofs: convert z_erofs_onlinepage_.* to folios
+Subject: Re: [PATCH 2/6] erofs: convert z_erofs_do_read_page() to folios
+Content-Language: en-US
 To: Gao Xiang <hsiangkao@linux.alibaba.com>, linux-erofs@lists.ozlabs.org
 Cc: LKML <linux-kernel@vger.kernel.org>
 References: <20240305091448.1384242-1-hsiangkao@linux.alibaba.com>
-Content-Language: en-US
+ <20240305091448.1384242-2-hsiangkao@linux.alibaba.com>
 From: Chao Yu <chao@kernel.org>
 Autocrypt: addr=chao@kernel.org; keydata=
  xsFNBFYs6bUBEADJuxYGZRMvAEySns+DKVtVQRKDYcHlmj+s9is35mtlhrLyjm35FWJY099R
@@ -97,19 +98,13 @@ Autocrypt: addr=chao@kernel.org; keydata=
  92Qh98hAj3cMFKtEVbLKJvrc2AO+mQlS7zl1qWblEhpZnXi05S1AoT0gDW2lwe54VfT3ySon
  8Klpbp5W4eEoY21tLwuNzgUMxmycfM4GaJWNCncKuMT4qGVQO9SPFs0vgUrdBUC5Pn5ZJ46X
  mZA0DUz0S8BJtYGI0DUC/jAKhIgy1vAx39y7sAshwu2VILa71tXJ
-In-Reply-To: <20240305091448.1384242-1-hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240305091448.1384242-2-hsiangkao@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 2024/3/5 17:14, Gao Xiang wrote:
-> Online folios are locked file-backed folios which will eventually
-> keep decoded (e.g. decompressed) data of each inode for end users to
-> utilize.  It may belong to a few pclusters and contain other data (e.g.
-> compressed data for inplace I/Os) temporarily in a time-sharing manner
-> to reduce memory footprints for low-ended storage devices with high
-> latencies under heary I/O pressure.
-> 
-> Apart from folio_end_read() usage, it's a straight-forward conversion.
+> It is a straight-forward conversion. Besides, it's renamed as
+> z_erofs_scan_folio().
 > 
 > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
