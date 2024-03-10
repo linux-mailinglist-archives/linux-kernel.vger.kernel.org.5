@@ -1,135 +1,115 @@
-Return-Path: <linux-kernel+bounces-98230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F29D877708
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 14:23:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20847877711
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 14:29:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA4101F212C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 13:23:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82769281222
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 13:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B80E2C84F;
-	Sun, 10 Mar 2024 13:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23A52D05D;
+	Sun, 10 Mar 2024 13:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="yqpB/ZFs"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RqfW/h3S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB8738F9B;
-	Sun, 10 Mar 2024 13:22:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD25F18AE4;
+	Sun, 10 Mar 2024 13:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710076965; cv=none; b=o6vvZUBAPf8yV2L/FhwQIZ/2LPbroHDquGXdl97bSmRpkJO1QVyijJTWZuZpH3KrA1r8h/hepHFhDZcPFh+aGlsqSv49p0DC2a1lzW79SfBL4I1YiiPSvuU0NE2oR2kMUIt1Qr0LocpGyY39buvN1GnFjfdK8TR67R0LqgHc+5A=
+	t=1710077369; cv=none; b=MfXbvzhPmi9Q9PSmzGjnLZE2x2FeyJmhooPeINanj/exVPlK2eRIrPwUZEs17tNcE5cKSDKyVWDBo5Cp1pKpHTYvp8hOkKMjbvCaKiC1XBdDIEdQsWnK+oPch+FL4TPITrOMGEAACWRcHrFQHKAQM1FeoFqxxTsqc40704C5Pxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710076965; c=relaxed/simple;
-	bh=kvvIkTmfQMw8UxSyDxPC93rn0oSCr/Quea9RAybNOn8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FFwatvMeuNWrtNYfZA2iVt6nNxbr1KerPummToTwQQVrQPVoxBcKccPAataK9/QktxypzrRfXLvPJfoxIfAgum5tHnCxyam1fCzQczXxMX1SmlJ7JNKJrxQmXKBdT2rn/RanQXdyMNkB4pYazVDrdl4lnyrO4hYCebUZE+O6TQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=yqpB/ZFs; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Tt0vF5gjbz9smD;
-	Sun, 10 Mar 2024 14:22:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-	s=MBO0001; t=1710076953;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XhGwFTOxsp8TA925vZCjt+JcQqgJocjoqK3BssOmRYM=;
-	b=yqpB/ZFsIC3kVJiHYJxsIUj+zkEdsrbwWRpoL3s3LJXI5NXAT7uCqBmYJynZrZvLl9pG8L
-	6Lf3AiIu71PVNlRQ+byBfX2w5xMsh44hiyxEqL1EgviV57n1HO7SxCwMJC7nU0l4IemOnT
-	RrgNw4P9jbLAs0TbBFnqURRsmlFipUNhVn5S4doXCmEOhZm/oSXdrr1vjURggphMfKkvQC
-	5dpf5rQfqOhf+emT9gpdPE3El/+kMKAt1LpILKsR3l49okaMcqcMlZNVVwjrCyXNXwxrdm
-	PycJixMcrT0d1HVm7iYFxB74VZA1c+dD7Yza54IEYi2w6i6csV3XqrYbMO7WTw==
-From: Frank Oltmanns <frank@oltmanns.dev>
-Date: Sun, 10 Mar 2024 14:21:15 +0100
-Subject: [PATCH v4 5/5] arm64: dts: allwinner: a64: Run GPU at 432 MHz
+	s=arc-20240116; t=1710077369; c=relaxed/simple;
+	bh=gfkP8LYRyawwp9+kWHGhd2GZEQ3SoFQ4y8eKVamILuY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hjtri1jG5NBc4nMXxw3LscoHxUKg+zjOnGwMHa206Snz6LQFxyORijoqa7Cl0/D8XuD8GzqASHIz0Hq3vOG7rRGUm2C3hgtrLjvCYDS09QbK9yVmqHGYtt1Vn+pzmZve6cm1e6SwMelbbcS28/4UMOETBuNTYIcdYZMGfBhdKaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RqfW/h3S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD694C433F1;
+	Sun, 10 Mar 2024 13:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710077368;
+	bh=gfkP8LYRyawwp9+kWHGhd2GZEQ3SoFQ4y8eKVamILuY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RqfW/h3S87jj7+W0+B9RcHkHeLPMG/GXlWRzgASmC2b8EWoY7lueJu1mlC+YIbp3H
+	 fdtydgo6WXrq37R2CEaQMUhqH/yH2E3zP8RbNWRVgYkybKx5d1ztSLMM6nr6pzYOPT
+	 +eCV80EPFkgM35jQ+KctNZ6YUI6GBHW6Rva3JsOmSaQGx4obn2rtHl4c54iT/b78CA
+	 n+UPO0swXukzZ2bmFJPHQqdDq8bfZyuD/f2v0dtDGFG7l7EKX9Uf+T3ito+2AADnKc
+	 Fx4o6ls2xSbKE6YG3b779HPh+rgb4L9Jl61IIB4VeY9L/D/eLdqUh9y3mtvuAq9Q8a
+	 Vz/xvIwAtBPRA==
+Date: Sun, 10 Mar 2024 18:59:15 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Praveenkumar I <quic_ipkumar@quicinc.com>
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+	mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com,
+	vkoul@kernel.org, kishon@kernel.org, mani@kernel.org,
+	quic_nsekar@quicinc.com, quic_srichara@quicinc.com,
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
+	quic_varada@quicinc.com, quic_devipriy@quicinc.com,
+	quic_kathirav@quicinc.com, quic_anusha@quicinc.com
+Subject: Re: [PATCH 00/10] Add PCIe support for Qualcomm IPQ5332
+Message-ID: <20240310132915.GE3390@thinkpad>
+References: <20231214062847.2215542-1-quic_ipkumar@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240310-pinephone-pll-fixes-v4-5-46fc80c83637@oltmanns.dev>
-References: <20240310-pinephone-pll-fixes-v4-0-46fc80c83637@oltmanns.dev>
-In-Reply-To: <20240310-pinephone-pll-fixes-v4-0-46fc80c83637@oltmanns.dev>
-To: Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
- Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, 
- =?utf-8?q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, 
- Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
- Frank Oltmanns <frank@oltmanns.dev>, Erico Nunes <nunes.erico@gmail.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1257; i=frank@oltmanns.dev;
- h=from:subject:message-id; bh=kvvIkTmfQMw8UxSyDxPC93rn0oSCr/Quea9RAybNOn8=;
- b=owEB7QES/pANAwAIAZppogiUStPHAcsmYgBl7bP6p2D/0yVAajHJzxsF2A2zeZMiqWXbGyGZ0
- py+R4ILTJuJAbMEAAEIAB0WIQQC/SV7f5DmuaVET5aaaaIIlErTxwUCZe2z+gAKCRCaaaIIlErT
- xzQeC/9jShpjnftS4GkyabYSB2tpbtKkzT+oFr9HD819N1UtksrEvwfmCRDtWbZkHg+E+Id2EFl
- 5cwQX+IXyN5BYzWsPCCw/Jxf3LqYdbEmmwYWS7YMLBE8VVjpycE3jloPFsYVc4yOxjRW7+MCJxl
- 5/29M0HefgdbSERNfRe40HeZZGjZHUu4KdUa69QIixrQTZLrLsCFm42Z/UqQJ3VkPn5NiiyJr6E
- z40Tg+9Ga/rU2uaDcforPsLl/l0y9ayLBoK0UA9C3LijM2DxATNpeWz3iWPwg/YIRp6MvTKNW18
- YiHtgkixh18DiLRJBl2Z3G0dhWGU3g9e6EfYoV93t/YeHSmXCxp91JSM+cwxNsgHLKCoZ1jIWsP
- 82JDNAdA0LyExvZXF5171VphDgB353vTAiSQlb0BlupDKjDFbKCbOfIpcJTDS63WGJ+pBlEi0Xa
- t/JoCa19Y8thObe2+u87zj51in6LJCujRj8DHXUmwhVWJgMTIO93b65RqRGapzoBPecpg=
-X-Developer-Key: i=frank@oltmanns.dev; a=openpgp;
- fpr=02FD257B7F90E6B9A5444F969A69A208944AD3C7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231214062847.2215542-1-quic_ipkumar@quicinc.com>
 
-The Allwinner A64's GPU has currently three operating points. However,
-the BSP runs the GPU fixed at 432 MHz. In addition, at least one of the
-devices using that SoC - the pinephone - shows unstabilities (see link)
-that can be circumvented by running the GPU at a fixed rate.
+On Thu, Dec 14, 2023 at 11:58:37AM +0530, Praveenkumar I wrote:
+> Patch series adds support for enabling the PCIe controller and
+> UNIPHY found on Qualcomm IPQ5332 platform. PCIe0 is Gen3 X1 and
+> PCIe1 is Gen3 X2 are added.
+> 
+> UNIPHY changes depends on
+> https://lore.kernel.org/all/20231003120846.28626-1-quic_nsekar@quicinc.com/
+> PCIe driver change depends on
+> https://lore.kernel.org/all/20230519090219.15925-1-quic_devipriy@quicinc.com/
+> 
 
-Therefore, remove the other two operating points from the GPU OPP table,
-so that the GPU runs at a fixed rate of 432 MHz.
+Any plan on this series and the dependencies?
 
-Link: https://gitlab.com/postmarketOS/pmaports/-/issues/805
-Acked-by: Erico Nunes <nunes.erico@gmail.com>
-Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 8 --------
- 1 file changed, 8 deletions(-)
+- Mani
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 57ac18738c99..c810380aab6d 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -107,14 +107,6 @@ de: display-engine {
- 	gpu_opp_table: opp-table-gpu {
- 		compatible = "operating-points-v2";
- 
--		opp-120000000 {
--			opp-hz = /bits/ 64 <120000000>;
--		};
--
--		opp-312000000 {
--			opp-hz = /bits/ 64 <312000000>;
--		};
--
- 		opp-432000000 {
- 			opp-hz = /bits/ 64 <432000000>;
- 		};
+> Praveenkumar I (10):
+>   dt-bindings: clock: Add separate clocks for PCIe and USB for Combo PHY
+>   clk: qcom: ipq5332: Add separate clocks for PCIe and USB for Combo PHY
+>   arm64: dts: qcom: ipq5332: Add separate entry for USB pipe clock
+>   phy: qcom: Add support for Pipe clock rate from device data
+>   dt-bindings: phy: qcom,uniphy-pcie: Add ipq5332 bindings
+>   phy: qcom: ipq5332: Add support for g3x1 and g3x2 PCIe PHYs
+>   dt-bindings: PCI: qcom: Add IPQ5332 SoC
+>   pci: qcom: Add support for IPQ5332
+>   arm64: dts: qcom: ipq5332: Add PCIe related nodes
+>   arm64: dts: qcom: ipq5332: Enable PCIe phys and controllers
+> 
+>  .../bindings/clock/qcom,ipq5332-gcc.yaml      |   6 +-
+>  .../devicetree/bindings/pci/qcom,pcie.yaml    |  36 ++++
+>  .../bindings/phy/qcom,uniphy-pcie-28lp.yaml   |  65 +++++-
+>  arch/arm64/boot/dts/qcom/ipq5332-rdp441.dts   |  74 +++++++
+>  arch/arm64/boot/dts/qcom/ipq5332.dtsi         | 188 +++++++++++++++++-
+>  drivers/clk/qcom/gcc-ipq5332.c                |   7 +-
+>  drivers/pci/controller/dwc/pcie-qcom.c        |   1 +
+>  .../phy/qualcomm/phy-qcom-uniphy-pcie-28lp.c  |  49 ++++-
+>  8 files changed, 412 insertions(+), 14 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
+> 
 
 -- 
-2.44.0
-
+மணிவண்ணன் சதாசிவம்
 
