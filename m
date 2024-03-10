@@ -1,126 +1,216 @@
-Return-Path: <linux-kernel+bounces-98204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B343E87766F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:46:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8522B877672
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:46:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA4831C20AD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:46:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFE42B20C96
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4532134B;
-	Sun, 10 Mar 2024 11:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D1C208C4;
+	Sun, 10 Mar 2024 11:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iRGVgfe3"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dbeuut79"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E381D1F958;
-	Sun, 10 Mar 2024 11:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DFEB200C8
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 11:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710071157; cv=none; b=LBarGsUsphPM11NtcZN4mwB4IWmh/baSHx5n/rtLAJhgXkLm540SjMTL5+GzhfC2O/YyGTOw2ODqfBeu+4vwzhFt+FlNry7PNYcTFHJmqwYLvBYQ4afk1YzxRomqr5ujWKLCJHKLTFNdbRmUNil6eqWRdcvudWvIDg6Wh0nzPyg=
+	t=1710071190; cv=none; b=gk/ft87gigyl0KZD04sLbMiBmu1Gm6XxYqjTC8MsZvnSZDxCxCgzLR25Nq+UeGdxCwNlY6fAw1LXzG9sMu1f4sRQpQmB7o2X3H7/CndtSBa4GotvHP+zaXQjpJm2gL+qjj20zz+SmCKFMqWXd4+uVPEh3LkY9taKbdjbyG4SOAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710071157; c=relaxed/simple;
-	bh=x4szjyNUt9dEAUQ7bswBMhPwjeuMoSBrMur9XPZXXjY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AwH1Na2FSPF5yGBrGuU1N75D+EP537dPweb8v+7UvwkbZ5B2TIwY3e817MQSzv4PVdSo6/xIKS1/595vI17w/GW4whRHHzZgUmpGE8Deb2qyR6PiXHJY7SxSeLgf2+o3pP2uO8GNxqOOi+LpP1AOuk1qp2PwRLTF9OidZW/+Vmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iRGVgfe3; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-29bfc3ca816so2652a91.0;
-        Sun, 10 Mar 2024 04:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710071155; x=1710675955; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=APdbC4WVW8bbq3Ji/1h5l4Whb2mua5InxmZI64nd8Ms=;
-        b=iRGVgfe3PUY3WM7M9Kmd42qfBq7UphZl9qeOmNZYCwlmsG3Hb2Ew0MxoOjs/omvieC
-         V8Bj4yAYeku3ibpWlNpreJPuNFdUkwE5K7sX3LAFpNAEB3h7yG2CbS/34uKcfur1d5fB
-         EbvCHU9TX7XO2xSTx7ywCQG2q7her5P5QLhm8z88prW9fKJTXNb8UZfKYnHv7dX7xNFO
-         q/Yv93biu7tEdRE9q/VvcQxCZFW+hi5DT1Swzj2ZMCLMnTWSigckGQR23vA9DOqnA0/P
-         1fztKSwLsGGkL6MBxPKJ2OQS4CIApADjkb5eQGtiqBi1ZYSs/YtwQwdB3NHSAIe82zvN
-         cyUg==
+	s=arc-20240116; t=1710071190; c=relaxed/simple;
+	bh=uizi5IRvd5NvjgqfhI2wCMBimt43g2ByEAhc/niz0pY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cYYeEhR1TJZOBk8srnDkvTsKcJg1xYk2BvqSnEsgHlqWod+9zPWR+qzIhWIGTdvAEmeS1J9/5MM0aWTtolvBX0QhmYrA/0+LTS/SDMQkmlL33Xz9Q0WpTyvZbtrIi7qSO+mBzcBdoVsoCJM5DEOEnXLZON5U1mFnXQ4n8RScq5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dbeuut79; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710071187;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KET7QTLCZ3S+u1REsJgRib9mJHyqhY3qVaHdaO5OW3w=;
+	b=dbeuut791euHkd1F/MPPIMuwkaZJasdGrfgvS03c91AvWhrMXDj3vDJCOLO2W8UQiwopgO
+	pwIXUjwrUXU60BscBCEKihPo3mTRJkC7B90O6A/zgmuDOlEi4horjvuyjHy4rCwV2MnhXW
+	l63+KTSVbb3zM6Hozmh9VAib+tJSs/k=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-447-fgrpws5sODiB28xiZn-whg-1; Sun, 10 Mar 2024 07:46:25 -0400
+X-MC-Unique: fgrpws5sODiB28xiZn-whg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a4455ae71fcso210700066b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 04:46:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710071155; x=1710675955;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=APdbC4WVW8bbq3Ji/1h5l4Whb2mua5InxmZI64nd8Ms=;
-        b=hZSVx5RyGqbtctFFGHlycoZfZP01IDWjUS65CNusWaGYwJR9lLmRInxG8lx6j1HQfl
-         BUE+RX6NZy08dG8HUiCx6r2pHWldk07ztSM9I+XN33EeA/zzLsMaWoUTLiD4PH/1S5q8
-         cuOxpsWfZG7UpywOfctZT02Pbr3myEPT2nhVxACh6fQHVtqz6EBs0RkWwy8cYen2d7/d
-         Dx9hQeCNLvU5j9qtthiDwj4E989JNN6+VvKg7TiTrHOsjV53gYZum3l5HG+AwJDRz7o8
-         grjNnveiBxS138cvrmSgdF23JujLuYT1ijh24USdq6H5EOTjjprp7j/wQAxk+VwenV7v
-         Hmbw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPHDxOhvQDKT9Nu+H8jiOKi3WhMF7FyhvMhL6/h41yhQNcQM2zg3iP2NkxPBfm4/ylmhNHtxvq4KkTFbjGpPxR6KV9wqZjxUemxCG7q3nn3+LibRSluu/c40/sKVSmVTUX+6g/rHNPmAj8RU68T2WMinL1qJ+GRvm2vujPNC6e9H+rVcG+niZ7zkVB2PDIii5LBGYKtbqwCKcRTIxc3MoQztlm7RtfDaZIGU/s18d4TF/KlwxZ/X4i+F8o2cG/WqkJjRPRUn+3FwtU54iwj0qCQBMAcfVv3s0M0Os2hK22tJNbrKHYJ/72I1ycZlPvx5sDDNLkPGw=
-X-Gm-Message-State: AOJu0YxjZEEiM4bhznA2nN7GGD0ithWvosiPDts4aHEwif7QxyQd6wt2
-	j0rUUDh8j9e4bi4eLtxuXgnCisVXsvfs/ZKBUdGzEFhd2EW9A/vw3m1uRFbgZobLhcAJOrIbUMP
-	cEheeYWSYun/XSTYpKBakZ5Ete9I=
-X-Google-Smtp-Source: AGHT+IFg5QyD7zzPSiIxq5ayVbCopyYxmimvVxbYpEQvBBTN/IY5s/u1gydEhZLQBPQOnhaZIkoB9B3RWeU16yrH+hI=
-X-Received: by 2002:a17:90a:43a2:b0:29b:90d7:36dc with SMTP id
- r31-20020a17090a43a200b0029b90d736dcmr2619352pjg.19.1710071154965; Sun, 10
- Mar 2024 04:45:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710071184; x=1710675984;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KET7QTLCZ3S+u1REsJgRib9mJHyqhY3qVaHdaO5OW3w=;
+        b=DLM6Z0jnzMD1jQau2I2w/X7z1S180dfeuDLk1mICi6mkkeWeCAa1cZXOW5FCb6Mtsd
+         rgBNQ5bcSV9p3dhVHVUqCuIeofzeCRlmWunGu9H8Fu0mpaad3PAPGQXwa3ojUxkZWc7B
+         K9v0srSFNgrf+NeJ54ZeibtA0jdI5RfiT2NdMV/J9GHWGwKl7QykoFA0tWYJ0UeBLtRP
+         3A2oc1tkb+oY7Lxfw6RojEfjFdgMjj5daun6GI/jWaTplC7taJH7ydw0cknIhB75ZfiD
+         cr9daelE705PN/m5lwvLu3yMH3dW4ED/9rkUnt943BXZf/vWVQS9LRimdT3HtvpsPPPw
+         ockw==
+X-Forwarded-Encrypted: i=1; AJvYcCXen9JQpsCNHbc/ypTdO6gtMXeK5ydheWU1lp/oLVnZDDOH5iem3khYQ7B1waAxJjkASNdEKJTNdnSa+7IZfn8WeGq9i0zvgqOGQTLD
+X-Gm-Message-State: AOJu0YyngaZLfRg4Qi7pf9/v+J2BE8z3tSh+CpSsaeokvR/EqBN9LyIw
+	eDxjyCDirujLVqBhemuiNjQ08PzUqOxHGK6WCi1v0NLzgiVqu//7pxRSb5pidhyKxJ7ocNGRpqD
+	fmzV/uTTBkVteRbGgD5R2vw5/kU4waeYCl7LOn4okOnWTZJpXUBFPLrRFI5kjCg==
+X-Received: by 2002:a17:907:a705:b0:a3e:68a2:3d4e with SMTP id vw5-20020a170907a70500b00a3e68a23d4emr2483237ejc.54.1710071184178;
+        Sun, 10 Mar 2024 04:46:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHeCEv47Gv2F/UtTX5L4hoIfKNN7um5zd3GdBdlzWig0mpU0KOQoa9GqJnzwVjAlTfVVq0Niw==
+X-Received: by 2002:a17:907:a705:b0:a3e:68a2:3d4e with SMTP id vw5-20020a170907a70500b00a3e68a23d4emr2483229ejc.54.1710071183848;
+        Sun, 10 Mar 2024 04:46:23 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id me24-20020a170906aed800b00a450164cec6sm1846571ejb.194.2024.03.10.04.46.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Mar 2024 04:46:23 -0700 (PDT)
+Message-ID: <36e56422-d027-4edd-af6e-8ebcebc1dfe3@redhat.com>
+Date: Sun, 10 Mar 2024 12:46:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240310020509.647319-1-irogers@google.com> <20240310020509.647319-13-irogers@google.com>
-In-Reply-To: <20240310020509.647319-13-irogers@google.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Sun, 10 Mar 2024 12:45:42 +0100
-Message-ID: <CANiq72=YJEpyk_uGo1skK-K7AUBdtUkuVqoBD0WCyifE-xbHQA@mail.gmail.com>
-Subject: Re: [PATCH v1 12/13] tools headers: Sync compiler.h headers
-To: Ian Rogers <irogers@google.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	David Laight <David.Laight@aculab.com>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
-	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
-	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
-	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
-	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
-	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
-	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
-	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] usb: misc: ljca: Fix double free in error handling
+ path
+Content-Language: en-US, nl
+To: Yongzhi Liu <hyperlyzcs@gmail.com>, wentong.wu@intel.com,
+ gregkh@linuxfoundation.org, andi.shyti@linux.intel.com
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ jitxie@tencent.com, huntazhang@tencent.com
+References: <2c77e58a-fe07-464f-9032-3933080be349@redhat.com>
+ <20240307115743.13104-1-hyperlyzcs@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240307115743.13104-1-hyperlyzcs@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Mar 10, 2024 at 3:06=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
-te:
->
-> compiler_attributes.h - added from
->  include/linux/compiler_attributes.h,
->  guards were added to definitions to avoid redefinition of macros
->  in libc.
+Hi Yongzhi Liu,
 
-Do you have an example for context?
+On 3/7/24 12:57, Yongzhi Liu wrote:
+> When auxiliary_device_add() returns error and then calls
+> auxiliary_device_uninit(), callback function ljca_auxdev_release
+> calls kfree(auxdev->dev.platform_data) to free the parameter data
+> of the function ljca_new_client_device. The callers of
+> ljca_new_client_device shouldn't call kfree() again
+> in the error handling path to free the platform data.
+> 
+> Fix this by cleaning up the redundant kfree() in all callers and
+> adding kfree() the passed in platform_data on errors which happen
+> before auxiliary_device_init() succeeds .
+> 
+> Fixes: acd6199f195d ("usb: Add support for Intel LJCA device")
+> Signed-off-by: Yongzhi Liu <hyperlyzcs@gmail.com>
+> ---
+>  drivers/usb/misc/usb-ljca.c | 26 +++++++++-----------------
+>  1 file changed, 9 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/usb/misc/usb-ljca.c b/drivers/usb/misc/usb-ljca.c
+> index 35770e608c64..bd9ccbea6e72 100644
+> --- a/drivers/usb/misc/usb-ljca.c
+> +++ b/drivers/usb/misc/usb-ljca.c
+> @@ -518,8 +518,10 @@ static int ljca_new_client_device(struct ljca_adapter *adap, u8 type, u8 id,
+>  	int ret;
+>  
+>  	client = kzalloc(sizeof *client, GFP_KERNEL);
+> -	if (!client)
+> +	if (!client) {
+> +		kfree(data);
+>  		return -ENOMEM;
+> +	}
+>  
+>  	client->type = type;
+>  	client->id = id;
+> @@ -535,8 +537,10 @@ static int ljca_new_client_device(struct ljca_adapter *adap, u8 type, u8 id,
+>  	auxdev->dev.release = ljca_auxdev_release;
+>  
+>  	ret = auxiliary_device_init(auxdev);
+> -	if (ret)
+> +	if (ret) {
+> +		kfree(data);
+>  		goto err_free;
+> +	}
+>  
+>  	ljca_auxdev_acpi_bind(adap, auxdev, adr, id);
+>  
+> @@ -590,12 +594,8 @@ static int ljca_enumerate_gpio(struct ljca_adapter *adap)
+>  		valid_pin[i] = get_unaligned_le32(&desc->bank_desc[i].valid_pins);
+>  	bitmap_from_arr32(gpio_info->valid_pin_map, valid_pin, gpio_num);
+>  
+> -	ret = ljca_new_client_device(adap, LJCA_CLIENT_GPIO, 0, "ljca-gpio",
+> +	return ljca_new_client_device(adap, LJCA_CLIENT_GPIO, 0, "ljca-gpio",
+>  				     gpio_info, LJCA_GPIO_ACPI_ADR);
+> -	if (ret)
+> -		kfree(gpio_info);
+> -
+> -	return ret;
+>  }
+>  
+>  static int ljca_enumerate_i2c(struct ljca_adapter *adap)
+> @@ -626,13 +626,9 @@ static int ljca_enumerate_i2c(struct ljca_adapter *adap)
+>  		i2c_info->capacity = desc->info[i].capacity;
+>  		i2c_info->intr_pin = desc->info[i].intr_pin;
+>  
+> -		ret = ljca_new_client_device(adap, LJCA_CLIENT_I2C, i,
+> +		return ljca_new_client_device(adap, LJCA_CLIENT_I2C, i,
+>  					     "ljca-i2c", i2c_info,
+>  					     LJCA_I2C1_ACPI_ADR + i);
+> -		if (ret) {
+> -			kfree(i2c_info);
+> -			return ret;
+> -		}
 
-Thanks!
+This is in a for loop, by using:
 
-Cheers,
-Miguel
+		return ljca_new_client_device(...);
+
+you are now only creating the first ljca-i2c controller, while
+there may be more instead just drop the kfree() from the if (ret) {}
+block:
+
+		ret = ljca_new_client_device(...);
+		if (ret)
+			return ret;
+
+Sorry for not noticing this with the v1 posting.
+
+>  	}
+>  
+>  	return 0;
+> @@ -666,13 +662,9 @@ static int ljca_enumerate_spi(struct ljca_adapter *adap)
+>  		spi_info->id = desc->info[i].id;
+>  		spi_info->capacity = desc->info[i].capacity;
+>  
+> -		ret = ljca_new_client_device(adap, LJCA_CLIENT_SPI, i,
+> +		return ljca_new_client_device(adap, LJCA_CLIENT_SPI, i,
+>  					     "ljca-spi", spi_info,
+>  					     LJCA_SPI1_ACPI_ADR + i);
+> -		if (ret) {
+> -			kfree(spi_info);
+> -			return ret;
+> -		}
+>  	}
+
+Same remark as with the creation of the i2c controllers, please use:
+
+		ret = ljca_new_client_device(...);
+		if (ret)
+			return ret;
+
+Regards,
+
+Hans
+
+
+
 
