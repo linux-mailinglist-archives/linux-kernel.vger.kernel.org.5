@@ -1,99 +1,89 @@
-Return-Path: <linux-kernel+bounces-98314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01D2877851
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:42:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 519E0877852
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:43:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 901632817C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 19:42:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0BAF1F21295
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 19:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B1E3A1AB;
-	Sun, 10 Mar 2024 19:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eSHxJm9j"
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F46B3A1A2;
+	Sun, 10 Mar 2024 19:43:14 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7256039846
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 19:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9E620335
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 19:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710099730; cv=none; b=vGMpzYciWBA/Auen+PxSm8BxCzdzITpLzTqVRSMb9CZy9gnpMn2t+5wlKWj5gq0J6XOJB3W1AFPN8KTyQOLWHV1mKQaXhkusm+zt6IKxujUOzYNqxIvbQbEOQU+lkA93W2q9HyzqeF+t+9P9ziHUR3RYMeIkEvmm3FEAkyf/Co0=
+	t=1710099793; cv=none; b=dOkOuZtnMRkmP8eBW7CnbLFllYKiC7WNGwJTh2XIxOwpr1IFYAUZf9CM/61dTDQYKuxGHh/0T+NucLUDGT7wAM52rCFqwpD/FmqrDxOqCBOatY488YDADxXHQ3u14XK0Cz+Zk4FkZ0HFOHiWSIdc/DSNNbBkntlSD8tmHXU6Oow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710099730; c=relaxed/simple;
-	bh=xXfTV4GI3xnP2k8SPtzObSqxaymakeQpPF3auXEnEwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UTOdBsG/TaqC+15aY4Id1tQn5In9vm/sR3841dp1TEMNAdls9PUtOqy5EscYKHzcxJL5Y5aYMgehnEOU4eFaWx8eSgzZE79aCWkEfx1MEFIRhZchUNoPcmfD78KOx6bPDBjkHAi9EaY1DSKH61Jzgt2DqECDGcoK2prV/sWgTR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eSHxJm9j; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 10 Mar 2024 15:41:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710099723;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Cb7OKsY7pJ9Te/hhWi0i7nqCpNr5gLsM0TXwe5MbJsI=;
-	b=eSHxJm9jvh4YY1rKRsZy9UXhw6N1OT5YboN9Hve5jsHATi2ski21RcYtJLhGKxV/d+DDes
-	JxO6iUeNVTbRjc5EVGrKBiXFk0958xRzMaXQE1W+fXR0cylYK8n3XdywUICzV9DssAQtkP
-	OH2zjTwYHtVAhmaL1oEb07OVZAvySLo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Erick Archer <erick.archer@gmx.com>
-Cc: Brian Foster <bfoster@redhat.com>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] bcachefs: Prefer struct_size over open coded
- arithmetic
-Message-ID: <rmna7gzrezwrhmrsgheswqsnc53nk6xiu5en6fg3ag44f3blps@otgd65u62umx>
-References: <20240310110226.6366-1-erick.archer@gmx.com>
+	s=arc-20240116; t=1710099793; c=relaxed/simple;
+	bh=J3hHOIDKrVgCM4kdsGPxV8/B4F8p+mTsleZQ51fGrCA=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=G4mUSCoxJE2wsmFl0xMNbfYnf8OxRbzrKpEKoiYDweEs0xas9iVoiI+w6rOnaxuq5/PyW9FVTT8lWHCJvWdf+r40qyOx/Oyo1T+TfpY5CJX8qayb3C2oa1q6NhL8++tvyb9gisq6eWFkpIaYSxlt+tn9pwkTNbBgo/h5BB75aU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-158-NaaYfuJrOBy0jcWCpLAwGw-1; Sun, 10 Mar 2024 19:43:08 +0000
+X-MC-Unique: NaaYfuJrOBy0jcWCpLAwGw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 10 Mar
+ 2024 19:43:18 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 10 Mar 2024 19:43:18 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Nazerke Turtayeva' <nturtayeva@ucsb.edu>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: Question about unpacking large initramfs (>2G)
+Thread-Topic: Question about unpacking large initramfs (>2G)
+Thread-Index: AQHacc+Qmbacfw5d7EiWXwAjIr6uu7ExYL9w
+Date: Sun, 10 Mar 2024 19:43:18 +0000
+Message-ID: <a6dddd70d2844e438c2e6c205fa41b7d@AcuMS.aculab.com>
+References: <CAHY78BqCpMQptPN0SMaXuRqHOhYi+wnMEUSTYt7OHDZih4e7yQ@mail.gmail.com>
+In-Reply-To: <CAHY78BqCpMQptPN0SMaXuRqHOhYi+wnMEUSTYt7OHDZih4e7yQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240310110226.6366-1-erick.archer@gmx.com>
-X-Migadu-Flow: FLOW_OUT
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Sun, Mar 10, 2024 at 12:02:26PM +0100, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1][2].
-> 
-> As the "op" variable is a pointer to "struct promote_op" and this
-> structure ends in a flexible array:
-> 
-> struct promote_op {
-> 	[...]
-> 	struct bio_vec bi_inline_vecs[];
-> };
-> 
-> and the "t" variable is a pointer to "struct journal_seq_blacklist_table"
-> and this structure also ends in a flexible array:
-> 
-> struct journal_seq_blacklist_table {
-> 	[...]
-> 	struct journal_seq_blacklist_table_entry {
-> 		u64		start;
-> 		u64		end;
-> 		bool		dirty;
-> 	}			entries[];
-> };
-> 
-> the preferred way in the kernel is to use the struct_size() helper to
-> do the arithmetic instead of the argument "size + size * count" in the
-> kzalloc() functions.
-> 
-> This way, the code is more readable and safer.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/160 [2]
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+RnJvbTogTmF6ZXJrZSBUdXJ0YXlldmENCj4gU2VudDogMDkgTWFyY2ggMjAyNCAwMzoxMQ0KPiAN
+Cj4gUmVjZW50bHkgSSB3YXMgdGVzdGluZyBMTE1zIGZvciBSSVNDLVYgb24gTGludXggcGx1cyBC
+dWlsZHJvb3QgcGx1cw0KPiBPcGVuU0JJIGFuZCBTcGlrZSBJU0EgU2ltdWxhdG9yLiBOZXZlcnRo
+ZWxlc3MsIGdpdmVuIG15IHJvb3RmcyBlbmQgdXANCj4gYmVpbmcgcHJldHR5IGxhcmdlLCAzLjZH
+QiBhdCB0aGUgbW9tZW50LCBteSBsaW51eCBib290IGZhbGxzIHNob3J0DQo+IHdpdGggIkluaXRy
+YW1mcyB1bnBhY2tpbmcgZmFpbGVkOiB3cml0ZSBlcnJvciIuIEkgd2FzIHRyeWluZyB0byBkZWJ1
+Zw0KPiB0aGlzIHByb2JsZW0gbGFzdCB3ZWVrLCBidXQgZ290IGNvbmZ1c2VkIHdpdGggY29kZSBj
+b21wbGV4aXR5IDooLg0KDQpJJ2QgbG9vayBhdCByZW1vdmluZyB1bndhbnRlZCBzdHVmZiBmcm9t
+IGluaXRyYW1mcy4NCkZvciBvdXIgYnVpbGRyb290IGltYWdlcyB3ZSBkZWxldGUgYSBsb3Qgb2Yg
+c3R1ZmYgLSBzaW5jZSBpdA0KY2FuIGJlIGZvdW5kIGluIHRoZSBkaXNrIGltYWdlIGFmdGVyIG1v
+dW50aW5nIHRoZSBkaXNrIC8uDQooQWx0aG91Z2ggSSdtIG5vdCBhdCBhbGwgc3VyZSBob3cgbXVj
+aCBvZiB0aGUgaW5pdHJhbWZzIG1lbW9yeQ0KaXMgcmVjb3ZlcmVkIC0gZXNwZWNpYWxseSB3aXRo
+b3V0IHBpdm90X3Jvb3QuDQoNCk9uZSB0aGluZyBJIGhhdmUgbm90aWNlZCBvbiB4ODYgaXMgdGhh
+dCB0aGUgLmtvIGZpbGVzIGFyZQ0KbWFzc2l2ZSBiZWNhdXNlIHRoZXkgY29udGFpbiBhIGxvdCBv
+ZiBkZWJ1ZyBpbmZvLg0KKEkgd2FzIGxvb2tpbmcgYXQgd2h5IGl0IHRvb2sgc28gbG9uZyBiZXR3
+ZWVuIHRoZSBsYXN0IGdydWINCm1lc3NhZ2UgYW5kIHRoZSBmaXJzdCBrZXJuZWwgb25lLikNCkFs
+c28gdGhlIGRlZmF1bHQgYnVpbGQgYWxzbyBwdXRzIGFsbCB0aGUgbW9kdWxlcyBpbnRvIHRoZQ0K
+aW5pdHJhbWZzIC0gZXZlbiB0aG91Z2ggbW9zdCBjYW4gYmUgbG9hZGVkIGZyb20gdGhlIHJvb3Qg
+ZmlsZXN5c3RlbS4NCg0KCURhdmlkLg0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
+IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
+Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-applied
 
