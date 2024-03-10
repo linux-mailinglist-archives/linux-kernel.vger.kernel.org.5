@@ -1,117 +1,107 @@
-Return-Path: <linux-kernel+bounces-98199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 577BA87765F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:37:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0B80877662
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 283811C20CB0
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:37:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3231A1F217E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9BA4200C8;
-	Sun, 10 Mar 2024 11:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 818192030A;
+	Sun, 10 Mar 2024 11:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aJKSzryx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="xLljj0e1"
+Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECC708465;
-	Sun, 10 Mar 2024 11:37:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7DB1DDDB;
+	Sun, 10 Mar 2024 11:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710070664; cv=none; b=cN7sTYINoLywm0KFQFNAqOI9+0ZDhI81cLuWKJVcMnHp1pDfi5eNWAodxFNoFwR4VBn5XXdqlD2W1VhSxF2sWzfe0EAdYMuDER3Tw1a7CLf283rm+HcPpqxu+Z4SkyPyLHPf0hd05c3YzL6PQJIfboSzvj/wBKyRSQR2pSJ7Xew=
+	t=1710070920; cv=none; b=VLO/P3EVatuPp5m1VG61GNVBRfAekveRfzr5RRKYvvJQk1IlLOfAAJqx/DNXhSooTcl+SGTQ0YC7arQkuKA/WT6sNbQ0VX9TWR0boStjRjEKJxEgB4l4vrdQT7c8+vfiSCWD06nFCrhkcHOKJWLah9jjlvhJI1+L9jJZ9maQT3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710070664; c=relaxed/simple;
-	bh=m7RZczD1dDV032y05IlmdDOzJwvwGNZyOWRvNsYwM+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ONTHjPgg/acfHCess93Ovgk1NM7LU+s61Af7hd3fx9z9Q29ar0vbklJd2F/K29SxaRcAOgQ/rbSnTbCurrc3qLN6GcbWTT5WCsn9QXaVGgBzOB1UjDAvwcV7/qZ46hgMFXZ61zgQ0o4RCG3iEMB/0dvVuH9QS39ll2YKc5NPAS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aJKSzryx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37024C433C7;
-	Sun, 10 Mar 2024 11:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710070663;
-	bh=m7RZczD1dDV032y05IlmdDOzJwvwGNZyOWRvNsYwM+U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aJKSzryxcgu8cb6ktkPYMCQJoAlK7Sv2qXMupZoGls10vgj7PrUNhEChSUg2btniC
-	 HN8/c5vySOXnleF8r+xzpJcmhNiBiQ73XnkUqwXRHyRcd2o4tsMKcwlqPjNo+8aJjY
-	 LuydjTZenav48Yzf/Q1JE/QCf29OlXxe8NF6ELIeizL2Udoaqc6KcaVjyAYMHbLtkP
-	 e4jVIQI6txHLrjYc4EBokpt92tk7L7SCfRhdQ8qJ+RdJFsfu3kSdNdWZkcpIgvneis
-	 FTDrnxQDXOEH+OSEXLqB+RnvfpE38/MZ3ElyNDrS1VLWuScJ1kDCfyMDrhjfH9C+11
-	 /lE7/3bg0ZeUg==
-Date: Sun, 10 Mar 2024 11:37:38 +0000
-From: Simon Horman <horms@kernel.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/4] net: dsa: realtek: keep default LED state
- in rtl8366rb
-Message-ID: <20240310113738.GA1623@kernel.org>
-References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
- <20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
- <388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
+	s=arc-20240116; t=1710070920; c=relaxed/simple;
+	bh=AgJRUGq8reZPMsQEkwJy5L1RC2vqHFoXplg91ZNU2Z4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=L42BW1hAbiqehrhdrAadrHJcon4kp1pwtxLpE+O4R/scwt2ueC2gOxj06xxRnV1L8jIzsWZy3hIDax75SbC6Um39Umag93/9y64Fta57k60elD5iSIpou8hcQFo5rEj3Bm+UxNDkP3gGzEJSnkIaeJ4MfLrETYL/lfH12O13FW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=xLljj0e1; arc=none smtp.client-ip=128.199.32.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
+	t=1710070912; bh=AgJRUGq8reZPMsQEkwJy5L1RC2vqHFoXplg91ZNU2Z4=;
+	h=From:Subject:Date:To:Cc;
+	b=xLljj0e1OF20LrLSz8RgYDMqcp0J7Kc4WQu2MWnreF26V/ZHh8Lwk7RhSTGAnZIdi
+	 b5rFuVylVbMYEh39F3MQictrlcvh15JqCfj5aNm/+8tN/g6h9nYpEGEQqCV4bZj6UO
+	 jvAb25DWWCNedSiRe0eIFY4CGqhdIPsQHgGXC/D4=
+From: Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH 0/3] Split sony-castor into shinano-common and add Sony
+ Xperia Z3
+Date: Sun, 10 Mar 2024 12:41:06 +0100
+Message-Id: <20240310-shinano-common-v1-0-d64cd322ebca@z3ntu.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFKc7WUC/x3MTQqAIBBA4avIrBP8qUVdJVqIjTkLx1CIQLx70
+ vJbvNegYiGssIkGBR+qlHlATwJ8dHyhpHMYjDKzslrJGokdZ+lzSpmlWm1AswS0TsOI7oKB3n+
+ 4H71/zX+Mj2AAAAA=
+To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=978; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=AgJRUGq8reZPMsQEkwJy5L1RC2vqHFoXplg91ZNU2Z4=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBl7ZxnJ8I/hSb+nyOF1cGR2dpGm477ofrx4YSbR
+ 9OQYJbOfPKJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZe2cZwAKCRBy2EO4nU3X
+ VgtID/4jJXu27eWPRSTuiMeYeCsOxmsF8Eu+BqP6uWADJTl27/BerWlAdC8d5Nn607ZqUFTmmuc
+ 7F42asa9VD82H5KrpdSwDfE6+mwpnLOjH1VLwDzkhit4VM42zVbVaBvGpewc7iru4AgSBn+PXNS
+ CLd4Ja6Rii99rYRdUioNR2QRfO2Dl9VSaemHwvlnGuDF1+tdFbPKlzLYgebigHNPF5XBQSvFFcE
+ K3eUwpJskRH8xpeIP6R0aSQ+VrZefldd0fiM46tUAUEeM1FoOzSELJzAY3HGyyTNb1WTPnnwE9G
+ TW9Hp9zT1j3tHne0xawbSnfdA+vokn7TPHDoALfipaSaZIRSLDFnqvUk1W+6TYS72yceJMPGYuK
+ w/ot/fuJil+zhgN3YLNQrqELKeUusg4qKgErHKF7y9T2VUJP0mEU0bu2Hq+zFnyp6w9K2lZiyJ7
+ PXvSbJ+9+D9GGn0ih7cmG0McJsSL+b1vcSny+EcyiORoxDfvyxtQsYk4QopmvtPZCTz8MD4zV0m
+ VZ40GKhWIafqyKU6zKFDx9FMmAFGx9kIvCSG0+IkwpjTiMAKSGTeYj66muwmKgwpwohkoQjcoQ6
+ y4U6aF3wLtcY/5ZO3kba8MwrgJjm1Y9IkS5Bw1ffHTzpOOaj5Vf3Y8IltHrg6sT1DbpQqVbtq22
+ VIJSbwRnGKDOaOw==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-On Sun, Mar 10, 2024 at 09:01:46AM +0100, Krzysztof Kozlowski wrote:
-> On 10/03/2024 05:51, Luiz Angelo Daros de Luca wrote:
-> > This switch family supports four LEDs for each of its six ports. Each
-> > LED group is composed of one of these four LEDs from all six ports. LED
-> > groups can be configured to display hardware information, such as link
-> > activity, or manually controlled through a bitmap in registers
-> > RTL8366RB_LED_0_1_CTRL_REG and RTL8366RB_LED_2_3_CTRL_REG.
-> > 
-> > After a reset, the default LED group configuration for groups 0 to 3
-> > indicates, respectively, link activity, link at 1000M, 100M, and 10M, or
-> > RTL8366RB_LED_CTRL_REG as 0x5432. These configurations are commonly used
-> > for LED indications. However, the driver was replacing that
-> > configuration to use manually controlled LEDs (RTL8366RB_LED_FORCE)
-> > without providing a way for the OS to control them. The default
-> > configuration is deemed more useful than fixed, uncontrollable turned-on
-> > LEDs.
-> > 
-> > The driver was enabling/disabling LEDs during port_enable/disable.
-> > However, these events occur when the port is administratively controlled
-> > (up or down) and are not related to link presence. Additionally, when a
-> > port N was disabled, the driver was turning off all LEDs for group N,
-> > not only the corresponding LED for port N in any of those 4 groups. In
-> > such cases, if port 0 was brought down, the LEDs for all ports in LED
-> > group 0 would be turned off. As another side effect, the driver was
-> > wrongly warning that port 5 didn't have an LED ("no LED for port 5").
-> > Since showing the administrative state of ports is not an orthodox way
-> > to use LEDs, it was not worth it to fix it and all this code was
-> > dropped.
-> > 
-> > The code to disable LEDs was simplified only changing each LED group to
-> > the RTL8366RB_LED_OFF state. Registers RTL8366RB_LED_0_1_CTRL_REG and
-> > RTL8366RB_LED_2_3_CTRL_REG are only used when the corresponding LED
-> > group is configured with RTL8366RB_LED_FORCE and they don't need to be
-> > cleaned. The code still references an LED controlled by
-> > RTL8366RB_INTERRUPT_CONTROL_REG, but as of now, no test device has
-> > actually used it. Also, some magic numbers were replaced by macros.
-> > 
-> > Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> This is the first version, so where did review happen?
+Prepare for adding sony-leo dts by splitting common parts into a
+separate dtsi file.
 
-FWIIW, I think this relates to review of an RFC of this patch-set.
+Then add the dts for Sony Xperia Z3.
 
-https://lore.kernel.org/netdev/CACRpkda8tQ2u4+jCrpOQXbBd84oW98vmiDgU+GgdYCHuZfn49A@mail.gmail.com/
+Depends on:
+https://lore.kernel.org/linux-arm-msm/20240306-castor-changes-v1-0-2286eaf85fff@z3ntu.xyz/T/
+
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+Luca Weiss (3):
+      ARM: dts: qcom: msm8974-sony-castor: Split into shinano-common
+      dt-bindings: arm: qcom: Add Sony Xperia Z3
+      ARM: dts: qcom: Add Sony Xperia Z3 smartphone
+
+ Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+ .../qcom-msm8974pro-sony-xperia-shinano-castor.dts | 541 +--------------------
+ ...qcom-msm8974pro-sony-xperia-shinano-common.dtsi | 535 ++++++++++++++++++++
+ .../qcom-msm8974pro-sony-xperia-shinano-leo.dts    |  44 ++
+ 4 files changed, 591 insertions(+), 530 deletions(-)
+---
+base-commit: bee52eeb37d8124a07711657d1650bf3b467e7dd
+change-id: 20240310-shinano-common-093fe25fe3a1
+
+Best regards,
+-- 
+Luca Weiss <luca@z3ntu.xyz>
+
 
