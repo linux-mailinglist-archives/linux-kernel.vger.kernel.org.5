@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-98160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87BB08775D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:40:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED82D8775DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23C13B20EBE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:40:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3F4A28296F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00861CD3A;
-	Sun, 10 Mar 2024 08:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870D21CD09;
+	Sun, 10 Mar 2024 08:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yWrr1y2F"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TX6x0cPe"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B9E17758
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 08:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0B417556
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 08:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710060018; cv=none; b=lvXDop8jzIvQXUN8f0yuU8Ny0LXP8DycQR0X/9TvJMMlX86xMDzrk0x48TOPP2sr/6xmFh0j7mFuw+XZc6/gFFfrIh/jw6P6QeT4ZrthDfVXWQ8/j1vx3ldnwSRutgXSFHfjYbr/vO+aBEHOhCIULuMfR9ZxpqHlZFJQX8YwbpI=
+	t=1710060402; cv=none; b=jcYjogq2YvWBDuN4+kQsCMGpwwyN4oxGPi58COix/QRY7gWqMo68TahzH2zTi58ml8d1ylaW7tEANSLlwOeGkI/6waAMaYd9jp9q3UFrbmY/70ruQW5UZOZd0Hx5R3B+0JFfY4IuiOROJ914+T7kaJA/8GwsOhN3PtEl7oG4P7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710060018; c=relaxed/simple;
-	bh=l09NvDnufSejDgbUZSC6DKpjR8j2UlyS+Cpr4/3LZAM=;
+	s=arc-20240116; t=1710060402; c=relaxed/simple;
+	bh=xLmmJdf7b1EcM83YnOo1gFdVXubBPLeW+b+Fbod8neQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CNBCl607yHpoTEt9SlBtEjUpNt7+KAUCCwTkNfWRXWa0RiCYhaQOJmbdTW9tY3nxB1Nw9Kf1dD0y9Untlb78fN0XajreHC5Dr3Uq79qVxztTpHNgSI+FWj/KyA/g40rz2B5oTpHHzr0nYKf5pwE+SoJiX6FNiBJwUsqEMH74REI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yWrr1y2F; arc=none smtp.client-ip=209.85.128.45
+	 In-Reply-To:Content-Type; b=klDqRHSui+Q447aPMlS8iw/FQiKn5SeAzDIsi4pWU+JHaDWjZbMBz91nWPt2om1THcXaH8XdULWIeWxqfQocf+UrGUvoqewOK0KqkMPw31mLSAKjEAGU/FbDuAZrrN8aWPbaU0cmzLDY/xJkssg0eTDbOhC+zo6ccxbe/uv8S6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TX6x0cPe; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412f1ccf8d8so27319895e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 00:40:15 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56845954fffso793346a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 00:46:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710060014; x=1710664814; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710060398; x=1710665198; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vaRopQBYu86yvcn5SLZXjKAGYfexBOPbHPZsUxiN77c=;
-        b=yWrr1y2F922VqtJBgosAYtVsKZrDlLe+SH+Q2FQlVbZuOruqf/kzCb9sevklwJ473a
-         ljlXUodpG/fhqKgFuH4W2OxAGWSPbiPF5lm2jl3bnPpETKB5/LtabUhn2joaKxwmbSeh
-         Ks0q5IE9dcg73UPIoknL1LF2Ll+6ks/38kZxOmvZQvF4HrXCeiEaaFQCHsUycyGXbkjX
-         DXDJUpvnBjWztlYuk9fyrQjxJ6thi7pFED5zaySVInvAbp/orEKMLYszogQMa4Hra2Rx
-         cOb4nWshT+S6GFEqKmDxlZZ+/3RNBK2DsI5wlYB4FZvkd35t1wVkzesijS+FDnBwWR1e
-         kKSQ==
+        bh=C530xy+YltijTtebs95wWn+75gIn26qAKpps14k6LgI=;
+        b=TX6x0cPeRDKZvr/uXQZS+E1TgyeLevz1LTWSM3WAXY8hvDvOjt3H+gFd8M7HfyeYch
+         xzBemVJ1uE5Q3YwUaiCf4EG4dLuOJrOVW5AEVDmRkl94KBBR9GIpI1Ihs6USPW94H3+R
+         SNB9OjtNRJTDFzuwGTw5g3+Tm/5ReY0ED4idRLnqwuwPoQcuAtDlskdBBqj2jhLVA8NA
+         /ZrGZDuq7F1mF9Upx63JWhx16AqMY58JRnS/SBUbQA68TVrW57kCRldH9X8qfKKfLnMS
+         3do5d2ytVSizYd+j9HV53Da/0DZNtiBQ24FSo8xjKDLudxDCLDdpQE/PhlqCfFafZM48
+         dqrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710060014; x=1710664814;
+        d=1e100.net; s=20230601; t=1710060398; x=1710665198;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vaRopQBYu86yvcn5SLZXjKAGYfexBOPbHPZsUxiN77c=;
-        b=FWnPHDuLPDRcSWHF5oE+pWD0VFbhttelfYmUu3ZBQkLCmuu5YP6tez8UIzhGKEttlo
-         J49U9olR9I1KCnpVQk5cId2Nd/aXKmQCZDImaKzBLn9+OEX+Znsi6juDp0UtM4Kc+v2a
-         LiD9o9kE+tRsjCxxeioLx13YKFGSAKTFFTtUHf8zIRrwcrWNUB0crXiCqeDMNtEPC5oG
-         f1ideKs+MgQLJ3O0XTNpVDSiSo0vrGRaI2liampHzTapbexJZnAEpdU2yXHXeTNWkdlA
-         eOvNod1XohihSkpl3GHxIOIL0l0DaF+Kyt3hm7e/hIXDimrufVjr7N1ja78XCPVfkAXg
-         LJ3A==
-X-Forwarded-Encrypted: i=1; AJvYcCU5vtvisZ4Uksvdgl/nf9Ir/AFMlzXyUHlaS+0n7jvypSew2C2RaE48oAhxQDU+81CRc7dJ0XTmBF1peWqbyGy9vnxJ2JZa+zvyQpLz
-X-Gm-Message-State: AOJu0Yzj5FSsT3D9Zjtmfpo1Pb+ePpfDBeZE4rLVsHac0OWwjXQokdcn
-	fIGakREbxbAulZPtbQ5a6CACCaLqZkAwumLC8qPWvktyiPvjaRHXaT1AeBKxT4U=
-X-Google-Smtp-Source: AGHT+IH7tj1TTeteFJBpEyRXXnZxcaVWcUnOJhxNlnU/+0ISMRzviDw4Qxm02dUqk9KICRVZGTYKxQ==
-X-Received: by 2002:a05:600c:1908:b0:413:28c1:7867 with SMTP id j8-20020a05600c190800b0041328c17867mr328470wmq.13.1710060013956;
-        Sun, 10 Mar 2024 00:40:13 -0800 (PST)
+        bh=C530xy+YltijTtebs95wWn+75gIn26qAKpps14k6LgI=;
+        b=sH9m+QBcu4r9VWlExnJkOiXdvL51nY1POtu5wkU1h+WXMrJ+lsU/NFARR1L+iyPxjM
+         1JxfBi6bk2FZ29tZlDx0iRheLI/sgJtgCwQZ3w61Pp7GF7dlU2srDSkxoEPee3EeqzzX
+         19tV7a1WFHDpElTcXRoR7FRQNj65bDNC8QRGiWApcw7MdIHhsDO1uNygivxt7sZZTlYB
+         6koIC7tyX11fLNmzJAPHQFYfsA1tWPYx48oZzhWQw3TYx3wKMUdUzz7k+dBFIyC+tYcJ
+         SkcogTdgVTlT+C6kAaY8yYdw/5qmZdO0FaW6UKSXsDYAIrKufYhExmr6tJnkt6RkpNAw
+         vWbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUCxzhUe/AlgHpt+GMT5IKGQkP3dVD+zbO/pD6AiE8koxYcryxtTpVFvmzeoMuZzv4AIrcTv8dwLDzLrz0EJQBoZTrzOgl2h7bo1Fs3
+X-Gm-Message-State: AOJu0YzEP1IQNZke5F/ErYlxQ3sMaPcZJK3hX/1RxR6A1QQTPZyNUCfp
+	RokWlqDn0ipbVBqiucr9JjhfMG4DWpGuPwL7OBR1GzN2GSA2OHoFx5GjvRzrRfA=
+X-Google-Smtp-Source: AGHT+IH5kSY38rfz+3g8kBzu9+2QsdxgrFctdunyDmLQiYSfKlA5Uh533yF369VBiVmmlfgNgIPR5w==
+X-Received: by 2002:a50:c01b:0:b0:566:43ab:8b78 with SMTP id r27-20020a50c01b000000b0056643ab8b78mr2188685edb.30.1710060398578;
+        Sun, 10 Mar 2024 00:46:38 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id q14-20020a05600c46ce00b00412b4dca795sm5138534wmo.7.2024.03.10.00.40.12
+        by smtp.gmail.com with ESMTPSA id b2-20020aa7c902000000b00564e489ce9asm1765052edt.12.2024.03.10.00.46.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Mar 2024 00:40:13 -0800 (PST)
-Message-ID: <e95c097b-0ced-4beb-ae4d-5239f9b1805a@linaro.org>
-Date: Sun, 10 Mar 2024 09:40:12 +0100
+        Sun, 10 Mar 2024 00:46:38 -0800 (PST)
+Message-ID: <e8c04ee6-d860-410f-a333-aa36205661ec@linaro.org>
+Date: Sun, 10 Mar 2024 09:46:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,20 +75,21 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] dt-bindings: mfd: x-powers,axp152: document AXP717
+Subject: Re: [PATCH v2 1/2] dt-bindings: iommu: arm,smmu-v3: Add SC8280XP
+ compatible
 Content-Language: en-US
-To: Andre Przywara <andre.przywara@arm.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Chen-Yu Tsai <wens@csie.org>, Lee Jones <lee@kernel.org>,
- Rob Herring <robh@kernel.org>,
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Chris Morgan <macromorgan@hotmail.com>, linux-kernel@vger.kernel.org,
- linux-sunxi@lists.linux.dev
-References: <20240310010211.28653-1-andre.przywara@arm.com>
- <20240310010211.28653-3-andre.przywara@arm.com>
+ Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+ Rob Herring <robh@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev, Johan Hovold <johan+linaro@kernel.org>
+References: <20231219-topic-8280_smmuv3-v2-0-c67bd3226687@linaro.org>
+ <20231219-topic-8280_smmuv3-v2-1-c67bd3226687@linaro.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -134,22 +135,39 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240310010211.28653-3-andre.przywara@arm.com>
+In-Reply-To: <20231219-topic-8280_smmuv3-v2-1-c67bd3226687@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 10/03/2024 02:02, Andre Przywara wrote:
-> The X-Powers AXP717 is a PMIC used on some newer Allwinner devices.
-> Among quite some regulators it features the usual ADC/IRQ/power key
-> parts, plus a battery charger circuit, and some newly introduced USB
-> type-C circuitry.
-> Like two other recent PMICs, it lacks the DC/DC converter PWM frequency
-> control register, that rate is fixed here as well.
+On 09/03/2024 14:31, Konrad Dybcio wrote:
+> The smmu-v3 binding currently doesn't differentiate the SoCs it's
+> implemented on. This is a poor design choice that may bite in the future,
+> should any quirks surface.
 > 
-> Add the new compatible string, and add that to the list of PMICs without
-> the PWM frequency property.
+> Add a compatible for the instance found on Qualcomm SC8280XP.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/iommu/arm,smmu-v3.yaml | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu-v3.yaml
+> index 75fcf4cb52d9..f284f7b0c1d8 100644
+> --- a/Documentation/devicetree/bindings/iommu/arm,smmu-v3.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu-v3.yaml
+> @@ -20,7 +20,11 @@ properties:
+>    $nodename:
+>      pattern: "^iommu@[0-9a-f]*"
+>    compatible:
+> -    const: arm,smmu-v3
+> +    oneOf:
+> +      - items:
+> +          - const: qcom,sc8280xp-smmu-v3
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+This could be enum, because likely it will grow in the future, but there
+is no need to resend for this alone.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
