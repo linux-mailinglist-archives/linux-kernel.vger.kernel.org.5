@@ -1,172 +1,126 @@
-Return-Path: <linux-kernel+bounces-98180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A9887761A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:34:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD2A6877620
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 121E2B20EA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 10:34:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 193011C20D1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 10:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432A91C6AD;
-	Sun, 10 Mar 2024 10:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40601F170;
+	Sun, 10 Mar 2024 10:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gvQ1tdgq"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bw/KztFx"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1671219BDC;
-	Sun, 10 Mar 2024 10:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E783D8E;
+	Sun, 10 Mar 2024 10:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710066849; cv=none; b=VRij5VlCEw5FAjsRe9zOKrEN6mJfiL+HiVdFjMrLNXiXPCwhvKmFle/bhN1YOfvUp4iEttj80pmS8GMzZ7JTxm3K4a6sPFuhJLdQXVJWXmjMjrRxqCVPEEY2lhSPhp7YM6vIXEY1QDRjxB2JI4hymxDvaBRvxq5SxBu/ZXS5etI=
+	t=1710067094; cv=none; b=S822KuWBpvYEND4UACqtxHNcPVQyjHW2uizh0A95vza3tfoLdRp9lVf9VedJ/Ure5i08FILblP2yD91zY/Qy+89gjha9q5ALooYu7RQwh40RZTj61nqFAbkud5hPHIbr/l/t3q8VriogykGDYbBFzcT4kaB8bNHtWILs5Ta/FUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710066849; c=relaxed/simple;
-	bh=wFP5SnRdAlTYrtaQsMeuYAzoSBLP5KDO3ydiK/WFhDI=;
-	h=Date:From:To:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=FE+sKAYaqEeRO5F733MOVLd479+6M7pfj2DhL2qqCsxAwYi9OYJTxHhOftXSn+Wvktat/rBc/XBbFlCnKY1GkeTVgS8Csq10qB6KbB9agCbRDcfDfKNWxSnVBTnYdSNiUoqzy81M7/cmvoEEsXLri8Zu55dnT/mxr68w1rw0ISY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gvQ1tdgq; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7882e94d408so297458885a.0;
-        Sun, 10 Mar 2024 03:34:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710066847; x=1710671647; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TQXfYhSSj+U5lwLm5VRHdYF0sy5VxGpEKaFhMn2Srhs=;
-        b=gvQ1tdgq/XehUehUbBXZyutFqZ+W5kmMv6kw/G5pka1WuWBtFPn8Qb7PT98oXFo6FW
-         x1szY0emsPKx4reYWpbushj73/4fVCby0eaGhRBA6ccunUilXzZaxGJrQjhxX8YMiztU
-         oNgR29Vzf8U/WppZVFnR4BDxYoV8r6rAJdZjXFVSN2qFJz5J3ep4SliLrf1EZn4evjsz
-         v32xhUlkeMB32QVDWKFOBvYa4Nbf9JewIKvMsX3iZqOq+otKvdZTSE5Fx/jDz3YRXCPG
-         4kaiHNMM7P3yQsdH6WDlBxdXc4jghV1lKAEVXm0v/Dbqtq2kmzq2afHaq8ckcRVfg3Lg
-         90jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710066847; x=1710671647;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TQXfYhSSj+U5lwLm5VRHdYF0sy5VxGpEKaFhMn2Srhs=;
-        b=mVCI8+uemztWFR2PWm4QfThRRIGN2xeAWCb00W4qG4a/fwvJ6tfhBK7sie5ELwu9ON
-         6qePQggWjTVHnaXPMEuQ+6+fi1HXWnCtFNEbnaTE25xL5ibZfd+mKJosYM3EykZ6wSCv
-         3Z7ruPiyRMcOBnanVFRRYBQT3L2DtuINrDUZTVS4cgu19WM/OHeZlB1QOSn8ENP7SK7T
-         u2nX+nBH1GETPlxBflOcW0XEtj42+ZH8wips4sqA1VxfZDscR0858g1q+02NEZmeInLW
-         zc2WzNnMy4K/2Ys7kTXd4zkQwT5Dg8DR6I2Tkgw93FaFOkoigqcDNSlyuOR7BPp//efJ
-         uORg==
-X-Forwarded-Encrypted: i=1; AJvYcCUVvQ+7VOdjXGlKK9GCp3jvf0xffa44JgdBW1Bj7lD9odYUUXP69rZK2W+XFDkBMhD3fH8uy1lcGIlug9Cyc06CptpNA3Tmb5FTZAItnoUW0/8huV+ZHXlGfLNxS4KUYwYx6np3JyoQUUMHvKR3AqKIvUSZUge0epMwxEnZqdOOmAh8kiC4
-X-Gm-Message-State: AOJu0YxUwgd/8EcmRuELT+fWOe/a+J1yuu/5UCwj+yLMKDVAbI2UHu2g
-	0StJcKQbMtdrQ97O7w4ZJ4H/+U1TBBP4uWOJiy4LrhV67G77/ZVT
-X-Google-Smtp-Source: AGHT+IFbCBpNRgqZo+j6zeF9zOKNyhkuBx8fIzO8pR5aME+Fs0REMNDZ+JR+kDa986Ot0EHmXMc4eA==
-X-Received: by 2002:a05:620a:100b:b0:788:2d92:af16 with SMTP id z11-20020a05620a100b00b007882d92af16mr4320951qkj.70.1710066846864;
-        Sun, 10 Mar 2024 03:34:06 -0700 (PDT)
-Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id wh24-20020a05620a56d800b007883c9be0a9sm1717344qkn.80.2024.03.10.03.34.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 03:34:06 -0700 (PDT)
-Date: Sun, 10 Mar 2024 06:34:05 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Richard Gobert <richardbgobert@gmail.com>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- willemdebruijn.kernel@gmail.com, 
- dsahern@kernel.org, 
- xeb@mail.ru, 
- shuah@kernel.org, 
- idosch@nvidia.com, 
- razor@blackwall.org, 
- amcohen@nvidia.com, 
- petrm@nvidia.com, 
- jbenc@redhat.com, 
- bpoirier@nvidia.com, 
- b.galvani@gmail.com, 
- gavinl@nvidia.com, 
- liujian56@huawei.com, 
- horms@kernel.org, 
- linyunsheng@huawei.com, 
- therbert@google.com, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <65ed8c9d8dc5a_193375294e6@willemb.c.googlers.com.notmuch>
-In-Reply-To: <88831c36-a589-429f-8e8b-2ecb66a30263@gmail.com>
-References: <f939c84a-2322-4393-a5b0-9b1e0be8ed8e@gmail.com>
- <88831c36-a589-429f-8e8b-2ecb66a30263@gmail.com>
-Subject: Re: [PATCH net-next v3 4/4] net: gro: move L3 flush checks to
- tcp_gro_receive
+	s=arc-20240116; t=1710067094; c=relaxed/simple;
+	bh=8/J5Jwa+0rLFUZyeqG/2hEgXFAgXb6jr08TRztCGnd4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CwCu27Hj8ZieCBrfCGCFtM63fk7k28E7mui4EVgPHH+ACdmQIlagKv2VQ7LHaW7TdmyXT/XBo4PvloPpwgW86fH9fbXEDckJqo1NDlwEy9xn04WPBx6EdPlFwFBVa3q1kBPkktXc51ziteSWTQ2f9D8SBtWiKlRq6X1HvxcZXcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bw/KztFx; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710067092; x=1741603092;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8/J5Jwa+0rLFUZyeqG/2hEgXFAgXb6jr08TRztCGnd4=;
+  b=bw/KztFxr2RGA20RrmiEl8fvCxsf8uXqk06fmxN1bqJOKfdCJl4qV4ZN
+   xiNZpSpdGtbhSRljEtcYZ5tG0uTNH2RUZ7Hyx6ncAJhkPV8MBFp5w4wH8
+   EzuoJkS8H52fo+6+kyNpxH67sEukvGnQDUOOGkQgqRfAe2++7/Ejkefqr
+   Fj8bUQzmixfS1vOhhO/GG4pofa0Ye9vbtWwIRc8FgsQwKsd6tcaz6X/14
+   5qDSURKjuKVR9CGWk9jdNZZZLFLYQGLz7NZLWteq/QRR+Vl1b4JcG0TlX
+   OFjDpsi2rIjKvDkDszlqLCYYrhYTG8mFWGYwoawo1/l1LJOiEZXzN08Yu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="4868405"
+X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
+   d="scan'208";a="4868405"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2024 03:38:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
+   d="scan'208";a="10787715"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 10 Mar 2024 03:38:05 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rjGZ9-0008BP-19;
+	Sun, 10 Mar 2024 10:38:03 +0000
+Date: Sun, 10 Mar 2024 18:37:53 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sam Ravnborg via B4 Relay <devnull+sam.ravnborg.org@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Arnd Bergmann <arnd@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>
+Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	Helge Deller <deller@gmx.de>, Randy Dunlap <rdunlap@infradead.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>,
+	Kjetil Oftedal <oftedal@gmail.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org,
+	Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2 14/28] sparc32: Drop unused mmu models
+Message-ID: <202403101854.Z94SAU13-lkp@intel.com>
+References: <20240309-sunset-v2-14-f09912574d2c@ravnborg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240309-sunset-v2-14-f09912574d2c@ravnborg.org>
 
-Richard Gobert wrote:
-> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
-> iph->id, ...) against all packets in a loop. These flush checks are
-> relevant only to tcp flows, and as such they're used to determine whether
-> the packets can be merged later in tcp_gro_receive.
-> 
-> These checks are not relevant to UDP packets.
+Hi Sam,
 
-These are network protocol coalescing invariants. Why would they be
-limited to certain transport protocols only?
+kernel test robot noticed the following build warnings:
 
-> Furthermore, they need to be
-> done only once in tcp_gro_receive and only against the found p skb, since
-> they only affect flush and not same_flow.
-> 
-> Levaraging the previous commit in the series, in which correct network
-> header offsets are saved for both outer and inner network headers -
-> allowing these checks to be done only once, in tcp_gro_receive. As a
-> result, NAPI_GRO_CB(p)->flush is not used at all. In addition - flush_id
-> checks are more declerative and contained in inet_gro_flush, thus removing
+[auto build test WARNING on 84b76d05828a1909e20d0f66553b876b801f98c8]
 
-declarative
+url:    https://github.com/intel-lab-lkp/linux/commits/Sam-Ravnborg-via-B4-Relay/sparc32-Update-defconfig-to-LEON-SMP/20240310-021717
+base:   84b76d05828a1909e20d0f66553b876b801f98c8
+patch link:    https://lore.kernel.org/r/20240309-sunset-v2-14-f09912574d2c%40ravnborg.org
+patch subject: [PATCH v2 14/28] sparc32: Drop unused mmu models
+config: sparc-randconfig-r113-20240310 (https://download.01.org/0day-ci/archive/20240310/202403101854.Z94SAU13-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240310/202403101854.Z94SAU13-lkp@intel.com/reproduce)
 
-> the need for flush_id in napi_gro_cb.
-> 
-> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-> ---
-> +static int inet_gro_flush(const struct iphdr *iph, const struct iphdr *iph2,
-> +			  struct sk_buff *p, u32 outer)
-> +{
-> +	const u32 id = ntohl(*(__be32 *)&iph->id);
-> +	const u32 id2 = ntohl(*(__be32 *)&iph2->id);
-> +	const int flush_id = ntohs(id >> 16) - ntohs(id2 >> 16);
-> +	const u16 count = NAPI_GRO_CB(p)->count;
-> +	const u32 df = id & IP_DF;
-> +	u32 is_atomic;
-> +	int flush;
-> +
-> +	/* All fields must match except length and checksum. */
-> +	flush = (iph->ttl ^ iph2->ttl) | (iph->tos ^ iph2->tos) | (df ^ (id2 & IP_DF));
-> +
-> +	/* When we receive our second frame we can make a decision on if we
-> +	 * continue this flow as an atomic flow with a fixed ID or if we use
-> +	 * an incremdfenting ID.
-> +	 */
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403101854.Z94SAU13-lkp@intel.com/
 
-Comment became garbled on move: incrementing
+sparse warnings: (new ones prefixed by >>)
+>> arch/sparc/mm/srmmu.c:49:5: sparse: sparse: symbol 'vac_line_size' was not declared. Should it be static?
 
-> +	if (count == 1) {
-> +		is_atomic = df && flush_id == 0;
-> +		NAPI_GRO_CB(p)->is_atomic = is_atomic;
-> +	} else {
-> +		is_atomic = df && NAPI_GRO_CB(p)->is_atomic;
-> +	}
-> +
-> +	/* Ignore outer IP ID value if based on atomic datagram. */
-> +	outer = (outer && df) - 1;
-> +	is_atomic--;
-> +
-> +	return flush | ((flush_id ^ (count & is_atomic)) & outer);
-> +}
+vim +/vac_line_size +49 arch/sparc/mm/srmmu.c
+
+accf032cfa582e Sam Ravnborg   2012-05-19  46  
+^1da177e4c3f41 Linus Torvalds 2005-04-16  47  int vac_cache_size;
+9d262d95114cf2 Guenter Roeck  2017-04-01  48  EXPORT_SYMBOL(vac_cache_size);
+^1da177e4c3f41 Linus Torvalds 2005-04-16 @49  int vac_line_size;
+^1da177e4c3f41 Linus Torvalds 2005-04-16  50  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
