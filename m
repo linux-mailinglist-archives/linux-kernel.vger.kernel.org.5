@@ -1,135 +1,153 @@
-Return-Path: <linux-kernel+bounces-98057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341C887748D
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 00:45:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DC8877492
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:03:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81C31F21323
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 23:45:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9197B21453
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 00:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68DC2537FB;
-	Sat,  9 Mar 2024 23:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jLyI/qk+"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D83134CB;
+	Sun, 10 Mar 2024 00:03:15 +0000 (UTC)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2765D535AF
-	for <linux-kernel@vger.kernel.org>; Sat,  9 Mar 2024 23:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384C31170B
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 00:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710027904; cv=none; b=qUI+ghDgCL8mJsbpxjSLEispc+yooS2ZnnG3VTRGy+6a7Gh9j1IAZA495dzJ5hET6p1GC1XXPvr82+Ob53lk35g2ZtWuSb1EPz0/7tagghGfG6mHbiJ9qBj1AohbID7DOjGoztcTY/qheIHjJiR6075Q4bDa4LEBeEH/QkuPdVo=
+	t=1710028995; cv=none; b=GApW5f+RodE8pTqvgzVUuSlUCaN8iFWZuju6G38aBmJr+WzX1Zvun6Oy8Cmgj9myjbEvZ2+zYmMF3M3SkTvYWSwbTpAHPmFAN7vFxXQVigsrkiU83MeMmNcdb9EFwM8Y2xoh2hzhEJd7LqOm9KkfPKUMgK2JCNg56DiCrvuBW2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710027904; c=relaxed/simple;
-	bh=3/X1psLY0Zim7ILl0IF3hRPUcK261kr1dKIcPs6BxMw=;
+	s=arc-20240116; t=1710028995; c=relaxed/simple;
+	bh=l2PF8vzrNA7mLZujTcKphxVafwGJwqbU2lm5z38glkc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K0JDM6cP/nZ+tBgyph6sdIreBI0U79aMn0o/LU9IMk7VM/ne5eXSMXFYhkw0O0K8KfvxUXKsXMmz676FXQVpuZsQkAzYzs4NnzvhnByJHuA4xH+L3Kydolu14LqMXHA7+N4m85Kqwt5bP76Z8Cj/7O7LtZV2Mh8UYkhv3+WFOfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jLyI/qk+; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc236729a2bso2932009276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 15:45:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710027901; x=1710632701; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0qceh3sC8kiofPhUeytSOniPbrODQxl3H6CnR4Wu1NQ=;
-        b=jLyI/qk+s/RmWhoWQuJbrPZ8XCGTJLIKMQ4kqA1A9pM9FkPG65cQIL1u2lXBXv+Ds5
-         +UslktRtXmDiWp9kdkv1cu6rVjFUIBiYFXjvd/8DpoZzSh+D3Vh7PmIu2hBast2ZNPD5
-         PN04i9PFrArGm7O/ssv7FThABXkNIUe/j6puUNXcJ7VV8sUSS8XZVHPkgbetAMiv5jEj
-         OuN8PI0sXRCHtvgYKjXHVqBdJCV3ruY7vXPPvGdWsTxhllJ2veD2IeIyAzu+/kfkg+b/
-         aBIyQSQiVa4DnxwmVx7+Sw5MWawM/c2RjD1PODtf5t6T3VN5qYJJpAi4LTt7++XKTSJr
-         81ig==
+	 To:Cc:Content-Type; b=HNCCwZ72/PJBVBReKl5V5wvf9Jbx3BX8SiqvpxKx9dG48rteM9Mj0DobGMHe4mu/tpsxKmqGOYm6SY9i8CsYm0RwX1DeJ3xMZ6fbCUNFgIWNi07SCHIIQWZ2F0pUZpku5LnGs+2zwGvsWsX3V7pJZuMvPp9IHe3uBKpBH9UDorU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a461c50deccso8471366b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 16:03:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710027901; x=1710632701;
+        d=1e100.net; s=20230601; t=1710028991; x=1710633791;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0qceh3sC8kiofPhUeytSOniPbrODQxl3H6CnR4Wu1NQ=;
-        b=n7CYVhRnVmrjV+6E5R9agDz4Dg7+91aYvw04Ra5p+dcmwVpaOO9cZEDWdeZjoJ2iKe
-         BlQ4BwkCy6ZOGrkEIMUcwAg8viBLp+aDbX+SYGxwtt8pD+mp19RdD9KjkoUZ91zHhwxC
-         VCIDmV/qxJzB6iWy8Kpdc/kJcKphIL3hcQy0oeiqSzGC0FkkbjOW5qYdtNQB28S/nhdg
-         aPa6rmv1hkeHca9YIc+rj3iWMvd69HnmHOBTgL2Aj91C/NbhvnGlEY2Bs09XHoaq1KxR
-         2neQ8ZB1TDQXagHASKI7IdWyXwMFXYmpmVbTpyRa97pjS+4BQ+GB/3+cl/vsFXaK2Sy4
-         4P3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUF6vteq9Xeynyjlk7cZHtLEPec0KEzxdEy6NP1VunRaIGqjgz3rsV4Hn+W5m0YKtTwzH08QDlatb+1eHxwwqf7STihdJ8+BxcN3n9C
-X-Gm-Message-State: AOJu0Yw6ubSHORShTqQlkCmnrNtWsLDzL7NxyLYDdNQFTUx+Pp1ROrKc
-	JZjOWYh/Vxg2ZoToOV6Fh5QIQU4ecawIaeaoh0qdTeK4HipoOSV1buU0CYZOrg8cmY8M66/ML1a
-	0VNqVzGkaES3kUn8kBwM7HVn5/sU4pCGbcFo+bg==
-X-Google-Smtp-Source: AGHT+IFjQ7Gcrqq5W6UpC7l3IWPSk0nRWcufMO5FpukUPjCY39q7UzwvY6a72jclK6kDbiYQJofABauyhz+jduzN9j0=
-X-Received: by 2002:a81:a214:0:b0:609:ecb9:77c with SMTP id
- w20-20020a81a214000000b00609ecb9077cmr2763677ywg.18.1710027901171; Sat, 09
- Mar 2024 15:45:01 -0800 (PST)
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=r/kxb+cW6k3M1uLfKoBDLes6OkkBdvyrEAxG34HYODA=;
+        b=h6cV0B6thED7ELHcwdS8dLlCkGqSKU0SMEqkvHcG4UkqvrAM7aHfjL7Sf/qQCdC9o9
+         8zwyTmCGkuO2lYg96aBnZDLDrhOIzCggu9bb+sK+7fpWTz9IYTJit3Y84tsSJSjO736l
+         DOOVDUl1TmLu7EaVa3fQdUfw2+D9PQjRw5y1Id+XCPm2hKOxpdBjLZEzawyDn97n3GMe
+         C4N18j6W+d0EtWhvkhF8caQRhoHbKszfpsAYS+fVFtXP85UZZPY/AOdDFiZRx16l3PNs
+         9doNRnE8wfe5Cw+eTkXxKnJlmvBGNllQjrp471F9ywcS1Zt/wh9ODSpnQsLsO5DpYvaq
+         OaTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWaK3cjwW1u+Sn5/Yq09I0LEXfu4x9JjOWX/TP1S7+qR2LZJIYwHsl/zu2Ak/Kfgtgt5vNtD90hW+1Ty6hv9U72ZbT3d8fx2oqDoFjD
+X-Gm-Message-State: AOJu0YyrVBP6CR5F+4gVhrWZSfHXUlmltY6cLYxa2UXHtRl1hGI/qzD/
+	FzNHHujbEdTQsnX8EvJPGMW7xLlGpKohN3mmTLaaY/haSedHDl+2kWVY+kn7zPw=
+X-Google-Smtp-Source: AGHT+IHvZy+CdyRxeSSGGBCDwt3qBvrhXzAWLSbtcqv+2paDQCWZb8GFTyS6ulAFCSbPR9YZiUNHjg==
+X-Received: by 2002:a17:906:5947:b0:a45:c931:5703 with SMTP id g7-20020a170906594700b00a45c9315703mr1241402ejr.70.1710028990642;
+        Sat, 09 Mar 2024 16:03:10 -0800 (PST)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id ae1-20020a17090725c100b00a45ffe583acsm1255306ejc.187.2024.03.09.16.03.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Mar 2024 16:03:10 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5682ecd1f81so2305449a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 16:03:10 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVwIOJHTnolWLa0iRKqvvqn136IMp5yKYjlCVj+6Eqm6Vfwl8vNtE2FDulWW96/nq+93F/v5Iu5sqW8BnqPNjjl7ARrRXQeLjK+R3FA
+X-Received: by 2002:a50:9305:0:b0:566:4aa9:7143 with SMTP id
+ m5-20020a509305000000b005664aa97143mr1855789eda.14.1710028990084; Sat, 09 Mar
+ 2024 16:03:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129092512.23602-1-quic_tengfan@quicinc.com>
- <20240129092512.23602-2-quic_tengfan@quicinc.com> <CAL_JsqJfsWaj9OPkvc34rBvx7W_3v9+1kZqNu6QKDsA=iWAA4w@mail.gmail.com>
- <CAL_JsqLbbRFijBXS5CyRm0P4FMY7bR3UUdgXA7xP4Z1oRevnzQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqLbbRFijBXS5CyRm0P4FMY7bR3UUdgXA7xP4Z1oRevnzQ@mail.gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 10 Mar 2024 00:44:50 +0100
-Message-ID: <CACRpkdZ3uhyTnF7YkMk9sOeJJFZ4UPEna7PwpqPeBpWDdAmayA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: qcom: update compatible name
- for match with driver
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
+References: <20240309210230.239045-1-kirill.shutemov@linux.intel.com> <20240309210230.239045-2-kirill.shutemov@linux.intel.com>
+In-Reply-To: <20240309210230.239045-2-kirill.shutemov@linux.intel.com>
+Reply-To: sathyanarayanan.kuppuswamy@linux.intel.com
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Date: Sat, 9 Mar 2024 16:02:58 -0800
+X-Gmail-Original-Message-ID: <CAC41dw-ptOjRuOLefeu2-k_K1sigKVNxRxh+-9SHNooMfH660A@mail.gmail.com>
+Message-ID: <CAC41dw-ptOjRuOLefeu2-k_K1sigKVNxRxh+-9SHNooMfH660A@mail.gmail.com>
+Subject: Re: [PATCH 1/4] x86/tdx: Introduce tdg_vm_wr()
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@intel.com, 
+	hpa@zytor.com, seanjc@google.com, ele.reshetova@intel.com, 
+	rick.p.edgecombe@intel.com, x86@kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 8, 2024 at 9:10=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wro=
-te:
-> On Tue, Feb 27, 2024 at 7:37=E2=80=AFAM Rob Herring <robh+dt@kernel.org> =
-wrote:
-> > On Mon, Jan 29, 2024 at 3:25=E2=80=AFAM Tengfei Fan <quic_tengfan@quici=
-nc.com> wrote:
-> > >
-> > > Use compatible name "qcom,sm4450-tlmm" instead of "qcom,sm4450-pinctr=
-l"
-> > > to match the compatible name in sm4450 pinctrl driver.
-> > >
-> > > Fixes: 7bf8b78f86db ("dt-bindings: pinctrl: qcom: Add SM4450 pinctrl"=
-)
-> > > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml | 2 =
-+-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tl=
-mm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
-> > > index bb08ca5a1509..bb675c8ec220 100644
-> > > --- a/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
-> > > +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
-> > > @@ -17,7 +17,7 @@ allOf:
-> > >
-> > >  properties:
-> > >    compatible:
-> > > -    const: qcom,sm4450-pinctrl
-> > > +    const: qcom,sm4450-tlmm
-> >
-> > I think you forgot to update the example:
-> >
-> > Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.example.dtb:
-> > /example-0/pinctrl@f100000: failed to match any schema with
-> > compatible: ['qcom,sm4450-tlmm']
+On Sat, Mar 9, 2024 at 1:02=E2=80=AFPM Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
 >
-> Still a warning in linux-next. Please send a fix.
+> Add a helper to write to a TD-scope metadata field and use it to set
+> NOTIFY_ENABLES.
+>
 
-I understand it as applying 1/2 is the fix so I applied it.
+Add a note about why you create this helper function. I think the
+intention is to reuse it
+to update other TD-scope fields.
 
-Yours,
-Linus Walleij
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+>  arch/x86/coco/tdx/tdx.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> index cc67f7380055..5ffe5ef99536 100644
+> --- a/arch/x86/coco/tdx/tdx.c
+> +++ b/arch/x86/coco/tdx/tdx.c
+> @@ -77,6 +77,20 @@ static inline void tdcall(u64 fn, struct tdx_module_ar=
+gs *args)
+>                 panic("TDCALL %lld failed (Buggy TDX module!)\n", fn);
+>  }
+>
+> +static inline u64 tdg_vm_wr(u64 field, u64 value, u64 mask)
+> +{
+> +       struct tdx_module_args args =3D {
+> +               .rdx =3D field,
+> +               .r8 =3D value,
+> +               .r9 =3D mask,
+> +       };
+> +
+> +       tdcall(TDG_VM_WR, &args);
+> +
+> +       /* Old value */
+> +       return args.r8;
+
+Since the update failure will panic, any use for returning the old value?
+
+> +}
+> +
+>  /**
+>   * tdx_mcall_get_report0() - Wrapper to get TDREPORT0 (a.k.a. TDREPORT
+>   *                           subtype 0) using TDG.MR.REPORT TDCALL.
+> @@ -902,10 +916,6 @@ static void tdx_kexec_unshare_mem(void)
+>
+>  void __init tdx_early_init(void)
+>  {
+> -       struct tdx_module_args args =3D {
+> -               .rdx =3D TDCS_NOTIFY_ENABLES,
+> -               .r9 =3D -1ULL,
+> -       };
+>         u64 cc_mask;
+>         u32 eax, sig[3];
+>
+> @@ -924,7 +934,7 @@ void __init tdx_early_init(void)
+>         cc_set_mask(cc_mask);
+>
+>         /* Kernel does not use NOTIFY_ENABLES and does not need random #V=
+Es */
+> -       tdcall(TDG_VM_WR, &args);
+> +       tdg_vm_wr(TDCS_NOTIFY_ENABLES, 0, -1ULL);
+>
+>         /*
+>          * All bits above GPA width are reserved and kernel treats shared=
+ bit
+> --
+> 2.43.0
+>
 
