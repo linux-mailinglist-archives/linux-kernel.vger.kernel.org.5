@@ -1,202 +1,174 @@
-Return-Path: <linux-kernel+bounces-98173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ECD3877609
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:03:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12CE187760A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 11:03:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2577E1C20D4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 10:03:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66290B20B2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 10:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E9EC1EB44;
-	Sun, 10 Mar 2024 10:03:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E3C208C8;
+	Sun, 10 Mar 2024 10:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FHTufgvX";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="u3n55P3l"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="CchBOQw0"
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1F41DDD6;
-	Sun, 10 Mar 2024 10:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710065004; cv=fail; b=pgBKHvT8XhlgwdrkcCnbBhFlTRwTyTwg8TCSqsps1yd76cZfWZh0cKUZVovVcHzIQdazcYprJq/sQfqT804NQhxJIffGjxF4760DmkrypBLAdCSgdOXOAjOEVUhUs5l4cg3hqylcn86sxdWfDSfZijHmHAOu9syuqz9HCKstpiQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710065004; c=relaxed/simple;
-	bh=t3Yd8HsiP1jhE4Hejuc1Uo+al025SBzhuGc6c0Ke4Vc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=C7RRDd7x5AoQIVqkcmr7FShNw5H3QArE049x7FWhG6OCxAacuTRYXKk1rZintzEfjoDdIHamd7WJxu5185n05bPWRhnpGamWp15aqhv1/yn97gc0gbp+u1QGF3egEz9RSbCh7Daa8dgQkMaEqftxb5V2p9lHJlxJJuFcHJU3fl0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=FHTufgvX; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=u3n55P3l; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42A6TU1r019911;
-	Sun, 10 Mar 2024 10:02:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=ORtweBowOnut5XR4xZPVd9JQaQJRY8M8FKYCXZlZtM0=;
- b=FHTufgvXNfcpk8HPnr44OBn6XDomd3Cu5KSsRKAyZL3uGwY9sEOFhITn2HlSjZqzGJ0Y
- QBqnphMLppY6py6VLl5vFKeRllhlowSkTUsfAs4ZOuEOH7b9JT8PkbHdjJzmhR1fzX/T
- KS0ZfmJQzCQ5pNtvm95gEWtCMFuvbaajDFYt269CNOlLFVtdqOvkGvEHjC/vnimT3uwy
- Iet8Tm01uihB6B1vWV44bvKMtsYSQ+SQU1kgvEqGTHYOu9TYtJmFKRECl+BixxvD9OAR
- NcOryC+cfXf12UkFTFk17hZ2iszv/EhJjpjgAgCubObu41qu4kPnklnk7kd2EORGNkKp og== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrftd9bk7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 10 Mar 2024 10:02:53 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42A6Odta004805;
-	Sun, 10 Mar 2024 10:02:52 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wre74nghe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 10 Mar 2024 10:02:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MscI+KzhfAnCpTelfPZCPk76fzO/PcukhSqyez1bBNlzFXvMIhSy3o8awagWPtNPyvNsPVZloW//JfZQcVlQZAZzuOpc2qZGo5a2K/HDjk1qPO8kZG74AVKKRaZb9/cvcFP5l8ifR0NMGrfNRwWSdQVL+4YmPc/nwOD5CR3nc/09NfPfmGGyOZtLIzk6K1+gS4cYnaPsVgxvT7FsG+2+0gEfeLe6uaaXPPl97st2U9isJOIsAJPXV2GWcBgrMnskV9KY5MhCbPYoyyCsFF6V2XwZIsbuS7lsyKoQDou6zp8w1+SH7WeVqhtzwH4Mrg1dIggf2/yBQOBMv/yElcj8yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ORtweBowOnut5XR4xZPVd9JQaQJRY8M8FKYCXZlZtM0=;
- b=HPz2XEVW1AKeY+J5ZaOCtLAixVmEqbySwBH36wp8WYPvJapkwSC5QqdjJS/we+88q5PKTI8nsDQoZlpZlTMK9FNuUnyXQiv5Ny+jlLkmRb1T/CtrOLsudZU8VgWlgOimyz2ZWX9/lEOGCPP+JbQNyDcJ7EvwZUQbXx+xOR/b+ddtAmdX8d/PonsiN0XX3QGP55KcImW3alWgUOq8N65UbQ1r/4MYjgvWzlgCJhB4vvlaCzSTiKMsTw7DykZzi0DsVCZ2SetEKlzjP1ALPcbM29HnKX8X6SIhzZpQjM7Y9WJRjO4XFj+YKT2tyIlCce3iQOKkbvpghCNIwhuoOM0tnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280DB20312
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 10:03:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710065015; cv=none; b=BsZyd+yMjdMPvmiW70IpKNrLMrfG5wYRnL2QP7qzEU8mtRojZSZaF9eWKmwRdJwo3vlxxJXveawIQnvdRApsvYmwDPCmRAANO61JcJhoM9VPIbJBnxoDRvtZNF5b8MNpm8xax8QAz0RfI/QkZ8D7JwhkyeuvpU/pCPS3mY2JB6Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710065015; c=relaxed/simple;
+	bh=ODKswa5CUJaU3YGLm+CuGHnSbODtPb8Pzdi7BdThR1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DhWQMsvpnVoKfApL+QdpxEf+dQohteImV8t7eo1iCP6ROoBHI80sy1VWgIwVonERagy5EY1u+LMw2BRQ5slnGaG8Fmz9xhbpAp8ehBlXEQUZb7D3K2XxBEWg5N83kK2flo8boHn1KxN5re5z4seDAvDcQKxzHG3HxObVCkf6jcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=CchBOQw0; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-690c1747c3cso9211346d6.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 03:03:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ORtweBowOnut5XR4xZPVd9JQaQJRY8M8FKYCXZlZtM0=;
- b=u3n55P3lDMjYQ/ZoKz6bn2wkfwQNT15J/Sva/YrjJL2GZlSqNBxGVNZ1LadkLYfgfC9ct6rtryR3caBQxxGSE17+rlcS9051eHV3kzKC5WTVKsalh4ulr/gr9THy57rCRqWtXHN0wjy4f00wdRs7kClAGCTLw8BYU6Q+WzLI6dE=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by SJ0PR10MB5719.namprd10.prod.outlook.com (2603:10b6:a03:3ee::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.33; Sun, 10 Mar
- 2024 10:02:46 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7362.031; Sun, 10 Mar 2024
- 10:02:46 +0000
-Message-ID: <3c343fde-01cb-4cda-bf20-9df0ece94359@oracle.com>
-Date: Sun, 10 Mar 2024 10:02:42 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] scsi: libsas: Add LIBSAS_SHT_BASE
-To: Igor Pylypiv <ipylypiv@google.com>
-Cc: jejb@linux.ibm.com, martin.petersen@oracle.com, chenxiang66@hisilicon.com,
-        jinpu.wang@cloud.ionos.com, artur.paszkiewicz@intel.com,
-        yanaijie@huawei.com, dlemoal@kernel.org, cassel@kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240308114339.1340549-1-john.g.garry@oracle.com>
- <20240308114339.1340549-2-john.g.garry@oracle.com>
- <Zetp8ufVfxxo6DOF@google.com>
-Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <Zetp8ufVfxxo6DOF@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0354.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18d::17) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=joelfernandes.org; s=google; t=1710065013; x=1710669813; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cRw83r26dUzmXUGRBQ0rsHKELCL2+O1vFNrTC/BrAHk=;
+        b=CchBOQw0yWKJPSLRezqrw7QAOtfCzSgn3Rhn7y4IT/QPlFCdxIyBDWtP1kglQVxvkM
+         VxrRaBoBT5J/C8OenWgjVUzt2N6QCxHKuuxVpEVcNm3+/zbdOzA3dqSmTprHrefu+f/D
+         gcP38460atgU0zkJKjF/Pa507r0US+smmx4EA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710065013; x=1710669813;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cRw83r26dUzmXUGRBQ0rsHKELCL2+O1vFNrTC/BrAHk=;
+        b=VqWKVz1tSwo+zSNV+7KWJarqZF4h97izGj5IyM04HEdGWESQFlMLqyKpGBqftKI7DN
+         FSUsIpJqUNH3n8oAiZOReVoRiMcI/It0G1nrr2hR38lQKRFUG23adnWzo1CWfI1N0hZp
+         twOz5J+XG6Q9JTQHd21mxZVq07m3tVRHmdJvHIkkgjW6zKQTgYXUVZyfEvkU6lEQ6aYC
+         EOcJCY3P9/aKB7Rvw8YJMbGmAugpwY4TlJ5UzDN/+ZeINY6GkK4qTZN//C4ixffJmWTx
+         /I971vqLntGLszuCd3neXCzgc67g4xQpfN1wTTje1NM8NQ344ZimnfIm1WpaAtVl3tWw
+         o1qg==
+X-Gm-Message-State: AOJu0YwOv1OdW7ez8oJieg1wutQJcvZa/gGCLCPYRAAr/km/lfIS7Kca
+	1eDO+pca34Y9h8l1Us5s5yI3CLRcEaFvFUdRY0/oT+I5kdZyfcJkenphBUK6H0E=
+X-Google-Smtp-Source: AGHT+IHBX+UKSD1e6owiqcXqfLroval1RSKYSGVtXU1UFq6HNY2Onl8gA8nkfcFr4GHOuXQeBYJWqg==
+X-Received: by 2002:a05:6214:20a4:b0:690:5ff8:cc0 with SMTP id 4-20020a05621420a400b006905ff80cc0mr7179427qvd.11.1710065012835;
+        Sun, 10 Mar 2024 03:03:32 -0700 (PDT)
+Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id kh20-20020a056214515400b00690c78902a1sm809884qvb.109.2024.03.10.03.03.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 03:03:31 -0700 (PDT)
+Date: Sun, 10 Mar 2024 06:03:30 -0400
+From: Joel Fernandes <joel@joelfernandes.org>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
+	torvalds@linux-foundation.org, paulmck@kernel.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
+	mark.rutland@arm.com, jgross@suse.com, andrew.cooper3@citrix.com,
+	bristot@kernel.org, mathieu.desnoyers@efficios.com,
+	geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+	krypton@ulrich-teichert.org, rostedt@goodmis.org,
+	David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+	jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
+ PREEMPT_COUNT=y
+Message-ID: <20240310100330.GA2705505@joelbox2>
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-16-ankur.a.arora@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SJ0PR10MB5719:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23ad2783-98f8-4157-3524-08dc40e93c32
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	owkYbtBwYvW9vkmFHw69yYjJjgOP31DhSFXOD4WFuMIEPKji+ofIbEodmLycDNceQMfV8TdeTkLpkodouEsbpbXRz2Lt8i8mwqqRu+/i3UgcGIpNtt8n4gDT81spRbx6IMZQpkpfHBqJcBWUi9HZe9XrtJKuzQtoGSIaNMgD/mRonIj18QKR00Nghfh3RgznyKD0iMocUEITE54kgEWdLKqeTkUCGJqqBDDMgqD/7iIyKzlOtIN0FggLf9SMHh6nCmY4BGqvom6o81Oennk8iOjkFibKHGjBIdSeiKRc93DOMiuntOQsEMr15pmZESrp9kCOwCCvlUNg9gvjg8rXK2QepFHbeH+4DmZ9ZEOiKTUcCQowbs3klaSs1TTqYBaB+qgH1zTVHXlNMgwmmBOBVTI3hQi1rEohijHv/HV4rg6oqd84+mtsy+qXt19zjsrgmsPePBXJ4Kwixp+fcwQ1vDLeyilNeP/xy8HsKHGJil13tCucze+eN+S94m5FdKeRkPe3e47a5ECXU/7voJqLl1bxbi5/gIWSayRNZ+fwTYqaur1d7gcoH1s8JVEx8jtwuyPGWSb0uAInFvJh9vL8KaybHpNH6s0NKZ2A1uVq0P8=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?RGE5TlUvWGk3c3lWZ25aWm5qSmN1dC9ER0hmc0ZYRzY5WkNDaVNVVXROeU1p?=
- =?utf-8?B?SnFiNWw0bG1YdmhOanRNWUxxbEdhR3RWMU5rd2IyNS9uVlJ0ZS9RcERuVFJn?=
- =?utf-8?B?dG9kUEc2SkVvMWIvSjN4SVdLWTBIdE0ycDZjdnJkamFoc3NtOXpscjVvMCtl?=
- =?utf-8?B?K25rUnNhY3ZoYmJHVnJJbElGQ1B3eXR0NTIwWHdsZkpOV29FMyt3WHNGMXBs?=
- =?utf-8?B?K3lIMVRTLytXUFh3a1lHamliMTRKWjBFZmpacGZQSnBuSnFoYk9JaS9wQUJO?=
- =?utf-8?B?VHM2NlZyU3hOWUh6cEY5NmhhMXZKVFBhQW5nOHkzUDJXbDBNSDd2Ni9jVi9T?=
- =?utf-8?B?ZVV6VzRsNmVCZHp3YWNqKzNuWXdtWVdYZ3NhRlo5cUtCWUVEemxDR2JxMUNo?=
- =?utf-8?B?TGZnYyt4RFNpelhMKzdDTFE4bXV3eThTSEUrbEdHZ2N4VWxSNlN1VklRMm5S?=
- =?utf-8?B?ZVhCQkJXcnNmWWlPZHJaa3IrZ2VwbGxIazNXam81Qml0QitJUUt6STN2N3Bl?=
- =?utf-8?B?clBXNG4vM0FCYzIzL3pzVytRL2FTV1pTRWROaFFHeHZOVDJUc2NNODlnMS9P?=
- =?utf-8?B?QkN4Q2RFdWVxUm94a1R5SVk3RXBPb00xejlocExIcFlVeW9tRzU4Q2FGR0VC?=
- =?utf-8?B?SXVKVEUrRENBcHRCQTRVVk41b29kZGZMMHp5ekpUT1htR2dJbjczL2FqTXc3?=
- =?utf-8?B?RW9BVkMzYVUxZGx2aWVTRVFRK0dQMStvTXpkdnhvQktYVHhxR0UxRDE4WXJU?=
- =?utf-8?B?ZkpuUldmcHF4Tjd4cGpZNXhRVnRwenFDRGEwZjVvaGVtUnBtZ1lidHBpT1FX?=
- =?utf-8?B?ZlJCNHBxNEtXNC96V1JFbjhZTWtnZ3RFcmtZajZDZm5LZHo4Rzg0anJjckdL?=
- =?utf-8?B?aEtra0VzS3E1RzB5RENiNG52anY0VURTOGl5RjFtOG5aQlFzWVJhQUdKUFlG?=
- =?utf-8?B?S2JlLy9tQWMvU0JlT2xHVFhya2k1eThJTUFFMThHWTRQNUU5bmtra3cvVVE0?=
- =?utf-8?B?b3liYk5JVW8vVXQzZWFId0I2TkFmV0VNOFl1UW9ocnZiZ2R1TTA3L1NXcCtm?=
- =?utf-8?B?dTJvZFNXQ0g2bWhIRGNLTWlQWHl2NzRqV0cybk1HamxyT0EzaEFJZThNaEs4?=
- =?utf-8?B?N2ZQcHBpa1lRWTVHeFBqN1Bub1BzRU5DOVRESmdOYjJXYjBUL0pOZk41MkNu?=
- =?utf-8?B?RjdDZkV0ZTV4b0h6aHNlc3R2Znd6ZVhTQVh0a0owK2tVUE00d2NhRUhjK0Nx?=
- =?utf-8?B?dG13MmZEdnRoeU80SjZrNEcyUWxBNHdwVWVFYmsyekVyWHBCN1dXdWphOG50?=
- =?utf-8?B?L2ZDb25oRHVpeUJGQlZPeERlRzBYZktkZ0ZIZXBrUExzSTF3MGpQUThaS2Zu?=
- =?utf-8?B?MHV4TisyaFhSSWUrNzdFdHh4cWc3OXQ1L05iTXRnaU5wUG5wMzFYQWU1aE9P?=
- =?utf-8?B?QS9JUElOU2JFRFFhQkJRVE5rUnlpbXY5QmxtYkNzd3JFSHM3WUI1bXhjWDZB?=
- =?utf-8?B?Z2t5NDQwam1nMmIvU0dvQ2RhdjVYM1plZ29SZXhuNUlVRlRIRDArUzlFODB0?=
- =?utf-8?B?UGp6ZFRlQkVNZU81ZHluV3lSbHljai9tZ1lFK2ZaMGRGQW50alVEcUp4THll?=
- =?utf-8?B?cUpDaG1MR2ZhVmRuSFpBNmJjSzB3R2M5d08yT2d2MGlrU09UT05Fc0VjNE5s?=
- =?utf-8?B?anF0eFJtWlh0QVhRNmFPbU1PMmhnZnExbnFYRTdrekZ0cDVNTGdLT3dPOFpu?=
- =?utf-8?B?aUg5SVorKy9MaUxOcWtldk0ydzhWd2ZSQUJiSlVRTURmbWtHZmVUK0xRbS93?=
- =?utf-8?B?MmkzWFVmczUyanltVXBVdDVnSnFBYUdVUTh2MC82UjNIWnNJUXdpYmxSODlj?=
- =?utf-8?B?ZFI2VnFNdGtac1JQQzFYaExjOFJnQmFjSDlIVWJIc1lUREpKNFQzakJ2MFR3?=
- =?utf-8?B?UStScUh3V0VtOCt6b3ZkdXJGZENoTlFBeWE2YzJJNTd1VjFUR3JGMUdzcDFZ?=
- =?utf-8?B?WWtORG9yd01wSTVTYXh0eWY4Vkc4b2cxK0hRcmZLRThWNWxSMGVwWHNUUlhM?=
- =?utf-8?B?T1N3TDdFSVVmMmt0NnBZWFN1aitHWndKOG9wd09aVjNQQVQ4UGtLK1BuM2Jn?=
- =?utf-8?Q?ER5Clwk54D863P2ZdvEGbjJ3j?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	RqNdCTAmGVeGhvQhMnmfcWht+8Hjir6Yli0zazBjXS3t/rdXDFXCrQ3fKqOEPA7PCrtcEb0+MY9na7mCRCgufDZZjimBczAB9w/Cm8U/OWJCwh4zevIuLo6nQ5AP7IqqU8zwYgVY8ENxh+O181SGANyCdwSvjH/F1X5493x6u4fKsBvn62cKn4VsbQM0Um6Yk2gVkxIrAzpVimCFc2Zw5Em7fi0pohBfpNGRlp8zKWX8Wl2ZE2uSNABUSXSqPUnoYmUOd12MyLZEU/mZ4NnMrdRsY4wRfy/Fa8mo4kbnij92lJIq4voW2Y9ULnn3u/A5t5UUU63SJIcQ0KRaqTSGEprEGdXtyVebONGfhWISweEUM0oZ150Mbi4EjrN02wf7zjkCvJDRcrgx9+wNywBPRFJ/pkKtAm+rrHK7SyJtxb54/NyhLkAbx3spVvhdsVZmlPyZlOqbVNr2gJP3l4/gfSbyqVZmI7K38VrP+crYUyEpYcB3IZzi5oG9vlnvug6ye9ixmVA0UH02MuYBmauopDl+lMQijtt6pbUvpqhmrnlVJF/ThmFnKurKfwzB60AW0pBB8Pt9/M6YFm9+tdZlb0hG+4W83+VLYuX0PT8/ClI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23ad2783-98f8-4157-3524-08dc40e93c32
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2024 10:02:46.3915
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o9AIwnuCKPlvTknOvF7akR1+jKERsPcdNILhJCHYVP/5XQ/HQHVe54LMO88zBHmawnfU1+3SXpg2h7HZT1mXPg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5719
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-10_07,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxscore=0 phishscore=0 spamscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2403100080
-X-Proofpoint-ORIG-GUID: cgngnN9W0bHPdlhIVNUhZ4hjeeH3r1bz
-X-Proofpoint-GUID: cgngnN9W0bHPdlhIVNUhZ4hjeeH3r1bz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213055554.1802415-16-ankur.a.arora@oracle.com>
 
-On 08/03/2024 19:41, Igor Pylypiv wrote:
->> Even though some drivers don't set proc_name, it won't make much difference
->> to set as DRV_NAME.
->>
->> Also add LIBSAS_SHT_BASE_NO_SLAVE_INIT for the hisi_sas drivers which have
->> custom .slave_alloc and .slave_configure methods.
-> Looks like libata drivers have no problem overriding default values that were
-> set by __ATA_BASE_SHT. For example __ATA_BASE_SHT sets .can_queue .sdev_attrs
-> and then AHCI_SHT overrides those with AHCI specific values:
+Hello Ankur and Paul,
+
+On Mon, Feb 12, 2024 at 09:55:39PM -0800, Ankur Arora wrote:
+> With PREEMPT_RCU=n, cond_resched() provides urgently needed quiescent
+> states for read-side critical sections via rcu_all_qs().
+> One reason why this was necessary: lacking preempt-count, the tick
+> handler has no way of knowing whether it is executing in a read-side
+> critical section or not.
 > 
-> #define AHCI_SHT(drv_name)                                              \
->          ATA_NCQ_SHT(drv_name),                                          \
+> With PREEMPT_AUTO=y, there can be configurations with (PREEMPT_COUNT=y,
+> PREEMPT_RCU=n). This means that cond_resched() is a stub which does
+> not provide for quiescent states via rcu_all_qs().
+> 
+> So, use the availability of preempt_count() to report quiescent states
+> in rcu_flavor_sched_clock_irq().
+> 
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> ---
+>  kernel/rcu/tree_plugin.h | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 26c79246873a..9b72e9d2b6fe 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -963,13 +963,16 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
+>   */
+>  static void rcu_flavor_sched_clock_irq(int user)
+>  {
+> -	if (user || rcu_is_cpu_rrupt_from_idle()) {
+> +	if (user || rcu_is_cpu_rrupt_from_idle() ||
+> +	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) &&
+> +	     !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)))) {
 
-which tag are you looking at here?
+I was wondering if it makes sense to even support !PREEMPT_RCU under
+CONFIG_PREEMPT_AUTO.
 
-That looks like an old definition of AHCI_SHT().
+AFAIU, this CONFIG_PREEMPT_AUTO series preempts the kernel on
+the next tick boundary in the worst case, with all preempt modes including
+the preempt=none mode.
 
-There was a significant change for this in the following:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/ata/ahci.h?h=v5.14&id=071e86fe2872e7442e42ad26f71cd6bde55344f8
+Considering this, does it makes sense for RCU to be non-preemptible in
+CONFIG_PREEMPT_AUTO=y? Because if that were the case, and a read-side critical
+section extended beyond the tick, then it prevents the PREEMPT_AUTO preemption
+from happening, because rcu_read_lock() would preempt_disable().
 
-Thanks,
-John
+To that end, I wonder if CONFIG_PREEMPT_AUTO should select CONFIG_PREEMPTION
+(or CONFIG_PREEMPT_BUILD, not sure which) as well because it does cause
+kernel preemption. That then forces selection of CONFIG_PREEMPT_RCU as well.
+
+thanks,
+
+ - Joel
+
+
+
+
+
+
+
+>  
+>  		/*
+>  		 * Get here if this CPU took its interrupt from user
+> -		 * mode or from the idle loop, and if this is not a
+> -		 * nested interrupt.  In this case, the CPU is in
+> -		 * a quiescent state, so note it.
+> +		 * mode, from the idle loop without this being a nested
+> +		 * interrupt, or while not holding a preempt count.
+> +		 * In this case, the CPU is in a quiescent state, so note
+> +		 * it.
+>  		 *
+>  		 * No memory barrier is required here because rcu_qs()
+>  		 * references only CPU-local variables that other CPUs
+> -- 
+> 2.31.1
+> 
 
