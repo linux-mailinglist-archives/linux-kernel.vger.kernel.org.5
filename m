@@ -1,108 +1,149 @@
-Return-Path: <linux-kernel+bounces-98101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E0CE877527
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:28:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 925F1877526
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29153B21110
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:28:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B67D1F216FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:27:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79B01381;
-	Sun, 10 Mar 2024 02:28:44 +0000 (UTC)
-Received: from avasout-ptp-002.plus.net (avasout-ptp-002.plus.net [84.93.230.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7E81115;
+	Sun, 10 Mar 2024 02:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FI3GFeSy"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D679B10E9
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.93.230.235
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A41CEC5
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710037724; cv=none; b=D2BtA9xK+217i8rZ51dqisx2zDSu59gq8Ya05hdVbrAHPXCoILg+qhB/AiSM0PfCHSCd9Fg5aVxDSKMu07gv7bz7T05Ue5slD6Qfjgf3M2YceJA05wsjrbmUZZiyFnfSPF9NhECdjX9M5/ZycFlbR/Cljxg7P/pGnPueovyKZsg=
+	t=1710037653; cv=none; b=HVgDyEbKEgtwjUXQCP9AWIErLQnFCSscnMIWsPmw5qdErOQMsZwFu5ewUcMUWZOnbASMGDRDtf9Mi6aRb1pcmozabmV1+V0twvsUuSfdZfTp830+22fvOuU6RG+LzTMG9tQlcfay10IdR3PxIPWApGU6P1ac/wOZxWkok0Gt4Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710037724; c=relaxed/simple;
-	bh=IX40CDGHbzLqJdPoJ3o3l2pH8QInHNKHlTJHgLVt5Gs=;
-	h=Message-ID:Date:Subject:From:To:Cc:MIME-Version:Content-Type; b=g591IaHApa3FVSvQZTHglehYKQFPtKUDJJeKB75tMh8Tc/7InsqsEMizT8aZ3JnUk8sbLwN70ApTKOowUeDhoCdCi3RH2neNYkUh2v806e1PL2n1lwfBYRpUsN8BQJ1DFz8/Jt4WrdMMHNd2KG3qYIubdCIQthEWGWTWiFibyvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk; spf=none smtp.mailfrom=jessamine.co.uk; arc=none smtp.client-ip=84.93.230.235
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jessamine.co.uk
-Received: from webmail07.plus.net ([84.93.237.82])
-	by smtp with ESMTP
-	id j8sWrrj4b7L1ij8sXru8X1; Sun, 10 Mar 2024 02:25:33 +0000
-X-Clacks-Overhead: "GNU Terry Pratchett"
-X-CM-Score: 0.00
-X-CNFS-Analysis: v=2.4 cv=XP2TShhE c=1 sm=1 tr=0 ts=65ed1a1d
- a=k49VtrWLZTL8DnM+6AvpWw==:117 a=8YZdF9bm7lDkcydB81w8Xw==:17
- a=8nJEP1OIZ-IA:10 a=K6JAEmCyrfEA:10 a=ZBkl__CYAAAA:8 a=VwQbUJbxAAAA:8
- a=8AirrxEcAAAA:8 a=VdYuLKcatEhD6b8jxZQA:9 a=wPNLvfGTeEIA:10
- a=d6WIyDdLbVARuAyufDlf:22 a=AjGcO6oz07-iQ99wixmX:22 a=ST-jHhOKWsTCqRlWije3:22
-Received: from [127.0.0.1] (helo=webmail.plus.net)
-	by webmail07.plus.net with esmtp (Exim 4.89)
-	(envelope-from <adam@jessamine.co.uk>)
-	id 1rj8sW-0002mW-1J; Sun, 10 Mar 2024 02:25:32 +0000
-Received: from 84.92.42.80
-        (SquirrelMail authenticated user jessaminenet+adam)
-        by webmail.plus.net with HTTP;
-        Sun, 10 Mar 2024 02:25:32 -0000
-Message-ID: <a94544be59233be694b317df0a8cdeae.squirrel@webmail.plus.net>
-Date: Sun, 10 Mar 2024 02:25:32 -0000
-Subject: [PATCH] spi: spi-imx: fix off-by-one in mx51 CPU mode burst length
-From: "Adam Butcher" <adam@jessamine.co.uk>
-To: linux-kernel@vger.kernel.org
-Cc: linux-spi@vger.kernel.org
-User-Agent: SquirrelMail
+	s=arc-20240116; t=1710037653; c=relaxed/simple;
+	bh=z/Ae57RHxWxRm7fOcWED5pQ9hfFioiYvDwVI6LW6oOo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tVIX4PpzLQlaL2EcqxhK/ZclukN1VkG5lti48Cwg74tVyqkwx80jGkZXHSba66zR7n5Faij/LXNamyoizSmtod2rt3WAakAqsAoMEWMGSDlr9cw6AJkeZwpnBCx6gWnuLwwR8Q3jLC08eI8Zs33FRIvSHzhR6FbjY2ankgPK+HU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FI3GFeSy; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso3954673a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:27:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710037650; x=1710642450; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UyIMcx7YI42naqlnpwMXGZAB29gG6v/fxoHkDHcKrMI=;
+        b=FI3GFeSycA6I+N+Of9pwNxYjc9HQRvkkkODWL5qvujW9rMVnn0gxHZ+Dn3/9QDWmFw
+         O4dcpcfE+m9/SScIOqnVmXVOvU+8RJ3wojPeQ4Yyx4lPlfepICTIEdVwF9/dT/ZxrtAU
+         etQwoyuUGcfRKpVE5z3d2l4tYzmC3Qzu4hFdRtXfAAuTJ1/ILFH9qalWtoS2KJuDg7Vy
+         GAM5IZnOz+SkUXUA6IHDY7Q/c5JbxitS3ZlJ2rK0De/EHRjOqVbv6XwykOLI+WWCQbax
+         MxuZPHBo4I9bD3qTJc90cEGBhv5jcm1HZUmuNd5rAD0vUj00E88G36rY45FxJj/C+vzX
+         YaxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710037650; x=1710642450;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UyIMcx7YI42naqlnpwMXGZAB29gG6v/fxoHkDHcKrMI=;
+        b=mbMXE1B5vQ4FW0eSqPzN4DtdDxIGBYiAWQhIVwEisFZqMkYm6U3rthUgmF5THHC4ss
+         D7c+pmuEMS/zmdD1MpE7kFvzX6f0oXV0XsiBZriK04JFDqoiFeHzEpfbbGdIa0cOBObh
+         ogewD9qOH8ioIYFYqRMYBlRWMGuCyJJFk/Y7GxqRs7uCtiMxsV2VExZa65I5cbwBIdxQ
+         1BWDLzonWeasatZntzl2wP4P0QbLumcZqQ+c69efBs1p8K5/WuJqtZNjh232kUF8I2Kx
+         alaAIIFMbkfq7OoHSysVdIL2fEhjCo0sZ5Szb8X84s8qHVh/na7zT3ok0/EL3KXimn+k
+         NM1g==
+X-Forwarded-Encrypted: i=1; AJvYcCVPhUflZl/jYZz2o+9NTh1ISaB1LyHMVryskS0BGkHQTlt1P9GbJ2wfkvqJBeA1E9t/zSFFPcH6alwOuBX+gSY5xED1ZsEqNqzMEZNb
+X-Gm-Message-State: AOJu0YwPchopMN9u9F9KzyIJZa2iriC2Jb0hW3UWXNsBKDkGl1Y6Tvt1
+	eAYjx4GByOo7rLZSwh64Ra+FjzAinGLiHSF7MjwRDLAReZH1uv9WTZfFh6NB
+X-Google-Smtp-Source: AGHT+IE3ieeEcK8ealprtxmznMKb1f67Bx1kVR7dXHKRFQjHyEmXV3jr67k9sfuxgKuFmqcrZ+e8lA==
+X-Received: by 2002:a50:c90d:0:b0:565:edd9:1acb with SMTP id o13-20020a50c90d000000b00565edd91acbmr2188878edh.23.1710037649712;
+        Sat, 09 Mar 2024 18:27:29 -0800 (PST)
+Received: from andrea ([31.189.122.3])
+        by smtp.gmail.com with ESMTPSA id i40-20020a0564020f2800b005684b7c7cbcsm643588eda.78.2024.03.09.18.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Mar 2024 18:27:29 -0800 (PST)
+Date: Sun, 10 Mar 2024 03:27:10 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Kenneth-Lee-2012@foxmail.com
+Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
+	paulmck@kernel.org
+Subject: Re: Question about PB rule of LKMM
+Message-ID: <Ze0afrfXMe4oJ4ez@andrea>
+References: <e05fa6a9-c810-46cb-b033-b91ae7a5c382@rowland.harvard.edu>
+ <ZejC+lutRuwXQrMz@andrea>
+ <Zenip+8BDM3p+MUh@andrea>
+ <eb8f2a21-d388-424d-8504-ccd7bdb53a93@rowland.harvard.edu>
+ <ZeoFBkB1BeTdEQsn@andrea>
+ <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
+ <ZeoQvj3l6moF9KdQ@andrea>
+ <tencent_3FCF3AA5E98BC9395F98803764A6B2F7CC07@qq.com>
+ <ZeuFQdk/zcjkILbC@andrea>
+ <tencent_454C12FBD6076C20C3955565E6D6354E4F0A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-X-Priority: 3 (Normal)
-Importance: Normal
-X-CMAE-Envelope: MS4xfG45LlQwTpDapLjLb9xgU+P5rCIm5OsNZddcGfFY3FSc+Qk5CT0M3U4IAl6emDH+euMHaVQFRC6OX+GXYrBR3uPrMFQM50ybUc3RyABtkkEXp9w3C7pX
- I/crLoThllJRckZS+RHfl7kymSQxf4JtthDFWk8s7YuZrnMDRpodaGpywKP6F0L1bmvpz5Nw5q4M5Gqs5biPmYD8BO2bvD7nUSg=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_454C12FBD6076C20C3955565E6D6354E4F0A@qq.com>
 
-From: Adam Butcher <adam@jessamine.co.uk>
+> > Remark that, in the CAT language, the identity relation ({(e, e) : each event e})
+> > is a subset of R* (the _reflexive_-transitive closure of R) for any relation R.
+> > 
+> > The link at stake, (P0:Wx1, P0:Rx), is the result of the following composition:
+> > 
+> >   [Marked]         ; (overwrite & ext)? ; cumul-fence*     ; [Marked]          ; rfe?            ; [Marked]
+> >   (P0:Wx1, P0:Wx1)   (P0:Wx1, P1:Wx8)     (P1:Wx8, P1:Wx8)   (P1:Wx8, P1:Wx8))   (P1:Wx8, P0:Rx)   (P0:Rx, P0:Rx)
+> > 
+> 
+> So the cumul-fence relation includes the same Store? This is hard to
+> understand, because it is defined as:
+> 
+>   let cumul-fence = [Marked] ; (A-cumul(strong-fence | po-rel) | wmb |
+> 	po-unlock-lock-po) ; [Marked] ; rmw-sequence
+> 
+> There is at lease a rmw-sequence in the relation link.
+> 
+> I doubt we have different understanding on the effect of
+> reflexive operator. Let's discuss this with an example. Say we have two
+> relation r1 and r2. r1 have (e1, e2) while r2 have (e2, e3). Then we got
+> (e1, e3) for (r1;r2). The (;) operator joins r1's range to r2's domain.
+> 
+> If we upgrade (r1;r2) to  (r1?;r2), (r1?) become {(m1, m1), (m1, m2), (m2,
+> m2)}, it is r1 plus all identity of all elements used in r1's relations.
+> 
+> So (r1?;r2) is {(m1, m3), (m2, m3)}. If we consider this link:
+> 
+>   e1 ->r1 ->e2 ->r2 e3
+> 
+> A question mark on r1 means both (e1, e3) and (e2, e3) are included in
+> the final definition. The r1 is ignore-able in the definition. The event
+> before or behind the ignore-able relation both belong to the definition.
+> 
+> But this doesn't means r1 is optional. If r1 is empty, (r1?;r2) will
+> become empty, because there is no event element in r1's relations.
+> 
+> So I think the reflexive-transitive operation on cumul-fence cannot make
+> this relation optional. You should first have such link in the code.
 
-992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU mode")
-corrects three cases of setting the ECSPI burst length but erroneously
-leaves the in-range CPU case one bit to big (in that register a value of
-0 means 1 bit).  The effect was that transmissions that should have been
-8-bit bytes appeared as 9-bit causing failed communication with SPI
-devices.
+In Cat, r1? is better described by (following your own wording) "r1 plus
+all identity of all elements (i.e. not necessarily in r1)".
 
-It seems the original patch submission up to v4 did not contain the bug.
-It was introduced in the v5 update.
+As an example, in the scenario at stake, cumul-fence is empty while both
+cumul-fence? and cumul-fence* match the identity relation on all events.
 
-Link: https://lore.kernel.org/all/20240201105451.507005-1-carlos.song@nxp.com/
-Link: https://lore.kernel.org/all/20240204091912.36488-1-carlos.song@nxp.com/
-Fixes: 992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU mode")
-Signed-off-by: Adam Butcher <adam@jessamine.co.uk>
----
- drivers/spi/spi-imx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Here is a (relatively old, but still accurate AFAICR) article describing
+these and other notions as used in Herd:  (cf. table at the bottom)
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 7c1fcd5ed52f7..100552e6c56bc 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -743,8 +743,8 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
- 				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
- 						<< MX51_ECSPI_CTRL_BL_OFFSET;
- 			else
--				ctrl |= spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
--						BITS_PER_BYTE) * spi_imx->bits_per_word
-+				ctrl |= (spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
-+						BITS_PER_BYTE) * spi_imx->bits_per_word - 1)
- 						<< MX51_ECSPI_CTRL_BL_OFFSET;
- 		}
- 	}
--- 
-2.43.0
+  https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/LWNLinuxMM/herd.html
 
+Said this, I do think the best way to familiarize with these notions and
+check one's understanding is to spend time using the herd tool itself.
 
-
+  Andrea
 
