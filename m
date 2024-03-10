@@ -1,202 +1,154 @@
-Return-Path: <linux-kernel+bounces-98352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E408778C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 23:18:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A9338778B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 23:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA7FF2815A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 22:18:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BC461C20CB2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 22:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852C33BBF6;
-	Sun, 10 Mar 2024 22:18:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F68A3B799;
+	Sun, 10 Mar 2024 22:16:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ggQcaoQw"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VN2K/mcf"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153313B2BD;
-	Sun, 10 Mar 2024 22:18:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD273B2A1;
+	Sun, 10 Mar 2024 22:16:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710109100; cv=none; b=uIiBahcXnPq+Fzl3lWQoI7F1z0zPXaoTk51SgYEqShTPy7YNGcQR13fmoyzNDOeENYY5dfVwjGm96VvF4nEpXG9qlie1Qob8sL+gblth5i3BqIkLRz5H6tACh1gl8iwpEHtb23DPba0pdRMCr+LPJR5jeJW5RR8iKkyTfLmUFxw=
+	t=1710108982; cv=none; b=WiTwbuh9v3g4DGHnmmCnpO4mBagMx3EiELDNHbmWbcMrdYJDrrsyOrqqf4cvkmYY8KPtDlxYs5S4244O9PsJXZTgDiRvqnEH9pVVsB0dO2UbQmZ6ws14BPcXwX3dAbykYE6KuweNSY+P1ikaIwpOkv1atIgQ4wSRvqB4QKmUiyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710109100; c=relaxed/simple;
-	bh=LzojmOkGyGWODGs86carqSVDvuw6ECtiishy9jfjPf0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o/C0uvfJMBA2GhddoIpQXqv+Pt4RTZvlm69RCELj2l2c3qEA1iyUBwfrr2EeReyuViSFkK4ZMKR8wiNbk7xJKHTBYh6k5/MnrQRnpSILO9PtOTjI1LJBxoNJ0nJRdYQ3F5zq4oQYohypV4DNGVCvED86mcYaiWqvTD9vQCQSKxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ggQcaoQw; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1710108982; c=relaxed/simple;
+	bh=NgSfBYH1LNsnELYmNLDEDEzlrOCpMpxpZ7PR46inh14=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PEW6Jp590V2KCTwEmHpWoSJgnTZR6WW8gFB0R+vinx7XGeQlYi6jK/uIai74jUF+vJdcILE682gAcP+SGGHYQal50oOo45MIhrtq4zcI8v6HMPuJlrFOYdc1tAESyuHVo66V+tqdcwZpyj7hKqpwMWq/G7/c92ibFCQY0c1dTXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VN2K/mcf; arc=none smtp.client-ip=209.85.208.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5586764bd0aso1186597a12.0;
-        Sun, 10 Mar 2024 15:18:18 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d09cf00214so36340651fa.0;
+        Sun, 10 Mar 2024 15:16:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710109097; x=1710713897; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0gS5X6onTdeKQ+ZJfx6BgLwsymjvWUS7UTiqeOdmipA=;
-        b=ggQcaoQwxbObmQLLm8kX8v56Qez8YJsL0D/h0d7q8FA0DLlE+tsbKz+5pWq4wCBCr5
-         B2eHrRey0WX77smkmD8Dych1/r6/hgMyESwHpx4bUh1r87yd5niaTgL9Uh/+nUAVDSmh
-         /Xe84jTskEwxtXmEjtt71iF5diQqc6C2LvSIBpfRjesaQOU+aeB/lD8BZ7SaZHUC+kVU
-         n/dtCF07eUHSTqqWe3VuBpIqlb2FbZSZSH5fnxVirhpafIb+CrhKlLvPEIsp5HT4xYC6
-         LEfcTB7+wVhX06aYa+boE2hRSniygczkvWQD2AH01xt23Lk20rMUCDoPZaoEFUJQUf7f
-         bNIA==
+        d=gmail.com; s=20230601; t=1710108979; x=1710713779; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dc3StepsO+Kwx79HUWIFjCgTbcngrQSPw+SNx+WUt0k=;
+        b=VN2K/mcf2XdJdux1OgCtykoK4xtRZDjjWulbtD1aLkiRJ0yTJegy9AqPKOJSjrZK9g
+         xNM8lbaESX6xZ46qQRNTg4d1Jzgw4LSX675jLUVbGOBd59r8m8FutuWRV3aDjJJnjUKc
+         rEeUNLNFbqF4srFQtb+47Ll2wOz9u+bBwPLrS5jnacy1fK5rN8stX0ghbJHtc+QoWK4r
+         yQWs6Ghkcwbi80DDDOoUAryJ1XfCKMnMBPb0cSl/3/U28OiBulh6ZetZabDzQy1RvnWe
+         zbCrkCLLQjWXrQKdn6YiKAiw5kUBFr87ww43hIIRQPb57RNhmnhe6qsaPXoJnyqLKSmS
+         Q1YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710109097; x=1710713897;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0gS5X6onTdeKQ+ZJfx6BgLwsymjvWUS7UTiqeOdmipA=;
-        b=YN656nuuRThrKxvh1WupIiDUbX5C3u3pGIj3FLDXEp1IVoT1o5WWNyGsYIpDdN77g6
-         RnNhGNiWv+Uuj7WaLN/IxWzqIJ7U3Adt17gkJpWPVdl6GNoFUeyNM8Z+qaQsZz43OMGf
-         LacDyq/SzGsAYLO/eU1Tzl3DIUTl47UuINeoCNVKpYCVjsChoV6kMyApIGx4eUIXj91h
-         LWwAzpx2VaLo+3V9/BXITIF32AHSjLo77U42NwgOR+zn5OhtTEiTZ8YcE0y2RGuct7Vw
-         OTqfY7yYAHzKFzbpkFyTQp0hmvTu6WoJ570QyiKACL3JquumNctsFMKEOKGmNezp3ajH
-         /+iQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXnQflsGOo+7ha9iPm/dnCwqiQJ1CycWzeQPnmuf/ZDlSKgbPgPkTWgMXEFwJwah2/fbtM3PLMAF10QtuYJaLLpI9KPmkmsKqS6/9IPu12eoCsS27LAlFHPTRBbUAEj6rGUHq/iCK4IWIE=
-X-Gm-Message-State: AOJu0YwFU1LNT/uwlK121La0R/ODa6FV3vNTjLC5lZJE5j2eRxSTb9gB
-	QTJPhPf3vupzzwxULr9J7gWABPC5ahkhUFoTPkTGBGtrs2O3s+srxibE8FNa+Cs=
-X-Google-Smtp-Source: AGHT+IETq19AUiBmONvKhgCOyeCwL8i7VwzXD4gfhndjiGT6qqFwscF0SlsD7DXFsImou2ixih51SQ==
-X-Received: by 2002:a17:906:3087:b0:a45:da91:8d29 with SMTP id 7-20020a170906308700b00a45da918d29mr3063314ejv.2.1710109097140;
-        Sun, 10 Mar 2024 15:18:17 -0700 (PDT)
-Received: from desktop-nixos-martino.. ([2a01:e11:5004:180::bd5a:12c2])
-        by smtp.gmail.com with ESMTPSA id gq14-20020a170906e24e00b00a3d2d81daafsm2282377ejb.172.2024.03.10.15.18.16
+        d=1e100.net; s=20230601; t=1710108979; x=1710713779;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dc3StepsO+Kwx79HUWIFjCgTbcngrQSPw+SNx+WUt0k=;
+        b=AFFF9Ons8Y/p5XwKw/l9UgUsVNJL8fVCi/crPMZfpUp8C/XyL7UNifuCc82bLTBLwV
+         Tk9/7p/M+jTcaT9cqOfCOoIaZr3Zup7jufjfBUE1Kl2fSb1OLbiPGnFrOCEXtvKhsXyZ
+         B8e3pKLxe2vPFhawxp0ScGbyaVUYtPLVsipuYKsWl7rgJGKP+DMJClXZMS2bM8qC4lnj
+         0i98XQYR0BpiBHSOWH6S73rzW3lzhlszAnGOqCGy82wvV20XRsJMsLkh7Krum3O4cLmA
+         bO5EkoDw4R4L1XoeXWeCb02LRhnMtjQo+cbr18oplmJ3jFAy2biBvJmOWFvU1p+zB3/n
+         iInA==
+X-Forwarded-Encrypted: i=1; AJvYcCX+ZRL6aq34X9Qr+8Mafwj9B7bBtApDoK1CgIKFS+zU35lw5JXAS3EgYwoHprsms6q2IwiCQCra1KERyhpSvXEtWi4avuTX8TVYC32DN4TOavgTTOJr5Ox3iAACbzJMXkznNDzf4k0elN1WGW3GKOg+0BajDtyGjVghvsGWvyxph9w4rj9n6A==
+X-Gm-Message-State: AOJu0YyZ0gnvWgTS0ee6qZiyC6R/F+uAev9VWY9FQoEIDCM9dv+Wzn9d
+	auRggicd4BKA7l/+5agEYSFk/hibrdhljQu+TxY3fGPjct3DndpOgPdY6/S+
+X-Google-Smtp-Source: AGHT+IH9TQxVHx3jEkCPrv/L2i1YI7kr16M1lHlEq+Yn5rsKFooKGpixgfnlK6xwq3mmppJ6+za3Gw==
+X-Received: by 2002:ac2:4644:0:b0:512:c9bc:f491 with SMTP id s4-20020ac24644000000b00512c9bcf491mr3009866lfo.47.1710108978913;
+        Sun, 10 Mar 2024 15:16:18 -0700 (PDT)
+Received: from localhost (host86-164-143-89.range86-164.btcentralplus.com. [86.164.143.89])
+        by smtp.gmail.com with ESMTPSA id m38-20020a05600c3b2600b00412b6fbb9b5sm13627109wms.8.2024.03.10.15.16.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 15:18:16 -0700 (PDT)
-From: Martino Fontana <tinozzo123@gmail.com>
-To: djogorchock@gmail.com,
-	jikos@kernel.org,
-	benjamin.tissoires@redhat.com,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Martino Fontana <tinozzo123@gmail.com>,
-	Ryan McClelland <rymcclel@gmail.com>
-Subject: [PATCH v3] HID: nintendo: use ida for LED player id
-Date: Sun, 10 Mar 2024 23:12:30 +0100
-Message-ID: <20240310221655.83528-2-tinozzo123@gmail.com>
-X-Mailer: git-send-email 2.43.1
+        Sun, 10 Mar 2024 15:16:18 -0700 (PDT)
+Date: Sun, 10 Mar 2024 22:14:04 +0000
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	upstream+pagemap@sigma-star.at, adobriyan@gmail.com,
+	wangkefeng.wang@huawei.com, ryan.roberts@arm.com, hughd@google.com,
+	peterx@redhat.com, david@redhat.com, avagin@google.com,
+	vbabka@suse.cz, akpm@linux-foundation.org,
+	usama.anjum@collabora.com, corbet@lwn.net
+Subject: Re: [PATCH 2/2] [RFC] pagemap.rst: Document write bit
+Message-ID: <Ze4wrHL6DEQJl_Oo@devil>
+References: <20240306232339.29659-1-richard@nod.at>
+ <20240306232339.29659-2-richard@nod.at>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306232339.29659-2-richard@nod.at>
 
-Previously, the leds pattern would just increment with every controller
-connected. This wouldn't take into consideration when controllers are
-disconnected. The same controller could be connected and disconnected
-with the pattern increasing player count each time.
+On Thu, Mar 07, 2024 at 12:23:39AM +0100, Richard Weinberger wrote:
+> Bit 58 denotes that a PTE is writable.
+> The main use case is detecting CoW mappings.
+>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  Documentation/admin-guide/mm/pagemap.rst | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+> index f5f065c67615..81ffe3601b96 100644
+> --- a/Documentation/admin-guide/mm/pagemap.rst
+> +++ b/Documentation/admin-guide/mm/pagemap.rst
+> @@ -21,7 +21,8 @@ There are four components to pagemap:
+>      * Bit  56    page exclusively mapped (since 4.2)
+>      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
+>        Documentation/admin-guide/mm/userfaultfd.rst)
+> -    * Bits 58-60 zero
+> +    * Bit  58    pte is writable (since 6.10)
 
-This patch changes it by using an ID allocator in order to assign the
-player id, the same way hid-playstation does.
+I really think we need to be careful about talking about 'writable' again
+because people are easily confused about the difference between a writable
+_mapping_ and a writable _page table entry_.
 
-Signed-off-by: Martino Fontana <tinozzo123@gmail.com>
-Signed-off-by: Ryan McClelland <rymcclel@gmail.com>
----
-Changes for v2:
+Of course you mention PTE here, but I think it might be better to say
+something like:
 
-ida_free now frees the correct id, instead of an id that got moduloed.
+    * Bit  58    raw pte r/w flag (since 6.10)
 
-Changes for v3:
+> +    * Bits 59-60 zero
+>      * Bit  61    page is file-page or shared-anon (since 3.5)
+>      * Bit  62    page swapped
+>      * Bit  63    page present
+> @@ -37,6 +38,11 @@ There are four components to pagemap:
+>     precisely which pages are mapped (or in swap) and comparing mapped
+>     pages between processes.
+>
+> +   Bit 58 is useful to detect CoW mappings; however, it does not indicate
+> +   whether the page mapping is writable or not. If an anonymous mapping is
+> +   writable but the write bit is not set, it means that the next write access
+> +   will cause a page fault, and copy-on-write will happen.
+> +
 
-Destroy allocator when removing driver.
+David has addressed the copy vs. anon exclusive remap issue, but I also
+feel this needs some balking out.
 
- drivers/hid/hid-nintendo.c | 41 ++++++++++++++++++++++++++------------
- 1 file changed, 28 insertions(+), 13 deletions(-)
+I would simply rephrase this in terms of whether a write fault occurs or
+not e.g.:
 
-diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
-index 997c3a1adaca..8a8ae7881469 100644
---- a/drivers/hid/hid-nintendo.c
-+++ b/drivers/hid/hid-nintendo.c
-@@ -28,6 +28,7 @@
- #include <linux/device.h>
- #include <linux/kernel.h>
- #include <linux/hid.h>
-+#include <linux/idr.h>
- #include <linux/input.h>
- #include <linux/jiffies.h>
- #include <linux/leds.h>
-@@ -427,6 +428,7 @@ static const enum led_brightness joycon_player_led_patterns[JC_NUM_LED_PATTERNS]
- struct joycon_ctlr {
- 	struct hid_device *hdev;
- 	struct input_dev *input;
-+	u32 player_id;
- 	struct led_classdev leds[JC_NUM_LEDS]; /* player leds */
- 	struct led_classdev home_led;
- 	enum joycon_ctlr_state ctlr_state;
-@@ -1930,7 +1932,8 @@ static int joycon_home_led_brightness_set(struct led_classdev *led,
- 	return ret;
- }
- 
--static DEFINE_SPINLOCK(joycon_input_num_spinlock);
-+static DEFINE_IDA(nintendo_player_id_allocator);
-+
- static int joycon_leds_create(struct joycon_ctlr *ctlr)
- {
- 	struct hid_device *hdev = ctlr->hdev;
-@@ -1941,20 +1944,19 @@ static int joycon_leds_create(struct joycon_ctlr *ctlr)
- 	char *name;
- 	int ret;
- 	int i;
--	unsigned long flags;
- 	int player_led_pattern;
--	static int input_num;
--
--	/*
--	 * Set the player leds based on controller number
--	 * Because there is no standard concept of "player number", the pattern
--	 * number will simply increase by 1 every time a controller is connected.
--	 */
--	spin_lock_irqsave(&joycon_input_num_spinlock, flags);
--	player_led_pattern = input_num++ % JC_NUM_LED_PATTERNS;
--	spin_unlock_irqrestore(&joycon_input_num_spinlock, flags);
- 
- 	/* configure the player LEDs */
-+	ctlr->player_id = U32_MAX;
-+	ret = ida_alloc(&nintendo_player_id_allocator, GFP_KERNEL);
-+	if (ret < 0) {
-+		hid_warn(hdev, "Failed to allocate player ID, skipping; ret=%d\n", ret);
-+		goto home_led;
-+	}
-+	ctlr->player_id = ret;
-+	player_led_pattern = ret % JC_NUM_LED_PATTERNS;
-+	hid_info(ctlr->hdev, "assigned player %d led pattern", player_led_pattern + 1);
-+
- 	for (i = 0; i < JC_NUM_LEDS; i++) {
- 		name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s:%s",
- 				      d_name,
-@@ -2423,6 +2425,7 @@ static void nintendo_hid_remove(struct hid_device *hdev)
- 	spin_unlock_irqrestore(&ctlr->lock, flags);
- 
- 	destroy_workqueue(ctlr->rumble_queue);
-+	ida_free(&nintendo_player_id_allocator, ctlr->player_id);
- 
- 	hid_hw_close(hdev);
- 	hid_hw_stop(hdev);
-@@ -2468,7 +2471,19 @@ static struct hid_driver nintendo_hid_driver = {
- 	.resume		= nintendo_hid_resume,
- #endif
- };
--module_hid_driver(nintendo_hid_driver);
-+static int __init nintendo_init(void)
-+{
-+	return hid_register_driver(&nintendo_hid_driver);
-+}
-+
-+static void __exit nintendo_exit(void)
-+{
-+	hid_unregister_driver(&nintendo_hid_driver);
-+	ida_destroy(&nintendo_player_id_allocator);
-+}
-+
-+module_init(nintendo_init);
-+module_exit(nintendo_exit);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Daniel J. Ogorchock <djogorchock@gmail.com>");
--- 
-2.43.1
+   Bit 58 indicates whether the PTE has the write flag set. If this flag is
+   unset, then write accesses for this mapping will cause a fault for this
+   page. If the mapping is private (whether anonymous or file-backed), this
+   can result in a Copy-on-Write (though if anonymous-excusive the flag
+   will simply be set). If file-backed, this being cleared may simply
+   indicate that this file page is clean.
 
+>     Efficient users of this interface will use ``/proc/pid/maps`` to
+>     determine which areas of memory are actually mapped and llseek to
+>     skip over unmapped regions.
+> --
+> 2.35.3
+>
 
