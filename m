@@ -1,93 +1,150 @@
-Return-Path: <linux-kernel+bounces-98084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 235828774DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A43877511
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:09:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B71D31F213BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:05:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C2791F20F76
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30EBC20E4;
-	Sun, 10 Mar 2024 02:05:07 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1F439FFE;
+	Sun, 10 Mar 2024 02:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LlVbaPzg"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F3B15C4
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56F437719
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710036306; cv=none; b=ptTfsPmzvQjU9WC+olX3SKBdFLxPZG3IXAbuFt67+i8pOAE/2/u1mhBk6/pGbiYwW4ZdPFa4wQEWeSvityGLRhKL2nK3lDappEVaU6zu/YLCwnzJaSfNlXBeABokxej9awwtu6EvfIsfJ6XZHM9BGSpuTbvMDpJEYjhkZB2+B0o=
+	t=1710036359; cv=none; b=IMsW/ttoKMpnnomQeoxNu8bUtiytSt2/hg5VeEKj+hb0LezHA1RaMipQ6uWlxYCu/bmduAYISmnJEYSqnYGT7d+qStxrF0QA8KndK5uJ1FfUn1wqe73y6xtCPZis9mV7/2dv0G2CPbHwM3JL8Y6Lz3+jEc+FFGJlTlTkbeL0+S8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710036306; c=relaxed/simple;
-	bh=AB9oIgX15HDPukZy2QrbAYWK+ICd94A+UY4Tldqk2xs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=qSR/vJwHZmWrMger+0iDsGEPT5iRUaMahm4nMWM0BxWQfKfiCKPjC5y+qcM1lDbATQkGyhcAgdE838Hz+AnCz6pq6D72u/Pmp/PNHaO7/4kxGhRJrEe0J4YD7xOnmHiqIvveUA8p49Q4xXsUF8ExTMj9fXeTEPhHriB5ur9t6V8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c86ecb5b37so339556939f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:05:05 -0800 (PST)
+	s=arc-20240116; t=1710036359; c=relaxed/simple;
+	bh=ZWL6CpbSDkoHT9bHTSvzN2HvMNxtU4EmDh1g2wTW1tQ=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=o0MBg5+JCornX/0G1bJsrC3TR1HFZpkLrHd5VC7h520sPJdNNOpjhLwGWqBPGHw1QR1VhQJOS5QbDsYlJT1qDR1JuNaZizJ4qWff0KbGxatkoExj4yV0efaab3+WtiyopIVDRFG0/5e7KdQWuX8FK35woH09c0z24Z7+emaMnmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LlVbaPzg; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc05887ee9so2813660276.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710036357; x=1710641157; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YcbTXn+GZg98Vv/BPAp4vRUPCLHW4NXMPZPsnrVHKvg=;
+        b=LlVbaPzg3SZLzeFq+0upg5FmL3naDuQtNeVRRATjaVIr2Ao293gZStjMay0I88luJb
+         REZWEdtqNVjNwvVaG85n0qI61sVPKbW71X5dQN4+gbn7LnuOkPQsUhzejb/2OF2y6b13
+         G7KKYmjBXkkujaU+hIErFoa0+02M3n4FD+uhgeaOZtQVLT4NjD4xAK1VcIR7DWWwdFP6
+         tOqhUI//yL8wD8dNPA6Q9gXmA5Xkc+LXyrE2mrZ+3M9kQm0LEN8W70xqqiVI/uaArFXI
+         h5jGKEiwZOhtgM4DmUMMXktvWALZTepJakcPvqdRTTHbDTMQ1+lUtXQXtOkyznvsVOIl
+         07/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710036304; x=1710641104;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1710036357; x=1710641157;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eAtcZ0jcmff76E8g+uUmd6ptddX0gjsk2MQCSo48DN0=;
-        b=lqRGgJOpLRi+v1nzlXlpvRRXfKgCSOH9ZS0ioAJTaJVJEdDqGFQBOFoeCNFQPKhq7J
-         MZ7dCNtQfD4pAHSaHteuUw7y8htCQA3ZdBQfET0o+3+xFhpJDbSweJf5rNzj+/OG/2ob
-         iTgj2i0RWDMfTAzx46UKdP+oFtPk6is+uxRWdiiwGdLmNfUrO2x0NBGLrCkRmCAdLxg2
-         gxsuEmlvmcfAmWthXrn2Ad/E+Kyr89/IhDJIDvfYSKXz58dVmNBXsZisn6Ic8Povhrj8
-         Bazfq30SNvdziqjl2ayuZxuLwNNnNiw7WaydmOiTrDcW8PYJ7ZQvEuwIiO8u7vLJ6EBs
-         qbMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX8FR6G5QetI9dOBKmxv8B2sK4fhgDYR5L3+w8Dx5fEvq9ZB+ob0+VE/t9Htl3IUHNagIqmyc8V4a4NENXrXrjGb1dORoHCc7bcnWIL
-X-Gm-Message-State: AOJu0Yyo5gbNCHFX4kGWzgbszz18U6seHJNuSc90nU5EK1stzy8ZA8vE
-	pFfaG5qIbhMJ3Z4KTP+9g53VEQV7Bu2A0S3MyYtwUXnSXmVjigkLVkE0c7vl92aE+6FicG518qr
-	ZICKv7Tlb5wsu533OW9LcjSS5UOKdcuBmhPz3YkMrnqC0FQ9ebV/iDQg=
-X-Google-Smtp-Source: AGHT+IE6e/IIewGxQAV4bqB6X0atmmjTjDjRrTeEujE/9OhtcHQe4bLNbPc1G6ogefC3EoR0pjUbedvrrFrSIyeg1cQ727HyyOZJ
+        bh=YcbTXn+GZg98Vv/BPAp4vRUPCLHW4NXMPZPsnrVHKvg=;
+        b=maV1RSdj+YYDbiITWJMVKWBsy/yPywO+YSfrHTnxoTXJtZ5j0XV2i/9gzqH6FfSgyt
+         XCI0GxrzCtj4TQ5C/dEzFnBr30sX9+MZSn9NLC2QUxzI/e3Wag31PES60ydXWVsTmuxG
+         m5ygLWroMnAFAeiX73LTTkxxG1PXA5hRFc0Anrob0xn+qHos+jAjv+lffd3OkfsvnbVy
+         EMYfcw9ASgo79yA+/mK0I18/H8bkkB2JfBKmrQ7/lQqoNjlhMYL1ZRAMb+uZ2/OWpFml
+         8rNmmJ2qYHNhISMohCLQjKj2BOWb4nsw9J9fhvX6Bdx494Bj7gc8gLmGuxnsWq9nNxRw
+         yfng==
+X-Forwarded-Encrypted: i=1; AJvYcCVsykt+1XJJdkjVJWA9EL9rZDr83xGl9qbpWh1vu9b2gboouL8r4jS8ZvgTHLWKBsnnnh1N5Z9WrrLJVu+2GhIg1ozClMpHaKlPCDLV
+X-Gm-Message-State: AOJu0YwZL5L5/BnyU9M5oXxfiXJZo56wTcflhedbKuYvi2OXfYHMwDgQ
+	/pD1U7rVhKjkkBPqWgODMyEzzpciwyDu5EEahiqrrXILuVOhMpuGyvoFHZtBNKzb4N8KJaeoBJG
+	ckRex7g==
+X-Google-Smtp-Source: AGHT+IFh+Pg/vPJRzp3HY0EtlqFR8c7TCYxcMdD2zR5o/IcNrp2JWb8OldTiph3/7rY2TpwrRD4D5cJe7AWq
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a63d:1b65:e810:3ad3])
+ (user=irogers job=sendgmr) by 2002:a05:6902:b06:b0:dc6:b982:cfa2 with SMTP id
+ ch6-20020a0569020b0600b00dc6b982cfa2mr183760ybb.8.1710036356770; Sat, 09 Mar
+ 2024 18:05:56 -0800 (PST)
+Date: Sat,  9 Mar 2024 18:05:05 -0800
+In-Reply-To: <20240310020509.647319-1-irogers@google.com>
+Message-Id: <20240310020509.647319-11-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2dc5:b0:7c8:b219:4547 with SMTP id
- l5-20020a0566022dc500b007c8b2194547mr3316iow.2.1710036304535; Sat, 09 Mar
- 2024 18:05:04 -0800 (PST)
-Date: Sat, 09 Mar 2024 18:05:04 -0800
-In-Reply-To: <0000000000002a6cba05eb5c7fbd@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007c3484061344da08@google.com>
-Subject: Re: [syzbot] [ntfs3?] possible deadlock in map_mft_record
-From: syzbot <syzbot+cb1fdea540b46f0ce394@syzkaller.appspotmail.com>
-To: almaz.alexandrovich@paragon-software.com, anton@tuxera.com, 
-	axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com
+Mime-Version: 1.0
+References: <20240310020509.647319-1-irogers@google.com>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v1 10/13] asm-generic: Avoid transitive dependency for unaligned.h
+From: Ian Rogers <irogers@google.com>
+To: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
+	David Laight <David.Laight@ACULAB.COM>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
+	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
+	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
+	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
+	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
+	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
+	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
+	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot suspects this issue was fixed by commit:
+unaligned.h uses types from linux/types.h such as u64, but doesn't
+directly import linux/types.h. This can cause breakages when the
+declarations of the types is reliant on a transitive dependency and
+the dependencies change. Add the missing header file to avoid this.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ include/asm-generic/unaligned.h       | 2 ++
+ tools/include/asm-generic/unaligned.h | 2 ++
+ 2 files changed, 4 insertions(+)
 
-    fs: Block writes to mounted block devices
+diff --git a/include/asm-generic/unaligned.h b/include/asm-generic/unaligned.h
+index a84c64e5f11e..0cbe118e25db 100644
+--- a/include/asm-generic/unaligned.h
++++ b/include/asm-generic/unaligned.h
+@@ -2,6 +2,8 @@
+ #ifndef __ASM_GENERIC_UNALIGNED_H
+ #define __ASM_GENERIC_UNALIGNED_H
+ 
++#include <linux/types.h>
++
+ /*
+  * This is the most generic implementation of unaligned accesses
+  * and should work almost anywhere.
+diff --git a/tools/include/asm-generic/unaligned.h b/tools/include/asm-generic/unaligned.h
+index cdd2fd078027..768cafe6702e 100644
+--- a/tools/include/asm-generic/unaligned.h
++++ b/tools/include/asm-generic/unaligned.h
+@@ -2,6 +2,8 @@
+ #ifndef __ASM_GENERIC_UNALIGNED_H
+ #define __ASM_GENERIC_UNALIGNED_H
+ 
++#include <linux/types.h>
++
+ /*
+  * This is the most generic implementation of unaligned accesses
+  * and should work almost anywhere.
+-- 
+2.44.0.278.ge034bb2e1d-goog
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b28b99180000
-start commit:   e4cf7c25bae5 Merge tag 'kbuild-fixes-v6.2' of git://git.ke..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4
-dashboard link: https://syzkaller.appspot.com/bug?extid=cb1fdea540b46f0ce394
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=151db82a480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f0e670480000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
