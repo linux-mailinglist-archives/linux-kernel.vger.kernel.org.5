@@ -1,117 +1,170 @@
-Return-Path: <linux-kernel+bounces-98168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3516A8775F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 10:35:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 404378775FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 10:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCFD6281823
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:35:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 637D21C20D4E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39C91F608;
-	Sun, 10 Mar 2024 09:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35131EA71;
+	Sun, 10 Mar 2024 09:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U5txpaxj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GAascpdI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4071DDD6;
-	Sun, 10 Mar 2024 09:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BE416FF43
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 09:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710063319; cv=none; b=sDWapVDF8/QUsPU2PXtIrpWFVbhkqTZ5fOCe6oQ3KQWgD0BZwFTRHlPTmIbBUaAXcXyrI3exTGH4xzagDeIUkVtznMDi3oUkLVtq7WuSKCUsqDwpIzPxPMy+Hl70vSETWR53uRpL2RE46aHNFLePYFRCvzbVPsQXArd52rGQTuE=
+	t=1710063366; cv=none; b=dLtJcg7PKX7PAthq2yMpeIbYcOnhbXe8SGkFWjmm5cm7XFau8lFoL2tq/EshcmprEYMVT0+R/Hwh0T7XJ9BB/m5Vj5HqfO7kUAvgvaZYvWMUFcC4WHiVhE846S2E7S0Q32GINmwkvfARfDUBdfIlBjHynom2He61GvdWzgEVt4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710063319; c=relaxed/simple;
-	bh=A56j1ShXDrhKO97iz6szIVzteEyqKgRDBPAwzXDzikI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ac80HIwoLIvu7vjqhEQWCnCFgliPyi+AzvJOs3WTTu4fp0DVzpFlG+gI1OamZQRLSSEI1YMXIbjkfHSFB/OoPU4zSu/DYvj2CDlt7P87+eHhq+QbZPXiN8SYFC4u0g9bYTIAEI4++BgN0ABl+XkE7lzenWdyN2lrroYS2FDnSYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U5txpaxj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0B84C433F1;
-	Sun, 10 Mar 2024 09:35:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710063318;
-	bh=A56j1ShXDrhKO97iz6szIVzteEyqKgRDBPAwzXDzikI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=U5txpaxjWhNjC2+i4ewRBUTMbOl9INv+8VjxpWaxk1WEUrjJg3az83iYX2Mn4D5SW
-	 yc6zUeCxxSQMhZvCdnpcpuT+AYCkhv/mL7iK7m+UeKVcbupJn2l7VTPaYgCjgBMOA/
-	 BVU6BAh38XlKsUBRkSdAb8irqFKw0ZmI0R/LcvETKy/DSscUI1S6TDxF2MskopGD0N
-	 xWRfW9nVMxCaiAkZIpVfqgVBd2dslnlH2l6ODPwVzq2OuPr97rODqlhU5Xm7KbNrxR
-	 R7fTvQEaz2EW6Wj0d9pT+Nk4jaz7CJCi9Qxf7jgVSWm1t3UiO2ayk7llGARr05mmDQ
-	 jSKO3qAwJxGPw==
-Date: Sun, 10 Mar 2024 11:35:13 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-Message-ID: <20240310093513.GB12921@unreal>
-References: <20240306154328.GM9225@ziepe.ca>
- <20240306162022.GB28427@lst.de>
- <20240306174456.GO9225@ziepe.ca>
- <20240306221400.GA8663@lst.de>
- <20240307000036.GP9225@ziepe.ca>
- <20240307150505.GA28978@lst.de>
- <20240307210116.GQ9225@ziepe.ca>
- <20240308164920.GA17991@lst.de>
- <20240308202342.GZ9225@ziepe.ca>
- <20240309161418.GA27113@lst.de>
+	s=arc-20240116; t=1710063366; c=relaxed/simple;
+	bh=++KjARGJ8nOD8jfz8bqml8G9vV6c0LtPQdkxRUz48aI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VbijmUnOPB/0wTt+2DuVegH8FxgkivQAVAGXznjqZ6mNYXVXQCotnjK2P2YBMOO9wMp06VJRJqzDk5jIMqND35mlrK7jRzkCYBI8EasaKqJuZZj4WlqOQCZiUwTTUbDyxdQwE/irFo71WXivk8YDH3XnjuLy7JRJv9lKhIMvgzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GAascpdI; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710063361;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ewYyqZGEFtGRF9uF/AbyS4xwOgMo8zaoUtbs4DsxlK8=;
+	b=GAascpdImZoYD3gz3OMJwZngatvAzQYIdPqpoI12R/nNkOGhzag7Xv/ukaUjUVg5Z15e99
+	tx8bb2gEjb2c4szHejy7bPZ1JcgaqgWweAJbDUdVVY9CKUqkRaMGOLB4wNANULXfTH0UCV
+	bcVvDawa17XZJXdTnmXkLKUgLZUqFyg=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-64-iAb5GYG2O_G5X5HMZUkzdg-1; Sun, 10 Mar 2024 05:35:59 -0400
+X-MC-Unique: iAb5GYG2O_G5X5HMZUkzdg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a456c9d0717so164508366b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:35:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710063358; x=1710668158;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ewYyqZGEFtGRF9uF/AbyS4xwOgMo8zaoUtbs4DsxlK8=;
+        b=NxOx0SqtBn7pdR64JvSnUcrIKwqm7Q4eweMvv/sjvl4PNaSS+WYkXE2fQuFurywhGn
+         1KvXDsYd+IL9v/xJV2Fp9/IeZhumQh+ZvyFvyqYYDPJ4bdu++A1XfCsNLoAkajX9mtqC
+         zu8NkjxhEZFchw224ztJ28bI3Ap0CfRPVIKyIbo11bNwgKayUHr9NUMtx5lc21GebdFa
+         1HNG6VaPkMwwEgvfVEdAYfBy4u5AqjtFuVqJ9dCpKrF++JhZV0oAPcogipGto0eEA9dB
+         DivkYxTPD7RPSCGN1Mf5cjViWnN9eBZ+vigOcG22T7j2mrb0i/RVo+hQ6HAkZMWo4Qmo
+         5peQ==
+X-Gm-Message-State: AOJu0YykLPBNJk/bd23sVGQ6NrHpvkrcFhIS2WWaRkYteLU7H2JmXHhS
+	Fsb8lIDxy0CJNL5SUbDeZLEGSJ03COtTVY1vuDs2he2mOa89fqt6bJlJFsG/gE7Eedp1UL9Vfbi
+	Ft+LZldaG7kQiRPzr06YO3QvQ+9Nb1SYlYV5xbbHoAjs8vF4ekAKwZtwu/Odq3Q==
+X-Received: by 2002:a17:906:cd1a:b0:a45:89f3:3947 with SMTP id oz26-20020a170906cd1a00b00a4589f33947mr1827716ejb.74.1710063358416;
+        Sun, 10 Mar 2024 01:35:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH/WyEABvZUnrPc97sKvwmUZLhFb/bAv1V7yyBIgS32g7raZF+WotMm1ZkrzHppYH5DoGd5Tw==
+X-Received: by 2002:a17:906:cd1a:b0:a45:89f3:3947 with SMTP id oz26-20020a170906cd1a00b00a4589f33947mr1827710ejb.74.1710063357981;
+        Sun, 10 Mar 2024 01:35:57 -0800 (PST)
+Received: from [192.168.10.118] ([151.49.77.21])
+        by smtp.gmail.com with ESMTPSA id c6-20020a056402100600b0056850d5ee00sm530799edu.15.2024.03.10.01.35.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 01:35:57 -0800 (PST)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: [GIT PULL] Final set of KVM fixes for Linux 6.8
+Date: Sun, 10 Mar 2024 10:35:56 +0100
+Message-ID: <20240310093556.653127-1-pbonzini@redhat.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240309161418.GA27113@lst.de>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Mar 09, 2024 at 05:14:18PM +0100, Christoph Hellwig wrote:
-> On Fri, Mar 08, 2024 at 04:23:42PM -0400, Jason Gunthorpe wrote:
-> > > The DMA API callers really need to know what is P2P or not for
-> > > various reasons.  And they should generally have that information
-> > > available, either from pin_user_pages that needs to special case
-> > > it or from the in-kernel I/O submitter that build it from P2P and
-> > > normal memory.
-> > 
-> > I think that is a BIO thing. RDMA just calls with FOLL_PCI_P2PDMA and
-> > shoves the resulting page list into in a scattertable. It never checks
-> > if any returned page is P2P - it has no reason to care. dma_map_sg()
-> > does all the work.
-> 
-> Right now it does, but that's not really a good interface.  If we have
-> a pin_user_pages variant that only pins until the next relevant P2P
-> boundary and tells you about we can significantly simplify the overall
-> interface.
+Linus,
 
-And you will need to have a way to instruct that pin_user_pages() variant
-to continue anyway, because you asked for FOLL_PCI_P2PDMA. Without that
-force, you will have !FOLL_PCI_P2PDMA behaviour.
+The following changes since commit c48617fbbe831d4c80fe84056033f17b70a31136:
 
-When you say "simplify the overall interface", which interface do you mean?
+  Merge tag 'kvmarm-fixes-6.8-3' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD (2024-02-21 05:18:56 -0500)
 
-Thanks
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 5abf6dceb066f2b02b225fd561440c98a8062681:
+
+  SEV: disable SEV-ES DebugSwap by default (2024-03-09 11:42:25 -0500)
+
+Sorry that this comes in a bit late.
+
+It's a bunch of fixes mostly involving confidential VMs; in particular,
+many of the commits constrain the new guest_memfd API a bit more, so
+that we're not stuck supporting more than it's necessary.  However,
+there's also a rare failure to mark a guest page as dirty and a fix
+for awful startup performance with preemptible kernels (including
+CONFIG_PREEMPT_DYNAMIC in non-preemptible mode) of guests with many vCPUs.
+
+----------------------------------------------------------------
+KVM GUEST_MEMFD fixes for 6.8:
+
+- Make KVM_MEM_GUEST_MEMFD mutually exclusive with KVM_MEM_READONLY to
+  avoid creating an inconsistent ABI (KVM_MEM_GUEST_MEMFD is not writable
+  from userspace, so there would be no way to write to a read-only
+  guest_memfd).
+
+- Update documentation for KVM_SW_PROTECTED_VM to make it abundantly
+  clear that such VMs are purely for development and testing.
+
+- Limit KVM_SW_PROTECTED_VM guests to the TDP MMU, as the long term plan
+  is to support confidential VMs with deterministic private memory (SNP
+  and TDX) only in the TDP MMU.
+
+- Fix a bug in a GUEST_MEMFD dirty logging test that caused false passes.
+
+x86 fixes:
+
+- Fix missing marking of a guest page as dirty when emulating an atomic access.
+
+- Check for mmu_notifier invalidation events before faulting in the pfn,
+  and before acquiring mmu_lock, to avoid unnecessary work and lock
+  contention with preemptible kernels (including CONFIG_PREEMPT_DYNAMIC
+  in non-preemptible mode).
+
+- Disable AMD DebugSwap by default, it breaks VMSA signing and will be
+  re-enabled with a better VM creation API in 6.10.
+
+- Do the cache flush of converted pages in svm_register_enc_region() before
+  dropping kvm->lock, to avoid a race with unregistering of the same region
+  and the consequent use-after-free issue.
+
+----------------------------------------------------------------
+Paolo Bonzini (3):
+      Merge tag 'kvm-x86-fixes-6.8-2' of https://github.com/kvm-x86/linux into HEAD
+      Merge tag 'kvm-x86-guest_memfd_fixes-6.8' of https://github.com/kvm-x86/linux into HEAD
+      SEV: disable SEV-ES DebugSwap by default
+
+Sean Christopherson (8):
+      KVM: x86: Mark target gfn of emulated atomic instruction as dirty
+      KVM: Make KVM_MEM_GUEST_MEMFD mutually exclusive with KVM_MEM_READONLY
+      KVM: x86: Update KVM_SW_PROTECTED_VM docs to make it clear they're a WIP
+      KVM: x86/mmu: Restrict KVM_SW_PROTECTED_VM to the TDP MMU
+      KVM: selftests: Create GUEST_MEMFD for relevant invalid flags testcases
+      KVM: selftests: Add a testcase to verify GUEST_MEMFD and READONLY are exclusive
+      KVM: SVM: Flush pages under kvm->lock to fix UAF in svm_register_enc_region()
+      KVM: x86/mmu: Retry fault before acquiring mmu_lock if mapping is changing
+
+ Documentation/virt/kvm/api.rst                     |  5 +++
+ arch/x86/kvm/Kconfig                               |  7 ++--
+ arch/x86/kvm/mmu/mmu.c                             | 42 ++++++++++++++++++++++
+ arch/x86/kvm/svm/sev.c                             | 25 +++++++------
+ arch/x86/kvm/x86.c                                 | 12 ++++++-
+ include/linux/kvm_host.h                           | 26 ++++++++++++++
+ .../testing/selftests/kvm/set_memory_region_test.c | 12 ++++++-
+ virt/kvm/kvm_main.c                                |  8 ++++-
+ 8 files changed, 121 insertions(+), 16 deletions(-)
+
 
