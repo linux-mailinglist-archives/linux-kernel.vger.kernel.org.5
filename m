@@ -1,125 +1,174 @@
-Return-Path: <linux-kernel+bounces-98083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C4008774D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:39:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB70F8774DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98DA11C209A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:39:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 411C41F21389
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151221366;
-	Sun, 10 Mar 2024 01:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D23515C4;
+	Sun, 10 Mar 2024 02:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CKXm00mK"
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="thYILaaq"
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0845310E9;
-	Sun, 10 Mar 2024 01:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87D23C32
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710034766; cv=none; b=K3Hf0JWoppiR0vJ1vDOehpqCHCI3+B5k4F5/YyLMVEs+dIcAr/IpG9FzqGah9A36T/NqWCNaZWRLW26SzMq4HJcan4bfzIGyGSf6Qh8+8D/lcU08jMU+DNC9lL9Ejp/F+XK0WnHnjrddlFqv97t+w0BZ/n29USn6j3PLmZO2yOs=
+	t=1710036333; cv=none; b=gP+iMpHwmAEZzQNT6bU1bAUJkzNwP12NdBDE1Ze2k3U7YcbRqo7kbe6BVUq2653Me/zRgQylmTif24G9q03HjVVss2VfxOdCBRPUDW83Sa10EEeGcyAsRBmO8wrIGNEeMCZcor7CiotCeQCWDTuuCg3i2Pni1HzTWU4sgBDX6SI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710034766; c=relaxed/simple;
-	bh=Hbv5dKqaLqBrgXClL9twOnok0X7YsUM8U4SrM79+aEc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HAEo4k7b9BL8h61zPICfMhyMZgfO2Rch/81OtEiVl05gtUIZDexN3fwhu95i/tVsyD/WZ4CPvpM3NBUKeekCNHT2RJyXx78p3T8miSIF9UK13S9qZn1O0PqUtytTOLfadNxxaulihNyQ1XTmkJRd/uVtDYKqGrJonxx4JTiPzO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CKXm00mK; arc=none smtp.client-ip=209.85.161.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a1cba5d46fso950513eaf.0;
-        Sat, 09 Mar 2024 17:39:24 -0800 (PST)
+	s=arc-20240116; t=1710036333; c=relaxed/simple;
+	bh=as7KSNoSZZw9qpo+zjIfLwBqz9yg94llh3SNLLkBgkY=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=bDqpBQd+XFQVRjQT1AYmreL694xN4+W+mXyzV4RiBHzHWiRMIZQZSYsE74To5mbPNPztmF80wQcaZAjWD3P8sZFfWadUnFVMl90fly8ek31ml0lWfatMfIiB+svWRUMBXAeKEqZW2XS+63ZWEz1nx6XkJpCo2Qv9iIHETE3UrdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=thYILaaq; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-29a5bae5b3fso3080718a91.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:05:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710034764; x=1710639564; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=89dICWtcTgU7rYBclVDfmBzPExpeafeUhsNwlxxomUo=;
-        b=CKXm00mKDeW2qxdbGXESAIJMau/mZmTF9uVBQkuv7OnXpn4BBnStryaFYhZZpBh0T7
-         0Kbtn7YO0aTWaX37EphV69dx93j/+/EinVXicPkkMlv9bZduv6EJq5OeKj3HlTkATRtD
-         K2pCif5RWvAiQ718xk5reP0ohZjMbjqQwlLmowUSL5B0OZOgCkl8/9VXm7KusiutSG0J
-         yhEc1VNOsBF0A2WH+ifHCotAg64OjTyXqbNzyxLsVQMecs1p9fQr5Ip04GGcVUMRvssY
-         UIieBo6SnB5qWr5eGB+FieMkzdgMhHHDxDE41gwKV0rb7LBtOssT0AdM0g4GH+ZR/PJY
-         Q1NQ==
+        d=google.com; s=20230601; t=1710036331; x=1710641131; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=eHEIYqeti5loGAbMg5pT9rTzLm2kPQlk4+PZDUbNnbs=;
+        b=thYILaaq0N8hztWo1a6G6Gna5tcUK7A8Pr9P0KTYl8eXkQzu4f5M4gJuRJSyTWIsCG
+         I4+QDYfzsbg9YxV+Pjyu8vHBAZ5FXW7QkIz/FGBv1PaWK7/Hwc7GlhTPmH8gruT+4uL/
+         t7bcVG7ZWNg4aqJH0Ercooi2T+Np4zQcIj4qfRsp7ZEMxNrXdDwL6uvnTYvKRiqUW+VF
+         fwnluvnGaF2iqIWxm85sua6JPALE5wQSdzUuT5inUmSxZpQLR8kKYdMKiZ7xkjpm3Q1F
+         WmIWPij3/Zcwd3sXtc2oWy1QtJWi4K1YxwfWZE9jznqUNPwflSNeHC/DhsrRKQK9ipoE
+         kUew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710034764; x=1710639564;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=89dICWtcTgU7rYBclVDfmBzPExpeafeUhsNwlxxomUo=;
-        b=X6YsyTnI3Ejky+9BBnAUPNRFIowhGs+jNluZXYOJ/lXeETq7rxrVYqe3HXr4rHIzRU
-         QRkirElW4kP7yyDjvyTW9/ugctJPllu+Jw/4ES+SUVt9e7qSwy3y4Lpiqy5CTbRtlXeF
-         UWIZxQSZbq5LKBf47ZE+eOAYGj5ggjce24aHR3Ti4VdaEbxNravO5BRfjVJy6S4Xh9oX
-         F3RJjkTsj5EA3yFiFEd+MQ91472DKm+iIlBoYsT2IEM/BG1x5+DsRyojDz8inmfMvlgP
-         cdVt/lcOrq1WApVwxzGi7i/4MQf/YaP3nT9SHeP7PW6jDXfLm96k3Rtft3e6TYb3TIuO
-         ojow==
-X-Forwarded-Encrypted: i=1; AJvYcCUq6O7KLfJtTf4ZB8S22CNAM3elolxq+89wJZi7YdLRT1F+aV+NKwGs6yY4F5imRRBFep8CZwKvvH8oW1kueJ6MdKSPbnTbkLGqJ6+U67HlYhZEyqYM46w5iMcxtmib9S16Hj4C69Mxu5spB9Ndz2KdPAhzYHjz5dz6JqAP37Amy6RHm016pqD+VVfLe0Pv
-X-Gm-Message-State: AOJu0Yz+eASjh6Z7mUyjkKSWZiInmuIxBEk0C7Gnaa6qw4nbzvia6YGH
-	NguVnVW8KbTQlCUvyFcpyabyj/oWjZlHh0IvvwohliLhLuVboC1dMJgWRVI/
-X-Google-Smtp-Source: AGHT+IGa8LWghdsW4lGPMtbGDh64RIJVuU6q8Za08bnTmcCJbvG41L+9ZGzUXxOEHKCRwucHSW9QvA==
-X-Received: by 2002:a05:6808:3994:b0:3c1:b335:12bc with SMTP id gq20-20020a056808399400b003c1b33512bcmr5386225oib.5.1710034763803;
-        Sat, 09 Mar 2024 17:39:23 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:5296:fec3:1fa8:a601])
-        by smtp.gmail.com with ESMTPSA id w33-20020a17090a6ba400b0029bb5dc7c77sm1990101pjj.23.2024.03.09.17.39.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Mar 2024 17:39:23 -0800 (PST)
-Date: Sat, 9 Mar 2024 17:39:21 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Ike Panhc <ike.pan@canonical.com>, Hans de Goede <hdegoede@redhat.com>,
-	Philipp Jungkamp <p.jungkamp@gmx.net>, Gergo Koteles <soyer@irl.hu>,
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-input@vger.kernel.org
-Subject: Re: [PATCH 0/2] map Fn + R key on newer Yogas and Legions
-Message-ID: <Ze0PSaOQSJMxL_Ln@google.com>
-References: <cover.1708399689.git.soyer@irl.hu>
- <170895405312.2243.4199399921923370447.b4-ty@linux.intel.com>
+        d=1e100.net; s=20230601; t=1710036331; x=1710641131;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eHEIYqeti5loGAbMg5pT9rTzLm2kPQlk4+PZDUbNnbs=;
+        b=lYm6XKATsixmMuznlB5LZlNbIez4ajY9pg3rJoaXpJveZl+UVIdHlIQwyVtMtv0tFO
+         lUDSrEAPFBdC/uaiv75IwDT9Qn+/AvEJ6CJ/30qDRzkVZyH5Ss9gOgzhgfR1/CuhAsFc
+         tU8D0I4lQAMaCbmDkxMhqdJrxFAoSvqhfQX3TxfGAJXlQvOp1iUP+g2JlQpNftPO2yfB
+         nb/9pldF4L+qoqCqyQeya91bbo2UTui2JkEUjdPy+iAUVGCbrO/ZkS7eW5z5HcrxyvD0
+         eBNdqGpsNTzttlycxVTbCe7MUA0psJKow3izmnFhlY5ve5mhjZC7uO6GOT23uIs0U1pL
+         TZZw==
+X-Forwarded-Encrypted: i=1; AJvYcCXr0K8tXWSiOOKDHdLxVAy0fLHRwjkt7YH3M5q7NkIakNSWIZ3xgynfRgVlBCC8AeEtotXy5xWo9Pz0rWpB3UEomCQpRkXzDHyCsqa4
+X-Gm-Message-State: AOJu0YxH2J/GiJEds4x7UkexqJ2nFSErM/GpzkdF87TMfh8MWtWUj+y+
+	6+db3myERf3dbCDvIFPzFoYtZ3O9sc01VZkMSwUh/raBAoM6B24preyAenuoSyGX2STsxqsJVw+
+	NfUfdeA==
+X-Google-Smtp-Source: AGHT+IFFeRmPXH/DhdnrjLnsP7WPRqqtOIbezxRAyR/jnJBja3zK8/JuocE9C3SHGAEjuI8M5e1xF7iOTDOC
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a63d:1b65:e810:3ad3])
+ (user=irogers job=sendgmr) by 2002:a17:90b:3804:b0:29b:b854:54ad with SMTP id
+ mq4-20020a17090b380400b0029bb85454admr192655pjb.0.1710036330740; Sat, 09 Mar
+ 2024 18:05:30 -0800 (PST)
+Date: Sat,  9 Mar 2024 18:04:55 -0800
+Message-Id: <20240310020509.647319-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <170895405312.2243.4199399921923370447.b4-ty@linux.intel.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v1 00/13] tools header compiler.h update
+From: Ian Rogers <irogers@google.com>
+To: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
+	David Laight <David.Laight@ACULAB.COM>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
+	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
+	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
+	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
+	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
+	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
+	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
+	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Feb 26, 2024 at 03:27:33PM +0200, Ilpo Järvinen wrote:
-> On Tue, 20 Feb 2024 04:39:34 +0100, Gergo Koteles wrote:
-> 
-> > This patch series adds a new KEY_FN_R input event code and map the
-> > Fn + R key to it in the ideapad-laptop driver.
-> > 
-> > It affects two WMI keycodes and I couldn't try the 0x0a, but I couldn't
-> > find any indication that the refresh rate toggle should not be Fn + R.
-> > 
-> > Regards,
-> > Gergo
-> > 
-> > [...]
-> 
-> 
-> Thank you for your contribution, it has been applied to my local
-> review-ilpo branch. Note it will show up in the public
-> platform-drivers-x86/review-ilpo branch only once I've pushed my
-> local branch there, which might take a while.
-> 
-> The list of commits applied:
-> [1/2] Input: allocate keycode for Fn + R
->       commit: 4e45fa464aeef4e803412b5dcce73aad48c94b0e
+Update tools/include/linux/compiler.h so that the definition of
+noinline can be updated to avoid an LLVM libc breakage. Fix build
+issues and try to synchronize other pieces on the way. For atomic.h,
+don't try to synchronize and just punt to stdatomic.h that we can
+assume is present since the move to C11.
 
-I am sorry for the delay, but instead of defining a generic name we should define
-a proper keycode for concrete action even if nothing is printed on a
-particular key on a particular device.
+Ian Rogers (13):
+  tools bpf: Synchronize bpf.h with kernel uapi version
+  libbpf: Make __printf define conditional
+  libperf xyarray: Use correct stddef.h include
+  perf expr: Add missing stdbool.h include
+  perf expr: Tidy up header guard
+  perf debug: Add missing linux/types.h include
+  perf cacheline: Add missing linux/types.h include
+  perf arm-spe: Add missing linux/types.h include
+  tools headers: Rewrite linux/atomic.h using C11's stdatomic.h
+  asm-generic: Avoid transitive dependency for unaligned.h
+  tools headers: Sync linux/overflow.h
+  tools headers: Sync compiler.h headers
+  tools headers: Rename noinline to __noinline
 
-Please drop this patch.
-
-Thanks.
+ include/asm-generic/unaligned.h               |   2 +
+ tools/arch/x86/include/asm/atomic.h           |  84 ----
+ tools/include/asm-generic/atomic-gcc.h        |  95 ----
+ tools/include/asm-generic/bitops/non-atomic.h |   1 +
+ tools/include/asm-generic/unaligned.h         |   2 +
+ tools/include/asm/atomic.h                    |  11 -
+ tools/include/asm/rwonce.h                    |  63 +++
+ tools/include/linux/atomic.h                  | 107 ++++-
+ tools/include/linux/compiler-clang.h          | 124 +++++
+ tools/include/linux/compiler-gcc.h            | 145 +++++-
+ tools/include/linux/compiler.h                | 221 ++-------
+ tools/include/linux/compiler_attributes.h     | 449 ++++++++++++++++++
+ tools/include/linux/compiler_types.h          | 171 ++++++-
+ tools/include/linux/overflow.h                | 331 ++++++++++---
+ tools/include/linux/rbtree.h                  |   1 +
+ tools/include/linux/string.h                  |   1 +
+ tools/include/linux/types.h                   |  17 +-
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/libbpf.c                        |   4 +-
+ tools/lib/perf/include/internal/xyarray.h     |   2 +-
+ tools/perf/arch/x86/tests/bp-modify.c         |   4 +-
+ tools/perf/bench/find-bit-bench.c             |   2 +-
+ tools/perf/check-headers.sh                   |   4 +
+ tools/perf/tests/bp_account.c                 |   2 +-
+ tools/perf/tests/bp_signal.c                  |   2 +-
+ tools/perf/tests/bp_signal_overflow.c         |   2 +-
+ tools/perf/tests/dwarf-unwind.c               |  12 +-
+ tools/perf/tests/workloads/leafloop.c         |   8 +-
+ tools/perf/tests/workloads/thloop.c           |   4 +-
+ .../util/arm-spe-decoder/arm-spe-decoder.h    |   1 +
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     |   8 +-
+ tools/perf/util/cacheline.h                   |   1 +
+ tools/perf/util/debug.h                       |   1 +
+ tools/perf/util/expr.h                        |   8 +-
+ .../selftests/kvm/include/kvm_util_base.h     |   3 +-
+ 35 files changed, 1388 insertions(+), 506 deletions(-)
+ delete mode 100644 tools/arch/x86/include/asm/atomic.h
+ delete mode 100644 tools/include/asm-generic/atomic-gcc.h
+ delete mode 100644 tools/include/asm/atomic.h
+ create mode 100644 tools/include/asm/rwonce.h
+ create mode 100644 tools/include/linux/compiler-clang.h
+ create mode 100644 tools/include/linux/compiler_attributes.h
 
 -- 
-Dmitry
+2.44.0.278.ge034bb2e1d-goog
+
 
