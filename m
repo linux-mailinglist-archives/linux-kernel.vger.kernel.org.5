@@ -1,100 +1,123 @@
-Return-Path: <linux-kernel+bounces-98319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5280A87785C
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:58:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA97D877860
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 21:06:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 833711C20908
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 19:58:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 963472810C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20CF3A1AC;
-	Sun, 10 Mar 2024 19:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303AF3A1C2;
+	Sun, 10 Mar 2024 20:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GRmS7jca"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4ct9vcta"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89BE83987D;
-	Sun, 10 Mar 2024 19:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8823207
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 20:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710100720; cv=none; b=G1gLftY8HKwRJYGDYpQ8gkfJeCxu45OWYEGl+Ay6w+1QfFB/eFCnQ5SW/Zi5oGhZs2eUjSQiT61LtiidrN/c2pD90Mjc5MLnHf4GRdTHyZu7hv90OZxp1mzc3disIu1Uq3tv5XUsjkIXfZKCDRwjC92+RfLNvg1VpqSD6g+IH1o=
+	t=1710101153; cv=none; b=qWSWeX0cr7eLBTE9/cijTSTuQBVhKALwxBQcg15C7cNphhdeD1MmtvzzYpIZaIWoZgOmAJqEXzgHRGHrdQjmzJYdWQubHNIENVp0CMkZ+ff4qxzZLi1/byb/m1/iuKtBrJpiJtrxe70umhJ4JXfzp+XO5Ek5Dl03LF+ElswrX4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710100720; c=relaxed/simple;
-	bh=e/S3QsOZRxk0R1c0mtSGuywQ8blcGGvaddFxTrU5nzQ=;
+	s=arc-20240116; t=1710101153; c=relaxed/simple;
+	bh=axkdLd7QmlW/nS3h7kOIMAbn+TRaZ9Z5Zq5yBjNkkI4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WkEuog9umVZK/97vNGkYHZeu/rYHTgEwP7DufKyDWAS/F6XYRy/14uuTNkjG4BIksGqUBq5lhAn5xqVwn5bzZLWXCc++Arr4HQWKIOGmbAlA+l0h5SICIULj/7DNk8jhNJVFxblxYRmZAan/WNA6lUOp2A6NDQVXBKnxGORUl/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GRmS7jca; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e4eaa4b394so1597275a34.1;
-        Sun, 10 Mar 2024 12:58:38 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=rrfpDvsiK7EiKPPwyIatZm8Ogz2V2gxcvZvGt93d/VPAkvSswApOuLaOMuLedszERZNSpJpjwBcP0qRvxFKb5xQwSo41weP+pYifceR7gBjtCVDySDhDgs8f/FGVVn+B8+J4G+N1ROq5nbKjSqz/VCUtBvuvSfI+136Tczl+o20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4ct9vcta; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so2650867a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 13:05:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710100717; x=1710705517; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gUky88ZAZ+yr9vj7pzsLUkjMCq8JAAHxO4SYtMxX+9w=;
-        b=GRmS7jcaehhOxliCLGxAY9cD8RHwTBUqRdwPx6S5INYcA2MBcwgxFtjHNOOJaDm414
-         PZ1eyQeQbwrvE5Oz3BrITARLiFsx5R5Mq77be7F7unWthr6LkogGw4QG0FJfTQKErxRk
-         Xqdo9ROV02G05Bo8Ddhr+YPzoyJ0Dq+kuT9EJvmqy+kcQpvvapWnweS17b3iKoTehlCK
-         lFrB/lSnzmeLerSw4vRigaK2+Qb1rBjCPfwlsknoXjx0WgjB/US9HKRm0OAuae7gQ4YR
-         T6LZR4BvVZ0F3cEow+UrU4Aox7vq5TnYvtMpsJF/tmxnWYojJH0Mu+VpmLkB5shxVj28
-         4bBw==
+        d=google.com; s=20230601; t=1710101151; x=1710705951; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JNuLk/SmJZe+3FEWgsu7CWQfjCzjRMTWkCyyZXjE1jU=;
+        b=4ct9vctaGlegl7QokrpgmpwiUM1fCgzCdzr904BzpwNUOkgmXQFLqwm0rlas1sIu3T
+         6Uf+8dhdu5XUd+bsxy7SF8UA/P376CAar+FI8AJMEM15fGs6uuQmVw9sEI+Fn6flgZGT
+         zCJ7QvrpU+yoAMmiSGWliAqlLZ4DqJDlbHU//TpmjKtowOPseG4j5njmfzoKTlfW0l/O
+         kT13qjGrfHNqeB1DYFNAECCoqTL07YJ/urkRcF98SQG94qbRPmCdsGCDOqwJjN2SJA66
+         MTpmp1PKVNJww6ICZ9AhnlO79mz4SqANjQT1hsfxMRzpkzQyz4f55AoWY3jbLtI01tVC
+         PZ4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710100717; x=1710705517;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gUky88ZAZ+yr9vj7pzsLUkjMCq8JAAHxO4SYtMxX+9w=;
-        b=WMDE8iGFHAfmx9Gdu2DXgQwnElwQZ3CQeJs+E0rms5KAbxvXQs5t3NNHDpmGv8Yn/y
-         pc0Qmz3dxBCRyoFUikRK31KYQA1dm/VkiMrIOdxK0OvxKDarDqRwoZvLenWGrKRheuWH
-         7YOSIBhSni8EnDhf53KAeNhTO8R0LZjFbkEg/3tmxVsV7OatTaSnuB+elEFmzcH9Q4Xh
-         k94vx97lbwAAdW8hKdoq42CsCwc6QZrzSu00YfM2mSINSh4/RSXe7tEYHcyPPeKJZ2Vq
-         IffXUmDpKiZSZYRFdMUcF2bMK7rZPW13zLgEOOj7nCMY4C+lkuKz+W/pqStLbxqUySUC
-         +hrw==
-X-Forwarded-Encrypted: i=1; AJvYcCXOsSrVJfYWQSV4qFQv6tkDQxo/Hf/zo+14TjD//OY+YeqwWftMiU1ofWotL+yiqR/a6SSiwUJTcscJar0vH1LUD2PuD2GqKr9mBGYr6ROYoWTlFgiJk2ErLqwfcpz/G+6QmCRFg9j/s+U=
-X-Gm-Message-State: AOJu0Yx5mdc6gLzJrcWC4v56XKgVoj8r+8IZzBL1Tn56rpQPpxiCfNFu
-	pBYi+pspKjfOAb+ReigyFMFvr6XajEzozJeQLPQRwPIKZEkTMnlc
-X-Google-Smtp-Source: AGHT+IFFiiCe4Qnwvr/rghFmL47p+EkCKmaCnHCOzJOECf1+sw3dexnPEF1isa5Sc9m2cNdQWggfzQ==
-X-Received: by 2002:a05:6808:f94:b0:3c2:4d6d:22bd with SMTP id o20-20020a0568080f9400b003c24d6d22bdmr314193oiw.10.1710100717553;
-        Sun, 10 Mar 2024 12:58:37 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b21-20020a170902d31500b001dcc2951c02sm3000939plc.286.2024.03.10.12.58.35
+        d=1e100.net; s=20230601; t=1710101151; x=1710705951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JNuLk/SmJZe+3FEWgsu7CWQfjCzjRMTWkCyyZXjE1jU=;
+        b=a4uF2CROrRgV4vPwORUTaaeHajREJjHm3efNq4lp79WVMI5zW8x1PzoC4fctKJTaAG
+         L80eZUxlkKCy9SO4Ed9I9y0cpMyNhFyFk74V0o11dnK2AYqQkj3tvAmaJ6IHbgJhCAu6
+         ngc3+Rvar8vTYzU9x2fkIcQeqtlJaLJXPlwdBFc++Xk9ko6y2YFhDkCzCwp3pr5Z1NiU
+         wW9xyo9ivzboZNPSGHsmMDONCyDVZhiV/NRTx3ijAueiAd7nISnV2F2k89CuXxoYnmey
+         FT9hNz398OyuYHLwPCXch6YPwIbpeZq26WAMHTvsWLg/vremCjWEarN5kyUeAfWeCdLX
+         ZKCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUbn7ZWwAcljwXOvOUdyx+xhsfzyaaqWoJyYW77ck0OHsiMTkGv38eDXf/C1oX8AyV+bwNgn8JeEkS9epi23DuuikNTZwojvToV0+fq
+X-Gm-Message-State: AOJu0YwwH64f+pfpSU5Ges7H9LndqVUxOmdxvFxt59H5gpCnVO5S0D29
+	CjN7rCg06KmyQE+3riXFmNWU6m4cEg5g4C5TpOHtZUQEoVUfO38NMy+jNar32w==
+X-Google-Smtp-Source: AGHT+IH4tB7A0OdNI4gElwDpV2Geq+cGOnRhpOkDsCxu0fQh7Jd5vbI1iIoYcRe7nnVIfgqGRG5syA==
+X-Received: by 2002:a17:902:7b95:b0:1dd:611d:3be0 with SMTP id w21-20020a1709027b9500b001dd611d3be0mr4491939pll.27.1710101151153;
+        Sun, 10 Mar 2024 13:05:51 -0700 (PDT)
+Received: from google.com ([2620:15c:2c5:13:d1de:e5bb:fcf:1314])
+        by smtp.gmail.com with ESMTPSA id z17-20020a170903019100b001dd7d66ac95sm2716210plg.78.2024.03.10.13.05.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 12:58:36 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 10 Mar 2024 12:58:34 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: pali@kernel.org, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        Sun, 10 Mar 2024 13:05:50 -0700 (PDT)
+Date: Sun, 10 Mar 2024 13:05:45 -0700
+From: Igor Pylypiv <ipylypiv@google.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: jejb@linux.ibm.com, martin.petersen@oracle.com,
+	chenxiang66@hisilicon.com, jinpu.wang@cloud.ionos.com,
+	artur.paszkiewicz@intel.com, yanaijie@huawei.com,
+	dlemoal@kernel.org, cassel@kernel.org, linux-scsi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 9315 to fan control whitelist
-Message-ID: <cd8071c1-22c9-4a2f-89d9-6634fb88b842@roeck-us.net>
-References: <20240309212025.13758-1-W_Armin@gmx.de>
+Subject: Re: [PATCH v2 1/6] scsi: libsas: Add LIBSAS_SHT_BASE
+Message-ID: <Ze4SmVLprCrJi59W@google.com>
+References: <20240308114339.1340549-1-john.g.garry@oracle.com>
+ <20240308114339.1340549-2-john.g.garry@oracle.com>
+ <Zetp8ufVfxxo6DOF@google.com>
+ <3c343fde-01cb-4cda-bf20-9df0ece94359@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240309212025.13758-1-W_Armin@gmx.de>
+In-Reply-To: <3c343fde-01cb-4cda-bf20-9df0ece94359@oracle.com>
 
-On Sat, Mar 09, 2024 at 10:20:25PM +0100, Armin Wolf wrote:
-> A user reported that on this machine, disabling BIOS fan control
-> is necessary in order to change the fan speed.
+On Sun, Mar 10, 2024 at 10:02:42AM +0000, John Garry wrote:
+> On 08/03/2024 19:41, Igor Pylypiv wrote:
+> > > Even though some drivers don't set proc_name, it won't make much difference
+> > > to set as DRV_NAME.
+> > > 
+> > > Also add LIBSAS_SHT_BASE_NO_SLAVE_INIT for the hisi_sas drivers which have
+> > > custom .slave_alloc and .slave_configure methods.
+> > Looks like libata drivers have no problem overriding default values that were
+> > set by __ATA_BASE_SHT. For example __ATA_BASE_SHT sets .can_queue .sdev_attrs
+> > and then AHCI_SHT overrides those with AHCI specific values:
+> > 
+> > #define AHCI_SHT(drv_name)                                              \
+> >          ATA_NCQ_SHT(drv_name),                                          \
 > 
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> Acked-by: Pali Rohár <pali@kernel.org>
+> which tag are you looking at here?
+> 
+> That looks like an old definition of AHCI_SHT().
+> 
+> There was a significant change for this in the following:
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/ata/ahci.h?h=v5.14&id=071e86fe2872e7442e42ad26f71cd6bde55344f8
 
-Applied.
+Oh, my bad. I had some old kernel version checked out. Please disregard.
+
+Reviewed-by: Igor Pylypiv <ipylypiv@google.com>
 
 Thanks,
-Guenter
+Igor
+
+> 
+> Thanks,
+> John
 
