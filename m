@@ -1,78 +1,109 @@
-Return-Path: <linux-kernel+bounces-98302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B549877819
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3661C87781E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 20:07:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C613B1F2108F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 19:00:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4FE91F210F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 19:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B2439FDD;
-	Sun, 10 Mar 2024 19:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZo0eIc/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E88C39FE4;
+	Sun, 10 Mar 2024 19:07:42 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC7D3987C
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 19:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9DE839FC1
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 19:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710097212; cv=none; b=EHPKS1Vj+6qfzkIEhZ9vb73EJCmrnXcPuAwSpZyC5Tx+yxWDE0Y5x7zj1uQqRpaVR7UyuSxukYqQlsc3RAMU7UoEarZMHUhhwUjcEKbVe32rATav5SpHTdjTl3g9GAUJpU/U/S9ikEWt0l76lcj5EejsjjOQRmASAmde4jbs4cM=
+	t=1710097661; cv=none; b=NuRl0RF+P7Lb3dqdv8QfnjkmvPFHe5Rzi4oA5YJqnY4bOp9bC6sVwcb9VFA+UxAJMm6aWxDbWerwzT9Qdbo7PvLEH8PZDdtpk87IEDlqF4S3dV0FbpAfnB23VXArI9m4/XCrztFTYLow+wScnFI1n43FxO9Bn1DySYXM6ZeCAro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710097212; c=relaxed/simple;
-	bh=FK4H1mezFqdFro1JGhqHABzE54G6XxrM01VMc9pc1KA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=R38iJLPP+Gapi5kagNFKxrdll/islMnORtrY5OCLH6s14tyWOBrm2mDTpHfSR+udsup28nD1d4vY8HrdaocY5Qklz5aa5TUoWzgGDzt9+X5YOJQNTWfoUyeC6fwSHfAeDOcpl2SYA3WbW+0/V70OjnA1xJmtHBbeCZ7otILc31E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZo0eIc/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7723CC43394;
-	Sun, 10 Mar 2024 19:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710097212;
-	bh=FK4H1mezFqdFro1JGhqHABzE54G6XxrM01VMc9pc1KA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=MZo0eIc/V7MdWbmu4YL41jds3s+kTtgXyHAIG3gJrbq1LLD4+3L3SU4rTCd2kzQus
-	 nSpLkiaiLXWqFpJEeVhGvUJ833F1uoLXqrlya8fx9om5ukr0XNGhw4fES9RN+NcjwM
-	 /7fynPEh3lfJdy+geXzWHroISRPnPnFxcy2KZMSmxx3yTnJkFpfQj9nEi7dwiTVtza
-	 E1K0KMkzG+v3DI4H+JsHtmqVV0mr/iE9qrHPhs2MNV5u4hJrXAyUFN+dxqeGLgGd9r
-	 4jbPy7HWJqG4L1igSsiYwjiDOUnKMpuzVHXC6HOa98wL5WdWUvPLrd0jg4UESiKJGF
-	 5RyKG14doYEpQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 44D64D84BBF;
-	Sun, 10 Mar 2024 19:00:12 +0000 (UTC)
-Subject: Re: [GIT PULL]: Generic phy fixes for v6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <Ze3olI5SfqS-1RJ0@matsya>
-References: <Ze3olI5SfqS-1RJ0@matsya>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Ze3olI5SfqS-1RJ0@matsya>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-fixes3-6.8
-X-PR-Tracked-Commit-Id: 47b412c1ea77112f1148b4edd71700a388c7c80f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 210ee636c4ad5e88a77f858fa460033715ad7d3f
-Message-Id: <171009721227.15660.11407102587561504224.pr-tracker-bot@kernel.org>
-Date: Sun, 10 Mar 2024 19:00:12 +0000
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>
+	s=arc-20240116; t=1710097661; c=relaxed/simple;
+	bh=kxWIp5Qt6rna3+DYNwudkMrznOHdEExHjOTg+CwdaOM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=ar0GDSrCj/yJ1tCjwhZztBu0Ano/plNg78VchdXSQfyoOvpyxIn93KwsQe9YgY418S81SYJD+wZSONx7e3ao8uuM6KnS6bqjUMf6G4OUaWFfv7tZb9N5zI520fJXf0pp28fGhGRGGFNnrpdPzbSMINGysPIvOizUGWKuBvu6P4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-40-SMhtXwpFNL6OmNRJqlhX_g-1; Sun, 10 Mar 2024 19:07:31 +0000
+X-MC-Unique: SMhtXwpFNL6OmNRJqlhX_g-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 10 Mar
+ 2024 19:07:41 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 10 Mar 2024 19:07:41 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Matthew Wilcox' <willy@infradead.org>, "linux-mm@kvack.org"
+	<linux-mm@kvack.org>
+CC: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: On the optimum size of a batch
+Thread-Topic: On the optimum size of a batch
+Thread-Index: AQHacMlzWJ9ZLWk00E2JGYCnzpWSgrExV8hA
+Date: Sun, 10 Mar 2024 19:07:41 +0000
+Message-ID: <905fcd730d6e40b992c15ce0fe526941@AcuMS.aculab.com>
+References: <Zeoble0xJQYEAriE@casper.infradead.org>
+In-Reply-To: <Zeoble0xJQYEAriE@casper.infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The pull request you sent on Sun, 10 Mar 2024 22:36:28 +0530:
+From: Matthew Wilcox
+> Sent: 07 March 2024 19:55
+>=20
+> I've had a few conversations recently about how many objects should be
+> in a batch in some disparate contextx, so I thought I'd write down my
+> opinion so I can refer to it in future.  TLDR: Start your batch size
+> around 10, adjust the batch size when measurements tell you to change it.
+>=20
+> In this model, let's look at the cost of allocating N objects from an
+> allocator.  Assume there's a fixed cost, say 4 (units are not relevant
+> here) for going into the allocator and then there's a 1 unit cost per
+> object (eg we're taking a spinlock, pulling N objects out of the data
+> structure and releasing the spinlock again).
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-fixes3-6.8
+I think you are trying to measure the length of a piece of string.
+(and not the ones in the box labelled 'pieces of string too small to keep')
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/210ee636c4ad5e88a77f858fa460033715ad7d3f
+What I did recently for a global+local buffer allocator was to make
+each entry on the global list itself be a list of objects.
+So if the local list was empty it was a single cmpxchg to grab
+(about 100) items.
+Similarly if the local free list got too big a single locked
+operation would free a block of items.
+That significantly reduced lock contention.
 
-Thank you!
+If was necessary to split the free of very long lists - otherwise
+a single item on the global list could contain silly numbers of items.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+This was userspace, and we don't talk about the test that ended up
+with ALL system memory on one linked list.
+I managed to kill enough (remote) things to get a working shell.
+It took the system about 20 minutes just to count the linked list!
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
