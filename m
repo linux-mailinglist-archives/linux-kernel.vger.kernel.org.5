@@ -1,85 +1,164 @@
-Return-Path: <linux-kernel+bounces-98143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6B3877594
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:03:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A3887759C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67E0EB219B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 07:03:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 052141F23134
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 07:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93E0D2F5;
-	Sun, 10 Mar 2024 07:03:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443D4171A1;
+	Sun, 10 Mar 2024 07:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BUKVWLmK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0378916FF48
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 07:03:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E938480;
+	Sun, 10 Mar 2024 07:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710054186; cv=none; b=aFvYkvqiAscDhlfvcPXxfOI54hoG2YSs5RhettGtRjeiPbi2HCcOsCclX5sVPDzxkEfq5Su04tq+Tdw+tRNcBMjvqnK+9ixuKY8R7edqsZ0ta4iaer4EHdfbq+OUEenD6pOr2FFkO+YWATjvkKv3bNi7kpGtuSrNs/cvj01OOkE=
+	t=1710055207; cv=none; b=VN0QpDMaaYRE7hnrYFgzrmYHP1FitE/NNT4JEwhDa/z6zZJVwL6ci2VXrMX8UNG+PFm7xHKtlKIAZAvf63dv2IQ7YtnWacu/dScsLbgbx8XRLXXSW+KONI22biIBPnXXsRuoq+as9tUpGGr224/9WeC46XqbBMIKxMrNPK8DtBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710054186; c=relaxed/simple;
-	bh=U5cQeCZfGNuvmn1CBBLh9ozKjtInGURH3unQVcppWHI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=HJfi9btuWIrXKJMeaZmmjGGxP2JiCFDQGtLnKrfVQcIChPCCf+ujU6YJzTbiuc1Sk8ztoAFTbb1J+Qybg6YvgnVIWH4CJ8yrKHKhUb6LjTbEKw/GmqFG/k+5/h67O3yod7Rrvkm94rMXwBzKFcxoSCh7jbO+JeP5vSFDkQkWB+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c8a7d77806so65811539f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 23:03:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710054184; x=1710658984;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x+bRvVgWGc1gnEK3RscUQ5g0RP0Rwls8zXeJwEl53dQ=;
-        b=IjjN6M9j+I5vMWJbDn5B2R8s1pC3UlIduxHM6OiRnnNbR8CKNTVqW20y2WxYNwmw9W
-         uR/PX3dUu4QL3yDCvWvJkg35flIcWDUqzuy9OS+TPlys6VK/Vm1sLYb35noKbOtOrKF4
-         mIRWn2y5Ldbf0ZVErgRhTEdHn18woBThMeHKtq/bWFiSIpZXUiAdh1xB053E8DMCE+qS
-         w/b54PaTMV0o7eB4g6cOeUqYL6143drvoTlPRWePKaDK+s5ITY8fqNi1ihRd68yV1DhE
-         SkZqChk3jzUpbrTsfJ4y12PDnImCM4E9vCsujzQeMxkyqRg+UasH36tzK20iNyJSZYwe
-         RcmA==
-X-Gm-Message-State: AOJu0YwKx28lRkG9QkwWQ8BZR04Ye+6ErmH3Jk0QkvukmhN6p5hFO4t9
-	OLRnZFKMiizUBwjJmKAnoNGqFI2WUXD6Tv0pCo1Y4zISnop2iL/jKhoEiiwAdoo3rZkvVsbF+Nl
-	Rayllf+pvOe/ictFQ2YBv3mIYcLYDmoUfeF7Zv2cPAKqoFsmQd7MkwWmgWg==
-X-Google-Smtp-Source: AGHT+IGAZ/62DyKsgN7dG9goQnly+p0JmtoXucxyz6iw+7209HLbBDkCkJgM2Z5BmWyJ+K2ryuWNiPijlFynPDKh2hqBuCjOy5Qi
+	s=arc-20240116; t=1710055207; c=relaxed/simple;
+	bh=3EhUpcpxd3ve1kIYZvxRqF4hsYotNnSxvjMRam9Xd/0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=joV0jMnMzQCfR6nhLCmBCN4mu1mDoZOkL6V/JXFJjiTD9c+Iv0qwQXz6JX/peGcFMML44nNiaSlTQFWU+ofBcVdW4TbtWkvp/78epa+/6KNPrPoigCRO6/jm9Ict6dBnqJtiHVMZhjR6ECi+pDeSpdig8pU3TfXKf5OGCa+g0v4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BUKVWLmK; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710055204; x=1741591204;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3EhUpcpxd3ve1kIYZvxRqF4hsYotNnSxvjMRam9Xd/0=;
+  b=BUKVWLmK/d0svGpQf+vH7oJmOzQYX6MAom3MC6VG2FOYQYISRLEw2bXl
+   RfGuqEtyUPHKjR7bKSoL1u31T7sldm+pFXjJhZAe22cecDMFT+Jvq6vZ2
+   am7a/pxVx2JEotF3Mprrw61C7Pm+jfDPJEI6sWMgC8kGiSWQZ9RxusIbs
+   JhO9a18gIG+W2sHxdL7U5y37/hlfCBvr3QTGr5Z2oQVO3MvwkncEhWrDF
+   mbb7WKBZSSlIrethhL3TzGuu/5pHTq/Awxe8XmCIX+RsQJIevoBpN9bvI
+   XwBDO6Og4ochFv0BfVdJ7uuGdxD07Wo2rTMbriO9QZ9mPsGppk5zDVcCl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="15376857"
+X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
+   d="scan'208";a="15376857"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 23:20:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,114,1708416000"; 
+   d="scan'208";a="10747039"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 09 Mar 2024 23:19:59 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rjDTQ-00083D-2E;
+	Sun, 10 Mar 2024 07:19:56 +0000
+Date: Sun, 10 Mar 2024 15:19:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Paul Cercueil <paul@crapouillou.net>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vkoul@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, Nuno Sa <nuno.sa@analog.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org,
+	Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v8 3/6] iio: core: Add new DMABUF interface infrastructure
+Message-ID: <202403101535.uRqo6AIt-lkp@intel.com>
+References: <20240308170046.92899-4-paul@crapouillou.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:37a7:b0:476:decd:a9c5 with SMTP id
- w39-20020a05663837a700b00476decda9c5mr32324jal.5.1710054184270; Sat, 09 Mar
- 2024 23:03:04 -0800 (PST)
-Date: Sat, 09 Mar 2024 23:03:04 -0800
-In-Reply-To: <Ze1PTNpum86xXNcI@mars>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000334ee9061349040f@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KMSAN: uninit-value in nci_dev_up
-From: syzbot <syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, ryasuoka@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308170046.92899-4-paul@crapouillou.net>
 
-Hello,
+Hi Paul,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+kernel test robot noticed the following build warnings:
 
-Reported-and-tested-by: syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com
+[auto build test WARNING on jic23-iio/togreg]
+[also build test WARNING on vkoul-dmaengine/next lwn/docs-next linus/master v6.8-rc7 next-20240308]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Tested on:
+url:    https://github.com/intel-lab-lkp/linux/commits/Paul-Cercueil/dmaengine-Add-API-function-dmaengine_prep_peripheral_dma_vec/20240309-010421
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+patch link:    https://lore.kernel.org/r/20240308170046.92899-4-paul%40crapouillou.net
+patch subject: [PATCH v8 3/6] iio: core: Add new DMABUF interface infrastructure
+config: i386-randconfig-062-20240309 (https://download.01.org/0day-ci/archive/20240310/202403101535.uRqo6AIt-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240310/202403101535.uRqo6AIt-lkp@intel.com/reproduce)
 
-commit:         9f8413c4 Merge tag 'cgroup-for-6.8' of git://git.kerne..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1011c7e1180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
-dashboard link: https://syzkaller.appspot.com/bug?extid=7ea9413ea6749baf5574
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1161f41a180000
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403101535.uRqo6AIt-lkp@intel.com/
 
-Note: testing is done by a robot and is best-effort only.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/iio/industrialio-buffer.c:1765:40: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const [noderef] __user *from @@     got int *user_req @@
+   drivers/iio/industrialio-buffer.c:1765:40: sparse:     expected void const [noderef] __user *from
+   drivers/iio/industrialio-buffer.c:1765:40: sparse:     got int *user_req
+>> drivers/iio/industrialio-buffer.c:1988:53: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected int *user_req @@     got void [noderef] __user *_arg @@
+   drivers/iio/industrialio-buffer.c:1988:53: sparse:     expected int *user_req
+   drivers/iio/industrialio-buffer.c:1988:53: sparse:     got void [noderef] __user *_arg
+   drivers/iio/industrialio-buffer.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
+   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
+
+vim +1765 drivers/iio/industrialio-buffer.c
+
+  1755	
+  1756	static int iio_buffer_detach_dmabuf(struct iio_dev_buffer_pair *ib,
+  1757					    int *user_req, bool nonblock)
+  1758	{
+  1759		struct iio_buffer *buffer = ib->buffer;
+  1760		struct iio_dev *indio_dev = ib->indio_dev;
+  1761		struct iio_dmabuf_priv *priv;
+  1762		struct dma_buf *dmabuf;
+  1763		int dmabuf_fd, ret = -EPERM;
+  1764	
+> 1765		if (copy_from_user(&dmabuf_fd, user_req, sizeof(dmabuf_fd)))
+  1766			return -EFAULT;
+  1767	
+  1768		dmabuf = dma_buf_get(dmabuf_fd);
+  1769		if (IS_ERR(dmabuf))
+  1770			return PTR_ERR(dmabuf);
+  1771	
+  1772		mutex_lock(&buffer->dmabufs_mutex);
+  1773	
+  1774		list_for_each_entry(priv, &buffer->dmabufs, entry) {
+  1775			if (priv->attach->dev == indio_dev->dev.parent
+  1776			    && priv->attach->dmabuf == dmabuf) {
+  1777				list_del(&priv->entry);
+  1778	
+  1779				/* Unref the reference from iio_buffer_attach_dmabuf() */
+  1780				iio_buffer_dmabuf_put(priv->attach);
+  1781				ret = 0;
+  1782				break;
+  1783			}
+  1784		}
+  1785	
+  1786		mutex_unlock(&buffer->dmabufs_mutex);
+  1787		dma_buf_put(dmabuf);
+  1788	
+  1789		return ret;
+  1790	}
+  1791	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
