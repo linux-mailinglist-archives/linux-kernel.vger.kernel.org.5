@@ -1,89 +1,78 @@
-Return-Path: <linux-kernel+bounces-98122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB497877566
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:19:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF11B877568
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04E2DB20155
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:19:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0442C1C210B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210E6111A8;
-	Sun, 10 Mar 2024 05:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D88D10A0E;
+	Sun, 10 Mar 2024 05:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YZsQJNyO"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="UWa+EZgO"
+Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBAE257D;
-	Sun, 10 Mar 2024 05:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07ECC1FA5
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 05:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710047979; cv=none; b=Jv3r+pCkX1hfZX8l4HaHx9WCdI91dxwDwefxBiZ4KT7YH3c+L2nJyB6/oc7tNLlxagpk+vODF7ZMV/56naR6q8iRFCC3ATxP78uhL3q1HWobtuU36K6K1dc/c6ngKf9mnFRCsCohJUmRYfDbF7vMptnGKIbrD84h118bwwb+HIw=
+	t=1710048362; cv=none; b=b8PsrMSAJfTvlSsmXKtV5QKLurxrVU1kaW0BUA5hL08TY164YuCRAds1GZ26NWxYMu3ey70onfaMXuAkqhWgVc/VCSDEP6Sjpj4KkRYNLOQkQiSkQTp+Pbtri6GG/BE9W7O9zf4tyNi5SP7wQ3lmG8Tuuj+RFlhxvXDULKF5stE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710047979; c=relaxed/simple;
-	bh=FEwqsZ/L47wp0oexwqcD/oAHTnhQ1S/70n21XEPQ7JM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=srgFft8/LqZfOGC0wBommHBTvWaAaG0NYkjI/I0Zp+OSSnrAAlvknwtYQ97gUl09Fyzxn5fn0iLZ8dp/Gwsp9scLgQyhnjX1AtAi2FTDFYvTaid2L6BAVVcyhuNPwrpZbVA04icG8Uo+erpK520+bF3MhjrtZPZGpk+2J36ZZKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YZsQJNyO; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-221a37a29f5so1177869fac.3;
-        Sat, 09 Mar 2024 21:19:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710047977; x=1710652777; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uVVGE8GaEDHHmhOEunvfSVf3mdMruJPA7Ps3WM6YTI0=;
-        b=YZsQJNyO0DHprjquQSjX/UKVjkQqV1NqU6TLP60JluykMtEM+W+vQrtA2TWyCUUrIr
-         YSGMGqwBZSrF7GChOaTLd20dGbc23EbIXh37oMrny305TetKSZhUykca2a6WzenxJ+OE
-         oXZAuV579AkAqO94DlVRvCRQDCFf/u4aSEmIjJR7fiWKSchuwZkjquS/yVqsjbth38/g
-         6fhwrk54AYlpRaBhVHJXR9pH9fDqXlIZz5AR4o9lb35si+tQfzzcNCdfVeszJQSX6Diq
-         kMMxlMTTzb7AFxG8ReQQl0ihK8BqpNrPZfEU5FbwJ9QWuCxP/eaBAh89McDKsbmF1SdO
-         BQPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710047977; x=1710652777;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uVVGE8GaEDHHmhOEunvfSVf3mdMruJPA7Ps3WM6YTI0=;
-        b=lFwZI9WSvH+bQarzryn32MnF5K2OiuAC7unud6V4QYN4cLXnraeGEJ8QFPlDoLhXK/
-         aLOan5fMTo29tdqHGpmS3s1PtM17sImR6fQ1zGnAb6cS2466JucBsEySLx7RAKn8A7Ri
-         WRgQW5/ANG/dkluunzYznze59dsJyyKOTDEqWQqEDrVMm5pJ3839e29OB7zOkTQo8qLI
-         T0AFdh7Mx7ceGjvUnrbafoIH40yDUb5jxP3qOTerIdM3GGvxVHvA5Pnb+0K4IDAMqA9T
-         gpma7Hz3sqjcb/Q9Aki1wpq+tMCfdDgOO2ZMqahdg8qkPjuGkU8JTTJdNBDhjASSxN+1
-         CxJw==
-X-Forwarded-Encrypted: i=1; AJvYcCW9+ZWSe3z0f8xB3irJO2RcAneqqy0aXeRYPKtdKuyn1jwRFFPIidtYwWju6lodoX0AdpKeVjODza82tjFd1VeNJGBH1KTnJErx8ad/7Qqth9AzSKfJyBi4IqxFLQeej+JqbRMsRu17qgU/kaogPilrg+FoLMaAbVbmjDznyQ834YspGQ==
-X-Gm-Message-State: AOJu0YwV4hKYrwgZBvcEuSvVYUxdiDJZc2/vJvE6MpdP2eZtAOl6Jm2Q
-	zLG99rjn3uZKsST6OqI1O5Py7vuqRYtmOlQXR3bAF9gu2Mcu8Qzw
-X-Google-Smtp-Source: AGHT+IESntEqwQzHWhQocQpY9SyZGd4m4ChjOhsqpXKrxhu1lQP7c035x40l2KEcp0OBYa/Bq+H4ig==
-X-Received: by 2002:a05:6808:1509:b0:3c2:2639:9792 with SMTP id u9-20020a056808150900b003c226399792mr4828392oiw.48.1710047976958;
-        Sat, 09 Mar 2024 21:19:36 -0800 (PST)
-Received: from fedora.. ([2409:40f4:3a:d8ab:6980:be5b:99c3:fb12])
-        by smtp.gmail.com with ESMTPSA id s9-20020a639e09000000b005e17cad83absm2034243pgd.74.2024.03.09.21.19.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Mar 2024 21:19:36 -0800 (PST)
-From: Animesh Agarwal <animeshagarwal28@gmail.com>
-To: 
-Cc: animeshagarwal28@gmail.com,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-ide@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1710048362; c=relaxed/simple;
+	bh=f2BLX5fET0RUFWfLQGHErQZOtiUviwwQTOr1HfZUlKw=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=BF2vx3lUunDKHaylLVX0dN15eeB1KaS1PLgp6NSB/oSXNf2FNRWUQrOn72p5jOC2LNB2ZE3tn7eCH/cEO3IGO9+LRkHemE2XrevF2c8OUWmVI59Z0bMQmaFetlqvL5wrj3uA9A0DiiHzZERForVETUW+O2WL+flnpPoynl6RxZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=UWa+EZgO; arc=none smtp.client-ip=203.205.251.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1710048356;
+	bh=RFbrlE8bKyXh1wQvXS2b2V9UYhLWFs0ZKai1mg42aZ4=;
+	h=From:To:Cc:Subject:Date;
+	b=UWa+EZgO8D9bxIDkhObskjHv8DS3nw0FRYNYX6e2pNFLSX/vXVfUIcBOwoDgskqPp
+	 1Juc2ak8IX7Vr+2izm5DPw1+CH7qvr/25VzEx1dOCb83RaXS5kHDz4pmqU+YdE4Jgr
+	 4t5+WGnNQkvQ02VQZ6ZNCCtbLeFKJ43meikDaRRQ=
+Received: from localhost.localdomain ([2409:8a60:2a60:3eb0:f685:8358:c9e1:8bef])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 6749F8FA; Sun, 10 Mar 2024 13:25:52 +0800
+X-QQ-mid: xmsmtpt1710048352t52ifyxyr
+Message-ID: <tencent_277EBFCF545587D4FD41EF932AE972CC6708@qq.com>
+X-QQ-XMAILINFO: OZsapEVPoiO6IKq8JVkXKogtJegkw40HF9lvXESOQ0BxLnK52Kp4sM5WW2TBL+
+	 StaxctsMbu1tcZoVstbdkxpckc9j9ZUoJSidPHv9Tkq7U/KveKhM4Q3majfdDgY+KZQFUDfTRcZl
+	 wOPiMg4E8SnSwZK30O2sTXmguFMTWgZrlxF0y2/8SP3fKEhFr6zAe47XQwkByagoYiLz4JFqbKzm
+	 2RFts/KWPZ0z85khLZAnfWeSRGPpGESkg4gqqOHCvrYgDb74eAMu49uIrfTC9PuJKCE3eplj4Nff
+	 P0d5f3ioXEOdSVoeI/Pthbt5IZIv8fsMBLUXt2g5E/X4e/2rF/a/ruR/KVSZJqvbNLPUSMaPK3Xp
+	 IUkqzJUyEUtpxkvqHrzaLXuPH/UYpiV4PgGl9r2k8HVjHGv2yuZZgzyv1xfLZZLQ6SLkYki+Zx84
+	 JRaYlN0D6Mg/3Nfa/IUsRlq/V6MtHNjsx6pV/u8U0lUcwjZUDfayiMFWPTs2zGPRGWUDgxJAf0y5
+	 shmlu+7WLuUG9Ky+X7VTmJdJio64W2DOU8elFEPWuuYOKC6rrUy6fWR6ykL23l+ePZTJgnBEgoUA
+	 dAqqon+LG8Rrg4lXY1K5IMCqOBvVaLFud1ur8BY1yI8yKlWd610d4uzjjSZtsJN7zdqX4w12C6OI
+	 GL+josLCiq5RByb3an2q1aeezSzDbZxE4pyJ+iufLQbs+fa9Rdh8qm/wFeMlQgI+iB4eXl1xk/oA
+	 WYshM5JqwtRKUBn0MPbQipSK7WRmFlz5q3Lc1m5tgS8IRH1US7ov1OEvxpcYbp9UJLtSwzsevP4w
+	 hSbuWAKX5A2p/jIEAxZigriygS7d1PnzDVY6TU+sTMDK+J7EfLG+VIh5DvtmNj3rj0/BJiY4Mkxe
+	 Mi4dochRoHIG2Ljubrge4z7/1XfIpH7sjzaB1UAZca2fwMPvNCkVIMyj3KZNjI39sz5EWVljWYra
+	 ykfKlIKdZtebdhjDsRuwBwKuiqIOLlQ6bbJrKaBdIvXD+G/tgvgRhDA7XIKGam65NqUfWLkoPc2B
+	 5Noly/6gEEAv7BG5Eln8/K+1qq7nY=
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: wenyang.linux@foxmail.com
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Ingo Molnar <mingo@kernel.org>
+Cc: Wen Yang <wenyang.linux@foxmail.com>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Peter Zijlstra <peterz@infradead.org>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] dt-bindings: imx-pata: Convert to dtschema
-Date: Sun, 10 Mar 2024 10:49:09 +0530
-Message-ID: <20240310051914.153193-1-animeshagarwal28@gmail.com>
-X-Mailer: git-send-email 2.44.0
+Subject: [PATCH v3] exit: move trace_sched_process_exit earlier in do_exit()
+Date: Sun, 10 Mar 2024 13:25:29 +0800
+X-OQ-MSGID: <20240310052529.294895-1-wenyang.linux@foxmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,99 +81,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Convert the imx-pata bindings to DT schema.
+From: Wen Yang <wenyang.linux@foxmail.com>
 
-Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
+Currently coredump_task_exit() takes some time to wait for the generation
+of the dump file. But if the user-space wants to receive a notification
+as soon as possible it maybe inconvenient.
 
----
-Changes in v4:
-- added fsl,imx31-pata in compatible property
-- imx51-pata was not defined as	compatible in txt bindings, adding imx51-pata ensures this node	compiles to imx31.dtsi
-Changes in v3:
-- added fsl,imx51-pata in compatible property
-- imx51-pata was not defined as compatible in txt bindings, adding imx51-pata ensures this node compiles to imx51.dtsi
-Changes in v2:
-- fixed style issues
-- compatible property now matches the examples
-- fixed yamllint warnings/errors
----
----
- .../devicetree/bindings/ata/fsl,imx-pata.yaml | 41 +++++++++++++++++++
- .../devicetree/bindings/ata/imx-pata.txt      | 16 --------
- 2 files changed, 41 insertions(+), 16 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
- delete mode 100644 Documentation/devicetree/bindings/ata/imx-pata.txt
+Move trace_sched_process_exit() earlier in do_exit().
+This way a user-space monitor could detect the exits and
+potentially make some preparations in advance.
 
-diff --git a/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml b/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
-new file mode 100644
-index 000000000000..aa0174844eb1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/ata/fsl,imx-pata.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale i.MX PATA Controller
-+
-+maintainers:
-+  - Animesh Agarwal <animeshagarwal28@gmail.com>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - fsl,imx31-pata
-+          - fsl,imx51-pata
-+      - const: fsl,imx27-pata
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    items:
-+      - description: PATA Controller interrupts
-+
-+  clocks:
-+    items:
-+      - description: PATA Controller clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pata: pata@83fe0000 {
-+        compatible = "fsl,imx51-pata", "fsl,imx27-pata";
-+        reg = <0x83fe0000 0x4000>;
-+        interrupts = <70>;
-+        clocks = <&clks 161>;
-+    };
-+
-diff --git a/Documentation/devicetree/bindings/ata/imx-pata.txt b/Documentation/devicetree/bindings/ata/imx-pata.txt
-deleted file mode 100644
-index f1172f00188a..000000000000
---- a/Documentation/devicetree/bindings/ata/imx-pata.txt
-+++ /dev/null
-@@ -1,16 +0,0 @@
--* Freescale i.MX PATA Controller
--
--Required properties:
--- compatible: "fsl,imx27-pata"
--- reg: Address range of the PATA Controller
--- interrupts: The interrupt of the PATA Controller
--- clocks: the clocks for the PATA Controller
--
--Example:
--
--	pata: pata@83fe0000 {
--		compatible = "fsl,imx51-pata", "fsl,imx27-pata";
--		reg = <0x83fe0000 0x4000>;
--		interrupts = <70>;
--		clocks = <&clks 161>;
--	};
+Oleg initially proposed this suggestion, and Steven further provided some
+detailed suggestions, and Mathieu carefully checked the historical code
+and said:
+: I've checked with Matthew Khouzam (maintainer of Trace Compass)
+: which care about this tracepoint, and we have not identified any
+: significant impact of moving it on its model of the scheduler, other
+: than slightly changing its timing.
+: I've also checked quickly in lttng-analyses and have not found
+: any code that care about its specific placement.
+: So I would say go ahead and move it earlier in do_exit(), it's
+: fine by me.
+
+Suggested-by: Oleg Nesterov <oleg@redhat.com>
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ kernel/exit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 493647fd7c07..2cff6533cb39 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -826,6 +826,7 @@ void __noreturn do_exit(long code)
+ 
+ 	WARN_ON(tsk->plug);
+ 
++	trace_sched_process_exit(tsk);
+ 	kcov_task_exit(tsk);
+ 	kmsan_task_exit(tsk);
+ 
+@@ -866,7 +867,6 @@ void __noreturn do_exit(long code)
+ 
+ 	if (group_dead)
+ 		acct_process();
+-	trace_sched_process_exit(tsk);
+ 
+ 	exit_sem(tsk);
+ 	exit_shm(tsk);
 -- 
-2.44.0
+2.25.1
 
 
