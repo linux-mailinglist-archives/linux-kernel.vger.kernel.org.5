@@ -1,187 +1,213 @@
-Return-Path: <linux-kernel+bounces-98165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E12198775EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 10:16:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 248B68775F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 10:18:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C66C1F221E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:16:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEBC1281E5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372161EB25;
-	Sun, 10 Mar 2024 09:16:26 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B81D1EB25;
+	Sun, 10 Mar 2024 09:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="Yz1JSqQ9"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC5F1BC49
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 09:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5985B1BC49;
+	Sun, 10 Mar 2024 09:18:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710062185; cv=none; b=l0DTGdjk2CkLTfH/LnoX600Nf0GSvcgtctH5dF2Q7aS2SkvxrvWD/tKAc9t1GxMdfo1VtsHoNMpmwjWevymwvUaTZPXBk+7bQwumkaqaXIYwIPIeKE3qVF+FaBds/50AZ6pjeBLbXCXXkADMSoLCa3kKT45Mudc5k2IprOJXQ50=
+	t=1710062301; cv=none; b=LH7TbgeTK+PobWNjNM8G++T+82NlAsC4P8fKK4n2T70FP2MRRe7uhDuSxRjkkQ9SlTLuHjW1djan63GI1eVaz3qH24XghAi6A1npfqQ5u8oQr6QBSQyY5GpiPRnUKuGG8fOIuD1zwjRIJ2rHKJs89bcgYTkeWtq15CRVGTa2w8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710062185; c=relaxed/simple;
-	bh=MlagqZPBrdWvUGmaWGdhxE6Ng+8nES7zjq8PZhu+dW0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=acC9EXE7l+blkbDKGS4KA/V0dBNtq6OkvYkXgfwEnlUjFzBKpzZ9ayZNDhuVULTOiuqzBmX/2Ov54fC8uprGqefU/IkXIwt8oFF4+NUAY4qae406fiHlfjXxb3TRsk1b2mDwIh4xUcLMP01fsFRLQ/xPM1XZydzszOV5I5MsIkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8a960bd9eso56606539f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:16:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710062183; x=1710666983;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5zDRQjgkhxRVicgj40VR0YIXpagwtpa9TQqkcBjGwTE=;
-        b=kaWvJdVMdd8ATWZWox2ox5whw+VRxz9fDusOpbkejuoAQXk4Hjty7i8wj68thCmfRb
-         uJUt2PSYqHPMh02CFdyRg1oTrnqR0c94Islk82AT1Rbb4LR4YYePaQ5xD/WnV7A7pdDl
-         08ojlfOXY92hI4CJfhPpAp3bN2vf2NgRdkBLxhxTZ0I3cWFMxe2/wrlwBv0k024AHP5H
-         /vzogyotQrN+HnFadssT+hay+m+T35DbPgYSfE2UZXL7I4QOChsSis7+ruNi4or8/Jj1
-         3lZBQ2ZHJ16ZpAfGhAKHffkr4P9NbruCJNGDHjBB6UsC2ZrLFlPPxBtxOPFPJ4ApiTEA
-         Jg9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUBGZmlbUWIjXXJrOA7MKHM7hq2JJFagifFxYBOEea1cRNMgyDBFsv7qL8SSmiodiUrIXgCLxaD9tKmVgSULalA24CPpApF70PoPMex
-X-Gm-Message-State: AOJu0YwG7wAJls6wZ25kItKFqJ+++nY+aCpQh8GSE95H19oWW5g5cMe2
-	RXqwjx20ZGuML4+FVcEM2Jhlx+wFXGySpznvUyudl0z9lM5iZatFIFoZjoX72qrgQFogehFmyNI
-	g7uzhlE7SplYn7DGwrU0Tz/uj0tA6rVbWbmjNShoepGVaafGzb8uL8D4=
-X-Google-Smtp-Source: AGHT+IHHKgN8BmBXtWcmcpRxGbXFfnt/P3gNEMVRNNGsEyS+NN4qwWDDqY3mLY75SrShvLCcc1t4pjRetlQ/ZgalTKy0i1RsYaYD
+	s=arc-20240116; t=1710062301; c=relaxed/simple;
+	bh=4/Etg5IAaCmbmxqxtDclWTx/CGLXoTnwU28WEm0VocA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OTxbQfHt0OWwJ0v4onY154SHC08neG8jMlfidPfvjapcEOFalhqqVjNkCtRH5tZJu/9EzlyoJGV7E4pXgb7V1T2SVkMDfp2W+ey+JokDGaoaBzZXnYDXrsYJ/8KR452OM5063oyhAi8lmV3uhspmXFBBV1oA6n+7/ktkiMfrKVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=Yz1JSqQ9; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1710062288;
+	bh=4/Etg5IAaCmbmxqxtDclWTx/CGLXoTnwU28WEm0VocA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Yz1JSqQ9iMbvoFUbuHmRaYiRtps/bZUuKgWK0FcDrfCyxM4eFWcO5PeMGg4tbMZuf
+	 7WIWRQw5Hy1O2U9WjFbFjaVwcq3gJ4LSbMRy5C59qi0SYCwxediET+Xc+HJzZmtQo+
+	 pRLB2xl8ZxwSjYjL/Qd65Ff8HRV+o892y2pdAO4c=
+Date: Sun, 10 Mar 2024 10:18:07 +0100
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v2] sysctl: treewide: constify ctl_table_root::permissions
+Message-ID: <e3198416-4d90-4984-88ee-d2fccf96c783@t-8ch.de>
+References: <CGME20240223155229eucas1p24a18fa79cda02a703bcceff3bd38c2ba@eucas1p2.samsung.com>
+ <20240223-sysctl-const-permissions-v2-1-0f988d0a6548@weissschuh.net>
+ <20240303143408.sxrbd7pykmyhwu5f@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:218b:b0:476:e4c4:c80e with SMTP id
- s11-20020a056638218b00b00476e4c4c80emr25604jaj.6.1710062183319; Sun, 10 Mar
- 2024 01:16:23 -0800 (PST)
-Date: Sun, 10 Mar 2024 01:16:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fb15d306134ae036@google.com>
-Subject: [syzbot] [bpf?] [net?] KMSAN: uninit-value in bpf_prog_test_run_xdp
-From: syzbot <syzbot+6856926fbb5e9b794e5c@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, netdev@vger.kernel.org, pabeni@redhat.com, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240303143408.sxrbd7pykmyhwu5f@joelS2.panther.com>
 
-Hello,
+Hi!
 
-syzbot found the following issue on:
+On 2024-03-03 15:34:08+0100, Joel Granados wrote:
+> Just to be sure I'm following. This is V2 of "[PATCH] sysctl: treewide:
+> constify ctl_table_root::set_ownership". Right? I ask, because the
+> subject changes slightly.
 
-HEAD commit:    3aaa8ce7a335 Merge tag 'mm-hotfixes-stable-2024-03-07-16-1..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e5861e180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8d2f8f66e9a667a
-dashboard link: https://syzkaller.appspot.com/bug?extid=6856926fbb5e9b794e5c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ed8171180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b728ae180000
+No, the v1 of this patch is linked in the patch log below.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2a093f1b5a72/disk-3aaa8ce7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/efa5cb929ca6/vmlinux-3aaa8ce7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2b0c044e721b/bzImage-3aaa8ce7.xz
+The patches for ::set_ownership and ::permissions are changing two
+different callbacks and both of them are needed.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6856926fbb5e9b794e5c@syzkaller.appspotmail.com
+The v2 for set_ownership is here:
+https://lore.kernel.org/lkml/20240223-sysctl-const-ownership-v2-1-f9ba1795aaf2@weissschuh.net/
 
-=====================================================
-BUG: KMSAN: uninit-value in bpf_prog_test_run_xdp+0x1758/0x1a30 net/bpf/test_run.c:1277
- bpf_prog_test_run_xdp+0x1758/0x1a30 net/bpf/test_run.c:1277
- bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4107
- __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5475
- __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
- __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5559
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Regards
 
-Uninit was stored to memory at:
- bpf_test_run+0x515/0xaf0
- bpf_prog_test_run_xdp+0xea5/0x1a30 net/bpf/test_run.c:1267
- bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4107
- __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5475
- __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
- __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5559
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> Best
+> 
+> On Fri, Feb 23, 2024 at 04:52:16PM +0100, Thomas Weißschuh wrote:
+> > The permissions callback is not supposed to modify the ctl_table.
+> > Enforce this expectation via the typesystem.
+> > 
+> > The patch was created with the following coccinelle script:
+> > 
+> >   @@
+> >   identifier func, head, ctl;
+> >   @@
+> > 
+> >   int func(
+> >     struct ctl_table_header *head,
+> >   - struct ctl_table *ctl)
+> >   + const struct ctl_table *ctl)
+> >   { ... }
+> > 
+> > (insert_entry() from fs/proc/proc_sysctl.c is a false-positive)
+> > 
+> > The three changed locations were validated through manually inspection
+> > and compilation.
+> > 
+> > In addition a search for '.permissions =' was done over the full tree to
+> > look for places that were missed by coccinelle.
+> > None were found.
+> > 
+> > This change also is a step to put "struct ctl_table" into .rodata
+> > throughout the kernel.
+> > 
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > ---
+> > To: Luis Chamberlain <mcgrof@kernel.org>
+> > To: Kees Cook <keescook@chromium.org>
+> > To: Joel Granados <j.granados@samsung.com>
+> > To: David S. Miller <davem@davemloft.net>
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > 
+> > Changes in v2:
+> > - flesh out commit messages
+> > - Integrate changes to set_ownership and ctl_table_args into a single
+> >   series
+> > - Link to v1: https://lore.kernel.org/r/20231226-sysctl-const-permissions-v1-1-5cd3c91f6299@weissschuh.net
+> > ---
+> > The patch is meant to be merged via the sysctl tree.
+> > 
+> > There is an upcoming series that will introduce a new implementation of
+> > .permission which would need to be adapted [0].
+> > The adaption would be trivial as the 'table' parameter also not modified
+> > there.
+> > 
+> > This change was originally part of the sysctl-const series [1].
+> > To slim down that series and reduce the message load on other
+> > maintainers to a minimumble, submit this patch on its own.
+> > 
+> > [0] https://lore.kernel.org/lkml/20240222160915.315255-1-aleksandr.mikhalitsyn@canonical.com/
+> > [1] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-2-7a5060b11447@weissschuh.net/
+> > ---
+> >  include/linux/sysctl.h | 2 +-
+> >  ipc/ipc_sysctl.c       | 2 +-
+> >  kernel/ucount.c        | 2 +-
+> >  net/sysctl_net.c       | 2 +-
+> >  4 files changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+> > index ee7d33b89e9e..0a55b5aade16 100644
+> > --- a/include/linux/sysctl.h
+> > +++ b/include/linux/sysctl.h
+> > @@ -207,7 +207,7 @@ struct ctl_table_root {
+> >  	void (*set_ownership)(struct ctl_table_header *head,
+> >  			      struct ctl_table *table,
+> >  			      kuid_t *uid, kgid_t *gid);
+> > -	int (*permissions)(struct ctl_table_header *head, struct ctl_table *table);
+> > +	int (*permissions)(struct ctl_table_header *head, const struct ctl_table *table);
+> >  };
+> >  
+> >  #define register_sysctl(path, table)	\
+> > diff --git a/ipc/ipc_sysctl.c b/ipc/ipc_sysctl.c
+> > index 8c62e443f78b..b087787f608f 100644
+> > --- a/ipc/ipc_sysctl.c
+> > +++ b/ipc/ipc_sysctl.c
+> > @@ -190,7 +190,7 @@ static int set_is_seen(struct ctl_table_set *set)
+> >  	return &current->nsproxy->ipc_ns->ipc_set == set;
+> >  }
+> >  
+> > -static int ipc_permissions(struct ctl_table_header *head, struct ctl_table *table)
+> > +static int ipc_permissions(struct ctl_table_header *head, const struct ctl_table *table)
+> >  {
+> >  	int mode = table->mode;
+> >  
+> > diff --git a/kernel/ucount.c b/kernel/ucount.c
+> > index 4aa6166cb856..90300840256b 100644
+> > --- a/kernel/ucount.c
+> > +++ b/kernel/ucount.c
+> > @@ -38,7 +38,7 @@ static int set_is_seen(struct ctl_table_set *set)
+> >  }
+> >  
+> >  static int set_permissions(struct ctl_table_header *head,
+> > -				  struct ctl_table *table)
+> > +			   const struct ctl_table *table)
+> >  {
+> >  	struct user_namespace *user_ns =
+> >  		container_of(head->set, struct user_namespace, set);
+> > diff --git a/net/sysctl_net.c b/net/sysctl_net.c
+> > index 051ed5f6fc93..ba9a49de9600 100644
+> > --- a/net/sysctl_net.c
+> > +++ b/net/sysctl_net.c
+> > @@ -40,7 +40,7 @@ static int is_seen(struct ctl_table_set *set)
+> >  
+> >  /* Return standard mode bits for table entry. */
+> >  static int net_ctl_permissions(struct ctl_table_header *head,
+> > -			       struct ctl_table *table)
+> > +			       const struct ctl_table *table)
+> >  {
+> >  	struct net *net = container_of(head->set, struct net, sysctls);
+> >  
+> > 
+> > ---
+> > base-commit: ffd2cb6b718e189e7e2d5d0c19c25611f92e061a
+> > change-id: 20231226-sysctl-const-permissions-d7cfd02a7637
+> > 
+> > Best regards,
+> > -- 
+> > Thomas Weißschuh <linux@weissschuh.net>
+> > 
+> 
+> -- 
+> 
+> Joel Granados
 
-Uninit was stored to memory at:
- ___bpf_prog_run+0x76dd/0xdb80
- __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2227
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run_xdp include/net/xdp.h:514 [inline]
- bpf_test_run+0x42d/0xaf0 net/bpf/test_run.c:421
- bpf_prog_test_run_xdp+0xea5/0x1a30 net/bpf/test_run.c:1267
- bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4107
- __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5475
- __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
- __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5559
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Uninit was stored to memory at:
- ___bpf_prog_run+0x8567/0xdb80
- __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2227
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run_xdp include/net/xdp.h:514 [inline]
- bpf_test_run+0x42d/0xaf0 net/bpf/test_run.c:421
- bpf_prog_test_run_xdp+0xea5/0x1a30 net/bpf/test_run.c:1267
- bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4107
- __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5475
- __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
- __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5559
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Local variable stack created at:
- __bpf_prog_run512+0x45/0xe0 kernel/bpf/core.c:2227
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run_xdp include/net/xdp.h:514 [inline]
- bpf_test_run+0x42d/0xaf0 net/bpf/test_run.c:421
-
-CPU: 0 PID: 5009 Comm: syz-executor369 Not tainted 6.8.0-rc7-syzkaller-00142-g3aaa8ce7a335 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
