@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-98092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31510877501
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:08:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D142D877507
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 03:08:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 555A91C20D25
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:08:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B6BC1F213F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB472C18E;
-	Sun, 10 Mar 2024 02:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646E53838F;
+	Sun, 10 Mar 2024 02:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4RRJfEVF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wez/FaFs"
 Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB7E2555B
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB7F2C68F
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 02:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710036351; cv=none; b=UZQXIEX530gwVcGzTvemyHQfOcKoPMXz6Qnyqxz+UqELnl9Orevu+NiR36F7oX6yo0KvfFzCfrSrd+KX/od7l6Ibh/Xj8dS2eTjX8uJs4KeVyRWSDCdvAJzdIoDnrClFg/NZLsXP/6KMKpVrK68HLnPOiMI8RSpy9O+Dw+oWvRA=
+	t=1710036354; cv=none; b=T8Fqc7VvsSi2vM84ZvyjZfEtJyT29kOYG0I63rDAwb0T0sKdUSHb7bI4wgcVej2hAlgNdDjGP9nXSIUx/BAiRbZ9hfO3uhuW7CCecaqeT9buYaM8UsgZwLODPAfNDNwkO3+Lp9v2GKCR/nAX73GGXujCft9+y5WgWKbg1gdPxr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710036351; c=relaxed/simple;
-	bh=gXS4/PmUcr/u98E5bD8fZ0t4D/xMUtOLNVIZOZ/mooI=;
+	s=arc-20240116; t=1710036354; c=relaxed/simple;
+	bh=nyI9dgaoU2HMw/TgIDnIDYrLQif8D0L3I6qaHvxp6Ug=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=OBdRUnrwuwL0XREPPQtpERZ7Nb1Z82ZIywV+RiGTQWRywGfd7kE4kM8/nJuIOLIzyELEH2/1gq46dzZO+0+pxacYDRClju6lirp1J/nGEV8er0BApZTfn01hpMS9wvUimBu+5GJrAstEMXHgPc0Td45CjcwRny6UUlX225/maRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4RRJfEVF; arc=none smtp.client-ip=209.85.128.201
+	 To:Content-Type; b=s5T2jCP5y4z3koDbB3DpKXqkfXuh2Bcx0kJAVSbXq65v5xULlilq1GE/7vL8WFJW1bbKjK9Iq6Lut11LIxrNmTUh3vH3Ti/xvkFTxjL5rcNyCH08W8SAkS8MYZ2jdJInWgu+iV+vTWl8vXHNvnv2HWAO3Iv4OG/vQf+gEQbtqYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wez/FaFs; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609f2920b53so48010867b3.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:05:49 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609ff3206c3so40643887b3.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Mar 2024 18:05:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710036349; x=1710641149; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710036351; x=1710641151; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vgONc26lvm/9ZOmPonAKLBWVK7kvQvvNgc4EWpL/eBk=;
-        b=4RRJfEVFPtrJeHkpe6FwktJhu6hedW8U/v/FPR5lEZLhqQphPs7rfv16DpEvOLsq3p
-         uJY87zLQNSikrSGbJjnZmvv3SXwvszzrcdKMS+PKtWJIUZtpzl7R0QEuJARFoL8xscwU
-         rLXoSBMrzfFNivUw+I2NtMiETimmNkJd6cd7MXkpMcOn3sAm3xhnGlM7JJ0agY8uLr+f
-         aziq4Fo6IxHBXY0idncI9OQeKuvL/Oh585fTQgef3OOR+7L7BZeWsnsPOiZaR5WeSN0K
-         OthKQCtrXWr5CHwo2KSZJcHxH72A5++tGB32b3HTV7eIH7HP5uHRbMBhpcBc9t59/bku
-         QaZw==
+        bh=/s3J+Sp6Nwm5vYKq4/rEI+V8C3zBszpK/wcDil3Uhsk=;
+        b=wez/FaFsRjHRkv0PxDcesvwFad++DgjbL5QV9cfERctSQJoTj2UXGQ9UA0SVyrBMS1
+         MmWpxfWDlUlmdFQZzAEfEc9cequA/fJUA24J4wmP1XJuT86NqcIMF3zamj22F9LCMRB2
+         2ZcKcGrrMeu8Ya8Icq9g9DKOhaG/tIwJ17Qjsw46RzsTNDBEkfF//4FHu1n0YJxEgIbx
+         41qP3ACy74XDqDuHmaSaQOMGeDw20pQSVKcAD4QAAalvxoCkw4TvMsv/sgdx2Hl3rQYa
+         UX70j7T0A8KWX512RuVd3u3LTJvu/rcq5dYIpQYApfjWtnlGgWDhMvKiMDR08SBCjXeC
+         U2Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710036349; x=1710641149;
+        d=1e100.net; s=20230601; t=1710036351; x=1710641151;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vgONc26lvm/9ZOmPonAKLBWVK7kvQvvNgc4EWpL/eBk=;
-        b=tZBJq7z1Wi9o715GDC7Jx8PY0/KwLYPJ3+MZMkbqD/oHde4IfVC0YIpu7vflBj2aZu
-         GEQZ93ZswANjjZD/ZNPWN3hvN/kEqFDPEVEODSkc4/RqG2hnEjFZ+Weu6nw8fBMbYkow
-         j4L5P2QH0W2S3z7ODfsf3Wo5HPfnvwvmboRNY1qKgtG2sPWoA5Wmw8iqYxpezPEfa5+O
-         0/58WlA263AhZ91qmlrSC10t+XTI57+F29fsn2G24kP9IJMb8T2XloQNeri6MEw0NuHH
-         YkldcoJMdK+L5Ws3YdHYStsVQf8EN6n2ZAFQYKKgdHWQORW4yDbCUXDRx3mUnnwwTLAq
-         H+Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCWzPhEZkYy/ryHh7t+v/PkTKOyK3PX22DG0jz72+11DYpT+CokqIYvY+JkZo79ZoZnUdXo3VtazfzY5s6weIcFHR83pdk05znJws31R
-X-Gm-Message-State: AOJu0YyDjNGule1/EOthHtgRWIEk6tvAPuftj75QdFUpJX2W/MLaqONV
-	AcAmvugtH7E1l3qlBHsFmB35KcBTXCORtzZzTXl2Hfmqgr/V4DvpnFpnRmOIJz0EKrjn/bEBf9d
-	XE+Ye5w==
-X-Google-Smtp-Source: AGHT+IEHSaymlJ72bm2wFBwRFlyvHmM501SMsBRHMdMGbeCTQVSAZx2WeXRxeWUBMJJSsrdAYYWs4TJGUV9K
+        bh=/s3J+Sp6Nwm5vYKq4/rEI+V8C3zBszpK/wcDil3Uhsk=;
+        b=A+t14y6bdmkRzuCfnjR3LtDk1sGQSh3r1odFT3STAFc2O8q5H12mkdQZEutnqxqfK3
+         s7oRVrds5PY31U+I5WCtG3eRHdP+cUHl4mBNVyk7LMTtdNLf2c0y41+bziYmaaEMbZLA
+         o1pCl5qJCV0oSSdHKiSzsx41m7hmxaK6e1mgOZz+HrOrAE46P7d9YFAI3J6P7y+QKhfG
+         UqMDGxtFfaC07KSBb0p7rEfJO6Q1K2kU9w+IxCkLMkuxRtu5Y8SAN6YbeDj3Ogk3LRV8
+         EIppos9Z5UcQ6tVeXhuEiZBdiSJFx0ZP+0hzvRF4TNPWP78qbWg+pIy5td19uZjVJCfm
+         yo6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWBI4fIQz1n90FKF2Ju/KNUtOAeHd+mvqpn3sR5KWT7tOG1OZcMxuXqovLGAGGDGFN5aXDKsdUN70Hqqq3ITy1XB/VGV7hyfyh95gnB
+X-Gm-Message-State: AOJu0YyMiiZu+VIcIiu6rkWGSw/4hxeJqxOIw4AftT1UDUDHEOLFNcs/
+	TXIugWaYvNykVc+uAiroDR6qkVI6onz7VLmcDuOlDWoQnECWQr63VuQDIjEt5FikD12VxxRHFLN
+	ia9Jnrg==
+X-Google-Smtp-Source: AGHT+IHPD3AdhB6c0T/TfiXMF4uI00y32OTKxm5DEXBOiPnGnfJTzAmtckpif5kyd4Qr/BOAcbdh5KWG2LgR
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a63d:1b65:e810:3ad3])
- (user=irogers job=sendgmr) by 2002:a25:ab6f:0:b0:dcd:3a37:65 with SMTP id
- u102-20020a25ab6f000000b00dcd3a370065mr144117ybi.7.1710036348960; Sat, 09 Mar
- 2024 18:05:48 -0800 (PST)
-Date: Sat,  9 Mar 2024 18:05:02 -0800
+ (user=irogers job=sendgmr) by 2002:a0d:dd04:0:b0:60a:25ce:c165 with SMTP id
+ g4-20020a0ddd04000000b0060a25cec165mr362319ywe.6.1710036351589; Sat, 09 Mar
+ 2024 18:05:51 -0800 (PST)
+Date: Sat,  9 Mar 2024 18:05:03 -0800
 In-Reply-To: <20240310020509.647319-1-irogers@google.com>
-Message-Id: <20240310020509.647319-8-irogers@google.com>
+Message-Id: <20240310020509.647319-9-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240310020509.647319-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1 07/13] perf cacheline: Add missing linux/types.h include
+Subject: [PATCH v1 08/13] perf arm-spe: Add missing linux/types.h include
 From: Ian Rogers <irogers@google.com>
 To: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -107,26 +107,69 @@ To: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>,
 	llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-u64 is used in this header for cl_address and cl_offset, so
-linux/types.h is necessary. Add to avoid compilation errors that
-aren't currently seen due to transitive dependencies.
+u64 is used for various structs in arm-spe-decoder.h, while uint64_t
+is used in arm-spe-pkt-decoder.h. Avoid transitive dependencies
+bringing in linux/types.h and directly depend upon it in
+arm-spe-decoder.h. Fix arm-spe-decoder.c to use uint64_t, as the
+header file does.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/cacheline.h | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.h     | 1 +
+ tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 8 ++++----
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/cacheline.h b/tools/perf/util/cacheline.h
-index fe6d5b60a031..50b77129e1a4 100644
---- a/tools/perf/util/cacheline.h
-+++ b/tools/perf/util/cacheline.h
-@@ -3,6 +3,7 @@
- #define PERF_CACHELINE_H
- 
- #include <linux/compiler.h>
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+index 1443c28545a9..da5c5816c948 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+@@ -10,6 +10,7 @@
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include <stdint.h>
 +#include <linux/types.h>
  
- int __pure cacheline_size(void);
+ #include "arm-spe-pkt-decoder.h"
+ 
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+index a454c6737563..e035f49f28ad 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+@@ -292,7 +292,7 @@ static int arm_spe_pkt_out_string(int *err, char **buf_p, size_t *blen,
+ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
+ 				  char *buf, size_t buf_len)
+ {
+-	u64 payload = packet->payload;
++	uint64_t payload = packet->payload;
+ 	int err = 0;
+ 
+ 	arm_spe_pkt_out_string(&err, &buf, &buf_len, "EV");
+@@ -332,7 +332,7 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
+ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
+ 				    char *buf, size_t buf_len)
+ {
+-	u64 payload = packet->payload;
++	uint64_t payload = packet->payload;
+ 	int err = 0;
+ 
+ 	switch (packet->index) {
+@@ -429,7 +429,7 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
+ {
+ 	int ns, el, idx = packet->index;
+ 	int ch, pat;
+-	u64 payload = packet->payload;
++	uint64_t payload = packet->payload;
+ 	int err = 0;
+ 	static const char *idx_name[] = {"PC", "TGT", "VA", "PA", "PBT"};
+ 
+@@ -469,7 +469,7 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
+ static int arm_spe_pkt_desc_counter(const struct arm_spe_pkt *packet,
+ 				    char *buf, size_t buf_len)
+ {
+-	u64 payload = packet->payload;
++	uint64_t payload = packet->payload;
+ 	const char *name = arm_spe_pkt_name(packet->type);
+ 	int err = 0;
  
 -- 
 2.44.0.278.ge034bb2e1d-goog
