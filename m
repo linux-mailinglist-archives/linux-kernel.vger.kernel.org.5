@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-98073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96E778774BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:07:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D28D8774BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:07:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C0ED1F21433
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:07:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE6CF1C20A6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2F71102;
-	Sun, 10 Mar 2024 01:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137AB2566;
+	Sun, 10 Mar 2024 01:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOc4/ye4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JIfCDKGm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9CB2EC5
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548C123B7
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 01:07:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710032847; cv=none; b=LHVSKKGIfGm8OHRCFdTEfdmW5vL58L1WXdMP6iA/XhIzSLynWRr1Qj+tIlubQKiFHK3u9AIRWF8258kbIE1XcukqUvb9vrCw/QEM77vtYHBQzraX3mVaxCWIicP+AEsgqr1ZnpyjTNIdz6Zn9GK0+YU6+g1k8BygVamDw3I68Vk=
+	t=1710032871; cv=none; b=VllnEjxbLfyuIqgOwLl8AibP5rELwE2K7Ind2a2i9zvX8ZfS4lJa+2vJbkEqAPoJZJpUjuIyv087hlIJaAVcDiCvQ7PRe2QubWZ99C193Z1adUMs87xAlq5tjq8jPJByseK4sKkofzYlOcli7d67LFj/Zc60qRJzEbdYdp8z/mE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710032847; c=relaxed/simple;
-	bh=O7bNLqK+XdY3HWJdlGb26cZKxT7qdN/YKKNm+L8u1pA=;
+	s=arc-20240116; t=1710032871; c=relaxed/simple;
+	bh=zo55FRunLbNZ0mh+h996GwsvC6svab2r9qI5V26neLE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AR6TtA3CfCUhDQ7V9qzDtsQEtzZW96znQ0II7xEUMlAsJKNPujCTu3JBg5H/kfcMu5UHtF7uvuKxeo87f/ySzcZp/SD2tsUAjygCsQYldMaxN5776vDqcFxVJktTsw0ocVgMw3U5MrX6XMH72ftXd908TZpCAcfBS6oTRxClgOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOc4/ye4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC066C433C7;
-	Sun, 10 Mar 2024 01:07:26 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=lVmH49+VXf/MlScKtXEELTaF/uJq04KNk6Yrth0UC5C7fNA41Tj4hnZzf65Bs5y19yH/4ZJ5LjqwtWkQebbIhnhz4Ym63YO2rliSxpD5FnVdKHqDw5Xx9WiyQn/JrswmUtUbsITy/j2Cbae7PIJVYeocDlxFRxgxhXfVR6IGvxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JIfCDKGm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB6FC433C7;
+	Sun, 10 Mar 2024 01:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710032847;
-	bh=O7bNLqK+XdY3HWJdlGb26cZKxT7qdN/YKKNm+L8u1pA=;
+	s=k20201202; t=1710032870;
+	bh=zo55FRunLbNZ0mh+h996GwsvC6svab2r9qI5V26neLE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=jOc4/ye4s7xJs3j15nPFCxQk6FbEeSdHapovJ5llbuBO9MDzD2OWit6nBBnyqqjX5
-	 bvJj5yBMo/N3vO1P+3xRDsccd00QPD7zFQF5aGPDqZTS8grlDm1bb2FiVT8/ENvE0m
-	 Bp0hdhSHm48Uw40HsyD+e+o7yVSOPuzARD+Qrz9KaCpRw+kmCdM65iTHo+dIU+tbuD
-	 gZmVw52ohzFCylLXehxb5KZHXizKpE6YyMtO6PUisA15revGTPHE+RKEc62qeHBpuF
-	 AydBavJJjf/WWpgk4SzrqYmR3P970C9kQ1AC/M1j/ChhZN+wOLtML89g9LDYg9WqtC
-	 9r2cg5Ums4Gfw==
-Message-ID: <4e94e854-0670-4758-969b-e51c53733e0d@kernel.org>
-Date: Sun, 10 Mar 2024 09:07:28 +0800
+	b=JIfCDKGmmyfP/yhlNlUaojIzXojM+Ua94asNs/9afQNVjHnPYgJkf0DIeTsZCtQTY
+	 7qmyjj/nQb/urQ6E69ZfyAsWLm6uIexAOoD70d4DXCHMrrN8R8Qm+ycl7me0OvXWjx
+	 Yjg/uRBlm0h3pA456HuBP+4L5PmaNHnRtijcC7k/Lw8SQRdjnzoQDMFA2YWfRfPi6/
+	 fOtXJuxqL9DhmICD3WScAc0AAsYWoXZ7BZuFvpvUWltW1ybUL9i3aTM40av06X/Znc
+	 ej2dPqcfbgErJrz7zdqO9TQCpsjnbF970apnwHBMTX+k2FxCY/5baDPHjTfY3cF0PX
+	 fl0mhWMO7OlzQ==
+Message-ID: <d8ed48b3-cb79-4856-9e5d-1c3f421d620b@kernel.org>
+Date: Sun, 10 Mar 2024 09:07:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,12 +49,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] erofs: convert z_erofs_fill_bio_vec() to folios
+Subject: Re: [PATCH 5/6] erofs: convert z_erofs_submissionqueue_endio() to
+ folios
 Content-Language: en-US
 To: Gao Xiang <hsiangkao@linux.alibaba.com>, linux-erofs@lists.ozlabs.org
 Cc: LKML <linux-kernel@vger.kernel.org>
 References: <20240305091448.1384242-1-hsiangkao@linux.alibaba.com>
- <20240305091448.1384242-4-hsiangkao@linux.alibaba.com>
+ <20240305091448.1384242-5-hsiangkao@linux.alibaba.com>
 From: Chao Yu <chao@kernel.org>
 Autocrypt: addr=chao@kernel.org; keydata=
  xsFNBFYs6bUBEADJuxYGZRMvAEySns+DKVtVQRKDYcHlmj+s9is35mtlhrLyjm35FWJY099R
@@ -98,13 +99,13 @@ Autocrypt: addr=chao@kernel.org; keydata=
  92Qh98hAj3cMFKtEVbLKJvrc2AO+mQlS7zl1qWblEhpZnXi05S1AoT0gDW2lwe54VfT3ySon
  8Klpbp5W4eEoY21tLwuNzgUMxmycfM4GaJWNCncKuMT4qGVQO9SPFs0vgUrdBUC5Pn5ZJ46X
  mZA0DUz0S8BJtYGI0DUC/jAKhIgy1vAx39y7sAshwu2VILa71tXJ
-In-Reply-To: <20240305091448.1384242-4-hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240305091448.1384242-5-hsiangkao@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 2024/3/5 17:14, Gao Xiang wrote:
-> Introduce a folio member to `struct z_erofs_bvec` and convert most
-> of z_erofs_fill_bio_vec() to folios, which is still straight-forward.
+> Use bio_for_each_folio() to iterate over each folio in the bio and
+> there is no large folios for now.
 > 
 > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
