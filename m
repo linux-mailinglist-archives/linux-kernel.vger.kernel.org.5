@@ -1,355 +1,102 @@
-Return-Path: <linux-kernel+bounces-98257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323C2877784
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 16:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD704877788
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 16:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2E201F2142A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 15:48:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 773D51F21272
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 15:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F38C383B5;
-	Sun, 10 Mar 2024 15:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28288383A5;
+	Sun, 10 Mar 2024 15:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UVKjjnEl"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iGwjMXeq"
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C90200AE
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 15:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2FC38384;
+	Sun, 10 Mar 2024 15:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710085674; cv=none; b=fvgV0YyCpp5lQsIxoNJ/PqATGnTdgCOx6fKHmGLIwUxOWXUoHAH+YkIqgKDTARkqpIUbEs6KppFG1W0tPj8PGwcC2/7LssLJqVlAtMxV2O06A/dD8MNIgkevZMmO9Y0O4Y4gTORLL35wq4DVRVPUqXm0QCAf9zB1jCxkXPlQWJM=
+	t=1710085918; cv=none; b=nwbIyapQ2nX0ka7FReObnMiBNIErLf3PtRJHBfQ6qBbtE7LXAPgCazOEMu0rQ1wgfS5dXZYjdi/8hXZIWAsRkJNxqVXwMbIHHgL14QPpQ1N9Z03HfYM6Ev2VF37rAZfeCRnzS8R1gCj1lDxGed+ksT4DmXp4pSCScUvxgGS1ueE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710085674; c=relaxed/simple;
-	bh=WGcYheCrkSFjv2fImGb0si1xdLZF/9H6Qe/RzGeZA+c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XqnFVQ68o4K0Novs+xInYyxKPNz/4pjM3GradBBCIXHSSmgt8+/LgfQHjTbd5ANINjxZsA6w4WZyHa1g9Tyrn6+u49ncCmEqVPVKlzOyXaZztTwLLLdbH9UjzrHBr26hn3JeQCKPHnHP0tpUpMYeMU8SC3iFnF/Mfqp08lnK3IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UVKjjnEl; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710085671;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Pr0jCGIrdUrAXoqQBPxPwh4IjonnOl4otme9lP7zJ4=;
-	b=UVKjjnElTTKWcmPIOshsOvWVHklW/OkP9GzSZMSIGyn71YxLZsHpM/ReXzA5QdW3Lbvsds
-	k1IMsMVQH0SkOvzaX1lcyzWOoN0JU9ZmBaJ7ThMR2DS3fBxs0R1xYn0LMUn98tqOvxx6OP
-	cHSoydzHePAJT/A9+i/Pq7uYQORzD80=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-37-SQXBM1lkMsmpAfNC4utWFg-1; Sun, 10 Mar 2024 11:47:43 -0400
-X-MC-Unique: SQXBM1lkMsmpAfNC4utWFg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 083A5800264;
-	Sun, 10 Mar 2024 15:47:43 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.5])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id DEBB7C478A1;
-	Sun, 10 Mar 2024 15:47:36 +0000 (UTC)
-Date: Sun, 10 Mar 2024 23:47:32 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Mike Snitzer <snitzer@kernel.org>
-Cc: Patrick Plenefisch <simonpatp@gmail.com>,
-	Goffredo Baroncelli <kreijack@inwind.it>,
-	linux-kernel@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	regressions@lists.linux.dev, dm-devel@lists.linux.dev,
-	linux-btrfs@vger.kernel.org, Heinz Mauelshagen <heinzm@redhat.com>
-Subject: Re: LVM-on-LVM: error while submitting device barriers
-Message-ID: <Ze3WFGE0je3FivlL@fedora>
-References: <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it>
- <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
- <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
- <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
- <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
- <ZedaKUge-EBo4CuT@redhat.com>
- <ZeiS/bjJaRcrerWW@fedora>
- <CAOCpoWeoQMh_-MxzxGBnK2Kf5EhvTLs=GrGwJ5XcfGVRTp73Eg@mail.gmail.com>
- <Ze2azGlb1WxVFv7Z@fedora>
- <Ze3RWqLvG18cQ4dz@redhat.com>
+	s=arc-20240116; t=1710085918; c=relaxed/simple;
+	bh=FFd3DcW0VEW9q4PY+3fjis2BdSm7XjuFwi4yhcFrhU4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XkytQcwVVL/MwiyFwpQ76ShjizoN4dUZXMLbcfD3YOurVgz8fbIkeWBI+8FOhHYZL5qBWUoLHqljCMzh81h5V3MbeORc+tgDtG6wRYm4q3611+3I6yje4w0Fqk6xPh4IfAIdqw3P3vpyLn9uefsswDNq3pteY6I55xnedDivwKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iGwjMXeq; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c19b7d9de7so2458735b6e.2;
+        Sun, 10 Mar 2024 08:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710085916; x=1710690716; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FFd3DcW0VEW9q4PY+3fjis2BdSm7XjuFwi4yhcFrhU4=;
+        b=iGwjMXeqR+K2iDCc7ClkRmXvKuOkF2A5SfK68aUgKeGOuTUO1zLrlKUcYGD/yVZoFe
+         16w1aE5XJTLBgxHEVV4OULwCfglx1G/hSRg/bwJGStGBg6+2AdifsJt37hlB2G7OHhoh
+         /9y1H4CfHo+i6cqekfOcIdGmWs6oh4rtVPhE9c6Rbk7FT6KKXLMhT62lUHGa/uG3Yg6e
+         lqhFa5WgQJZUsKKkZhwa4SI76OA786zvtQ7XbUszWkkg4PSaI0PudTXCiwt5rn2vr1XO
+         xXquW4EwfAZbKHaDyPGcKO5W4myseukLX627bzIhySCxa0vTg/yVpRP4EMNzR/TXJlLY
+         SeAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710085916; x=1710690716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FFd3DcW0VEW9q4PY+3fjis2BdSm7XjuFwi4yhcFrhU4=;
+        b=a521Sp1PYfSjnib/X10VO/bNU+3C12k2ZPnJBIrsC2J01SFzK3dWneRxLqr/M2z+dr
+         KQrnXwmzlDlVMU24QMWEsGuaI2jsCiGi6u4Bof8DYNQ+vIji+f4LhiZdwia4GO13tlhg
+         anTkp2PzjF5i/OxWcC+eJiLNG+2BfPmBztxSGneodsSXFCgD0bVscO/FEL22lxv0htZS
+         TZRM5HnDS+KUJtY7Fnn1l+wKqvYu2R9JMa6L8ulnS5IRqHdzV/0wiPq56e6fQnS//V4K
+         o4IxA0nyrwbhlEbUB1UfeusStGeeMGaGaIsLo3Dr1w8IosWdAPxJd+Oi6CX500/y75XR
+         lPfg==
+X-Forwarded-Encrypted: i=1; AJvYcCUkh9Hx4hRUPwDLTFIk0dyyeg6y/7KEycNZDnZF+X7aV8wGAjrvWWe//P/aG2cy3YboE5wsDeSctqj6qipJ4vgEfrLFyzXv1s379QUokTeGoMj8RawmZ5zKSVbvY9rbX39vj+aAyjNgSLJzhEvTWRWp8WxSdpSD7dKVQEe7Zgm8c+KsPw==
+X-Gm-Message-State: AOJu0YwrhXKFd1gEyMVDWDer4E7NcdH0sOVviG7p0SQP5mgA/ZJEfcp5
+	QrT49KfkgM4nWI9LUtR9EctP2jNr+7myl5rl3jp/zrJwPinO1Ox1nheHCI7XdDQuseQwX+KIaE6
+	yN9NeMvvzO1vw/bmpQ0jYwagNy0E=
+X-Google-Smtp-Source: AGHT+IH/bPs+BskZRMjgFJT5/0kkUalFAj9DSG+q4hWz4JlMQZH0XKTvdFt9qWH5kpdERAjxBvzgZTImaONF2Unqsmo=
+X-Received: by 2002:a05:6871:5806:b0:21e:7b5c:60fb with SMTP id
+ oj6-20020a056871580600b0021e7b5c60fbmr4348693oac.11.1710085916074; Sun, 10
+ Mar 2024 08:51:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Ze3RWqLvG18cQ4dz@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+References: <20240309160741.54096-1-animeshagarwal28@gmail.com>
+ <a26689a4-1c8c-4458-bb82-137cd1ac21d0@linaro.org> <CAE3Oz80TByuu6=U4PTOHO6k1=KjjRKtPPf7ayhSMZareXP8vdw@mail.gmail.com>
+ <6b065dce-5271-4ea0-b291-a7aae8e71d20@linaro.org> <CAE3Oz83uiCyxV3u1C-5=vmBt6RxnTM+LJCw4KWyJDB2OLn-dRw@mail.gmail.com>
+ <f7d94072-eb4e-4d67-98d6-8090362a01e2@linaro.org>
+In-Reply-To: <f7d94072-eb4e-4d67-98d6-8090362a01e2@linaro.org>
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+Date: Sun, 10 Mar 2024 21:21:44 +0530
+Message-ID: <CAE3Oz81B6uhMu7B0S73Sd1jx-7JNhWoccDkFNn5L_PT+P_-2Rg@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: imx-pata: Convert to dtschema
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, linux-ide@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 10, 2024 at 11:27:22AM -0400, Mike Snitzer wrote:
-> On Sun, Mar 10 2024 at  7:34P -0400,
-> Ming Lei <ming.lei@redhat.com> wrote:
-> 
-> > On Sat, Mar 09, 2024 at 03:39:02PM -0500, Patrick Plenefisch wrote:
-> > > On Wed, Mar 6, 2024 at 11:00 AM Ming Lei <ming.lei@redhat.com> wrote:
-> > > >
-> > > > On Tue, Mar 05, 2024 at 12:45:13PM -0500, Mike Snitzer wrote:
-> > > > > On Thu, Feb 29 2024 at  5:05P -0500,
-> > > > > Goffredo Baroncelli <kreijack@inwind.it> wrote:
-> > > > >
-> > > > > > On 29/02/2024 21.22, Patrick Plenefisch wrote:
-> > > > > > > On Thu, Feb 29, 2024 at 2:56 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
-> > > > > > > >
-> > > > > > > > > Your understanding is correct. The only thing that comes to my mind to
-> > > > > > > > > cause the problem is asymmetry of the SATA devices. I have one 8TB
-> > > > > > > > > device, plus a 1.5TB, 3TB, and 3TB drives. Doing math on the actual
-> > > > > > > > > extents, lowerVG/single spans (3TB+3TB), and
-> > > > > > > > > lowerVG/lvmPool/lvm/brokenDisk spans (3TB+1.5TB). Both obviously have
-> > > > > > > > > the other leg of raid1 on the 8TB drive, but my thought was that the
-> > > > > > > > > jump across the 1.5+3TB drive gap was at least "interesting"
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > what about lowerVG/works ?
-> > > > > > > >
-> > > > > > >
-> > > > > > > That one is only on two disks, it doesn't span any gaps
-> > > > > >
-> > > > > > Sorry, but re-reading the original email I found something that I missed before:
-> > > > > >
-> > > > > > > BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
-> > > > > > > 0, rd 0, flush 1, corrupt 0, gen 0
-> > > > > > > BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
-> > > > > >                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > > > > > > tolerance is 0 for writable mount
-> > > > > > > BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
-> > > > > > > failure (errors while submitting device barriers.)
-> > > > > >
-> > > > > > Looking at the code, it seems that if a FLUSH commands fails, btrfs
-> > > > > > considers that the disk is missing. The it cannot mount RW the device.
-> > > > > >
-> > > > > > I would investigate with the LVM developers, if it properly passes
-> > > > > > the flush/barrier command through all the layers, when we have an
-> > > > > > lvm over lvm (raid1). The fact that the lvm is a raid1, is important because
-> > > > > > a flush command to be honored has to be honored by all the
-> > > > > > devices involved.
-> > > >
-> > > > Hello Patrick & Goffredo,
-> > > >
-> > > > I can trigger this kind of btrfs complaint by simulating one FLUSH failure.
-> > > >
-> > > > If you can reproduce this issue easily, please collect log by the
-> > > > following bpftrace script, which may show where the flush failure is,
-> > > > and maybe it can help to narrow down the issue in the whole stack.
-> > > >
-> > > >
-> > > > #!/usr/bin/bpftrace
-> > > >
-> > > > #ifndef BPFTRACE_HAVE_BTF
-> > > > #include <linux/blkdev.h>
-> > > > #endif
-> > > >
-> > > > kprobe:submit_bio_noacct,
-> > > > kprobe:submit_bio
-> > > > / (((struct bio *)arg0)->bi_opf & (1 << __REQ_PREFLUSH)) != 0 /
-> > > > {
-> > > >         $bio = (struct bio *)arg0;
-> > > >         @submit_stack[arg0] = kstack;
-> > > >         @tracked[arg0] = 1;
-> > > > }
-> > > >
-> > > > kprobe:bio_endio
-> > > > /@tracked[arg0] != 0/
-> > > > {
-> > > >         $bio = (struct bio *)arg0;
-> > > >
-> > > >         if (($bio->bi_flags & (1 << BIO_CHAIN)) && $bio->__bi_remaining.counter > 1) {
-> > > >                 return;
-> > > >         }
-> > > >
-> > > >         if ($bio->bi_status != 0) {
-> > > >                 printf("dev %s bio failed %d, submitter %s completion %s\n",
-> > > >                         $bio->bi_bdev->bd_disk->disk_name,
-> > > >                         $bio->bi_status, @submit_stack[arg0], kstack);
-> > > >         }
-> > > >         delete(@submit_stack[arg0]);
-> > > >         delete(@tracked[arg0]);
-> > > > }
-> > > >
-> > > > END {
-> > > >         clear(@submit_stack);
-> > > >         clear(@tracked);
-> > > > }
-> > > >
-> > > 
-> > > Attaching 4 probes...
-> > > dev dm-77 bio failed 10, submitter
-> > >        submit_bio_noacct+5
-> > >        __send_duplicate_bios+358
-> > >        __send_empty_flush+179
-> > >        dm_submit_bio+857
-> > >        __submit_bio+132
-> > >        submit_bio_noacct_nocheck+345
-> > >        write_all_supers+1718
-> > >        btrfs_commit_transaction+2342
-> > >        transaction_kthread+345
-> > >        kthread+229
-> > >        ret_from_fork+49
-> > >        ret_from_fork_asm+27
-> > > completion
-> > >        bio_endio+5
-> > >        dm_submit_bio+955
-> > >        __submit_bio+132
-> > >        submit_bio_noacct_nocheck+345
-> > >        write_all_supers+1718
-> > >        btrfs_commit_transaction+2342
-> > >        transaction_kthread+345
-> > >        kthread+229
-> > >        ret_from_fork+49
-> > >        ret_from_fork_asm+27
-> > > 
-> > > dev dm-86 bio failed 10, submitter
-> > >        submit_bio_noacct+5
-> > >        write_all_supers+1718
-> > >        btrfs_commit_transaction+2342
-> > >        transaction_kthread+345
-> > >        kthread+229
-> > >        ret_from_fork+49
-> > >        ret_from_fork_asm+27
-> > > completion
-> > >        bio_endio+5
-> > >        clone_endio+295
-> > >        clone_endio+295
-> > >        process_one_work+369
-> > >        worker_thread+635
-> > >        kthread+229
-> > >        ret_from_fork+49
-> > >        ret_from_fork_asm+27
-> > > 
-> > > 
-> > > For context, dm-86 is /dev/lvm/brokenDisk and dm-77 is /dev/lowerVG/lvmPool
-> > 
-> > io_status is 10(BLK_STS_IOERR), which is produced in submission code path on
-> > /dev/dm-77(/dev/lowerVG/lvmPool) first, so looks it is one device mapper issue.
-> > 
-> > The error should be from the following code only:
-> > 
-> > static void __map_bio(struct bio *clone)
-> > 
-> > 	...
-> > 	if (r == DM_MAPIO_KILL)
-> > 		dm_io_dec_pending(io, BLK_STS_IOERR);
-> > 	else
-> > 		dm_io_dec_pending(io, BLK_STS_DM_REQUEUE);
-> >     break;
-> 
-> I agree that the above bpf stack traces for dm-77 indicate that
-> dm_submit_bio failed, which would end up in the above branch if the
-> target's ->map() returned DM_MAPIO_KILL or DM_MAPIO_REQUEUE.
-> 
-> But such an early failure speaks to the flush bio never being
-> submitted to the underlying storage. No?
-> 
-> dm-raid.c:raid_map does return DM_MAPIO_REQUEUE with:
-> 
->         /*
->          * If we're reshaping to add disk(s)), ti->len and
->          * mddev->array_sectors will differ during the process
->          * (ti->len > mddev->array_sectors), so we have to requeue
->          * bios with addresses > mddev->array_sectors here or
->          * there will occur accesses past EOD of the component
->          * data images thus erroring the raid set.
->          */
->         if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
->                 return DM_MAPIO_REQUEUE;
-> 
-> But a flush doesn't have an end_sector (it'd be 0 afaik).. so it seems
-> weird relative to a flush.
+On Sun, Mar 10, 2024 at 8:04=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> I don't see anything about this in commit msg. Commit msg is exactly the
+> same as before. Try yourself - use b4 shazam to apply your patch and see
+> if commit msg contains that information.
 
-Yeah, I also found the above is weird, since DM_MAPIO_REQUEUE is
-supposed to work together only with noflush_suspend, see
-2e93ccc1933d ("[PATCH] dm: suspend: add noflush pushback"), looks
-you already mentioned.
+I will post patch v5 containing the proper explanation in the Change Log.
 
-If that is the reason, maybe the following change can make a
-difference:
-
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index 5e41fbae3f6b..07af18baa8dd 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3331,7 +3331,7 @@ static int raid_map(struct dm_target *ti, struct bio *bio)
- 	 * there will occur accesses past EOD of the component
- 	 * data images thus erroring the raid set.
- 	 */
--	if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
-+	if (unlikely(bio_has_data(bio) && bio_end_sector(bio) > mddev->array_sectors))
- 		return DM_MAPIO_REQUEUE;
- 
- 	md_handle_request(mddev, bio);
-
-
-> 
-> > Patrick, you mentioned lvmPool is raid1, can you explain how lvmPool is
-> > built? It is dm-raid1 target or over plain raid1 device which is
-> > build over /dev/lowerVG?
-> 
-> In my earlier reply I asked Patrick for both:
-> lsblk
-> dmsetup table
-> 
-> Picking over the described IO stacks provided earlier (or Goffredo's
-> interpretation of it, via ascii art) isn't really a great way to see
-> the IO stacks that are in use/question.
-> 
-> > Mike, the logic in the following code doesn't change from v5.18-rc2 to
-> > v5.19, but I still can't understand why STS_IOERR is set in
-> > dm_io_complete() in case of BLK_STS_DM_REQUEUE && !__noflush_suspending(),
-> > since DMF_NOFLUSH_SUSPENDING is only set in __dm_suspend() which
-> > is supposed to not happen in Patrick's case.
-> > 
-> > dm_io_complete()
-> > 	...
-> > 	if (io->status == BLK_STS_DM_REQUEUE) {
-> > 	        unsigned long flags;
-> > 	        /*
-> > 	         * Target requested pushing back the I/O.
-> > 	         */
-> > 	        spin_lock_irqsave(&md->deferred_lock, flags);
-> > 	        if (__noflush_suspending(md) &&
-> > 	            !WARN_ON_ONCE(dm_is_zone_write(md, bio))) {
-> > 	                /* NOTE early return due to BLK_STS_DM_REQUEUE below */
-> > 	                bio_list_add_head(&md->deferred, bio);
-> > 	        } else {
-> > 	                /*
-> > 	                 * noflush suspend was interrupted or this is
-> > 	                 * a write to a zoned target.
-> > 	                 */
-> > 	                io->status = BLK_STS_IOERR;
-> > 	        }
-> > 	        spin_unlock_irqrestore(&md->deferred_lock, flags);
-> > 	}
-> 
-> Given the reason from dm-raid.c:raid_map returning DM_MAPIO_REQUEUE
-> I think the DM device could be suspending without flush.
-> 
-> But regardless, given you logged BLK_STS_IOERR lets assume it isn't,
-> the assumption that "noflush suspend was interrupted" seems like a
-> stale comment -- especially given that target's like dm-raid are now
-> using DM_MAPIO_REQUEUE without concern for the historic tight-coupling
-> of noflush suspend (which was always the case for the biggest historic
-> reason for this code: dm-multipath, see commit 2e93ccc1933d0 from
-> 2006 -- predates my time with developing DM).
-> 
-> So all said, this code seems flawed for dm-raid (and possibly other
-> targets that return DM_MAPIO_REQUEUE).  I'll look closer this week.
-
-Agree, the change is added since 9dbd1aa3a81c ("dm raid: add reshaping
-support to the target"), so loop Heinz in.
-
-
-Thanks,
-Ming
-
+> You mean v5? You need oneOf allowing usage of imx27 alone.
+Ok will modify this in patch v5
 
