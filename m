@@ -1,101 +1,100 @@
-Return-Path: <linux-kernel+bounces-98240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8950887773A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 15:03:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B12877746
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 15:14:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9712EB20EAB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 14:03:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0B602815C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 14:14:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF29A2D607;
-	Sun, 10 Mar 2024 14:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B742D638;
+	Sun, 10 Mar 2024 14:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MrXAmr/F"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="4UJqHlKh"
+Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F17372C85A
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 14:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EEE42C6B8;
+	Sun, 10 Mar 2024 14:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710079428; cv=none; b=hQcHh5zQUBaVzW1mytLOEEhdfywKLl0BYk0u+tfokBgR44Iw87eLWZvlgGpg5ijIeLtCNNa6STdnzTN+e9tC40A1TwJNuoLL3MvnKQbUz/AotAw24S0lP0Xq6lxN9cNo8NXlYHserhd2KL5ikXFwp9jchyblAgJgdizUhcs1BO8=
+	t=1710080055; cv=none; b=fnsTqDskdJwOW5pjU+hxij2kAGYaTQLtZjykicJztlsjXXFQwEagxpLN+41ukfgssrHEOQXizPz2xtjDcxQjQgbv5gzm8ZdJIlCLtjTC3rKFWds+EEFDJdzOkQniXaT+OWAEkSQ1kv7L+hIoDR/9CF+sEoEsZEyIaMDJedxC7zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710079428; c=relaxed/simple;
-	bh=bwiNExhP3G8/4ZF9l7HFtlTqhac5Y1om1nv7SCEhE0s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BL51xYnC6m/ZdvSuhDqDRZrK44kAA3ffQDDETVFzK1MjRLdWBTOtVWlIUrEK2gwH+/z8QrjhIVULQ/L9Jykrj+AJyKwBNz3q2Nsw3Ho2Rg5mvqF/zW7Jmt5j+euGBmP95devI+y2tKTd/XgafVADfPGzE0WUdu4V5yCfq4tgGWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MrXAmr/F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87BDCC433C7
-	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 14:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710079427;
-	bh=bwiNExhP3G8/4ZF9l7HFtlTqhac5Y1om1nv7SCEhE0s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MrXAmr/FhTA07M0n01frmkIyWEcGbzUxsBZ3MglRzMA1sj5v/+EIToP3BDzY2tTGt
-	 /cbyFRCTRKFSDyl7w0JWvI1Juc+PLpLIKiJv1Mu0vKZDGecbTd2pof3aaa/kBwWm+u
-	 e+KDYV/yCabWPpPlLag8CjPNMtJN7ak518OyBg1fOs5g1EjioPACaO7pK3Gj4VV/2U
-	 R7Wakre3MZB2i3QFN2E25FIXzcDY/14MuiyG9/KPly3Wo6SPR+eJZHBNItj1Rd+Og0
-	 v7LZxSD+pHZIQEeeRJtiQ6LnMDL19Dw57/vSawx6RbtQdyEnoqCZQGH66iif1jH07D
-	 yAYIjfPlaNVNA==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a44665605f3so541488666b.2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 07:03:47 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVHidxlczPfq60sO8IOOKYk5/3aBy8aeGHl+vGWCRKYc/5ZfjMYHg2OB1hRDlhTew+TZB8dPqVANmcrFkiBiOri3X9D8vGMyBf6MnAC
-X-Gm-Message-State: AOJu0YxDJLoddndzeXrJjlwQWqyxPRm0kOO9C4K35hUO9ubABPvipU+L
-	0Rs2EWJq3c84DmNJxsvpRBuVli0bBlkeRR5e+FZ7TsFKWz0yf3GYjYKtqmWUvRszvE24EPl8zed
-	qkmiuoweXgLsqYWz9+69q5wa45fI=
-X-Google-Smtp-Source: AGHT+IG4VFqfXMFmT5TrkFhnEebpwiC0lNv40gCZNo4v3r44FIWbSv/ZoWFpbWWWwdjnrXq3t8+SWp8OpqBOZQQYuos=
-X-Received: by 2002:a17:906:564b:b0:a46:2e:ffdb with SMTP id
- v11-20020a170906564b00b00a46002effdbmr2316785ejr.49.1710079426029; Sun, 10
- Mar 2024 07:03:46 -0700 (PDT)
+	s=arc-20240116; t=1710080055; c=relaxed/simple;
+	bh=VT9me4U8T0mG14wxZ1V0il48moXnWd38XMi/P90Ej6g=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=DNDmeQZr/wEbxszKe8Qy3Kg9y6V6y47Xa58CL3hrwTT0P5VV1qZK8yRBLAPqptqhwwpDdj8w9YDPwZU+KRAzgFY9NYBvD5tL5QyO8t8C2TkU0zvZsW1tAlrzNon0qbautEnhLWKC76Hg8ybwYJi2QVqtULKzWRi9CdU4qQKZ5iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=4UJqHlKh; arc=none smtp.client-ip=128.199.32.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
+	t=1710080051; bh=VT9me4U8T0mG14wxZ1V0il48moXnWd38XMi/P90Ej6g=;
+	h=From:Subject:Date:To:Cc;
+	b=4UJqHlKhr+H80i/JeqDqWVmleiuKO5aqBWrvKxhFv92MO3TEoQRBBWJSQ2nV6ZTZG
+	 Ob/w0JLOVd2Ph8vk+TUpY9WeEepVO7xSOUaUtB49/2q95D62todkJEKn/9+T6Drn1c
+	 iz/vUgKRjVHidUxmfccr8Ob3gtfu2i7DM7fIkYkk=
+From: Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH 0/2] Add Samsung Galaxy Note 3 support
+Date: Sun, 10 Mar 2024 15:13:35 +0100
+Message-Id: <20240310-samsung-hlte-v1-0-e9b55bf98a48@z3ntu.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308074600.3294338-1-max.kellermann@ionos.com>
- <CAAhV-H6O02es7ZsDRjWfO=9hz8owa1SWZXkyZ=p3BO28D+ix6A@mail.gmail.com> <CAKPOu+_j3FTcjpOfS6O+Pr5sFGEC63ofgU8qjHUFbSPRWtS6_Q@mail.gmail.com>
-In-Reply-To: <CAKPOu+_j3FTcjpOfS6O+Pr5sFGEC63ofgU8qjHUFbSPRWtS6_Q@mail.gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Sun, 10 Mar 2024 22:03:35 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7X2ViBwz7wz3SPmwaxn__9Mo-5pEL9SGe0xON7exj+wA@mail.gmail.com>
-Message-ID: <CAAhV-H7X2ViBwz7wz3SPmwaxn__9Mo-5pEL9SGe0xON7exj+wA@mail.gmail.com>
-Subject: Re: [PATCH] loongarch/pgtable.h: move {dmw,tlb}_virt_to_page() to page.h
-To: Max Kellermann <max.kellermann@ionos.com>
-Cc: kernel@xen0n.name, lienze@kylinos.cn, yangtiezhu@loongson.cn, 
-	tglx@linutronix.de, arnd@arndb.de, loongarch@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAA/A7WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDY0MD3eLE3OLSvHTdjJySVF1zixTDRCML8ySDRAsloJaCotS0zAqwcdG
+ xtbUAZhzRIl4AAAA=
+To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Adam Honse <calcprogrammer1@gmail.com>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=656; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=VT9me4U8T0mG14wxZ1V0il48moXnWd38XMi/P90Ej6g=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBl7cAZc+SJOXy9NaYjlz2Zq3gHTMNEp8eslZ7j3
+ Qa2e6VXlTWJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZe3AGQAKCRBy2EO4nU3X
+ VtmWD/9gTPIcCe6KEPgfMKOMooo7oKMhHuy3sEWpf1xKunLLgWxu75yhGCyz6rZGLHrsrk7FmUs
+ IPArj0ObjgqK8XdPXOebI7QMHSJbwXUZb6SWz5pQaJpyeDB5Z35wvWLEwxg130oI4ks/Z4mDwro
+ F0JskvvbbSUs3WtdAAkT0C/QDqqKRP2BKNE1NNx0Hd/F35scyiUMgmO/0/SGYibkhhlMr6niuIr
+ pX/jiObtR3UICt0qPV1RK0eIEG6NJ+2JQw4V+pJxGWV0zpi1dspbipVn9pH5TTj4OUT7EgJvB+J
+ ubbEhQBMnD8nJzRgabIbmolsloIFFVPiFWq9zyQ65CuCpWeaKu52BmTDe+QW8DGrBIoyX5HEtxW
+ raQXD1Pl2Vn71NlCcU3QSHKkTXmKW5wVk/I1k67NCB87DHGbt9jf6KyxV7sLXCJ0fygSu89YLq+
+ FGHdkl2rgvf/GVSwn4f6HrfFTgJEZ3lGfXWT1C7kQN/jFMEDwDUm+2QZmaF/sWEJR/plG1+08p6
+ ragJl+ByiALZGFCqghbw7h8Hhp+VzC4swSLYiKRw0J/Vn5amYr0Tlew1j4Y6uOe4O+3Tk1j6d+t
+ F/lrYXiluamjIN7Pcm1yHIrx4kluUMOuBsqLaUBa4D7uQ/jScYwbUgTw5BYt/nrcJKj9yAPkPys
+ UJo87FdUiRC7YEA==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-Hi, Max,
+Add the dts for "hlte" which is a phablet from 2013.
 
-On Sun, Mar 10, 2024 at 6:22=E2=80=AFPM Max Kellermann <max.kellermann@iono=
-s.com> wrote:
->
-> On Sun, Mar 10, 2024 at 2:14=E2=80=AFAM Huacai Chen <chenhuacai@kernel.or=
-g> wrote:
-> > Could you please share what kind of configuration will cause a build er=
-ror?
->
-> With the current kernel, I found none; the problem is masked currently
-> due to the current order of include directives, but it caused problems
-> during my attempts to clean up linux/mm.h - see
-> https://lore.kernel.org/lkml/20240305085919.1601395-1-max.kellermann@iono=
-s.com/
-> for the most recent submission; a later (not-yet-submitted) version of
-> the series which reproduces the problem can be found here:
-> https://github.com/MaxKellermann/linux/commits/mm.h/
-OK, I will apply this patch if no one has objections.
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+Adam Honse (1):
+      ARM: dts: qcom: msm8974: Add Samsung Galaxy Note 3
 
-Huacai
+Luca Weiss (1):
+      dt-bindings: arm: qcom: Add Samsung Galaxy Note 3
 
->
-> I saw this problem with "randconfig KCONFIG_SEED=3D0x5D8A9172" - config a=
-ttached.
->
-> Max
+ Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+ arch/arm/boot/dts/qcom/Makefile                    |   1 +
+ .../boot/dts/qcom/qcom-msm8974-samsung-hlte.dts    | 403 +++++++++++++++++++++
+ 3 files changed, 405 insertions(+)
+---
+base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+change-id: 20240310-samsung-hlte-78d1a287b0a8
+
+Best regards,
+-- 
+Luca Weiss <luca@z3ntu.xyz>
+
 
