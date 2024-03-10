@@ -1,101 +1,114 @@
-Return-Path: <linux-kernel+bounces-98128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CCE2877576
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:52:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F42877578
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 06:53:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DFF21C216A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:52:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A00011F22313
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 05:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D6014011;
-	Sun, 10 Mar 2024 05:52:40 +0000 (UTC)
-Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6F016FF54;
-	Sun, 10 Mar 2024 05:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDB771427B;
+	Sun, 10 Mar 2024 05:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="TYTSvajk";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZBHDVqMB"
+Received: from wfhigh8-smtp.messagingengine.com (wfhigh8-smtp.messagingengine.com [64.147.123.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9256F11187;
+	Sun, 10 Mar 2024 05:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710049960; cv=none; b=M3teIGNk9JSW+aNEw1pxvnsz5qivnqZX0WJrZxbKTsLficdXJEwC6t7ZJyMSVzolTlQJPz1c5hwcx4kwtgNyFzT0iCQCS2y8WwmWKGp8cA9aQAdKQYw+knvMts4B8Pvz5uarZIImk+O+oEaI1agoZ3ZKkpp6dHFz1Wj9S2lAGGI=
+	t=1710050006; cv=none; b=bdRg5U+XqeO+S4CiaZD6o3moXhjuu1/wkunkup1MedU8YeP6qXwG1YqsIMAAi1Nc3niNfVvFJnRXLstuzpfPSkt5k3QdZ40suCBjTW+n62lytg+BkHDYRE0Ml8zOwf65Jodsd6B4YviUNx5aFylJpK7OIGhU6xU8MX5RSYBKcN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710049960; c=relaxed/simple;
-	bh=A9LW5U9UCJNGxciKUSGPD7E5AULsadj2d4L30+gwoGU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Yc47rR+iXtz1k/lqaj4Eq6e7S4n5liqsgwpyJ3qAU+6fBLSdFc/YTYi7WPy4i3YSAM2ffUSXMm7h2NOiObsOjNttgq1MUfiJVNQJ/NmvSzsqXz5yQhMFxP1GVVyIxj+ibLh1OkgyV80YkGOG74TOE4xWx8DP4bCqAQQzGhKhy4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; arc=none smtp.client-ip=210.171.160.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-	by mail.parknet.co.jp (Postfix) with ESMTPSA id 358C5205DB9A;
-	Sun, 10 Mar 2024 14:52:30 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42A5qRD9134432
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Sun, 10 Mar 2024 14:52:28 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42A5qRJl710650
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Sun, 10 Mar 2024 14:52:27 +0900
-Received: (from hirofumi@localhost)
-	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 42A5qR0w710649;
-	Sun, 10 Mar 2024 14:52:27 +0900
-From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gwendal
- Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-In-Reply-To: <Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br> (Thadeu Lima de
-	Souza Cascardo's message of "Wed, 28 Feb 2024 06:10:22 -0300")
-References: <20240222203013.2649457-1-cascardo@igalia.com>
-	<87bk88oskz.fsf@mail.parknet.co.jp>
-	<Zdf8qPN5h74MzCQh@quatroqueijos.cascardo.eti.br>
-	<874jdzpov7.fsf@mail.parknet.co.jp>
-	<87zfvroa1c.fsf@mail.parknet.co.jp>
-	<ZdhsYAUCe9GVMnYE@quatroqueijos.cascardo.eti.br>
-	<87v86fnz2o.fsf@mail.parknet.co.jp>
-	<Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
-	<87le75s1fg.fsf@mail.parknet.co.jp>
-	<Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
-Date: Sun, 10 Mar 2024 14:52:26 +0900
-Message-ID: <87h6hek50l.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710050006; c=relaxed/simple;
+	bh=2wOh83HnBhx1otKc16AoVrX9HuNjsfoUVAuZ5jtZxRc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=keaQZUX+l9kvipyhbGmj1/uPpF/aLqEswzNNzN/6K51EGAJrA+9MK0Bhnjb8yKOzg5tfH3INF4VmJl4nCwbMmPEYPiVREHGhvMFNCaYms6qpfS2z3MYgLg+ff3lqr6aPpA90lSN+CTf373JpSoc0QnAaPCrm2HylqYGk8u0nfB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=TYTSvajk; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZBHDVqMB; arc=none smtp.client-ip=64.147.123.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 086FA1800075;
+	Sun, 10 Mar 2024 00:53:22 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 10 Mar 2024 00:53:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1710050002; x=1710136402; bh=gmryNO6e4mNG5DUbmtbWL
+	rETime890uOx6ZmnWDhp/k=; b=TYTSvajk/tDsFTsppQJLGHnQFjTRVxnOvp9M2
+	EaIhXapzaeMG+brJsEHRKq1uyZLdgvtFgAu8T4n7k5KH+xCDawFiut2YS5GneEfh
+	UTgAo6TjMj4yczykq0yOJ7ONnzDUIaHic2WrpdhoPR+oQA1no7ucAkmJXO+xq+/M
+	UmQoSZBJ5fFCiVtgUopkPRJxUAY0iFfCedsrjY8/newkRzZ/I7fVJNLnVS2qosDF
+	8d6zokxczzG/CxKVP2t2cVLAYeOPVRbA8uFjTvdwOHrYN9is096f24HQNmMd461P
+	hcV30q5Lnhcye2kH5caD6Y9DTYU8zC1seTrzUUtFY8uif630g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1710050002; x=1710136402; bh=gmryNO6e4mNG5DUbmtbWLrETime8
+	90uOx6ZmnWDhp/k=; b=ZBHDVqMBq8+TgmDTqw96PXXgs7FkuWIKwwJPOVPyfZza
+	Hwnc6dtkHHQrY5ecbxgH+h9qdaOAncvJUii98Z/TPfsNwGghIe5tmqVv2KXTOQme
+	WqvTPpe7nxG2ow8nsGSDCr3Wdbu0v2DykUtoD3gXQIUs04ilLc2ODJKHlox1xQm5
+	Yub86nEl5YiCwRxH7SmPh6PsA2TSTTuEKl032Um+8yrZcXV79ukyfStmM1whwgoH
+	06FQhkUDj+ANk84jZN98tgZ6qG78GzHHyrXTDtwof5hn8gdrwG/xhpxus+jAd+sc
+	gR7obpZyzDB4/0CDep3l2VU9aleu05GHhL7qWfiUuQ==
+X-ME-Sender: <xms:0krtZbogWvsu35z7Sd1J_xAKfR9cOsYJOSOOpJ2jl7ThFWWtqPinjQ>
+    <xme:0krtZVonNb5Z003Gx0bTyelRRPiK-ITB3zujhJTLBPeb35atkr5UDeIffqaZNj_-a
+    grvJZaxHl66C2QTmek>
+X-ME-Received: <xmr:0krtZYP1VAgA1XsHFgg-JF0GwNyCz5xq_OR2TbVzlCn13BvJUK14TqZzaYQh>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieekgdekkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
+    vghsrdguvghvqeenucggtffrrghtthgvrhhnpefgudejtdfhuddukefffeekiefftddtvd
+    fhgeduudeuffeuhfefgfegfeetvedvgeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:0krtZe6mZxRqsZtCfj__TLczaVT2WEbBk20LZd6v6N3KQZekK6hrXw>
+    <xmx:0krtZa6rx1M85-oIAXEVKQF5dA4Q0lBWu2u2_rpLO-2Kt5-aXl0SxQ>
+    <xmx:0krtZWgJkbnRtSfLNntND1fzlsUFzaFlECBAP8MDjxi-MGKvxZL01A>
+    <xmx:0krtZV3dZ9QD1_4XLM5LjrGdt19pz7Kphql0aErL1S2DXgs5AYz6CtYW4-s>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 10 Mar 2024 00:53:19 -0500 (EST)
+From: "Luke D. Jones" <luke@ljones.dev>
+To: platform-driver-x86@vger.kernel.org
+Cc: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	"Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH v2 0/1] asus-wmi: add support for Vivobook GPU MUX
+Date: Sun, 10 Mar 2024 18:53:11 +1300
+Message-ID: <20240310055312.11293-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
+Note to self to not try catching up on things while sick.
 
->> Can you share the image somehow? And fsck (chkdsk, etc.) works without
->> any complain?
->
-> Checking the filesystem on Windows runs without any complains, but it turns the
-> directory into an useless lump of data. Without checking the filesystem,
-> creating and reading files from that directory works just fine.
->
-> I tried to use gzip or xz to compress the very sparse filesystem image that I
-> got, but they made it larger on disk than it really was. So here is a script
-> and pieces of the filesystem that will create a sparse 8GB image.
+Changelog:
+-v1
+  - Add missing define for new WMI method
+-v2
+  - Actually add the right one
 
-I tested a your image with some tweaks. Windows's chkdsk complains about
-"BADDIR" directory, and it was fixed by converting it to normal
-file. Probably, chkdsk thought that "BADDIR" got ATTR_DIR bit by
-corruption.  IOW, Windows FATFS driver may accept this image, but
-Windows also think this image as corrupt, like chkdsk says.
+Luke D. Jones (1):
+  platform/x86: asus-wmi: add support for Vivobook GPU MUX
 
-I think the app that make this should be fixed. Windows accepts more
-than linux though, it looks also think as corrupt.
+ drivers/platform/x86/asus-wmi.c            | 18 +++++++++++++-----
+ include/linux/platform_data/x86/asus-wmi.h |  1 +
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
-If we really want to accept this image, we have to change the fat driver
-without affecting good image.  And your patch affects to good image,
-because that patch doesn't count directory correctly, so bad link count.
-
-Thanks.
 -- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+2.44.0
+
 
