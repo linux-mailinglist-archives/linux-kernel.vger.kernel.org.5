@@ -1,100 +1,132 @@
-Return-Path: <linux-kernel+bounces-98211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 256A887769A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 13:37:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ABDD8776A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 13:42:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A975FB21105
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:37:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC2281F21868
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 12:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4372225605;
-	Sun, 10 Mar 2024 12:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC86528389;
+	Sun, 10 Mar 2024 12:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="lC0KogEM"
-Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hn884P6N"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0F316FF23;
-	Sun, 10 Mar 2024 12:36:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117A916FF29;
+	Sun, 10 Mar 2024 12:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710074214; cv=none; b=bDNh87do+c1ghCPPj/GynvoFUvXA+FJBWsXFBBPxoAOEB2y/3o7FtrMg1UPg3nwXQJb77Qvg5xYsvFLESLytxyO85Xnd69S9aohOHF/Widn4D2W6yZ7cDcl9rukOETjorQhSjqV06FqjEubYBBJvwfdXbrgZ1e5DmLFMTwc5mZs=
+	t=1710074511; cv=none; b=uY4JQMkEoNA4HJ9euNwZqTVC/rxYSqcM4XVZYybbp9CGjrTZ84/eWQgmmqJBkSnApyCht3OVtTVgMazQ81wfWtFy6eHXBcygKQ4gz6AguU4cpnjETVPOHJYG5uN3GCUhHRpX9en2/y5sVa6CocARCD4XGeWcCLdUuZz13r8BhfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710074214; c=relaxed/simple;
-	bh=FHkI/XTtwAO2bphz0FP9YeV3o6idfDLKkX3YyUFYqv0=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=buo48tZermijYUiXKfQnZbZnZfAscQifQdWIJxxfmAozfpe/Dw7bZxAEpwFM+JE/6Jfo04Qz9+//GC9jEs/CQoDB3sUqsqmlkhDGOlsR5OHXT5v6lckM0ZLpWX7L43abHvJAOtI3hAagx2ZxHbdYL1J3D+EBWJ139T5Rhcw+/Qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=lC0KogEM; arc=none smtp.client-ip=203.205.251.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710074198; bh=xhILMpXmjh62wZTAFQ4UaRzNQOPst+CVs6ZuyVeh/8A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=lC0KogEMEb/4iYqtfE1JaBUbZWTUCwNNxfLA9Ts4s+z1SQaN3GFMYxE0M+lW1Ss6H
-	 dwZrAcjiFJD3MIn5iR0dJqH4KmTGUKFQS5p1ut6TsGSa18AL01rXlGFra4jMeXqKk5
-	 5iXtxpcC/6LsVVrHbXkgZr3uBDLjVQxUm+WN35Zc=
-Received: from localhost.localdomain ([58.213.8.163])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 9241D2F1; Sun, 10 Mar 2024 20:36:36 +0800
-X-QQ-mid: xmsmtpt1710074196tfumjurs7
-Message-ID: <tencent_688B20450ABBA409637C5A4BC3A7B0191D07@qq.com>
-X-QQ-XMAILINFO: OGvgEoGelOUdHurlUnToO+m81M24ckg367b+/dp254AnKIZvlDyeKxKrO/gMk8
-	 b91c0QhLa5yZIEWaZh9v7Jna9+dCVnEERKBOevSHhyAy9cLOjQXANaCddOL8ZN8JxILN6U77Xru1
-	 QVbA1f5m4AWaWg8VNZwSVf4ivmkfO2+5gFrX4jr+nV09E3FxBBQ4u6VwvyndyaZuDumDHRHT6Rnw
-	 QCIWlmKPLfcY+b+eCN+9AmfpYwTNJXGtA2Yhp4RnoYHAtaRmoukCnXxERtuft+UC7ZbLJ3pzPRQ6
-	 COp9Lslu2Amk+GjOuzVWPvtG231gXP4JL2hDI0heS49SenvKdRC327Sg98reVIZyrVg2LRBHupc0
-	 DFvu48aDs+avBWS04mdOfGt6WkTx8PRtaFy6m7dGfSKP4ZnRcjlcV56OxAkEcKNP2YG8iswWFA+k
-	 1tZuo1RwGB+hz6ZhtLOTGGX9vcFa7L9aKebO+MUIz+8cu/drP55USYMxPcfkW5Hr+lQDTXq4YsBq
-	 5GqXmIv/Xfo/VU9RBFtXUBLfJ+Qt6SxKX1cGt3cIklWdFi7sVq8ZWNw5rZB1ij1v47+TkROWTo6f
-	 wKU75smHb4x/vYy4FJlNoryWlDEPxkoax1fR5c+EP1nPVmvc51HdkdWEElJ1pECC7n326Y96POZd
-	 bqDEOAFojecnMyXy6LosOIKIptAJ1qneXQcadj1e2K7F6ZY/eRL3QCr0Cdm73Z0/dryH9AsDtDrq
-	 Qdv55k9Zvlfa35nM3i5x2V2bMEDLxUFanzM8fzw95w80MyBUG3sT1Cxdf9a2S+vh8xlGvuO6pm7P
-	 dazVStddgY89245lLr1oETDaWRMBSw+2Bu2toXkkv46iRNYFWNdjTnPNXiZPq5YZ4tg1zdBy5Q06
-	 BuDznGL0Ph6M+JnKnRvILKKA8EsRsadp733EfZM9lV6Hgta3HhXQehONeCYBIaDOfGu478YKhVDX
-	 REoSyXMrLQQiGlT7pq0OCi/Qp8Jp75MKfJVlWI3N7P+7cFB3gkNwMn1P5xzlyGzIMaxrmNmIkOvL
-	 UyABIfAswCiZ4ta8uqFMo8/Rhy1aXie9A289yM+9yGHxykl5nQRri+B6oO0eMZBs33dCnR5A==
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: linke li <lilinke99@qq.com>
-To: yanjun.zhu@linux.dev
-Cc: bmt@zurich.ibm.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	lilinke99@qq.com,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of re-reading it
-Date: Sun, 10 Mar 2024 20:36:34 +0800
-X-OQ-MSGID: <20240310123634.69189-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <2d508574-c2b8-489b-a26d-71b1c36961cf@linux.dev>
-References: <2d508574-c2b8-489b-a26d-71b1c36961cf@linux.dev>
+	s=arc-20240116; t=1710074511; c=relaxed/simple;
+	bh=T2hnsj3TXxdQauhbrydhvVMlAp4FlGMF27ltKRC1xko=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DsbXEZ/R/HR1oXl2fEJxTmwr1FlinW7og1MUWy47uGdAj6Z5T6o95WDatU8UZcRboBf/URWDaBmHbVbsjM/Vn3LL/CG26kv7zypCirzWC/E5ZEwSJ02iHzm4W0XdPtf/Can9TUOpvbcs+SOkeW9/E2hMqi12nUCv9e4x6DxGjW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hn884P6N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DD6CC433F1;
+	Sun, 10 Mar 2024 12:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710074510;
+	bh=T2hnsj3TXxdQauhbrydhvVMlAp4FlGMF27ltKRC1xko=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Hn884P6NYCntbYCwhViso8xYitvz/SDSeAYZDfK/+/NNFWBfgkkuxX3gzjYVAT4X2
+	 75YA8TLBgLTHDzXhVe9CfMjGsat0po8S88pq9OfxKLhWElwY7q8w398qcNRr7wwN5g
+	 L5w8HVcrSrqFvtdBU1pSnG4cz71f0xxJMCuP9M5TjxD/GmmO3G4A3kP2ex7IuhABAK
+	 uY76WFjb0LdEG8cy+J2DWRuRgFQhs8QF02ONHzFh4Uhfm5xBQ569mHBp6as4id/fWy
+	 eCUPv+d/UamjMG0dqiKxynXZjHK2WenzLrZnNFt0PLWrVd3K/mhz/nx/8KLipkUqLE
+	 tljcQNovP1rgw==
+Date: Sun, 10 Mar 2024 12:41:33 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>, Jonathan
+ Corbet <corbet@lwn.net>, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul
+ <vkoul@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Nuno Sa
+ <nuno.sa@analog.com>, Michael Hennerich <michael.hennerich@analog.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v8 0/6] iio: new DMABUF based API
+Message-ID: <20240310124133.683e8853@jic23-huawei>
+In-Reply-To: <20240308170046.92899-1-paul@crapouillou.net>
+References: <20240308170046.92899-1-paul@crapouillou.net>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> In a complicated environment, for example, this function is called many 
-> times at the same time and orqe->flags is changed at the same time, I am 
-> not sure if this will introduce risks or not.
+On Fri,  8 Mar 2024 18:00:40 +0100
+Paul Cercueil <paul@crapouillou.net> wrote:
 
-I think one function of READ_ONCE is to read a valid value while the value
-may change concurrently. And there is a smp() above the READ_ONCE, which
-means that the READ_ONCE is well ordered. I think it is kind of safe here.
+> Hi Jonathan,
+> 
+> Here's the final(tm) version of the IIO DMABUF patchset.
+> 
+> This v8 fixes the remaining few issues that Christian reported.
+> 
+> I also updated the documentation patch as there has been changes to
+> index.rst.
+> 
+> This was based on next-20240308.
+> 
+> Changelog:
+> 
+> - [3/6]:
+>     - Fix swapped fence direction
+>     - Simplify fence wait mechanism
+>     - Remove "Buffer closed with active transfers" print, as it was dead
+>       code
+>     - Un-export iio_buffer_dmabuf_{get,put}. They are not used anywhere
+>       else so they can even be static.
+>     - Prevent attaching already-attached DMABUFs
+> - [6/6]:
+>     Renamed dmabuf_api.rst -> iio_dmabuf_api.rst, and updated index.rst
+>     whose format changed in iio/togreg.
+> 
+> Cheers,
+> -Paul
+Given nature of the build bug issues reported, I'm guessing you never
+built this as a module :(  Not sure how one instance of a missing 
+user marking got through but also easy to fix.
 
-> if you need to ensure the consistency of the flags throughout the function, not sure if the following is better or not.
+Anyhow, no need to wait before sending a v9 with those sorted.
 
-> if (((orqe_flags=READ_ONCE(orqe->flags))) & SIW_WQE_VALID) {
+0-day does it's job again - even better is that it's whilst it's
+still your problem and not mine :)
 
-This patch looks like exactly do the same things. The only difference I
-think is the code style.
+Jonathan
 
-Thanks,
-Linke
+> 
+> Paul Cercueil (6):
+>   dmaengine: Add API function dmaengine_prep_peripheral_dma_vec()
+>   dmaengine: dma-axi-dmac: Implement device_prep_peripheral_dma_vec
+>   iio: core: Add new DMABUF interface infrastructure
+>   iio: buffer-dma: Enable support for DMABUFs
+>   iio: buffer-dmaengine: Support new DMABUF based userspace API
+>   Documentation: iio: Document high-speed DMABUF based API
+> 
+>  Documentation/iio/iio_dmabuf_api.rst          |  54 ++
+>  Documentation/iio/index.rst                   |   1 +
+>  drivers/dma/dma-axi-dmac.c                    |  40 ++
+>  drivers/iio/buffer/industrialio-buffer-dma.c  | 181 ++++++-
+>  .../buffer/industrialio-buffer-dmaengine.c    |  59 ++-
+>  drivers/iio/industrialio-buffer.c             | 462 ++++++++++++++++++
+>  include/linux/dmaengine.h                     |  27 +
+>  include/linux/iio/buffer-dma.h                |  31 ++
+>  include/linux/iio/buffer_impl.h               |  30 ++
+>  include/uapi/linux/iio/buffer.h               |  22 +
+>  10 files changed, 890 insertions(+), 17 deletions(-)
+>  create mode 100644 Documentation/iio/iio_dmabuf_api.rst
+> 
 
 
