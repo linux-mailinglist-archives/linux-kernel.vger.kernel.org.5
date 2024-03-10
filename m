@@ -1,94 +1,85 @@
-Return-Path: <linux-kernel+bounces-98295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 052D3877803
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 19:34:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F03FC877804
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 19:36:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E01BB20CD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 18:34:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3AEF28138F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 18:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1894D39AFD;
-	Sun, 10 Mar 2024 18:34:21 +0000 (UTC)
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D468639AFD;
+	Sun, 10 Mar 2024 18:36:43 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AD32EAD8;
-	Sun, 10 Mar 2024 18:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7006C39AD5
+	for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 18:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710095660; cv=none; b=qYd8lPQ2X9FRkW2920EHNzH5UUHAb5fAgUYbpHqwvTJc/sJy33WxGzECP24EpDB2IK4jMuif64Y/TMxYs1pHbbEswhkgWs8+xwR8c8ppB5ffp9quMxqhZIVs2AWayf2lUYvB84gX7rlVn24xsAt0PqvJ0Hp4Sohf5bn0efZGD7s=
+	t=1710095803; cv=none; b=pusTRepabVzE2xWHoXn5DDmenF+d4gq1ABA04/t9SgBbtHBGzNBmevqOrrALXKSydFUzFcjrFqcbyv4V01gmn0Rp3J9wcHmbL/y72pub+miBKC7JH7J7CO6ByFIxKTeRpxtbSv9I1/MCHZds1Brjwde+djEhYGQu0jPP5zbPfMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710095660; c=relaxed/simple;
-	bh=ujM31iBXHdBt4kaCQzBTvFa1bk670UqJUJyI7JLKO08=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Up84nERJJMo4o0esb/iWTPE8uxvy26iBwjdwNTTYhBAZS1YrfdC43tT31tAsrGH1eowUFdd864i6SHJjETVku9+YYTOcPu7UHTsfZV9jHhaiMpEemeuytz3ux8nK10oV8JyDGl6Jg862R1pTyhuF34gLH961+OIlcmpeQhA3Fq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5a17a739935so2183345eaf.1;
-        Sun, 10 Mar 2024 11:34:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710095658; x=1710700458;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2HuVop9TXUF1sME+GPkklQ5nsaJvPNR91ikXjkm6UTI=;
-        b=qlriZGVQmc97gNa/X5ROd39tUjVkT/v9rD/7KwSaybug49+398CjMGBcsMFuKiHu4e
-         eSm25ZKOTiCLbXKI1HEpyxmkeDjoBLGwdOh3gsCsI7M4ReRZZXEa21AhK4exi46oYWul
-         Dy4F1Tc7RnCmleyFqvZ7XVNu+o9pWZwa+iDdJCV/w8MeQDq5664CFsqDLbPhUS9EsN1t
-         fj3WCMrJhfxc28J4WsImOHK2pZw5MXQON7+JjybXBvI4LXaLUyoEnLjq4fofO9UkZBwY
-         MHX0lJ1kFXRzYP6UsLd9FbsRkYO1LhFkGYtitKMQlkVsZq4osC/gt/aEFR8s0rkR9xdP
-         bpcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXx7LhlQ4pzVFSQgWZy/bPpyaqb7wGZX679hYYOp8yVHLAWGO9+Skzm9lo+AwJCxZzFHtzDTFbqoj1tAdFv07hNfE8Ii2VQHpxdKcDxcQ1CtGm8PkMION9qOgcT3kxyjWDNFsqs6vcY
-X-Gm-Message-State: AOJu0YzUrI39EF0p15y3je62by3Sm7yuGvRWlLN8G+2+kuUPTiXj6eQp
-	iMx3El7aDjThWgmqd4N2Nxggjxq8Bbr2c3PlEOItgkhuon0+KERF
-X-Google-Smtp-Source: AGHT+IGWq3sjWNRWUuFd3bI7tiabau54smSS71nPzPxgI7GAzPVLZZHKLv+xsV4LRq35eDIfp7/nfA==
-X-Received: by 2002:a05:6830:97:b0:6e5:2213:9619 with SMTP id a23-20020a056830009700b006e522139619mr3955706oto.12.1710095658286;
-        Sun, 10 Mar 2024 11:34:18 -0700 (PDT)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id k18-20020a6568d2000000b005dc491ccdcesm2349349pgt.14.2024.03.10.11.34.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 11:34:17 -0700 (PDT)
-Date: Mon, 11 Mar 2024 03:34:16 +0900
-From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: lpieralisi@kernel.org, robh@kernel.org, bhelgaas@google.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, vigneshr@ti.com, srk@ti.com,
-	nm@ti.com
-Subject: Re: [PATCH v4] PCI: Cadence: Clear the ARI Capability Next Function
- Number of the last function
-Message-ID: <20240310183416.GE2765217@rocinante>
-References: <20231202085015.3048516-1-s-vadapalli@ti.com>
+	s=arc-20240116; t=1710095803; c=relaxed/simple;
+	bh=BExo0rP+W8uEQed6H6W4rt613GfDykdsivkK43c3Yiw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XdQA3gkQc38pIAwRJ3jBP97LlPXh6ymErypjfJvxeojOA93XMO8mBTcU8HAKjkUX4B++DsSCvEYqD1g/tmV/PT/Zx77CJOa5ZpzvZJ9pXPbtYVed/9CjkVNNqNNtE0vpoM+NGiE1EIHym29gEiPRMMQFSHYOSM08vifw3R8fReI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C853C433F1;
+	Sun, 10 Mar 2024 18:36:42 +0000 (UTC)
+Date: Sun, 10 Mar 2024 14:36:40 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: David Laight <David.Laight@ACULAB.COM>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>
+Subject: Re: [for-linus][PATCH 0/3] tracing: Fixes for v6.8
+Message-ID: <20240310143640.3feb907b@rorschach.local.home>
+In-Reply-To: <550b6c44aa434b5b91e999a8d073527c@AcuMS.aculab.com>
+References: <20240306184244.754263547@goodmis.org>
+	<550b6c44aa434b5b91e999a8d073527c@AcuMS.aculab.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231202085015.3048516-1-s-vadapalli@ti.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Sun, 10 Mar 2024 18:16:06 +0000
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-> Next Function Number field in ARI Capability Register for last function
-> must be zero by default as per the PCIe specification, indicating there
-> is no next higher number function but that's not happening in our case,
-> so this patch clears the Next Function Number field for last function used.
+> ...
+> >   Another issue that was brought up is that the trace_seq buffer is
+> >   also based on PAGE_SIZE even though it is not tied to the architecture
+> >   limit like the ring buffer sub-buffer is. Having it be 64K * 2 is
+> >   simply just too big and wasting memory on systems with 64K page sizes.
+> >   It is now hardcoded to 8K which is what all other architectures with
+> >   4K PAGE_SIZE has.  
 > 
-> Signed-off-by: Jasko-EXT Wojciech <wojciech.jasko-EXT@continental-corporation.com>
-> Signed-off-by: Achal Verma <a-verma1@ti.com>
-> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> Does Linux use a 2k PAGE_SIZE on any architectures?
+> IIRC m68k hardware has a 2k page, but Linux might always pair them.
+> A 2k page might (or might not) cause grief.
+> 
 
-Applied to controller/cadence, thank you!
+The trace_seq is just a buffer to build up the event output string. The
+ring buffer sub-buffer is set to page size. For trace_marker, it is
+still limited to the size of the ring buffer sub-buffer. If the
+sub-buffer is only 2K, the trace_marker write will be broken up by less
+than 2K.
 
-[1/1] PCI: cadence: Clear the ARI Capability Next Function Number of the last function
-      https://git.kernel.org/pci/pci/c/667a006d73fb
+The problem that is being fixed here had nothing to do with the limited
+size of the resources. The issue was actually the opposite. On PowerPC,
+the PAGE_SIZE being 64K allowed the strings to be that big too. And
+what broke was that it was passed to a vsprintf(s, "%.*s", len, str);
+where the len was greater than 32K and that caused a warning as the
+precision of "%.*s" has a max of signed short.
 
-	Krzysztof
+2K PAGE_SIZE will still just "work".
+
+-- Steve
 
