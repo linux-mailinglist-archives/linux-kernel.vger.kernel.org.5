@@ -1,98 +1,118 @@
-Return-Path: <linux-kernel+bounces-98278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7DF68777CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 18:42:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 588FC8777CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 18:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F77F1F20EEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 17:42:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B6EC2812EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 17:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADBD39855;
-	Sun, 10 Mar 2024 17:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b="UOfuasIZ"
-Received: from smtp1.math.uni-bielefeld.de (smtp1.math.uni-bielefeld.de [129.70.45.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C32A39AC7;
+	Sun, 10 Mar 2024 17:45:47 +0000 (UTC)
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA2821115;
-	Sun, 10 Mar 2024 17:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.70.45.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C71B21115;
+	Sun, 10 Mar 2024 17:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710092544; cv=none; b=T8t4PYOb4/NGCoPWOpCDoc6MNnidZZQG2LJR/tFCQsiWjgZKdOjQj9NWl8iOXcJgmKU4RXLebAC4gMiK7AJKG1qH8Z+1m0mp9s410AX5vJeA4EXD4QyXs1LCxQDn3DSSQn6QM3/dHETCYAoXCDtJ8welPM215iIV6iulx7AuofE=
+	t=1710092746; cv=none; b=e8/I4fv+sjYdR4hx3q0bPAor2djXiIx4cpSO/3ogMHHOSIoDzGitY8ZhSqwilq9fF9nyHTFF3dZSZeyDdlZrpfqF9X8mQ+qDfBsG8RsXZQqjh0xcUrZXepyrgotHUUXeuGoUWjiNxc2oVjLine2OeGHjrBu7OMnCcDQpuUkj9Yg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710092544; c=relaxed/simple;
-	bh=JjnmvSWzQ3skeCeWaRaZEbDd1U+jcePFgpXcI+mVNAc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NO7UBSwmqpyzRObW6kS47v8aQq3VENjL0qfmTxzFMhrwaPPHusVjYphMrBaSbIk7cWux85u0byNInb2EZRQsmztaaiGFbxHTf4azgdyvaQ/Q7uNULDMvMEZGDvAk6wMdr5ZmtGFf0nB1iNldD4gqeEjIIQVx4OL3jjSxb1cnmgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de; spf=pass smtp.mailfrom=math.uni-bielefeld.de; dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b=UOfuasIZ; arc=none smtp.client-ip=129.70.45.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=math.uni-bielefeld.de
-Received: from localhost (dslb-094-217-220-071.094.217.pools.vodafone-ip.de [94.217.220.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by smtp1.math.uni-bielefeld.de (Postfix) with ESMTPSA id 03F8760ABB;
-	Sun, 10 Mar 2024 18:42:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=math.uni-bielefeld.de; s=default; t=1710092530;
-	bh=JjnmvSWzQ3skeCeWaRaZEbDd1U+jcePFgpXcI+mVNAc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=UOfuasIZqVJu6n6AOCf14bJj4HXVvYKlYZi0XzG8pf2OCSyUh2OtlNi6FPgbupX2j
-	 eL2C+aVQ71lyrQt42Vit6Hk0XVid08V1GK2DLDzf4irX3RzqS2cmDg+862h0mkgZGH
-	 8+g1vkyBfld1nga2qBJ7Yb8z6BQUrjNZJochzTGtVncQIytFBA4Ap1rOPwJyJFfgTX
-	 oNoffeH26Z0qvlDe9hWFksyckDuSITt7w1q0zBVts4rqrX19eG8Vj8k0O594Ff8Zoe
-	 IOEmGVQZWWMlbEZRzppXHqrRFQbPKc5GaPEDCGq6s7RU+30IQz4keNgW8A2AMZAkeG
-	 BxUod/hGV8rLQ==
-From: tjakobi@math.uni-bielefeld.de
-To: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>
-Cc: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (dell-smm) Add Dell G5 5505 to DMI table
-Date: Sun, 10 Mar 2024 18:41:43 +0100
-Message-ID: <20240310174144.859510-1-tjakobi@math.uni-bielefeld.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1710092746; c=relaxed/simple;
+	bh=hrQnUxJLirdyrN46Viu7HBOjLYptBIcrVHgHTEz5FvI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LBWaLukqt2onftfdiVIkmb4hiMpV1AJbbdFWtNHFBo7+E8jTBe8dXRwyq9Xf8yGT9oMkGO8mBzqsMVBlG4LW/jlBt5sv7+4cLO1Nn9fEjcMG958iTsHsX59j70118KWeBWefw429hR8vgrBR/wfWaSuxxAI2uM8P2L0+0vE1fCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ddf26eba3cso2824790a34.0;
+        Sun, 10 Mar 2024 10:45:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710092744; x=1710697544;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S7iPTCl8r4EkA4EfZ5hPRJf4v1rg1K2hUgK6qm67XQU=;
+        b=pq65PE40YWaeoc1lsDTD4P9ekbP5WOqEdGE8FYI8IvfCSjHU2wYEXirtpw2tqK+fkl
+         ZPMU2Bu8e3yKBhabnM9/aCtJYsthTk4t0+snwJlASXm8Nwi7a3/tzN6TeH77CoUlENBn
+         ywIrpX9fu+eAo5CbppmCghyGR2r5n+dfqiDXwdazI7+8DEdbGLOGiK7To1u69VixBWMl
+         srR1XGMQiKMWrYs/MEge+AHYtyndUJDobo3eaQQAZ8XDbAsvYwpXMJyBskx/GcRqk36w
+         uRcVh1Lu+1I15X5iT0Fu6FqdCf0rVF/7F+eZJiI8KcDuNCrC+gC17H3vmBfSAlpVxl8R
+         kEog==
+X-Forwarded-Encrypted: i=1; AJvYcCXmSVxQBQAL1uJRKncLR8/nNRJxwUnZEiarhTklSzyWk9x/rdAIpYqpB7Jc25wnrZRek8mwdeQr/nlxyKIEip6LwWcH27xIDoaaRn5OZzXHyEcKeoP0I2xw26OB+yapOxbRg/5vyXsBzGrFLrGqL+9dlJlUp6R+4ZxQ5Lx7DIm7Kg+95F4fhLI2Chq+FATyrfZyztIQq2S7grtWk76znA==
+X-Gm-Message-State: AOJu0Ywvd0OS3NIHgRf+tuYM8Ur7QQ7WZDNx8m9BH1US33Ux7Nu/cvMa
+	NKHb4YNZSkQfeGdNmVVDMD8++f4IArEPLbfYFVe687ipKCdlqyV5I/oC7W+xWLYw+A==
+X-Google-Smtp-Source: AGHT+IEcfNjhsv73rREw3FDt64vqTpH5i74RFUwWehwR6mOMV0r1WNXFeD8Aop5kBWRwiJ04EI+nvg==
+X-Received: by 2002:a9d:69cc:0:b0:6e5:5cd:6b08 with SMTP id v12-20020a9d69cc000000b006e505cd6b08mr6147920oto.32.1710092744079;
+        Sun, 10 Mar 2024 10:45:44 -0700 (PDT)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id c13-20020a63350d000000b0059b2316be86sm2733363pga.46.2024.03.10.10.45.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 10:45:43 -0700 (PDT)
+Date: Mon, 11 Mar 2024 02:45:41 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] PCI: qcom: Enable BDF to SID translation properly
+Message-ID: <20240310174541.GA2765217@rocinante>
+References: <20240307-pci-bdf-sid-fix-v1-1-9423a7e2d63c@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307-pci-bdf-sid-fix-v1-1-9423a7e2d63c@linaro.org>
 
-From: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
+Hello,
 
-Enables reading the speed of the CPU and GPU fan on the G5.
+> Qcom SoCs making use of ARM SMMU require BDF to SID translation table in
+> the driver to properly map the SID for the PCIe devices based on their BDF
+> identifier. This is currently achieved with the help of
+> qcom_pcie_config_sid_1_9_0() function for SoCs supporting the 1_9_0 config.
+> 
+> But With newer Qcom SoCs starting from SM8450, BDF to SID translation is
+> set to bypass mode by default in hardware. Due to this, the translation
+> table that is set in the qcom_pcie_config_sid_1_9_0() is essentially
+> unused and the default SID is used for all endpoints in SoCs starting from
+> SM8450.
+> 
+> This is a security concern and also warrants swapping the DeviceID in DT
+> while using the GIC ITS to handle MSIs from endpoints. The swapping is
+> currently done like below in DT when using GIC ITS:
+> 
+> 			/*
+> 			 * MSIs for BDF (1:0.0) only works with Device ID 0x5980.
+> 			 * Hence, the IDs are swapped.
+> 			 */
+> 			msi-map = <0x0 &gic_its 0x5981 0x1>,
+> 				  <0x100 &gic_its 0x5980 0x1>;
+> 
+> Here, swapping of the DeviceIDs ensure that the endpoint with BDF (1:0.0)
+> gets the DeviceID 0x5980 which is associated with the default SID as per
+> the iommu mapping in DT. So MSIs were delivered with IDs swapped so far.
+> But this also means the Root Port (0:0.0) won't receive any MSIs (for PME,
+> AER etc...)
+> 
+> So let's fix these issues by clearing the BDF to SID bypass mode for all
+> SoCs making use of the 1_9_0 config. This allows the PCIe devices to use
+> the correct SID, thus avoiding the DeviceID swapping hack in DT and also
+> achieving the isolation between devices.
 
-Signed-off-by: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
----
- drivers/hwmon/dell-smm-hwmon.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Applied to controller/qcom, thank you!
 
-diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-index 44aaf9b9191d..bee9cca2f768 100644
---- a/drivers/hwmon/dell-smm-hwmon.c
-+++ b/drivers/hwmon/dell-smm-hwmon.c
-@@ -1192,6 +1192,14 @@ static const struct dmi_system_id i8k_dmi_table[] __initconst = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "XPS"),
- 		},
- 	},
-+	{
-+		.ident = "Dell G5 5505",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_FAMILY, "GSeries"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "G5 5505"),
-+		},
-+	},
- 	{ }
- };
- 
--- 
-2.43.0
+[1/1] PCI: qcom: Enable BDF to SID translation properly
+      https://git.kernel.org/pci/pci/c/b9bc750e1193
 
+	Krzysztof
 
