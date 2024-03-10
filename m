@@ -1,165 +1,232 @@
-Return-Path: <linux-kernel+bounces-98081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B92C8774CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:35:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54A738774D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 02:38:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85059B20B8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:35:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59EC41C20992
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 01:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A5C10E9;
-	Sun, 10 Mar 2024 01:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D01D1115;
+	Sun, 10 Mar 2024 01:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="rkxZMowO"
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2090.outbound.protection.outlook.com [40.92.102.90])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VI3jRqHX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621621102;
-	Sun, 10 Mar 2024 01:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.102.90
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710034532; cv=fail; b=MVMB11mi3M+ezmCqKJRS2TFJtDW+67XQxc3We9n2gLNWs2czb94mB8Kh4hCsgURQtTAuGnDG8pzLTSpXrOeRBQCvA++rvH94x0utXlrlsi6LpMG1pPTQ97sAifsaGspiPbYXaWbzNE7U9JmLRefc3RkNydtJ1ekToC1qMEDEk00=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710034532; c=relaxed/simple;
-	bh=7LTsmkoKL5rYGyfwDACnoZ8DZmMBsohLreFOi9gZuOY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=GusVMSn1Z6YLRldeHBLt4d3ahlQYFqBYcO9q/O3YiMIS0v4vHbkJ770Juw8lGrd+3MtefV+3XsQPCAtJqne4kCPr2vv7KkKeigoxlsJAE6G0wHcD44VqPC703V5Ev7CusxUCFwpPylFdsp8ekt1nrNQ2pcl4axYF0sbain+Fmkc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=rkxZMowO; arc=fail smtp.client-ip=40.92.102.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KN27zZE3xxWnr9SdKHdctDAGWq9u6N2kksihw/Qz9bcAdRGJ5TcNvfG6bk7RpRO2VC9k2lOZLM3EIwunR/CeZNQEepb5vkSqtpYXHAou9m2J5ioRB2elb6MZxYDSkAzDWkX9AbZ6XAsMn6UGAfJ/V9ZpvBsi1sLRkodQ/4vzGxI/p6nXvz37VKiUIloo27hsO9EMvAd44eQbWEIVcvjGgnqkilZJo54fT2c5kWekJssfHjDIf+cl7+1kScR+KCWxusOSAmRZYVBWBteufw7j2DQeluGTXkygvK9v/pYaXyIk1+oCSpJKFnnapMQtfqyc6DbFgoT4QMmtw9Ssfpyu4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RbkvK4NCxTEvujL/Ww3GSNBs32AA4y1GV+rVBa9rYKQ=;
- b=O4aeExp/+yNZ8+PgAmkbfHthfka9FkjdygWEyUF+8WSTK3HMz+HIxQq6J99mR/CK5PoZMfNCg1nOa2oRXRFsr1pFo3Ljesw4AgGhyCWr6Z2xJchDCAIJ+cLxsEuoKXOuRpCSEyktmJVT1l6ffLYY32lE/IGPqcp2JB78HX6CJaEgzkebD8EmPEN2n3ufoFXD8pOtbddAakXz8IrfFMS431xhMPUDi+rtDB/hSvMM0BSChwpbOfPtKWpKlQ16N/CZ/zNE9YpJ+69NuDNvJJACWLYX5sYtUgD/kf/H3kt9flvEMtp0GNk2E14sflLUOvqDNH2gKmzE3eOTvP/jCRqfWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RbkvK4NCxTEvujL/Ww3GSNBs32AA4y1GV+rVBa9rYKQ=;
- b=rkxZMowOt8SlKLFXkk+/rYnXK1EgXiuOKj52JUNvVSdzvtNXe7q7siyBdoxKsxz//4Y49DnimI9Hsa6rhqTqRCaBjwaQv1GAVIpDm2gYREnqBCOhKjrpHqN9Gaevm8ztC8eYW9a09Msh1FJehrZWVWpfofNupnRxRyTa4oJ9qzNZ6aI6ho2mjyjMBxuhTpYVh5GybktTx3oHvTnAd0DHq9ZWl2QsLJsNLZzP9BB/iv47Ybyly69U1n4kp+q38ctR3YA80CwJESPwpjkC9mmsuJve+Jh3/yqcEdYe+tXlCqnN1b1VYkUAaBWhd769xaRv/IsZJfsWSJKcPY9Fw8555A==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by PN2P287MB0223.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:ee::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.33; Sun, 10 Mar
- 2024 01:35:21 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::7397:fc50:6da4:7328]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::7397:fc50:6da4:7328%7]) with mapi id 15.20.7362.031; Sun, 10 Mar 2024
- 01:35:21 +0000
-Message-ID:
- <MA0P287MB2822D5C65CA0F90BCC8D2095FE252@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Sun, 10 Mar 2024 09:35:17 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 1/5] dt-bindings: clock: sophgo: add pll clocks for
- SG2042
-To: Stephen Boyd <sboyd@kernel.org>, Chen Wang <unicornxw@gmail.com>,
- aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
- devicetree@vger.kernel.org, guoren@kernel.org, haijiao.liu@sophgo.com,
- inochiama@outlook.com, jszhang@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
- richardcochran@gmail.com, robh+dt@kernel.org, samuel.holland@sifive.com,
- xiaoguang.xing@sophgo.com
-Cc: Rob Herring <robh@kernel.org>
-References: <cover.1708397315.git.unicorn_wang@outlook.com>
- <92448a1ca9ad8f713dbdbf3453f1a5db0ca47d9b.1708397315.git.unicorn_wang@outlook.com>
- <d22eb9d0bfbaf12689a2d14d3c50e263.sboyd@kernel.org>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <d22eb9d0bfbaf12689a2d14d3c50e263.sboyd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [kBF0qzm8I7LF6rbDRtugZPcbnXRtBr7U]
-X-ClientProxiedBy: SI1PR02CA0010.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::17) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <3fb6af03-9adf-4eda-a953-35f7082e3c0c@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D856EC5;
+	Sun, 10 Mar 2024 01:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710034681; cv=none; b=QHq0tVGHB6IzYbD70rpGhlqcCqtE5NLoP8J+kLo7JCdN/Q4P8SIRGoEiSqPRHN4cHiMi2eZ8sRYzLUY8QxnwRcWDd9pVVbYXFqfCp4hMkMLm8K14+rcnvYfJ9PaIUM+UVVIwMt9jFJV0D4r1rBM46b7CC5K3KJ4JRt4wQQHWTEk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710034681; c=relaxed/simple;
+	bh=mLysYKJMnp+csqFKfyy0BM0x56EkfLIUO0ZrRPScLJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pw1AFhlLFUVXnlWpzOcJzbXrJ/V+bg2RHVt7QCdTe6YG8y86vI22/Oqly9WfRAOsN149gpWAmpCAypFVGO8ZbxNvchL9BYRQ9fJp0Eph6AdXKENNtWiXB7MvJIY9/ohMPX+dtnKHfJMxNeaAydcMRw2oKMVdWyYGpSoTxhUOTNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VI3jRqHX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC111C433F1;
+	Sun, 10 Mar 2024 01:37:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710034680;
+	bh=mLysYKJMnp+csqFKfyy0BM0x56EkfLIUO0ZrRPScLJE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VI3jRqHX/kHfxrP0VnhRu3y7u0mu3xQ8TIoyJmBFZNx941GnzQV8toeJaP36FC+DH
+	 HEueSM7E64MbMnMr60kH22/WYUmzgioKEc/Nck9e5kAsV61lW2RiuCH/50nyRVMpcU
+	 znIT/4zIf/62xcCXme/FgoGoeQskQG4fvKXX79W9trkq69ZwsdfINM7xfySEoWrzmV
+	 z+dhzvqVLAGAGt6UV2HfoRBlb9oNXl+ocV/hT5MoXiN33gD9bgnzIeRrJjPQ2+dtQx
+	 qGH+rfFK4oaBpurYC0XVJDase4EAC8qoDeegclHz0svqH6+rftsXciktdh5Vn6vXCf
+	 bTWzAWA/P6V9A==
+Date: Sat, 9 Mar 2024 20:37:51 -0500
+From: Guo Ren <guoren@kernel.org>
+To: Andy Chiu <andy.chiu@sifive.com>
+Cc: Puranjay Mohan <puranjay12@gmail.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+	Deepak Gupta <debug@rivosinc.com>,
+	Sia Jee Heng <jeeheng.sia@starfivetech.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	Song Shuai <suagrfillet@gmail.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Jisheng Zhang <jszhang@kernel.org>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
+Message-ID: <Ze0O77ze56DGffzD@gmail.com>
+References: <20240306165904.108141-1-puranjay12@gmail.com>
+ <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
+ <CANk7y0gbQdYw0V+CEv-z8wFGXnki8KSn4c8+i0iZ1UFNCg7wJQ@mail.gmail.com>
+ <CABgGipUJU_joVOjPi4WZ4JJM72zaSrCA1QUAaP8hob3+LXkS0g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN2P287MB0223:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d61b079-1bb6-416e-b14c-08dc40a25991
-X-MS-Exchange-SLBlob-MailProps:
-	iS5pQZgsAQCMYMcbXXZJyxopNTE8DiX3ITZEkkon+BmixtgB80HzB0uSoqyyofFmjPVZFbgV2zIH17W0/XrEyW4e5aaiu4ebrxfkHFI3L1wYl/zKr2zVdLKartJNUKbUxD2ikyCXGhxxLJVKc2Qnah/oKHdlGc5KMO8M7fyxJXb2FOcwlVvdLPBkYUXQrm/4Nwa9lzoEHAY5mtWtwAdIJWPdkItoN4F6PAQZnI7vEsEVpnVebuWV3Ay+veBJAAbnLm0eYsoZM0DF05WljIGppEev2U++N5WC+uxpQFEo2Rlsjp4z6x9bWCXMCkrz7WJMJSSqsp9uxTXbqzrTpY/B16NtGjf3TVMDj5YJu4LRq2JsrTYDqrhIELSSLnRO6Dr0luc4hFLnRYg5VTJSKTXWU3t2QPLH6XK2p3DMci3/9PdDVdQLkNrWtRigMR1aELcX91f/Mf9JAxl2UfoehY/cWjXVkgPkU800I/3crCluyBkP3a2dq5vw1d+k390EYHWz/zBKKwGt+dncQVNPSm0gOmhn9urpLRemgf1iZLuVDki3raqgk/AVj9iVVRlAsolGwumIW5HcKhX/VaIucE920zIw5t6KJlK1mgPEoEhMiWmpAjLHxra6s51sY6h7c0sCAgZF4kyuAQDC7VGMwMCYvltj34+d9GQK2IdK0/EujyH/fHrPVFDitiegpgwqHfZwNzU+y3WIUY/IMnINfdnfqTZlpiDovhsIqgwL2NR6mM8lo5mBpqu4Xs8a5yU58RiZsPYAHQUlMEcx1aNw/GpZb/TZBai2jRD51QG6HpHezP0kSepRaeOkQFR31qu+LloF
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	pd0FXcmuT+2TBzMktB3B9iu3ofmIyQm4uPI1hRudxp2kpYl99r265tVax+v6fHeDh5ZkmPPBYei6buOpNNjS78rMjoikV2JstnPMidTe+LkIcqyi/dyadtqFwBIhUyWCvBx3U4NDKZgAQV/RV6S7E3v7TA93vyoITAKFBaUKI6Vn7n27lYrebLG3ShHUH8kbIE7pjwhJhPGkPKlJf0Fj+xfoWmeSisaWEX/JiRjdloIqhJOKIvQkWLDavvTYywfCBCRtUciXn9Ve9ogSHSM65QXrX2iDs/+gvmnTTRCAOMEGqnKK6sels6SJp4aJoIDxLSRi8UbOa8BPmn/WZ4K8t03CoSAqL4be2BaXEY+UfRmjWK5ke6/59zRBtL2lslyECRZrsOlnsoPItiPyuUHdBIfg1LZfLWt5YcFp/v3bix9SrWnnrVnyioTIngXdHZNEZ21qieBjNS+YvI4HeyIzjgi8AlkDSZWHZzdnhAIDCAjjEGNSj7cKVTuyiAaikV0bOk2FpKTWuTyv7wcnwwAGupCsCZh2MIMcEd2y2HKyYpWBP06Fw6cITp0+gZQRcZjWEu3O7epebmzr5qdy04/37ov7hjv6Cy/9QhSaHOSKo/mc2GESe+QiVkESMZxWQyVt52FmlMNv9Ki5+IeKF0xURW5ilCFrGgEZTpOfCQYZhSo=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TlVSNUdNWlVnR1NMVVRyUjlHa2JSSEVScGFhNG1tbXRYWnFncUM1VXBvaVlo?=
- =?utf-8?B?YkpnY3hJU0UyVG0ySHNpTkJ4dExKT1B3VEdQbGE0bXQweHJQWEcyR1NHdzdC?=
- =?utf-8?B?Z3lvWjJFeTZ4MmtESXFIeTVMR3M5TnlMdE1zWGs2MVFlZmpMcXpuUmQ5UTE3?=
- =?utf-8?B?ekVacm4welExZnpGUnUzbmxTSDFqSDB3VDJsNmJYa1JFcGYwYmcwTS84NTUr?=
- =?utf-8?B?bUcyVHpjNjkzMytia3pxY09HU3dOWHM1VllHb1hjNUEraGxWSEZtbVY4OWpD?=
- =?utf-8?B?L3k5b3BVWlJXQVBJNENObVZxdGJsMXBvS0EvWmFhTXhqS3RnUkJTWkEyZVZh?=
- =?utf-8?B?ZDdnY1JjL3ZuNUdKeW5CT3VOMnNCSFhxMDhhQ1czNWx5M0loeTZUU01hMkFp?=
- =?utf-8?B?dW02V1B1TEJyZFY2K1NHZjJobEVvZXFhbEVEOGNUZFhjZGVqUjZnS1lVdnlt?=
- =?utf-8?B?RHovcnZMYnBwM2pmTCtCM2FjYTYrZGNtNnhZK3RiNitDUGwxMmEwcmFrVmhj?=
- =?utf-8?B?ZmtRLzF1THNraTlsanp4dSszVFEzWjZ0bTNNYkpLd0hQaG1kM3RGc01DR0tj?=
- =?utf-8?B?RFgvN2RJME1PRC9Nem01N0NYcTZPVmt4UUJSbkZYQVlnZmI4SEhJclREdTZS?=
- =?utf-8?B?ZmFXZW13NC9aazR3UWNsZmtDWGhtSUtlVFEwYnZIWGtMd2RmbksxSXlZSEJx?=
- =?utf-8?B?S0NiVERuNWhONUUvNFhhdkpzRTFURW9WNmxOZnpFWDhIekordWhnZW8xOTEw?=
- =?utf-8?B?b1o1Mk8zNFBxU2dVc1IrK3Z4YTZqdmFTUGhrdENWTEx5d2lyWk53Tm1BaHRD?=
- =?utf-8?B?VWE3S24xK3BvNVd1S3p5NVdBd0t3YTQyRnZza0ZMMzZ2dTYza0x0WUZ6ampQ?=
- =?utf-8?B?Rm9ld1FGWXBqc2ExZlRuSWFjS1hLdU5KWE4zcGFmbUROOG1JcjR4NzE2VGY1?=
- =?utf-8?B?Qzc1TEJWQ005TGcxNzNzTmhpUkEyQytnVk1mM0puMmdOSjl2T0dxT2cydXIz?=
- =?utf-8?B?cHVQMjVBTVRWNVpTNXlKcXo2NWh3bkQ3cXIxSy83RXBZLzc3OG00SVY2WTNt?=
- =?utf-8?B?STgvNkorUk9hbVNjdFFsV0ZjZ0cwSFJxd1lQTVlwVnJTR1ZXNVMxTjdzcW1X?=
- =?utf-8?B?ZC94cTc0Q0hOMEx0YmlIUWtxeDNZRTBHOXQ5eEdmU1hMUEloMCtabFVZbFZy?=
- =?utf-8?B?K09VQjJIMFR6YUQ0V3hKYnN3WkM4Zm0rV2g3c3pJanFEeEszL3lINjBEWnkr?=
- =?utf-8?B?YzZ6VXc2YWhpV0xCckRmL1g5RnhNZEVGLzQ2b2RHc3BsanVnanprbGxDUzl1?=
- =?utf-8?B?ODNZdHVYKzlxRHczenljalVUUVVQNjdHV2Jjay9DOXd2RTF1QVFrVlUxcGRU?=
- =?utf-8?B?TG1uMmJtQWdqclVPdEQvczgrOTdCdjZGMXpXRW9tUDYxZ25ZTXp0cUZZMjFG?=
- =?utf-8?B?WWV1YVFWWnNVdXYremRkYkRSdi9aTkc3Tk5Od1hqR1pPWTJzczRSNTMrSHNP?=
- =?utf-8?B?ODFTbWVDcjZZUk81a2h2M1VyRHcvU0l1R3BrZHF6ajJKR3NQZm9EOEtoVWFY?=
- =?utf-8?B?dTdWL3NsNzNNQWI2aTNPVTlUNDZUQ3IxNm8wYkx6bDhIZFA5VmtYbE56SXlT?=
- =?utf-8?B?S2Rnb3hhb2FPT2p1WGEwK3RabXBoYWRPbDY1Mm54OWVOWEFkS3pMbkRralFi?=
- =?utf-8?Q?y1nJW8CNUMEHTV6sPPga?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d61b079-1bb6-416e-b14c-08dc40a25991
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2024 01:35:21.3841
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2P287MB0223
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABgGipUJU_joVOjPi4WZ4JJM72zaSrCA1QUAaP8hob3+LXkS0g@mail.gmail.com>
 
-hi, Stephen,
+On Fri, Mar 08, 2024 at 05:18:21PM +0800, Andy Chiu wrote:
+> Hi Puranjay,
+> 
+> On Fri, Mar 8, 2024 at 3:53 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
+> >
+> > Hi Björn,
+> >
+> > On Thu, Mar 7, 2024 at 8:27 PM Björn Töpel <bjorn@kernel.org> wrote:
+> > >
+> > > Puranjay!
+> > >
+> > > Puranjay Mohan <puranjay12@gmail.com> writes:
+> > >
+> > > > This patch enables support for DYNAMIC_FTRACE_WITH_CALL_OPS on RISC-V.
+> > > > This allows each ftrace callsite to provide an ftrace_ops to the common
+> > > > ftrace trampoline, allowing each callsite to invoke distinct tracer
+> > > > functions without the need to fall back to list processing or to
+> > > > allocate custom trampolines for each callsite. This significantly speeds
+> > > > up cases where multiple distinct trace functions are used and callsites
+> > > > are mostly traced by a single tracer.
+> > > >
+> > > > The idea and most of the implementation is taken from the ARM64's
+> > > > implementation of the same feature. The idea is to place a pointer to
+> > > > the ftrace_ops as a literal at a fixed offset from the function entry
+> > > > point, which can be recovered by the common ftrace trampoline.
+> > >
+> > > Not really a review, but some more background; Another rationale (on-top
+> > > of the improved per-call performance!) for CALL_OPS was to use it to
+> > > build ftrace direct call support (which BPF uses a lot!). Mark, please
+> > > correct me if I'm lying here!
+> > >
+> > > On Arm64, CALL_OPS makes it possible to implement direct calls, while
+> > > only patching one BL instruction -- nice!
+> > >
+> > > On RISC-V we cannot use use the same ideas as Arm64 straight off,
+> > > because the range of jal (compare to BL) is simply too short (+/-1M).
+> > > So, on RISC-V we need to use a full auipc/jal pair (the text patching
+> > > story is another chapter, but let's leave that aside for now). Since we
+> > > have to patch multiple instructions, the cmodx situation doesn't really
+> > > improve with CALL_OPS.
+> > >
+> > > Let's say that we continue building on your patch and implement direct
+> > > calls on CALL_OPS for RISC-V as well.
+> > >
+> > > From Florent's commit message for direct calls:
+> > >
+> > >   |    There are a few cases to distinguish:
+> > >   |    - If a direct call ops is the only one tracing a function:
+> > >   |      - If the direct called trampoline is within the reach of a BL
+> > >   |        instruction
+> > >   |         -> the ftrace patchsite jumps to the trampoline
+> > >   |      - Else
+> > >   |         -> the ftrace patchsite jumps to the ftrace_caller trampoline which
+> > >   |            reads the ops pointer in the patchsite and jumps to the direct
+> > >   |            call address stored in the ops
+> > >   |    - Else
+> > >   |      -> the ftrace patchsite jumps to the ftrace_caller trampoline and its
+> > >   |         ops literal points to ftrace_list_ops so it iterates over all
+> > >   |         registered ftrace ops, including the direct call ops and calls its
+> > >   |         call_direct_funcs handler which stores the direct called
+> > >   |         trampoline's address in the ftrace_regs and the ftrace_caller
+> > >   |         trampoline will return to that address instead of returning to the
+> > >   |         traced function
+> > >
+> > > On RISC-V, where auipc/jalr is used, the direct called trampoline would
+> > > always be reachable, and then first Else-clause would never be entered.
+> > > This means the the performance for direct calls would be the same as the
+> > > one we have today (i.e. no regression!).
+> > >
+> > > RISC-V does like x86 does (-ish) -- patch multiple instructions, long
+> > > reach.
+> > >
+> > > Arm64 uses CALL_OPS and patch one instruction BL.
+> > >
+> > > Now, with this background in mind, compared to what we have today,
+> > > CALL_OPS would give us (again assuming we're using it for direct calls):
+> > >
+> > > * Better performance for tracer per-call (faster ops lookup) GOOD
+> >
+> > ^ this was the only motivation for me to implement this patch.
+> >
+> > I don't think implementing direct calls over call ops is fruitful for
+> > RISC-V because once
+> > the auipc/jalr can be patched atomically, the direct call trampoline
+> > is always reachable.
+> 
+> Yes, the auipc/jalr instruction pair can be patched atomically just as
+> long as their size is naturally aligned on. However, we cannot prevent
+> 2 instructions from being fetched atomically :P
+There are some micro-arch optimization methods here, such as:
+ - Disable interrupt when auipc retired.
+ - When auipc -> auipc, the second one still could cause an
+   interruption.
 
-Just a kindly reminder, have you applied this one together with other 
-two bindings patches for sg2042? I checked the 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/log/?h=clk-next, 
-but can't see them.
-
-Thanks,
-
-Chen
-
-On 2024/3/9 10:12, Stephen Boyd wrote:
-> Quoting Chen Wang (2024-02-19 19:08:39)
->> From: Chen Wang <unicorn_wang@outlook.com>
->>
->> Add bindings for the pll clocks for Sophgo SG2042.
->>
->> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> Reviewed-by: Guo Ren <guoren@kernel.org>
->> ---
-> Applied to clk-next
+> 
+> > Solving the atomic text patching problem would be fun!! I am eager to
+> > see how it will be
+> > solved.
+> 
+> I have a patch series to solve the atomic code patching issue, which I
+> am about to respin [1]. The idea is to solve it with yet another layer
+> of indirection. We add a 8-B aligned space at each function entry. The
+> space is a pointer to the ftrace entry. During boot, each function
+> entry code is updated to perform a load and then take the jump from
+> the 8-B space. When ftrace is disabled, we patch the first 4B-aligned
+> instruction to a jump so as to skip the ftrace entry.
+> 
+> We are still discussing with Alex to see if we have a better way to do
+> it. If not then I'd update the patchset and re-send it. There's a
+> pending improvement in the series to reduce complexity. The 8-B
+> aligned space can be added before the function entry (just like your
+> patch).
+> 
+> >
+> > > * Larger text size (function alignment + extra nops) BAD
+> > > * Same direct call performance NEUTRAL
+> > > * Same complicated text patching required NEUTRAL
+> > >
+> > > It would be interesting to see how the per-call performance would
+> > > improve on x86 with CALL_OPS! ;-)
+> >
+> > If I remember from Steven's talk, x86 uses dynamically allocated trampolines
+> > for per callsite tracers, would CALL_OPS provide better performance than that?
+> >
+> > >
+> > > I'm trying to wrap my head if it makes sense to have it on RISC-V, given
+> > > that we're a bit different from Arm64. Does the scale tip to the GOOD
+> > > side?
+> > >
+> > > Oh, and we really need to see performance numbers on real HW! I have a
+> > > VF2 that I could try this series on.
+> >
+> > It would be great if you can do it :D.
+> >
+> > Thanks,
+> > Puranjay
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+> - [1] https://yhbt.net/lore/all/CAJF2gTSn3_cDYsF9D8dt-br2Wf_M8y02A09xgRq8kXi91sN3Aw@mail.gmail.com/T/
+> 
+> Regards,
+> Andy
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
