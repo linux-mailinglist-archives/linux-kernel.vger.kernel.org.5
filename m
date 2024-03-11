@@ -1,167 +1,98 @@
-Return-Path: <linux-kernel+bounces-98613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCDAA877CA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:25:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DDCC877CA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:25:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B2AB1C20F94
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:25:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2CE5B20327
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A5C1799B;
-	Mon, 11 Mar 2024 09:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00906182D2;
+	Mon, 11 Mar 2024 09:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="f5iWBydV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d/TDc1Ou";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="f5iWBydV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d/TDc1Ou"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="FonZ3Ej9"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194FB1A27D;
-	Mon, 11 Mar 2024 09:25:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796DC17BD3
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710149117; cv=none; b=EP/FXB4uhDIjTGe020WNQO2S2NbMpTwQmpz7L0ErUy8ndgfEVEDAEXgDVWj5HerJgy0lxDzdurKo9Je14nC2YY029TmvuDTngT9sNjx9yNXo36FvwMzJxRpKED4BXfwliDqByS1FZVoEomIq/F9huvjOLtc59yw02Ym9raB8eYg=
+	t=1710149135; cv=none; b=qJeYIuMO5KOmvwAU352Kmi9/o8mfG9zrNX748w9G3dlHraPqs05r1UUg0ct3h3U3WQs+lAhhWrI5hnKhJJUjnPMPcOYkSHxgH1rDROvoLTvAJDwravB6NSVEzC3ACfGntklkCPvv3xQ9O/SpkQUnJg9kg6CrPPC4w1DOQKx/kVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710149117; c=relaxed/simple;
-	bh=qAh1/pg2XENawq9x9zAF4/+ru0qiGEB1jqL5GI32dpE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uhhft9X/c9zBiVyhX+jZq2fgMbI3LSv6EHUSWDpQFD+JnBUU7nUy9b2LBI9XHsnC3I6ToPh3v4eYS8E581AMJHCIcFKTESLMSAbQq4IW7rGPgpPHJRU1oY6KK3oWe2lUMBJPWqQ1+YA4yD7eceutwErUOGMrJAlJE5fEdbvO/1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=f5iWBydV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d/TDc1Ou; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=f5iWBydV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d/TDc1Ou; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 05A805C485;
-	Mon, 11 Mar 2024 09:25:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710149112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CsEgkA1hBCPYUveqZbm1bnxBqR8bzX+PKYOhbea4gsU=;
-	b=f5iWBydV747+IUnHFMNR7tAsPNWU+U0K3LntDl4yekraLNIDuwTtbBMZ3XfW0Tn9Zj1AT5
-	IshmUbrNp8OSvzOLsWo/ZP6XDn+TuDB5S2bdcr2k9FsbVQsS0p4vHeuDMSpihzgb+Y2FcY
-	DFY80ee/94P5YnbSQUeHP0RByCe2Fgw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710149112;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CsEgkA1hBCPYUveqZbm1bnxBqR8bzX+PKYOhbea4gsU=;
-	b=d/TDc1Ou19LfXj7XVYt06OUpyrhy4q1ee+B1mCTttoamfRkjyWbwxRPjmDXIF64ddvjzi6
-	H2F6uvspMxcbk7Bg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710149112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CsEgkA1hBCPYUveqZbm1bnxBqR8bzX+PKYOhbea4gsU=;
-	b=f5iWBydV747+IUnHFMNR7tAsPNWU+U0K3LntDl4yekraLNIDuwTtbBMZ3XfW0Tn9Zj1AT5
-	IshmUbrNp8OSvzOLsWo/ZP6XDn+TuDB5S2bdcr2k9FsbVQsS0p4vHeuDMSpihzgb+Y2FcY
-	DFY80ee/94P5YnbSQUeHP0RByCe2Fgw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710149112;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CsEgkA1hBCPYUveqZbm1bnxBqR8bzX+PKYOhbea4gsU=;
-	b=d/TDc1Ou19LfXj7XVYt06OUpyrhy4q1ee+B1mCTttoamfRkjyWbwxRPjmDXIF64ddvjzi6
-	H2F6uvspMxcbk7Bg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB17113695;
-	Mon, 11 Mar 2024 09:25:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fGBgOffN7mW/AwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 11 Mar 2024 09:25:11 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7D95EA0807; Mon, 11 Mar 2024 10:25:07 +0100 (CET)
-Date: Mon, 11 Mar 2024 10:25:07 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+0b7937459742a0a4cffd@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, axboe@kernel.dk, brauner@kernel.org,
-	eadavis@qq.com, hch@lst.de, jack@suse.com, jack@suse.cz,
-	linkinjeon@gmail.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	syzkaller-bugs@googlegroups.com, willy@infradead.org
-Subject: Re: [syzbot] [udf?] KASAN: slab-use-after-free Read in
- udf_free_blocks
-Message-ID: <20240311092507.eyzqyrr6lkbqszvb@quack3>
-References: <000000000000d40c3c05fdc05cd1@google.com>
- <0000000000004ff6580612af035e@google.com>
+	s=arc-20240116; t=1710149135; c=relaxed/simple;
+	bh=vxgDEDHmPVdKOo18wugfaNuuyfadd5F4i/1ADxrjot0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E+zo7JOZJkhSgyoT5NZzE4k3pTKaVPXYkN+SutynRZaUeba7uGH2yZPYZO7X5tx/126MqYZXjhK5S8mINc5ar3KzP7eLGCKsI19Y5MarU5MO961FvMWJhCtuTwZ/fbobRp2G/iFmdizx68ZVTcbwobd+4nMB1WYtpI9geN0Ngvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=FonZ3Ej9; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5684db9147dso1139300a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1710149132; x=1710753932; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xweGuz2EcliYTpJB5JmcOmCcUiI4LLTlw3hou6Xw2WI=;
+        b=FonZ3Ej9s8aGIt9tKqwLOMWP60H2zZvc6NqcdjCwfbZIsT1jc4+WNqTrfYuLbz8aZM
+         C6AeOb5Xz2NCJEBfWVOyPjpKkTTL3L4W/Grvg1aEVtbQ2T8OZm7Xviq8fQ3Dm1vjVq/2
+         SYnFeG65SEG2+DCRbYm8HZ9JOLhfQK7TS46Qk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710149132; x=1710753932;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xweGuz2EcliYTpJB5JmcOmCcUiI4LLTlw3hou6Xw2WI=;
+        b=ubeiatFhR7QGR2krzYZviYbt4EeGhx+7bABpg1IfTHtgGruUu7O4j9Q01A2+m/99jw
+         kfRNpT0I/iZtFPQRzYKwNQ6oV3jlHX3xEGquQxLyN8kQQBTDOv3Wh7KpsTNHXdOe2E30
+         KMwqzrQqLdVjS3sbmCx9Pp2GnmZrfZNhmE3NpdkR/ubn+K4nDr8YXnOnN3xgVYX+jMmI
+         CTQubK/h7cTh8YRPKfGWYgEB7wyI8y6uZ8PmARaBMMWEj/sjkgWG0ZDLnB2JQQmduw9v
+         Obqjq+ztfYCHHpVSR+mU3uO8bUwscpO0j+RPihZZR4eBscJW5Uq2xn1WdAyPzMizsKa6
+         q9iA==
+X-Forwarded-Encrypted: i=1; AJvYcCWIv+91v4k39Zxwk8M5f+oE7NRRW9WytkRWUqesIVaWExKXWRZ5UA9myJ0VcxwFAUoUnd43H6iJPt+c0DsXhgFrvziwBL0nnfooC/PL
+X-Gm-Message-State: AOJu0Yyb5bhGxZuIyXtuwSPawK6oORq4ig+3Hvi8WZYVn7lWb39PeNe1
+	EJmWMCuY57zklJfvath2CVxEFiKzJpUi3Rt+UXpxLbZV4YcFZHZGPDW0WReezrMOPjbIQQC2edy
+	WrBYYOEXXFhcX+eIcFb87B8irG0OO+H7KM3zA+w==
+X-Google-Smtp-Source: AGHT+IF6gOthfnOOrsU1+KqBXRgXtuLD8ub1hx+m+9V+CldiXPDbe759oa1uJ0qJZanpOhfos8wXec/7mMMHKefYY3Q=
+X-Received: by 2002:a17:906:f215:b0:a45:b1cf:42f6 with SMTP id
+ gt21-20020a170906f21500b00a45b1cf42f6mr3725666ejb.9.1710149131774; Mon, 11
+ Mar 2024 02:25:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000004ff6580612af035e@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: *
-X-Spam-Score: 1.70
-X-Spamd-Result: default: False [1.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.00)[39.07%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,qq.com];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=3c980bfe8b399968];
-	 TAGGED_RCPT(0.00)[0b7937459742a0a4cffd];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLt8atpzwu1a6up6bx38ctuzr7)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,syzkaller.appspot.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,kernel.dk,kernel.org,qq.com,lst.de,suse.com,suse.cz,gmail.com,vger.kernel.org,kvack.org,googlegroups.com,infradead.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Flag: NO
+References: <20240307160225.23841-1-lhenriques@suse.de> <20240307160225.23841-4-lhenriques@suse.de>
+In-Reply-To: <20240307160225.23841-4-lhenriques@suse.de>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Mon, 11 Mar 2024 10:25:20 +0100
+Message-ID: <CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount parameters
+To: Luis Henriques <lhenriques@suse.de>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat 02-03-24 07:19:04, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11030516180000
-> start commit:   f8dba31b0a82 Merge tag 'asym-keys-fix-for-linus-v6.4-rc5' ..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3c980bfe8b399968
-> dashboard link: https://syzkaller.appspot.com/bug?extid=0b7937459742a0a4cffd
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10bcb6b5280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fbcfd1280000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+On Thu, 7 Mar 2024 at 19:17, Luis Henriques <lhenriques@suse.de> wrote:
+>
+> This patch fixes the usage of mount parameters that are defined as strings
+> but which can be empty.  Currently, only 'lowerdir' parameter is in this
+> situation for overlayfs.  But since userspace can pass it in as 'flag'
+> type (when it doesn't have a value), the parsing will fail because a
+> 'string' type is assumed.
 
-Looks good.
- 
-#syz fix: fs: Block writes to mounted block devices
+I don't really get why allowing a flag value instead of an empty
+string value is fixing anything.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+It just makes the API more liberal, but for what gain?
+
+Thanks,
+Miklos
 
