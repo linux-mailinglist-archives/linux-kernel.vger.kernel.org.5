@@ -1,150 +1,172 @@
-Return-Path: <linux-kernel+bounces-99334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8C88786CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:56:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF098786D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:57:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34CD42810F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:56:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF91D281B6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780B7535AF;
-	Mon, 11 Mar 2024 17:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391BB535AF;
+	Mon, 11 Mar 2024 17:57:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N1JQeV7b"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hTyIn061"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4334C631;
-	Mon, 11 Mar 2024 17:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D289A52F61;
+	Mon, 11 Mar 2024 17:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710179771; cv=none; b=bv0KeSgCCJn+FiuRRv4NsBK5uf2SMI2IX/flaXGw4l/HO8ZqPUEkAJKjGGTwTWVBUDGLo5hGDOjobXvVUQIQlUKOco6ER2v9+oWQuAoMTFgqkPyTSfXOVkEH0h8Pe04XYSFhgfWomZX4HaxAILGY7RIbOafb+5o8o89em95txL8=
+	t=1710179858; cv=none; b=lIVdgYNEmvNRX8G9ivnRnc62fIGZX0GTxL2QPrfSCXq2PPlItTay1iCw1BfbjpHkWLxRsNrvKhLgs9QaGW7DEwFdvF6LhLB6RfrPKBE1N603qjq5e7cCxwQd/MNBqDib4XJ3aS87BIraXQthhYF+N+9ISzTa/tHepC5/lyNJpB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710179771; c=relaxed/simple;
-	bh=2sHTM97y6Ae9lduC17X4CVIj9RmYErbw28IMnyPzK8c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YYDf2Xz2FaQnBtqXXDNONAr3odqzh/gs5TVud+BEGKaAXK1oyw6mjBxHzfSZO56GywcaXMSceGhqW5rAYsVuugA18DVfIQQ67b5g9wyYCWHK0r+EYKW7tY3fD2WNpmZhRyn2uKGZ0LhflbcoNdZdzjszChEJ1HB9xVe2RHufNuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N1JQeV7b; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so3042826a12.1;
-        Mon, 11 Mar 2024 10:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710179770; x=1710784570; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yA5M5kpASFinQzBucQIe6R0OuQDkEP28n5sfVDn4lPc=;
-        b=N1JQeV7buFwUk5r48st+Ef1KwXH8aIbNNv0Un9zEV4zCtewyMMMEYWMdFQXl7b5rNU
-         TymjHNpn5nAeIWhH51Qj62Px1dr/h22Ozy8kJXRtMszXe9s4w6L1k2O+wsIhQm4STNkT
-         qCeS17FQW0f8HhqVyfm00zKHnvKCgLGXYdrHviO1sY2IV33iQYTqiwYRTO5nK1pliX8I
-         A/hJF8N53Aq9y4u5+1E7YIe0r8Q9+QXcDhjsk8KC8ujVsPZaG3LD6dvCVq6J8wAARMOT
-         Ox5WW0MDb9SzuljqJESN50FSHcXnfIWn8kVhpU4jLev43THqHw2Unr6MWiUTLeFIYnqk
-         EfUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710179770; x=1710784570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yA5M5kpASFinQzBucQIe6R0OuQDkEP28n5sfVDn4lPc=;
-        b=YrFxn6nIc/G59mH3ch/eAfG4nYMzrCQ5GXqDh9tM/mphGTAVqdNTORl68hRPFvfQeJ
-         jVkCaIeaZSlU+FT5O6o7yZZDL/jsUkdWgF8yJbBCtELfshvb3SKGGTzTuDO1UF0BBPmZ
-         b93uLNnPUukqaY3iAM7gvkoCDdoeHW7whYYcfSFdSyFaR7v1gZlPKxfY6sLy7cOWmu1U
-         XA+uVtszxGNb2+zvdcuc6nTu/fNr0teQ49QS+Vow+D2CnNg+d2AjV62DinWCP2vGFiXM
-         yOlKA0FOiji/BqeEL4p5lQs4lQAGqo+AJ1O7GyezpvUecLrM2G7jJnFfM4HagBxvETyT
-         Wl+w==
-X-Forwarded-Encrypted: i=1; AJvYcCXCBYC9KZHqZdFvmORL9D1cuTxlrIELBPkDH1xY0WxQXICTfijI2Bbiy+hFQeF2HuN6X2/LE74pRlswtqT5kCTRzvhugUwAiwTApHhtEFmavIPpWq7PzhCpKcS6PhVpvID+
-X-Gm-Message-State: AOJu0Yxk25N+y6SmuO7BIDf5SF26JiaOMI9M48Fa6g80QKDfEt2gl/Ut
-	bnkSmo76WJKBIKoY6rtEiqMfNZo6cgYLRRCmPHhwec4Nho6yeHZQeHN1nzxOE7x7bN3OF+uUafH
-	9HHUGji721/Cl5qEGqC6mzyRJk6Q=
-X-Google-Smtp-Source: AGHT+IGmceLJx9agIv6BGQlFZEwEv807foK6FXOon+/fe1VfiZLBlWJjK50x0/uje3HacOpp0lRoQlNZsZCEy7Zs7UA=
-X-Received: by 2002:a17:90b:4007:b0:29c:e1b:f9e2 with SMTP id
- ie7-20020a17090b400700b0029c0e1bf9e2mr2261232pjb.25.1710179769736; Mon, 11
- Mar 2024 10:56:09 -0700 (PDT)
+	s=arc-20240116; t=1710179858; c=relaxed/simple;
+	bh=nenLp6Iozx7BggIrKYWt4FxcGS4sna5rFGPPrwcIRXA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OZQTGV9oDjDrb2yys4j6MS7kfaxmfZYEb8/YY8jU7Pn2uvuQr5rH6sUHUAvMB1wyq5ORRPsbSflX0cxRlTnbjGNQpclOvVly+RyzKCUAMeMnQVJ20cfx3Qf9JdlPGeAXmHeenjcAzIhp3o6Q8+H/HU2CMn6EPpDg3yCgegqqclc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hTyIn061; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42B8UEPR010665;
+	Mon, 11 Mar 2024 17:57:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=+BdaFrwNgX3LEXWnHtSpoGJGl5G3NqlZlETyFowVpWM=; b=hT
+	yIn061GCDQXqgsgtQ03x860vREnY+H0Li4pmgt+MXbm/Vq3eFrnEClYU3PB3esVA
+	C7Boq4qpCXlalLIyxGVe5xaLERdTJ9YD88tBlLPutbOa/8H5C3oSlDUQjzx0N3pi
+	9QZuNTwXP8brlyWoPBqwKxQkSdy7QOQDqh1Zu4aZmLTrSEAnva/aYWAtkJAjkzPM
+	kXnhyM3sLjZiBmNXF9O90gM2Vj10uFbCrrGkiRrLf1wBzanMusA3EMK1RvvOrgxu
+	pilsBUG2uqrA8gTMXBwH5Ayd0fVIgk7nVm4IYHThJHSDwoD9W8qxA7mJIGbb0jTy
+	boSvu2SccQrwz+6iTcEA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wsx48snmq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 17:57:14 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42BHvD2r020790
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 17:57:13 GMT
+Received: from [10.110.0.139] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 11 Mar
+ 2024 10:57:12 -0700
+Message-ID: <1fb0d3b1-4248-f7eb-4d67-5c1b15082fc1@quicinc.com>
+Date: Mon, 11 Mar 2024 10:57:03 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240310154726.734289-1-andrea.righi@canonical.com>
-In-Reply-To: <20240310154726.734289-1-andrea.righi@canonical.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 11 Mar 2024 10:55:57 -0700
-Message-ID: <CAEf4BzYrwRQu1eNMACfXtsac+=psnNGr+=WQz3zUPP+2DPA2Rg@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: ringbuf: allow to partially consume items
-To: Andrea Righi <andrea.righi@canonical.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/msm/dp: move link_ready out of HPD event thread
+Content-Language: en-US
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Dmitry
+ Baryshkov" <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        "Marijn Suijten" <marijn.suijten@somainline.org>,
+        David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+CC: <dri-devel@lists.freedesktop.org>, <swboyd@chromium.org>,
+        <quic_jesszhan@quicinc.com>, <quic_parellan@quicinc.com>,
+        <johan@kernel.org>, <quic_bjorande@quicinc.com>,
+        Rob Clark <robdclark@chromium.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240308214532.1404038-1-quic_abhinavk@quicinc.com>
+From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <20240308214532.1404038-1-quic_abhinavk@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: YqMFmqfM_C1fyOnyvSMx2GDfS3K5YZXv
+X-Proofpoint-ORIG-GUID: YqMFmqfM_C1fyOnyvSMx2GDfS3K5YZXv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=999
+ spamscore=0 impostorscore=0 adultscore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403110136
 
-On Sun, Mar 10, 2024 at 8:47=E2=80=AFAM Andrea Righi <andrea.righi@canonica=
-l.com> wrote:
+
+On 3/8/2024 1:45 PM, Abhinav Kumar wrote:
+> There are cases where the userspace might still send another
+> frame after the HPD disconnect causing a modeset cycle after
+> a disconnect. This messes the internal state machine of MSM DP driver
+> and can lead to a crash as there can be an imbalance between
+> bridge_disable() and bridge_enable().
 >
-> Instead of always consuming all items from a ring buffer in a greedy
-> way, allow to stop when the callback returns a value > 0.
+> This was also previously reported on [1] for which [2] was posted
+> and helped resolve the issue by rejecting commits if the DP is not
+> in connected state.
 >
-> This allows to distinguish between an error condition and an intentional
-> stop condition by returning a non-negative non-zero value from the ring
-> buffer callback.
+> The change resolved the bug but there can also be another race condition.
+> If hpd_event_thread does not pick up the EV_USER_NOTIFICATION and process it
+> link_ready will also not be set to false allowing the frame to sneak in.
 >
-> This can be useful, for example, to consume just a single item from the
-> ring buffer.
+> Lets move setting link_ready outside of hpd_event_thread() processing to
+> eliminate a window of race condition.
 >
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> [1] : https://gitlab.freedesktop.org/drm/msm/-/issues/17
+> [2] : https://lore.kernel.org/all/1664408211-25314-1-git-send-email-quic_khsieh@quicinc.com/
+>
+> Fixes: 8a3b4c17f863 ("drm/msm/dp: employ bridge mechanism for display enable and disable")
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Tested-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> Reviewed-by: Kuogee Hsieh<quic_khsieh@quicinc.com>
 > ---
->  tools/lib/bpf/ringbuf.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>   drivers/gpu/drm/msm/dp/dp_display.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index aacb64278a01..dd8908eb3204 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -265,6 +265,14 @@ static int64_t ringbuf_process_ring(struct ring *r)
->                                         return err;
->                                 }
->                                 cnt++;
-> +                               if (err > 0) {
-
-So libbpf already stops at any err < 0 (and sets correct consumer
-pos). So you could already get desired behavior by just returning your
-own error code. If you need count, you'd have to count it yourself
-through custom context, that's a bit of inconvenience.
-
-But on the other hand, currently if user callback returns anything > 0
-they keep going and that return value is ignored. Your change will
-break any such user pretty badly. So I'm a bit hesitant to do this.
-
-Is there any reason you can't just return error code (libbpf doesn't
-do anything with it, just passes it back, so it might as well be
-`-cnt`, if you need that).
-
-pw-bot: cr
-
-> +                                       /* update consumer pos and return=
- the
-> +                                        * total amount of items consumed=
-.
-> +                                        */
-> +                                       smp_store_release(r->consumer_pos=
-,
-> +                                                         cons_pos);
-> +                                       goto done;
-> +                               }
->                         }
->
->                         smp_store_release(r->consumer_pos, cons_pos);
-> --
-> 2.43.0
->
->
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 068d44eeaa07..e00092904ccc 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -345,8 +345,6 @@ static int dp_display_send_hpd_notification(struct dp_display_private *dp,
+>   							 dp->panel->downstream_ports);
+>   	}
+>   
+> -	dp->dp_display.link_ready = hpd;
+> -
+>   	drm_dbg_dp(dp->drm_dev, "type=%d hpd=%d\n",
+>   			dp->dp_display.connector_type, hpd);
+>   	drm_bridge_hpd_notify(bridge, dp->dp_display.link_ready);
+> @@ -399,6 +397,8 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+>   		goto end;
+>   	}
+>   
+> +	dp->dp_display.link_ready = true;
+> +
+>   	dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
+>   
+>   end:
+> @@ -466,6 +466,8 @@ static int dp_display_notify_disconnect(struct device *dev)
+>   {
+>   	struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>   
+> +	dp->dp_display.link_ready = false;
+> +
+>   	dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
+>   
+>   	return 0;
+> @@ -487,6 +489,7 @@ static int dp_display_handle_port_status_changed(struct dp_display_private *dp)
+>   		drm_dbg_dp(dp->drm_dev, "sink count is zero, nothing to do\n");
+>   		if (dp->hpd_state != ST_DISCONNECTED) {
+>   			dp->hpd_state = ST_DISCONNECT_PENDING;
+> +			dp->dp_display.link_ready = false;
+>   			dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
+>   		}
+>   	} else {
 
