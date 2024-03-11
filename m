@@ -1,94 +1,56 @@
-Return-Path: <linux-kernel+bounces-99183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1005287849A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:07:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF60787849E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:07:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46368B2160C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:06:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA38B283A59
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15EC247A76;
-	Mon, 11 Mar 2024 16:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0C1481AB;
+	Mon, 11 Mar 2024 16:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Asl7qjzC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YDrEiu+m"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70CF44393
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8497A4436C;
+	Mon, 11 Mar 2024 16:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710173213; cv=none; b=uQNEk7hfXg4Dy1qEmfRckY2dytjPKsDTbO9gFyGOnuIQj8YfxY7p5cYFTjjUY+TwEEty5Aoz+hnNKDT2j+v7MVZE+R2gdYGTszz3EQzlGmHa2rghAahpS92rjbQ7aOucWa9qLHn8AxFxRMu5Sa/yl5sxBI72bPccqgEb8okKzq8=
+	t=1710173260; cv=none; b=sK8/tedH1iBL9bKmzLq+JGGL973hXFsX8uV7O0EvbCtDWeDFRwl6Bkm/QV0EO46G7KhZw/vcixp6XY+SAVwAdXuybyjdnQUfjz9bA4mkZ9TdE5RtIKua4M3F1wZTjcVl/T2hnyG7Ccwyz7BtMq/e528Ddi5DNzxaUluFhWIDn4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710173213; c=relaxed/simple;
-	bh=dXKDmpIAhlhGm+9bZxqCyqj+Xcxx+ntMNMiDn/Y+5ms=;
+	s=arc-20240116; t=1710173260; c=relaxed/simple;
+	bh=Z3VLtbgSadjSI/x6kUu32ZF43oQcfZ5oMFjrp5In00U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oQUHsTBwajCxped15yG56akwkJfKdMawLsCWvOGGxFu6f1alBUV65UwNef9JwKNeexzbO9EkcGkrX9ycd7wXNwuPRJnMH1UERcXnZo+rLig1RJXXmzWeJhBmXMPTHmFaTxfcahOwLcdXSg+OZabEABSWVyrunneLqGRzTTNytww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Asl7qjzC; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710173209;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QNJHLR0yNjNcJydH+HbGTVl6vOCkvHLtHR5rRbxrvfo=;
-	b=Asl7qjzCsc95g6iLe8JzrS4OMn3063yAhJSq5tEStD3amWJL5qLH841aX2/oH2xQy6WxuW
-	gR/IZI6UhmJ82Sa/rSXS9zb22DIEFfixrxT6qKfdESz62I5GrSy9OvcMoint4fgnwt8biQ
-	R+n2ZZoT4y+VCPEt45SqMAavY8rjNPM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-132-0OMSACYXPKKGWYYijRgUMQ-1; Mon, 11 Mar 2024 12:06:38 -0400
-X-MC-Unique: 0OMSACYXPKKGWYYijRgUMQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33e67c6b7bdso2239092f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:06:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710173197; x=1710777997;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QNJHLR0yNjNcJydH+HbGTVl6vOCkvHLtHR5rRbxrvfo=;
-        b=dW1wtAeqXbDjzGyHFW3TadkXfSMj/Wuv35EVZJitgD/AOnoKdpuDV5p8Q5AlyxVjIZ
-         ithcPIlQZAqmB+6JavAZBp+LzdbQ90M+uJowZQlI097Y1itB4MlS0IHm1SMF4DupH+gT
-         +y16Sl1v0rAY9xxrS4Y42zERdUhlg3JWXWQ/9PIKmTdP+CQtnZTDGpn4gkYndfCmkrSs
-         /QxFNsY40UUzhmxBr3mcYy6Rh3WIOcAP/taSe9Xo+pDYwQUHL5g/kOqY+5k5W6ijE7Bi
-         /Retdphljg04JV389P9DR6x/MxnhKAWWiqKpuQG8tVNStsNVxtfn4Zwp5ZhPUHeoWCsI
-         UZ7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWeLfJH4DTMDbMBIh1MBoxSNceg6/TOx1tD1FqFxel/prK3h5mNYu8XgZuV5dXX6tkOxcIjrHd15HZxPejmtDA8eNrCsbRkMVW8rb2C
-X-Gm-Message-State: AOJu0YypS3FBskaQmkznoX5MpdlBTaH4oSZzpE5VpL8D+au+MhTY4C/p
-	WKplTRtZ28TNlsMhCub6NpZOw3lqjWSQLfc72+Vkiq3T5pHrMVf6Mvy5M7cwBCuvLwCz6s1zvWd
-	A8aRCqWB+zczOksnnmf63cG3bY1L+2dv381ltGQKzwRq4VnGgaT79nJ3fyou+yw==
-X-Received: by 2002:a5d:4088:0:b0:33e:7a10:4d6e with SMTP id o8-20020a5d4088000000b0033e7a104d6emr4220091wrp.32.1710173197128;
-        Mon, 11 Mar 2024 09:06:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFIHQ4IsSr7/EQIzMSsVUeLFmRLgG/+RHWPw63nSJAHInZRyoeJJPvp9gsj1QT60M0fJVsTgg==
-X-Received: by 2002:a5d:4088:0:b0:33e:7a10:4d6e with SMTP id o8-20020a5d4088000000b0033e7a104d6emr4220075wrp.32.1710173196698;
-        Mon, 11 Mar 2024 09:06:36 -0700 (PDT)
-Received: from toolbox ([2001:9e8:89a8:bc00:4f1a:435e:d5a8:5d5a])
-        by smtp.gmail.com with ESMTPSA id c17-20020a5d5291000000b0033d2ae84fafsm6757931wrv.52.2024.03.11.09.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 09:06:36 -0700 (PDT)
-Date: Mon, 11 Mar 2024 17:06:34 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc: Harry Wentland <harry.wentland@amd.com>,
-	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	Xaver Hugl <xaver.hugl@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/drm_connector: Document Colorspace property
- variants
-Message-ID: <20240311160634.GA323822@toolbox>
-References: <20240305135155.231687-1-sebastian.wick@redhat.com>
- <20240306102721.3c9c3785.pekka.paalanen@collabora.com>
- <20240306164209.GA11561@toolbox>
- <20240307102922.0f3701cb.pekka.paalanen@collabora.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TDhvJKTJaClowQ+wvVWSAoog83RY6mfgeXkpDaXzw0+MS+XrTbpowy1SH0MVqa9Mv4kfxLkUl47v8ZojyDR0SekOH61x2tofO/dysejxABVQC/TvDd/2IJWS4dqiHmOicBMH2qNMeLqOQNQNCdVanFxBkdnp8xuJd6Y2o9cIMcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YDrEiu+m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01203C433F1;
+	Mon, 11 Mar 2024 16:07:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710173260;
+	bh=Z3VLtbgSadjSI/x6kUu32ZF43oQcfZ5oMFjrp5In00U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YDrEiu+mrr/IeG+VuLb+GqeyONl++YsowQWctcdNqdrvnXZ6zxWSW+58mkrmFPXnA
+	 i8inmXsx+nlB9za6NxgaQRzMwVKQwyJRN381/3QiYzl5917n8yeW6AGUJGdM5O0LBm
+	 IHdssvWlau3Ses9J/gHshDr7r98Id5aGzswxUbFeLi5GgFWzUEz6jIuceNoPSLrnRA
+	 B4JD653vipyxVlrUYKByJbzu6lsdlLcCVTnH9i0SheyqbWxj4pAjtd3QkAswWhZWDk
+	 C7/vFPJwPrrIt/mPv5I+/vp9+QFw567EbZ8qnv3R7WbhlhmxfTH/NT0RjiCPmqo80P
+	 9f7nDvTOgO3vQ==
+Date: Mon, 11 Mar 2024 09:07:39 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
+	david@fromorbit.com, tytso@mit.edu, jack@suse.cz,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH 4/4] iomap: cleanup iomap_write_iter()
+Message-ID: <20240311160739.GV1927156@frogsfrogsfrogs>
+References: <20240311122255.2637311-1-yi.zhang@huaweicloud.com>
+ <20240311122255.2637311-5-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,228 +59,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307102922.0f3701cb.pekka.paalanen@collabora.com>
+In-Reply-To: <20240311122255.2637311-5-yi.zhang@huaweicloud.com>
 
-On Thu, Mar 07, 2024 at 10:29:22AM +0200, Pekka Paalanen wrote:
-> On Wed, 6 Mar 2024 17:42:09 +0100
-> Sebastian Wick <sebastian.wick@redhat.com> wrote:
+On Mon, Mar 11, 2024 at 08:22:55PM +0800, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> > On Wed, Mar 06, 2024 at 10:27:21AM +0200, Pekka Paalanen wrote:
-> > > On Tue,  5 Mar 2024 14:51:49 +0100
-> > > Sebastian Wick <sebastian.wick@redhat.com> wrote:
-> > >   
-> > > > The initial idea of the Colorspace prop was that this maps 1:1 to
-> > > > InfoFrames/SDP but KMS does not give user space enough information nor
-> > > > control over the output format to figure out which variants can be used
-> > > > for a given KMS commit. At the same time, properties like Broadcast RGB
-> > > > expect full range quantization range being produced by user space from
-> > > > the CRTC and drivers to convert to the range expected by the sink for
-> > > > the chosen output format, mode, InfoFrames, etc.
-> > > > 
-> > > > This change documents the reality of the Colorspace property. The
-> > > > Default variant unfortunately is very much driver specific and not
-> > > > reflected by the EDID. The BT2020 variants are in active use by generic
-> > > > compositors which have expectations from the driver about the
-> > > > conversions it has to do when selecting certain output formats.
-> > > > 
-> > > > Everything else is also marked as undefined. Coming up with valid
-> > > > behavior that makes it usable from user space and consistent with other
-> > > > KMS properties for those variants is left as an exercise for whoever
-> > > > wants to use them.
-> > > > 
-> > > > v2:
-> > > >  * Talk about "pixel operation properties" that user space configures
-> > > >  * Mention that user space is responsible for checking the EDID for sink
-> > > >    support
-> > > >  * Make it clear that drivers can choose between RGB and YCbCr on their
-> > > >    own
-> > > > 
-> > > > Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
-> > > > ---
-> > > >  drivers/gpu/drm/drm_connector.c | 79 +++++++++++++++++++++++++--------
-> > > >  include/drm/drm_connector.h     |  8 ----
-> > > >  2 files changed, 61 insertions(+), 26 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> > > > index b0516505f7ae..65cdcc7d22db 100644
-> > > > --- a/drivers/gpu/drm/drm_connector.c
-> > > > +++ b/drivers/gpu/drm/drm_connector.c
-> > > > @@ -2147,24 +2147,67 @@ EXPORT_SYMBOL(drm_mode_create_aspect_ratio_property);
-> > > >   * DOC: standard connector properties
-> > > >   *
-> > > >   * Colorspace:
-> > > > - *     This property helps select a suitable colorspace based on the sink
-> > > > - *     capability. Modern sink devices support wider gamut like BT2020.
-> > > > - *     This helps switch to BT2020 mode if the BT2020 encoded video stream
-> > > > - *     is being played by the user, same for any other colorspace. Thereby
-> > > > - *     giving a good visual experience to users.
-> > > > - *
-> > > > - *     The expectation from userspace is that it should parse the EDID
-> > > > - *     and get supported colorspaces. Use this property and switch to the
-> > > > - *     one supported. Sink supported colorspaces should be retrieved by
-> > > > - *     userspace from EDID and driver will not explicitly expose them.
-> > > > - *
-> > > > - *     Basically the expectation from userspace is:
-> > > > - *      - Set up CRTC DEGAMMA/CTM/GAMMA to convert to some sink
-> > > > - *        colorspace
-> > > > - *      - Set this new property to let the sink know what it
-> > > > - *        converted the CRTC output to.
-> > > > - *      - This property is just to inform sink what colorspace
-> > > > - *        source is trying to drive.
-> > > > + *	This property is used to inform the driver about the color encoding
-> > > > + *	user space configured the pixel operation properties to produce.
-> > > > + *	The variants set the colorimetry, transfer characteristics, and which
-> > > > + *	YCbCr conversion should be used when necessary.
-> > > > + *	The transfer characteristics from HDR_OUTPUT_METADATA takes precedence
-> > > > + *	over this property.
-> > > > + *	User space always configures the pixel operation properties to produce
-> > > > + *	full quantization range data (see the Broadcast RGB property).
-> > > > + *
-> > > > + *	Drivers inform the sink about what colorimetry, transfer
-> > > > + *	characteristics, YCbCr conversion, and quantization range to expect
-> > > > + *	(this can depend on the output mode, output format and other
-> > > > + *	properties). Drivers also convert the user space provided data to what
-> > > > + *	the sink expects.  
-> > > 
-> > > Hi Sebastian,
-> > > 
-> > > should it be more explicit that drivers are allowed to do only
-> > > RGB->YCbCr and quantization range conversions, but not TF nor gamut
-> > > conversions?
-> > > 
-> > > That is, if the driver cannot pick the TF implied by "Colorspace"
-> > > property for the sink, then it cannot pick another TF for the sink and
-> > > silently convert. It think this should apply to all options including
-> > > the undefined ones. Or is that too much to guess?  
-> > 
-> > That's a really good point. I'll add it in the next revision.
-> > 
-> > > > + *
-> > > > + *	User space has to check if the sink supports all of the possible
-> > > > + *	colorimetries that the driver is allowed to pick by parsing the EDID.  
-> > > 
-> > > All? Rather than at least one?
-> > > 
-> > > Is this how it has been implemented for BT2020, that userspace picked
-> > > colorimetry and driver picked color model and quantization are
-> > > completely independent, and drivers do not check the combination
-> > > against EDID?  
-> > 
-> > AFAIK the driver exposes all Colorspace variants that it can support in
-> > the driver, independent of the sink. That means user space has to make
-> > sure that the sink supports all colorimetry variants the driver can
-> > pick.
+> The status variable in iomap_write_iter() is confusing and
+> iomap_write_end() always return 0 or copied bytes, so replace it with a
+> new written variable to represent the written bytes in each cycle, and
+> also do some cleanup, no logic changes.
 > 
-> I didn't mean exposing but the driver could reject the atomic commit
-> that would lead to a combination not advertised as supported in EDID.
-> If drivers reject, then userspace does not need to check for all
-> driver-choosable variants, just one would be enough. Theoretically not
-> needing all might allow some cases to work that don't support all.
-> "Colorspace" property value could direct the driver's choice based on
-> what EDID claims to support.
-
-Right, this could be possible and is probably even better than what I
-wrote down but...
-
-> Of course, if drivers don't do that already, then "all" it must be.
-
-..unfortunately that seems to be the case. Maybe we can get away with
-changing it though?
-
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  fs/iomap/buffered-io.c | 31 +++++++++++++++----------------
+>  1 file changed, 15 insertions(+), 16 deletions(-)
 > 
-> Thanks,
-> pq
-> 
-> > Would be good to get a confirmation from Harry and Ville.
-> > 
-> > > If so, "all" it is. Would be good to explain this in the commit message.  
-> > 
-> > Will do.
-> > 
-> > > > + *
-> > > > + *	For historical reasons this property exposes a number of variants which
-> > > > + *	result in undefined behavior.
-> > > > + *
-> > > > + *	Default:
-> > > > + *		The behavior is driver-specific.
-> > > > + *	BT2020_RGB:
-> > > > + *	BT2020_YCC:
-> > > > + *		User space configures the pixel operation properties to produce
-> > > > + *		RGB content with Rec. ITU-R BT.2020 colorimetry, Rec.
-> > > > + *		ITU-R BT.2020 (Table 4, RGB) transfer characteristics and full
-> > > > + *		quantization range.
-> > > > + *		User space can use the HDR_OUTPUT_METADATA property to set the
-> > > > + *		transfer characteristics to PQ (Rec. ITU-R BT.2100 Table 4) or
-> > > > + *		HLG (Rec. ITU-R BT.2100 Table 5) in which case, user space
-> > > > + *		configures pixel operation properties to produce content with
-> > > > + *		the respective transfer characteristics.
-> > > > + *		User space has to make sure the sink supports Rec.
-> > > > + *		ITU-R BT.2020 R'G'B' and Rec. ITU-R BT.2020 Y'C'BC'R
-> > > > + *		colorimetry.
-> > > > + *		Drivers can configure the sink to use an RGB format, tell the
-> > > > + *		sink to expect Rec. ITU-R BT.2020 R'G'B' colorimetry and convert
-> > > > + *		to the appropriate quantization range.
-> > > > + *		Drivers can configure the sink to use a YCbCr format, tell the
-> > > > + *		sink to expect Rec. ITU-R BT.2020 Y'C'BC'R colorimetry, convert
-> > > > + *		to YCbCr using the Rec. ITU-R BT.2020 non-constant luminance
-> > > > + *		conversion matrix and convert to the appropriate quantization
-> > > > + *		range.
-> > > > + *		The variants BT2020_RGB and BT2020_YCC are equivalent and the
-> > > > + *		driver chooses between RGB and YCbCr on its own.
-> > > > + *	SMPTE_170M_YCC:
-> > > > + *	BT709_YCC:
-> > > > + *	XVYCC_601:
-> > > > + *	XVYCC_709:
-> > > > + *	SYCC_601:
-> > > > + *	opYCC_601:
-> > > > + *	opRGB:
-> > > > + *	BT2020_CYCC:
-> > > > + *	DCI-P3_RGB_D65:
-> > > > + *	DCI-P3_RGB_Theater:
-> > > > + *	RGB_WIDE_FIXED:
-> > > > + *	RGB_WIDE_FLOAT:
-> > > > + *	BT601_YCC:
-> > > > + *		The behavior is undefined.
-> > > >   *
-> > > >   * Because between HDMI and DP have different colorspaces,
-> > > >   * drm_mode_create_hdmi_colorspace_property() is used for HDMI connector and
-> > > > diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> > > > index fe88d7fc6b8f..02c42b01a3a7 100644
-> > > > --- a/include/drm/drm_connector.h
-> > > > +++ b/include/drm/drm_connector.h
-> > > > @@ -437,14 +437,6 @@ enum drm_privacy_screen_status {
-> > > >   *
-> > > >   * DP definitions come from the DP v2.0 spec
-> > > >   * HDMI definitions come from the CTA-861-H spec
-> > > > - *
-> > > > - * A note on YCC and RGB variants:
-> > > > - *
-> > > > - * Since userspace is not aware of the encoding on the wire
-> > > > - * (RGB or YCbCr), drivers are free to pick the appropriate
-> > > > - * variant, regardless of what userspace selects. E.g., if
-> > > > - * BT2020_RGB is selected by userspace a driver will pick
-> > > > - * BT2020_YCC if the encoding on the wire is YUV444 or YUV420.
-> > > >    *
-> > > >   * @DRM_MODE_COLORIMETRY_DEFAULT:
-> > > >   *   Driver specific behavior.  
-> > > 
-> > > This looks really good. This also makes me need to revisit the Weston
-> > > series I've been brewing that adds "Colorspace" KMS support.
-> > > 
-> > > I think the two questions I had may be slightly too much in the
-> > > direction of improving rather than just documenting this property, so
-> > > I'll already give
-> > > 
-> > > Reviewed-by: Pekka Paalanen <pekka.paalanen@collabora.com>  
-> > 
-> > Thanks.
-> > 
-> > > 
-> > > Thanks,
-> > > pq  
-> > 
-> > 
-> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 19f91324c690..767af6e67ed4 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -851,7 +851,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  	loff_t length = iomap_length(iter);
+>  	size_t chunk = PAGE_SIZE << MAX_PAGECACHE_ORDER;
+>  	loff_t pos = iter->pos;
+> -	ssize_t written = 0;
+> +	ssize_t total_written = 0;
+>  	long status = 0;
+>  	struct address_space *mapping = iter->inode->i_mapping;
+>  	unsigned int bdp_flags = (iter->flags & IOMAP_NOWAIT) ? BDP_ASYNC : 0;
+> @@ -862,6 +862,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  		size_t offset;		/* Offset into folio */
+>  		size_t bytes;		/* Bytes to write to folio */
+>  		size_t copied;		/* Bytes copied from user */
+> +		size_t written;		/* Bytes have been written */
+>  
+>  		bytes = iov_iter_count(i);
+>  retry:
+> @@ -906,7 +907,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  			flush_dcache_folio(folio);
+>  
+>  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
+> -		status = iomap_write_end(iter, pos, bytes, copied, folio);
+> +		written = iomap_write_end(iter, pos, bytes, copied, folio);
+>  
+>  		/*
+>  		 * Update the in-memory inode size after copying the data into
+> @@ -915,28 +916,26 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  		 * no stale data is exposed.
+>  		 */
+>  		old_size = iter->inode->i_size;
+> -		if (pos + status > old_size) {
+> -			i_size_write(iter->inode, pos + status);
+> +		if (pos + written > old_size) {
+> +			i_size_write(iter->inode, pos + written);
+>  			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+>  		}
+> -		__iomap_put_folio(iter, pos, status, folio);
+> +		__iomap_put_folio(iter, pos, written, folio);
+>  
+>  		if (old_size < pos)
+>  			pagecache_isize_extended(iter->inode, old_size, pos);
+> -		if (status < bytes)
+> -			iomap_write_failed(iter->inode, pos + status,
+> -					   bytes - status);
+> -		if (unlikely(copied != status))
+> -			iov_iter_revert(i, copied - status);
 
+I wish you'd made the variable renaming and the function reorganization
+separate patches.  The renaming looks correct to me, but moving these
+calls adds a logic bomb.
 
+If at some point iomap_write_end actually starts returning partial write
+completions (e.g. you wrote 250 bytes, but for some reason the pagecache
+only acknowledges 100 bytes were written) then this code no longer
+reverts the iter or truncates posteof pagecache correctly...
+
+>  
+>  		cond_resched();
+> -		if (unlikely(status == 0)) {
+> +		if (unlikely(written == 0)) {
+>  			/*
+>  			 * A short copy made iomap_write_end() reject the
+>  			 * thing entirely.  Might be memory poisoning
+>  			 * halfway through, might be a race with munmap,
+>  			 * might be severe memory pressure.
+>  			 */
+> +			iomap_write_failed(iter->inode, pos, bytes);
+> +			iov_iter_revert(i, copied);
+
+..because now we only do that if the pagecache refuses to acknowledge
+any bytes written at all.  I think it actually works correctly with
+today's kernel since __iomap_write_end only returns copied or 0, but the
+size_t return type implies that a short acknowledgement is theoretically
+possible.
+
+IOWs, doesn't this adds a logic bomb?
+
+--D
+
+> +
+>  			if (chunk > PAGE_SIZE)
+>  				chunk /= 2;
+>  			if (copied) {
+> @@ -944,17 +943,17 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  				goto retry;
+>  			}
+>  		} else {
+> -			pos += status;
+> -			written += status;
+> -			length -= status;
+> +			pos += written;
+> +			total_written += written;
+> +			length -= written;
+>  		}
+>  	} while (iov_iter_count(i) && length);
+>  
+>  	if (status == -EAGAIN) {
+> -		iov_iter_revert(i, written);
+> +		iov_iter_revert(i, total_written);
+>  		return -EAGAIN;
+>  	}
+> -	return written ? written : status;
+> +	return total_written ? total_written : status;
+>  }
+>  
+>  ssize_t
+> -- 
+> 2.39.2
+> 
+> 
 
