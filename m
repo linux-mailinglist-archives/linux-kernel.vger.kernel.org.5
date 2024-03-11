@@ -1,102 +1,171 @@
-Return-Path: <linux-kernel+bounces-99447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17CB8878878
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:01:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1F18878883
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:11:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B47FB22C5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:01:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39366284F59
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E8F56443;
-	Mon, 11 Mar 2024 19:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9539A54BE9;
+	Mon, 11 Mar 2024 19:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tZULmN2V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PZMUJ6f3"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B7155792;
-	Mon, 11 Mar 2024 19:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B7140847;
+	Mon, 11 Mar 2024 19:11:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710183681; cv=none; b=tDQ3VxHr4+6/tTcNRN86mvUTldbdgSn3jqNbyP0y3T7Rl4t2/a7TQwfe+WSUSpMcNfxJZnfeED/54wkUG84xDFSFHeUDByWPYKZ1PzA/r4U+qWBEtmHaaz4ECIL6rJPCO+y7Tkv7XWzeu3h2Kbel4tqgi72hyr8BA7hi8YVkiuU=
+	t=1710184290; cv=none; b=GeG/wfRqqok2GvN6ZanMDy9pFBRI6eW3jtSY7nrrlmtvUj5Q/FTLLCbQOtlzKFsSTmDXKJKTWMuj5weOn7eq6dRkReldEtYmgg3Au9YGH9Ti1zeX5s6bjmQFz+Ot5YEpaK9JHw/mm5r0cY5v3dIKUCN6Rpg32qZvMj1UJ2OyhiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710183681; c=relaxed/simple;
-	bh=nJrp1Y9l6Y09y6DGb2hHKl38I+DRlu4uhl9A1sfZhp0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a1hzaj9cIgm8w/9J+A1OYvL5DkJuXD0n3ec2IfyNp6oI7m+td64MY/zsY1TUWoHAlPiyZ1TFmVf+/JVHXrpT1KZzTqGuUMxiKnzO11PF/cTS6ZxLTglu1NCLfCiAhqqNKWPMKVn3klSFCAZ+hF/FhVQkhvnGLaMO7AYuBtLKtv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tZULmN2V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2DFDC433F1;
-	Mon, 11 Mar 2024 19:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710183681;
-	bh=nJrp1Y9l6Y09y6DGb2hHKl38I+DRlu4uhl9A1sfZhp0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=tZULmN2V0fMkFqidHaZ9A7yEiIKNZjQ1U74oLWYftcP+26hLhqdgrjShqkYLzAX7n
-	 +vgwyE8WkMxMDMOJlSoxKAfike/K0jpmsewvrP1upZXEUWuVShp3hOqnld+TZ5Gal6
-	 X3+VAMK/8GmfIEwlVaE0yH0ndMHYg/movgK+YBp0CJkwKIht/VbkzWJjDMPjQKQnU8
-	 Lk4WglaIi2crRczw6Zc6Yj4WaVTdzmkYcb9QmFmTr3joRqc45KK9HUOkpJM3CIiLS8
-	 2WvWB2xMFK15qX0NYt5ZJ+Toc8d4/jhRzW3aqQ1Fp/h9yYitxD+PYm/QlwIzwJaVDr
-	 mlwYl14eqAdTQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 93F47CE0B68; Mon, 11 Mar 2024 12:01:20 -0700 (PDT)
-Date: Mon, 11 Mar 2024 12:01:20 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Stefan Wiehler <stefan.wiehler@nokia.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
- splat
-Message-ID: <d42e5844-5a53-4854-b464-b622686e9f8f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
- <Ze8sl01dgGTLcREs@shell.armlinux.org.uk>
- <c0001d35-a75a-4cdf-917b-8e1ec159502d@nokia.com>
+	s=arc-20240116; t=1710184290; c=relaxed/simple;
+	bh=4LwPqX5B/kedEJN2uWC05iOjLmcODFip9S5O4WyitH8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=phhsMo5AbAzNYfz5CT2orzkoIYFfHR3ofo0/0j5B0ln+6CTmgJl6ynbw87FfewF1szTtHl+zbRcMqvPaYppjDkguYU4jVSLBoMm2alUSQ7KQdDuXlFOiM0aHLbqAPjwsXUyMJ7zqwlb8frhWwYRzfjAusTT7pVu+7l0UinjAxoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PZMUJ6f3; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BJ7luc011988;
+	Mon, 11 Mar 2024 19:11:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=cIC28NXyFQhnrE2WQSAna546CA7ZxTgRRfuoymC5yiU=;
+ b=PZMUJ6f3AjMW2ZGqu1bXK12KjSIbvvGlefIKWVL4BIXvo4A/4fghfvVwFpMzv2ByyICj
+ tnxi1qwYsFcCEStcZIhrIvVFbv6Z9yDoXfrPoU9UaL6qOXAyVABmZ4iO/bJhc6uTLrZv
+ 7LHbYthp8R0V+xAQOzoDwtEmv7aO5GEe7Jd+eTnd6AQ0HQzRwSO0bu5xwvlJ+TtWqRMk
+ TdtxD5FrZ8fUL5hw7WIQhPZ2koz1tNHumrjQqgMTMy19VcwGhpySnx7w1xVNpmOih31H
+ ybfrKzrMRAA6ujCJzQFOml8ZWNE4dj48Dlre8oRXGL0jCqYoLasn1Llum9h7zTXuc18/ 4A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt7uar1p7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 19:11:13 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42BJ98Nm016204;
+	Mon, 11 Mar 2024 19:11:12 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt7uar1hr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 19:11:12 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BGXkRH014887;
+	Mon, 11 Mar 2024 19:10:44 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws33njfs8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 19:10:43 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BJAguG46924208
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 19:10:43 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 83A3158055;
+	Mon, 11 Mar 2024 19:10:42 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 91E095805B;
+	Mon, 11 Mar 2024 19:10:41 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 11 Mar 2024 19:10:41 +0000 (GMT)
+Message-ID: <2c9dc099-f450-40af-9723-27ca2b69afdc@linux.ibm.com>
+Date: Mon, 11 Mar 2024 15:10:40 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 1/3] powerpc/prom_init: Replace
+ linux,sml-base/sml-size with linux,sml-log
+Content-Language: en-US
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "rnsastry@linux.ibm.com" <rnsastry@linux.ibm.com>,
+        "jsnitsel@redhat.com" <jsnitsel@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
+        "viparash@in.ibm.com" <viparash@in.ibm.com>
+References: <20240311132030.1103122-1-stefanb@linux.ibm.com>
+ <20240311132030.1103122-2-stefanb@linux.ibm.com>
+ <0bde9a6f-e002-452e-8610-8d4040fb0b86@csgroup.eu>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <0bde9a6f-e002-452e-8610-8d4040fb0b86@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c0001d35-a75a-4cdf-917b-8e1ec159502d@nokia.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: q89qBJgZ5Gn7UriGH1PV_pfbJEKXRzzy
+X-Proofpoint-GUID: K94-f5m9lfd12jL9cXHK1-N4_xfkabyb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_11,2024-03-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2403110146
 
-On Mon, Mar 11, 2024 at 05:17:43PM +0100, Stefan Wiehler wrote:
-> > So what do I do about this? I see you submitted this to the patch system
-> > on the 8th March, but proposed a different approach on the 9th March. I
-> > don't see evidence that Paul is happy with the original approach either
-> > and there's no ack/r-b's on anything here.
+
+
+On 3/11/24 13:24, Christophe Leroy wrote:
 > 
-> I think we need to wait for feedback from Will Deacon regarding the new
-> arch_spin_lock() based approach. So please abandon the original proposal in the
-> patch system, at least for now…
+> 
+> Le 11/03/2024 à 14:20, Stefan Berger a écrit :
+>> linux,sml-base holds the address of a buffer with the TPM log. This
+>> buffer may become invalid after a kexec. To avoid accessing an invalid
+>> address or corrupted buffer, embed the whole TPM log in the device tree
+>> property linux,sml-log. This helps to protect the log since it is
+>> properly carried across a kexec soft reboot with both of the kexec
+>> syscalls.
+>>
+>> Avoid having the firmware ingest the whole TPM log when calling
+>> prom_setprop but only create the linux,sml-log property as a place holder.
+>> Insert the actual TPM log during the tree flattening phase.
+>>
+>> Fixes: 4a727429abec ("PPC64: Add support for instantiating SML from Open Firmware")
+>> Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> ---
 
-I prefer the arch_spin_lock() version, but the other approach also works.
-I agree with Stefan that it would also be good to get Will's feedback.
+>> @@ -2645,6 +2645,17 @@ static void __init scan_dt_build_struct(phandle node, unsigned long *mem_start,
+>>    		}
+>>    		prev_name = sstart + soff;
+>>    
+>> +		if (!prom_strcmp("linux,sml-log", pname)) {
+>> +			/* push property head */
+>> +			dt_push_token(OF_DT_PROP, mem_start, mem_end);
+>> +			dt_push_token(sml_size, mem_start, mem_end);
+>> +			dt_push_token(soff, mem_start, mem_end);
+>> +			/* push property content */
+>> +			valp = make_room(mem_start, mem_end, sml_size, 1);
+>> +			memcpy(valp, (void *)sml_base, sml_size);
+> 
+> You can't cast a u64 into a pointer. If sml_base is an address, it must
+> be declared as an unsigned long.
+> 
+> Build with pmac32_defconfig :
+> 
+>     CC      arch/powerpc/kernel/prom_init.o
+> arch/powerpc/kernel/prom_init.c: In function 'scan_dt_build_struct':
+> arch/powerpc/kernel/prom_init.c:2663:38: error: cast to pointer from
+> integer of different size [-Werror=int-to-pointer-cast]
+>    2663 |                         memcpy(valp, (void *)sml_base, sml_size);
+>         |                                      ^
+> cc1: all warnings being treated as errors
+> make[4]: *** [scripts/Makefile.build:243:
+> arch/powerpc/kernel/prom_init.o] Error 1
 
-The downside of the arch_spin_lock() approach is that, in theory, it
-prevents lockdep from seeing deadlocks involving that lock acquisition.
-But in practice, that is a problem only if additional locks can be
-acquired while that lock is held, and there are no such additional
-locks, right?
+Next round will have this block under #ifdef CONFIG_PPC64.
 
-The downside of the original approach is that it further complicates
-RCU's interaction with offline CPUs, especially should people copy that
-approach in other pieces of offline code.
-
-So, again, I prefer the arch_spin_lock() approach.
-
-							Thanx, Paul
+Thanks.
 
