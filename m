@@ -1,58 +1,70 @@
-Return-Path: <linux-kernel+bounces-99031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C1C987829F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:01:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FA78782A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0BFE1C22BDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:01:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2391F24F9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:03:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00BC42079;
-	Mon, 11 Mar 2024 15:01:15 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4083C3F8C3
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696EA40C09;
+	Mon, 11 Mar 2024 15:02:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="azBS6ah4"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20DA3FB9D;
+	Mon, 11 Mar 2024 15:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710169275; cv=none; b=G5DWN0BKuKOj4rNaKS38rd48cwIofFrbCO/NA3B2I7iV98kEGTdsiWZG5+FOcutV5bW47p2hOPXZHkqdOtWcrBb22r62um4UmuOmPqlozp1Rvt/0F5GODVaGppQt6QyOrqNdbmMc9JTspeyVh/6G+mk/tV3Ik7PI9Mfp32X1GhM=
+	t=1710169353; cv=none; b=uTfjUjZ/vt4HiOY8pkjRHN9ZBkdK6t3cWCG42UVpCYKQWldf00zvHHc/++9q63SuHKzWGLdZocdTOQ3EkevZThEjSFf5IdtVpWvvPdyWzPShTrabHKWHuxLvOMO9PJN+ti+yM0E6CczL3IiX99rX3iakPh4+muLesHM2xegOHZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710169275; c=relaxed/simple;
-	bh=W4HTRtFPqGSJ216rvR08ho2Ee31NW0Ds9D9dPsn8EEM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ghaLDoaLmL1HqQ5rZhuynuulnNJzBzDkbJ04Qr40g9SqPMkC0N6O2D+iVGQkbbkLHnSF+TTFYW7g8VhcgR5QpgGOMwMbo1Qk/Ae/9cnyrTq1evSLZOfLQuKHkUdC50w2kcDtoCHHwLPBEOATyQhWxg26lKF/aybsba6iFJD3LwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 528DC1007;
-	Mon, 11 Mar 2024 08:01:49 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A7423F64C;
-	Mon, 11 Mar 2024 08:01:10 -0700 (PDT)
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Huang Ying <ying.huang@intel.com>,
-	Gao Xiang <xiang@kernel.org>,
-	Yu Zhao <yuzhao@google.com>,
-	Yang Shi <shy828301@gmail.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Barry Song <21cnbao@gmail.com>,
-	Chris Li <chrisl@kernel.org>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/6] mm: swap: Remove CLUSTER_FLAG_HUGE from swap_cluster_info:flags
-Date: Mon, 11 Mar 2024 15:00:53 +0000
-Message-Id: <20240311150058.1122862-2-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240311150058.1122862-1-ryan.roberts@arm.com>
-References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+	s=arc-20240116; t=1710169353; c=relaxed/simple;
+	bh=0d1h+66LiZBG4l7r4vzhI6g9+f3v9VLhHMPpwzwCB1o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s66FxJnryOv9m+W2fQhe7hLlPi6o+ffIp6gbOtjdzR2fwFwwHWadjffdJK8WcZAJ6bMJXYgsGvXDG/DmV2jhSLPbf0pU7s5dlQTAqFjM0FCCowFtDFrvWWFPJWP22bO/vma6muYOB4kz8BhnxG5IYJL/ENJlDhfbh0T+vIWq1aQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=azBS6ah4; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BExtWO007122;
+	Mon, 11 Mar 2024 15:02:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=w/vL4sracDDYC8rXycaL7lPs9isu/fY8uteFKSY6cBI=;
+ b=azBS6ah4c2A62JuJ1hLEBxoWbAUvV/KdNh/9xEDGXurYC5Myvgb42D21hAsVaFRMbKhH
+ 7ZURIGEdigpD6y/s529MqmEY8wk62MbI/vrhcZG1ZjbGpbQg+XNDveneQS8hlWoPmdQG
+ karOwytWQJuTM2rLU7jqxmfL6rhCq875eKOZhKE7VieWtmVxF8CX9God1l3lsdfixq8w
+ vUGbasHbSCZtbW5Sr9Fj08ZUtFcU5YvS9qEtPuaFU3bFkeziK17SLODk8Rq/PzL8J1RB
+ kIX/vXQtEU50c/DrDEAPkMFk56oPUFU08eeHHiVJiJbyviET2EghgWFS6JVHJOt6UziR iQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wre6ebhh8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 15:02:20 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42BENe4T005252;
+	Mon, 11 Mar 2024 15:02:19 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wre75ykya-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 15:02:19 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42BF2I3L000311;
+	Mon, 11 Mar 2024 15:02:18 GMT
+Received: from t460-2.nl.oracle.com (dhcp-10-175-49-173.vpn.oracle.com [10.175.49.173])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3wre75ykvn-1;
+	Mon, 11 Mar 2024 15:02:18 +0000
+From: Vegard Nossum <vegard.nossum@oracle.com>
+To: Jonathan Corbet <corbet@lwn.net>, cve@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        security@kernel.org, Vegard Nossum <vegard.nossum@oracle.com>
+Subject: [RFC PATCH 1/2] docs: automarkup: linkify CVSS: strings
+Date: Mon, 11 Mar 2024 16:00:53 +0100
+Message-Id: <20240311150054.2945210-1-vegard.nossum@oracle.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,202 +72,74 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_10,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403110113
+X-Proofpoint-GUID: J-vTCBCe52pbfRHix-D-QdTHimg_w6ft
+X-Proofpoint-ORIG-GUID: J-vTCBCe52pbfRHix-D-QdTHimg_w6ft
 
-As preparation for supporting small-sized THP in the swap-out path,
-without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
-which, when present, always implies PMD-sized THP, which is the same as
-the cluster size.
+CVSS vectors encode the results of a vulnerability analysis.
 
-The only use of the flag was to determine whether a swap entry refers to
-a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
-Instead of relying on the flag, we now pass in nr_pages, which
-originates from the folio's number of pages. This allows the logic to
-work for folios of any order.
+When encountered in the documentation, create links to first.org which
+can be used to explain and explore the various vector components and
+their values.
 
-The one snag is that one of the swap_page_trans_huge_swapped() call
-sites does not have the folio. But it was only being called there to
-shortcut a call __try_to_reclaim_swap() in some cases.
-__try_to_reclaim_swap() gets the folio and (via some other functions)
-calls swap_page_trans_huge_swapped(). So I've removed the problematic
-call site and believe the new logic should be functionally equivalent.
+Example:
 
-That said, removing the fast path means that we will take a reference
-and trylock a large folio much more often, which we would like to avoid.
-The next patch will solve this.
+- https://www.first.org/cvss/calculator/3.1#CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L/E:U/MPR:L
 
-Removing CLUSTER_FLAG_HUGE also means we can remove split_swap_cluster()
-which used to be called during folio splitting, since
-split_swap_cluster()'s only job was to remove the flag.
+FIRST is the Forum of Incident Response and Security Teams, founded
+in 1990, and is partnered and supported by many well-known organizations.
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 ---
- include/linux/swap.h | 10 ----------
- mm/huge_memory.c     |  3 ---
- mm/swapfile.c        | 47 ++++++++------------------------------------
- 3 files changed, 8 insertions(+), 52 deletions(-)
+ Documentation/sphinx/automarkup.py | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 2955f7a78d8d..4a8b6c60793a 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -259,7 +259,6 @@ struct swap_cluster_info {
- };
- #define CLUSTER_FLAG_FREE 1 /* This cluster is free */
- #define CLUSTER_FLAG_NEXT_NULL 2 /* This cluster has no next cluster */
--#define CLUSTER_FLAG_HUGE 4 /* This cluster is backing a transparent huge page */
+diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/automarkup.py
+index a413f8dd5115..8cf95a404bc8 100644
+--- a/Documentation/sphinx/automarkup.py
++++ b/Documentation/sphinx/automarkup.py
+@@ -76,6 +76,11 @@ c_namespace = ''
+ RE_git = re.compile(r'commit\s+(?P<rev>[0-9a-f]{12,40})(?:\s+\(".*?"\))?',
+     flags=re.IGNORECASE | re.DOTALL)
  
- /*
-  * We assign a cluster to each CPU, so each CPU can allocate swap entry from
-@@ -600,15 +599,6 @@ static inline int add_swap_extent(struct swap_info_struct *sis,
- }
- #endif /* CONFIG_SWAP */
++#
++# CVSS score vectors
++#
++RE_cvss = re.compile(r'CVSS:(?P<ver>[0-9\.]+)(/[A-Z-]{1,3}:[A-Z])+')
++
+ def markup_refs(docname, app, node):
+     t = node.astext()
+     done = 0
+@@ -93,7 +98,8 @@ def markup_refs(docname, app, node):
+                            RE_union: markup_c_ref,
+                            RE_enum: markup_c_ref,
+                            RE_typedef: markup_c_ref,
+-                           RE_git: markup_git}
++                           RE_git: markup_git,
++                           RE_cvss: markup_cvss}
  
--#ifdef CONFIG_THP_SWAP
--extern int split_swap_cluster(swp_entry_t entry);
--#else
--static inline int split_swap_cluster(swp_entry_t entry)
--{
--	return 0;
--}
--#endif
--
- #ifdef CONFIG_MEMCG
- static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
- {
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 04fb994a7b0b..5298ba882d49 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2965,9 +2965,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		shmem_uncharge(folio->mapping->host, nr_dropped);
- 	remap_page(folio, nr);
+     if sphinx.version_info[0] >= 3:
+         markup_func = markup_func_sphinx3
+@@ -290,6 +296,12 @@ def markup_git(docname, app, match):
+     return nodes.reference('', nodes.Text(text),
+         refuri=f'https://git.kernel.org/torvalds/c/{rev}')
  
--	if (folio_test_swapcache(folio))
--		split_swap_cluster(folio->swap);
--
- 	/*
- 	 * set page to its compound_head when split to non order-0 pages, so
- 	 * we can skip unlocking it below, since PG_locked is transferred to
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 1155a6304119..df1de034f6d8 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -343,18 +343,6 @@ static inline void cluster_set_null(struct swap_cluster_info *info)
- 	info->data = 0;
- }
- 
--static inline bool cluster_is_huge(struct swap_cluster_info *info)
--{
--	if (IS_ENABLED(CONFIG_THP_SWAP))
--		return info->flags & CLUSTER_FLAG_HUGE;
--	return false;
--}
--
--static inline void cluster_clear_huge(struct swap_cluster_info *info)
--{
--	info->flags &= ~CLUSTER_FLAG_HUGE;
--}
--
- static inline struct swap_cluster_info *lock_cluster(struct swap_info_struct *si,
- 						     unsigned long offset)
- {
-@@ -1027,7 +1015,7 @@ static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
- 	offset = idx * SWAPFILE_CLUSTER;
- 	ci = lock_cluster(si, offset);
- 	alloc_cluster(si, idx);
--	cluster_set_count_flag(ci, SWAPFILE_CLUSTER, CLUSTER_FLAG_HUGE);
-+	cluster_set_count(ci, SWAPFILE_CLUSTER);
- 
- 	memset(si->swap_map + offset, SWAP_HAS_CACHE, SWAPFILE_CLUSTER);
- 	unlock_cluster(ci);
-@@ -1365,7 +1353,6 @@ void put_swap_folio(struct folio *folio, swp_entry_t entry)
- 
- 	ci = lock_cluster_or_swap_info(si, offset);
- 	if (size == SWAPFILE_CLUSTER) {
--		VM_BUG_ON(!cluster_is_huge(ci));
- 		map = si->swap_map + offset;
- 		for (i = 0; i < SWAPFILE_CLUSTER; i++) {
- 			val = map[i];
-@@ -1373,7 +1360,6 @@ void put_swap_folio(struct folio *folio, swp_entry_t entry)
- 			if (val == SWAP_HAS_CACHE)
- 				free_entries++;
- 		}
--		cluster_clear_huge(ci);
- 		if (free_entries == SWAPFILE_CLUSTER) {
- 			unlock_cluster_or_swap_info(si, ci);
- 			spin_lock(&si->lock);
-@@ -1395,23 +1381,6 @@ void put_swap_folio(struct folio *folio, swp_entry_t entry)
- 	unlock_cluster_or_swap_info(si, ci);
- }
- 
--#ifdef CONFIG_THP_SWAP
--int split_swap_cluster(swp_entry_t entry)
--{
--	struct swap_info_struct *si;
--	struct swap_cluster_info *ci;
--	unsigned long offset = swp_offset(entry);
--
--	si = _swap_info_get(entry);
--	if (!si)
--		return -EBUSY;
--	ci = lock_cluster(si, offset);
--	cluster_clear_huge(ci);
--	unlock_cluster(ci);
--	return 0;
--}
--#endif
--
- static int swp_entry_cmp(const void *ent1, const void *ent2)
- {
- 	const swp_entry_t *e1 = ent1, *e2 = ent2;
-@@ -1519,22 +1488,23 @@ int swp_swapcount(swp_entry_t entry)
- }
- 
- static bool swap_page_trans_huge_swapped(struct swap_info_struct *si,
--					 swp_entry_t entry)
-+					 swp_entry_t entry,
-+					 unsigned int nr_pages)
- {
- 	struct swap_cluster_info *ci;
- 	unsigned char *map = si->swap_map;
- 	unsigned long roffset = swp_offset(entry);
--	unsigned long offset = round_down(roffset, SWAPFILE_CLUSTER);
-+	unsigned long offset = round_down(roffset, nr_pages);
- 	int i;
- 	bool ret = false;
- 
- 	ci = lock_cluster_or_swap_info(si, offset);
--	if (!ci || !cluster_is_huge(ci)) {
-+	if (!ci || nr_pages == 1) {
- 		if (swap_count(map[roffset]))
- 			ret = true;
- 		goto unlock_out;
- 	}
--	for (i = 0; i < SWAPFILE_CLUSTER; i++) {
-+	for (i = 0; i < nr_pages; i++) {
- 		if (swap_count(map[offset + i])) {
- 			ret = true;
- 			break;
-@@ -1556,7 +1526,7 @@ static bool folio_swapped(struct folio *folio)
- 	if (!IS_ENABLED(CONFIG_THP_SWAP) || likely(!folio_test_large(folio)))
- 		return swap_swapcount(si, entry) != 0;
- 
--	return swap_page_trans_huge_swapped(si, entry);
-+	return swap_page_trans_huge_swapped(si, entry, folio_nr_pages(folio));
- }
- 
- /**
-@@ -1622,8 +1592,7 @@ int free_swap_and_cache(swp_entry_t entry)
- 		}
- 
- 		count = __swap_entry_free(p, entry);
--		if (count == SWAP_HAS_CACHE &&
--		    !swap_page_trans_huge_swapped(p, entry))
-+		if (count == SWAP_HAS_CACHE)
- 			__try_to_reclaim_swap(p, swp_offset(entry),
- 					      TTRS_UNMAPPED | TTRS_FULL);
- 		put_swap_device(p);
++def markup_cvss(docname, app, match):
++    text = match.group(0)
++    ver = match.group('ver')
++    return nodes.reference('', nodes.Text(text),
++        refuri=f'https://www.first.org/cvss/calculator/{ver}#{text}')
++
+ def auto_markup(app, doctree, name):
+     global c_namespace
+     c_namespace = get_c_namespace(app, name)
 -- 
-2.25.1
+2.34.1
 
 
