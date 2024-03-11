@@ -1,129 +1,125 @@
-Return-Path: <linux-kernel+bounces-98930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFCFA878123
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:00:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BBE878131
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:02:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 579B51F23F1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:00:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 767801C22875
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FCDC3FB39;
-	Mon, 11 Mar 2024 14:00:36 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D0033CCD;
+	Mon, 11 Mar 2024 14:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pWMWeKlh"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D2625755;
-	Mon, 11 Mar 2024 14:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0B83EA64;
+	Mon, 11 Mar 2024 14:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710165635; cv=none; b=K4NT8KMgVmyXIY+Y43kv1irpXirqKc0W2s9nFgpbQm+langIpMDzkYpNQgK4GOjMI0HpWcKvgHZcg2ZCpUge4Dhh4xWI9M7M2KdePFVVJrj1TMwi5LO774XCSJotFJfgKJQMdxLdYC41TFBAOC0up5mI2yphKf1OTK52Qog5Yww=
+	t=1710165735; cv=none; b=l43MEotG/czXja+6fQAqwGveEpLGlclxIROr2qouHRsGkcZTTGDtwm4Em4+LWPFfUuVypounczURAYyo4tsNOIGVZO/p0lgSRp2dnYEv8Y2Hb1/a5cJKnlhFhTXrDoh58gVQjF+CaMK00MRBQntDQClOaUxP6fGcKz2Z9qAK+HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710165635; c=relaxed/simple;
-	bh=yeIfJKwxZ8NuIULLluOK4QJcbswhSvGsUU/2cdooVIU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=oEv2mutCKoccoDKowaXB2NB1zItTy5+gxgy7A85ErvLTM8rnfPZZC7ZJnBm2BGdbYLcuHNQZFj2Xg9u5DYfV/BCN6ljDc/s3vwv1N+GHpatuZS17JT8dqlA7nEcZcb8ciQfRwWLrpzRAl6VLYG7h2CGj7Y0L/aAbNPSSjdjPApU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ttddl0z6Sz1h1wg;
-	Mon, 11 Mar 2024 21:58:03 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8BD65180061;
-	Mon, 11 Mar 2024 22:00:28 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 22:00:27 +0800
-Message-ID: <f8354762-703c-16e2-fa8e-bc8519fdcd06@hisilicon.com>
-Date: Mon, 11 Mar 2024 22:00:27 +0800
+	s=arc-20240116; t=1710165735; c=relaxed/simple;
+	bh=IiDhdI0p6YSxPuGncTwB9Q4x26gQ/GNeSvzVzFtOYo0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Mime-Version; b=dmdIxQSJhY2wxChFyS8c8lsBuETWMewS4nFTbaejuBK+KQ3QuWygu/4tMI1iuocW4P/HrfbEVyGd01hwzTIC+EuWvilsyLjWqCCyDaQ9J/RcxG+zVUoI0yzI6soISdj0Y8VPFc1DN5TUrdwaU4EsC7qUThqSF/XoQDqRNPxzcXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pWMWeKlh; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BDxHE1019090;
+	Mon, 11 Mar 2024 14:00:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=IiDhdI0p6YSxPuGncTwB9Q4x26gQ/GNeSvzVzFtOYo0=;
+ b=pWMWeKlhKfTBmXU86QnOWcvve9X+RB+TrreYeaBWbEHMLIyS08/kPVEkiPBjdLTRw7qg
+ bANrdBJtcyrZk6GDQcGsCbEwXPDlXoYIW9Z7/2senJQxiUQueIxKjcivgbYp814nGuDk
+ gRBEWo5eULJQuA/9yRvTrH3JzyMFUzK5K4N5twanXJ4al9ya00qOyRpT3ltIQbUYgtJC
+ a9LSS3JJB+rAdh0qqi9xWpefrhu2BOlzUDVJXmago3Y8ct58JW/tOa8Cuh48SWYy3Bt9
+ M48VYZHHMRAZjysFT8JI5snR58IGRkU5uI1p7J1jDABhGp7GLwEQWkqyvZsypLr3wK2P yQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt2mrh69s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 14:00:51 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42BDxxv2022576;
+	Mon, 11 Mar 2024 14:00:51 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt2mrh66s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 14:00:50 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BDwfoM020496;
+	Mon, 11 Mar 2024 14:00:47 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws3kkrqtc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 14:00:47 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BE0jsE24183328
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 14:00:47 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4DC2658063;
+	Mon, 11 Mar 2024 14:00:45 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0D9EB58060;
+	Mon, 11 Mar 2024 14:00:43 +0000 (GMT)
+Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.133.174])
+	by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 11 Mar 2024 14:00:42 +0000 (GMT)
+Message-ID: <7f486a5d3b6ac6c1af3974975888d0383b5826c6.camel@linux.ibm.com>
+Subject: Re: [RFC][PATCH 5/8] ima: Record IMA verification result of digest
+ lists in digest cache
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet@lwn.net,
+        dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+        wufan@linux.microsoft.com, pbrobinson@gmail.com, zbyszek@in.waw.pl,
+        hch@lst.de, mjg59@srcf.ucam.org, pmatilai@redhat.com, jannh@google.com,
+        dhowells@redhat.com, jikos@kernel.org, mkoutny@suse.com,
+        ppavlu@suse.com, petr.vorel@gmail.com, petrtesarik@huaweicloud.com,
+        mzerqung@0pointer.de, kgold@linux.ibm.com,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date: Mon, 11 Mar 2024 10:00:42 -0400
+In-Reply-To: <20240214143525.2205481-6-roberto.sassu@huaweicloud.com>
+References: <20240214143525.2205481-1-roberto.sassu@huaweicloud.com>
+	 <20240214143525.2205481-6-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
- parameter configuration
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
- <20240310100027.GC12921@unreal>
- <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
- <20240311071119.GH12921@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240311071119.GH12921@unreal>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: BSm5942N8Msoz5zbZnbmekoawL09eek7
+X-Proofpoint-ORIG-GUID: eD4MDpRznV5_ydSjbwCAtrPcKQ35iYcx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 mlxlogscore=999 suspectscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403110105
 
+Roberto, please consider renaming this patch.
 
+IMA is informing the digest_cache LSM of the digest_list verification result.
+Instead of "ima: Record IMA verification result of digest lists in digest
+cache", it should be "ima: inform digest_cache LSM of digest list verification
+result".
 
-On 2024/3/11 15:11, Leon Romanovsky wrote:
-> On Mon, Mar 11, 2024 at 10:00:51AM +0800, Junxian Huang wrote:
->>
->>
->> On 2024/3/10 18:00, Leon Romanovsky wrote:
->>> On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
->>>> From: Chengchang Tang <tangchengchang@huawei.com>
->>>>
->>>> hns RoCE supports 4 congestion control algorithms. Each algorihm
->>>> involves multiple parameters. Add port sysfs directory for each
->>>> algorithm to allow modifying their parameters.
->>>
->>> Unless Jason changed his position after this rewrite [1], we don't allow
->>> any custom driver sysfs code.
->>>
->>> [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
->>>
->>
->> I didn't quite get the reason from [1], could you please explain it?
-> 
-> Before [1], we didn't allow custom sysfs. After [1], the sysfs code
-> started to be more sane and usable for the drivers. However, it is
-> unlikely that the policy is changed to allow driver sysfs code.
-> 
->>
->> And it would be helpful if you could give us a hint about any other
->> proper ways to do the algorithm parameter configuration.
-> 
-> Like any other FW internals.
-> 
+Mimi
 
-If we add the capability of custom driver parameter configuration to
-rdmatool (similar to [2]), would it be acceptable?
-
-[2] https://patchwork.ozlabs.org/project/netdev/patch/1530703837-24563-4-git-send-email-moshe@mellanox.com/
-
-Junxian
-
-> Thanks
-> 
->>
->> Thanks,
->> Junxian
->>
->>>>
->>>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
->>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->>>> ---
->>>>  drivers/infiniband/hw/hns/Makefile          |   2 +-
->>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  20 ++
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  59 ++++
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 132 ++++++++
->>>>  drivers/infiniband/hw/hns/hns_roce_main.c   |   3 +
->>>>  drivers/infiniband/hw/hns/hns_roce_sysfs.c  | 346 ++++++++++++++++++++
->>>>  6 files changed, 561 insertions(+), 1 deletion(-)
->>>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_sysfs.c
->>>
->>> Thanks
->>
 
