@@ -1,376 +1,278 @@
-Return-Path: <linux-kernel+bounces-99348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECE2187870D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 351CC878715
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:13:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 774B41F213A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:11:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D61BE1F21AC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C975465B;
-	Mon, 11 Mar 2024 18:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC86753819;
+	Mon, 11 Mar 2024 18:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="VHtK0knn"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255B01EB5C;
-	Mon, 11 Mar 2024 18:10:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SZFlKfI9"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 435763BB29;
+	Mon, 11 Mar 2024 18:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710180658; cv=none; b=AXJkU2UvnLl0q8dsi67WghPEVQ/sbyq7WNFLdo1IXDsaPffHi8igThayP2ZfKS15oKfPyaJDpsJTvze81RbwWoesP3yr4/hfy3QnztBe7s4tQ3/5UyziKh9ZYPAiTTfWJcDhRl3ouJ5OzohqjNz/lrU6jL4nkHB/Buts0JbmkI4=
+	t=1710180774; cv=none; b=up4pGgmSdXQIcoqd40cFbEPUMVoqJD9M1nDp1zlD93Bp8VFFCwnUEON1NjjSzBMfYsy6uYoPvo0bL6PD0W69vKBFyRC0yqcQoIZdCJh0WIHrmGYBj3EC4ndhzRukUgTUG8tIukZFNYFoldCHBaAvDVwHHXbybGXRNv6sgyLvmXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710180658; c=relaxed/simple;
-	bh=IlpA1JdDk979yXLkGRM+oxDPT5bK6ueS7QlDrgRmw7A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O/hEhQkH90K0KcfcNS+AEAKvBY6E+b+upqKDd5tMtnngwcLkFVJfkuKHWVhnVKtGs2/w4vxrcvohrhPMKUgbL+onOoCULSnW3dvl5hBbyS7mi5rgpac910Bu2iqmK+BMH1eCxMZEoS6w3CcJBq3e+a8nDoPbwbH9gAQqT3mKmkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=VHtK0knn; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.137.106.151] (unknown [131.107.8.87])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 7F32B20B74C0;
-	Mon, 11 Mar 2024 11:10:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7F32B20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710180654;
-	bh=xbhwVp3nppXLf2bz4+VzXn2ef5pW4ZLtcKrUCC0s6oc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VHtK0knneBY7bnXaWkXbbfxbekWNaF5L4lbPiC/aa3AtSGgdPCPYKfdfXtJW/PBBn
-	 GtDWVCu1XMqQXuRkVdSWyHkLl/IFY5005VvSho8vmiA6qMUChbzHUaNbJx58XqMqsO
-	 gapRoOZxJB3uq1+eg7Lhx54WmiZstmlselC1Y+54=
-Message-ID: <9b02176a-3842-460c-a78f-f4d4debfde5b@linux.microsoft.com>
-Date: Mon, 11 Mar 2024 11:10:54 -0700
+	s=arc-20240116; t=1710180774; c=relaxed/simple;
+	bh=NNSHfvBkcnofDuPTmyiip/uUKA9VYNoT31uHzplNxCI=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=B6FDRPitySU+keomOVKYPo5LwKa7BpMVbOzGDqFqxemgZQ3/eqEvit5J2b3pJnFP82g8DuRre+GuMTqyBPeGhvG/vqy1bxAk61O7vLExF7FyEZc6Q+TiZ6GV4Uj0oOjFqxAw1ubF0cb7PhXygOkbzceI2lahWrsjRSfkUJs8K98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SZFlKfI9; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e64997a934so3657601b3a.0;
+        Mon, 11 Mar 2024 11:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710180772; x=1710785572; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pHdxOU6FI0zPgGr7ph1GUra/E3baRZW/HfFXDD76XIM=;
+        b=SZFlKfI9pNDnbqkTmzr3Ty5Zwy/fQzIKZ0xUIWV+q1hBx3Egsw5k+6b9xp+6oALj4Q
+         ifGgMyUxQ/jBFjs3sViUtKURuEM6oOAK2cQ/61cXLpPmjKWAKDvSb+fKYOtOHcP6tuI3
+         jzQPvpuZio8fECTFR+lNvR2b9GarXwNebqGC5Ls9qcU6k+gYejd6+ZeYo6KiA4LXchk5
+         ZwP8LLbne9i38p0QGPoCNXSvTvVEmAUjzoFC7EeHiszdA6AIWuQkMG13DyPHSAfcnMlo
+         JnpW8x16S91GEB0fHIEocYnQJQMzx1qczVW+nQVStzhZ8voloiGkmP31RoPMIxK/cMNH
+         PfZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710180772; x=1710785572;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pHdxOU6FI0zPgGr7ph1GUra/E3baRZW/HfFXDD76XIM=;
+        b=dFyG55F0rJVy2xfVg95l/l4hNWGQiJJxcSffPIXtaydxemkzLKNqfnCO5x27xFjHPu
+         ARR9YE0/rH65hKXMr1eglAB9pizjkJyjk5Snul+fTpFyQd8u+/4QXy9gINp9plvmB0NN
+         U2RxNZviLbOr44lx0YQpiiju1rni8DV0cXI6YFMGkMtUArpCPWQPsgc+hnp2J+LIujVW
+         lZv3gwWy3BrnmMyy22U6HqFUxOjESL/RCTgV/7Yi6NFYPX9AuyNVFXNuN2P6L/teAps9
+         0gzXbGKiv93pAV2qHpKTxhPsSPVuC11wLijxPuxLI5Q1ssZGMQtAHzaXnN0DpBnv0hTc
+         wNtg==
+X-Forwarded-Encrypted: i=1; AJvYcCXLksfaFDi5r0ValV/mViu9CcaZ+d3xv3EAgHSyl+HoXkeuZn3u8vdJ1fQHQn00ndv9Lzh9Jp5xk0F7rAzPs66dJT6oT6KO14tgI2AlB7g/OxloeOuSW7PUQbnvmoWJvXk3BL56t2g5AvDA
+X-Gm-Message-State: AOJu0YyWtsXvqD12VIM/D8xnoK6HNzogG3dbjXvTgXJ3zWcUOZqM1Mib
+	w2+3KaI4EaG7X3ZpQ3VpQ8POumhGpN1W7l4zDb0ULz5BWaaPQDUZ
+X-Google-Smtp-Source: AGHT+IFBbIjR32PbIYfTWs+uRY9c0pwYjvTgr8H3ULTdBrVByC9khjQqCTAmswxtIdGE67iLv1IsTw==
+X-Received: by 2002:a05:6a00:983:b0:6e6:9a11:9d57 with SMTP id u3-20020a056a00098300b006e69a119d57mr1339143pfg.7.1710180772446;
+        Mon, 11 Mar 2024 11:12:52 -0700 (PDT)
+Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
+        by smtp.gmail.com with ESMTPSA id p1-20020a62b801000000b006e66a76d877sm4882751pfe.153.2024.03.11.11.12.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 11:12:52 -0700 (PDT)
+From: mhkelley58@gmail.com
+X-Google-Original-From: mhklinux@outlook.com
+To: haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org
+Subject: [PATCH 1/1] hv_balloon: Enable hot-add for memblock sizes > 128 Mbytes
+Date: Mon, 11 Mar 2024 11:12:38 -0700
+Message-Id: <20240311181238.1241-1-mhklinux@outlook.com>
+X-Mailer: git-send-email 2.25.1
+Reply-To: mhklinux@outlook.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v14 01/19] security: add ipe lsm
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet@lwn.net,
- zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com, tytso@mit.edu,
- ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
- eparis@redhat.com, paul@paul-moore.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
- audit@vger.kernel.org, linux-kernel@vger.kernel.org,
- Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1709768084-22539-1-git-send-email-wufan@linux.microsoft.com>
- <1709768084-22539-2-git-send-email-wufan@linux.microsoft.com>
- <21597a6e143e4110d0103ef1421ac87fa98b7f32.camel@huaweicloud.com>
-Content-Language: en-CA
-From: Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <21597a6e143e4110d0103ef1421ac87fa98b7f32.camel@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Michael Kelley <mhklinux@outlook.com>
 
+The Hyper-V balloon driver supports hot-add of memory in addition
+to ballooning. Current code hot-adds in fixed size chunks of
+128 Mbytes (fixed constant HA_CHUNK in the code).  While this works
+in Hyper-V VMs with 64 Gbytes or less or memory where the Linux
+memblock size is 128 Mbytes, the hot-add fails for larger memblock
+sizes because add_memory() expects memory to be added in chunks
+that match the memblock size. Messages like the following are
+reported when Linux has a 256 Mbyte memblock size:
 
-On 3/11/2024 7:25 AM, Roberto Sassu wrote:
-> On Wed, 2024-03-06 at 15:34 -0800, Fan Wu wrote:
->> From: Deven Bowers <deven.desai@linux.microsoft.com>
->>
->> Integrity Policy Enforcement (IPE) is an LSM that provides an
->> complimentary approach to Mandatory Access Control than existing LSMs
->> today.
->>
->> Existing LSMs have centered around the concept of access to a resource
->> should be controlled by the current user's credentials. IPE's approach,
->> is that access to a resource should be controlled by the system's trust
->> of a current resource.
->>
->> The basis of this approach is defining a global policy to specify which
->> resource can be trusted.
->>
->> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
->> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
->> ---
->> v2:
->>    + Split evaluation loop, access control hooks,
->>      and evaluation loop from policy parser and userspace
->>      interface to pass mailing list character limit
->>
->> v3:
->>    + Move ipe_load_properties to patch 04.
->>    + Remove useless 0-initializations
->>    + Prefix extern variables with ipe_
->>    + Remove kernel module parameters, as these are
->>      exposed through sysctls.
->>    + Add more prose to the IPE base config option
->>      help text.
->>    + Use GFP_KERNEL for audit_log_start.
->>    + Remove unnecessary caching system.
->>    + Remove comments from headers
->>    + Use rcu_access_pointer for rcu-pointer null check
->>    + Remove usage of reqprot; use prot only.
->>    + Move policy load and activation audit event to 03/12
->>
->> v4:
->>    + Remove sysctls in favor of securityfs nodes
->>    + Re-add kernel module parameters, as these are now
->>      exposed through securityfs.
->>    + Refactor property audit loop to a separate function.
->>
->> v5:
->>    + fix minor grammatical errors
->>    + do not group rule by curly-brace in audit record,
->>      reconstruct the exact rule.
->>
->> v6:
->>    + No changes
->>
->> v7:
->>    + Further split lsm creation into a separate commit from the
->>      evaluation loop and audit system, for easier review.
->>
->>    + Introduce the concept of an ipe_context, a scoped way to
->>      introduce execution policies, used initially for allowing for
->>      kunit tests in isolation.
->>
->> v8:
->>    + Follow lsmname_hook_name convention for lsm hooks.
->>    + Move LSM blob accessors to ipe.c and mark LSM blobs as static.
->>
->> v9:
->>    + Remove ipe_context for simplification
->>
->> v10:
->>    + Add github url
->>
->> v11:
->>    + Correct github url
->>    + Move ipe before bpf
->>
->> v12:
->>    + Switch to use lsm_id instead of string for lsm name
->>
->> v13:
->>    + No changes
->>
->> v14:
->>    + No changes
->> ---
->>   MAINTAINERS              |  7 +++++++
->>   include/uapi/linux/lsm.h |  1 +
->>   security/Kconfig         | 11 ++++++-----
->>   security/Makefile        |  1 +
->>   security/ipe/Kconfig     | 17 +++++++++++++++++
->>   security/ipe/Makefile    |  9 +++++++++
->>   security/ipe/ipe.c       | 41 ++++++++++++++++++++++++++++++++++++++++
->>   security/ipe/ipe.h       | 16 ++++++++++++++++
->>   security/security.c      |  3 ++-
->>   9 files changed, 100 insertions(+), 6 deletions(-)
->>   create mode 100644 security/ipe/Kconfig
->>   create mode 100644 security/ipe/Makefile
->>   create mode 100644 security/ipe/ipe.c
->>   create mode 100644 security/ipe/ipe.h
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 13158047f2af..8517011f88ff 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -10650,6 +10650,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
->>   F:	security/integrity/
->>   F:	security/integrity/ima/
->>   
->> +INTEGRITY POLICY ENFORCEMENT (IPE)
->> +M:	Fan Wu <wufan@linux.microsoft.com>
->> +L:	linux-security-module@vger.kernel.org
->> +S:	Supported
->> +T:	git https://github.com/microsoft/ipe.git
->> +F:	security/ipe/
->> +
->>   INTEL 810/815 FRAMEBUFFER DRIVER
->>   M:	Antonino Daplas <adaplas@gmail.com>
->>   L:	linux-fbdev@vger.kernel.org
->> diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
->> index f8aef9ade549..43e2fb32745a 100644
->> --- a/include/uapi/linux/lsm.h
->> +++ b/include/uapi/linux/lsm.h
->> @@ -62,6 +62,7 @@ struct lsm_ctx {
->>   #define LSM_ID_LOCKDOWN		108
->>   #define LSM_ID_BPF		109
->>   #define LSM_ID_LANDLOCK		110
->> +#define LSM_ID_IPE		111
->>   
->>   /*
->>    * LSM_ATTR_XXX definitions identify different LSM attributes
->> diff --git a/security/Kconfig b/security/Kconfig
->> index 52c9af08ad35..cc7adfbb6b96 100644
->> --- a/security/Kconfig
->> +++ b/security/Kconfig
->> @@ -194,6 +194,7 @@ source "security/yama/Kconfig"
->>   source "security/safesetid/Kconfig"
->>   source "security/lockdown/Kconfig"
->>   source "security/landlock/Kconfig"
->> +source "security/ipe/Kconfig"
->>   
->>   source "security/integrity/Kconfig"
->>   
->> @@ -233,11 +234,11 @@ endchoice
->>   
->>   config LSM
->>   	string "Ordered list of enabled LSMs"
->> -	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
->> -	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
->> -	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
->> -	default "landlock,lockdown,yama,loadpin,safesetid,bpf" if DEFAULT_SECURITY_DAC
->> -	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf"
->> +	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,ipe,bpf" if DEFAULT_SECURITY_SMACK
->> +	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,ipe,bpf" if DEFAULT_SECURITY_APPARMOR
->> +	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,ipe,bpf" if DEFAULT_SECURITY_TOMOYO
->> +	default "landlock,lockdown,yama,loadpin,safesetid,ipe,bpf" if DEFAULT_SECURITY_DAC
->> +	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,ipe,bpf"
->>   	help
->>   	  A comma-separated list of LSMs, in initialization order.
->>   	  Any LSMs left off this list, except for those with order
->> diff --git a/security/Makefile b/security/Makefile
->> index 59f238490665..cc0982214b84 100644
->> --- a/security/Makefile
->> +++ b/security/Makefile
->> @@ -25,6 +25,7 @@ obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown/
->>   obj-$(CONFIG_CGROUPS)			+= device_cgroup.o
->>   obj-$(CONFIG_BPF_LSM)			+= bpf/
->>   obj-$(CONFIG_SECURITY_LANDLOCK)		+= landlock/
->> +obj-$(CONFIG_SECURITY_IPE)		+= ipe/
->>   
->>   # Object integrity file lists
->>   obj-$(CONFIG_INTEGRITY)			+= integrity/
->> diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
->> new file mode 100644
->> index 000000000000..e4875fb04883
->> --- /dev/null
->> +++ b/security/ipe/Kconfig
->> @@ -0,0 +1,17 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->> +#
->> +# Integrity Policy Enforcement (IPE) configuration
->> +#
->> +
->> +menuconfig SECURITY_IPE
->> +	bool "Integrity Policy Enforcement (IPE)"
->> +	depends on SECURITY && SECURITYFS
->> +	select PKCS7_MESSAGE_PARSER
->> +	select SYSTEM_DATA_VERIFICATION
->> +	help
->> +	  This option enables the Integrity Policy Enforcement LSM
->> +	  allowing users to define a policy to enforce a trust-based access
->> +	  control. A key feature of IPE is a customizable policy to allow
->> +	  admins to reconfigure trust requirements on the fly.
->> +
->> +	  If unsure, answer N.
->> diff --git a/security/ipe/Makefile b/security/ipe/Makefile
->> new file mode 100644
->> index 000000000000..f7a80d0f18f8
->> --- /dev/null
->> +++ b/security/ipe/Makefile
->> @@ -0,0 +1,9 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +#
->> +# Copyright (C) Microsoft Corporation. All rights reserved.
->> +#
->> +# Makefile for building the IPE module as part of the kernel tree.
->> +#
->> +
->> +obj-$(CONFIG_SECURITY_IPE) += \
->> +	ipe.o \
->> diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
->> new file mode 100644
->> index 000000000000..b013aed15e73
->> --- /dev/null
->> +++ b/security/ipe/ipe.c
->> @@ -0,0 +1,41 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) Microsoft Corporation. All rights reserved.
->> + */
->> +#include <uapi/linux/lsm.h>
->> +
->> +#include "ipe.h"
->> +
->> +static struct lsm_blob_sizes ipe_blobs __ro_after_init = {
->> +};
->> +
->> +static const struct lsm_id ipe_lsmid = {
->> +	.name = "ipe",
->> +	.id = LSM_ID_IPE,
->> +};
->> +
->> +static struct security_hook_list ipe_hooks[] __ro_after_init = {
->> +};
->> +
->> +/**
->> + * ipe_init - Entry point of IPE.
->> + *
->> + * This is called at LSM init, which happens occurs early during kernel
->> + * start up. During this phase, IPE registers its hooks and loads the
->> + * builtin boot policy.
->> + * Return:
->> + * * 0		- OK
->> + * * -ENOMEM	- Out of memory
->> + */
->> +static int __init ipe_init(void)
->> +{
->> +	security_add_hooks(ipe_hooks, ARRAY_SIZE(ipe_hooks), &ipe_lsmid);
->> +
->> +	return 0;
->> +}
->> +
->> +DEFINE_LSM(ipe) = {
->> +	.name = "ipe",
->> +	.init = ipe_init,
->> +	.blobs = &ipe_blobs,
->> +};
->> diff --git a/security/ipe/ipe.h b/security/ipe/ipe.h
->> new file mode 100644
->> index 000000000000..a1c68d0fc2e0
->> --- /dev/null
->> +++ b/security/ipe/ipe.h
->> @@ -0,0 +1,16 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (C) Microsoft Corporation. All rights reserved.
->> + */
->> +
->> +#ifndef _IPE_H
->> +#define _IPE_H
->> +
->> +#ifdef pr_fmt
->> +#undef pr_fmt
->> +#endif
->> +#define pr_fmt(fmt) "IPE: " fmt
->> +
->> +#include <linux/lsm_hooks.h>
->> +
->> +#endif /* _IPE_H */
->> diff --git a/security/security.c b/security/security.c
->> index 7035ee35a393..f168bc30a60d 100644
->> --- a/security/security.c
->> +++ b/security/security.c
->> @@ -51,7 +51,8 @@
->>   	(IS_ENABLED(CONFIG_SECURITY_SAFESETID) ? 1 : 0) + \
->>   	(IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM) ? 1 : 0) + \
->>   	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0) + \
->> -	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0))
->> +	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0) + \
->> +	(IS_ENABLED(CONFIG_SECURITY_IPE) ? 1 : 0))
-> 
-> Hi Fan
-> 
-> you would also need to update
-> tools/testing/selftests/lsm/lsm_list_modules_test.c.
-> 
-> Roberto
->   
->>   /*
->>    * These are descriptions of the reasons that can be passed to the
+[  312.668859] Block size [0x10000000] unaligned hotplug range:
+               start 0x310000000, size 0x8000000
+[  312.668880] hv_balloon: hot_add memory failed error is -22
+[  312.668984] hv_balloon: Memory hot add failed
 
-Hi Roberto,
+Larger memblock sizes are usually used in VMs with more than
+64 Gbytes of memory, depending on the alignment of the VM's
+physical address space.
 
-Thanks for the info. I will also update that file.
+Fix this problem by having the Hyper-V balloon driver determine
+the Linux memblock size, and process hot-add requests in that
+chunk size instead of a fixed 128 Mbytes. Also update the hot-add
+alignment requested of the Hyper-V host to match the memblock
+size instead of being a fixed 128 Mbytes.
 
--Fan
+The code changes look significant, but in fact are just a
+simple text substitution of a new global variable for the
+previous HA_CHUNK constant. No algorithms are changed except
+to initialize the new global variable and to calculate the
+alignment value to pass to Hyper-V. Testing with memblock
+sizes of 256 Mbytes and 2 Gbytes shows correct operation.
+
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+---
+ drivers/hv/hv_balloon.c | 64 ++++++++++++++++++++++++-----------------
+ 1 file changed, 37 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+index e000fa3b9f97..d3bfbf3d274a 100644
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -425,11 +425,11 @@ struct dm_info_msg {
+  * The range start_pfn : end_pfn specifies the range
+  * that the host has asked us to hot add. The range
+  * start_pfn : ha_end_pfn specifies the range that we have
+- * currently hot added. We hot add in multiples of 128M
+- * chunks; it is possible that we may not be able to bring
+- * online all the pages in the region. The range
++ * currently hot added. We hot add in chunks equal to the
++ * memory block size; it is possible that we may not be able
++ * to bring online all the pages in the region. The range
+  * covered_start_pfn:covered_end_pfn defines the pages that can
+- * be brough online.
++ * be brought online.
+  */
+ 
+ struct hv_hotadd_state {
+@@ -505,8 +505,9 @@ enum hv_dm_state {
+ 
+ static __u8 recv_buffer[HV_HYP_PAGE_SIZE];
+ static __u8 balloon_up_send_buffer[HV_HYP_PAGE_SIZE];
++static unsigned long ha_chunk_pgs;
++
+ #define PAGES_IN_2M (2 * 1024 * 1024 / PAGE_SIZE)
+-#define HA_CHUNK (128 * 1024 * 1024 / PAGE_SIZE)
+ 
+ struct hv_dynmem_device {
+ 	struct hv_device *dev;
+@@ -724,15 +725,15 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ 	unsigned long processed_pfn;
+ 	unsigned long total_pfn = pfn_count;
+ 
+-	for (i = 0; i < (size/HA_CHUNK); i++) {
+-		start_pfn = start + (i * HA_CHUNK);
++	for (i = 0; i < (size/ha_chunk_pgs); i++) {
++		start_pfn = start + (i * ha_chunk_pgs);
+ 
+ 		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
+-			has->ha_end_pfn +=  HA_CHUNK;
++			has->ha_end_pfn +=  ha_chunk_pgs;
+ 
+-			if (total_pfn > HA_CHUNK) {
+-				processed_pfn = HA_CHUNK;
+-				total_pfn -= HA_CHUNK;
++			if (total_pfn > ha_chunk_pgs) {
++				processed_pfn = ha_chunk_pgs;
++				total_pfn -= ha_chunk_pgs;
+ 			} else {
+ 				processed_pfn = total_pfn;
+ 				total_pfn = 0;
+@@ -745,7 +746,7 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ 
+ 		nid = memory_add_physaddr_to_nid(PFN_PHYS(start_pfn));
+ 		ret = add_memory(nid, PFN_PHYS((start_pfn)),
+-				(HA_CHUNK << PAGE_SHIFT), MHP_MERGE_RESOURCE);
++				(ha_chunk_pgs << PAGE_SHIFT), MHP_MERGE_RESOURCE);
+ 
+ 		if (ret) {
+ 			pr_err("hot_add memory failed error is %d\n", ret);
+@@ -760,7 +761,7 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ 				do_hot_add = false;
+ 			}
+ 			scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
+-				has->ha_end_pfn -= HA_CHUNK;
++				has->ha_end_pfn -= ha_chunk_pgs;
+ 				has->covered_end_pfn -=  processed_pfn;
+ 			}
+ 			break;
+@@ -838,11 +839,11 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
+ 		if ((start_pfn + pfn_cnt) > has->end_pfn) {
+ 			residual = (start_pfn + pfn_cnt - has->end_pfn);
+ 			/*
+-			 * Extend the region by multiples of HA_CHUNK.
++			 * Extend the region by multiples of ha_chunk_pgs.
+ 			 */
+-			new_inc = (residual / HA_CHUNK) * HA_CHUNK;
+-			if (residual % HA_CHUNK)
+-				new_inc += HA_CHUNK;
++			new_inc = (residual / ha_chunk_pgs) * ha_chunk_pgs;
++			if (residual % ha_chunk_pgs)
++				new_inc += ha_chunk_pgs;
+ 
+ 			has->end_pfn += new_inc;
+ 		}
+@@ -910,14 +911,14 @@ static unsigned long handle_pg_range(unsigned long pg_start,
+ 			 * We have some residual hot add range
+ 			 * that needs to be hot added; hot add
+ 			 * it now. Hot add a multiple of
+-			 * HA_CHUNK that fully covers the pages
++			 * ha_chunk_pgs that fully covers the pages
+ 			 * we have.
+ 			 */
+ 			size = (has->end_pfn - has->ha_end_pfn);
+ 			if (pfn_cnt <= size) {
+-				size = ((pfn_cnt / HA_CHUNK) * HA_CHUNK);
+-				if (pfn_cnt % HA_CHUNK)
+-					size += HA_CHUNK;
++				size = ((pfn_cnt / ha_chunk_pgs) * ha_chunk_pgs);
++				if (pfn_cnt % ha_chunk_pgs)
++					size += ha_chunk_pgs;
+ 			} else {
+ 				pfn_cnt = size;
+ 			}
+@@ -1021,11 +1022,11 @@ static void hot_add_req(struct work_struct *dummy)
+ 		 * that need to be hot-added while ensuring the alignment
+ 		 * and size requirements of Linux as it relates to hot-add.
+ 		 */
+-		region_size = (pfn_cnt / HA_CHUNK) * HA_CHUNK;
+-		if (pfn_cnt % HA_CHUNK)
+-			region_size += HA_CHUNK;
++		region_size = (pfn_cnt / ha_chunk_pgs) * ha_chunk_pgs;
++		if (pfn_cnt % ha_chunk_pgs)
++			region_size += ha_chunk_pgs;
+ 
+-		region_start = (pg_start / HA_CHUNK) * HA_CHUNK;
++		region_start = (pg_start / ha_chunk_pgs) * ha_chunk_pgs;
+ 
+ 		rg_start = region_start;
+ 		rg_sz = region_size;
+@@ -1832,9 +1833,12 @@ static int balloon_connect_vsp(struct hv_device *dev)
+ 
+ 	/*
+ 	 * Specify our alignment requirements as it relates
+-	 * memory hot-add. Specify 128MB alignment.
++	 * memory hot-add.  The value is the log base 2 of
++	 * the number of megabytes in a chunk. For example,
++	 * with 256 Mbyte chunks, the value is 8.
+ 	 */
+-	cap_msg.caps.cap_bits.hot_add_alignment = 7;
++	cap_msg.caps.cap_bits.hot_add_alignment =
++			ilog2(ha_chunk_pgs >> (20 - PAGE_SHIFT));
+ 
+ 	/*
+ 	 * Currently the host does not use these
+@@ -2156,6 +2160,12 @@ static  struct hv_driver balloon_drv = {
+ 
+ static int __init init_balloon_drv(void)
+ {
++	/*
++	 * Hot-add must operate in chunks that are of size
++	 * equal to the memory block size because that's
++	 * what the core add_memory() interface requires.
++	 */
++	ha_chunk_pgs = memory_block_size_bytes() / PAGE_SIZE;
+ 
+ 	return vmbus_driver_register(&balloon_drv);
+ }
+-- 
+2.25.1
+
 
