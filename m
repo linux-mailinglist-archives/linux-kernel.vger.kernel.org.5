@@ -1,144 +1,172 @@
-Return-Path: <linux-kernel+bounces-99234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA1F878561
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:28:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A069878563
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:29:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD7551C20854
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:28:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAA961F22DF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07D052F78;
-	Mon, 11 Mar 2024 16:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063E554669;
+	Mon, 11 Mar 2024 16:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MGDJp4YW"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XrShw5xI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cWWnh340";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XrShw5xI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cWWnh340"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7F857860
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:22:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A014537E3;
+	Mon, 11 Mar 2024 16:23:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710174172; cv=none; b=JpCilcJUt4KCREBWXHu7xjb+JUP4xtjC/9bBt3yjsnwnfT2u2/nGnw0hSG4iTmuVWHt7jOczi5JeEI0w3E9KvRgM1WltRcLfS3p7qc+4AIYip0ugBXiyoYwrPkvppcweba1iZVeFUfyufW2KoEQszY/NVt396Nz0++F8RnT7ZKk=
+	t=1710174197; cv=none; b=lHz2ekXbu3RbZ5VPxa2IIW4KIH0qUEsh+D5aZ0a+qA+AKJ3+T9ZlzuqHjE1y36jKX6Mqz2CVURwiF2Fy+RFnE2HVGcG4cfjOrjIVURcoIzgOcCqRLpXhhT/PIaRTjheARVlvVfy6hPVKu1tVhppBoykwcyo83JgqvaynZXz30D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710174172; c=relaxed/simple;
-	bh=XDSfURSGPZgQfIxvmCYz/Kgu4M5nZACxndhVTEc5lX0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JDpFDWDGqBaxePHsrsJsYbCf+Ny5R5A5DrKI34rQTWcVSaU6a4BD+f1acLKwvx7JLyl6hNykoR2BxMuXKO3ps0O2qYSIXfWrRyTEF1Quwfg+4XtUREND4GCVL10bcDm28j5eKWAEyJzAggMRHwlEIoShee53m+5BonRdbwXpr4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MGDJp4YW; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710174169;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wu/GbQyAsTJ6iD1A5pIHTBnraO749TaX6tIRLxu4AAg=;
-	b=MGDJp4YWF7/WtAiMsGiYxoDHiHx53zhvqqBeBjcPjSV+Io5WjL40jwoTV3i+Z25IDkuXvU
-	h8oKtVIq9WbXgAnVFg4y9J38RqWOeEg5O25QxeE42tjorkKFTUVUf6TxoXT2Vj2ld948GC
-	xYrXY5Ms2ZxsUVgo2ej04GLFeQHNXh8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-213-FtzkMTugM7yRDbMnUa55uw-1; Mon,
- 11 Mar 2024 12:22:46 -0400
-X-MC-Unique: FtzkMTugM7yRDbMnUa55uw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	s=arc-20240116; t=1710174197; c=relaxed/simple;
+	bh=LeTUeB66NNu07Tu8xsCZA3P+skWgHcjg+bPmt2EoaRU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cQvvSIONxislLP9wHHCdJfgNCyMkcGV2IIVvZTG7WE49sOEhFl0caKFuzEHDuIuQMfSPloFohWMN/mUKtfQuJ5AAhhTBcET1gNOTI7kOmd97fQytfsjahGWgzxuWu8iO7qUgDyvObl+vb8hniXIbtUXmOc9rMS6v2pFhaOanLy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XrShw5xI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cWWnh340; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XrShw5xI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cWWnh340; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8E2B71C006AA;
-	Mon, 11 Mar 2024 16:22:45 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.192.124])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C331E492B14;
-	Mon, 11 Mar 2024 16:22:43 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: masahiroy@kernel.org
-Cc: jtornosm@redhat.com,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	nathan@kernel.org,
-	nicolas@fjasle.eu
-Subject: [PATCH V2] kbuild: rpm-pkg: add dtb files in kernel rpm
-Date: Mon, 11 Mar 2024 17:22:38 +0100
-Message-ID: <20240311162238.1761147-1-jtornosm@redhat.com>
-In-Reply-To: <CAK7LNAQ6_kr0Q1RB0dELiGUObFJ4HEEu3XTErGf6FaNntKMnTg@mail.gmail.com>
-References: <CAK7LNAQ6_kr0Q1RB0dELiGUObFJ4HEEu3XTErGf6FaNntKMnTg@mail.gmail.com>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8BB7534E6C;
+	Mon, 11 Mar 2024 16:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710174193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IOg3na/OLp5fyJbplID3ln+wXJxKBoSEVF2V/6Zion4=;
+	b=XrShw5xIa+HdMtPCyG18NvKeWQ1ySMJ9R9fV3fHVOO2Gu3V7pNbPVg/YtxqcrRAQHyzJyZ
+	39GaK6hw0+6OM1Xrbj79/xRxsvpAOgrpLnHMK6OVQbtwWm12ijEFjO4BmZ+o3xz6bd/NBc
+	IkQCHS98lEJAMxUzeQocjETlluIfGFE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710174193;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IOg3na/OLp5fyJbplID3ln+wXJxKBoSEVF2V/6Zion4=;
+	b=cWWnh340wwD0aWr9/7TYO3K0HNnBZt9D3rWeDbA+7emmjzOxpCiw7wb3D8hpuhZEdDtijo
+	Xh6PdV1nDvHfApDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710174193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IOg3na/OLp5fyJbplID3ln+wXJxKBoSEVF2V/6Zion4=;
+	b=XrShw5xIa+HdMtPCyG18NvKeWQ1ySMJ9R9fV3fHVOO2Gu3V7pNbPVg/YtxqcrRAQHyzJyZ
+	39GaK6hw0+6OM1Xrbj79/xRxsvpAOgrpLnHMK6OVQbtwWm12ijEFjO4BmZ+o3xz6bd/NBc
+	IkQCHS98lEJAMxUzeQocjETlluIfGFE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710174193;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IOg3na/OLp5fyJbplID3ln+wXJxKBoSEVF2V/6Zion4=;
+	b=cWWnh340wwD0aWr9/7TYO3K0HNnBZt9D3rWeDbA+7emmjzOxpCiw7wb3D8hpuhZEdDtijo
+	Xh6PdV1nDvHfApDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C185136BA;
+	Mon, 11 Mar 2024 16:23:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZcVHHvEv72UVFQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 11 Mar 2024 16:23:13 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1BE05A0807; Mon, 11 Mar 2024 17:23:13 +0100 (CET)
+Date: Mon, 11 Mar 2024 17:23:13 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+b4084c18420f9fad0b4f@syzkaller.appspotmail.com>
+Cc: almaz.alexandrovich@paragon-software.com, axboe@kernel.dk,
+	brauner@kernel.org, jack@suse.cz, kari.argillander@gmail.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+	ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
+	trix@redhat.com
+Subject: Re: [syzbot] [ntfs3?] KASAN: slab-out-of-bounds Read in ntfs_iget5
+Message-ID: <20240311162313.yjwhfp7xxjynksih@quack3>
+References: <0000000000000149eb05dd3de8cc@google.com>
+ <000000000000a9c150061340dbc9@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000a9c150061340dbc9@google.com>
+X-Spam-Level: *
+X-Spamd-Bar: +
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XrShw5xI;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=cWWnh340
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [1.48 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLeyet8kb1p6pwtwqxkq31mbep)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.01)[50.68%];
+	 SUBJECT_HAS_QUESTION(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=755695d26ad09807];
+	 TAGGED_RCPT(0.00)[b4084c18420f9fad0b4f];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[paragon-software.com,kernel.dk,kernel.org,suse.cz,gmail.com,vger.kernel.org,lists.linux.dev,google.com,googlegroups.com,redhat.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 1.48
+X-Rspamd-Queue-Id: 8BB7534E6C
+X-Spam-Flag: NO
 
-Some architectures, like aarch64 ones, need a dtb file to configure the
-hardware. The default dtb file can be preloaded from u-boot, but the final
-and/or more complete dtb file needs to be able to be loaded later from
-rootfs.
-
-Add the possible dtb files to the kernel rpm and mimic Fedora shipping
-process, storing the dtb files in the module directory. These dtb files
-will be copied to /boot directory by the install scripts, but add fallback
-just in case, checking if the content in /boot directory is correct.
-
-Mark the files installed to /boot as %ghost to make sure they will be
-removed when the package is uninstalled.
-
-Tested with Fedora Rawhide (x86_64 and aarch64) with dnf and rpm tools.
-In addition, fallback was also tested after modifying the install scripts.
-
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
----
-V1 -> V2:
-- Follow the suggestions from Masahiro Yamada to improve the checks and
-avoid the loop to ghost the dtb files in /boot folder.
-
- scripts/package/kernel.spec | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
-index c256b73cca3e..e095eb1e290e 100644
---- a/scripts/package/kernel.spec
-+++ b/scripts/package/kernel.spec
-@@ -61,6 +61,9 @@ cp $(%{make} %{makeflags} -s image_name) %{buildroot}/lib/modules/%{KERNELRELEAS
- %{make} %{makeflags} INSTALL_HDR_PATH=%{buildroot}/usr headers_install
- cp System.map %{buildroot}/lib/modules/%{KERNELRELEASE}
- cp .config %{buildroot}/lib/modules/%{KERNELRELEASE}/config
-+if %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='test -d ${srctree}/arch/${SRCARCH}/boot/dts' 2>/dev/null; then
-+	%{make} %{makeflags} INSTALL_DTBS_PATH=%{buildroot}/lib/modules/%{KERNELRELEASE}/dtb dtbs_install
-+fi
- ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEASE}/build
- %if %{with_devel}
- %{make} %{makeflags} run-command KBUILD_RUN_COMMAND='${srctree}/scripts/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELRELEASE}'
-@@ -81,6 +84,11 @@ ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%{KERNELRELEA
- 		echo "%ghost /boot/${x}-%{KERNELRELEASE}"
- 	done
+On Sat 09-03-24 13:19:04, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1649668e180000
+> start commit:   3800a713b607 Merge tag 'mm-hotfixes-stable-2022-09-26' of ..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=755695d26ad09807
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b4084c18420f9fad0b4f
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ccc59c880000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10928774880000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
  
-+	if [ -d "%{buildroot}/lib/modules/%{KERNELRELEASE}/dtb" ];then
-+		echo "/lib/modules/%{KERNELRELEASE}/dtb"
-+		find "%{buildroot}/lib/modules/%{KERNELRELEASE}/dtb" -printf "%%%ghost /boot/dtb-%{KERNELRELEASE}/%%P\n"
-+	fi
-+
- 	echo "%exclude /lib/modules/%{KERNELRELEASE}/build"
- } > %{buildroot}/kernel.list
- 
-@@ -96,6 +104,11 @@ for file in vmlinuz System.map config; do
- 		cp "/lib/modules/%{KERNELRELEASE}/${file}" "/boot/${file}-%{KERNELRELEASE}"
- 	fi
- done
-+if [ -d "/lib/modules/%{KERNELRELEASE}/dtb" ] && \
-+   ! diff -rq "/lib/modules/%{KERNELRELEASE}/dtb" "/boot/dtb-%{KERNELRELEASE}" >/dev/null 2>&1; then
-+	rm -rf "/boot/dtb-%{KERNELRELEASE}"
-+	cp -r "/lib/modules/%{KERNELRELEASE}/dtb" "/boot/dtb-%{KERNELRELEASE}"
-+fi
- if [ ! -e "/lib/modules/%{KERNELRELEASE}/modules.dep" ]; then
- 	/usr/sbin/depmod %{KERNELRELEASE}
- fi
+#syz fix: fs: Block writes to mounted block devices
+
+								Honza
 -- 
-2.44.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
