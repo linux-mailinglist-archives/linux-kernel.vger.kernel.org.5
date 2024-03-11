@@ -1,130 +1,203 @@
-Return-Path: <linux-kernel+bounces-98937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAAF587813E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:04:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83075878142
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 805301F22CDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:04:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A615BB2276F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93963FB86;
-	Mon, 11 Mar 2024 14:04:26 +0000 (UTC)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3BA3FBA4;
+	Mon, 11 Mar 2024 14:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jCrTGkFW"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADCD3FB2E
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D561804C;
+	Mon, 11 Mar 2024 14:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710165866; cv=none; b=NQup9S2Xr06shtZK1zLsBTODH4vdGAFxf3TE7hsohOlGOyjmhd3WDTw3bSb2/9HTSbiB0NexLlA4Lq8+QQGiN1r0ScCJbHA+2jnNPa18Dpib1VIxJJT4+7N2Tz2JQB4Wn8PF9Q4woyopxz82BCCPWHm4DGRv+NPkyuJC/i83X8Q=
+	t=1710165942; cv=none; b=qYOXeu1LN8KyIFhJ6Sjb61lKmld/hlgY2X4P6puztw5sYHyoP9wex7SHPfrnQXKJnzFkSwwF2gGv9S9OZtij1m7CZfdxFlZOyqTZjIPNmT5nHk8MNKiXeVbnJi9ZBUDjZKzbfTKej2rStMrtJhC6pepKmZXydpHhf5db8JRsUj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710165866; c=relaxed/simple;
-	bh=Llu4HnXUgpYVrm6rtIdbKc+cL6h4GteJq9IJb6Oy2+M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bOUtvH8G9xJncyXJeFxLNDTyA27jopgV5PHy7p0trxURP78Tnp9UunCHFzWNw6AIiRnmW64ZgqXjDz259IvlVRo600x7hdBFQmDGGAS5XD/TRIzp5Q9JHz5DXuJrWkLGXMNyIc3Dl/mxeSSf2Jh5hrpAj3cagFy/RTqWa2nPLN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1710165942; c=relaxed/simple;
+	bh=JZaWt59UeCeNqcvWv/r5KgGKkLciUCSkM8vrzhZCIq0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ELzsttdJDxogdXhc+Zjy365rIEQAeCUjhGe6lQFuKFZE3PpznBSzpnIrF3WsqpP2RQxNZYUkRP3zl8Nc2vpORapZCXDyMpUvmGiqZvukfdk9BfCcNNRqajQBYJVsF+7EmalHDQWC49WnEeb1yNJffcNdDazxofae5cjx+VvmH50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jCrTGkFW; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60a0a54869bso20492277b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:04:24 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dd916ad172so9048065ad.2;
+        Mon, 11 Mar 2024 07:05:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710165940; x=1710770740; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HGpBbMBa0HNbveOXPkSVIl+7CcmOX/xDsnjZNZtqj28=;
+        b=jCrTGkFWvmoJky+u63JlySZTvgBBdh+wImW1a724Bpp1sZNOQSkakaElVeU7dVCrd+
+         C+sJFd11tjuoR5+hfC4i57aw/YOkgY2Zhhkk2GO4rcLwH4+GjaQrzCymYsNBqqO+gtbU
+         xc+kui+03kom9IhcItr0uK4qf2uctGbukebEeA2LmkAqwYpMO8jVCG7I3r4+cdXPZTZh
+         w06Rr94/I53TpJ0GYrbhvfTkCjsB61fPUGTvUYVCd6SCAamQAcQlzQOzYUuPiNwi5+Y+
+         xn8HV+TX6N5KnjArrgsjv7ksnzJzhTRR52IGseqNRojAqy5ad28aGwOx+o3wAldEJFVt
+         xnUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710165862; x=1710770662;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OzLXwIVWLQf055SWSXkN052ooqv0U35mFYFMQAsjB/s=;
-        b=bbQjUKVkXomeaALEyFBVNcpVo1oQddxrm9D9rRxXDcWWkPaUTy7lst3yParmOJh04G
-         nBtA79S2lb/WjB+PQQM0HywbazSvukTEtT+S2FWhFImmQOf5B8mjMkx9nckxKTnvmugg
-         960MfwNfycrvIcOeEMa5j3jSXUPINouw3/qUq1LvcHAuWW8UAuM4pQ4gaX/qqOC2xTKv
-         Da0Mg7NbMH2kQnYTEB+M7BjV4/kbVSD0pSJGgXNa1M5t0klf4D9ukcDvtFQT8ZzQiOfC
-         q8D+HlNdDk9qmG1ii8AhE7T2vwhUfEsI+8YfdhwCGGb7bMqE1MWT0ePTGWaBKtUzUa5m
-         Xf+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWnXjuS3dz5Ql9zcEEDV17gegwoULT1AtdGbxR7+rYiA4K9Iu3EGOeFWK6N/Cu6QvM2egbtFEE3Hm5O9MKJNoSP+SPPOpExeMmNLZcf
-X-Gm-Message-State: AOJu0YwBAiMgbpw1TIyhK2OphptjwfdaL0qbtMYI5AaFm3rmXca6K2Pi
-	mwJvKl3Z6ABcbFfNMsAmPrQhTWAX1N6FuCUgRSDP3xM2Ld6Xd7FaRl1p7J4p90k=
-X-Google-Smtp-Source: AGHT+IFS6TVYJFlw1rDuEYy2MU9TZR3vLxaD76dUNMgJug6SzG8yBKUR8Ke1t0QS60g3CuuYdeHvbw==
-X-Received: by 2002:a81:8497:0:b0:60a:4cba:ada1 with SMTP id u145-20020a818497000000b0060a4cbaada1mr545911ywf.7.1710165861963;
-        Mon, 11 Mar 2024 07:04:21 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id u123-20020a0deb81000000b0060a0662ccc3sm1361832ywe.90.2024.03.11.07.04.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 07:04:21 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so4998572276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:04:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV9EyTahSv7upt8//O1BqNyzXIOSpG0Ltt67Jq14PF+KIwjPyCH0kv5CORuhUMPoI3nlGWTwubkJcikH6B7Md8ZWylv4Pp5m0Fwa2EM
-X-Received: by 2002:a25:41c1:0:b0:dc6:daa4:e808 with SMTP id
- o184-20020a2541c1000000b00dc6daa4e808mr5213321yba.12.1710165861507; Mon, 11
- Mar 2024 07:04:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710165940; x=1710770740;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HGpBbMBa0HNbveOXPkSVIl+7CcmOX/xDsnjZNZtqj28=;
+        b=LdKeCsNwmpYcdpBNyaWLyf/PUZg+7Qsjv7F5ixsKQNBupMjE+Ov2pyqjK6T/BGx6w4
+         h83/bgXTOdC2TaPeYx7iEdZRfOk7GsAxzUZUlmkQjlb/SVGWm31uvTPjf6I6/weL7Is+
+         acXBUdkpsFJg3I0Q5QG9iFi5a35Ob3xtmuJKtdurqB+Rhve6ubVU6r9BAH+yWw1wLsdE
+         uHfXdEOjrBeeqzn50v2Y5sfTnjRl26V+uUbWFd4ITNciV4JvXRoiarNFEDpLU+Dhqqiz
+         a3FUAvnuBbfTJcIwzM94uCPjljU1XscLVczi7zhzUEjkSTJSkNYPqVAVqEUbKlMLVZmM
+         XV1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUKNet28JyRe3Hex3Eoqgbj/kulGNgWskcaKB4Clfty13qLLDROgCYzGsuEjrZExxA8TEvOJxzn4yZqmtJctir36Y/sCCRycfZdxlmrs93snH03G9h3UgzxxeIjHAuo9g4R+2fmoWEkucwmH1fUVyAPHlTLj1Hd1ql65G01UHBVKo9BTQ==
+X-Gm-Message-State: AOJu0YzwGRlP05JgipAn44Lcj9EjbMVijjc2ur9O4ALGrPESyJWt6n1V
+	p6bblj6AU5QVj2CQIiZZ1LFJ/gYfmH0G9CBGR8DyITWeL48FInuQ
+X-Google-Smtp-Source: AGHT+IFrWc8qJis+RyGSwF7nLR4pCsKTP7tEgT5YdzAVXgtdQYPGMOl+PKdKOilW6izN/63zMXQXiA==
+X-Received: by 2002:a17:902:d2c1:b0:1dd:b315:906d with SMTP id n1-20020a170902d2c100b001ddb315906dmr45245plc.8.1710165939915;
+        Mon, 11 Mar 2024 07:05:39 -0700 (PDT)
+Received: from localhost.localdomain ([115.240.194.54])
+        by smtp.gmail.com with ESMTPSA id kt12-20020a170903088c00b001dd566a1f5fsm4744180plb.155.2024.03.11.07.05.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 07:05:39 -0700 (PDT)
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+To: 
+Cc: animeshagarwal28@gmail.com,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-ide@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v7] dt-bindings: imx-pata: Convert to dtschema
+Date: Mon, 11 Mar 2024 19:34:29 +0530
+Message-ID: <20240311140435.34329-1-animeshagarwal28@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f713d82fe6526288f51fc138cd16681cec6b43a6.1710164592.git.geert@linux-m68k.org>
- <8f27c774-7197-48da-a6f2-6d375bd848f0@app.fastmail.com>
-In-Reply-To: <8f27c774-7197-48da-a6f2-6d375bd848f0@app.fastmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 11 Mar 2024 15:04:09 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWJJuEHo08gJwrxiLv2P-US6sfEz83PZHnAcB4es68BjQ@mail.gmail.com>
-Message-ID: <CAMuHMdWJJuEHo08gJwrxiLv2P-US6sfEz83PZHnAcB4es68BjQ@mail.gmail.com>
-Subject: Re: [PATCH] fork: Use THREAD_SIZE_ORDER
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Arnd,
+Convert the imx-pata bindings to DT schema.
+Add missing fsl,imx31-pata and
+fsl,imx51-pata compatibles during conversion,
+because they are already being used in existing DTS.
 
-On Mon, Mar 11, 2024 at 2:48=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
-:
-> On Mon, Mar 11, 2024, at 14:44, Geert Uytterhoeven wrote:
-> > Use the existing THREAD_SIZE_ORDER definition instead of calculating it
-> > from THREAD_SIZE and PAGE_SIZE.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> >  kernel/fork.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/fork.c b/kernel/fork.c
-> > index 0d944e92a43ffa13..e79fdfe1f0bf4953 100644
-> > --- a/kernel/fork.c
-> > +++ b/kernel/fork.c
-> > @@ -252,9 +252,9 @@ static int memcg_charge_kernel_stack(struct vm_stru=
-ct *vm)
-> >       int ret;
-> >       int nr_charged =3D 0;
-> >
-> > -     BUG_ON(vm->nr_pages !=3D THREAD_SIZE / PAGE_SIZE);
-> > +     BUG_ON(vm->nr_pages !=3D THREAD_SIZE_ORDER);
-> >
->
-> That doesn't look right, THREAD_SIZE_ORDER not the number of
-> pages but the the log2 of it, right?
->
-> I think you want '(1 << THREAD_SIZE_ORDER)', but at that point
-> it doesn't actually look simpler than the existing code.
+Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
 
-Thank you for pointing out my silly mistake.
+---
+Changes in v7:
+- removed blank space at the end of file.
 
-/me hides in a brown paper bag, with a coffee machine.
+Changes in v6:
+- removed items before const due to single element.
 
-Gr{oetje,eeting}s,
+Changes in v5:
+- added oneOf in compatible property to allow the usage of imx27 alone.
 
-                        Geert
+Changes in v4:
+- added fsl,imx31-pata in compatible property as enum.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Changes in v3:
+- added fsl,imx51-pata in compatible property as enum
+- fsl,imx27-pata is added as a const to ensure it is present always
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Changes in v2:
+- fixed style issues
+- compatible property now matches the examples
+- fixed yamllint warnings/errors
+---
+ .../devicetree/bindings/ata/fsl,imx-pata.yaml | 42 +++++++++++++++++++
+ .../devicetree/bindings/ata/imx-pata.txt      | 16 -------
+ 2 files changed, 42 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
+ delete mode 100644 Documentation/devicetree/bindings/ata/imx-pata.txt
+
+diff --git a/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml b/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
+new file mode 100644
+index 000000000000..27b47e2d32f1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/ata/fsl,imx-pata.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX PATA Controller
++
++maintainers:
++  - Animesh Agarwal <animeshagarwal28@gmail.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - fsl,imx31-pata
++              - fsl,imx51-pata
++          - const: fsl,imx27-pata
++      - const: fsl,imx27-pata
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: PATA Controller interrupts
++
++  clocks:
++    items:
++      - description: PATA Controller clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    pata: pata@83fe0000 {
++        compatible = "fsl,imx51-pata","fsl,imx27-pata";
++        reg = <0x83fe0000 0x4000>;
++        interrupts = <70>;
++        clocks = <&clks 161>;
++    };
+diff --git a/Documentation/devicetree/bindings/ata/imx-pata.txt b/Documentation/devicetree/bindings/ata/imx-pata.txt
+deleted file mode 100644
+index f1172f00188a..000000000000
+--- a/Documentation/devicetree/bindings/ata/imx-pata.txt
++++ /dev/null
+@@ -1,16 +0,0 @@
+-* Freescale i.MX PATA Controller
+-
+-Required properties:
+-- compatible: "fsl,imx27-pata"
+-- reg: Address range of the PATA Controller
+-- interrupts: The interrupt of the PATA Controller
+-- clocks: the clocks for the PATA Controller
+-
+-Example:
+-
+-	pata: pata@83fe0000 {
+-		compatible = "fsl,imx51-pata", "fsl,imx27-pata";
+-		reg = <0x83fe0000 0x4000>;
+-		interrupts = <70>;
+-		clocks = <&clks 161>;
+-	};
+-- 
+2.44.0
+
 
