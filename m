@@ -1,79 +1,75 @@
-Return-Path: <linux-kernel+bounces-98960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ABFE87819E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBEC88781A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:29:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2010728A869
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:29:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FDB928AA94
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CC8405DB;
-	Mon, 11 Mar 2024 14:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56D63FE3F;
+	Mon, 11 Mar 2024 14:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RExG1A1X"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CWtp2BR5"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290AD3FB94
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F0640BE0
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710167345; cv=none; b=FBQsrN3UMbT94xnj49ULdMltWzIO+Xv61g0j7e9pSgQzjIv3BpJ7fMXu1Sl6Z/VSVe1G+65NaqAMHSJHHWa+01VLZ1Z1OXiWvlJhXoAYOWxMG827FK7DKR0i0FCB69sz/kTm1Vpfj5JCLPHpBy00j74ExIsasom0KqfjaGh0WM0=
+	t=1710167380; cv=none; b=YTyTpvK2r/4LNsfTWcRWdg3HBmME0hikbCeqNOVlzXztRT6ntOfdru5fJKy2vg/owmTy8Asq/x9O63XsnmrNQYHJD9gfhFN2LhwL0R6Likp9ah7YK8VmLzOlGTDzhLjlzZX24xqXjMUbbfLiKloyETz0ofTu5l2JIy8oZWqHlq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710167345; c=relaxed/simple;
-	bh=lvEhKayg87ynsa7PXZ0F/cNTCRohzPeuaH11cVWXK6M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ej2IWQ+tmT6HOg/GEOODitliKIBSRtJKyGJMCQLvatrdTWvE7c8LvPx3LyyWd6dctLAKnS3+ZjymmQ6rvVy+n9L0GIMMQVSePTWYQcHsq2QTFxfwdVyc1St740CMELURg7UWMV2kWshxWxQIFxr6FNYJfrc/wckcOK3Qt1qntFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RExG1A1X; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710167343;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ZxtSnVmFCjtRLTdczrScdrn0iS+cuZPH3UwwJwQHzJI=;
-	b=RExG1A1XKoM7Zer6J3B+QxjkE0YGFaoU7s5U6Ni5aM1LkcDkoL4bln0P9nzMowLzIVoUkF
-	+rfEusVmDZJb/HeJF//4qCOJUa7BcrqZFQDacUE9dzhNkW/0aipya1ZjUfxb3uO7ZuptTB
-	xZbBnJlgCoJiS0HwMRsc3tCMXNH+eYs=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-173-ByOfyXaENX2pV5UlQfR6Zw-1; Mon, 11 Mar 2024 10:29:01 -0400
-X-MC-Unique: ByOfyXaENX2pV5UlQfR6Zw-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-567eb02e45dso3963682a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:29:01 -0700 (PDT)
+	s=arc-20240116; t=1710167380; c=relaxed/simple;
+	bh=wLsyP2s7dcW/i7s8BacUw0NFCSZWu/IC3xOBjLp8MJI=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=bplaXD1Iaaiffz7j8HMfjxXnuHOfgoyRFoK4vkWW7rp3LYKJl9N/LRlbtYQhwp+ZNR/8WDMW4TE/3+c+So0nl2XUqHf8nfnJLI6CL9ElN+jDgUTyfKmpPwhtY7Cl7bh6OuOEUZK7PIS+VlAHdMzljGVEfnHZhDM7jUWsV9WA2/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CWtp2BR5; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4132fc7dea7so2075505e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:29:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710167377; x=1710772177; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mzsRMITadDLkW91FrisSwb25Cjz9P5y9WXj5tj/mP6Q=;
+        b=CWtp2BR5DN4526CQyd6pA3zNLiD73D/xpKqPuiaf7QC1Bwg9AjS/rx3CSv6irjiEG5
+         ICTBsb0sQvUADQs4D0XWYkO9jVpv8wntTefKAvh7p8cQzGtuWBdlCpr2EsPJmc6NGwij
+         F0ARMSYd8X2tLx5TjiHn25bMNP70RpNyl5sfQNwBdFr7Z0deauBRT7hoJuhLlrBRbCoY
+         +1UF/4fGSzitYEyeIMk2281qDkm62Grilm+M6I2psuhwMdct8QYt9fTxj4E5qDBaC4CU
+         5YvqL2pj+a5z7H9D0gaR7jWmEdv3E6+6VQX278gR6CvJNVA8W4vgyg+hb6d3PC6cZQzv
+         lCNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710167340; x=1710772140;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZxtSnVmFCjtRLTdczrScdrn0iS+cuZPH3UwwJwQHzJI=;
-        b=hl+8lUJnHbffd9vU1Myc04Ni6hHId6b1qbbAMeLecmM7FvkNJyeqoshxyOkRLyfe3i
-         4l8bO+gJ9DzXomzhXrZS7ipdD47y7Y/4ceLuvwDr28lNXM2PeaDElDG4FEA4PI1PfYAX
-         I1fmmpvA6AEandJW1QdglOVBYDBa70dHw/pIt1Ri6hjMVVkx93rbs725643jsJa9OiZr
-         tp0Wsmvq+e8f1dl1ltPPQU7R9bJuSNGEjnZuJHiq/jWqUOw8FofJ97jdM/4qlCMGyNm+
-         IcUMxWYFDoFfEl6fPMY1PGcU1ZkMPNCWJQk6/EN9dNAFGNP2CmAcFUrTr+f7LvACOrzE
-         Zufw==
-X-Forwarded-Encrypted: i=1; AJvYcCVVjgK4ZfMOvODQj2nwNgFm9ea8c3joCymP+i3TiDWt4xXJiUkFjYtGbx50d2y6LfXh0AnjFwjuMtyEPcw9Op6s9AAfBZkdNDYjObBi
-X-Gm-Message-State: AOJu0YxPXkqE5J859Jypd/kSy1c4JJdNZoXCZkfjHJkObJe9NZ7FBJaC
-	sjlEJTuBEWmUp4JKStDIotfMlvCy2v2ngFJ9QNeFLsAD+Iz+ZVoBPkBuxQcwbjfgSwyVaDpBIJH
-	kl80ktebYdwdb89frQa0h6+qAkov05hZGjKPFvMBzCsRfCA1czm0hnGAMHNZ5wQ==
-X-Received: by 2002:a50:f68e:0:b0:566:f733:45da with SMTP id d14-20020a50f68e000000b00566f73345damr4930091edn.22.1710167340195;
-        Mon, 11 Mar 2024 07:29:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHhNYx2TxZ0JrLxCHUxHICYkeYhAsyLYmFN7fbEDJVvWbotrFyqyIRCEXJ8sqck/fYQPL/IGg==
-X-Received: by 2002:a50:f68e:0:b0:566:f733:45da with SMTP id d14-20020a50f68e000000b00566f73345damr4930072edn.22.1710167339839;
-        Mon, 11 Mar 2024 07:28:59 -0700 (PDT)
-Received: from [192.168.10.81] ([151.49.77.21])
-        by smtp.googlemail.com with ESMTPSA id k15-20020aa7c04f000000b0056864cde14dsm621950edo.68.2024.03.11.07.28.58
+        d=1e100.net; s=20230601; t=1710167377; x=1710772177;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mzsRMITadDLkW91FrisSwb25Cjz9P5y9WXj5tj/mP6Q=;
+        b=QdVdndmz9z8+Heq1+BmTWB+XUzd7DhkuakR/PM67NtKkdO/i3HfMpHPSNScfzXn5zP
+         9tG/bHXQtiSLA5y+sNsrvTyfpoF1w2adJ6J5oDp6DJIC+wkf1UM2ZjJzmpvIS83yQ1NT
+         GFZvhb9eYyt6jRy8if4l8941GJ7KDfRvL1XKvJPUYddS6qckOqrECMGQWHbOatoSg+1o
+         RX/d+JPQ27z2skL4I+MXokSdXuGtMbHEyzHECf+6WpX/XoXibIc1vlpQ5bTJsN5G5eMb
+         UpuOIjgvbxq9Ijq2p8v/LqRUr2tw3YQSQKcM+51GYtq21muEu0HZbv2a9jzVZNASK6sT
+         EqGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV/pPzeMgX7sKNSJ+TOHqVNk403gVyQhKHUd8KsUe+9KhHADu+c1W5i/YwMtRpS/7/pKyY4Ce3aewLMJJ1P3kKse9T/FZ/BtI2xvcQt
+X-Gm-Message-State: AOJu0Yxzl/9c5itNA+StYEnTHQWoi9bBxCb9jNUESasM9kJ8aeOG4PoZ
+	I0mbmwr7q9vALgYoxt20F0pMuUNh5XupggiVJhycC2oqehF64vxxWk2oZQ1e9gY=
+X-Google-Smtp-Source: AGHT+IH2GSgaLDsOKqTdq8uFhJ5NVLDJe/o2O2nOZFD2lCeDKtU4k0xvoLjGWtnMOjlgyRDjMnjHnQ==
+X-Received: by 2002:a05:600c:45cf:b0:413:306f:b8f4 with SMTP id s15-20020a05600c45cf00b00413306fb8f4mr322588wmo.15.1710167377287;
+        Mon, 11 Mar 2024 07:29:37 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:48be:feb9:192b:f402? ([2a01:e0a:982:cbb0:48be:feb9:192b:f402])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05600c468c00b004130378fb77sm16030998wmo.6.2024.03.11.07.29.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 07:28:58 -0700 (PDT)
-Message-ID: <6309a608-6a8d-4793-bd1a-f77f7758d59f@redhat.com>
-Date: Mon, 11 Mar 2024 15:28:56 +0100
+        Mon, 11 Mar 2024 07:29:36 -0700 (PDT)
+Message-ID: <0bbdb132-4cf4-4278-b887-28e06fa97b9f@linaro.org>
+Date: Mon, 11 Mar 2024 15:29:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,146 +77,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] KVM: x86: Misc changes for 6.9
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240308223702.1350851-1-seanjc@google.com>
- <20240308223702.1350851-4-seanjc@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20240308223702.1350851-4-seanjc@google.com>
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 3/3] arch: arm64: dts: sm8650-hdk: add support for the
+ Display Card overlay
+Content-Language: en-US, fr
+To: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240223-topic-sm8650-upstream-hdk-v1-0-ccca645cd901@linaro.org>
+ <20240223-topic-sm8650-upstream-hdk-v1-3-ccca645cd901@linaro.org>
+ <2aa5d81b-c7fe-14e0-40b8-80ef5ba364cb@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <2aa5d81b-c7fe-14e0-40b8-80ef5ba364cb@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/8/24 23:36, Sean Christopherson wrote:
-> A variety of one-off cleanups and fixes, along with two medium sized series to
-> (1) improve the "force immediate exit" code and (2) clean up the "vCPU preempted
-> in-kernel" checks used for directed yield.
+On 03/03/2024 00:32, Vladimir Zapolskiy wrote:
+> Hi Neil,
 > 
-> The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+> On 2/23/24 10:52, Neil Armstrong wrote:
+>> With the SM8650-HDK, a Display Card kit can be connected to provide
+>> a VTDR6130 display with Goodix Berlin Touch controller.
+>>
+>> In order to route the DSI lanes to the connector for the Display
+>> Card kit, a switch must be changed on the board.
+>>
+>> The HDMI nodes are disabled since the DSI lanes are shared with
+>> the DSI to HDMI transceiver.
+>>
+>> Add support for this card as an overlay and apply it it at
+>> build-time to the sm8650-hdk dtb.
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
 > 
->    Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+> <snip>
 > 
-> are available in the Git repository at:
+>> +    mdp_vsync_active: mdp-vsync-active-state {
+>> +        pins = "gpio86";
+>> +        function = "mdp_vsync";
+>> +        drive-strength = <2>;
+>> +        bias-pull-down;
+>> +    };
+>> +
+>> +    mdp_vsync_suspend: mdp-vsync-suspend-state {
+>> +        pins = "gpio86";
+>> +        function = "mdp_vsync";
+>> +        drive-strength = <2>;
+>> +        bias-pull-down;
+>> +    };
 > 
->    https://github.com/kvm-x86/linux.git tags/kvm-x86-misc-6.9
+> If you have a single pin configuration for active and suspend states,
+> then likely you may have only one device tree node here.
 > 
-> for you to fetch changes up to 78ccfce774435a08d9c69ce434099166cc7952c8:
+> Reviewed-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 > 
->    KVM: SVM: Rename vmplX_ssp -> plX_ssp (2024-02-27 12:22:43 -0800)
+> I don't add my Tested-by tag, since I don't get a panel working on 6.8.0-rc6,
+> while in runtime MSM and DSI are enabled, the panel driver is not initialized:
+> 
+>    panel-visionox-vtdr6130 ae94000.dsi.0: Failed to initialize panel: -22
 
-Queued, thanks.
+This is unrelated to to the HDK, it requires this:
+https://lore.kernel.org/all/20240201-visionox-vtdr-prev-first-v2-1-32db52867624@quicinc.com/
+that has been applied fr next release.
 
-Paolo
+Thanks,
 
-> ----------------------------------------------------------------
-> KVM x86 misc changes for 6.9:
+Neil
+
 > 
->   - Explicitly initialize a variety of on-stack variables in the emulator that
->     triggered KMSAN false positives (though in fairness in KMSAN, it's comically
->     difficult to see that the uninitialized memory is never truly consumed).
-> 
->   - Fix the deubgregs ABI for 32-bit KVM, and clean up code related to reading
->     DR6 and DR7.
-> 
->   - Rework the "force immediate exit" code so that vendor code ultimately
->     decides how and when to force the exit.  This allows VMX to further optimize
->     handling preemption timer exits, and allows SVM to avoid sending a duplicate
->     IPI (SVM also has a need to force an exit).
-> 
->   - Fix a long-standing bug where kvm_has_noapic_vcpu could be left elevated if
->     vCPU creation ultimately failed, and add WARN to guard against similar bugs.
-> 
->   - Provide a dedicated arch hook for checking if a different vCPU was in-kernel
->     (for directed yield), and simplify the logic for checking if the currently
->     loaded vCPU is in-kernel.
-> 
->   - Misc cleanups and fixes.
-> 
-> ----------------------------------------------------------------
-> John Allen (1):
->        KVM: SVM: Rename vmplX_ssp -> plX_ssp
-> 
-> Julian Stecklina (2):
->        KVM: x86: Clean up partially uninitialized integer in emulate_pop()
->        KVM: x86: rename push to emulate_push for consistency
-> 
-> Mathias Krause (1):
->        KVM: x86: Fix broken debugregs ABI for 32 bit kernels
-> 
-> Nikolay Borisov (1):
->        KVM: x86: Use mutex guards to eliminate __kvm_x86_vendor_init()
-> 
-> Sean Christopherson (14):
->        KVM: x86: Make kvm_get_dr() return a value, not use an out parameter
->        KVM: x86: Open code all direct reads to guest DR6 and DR7
->        KVM: x86: Plumb "force_immediate_exit" into kvm_entry() tracepoint
->        KVM: VMX: Re-enter guest in fastpath for "spurious" preemption timer exits
->        KVM: VMX: Handle forced exit due to preemption timer in fastpath
->        KVM: x86: Move handling of is_guest_mode() into fastpath exit handlers
->        KVM: VMX: Handle KVM-induced preemption timer exits in fastpath for L2
->        KVM: x86: Fully defer to vendor code to decide how to force immediate exit
->        KVM: x86: Move "KVM no-APIC vCPU" key management into local APIC code
->        KVM: x86: Sanity check that kvm_has_noapic_vcpu is zero at module_exit()
->        KVM: Add dedicated arch hook for querying if vCPU was preempted in-kernel
->        KVM: x86: Rely solely on preempted_in_kernel flag for directed yield
->        KVM: x86: Clean up directed yield API for "has pending interrupt"
->        KVM: Add a comment explaining the directed yield pending interrupt logic
-> 
-> Thomas Prescher (1):
->        KVM: x86/emulator: emulate movbe with operand-size prefix
-> 
->   arch/x86/include/asm/kvm-x86-ops.h |   1 -
->   arch/x86/include/asm/kvm_host.h    |   8 +--
->   arch/x86/include/asm/svm.h         |   8 +--
->   arch/x86/kvm/emulate.c             |  45 +++++++--------
->   arch/x86/kvm/kvm_emulate.h         |   2 +-
->   arch/x86/kvm/lapic.c               |  27 ++++++++-
->   arch/x86/kvm/smm.c                 |  15 ++---
->   arch/x86/kvm/svm/svm.c             |  25 ++++-----
->   arch/x86/kvm/trace.h               |   9 ++-
->   arch/x86/kvm/vmx/nested.c          |   2 +-
->   arch/x86/kvm/vmx/vmx.c             |  85 +++++++++++++++++-----------
->   arch/x86/kvm/vmx/vmx.h             |   2 -
->   arch/x86/kvm/x86.c                 | 110 ++++++++++++-------------------------
->   include/linux/kvm_host.h           |   1 +
->   virt/kvm/kvm_main.c                |  21 ++++++-
->   15 files changed, 184 insertions(+), 177 deletions(-)
-> 
+> -- 
+> Best wishes,
+> Vladimir
 
 
