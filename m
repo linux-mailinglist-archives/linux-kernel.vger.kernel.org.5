@@ -1,83 +1,96 @@
-Return-Path: <linux-kernel+bounces-99283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871238785F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:04:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9977F8785FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:06:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 433B5281B08
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:04:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 113B01F21796
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC5A4AEC5;
-	Mon, 11 Mar 2024 17:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC3994D11D;
+	Mon, 11 Mar 2024 17:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eb5ZiZdb"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DY0AFFXB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C79648792;
-	Mon, 11 Mar 2024 17:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4C948792
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710176684; cv=none; b=TBPwSqssjAxOxch5UIsrE1p0u/nOSq2cBAtnQ541gtxk0fUvrhxi7WvppFYVsUiIBJPnPvf4HJ+Ey0J4NNNfEoQoy2Zl2glT/yJOQzXAC9M87WoNL1YkSGVbbTaS8Aav2ap6oGN4J4Hc3EoKf/XGN+sZKT+or7gamuu3o5ccYvg=
+	t=1710176755; cv=none; b=s2CyDfQUQHf7JtiW9O6YtjLnzqb7BeQPMWN6BnQ/2CJjcJsWEwvTVwRrSHSyZGnM8eGNUUWhG33B0DSeqOeroJHPSYmc7X0NccSJ1g8021vh184POoG79+qasPS/4CoAqeUOHP2xUxnYIqm01Jg3HzseSy3/zuvt9ES1ilm8zWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710176684; c=relaxed/simple;
-	bh=nEwjlsDuh1BBJpQl7CFyLetW/Pf4Lp62bRB2Jd2W7Rg=;
+	s=arc-20240116; t=1710176755; c=relaxed/simple;
+	bh=XNwbXKaCLGvCbpxIvSjj9i4O3/8QvDmG0N51zcg49XU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lJA5gqIhY2UNsu2RmMxRCcIqAXy5InFrBNRYBqsID5UN0ewI++Ku/hDJWVhGJQ9Nb8PW1UL/z800NmLHttZDArhgQWoIweMcnUFIIjWq7rGacRxIljK3FaRmdIzQzca3FpsRBnQz1iY1EAsGzjhd7qy/pORsKOmjVJYS+SkCc14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eb5ZiZdb; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36423c819a3so24821825ab.0;
-        Mon, 11 Mar 2024 10:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710176681; x=1710781481; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YLvEvFfc7sXj9N7DoQT3M6dC8xShppj/zokxxJquUjk=;
-        b=eb5ZiZdbErAuO9guLmz7aPY7r9euy1J4PMcU5WkE4E/NKFu+QmX6ind8SLS1xVuBia
-         3E1asgmZQQ2DJ5br/gwgLr3MfxLa7C+4F8gzphizKTLbgBflWdNPbiV3UtyiRUCXPWWy
-         GSxOIQHao/aiXV3NxsImJTt7lHCebVPcFCBOnIEnkkrKCJrhsGtrVtziV3WTe98rg3TI
-         01YSQ7A4ymBaz96w0FuxNvA9blbBJr/dQNE7aTPvG1Icax2+rZqZPtBh/mbVDNBN7+R1
-         lT38cszSA/EHaB2sQEguwMjneWL7nPJq6jcdrVMNUrgf2wt8N5CjYae4ZpVgPD0243fe
-         jGKw==
+	 Content-Type:Content-Disposition:In-Reply-To; b=ifZwl6Xjrt/tFiyMG+rzkrNDddoxLmNTMNR5MayxmheajQ6sdH/GKiCOhJ/D4gsXgmGyq4xxMq1CoyvQmrCswnBgVs8R8FFYHkyax8T0whqsdhhiSZM3SUG18K7+XrqAXKKu7TLQ+3er50qD0lUOoRgELibkfYsxsPNyU7uAZe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DY0AFFXB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710176752;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ofx1nXrTDjwWTrrBkspXHarb2XIic0gZXzZbExCDCt4=;
+	b=DY0AFFXBmW77aIXzSXSTRKcQ1CrMJJeElCKQpJTrI3FIJrtgbodG5uixJAoLqgOeyzYvgY
+	/chlDe60+zvfFXx6q5g4OQxYDngrO2ZBx+eFnGbPoBr7VbAkQtVj3Jnk752liHsy+oR/2N
+	sTKevpQx0rIF+YUUENcToUfWbrpm6rs=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-33-rBUI-lgLPv2UhqEIqToHUg-1; Mon, 11 Mar 2024 13:05:28 -0400
+X-MC-Unique: rBUI-lgLPv2UhqEIqToHUg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33e92573a93so821493f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:05:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710176681; x=1710781481;
+        d=1e100.net; s=20230601; t=1710176727; x=1710781527;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YLvEvFfc7sXj9N7DoQT3M6dC8xShppj/zokxxJquUjk=;
-        b=sOQqIlWeSrburX75o+EaiLJOd5gXab6Y3pOKf5WCtYLzKQc86/WT/Er94TUvQMC9Cn
-         Vl+hsojrPFfc28JqPNj04YhHYzXreuKvEBexDZ+hLrhYcvFVNAoNqgQ8AlOXRKsE7Pj4
-         glp0edqmMrCTqMnWWtV2wN0lLkPC2v0PKyjJmalUiaTVBk7YH60Z+uEjV+A9Z37bYn4e
-         O8x/GJoS5p5crnXGzk/jKA7JBw5dQwdfdIIDxU0sMF6/pYMtPSX2e7Du7LpWN/TKVbac
-         2Tm7Uyhelo6lPezoJVPo8+NYicUqM7OzX8sm/h1b44mBSKq6XY2r7FCzCl3aLRxibJvg
-         Oyng==
-X-Forwarded-Encrypted: i=1; AJvYcCU6bSJp5g9EX5Rngcu45YZ6gp0c3w+iNdX6Z9yhaO8ofgof5KEDnk2T/ftwJwLSglI0TrY2Q9wYEldU4CrvQJBDM36E8IFghDPQ9P9BHFoLvAmwJhRmbnyasO9IJEG1KVT3t1VicVc=
-X-Gm-Message-State: AOJu0Yx/4MotdsTwoH+J4hHJ0UyJDepiLOL7I5iNUF7+W1wdwhPc8PI3
-	/Hh4bDmHi5XCuN96vIS9OWQF8fJBg7X+M3qCpK/ere/5sLtpkVmupZsSrOz0
-X-Google-Smtp-Source: AGHT+IEgAZfjT7LfIQHhxciQab3kA+AMIbmZFE5+4xwrYc+EzjZ26fQCy34O0B5bZyGjrTyX9jYR7Q==
-X-Received: by 2002:a05:6e02:1a2e:b0:365:27e7:4b60 with SMTP id g14-20020a056e021a2e00b0036527e74b60mr11077796ile.21.1710176681285;
-        Mon, 11 Mar 2024 10:04:41 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t17-20020a63f351000000b005dc4829d0e1sm4700602pgj.85.2024.03.11.10.04.39
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ofx1nXrTDjwWTrrBkspXHarb2XIic0gZXzZbExCDCt4=;
+        b=UoZD0eViMZ7qx59M3ycL7dRm8MJ4U1t7UKDxUGVCucBfrZVhkehUg7MYXzfDuhFlIa
+         rhAds/DGtc7ax1w+1JGeIvnaw0GcusEOBYesHpnsd0v1AU2VCCp8Ewll1F9+E+Jra38L
+         4bEt2yv44x3xR1+QFip6QzpHRUnQs6gyhmM/S4ibDexozbOl3hfQDXc7yfQq2WZBB00f
+         MxlC4r7JnOrUhfiDDb/2D10C68C8hOX9i1oCiF7n6vVrqZZ7UWPpQF7S348HoMSexzeG
+         rFPrDAUNFidRrGrcVxvtSem1DFqUcuA1j3zIMM29v01A2G1TgxayoY07XgmO/0jR+7Qh
+         HhvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXoKLLZCjTn/78gQ0IIHsoKv84M2HUqILS64B0ygvWX32EQW/ro9dgY/HSFnvDFm1M+HC5+EMtFsjD44wdY5YjCuuXOjusoNc4UH/iM
+X-Gm-Message-State: AOJu0YzIZDB1w1BobhJYOCLPMkFxATYBZg0kdEyvNVaVBbnndDIr5g4B
+	uYZa9l/D0ChzPVld1SqnhCXq8CIcf8Q7AN0yQ73XRkz1H4C4TK22EDgxD5Q0CjsJteH5F582V4F
+	/D8RBUe4NLN+YMNjPeFvUd3bklzu8zGecpofmqctSfDdslMKQpyaU+IyoefDjlA==
+X-Received: by 2002:a05:6000:230:b0:33e:96b7:af6d with SMTP id l16-20020a056000023000b0033e96b7af6dmr1971469wrz.6.1710176727046;
+        Mon, 11 Mar 2024 10:05:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHkykAXhh3ZDBHaIBqo4LqQhaHhS1QTgvnZKN/euSPkgltlwWOCucmDgB5XoQsM841Kz8WUQQ==
+X-Received: by 2002:a05:6000:230:b0:33e:96b7:af6d with SMTP id l16-20020a056000023000b0033e96b7af6dmr1971451wrz.6.1710176726496;
+        Mon, 11 Mar 2024 10:05:26 -0700 (PDT)
+Received: from redhat.com ([2.52.134.16])
+        by smtp.gmail.com with ESMTPSA id b3-20020a05600003c300b0033e239040d8sm7123545wrg.84.2024.03.11.10.05.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 10:04:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Mon, 11 Mar 2024 10:04:38 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev
-Subject: Re: Problems with csum_partial with misaligned buffers on sh4
- platform
-Message-ID: <351dfebd-c09f-470e-8b03-cc904753b136@roeck-us.net>
-References: <65ed7c95-712c-410b-84f3-58496b0c9649@roeck-us.net>
+        Mon, 11 Mar 2024 10:05:25 -0700 (PDT)
+Date: Mon, 11 Mar 2024 13:05:21 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Tobias Huschle <huschle@linux.ibm.com>
+Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
+ sched/fair: Add lag based placement)
+Message-ID: <20240311130446-mutt-send-email-mst@kernel.org>
+References: <42870.123121305373200110@us-mta-641.us.mimecast.lan>
+ <20231213061719-mutt-send-email-mst@kernel.org>
+ <25485.123121307454100283@us-mta-18.us.mimecast.lan>
+ <20231213094854-mutt-send-email-mst@kernel.org>
+ <20231214021328-mutt-send-email-mst@kernel.org>
+ <92916.124010808133201076@us-mta-622.us.mimecast.lan>
+ <20240121134311-mutt-send-email-mst@kernel.org>
+ <07974.124020102385100135@us-mta-501.us.mimecast.lan>
+ <20240201030341-mutt-send-email-mst@kernel.org>
+ <89460.124020106474400877@us-mta-475.us.mimecast.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,89 +99,98 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <65ed7c95-712c-410b-84f3-58496b0c9649@roeck-us.net>
+In-Reply-To: <89460.124020106474400877@us-mta-475.us.mimecast.lan>
 
-On Sat, Feb 10, 2024 at 07:12:39AM -0800, Guenter Roeck wrote:
-> Hi,
+On Thu, Feb 01, 2024 at 12:47:39PM +0100, Tobias Huschle wrote:
+> On Thu, Feb 01, 2024 at 03:08:07AM -0500, Michael S. Tsirkin wrote:
+> > On Thu, Feb 01, 2024 at 08:38:43AM +0100, Tobias Huschle wrote:
+> > > On Sun, Jan 21, 2024 at 01:44:32PM -0500, Michael S. Tsirkin wrote:
+> > > > On Mon, Jan 08, 2024 at 02:13:25PM +0100, Tobias Huschle wrote:
+> > > > > On Thu, Dec 14, 2023 at 02:14:59AM -0500, Michael S. Tsirkin wrote:
+> > > 
+> > > -------- Summary --------
+> > > 
+> > > In my (non-vhost experience) opinion the way to go would be either
+> > > replacing the cond_resched with a hard schedule or setting the
+> > > need_resched flag within vhost if the a data transfer was successfully
+> > > initiated. It will be necessary to check if this causes problems with
+> > > other workloads/benchmarks.
+> > 
+> > Yes but conceptually I am still in the dark on whether the fact that
+> > periodically invoking cond_resched is no longer sufficient to be nice to
+> > others is a bug, or intentional.  So you feel it is intentional?
 > 
-> when running checksum unit tests on sh4 qemu emulations, I get the following
-> errors.
+> I would assume that cond_resched is still a valid concept.
+> But, in this particular scenario we have the following problem:
 > 
+> So far (with CFS) we had:
+> 1. vhost initiates data transfer
+> 2. kworker is woken up
+> 3. CFS gives priority to woken up task and schedules it
+> 4. kworker runs
+> 
+> Now (with EEVDF) we have:
+> 0. In some cases, kworker has accumulated negative lag 
+> 1. vhost initiates data transfer
+> 2. kworker is woken up
+> -3a. EEVDF does not schedule kworker if it has negative lag
+> -4a. vhost continues running, kworker on same CPU starves
+> --
+> -3b. EEVDF schedules kworker if it has positive or no lag
+> -4b. kworker runs
+> 
+> In the 3a/4a case, the kworker is given no chance to set the
+> necessary flag. The flag can only be set by another CPU now.
+> The schedule of the kworker was not caused by cond_resched, but
+> rather by the wakeup path of the scheduler.
+> 
+> cond_resched works successfully once the load balancer (I suppose) 
+> decides to migrate the vhost off to another CPU. In that case, the
+> load balancer on another CPU sets that flag and we are good.
+> That then eventually allows the scheduler to pick kworker, but very
+> late.
 
-Adding to regression tracker.
+Are we going anywhere with this btw?
 
-#regzbot ^introduced cadc4e1a2b4d2
-#regzbot title Problems with csum_partial with misaligned buffers on sh4 platform
-#regzbot ignore-activity
 
->     KTAP version 1
->     # Subtest: checksum
->     # module: checksum_kunit
->     1..5
->     # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:500
->     Expected ( u64)result == ( u64)expec, but
->         ( u64)result == 53378 (0xd082)
->         ( u64)expec == 33488 (0x82d0)
->     not ok 1 test_csum_fixed_random_inputs
->     # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:525
->     Expected ( u64)result == ( u64)expec, but
->         ( u64)result == 65281 (0xff01)
->         ( u64)expec == 65280 (0xff00)
->     not ok 2 test_csum_all_carry_inputs
->     # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:573
->     Expected ( u64)result == ( u64)expec, but
->         ( u64)result == 65535 (0xffff)
->         ( u64)expec == 65534 (0xfffe)
->     not ok 3 test_csum_no_carry_inputs
->     ok 4 test_ip_fast_csum
->     ok 5 test_csum_ipv6_magic
-> # checksum: pass:2 fail:3 skip:0 total:5
+> > I propose a two patch series then:
+> > 
+> > patch 1: in this text in Documentation/kernel-hacking/hacking.rst
+> > 
+> > If you're doing longer computations: first think userspace. If you
+> > **really** want to do it in kernel you should regularly check if you need
+> > to give up the CPU (remember there is cooperative multitasking per CPU).
+> > Idiom::
+> > 
+> >     cond_resched(); /* Will sleep */
+> > 
+> > 
+> > replace cond_resched -> schedule
+> > 
+> > 
+> > Since apparently cond_resched is no longer sufficient to
+> > make the scheduler check whether you need to give up the CPU.
+> > 
+> > patch 2: make this change for vhost.
+> > 
+> > WDYT?
 > 
-> The above is with from a little endian system. On a big endian system,
-> the test result is as follows.
+> For patch 1, I would like to see some feedback from Peter (or someone else
+> from the scheduler maintainers).
+> For patch 2, I would prefer to do some more testing first if this might have
+> an negative effect on other benchmarks.
 > 
->     KTAP version 1
->     # Subtest: checksum
->     # module: checksum_kunit
->     1..5
->     # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:500
->     Expected ( u64)result == ( u64)expec, but
->         ( u64)result == 33488 (0x82d0)
->         ( u64)expec == 53378 (0xd082)
->     not ok 1 test_csum_fixed_random_inputs
->     # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:525
->     Expected ( u64)result == ( u64)expec, but
->         ( u64)result == 65281 (0xff01)
->         ( u64)expec == 255 (0xff)
->     not ok 2 test_csum_all_carry_inputs
->     # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:565
->     Expected ( u64)result == ( u64)expec, but
->         ( u64)result == 1020 (0x3fc)
->         ( u64)expec == 0 (0x0)
->     not ok 3 test_csum_no_carry_inputs
->     # test_ip_fast_csum: ASSERTION FAILED at lib/checksum_kunit.c:589
->     Expected ( u64)expected == ( u64)csum_result, but
->         ( u64)expected == 55939 (0xda83)
->         ( u64)csum_result == 33754 (0x83da)
->     not ok 4 test_ip_fast_csum
->     # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:617
->     Expected ( u64)expected_csum_ipv6_magic[i] == ( u64)csum_ipv6_magic(saddr, daddr, len, proto, csum), but
->         ( u64)expected_csum_ipv6_magic[i] == 6356 (0x18d4)
->         ( u64)csum_ipv6_magic(saddr, daddr, len, proto, csum) == 43586 (0xaa42)
->     not ok 5 test_csum_ipv6_magic
-> # checksum: pass:0 fail:5 skip:0 total:5
+> I also stumbled upon something in the scheduler code that I want to verify.
+> Maybe a cgroup thing, will check that out again.
 > 
-> Note that test_ip_fast_csum and test_csum_ipv6_magic fail on all big endian
-> systems due to a bug in the test code, unrelated to this problem.
+> I'll do some more testing with the cond_resched->schedule fix, check the
+> cgroup thing and wait for Peter then.
+> Will get back if any of the above yields some results.
 > 
-> Analysis shows that the errors are seen only if the buffer is misaligned.
-> Looking into arch/sh/lib/checksum.S, I found commit cadc4e1a2b4d2 ("sh:
-> Handle calling csum_partial with misaligned data") which seemed to be
-> related. Reverting that commit fixes the problem.
-> This suggests that something may be wrong with that commit. Alternatively,
-> of course, it may be possible that something is wrong with the qemu
-> emulation, but that seems unlikely.
-> 
-> Thanks,
-> Guenter
+> > 
+> > -- 
+> > MST
+> > 
+> > 
+
 
