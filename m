@@ -1,120 +1,179 @@
-Return-Path: <linux-kernel+bounces-99253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E4428785A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:42:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 048158785A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:43:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FC501C21B91
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:41:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 361801C21B7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140C44207A;
-	Mon, 11 Mar 2024 16:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D43482C3;
+	Mon, 11 Mar 2024 16:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="laCtl/UH"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="YYzNun8W"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0644C42073
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632E61EB5C;
+	Mon, 11 Mar 2024 16:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710175307; cv=none; b=gl/ecqOYpMk0Eap2Blx3z44bcdsPHXxZY6lD/Kid7H65+17Z5aRtpgOB1K9IxiusaWctt7kn76nyho+D/Lb+5hMWaeJRoSEEJnh7YdnIRaBlG2WVb+bVrKU0JbR2XV9Hb3gol4NiS/EeOGFSvpQGSDY40B9XMpY9jZyamxvGKq0=
+	t=1710175375; cv=none; b=AsTPeh4NdhfkjqKAN0eLuRYsm6YoXc0vUunz/pSB5opq0WnJLnk5jjPoZ4cqmxguvKOa+C1/6DsizWvTJpGtkAekSTuLHTQ+wCnKZQLqcEdstwTtARDvgq6TZxehUwO+Z+MLI7Cl1crCNxp1nH9iLGT4Ze5f+EVpk5eE0435vpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710175307; c=relaxed/simple;
-	bh=tsIonJwynOjYCCdrRNvMtpqlyXRynwccuNLo8Hy5ngg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WhqXgWs5yfBScHiyeai4pnLEnRStc78flbI7tlUCSMkJk0muR31DmfpGMjYvJdBDgSstwgBTcTtW+cKOfmIZC1m17i8lDN+vaNQI3kPrFy9rnwll4V2K4Js3GcnMQ/4DsJS3u82jKFeWdY6xh1I+OLtwfjEFuV9HXXwCFRIGisY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=laCtl/UH; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e5b1c6daa3so2892489b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1710175305; x=1710780105; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hO2WE/Q4Nu2PhvR94l66ZCUZTIcYIt0ltfnKbOAvEA0=;
-        b=laCtl/UHcRYiltlF1HOuvsQVyqRCgeoFUv08Eadw/qwwVJ6oOXQtDW7Xe7lslOJ55H
-         qe8z48cEwolugBUbYGO/JXqGkDT/N5IrK9RllcOLWzdYrbzl7KQsLRqH4/W9HONf35fI
-         IHFT1qfBfrr/mC4lc90wsYtMPV3jStw7olf1erDN/e/EhEQ52re9sqguVBtnf0YGwcAX
-         Jw42CZO1EC/CcMe2cM14v0csvnJXvUe35CBuXT6RNjOkXyKFzbIGGBnLxBGJQXI8+ZEY
-         xBlIqf6ZVZ1bJdbOeGw+uHhxADhph7Qv/UPItP/p6sBmcDeaVvZnYiRfmNrurDQXeSdY
-         3KxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710175305; x=1710780105;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hO2WE/Q4Nu2PhvR94l66ZCUZTIcYIt0ltfnKbOAvEA0=;
-        b=CzgAou/bU0AZBv7G4a9AJBBagWLOh1vFxb8LqrKBttr8W76EGOMHPyKA30WExSoW4c
-         c1mbxrmccME/8mNbLcVURe2q0k2iKBOrEqm1NRuYO6HbtdHagFXR0/wBfhMOyd6xrPYX
-         Rh6bBPCTsV1UldVOcXz0572tEnBgB74wFntpYgYQDkeCI7vQDb6w/M6TNw3T9NkU934v
-         Fo2lFxGTW5Ii3drd5UOnLVBM48aYAPD/Za8ZD9qRbbkNSRRCXS0PeHeLPt2G5zf0iIyP
-         G6utp6hz/edMnxvQss2i1gr1GZK+6PztE0WQyj7l2TxCyn/TkHJAgb79Rg8E9rvFazzk
-         1IeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrMhg436sXqXWr1nZFSSmYbhu0WbeQfbeE9I3ThJlYXfESq6QMwEBQ2gR2vAlHxrfVj/yLUV1P18tFVxjGqDHaWMPxrXFFK0kdQO2w
-X-Gm-Message-State: AOJu0YzJmWTaXHdwH/9OYunmYNt062Xl6o0mWOrGcmrEO3/Vc0bUGcF7
-	GD2Y3yCrG/7CxiCOJPoBp1+Boqpqo3/YZ9fhvQwO6aXdG6z+B6IVqk0v/AaAOcY=
-X-Google-Smtp-Source: AGHT+IF9sh9O+4LAtdYd3MNx/de/ejcI0gxeWxCHrmkfJ4zqw0YXHnCfkvhPnuzsvbRs1lgTCoptAg==
-X-Received: by 2002:a05:6a00:a15:b0:6e5:9a0a:8b8d with SMTP id p21-20020a056a000a1500b006e59a0a8b8dmr10813456pfh.18.1710175305232;
-        Mon, 11 Mar 2024 09:41:45 -0700 (PDT)
-Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
-        by smtp.gmail.com with ESMTPSA id k12-20020aa7998c000000b006e632025bcdsm4542433pfh.138.2024.03.11.09.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 09:41:45 -0700 (PDT)
-Date: Mon, 11 Mar 2024 09:41:42 -0700
-From: Stephen Hemminger <stephen@networkplumber.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>, Haiyang Zhang
- <haiyangz@microsoft.com>, Shradha Gupta <shradhagupta@microsoft.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ajay Sharma
- <sharmaajay@microsoft.com>, Leon Romanovsky <leon@kernel.org>, Thomas
- Gleixner <tglx@linutronix.de>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, KY Srinivasan <kys@microsoft.com>, Wei Liu
- <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li
- <longli@microsoft.com>, Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
-Message-ID: <20240311094142.3bbe7d7b@hermes.local>
-In-Reply-To: <20240311085126.648f42e0@kernel.org>
-References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
-	<20240307072923.6cc8a2ba@kernel.org>
-	<DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
-	<20240307090145.2fc7aa2e@kernel.org>
-	<CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
-	<20240308112244.391b3779@kernel.org>
-	<20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-	<20240311085126.648f42e0@kernel.org>
+	s=arc-20240116; t=1710175375; c=relaxed/simple;
+	bh=Ttv99q8rQ4U54AZVsuGb8BhkkD678dDrmrAqjSbxBFI=;
+	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
+	 To:Date:Message-ID; b=W/ij3FxximwGQv9I4P44ONcQzcXPMNo85xj4cPufFasxrhqlwYhy/ofr52QM7eFhqGJzQNeaEc5JuwRpaLAGKkZ+TiC2hISqLqlKVhCgSwp+DARd8yKGIyqiXbxV6Ng0sb0/HOWW5eyrT8hZokLEjPWMPOs7BolhoO6Epe7prg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=YYzNun8W; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 526816BE;
+	Mon, 11 Mar 2024 17:42:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710175348;
+	bh=Ttv99q8rQ4U54AZVsuGb8BhkkD678dDrmrAqjSbxBFI=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=YYzNun8Wh3bbNhUmvVfhLiAy3/z1IIcko9n1lghrEC0Qyo4AJRXtQ+GMsPfnSC87k
+	 k3FWSdDtAs5bOmLz4Lx8DOAKDG2P4Y2JVhrH8UbufEU1orRIBYhaJJOUQ7xOyLkIid
+	 s7t1GzAa2nsQb2w4gRkNRuATBMiixcc2rQNcYMTw=
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Ze8xY1bqTiXzRvKp@kekkonen.localdomain>
+References: <20240307214048.858318-1-umang.jain@ideasonboard.com> <20240307214048.858318-3-umang.jain@ideasonboard.com> <Zeq7HBMqqrw4nSPj@kekkonen.localdomain> <171016009901.2924028.16001544322304093037@ping.linuxembedded.co.uk> <Ze8xY1bqTiXzRvKp@kekkonen.localdomain>
+Subject: Re: [PATCH v2 2/2] media: i2c: Add imx283 camera sensor driver
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: Umang Jain <umang.jain@ideasonboard.com>, linux-media@vger.kernel.org, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, willl will <will@willwhang.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans de Goede <hdegoede@redhat.com>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, Alain Volmat <alain.volmat@foss.st.com>, Paul Elder <paul.elder@ideasonboard.com>, Mehdi Djait <mehdi.djait@bootlin.com>, Bingbu Cao <bingbu.cao@intel.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Sebastian Reichel <sre@kernel.org>, Jacopo Mondi <jacopo.mondi@ideasonboard.com>, open list <linux-kernel@vger.kernel.org>
+To: Sakari Ailus <sakari.ailus@linux.intel.com>
+Date: Mon, 11 Mar 2024 16:42:46 +0000
+Message-ID: <171017536692.2924028.6522729664515712567@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 
-On Mon, 11 Mar 2024 08:51:26 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
+Quoting Sakari Ailus (2024-03-11 16:29:23)
+> Hi Kieran,
+>=20
+> On Mon, Mar 11, 2024 at 12:28:19PM +0000, Kieran Bingham wrote:
+> > Hi Sakari, Umang,
+> >=20
+> > I've replied inline below to a couple of points that I was responsible =
+for.
+> >=20
+> > >=20
+> > > > +
+> > > > +struct imx283 {
+> > > > +     struct device *dev;
+> > > > +     struct regmap *cci;
+> > > > +
+> > > > +     const struct imx283_input_frequency *freq;
+> > > > +
+> > > > +     struct v4l2_subdev sd;
+> > > > +     struct media_pad pad;
+> > > > +
+> > > > +     struct clk *xclk;
+> > > > +
+> > > > +     struct gpio_desc *reset_gpio;
+> > > > +     struct regulator_bulk_data supplies[ARRAY_SIZE(imx283_supply_=
+name)];
+> > > > +
+> > > > +     /* V4L2 Controls */
+> > > > +     struct v4l2_ctrl_handler ctrl_handler;
+> > > > +     struct v4l2_ctrl *exposure;
+> > > > +     struct v4l2_ctrl *vblank;
+> > > > +     struct v4l2_ctrl *hblank;
+> > > > +     struct v4l2_ctrl *vflip;
+> > > > +
+> > > > +     unsigned long link_freq_bitmap;
+> > > > +
+> > > > +     u16 hmax;
+> > > > +     u32 vmax;
+> > > > +};
+> > > > +
+> > > > +static inline struct imx283 *to_imx283(struct v4l2_subdev *_sd)
+> > > > +{
+> > > > +     return container_of(_sd, struct imx283, sd);
+> > >=20
+> > > It's a function, you can call _sd sd instead.
+> >=20
+> > Except then that could 'look' like it is passed as the first and third
+> > argument to container_of...
+>=20
+> It's really a non-issue: the third argument is a field name, not a
+> variable.
 
-> On Sun, 10 Mar 2024 21:19:50 -0700 Shradha Gupta wrote:
-> > > Seems unlikely, but if it does work we should enable it for all
-> > > devices, no driver by driver.    
-> > You mean, if the usecase seems valid we should try to extend the framework
-> > mentioned by Rahul (https://lore.kernel.org/lkml/20240307072923.6cc8a2ba@kernel.org/)
-> > to include these stats as well?  
-> 
-> "framework" is a big word, but yes, add a netlink command to get 
-> pcpu stats. Let's focus on the usefulness before investing time
-> in a rewrite, tho.
+That's not so easy to determine when the args are the same name.., but
+it's fine with me either way.
 
-Couldn't userspace do the same thing by looking at /proc/interrupts
-and PCI info?
+> > But if it's fine / accepted otherwise then sure.
+>=20
+> And please use container_of_const(). :)
+
+Ack. Or rather ... I'll leave that to Umang to handle, as he's managing
+this driver now.
+
+> > > > +
+> > > > +/* Determine the exposure based on current hmax, vmax and a given =
+SHR */
+> > > > +static u64 imx283_exposure(struct imx283 *imx283,
+> > > > +                        const struct imx283_mode *mode, u64 shr)
+> > > > +{
+> > > > +     u32 svr =3D 0; /* SVR feature is not currently supported */
+> > >=20
+> > > What does this refer to? I guess you could just drop it as well if it=
+'s not
+> > > supported?
+> >=20
+> > Keeping this will keep the calculation matching the datasheet, and
+> > provide clear value for what to update when we/others return to enable
+> > long exposures.
+> >=20
+> > So it would be nice to keep as it sort of documents/tracks the
+> > datasheet.
+>=20
+> Ack.
+>=20
+> >=20
+> >=20
+> > > > +     u32 hmax =3D imx283->hmax;
+> > > > +     u64 vmax =3D imx283->vmax;
+> > >=20
+> > > You're not changing the values here. I wouldn't introduce temporary
+> > > variables just for that.
+> > >=20
+> > > > +     u32 offset;
+> > > > +     u64 numerator;
+> > > > +
+> > > > +     /* Number of clocks per internal offset period */
+> > > > +     offset =3D mode->mode =3D=3D IMX283_MODE_0 ? 209 : 157;
+> > >=20
+> > > Shouldn't this be in the mode definition?
+> >=20
+> > It could be, but then there would be one copy of 209, and 9 copies of
+> > 157.=20
+>=20
+> That would still be specified explicitly. Someone adding a new mode would
+> easily miss this.
+>=20
+> Or, if you can, derive this from something else that is now a part of the
+> mode itself.
+
+I don't understand the above, other than ... That's exactly what we're
+doing here.
+
+*Only* MODE_0 has an offset of 209 in the datasheet. All other modes are
+157.
+
+This is the table being codified:
+  https://pasteboard.co/OsKf4VX7rtrS.png
+
+--
+Kieran
 
