@@ -1,105 +1,156 @@
-Return-Path: <linux-kernel+bounces-98662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1188877D8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:02:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 763B2877D8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:02:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E102C1C20BBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:02:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 274F41F21EAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B4A22F07;
-	Mon, 11 Mar 2024 10:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A84A2232A;
+	Mon, 11 Mar 2024 10:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aDMAzFcG"
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ypRrGTdu"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E9222338;
-	Mon, 11 Mar 2024 10:02:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0B7846F;
+	Mon, 11 Mar 2024 10:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710151322; cv=none; b=AlKaJ3xouUWTBWY8dePLkCAc2dSag01uGyR/4hF1jewbVzr3QkkV146xHxsZgpHMoTCvvTIdvHoR4etLNwZbnPMY7NuGNxiBvL2v+/W7ufDoljlqMjGZiE0jzOcOB4y74XoNvuqMHA9CODogjDWLtav1z026Y7h5zi4vsufPhDQ=
+	t=1710151364; cv=none; b=L+UNB/UCnLyR7x9EX0kIQaFM6s2ZbTHRqBU/IHHUY94dxIuJNpMJCWd988iWGlaM035gMqidHfKY9dITkUPll+lwc7HWXYdCKNRkPC1RASv7eiwSXQsn1CXzrmfE5+NZSlgFmsVub07PTKdOAoXsloC6PI0jEJf/ISGE6yWQNOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710151322; c=relaxed/simple;
-	bh=C0lZ6B2LOqG14mkDCWHzxUAa9DXdg3M75sHJf0k3SEM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gEclJZvtiPArRhKSkkmn8ONFXFAaYbDCz51VK/c2gnGOJk0fJBFeyG+qff+m7SRdfx+IgLyuQK7grEjqcUBVJi9pHlD9Az8dyWh6nNnJE+p7ogio34IGGMfgRj/1Ice3qJxT24O3BdDgxdilpwZtZoukhZ8HAa8EHeYER49Bgqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aDMAzFcG; arc=none smtp.client-ip=209.85.160.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-221a4f9557dso2102308fac.2;
-        Mon, 11 Mar 2024 03:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710151320; x=1710756120; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2+Wn2Uqb3xw0M3yXxu8yoQDE/POXlxhsfE/KZsuL0tU=;
-        b=aDMAzFcGemQ/uowqJb7t76OuYzYbEZ8CMZ57XUHI7/bQZW8fK+n5p2Jjm1FSFzk9cB
-         1zJClDgUdVPS9CU2Ic2Wjkkos41XTv2vo/aezYXxVF57mzBkjTMKtVP8bT9eD77xo7eX
-         M0l755pyNPCNisP6VN/PNYuh75RlTCaDt6OVc/B0piTRCA+gvlezXs4789IqBTpH08Yp
-         4EqTQ4QdaVz1NlGKYnYeyGvjCuK8vS8x8Y3lQEu9PyQIH/+d7U+latW5Btuc7OShfxxa
-         88tVryxmnd0XzOQhclEI+sJQGCx9IAf+gTbWCVtbyUFZBYXY3EFZIdf5dNEYRjVDloOU
-         6I1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710151320; x=1710756120;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2+Wn2Uqb3xw0M3yXxu8yoQDE/POXlxhsfE/KZsuL0tU=;
-        b=gY5+yuf9Xve7/NRAacFoCI2t5jq4HA0ogV7g7mOhy29e0UKYR+y4/mAwN9UfCIlOmH
-         0FS+xbtObPblo3OIog6IsVSO1iZdSzzbUrIhnbt1Mx9F1F81RXRojrfJo9FU9QdcestT
-         hHqYeHhYvYRNb+nI65lPdFY5vRias6Vw6OQKyQJ9JRjonAbdYwlh6klxbevzzIO0AIl+
-         g5kkGGadgGBaWTIBJ1jyi7Q/52ln9cOPmTUcr0pfs7+DnbpEma8gSnIDyLsdgNXSYQqk
-         U0MzfG/HEWRv7NFWqgoyjljmbp4keoNEVNd8TayGDXzNrI0HBwfqPTSfJ+/dk8z0fj/B
-         Cn+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUEOCIYx4DhPtS+B15pN9orRgs8HmrGUKJY8PywXrCPTWB98GBtyvd86Wtry0AJM5QlbkJorETbnsFBBqSS5IP5OXiVZU6FFSgP0zaA
-X-Gm-Message-State: AOJu0YzLIPeI93F56Ugz55XiRlVSQsG/R/tFfzQ/HAZJugqy+7mmq1pU
-	0ywFFqPex+jIq0ZqQlWnyNdKHhQy/lEMJl6ae1RkzSt1KBcVfb8XQJSaJE0nZP2/kI9NCMCD7wK
-	VSb2kNVsJd7ZlzgEIHIrRy5Jp95A=
-X-Google-Smtp-Source: AGHT+IE+HdXxVacCokVXm6AG1Enh2GRrurBbBK52TD/DZnfbOMy3nxz2d4aziM1/T87eix+xubS28lgFRxatZxaUF04=
-X-Received: by 2002:a05:6870:1097:b0:21f:9c60:dba8 with SMTP id
- 23-20020a056870109700b0021f9c60dba8mr5592419oaq.4.1710151320411; Mon, 11 Mar
- 2024 03:02:00 -0700 (PDT)
+	s=arc-20240116; t=1710151364; c=relaxed/simple;
+	bh=Socx3OmMLBtgHrQ/ZyhaEqEqMB7cMWVDA6gC3HFPDKk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QlmrKZpShIm1gvzmsFAuLwbBFmxZ0+i4qRaB62CNJjSDTvYg3KH1xI8aSG72qWX0LywGyyP+E0/uSIFJgJdKTkNIS6n8dWDLvfM20HJSEGdhX+8mTCPPSUke2MK0H0bN9NKo7K+oZ1cgmg8YSuJ0eU9QAAG31fCliunP13dcwV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ypRrGTdu; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710151361;
+	bh=Socx3OmMLBtgHrQ/ZyhaEqEqMB7cMWVDA6gC3HFPDKk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ypRrGTdumQJoXpsy+P8xrogE2RGVYY3t/4rH48LFzV2ywd5Jek8CvNa0lPHm7uoso
+	 DG4d/XcqaGzhRAiV9sq/hbxVEy3209rNW+ExJWlQ3MNfSYpbJzCHln0sb7ac9Cm1db
+	 ySmdTVcQhtvOwtoBVm/TfhqSYOT8/MfruEE9qzT1mEmfSULFsCMY0R9QHVi7XqtIhy
+	 p8DUQ3ezADCDS14C7AY0NqsdtoIOE2XWyAlLLkzrx21r4CLM31IiOSVKLxZzuDmEye
+	 wNnaukIP/KVlKY6gqOlpHx8xm29vN9uXQLQZ4XFB4vSkexRb4oDdrCbbj17yZrsdKG
+	 +aFtbZvwEUMwg==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4CDB937811D4;
+	Mon, 11 Mar 2024 10:02:40 +0000 (UTC)
+Date: Mon, 11 Mar 2024 11:02:38 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Tvrtko Ursulin <tursulin@ursulin.net>
+Cc: =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>,
+ robh@kernel.org, steven.price@arm.com, airlied@gmail.com, daniel@ffwll.ch,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ corbet@lwn.net, kernel@collabora.com, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] drm/panfrost: Replace fdinfo's profiling debugfs
+ knob with sysfs
+Message-ID: <20240311110238.1082a1f6@collabora.com>
+In-Reply-To: <0db9babe-da95-48e2-b577-3e92a81f8303@ursulin.net>
+References: <20240306015819.822128-1-adrian.larumbe@collabora.com>
+	<20240306015819.822128-2-adrian.larumbe@collabora.com>
+	<0db9babe-da95-48e2-b577-3e92a81f8303@ursulin.net>
+Organization: Collabora
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311094559.547083-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240311094559.547083-1-andriy.shevchenko@linux.intel.com>
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date: Mon, 11 Mar 2024 11:01:47 +0100
-Message-ID: <CAMhs-H8kVSrY-2upSEnLp-F2MXzSu3sCN1st=JghBMrT27buXw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] MIPS: ralink: Don't use "proxy" headers
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	John Crispin <john@phrozen.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11, 2024 at 10:46=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Update header inclusions to follow IWYU (Include What You Use)
-> principle.
->
-> Fixes: 5804be061848 ("MIPS: ralink: Remove unused of_gpio.h")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202403090727.nLhljNp6-lkp@i=
-ntel.com/
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  arch/mips/ralink/timer.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+On Wed, 6 Mar 2024 08:33:47 +0000
+Tvrtko Ursulin <tursulin@ursulin.net> wrote:
 
-Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> On 06/03/2024 01:56, Adri=C3=A1n Larumbe wrote:
+> > Debugfs isn't always available in production builds that try to squeeze
+> > every single byte out of the kernel image, but we still need a way to
+> > toggle the timestamp and cycle counter registers so that jobs can be
+> > profiled for fdinfo's drm engine and cycle calculations.
+> >=20
+> > Drop the debugfs knob and replace it with a sysfs file that accomplishes
+> > the same functionality, and document its ABI in a separate file.
+> >=20
+> > Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
+> > ---
+> >   .../testing/sysfs-driver-panfrost-profiling   | 10 +++++
+> >   Documentation/gpu/panfrost.rst                |  9 ++++
+> >   drivers/gpu/drm/panfrost/Makefile             |  2 -
+> >   drivers/gpu/drm/panfrost/panfrost_debugfs.c   | 21 ----------
+> >   drivers/gpu/drm/panfrost/panfrost_debugfs.h   | 14 -------
+> >   drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
+> >   drivers/gpu/drm/panfrost/panfrost_drv.c       | 41 ++++++++++++++++---
+> >   drivers/gpu/drm/panfrost/panfrost_job.c       |  2 +-
+> >   8 files changed, 57 insertions(+), 44 deletions(-)
+> >   create mode 100644 Documentation/ABI/testing/sysfs-driver-panfrost-pr=
+ofiling
+> >   delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> >   delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> >=20
+> > diff --git a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling =
+b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > new file mode 100644
+> > index 000000000000..1d8bb0978920
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > @@ -0,0 +1,10 @@
+> > +What:		/sys/bus/platform/drivers/panfrost/.../profiling
+> > +Date:		February 2024
+> > +KernelVersion:	6.8.0
+> > +Contact:	Adrian Larumbe <adrian.larumbe@collabora.com>
+> > +Description:
+> > +		Get/set drm fdinfo's engine and cycles profiling status.
+> > +		Valid values are:
+> > +		0: Don't enable fdinfo job profiling sources.
+> > +		1: Enable fdinfo job profiling sources, this enables both the GPU's
+> > +		   timestamp and cycle counter registers.
+> > \ No newline at end of file
+> > diff --git a/Documentation/gpu/panfrost.rst b/Documentation/gpu/panfros=
+t.rst
+> > index b80e41f4b2c5..51ba375fd80d 100644
+> > --- a/Documentation/gpu/panfrost.rst
+> > +++ b/Documentation/gpu/panfrost.rst
+> > @@ -38,3 +38,12 @@ the currently possible format options:
+> >  =20
+> >   Possible `drm-engine-` key names are: `fragment`, and  `vertex-tiler`.
+> >   `drm-curfreq-` values convey the current operating frequency for that=
+ engine.
+> > +
+> > +Users must bear in mind that engine and cycle sampling are disabled by=
+ default,
+> > +because of power saving concerns. `fdinfo` users and benchmark applica=
+tions which
+> > +query the fdinfo file must make sure to toggle the job profiling statu=
+s of the
+> > +driver by writing into the appropriate sysfs node::
+> > +
+> > +    echo <N> > /sys/bus/platform/drivers/panfrost/[a-f0-9]*.gpu/profil=
+ing =20
+>=20
+> A late thought - how it would work to not output the inactive fdinfo=20
+> keys when this knob is not enabled?
+>=20
+> Generic userspace like gputop already handles that and wouldn't show the=
+=20
+> stat. Which may be more user friendly than showing stats permanently at=20
+> zero. It may be moot once you add the auto-toggle to gputop (or so) but=20
+> perhaps worth considering.
 
-Thanks,
-     Sergio Paracuellos
+I agree with Tvrtko, if the line being printed in fdinfo relies on some
+sysfs knob to be valid, we'd rather not print the information in that
+case, instead of printing zero.
 
