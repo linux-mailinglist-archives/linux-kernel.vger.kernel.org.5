@@ -1,198 +1,151 @@
-Return-Path: <linux-kernel+bounces-98389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2313087795C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 01:48:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A9F387795E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 01:55:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7280FB20F6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 00:48:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77A661C20E11
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 00:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C599E80C;
-	Mon, 11 Mar 2024 00:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9827CA35;
+	Mon, 11 Mar 2024 00:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Bc1+/UMO"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KBL7+as6"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0111631
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:48:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4578F622;
+	Mon, 11 Mar 2024 00:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710118117; cv=none; b=Rwuxm2PVc8Qvldwsak3O5CQsX9bFdvhJ9MiODNsanm8EbWmgo68yeC8htzOgxpypnrW85q139Mu8y24RbwZi0C6K8kyM1W3dJqUu4b+CN3x5xZTIzotaZom5Ty8ybN60Ugzs8Q3UvcLxXes42oAHkNUrm0OkBtLi7MzprikhqLY=
+	t=1710118492; cv=none; b=bC5mLAukTKwIv2DZGZP9/f4O8CIi1QVutbD8yaxR66ZFrOAAYqlAivAgDoVHCUwXseMGm368Y1yMCQJSIMtQ/AzLrhsO6nIetnP3nd5TU81guyFqLueRrOpKLKOB2NBSTZTmcsNHt22v8lFZ+yqPd9WN6lWRUJvEm83+MSCFh60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710118117; c=relaxed/simple;
-	bh=lLIfQtc2c8Q0jsN1oKwUuOVJDaowV3tD2r4ivl19zSo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NvV/lmRHiAaymRxRk0SQi9iDuMOh7TMxtObh8eISIDCS7Rn0W8eVgK/w8Agz7gEr83JdQH22jMYz3sgB9Xl9PDAZbe+BXJijTYOyRW7q3FBSbu/1bVkGNxgneXnG6e0dQVabJt8u4Fkob6CLydcZ8kPSS5PyIRHIEN6EaVGgxHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Bc1+/UMO; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso3320454276.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 17:48:34 -0700 (PDT)
+	s=arc-20240116; t=1710118492; c=relaxed/simple;
+	bh=HJxx/b9XqDNTujCI2CqDQmRKxxztVUqH1ZaHHY1D4J0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RHj3aiC96kM2Jx34FP3K0hkOvXxAD/WoZ9NxUL7XeZH929XCEgMD098S438Oqcrm+BObRv8TP9TKXX7+YvGbLqmwJ3W+BFEz28LvhVeRzJrxbhatjGNhoW7QUVsbNRhug8guuq9Quq6d491Q3a7rVRDJOOztv2PXKT57Uef0QHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KBL7+as6; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a28a6cef709so363167266b.1;
+        Sun, 10 Mar 2024 17:54:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710118114; x=1710722914; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=djbO+fy9ASP5VMlEtgdwtbtLbFo5gKWiP+KGfCbXaaA=;
-        b=Bc1+/UMOzS05UdbSZHG1wP5djGvN3U/9nzmhfhr81+txWxF/uD22TaTz70u2q6Br9Z
-         zmI7XrVDMIPUhRIBXMvmMV6bJliwYYvDw4+H0y+d05uPn2mOp/HD0nRpZfUpKyn6ZVl8
-         dD8L+0qPbprWJGuI5Uh3YClvpYUgduqLxXYEc=
+        d=gmail.com; s=20230601; t=1710118489; x=1710723289; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jRtxWB8Q0Yuuhy6rs9UUDDIt6Ct+XJ8tkpooJ1CMz/E=;
+        b=KBL7+as6qx6sQ8lQ22I7vwLTv7pkd0CM9VrTd0yBzqEttv2lEC7g2UFaJ6rIj8HpB5
+         cVFavcBRmV+JMURKdAM6B4R3b1JcTJ1b2+9zprlzEG2fawzAQF21QrJnoYlHlo4/2jJX
+         r8cfMEGhDTjVS6ASIiPyvVOPqKL/4tuyRuBgCfZHd5JREAsy5/5lG8azILcWLPjyjGGz
+         FRf4YdZhLERQbKgtfr59qFy8Zg5onF0QMUcTUFaTIOmz6dy0ARL6MiKKSdZqvmlQDbbU
+         z1JQZ+J3eHSiVQKiy4qIXD50PHLtjSaCzcFxPXBXM3XuLjbFWeNjcy3ZoZyvtJvfE0GK
+         2nxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710118114; x=1710722914;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=djbO+fy9ASP5VMlEtgdwtbtLbFo5gKWiP+KGfCbXaaA=;
-        b=O/nfUcQC5MvIv1zbtpie848SaS91oY0oWFeL0i2ZVu3fyoR0otErYytAscWx7eJGg7
-         h69GmI+cZHk0EelzigI6BX3YQZMEBzwNr02OqaOoYqH/qVpDwYVx/+hxK2cwGx0iYigp
-         cuFo1gKnQp4ywsQyDLdhh+QybCvzd8voNUp4SevHJyja5prxyqtp4OBu9K9o+WuOVNiy
-         TfDwUTKpi5tCHWLuTuog9fvG3sQW6J5QHYGQkD0iNtvxyZIcL/F/epaqaIVTnBbcE11T
-         Zx3IXoCNvxM9rkdOM/dJIqMHHiIMdIaj1b7Q6oeLsc2rfvdA/LfbCCTYOvJ0wNK3Xz4S
-         3ifw==
-X-Forwarded-Encrypted: i=1; AJvYcCUtBB2NnnqM7QhFY4NDPArrgZzlFZYUgh574UZa36C17QiJddwbgQis4EeHs6WBb7D9JSVZI96zHy2Jug6G8pUzQ4FuN8G+57zISUIQ
-X-Gm-Message-State: AOJu0YwUmes3B1EuCFGXcLHZxFhLm+9Wha4XnSjtIq3p2q4T1I09BMuL
-	cotXi6OCtL7uGrwO6GJcvYgVrfxg8dz0UezG20Ik0ebnr9dUCyNjF+JukpSv5tk=
-X-Google-Smtp-Source: AGHT+IGl/iuEjGQLjgZEYOu3RPjQ8nLN3jI8BTYdfcFOwfymUb+yIP7KTA9zuBeM1K5grmkD6D8n8Q==
-X-Received: by 2002:a25:bc83:0:b0:dcd:24b6:1aee with SMTP id e3-20020a25bc83000000b00dcd24b61aeemr2598507ybk.47.1710118113354;
-        Sun, 10 Mar 2024 17:48:33 -0700 (PDT)
-Received: from [10.5.0.2] ([91.196.69.182])
-        by smtp.gmail.com with ESMTPSA id j20-20020a05622a039400b0042f376886d2sm2066517qtx.36.2024.03.10.17.48.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Mar 2024 17:48:32 -0700 (PDT)
-Message-ID: <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
-Date: Sun, 10 Mar 2024 20:48:28 -0400
+        d=1e100.net; s=20230601; t=1710118489; x=1710723289;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jRtxWB8Q0Yuuhy6rs9UUDDIt6Ct+XJ8tkpooJ1CMz/E=;
+        b=PM0W4jYroRvcUujpS0RtlgexSApPKXxyaSmbE4NnQjhoqMxaSHwj7rXB6n/2JWxbGA
+         0eAQBJ/dhFQrWQ9qcWCJDNT02VCobgPAzTI4+MTFW5pUsN10wkckVG2Bx1qVqQTjY3cf
+         uk04gV0TrZr8xgRospkOyZ4SGG4bOxx1g0v90sLUiL4+OJ1H6/yVw7Awvr7tHCMkoBzX
+         fJVvQ99h3c6jFckD1rOsxxKghI5pa5co6rYZdouzyyJxNWQ1G47qVUldLT2zTP46cFe+
+         6WMvsavuvdvfVYjYMkCjfifP53a9N4+krknRftrR7qfyi4x95RGHAEgCYbIVYBI8GxHD
+         AqaA==
+X-Forwarded-Encrypted: i=1; AJvYcCWAGEZZS9OQUqF2vhvXU4fjM44uEmZ0VXEG6T1FHCT0wLPNA0dJNDPcURLp6Oo05on284b/zezKg9ySW7yvIJtvUbZjQt05X9dWn3jybpYf0wFFe4EFMKUtjlekfI9QdlBDWTQ5x6H7
+X-Gm-Message-State: AOJu0YxCIfGAjwWoIZ5Fvo5mJomnUoE9FP1ZDNqtwj+LH03U2p8JY3lQ
+	9g/vYf1Nv70Yk9O5lrWvJ3JpPLh23G2GvX65OBtGSaQLUnbVDkVn
+X-Google-Smtp-Source: AGHT+IHQwN7D9vCo1ffxDPINsTxfXuuu4MZDHo7+8KW3I8FK46QB4W7VJcGbdfe6eELYv3OTCzQ2OQ==
+X-Received: by 2002:a17:906:7084:b0:a3f:804f:c1a4 with SMTP id b4-20020a170906708400b00a3f804fc1a4mr3505703ejk.74.1710118489342;
+        Sun, 10 Mar 2024 17:54:49 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:ee41:82:7577:b24d:a5cc:76ea:4a7a])
+        by smtp.gmail.com with ESMTPSA id qu21-20020a170907111500b00a45d17148a3sm2403535ejb.13.2024.03.10.17.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 17:54:48 -0700 (PDT)
+From: Vasileios Amoiridis <vassilisamir@gmail.com>
+To: jic23@kernel.org
+Cc: lars@metafoo.de,
+	andriy.shevchenko@linux.intel.com,
+	ang.iglesiasg@gmail.com,
+	phil@raspberrypi.com,
+	579lpy@gmail.com,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vasileios Amoiridis <vassilisamir@gmail.com>
+Subject: [PATCH] iio: pressure: Fixes SPI support for BMP3xx devices
+Date: Mon, 11 Mar 2024 01:54:32 +0100
+Message-Id: <20240311005432.1752853-1-vassilisamir@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
- PREEMPT_COUNT=y
-To: paulmck@kernel.org
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, peterz@infradead.org, torvalds@linux-foundation.org,
- akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
- dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
- juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
- mgorman@suse.de, jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
- andrew.cooper3@citrix.com, bristot@kernel.org,
- mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
- glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
- mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
- David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
- jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
- boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-16-ankur.a.arora@oracle.com>
- <20240310100330.GA2705505@joelbox2>
- <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
-Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Bosch does not use unique BMPxxx_CHIP_ID for the different versions of
+the device which leads to misidentification of devices if their ID is
+used. Use a new value in the chip_info structure instead of the
+BMPxxx_CHIP_ID, in order to choose the regmap_bus to be used.
 
+Fixes: a9dd9ba32311 ("iio: pressure: Fixes BMP38x and BMP390 SPI support")
+Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
+---
+ drivers/iio/pressure/bmp280-core.c | 1 +
+ drivers/iio/pressure/bmp280-spi.c  | 9 ++-------
+ drivers/iio/pressure/bmp280.h      | 1 +
+ 3 files changed, 4 insertions(+), 7 deletions(-)
 
-On 3/10/2024 2:56 PM, Paul E. McKenney wrote:
-> On Sun, Mar 10, 2024 at 06:03:30AM -0400, Joel Fernandes wrote:
->> Hello Ankur and Paul,
->>
->> On Mon, Feb 12, 2024 at 09:55:39PM -0800, Ankur Arora wrote:
->>> With PREEMPT_RCU=n, cond_resched() provides urgently needed quiescent
->>> states for read-side critical sections via rcu_all_qs().
->>> One reason why this was necessary: lacking preempt-count, the tick
->>> handler has no way of knowing whether it is executing in a read-side
->>> critical section or not.
->>>
->>> With PREEMPT_AUTO=y, there can be configurations with (PREEMPT_COUNT=y,
->>> PREEMPT_RCU=n). This means that cond_resched() is a stub which does
->>> not provide for quiescent states via rcu_all_qs().
->>>
->>> So, use the availability of preempt_count() to report quiescent states
->>> in rcu_flavor_sched_clock_irq().
->>>
->>> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
->>> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
->>> ---
->>>  kernel/rcu/tree_plugin.h | 11 +++++++----
->>>  1 file changed, 7 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
->>> index 26c79246873a..9b72e9d2b6fe 100644
->>> --- a/kernel/rcu/tree_plugin.h
->>> +++ b/kernel/rcu/tree_plugin.h
->>> @@ -963,13 +963,16 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
->>>   */
->>>  static void rcu_flavor_sched_clock_irq(int user)
->>>  {
->>> -	if (user || rcu_is_cpu_rrupt_from_idle()) {
->>> +	if (user || rcu_is_cpu_rrupt_from_idle() ||
->>> +	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) &&
->>> +	     !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)))) {
->>
->> I was wondering if it makes sense to even support !PREEMPT_RCU under
->> CONFIG_PREEMPT_AUTO.
->>
->> AFAIU, this CONFIG_PREEMPT_AUTO series preempts the kernel on
->> the next tick boundary in the worst case, with all preempt modes including
->> the preempt=none mode.
->>
->> Considering this, does it makes sense for RCU to be non-preemptible in
->> CONFIG_PREEMPT_AUTO=y? Because if that were the case, and a read-side critical
->> section extended beyond the tick, then it prevents the PREEMPT_AUTO preemption
->> from happening, because rcu_read_lock() would preempt_disable().
-> 
-> Yes, it does make sense for RCU to be non-preemptible in kernels
-> built with CONFIG_PREEMPT_AUTO=y and either CONFIG_PREEMPT_NONE=y or
-> CONFIG_PREEMPT_VOLUNTARY=y.
-> As noted in earlier discussions, there are
+diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+index fe8734468ed3..5ea9039caf75 100644
+--- a/drivers/iio/pressure/bmp280-core.c
++++ b/drivers/iio/pressure/bmp280-core.c
+@@ -1233,6 +1233,7 @@ const struct bmp280_chip_info bmp380_chip_info = {
+ 	.chip_id = bmp380_chip_ids,
+ 	.num_chip_id = ARRAY_SIZE(bmp380_chip_ids),
+ 	.regmap_config = &bmp380_regmap_config,
++	.spi_read_extra_byte = 1,
+ 	.start_up_time = 2000,
+ 	.channels = bmp380_channels,
+ 	.num_channels = 2,
+diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
+index a444d4b2978b..3a5fec5d47fd 100644
+--- a/drivers/iio/pressure/bmp280-spi.c
++++ b/drivers/iio/pressure/bmp280-spi.c
+@@ -96,15 +96,10 @@ static int bmp280_spi_probe(struct spi_device *spi)
+ 
+ 	chip_info = spi_get_device_match_data(spi);
+ 
+-	switch (chip_info->chip_id[0]) {
+-	case BMP380_CHIP_ID:
+-	case BMP390_CHIP_ID:
++	if (chip_info->spi_read_extra_byte)
+ 		bmp_regmap_bus = &bmp380_regmap_bus;
+-		break;
+-	default:
++	else
+ 		bmp_regmap_bus = &bmp280_regmap_bus;
+-		break;
+-	}
+ 
+ 	regmap = devm_regmap_init(&spi->dev,
+ 				  bmp_regmap_bus,
+diff --git a/drivers/iio/pressure/bmp280.h b/drivers/iio/pressure/bmp280.h
+index 4012387d7956..70bceaccf447 100644
+--- a/drivers/iio/pressure/bmp280.h
++++ b/drivers/iio/pressure/bmp280.h
+@@ -423,6 +423,7 @@ struct bmp280_chip_info {
+ 	int num_chip_id;
+ 
+ 	const struct regmap_config *regmap_config;
++	int spi_read_extra_byte;
+ 
+ 	const struct iio_chan_spec *channels;
+ 	int num_channels;
+-- 
+2.25.1
 
-Sorry if I missed a discussion, appreciate a link.
-
-> systems that are adequately but not abundantly endowed with memory.
-> Such systems need non-preemptible RCU to avoid preempted-reader OOMs.
-
-Then why don't such systems have a problem with CONFIG_PREEMPT_DYNAMIC=y and
-preempt=none mode? CONFIG_PREEMPT_DYNAMIC forces CONFIG_PREEMPT_RCU=y. There's
-no way to set CONFIG_PREEMPT_RCU=n with CONFIG_PREEMPT_DYNAMIC=y and
-preempt=none boot parameter.  IMHO, if this feature is inconsistent with
-CONFIG_PREEMPT_DYNAMIC, that makes it super confusing.  In fact, I feel
-CONFIG_PREEMPT_AUTO should instead just be another "preempt=auto" boot parameter
-mode added to CONFIG_PREEMPT_DYNAMIC feature, otherwise the proliferation of
-CONFIG_PREEMPT config options is getting a bit insane. And likely going to be
-burden to the users configuring the PREEMPT Kconfig option IMHO.
-
-> Note well that non-preemptible RCU explicitly disables preemption across
-> all RCU readers.
-
-Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
-being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
-preemption in preempt=none. So the "Don't preempt the kernel" behavior has
-changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
-CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
-the way. It is like saying, you want an option for CONFIG_PREEMPT_RCU to be set
-to =n for CONFIG_PREEMPT=y kernels, sighting users who want a fully-preemptible
-kernel but are worried about reader preemptions.
-
-That aside, as such, I do agree your point of view, that preemptible readers
-presents a problem to folks using preempt=none in this series and we could
-decide to keep CONFIG_PREEMPT_RCU optional for whoever wants it that way. I was
-just saying that I want CONFIG_PREEMPT_AUTO's preempt=none mode to be somewhat
-consistent with CONFIG_PREEMPT_DYNAMIC's preempt=none. Because I'm pretty sure a
-week from now, no one will likely be able to tell the difference ;-). So IMHO
-either CONFIG_PREEMPT_DYNAMIC should be changed to make CONFIG_PREEMPT_RCU
-optional, or this series should be altered to force CONFIG_PREEMPT_RCU=y.
-
-Let me know if I missed something.
-
-Thanks!
-
- - Joel
 
