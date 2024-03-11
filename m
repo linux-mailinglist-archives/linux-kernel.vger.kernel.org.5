@@ -1,238 +1,293 @@
-Return-Path: <linux-kernel+bounces-98583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32893877C4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B184C877C49
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:11:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 534B41C20B5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:11:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4F881C20BD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B575814A96;
-	Mon, 11 Mar 2024 09:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6158514010;
+	Mon, 11 Mar 2024 09:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ju28+9JR"
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D161401E;
-	Mon, 11 Mar 2024 09:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="kl0pxinO"
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B671400A
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148305; cv=none; b=GJySmhTIoFc9zSbFQcGDb8AXbkIfDG3nXZ44EhkV9BqiPoxIefcABvu8a3phlVzbkrOmwJOxO9j9LeOtN6Oxhei6rbKdKbzrqsWIOazWCFEx6DpNDpWBYUy7ydbsJEXfUsCdGWNdy/CJR0ZdvhBo2HYgLjaqzUeVU7RG3C47dyk=
+	t=1710148282; cv=none; b=S0Kdr3/5o3fx98fygLheLPvP8KKobUo/v8jh+b/4FLWiIs8b5lEJM0jqhJWh8jOd+MVgISNFod8P/LVqzhQ2mnZLCpL3S/mnwAR23MUiv0FQwTcx1ePlmTmIxymXRxWCNz9oFiYCCAOfk2YE+4Q8gqGAro0Lf95ho9OSdfwTa6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148305; c=relaxed/simple;
-	bh=bQycjD3Nt7s486XLfov6DBezJbQVxS3qMWOSqeVVRFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AkKR2EK7VnOiCOrlhUdSZBO+ZuJo0TpeTtwegarzfocO1EC1Byd9UEKXVnGIGdBzs5mNAqgXkUXSbYX63NYXApbBx+MlFac4sC8NiF3S1RunT+ZeygE7bHC4jMSUn9BS0+hlgXny6suL2L6OeFc4ZNMcMPni61Z39pgnn/xGSm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ju28+9JR; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7cedcea89a0so2728973241.1;
-        Mon, 11 Mar 2024 02:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710148303; x=1710753103; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4qvSkoWG3hG+H8BATALROwaa3X2nvmLzNfY2hVRikCs=;
-        b=Ju28+9JRSFBYJdKkowGB1F8BLGRWwxS2DsFMFaEYZMDQM/czaDsCUrdn6ykl4LXoWs
-         ixYic1jVTk3DKFNv2HYgcD26+XE2kl81vv++yX1BgCim9MIbQoRorfLotawVdZccaswt
-         2X0/7SMd76YOX1iRxvuwxgzrWR28thg8i9QMa5Gkf+h1db92fNJQpkits0KPDrgnI66O
-         j6GWGCpACHtgUvG7Qcg7MfckYwlupJEkjPU8nWSTA7EbxbtIQ3n0RauTiZNZAFcRkLzU
-         MOzeC/Q0NClU0lAtfwAq7iUFMF70/OEhRGnihKMv8EqPZ8g7YEqOmWZTHSgYNJCdGS5h
-         W/kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710148303; x=1710753103;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4qvSkoWG3hG+H8BATALROwaa3X2nvmLzNfY2hVRikCs=;
-        b=RIuiiaBeaqRypjVSHweHaU9hJI6DslRjHC+kBVYoaZy65JuBV/wSj0XzWpP53qM4rd
-         9n7wKeTiru04xklqR0skQkjYhlg3xF0QsgykL7CYZKZZM0IHh+c2YKZ9BOq5b9/Bskag
-         pChskKChmWcWvTQBFd9RdmS5srF7nybhw9UzUmhlT9Rli330Sm2zCNsU7oHdM6jnh7As
-         ruwa/M3HN4/cxqOHUO1kcqh6oiZOGEWQZ30O1XxPAlYInbyJ9kApBV6BLM1Ax5TqgovP
-         +J4+dbfziyABgUGvUMrmxblMW+sO7N+2c7bDdje/5us5wFbKvT7T8ZL2YN4wFCUPC2Kz
-         sHbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0tMif3x7OLyFqeHaw5oy1re2kaPhPR/EjFDT97iWarvhXDHAgiJrX6w+es65kEFV/ibivNVrq36II1bbgFrtHjQOVRA7JyQ6GMhSsarG8fjP+hLp10OemHSo0DM8cAYvDdE4qdQ==
-X-Gm-Message-State: AOJu0Yx0qwcZrsnfr7EWFfpHv/tg+20HLrXCwKZgpBciaDMJqBxUkOT8
-	dSxkpvemnANiF50lZvvSKAkmoCujYkd51ZkFlHdZX3ppFj6FvzIjhpe/nfLLE+rV/oks9rdmYZR
-	88nCvoGhxPobyKrfrZ4s3Vg7YnLaF9XT6iF2Jq7qdZsY=
-X-Google-Smtp-Source: AGHT+IGhj+x8PbYBec92s0jPkmQjnzq8HzpZbtjL6JMxo4ac2s/kS8iToRyYZSqvmkrMguR+LbUdOyKos2a5RyaKjr8=
-X-Received: by 2002:a05:6102:1814:b0:473:df7:1084 with SMTP id
- jg20-20020a056102181400b004730df71084mr3630428vsb.29.1710148303200; Mon, 11
- Mar 2024 02:11:43 -0700 (PDT)
+	s=arc-20240116; t=1710148282; c=relaxed/simple;
+	bh=miCbQdpcXs3OZwmYKJpRmifu1gWyF3jmGEJzcdzlVas=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=qLJrv3s1uu8Lw9r9PYM6fO8gzl1cpZk6W2hh0rpe4w18qO+j1lj2GjF2lvMWGGQ/NarjgRQLWFsC47wwwVJpYcdP95yAnAnHC2rqYryfGJ6in8UixXzx4fSDCz1f4blOQOGWnMVbV2gevvTDQ77CHyuMTnAXPi3DqGyz9BhZV1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=kl0pxinO; arc=none smtp.client-ip=85.214.250.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
+Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.8bytes.org (Postfix) with ESMTPSA id B4A131C7CA4;
+	Mon, 11 Mar 2024 10:11:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+	s=default; t=1710148272;
+	bh=miCbQdpcXs3OZwmYKJpRmifu1gWyF3jmGEJzcdzlVas=;
+	h=Date:From:To:Cc:Subject:From;
+	b=kl0pxinOpkekigSgnns/xKzjeAGB2uu2AD18WeyBMFnsnKX5QEQwShVU01PoRy1ka
+	 q6EPkRHWjlmwCD1km/4C0tAc9vSNrHahTbPw/I+bcz2v3HvOmlnoEvRYjcjks5Piid
+	 8/27hjenRmk3oMhDj2gzGECLVnLBLWigHniyXgJmzTe5KKHDgzfg9JO/ZFMp6PEZ1L
+	 YVQp/+wH54Yh9vtIPrr0wjoHrzFw0Stp8IbOZubT4lA2PTq8X0UY2+JRogHaRTWFvb
+	 GwRt8e9vKbq4shmHFNoAzdOTwVmyEmhDMJDqOKThiENTBioc11PSkzfjPnRrcNIDi7
+	 /XJBVRwDX8mjA==
+Date: Mon, 11 Mar 2024 10:11:09 +0100
+From: Joerg Roedel <joro@8bytes.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev
+Subject: [git pull] IOMMU Updates for Linux v6.9
+Message-ID: <Ze7KrT5is81WGTRT@8bytes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZcWOh9u3uqZjNFMa@chrisdown.name> <20240229235134.2447718-1-axelrasmussen@google.com>
- <ZeEhvV15IWllPKvM@chrisdown.name> <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
-In-Reply-To: <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 11 Mar 2024 17:11:06 +0800
-Message-ID: <CALOAHbBupMYBMWEzMK2xdhnqwR1C1+mJSrrZC1L0CKE2BMSC+g@mail.gmail.com>
-Subject: Re: MGLRU premature memcg OOM on slow writes
-To: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Chris Down <chris@chrisdown.name>, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	kernel-team@fb.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sat, Mar 9, 2024 at 3:19=E2=80=AFAM Axel Rasmussen <axelrasmussen@google=
-com> wrote:
->
-> On Thu, Feb 29, 2024 at 4:30=E2=80=AFPM Chris Down <chris@chrisdown.name>=
- wrote:
-> >
-> > Axel Rasmussen writes:
-> > >A couple of dumb questions. In your test, do you have any of the follo=
-wing
-> > >configured / enabled?
-> > >
-> > >/proc/sys/vm/laptop_mode
-> > >memory.low
-> > >memory.min
-> >
-> > None of these are enabled. The issue is trivially reproducible by writi=
-ng to
-> > any slow device with memory.max enabled, but from the code it looks lik=
-e MGLRU
-> > is also susceptible to this on global reclaim (although it's less likel=
-y due to
-> > page diversity).
-> >
-> > >Besides that, it looks like the place non-MGLRU reclaim wakes up the
-> > >flushers is in shrink_inactive_list() (which calls wakeup_flusher_thre=
-ads()).
-> > >Since MGLRU calls shrink_folio_list() directly (from evict_folios()), =
-I agree it
-> > >looks like it simply will not do this.
-> > >
-> > >Yosry pointed out [1], where MGLRU used to call this but stopped doing=
- that. It
-> > >makes sense to me at least that doing writeback every time we age is t=
-oo
-> > >aggressive, but doing it in evict_folios() makes some sense to me, bas=
-ically to
-> > >copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
-> >
-> > Thanks! We may also need reclaim_throttle(), depending on how you imple=
-ment it.
-> > Current non-MGLRU behaviour on slow storage is also highly suspect in t=
-erms of
-> > (lack of) throttling after moving away from VMSCAN_THROTTLE_WRITEBACK, =
-but one
-> > thing at a time :-)
->
->
-> Hmm, so I have a patch which I think will help with this situation,
-> but I'm having some trouble reproducing the problem on 6.8-rc7 (so
-> then I can verify the patch fixes it).
+Hi Linus,
 
-We encountered the same premature OOM issue caused by numerous dirty pages.
-The issue disappears after we revert the commit 14aa8b2d5c2e
-"mm/mglru: don't sync disk for each aging cycle"
+The following changes since commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72:
 
-To aid in replicating the issue, we've developed a straightforward
-script, which consistently reproduces it, even on the latest kernel.
-You can find the script provided below:
+  Linux 6.8-rc7 (2024-03-03 13:02:52 -0800)
 
-```
-#!/bin/bash
+are available in the Git repository at:
 
-MEMCG=3D"/sys/fs/cgroup/memory/mglru"
-ENABLE=3D$1
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v6.9
 
-# Avoid waking up the flusher
-sysctl -w vm.dirty_background_bytes=3D$((1024 * 1024 * 1024 *4))
-sysctl -w vm.dirty_bytes=3D$((1024 * 1024 * 1024 *4))
+for you to fetch changes up to f379a7e9c3b5c325ff550e911ea42092295695de:
 
-if [ ! -d ${MEMCG} ]; then
-        mkdir -p ${MEMCG}
-fi
+  Merge branches 'arm/mediatek', 'arm/renesas', 'arm/smmu', 'x86/vt-d', 'x86/amd' and 'core' into next (2024-03-08 09:05:59 +0100)
 
-echo $$ > ${MEMCG}/cgroup.procs
-echo 1g > ${MEMCG}/memory.limit_in_bytes
+----------------------------------------------------------------
+IOMMU Updates for Linux v6.9
 
-if [ $ENABLE -eq 0 ]; then
-        echo 0 > /sys/kernel/mm/lru_gen/enabled
-else
-        echo 0x7 > /sys/kernel/mm/lru_gen/enabled
-fi
+Including:
 
-dd if=3D/dev/zero of=3D/data0/mglru.test bs=3D1M count=3D1023
-rm -rf /data0/mglru.test
-```
+	- Core changes:
+	  - Constification of bus_type pointer
+	  - Preparations for user-space page-fault delivery
+	  - Use a named kmem_cache for IOVA magazines
 
-This issue disappears as well after we disable the mglru.
+	- Intel VT-d changes from Lu Baolu:
+	  - Add RBTree to track iommu probed devices
+	  - Add Intel IOMMU debugfs document
+	  - Cleanup and refactoring
 
-We hope this script proves helpful in identifying and addressing the
-root cause. We eagerly await your insights and proposed fixes.
+	- ARM-SMMU Updates from Will Deacon:
+	  - Device-tree binding updates for a bunch of Qualcomm SoCs
+	  - SMMUv2: Support for Qualcomm X1E80100 MDSS
+	  - SMMUv3: Significant rework of the driver's STE manipulation and
+	    domain handling code. This is the initial part of a larger scale
+	    rework aiming to improve the driver's implementation of the
+	    IOMMU-API in preparation for hooking up IOMMUFD support.
 
->
-> If I understand the issue right, all we should need to do is get a
-> slow filesystem, and then generate a bunch of dirty file pages on it,
-> while running in a tightly constrained memcg. To that end, I tried the
-> following script. But, in reality I seem to get little or no
-> accumulation of dirty file pages.
->
-> I thought maybe fio does something different than rsync which you said
-> you originally tried, so I also tried rsync (copying /usr/bin into
-> this loop mount) and didn't run into an OOM situation either.
->
-> Maybe some dirty ratio settings need tweaking or something to get the
-> behavior you see? Or maybe my test has a dumb mistake in it. :)
->
->
->
-> #!/usr/bin/env bash
->
-> echo 0 > /proc/sys/vm/laptop_mode || exit 1
-> echo y > /sys/kernel/mm/lru_gen/enabled || exit 1
->
-> echo "Allocate disk image"
-> IMAGE_SIZE_MIB=3D1024
-> IMAGE_PATH=3D/tmp/slow.img
-> dd if=3D/dev/zero of=3D$IMAGE_PATH bs=3D1024k count=3D$IMAGE_SIZE_MIB || =
-exit 1
->
-> echo "Setup loop device"
-> LOOP_DEV=3D$(losetup --show --find $IMAGE_PATH) || exit 1
-> LOOP_BLOCKS=3D$(blockdev --getsize $LOOP_DEV) || exit 1
->
-> echo "Create dm-slow"
-> DM_NAME=3Ddm-slow
-> DM_DEV=3D/dev/mapper/$DM_NAME
-> echo "0 $LOOP_BLOCKS delay $LOOP_DEV 0 100" | dmsetup create $DM_NAME || =
-exit 1
->
-> echo "Create fs"
-> mkfs.ext4 "$DM_DEV" || exit 1
->
-> echo "Mount fs"
-> MOUNT_PATH=3D"/tmp/$DM_NAME"
-> mkdir -p "$MOUNT_PATH" || exit 1
-> mount -t ext4 "$DM_DEV" "$MOUNT_PATH" || exit 1
->
-> echo "Generate dirty file pages"
-> systemd-run --wait --pipe --collect -p MemoryMax=3D32M \
->         fio -name=3Dwrites -directory=3D$MOUNT_PATH -readwrite=3Drandwrit=
-e \
->         -numjobs=3D10 -nrfiles=3D90 -filesize=3D1048576 \
->         -fallocate=3Dposix \
->         -blocksize=3D4k -ioengine=3Dmmap \
->         -direct=3D0 -buffered=3D1 -fsync=3D0 -fdatasync=3D0 -sync=3D0 \
->         -runtime=3D300 -time_based
->
+	- AMD-Vi Updates:
+	  - Refactor GCR3 table support for SVA
+	  - Cleanups
 
+	- Some smaller cleanups and fixes
 
---=20
-Regards
-Yafang
+----------------------------------------------------------------
+Abel Vesa (1):
+      iommu/arm-smmu-qcom: Add X1E80100 MDSS compatible
+
+Bert Karwatzki (1):
+      iommu: Fix compilation without CONFIG_IOMMU_INTEL
+
+Erick Archer (2):
+      iommu/mtk_iommu: Use devm_kcalloc() instead of devm_kzalloc()
+      iommu/vt-d: Use kcalloc() instead of kzalloc()
+
+Ethan Zhao (3):
+      PCI: Make pci_dev_is_disconnected() helper public for other drivers
+      iommu/vt-d: Don't issue ATS Invalidation request when device is disconnected
+      iommu/vt-d: Improve ITE fault handling if target device isn't present
+
+Jason Gunthorpe (16):
+      iommu/arm-smmu-v3: Make STE programming independent of the callers
+      iommu/arm-smmu-v3: Consolidate the STE generation for abort/bypass
+      iommu/arm-smmu-v3: Move the STE generation for S1 and S2 domains into functions
+      iommu/arm-smmu-v3: Build the whole STE in arm_smmu_make_s2_domain_ste()
+      iommu/arm-smmu-v3: Hold arm_smmu_asid_lock during all of attach_dev
+      iommu/arm-smmu-v3: Compute the STE only once for each master
+      iommu/arm-smmu-v3: Do not change the STE twice during arm_smmu_attach_dev()
+      iommu/arm-smmu-v3: Put writing the context descriptor in the right order
+      iommu/arm-smmu-v3: Pass smmu_domain to arm_enable/disable_ats()
+      iommu/arm-smmu-v3: Remove arm_smmu_master->domain
+      iommu/arm-smmu-v3: Check that the RID domain is S1 in SVA
+      iommu/arm-smmu-v3: Add a global static IDENTITY domain
+      iommu/arm-smmu-v3: Add a global static BLOCKED domain
+      iommu/arm-smmu-v3: Use the identity/blocked domain during release
+      iommu/arm-smmu-v3: Pass arm_smmu_domain and arm_smmu_device to finalize
+      iommu/arm-smmu-v3: Convert to domain_alloc_paging()
+
+Jingqi Liu (1):
+      iommu/vt-d: Add the document for Intel IOMMU debugfs
+
+Joerg Roedel (2):
+      Merge tag 'arm-smmu-updates' of git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into arm/smmu
+      Merge branches 'arm/mediatek', 'arm/renesas', 'arm/smmu', 'x86/vt-d', 'x86/amd' and 'core' into next
+
+Konrad Dybcio (1):
+      dt-bindings: arm-smmu: Add QCM2290 GPU SMMU
+
+Krzysztof Kozlowski (4):
+      iommu: constify pointer to bus_type
+      iommu: constify of_phandle_args in xlate
+      iommu: constify fwnode in iommu_ops_from_fwnode()
+      iommu: re-use local fwnode variable in iommu_ops_from_fwnode()
+
+Lu Baolu (24):
+      iommu: Move iommu fault data to linux/iommu.h
+      iommu/arm-smmu-v3: Remove unrecoverable faults reporting
+      iommu: Remove unrecoverable fault data
+      iommu: Cleanup iopf data structure definitions
+      iommu: Merge iopf_device_param into iommu_fault_param
+      iommu: Remove iommu_[un]register_device_fault_handler()
+      iommu: Merge iommu_fault_event and iopf_fault
+      iommu: Prepare for separating SVA and IOPF
+      iommu: Make iommu_queue_iopf() more generic
+      iommu: Separate SVA and IOPF
+      iommu: Refine locking for per-device fault data management
+      iommu: Use refcount for fault data access
+      iommu: Improve iopf_queue_remove_device()
+      iommu: Track iopf group instead of last fault
+      iommu: Make iopf_group_response() return void
+      iommu: Make iommu_report_device_fault() return void
+      iommu/vt-d: Remove INTEL_IOMMU_BROKEN_GFX_WA
+      iommu/vt-d: Use rbtree to track iommu probed devices
+      iommu/vt-d: Use device rbtree in iopf reporting path
+      iommu: Add static iommu_ops->release_domain
+      iommu/vt-d: Fix NULL domain on device release
+      iommu/vt-d: Setup scalable mode context entry in probe path
+      iommu/vt-d: Remove scalable mode context entry setup from attach_dev
+      iommu/vt-d: Remove scalabe mode in domain_context_clear_one()
+
+Mario Limonciello (1):
+      iommu/amd: Mark interrupt as managed
+
+Neil Armstrong (2):
+      dt-bindings: arm-smmu: Fix SM8[45]50 GPU SMMU 'if' condition
+      dt-bindings: arm-smmu: Document SM8650 GPU SMMU
+
+Pasha Tatashin (1):
+      iommu/iova: use named kmem_cache for iova magazines
+
+Robin Murphy (4):
+      iommu/iova: Tidy up iova_cache_get() failure
+      iommu/iova: Reorganise some code
+      iommu/ipmmu-vmsa: Minor cleanups
+      iommu/dma: Document min_align_mask assumption
+
+Suravee Suthikulpanit (8):
+      iommu/amd: Introduce get_amd_iommu_from_dev()
+      iommu/amd: Introduce struct protection_domain.pd_mode
+      iommu/amd: Introduce per-device GCR3 table
+      iommu/amd: Refactor helper function for setting / clearing GCR3
+      iommu/amd: Refactor attaching / detaching device functions
+      iommu/amd: Refactor protection_domain helper functions
+      iommu/amd: Refactor GCR3 table helper functions
+      iommu/amd: Remove unused GCR3 table parameters from struct protection_domain
+
+Tina Zhang (3):
+      iommu/vt-d: Remove treatment for revoking PASIDs with pending page faults
+      iommu/vt-d: Remove initialization for dynamically heap-allocated rcu_head
+      iommu/vt-d: Merge intel_svm_bind_mm() into its caller
+
+Vasant Hegde (16):
+      iommu/amd: Remove unused PPR_* macros
+      iommu/amd: Remove unused IOVA_* macro
+      iommu/amd: Remove unused APERTURE_* macros
+      iommu/amd: Remove duplicate function declarations from amd_iommu.h
+      iommu/amd: Remove redundant error check in amd_iommu_probe_device()
+      iommu/amd: Remove EXPORT_SYMBOL for perf counter related functions
+      iommu/amd: Pass struct iommu_dev_data to set_dte_entry()
+      iommu/amd: Enable Guest Translation before registering devices
+      iommu/amd: Use protection_domain.flags to check page table mode
+      iommu/amd: Add support for device based TLB invalidation
+      iommu/amd: Rearrange GCR3 table setup code
+      iommu: Introduce iommu_group_mutex_assert()
+      iommu/amd: Remove unused flush pasid functions
+      iommu/amd: Rearrange device flush code
+      iommu/amd: Introduce per-device domain ID to fix potential TLB aliasing issue
+      iommu/amd: Fix sleeping in atomic context
+
+Will Deacon (1):
+      Merge branch 'for-joerg/arm-smmu/bindings' into for-joerg/arm-smmu/updates
+
+ Documentation/ABI/testing/debugfs-intel-iommu      | 276 +++++++
+ .../devicetree/bindings/iommu/arm,smmu.yaml        |  20 +-
+ MAINTAINERS                                        |   1 -
+ drivers/iommu/Kconfig                              |   6 +-
+ drivers/iommu/Makefile                             |   3 +-
+ drivers/iommu/amd/amd_iommu.h                      |  41 +-
+ drivers/iommu/amd/amd_iommu_types.h                |  34 +-
+ drivers/iommu/amd/init.c                           |  12 +-
+ drivers/iommu/amd/io_pgtable_v2.c                  |  21 +-
+ drivers/iommu/amd/iommu.c                          | 634 ++++++++--------
+ drivers/iommu/apple-dart.c                         |   3 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c    |  22 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        | 814 +++++++++++++--------
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |   4 -
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         |   1 +
+ drivers/iommu/arm/arm-smmu/arm-smmu.c              |   3 +-
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c            |   3 +-
+ drivers/iommu/dma-iommu.c                          |   5 +
+ drivers/iommu/exynos-iommu.c                       |   2 +-
+ drivers/iommu/intel/Kconfig                        |  12 +-
+ drivers/iommu/intel/Makefile                       |   2 +
+ drivers/iommu/intel/dmar.c                         |  26 +-
+ drivers/iommu/intel/iommu.c                        | 337 ++++-----
+ drivers/iommu/intel/iommu.h                        |  14 +-
+ drivers/iommu/intel/pasid.c                        | 205 ++++++
+ drivers/iommu/intel/pasid.h                        |   2 +
+ drivers/iommu/intel/perf.c                         |   2 +-
+ drivers/iommu/intel/svm.c                          |  76 +-
+ drivers/iommu/io-pgfault.c                         | 463 +++++++-----
+ drivers/iommu/iommu-priv.h                         |   5 +-
+ drivers/iommu/iommu-sva.c                          |  71 +-
+ drivers/iommu/iommu-sva.h                          |  71 --
+ drivers/iommu/iommu.c                              | 280 +------
+ drivers/iommu/iova.c                               | 143 ++--
+ drivers/iommu/ipmmu-vmsa.c                         |  19 +-
+ drivers/iommu/irq_remapping.c                      |   3 +-
+ drivers/iommu/msm_iommu.c                          |   4 +-
+ drivers/iommu/mtk_iommu.c                          |   5 +-
+ drivers/iommu/mtk_iommu_v1.c                       |   7 +-
+ drivers/iommu/of_iommu.c                           |   2 +-
+ drivers/iommu/rockchip-iommu.c                     |   2 +-
+ drivers/iommu/sprd-iommu.c                         |   3 +-
+ drivers/iommu/sun50i-iommu.c                       |   2 +-
+ drivers/iommu/tegra-smmu.c                         |   4 +-
+ drivers/iommu/virtio-iommu.c                       |   3 +-
+ drivers/pci/pci.h                                  |   5 -
+ include/linux/iommu.h                              | 295 ++++++--
+ include/linux/pci.h                                |   5 +
+ include/uapi/linux/iommu.h                         | 161 ----
+ 49 files changed, 2295 insertions(+), 1839 deletions(-)
+ create mode 100644 Documentation/ABI/testing/debugfs-intel-iommu
+ delete mode 100644 drivers/iommu/iommu-sva.h
+ delete mode 100644 include/uapi/linux/iommu.h
+
+Please pull.
+
+Thanks,
+
+	Joerg
 
