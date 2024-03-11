@@ -1,144 +1,86 @@
-Return-Path: <linux-kernel+bounces-98532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AC00877B96
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:17:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4D20877B97
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:18:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5641F1C2034A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:17:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 563DB1F219DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:18:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A8512E48;
-	Mon, 11 Mar 2024 08:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDB81119A;
+	Mon, 11 Mar 2024 08:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PisB96aa"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ON9V5FQZ"
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CF712B70
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 08:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CAD14284
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 08:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710145070; cv=none; b=vDfF66WzUsLHOfSxmusAn7eA7jXNH2lzneqqaQin1NnLq1b8vABcJ1//raH5zGCH0rPUrCW8JW+jLxVIwZYywGyrgiUbYL+XeX5XBDhjpn7x1Hk3Cz5zo2eU2xgHUl2r2yFUeVWhWUL1yfTu8bGlg6nQfNmeAO+br3q8m9iFAV4=
+	t=1710145082; cv=none; b=kVvbfqP+7QuHSRhPWRQvCvIxGnas5lfrOaP4+7O6aTGlwvx4PKxr/IYDl4HdZ65HPqCj1ipV9kSZlkHl72ilW1w0JAYMzBNqS4n2t7AphMa2jh46AQDB4dkwb0mhrqQNMRrSYgsZsq7I9ellEF+txPUchq4gVVf8PsYsdUqZGUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710145070; c=relaxed/simple;
-	bh=m1fQ2UlKJYrIhYEsV9snpND9AtrXOdk71ETIefhjfW8=;
+	s=arc-20240116; t=1710145082; c=relaxed/simple;
+	bh=jzvSjvVA6Jyy48uWqmfGdrZwBkgTuPLqmjeUVsU/44Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hr8UO+TD67GdoxmU5gaEKkTizCqGapipNxqZnGp6b7ykYc0YPRRMSQ2CYWmK1yVCb6nA6Tz06c/h7Aw8gmoPQPbcmKLir3F/ALta2LRnHZaBnjHvojaF/WUK9TPg5nGiDXaddAayeMZtX30nJKJuvHtSHI0wrUkcMMFDWePVOaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PisB96aa; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42B74wlU005037;
-	Mon, 11 Mar 2024 08:17:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Hcp6eEMzpC930Ztzxwb++L0eluwabU2RKzsvkdv2/sw=;
- b=PisB96aacZ6wWGfC/A8SHJlxJPWLZYyvHmXyjnlXCNiVv1tJKlBPP7+znGtqYzPHLi3P
- Adn3gtOCKZM0JG6okErizbOYKrru5dMMcbrilVUPJbvoXb4Di2UHyiaWpUQBYQzuuPmZ
- VpjLmxiwS3E2obcDYL9Y7iUhykPakkHYb8WXPCwVBqmtACidhP8rUQvuUulrPlj/wXK2
- aCslp8AUYzCG98qh/z1JjWbE4LvbbfxQQiBMq5WRiFhZxkLMhYtUvb1TGzKfKAla89Fc
- BdASilh/QKPQvaGZu9vBehHGEzIayS3dAKKJJZCYdCcVXaNhTah/JvcRD7/FWcueGf3U +A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wsw8n12pt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 08:17:29 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42B8HTBD032685;
-	Mon, 11 Mar 2024 08:17:29 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wsw8n12pm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 08:17:29 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42B6fO0b018112;
-	Mon, 11 Mar 2024 08:17:28 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws23syhrc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 08:17:28 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42B8HPj848169234
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Mar 2024 08:17:27 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A1B7458062;
-	Mon, 11 Mar 2024 08:17:25 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 67F7E5805C;
-	Mon, 11 Mar 2024 08:17:23 +0000 (GMT)
-Received: from [9.124.31.199] (unknown [9.124.31.199])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 11 Mar 2024 08:17:23 +0000 (GMT)
-Message-ID: <f14bf408-8a6d-4213-b922-82f1e8782609@linux.ibm.com>
-Date: Mon, 11 Mar 2024 13:47:21 +0530
+	 In-Reply-To:Content-Type; b=GhkK69bJz4oqw01SdPMTQPHr/NjlFhRl8scOIpTR4/xFLf50IQPUCTbEQS4wNKlEWoRtI9DO7fpVx6EaS9bKvDcEObLofo2L33LrPyp51qE+Z0uVm3thyzcEooOGBWa/sJVVp5IeH/QswQV9eR5Bhe2ANOX/ctZqFfYVXIu//Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ON9V5FQZ; arc=none smtp.client-ip=91.218.175.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7c391960-4406-4089-991e-d54ecc45524f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710145078;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m/Gz70WprgLvSEDgpF5x0FUaddqxV0rehd1ZR+aa/us=;
+	b=ON9V5FQZKlAsAbR47O1AsQEFG48m7H6UueIUrYklxzeol9YBF2b2dTvxV9SiOAxZcSAoJW
+	WSbs59ndbxLCvr8yMz9cWGYnuy8FBsXDlo9NF/AEZ9PQGRfSnFP+R4NaIVgMrL7QINVdnN
+	5nH3L1J3bIa/3mu+w6+ydd+tl/wh2KY=
+Date: Mon, 11 Mar 2024 09:17:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/13] sched/balancing: Rename load_balance() =>
- sched_balance_rq()
+Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of
+ re-reading it
+To: linke li <lilinke99@qq.com>, gregsword0@gmail.com
+Cc: bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <CAEz=LctG46xSHVxRg0VwnfCpv+uyOHdb0jqQ+WJNc7zSnMA2Ng@mail.gmail.com>
+ <tencent_C20218AE8489E90806F1522C24B11BAFD30A@qq.com>
 Content-Language: en-US
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20240308111819.1101550-1-mingo@kernel.org>
- <20240308111819.1101550-6-mingo@kernel.org>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <20240308111819.1101550-6-mingo@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <tencent_C20218AE8489E90806F1522C24B11BAFD30A@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 44UmGPByuVhL7ZydeLctZhkoqrplsEtN
-X-Proofpoint-ORIG-GUID: yvEIeQ86c-XttdndvOP7G60PcmqLR-S5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_04,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 impostorscore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1015 spamscore=0 mlxlogscore=817 adultscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403110062
+X-Migadu-Flow: FLOW_OUT
 
+In the original source code, READ_ONCE(xxx) is in if test. In your 
+commit, you move READ_ONCE out of this if test.
 
+So the time slot exists between fetching and using. In the original 
+source code, it does not exist. And the fetching and using are not 
+protected by locks. As is suggested by Leon.
 
-On 3/8/24 4:48 PM, Ingo Molnar wrote:
-> Standardize scheduler load-balancing function names on the
-> sched_balance_() prefix.
-> 
-> Also load_balance() has become somewhat of a misnomer: historically
-> it was the first and primary load-balancing function that was called,
-> but with the introduction of sched domains, it's become a lower
-> layer function that balances runqueues.
-> 
-> Rename it to sched_balance_rq() accordingly.
+This will introduce risks.
 
-nit: Can this be sched_balance_rqs()? since load balancing happens 
-between two runqeueus.
+The binary is based on optimization level and architectures. It is very 
+complicated.
 
+Zhu Yanjun
 
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Shrikanth Hegde <sshegde@linux.ibm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
-
-Though one would have been familiar with names(for someone started recently),
-given the correct behaviour and historical context helps why the name changes are making sense. 
-
-Reviewed-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-
+On 11.03.24 03:57, linke li wrote:
+>> This is not a smp problem. Compared with the original source, your
+>> commit introduces a time slot.
+> I don't know what do you mean by a time slot. In the binary level, they
+> have the same code.
+>
 
