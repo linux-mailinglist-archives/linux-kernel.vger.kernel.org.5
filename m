@@ -1,141 +1,193 @@
-Return-Path: <linux-kernel+bounces-99536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E8428789B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:47:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DABC8789BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 718971C20C5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:47:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 712651C21292
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD2353807;
-	Mon, 11 Mar 2024 20:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 075B956B77;
+	Mon, 11 Mar 2024 20:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="r7rxotb2"
-Received: from sonic306-27.consmr.mail.ne1.yahoo.com (sonic306-27.consmr.mail.ne1.yahoo.com [66.163.189.89])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hARHJHvt"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C949F3CF6A
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.189.89
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA2243AAC;
+	Mon, 11 Mar 2024 20:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710190052; cv=none; b=FD+n/noiG0dDAe9ow7/j/GEPApqHaktbNCOeMEMNFSfV0a9XYXpq60W3zJGoqPuaOaCws8EGH2/826xyMYP16bamkiYesqtlkDp7uwEZ4/lzcKf2mrtDwW6uWN+FFP7DFuHWuDs+GoMqLGxpxSQvizc2J1cl+bLvmLYMOOpT0tM=
+	t=1710190325; cv=none; b=NnvQJoB1EbU+fzwNSALBjvELsu8qv9VO+SxlYdYDRly6V/3L/GsxWxkwlsos/CUz6Cd0QE0aUtS1k9hIdtjf2XyieJ97Sz7t5yK6ea+fwtrWR1WitOU3/t0qS9FUYJQ6j8MbzdoP6tcTtBPiMP1SVizq8YD7KyQ2SSNjmrSrex8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710190052; c=relaxed/simple;
-	bh=tSout2TqFMMn1aVNiQh1eTMMgTL81OOw9wbOBN5R21U=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:
-	 References; b=K+67aXeyzgOL4laqmkjBx51I6txwT0O/A7/MFmFAWAfzqaJvBFmTFLwqI1k92N+a6sY1xeIf3dRD1T4i00tFJOJQxxXmK/vwsBaVSkj2SXd85j5otDQI+pcba1dUr2UQ49XtHAOn4z33rU7Ko+GQ65tCK/q9zuxjaTsBLyvAI2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=r7rxotb2; arc=none smtp.client-ip=66.163.189.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710190043; bh=R+3yYbDK/b0o/B6YZnnajyfQUTD2GpVdBRpsPhQlXns=; h=Date:To:Cc:From:Subject:References:From:Subject:Reply-To; b=r7rxotb2Q7UefoQeogvGb/sqCFP1ozvTgiwBx/aGDMkFkmW1dKsmX8nJdD79dTSnqUdwGIQLbDM9xoptEH2z70Xq/RSYitVRziHwBjzkZTAn2Bz26VgQu26QJK+8OFMpYRUpMYYd6ymw7i2q8HgZyX2AXgSfoqotlEBpmomy2LB8ebYI0UNxQWHpHM4HyVBy6jGSS2QjmwtBWlV0k6yUjKHLK/iJ4CRVXx4ZdjEXoJcFmvp+WPHugMqQ/nhTkb5FxUE39UoKPNtsdcx66E3EwYtbU7P00Ro+4jiTTq8eT2PkHbL1ubGmxXZ9I+ePBY4cRJvoKbmkKBoX7AvMoyaU5g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710190043; bh=/8tcXfGJighrM3waXPPmsADLIMO6dMC1a1lM+jLWWRK=; h=X-Sonic-MF:Date:To:From:Subject:From:Subject; b=PnUXH6iopAn6VVRQiSQVNmtydguMTpgtg0BVCUdLTlDNMOlg8Cz4h3o8Ohp7qSG25B+PeEWBrkezq1X0JUAxlNfCzVvkYlxm+aZ/VoJV0XVYax5r6OuT37JtsonU/8NeA2MyfcS5QR3+k10JhgoJxuk0wzWlvHFA3UMLk3PxBpPsUuE8svjoXVYvSzH6uXkfHXKf31baZaEK1PXdAeR6TgxVpWd4u5ddJK05ZQB0dkI3Eaa/Q9EW1nUCprdUTcBrZPsWzSNNlv9pF4GJSRUxWUIZdCQGpJKCKV39rauy2fUSAJtQaMLnybSYCkr7K5yrvqTgOvFeghYFsDYJw47mwg==
-X-YMail-OSG: 9giBdIsVM1k2TqWuek9tZkaVKqqkQyda.X76UOnNNoALeLsguuIOSwpmj_dfaBa
- I.1M2TYfDa.tGKQZia_ImbS9D8bNUo7fJEI.NWVggAJW96r11bKugavYyPFo2OGzFxIAdZA2IJPC
- djVB4Bsz2pmLIa1rvHzBl3KnQQfjbUysB4jCIm6ZkGlb8HLMrQ55geiipbg4Ut_OwMOsYiu0u5Hw
- LI3Hp0A3GKudeilmXlMEXq5LrMoq4aDK3ehUF9Z7fueKUvuJrRKpvZ.F07UMI8LXc_HlBZSK_.an
- ZUl_nn97BcQqPI8ytPd8ldrz8TrOXVbgd0Fe25nAw_GDEDb009kryVquaZtHqiuNMu5.9IopDHSX
- RLkAF.dmWTGL28OKbkW6whqfbmVcqZB.WkW7e8MlUw7W7nDsLJnz1O2iI.noJboK4scAmEFySfkZ
- s3PwAXnQoR9VdbiRAP3.FscOaw1ghTAsUHaIqeUt3SBmov5ni2rAwqJKkcVzMqir0GS8ZL._yexN
- _pw_9QI.VPz_I6Jt8ltoLEPV12CMrH8TiXZ0ovOLVunBhICvytN7sIUL4xUlcH3BaQvlV.l8Z_qJ
- eRBTShWM7fcWJ0Lyouco04bMfZ4.QsVwON9Q.4rgvosO9YbOVS33DI0BK.5rlXxBgI44q3WqlIcy
- Jr6TM22wkVAHvD_2bzQx1h.koQVMczoYr7rFdr6QwoNcfSmZKeowftUMkUdK.ISE5yyOJGkCG1wt
- KUVh_Dh5YKGOG0Ym6wpmQgfglV9PmVQmGr4Iexio1hnm58Jd_cOu8y6s4SjCHsx8ZA_NdsgeI5_c
- nFTWt.k1vvO.rlTwiISM8s17loVSIwp1yGShFpE328PDXLvhlqeJqjwuot6y3hf0l2aE_qxm47Jm
- VKzzvpFauyCNQ1bOyEiJLuA8z5f16kT3Ebzhvq_6l8N8w8nkEot3xY5FnRpb0e3SGt8IZBnzVY2a
- 2dKet55DSdDd3b3Fy4gAMzTRDVdkXvVyN3j0DeOUoJWwj3Sdx5xVxXoMUomgWUfnic.TEPa7niZu
- gtj87cTMxkVyitexEk8eGcb423LW18iL5UOoPeR10Tgg.TXdN4t.xHI3DOHE3lACmPzSNcX47hra
- seINNPL3EBmZHedhCT0xnkVs8yp_Jn3TF1dlfQe2KHAdbh5cEbbjRIv_Cect6fZvrZry9IGlBOWu
- aahhpOax9qzawV0oodVIigTS_UdS7jH0eSPXt1nBs4bzjTNQzqDgZyOpLD64R1EmT.arWTA6VuWc
- yIsHhm1hc_NvXO6H3ZwchJmd1HdnEwutMeHYLTV_QI_f6LqYfdk39lhcLzf8IFo1m3jFGHL4oydW
- 9qosxyu8KlSrR.aCensB.TUAb2Eap2_WUMt0Xc5TF6qR5NEzQwTO.GCh8weYuUOvZCLSqsguw8Rs
- ybuFGw6r7u3KhIXb72HAj4Bmk3cGqAFSbiaZwZakqkOZWMWyTYuBM2Pa4o1OVsFDJKPvKNTPmuqk
- Oj9nws3HnAhM4TD2ue57vqaVcmgxG9qR1m8ub_crTgk9FqDywY_HZE3aTffR4iU.Bgj6rHrTpNOF
- 7saow24jq7vTqR7xNbo1Umc0nxnQXquNvCww5JgvQz2nl0pUhnKAbeDVp0Us2cMNKrXpiMb92YdO
- WpjGXDecgKYDfMA2lf9HzjAOOe5C3Nl0CrGwixat2xjHKQKLxmJgtmUMwn41j.3KTJwf4P3Ewx.U
- i1V8v2CAbWwbvH3oj6nA4YgZGuK__B__lV30vDnlbRSDwjhsMdyQuqPa70qB.ioalTHHzN9DEz8w
- FR3VS3y5egExvpd4CgL2AWekKJdz40cFUpKTM3XMjgTPA3RXfjgNeqZ6O1fsxxyMhR3CjhhR46zq
- 0Uf7qNhZNAeyFG03zEK0E37FDzd8KAf_rZVJIn.4gw.89jaGwLZfYeZTEVYbHiMTeMQBjMbuzBPT
- zypOTL29MBcbdDwb2_RlwERpMzY3HKP5RUgnD9cXWr9544DsFs4HWYNfKwl9XV2232xkWiN8WMj2
- gpgW0nNSk0jchj00pJo6v4pHhmJHzFKRUoizH.zDZWrDFES1HL0niBhnG.g3Hq8KiEMTPWCKtvOy
- T1LHZ6yVTx0hwv7ovu03Fqe0LIpxhTToBsahk9cJz971tGJor59FKUwlfoG9chwc5xeG.KrCvglT
- jHqHkSk9dJ_7ofag5xfVU74Jlmie06sea0UCN9GI8jQzCTCudBp2q9KXV7g3OB1Rf_gw_8_trnxY
- aVWY3bQqyicZ0Us_8YmQ9lgvHZR_ElFyxMNGaEINJ8FKQCHVHU0lm0Ey1T5GFTW38xnRBonFo17R
- eFGnL_u51o_fgWtKLBVk-
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: b1d92f14-2d7c-4784-b5b9-4c2920e16dc3
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Mon, 11 Mar 2024 20:47:23 +0000
-Received: by hermes--production-gq1-5c57879fdf-qprqq (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 9e979ddbf4eb120d89b6003a87edbfd3;
-          Mon, 11 Mar 2024 20:47:18 +0000 (UTC)
-Message-ID: <5f321246-e0ba-4882-a42d-fe174d593aaf@schaufler-ca.com>
-Date: Mon, 11 Mar 2024 13:47:16 -0700
+	s=arc-20240116; t=1710190325; c=relaxed/simple;
+	bh=ByUIPZ47pKYggMFQ2m6tctWjj7DYdv9nhhKxwYcw3UI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LrIoCnnSUBKYCIwPjxjs4ushdVrJXNFEEsd6G0b4lEHTBC03YcxUEbJPjOfqsbLpq5WjnyUJ378asCLmSqVzdbEhDaB0fyYmOYaC5BxajdZC0Ec2ViaQfLf0KttWu5ZppQieXLOnICTaDfas7bq2dJ+LYYw8tZEo1mhCllJUVQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hARHJHvt; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29aa91e173dso3332025a91.0;
+        Mon, 11 Mar 2024 13:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710190322; x=1710795122; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dd981U9xN2VeJ5yKqoYAGms3X6oq3hxLcufVnnlsh9s=;
+        b=hARHJHvtO737bqTwyz5cg0hA6e4j2p8yu7kDcJCBs4t+YWcppX0ASRrMknh4fV7Y6Z
+         Dss5OEVuHQ8WZ1mR3Yjf4rDuK3aQmjKKIqhshXXm4LJcmA+2r1eruvwGKCGBTPSc6VLj
+         Bv8aW/0Mo7TW792qRJu3WUR8fDcrUFv2gqinqU6Wl8AC6q4tOHFbhvKnoMHMq+X5ePVE
+         BA11BRQjlrpd/9rdIb09X44q6y6jBXZWS/7/7kGVz6x7fHn7tEbrT3tI3BU47AKhMLqT
+         y9HZq0n25TyObQvIXQMvT+nR4gBwUHcZSEirDJX8/u8YxTWJlNojXtW9DX3nzGYiUyZW
+         Q0eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710190322; x=1710795122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dd981U9xN2VeJ5yKqoYAGms3X6oq3hxLcufVnnlsh9s=;
+        b=NbhijlJZd2ZU4E0sFDIPllG42CvxZdrXgm/u+glXLpgsX1nRWbdgTz/UNLwbjzPvBX
+         NY210+hm30TQ50jCU/v1b0DAkp6YOWAObT8GcjIUNxLBvm00nZ8VR1qfOZOvM6ggUuAe
+         TUfz3desXGtkkkz/aYsxIWvNfHVI108kypWYowK2aczu90ay5+AtaT9+QsM9BA1FclfI
+         a27rORLAcsZe/asASTunQos6w0+s7cWHmPHsn5hOEruD4WUcRE42B1NvjaHBfgyC6iRm
+         3jMOprw2ELmtFPljpVfsisFwSbCPvzbny9fxQkswLEUEu4bYKLwwJFhYL4QOOR5Pm/8t
+         dATA==
+X-Forwarded-Encrypted: i=1; AJvYcCWc6Y2UhhcH4A1sw02tIt4uD7jMjnBQqXu3R4KYrPVN43SLPRBafZKCJ/xGKjpkLUQRu8S91sh0aGEpEbWbYdB/DE68JHlQWLTTrn3kWw6FMTOa6jzsdVp7OQSguqPWZM3kQiZX5hZcLrn489Bt5ExpzsTq+YYl1JY0q1ALdFKC2STCdVKv+q7nu/DbFh21tKXWqcsGGEmFJCQCOspQ81KP63cu/0p53sGe88uXwnMCxyqe1HrqJIQX2NfXM1fejwwb0uIPfE8MgeSCC2HNAZMYo0CXHyVT+OasV/8m7tedV4nKTqwRyc1CnEaLfZ+8gUdbH7KVbcc=
+X-Gm-Message-State: AOJu0YwThJrmvk04hJJZhgs5DVjAbJGNS0aS1MyxZGtLfpKLGvJwL9uR
+	yHmUlm9A4HWKIj3ve+K7GaTw2/bbcEH2vzy3x5m40cgkOyT6VO8CJuWkACmDtyQNuZMnLL02KM7
+	9MiPypxLF1BX7fxLTLYrc6LSIafI=
+X-Google-Smtp-Source: AGHT+IEgfLgZ9vcdFhZoSO6fknZCxb89NjyC+7Z+5uVV9Zl7CWKCYHTODpZc68UrZGzW1EcTqjEdltk5w4Wxjqea6SM=
+X-Received: by 2002:a17:90a:390c:b0:29b:a509:30aa with SMTP id
+ y12-20020a17090a390c00b0029ba50930aamr112253pjb.14.1710190321684; Mon, 11 Mar
+ 2024 13:52:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LSM List <linux-security-module@vger.kernel.org>,
- Linux kernel mailing list <linux-kernel@vger.kernel.org>,
- Casey Schaufler <casey@schaufler-ca.com>,
- roberto Sassu <roberto.sassu@huaweicloud.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-Subject: [GIT PULL] Smack patches for 6.9
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <5f321246-e0ba-4882-a42d-fe174d593aaf.ref@schaufler-ca.com>
-X-Mailer: WebService/1.1.22129 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <20240310020509.647319-1-irogers@google.com> <20240310020509.647319-3-irogers@google.com>
+ <CAEf4BzYiH6xRRLFBdUAkjn0uJP=safZod4=1EmEwTTH9PDmVvQ@mail.gmail.com> <CAP-5=fUQY=ho1OSk-wosw8=7Sjp8MB_kngggP00BXs+nVNj7Pg@mail.gmail.com>
+In-Reply-To: <CAP-5=fUQY=ho1OSk-wosw8=7Sjp8MB_kngggP00BXs+nVNj7Pg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 11 Mar 2024 13:51:49 -0700
+Message-ID: <CAEf4BzZ+4WAaySJVGArk3epJ-u92ULkcoXTr2HnRXshGx8fPDw@mail.gmail.com>
+Subject: Re: [PATCH v1 02/13] libbpf: Make __printf define conditional
+To: Ian Rogers <irogers@google.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
+	David Laight <David.Laight@aculab.com>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
+	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
+	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
+	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
+	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
+	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
+	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
+	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Linus,
+On Mon, Mar 11, 2024 at 11:54=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> On Mon, Mar 11, 2024 at 10:49=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sat, Mar 9, 2024 at 6:05=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> > >
+> > > libbpf depends upon linux/err.h which has a linux/compiler.h
+> > > dependency. In the kernel includes, as opposed to the tools version,
+> > > linux/compiler.h includes linux/compiler_attributes.h which defines
+> > > __printf. As the libbpf.c __printf definition isn't guarded by an
+> > > ifndef, this leads to a duplicate definition compilation error when
+> > > trying to update the tools/include/linux/compiler.h. Fix this by
+> > > adding the missing ifndef.
+> > >
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index afd09571c482..2152360b4b18 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -66,7 +66,9 @@
+> > >   */
+> > >  #pragma GCC diagnostic ignored "-Wformat-nonliteral"
+> > >
+> > > -#define __printf(a, b) __attribute__((format(printf, a, b)))
+> > > +#ifndef __printf
+> > > +# define __printf(a, b)        __attribute__((format(printf, a, b)))
+> >
+> > styling nit: don't add spaces between # and define, please
+> >
+> > overall LGTM
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > Two questions, though.
+> >
+> > 1. It seems like just dropping #define __printf in libbpf.c compiles
+> > fine (I checked both building libbpf directly, and BPF selftest, and
+> > perf, and bpftool directly, all of them built fine). So we can
+> > probably just drop this. I'll need to add __printf on Github, but
+> > that's fine.
+> >
+> > 2. Logistics. Which tree should this patch go through? Can I land it
+> > in bpf-next or it's too much inconvenience for you?
+>
+> Thanks Andrii,
+>
+> dropping the #define (1) sgtm but the current compiler.h will fail to
+> build libbpf.c without the later compiler.h update in this series.
+> This causes another logistic issue for your point 2. Presumably if
+> this patch goes through bpf-next, the first patch "tools bpf:
+> Synchronize bpf.h with kernel uapi version" should also go through the
+> bpf-next.
+>
 
-Here is the Smack pull request for v6.9.
+That's what I'm saying, it seems to work without your patches already.
+At least on bpf-next/master. But it's ok, let's keep it and just add
+#ifndef guard, that will make my life easier when syncing to Github
+later one. Then the patch can go through other trees and eventually
+make it into bpf-next and then Github. So please keep my ack for
+#ifndef version, thanks.
 
-There are 6 patches. One is a simple refactoring to remove
-code duplication. The other five, from Roberto Sassu, correct
-the in-memory inode initialization path used by ramfs in Smack.
-This is necessary for ramfs to correctly handle directory label
-transmutation.
-
-All has been in the next branch and pass all tests.
-
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  https://github.com/cschaufler/smack-next tags/Smack-for-6.9
-
-for you to fetch changes up to 69b6d71052b54fb10feba68564ccb41c0f0ce1e9:
-
-  Smack: use init_task_smack() in smack_cred_transfer() (2024-02-14 10:47:06 -0800)
-
-----------------------------------------------------------------
-Smack updates for v6.9.
-
-Improvements to the initialization of in-memory inodes.
-A fix in ramfs to propery ensure the initialization of
-in-memory inodes.
-Removal of duplicated code in smack_cred_transfer().
-
-----------------------------------------------------------------
-Casey Schaufler (1):
-      Smack: use init_task_smack() in smack_cred_transfer()
-
-Roberto Sassu (5):
-      smack: Set SMACK64TRANSMUTE only for dirs in smack_inode_setxattr()
-      smack: Handle SMACK64TRANSMUTE in smack_inode_setsecurity()
-      smack: Always determine inode labels in smack_inode_init_security()
-      smack: Initialize the in-memory inode in smack_inode_init_security()
-      ramfs: Initialize security of in-memory inodes
-
- fs/ramfs/inode.c           |  32 +++++++++++++-
- security/smack/smack_lsm.c | 102 +++++++++++++++++++++++++--------------------
- 2 files changed, 87 insertions(+), 47 deletions(-)
-
+> Thanks,
+> Ian
+>
+>
+> > > +#endif
+> > >
+> > >  static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
+> > >  static bool prog_is_subprog(const struct bpf_object *obj, const stru=
+ct bpf_program *prog);
+> > > --
+> > > 2.44.0.278.ge034bb2e1d-goog
+> > >
 
