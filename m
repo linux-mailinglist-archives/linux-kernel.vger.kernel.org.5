@@ -1,218 +1,127 @@
-Return-Path: <linux-kernel+bounces-99358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FC1D878743
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:27:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BEB8878747
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 467C81C2107B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:27:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A037BB21577
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3D653E3C;
-	Mon, 11 Mar 2024 18:27:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6969853E27;
+	Mon, 11 Mar 2024 18:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="nt4+uhAb"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2134.outbound.protection.outlook.com [40.107.243.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="y/fE0UYs"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF711EB5C;
-	Mon, 11 Mar 2024 18:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.134
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710181657; cv=fail; b=jDrT18xT78i1WWFGHdwe4j+aJTRIq/Jj6zAN3dsaGXks7vxIm0BiUPABtT98Y/noF+GGpGpym7BXl0Jqya9uI/vEll684LPAVFecPoeeswhmof3uLEdCel/KgbDiycYn9u5P5aOuA123mSMJjm43VMaN0K21UFoRa6iNZfpJBDc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710181657; c=relaxed/simple;
-	bh=Ot6pVFSH5TS/bnJcBT14hcjswRnvk7N7khEiqdMNjWM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=U3Ubi/JHrwwFeMZ3Xaj7rZVdcyFw96U0L4JqDMgI8OSI9HQ0goN/IUPOGhfHiTIWoOn53a12BtJ9Hpl5BpWN2JZasDfjJn5VDQhfOoyH/BEMzD00Dw17UDcWmlyKRE8oKrhXH9/CAjEoQ105+fZdZsrG34iaOF2A1Yuu6wCE/mI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=nt4+uhAb; arc=fail smtp.client-ip=40.107.243.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bXEbGMU5ulcnM+VH07MyVseol+wLSyviAmJicv+FntnCj6WfoyyGtvj4wPb6RYvuIijbiDFFC4Ze1UfvmTnluF4uFk969zTuDRVg7IvIYv8dMt8fZch+ndDl059SQNcVE1L6R+0MheEgGOvahgzoE66SMrbqEUnfg+t2P4cxzciC53gmO3KiqlJof3BW+IlCHL5uZjqD+MuaMWg2PxIGUgztSlmVpT/gvUn/zHV/x9dFrdcMK5QJqrPug+/hHJyxWc/OqLvA6rHa1NMhS73Ea4t6NvUopQRJLuBJTOiTz574xRbn44EYLNpadQ4Fh9z9w8bwvMsa4McZfue1gt3dbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dRnjKnY2q5rQXL7eh+CZne7CByUhHPVSfBKLKlJLxEE=;
- b=BjzZelFt0cj7z+nARgUbm+ky/a1kQKwZTROpHJUogkb+BUnxP/gSBI9FAzQFZGk5f4J50rTerobrOpZDWfVZOwN1r3reLvNPEFXUm7rZnTlNhL40lPwx2T2ic1hsP0bVVbDk6MPx3YBpiGmkKjBL6+19GrBxCR8Hum4D1TZWMYG0cuhMfgSg28ymvqtB0AxRzlWTY08GSDHMG6JmAAyhZoTiTQFeSiMzfuom9Bf+hJeJTIhlSKMC8TtHe+w8MUnic0d3qyf60gPXasQCHrRvfPjq2IjsAL83QN07nz6xy8ev1vqEuLR6WHF7rIDCpyAM00Irif92D7GKkUJq8RR3Tg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1073BB29
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710181720; cv=none; b=Th0DSbjjMX0VPaWQ5iTPyonS7by98bjHe/J+4fwSAWefqKkj82KiYMjaLSoE9jYU1Fy2cO7OGGaCxz7f94tUrWMK8euNGN8fPI9sTNyx+BasBm05CK01sr7KiKg1Gwy9Nmx61zJ72TtjFn7RDEQLvNTD8n9kEorrJj1eiK+tW40=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710181720; c=relaxed/simple;
+	bh=PWhA/95D0w3WWTr9rPVx2B2b935xKBD2Q4H9+tL8x38=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fv7b3Q8vABFSRIHrVNC2IIe3w+gYJwgsqAa7GYZil2YLZQnZCtymkLPTb+lTQONQbpjGyWOhrSpX5himWn0pVLT0GhLEw4gKA6WLQaxrLaz4y1oanI39rVE5jFAJ12L03tEtXa2g64i5l0AAP79DNX1JTPFAHlG1wa0tY2F/8OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=y/fE0UYs; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51321e71673so5087585e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dRnjKnY2q5rQXL7eh+CZne7CByUhHPVSfBKLKlJLxEE=;
- b=nt4+uhAbX4t34axyGlnM5yyyUTTmKFM7QSGbkgsbVNjNZMCoN7Abi7NI4VLwlP3RJKhH4ublx63kmF7vREz0p9YJk/7vbQE4/HFzwXRu+tpcDOJ0gAGSbq0R2Q/o72QtQFiO5vvdBqXN1tNY5MCSdJ99ubEFdOMEhnwCk3PJ/Gg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from MW4PR01MB6498.prod.exchangelabs.com (2603:10b6:303:79::19) by
- BN0PR01MB7183.prod.exchangelabs.com (2603:10b6:408:15a::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7362.35; Mon, 11 Mar 2024 18:27:32 +0000
-Received: from MW4PR01MB6498.prod.exchangelabs.com
- ([fe80::4fc3:132:87ac:c13b]) by MW4PR01MB6498.prod.exchangelabs.com
- ([fe80::4fc3:132:87ac:c13b%5]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
- 18:27:32 +0000
-Date: Mon, 11 Mar 2024 11:27:27 -0700
-From: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-To: "lihuisong (C)" <lihuisong@huawei.com>
-Cc: Beata Michalska <beata.michalska@arm.com>, 
-	Ionela Voinescu <ionela.voinescu@arm.com>, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, rafael@kernel.org, sumitg@nvidia.com, zengheng4@huawei.com, 
-	yang@os.amperecomputing.com, will@kernel.org, sudeep.holla@arm.com, liuyonglong@huawei.com, 
-	zhanjie9@hisilicon.com, linux-acpi@vger.kernel.org
-Subject: Re: Re: [PATCH v1 2/3] arm64: idle: Cache AMU counters before
- entering idle
-Message-ID: <ghmdr7gksgdedikslax2wdxfzzifu3drviuhifbshhvgksmxjr@7giez2rzppil>
-References: <20240229162520.970986-1-vanshikonda@os.amperecomputing.com>
- <20240229162520.970986-3-vanshikonda@os.amperecomputing.com>
- <3ed907bf-9526-3a46-41b9-8a0c747122f1@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3ed907bf-9526-3a46-41b9-8a0c747122f1@huawei.com>
-X-ClientProxiedBy: CH2PR15CA0008.namprd15.prod.outlook.com
- (2603:10b6:610:51::18) To MW4PR01MB6498.prod.exchangelabs.com
- (2603:10b6:303:79::19)
+        d=google.com; s=20230601; t=1710181717; x=1710786517; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PWhA/95D0w3WWTr9rPVx2B2b935xKBD2Q4H9+tL8x38=;
+        b=y/fE0UYsdvajN5Je8bGlQ4XiMWhCtFj1X0ksjyUYGa93dxlcbSKMzT8psW18yn3Gbg
+         8ZhylTKV6Wi+nQfH9SMkWYDnMkbspniohoze0lJy1F+B4b5L+dq4hA39WWKs80ujL5Ri
+         XtcZCjGdS7BdBkTPMAI4HWE11rmo+CzP1bEUPXwegF1AhCBjAWN/76/t/RNPNLUOtVq3
+         mkI3NMUSnf/66UbHuMqlKpHz/rUzIdPXspXUR5IoUa+Yquy3nEFbKQaSWbbF+f3m5Ghg
+         Nab/iJt+BCkv3YhK2e90XPmJ7fcrT25hUZV0NoWffMQI62EIAurFwU/kylaGwWjPYsIF
+         cjPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710181717; x=1710786517;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PWhA/95D0w3WWTr9rPVx2B2b935xKBD2Q4H9+tL8x38=;
+        b=im+tCCt3A83SRf1MAz5MWDghoEEoGHWTpihqHrRpeJPi75OYn83JfcRnsrCMza7+3Q
+         GC/wJ5deNWfnDccihutr/B1n2SXRD2XlvJVTGmxUea3uEgBTcv/xBsAIp/iZdtxAcgPb
+         Pw71tAEzvz4eQd3szCNzSrw79VYTcnVIKDwQgEOWZI+gDS1/1pKIDiA+5jqLzc6m6s+C
+         R8m+PCB8wMTAorK0omKuS90+E5b7W8BSgMzt2asXVjzyo4PIM7Jyf2SGHwvp5CZLLAQh
+         4pfGAQMJcqvUbIZbHAREI46I2J1cbnjH+TrlKSDmIoACXYSM+w3v8K5lIMK9yxjMdDD4
+         ou5w==
+X-Forwarded-Encrypted: i=1; AJvYcCXJQtYsg8cWVztFRPa9ZZhVjicE3AZolOI5ZItKRXCH5K/y64whD+dfBSaGj95HUTllKhDeEbG/DaND6RXD5Vn+R7PMlIomSP+YeKII
+X-Gm-Message-State: AOJu0Ywi4qAB6vpBwQtJGNR0iX5Z2R1SzN06g4XGBaYYbmaaKKFn0ky4
+	r9sfIMCTT3FQlzTys5mH3acQHG9TUmoC+GfrLH25ExNKdyvYPNsF/eeA3AMhdtsTqH+qCZok2KQ
+	z/ViRS1dcf2sa6S3pDlRwfehcZOPFXHAy8ciI
+X-Google-Smtp-Source: AGHT+IHrLmjzFAJTYl5719GqKvfQGhtCq5ZY6aYr3tOzSCXcxH1gXnPhub/BsTtVRYnXofvsz0JrLVDlNZB9+mS3OBA=
+X-Received: by 2002:a19:641e:0:b0:513:4764:2fa5 with SMTP id
+ y30-20020a19641e000000b0051347642fa5mr5008706lfb.41.1710181717177; Mon, 11
+ Mar 2024 11:28:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR01MB6498:EE_|BN0PR01MB7183:EE_
-X-MS-Office365-Filtering-Correlation-Id: a7bab395-c94f-446f-f49a-08dc41f8eaa9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	quTbU0yTOzc8JxZsbjYJcmUX2epyH4EyiUVcu96+yfsSHTYZG1NrzpVo1ibxsicJANBBYnd4Dxc0BI9BznpkMcoLXdXMdnWl/0o3IqubmvxudxhP3Vx/j29H+/GWAdmxvhUOCGRULEltAMrSUR/LE6pgoHKKzrDtdNEO3CHu+qwVWligmmsQjFgqq5Gvf4yPdkmOAHbBrc6YMIrp+qIFYzURBefsGar4kuoJwljqrwt15Ah7VtBtt+SHdfPQ68KL9pHf19HeYR7AFkJ2BlyrjiPhp8atF5Y1nbEPr7quAj7T46We2Im7JyVwjsWEaKXE7BYa05ZtvT1G31/LHbVAzSeKeOUAf35cL6DA47JaTGdi0u51Fro/GF1LIYsozDqrs+PFUhXXY+hoGFGfaeBeX5M1TEpYWb6BQ/wvuK80aTc+GZr+lcVMpt3tFl3v3zadd/ygrlKHXm6YlA93JovpCvJpM62tpFSt6ogTErdzlNuf2Ee2zeVzV7ynp9v/VPoJXu7T/Ii5paG0MSd0Z83xSdDEZ2j3p+aIQnudO0NBmKoCaLH78c8JpHu98X06muTFrS6vE/k+1G+EjBdTbnb1PeKJX76ssUqzyj6wNxKnJK8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR01MB6498.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?M2FzVnM5S0lIejE0cTJpTFl2M2FQMFFvbFI2WkN0OURUV1E0UkdBMGNEWHZu?=
- =?utf-8?B?U1BncUlxd1I4NkUwaDRPSXJnQUxWYk9vUm5hZ2I1TEJIUVl2TWFmM0xjWEk2?=
- =?utf-8?B?ck92SHlYNEMvc3NDVnVndFJEdjd4Z3RoWldkVWVyK0NJM1FDSnUyL3J1WFQ4?=
- =?utf-8?B?MFRKbElmNUErbzFvQjRvZURVSWJTdHhqVHIvRk9odWd6OGRjZUdnbEptYm8r?=
- =?utf-8?B?eDcvTjQxajBQQzk2K1FZaHVBdnJFWW45Ym1ma3o1ckFnR3JwcHJIcUZKU1JO?=
- =?utf-8?B?OTBNTmp5ckw3YWtCUm83alZsQjRJcktvcUYvYXpFc0hONmowUGFzYWZCbFRz?=
- =?utf-8?B?dGJLcmZSdEdZemo2RkgxbUp1UE0vUEc3blBoZWpUNkpLZmo4ZUdGaHFCNGlu?=
- =?utf-8?B?R0tXUlhmTFB3L3g0MzVaV0h0cFlOcW9RVlFNSjdQNU81YWp3bVA4ZFpvNXo4?=
- =?utf-8?B?N3c1OVdWMWpYeVFyMkpoMTZRV1FPR2xlN0hDZ040TCthTUkzTGpYbUVHekZL?=
- =?utf-8?B?VU9UNkxLUnNCRkdoWHRkS1p0OU45eEFpL3grUDBIVnN4a2ZtdytneVpsM0l6?=
- =?utf-8?B?Y1VGRnlUY2x1dTAxd2VVUXB5dHd5V1JMaHdjNU9qdzlhbUxNS29zNHFpOXR2?=
- =?utf-8?B?VmF1TjNZTW5hekxvYjIvbVp4dWdLMGk4b3NMQzQ4cXl2blpiWDF3a1MyU09y?=
- =?utf-8?B?Nll2TG9MRFNIM0F3VXNDOVp2M0R0M2dxUWYvdHBla0s3WE5hQWRPOXlwUHpn?=
- =?utf-8?B?Q0RsYURuN1NQQlVweXhJc3lFZEo0ayt1aEs4aWFtb3puN2M5TUh4TFlQU2Zz?=
- =?utf-8?B?UW9ibytUbFgzV1lWZ0NmaFFIRm9PYWg1U2xnSzJHWU1ZUGxQR09GQlR0cGxK?=
- =?utf-8?B?Q3BUeFJPK3ROSXlPQ1Z0VkhVUUM1UTlpZERzekUyU1lwQmJHVGpLSko0T3Br?=
- =?utf-8?B?Z1JYZitvZGRNR0V6NzhhQ0QrNkZ3aE05SGZRcU14RktDbG5oL3ovN05taEgy?=
- =?utf-8?B?S1U2QXVPV1pqa1FGWHFvNXlKK0Y2WEhjN2MxUFFwNlhWWEF6cVJZRHQzanc2?=
- =?utf-8?B?cWJzTHMxcUlCWkdVZnlwMVhmYy9vQ3dyOGZ1TS95OGhRbGV4U0Nsa2FCQm5Y?=
- =?utf-8?B?SmxnUUFmUWtvMllOKzc4TXg5WG1Ebk9XcHFGZnNJTnBmVWJuMTdUK0h6MzVI?=
- =?utf-8?B?V0s0S2U2UlptTVZEMTQ5eEV3TytCZFIrVmRuVjhkNkJ3azJXZERHSWdQOGlj?=
- =?utf-8?B?YzFBVkVoYUhrcWszY0N6OHZPcDd4OE94Q0RKUmhIUU5IU3F2OHJEMFdtalRa?=
- =?utf-8?B?QkVyK3d0VzdJY0xiSFQvK0lBQlk4STVWcys1b0cwSXo1NUhvL000ZjV3Q1Z1?=
- =?utf-8?B?OFV5cU9QVlFCLy9IRlZ4S1BnOUJjbXU0bC8wNCtKVUpMOUZuNFB4Tzh3Z3BI?=
- =?utf-8?B?SG4vc3dsZjdtUnlHWEMrWVU0N3hFQy9IQlR2bTA3NnB2SVdvT1ZiR3RPd2tB?=
- =?utf-8?B?UXNzV3JZanlGN0g1TUMrK2h1RTBSSEdZbFV2cVczY3NxWlU2QlBPNGZFNkJI?=
- =?utf-8?B?YzgxbE1BbHl0OGtrZjcweHVyeEgvRDM2cjFXSENQbEp6YkJMdXNhRnQ5SWxC?=
- =?utf-8?B?RDFQSHg2YXdEcHJHdE5MRzVSVUU1d01PTjRLMTFiTXVWUnAwekVrUDlXVEY3?=
- =?utf-8?B?ME83enlXdW9GSjVjYlY0NEs3N016ZjFNcWJ6dVY0QjluRGNkSzl0NWVZZEtx?=
- =?utf-8?B?eGFaZXYwSStaaExnSUlkYUd4eHp6STA4QTVXbXRFY1c1eUd4V05zSnJ3NFg5?=
- =?utf-8?B?Qkxxa0pzdDY3cVhoQ1pqTHhaZUwrUFpzdWF0VVpBL3N4WlFUVFVBS1FrT0Jp?=
- =?utf-8?B?b0FPRzFHZnpnQWk3cG04dXlRMC80ZlhVUHJtdmdOMUZ2WmUyNEtJRTM1UFV5?=
- =?utf-8?B?QkI3blB1Rm5XcUJHNDF4d3RBTDFnUTNUSXBjOE1VZVRFUFBtU1p6c2MvalNt?=
- =?utf-8?B?Y2NDNVJucU1hWFN3L1F3R0krRzByVmJpNzBTaEdCVjh3L2hvRFllZlh6MlZV?=
- =?utf-8?B?c2t5OFp3NWVKQitrV3pVTllmb3RIVUZ6aGFCVU4xbE9sdThvakx6OWIzdEdO?=
- =?utf-8?B?QzR3aWswUk1JbWFZd1NNWEoybFJTSk5BM2NXWkF4Vm00eTVweU91UFV6cHVO?=
- =?utf-8?Q?pseGxUnod68me7v1UyyelYI=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7bab395-c94f-446f-f49a-08dc41f8eaa9
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR01MB6498.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 18:27:32.6058
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: glaj+rLrlNVxIA8VrpqSEqS0JUgG6QhFaTgD7RU9IOUTPlfUi4HqEXZVenC0uyQcovwE1Kek9deiqbqdb+gjRQsHBJ+9RD/3KOeuyeTL1S2w0lxEVOKSIfk0SONckW+O
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR01MB7183
+References: <20240307133916.3782068-1-yosryahmed@google.com>
+ <20240307133916.3782068-3-yosryahmed@google.com> <420fcb06-c3c3-4e8f-a82d-be2fb2ef444d@app.fastmail.com>
+ <35b670e2-9ef5-4d3a-b6ea-f8016dfa088d@intel.com> <ZevHJ5o3G00_nBha@google.com>
+ <o5t3qrrlw37hdkcja2vny3ycpmhb4dowmdj74a2wrq2x4xctqk@5g5jvzen46qe>
+ <CAJD7tkZABvm4v87T2WJ593sjZ_Z9iLCcgecghQJHrZDnuisBLg@mail.gmail.com> <e5tjo62yrvmviixily6ramjvnqqmokvayyr6k7c7qzrczcx4yd@yupixsoj53vm>
+In-Reply-To: <e5tjo62yrvmviixily6ramjvnqqmokvayyr6k7c7qzrczcx4yd@yupixsoj53vm>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 11 Mar 2024 11:27:58 -0700
+Message-ID: <CAJD7tkZ3-RSxSWmskGyqR1j=XHVS8=BpHPcbH1bgxih=Lo9CHw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] x86/mm: make sure LAM is up-to-date during
+ context switching
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>, "the arch/x86 maintainers" <x86@kernel.org>, linux-mm@kvack.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 07, 2024 at 11:17:26AM +0800, lihuisong (C) wrote:
+On Mon, Mar 11, 2024 at 5:42=E2=80=AFAM Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
 >
->在 2024/3/1 0:25, Vanshidhar Konda 写道:
->>AMU counters do not increment while a CPU is in idle. Saving the value
->>of the core and constant counters prior to invoking WFI allows FIE to
->>compute the frequency of a CPU that is idle.
->>
->>Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
->>---
->>  arch/arm64/kernel/idle.c     | 10 ++++++++++
->>  arch/arm64/kernel/topology.c | 14 ++++++++------
->>  2 files changed, 18 insertions(+), 6 deletions(-)
->>
->>diff --git a/arch/arm64/kernel/idle.c b/arch/arm64/kernel/idle.c
->>index 05cfb347ec26..5ed2e57188a8 100644
->>--- a/arch/arm64/kernel/idle.c
->>+++ b/arch/arm64/kernel/idle.c
->>@@ -26,6 +26,16 @@ void __cpuidle cpu_do_idle(void)
->>  	arm_cpuidle_save_irq_context(&context);
->>+#ifdef CONFIG_ARM64_AMU_EXTN
->>+	/* Update the AMU counters before entering WFI. The cached AMU counter
->>+	 * value is used to determine CPU frequency while the CPU is idle
->>+	 * without needing to wake up the CPU.
->>+	 */
->>+
->>+	if (cpu_has_amu_feat(smp_processor_id()))
->>+		update_freq_counters_refs();
->>+#endif
->The below point I has mentioned in [1].
->This is just for the WFI state.
->What about other deeper idle states, like retention and power down?
->The path to enter idle state is different for them. We should do this 
->for all idle states.
+> On Sat, Mar 09, 2024 at 01:37:06PM -0800, Yosry Ahmed wrote:
+> > On Sat, Mar 9, 2024 at 8:34=E2=80=AFAM Kirill A. Shutemov
+> > <kirill.shutemov@linux.intel.com> wrote:
+> > >
+> > > On Sat, Mar 09, 2024 at 02:19:19AM +0000, Yosry Ahmed wrote:
+> > > > I don't see how skipping set_tlbstate_lam_mode() for kthreads fixes=
+ this
+> > > > problem. Do you mind elaborating?
+> > >
+> > > Define what problem is.
+> > >
+> > > Yes, in this scenario kthread gets more permissive LAM mode than it n=
+eeds.
+> > > But nothing breaks.
+> >
+> >
+> > The problem here is not how the kthread runs at all. It is the fact
+> > that if that kthread context switches into the user process that has
+> > enabled LAM, it may not update CR3 because the mm doesn't change.
+> > switch_mm_irqs_off() will only update CR3 in this case if there is a
+> > pending TLB flush. Otherwise, we just return, even if the LAM for this
+> > mm has changed.
+> >
+> > This can cause the process that has enabled LAM to run with LAM
+> > disabled and fault on tagged addresses, right? Did I miss something?
 >
-
-Yes. That makes sense. I'll account for them in the next version of the
-patch. I'll work on the next version of the patch based on the updated
-patch from @Beata.
-
-Thanks,
-Vanshi
-
->>+
->>  	dsb(sy);
->>  	wfi();
->>diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
->>index db8d14525cf4..8905eb0c681f 100644
->>--- a/arch/arm64/kernel/topology.c
->>+++ b/arch/arm64/kernel/topology.c
->>@@ -240,13 +240,15 @@ unsigned int arch_freq_get_on_cpu(int cpu)
->>  	} while (read_seqcount_retry(&cpu_sample->seq, seq));
->>  	/*
->>-	 * Bail on invalid count and when the last update was too long ago,
->>-	 * which covers idle and NOHZ full CPUs.
->>+	 * Bail on invalid count and when the last update was too long ago.
->>+	 * This covers idle, NOHZ full and isolated CPUs.
->>+	 *
->>+	 * Idle CPUs don't need to be measured because AMU counters stop
->>+	 * incrementing during WFI/WFE.
->>  	 */
->>-	if (!delta_const_cnt || ((jiffies - last) > MAX_SAMPLE_AGE)) {
->>-		if (!(housekeeping_cpu(cpu, HK_TYPE_TICK) && idle_cpu(cpu)))
->>-			goto fallback;
->>-	}
->>+	if (!delta_const_cnt ||
->>+	    ((jiffies - last) > MAX_SAMPLE_AGE && !idle_cpu(cpu)))
->>+		goto fallback;
->>  	/*
->>  	 * CPU frequency = reference perf (in Hz) * (/\ delivered) / (/\ reference)
->[1] https://lore.kernel.org/linux-arm-kernel/20231212072617.14756-1-lihuisong@huawei.com/
+> You are right. I think IPI is the way to go.
 >
+> Will you prepare a patch?
+
+I am working on it.
 
