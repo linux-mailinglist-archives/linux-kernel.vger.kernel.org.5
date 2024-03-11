@@ -1,191 +1,124 @@
-Return-Path: <linux-kernel+bounces-99184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF60787849E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:07:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D11287849F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA38B283A59
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:07:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9AB4B206B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:08:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0C1481AB;
-	Mon, 11 Mar 2024 16:07:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0DF4594B;
+	Mon, 11 Mar 2024 16:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YDrEiu+m"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rlsr675w"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8497A4436C;
-	Mon, 11 Mar 2024 16:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340A248CF2
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710173260; cv=none; b=sK8/tedH1iBL9bKmzLq+JGGL973hXFsX8uV7O0EvbCtDWeDFRwl6Bkm/QV0EO46G7KhZw/vcixp6XY+SAVwAdXuybyjdnQUfjz9bA4mkZ9TdE5RtIKua4M3F1wZTjcVl/T2hnyG7Ccwyz7BtMq/e528Ddi5DNzxaUluFhWIDn4E=
+	t=1710173266; cv=none; b=fiQd/kp09mY/O0TPBcAM0UHJv8a8sYrXujnkPUlgfjwOJcAyyu+woHosOay7viyKL3CGo9UY1eYu6XOndoJ157f0dNCyMsI2fso92WXYI0nBoD4j49P/l0iO5tJGBdy1V9iGBwCczCrEugiH3iphEbse7EmDYX8Fn2qeoWCJ2QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710173260; c=relaxed/simple;
-	bh=Z3VLtbgSadjSI/x6kUu32ZF43oQcfZ5oMFjrp5In00U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TDhvJKTJaClowQ+wvVWSAoog83RY6mfgeXkpDaXzw0+MS+XrTbpowy1SH0MVqa9Mv4kfxLkUl47v8ZojyDR0SekOH61x2tofO/dysejxABVQC/TvDd/2IJWS4dqiHmOicBMH2qNMeLqOQNQNCdVanFxBkdnp8xuJd6Y2o9cIMcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YDrEiu+m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01203C433F1;
-	Mon, 11 Mar 2024 16:07:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710173260;
-	bh=Z3VLtbgSadjSI/x6kUu32ZF43oQcfZ5oMFjrp5In00U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YDrEiu+mrr/IeG+VuLb+GqeyONl++YsowQWctcdNqdrvnXZ6zxWSW+58mkrmFPXnA
-	 i8inmXsx+nlB9za6NxgaQRzMwVKQwyJRN381/3QiYzl5917n8yeW6AGUJGdM5O0LBm
-	 IHdssvWlau3Ses9J/gHshDr7r98Id5aGzswxUbFeLi5GgFWzUEz6jIuceNoPSLrnRA
-	 B4JD653vipyxVlrUYKByJbzu6lsdlLcCVTnH9i0SheyqbWxj4pAjtd3QkAswWhZWDk
-	 C7/vFPJwPrrIt/mPv5I+/vp9+QFw567EbZ8qnv3R7WbhlhmxfTH/NT0RjiCPmqo80P
-	 9f7nDvTOgO3vQ==
-Date: Mon, 11 Mar 2024 09:07:39 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
-	david@fromorbit.com, tytso@mit.edu, jack@suse.cz,
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH 4/4] iomap: cleanup iomap_write_iter()
-Message-ID: <20240311160739.GV1927156@frogsfrogsfrogs>
-References: <20240311122255.2637311-1-yi.zhang@huaweicloud.com>
- <20240311122255.2637311-5-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1710173266; c=relaxed/simple;
+	bh=Vf1D/drG8dAvyzL6c7x+BSkJoHS3u5JICDtceL4dw9A=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=SzAMAtQywG0ABGXDneY1wO7UPhXTgXj9WjBIvjoN4ZaF7HHldnoMeE94quY0GslVLe6GELHtHHT4wq3EcJxU+wJwgDyeGuSN3Fif4Sy6BNF3+3OCOqKtXgBMvLE2uAHDoFR3KuTjsRK95pxEq1bI9YRDIWn3dpId8QhA6K6F9c0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rlsr675w; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a20c33f07so31537997b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710173264; x=1710778064; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2I1JSNuwoRbdZ2LtvsNthD0wIWUGF8lxvDDDFf/XXwI=;
+        b=rlsr675wTD8K9fKVfX0C+c2ZBmfS62NMrMMPie7N9kpiD4gCA6sYWfE8huejmOSGpY
+         NzI9bv6Rcxt+b2WxmVbA/304d9zUdcpMU8iVQD2xPxOZNRyVG6roMe/WiX4eqBxsCebZ
+         fhVmGeJ5fwe2dMeWURQgc4ioMI/yI843SqBi0QmdZTOkc8VMHLlHOmjnLGrktuQtMOk7
+         Miy/HzKvIIWoAMi0FK/J2zW7xtsb6oGrsM90qqf07HXn1cTP0ZLaJGw7wxqhWvPz2Go4
+         rLeMwohXSAMRT2ATZmJrTpS6BpX+K5xjrpEkRpXEOpYD3mAI9kd7KEnv5CAj5Xvnt3tu
+         VrmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710173264; x=1710778064;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2I1JSNuwoRbdZ2LtvsNthD0wIWUGF8lxvDDDFf/XXwI=;
+        b=aeEi7DbaFZoTX2PMS7/ATY+doOW+rdn559Z2kfqsr3cHelL6phC/Qux3BxzNmkE7HZ
+         mG5kpSXhaj0CSuXgLNY+MS4rT11zPpZhUoiwEYxRKJw+lI6SHTOjj6UHuxVTDSVHEXwx
+         3SoRiWcXWKy+3PvY23/SeCGRKa+ef7YxtLTNB7ygY15noWT87nHbLS5DvvzuU6YuFrZD
+         8hmZTsgkvYCzHFlskxp751ezNdyU89QQv372utACwHOeSAWBxvqUxyQx8zQtbhcplpBD
+         TadVkHRoA8t8PRxC/O+/n1W7GFb5sw1JGdF56s1xx64Yj+jygcj0IFiJ3PF11H1PNzcj
+         az+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWeV/PLotWBzVy/JxQzFe5PakAkyWOOYnX0f5VVf733F+rHuHoIbm80WMFDo1Whlk5GHD86uNMFvT+R6sTGvQZQktD973pdW6C7yM7X
+X-Gm-Message-State: AOJu0YyFrusWyvHhGwFMb8kuDOnrKZZpV34U1bq2zot2xDEWJsvdgsMz
+	0vSK0czN2QAEW3xI2uv+wftKBSZYzEd8v9a4uYMnpWniRyXSsozoanI3gSK4Y0wf7YoU6++X08h
+	SzA==
+X-Google-Smtp-Source: AGHT+IH7ZTmuIMKrfes3mdxvE6B/9dW9KrRKc/OFzWnNh/fm0pvaaWzXshEZCqE+/gFWjTlOKiCD9fW9G2k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d843:0:b0:60a:16ae:38ee with SMTP id
+ a64-20020a0dd843000000b0060a16ae38eemr1797523ywe.3.1710173264289; Mon, 11 Mar
+ 2024 09:07:44 -0700 (PDT)
+Date: Mon, 11 Mar 2024 16:07:42 +0000
+In-Reply-To: <20240311134202.GQ86322@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240311122255.2637311-5-yi.zhang@huaweicloud.com>
+Mime-Version: 1.0
+References: <2024030251-CVE-2023-52514-c93d@gregkh> <Ze7d0YCDKdu_LJWc@tiehlicka>
+ <20240311134202.GQ86322@google.com>
+Message-ID: <Ze8sTnE16lbYuX01@google.com>
+Subject: Re: CVE-2023-52514: x86/reboot: VMCLEAR active VMCSes before
+ emergency reboot
+From: Sean Christopherson <seanjc@google.com>
+To: Lee Jones <lee@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>, cve@kernel.org, linux-kernel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Juergen Gross <jgross@suse.com>, 
+	Andrew Cooper <Andrew.Cooper3@citrix.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Mar 11, 2024 at 08:22:55PM +0800, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+On Mon, Mar 11, 2024, Lee Jones wrote:
+> On Mon, 11 Mar 2024, Michal Hocko wrote:
 > 
-> The status variable in iomap_write_iter() is confusing and
-> iomap_write_end() always return 0 or copied bytes, so replace it with a
-> new written variable to represent the written bytes in each cycle, and
-> also do some cleanup, no logic changes.
+> > On Sat 02-03-24 22:52:59, Greg KH wrote:
+> > > Description
+> > > ===========
+> > > 
+> > > In the Linux kernel, the following vulnerability has been resolved:
+> > > 
+> > > x86/reboot: VMCLEAR active VMCSes before emergency reboot
+> > > 
+> > > VMCLEAR active VMCSes before any emergency reboot, not just if the kernel
+> > > may kexec into a new kernel after a crash.  Per Intel's SDM, the VMX
+> > > architecture doesn't require the CPU to flush the VMCS cache on INIT.  If
+> > > an emergency reboot doesn't RESET CPUs, cached VMCSes could theoretically
+> > > be kept and only be written back to memory after the new kernel is booted,
+> > > i.e. could effectively corrupt memory after reboot.
+> > > 
+> > > Opportunistically remove the setting of the global pointer to NULL to make
+> > > checkpatch happy.
+> > > 
+> > > The Linux kernel CVE team has assigned CVE-2023-52514 to this issue.
+> > 
+> > I do not really see the security aspect of this fix. Guests systems
+> > shouldn't be able to trigger host reboot nor any untrusted entity should
+> > on the host either or this would be a serious security hole.
+
+And not just any reboot either, this only comes into play with something like
+`reboot -f`.  Not to mention the impact of the bug is ridiculously theroetical
+(I didn't tag the patch for stable@ for a reason).
+
+> > Or am I missing something?
 > 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->  fs/iomap/buffered-io.c | 31 +++++++++++++++----------------
->  1 file changed, 15 insertions(+), 16 deletions(-)
+> Thanks for reporting.
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 19f91324c690..767af6e67ed4 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -851,7 +851,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  	loff_t length = iomap_length(iter);
->  	size_t chunk = PAGE_SIZE << MAX_PAGECACHE_ORDER;
->  	loff_t pos = iter->pos;
-> -	ssize_t written = 0;
-> +	ssize_t total_written = 0;
->  	long status = 0;
->  	struct address_space *mapping = iter->inode->i_mapping;
->  	unsigned int bdp_flags = (iter->flags & IOMAP_NOWAIT) ? BDP_ASYNC : 0;
-> @@ -862,6 +862,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  		size_t offset;		/* Offset into folio */
->  		size_t bytes;		/* Bytes to write to folio */
->  		size_t copied;		/* Bytes copied from user */
-> +		size_t written;		/* Bytes have been written */
->  
->  		bytes = iov_iter_count(i);
->  retry:
-> @@ -906,7 +907,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  			flush_dcache_folio(folio);
->  
->  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
-> -		status = iomap_write_end(iter, pos, bytes, copied, folio);
-> +		written = iomap_write_end(iter, pos, bytes, copied, folio);
->  
->  		/*
->  		 * Update the in-memory inode size after copying the data into
-> @@ -915,28 +916,26 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  		 * no stale data is exposed.
->  		 */
->  		old_size = iter->inode->i_size;
-> -		if (pos + status > old_size) {
-> -			i_size_write(iter->inode, pos + status);
-> +		if (pos + written > old_size) {
-> +			i_size_write(iter->inode, pos + written);
->  			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
->  		}
-> -		__iomap_put_folio(iter, pos, status, folio);
-> +		__iomap_put_folio(iter, pos, written, folio);
->  
->  		if (old_size < pos)
->  			pagecache_isize_extended(iter->inode, old_size, pos);
-> -		if (status < bytes)
-> -			iomap_write_failed(iter->inode, pos + status,
-> -					   bytes - status);
-> -		if (unlikely(copied != status))
-> -			iov_iter_revert(i, copied - status);
+> If Sean and/or Paolo agree, we can revoke the CVE for you.
 
-I wish you'd made the variable renaming and the function reorganization
-separate patches.  The renaming looks correct to me, but moving these
-calls adds a logic bomb.
-
-If at some point iomap_write_end actually starts returning partial write
-completions (e.g. you wrote 250 bytes, but for some reason the pagecache
-only acknowledges 100 bytes were written) then this code no longer
-reverts the iter or truncates posteof pagecache correctly...
-
->  
->  		cond_resched();
-> -		if (unlikely(status == 0)) {
-> +		if (unlikely(written == 0)) {
->  			/*
->  			 * A short copy made iomap_write_end() reject the
->  			 * thing entirely.  Might be memory poisoning
->  			 * halfway through, might be a race with munmap,
->  			 * might be severe memory pressure.
->  			 */
-> +			iomap_write_failed(iter->inode, pos, bytes);
-> +			iov_iter_revert(i, copied);
-
-..because now we only do that if the pagecache refuses to acknowledge
-any bytes written at all.  I think it actually works correctly with
-today's kernel since __iomap_write_end only returns copied or 0, but the
-size_t return type implies that a short acknowledgement is theoretically
-possible.
-
-IOWs, doesn't this adds a logic bomb?
-
---D
-
-> +
->  			if (chunk > PAGE_SIZE)
->  				chunk /= 2;
->  			if (copied) {
-> @@ -944,17 +943,17 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  				goto retry;
->  			}
->  		} else {
-> -			pos += status;
-> -			written += status;
-> -			length -= status;
-> +			pos += written;
-> +			total_written += written;
-> +			length -= written;
->  		}
->  	} while (iov_iter_count(i) && length);
->  
->  	if (status == -EAGAIN) {
-> -		iov_iter_revert(i, written);
-> +		iov_iter_revert(i, total_written);
->  		return -EAGAIN;
->  	}
-> -	return written ? written : status;
-> +	return total_written ? total_written : status;
->  }
->  
->  ssize_t
-> -- 
-> 2.39.2
-> 
-> 
+Please do.
 
