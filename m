@@ -1,210 +1,124 @@
-Return-Path: <linux-kernel+bounces-99450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3F6878886
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:12:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5427B878885
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:11:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81086284FAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:12:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0D19B21B33
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA07254F83;
-	Mon, 11 Mar 2024 19:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9167455E43;
+	Mon, 11 Mar 2024 19:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MmviCdjD"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="dgiHBU0V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B60454BE4
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C585640847;
+	Mon, 11 Mar 2024 19:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710184319; cv=none; b=XTQGy/Qp7vyGpF30pl52pfCBC0MvWz0Mk4ljgKxe+C+vXgjrJ+wHiCDayFV0g+Uo+NVv1qCh3WDzopUMS9CxdLrZrLAgNh1uiVrUBz0+zPaGDOfPuBwz2KVWoL3pbs+2ijmR0wV9bg3++Qi6Ohta1NsHOLXctXqCViRhy+vLRqs=
+	t=1710184294; cv=none; b=FpulqPHFyMzaAE6zzmpPRJUiccGce6jlei7IlrFNJ5lkCCAQk5I8iPw2BwhPwfBW37w5UcpvHwSzO+hU+q5l03AY0PjTpUSGI1DPEPfg7ovusURr01JOzKgdQuHbNtQgJfKUhl1X8g5pQ29X5PZDduMUcVNvWB4cT55q2ldhRr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710184319; c=relaxed/simple;
-	bh=7hYuVl4h7nXnFmVyrCsoLYSn1d8tMpOx3MRZzchbHnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=gvW6/gGZul1JIPUYgOk60jW9SQPqRPnIGi46qCQqavCQ6D8T+dpjTk0c2aYYd0KpPERQu+yi0UWxirLVhcFvgJOvCGUXjSdpy1QUMPxgj90qOv/6zwDrNNF0k8+SRKgWlYlTOSASIjq8kctOmULNAlcLXNzqEU6vZsD+FoGqTqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MmviCdjD; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710184318; x=1741720318;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=7hYuVl4h7nXnFmVyrCsoLYSn1d8tMpOx3MRZzchbHnE=;
-  b=MmviCdjDJzt56ynd/FjdhkUTH/dn6dmhc1Ul7K8HNf2v7UXMMZPqE4wl
-   vlrkh8xarNbh9iQwTAmg+oPi2j+NE0r6dnG9Py+vHbRkWTSVf0OeidKiB
-   HC2HQ9WELlbVesJtZYT7zUh8yIeodzfAy91Mhzku30eIB1X4FYxIeM0MK
-   VI6ea8GUueMa+dk7OSw8oTKfLpeGj7ilvQFAyZe90ef7UCSsUfaCdM6jI
-   +a9rRkj1NShCrsZAOjvXm1lFD6E6WGuhipg21eVFSCNzM1Hu8uUvO/1ho
-   k7mDp5uCnNKYTeOA4YNhfr4dYqVNhyzFN2ADMGtdrril0AW+nPZKd57Af
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="8684299"
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="8684299"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 12:11:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="11334758"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 11 Mar 2024 12:11:54 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rjl3w-0009O1-2b;
-	Mon, 11 Mar 2024 19:11:52 +0000
-Date: Tue, 12 Mar 2024 03:11:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ratheesh Kannoth <rkannoth@marvell.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Petr Machata <petrm@nvidia.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: WARNING: modpost: "__ashldi3" [net/netfilter/nf_tables.ko] has no
- CRC!
-Message-ID: <202403120305.KdTgNyMb-lkp@intel.com>
+	s=arc-20240116; t=1710184294; c=relaxed/simple;
+	bh=PUTxgOD0c6Psk4GX8+bMAve3zPoeWoP2pyJrAksPe14=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aqoNmmhQnN8H9yDmXFxr3HwjfxqaXVFTgBQQKxgqo+mUy+w6Ptl4Ep5OZ4PdAnBJ5pc8XEXKpUi7djEdWsQLJiYzdH5/ap1iGVY2xL/Xi93viWYUp0wWPATsW8w8TQZam07zmZH0HarE3hyAa3k6JMcsvJR+f1zuiTlWjHGy6SA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=dgiHBU0V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3636BC43394;
+	Mon, 11 Mar 2024 19:11:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1710184294;
+	bh=PUTxgOD0c6Psk4GX8+bMAve3zPoeWoP2pyJrAksPe14=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dgiHBU0VWdrXQGIB3NNNirpld5UNZ00GXraSDkMT07VGJoI03hDJPLAvG+NKTFrRP
+	 WREXYGtzi74TSsH/7ZF1lQF95JpD/r/QmN2N07NKVBWpM4ldlnBm9J0Lk9NLD32sMm
+	 upWrXGk8CDGdt9WZnqo5x1llPMqfG9Wq3Q5zbgd0=
+Date: Mon, 11 Mar 2024 15:11:33 -0400
+From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Simon Horman <horms@kernel.org>, 
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>, Andrew Lunn <andrew@lunn.ch>, 
+	Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/4] net: dsa: realtek: keep default LED state
+ in rtl8366rb
+Message-ID: <20240311-flying-impossible-earthworm-51b889@lemur>
+References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
+ <20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
+ <388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
+ <20240310113738.GA1623@kernel.org>
+ <09793a72-bfe5-4cb5-a6da-ffee565e6956@kernel.org>
+ <20240311091111.53191e08@kernel.org>
+ <20240311-chowchow-of-premium-piety-9e4a0d@lemur>
+ <20240311115228.5ad9db52@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20240311115228.5ad9db52@kernel.org>
 
-Hi Ratheesh,
+On Mon, Mar 11, 2024 at 11:52:28AM -0700, Jakub Kicinski wrote:
+> > > Eh, hum. He does according to the X-Mailer header. More importantly
+> > > I thought the RFC to PATCH transition resetting version numbering
+> > > is how we always operated. Maybe b4 should be fixed?  
+> > 
+> > There is no way to make it work reliably the way you propose,
+> 
+> Could you describe what the problem is?
+> Cover letter + date seems like fairly strong signal to me.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+The problem is tracking the series all the way from its inception to its final
+inclusion into the tree. Links to previous versions of the series are
+sometimes included in the cover letter, but they are free-form and we can't
+reliably parse them.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e8f897f4afef0031fe618a8e94127a0934896aba
-commit: 2b3082c6ef3b0104d822f6f18d2afbe5fc9a5c2c net: flow_dissector: Use 64bits for used_keys
-date:   7 months ago
-config: sparc-buildonly-randconfig-r004-20220113 (https://download.01.org/0day-ci/archive/20240312/202403120305.KdTgNyMb-lkp@intel.com/config)
-compiler: sparc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240312/202403120305.KdTgNyMb-lkp@intel.com/reproduce)
+Specifically, we need to be able to *reliably* retrieve any previous/new
+versions of the same series:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403120305.KdTgNyMb-lkp@intel.com/
+- to allow running range-diff between vN-1 and vN
+- to allow checking if there is a newer version of the series available
+- to allow specifying series dependencies (this series depends on series X
+  version Y or newer)
 
-All warnings (new ones prefixed by >>, old ones prefixed by <<):
+If dropping the RFC prefix resets the version count, then the above breaks
+unless we also use a different change-id, and if we do that, then we lose
+change history.
 
-WARNING: modpost: "__udelay" [drivers/leds/flash/leds-rt8515.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/extcon/extcon-fsa9480.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ntb/hw/epf/ntb_hw_epf.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/fpga/xilinx-spi.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/fsi/fsi-master-hub.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rapidio/rapidio.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rapidio/switches/idt_gen3.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ata/libata.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/libata.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/ata/libata.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/ata/libata.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ata/libahci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/libahci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/sata_mv.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/ata/sata_nv.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/sata_nv.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/sata_promise.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/sata_svw.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/sata_vsc.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/pata_hpt37x.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/pata_ns87415.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/pata_via.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/pata_sl82c105.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/pata_legacy.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/mtd/chips/cfi_util.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/chips/cfi_util.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/chips/cfi_cmdset_0002.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/mtd/chips/cfi_cmdset_0002.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/chips/cfi_cmdset_0001.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/mtd/chips/cfi_cmdset_0001.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/lpddr/qinfo_probe.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/mtd/lpddr/lpddr_cmds.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/lpddr/lpddr_cmds.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/devices/phram.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/onenand/onenand.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/onenand/onenand.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/mtd/nand/onenand/onenand.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/cafe_nand.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/cafe_nand.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/ams-delta.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/gpio.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/raw/cadence-nand-controller.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/tests/mtd_nandbiterrs.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/mtd.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/mtd_blkdevs.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/mtdswap.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/comedi.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/drivers/dt3000.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/drivers/gsc_hpdi.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/drivers/icp_multi.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/drivers/jr3_pci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/drivers/cb_pcidas64.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/comedi/drivers/ni_660x.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/drivers/ni_pcimio.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/drivers/s626.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/accel/mma9551_core.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/iio/adc/ad7192.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/ad7476.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/iio/adc/ad7606.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/iio/adc/ad7793.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/iio/adc/ad7793.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/ad7949.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/ad9467.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/iio/adc/ad9467.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/adi-axi-adc.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/max1241.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/iio/adc/nau7802.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/nau7802.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/iio/adc/ti-ads1015.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/ti-ads8344.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/ti-ads131e08.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/iio/afe/iio-rescale.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/iio/common/hid-sensors/hid-sensor-iio-common.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/iio/common/ms_sensors/ms_sensors_i2c.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/dac/ad5592r-base.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/dac/ad5755.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/iio/dac/ad5766.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/iio/dac/dpot-dac.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/gyro/itg3200.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/frequency/ad9523.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/proximity/as3935.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/proximity/ping.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/resolver/ad2s1200.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/iio/industrialio.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/thunderbolt/thunderbolt.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/thunderbolt/thunderbolt.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/siox/siox-bus-gpio.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/sched/act_police.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/sched/sch_gred.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/sched/sch_sfq.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/sched/sch_tbf.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/sched/sch_cake.ko] has no CRC!
->> WARNING: modpost: "__ashldi3" [net/netfilter/nf_tables.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/netfilter/xt_cluster.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/wireless/cfg80211.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [net/rxrpc/rxrpc.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [net/rds/rds.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [net/tipc/tipc.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/tipc/tipc.ko] has no CRC!
-WARNING: modpost: "empty_zero_page" [net/ceph/libceph.ko] has no CRC!
+> > so I strongly suggest that we do it the way b4 currently works:
+> > 
+> > - a series can start with RFC in the prefixes to indicate that it's not
+> >   something to be considered for inclusion
+> > - when the author feels that the series is ready for maintainers'
+> >   consideration, they simply drop the RFC and keep the same change-id and
+> >   versioning info; e.g. [PATCH RFC v3] -> [PATCH v4]
+> 
+> It's not a pain point for networking.
+> 
+> While I have you - it'd be great if the patchwork bot did not
+> repeatedly set patches to Superseded. Sometimes we want to keep and
+> apply non-latest version, because the latest version was posted based
+> on non-expert review, or we changed our mind.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+That's a request to helpdesk. :)
+
+> > Resetting the versioning requires resetting the change-id of the series, or a
+> > lot of automation breaks.
+> 
+> What is "change-id of the series"?
+
+It's the line that says "change-id: " at the bottom of the cover letter and
+doesn't change between v1..vN of the series. This is how we know it's the same
+series and are able to retrieve the entire series history without guesswork.
+
+-K
 
