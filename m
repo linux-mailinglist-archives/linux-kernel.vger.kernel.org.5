@@ -1,238 +1,121 @@
-Return-Path: <linux-kernel+bounces-99600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6E10878AA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C73C878AA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:20:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A7D6281FBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:19:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 567F2281FF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551745786B;
-	Mon, 11 Mar 2024 22:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B870E5788E;
+	Mon, 11 Mar 2024 22:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BcvM42BC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ncIpVrqC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D30757304;
-	Mon, 11 Mar 2024 22:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A6B58104;
+	Mon, 11 Mar 2024 22:20:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710195574; cv=none; b=pTUaVMc1H2RXsUUHQ9OV3iFo4je8QpysQJBqhxCnMVCe/THffEmVb3KJLO+hH8qDCWbLXBt617Qh0Lu/rW3rnAV7Y++p0tme5C6v95Rp/qe3ir+SkYTY0auXWhW72VHP6imsVQgAeZ3olnNa2dH9IwQEpzGkBH9d0AUI/fgKEz0=
+	t=1710195632; cv=none; b=cF9kI/SqEH0uXpLTNKIGw0a5keWv7gZ1VhX0KTeKfUrhN4/Lh5sc1d/vdNtRQCj0uA+jQxGQ5imBtWFEV3LBzRX+Suff9CGos3iu7FY9bSzBtuMiXu+G/0hPmPGi6998rlT0P13fV7xsH2b9ahs9PhXc6cuMuq5JnV4gn0zcWcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710195574; c=relaxed/simple;
-	bh=0v++ROQPobMGQbI/Vm4BZhMEsVhvWe+m26wqCk9eS1s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FAHa6PORQl2POYHF7XRSZQjo5VaKs9ro3xcQ17BPyU8MuoOwpPtp59ZyTSOkYrL+SjU/RqA9WeZ8QqorgfyFnFuBaG0j34ktBm+pCPuqMVtbzvusksujJ+5P0alYzSxm9cOgVaaDy1/tjXUDmOMOti9+VfLFwgn3R/YIAkxPfng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BcvM42BC; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710195573; x=1741731573;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0v++ROQPobMGQbI/Vm4BZhMEsVhvWe+m26wqCk9eS1s=;
-  b=BcvM42BCwbSlNMFcIoCkHHkemUb1Axa2DHJ6qe6Zwj3+VH21rdC+USkc
-   FAhXbkKl/HJ09JmoNOdZSSnQjzo15bHHQKHIZ/4foqdCHwD9CEH3lB5oS
-   oyiJcxsNO8YOtZcjWtnzLbNDHp0weMKC1Fi6+lWtdx6vlT8TqSrnO/MbH
-   FB3uzQTb2gJEE4pGilPLBQKjnhFcMiaMBvC1KMbJB2VtMP5xuceWH7ciO
-   vlaPzHkqXG1rPuh8aZrvmIUnMpmQS8dNGKcV5LGHvZpQatqipbIugrZXX
-   8ABJVT0Bt0Ib9ZiewhcIpUcQCz7cFtuKnLtnu+dI54tkhHN2yoKWZ11g0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="16326416"
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="16326416"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 15:19:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="11902821"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 15:19:31 -0700
-Date: Mon, 11 Mar 2024 15:19:31 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	David Matlack <dmatlack@google.com>,
-	Federico Parola <federico.parola@polito.it>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [RFC PATCH 2/8] KVM: Add KVM_MAP_MEMORY vcpu ioctl to
- pre-populate guest memory
-Message-ID: <20240311221931.GA935089@ls.amr.corp.intel.com>
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <012b59708114ba121735769de94756fa5af3204d.1709288671.git.isaku.yamahata@intel.com>
- <Ze8-EFtsIONMyO3o@google.com>
+	s=arc-20240116; t=1710195632; c=relaxed/simple;
+	bh=wpoixAH5hmLkM35K/YQ7kamEzrI2/hx3uKaAyzVuvW0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=k1mHRMDB9reRc+1vlxi25M6YiA2IxU837AG8j6NXJuBeJz3bWaNJDYjvcDWJ1gNjQuWrjaMnbBGhqslvyan1sIXEewzBsmG9p/ZS7tBo2EOIuL5aioraJdQiXt05gZR8zQZPnySK2x1IvvhIegEyse4X7n4hhZO+mqIMWKVg2No=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ncIpVrqC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9161EC43390;
+	Mon, 11 Mar 2024 22:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710195631;
+	bh=wpoixAH5hmLkM35K/YQ7kamEzrI2/hx3uKaAyzVuvW0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ncIpVrqCU/a4KDUIUnKzFzOXKQFqdMKJhN1H9cFpEi4WQ49Y+8tEhAcTArdYMbGSl
+	 CYNwlWMMJ7pqSXzqzuKEKz7zCSN4lUKIMHL2THGIyLYKsZ4m0/e3NLcUtPDHZbUOTO
+	 8HBkpezzTDrpjoA3mdxMnhXIN4EqeLPTpOqqvxGIpYuj1N8xn4RI+VImGeSujOs7F2
+	 VOvXMc19ZtL4g2No/59y9BZAi+29HNOxKFQ77wDNBZNI+/2L53hpVvH6U5cdWp8Jqn
+	 X42lCpLrfFBfOh2FbKOp48kzcvi1RpvvwVbTTkDGWp5tpiDRlvlTD5/EGIvYKUQb0Y
+	 Zw671a3g4LB9A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 74BA0D95056;
+	Mon, 11 Mar 2024 22:20:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Ze8-EFtsIONMyO3o@google.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 00/15] selftests: mptcp: various improvements
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171019563147.21986.8830557428552738563.git-patchwork-notify@kernel.org>
+Date: Mon, 11 Mar 2024 22:20:31 +0000
+References: <20240308-upstream-net-next-20240308-selftests-mptcp-unification-v1-0-4f42c347b653@kernel.org>
+In-Reply-To: <20240308-upstream-net-next-20240308-selftests-mptcp-unification-v1-0-4f42c347b653@kernel.org>
+To: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang@kernel.org,
+ tanggeliang@kylinos.cn, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Mon, Mar 11, 2024 at 10:23:28AM -0700,
-Sean Christopherson <seanjc@google.com> wrote:
+Hello:
 
-> On Fri, Mar 01, 2024, isaku.yamahata@intel.com wrote:
-> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > index d1fd9cb5d037..d77c9b79d76b 100644
-> > --- a/virt/kvm/kvm_main.c
-> > +++ b/virt/kvm/kvm_main.c
-> > @@ -4419,6 +4419,69 @@ static int kvm_vcpu_ioctl_get_stats_fd(struct kvm_vcpu *vcpu)
-> >  	return fd;
-> >  }
-> >  
-> > +__weak int kvm_arch_vcpu_pre_map_memory(struct kvm_vcpu *vcpu)
-> > +{
-> > +	return -EOPNOTSUPP;
-> > +}
-> > +
-> > +__weak int kvm_arch_vcpu_map_memory(struct kvm_vcpu *vcpu,
-> > +				    struct kvm_memory_mapping *mapping)
-> > +{
-> > +	return -EOPNOTSUPP;
-> > +}
-> > +
-> > +static int kvm_vcpu_map_memory(struct kvm_vcpu *vcpu,
-> > +			       struct kvm_memory_mapping *mapping)
-> > +{
-> > +	bool added = false;
-> > +	int idx, r = 0;
-> 
-> Pointless initialization of 'r'.
-> 
-> > +
-> > +	if (mapping->flags & ~(KVM_MEMORY_MAPPING_FLAG_WRITE |
-> > +			       KVM_MEMORY_MAPPING_FLAG_EXEC |
-> > +			       KVM_MEMORY_MAPPING_FLAG_USER |
-> > +			       KVM_MEMORY_MAPPING_FLAG_PRIVATE))
-> > +		return -EINVAL;
-> > +	if ((mapping->flags & KVM_MEMORY_MAPPING_FLAG_PRIVATE) &&
-> > +	    !kvm_arch_has_private_mem(vcpu->kvm))
-> > +		return -EINVAL;
-> > +
-> > +	/* Sanity check */
-> 
-> Pointless comment.
-> 
-> > +	if (!IS_ALIGNED(mapping->source, PAGE_SIZE) ||
-> > +	    !mapping->nr_pages ||
-> 
-> > +	    mapping->base_gfn + mapping->nr_pages <= mapping->base_gfn)
-> > +		return -EINVAL;
-> > +
-> > +	vcpu_load(vcpu);
-> > +	idx = srcu_read_lock(&vcpu->kvm->srcu);
-> > +	r = kvm_arch_vcpu_pre_map_memory(vcpu);
-> 
-> This hooks is unnecessary, x86's kvm_mmu_reload() is optimized for the happy path
-> where the MMU is already loaded.  Just make the call from kvm_arch_vcpu_map_memory().
-> 
-> > +	if (r)
-> > +		return r;
-> 
-> Which is a good thing, because this leaks the SRCU lock.
-> 
-> > +
-> > +	while (mapping->nr_pages) {
-> > +		if (signal_pending(current)) {
-> > +			r = -ERESTARTSYS;
-> 
-> Why -ERESTARTSYS instead of -EINTR?  The latter is KVM's typical response to a
-> pending signal.
-> 
-> > +			break;
-> > +		}
-> > +
-> > +		if (need_resched())
-> 
-> No need to manually check need_resched(), the below is a _conditional_ resched.
-> The reason KVM explicitly checks need_resched() in MMU flows is because KVM needs
-> to drop mmu_lock before rescheduling, i.e. calling cond_resched() directly would
-> try to schedule() while holding a spinlock.
-> 
-> > +			cond_resched();
-> > +
-> > +		r = kvm_arch_vcpu_map_memory(vcpu, mapping);
-> > +		if (r)
-> > +			break;
-> > +
-> > +		added = true;
-> > +	}
-> > +
-> > +	srcu_read_unlock(&vcpu->kvm->srcu, idx);
-> > +	vcpu_put(vcpu);
-> > +
-> > +	if (added && mapping->nr_pages > 0)
-> > +		r = -EAGAIN;
-> 
-> No, this clobbers 'r', which might hold a fatal error code.  I don't see any
-> reason for common code to ever force -EAGAIN, it can't possibly know if trying
-> again is reasonable.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Thanks for review.  With those included, the hunk is as follows.
+On Fri, 08 Mar 2024 23:10:07 +0100 you wrote:
+> In this series from Geliang, there are various improvements in MPTCP
+> selftests: sharing code, doing actions the same way, colours, etc.
+> 
+> Patch 1 prints all error messages to stdout: what was done in almost all
+> other MPTCP selftests. This can be now easily changed later if needed.
+> 
+> Patch 2 makes sure the test counter is continuous in mptcp_connect.sh.
+> 
+> [...]
 
-	
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index d1fd9cb5d037..342269ef9f13 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -4419,6 +4419,47 @@ static int kvm_vcpu_ioctl_get_stats_fd(struct kvm_vcpu *vcpu)
-        return fd;
- }
- 
-+__weak int kvm_arch_vcpu_map_memory(struct kvm_vcpu *vcpu,
-+                                   struct kvm_memory_mapping *mapping)
-+{
-+       return -EOPNOTSUPP;
-+}
-+
-+static int kvm_vcpu_map_memory(struct kvm_vcpu *vcpu,
-+                              struct kvm_memory_mapping *mapping)
-+{
-+       int idx, r;
-+
-+       if (mapping->flags)
-+               return -EINVAL;
-+
-+       if (!IS_ALIGNED(mapping->source, PAGE_SIZE) ||
-+           mapping->base_gfn + mapping->nr_pages <= mapping->base_gfn)
-+               return -EINVAL;
-+
-+       vcpu_load(vcpu);
-+       idx = srcu_read_lock(&vcpu->kvm->srcu);
-+
-+       r = 0;
-+       while (mapping->nr_pages) {
-+               if (signal_pending(current)) {
-+                       r = -EINTR;
-+                       break;
-+               }
-+
-+               r = kvm_arch_vcpu_map_memory(vcpu, mapping);
-+               if (r)
-+                       break;
-+
-+               cond_resched();
-+       }
-+
-+       srcu_read_unlock(&vcpu->kvm->srcu, idx);
-+       vcpu_put(vcpu);
-+
-+       return r;
-+}
-+
- static long kvm_vcpu_ioctl(struct file *filp,
-                           unsigned int ioctl, unsigned long arg)
- {
+Here is the summary with links:
+  - [net-next,01/15] selftests: mptcp: print all error messages to stdout
+    https://git.kernel.org/netdev/net-next/c/6215df11b945
+  - [net-next,02/15] selftests: mptcp: connect: add dedicated port counter
+    https://git.kernel.org/netdev/net-next/c/01ed9838107f
+  - [net-next,03/15] selftests: mptcp: connect: fix misaligned output
+    https://git.kernel.org/netdev/net-next/c/c9161a0f8ff9
+  - [net-next,04/15] selftests: mptcp: sockopt: print every test result
+    https://git.kernel.org/netdev/net-next/c/fd959262c1bb
+  - [net-next,05/15] selftests: mptcp: export TEST_COUNTER variable
+    https://git.kernel.org/netdev/net-next/c/9e6a39ecb9a1
+  - [net-next,06/15] selftests: mptcp: add print_title in mptcp_lib
+    https://git.kernel.org/netdev/net-next/c/3382bb09701b
+  - [net-next,07/15] selftests: mptcp: print test results with counters
+    https://git.kernel.org/netdev/net-next/c/aa7694766f14
+  - [net-next,08/15] selftests: mptcp: use += operator to append strings
+    https://git.kernel.org/netdev/net-next/c/e7c42bf4d320
+  - [net-next,09/15] selftests: mptcp: print test results with colors
+    https://git.kernel.org/netdev/net-next/c/747ba8783a33
+  - [net-next,10/15] selftests: mptcp: call test_fail without argument
+    https://git.kernel.org/netdev/net-next/c/339c225e2e03
+  - [net-next,11/15] selftests: mptcp: extract mptcp_lib_check_expected
+    https://git.kernel.org/netdev/net-next/c/663260e14668
+  - [net-next,12/15] selftests: mptcp: print_test out of verify_listener_events
+    https://git.kernel.org/netdev/net-next/c/8ebb44196585
+  - [net-next,13/15] selftests: mptcp: add mptcp_lib_verify_listener_events
+    https://git.kernel.org/netdev/net-next/c/7f0782ca1ce9
+  - [net-next,14/15] selftests: mptcp: declare event macros in mptcp_lib
+    https://git.kernel.org/netdev/net-next/c/23a0485d1c04
+  - [net-next,15/15] selftests: mptcp: use KSFT_SKIP/KSFT_PASS/KSFT_FAIL
+    https://git.kernel.org/netdev/net-next/c/8f7a69a8e7dc
+
+You are awesome, thank you!
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
