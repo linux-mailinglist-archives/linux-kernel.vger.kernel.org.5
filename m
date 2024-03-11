@@ -1,147 +1,313 @@
-Return-Path: <linux-kernel+bounces-98509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD199877B25
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:06:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1106D877B28
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DF381F210A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:06:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A92DB20B25
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631D5F9FD;
-	Mon, 11 Mar 2024 07:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F144710796;
+	Mon, 11 Mar 2024 07:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="r8XyQ3kw"
-Received: from out203-205-251-73.mail.qq.com (out203-205-251-73.mail.qq.com [203.205.251.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="JVtdnD4N"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4165D63AE;
-	Mon, 11 Mar 2024 07:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADA463AE;
+	Mon, 11 Mar 2024 07:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710140788; cv=none; b=ZlcrCCbenoMo5pj13f73pg8gxy9DTt5B8n4Mxs8l3Rvwn4az3kxRJXKU0QX97zZRsDO6AdwXaDPPXQzqNQz8D/zLncEBHnjE1Ej+BbrfZKml9WUpowJ0V7gUU/2ruc12uTIGUEr32W6MLmyJyKfrcm66UDHhnlvMcKWm/1mCnCA=
+	t=1710140909; cv=none; b=Y6ankMom9+4+g0T7DeZ2QzMbpfzcXbfi1fA/AeQYLFKfOBWWSQBuAtUBIb2jewiy4w3hTQrnDhsMPZcPfnjtkJOor9E1bNy21XaARuYzkG0XLobPBBQF2Why+t/+Ts4wK2rczpreO2ifK0DoI9S5ESsvvjHSzZu2s5TxU7r+wcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710140788; c=relaxed/simple;
-	bh=iU0B7oVdYRD3BhveLKih3H4/+mbVUTEDWz+MaSwKAa4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References; b=lgIbWVtJzs1FH/znRa6yhxZOxmtq3FdfjY4t83CKvZ/Nbi/2pKw6NRzZufPgfUnkA778jr6FKP6ljrl/STK7+/RtfCWNRYGs36YTfgjULx1g0B+GX9NuMrQG3GF4bVvOwSbk7h5rBw9JVjVWlh3NRqn9bW4MeiBLF4QL7gAy3PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=r8XyQ3kw; arc=none smtp.client-ip=203.205.251.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710140773; bh=DqF6IJE/etcDmyhMo12vo/H9b+vPvvKr49SpjwRCc4Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=r8XyQ3kwiwDjS5cv1fm4LyqMBPWKU6zktk7JRoevHfH9Tj6H8u1nJDzDKQFelGkDb
-	 ergk6kcmEb+CBoE6doRqVyA7AmOUgH93Rr3sULePdhsKx+Y/9AAIs+hVWybGMa2cj0
-	 fljVdY78jY8lfskkQKaYgBYIMtztlDLLz0Y3Tq/w=
-Received: from ubuntu.vimicro.com ([121.225.188.5])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id 1730EAEB; Mon, 11 Mar 2024 15:05:51 +0800
-X-QQ-mid: xmsmtpt1710140751t40mlgap6
-Message-ID: <tencent_8A7C0C985AE1A1975C25D8DE24010D8B2007@qq.com>
-X-QQ-XMAILINFO: MO96tf8oLeWlcKKMCzcDopUHvgcH+0fyeyZywUfPwD6g2nSeDknXIRQf5bqKyh
-	 /8BpRFYz4v4OV3XC7fqbVxyQAPLwS1vPXVi1KqSzM96cAeR4YQHhGEooYzNa+8pj1NA7gbyFEi7A
-	 G//aIbGWOgEPHkVUhV+HsAOSLVFpJyJTtmEAuy+27iCHPVWQ2dWi20A9Cd3L6Ar5vu6Mxu9Des4e
-	 POOAgd3+9/mCGNVYEPNvZIsujl5QmY8J5jl5q7tMZR1SEfQVTuq2tz2Dt8NZ+oDuPzaYBU1cIxQS
-	 qE0SfV44wmUmRkOkXdvBFiy5V3GKLsFRF6nn+fK0vcCJridebtVgDIbyZFH8HAeKKjw3VdYmO8yP
-	 f/3hBnG5UeN6pyQcxfNaEHIlTq9BUmduL0LI/s5C6xReOpXWEaYmPAWkPGNjy7w6hOVe4dSYm8Hd
-	 xwFqKci6XAm4vzHWFAO8+/UiltOJ62Fkv8DOOfuDhfTSdBmfsnQDEqhRbSOEykT8dSOsD83T5gNV
-	 SQjZPDa4o9rhEMgt6O2AnbDTe6FN8dlhmCvvYTZVceLX3hp0xALG6mBg+nTX4Bk4H0iwvSvX0taL
-	 MKYMhSCHfj7PPuiDX6FM1iA6lpOBRwqTE1wflUAgwMo5Ccz14oGZ5WPeOEy9RSNBVLVF4TNel5EL
-	 Erb6drN4XnzR+ovick34UXSLJqlDuzKfI3B3fRvqSOoKLa7NxdYBhIC7NeLpDIrTV4Py2s/mJuxK
-	 nlPk21ua2TwNO5eID8cp8TGkDtf17yMTuTpuQLoB//7L85sSr4z4JSeesmZvbYLx3JZZ41+8ZTva
-	 Axn59opiO7WU+tZNnPV2fdV2kXoz8he4GB+10PRrWvx+hjsuYj1/oET8TENJRiwOB+X6kk8nDBnX
-	 RM666PiaU6M1H707YANRMpeNLY7PEbIuWKIvJk3CSOj5e5eNubU2ikHfU6v4lHt83VPKvSOSiOy9
-	 /aW7vdgsU=
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: xuhanwu <2433926602@qq.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com
-Cc: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	xuhanwu <xu.hanwu@zxelec.com>
-Subject: [PATCH] ASoC: soc-pcm: add a check for unsupported commands to the soc_pcm_trigger
-Date: Mon, 11 Mar 2024 15:05:48 +0800
-X-OQ-MSGID: <20240311070548.2925-1-2433926602@qq.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <tencent_002E3C6C67928986481018466EEDF8D05706@qq.com>
-References: <tencent_002E3C6C67928986481018466EEDF8D05706@qq.com>
+	s=arc-20240116; t=1710140909; c=relaxed/simple;
+	bh=d1eVzxHx9HhiYyRxz3FVtwzPZplvBNYMhzP5gLR8epQ=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=f+p39p8+Zw02flK7ZPDjdX6IFMfbqxM4ZAFl3qSFp0AvLVOnTA/dWZCYoAIrU8YqAFqB4v/ygtAk7aNAZT1fmS8I0eztXw6qzlIG4SHIuchFXn16877Wgdan3i2yH/Ife7NZoOynHddrRK/SdZfvOxgMtzgi9TuY8GsEfZvXCZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=JVtdnD4N; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1710140897;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pwjpdAzr3Ii/lOqzip2XeVxDOQx4yrf1E1Tz735rmHI=;
+	b=JVtdnD4N7f/mz3TcOCpJdcWsgJS0ux2d0HBG/06oWlzcQj3U1gi7GFcfIiXvi221n1KUtl
+	+pLGW2b+zKvf1RfG+mY8hkKQl9T8cwnDzMbSe8HrjenLJYj0Eo4Kfdda89nAnJWLJSYV93
+	MAxkcD+2ZF8LtyhBWMYWya6ICvFQ4gnpdjKYMNazW+jJeKo3gwbKYWsbQHW/LbxgZPAH8e
+	cR9b9dRteryOHcZBqtaHX4hTCy07vhA6RRWHfrZiG3lZzEEwX1g7Aa313kSenXA+bYX4pa
+	HE0DQyVJSef2V7XNZuTJYq+65ifYmN5GHmw1+lj5//1aZNjmzKdzaqxaOGW8zA==
+Date: Mon, 11 Mar 2024 08:08:16 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
+ Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] RK3588 and Rock 5B dts additions: thermal, OPP and
+ fan
+In-Reply-To: <eaff900c308f96baa7d786b5a9c4d939@manjaro.org>
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <j3krazypdc7gsvnp4kcocaftxsbjrfhj6nr2kf2cieo4bjxbv7@bqdfbirk5tei>
+ <CABjd4Yxs9b0XDXYfdnmT08BQnsJLonRy4X-g73J67yeGw3xL+w@mail.gmail.com>
+ <CABjd4YzTL=5S7cS8ACNAYVa730WA3iGd5L_wP1Vn9=f83RCORA@mail.gmail.com>
+ <eaff900c308f96baa7d786b5a9c4d939@manjaro.org>
+Message-ID: <54bc850b2eba7ee4fc58cb77c76628b4@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-From: xuhanwu <xu.hanwu@zxelec.com>
+Hello Alexey,
 
-The function soc_pcm_trigger needs to return an error(-EINVAL)
-if the cmd parameter is not supported.
+On 2024-03-07 15:21, Dragan Simic wrote:
+> On 2024-03-07 13:38, Alexey Charkov wrote:
+>> On Tue, Mar 5, 2024 at 12:06 PM Alexey Charkov <alchark@gmail.com> 
+>> wrote:
+>>> On Mon, Mar 4, 2024 at 9:51 PM Sebastian Reichel
+>>> <sebastian.reichel@collabora.com> wrote:
+>>> > On Thu, Feb 29, 2024 at 11:26:31PM +0400, Alexey Charkov wrote:
+>>> > > This enables thermal monitoring and CPU DVFS on RK3588(s), as well as
+>>> > > active cooling on Radxa Rock 5B via the provided PWM fan.
+>>> > >
+>>> > > Some RK3588 boards use separate regulators to supply CPUs and their
+>>> > > respective memory interfaces, so this is handled by coupling those
+>>> > > regulators in affected boards' device trees to ensure that their
+>>> > > voltage is adjusted in step.
+>>> > >
+>>> > > In this revision of the series I chose to enable TSADC for all boards
+>>> > > at .dtsi level, because:
+>>> > >  - The defaults already in .dtsi should work for all users, given that
+>>> > >    the CRU based resets don't need any out-of-chip components, and
+>>> > >    the CRU vs. PMIC reset is pretty much the only thing a board might
+>>> > >    have to configure / override there
+>>> > >  - The boards that have TSADC_SHUT signal wired to the PMIC reset line
+>>> > >    can still choose to override the reset logic in their .dts. Or stay
+>>> > >    with CRU based resets, as downstream kernels do anyway
+>>> > >  - The on-by-default approach helps ensure thermal protections are in
+>>> > >    place (emergency reset and throttling) for any board even with a
+>>> > >    rudimentary .dts, and thus lets us introduce CPU DVFS with better
+>>> > >    peace of mind
+>>> > >
+>>> > > Fan control on Rock 5B has been split into two intervals: let it spin
+>>> > > at the minimum cooling state between 55C and 65C, and then accelerate
+>>> > > if the system crosses the 65C mark - thanks to Dragan for suggesting.
+>>> > > This lets some cooling setups with beefier heatsinks and/or larger
+>>> > > fan fins to stay in the quietest non-zero fan state while still
+>>> > > gaining potential benefits from the airflow it generates, and
+>>> > > possibly avoiding noisy speeds altogether for some workloads.
+>>> > >
+>>> > > OPPs help actually scale CPU frequencies up and down for both cooling
+>>> > > and performance - tested on Rock 5B under varied loads. I've split
+>>> > > the patch into two parts: the first containing those OPPs that seem
+>>> > > to be no-regret with general consensus during v1 review [2], while
+>>> > > the second contains OPPs that cause frequency reductions without
+>>> > > accompanying decrease in CPU voltage. There seems to be a slight
+>>> > > performance gain in some workload scenarios when using these, but
+>>> > > previous discussion was inconclusive as to whether they should be
+>>> > > included or not. Having them as separate patches enables easier
+>>> > > comparison and partial reversion if people want to test it under
+>>> > > their workloads, and also enables the first 'no-regret' part to be
+>>> > > merged to -next while the jury is still out on the second one.
+>>> > >
+>>> > > [1] https://lore.kernel.org/linux-rockchip/1824717.EqSB1tO5pr@bagend/T/#ma2ab949da2235a8e759eab22155fb2bc397d8aea
+>>> > > [2] https://lore.kernel.org/linux-rockchip/CABjd4YxqarUCbZ-a2XLe3TWJ-qjphGkyq=wDnctnEhdoSdPPpw@mail.gmail.com/T/#m49d2b94e773f5b532a0bb5d3d7664799ff28cc2c
+>>> > >
+>>> > > Signed-off-by: Alexey Charkov <alchark@gmail.com>
+>>> > > ---
+>>> > > Changes in v3:
+>>> > > - Added regulator coupling for EVB1 and QuartzPro64
+>>> > > - Enabled the TSADC for all boards in .dtsi, not just Rock 5B (thanks ChenYu)
+>>> > > - Added comments regarding two passive cooling trips in each zone (thanks Dragan)
+>>> > > - Fixed active cooling map numbering for Radxa Rock 5B (thanks Dragan)
+>>> > > - Dropped Daniel's Acked-by tag from the Rock 5B fan patch, as there's been quite some
+>>> > >   churn there since the version he acknowledged
+>>> > > - Link to v2: https://lore.kernel.org/r/20240130-rk-dts-additions-v2-0-c6222c4c78df@gmail.com
+>>> > >
+>>> > > Changes in v2:
+>>> > > - Dropped the rfkill patch which Heiko has already applied
+>>> > > - Set higher 'polling-delay-passive' (100 instead of 20)
+>>> > > - Name all cooling maps starting from map0 in each respective zone
+>>> > > - Drop 'contribution' properties from passive cooling maps
+>>> > > - Link to v1: https://lore.kernel.org/r/20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com
+>>> > >
+>>> > > ---
+>>> > > Alexey Charkov (5):
+>>> > >       arm64: dts: rockchip: enable built-in thermal monitoring on RK3588
+>>> > >       arm64: dts: rockchip: enable automatic active cooling on Rock 5B
+>>> > >       arm64: dts: rockchip: Add CPU/memory regulator coupling for RK3588
+>>> > >       arm64: dts: rockchip: Add OPP data for CPU cores on RK3588
+>>> > >       arm64: dts: rockchip: Add further granularity in RK3588 CPU OPPs
+>>> > >
+>>> > >  arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts   |  12 +
+>>> > >  .../arm64/boot/dts/rockchip/rk3588-quartzpro64.dts |  12 +
+>>> > >  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts    |  30 +-
+>>> > >  arch/arm64/boot/dts/rockchip/rk3588s.dtsi          | 385 ++++++++++++++++++++-
+>>> > >  4 files changed, 437 insertions(+), 2 deletions(-)
+>>> >
+>>> > I'm too busy to have a detailed review of this series right now, but
+>>> > I pushed it to our CI and it results in a board reset at boot time:
+>>> >
+>>> > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/jobs/300950
+>>> >
+>>> > I also pushed just the first three patches (i.e. without OPP /
+>>> > cpufreq) and that boots fine:
+>>> >
+>>> > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/jobs/300953
+>>> 
+>>> Thank you for testing these! I've noticed in the boot log that the CI
+>>> machine uses some u-boot 2023.07 - is that a downstream one? Any
+>>> chance to compare it to 2023.11 or 2024.01 from your (Collabora)
+>>> integration tree?
+>>> 
+>>> I use 2023.11 from your integration tree, with a binary bl31, and I'm
+>>> not getting those resets even under prolonged heavy load (I rebuild
+>>> Chromium with 8 concurrent compilation jobs as the stress test -
+>>> that's 14 hours of heavy CPU, memory and IO use). Would be 
+>>> interesting
+>>> to understand if it's just a 'lucky' SoC specimen on my side, or if
+>>> there is some dark magic happening differently on my machine vs. your
+>>> CI machine.
+>>> 
+>>> Thinking that maybe if your CI machine uses a downstream u-boot it
+>>> might be leaving some extra hardware running (PVTM?) which might do
+>>> weird stuff when TSADC/clocks/voltages get readjusted by the generic
+>>> cpufreq driver?..
+>>> 
+>>> > Note, that OPP / cpufreq works on the same boards in the CI when
+>>> > using the ugly-and-not-for-upstream cpufreq driver:
+>>> >
+>>> > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/commit/9c90c5032743a0419bf3fd2f914a24fd53101acd
+>>> >
+>>> > My best guess right now is, that this is related to the generic
+>>> > driver obviously not updating the GRF read margin registers.
+>>> 
+>>> If it was about memory read margins I believe I would have been
+>>> unlikely to get my machine to work reliably under heavy load with the
+>>> default ones, but who knows...
+>> 
+>> Sebastian's report led me to investigate further how all those things
+>> are organized in the downstream code and in hardware, and what could
+>> be a pragmatic way forward with upstream enablement. It turned out to
+>> be quite a rabbit hole frankly, with multiple layers of abstraction
+>> and intertwined code in different places.
+>> 
+>> Here's a quick summary for future reference:
+>>  - CPU clocks on RK3588 are ultimately managed by the ATF firmware,
+>> which provides an SCMI service to expose them to the kernel
+>>  - ATF itself doesn't directly set any clock frequencies. Instead, it
+>> accepts a target frequency via SCMI and converts it into an oscillator
+>> ring length setting for the PVPLL hardware block (via a fixed table
+>> lookup). At least that's how it's done in the recently released TF-A
+>> bl31 code [1] - perhaps the binary bl31 does something similar
+>>  - U-boot doesn't seem to mess with CPU clocks, PVTM or PVPLL
+>>  - PVPLL produces a reference clock to feed to the CPUs, which depends
+>> on the configured oscillator ring length but also on the supply
+>> voltage, silicon quality and perhaps temperature too. ATF doesn't know
+>> anything about voltages or temperatures, so it doesn't guarantee that
+>> the requested frequency is matched by the hardware
+>>  - PVPLL frequency generation is bypassed for lower-frequency OPPs, in
+>> which case the target frequency is directly fed by the ATF to the CRU.
+>> This happens for both big-core and little-core frequencies below 816
+>> MHz
+>>  - Given that requesting a particular frequency via SCMI doesn't
+>> guarantee that it will be what the CPUs end up running at, the vendor
+>> kernel also does a runtime voltage calibration for the supply
+>> regulators, by adjusting the supply voltage in minimum regulator steps
+>> until the frequency reported by PVPLL gets close to the requested one
+>> [2]. It then overwrites OPP provided voltage values with the
+>> calibrated ones
+>>  - There's also some trickery with preselecting OPP voltage sets using
+>> the "-Lx" suffix based on silicon quality, as measured by a "leakage"
+>> value stored in an NVMEM cell and/or the PVTM frequency generated at a
+>> reference "midpoint" OPP [3]. Better performing silicon gets to run at
+>> lower default supply voltages, thus saving power
+>>  - Once the OPPs are selected and calibrated, the only remaining
+>> trickery is the two supply regulators per each CPU cluster (one for
+>> the CPUs and the other for the memory interface)
+>>  - Another catch, as Sebastian points out, is that memory read margins
+>> must be adjusted whenever the memory interface supply voltage crosses
+>> certain thresholds [4]. This has little to do with CPUs or
+>> frequencies, and is only tangentially related to them due to the
+>> dependency chain between the target CPU frequency -> required CPU
+>> supply voltage -> matching memory interface supply voltage -> required
+>> read margins
+>>  - At reset the ATF switches all clocks to the lowest 408 MHz [6], so
+>> setting it to anything in kernel code (as the downstream driver does)
+>> seems redundant
+>> 
+>> All in all, it does indeed sound like Collabora's CI machine boot-time
+>> resets are most likely caused by the missing memory read margin
+>> settings in my patch series. Voltage values in the OPPs I used are the
+>> most conservative defaults of what the downstream DT has, and PVPLL
+>> should be able to generate reasonable clock speeds with those (albeit
+>> likely suboptimal, due to them not being tuned to the particular
+>> silicon specimen). And there is little else to differ frankly.
+>> 
+>> As for the way forward, it would be great to know the opinions from
+>> the list. My thinking is as follows:
+>>  - I can introduce memory read margin updates as the first priority,
+>> leaving voltage calibration and/or OPP preselection for later (as
+>> those should not affect system stability at current default values,
+>> perhaps only power efficiency to a certain extent)
+>>  - CPUfreq doesn't sound like the right place for those, given that
+>> they have little to do with either CPU or freq :)
+>>  - I suggest a custom regulator config helper to plug into the OPP
+>> layer, as is done for TI OMAP5 [6]. At first, it might be only used
+>> for looking up and setting the correct memory read margin value
+>> whenever the cluster supply voltage changes, and later the same code
+>> can be extended to do voltage calibration. In fact, OMAP code is there
+>> for a very similar purpose, but in their case optimized voltages are
+>> pre-programmed in efuses and don't require runtime recalibration
+>>  - Given that all OPPs in the downstream kernel list identical
+>> voltages for the memory supply as for the CPU supply, I don't think it
+>> makes much sense to customize the cpufreq driver per se.
+>> Single-regulator approach with the generic cpufreq-dt and regulator
+>> coupling sounds much less invasive and thus lower-maintenance
+> 
+> Thank you very much for a detailed and highly useful summary!
+> 
+> I'll retrace your steps into and, hopefully, out of the rabbit hole. :)
+> After that, I'll come back with an update.
 
-Signed-off-by: xuhanwu <xu.hanwu@zxelec.com>
----
-Dear Brown
+Just a brief update...  I went even a bit deeper into multiple rabbit
+holes, :) and I'll come back with a detailed update a bit later, 
+together
+with a proposal for the plan to move forward.  The final outcome should
+be awesome. :)
 
-Thank you for your guidance.
-The issue with characters exceeding 80 has been resolved.
-
->	As can be seen from inspection of the immediately
->	preceeding handling of start, we're deliberately
->        ignoring half the values in each switch.
-
-In kernel version 6.2, when the soc_pcm_trigger function receives a
-command parameter cmd set to SNDRV_PCM_TRIGGER_DRAIN,
-it returns a value of -EINVAL.The function snd_pcm_drain checks
-the returned error value and exits accordingly.
-
-kernel-version6.2 Function call relationship
-		  snd_pcm_drain->
-			snd_pcm_action->
-				snd_pcm_do_drain_init->
-					    soc_pcm_trigger->
-
-    snd_pcm_drain
-	result = snd_pcm_action(&snd_pcm_action_drain_init, substream,
-				ACTION_ARG_IGNORE);
-	if (result < 0)
-		goto unlock;
-
-     snd_pcm_do_drain_init
-	if (runtime->state == SNDRV_PCM_STATE_DRAINING &&
-	    runtime->trigger_master == substream &&
-	    (runtime->hw.info & SNDRV_PCM_INFO_DRAIN_TRIGGER))
-		return substream->ops->trigger(substream,
-					       SNDRV_PCM_TRIGGER_DRAIN);
-
-In the latest code, when the cmd parameter is set to SNDRV_PCM_TRIGGER_DRAIN,
-the return value is 0. If snd_pcm_drain finds that the return value is 0,
-it will not execute the goto unlock;
-
-The above is my understanding of the code, please help me correct it.
-
-Thanks
-Xuhanwu
----
- sound/soc/soc-pcm.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 77ee103b7..eba737729 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1173,6 +1173,9 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 			if (r < 0)
- 				break;
- 		}
-+		break;
-+	default:
-+		return -EINVAL;
- 	}
- 
- 	/*
--- 
-2.17.1
-
+>> [1] 
+>> https://gitlab.collabora.com/hardware-enablement/rockchip-3588/trusted-firmware-a/-/blob/rk3588/plat/rockchip/rk3588/drivers/scmi/rk3588_clk.c?ref_type=heads#L303
+>> [2] 
+>> https://github.com/radxa/kernel/blob/c428536281d69aeb2b3480f65b2b227210b61535/drivers/soc/rockchip/rockchip_opp_select.c#L804
+>> [3] 
+>> https://github.com/radxa/kernel/blob/c428536281d69aeb2b3480f65b2b227210b61535/drivers/soc/rockchip/rockchip_opp_select.c#L1575
+>> [4] 
+>> https://github.com/radxa/kernel/blob/c428536281d69aeb2b3480f65b2b227210b61535/drivers/cpufreq/rockchip-cpufreq.c#L405
+>> [5] 
+>> https://gitlab.collabora.com/hardware-enablement/rockchip-3588/trusted-firmware-a/-/blob/rk3588/plat/rockchip/rk3588/drivers/scmi/rk3588_clk.c?ref_type=heads#L2419
+>> [6] 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/opp/ti-opp-supply.c#n275
+> 
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
