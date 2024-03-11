@@ -1,182 +1,190 @@
-Return-Path: <linux-kernel+bounces-98456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2413877A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:36:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59A65877A6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:40:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32C1D280EAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:36:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF341C20F49
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:40:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E417489;
-	Mon, 11 Mar 2024 04:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13908C15;
+	Mon, 11 Mar 2024 04:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L5XaLtQT"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="PiVzDdtK"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2091.outbound.protection.outlook.com [40.92.41.91])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2D863AE;
-	Mon, 11 Mar 2024 04:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710131775; cv=none; b=MDxxboAY6FOph+YsMtiLi4GJx7BbxoWpr0A1YmDAJzoaget2WfVfB8LjVw66vdFUkzl5EUz61/MyHcVgwZNMCc++lcebotZV5+R7m/opRwaDq5sviCepcMrbpVzIUEADINqk+2qvGcjdNL4HUyoxybljlsvlxfTgci6MHq2R9/k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710131775; c=relaxed/simple;
-	bh=gqmZzmP8nlpwp+4dLArAfocYsyqp64vuYa7f4fUPuiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n1iOm5TPHzun+PvQqP0rtkMKii7SK33bGCievtv9aRibKzZgnMLDWn03JQzRmHMRFp0Kbu8CSAGPIHvZtVS/7uRwiNLUzJIL+DF+tTzPNmgtw4WIX9bVg7Wd1UVZ5sbCgmE1ZSfTDdLhP0kP7QelEZxRyh29Nwgtc+sHFBEW+7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L5XaLtQT; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299b818d63aso2670880a91.0;
-        Sun, 10 Mar 2024 21:36:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710131772; x=1710736572; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QiEYgTiVIfRWezz5AaQue6rBdCpnJEAVy8ZiGZDVI+E=;
-        b=L5XaLtQTAOVyrL5jHQkeZC5ulydLU65SNcQY110eJwhw8DtuVN9Mkri6LIXnpvILJ0
-         Jlyph52ih1qpwZv69QCJKYbI6YEuJbGbR6hI/9qmU7H/09o+P7NHnuQTkVjt4EeuCFaC
-         cHkWnoRc7qkpM9+tUfH5ANjdqd/JAiwhHZebZRy78wzv4yZixIUnFD62Iw8yqG6F9UZS
-         +h3I9CykA/Q07SZmsdZ3b6ODk9x6tcBXUHA0hjrfr+jKFx1hrb2lUIzaI4l2HhKPGBkF
-         4tYetoWB8pkMEpXKR79VK1mRjC7cmvQtTSYi6n9x8Qq4MJ3knya/2evahTjsehY66DeK
-         hNFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710131772; x=1710736572;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QiEYgTiVIfRWezz5AaQue6rBdCpnJEAVy8ZiGZDVI+E=;
-        b=h5SIcgG+gsaPNetAmwgQr31OccyXyhJmYTiB+XebQiv+pVcp41RsCv2cszSI+X4eYf
-         mPD9HR61SbIoWWLaUFpCixbLcCvFrLvlkfIoiTcgMAalxfZebxsYk79RHN1M18JpXsVU
-         yhPdWqtGq9dRifVN8abhYg52UhMNO8UxKpUgoZYHxPPaa4/yq9/SGZKP3N75zC7z/hx6
-         /qUe2ZPGO+ctfVol7czoygjVBX7UUTYQ8/uPqEcri822JDFmmydVAuQSvjhqxl1hUXeh
-         ixC9RFYz6IWyt+SoCYS5iP1hsnrISzcZWXXAZRqMRP70SrWumAOuRB0P+NxDh62QHV5V
-         sAWw==
-X-Forwarded-Encrypted: i=1; AJvYcCWW9NoRdAzUck3Gqhn2Ya6/AiD5+xPgik7gSsqAKxtwvDMKeBVbr5JAP3AfgPqXZIYBdQH28Eek22FRZ04TUCx+RjqHkYNvlz9KbjgXzUfFOsjY5KLW2VfWs5cFD3TnapgfLJcbeBCEWw==
-X-Gm-Message-State: AOJu0YxtVY2dIMZndn+7LzFzrz+tBxZp32iOolWQGGWBYrpNVMfuD1AP
-	InyS0SR9qOHbFdxQTAPvC+6nnlndfx2Olj67R/iuu1Su+DVsEq4mTTR7ZII9
-X-Google-Smtp-Source: AGHT+IH+D9y4G7q+l3gX0afrHis3jTndC+4q6rRWXxESOkmoncT+9xkRPwtY2kgZHGqK0rqBuSHufw==
-X-Received: by 2002:a17:90b:e8a:b0:29b:6cfb:14a6 with SMTP id fv10-20020a17090b0e8a00b0029b6cfb14a6mr8043401pjb.11.1710131772355;
-        Sun, 10 Mar 2024 21:36:12 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q10-20020a170902e30a00b001d9aa663282sm3583751plc.266.2024.03.10.21.36.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 21:36:11 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 10 Mar 2024 21:36:10 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: linux-kselftest@vger.kernel.org
-Cc: David Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Kees Cook <keescook@chromium.org>,
-	Daniel Diaz <daniel.diaz@linaro.org>,
-	David Gow <davidgow@google.com>,
-	Arthur Grillo <arthurgrillo@riseup.net>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com, linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH 0/5] Add support for suppressing warning backtraces
-Message-ID: <d24f147c-a304-4395-aefc-bed7490278b6@roeck-us.net>
-References: <20240305184033.425294-1-linux@roeck-us.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B962D7464
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 04:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.41.91
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710131983; cv=fail; b=QDl5eXZXUJCA4ylKV975HIJPxPJrjgIDksuUfH9S2mfMg4sJZEB8x9IMZCgZE19DHo2lv+WZiUSVXn5KDQc+sNyoHGtZ4vEvbHJACCKc46jYvWhtizCqkv4VS0DgwvufTi84lQp6oxgSD+RHYuMydKamApfaYcxT4y2Ol+510Gc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710131983; c=relaxed/simple;
+	bh=8ZcZj8sfO0qkVSF94NnrdjiZs4YL1tEvJDXRxCt9Ywo=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=aDRYXDUWXlGITutC7NtKuE59rPO3ASTXXTqu4s5lbyxst23vsfPn2M7vneolwFyJFnRY446R9qN1DUETh8AtHnTBnguGnOUm9U9+f3bdAG+uf5cm7SXIH1rDLwKAszvgGiKtla++YYxnIzEioWFfJGoizXXW4tIF70V+a8DneBA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=PiVzDdtK; arc=fail smtp.client-ip=40.92.41.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WNydLXGBVPenhbkze3CuP78jV4hXseFmv4n1gpBHu9XkxJydrdktLAx/uq/wASaXBezUfty55eES7Zw2YMDGH1s3DggfdT1Beqe94XQGSQTEZp7c2ztvFEQRGxTmWfq7Hnc3K0WXdO1RMLcSSfzaU/5x/DjF3gliZCluissOzmmqJbNIni2bYc83e1kF9e9sQlOstRcLiIrNelYgRobkOHOhvRkLtXva9pmpWuZ5EOFO2k0OEVN9tgcgU1qvQ/LsWOdHsueDfMiLbOU12boQR2nvrqH5UZSOvCEyhowbKxK83EPZ/REwq+eFY89V58A6baF4z28Kf9SAC6Uv7jEgmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9IpH0tfMXiL5Y8fxdX5X45FrKirbNVeDoJVzU7VET3c=;
+ b=iZ8R17zu46ElK7coC1IiSdO+VeiNH5rM+MWDkLOsKcqmNOTmus/Opj8Q6+B6Xv10UYkibAesE1EAPgPCVaJhNEqqGC7V8gvYbFtgbwLV5UAsFI1jmiQ+oQ4XdnFIE7aY/bx6jlBIpIccKQTvjl50UADRVPQBURJ3a3zQCWkkBduT6xrx1NnLK7ha/3H2+83egu5BZJX2+fJDHOmHI0zj6JX0je7g+tfHodZQmqbixq5ABFlX8fn5pyI/CPYaWJOBUXIrcuPKhOt8hYhyZ1TBgSjQWEG2A/YzghXKSYjyvrzbH1scORrD8e3OyqRj0jYpmxxOZbTHBHuFFQQNw8mEfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9IpH0tfMXiL5Y8fxdX5X45FrKirbNVeDoJVzU7VET3c=;
+ b=PiVzDdtKAQdtr0bFzRFrplWpcpXEEUApec7VrYtLrAlRabNwwVzVLjs2h3rUFMPxtUMANfuRo6IYtU5kcEVMSURJb5i2YudAQYdZHA21tb92xHvRanvtUnQhmPhtqegMxn0jL9DFjT9gVkhaBzVjdcNWpeKpFvQz5yaB7y8Kz4aPoSIcQmX1dzFW10O0OHD1P8BoZN6CqWjPZY7l5ulVRbyDGvMips5sNWRlmGwNGZAJkxOBdTBC73jvKyYOhSHz5YKmHvwbXOG/QO0bVrGhqX8gz4xIBUVZc+wwTy9pwkZlCrF6XaOWU0U4k22EEdgfVkiZA/RleA9w5D0InGL4YQ==
+Received: from CY5PR10MB5988.namprd10.prod.outlook.com (2603:10b6:930:28::9)
+ by CH0PR10MB4953.namprd10.prod.outlook.com (2603:10b6:610:de::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
+ 2024 04:39:38 +0000
+Received: from CY5PR10MB5988.namprd10.prod.outlook.com
+ ([fe80::11ce:fd0c:d54d:a27e]) by CY5PR10MB5988.namprd10.prod.outlook.com
+ ([fe80::11ce:fd0c:d54d:a27e%7]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
+ 04:39:38 +0000
+Message-ID:
+ <CY5PR10MB598826EB007900A8BE01F4738C242@CY5PR10MB5988.namprd10.prod.outlook.com>
+Subject: [PATCH] Print also the BSP number when announcing cpu
+From: Dashi Cao <dscao999@hotmail.com>
+To: linux-kernel@vger.kernel.org
+Date: Mon, 11 Mar 2024 12:39:07 +0800
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1+deb11u2 
+Content-Transfer-Encoding: 7bit
+X-TMN: [boPwrUItzrdGqREUcX619zNVhft6V4My]
+X-ClientProxiedBy: TYCPR01CA0206.jpnprd01.prod.outlook.com
+ (2603:1096:405:7a::17) To CY5PR10MB5988.namprd10.prod.outlook.com
+ (2603:10b6:930:28::9)
+X-Microsoft-Original-Message-ID:
+ <82e10ff69d703a1aab2a5368c63104b75aaa0a75.camel@hotmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305184033.425294-1-linux@roeck-us.net>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR10MB5988:EE_|CH0PR10MB4953:EE_
+X-MS-Office365-Filtering-Correlation-Id: 387f8405-6bb5-4dbb-c610-08dc4185426a
+X-MS-Exchange-SLBlob-MailProps:
+	znQPCv1HvwXP1pgB6quBLdqLhL8BcDmj1JWv8mqkKKt/S8Ruzm6Fd02YG50NXK3cz/c7Ad7ks8obp+BhfxJLWZmvqXHnSvK4ELkDm6hPSBlL1FV/FNpfu8Q8gXk1opJ2/zaYpiwK44cUbJ5Rl/qOQ8ihrjOh0EaNzs6rUoAXAq6NXFPJZCGipl51u2zFR/OpnpXDaAGmSAdbJ8g08jsGEQEW0caYJNEYKYYPPKxS1EVH9+Vi1wccRKVR7JWzM7oHPE+ZCVvgRr9ERCgyc0rpANmoQUiMW6FbhX2oR6BZCP134HwEqDnyJAF+sOF+5sfsOKuviQu1ao/4M60eL1wqhQX78URR2+XdREW4OiIN0PwvysdJc+3FvuMz1iYvQ9LZ3MThFTEeM1cX4LsTnP8PkukDykk5pa6YbzSGEHECuHiVvNSx93FPf61I0wjngekN24BoORWwhwdjVzdG2FGJM6kXqf7mTb/5h6yoXPN+OG8aqk4F9xucpaKGrbE/mwbVcbfhZGBpkCGiVgT7HdTjXJOtrW4rX3k3T8ETC6k4/pYMha+5EC9Gep2AQ7UbXyKMK+pH0AQytWCMyFJRuchxYcYNaeeboBwohuwlQ+hPcfGhwgAtL8/M3h8ZegiGBRHTSmUH39RECY6zMSUm5S3ctD5VGwcfXMsN1R6KYBDm2Xyul/8ifSbTEqNni5315LwMqQUUaHodEt0OHRhpVbYd5WAcEtIbzA0c8FYGGTWBzmGmCga50jCag3/DKkMQtUXCS6V3++p5Fj0=
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	pZ2L9n8IUvpWcAMMZ04CWXHNzC4FEgV+qb+mcC/rT/au9u5kQ596YbVJZvTFUWT7WXP1GyEYbTBqD9OzWrEB6LrFZ/ej00sNRdMDR7XnTJZW3Ue9aPmP8qwAvWH64PVnDKM5ejfuOi1EAXwkb2I+a466ysDUh/D0bsMlYzT/lTDS4/w9yTfjCOvJ8xi6rc6FMTTWjb0DL9EFUUyjkCHEP8Rtvie+9Y1hjxoHHqTZ4Tzs/U0MP4kSlrHf1yVjbdK72nO1grMvAv1+QBLxYXlbyisYKwOXYvRZC9kL1ERVsxVg+/Fp1hD6TPKizssqT1C6ra4bn4Tcwwhc3fvP4Glylw4OXiipzEtZ2I1Y0SkrxDUi1XA1e83+ugop+cYbNgTuy92FHs3Qbyz5bNBcYdG5x0aYq3i1G+C4tC86pmyLbNYGFDTPKmR1bwgJ4145GRUaEodP2e24UZ2JADw8BjI239SX9WZYy3+1Wn7xWCQNLJY9bGOqcBLQJK+OsPMltLhzLhnN4zAQiansR18i6sO8pUtjpT9PiwIe894xBhEzIaXeUNK3YIseP28v+0ca2MIZ
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?N2FZelJQZU8wbGlndjR0eDIxRkxSa3hiaUl3M0pFVGUydE9WVFZvOFZXT3BP?=
+ =?utf-8?B?MWpieVliTnlDSzFYVE1LNDVmcXZpbStXMWM5UEhKOTB3eFUwT1BIUm9CUnBE?=
+ =?utf-8?B?dk5JTDNpZWtqUVprU0trdHhocDVtYmFKZzhSakppd1g0cjMxZ3JmZ1MzVlF3?=
+ =?utf-8?B?NERDWWtwOGtqYmNrVUpnaFRJQ3g0YTMrU2lEVHlKZk1PWnZJVE1ZaHhYWk04?=
+ =?utf-8?B?eCszRHZaRXJ0WTlwUzdNcmk5UStBTmNjVGRsMnhBYlcwMjhuUWlBeUZiOVJW?=
+ =?utf-8?B?cTlTNldDZ0RNTGczdFUwUjdqa29RTUxXMERnVzBhbURRTGJhTExCamUvNHRz?=
+ =?utf-8?B?M2JkdGRTOXNVeUN6Q3VCOXNMOVJvMGR5VXRwV3ZwVTFhK3ZNQTRFL280WmRr?=
+ =?utf-8?B?U3FadCt3OWR0YUlLWUJBNGVtNVRNQWtlNVpTTTV4WmpOUXBId2tUdDA3QXZq?=
+ =?utf-8?B?UEdCVEdwQ0lqaW85Mk5PNDMwU0ZBRjYrS3FOaDk2WkczampWelloZGxndzVL?=
+ =?utf-8?B?VlJyTXdWSWI1YTgvRk1lUHhWYVUvRWhaUitjcXVCYkhreE5Fa2ZZTDdVL0Vz?=
+ =?utf-8?B?UVFIakxkWStjd3g3QWcyYnBMK1VNK0RnR3ErYkh2K01NMmpTbVZLL2p2aUFE?=
+ =?utf-8?B?d0JqNlJoTmplSTNtb2cwRTVEdGVwVjhpMFJsREI0d0lnRzFWZURqNTBuQWNO?=
+ =?utf-8?B?bE9STTBKTmxTVVRFMHU4K0o0YlczTk1iSHNaNW9BSUxPZ01XR1BGMEwremFE?=
+ =?utf-8?B?SFFObnFPSmJrdmZmck53S1lBdzJWMEV3WWlKZHl5REl2WU9sMG1BaHpHN202?=
+ =?utf-8?B?djZKYXBORmFDNzQwMm15TEFJMm11YzdPZ01BTjZZa2k4L2NvYTI0K3VnVUdi?=
+ =?utf-8?B?YUowRTlsY0p6ME1ncjgvZkRCcU5vV3h6dDFmRmdjTG5iVXZLRE5ZVHNLeDVs?=
+ =?utf-8?B?UDc1TG5nSTJqREdaWVpUc3hJbUZ3NzI4ZVhRMU0rVmhsMFZldlV3eEhJbXNw?=
+ =?utf-8?B?czZCT2x2b0hLRG9jc1QyWjdKd2srYmJ0aW1nNzBaUkRSaFpkR2N1ejRwbWtq?=
+ =?utf-8?B?ME14RlVBVVcxWWloT0laWE9LV3cvbk94SnUzVlVYMHBUYkFBRUV0S0cvL0Ex?=
+ =?utf-8?B?ZldUb0duOEwrdVFraUdqVFRiWHJ4MGI1MVdMb3FqbGMxWmlNV2Y4eERyVFNH?=
+ =?utf-8?B?bjVnYklnMEM3Y3B0UDN5d1hQZXhmRFQ0d0hQZVlJR3Y5WFBDR2VSWlU2blpQ?=
+ =?utf-8?B?d0JrL1FNZjdEWjkzWUN6WXR1ZlpwQjNkVmVmRytReFdOOUJscFRaYk5TWG1K?=
+ =?utf-8?B?MC9UN1NIeis1eFhid2hIQ0lLaXJiQ2hjRzN4eElFSjB4Z3hQSzFSajBmZnkw?=
+ =?utf-8?B?bXUxMFlRNlFpTE9FVDI1c0RZYjlYOGIvdGsvRGRnYTlXbGNIWElFSSt2b2Jo?=
+ =?utf-8?B?UEQwZ0RvRDBFM0xkcDNOMVpiWmpha21FVEJkUWwwWER6QnhkZ1h4NTlUYTkv?=
+ =?utf-8?B?MU9lY1hVdmVjbVNIakVvbXVWVWFkSlJRdDZnQmhkNWRSVzdiNXBCOHUrdmVP?=
+ =?utf-8?B?Wis3bVNqc2dGRXZZZG1TYWtEYWZhU0loQ3VkZ1BaR1J5bFRubW9MdUtKVmI0?=
+ =?utf-8?Q?v4cqwcvyR4aqtKywDZXh5leJ/mru7Ia3brlwsmAF2fss=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-926a2.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 387f8405-6bb5-4dbb-c610-08dc4185426a
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR10MB5988.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 04:39:38.1991
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4953
 
-On Tue, Mar 05, 2024 at 10:40:28AM -0800, Guenter Roeck wrote:
-> Some unit tests intentionally trigger warning backtraces by passing bad
-> parameters to kernel API functions. Such unit tests typically check the
-> return value from such calls, not the existence of the warning backtrace.
-> 
-> Such intentionally generated warning backtraces are neither desirable
-> nor useful for a number of reasons.
-> - They can result in overlooked real problems.
-> - A warning that suddenly starts to show up in unit tests needs to be
->   investigated and has to be marked to be ignored, for example by
->   adjusting filter scripts. Such filters are ad-hoc because there is
->   no real standard format for warnings. On top of that, such filter
->   scripts would require constant maintenance.
-> 
-> One option to address problem would be to add messages such as "expected
-> warning backtraces start / end here" to the kernel log.  However, that
-> would again require filter scripts, it might result in missing real
-> problematic warning backtraces triggered while the test is running, and
-> the irrelevant backtrace(s) would still clog the kernel log.
-> 
-> Solve the problem by providing a means to identify and suppress specific
-> warning backtraces while executing test code. Support suppressing multiple
-> backtraces while at the same time limiting changes to generic code to the
-> absolute minimum. Architecture specific changes are kept at minimum by
-> retaining function names only if both CONFIG_DEBUG_BUGVERBOSE and
-> CONFIG_KUNIT are enabled.
-> 
-> The first patch of the series introduces the necessary infrastructure.
-> The second patch marks the warning message in drm_calc_scale() in the DRM
-> subsystem as intentional where warranted. This patch is intended to serve
-> as an example for the use of the functionality introduced with this series.
-> The last three patches in the series introduce the necessary architecture
-> specific changes for x86, arm64, and loongarch.
-> 
-> This series is based on the RFC patch and subsequent discussion at
-> https://patchwork.kernel.org/project/linux-kselftest/patch/02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain/
-> and offers a more comprehensive solution of the problem discussed there.
-> 
-> Checkpatch note:
->   Remaining checkpatch errors and warnings were deliberately ignored.
->   Some are triggered by matching coding style or by comments interpreted
->   as code, others by assembler macros which are disliked by checkpatch.
->   Suggestions for improvements are welcome.
-> 
-> Some questions:
-> 
-> - Is the general approach promising ? If not, are there other possible
->   solutions ?
-> - Function pointers are only added to the __bug_table section if both
->   CONFIG_KUNIT and CONFIG_DEBUG_BUGVERBOSE are enabled. This avoids image
->   size increases if CONFIG_KUNIT=n. Downside is slightly more complex
->   architecture specific assembler code. If function pointers were always
->   added to the __bug_table section, vmlinux image size would increase by
->   approximately 0.6-0.7%. Is the increased complexity in assembler code
->   worth the reduced image size ? I think so, but I would like to hear
->   other opinions.
-> - There are additional possibilities associated with storing the bug
->   function name in the __bug_table section. It could be independent of
->   KUNIT, it could be a configuration flag, and/or it could be used to
->   display the name of the offending function in BUG/WARN messages.
->   Is any of those of interest ?
-> 
+When announcing CPU, the BSP is always printed as blanks.
+This patch will print out the BSP number. It has the assumption
+that the BSP is not the last CPU in a CPU node.
 
-I am ready to send a full version of this series with support for
-all affected architectures. I am undecided if I should send it now,
-based on v6.8, and send v2 after rebasing it to v6.9-rc1, or if I
-should just wait for v6.9-rc1.
+Dashi Cao
 
-I understand that some maintainers dislike getting new patch series
-while the commit window is is open. On the ther side, I tested the
-series thoroughly on top of v6.8-rc7, and initial v6.9 release candidates
-may have their own problems. Given that, I tend to send the series now.
+Signed-off-by: Dashi Cao <dscao999@hotmail.com>
+---
+ arch/x86/kernel/smpboot.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-Any thoughts ? Unless there is strong negative feedback, I'll likely
-do that in a day or two.
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 3f57ce68a3f1..073472742be4 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -931,9 +931,9 @@ static int wakeup_secondary_cpu_via_init(u32
+phys_apicid, unsigned long start_ei
+ /* reduce the number of lines printed when booting a large cpu count
+system */
+ static void announce_cpu(int cpu, int apicid)
+ {
+-       static int width, node_width, first = 1;
++       static int width, node_width, bspn = -1;
+        static int current_node = NUMA_NO_NODE;
+-       int node = early_cpu_to_node(cpu);
++       int bsp, node = early_cpu_to_node(cpu);
 
-Thanks,
-Guenter
+        if (!width)
+                width = num_digits(num_possible_cpus()) + 1; /* + '#'
+sign */
+@@ -942,7 +942,7 @@ static void announce_cpu(int cpu, int apicid)
+                node_width = num_digits(num_possible_nodes()) + 1; /* +
+'#' */
+
+        if (system_state < SYSTEM_RUNNING) {
+-               if (first)
++               if (bspn == -1)
+                        pr_info("x86: Booting SMP configuration:\n");
+
+                if (node != current_node) {
+@@ -954,10 +954,12 @@ static void announce_cpu(int cpu, int apicid)
+                               node_width - num_digits(node), " ",
+node);
+                }
+
+-               /* Add padding for the BSP */
+-               if (first)
+-                       pr_cont("%*s", width + 1, " ");
+-               first = 0;
++               if (bspn == -1) {
++                       bsp = raw_smp_processor_id();
++                       bspn = cpumask_next(bsp, cpu_present_mask);
++               }
++               if (cpu == bspn)
++                       pr_cont("%*s#%d", width - num_digits(bsp), " ",
+bsp);
+
+                pr_cont("%*s#%d", width - num_digits(cpu), " ", cpu);
+        } else
+-- 
+2.30.2
+
+
 
