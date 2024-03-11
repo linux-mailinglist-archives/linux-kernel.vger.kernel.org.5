@@ -1,183 +1,254 @@
-Return-Path: <linux-kernel+bounces-99466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 825468788E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6BBE8788E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6DF1F23673
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:24:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50FF31F23D88
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00AAF55E6A;
-	Mon, 11 Mar 2024 19:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0524E54FA3;
+	Mon, 11 Mar 2024 19:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pxbuNjla"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="cmAYwwHu"
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6195C54BFE
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B2052F82
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710185078; cv=none; b=TIIjb64S7v+UO2l+F+gCKma37crLBeyl0PkDpINyLjS0UGPQ9KR0Gi9gYUlldDEvEmeoLDbvW1c5kCqnwvngBzoaGP1pTAAetOdPYcjwvVUikMgLI9Ab2ehpWWxgArRoZkgd4Asray8/85i1fCiXxEN9gG30/vk4iwnuNU1fcg4=
+	t=1710185134; cv=none; b=fiz/fXnShITCEvq3ZKIRGT9zgb1zrtRZHk7DBoxd1mk/tzq4tdvsySwbROpvSG1lQxnzjMPuu0uZfWoIgmYKXtAxdr0OgvrgJzlsiPF+z+Ur4KHuuFbtBfDhaU+vuc6pYHxfHGlZpYzLsmrgpiG4XsjJH8Yal6UMwg9pit7mpiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710185078; c=relaxed/simple;
-	bh=DgLWHcwduAxqjCigbUNUqTye02EDECmbNSNBeiAjWj8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PoMh343jWjCFNF7jJfLdGkNS+ipgI2fN0lDe/FfDxwIVCopFhE2QRffBxxI1BqXbMVny49nCTdwZ+ZBc76Dje9RxhcPRwBxooTmRHW3n/x/Qrm5VJRreikTOl1ZvRmuN2ilW03IfKQ2BQ5F30I3foNufDBGsVJtM28zKQ1MouNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pxbuNjla; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-366248b78d9so17625ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:24:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710185075; x=1710789875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PPemlJM4Xz0k98wRrCIdoRJ/9LZG6WhrdONiHPBnMmw=;
-        b=pxbuNjlaOnceYNWJHoUQQzhYjMPi130X9DGE9v72HGo8G2ovCj3Eyq640WR1ZIe1+A
-         sYD4B9u6vxyLeIErXplk896HlLVI0sUgi/QVDCoq6VME612+J5pLJnEEIcXhokFK+P2U
-         Nma8U98Prf+9nxVDUbGe8P0FGuAlfqC1HoT/LAUrRZD/rkskb07d49yHbfE9G0v4inZz
-         IIC7Ija2Cak7EeP3EL+xMrpHrpdG+J9Q+QkUCsAlt14OGsMVngNp4UrGF+ogSRWbUTcR
-         G17E/qzGa3/MDWceOIjZSJH04GccTuicpN3sMVxBhhiDsxWbf8Hw5tEdngiZ/qRCubZP
-         iW1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710185075; x=1710789875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PPemlJM4Xz0k98wRrCIdoRJ/9LZG6WhrdONiHPBnMmw=;
-        b=oNMBUnYK0t/A1Ss8b470AuW47xS6CGtvGlqVVQBlPHLSXAc0IzlLTq0IYlAdQTlmc/
-         qG04ZA2H9f5jDXx6zqGGSvKM+P1BTrEdDc+XAtKi0rGMG1ongHvHfXS5ouAsrvZwQZk7
-         KBWZZ0/YxK2Nx7FsCXvBluvl91/qorxKAi/yrc6eqMdB0E946uGLcpsFV0Vn+INGhhnz
-         huQgIScNbfOnFaeAB4tH5e5mjEJWpYTEIBUIPrD1UHj/iRv8sCfjd9rQ/qILc3G3KD8S
-         IvTRSBegFcVNCEEV6I5jHMjA7cqNkDlpRzyYD9KAyNig2FB5Lpyuy7RECcjZ+Vd4p1MQ
-         1fnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVL4widH+X6t1TF+ahG8wG66HP0QrNM/SiOnJGpLU45OK2iZ5ObXFOsZlA1tYvc90kN+/zzeFscMqkqoHBNtoBOdXI1+FeCb3BUrmRT
-X-Gm-Message-State: AOJu0YxBoiWK5b3Qlnv5yh9Mvdd1v1IXqjAUnALcpioPy8hN+4DaGURZ
-	YWz05+NXYDEm2EAD20xHHWSQxdYh40/sCgcfB2AwGImzwPasGNq1FCP3l//MhG/IBa75s2XQsST
-	W71f657jnPYmdcsQJimwT4tAfqFqRXHFET/ZP
-X-Google-Smtp-Source: AGHT+IHK6kjYuN+av2sRfyJ8pA7jWQvyzS6EkNDyOpNIDK07iRRVV0vswER0vA5L4Tl9BTd3XE1V8lLoEXKubRDEp18=
-X-Received: by 2002:a05:6e02:1a43:b0:366:27e0:3425 with SMTP id
- u3-20020a056e021a4300b0036627e03425mr10947ilv.19.1710185075344; Mon, 11 Mar
- 2024 12:24:35 -0700 (PDT)
+	s=arc-20240116; t=1710185134; c=relaxed/simple;
+	bh=BUb6mWms1cF3tzi6Wb0eoN6mk/QC4nbageqFaV8EQo8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QW23YqzdJptpy8HB9ZHGshnKC05vqtBJGFlKYYJTRA+hwCLzRjOgBIdmUrMKp5MjTCMqOK2R1hfeYLKLEmdP1L8KUQk8nlKQvrAkcXqMB7kyaXOBc4nZUGRVYH79KAK7WGVd7Z0bihQMlTJA50lI1An+0siEgbTTjM4dVj1fB3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=cmAYwwHu; arc=none smtp.client-ip=185.67.36.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout02.posteo.de (Postfix) with ESMTPS id DFBA3240104
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:25:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1710185123; bh=BUb6mWms1cF3tzi6Wb0eoN6mk/QC4nbageqFaV8EQo8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:From;
+	b=cmAYwwHuHFjkA6tT8jRTXHe7anaIK6NSItoJ7XtaNznJ6L9e4d2Rn5L2Dh/fRB9IK
+	 TrqltPCipVjSiRIn7IMD6GDwiA19tEFqalrPo8Ud9R5D+dzlFUr5wjaJ26ccwRV0gx
+	 vW15Qc0chbNMcKJpyftUVIquLuClay9K7QAYxfMtUYU7dlqjmHUKB64XbkOJeLEtGs
+	 mP+W//Jmkv+gAJY9vmpayMtAxQ1e9nG6KGUz1WLf693btv0+YhZ2iwmDKMPJig8ZlY
+	 HJWK4dre0T2ZpUaHTA9PPg51y3q/R0UH9EkZtTkybPYIHdx0XbFKu2jUbVRikwA/xV
+	 kc/qFlfWgx9/g==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4TtmvL64Dvz6trs;
+	Mon, 11 Mar 2024 20:25:18 +0100 (CET)
+From: Anne Macedo <retpolanne@posteo.net>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,  Peter Zijlstra
+ <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,  Mark Rutland
+ <mark.rutland@arm.com>,  Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>,  Jiri Olsa <jolsa@kernel.org>,  Ian
+ Rogers <irogers@google.com>,  Adrian Hunter <adrian.hunter@intel.com>,
+  linux-perf-users@vger.kernel.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] perf lock contention: skip traceiter functions
+In-Reply-To: <m2il1sbocg.fsf@posteo.net> (Anne Macedo's message of "Mon, 11
+	Mar 2024 15:44:15 -0300")
+References: <20240309132710.1055941-1-retpolanne@posteo.net>
+	<CAM9d7cjhiua5rBj=CTDJJC-XJN6PzKxQ5DsooJGEz0QcQAry7w@mail.gmail.com>
+	<m2il1sbocg.fsf@posteo.net>
+Date: Mon, 11 Mar 2024 19:25:16 +0000
+Message-ID: <m24jdcbmg3.fsf@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240310020509.647319-1-irogers@google.com> <20240310020509.647319-13-irogers@google.com>
- <1ab20914-b6d2-fe39-7b14-c1ccebaa34f6@arm.com>
-In-Reply-To: <1ab20914-b6d2-fe39-7b14-c1ccebaa34f6@arm.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 11 Mar 2024 12:24:24 -0700
-Message-ID: <CAP-5=fWZVrpRufO4w-S4EcSi9STXcTAN2ERLwTSN7yrSSA-otQ@mail.gmail.com>
-Subject: Re: [PATCH v1 12/13] tools headers: Sync compiler.h headers
-To: James Clark <james.clark@arm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	David Laight <David.Laight@aculab.com>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
-	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
-	Nick Forrington <nick.forrington@arm.com>, Leo Yan <leo.yan@linux.dev>, 
-	German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
-	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
-	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
-	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
-	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11, 2024 at 9:34=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
->
->
-> On 10/03/2024 02:05, Ian Rogers wrote:
-> > compiler.h - synced from include/linux/compiler.h, guards were
-> >  added to definitions to avoid redefinition of macros
-> >  in libc. ftrace, CONFIG_OBJTOOL and kentry logic was removed as
-> >  redundant.
-> >
->
-> Hi Ian,
->
-> This commit breaks the Arm build (and cross compilation for Arm on x86):
->
->   $ make ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu-
->
-> Something like this, but I won't paste the whole output because it's huge=
-:
->
-> tools/include/linux/ring_buffer.h: In function =E2=80=98ring_buffer_read_=
-head=E2=80=99:
->
-> tools/include/asm/../../arch/arm64/include/asm/barrier.h:72:35: error:
-> =E2=80=98__u8_alias_t=E2=80=99 undeclared (first use in this function)
->    72 |                         : "=3Dr" (*(__u8_alias_t *)__u.__c)
->        \
->       |                                   ^~~~~~~~~~~~
-> tools/include/linux/ring_buffer.h:59:16: note: in expansion of macro
-> =E2=80=98smp_load_acquire=E2=80=99
->    59 |         return smp_load_acquire(&base->data_head);
->       |                ^~~~~~~~~~~~~~~~
+Anne Macedo <retpolanne@posteo.net> writes:
 
-Sorry for this James, I was rushing. I'll address the issues in v2 but
-the one you highlight above doesn't look like a fun/simple issue to
-resolve :-( Tbh, I'm not sure how much value tools/include has in its
-current set up. It is weird the include order in perf prefers
-tools/include/linux over tools/include/uapi. Current tools/include
-seems to be trying to do a few different things:
+> Namhyung Kim <namhyung@kernel.org> writes:
+>
+>> Hello Anne,
+>>
+>> On Sat, Mar 9, 2024 at 5:27=E2=80=AFAM Anne Macedo <retpolanne@posteo.ne=
+t> wrote:
+>>>
+>>> The perf lock contention program currently shows the caller of the locks
+>>> as __traceiter_contention_begin+0x??. This caller can be ignored, as it=
+ is
+>>> from the traceiter itself. Instead, it should show the real callers for
+>>> the locks.
+>>>
+>>> When fiddling with the --stack-skip parameter, the actual callers for
+>>> the locks start to show up. However, just ignore the
+>>> __traceiter_contention_begin and the __traceiter_contention_end symbols
+>>> so the actual callers will show up.
+>>>
+>>> Before this patch is applied:
+>>>
+>>> sudo perf lock con -a -b -- sleep 3
+>>>  contended   total wait     max wait     avg wait         type   caller
+>>>
+>>>          8      2.33 s       2.28 s     291.18 ms     rwlock:W   __trac=
+eiter_contention_begin+0x44
+>>>          4      2.33 s       2.28 s     582.35 ms     rwlock:W   __trac=
+eiter_contention_begin+0x44
+>>>          7    140.30 ms     46.77 ms     20.04 ms     rwlock:W   __trac=
+eiter_contention_begin+0x44
+>>>          2     63.35 ms     33.76 ms     31.68 ms        mutex   trace_=
+contention_begin+0x84
+>>>          2     46.74 ms     46.73 ms     23.37 ms     rwlock:W   __trac=
+eiter_contention_begin+0x44
+>>>          1     13.54 us     13.54 us     13.54 us        mutex   trace_=
+contention_begin+0x84
+>>>          1      3.67 us      3.67 us      3.67 us      rwsem:R   __trac=
+eiter_contention_begin+0x44
+>>>
+>>> Before this patch is applied - using --stack-skip 5
+>>>
+>>> sudo perf lock con --stack-skip 5 -a -b -- sleep 3
+>>>  contended   total wait     max wait     avg wait         type   caller
+>>>
+>>>          2      2.24 s       2.24 s       1.12 s      rwlock:W   do_epo=
+ll_wait+0x5a0
+>>>          4      1.65 s     824.21 ms    412.08 ms     rwlock:W   do_exi=
+t+0x338
+>>>          2    824.35 ms    824.29 ms    412.17 ms     spinlock   get_si=
+gnal+0x108
+>>>          2    824.14 ms    824.14 ms    412.07 ms     rwlock:W   releas=
+e_task+0x68
+>>>          1     25.22 ms     25.22 ms     25.22 ms        mutex   cgroup=
+_kn_lock_live+0x58
+>>>          1     24.71 us     24.71 us     24.71 us     spinlock   do_exi=
+t+0x44
+>>>          1     22.04 us     22.04 us     22.04 us      rwsem:R   lock_m=
+m_and_find_vma+0xb0
+>>>
+>>> After this patch is applied:
+>>>
+>>> sudo ./perf lock con -a -b -- sleep 3
+>>>  contended   total wait     max wait     avg wait         type   caller
+>>>
+>>>          4      4.13 s       2.07 s       1.03 s      rwlock:W   releas=
+e_task+0x68
+>>>          2      2.07 s       2.07 s       1.03 s      rwlock:R   mm_upd=
+ate_next_owner+0x50
+>>>          2      2.07 s       2.07 s       1.03 s      rwlock:W   do_exi=
+t+0x338
+>>>          1     41.56 ms     41.56 ms     41.56 ms        mutex   cgroup=
+_kn_lock_live+0x58
+>>>          2     36.12 us     18.83 us     18.06 us     rwlock:W   do_exi=
+t+0x338
+>>>
+>>> changes since v0:
+>>>
+>>> - skip trace_contention functions
+>>> - use sym->end instead of __traceiter_contention_end for text_end
+>>>
+>>> Signed-off-by: Anne Macedo <retpolanne@posteo.net>
+>>> ---
+>>>  tools/perf/util/machine.c | 17 +++++++++++++++++
+>>>  tools/perf/util/machine.h |  2 +-
+>>>  2 files changed, 18 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+>>> index 527517db3182..db443947ccd1 100644
+>>> --- a/tools/perf/util/machine.c
+>>> +++ b/tools/perf/util/machine.c
+>>> @@ -3266,6 +3266,14 @@ bool machine__is_lock_function(struct machine *m=
+achine, u64 addr)
+>>>
+>>>                 sym =3D machine__find_kernel_symbol_by_name(machine, "_=
+_lock_text_end", &kmap);
+>>>                 machine->lock.text_end =3D map__unmap_ip(kmap, sym->sta=
+rt);
+>>> +
+>>> +               sym =3D machine__find_kernel_symbol_by_name(machine, "_=
+_traceiter_contention_begin", &kmap);
+>>
+>> Unlike __sched_text_{start,end} and __lock_text_{start,end} I guess
+>> this traceiter thing is optional so it might not be there.  You need to
+>> handle if it's NULL.
+>>
+>
+> Let me test with CONFIG_TRACEPOINTS=3Dn then.
+>
+Thanks for pointing out, with CONFIG_TRACEPOINTS=3Dn perf lock contention
+won't work, but I tried with a faux symbol and got a segfault. v2 will
+handle that.
+>
+>> I think it depends on the kernel version and configuration.  I remember
+>> I saw a different symbol on old kernels.  But it'd be hard to handle all
+>> the cases.  Let's have a single trace text section in the struct machine
+>> and use __traceiter_contention_begin only.  If it's not found you can
+>> fallback to trace_contention_begin.
 
-1) provide headers like list.h so programs in tools can have linux
-style lists, etc.
-2) stuff that (1) drags in .. do we really want the asm barrier code
-from arm? A sane user space program would be better using stdatomic.h,
-plus that'd give the user space program an ability to get compiled on
-to weirder targets like wasm. Plus we end up with weird type conflicts
-like bool coming from linux/types.h rather than stdbool.h.
-3) copies of kernel uapi headers that may be more up-to-date that
-those in your system, thereby exposing constants that things like
-libbpf depend upon.
-4) headers with the same name as and that resemble kernel headers but
-are really a reimplementation, like tools/include/linux/string.h
-5) headers we have just so we can use shell scripts to scrape
-constants for beautifying things in perf trace
+However, if we fallback to trace_contention_begin, we won't be able to
+filter out both __traceiter_contention_begin and trace_contention_begin
+at the same time.
 
-For (1) and (2) it seems a separate library would be cleaner than
-having the code in tools/include.
-(3) feels like a legit use-case, so we should hold onto
-tools/include/uapi, but do we want the asm directories?
-(4) sounds like it should be in a library, perhaps with (1) and (2).
-(5) feels like the headers should be alongside the shell scripts to
-avoid polluting tools/include.
-Not that I propose fixing any of this here.
-
-Thanks,
-Ian
-
-> Thanks
-> James
+>>
+> ACK :)
+>>
+>> Thanks,
+>> Namhyung
+>>
+>>
+>>> +               machine->traceiter.text_start =3D map__unmap_ip(kmap, s=
+ym->start);
+>>> +               machine->traceiter.text_end =3D map__unmap_ip(kmap, sym=
+->end);
+>>> +
+>>> +               sym =3D machine__find_kernel_symbol_by_name(machine, "t=
+race_contention_begin", &kmap);
+>>> +               machine->trace.text_start =3D map__unmap_ip(kmap, sym->=
+start);
+>>> +               machine->trace.text_end =3D map__unmap_ip(kmap, sym->en=
+d);
+>>>         }
+>>>
+>>>         /* failed to get kernel symbols */
+>>> @@ -3280,5 +3288,14 @@ bool machine__is_lock_function(struct machine *m=
+achine, u64 addr)
+>>>         if (machine->lock.text_start <=3D addr && addr < machine->lock.=
+text_end)
+>>>                 return true;
+>>>
+>>> +       /* traceiter functions currently don't have their own section
+>>> +        * but we consider them lock functions
+>>> +        */
+>>> +       if (machine->traceiter.text_start <=3D addr && addr < machine->=
+traceiter.text_end)
+>>> +               return true;
+>>> +
+>>> +       if (machine->trace.text_start <=3D addr && addr < machine->trac=
+e.text_end)
+>>> +               return true;
+>>> +
+>>>         return false;
+>>>  }
+>>> diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+>>> index e28c787616fe..4312f6db6de0 100644
+>>> --- a/tools/perf/util/machine.h
+>>> +++ b/tools/perf/util/machine.h
+>>> @@ -49,7 +49,7 @@ struct machine {
+>>>         struct {
+>>>                 u64       text_start;
+>>>                 u64       text_end;
+>>> -       } sched, lock;
+>>> +       } sched, lock, traceiter, trace;
+>>>         pid_t             *current_tid;
+>>>         size_t            current_tid_sz;
+>>>         union { /* Tool specific area */
+>>> --
+>>> 2.39.2
+>>>
+Thanks, Anne
 
