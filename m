@@ -1,90 +1,87 @@
-Return-Path: <linux-kernel+bounces-98747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 357B7877EB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:15:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E111F877EB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:15:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E14F2282825
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:15:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118AA1C20CFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE743CF7D;
-	Mon, 11 Mar 2024 11:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633483D986;
+	Mon, 11 Mar 2024 11:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="EVCuDCVk"
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2052.outbound.protection.outlook.com [40.107.14.52])
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="k3aJhzFV"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2133.outbound.protection.outlook.com [40.107.94.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA25D3C467;
-	Mon, 11 Mar 2024 11:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB2D3D556;
+	Mon, 11 Mar 2024 11:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.133
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710155673; cv=fail; b=QEDAIoMFEXVfg2bIN3FHZBEQsw3adbU7RqbbLB8uumWQgACYPxJKuc4toi2LcA0JEbMNwndVthdNgN7R7iH8eJUGrTpEuA/4oLqymGhpphbxHoHnWB3unaKCpoS21q1p9EIuHM6XExcRoFsInTKdiokZ1C/2IrxoWD7C57GB3Fw=
+	t=1710155680; cv=fail; b=q3O1Tk9VsOAvcjy4fLpcx99TfuOWQJDQZ6532GZBJODsecDzScWzHNXMH1h/Sy1wVfWbktERsNFrdUzGCmOmKIa8aeKs8HfswVZQo+yLFBhnglBTip837ZCUyIsd5fDyKaPRH3IGNjrmXwc6+g+NDd/eK6vfbUgVjgM8UU7ua8k=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710155673; c=relaxed/simple;
-	bh=HBmrhhEuWxy3hoO5iNeDkh8W1qQNc1bOWF6AbhCMw/M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=d8cqGF+12Y7AtPHpIJHFu21jiv+Dl3r5iUqAztwUxiHoAYdoZo7l4gue3AhO4dspejRPpKwCqSFJ2ub25tUd/WCWeP4S9fSxJXAHT7Nae1RdKa0gcBWUVM6iaZyvpjRBCgY1/UlkFxNavkix+Hyi3VPxVg+4vGHWSUaCNd16uKU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=EVCuDCVk; arc=fail smtp.client-ip=40.107.14.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+	s=arc-20240116; t=1710155680; c=relaxed/simple;
+	bh=LqZxRBu72sZ5DtA6tqfahM0Zsk7K+kpu0T/sAawRyPA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=STRXfSjyZ6mx9Wgwt5sd25SOMVxc7Rb/EUO4NfandrmDjTTXrSM944TcJ7rVw0Zr3KuZG7UXbBDSjmyeGL4l2QfbDyJx3lfE3S2YS9IklBeH6+XotXJ1leX4i9ENvv9hGGgknm3prfHdNN4/5GCYApBOuQjUW/34u3jAuMEy5zo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=k3aJhzFV; arc=fail smtp.client-ip=40.107.94.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fMdEP0eMkUcU11PDBdAw4rbf247ZZywF/OsJsF+sK7EC7mG4Mk05QnMWHtEUDETG1rXXj9z+WHug8GszHFSyhg9HuifyY1cleomf6vI9VJadPqkUeon8/NT+xzD1WTlpE9KuYCl29Y3I3Tpxh7+cdFwyrdaonm8LxGK1Uw1IOZPTrLjvI2H/WDNWrzzrQQPGX30AjEM2fUYyYsCS6PDm0JIL82f/I/nznNMUdi1zHS/jEqrKgi/c0hCJDvQOIRwoQuAxjRLqNqDB7v9X+Eynqt731WqzJHX5jYRWa7YjOx1IF0+d3AyLNiX4dkEKy3uVNNQ4WefX4xMM/azOrDVZjg==
+ b=j+RALAhWGdWmtwbPJSUjeoGOKJ8p7qFSVb+SCREveH+Lk3pCkRT5eUEGvVR7rcRZ28gdTxgjdnE6lgFOfeSDZVxhtc2grojYG1ViW405nsYEqoxpPiud9Ji01PqSTPZtzrveII2yh0iLZo0kiFANkhqUedHCvDeYKy1huulJBUrFBxcT22R74YDY2wcwOJX2irtV+3hXhD9B0Zn/isBWP50CNgTBZbTlERuKCRZ97s9ZUWHMmA55HnlSYbzOEX98PF+Fax1cRjKL8tWM2dh45sGXZrhxCknU3VV67vnaMCRtMVLm/rF6dXOShrgk7RRraQOaF4ocYNdX4xQGFJpNNg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=usFJflqaAIQAVMktPObw+rK+eyJhCtZONibE7XKKYLg=;
- b=h2+rlVEGd2WP2rin3of4DofefILKICr27XGKPmPta5q9ECTmNdIJPOYznQ8EYJZ9qhicpv9bC57lebSKjEFB9MD7f/V+K8mDH4br+ScQPqA3fCxgkhKnvPCgu0zZpqd0rJOnbth/aftpvKotPRYO/WyWGAouacjpGxEPx/LHbArB4LODw2hXYofr0XLzGfREiXaNYQYmDY5unCu6qYZt7bCGKk7B9yziJ1buCH1lAgeRP7xwh4pKjbNqGZtxAAt+PaWMqaSj/StA6uuXKdVxtYIYGiXI7OlFK1aL/u5zBLyUAO2gxaQETaN6Yv1+7lykkg2zChLk3KAKyqokVgJTGQ==
+ bh=X0u40wOJfOwoU4DKcUXVHsuNz8t8DGXO0rERZzjej3E=;
+ b=PJvDroDVvrF3Mr4d2kiU9owGQkCqJG3Pk9PVEPWUyQ2disdY1cD78okH/cvdxoMAPbl8coD6QZCEKCdPPJAMWujSZ4StMYbXVhedY5kuJGo2zSwXw3Set4vUtmcOoV3Zp4b4x8EGrHqk/Wg2KZZjjVPUxSQwbKEk9XnheJMS5c6+Q3CC15VMl5viHeM7VxUPh0i120B2zItkDro+QWr1wb1lDO1uNbNaZlGWmOrh5dAzxfmrQADkNjRbO79Isb5K5STGTd9nIBIZE5AqY3zY92gs+aPogZFKZZ3BZuybssud9hGyCKMkjeu+06fpEfxN3fRI0CrkXyFl7fXRw339zA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=usFJflqaAIQAVMktPObw+rK+eyJhCtZONibE7XKKYLg=;
- b=EVCuDCVkVl2z2NpRUN5jhckIDBw7HugWuo3/EC0zXo877UDhGAAY6Kp/Zzr3vFiXFHIvaK0s0AQ8KYv1N7/M8Aglw6h3RHkr5fUgMAExE6Lxn9NTmCXxRZKA4H1/fdVxZrDzAvmegXCBo/i2Vt5e+NU5Oixb0yOlF7MYmORsHGI=
+ bh=X0u40wOJfOwoU4DKcUXVHsuNz8t8DGXO0rERZzjej3E=;
+ b=k3aJhzFVv4h3FT0dkNfOuG9xUJPfp1JCscWRpsoh4uvJjmwvjb69BmS9iPB0Qs3CVLiaCEkJ2v4Ea8bW7KN/4Ad9DOtha7Rd9jm0RX+wu70xz7FHpZlRGtrU0Yx3RTNMOZnrngeGOERC813IHwCCHbv5Yqzrb5ldDoQuuDR6BT0=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DU2PR04MB9145.eurprd04.prod.outlook.com (2603:10a6:10:2f4::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
- 2024 11:14:28 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::4bee:acb0:401a:3a01]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::4bee:acb0:401a:3a01%7]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
- 11:14:28 +0000
-From: Chancel Liu <chancel.liu@nxp.com>
-To: shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	linux-imx@nxp.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org,
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
+ CO1PR01MB6741.prod.exchangelabs.com (2603:10b6:303:f2::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7362.35; Mon, 11 Mar 2024 11:14:36 +0000
+Received: from DM6PR01MB5947.prod.exchangelabs.com
+ ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
+ ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7362.031; Mon, 11 Mar 2024
+ 11:14:36 +0000
+From: Chanh Nguyen <chanh@os.amperecomputing.com>
+To: Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Justin Ledford <justinledford@google.com>,
+	devicetree@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH v3 2/5] ASoC: fsl: imx-audio-rpmsg: Register device with rpmsg channel name
-Date: Mon, 11 Mar 2024 20:13:46 +0900
-Message-ID: <20240311111349.723256-3-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240311111349.723256-1-chancel.liu@nxp.com>
-References: <20240311111349.723256-1-chancel.liu@nxp.com>
-Content-Transfer-Encoding: 8bit
+	OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+	Open Source Submission <patches@amperecomputing.com>
+Cc: Phong Vo <phong@os.amperecomputing.com>,
+	Thang Nguyen <thang@os.amperecomputing.com>,
+	Quan Nguyen <quan@os.amperecomputing.com>,
+	Chanh Nguyen <chanh@os.amperecomputing.com>
+Subject: [PATCH 2/3] hwmon: (max31790): Support config PWM output becomes TACH
+Date: Mon, 11 Mar 2024 18:13:46 +0700
+Message-Id: <20240311111347.23067-3-chanh@os.amperecomputing.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240311111347.23067-1-chanh@os.amperecomputing.com>
+References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
 Content-Type: text/plain
-X-ClientProxiedBy: SI2P153CA0032.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:190::23) To DB9PR04MB9498.eurprd04.prod.outlook.com
- (2603:10a6:10:360::21)
+X-ClientProxiedBy: SG2PR02CA0088.apcprd02.prod.outlook.com
+ (2603:1096:4:90::28) To DM6PR01MB5947.prod.exchangelabs.com
+ (2603:10b6:5:1dd::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,80 +89,129 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DU2PR04MB9145:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8e6a5f85-312d-4608-7aeb-08dc41bc6b0d
+X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|CO1PR01MB6741:EE_
+X-MS-Office365-Filtering-Correlation-Id: da385cf0-3817-4bc1-6637-08dc41bc6fac
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	z4YKP//FkGWJWjXedlif15mYH5DI9SOZi4o62qPaCuRvfyTzgNJo/KKUB72fkTxyDcF6/IRQYhbLEZxt7rbtAvoTOPsIrcfZ573zfvrqAADJvUEZ6dg26I5JFAbx1BSdxR7D/Vz5Vei3w9m1WbKavBb9VXS5cEy3SQCoLUZeYpxxZO2fdmzb+URdSUr880VouEMzpbDXY/043HlDBweW7lNSj3lFF3PmoLJ7+0oZFnj4FKacW9nkWyNnijvjJp5wx0e+jDzrbPoFsdunwxNX7bCPjmvyq7W+w//nI/e18jS8PgG0dAeOlBaymiy81NLom1zlsBWiMxZY5XdpoCAcZ56w0/4W6NQvA10vRPf7yUAhevY0RWVydivXq/WptRzvoCDGXxesBITeJvYW4+5yDqTZGK0v7H/NIfWQvy9tCDgfD0Qynn9Ui123kO1LurL/LqsLOH4zjVSZfsUkNOoyBhAEeQeKh4jLwH7LsxMEzbvwS5RtuPUG4GRVa4ss/rFD4xCmliP1rp39Lku/9/7aA7xLXlwvKyoZlyTFLi2p8zR2xNN9sB6X++qEb7vbcvhOFoNFFLM9F/7KsSm+TrjqzP+QwM5xhJ7nuLdkwbqk2AvEEUSgnm7tjVjJpovNURYoEif4xvvKLebpuLvq3aez/+cSwk/n1JGNjkxCy7THKl0pPh/bDWnVcZmJv6t+KczyqW9uIMFaWDKmEtq25JwW8ptYhMSznSXtwZz2rVSO8uU=
+	WfsU27adHcRdXAKZcrfNjjsPccytwwdugpig6Qhy/8em//icqzmxU4Hg0z3iHK3pix1ARI+tVNpHvb+Qj8uE2QZfb77kBVOpTGcq4Dkboykgj2i8ZO98XAEagTEckAChryq7vmb56vyAP4dAua8/fyQTIr/2yQvNgjnxeZPLrcyPSF13JUAFcjKHtXLKpMZfV0WmCZAp6QNALxPvHF5prwEhRCkeJEGh9Ez9CNwcGCEf4wR9Kli8e9grTgnATdWpOAuidYTjnwFA+k3zOaefxWyzkrccSNrRJsA+Ayt5rgkBV4rpp6jVyjO/HyrHD3qohF/D6m1JldTAancuBR89IdoZ68G51xLW3qnlByaxjitYwH7w6lO8hrYmHX7t5DlfjixeKY00wn1BYrOsTb4dXu0NcMkYJiesxF1zU0jk6ymqLEnh3H/JDK9tOER9l4Dc7xcQU8ek2tivVKuDpAu8Rk4RGr0hiiaUeKjghM2JQXAc9dHLneQ09numaLFmMYuWPVj3c8tnJeM9Fjg2L8wFOGFMhjIIYIhUpYgSqCSY4Sxat78wpDutCGTDExEKEohJsWfdf3FeMlAJGDcxu5yBu/M35mhfcodh+pFy8/46s4HmUVd88vTRfDE5jJ10Lv7QH95CZvbNloW5GfvTg2u+TkU4/BASrHTB/T6HAJBdP8xRQPyxPCYt7e47lCaCnCIgHGF55zTf9qQWEv0VGu0fX77TcmZaxONJUcTahvsl8kU=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(52116005)(921011)(38350700005);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(52116005)(38350700005)(921011);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?bfNzYetF4HRvJi3PD1cNSNd1V41TcG2Co8pqBeCdhItP5WL0/AN7rDR1Uf4Y?=
- =?us-ascii?Q?CeP6lPbExuhB+z/7Qvq3GOBgs8bZtIuVMPUKw0oPZnCamY7XD4DIl+aqLAJf?=
- =?us-ascii?Q?U7U9pPFcri+R1a1Fn9EfuR5219KEeC9vOnoaw1EIxXB/b9vwB4JAoG1iyOQh?=
- =?us-ascii?Q?87AL/GbIRTXGgwjUBz0uudiBDYeTEcxcKX8gSxUVTEKFeSWA1cEwNwQJ6JDc?=
- =?us-ascii?Q?H5wsVQ7hEifDeuM1VFYMfgSSa7S3tRtgtMWaPuPV9puiXvJvkOUfZjUi3g9d?=
- =?us-ascii?Q?f25OyOc7dfKZJXdfJJQaqaoW2DPGwkM/ODqkM1TmdDHtxbpXgwfaKpy0ZLVh?=
- =?us-ascii?Q?vKY0f42h9pt2O1oXqIUMjmqNsD6mG/hMNp52cRbwyS78KSIWedRQJ3qBbyzJ?=
- =?us-ascii?Q?3RqWa4tbQ20tJ8LA2kBlcHsZgHsbZvOtIp1wObfzd99H9ZqUcrFDTQeMypmf?=
- =?us-ascii?Q?fgwmSVwDr+eYgHKWbOSgSSxlyU7vIIHCfRVaMc4W4kvPvPO+npM1H4NIm/xl?=
- =?us-ascii?Q?xmVwnwqF8tawTSVKJZZnd+/irLgvgkzEnbMXOzBP0Lf3UVi5nxHupT+Z3W4U?=
- =?us-ascii?Q?JsxmOlfbja77vemiokovXaLIUIczvlQf+RgGSRATKaunvUQxtz3tsJAMSx1m?=
- =?us-ascii?Q?RzxT5WqbtLjo1x2jtrbBLCqhPl3/hy1EuaalEODWGh23JlM8kn6x46D1VD+L?=
- =?us-ascii?Q?9bX9pVTQNNUNT0xG6E63Q5o2wWI10nQMVxOfsmUr3rvJ94BdtUhZyHu9N7bX?=
- =?us-ascii?Q?AY+GPRrnLTAJL33x4UaXskpTef/VEcIbSLc2fkRoYJW5VVc1h3ijutcAbVwD?=
- =?us-ascii?Q?misl5Z879areBO2aoXZxf+UjEcfxLm6tClldxnTpsOqh7DgCECwkCatwZkx8?=
- =?us-ascii?Q?kMzfasMj1+k3RAhh2Pwm+J+uHZGseQq2xpuAoVKjc+Om4INcOuT9pkRj6GtX?=
- =?us-ascii?Q?jjVVr7eVpNTB0E95aCXx9YfiDO8BeTQbH3Jor1kxJ9KsrvUkFi+6q8TFYTxL?=
- =?us-ascii?Q?/dKqit0BLxb34ZeIAqMd4JW4Lv4b2zqQJ0BjmmtDakzQc2zVufRbpGTmkopo?=
- =?us-ascii?Q?V3R6kUaHLHh7MCN+JoQMZn5yMnZXSbZp52Dip7m5qJygivQIFWjmlUmOUrwV?=
- =?us-ascii?Q?w3NSucFedJXSuFjeFpKQZZ9SFZpmvbp8gSVk+2t32GExVbcUK9XzUpMNlrTB?=
- =?us-ascii?Q?hMZVCApA3VmO6rLtR7Ah//kQ1dEi71s8C9sDGMd/gyZ+aUJn1MWowJ/JpQSl?=
- =?us-ascii?Q?I8xhF/tfIIWMuswhVIFt0AZ4EUuRYWGFE2CVWbKz1RduKIKji6VMk7uQlftY?=
- =?us-ascii?Q?nGig+v2PlkdQn8IQ4JAZKdPQsLQBNBkgRo1wQk1i+0WeUfcCbkPQJnpbQmK2?=
- =?us-ascii?Q?VUnwYDtq0zlmg7B8/3lX+xk5ElrNuE4O+gaNDS/qePvtz2G/+41BnmhyqEEi?=
- =?us-ascii?Q?IAWE3CVl3jYvfdIsf1h5tv2BvBt8PriKhKYb52JtY/naz6Lc6eE+OAAKiZXJ?=
- =?us-ascii?Q?6fSbj4H6JCRf+4HYyodL63ts16TtH9Ag3ssjs+zDAzoTVPaCtWU6S3ZdqjUw?=
- =?us-ascii?Q?dwG5gv08mrTy+bRBkDYID6P0LRVHxoZ/XCVLRG3m?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e6a5f85-312d-4608-7aeb-08dc41bc6b0d
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
+	=?us-ascii?Q?Tj8yy3k1htddNRIYszg9O5MvkKU5CFeYBNPlneH+ScfQAEihxgLsgsuDCuk4?=
+ =?us-ascii?Q?7soO20w7PD88KXObcwEntOX1ZWiKOxM6U9TOiEt1NUAhUMR/nWI/IpwlZarf?=
+ =?us-ascii?Q?Y/KPHuoHXbfNkc8+gLcJyJ1DY1Y9vZt8C/Rc8yAK//NTdVPo7unPOJXsI3vS?=
+ =?us-ascii?Q?inCukDh6VltWG3cc8wu+3kVYBpcNQ3eRq/QQxWV6kp4Gzor9wFj/aNe7oRqY?=
+ =?us-ascii?Q?B/WRNHGYUvDJWzhljy+ptrR8Xky/tPxjvNRXeiPFJh+9UEYWbvPBAmPC2sdp?=
+ =?us-ascii?Q?N2NhDhq3CPyvCrvc9GGjyx2SH3+WPJfMzZxYhkgY7J0IiwA9P676nMhf1UQ0?=
+ =?us-ascii?Q?Ai+J8x1bUAlijAxvDo+n1TySy7fTW6gUgvJrzyObLrfFUtOlNZFF41INAz0b?=
+ =?us-ascii?Q?WqxvvI5Np8jh46pjLDx/NxTEbXo4wW2bI6sjpKAD6yjWXCmuisjeeD6NciCY?=
+ =?us-ascii?Q?aqNSyYfJfWDG53Tcax6bHOMc0sU+uFfxRT3OL1tN9miJHb8eNWEW1sBQOVT3?=
+ =?us-ascii?Q?BhhGwL06adPuNN+XcSbJGWj8BD8WLgrT3cTUkXIvF2lActj1sonlJzb6NGBE?=
+ =?us-ascii?Q?ZJ5kw4WqT1vgWEXxusG3FmWtRJKli+CVhj1VUkP6vIE+sz6TrSyEzBtgf7IQ?=
+ =?us-ascii?Q?hvcDUlWgtz5P9drQWXAL3ENQjkyaBjKq9sGaRz6tM6akj1j+q7msPpXHSi6/?=
+ =?us-ascii?Q?YT3uS/nsSAjZewvLvub8ADlNZBuJhA+c2yZb3tbaMmZ8PqaKw/lx3iETZUr1?=
+ =?us-ascii?Q?3B8x8oJehGYZ8cFK09weL4inGkuVOwrRRWhlzqv5xn7qm9H2G9YL/UCeSQrX?=
+ =?us-ascii?Q?2tSSgT0V3QgyDnnX2PfLuIBdgrLtgM6RFneHPz5Qp5HgYxqbpcnN8hXy1R0m?=
+ =?us-ascii?Q?OAlLrIw0Y+x3jlPF5wcFDM5hVKptme955tu7zoKqOlSf7OVV5ZTHEJfR6d8O?=
+ =?us-ascii?Q?DHhEnxS9xLp3rYMUXTHBMZEG1ZiE+RDutrwqY3Ft/KbxycbfkVeCHICReFHq?=
+ =?us-ascii?Q?uNrvZD+1w7A54bD0rR+4GFaSoqsTetUFWh5MM4OSZOvdgtfrwoo1UrrHXaCd?=
+ =?us-ascii?Q?odToK9xQaoxkou+SnNWSBIE+pFRyud+r7Bq69oq0yS+YQgXsIuvaKqcmq8JL?=
+ =?us-ascii?Q?RewilZ8PwJ22U+eWalZC+juDY26UtHVUU1pTZfPqNuTRZkoQyjppLhfZfR+Z?=
+ =?us-ascii?Q?POLYEwA24xY0Fkgn7/xl/VvAGFC2h+3T/RoOY3GDiDCl/xOIfPYzdYOdd7p3?=
+ =?us-ascii?Q?GV6deHB/qYy0AL+6ljqEjzeI/syF8TKNRAT8/FUgj/Hzrt/ybb0pOrLCkeyU?=
+ =?us-ascii?Q?OIuyyL3ZGKq3bp2WnC8cySYH7yUuer7pA0LmtsP3K5C2Lxhjet2BnmrcY++A?=
+ =?us-ascii?Q?BvFoYskBpKEtUwx8Z/NIA576KGeeSoK05+rVn6oaDEl97GlLXihRFWgFx0V3?=
+ =?us-ascii?Q?Bn/RAfdwOI0y53y93oMtWLa4dYcC1cNeO65rMlmFKS6tqYuio/Fsn4X/Ton3?=
+ =?us-ascii?Q?7kqCc0pHf4BS3sWR0ZbBI9hQTa5BmkgeZtakY0Tm8uTjLlj42p8mvHvpCct4?=
+ =?us-ascii?Q?FKVRwAmOUt8LG5/xj6Gv0cAhJHhXRqF8Go1txw0UKYvBPSjQcIpli34EX9wg?=
+ =?us-ascii?Q?XW0Nke2Scrc7K8P9UYC3cXo=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da385cf0-3817-4bc1-6637-08dc41bc6fac
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 11:14:28.8908
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 11:14:36.6883
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zkv8/kGI35tjvf7e2fd1gUl4RdGlFQy6+un4sTrSVk7wH7K48dxlPQZ0dMKtC/ZLdDMQkkbkfqLwkPi2U9e58w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9145
+X-MS-Exchange-CrossTenant-UserPrincipalName: wH7hqo8vO/dENqX/ZBAiniDmvvDKl1jEYt9mXE5e6mTJTAEIfw+b9MruQMrD7Pdro36iLM4apm3p0jY2R1COiZL3No9pKzTGmXKwn+gl543GZ44QI1qahFeuZl+7I8qa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB6741
 
-This rpmsg driver registers device for ASoC platform driver. To align
-with platform driver use rpmsg channel name to create device.
+PWMOUT pins on MAX31790 can be configured as a tachometer input pin by
+setting bit[0] in the Configuration Register. When the bit[0] of a channel
+is set, the PWMOUT pin becomes the tach input pin for the channel plus six.
 
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+This commit allows the kernel to set those pins when necessary if the
+pwmout-pin-as-tach-input DT property exists.
+
+Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
 ---
- sound/soc/fsl/imx-audio-rpmsg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwmon/max31790.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/sound/soc/fsl/imx-audio-rpmsg.c b/sound/soc/fsl/imx-audio-rpmsg.c
-index 289e47c03d40..40820d5ad92d 100644
---- a/sound/soc/fsl/imx-audio-rpmsg.c
-+++ b/sound/soc/fsl/imx-audio-rpmsg.c
-@@ -87,8 +87,8 @@ static int imx_audio_rpmsg_probe(struct rpmsg_device *rpdev)
+diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+index 3dc95196b229..33ca8d1721c0 100644
+--- a/drivers/hwmon/max31790.c
++++ b/drivers/hwmon/max31790.c
+@@ -12,6 +12,7 @@
+ #include <linux/init.h>
+ #include <linux/jiffies.h>
+ #include <linux/module.h>
++#include <linux/property.h>
+ #include <linux/slab.h>
  
- 	/* Register platform driver for rpmsg routine */
- 	data->rpmsg_pdev = platform_device_register_data(&rpdev->dev,
--							 IMX_PCM_DRV_NAME,
--							 PLATFORM_DEVID_AUTO,
-+							 rpdev->id.name,
-+							 PLATFORM_DEVID_NONE,
- 							 NULL, 0);
- 	if (IS_ERR(data->rpmsg_pdev)) {
- 		dev_err(&rpdev->dev, "failed to register rpmsg platform.\n");
+ /* MAX31790 registers */
+@@ -506,9 +507,12 @@ static int max31790_probe(struct i2c_client *client)
+ {
+ 	struct i2c_adapter *adapter = client->adapter;
+ 	struct device *dev = &client->dev;
++	u8 pwmout_to_tach[NR_CHANNEL];
+ 	struct max31790_data *data;
+ 	struct device *hwmon_dev;
+ 	int err;
++	u8 tmp;
++	int i;
+ 
+ 	if (!i2c_check_functionality(adapter,
+ 			I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA))
+@@ -528,6 +532,33 @@ static int max31790_probe(struct i2c_client *client)
+ 	if (err)
+ 		return err;
+ 
++	if (device_property_present(dev, "pwmout-pin-as-tach-input")) {
++		err = device_property_read_u8_array(dev, "pwmout-pin-as-tach-input",
++						    pwmout_to_tach, NR_CHANNEL);
++		if (err) {
++			/* The pwmout-pin-as-tach-input is an array of six values */
++			dev_warn(dev, "The pwmout-pin-as-tach-input property exist but malform");
++		} else {
++			for (i = 0; i < NR_CHANNEL; i++) {
++				tmp = data->fan_config[i];
++				if (pwmout_to_tach[i])
++					data->fan_config[i] |= MAX31790_FAN_CFG_TACH_INPUT;
++				else
++					data->fan_config[i] &= ~(MAX31790_FAN_CFG_TACH_INPUT);
++
++				if (tmp != data->fan_config[i]) {
++					err = i2c_smbus_write_byte_data(client,
++									MAX31790_REG_FAN_CONFIG(i),
++									data->fan_config[i]);
++					if (err < 0)
++						dev_warn(dev,
++							 "Fail to apply fan configuration at channel %d",
++							 i);
++				}
++			}
++		}
++	}
++
+ 	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name,
+ 							 data,
+ 							 &max31790_chip_info,
 -- 
-2.43.0
+2.17.1
 
 
