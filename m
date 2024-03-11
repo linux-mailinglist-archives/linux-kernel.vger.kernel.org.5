@@ -1,164 +1,78 @@
-Return-Path: <linux-kernel+bounces-99627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D876878AEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:50:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6CDC878ADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:44:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAD30B210E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:50:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71F77282308
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:44:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3945858236;
-	Mon, 11 Mar 2024 22:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9701A58AA5;
+	Mon, 11 Mar 2024 22:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2JMcx+Xw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F+g1Kpq1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2JMcx+Xw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F+g1Kpq1"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cYfY0ErC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02F758119;
-	Mon, 11 Mar 2024 22:50:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92B95810E
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 22:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710197420; cv=none; b=SK3XbKGkStqy9qyjKbxekgWBxFG+ru0MqkyLTtE39NoaUKyI9jgbee24hoSebHVvZpvZ4xGMwlcB0Rd4Pa8+e+En45hPISoR98bIT/eJtYLRk8hApp6pcyuZtdxvKrIwMreAUmSmkOa3+gLuWtrAZTTSkU2Zl09p4iQWwfUyNDs=
+	t=1710197077; cv=none; b=PhROvreCtzacyxmoINwlWV3agLgrgxkpiT0NJhIe3nItS8/NQQw3WaIEvSrjc3VAHVN+q8pk7EuWLLbGKmJi664csW99Rali6eaTZaC6Iv3byJWEDY+FFsnFykxVcd+hFUqdWODa1m4thCwVfvXHWe86IhaGT+zPvqmPiB1JpFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710197420; c=relaxed/simple;
-	bh=6hEw/tubGvPxhFiRELWYV1/vJLyENcju0/g5UjQ5KqY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VLy0ZphqNqWOgjp3UGqfpVDUUem3DDNduK5gRlE+v0ryGKAqq+N/H14VPP5vLRaEvkBMd7SF8N1Fv43uHcAw/9ADMFIbgweCc3uig+i54/qMPYsWSlfBlmSJ2njjmOz6tjhGRkSyDMOpF/2tTqOg17Mmh2iVsEpSOxysY9GLUQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2JMcx+Xw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F+g1Kpq1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2JMcx+Xw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F+g1Kpq1; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 88B38351BF;
-	Mon, 11 Mar 2024 22:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710197409;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZxUzTMlXn3tjcFXFnIZtmdtt4eI79Utif3t7gSNN5zI=;
-	b=2JMcx+XwlcbtzsHasDWy6ZqzZxXsO3ioT+8RzDCQ0YvK0mSr6RGEEmrDkprLn9iu/wrFlb
-	2nBv61lu5TWoLC+nmdgCMjeN3iwiOxMPT1xggX7YslQnNgaZkdTVnamLCxVzptOzNdUH+k
-	gdB/u14tP/OhBm72q0zbrsymW1HQx5s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710197409;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZxUzTMlXn3tjcFXFnIZtmdtt4eI79Utif3t7gSNN5zI=;
-	b=F+g1Kpq1z//72iAQU0s5syM1OR3D2vd1+VUaZDH/4porC6DOlqeOzQCvwxbMLLcaGNGQzW
-	MuVHYv5vFOygdiCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710197409;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZxUzTMlXn3tjcFXFnIZtmdtt4eI79Utif3t7gSNN5zI=;
-	b=2JMcx+XwlcbtzsHasDWy6ZqzZxXsO3ioT+8RzDCQ0YvK0mSr6RGEEmrDkprLn9iu/wrFlb
-	2nBv61lu5TWoLC+nmdgCMjeN3iwiOxMPT1xggX7YslQnNgaZkdTVnamLCxVzptOzNdUH+k
-	gdB/u14tP/OhBm72q0zbrsymW1HQx5s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710197409;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZxUzTMlXn3tjcFXFnIZtmdtt4eI79Utif3t7gSNN5zI=;
-	b=F+g1Kpq1z//72iAQU0s5syM1OR3D2vd1+VUaZDH/4porC6DOlqeOzQCvwxbMLLcaGNGQzW
-	MuVHYv5vFOygdiCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6618113695;
-	Mon, 11 Mar 2024 22:50:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QldwGKGK72XGBQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 11 Mar 2024 22:50:09 +0000
-Date: Mon, 11 Mar 2024 23:43:00 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Message-ID: <20240311224259.GV2604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <2f598709-fccb-4364-bf15-f9c171b440aa@wdc.com>
- <20240311-zugeparkt-mulden-48b143bf51e0@brauner>
+	s=arc-20240116; t=1710197077; c=relaxed/simple;
+	bh=gSLjUKQuiZ+go9sxFRBcW7++ax6JRsF9hPMbiCajCXI=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=KcdYlDQUV3W4nWza0vF2PA/rEabjjzQJNp0DVRWrCY2RfDyV3qLxFzXEHSIYjUA/ReFdhfCGJhw/xOpzU9MZdU0S+DD0l9zvw6RNH6bhjDw7gQzVamlYyTJ+0ronAdtxValCvlrmk444SvHg/a7HhZGErSRoSY7flcwIAZQ4LiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cYfY0ErC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B2C5FC43399;
+	Mon, 11 Mar 2024 22:44:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710197077;
+	bh=gSLjUKQuiZ+go9sxFRBcW7++ax6JRsF9hPMbiCajCXI=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=cYfY0ErCklYTmmBvfYz3aZvHXykN+xOeRce0ulSjG8+/nptpNP20LyJ+4RnMgqitO
+	 bApIVTY/63TWcct1OZ6KbUtySaA+K5m+pGbzJJLdcjO+a+iF32aCDVCPQ19Rillc5N
+	 TxyJiSkBoDQz5ENXkRfggMq5NkCPUjprcVYzj3N/pyoID0CKpAwybnob26s17o72J5
+	 O4zZknZqxyGvLKN4tq1edzun818Rkudc52hTm4sWn2MtzB3sdAeOtdOrJjL7j8rJN5
+	 dHr/caideDifMDnNR3avtez+hFGD2+Apwue/9VQO6AQ0eRTMLX8NwNZrIQGoR2mJBe
+	 xj82IDFSidZLw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9B983D95055;
+	Mon, 11 Mar 2024 22:44:37 +0000 (UTC)
+Subject: Re: [GIT pull] irq/core for v6.9-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <171011361246.2468526.10740060923051583953.tglx@xen13>
+References: <171011361246.2468526.10740060923051583953.tglx@xen13>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <171011361246.2468526.10740060923051583953.tglx@xen13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-core-2024-03-10
+X-PR-Tracked-Commit-Id: f7f56d59a3923e95bad2c49615a4d7313ed78314
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 02d4df78c5ae70d283ebb4f78b9dcfdd4dfb71c2
+Message-Id: <171019707763.5315.41050767105686955.pr-tracker-bot@kernel.org>
+Date: Mon, 11 Mar 2024 22:44:37 +0000
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240311-zugeparkt-mulden-48b143bf51e0@brauner>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 URIBL_BLOCKED(0.00)[wdc.com:email];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[44.46%]
-X-Spam-Score: 0.20
-X-Spam-Flag: NO
 
-On Mon, Mar 11, 2024 at 02:43:11PM +0100, Christian Brauner wrote:
-> On Mon, Mar 11, 2024 at 08:12:33AM +0000, Johannes Thumshirn wrote:
-> > On 08.03.24 03:29, Kent Overstreet wrote:
-> > > Add a new statx field for (sub)volume identifiers, as implemented by
-> > > btrfs and bcachefs.
-> > > 
-> > > This includes bcachefs support; we'll definitely want btrfs support as
-> > > well.
-> > 
-> > For btrfs you can add the following:
-> > 
-> > 
-> >  From 82343b7cb2a947bca43234c443b9c22339367f68 Mon Sep 17 00:00:00 2001
-> > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > Date: Mon, 11 Mar 2024 09:09:36 +0100
-> > Subject: [PATCH] btrfs: provide subvolume id for statx
-> > 
-> > Add the inode's subvolume id to the newly proposed statx subvol field.
-> > 
-> > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > ---
-> 
-> Thanks, will fold, once I hear from Josef.
+The pull request you sent on Mon, 11 Mar 2024 00:38:50 +0100 (CET):
 
-We're OK with it.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-core-2024-03-10
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/02d4df78c5ae70d283ebb4f78b9dcfdd4dfb71c2
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
