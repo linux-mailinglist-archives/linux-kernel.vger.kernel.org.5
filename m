@@ -1,145 +1,190 @@
-Return-Path: <linux-kernel+bounces-98770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48907877F1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83144877F1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:36:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA0181F21D24
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:36:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0CCC1F21DE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7073B78B;
-	Mon, 11 Mar 2024 11:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0CE3B79F;
+	Mon, 11 Mar 2024 11:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="SrUb7nx6"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="imLa5gJs"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8D911187;
-	Mon, 11 Mar 2024 11:36:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710156973; cv=none; b=eo7Poqpk1orI0I7Sa3dprpkZrXlyYrRbTbgBtp4+g5A8L0PRPynUZF7xODq0mHyGV8LZAxR0zqBO+iEsRDEAZO/7TWjBYfQr45l9t9leYPLsPVCG/wDWtT1KIHaZS1b9CG125PmxEngeGipFQW6SgWlx5Q0KNwsnCX8f16W7Eog=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710156973; c=relaxed/simple;
-	bh=Fa/ucm725FyyWh4vLGlZ8mVa9jvhTNbD3PEA+Vj5CXA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F2dESqIs8YGaFAjhbumgaNh3YZLM9zSVSmjSnzCAWsTWW9XWXOKEj7xYg36fe7OUCvbv+yOxuDCcEAWIDmxIfkB/9knEPVgU5FG/rSPugEAnNx8EOx13xJhFcp5pZcsBQaoJdjh4dAf/Ogya9/J9hkNRZ9I/8+KYeDfFSuW0VEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=SrUb7nx6; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42B8LeEh004167;
-	Mon, 11 Mar 2024 06:35:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=B2yXBVF4yQav2XX
-	ZoUDETCycEZxy7aTCa2+3bNy7YGc=; b=SrUb7nx6GggKJSCf02xDbS3N0IZmvY5
-	GcrKqlxgI4PFKruRejF25HGkejPxu9v5FMx/77l3yDhOgjWARu0iT3LmZxjVLPDy
-	txFaeao0HVzCNHEhjeI5han+pXvmPxCgFFSPsamijmH3PFtQBji3xAhMJIXq724k
-	ISGEiWVh3aAEFzYxqtcP+xlRSka/OQqFFI2qRmjxpJU6HSSenaBwJcpZGawdvpg5
-	oRKKW3U8QFxNJl8UWO/bclJI6HzN6bnIsj22xqeLgqvkUKe+LAHpyOpZ4VktSDLc
-	MfAEOsvAjduMBCpR+08ORWU8y6yhNNh1cdddcj+zp9CNY5uc2taJsYQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wrn2psv51-1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726363BBC6;
+	Mon, 11 Mar 2024 11:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710157001; cv=fail; b=T98KfZSLBE69C5ycESJcgL0EXB3fxEgIlA1ZQaGWaEjjwFm5+IUvU8Viscf1dSOYlmmbdD3yl/+4lAkEEV83nOXTWqcz2Z0v2YpKBnvA8WqKCUv/IthgIbRAt8rTkszk8i+UgZeGQ4j5Xh58DnDPqheo8T4P4VJJt20xc8oyB3A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710157001; c=relaxed/simple;
+	bh=m8QgQTmDegO8An9xir5Hw21repN4MGRNVrVh/0V1Gcg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=kkqTbXizqipli/wX/VsdGbCtbXifTVYEn39M/ELTVQm1wwWGNzBUJ/uaeSRqxdBZm71MmEUkHGz3KFf8X2/p0t2R9OwYlpx7IQ/ZfbFxcRzpZHgcAia2IpaLOEIgfYWl/Kxfj29IgN9DN5ynIursHpHUFSkyFLZALpG+rU9wB/8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=imLa5gJs; arc=fail smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42B9mVmJ015527;
+	Mon, 11 Mar 2024 04:36:17 -0700
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wsynb097j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 06:35:56 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 11 Mar
- 2024 11:35:54 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.4 via Frontend Transport; Mon, 11 Mar 2024 11:35:54 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 7AACC820270;
-	Mon, 11 Mar 2024 11:35:54 +0000 (UTC)
-Date: Mon, 11 Mar 2024 11:35:53 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
-CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        "Mark
- Brown" <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai
-	<tiwai@suse.com>,
-        Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
-Subject: Re: [RFC PATCH v1] ASoC: wm8904: enable fll with fixed mclk
-Message-ID: <Ze7smWSeoCVIcxIo@ediswmail9.ad.cirrus.com>
-References: <20240308155831.141229-1-andrejs.cainikovs@gmail.com>
+	Mon, 11 Mar 2024 04:36:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EwYYGcVkpCvv/t12tytAWZ5vHjdwpaIz3WijTZq7uGf8tLFGrsmi3QV2Pe6wU/K0rxvWNTiN3U3coS8xfdlwiqAQzF0xDMYeTM2Mv1LZO1K6D6Dff4BVYWBTpSEUeDNMrCyfly2RexVk3WBZPlsR5g9AAYw3vSHxMacGB9o9InVyPq7dVNSzCyvE8Y9vSub+xkXIgCHlU9nqfegmiOPoGTIpXFGplUyifex3+5mbQSySi4dqCx0/TcretOtwGI0URFiqY2Zk7lijNxRNyrIYUilsQybPBFlCly2LRKaZqtqUy/qbuPyEtHJm2tuq7EJx9/3Af7MG/UB3XCCRM1OvsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=m8QgQTmDegO8An9xir5Hw21repN4MGRNVrVh/0V1Gcg=;
+ b=h2+Y1d8BASjqvxGRHJGrndZ2Xi2qKrCqFvZb1n1yba6SFGQ59dpVX2N4WvTON1M0+3als+RUhzUBcM336NpayT2bkqjuku3CcH7QyqD4ETD3ePtUHEdivypfFZ+8wDmirj1wh1Wz5gBaRW1ZhJZIZs6VcfeKCHf1cD2JUGjrgDv9JhU7Kpyb421MumhoFQyimH/Q7pDrXJud6Z2NMiAsCNq0D+B82bDRBO74BIVHrjNd607CmOl1wq0JnL+KYFFp31cEDUIAm1N3zU8jBHYGlpsK8mJRbIe6DRJEtixtbGxe8pIG0VBGmSwjbf6HPudmJnrjqT3qHfmXM9lTmHppsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m8QgQTmDegO8An9xir5Hw21repN4MGRNVrVh/0V1Gcg=;
+ b=imLa5gJsFmqICdhOZi8WXLSa+qryl50sM5eecrUGOsQx9f1v1PgFC1PM0aU0GkdfWG7xqAw1W25ZCrLBP6J7OCvQKMiMa6PJQ0+8y8rXeeRWr+doqxJGvlnOJZ3BcGukIUlqPSajnb1EIth+UjrxyqGVJ67FrArX7ksRzzw5nh0=
+Received: from CO1PR18MB4666.namprd18.prod.outlook.com (2603:10b6:303:e5::24)
+ by PH0PR18MB4972.namprd18.prod.outlook.com (2603:10b6:510:11f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
+ 2024 11:36:14 +0000
+Received: from CO1PR18MB4666.namprd18.prod.outlook.com
+ ([fe80::5087:a566:c473:1fef]) by CO1PR18MB4666.namprd18.prod.outlook.com
+ ([fe80::5087:a566:c473:1fef%7]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
+ 11:36:14 +0000
+From: Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+To: Breno Leitao <leitao@debian.org>, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo
+ Abeni <pabeni@redhat.com>
+CC: "keescook@chromium.org" <keescook@chromium.org>,
+        Ido Schimmel
+	<idosch@nvidia.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Amit Cohen
+	<amcohen@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+        Jiri Benc
+	<jbenc@redhat.com>, Beniamino Galvani <b.galvani@gmail.com>,
+        Gavin Li
+	<gavinl@nvidia.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] [PATCH net-next 2/2] vxlan: Remove generic
+ .ndo_get_stats64
+Thread-Topic: [EXTERNAL] [PATCH net-next 2/2] vxlan: Remove generic
+ .ndo_get_stats64
+Thread-Index: AQHac6bXZtyIJKjPJ0W06FQgEfQfJbEyaStg
+Date: Mon, 11 Mar 2024 11:36:14 +0000
+Message-ID: 
+ <CO1PR18MB4666DBAAE72E169E647528FDA1242@CO1PR18MB4666.namprd18.prod.outlook.com>
+References: <20240311112437.3813987-1-leitao@debian.org>
+ <20240311112437.3813987-2-leitao@debian.org>
+In-Reply-To: <20240311112437.3813987-2-leitao@debian.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CO1PR18MB4666:EE_|PH0PR18MB4972:EE_
+x-ms-office365-filtering-correlation-id: 271d2dfa-6371-4ee4-40b1-08dc41bf7564
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ 4yp5E0s7QvUbFueAIxtEJNGeDnelDYaE9rEzNvRWVAxwR4yRNpkiYGxXHqr9RipARti4CyI5CBVNclTsUQrIxlopLJoRzhsCPGUCnkrZ96+ojieNB0reVtmibCl7MbdiXHLI6X29Pc3r50xOe7ic4KSTKUEPUPtUcZcEYSR9PjoC6IKQy9/8KmuXAPEEACvlvY3B47nddWXkC3KZOEWv+mW7bkQ6a5xpO6JDZABTnKMZxp0TNQV0e0QKXaMWxI5dYC6FXSDcnlrR8+3ruPkllxt2Jp+7OtIYXwE7XKvdbu73xmDuTxC20aPLVbgBDFfhjzY7j0+8XTBfNjlwZvH1OawqgjYwDk6/rLJYwlSaSRgtj003o2Uo6J5v+r2C+1RtBn2CwSpcp8vJVX44SyLvXvMxr+QLItlGdsZ7Z2QoeigF4A1x0jz1BzxarBX9Ax/HXNYgRL9K6Ou+tBXR02onFjt+I3KIwTk6RZf+JILNXWzIZZ093SdNTX2DVnhpKvUGQ72z+Op0AjUK854JmTz5P88OF2DeSfb1+zzZKkHKlOwULKVG9Dou4NgmPm2F6wPkTi2kmFHLyrPViRCVxBrmZr9EQiI7wo0Hn93F3WKXqLbv6nE4w6bT9Mab3alnisTjq9Mdq3suQ60pUDPf3WbW354Ec1b+U/L45q82P0iROCMi9FZwDMa7thfgW3HiXnG//THWJ2H4AFKzeE6Yn1kBOFS5AEO52jKSe9u33rp82Fg=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR18MB4666.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?iCftmHzvf3AWdeQA+/L1XTzeIEYJLpvtgWS2ooIy05B+iMvCTcuiE3ytfTu2?=
+ =?us-ascii?Q?50LGqFd+XbLsRqq+9Nzl8KtZRITiYgeCEXBZCz21lRoTgE3pHcoVjiak9ut/?=
+ =?us-ascii?Q?xXRH/tpjPA3qBzobj92bcU0vQdrn4ZHOq6mp1x+LSAl8rXPsUmB+xxRBuoRn?=
+ =?us-ascii?Q?d77OVQPgPieZcVXr5CP0lEMTTiA67JNAq2wKeVesLBh+NrQa45tbnfySVhIo?=
+ =?us-ascii?Q?8MStPeI1GSwBR9CZklTNHVTYO0xNtotyFeeS2np/Q2tDymuo9ird4s1GwTuX?=
+ =?us-ascii?Q?hhOyo1nkSa9V3qJhDvloSC/ezH07V/ad92oko66tuYAjv28wZIBxWO8CeRVJ?=
+ =?us-ascii?Q?uInC4BrlturOufxG86wH2hW04sqmdhi2kAymoeVRh2+08sNlMhlXIeMthvrW?=
+ =?us-ascii?Q?LYvvroRdufB8q3teee+gcV2/OgP5Z3ZBDzE/H53muw4mULkNrH2mYz+a33kd?=
+ =?us-ascii?Q?ROgg+OxViKiPXgPk03GS8peVEUuAozcevJiNp8rKEwF47HUAHDFw8NLsZp8n?=
+ =?us-ascii?Q?Ht31VflsWd8d+3fUB8wfq97RQp6PMFp2fVhVaaNxnyMcXNi3ax4QsDni5RnP?=
+ =?us-ascii?Q?2buKmoCM514ZHHoLy9DHBqyt4F9Ob3A51tmoKt8rXOfXqLWn7A6RluXZq1+K?=
+ =?us-ascii?Q?DLpK7PjLuHVv23h/K0YDPkWAyMsfcF4QvTCrsuTHC5wB55P0gLPg+1hODxm5?=
+ =?us-ascii?Q?7zOapbeiIzvcwj5yAItgnurVZ802nRb1S9VqL0EsorVLqROB6EvrR1t5ULNl?=
+ =?us-ascii?Q?ALM2VCmaC0X/Zlv8XYxo1rvr5bazP0cYY/44EOZNjkceXksRtscET+GbEG/t?=
+ =?us-ascii?Q?P/w3WKRPW2oMnkcFrdbiDpmKtFeA9M91jyqEqsB+qeKZ4UaIV4sPGfVBtwy+?=
+ =?us-ascii?Q?ZFU/bao7K/fB6/CljfWWOB/zdR+UAOUcPiOHaWMXN1Cmzo2Omm9zrojpjd8j?=
+ =?us-ascii?Q?DlDYpJ23ogi0gFIjEUsM2vBP2eqRAMvA6QApZMcEGmNuI0Eyyd0ca8Hd4RHh?=
+ =?us-ascii?Q?014ztTe4Wvr28m9giEicQBnldRTj0MbMw82eo7wkkjMcrU2KrwrUvZhfd/Th?=
+ =?us-ascii?Q?W6VTE8CZisnvLDTX1heR7TAVy51OyvAX3oIXORBq0xPj02QKNmGXMxLEdScr?=
+ =?us-ascii?Q?DgfQ5G2a+AmOkP4/b78P2lpWhByzOcKqP2S5VTrf6bbrTfvbR2ECksrJtl6f?=
+ =?us-ascii?Q?eM6W5FITU2oYqWeV2L1Hc6Xlk2ZwDp442xhCRNUqHLIP9VqQ1dHxPH+hGkkH?=
+ =?us-ascii?Q?Rly+DrDgacKnRKsq+ADvHWWhTPJK7HIQVjtN9DWp4sLSljJz3hnclXPinaST?=
+ =?us-ascii?Q?MKmMfN2IoJhLo9xtni1UqX4oaf3IOZQeBmlGZNZ7jOcrK9lz11/My1HfJuKM?=
+ =?us-ascii?Q?9y1yY8LW+5ZUyn/wNZE94WoYgntDyH7h2Zhk6Yocm4B+2rD2+u9qt4SdmZgQ?=
+ =?us-ascii?Q?Y7YTO2jlRQ0jGID3g9o4n+sixwRsft1ImmUb8z6+8LmGQNMcmzQ0eY+fq8gW?=
+ =?us-ascii?Q?sLZNZHLXWqr8mRzDGiL65vlpVmvI7nNvomoqBMqZr4+vI7n1lb0YF5uk4lVc?=
+ =?us-ascii?Q?iQkglbP621uG8brmKEPgTBOC4zuwjD5BqpDQm4rr?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240308155831.141229-1-andrejs.cainikovs@gmail.com>
-X-Proofpoint-GUID: jZaxHSgbLbEIBShIBsJsTeVhjz7k_AtH
-X-Proofpoint-ORIG-GUID: jZaxHSgbLbEIBShIBsJsTeVhjz7k_AtH
-X-Proofpoint-Spam-Reason: safe
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR18MB4666.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 271d2dfa-6371-4ee4-40b1-08dc41bf7564
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2024 11:36:14.3306
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c6tlo/qbDGRhqTAAyWZ+ljaiJm9QihZvOoB4dYj9cdecQZARchYqrZWqRobP6HflncHCa0ftZfm50A6cXCrZJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR18MB4972
+X-Proofpoint-GUID: feAOewRNjEg4GUsbYZUUe8i7ZUqLcczQ
+X-Proofpoint-ORIG-GUID: feAOewRNjEg4GUsbYZUUe8i7ZUqLcczQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_08,2024-03-06_01,2023-05-22_02
 
-On Fri, Mar 08, 2024 at 04:58:31PM +0100, Andrejs Cainikovs wrote:
-> From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
-> 
-> Dear all,
-> 
-> This is an attempt to change wm8904 for a scenario when reference clock
-> supposed to be fixed to a particular frequency, but is not configured as
-> a fixed-clock. While this change is working fine, I'm struggling to
-> finalize it, not being able to find a proper solution of adding a check
-> whether we want to use fixed MCLK with codec's FLL or not. I could, of
-> course, introduce a new device tree property, but do not feel this would
-> be a proper way forward. Hence, I'm sending out this RFC patch to gather
-> your valuable feedback.
-> 
-> DUT: Dahlia carrier board with Verdin TI AM62 SOM.
-> Audio card configuration can be found in ti/k3-am62-verdin-dahlia.dtsi.
 
-At some point one really starts to question if this is really a
-"simple card" any more.
 
-> On systems with a fixed reference clock output rate it
-> is impossible to use this clock for all audio frequencies.
-> 
-> Following is an example of playing a 44100Hz audio on a system
-> with a fixed 25MHz reference clock applied to wm8904 codec,
-> in combination with simple-audio-card without mclk-fs:
-> 
-> [   27.013564] wm8904 1-001a: Target BCLK is 1411200Hz
-> [   27.013601] wm8904 1-001a: Using 25000000Hz MCLK
-> [   27.013611] wm8904 1-001a: CLK_SYS is 12500000Hz
-> [   27.013654] wm8904 1-001a: Selected CLK_SYS_RATIO of 256
-> [   27.013663] wm8904 1-001a: Selected SAMPLE_RATE of 44100Hz
-> [   27.013671] wm8904 1-001a: Selected BCLK_DIV of 80 for 1562500Hz BCLK
-> [   27.013680] wm8904 1-001a: LRCLK_RATE is 35
-> 
-> This leads to a distorted sound and this configuration is unusable.
-> 
-> On the other hand, configuring simple-audio-card with mclk-fs will
-> force the system to change MCLK frequency, which supposed to be fixed.
-> 
-> This change forces to use wm8904 FLL while keeping SoC's MCLK
-> frequency intact:
-> 
-> [  234.108149] wm8904 1-001a: Target BCLK is 1411200Hz
-> [  234.108304] wm8904 1-001a: Using 0Hz FLL clock
-> [  234.108722] wm8904 1-001a: FLL configured for 25000000Hz->1411200Hz
-> [  234.108794] wm8904 1-001a: CLK_SYS is 1411200Hz
-> [  234.108835] wm8904 1-001a: Selected CLK_SYS_RATIO of 64
-> [  234.108875] wm8904 1-001a: Selected SAMPLE_RATE of 44100Hz
-> [  234.108913] wm8904 1-001a: Selected BCLK_DIV of 10 for 1411200Hz BCLK
-> [  234.108955] wm8904 1-001a: LRCLK_RATE is 32
-> 
+>-----Original Message-----
+>From: Breno Leitao <leitao@debian.org>
+>Sent: Monday, March 11, 2024 4:55 PM
+>To: David S. Miller <davem@davemloft.net>; Eric Dumazet
+><edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+><pabeni@redhat.com>
+>Cc: keescook@chromium.org; Ido Schimmel <idosch@nvidia.com>; Nikolay
+>Aleksandrov <razor@blackwall.org>; Amit Cohen <amcohen@nvidia.com>; Petr
+>Machata <petrm@nvidia.com>; Jiri Benc <jbenc@redhat.com>; Beniamino
+>Galvani <b.galvani@gmail.com>; Gavin Li <gavinl@nvidia.com>; open
+>list:NETWORKING DRIVERS <netdev@vger.kernel.org>; open list <linux-
+>kernel@vger.kernel.org>
+>Subject: [EXTERNAL] [PATCH net-next 2/2] vxlan: Remove generic
+>.ndo_get_stats64
+>
+>Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
+>configured") moved the callback to dev_get_tstats64() to net core, so,
+>unless the driver is doing some custom stats collection, it does not
+>need to set .ndo_get_stats64.
+>
+>Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
+>doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
+>function pointer.
+>
+>Signed-off-by: Breno Leitao <leitao@debian.org>
 
-Hmm... the driver already provides an option to automatically
-configure the clock. Is the issue here that in your fail case the
-machine driver never calls wm8904_set_sysclk? Or if it does call
-it, when and what parameters is it passing?
-
-Thanks,
-Charles
+Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+..
 
