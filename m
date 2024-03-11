@@ -1,159 +1,112 @@
-Return-Path: <linux-kernel+bounces-98434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AD5D877A29
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:41:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8718877A2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 263941C20A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:41:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5211528219F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C6B23AD;
-	Mon, 11 Mar 2024 03:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D231C3D;
+	Mon, 11 Mar 2024 03:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MwlOgmeM"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kRE2QOhx"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C1115B3;
-	Mon, 11 Mar 2024 03:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEFD81851
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 03:44:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710128508; cv=none; b=ddC9Wl62bGG6kJfMYEtyevfhIEVnUyZd5YAbtUvgISvfLJJEEvVEnJ5jkZt+8AqjBg0LybcApNmwWe21fNdJXE8uvXasidp86Aj5ntKXRqGP9q+nm/IJG02TfA7YJLoUcyRQMJVJGqufHQkPsnNT7NYEQJPCieXcvVAZiBaAUEg=
+	t=1710128649; cv=none; b=Xm1NSfYCoy35GUI5HYILbL2N4Mj1l8b3JZGVjbE/HKiCEwFKrBcyrEJaxuzSXCdWMeu0OeYRfdU2HJNJQUEgDi4mwnwFdUn+aS58dnmpJ1L/SAe708INLvxsjqMZmIHgbYP/RF7h2VCT3ocH9OKsTbf62fgslPdv5XBZ9w2lbb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710128508; c=relaxed/simple;
-	bh=IkVWhXDcD+dqXR0sg2CSh+0xLf+knakijimU2ebVXAw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sNajBsrNYwQo2gO3/BdwS6kiLrgQJnSBqMY1jfS2wLMqznfsZJB3hEr53ttUyO2i4n2GiIK+pgK6OjAqMJOgNOV/V3GhuIcWLIEiOwwwBqlWJFIqeY66WDDftvgYbwc3YM04/QkkFRZrqD/ioL6bg7F5sLt4yRgZ/tu7QW5ne48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MwlOgmeM; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=0IhkeUfnkckGUpoB8ltx//YeJvd8V+1fi/yffsV3/DE=; b=MwlOgmeMRShI7BYlx0kHstVhwm
-	hgt4enB2uKdIIl4DUlbLzZAgYM+QIr0KyS8j52ssOJiKK7PECYrI8ur2Yg5lhXRWltKMEAENneSrE
-	GHF2O/16j7srHcEfH1vx8OVCLBeawcyjEPMfWR5ILjY3IwDhtYunJROk/J/tl8BnjxKVlEZWsxgjS
-	/Dcp6AB0D3HSZ35TjxPeb3I+2/djM5Cb2ToUPaPhPiBtf+sa1MAWGDDGrh9ASCl4fblf2yqAt41AG
-	oKTvkpanedvcrvAYsgMMKbeDl8FCEstEYqcbWMyZohgNKPC1eaDyPE2cqGu+fFt4kOPYA90L6LhUm
-	Ta8tWEPg==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjWXf-0000000HKj2-0ofC;
-	Mon, 11 Mar 2024 03:41:35 +0000
-Date: Mon, 11 Mar 2024 03:41:35 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: On the optimum size of a batch
-Message-ID: <Ze59byUR80z42m8R@casper.infradead.org>
-References: <Zeoble0xJQYEAriE@casper.infradead.org>
- <Ze5onaXsI+LT1+Be@dread.disaster.area>
+	s=arc-20240116; t=1710128649; c=relaxed/simple;
+	bh=Dz5KLd3tIqprW/GVHSjYfOPNf1sfHIEZQhjHu//Tv9s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uzYWReBX2TpMAWfgqjZ9mSurQF5nKvR/bQ+yDJks+r8yN72+OWH2cLC/Cc/J35uM12y1MQYoeB7rqV5hnCI5eAm7x2Tk/S4Dv3kkd0KopzCttYOdYZpvzOgkmWFVJFbvBCtS541yejMw5BB3gzz/cKCLQnYx/32tQvnfyKmGVCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kRE2QOhx; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dd6d4832dcso3566335ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 20:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710128647; x=1710733447; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uqf/Jkk0NFQZ1ArKKj86vJrb3nslVxHqnT0lqQ8B590=;
+        b=kRE2QOhxXJrOJvjmYIxstFFZpXdxYx/k4SgRCCE67unqDYVsRiBbIw5lACPEBWlSyK
+         luAKaWKUmVm/ykLmRLR4vJfjwyuu26/y4wSlEeuixiFqpuTEWlDWC9kRE+BgeABjI0Js
+         ZYu5tg2CWfae5MG0/e2ZCMEEByDvIs369B7dA0OH2HOdCKVgfCv3aQqb0TQ/vR9144GN
+         lyTxhwQ6ZI7rlOc9Z79Iml+gj6JOGlsfSn1wRQo1e8G6DG1iIl7sHhahubOPtA3JU/4l
+         9sXzmXxV71c+bWb+ceqQnicfc18cCdzghcp7r7k2OPfrPFhhke9woNhtTluiEdAuZkL+
+         RaIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710128647; x=1710733447;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uqf/Jkk0NFQZ1ArKKj86vJrb3nslVxHqnT0lqQ8B590=;
+        b=HuOFRaK7QUZwz0WOkyuVf+hZDaxDwrZrP72cU+bayKH74X24ZHFJhvmZXUISLHZoHV
+         JI8EPGx0neV4brasV/EuQMntv08jHoyqQ+DXdVYU3c95uMtG67SS++baAYfLmhFaVpJu
+         f7zKpj86pf5m6xwtfEPa8LMLbrQEzaVPmUEPLqNOS9AWIER+0J1XjyJS5dGvX2JtUckG
+         monNZmUnQ+Di4JHOk0rSS54rNbTWHjaGGGfHwFDp+JGrzGcB3jiWDjTQ6V2FiCbNeddh
+         W2D7HTetZfczPYIxCUbQLp1nacnCBIh2D9Mdxe3NihFZgYE4KtzrmktYmBS2Njfm2GY7
+         Yp0A==
+X-Forwarded-Encrypted: i=1; AJvYcCW0ZMxm7nthtQEgMuoepmqnHk0yQnfV0D0MnumiIG16g3KOCAULiHWS5OpddLNJhVhtCTBBQUVCyvWA4vHoj9T1cL5O+itSR0QXVSxJ
+X-Gm-Message-State: AOJu0Yzgx0qi7n+t/SqqN/xTkloEVoQiIjAw3mQwqT+D7KhFGtEPrdlN
+	N68E3/b2K064pHGnIyfZUYmqU/pAIVEAF07QrP9krg1SFWMa7ew6kBEWiLrayCA=
+X-Google-Smtp-Source: AGHT+IFpyX1+j2mnwa8ni51KfFT4JSVV3tiX8GAi4YroXgQjyCnwVsmAbVHPUnQonnidiVVHEd8cpg==
+X-Received: by 2002:a17:902:d395:b0:1dc:fcde:853a with SMTP id e21-20020a170902d39500b001dcfcde853amr6096389pld.1.1710128647004;
+        Sun, 10 Mar 2024 20:44:07 -0700 (PDT)
+Received: from vaxr-BM6660-BM6360.. ([2001:288:7001:2703:b289:6f57:682e:c7f1])
+        by smtp.gmail.com with ESMTPSA id w17-20020a170902d11100b001dca68b97d3sm3494934plw.44.2024.03.10.20.44.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 20:44:06 -0700 (PDT)
+From: I-HSIN CHENG <richard120310@gmail.com>
+To: philipp.reisner@linbit.com
+Cc: lars.ellenberg@linbit.com,
+	christoph.boehmwalder@linbit.com,
+	drbd-dev@lists.linbit.com,
+	linux-kernel@vger.kernel.org,
+	I-HSIN CHENG <richard120310@gmail.com>
+Subject: [PATCH] lru_cache: Initialize hlist_head in lc_create
+Date: Mon, 11 Mar 2024 11:44:01 +0800
+Message-Id: <20240311034401.234854-1-richard120310@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ze5onaXsI+LT1+Be@dread.disaster.area>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 11, 2024 at 01:12:45PM +1100, Dave Chinner wrote:
-> > Batch size      Cost of allocating 100          thousand        million
-> > 1               500 (5 * 100)                   5000            5M
-> > 2               300 (6 * 50)                    3000            3M
-> > 4               200 (8 * 25)                    2000            2M
-> > 8               156 (12 * 13)                   1500            1.5M
-> > 16              140 (20 * 7)                    1260            1.25M
-> > 32              144 (36 * 4)                    1152            1.13M
-> > 64              136 (68 * 2)                    1088            1.06M
-> > 128             132 (132 * 1)                   1056            1.03M
-> 
-> Isn't this just repeating the fundamental observation that SLUB is
-> based on?  i.e. it can use high-order pages so that it can
-> pre-allocate optimally sized batches of objects regardless of their
-> size? i.e.  it tries to size the backing page order to allocate in
-> chunks of 30-40 objects at a time?
+Use INIT_HLIST_HEAD to perform the initialization for each pointer to
+struct list_head in the variable "slot" to provide more safety and
+prevent possible bugs from uninitialized behavior.
 
-What SLUB is currently doing is inefficient.  One of the conversations
-I had (off-list) about appropriate batch size is in relation to SLUB-ng
-where one of the participants claimed that the batch size of 32 was
-obviously too small (it wasn't; the performance problem was due to a
-bug).
+Signed-off-by: I-HSIN CHENG <richard120310@gmail.com>
+---
+ lib/lru_cache.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-What you're thinking about is the cost of allocating from the page
-allocator (which is now much cheaper than it used to be, but should
-be cheaper than it currently is).  But there is another inefficiency
-to consider, which is that the slab allocator has a per-slab lock,
-and while you can efficiently remove and add a number of objects to
-a single slab, you might only have one or two free objects per slab.
-To work around this some of the more performance sensitive parts of the
-kernel have implemented their own allocator in front of slab.  This is
-clearly a bad thing for all of us, and hence Vlastimil has been working
-on a better approach.
-
-https://lore.kernel.org/linux-mm/20231129-slub-percpu-caches-v3-0-6bcf536772bc@suse.cz/
-
-> Except for SLUB we're actually allocating in the hundreds of
-> millions to billions of objects on machines with TBs of RAM. IOWs we
-> really want to be much further down the curve than 8 - batches of at
-> least 32-64 have significantly lower cost and that matters when
-> scaling to (and beyond) hundreds of millions of objects....
-
-But that doesn't necessarily mean that you want a larger batch size.
-Because you're not just allocating, you're also freeing and over a
-large enough timescale the number of objects allocated and freed is
-approximately equal.  In the SLUB case, your batch size needs to be
-large enough to absorb most of the allcation-vs-free bias jitter; that
-is if you know they always alternate AFAFAFAFAF a batch size of 2 would
-be fine.  If you know you get four allocations followed by four frees,
-having a batch size of 5 woud be fine.  We'd never go to the parent
-allocator if we got a AFAAFFAAAFFFAAAAFFFFAAFFAFAAFAAFFF pattern.
-
-> > This is a simple model for only one situation.  If we have a locking
-> > contention breakdown, the overhead cost might be much higher than 4 units,
-> > and that would lead us to a larger batch size.
-> > 
-> > Another consideration is how much of each object we have to touch.
-> > put_pages_list() is frequently called with batches of 500 pages.  In order
-> > to free a folio, we have to manipulate its contents, so touching at least
-> > one cacheline per object.
-> 
-> Right, that's simply the cost of the batch cache footprint issue
-> rather than a "fixed cost mitigation" described for allocation.
-
-No, it's not, it's an illustration that too large a batch size can
-actively harm you.
-
-> So I'm not sure what you're trying to say here? We've known about
-> these batch optimisation considerations for a long, long time and
-> that batch size optimisation is always algorithm and access pattern
-> dependent, so.... ???
-
-People forget these "things we've always known".  I went looking and
-couldn't find a good writeup of this, so did my own.  In addition to the
-percpu slub batch size, various people have opined that the folio_batch
-size (15 objects) is too small for doing things like writeback and
-readahead.  They're going to have to bring data to convince me.
-
-> > And we make multiple passes over the batch,
-> > first decrementing the refcount, removing it from the lru list; second
-> > uncharging the folios from the memcg (writes to folio->memcg_data);
-> > third calling free_pages_prepare which, eg, sets ->mapping to NULL;
-> > fourth putting the folio on the pcp list (writing to the list_head).
-> 
-> Sounds like "batch cache footprint" would be reduced by inverting
-> that algorithm and doing all the work on a single object in a single
-> pass, rahter than doing it in multiple passes.  That way the cache
-> footprint of the batch is determined entirely by the size of the
-> data structures accessed to process each object in the batch.
-
-Well, now you're just opining without having studied the problem, and
-I have, so I can say confidently that you're wrong.  You could read
-the code if you like.
+diff --git a/lib/lru_cache.c b/lib/lru_cache.c
+index b3d918761..ae122792e 100644
+--- a/lib/lru_cache.c
++++ b/lib/lru_cache.c
+@@ -105,6 +105,9 @@ struct lru_cache *lc_create(const char *name, struct kmem_cache *cache,
+ 	if (!lc)
+ 		goto out_fail;
+ 
++	for (int i = 0; i < e_count; i++)
++		INIT_HLIST_HEAD(slot + i);
++
+ 	INIT_LIST_HEAD(&lc->in_use);
+ 	INIT_LIST_HEAD(&lc->lru);
+ 	INIT_LIST_HEAD(&lc->free);
+-- 
+2.34.1
 
 
