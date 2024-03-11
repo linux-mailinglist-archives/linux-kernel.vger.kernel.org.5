@@ -1,162 +1,91 @@
-Return-Path: <linux-kernel+bounces-99614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 777A4878AC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:31:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB02878ACB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:33:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D03D228225D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:31:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E9551F223C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4455812A;
-	Mon, 11 Mar 2024 22:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467B958120;
+	Mon, 11 Mar 2024 22:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iCVVhgFm"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="CBzOWzWW"
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD0C54736
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 22:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D58482C1
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 22:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710196261; cv=none; b=VI8VPYdSDcTpc9XFNtHOIVGE2GLf3jaKIdNanjAHe1Hd2Egx2xNgGzx/V4nWfbFx0qE23xWBkYFp24ZK/uSTRVx4KcGVPXMeQU9w1Qy6asXA16Jq5dsiGDHVGG2kvEkt7DKhXHenDmftlfc3FVUYqYClW6Gq4BH0Bx/2VX2Zrfc=
+	t=1710196374; cv=none; b=F59Z7F97MboQy5RS5WS/4Q3gKt8OBYV1sWAHyWqEnKMKreh3Jui+Ez7xeRSAmsOmUne4nV3ysbJwzS3646yJMgpgB+ujOv2WyQZNdSDeEohGnnTVc0vsZkP2gj3f1XGqx1Yh6v/RoYEcbb2qw2BDFjKzyGAvD22eet7EYuy/Nc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710196261; c=relaxed/simple;
-	bh=ccEPIRBsx8Z3efNFka2XMIqeialKRn15JJ1iLrYfxvQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BKlWuuMLA+shmEFYCU0y3xvBGVc0DQ+/Z/XORFSQup0ktyTNhcRxx6KRxlaq69B7MeuBewj58zuptzrNnV7WEIJvKPmhYNMSRslnJ4PW4NOu4YQUduTZR1EKplg754zJY6Q6nqmZBBOsiokBr/y7OMYOUowC3aL6Jv2op/OShqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iCVVhgFm; arc=none smtp.client-ip=209.85.222.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7db9cad9dbcso1911034241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:30:59 -0700 (PDT)
+	s=arc-20240116; t=1710196374; c=relaxed/simple;
+	bh=vwLn6pPMKhnjkaMcj/WgdNDx63eGUSsPz3XGpaNFawk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=WXoa2YvinUzypZYnfPy2aBwwHrgI2VKrX8seR68YEUZjlpmmQskSNHY8PfaVQMsE8vgjTCm08BH00HNDyFbseiXGI5G8T12aDuout++ixBcCEjMItGcAoDq7h66TIVbdkcGdbSfAcalzIs+qwFNVZhbAAyHeUBn1O+vYPbUynQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net; spf=pass smtp.mailfrom=iwanders.net; dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b=CBzOWzWW; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7882e94d408so404805485a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710196259; x=1710801059; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IbQrm7vb6lcaupZxQt2vA7yORilaHaySRWOgYMwjdKI=;
-        b=iCVVhgFmxe+WZE+TAj4BCW82fEJYnPIf+NYJPwaabVzgd2KICeE4HG9V1TZTxqwvrl
-         3ytTAqzx0bovpevdhxTms/UInZcku7du06WXzgESNpcoCuEYwidKvg5hiRfERcZ9HRuA
-         V0P2UfqNTHjPjPb0F3nFCgAnV9I/Buo+P20lp/QQJHma+i+0v6KxPMVvaspHH5GdU5eg
-         KwONdDQ1Rp4g85XObJh3Ccl1Hf2U7zq8RYf64SSRxz0BjRtD8CmbTDu6Ap2tJkjKvtzD
-         hm1HyDT1AmShI6Lb2esUSVQ47OUJe+vJoXaCwsBy3XE+sajMR9pcNTMf3icVzQzo6x0N
-         i09A==
+        d=iwanders.net; s=google; t=1710196372; x=1710801172; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CArm0auKmwv8Q1uxyRuXJ0PLf8GkQNTL9Enxue9llQA=;
+        b=CBzOWzWW/6z//lsY6fsPIVmmAg+pRQcPz7N4wMC70sBXg5tlcq+1W+fBgiIbPlIdST
+         eflgfFFuxmCZs/wT2EUAAr7lQkC4li4GMHO5BjqFATJfo1mNYr3WBP4vT2QeFTPfKAzC
+         73hU47t+bwpbzxfts6aJKoVlW0cb+H6e4+Ync=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710196259; x=1710801059;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IbQrm7vb6lcaupZxQt2vA7yORilaHaySRWOgYMwjdKI=;
-        b=ulo88/8hXh+xFBZ6FX8OaOyP4cccVFoV8COyY7lw0D5wlPfXbyJhNVstNIJT26y28a
-         3JTKhFwuvEoUEJfxENbGB28jcLKpMq2vQmtZweADMwhLBMIR5FJAvTWGSU6HmcB0Qg0q
-         FULZVsMH2QHQjFsWacg4DZYb0D6fQO1JbsFMYOzojgnBIBGMFXAhcrobmflRehP/aePL
-         Pp24P2GD3xEp/Xr/Ozqe/V74YpoGOeaNlKBF2tbEjt6Z6DpGsP8nr2rvIXVzCTkAtAvC
-         oOBBNujDqjzK9/HRdMKmcyTW61aw2gCfwgXjpa/XiitJ9P8NTPq04mU7YTjZ6saXyq+J
-         mDiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWBlRw0SBa8tFl+oWEuSPItRJBDgMi/GgPM0lAdsHrAj0hPjXFvA4+Drh7IZxX1SkU4Iwjkkttc83UDg8JyJgA6Fy3MlwJs3ApJNhuy
-X-Gm-Message-State: AOJu0Yyhr8AAzZsZqe8K6SvmanKo8TX9xKG3KyCOJ3T9IvUrqGeSa5h6
-	RfhHowlYwQBYEgs9o2204aT0d1FcuosEAcCwR729DdmNpGpiS1lIVkJHWLPMvAYqzANaQXwqi7Q
-	HqAhx5sAnZZeMjctxSvUi6otxNPo=
-X-Google-Smtp-Source: AGHT+IHpWeNRmtXpj0XUQvDlRqFRbkrPZRGONY17K7X3qg/HBjfAXo0NJmE8vv3shR2KQiFJH37T66AFsBDIlEIG+Yw=
-X-Received: by 2002:a05:6102:3565:b0:473:23ae:c11f with SMTP id
- bh5-20020a056102356500b0047323aec11fmr2870966vsb.1.1710196259114; Mon, 11 Mar
- 2024 15:30:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710196372; x=1710801172;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CArm0auKmwv8Q1uxyRuXJ0PLf8GkQNTL9Enxue9llQA=;
+        b=cDlEIfyMYUAm+9Gs7KDZFF6fTx6JVGr+TiNMyCnFGfQqQL/5wYxYVzya6V6VuFHNvq
+         BJkwpD9jZMf1MNmRrLhtMJt9KtJNY1qM+5k1l6NoptwnskEKhNBmIZcV4q6Bh3XxvIta
+         f2s0Kswpy/FZv17zUEtywDsm9oE6FLoYq7yM/g2H7PmSBfCz/d/h+kDA4h/LxrvNIo5U
+         QJd3CUF+PitFoaIQfKzvnYRfMMRnSisqN3xMOfgf3phi5sFvGT30zWuulCQoGPsU/ZjI
+         G+u9JfC9liYYvzsNRPlLJ4jGH/GRsG8qvpToPCG1ZfLKYTvsKmzQfZ8zjLDevQjlDXc6
+         U6mg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRBRbkxspxoTP8kIX9RAJzM2z1wkv+yU0jmviczQvn3LLdR0HJJ7iAWI9UmhTlHG4B/xQ2wK0UYNbgQRAl559Xr6tMZkbTpu6cNjYX
+X-Gm-Message-State: AOJu0YxNMedXZV+nRbje7l5SyqGK98+3/v1vp7BDoOLwnKlHZB3JBbqa
+	AgOSyyvO5FiX2QjF98HHjb9Udpcmi1iG7M2qhlISIfQnL47pb3PcnuHXaF7WtajCr595AMLFu2l
+	EKNU=
+X-Google-Smtp-Source: AGHT+IEKvHUH5Vn2Ya7dsxvRmBmETgiXKV1KVbATb/H14J5Tw1iznBmhd4clegC+uNQb6ptxpPNBRg==
+X-Received: by 2002:a05:620a:2455:b0:788:25bc:622d with SMTP id h21-20020a05620a245500b0078825bc622dmr11477842qkn.55.1710196371783;
+        Mon, 11 Mar 2024 15:32:51 -0700 (PDT)
+Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
+        by smtp.gmail.com with ESMTPSA id h27-20020a05620a13fb00b00787930320b6sm3096198qkl.70.2024.03.11.15.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 15:32:51 -0700 (PDT)
+From: Ivor Wanders <ivor@iwanders.net>
+To: ilpo.jarvinen@linux.intel.com
+Cc: hdegoede@redhat.com,
+	ivor@iwanders.net,
+	linux-kernel@vger.kernel.org,
+	luzmaximilian@gmail.com,
+	platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 1/1] platform/surface: platform_profile: add fan profile switching
+Date: Mon, 11 Mar 2024 18:32:30 -0400
+Message-Id: <20240311223230.4653-1-ivor@iwanders.net>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <fa16bf5a-b0da-2751-7109-fe76acbcd7d8@linux.intel.com>
+References: <fa16bf5a-b0da-2751-7109-fe76acbcd7d8@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240311150058.1122862-1-ryan.roberts@arm.com> <20240311150058.1122862-6-ryan.roberts@arm.com>
-In-Reply-To: <20240311150058.1122862-6-ryan.roberts@arm.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 12 Mar 2024 06:30:40 +0800
-Message-ID: <CAGsJ_4zq4jdDdG6Cne6SESSmJQJnGwaQF5y3BHOaLHFdED0zYg@mail.gmail.com>
-Subject: Re: [PATCH v4 5/6] mm: vmscan: Avoid split during shrink_folio_list()
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
-	Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>, 
-	Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11, 2024 at 11:01=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com=
-> wrote:
->
-> Now that swap supports storing all mTHP sizes, avoid splitting large
-> folios before swap-out. This benefits performance of the swap-out path
-> by eliding split_folio_to_list(), which is expensive, and also sets us
-> up for swapping in large folios in a future series.
->
-> If the folio is partially mapped, we continue to split it since we want
-> to avoid the extra IO overhead and storage of writing out pages
-> uneccessarily.
->
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  mm/vmscan.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index cf7d4cf47f1a..0ebec99e04c6 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1222,11 +1222,12 @@ static unsigned int shrink_folio_list(struct list=
-_head *folio_list,
->                                         if (!can_split_folio(folio, NULL)=
-)
->                                                 goto activate_locked;
->                                         /*
-> -                                        * Split folios without a PMD map=
- right
-> -                                        * away. Chances are some or all =
-of the
-> -                                        * tail pages can be freed withou=
-t IO.
-> +                                        * Split partially mapped folios =
-map
-> +                                        * right away. Chances are some o=
-r all
-> +                                        * of the tail pages can be freed
-> +                                        * without IO.
->                                          */
-> -                                       if (!folio_entire_mapcount(folio)=
- &&
-> +                                       if (!list_empty(&folio->_deferred=
-_list) &&
+> Is char correct type here or do you perhaps mean e.g., u8 that is more 
+approriate for 1-byte long binary data? [...] u8 ?
 
-Hi Ryan,
-After reconsidering our previous discussion about PMD-mapped large
-folios, I've pondered
-the possibility of PMD-mapped Transparent Huge Pages (THPs) being
-mapped by multiple
-processes. In such a scenario, if one process decides to unmap a
-portion of the folio while
-others retain the entire mapping, it raises questions about how the
-system should handle
-this situation. Would the large folio be placed in a deferred list? If
-so, splitting it might not
-yield benefits, as neither I/O nor swap slots would increase in this
-case by not splitting it.
+Thanks for the review Ilpo. Agreed, u8 would be better, I also noticed that
+this variable, and the profile_le one in the function just above it can be
+const, I'll change this type to u8 and make both profile variable const in v2.
 
-Regarding PTE-mapped large folios, the absence of an indicator like
-"entire_map" makes it
-challenging to identify cases where the entire folio is mapped. Thus,
-splitting seems to be
-the only viable solution in such circumstances.
-
->                                             split_folio_to_list(folio,
->                                                                 folio_lis=
-t))
->                                                 goto activate_locked;
-> --
-> 2.25.1
-
-Thanks
-Barry
+~Ivor
 
