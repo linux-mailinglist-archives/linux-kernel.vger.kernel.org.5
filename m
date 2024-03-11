@@ -1,162 +1,171 @@
-Return-Path: <linux-kernel+bounces-99353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F22B878724
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:20:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5D8087872A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:21:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D86BB2810F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:20:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29976B21090
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852FE53E26;
-	Mon, 11 Mar 2024 18:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC6A53E12;
+	Mon, 11 Mar 2024 18:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EXEFYmmD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sbzKss+0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EXEFYmmD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sbzKss+0"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lOkZkdr3"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDAC51C44;
-	Mon, 11 Mar 2024 18:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF3F51C44;
+	Mon, 11 Mar 2024 18:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710181218; cv=none; b=TduTpwcCDdHt9j9/nsPXkwmD35MB+f774leDhOWk/bYZCaZy1MsEykvsbMos29e9NP+bbgzizMrNsITcX9VUpX8WH7b915t6BxGDtixGtIAAM0yFdPYO49b2kiwHlWUKZ6NvIaHXzhCMaMbaELJHHdI6kCN6ePTNIFYw2fA0Xl4=
+	t=1710181260; cv=none; b=Gv6z9kLq5703iEaeog2j6hBs3a7YjG8oqwnORIyyadHmUhteqXFDq2vku8fP/BpBKC3JC5t9hZZ/UvOv2+S2QDHeSNIM3TgyM3D7CrvLgeZRur57CqnsttCaLL6ocrHdHa0Gd+NETkG5F6BZD6Jux3+7y8BHVqtt4O9kd+v9PLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710181218; c=relaxed/simple;
-	bh=Ia/8zB3aid9jaW1fNqMVPaILNhAg9IWGYmQHIwg4Xu8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sqYbS/teGqdbW9dkKrK9PjScqs0i8KqT2ieEH67Gdc6ip9Z5vhTGzWc2zBCx6W5DkLSPlOdQ5wiTV1KvGSMqCktMd+h/GgVpTyu8brio6JiWpO8O7EXXyIh7ctHUo1BUOOMpVXXJGuS+Mnas3og1RiGX3JIQyy33a8A3CSF2C+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EXEFYmmD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sbzKss+0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EXEFYmmD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sbzKss+0; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3DCC55CA0F;
-	Mon, 11 Mar 2024 18:20:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710181215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GN0VDG+WrM51ERqPpJDImcxlIBb+21qjCIJ03ewQ9ao=;
-	b=EXEFYmmDCUATUtX0yuQV3n0vZQFuC1JDdH2/XHbfGw6zjks2HTmFgtZIZHydT1+OBbTJpz
-	TIea3SdIHxWMmUCucvsgOu6DTr0la8Fm7LLURR3mPxieH9HMXp1Kf4p+K+OGAilV+E1GL2
-	SQN98ApwMHAFkYEU+JtFyiUmm4h3kPw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710181215;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GN0VDG+WrM51ERqPpJDImcxlIBb+21qjCIJ03ewQ9ao=;
-	b=sbzKss+05q+DfnN1PJOxzbHLg9PPkyrwJEYj08xHFrvzZM+biD6xQPe7eo4XkusF7Y60kU
-	jMpom94x4bKQuZDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710181215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GN0VDG+WrM51ERqPpJDImcxlIBb+21qjCIJ03ewQ9ao=;
-	b=EXEFYmmDCUATUtX0yuQV3n0vZQFuC1JDdH2/XHbfGw6zjks2HTmFgtZIZHydT1+OBbTJpz
-	TIea3SdIHxWMmUCucvsgOu6DTr0la8Fm7LLURR3mPxieH9HMXp1Kf4p+K+OGAilV+E1GL2
-	SQN98ApwMHAFkYEU+JtFyiUmm4h3kPw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710181215;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GN0VDG+WrM51ERqPpJDImcxlIBb+21qjCIJ03ewQ9ao=;
-	b=sbzKss+05q+DfnN1PJOxzbHLg9PPkyrwJEYj08xHFrvzZM+biD6xQPe7eo4XkusF7Y60kU
-	jMpom94x4bKQuZDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2ECFA136BA;
-	Mon, 11 Mar 2024 18:20:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OutlC19L72UCOgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 11 Mar 2024 18:20:15 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A8FBDA0807; Mon, 11 Mar 2024 19:20:10 +0100 (CET)
-Date: Mon, 11 Mar 2024 19:20:10 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+d62e6bd2a2d05103d105@syzkaller.appspotmail.com>
-Cc: almaz.alexandrovich@paragon-software.com, anton@tuxera.com,
-	axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
-	linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-	ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ntfs3?] kernel BUG in ntfs_iget
-Message-ID: <20240311182010.7lq6ncxf7pg4hqp5@quack3>
-References: <000000000000602c0e05f55d793c@google.com>
- <0000000000007717e5061282baa0@google.com>
+	s=arc-20240116; t=1710181260; c=relaxed/simple;
+	bh=NQQvqKzPU8v8dTdFW/yg3BWpbucbVKrL6/83G+86T+w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oBioEsrPBrNLwL8x1ykLfhKt+tDT1IlN84yYp0sWA0SxtbmXTIR2srUZUGvwt6429zOK81/q7VEfksyDhGMbfpUWRpJ/aYyeE16uEVTqT96K4u39Z4BOu0L8mlrgEGKe8con0C0dRhTx0mRTjf6SuoClgZQdUL+C1KruXXW/3Cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=lOkZkdr3; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BGhPP4023998;
+	Mon, 11 Mar 2024 18:20:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bqtNjjrY09WFPvm4l2cpnXrSAK6us97T3iOoYmqP4TI=;
+ b=lOkZkdr3BbaMZGMpTCBgLIERLJFYOv6wZFKz82MvFirXxNXVRsYYpQCxjWEHWRlaDJlb
+ 6drWekd3XSXu5Bm3HrR/VEPS4UrJsSmN3PfMkhHlo2dmWh/85vO4lr2X4Y7euvypLLpN
+ au1AMVo+rfAM6SZwX1RlppJ9frEz6WXruCyWstsFv8iEe4qMOHi7T//rtyKYGItBxuSh
+ B9OSjzbkiufVPjGwr4Pet4wKjDraVfr2w8tfaLc5xxWMSzXG2PZH/4VZgfRBWZZ3LkW3
+ 8nhrFP2jeT6tHE6VLVypeQ6zKn2POM9sEQVmnjzYuiN8knDSZT0jBGkZ8y+0fUX/Yg9u pg== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt5qp2001-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 18:20:55 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BI6G7g018119;
+	Mon, 11 Mar 2024 18:20:55 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws23t2g0e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 18:20:55 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BIKqns24183120
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 18:20:54 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2B2775806B;
+	Mon, 11 Mar 2024 18:20:52 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7076858052;
+	Mon, 11 Mar 2024 18:20:51 +0000 (GMT)
+Received: from [9.61.27.161] (unknown [9.61.27.161])
+	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 11 Mar 2024 18:20:51 +0000 (GMT)
+Message-ID: <502b97e4-8ed4-402b-a025-3d023cae5a71@linux.ibm.com>
+Date: Mon, 11 Mar 2024 14:20:50 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000007717e5061282baa0@google.com>
-X-Spam-Level: **
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [2.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 URIBL_BLOCKED(0.00)[syzkaller.appspot.com:url,suse.cz:email,suse.com:email];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=f8e72bae38c079e4];
-	 TAGGED_RCPT(0.00)[d62e6bd2a2d05103d105];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.00)[43.75%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,syzkaller.appspot.com:url,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Score: 2.90
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] s390: doc: Update doc
+Content-Language: en-US
+To: "Jason J. Herne" <jjherne@linux.ibm.com>, linux-s390@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com, borntraeger@de.ibm.com,
+        agordeev@linux.ibm.com, gor@linux.ibm.com
+References: <20240306140843.10782-1-jjherne@linux.ibm.com>
+ <20240306140843.10782-6-jjherne@linux.ibm.com>
+From: Anthony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <20240306140843.10782-6-jjherne@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: b4FuQatNi3XvB8e1qKUdCS59FCMyL7hI
+X-Proofpoint-ORIG-GUID: b4FuQatNi3XvB8e1qKUdCS59FCMyL7hI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ spamscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
+ impostorscore=0 adultscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403110139
 
-On Thu 29-02-24 02:29:03, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=105d5a6a180000
-> start commit:   2639772a11c8 get_maintainer: remove stray punctuation when..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f8e72bae38c079e4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d62e6bd2a2d05103d105
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1358d65ee80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10dbbe45e80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
 
-Looks good.
+On 3/6/24 9:08 AM, Jason J. Herne wrote:
+> fix me
+>
+> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+> ---
+>   Documentation/arch/s390/vfio-ap.rst | 27 +++++++++++++++++++++++++++
+>   1 file changed, 27 insertions(+)
+>
+> diff --git a/Documentation/arch/s390/vfio-ap.rst b/Documentation/arch/s390/vfio-ap.rst
+> index 929ee1c1c940..af5ef60355a2 100644
+> --- a/Documentation/arch/s390/vfio-ap.rst
+> +++ b/Documentation/arch/s390/vfio-ap.rst
+> @@ -380,6 +380,33 @@ matrix device.
+>       control_domains:
+>         A read-only file for displaying the control domain numbers assigned to the
+>         vfio_ap mediated device.
+> +    ap_config:
+> +        A read/write file that, when written to, allows the entire vfio_ap mediated
+> +        device's ap configuration to be replaced in one shot. Three masks are given,
+> +        one for adapters, one for domains, and one for control domains. If the
+> +        given state cannot be set, then no changes are made to the vfio-ap
+> +        mediated device.
+> +
+> +        The format of the data written to ap_config is as follows:
+> +        {amask},{dmask},{cmask}\n
+> +
+> +        \n is a newline character.
+> +
+> +        amask, dmask, and cmask are masks identifying which adapters, domains,
+> +        and control domains should be assigned to the mediated device.
+> +
+> +        The format of a mask is as follows:
+> +        0xNN..NN
+> +
+> +        Where NN..NN is 64 hexadecimal characters representing a 256-bit value.
+> +        The leftmost (highest order) bit represents adapter/domain 0.
 
-#syz fix: fs: Block writes to mounted block devices
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Same comment I made in patch 4/5:
+
+I won't reject giving an r-b for the above, but could be more 
+informative; maybe more along the lines of how this is described in all 
+documentation:
+
+
+Where NN..NN is 64 hexadecimal characters comprising a bitmap containing 
+256 bits. Each bit, from left
+
+to right, corresponds to a number from 0 to 255. If a bit is set, the
+
+corresponding adapter, domain or control domain is assigned to the 
+vfio_ap mdev.
+
+You could also mention that setting an adapter or domain number greater 
+than the maximum allowed for
+
+for the system will result in an error.
+
+
+> +
+> +        For an example set of masks that represent your mdev's current
+> +        configuration, simply cat ap_config.
+> +
+> +        This attribute is intended to be used by automation. End users would be
+> +        better served using the respective assign/unassign attributes for
+> +        adapters, domains, and control domains.
+>   
+>   * functions:
+>   
 
