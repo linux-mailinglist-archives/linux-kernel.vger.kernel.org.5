@@ -1,194 +1,198 @@
-Return-Path: <linux-kernel+bounces-98806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5A3877FB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:11:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE4D7877FBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:12:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 934361C21F74
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:11:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B5CF1F21994
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51093C488;
-	Mon, 11 Mar 2024 12:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025C53C493;
+	Mon, 11 Mar 2024 12:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="To/mIZ2a"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HhU1XjN6"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D01E3BBF0
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7B23B7AC;
+	Mon, 11 Mar 2024 12:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710159094; cv=none; b=If73LoIAr/p7CBF9yW8ks6DIBlqNwltaBJP8V9UaCSiEwk8d0OunRwBfqBkvYLdf0NLupC5GFLkcFaRkkXZxK4X4YufRmTeb9Cxvhv8NeYPVD2+4KFhaXecg0kX1Wp1H+cNPkcBXufimDEmbyYkzjP2wTHVrbSCNSSbDkXDiWJQ=
+	t=1710159149; cv=none; b=SYjaMslZv01ig1P+HTdZB1KtR0+F1LJ+IWqE+bFu93F95IcZ6lDWq6elS0MNjnPDaAMAiWb5I7DUHxomxMqQ1I0q8FBBe02D0+aEk0EiY3otq5+n//3TV6quC0iZH4cNEmmEHpxiJ2jSPOHFf2nyKs4BswKkOL0WV/k+G1vHILo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710159094; c=relaxed/simple;
-	bh=hPCVMa6Dg6Dev/02Qlr2EszqiAAyEsxvBg5lx8hr1bY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FKeBsYdRspJSS7VGfbyjHqd21rearOzf91cnyNj5IOJC1gHj02otNjAFM+01htaqz/SSIGp5c38B7u811n77F9UaR5uvwdW4ZcLJiFkuokRx3jo5nwZOntjPlmLQFWkyBOdsodSFm/Pmttg+4CBhcSHomYlV01St77Y0NVWs+GE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=To/mIZ2a; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-609eb87a847so31777407b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 05:11:31 -0700 (PDT)
+	s=arc-20240116; t=1710159149; c=relaxed/simple;
+	bh=Xww2rG6IPqeBhdEBP4tj86oP6xhbOOQM6z+2Z8fryGE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=umFeysuV/BCuao8WCgX7Hn/tRH99op4XrGp/0r+dEWd6fcXsUd5lm9ML/bxNBFw5c3ww3/ch0M8+iA/XEv5UpcqK6DWHKMJs0jRX7FxkLZ+BIjUweouAZKveVR1NGdXHoMJBibdrRTKyOqtVsujf8buBBEDlOqKQr9+r5W0/CZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HhU1XjN6; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412f55695d1so30883575e9.0;
+        Mon, 11 Mar 2024 05:12:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710159091; x=1710763891; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Df2BGMbvWb2FVi+eRBRBYDqje0ymDCBi93nT5jupjk=;
-        b=To/mIZ2a/NT8WwzOsnA38kwGMfoew/534sla9xvfbdwCGDypvthEq3zJDT2ewT7ELO
-         yCQK+TUMZF8CpmIa9dKABV/K78FZYcrOiS4MQQk7PDytRa0pIX69WgSWyJYExkyUBhiR
-         sQWsc4jYjyOpzuJLuXBUAFRs6jZowOjG7ZsOiFl9s/4CPOF/7oHsGIh3efYUOuHcVWf1
-         TVEcUGIJSXkOhvkxCPB1QWT4l6lEb4pwAtCQIIEqi9cgdw2NAroDoftWHhrTL23PG4/t
-         UKjhlfnnV4m7c/SC3frH/DCVC0RYNl4bEO4l/SA3KTDbBRRyzvnPitnbo84/eEV0g7P/
-         QUHg==
+        d=gmail.com; s=20230601; t=1710159146; x=1710763946; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UNidjb7UaHC40jeV6l+KqsqSEZYYut5toBjevl2L6WA=;
+        b=HhU1XjN6TmA1E8w3hj4VENnkVD+/w4vR9+ANL8dUSglFGfTVLCjeW75Lgv/aiabsfT
+         S8n+B4AyrhurbZP0hRg6tsgWMxJwxHIktEzDeRFQyll3EQMqku6OANP+qKIr3bp2F1Mf
+         gsgrfIyR6x9Op6sM5JeWyOhWncRZhiM+/yZaLHj3mr2aqGgHi1uv7GkG5MvlrbBAdAe4
+         8TnfjhXFLHD+HKJGdALRChbohDsLbOLd5O2/eXFP+uOJH7227NNo4JTK62y3kMssMXxH
+         Z1dNOp6yc7XBiOPpRR+jTmqogs2ON2C4Wlr7VVSKccfZVzltXJx/LRqFGFTLW8Hc3tws
+         C8RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710159091; x=1710763891;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1710159146; x=1710763946;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8Df2BGMbvWb2FVi+eRBRBYDqje0ymDCBi93nT5jupjk=;
-        b=I1Z2lgOz85wLb/+QtvaeXRC3MqWRiFbavF/qyaBUEvaiJu7ASkYV3Kpa9pCcuK8Hw1
-         JOKFRaYag79mGy8H/eH6sT8RCm2gfXOZNBdNFRdxvYJG38pbmUgIKBf+DGCjeUhEoPwf
-         OurxTO9sSzzp8S/3qbW0wGfx6wggk3uPkBTzuu8KrQKDKFWZJbhI7Xd92PHNiW6ebUe7
-         ujBTGjcNTmmUrEdXy9up2nBGAMrWcwipmMsvwJxfqfGF55Z9s3ReREbq9XNWQYvPJ2Z1
-         C51RNzORiZiXLIPVON3Hi0bJUahfAJtBZGcEcYx97SaQGZMgIWbXO3TUxqIbkTZx9/G/
-         Ozfg==
-X-Forwarded-Encrypted: i=1; AJvYcCXB2nPJYcEauMhlSGywnWAShi0KIAtjRno/NS6+TApCZ9Dc08Earsi0oZjjGVGt6pqGQXpBZz1Pqp2CLIohW7jjt2s4XK35ynvwL2+9
-X-Gm-Message-State: AOJu0Yyz83n1JiFhZBfHwsToqnenpE3QhbEWxsvnmPw0OYSYJf0JIyYE
-	VhTLgOnu7a+pO+ZHz2a9rB82T2YVmxdRUJYRd2cRepqsXDSHaXzi0nIK3kEkoJJdXNz2aZuA6Kl
-	wqNE3WVnOzdc/DBO6/S+m71NQnoCs7NJPETU/qA==
-X-Google-Smtp-Source: AGHT+IH3uEU9Y3NgSjn2ucTTnuKP0tLiafc9xxzHXN2G6ScWOy3+Ws7ZAt0RIOXZIhqarb09H4oVYpgLcqNXFBV4RIE=
-X-Received: by 2002:a0d:eec1:0:b0:60a:36c2:fdf8 with SMTP id
- x184-20020a0deec1000000b0060a36c2fdf8mr1469676ywe.18.1710159091155; Mon, 11
- Mar 2024 05:11:31 -0700 (PDT)
+        bh=UNidjb7UaHC40jeV6l+KqsqSEZYYut5toBjevl2L6WA=;
+        b=aFaCWusrwaFwVDGPHKlZvRYtHakQXfs3v8NhNlCkFVzNjy/ouwmJ27lePmU+U3AO1B
+         5ShrreVPAf56zlF9/zeJke7jDBa9bKY4IxkmoOH5lvHq/OiWau0xgAWxUyMkt9VI565z
+         EfMIWYmzv7H73Cp+yFHQLVjaeyW+yIhiOSltWCB1vjNcK+eVFiTciraeSmxiVVyed6P8
+         MpFuIsSmEzcWR8pEZdXdovlWcR1Eybc6slsOoDQvTFSPww+7MLr5kjL5W7gLxJS+8Gmy
+         zMMwgUXDxiPr/XW94tMBQClOU1OVsXoFusElZ1DorasPiAhJGo5/lo986Vq8dTUhunww
+         6gjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVVCXaPxo03VAKxE85m0SBMaYpqt67tWaP0IWjDQkZksu3ZvWNP15yQyc3/+bqCs8mxbChZSyAMEvYiDyz19OG2TjQQS2Xg6NjlL9CsqfxVWkXAAmcGV6zUqaAFo2hzObBtO39AYTjulNZnzswqKL/JH8r7/s9C0Ypzcam52p0exXoiLI7WnfYmdqqlrsnlfnRgxxE4ct8O
+X-Gm-Message-State: AOJu0Yx9+jCx7Atv6VT+PGcZVYmyv//Qg6K2LA8UnzpjZL9Lz+OW6qFk
+	3OvcteQzJOlDQq45uSqai+dayOReumuCAThqGkNeO1xeEwr9GXDH
+X-Google-Smtp-Source: AGHT+IFFtxRTbFUgz0v8CxICWPJBT53jAcvblF92qIaUh3qdvoMOBMSefaw6ur3motg2fskcIQXJbg==
+X-Received: by 2002:a05:600c:1e06:b0:413:28c1:7832 with SMTP id ay6-20020a05600c1e0600b0041328c17832mr2311008wmb.11.1710159145756;
+        Mon, 11 Mar 2024 05:12:25 -0700 (PDT)
+Received: from vitor-nb.. ([2001:8a0:e60f:3100:f272:bc42:d450:41d1])
+        by smtp.gmail.com with ESMTPSA id o1-20020a05600c4fc100b00412f12f00adsm8976619wmq.10.2024.03.11.05.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 05:12:25 -0700 (PDT)
+From: Vitor Soares <ivitro@gmail.com>
+To: mkl@pengutronix.de,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Thomas Kopp <thomas.kopp@microchip.com>,
+	Wolfgang Grandegger <wg@grandegger.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: ivitro@gmail.com,
+	Vitor Soares <vitor.soares@toradex.com>,
+	linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH v3] can: mcp251xfd: fix infinite loop when xmit fails
+Date: Mon, 11 Mar 2024 12:11:43 +0000
+Message-Id: <20240311121143.306403-1-ivitro@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311120215.16845-1-quic_kbajaj@quicinc.com> <20240311120215.16845-5-quic_kbajaj@quicinc.com>
-In-Reply-To: <20240311120215.16845-5-quic_kbajaj@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 11 Mar 2024 14:11:19 +0200
-Message-ID: <CAA8EJpo7Zd-QxAxKFuo5zaR-=N8eBefpL=LcLQ9j+akhFQYUrg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] phy: qcpm-qmp-usb: Add support for QDU1000/QRU1000
-To: Komal Bajaj <quic_kbajaj@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Wesley Cheng <quic_wcheng@quicinc.com>, 
-	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-usb@vger.kernel.org, Amrit Anand <quic_amrianan@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 11 Mar 2024 at 14:05, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
->
-> Add QDU1000/QRU1000 specific register layout and table configs.
->
-> Co-developed-by: Amrit Anand <quic_amrianan@quicinc.com>
-> Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-usb.c | 52 +++++++++++++++++++++++++
->  1 file changed, 52 insertions(+)
->
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> index 5c003988c35d..e067574bea7a 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> @@ -1441,6 +1441,32 @@ static const struct qmp_phy_init_tbl x1e80100_usb3_uniphy_pcs_usb_tbl[] = {
->         QMP_PHY_INIT_CFG(QPHY_V7_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
->  };
->
-> +
-> +static const struct qmp_phy_init_tbl qdu1000_usb3_uniphy_pcs_tbl[] = {
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG1, 0xc4),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG2, 0x89),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG3, 0x20),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_LOCK_DETECT_CONFIG6, 0x13),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_RX_SIGDET_LVL, 0xaa),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCS_TX_RX_CONFIG, 0x0c),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_CDR_RESET_TIME, 0x0a),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_ALIGN_DETECT_CONFIG1, 0x88),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_ALIGN_DETECT_CONFIG2, 0x13),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_EQ_CONFIG1, 0x4b),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_EQ_CONFIG5, 0x10),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_REFGEN_REQ_CONFIG1, 0x21),
-> +};
-> +
-> +static const struct qmp_phy_init_tbl qdu1000_usb3_uniphy_pcs_usb_tbl[] = {
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
-> +       QMP_PHY_INIT_CFG(QPHY_V4_PCS_USB3_POWER_STATE_CONFIG1, 0x6f),
-> +};
-> +
-> +
-> +
+From: Vitor Soares <vitor.soares@toradex.com>
 
-Please drop extra empty lines.
+When the mcp251xfd_start_xmit() function fails, the driver stops
+processing messages, and the interrupt routine does not return,
+running indefinitely even after killing the running application.
 
-Also the tables are more or less sorted out. Please move this to a
-correct place.
+Error messages:
+[  441.298819] mcp251xfd spi2.0 can0: ERROR in mcp251xfd_start_xmit: -16
+[  441.306498] mcp251xfd spi2.0 can0: Transmit Event FIFO buffer not empty. (seq=0x000017c7, tef_tail=0x000017cf, tef_head=0x000017d0, tx_head=0x000017d3).
+.. and repeat forever.
 
->  struct qmp_usb_offsets {
->         u16 serdes;
->         u16 pcs;
-> @@ -1693,6 +1719,29 @@ static const struct qmp_phy_cfg msm8996_usb3phy_cfg = {
->         .regs                   = qmp_v2_usb3phy_regs_layout,
->  };
->
-> +static const struct qmp_phy_cfg qdu1000_usb3_uniphy_cfg = {
-> +       .lanes                  = 1,
-> +
-> +       .offsets                = &qmp_usb_offsets_v5,
-> +
-> +       .serdes_tbl             = sm8150_usb3_uniphy_serdes_tbl,
-> +       .serdes_tbl_num         = ARRAY_SIZE(sm8150_usb3_uniphy_serdes_tbl),
-> +       .tx_tbl                 = sm8350_usb3_uniphy_tx_tbl,
-> +       .tx_tbl_num             = ARRAY_SIZE(sm8350_usb3_uniphy_tx_tbl),
-> +       .rx_tbl                 = sm8350_usb3_uniphy_rx_tbl,
-> +       .rx_tbl_num             = ARRAY_SIZE(sm8350_usb3_uniphy_rx_tbl),
-> +       .pcs_tbl                = qdu1000_usb3_uniphy_pcs_tbl,
-> +       .pcs_tbl_num            = ARRAY_SIZE(qdu1000_usb3_uniphy_pcs_tbl),
-> +       .pcs_usb_tbl            = qdu1000_usb3_uniphy_pcs_usb_tbl,
-> +       .pcs_usb_tbl_num        = ARRAY_SIZE(qdu1000_usb3_uniphy_pcs_usb_tbl),
-> +       .vreg_list              = qmp_phy_vreg_l,
-> +       .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
-> +       .regs                   = qmp_v4_usb3phy_regs_layout,
-> +       .pcs_usb_offset         = 0x1000,
-> +
-> +       .has_pwrdn_delay        = true,
-> +};
-> +
->  static const struct qmp_phy_cfg sa8775p_usb3_uniphy_cfg = {
->         .lanes                  = 1,
->
-> @@ -2620,6 +2669,9 @@ static const struct of_device_id qmp_usb_of_match_table[] = {
->         }, {
->                 .compatible = "qcom,sdx65-qmp-usb3-uni-phy",
->                 .data = &sdx65_usb3_uniphy_cfg,
-> +       }, {
-> +               .compatible = "qcom,qdu1000-qmp-usb3-uni-phy",
-> +               .data = &qdu1000_usb3_uniphy_cfg,
+The issue can be triggered when multiple devices share the same
+SPI interface. And there is concurrent access to the bus.
 
-Please keep the table sorted.
+The problem occurs because tx_ring->head increments even if
+mcp251xfd_start_xmit() fails. Consequently, the driver skips one
+TX package while still expecting a response in
+mcp251xfd_handle_tefif_one().
 
->         }, {
->                 .compatible = "qcom,sdx75-qmp-usb3-uni-phy",
->                 .data = &sdx75_usb3_uniphy_cfg,
-> --
-> 2.42.0
->
->
+This patch resolves the issue by decreasing tx_ring->head if
+mcp251xfd_start_xmit() fails. With the fix, if we trigger the issue and
+the err = -EBUSY, the driver returns NETDEV_TX_BUSY. The network stack
+retries to transmit the message.
+Otherwise, it prints an error and discards the message.
 
+Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
+Cc: stable@vger.kernel.org
+Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
+---
 
+V2->V3:
+  - Add tx_dropped stats.
+  - netdev_sent_queue() only if can_put_echo_skb() succeed.
+
+V1->V2:
+  - Return NETDEV_TX_BUSY if mcp251xfd_tx_obj_write() == -EBUSY.
+  - Rework the commit message to address the change above.
+  - Change can_put_echo_skb() to be called after mcp251xfd_tx_obj_write() succeed.
+    Otherwise, we get Kernel NULL pointer dereference error.
+
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c | 34 ++++++++++++--------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+index 160528d3cc26..146c44e47c60 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+@@ -166,6 +166,7 @@ netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+ 				 struct net_device *ndev)
+ {
+ 	struct mcp251xfd_priv *priv = netdev_priv(ndev);
++	struct net_device_stats *stats = &ndev->stats;
+ 	struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+ 	struct mcp251xfd_tx_obj *tx_obj;
+ 	unsigned int frame_len;
+@@ -181,25 +182,32 @@ netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+ 	tx_obj = mcp251xfd_get_tx_obj_next(tx_ring);
+ 	mcp251xfd_tx_obj_from_skb(priv, tx_obj, skb, tx_ring->head);
+ 
+-	/* Stop queue if we occupy the complete TX FIFO */
+ 	tx_head = mcp251xfd_get_tx_head(tx_ring);
+-	tx_ring->head++;
+-	if (mcp251xfd_get_tx_free(tx_ring) == 0)
+-		netif_stop_queue(ndev);
+-
+ 	frame_len = can_skb_get_frame_len(skb);
+-	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
+-	if (!err)
+-		netdev_sent_queue(priv->ndev, frame_len);
++
++	tx_ring->head++;
+ 
+ 	err = mcp251xfd_tx_obj_write(priv, tx_obj);
+-	if (err)
+-		goto out_err;
++	if (err) {
++		tx_ring->head--;
+ 
+-	return NETDEV_TX_OK;
++		if (err == -EBUSY)
++			return NETDEV_TX_BUSY;
+ 
+- out_err:
+-	netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
++		stats->tx_dropped++;
++
++		if (net_ratelimit())
++			netdev_err(priv->ndev,
++				   "ERROR in %s: %d\n", __func__, err);
++	} else {
++		err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
++		if (!err)
++			netdev_sent_queue(priv->ndev, frame_len);
++
++		/* Stop queue if we occupy the complete TX FIFO */
++		if (mcp251xfd_get_tx_free(tx_ring) == 0)
++			netif_stop_queue(ndev);
++	}
+ 
+ 	return NETDEV_TX_OK;
+ }
 -- 
-With best wishes
-Dmitry
+2.34.1
+
 
