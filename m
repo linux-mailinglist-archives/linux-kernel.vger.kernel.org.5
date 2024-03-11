@@ -1,131 +1,109 @@
-Return-Path: <linux-kernel+bounces-99668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA770878B98
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:41:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86CB2878B9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE2921C2116F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:41:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28178B21286
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BAA58AD7;
-	Mon, 11 Mar 2024 23:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ECCD59B4D;
+	Mon, 11 Mar 2024 23:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="S4dWM25w"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="h8IWzGVF"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C8D58ABF
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:41:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483E25917D;
+	Mon, 11 Mar 2024 23:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710200487; cv=none; b=Iy93AL8sOgFcdeL8AKi3uKVqtgvuUCYNEPZG+3bwY4bgzPbEoqZYiSfPNOLK8XYNdz2gYKpP9z+JBMxKQ5T/8wGnc03W/FOSVL8PTlPy8YX5E47RqiWuCUVjbW0knIw9aevn3xxqCuClbGTaiICvSDDNHJkgvMASEPQaLScEcOU=
+	t=1710200497; cv=none; b=UKPxvye8pW2vTp9FAgIaW8/wJ1ZNM85yCAJjmYkccy7idOIdYxgEibHth8aEbDLoIoS8fCPLxt2WDcjUd3iCBtjwiHK5T+PgTGWvBZUrWjkZmYrY0wuo5pJuWTw+x6Gmyg4B/b1M8WFMIX5uIxakzl62cNRFlefiAJvdWuQq8zE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710200487; c=relaxed/simple;
-	bh=oMBEUrIufNiH5v4Ezh8LCLg7QmBGNpZT2yXP31KEKm0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=AWcocMspLhU3v1ARSodTGe+v4aWsRKlWbyya46As9Ykka3ZkE4cUF651qRk2rnoyv6MfxO5QRbtzZHlInF5lK3d5gYDkgx72S/yoZWuTgI2kQu/jF0JVjMv6rfS089u6G1UHF6kxNqtofjnPu7rWzpW9XJYLaB+YRda19Hzol6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=S4dWM25w; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dcad814986so37896305ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:41:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710200485; x=1710805285; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sijOqUV0v9b+uu6ucC7y1n+V6LIAN15M66Y7AMirCnM=;
-        b=S4dWM25wdVnn/V4sveILyhwzGtZNqtJxvlNY2pH/fLfVdM44X9gVdzlPRWzRZCrgsp
-         HNp2tgQEhCGYjmYThXRREjH/gJ7T9Vl7F2K7yh4lqjrFNmqvMBHODixe7pdYwwKxvU00
-         LwbKsV3/1fKpKQ965sMHotjxAkBBz9tUP9Y98=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710200485; x=1710805285;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sijOqUV0v9b+uu6ucC7y1n+V6LIAN15M66Y7AMirCnM=;
-        b=iS9VnL6Eau5vIeo+m0Yqo34RMjC0mtTlu0kmqzTRdj9juAHHmfiQw3JRdmjTmPbYj0
-         eziUZYYYJQZuNATTQ77qrH/o+rfLnh09sSPmg+h/IagcJuQ6UaURL4AbZHxDEZDEZbp5
-         mnk9ZCqgXXZ1XvbVHghGEDW48D4zoboTuEEtidSLnO6FiMBdCk4H9RrGeqElgS3R+teg
-         aUel+qpKhhRB7PUcqwOGuAAcMNlV28cNsXpiaZSNHoWwJiyicUZAmSv8/+bUfYXulwqt
-         KAqZMznoSmVP+ycj9c0i0gtdJT+4k5HnG7ZE8V0mkFhRrDotAeENBAJKvDK7Y4oYdnrQ
-         M/mA==
-X-Gm-Message-State: AOJu0YzPJiJR1en9Hf/bzCqyaKvKN6tf1UrL4lmk0V4/BPa1mKmjTJ0T
-	smzaxIIKUA8PBd+URLdvIItOW8Egq35K/m1HwqWigDTQnikyk9H5PnltThnsDw==
-X-Google-Smtp-Source: AGHT+IE4FPC62JWv24Re4HnAvjBsvlPzELc8KjZdIGfSWVJernlkYiRfS4rgmxzDYiTK0R3q5UfsbA==
-X-Received: by 2002:a17:902:edd0:b0:1dc:a8aa:3c86 with SMTP id q16-20020a170902edd000b001dca8aa3c86mr7725774plk.5.1710200485198;
-        Mon, 11 Mar 2024 16:41:25 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170902e54900b001d949393c50sm5283343plf.187.2024.03.11.16.41.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 16:41:24 -0700 (PDT)
-Date: Mon, 11 Mar 2024 16:41:24 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
-	Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-	kernel test robot <oliver.sang@intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Terry Tritton <terry.tritton@linaro.org>,
-	Tycho Andersen <tandersen@netflix.com>,
-	Will Drewry <wad@chromium.org>
-Subject: [GIT PULL] seccomp updates for v6.9-rc1
-Message-ID: <202403111640.68D9B74844@keescook>
+	s=arc-20240116; t=1710200497; c=relaxed/simple;
+	bh=NSpdWKz3dtXZCOiFR1hjJUNd4g6YWs1gOB1/WeN2Z/0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=sr5Rr6yjTPTnJf5/pzdfGHtqTEnUOlXZWsSdWsNhNxuvR7VjJoBHBiLtQrRPEiHqkzg4ouGO1/EbltxVngTfImBxoazIM/JoRK3LWoygkUmX0mqfdWx1tdxL+d3a70aph150NeucknUWSNID4DXKX5tZYd99C/DJ170aPrnZBII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=h8IWzGVF; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710200489;
+	bh=KPnrKhWMlY/WKjNaJzOqtYzFsw7BeMmsiEd+5e4Jfc0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=h8IWzGVF9GRXbiEbYuHkbLZgGUYw9MLrUcFAllTmZBBxxD5IawZY3+CQyEB3IBVqK
+	 j2vAuNiqNuPgvxpWizAPXtGChR+IG9AmTPnO51Za7yafCHvuxCbtin+R1S8n7e1k4L
+	 qdaRZixF0b5myaWrBSlv1LPM6DZrljUlqmzC4NqX5Y4oWhfF1oD8LSmDC4gGJnOi73
+	 4YSyQjaqSFp/XU29CSkM0OsNcRusIGchpy0fojfQu470KCjRfj7lyNu5e1bPtXDDJI
+	 MrsKXLaKYHZ2NGuDAXfUXx0F/KYop88paFlK+GmHdQ6U/HqF7QzTZ7YLXQar+be1C5
+	 dI3Di6J9Mc9kQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TttZx4g2Xz4wyr;
+	Tue, 12 Mar 2024 10:41:29 +1100 (AEDT)
+Date: Tue, 12 Mar 2024 10:41:27 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andi Shyti <andi.shyti@kernel.org>
+Cc: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>, Viken Dadhaniya
+ <quic_vdadhani@quicinc.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the i2c-host tree
+Message-ID: <20240312104127.3fb5e650@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: multipart/signed; boundary="Sig_/DzOZ0XHmvV_p5fhAGehxzoB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi Linus,
+--Sig_/DzOZ0XHmvV_p5fhAGehxzoB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Please pull these several seccomp updates for v6.9-rc1. There are no core
-kernel changes here; it's entirely selftests and samples. Details below.
+Hi all,
 
-Thanks!
+After merging the i2c-host tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
--Kees
+drivers/i2c/busses/i2c-qcom-geni.c: In function 'i2c_gpi_cb_result':
+drivers/i2c/busses/i2c-qcom-geni.c:493:18: error: implicit declaration of f=
+unction 'FIELD_GET' [-Werror=3Dimplicit-function-declaration]
+  493 |         status =3D FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
+      |                  ^~~~~~~~~
+cc1: all warnings being treated as errors
 
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+Caused by commit
 
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+  313d6aa4c648 ("i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI mode")
 
-are available in the Git repository at:
+I have used the i2c-host tree from next-20240308 for today.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v6.9-rc1
+--=20
+Cheers,
+Stephen Rothwell
 
-for you to fetch changes up to 56af94aace8a0489fb1a32fd6f1cf0c548fe3911:
+--Sig_/DzOZ0XHmvV_p5fhAGehxzoB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  samples: user-trap: fix strict-aliasing warning (2024-02-12 10:42:02 -0800)
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-seccomp updates for v6.9-rc1
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXvlqcACgkQAVBC80lX
+0Gxzngf/W7c80F2x3Up16fxpdypmxrsRRkghtVjr0eSoZ2uWC/JXLZRqPbcGIcFe
+vW9a5kKzEYNHkXYz4w/9N+lmPO5lEsDobVipy1AkeRzo7mId2RSq3wbCpQplsKU8
+PpTMVpIamxx/IyxXrTlEAmWg4OBBzSxtgSmC8X6CDotLD/VJqJ3ZL1J4I+eY/oEU
+hv1WSW5gZDoUeqrCGrClp++enObxe4NleLVnOcgU1eoiPQVJitPooFi0XsppsI8a
+9eXKcfDgQulJJyVVp/NpqqSjcXiVhla/4T9TNHE69NWXe1qrojPVCNE1TbQYkrq+
+JYsJcrarpclVGoQ23GprYIvBM8lidA==
+=SABp
+-----END PGP SIGNATURE-----
 
-- Improve reliability of selftests (Terry Tritton, Kees Cook)
-
-- Fix strict-aliasing warning in samples (Arnd Bergmann)
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      samples: user-trap: fix strict-aliasing warning
-
-Kees Cook (1):
-      selftests/seccomp: Pin benchmark to single CPU
-
-Terry Tritton (3):
-      selftests/seccomp: Handle EINVAL on unshare(CLONE_NEWPID)
-      selftests/seccomp: Change the syscall used in KILL_THREAD test
-      selftests/seccomp: user_notification_addfd check nextfd is available
-
- samples/seccomp/user-trap.c                        |  8 +++--
- .../testing/selftests/seccomp/seccomp_benchmark.c  | 38 ++++++++++++++++++--
- tools/testing/selftests/seccomp/seccomp_bpf.c      | 41 ++++++++++++++++------
- 3 files changed, 73 insertions(+), 14 deletions(-)
-
--- 
-Kees Cook
+--Sig_/DzOZ0XHmvV_p5fhAGehxzoB--
 
