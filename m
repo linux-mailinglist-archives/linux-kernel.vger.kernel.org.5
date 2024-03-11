@@ -1,186 +1,161 @@
-Return-Path: <linux-kernel+bounces-99342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7BF68786E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:01:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 266028786EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 572AF1F22B4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:01:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0B2F1F21591
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C533D53E13;
-	Mon, 11 Mar 2024 18:01:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E4A53E22;
+	Mon, 11 Mar 2024 18:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IUBx8sFS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zw9XqBd9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IUBx8sFS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zw9XqBd9"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K6hOpfN1"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A083537E3;
-	Mon, 11 Mar 2024 18:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E738854F8D;
+	Mon, 11 Mar 2024 18:02:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710180092; cv=none; b=pF6Qox8fnAFK/9K4iLzAmwwjMszpO1Yb/cortVU+0rO30oNAzZOls27sJkQUbpgTOUHaMxKTtU+Mi99z4zgafphssdC3wBk05Tthzorh7RGefkwJ0ccOYC1ZsgjMVRS0qVhdE8hdAgpXtKtfrybZto815d6F7u26zWFr/ZZ0wGM=
+	t=1710180127; cv=none; b=l0aw9Fl9hEPq0OFf7y0/1Gd17iNB8+aJj6mKDiJ33V3OtlvXjZhp4h0iGQoCWYD2q5Y3itq9z4xs8VnlU7S3d0TIZZsF/sLU93/wP/j4YGOR+CaX2uMofm7A128qCJxWzd0DoUUxwMkZc6vDANBd0doEPdtA5xjntu5kD7gF/Hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710180092; c=relaxed/simple;
-	bh=YwQ3R76+KLkiJDzmZlZvHr0Ih1ifU7CC0K6Lnax3Koo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WKNTwI3KIoMZEOq4w/nI7nb7D+I4POAE3KeqdoU8Mugz0sjh4cadajYZ6yxwjhshqKR71rleHlwFIXim8fdgV9aByM3dhj3wzB+LQYDlUCtNy1dj+9s/NlbGYhh9/tw9m8Mb9zFmPz/fdbU9vbkqjgfXsdOncsm9YFiW9MxckDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IUBx8sFS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zw9XqBd9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IUBx8sFS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zw9XqBd9; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4A00F21D16;
-	Mon, 11 Mar 2024 18:01:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710180088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1nuY4Ji3/LCK1/g56T1VrxYdJ9wsBsTAQhk/YstClZ4=;
-	b=IUBx8sFSykKkAWFkUo5A2ufI7D0423uxhOPzJXWJNAbi3P6WmYD3tUPPvKyXC7GDfAJ6Ib
-	Y1lT3Em+8uU6mEuBFG/DTKV9C2Q40GEnCMqt4sj9dymxvGQix2jfU4N3YJIwCrMY9hwL35
-	6VKFQqppm70gyGEfZgg45+FtYuFD6YM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710180088;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1nuY4Ji3/LCK1/g56T1VrxYdJ9wsBsTAQhk/YstClZ4=;
-	b=Zw9XqBd9Zb5tOag9RIEpLDAYOHLi6R8NE7yoJ6PgHZkorPI24xG+Ru5WZuNQ9VaalrCDri
-	lopbc7J0zqAGfBAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710180088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1nuY4Ji3/LCK1/g56T1VrxYdJ9wsBsTAQhk/YstClZ4=;
-	b=IUBx8sFSykKkAWFkUo5A2ufI7D0423uxhOPzJXWJNAbi3P6WmYD3tUPPvKyXC7GDfAJ6Ib
-	Y1lT3Em+8uU6mEuBFG/DTKV9C2Q40GEnCMqt4sj9dymxvGQix2jfU4N3YJIwCrMY9hwL35
-	6VKFQqppm70gyGEfZgg45+FtYuFD6YM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710180088;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1nuY4Ji3/LCK1/g56T1VrxYdJ9wsBsTAQhk/YstClZ4=;
-	b=Zw9XqBd9Zb5tOag9RIEpLDAYOHLi6R8NE7yoJ6PgHZkorPI24xG+Ru5WZuNQ9VaalrCDri
-	lopbc7J0zqAGfBAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E997136BA;
-	Mon, 11 Mar 2024 18:01:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id oitFD/hG72VlNAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 11 Mar 2024 18:01:28 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id DE241A0807; Mon, 11 Mar 2024 19:01:27 +0100 (CET)
-Date: Mon, 11 Mar 2024 19:01:27 +0100
-From: Jan Kara <jack@suse.cz>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Luis Henriques <lhenriques@suse.de>, Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount
- parameters
-Message-ID: <20240311180127.4qdr6ln2xf6vviu3@quack3>
-References: <20240307160225.23841-1-lhenriques@suse.de>
- <20240307160225.23841-4-lhenriques@suse.de>
- <CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
- <87le6p6oqe.fsf@suse.de>
- <CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
- <20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
- <CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
+	s=arc-20240116; t=1710180127; c=relaxed/simple;
+	bh=rkJoFU+8RUcVvUJAcqdZvMWhYKXiwBRaY37lui0QE2U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oNIKJyP3L1Dpeyt67uP16J39ezyB30Sjltxea1KIh4qwCyXP7XwvGDLC554fu9YUmrGAK9lAkxvWWXfWyh/hMIFSbqZBtGZH1pXjQNnnRwe++tzzbfyb6MuelzyKie5oFAvvssAEhbKzQ8bZry3SlWYxoKOLnBA6VNOfuUUhJiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K6hOpfN1; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e66601f082so2857602b3a.0;
+        Mon, 11 Mar 2024 11:02:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710180125; x=1710784925; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o4R9ADmuK2FzMV+uyNo5OY4V3RZjV78H/xpdInlrSUI=;
+        b=K6hOpfN16tdkcx1IoNQhnhY85iNzGR6aBAR77VXORPZyRXkSjgeUiJw/Wt/VnQXavL
+         6EoDYwzoVee6ARQ58yU71mNQ6Osisd7JA42vq390MOT9iAZSYfuekVOTgGJn53vHrG6v
+         sGAiAqir0/n6fKerRnsy5k1Eo66Bb8hFY5PEWqVDcV+V90vMTaF5qG06+IqOwanlbtga
+         1Ec/UAgcKQqYVqzs/xoEXLztaGK0k2gOtHwSP+lpivqLaaCCrtLzQVurRU7Va5Kamc5J
+         1LLSvWBDRumG1PLQ0GSfbcdM1Z5G5uZyDvpb5a95Ac2YwBH6oUa4U6eJOmms5a29mGs0
+         kadA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710180125; x=1710784925;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o4R9ADmuK2FzMV+uyNo5OY4V3RZjV78H/xpdInlrSUI=;
+        b=fu/6UUVssjiCREhcmXJ5mluJiLdSsC7LBbeTECfP1qgclsd23O9eTb59MpTeQLg6WE
+         xt4qK5ia5JxVSGCI6B/AgCFuYpKbBHwqiA5kUt6JFexCB6TiCry7s/5A5+sQFsTvz+29
+         yTlideJFQpgzqwzez9YsUUL55BlPuIXYrGoxKlu282gidktWGLVdNHKx5tX0PC7/CyjS
+         tbJuJqifTyox+a2Rlf3dMgIMs3s23d7qBqdnEOWskVoSlyp2fywd+7ICXxQUaEI1BSmy
+         WSUbn/lXIxw/JEUbjVAjEIBLsWBBCcolsgxB7kVDTHQJE2WPS1si4+7GYjFkqbOLc49X
+         /o3A==
+X-Forwarded-Encrypted: i=1; AJvYcCUoIBZGD2sr/eKeZ2T3+q0lJrpTWwR0koBh5OGPwkTLWgtIecNFmkPGi/jfSzqp8glGm45nqDV+XKWxj8nMiXacE+nVyME7x4DmgdVFem9f7SRKlsaJcC7/6QVkQM5BNpPn+SUEUVZLZfutdSsYZCtZE+fM1Kih14iu
+X-Gm-Message-State: AOJu0YxtsDyt+VGpixIjM6fjuRzHQuLBqco8CL2Hm7tNZWb9c6+zytTd
+	uB431YzMsXjD7fJfr1935GO1SCb7OoHcU/N1KOdi3+ZSZtvn6YerX38bQB6+ovC/kb+IxVNgHUv
+	ye74QMY9h1HfT5/Onc33IL04fgt0=
+X-Google-Smtp-Source: AGHT+IE0HXRVILcbLRkdcMQ91Ff+mSiLMeMoLaa8RV2aeF2XJTB8yy92gHL1YS2H9RjfeX/2ibS2+rn6n0/Ttk+24y4=
+X-Received: by 2002:a05:6a20:3d87:b0:1a1:4848:98af with SMTP id
+ s7-20020a056a203d8700b001a1484898afmr5735907pzi.1.1710180124799; Mon, 11 Mar
+ 2024 11:02:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-0.24 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.org,suse.de,mit.edu,dilger.ca,zeniv.linux.org.uk,suse.cz,gmail.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.64)[82.43%]
-X-Spam-Score: -0.24
-X-Spam-Flag: NO
+References: <00000000000081fb0d06135eb3ca@google.com> <tencent_E4EB1B6A2584BA2BBBB733409EAE1B524B08@qq.com>
+ <5f1446d409322de91946a569edc0b836daa52aae.camel@gmail.com>
+In-Reply-To: <5f1446d409322de91946a569edc0b836daa52aae.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 11 Mar 2024 11:01:52 -0700
+Message-ID: <CAEf4BzbbvBEwy6_S1MRjiGWWfS_nxy6qNsEc0_Jdro1c10b8Vw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: fix oob in btf_name_valid_section
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Edward Adam Davis <eadavis@qq.com>, syzbot+cc32304f6487ebff9b70@syzkaller.appspotmail.com, 
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org, 
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 11-03-24 15:39:39, Miklos Szeredi wrote:
-> On Mon, 11 Mar 2024 at 14:25, Christian Brauner <brauner@kernel.org> wrote:
-> 
-> > Yeah, so with that I do agree. But have you read my reply to the other
-> > thread? I'd like to hear your thoughs on that. The problem is that
-> > mount(8) currently does:
+On Mon, Mar 11, 2024 at 7:48=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Mon, 2024-03-11 at 21:16 +0800, Edward Adam Davis wrote:
+> > Check the first char of the BTF DATASEC names.
 > >
-> > fsconfig(3, FSCONFIG_SET_FLAG, "usrjquota", NULL, 0) = -1 EINVAL (Invalid argument)
+> > Fixes: bd70a8fb7ca4 ("bpf: Allow all printable characters in BTF DATASE=
+C names")
+> > Reported-and-tested-by: syzbot+cc32304f6487ebff9b70@syzkaller.appspotma=
+il.com
+> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> > ---
+> >  kernel/bpf/btf.c | 2 ++
+> >  1 file changed, 2 insertions(+)
 > >
-> > for both -o usrjquota and -o usrjquota=
-> 
-> For "-o usrjquota" this seems right.
-> 
-> For "-o usrjquota=" it doesn't.  Flags should never have that "=", so
-> this seems buggy in more than one ways.
-> 
-> > So we need a clear contract with userspace or the in-kernel solution
-> > proposed here. I see the following options:
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 170d017e8e4a..dda0aa0d7175 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -816,6 +816,8 @@ static bool btf_name_valid_section(const struct btf=
+ *btf, u32 offset)
+> >       const char *src =3D btf_str_by_offset(btf, offset);
+> >       const char *src_limit;
 > >
-> > (1) Userspace must know that mount options such as "usrjquota" that can
-> >     have no value must be specified as "usrjquota=" when passed to
-> >     mount(8). This in turn means we need to tell Karel to update
-> >     mount(8) to recognize this and infer from "usrjquota=" that it must
-> >     be passed as FSCONFIG_SET_STRING.
-> 
-> Yes, this is what I'm thinking.  Of course this only works if there
-> are no backward compatibility issues, if "-o usrjquota" worked in the
-> past and some systems out there relied on this, then this is not
-> sufficient.
+> > +     if (!isprint(*src))
+> > +             return false;
+> >       /* set a limit on identifier length */
+> >       src_limit =3D src + KSYM_NAME_LEN;
+> >       src++;
+>
+> Hi Edward,
+>
+> Thank you for fixing this.
+> I wonder, maybe something like below would be simpler?
+>
+> Thanks,
+> Eduard
+>
+> ---
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 170d017e8e4a..3d95d5398c8a 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -818,7 +818,6 @@ static bool btf_name_valid_section(const struct btf *=
+btf, u32 offset)
+>
+>         /* set a limit on identifier length */
+>         src_limit =3D src + KSYM_NAME_LEN;
+> -       src++;
 
-No, "-o usrjquota" never worked and I'm inclined to keep refusing this
-variant as IMHO it is confusing.
+ah, __btf_name_valid() has a separate __btf_name_char_ok(*src, true)
+check and then skips first character :(
 
-> > In any case, we need to document what we want:
-> >
-> > https://github.com/brauner/man-pages-md/blob/main/fsconfig.md
-> 
-> What's the plan with these?  It would be good if "man fsconfig" would
-> finally work.
+What Eduard proposes makes sense, we shouldn't advance src before the loop.
 
-Yes, merging these into official manpages would be nice.
+Eduard, I'd also say we should make __btf_name_valid() a bit more
+uniform by dropping that first if and then doing
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+if (!__btf_name_char_ok(*src, src =3D=3D src_orig))
+    return false;
+
+where we just remember original string pointer in src_orig.
+
+WDYT?
+
+
+>         while (*src && src < src_limit) {
+>                 if (!isprint(*src))
+>                         return false;
+>
 
