@@ -1,400 +1,84 @@
-Return-Path: <linux-kernel+bounces-99180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B801187848C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:05:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F64B87848F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:05:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB6DC1C217FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:05:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4E5B1F21B04
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AD24AECC;
-	Mon, 11 Mar 2024 16:03:34 +0000 (UTC)
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 915AD4AEC7;
-	Mon, 11 Mar 2024 16:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6199047F4D;
+	Mon, 11 Mar 2024 16:03:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jqQi97d/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997174CDE0;
+	Mon, 11 Mar 2024 16:03:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710173014; cv=none; b=YHszytzorfDlXwmzOa31EbdCqfH1t4dgYdhYE1rvTvqSZjJhg1+dV6Imkfq9FwfHgM7ZUQi9WmHDhtMw7qjNTuRqN1rPTKfWEhBibLxq4fnfkjOdSh7U/d0wKts+LTHe2wnBWo094b6UOAfn2s1nYi5nyhB5gjianAqid6K1V/s=
+	t=1710173023; cv=none; b=bCRLvhrv6t41JQwYNBTIlZI8nTXB9kib/fCHbvL6XRQIKFAqqgaN3h1cpXh/HbHRpbVEBEvOm7Tm4ggjLciZHzYysmTRVJ5qwhnVqz0tW1PIOM+jOYUTPkuScuirZwsDhoc+pQpWHxUXOj3srZvgdtlHjb0HEI/5hFpeKszdDwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710173014; c=relaxed/simple;
-	bh=e6qgyPjYGoGQpKW60zdDvAZuJQDzOPj9tlKeyOps+VQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hbncOq6OhLLvejkhY52ZEesLEE+oxGFdK1r0+F1QCDw41MpWjzpny9j0UHkX/FhjZB/DAi2rqqrD5xdVQWcSXFvZPDmSdySTHBFyB0upFc8t1Sh9gWRM93oIAa1IWNK8kK1keoFYjzcgwRn7ocEWNEvWEfqy+3jGh0KZts6f36M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn; spf=pass smtp.mailfrom=hust.edu.cn; arc=none smtp.client-ip=46.101.248.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hust.edu.cn
-Received: from hust.edu.cn (unknown [172.16.0.52])
-	by app2 (Coremail) with SMTP id HwEQrAB3qcVHK+9lauWjAA--.36212S2;
-	Tue, 12 Mar 2024 00:03:19 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.12.177.116])
-	by gateway (Coremail) with SMTP id _____wAnD71GK+9lGnntAA--.35117S2;
-	Tue, 12 Mar 2024 00:03:19 +0800 (CST)
-From: Haoyang Liu <tttturtleruss@hust.edu.cn>
-To: Alex Shi <alexs@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: hust-os-kernel-patches@googlegroups.com,
-	Haoyang Liu <tttturtleruss@hust.edu.cn>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] docs/zh_CN: Add dev-tools/kmemleak Chinese translation
-Date: Tue, 12 Mar 2024 00:03:16 +0800
-Message-Id: <20240311160316.11586-1-tttturtleruss@hust.edu.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710173023; c=relaxed/simple;
+	bh=IQ2AfFxikmk5U+8nWeI3XB2vOqdm6NYFDmK5mhJMrjw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uc7VYOjN4ZaKJ4cFy1s136KDlswyn21WOLSpOQnWPL5T1fGyaBHGvO6CZfRRxdYczZ0Qd3r1TRt5p34Uremya1L2vhxh86Hl+KYjDzxa7P1uFhtgk1WngoRsC1oqDUmy6Qmd+nEsUau0IfoIDOIImcvWM1dYifZ9GkAoGe93ssM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jqQi97d/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD972C433F1;
+	Mon, 11 Mar 2024 16:03:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710173023;
+	bh=IQ2AfFxikmk5U+8nWeI3XB2vOqdm6NYFDmK5mhJMrjw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jqQi97d/3zBbY8YxDP7/y+JGZYkqLDyXP5Zylg4mrmY9V499OoKyW9ha19xDT1s2j
+	 cG9Lfgs/cCWdJDIGOWQOJeZDvM3zDY6xi8HIbCvhizDoI8s5HIMiQnyzqh7xaTp2up
+	 Onpyy/703Z6kVFkWiIZ/b238xKS88I0RVTRcV2wZEg9lTdGqd31OZzEGbCj9hG4zAi
+	 OXo0mx9W6G0S0CudeQnmh5eql5XEzc2M6QMsS7w2npJjATNpLNw0MI0ujSi2vuVFfZ
+	 BZYBvl7T9lKAE5/Nqb5wt4p0r70E7e+C7Rj3tjlrTyRr8Z7GMm/+THMOQHuo4PlOv4
+	 w3PueFmKlJAdA==
+Date: Mon, 11 Mar 2024 09:03:41 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Yang Xiwen <forbidden405@outlook.com>
+Cc: Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
+ <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Krzysztof
+ Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH net-next v11 4/9] dt-bindings: net: convert
+ hisi-femac.txt to YAML
+Message-ID: <20240311090341.32509303@kernel.org>
+In-Reply-To: <SEZPR06MB6959090F2C45C3E5D6B3F9F496262@SEZPR06MB6959.apcprd06.prod.outlook.com>
+References: <20240309-net-v11-0-eb99b76e4a21@outlook.com>
+	<20240309-net-v11-4-eb99b76e4a21@outlook.com>
+	<SEZPR06MB6959090F2C45C3E5D6B3F9F496262@SEZPR06MB6959.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:HwEQrAB3qcVHK+9lauWjAA--.36212S2
-Authentication-Results: app2; spf=neutral smtp.mail=tttturtleruss@hust
-	.edu.cn;
-X-Coremail-Antispam: 1UD129KBjvAXoW3CFyfurykJr47JFW3Gw1DGFg_yoW8Gr13Jo
-	Z8uFW5Cr4kAF1UXF4fWa15GrW3Can0kF4jya13Cr1q9ry5XF18G3Wvvas3CFy5Z3s8GrsI
-	qw1rGa4xCa1UKr9rn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUO47k0a2IF6FyUM7kC6x804xWl1xkIjI8I6I8E6xAIw20EY4v2
-	0xvaj40_Wr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7
-	IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK
-	6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2kKe7AKxV
-	WUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc02
-	F40EFcxC0VAKzVAqx4xG6I80ewAv7VACjcxG62k0Y48FwI0_Gr1j6F4UJwAv7VCjz48v1s
-	IEY20_GFW3Jr1UJwAv7VCY1x0262k0Y48FwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8
-	JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCF04
-	k20xvE74AGY7Cv6cx26r4fZr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAF
-	wI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-	AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
-	IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
-	xhVjvjDU0xZFpf9x07jgcTQUUUUU=
-X-CM-SenderInfo: rxsqjiqrssiko6kx23oohg3hdfq/1tbiAQoNAmXvDTcLNgABsI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Translate dev-tools/kmemleak.rst into Chinese and add it into
-zh_CN/dev-tools/index.rst.
+On Sat, 9 Mar 2024 20:30:21 +0800 Yang Xiwen wrote:
+> > +  clock-names:
+> > +    items:
+> > +      - const: mac
+> > +      - const: macif
+> > +      - const: phy  
+> 
+> Still not very correct here. In downstream the core can also have an 
+> external PHY. The internal phy is also optional. So maybe this clock 
+> should be optional.
 
-Signed-off-by: Haoyang Liu <tttturtleruss@hust.edu.cn>
----
- .../translations/zh_CN/dev-tools/index.rst    |   2 +-
- .../translations/zh_CN/dev-tools/kmemleak.rst | 285 ++++++++++++++++++
- 2 files changed, 286 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/translations/zh_CN/dev-tools/kmemleak.rst
-
-diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Documentation/translations/zh_CN/dev-tools/index.rst
-index c2db3e566b1b..9f52b7f452bd 100644
---- a/Documentation/translations/zh_CN/dev-tools/index.rst
-+++ b/Documentation/translations/zh_CN/dev-tools/index.rst
-@@ -22,6 +22,7 @@ Documentation/translations/zh_CN/dev-tools/testing-overview.rst
-    sparse
-    gcov
-    kasan
-+   kmemleak
-    gdb-kernel-debugging
- 
- Todolist:
-@@ -29,7 +30,6 @@ Todolist:
-  - coccinelle
-  - kcov
-  - ubsan
-- - kmemleak
-  - kcsan
-  - kfence
-  - kgdb
-diff --git a/Documentation/translations/zh_CN/dev-tools/kmemleak.rst b/Documentation/translations/zh_CN/dev-tools/kmemleak.rst
-new file mode 100644
-index 000000000000..800c0aa4ff1a
---- /dev/null
-+++ b/Documentation/translations/zh_CN/dev-tools/kmemleak.rst
-@@ -0,0 +1,285 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: Documentation/dev-tools/kmemleak.rst
-+:Translator: Haoyang Liu <tttturtleruss@hust.edu.cn>
-+
-+内核内存泄露检测器
-+==================
-+
-+Kmemleak 提供了一个类似\ `可追踪的垃圾收集器 <https://e
-+n.wikipedia.org/wiki/Tracing_garbage_co
-+llection>`_\ 的方法来检测可能的内核内存泄漏，不同的是孤立
-+对象不会被释放，而是仅通过 /sys/kernel/debug/kmemleak
-+报告。Valgrind 工具
-+（\ ``memcheck --leak-check``\ ）使用了一种相似
-+的方法来检测用户空间应用中的内存泄露。
-+
-+用法
-+----
-+
-+\"Kernel hacking\" 中的 CONFIG_DEBUG_KMEM
-+LEAK 必须被启用。一个内核线程每10分钟（默认情况下）扫描一次内存，并且打
-+印出新发现的未被引用的对象个数。如果 ``debugfs`` 没有挂载，则执行
-+：
-+
-+.. code-block::
-+
-+   # mount -t debugfs nodev /sys/kernel/debug/
-+
-+
-+
-+显示所有扫描出的可能的内存泄漏的细节信息：
-+
-+.. code-block::
-+
-+   # cat /sys/kernel/debug/kmemleak
-+
-+
-+启动一次中等程度的内存扫描：
-+
-+.. code-block::
-+
-+   # echo scan > /sys/kernel/debug/kmemleak
-+
-+
-+清空当前所有可能的内存泄露列表：
-+
-+.. code-block::
-+
-+   # echo clear > /sys/kernel/debug/kmemleak
-+
-+
-+当再次读取 ``/sys/kernel/debug/kmemleak`` 文件
-+时，将会输出自上次扫描以来检测到的新的内存泄露。
-+
-+注意，孤立目标是通过被分配时间来排序的，列表开始的对象可能会导致后续的对象都被
-+识别为孤立对象。
-+
-+可以通过写入 ``/sys/kernel/debug/kmemleak`` 文
-+件在运行时修改内存扫描参数。下面是支持的参数：
-+
-+
-+* off
-+    禁用 kmemleak（不可逆）
-+* stack=on
-+    开启任务栈扫描（默认）
-+* stack=off
-+    禁用任务栈扫描
-+* scan=on
-+    开启自动内存扫描线程（默认）
-+* scan=off
-+    关闭自动内存扫描线程
-+* scan=\<secs\>;
-+    设定自动内存扫描间隔，以秒为单位（默认值为 600，设置为 0 表示停
-+    止自动扫描）
-+* scan
-+    触发一次内存扫描
-+* clear
-+    通过标记所有当前已报告的未被引用对象为灰，从而清空当前可能的内存泄露列
-+    表；如果 kmemleak 被禁用，则释放所有 kmemleak 对象，。
-+* dump=\<addr\>;
-+    输出存储在 \<addr\>; 中的对象信息
-+
-+可以通过在内核命令行中传递 ``kmemleak=off`` 参数从而在启动时
-+禁用 Kmemleak。
-+
-+在 kmemleak 初始化之前就可能会有内存分配或释放，这些操作被存储在一个
-+早期日志缓冲区中。缓冲区的大小通过 CONFIG_DEBUG_KMEMLEAK
-+_MEM_POOL_SIZE 选项配置。
-+
-+如果 CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF 被启
-+用，则 kmemleak 默认被禁用。在内核命令行中传递
-+``kmemleak=on`` 参数来开启这个功能。
-+
-+如果出现 \"Error while writing to stdout\"
-+或 \"write_loop: Invalid argument\" 这样的错
-+误，请确认 kmemleak 被正确启用。
-+
-+基础算法
-+--------
-+
-+通过 :c:func:`kmalloc`, :c:func:`vmalloc`
-+, :c:func:`kmem_cache_alloc` 以及同类函数均被跟踪
-+，指针，包括一些额外的信息如大小和栈追踪等，都被存储在红黑树中。对应的释放函数
-+调用也被追踪，并从 kmemleak 数据结构中移除相应指针。
-+
-+对于一个已分配的内存块，如果通过扫描内存（包括保存寄存器）没有发现任何指针指向
-+它的起始地址或者其中的任何位置，则认为这块内存是孤立的。这意味着内核无法将该内
-+存块的地址传递给一个释放内存函数，这块内存便被认为泄露了。
-+
-+扫描算法步骤：
-+
-+..
-+
-+   #. 标记所有对象为白色（最后剩下的白色对象被认为是孤立的）
-+   #. 从数据节和栈开始扫描内存，检测每个值是否是红黑树中存储的地址。如果
-+      一个指向白色对象的指针被检测到，则将该对象标记为灰色。
-+
-+   #. 扫描灰色对象引用的其他对象（有些白色对象可能会变为灰色并被添加到灰
-+      名单末尾）直到灰名单为空。
-+
-+   #. 剩余的白色对象就被认为是孤立的并通过
-+      /sys/kernel/debug/kmemleak 报告。
-+
-+
-+有些指向已分配的内存块的指针存储在内核内部的数据结构中，它们不能被检测为孤立。
-+为了避免这种情况，kmemleak 也存储了指向需要被查找的内存块范围内
-+的任意地址的地址数量，如此一来这些内存便不会被认为泄露。
-+一个例子是 __vmalloc()。
-+
-+用 kmemleak 测试特定部分
-+------------------------
-+
-+在初始化启动阶段 /sys/kernel/debug/kmemleak 的输出
-+可能会很多，这也可能是你在开发时编写的漏洞百出的代码导致的。
-+为了解决这种情况你可以使用 \'clear\' 命令来清除
-+/sys/kernel/debug/kmemleak 输出的所有的未引用对象
-+。在执行\'clear\' 后执行 \'scan\' 可以发现新的未引用对象
-+，这将会有利你测试代码的特定部分。
-+
-+为了用一个空的 kmemleak 测试一个特定部分，执行：
-+
-+.. code-block::
-+
-+   # echo clear > /sys/kernel/debug/kmemleak
-+   ... 测试你的内核或者模块 ...
-+   # echo scan > /sys/kernel/debug/kmemleak
-+
-+
-+然后像平常一样获得报告：
-+
-+.. code-block::
-+
-+   # cat /sys/kernel/debug/kmemleak
-+
-+
-+释放 kmemleak 内核对象
-+----------------------
-+
-+为了允许访问先前发现的内存泄露，当用户禁用或发生致命错误导致 kmemleak
-+被禁用时，内核中的 kmemleak 对象不会被释放。这些对象可能会占用很大
-+一部分物理内存。
-+
-+在这种情况下，你可以用如下命令回收这些内存：
-+
-+.. code-block::
-+
-+   # echo clear > /sys/kernel/debug/kmemleak
-+
-+
-+Kmemleak API
-+------------
-+
-+在 include/linux/kmemleak.h 头文件中查看函数原型：
-+
-+
-+* ``kmemleak_init`` - 初始化 kmemleak
-+* ``kmemleak_alloc`` - 通知一个内存块的分配
-+* ``kmemleak_alloc_percpu`` - 通知一个
-+   percpu 类型的内存分配
-+* ``kmemleak_vmalloc`` - 通知一个使用
-+   vmalloc() 的内存分配
-+* ``kmemleak_free`` - 通知一个内存块的释放
-+* ``kmemleak_free_part`` - 通知一个部分的内存释放
-+* ``kmemleak_free_percpu`` - 通知一个
-+   percpu 类型的内存释放
-+* ``kmemleak_update_trace`` - 更新分配对象过程的
-+   栈追踪
-+* ``kmemleak_not_leak`` - 标记一个对象内存为未泄露的
-+* ``kmemleak_ignore`` - 不要扫描或报告某个对象未泄露的
-+* ``kmemleak_scan_area`` - 在内存块中添加扫描区域
-+* ``kmemleak_no_scan`` - 不扫描某个内存块
-+* ``kmemleak_erase`` - 在指针变量中移除某个旧的值
-+* ``kmemleak_alloc_recursive`` - 和
-+   kmemleak_alloc 效果相同但会检查是否有递归的内存分配
-+* ``kmemleak_free_recursive`` - 和
-+   kmemleak_free 效果相同但会检查是否有递归的内存释放
-+
-+下列函数使用一个物理地址作为对象指针并且只在地址有一个 lowmem 映射时做出相应的行为：
-+
-+
-+* ``kmemleak_alloc_phys``
-+* ``kmemleak_free_part_phys``
-+* ``kmemleak_ignore_phys``
-+
-+解决假阳性/假阴性
-+-----------------
-+
-+假阴性是指由于在内存扫描中有值指向该对象导致 kmemleak 没有报告的实际
-+存在的内存泄露（孤立对象）。为了减少假阴性的出现次数，kmemleak 提供了
-+kmemleak_ignore，kmemleak_scan_area，
-+kmemleak_no_scan 和 kmemleak_erase 函数
-+（见上）。
-+任务栈也会增加假阴性的数量并且默认不开启对它们的扫描。
-+
-+假阳性是对象被误报为内存泄露（孤立对象）。对于已知未泄露的对象，kmemlea
-+k 提供了 kmemleak_not_leak 函数。同时
-+kmemleak_ignore 可以用于标记已知不包含任何其他指针的内存块，
-+标记后该内存块不会再被扫描。
-+
-+一些被报告的泄露仅仅是暂时的，尤其是在 SMP（对称多处理）系统中，因为其指针
-+暂存在 CPU 寄存器或栈中。Kmemleak 定义了
-+MSECS_MIN_AGE（默认值为 1000）来表示一个被报告为内存泄露的
-+对象的最小存活时间。
-+
-+限制和缺点
-+----------
-+
-+主要的缺点是内存分配和释放的性能下降。为了避免其他的损失，只有当
-+/sys/kernel/debug/kmemleak 文件被读取时才会进行内
-+存扫描。无论如何，这个工具是出于调试的目标，性能表现可能不是最重要的。
-+
-+为了保持算法简单，kmemleak 寻找指向某个内存块范围中的任何值。这可能会
-+引发假阴性现象的出现。但是，最后一个真正的内存泄露也会变得明显。
-+
-+非指针值的数据是假阴性的另一个来源。在将来的版本中，kmemleak 仅仅会扫
-+描已分配结构体中的指针成员。这个特性会解决上述很多的假阴性情况。
-+
-+Kmemleak 会报告假阳性。这可能发生在某些被分配的内存块不需要被释放的情
-+况下（某些 init_call 函数中），指针的计算是通过其他方法而不是常规的
-+container_of 宏或是指针被存储在 kmemleak 没有扫描的地方。
-+
-+页分配和 ioremap 不会被追踪。
-+
-+使用 kmemleak-test 测试
-+-----------------------
-+
-+为了检测是否成功启用了 kmemleak，你可以使用一个故意制造内存泄露的模组
-+kmemleak-test。设置
-+CONFIG_SAMPLE_KMEMLEAK 为模组（不能作为内建模组使用）
-+并且启动启用了 kmemleak 的内核。加载模块并执行一次扫描：
-+
-+.. code-block::
-+
-+   # modprobe kmemleak-test
-+   # echo scan > /sys/kernel/debug/kmemleak
-+
-+
-+注意你可能无法立刻或在第一次扫描后得到结果。当 kmemleak 得到结果，将
-+会输出日志 ``kmemleak: <count of leaks> new
-+suspected memory leaks``\ 。然后通过读取文件获取信息
-+：
-+
-+.. code-block::
-+
-+   # cat /sys/kernel/debug/kmemleak
-+   unreferenced object 0xffff89862ca702e8 (size 32):
-+     comm "modprobe", pid 2088, jiffies 4294680594 (age 375.486s)
-+     hex dump (first 32 bytes):
-+       6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
-+       6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b a5  kkkkkkkkkkkkkkk.
-+     backtrace:
-+       [<00000000e0a73ec7>] 0xffffffffc01d2036
-+       [<000000000c5d2a46>] do_one_initcall+0x41/0x1df
-+       [<0000000046db7e0a>] do_init_module+0x55/0x200
-+       [<00000000542b9814>] load_module+0x203c/0x2480
-+       [<00000000c2850256>] __do_sys_finit_module+0xba/0xe0
-+       [<000000006564e7ef>] do_syscall_64+0x43/0x110
-+       [<000000007c873fa6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-+   ...
-+
-+
-+用 ``rmmod kmemleak_test`` 移除模块时也会触发
-+kmemleak 的结果输出。
--- 
-2.25.1
-
+You are responding to yourself 4 min after posting?
+What is the purpose of your comments?
 
