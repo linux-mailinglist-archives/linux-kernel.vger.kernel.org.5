@@ -1,131 +1,150 @@
-Return-Path: <linux-kernel+bounces-98682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C63877DD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:13:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BD33877DF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07B81F210E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:13:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B85EF1F22921
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798E738DFB;
-	Mon, 11 Mar 2024 10:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A27B2BB16;
+	Mon, 11 Mar 2024 10:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iEuDl0CX"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OXtFdGZo"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E0838DC0
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF1222F07
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710151886; cv=none; b=IBW8a/HBTv+rKmyYcHv85fu8b+MKUtm34Gi9203nJpvKEl5LFK55XWhAa9koNMnm6qDx6Uo7fuCO5zpyLzk4S0wMOX+N+R1225s/qsyl0w35Z4Z57VjzNOXRx1ekVOgKmfmQcZnTbBQKexJwcfS64VrbSVJA7tE7ENt3ZsU3Sws=
+	t=1710152290; cv=none; b=d0Bbl2o/EZctJ/dLVPyrrPGmehAPJtmrMgw+RIpjuMi7xi6ewyBkNlcxIOyl6kgr2f/pBZKIaO2KZ8CXRIkIPskZ+K3CrRQVLyzU5hcpHBsW4zYY2if8rgYMY0RzmbYo1wsJ6MHsFiTxSVKqsNvTASCFbU/+IHtWbIL87HdRi4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710151886; c=relaxed/simple;
-	bh=90wxFtc2yl7pC0/MOznw1zbBPujem0U2+kENHa16YIc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D0wYOlVdFrunvTddVwpvyEPITbQHeO39ucanEoXdIicu2ecKrJpqzbKEvTNIL3BGft32QwfwC+LmM50NQqgSaxHl1c4I+WSicA+z143f4JSpzaeGfg/CwIbsCthHF2jPO07E82wb1U9KeTkHSCqiMY3B0vRSj6P20V0ZsOYjyuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iEuDl0CX; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so4773625276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 03:11:25 -0700 (PDT)
+	s=arc-20240116; t=1710152290; c=relaxed/simple;
+	bh=CgLEEXYxdr+/lRqJ2xUbK+mwBgS3fqIC4vqRFb4hrpI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iTgTGr3TixjhCKwYmIcDlk4mBT6E/fNyiuqT+wSF5307q7RS95ULqryITTIc8+X9uxO5OGd0VfD2zE0iKilVX5eJtSzReAI+L9IwuOhmuyx/dWfgxaSiwpwLpFW39Zy6PZkD+KP3TKIy/wL0TWE8B0d3F9oYB2PDmtznj0uEPaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OXtFdGZo; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51323dfce59so2489246e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 03:18:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710151884; x=1710756684; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OW00I9htwoAsj3xBJZrkbzrUKhGDr0/+mmT+snWwiXg=;
-        b=iEuDl0CXWHzvdZYvg2Uqft91dUHE8s4S0nzX2JXi0jbuzaqbP/anhhfShGbtmAbj+6
-         dFvbr3wwsVc1l/yaFnWxdW9auVjedAAueOsEYCtd/ModbkuJ87LhwWNhfyYT9XIHG8Rg
-         NBXdgt4kfaL/thZyayXXcL5XztQ6r/VYqwHY+b0jAUMzWM+09I0c+AYDpX/iaZWoArCu
-         ZDCuk9xxDBrx37I/nCyzCsUY1m8U0Sf/vNFHetvMnoOOowTWDaAIQHxZQGdLCeli+uPI
-         QlfLzQ20Zjfb5+AatcjBlMjSEpCqglJQ28Sc25aQosThpL/N1kkhnSaA4YiQrxWazKkS
-         WDyA==
+        d=linaro.org; s=google; t=1710152287; x=1710757087; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AsP/0qz8QlmA4JVNtkQu7AGls/ZfeI7jmrpsFvcLc28=;
+        b=OXtFdGZob1rgzbKnnH06lTlWoC1Oxv466F2Kk76U/u4Zjxme80ihvvVoRuqE1jwn+G
+         hbq1fbLIV5cu9kpb0qP5QHerNFNNvTGddjE3aybMbywgULTYN9HzuHGHSr1zfke1nYvU
+         OOhd07lxuLS+aHanwi0+ZA1qwKEHA1syCA2R/Q+sSSZ26nsD/T44tt9MhgS4Dpc09d/s
+         XJZWTvu0Nz4nOB0y2o4pc3lkcStsYGVOEKAtYbS1y6+IzyL2Td5LuHFv56pTKSbUKBYn
+         dH2EPbDzpTql+Wlij0yNcCFtwPE3RO56GoXVKEM+/rNxl5u/+xpwNIJu3DLTl0EFPXbh
+         WmZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710151884; x=1710756684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OW00I9htwoAsj3xBJZrkbzrUKhGDr0/+mmT+snWwiXg=;
-        b=I3pFq1VdsL0+hEdY+UCfTeVER+JOi6gs/2uxSbSG2aX0PU00SYO7Zdb7Yz96p/sjL2
-         aWc1b/NAG4glmc1RruIFo7W/Mi0R0ssZa2WxX/hLGDKeA/szwcUlzWgpiKu5QRwBArVP
-         n25QAI43WWGEW5PDq6lEJ747zF9cYBrmlvVWTHL2s80EWI8Ujl61oLFsKrsqx1kw9pme
-         lELw+CSK4KRCarR8InIGqvopxkkhGB9srJJ10CEkHi4a/jTiEODKdJBxDUbBuyU7/nCc
-         2LitUlcLxOl/QA9xnCg46f1HCwOzqu4A3LegUtR7B2Gk2KC8ouIWcPNuuwxcn0S5IgvX
-         5FKA==
-X-Forwarded-Encrypted: i=1; AJvYcCWLwlas2EJaV0UKPW8lBClJmUiaDaJEj2z0dDz37LWxOACI3PcYvOodQgDtuk3tyjdlXLzWkVw/6CKLAJU7pW310mxN90F5KtVHC9nO
-X-Gm-Message-State: AOJu0Yx8bNWqvrdh1cu12tuhyJcQE2cpDy+OQ8jwIOXRg6FCXIjD91Uv
-	hRLwb/Cr87MMPn906g7xSUC1jBXCZp0bAk2RfD2dUwJwubhUoE4dmFqmpxR/DXTUP6bgW65GtyX
-	h0uIJzwYnjFNHafYuRMWNsYgUbrazYxHRZi5F
-X-Google-Smtp-Source: AGHT+IHeMf2I6e7HKYzUshIicVdYM485nxp+wOAn6CZ5eXC/DS89xt9vl9QxYES8bm7T9Wf6yE9ct4Shlv7P6VhvUsU=
-X-Received: by 2002:a25:28a:0:b0:dc6:ca3a:31da with SMTP id
- 132-20020a25028a000000b00dc6ca3a31damr5135139ybc.16.1710151884041; Mon, 11
- Mar 2024 03:11:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710152287; x=1710757087;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AsP/0qz8QlmA4JVNtkQu7AGls/ZfeI7jmrpsFvcLc28=;
+        b=ka3V0DeZi415d0xFfhMrs4JqcRrari0WINQBmr7/SVd/hWKgHHQvMd/fQu4687xkOv
+         oi2gv5NeqzxZjGYANwZ6jHb4MQB/wtHgzBSOF2ZI0WKjvr13IZXF8YW0Rw/wXJ1cYyAF
+         7oVLYggY5dBZx+doHL3QH4n72qiWbSKdg+RSUpmpHdASCIB1I7RuCp28kmyxl5RSpvPS
+         xAN2A9tJ+z4OIqvoqf2Yt+efo+sx66ZRWEDJwFWj2U3TzQNMKAsiUj0UFKBIsAewS2wX
+         j0FLi0BjyT/JkbRiGlA9k+g4XOoN7sTM4VyFfGFE0kJS0w8kVNY9e/cNVkduFXVfE8aW
+         Is5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUDwcW1nYHFJCkCpyz1w41LCRs+hzVNrBPXj6hwWKTTP+/paO172WTsW6Uf1eLRk1cVfVxVK1A/x8yUf7w53ZC2QY1Cg2vyM2wMBIGW
+X-Gm-Message-State: AOJu0YyCEvDuyGLLicly9GIDhPXcxQbWKv2B50hJhU2QQG2J7ZD+8Aym
+	8NGGNOFwDAD+ZMStvfFL3prYvbOKkqskxO+P6AcKDwYDI5tSuwsR2Lj4syowKQ0=
+X-Google-Smtp-Source: AGHT+IEPbwnztzbsrRlV9J9paTgwc4a4ZlvV7sSr+jRNTb6Ycx10ADEmEmgJ63NIgvTmv0iTNLY6cw==
+X-Received: by 2002:a19:ae0c:0:b0:512:f679:665b with SMTP id f12-20020a19ae0c000000b00512f679665bmr3752164lfc.42.1710152286635;
+        Mon, 11 Mar 2024 03:18:06 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id i20-20020a05600c355400b004131035d28csm14552679wmq.23.2024.03.11.03.18.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 03:18:06 -0700 (PDT)
+Message-ID: <c56407f7-b128-4264-b149-89682cd9500d@linaro.org>
+Date: Mon, 11 Mar 2024 11:18:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311094947.3738200-1-howardyen@google.com> <Ze7W3o67JLTKlLzR@smile.fi.intel.com>
-In-Reply-To: <Ze7W3o67JLTKlLzR@smile.fi.intel.com>
-From: Howard Yen <howardyen@google.com>
-Date: Mon, 11 Mar 2024 18:10:47 +0800
-Message-ID: <CAJDAHvbRSm_UYgx0fE7o2dJqcBfBbcFR4DrnVydkwfxGo0O4Rg@mail.gmail.com>
-Subject: Re: [PATCH v5 0/2] Add support for multiple coherent memory regions
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: gregkh@linuxfoundation.org, rafael@kernel.org, mathias.nyman@intel.com, 
-	hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, 
-	petr.tesarik.ext@huawei.com, broonie@kernel.org, james@equiv.tech, 
-	james.clark@arm.com, masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-usb@vger.kernel.org, iommu@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: watchdog: sprd,sp9860-wdt: convert to YAML
+Content-Language: en-US
+To: Stanislav Jakubek <stano.jakubek@gmail.com>
+Cc: baolin.wang7@gmail.com, baolin.wang@linux.alibaba.com,
+ conor+dt@kernel.org, devicetree@vger.kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux@roeck-us.net, orsonzhai@gmail.com,
+ robh@kernel.org, wim@linux-watchdog.org, zhang.lyra@gmail.com
+References: <Ze7GreWtuUtMh6MK@standask-GA-A55M-S2HP>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <Ze7GreWtuUtMh6MK@standask-GA-A55M-S2HP>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 11, 2024 at 6:03=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Mar 11, 2024 at 09:49:45AM +0000, Howard Yen wrote:
-> > In the system I'm working on, there is an always-on subsystem which
-> > includes a small size memory, and several functions need to run and
-> > occupy the memory from the small memory if they need to run on the
-> > always-on subsystem. These functions must allocate the memory from the
-> > small memory region, so that they can get benefit from the always-on
-> > subsystem. So the small memory is split for multiple functions which ar=
-e
-> > satisfied with their generic use cases. But in specific use cases, like
-> > USB3 devices which support the stream trasnsfer or multiple devices
-> > connect to the host, they required more memory than their pre-allocated
-> > memory region. I tried to implement it in a generic way and propose thi=
-s
-> > patch to give it the ability to get the memory from the other larger
-> > memory to solve the issue.
->
-> > Changelog
-> > --------------------------------------------
-> > Changes in v5:
-> > - Fix build break.
-> > - Use of_property_count_u32_elems() instead of
-> >   of_property_count_elems_of_size().
->
-> Have you tried to use --histogram diff algo?
+On 11/03/2024 09:54, Stanislav Jakubek wrote:
+> Hi all,
+> 
+> I was about to remind people that this patch exists, but apparently it
+> already got applied without notice? Seems like it's in linux-next already.
 
-Yes, I used the below command to create the patch v5.
-`git format-patch --cover-letter --histogram -v5 51b70ff55`
+You are not the first one surprised... I think I could count on fingers
+of one hand the times I received any notification/confirmation from
+watchdog that my patch was applied. That made me waste some time in the
+past for unneeded checks and resends.
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Best regards,
+Krzysztof
 
-
---=20
-Best Regards,
-
-Howard
 
