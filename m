@@ -1,73 +1,46 @@
-Return-Path: <linux-kernel+bounces-99347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DF49878701
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:08:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE2187870D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B259B21684
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:08:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 774B41F213A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D242A53E00;
-	Mon, 11 Mar 2024 18:08:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C975465B;
+	Mon, 11 Mar 2024 18:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Uo9vuj8g"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A15856754
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="VHtK0knn"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255B01EB5C;
+	Mon, 11 Mar 2024 18:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710180495; cv=none; b=oK0CB9P62QhjiNGTnmFGZfyzcaScPdQyQE/nrWi/goZgLKgggWTDjYcK0Bv81rurtInGBRcx4E2lVMIRssTA09B/kB6C5ngL4kS4h0zwOkly2gufX2kvfwOa0JvnqxS51wiZXTBm5F5+7KCly5zE6p1nJkJuhC3N3G0RQJ3dbhk=
+	t=1710180658; cv=none; b=AXJkU2UvnLl0q8dsi67WghPEVQ/sbyq7WNFLdo1IXDsaPffHi8igThayP2ZfKS15oKfPyaJDpsJTvze81RbwWoesP3yr4/hfy3QnztBe7s4tQ3/5UyziKh9ZYPAiTTfWJcDhRl3ouJ5OzohqjNz/lrU6jL4nkHB/Buts0JbmkI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710180495; c=relaxed/simple;
-	bh=Cmko//sBJYEqC6CF+c84J08C8jz6SB2p1fGLA87CQjs=;
+	s=arc-20240116; t=1710180658; c=relaxed/simple;
+	bh=IlpA1JdDk979yXLkGRM+oxDPT5bK6ueS7QlDrgRmw7A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XJmTDGpKtdr7FJ7Mxnt6JHtjt0fCtU08xld+Bq+VMbtKSiPb2NpHW6aGQXAmJ1hZDIP7kiHZztt3nKIAMedQCPRCD+YC24yWyqRgC7eebSwAaIQ6quYSv1VIPc+rAmeWQwRTYsZrGHFRWyK3WI0a35tAqqc4jfi2Fhei89dOYY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Uo9vuj8g; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51331634948so5150697e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710180491; x=1710785291; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GdAvpgJ6KgtulG4GgWKU8j8WvSWhLjlXYs9zNUw6VUE=;
-        b=Uo9vuj8gwrHx/bvSppMS/FxpZC+4jLr/WPNPa71Okf6H5teaCrQc1XixnzJgm/LbY9
-         07zyHy14VPNN2zNpgb5m+189VFhfHAgC4zu8n5HFgpnphTGOR9N1LVsnc8acLCPkhSAT
-         LyLY54BBFjMYpvD+eVa3tx6Hah+T38P132/GE5ffg5ZaBNE5OzRFPwdNMpc2PQtQUKrC
-         TkybuDKbDfx3FG8FGImwaniKNUPlBELcrMHY/7eVfAfOWd0LEyGoi0H7sH4cg0hnT1J1
-         i0sBHoAg3uQsACWRCmgmm5s5VmFF/zXsR4AFegH5UZKiNhpChWZAiErW4Ud0CJ3L0QA5
-         8HaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710180491; x=1710785291;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GdAvpgJ6KgtulG4GgWKU8j8WvSWhLjlXYs9zNUw6VUE=;
-        b=kpLOoON1IJ1IJn65ISe7MztIbOy0qqMA/h+sv6CikPnujaRfGjdQP/r3R6ohMYNlSL
-         xoOkMpoxnArosu+QfU1vaRZdh0ZLTyZVA+0o8B2FXYtBTUaT8YpjwCDLA+zOuy1UvFz5
-         N+tboLskatiymDh7VZFK2VbiSbUPx9yLnUq3sI+eyi1Iu3VUgolw1sR4UMHNagAYIniQ
-         9p5/bGeoaDJy9ZYPOMTaHWYAnRkKMDoReZDLPm9R+dWKnMGMoj1coOb5ViTHuMe4TiRy
-         yP1fP4VA6mRVvix2luvVjHHwKtCRGLtg+OmioJVb7HdGfty8h37ibw38/v2PdZTfDH3q
-         uK2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWUMDbqG3Hhyq+65InBEw7+LO+uYnQazRPxecHpAvk4MHQVAHhEuuc1YdGfRqBsX9KfIwtM7BeIsyYaDgMSqqjpkZ1LOYN1FqtO+W33
-X-Gm-Message-State: AOJu0YyBx6KQTt6v/CO8FghAOAkLmOpdXSPTFJ+wy8zav8ARnX6TOzcQ
-	VHi2EwqHoyk4BIojNSICvkeBq9D4GVyE4124A17Xe7c/RA7ERZCGZafzvPBXfRQ=
-X-Google-Smtp-Source: AGHT+IGWxtUfvowwbYHZ81ILlBPneI8LPDnoaGfZGl2zcauoCYrxYCX6xPC0K5XwQynu0RSwe2iq1Q==
-X-Received: by 2002:a05:6512:476:b0:513:9be7:7112 with SMTP id x22-20020a056512047600b005139be77112mr2399808lfd.29.1710180490668;
-        Mon, 11 Mar 2024 11:08:10 -0700 (PDT)
-Received: from [172.30.205.61] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id k22-20020ac24f16000000b00513b61bc392sm11724lfr.2.2024.03.11.11.08.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 11:08:10 -0700 (PDT)
-Message-ID: <e19ca61f-894e-40c8-86b9-dbd42df4aa46@linaro.org>
-Date: Mon, 11 Mar 2024 19:08:06 +0100
+	 In-Reply-To:Content-Type; b=O/hEhQkH90K0KcfcNS+AEAKvBY6E+b+upqKDd5tMtnngwcLkFVJfkuKHWVhnVKtGs2/w4vxrcvohrhPMKUgbL+onOoCULSnW3dvl5hBbyS7mi5rgpac910Bu2iqmK+BMH1eCxMZEoS6w3CcJBq3e+a8nDoPbwbH9gAQqT3mKmkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=VHtK0knn; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [10.137.106.151] (unknown [131.107.8.87])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 7F32B20B74C0;
+	Mon, 11 Mar 2024 11:10:54 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7F32B20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710180654;
+	bh=xbhwVp3nppXLf2bz4+VzXn2ef5pW4ZLtcKrUCC0s6oc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VHtK0knneBY7bnXaWkXbbfxbekWNaF5L4lbPiC/aa3AtSGgdPCPYKfdfXtJW/PBBn
+	 GtDWVCu1XMqQXuRkVdSWyHkLl/IFY5005VvSho8vmiA6qMUChbzHUaNbJx58XqMqsO
+	 gapRoOZxJB3uq1+eg7Lhx54WmiZstmlselC1Y+54=
+Message-ID: <9b02176a-3842-460c-a78f-f4d4debfde5b@linux.microsoft.com>
+Date: Mon, 11 Mar 2024 11:10:54 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,38 +48,329 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] clk: qcom: camcc-x1e80100: Set titan_top_gdsc as the
- parent GDSC of subordinate GDSCs
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
- Abel Vesa <abel.vesa@linaro.org>, Rajendra Nayak <quic_rjendra@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240311-linux-next-camcc-fixes-v1-0-d126ae0b9350@linaro.org>
- <20240311-linux-next-camcc-fixes-v1-2-d126ae0b9350@linaro.org>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240311-linux-next-camcc-fixes-v1-2-d126ae0b9350@linaro.org>
+Subject: Re: [RFC PATCH v14 01/19] security: add ipe lsm
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet@lwn.net,
+ zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com, tytso@mit.edu,
+ ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+ eparis@redhat.com, paul@paul-moore.com
+Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+ audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Deven Bowers <deven.desai@linux.microsoft.com>
+References: <1709768084-22539-1-git-send-email-wufan@linux.microsoft.com>
+ <1709768084-22539-2-git-send-email-wufan@linux.microsoft.com>
+ <21597a6e143e4110d0103ef1421ac87fa98b7f32.camel@huaweicloud.com>
+Content-Language: en-CA
+From: Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <21597a6e143e4110d0103ef1421ac87fa98b7f32.camel@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 3/11/24 01:33, Bryan O'Donoghue wrote:
-> The Titan TOP GDSC is the parent GDSC for all other GDSCs in the CAMCC
-> block. None of the subordinate blocks will switch on without the parent
-> GDSC switched on.
+On 3/11/2024 7:25 AM, Roberto Sassu wrote:
+> On Wed, 2024-03-06 at 15:34 -0800, Fan Wu wrote:
+>> From: Deven Bowers <deven.desai@linux.microsoft.com>
+>>
+>> Integrity Policy Enforcement (IPE) is an LSM that provides an
+>> complimentary approach to Mandatory Access Control than existing LSMs
+>> today.
+>>
+>> Existing LSMs have centered around the concept of access to a resource
+>> should be controlled by the current user's credentials. IPE's approach,
+>> is that access to a resource should be controlled by the system's trust
+>> of a current resource.
+>>
+>> The basis of this approach is defining a global policy to specify which
+>> resource can be trusted.
+>>
+>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+>> ---
+>> v2:
+>>    + Split evaluation loop, access control hooks,
+>>      and evaluation loop from policy parser and userspace
+>>      interface to pass mailing list character limit
+>>
+>> v3:
+>>    + Move ipe_load_properties to patch 04.
+>>    + Remove useless 0-initializations
+>>    + Prefix extern variables with ipe_
+>>    + Remove kernel module parameters, as these are
+>>      exposed through sysctls.
+>>    + Add more prose to the IPE base config option
+>>      help text.
+>>    + Use GFP_KERNEL for audit_log_start.
+>>    + Remove unnecessary caching system.
+>>    + Remove comments from headers
+>>    + Use rcu_access_pointer for rcu-pointer null check
+>>    + Remove usage of reqprot; use prot only.
+>>    + Move policy load and activation audit event to 03/12
+>>
+>> v4:
+>>    + Remove sysctls in favor of securityfs nodes
+>>    + Re-add kernel module parameters, as these are now
+>>      exposed through securityfs.
+>>    + Refactor property audit loop to a separate function.
+>>
+>> v5:
+>>    + fix minor grammatical errors
+>>    + do not group rule by curly-brace in audit record,
+>>      reconstruct the exact rule.
+>>
+>> v6:
+>>    + No changes
+>>
+>> v7:
+>>    + Further split lsm creation into a separate commit from the
+>>      evaluation loop and audit system, for easier review.
+>>
+>>    + Introduce the concept of an ipe_context, a scoped way to
+>>      introduce execution policies, used initially for allowing for
+>>      kunit tests in isolation.
+>>
+>> v8:
+>>    + Follow lsmname_hook_name convention for lsm hooks.
+>>    + Move LSM blob accessors to ipe.c and mark LSM blobs as static.
+>>
+>> v9:
+>>    + Remove ipe_context for simplification
+>>
+>> v10:
+>>    + Add github url
+>>
+>> v11:
+>>    + Correct github url
+>>    + Move ipe before bpf
+>>
+>> v12:
+>>    + Switch to use lsm_id instead of string for lsm name
+>>
+>> v13:
+>>    + No changes
+>>
+>> v14:
+>>    + No changes
+>> ---
+>>   MAINTAINERS              |  7 +++++++
+>>   include/uapi/linux/lsm.h |  1 +
+>>   security/Kconfig         | 11 ++++++-----
+>>   security/Makefile        |  1 +
+>>   security/ipe/Kconfig     | 17 +++++++++++++++++
+>>   security/ipe/Makefile    |  9 +++++++++
+>>   security/ipe/ipe.c       | 41 ++++++++++++++++++++++++++++++++++++++++
+>>   security/ipe/ipe.h       | 16 ++++++++++++++++
+>>   security/security.c      |  3 ++-
+>>   9 files changed, 100 insertions(+), 6 deletions(-)
+>>   create mode 100644 security/ipe/Kconfig
+>>   create mode 100644 security/ipe/Makefile
+>>   create mode 100644 security/ipe/ipe.c
+>>   create mode 100644 security/ipe/ipe.h
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 13158047f2af..8517011f88ff 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -10650,6 +10650,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+>>   F:	security/integrity/
+>>   F:	security/integrity/ima/
+>>   
+>> +INTEGRITY POLICY ENFORCEMENT (IPE)
+>> +M:	Fan Wu <wufan@linux.microsoft.com>
+>> +L:	linux-security-module@vger.kernel.org
+>> +S:	Supported
+>> +T:	git https://github.com/microsoft/ipe.git
+>> +F:	security/ipe/
+>> +
+>>   INTEL 810/815 FRAMEBUFFER DRIVER
+>>   M:	Antonino Daplas <adaplas@gmail.com>
+>>   L:	linux-fbdev@vger.kernel.org
+>> diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
+>> index f8aef9ade549..43e2fb32745a 100644
+>> --- a/include/uapi/linux/lsm.h
+>> +++ b/include/uapi/linux/lsm.h
+>> @@ -62,6 +62,7 @@ struct lsm_ctx {
+>>   #define LSM_ID_LOCKDOWN		108
+>>   #define LSM_ID_BPF		109
+>>   #define LSM_ID_LANDLOCK		110
+>> +#define LSM_ID_IPE		111
+>>   
+>>   /*
+>>    * LSM_ATTR_XXX definitions identify different LSM attributes
+>> diff --git a/security/Kconfig b/security/Kconfig
+>> index 52c9af08ad35..cc7adfbb6b96 100644
+>> --- a/security/Kconfig
+>> +++ b/security/Kconfig
+>> @@ -194,6 +194,7 @@ source "security/yama/Kconfig"
+>>   source "security/safesetid/Kconfig"
+>>   source "security/lockdown/Kconfig"
+>>   source "security/landlock/Kconfig"
+>> +source "security/ipe/Kconfig"
+>>   
+>>   source "security/integrity/Kconfig"
+>>   
+>> @@ -233,11 +234,11 @@ endchoice
+>>   
+>>   config LSM
+>>   	string "Ordered list of enabled LSMs"
+>> -	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+>> -	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+>> -	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
+>> -	default "landlock,lockdown,yama,loadpin,safesetid,bpf" if DEFAULT_SECURITY_DAC
+>> -	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf"
+>> +	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,ipe,bpf" if DEFAULT_SECURITY_SMACK
+>> +	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,ipe,bpf" if DEFAULT_SECURITY_APPARMOR
+>> +	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,ipe,bpf" if DEFAULT_SECURITY_TOMOYO
+>> +	default "landlock,lockdown,yama,loadpin,safesetid,ipe,bpf" if DEFAULT_SECURITY_DAC
+>> +	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,ipe,bpf"
+>>   	help
+>>   	  A comma-separated list of LSMs, in initialization order.
+>>   	  Any LSMs left off this list, except for those with order
+>> diff --git a/security/Makefile b/security/Makefile
+>> index 59f238490665..cc0982214b84 100644
+>> --- a/security/Makefile
+>> +++ b/security/Makefile
+>> @@ -25,6 +25,7 @@ obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown/
+>>   obj-$(CONFIG_CGROUPS)			+= device_cgroup.o
+>>   obj-$(CONFIG_BPF_LSM)			+= bpf/
+>>   obj-$(CONFIG_SECURITY_LANDLOCK)		+= landlock/
+>> +obj-$(CONFIG_SECURITY_IPE)		+= ipe/
+>>   
+>>   # Object integrity file lists
+>>   obj-$(CONFIG_INTEGRITY)			+= integrity/
+>> diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
+>> new file mode 100644
+>> index 000000000000..e4875fb04883
+>> --- /dev/null
+>> +++ b/security/ipe/Kconfig
+>> @@ -0,0 +1,17 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +#
+>> +# Integrity Policy Enforcement (IPE) configuration
+>> +#
+>> +
+>> +menuconfig SECURITY_IPE
+>> +	bool "Integrity Policy Enforcement (IPE)"
+>> +	depends on SECURITY && SECURITYFS
+>> +	select PKCS7_MESSAGE_PARSER
+>> +	select SYSTEM_DATA_VERIFICATION
+>> +	help
+>> +	  This option enables the Integrity Policy Enforcement LSM
+>> +	  allowing users to define a policy to enforce a trust-based access
+>> +	  control. A key feature of IPE is a customizable policy to allow
+>> +	  admins to reconfigure trust requirements on the fly.
+>> +
+>> +	  If unsure, answer N.
+>> diff --git a/security/ipe/Makefile b/security/ipe/Makefile
+>> new file mode 100644
+>> index 000000000000..f7a80d0f18f8
+>> --- /dev/null
+>> +++ b/security/ipe/Makefile
+>> @@ -0,0 +1,9 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +#
+>> +# Copyright (C) Microsoft Corporation. All rights reserved.
+>> +#
+>> +# Makefile for building the IPE module as part of the kernel tree.
+>> +#
+>> +
+>> +obj-$(CONFIG_SECURITY_IPE) += \
+>> +	ipe.o \
+>> diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
+>> new file mode 100644
+>> index 000000000000..b013aed15e73
+>> --- /dev/null
+>> +++ b/security/ipe/ipe.c
+>> @@ -0,0 +1,41 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) Microsoft Corporation. All rights reserved.
+>> + */
+>> +#include <uapi/linux/lsm.h>
+>> +
+>> +#include "ipe.h"
+>> +
+>> +static struct lsm_blob_sizes ipe_blobs __ro_after_init = {
+>> +};
+>> +
+>> +static const struct lsm_id ipe_lsmid = {
+>> +	.name = "ipe",
+>> +	.id = LSM_ID_IPE,
+>> +};
+>> +
+>> +static struct security_hook_list ipe_hooks[] __ro_after_init = {
+>> +};
+>> +
+>> +/**
+>> + * ipe_init - Entry point of IPE.
+>> + *
+>> + * This is called at LSM init, which happens occurs early during kernel
+>> + * start up. During this phase, IPE registers its hooks and loads the
+>> + * builtin boot policy.
+>> + * Return:
+>> + * * 0		- OK
+>> + * * -ENOMEM	- Out of memory
+>> + */
+>> +static int __init ipe_init(void)
+>> +{
+>> +	security_add_hooks(ipe_hooks, ARRAY_SIZE(ipe_hooks), &ipe_lsmid);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +DEFINE_LSM(ipe) = {
+>> +	.name = "ipe",
+>> +	.init = ipe_init,
+>> +	.blobs = &ipe_blobs,
+>> +};
+>> diff --git a/security/ipe/ipe.h b/security/ipe/ipe.h
+>> new file mode 100644
+>> index 000000000000..a1c68d0fc2e0
+>> --- /dev/null
+>> +++ b/security/ipe/ipe.h
+>> @@ -0,0 +1,16 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * Copyright (C) Microsoft Corporation. All rights reserved.
+>> + */
+>> +
+>> +#ifndef _IPE_H
+>> +#define _IPE_H
+>> +
+>> +#ifdef pr_fmt
+>> +#undef pr_fmt
+>> +#endif
+>> +#define pr_fmt(fmt) "IPE: " fmt
+>> +
+>> +#include <linux/lsm_hooks.h>
+>> +
+>> +#endif /* _IPE_H */
+>> diff --git a/security/security.c b/security/security.c
+>> index 7035ee35a393..f168bc30a60d 100644
+>> --- a/security/security.c
+>> +++ b/security/security.c
+>> @@ -51,7 +51,8 @@
+>>   	(IS_ENABLED(CONFIG_SECURITY_SAFESETID) ? 1 : 0) + \
+>>   	(IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM) ? 1 : 0) + \
+>>   	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0) + \
+>> -	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0))
+>> +	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0) + \
+>> +	(IS_ENABLED(CONFIG_SECURITY_IPE) ? 1 : 0))
 > 
-> Fixes: 76126a5129b5 ("clk: qcom: Add camcc clock driver for x1e80100")
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
+> Hi Fan
+> 
+> you would also need to update
+> tools/testing/selftests/lsm/lsm_list_modules_test.c.
+> 
+> Roberto
+>   
+>>   /*
+>>    * These are descriptions of the reasons that can be passed to the
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Hi Roberto,
 
-Konrad
+Thanks for the info. I will also update that file.
+
+-Fan
 
