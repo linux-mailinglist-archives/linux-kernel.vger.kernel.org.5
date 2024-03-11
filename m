@@ -1,339 +1,206 @@
-Return-Path: <linux-kernel+bounces-99565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDE2F878A05
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:27:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E99A5878A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:28:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D2E61F21996
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:27:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 613EAB213FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DE556B81;
-	Mon, 11 Mar 2024 21:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31EA756B81;
+	Mon, 11 Mar 2024 21:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ObTuvDYZ"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cpj4CVs8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5598B56B63
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:26:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5566A56B63
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710192423; cv=none; b=IlJ1I6JHAYeYRvDP5FgERCh/NZthQI0pWePulJeFClFO5y/4H09DtS1xSQCX2f3goU42R4pxJY0NKGXP2ZZHkPuA2bfNegBgL/1VjyFg7C9TrnNNH152A95FWnLsZkV2P3Gm7T6Bnwsg/gHAC+IDePT9ig+E3ZDK4HnOIE1kGvk=
+	t=1710192472; cv=none; b=KNF4KhuwiZeNjMKIEfYlKDdwu1lKOSfVKK7OK5ClILuOr17qq6OzppAZwt1yz0hOcRGX4kVDn/yVWEJM/1kYdJEg+hOGfDzsRm5ROWP2jge5rtNqkVJSEEtubT8VfEIpq+NFHBtFSz1rH99XsyKINJWJD9oM+XPS8ME4NOCy+5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710192423; c=relaxed/simple;
-	bh=r/k/zD4UjmgXk1SslwxTLRCqpcqrhVhqnAhWTq9ct0E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QOWoHi69LUnqCr9c6XenI3FnEqZaTnkb2n1wjnh9eK7kITyLLZLs+zpFhcwH7z/86VZA6XR5X2LXuKArfqJZ4JplXdzCzhNv3k+Jo+XjMG4l/BcAYWvvbXwFChSiI7bClOKcf9P2/H8Vkz4pNBMbTsF2/CXTaSrXpUj6SSIXFDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ObTuvDYZ; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a1cbbad6ecso1530332eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:26:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710192419; x=1710797219; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=c8UecoZzKSYut+vZhKQ1It3pvBftXrdE86DZ5998DKY=;
-        b=ObTuvDYZg/wQXp4vlIcGcij/BYU9HpBqqOxjthmIucRU/ItzZQN6tFZJdHOJWiezng
-         FjjX5S0HChb+lXbm2n8GkzHIHls7zmyBUiFpTgvt++bhC1zvrFeloXkFelr2K+ZuYKCY
-         90jgUXywCrMLHpIzTZ7trRGhMaIKR4mCxvNlG/RwrUA0vhRz2RhcjL1a6cuYuhR1aKco
-         7MggzpGyh3b3Zc/DePj6HJVmKJdmCwNQptutnTX6pIHAeeAsvdhedcU2SKJiRXJgH5m9
-         pI50WZa3kykJl3/JoTwc+7fpcWDvvP5SnYCi57U/DLr/2sBt9lM6h2iAS4J1aYsMJmoW
-         FLyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710192419; x=1710797219;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c8UecoZzKSYut+vZhKQ1It3pvBftXrdE86DZ5998DKY=;
-        b=vmCydt3UBpop9Z7dDzig/Tv4MLcE5zC09xSPxS5/77hcOfkzX8du//Kcr2KHAMzK1z
-         V7sYiS2OPr/bUT3F1xSv/MpTWE7nxX4yMWy//Rj2F1a1Yp7AeTa3ziFOrtw5yKS7vJkm
-         F5mtglbXKh11FhpwsL7R1bckzEWwEYdErsoP5kX8bajm5V/xEzfSK35Q4xoua9yasKN3
-         0kSpo8XHAyLZRxiGmWlbq569TiS4h6zV7cG5noCmCLVFKMbYskjQbMD50a1XP7jL2l6Y
-         r/T3b15z7heU2+0X/U/QVvOzxIPqBEADMdQs3LG9yBbuvXH54ThLiytAIIkknIj7iStG
-         c91Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWrUYpuqJu3HKgBtcRePlYfHB1y5F2U3vd6WAgyIE+Ck4iQ1vaf08Th2LRNBHx1/r9tmtBe1v1LNtts8OhR3t+oEqICNC4MOzR3a19y
-X-Gm-Message-State: AOJu0YxyUQc1dNoVI4BXzQS2xTcp/S6SfnCONod2FLAxFmQOZ4JZ8Spo
-	evQ+B0M9J9uWMr74ePQPAeNmcBUTA4mk5cNnIML7FWkt9/YGEGdsQ88gxNY5legUg3XzNGLLfHk
-	s
-X-Google-Smtp-Source: AGHT+IF9NQtKdXH78xZW2qijYZsTFbYpPxK69NgQXvR+N/CMWxfFlepZFHam+pf4xCSfQt+QjRFw3w==
-X-Received: by 2002:a4a:3c08:0:b0:5a1:d5ab:3b94 with SMTP id d8-20020a4a3c08000000b005a1d5ab3b94mr4021465ooa.0.1710192419088;
-        Mon, 11 Mar 2024 14:26:59 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id b11-20020a056830310b00b006e529465addsm677172ots.7.2024.03.11.14.26.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 14:26:58 -0700 (PDT)
-From: David Lechner <dlechner@baylibre.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: adc: ad7944: Add support for "3-wire mode"
-Date: Mon, 11 Mar 2024 16:26:46 -0500
-Message-ID: <20240311-mainline-ad7944-3-wire-mode-v1-1-8e8199efa1f7@baylibre.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1710192472; c=relaxed/simple;
+	bh=ZmdP1tSm+qb+nNPO2UUjNu7uMmVk4E96vMUzvsP8Lc8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nT6Ela21nJHdyreC6mdlWgU5vr3wxxLk9a9tUjaaOgLy+1lezdw7lRskZ9eiy/QsSjS6fxv8UISlph42c7boa+wnuXXY8806t1f3uQdHeick5a8L3N9dLZUDKPwpYbk30g/NnLxhpwYZsHBhT2zRoxT/yVHmjn0gpUBEQA1z6UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cpj4CVs8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52F24C433F1;
+	Mon, 11 Mar 2024 21:27:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710192471;
+	bh=ZmdP1tSm+qb+nNPO2UUjNu7uMmVk4E96vMUzvsP8Lc8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Cpj4CVs8QxtXolkOfXKSPGD7cdQcOzYl+xjVIt7s4maGcs5drai0fkAaSU37k4Dzs
+	 9hVcZ0CO7z1z2Y9KBQmoQ+ox8UIFFkKW0CetC+zd9ymx1BgXmjVdPtZTLMlIrOHnsF
+	 +Hu/IS4/4Y9xIoj0OsSNIesVnXuJRM2M/e1TrtC2/olA8lgSJb/NGR0FHfpeoNugMg
+	 u2r7U1a+1NGoueqUIvOHQtSp8jcb54pZoONIf5vMp8td/qnUp4JjT7mbNvLx3QSiL1
+	 sIllTR+ssAGSno54ZJzboDDOP71/h3QgXNqGIGN+ZCh0hqVExHavgzZzGcad/J3uXK
+	 zeAu1Qg04/Rfw==
+Date: Mon, 11 Mar 2024 18:27:48 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf beauty: Move uapi/linux/fs.h copy out of the
+ directory used to build perf
+Message-ID: <Ze93VPYpegMMt5kk@x1>
+References: <Ze9vjxv42PN_QGZv@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.4
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ze9vjxv42PN_QGZv@x1>
 
-This adds support for AD7944 ADCs wired in "3-wire mode". (NOTE: 3-wire
-is the datasheet name for this wiring configuration and has nothing to
-do with SPI_3WIRE.)
+It is mostly used only to generate string tables, not to build perf, so
+move it to the tools/perf/trace/beauty/include/ hierarchy, that is used
+just for scrapping.
 
-In the 3-wire mode, the SPI controller CS line can be wired to the CNV
-line on the ADC and used to trigger conversions rather that using a
-separate GPIO line.
+The only case where it was being used to build was in
+tools/perf/trace/beauty/sync_file_range.c, because some older systems
+doesn't have the SYNC_FILE_RANGE_WRITE_AND_WAIT define, just use the
+system's linux/fs.h header instead, defining it if not available.
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
+This is something that should've have been done already, as happened
+with the linux/socket.h scrapper, do it now as Ian suggested while doing
+an audit/refactor session in the headers used by perf.
+
+No other tools/ living code uses it, just <linux/fs.h> coming from
+either 'make install_headers' or from the system /usr/include/
+directory.
+
+Suggested-by: Ian Rogers <irogers@google.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/CAP-5=fWZVrpRufO4w-S4EcSi9STXcTAN2ERLwTSN7yrSSA-otQ@mail.gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- drivers/iio/adc/ad7944.c | 157 +++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 139 insertions(+), 18 deletions(-)
+ tools/perf/Makefile.perf                              |  9 +++++----
+ tools/perf/check-headers.sh                           |  2 +-
+ tools/{ => perf/trace/beauty}/include/uapi/linux/fs.h |  0
+ tools/perf/trace/beauty/rename_flags.sh               |  2 +-
+ tools/perf/trace/beauty/sync_file_range.c             | 11 ++++++++++-
+ tools/perf/trace/beauty/sync_file_range.sh            |  2 +-
+ 6 files changed, 18 insertions(+), 8 deletions(-)
+ rename tools/{ => perf/trace/beauty}/include/uapi/linux/fs.h (100%)
 
-diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
-index adb007cdd287..8f466eb66bc4 100644
---- a/drivers/iio/adc/ad7944.c
-+++ b/drivers/iio/adc/ad7944.c
-@@ -32,8 +32,25 @@ struct ad7944_timing_spec {
- 	unsigned int turbo_conv_ns;
- };
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index d3a568abc38919e8..643e9fa6ec89c58c 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -472,6 +472,7 @@ arm64-sysreg-defs-clean:
+ 		clean > /dev/null
  
-+enum ad7944_spi_mode {
-+	/* datasheet calls this "4-wire mode" */
-+	AD7944_SPI_MODE_DEFAULT,
-+	/* datasheet calls this "3-wire mode" (not related to SPI_3WIRE!) */
-+	AD7944_SPI_MODE_SINGLE,
-+	/* datasheet calls this "chain mode" */
-+	AD7944_SPI_MODE_CHAIN,
-+};
-+
-+/* maps adi,spi-mode property value to enum */
-+static const char * const ad7944_spi_modes[] = {
-+	[AD7944_SPI_MODE_DEFAULT] = "",
-+	[AD7944_SPI_MODE_SINGLE] = "single",
-+	[AD7944_SPI_MODE_CHAIN] = "chain",
-+};
-+
- struct ad7944_adc {
- 	struct spi_device *spi;
-+	enum ad7944_spi_mode spi_mode;
- 	/* Chip-specific timing specifications. */
- 	const struct ad7944_timing_spec *timing_spec;
- 	/* GPIO connected to CNV pin. */
-@@ -58,6 +75,9 @@ struct ad7944_adc {
- 	 } sample __aligned(IIO_DMA_MINALIGN);
- };
+ beauty_linux_dir := $(srctree)/tools/perf/trace/beauty/include/linux/
++beauty_uapi_linux_dir := $(srctree)/tools/perf/trace/beauty/include/uapi/linux/
+ linux_uapi_dir := $(srctree)/tools/include/uapi/linux
+ asm_generic_uapi_dir := $(srctree)/tools/include/uapi/asm-generic
+ arch_asm_uapi_dir := $(srctree)/tools/arch/$(SRCARCH)/include/uapi/asm/
+@@ -647,8 +648,8 @@ $(x86_arch_MSRs_array): $(x86_arch_asm_dir)/msr-index.h $(x86_arch_MSRs_tbl)
+ rename_flags_array := $(beauty_outdir)/rename_flags_array.c
+ rename_flags_tbl := $(srctree)/tools/perf/trace/beauty/rename_flags.sh
  
-+/* quite time before CNV rising edge */
-+#define T_QUIET_NS	20
-+
- static const struct ad7944_timing_spec ad7944_timing_spec = {
- 	.conv_ns = 420,
- 	.turbo_conv_ns = 320,
-@@ -110,6 +130,65 @@ AD7944_DEFINE_CHIP_INFO(ad7985, ad7944, 16, 0);
- /* fully differential */
- AD7944_DEFINE_CHIP_INFO(ad7986, ad7986, 18, 1);
+-$(rename_flags_array): $(linux_uapi_dir)/fs.h $(rename_flags_tbl)
+-	$(Q)$(SHELL) '$(rename_flags_tbl)' $(linux_uapi_dir) > $@
++$(rename_flags_array): $(beauty_uapi_linux_dir)/fs.h $(rename_flags_tbl)
++	$(Q)$(SHELL) '$(rename_flags_tbl)' $(beauty_uapi_linux_dir) > $@
  
-+/*
-+ * ad7944_3wire_cs_mode_conversion - Perform a 3-wire CS mode conversion and
-+ *                                   acquisition
-+ * @adc: The ADC device structure
-+ * @chan: The channel specification
-+ * Return: 0 on success, a negative error code on failure
-+ *
-+ * This performs a conversion and reads data when the chip is wired in 3-wire
-+ * mode with the CNV line on the ADC tied to the CS line on the SPI controller.
-+ *
-+ * Upon successful return adc->sample.raw will contain the conversion result.
-+ */
-+static int ad7944_3wire_cs_mode_conversion(struct ad7944_adc *adc,
-+					   const struct iio_chan_spec *chan)
-+{
-+	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
-+						   : adc->timing_spec->conv_ns;
-+	struct spi_transfer xfers[] = {
-+		{
-+			/*
-+			 * NB: can get better performance from some SPI
-+			 * controllers if we use the same bits_per_word
-+			 * in every transfer.
-+			 */
-+			.bits_per_word = chan->scan_type.realbits,
-+			/*
-+			 * CS is tied to CNV and we need a low to high
-+			 * transition to start the conversion, so place CNV
-+			 * low for t_QUIET to prepare for this.
-+			 */
-+			.delay = {
-+				.value = T_QUIET_NS,
-+				.unit = SPI_DELAY_UNIT_NSECS,
-+			},
+ arch_errno_name_array := $(beauty_outdir)/arch_errno_name_array.c
+ arch_errno_hdr_dir := $(srctree)/tools
+@@ -660,8 +661,8 @@ $(arch_errno_name_array): $(arch_errno_tbl)
+ sync_file_range_arrays := $(beauty_outdir)/sync_file_range_arrays.c
+ sync_file_range_tbls := $(srctree)/tools/perf/trace/beauty/sync_file_range.sh
+ 
+-$(sync_file_range_arrays): $(linux_uapi_dir)/fs.h $(sync_file_range_tbls)
+-	$(Q)$(SHELL) '$(sync_file_range_tbls)' $(linux_uapi_dir) > $@
++$(sync_file_range_arrays): $(beauty_uapi_linux_dir)/fs.h $(sync_file_range_tbls)
++	$(Q)$(SHELL) '$(sync_file_range_tbls)' $(beauty_uapi_linux_dir) > $@
+ 
+ TESTS_CORESIGHT_DIR := $(srctree)/tools/perf/tests/shell/coresight
+ 
+diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+index 66ba33dbcef22b23..015f74137b755eaf 100755
+--- a/tools/perf/check-headers.sh
++++ b/tools/perf/check-headers.sh
+@@ -11,7 +11,6 @@ FILES=(
+   "include/uapi/drm/i915_drm.h"
+   "include/uapi/linux/fadvise.h"
+   "include/uapi/linux/fcntl.h"
+-  "include/uapi/linux/fs.h"
+   "include/uapi/linux/fscrypt.h"
+   "include/uapi/linux/kcmp.h"
+   "include/uapi/linux/kvm.h"
+@@ -98,6 +97,7 @@ SYNC_CHECK_FILES=(
+ declare -a BEAUTY_FILES
+ BEAUTY_FILES=(
+   "include/linux/socket.h"
++  "include/uapi/linux/fs.h"
+ )
+ 
+ declare -a FAILURES
+diff --git a/tools/include/uapi/linux/fs.h b/tools/perf/trace/beauty/include/uapi/linux/fs.h
+similarity index 100%
+rename from tools/include/uapi/linux/fs.h
+rename to tools/perf/trace/beauty/include/uapi/linux/fs.h
+diff --git a/tools/perf/trace/beauty/rename_flags.sh b/tools/perf/trace/beauty/rename_flags.sh
+index 94bf7f45d28e6be6..702411dd7a1c2fc2 100755
+--- a/tools/perf/trace/beauty/rename_flags.sh
++++ b/tools/perf/trace/beauty/rename_flags.sh
+@@ -2,7 +2,7 @@
+ # Copyright (C) 2018, Red Hat Inc, Arnaldo Carvalho de Melo <acme@redhat.com>
+ # SPDX-License-Identifier: LGPL-2.1
+ 
+-[ $# -eq 1 ] && header_dir=$1 || header_dir=tools/include/uapi/linux/
++[ $# -eq 1 ] && header_dir=$1 || header_dir=tools/perf/trace/beauty/include/uapi/linux/
+ 
+ fs_header=${header_dir}/fs.h
+ 
+diff --git a/tools/perf/trace/beauty/sync_file_range.c b/tools/perf/trace/beauty/sync_file_range.c
+index 1c425f04047dbb24..3e8f50ff4fc701f9 100644
+--- a/tools/perf/trace/beauty/sync_file_range.c
++++ b/tools/perf/trace/beauty/sync_file_range.c
+@@ -7,7 +7,16 @@
+ 
+ #include "trace/beauty/beauty.h"
+ #include <linux/log2.h>
+-#include <uapi/linux/fs.h>
++#include <linux/fs.h>
 +
-+		},
-+		{
-+			.bits_per_word = chan->scan_type.realbits,
-+			/*
-+			 * CS has to be high for full conversion time to avoid
-+			 * triggering the busy indication.
-+			 */
-+			.cs_off = 1,
-+			.delay = {
-+				.value = t_conv_ns,
-+				.unit = SPI_DELAY_UNIT_NSECS,
-+			},
-+		},
-+		{
-+			/* Then we can read the data during the acquisition phase */
-+			.rx_buf = &adc->sample.raw,
-+			.len = BITS_TO_BYTES(chan->scan_type.storagebits),
-+			.bits_per_word = chan->scan_type.realbits,
-+		},
-+	};
-+
-+	return spi_sync_transfer(adc->spi, xfers, ARRAY_SIZE(xfers));
-+}
-+
- /*
-  * ad7944_4wire_mode_conversion - Perform a 4-wire mode conversion and acquisition
-  * @adc: The ADC device structure
-@@ -167,9 +246,22 @@ static int ad7944_single_conversion(struct ad7944_adc *adc,
++#ifndef SYNC_FILE_RANGE_WRITE_AND_WAIT
++#define SYNC_FILE_RANGE_WAIT_BEFORE     1
++#define SYNC_FILE_RANGE_WRITE           2
++#define SYNC_FILE_RANGE_WAIT_AFTER      4
++#define SYNC_FILE_RANGE_WRITE_AND_WAIT  (SYNC_FILE_RANGE_WRITE | \
++                                         SYNC_FILE_RANGE_WAIT_BEFORE | \
++                                         SYNC_FILE_RANGE_WAIT_AFTER)
++#endif
+ 
+ static size_t sync_file_range__scnprintf_flags(unsigned long flags, char *bf, size_t size, bool show_prefix)
  {
- 	int ret;
+diff --git a/tools/perf/trace/beauty/sync_file_range.sh b/tools/perf/trace/beauty/sync_file_range.sh
+index 90bf633be879909a..b1084c4cab636b52 100755
+--- a/tools/perf/trace/beauty/sync_file_range.sh
++++ b/tools/perf/trace/beauty/sync_file_range.sh
+@@ -2,7 +2,7 @@
+ # SPDX-License-Identifier: LGPL-2.1
  
--	ret = ad7944_4wire_mode_conversion(adc, chan);
--	if (ret)
--		return ret;
-+	switch (adc->spi_mode) {
-+	case AD7944_SPI_MODE_DEFAULT:
-+		ret = ad7944_4wire_mode_conversion(adc, chan);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	case AD7944_SPI_MODE_SINGLE:
-+		ret = ad7944_3wire_cs_mode_conversion(adc, chan);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	case AD7944_SPI_MODE_CHAIN:
-+		return -EOPNOTSUPP;
-+	}
- 
- 	if (chan->scan_type.storagebits > 16)
- 		*val = adc->sample.raw.u32;
-@@ -230,9 +322,23 @@ static irqreturn_t ad7944_trigger_handler(int irq, void *p)
- 	struct ad7944_adc *adc = iio_priv(indio_dev);
- 	int ret;
- 
--	ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
--	if (ret)
-+	switch (adc->spi_mode) {
-+	case AD7944_SPI_MODE_DEFAULT:
-+		ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
-+		if (ret)
-+			goto out;
-+
-+		break;
-+	case AD7944_SPI_MODE_SINGLE:
-+		ret = ad7944_3wire_cs_mode_conversion(adc, &indio_dev->channels[0]);
-+		if (ret)
-+			goto out;
-+
-+		break;
-+	case AD7944_SPI_MODE_CHAIN:
-+		/* not supported */
- 		goto out;
-+	}
- 
- 	iio_push_to_buffers_with_timestamp(indio_dev, &adc->sample.raw,
- 					   pf->timestamp);
-@@ -260,16 +366,9 @@ static int ad7944_probe(struct spi_device *spi)
- 	struct ad7944_adc *adc;
- 	bool have_refin = false;
- 	struct regulator *ref;
-+	const char *str_val;
- 	int ret;
- 
--	/*
--	 * driver currently only supports the conventional "4-wire" mode and
--	 * not other special wiring configurations.
--	 */
--	if (device_property_present(dev, "adi,spi-mode"))
--		return dev_err_probe(dev, -EINVAL,
--				     "adi,spi-mode is not currently supported\n");
--
- 	indio_dev = devm_iio_device_alloc(dev, sizeof(*adc));
- 	if (!indio_dev)
- 		return -ENOMEM;
-@@ -283,6 +382,22 @@ static int ad7944_probe(struct spi_device *spi)
- 
- 	adc->timing_spec = chip_info->timing_spec;
- 
-+	if (device_property_read_string(dev, "adi,spi-mode", &str_val) == 0) {
-+		ret = sysfs_match_string(ad7944_spi_modes, str_val);
-+		if (ret < 0)
-+			return dev_err_probe(dev, -EINVAL,
-+					     "unsupported adi,spi-mode\n");
-+
-+		adc->spi_mode = ret;
-+	} else {
-+		/* absence of adi,spi-mode property means default mode */
-+		adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
-+	}
-+
-+	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "chain mode is not implemented\n");
-+
- 	/*
- 	 * Some chips use unusual word sizes, so check now instead of waiting
- 	 * for the first xfer.
-@@ -349,15 +464,17 @@ static int ad7944_probe(struct spi_device *spi)
- 		adc->ref_mv = AD7944_INTERNAL_REF_MV;
- 	}
- 
--	/*
--	 * CNV gpio is required in 4-wire mode which is the only currently
--	 * supported mode.
--	 */
--	adc->cnv = devm_gpiod_get(dev, "cnv", GPIOD_OUT_LOW);
-+	adc->cnv = devm_gpiod_get_optional(dev, "cnv", GPIOD_OUT_LOW);
- 	if (IS_ERR(adc->cnv))
- 		return dev_err_probe(dev, PTR_ERR(adc->cnv),
- 				     "failed to get CNV GPIO\n");
- 
-+	if (!adc->cnv && adc->spi_mode == AD7944_SPI_MODE_DEFAULT)
-+		return dev_err_probe(&spi->dev, -EINVAL, "CNV GPIO is required\n");
-+	else if (adc->cnv && adc->spi_mode != AD7944_SPI_MODE_DEFAULT)
-+		return dev_err_probe(&spi->dev, -EINVAL,
-+				     "CNV GPIO in single and chain mode is not currently supported\n");
-+
- 	adc->turbo = devm_gpiod_get_optional(dev, "turbo", GPIOD_OUT_LOW);
- 	if (IS_ERR(adc->turbo))
- 		return dev_err_probe(dev, PTR_ERR(adc->turbo),
-@@ -369,6 +486,10 @@ static int ad7944_probe(struct spi_device *spi)
- 		return dev_err_probe(dev, -EINVAL,
- 			"cannot have both turbo-gpios and adi,always-turbo\n");
- 
-+	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN && adc->always_turbo)
-+		return dev_err_probe(dev, -EINVAL,
-+			"cannot have both chain mode and always turbo\n");
-+
- 	indio_dev->name = chip_info->name;
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->info = &ad7944_iio_info;
+ if [ $# -ne 1 ] ; then
+-	linux_header_dir=tools/include/uapi/linux
++	linux_header_dir=tools/perf/trace/beauty/include/uapi/linux/
+ else
+ 	linux_header_dir=$1
+ fi
+-- 
+2.44.0
 
----
-base-commit: bbafdb305d6b00934cc09a90ec1bb659d43e5171
-change-id: 20240311-mainline-ad7944-3-wire-mode-c240fe8af979
+
 
