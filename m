@@ -1,220 +1,181 @@
-Return-Path: <linux-kernel+bounces-99314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CBE5878666
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:39:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B9F2878667
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0807284288
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:39:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02A431F23507
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906604D9E6;
-	Mon, 11 Mar 2024 17:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560E143AD6;
+	Mon, 11 Mar 2024 17:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h9ig3wKS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="RLmMYXul"
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098C453E0D;
-	Mon, 11 Mar 2024 17:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710178782; cv=fail; b=L7y3Zla9dQNpA8BvLZn+AZoXh6CcolUuzyux/dgk/z4haXU8VDQHRyqimz4gGRyacP2m1fnct9mjo/pF1D6TyO3lRzfp1t+6QMxDClt8Jsxy0puros+fp/XvJqy+xaY3KMfO9D9IQprpUY05QIej5VAhaaFCArynGvT1oE++Rwk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710178782; c=relaxed/simple;
-	bh=0eT7aLijuErCDEBS3mXzxzlLhl2T3qrkx8vyz0f48v8=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZadveZpp0dn5y/Vy3x2n5qqLE20zMLWt+0EM0JgXgGG3cA6YRNblw1305eKzLw10MP63HIwgI3r6Sz/wFNBRLPQw5oyIF9SHLk3rxwNSww/9ARjuaCYpzOTAbUIFkTxqx2YvvgI+0tU+4V+eZAkaiYyObF91rSYHRg5iN8UJu0Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h9ig3wKS; arc=fail smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710178780; x=1741714780;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=0eT7aLijuErCDEBS3mXzxzlLhl2T3qrkx8vyz0f48v8=;
-  b=h9ig3wKSs7F4R+TqQ8eOYR7R4zhK1nTf3S2fY3Mqxv70HdBfiKdRNdzY
-   IAwXEY0nfXwiaTNUivP4KMt08JW1+93VybrU96hVXkOsFJ/576m06Ku3b
-   lKQWOoEjvGtJjNJImJFt8GQlPZLibt7F/kxdgn4H4dNfvRg9QJ8vNZxT5
-   hWcQGWCYA9de2bEOEl5yhgc/tzWvQtZ8QTkdnoNOpIC8pP5fLR2ap0GtL
-   6SVKK3M1ejgVz2fRliqg3FfzZ8+rtJlKHVxYwW/duaWECqLjRTNxCPQEL
-   xLdk+5KFFlFZToXlgi2L7LtfERkxl8ZR5M1oFCxgv3pfRU6N+oKfNxGyT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="27328233"
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="27328233"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 10:39:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="11312926"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Mar 2024 10:39:15 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Mar 2024 10:39:15 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Mar 2024 10:39:15 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 11 Mar 2024 10:39:15 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 10:39:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hJPHwuFDVAmbE8pRW1RIAX7Ht/bTg7+rldJ/Dqr523ZFHfe/V1g2YcEbFvbALckd+qM17i86Z/k2/Sa4uBPuY/IwNJAqfeXsgeRyOPnmBhSS1ltHRamOWOxtBimUQT2fHObnQnQ3WF3z/athYMxXi/6Ax1P7hYW/+EcCyDGqCQNXhfRokHrXxp50JydgCZrbKIhnMUj1jSkiqtgix3Gk0T3oJRvQqI08yaSOMcS/zYzK5kger7ohQzwuXOu2Hcy31mJuPGeKvhvt+crN6sZWm5fGgHu3er2IYqIDPUQv3/mLmNhPW3KY6MqpDTFJVSpiHyjD/EAsSw60uUj37AV4bQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qckV+P0UG3NGxNSj0oqez5Cd88llqKOgv8YntTWjlpo=;
- b=brlzlJDtQGt5VBn6b82qkl9S6//fg1W0QBQx8xSYBq91T3AYNuw9fJPCZjBPJISSm38k/dEWDQJz5SgiPT/IGXKjelvxNPlrA79xwzeNP+K9/O0/0l5ZZcu8q/V2uw+lOxHQAFL8DRua0yzpSFlbY5JdMZqs7BC4+X3xviErvkrD+kX9O7kyfMGXeY8ZOnwXrU4V8KSD8zOuLfcH+7/lXWI19tQG3OPROFiRwQDMrevgAB+/hPJplF/TQpYrOWnzL5Gtvb5gkhz451dZvAn5E+fof9Q0ahhuIgZzGk8VvNqUdoiDvseKUND0W1rDwsw3LeapZNSc2MP+tQDgHW3d2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW4PR11MB7164.namprd11.prod.outlook.com (2603:10b6:303:212::6)
- by MW3PR11MB4745.namprd11.prod.outlook.com (2603:10b6:303:5e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.16; Mon, 11 Mar
- 2024 17:39:13 +0000
-Received: from MW4PR11MB7164.namprd11.prod.outlook.com
- ([fe80::b5bc:2406:7431:8c1]) by MW4PR11MB7164.namprd11.prod.outlook.com
- ([fe80::b5bc:2406:7431:8c1%7]) with mapi id 15.20.7386.015; Mon, 11 Mar 2024
- 17:39:13 +0000
-Message-ID: <1cacbd08-1131-4be4-b318-58c05afda2de@intel.com>
-Date: Mon, 11 Mar 2024 10:39:10 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests: x86: skip the tests if prerequisites aren't
- fulfilled
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>, Shuah Khan
-	<shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, "Kirill A.
- Shutemov" <kirill.shutemov@linux.intel.com>, "Peter Zijlstra (Intel)"
-	<peterz@infradead.org>, Weihong Zhang <weihong.zhang@intel.com>, Binbin Wu
-	<binbin.wu@linux.intel.com>, angquan yu <angquan21@gmail.com>
-CC: <kernel@collabora.com>, <linux-kselftest@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240307183730.2858264-1-usama.anjum@collabora.com>
- <dc8d122a-22b7-4d17-abd9-66262af0b058@intel.com>
- <c3362840-365e-40cb-80fe-895aa2d979ec@collabora.com>
-Content-Language: en-US
-From: "Chang S. Bae" <chang.seok.bae@intel.com>
-In-Reply-To: <c3362840-365e-40cb-80fe-895aa2d979ec@collabora.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR04CA0141.namprd04.prod.outlook.com
- (2603:10b6:303:84::26) To MW4PR11MB7164.namprd11.prod.outlook.com
- (2603:10b6:303:212::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59061DFEF
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710178817; cv=none; b=LAMjxcbImuBL2Y9Dd2iTxvRXfby/r7z7ubaEHGRWrhKpoNdqqvjoMaTizjBz/9NWe5Ux4COP8cF+vrp/XaNWW6uTcsWrRAaKH/LB2T5YrmRiKMVTyAIOkZX0ZMSrNLF8aOBOHu7tCoGpMfwOQ3/aadxKK24RTFFGu0zoTfgrXH8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710178817; c=relaxed/simple;
+	bh=hd5gikp0vc2N6bZJgrq9wVj+rRiZAjXng1Xqa7TV6CM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kx+EGMvrCtH2dIqLmrzkGWnBxmqKp+GXX0mBMA1c8spThhNAQ1CQtrK9qCw9GWUTPGFqr6fD4dnDE4rJuNwQbeADwIAULvFjCLKMhkqJVnnnGHngzhnh7dyWZ3aJ1cQzLfCgDtb8CawmqsPtCy7yKMrruXdjup6zGfIQogdGoEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RLmMYXul; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-428405a0205so14641cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710178815; x=1710783615; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BvZZjW8V4QSv3wSrX51FU3CWzJnSisLpykPAhfx62oc=;
+        b=RLmMYXul5Lb55mekU56XpfSUrEerlLqefGzfBq8sjyBlxJuGcxm9KGuH2XABt2OMnJ
+         GplLqeuy3s6gkK87tOXWd90yypN3feEJc+KNoe/vViK49uWlObUdWGtw0t9KLmrWgtie
+         JRLjfjfn1fuVISXrq5drV+z+kdFTJXGHZLbMmZl0mzRfy/4tsAumoCqHtavFdRzdu1m0
+         qyOLyAgGX4cTGZ+x1bdxInDZ3lbL/mt2aSuN5hgWYXQEUnsIHcs90KvczTbGwhO961iR
+         KeAYHNX9csb/qXOnnaUCON3LrRFneBdIV1H0QC7UW/ldU3pRh27JY9314nWlvBloDQKv
+         Kbig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710178815; x=1710783615;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BvZZjW8V4QSv3wSrX51FU3CWzJnSisLpykPAhfx62oc=;
+        b=IP2ntocIr9RrW9v7NTkZgc+rMx7ZiSR4Z3PiZW3N0lurwRjaJt0ZyW8rlBr7+f7cL9
+         mOnbo5KHjuN6IswUUlIpmbk6I2hTO0xSEZrloQTu60vxB0PFm63YM5LSTxJ01ABxUG/3
+         TJohUg/FTKJwLOiysu8SCtvil/9fiGRJP2lYbYSkUqiDMGc/yeGNaUSUzx4G7CX2cNY0
+         ultAM3IZFrvgrvdpRv/7dxI9dw/NGJ96WqtS3/pUrUowp1jTltMgNRyS9iLWSqj3OBq2
+         TqjHYKr/KrRGW5urdPJV7MsVthNmrOohogUM+1Em2vClhS999jylRWD5ZmFinpobILqL
+         GAjg==
+X-Forwarded-Encrypted: i=1; AJvYcCV3RMMUm1YxYGECunn59fX9ZT8e3BZumK3hV1yCHAFBgf68uArZpK+PJyOm81Q+DRVibqVxHTQK02nwskz3qtJ0JfVAlsHCNVAaRkgm
+X-Gm-Message-State: AOJu0YwP8wHPV843lEnqmCWT9auuEz9JKSGpxo29d/3r0PxX0q5FkwEH
+	3dSm85jo2yXozyFTe52a39LjZR8+Swu8ZstAZD29WOE+IJvQudji854h6Zpca0VoEYyhoND9zBv
+	Y2eweu/qMKF6pqP7oISeO3U0u6d1xgj2yGrov
+X-Google-Smtp-Source: AGHT+IF6099lhAbQyfyLMhuxPuQThWGNDNo27yji/hbKmnIRQDm5vZwakil94YZV5a6pABPWkLV86cxbd7Q9c0l+Pr8=
+X-Received: by 2002:a05:622a:13cf:b0:42f:a3c:2d54 with SMTP id
+ p15-20020a05622a13cf00b0042f0a3c2d54mr1221194qtk.21.1710178814682; Mon, 11
+ Mar 2024 10:40:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR11MB7164:EE_|MW3PR11MB4745:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a565294-4764-4ae9-769d-08dc41f22a74
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AZ8cFaYiQH4g/lpIo595t1FuHuKYNn2NyPWuVCszZiPn6FG0GQaGyi/N1PJxtLi31Zz6KGOFWUs7ulnj+5itosKrVYTpbYJMaetXDEhV6xiTEXMpPmmZG9yaaaE6G3mVuJkvqizG+AomOvZtCNvJUsR9Yiecksmp5c5XScux0G+Kxrd1WG3JLvvBnpiUtgqOGojBWV6TJDcHgTEJb40v79acqWLg/BXR0bojxqflAcD6TCMRaoCws3P+pDrif9wMFsrH1OiEc688+4Nkm5Nc+7DnMi6c+jvts/TAVfUwFwctGg+hX+n9lrPHTnTInOC2AfpuA3DnopRfCF6Ld7oYoSTpmgVf4YuEX43OhNSQYbiy9QMahjNgEkGayCx8wHdg7nrfTl86lxv+hQFx9HXxiWLVr1gwD14cEAOK9q6b+8tuHDZUOjedrF5wQbpoXnGSLtqvWAmz2TkWsNqNkoccnbaVGERNxBqYjICKWRcVnA4GTqKrLiaBmiLdQ7h+91wHb+xWMq9iAR60u+JMuhuU31qAl50/IMGBWMhsGCt8wwgB/rzP3/IS/PA1ympMxv/CO//VPDbKEVNtw6gdmhM6TkM4kxZDNrq6lFRJSlTF6rELbMwSNYQuQ8chxqckQL0+2TW+T0w23RXOS8VowZUN3cGydu1AZrm5fmUKetJD7Fc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB7164.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bUM3LysvNjdxYVRkY08wa2NoS2ZUaTV3S3p4M3lhZm1RT3FmNDh0SlJENHZ1?=
- =?utf-8?B?ZXlrR3VKREk3YndIWFk5MHFPUG1UeGMrL0dYS2NWejdxdWxHS1J5N1cyb01w?=
- =?utf-8?B?QVpCeWQyUUIrL21nd3BWNE1ldTJjOEtBSkUzNUpPcWNzeWNlbml2eFNleE5h?=
- =?utf-8?B?eC9tZHFieU5DYmVWeXNsOFRmRlBjR3BQcGtWNTg2Rmg4MERtVnpWeHZ1U1VG?=
- =?utf-8?B?QUp0ZWVRWHVLT3pKc1BOUTd3UURCYkNzSUU4SFh5ejVNMldrRnJlYXZMeElk?=
- =?utf-8?B?YUpBQ1FUZEhCMjI0RFNVTlUyaS9BamJLS012VDhjdDlnNEQ5K3d6SFFYcW85?=
- =?utf-8?B?QzE3d1dQNDB0UStIRmpYZHZqT2c0eEl5RHBGRGdCUHE2L3RTUHRtNmREa1Vn?=
- =?utf-8?B?QnhjUll3ZHNqSUZ1Mk95ZWU4YjJKb3NkdGFFY1B3blFvcjdQQlRxanoxN1Vy?=
- =?utf-8?B?MHh1bm4vOU9FYVB3ZWhmUDZYeHpCajZCWjhnRFhhZCtMOEJ3c2gzSUhFNkFv?=
- =?utf-8?B?U0dLMVFBenVZU3crWVVlMTZrVXpHWUMzcktkV0h4Y2RhVTk2amNaU2lzaWRZ?=
- =?utf-8?B?VmJvci9Dd2Z3NmdtbXJTOXBLOW9OM21Tb3Z1UTZEUGpNUHAwRWhObGs0YWhT?=
- =?utf-8?B?NGhaenpSaVJhWDdKYXBnYjNrMEdBTFJMZkJ2UGIzS2I5M3p2T2R0QXBkQ1BO?=
- =?utf-8?B?Y29UN1gwZG85V1pZTENrVDg5RkliRWxzVXJRTHdyTmxrMUxmTjNPSDNudFBT?=
- =?utf-8?B?N0ZEZEFUTTVtcGNKZG45YTJhakgrcHVmRzhGelVUMk5xN2xGWUttMFpCc1Y0?=
- =?utf-8?B?ZEh5NFpWVEZWZHpsNFpvVk1USlZlVGNkeHVhRzhsS3RuZDR0ME53SG4ybm9k?=
- =?utf-8?B?QzM2QU85bnJFSzY1TTFmU01ONUxHclR1ckpYRHN5UlZPdCtJM2g0Y0NHeTNE?=
- =?utf-8?B?REZmUlBoUyt6U2J6bFRUMS91Unp0RXlJMFYybkRZVjczT3paMGN3N3phRFQ2?=
- =?utf-8?B?OEg4eW53UENyZXZOTUlUS0lidlJEMVkwc0xkN0g1b1l3VEF4akUyRWxkWkU5?=
- =?utf-8?B?Q3BHNFg4djZ0N1E1L2FYOU9ibGJjU0ROMFU2ZmpYamliQ3VvbjNwc3dGSzJs?=
- =?utf-8?B?T1JFekRBNHJFdHJRRHNseHBZaEpjVms0WEFHQ29jWE9EM2F6cWZpKzZhZ3oy?=
- =?utf-8?B?U1JXcXhYd1crTlVncElzQmdMYUwrcEREcURKYk9ROTRtcWF2OTlmUDdlUTJs?=
- =?utf-8?B?eFN3d09aWVRpbkh4TjlWNEVVdmNKdTVod3hHUStmN3pGMU0zdldDR3JuY0lZ?=
- =?utf-8?B?ODN4S291elp3TC9oWUJsenZTd0JSYzhMR1Y5aWRrVzJoN3pFd0RLZHA5ckF4?=
- =?utf-8?B?SitYQ3dEVkRzOUtsNFVuM1F4Z1JPNTVhaDVEaWxreXZrM0d1Wm4yM2tqNFlS?=
- =?utf-8?B?MEFEcDZnMUVVZkV2WnQvZHFud0pOZXM5RVF2MnFQMmM3QzBiQTBQeDVBcXNV?=
- =?utf-8?B?V3VWRXNaRXlzREtiZ2V6UG5IcmZBQVFjVnFFZzFWei81SkE0NUIxOXV6N3Rx?=
- =?utf-8?B?amdFZGZ1bFZZWUd1NlJOa3FVQmtsQUxqSWNYajdrc1IvdXVyRzYzU0t1VmVk?=
- =?utf-8?B?WkkzV3dnanI2c01ZdXBzSTBUYVBKUWtDdmdCUjJsWVBXL0Y3TFFpajM4YjZR?=
- =?utf-8?B?SzNCODNmcm5BbU1kT3hZYks3bnlEcEVjeTIrMWVYS0UrOUQ4NjdFRnRqNDA1?=
- =?utf-8?B?VlA2bWFseW5HcWFNMkdpZ1lHNS9CcWZlckQzT1JhKzlFc0RKSHpxdmNNbSsv?=
- =?utf-8?B?eGZaUVNpQmJzaXV0aXNMazA0NGN2N2FqYUU4ZisvcVlGZ014NDZqVzU0dG12?=
- =?utf-8?B?L3pKUmlyaVRUbTkvckJZMnVqWlp2TUpBSmxpOFVwQ2ZCUU9CaXp4cEtPVXVt?=
- =?utf-8?B?aUkxRXg1ZnBLS2hwWXZZNXpGWmlSalRaMjVOQ2ZTTDJUcmtWT3p3NnEyN0F2?=
- =?utf-8?B?MDdGeGdkTnAzc0ttaUt6R3pjaXl6SDBUMGx5MENWV0xrM1NXK2hXcy8zM0Z3?=
- =?utf-8?B?ZVBtSStHaU41OXhPT2tWTDl4WEdUWVMrZ0RHRkRSYzl1Ti96cGNuYTUvellK?=
- =?utf-8?B?b01aSjZMamlJZUk5cDJRUHAwY3hxd2FCQW5hY0ZnNTNCcmJvL0MyaERzbjBs?=
- =?utf-8?B?aVE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a565294-4764-4ae9-769d-08dc41f22a74
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB7164.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 17:39:13.0991
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jNHJ8fPkVzlqtRwiC9Lv+8hHBcWJ9m62nRwaWg1G7NdODtUfsG0ZydYgvYKp4rZEGwq6zPc7cOzdJ64I3H+P6e0NjmmN5zMD5RtBGLt3WBE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4745
-X-OriginatorOrg: intel.com
+References: <cover.1710133771.git.sandipan.das@amd.com> <0d18c3a93083f12481f27dcc5f5795877fa02b90.1710133771.git.sandipan.das@amd.com>
+In-Reply-To: <0d18c3a93083f12481f27dcc5f5795877fa02b90.1710133771.git.sandipan.das@amd.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 11 Mar 2024 10:40:03 -0700
+Message-ID: <CAP-5=fUV=6my-+z0Qc+TS2+CbKT1DqsLbpHZrZLitqpAnDd2-A@mail.gmail.com>
+Subject: Re: [PATCH 1/4] perf vendor events amd: Add Zen 5 core events
+To: Sandipan Das <sandipan.das@amd.com>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, 
+	adrian.hunter@intel.com, eranian@google.com, ravi.bangoria@amd.com, 
+	ananth.narayan@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/11/2024 10:02 AM, Muhammad Usama Anjum wrote:
-> On 3/9/24 6:06 AM, Chang S. Bae wrote:
->> On 3/7/2024 10:37 AM, Muhammad Usama Anjum wrote:
->>
->>> -static void check_cpuid_xtiledata(void)
->>> +static int check_cpuid_xtiledata(void)
->>>    {
->>>        uint32_t eax, ebx, ecx, edx;
->>>    @@ -153,12 +160,16 @@ static void check_cpuid_xtiledata(void)
->>>         * eax: XTILEDATA state component size
->>>         * ebx: XTILEDATA state component offset in user buffer
->>>         */
->>> -    if (!eax || !ebx)
->>> -        fatal_error("xstate cpuid: invalid tile data size/offset: %d/%d",
->>> -                eax, ebx);
->>> +    if (!eax || !ebx) {
->>> +        ksft_print_msg("xstate cpuid: invalid tile data size/offset:
->>> %d/%d\n",
->>> +                   eax, ebx);
->>> +        return -1;
->>> +    }
->>>          xtiledata.size          = eax;
->>>        xtiledata.xbuf_offset = ebx;
->>> +
->>> +    return 0;
->>>    }
->>
->> I don't think it is okay to silently skip the test here. If the feature is
->> available, the tile data size and offset should not be zero.
-> We are logging that data size/offset are invalid if either eax or ebx are
-> invalid and then we are skipping. Not sure what you are asking me to change.
+On Sun, Mar 10, 2024 at 10:23=E2=80=AFPM Sandipan Das <sandipan.das@amd.com=
+> wrote:
+>
+> Add core events taken from Section 1.4 "Core Performance Monitor
+> Counters" of the Performance Monitor Counters for AMD Family 1Ah Model
+> 00h-0Fh Processors document available at the link below. This
+> constitutes events which capture information on op dispatch, execution
+> and retirement, branch prediction, L1 and L2 cache activity,
+> TLB activity, etc.
+>
+> Link: https://bugzilla.kernel.org/attachment.cgi?id=3D305974
+> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+> ---
+>  .../pmu-events/arch/x86/amdzen5/branch.json   |  82 ++
+>  .../pmu-events/arch/x86/amdzen5/cache.json    | 605 +++++++++++++
+>  .../pmu-events/arch/x86/amdzen5/core.json     | 122 +++
+>  .../arch/x86/amdzen5/floating-point.json      | 830 ++++++++++++++++++
+>  .../pmu-events/arch/x86/amdzen5/memory.json   | 180 ++++
+>  .../pmu-events/arch/x86/amdzen5/other.json    | 168 ++++
+>  6 files changed, 1987 insertions(+)
+>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/branch.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/cache.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/core.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/floating-point=
+json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/memory.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/other.json
+>
+> diff --git a/tools/perf/pmu-events/arch/x86/amdzen5/branch.json b/tools/p=
+erf/pmu-events/arch/x86/amdzen5/branch.json
+> new file mode 100644
+> index 000000000000..208c646c59ca
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/amdzen5/branch.json
+> @@ -0,0 +1,82 @@
+> +[
+> +  {
+> +    "EventName": "bp_l2_btb_correct",
+> +    "EventCode": "0x8b",
+> +    "BriefDescription": "L2 branch prediction overrides existing predict=
+ion (speculative)."
+> +  },
+> +  {
+> +    "EventName": "bp_dyn_ind_pred",
+> +    "EventCode": "0x8e",
+> +    "BriefDescription": "Dynamic indirect predictions (branch used the i=
+ndirect predictor to make a prediction)."
+> +  },
+> +  {
+> +    "EventName": "bp_de_redirect",
+> +    "EventCode": "0x91",
+> +    "BriefDescription": "Instruction decoder corrects the predicted targ=
+et and resteers the branch predictor."
+> +  },
+> +  {
+> +    "EventName": "ex_ret_brn",
+> +    "EventCode": "0xc2",
+> +    "BriefDescription": "Retired branch instructions (all types of archi=
+tectural control flow changes, including exceptions and interrupts)."
+> +  },
 
-You intention seems to skip the test when AMX is not available. But this 
-function should only be invoked when AMX is actually available, not as 
-part of the feature availability check. Therefore, I think this change 
-is not relevant. Also, if we encounter invalid TILEDATA CPUID, it should 
-be a reason to *fail* the test, rather than calling out a skip, right?
+So the "bp_" prefix means branch predictor, but here this is an "ex_"
+prefix. You've put them both in the topic "branch".
+
+[ ... snip ... ]
+
+> diff --git a/tools/perf/pmu-events/arch/x86/amdzen5/other.json b/tools/pe=
+rf/pmu-events/arch/x86/amdzen5/other.json
+> new file mode 100644
+> index 000000000000..9d49a23622e9
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/amdzen5/other.json
+> @@ -0,0 +1,168 @@
+> +[
+> +  {
+> +    "EventName": "bp_redirects.resync",
+> +    "EventCode": "0x9f",
+> +    "BriefDescription": "Redirects of the branch predictor caused by res=
+yncs.",
+> +    "UMask": "0x01"
+> +  },
+
+Here is a branch predictor "bp_" event but the topic is "other", why
+isn't it a topic of branch?
+
+Given the number of events categorized as topic "other" wouldn't it be
+better to regenerate the events just using the prefix to set the
+topic?
 
 Thanks,
-Chang
+Ian
+
+[ ... snip ... ]
 
