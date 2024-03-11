@@ -1,102 +1,92 @@
-Return-Path: <linux-kernel+bounces-99528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68CDA87899C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:42:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E23258789A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F21491F21FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:42:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19D211C210A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2948454BFD;
-	Mon, 11 Mar 2024 20:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5C352F82;
+	Mon, 11 Mar 2024 20:44:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vy7t7w+Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HKI/BRla"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5483CF6A;
-	Mon, 11 Mar 2024 20:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB6D3C0C;
+	Mon, 11 Mar 2024 20:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710189706; cv=none; b=rXbL/ro/tvfj84CMm09KZRiGOxPUb4BpXlaAF+/2n5cPwQOxfoJgKijSJs2QO/J3xyqoKeLtu2sz+9Pj0gmCASvJ8jqj1LxJqkpFGk+8YQr4weaNcqNEGCC8jSoEPR/44S3kit9a/9DuA1tau/DkrkP+Ca9v9znA2jZ4A+ETB5I=
+	t=1710189877; cv=none; b=FCToJvoTGTp6TRf1v8z9yK/xu5QehBjFR8S0DuFLGxdrt5rR9UjCKyuGIBpjRGulEjJkSzJ5gQ4SKk03qMY9ETMFG+kT05Ss7nfTX8iuqyjzcwSqKCYLY14x1DdBHuHUVZI6APQclAIE0ITWXHA8nRxDY4LTv9cOmIrYesK3Yvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710189706; c=relaxed/simple;
-	bh=zCrAyipAu34X8H/QzFwggTciVlrm34ebhAgGLc4sySE=;
+	s=arc-20240116; t=1710189877; c=relaxed/simple;
+	bh=fcJhJ0MWCqBw8chXp9vtaAHiJeUJVUgJd4Am03lKKY8=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qgl4wjqx9CYU2f+gT+r02FZSAeC5qvycSNyXXsjLFkiExf6spd9K+9M9/iYiHCF5zE05e6LB/lsgnZCXh/Xw469KgkA3HfuS32BcMMoyccyZ+704GSbetf7otyVv0dIUM3PcKJJjlFYl8zBQFYOEQbtfzGi/TaVRdFSsefR9Gag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vy7t7w+Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B796C433F1;
-	Mon, 11 Mar 2024 20:41:45 +0000 (UTC)
+	 MIME-Version:Content-Type; b=tPsGWd7BEwu5aQbsyPH74y2iu7LKZJIJWNTiiL2crUZalC/g/4w/GumNOg+crP4P9uw72/i4E7SL+8QbMsxKKWOMlm4aQ9DVBxuvwTcI2Pg7rE5mYX0fODgbOnMbpGMAq/9vjK1AXjYhZQ7HkVrL+l2wzKc1vVtR2a14pV5T4YQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HKI/BRla; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6510AC433C7;
+	Mon, 11 Mar 2024 20:44:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710189706;
-	bh=zCrAyipAu34X8H/QzFwggTciVlrm34ebhAgGLc4sySE=;
+	s=k20201202; t=1710189876;
+	bh=fcJhJ0MWCqBw8chXp9vtaAHiJeUJVUgJd4Am03lKKY8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Vy7t7w+Qcu/Nfn9x1re1G4djimbGTDqzBjtSLMjxQH8BHw089k+IxU0l7c5AuPUKf
-	 O9nLgJw8tC8t/m6Q9Hd39Qaemsb3mz2M1cOUiK2i87yCSK6hFQDfGyvWRhOIUBM4FA
-	 9CClBFeArVDmwTKE9lDes2z8YQrJjQ1d1lDwvDI5teoJ5GBQnXvGrMPUl5UYLbmfCC
-	 Uqls39WKbokTSujVmDMDixz6K2Dy1iPETb3WvVuLqzB7OAWzaBgvMpgy6JndIwFWif
-	 Wv0MuRdZPBBfBKEB8xlSp4CesRNyMmRx29QYlLijqiIfYDRsLOG6mn5Cn2IWPW2HzS
-	 jbF4ua2qJj7ug==
-Date: Mon, 11 Mar 2024 13:41:44 -0700
+	b=HKI/BRlaYOLgO54Igy/9p4OLYto4NXnD0zMA2B+E6q9lunvb+oDIz/ttQoiSnPfMg
+	 xpPgG/W7cTne0xDiMcRLUBh5IcD65aAbWFyVdS5g8TEdYfr3dD8KZCBvd8YF0//cPm
+	 zeVzTK3wkjox4uGnlE5vT/yMJasMJY3D9rSRfEVS6wLgCPAoXUTSMzrbUkNSxwE3Kc
+	 R2yIxFi6LbcRsD7KJuns4iHm/AB8rRiCy7Cln/00OYyB6wlHvCjeOhx7jYq2e5EXVK
+	 J2e8Pk/Cv5YIWdFh8+xwkwlFFQbA6ki1mLYc06+hpBjlwXmydC3OOnp1tK6H3BsDZV
+	 4NYG91Gx6B2dg==
+Date: Mon, 11 Mar 2024 13:44:35 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Piotr Wejman <piotrwejman90@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
- <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] net: stmmac: fix rx queue priority assignment
-Message-ID: <20240311134144.7b1e1a34@kernel.org>
-In-Reply-To: <20240303190339.52496-1-piotrwejman90@gmail.com>
-References: <20240303190339.52496-1-piotrwejman90@gmail.com>
+To: =?UTF-8?B?QXNiasO4cm4=?= Sloth =?UTF-8?B?VMO4bm5lc2Vu?=
+ <ast@fiberby.net>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang
+ <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, Daniel Borkmann
+ <daniel@iogearbox.net>, Vlad Buslov <vladbu@nvidia.com>, Marcelo Ricardo
+ Leitner <mleitner@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, llu@fiberby.dk
+Subject: Re: [PATCH net-next v3 0/3] make skip_sw actually skip software
+Message-ID: <20240311134435.19393f98@kernel.org>
+In-Reply-To: <20240306165813.656931-1-ast@fiberby.net>
+References: <20240306165813.656931-1-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun,  3 Mar 2024 20:03:38 +0100 Piotr Wejman wrote:
-> The driver should ensure that same priority is not mapped to multiple
-> rx queues. Currently rx_queue_priority() function is adding
-> priorities for a queue without clearing them from others.
+On Wed,  6 Mar 2024 16:58:08 +0000 Asbj=C3=B8rn Sloth T=C3=B8nnesen wrote:
+> During development of flower-route[1], which I
+> recently presented at FOSDEM[2], I noticed that
+> CPU usage, would increase the more rules I installed
+> into the hardware for IP forwarding offloading.
+>=20
+> Since we use TC flower offload for the hottest
+> prefixes, and leave the long tail to the normal (non-TC)
+> Linux network stack for slow-path IP forwarding.
+> We therefore need both the hardware and software
+> datapath to perform well.
+>=20
+> I found that skip_sw rules, are quite expensive
+> in the kernel datapath, since they must be evaluated
+> and matched upon, before the kernel checks the
+> skip_sw flag.
+>=20
+> This patchset optimizes the case where all rules
+> are skip_sw, by implementing a TC bypass for these
+> cases, where TC is only used as a control plane
+> for the hardware path.
 
-Do you know what user-visible mis-behavior this may result in?
-
-> From DesignWare Cores Ethernet Quality-of-Service
-> Databook, section 17.1.29 MAC_RxQ_Ctrl2:
-> "[...]The software must ensure that the content of this field is
-> mutually exclusive to the PSRQ fields for other queues, that is,
-> the same priority is not mapped to multiple Rx queues[...]"
-> 
-> After this patch, rx_queue_priority() function will:
-> - assign desired priorities to a queue
-> - remove those priorities from all other queues
-
-But also you seem to remove clearing all other prios from the queue:
-
--	value &= ~GMAC_RXQCTRL_PSRQX_MASK(queue);
-
-and 
-
--	value &= ~XGMAC_PSRQ(queue);
-
-is that intentional? Commit message should explain why.
-
-> The write sequence of CTRL2 and CTRL3 registers is done in the way to
-> ensure this order.
-
-Ensure which order? Looks like you're actually writing in the opposite
-order than what I'd expect :S First the register you want to assign to,
-and then the register you only clear from.
-
-When you repost please include a Fixes tag.
--- 
-pw-bot: cr
+Linus tagged v6.8 and the merge window for v6.9 has started.
+This feels a bit too risky for me to apply last minute,
+could you repost in 2 weeks once the merge window is over?
+--=20
+pw-bot: defer
 
