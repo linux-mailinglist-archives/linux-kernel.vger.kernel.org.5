@@ -1,130 +1,142 @@
-Return-Path: <linux-kernel+bounces-98710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0D87877E4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:43:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A69F877E53
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77F611F21020
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:43:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C55BF280E59
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7A1374CF;
-	Mon, 11 Mar 2024 10:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2261038FA5;
+	Mon, 11 Mar 2024 10:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XFrVxs9l"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="hyt+S1xV"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38FD36AEF
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4AF638DD2;
+	Mon, 11 Mar 2024 10:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710153806; cv=none; b=EiJ5EJk/7TBBiyovyFdPRgIMEx5wwK2Ayqn2jr581PTljFerJTmKISjkSGyVUa8OqEwI6s8xGHDMJULPbUEsCwElgHR23cp15FegB3yC46Ip7nn9YiLl4H0Fkn9+jEPZg+y4LmXs827BhioRclRxZqOsdRUFcJsWG8kndj7y1ZE=
+	t=1710153910; cv=none; b=erS+JJsjgKvMV6IKBzwqFPLxF4WxIfDy67ft1cEJ14ugThNotzrEgmzv8H/ppoQkUKKwl6lLuTEziZVkF1yszsnEZwhEETEHO6Re0O4PSY6n82aw0Drio2zZjTsG6JAgAPCZhAwvvXulQcnb9cqCVpdTKsXb10L/JOL57ZUGWME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710153806; c=relaxed/simple;
-	bh=4kFkDZiXk38/U8SEmehYB/3ANFg066o8CqRYUPISa3Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LfL/xSsmu/k+CysAFmgOKCK2rpqRg4/OrEZ407tS7jvr0R70y25yhJ8w6lxHau/3vI4d6waGqGYD8VYXBlb+I5YA0sknKzLBqlp/ZOq9Cj9EQa4nE60hlsBV3BqInjr0jxYkieLV7piQJ+X32+lSftglIbX3bgm1TeoSTRlo3JM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XFrVxs9l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 327B3C433A6
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:43:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710153806;
-	bh=4kFkDZiXk38/U8SEmehYB/3ANFg066o8CqRYUPISa3Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XFrVxs9lG9ca2zvTIEdg5+MWWhH1WkGcfBj/wmXXaOlKn/xp5VSKvTyswsnDVnSWV
-	 DrxX4esbbnvE+hqM/82yQB/lOLoJ3JdPK/EyYb+ynvFzepyZtjcEIlnA6oymoZPvwh
-	 9RqZPhvSWsJaGuuXmHC+fU5gxN82UrmiTv7l0Ebt7c73uviRCRjbgP2kXWMRoivJKp
-	 /J4n5/rbN4hD5NlOdYjomRozPK+cUBXMNAvENcJsz8WMpM3JWbKf/vWzkSbTNuD1UK
-	 NJzndQs5kw33trklS3acKG6HjD/v/isBORhXdKZztsNXsdPV6BZ+BNe6oPiW72mFBr
-	 Bv+cVd4q4cpvw==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513a81b717cso914789e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 03:43:26 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUrQtzyv59x5P61F8165nJ0FJ7LIHdt2QzdS1b1Pr5jXrbwL/cuy/1voXzLA1TzCG1NcNQ7wQW3SpctndYT6jTUmL+d2I6cLR5Qq+oQ
-X-Gm-Message-State: AOJu0Yw09ikUrxtMwdl+ewgtiisFtqPsPQpU1qeoB5kWjla7fk7yUtpp
-	7SUPVtVg5w+dad/aPrMW8mqKt2Uzy+JxG8lEgR+NPWd7KFrsqV9F0zMoxI0sZQ8vNPu32kTHqkg
-	Bu0NdumhelEIpbhPcBac301gepT4=
-X-Google-Smtp-Source: AGHT+IEHFZOT5Uoi6TJviWnX9qVI6iYvLR9LWZsEO9MbOLjiOJGvdNr+vf95PcyR0GrDOpzjtGYtWJIbRjMaMkiByKE=
-X-Received: by 2002:ac2:4652:0:b0:512:b3a3:4adc with SMTP id
- s18-20020ac24652000000b00512b3a34adcmr3148425lfo.0.1710153804388; Mon, 11 Mar
- 2024 03:43:24 -0700 (PDT)
+	s=arc-20240116; t=1710153910; c=relaxed/simple;
+	bh=+sxHONNnx1hFuxK0YIAbVsDwlEeH+igDtPPWM75FSv4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BFPUNGZmw6t0ICYdgYH/9TqOjoDrZAmY4uqeNSA20oOfndeBzIMlHuK1Rg5KPZUN2590axFouflHR12AX5NS6+HnFOliCQPOJt2ZKuVMUtCVcxWP7rGmwSUDr6st/JEcxGVYJrN3IdXpzG1uSbsAM2Hd8TQDP2A84ulWYr6G2gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=hyt+S1xV; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42BAiruH107557;
+	Mon, 11 Mar 2024 05:44:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1710153893;
+	bh=brk8hEUtZhRYQimGd+K1WoJ4/pWrBZiyIAP9nhQEREs=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=hyt+S1xVq5Aa03sAcOxLAYUTmzaRTG91NigalPACIk2CoYlzcA3vdQNQtQgbS9Jfx
+	 73lEWYCDa/Y0xGf7by0MS0M2mW6ZkVY7rXCLUO5vT+68zy9X1lNpyIyGBBQWSLuchf
+	 7K8GFf9kG6LK4f9D6TlDMN3rrOXURGXSNUAl5MAI=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42BAirPa113120
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 11 Mar 2024 05:44:53 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Mar 2024 05:44:52 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Mar 2024 05:44:52 -0500
+Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42BAikUT105135;
+	Mon, 11 Mar 2024 05:44:47 -0500
+Message-ID: <0512d57f-af22-4bd8-8266-33d943d7eb4a@ti.com>
+Date: Mon, 11 Mar 2024 16:14:46 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAGdbjmK9WoOQSbKUvcTdLJDW-RB=qe2tHFDZ-MeD266xZOxh7w@mail.gmail.com>
- <20240222202404.36206-1-kevinloughlin@google.com> <CAMj1kXFsX1HZ3=x1cjN0-7i5EV9LXkSrAW22dc1wERUaTdAMaA@mail.gmail.com>
- <20240308110043.GEZerv21Qj10Q7-8p5@fat_crate.local> <CAMj1kXFe48dUtNkCDG0PcmeGhYfvr5HJ8sucuNGwCJ1XDKw03Q@mail.gmail.com>
- <CAGdbjmKC+tTBHLPZ6bqCXvu45Gbout+0QrNemDqxY-nKAo_3gg@mail.gmail.com>
-In-Reply-To: <CAGdbjmKC+tTBHLPZ6bqCXvu45Gbout+0QrNemDqxY-nKAo_3gg@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Mon, 11 Mar 2024 11:43:12 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGisJjijwo5JOknWtUTECC9pzkd9qpRhsGCSoGT8Jic6g@mail.gmail.com>
-Message-ID: <CAMj1kXGisJjijwo5JOknWtUTECC9pzkd9qpRhsGCSoGT8Jic6g@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/kernel: skip ROM range scans and validation for
- SEV-SNP guests
-To: Kevin Loughlin <kevinloughlin@google.com>
-Cc: Borislav Petkov <bp@alien8.de>, acdunlap@google.com, alexander.shishkin@linux.intel.com, 
-	andrisaar@google.com, bhe@redhat.com, brijesh.singh@amd.com, 
-	dave.hansen@linux.intel.com, dionnaglaze@google.com, grobler@google.com, 
-	hpa@zytor.com, jacobhxu@google.com, jpoimboe@kernel.org, kai.huang@intel.com, 
-	linux-kernel@vger.kernel.org, michael.roth@amd.com, mingo@redhat.com, 
-	peterz@infradead.org, pgonda@google.com, ross.lagerwall@citrix.com, 
-	sidtelang@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
-	x86@kernel.org, ytcoode@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/6] arm64: dts: ti: k3-j784s4: Add alias to MCU CPSW2G
+Content-Language: en-US
+To: Andrew Davis <afd@ti.com>, Peter Rosin <peda@axentia.se>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Tero
+ Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
+ Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>
+References: <20240131101441.1362409-1-c-vankar@ti.com>
+ <20240131101441.1362409-3-c-vankar@ti.com>
+ <469a7f15-0539-48e9-993c-5b9c638917e0@ti.com>
+From: Chintan Vankar <c-vankar@ti.com>
+In-Reply-To: <469a7f15-0539-48e9-993c-5b9c638917e0@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sun, 10 Mar 2024 at 18:12, Kevin Loughlin <kevinloughlin@google.com> wro=
-te:
->
-> On Fri, Mar 8, 2024 at 3:44=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> w=
-rote:
-> >
-> > On Fri, 8 Mar 2024 at 12:01, Borislav Petkov <bp@alien8.de> wrote:
-> > >
-> > > On Fri, Mar 08, 2024 at 11:30:50AM +0100, Ard Biesheuvel wrote:
-> > > > Agree with the analysis and the conclusion. However, this will need=
- to
-> > > > be split into generic and x86 specific changes, given that the DMI
-> > > > code is shared between all architectures, and explicitly checking f=
-or
-> > > > SEV-SNP support in generic code is not appropriate.
-> > > >
-> > > > So what we will need is:
-> > >
-> > > I was actually thinking of:
-> > >
-> > >         x86_init.resources.probe_roms =3D snp_probe_roms;
-> > >
-> > > and snp_probe_roms() is an empty stub.
-> > >
-> > > Problem solved without ugly sprinkling of checks everywhere.
-> > >
-> >
-> > Indeed. Setting the override could be done in
-> > init_hypervisor_platform(), which is called right before from
-> > setup_arch().
->
-> The call to init_hypervisor_platform() has a comment saying it must
-> come after dmi_setup() (i.e., init_hypervisor_platform() would *not*
-> work for doing a dmi_setup() override), so I'm currently planning to
-> do the overrides at the end of snp_init() in arch/x86/kernel/sev.c
-> instead (which comes before both). This would be somewhat similar to
-> how there are early setup functions for specific platforms that
-> perform init overrides for different reasons (example:
-> x86_ce4100_early_setup()). Open to other locations of course.
 
-snp_init() is one of those routines that executes from the 1:1 early
-mapping of memory.
 
-Setting a global function pointer will therefore involve special
-tricks to ensure that taking the address of this function will produce
-an address that uses the correct translation.
+On 31/01/24 21:06, Andrew Davis wrote:
+> On 1/31/24 4:14 AM, Chintan Vankar wrote:
+>> Add alias for the MCU CPSW2G port to enable Linux to fetch MAC Address
+>> for the port directly from U-Boot.
+> 
+> Could you explain *how* this alias allows Linux to fetch a MAC
+> address from U-Boot? Sounds like we are doing something hacky here..
+> 
+Using "probe_daughtercards()" function U-Boot parses MAC addresses from
+EEPROM, then it internally calls "eth_env_set_enetaddr_by_index()"
+function which stores these MAC addresses into environment variables
+ethaddr, eth1addr, eth2addr and so on based on number of ports.
 
-So if we can, it would be better to put it somewhere else.
+U-Boot loads DTB during boot process, and it calls
+"fdt_fixup_ethernet()" function, which uses environment variables to
+update MAC addresses of ethernet ports as specified in the aliases
+section.
+
+> Why can't Linux fetch the MAC from efuses the same way U-Boot does,
+
+Linux can fetch the MAC address from efuses if "ti,syscon-efuse"
+property is enabled.
+
+> what happens if I don't use U-Boot to boot?
+
+If you don't use U-Boot to boot then the equivalent of
+"probe_daughtercards()" has to be implemented which is currently
+missing.
+
+> 
+> Andrew
+> 
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts 
+>> b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>> index f34b92acc56d..b74f7d3025de 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>> @@ -27,6 +27,7 @@ aliases {
+>>           mmc1 = &main_sdhci1;
+>>           i2c0 = &wkup_i2c0;
+>>           i2c3 = &main_i2c0;
+>> +        ethernet0 = &mcu_cpsw_port1;
+>>       };
+>>       memory@80000000 {
 
