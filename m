@@ -1,141 +1,156 @@
-Return-Path: <linux-kernel+bounces-99463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71EBC8788C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0D3D8788C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D258128101B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:20:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A253280ED4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402EC56773;
-	Mon, 11 Mar 2024 19:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0785154BE8;
+	Mon, 11 Mar 2024 19:21:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S+l/Spf3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LuKku1Or"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D57056760;
-	Mon, 11 Mar 2024 19:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4BB1EB5C
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710184800; cv=none; b=HK8Gv79RQd1r8io7CKm2AtQQ/JZtaczJd2+Ja8byMfDGRBEtXxdE7Uf0VuC5jNQrdRROWCA1x4dOoxeFV0sRdN5DPgmw09jk5XUv20VIsNojpHGNLu5IjLyhaTHbGyvdaDW5H2NP/lZy9C2HqKdwgEDJOuMR0dTvjKr3/8l1rM0=
+	t=1710184866; cv=none; b=NoukhvS7muY8LIWvPMKYF9ZseXdDw6PaqtCrSQxJ/+TgEwKsnrmPuQqSik3eh15Zw59ioGwUQL4ddL5+tfY7bKT7/ynUATxiClpi238Kd1RT0eI4WfdMFsYkxW7timSc7ZyJEbELux9hxUgsjN+2x5llrVtSnYxh/h8W9nNfAKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710184800; c=relaxed/simple;
-	bh=W0QwnwhwBVdu31x4nz8XwRx+ENapwWcKDdC+Mp/Nmuk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Eo1NBc3MrOX9E68eKS8j5IF8lKU1gQ2yxBRzzHfA3e0hkLv81gPmuPCXCBQ/+sMO3WJNoQOPW6PDNnEjjA/KY9Gltnths9xiLNWbLNQs1CWMll97qF7V62vBGCye+krMaXX0ZsLBwmmr0rrMR3BbCfUCGLku7P+m9uAerYqXUn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S+l/Spf3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A484C433F1;
-	Mon, 11 Mar 2024 19:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710184800;
-	bh=W0QwnwhwBVdu31x4nz8XwRx+ENapwWcKDdC+Mp/Nmuk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=S+l/Spf3o/TjHQz6wvvV5qGRkOn6Xf1YXRVSw1ohbude9MQjByfGa+JMCGzsWUYJM
-	 MauoBQMW1M+W6v6ozgZQWpxg62CP8RJNtZrAPVi2k4cKTvfAJ9sgb9Tmtg9Y+2WukN
-	 DJJXsYwJEN/Fj7i5Fma55smmn/88gBAw/H+m6Uxr1i6hduSXLNBYFBwtcsyCSeFTBV
-	 RzaIMY4TXYVRgAhQjVfHnrzUttzEYoQJNCsdbii5Ic9Zg8/A/eqzsOEx74ulxweDnR
-	 7B8h4oVVpugby0r6E2Lkpk3VhPHe1qmCKSHCLUFgGrlivgyIqP18OTnZAscB9/HIoN
-	 DfN6IhFC2sWbw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D9BFBCE0B68; Mon, 11 Mar 2024 12:19:59 -0700 (PDT)
-Date: Mon, 11 Mar 2024 12:19:59 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v6 0/6] Reduce synchronize_rcu() latency(v6)
-Message-ID: <e055993f-9a1b-4c92-b093-7babed9ba58b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240308173409.335345-1-urezki@gmail.com>
- <63e54cb9-fd08-43c3-9f42-3627198634e8@paulmck-laptop>
- <Ze7ER232fPpvGssC@pc636>
+	s=arc-20240116; t=1710184866; c=relaxed/simple;
+	bh=sdiIgAJg0WVhlnuSmujapDS8NBl6O2XbKat3g5PwiPI=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GTYG9wyiDeUEyl15ThqjC97apWQdpnGQUbIOAhRdCFuqCGpBv45qgEduzyk1R3K16m8MUJxeVILdD14+WQpy57antM3AXtT2W6BAMDPAHT7ahM+04llQ7GOZMPD02ubQFYSjCSq/lLHyLTsFnj7GPQHp4z/Hntl6wOHT55LiusQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LuKku1Or; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5684db9147dso2086510a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710184863; x=1710789663; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sdiIgAJg0WVhlnuSmujapDS8NBl6O2XbKat3g5PwiPI=;
+        b=LuKku1OrNsqZd5K6E3S5ihni/OIa2nBZfkPJzneMEqzA6XuqKW/9w67IQYpBPywqvU
+         QKCF2/cLJVs9dxAjHOb7ynjxZkr9famf4C0GU0d0UDtJqyPiOXgMUtzG1NRny92tLD6q
+         r8QNIunu0iJkACmcOZFh3XkPqumYAEAgJgMGMT0M3CRJd/Wb8V09fQtJt1Tjd/9kBbqQ
+         xtF6ef6TA2+gCfyrDtt1ImSQ1kIrjsA6JMVGMFrtmHdtSq2Zs5auD3f5U99/Ju2Pxk6W
+         xC0IzTV3xfv1kOeurKaVhmYtXMVdQwXzvyX5ERJpMBzk0WD51WBnBsLMcgNjxLzNOlBN
+         uNCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710184863; x=1710789663;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sdiIgAJg0WVhlnuSmujapDS8NBl6O2XbKat3g5PwiPI=;
+        b=hh7OSDKtg1xVtck0yiNh3/w7n5QNanuE9DbAzx38d0uwd2p5riT6+FBQ5O1sOsgKHx
+         7cG5xNAnjLlpQaQP7MMZ0P8XKnVI4jt/XphshkDvJdmahYlQ4FLSrnogJDjiXUU88sIN
+         cM1uzphjTpilZ4WmQJGAUJPF7u++SvIX5SzoN4WG7Gp1JeEte+IXioxdjcDRtrzQpeYM
+         pIEZ8KCnQtZF1YFkXpxBi905TYIoE5jStbgKnETbejwZSp/lZDJscbF/+K3aGigvutDX
+         bERLLzL1WyUt1GY7OXaV571OWvwCtfNQEeqXHHzOqh7VpFeGyeUvR7taUuvUZmj7eTn+
+         oJLQ==
+X-Gm-Message-State: AOJu0YzWkYl2MChC6OI4ueJyrPwz2NhSt9KXxP+BqvP35PCH55L9v07C
+	IGnSstzFxKXGKXx/vEvGzRj/NoVcqUnsfH8kUVUDUiDCPt5+53GJLn91sRV22E9jygM7+y2rdcD
+	FycTlHPrf0pgeLWOa6RxKmhKYIcA=
+X-Google-Smtp-Source: AGHT+IFeiZ9ORIOiJdWwUhVsq8ZnHumI5NXM2hO8BfIFekg68bFpl1pd7vDKsZz/aQMub/KKywTthYNOv8Yl6yC9yp4=
+X-Received: by 2002:a50:d7de:0:b0:565:3aa7:565f with SMTP id
+ m30-20020a50d7de000000b005653aa7565fmr4754481edj.8.1710184862828; Mon, 11 Mar
+ 2024 12:21:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ze7ER232fPpvGssC@pc636>
+Received: by 2002:a05:6f02:f0d:b0:65:b649:35ec with HTTP; Mon, 11 Mar 2024
+ 12:21:01 -0700 (PDT)
+In-Reply-To: <CA+CK2bBr2wH4=L39ZthRPUnAjVxMqt80bsZj0NPx9xdH=_Mn0Q@mail.gmail.com>
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <CAGudoHERLX=X1r0q7yHM22O9udsR=6M+geix7TR3f8ZzHkb-hQ@mail.gmail.com> <CA+CK2bBr2wH4=L39ZthRPUnAjVxMqt80bsZj0NPx9xdH=_Mn0Q@mail.gmail.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Mon, 11 Mar 2024 20:21:01 +0100
+Message-ID: <CAGudoHHFQPiYkpHrBqSUVDtxaWXLbSc3ZJDOwMEzheBLO8E6Lw@mail.gmail.com>
+Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
+	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
+	dianders@chromium.org, dietmar.eggemann@arm.com, hca@linux.ibm.com, 
+	hch@infradead.org, hpa@zytor.com, jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, 
+	jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com, 
+	kent.overstreet@linux.dev, kinseyho@google.com, 
+	kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org, 
+	mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com, 
+	mingo@redhat.com, mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, 
+	pmladek@suse.com, rick.p.edgecombe@intel.com, rostedt@goodmis.org, 
+	surenb@google.com, tglx@linutronix.de, urezki@gmail.com, 
+	vincent.guittot@linaro.org, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11, 2024 at 09:43:51AM +0100, Uladzislau Rezki wrote:
-> On Fri, Mar 08, 2024 at 01:51:29PM -0800, Paul E. McKenney wrote:
-> > On Fri, Mar 08, 2024 at 06:34:03PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > This is v6. It is based on the Paul's "dev" branch:
-> > > 
-> > > HEAD: f1bfe538c7970283040a7188a291aca9f18f0c42
-> > > 
-> > > please note, that patches should be applied from scratch,
-> > > i.e. the v5 has to be dropped from the "dev".
-> > > 
-> > > v5 -> v6:
-> > >  - Fix a race due to realising a wait-head from the gp-kthread;
-> > >  - Use our own private workqueue with WQ_MEM_RECLAIM to have
-> > >    at least one execution context.
-> > > 
-> > > v5: https://lore.kernel.org/lkml/20240220183115.74124-1-urezki@gmail.com/
-> > > v4: https://lore.kernel.org/lkml/ZZ2bi5iPwXLgjB-f@google.com/T/
-> > > v3: https://lore.kernel.org/lkml/cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop/T/
-> > > v2: https://lore.kernel.org/all/20231030131254.488186-1-urezki@gmail.com/T/
-> > > v1: https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
-> > 
-> > Queued in place of your earlier series, thank you!
-> > 
-> Thank you!
-> 
-> >
-> > Not urgent, but which rcutorture scenario should be pressed into service
-> > testing this?
-> > 
-> I tested with setting '5*TREE01 5*TREE02 5*TREE03 5*TREE04' apart of that
-> i used some private test cases. The rcutree.rcu_normal_wake_from_gp=1 has
-> to be passed also.
-> 
-> Also, "rcuscale" can be used to stress the "cur_ops->sync()" path:
-> 
-> <snip>
-> #! /usr/bin/env bash
-> 
-> LOOPS=1
-> 
-> for (( i=0; i<$LOOPS; i++ )); do
->         tools/testing/selftests/rcutorture/bin/kvm.sh --memory 10G --torture rcuscale \
->     --allcpus \
->       --kconfig CONFIG_NR_CPUS=64 \
->       --kconfig CONFIG_RCU_NOCB_CPU=y \
->       --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
->       --kconfig CONFIG_RCU_LAZY=n \
->       --bootargs "rcuscale.nwriters=200 rcuscale.nreaders=220 rcuscale.minruntime=50000 \
->                          torture.disable_onoff_at_boot rcutree.rcu_normal_wake_from_gp=1" --trust-make
->         echo "Done $i"
-> done
-> <snip>
+On 3/11/24, Pasha Tatashin <pasha.tatashin@soleen.com> wrote:
+> On Mon, Mar 11, 2024 at 1:09=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com>=
+ wrote:
+>> 1. what about faults when the thread holds a bunch of arbitrary locks
+>> or has preemption disabled? is the allocation lockless?
+>
+> Each thread has a stack with 4 pages.
+> Pre-allocated page: This page is always allocated and mapped at thread
+> creation.
+> Dynamic pages (3): These pages are mapped dynamically upon stack faults.
+>
+> A per-CPU data structure holds 3 dynamic pages for each CPU. These
+> pages are used to handle stack faults occurring when a running thread
+> faults (even within interrupt-disabled contexts). Typically, only one
+> page is needed, but in the rare case where the thread accesses beyond
+> that, we might use up to all three pages in a single fault. This
+> structure allows for atomic handling of stack faults, preventing
+> conflicts from other processes. Additionally, the thread's 16K-aligned
+> virtual address (VA) and guaranteed pre-allocated page means no page
+> table allocation is required during the fault.
+>
+> When a thread leaves the CPU in normal kernel mode, we check a flag to
+> see if it has experienced stack faults. If so, we charge the thread
+> for the new stack pages and refill the per-CPU data structure with any
+> missing pages.
+>
 
-Very good, thank you!
+So this also has to happen if the thread holds a bunch of arbitrary
+semaphores and goes off cpu with them? Anyhow, see below.
 
-Of those five options (TREE01, TREE02, TREE03, TREE04, and rcuscale),
-which one should be changed so that my own testing automatically covers
-the rcutree.rcu_normal_wake_from_gp=1 case?  I would guess that we should
-leave out TREE03, since it covers tall rcu_node trees.  TREE01 looks
-closest to the ChromeOS/Android use case, but you tell me!
+>> 2. what happens if there is no memory from which to map extra pages in
+>> the first place? you may be in position where you can't go off cpu
+>
+> When the per-CPU data structure cannot be refilled, and a new thread
+> faults, we issue a message indicating a critical stack fault. This
+> triggers a system-wide panic similar to a guard page access violation
+>
 
-And it might be time to rework the test cases to better align with
-the use cases.  For example, I created TREE10 to cover Meta's fleet.
-But ChromeOS and Android have relatively small numbers of CPUs, so it
-should be possible to rework things a bit to make one of the existing
-tests cover that case, while modifying other tests to take up any
-situations that these changes exclude.
+OOM handling is fundamentally what I was worried about. I'm confident
+this failure mode makes the feature unsuitable for general-purpose
+deployments.
 
-Thoughts?
+Now, I have no vote here, it may be this is perfectly fine as an
+optional feature, which it is in your patchset. However, if this is to
+go in, the option description definitely needs a big fat warning about
+possible panics if enabled.
 
-							Thanx, Paul
+I fully agree something(tm) should be done about stacks and the
+current usage is a massive bummer. I wonder if things would be ok if
+they shrinked to just 12K? Perhaps that would provide big enough
+saving (of course smaller than the one you are getting now), while
+avoiding any of the above.
+
+All that said, it's not my call what do here. Thank you for the explanation=
+.
+
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
