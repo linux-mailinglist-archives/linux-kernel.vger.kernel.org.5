@@ -1,127 +1,107 @@
-Return-Path: <linux-kernel+bounces-99327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320998786A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:49:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7AE287869C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B624FB21F14
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:49:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0594B1C20FDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:48:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C345A51C58;
-	Mon, 11 Mar 2024 17:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D587953E27;
+	Mon, 11 Mar 2024 17:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="V7yP0SMK";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="nS1rWewz"
-Received: from mailrelay1-1.pub.mailoutpod3-cph3.one.com (mailrelay1-1.pub.mailoutpod3-cph3.one.com [46.30.211.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X9bYxrq3"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55DB3537E8
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D38E53E00
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710179325; cv=none; b=AfHsN4/b7w2CL5EILmUM+SnYcq7xPFPNeODM8x5YGjWakN9aHhhVUAIkM3wA2isYUskkNzJ548EcFzshkSeCvdhi5nesf1gDA6tFmVSDp0WdAL24ye6SZsllPCwjtuFGOb5v9NVXz+tr+bxdof2JhUqeY2YgWr0K3rlxp0YgiQk=
+	t=1710179286; cv=none; b=uTFWjO10fm3gQ1h43t2+u4Z0kZzMyhIOe4CF3AnxtGd+Qg5mUpHz682Kf3NXrYxkHwSUZ2IJIN6fLcO7/khQIrcWDBmU/90zptbtWsXQvNVREuk6OvLnnEOpiRW03fRWEsqr5QEFi3yUt5vDD4Ly9of0stPShIviVz3ogAX7bZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710179325; c=relaxed/simple;
-	bh=xtOyqNO3xR4fygOmCmugqJOIeJt5oCnIz1hqQsZQrws=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hDQFa1wYRpFs3D8hRqVFEv75GnbkTVICn0vhIAfz1LavWimGWM6+th0ZEEBdDFfND3tsToAwLwiX1lL5/Etv+RUDCbX7EKVS3iQ1BVdpmYPiKaTGiWeScgmtxtJd6CQ3PUqBPXbcjfc/+Sjie9HBpYvgqGnJ7BMIqHsma2IrvwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=V7yP0SMK; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=nS1rWewz; arc=none smtp.client-ip=46.30.211.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+	s=arc-20240116; t=1710179286; c=relaxed/simple;
+	bh=imBPUSGabX5HBFgzKPX5esrERwd3Fx6o9pGvNyZ4AbI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qJSpEiydDbd4Is6An2iPnqI2OyPL37XsaT+akzTKDNBx7iWK3jd1GtRwgdRgeE3m2PuIvSsh3reAK+XepYc7dICx8pwRp+hw0aMEzEZes2eAT83d07F3cVU4KL18sFfD0iwW18lp/Fg2tVk3BEbVHXLbsytrGhSpKl82IO+tt2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X9bYxrq3; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56847d9b002so2549910a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=cd5g7+y3ZJJCh2Ko+xCMBEZ+m4kbDCL/fdaw/LYfBo8=;
-	b=V7yP0SMKbtgW1/HQYCOzC88dDIeiQDR2Ols3pu6JLi17oRPwJyP2/PaicGD4OjxZngIUcb3JaUQg6
-	 vAwkp8FiBv58goGE3h6vex+GEXo5WLLp1G0/IcHBC9vQYgRlp852LiD+c0eKSza2vdgF4yMh1bmcfP
-	 PiF/bnUtIcH+ABSO+CJTZnvKLreabOzhsT7cE0lpeP0YQMCGeYLUrb0zHfwEr6TKykJaUqqhp8fqrz
-	 3jdnm/+lvXEUco7FgFCmoFDFSLyxNoOwZ4T/HV/51c3onW24oZaKZHdwiNSUKTs3hVlvYu94UYgbC5
-	 fGk0kFjSIRt2l6TwkcX31WZGQ87b2nA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=cd5g7+y3ZJJCh2Ko+xCMBEZ+m4kbDCL/fdaw/LYfBo8=;
-	b=nS1rWewzFdGnrHoc1+TIrcLhB69z5yEplIxJH+LbMmLD1HhpYnBKAKBpO7Dyn2rNeb/sLg+/4KKdR
-	 oCgyyaDCA==
-X-HalOne-ID: 6f272b20-dfcf-11ee-93aa-1ff1563c5748
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay1.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
-	id 6f272b20-dfcf-11ee-93aa-1ff1563c5748;
-	Mon, 11 Mar 2024 17:47:32 +0000 (UTC)
-Date: Mon, 11 Mar 2024 18:47:31 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>, Helge Deller <deller@gmx.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>,
-	Kjetil Oftedal <oftedal@gmail.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH v2 28/28] fbdev/p9100: Drop now unused driver p9100
-Message-ID: <20240311174731.GB1369531@ravnborg.org>
-References: <20240309-sunset-v2-0-f09912574d2c@ravnborg.org>
- <20240309-sunset-v2-28-f09912574d2c@ravnborg.org>
- <e387ad3c-7646-49b6-a5f5-afd287556d8c@app.fastmail.com>
+        d=gmail.com; s=20230601; t=1710179283; x=1710784083; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ecbBCBCe15Y100JmWAWGOrkx0ptRHMQJFdIhslePcMo=;
+        b=X9bYxrq37D/+46bdPS3dC8zTRF7jPmKxZ4LSJor0cObzEfyGlsElBXaRuqa9b+9K7U
+         a/vWwqvlno/LFBBa1koIZ2JOPg9r+VcdgEufQVvu/oaXaLuVTq32hDj2CBGq5oDr7Jsr
+         zQ1s4tMxaMy2PKWwQQ5i2xD2Nc9hHMBlTf17iWId7FqulHuX8FtASouflJ0Tp0JUZIXG
+         AIFlH+MFt2M5ct58V8auKmPsAm+C70WSiYspmJmYU1EIcLN4iC3dSHvrEeWmw0aD1ebM
+         5NoatPQlNw06MG8w/KzQcXSVXjasbbU8D57blRRkpEf8n8rvEDtO11pUa6XTMEdCZ8Sg
+         BCYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710179283; x=1710784083;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ecbBCBCe15Y100JmWAWGOrkx0ptRHMQJFdIhslePcMo=;
+        b=JZhXAKJj4BpAHm7iNiMTHJgQKjwGOTkWBOAFtereCzdlef6n+33wqCVQzNixcCq+4f
+         ujT6FUQhFtJ7JufQn/Di5OZCanhT0CkTSKPtfUPhWP/ld5n9xzEwSjs/xdiWxIGvmqc/
+         WM3KpTxkYJlL9tjJGSDbhVebydcWqREauaAVD5CyfLmG0n+dtsf3bluAIgvP8g1I887x
+         +uU6QBaQbvgzYJ2ZeagwhEjDIP7hjZOse2D2/BnDwyVbuLgJhkssGVP35+GsPtbwEoOX
+         1w+qAo2Lsn1Eigo62B95VuU5P2OI+5LG5GvSjLEojLUgXB/MkrygtpiH5YntYJVFR5to
+         V5Zg==
+X-Forwarded-Encrypted: i=1; AJvYcCVy4Z/JQHVghpDnv+ZU+hzUE/rbfDJSd6RzeS8xDdGvCqwkbBRg4crqzW+JGCJFoxY2zDUwMFZDo8HVOOUKESgED8LkLbJc15b3MR/Z
+X-Gm-Message-State: AOJu0YzqpT9Ogv2vnov+ic8Q3KQSaza3IKBI697ZEfSZQVTt0vv16Iia
+	HnRBDIb1AgFg9yzfcWweIJWX3K8s2E7491T0Yu2rY4ZyG6s7QX7D
+X-Google-Smtp-Source: AGHT+IGO67PecI1sgFey0dTacs9DhW/y+oL7j9v6XDu7UhBwavGchYeiuRmbSt9P4nJkX+FcQLQWew==
+X-Received: by 2002:a50:d483:0:b0:567:e812:e44e with SMTP id s3-20020a50d483000000b00567e812e44emr4840330edi.18.1710179282652;
+        Mon, 11 Mar 2024 10:48:02 -0700 (PDT)
+Received: from localhost.localdomain (89-76-44-138.dynamic.chello.pl. [89.76.44.138])
+        by smtp.gmail.com with ESMTPSA id r24-20020aa7d158000000b00568525ab2e8sm1757060edo.55.2024.03.11.10.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 10:48:02 -0700 (PDT)
+From: Kamil Kasperski <ressetkk@gmail.com>
+To: wens@csie.org,
+	jernej.skrabec@gmail.com,
+	samuel@sholland.org
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Kamil Kasperski <ressetkk@gmail.com>
+Subject: [PATCH 0/3] dts: arm64: sunxi: add initial support for t95 tv box
+Date: Mon, 11 Mar 2024 18:47:47 +0100
+Message-Id: <20240311174750.6428-1-ressetkk@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e387ad3c-7646-49b6-a5f5-afd287556d8c@app.fastmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Arnd.
+T95 is a most commonly known for being a box with a pre-installed malware.
+It uses Allwinner H616 and comes with eMMC and DDR3 memory.
+This device comes with two versions - one with AXP305 PMIC and another with AXP313 PMIC.
 
-On Mon, Mar 11, 2024 at 03:05:25PM +0100, Arnd Bergmann wrote:
-> On Sat, Mar 9, 2024, at 19:15, Sam Ravnborg via B4 Relay wrote:
-> > From: Sam Ravnborg <sam@ravnborg.org>
-> >
-> > The p9100 driver is only relevant for the Sparcbook 3 machine,
-> > and with sun4m support removed this driver is no longer relevant.
-> >
-> > Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> > Acked-by: Arnd Bergmann <arnd@kernel.org>
-> > Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Arnd Bergmann <arnd@kernel.org>
-> > Cc: Andreas Larsson <andreas@gaisler.com>
-> > Cc: Helge Deller <deller@gmx.de>
-> > ---
-> >  drivers/video/fbdev/Kconfig  |   8 -
-> >  drivers/video/fbdev/Makefile |   1 -
-> >  drivers/video/fbdev/p9100.c  | 372 -------------------------------------------
-> >  3 files changed, 381 deletions(-)
-> 
-> I tried to figure out if there are other drivers in the same
-> category and found the list at
-> https://everything2.com/title/Sun+graphics+cards
-> 
-> As far as I can tell, the only SBUS graphics that were
-> shipped on sparc64 are FB_FFB and FB_CG6, so we could
-> go further and remove BW2, CG3, TCX, CG14 and LEO as
-> well.
+Kamil Kasperski (3):
+  dt-bindings: vendor-prefixes: sunxi: add T95 to vendor-prefixes
+  dt-bindings: arm: sunxi: add t95 compatible string to list of known
+    boards
+  dts: arm64: sunxi: add initial support for T95 AXP313 tv box
 
-Looks like you are right, so we can drop more - good.
-As you already wrote - let's get the current patch set processed first.
+ .../devicetree/bindings/arm/sunxi.yaml        |   5 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+ .../dts/allwinner/sun50i-h616-t95-axp313.dts  | 138 ++++++++++++++++++
+ 4 files changed, 146 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-t95-axp313.dts
 
-I did a quick hack on top of my current sparc32 patches.
-This is nice reduction of ~2700 lines and 5 fbdev drivers less to care
-about.
+-- 
+2.34.1
 
-	Sam
 
