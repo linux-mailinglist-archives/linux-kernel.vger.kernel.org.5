@@ -1,139 +1,126 @@
-Return-Path: <linux-kernel+bounces-98385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABBE4877948
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 01:21:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C500877951
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 01:33:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E343B1C20E36
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 00:21:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1720A1F217C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 00:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A79A17D2;
-	Mon, 11 Mar 2024 00:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E067110A;
+	Mon, 11 Mar 2024 00:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=j.neuschaefer@gmx.net header.b="U0+naqu2"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G06A5gyO"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167E01364
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263E4631
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:33:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710116493; cv=none; b=GMp9Lv5VEBv7AvZ41P1MUqX+2ds+F4eLG5azGGnntusWeuPe9J9ZsmMRWiqSHGQLaBdcZA23V/AzTTelIrCI++R4wSg92N/ol9NysctpDrVc2e+d6h734HER2WrOgeVNhJzNq5WoIXtPL5/SPnMXrEvOnmJrs66DOLAk3Q1B+jg=
+	t=1710117210; cv=none; b=Jbp6jLkoyVypky2DHHSO88vSXrJ0yxocMLb29TiEsG28MqIexmRGLQX4SGiHICbVYNJsEEo15HHXgkzG9pnxnxzWRiEMRpZIqdKhOWXHl5Xo9hLUts/FnrCy+zq1nTG6r54mtl3ocrsRbSVa2WYNcgZEYjyeCYXEe2YfULQN3/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710116493; c=relaxed/simple;
-	bh=7vtle+VHuBY6t0ucAA0nAPGWrAMPibARvVodmEV/ewI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M9ZkYgU/tYL7Wig8UvEZJx/m+0bJee7VschQtcIOZ5+g5VKR1NvcwTWCdxlHYQzcb/F7RryjBx/LVZz34dJUCPFVQf1DZBRjt08MgJkjNfV66DOPKOMldlLtLZ84A42aHSLjPNJHkAG3FqPNhJ81Sof4+1v4ZvNO5iNjwWX2/y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=j.neuschaefer@gmx.net header.b=U0+naqu2; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1710116478; x=1710721278; i=j.neuschaefer@gmx.net;
-	bh=7vtle+VHuBY6t0ucAA0nAPGWrAMPibARvVodmEV/ewI=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=U0+naqu22VBavENikeAP+jlWQeRTv1aqnLL9mB0QbkQVSJLrGx81hgf9AMdYz5Cc
-	 rwX5AT5IJ1n7rjeLqVBkLy4GxUmiCgxz5d2fj6uzVg87zIlLlJNEkbxauch49By7u
-	 N4OW6yG2w2frf+zoQxQ6Gy1MDX7AIRMpgSdQLgvKtA9XnSUh8vXLf0Flq40SlCA92
-	 gRSiFqIjMcP2Wj/OdIpmeAyLHzzDQxHMN+yvwjIc0oe8CEqp/xhn8khhjcUhZ6ST6
-	 bHv725U516T+ROdaw4Dp7bXm6AAqucESm0gjgjgAGSeiYf8p9lhA3PnYcmyNOGOCs
-	 pMgfa47CSUhXHgiUSg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([78.35.216.168]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N9MpS-1qnIF82ES4-015HGJ; Mon, 11
- Mar 2024 01:21:18 +0100
-From: =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To: linux-kernel@vger.kernel.org
-Cc: openbmc@lists.ozlabs.org,
-	Joel Stanley <joel@jms.id.au>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	=?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v6 2/2] soc: nuvoton: Add "select REGMAP" to WPCM450 SoC driver
-Date: Mon, 11 Mar 2024 01:21:00 +0100
-Message-ID: <20240311002104.2829298-2-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240311002104.2829298-1-j.neuschaefer@gmx.net>
-References: <20240311002104.2829298-1-j.neuschaefer@gmx.net>
+	s=arc-20240116; t=1710117210; c=relaxed/simple;
+	bh=q3MFamMIr6NFVpUFcDH0jWX4vsZYOAYFx1MyZtEqvyw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=S9nWjyvZwtF22Tk5i+YqIu0SiZIGlID2eKHOJ1+Rpx21ZbUn174a+ui1ZgH164CztKLK8ncSGu4xbnG4wJ+cro4mHjx3JZDyMh+xBY/FkPfyUX0RZi59b4Mk2P/bM0YpD1EvZeAKy+GeqULKzRfQiz8e5cdE1IFCYsPHgSck3Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G06A5gyO; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33e94c12f33so638907f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 17:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710117207; x=1710722007; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mfyiNRPXIKA0wIGpSVJEarVeJ6YjuAYZ6W8XU9TBWZg=;
+        b=G06A5gyOSWhOCdfOvpciP7O2FLtr30VEiftt/DxtYfV14qmKq7XDpfFAEJnhtoUH2Y
+         RTF8Y1mVo6eMhN6ONniokvzIb7h1tdEIf3+8KAyxdmoD9zlJ81WPOzcJUlsOQup71Llh
+         SO04Nn+77qKjtPZD91xoBFL4CAKgJCaE0phv3vxhmlzck09GpfkZgZSSKOcC2vWGCv9m
+         kCA8HcwikSpbcyQsjPfFCGu3S2jQOJqP/ag1CdcwFCI/DmqS99t5s+i+/sIRDwwCCv97
+         rrx5WeeXQglQznyprjrrFZXIN4sP8MTMvt8x0n96iRW6HWnOvf8wPgXiOmxB9bTnm6wf
+         t2xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710117207; x=1710722007;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mfyiNRPXIKA0wIGpSVJEarVeJ6YjuAYZ6W8XU9TBWZg=;
+        b=w+bixD2r1+oQoPcUj7OQyJqhk62TpWmbn9SNZdTIrIuaUwobjEspQx72vDm9kY9ace
+         0HvMsklKGdr73nUgEgFN/dTP40tN2SUg/5ealhlu9t6KiB5jRS5N+8lSWe1BoLQygucQ
+         OyDWsF3bwFJLkmJC36Esa7QMJ+S9n03bx26F8tAB0hl+lLLI870fpc6h5obBMcT5/2O5
+         kc2N0v2r13amvOVyLVKsSzZBAJVitvkrPm8xCsYiJdUz4ZWD+iexFXEf5YUuuugi0C0G
+         Fniuon6wfgOJHOGpKc06ViT8i/YrTa5lxsOgMhfBL2gr0qe2Wyktm/6O0BqnO2qcXflU
+         wSug==
+X-Forwarded-Encrypted: i=1; AJvYcCWhdVf94Ra7oiQYo4H2fQvr/ZYs2B8wTr+5quIIqG2Xs1jSwr6sVBqYMGws4dewh/fEddMnfY8DoE74bsBVkd5SEuOM8Z/D8NgxwQ8E
+X-Gm-Message-State: AOJu0YyF3dOoi5anlruW0xZ6EKvIKm0ClFAciiPP74CQFnD3onHqY7bd
+	Lcdii4azxeqJzQ4aCNCWINffsWmGKbYmfqxkPvSaIx2nG6t8bd4pEPav7vZsOrh2qkeo8SRbUZa
+	L
+X-Google-Smtp-Source: AGHT+IFwRUunT+Ya9ZAsaCyFZIIhiHE6ops/oFZR1frJlejjxGjqW5MNXAD/9FWboTVWVIXp+oDlPA==
+X-Received: by 2002:a05:600c:1d86:b0:412:f8c2:869a with SMTP id p6-20020a05600c1d8600b00412f8c2869amr4095684wms.30.1710117207063;
+        Sun, 10 Mar 2024 17:33:27 -0700 (PDT)
+Received: from [127.0.0.1] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id m38-20020a05600c3b2600b00412b6fbb9b5sm13881720wms.8.2024.03.10.17.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 17:33:26 -0700 (PDT)
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH 0/2] qcom: clk: camcc: Fix power-domain definitions on
+ x1e80100
+Date: Mon, 11 Mar 2024 00:33:24 +0000
+Message-Id: <20240311-linux-next-camcc-fixes-v1-0-d126ae0b9350@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Fm898HXtkh9qFM4PMdffxxzwkcsHvlCnk9FGqZ1wyudJ9oQJAp5
- fL6BQ5LzAgl7dJGoYs4bHhHYpID5xUT5mg8ckLe+k8ubk9M1KR3C9LrrtfA5WSOAU0IeHcG
- XbFIH9HSdg8wua8To9wRvoDCAYcsHwDZFJ1Oc7+puVlvUwOjDaFJxxc96+qjAQPhCPL0MRd
- 2DCyHyY+BMIoaRTpVj78w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SkrLU6WQY/4=;h9Xvce7K7NWKZlOSUSrsS1aHbEb
- udgXA72MxjjRV/NQB/fSNf/Qg/ZKp71+h3TD5orcy9Own02XFsJtbNCMwXnvZ7NPBPkkR7BPb
- 9J0XS8SLDTGkypkZeObywhHUFlocbciSEYq+D0dEckFg/x3IVAL6EZkNq/vlEmxed6YzXpsw2
- HjBCuJj0uvSgeEi8WxfxGeFmAGSdPcZPPb4grU1tJXioihTGmkGhNqNDaK067vUCkkRzmTSiO
- riT1uyRiXlz4khRqb92SV0OZxfe9/gUJl7aS89zLgxG8LJWFQWKI5pF1rcy7kR7mWbvReVLoD
- ZPjX2j8TvtAjCgEXxqOStPGLPXqKrKPbqfFjbXV+tckC1gw6YHwKU30Tz7nVMPxTYbHYxLtWN
- N58iJRzjc8Pm5g5V98aPQ4CAJz5MyCfeX9hVqXNQoM7P7jhhVEqHBSnj34xByZfty/JB9pjZb
- wzUU7O1KUbMEB1FGCbhWSsAx0LrR8/N8P82HvyJzT7JfeV6a+I6pN6rPUH2ykYaoIrxZiM9/o
- s29oStPte3xCw1QqwKABE5xMuUL4+2pvP+RG/J4oyZh1sUZhlxkDcTW2U1i1hVfYLyEZasMwW
- AKhO/s1pKgPONn0oXQMQgnaBrjCagz/2B17xEdbHv/HkFzxmHXqW0NrtMS2gikXEwZeJkooOy
- AuWp1/oCTyJR7MY5rCbDzuygJu9HDk+TE0QujZJXnn/VfCxZH+z+B+IkDoifFMVrjSb0zvYJw
- abHvrvm3npcwRZY2d1gqPcvMSJpZmSZYa1zTy57MJnN7XM0U+ha8FAO+6tzBPbxxnIkdKEdpA
- VK2cAUyowcM3pO8W54b/kAbH76Kzz6OMxu0k/2ODPdI14=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFRR7mUC/x3LQQqAIBBA0avErBvQMaK6SrQQm2qgLLRCiO6et
+ Hx8/gORg3CErngg8C1Rdp+hywLcYv3MKGM2kKJKGa1wFX8l9JxOdHZzDidJHNHWjSFqdV2Rhjw
+ fgf+Q33543w9RZaGpaAAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, 
+ Abel Vesa <abel.vesa@linaro.org>, Rajendra Nayak <quic_rjendra@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+X-Mailer: b4 0.13-dev-26615
 
-Select CONFIG_REGMAP from CONFIG_WPCM450_SOC, because the driver relies
-on regmap to work.
+There are two problems with the upstream camcc implementation at the
+moment which this series addresses.
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Closes: https://lore.kernel.org/lkml/CAMuHMdWo5vHCeE6BeSHrUy12uT7_wFhW-VbQ=
-mQ5u+4Q8c7-wYQ@mail.gmail.com/
-Fixes: 7dbb4a38bff3 ("soc: nuvoton: Add SoC info driver for WPCM450")
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-=2D--
-v6:
-- no changes
+1. The camcc block has two power-domains MXC and MMCX however, the yaml
+   description doesn't include MXC.
 
-v5:
-- Rebase on v6.6-rc2
+2. The code for the GDSC definitions for x1e80100 camcc fails to list
+   the titan_top_gdsc as the parent GDSC of the other GDSCs.
 
-v4:
-- Add Geert's R-b tag
-- Fix commit reference
-- Change Link tag to Closes
+This series addresses both of those bugs. There is currently no upstream
+camcc dtsi for x1e80100 so the yaml change won't affect the ABI.
 
-v3:
-- Split the commit into two
-- Reword the commit messages a bit
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+Bryan O'Donoghue (2):
+      dt-bindings: clock: qcom: Fix x1e80100 camcc power-domain declaration
+      clk: qcom: camcc-x1e80100: Set titan_top_gdsc as the parent GDSC of subordinate GDSCs
 
-v2:
-- https://lore.kernel.org/lkml/20230212215234.2608565-1-j.neuschaefer@gmx.=
-net/
-- Commit message improvements, as suggested by Geert Uytterhoeven.
-- Add Link after Reviewed-by, as checkpatch.pl now suggests
-=2D--
- drivers/soc/nuvoton/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ .../bindings/clock/qcom,sm8450-camcc.yaml          | 37 ++++++++++++++++++----
+ drivers/clk/qcom/camcc-x1e80100.c                  |  7 ++++
+ 2 files changed, 38 insertions(+), 6 deletions(-)
+---
+base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
+change-id: 20240310-linux-next-camcc-fixes-a68322916421
 
-diff --git a/drivers/soc/nuvoton/Kconfig b/drivers/soc/nuvoton/Kconfig
-index 853392c8a9151a..2167d3d739d84b 100644
-=2D-- a/drivers/soc/nuvoton/Kconfig
-+++ b/drivers/soc/nuvoton/Kconfig
-@@ -6,6 +6,7 @@ config WPCM450_SOC
- 	tristate "Nuvoton WPCM450 SoC driver"
- 	default y if ARCH_WPCM450
- 	select SOC_BUS
-+	select REGMAP
- 	help
- 	  Say Y here to compile the SoC information driver for Nuvoton
- 	  WPCM450 SoCs.
-=2D-
-2.43.0
+Best regards,
+-- 
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
 
