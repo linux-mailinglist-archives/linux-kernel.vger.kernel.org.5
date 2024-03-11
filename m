@@ -1,82 +1,104 @@
-Return-Path: <linux-kernel+bounces-98409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FDC98779B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:57:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 712EB8779B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D42F7B21383
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 01:57:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8AD21C2138D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8391710F1;
-	Mon, 11 Mar 2024 01:57:31 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E20E10FA;
+	Mon, 11 Mar 2024 02:01:08 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797737EC;
-	Mon, 11 Mar 2024 01:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326D4801;
+	Mon, 11 Mar 2024 02:01:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710122251; cv=none; b=sH7Ofdz6ttJ7yWnuYtvGGlZ0CZF+lGDYOxhh0xQpwoxszTvf9BWM1ZgxfX5+DTgZsYmWndUADjsQRbcx34UWkOWVISDXqbRaEhcKkQ6FdrwBwNFt2ViBzA5m0Ct2FY2xcE6izpmNhYV5Xi/FXpsZPPtYuYIVkjBmN296m8fvGCI=
+	t=1710122468; cv=none; b=OuAuKuRbW0ukEpwI34yUCGWk4FUuBChZQmmSoUMa4yDaH+WkoNZqmHrjO1Ddb0iEJ6wWp3iY9NT1ujJ039/wzxbYSv0543ju7+q38zQYQKw5t781pD2qh/5IoQkXgio7Xizkvo2arc8WRg/gKVJ5U8KvnYczgwV/6omsBRKK0sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710122251; c=relaxed/simple;
-	bh=z8MyjMzJL1ARGJIc3kquQRdhTjM6fo2ijLMakMNt/JE=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=mJsWoTAOQ3yMvBDYrHrKVST9Aym2J1fKDjHauehKFErUBdeZ8p+CgW0X42pFnJ6AV3Wi7sF38APcTqNC5wVITc1jyq1/G14NuimqUvP2xaW2cFcDwrA1FWKV7xxqZOzLsVXdgAFvzEQVdz9fsmMG819JWJu3bI8OPwVgEUMaY9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TtKbL0KtLz1Z1j5;
-	Mon, 11 Mar 2024 09:54:54 +0800 (CST)
-Received: from canpemm100007.china.huawei.com (unknown [7.192.105.181])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8FF1C1A0178;
-	Mon, 11 Mar 2024 09:57:19 +0800 (CST)
-Received: from canpemm500004.china.huawei.com (7.192.104.92) by
- canpemm100007.china.huawei.com (7.192.105.181) with Microsoft SMTP Server
+	s=arc-20240116; t=1710122468; c=relaxed/simple;
+	bh=wiQLkBh8niMqqh6Ln393H6ASZbM8ndGA41bmCEBbZZI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=oLOQNq1HUwK2XWlqWtGkzF0aK1SgPfFL8ZDWs1gV8VTUwzCLUUBULsLZfBHVM233cYaESi9Of3u+XOraMYl//G6CSCZ8jUtx/qpovVNIShPXEhwZojguiI7Mvo50GTyCS6v8vBF/iNXo7SpUF9izh/0YKrwEglGd2eSANUTwcy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TtKgS0NWfz1h1rd;
+	Mon, 11 Mar 2024 09:58:28 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0C5F61402E1;
+	Mon, 11 Mar 2024 10:00:53 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 09:57:19 +0800
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 09:57:18 +0800
-Subject: Re: [PATCH v2 2/6] scsi: pm8001: Use LIBSAS_SHT_BASE
-To: John Garry <john.g.garry@oracle.com>, <jejb@linux.ibm.com>,
-	<martin.petersen@oracle.com>, <chenxiang66@hisilicon.com>,
-	<jinpu.wang@cloud.ionos.com>, <artur.paszkiewicz@intel.com>,
-	<dlemoal@kernel.org>, <ipylypiv@google.com>, <cassel@kernel.org>
-CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240308114339.1340549-1-john.g.garry@oracle.com>
- <20240308114339.1340549-3-john.g.garry@oracle.com>
-From: Jason Yan <yanaijie@huawei.com>
-Message-ID: <1974cf11-787d-ebe8-853f-56e83e98a925@huawei.com>
-Date: Mon, 11 Mar 2024 09:57:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ 15.1.2507.35; Mon, 11 Mar 2024 10:00:52 +0800
+Message-ID: <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
+Date: Mon, 11 Mar 2024 10:00:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240308114339.1340549-3-john.g.garry@oracle.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
+ parameter configuration
 Content-Language: en-US
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
+ <20240310100027.GC12921@unreal>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20240310100027.GC12921@unreal>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500004.china.huawei.com (7.192.104.92)
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
 
-On 2024/3/8 19:43, John Garry wrote:
-> Use standard template for scsi_host_template structure to reduce
-> duplication.
+
+On 2024/3/10 18:00, Leon Romanovsky wrote:
+> On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
+>> From: Chengchang Tang <tangchengchang@huawei.com>
+>>
+>> hns RoCE supports 4 congestion control algorithms. Each algorihm
+>> involves multiple parameters. Add port sysfs directory for each
+>> algorithm to allow modifying their parameters.
 > 
-> Signed-off-by: John Garry<john.g.garry@oracle.com>
-> ---
->   drivers/scsi/pm8001/pm8001_init.c | 20 +-------------------
->   1 file changed, 1 insertion(+), 19 deletions(-)
+> Unless Jason changed his position after this rewrite [1], we don't allow
+> any custom driver sysfs code.
+> 
+> [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
+> 
 
-Reviewed-by: Jason Yan <yanaijie@huawei.com>
+I didn't quite get the reason from [1], could you please explain it?
+
+And it would be helpful if you could give us a hint about any other
+proper ways to do the algorithm parameter configuration.
+
+Thanks,
+Junxian
+
+>>
+>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>> ---
+>>  drivers/infiniband/hw/hns/Makefile          |   2 +-
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  20 ++
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  59 ++++
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 132 ++++++++
+>>  drivers/infiniband/hw/hns/hns_roce_main.c   |   3 +
+>>  drivers/infiniband/hw/hns/hns_roce_sysfs.c  | 346 ++++++++++++++++++++
+>>  6 files changed, 561 insertions(+), 1 deletion(-)
+>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_sysfs.c
+> 
+> Thanks
 
