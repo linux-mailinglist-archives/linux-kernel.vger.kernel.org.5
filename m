@@ -1,106 +1,134 @@
-Return-Path: <linux-kernel+bounces-98421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05EF98779DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:35:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A908779DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5E8C281616
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:35:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EFCC281766
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA201388;
-	Mon, 11 Mar 2024 02:35:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="kmIFnJcN"
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9C91FC8;
+	Mon, 11 Mar 2024 02:37:36 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BC93D62;
-	Mon, 11 Mar 2024 02:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C491841;
+	Mon, 11 Mar 2024 02:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710124519; cv=none; b=f7dywNLf2ahrtQ9Zd07XmGOYt3IMz6lqBFFLhcrZxmRbRE3h386ffrtuSHfN5CnKkFXmVhTEsV/CSOJFGw1qVx6+1x9T8J/fQa4jYpkvaRo8T/0hXRwtR351ljsszFaN8JSv4AmIjHxBCeFI8OIJS+75dH3FtDcJJ/kDkLrLfBU=
+	t=1710124656; cv=none; b=AgWy/Y6ryxstFtLX4bwUFpQl4PZ8rLBI2QJex0IpOQKtUF0mfOky8dFVYpdhIy5FW6JpOCMfZcPC2UrBnUDO49nxsUr9YYQjXYlxixVye1Aioi5j/pTLmb5OttfEep6EPd1rzP++qKmy1ZaRgFtQkMADgDZ5ydTfcBKGOk6ylrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710124519; c=relaxed/simple;
-	bh=WhmjuGV1kq2WCEIDtuCaWUDhxbU/+ZMX+LPouv4Jpx0=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=L89hs5MoeMju+LRWzfT86ju7B8Ogp83j21FZheAe1VmC+nJQ2J2D4JR/GzSriFuOmSIu118taK/W4IRNnFyUQXvb/WNiPa+F6BQE17adUf/x43Hl2hXHvNMMJevD/+JNnPsOlTsd8YgiqCvepVVrugZTgcXS3M8Dygdbn6kFuEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=kmIFnJcN; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710124500; bh=C+MiEF4qC6FAaylAML0xdTY2YhM7+veLwzKbbzTLXok=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=kmIFnJcNDNfWAj2bmooSKy0uGNvlwfJ3NDxvHOlFQGUiSdV68TvplEgqoqUnVgrw3
-	 zHSrLBS4L1Vgt+9aeMb3va51KsCYeuS40sawoo2c53Kj1hnZLnFnl9IGWj2wCs6Uut
-	 JI/Yk7NjdX/gfvHofLH4v1PqQSANFmHAVoVJsvPo=
-Received: from localhost.localdomain ([58.213.8.34])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 8B995E48; Mon, 11 Mar 2024 10:34:57 +0800
-X-QQ-mid: xmsmtpt1710124497t5plveddw
-Message-ID: <tencent_03614198A34E56D038455012AA31022D9C06@qq.com>
-X-QQ-XMAILINFO: Mm/8i8/T4yneLFjWWrRIGkqbOZu0z8AIxOyq+RGDR2OmIiGfEHfbT3yggaBppe
-	 x+5Owg6mNNjoEAAbIRdkBqJmqPPOxnSWCkL/x8/JNqrlqyr/Er8NPHOPK2Odgdf3Wfl9trvb45r1
-	 ZGgig1CzHGTZfkcGQjSWqtyY2RhcBFCl6VKvTw4d4J/pHCgi6J2TcThOgZC0sBpFmImg9qMnKdQk
-	 ZkzOGkc9dOXrK6MuUyouiFAyyWm7Y/u1jLFogBqT1wD61ak2kJdUGphZWVM8TAElO25Jd6/2AWO5
-	 252H1Ps7ELnyxV/rIJTh4zeJaFtKg3fQdFY/md//rE7EErZ634ACM1PVhb7mYkqHy/c9URVhydQr
-	 4BqDq32dWXFz4w7mIA76jUA/BwZZR2eItyGigLDf3PIZhwZ/BwReudQ8sIFfVAKvIn4TIs/ntp9X
-	 D//eMiXXxqUwaaUHTVR36y7xImPkBSn8WXagPj2/anSS1Klud7FUESIAem3UfM/XLnXCHZjmu3y2
-	 NQy/RdUHppO4D9GqL7ML1pdfu/ODveaAjc0lHjHtjQz+BrT38XG3s9mL+SIxEZZYhJOHUMAh91eT
-	 GKL0fwkdfktYZAleB9eg8GBosG8hf6YpEdmj3O/5dEXX8r9Vw2LxNsevcSCpAcXCXlCfD9LyjGvE
-	 clQCLafmM6Ddts/jB8oteHDFz++v2ljoZobAXBUUSlRKf2O7IzMPZ+zGeumlRplpB22Qh0Csj+J1
-	 yeKW+edaCYbPkC4u3jO1hKO6XWAl4/h+Lb6vylBUh2o2yEgvFhPN+NuFxAHNXs/qKW6uBOodBAW6
-	 VOeXQA6q2AlCIlHOaJ2zYcL+mBxR58ADNrjaRYUs+04VKscHopX9VJVdHLZl6B/dDRADFJGrL3dp
-	 Kv+RAiEO/ceg8ZE15tQJCauMW3etZXV1IR98g6UneFwyUQtRMmEvUPBCF54FsRVzaI0gZRGdMMso
-	 KMtOJxzM+3nTgqmbH9u0ZGduadSmvG04a6j9bVZYN48MSpqQDV04O6GlOxwCTp
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: linke li <lilinke99@qq.com>
-To: leon@kernel.org
-Cc: bmt@zurich.ibm.com,
-	jgg@ziepe.ca,
-	lilinke99@qq.com,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of re-reading it
-Date: Mon, 11 Mar 2024 10:34:55 +0800
-X-OQ-MSGID: <20240311023455.72601-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240310191910.GG12921@unreal>
-References: <20240310191910.GG12921@unreal>
+	s=arc-20240116; t=1710124656; c=relaxed/simple;
+	bh=KkWPgs33qgoq499jSSM0dfHvg5p8RlHA+Lh4J5L3mKo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cJUI9zs+C9xpyjSTTEe8HyyZTc1lguZ9uQ9DHRerkNoabkQHVGHoC/0db5UsesbgHX0lTvpr+AxrBHV7JhXTbGHQTHaKudUoYhaNJWtmgI5I5QfE74y41W18NPVSSO2GXEYu9OWzzYmJPekLka4fCv+8Oj08VX7Or0aCpPcgymU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rjVXJ-0005rO-36;
+	Mon, 11 Mar 2024 02:37:10 +0000
+Date: Mon, 11 Mar 2024 02:37:07 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	devicetree <devicetree@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 7/7] mtd: ubi: provide NVMEM layer over UBI volumes
+Message-ID: <Ze5uUyUuEDBM3p43@makrotopia.org>
+References: <cover.1702952891.git.daniel@makrotopia.org>
+ <82ceb13954f7e701bf47c112333e7b15a57fc360.1702952891.git.daniel@makrotopia.org>
+ <20240219120156.383a1427@xps-13>
+ <1209094181.98490.1708899174329.JavaMail.zimbra@nod.at>
+ <ZdvV1KABu_UCSL7B@makrotopia.org>
+ <1754825522.38834.1710105437883.JavaMail.zimbra@nod.at>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1754825522.38834.1710105437883.JavaMail.zimbra@nod.at>
 
-> If value can change between subsequent reads, then you need to use locks
-> to make sure that it doesn't happen. Using READ_ONCE() doesn't solve the
-> concurrency issue, but makes sure that compiler doesn't reorder reads
-> and writes.
+Hi Richard,
 
-This code do not need to prevent other thread from writing on the flags.
+On Sun, Mar 10, 2024 at 10:17:17PM +0100, Richard Weinberger wrote:
+> Daniel,
+> 
+> ----- Ursprüngliche Mail -----
+> > Von: "Daniel Golle" <daniel@makrotopia.org>
+> >> Finally(!), I had enough time to look.
+> >> Thanks for addressing all my comments form the previous series.
+> >> Patches applied.
+> > 
+> > It's an enourmous coicident that you are writing just now that I found
+> > a sizeof(int)-related problem which triggers a compiler warning when
+> > building the UBI NVMEM provider on 32-bit platforms. I was just about
+> > to prepare an updated series. Literally in this minute.
+> > Should I still send the whole updates series or only the final patch
+> > (as the necessary change is there) or a follow-up patch fixing the
+> > original patch?
+> 
+> I have just merged your fixup patch. So all good.
 
-This topic got quite a bit of discussion [1], quote from it:
+Thank you!
 
-    (READ_ONCE and WRITE_ONCE)
-    That's often useful - lots of code doesn't really care if you get the
-    old or the new value, but the code *does* care that it gets *one*
-    value, and not some random mix of "I tested one value for validity,
-    then it got reloaded due to register pressure, and I actually used
-    another value".
+> 
+> >> 
+> >> I have only one tiny request, can you share the lockdep spalt
+> >> you encountered in ubi_notify_add() regarding mtd_table_mutex
+> >> and ubi_devices_mutex? The solutions looks okay to me, but
+> >> if you have more details that would be great.
+> > 
+> > I will setup a test build to reproduce the original warning and
+> > let you know shortly.
+> 
+> Any news on that?
 
-    And not some "I read one value, and it was a mix of two other values".
- 
-From the original code, the first read seems to do the same things. So
-READ_ONCE is probably ok here. 
+I've tried for days now to reproduce this on recent kernels and fail
+to do so. Ie. when using regular mutex_lock() instead of
+mutex_lock_nested() I no longer see any lockdep warning with
+linux-next. It could be that I'm chasing a lockdep ghost...
 
-I just want to make sure the flags stored to wqe->sqe.flags is consistent
-with the read used in the if condition.
+> BTW: Is there a nice way to test this with nandsim in qemu?
+> I'd love being able to test all ubi attach code paths on my test setup.
 
-[1]https://lore.kernel.org/lkml/CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com/
+From what I can tell 'nandsim' doesn't have a way to be defined in
+Device Tree, making it unsuitable to test the attachment of UBI in
+this way.
 
+However, QEMU does support emulating TI OMAP's OneNAND controller, eg.
+as part of the Nokia N810 hardware supported by qemu-system-arm, see
+
+https://www.qemu.org/docs/master/system/arm/nseries.html
+
+So we could use that and modify the device tree in Linux to have a MTD
+partition for UBI and 'compatible = "linux,ubi";' set therein:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/ti/omap/omap2420-n8x0-common.dtsi#n84
+
+If you like I can prepare such a test setup.
+
+Is there a repository for MTD/UBI tests to be run on QEMU which I should
+contribute this to?
+
+
+Cheers
+
+
+Daniel
 
