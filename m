@@ -1,120 +1,127 @@
-Return-Path: <linux-kernel+bounces-98761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC362877EFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E8F3877F00
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:30:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 687D81F22724
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:25:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E50911F22901
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25AA33C484;
-	Mon, 11 Mar 2024 11:25:03 +0000 (UTC)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B873AC08;
+	Mon, 11 Mar 2024 11:30:35 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048673C493;
-	Mon, 11 Mar 2024 11:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E4339FF2
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:30:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710156302; cv=none; b=A1XTmy/Uxl98JXCCaRqKGo5tPeXWmjHCFnzu9mZUrMfb91FX7eP13e1L7MK64qYfOiMTnELQg0sYRpVo4DwrGHO30/BFEnuBeQYCHwEo8WROPGbIH01aaTSiRm4OqENZxtn5kcHMnR021wOhGEJjQdMXyu7TBxcoRpcUBb5/V7k=
+	t=1710156634; cv=none; b=jODtEvFsnxRFTSStbUqySjSNfsA4y2w1w1i8eUtauTD9TvHwXp2EgD0/kgyENOc0cH5lBE4t0tZtjgEEeIQdObFU4q+/DcmP7v1yD/tcYaGrJvYk1srXCw5Va5+TfVruegoEuMzYRi1qQlt4QjuL8/QI/LlSKa37TSZ9r74Evdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710156302; c=relaxed/simple;
-	bh=4pDVnZkHej3RuwF5nxZLKJSsv+DmPh3nKITPhTPBN/U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Mw2b03VdF7HrlyYNRPFN929QA9H6X9XRlu4vdhBcaUoKA7/BV0V3QQRmulyMrUhsodC6Hcrs4lPdxMsSuoyuZOKkqAs0GTHMeGRjIaRY+D29Ejb6giom501uEN5heESwNaiNtsgmFv23MOIlGlLHvHU5di5PfomXp9kNTtZje3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5683576ea18so3148915a12.3;
-        Mon, 11 Mar 2024 04:25:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710156299; x=1710761099;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tn6DoL4XiC/1sb436SFq4XKysqpuHz83glo8mzdMNKA=;
-        b=webuKl6a8bMD5uI8zBfuXQ+7PCNltcSy1cUx71RtwhXnEQQ0NGOa7HpQc5daMURovV
-         pDpuZQYu2wvvBToQqD+bwhTaOSD9PHV0ngNoCh5F8jSpU0rjzsjAj8cL0pGdegHxgcgc
-         E3L5aSXaVlYGP5iqRSYTft6BIbhBQF1eJT1dGntPPrqxw4E2UtaV5btmd5d0Wgif0gmr
-         XD9BkZLCSnwP+AfEBo3HJ1MjpaHGyw9FBDFabLww0JUrtvG/4eYKH08N8HfUR49R/l59
-         d1S2zJWqndIHmd3x+J0OVJit6FAsVk39doywEEAc0GZOWnuljmYSej1Qma736tWOz3/p
-         w6Kg==
-X-Forwarded-Encrypted: i=1; AJvYcCX5cTJd2iv3JXqAJNhvModqmpIIZjVoSAWPxcBeL1B2oMgOBM7BY/LbgwSGQMKIV4SfaEFDnBYKm/dlnzG7lupuX4jkY2tI7dY5pQegC3Jenypnmefx0O3r10Cn/gpeVqHuB9/S
-X-Gm-Message-State: AOJu0YxrTXNSfMfDu+13wr9FbrIte+KamM0X7A5q7LXmkzaR3HQqI2IS
-	e5Vv1pyKSTBj2W1STS2Vne93zBJicYdVYp72Q9Yy/p4KDJP3Zcyw
-X-Google-Smtp-Source: AGHT+IFpol4GKbefX4gxusREijrPiCVSvlLD2YwUl3LIMYtv+crpJlIwGpJ9CLa9SEwoEMWtDjfNBA==
-X-Received: by 2002:a05:6402:907:b0:566:b91f:1980 with SMTP id g7-20020a056402090700b00566b91f1980mr4312961edz.31.1710156299225;
-        Mon, 11 Mar 2024 04:24:59 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ev19-20020a056402541300b0056742460f68sm2780020edb.66.2024.03.11.04.24.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 04:24:58 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: keescook@chromium.org,
-	Ido Schimmel <idosch@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Amit Cohen <amcohen@nvidia.com>,
-	Petr Machata <petrm@nvidia.com>,
-	Jiri Benc <jbenc@redhat.com>,
-	Beniamino Galvani <b.galvani@gmail.com>,
-	Gavin Li <gavinl@nvidia.com>,
-	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 2/2] vxlan: Remove generic .ndo_get_stats64
-Date: Mon, 11 Mar 2024 04:24:31 -0700
-Message-ID: <20240311112437.3813987-2-leitao@debian.org>
+	s=arc-20240116; t=1710156634; c=relaxed/simple;
+	bh=qM8hF6ZmRnBrmgXNks/rh7LqwkHDijbtSphZtiJE2U4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UAQWl8Jf+eTXx5ilXk5BdJokAjs7xAguol1YR4/TVQ9ICwPHA3GIcIBSfOnYzdWud0W4Wu5fGUJ5eCcLpoDCCKZRimiiTiLUBeIh9SmLfHd11Ym+nJYFBALjLfVf2e5rV3NpKkgWd2mOCLJ5xL168Vhj0Dh3XJXHtmrUSv1HgEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rjdrM-0007Fx-2C; Mon, 11 Mar 2024 12:30:24 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rjdrL-005hcG-Ed; Mon, 11 Mar 2024 12:30:23 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rjdrL-0040U5-19;
+	Mon, 11 Mar 2024 12:30:23 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH] tty: vt: conmakehash: Don't mention the full path of the input in output
+Date: Mon, 11 Mar 2024 12:30:18 +0100
+Message-ID: <20240311113017.483101-2-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240311112437.3813987-1-leitao@debian.org>
-References: <20240311112437.3813987-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1866; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=qM8hF6ZmRnBrmgXNks/rh7LqwkHDijbtSphZtiJE2U4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl7utJG/3nW61SonsD5u0XPzPV6gvfi6dS9PiK1 oX4x13ZP0aJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZe7rSQAKCRCPgPtYfRL+ Tp/qB/9+4JB8AW8tepvkjnO+ROE4CRGaE4NbcDZlwYedjY2YaIIa4jFNPnLi3fONZwEO7rfWFAn MxBA+lQx8WgerLHGoAQscBfIe5yUr6Ot8OIbWqj6wQmHorJf0DqLMX6YkKghSm6+cBkDN8hp7l3 SDy/PhaKSbHynxt8yQqZCnYH6fVpcg9UBrqBBEo5N0s0fee+kA8SNl4SihkjUnOqGaRXqo+ApWz NhYJpAa1oHA43No7b9nET22xfShHLqT583SQiAgxM2Sk8K/HY7l8LaJPq4inO2KweGntMc9iTvc LyrqImhsCSDIhY+kVDBB34JCOrhsDNY6YkjfHBnXI0TVU1+z
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
-configured") moved the callback to dev_get_tstats64() to net core, so,
-unless the driver is doing some custom stats collection, it does not
-need to set .ndo_get_stats64.
+This change strips $abs_srctree of the input file containing the
+character mapping table in the generated output. The motivation for this
+change is Yocto emitting a build warning
 
-Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
-doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
-function pointer.
+        WARNING: linux-lxatac-6.7-r0 do_package_qa: QA Issue: File /usr/src/debug/linux-lxatac/6.7-r0/drivers/tty/vt/consolemap_deftbl.c in package linux-lxatac-src contains reference to TMPDIR
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
+So this change brings us one step closer to make the build result
+reproducible independent of the build path.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/net/vxlan/vxlan_core.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/tty/vt/conmakehash.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/vxlan/vxlan_core.c b/drivers/net/vxlan/vxlan_core.c
-index 6f26003a3064..3495591a5c29 100644
---- a/drivers/net/vxlan/vxlan_core.c
-+++ b/drivers/net/vxlan/vxlan_core.c
-@@ -3214,7 +3214,6 @@ static const struct net_device_ops vxlan_netdev_ether_ops = {
- 	.ndo_open		= vxlan_open,
- 	.ndo_stop		= vxlan_stop,
- 	.ndo_start_xmit		= vxlan_xmit,
--	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_rx_mode	= vxlan_set_multicast_list,
- 	.ndo_change_mtu		= vxlan_change_mtu,
- 	.ndo_validate_addr	= eth_validate_addr,
-@@ -3238,7 +3237,6 @@ static const struct net_device_ops vxlan_netdev_raw_ops = {
- 	.ndo_open		= vxlan_open,
- 	.ndo_stop		= vxlan_stop,
- 	.ndo_start_xmit		= vxlan_xmit,
--	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_change_mtu		= vxlan_change_mtu,
- 	.ndo_fill_metadata_dst	= vxlan_fill_metadata_dst,
- };
+diff --git a/drivers/tty/vt/conmakehash.c b/drivers/tty/vt/conmakehash.c
+index cddd789fe46e..dc2177fec715 100644
+--- a/drivers/tty/vt/conmakehash.c
++++ b/drivers/tty/vt/conmakehash.c
+@@ -76,7 +76,8 @@ static void addpair(int fp, int un)
+ int main(int argc, char *argv[])
+ {
+   FILE *ctbl;
+-  char *tblname;
++  const char *tblname, *rel_tblname;
++  const char *abs_srctree;
+   char buffer[65536];
+   int fontlen;
+   int i, nuni, nent;
+@@ -101,6 +102,16 @@ int main(int argc, char *argv[])
+ 	}
+     }
+ 
++  abs_srctree = getenv("abs_srctree");
++  if (abs_srctree && !strncmp(abs_srctree, tblname, strlen(abs_srctree)))
++    {
++      rel_tblname = tblname + strlen(abs_srctree);
++      while (*rel_tblname == '/')
++	++rel_tblname;
++    }
++  else
++    rel_tblname = tblname;
++
+   /* For now we assume the default font is always 256 characters. */
+   fontlen = 256;
+ 
+@@ -253,7 +264,7 @@ int main(int argc, char *argv[])
+ #include <linux/types.h>\n\
+ \n\
+ u8 dfont_unicount[%d] = \n\
+-{\n\t", argv[1], fontlen);
++{\n\t", rel_tblname, fontlen);
+ 
+   for ( i = 0 ; i < fontlen ; i++ )
+     {
+
+base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
 -- 
 2.43.0
 
