@@ -1,162 +1,143 @@
-Return-Path: <linux-kernel+bounces-98773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94BDD877F31
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:41:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B427877F37
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA5FAB2194A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:40:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C8D11C217AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573763AC08;
-	Mon, 11 Mar 2024 11:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2E03BBC6;
+	Mon, 11 Mar 2024 11:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M8LR92PT"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="lYvI4ilx";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CBmUmFXC"
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E385B3A268
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFDC3BBCC
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710157248; cv=none; b=luDdhbjljb/qEsWf+Idh1s9vsEMXIJwLB93e1DqCUZWZaK/AO8hsXk9cz5+8EpciUT9s4QRiK4/DtH/gvcB4BcaHh9/GBSgh7DvCpHa00heJ3PeRd4weMwxk1YwzluGO0i8e8DHnqhabyrbRjf2nVEc64ToPdMQIkeQMNA2nOQs=
+	t=1710157384; cv=none; b=d8mGuHGu0R1ujEu3I3z2D+THi9bp8yhKV9XHTjXfj95hR0aT21XRLJ5czNMrCpw2rbcOqbN1pMr40zGH6zHEs9Oh4l82+Pr537l+gJ/roZQ87Ok2dvl4Pl4PyhYe2SE3UyoK+FJJo14v0e2CltPhQyoXJaeqccBJsjBoQXzGec4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710157248; c=relaxed/simple;
-	bh=kiSPAvLuBmKLwnLz0szwtesbk3eIGqsOaJTrvrVAQog=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U8+cwAPnEU3YNmXyHAPXrdZCeEViU389A1KbiIiSptrPhvozYXjGxEHSCfE1WmGXuiS2rdj7doZk8RUDQekZ8Ejs/V3gyf9GzpgvET7OaHjISAoeRXLETJze3/jJcA8Q57vV+6Lfh5NGJuNKjaTUv/XbplBD5x0V4x2oBLRPyN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=M8LR92PT; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a45606c8444so505062066b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 04:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710157245; x=1710762045; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SkjzeE4dZ9o2SQlL4u86zxDCBSGbNgJrdX2fu89HmnA=;
-        b=M8LR92PTl1nKoEAFkOa/pPA6Qn6d4AuMXrJ51bSy5FQD5l7nx/YFX7doFHrxEcCotg
-         SC85tsPlYoZwzROsyX3AIW0bm5ySmSuJd8FkFWdkqdXsgm9PEq1a1juxoocnSyzsGWI7
-         Spcti+cYPBdJ7mPtLyqbsoXSHLtH0C8Ij1DJtFuPCBFXpTWh3Ot8be0PhN8tB+zvgrV5
-         Ty7kYE3w31aaAyYaG6E1tHPcML8/Y/tuzKMzRuzR4/x+O/ueiOKtADpAjSnKnY8kbmyv
-         rmc5utuOnx+TqFnARz52yZu9Yb4HhloSYJHOi6Et1NRmMlJ/EFQ84g0DXFYkj/Glu7rO
-         lbig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710157245; x=1710762045;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SkjzeE4dZ9o2SQlL4u86zxDCBSGbNgJrdX2fu89HmnA=;
-        b=S9U9rmZD2tGplY1eyZu6UtT93N0YHO2rjAnwPVCi7GeYqHNivTn3mQoztWlyxdhrUq
-         4rjsx97I4/r7cn30Kx0f4MAvMYnJ5IipIleh1h0v2WSBunzdiyOlm+FOldq5aUCvdIQH
-         qNKysJk3dxTazaEUPA5ywD4+CF8XtaWsV8uM0FQ+tu7xmbni3o/dn6QRZooyZBm7xS5J
-         ciWiCkMg8BZBZxUxzicjj4AUdCJDDDbfA0EPLlW3ma6kvuG30ZW2fKJjDW90L0uV2qIq
-         hBt+g6dORsGZwhBTpsLh4mm0X0upp9Q7peSLsJyKcrXc9m5xYHTwKWWAr/xdeAykk1Im
-         TjNw==
-X-Forwarded-Encrypted: i=1; AJvYcCW3xYM6AX5DLSFhgiZ38R0UlXV8sKTj205/Y9jR7Bpv+NEAAanmkHe/jPHoa4Ftsx5J1N0hzxwh9aSsfF4qsCg7xOQtG9VOeRi7xspr
-X-Gm-Message-State: AOJu0YxIyMVrVTMbv6SQGB9wKBSDAdf5ymk4tBbPGLAzCjH4Teze1dEp
-	pl75gzATsiaiBnXl31KD6K1LtU2eTW8OLlOVkqGOmDZnusw/ZgxuX7TU9LuVWw==
-X-Google-Smtp-Source: AGHT+IFvD3eTrXBRLNqxixAkOQniNH0dO7QajxVi2chqo/onElzZKCzE2Xbnm3EEkgu3u6XSOdsOrQ==
-X-Received: by 2002:a17:907:a805:b0:a45:ed7f:266a with SMTP id vo5-20020a170907a80500b00a45ed7f266amr3709882ejc.0.1710157245065;
-        Mon, 11 Mar 2024 04:40:45 -0700 (PDT)
-Received: from google.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
-        by smtp.gmail.com with ESMTPSA id d4-20020a1709064c4400b00a44dca5f9c1sm2770444ejw.100.2024.03.11.04.40.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 04:40:44 -0700 (PDT)
-Date: Mon, 11 Mar 2024 11:40:41 +0000
-From: Quentin Perret <qperret@google.com>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Rob Herring <robh@kernel.org>, Saravana Kannan <saravanak@google.com>,
-	David Dai <davidai@google.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Masami Hiramatsu <mhiramat@google.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Pavan Kondeti <quic_pkondeti@quicinc.com>,
-	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>,
-	kernel-team@android.com, linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-Message-ID: <Ze7tuWsJJMaBLNcf@google.com>
-References: <20240127004321.1902477-1-davidai@google.com>
- <20240127004321.1902477-2-davidai@google.com>
- <20240131170608.GA1441369-robh@kernel.org>
- <CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
- <20240202155352.GA37864-robh@kernel.org>
- <86a5og7cl7.wl-maz@kernel.org>
+	s=arc-20240116; t=1710157384; c=relaxed/simple;
+	bh=dUSSVd4bpD7Wuj2qhYTInbXUYg3ivnsEF0eKLdqsxz4=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=LRvseevqvLB3euzMA5MiFWFIF07+pYjb1qdG1y1yj8bglRgjY7c/QkgKWLzReS4mT+USi9Z+RaxKpOpEoXO8Ha0k13khijnN8UAoKuT+qsR4OwixwUJ5BiF8NuzT9vN3S1XVvjrOMJ8potX0I87oqNO2LFit+cSjAt+XijspTeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=lYvI4ilx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CBmUmFXC; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 0E0C11C00098;
+	Mon, 11 Mar 2024 07:42:59 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 11 Mar 2024 07:43:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1710157379;
+	 x=1710243779; bh=ek5xhz1iNDGVCreLe4BeP1Rp355S8inPd2lUjGag3sQ=; b=
+	lYvI4ilxMDHu3f8uLA/epJDnCCDPz+/FsOwHvgEzR7DpDP3TJhuuT+KR0I1GWUFa
+	HU+PinzyoxuHns8sMbIWnUSJbnWuybz6tpb3ibWECvzIWuQLK8XN4FmMBBpS0bLB
+	xVMuotpKB6MCCQobK1MmMO3Wg/UyOHSPzIp+8oGbZ3beJta/ZJyn9xw7by/MY7HA
+	u/Vj1nCv1T+qIeig5QA9WivYEB5yndDSrgGxdK2ZtGNcMX+0F0lHhk7e8bTUbw3Z
+	trsfVTwHn4M6qRFxsFi1pZ/HSjiLxJV36r7q8FP2BwSKyQp7UWtIs9/4fDfVhutG
+	5kwxeld6pJvCvpO/flVdYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710157379; x=
+	1710243779; bh=ek5xhz1iNDGVCreLe4BeP1Rp355S8inPd2lUjGag3sQ=; b=C
+	BmUmFXCIcSfZoH0CldL2Jyba7Zkzdxo7VH3a3m1+2XCwcyLmUL1AQfDUwDW8u0uQ
+	20HhBSDAg0muWHYU8c6Z7AbU5jS7ifk/egO8fFl0LKlObAyYNfJRN6U4bRZwTclI
+	tbtyzkaNGXoGejASOTW56O4ay2WR6SegjBgRHCaouGYI9cUQv99m8U1tyzAruFNU
+	9POAoOXPlQMfwhnhP4WKLpvw21J5n0NwA4qJAeZ8RPv8SxLmqkuM5uax5WquaDhM
+	qNO2vx8NJjJW5ViPdKcqar/okRyMKr69vtxb8jbXGBO475S2sgBXJRc9D8rtXOFw
+	QHVRnSQxhCiK99WD7ok5Q==
+X-ME-Sender: <xms:Qu7uZSTdHjnpaOh7DchdMURwDJXvGQfMCAkgP4kkqZVyMTJmglixhw>
+    <xme:Qu7uZXyc-Gm0qgx0JGQKQFuHn_P53o9eW-7TGxzAEg0XeRUKdYzLo3rg4aL015G4I
+    ixzeOhBXkM50vFLWnU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjedugdefudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeufeef
+    ieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:Qu7uZf1gIj2FJDuy544F3jtBsu_Qth4W_Jh_-ipEphFZz6JUjNVujg>
+    <xmx:Qu7uZeAF5v4tX6wVWgpehmnjRN1Jk0pFZtTYtAyE0AK4leCNKXr8mA>
+    <xmx:Qu7uZbiE-xc7Y821oNFfr4Ze0eLlg6Q4ZHwpBZS4rOUOqHjcL2uNxg>
+    <xmx:Q-7uZaSgF_RydoV_4eSDB8Uh_zb76rDYUZ9Zck3FU5oSl46PDAr3KC9sxe8>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id BDFDBB6008D; Mon, 11 Mar 2024 07:42:58 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86a5og7cl7.wl-maz@kernel.org>
+Message-Id: <d3a7a06c-e82f-4e5e-9ceb-6c659a228bbe@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdXKk9S9voKVPvO+xvn1zFW3FnKyVHQGDkC7b9Ynkcnvmw@mail.gmail.com>
+References: <20240307151231.654025-1-liuyuntao12@huawei.com>
+ <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com>
+ <42892794-7668-4eb0-8d2f-c78ca0daf370@huawei.com>
+ <2a90581c-f1df-4d6b-8f0b-8e7cbf150ed9@app.fastmail.com>
+ <346e15e5-49e9-4a7f-b163-c3316225baab@huawei.com>
+ <CAMuHMdXKk9S9voKVPvO+xvn1zFW3FnKyVHQGDkC7b9Ynkcnvmw@mail.gmail.com>
+Date: Mon, 11 Mar 2024 12:41:48 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Yuntao Liu" <liuyuntao12@huawei.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Ard Biesheuvel" <ardb@kernel.org>, "Fangrui Song" <maskray@google.com>,
+ "Russell King" <linux@armlinux.org.uk>, "Andrew Davis" <afd@ti.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ "Geert Uytterhoeven" <geert+renesas@glider.be>,
+ "Jonathan Corbet" <corbet@lwn.net>, "Mike Rapoport" <rppt@kernel.org>,
+ "Rob Herring" <robh@kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>,
+ "Linus Walleij" <linus.walleij@linaro.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH-next v2] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sunday 04 Feb 2024 at 10:23:00 (+0000), Marc Zyngier wrote:
-> Well, I've said it before, and I'll say it again: the use of
-> *frequencies* makes no sense. It is a lie (it doesn't describe any
-> hardware, physical nor virtual), and doesn't reflect the way the
-> emulated cpufreq controller behaves either (since it scales everything
-> back to what the host can potentially do)
-> 
-> The closest abstraction we have to this is the unit-less capacity. And
-> *that* reflects the way the emulated cpufreq controller works while
-> avoiding lying to the guest about some arbitrary frequency.
-> 
-> In practice, this changes nothing to either the code or the behaviour.
-> But it changes the binding.
+On Mon, Mar 11, 2024, at 10:14, Geert Uytterhoeven wrote:
+> On Sat, Mar 9, 2024 at 2:24=E2=80=AFPM liuyuntao (F) <liuyuntao12@huaw=
+ei.com> wrote:
+>> On 2024/3/9 16:20, Arnd Bergmann wrote:
+>>
+>> I tested this patch, the size improvement was only about one
+>> ten-thousandth, and the compilation time had increased by about a qua=
+rter,
+>> and the kernel did not boot.
+>>
+>> Strangely, LTO has actually increased the compilation time
+>> significantly, which seems contrary to its purpose.
+>
+> The purpose of LTO is to reduce code size. Doing so requires more
+> processing, hence the total build time increases.
 
-Apologies all for jumping late into this, but for what it's worth,
-regardless of the unit of the binding, Linux will shove that into
-cpufreq's 'frequency table' anyway, which as the name suggests is very
-much assuming frequencies :/ -- see how struct cpufreq_frequency_table
-explicitely requires KHz. The worst part is that this even ends up
-being reported to _userspace_ as frequencies in sysfs via cpufreq's
-scaling_available_frequencies file, even when they're really not...
+I think llvm treats it purely as a performance optimization of
+the resulting binary, allowing cross-unit inlining and constant
+folding, but I don't think it actually tries or succeeds to make
+the output smaller. I do remember seeing size improvements with
+LTO using gcc in the past, but this never made it into the
+mainline kernel. The last time someone tried to add it was 2022[1],
+not sure why there was no follow-up.
 
-In the case of SCMI for example, IIRC the firmware can optionally (and
-in practice I think it does for all older implementations of the spec
-least) report unit-less operating points to the driver, which will then
-happily pretend these are KHz values when reporting that into PM_OPP and
-cpufreq -- see how scmi_dvfs_device_opps_add() simply multiplies the
-level's 'perf' member by 1000 when populating PM_OPP (which is then
-propagated to cpufreq's freq_table'). And a small extract from the SCMI
-spec:
+     Arnd
 
-    "Certain platforms use IMPLEMENTATION DEFINED indices to identify
-     performance levels. Level Indexing Mode is used to describe such
-     platform behavior. The level indices associated with performance
-     levels are neither guaranteed to be contiguous nor required to be
-     on a linear scale."
-
-Not nice, but unfortunately the core cpufreq framework has way too much
-historical dependencies on things being frequencies to really change it
-now, so we're pretty much stuck with that :(
-
-So, while I do agree with the sentiment that this is a non-ideal place
-to be, 'faking' frequencies is how we've addressed this so far in Linux,
-so I'm personally not too fussed about David's usage of a freq-based DT
-binding in this particular instance. On the plus side that allows to
-re-use all of PM_OPP and cpufreq infrastructure as-is, so that's cool.
-
-I guess we could make the argument that Linux's approach to handling
-frequencies shouldn't influence this given that the binding should be OS
-agnostic, but I can easily see how another OS could still make use of
-that binding (and in fact requiring that this other OS can deal with
-unitless frequencies is most likely going to be a bigger problem), so
-I'd be inclined to think this isn't a major problem either.
-
-Thanks,
-Quentin
+[1] https://lore.kernel.org/lkml/20221114114344.18650-1-jirislaby@kernel=
+org/
 
