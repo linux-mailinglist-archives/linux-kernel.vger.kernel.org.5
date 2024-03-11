@@ -1,110 +1,152 @@
-Return-Path: <linux-kernel+bounces-99498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3ED087893C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:05:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 121AB87893B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98A4F1F21D49
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:05:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4427A1C21318
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7435676F;
-	Mon, 11 Mar 2024 20:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F7A56751;
+	Mon, 11 Mar 2024 20:05:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="BbJRN59W"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="wyEKgURJ"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C2F54BCC
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2C154BCC
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710187527; cv=none; b=XcvIP6CUOPltU5BCatR1hZF7GRXduOe8YIFHx8K7rA9/Af/J5CWwBTP9/7thLJpvj7s2C2MCbqYnSZhfSExwclwVrvIpV5DkKULkscvZytFcsyledEEQ7TrPGg9e/UrS/uG47lXsaFO+2UusnHIzH/4m57YDtsIvllpk4f66iZo=
+	t=1710187514; cv=none; b=I5MH7JBqOI5gDSFFVXYWnwftosAF0wiB/FPaOvlvxM0vufPx4TrjWNB7GCQu52j8ecRVDQaIIZe+ObV5KPbA4J7g98TK2hB27HEVWgEMMjLVIIDAZ/vYPUzUq8Dhtzqzalq6MGHVUSC8jTVK6QaDOPXvlTx2EHQPHLfDBGeReL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710187527; c=relaxed/simple;
-	bh=mpT1sl1F0yF+bunGOpA/ynNHa11gaq+11+ZvHS6RJUE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J3UlC9CbQG51Daht2Lh+Qfv7ncY8fS4rD74IaWYPpVZTueTLC1u0r30D4jSLXclhTfRQDzSNqebZEp6bGay/QJxTAp46pQK9r90vMZSwlGmJz8ZVzddPHJUUfgOrxcl8HsUv21KNsRoiGYd88kmBM6MOxkQ5x6OJaTK2aaAJ9r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=BbJRN59W; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a45c006ab82so560801266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1710187524; x=1710792324; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4eiTO72xToSXf7fJMM1Ipdwyb9aIIUVWhtnvnxbKSBw=;
-        b=BbJRN59Wdeohaf6YrpklY7rI16pbNIMrqmAzlNaiGP5XyGbINr5ZlTEUMEfw1qjx3t
-         vVyMbGYYTpszeOEuLLJ0CvuTZCYGyge1Qe4Pv4ji66fFxaZujckKwbh7Gv9KB2u7x+vv
-         indxh/6dMWsg3uFB5oe7oWaXE938H3H6kLWws=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710187524; x=1710792324;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4eiTO72xToSXf7fJMM1Ipdwyb9aIIUVWhtnvnxbKSBw=;
-        b=b/bvNkyB31DKd/ICFNZYiSJERxQMj7E2xSlswOHSL/DorYCcqfWhXPlLRJvH0gW8Zy
-         OWx5QRH+secGraB0C2aADOCQeuap5PKa9p4zdiZg/lhHO5jtPXW7WvBsyLBcEIjefok2
-         WawuUSB2tsT/b/CzRlx0YS5V0XaTnyFYhjCxAnaSNiT4gMqIG1p+h8ntJxTALfQOvmkO
-         JrYd4DXHCcjvzIz1DAnnKs34ig6Q1RufRRaUFsNc070viwGDFoAUewg8RiVcUKV6mSss
-         tPKvlugWZmfrslMckDMINEwFJpISy3gtTHsUTB62n87VCEHuinqsEYKt1/r7lYPMkHK7
-         4Mqg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpu+I5rgGq2JDgFuZ35seCqS1ePBmCs6G7tnqXj1At4G1otSCpocGfL0KRjVebiva6CIDaSoe5kNysRy3Nr1N7oKigMk5JaJzkP0ln
-X-Gm-Message-State: AOJu0YwfYjRIErw1JDA5UKzoz03+pq0v4TqYHaFeYNdmYG8kg0FcPxNv
-	sixHgf8iXpdkvxvh141wWeKSpmRQz87YNY3IRHNQ5QHfE22ASAwgCSKsKxA/D1QqAsI5iotV2nh
-	EYt4=
-X-Google-Smtp-Source: AGHT+IHZDjoVaRt+SrWP+pIqpvEYgmmIFuRmPc0wKNSCV9z47YfBfxzohcFzL3S5Jf3G2S5PMXzzaQ==
-X-Received: by 2002:a17:906:447:b0:a46:2e4d:6ca0 with SMTP id e7-20020a170906044700b00a462e4d6ca0mr954328eja.31.1710187523851;
-        Mon, 11 Mar 2024 13:05:23 -0700 (PDT)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id be10-20020a1709070a4a00b00a461d2a3374sm1815779ejc.47.2024.03.11.13.05.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 13:05:23 -0700 (PDT)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a44cdb2d3a6so672214666b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:05:23 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV/OfUKCXl/JcybHZkoUmVP4tMec/GugrBZS7EOchnB9t2Ewn9Ep8E1LLET36731BYGWEWZ5BG+E+UL/vYHcFdpEkL+GRObO0081YRj
-X-Received: by 2002:a17:906:c34e:b0:a45:ab1a:4c31 with SMTP id
- ci14-20020a170906c34e00b00a45ab1a4c31mr991274ejb.56.1710187522843; Mon, 11
- Mar 2024 13:05:22 -0700 (PDT)
+	s=arc-20240116; t=1710187514; c=relaxed/simple;
+	bh=Dd3L8MnUZbt3XNG7D95vnVqMzNTpKO7da/OXJzhdrJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uR56rBKFXa9oh0462xAhGjYpSAfQzWtvfIalKj/pbMX8FZuqcQ0ijA/EHHGtgnPdN8aYr71eSStTnPGTE/MP00F9i3K+yF5fhNjz/DrvA35ZpEwhLDhIH6Hn3PL1PYA8iymUp4BhvaHzzDEmFkiGhXvedKyMo0hDCOnUCrFMQvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=wyEKgURJ; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id C4DE01CFAE6;
+	Mon, 11 Mar 2024 21:05:08 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1710187509; bh=UR9/fHtF3ylhFb+vQrKq2FopW5DRuWNRssvKZI8ZonY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=wyEKgURJ/lwuVhrDSJ9tPWRN7winKNNaRknwXJWxewn2lpx4cAtHvgJs6XzuZc9vo
+	 6iX4aBnh3QizG7IyItjoQqmj1Uuz7zyTUDcIlEhiYP1iTTk7MV8m9O+yZZ8nZD7sjI
+	 Jlsvq3IsJaOuCWgX+yRbAGwnA+jNnno69KDEpJ5hjY4nwdSD46calyYGhDtlz82aia
+	 JyvClztpcOJYNRLHUUR9oN3Z/J6n/0+p8YP+Gb73meFyME9cVtiajKOcmwHIyDLGgA
+	 dlRY+OOfeCBWrU8nCdPTp+NHfgx8VMxJJp1x7IPyS1juHZwMhY/8L7iDDqTKop9M6e
+	 MArHNeOxOk1kA==
+Date: Mon, 11 Mar 2024 21:05:07 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Will Deacon <will@kernel.org>, Nicolin Chen <nicolinc@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
+ Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
+ <decui@microsoft.com>, Michael Kelley <mhklinux@outlook.com>
+Subject: Re: [PATCH v6 4/6] swiotlb: Fix alignment checks when both
+ allocation and DMA masks are present
+Message-ID: <20240311210507.217daf8b@meshulam.tesarici.cz>
+In-Reply-To: <20240308152829.25754-5-will@kernel.org>
+References: <20240308152829.25754-1-will@kernel.org>
+	<20240308152829.25754-5-will@kernel.org>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308-vfs-pidfd-b106369f5406@brauner>
-In-Reply-To: <20240308-vfs-pidfd-b106369f5406@brauner>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 11 Mar 2024 13:05:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wigcyOxVQuQrmk2Rgn_-B=1+oQhCnTTjynQs0CdYekEYg@mail.gmail.com>
-Message-ID: <CAHk-=wigcyOxVQuQrmk2Rgn_-B=1+oQhCnTTjynQs0CdYekEYg@mail.gmail.com>
-Subject: Re: [GIT PULL] vfs pidfd
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, 8 Mar 2024 at 02:14, Christian Brauner <brauner@kernel.org> wrote:
->
-> * Move pidfds from the anonymous inode infrastructure to a tiny
->   pseudo filesystem. This will unblock further work that we weren't able
->   to do simply because of the very justified limitations of anonymous
->   inodes. Moving pidfds to a tiny pseudo filesystem allows for statx on
->   pidfds to become useful for the first time. They can now be compared
->   by inode number which are unique for the system lifetime.
+On Fri,  8 Mar 2024 15:28:27 +0000
+Will Deacon <will@kernel.org> wrote:
 
-So I obviously pulled this already, but I did have one question - we
-don't make nsfs conditional, and I'm not convinced we should make
-pidfs conditional either.
+> Nicolin reports that swiotlb buffer allocations fail for an NVME device
+> behind an IOMMU using 64KiB pages. This is because we end up with a
+> minimum allocation alignment of 64KiB (for the IOMMU to map the buffer
+> safely) but a minimum DMA alignment mask corresponding to a 4KiB NVME
+> page (i.e. preserving the 4KiB page offset from the original allocation).
+> If the original address is not 4KiB-aligned, the allocation will fail
+> because swiotlb_search_pool_area() erroneously compares these unmasked
+> bits with the 64KiB-aligned candidate allocation.
+> 
+> Tweak swiotlb_search_pool_area() so that the DMA alignment mask is
+> reduced based on the required alignment of the allocation.
+> 
+> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
+> Reported-by: Nicolin Chen <nicolinc@nvidia.com>
+> Link: https://lore.kernel.org/r/cover.1707851466.git.nicolinc@nvidia.com
+> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+> Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  kernel/dma/swiotlb.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index c20324fba814..c381a7ed718f 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -981,8 +981,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+>  	dma_addr_t tbl_dma_addr =
+>  		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
+>  	unsigned long max_slots = get_max_slots(boundary_mask);
+> -	unsigned int iotlb_align_mask =
+> -		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
+> +	unsigned int iotlb_align_mask = dma_get_min_align_mask(dev);
+>  	unsigned int nslots = nr_slots(alloc_size), stride;
+>  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+>  	unsigned int index, slots_checked, count = 0, i;
+> @@ -993,6 +992,14 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+>  	BUG_ON(!nslots);
+>  	BUG_ON(area_index >= pool->nareas);
+>  
+> +	/*
+> +	 * Ensure that the allocation is at least slot-aligned and update
+> +	 * 'iotlb_align_mask' to ignore bits that will be preserved when
+> +	 * offsetting into the allocation.
+> +	 */
+> +	alloc_align_mask |= (IO_TLB_SIZE - 1);
+> +	iotlb_align_mask &= ~alloc_align_mask;
+> +
 
-I think (and *hope*) all the semantic annoyances got sorted out, and I
-don't think there are any realistic size advantages to not enabling
-CONFIG_FS_PID.
+I have started writing the KUnit test suite, and the results look
+incorrect to me for this case.
 
-Is there some fundamental reason for that config entry to exist?
+I'm calling swiotlb_tbl_map_single() with:
 
-            Linus
+* alloc_align_mask = 0xfff
+* a device with min_align_mask = 0xfff
+* the 12 lowest bits of orig_addr are 0xfa0
+
+The min_align_mask becomes zero after the masking added by this patch,
+and the 12 lowest bits of the returned address are 0x7a0, i.e. not
+equal to 0xfa0.
+
+In other words, the min_align_mask constraint is not honored. Of course,
+given the above values, it is not possible to honor both min_align_mask
+and alloc_align_mask. I find it somewhat surprising that NVMe does not
+in fact require that the NVME_CTRL_PAGE_SHIFT low bits are preserved,
+as suggested by Nicolin's successful testing.
+
+Why is that?
+
+Does IOMMU do some additional post-processing of the bounce buffer
+address to restore the value of bit 11?
+
+Or is this bit always zero in all real-world scenarios?
+
+Petr T
 
