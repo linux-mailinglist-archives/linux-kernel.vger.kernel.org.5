@@ -1,458 +1,235 @@
-Return-Path: <linux-kernel+bounces-99351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 841EF87871B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:15:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63E22878720
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB05028167E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:15:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAB2D1F21A16
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E7953819;
-	Mon, 11 Mar 2024 18:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eFuoWzGV"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50B653E12;
+	Mon, 11 Mar 2024 18:17:16 +0000 (UTC)
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C075D3BB29;
-	Mon, 11 Mar 2024 18:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6F5537E3;
+	Mon, 11 Mar 2024 18:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710180945; cv=none; b=i3jHdduU41GJnbwrlu1/bvyhHSwlIofMYTGYI0lSvCmuRqNGeIMBFGTOTD9/bHDUcj3Lpw7vG+iRP4BQyoGIEVevnK5arxi/if5iUZTrx1Nry3wk41NRyb82vixOTGkVQwiBrTgcyKdSUTgIK5IMLxlhmL0LCbp1Z7AO4TyJlI4=
+	t=1710181036; cv=none; b=hKKjYYXr57ePfOrUXoLBvwR9XmRo8rDIlR2ydRgkX/M8i00OGw/CiuuHqkcAP2rJ5NXMpfXBe57/96vpsPEYwvSsOq6rzS7hyBqGVJnWxhOqMt2wAIk/ZmJ3v8oJjLp02/ZUhgvZZctAqApiA6t53t+cDBiw8lvZfrrS1hZFRs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710180945; c=relaxed/simple;
-	bh=KiDv1YYSDek2uDTyFZnCg9alxLJ7vbm4DEJwqRsYRFg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kj98U9lRczSyym0QxlFcV1veeEjtMXhuHR/psaD408k+NfcpMIbIrstHSUEHHpshVVHdjP4LgbCXMHVV0LefFQSezdNrGwtX6iqkjWkLIferZvQvaTjg85Ti5Grxhpzy31Vz1EBXNwpmiDtBUNp0r2xh8fRExNBSAI8RT1bZ9Vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eFuoWzGV; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BI0Rmv012781;
-	Mon, 11 Mar 2024 18:15:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=kaxqx2bkBJWILw3UWZdF8GUlds++zvf3GmLgcvyUvgY=;
- b=eFuoWzGV05c1c4tLTig5fofL1l7OhYRhyLoR/iL41dKujFEUxB7fzpD+8zrAFvq210rV
- 7NFIHtgzV98Xd5Kcq2HEpjmoHUbW4spCrKQ1UCHkwNxyi2/EbluxXzVOgw69tMbGBAm8
- Qa6U+DTSCj4X+lj1pJREXVjAkkkWXPSnfbV48fcHfPTBfRrPMKAnCt4i0LxbaWddmuQU
- sk/x7hYyo443gmoA3Kq5uq2l++Ga6STVKj8imMWIBJBq+fJumMYivkIo4lnHHz+W8AZ6
- HTCFOJQNbi5WHzmbf7Ro4Iz+FbwF5njH2s2HeeSMfA/VJeQkIwA/BYAw6TU69pYOFc5r Eg== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt6ux89g5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 18:15:40 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BFxEo5015485;
-	Mon, 11 Mar 2024 18:15:39 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws2fyjckg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 18:15:39 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BIFaUt14090812
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Mar 2024 18:15:38 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5FE3358065;
-	Mon, 11 Mar 2024 18:15:36 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BCF4A58056;
-	Mon, 11 Mar 2024 18:15:35 +0000 (GMT)
-Received: from [9.61.27.161] (unknown [9.61.27.161])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 11 Mar 2024 18:15:35 +0000 (GMT)
-Message-ID: <0389f521-e9e2-43d4-8d78-87695853a536@linux.ibm.com>
-Date: Mon, 11 Mar 2024 14:15:35 -0400
+	s=arc-20240116; t=1710181036; c=relaxed/simple;
+	bh=i30HJipBERyBeNnBGt/AmRXW/1xlVlVVTCl0skxzybE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u5v988Gs2bwszM2zBqHkGsMJr616GSII3qN1kfx2MlR+SJPqz5NjW5KKnGCOHpRJ8uqSh6muTEelGBn+F3U/X+6R2ZDv5QHU0Q6CrLGIcs85MZkztfgsEhOPcnzBnwUhHDerhTYDBpskNiop+Y0bMtP37vs9vFuxqfYNsZ/2qpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29a8911d11cso2584713a91.1;
+        Mon, 11 Mar 2024 11:17:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710181034; x=1710785834;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=inO+ZkWQOzLmMHjS1ustIMza3dommiYmwCPrQAo/hpg=;
+        b=B6Dr62QWJEwawfEWmKCUNZ/Q6MWMHtQ/l658d7ypWr8J9vlqoPv07kNFKIG713ZZtb
+         QYW84wDqe3MyHveskN/4VONJDCKUlr3FlVMh/YLKUjh2A1cSEFlx+edTYZLitpGfpkYZ
+         QQBBFnZbP2Ln43m9oyRCvF4APjY4FTX4ey94C5kSRRERFCIkFMXjxMIge2MJbhYh8OAk
+         gmtV0wfnrUYR1kVsiLcQzqkR6FYo9DjO2tKI05x90D+JUn2Xrpfb2eAgvybOpyLk9eE1
+         +QnIDVjg6UYWNbywpdCt0efEREpe5dUUhTYYfeiBDTNjKzFuoxnv55wbTq1y7qhODhZF
+         Q5wA==
+X-Forwarded-Encrypted: i=1; AJvYcCURbZgkAUGjH1+3z1B1siRWPaBmWGIaVVAlc6v5WPAOXB+qpKHslfE73DhekrOnvwvYbQFSid0rLwEvLCm34TLAwqii4NVXVbtxwibBj69eMYXdxTDtxoI9l2FaLHg8ZLl3Ed+y7sPQ0tltOcz+2g==
+X-Gm-Message-State: AOJu0Yyh5YyFYSB21JXQGbo/WDZXiT1JUvurl8q9NgSO7NkNQMznkS5b
+	EzyHGcUEKrfuyUGjZp1lCMJO8Vvsy2FAs2W5kzs6tzckcK18fC2TwjRMlCt8dZGsdiFwN1biMHQ
+	Fb8PiGyy/FTTKKblNoqUg6jK5gTc=
+X-Google-Smtp-Source: AGHT+IG+GzYXuKcTtjLrrDQoKIvbdrrpEw5q8H0qipehz120xzyhA2PoOsg2xGaLG5crSVElf91HyS3P+xOzG7JpSHA=
+X-Received: by 2002:a17:90a:fb98:b0:29b:b322:1a1d with SMTP id
+ cp24-20020a17090afb9800b0029bb3221a1dmr1375742pjb.21.1710181033924; Mon, 11
+ Mar 2024 11:17:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/5] s390/vfio-ap: Add write support to sysfs attr
- ap_config
-Content-Language: en-US
-To: "Jason J. Herne" <jjherne@linux.ibm.com>, linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com, borntraeger@de.ibm.com,
-        agordeev@linux.ibm.com, gor@linux.ibm.com
-References: <20240306140843.10782-1-jjherne@linux.ibm.com>
- <20240306140843.10782-5-jjherne@linux.ibm.com>
-From: Anthony Krowiak <akrowiak@linux.ibm.com>
-In-Reply-To: <20240306140843.10782-5-jjherne@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: l7r5iZOPwMCMEG3-ZZHlHi3LeUipomrk
-X-Proofpoint-ORIG-GUID: l7r5iZOPwMCMEG3-ZZHlHi3LeUipomrk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 priorityscore=1501 spamscore=0 adultscore=0
- phishscore=0 malwarescore=0 suspectscore=0 impostorscore=0 mlxscore=0
- clxscore=1015 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2403110139
+References: <20240309132710.1055941-1-retpolanne@posteo.net>
+In-Reply-To: <20240309132710.1055941-1-retpolanne@posteo.net>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 11 Mar 2024 11:17:01 -0700
+Message-ID: <CAM9d7cjhiua5rBj=CTDJJC-XJN6PzKxQ5DsooJGEz0QcQAry7w@mail.gmail.com>
+Subject: Re: [PATCH v1] perf lock contention: skip traceiter functions
+To: Anne Macedo <retpolanne@posteo.net>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hello Anne,
 
-On 3/6/24 9:08 AM, Jason J. Herne wrote:
-> Allow writing a complete set of masks to ap_config. Doing so will
-> cause the vfio-ap driver to replace the vfio-ap mediated device's entire
-> state with the given set of masks. If the given state cannot be set, then
-
-
-Just a nit, but it will not replace the vfio_ap mdev's entire state; it 
-will replace the masks that comprise the matrix and control_domain 
-attributes which comprise the guest's AP configuration profile (or the 
-masks identifying the adapters, domains and control domains which a 
-guest has permission to access). The guest_matrix attribute may or may 
-not match the masks written via this sysfs interface.
-
-
-> no changes are made to the vfio-ap mediated device.
+On Sat, Mar 9, 2024 at 5:27=E2=80=AFAM Anne Macedo <retpolanne@posteo.net> =
+wrote:
 >
-> The format of the data written to ap_config is as follows:
-> {amask},{dmask},{cmask}\n
+> The perf lock contention program currently shows the caller of the locks
+> as __traceiter_contention_begin+0x??. This caller can be ignored, as it i=
+s
+> from the traceiter itself. Instead, it should show the real callers for
+> the locks.
 >
-> \n is a newline character.
+> When fiddling with the --stack-skip parameter, the actual callers for
+> the locks start to show up. However, just ignore the
+> __traceiter_contention_begin and the __traceiter_contention_end symbols
+> so the actual callers will show up.
 >
-> amask, dmask, and cmask are masks identifying which adapters, domains,
-> and control domains should be assigned to the mediated device.
+> Before this patch is applied:
 >
-> The format of a mask is as follows:
-> 0xNN..NN
+> sudo perf lock con -a -b -- sleep 3
+>  contended   total wait     max wait     avg wait         type   caller
 >
-> Where NN..NN is 64 hexadecimal characters representing a 256-bit value.
-> The leftmost (highest order) bit represents adapter/domain 0.
-
-
-I won't reject giving an r-b for the above, but could be more 
-informative; maybe more along the lines of how this is described in all 
-documentation:
-
-
-Where NN..NN is 64 hexadecimal characters comprising a bitmap containing 
-256 bits. Each bit, from left
-
-to right, corresponds to a number from 0 to 255. If a bit is set, the
-
-corresponding adapter, domain or control domain is assigned to the 
-vfio_ap mdev.
-
-You could also mention that setting an adapter or domain number greater 
-than the maximum allowed for
-
-for the system will result in an error.
-
-
+>          8      2.33 s       2.28 s     291.18 ms     rwlock:W   __tracei=
+ter_contention_begin+0x44
+>          4      2.33 s       2.28 s     582.35 ms     rwlock:W   __tracei=
+ter_contention_begin+0x44
+>          7    140.30 ms     46.77 ms     20.04 ms     rwlock:W   __tracei=
+ter_contention_begin+0x44
+>          2     63.35 ms     33.76 ms     31.68 ms        mutex   trace_co=
+ntention_begin+0x84
+>          2     46.74 ms     46.73 ms     23.37 ms     rwlock:W   __tracei=
+ter_contention_begin+0x44
+>          1     13.54 us     13.54 us     13.54 us        mutex   trace_co=
+ntention_begin+0x84
+>          1      3.67 us      3.67 us      3.67 us      rwsem:R   __tracei=
+ter_contention_begin+0x44
 >
-> For an example set of masks that represent your mdev's current
-> configuration, simply cat ap_config.
+> Before this patch is applied - using --stack-skip 5
 >
-> This attribute is intended to be used by an mdevctl callout script
-> supporting the mdev type vfio_ap-passthrough to atomically update a
-> vfio-ap mediated device's state.
+> sudo perf lock con --stack-skip 5 -a -b -- sleep 3
+>  contended   total wait     max wait     avg wait         type   caller
 >
-> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+>          2      2.24 s       2.24 s       1.12 s      rwlock:W   do_epoll=
+_wait+0x5a0
+>          4      1.65 s     824.21 ms    412.08 ms     rwlock:W   do_exit+=
+0x338
+>          2    824.35 ms    824.29 ms    412.17 ms     spinlock   get_sign=
+al+0x108
+>          2    824.14 ms    824.14 ms    412.07 ms     rwlock:W   release_=
+task+0x68
+>          1     25.22 ms     25.22 ms     25.22 ms        mutex   cgroup_k=
+n_lock_live+0x58
+>          1     24.71 us     24.71 us     24.71 us     spinlock   do_exit+=
+0x44
+>          1     22.04 us     22.04 us     22.04 us      rwsem:R   lock_mm_=
+and_find_vma+0xb0
+>
+> After this patch is applied:
+>
+> sudo ./perf lock con -a -b -- sleep 3
+>  contended   total wait     max wait     avg wait         type   caller
+>
+>          4      4.13 s       2.07 s       1.03 s      rwlock:W   release_=
+task+0x68
+>          2      2.07 s       2.07 s       1.03 s      rwlock:R   mm_updat=
+e_next_owner+0x50
+>          2      2.07 s       2.07 s       1.03 s      rwlock:W   do_exit+=
+0x338
+>          1     41.56 ms     41.56 ms     41.56 ms        mutex   cgroup_k=
+n_lock_live+0x58
+>          2     36.12 us     18.83 us     18.06 us     rwlock:W   do_exit+=
+0x338
+>
+> changes since v0:
+>
+> - skip trace_contention functions
+> - use sym->end instead of __traceiter_contention_end for text_end
+>
+> Signed-off-by: Anne Macedo <retpolanne@posteo.net>
 > ---
->   drivers/s390/crypto/vfio_ap_ops.c     | 172 ++++++++++++++++++++++++--
->   drivers/s390/crypto/vfio_ap_private.h |   6 +-
->   2 files changed, 162 insertions(+), 16 deletions(-)
+>  tools/perf/util/machine.c | 17 +++++++++++++++++
+>  tools/perf/util/machine.h |  2 +-
+>  2 files changed, 18 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 259130347d00..c382e46f620f 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -1106,19 +1106,22 @@ static void vfio_ap_mdev_unlink_adapter(struct ap_matrix_mdev *matrix_mdev,
->   	}
->   }
->   
-> -static void vfio_ap_mdev_hot_unplug_adapter(struct ap_matrix_mdev *matrix_mdev,
-> -					    unsigned long apid)
-> +static void vfio_ap_mdev_hot_unplug_adapters(struct ap_matrix_mdev *matrix_mdev,
-> +					    unsigned long *apids)
->   {
->   	struct vfio_ap_queue *q, *tmpq;
->   	struct list_head qlist;
-> +	unsigned long apid;
->   
->   	INIT_LIST_HEAD(&qlist);
-> -	vfio_ap_mdev_unlink_adapter(matrix_mdev, apid, &qlist);
->   
-> -	if (test_bit_inv(apid, matrix_mdev->shadow_apcb.apm)) {
-> -		clear_bit_inv(apid, matrix_mdev->shadow_apcb.apm);
-> -		vfio_ap_mdev_update_guest_apcb(matrix_mdev);
-> +	for_each_set_bit_inv(apid, apids, AP_DEVICES) {
-> +		vfio_ap_mdev_unlink_adapter(matrix_mdev, apid, &qlist);
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 527517db3182..db443947ccd1 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -3266,6 +3266,14 @@ bool machine__is_lock_function(struct machine *mac=
+hine, u64 addr)
+>
+>                 sym =3D machine__find_kernel_symbol_by_name(machine, "__l=
+ock_text_end", &kmap);
+>                 machine->lock.text_end =3D map__unmap_ip(kmap, sym->start=
+);
 > +
-> +		if (test_bit_inv(apid, matrix_mdev->shadow_apcb.apm))
-> +			clear_bit_inv(apid, matrix_mdev->shadow_apcb.apm);
->   	}
-> +	vfio_ap_mdev_update_guest_apcb(matrix_mdev);
+> +               sym =3D machine__find_kernel_symbol_by_name(machine, "__t=
+raceiter_contention_begin", &kmap);
+
+Unlike __sched_text_{start,end} and __lock_text_{start,end} I guess
+this traceiter thing is optional so it might not be there.  You need to
+handle if it's NULL.
+
+I think it depends on the kernel version and configuration.  I remember
+I saw a different symbol on old kernels.  But it'd be hard to handle all
+the cases.  Let's have a single trace text section in the struct machine
+and use __traceiter_contention_begin only.  If it's not found you can
+fallback to trace_contention_begin.
+
+Thanks,
+Namhyung
 
 
-I wouldn't do the hot plug unless at least one of the APIDs in the apids 
-parameter is assigned to matrix_mdev->shadow_apcb. The 
-vfio_ap_mdev_update_guest_apcb function calls the 
-kvm_arch_crypto_set_masks function which takes the guest's VCPUs out of 
-SIE, copies the apm/aqm/adm from matrix_mdev->shadow_apcb to the APCB in 
-the SIE state description, then restores the VCPUs to SIE. If no changes 
-have been made to matrix_mdev->shadow_apcb, then it doesn't make sense 
-to impact the guest in such a manner. So maybe something like this:
-
-if (bitmap_intersects(apids, matrix_mdev->shadow_apcb.apm, AP_DEVICES))
-
-         vfio_ap_mdev_update_guest_apcb(matrix_mdev)
-
-
-
->   
->   	vfio_ap_mdev_reset_qlist(&qlist);
->   
-> @@ -1128,6 +1131,15 @@ static void vfio_ap_mdev_hot_unplug_adapter(struct ap_matrix_mdev *matrix_mdev,
->   	}
->   }
->   
-> +static void vfio_ap_mdev_hot_unplug_adapter(struct ap_matrix_mdev *matrix_mdev,
-> +					    unsigned long apid)
-> +{
-> +	DECLARE_BITMAP(apids, AP_DEVICES);
-
-
-I'm not sure about this, but should the apids bitmap be zeroed out?
-
-memset(apids, 0, sizeof(apids));
-
-
+> +               machine->traceiter.text_start =3D map__unmap_ip(kmap, sym=
+->start);
+> +               machine->traceiter.text_end =3D map__unmap_ip(kmap, sym->=
+end);
 > +
-> +	set_bit_inv(apid, apids);
-> +	vfio_ap_mdev_hot_unplug_adapters(matrix_mdev, apids);
-> +}
+> +               sym =3D machine__find_kernel_symbol_by_name(machine, "tra=
+ce_contention_begin", &kmap);
+> +               machine->trace.text_start =3D map__unmap_ip(kmap, sym->st=
+art);
+> +               machine->trace.text_end =3D map__unmap_ip(kmap, sym->end)=
+;
+>         }
+>
+>         /* failed to get kernel symbols */
+> @@ -3280,5 +3288,14 @@ bool machine__is_lock_function(struct machine *mac=
+hine, u64 addr)
+>         if (machine->lock.text_start <=3D addr && addr < machine->lock.te=
+xt_end)
+>                 return true;
+>
+> +       /* traceiter functions currently don't have their own section
+> +        * but we consider them lock functions
+> +        */
+> +       if (machine->traceiter.text_start <=3D addr && addr < machine->tr=
+aceiter.text_end)
+> +               return true;
 > +
->   /**
->    * unassign_adapter_store - parses the APID from @buf and clears the
->    * corresponding bit in the mediated matrix device's APM
-> @@ -1288,19 +1300,22 @@ static void vfio_ap_mdev_unlink_domain(struct ap_matrix_mdev *matrix_mdev,
->   	}
->   }
->   
-> -static void vfio_ap_mdev_hot_unplug_domain(struct ap_matrix_mdev *matrix_mdev,
-> -					   unsigned long apqi)
-> +static void vfio_ap_mdev_hot_unplug_domains(struct ap_matrix_mdev *matrix_mdev,
-> +					   unsigned long *apqis)
->   {
->   	struct vfio_ap_queue *q, *tmpq;
->   	struct list_head qlist;
-> +	unsigned long apqi;
->   
->   	INIT_LIST_HEAD(&qlist);
-> -	vfio_ap_mdev_unlink_domain(matrix_mdev, apqi, &qlist);
->   
-> -	if (test_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm)) {
-> -		clear_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm);
-> -		vfio_ap_mdev_update_guest_apcb(matrix_mdev);
-> +	for_each_set_bit_inv(apqi, apqis, AP_DOMAINS) {
-> +		vfio_ap_mdev_unlink_domain(matrix_mdev, apqi, &qlist);
+> +       if (machine->trace.text_start <=3D addr && addr < machine->trace.=
+text_end)
+> +               return true;
 > +
-> +		if (test_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm))
-> +			clear_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm);
->   	}
-> +	vfio_ap_mdev_update_guest_apcb(matrix_mdev);
-
-
-Same comment here as for vfio_ap_mdev_hot_unplug_adapters function.
-
-
->   
->   	vfio_ap_mdev_reset_qlist(&qlist);
->   
-> @@ -1310,6 +1325,15 @@ static void vfio_ap_mdev_hot_unplug_domain(struct ap_matrix_mdev *matrix_mdev,
->   	}
->   }
->   
-> +static void vfio_ap_mdev_hot_unplug_domain(struct ap_matrix_mdev *matrix_mdev,
-> +					   unsigned long apqi)
-> +{
-> +	DECLARE_BITMAP(apqis, AP_DOMAINS);
-
-
-See comment/question in vfio_ap_mdev_hot_unplug_adapter function.
-
-
-> +
-> +	set_bit_inv(apqi, apqis);
-> +	vfio_ap_mdev_hot_unplug_domains(matrix_mdev, apqis);
-> +}
-> +
->   /**
->    * unassign_domain_store - parses the APQI from @buf and clears the
->    * corresponding bit in the mediated matrix device's AQM
-> @@ -1577,10 +1601,132 @@ static ssize_t ap_config_show(struct device *dev, struct device_attribute *attr,
->   	return idx;
->   }
->   
-> +/* Number of characters needed for a complete hex mask representing the bits in ..  */
-> +#define AP_DEVICES_STRLEN	(AP_DEVICES/4 + 3)
-> +#define AP_DOMAINS_STRLEN	(AP_DOMAINS/4 + 3)
-> +#define AP_CONFIG_STRLEN	(AP_DEVICES_STRLEN + 2 * AP_DOMAINS_STRLEN)
-> +
-> +static int parse_bitmap(char **strbufptr, unsigned long *bitmap, int nbits)
-> +{
-> +	char *curmask;
-> +
-> +	curmask = strsep(strbufptr, ",\n");
-> +	if (!curmask)
-> +		return -EINVAL;
-> +
-> +	bitmap_clear(bitmap, 0, nbits);
-> +	return ap_hex2bitmap(curmask, bitmap, nbits);
-> +}
-> +
-> +static int ap_matrix_length_check(struct ap_matrix_mdev *matrix_mdev)
-
-
-We're not really checking the matrix length here, we're checking whether 
-any set bits exceed that maximum value, so maybe something like:
-
-ap_matrix_max_bitnum_check(struct ap_matrix_mdev *matrix_mdev)?
-
-Not critical though.
-
-
-> +{
-> +	unsigned long bit;
-> +
-> +	for_each_set_bit_inv(bit, matrix_mdev->matrix.apm, AP_DEVICES) {
-> +		if (bit > matrix_mdev->matrix.apm_max)
-> +			return -ENODEV;
-> +	}
-> +
-> +	for_each_set_bit_inv(bit, matrix_mdev->matrix.aqm, AP_DOMAINS) {
-> +		if (bit > matrix_mdev->matrix.aqm_max)
-> +			return -ENODEV;
-> +	}
-> +
-> +	for_each_set_bit_inv(bit, matrix_mdev->matrix.adm, AP_DOMAINS) {
-> +		if (bit > matrix_mdev->matrix.adm_max)
-> +			return -ENODEV;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void ap_matrix_copy(struct ap_matrix *dst, struct ap_matrix *src)
-> +{
-> +	bitmap_copy(dst->apm, src->apm, AP_DEVICES);
-> +	bitmap_copy(dst->aqm, src->aqm, AP_DOMAINS);
-> +	bitmap_copy(dst->adm, src->adm, AP_DOMAINS);
-> +}
-> +
->   static ssize_t ap_config_store(struct device *dev, struct device_attribute *attr,
->   			       const char *buf, size_t count)
->   {
-> -	return count;
-> +	struct ap_matrix_mdev *matrix_mdev = dev_get_drvdata(dev);
-> +	struct ap_matrix m_new, m_old, m_added, m_removed;
-> +	DECLARE_BITMAP(apm_filtered, AP_DEVICES);
-> +	unsigned long newbit;
-> +	char *newbuf, *rest;
-> +	int rc = count;
-> +	bool do_update;
-> +
-> +	newbuf = rest = kstrndup(buf, AP_CONFIG_STRLEN, GFP_KERNEL);
-> +	if (!newbuf)
-> +		return -ENOMEM;
-> +
-> +	mutex_lock(&ap_perms_mutex);
-> +	get_update_locks_for_mdev(matrix_mdev);
-> +
-> +	/* Save old state */
-> +	ap_matrix_copy(&m_old, &matrix_mdev->matrix);
-> +
-> +	if (parse_bitmap(&rest, m_new.apm, AP_DEVICES) ||
-> +	    parse_bitmap(&rest, m_new.aqm, AP_DOMAINS) ||
-> +	    parse_bitmap(&rest, m_new.adm, AP_DOMAINS)) {
-> +		rc = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	bitmap_andnot(m_removed.apm, m_old.apm, m_new.apm, AP_DEVICES);
-> +	bitmap_andnot(m_removed.aqm, m_old.aqm, m_new.aqm, AP_DOMAINS);
-> +	bitmap_andnot(m_added.apm, m_new.apm, m_old.apm, AP_DEVICES);
-> +	bitmap_andnot(m_added.aqm, m_new.aqm, m_old.aqm, AP_DOMAINS);
-> +
-> +	/* Need new bitmaps in matrix_mdev for validation */
-> +	ap_matrix_copy(&matrix_mdev->matrix, &m_new);
-> +
-> +	/* Ensure new state is valid, else undo new state */
-> +	rc = vfio_ap_mdev_validate_masks(matrix_mdev);
-> +	if (rc) {
-> +		ap_matrix_copy(&matrix_mdev->matrix, &m_old);
-> +		goto out;
-> +	}
-> +	rc = ap_matrix_length_check(matrix_mdev);
-> +	if (rc) {
-> +		ap_matrix_copy(&matrix_mdev->matrix, &m_old);
-> +		goto out;
-> +	}
-> +	rc = count;
-> +
-> +	/* Need old bitmaps in matrix_mdev for unplug/unlink */
-> +	ap_matrix_copy(&matrix_mdev->matrix, &m_old);
-> +
-> +	/* Unlink removed adapters/domains */
-> +	vfio_ap_mdev_hot_unplug_adapters(matrix_mdev, m_removed.apm);
-> +	vfio_ap_mdev_hot_unplug_domains(matrix_mdev, m_removed.aqm);
-> +
-> +	/* Need new bitmaps in matrix_mdev for linking new adapters/domains */
-> +	ap_matrix_copy(&matrix_mdev->matrix, &m_new);
-> +
-> +	/* Link newly added adapters */
-> +	for_each_set_bit_inv(newbit, m_added.apm, AP_DEVICES)
-> +		vfio_ap_mdev_link_adapter(matrix_mdev, newbit);
-> +
-> +	for_each_set_bit_inv(newbit, m_added.aqm, AP_DOMAINS)
-> +		vfio_ap_mdev_link_domain(matrix_mdev, newbit);
-> +
-> +	/* filter resources not bound to vfio-ap */
-> +	do_update = vfio_ap_mdev_filter_matrix(matrix_mdev, apm_filtered);
-> +	do_update |= vfio_ap_mdev_filter_cdoms(matrix_mdev);
-> +
-> +	/* Apply changes to shadow apbc if things changed */
-> +	if (do_update) {
-> +		vfio_ap_mdev_update_guest_apcb(matrix_mdev);
-> +		reset_queues_for_apids(matrix_mdev, apm_filtered);
-> +	}
-> +out:
-> +	release_update_locks_for_mdev(matrix_mdev);
-> +	mutex_unlock(&ap_perms_mutex);
-> +	kfree(newbuf);
-> +	return rc;
->   }
->   static DEVICE_ATTR_RW(ap_config);
->   
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index 98d37aa27044..437a161c8659 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -75,11 +75,11 @@ extern struct ap_matrix_dev *matrix_dev;
->    */
->   struct ap_matrix {
->   	unsigned long apm_max;
-> -	DECLARE_BITMAP(apm, 256);
-> +	DECLARE_BITMAP(apm, AP_DEVICES);
->   	unsigned long aqm_max;
-> -	DECLARE_BITMAP(aqm, 256);
-> +	DECLARE_BITMAP(aqm, AP_DOMAINS);
->   	unsigned long adm_max;
-> -	DECLARE_BITMAP(adm, 256);
-> +	DECLARE_BITMAP(adm, AP_DOMAINS);
->   };
->   
->   /**
+>         return false;
+>  }
+> diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+> index e28c787616fe..4312f6db6de0 100644
+> --- a/tools/perf/util/machine.h
+> +++ b/tools/perf/util/machine.h
+> @@ -49,7 +49,7 @@ struct machine {
+>         struct {
+>                 u64       text_start;
+>                 u64       text_end;
+> -       } sched, lock;
+> +       } sched, lock, traceiter, trace;
+>         pid_t             *current_tid;
+>         size_t            current_tid_sz;
+>         union { /* Tool specific area */
+> --
+> 2.39.2
+>
 
