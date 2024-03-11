@@ -1,86 +1,63 @@
-Return-Path: <linux-kernel+bounces-98488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3532C877AC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:49:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A0C877AC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:49:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67ACE1C213B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:49:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D347628105C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7360ED516;
-	Mon, 11 Mar 2024 05:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A81A10A16;
+	Mon, 11 Mar 2024 05:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iMRGqWdV"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oERJMVAJ"
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A24BAD59
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 05:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62538FC1E
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 05:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710136148; cv=none; b=P8HvsryeukWr83aqyQqLHtp9bn5ZYiwIftWK+0TG/Ox/neAnFH7higawq0uohd4rI57i02d3NLu6IMra1kzxRj2K7ejvKyS8YX6KPLWwl3/qo3ImoHttGko9rBAzOHNjfMP4f+R6JVN2QZZohM9poGnQdy+Um7buRTy+Gjd+XRk=
+	t=1710136156; cv=none; b=EZrUkgiJEqF6o40cQc57S7Or6x2Aw0IhPe7oUp0ZBG3yPNc0xzQDaBK3+p1yjwhT/oZzBEAGN6naucqQqfRamnXzr70pGP1MmlOPn+oMg0Mv2fZXN4PmYXVqasyQEtTdenYgaDIgwoseUrqmpIXPj2kbMOkl++kvrUc4zj8rCPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710136148; c=relaxed/simple;
-	bh=iJq8I4665B6tXtRy7Ozf48bVxsc7zHGXEtSdRs+nb6M=;
+	s=arc-20240116; t=1710136156; c=relaxed/simple;
+	bh=Z6cqolKDpJQd55JrfdXxt3JoNMl424ciH8Eaawonlck=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AWWWZIIej8SwxlWzjbwThcdKhdQJ+72Q2ZBvJikjFAr8TrXwgbs957e85D50HKm8MkTScLZ1+fxe5IAQQagnlU+dHOf0ASEWm1miFQSrut0dKUELNkay4j0a4FtykW8dgMfjEYUkiVzTaWOOi7nwK19g2U0eKrz8clQqHdoD460=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iMRGqWdV; arc=none smtp.client-ip=209.85.210.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e0f43074edso2810194a34.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 22:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710136146; x=1710740946; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+4QvIE9VzTbAgKqsifgCBQZyOLX6yUspxfOa9hY1WXE=;
-        b=iMRGqWdVcy0+N1qlpZ2WivZ2VZ3Chl5g3eF1SPHb9+L+kZUDhuR1lfUF6hIfZvDgaf
-         /BKCO0YfpLRhvOAGoiCGv1VFtLjoVV5QPhgd+HPoBmn0HlShdxYTPWNV0TwQ/YchbwBv
-         rKexnq22fW8CDo0R/o41w9ahPTTY2Razcb/ubJJ0FsDFuiVBlujBjwlHN76FoYySdDwO
-         PZghcv32SrOUo++viRCDg3/UwEzBLA451crUPp4Zfq9+iHoA+CZT7WaEOU77vQvznIXN
-         +H1TqNN/4GW7uUHsUnXKOjhM1xzyTFr+NGHqI0dGh9mSWuHbrBYG9HdZILrgPGlGzU1p
-         SHSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710136146; x=1710740946;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+4QvIE9VzTbAgKqsifgCBQZyOLX6yUspxfOa9hY1WXE=;
-        b=IA/h7mFWk4pzLW0Qo9w3iEGHvgIxtxN8sooYO+ybyG8U6thqoNAZ0Hrhardk9eKAf8
-         nspaIPcf/Nnhb4HrQBeXdlENOh17HBiNrXpiIXjq+yhCMrNrUY0TsXcLsg5ItBgjIPoX
-         vXPzCpHMSCnhqtjDsr+F0/fq/SU1M9wxWeM/SelFHDdV5ZlETnXULT4vhX/qj+aQWkne
-         tJdeH2FlPfTGqew0TVMkTIOQhTCSE+cwwu3NoRUC90LHl3nGJAoT6Ctk3p8I2Pnvcg1u
-         TaAoWDbDBCu6eX8f3fg7FHGaSpw8e7dtSeimie6b640zR5bNxaBTzoJ9pXBeOCr3I0rQ
-         wyNw==
-X-Forwarded-Encrypted: i=1; AJvYcCVA4jc0bMZMhzBbl6NcOPU+Ljps6lqPQaeH63jHG09bYEJv8aAYlWQbS2bGfNo2ZrbxhMhLtuu0CHvY9OKc3mdtkoTmEuBfdNiLI0Yg
-X-Gm-Message-State: AOJu0YxGgHWDWqq455Z/+ycO58qxb/6D2F8kqT/Ku5k1FSUjUhTm59w1
-	dS3YiGN+xr/PLbDh2x/o6oYKUn/iqg3LQuLY9IhCPdAda7aiHJT7Qg1tbcnp7Bg=
-X-Google-Smtp-Source: AGHT+IGTc9RR/qldDCyHa084mMYBDLDFRMOSdRBDHjzvzzZDmDR9cw7Gtzb+pxkEKOvPNI9IDP9zGg==
-X-Received: by 2002:a9d:618f:0:b0:6e4:767d:a085 with SMTP id g15-20020a9d618f000000b006e4767da085mr4576973otk.24.1710136146150;
-        Sun, 10 Mar 2024 22:49:06 -0700 (PDT)
-Received: from localhost ([122.172.85.206])
-        by smtp.gmail.com with ESMTPSA id d1-20020a654241000000b005cfb6e7b0c7sm2960190pgq.39.2024.03.10.22.49.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 22:49:05 -0700 (PDT)
-Date: Mon, 11 Mar 2024 11:19:03 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Dhruva Gole <d-gole@ti.com>
-Cc: Sibi Sankar <quic_sibis@quicinc.com>, sudeep.holla@arm.com,
-	cristian.marussi@arm.com, rafael@kernel.org,
-	morten.rasmussen@arm.com, dietmar.eggemann@arm.com,
-	lukasz.luba@arm.com, sboyd@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_mdtipton@quicinc.com,
-	linux-arm-msm@vger.kernel.org, nm@ti.com
-Subject: Re: [PATCH V3 1/2] firmware: arm_scmi: Add support for marking
- certain frequencies as boost
-Message-ID: <20240311054903.x5khrkseslgyjn2z@vireshk-i7>
-References: <20240308104410.385631-1-quic_sibis@quicinc.com>
- <20240308104410.385631-2-quic_sibis@quicinc.com>
- <20240311053554.36j2rq3wgtswwoom@dhruva>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kXyHH8jM5xVaCi4NmJAo7lywrFLGJ332ilnwMB1jKiRlaZYChX5wmARNSIqjhdXZ32qTtutXLEOwkv8DjX2mueJ0+WZAmmDxEfI6mczqU+aXh8IhPSLkgF50rPBawvdA3IUB58BB59H/qy3cu9n8JfrEJkRkMLiw/upiPY+PRuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oERJMVAJ; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 11 Mar 2024 01:49:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710136152;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nPF/wGUlrmECSHZ02Z5/7MM0dASCOcabKL9s7iF20VE=;
+	b=oERJMVAJEYNR5cNfxivh4EkpcUHWVBNtOjyFQfNZglN71yqjIbZR+jJpG6vJhhlEJ+5/vu
+	RTe7m2axVJZZ9bCkDsD16CLoyamv/pvr1hFUG3fwQlRS2q6HTo8gwXTJAr1DoDt/jyVQ83
+	nqZ0IqyWkb/i76wINxKImvheGWU9IHI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Dave Chinner <david@fromorbit.com>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Neal Gompa <neal@gompa.dev>, linux-fsdevel@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, Miklos Szeredi <mszeredi@redhat.com>, 
+	Christian Brauner <brauner@kernel.org>, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+Message-ID: <nsfwsznghuaeimuk2waym3ioghcviidlgt3ozdzpaozw4g3z3o@o5lttjrqcin4>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
+ <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
+ <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
+ <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
+ <20240308165633.GO6184@frogsfrogsfrogs>
+ <Ze5ppBOFpVm1jyb+@dread.disaster.area>
+ <CAJfpeguu=DCvtU7dudXNncbxvy5joqS1Xp0Yf590UFPna6qZ2A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,19 +66,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240311053554.36j2rq3wgtswwoom@dhruva>
+In-Reply-To: <CAJfpeguu=DCvtU7dudXNncbxvy5joqS1Xp0Yf590UFPna6qZ2A@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On 11-03-24, 11:05, Dhruva Gole wrote:
-> > +		if (freq > sustained_freq)
-> > +			data.turbo = true;
+On Mon, Mar 11, 2024 at 06:30:21AM +0100, Miklos Szeredi wrote:
+> On Mon, 11 Mar 2024 at 03:17, Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > On Fri, Mar 08, 2024 at 08:56:33AM -0800, Darrick J. Wong wrote:
+> > > Should the XFS data and rt volumes be reported with different stx_vol
+> > > values?
+> >
+> > No, because all the inodes are on the data volume and the same inode
+> > can have data on the data volume or the rt volume. i.e. "data on rt,
+> > truncate, clear rt, copy data back into data dev".  It's still the
+> > same inode, and may have exactly the same data, so why should change
+> > stx_vol and make it appear to userspace as being a different inode?
 > 
-> It's simple enough that we can write it as
-> data.turbo = (freq > sustained_freq_khz*1000) ? true : false;
+> Because stx_vol must not be used by userspace to distinguish between
+> unique inodes.  To determine if two inodes are distinct within a
+> filesystem (which may have many volumes) it should query the file
+> handle and compare that.
+> 
+> If we'll have a filesystem that has a different stx_vol but the same
+> fh, all the better.
 
-Or:
+I agree that stx_vol should not be used for uniqueness testing, but
+that's a non sequitar here; Dave's talking about the fact that volume
+isn't a constatn for a given inode on XFS. And that's a good point;
+volumes on XFS don't map to the filesystem path heirarchy in a nice
+clean way like on btrfs and bcachefs (and presumably ZFS).
 
-data.turbo = freq > sustained_freq_khz * 1000;
-
--- 
-viresh
+Subvolumes on btrfs and bcachefs form a tree, and that's something we
+should document about stx_subvol - recursively enumerable things are
+quite nice to work with.
 
