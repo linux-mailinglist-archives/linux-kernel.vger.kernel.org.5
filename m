@@ -1,142 +1,140 @@
-Return-Path: <linux-kernel+bounces-99471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7788788EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14CB38788FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:38:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0CD31F21013
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:29:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9BD91F21285
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E7354FB1;
-	Mon, 11 Mar 2024 19:29:03 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 316F754FB7;
+	Mon, 11 Mar 2024 19:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MnpeOfjR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MnpeOfjR"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84BCB54F95
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A865E53E27
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710185343; cv=none; b=Fzlpx8XHQQzf5InrhZ526bmlpujAUokVtd01DlE4wk4TdN2B1+lBcOGV7j+4xM+aW5ed7/lb7oTzOjqQwd+M4PhzbaqVWhwekTlStTvAf7tg2F7rtTEpJf8gU/W11vj9HEreJAZ7cyHIt9I9YJFVXBcH9JMFdRYT9GG+uGZ7JSk=
+	t=1710185873; cv=none; b=PZiTtv+swVr6CR1iVeDfM6pOyZF3Jr2pAiXnKBNTraMUPVY+BwtVMNLuH5aa7KfPWe9rMhBs0qh4TbLctqFr5Q5rlyxYas2ieBOJq5eLKp6q1JJuml+oEM+FmUHNwSZPy/8Oq8xroLPdcy10ayPWwEaMXIgZKwkc4eIEMgOcq3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710185343; c=relaxed/simple;
-	bh=oIABW2DNy9dOFuOU2pfHQlTmZCb/X3jVT9ZrNe8DWhA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aUxdf9P6TBXygvcC8eM2KgkD40cHXTX6HveADfs7EjMHgGhoMmvxb7seBAWPahX+oakQMZ42AeXZFi/DBwCqgzRwG+5N1Ab1VAGcs/RH7L9KWptHDh3OYz33Gn1Ms6FRPGh/MCfkmsUslqyUqtEurZc9pQJi5erwky7VagOIIfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	s=arc-20240116; t=1710185873; c=relaxed/simple;
+	bh=o05NxM7WZ81q6wAbtVKGEmLaegB5tbOJPwes8Lf1e94=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oM4Yv4ZBHz2dsgj+V4sE7T9PT8MW32Z9bPZPhlXuSghDVBkQJ8ZdFnpHNet/nNT07CqfIsJM552UG45WHg8FcyfAa6a0Oia6sDhT6Al18TlHGSci7/TlnQJciyzOHPgeSvWVXMiQz0LyyPxoE9IkBPOjMMobPZM6yMaZNbt5WpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MnpeOfjR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MnpeOfjR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C932C34FD2;
-	Mon, 11 Mar 2024 19:28:59 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A25A35CACF;
+	Mon, 11 Mar 2024 19:37:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710185868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=909brDHSnvKCvnxGbfXG4mQWSVR9gVM6+h3f/kHoAjc=;
+	b=MnpeOfjRKbz6alYo3GrzstTggZToHeZ/cQfKy7xgIKBto382sVKk7BSfzMK3ZEjrpS3Ia3
+	VlrSAVixDz5J6GkDqXVPM+o/VQ+D9fO98uUG520m7H1KihpHSxOWRIR/Cj4bkBuiBh9LWf
+	fOHFl2ylLHjJRKqiZstafChk0VixHN8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710185868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=909brDHSnvKCvnxGbfXG4mQWSVR9gVM6+h3f/kHoAjc=;
+	b=MnpeOfjRKbz6alYo3GrzstTggZToHeZ/cQfKy7xgIKBto382sVKk7BSfzMK3ZEjrpS3Ia3
+	VlrSAVixDz5J6GkDqXVPM+o/VQ+D9fO98uUG520m7H1KihpHSxOWRIR/Cj4bkBuiBh9LWf
+	fOHFl2ylLHjJRKqiZstafChk0VixHN8=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E16013695;
-	Mon, 11 Mar 2024 19:28:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9BA1A13695;
+	Mon, 11 Mar 2024 19:37:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0nXBHHtb72XkTQAAD6G6ig
-	(envelope-from <hare@suse.de>); Mon, 11 Mar 2024 19:28:59 +0000
-Message-ID: <14c5a294-e68f-441f-8606-31cfb67670b7@suse.de>
-Date: Mon, 11 Mar 2024 20:28:58 +0100
+	id VbL8JYxd72VkUAAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Mon, 11 Mar 2024 19:37:48 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] AFFS update for 6.9
+Date: Mon, 11 Mar 2024 20:30:38 +0100
+Message-ID: <cover.1710185320.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] nvme-fabrics: introduce ref counting for
- nvmf_ctrl_options
-Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>, Sagi Grimberg <sagi@grimberg.me>
-Cc: James Smart <james.smart@broadcom.com>, Keith Busch <kbusch@kernel.org>,
- Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240221132404.6311-1-dwagner@suse.de>
- <20240221132404.6311-4-dwagner@suse.de>
- <342cf4cf-ad14-4fd0-bcab-fe5fcecf4c0a@grimberg.me>
- <3xjjwq56sldxrr3dmcxmzhqjebctrowmfpr3istfqmnitlvpv4@mzjixl3jjnbi>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <3xjjwq56sldxrr3dmcxmzhqjebctrowmfpr3istfqmnitlvpv4@mzjixl3jjnbi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: C932C34FD2
+X-Spamd-Bar: ++
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=MnpeOfjR
+X-Spamd-Result: default: False [2.65 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 URIBL_BLOCKED(0.00)[suse.com:dkim];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_DN_SOME(0.00)[];
+	 DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.04)[87.59%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: 2.65
+X-Spam-Level: **
+X-Rspamd-Queue-Id: A25A35CACF
 X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-On 3/11/24 18:36, Daniel Wagner wrote:
-> On Thu, Mar 07, 2024 at 12:27:43PM +0200, Sagi Grimberg wrote:
->> Why do we need a refcount for an object that has the same exact lifetime
->> as the ctrl itself? It just feels like unneeded complication.
-> 
-> My claim the UAF is also possible with the current code is not correct.
-> Or at least not easy to reproduce. I've re-tested a lot and I couldn't
-> reproduce it.
-> 
-> Though, the UAF is very simple to reproduce with the sync connect patch
-> applied (nvme-fc: wait for initial connect attempt to finish) together
-> with Hannes' patch (nvme: authentication error are always
-> non-retryable):
-> 
-> In this case, the initial connect fails and the resources are removed,
-> while we are waiting in
-> 
-> +       if (!opts->connect_async) {
-> +               enum nvme_ctrl_state state;
-> +
-> +               wait_for_completion(&ctrl->connect_completion);
-> +               state = nvme_ctrl_state(&ctrl->ctrl);
-> +               nvme_fc_ctrl_put(ctrl);
-> +
-> +               if (state != NVME_CTRL_LIVE) {
-> +                       /* Cleanup is handled by the connect state machine */
-> +                       return ERR_PTR(-EIO);
-> +               }
-> +       }
-> 
-> This opens up the race window. While we are waiting here for the
-> completion, the ctrl entry in sysfs is still reachable. Unfortunately,
-> we also fire an uevent which starts another instance of nvme-cli. And
-> the new instance of nvme-cli iterates over sysfs and reads the already
-> freed options object.
-> 
-Curiously enough, I had been digging into better error reporting for 
-nvme-fabrics. And the one thing I came up with is to make the controller
-_options_ as a private pointer to seq_file.
-With that we can allocate and initialize the options during open(),
-and then have write() do the parsing and calling create_ctrl() as usual.
-But read() would then always have access to the option structure, and
-we can use this structure to pass any errors. EG parsing errors could
-be reported by an 'err_mask' field and so on.
+Hi,
 
-That would allow us to report errors back to nvme-cli, and,
-incidentally, also require reference counting.
-Two stones with a bird and all that.
+please pull one change to AFFS that removes use of SLAB_MEM_SPREAD,
+which is going to be removed from MM code. Thanks.
 
-Patch is in testing, and I'll be posting it once I get confirmation.
+----------------------------------------------------------------
+The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
 
+  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
 
-Cheers,
+are available in the Git repository at:
 
-Hannes
--- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/affs-for-6.9
 
+for you to fetch changes up to f7c79a40b575f2b6c156c8bee9a652401bf715b6:
+
+  affs: remove SLAB_MEM_SPREAD flag usage (2024-02-26 11:36:28 +0100)
+
+----------------------------------------------------------------
+affs-for-6.9
+
+----------------------------------------------------------------
+Chengming Zhou (1):
+      affs: remove SLAB_MEM_SPREAD flag usage
+
+ fs/affs/super.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
