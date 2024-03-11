@@ -1,182 +1,99 @@
-Return-Path: <linux-kernel+bounces-99441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBBED878866
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:56:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA250878869
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 432EAB2484D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:56:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A71BF286A9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80EBD54FA2;
-	Mon, 11 Mar 2024 18:54:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xey65aa7"
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA86656745;
+	Mon, 11 Mar 2024 18:55:52 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2DA52F82
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB9E56443;
+	Mon, 11 Mar 2024 18:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710183287; cv=none; b=BVlTdfc2JI5E3Am2thgZiQncDSBBHIkgK/a7RKHnktKu6c+XMw3EBKFRLyAUCVKJVmMcBhmi8H5M8PISUGyAhwtFHeR/gyXTos5c0yjFlPDmB8e4GAcmIuwgUpUCTCe4pKnY6LQkDlhhB+E8x2ZSxEmXbH9ZeUJ7nGLwnVX6M0k=
+	t=1710183352; cv=none; b=JBAQTi8cVcT6ueQz56Cq875Qoswax5fl7cqDEPiJXJd4GPAaTFRvefTi1eIYEVLZAPz4UFDYmnpcYwDrXNl4BFZlUvFmJQRso3ojf6Tx3SFLJrmCC9ogQWIj7r+sZf69Er5/iSGdbLPhOly7vvFSGHhQWVFW9nfFlUZ899x2OX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710183287; c=relaxed/simple;
-	bh=sg1d/ANVhdMJVWpfU8bbvkMp+uD3nzj9x9rv9aGU7ss=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Li38A0c2drftaohUuBo0Cn5IK1kaqyw6w1HVMs0UJsSD9mA2PbhZ98qjTI6vq1KB/VOo2TC6j5WVdG6jNFoQMw2D56HIRLDN8HjrkZBg+km/yX5TFSLB40QHhNpj2+DC/DZWa+o3/5XtLquCnZX00S0ktzQP6lsQPpGR8A/4R78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xey65aa7; arc=none smtp.client-ip=209.85.166.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-366248b78d9so14495ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:54:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710183284; x=1710788084; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9EWPj2I4xpYoZRjyOYAm/kocZbdOlLT2RiNEmzadKaY=;
-        b=xey65aa7VE1wIljt/ixV6xel+/R5udOqzmcbCiIrUaErlg1igTj+xHHwuQCYTzh9up
-         gwX6SRiXKyFi/2K6SzwjHRVVhUiSb/E6H1m293SMrMno++CElm7lah0vjw0nbxBPCKF1
-         1KggYhb+LqBJqmmZ+PjaihjMv1sfV3+JTNBadSbrM+lesNUkMK2Ws9704W07WK2+pPYc
-         6yNgIhKkmJeGhuWAccjBZ+gNrzM1cQggQKYtv4DqDvtm1uRcSM2laMjrvR4ONMWaJcGI
-         5Ebo4Df4MVwLcOu1UbbtZ/WX9SPh9X+w0fyq/yEgqaleOURfABAA6PjEc0YfhnymHV3M
-         re1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710183284; x=1710788084;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9EWPj2I4xpYoZRjyOYAm/kocZbdOlLT2RiNEmzadKaY=;
-        b=S9hIjTJxrhnTSt5x3AxdaImHl//kZrB5c0BLx7XhSP4Xd0++QVYHno9HFmKh+1BC3o
-         uB11WG+chjiC+nakcCQHKiXY0JTj2a0APGPxNmVTkUkSL/3J5d7ltx1WyEpjf+nYG4cz
-         X9j7uDchwLK82I/NtmKyIR6ML5nSwhOwgHd4XxU1jpiVarwt3P4ExJLg1oGC4J8P69P1
-         7YUUzx8/yOUcScb+S80Bn3wC9Z89uO6PNXd88x2bFIhhdHRBcZ/lbYQs9/E9lbrizcul
-         FsC/go4Y7uSmaVb6nHRRqL8WLNjQ0l0j9OKIDzlOGVDDVcAbLlxaqbZYabJvLgycvZb4
-         xJmg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7C4ZcHPFoisrmgrRbhqe+A1rdve9MV6/c1FJjwG0X6F1ceiLLEwOdfiMBOT3bO6II7dSlzikwb89nePVMTFUhOq/n7p8bGDEg2dT9
-X-Gm-Message-State: AOJu0Yy4a8VhYJZrGJF+y5mnhdJtTg5RVbFTyk0CwQtCDTWCioe6W3TC
-	/JVQGxyYYvwftayEkS/Gw0JN3EwCMyPSM5Jqwy+vIEYyzgMvqM2tYl3k1t25PMuR4wSRd2XLztv
-	hVEVaB2fJ8va17axQSpovbC99ozoMGvTzP/hQ
-X-Google-Smtp-Source: AGHT+IF9Y1AJY3TwC+yrKD+SLGX6DGVejGuk9zVLbhhSZF+Z1op/fddC1zPHT7AUjYPqnvQvkBSi2u31QCO6TEveBME=
-X-Received: by 2002:a05:6e02:1648:b0:366:444b:82d6 with SMTP id
- v8-20020a056e02164800b00366444b82d6mr6714ilu.15.1710183283551; Mon, 11 Mar
- 2024 11:54:43 -0700 (PDT)
+	s=arc-20240116; t=1710183352; c=relaxed/simple;
+	bh=u+mjpEFo6fNKY8iblRcstxYCBK04l2AO6isKa5Cqn+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o/89ogHqGFDY7/04yczTlnqXnl02SMaH1aLdD9BT//CDyFfPUYDnJXFrsillamgOdjH9tIskMJDCfGR3FmXi5JffcPsmm/6H0zOhega7izQE4O9kzGAtVVjBdhIyq6Z0vYVVSZNv6nBBiWbZ615Xb3kuuropqtYTH0JrrPYcko0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6058C433F1;
+	Mon, 11 Mar 2024 18:55:47 +0000 (UTC)
+Date: Mon, 11 Mar 2024 18:55:45 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: "Christoph Lameter (Ampere)" <cl@gentwo.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <vireshk@kernel.org>, Will Deacon <will@kernel.org>,
+	Jonathan.Cameron@huawei.com, Matteo.Carlini@arm.com,
+	Valentin.Schneider@arm.com, akpm@linux-foundation.org,
+	anshuman.khandual@arm.com, Eric Mackay <eric.mackay@oracle.com>,
+	dave.kleikamp@oracle.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux@armlinux.org.uk, robin.murphy@arm.com,
+	vanshikonda@os.amperecomputing.com, yang@os.amperecomputing.com,
+	Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
+ supported CPUs to 512
+Message-ID: <Ze9TsQ-qVCZMazfI@arm.com>
+References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
+ <CGME20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f@eucas1p1.samsung.com>
+ <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240310020509.647319-1-irogers@google.com> <20240310020509.647319-3-irogers@google.com>
- <CAEf4BzYiH6xRRLFBdUAkjn0uJP=safZod4=1EmEwTTH9PDmVvQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYiH6xRRLFBdUAkjn0uJP=safZod4=1EmEwTTH9PDmVvQ@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 11 Mar 2024 11:54:32 -0700
-Message-ID: <CAP-5=fUQY=ho1OSk-wosw8=7Sjp8MB_kngggP00BXs+nVNj7Pg@mail.gmail.com>
-Subject: Re: [PATCH v1 02/13] libbpf: Make __printf define conditional
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	David Laight <David.Laight@aculab.com>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
-	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
-	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
-	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
-	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
-	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
-	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
-	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
 
-On Mon, Mar 11, 2024 at 10:49=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, Mar 9, 2024 at 6:05=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
+On Fri, Mar 08, 2024 at 03:01:28PM +0100, Marek Szyprowski wrote:
+> On 07.03.2024 02:45, Christoph Lameter (Ampere) wrote:
+> > Currently defconfig selects NR_CPUS=256, but some vendors (e.g. Ampere
+> > Computing) are planning to ship systems with 512 CPUs. So that all CPUs on
+> > these systems can be used with defconfig, we'd like to bump NR_CPUS to 512.
+> > Therefore this patch increases the default NR_CPUS from 256 to 512.
 > >
-> > libbpf depends upon linux/err.h which has a linux/compiler.h
-> > dependency. In the kernel includes, as opposed to the tools version,
-> > linux/compiler.h includes linux/compiler_attributes.h which defines
-> > __printf. As the libbpf.c __printf definition isn't guarded by an
-> > ifndef, this leads to a duplicate definition compilation error when
-> > trying to update the tools/include/linux/compiler.h. Fix this by
-> > adding the missing ifndef.
+> > As increasing NR_CPUS will increase the size of cpumasks, there's a fear that
+> > this might have a significant impact on stack usage due to code which places
+> > cpumasks on the stack. To mitigate that concern, we can select
+> > CPUMASK_OFFSTACK. As that doesn't seem to be a problem today with
+> > NR_CPUS=256, we only select this when NR_CPUS > 256.
 > >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index afd09571c482..2152360b4b18 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -66,7 +66,9 @@
-> >   */
-> >  #pragma GCC diagnostic ignored "-Wformat-nonliteral"
-> >
-> > -#define __printf(a, b) __attribute__((format(printf, a, b)))
-> > +#ifndef __printf
-> > +# define __printf(a, b)        __attribute__((format(printf, a, b)))
->
-> styling nit: don't add spaces between # and define, please
->
-> overall LGTM
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->
-> Two questions, though.
->
-> 1. It seems like just dropping #define __printf in libbpf.c compiles
-> fine (I checked both building libbpf directly, and BPF selftest, and
-> perf, and bpftool directly, all of them built fine). So we can
-> probably just drop this. I'll need to add __printf on Github, but
-> that's fine.
->
-> 2. Logistics. Which tree should this patch go through? Can I land it
-> in bpf-next or it's too much inconvenience for you?
+> > CPUMASK_OFFSTACK configures the cpumasks in the kernel to be
+> > dynamically allocated. This was used in the X86 architecture in the
+> > past to enable support for larger CPU configurations up to 8k cpus.
+[...]
+> This patch landed in today's linux-next as commit 0499a78369ad ("ARM64: 
+> Dynamically allocate cpumasks and increase supported CPUs to 512"). 
+> Unfortunately it triggers the following warning during boot on most of 
+> my ARM64-based test boards. Here is an example from Odroid-N2 board:
 
-Thanks Andrii,
+I spent a big part of this afternoon going through the code paths but
+there's nothing obvious that triggered this problem. My suspicion is
+some memory corruption, algorithmically I can't see anything that could
+go wrong with CPUMASK_OFFSTACK. Unfortunately I could not reproduce it
+yet to be able to add some debug info.
 
-dropping the #define (1) sgtm but the current compiler.h will fail to
-build libbpf.c without the later compiler.h update in this series.
-This causes another logistic issue for your point 2. Presumably if
-this patch goes through bpf-next, the first patch "tools bpf:
-Synchronize bpf.h with kernel uapi version" should also go through the
-bpf-next.
+So I decided to revert this patch. If we get to the bottom of it during
+the merging window, I can still revive it. Otherwise we'll add it to
+linux-next post -rc1.
 
-Thanks,
-Ian
+Thanks for reporting it and subsequent debugging.
 
-
-> > +#endif
-> >
-> >  static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
-> >  static bool prog_is_subprog(const struct bpf_object *obj, const struct=
- bpf_program *prog);
-> > --
-> > 2.44.0.278.ge034bb2e1d-goog
-> >
+-- 
+Catalin
 
