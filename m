@@ -1,171 +1,106 @@
-Return-Path: <linux-kernel+bounces-99354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5D8087872A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:21:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A7A787872B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:21:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29976B21090
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:21:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A9511F218F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC6A53E12;
-	Mon, 11 Mar 2024 18:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6835653E27;
+	Mon, 11 Mar 2024 18:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lOkZkdr3"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="z8AlPkLX"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF3F51C44;
-	Mon, 11 Mar 2024 18:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B762E53E0A
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:21:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710181260; cv=none; b=Gv6z9kLq5703iEaeog2j6hBs3a7YjG8oqwnORIyyadHmUhteqXFDq2vku8fP/BpBKC3JC5t9hZZ/UvOv2+S2QDHeSNIM3TgyM3D7CrvLgeZRur57CqnsttCaLL6ocrHdHa0Gd+NETkG5F6BZD6Jux3+7y8BHVqtt4O9kd+v9PLI=
+	t=1710181282; cv=none; b=mUF+cXIqi6gtewLLaGIl6nHqE32YsGBzVP5U1nv4JRLlVoMYeiJn2MtV0YJaxbflfgYcnxb56x0Cf+3H+2+l6EzbNSAIAVyB2o5FQkcLgcRv8UGN9p0zmic2hgNdYfL/kk28+n4vdCbDktsg41q8K4x0nqpkp2nm3pXtSQYtp6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710181260; c=relaxed/simple;
-	bh=NQQvqKzPU8v8dTdFW/yg3BWpbucbVKrL6/83G+86T+w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oBioEsrPBrNLwL8x1ykLfhKt+tDT1IlN84yYp0sWA0SxtbmXTIR2srUZUGvwt6429zOK81/q7VEfksyDhGMbfpUWRpJ/aYyeE16uEVTqT96K4u39Z4BOu0L8mlrgEGKe8con0C0dRhTx0mRTjf6SuoClgZQdUL+C1KruXXW/3Cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=lOkZkdr3; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BGhPP4023998;
-	Mon, 11 Mar 2024 18:20:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=bqtNjjrY09WFPvm4l2cpnXrSAK6us97T3iOoYmqP4TI=;
- b=lOkZkdr3BbaMZGMpTCBgLIERLJFYOv6wZFKz82MvFirXxNXVRsYYpQCxjWEHWRlaDJlb
- 6drWekd3XSXu5Bm3HrR/VEPS4UrJsSmN3PfMkhHlo2dmWh/85vO4lr2X4Y7euvypLLpN
- au1AMVo+rfAM6SZwX1RlppJ9frEz6WXruCyWstsFv8iEe4qMOHi7T//rtyKYGItBxuSh
- B9OSjzbkiufVPjGwr4Pet4wKjDraVfr2w8tfaLc5xxWMSzXG2PZH/4VZgfRBWZZ3LkW3
- 8nhrFP2jeT6tHE6VLVypeQ6zKn2POM9sEQVmnjzYuiN8knDSZT0jBGkZ8y+0fUX/Yg9u pg== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt5qp2001-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 18:20:55 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BI6G7g018119;
-	Mon, 11 Mar 2024 18:20:55 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws23t2g0e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 18:20:55 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BIKqns24183120
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Mar 2024 18:20:54 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2B2775806B;
-	Mon, 11 Mar 2024 18:20:52 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7076858052;
-	Mon, 11 Mar 2024 18:20:51 +0000 (GMT)
-Received: from [9.61.27.161] (unknown [9.61.27.161])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 11 Mar 2024 18:20:51 +0000 (GMT)
-Message-ID: <502b97e4-8ed4-402b-a025-3d023cae5a71@linux.ibm.com>
-Date: Mon, 11 Mar 2024 14:20:50 -0400
+	s=arc-20240116; t=1710181282; c=relaxed/simple;
+	bh=BUUe45GmcgEf+7sZXAFei90Gwt6yjfK4dCtth9t62L8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ma2RiPQQI7uZSIzvQvKydxm08JzmmlrG7xqfi8UCCGcB4GmsCHpoEW5cofjTj4SHIiGrjeCiZMe2M8oXs4IEUNKCWiVEK5ur0qotdQYcL+VJApbWberzxPqsCtFlIcJU6ilRMUqVb1YC1EKHylCScYEg1I0igmPsh3rgeZhp3dU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=z8AlPkLX; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id E98F51CF161;
+	Mon, 11 Mar 2024 19:21:18 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1710181279; bh=uu0vN9OWT5pwA8su6yrDf5xh0xrr2nA/BSmFKgc9obg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=z8AlPkLXRH8Hln+3lBF66TakbKoQUJNIR7HACFeYLc4orin1UX92nUGDp6Gof/ce/
+	 EQ1hv+PfbQXUyjFF5VdWAjRr2jLchmmiN/QqFZMGlO58xrr+nTSIL66116Flyq170G
+	 am4F5ykQZhKId0GOCZ/puKSRUomgVsonaZAZC/jouLH0aDGhQpGkQkpYNHp0oMZptV
+	 ypJa45o8g4vyJOeZqoAg6VU+R65qWHeszCI1fdHilIlLAlJ+AAeM/KILPqHqCw1XNM
+	 hphvY1/fF3bpiPNqx6HpAVgdXaEUZzzZfAX5oSs36H7PnEbeICfJtQos3IHDnEMpF+
+	 M/BhtUiTpE3JA==
+Date: Mon, 11 Mar 2024 19:21:18 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Eric Dumazet <edumazet@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Linux regressions mailing list
+ <regressions@lists.linux.dev>, open list <linux-kernel@vger.kernel.org>,
+ "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>, stable@kernel.org
+Subject: Re: [PATCH 1/1] u64_stats: fix u64_stats_init() for lockdep when
+ used repeatedly in one file
+Message-ID: <20240311192118.31cfc1fb@meshulam.tesarici.cz>
+In-Reply-To: <CANn89iKQpSaF5KG5=dT_o=WBeZtCiLcN768eUdYvUew-dLbKaA@mail.gmail.com>
+References: <20240306111157.29327-1-petr@tesarici.cz>
+	<20240311182516.1e2eebd8@meshulam.tesarici.cz>
+	<CANn89iKQpSaF5KG5=dT_o=WBeZtCiLcN768eUdYvUew-dLbKaA@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] s390: doc: Update doc
-Content-Language: en-US
-To: "Jason J. Herne" <jjherne@linux.ibm.com>, linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com, borntraeger@de.ibm.com,
-        agordeev@linux.ibm.com, gor@linux.ibm.com
-References: <20240306140843.10782-1-jjherne@linux.ibm.com>
- <20240306140843.10782-6-jjherne@linux.ibm.com>
-From: Anthony Krowiak <akrowiak@linux.ibm.com>
-In-Reply-To: <20240306140843.10782-6-jjherne@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: b4FuQatNi3XvB8e1qKUdCS59FCMyL7hI
-X-Proofpoint-ORIG-GUID: b4FuQatNi3XvB8e1qKUdCS59FCMyL7hI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- spamscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 adultscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403110139
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, 11 Mar 2024 18:43:59 +0100
+Eric Dumazet <edumazet@google.com> wrote:
 
-On 3/6/24 9:08 AM, Jason J. Herne wrote:
-> fix me
->
-> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
-> ---
->   Documentation/arch/s390/vfio-ap.rst | 27 +++++++++++++++++++++++++++
->   1 file changed, 27 insertions(+)
->
-> diff --git a/Documentation/arch/s390/vfio-ap.rst b/Documentation/arch/s390/vfio-ap.rst
-> index 929ee1c1c940..af5ef60355a2 100644
-> --- a/Documentation/arch/s390/vfio-ap.rst
-> +++ b/Documentation/arch/s390/vfio-ap.rst
-> @@ -380,6 +380,33 @@ matrix device.
->       control_domains:
->         A read-only file for displaying the control domain numbers assigned to the
->         vfio_ap mediated device.
-> +    ap_config:
-> +        A read/write file that, when written to, allows the entire vfio_ap mediated
-> +        device's ap configuration to be replaced in one shot. Three masks are given,
-> +        one for adapters, one for domains, and one for control domains. If the
-> +        given state cannot be set, then no changes are made to the vfio-ap
-> +        mediated device.
-> +
-> +        The format of the data written to ap_config is as follows:
-> +        {amask},{dmask},{cmask}\n
-> +
-> +        \n is a newline character.
-> +
-> +        amask, dmask, and cmask are masks identifying which adapters, domains,
-> +        and control domains should be assigned to the mediated device.
-> +
-> +        The format of a mask is as follows:
-> +        0xNN..NN
-> +
-> +        Where NN..NN is 64 hexadecimal characters representing a 256-bit value.
-> +        The leftmost (highest order) bit represents adapter/domain 0.
+> On Mon, Mar 11, 2024 at 6:25=E2=80=AFPM Petr Tesa=C5=99=C3=ADk <petr@tesa=
+rici.cz> wrote:
+> >
+> > On Wed,  6 Mar 2024 12:11:57 +0100
+> > Petr Tesarik <petr@tesarici.cz> wrote:
+> > =20
+> > > Fix bogus lockdep warnings if multiple u64_stats_sync variables are
+> > > initialized in the same file.
+> > >
+> > > With CONFIG_LOCKDEP, seqcount_init() is a macro which declares:
+> > >
+> > >       static struct lock_class_key __key;
+> > >
+> > > Since u64_stats_init() is a function (albeit an inline one), all calls
+> > > within the same file end up using the same instance, effectively trea=
+ting
+> > > them all as a single lock-class. =20
+> >
+> > What happens with this fix now?
+> >
+> > IIUC it should be reviewed by Eric, but I don't know through which tree
+> > it should be merged. Any plans yet? =20
+>=20
+> I thought I gave a reply, but apparently not .
+>=20
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
+Thank you!
 
-Same comment I made in patch 4/5:
-
-I won't reject giving an r-b for the above, but could be more 
-informative; maybe more along the lines of how this is described in all 
-documentation:
-
-
-Where NN..NN is 64 hexadecimal characters comprising a bitmap containing 
-256 bits. Each bit, from left
-
-to right, corresponds to a number from 0 to 255. If a bit is set, the
-
-corresponding adapter, domain or control domain is assigned to the 
-vfio_ap mdev.
-
-You could also mention that setting an adapter or domain number greater 
-than the maximum allowed for
-
-for the system will result in an error.
-
-
-> +
-> +        For an example set of masks that represent your mdev's current
-> +        configuration, simply cat ap_config.
-> +
-> +        This attribute is intended to be used by automation. End users would be
-> +        better served using the respective assign/unassign attributes for
-> +        adapters, domains, and control domains.
->   
->   * functions:
->   
+Petr T
 
