@@ -1,134 +1,144 @@
-Return-Path: <linux-kernel+bounces-98706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E0A877E2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:35:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7DAA877E42
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F64F2827BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:35:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8177D2825CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AD6936AEF;
-	Mon, 11 Mar 2024 10:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C83436B1B;
+	Mon, 11 Mar 2024 10:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Pv1o7omv"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YNnpRHoA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC40249E4;
-	Mon, 11 Mar 2024 10:35:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C728494
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710153321; cv=none; b=gkX3YhQrSaoRjigfWqxhJKwfrIYVC15OolP1AmqRJBY7a6bmbGWxnqOOcYCKSoN4U0mjHuHKodlNguhMNLcOaExNP3lnho+Hv4E4rVjMd9CTTUGauFDyj9Yb3ZIoM1loeLXTjAypFnu/gjLVTGDbCumGiJu5F1SAuNcasnW4cAg=
+	t=1710153685; cv=none; b=N8fidFgOEqllciSiyF7M+dagRLSHvRDJpoBeMdrFz+Unk+CsRPgHQozjbIcjF7r7Tkk/QYrSWeByuBPj/hEEup5kc1NDChJhnIw0HHNbX3uFfT59E/DBtnTGAKZ8uLGxyCvkKLCAXd8SYeIHyYhg4JhPZHSklIah9mLrp4Pb4BY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710153321; c=relaxed/simple;
-	bh=bH/XvSdNJiKdE3OIQD4JszYlFQOoKuSIHzKC0Z4hyW4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l1JvWJIOpzPzPBXRrDVIT4isLLFqnrBixb7+vGjhvLANwom47UDhhNqZBIAz2sZ5hE3AD61235UdySvzEwIapN2xOfEbszii6SJcZ4Di/UwouBakD3DRTJQS1NtQaWto+klBOvREekXDupGxLy2nXjuzPfHhsQeI4IpE/mLl3hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Pv1o7omv; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710153318;
-	bh=bH/XvSdNJiKdE3OIQD4JszYlFQOoKuSIHzKC0Z4hyW4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Pv1o7omv9nUDixra0TUCrmUf64Z1XaOH4vtQhflvk0u/82LZfRmWRnwlF0poOlTeu
-	 8YVQ7UX6lGoEOmbvs976jdhWumwwJuEU1nFvtT0oLK02HioXqh5vkgpcdF0dxIRUXC
-	 wcPOJdiyVtMQ820UzhytNHxOo2tNtkWdA9UVJovJTvqE1cYLWpkjTYsD/vQmbj4OlZ
-	 rz4+ogdEdw4sxIx/71e39STnfznn6Ui59byCfn0TF5B771rzUlofwD0Pznk+e6VbK5
-	 CBHlVpSxLveczgyCdtN5/vPOdM5p3c6FJnmapa43LnsesL7XVPl8WdzqLAS6/suKKE
-	 sYWPI5ahUEQfQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	s=arc-20240116; t=1710153685; c=relaxed/simple;
+	bh=MSKDyAI0xCcsSThDCwZZVUd6rs3dtSQH0t2OgHt/rGc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sWjRJ6kHIlTybpz6R7KOX1Hu8NHLQzxPGp1V36dmUnb0wPAFydAJYi8K+U1C6ijZ0DyWHrSs0Qlrg+oL3rqL+Z7eGOEwBrGfX7q/Gp7ERch7shpGcCOrAEgitAaENV1bIa/Q04gZo/5UfFUnkqxJrPQqfsP8hngcEBcgQmrVEm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YNnpRHoA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710153683;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hlLFoX1P5jTKtS2weQZan201tuv3XXgj03SclaGMt18=;
+	b=YNnpRHoAeE5re+WVRT2rkYpCpiUOJrgF6M+wzRTxogZDE9kK+PZUBvNlhn6+/63YczeFzp
+	8FZ0ZOfmfCY9x8frp2N0Srs0zVGkD9usroZZnKlXEjz/IdP3hksZpJG69gT3F61nLDgxrQ
+	HtgVAJ9FvyKMTIrYr7QJYzHXNlrG87U=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-132-kXFcFobtOHuxPc7jyORB9Q-1; Mon,
+ 11 Mar 2024 06:41:21 -0400
+X-MC-Unique: kXFcFobtOHuxPc7jyORB9Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C64AC3780629;
-	Mon, 11 Mar 2024 10:35:17 +0000 (UTC)
-Message-ID: <15267045-045d-484a-b645-3c485a89bf12@collabora.com>
-Date: Mon, 11 Mar 2024 11:35:17 +0100
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C94131C02D26;
+	Mon, 11 Mar 2024 10:41:20 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.192.160])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 85A3D8173;
+	Mon, 11 Mar 2024 10:41:19 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+	id 639251801A8E; Mon, 11 Mar 2024 11:41:18 +0100 (CET)
+From: Gerd Hoffmann <kraxel@redhat.com>
+To: kvm@vger.kernel.org
+Cc: Tom Lendacky <thomas.lendacky@amd.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+Subject: [PATCH v3 1/2] kvm/cpuid: remove GuestPhysBits code.
+Date: Mon, 11 Mar 2024 11:41:16 +0100
+Message-ID: <20240311104118.284054-2-kraxel@redhat.com>
+In-Reply-To: <20240311104118.284054-1-kraxel@redhat.com>
+References: <20240311104118.284054-1-kraxel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] media: mediatek: vcodec: Replace false function
- description
-Content-Language: en-US
-To: Sebastian Fricke <sebastian.fricke@collabora.com>,
- Tiffany Lin <tiffany.lin@mediatek.com>,
- Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
- Yunfei Dong <yunfei.dong@mediatek.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel@collabora.com
-References: <20240309-mediatek-typos-v1-0-fa4aeb59306c@collabora.com>
- <20240309-mediatek-typos-v1-3-fa4aeb59306c@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240309-mediatek-typos-v1-3-fa4aeb59306c@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Il 09/03/24 16:08, Sebastian Fricke ha scritto:
-> The function descriptions where falsely copy pasted from another entry,
-> write more fitting descriptions for the functions.
-> 
-> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+GuestPhysBits (cpuid leaf 80000008, eax[23:16]) is intended for software
+use.  Physical CPUs do not set that field.  The current code which
+propagates the host's GuestPhysBits to the guest's PhysBits does not
+make sense.  Remove it.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ arch/x86/kvm/cpuid.c | 32 ++++++++++++++------------------
+ 1 file changed, 14 insertions(+), 18 deletions(-)
 
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index adba49afb5fe..c638b5fb2144 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -1221,26 +1221,22 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+ 		entry->eax = entry->ebx = entry->ecx = 0;
+ 		break;
+ 	case 0x80000008: {
+-		unsigned g_phys_as = (entry->eax >> 16) & 0xff;
+-		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
+-		unsigned phys_as = entry->eax & 0xff;
++		unsigned int virt_as = max((entry->eax >> 8) & 0xff, 48U);
++		unsigned int phys_as;
+ 
+-		/*
+-		 * If TDP (NPT) is disabled use the adjusted host MAXPHYADDR as
+-		 * the guest operates in the same PA space as the host, i.e.
+-		 * reductions in MAXPHYADDR for memory encryption affect shadow
+-		 * paging, too.
+-		 *
+-		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
+-		 * provided, use the raw bare metal MAXPHYADDR as reductions to
+-		 * the HPAs do not affect GPAs.
+-		 */
+-		if (!tdp_enabled)
+-			g_phys_as = boot_cpu_data.x86_phys_bits;
+-		else if (!g_phys_as)
+-			g_phys_as = phys_as;
++		if (!tdp_enabled) {
++			/*
++			 * If TDP (NPT) is disabled use the adjusted host
++			 * MAXPHYADDR as the guest operates in the same PA
++			 * space as the host, i.e.  reductions in MAXPHYADDR
++			 * for memory encryption affect shadow paging, too.
++			 */
++			phys_as = boot_cpu_data.x86_phys_bits;
++		} else {
++			phys_as = entry->eax & 0xff;
++		}
+ 
+-		entry->eax = g_phys_as | (virt_as << 8);
++		entry->eax = phys_as | (virt_as << 8);
+ 		entry->ecx &= ~(GENMASK(31, 16) | GENMASK(11, 8));
+ 		entry->edx = 0;
+ 		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+-- 
+2.44.0
 
-> ---
->   .../platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.h    | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.h b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.h
-> index 6f624c266246..2d845b1307b6 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.h
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.h
-> @@ -185,7 +185,7 @@ void mtk_vdec_h264_get_ref_list(u8 *ref_list,
->   void *mtk_vdec_h264_get_ctrl_ptr(struct mtk_vcodec_dec_ctx *ctx, int id);
->   
->   /**
-> - * mtk_vdec_h264_fill_dpb_info - get each CID contrl address.
-> + * mtk_vdec_h264_fill_dpb_info - Fill the decoded picture buffer info
->    *
->    * @ctx:		v4l2 ctx
->    * @decode_params:	slice decode params
-> @@ -225,7 +225,9 @@ void mtk_vdec_h264_copy_slice_hd_params(struct mtk_h264_slice_hd_param *dst_para
->   					const struct v4l2_ctrl_h264_decode_params *dec_param);
->   
->   /**
-> - * mtk_vdec_h264_copy_scaling_matrix - get each CID contrl address.
-> + * mtk_vdec_h264_copy_scaling_matrix - Copy the scaling matrix from a source to
-> + *				       a destination.
-> + *				       (for example into the slice parameters)
-
-That should be a short description; the "for example into the slice parameters"
-along with a longer description go in the long description part of the doc.
-
-/*
-  * mtk_vdec_h264_copy_scaling_matrix - Copy scaling matrix from HW to driver
-  * @dst_matrix: .....
-  * @src_matrix: ....
-  *
-  * This function copies the scaling matrix from the hardware decoder (format?
-  * structs? registers? what?) to the driver's scaling matrix structure, because
-  * this that and the other tell me why we would ever need to do this, as this
-  * is a long description of what this function does.
-  * If a long description is not needed, just avoid it, of course.
-  *
-  * Return: some value for something, some other for something else
-  *
-  * This return value, as described, is so useful! :-)
-  */
-
-Cheers,
-Angelo
 
