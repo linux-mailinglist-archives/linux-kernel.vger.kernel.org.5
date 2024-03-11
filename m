@@ -1,77 +1,76 @@
-Return-Path: <linux-kernel+bounces-99196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2FA8784B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:16:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65DD98784CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A7262844B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:16:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E30F21F246EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4E90481C0;
-	Mon, 11 Mar 2024 16:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC59487BF;
+	Mon, 11 Mar 2024 16:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="XbDt92Tl"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2054.outbound.protection.outlook.com [40.107.93.54])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="k2LPUU/y"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2078.outbound.protection.outlook.com [40.107.101.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF5C2B9B5
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E525347F63
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.78
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710173775; cv=fail; b=eCRN7ryQa2gadf/SW0ENykkK5a0x8ogS3m+IWkvOwKmUZJCmuw+BsmFK+fRzK5KmT/aTl0CwckWkj8yrOpQ3GZgaeNuzkUsC+h8ohYIBLTWt80INA8eENA5byYyaLbjOPwbKM8IGysN/mFdydQQfJw1lj+RzlIaHeElHCG2dr6w=
+	t=1710173813; cv=fail; b=L1SnSGTfklD+3u542HVJsvOUZFDBCAnuPZ8sjKWhFdGNMcaKYQLdkarvz+yJctpoHFBYJN/rh/vqteHnpezzNaZyqvkVOTrC9BIntOXI8KsmhKetNUOYaNeRdjyHtCPhbdEWrZIcklNWCbGNkT9B81nrCQ1RBS2AiqUDNncEpmE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710173775; c=relaxed/simple;
-	bh=KDUO2XTStZNFd/S5yKI9DNelQQo1tODPkjN5LefM6KE=;
+	s=arc-20240116; t=1710173813; c=relaxed/simple;
+	bh=V/d1F6WS2li9DbYbBYCbSoPp4oePopRvX10s7UZ240A=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=b1IaLPYR8WfJV+oonyM4xClUtebA+sK+J9m8hrl+HfTcSa6bd3fBb3apnhmZ32YkHKVaWyUPLikBwKWG5sZ2iV+lKxd8vrVqUPB3GLY03pSp3SOaKWkEM3qA52ta8ZJ5/rLGFxcYuzMtAEHM3oaqUWbAYt1eXozKAZIg5DHCiZc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=XbDt92Tl; arc=fail smtp.client-ip=40.107.93.54
+	 Content-Type:MIME-Version; b=svs6zR6jI67AHYItQKx+LqEn263gi/ujbd2euQQpgYRGvsE28aTL0AyuqNRZYrDlxszDSxvaL8/N8g33vtnKay/q1B4R02SHJ7vLFjpFEmKr9aDibRABrQzs/Z8cyJ9OFOQu2w+a3I04KrJX8FqthppgU/2s+4kDZZyOzUYN/bc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=k2LPUU/y; arc=fail smtp.client-ip=40.107.101.78
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IStbrlcaR3jEucxjaHXhTW7D4q2FW2QLnkejV12oqwn1HyEPEYas1TjfNCsWAOqILbbFoei5GyRGBmXtYqL+tZ8+0sPWiKeNQutdu2w4rV3n80r9qCfN+WX1MS6v39ODp0YCa4tujYykyTGW90lPLJfv8nPNQ0mOEW2W4OiereW6MxmUOUKybTaT/oEabH85Qi+XKEXolURxJfBLrrPSsVaA5V7hIOjRCj3LP0Cs1tI7oCCoHG3l8bjBtso6rYNtOGzuGvXa97Z1UnmRQwI9XV5R1ajV7wIqIC58bBN4fm92Hq51KGm1OD76+zQf2b/wElBPA1xs4WOjU9MyVO6UuQ==
+ b=NglrE9DshszliZR0MS+YLjlERYx5DmPAECQlQCUaTiWwNHi748Sjyez/7Od2MjgkkbRtBJbs1QIbnJR8tNbK3qH0wZ+UEOueJKFqbTbUiCeh9F6RKuNRwxeU/tR/d1JAU50CuAeJjfroNDqg6GnWQdUr3lbfaNsi5Exqmb+NCDuSG8AlrhBiZVlhawC0973lCYNz48wq2iOCZ1IEE852QkmgnSAWEn+2fqDT6FUH7P5BNlFRvFQsNnVRe6z4R8zBmRMQlFjISX2Y0e/FJ8YLRHptBzZnwIHl73FVnEfvknIJpOg+cb9Qu0WZkgrT7Ml82FLjc5uqCcuprQcnidylhQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3sNflOGn6fs++FtNn6RD/JqhmSDaUxy9WE+eBLL8tuc=;
- b=M7iF0lDg5wphxjLlNPSg4Ii6fl34yRf9LWzTbYmPdfobacjCoVDZmj8BxGvJRTiuaJWfH6h9DlaleXWFkNciRjajdPbV3kWegck4zHPXqhCqp01YUq6XNfKEsz0RQDj7yjOIOaIvj3WZf0IhN/rMIvgM+cNOWXhZl2r/5yRtP49yXbY+fN6ppGr2ux+IKW9lolTcrl6qtmQl7H8Bwgdy1NiCluhuBJeaT2UxpZpeMLZHxr+ot7MKG9Fs+4tvp/vuYOfqa1oFz5szQz8muMFkJNMeVCYSqgCwqT2xt7A7ASW7gFnWs3NSRndr68zR1A9kgn88AgKlhhXVr98OG9nuaQ==
+ bh=xoxsTqM0croZx5k2quBAE0z4vr5DTDbusz1X60P7S6s=;
+ b=aAq532bf/v/9xfucjU97G7wDLKFFYs67Nzbb0eUr/8kYpQmmIgzNLSgwW915VwFsPlG3Rs2Lq37wIfdethz4sted/44BZZW9SdUExFcPVSq8HJOz9kd+ZFPIwon1F/UYZkcXTpT1r1tMKQ8o0TUvya/ADl7Nu8M1UBVUBP8qcncRwUoj1E47Lr8JB4bDsriiv/WVsTurvr6eMtHg9r29FvXsK3Jt7x5hxJV5O5pqQ0TiGYUWo2unF6RQ67Qad3XD7dKT3keIMqDtU06YF/1AqiUed2C++8+KmA88bd6gV1teTOV/U6I97UV5R/L6b0VGT/Gb/UMnT355jlxiz09hJA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3sNflOGn6fs++FtNn6RD/JqhmSDaUxy9WE+eBLL8tuc=;
- b=XbDt92TlCsrdRm9ZcEn/XXFi5ESf6q6btmPgh8onSPbcBQSdUfluTQd6LsJ2Xw7kupT1k7YOak7qOgBRX92Sqcy+jGoDidnwl9l1nVPrcwbAlkY+nv6ZoxrvgMzEM7OLKyvp3z7id4aCWfKbe4dUBhQHaGbQhL+FjRf7vd64ZoQ=
+ bh=xoxsTqM0croZx5k2quBAE0z4vr5DTDbusz1X60P7S6s=;
+ b=k2LPUU/yDfwDWlsqreLohQiKRsg75fVfbE78cuZgiDoxkwOLUY6QLxB3m3RvBblIYcOJptk8rs76xMYEdNrzukJZPgz/DRRb6u3LbMCjS/hOChqfPic2mLD9/8V9sHOOd34U/HlXoMAbyxQfXFVOskWeQFz5kYSEU2QjJNiHfIo=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by DS0PR12MB6413.namprd12.prod.outlook.com (2603:10b6:8:ce::10) with
+ by DS0PR12MB7747.namprd12.prod.outlook.com (2603:10b6:8:138::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
- 2024 16:16:10 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Mon, 11 Mar
+ 2024 16:16:48 +0000
 Received: from BL1PR12MB5732.namprd12.prod.outlook.com
  ([fe80::4c26:40af:e1fd:849e]) by BL1PR12MB5732.namprd12.prod.outlook.com
  ([fe80::4c26:40af:e1fd:849e%7]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
- 16:16:10 +0000
-Message-ID: <805b863c-1631-477d-9faf-f7569a8d80e4@amd.com>
-Date: Mon, 11 Mar 2024 11:16:08 -0500
+ 16:16:48 +0000
+Message-ID: <33b7a57e-1df8-47ee-94d7-aa646a9e923c@amd.com>
+Date: Mon, 11 Mar 2024 11:16:47 -0500
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/14] x86/sev: Extend the config-fs attestation
- support for an SVSM
+Subject: Re: [PATCH v2 01/14] x86/sev: Rename snp_init() in the
+ boot/compressed/sev.c file
 Content-Language: en-US
-To: "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
- linux-kernel@vger.kernel.org, x86@kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
  Dan Williams <dan.j.williams@intel.com>, Michael Roth
  <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
 References: <cover.1709922929.git.thomas.lendacky@amd.com>
- <a6d236e247c4a0258e5e28c7378350389997cc59.1709922929.git.thomas.lendacky@amd.com>
- <93f36ae1-35b3-4852-8b36-3277f250408e@intel.com>
+ <d558343480a78b53ac419ce67fc9f13d631672a4.1709922929.git.thomas.lendacky@amd.com>
+ <20240310212521.GBZe4lQWwIQSBsaCLc@fat_crate.local>
 From: Tom Lendacky <thomas.lendacky@amd.com>
 Autocrypt: addr=thomas.lendacky@amd.com; keydata=
  xsFNBFaNZYkBEADxg5OW/ajpUG7zgnUQPsMqWPjeAxtu4YH3lCUjWWcbUgc2qDGAijsLTFv1
@@ -117,7 +116,7 @@ Autocrypt: addr=thomas.lendacky@amd.com; keydata=
  y46PmDPicLjX/srgemvLtHoeVRplL9ATAkmQ7yxXc6wBSwf1BYs9gAiwXbU1vMod0AXXRBym
  0qhojoaSdRP5XTShfvOYdDozraaKx5Wx8X+oZvvjbbHhHGPL2seq97fp3nZ9h8TIQXRhO+aY
  vFkWitqCJg==
-In-Reply-To: <93f36ae1-35b3-4852-8b36-3277f250408e@intel.com>
+In-Reply-To: <20240310212521.GBZe4lQWwIQSBsaCLc@fat_crate.local>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: DS7PR03CA0019.namprd03.prod.outlook.com
@@ -130,211 +129,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|DS0PR12MB6413:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc96d0fb-9450-4472-2811-08dc41e690ba
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|DS0PR12MB7747:EE_
+X-MS-Office365-Filtering-Correlation-Id: 780c29b7-8c77-4557-0a75-08dc41e6a753
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	xtn/AOuByk6vPIIphsB0KcGS95VsOPSLcz1YoPCX9j1lPKDlWYFv3VQvI4bECWH9lDK18W4TPs8Sfygc/WWQfQ2z86EDGCZoqAjkaYAUQM///6uS/3bl2OLMA7BxGxdr0Xvv4n1to5G0zl1vJsg9guMhIlXzVbI2PG+lgQgASIOAi7Z+uygia8BbXoeOpmz/7fix4btt0Qnxm/97mE7bwJTE4fbY3O2Y2lEPsoRFsRgA6SzCwCYbucfFvZvx4Kj9zacBWQpbb1/dgOZ//IR+W9V4dQUJrrrJwpBhiweWu2w9n+SHfX8I+QwvM6CKp+wG9hlO8earn3jRm7uJm0amBkpOTADueetl4olmqgMeqDQ/mehtgflRbsdcrJKAjB9NE8D2LOWWEt3zl3Jvs85EXxVepznrQbvLH0m+YpQDeiiMKsmmv/Me1jGJj6dCWFHae5/qGIx9+7avsl/eTU5+yyWh/MHZgtqU17CN7EOFNVC/upiSSjT2r1WAfbkPlLcsT63RA0zCoefT9bHp7owfyUMSuSbxh8X03W5tqTj+qSw6BtXPZrm6PXcqHvBpdWkuBcpoDsCPhRAVbmqc5Sx3w7lurZHYPILgFMsHGABLZ6k=
+	vCeWyXE7SWMZ3bvnuy4O80S/mZJDdubpHyShcMcW5pqyfZWVNhsz9UYt9CEDL/5MNB+0xibfL7rydfR4CwBfcBJVEbyIITvjkW4OlUR4x64AvsnIfcQDlgcvD9l6XtQOUuOGqB8/2U2yYmRBn7mO3HFke07iEl+eBXgL+MWnntvOL7LrW7jeQXwHJCdZUMwFRFTEww7T/60ht8iNDA1KZ3CBqGj7UBGFMd1S0mefSd7skLDHeeaH43ChIkO4t5//y06RFYRRJrVM8M6CLNLVo/az76LimPpz+uPG10wM9oPlPePjbh5h9+dRZ/wFNYkGq6b7licNt1CoAf4sQHRPDfowUtJJsydaJdU4E/e1RX67Le0zqec0RjZqJv+QCOwZThgQZYFlVCp38s1VaNLyYMQiOAjuET2doqXO6To5LHp+hOG8QnUZvZ0cE9DiwpiybeLx60kAsCrVlBQjMJXsWiqIZbJwcb20HrH+get6qDhZH0w9dlIy6hCLJy83kU4c+pmOrlandulr6BTs5+LnrIocgMtJoH1S7UX+mxFwo6rhYzOp/rYB7+mMKZSWvu9DuGtu+IQlTwUjTGj2EqUdpkfrH7e9pV4hfhbe3kfIGAFmA1PR1KFf+Gtw203N54EGH0aOtFi+EU1SW6nHS1SbUmUbIsY3aLGBUBsfTJPkoNk=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZWRkVkx0TVV5QnMzdlo3VGJweFVJRFlickhxZmxpcytRWkJKRVl3VytaazVZ?=
- =?utf-8?B?cEVtZzRkL0FIaHJMSGFMLy9YRG8xVzRoNzhVQ0p0blJZR1NsSFRLc200WnFt?=
- =?utf-8?B?b1ZrdVRMMFZBZUVUTWFYK05URjJibE5vNzkvMWNaOUJzZXh4ZUZBR1p1S1JB?=
- =?utf-8?B?VnlzbzBmMFBVY0hLdVdPUlVxM25zYmJtQ1p0eXFIZExoWXNiWFFVUy9GL3d0?=
- =?utf-8?B?WnIwd2xpTXBhWE1pU2VSc2xXZWRHTjJMTTg2Z1JMdWVJbm9xYXdweWsyQ25x?=
- =?utf-8?B?SnE1L09HTmVrK1RvSFJBNEdJZkJqUlpuNmhybHNCcDMrcXNya0JxZkYzUTBx?=
- =?utf-8?B?cjZnR25zV252QXFBODhYYXdiS2k5MEY1ZmpLVEdmWnVHSUZWdWZHOXVHS0Nu?=
- =?utf-8?B?STlFMHhZRkRNRitmeEVTa0tzNVpLbEhSa1NkR25sVTR1RmFMcVNac01WSGpx?=
- =?utf-8?B?NmFGN2tmVk5oQk42TytFU2ZlUDFka2RRNEM1TE51WnhoK0NmeTN5WDUzbjQ4?=
- =?utf-8?B?MEVLdVJYVTBKbERRVEJ0Q2dLVktEdGhHME9PRmdENmJOTmZKVklXL0ZqVzdx?=
- =?utf-8?B?VU9Kd0QvamJTL0ROUTIvd1JFYTRhcEFrU0pyV2svMGNMZ00vUFE0cUNXTnVW?=
- =?utf-8?B?dGo4V1B0azNybWVRN3FhSElsOFRIREZ2RVg0RUkwcmZESG52MXY1NXRML0pk?=
- =?utf-8?B?SlorOVdiamVWVENWUVBsZ2hiS1BmR2lGWGFVbUFsc01GUnc0dWV3OUtuMUgr?=
- =?utf-8?B?VzBoU1dyYjAzWWlTdUZOb05scnV6cFdYV0VIM3pma2o1SWhiQmFDd2ZrNFJo?=
- =?utf-8?B?YThESnlKUFN6OHROa21WTzVkbVpaUmdZcE03S0dvU3BueUpPSDR4WVhtNFJU?=
- =?utf-8?B?NStuM3FYVUozb3VvUU9SWENnaWJyUFFUeFkyd2p1UklKUlVlYTZXVnpxdUZH?=
- =?utf-8?B?SGRZWjhXN210Sy9DWDRRS3ROdDRaTUlhejh5TjdKS2ZIMDRKekFyblVCYmZL?=
- =?utf-8?B?RHluM2xzYmtMYXV6cDNIRC9rMmtjYTdyU3NlYXBCdGtuRjNQVWhvZnk2VzBj?=
- =?utf-8?B?K3g4TG8wQ2NjRXZDUUVNRGd3QUcyT3pOOGZFMWNRdWd1ckxUS0tFREoxdjN4?=
- =?utf-8?B?bStWdDd5ZndwNUZoRTljMStKZGdTbVJKYWVHaG1qZ1A5VHNGbjVBdHhpWjMz?=
- =?utf-8?B?ODRCelgrbisrTGE4V0Y5NWZ1eURDQ242eFY5NHNtSDJvR3pMdERqK3U5cUdV?=
- =?utf-8?B?UElnNS8xUTZ0OStlRm9SVTR4a2s5clJYQ1pSQlBFbW05V0o1YVlHRFlYNzJv?=
- =?utf-8?B?blNxMmE2djl0eFBuQ3JUcWlWQmFyajlJMU02Smhibk5GWGV0LzNlbTM3TWRa?=
- =?utf-8?B?cnJVdHJ1RWNSZ0hHUVY2MDRicGlTRmd4VExoeE1iLy9hWHR3N1lwUXE5aTVx?=
- =?utf-8?B?c0ptSmxKelptTlVnT2Z4UUNwcGFsYnQ5Wk1CZWRETENMQ2pPV3B5NmlhYVRV?=
- =?utf-8?B?UkhGMXF2SHlUUjF0VjNzaUMyZjk0MHJBWHlTTTFQY25oL1JBdEMvc1V1ODJJ?=
- =?utf-8?B?TFI1T1k1SXZvR3pMVDQyRnQ5VEMxQ0pFY2NqSHVlMmxxc1ZHTjlIaFRCRVVC?=
- =?utf-8?B?NjB1b3BBYVEyL3Zxa1dBQkF0RVY1TjlrSlRONk1aK2JxN0tUdW83SkFCNlFG?=
- =?utf-8?B?WE0zTE12YklMeTF3K2VoQnB5QUg2TGNjRFV6Um1MME9mTWtHeE93S0hQQjlx?=
- =?utf-8?B?eXo2czZSRzRNYTY4OTVKVkhtQkxZNkU0a1FCa0JZMitWQXNCcFVrWVR3YkNq?=
- =?utf-8?B?bmQ5ZXFBckxUYmNLdkRTYitld1pXbUdEY2ZkUEFLM1dRRCt1WERqZ0N6WjI5?=
- =?utf-8?B?RHpFUEtNT1k5dlNRUkI5QkxmSkRqZWR4VGxhUzZWTjZTWnI0Sk5PTW1ubExE?=
- =?utf-8?B?c3RjL1B0cmY1aXRJMWNFK1VnMkhuQTBuOGhEZWpHbGR3ak5oRDVheCswNXpQ?=
- =?utf-8?B?UTkxSXltcHZCVXVuNjQxOTMwQWlQRVZoVmxoRFp2SnBsZ3lsZDB5WHR4aW1K?=
- =?utf-8?B?bHpIUmh4Z0dxWVcraWwzU3U3QWtBTEVHZDk1dzhLTHZHK1JKeDNSZnNqd3NC?=
- =?utf-8?Q?S4h0c6Dp3RD5Pm+hXpAjftsds?=
+	=?utf-8?B?WGphUXVlczhDOWVBejJ4V1BuYzllejNadS81ZFhLUmtvWXUvU2xYL1UrNkN1?=
+ =?utf-8?B?a0EzMlI4eTFuQkU0ZjVaNUJrNWt0b3RoRWNQWnd6czVsZ212WUlpd0VqVlFh?=
+ =?utf-8?B?dk92a0FwalYybkxzTHJBVEo0YjZFbm9zTHA5QkJPeWJkanJLazdnbFZYNzdV?=
+ =?utf-8?B?aFZ2aGxFT0V4UnR1R1c1eVFySXYwdDRiNlBHQzc5bGxYb08zL3AxeitzS1F5?=
+ =?utf-8?B?YmZkMGpJdDNReWNyY1VhcEtmYU53TTE0dVJtTGhaTXAxZ0Q5dDRiVG80UjFK?=
+ =?utf-8?B?MVR5MDV3SU5rQnJxdS83L0FuMllOOXVGN1VQbndWWURNMXJ4NjNPSk9RQ3pF?=
+ =?utf-8?B?aWlJTno1KzlXdzVmYzkrY1pqN0srRnhHaGxyVlg4QVdRazJieXlPT25Ramg2?=
+ =?utf-8?B?L2FjS1ZLR241cm94a3dMdDJkbHBKY09JQ2Y1aWtPZ2E3WWc3MFZyTUNMdDNG?=
+ =?utf-8?B?SEMvalZXd0JQZEhCcURva2lJemZRdy95SUxCMVpZTXIyUWtlbGNyTmZYNkdr?=
+ =?utf-8?B?a2dSMGx2TmwrZlQrV2p0SzNiQlA5ajBVdjJhQy9GVmRzK3pEZEcvbVpxbmI5?=
+ =?utf-8?B?b2hQMDhQY1BFejhXRGhPZkdTRDB6ZXJIenZad2FuZ3VJRTZTUGJMR3ZZcDZq?=
+ =?utf-8?B?Q0ppZzlYekdjMS9pYkVjaTlsN1NlZUxkVWoxYlZvN0hWa1dxamRSMzl5VlJr?=
+ =?utf-8?B?UU9zbkdxL21ONCtuOEI5RThsSnE1NnhFdC9MMDJvSWl0ckI3UlhIOTlZMUVB?=
+ =?utf-8?B?clJZYUFqMGcyZngxdks4THFIRzE5RVhvVlFSV0RhMkk4THB0bVkreENLQVRE?=
+ =?utf-8?B?aTR1NnJpYTF5RmNsTGdBS3IrQkdIbW90dFl3MGFKTW96MDNST09SeEFIV1kz?=
+ =?utf-8?B?N25GS2RZSFNYR0VuMTVFSFhvY2VNVWpheTdKOWd2MGtYSm5GdFBub05uS3VQ?=
+ =?utf-8?B?RTVGUWZIc0V2OC9xTEc4RHFLSVhhTWttRXFyUGJrRlB3SmVuSjZHZTUwRGZi?=
+ =?utf-8?B?ZVRsTDQ2ci9pZW9DbTBUaFM2d29qZGRGTFhEb0J4VXRLZEE2ZjJmQ2tVRWxD?=
+ =?utf-8?B?QU9zaXlYVUF4TEthVTV1S2hNbEQ3KzFpL3l1c3VlR0RKTnhxVUFYbitDZWVw?=
+ =?utf-8?B?Z3E2YTcyT0NoNkpvT1gzVHpCRW9Ucm5OSzJxYWZYVzk1SlFJbjlVeDNTeGM1?=
+ =?utf-8?B?SW0yU3h0RUIrdUJWOTl0bGVjUDlPRGI0dFhrVGJoUGQ2eU1ldUVXbndFRGRw?=
+ =?utf-8?B?YzhpWHVGdnovV2JmQU1pQzFYQ1NjS1FTWW1aTk5IU2hjWWpUOWlBZEpBc2lG?=
+ =?utf-8?B?T1FyMHJhRCtaeWMxdmpWa2J0RE5DTFpxSG5QbzBFb1VYUGdWNTk4MkZEaEFh?=
+ =?utf-8?B?Z2gzM1NZTTVjaWpYVVRieGpuTllsN002dWNFZXc3Rjlwa2VoYTJjMVJscXQ2?=
+ =?utf-8?B?Smk1am9CVGRuN3krNDlHMzFwM1N4bXBDdnlxdjkyVTJOckNPYWpKMTN0YW1M?=
+ =?utf-8?B?N0RIeXo1SlJxQmFMS2YvbTFPdVlrRGpnNTJZM1FjV2J0ZE0zaDN4R0p1N29p?=
+ =?utf-8?B?OXNsc21ZWUJPYkRPdVFSZ1dXTU1nVWQ1MHIrdi9rdktaa2JhbUNHRGh3RTdL?=
+ =?utf-8?B?RGVzck5OWlJCNU5INXVwdnJGdzdBWG1JaEsrZWlYRUIvWm5DNmtBM1lZa1ZC?=
+ =?utf-8?B?RWFVY0hFL1lQQnZ0Q3lUcU5sVkxkY1YxdFJsSFBzQk9SR0hUcHZvdjJBK0Nq?=
+ =?utf-8?B?WDhiMmczZjh3ZzE5VlVNdzFVeDUyOE1SL2ZDYVZraDR2bWZ6WGVmTENUMlRS?=
+ =?utf-8?B?dUpTM0k3czZLWktRaEs2TnFLcVdBUC9SaWhsU2hrS2tsZE5TeitSZXIvbHhh?=
+ =?utf-8?B?SXgwdGduQ01yNmpLdHYvamQwNVg5TXJHaE91ZFdEblB4R0lKM21CYUhFdFlv?=
+ =?utf-8?B?bEFNNzQ2VnM0NjZJNlpuRHZvU3Y1VEY2eDFDaitXUk9WcTJ1dFlMQkFEMUE4?=
+ =?utf-8?B?QUhzZVVES1F5YnA1b1lnQzR1b2Z2b1FLZlVmNThNRlJ5ZEpaMmMwZExTQWc5?=
+ =?utf-8?B?UGo3ZkxTdGVaRkJlb3l1RmM1NXd2UzZoUGRwQnU4Q01vdHk1eVVoYVhzL1Iy?=
+ =?utf-8?Q?EdAgwAZNcTV5b3MjXeWZfBh9/?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc96d0fb-9450-4472-2811-08dc41e690ba
+X-MS-Exchange-CrossTenant-Network-Message-Id: 780c29b7-8c77-4557-0a75-08dc41e6a753
 X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 16:16:10.7598
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 16:16:48.6536
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8EWn+MREa6qrLJnXSTPYLqbMQqPUQpNcTpxpm7HCwPjjT3CUrO+jsK65P/Kl25ZPjKiWg2aYRjXs4+dEm1UQFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6413
+X-MS-Exchange-CrossTenant-UserPrincipalName: Bxzn1FmQrduxTyWzFrG8T6EMhRu84mv41QyvNT2vySC0hm/m4fFDQsw7X+F7ACO0AZDUxDrdyviB9aXznNsb9g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7747
 
-On 3/10/24 00:06, Kuppuswamy, Sathyanarayanan wrote:
+
+
+On 3/10/24 16:25, Borislav Petkov wrote:
+> On Fri, Mar 08, 2024 at 12:35:16PM -0600, Tom Lendacky wrote:
+>> @@ -478,7 +557,7 @@ void sev_enable(struct boot_params *bp)
+>>   	 * Setup/preliminary detection of SNP. This will be sanity-checked
+>>   	 * against CPUID/MSR values later.
+>>   	 */
+>> -	snp = snp_init(bp);
+>> +	snp = snp_setup(bp);
 > 
-> On 3/8/24 10:35 AM, Tom Lendacky wrote:
->> When an SVSM is present, the guest can also request attestation reports
->> from the SVSM. These SVSM attestation reports can be used to attest the
->> SVSM and any services running within the SVSM.
->>
->> Extend the config-fs attestation support to allow for an SVSM attestation
->> report. This involves creating four (4) new config-fs attributes:
->>
->>    - 'svsm' (input)
->>      This attribute is used to determine whether the attestation request
->>      should be sent to the SVSM or to the SEV firmware.
->>
->>    - 'service_guid' (input)
->>      Used for requesting the attestation of a single service within the
->>      SVSM. A null GUID implies that the SVSM_ATTEST_SERVICES call should
->>      be used to request the attestation report. A non-null GUID implies
->>      that the SVSM_ATTEST_SINGLE_SERVICE call should be used.
->>
->>    - 'service_manifest_version' (input)
->>      Used with the SVSM_ATTEST_SINGLE_SERVICE call, the service version
->>      represents a specific service manifest version be used for the
->>      attestation report.
->>
->>    - 'manifestblob' (output)
->>      Used to return the service manifest associated with the attestation
->>      report.
->>
->> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
->> ---
->>   Documentation/ABI/testing/configfs-tsm  |  59 ++++++++++
->>   arch/x86/include/asm/sev.h              |  31 ++++-
->>   arch/x86/kernel/sev.c                   |  50 ++++++++
->>   drivers/virt/coco/sev-guest/sev-guest.c | 147 ++++++++++++++++++++++++
->>   drivers/virt/coco/tsm.c                 |  95 ++++++++++++++-
->>   include/linux/tsm.h                     |  11 ++
->>   6 files changed, 390 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/ABI/testing/configfs-tsm b/Documentation/ABI/testing/configfs-tsm
->> index dd24202b5ba5..a4663610bf7c 100644
->> --- a/Documentation/ABI/testing/configfs-tsm
->> +++ b/Documentation/ABI/testing/configfs-tsm
+> So if you call the compressed/sev.c version early_snp_init() or
+> boot_snp_init() or something similar, you know immediately when it is
 
->> +
->> +What:		/sys/kernel/config/tsm/report/$name/svsm
->> +Date:		January, 2024
->> +KernelVersion:	v6.9
->> +Contact:	linux-coco@lists.linux.dev
->> +Description:
->> +		(WO) Attribute is visible if a TSM implementation provider
->> +		supports the concept of attestation reports for TVMs running
->> +		under an SVSM, like SEV-SNP. Specifying a 1 (or other boolean
-> 
-> Since service_guid can be used for non SVSM services as well, can we use
-> a generic term "service" here? And let user specify the service type
-> (like service=svsm)
-
-I suppose that's possible. I think we would need a better term than just 
-service, though, since service_guid is specific to a service within the 
-service provider... so maybe service_provider.
-
-> 
->> +		equivalent, e.g. "Y") implies that the attestation report
->> +		should come from the SVSM.
->> +		Secure VM Service Module for SEV-SNP Guests v1.00 Section 7.
->> +		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
->> +
->> +What:		/sys/kernel/config/tsm/report/$name/service_guid
->> +Date:		January, 2024
->> +KernelVersion:	v6.9
->> +Contact:	linux-coco@lists.linux.dev
->> +Description:
->> +		(WO) Attribute is visible if a TSM implementation provider
->> +		supports the concept of attestation reports for TVMs running
->> +		under an SVSM, like SEV-SNP. Specifying a empty or null GUID
->> +		(00000000-0000-0000-0000-000000) requests all active services
->> +		within the SVSM be part of the attestation report. Specifying
->> +		a non-null GUID requests an attestation report of just the
->> +		specified service using the manifest form specified by the
->> +		service_manifest_version attribute.
->> +		Secure VM Service Module for SEV-SNP Guests v1.00 Section 7.
->> +		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
->> +
-> 
-> I think it will be useful to the user if there is a attribute to list the service GUIDs
-> supported. It can help prevent user using incorrect or unsupported GUIDs.
-
-A list of supported GUIDs can be obtained from the manifest of a 
-all-services attestation request.
-
->  >> +	if (guid_is_null(&desc->service_guid)) {
->> +		call_id = SVSM_ATTEST_CALL(SVSM_ATTEST_SERVICES);
->> +	} else {
->> +		export_guid(attest_call.service_guid, &desc->service_guid);
->> +		attest_call.service_manifest_version = desc->service_manifest_version;
->> +
->> +		call_id = SVSM_ATTEST_CALL(SVSM_ATTEST_SINGLE_SERVICE);
->> +	}
-> 
-> Above initialization will not change during retry, right? Why not move it above
-> retry?
-
-True, will move it outside of the loop.
-
->
-
->> +
->> +	/* Obtain the GUID string length */
->> +	guid_len = (len && buf[len - 1] == '\n') ? len - 1 : len;
->> +	if (guid_len && guid_len != UUID_STRING_LEN)
->> +		return -EINVAL;
->> +
-> 
-> I don't think you need above checks. I think guid_parse will fail, if it is not
-> a valid GUID.
-
-Yes and no. The guid_parse() function will succeed if the string is longer 
-than UUID_STRING_LEN as long as it is a valid UUID up to UUID_STRING_LEN. 
-In other words, guid_parse() of:
-
-	aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
-
-and
-	aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee-gg
-
-both succeed.
-
-I'm ok with eliminating the length calculation and check if everyone is in 
-favor of doing that given the above behavior.
-
-> 
->> +	if (guid_len == UUID_STRING_LEN) {
->> +		rc = guid_parse(buf, &report->desc.service_guid);
->> +		if (rc)
->> +			return rc;
->> +	} else {
->> +		report->desc.service_guid = guid_null;
-> 
-> I think the default value will be guid_null right, why reset it to NULL for every failed attempt?
-
-Default, yes. But what if it is written once, then a second time with an 
-invalid GUID. Should the previously written GUID still be used?
+Yep, makes sense. Will change it.
 
 Thanks,
 Tom
 
+> called vs having to grep the tree to figure out which is which - was
+> snp_setup() early or was it in the kernel proper.  And so on...
 > 
 
