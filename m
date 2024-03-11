@@ -1,90 +1,130 @@
-Return-Path: <linux-kernel+bounces-98515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3AFD877B51
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:27:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01670877B4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:26:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58F301F213F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:27:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0A53281287
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5C310796;
-	Mon, 11 Mar 2024 07:27:43 +0000 (UTC)
-Received: from chinatelecom.cn (smtpnm6-01.21cn.com [182.42.159.233])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDF810FA
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=182.42.159.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E3510796;
+	Mon, 11 Mar 2024 07:26:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EqOMGGwH"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A181C20
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710142062; cv=none; b=lg4BD/iFiuUCLBvXOwv4MmW1hXyw1HKZlPFLKI8QD2NwG5JhHY9WMolr9Dn3jVF9per7xpLjgb5MZ2UdkX6/4sF1XyQirXimLx/Asavr6MgzODDdEsNo81TeLGbZyOpQeZjXYSzo89ojIkduoGe8i3MRlY5wTUfouRcfsIReTBs=
+	t=1710141981; cv=none; b=KhdU869s+asGSltRWORqKeIutmz19X94I/YY1fkoSrnvPi2e08IqgRF1mDPydMrW3gFNUtW+s5D5qaxZs7z2lht3QTethUDuiYX4MW7bSiyLGyzSTVgEXLsLlik9T1FlRJB9X7p6AFsnP9QauuX/mkRMf55tmF9CML7WKazPq7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710142062; c=relaxed/simple;
-	bh=J6HmO0J6s+zLrlibuEwc/AwNYn0n0tulm6hqS9PockI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KEjpzJVdczEkKNN0VaQPL0r9Z2/ZdfQdzRfUmtK3E04b91zsInw9ZF/fzBPWjCA3XZGGG7hhYjU+FhcZoRdxlsHoz20vFSst8hK9HiUhe6maSKnfcabxZ+n5kov4Et+v+Vg6nK2Y+cmMgwIHcmd6Cn7v88+pjKjejN1R2Y7+CSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn; spf=pass smtp.mailfrom=chinatelecom.cn; arc=none smtp.client-ip=182.42.159.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chinatelecom.cn
-HMM_SOURCE_IP:192.168.139.44:29798.1556610506
-HMM_ATTACHE_NUM:0000
-HMM_SOURCE_TYPE:SMTP
-Received: from clientip-124.127.58.150 (unknown [192.168.139.44])
-	by chinatelecom.cn (HERMES) with SMTP id E743B100112C5;
-	Mon, 11 Mar 2024 15:20:15 +0800 (CST)
-X-189-SAVE-TO-SEND: +sibs@chinatelecom.cn
-Received: from  ([124.127.58.150])
-	by gateway-ssl-dep-77bc75f6c8-x5lfc with ESMTP id b8ee26f0b9ed4be19d3822e012ad2032 for tglx@linutronix.de;
-	Mon, 11 Mar 2024 15:20:21 CST
-X-Transaction-ID: b8ee26f0b9ed4be19d3822e012ad2032
-X-Real-From: sibs@chinatelecom.cn
-X-Receive-IP: 124.127.58.150
-X-MEDUSA-Status: 0
-Sender: sibs@chinatelecom.cn
-From: Bingsong Si <sibs@chinatelecom.cn>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: Bingsong Si <sibs@chinatelecom.cn>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] x86/cpu: Clear TME feature flag if TME is not enabled by BIOS
-Date: Mon, 11 Mar 2024 15:19:37 +0800
-Message-Id: <20240311071938.13247-1-sibs@chinatelecom.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240308122752.3342-1-sibs@chinatelecom.cn>
-References: <20240308122752.3342-1-sibs@chinatelecom.cn>
+	s=arc-20240116; t=1710141981; c=relaxed/simple;
+	bh=4A1Ch0SnOg2vriHO4K6Az87fQ2K5aKoZjo2rqINki10=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=doZjGDei4AUbj0DQGy445DZgAx5aMka9zArUMVWZinO5yS1KDSbTen8wjIODkxn5JI/umYuQl9DhRZqrn2AOPushJA0VTehyeEHaVEHooYsWip8wINlj6OzG/1a+OPQmj/5JZlBmLzWPkEhlsNfnIFW0V5cTFkhZ4NKvQotjhn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EqOMGGwH; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5682360e095so4258781a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:26:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710141978; x=1710746778; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nWkn4Jgv2vGWKej5ZM1NioOSMWReqWi9UHuS9WHYkl4=;
+        b=EqOMGGwHfe4zytqQdHkFJqe0UW3dFKCCWDtXidiLqNFwuJS1TQ2/nQJSmZFj6Xq3vu
+         TpoKwr4QTqRLKbOds/fDrPhKnKh13KP3pNpY6NP1Db/+HPoOJcV868VhKO2MDaa2Wu6U
+         VilQqbmuwOYZt5Zuy2TV/sQLyaYGY/UAE8hDGbXIPwLMvwpE/I8iiwXuYYDkFfjGqM9u
+         B2WpGpzG1Z7ZEMDXj1K3Sgd/z9RR1Ahvo/QRm6DR51RTHH31lVPZUct337jcL80lZdMq
+         VxiYjcfrfA+3zXDpmucB3IwpBMSGV1wUGSYert6hKR/IY2XAE6niq3WgYpf5lXF427dn
+         noag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710141978; x=1710746778;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nWkn4Jgv2vGWKej5ZM1NioOSMWReqWi9UHuS9WHYkl4=;
+        b=HyBQx9UUVXtOSymst3iPytnA4TzleFFT4Iol5jk5qFj3i7IW2NHXap5J7u8xDhhYc9
+         x7O6bKNGziTK/sfFR7t/NIlrSIrsES6EPywR92M6YYywPdEkhhjomqjJ7fWizhgqxd9L
+         N3VGHbX+VyIj+na/CKKPWAGGJRhheungzYo2Qd3oo4KZ0YcbG1dFA/Dx0H/6WoOrmvk3
+         TL2IrZrpGJ2jwckXERsZ6PoRlBSekyTMDuQpxuXxxcNHsyp+0JfB8UGPixZQaY2KpuLk
+         UI7UuI/gtNX0Rn8Weu9IC3d3Boxrac6+ia6Re6BsoiiYyIgejYZ2H0aiYKgzv+cfVq7v
+         ZJog==
+X-Forwarded-Encrypted: i=1; AJvYcCWm2rQ/iozSfWf6CcKCcepvfyVzoHPXbBSWf3Q22ANDtwqyJVwq6IvBNlEIY2d8I3rOnpw6ElJY+ARIoZryxWqCgsMIesdWBOujKpg6
+X-Gm-Message-State: AOJu0YwZ6OkeFjc6O6JDLWROqdJzkFhSapAObFTrw9O7S9xBSjkS4Wne
+	OPOkT9zkRNrv7ofeDxpBXJptPT2HKaGvxnRI6NOUKPe4XLK2F63EU38V3Cy/lUrM2KDin6EJ09Z
+	9g20Z4yASjQmNUwX3OPBXs2Gr15I=
+X-Google-Smtp-Source: AGHT+IHlIrKxTq7vP0MeJ2GvPvVKvxoi93bl1RTM4o8dFr26YTt7kFx/WqKjoksumG4QiKtPySZp1LqDHt/GHwhn0II=
+X-Received: by 2002:a50:bb4c:0:b0:566:49f4:c538 with SMTP id
+ y70-20020a50bb4c000000b0056649f4c538mr3608881ede.34.1710141978051; Mon, 11
+ Mar 2024 00:26:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1709892753-27461-1-git-send-email-zhiguo.niu@unisoc.com> <67a7f35d-5cc3-4b5f-968a-e4151c63eb74@kernel.org>
+In-Reply-To: <67a7f35d-5cc3-4b5f-968a-e4151c63eb74@kernel.org>
+From: Zhiguo Niu <niuzhiguo84@gmail.com>
+Date: Mon, 11 Mar 2024 15:26:07 +0800
+Message-ID: <CAHJ8P3KnG6OmjeCq2JE6z-xXVbqjVU=pR+3A9Fz6qgELkeq90Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] f2fs: fix to remove f2fs_bug_on in add_bio_entry
+To: Chao Yu <chao@kernel.org>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	ke.wang@unisoc.com, hongyu.jin@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When TME is disabled by BIOS, dmesg output is "x86/mktme: enabled by
-BIOS" but the TME feature is still shown in the output of/proc/cpuinfo.
+On Mon, Mar 11, 2024 at 11:54=E2=80=AFAM Chao Yu <chao@kernel.org> wrote:
+>
+> On 2024/3/8 18:12, Zhiguo Niu wrote:
+> > add_bio_entry should not trigger system panic when bio_add_page fail,
+> > fix to remove it.
+> >
+> > Fixes: 0b20fcec8651 ("f2fs: cache global IPU bio")
+> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> > ---
+> >   fs/f2fs/data.c | 6 ++++--
+> >   1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > index d9494b5..f8ae684 100644
+> > --- a/fs/f2fs/data.c
+> > +++ b/fs/f2fs/data.c
+> > @@ -759,8 +759,10 @@ static void add_bio_entry(struct f2fs_sb_info *sbi=
+, struct bio *bio,
+> >       be->bio =3D bio;
+> >       bio_get(bio);
+> >
+> > -     if (bio_add_page(bio, page, PAGE_SIZE, 0) !=3D PAGE_SIZE)
+> > -             f2fs_bug_on(sbi, 1);
+> > +     if (bio_add_page(bio, page, PAGE_SIZE, 0) !=3D PAGE_SIZE) {
+> > +             bio_put(bio);
+>
+> I didn't get it, why new created bio has no space to store one page?
+>
+> Thanks,
 
-Signed-off-by: Bingsong Si <sibs@chinatelecom.cn>
----
- arch/x86/kernel/cpu/intel.c | 1 +
- 1 file changed, 1 insertion(+)
+Dear Chao,
+I got what you mean.
 
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index a927a8fc9624..22f0c829784d 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -526,6 +526,7 @@ static void detect_tme(struct cpuinfo_x86 *c)
- 	if (!TME_ACTIVATE_LOCKED(tme_activate) || !TME_ACTIVATE_ENABLED(tme_activate)) {
- 		pr_info_once("x86/tme: not enabled by BIOS\n");
- 		mktme_status = MKTME_DISABLED;
-+		clear_cpu_cap(c, X86_FEATURE_TME);
- 		return;
- 	}
- 
--- 
-2.34.1
-
+We are doing bio merge optimization in bio_add_page.
+After looking at all the locations where bio_add_page is called,
+and think it is unreasonable to panic the system if bio_add_page fails.
+but it is not impossible to panic in the current flow about bio_add_page.
+so keeping it as is is a good choice.
+thanks!
+> > +             return;
+> > +     }
+> >
+> >       f2fs_down_write(&io->bio_list_lock);
+> >       list_add_tail(&be->list, &io->bio_list);
 
