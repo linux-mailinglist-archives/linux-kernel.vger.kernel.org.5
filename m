@@ -1,149 +1,153 @@
-Return-Path: <linux-kernel+bounces-99451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C39F4878890
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:13:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18251878891
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:13:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CFF21F2155F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:13:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F2A41F21096
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033C954FA3;
-	Mon, 11 Mar 2024 19:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89EE56458;
+	Mon, 11 Mar 2024 19:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UCRElJ6y"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rgo65XpS";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MgtS9rKg"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A9554BFD
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F2C55E6A;
+	Mon, 11 Mar 2024 19:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710184376; cv=none; b=uUPqJpv5833rrAiUr4dXR6ojX3rnT+5zh80odLxzkaNygWWXQsUnAzyqHIPvjIKQN2mECH8t7WPCq197Lvj/VcDWzHa9st350vYoJ/AJoQSxboPBmYfSEwN/qlq50wk/HPlJAcvke773KVNyntKAPTXCvxZDlMwfKcR5PUpA2pM=
+	t=1710184383; cv=none; b=DUNQ0r51hliAVcYO0CpdLQmMcvmLiJ7nVu2IfyENTG7m9MgMJBtNHyOt1RSUCBq9p++BKfp7wgcd9kDr/EK2BDbbz6EReJAu04ONLNPJ8CdCqblJGk/iwKAfg/54o/z5dUKnOYTRXJhRGaRb64EDiI9cSE4HhQgivLPa4kBONzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710184376; c=relaxed/simple;
-	bh=vSPmOlLmSST5FDedii1lKp1ln0Krsn7NXYHxlkUi5kc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hnkd3NAZScGhv7IHMdNrGoo5+ld6bueetksOpmm+yAkpDsxalyGt08KNi2JtHKgiZr60HDAFGY5IFs8p2dips5uPgogNIdDCtE6qU9xQudUpHDEHxmIO7BDi8ilExvc62+HLtu8zP0RmrdkDRTU/ihCIqMIqQGmtM6DLpbnJey8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UCRElJ6y; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5685d26e1feso473540a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710184373; x=1710789173; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yvc3n57sG/EgKjIvn90GbNi1fbIRTY1+trZI6eVmRkA=;
-        b=UCRElJ6yyFAaGXTbZ8EW3Lt3zFyB01i0gFqUery/vD/1ZkKffLrWPUjlp17fCzofLu
-         AZ3hulvUEAGjODW3oAUICLxuTZ9ezGK67bcyajiVvdmsSo1mGqRB6+VPsI18kvE6dsjp
-         xELV3/nTikUcOUsHetJhkHd3LcmmH+C6C7+w8BjhLtju83+SS+ssMvqNZHgpzNnodQqv
-         UrzMNMh10No81o3McKZPEH8QEgUozh7FF4eufHXkOJixCmJZj6FONNVZiiGDH9808bjH
-         SNih3wYFAJaZ8dZkPg4rmgN98D4FsAiN+xW6mYvnhxnnK/oB0oK6zzU7Ota46sjFXb+Y
-         BaAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710184373; x=1710789173;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yvc3n57sG/EgKjIvn90GbNi1fbIRTY1+trZI6eVmRkA=;
-        b=ImMD00P9KoYztpsT/8jZ+GDX1W2YqvO6xw5V1m/757GFw0vnIJCN5O/wknI3s4gHT3
-         Vzv0l0hASdCurhyooPjSEI9IocQdAFvUye5uDCujwDwk7YiBQrVCDf2AmXjN2Km6eHSr
-         VThOZkzZqvXkZ66iQgSUOIKPzZw6d0BbVeD5H9ehEea+8pev9cHaim3f8GiJwXKnP523
-         GzwQBFAKVkz2dpNAyZlnGE86bVZGB/kLC0I90f8jSIhgAQr7FW4v/cDD5GHkKmaDRjq5
-         1ZCBvs1sUedBC/RxPUGk/ycyouRMjSEObkiA4mHbKcboN95N33JVyHwmUD601df0hmXF
-         GpJA==
-X-Forwarded-Encrypted: i=1; AJvYcCWYVl77etCACo5TjFhc7BVkIpSF4j1mSNp3GBc27x0cTe+PVNwiP2qPZLDeEeU7wv40CX8swqo5IAEoCSjjwPy+CVSjYptOw/3UD+HE
-X-Gm-Message-State: AOJu0Ywren3uhhkwnnFhPYSrmSSjEd7BAZxuGQSznncXbsDH75Ka2TS+
-	yaP/eTSD8zMe8/5Sxylanf3nhVudw4IA3eNKm9ba1mYnhPycb54k
-X-Google-Smtp-Source: AGHT+IEhK78V53bzJOOKLDCLv12a2XM+2jYUL5BNalyQIVaBMmHGdaZyIZAal9qxrLM3OD4p1tx86w==
-X-Received: by 2002:a17:906:32c3:b0:a45:ced8:e131 with SMTP id k3-20020a17090632c300b00a45ced8e131mr5381811ejk.2.1710184372652;
-        Mon, 11 Mar 2024 12:12:52 -0700 (PDT)
-Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id r24-20020a170906549800b00a45a62e0ed0sm3129450ejo.98.2024.03.11.12.12.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 12:12:52 -0700 (PDT)
-Message-ID: <5f6b7fad-5ad3-44a0-9e10-3e1c13109abd@gmail.com>
-Date: Mon, 11 Mar 2024 20:12:51 +0100
+	s=arc-20240116; t=1710184383; c=relaxed/simple;
+	bh=Bm88F28x3u+fvlR01BxaHWKDVnqJ17W1hQeeNr24xyo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RH0kYHFwhTIVhjMUvgWDrdWFCnqQ7+VNKCatZM/DzOh6vKJyQmGJPJv/mggADOMnildexpS45rhv3GPNzTfw4wsekwg0XRlOhNYb2DbSQZw4k1u74ec3ymYe/kgNaJd4Xt2ltpZscFVa3PKJKzxRMvsgOndjFUKh9GK+fPPJrPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rgo65XpS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MgtS9rKg; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710184379;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ojVF5KnTu9eflAVU8U0iQnMKfsuzwe1NcRF/4Nu1ku0=;
+	b=Rgo65XpSBswDXIVbhhr5JNjVSrbkGysrfzehxKTT6u+DAr7o88/XYdLRIeKGsKiCK9Tqx2
+	GHrb6l9AADDBymnfebyQ6s/ogzybtsiyHhg6n9Px50dsbrgtM4iqYgYsiEhc5ubaSF3fA6
+	zCzNzXpPax6YFRgH7a6FFuEFhT6DkR4NUNjaLBD8vJ39A1Q24ONjJnUzUawJ6mXDVr1V2r
+	0CFgc+aA5N8UYMVfYL7TckWMm5k78cr53BT9Lw3x2pHl7fe2lUIL4u8uvOo1u8JvY8Bos6
+	M86p+XNmf39CejcuMEfzpTon6jgItx2jakHnUtlGyUWf4G1DmZO1+dX+Xg5PlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710184379;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ojVF5KnTu9eflAVU8U0iQnMKfsuzwe1NcRF/4Nu1ku0=;
+	b=MgtS9rKgX6BQX/+QeE+mXqbLr3cKXV3YAa/33pgzxOv+gdlDUcpltmPk+ADDcurJB/kUmi
+	dhNoMysWEdF+64BA==
+To: Joel Fernandes <joel@joelfernandes.org>, Ankur Arora
+ <ankur.a.arora@oracle.com>
+Cc: paulmck@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org, luto@kernel.org,
+ bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+ mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
+ mark.rutland@arm.com, jgross@suse.com, andrew.cooper3@citrix.com,
+ bristot@kernel.org, mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+ glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+ mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
+ David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+ jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+ boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
+Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
+ PREEMPT_COUNT=y
+In-Reply-To: <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-16-ankur.a.arora@oracle.com>
+ <20240310100330.GA2705505@joelbox2>
+ <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
+ <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
+ <87r0ghl51f.fsf@oracle.com>
+ <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
+Date: Mon, 11 Mar 2024 20:12:58 +0100
+Message-ID: <87wmq8pop1.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] staging: cfg80211: Remove parentheses prism2_get_station
-To: Julia Lawall <julia.lawall@inria.fr>,
- "Felix N. Kimbu" <felixkimbu1@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
- outreachy@lists.linux.dev
-References: <Ze8LBf6xSjCRt4rd@MOLeToid>
- <4936c555-2c53-d421-126c-48804a26887d@inria.fr>
-Content-Language: en-US
-From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <4936c555-2c53-d421-126c-48804a26887d@inria.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 3/11/24 18:05, Julia Lawall wrote:
-> 
-> 
-> On Mon, 11 Mar 2024, Felix N. Kimbu wrote:
-> 
->> Remove unnecessary parentheses around 'wlandev->msdstate != WLAN_MSD_RUNNING'
->> in static int prism2_get_station(...)
-> 
-> You don't need the name of the function in the subject line.  That
-> information doesn't help understand the patch.
-> 
-> julia
+On Mon, Mar 11 2024 at 11:25, Joel Fernandes wrote:
+> On 3/11/2024 1:18 AM, Ankur Arora wrote:
+>>> Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
+>>> being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
+>>> preemption in preempt=none. So the "Don't preempt the kernel" behavior has
+>>> changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
+>>> CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
+>> 
+>> I think that's a view from too close to the implementation. Someone
+>> using the kernel is not necessarily concered with whether tasks are
+>> preempted or not. They are concerned with throughput and latency.
+>
+> No, we are not only talking about that (throughput/latency). We are also talking
+> about the issue related to RCU reader-preemption causing OOM (well and that
+> could hurt both throughput and latency as well).
 
-Hi Julia,
+That happens only when PREEMPT_RCU=y. For PREEMPT_RCU=n the read side
+critical sections still have preemption disabled.
 
-I think we do not need the function name in the subject but we need 
-something to distinguish between the patches. The subject line needs to 
-be a little unique. Otherwise we will have 100 patches like "[PATCH] 
-staging: cfg80211: Remove parentheses" when we are unlucky. Any better 
-proposal for a Subject uniqueness is welcome.
+> With CONFIG_PREEMPT_AUTO=y, you now preempt in the preempt=none mode. Something
+> very different from the classical CONFIG_PREEMPT_NONE=y.
 
-Function name for this purpose is OK for me.
+In PREEMPT_RCU=y and preempt=none mode this happens only when really
+required, i.e. when the task does not schedule out or returns to user
+space on time, or when a higher scheduling class task gets runnable. For
+the latter the jury is still out whether this should be done or just
+lazily defered like the SCHED_OTHER preemption requests.
 
-Thanks for your support.
+In any case for that to matter this forced preemption would need to
+preempt a RCU read side critical section and then keep the preempted
+task away from the CPU for a long time.
 
-Bye Philipp
+That's very different from the unconditional kernel preemption model which
+preempt=full provides and only marginally different from the existing
+PREEMPT_NONE model. I know there might be dragons, but I'm not convinced
+yet that this is an actual problem.
 
+OTOH, doesn't PREEMPT_RCU=y have mechanism to mitigate that already?
 
-> 
->>
->> This change ensures adherence to coding style guidelines.
->>
->> Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
->> ---
->>   drivers/staging/wlan-ng/cfg80211.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
->> index 471bb310176f..7451fd2bb580 100644
->> --- a/drivers/staging/wlan-ng/cfg80211.c
->> +++ b/drivers/staging/wlan-ng/cfg80211.c
->> @@ -247,7 +247,7 @@ static int prism2_get_station(struct wiphy *wiphy, struct net_device *dev,
->>
->>   	memset(sinfo, 0, sizeof(*sinfo));
->>
->> -	if (!wlandev || (wlandev->msdstate != WLAN_MSD_RUNNING))
->> +	if (!wlandev || wlandev->msdstate != WLAN_MSD_RUNNING)
->>   		return -EOPNOTSUPP;
->>
->>   	/* build request message */
->> --
->> 2.34.1
->>
->>
->>
-> 
+> Essentially this means preemption is now more aggressive from the point of view
+> of a preempt=none user. I was suggesting that, a point of view could be RCU
+> should always support preepmtiblity (don't give PREEEMPT_RCU=n option) because
+> AUTO *does preempt* unlike classic CONFIG_PREEMPT_NONE. Otherwise it is
+> inconsistent -- say with CONFIG_PREEMPT=y (another *preemption mode*) which
+> forces CONFIG_PREEMPT_RCU. However to Paul's point, we need to worry about those
+> users who are concerned with running out of memory due to reader
+> preemption.
 
+What's wrong with the combination of PREEMPT_AUTO=y and PREEMPT_RCU=n?
+Paul and me agreed long ago that this needs to be supported.
+
+> In that vain, maybe we should also support CONFIG_PREEMPT_RCU=n for
+> CONFIG_PREEMPT=y as well. There are plenty of popular systems with relatively
+> low memory that need low latency (like some low-end devices / laptops
+> :-)).
+
+I'm not sure whether that's useful as the goal is to get rid of all the
+CONFIG_PREEMPT_FOO options, no?
+
+I'd rather spend brain cycles on figuring out whether RCU can be flipped
+over between PREEMPT_RCU=n/y at boot or obviously run-time.
+
+Thanks,
+
+        tglx
 
