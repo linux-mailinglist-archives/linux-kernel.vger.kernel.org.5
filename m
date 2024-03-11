@@ -1,142 +1,172 @@
-Return-Path: <linux-kernel+bounces-99581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16A9D878A4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:56:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96CD0878A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:58:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F8861F21C18
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:56:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2543B1F21B84
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A361256B9F;
-	Mon, 11 Mar 2024 21:56:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F117256B98;
+	Mon, 11 Mar 2024 21:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="CMuMW/8N"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="2HyfHV1P"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B75356B79;
-	Mon, 11 Mar 2024 21:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A652D607
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710194184; cv=none; b=WO9dEzmiCSZtHKm8+hh/IL7VEAXg0BNpfWeC+7psjaDRInFCxDnGUUj/cjQBZiwHNsdvqFZX0l7xna7Ff4u22QDG23+3i0KitwXLyUvzbMhZbdDFECjV/esbepC2RzG9bIFpsiHCLbBAYRrfe6frDSyxg1dpWFbK43l+RHZJKPs=
+	t=1710194272; cv=none; b=YA0yn1KrNkN7qR6GFIpxpVio5zIcBc4NMJT7AJzCTRm5/usnhkpLFpn++AtdTipRposQSZRFqz2GLz/QqhR9+QiG1gLM95lQz2x8zMuOypYq7kJkzOYcArO0/Zk6Dz8ERVoKEG2jwYuk09248vFMKAVoDr3rtiy8/LbBLV8r324=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710194184; c=relaxed/simple;
-	bh=UIGkaKDh66bPE6UOPBSZSX0hDeAoqr1FyXz1/fGioIo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b3naa0u1/zHtVeVBynvdo+KSIXfvRAV2Pd0DL/BJAaiUnr2DHkXAdzzlTwSnQ9P9bMZCYZDxUabR3PR4rwnVVOsYBnJKVNhQoop/4uY+sVheLGwBBfSymP4MoYrdXXItVpJHt+GB7UJq9OU5rKsj3tA5CUqiIx1W+BkMGA6Xt5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=CMuMW/8N; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710194179;
-	bh=Wz8Ujw3rI9QMgBW9lKvOkkitX0MszA4zxm71kT6Iva4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CMuMW/8NLz+kwdmtnD8Wv9y36hf+JEQuaJfLunM1P/N6Xwdo2xnIsTqbPtxZTKi1N
-	 0DqPnRnGRhKBmHyH/U3kuOv6684HFweRHUmjLaekWtqnIL5gWCja0k31kdoJEo1P5d
-	 UqoJ36ciyKfXjBTN0YDI+MSYxfOafJZevgT346vvV1pVx+oQcBUdqAknUuAnyzn1tu
-	 7TH2LIFBNYMXNTjWKNaqAAEAmqxLHQuYSqh8Af8RmX0yL0UHzBXJBEteiu1AB6Z6g6
-	 wTztiEKeVRGevD0QxKgZMbSKdF1YS5yHMfFjLv1Xr1tqOthezVnszp7hHaCnBR9F23
-	 ux1FaYDAqUWwA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TtrFb2jHHz4wcT;
-	Tue, 12 Mar 2024 08:56:19 +1100 (AEDT)
-Date: Tue, 12 Mar 2024 08:56:18 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the mm
- tree
-Message-ID: <20240312085618.55544252@canb.auug.org.au>
-In-Reply-To: <20240221103200.165d8cd5@canb.auug.org.au>
-References: <20240221103200.165d8cd5@canb.auug.org.au>
+	s=arc-20240116; t=1710194272; c=relaxed/simple;
+	bh=Rv9Xl1j2Gcr0kIXmY7aliGGWXvDwx4DEY45xBD8KKf8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sl45Z/Rl4VdoamPzwTYL9kwcmTOBc1p4Wsa1AASnXr6FP23qhWXo9osG6oAHEatcE3K4xzEF5O2CHV2Vogi3SU1qrpVm2i5GkTKotG0FQXx7awh07Styi0wZTYC6m3eDI5cABwQ+kKZR4bfFoyAGSiMMYBlUoM021n1elTt9/Q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=2HyfHV1P; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=R4fs5qTi08rtdMj6m38ky2WmttIn+ysNDMJCt2/7f4s=; b=2HyfHV1PVL/NE2cDbDJHeiy1by
+	N0982YfxyXx0vvt33qIV5IcyEqdldIU+58/pjRNmZmRbqbZqkIVnREgwn5AdWkAbN0F8yzk23UQMU
+	VDIE/X66mnWEDgJzflhNU2C4yBYNdt4sO1zuV2nLaKvQ09BpjW+Gf5ZMzklVtMZQPAhgs4Q1vW6sK
+	zP3iUU3UxZ7FVAHD3VTO7zf0VTqk0HhK4rAOFPiaEXPU1RTcen76X99EbIR61N2Cpu+TUvPuiYPhJ
+	UexPz2ovc4pR9iQMrGK2y3tQ0twwnqKMdFNKZqzIl8q6JuzKqwFSpaS6LMFwYIaH+fGVIEoH3+VTq
+	9KU5n9Rw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rjneY-00000003K68-0jvY;
+	Mon, 11 Mar 2024 21:57:50 +0000
+Date: Mon, 11 Mar 2024 14:57:50 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Michal Hocko <mhocko@suse.com>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org,
+	Joel Granados <j.granados@samsung.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: CVE-2023-52596: sysctl: Fix out of bounds access for empty
+ sysctl registers
+Message-ID: <Ze9-Xmn8v4P_wppv@bombadil.infradead.org>
+References: <2024030645-CVE-2023-52596-b98e@gregkh>
+ <Ze68r7_aTn6Vjbpj@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/B_1GS=2eiTXdUHjwl6ZQeVC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ze68r7_aTn6Vjbpj@tiehlicka>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
---Sig_/B_1GS=2eiTXdUHjwl6ZQeVC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Mar 11, 2024 at 09:11:27AM +0100, Michal Hocko wrote:
+> On Wed 06-03-24 06:45:54, Greg KH wrote:
+> > Description
+> > ===========
+> > 
+> > In the Linux kernel, the following vulnerability has been resolved:
+> > 
+> > sysctl: Fix out of bounds access for empty sysctl registers
+> > 
+> > When registering tables to the sysctl subsystem there is a check to see
+> > if header is a permanently empty directory (used for mounts). This check
+> > evaluates the first element of the ctl_table. This results in an out of
+> > bounds evaluation when registering empty directories.
+> > 
+> > The function register_sysctl_mount_point now passes a ctl_table of size
+> > 1 instead of size 0. It now relies solely on the type to identify
+> > a permanently empty register.
+> > 
+> > Make sure that the ctl_table has at least one element before testing for
+> > permanent emptiness.
+> 
+> While this makes the code more robust and more future proof I do not think
+> this is fixing any real issue not to mention anything with security
+> implications. AFAIU there is no actual code that can generate empty
+> sysctl directories unless the kernel is heavily misconfigured.
+> 
+> Luis, Joel, what do you think?
 
-Hi all,
+As per review with Joel:
 
-On Wed, 21 Feb 2024 10:32:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the vfs-brauner tree got a conflict in:
->=20
->   init/main.c
->=20
-> between commit:
->=20
->   4728b74d1992 ("arm64, powerpc, riscv, s390, x86: ptdump: refactor CONFI=
-G_DEBUG_WX")
->=20
-> from the mm-unstable branch of the mm tree and commit:
->=20
->   193d98b1d3aa ("pidfd: add pidfs")
->=20
-> from the vfs-brauner tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc init/main.c
-> index bc3b6b49b3d8,2fbf6a3114d5..000000000000
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@@ -100,7 -99,7 +100,8 @@@
->   #include <linux/init_syscalls.h>
->   #include <linux/stackdepot.h>
->   #include <linux/randomize_kstack.h>
->  +#include <linux/ptdump.h>
-> + #include <linux/pidfs.h>
->   #include <net/net_namespace.h>
->  =20
->   #include <asm/io.h>
+The out-of-bounds issue cannot be triggered in older kernels unless
+you had external modules with empty sysctls. That is because although
+support for empty sysctls was added on v6.6 none of the sysctls that
+were trimmed for the superfluous entry over the different kernel
+releases so far has had the chance to be empty.
 
-This is now a conflict between the mm-stable tree and Linus' tree.
+The 0-day reported crash was for a future out of tree patch which was
+never merged yet:
 
---=20
-Cheers,
-Stephen Rothwell
+https://github.com/Joelgranados/linux/commit/423f75083acd947804c8d5c31ad1e1b5fcb3c020                                                                                                       
 
---Sig_/B_1GS=2eiTXdUHjwl6ZQeVC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Let's examine this commit to see why it triggers a crash to understand
+how the out of bounds issue can be triggered.
 
------BEGIN PGP SIGNATURE-----
+Looking for suspects of sysctls which may end up empty in that patch we
+have a couple. kernel/sched/fair.c sched_fair_sysctls can end up empty when
+you don't have CONFIG_CFS_BANDWIDTH or CONFIG_NUMA_BALANCING. But the kernel
+config for the 0-day test was:                                                                                                                                                                         
+https://download.01.org/0day-ci/archive/20231120/202311201431.57aae8f3-oliver.sang@intel.com/config-6.6.0-rc2-00030-g423f75083acd                                                           
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXvfgIACgkQAVBC80lX
-0GyaYAf/QB2Z1fTgVzq/mbxy9xqw8P4aJdg6qsFQPD/p9jEyc+lFP2SrZRoA7KRl
-oUrTFuCAdr2Dio9dK2Kfv+hgHcO7HicLsANPVLdzxL3cQ+c49/62WCxEYONF49F9
-8KEq2/J5w8ZruAT1aH0578QPG8d2Jf69e1ViuviCcLBNoHtD34uSPiPEz82hEdv5
-KNwZm5pFwSMoozwLJjqIf/i8N43tQ5S6LoqbjQt13Zob51K6Qh6Fs4XHMegwght/
-h8/bd+w4qgq2Oh3eaq4VKSwn9VhfSsWbHXHVk3mHUFnkkz5QTBCxZ4fjpuNTMqJ2
-PVLOM6vguG0PYHAOy0JIzxxB2wc2Jw==
-=noqE
------END PGP SIGNATURE-----
+It has CONFIG_CFS_BANDWIDTH=y but CONFIG_NUMA_BALANCING is not set so
+this was not the culprit, but that configuration could have been a
+cause if it was possible.
 
---Sig_/B_1GS=2eiTXdUHjwl6ZQeVC--
+In the same future-not-upstream commit kernel/sched/core.c sched_core_sysctls
+can be empty if you don't have the following:                                                                                                                     
+
+CONFIG_SCHEDSTATS       --> not set on 0-day kernel
+CONFIG_UCLAMP_TASK      --> not set on 0-day kernel                                                                                                                                         
+CONFIG_NUMA_BALANCING   --> not set on 0-day kernel
+
+So that was the cause, and an example real valid config which can trigger
+a crash. But that patch was never upstream.
+
+Now, we can look for existing removal of sysctl sentinels with:
+
+git log -p --grep "superfluous sentinel element"
+
+And of these, at first glance, only locks_sysctls seems like it *could*
+possibly end up in a situation where random config would create an empty
+sysctl, but exanding on the code we see that's not possible because
+leases-enable sysctl entry is always built if you have sysctls enabled:
+
+static struct ctl_table llocks_sysctlsocks_sysctls[] = {
+        {
+                .procname       = "leases-enable",
+                .data           = &leases_enable,
+                .maxlen         = sizeof(int),                                   
+                .mode           = 0644,
+                .proc_handler   = proc_dointvec,
+        },
+#ifdef CONFIG_MMU
+        {
+                .procname       = "lease-break-time",
+                .data           = &lease_break_time,                             
+                .maxlen         = sizeof(int),
+                .mode           = 0644,
+                .proc_handler   = proc_dointvec,
+        },
+#endif /* CONFIG_MMU */
+};
+
+The out of bounds fix commit should have just had the tag:
+
+Fixes 9edbfe92a0a13 ("sysctl: Add size to register_sysctl")
+
+Backporting this is fine, but wouldn't fix an issue unless an external
+module had empty sysctls. And exploiting this is not possible unless
+you purposely build an external module which could end up with empty
+sysctls.
+
+HTH,
+
+  Luis
 
