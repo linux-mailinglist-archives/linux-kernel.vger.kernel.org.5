@@ -1,119 +1,138 @@
-Return-Path: <linux-kernel+bounces-98602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6212D877C80
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B16A0877C83
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BAC9282059
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:20:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E32A281666
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80383168AC;
-	Mon, 11 Mar 2024 09:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A0351755B;
+	Mon, 11 Mar 2024 09:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gui0JIOP"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="H2QXL4op"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6353017548;
-	Mon, 11 Mar 2024 09:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC1B12E48;
+	Mon, 11 Mar 2024 09:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148816; cv=none; b=ZHGdAxi5xBb1esIcnBTw5FE2WnAq7M65VT2VLEACJzzeKAP/XEQmv7j/qff+zY/34GHUJ1VxxOeIt4p/2JZ0RHJ5poSJ4RF+c1V3NDYMDbzcdl1yGzVUkWxPUY1m9gqyp1KasvTvp1Qg23CcVfsVzizAN8iHiliPd4Am7fg0alk=
+	t=1710148874; cv=none; b=d84sBBRStYHjavB6kcr1jlJCJNYtLE2BGguTha/xunxNXa8bdW7oelZK/04L+qAMG0h+wIrdy0NhFohasAThiIkH3ZUEWo+wfDyehYkl8KAHU7m/WB4p33rZC1LyI1Mv0nhepw4DohYt0B6FJSUu1zAh7Jd4+QPXcYLdYJYMIBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148816; c=relaxed/simple;
-	bh=nmBmBVnPqJ2N+DmK4r1FSHVlgAjjOny7F6we7mlRXkc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ofA2XTZPoRGnYb1aiub2ZW9qCTS3IHbSICFyKRRZmH9AIqlF2ICaVitLSyqDhy0yeNjwxRCxA2rYZDlbRowRmQ47cPjMP0eje/EYERV6DNWwBLjh/Lin3DvT/RgtqopeClgrToRWKdcx2NGdij52v5eSPxmqMlSLXwflgAhoVHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gui0JIOP; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e64cdf08e3so1750662b3a.3;
-        Mon, 11 Mar 2024 02:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710148814; x=1710753614; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=PEdFwNEj9NiEV2imWkxjdIFM5A8FOXJbS9uIt5QsObI=;
-        b=gui0JIOPEyRqmBABlAR6VR/1bqA+JvXZNSpbZMQCUibO/ypzvDwJpY2lSszlDcOUcp
-         2xejr2MUG5zq9OBGxSpZ3lFIWbNPX+37U8fjawUufVpzZoYW35DSQRkJnaZmlm3szdN0
-         CCIIyn9ih3T+Jb8r1LOMuQwzyteNPb9xjTSAFUJ2DflvqX/Don6miVLY00GQrprQajrc
-         5eZCI2s/q/KcCrN87BpuA/qTnolSgE2ROh7FLLHL5J3aBgs3eizDAN0SRNWo+Tt48yu9
-         u5B+Dwl0qvWk5MJLvZGLYePBamV41dcx5F1ntaX1wXOlZe6qFeG1xz4dFtSUJD/I96xM
-         ZGZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710148814; x=1710753614;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PEdFwNEj9NiEV2imWkxjdIFM5A8FOXJbS9uIt5QsObI=;
-        b=o7Jo2PTjf4kcx/JniCHTdvbTF7ZKrY/5AJamdhFsaDS7ix/OJ5Mhh+Xcf2SlBXdl6Z
-         gDtVuDmcL3CoEiFM/w16VhfRdb2Imoh+zVgxjmccA4tmOvnU6tQJc1F0DJ2Z4ZHu8ia8
-         Ut/QIpCuYe/NncaA+VKNQBEJc+JlGdQmKmWphfTr2Yc4h+0hakSIGN8hfNgp9bIT5BlF
-         raOANGt1B8T+C8Nz3JxmP5et0K+98thc2LCYDojwgz4R8s0YxtPY9tIQq3rdcPct85T6
-         yeCZ9ANbqvFP2Dtm0z2+4zcAW9Q1BFrnsq+a7ZZ3CUPhoFDt4bPKxUybOQGa/t7/QYqX
-         hVpA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAzvKfURhr83wEqaVltnyOJ/Pui5ng735DfvAHOqtrDAqyhPBciKj/298c2JU6rykweBUJyr7w6seV2bhdqv8bc/ausSl4YQ==
-X-Gm-Message-State: AOJu0Yxb3lqo4+OhoOOPGll+O/JjYxU8astMyeCGMlOercZcRRRDm3P2
-	pDORZjx+E/+1pjOHRqKBMrF+9sf4Sq76q5CQ0Q1fJuH0i3pc3Wwd24CdRkSh
-X-Google-Smtp-Source: AGHT+IFO6gbWf3bpTTWva/VcKINhqbsDFEwx2df2IDRRr0x+AwhIhvO2MX4lN70SuleiV8LVpbZQ2g==
-X-Received: by 2002:a05:6a20:3424:b0:19e:9c82:b139 with SMTP id i36-20020a056a20342400b0019e9c82b139mr2879035pzd.45.1710148814474;
-        Mon, 11 Mar 2024 02:20:14 -0700 (PDT)
-Received: from localhost ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id y39-20020a056a00182700b006e3f09fd6a5sm3912448pfa.163.2024.03.11.02.20.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 02:20:14 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Sun, 10 Mar 2024 23:20:12 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-	cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup changes for v6.9
-Message-ID: <Ze7MzJUQZG41zx1w@slm.duckdns.org>
+	s=arc-20240116; t=1710148874; c=relaxed/simple;
+	bh=/hIauNCwOFr9GvZ1GLOdhxActQlNhMaVI4JUq639/L8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nlefkK+g4JJRPxy5ZM4eqh/Ejw9FB+wRPxs364RjqomryOcRCeJNAIAr4mlXR0CB+eEp5NkhM4SecBMbYESBGdPo4LZCv9kyp6ZyCg3VHgYCqxukw2TjO4dePteVH9RHkth+8e0hSJmhUhQSMtJMBzZmhDwm4EWzUGl/uxTWTYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=H2QXL4op; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7C5E0FF806;
+	Mon, 11 Mar 2024 09:21:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710148863;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MvrNB1vjlyglGsDHgQXajdb9Gf1WVPwiADdBQtMXZkU=;
+	b=H2QXL4opmZYFbaUOWr9UTc7MgjztMfmCZq/K2E9iWv1x6544XITdkjjgaQM4fQUUsIoYnx
+	JwLOPk7OKA/7iMa3c7+uHWmL8lH8AZ/YFxrr8t6JY4Zdq20fLczpGVX3g/hMN24Nj3htNK
+	rK74orgXDgOwacFqPfJ7oOVZS9jzQLnbER0H7/kTQV7Wa+BIZ4jtwG/K6VVnMslgorzX8h
+	JwLyFpTpIsMpecmadie9eq7l6SRBb891LiWj5z+F2XDJ3SECNAUnPDub43GN0ZqlM9DeNy
+	nHZ4AdHPqoIFmunV+v4vGkzW0x+HjA+lCzBa7ejILHp2CFZD6n+RW77PbjPMlw==
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Jakub Kicinski <kuba@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: thomas.petazzoni@bootlin.com,
+	Richard Cochran <richardcochran@gmail.com>
+Subject: [PATCH v2 net-next] ptp: Move from simple ida to xarray
+Date: Mon, 11 Mar 2024 10:21:01 +0100
+Message-Id: <20240311092101.1114687-1-kory.maincent@bootlin.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: kory.maincent@bootlin.com
 
-The following changes since commit 7ed2632ec7d72e926b9e8bcc9ad1bb0cd37274bf:
+Move from simple ida to xarray for storing and loading the ptp_clock
+pointer. This prepares support for future hardware timestamp selection by
+being able to link the ptp clock index to its pointer.
 
-  drm/ttm: fix ttm pool initialization for no-dma-device drivers (2024-01-22 17:25:46 -0800)
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
 
-are available in the Git repository at:
+Change in v2:
+- Update an err value missing
+---
+ drivers/ptp/ptp_clock.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.9
-
-for you to fetch changes up to 3ab67a9ce82ff22447b1dad53b49a91d1abbf1ff:
-
-  cgroup/cpuset: Mark memory_spread_slab as obsolete (2024-02-29 10:28:19 -1000)
-
-----------------------------------------------------------------
-cgroup: Changes for 6.9
-
-A quiet cycle. One trivial doc update patch. Two patches to drop now defunct
-memory_spread_slab feature from cgroup1 cpuset.
-
-----------------------------------------------------------------
-Xinyu Li (1):
-      docs: cgroup-v1: add missing code-block tags
-
-Xiongwei Song (2):
-      cgroup/cpuset: Remove cpuset_do_slab_mem_spread()
-      cgroup/cpuset: Mark memory_spread_slab as obsolete
-
- Documentation/admin-guide/cgroup-v1/cpusets.rst |  2 +-
- Documentation/admin-guide/cgroup-v1/hugetlb.rst | 20 ++++++++++++--------
- include/linux/cpuset.h                          | 10 ----------
- kernel/cgroup/cpuset.c                          |  1 +
- 4 files changed, 14 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 3aaf1a3430c5..9339fd475df0 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -31,7 +31,7 @@ struct class *ptp_class;
+ 
+ static dev_t ptp_devt;
+ 
+-static DEFINE_IDA(ptp_clocks_map);
++static DEFINE_XARRAY_ALLOC(ptp_clocks_map);
+ 
+ /* time stamp event queue operations */
+ 
+@@ -201,7 +201,7 @@ static void ptp_clock_release(struct device *dev)
+ 	bitmap_free(tsevq->mask);
+ 	kfree(tsevq);
+ 	debugfs_remove(ptp->debugfs_root);
+-	ida_free(&ptp_clocks_map, ptp->index);
++	xa_erase(&ptp_clocks_map, ptp->index);
+ 	kfree(ptp);
+ }
+ 
+@@ -246,12 +246,12 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	if (ptp == NULL)
+ 		goto no_memory;
+ 
+-	index = ida_alloc_max(&ptp_clocks_map, MINORMASK, GFP_KERNEL);
+-	if (index < 0) {
+-		err = index;
++	err = xa_alloc(&ptp_clocks_map, &index, ptp, xa_limit_31b,
++		       GFP_KERNEL);
++	if (err)
+ 		goto no_slot;
+-	}
+ 
++	err = -ENOMEM;
+ 	ptp->clock.ops = ptp_clock_ops;
+ 	ptp->info = info;
+ 	ptp->devid = MKDEV(major, index);
+@@ -378,7 +378,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	list_del(&queue->qlist);
+ 	kfree(queue);
+ no_memory_queue:
+-	ida_free(&ptp_clocks_map, index);
++	xa_erase(&ptp_clocks_map, index);
+ no_slot:
+ 	kfree(ptp);
+ no_memory:
+@@ -511,7 +511,7 @@ static void __exit ptp_exit(void)
+ {
+ 	class_destroy(ptp_class);
+ 	unregister_chrdev_region(ptp_devt, MINORMASK + 1);
+-	ida_destroy(&ptp_clocks_map);
++	xa_destroy(&ptp_clocks_map);
+ }
+ 
+ static int __init ptp_init(void)
 -- 
-tejun
+2.25.1
+
 
