@@ -1,163 +1,103 @@
-Return-Path: <linux-kernel+bounces-98624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82841877CCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:33:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D2D877CCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A63EE1C20E6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 728D6281091
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964711947B;
-	Mon, 11 Mar 2024 09:33:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QoWVN3bk";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LcYOR2Ic";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QoWVN3bk";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LcYOR2Ic"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD4F182C5;
-	Mon, 11 Mar 2024 09:33:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4771802E;
+	Mon, 11 Mar 2024 09:33:36 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD11017548;
+	Mon, 11 Mar 2024 09:33:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710149582; cv=none; b=qH3J+uAwFZpahMc2nXRHwXeJdPvCBgwDEzVBXS2OMiqG+2mIUjfZyJBEXuQ48P80W1T1NgynU0cOous9E7LZ7C/QEWGM/qMtw0M4/n1JciJ/tRNJtR10OjhLN6g92qaGmrD8mmenDZeG6uI+b68tlCpvNLcOpZzZiHQPtyjzxXs=
+	t=1710149616; cv=none; b=sMcrXfppvahX/zKAK2KF9lWJovcQDYPZ0B4Y/hOE7Am3y64qJdOQz2xG8gIAvcni8d9ubAS9g7GFVerT6S23WL+qrAbb4m27kWAHUqF7ZpS2VrHFucGw0wkk2UjINePqCm3MVYhoRYrRgPiz2jTrkZgpnJAOEaxYBtuVdNfE/fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710149582; c=relaxed/simple;
-	bh=wZb6/msMUpx9BpcFnxh9NohbHQHNlbgzy+qJSs5hmJ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DpCfB/t7FspePifgsMoiDZD0zRNpk24y5gTA0ETD52QXycHqOOebjHUV3eNT+sESApDTkP0c1E1/o4/fSB2MU+7637wHhs7EyFwtSkg9tomrYqPYS1JK31LVgbo3K4nEKiJqZRM7YHde+HWJEPPOv9OojzeTb4smwAEhYbX/aMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QoWVN3bk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LcYOR2Ic; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QoWVN3bk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LcYOR2Ic; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6D3265C498;
-	Mon, 11 Mar 2024 09:32:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710149579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=puIqP+LeA+BJf1r3+7qBhUyJGd7JnBzX8pvlrc45KkY=;
-	b=QoWVN3bkZXh2m3+udeVWG+YAHXgfIunWrFI2sUsnZW4YYpKAvK9fyapKsbVpnqbdSJ9G+P
-	5zrYtdWvq/lVTcPEdPTDDNBKmS5m93LpGK+S7AdWoU+ZRAJB9f3xiUBJgYXrmqTp3UZu41
-	hY7vdojUxMiUDmk0hZlwLJz2naCdpXo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710149579;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=puIqP+LeA+BJf1r3+7qBhUyJGd7JnBzX8pvlrc45KkY=;
-	b=LcYOR2IcrjXk7vEiGqvkN9JDjBO158L9OKz/kJjtQZDNn+Fnm32WOMI0lwHgxAav051TOn
-	deFKf2Tt6+FlhWAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710149579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=puIqP+LeA+BJf1r3+7qBhUyJGd7JnBzX8pvlrc45KkY=;
-	b=QoWVN3bkZXh2m3+udeVWG+YAHXgfIunWrFI2sUsnZW4YYpKAvK9fyapKsbVpnqbdSJ9G+P
-	5zrYtdWvq/lVTcPEdPTDDNBKmS5m93LpGK+S7AdWoU+ZRAJB9f3xiUBJgYXrmqTp3UZu41
-	hY7vdojUxMiUDmk0hZlwLJz2naCdpXo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710149579;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=puIqP+LeA+BJf1r3+7qBhUyJGd7JnBzX8pvlrc45KkY=;
-	b=LcYOR2IcrjXk7vEiGqvkN9JDjBO158L9OKz/kJjtQZDNn+Fnm32WOMI0lwHgxAav051TOn
-	deFKf2Tt6+FlhWAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 617B4136BA;
-	Mon, 11 Mar 2024 09:32:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +yjGF8vP7mXOBgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 11 Mar 2024 09:32:59 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0169AA0807; Mon, 11 Mar 2024 10:32:58 +0100 (CET)
-Date: Mon, 11 Mar 2024 10:32:58 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+9743a41f74f00e50fc77@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, axboe@kernel.dk, brauner@kernel.org,
-	hch@infradead.org, hch@lst.de, jack@suse.com, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	liushixin2@huawei.com, nogikh@google.com,
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu,
-	viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [udf] WARNING in invalidate_bh_lru
-Message-ID: <20240311093258.2oc6siuzmntx5jqk@quack3>
-References: <000000000000eccdc505f061d47f@google.com>
- <000000000000af5c290612ac6d86@google.com>
+	s=arc-20240116; t=1710149616; c=relaxed/simple;
+	bh=5h2/ErZoU+OYJlydwEWZQA4nPorm3Yj7oMA72BmjzmI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hup9LCrGMy2iSGhdj53K5Qjp5eT+8eL7w9f8Qfn9dhTGMy+T8CS818ZrpTkJFAHZ/rQ/mOnCWOzboC4u/ZTKf8ViXNEbJuvXpijmw4gFyrWnUnBvlH98Ifgba2m2WL5HGJ795KMGnV3xMHlgeiKMhCsuuZcW+SiUJLTUuXhu/4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86557FEC;
+	Mon, 11 Mar 2024 02:34:10 -0700 (PDT)
+Received: from [10.162.42.8] (a077893.blr.arm.com [10.162.42.8])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CBC03F762;
+	Mon, 11 Mar 2024 02:33:30 -0700 (PDT)
+Message-ID: <081eef3f-3b19-42d1-b70d-8916b867f766@arm.com>
+Date: Mon, 11 Mar 2024 15:03:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000af5c290612ac6d86@google.com>
-X-Spam-Level: **
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [2.87 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.03)[55.48%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=11e478e28144788c];
-	 TAGGED_RCPT(0.00)[9743a41f74f00e50fc77];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 2.87
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 00/11] coresight: Move remaining AMBA ACPI devices into
+ platform driver
+Content-Language: en-US
+To: James Clark <james.clark@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20240222082142.3663983-1-anshuman.khandual@arm.com>
+ <8ef57dd9-a16d-4847-89f5-a309c4ccb849@arm.com>
+ <379bf6df-3568-43c0-9a68-4a5693bf5ccc@arm.com>
+ <828d2109-7413-ffe5-da6a-56f15ed2f562@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <828d2109-7413-ffe5-da6a-56f15ed2f562@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat 02-03-24 04:14:04, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+
+
+On 3/11/24 14:55, James Clark wrote:
 > 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
+> On 11/03/2024 06:04, Anshuman Khandual wrote:
+>>
+>> On 3/5/24 23:55, Suzuki K Poulose wrote:
+>>> On 22/02/2024 08:21, Anshuman Khandual wrote:
+>>>> This moves remaining AMBA ACPI devices into respective platform drivers for
+>>>> enabling ACPI based power management support. This series applies on kernel
+>>>> v6.8-rc5 release. This series has been built, and boot tested on a DT based
+>>>> (RB5) and ACPI supported coresight platform (N1SDP).
+>>> Please rebase your series on coresight next and fix build failures with the extra warnings turned ON (should be on by default with next).
+>> I did rebase the series (which required some rebase related changes for some) on
+>> coresight next i.e with the following commit as HEAD.
+>>
+>> a4f3057d19ff ("coresight-tpda: Change qcom,dsb-element-size to qcom,dsb-elem-bits")
+>>
+>> Although did not see any warning either with = m or = y based coresight options.
+>> Is there any other particular config which needs to be enabled for these warnings
+>> to come up ?
+>>
+> It doesn't apply cleanly on a4f305 for me, maybe you sent an old version
+> after rebasing?
+
+Ohh, I was not clear enough earlier. This series is NOT rebased against coresight next.
+I am preparing V6 series respin which is rebased against the above mentioned commit on
+coresight next branch instead.
+
 > 
->     fs: Block writes to mounted block devices
+> This change in patch 5 is a warning for example, because not all members
+> of the struct are initialised. No special config is required:
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a093ce180000
-> start commit:   9a3dad63edbe Merge tag '6.6-rc5-ksmbd-server-fixes' of git..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=11e478e28144788c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9743a41f74f00e50fc77
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ebc3c5680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122e8275680000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+> +	{"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */"
 
-UDF is fixed but sysv still seems to trigger the warning so:
+Right, will change the above as follows and fix other affected places as well.
 
-#syz set subsystems: fs
-
-(we don't seem to have separate category for sysv bugs).
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+	{"ARMHC98D", 0, 0, 0}, /* ARM CoreSight Dynamic Replicator */
 
