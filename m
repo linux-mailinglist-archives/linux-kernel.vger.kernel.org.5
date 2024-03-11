@@ -1,201 +1,168 @@
-Return-Path: <linux-kernel+bounces-98928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F144A87811B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:59:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C9887811E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:00:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A668D288FFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:59:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1194F288FA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0ED3FB21;
-	Mon, 11 Mar 2024 13:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543443FB3E;
+	Mon, 11 Mar 2024 13:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tfPtjYq3"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2064.outbound.protection.outlook.com [40.107.94.64])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MFXVQPP2"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D551E3D551
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:59:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710165577; cv=fail; b=O2pWwGQs3kun7ad57Lff2VWS3PcpmYK5kyxtGBKphcrQJ/M9iVRZjTmAM6AXSFzPCQ9htW27gkX+qxwDFMoVDofEFxeG5XmUDJGd0N9oNdZdBLwfGSIk6IDTy1dBIMv+U4rMYp8O5M95MUTaa0MpkjUqCvcfVkCfFY3RAOnSD80=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710165577; c=relaxed/simple;
-	bh=8YVKnj+fW/4HD1FBKjnP7bX48cZaPxwVnh/IPv5sAnQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZuxLNvdcQLLKEIKurxiQzwZfcJA+8vzFHPezS10lcKrX/9SBcdJDBTegdRSg0M+9mZQ7+7ru+fjxMEJycPac1b5G8Tvu7nnz9Vu9d6+gW+1yqpeShh5+szX95FM2e6gMOUTGpwfySMipO3iCT/dretsBN7WlEAxx3d9+OX0nDoo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tfPtjYq3; arc=fail smtp.client-ip=40.107.94.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gcusqxQY1nBbTh46uj44Ei2FIz/vFnJ3IHgCkNMU+ezpx8Y2yMgSFSaz8aMX/yJyulEIs+lMjeDN35iO2PneadKKEjgLHlBQ6Ym1X1W1OHypNd+hFT1Cvnc7dPAe5Qo1+cULmxfpy3evOIhuiuxUGer5k5OH//BElQnbi3kW7vO2Nq10CmrUtcJyWv5MVSfrvV+07wftD1t/7zjAccoomX2JwHmXcgYCd9duyiNDcA2kpLSOlPI9lP/7HQrA2Jf3y3b6iPQFqMFTrf5ptY5jZaCqX9rfVElEVyQRlKUUdv65jiB5yVyqRAG7OpxBR/W1HPSBM6QcWfygYMWaFNEmoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LEpA20NNDDBs75Ec8GcP8R1IC1Q0+KMRTGNo+rQIID0=;
- b=Zh6/LTpb2yje1fABDvH8W+pJRq/xPFwrr0WS9AHnsUhgWHMZNp0MnHACM4vKXpyx+Sfz0Ch55GDWnbIGYj2M6CRYC2a5Rl2I9wwiENJjfF+IbAXo6EtXkf4sNN0SsMV+qVBjwZ29q0NRlZa5t12M+HkLZwJJVUwYbQvpMyRy+jjvq6kyvk7tBRlvwRH3h8z2+ax7OYQc14Hb24UL53OZPXGH7UaUMYS3jHxMVOAAnEH4VCxRrWdBgoUiFp7MhiReF+QsF3p6sXaqDNgMHv0Dv3ZJSLYQs5IQRFYUSqYX5kvOZwDrRlUHJGUfp8hAIb2amiWQCqAE71h93P6Px1Bk1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LEpA20NNDDBs75Ec8GcP8R1IC1Q0+KMRTGNo+rQIID0=;
- b=tfPtjYq3oq1SVdRFC5qJ27H+wcffrDxsV3A8A1eP/25D1wPbL+0hoQ/MdM9WvsuIlmlD4tsKGmAKCYkkZCNfNFJ0l2HHwtzXTmoSx8OrDs7g1LjHuXyG349RhJTd7ZvKJpo2bR6KH719PyF87KCMSl+syH29t9/1b81wsYqFsjY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by DS0PR12MB8525.namprd12.prod.outlook.com (2603:10b6:8:159::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
- 2024 13:59:33 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7362.031; Mon, 11 Mar 2024
- 13:59:32 +0000
-Message-ID: <9e1dbcbc-f00e-417c-995e-d9c539292e03@amd.com>
-Date: Mon, 11 Mar 2024 14:59:27 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: add ring buffer information in devcoredump
-Content-Language: en-US
-To: Sunil Khatri <sunil.khatri@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240311122212.13713-1-sunil.khatri@amd.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20240311122212.13713-1-sunil.khatri@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0192.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ab::11) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E385F3F9F8;
+	Mon, 11 Mar 2024 13:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710165594; cv=none; b=K5MVteW33HSGOYH6C308IOBetAmjKiGUDahiuqKRxGkVbffLOutyxJDYkF6NFmGcpZCKG8C59mC4QHm2CUapApo603lN2Dr8xnrpC7XFJDrCX+E4P4Jjd7DiIaN7A8+y5StDiY8VvdosrMmcBM0u22AvvlRNs/M8p2FJySHMwZI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710165594; c=relaxed/simple;
+	bh=w0U72Ycmq844X9KX4KpHGr0JX6G/1oC6LAYxW4A8Lyo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ny2ENuNSvRfv3G/C0jXyJV8KXp7YFbVY+OuEJ6sDfYV8Tf/Mxw99HaT5I6wT1pI4ZDiOZz5ehRvjDnDKrD0jgpmDBXb19sgdq7iHInJZqi0CVTvLfg9QsiQZtGgoRX7RzoTy3OkMEz/ICNLpW8nTN5RU9S+w4li1fX8TQjMZP2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=MFXVQPP2; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 937C5E000E;
+	Mon, 11 Mar 2024 13:59:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710165590;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=BIqCSEXEHAQQ7uGBrLNSPsM/8U6DguluqZGvnINBf78=;
+	b=MFXVQPP2fSaleun8lVC/lcWcQXSTFneu2IzH5/ZmYQDKRBhqifKx9mDV1UccOtdvroDLNa
+	zG3nKJB2tQ6zPUSLKa3J54cQVjDPkynHr1bzmfC4Ih/CpTnzL8OZAINZqNjoJOoV+EXmMZ
+	tw82OAkNvSwHCLze3Q3rwmQS1M9rVCw4rK+OmbGDoUzHuJDkwqqNAOgQ0tdIu5BgdcOzaJ
+	lKllUEF9dhqg80plRlrQKfGhbGRsm7uuyFlTxmkjfxK+KOI/8o/F/nBhTAIsvYn5LA40aU
+	XHHbi+f+HXqYXYksLO61LcmHNj37YdROpdynr088rxQsSdvRyBB9jy0jZHA0jQ==
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Jakub Kicinski <kuba@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: thomas.petazzoni@bootlin.com,
+	Richard Cochran <richardcochran@gmail.com>
+Subject: [PATCH v3 net-next] ptp: Move from simple ida to xarray
+Date: Mon, 11 Mar 2024 14:59:47 +0100
+Message-Id: <20240311135949.1180157-1-kory.maincent@bootlin.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DS0PR12MB8525:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1536601b-3968-42a2-f81a-08dc41d37a53
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	eO12heOxhspDA7mnDtPt0q6fEqvI1rFuKetoaLs+C0dCRpH4BJrwLBQbYNd3n2wJ8vr9zxWpFKH2tt5F7IarVyUV5FOlWPPThPRrOhAOGurE2fX+rqu+e5RrIy0e5SBL1nLRL3SZlYTc6bT9I7LOxZMkpLmdxl3POENi5Xbu5p9xeBPuesPiiKwm429trKncPwurS/t+XJzsJ1iMfvcytDe7P78o+UBQ7p/RKVZFa7qP6uQ+CATOFLoQC4CdJhLy5wWG36Xez0kdC9XPbhPTjvapOpo2dSpcIe8b4df0pQGuwN608HcyZpqFYhF50qhuUrM1panIp4yEnDipMQeRnbdhAtPC0v6SjMLIvDhzhCgAaDfD9KKQmxrMUCyW2qXDPi3LO0Hzd6W+bzaeRpJ4pZH5ghDOXSUiwdC2kDD0ImQ4LsYQdJiBDnfpQ1EvD6snxyMlZPY/NaR0iWQtdCDwvRPtJCZ9IhN0ZC3rrnjfZunyKHRW4xHBfGathRZamefbLofK6Iz0QXgUOomnoiUlHcWBpTAFh8NQcCxIdPkR4CD6ra/CMihMEXbEE86QIdwruOH+dtNTtpsMg6V0fbP7xq/ZGLTM7M/fe6HhUjxaEKWwUgKl2i7yoVjvKlx/NFajCiGkLSkgErTuuRJGtBGJr3JByVVuZcRhaDCq0mSQaK0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Q2lTZlgwWmpMdHhqeTV6bW1PYWJrUitmZmhKUDFmcjh2NHF1THBvR0M2K3dS?=
- =?utf-8?B?d3NCdUFnSzZRbU5lVk5qa3dSUHJyL0VEWFFpQmtYMWdnMzNhZnN5WncrOHVN?=
- =?utf-8?B?b1dIamp6ZVhybHE1NFdudTBCKzRyZXhZRlR5SUFCOVVhSmMrdEtWN1c0MGlG?=
- =?utf-8?B?RVE4TUJJLy9sYm44SUE5VkNRa2FxS1R1NmhGT3FBWUxJVUF4MWprRkcvNTht?=
- =?utf-8?B?cmN6d1pTL1NnV29VSDUxa25jdXc3VjZyNGR3QmIxa2tyd2dmMkkyUXF1VVhu?=
- =?utf-8?B?aC9DS0trTUhycGpsQWxLL2RyM1JpdnlNMjEvekU1YXpsQUtlRjd3Vnl2MXh2?=
- =?utf-8?B?U0Q4RWJjSE1SOWp0RkRDQWMrWDBiNzJSNUwwYzRKSnNDc1dUbXJXSlFVU3Zj?=
- =?utf-8?B?Zk8wdWR3WU1YNFFQa3FObG5wSG5nTHNqck5LZXVSRCswckN5NG96amFaS01S?=
- =?utf-8?B?NTZwaGpJam1WRDd1L0E3UVgxSEtsOHY2ZkxnMnBlN2dCK1VjYW5tSk9VS3VX?=
- =?utf-8?B?YTZkT3lienFRNEFXOVVQbmUzQjd5TGsxL3M5Mk5PRkVBcjBxMW9QOEpOQjFi?=
- =?utf-8?B?Ylk0R2xNZmxOK0kwZVg4QzhFVkpKZ0w0ckEyaE1mQ3VZdGVGQSt1aEhVVnBa?=
- =?utf-8?B?cVpCS241R3NBYlBmUXh6U2RwQnlYdE43Y3VoWlFHMTBlM3IxUXU0bGpPK1Za?=
- =?utf-8?B?TG8ycTB4dDRkOTI1ZTlPazlIMEhpeEc3MGRQdGtUcXBQbkVQMmQydGN2T0E3?=
- =?utf-8?B?NXJmYjd1MklkcmRVVjUzVXFYMklSeXRQcENpMGplTDBCbWpWckNJUmdQNXIx?=
- =?utf-8?B?bHpZa1BtNjRtVk92cVRudjhmRitZK2pZMW5ZeThxMkRudzdsVmh0RlRicXRL?=
- =?utf-8?B?Rmw5R25XQUhXL0w0Qlc3NnFTZFg4dHU5ZDEvemJjYXZSVlBDdy9yUVJZMzQw?=
- =?utf-8?B?dFI4c2FRcXkxL2RDaW1IVGNKUnQyZzYvNEhNK2JJU2U2T0JDVzdjQ2lWbGVk?=
- =?utf-8?B?RDhmZkZJSDlWU0podFRHQldpenJLaDRJbVFlVlliMkVjcnZnSUdwRTN4SEdx?=
- =?utf-8?B?dUNTK3lTVUYrN0hLbW1jNzZ6ZXBHRmROTEZ5cUlTWC85WE54TXEyOUk0ZHkr?=
- =?utf-8?B?UmQ0MHgyNGQ5OGY4ajVHRDJWTDF1N0VVMXZkT3UyZmtVL0VvYWhySXcwMHIx?=
- =?utf-8?B?OEQzOW1PRXVKVTZwMmlnS0tnS3NyRzBHaUEyZCtZS3o1YzdtSVdwL21OYUxB?=
- =?utf-8?B?NmNKamgzZ3phU1l3ZHBTT3VtV1pWRWJFTXRtQ1YrOEJpdDBtaFdoWU5zWVo4?=
- =?utf-8?B?UW9GSmJnS3B4c0huMFUxOWdsKzMrQWdIUWRHRVQ4TU5SQy9XRy9TWDBUMWpJ?=
- =?utf-8?B?SHdRRTBjUGlzbVh1OTZGcllKNk10bkRyWEJHQ21XRmRjc052bXRJaElCZFJz?=
- =?utf-8?B?akRBc0h4VmFMN3NERVJYR0cxandPQjBDR3NZT1NFZ1g5ZVNOeXZrWTV2a2dY?=
- =?utf-8?B?VEVJWjd6Y0xCU1BhQ25zVFh0aytSWUh5VytHQXZmd0J4WmN2TGJGSkxMM29X?=
- =?utf-8?B?N29aVlc0cnJlUmdvREhnRlhPcmxnSDVLekNvcDA1NjAzNG8rb21DOWdDS3RK?=
- =?utf-8?B?emp2RFRTUTlHQXhlYnB1UmxMYjYwNExycW1aVUlqQ0oyL3NOM056NDhZSWdY?=
- =?utf-8?B?L3pUd2dCNWFPT2RQWjF3UTk4MVRhNS92RkdsYTBpKzlDWTNYTmlBMTR4UkJC?=
- =?utf-8?B?eTZFcERzbEQrajBreTk4UkhLUUNSUDErU0RwT1NGUGpkT240WG9IN01nUWl4?=
- =?utf-8?B?cTlIdDFrT3NjeDIwT3oyMzV6aHhMSHRCaDF0bFZmOTR5MlRQRDJKYmdoT1BS?=
- =?utf-8?B?Z1dQaGQzTXRKNE8xQS9LcS9tcUd0MXhETDdyNEVLK0pQRXRtdXI2b2c2RWZp?=
- =?utf-8?B?anNPL0FBQkZ1bGNGRmFYYjJyL1dySE9JeFZZakJTT0FwOE1JWjBFOE9SdGFp?=
- =?utf-8?B?Q0dMeXBoZjE2NFhULzBTdUFqRXlGaGhETFhiSGJxWXNyQjZ0R1J4cGQzejdD?=
- =?utf-8?B?VHdSdmxxNWduY2pGNDEzSDQ5OHEwb0tidTN5M1J6dERjODJxa1pHRTltYk5C?=
- =?utf-8?Q?Rvlez9JwMhOKjKygZRJ9d2cA+?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1536601b-3968-42a2-f81a-08dc41d37a53
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 13:59:32.7210
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8RtJ1/CHr/w6dmeOtaxDOGuQSh1ygj82x/Q0wS/8OClJfMfLr6/Z/nEmzAsmF55r
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8525
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: kory.maincent@bootlin.com
 
+Move from simple ida to xarray for storing and loading the ptp_clock
+pointer. This prepares support for future hardware timestamp selection by
+being able to link the ptp clock index to its pointer.
 
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
 
-Am 11.03.24 um 13:22 schrieb Sunil Khatri:
-> Add relevant ringbuffer information such as
-> rptr, wptr, ring name, ring size and also
-> the ring contents for each ring on a gpu reset.
->
-> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 21 +++++++++++++++++++++
->   1 file changed, 21 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> index 6d059f853adc..1992760039da 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> @@ -215,6 +215,27 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
->   			   fault_info->status);
->   	}
->   
-> +	drm_printf(&p, "Ring buffer information\n");
-> +	for (int i = 0; i < coredump->adev->num_rings; i++) {
-> +		int j = 0;
-> +		struct amdgpu_ring *ring = coredump->adev->rings[i];
-> +
-> +		drm_printf(&p, "ring name: %s\n", ring->name);
-> +		drm_printf(&p, "Rptr: 0x%llx Wptr: 0x%llx\n",
-> +			   amdgpu_ring_get_rptr(ring) & ring->buf_mask,
-> +			   amdgpu_ring_get_wptr(ring) & ring->buf_mask);
+Change in v2:
+- Update an err value missing.
 
-Don't apply the mask here. We do have some use cases where the rptr and 
-wptr are outside the ring buffer.
+Change in v3:
+- Refactor err management.
+---
+ drivers/ptp/ptp_clock.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
-> +		drm_printf(&p, "Ring size in dwords: %d\n",
-> +			   ring->ring_size / 4);
-
-Rather print the mask as additional value here.
-
-> +		drm_printf(&p, "Ring contents\n");
-> +		drm_printf(&p, "Offset \t Value\n");
-> +
-> +		while (j < ring->ring_size) {
-> +			drm_printf(&p, "0x%x \t 0x%x\n", j, ring->ring[j/4]);
-> +			j += 4;
-> +		}
-
-> +		drm_printf(&p, "Ring dumped\n");
-
-That seems superfluous.
-
-Regards,
-Christian.
-
-> +	}
-> +
->   	if (coredump->reset_vram_lost)
->   		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
->   	if (coredump->adev->reset_info.num_regs) {
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 3aaf1a3430c5..8eebf1373ca3 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -31,7 +31,7 @@ struct class *ptp_class;
+ 
+ static dev_t ptp_devt;
+ 
+-static DEFINE_IDA(ptp_clocks_map);
++static DEFINE_XARRAY_ALLOC(ptp_clocks_map);
+ 
+ /* time stamp event queue operations */
+ 
+@@ -201,7 +201,7 @@ static void ptp_clock_release(struct device *dev)
+ 	bitmap_free(tsevq->mask);
+ 	kfree(tsevq);
+ 	debugfs_remove(ptp->debugfs_root);
+-	ida_free(&ptp_clocks_map, ptp->index);
++	xa_erase(&ptp_clocks_map, ptp->index);
+ 	kfree(ptp);
+ }
+ 
+@@ -241,16 +241,16 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	/* Initialize a clock structure. */
+-	err = -ENOMEM;
+ 	ptp = kzalloc(sizeof(struct ptp_clock), GFP_KERNEL);
+-	if (ptp == NULL)
++	if (!ptp) {
++		err = -ENOMEM;
+ 		goto no_memory;
++	}
+ 
+-	index = ida_alloc_max(&ptp_clocks_map, MINORMASK, GFP_KERNEL);
+-	if (index < 0) {
+-		err = index;
++	err = xa_alloc(&ptp_clocks_map, &index, ptp, xa_limit_31b,
++		       GFP_KERNEL);
++	if (err)
+ 		goto no_slot;
+-	}
+ 
+ 	ptp->clock.ops = ptp_clock_ops;
+ 	ptp->info = info;
+@@ -258,13 +258,17 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	ptp->index = index;
+ 	INIT_LIST_HEAD(&ptp->tsevqs);
+ 	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
+-	if (!queue)
++	if (!queue) {
++		err = -ENOMEM;
+ 		goto no_memory_queue;
++	}
+ 	list_add_tail(&queue->qlist, &ptp->tsevqs);
+ 	spin_lock_init(&ptp->tsevqs_lock);
+ 	queue->mask = bitmap_alloc(PTP_MAX_CHANNELS, GFP_KERNEL);
+-	if (!queue->mask)
++	if (!queue->mask) {
++		err = -ENOMEM;
+ 		goto no_memory_bitmap;
++	}
+ 	bitmap_set(queue->mask, 0, PTP_MAX_CHANNELS);
+ 	spin_lock_init(&queue->lock);
+ 	mutex_init(&ptp->pincfg_mux);
+@@ -378,7 +382,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	list_del(&queue->qlist);
+ 	kfree(queue);
+ no_memory_queue:
+-	ida_free(&ptp_clocks_map, index);
++	xa_erase(&ptp_clocks_map, index);
+ no_slot:
+ 	kfree(ptp);
+ no_memory:
+@@ -511,7 +515,7 @@ static void __exit ptp_exit(void)
+ {
+ 	class_destroy(ptp_class);
+ 	unregister_chrdev_region(ptp_devt, MINORMASK + 1);
+-	ida_destroy(&ptp_clocks_map);
++	xa_destroy(&ptp_clocks_map);
+ }
+ 
+ static int __init ptp_init(void)
+-- 
+2.25.1
 
 
