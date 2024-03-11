@@ -1,165 +1,241 @@
-Return-Path: <linux-kernel+bounces-98776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39977877F3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:45:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 140E2877F40
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:45:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA174B217D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:44:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DDE3B21AE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631443BBCF;
-	Mon, 11 Mar 2024 11:44:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B2F3B78E;
-	Mon, 11 Mar 2024 11:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2C23BB23;
+	Mon, 11 Mar 2024 11:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ePJOnNRv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EBAD3B2A4
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710157490; cv=none; b=tYRuGduxdOhOjKJvpXaF61aFpgOHpeB081hz+ePoA0zxxhanSXWOjWUZtmqD7cZPy4EcUEWD6MFgmJ/grqz0X/Wy1kqPfDtWJqKOqkK7I/PXDFma3b5Pnxj77FtC+cJjSCCCeombj4fP8VzQSuS45SBXzXsJFZMFg1T9lW/kvtw=
+	t=1710157523; cv=none; b=FCpcYkekUkpeVn0FoOwovzq0y/olGZWXael/XpwaFLFdA4xA3d+2m2tqUVtbNPcIgJT10zqx6Wiyvjv+Df8/xYaaObUsYoGde3ORSXwIUTu8T6tzhzkugLnFNE1zLwioH8LZEEN6GVCYFBq+R78+y4K8afCPyVA9eAlFveTZ+VY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710157490; c=relaxed/simple;
-	bh=ScauDxIHPpzPMivn0k7nmNQRb13dHQ5538K1RuMQE+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ul+9LMWgFjaKHli813CeFiL/hAOPGa7e5o0V/Q9tcF/gOhRliDEhFrmXyeX3ZKrCtIFpHF8MROyxKdK7iZIWTJk4Aes2lRW4dB+K92PP3/J3aQt4TKB2NUW/7/dN8Z6cpFsDNz0iuE5DYqWPBZuzDucnL+fsb5svUUVyi6T5wSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C30691007;
-	Mon, 11 Mar 2024 04:45:23 -0700 (PDT)
-Received: from e130802.arm.com (unknown [10.57.15.44])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D00DA3F64C;
-	Mon, 11 Mar 2024 04:44:43 -0700 (PDT)
-Date: Mon, 11 Mar 2024 11:44:42 +0000
-From: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
-To: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Drew.Reed@arm.com,
-	Adam.Johnston@arm.com, linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH 1/3] remoteproc: Add Arm remoteproc driver
-Message-ID: <20240311114442.GA82865@e130802.arm.com>
-References: <20240301164227.339208-1-abdellatif.elkhlifi@arm.com>
- <20240301164227.339208-2-abdellatif.elkhlifi@arm.com>
- <ZeYWKVpeFm1+4mlT@p14s>
- <20240307194026.GA355455@e130802.arm.com>
- <CANLsYkzA20rQdTM6AOvFK=3o28GvcoRbckL=ri8RegHqyHaiCw@mail.gmail.com>
+	s=arc-20240116; t=1710157523; c=relaxed/simple;
+	bh=EcNEaZMVk3aPUICbNCmMENQZ7/vKgD6kDbgmJolx/hs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bZTAvUDyREDKJ8rl/n26uENPJs9nzW7Nw4V93OE9yLq+GWYjW2idx6bi/lBxZkKN8r1MtbmJ1EQw6hXat/rx54ETzfKVr5HCA/xOcwJ3WR0aOQxtGvryZgjSE4ZBw6YSPj2OW0rZPnRX2bsxwQY96bShLQ8yH9/9XolsZoyCH8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ePJOnNRv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710157520;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EcNEaZMVk3aPUICbNCmMENQZ7/vKgD6kDbgmJolx/hs=;
+	b=ePJOnNRvepBgf8n8N77cnF9mBdRx2CFQxuRo2iAHYujENXBm1kCdkZQVvkOc5q6+jbhL5B
+	yfDw9xCTAxHRRwj0nykZVikUJGRm888rFMaWhzxFUXm2JdXSvOCGasg9br+cVexYdn0YIt
+	NI5wa0YqLTHAoOrQWIAvh85omZbqmj8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-591-NKGGjNEnP0CxT3zIOAgraA-1; Mon, 11 Mar 2024 07:45:18 -0400
+X-MC-Unique: NKGGjNEnP0CxT3zIOAgraA-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-567eb0397e3so1272871a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 04:45:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710157518; x=1710762318;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EcNEaZMVk3aPUICbNCmMENQZ7/vKgD6kDbgmJolx/hs=;
+        b=o1WCdiWvOaG2T9yTLqDSWb5bCdxH7AjzsqDc+QpJ9u5my/uixNrJmRdcXhY6VNiqi5
+         GC8hxt3akBFWxFmmUSq+9VVozVo7EOn7neNNVIPuRE3LQHLBXjLK5KJnDCNibLOK1dke
+         RsyyB4Amwuwlrzh4DXEMurD7S731MmG7BdDLIPEp3QCENGmqs5SVnxMhPax/w79RSqrD
+         0xkETmMb5R7zg2jw/hEURsa9ltx0hxoWY/or04X0PLPYe/4z3MslRp38Ew9JkjNpUoUs
+         oqdMPUgz2iY94xjmGf8mL2yOOGeGkl0XlV4hD5PipQfyPBh7WSqM6rx5vz9dq7Rss3+f
+         RBng==
+X-Forwarded-Encrypted: i=1; AJvYcCWv9ffZKhV74+AC3Zhkwk1tWEnDQMfhzYePr2tj3B0rhOCnvX60frLNWYsLrpG2lEDTd4ZMEnQX9YlBSKdNsLWgs2Cot37kuJVpLc5s
+X-Gm-Message-State: AOJu0Ywl2dLNRs3pt1NxViQoWTG8BZIkiSXfAWcVeElxfB5h6XFjCy53
+	WJoHvxgMEZEeWnt5p69rU7yRTgkFtB/YZjc2wUj9ajx6/aj4UAjr/hv88FkqdZeqyhRy1dIT1yy
+	dcFRslR6bzWoHD7vXCZV/0ewtW/n2BbiCi2AfX0zmuA570EgRdEg/spxy33Dg9g==
+X-Received: by 2002:a05:6402:3884:b0:568:4b96:36d2 with SMTP id fd4-20020a056402388400b005684b9636d2mr3389011edb.2.1710157517772;
+        Mon, 11 Mar 2024 04:45:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHZxthictsCT7kiFqPXiANc0599HzfXAwKn859lfAHV1rT6UpTe08qMtRLSkmAxkb65LOECOg==
+X-Received: by 2002:a05:6402:3884:b0:568:4b96:36d2 with SMTP id fd4-20020a056402388400b005684b9636d2mr3388970edb.2.1710157517001;
+        Mon, 11 Mar 2024 04:45:17 -0700 (PDT)
+Received: from pstanner-thinkpadt14sgen1.remote.csb (p200300d967002a00b6f567b28c2df44b.dip0.t-ipconnect.de. [2003:d9:6700:2a00:b6f5:67b2:8c2d:f44b])
+        by smtp.gmail.com with ESMTPSA id s27-20020a50d49b000000b0056729e902f7sm2997003edi.56.2024.03.11.04.45.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 04:45:16 -0700 (PDT)
+Message-ID: <e1e0044a364b218fea285b1c9e80d925ad4c9d90.camel@redhat.com>
+Subject: Re: [PATCH v4 00/10] Make PCI's devres API more consistent
+From: Philipp Stanner <pstanner@redhat.com>
+To: Hans de Goede <hdegoede@redhat.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Bjorn Helgaas <bhelgaas@google.com>, Sam
+ Ravnborg <sam@ravnborg.org>, dakr@redhat.com
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	linux-pci@vger.kernel.org
+Date: Mon, 11 Mar 2024 12:45:15 +0100
+In-Reply-To: <20240301112959.21947-1-pstanner@redhat.com>
+References: <20240301112959.21947-1-pstanner@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANLsYkzA20rQdTM6AOvFK=3o28GvcoRbckL=ri8RegHqyHaiCw@mail.gmail.com>
 
-Hi Mathieu,
+Gentle ping because the Merge Window opened 8-)
 
-On Fri, Mar 08, 2024 at 09:44:26AM -0700, Mathieu Poirier wrote:
-> On Thu, 7 Mar 2024 at 12:40, Abdellatif El Khlifi
-> <abdellatif.elkhlifi@arm.com> wrote:
-> >
-> > Hi Mathieu,
-> >
-> > > > +   do {
-> > > > +           state_reg = readl(priv->reset_cfg.state_reg);
-> > > > +           *rst_ack = EXTSYS_RST_ST_RST_ACK(state_reg);
-> > > > +
-> > > > +           if (*rst_ack == EXTSYS_RST_ACK_RESERVED) {
-> > > > +                   dev_err(dev, "unexpected RST_ACK value: 0x%x\n",
-> > > > +                           *rst_ack);
-> > > > +                   return -EINVAL;
-> > > > +           }
-> > > > +
-> > > > +           /* expected ACK value read */
-> > > > +           if ((*rst_ack & exp_ack) || (*rst_ack == exp_ack))
-> > >
-> > > I'm not sure why the second condition in this if() statement is needed.  As far
-> > > as I can tell the first condition will trigger and the second one won't be
-> > > reached.
-> >
-> > The second condition takes care of the following: exp_ack and  *rst_ack are both 0.
-> > This case happens when RST_REQ bit is cleared (meaning: No reset requested) and
-> > we expect the RST_ACK to be 00 afterwards.
-> >
-> 
-> This is the kind of conditions that definitely deserve documentation.
-> Please split the conditions in two different if() statements and add a
-> comment to explain what is going on.
+On Fri, 2024-03-01 at 12:29 +0100, Philipp Stanner wrote:
+> This v4 now can (hopefully) be applied to linux-next, but not to
+> mainline/master.
+>=20
+> Changes in v4:
+> =C2=A0 - Rebase against linux-next
+>=20
+> Changes in v3:
+> =C2=A0 - Use the term "PCI devres API" at some forgotten places.
+> =C2=A0 - Fix more grammar errors in patch #3.
+> =C2=A0 - Remove the comment advising to call (the outdated) pcim_intx() i=
+n
+> pci.c
+> =C2=A0 - Rename __pcim_request_region_range() flags-field "exclusive" to
+> =C2=A0=C2=A0=C2=A0 "req_flags", since this is what the int actually repre=
+sents.
+> =C2=A0 - Remove the call to pcim_region_request() from patch #10. (Hans)
+>=20
+> Changes in v2:
+> =C2=A0 - Make commit head lines congruent with PCI's style (Bjorn)
+> =C2=A0 - Add missing error checks for devm_add_action(). (Andy)
+> =C2=A0 - Repair the "Returns: " marks for docu generation (Andy)
+> =C2=A0 - Initialize the addr_devres struct with memset(). (Andy)
+> =C2=A0 - Make pcim_intx() a PCI-internal function so that new drivers
+> won't
+> =C2=A0=C2=A0=C2=A0 be encouraged to use the outdated pci_intx() mechanism=
+.
+> =C2=A0=C2=A0=C2=A0 (Andy / Philipp)
+> =C2=A0 - Fix grammar and spelling (Bjorn)
+> =C2=A0 - Be more precise on why pcim_iomap_table() is problematic (Bjorn)
+> =C2=A0 - Provide the actual structs' and functions' names in the commit
+> =C2=A0=C2=A0=C2=A0 messages (Bjorn)
+> =C2=A0 - Remove redundant variable initializers (Andy)
+> =C2=A0 - Regroup PM bitfield members in struct pci_dev (Andy)
+> =C2=A0 - Make pcim_intx() visible only for the PCI subsystem so that
+> new=C2=A0=C2=A0=C2=A0=20
+> =C2=A0=C2=A0=C2=A0 drivers won't use this outdated API (Andy, Myself)
+> =C2=A0 - Add a NOTE to pcim_iomap() to warn about this function being
+> the=C2=A0=C2=A0=C2=A0 onee
+> =C2=A0=C2=A0=C2=A0 xception that does just return NULL.
+> =C2=A0 - Consistently use the term "PCI devres API"; also in Patch #10
+> (Bjorn)
+>=20
+>=20
+> =C2=A1Hola!
+>=20
+> PCI's devres API suffers several weaknesses:
+>=20
+> 1. There are functions prefixed with pcim_. Those are always managed
+> =C2=A0=C2=A0 counterparts to never-managed functions prefixed with pci_ =
+=E2=80=93 or so
+> one
+> =C2=A0=C2=A0 would like to think. There are some apparently unmanaged fun=
+ctions
+> =C2=A0=C2=A0 (all region-request / release functions, and pci_intx()) whi=
+ch
+> =C2=A0=C2=A0 suddenly become managed once the user has initialized the de=
+vice
+> with
+> =C2=A0=C2=A0 pcim_enable_device() instead of pci_enable_device(). This
+> "sometimes
+> =C2=A0=C2=A0 yes, sometimes no" nature of those functions is confusing an=
+d
+> =C2=A0=C2=A0 therefore bug-provoking. In fact, it has already caused a bu=
+g in
+> DRM.
+> =C2=A0=C2=A0 The last patch in this series fixes that bug.
+> 2. iomappings: Instead of giving each mapping its own callback, the
+> =C2=A0=C2=A0 existing API uses a statically allocated struct tracking one
+> mapping
+> =C2=A0=C2=A0 per bar. This is not extensible. Especially, you can't creat=
+e
+> =C2=A0=C2=A0 _ranged_ managed mappings that way, which many drivers want.
+> 3. Managed request functions only exist as "plural versions" with a
+> =C2=A0=C2=A0 bit-mask as a parameter. That's quite over-engineered consid=
+ering
+> =C2=A0=C2=A0 that each user only ever mapps one, maybe two bars.
+>=20
+> This series:
+> - add a set of new "singular" devres functions that use devres the
+> way
+> =C2=A0 its intended, with one callback per resource.
+> - deprecates the existing iomap-table mechanism.
+> - deprecates the hybrid nature of pci_ functions.
+> - preserves backwards compatibility so that drivers using the
+> existing
+> =C2=A0 API won't notice any changes.
+> - adds documentation, especially some warning users about the
+> =C2=A0 complicated nature of PCI's devres.
+>=20
+>=20
+> Note that this series is based on my "unify pci_iounmap"-series from
+> a
+> few weeks ago. [1]
+>=20
+> I tested this on a x86 VM with a simple pci test-device with two
+> regions. Operates and reserves resources as intended on my system.
+> Kasan and kmemleak didn't find any problems.
+>=20
+> I believe this series cleans the API up as much as possible without
+> having to port all existing drivers to the new API. Especially, I
+> think
+> that this implementation is easy to extend if the need for new
+> managed
+> functions arises :)
+>=20
+> Greetings,
+> P.
+>=20
+> Philipp Stanner (10):
+> =C2=A0 PCI: Add new set of devres functions
+> =C2=A0 PCI: Deprecate iomap-table functions
+> =C2=A0 PCI: Warn users about complicated devres nature
+> =C2=A0 PCI: Make devres region requests consistent
+> =C2=A0 PCI: Move dev-enabled status bit to struct pci_dev
+> =C2=A0 PCI: Move pinned status bit to struct pci_dev
+> =C2=A0 PCI: Give pcim_set_mwi() its own devres callback
+> =C2=A0 PCI: Give pci(m)_intx its own devres callback
+> =C2=A0 PCI: Remove legacy pcim_release()
+> =C2=A0 drm/vboxvideo: fix mapping leaks
+>=20
+> =C2=A0drivers/gpu/drm/vboxvideo/vbox_main.c |=C2=A0=C2=A0 20 +-
+> =C2=A0drivers/pci/devres.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 1013 ++++++++++=
++++++++++++--
+> --
+> =C2=A0drivers/pci/iomap.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 =
+18 +
+> =C2=A0drivers/pci/pci.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
+=C2=A0 123 ++-
+> =C2=A0drivers/pci/pci.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
+=C2=A0=C2=A0 21 +-
+> =C2=A0include/linux/pci.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 =
+18 +-
+> =C2=A06 files changed, 1001 insertions(+), 212 deletions(-)
+>=20
 
-Thanks, I'll address that.
-
-> 
-> > > > +/**
-> > > > + * arm_rproc_load() - Load firmware to memory function for rproc_ops
-> > > > + * @rproc: pointer to the remote processor object
-> > > > + * @fw: pointer to the firmware
-> > > > + *
-> > > > + * Does nothing currently.
-> > > > + *
-> > > > + * Return:
-> > > > + *
-> > > > + * 0 for success.
-> > > > + */
-> > > > +static int arm_rproc_load(struct rproc *rproc, const struct firmware *fw)
-> > > > +{
-> > >
-> > > What is the point of doing rproc_of_parse_firmware() if the firmware image is
-> > > not loaded to memory?  Does the remote processor have some kind of default ROM
-> > > image to run if it doesn't find anything in memory?
-> >
-> > Yes, the remote processor has a default FW image already loaded by default.
-> >
-> 
-> That too would have mandated a comment - otherwise people looking at
-> the code are left wondering, as I did.
-> 
-> > rproc_boot() [1] and _request_firmware() [2] fail if there is no FW file in the filesystem or a filename
-> > provided.
-> >
-> > Please correct me if I'm wrong.
-> 
-> You are correct, the remoteproc subsystem expects a firmware image to
-> be provided _and_ loaded into memory.  Providing a dummy image just to
-> get the remote processor booted is a hack, but simply because the
-> subsystem isn't tailored to handle this use case.  So I am left
-> wondering what the plans are for this driver, i.e is this a real
-> scenario that needs to be addressed or just an initial patchset to get
-> a foundation for the driver.
-> 
-> In the former case we need to start talking about refactoring the
-> subsystem so that it properly handles remote processors that don't
-> need a firmware image.  In the latter case I'd rather see a patchset
-> where the firmware image is loaded into RAM.
-
-This is an initial patchset for allowing to turn on and off the remote processor.
-The FW is already loaded before the Corstone-1000 SoC is powered on and this
-is done through the FPGA board bootloader in case of the FPGA target. Or by the Corstone-1000 FVP model
-(emulator).
-
-The plan for the driver is as follows:
-
-Step 1: provide a foundation driver capable of turning the core on/off
-
-Step 2: provide mailbox support for comms
-
-Step 3: provide FW reload capability
-
-Steps 2 & 3 are waiting for a HW update so the Cortex-A35 (running Linux) can share memory with
-the remote core.
-
-I'm happy to provide more explanation in the commit log to reflect this status.
-
-Is it OK that we go with step 1 as a foundation please ?
-
-Cheers
-Abdellatif
 
