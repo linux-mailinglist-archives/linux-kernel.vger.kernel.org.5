@@ -1,92 +1,70 @@
-Return-Path: <linux-kernel+bounces-98416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289A98779C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:17:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66BC38779C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:18:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FC6B1C20A8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:17:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 254A02811E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C538187F;
-	Mon, 11 Mar 2024 02:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B86EBE;
+	Mon, 11 Mar 2024 02:18:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="jCk0db+n"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lEH7NncQ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4B8EDB
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A4A37462
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710123433; cv=none; b=ElYn+r+8Pplh9dtrXGXdxUspR+ydDio7oima7BFT8cU2I6xFqTu/d/cfd2QFweckIyrvnG32pm6Rz0NqyOv/WssAFjA6DMDPUdpj/J2L9WD3euIMi0ieKg8IatuMyc46rzeFHW2DfnF1LcI23xUDATzyuURoXEz9QIhkxL0L94w=
+	t=1710123495; cv=none; b=Go+WBGy3kMtL27Cw1B5hnzJVUu3Txz5uIc2K+HOe3BVNO0hJ1fQGvlbHvgd83lVQKNjqiDSty/BYLJlH5MMvyYX3Xm6c2fQbOsMBYp46jgsphDvmGO6ojEjaqMPLBwwyRq3S+IN0UzDmpUJ+jSNmqoEP00M8Ti2JkOgYIlEliVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710123433; c=relaxed/simple;
-	bh=1L7MoSZFuvPSNtlP8t+DsIgAFz3OYQfQmtdX/FZeVDI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OZbbD70lnA1r7CCGi7bchajr0jG0BMlvJaQ0KstGj7KObjdR6IaSjxeRHpgirokpta8dPGM64quSK/AtIymO11Akmgn5HrNYbEqYIg+0sCBsbXLJWMh//VNI7sF22GnaWV7TZ0bgvwinemeDkYOwyiJsDYUO4E5CWpXvnvQA0Ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=jCk0db+n; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29b7b9a4908so1366950a91.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 19:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1710123431; x=1710728231; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P2HOPvTzIOfPgTuaGyDXCX6Oprhe2Q5xowyCchEBaBY=;
-        b=jCk0db+nO/Lk+OXykEwsQIfoYn/mAi0EHmQXCu1T3dBwlf9+KTQiLrby5GBp93j7U7
-         V5ghmYNvale5vaOcsnZ+1He+O8nnGePtL2AI9KIg8S++ZwY4GcGyJtBjqF6y7n8hL4sD
-         j46+YkXWN7Dv4S2FZm/DzLh46ak9YXGD+5wmbWSDv54w8oWWDrNLs6RfrvlbBdOv9kg4
-         5sc4C5KzOT89NoK6Y3b2z4gB397PO7ySMlN4Qmk9wXAxMlTfgceg4KFbcfsxr79qz1Zx
-         rtEI2xQihYLAwHnQH6V5mtU2k1CinLV/rS4y+0Pdh0uVG84aHteeiyNLpTxFKUctBVSb
-         6Otg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710123431; x=1710728231;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P2HOPvTzIOfPgTuaGyDXCX6Oprhe2Q5xowyCchEBaBY=;
-        b=GQUYsarHndmbgZiTbCROkRMSvsqKVNtrXcu7jhZKlqPAiIYhf6aCHDI3ctmuCVsOeX
-         RVymu9Y7GSwLPTrp7LpN0QrpFbta986fY2QwXRo+o1gRIhQJ6NdkoLBpVDdXf03+Rktj
-         TQqeg5ajhXXdqdtp+FjigzM7o+TT54+dmmEDcYMr8TkgOkaJLCSnTm52uoMaLppHRICd
-         YDGezPABGLevm4IOQB3qBeRNHqc3wes8wQpueEY+rmAftCM8wW2bIIkMbatPdcFuBott
-         jH2Qq3OM7m9usJd98GIEnS6FdIVDToCp27b2BwE0hKcfl1YMzXYS3Pd2dboXs0Uvhyyd
-         kGPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBobVLsLozKyYsbetZjVINDI4Sp8E3yVZxSZCJkUjru3JXqXM0NJCDVQgI5uAIpJMD9GgKLtLJTzwgTLDUsobjLnxYj9YLiZAAfDE8
-X-Gm-Message-State: AOJu0YwHfQkwp1Eu57beam7xqEu0L4gLRE9oG9MegiYyYTieaEh+1Cm3
-	zobrJ86RObn8o5cA6n8Lp1pF+UcTQ0cM1JGUqNqQX9Rt7+6+6WDtSIPq8Ne3fC8=
-X-Google-Smtp-Source: AGHT+IEgtGW5AN8mnjwdibd+gLuySW0tEDIBlzlkkIrMs8fV0hgNTvd0J7PfU9RiDNuMx2cvGySV0Q==
-X-Received: by 2002:a17:90a:f417:b0:299:a69:1f8b with SMTP id ch23-20020a17090af41700b002990a691f8bmr3199478pjb.23.1710123431284;
-        Sun, 10 Mar 2024 19:17:11 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-47-118.pa.nsw.optusnet.com.au. [49.179.47.118])
-        by smtp.gmail.com with ESMTPSA id p3-20020a17090a348300b0029bc1c931d9sm3752893pjb.51.2024.03.10.19.17.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 19:17:10 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rjVDw-000GCA-1X;
-	Mon, 11 Mar 2024 13:17:08 +1100
-Date: Mon, 11 Mar 2024 13:17:08 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Neal Gompa <neal@gompa.dev>, linux-fsdevel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Message-ID: <Ze5ppBOFpVm1jyb+@dread.disaster.area>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
- <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
- <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
- <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
- <20240308165633.GO6184@frogsfrogsfrogs>
+	s=arc-20240116; t=1710123495; c=relaxed/simple;
+	bh=uz6FJxCEYQdKqSllQGG03zzz/o+fuscmUkLJxRazXdc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=s/tps3C8YKb+kHykIIdvj/YFwQrh5JgJ2+0q/VMOwDU8GM26w7yEGyPVc4Bs4Q/Y3MUyhQ18EwQhf4Sw0DKtNrauCL139myti3kejOrk+/8pZ/tpwUXHDs3A97veDh+mhGFoZ7CTArXmt+mBRWzx/bTeZvXbesuJYCYZuY90sho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lEH7NncQ; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710123492; x=1741659492;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=uz6FJxCEYQdKqSllQGG03zzz/o+fuscmUkLJxRazXdc=;
+  b=lEH7NncQTfFRo06hL2KaLblvjyghZb/7U+7f7hdVx1OC2WIj3mr+YoPP
+   9NysJyI/EE8Da85jdxlOdS9j3GheEA8Nj1uTUcacBGMvQOXk/NeWFyCg/
+   PnaxCDp3Q1lGMrVNqmx8NiHfMnobi6a6efx2cGWHafvVMZfA70xhghQG/
+   3odgles5/LezNDH810scD643WyoJnaq++S+hs9bbEatLpK0thzKUYd0Zn
+   rtkqbVcE4EchR79nzJPSTzGwN7h+1ThvrxgJzcotHEl/iVOCGy7x3lZOh
+   giEjFlm/rjShZ+yQPpiB69OkzN6SnQXm7an0EF9A19Kt3Dp310vsNHT+8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="4886776"
+X-IronPort-AV: E=Sophos;i="6.07,115,1708416000"; 
+   d="scan'208";a="4886776"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2024 19:18:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,115,1708416000"; 
+   d="scan'208";a="48476602"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 10 Mar 2024 19:18:09 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rjVEs-0008pR-2r;
+	Mon, 11 Mar 2024 02:18:06 +0000
+Date: Mon, 11 Mar 2024 10:17:55 +0800
+From: kernel test robot <lkp@intel.com>
+To: Emil Renner Berthing <kernel@esmil.dk>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	Samin Guo <samin.guo@starfivetech.com>,
+	Hal Feng <hal.feng@starfivetech.com>
+Subject: WARNING: modpost: "__udelay" [drivers/hwmon/sfctemp.ko] has no CRC!
+Message-ID: <202403111019.VvcVNxlT-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,20 +73,149 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240308165633.GO6184@frogsfrogsfrogs>
 
-On Fri, Mar 08, 2024 at 08:56:33AM -0800, Darrick J. Wong wrote:
-> Should the XFS data and rt volumes be reported with different stx_vol
-> values?
+Hi Emil,
 
-No, because all the inodes are on the data volume and the same inode
-can have data on the data volume or the rt volume. i.e. "data on rt,
-truncate, clear rt, copy data back into data dev".  It's still the
-same inode, and may have exactly the same data, so why should change
-stx_vol and make it appear to userspace as being a different inode?
+First bad commit (maybe != root cause):
 
--Dave.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   e8f897f4afef0031fe618a8e94127a0934896aba
+commit: 7f2958e845d2c8bf1100dc088dbdc31af2a80fd0 hwmon: (sfctemp) Add StarFive JH71x0 temperature sensor
+date:   11 months ago
+config: sparc-randconfig-r051-20240309 (https://download.01.org/0day-ci/archive/20240311/202403111019.VvcVNxlT-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240311/202403111019.VvcVNxlT-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403111019.VvcVNxlT-lkp@intel.com/
+
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
+
+WARNING: modpost: "__udelay" [drivers/media/rc/gpio-ir-tx.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/media/rc/gpio-ir-tx.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/rc/ir-hix5hd2.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/rc/serial_ir.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/thermal/k3_j72xx_bandgap.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-pci.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-s3c.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-milbeaut.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/alcor.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/mtk-sd.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/davinci_mmc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/renesas_sdhi_core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/cb710-mmc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/dw_mmc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sh_mmcif.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sunxi-mmc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/toshsd.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-esdhc-imx.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-bcm-kona.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-xenon-driver.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mmc/core/pwrseq_emmc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/leds-bcm6358.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/leds-bd2802.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/leds-lt3593.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/staging/iio/impedance-analyzer/ad5933.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/staging/rtl8192e/rtl8192e/r8192e_pci.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/staging/rtl8723bs/r8723bs.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/staging/rts5208/rts5208.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mailbox/sprd-mailbox.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/memory/tegra/tegra30-emc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/memory/tegra/tegra210-emc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/accel/mma9551_core.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/iio/adc/ad7606.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/bcm_iproc_adc.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/iio/adc/hx711.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/imx8qxp-adc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/mt6577_auxadc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/meson_saradc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/rcar-gyroadc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/sun4i-gpadc-iio.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/ti-ads7924.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/dac/ad5592r-base.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/gyro/itg3200.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/pressure/dlhl60d.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/proximity/ping.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/nvmem/nvmem_meson_mx_efuse.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/nvmem/nvmem-mxs-ocotp.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/nvmem/nvmem-rockchip-otp.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/chips/cfi_util.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/chips/cfi_cmdset_0002.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/chips/cfi_cmdset_0001.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/onenand/onenand.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/ingenic/ingenic_nand.ko] has no CRC!
+WARNING: modpost: "__ashldi3" [drivers/mtd/nand/raw/nand.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/nand.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/nand.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/davinci_nand.ko] has no CRC!
+WARNING: modpost: "__lshrdi3" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/marvell_nand.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/marvell_nand.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/lpc32xx_slc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/lpc32xx_mlc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/txx9ndfmc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/stm32_fmc2_nand.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/pcmcia/pcmcia_core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/serio/i8042.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/serio/olpc_apsp.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/keyboard/imx_keypad.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/keyboard/matrix_keypad.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/keyboard/pmic8xxx-keypad.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/keyboard/samsung-keypad.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/keyboard/sh_keysc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/keyboard/tegra-kbc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/mouse/vsxxxaa.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/as5011.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/db9.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/gamecon.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/gf2k.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/grip_mp.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/cyttsp4_core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/elants_i2c.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/ilitek_ts_i2c.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/raydium_i2c_ts.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/wdt87xx_i2c.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/sx8654.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/tps6507x-ts.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/zforce_ts.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/zinitix.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/rmi4/rmi_core.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/w1/masters/ds2482.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/w1/masters/mxc_w1.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/w1/masters/sgi_w1.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/w1/slaves/w1_ds28e17.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/w1/wire.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/hwmon/lm93.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/hwmon/powr1220.ko] has no CRC!
+>> WARNING: modpost: "__udelay" [drivers/hwmon/sfctemp.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/hwmon/sht15.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/ssb/ssb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/fpga/altera-freeze-bridge.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/drivers/vx/snd-vx-lib.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/au88x0/snd-au8810.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/ctxfi/snd-ctxfi.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/cs46xx/snd-cs46xx.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/lx6464es/snd-lx6464es.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/echoaudio/snd-darla20.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/echoaudio/snd-mona.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/echoaudio/snd-echo3g.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/echoaudio/snd-indigodjx.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/oxygen/snd-oxygen-lib.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/trident/snd-trident.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/vx222/snd-vx222.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/snd-ad1889.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/snd-intel8x0.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/snd-intel8x0m.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/snd-via82xx.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/snd-via82xx-modem.ko] has no CRC!
+
 -- 
-Dave Chinner
-david@fromorbit.com
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
