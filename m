@@ -1,166 +1,141 @@
-Return-Path: <linux-kernel+bounces-99328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C09818786A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:49:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 695E28786B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 361B51F23A07
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:49:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AC461C210CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2939853E12;
-	Mon, 11 Mar 2024 17:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96C2524D6;
+	Mon, 11 Mar 2024 17:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TwAZDQj7"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F0tVV5DE"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C273D5467F;
-	Mon, 11 Mar 2024 17:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B203753E00;
+	Mon, 11 Mar 2024 17:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710179371; cv=none; b=GFYHSXQNiFhKTcDxCjfqppVooQy6UehSQY4yXQRtQTqodAB/E9juZ2Wror0ZbZM+xcN+x85DnpUWaZO33quAkap4Ch+C3Nw+xYhV05G7RW4p8683KGk1qBCoInd9BszwtufcWLhn0kk8glOCLEycZQDa9AHXToXF3OQ9Lw06y0Q=
+	t=1710179531; cv=none; b=fC9sXT23iOHUJ0J3mRPFlTVp59rO1meDOIE5Ewj4g9g9LcyJvlCFW3hQev/hQiru8dZhBe2Q2+p9C1Pc+z4DpzflFBCNA3p8dezuoN43GSnvZapzRd58wb94T+9KVUOuo1bRogxl5PeQZoeubTeZojWcZcfRahSbj1gi3KzgzZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710179371; c=relaxed/simple;
-	bh=FruVc137rIMV3xfiSwhivbMir0fGyRuBlxHaGRlShtM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DUF4r5YLgepXaM3UpuE/0wqOq8SJMtQw9+vHFYGrtWY+HaHQaZFg9MEpCQ8R2OUXNFm4j8eDy5l6QmSnKv9VsZYbITfbIycgAmiFsg/7KTdkjK/36VOOkjZ6XSG84FSMnkun08/7PvUYns81aI6H9UsVxEydDNfxbvKIfrCYTLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TwAZDQj7; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso3955923a12.3;
-        Mon, 11 Mar 2024 10:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710179369; x=1710784169; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fbU798yjoe9QW28weq/V45GGj69Gs5hSFHP5NyuJ08o=;
-        b=TwAZDQj7Ve1xAmz6j70L/UFHTlK2nwUQ54hQPjVWTnwDDu+8q0kP6A2lRBN1Z55miy
-         vN4VUcOi27egSN9NPW6olGx/2FAHl5DK/1vwdVfcLkyqaPmhpqRpRLAmLRxahsKBHWxx
-         ZtHA8ZOd1Gcq6f355xmgDdxhkeXYNObOmGjovSllT/Wf8LVv4rRhvV7tRuKxlSTIPE6r
-         c+7mJkW31ocTJ2fmMJvr5zGRLe4QxQUyLLo0WPCe4X/fgOFnVR8EffqRMZi32OGMKeX9
-         MVomS77iLHQPpz8ijBOYp8JMEpGU3JnwhBNM3ACGESZM3q8F1lVRA590jZpOMgjITEjg
-         AJxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710179369; x=1710784169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fbU798yjoe9QW28weq/V45GGj69Gs5hSFHP5NyuJ08o=;
-        b=poGM+8RxQw27f+id7lEoDsc6dXIE94TqrV43eB9/hc9ydZujE1nlrbsm+820lmLuIS
-         LIpXM00qxgnJWJdNyDk0RXLEIOIl5oB97iYhCP+V3wtlKHK297SLOrelFF1LEc3Vciq1
-         RtTo0AGEcxHCn0XVY+z2kz6AMapDiu29R69wx65BICbdspjnjai/9sHX5hBSmYluk7Uz
-         +ADgG9R2ya5XisgIPxlocPR/MeseNVSlmQRZPZDmVVjF3arDqArsriH3UJkxOBzhpTh5
-         XGnbEtHVH30mRK1kp6wh7cKrJB8bCZk6oyIzr7PTj4Zfo8mzi2xSriptUuS3WCqdEn4k
-         rxBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/0B10mEjr2FIeKTkcn7Tup854ejATWA/e+qFEVQQivhMRlrluZYlGVweeTlsGaenuNPH+mv0lfZsRx/mHpcJ9b3uRYI7bTqqJDaSDydDCf9F5vDs3dQOeEuMGaQFAZGluMTbDAp5/E51JDCRRY+ycmNok3ve69Xxx4sUPJLbR6N8Q7q60cAM2pcrxISGynPiRCKarfXhilcaII/3ZkJ8zuLYb0n4R33O4VUaWHTEvwrEOToKvnZhvIA/UtZAb7H+PDb8T9ci4DpbE7O4eB30d4IQGY8jfMNqswi7kGYr93ACjrM18q8Ze3o/ZfeaptcbOXDHVDBQ=
-X-Gm-Message-State: AOJu0YyXNSCqfjL1S/b/feLQMTWgOnllF/oByARruJeRwX2UonpcREa2
-	qyUUoCFtZQ1ULMyuuDsqC32lvYjHax3YWXsx5iN7+KwRHVZ6BkHPZGRkrKUswLgseVOKkmcQ1c2
-	E7WglPayOkW+AlFAOAJkMpFugbXA=
-X-Google-Smtp-Source: AGHT+IFoTIEdjqsxBYqxcW2ZvSOL+ezHdwHnCQaQtLgWWppeaIwje2I36qXoDeTn1HfSnWTODh8p84OGtT7sU7h7l88=
-X-Received: by 2002:a17:90a:7563:b0:29a:d7ba:2c99 with SMTP id
- q90-20020a17090a756300b0029ad7ba2c99mr5706073pjk.10.1710179369144; Mon, 11
- Mar 2024 10:49:29 -0700 (PDT)
+	s=arc-20240116; t=1710179531; c=relaxed/simple;
+	bh=0xbA3b4MdRDSG9lBEC4D6pcd9ZmnWOomaUTYuVXJLnA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XrJx15oQ2IYtyH0LJGKrDVKiYE5i0Vttju2cGVUjrUBhmat4tKa9528xcgAed+Qmsq9zIZ6ZG3vUPa6M4rNzlESVI8aYH3bJA8jONPtt7KngBZD9AR1JgFaI+fVzhW1NNvmiNRIq9GOWCtbOSHQcqVy4rukis+N95Fjksebk1i0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F0tVV5DE; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710179528; x=1741715528;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=0xbA3b4MdRDSG9lBEC4D6pcd9ZmnWOomaUTYuVXJLnA=;
+  b=F0tVV5DEKxMlhFjD6YP2yrIP4OVO8GtbDu7zoH587stxN9GuYnNbEqyz
+   e0lpWkQkn9G3Mi53UdDuKj3/EQc2vWYJwUJFVeaXdYEAVag8blWsZdGFm
+   NFuZ13OhQ8c0u7PygUCmdo9nNA5sTOE8cQHyamdO7VHuEmbnh0RYZhOLZ
+   F3PxSwHHuLv32OPDyQh2tl92XT5FtzUdj7n06K4m1NE9uH9HMxeOEZMke
+   KimK0MTysWkPVWvgyG/B6VRmfyvMX/Itnigl5QAdkE8EK80LTwU9LvJzm
+   mPXnLE9FIv0NxSpIr0s9s5ebtWSrSAkWOzRQ8IfdHe21/AcvDhwwoApfY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4973442"
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="4973442"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 10:52:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="15902421"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.52.80])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 10:52:06 -0700
+Message-ID: <3a92ebdb-8923-46af-a020-0e12233262a9@intel.com>
+Date: Mon, 11 Mar 2024 19:52:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240310020509.647319-1-irogers@google.com> <20240310020509.647319-3-irogers@google.com>
-In-Reply-To: <20240310020509.647319-3-irogers@google.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 11 Mar 2024 10:49:17 -0700
-Message-ID: <CAEf4BzYiH6xRRLFBdUAkjn0uJP=safZod4=1EmEwTTH9PDmVvQ@mail.gmail.com>
-Subject: Re: [PATCH v1 02/13] libbpf: Make __printf define conditional
-To: Ian Rogers <irogers@google.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	David Laight <David.Laight@aculab.com>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
-	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
-	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
-	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
-	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
-	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
-	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
-	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf scripts python: Add a script to run instances of
+ perf script in parallel
+To: Andi Kleen <ak@linux.intel.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <20240310193502.2334-1-adrian.hunter@intel.com>
+ <Ze8ttn4bxBrYi63h@tassilo>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <Ze8ttn4bxBrYi63h@tassilo>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 9, 2024 at 6:05=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> libbpf depends upon linux/err.h which has a linux/compiler.h
-> dependency. In the kernel includes, as opposed to the tools version,
-> linux/compiler.h includes linux/compiler_attributes.h which defines
-> __printf. As the libbpf.c __printf definition isn't guarded by an
-> ifndef, this leads to a duplicate definition compilation error when
-> trying to update the tools/include/linux/compiler.h. Fix this by
-> adding the missing ifndef.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/lib/bpf/libbpf.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index afd09571c482..2152360b4b18 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -66,7 +66,9 @@
->   */
->  #pragma GCC diagnostic ignored "-Wformat-nonliteral"
->
-> -#define __printf(a, b) __attribute__((format(printf, a, b)))
-> +#ifndef __printf
-> +# define __printf(a, b)        __attribute__((format(printf, a, b)))
+On 11/03/24 18:13, Andi Kleen wrote:
+> On Sun, Mar 10, 2024 at 09:35:02PM +0200, Adrian Hunter wrote:
+>> Add a Python script to run a perf script command multiple times in
+>> parallel, using perf script options --cpu and --time so that each job
+>> processes a different chunk of the data.
+>>
+>> Refer to the script's own help text at the end of the patch for more
+>> details.
+>>
+>> The script is useful for Intel PT traces, that can be efficiently
+>> decoded by perf script when split by CPU and/or time ranges. Running
+>> jobs in parallel can decrease the overall decoding time.
+> 
+> This only optimizes for the run time of the decoder. Often when you do
+> analysis you have a non trivial part of it in some analysis script too,
+> but you currently have no directi / easy way to paralelize that. It would 
+> be better to support parallel pipelines.
 
-styling nit: don't add spaces between # and define, please
+It will parallelize any scripts and / or dlfilters that perf script
+itself executes.
 
-overall LGTM
+> 
+> TBH I'm not sure the script is worth it. If you need to do parallel
+> pipelines (which imho is the common case) it's probably better to just
+> write a custom shell script, which is not that difficult.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+It can be a pain to figure out how best to split the data if it is not
+evenly distributed.
 
-Two questions, though.
+The script also has value as a reference or starting point for
+users.
 
-1. It seems like just dropping #define __printf in libbpf.c compiles
-fine (I checked both building libbpf directly, and BPF selftest, and
-perf, and bpftool directly, all of them built fine). So we can
-probably just drop this. I'll need to add __printf on Github, but
-that's fine.
+>                                                           It might be
+> better to have a helper that makes writing such scripts easier, 
+> e.g. figuring out reasonable options for manual parallelization
+> based on the input file. I think parts of your script do that, maybe
+> it is usable for that.
 
-2. Logistics. Which tree should this patch go through? Can I land it
-in bpf-next or it's too much inconvenience for you?
+The --dry-run option shows the perf script commands, but an option
+to pipe through another command could be added.
+
+> 
+> Also as a default output it would be better to just merge the 
+> original output in order and output it on stdout.
+
+That assumes that the output comes from perf script printf
+output and not a perf script _script_.
+
+If the data is split by CPU, it will not be in time order
+if it is simply concatenated back together.
+
+> 
+> You should probably limit the number of jobs to some minimum
+> length, otherwise on systems with many CPUs there might be
+> inefficiently short jobs.
+
+That happens for Intel PT (64 PSB minimum), but could be added
+for the normal case also.
 
 
-> +#endif
->
->  static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
->  static bool prog_is_subprog(const struct bpf_object *obj, const struct b=
-pf_program *prog);
-> --
-> 2.44.0.278.ge034bb2e1d-goog
->
 
