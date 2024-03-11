@@ -1,178 +1,107 @@
-Return-Path: <linux-kernel+bounces-99439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 353AE87885D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:55:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFAB0878861
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:55:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8E3DB23621
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:55:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 103FFB236CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC465677F;
-	Mon, 11 Mar 2024 18:51:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185AD56751
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526E359B59;
+	Mon, 11 Mar 2024 18:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ntJveKEo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9562556751;
+	Mon, 11 Mar 2024 18:52:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710183090; cv=none; b=W6zcXSt5SeU3eCGM0feNTqRkaw98rJZzoQvjlmDfIwGKyCbLdxOvZNe6rsNxiREdLdE/dJbbgEZRKE/145TmJzo5tBsOCjq2davQRPa2hv1ipHc3RpPC79XU9Elu7TQ3/4xNROgO6fspRvmrpFftB9PhEEDjrG0eLniZejU/3dk=
+	t=1710183150; cv=none; b=QX6AbxZIVBZ27vu9A8iXttmBcTcJRiWjOi5tI/B5yQvQWRzNrqvyC3ohaleaZ37kOktqxjcJI+9kF57lstbmigc7HbgLxHSGiIuINwxIpPfL2ptmIVqsEL90dknhAf4E24oG/KMZ7ZWim5OBwjgXGcwOv4dverrlvcjnLokHHu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710183090; c=relaxed/simple;
-	bh=L3czb4yKVFTuEdeekbnrd39IUTZN8nT4xpst5WMpWtU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nNk4Wu0PVWWD6qQEIDuAMtQFXc3FPRJclybi45ctuBrbh79ZevBHHUW78X85cmcucLeiXTZgWp+xISx7IyBV5IB39e/MOHhq3C2IhmHzVOJyw0eqIn9sUcJ8ShsOMy3uOlWR31AlFmB+iFMi3CbYzcLcXVsCtVn0g3EakJvaZ3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01C48FEC;
-	Mon, 11 Mar 2024 11:52:04 -0700 (PDT)
-Received: from [10.57.68.246] (unknown [10.57.68.246])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D730F3F64C;
-	Mon, 11 Mar 2024 11:51:22 -0700 (PDT)
-Message-ID: <499a60c6-eeb8-4bbd-8563-9717c0d2e43d@arm.com>
-Date: Mon, 11 Mar 2024 18:51:20 +0000
+	s=arc-20240116; t=1710183150; c=relaxed/simple;
+	bh=8yNZVZwg88lIDwJTE7gfFU15qUPpE2qDq9xtN5uq0HE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SNJ0nQZ1jb3+1pHehq1WZ/43hQpzgE17pjkki8s0oyYqWONxxL77gn1vA5Y+JSi+KK/NDvaBsuG4d2fVRGmsaRafPvVz4huWEEIDjJXwwbek0Bttu8HcFCFhFpXiEPtRAVc8Fk9LE+CMVqGZwl7gPooTnIKcUqOc9Ujn3pPdYsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ntJveKEo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96607C433F1;
+	Mon, 11 Mar 2024 18:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710183150;
+	bh=8yNZVZwg88lIDwJTE7gfFU15qUPpE2qDq9xtN5uq0HE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ntJveKEoblrZJlInb3jlKdZ58Pa87F1a9pgyCst25tblq2sAxeYLDUbnv6bBbrizx
+	 amagySKMWlmrkgJOUmUeLB85J15EhIVkVVZoNhRUGKR2oTuQ4ZgYl3Vdb5Uts+uNUS
+	 d6hrW2bV5K2kSJtYUrUBPihL2DSuyDun+/RH0QrEiNxKAlbrGQb8EM577ivqjQh7Xa
+	 wVt8qfHVsjHdDyF9Zo+bzrODh7xBpxWXbTvoIxcrMzUtAGAinHyIKzKywdPgYTtUXQ
+	 /oIt58Q+0l4vLM+8+J+u+UV8Usfw99w81JVSI2R2nwoytOUS8nna+m8VM4MAt3SRQ7
+	 RWv2gK7d/NXHA==
+Date: Mon, 11 Mar 2024 11:52:28 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Simon Horman <horms@kernel.org>,
+ Luiz Angelo Daros de Luca <luizluca@gmail.com>, Linus Walleij
+ <linus.walleij@linaro.org>, Alvin =?UTF-8?B?xaBpcHJhZ2E=?=
+ <alsi@bang-olufsen.dk>, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli
+ <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/4] net: dsa: realtek: keep default LED state
+ in rtl8366rb
+Message-ID: <20240311115228.5ad9db52@kernel.org>
+In-Reply-To: <20240311-chowchow-of-premium-piety-9e4a0d@lemur>
+References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
+	<20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
+	<388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
+	<20240310113738.GA1623@kernel.org>
+	<09793a72-bfe5-4cb5-a6da-ffee565e6956@kernel.org>
+	<20240311091111.53191e08@kernel.org>
+	<20240311-chowchow-of-premium-piety-9e4a0d@lemur>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 2/5] mm: swap: introduce swap_nr_free() for batched
- swap_free()
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org
-Cc: chengming.zhou@linux.dev, chrisl@kernel.org, david@redhat.com,
- hannes@cmpxchg.org, kasong@tencent.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
- steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
- willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
- yosryahmed@google.com, yuzhao@google.com, Chuanhua Han
- <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
-References: <20240304081348.197341-1-21cnbao@gmail.com>
- <20240304081348.197341-3-21cnbao@gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240304081348.197341-3-21cnbao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 04/03/2024 08:13, Barry Song wrote:
-> From: Chuanhua Han <hanchuanhua@oppo.com>
+On Mon, 11 Mar 2024 14:40:44 -0400 Konstantin Ryabitsev wrote:
+> On Mon, Mar 11, 2024 at 09:11:11AM -0700, Jakub Kicinski wrote:
+> > > OK, then this is v2. RFC is state of patch, not some sort of version. Or
+> > > just use b4 which handles this automatically...  
+> > 
+> > Eh, hum. He does according to the X-Mailer header. More importantly
+> > I thought the RFC to PATCH transition resetting version numbering
+> > is how we always operated. Maybe b4 should be fixed?  
 > 
-> While swapping in a large folio, we need to free swaps related to the whole
-> folio. To avoid frequently acquiring and releasing swap locks, it is better
-> to introduce an API for batched free.
+> There is no way to make it work reliably the way you propose,
+
+Could you describe what the problem is?
+Cover letter + date seems like fairly strong signal to me.
+
+> so I strongly suggest that we do it the way b4 currently works:
 > 
-> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
-> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> ---
->  include/linux/swap.h |  6 ++++++
->  mm/swapfile.c        | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 41 insertions(+)
-> 
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 2955f7a78d8d..d6ab27929458 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -481,6 +481,7 @@ extern void swap_shmem_alloc(swp_entry_t);
->  extern int swap_duplicate(swp_entry_t);
->  extern int swapcache_prepare(swp_entry_t);
->  extern void swap_free(swp_entry_t);
-> +extern void swap_nr_free(swp_entry_t entry, int nr_pages);
+> - a series can start with RFC in the prefixes to indicate that it's not
+>   something to be considered for inclusion
+> - when the author feels that the series is ready for maintainers'
+>   consideration, they simply drop the RFC and keep the same change-id and
+>   versioning info; e.g. [PATCH RFC v3] -> [PATCH v4]
 
-nit: In my swap-out v4 series, I've created a batched version of
-free_swap_and_cache() and called it free_swap_and_cache_nr(). Perhaps it is
-preferable to align the naming schemes - i.e. call this swap_free_nr(). Your
-scheme doesn't really work when applied to free_swap_and_cache().
+It's not a pain point for networking.
 
->  extern void swapcache_free_entries(swp_entry_t *entries, int n);
->  extern int free_swap_and_cache(swp_entry_t);
->  int swap_type_of(dev_t device, sector_t offset);
-> @@ -561,6 +562,11 @@ static inline void swap_free(swp_entry_t swp)
->  {
->  }
->  
-> +void swap_nr_free(swp_entry_t entry, int nr_pages)
-> +{
-> +
-> +}
-> +
->  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
->  {
->  }
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 3f594be83b58..244106998a69 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1341,6 +1341,41 @@ void swap_free(swp_entry_t entry)
->  		__swap_entry_free(p, entry);
->  }
->  
-> +/*
-> + * Called after swapping in a large folio, batched free swap entries
-> + * for this large folio, entry should be for the first subpage and
-> + * its offset is aligned with nr_pages
-> + */
-> +void swap_nr_free(swp_entry_t entry, int nr_pages)
-> +{
-> +	int i;
-> +	struct swap_cluster_info *ci;
-> +	struct swap_info_struct *p;
-> +	unsigned type = swp_type(entry);
+While I have you - it'd be great if the patchwork bot did not
+repeatedly set patches to Superseded. Sometimes we want to keep and
+apply non-latest version, because the latest version was posted based
+on non-expert review, or we changed our mind.
 
-nit: checkpatch.py will complain about bare "unsigned", preferring "unsigned
-int" or at least it did for me when I did something similar in my swap-out patch
-set.
+> Resetting the versioning requires resetting the change-id of the series, or a
+> lot of automation breaks.
 
-> +	unsigned long offset = swp_offset(entry);
-> +	DECLARE_BITMAP(usage, SWAPFILE_CLUSTER) = { 0 };
-
-I don't love this, as it could blow the stack if SWAPFILE_CLUSTER ever
-increases. But the only other way I can think of is to explicitly loop over
-fixed size chunks, and that's not much better.
-
-> +
-> +	/* all swap entries are within a cluster for mTHP */
-> +	VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER);
-> +
-> +	if (nr_pages == 1) {
-> +		swap_free(entry);
-> +		return;
-> +	}
-> +
-> +	p = _swap_info_get(entry);
-
-You need to handle this returning NULL, like swap_free() does.
-
-> +
-> +	ci = lock_cluster(p, offset);
-
-The existing swap_free() calls lock_cluster_or_swap_info(). So if swap is backed
-by rotating media, and clusters are not in use, it will lock the whole swap
-info. But your new version only calls lock_cluster() which won't lock anything
-if clusters are not in use. So I think this is a locking bug.
-
-> +	for (i = 0; i < nr_pages; i++) {
-> +		if (__swap_entry_free_locked(p, offset + i, 1))
-> +			__bitmap_set(usage, i, 1);
-> +	}
-> +	unlock_cluster(ci);
-> +
-> +	for_each_clear_bit(i, usage, nr_pages)
-> +		free_swap_slot(swp_entry(type, offset + i));
-> +}
-> +
->  /*
->   * Called after dropping swapcache to decrease refcnt to swap entries.
->   */
-
-Thanks,
-Ryan
-
+What is "change-id of the series"?
 
