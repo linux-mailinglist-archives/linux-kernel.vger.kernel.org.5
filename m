@@ -1,153 +1,147 @@
-Return-Path: <linux-kernel+bounces-98508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42178877B22
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:05:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD199877B25
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:06:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7341E1C20F94
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:05:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DF381F210A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C5110942;
-	Mon, 11 Mar 2024 07:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631D5F9FD;
+	Mon, 11 Mar 2024 07:06:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yH30ZJpc"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="r8XyQ3kw"
+Received: from out203-205-251-73.mail.qq.com (out203-205-251-73.mail.qq.com [203.205.251.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EA5101C6
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:04:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4165D63AE;
+	Mon, 11 Mar 2024 07:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710140698; cv=none; b=esG9dThH8NzDHCBBNICYQAQL6MybJwdbVAtxylnaEzN+s4ujq3Gn8iNPcCH9Ju4XoU3uZHJm1mLlD5YfS/37fL80Wf7l1zgmNnIbUq5hVfP1OCp7F37UrBVl024w/iyIjfVsrELwLHEQCsmc+tR0znQL5EP5p6k9D9WncFbaAro=
+	t=1710140788; cv=none; b=ZlcrCCbenoMo5pj13f73pg8gxy9DTt5B8n4Mxs8l3Rvwn4az3kxRJXKU0QX97zZRsDO6AdwXaDPPXQzqNQz8D/zLncEBHnjE1Ej+BbrfZKml9WUpowJ0V7gUU/2ruc12uTIGUEr32W6MLmyJyKfrcm66UDHhnlvMcKWm/1mCnCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710140698; c=relaxed/simple;
-	bh=LDF1jMVuiZYW3+Qdxhj7V/tg1OZHnC5qcrFnW/RQ6ck=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n72CmrML4dwU/UpFifWQRlWwRxgXMfoJPtAd4J+2X77/AmjEGObIdlEK2c1So44yztMwA+IkXxPm1imT7OQNv/jPTaX0IpGrvWkmfVthxPGMZTJQLD/5T/Su8Wjtsvt+ZPOX3jTlUC6ZHtCuxMw/zQVp+BuUXIqxiBWVl2Y9ZOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yH30ZJpc; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-512f892500cso2653402e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710140695; x=1710745495; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1fKA6+EcIyG1VGF8wUUOjJ4Vzk29UqXeKfPp1lEfdws=;
-        b=yH30ZJpcd0tGzvzjbpHl+2iFkUvOhwM41r/Aw6wyu83Z56PC3/g7pm96HLJigbU0Qt
-         8M5bHqXswYT7QUFm0mZYMZ/KsIlmwusek7ZL3WqxZKtvRzZRE6dPXOCK2FJPUvw+4nba
-         bS9poGj8HVkSvjIjKgAjueXZO4S7NNAnjCRoBiRNsZuO7UwX8M6QJGsARIVwc10axIAm
-         3+L98NoQkf8D3qcbKi06vLuCUlsPtzrwPaLLePKdbtsNzEWSuIcMDHXDcUUezXV7vHXo
-         QmdE83S6cAscVE305aRZe6S5ZJsuaYuBwTQT90bk7y0/vXJ1BJqnhdHKpAvGRLtfXij/
-         PBDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710140695; x=1710745495;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1fKA6+EcIyG1VGF8wUUOjJ4Vzk29UqXeKfPp1lEfdws=;
-        b=pjTNhDy0F93nO8qogXPrlvFteU0i3qYVsPPvZjhxCjrDTiqpk+yDU0w+przyI75ULD
-         gXxD/FNgMiAySEImvlj0ddOETju5y1yRLyepAB6nx7pO3WcrNoNJqodnXJSAT4Z75Cgu
-         OLKqmHSvIZehd5e7dDoEBuTA3YAV6IFlZrZ01MFixl2Lu+0hJPlGZyhVXtl6i+RO9O1A
-         GCEc1OfZ5UVAwahUkc3Hrnsx0qXb/I8EL8ug9eANGS47ipIWKMIKL3zq8IGPTiVoymBR
-         TYrH67K8zFqJjasRcqqgt0NxWCFTyWhgUMzxs/xgHafmYzTMvakDHxu8zLraJYUX9KTk
-         Lqng==
-X-Forwarded-Encrypted: i=1; AJvYcCU2gD2ji+6fIWS91/8Vkb6gB7gPdxwLUTDZ7Q0owuEUj24LTZOGlHDRINrTJpXv0Pg0d/HTnPUeJlpg3aWk5yhuVUhN3VnIHFHjmAtR
-X-Gm-Message-State: AOJu0Yx7p88PRVlD8x5c6QSkIfzaIWjiWxE16UzFl/iLduNCGmqnQAy+
-	dLBm3+fbankGoXyzQgufxDi13ESY9m1E+k3Eva0xPgow2DdjHW80yqI3HoJToEw=
-X-Google-Smtp-Source: AGHT+IEcIiLHEOOICmbB0uULxC6RFfg6iqj9sUyoOsFQQ3tWtascKJ3bpzX5fnNEoUiAoOFpalJ96A==
-X-Received: by 2002:ac2:4428:0:b0:513:aa3a:4204 with SMTP id w8-20020ac24428000000b00513aa3a4204mr886796lfl.69.1710140694651;
-        Mon, 11 Mar 2024 00:04:54 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id m38-20020a05600c3b2600b00412b6fbb9b5sm14677443wms.8.2024.03.11.00.04.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 00:04:54 -0700 (PDT)
-Date: Mon, 11 Mar 2024 10:04:50 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Philipp Hortmann <philipp.g.hortmann@gmail.com>,
-	Lee Jones <lee@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Larry.Finger@lwfinger.net, johannes@sipsolutions.net,
-	kvalo@kernel.org, arnd@arndb.de
-Subject: Re: [RFC] staging: wlan-ng: Driver broken since kernel 5.15
-Message-ID: <fba3951f-00b7-41af-8ef4-1e7c86e0cb48@moroto.mountain>
-References: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
+	s=arc-20240116; t=1710140788; c=relaxed/simple;
+	bh=iU0B7oVdYRD3BhveLKih3H4/+mbVUTEDWz+MaSwKAa4=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References; b=lgIbWVtJzs1FH/znRa6yhxZOxmtq3FdfjY4t83CKvZ/Nbi/2pKw6NRzZufPgfUnkA778jr6FKP6ljrl/STK7+/RtfCWNRYGs36YTfgjULx1g0B+GX9NuMrQG3GF4bVvOwSbk7h5rBw9JVjVWlh3NRqn9bW4MeiBLF4QL7gAy3PI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=r8XyQ3kw; arc=none smtp.client-ip=203.205.251.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710140773; bh=DqF6IJE/etcDmyhMo12vo/H9b+vPvvKr49SpjwRCc4Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=r8XyQ3kwiwDjS5cv1fm4LyqMBPWKU6zktk7JRoevHfH9Tj6H8u1nJDzDKQFelGkDb
+	 ergk6kcmEb+CBoE6doRqVyA7AmOUgH93Rr3sULePdhsKx+Y/9AAIs+hVWybGMa2cj0
+	 fljVdY78jY8lfskkQKaYgBYIMtztlDLLz0Y3Tq/w=
+Received: from ubuntu.vimicro.com ([121.225.188.5])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id 1730EAEB; Mon, 11 Mar 2024 15:05:51 +0800
+X-QQ-mid: xmsmtpt1710140751t40mlgap6
+Message-ID: <tencent_8A7C0C985AE1A1975C25D8DE24010D8B2007@qq.com>
+X-QQ-XMAILINFO: MO96tf8oLeWlcKKMCzcDopUHvgcH+0fyeyZywUfPwD6g2nSeDknXIRQf5bqKyh
+	 /8BpRFYz4v4OV3XC7fqbVxyQAPLwS1vPXVi1KqSzM96cAeR4YQHhGEooYzNa+8pj1NA7gbyFEi7A
+	 G//aIbGWOgEPHkVUhV+HsAOSLVFpJyJTtmEAuy+27iCHPVWQ2dWi20A9Cd3L6Ar5vu6Mxu9Des4e
+	 POOAgd3+9/mCGNVYEPNvZIsujl5QmY8J5jl5q7tMZR1SEfQVTuq2tz2Dt8NZ+oDuPzaYBU1cIxQS
+	 qE0SfV44wmUmRkOkXdvBFiy5V3GKLsFRF6nn+fK0vcCJridebtVgDIbyZFH8HAeKKjw3VdYmO8yP
+	 f/3hBnG5UeN6pyQcxfNaEHIlTq9BUmduL0LI/s5C6xReOpXWEaYmPAWkPGNjy7w6hOVe4dSYm8Hd
+	 xwFqKci6XAm4vzHWFAO8+/UiltOJ62Fkv8DOOfuDhfTSdBmfsnQDEqhRbSOEykT8dSOsD83T5gNV
+	 SQjZPDa4o9rhEMgt6O2AnbDTe6FN8dlhmCvvYTZVceLX3hp0xALG6mBg+nTX4Bk4H0iwvSvX0taL
+	 MKYMhSCHfj7PPuiDX6FM1iA6lpOBRwqTE1wflUAgwMo5Ccz14oGZ5WPeOEy9RSNBVLVF4TNel5EL
+	 Erb6drN4XnzR+ovick34UXSLJqlDuzKfI3B3fRvqSOoKLa7NxdYBhIC7NeLpDIrTV4Py2s/mJuxK
+	 nlPk21ua2TwNO5eID8cp8TGkDtf17yMTuTpuQLoB//7L85sSr4z4JSeesmZvbYLx3JZZ41+8ZTva
+	 Axn59opiO7WU+tZNnPV2fdV2kXoz8he4GB+10PRrWvx+hjsuYj1/oET8TENJRiwOB+X6kk8nDBnX
+	 RM666PiaU6M1H707YANRMpeNLY7PEbIuWKIvJk3CSOj5e5eNubU2ikHfU6v4lHt83VPKvSOSiOy9
+	 /aW7vdgsU=
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: xuhanwu <2433926602@qq.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com
+Cc: linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xuhanwu <xu.hanwu@zxelec.com>
+Subject: [PATCH] ASoC: soc-pcm: add a check for unsupported commands to the soc_pcm_trigger
+Date: Mon, 11 Mar 2024 15:05:48 +0800
+X-OQ-MSGID: <20240311070548.2925-1-2433926602@qq.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <tencent_002E3C6C67928986481018466EEDF8D05706@qq.com>
+References: <tencent_002E3C6C67928986481018466EEDF8D05706@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
 
-On Sat, Mar 09, 2024 at 11:09:24PM +0100, Philipp Hortmann wrote:
-> Hi,
-> 
-> I would remove the driver from the mainline kernel. What are your thoughts?
-> 
-> I bought two WLAN devices (DUT: D-Link DWL-122 and T-Sinus 111 data) that
-> are supported by wlan-ng driver. Issue is that the driver is not working
-> anymore.
-> 
-> The error picture is that the device does not receive any packets.
-> The dmesg says:
-> [  123.695917] prism2_usb 2-1.6:1.0 wlan0: Unknown mgmt request message
-> 0x0e4f9800
-> [  127.508211] prism2_usb 2-1.6:1.0 wlan0: Unknown mgmt request message
-> 0x04f0d000
-> ...
-> 
-> A working commit 8fc4fb1728855a22f9149079ba51877f5ee61fc9 (HEAD) Date: Mon
-> Jul 5 11:16:28 2021 -0700
-> A failing commit  d980cc0620ae77ab2572235a1300bf22519f2e86 (HEAD) Date:  Fri
-> Jul 16 19:08:09 2021 -0700
+From: xuhanwu <xu.hanwu@zxelec.com>
 
-Those dates are 11 days apart during the v5.14 merge window.  You're
-saying 5.15 is broken but the broken commit is in 5.14-rc2 so it really
-was broken earlier.
+The function soc_pcm_trigger needs to return an error(-EINVAL)
+if the cmd parameter is not supported.
 
-There were only 3 patches to wlan-ng between v5.13 and v5.14.
+Signed-off-by: xuhanwu <xu.hanwu@zxelec.com>
+---
+Dear Brown
 
-$ git log --oneline v5.13..v5.14 drivers/staging/wlan-ng/
-b1e9109aeff3 staging: wlan-ng: silence incorrect type in argument 1 (different address spaces)
-ad843f392035 staging: wlan-ng: remove redundant initialization of variable txresult
-ea82ff749587 staging: wlan-ng: cfg80211: Move large struct onto the heap
+Thank you for your guidance.
+The issue with characters exceeding 80 has been resolved.
 
-Obviously I'm going to suspect the largest patch.  Reviewing that patch
-now, I see we removed a memset() from the loop.  That seems like a bug.
+>	As can be seen from inspection of the immediately
+>	preceeding handling of start, we're deliberately
+>        ignoring half the values in each switch.
 
--               memset(&msg2, 0, sizeof(msg2));
--               msg2.msgcode = DIDMSG_DOT11REQ_SCAN_RESULTS;
--               msg2.bssindex.data = i;
-+               msg2->msgcode = DIDMSG_DOT11REQ_SCAN_RESULTS;
-+               msg2->bssindex.data = i;
+In kernel version 6.2, when the soc_pcm_trigger function receives a
+command parameter cmd set to SNDRV_PCM_TRIGGER_DRAIN,
+it returns a value of -EINVAL.The function snd_pcm_drain checks
+the returned error value and exits accordingly.
 
-That's the only interesting change so I suspect it's the issue...
-Could you test this patch?  I feel like if you're the first person to
-complain since Aug 29 2021 then probably we should just remove the
-driver.  Greg is on vacation so lets hold off on removing it until he
-comes back.
+kernel-version6.2 Function call relationship
+		  snd_pcm_drain->
+			snd_pcm_action->
+				snd_pcm_do_drain_init->
+					    soc_pcm_trigger->
 
-regards,
-dan carpenter
+    snd_pcm_drain
+	result = snd_pcm_action(&snd_pcm_action_drain_init, substream,
+				ACTION_ARG_IGNORE);
+	if (result < 0)
+		goto unlock;
 
+     snd_pcm_do_drain_init
+	if (runtime->state == SNDRV_PCM_STATE_DRAINING &&
+	    runtime->trigger_master == substream &&
+	    (runtime->hw.info & SNDRV_PCM_INFO_DRAIN_TRIGGER))
+		return substream->ops->trigger(substream,
+					       SNDRV_PCM_TRIGGER_DRAIN);
 
-diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
-index 471bb310176f..0c270ed8ce67 100644
---- a/drivers/staging/wlan-ng/cfg80211.c
-+++ b/drivers/staging/wlan-ng/cfg80211.c
-@@ -347,6 +347,7 @@ static int prism2_scan(struct wiphy *wiphy,
- 	for (i = 0; i < numbss; i++) {
- 		int freq;
+In the latest code, when the cmd parameter is set to SNDRV_PCM_TRIGGER_DRAIN,
+the return value is 0. If snd_pcm_drain finds that the return value is 0,
+it will not execute the goto unlock;
+
+The above is my understanding of the code, please help me correct it.
+
+Thanks
+Xuhanwu
+---
+ sound/soc/soc-pcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 77ee103b7..eba737729 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1173,6 +1173,9 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 			if (r < 0)
+ 				break;
+ 		}
++		break;
++	default:
++		return -EINVAL;
+ 	}
  
-+		memset(msg2, 0, sizeof(*msg2));
- 		msg2->msgcode = DIDMSG_DOT11REQ_SCAN_RESULTS;
- 		msg2->bssindex.data = i;
- 
+ 	/*
+-- 
+2.17.1
+
 
