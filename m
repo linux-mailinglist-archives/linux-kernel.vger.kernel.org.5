@@ -1,100 +1,134 @@
-Return-Path: <linux-kernel+bounces-99555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39AF98789EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:16:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA8FE8789EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:17:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD007281BA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:16:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A989B212A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2BA56B6A;
-	Mon, 11 Mar 2024 21:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6849656B67;
+	Mon, 11 Mar 2024 21:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="tuqURkAF"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQ3O8eO1"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DFD3CF6A;
-	Mon, 11 Mar 2024 21:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6088E6FBE
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710191807; cv=none; b=VrPjEVeyLNIlLjaP1w1NvZmWY4hY5o1IsaNLlwbxU1IhAwB1ACIpnL6SiRrQo9d3tjUHnHFHwTKyhRKhi+MLMQ4Z+GSehae+s6GcuMwLjEAaYF4Rvwwkmu7VMhYKF1tSZSdwZy0neisvCFwJDXFBcMwJqADA4p2HSw8JXltzSO0=
+	t=1710191863; cv=none; b=maTokZV1kSVteydDzuGZn0JSysLn7P32rHQtadRR0Ws8apYAfbzlhwC6YQqw+Md0pEZ90SP+tTUwkSWBfdeUEOeOXMcVEEWi92KxOr8a7Tw1VsHPsu14ZIqKRUU3tO40X6KvUUlFyA582+6AEZzlu/Z2UHqfvAeKzhacPYCgXOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710191807; c=relaxed/simple;
-	bh=NQAUdkeOMHCqXYt8dPtca8uRa1FnOu5SFXIQfhNKX/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=PpEXf8TsuBm36QCU+4FACSYY/ca6/lv6ZfiAstfseMIg26269VHasebDzoKhQWjxZ2Qefw038nvTpnU0ZbD1oSxOIzH0ulmDsOI6QF2whEjCGM6HxDRdxOPshjKrz7EzSNbC2I5nollkGXqKMUem39yFH+2gQmRtyU0/8q1l4lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=tuqURkAF; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710191794;
-	bh=r7YQNuX1FwERL+k0Ou4dBK9LfRd9VlTsxLg8B15x4JU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=tuqURkAFdgBdA7OF7OrW1FYzi3fJZuqfTnZ4D8N5Vlu4GjvXuadG2IVR8o8W59fo4
-	 9oFGbH82GeRBI0JvG1PCoiWduZNZqeAg4L8CWmtzY/gZ0tcbUcIAvC3h6u+GsarBru
-	 7ogosuK095z/iJAypkeU21bkScYiIzCoUXDF3WAut7pZEmiOH79LloIEKOxNpJY4Jb
-	 CsLdoC9NPb2xdOM1vpcN4xxN23L96eP0vgUt9Q0KPcUj/zMz1OT4oTroc9HoXF71DJ
-	 oer6zVMPZtHOm5AF8pRjSc6yJP8Ih4+2Vg9V4q0O8N2XCcvMOST66xv8CRMDje5jlr
-	 M1DrfFjyYrr+w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TtqMk0lN5z4wcq;
-	Tue, 12 Mar 2024 08:16:34 +1100 (AEDT)
-Date: Tue, 12 Mar 2024 08:15:58 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the i2c-host-fixes tree
-Message-ID: <20240312081558.014deb45@canb.auug.org.au>
+	s=arc-20240116; t=1710191863; c=relaxed/simple;
+	bh=wj4Y1wrFfDeMIOfi5jjtBmO/jQSDCKe4tQkC44jCKRw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ctfZ1gOmEYYmH+ySykTXOazS1CDv12vfmSqQcAc9mga8nBFSsmOUomk6caWSHy1+Yf1xs/5JdZ9VKynHGiEvkZZ87l2NwIH8sbVGOkVrkw2AAAL4cLhRW8biALUcuLwrY8MYZjDgIsbn4cuczfCIpanq0o8rb1ozUFQ0BS2XDwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eQ3O8eO1; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5dc949f998fso4461803a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:17:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710191861; x=1710796661; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWrjIn8VqX1yLK5RmY2tARNudiN2LB2C+U5i0p8D36c=;
+        b=eQ3O8eO1LFb483KXM5QkNaQAX+6D/4R0qVVzuqKdVRj7GHTh92KHhxYgXV8HS3lo3t
+         1UxQga5rGNIttWgpEkKu9MFMW16/XKgqu/Y7X6guycFdQM41B6t9bIvjxqKseZpsHO16
+         fdo1JaRmpWlMPhJRm1dm1MrLuaBGwi/HEjF5V5JfW/IOIOSSEqr2aduMt7n5m3hHF9q2
+         UOf5UZcTlzr0iq01cZaRtfoWhHms7FPwBr3Mf3Ewkj8oZ15LAzK0xp0RHGHMV9IB+Fc0
+         CiisI4XgwHaMRNSYW3TCs/6vmOp7Kkwlb6+hK5HwOoQ2n2xWkcyO1vJgm+OEivs/yUpY
+         gWLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710191861; x=1710796661;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rWrjIn8VqX1yLK5RmY2tARNudiN2LB2C+U5i0p8D36c=;
+        b=KTya/tTUNhzmZinZ7cXij/Ouo03dKVMe+eutmILe4UkMFVUg5m3lllITctoACBbhBV
+         T8NM/1mrmSDMUYyHWyF47/7M5OHklUiwKdirGWrK4VEIrHJqR0X+RrPV3ebRycbR3ehD
+         ZQYS70gjUdBzITfldzM+ZKoJmZMlEbm8qb/ZNcl16bAcoiqf1VRv5iSnkXeQ3Rs8/QKS
+         2GOa+gVkYQVcXfJJKQQribsavXefVrv4i0Ar7zYkFSvvTiaSy9RD3Qo3gHvV2kqrZODR
+         EbcaZyLrICQL/DHkZlD9Ls4EqFen3xjeCIj6NvR/cwWD7orLCp5rUsfnKDaxberki/kF
+         8u1g==
+X-Gm-Message-State: AOJu0Ywj6gFDFoCWfXW7AO7sb412LOIdlHGIB9bW1ROl668Ss8aRQKJ+
+	K0KnAXbN8sZqpGK6LtdtRZLZ8+TuGY3BoHE/VMQhLUcUSiU84M/hPmeCLYYN7AM=
+X-Google-Smtp-Source: AGHT+IFvOmP+Z3s5BttRbh2i0vNtAp+hbZpblUvZiF501b4hhEnyzNreSB3KqGk8MmkS31NaKVtGtw==
+X-Received: by 2002:a05:6a20:6a0d:b0:1a0:f2a4:40da with SMTP id p13-20020a056a206a0d00b001a0f2a440damr19022pzk.6.1710191860664;
+        Mon, 11 Mar 2024 14:17:40 -0700 (PDT)
+Received: from blackforest.ics.uci.edu (blackforest.ics.uci.edu. [128.195.4.234])
+        by smtp.gmail.com with ESMTPSA id b125-20020a62cf83000000b006e34008d0c3sm5030844pfg.100.2024.03.11.14.17.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 14:17:40 -0700 (PDT)
+From: =?UTF-8?q?Andr=C3=A9=20R=C3=B6sti?= <an.roesti@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: an.roesti@gmail.com,
+	tglx@linutronix.de
+Subject: [PATCH v2] entry: Respect changes to system call number at sys_enter tracepoint
+Date: Mon, 11 Mar 2024 21:17:04 +0000
+Message-Id: <20240311211704.7262-1-an.roesti@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/U4vKAAIg+IDNvwlTeXq0OF3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---Sig_/U4vKAAIg+IDNvwlTeXq0OF3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+When a probe  is registered at the trace_sys_enter() tracepoint, and that
+probe changes the system call number, the old system call still gets
+executed.  This worked correctly until commit b6ec41346103 ("core/entry:
+Report syscall correctly for trace and audit"), which removed the
+re-evaluation of the syscall number after the trace point.
 
-Hi all,
+Restore the original semantics by re-evaluating the system call number
+after trace_sys_enter(). 
 
-The following commits are also in Linus Torvalds' tree as different
-commits (but the same patches):
+The performance impact of this re-evaluation is minimal because it only
+takes place when a trace point is active, and compared to the actual trace
+point overhead the read from a cache hot variable is negligible.
 
-  1f78f0901011 ("i2c: aspeed: Fix the dummy irq expected print")
-  7c16cfd69d51 ("i2c: i801: Avoid potential double call to gpiod_remove_loo=
-kup_table")
-  ace9dc1d1251 ("i2c: wmt: Fix an error handling path in wmt_i2c_probe()")
-  b60b86b55400 ("i2c: i801: Fix using mux_pdev before it's set")
+Fixes: b6ec41346103 ("core/entry: Report syscall correctly for trace and audit")
+Signed-off-by: André Rösti <an.roesti@gmail.com>
 
---=20
-Cheers,
-Stephen Rothwell
+---
+v1 -> v2: Clarify comment; improve commit message
 
---Sig_/U4vKAAIg+IDNvwlTeXq0OF3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+@Thomas Gleixner: Thank you for your very quick reply and helpful
+comments. I copied and slightly reworded your suggestions for the commit
+message which were much more concise and clear. 
+---
+ kernel/entry/common.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 88cb3c88aaa5..90843cc38588 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -57,8 +57,14 @@ long syscall_trace_enter(struct pt_regs *regs, long syscall,
+ 	/* Either of the above might have changed the syscall number */
+ 	syscall = syscall_get_nr(current, regs);
+ 
+-	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
++	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT)) {
+ 		trace_sys_enter(regs, syscall);
++		/*
++		 * Probes or BPF hooks in the tracepoint may have changed the
++		 * system call number as well.
++		 */
++		syscall = syscall_get_nr(current, regs);
++	}
+ 
+ 	syscall_enter_audit(regs, syscall);
+ 
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXvdI4ACgkQAVBC80lX
-0GwXdAf/UuTKraVoHjd6/gK6M0txixayi+arlcSYb/6IxTo+9pH+ZNjTIlK3DWit
-AhZz6fqQjM5jtInemnKQZg62TmukDwcKcJGRvT+pWkwYwtcAf8cdPjRyNfB1S30M
-i7UguYdxhzjcH84y5vtdtRYFvGx/iwozSVtl4lz/N5QbM/Hr1EXMomgvNCke8i9v
-cHhBAYAndLbHd+Wd6BLuEI52aJCZQODgGn/3hm7i6cRpI+fomGoQoIjvCzsGl3+9
-IktQLYgAoDFodXdCMVFmqAyZn/D1GAkTQp6Ob7Yiz7vQ6bXBrLmAUdE2FYSW+Sgo
-yhZNcvrdE+9xbCX689wvNnsvIVbJ9Q==
-=qhve
------END PGP SIGNATURE-----
+base-commit: 221a164035fd8b554a44bd7c4bf8e7715a497561
+-- 
+2.34.1
 
---Sig_/U4vKAAIg+IDNvwlTeXq0OF3--
 
