@@ -1,128 +1,145 @@
-Return-Path: <linux-kernel+bounces-98769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D84877F19
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:35:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48907877F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C568BB215C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:35:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA0181F21D24
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02943BB48;
-	Mon, 11 Mar 2024 11:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7073B78B;
+	Mon, 11 Mar 2024 11:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V2d5ZUNn"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="SrUb7nx6"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0EA3A268;
-	Mon, 11 Mar 2024 11:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8D911187;
+	Mon, 11 Mar 2024 11:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710156909; cv=none; b=NRbxAccQ0wFywY1yJ1y3Tr5uuK/dXgkTc3DD1W/Zyp1/CFawjPu2VFg8p4O3ihdIpellpRgLe9uiRQf3TdfwIqTKjqF8cW2PajeUjEp/6mkpVA56MgOr74jY8baIw/MBbsWPofCGAw2RzVAvL+gcdvcE3hwcO9FwL5+cUipX3TY=
+	t=1710156973; cv=none; b=eo7Poqpk1orI0I7Sa3dprpkZrXlyYrRbTbgBtp4+g5A8L0PRPynUZF7xODq0mHyGV8LZAxR0zqBO+iEsRDEAZO/7TWjBYfQr45l9t9leYPLsPVCG/wDWtT1KIHaZS1b9CG125PmxEngeGipFQW6SgWlx5Q0KNwsnCX8f16W7Eog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710156909; c=relaxed/simple;
-	bh=pYF/44sGUvtGohJefbieCblrNnn6V9de0G2M8//jghE=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=F3xnnmL4txap7Izznelqs+0JTV1bMI+mT43R1c9dN5QcLmYyP9m2dss4ERCZw6T6BIbQHq4aouXY/T2l32X77RMOJ4dif4ua/h08A+2wr3ClxCboN/D34eewOgLPYr/G7x+TsOzhPWcE1tm+PdPp5ymVJ7ODdruPxs6xEdGirdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V2d5ZUNn; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710156907; x=1741692907;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=pYF/44sGUvtGohJefbieCblrNnn6V9de0G2M8//jghE=;
-  b=V2d5ZUNnGrt+BrL0WUPF3Uv4SIE+Ho0HR0sRFsqpef7G7sslDpMlG2Le
-   /DHWAQjupw7P0pqfJS0EDitUgtRdzUTip87MaN91a9a7miZu8lWvjH3jM
-   DTXZ5LzfGx7AYVsXn2W+M0d2tvwU0dNIDQNGOveMdRhbVm8Idy8xkElKq
-   dnIOEEgAOb7zEbDGfzXGP8YpxMlolvn0V9/tvIihMuxRiYdpGuMo5rY8g
-   xvRPcDpWR8MTRWRJ9zukH3GISglrR+JuLVteh0awMV0JnXOi7pFii69Kc
-   waUB6v8sGIJukpVQsTPBXGVhHXfJhFFpr6P83UGFNjkq1WCAAcHNAGJa4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="4656318"
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="4656318"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 04:35:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="15784787"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.201])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 04:34:59 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 11 Mar 2024 13:34:54 +0200 (EET)
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
-    Jesse Brandeburg <jesse.brandeburg@intel.com>, 
-    intel-wired-lan@lists.osuosl.org, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-    Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-    linux-edac@vger.kernel.org, linux-efi@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org, 
-    Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
-    Netdev <netdev@vger.kernel.org>, Oliver O'Halloran <oohall@gmail.com>, 
-    Paolo Abeni <pabeni@redhat.com>, Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH 0/4] PCI: Consolidate TLP Log reading and printing
-In-Reply-To: <20240308213107.GA700934@bhelgaas>
-Message-ID: <cc3f6a32-a00d-3c68-bc89-c042d238e7fe@linux.intel.com>
-References: <20240308213107.GA700934@bhelgaas>
+	s=arc-20240116; t=1710156973; c=relaxed/simple;
+	bh=Fa/ucm725FyyWh4vLGlZ8mVa9jvhTNbD3PEA+Vj5CXA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F2dESqIs8YGaFAjhbumgaNh3YZLM9zSVSmjSnzCAWsTWW9XWXOKEj7xYg36fe7OUCvbv+yOxuDCcEAWIDmxIfkB/9knEPVgU5FG/rSPugEAnNx8EOx13xJhFcp5pZcsBQaoJdjh4dAf/Ogya9/J9hkNRZ9I/8+KYeDfFSuW0VEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=SrUb7nx6; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42B8LeEh004167;
+	Mon, 11 Mar 2024 06:35:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=B2yXBVF4yQav2XX
+	ZoUDETCycEZxy7aTCa2+3bNy7YGc=; b=SrUb7nx6GggKJSCf02xDbS3N0IZmvY5
+	GcrKqlxgI4PFKruRejF25HGkejPxu9v5FMx/77l3yDhOgjWARu0iT3LmZxjVLPDy
+	txFaeao0HVzCNHEhjeI5han+pXvmPxCgFFSPsamijmH3PFtQBji3xAhMJIXq724k
+	ISGEiWVh3aAEFzYxqtcP+xlRSka/OQqFFI2qRmjxpJU6HSSenaBwJcpZGawdvpg5
+	oRKKW3U8QFxNJl8UWO/bclJI6HzN6bnIsj22xqeLgqvkUKe+LAHpyOpZ4VktSDLc
+	MfAEOsvAjduMBCpR+08ORWU8y6yhNNh1cdddcj+zp9CNY5uc2taJsYQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wrn2psv51-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 06:35:56 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 11 Mar
+ 2024 11:35:54 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.4 via Frontend Transport; Mon, 11 Mar 2024 11:35:54 +0000
+Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 7AACC820270;
+	Mon, 11 Mar 2024 11:35:54 +0000 (UTC)
+Date: Mon, 11 Mar 2024 11:35:53 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
+CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+        "Mark
+ Brown" <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai
+	<tiwai@suse.com>,
+        Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
+Subject: Re: [RFC PATCH v1] ASoC: wm8904: enable fll with fixed mclk
+Message-ID: <Ze7smWSeoCVIcxIo@ediswmail9.ad.cirrus.com>
+References: <20240308155831.141229-1-andrejs.cainikovs@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-141571146-1710156894=:1142"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240308155831.141229-1-andrejs.cainikovs@gmail.com>
+X-Proofpoint-GUID: jZaxHSgbLbEIBShIBsJsTeVhjz7k_AtH
+X-Proofpoint-ORIG-GUID: jZaxHSgbLbEIBShIBsJsTeVhjz7k_AtH
+X-Proofpoint-Spam-Reason: safe
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, Mar 08, 2024 at 04:58:31PM +0100, Andrejs Cainikovs wrote:
+> From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
+> 
+> Dear all,
+> 
+> This is an attempt to change wm8904 for a scenario when reference clock
+> supposed to be fixed to a particular frequency, but is not configured as
+> a fixed-clock. While this change is working fine, I'm struggling to
+> finalize it, not being able to find a proper solution of adding a check
+> whether we want to use fixed MCLK with codec's FLL or not. I could, of
+> course, introduce a new device tree property, but do not feel this would
+> be a proper way forward. Hence, I'm sending out this RFC patch to gather
+> your valuable feedback.
+> 
+> DUT: Dahlia carrier board with Verdin TI AM62 SOM.
+> Audio card configuration can be found in ti/k3-am62-verdin-dahlia.dtsi.
 
---8323328-141571146-1710156894=:1142
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+At some point one really starts to question if this is really a
+"simple card" any more.
 
-On Fri, 8 Mar 2024, Bjorn Helgaas wrote:
+> On systems with a fixed reference clock output rate it
+> is impossible to use this clock for all audio frequencies.
+> 
+> Following is an example of playing a 44100Hz audio on a system
+> with a fixed 25MHz reference clock applied to wm8904 codec,
+> in combination with simple-audio-card without mclk-fs:
+> 
+> [   27.013564] wm8904 1-001a: Target BCLK is 1411200Hz
+> [   27.013601] wm8904 1-001a: Using 25000000Hz MCLK
+> [   27.013611] wm8904 1-001a: CLK_SYS is 12500000Hz
+> [   27.013654] wm8904 1-001a: Selected CLK_SYS_RATIO of 256
+> [   27.013663] wm8904 1-001a: Selected SAMPLE_RATE of 44100Hz
+> [   27.013671] wm8904 1-001a: Selected BCLK_DIV of 80 for 1562500Hz BCLK
+> [   27.013680] wm8904 1-001a: LRCLK_RATE is 35
+> 
+> This leads to a distorted sound and this configuration is unusable.
+> 
+> On the other hand, configuring simple-audio-card with mclk-fs will
+> force the system to change MCLK frequency, which supposed to be fixed.
+> 
+> This change forces to use wm8904 FLL while keeping SoC's MCLK
+> frequency intact:
+> 
+> [  234.108149] wm8904 1-001a: Target BCLK is 1411200Hz
+> [  234.108304] wm8904 1-001a: Using 0Hz FLL clock
+> [  234.108722] wm8904 1-001a: FLL configured for 25000000Hz->1411200Hz
+> [  234.108794] wm8904 1-001a: CLK_SYS is 1411200Hz
+> [  234.108835] wm8904 1-001a: Selected CLK_SYS_RATIO of 64
+> [  234.108875] wm8904 1-001a: Selected SAMPLE_RATE of 44100Hz
+> [  234.108913] wm8904 1-001a: Selected BCLK_DIV of 10 for 1411200Hz BCLK
+> [  234.108955] wm8904 1-001a: LRCLK_RATE is 32
+> 
 
-> On Tue, Feb 06, 2024 at 03:57:13PM +0200, Ilpo J=C3=A4rvinen wrote:
-> > This series consolidates AER & DPC TLP Log handling code. Helpers are
-> > added for reading and printing the TLP Log and the format is made to
-> > include E-E Prefixes in both cases (previously only one DPC RP PIO
-> > displayed the E-E Prefixes).
-> >=20
-> > I'd appreciate if people familiar with ixgbe could check the error
-> > handling conversion within the driver is correct.
-> >=20
-> > Ilpo J=C3=A4rvinen (4):
-> >   PCI/AER: Cleanup register variable
-> >   PCI: Generalize TLP Header Log reading
->=20
-> I applied these first two to pci/aer for v6.9, thanks, these are all
-> nice improvements!
->=20
-> I postponed the ixgbe part for now because I think we should get an
-> ack from those maintainers or just send it to them since it subtly
-> changes the error and device removal checking there.
+Hmm... the driver already provides an option to automatically
+configure the clock. Is the issue here that in your fail case the
+machine driver never calls wm8904_set_sysclk? Or if it does call
+it, when and what parameters is it passing?
 
-Okay, I'll make sure they're separated properly for the remaining patches=
-=20
-(I was already planning on doing that separation and posting v2 to avoid=20
-their input blocking the changed but you beat me to it).
-
-> >   PCI: Add TLP Prefix reading into pcie_read_tlp_log()
-> >   PCI: Create helper to print TLP Header and Prefix Log
->=20
-> I'll respond to these with some minor comments.
-
-Did you forget to send those comments?
-
-
---=20
- i.
-
---8323328-141571146-1710156894=:1142--
+Thanks,
+Charles
 
