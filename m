@@ -1,91 +1,89 @@
-Return-Path: <linux-kernel+bounces-98424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F8F38779E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:43:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611808779EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 815C61C203B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:43:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 000F71F21AA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:59:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BDC1841;
-	Mon, 11 Mar 2024 02:43:04 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9580F15B3;
+	Mon, 11 Mar 2024 02:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="PodtUbCG"
+Received: from out203-205-221-242.mail.qq.com (out203-205-221-242.mail.qq.com [203.205.221.242])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB77E7E8
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76AD9EDB;
+	Mon, 11 Mar 2024 02:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.242
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710124984; cv=none; b=TnAyPBRxW/T9GMQ1yeVhUn8emSts6+budeMay6JMnijRkC90AhAKdQyhZ14ZkMOLg/yx/wqpNYO2NxdPJwIrR3kJHwaQHZ6n73QJn4OhWCx0ezndVFCdU6/+43xa7abeHY+h7kDDUxE3WvASZOVnty7/b+6xzoMK/m8VoLM1iFc=
+	t=1710125967; cv=none; b=kad1P0xxllEOg++XcfZHAvvza3xZoGkEvqS5Ydc4l2n55DvOdTnNS3uwBOnpZe9YhgK3K+Q4+KYM/PGkD7fojP+UufsQtkWh+InURqS2RAdnmL6WsbQWH4toiHTyaTnF3yAM0WOh3bwH8RFkZe6aXGscpgGnzUJL8iVGD2Cfe9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710124984; c=relaxed/simple;
-	bh=xCUFlySz/HJzwmMAGBTFTxjuuWHHUASmrs7xC9rWZPw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=VIjX/hdhDVCpDb7EZrIuwuFxiyMS3uORBHEScqYm0d4MBXUqcetz9FFOcE9pzegni7N1LaBi28trRVSxhMzde34p7qgePwy0mM+4xuknXsmg6/UJtivKO19nF1b+PHdZcSmJjPrhzSQl3eafcOyXg35H6wRa+YQL5T7aC7CdzkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c8a8d93507so112446939f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 19:43:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710124982; x=1710729782;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lYcxoW7cD8kZbmcK9CYx64+UUR754gw2mSrSbnYLk3U=;
-        b=GWWpLGgjUtqAR/fypas+6uRg1tvzON1LrruD/h8oXZOvBJra48x3fYMFBxTMYK0hLU
-         LLUZq124Pi9FT+2jz5c7hK5siySDJtawcGWB6MZhYCj1iYaTkoFLG4DYyFMoJFf7/aE9
-         LJoQwuaRB/EIv8J/zEqTdcTMBB0lDhdQ8QsVxA4yx+ly5brbqvyOgNT0uICpkgipLqRV
-         kTBVxutHBk0MxAEhSEkozUkDaOe3Hl1fkua3otlGEGQyMenYezuI68xEBuMG+HRJW1jt
-         R8D7tXwOlYqE1AZvpkJ7QfPln0eGXAKmg+osHP/0v+9R9FVlvTzjteMj/ZSsfMw4pb34
-         WV4w==
-X-Forwarded-Encrypted: i=1; AJvYcCUus1RdvV1oRLAnqp42UC5Ix6viyrGpqFhlJFJyV/zhkcf8zZAplQcLQep5P7PRRCsG0yhYNGhwjrbgmUn4K+QcwJ8uHgAazJHrkUMj
-X-Gm-Message-State: AOJu0YyvLBGXipx9ovpKlVuo7zBTQvxaaHyhrlqSeIRhdJPZhcBwIk2w
-	EolDT43WyA1CE26Qydi3HZozl0tpAj8W+GBiqGnR+GxnBhLsa3Nxejy7Pj8pcfVPhuMgFVJVQAR
-	DZ+Xmyc5ncpROedc8p5Ihyst1mwT4GRBKPZMKF3LcHqM32BCuzbNmuso=
-X-Google-Smtp-Source: AGHT+IFusFZ3cMvP6daHHhxIg1ZsGPjKlL68E2l1ow40+7e2ifpNBPt1WflepZ0E4AeJRGxuTr3IKFO2SzeuMxFXKz+Qf3Kkd3kN
+	s=arc-20240116; t=1710125967; c=relaxed/simple;
+	bh=6KYN/7Meuvn7SKEogOlE2iizJKneaDT4Yk54uaEwvqw=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=qWuRvZqgGUqXG4A3XUC9nKeNyL8nhaCzSQOGARyBfONY52zPwAKzy7d/fKy1xKicADqhnaGcSE561qWA8NPubDPC9a3pqxQF1UHpTxqVhgWd/w4dPnKgtSl2pgWIPvWaYWVrvVji83V9eouy8MK9Kz9aGI5x06H5tWVgz5u7CiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=PodtUbCG; arc=none smtp.client-ip=203.205.221.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710125956; bh=6KYN/7Meuvn7SKEogOlE2iizJKneaDT4Yk54uaEwvqw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=PodtUbCGDGbQ0hM9MlPlY+jmvHLA4LWY8EY+vFB9MeJnnC59YTF5PWdGJD7jmQA9/
+	 AfJ/dVtl9AZ17xuEnTBM0+Lp0MgrZjXeIu9gtXlH4OhRgQUnh2kMDuZ40TQWPDkQfC
+	 OkOrU11nt4KYmVopfWbdOlZDgPMvemaLMj3tqAUI=
+Received: from localhost.localdomain ([58.213.8.34])
+	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+	id E751C65F; Mon, 11 Mar 2024 10:57:53 +0800
+X-QQ-mid: xmsmtpt1710125873th3oyzrzu
+Message-ID: <tencent_C20218AE8489E90806F1522C24B11BAFD30A@qq.com>
+X-QQ-XMAILINFO: NiAdzfE16ND4I+Bv9GCsESziTVK1TO0p2HRGnO8IMFriFQMZDrdrlHrQ9czJ4g
+	 v5IJONm+EnIjF3Gq1g36sJF/K6BiCQ2XG7KfUB3YMV5/sNTBfU6FMbmGwVjJDy5raIxK4J6PpBjZ
+	 7xG1qOHvesKsKxemVUZvZdxg1+9myswntJ73bHkfyV2pug2BbF0z40D1FRw8sNF+XKDVmudRa21b
+	 s05XHgGHBlCCD2XVNchcwC05gs3R9PQHH0tDjvA9MMkDqJHS/PW+MOV0xGvN48uteggWQ1Xl0yGa
+	 Mo2nxcXW1+wicWBvBXna+281T/NoN2Q40fiAeJy6rzAHo2dpbBTQ4xv1vyutfVOGYVF2e0MTDoVg
+	 YfiM2o63ZNm4IAY5buHYpuRcPgZjPjGc1fgmXdQM4wfCYZUQ0tOhWa+QPrP1yTv3Wfuc8Y6srhDn
+	 PVq+8iy0Tvr2J/Nb8S8QcfOiWJ2FDWysEX4d00jS4nd+8wBFvqx9hTymExpcYorEd+fVfHJC/eMH
+	 ni8rbCczFinxW8FQENJjGH8T57YVZNe5u1QqLqMCsQY3KLH9KcXxxoU6ppumrDPCV/2WBe9WcAXD
+	 6o2QDuCxVci1/8W0l4NOUu8Wp7FZK+l9WQUSpgmDlYZxremJc3FTSB+xKNUWgbMFvo79KVjM959L
+	 FWLFEISSKZoza4baX+72XKCVPnVXz/bpFWRZ1sjzrBWyjgBfAsc+UZMZnuZJjnIGUjhRZ04lLWke
+	 OLP1Gel693YRY2jfcCC1jcVlFXPKcaHibuz6oMCUsKts6VkuEVCW0eqUbfyZnzf0dj3Sk8z2KFe6
+	 YKlNmzmry/HZtEwJtgrno55Fwu2sV6bCaBlUw9UBaF3Fzq42/rjcHuOtK6FDPP3azXAy8Fz6ZxKu
+	 6JN5MCL/b9bsqa44hDSGJjQJ5nlaypEAy2yTOVnf5fq4A3Ehn2ZRQIWYrdOuWA/ofZ/msjsna9rk
+	 oqDxiAIMJ/pOPT/gQX3FMZ85MmYUL+eWllB8520fiq6zZyB7eShTbSlWDDgjwFlv0OJ/8VQFha+w
+	 XaWjRlCWlNnbiPil5mzl+IP5hYzed1XxRnDbY+Eh4h5zE0HEyY
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: linke li <lilinke99@qq.com>
+To: gregsword0@gmail.com
+Cc: bmt@zurich.ibm.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	lilinke99@qq.com,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	yanjun.zhu@linux.dev
+Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of re-reading it
+Date: Mon, 11 Mar 2024 10:57:50 +0800
+X-OQ-MSGID: <20240311025750.72981-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <CAEz=LctG46xSHVxRg0VwnfCpv+uyOHdb0jqQ+WJNc7zSnMA2Ng@mail.gmail.com>
+References: <CAEz=LctG46xSHVxRg0VwnfCpv+uyOHdb0jqQ+WJNc7zSnMA2Ng@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2187:b0:476:d30d:8d10 with SMTP id
- s7-20020a056638218700b00476d30d8d10mr369190jaj.6.1710124981946; Sun, 10 Mar
- 2024 19:43:01 -0700 (PDT)
-Date: Sun, 10 Mar 2024 19:43:01 -0700
-In-Reply-To: <0000000000001bd66b05fcec6d92@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000121d4f0613598092@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in vfs_setxattr (2)
-From: syzbot <syzbot+c98692bac73aedb459c3@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, hdanton@sina.com, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot suspects this issue was fixed by commit:
+> This is not a smp problem. Compared with the original source, your
+> commit introduces a time slot.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+I don't know what do you mean by a time slot. In the binary level, they
+have the same code.
 
-    fs: Block writes to mounted block devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=124c2811180000
-start commit:   f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8e72bae38c079e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=c98692bac73aedb459c3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=167dba7ee80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160cfe19e80000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
