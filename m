@@ -1,192 +1,116 @@
-Return-Path: <linux-kernel+bounces-98941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F9BC878153
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:08:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42CD5878154
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3A0B1C20481
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:08:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81AB1F23213
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4ACB3FB9C;
-	Mon, 11 Mar 2024 14:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DB83FB9C;
+	Mon, 11 Mar 2024 14:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bd5kjuqk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XygYDkFi"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470C13E46D;
-	Mon, 11 Mar 2024 14:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60063E46D
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710166120; cv=none; b=LW8gd1reXEJ7dhT75tWdV1ewrrr3eOAHY/AmNtesjNAVpoML1j0Ib/J6Po2ulQww6f9yio4inbR/71Z/lYCxNxk9tSQV5oSfUPyhLYevHIuv2jzlwo8zanC2ICQMw+1wx7d1xV3vMxtzZgelKB20jsdmJliuAdN96GCvQESFgrY=
+	t=1710166189; cv=none; b=tUEQ+8EmfcXut4c5IY01EyiYv7P2lR0eEbtOHDLAwZ5sMtd3PIuCvAvK4Xze+znFk+5LE3sYtzjWtlK+he/qpd4pwzzHpdMUAWyqd4UHd3Kyng6gUvUvxldgN67uWkLjbIKo8w0JA+lgyod5Q4y3lpWiHUC5tK8hYAyOaZyrll0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710166120; c=relaxed/simple;
-	bh=4opJTjHk6eRIzxcJR3OPwb0vcJcIOIZAXBxw8+TIagA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=s2I8pS1SSTDUnVKGrF2hGrKVHZ8W38idhE7Ussn67Hi44OHpcV6VJDE11Hm7N4MwFtudx0a0o1JyByAq42Sbmkv7S6E+mvmGiU3uUiKP89aO5I/FrgbwqLk2MOJOdWrevO1QyWFvi4MERykYdY6ltJ3/hCYWQpXqMI0Lig7o7CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bd5kjuqk; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710166119; x=1741702119;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4opJTjHk6eRIzxcJR3OPwb0vcJcIOIZAXBxw8+TIagA=;
-  b=bd5kjuqknv7jNcVOdKnAxMXk4OThBZ99rfbRUPTZkCDs8ygqFpy/1gp3
-   EU1ZajYHJ4lJLbyIaRfgf2gkuYEEkbcEfpWcUtQCs+qTquCLlN9WgWuOR
-   QfNT+qMJX1JrcaOV4R+TnvJTGLVA65ijyR0FTqXszQKTH/4ft0KWL3C8C
-   9O+FG7TaNPCf7wBn/Z9GLRjMDGNvfSKdLflDo/7E6SFumHZFZioRmSpo3
-   XO7s1BZMJTqGt4RBNZXzrPPddwo5Cbtkw/Gcd4KBNqvQNSGWELBXSX8ao
-   W+6DmlYtON55SJ+1TK0jx5wv51wFfIJ0/Pe9DFLpMtDymYEAfB/5TQSVG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="22351046"
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="22351046"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 07:08:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="937049955"
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="937049955"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Mar 2024 07:08:35 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 393A1177; Mon, 11 Mar 2024 16:08:34 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v1 1/1] pinctrl: pxa2xx: Make use of struct pinfunction
-Date: Mon, 11 Mar 2024 16:08:33 +0200
-Message-ID: <20240311140833.1168742-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1710166189; c=relaxed/simple;
+	bh=mgxPhZa7itiP3y8g8ze/hDZxipnyP4hm2UnmBNC9sKw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PiDeqjg8J2TzT5iTbi8jD0vJcpaffMigVo5c3/g3/znW474QEhaaqPUrm/NLQ0Lf4sU7PEct0MprQ2Qg1WYKSNa7B6tpLIKJd/VS+iHAEev1tWlRg1tPZ+lrziu5T3lgCRvaPfez9/5g23ZcTAxynHgw34Z2RZ0GJSKfD+XJ1O8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XygYDkFi; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4132f780ee2so2628905e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:09:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710166186; x=1710770986; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yl6YfvPFhweYRwRy68I4o7i+ufbSeARu9E5f/nZY69c=;
+        b=XygYDkFi1bkYgo1RRRkW73zdHFOHiUwtQESmVsNePGCqOU2bsBUyoFCIrNkHCPpo+g
+         Em0Mn4WcFwJ1ONg/IDg6m2b9XOVnXCopATRRnlqaM0TJ7G4CPpqyU6+qxeNBafoGXTrM
+         01H/Y5mcGyYOs8diGo3MIf1qAWMteDyWov4q1LFpCs9L7zIfSVI5dpnUMvuzrvOdqTyl
+         UrwvGT9RO/xST30fIGoEPAzuyaKI4ERjJ03pB/LFF5X33+H/AiqnXT3DRQD77Mba+2dj
+         OEDWA4vrXWhOx87sSvaaE4+lTGIhyEKUFZTnbjwTerkJBLgzBK9Oe4yyB45fBRy+ilLh
+         5OoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710166186; x=1710770986;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Yl6YfvPFhweYRwRy68I4o7i+ufbSeARu9E5f/nZY69c=;
+        b=FRziUxF/Th8gtfv7PZ7wMd83gu5+25fYnRjGCbY7IEo1SdRRJWBjEWFmo50+VAqDzb
+         EUb8Jy4xZjjEBM6QqJtCR+E3ElB853EBlKrkgNN0uHmS6Pe+5WOcVV9P2em/wYwrhB3v
+         0UlRCx80qRaIFSLIwu9kBVOEMnFXAdOfwBmD5JWPfiN7bcgN2dzCGIxNbHSWmhPEEnAI
+         Wfz2FpLPGrXIAnf1MmxXf7JOWUJe1Vtivf7fYfeCUa1/gxPS//INMD+03doQhFOVhu6I
+         BSl0lQhDomD/+6M8IacR7flKUhPj0EZraWnHtrKCU7n5doMThkQUm8ha2I28Y8iifjxv
+         KKfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJrG8hfziS7j/LL4J95s63mH7XDdnZ1tqrxbaBW/o7eM2M4GZwjaRPLES6x/X6U7QPh5uEe3QATzIWTSlDFKXSjc87Qdpv/XAaIfoL
+X-Gm-Message-State: AOJu0Yx+Rua/LCBbdLMurtDmK52R2WGUR+8WA0jam80gPTQuFAXpoo2t
+	D6zXZ0DN2/WF+WV9X7GPPZsKENhCLQX2zPGukSPTnd8C/HYzmvwCnax0wMd3MOw=
+X-Google-Smtp-Source: AGHT+IGQYnC6s8vq/AC95aOrVG5lPMt5L/uK8n2CYBjMezpKRJ3nt4A8EEH/Dx53g29OqUA7Km8LVA==
+X-Received: by 2002:a05:600c:4f50:b0:413:15a5:5029 with SMTP id m16-20020a05600c4f5000b0041315a55029mr6835212wmq.10.1710166186035;
+        Mon, 11 Mar 2024 07:09:46 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id p8-20020a05600c1d8800b004122b7a680dsm9399239wms.21.2024.03.11.07.09.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 07:09:45 -0700 (PDT)
+Date: Mon, 11 Mar 2024 17:09:41 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Felix N. Kimbu" <felixkimbu1@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	outreachy@lists.linux.dev
+Subject: Re: [PATCH] staging: cfg80211: Remove parentheses prism2_get_station
+Message-ID: <ac756a79-0522-4286-a464-2a62a4fb1cde@moroto.mountain>
+References: <Ze8LBf6xSjCRt4rd@MOLeToid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ze8LBf6xSjCRt4rd@MOLeToid>
 
-Since pin control provides a generic data type for the pin function,
-use it in the driver.
+On Mon, Mar 11, 2024 at 02:45:41PM +0100, Felix N. Kimbu wrote:
+> Remove unnecessary parentheses around 'wlandev->msdstate != WLAN_MSD_RUNNING'
+> in static int prism2_get_station(...)
+> 
+> This change ensures adherence to coding style guidelines.
+> 
+> Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
+> ---
+>  drivers/staging/wlan-ng/cfg80211.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
+> index 471bb310176f..7451fd2bb580 100644
+> --- a/drivers/staging/wlan-ng/cfg80211.c
+> +++ b/drivers/staging/wlan-ng/cfg80211.c
+> @@ -247,7 +247,7 @@ static int prism2_get_station(struct wiphy *wiphy, struct net_device *dev,
+>  
+>  	memset(sinfo, 0, sizeof(*sinfo));
+>  
+> -	if (!wlandev || (wlandev->msdstate != WLAN_MSD_RUNNING))
+> +	if (!wlandev || wlandev->msdstate != WLAN_MSD_RUNNING)
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/pxa/pinctrl-pxa2xx.c | 24 ++++++++++--------------
- drivers/pinctrl/pxa/pinctrl-pxa2xx.h |  8 +-------
- 2 files changed, 11 insertions(+), 21 deletions(-)
+Sorry, we're ignoring this checkpatch warning.
 
-diff --git a/drivers/pinctrl/pxa/pinctrl-pxa2xx.c b/drivers/pinctrl/pxa/pinctrl-pxa2xx.c
-index d2568dab8c78..f24bf49fa82b 100644
---- a/drivers/pinctrl/pxa/pinctrl-pxa2xx.c
-+++ b/drivers/pinctrl/pxa/pinctrl-pxa2xx.c
-@@ -109,7 +109,7 @@ static const char *pxa2xx_pmx_get_func_name(struct pinctrl_dev *pctldev,
- 					    unsigned function)
- {
- 	struct pxa_pinctrl *pctl = pinctrl_dev_get_drvdata(pctldev);
--	struct pxa_pinctrl_function *pf = pctl->functions + function;
-+	struct pinfunction *pf = pctl->functions + function;
- 
- 	return pf->name;
- }
-@@ -127,7 +127,7 @@ static int pxa2xx_pmx_get_func_groups(struct pinctrl_dev *pctldev,
- 				      unsigned * const num_groups)
- {
- 	struct pxa_pinctrl *pctl = pinctrl_dev_get_drvdata(pctldev);
--	struct pxa_pinctrl_function *pf = pctl->functions + function;
-+	struct pinfunction *pf = pctl->functions + function;
- 
- 	*groups = pf->groups;
- 	*num_groups = pf->ngroups;
-@@ -249,11 +249,11 @@ static struct pinctrl_desc pxa2xx_pinctrl_desc = {
- 	.pmxops		= &pxa2xx_pinmux_ops,
- };
- 
--static const struct pxa_pinctrl_function *
--pxa2xx_find_function(struct pxa_pinctrl *pctl, const char *fname,
--		     const struct pxa_pinctrl_function *functions)
-+static const struct pinfunction *pxa2xx_find_function(struct pxa_pinctrl *pctl,
-+						      const char *fname,
-+						      const struct pinfunction *functions)
- {
--	const struct pxa_pinctrl_function *func;
-+	const struct pinfunction *func;
- 
- 	for (func = functions; func->name; func++)
- 		if (!strcmp(fname, func->name))
-@@ -264,8 +264,8 @@ pxa2xx_find_function(struct pxa_pinctrl *pctl, const char *fname,
- 
- static int pxa2xx_build_functions(struct pxa_pinctrl *pctl)
- {
-+	struct pinfunction *functions;
- 	int i;
--	struct pxa_pinctrl_function *functions;
- 	struct pxa_desc_function *df;
- 
- 	/*
-@@ -296,9 +296,9 @@ static int pxa2xx_build_functions(struct pxa_pinctrl *pctl)
- static int pxa2xx_build_groups(struct pxa_pinctrl *pctl)
- {
- 	int i, j, ngroups;
--	struct pxa_pinctrl_function *func;
- 	struct pxa_desc_function *df;
--	char **gtmp;
-+	struct pinfunction *func;
-+	const char **gtmp;
- 
- 	gtmp = devm_kmalloc_array(pctl->dev, pctl->npins, sizeof(*gtmp),
- 				  GFP_KERNEL);
-@@ -316,13 +316,9 @@ static int pxa2xx_build_groups(struct pxa_pinctrl *pctl)
- 						pctl->ppins[j].pin.name;
- 		func = pctl->functions + i;
- 		func->ngroups = ngroups;
--		func->groups =
--			devm_kmalloc_array(pctl->dev, ngroups,
--					   sizeof(char *), GFP_KERNEL);
-+		func->groups = devm_kmemdup(pctl->dev, gtmp, ngroups * sizeof(*gtmp), GFP_KERNEL);
- 		if (!func->groups)
- 			return -ENOMEM;
--
--		memcpy(func->groups, gtmp, ngroups * sizeof(*gtmp));
- 	}
- 
- 	devm_kfree(pctl->dev, gtmp);
-diff --git a/drivers/pinctrl/pxa/pinctrl-pxa2xx.h b/drivers/pinctrl/pxa/pinctrl-pxa2xx.h
-index d86d47dbbc94..a0bdcec55158 100644
---- a/drivers/pinctrl/pxa/pinctrl-pxa2xx.h
-+++ b/drivers/pinctrl/pxa/pinctrl-pxa2xx.h
-@@ -57,12 +57,6 @@ struct pxa_pinctrl_group {
- 	unsigned	pin;
- };
- 
--struct pxa_pinctrl_function {
--	const char	*name;
--	const char	**groups;
--	unsigned	ngroups;
--};
--
- struct pxa_pinctrl {
- 	spinlock_t			lock;
- 	void __iomem			**base_gafr;
-@@ -76,7 +70,7 @@ struct pxa_pinctrl {
- 	unsigned			ngroups;
- 	struct pxa_pinctrl_group	*groups;
- 	unsigned			nfuncs;
--	struct pxa_pinctrl_function	*functions;
-+	struct pinfunction		*functions;
- 	char				*name;
- };
- 
--- 
-2.43.0.rc1.1.gbec44491f096
+https://lore.kernel.org/all/?q=prism2_get_station
+
+regards,
+dan carpenter
 
 
