@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-99526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F47878998
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:41:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F7BF878999
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:42:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2AF11F21F1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:41:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AEF1281B2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3A458226;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF6EF58AA3;
 	Mon, 11 Mar 2024 20:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WV/Nh38t"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="met2E4kd"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031D257315
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F03657861
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710189653; cv=none; b=tjv1oKa8BataKBjOEaXMfirjaYj2lYmUA4WLgUGXVSlNGUBJrs1ui6j2stI4vkSkB4EHvqgbRh0DiN45TbAr4YtqRJxyAJtR1QPyPpRRBXQoFwLtos7fxjPUI8VWyWbihgCyDgL0NqDmDENwUXgUrmjzn9gRSIGG9Eowx7cAw1k=
+	t=1710189654; cv=none; b=hDtBoxf7/VHd59Xrb3Ii85zBdbBzMK1aHTY3kZ4jdhC4rM1c6Ljg/7m00V0TCMZXInnIm8tIO+5H9GFoNxYZ+VtN6VW0+eiwaPKZf4wcCyiIeN0555UTHM+9fUHsVqA7jjh+LcyFr0NURQDPcQkeA10cvaY2eRyCqE49T0DFXpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710189653; c=relaxed/simple;
-	bh=z1eiWF00ulFGIhwzo8vX7fAaQ7Gt/3wwViaVAn8v6Xs=;
+	s=arc-20240116; t=1710189654; c=relaxed/simple;
+	bh=l6+vGocoJjKBZ6LjvyKw3EB2dMWQhPWbCAUhatHdqDE=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=g9QoJtgAITYEq9+sZaybD2TuQqdBXFGRryf9+1p2KHkiQZDcQS1jvoudi4j2LrXh8YzhPDCMOTWhXHF5z9bZwoCNtdpAgoqeu7HjxcqOXU1Lt8bvhstXHuakI+csiKMdSg1fw+2LWwOfr/MHrB3TCfSF1tWfTkWLn81Zb2irgHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WV/Nh38t; arc=none smtp.client-ip=209.85.128.54
+	 MIME-Version; b=k5T9qxUKLpg+9gjaVQaq4D8J5c50rdQgXM/lvGH2Sh4QVzrhDEPlLrb/62d1gfc0wTLRwQalDGJl/Lz/jq9JbSS4anWOIa21kCPoMHpX5TzMlldVaadp6q5NNxLVtB9TT1uAp5uYYA9YHiNdAzzLTqi6yrs6obaT5CJBIRCxOUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=met2E4kd; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4132cc37e21so6994845e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:40:51 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e8f906f3dso1887298f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:40:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710189650; x=1710794450; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710189651; x=1710794451; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=H4gf5zJ8CKFjRYmrei7za8lmpK5Lzx3+chgGCjt8WGo=;
-        b=WV/Nh38tBykT/JicFi0KacWSCtk6fkOOQttIMrbJwVNy+oa8ehBrNfRe9ZdsKAnGem
-         ngM+WVZtvXsJglUPPOOeSfHBnpGMQzOnApiodrmPv88jsIAfa7H6IIMRbf+wCPcK9L6d
-         IAEd45MeW4z+YPTyvd7X0cdDO7DHLaYXg3OgiVgn1hTRvqpsyDXOqFqaCdkWyQoxjdaC
-         gVdR3JOjGHhx3L4fVzdAKHPFieJfEGRuDsTkOHafHMWQ1WnGOt2kieNHXSXMXwIwBDde
-         WyofNlxeAV61Z4mDUqq6sLdVvlPXAV/xAqn6Qu127Nhz0RRSA3DaI4ZUKgjH2ktZLwLz
-         4rgw==
+        bh=Hysh3fJNhJmvp1Mvqbl3AfXFa72LgQZtPG4AlifhcO0=;
+        b=met2E4kdu7Dtzsz0EKXTMl/JmsybqY7YxI3Tu85dHRsR0t41/YZoNVpdwZUEp1JLGZ
+         o8gYjn0bafuG/2e6hTtgi+aWrXDRyInawILP6lshtqyTPzln8MsI8YlO5+d6hkC/jv6D
+         y/ouxqsi0jEqFHPkoaaULOLh/IHm55cz3sOdkD3mnPMeBycVN5P7hJXri9aCGWxgtlfX
+         Jo2Ryk2WUF/o3Zf5cD/x2hR/7O/teFepxp82oFfN3PEx/p6xQ2QHNKUQu7cpHEmsbROO
+         ej+y5eY3ItEURlu/Krkj91OnTeRlQYhyXPfnr5X8Bff/d9CT6ebQw7Z0vbX2WU6TbYUg
+         uShQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710189650; x=1710794450;
+        d=1e100.net; s=20230601; t=1710189651; x=1710794451;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H4gf5zJ8CKFjRYmrei7za8lmpK5Lzx3+chgGCjt8WGo=;
-        b=kv4zO4GgPBX9dODYENqOT4KoeSV6UFBGQQceRtw0ciqLvCjSvmKDT4Q1CAANe0kDbx
-         iipdJlrl8FP0GINZULiXCIH5Ej9Sjj+tA47m3jLk2jJssFKcisWHoBBjQ32jYFFTGeNk
-         lH9XEmTTtdCcQlogRCr0ra+Lcw1vLUAuBCqUcTmpqDJmEdiuR0yrSxqpDz2odvDCzHRm
-         M9mgrNoEJgjkXpds77/CbrxgI8ZMwBRyakDWa07LUqT6hLs8y2NeKtKEn/5X3z8bd/ZI
-         K1Lf7Hz5oLEe/b9JqE8xvHCA7Stlj09fDXIBP1LzVrpi56+gNiL7J3QfwZUMyBQU+l9b
-         VT2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWW04Ifx0it5aSmRrOfwn5wpeoti45FB3PRQHNIbvXernSk0oqc6vx0SIgh1mIY8ua79BTxRyG6YmulXIrXjcbDHMCCImLIvVW8Mi19
-X-Gm-Message-State: AOJu0Ywzy/9q2zvN9x8b5G11AIrDtFj22mnZvGDxJyfnWiHVpVAO4yOk
-	fFRwBT1KM+QXWP0baNCrixxLaRta0ewfIijnJH68RCVOb92vn0xnshsimVZn75c=
-X-Google-Smtp-Source: AGHT+IFmXXxuNdfoeWL7LRFZsvGA+WyC047fJGUlZv8+wxSs1WHgZrjKSl+0gbgaXFowrjsiD0v/ow==
-X-Received: by 2002:a05:600c:548c:b0:413:3110:2d06 with SMTP id iv12-20020a05600c548c00b0041331102d06mr555348wmb.16.1710189650396;
+        bh=Hysh3fJNhJmvp1Mvqbl3AfXFa72LgQZtPG4AlifhcO0=;
+        b=remTTVgRssRUkJQcu632rN42/pTdfuYNf8mfcOLk6SwnfxIgCrzIfPt5alkXBd9f3q
+         plSl8M/OL+DOnCpY1VP6eXKGmfe53Zzd8YuW4kRoundxbTPUgPGnXFov88wQ7GU3+DXe
+         hF10iIvdgyDEfLNgv7bjMDlBYNU+QMbVv/BVnV+DTGJLEYk+ygT0g59zVdoPTyyw3M+S
+         Fhi7cxvzFG/6baL9syMRzYyxIj3dZKaFwqnTFkYzYA23Vuwc+F5hz4vju5/NCSBdiD3B
+         q+YfeN5iDJmaVB4+62ytZYskww/m0dmaFhQx8gueRlqyxgOluPSnbvwu87EgXQjQcITn
+         HKnA==
+X-Forwarded-Encrypted: i=1; AJvYcCXnoocIj6yH2zBVtQUjlEetscb7g30b02UfCHtI+6MSZnYuda9ARw/pa+rkWCS/j1HclcbEetV203cK3R9NqK40yVA8HzNd/3s8ob7w
+X-Gm-Message-State: AOJu0YzF7IRMjjc31LI9Xcb4oOvlDsLR95LljtuxnA33tnKyjqPFuYNS
+	XzlCuny3a39NAnnDuqZ22mFJ/JONdsCY0uTuk7pwH0lDA7lES8uhL9fN0Tj0WBs=
+X-Google-Smtp-Source: AGHT+IGY2G4F8cTa0D/fyd+ZIT6Qbr8F168RDRZDJAMNFqzAzGHgWGWYgTpGdTGLt80U7pXeR2kYjg==
+X-Received: by 2002:a5d:5012:0:b0:33e:1560:71a8 with SMTP id e18-20020a5d5012000000b0033e156071a8mr5271323wrt.7.1710189650835;
         Mon, 11 Mar 2024 13:40:50 -0700 (PDT)
 Received: from rex.hwlab.vusec.net (lab-4.lab.cs.vu.nl. [192.33.36.4])
-        by smtp.gmail.com with ESMTPSA id t14-20020a05600c198e00b0041312c4865asm14929355wmq.2.2024.03.11.13.40.48
+        by smtp.gmail.com with ESMTPSA id t14-20020a05600c198e00b0041312c4865asm14929355wmq.2.2024.03.11.13.40.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 13:40:49 -0700 (PDT)
+        Mon, 11 Mar 2024 13:40:50 -0700 (PDT)
 From: Brian Johannesmeyer <bjohannesmeyer@gmail.com>
 To: Josh Poimboeuf <jpoimboe@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	Brian Johannesmeyer <bjohannesmeyer@gmail.com>
-Subject: [PATCH 6/7] scripts/faddr2line: Remove call to addr2line from find_dir_prefix()
-Date: Mon, 11 Mar 2024 21:40:18 +0100
-Message-Id: <20240311204019.1183634-7-bjohannesmeyer@gmail.com>
+Subject: [PATCH 7/7] scripts/faddr2line: Check only two symbols when calculating symbol size
+Date: Mon, 11 Mar 2024 21:40:19 +0100
+Message-Id: <20240311204019.1183634-8-bjohannesmeyer@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240311204019.1183634-1-bjohannesmeyer@gmail.com>
 References: <20240311204019.1183634-1-bjohannesmeyer@gmail.com>
@@ -84,48 +84,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use the single long-running faddr2line process from find_dir_prefix().
+Rather than looping through each symbol in a particular section to
+calculate a symbol's size, grep for the symbol and its immediate
+successor, and only use those two symbols.
 
 Signed-off-by: Brian Johannesmeyer <bjohannesmeyer@gmail.com>
 ---
- scripts/faddr2line | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ scripts/faddr2line | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/faddr2line b/scripts/faddr2line
-index 48fc8cfc80df..1fa6beef9f97 100755
+index 1fa6beef9f97..70d5a4602a92 100755
 --- a/scripts/faddr2line
 +++ b/scripts/faddr2line
-@@ -85,15 +85,17 @@ command -v ${ADDR2LINE} >/dev/null 2>&1 || die "${ADDR2LINE} isn't installed"
- # init/main.c!  This only works for vmlinux.  Otherwise it falls back to
- # printing the absolute path.
- find_dir_prefix() {
--	local objfile=$1
--
- 	local start_kernel_addr=$(echo "${ELF_SYMS}" | sed 's/\[.*\]//' |
- 		${AWK} '$8 == "start_kernel" {printf "0x%s", $2}')
- 	[[ -z $start_kernel_addr ]] && return
+@@ -252,7 +252,7 @@ __faddr2line() {
+ 				found=2
+ 				break
+ 			fi
+-		done < <(echo "${ELF_SYMS}" | sed 's/\[.*\]//' | ${AWK} -v sec=$sym_sec '$7 == sec' | sort --key=2)
++		done < <(echo "${ELF_SYMS}" | sed 's/\[.*\]//' | ${AWK} -v sec=$sym_sec '$7 == sec' | sort --key=2 | ${GREP} -A1 " ${sym_name}$")
  
--	local file_line=$(${ADDR2LINE} -e $objfile $start_kernel_addr)
--	[[ -z $file_line ]] && return
-+	run_addr2line ${start_kernel_addr} ""
-+	[[ -z $ADDR2LINE_OUT ]] && return
- 
-+	local file_line=${ADDR2LINE_OUT#* at }
-+	if [[ -z $file_line ]] || [[ $file_line = $ADDR2LINE_OUT ]]; then
-+		return
-+	fi
- 	local prefix=${file_line%init/main.c:*}
- 	if [[ -z $prefix ]] || [[ $prefix = $file_line ]]; then
- 		return
-@@ -350,7 +352,7 @@ echo "${ELF_SECHEADERS}" | ${GREP} -q '\.debug_info' || die "CONFIG_DEBUG_INFO n
- init_addr2line $objfile
- 
- DIR_PREFIX=supercalifragilisticexpialidocious
--find_dir_prefix $objfile
-+find_dir_prefix
- 
- FIRST=1
- while [[ $# -gt 0 ]]; do
+ 		if [[ $found = 0 ]]; then
+ 			warn "can't find symbol: sym_name: $sym_name sym_sec: $sym_sec sym_addr: $sym_addr sym_elf_size: $sym_elf_size"
 -- 
 2.34.1
 
