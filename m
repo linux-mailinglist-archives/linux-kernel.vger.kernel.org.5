@@ -1,254 +1,105 @@
-Return-Path: <linux-kernel+bounces-99475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B89E98788F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DE97878902
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:39:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6531E281293
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:36:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18B9628169A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B524D54FAA;
-	Mon, 11 Mar 2024 19:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3818856B62;
+	Mon, 11 Mar 2024 19:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="o6K2G/DJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="g++Kpc02"
-Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KippI1B9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42C71E884
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791355579A;
+	Mon, 11 Mar 2024 19:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710185809; cv=none; b=WLZ490iXvhL3RxwskKv2+ZjwykV/ku1ckE4vJh+WeQWHLfLEKY0QGN5SJLfRhYhp9KpIiHkVzhyWFoEb1R+sa3bvujTC8pOdXKCEKEpXTbJwBuLm0/vhhcZ8+zd9szlZ0+Jt5oSPAyluf2rwomi4I1bQaH8OJTrWHI5QmFuLZA4=
+	t=1710185962; cv=none; b=W4jBiouAGOzJqnj6XQ38GyOJpxVYtXBFpQnoaWAw2KY8CKFqFFJI40k+HV+R/GXO/sHvYJw5kDYBK81vYQSDN1FXaqHoPQQEJwIygp0QFYLa4Mcd8fyZ4Rr6E4aJkaYPG9UoGOBmxyKE5HwwDSX257TSZp1pugFvSmPR1vAeMDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710185809; c=relaxed/simple;
-	bh=oA81BqaKSjba3CwENuBFCYqFjtfgxiRczieDtv4LSF8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=V7ceb5bMpRMZ1csyS3h1jNV606N20GwYA4tMNi550Fpa9GYsiNBx2ZgyhgpvkLJsyy0nHFVNyblfdf2nlO3w0uwttpsSQQ+KQv1xCQCZcLhG86L9LLFx0PpjFgg15aEytLw+BMaSrX4BVnTGWtiPghaA5QaczldcyWc0G1KO3OQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=o6K2G/DJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=g++Kpc02; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfout.nyi.internal (Postfix) with ESMTP id B846113800D1;
-	Mon, 11 Mar 2024 15:36:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 11 Mar 2024 15:36:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:message-id:mime-version:reply-to
-	:reply-to:subject:subject:to:to; s=fm1; t=1710185805; x=
-	1710272205; bh=dGukwC2LyuCQ/OI2VLjd+cSQB2fydh8T1EPdNGlVsRE=; b=o
-	6K2G/DJ5LagUkehXa5ADJ7WTPVdfVXlGzW2zy+eGBuGT6QI2MrSS0DmIJn69D7Cw
-	+U/fWwj6XXBsxVjME6kwoaYXXUc3yXOWNFGnWl+URrl0jFzHr2rbIBsFgeTFZMpb
-	g2GSHEQ8SGOXEmeB8lvEeGD2x4+R/EFfeFIdQFqh7cYrbNKHib5guFDk/M1OE8Oh
-	IdYyhOLDCzt2LatWJYDas/wIP79UMrU84p5wx9xUR6L+HpI65mGIFJ56Pw5CSyp+
-	40AovbgNjugSsAj9YyiAcBvjBBddy7GPgN6IO3m/eJt/LmVPgTu8hTJ0gZ26Xd4f
-	UynonsCZwZNFoQz19mPBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:message-id:mime-version:reply-to:reply-to
-	:subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1710185805; x=1710272205; bh=d
-	GukwC2LyuCQ/OI2VLjd+cSQB2fydh8T1EPdNGlVsRE=; b=g++Kpc02SIO1PTbw1
-	vrCWbW/5SB1UYIaHipoExzoYFFHrfFpVPVxC2zEca0hKPnjp1c3TzL0Tptxk0+bd
-	TYlGQoRNGFTpC9pUMdgr4iWUv3oWK2DtzlfZYzSL1eE0tG3NbytjUzIuoQaowXEQ
-	AHrZJttHIIdLc0cANlxUvpjQCtYOWi/jXT2DiAdUoh7LD01tIMFrU1w8sTvn7pbj
-	ANE8VfsXm2YOKmIGgGppdkSNoCHL4oDxNHO21tkLMqpfvrPdrZKje+DgjvdSdY7X
-	wiSNqIWES8cdOhKNS5BiUT5ULqxIu4izmtUEYZqf2BjsdvgHLctAWl5wuM5wcLWA
-	arRTg==
-X-ME-Sender: <xms:TF3vZc9fgCd95c_ooxAQmQiodwPWX9Z-dmApGjQLzRuadEuQuYEujA>
-    <xme:TF3vZUvhhkTAkzYcFWGAVz2rMBHI0cP9HzXpAOrHSw6kN8YWlBtRyj0CXzGz_7ikT
-    lJ2DfWHnuXbj5pNGg>
-X-ME-Received: <xmr:TF3vZSCnWw4k7Pf7-k6hVbIPPeBpPSQG5V2ncJ45pw7m-woyaiLqqXvLc1giJR3LiLyOiGSzxCauRXSHW-dpLaKkqbAqnRI2u89hHIFaP0tJPjLoIsmWiz-Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjedugdduvdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofhrgggtgfesthekredtredtjeenucfhrhhomhepkghiucgj
-    rghnuceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepteduve
-    ehteehheeiteeihfejveejledtgfdvieeuiedutefftdevtdfhteevtdffnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
-X-ME-Proxy: <xmx:TF3vZcdUkIt5dCsduemOcSAmJQyyHYXP6Ly4uW4Oz-RuptfeS8b-bA>
-    <xmx:TF3vZROnVg5CQb8AmUaBUDKrH2lUD6HGpr-NCLmFkEsq7WzMB653Ng>
-    <xmx:TF3vZWnRavW-TLq2F_WzvTPjQ0_i1c1aeY7Nmnytv6qxSXY4OTpjRQ>
-    <xmx:TV3vZUo1kLehLivRLFh4XerLjzuqDRU2CpSL_9-UufH9FvCK2c88yg>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 11 Mar 2024 15:36:44 -0400 (EDT)
-From: Zi Yan <zi.yan@sent.com>
-To: linux-mm@kvack.org
-Cc: Zi Yan <ziy@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Yang Shi <shy828301@gmail.com>,
-	Huang Ying <ying.huang@intel.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/migrate: put dest folio on deferred split list if source was there.
-Date: Mon, 11 Mar 2024 15:36:41 -0400
-Message-ID: <20240311193641.133981-1-zi.yan@sent.com>
-X-Mailer: git-send-email 2.43.0
-Reply-To: Zi Yan <ziy@nvidia.com>
+	s=arc-20240116; t=1710185962; c=relaxed/simple;
+	bh=Tb3t3KEHkb0bKggnJvzoExyaezYnPNtP5SMbYxHfn14=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=t71Ne+z/Z0CyBt0fylPDmyTqBs3LYkyXbryVDLq7pCV42o00SEf2T0mSy4GaJOzc78P3Z9kc+ZhABB73XxOCtUn0gZV4l1PL1KE8z1CTY/ySsFh+X8SRKD19MShQPBXkTigg1C9TuloiMa1Txzll9/wCNHNgQRXEDKfmNr/Zppo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KippI1B9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0AA25C43390;
+	Mon, 11 Mar 2024 19:39:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710185962;
+	bh=Tb3t3KEHkb0bKggnJvzoExyaezYnPNtP5SMbYxHfn14=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KippI1B9+gMzNcgca+X/Mg+moPrGpBMojeLHzlzD7kofcrcl2eKzS3MsnO0vgNa9G
+	 gb/r9TyUGaMlembU6IikLIlDibUFseVPdcnSlblUjBtiSZrIV5PGJ9G55Vcbs7keGM
+	 AuaB7RPOCT6psSNsX5udmvECgg7f30+WYf38EYvQI+h3bmTm9q4QHfnKLq15LfbTe0
+	 6fUr0sDqC+KrQBkuGCkI6Q74CSfD0GubHL1E7ObHZrQ32ghYf/D8bTemUANSvmpg2/
+	 qqOWvWbBR/hJ9ktnDvDj6S6596E8QSqrrED4g1FU1OKHZbZkXlleZVja31vSJdBZ0f
+	 KNcp1VTImdd4Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DFF40C395F1;
+	Mon, 11 Mar 2024 19:39:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 0/6] fix incorrect parameter validation in the
+ *_get_sockopt() functions
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171018596190.1144.12769091156381896490.git-patchwork-notify@kernel.org>
+Date: Mon, 11 Mar 2024 19:39:21 +0000
+References: <20240307142030.2708698-1-Ilia.Gavrilov@infotecs.ru>
+In-Reply-To: <20240307142030.2708698-1-Ilia.Gavrilov@infotecs.ru>
+To: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+Cc: horms@kernel.org, davem@davemloft.net, dsahern@kernel.org,
+ kuba@kernel.org, pabeni@redhat.com, willemdebruijn.kernel@gmail.com,
+ edumazet@google.com, jchapman@katalix.com, ms@dev.tdt.de,
+ syoshida@redhat.com, almasrymina@google.com, kuniyu@amazon.com,
+ tom@herbertland.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org
 
-From: Zi Yan <ziy@nvidia.com>
+Hello:
 
-Commit 616b8371539a6 ("mm: thp: enable thp migration in generic path")
-did not check if a THP is on deferred split list before migration, thus,
-the destination THP is never put on deferred split list even if the source
-THP might be. The opportunity of reclaiming free pages in a partially
-mapped THP during deferred list scanning is lost, but no other harmful
-consequence is present[1]. Checking source folio deferred split list
-status before page unmapped and add destination folio to the list if
-source was after migration.
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-[1]: https://lore.kernel.org/linux-mm/03CE3A00-917C-48CC-8E1C-6A98713C817C@nvidia.com/
+On Thu, 7 Mar 2024 14:23:49 +0000 you wrote:
+> This v2 series fix incorrent parameter validation in *_get_sockopt()
+> functions in several places.
+> 
+> version 2 changes:
+> - reword the patch description
+> - add two patches for net/kcm and net/x25
+> 
+> [...]
 
-Fixes: 616b8371539a ("mm: thp: enable thp migration in generic path")
-Signed-off-by: Zi Yan <ziy@nvidia.com>
----
- mm/huge_memory.c | 22 ----------------------
- mm/internal.h    | 23 +++++++++++++++++++++++
- mm/migrate.c     | 26 +++++++++++++++++++++++++-
- 3 files changed, 48 insertions(+), 23 deletions(-)
+Here is the summary with links:
+  - [net-next,v2,1/6] tcp: fix incorrect parameter validation in the do_tcp_getsockopt() function
+    https://git.kernel.org/netdev/net-next/c/716edc9706de
+  - [net-next,v2,2/6] udp: fix incorrect parameter validation in the udp_lib_getsockopt() function
+    https://git.kernel.org/netdev/net-next/c/4bb3ba7b74fc
+  - [net-next,v2,3/6] ipmr: fix incorrect parameter validation in the ip_mroute_getsockopt() function
+    https://git.kernel.org/netdev/net-next/c/5c3be3e0eb44
+  - [net-next,v2,4/6] l2tp: fix incorrect parameter validation in the pppol2tp_getsockopt() function
+    https://git.kernel.org/netdev/net-next/c/955e9876ba4e
+  - [net-next,v2,5/6] net: kcm: fix incorrect parameter validation in the kcm_getsockopt) function
+    https://git.kernel.org/netdev/net-next/c/3ed5f415133f
+  - [net-next,v2,6/6] net/x25: fix incorrect parameter validation in the x25_getsockopt() function
+    https://git.kernel.org/netdev/net-next/c/d6eb8de2015f
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9859aa4f7553..c6d4d0cdf4b3 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -766,28 +766,6 @@ pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma)
- 	return pmd;
- }
- 
--#ifdef CONFIG_MEMCG
--static inline
--struct deferred_split *get_deferred_split_queue(struct folio *folio)
--{
--	struct mem_cgroup *memcg = folio_memcg(folio);
--	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
--
--	if (memcg)
--		return &memcg->deferred_split_queue;
--	else
--		return &pgdat->deferred_split_queue;
--}
--#else
--static inline
--struct deferred_split *get_deferred_split_queue(struct folio *folio)
--{
--	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
--
--	return &pgdat->deferred_split_queue;
--}
--#endif
--
- void folio_prep_large_rmappable(struct folio *folio)
- {
- 	if (!folio || !folio_test_large(folio))
-diff --git a/mm/internal.h b/mm/internal.h
-index d1c69119b24f..8fa36e84463a 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1107,6 +1107,29 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
- 				   unsigned long addr, pmd_t *pmd,
- 				   unsigned int flags);
- 
-+#ifdef CONFIG_MEMCG
-+static inline
-+struct deferred_split *get_deferred_split_queue(struct folio *folio)
-+{
-+	struct mem_cgroup *memcg = folio_memcg(folio);
-+	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
-+
-+	if (memcg)
-+		return &memcg->deferred_split_queue;
-+	else
-+		return &pgdat->deferred_split_queue;
-+}
-+#else
-+static inline
-+struct deferred_split *get_deferred_split_queue(struct folio *folio)
-+{
-+	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
-+
-+	return &pgdat->deferred_split_queue;
-+}
-+#endif
-+
-+
- /*
-  * mm/mmap.c
-  */
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 73a052a382f1..84ba1c65d20d 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -20,6 +20,7 @@
- #include <linux/pagemap.h>
- #include <linux/buffer_head.h>
- #include <linux/mm_inline.h>
-+#include <linux/mmzone.h>
- #include <linux/nsproxy.h>
- #include <linux/ksm.h>
- #include <linux/rmap.h>
-@@ -1037,7 +1038,10 @@ static int move_to_new_folio(struct folio *dst, struct folio *src,
- enum {
- 	PAGE_WAS_MAPPED = BIT(0),
- 	PAGE_WAS_MLOCKED = BIT(1),
--	PAGE_OLD_STATES = PAGE_WAS_MAPPED | PAGE_WAS_MLOCKED,
-+	PAGE_WAS_ON_DEFERRED_LIST = BIT(2),
-+	PAGE_OLD_STATES = PAGE_WAS_MAPPED |
-+			  PAGE_WAS_MLOCKED |
-+			  PAGE_WAS_ON_DEFERRED_LIST,
- };
- 
- static void __migrate_folio_record(struct folio *dst,
-@@ -1168,6 +1172,17 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 		folio_lock(src);
- 	}
- 	locked = true;
-+	if (folio_test_large_rmappable(src) &&
-+		!list_empty(&src->_deferred_list)) {
-+		struct deferred_split *ds_queue = get_deferred_split_queue(src);
-+
-+		spin_lock(&ds_queue->split_queue_lock);
-+		ds_queue->split_queue_len--;
-+		list_del_init(&src->_deferred_list);
-+		spin_unlock(&ds_queue->split_queue_lock);
-+		old_page_state |= PAGE_WAS_ON_DEFERRED_LIST;
-+	}
-+
- 	if (folio_test_mlocked(src))
- 		old_page_state |= PAGE_WAS_MLOCKED;
- 
-@@ -1307,6 +1322,15 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 	if (old_page_state & PAGE_WAS_MAPPED)
- 		remove_migration_ptes(src, dst, false);
- 
-+	if (old_page_state & PAGE_WAS_ON_DEFERRED_LIST) {
-+		struct deferred_split *ds_queue = get_deferred_split_queue(src);
-+
-+		spin_lock(&ds_queue->split_queue_lock);
-+		ds_queue->split_queue_len++;
-+		list_add(&dst->_deferred_list, &ds_queue->split_queue);
-+		spin_unlock(&ds_queue->split_queue_lock);
-+	}
-+
- out_unlock_both:
- 	folio_unlock(dst);
- 	set_page_owner_migrate_reason(&dst->page, reason);
+You are awesome, thank you!
 -- 
-2.43.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
