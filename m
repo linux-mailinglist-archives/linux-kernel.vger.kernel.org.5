@@ -1,113 +1,110 @@
-Return-Path: <linux-kernel+bounces-98639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D4E8877D16
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:39:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB0E0877D1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:43:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D10901F239D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:39:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC8261C21040
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:43:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4E118B15;
-	Mon, 11 Mar 2024 09:39:19 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69F61A27D;
+	Mon, 11 Mar 2024 09:43:20 +0000 (UTC)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5407012B7F
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA2317578;
+	Mon, 11 Mar 2024 09:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710149959; cv=none; b=eB/YRhSr+h76Qf+h3mLVKmg3Uudggoc+GiB3vb5i0/NNpsKK2/ceuUVntxTaIOm3F89GysOzvKapHzRZ2ohTazi04HKoJyb352/CO4hpTrpYOJDUBdqA0FZFyMulmqEHIicvz+1wkjwb+6WJCanhFOYNFPtKgZrYC1h5ZbVw6Mw=
+	t=1710150200; cv=none; b=I1LoDMYP03jvHGgzOCRDHHx9rW+qybloOsKw0fkCuGECudYgioHddSIRhEeAKiQsQD8ck0SYJqYSY30jnsGUrWK4or44TLOpqdCPV1ZLnITZepu+RAQr9WD2pDADF8Mq3TyulHyPY/2wNBIUXkdxu2JxbIwqRRU37CrUMOR2ZNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710149959; c=relaxed/simple;
-	bh=MYutdIjb/N7Yx3CRS+y5HbEnA1UZT5yZzKO7IjnGQik=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GqF6PQ/Qdc4L1zwx+eHT3rzTpv3ABuB4Fyj7B0YIZoM8JNErHY8btx2VduIh/Au7h+wslOILAQuXDGKMqa6swzXYGI4zUe0irNo/JGFaQt8sn3jHYb2ZaO/IgS8CfW+bWCUp2Ku5UuvAo+BxDCqEucedN5Zo/Es1OfCF+RESrmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TtWrM5qnXzwPQM;
-	Mon, 11 Mar 2024 17:36:51 +0800 (CST)
-Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
-	by mail.maildlp.com (Postfix) with ESMTPS id AC1AC14044F;
-	Mon, 11 Mar 2024 17:39:14 +0800 (CST)
-Received: from [10.67.109.211] (10.67.109.211) by
- dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 11 Mar 2024 17:39:14 +0800
-Message-ID: <79b87ef0-77c4-45a9-aae2-1754f1b407fe@huawei.com>
-Date: Mon, 11 Mar 2024 17:39:14 +0800
+	s=arc-20240116; t=1710150200; c=relaxed/simple;
+	bh=ntKFM4IAn00AoGiPHpx0tEZsUtien5xXsLMyxO2C2Qs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ELhbYIuhN0zVzpl+QZDRLu/zmHcaSyrDDlv2LHca8EseDoHNVQ7YRfF7F/GPBkQ7aGp3PDwemr82d4TNtObF7+8YirVdwjkVFVnEVj2mPQIRTWO75uYKDQUp2RIHYOl2w7OVDMdhIqvp/lJHWZjsyUWqHGHWNAHMltiG7PyYJko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a45fd0a0980so199977366b.2;
+        Mon, 11 Mar 2024 02:43:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710150197; x=1710754997;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OSyrdXqp3jtgY6jvF/E2QaWM25cbVZ+h2KPhZvu2LP4=;
+        b=PrkKnFMJVgYdhjtK2G5h/bmOY4USE1QDuXnPi3Ki6FOkGHL99EM7B8IBg/ZftzliOg
+         zA4DDNMRkWU4RszCZh86YgGykiGuuUO5qf9g3fJ7ytZJEXqCQcudV/UmphTNiaLvTYZf
+         tCTr0+qPnV67B/53ENiCkrZDD1z7TwTY8MKrBwabFs+QAMsEPMoxgEibMxNql4VOa+Gn
+         TWjh70/RG8ugUCAar2tVEyxA6NvH+YYWeNVmtGuLBF7oL4ABzPdCvj64Zugannyxecfl
+         Bu2uhH0PWHpV3tXsPpzRBngGp2ukkWsircg4TszeqfykigoZaAgC6NxjHjO622jbXSIb
+         QouQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUA1HPwMwo+2hZ17aeq4qX+Gy/qXWwc+W6qC6VT4kIgQvon8r6TFPCZ9oo0mNOGJ5FiSXPYq3Q2yVLWeyx0Wlz2NPGHsa4RzNruAg5+S5MmadPdlSJy/lJr2nWURv3AKvgG3kw1ON5RfNE4A4xR6nF1Ea8RgtTgIk3MtIECWJiQ
+X-Gm-Message-State: AOJu0YxSoguUXit123BKrePJLS2VpsVyNaSVZkH88YSw62+5VDrs8c4B
+	NO6W/EikBGQWT0biMY8L4s2ZH0TT3qqIsOhFcUmyqnSVhuLsN9Jj
+X-Google-Smtp-Source: AGHT+IF6mW6mi/T1LUxRvaBKxnf41VSHh5CktQtafSrWqGE0tuEakBbKqJRCognliCboXprZYrQimQ==
+X-Received: by 2002:a17:907:97d0:b0:a46:2c70:2226 with SMTP id js16-20020a17090797d000b00a462c702226mr1178381ejc.56.1710150196726;
+        Mon, 11 Mar 2024 02:43:16 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-009.fbsv.net. [2a03:2880:30ff:9::face:b00c])
+        by smtp.gmail.com with ESMTPSA id se13-20020a170906ce4d00b00a45a8c4edb4sm2676520ejb.48.2024.03.11.02.43.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 02:43:16 -0700 (PDT)
+Date: Mon, 11 Mar 2024 02:43:12 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Matthew Wood <thepacketgeek@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4] net: netconsole: Add continuation line
+ prefix to userdata messages
+Message-ID: <Ze7SMBzfaNP41xcO@gmail.com>
+References: <20240308002525.248672-1-thepacketgeek@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-next v2] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-CC: Arnd Bergmann <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Fangrui
- Song <maskray@google.com>, Russell King <linux@armlinux.org.uk>, Andrew Davis
-	<afd@ti.com>, Andrew Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov"
-	<kirill.shutemov@linux.intel.com>, Geert Uytterhoeven
-	<geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, Mike Rapoport
-	<rppt@kernel.org>, Rob Herring <robh@kernel.org>, Thomas Gleixner
-	<tglx@linutronix.de>, Linus Walleij <linus.walleij@linaro.org>,
-	<llvm@lists.linux.dev>
-References: <20240307151231.654025-1-liuyuntao12@huawei.com>
- <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com>
- <42892794-7668-4eb0-8d2f-c78ca0daf370@huawei.com>
- <2a90581c-f1df-4d6b-8f0b-8e7cbf150ed9@app.fastmail.com>
- <346e15e5-49e9-4a7f-b163-c3316225baab@huawei.com>
- <CAMuHMdXKk9S9voKVPvO+xvn1zFW3FnKyVHQGDkC7b9Ynkcnvmw@mail.gmail.com>
-From: "liuyuntao (F)" <liuyuntao12@huawei.com>
-In-Reply-To: <CAMuHMdXKk9S9voKVPvO+xvn1zFW3FnKyVHQGDkC7b9Ynkcnvmw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemd100004.china.huawei.com (7.185.36.20)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308002525.248672-1-thepacketgeek@gmail.com>
 
+On Thu, Mar 07, 2024 at 04:25:24PM -0800, Matthew Wood wrote:
+> Add a space (' ') prefix to every userdata line to match docs for
+> dev-kmsg. To account for this extra character in each userdata entry,
+> reduce userdata entry names (directory name) from 54 characters to 53.
+> 
+> According to the dev-kmsg docs, a space is used for subsequent lines to
+> mark them as continuation lines.
+> 
+> > A line starting with ' ', is a continuation line, adding
+> > key/value pairs to the log message, which provide the machine
+> > readable context of the message, for reliable processing in
+> > userspace.
+> 
+> Testing for this patch::
+> 
+>  cd /sys/kernel/config/netconsole && mkdir cmdline0
+>  cd cmdline0
+>  mkdir userdata/test && echo "hello" > userdata/test/value
+>  mkdir userdata/test2 && echo "hello2" > userdata/test2/value
+>  echo "message" > /dev/kmsg
+> 
+> Outputs::
+> 
+>  6.8.0-rc5-virtme,12,493,231373579,-;message
+>   test=hello
+>   test2=hello2
+> 
+> And I confirmed all testing works as expected from the original patchset
+> 
+> Fixes: df03f830d099 ("net: netconsole: cache userdata formatted string in netconsole_target")
+> Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
 
-
-On 2024/3/11 17:14, Geert Uytterhoeven wrote:
-> Hi Yuntao,
-> 
-> On Sat, Mar 9, 2024 at 2:24 PM liuyuntao (F) <liuyuntao12@huawei.com> wrote:
->> On 2024/3/9 16:20, Arnd Bergmann wrote:
->>> On Sat, Mar 9, 2024, at 07:14, liuyuntao (F) wrote:
->>>> On 2024/3/8 21:15, Arnd Bergmann wrote:
->>>>> On Thu, Mar 7, 2024, at 16:12, Yuntao Liu wrote:
->>>>
->>>> Thanks for the tests, CONFIG_LD_DEAD_CODE_DATA_ELIMINATION and
->>>> CONFIG_TRIM_UNUSED_KSYMS do indeed result in a significant improvement.
->>>> I found that arm32 still doesn't support CONFIG_LTO_CLANG. I've done
->>>> some work on it, but without success. I'd like to learn more about the
->>>> CONFIG_LTO_CLANG patch. Do you have any relevant links?
->>>
->>> I did not try to get it to boot and gave up when I did not see
->>> any size improvement. I think there were previous attempts to
->>> do it elsewhere, which I did not try to find.
->>>
->>
->> I tested this patch, the size improvement was only about one
->> ten-thousandth, and the compilation time had increased by about a quarter,
->> and the kernel did not boot.
->>
->> Strangely, LTO has actually increased the compilation time
->> significantly, which seems contrary to its purpose.
-> 
-> The purpose of LTO is to reduce code size. Doing so requires more
-> processing, hence the total build time increases.
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-
-Thanks, Geert, I got it.
+Reviewed-by: Breno Leitao <leitao@debian.rog>
 
