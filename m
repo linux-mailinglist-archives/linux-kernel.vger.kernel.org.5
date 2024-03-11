@@ -1,75 +1,73 @@
-Return-Path: <linux-kernel+bounces-98497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 193CB877AE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF64877AE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E4A61C20E00
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FDFD1C20FFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402691079A;
-	Mon, 11 Mar 2024 06:25:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D458F512;
+	Mon, 11 Mar 2024 06:26:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xcVJtJUJ"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K6lxpN75"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68131101C2
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886FFDDB2
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710138336; cv=none; b=ntml+8MvtxWRiS/FzRKYtYvev2Kv5dSSYoi63+OB2tIKPxEEn3x2UazZxEO80l2ExpHL3nKdaVuj/QDUV1l45lZRb49QJsOEXH1rm7zTSq8DT80D6yXR0I9FRvyyp/58EkWcJCml7fsYIz41uXz83LeZEr6QLG4tebKN7hWypO8=
+	t=1710138401; cv=none; b=d6W8+BsQeftdxvqWPJEueaIwjsL9CQQ3QMEY6tKNYdgyyH0/BpQFhreyJFt3C1OnQOgI1QIGKnp6uLlMxpUUgqTw8Cbhui9QMuCLL5utl9dTSy73x8gW1hqMisfsliHi59R6pdIFmj4jenoIBkTOKDuPDRnl1PjD6gd3ezwRcaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710138336; c=relaxed/simple;
-	bh=oORWwd9/pNfbg+SL2P5rWdApuXADnOiE87mL21mH1Pg=;
+	s=arc-20240116; t=1710138401; c=relaxed/simple;
+	bh=woBAP+L8tDsf5RhCXUB+Dtyyc0RdLUI1H/io8Jt8a4E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i7QYr/ttirg0fcsRxR+cHfe9aEa3vrSqaIN1pD1jw/PzFDx0DJer/eStUM+0xS2iivRLhZP9bv8CP852PA9zGOGZA7UW5cNZvU0y5qE52zvZToiE85gKpsz9/2HsGoUbCOOOuHBEyzQ0CmbB0koOLwNdFMU3ZNZqOIAxeOstQ64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xcVJtJUJ; arc=none smtp.client-ip=209.85.208.46
+	 In-Reply-To:Content-Type; b=nP5P/69LDuhkYKtS5j1yrEGkkuM/GfwuY1vGGAoT4t9NnccaSOXEgaGRHMeGLREw13HO6rqVGtQdNpkojRfjv8d4wT3o8xVfc8qbY9BQN7C6j2I/1z7nMJ0hWtV5o/WCpPd4Q5xy2DRmd1/LvjLu6K5tXOdItLmLbpEupmv0Kp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K6lxpN75; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5683576ea18so2717121a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 23:25:34 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-564647bcdbfso2692656a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 23:26:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710138333; x=1710743133; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=h5TULcaa4ZXu8CTo6nXooIAnI54QJKcr4hbjkmuM1Mg=;
-        b=xcVJtJUJH8LWXCMl1PCg0BZTbbC24cyaJRQjzWEilTxxZ7abq0CQfgKk/LtSLVs6Bg
-         APiLGXlbSa8Mt5ZYVwMvIvLfBYw5WdQMpneFQgWFhO8F9PHebktg1maatCL5T/EtvLkl
-         g+DZZ2m4khkDINNMuKFLdPs9ZUqliQKNhcIMKGlqJ31MBL/9PH/aEzL7pMe0XM+RVWF/
-         6AuIuUd4QsIZxL1mww5LkWcrmoqX04oH/oipqDLRgoszgTMYDTvoPUdnf4kWZnFrrMuX
-         TiWJdZVLC9rFShH15DNDmONLgfgXO7w7AOuRL9RlOfl+iBt/HLjX6G/P8As0giNGalrx
-         Z6WQ==
+        d=linaro.org; s=google; t=1710138398; x=1710743198; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=95DFh9Zq64+Ua7LkMrb/Dol1luz0PS9eyPGG9NqGYkY=;
+        b=K6lxpN75P/9y8pnGxRMw0EwoZY12oeocIvFlZpK9mKmHlBIiiBbGaY7+cFmS94u1hr
+         ijyH4cD4bTlInZ2DyjyjdosYjrwhlZDpNEadqkqsN0MnxoPJkvIct11616RjByElvhjN
+         /HmSqc29doarWJAl8LC5zZqJT63+cOxkM+z+hs5moqa2E/WvH9r4fXHkVHV9TzZ+zHUT
+         wchLruHDa1zIxtriGIM8O/IPQefWK048LF1CKYCKnwhAqpOXCbeHCwx9dZ0uZk9FMLQH
+         6LPTGVm0ifaJJz5xB/1gF3eg7DaoM1B0NJwfHM2cLwhx9jtfVUvgK1Zw5Mc+ofEo7ULH
+         1BxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710138333; x=1710743133;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h5TULcaa4ZXu8CTo6nXooIAnI54QJKcr4hbjkmuM1Mg=;
-        b=tg0pLpX1tl/kYAZZGzTHu8FnY7Mx0t9mq5FoU/kCVVFi8CPKu2BLG4Uku8oA1Z3FR5
-         xyJ4DIGrriNPI5SS0ueCXSS/sy+4SshmD6lhWfx4lqm/nB5wLgyGBlCscGgjL3jIHq6a
-         2/jjSxnEufucHbxftSSO2ncECMrwG/uYj59FDRudMXcaP74ITKOpL/rtfC0j++v0d2wT
-         LGAwTJFOXgrJZYrKgRPFiSEk1HfczGgPXAqDfCVZjVO9hIGo4EEz7IjnISgQfdmJx2+U
-         PAm26WpMdPetz77e4fssy8fye+QcaGren2k2+Z5MV/S30NQovyzt460J+Jd40sMEyfbb
-         sUPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXpf+I1Vi6OCqyEcF4QPj84cojc9AYui9PIDLnHgm1Ct/1uqvna7MOoXrC61eiuh9yf5Qw6WgQ2aiKw8NUNE//MJ1giIvfvCsfnxiEa
-X-Gm-Message-State: AOJu0YxWFQzTrYIzVbpzl2qrF0OC4HviL3ViVyij/vjg5EmM40E9dhxh
-	KV4yC0RPkK+KjAWcQELFxgDW+JxRTUPiFngCKOV0iWmM5cHzmE1uCIZyr+yXQCC6AFcWhR9A2C3
-	l
-X-Google-Smtp-Source: AGHT+IFcXwS90/bSIdV+m+i42FNV6Z75I0TuwTzCdK94SmkEuirQ1/P7A5jMYsjFubIV9KdTupRzPQ==
-X-Received: by 2002:a50:f689:0:b0:567:6a66:d103 with SMTP id d9-20020a50f689000000b005676a66d103mr3946948edn.0.1710138332752;
-        Sun, 10 Mar 2024 23:25:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710138398; x=1710743198;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=95DFh9Zq64+Ua7LkMrb/Dol1luz0PS9eyPGG9NqGYkY=;
+        b=QFnGj3f5KVCclJh6J9pvtvPQhfsle+Y2VWFTPTr+gviYkYgl/qup1iARvDIv2CGTNN
+         h/jB65GhAvzJkt3UajPAkqCGJ4YdxNWFZfbaMkxIk07TKMZkmf0rnDFfwTyQ7IC89IZT
+         b51AIwjJ4G+eDNnUMXlqmNhLGt+DLHBhUoKsHe2OZghBmHXMihiHJMWg5l7tbOaHkUz3
+         xyUvg6jCID15QQwVX9T8RjmjtzuWuxrdP43SuATH7RbtBOfrCDOMcqyTVfAXgrcg92bU
+         oS/thjWNN+hOVqSYSPm+ankCbYLxN5kmOvaeVA5Dtfzy56jPgsklvgvV2PRw64uhl3Gy
+         Hvqw==
+X-Forwarded-Encrypted: i=1; AJvYcCWXpy+jCJpCFbNoohrht47jaKrC+f2HooFhZHiitBmwWbiU2Sb14v3KvpinVw5yrUjvO58+3wN+JOwPyVYGO5UQrqEkdU6vBhb+o+oz
+X-Gm-Message-State: AOJu0YwXZjcw518C6T2wN3uo2SGCRp0fKBN3JrUwNTXc9rM5NDm7JVAI
+	z6DG/tMBVfjAD+XqigY36DJ8559wdtT7w4JsS5SMiBs4EgtTM5p360E9AuM3cYU=
+X-Google-Smtp-Source: AGHT+IFHE7hHrmss0voO5F8H+/3BdgAADjaBipQomev5Vfy5G0cYVDglUrsj40uawAIgUNKzKo7HaQ==
+X-Received: by 2002:a50:9319:0:b0:568:1bd8:a5f9 with SMTP id m25-20020a509319000000b005681bd8a5f9mr3887272eda.33.1710138397989;
+        Sun, 10 Mar 2024 23:26:37 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id e12-20020a056402104c00b005686037bc12sm510919edu.29.2024.03.10.23.25.31
+        by smtp.gmail.com with ESMTPSA id e12-20020a056402104c00b005686037bc12sm510919edu.29.2024.03.10.23.26.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Mar 2024 23:25:32 -0700 (PDT)
-Message-ID: <6785b149-a2bc-44ea-aec3-8477222d338b@linaro.org>
-Date: Mon, 11 Mar 2024 07:25:30 +0100
+        Sun, 10 Mar 2024 23:26:37 -0700 (PDT)
+Message-ID: <6597b720-4b8f-4034-8f0b-b67949ef5feb@linaro.org>
+Date: Mon, 11 Mar 2024 07:26:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,12 +75,24 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] i2c: muxes: pca954x: Allow sharing reset GPIO
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>, peda@axentia.se,
- p.zabel@pengutronix.de
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240311041412.3858710-1-chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v5] dt-bindings: imx-pata: Convert to dtschema
 Content-Language: en-US
+To: Animesh Agarwal <animeshagarwal28@gmail.com>
+Cc: Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240310171958.96388-1-animeshagarwal28@gmail.com>
+ <2b939f61-c8b9-4b41-a319-3bf7be42ba3e@linaro.org>
+ <CAE3Oz82coV5RgcRE=Lj5mm2kjdzh3iFJGpMBBw_OfZppfWAHfg@mail.gmail.com>
+ <d609c172-2bb3-479a-b5f2-841aed455bff@linaro.org>
+ <CAE3Oz80zrnLvpo=YdBA-3PAtJFP8KK4LGHpEpQaMCacFFG13Qg@mail.gmail.com>
+ <ba834984-d0d7-4b46-81f6-5a2df8e74944@linaro.org>
+ <CAE3Oz8353cPXgZa3BhtjyfdFfu+XPUhHXf=qWxWQ7sbvVK7gcg@mail.gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -128,44 +138,35 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240311041412.3858710-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <CAE3Oz8353cPXgZa3BhtjyfdFfu+XPUhHXf=qWxWQ7sbvVK7gcg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 11/03/2024 05:14, Chris Packham wrote:
-> Some hardware designs with multiple PCA954x devices use a reset GPIO
-> connected to all the muxes. Support this configuration by making use of
-> the reset controller framework which can deal with the shared reset
-> GPIOs. Fall back to the old GPIO descriptor method if the reset
-> controller framework is not enabled.
+On 11/03/2024 04:18, Animesh Agarwal wrote:
+> On Mon, Mar 11, 2024 at 1:55 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>> What changelog? Read carefully what I asked you few versions ago:
+> Below the sign off I have added changes done in all the versions
+> before and explained why imx51-pata was added.
 > 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
+>> "Please explain the differences done during conversion in the commit
+>> msg. There was no imx51 compatible in the binding before."
 > 
-> Notes:
->     This patch goes on top of Krzysztof's series adding the GPIO based reset
->     controller[1] which will be in linux-6.9. With this I'm able to
->     correctly describe my hardware platform in the DTS and have the resets
->     appropriately controlled.
->     
->     [1] - https://lore.kernel.org/all/20240129115216.96479-1-krzysztof.kozlowski@linaro.org/
-> 
+> ""
+> Changes in v4:
+> - added fsl,imx31-pata in compatible property as enum
+> - imx31-pata was not listed in compatible in original txt binding
+> - adding imx31-pata in enum ensures the node compiles to imx31.dtsi
+> Changes in v3:
+> - added fsl,imx51-pata in compatible property as enum
+> - imx51-pata was not listed in compatible in original txt binding
+> - adding imx51-pata in enum ensures the node compiles to imx51.dtsi
+> - fsl,imx27-pata is added as a const to ensure it is present always
+> ""
+> Aren't these lines enough for the said explanation?
 
-Where is the changelog? It was v3 or v4 already? Where are the tags?
-
-It looks like you received a tag and forgot to add it.
-
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-If a tag was not added on purpose, please state why and what changed.
+This is changelog, not commit msg. I did not ask to explain differences
+from pure conversion in changelog.
 
 Best regards,
 Krzysztof
