@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-99258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42A1D8785AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:47:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3029A8785AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADEFF1F215E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:47:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9CFF2839F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98454AEC5;
-	Mon, 11 Mar 2024 16:46:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C004E1CB;
+	Mon, 11 Mar 2024 16:46:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="NdFUqRgw"
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="mQTT3A9v"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883D547F6B
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77229482C8
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710175608; cv=none; b=fQmB/FI16LpToZ7muUDS6eEt3uVYpEh6XNhedV3YaP48NkGBXdENXYgy149NQrD0n9Fk7DUx1Wmpur3R4sQWE3Io+aIppEot9kQDgD6KEHu3I357qiFHliQ61gvfSdBceTf/mVOJwX1ib3XSUy7bK0zCNwGppT1etlRtyfUNmEg=
+	t=1710175609; cv=none; b=jxSn2S4elh1VQO+uCOB8vgPGvj4lP8R/j7qF0fcNwZGneOjSGOjvWyFMC6XlzM1IdG+ynqRBdJSMrtnajBdrkQTk/1RFH2Cb1nzodapsHFrbMMJzTSTmi6G9q8yi0cSPSl/5hzhOKUIcAUTW01Q0GU2pwS3F91gwVhWH5EyHKT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710175608; c=relaxed/simple;
-	bh=rNSw66o+XpxAmDCLp/4Y0L0j3NJA6sLvc+VkxIH0y8g=;
+	s=arc-20240116; t=1710175609; c=relaxed/simple;
+	bh=tEvVrQdda52ZeoTZCZGpLyifsvZ4B54Au/IQTs3CyBY=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=egiqYDUeVTxKgLghmoEQRABkGhepRAbEZsJJcw0hhJVQHjWbdb7mQMkWpwGnve7UJd9OOPMT+u1++Ik569X1cg2cWUF8CGRDHqF6r4+Me+scsTD+zKBxBTTQuMulUVkzVFafOT4zGhHdtIMBiRKkPtRbdlcP0rLxmOekxea6z60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=NdFUqRgw; arc=none smtp.client-ip=209.85.160.49
+	 MIME-Version; b=ns6TQ6VKLgGQMZXreh3KxYS6XESyfsN7IQ2Jkz6cEZGNqdmKkwsCoo3bPNIsNA3cce4cWjuXeyGWjPp9kI7+FIgomeTIF9bCAtzEvcb0C+d8DPrT+EC2AZpIgx9PvKEEsADmVF8UmTo6xQ9XtCpk1dv2dRLNybeSPIHeZNIa9dQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=mQTT3A9v; arc=none smtp.client-ip=209.85.222.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-22181888b88so3895624fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:46:46 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7882e94d408so382722985a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:46:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710175605; x=1710780405; darn=vger.kernel.org;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710175606; x=1710780406; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uRKHBCRgEDsAkh8Uu5g0LvaNrGLtTcS4Fv1I3hMOqvE=;
-        b=NdFUqRgwZzPkrAPEBG6Vly8/GajM6oy9t9Cc7v6qZZiUENLwc8xDKDA40eIsvDxLke
-         KHWZ51VzZZWxK24XkQCe5NhpFSD+7fTad2xoa/+kGX6FyYn+HE1tuSL19AuX0tZ+DB1x
-         wyjb9eaia04Eed/6QvxNFJvZ6K4JueagJ2LXxj0PQ/gspKhR9W+Cs6WvU8bnZXyoCu93
-         Dwq5RtFypq0rg02fJ60zJACeYkDT2Xi9XjQ/xkE91vQ/dzxCmC+gIR+1ZTY3/8fWbijw
-         OtEASAdUhLVKvMGzcYX6uBadWCGgmHmADgiRQOMQvVFfDiT0Z4LEnfKE7EkKvWE8xvoQ
-         YqOg==
+        bh=HoufURnUHz+cr/acEvSc8ejQyNfvHWk1Ds3/A5XAtBc=;
+        b=mQTT3A9vqwHQNYTdHWJygzw8tcaJfBI7IIbzYESS5ds1wk3CkSvRc3G8gYZ9Yx4xd1
+         WuLOFK3uodx7DUGJHqwoWZUn1yu5VNDonE6bIJWoqLcmoLHzFXYZp/86Z7kgxPetBGcV
+         XieCbZKVad8qPUsUym6gVTPlcaebw15P/vhb63W66HG6KTxZPcKiCGsSAZ6hDQSByy/D
+         Dlb/GG1dLT3OZZEM6p5ox/BMfIPyRU51Nd/FEa0uDZIEEv9Af1xPQzjuPtmlwhfbJRqV
+         iOF9/0/J/8AmFNXlXSnmVl58R1RUOwRpta/wAkxbP/VbLlVlFn2KBmNuu1VWFNauAWD3
+         gfew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710175605; x=1710780405;
+        d=1e100.net; s=20230601; t=1710175606; x=1710780406;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uRKHBCRgEDsAkh8Uu5g0LvaNrGLtTcS4Fv1I3hMOqvE=;
-        b=pC9yqcGs/Rz6XEzSg8iARr1P9IrFZnZP2WzsPaBXZo2vp9FreyZuk7QhzaNj/aS243
-         cJ+GR67uAvZFe4x9s2T9qqRL378fw4qz4Nq8qITLx0TQd+ImWU3FSHOz9mwWG6aKWXi9
-         +q6hy5D2nSZoAu5/Ep6Jq1brqbXg6reO4Q6cDevPN9Pm5AqNyCUDn/hGbWklzNVBsh9f
-         OvfMheXhVR/Ac4HTh904YAoULRMR31BdBavrvY2tfAITDcLMTli1eczMbGylyKhr4co5
-         XXj+xz5C329OLthP+gOjs+RRREChJ6J+waOUiywn3UOnOZFss4RH48BjVaAqF0jmWRS1
-         iGrg==
-X-Gm-Message-State: AOJu0Yzc9D20zGJrM/9rM6+lBSClgOxB//2frFdRsu9SnbMBp4catV9u
-	xVdXtRp3u/7mHbUgU6ihs4GWQOeFAwVPrEUWSIalCqHuKqkhNg+XQ5Ge9ScLzvo9AhDfR4prn86
-	luRA=
-X-Google-Smtp-Source: AGHT+IGB8z9Eh2EiOSMQqnmRI9zZB59VQQwcHf8aThINC/aQYO0+ESVp0WJ0ORdeFBqZ+2a6LmE9PQ==
-X-Received: by 2002:a05:6870:4721:b0:21f:4fe:9ee8 with SMTP id b33-20020a056870472100b0021f04fe9ee8mr7898763oaq.4.1710175605333;
-        Mon, 11 Mar 2024 09:46:45 -0700 (PDT)
+        bh=HoufURnUHz+cr/acEvSc8ejQyNfvHWk1Ds3/A5XAtBc=;
+        b=TisOJKYWBzP47zQWt6T5wEXj2uTE3sO+yudfuv4yR88anHIySym1jqr8aNu4EuU74H
+         LouTTF3dMta3/oN0Tt2eFovZZ0BjdByjy/yR73AQAEiXbf68EBZGPYJD0LJQq8lR+cKg
+         HzINZ8HRkCwLTs/pH2f/bdY9RsVL4Xl8sXM29K2N5HIQtLQoZLNcGWYAvt8LOtM/Rmtu
+         zi4lPd7WMuNEXjUD9n5m7rw2qi1+/yrxyAdCQ2itNCsovqWj4yA5sBEncIyq/Ej5oh7b
+         i7XUWEtzhqtR8h4udeQKc9046cbAT6JovM7xAtlX6bR0pO8Tvx4KRHUQMpAsMmEZJVUI
+         gElA==
+X-Gm-Message-State: AOJu0Ywn9U/kqzVZV0qVOOh/cmbS9oNUG8uc34G4F6XOUQSUBnpuD4PF
+	Z6UQkupAlM7aboc+Gl4WtBLp+atvczlZbNMMOwyfRE40bXFkBSbkLUCoJIr0C0tXHh35+N1CzFL
+	2gag=
+X-Google-Smtp-Source: AGHT+IGrhJ6GByyle2ZXj6YELCySZAA2hRd+lCiymK5OoO5mkfddy6eeNIr6RoEdx/yXV9YfoWqMCg==
+X-Received: by 2002:a05:620a:13cd:b0:788:3c2b:42e2 with SMTP id g13-20020a05620a13cd00b007883c2b42e2mr8567991qkl.10.1710175606139;
+        Mon, 11 Mar 2024 09:46:46 -0700 (PDT)
 Received: from soleen.c.googlers.com.com (150.254.86.34.bc.googleusercontent.com. [34.86.254.150])
-        by smtp.gmail.com with ESMTPSA id d27-20020a05620a137b00b00788228fbe05sm2851589qkl.17.2024.03.11.09.46.44
+        by smtp.gmail.com with ESMTPSA id d27-20020a05620a137b00b00788228fbe05sm2851589qkl.17.2024.03.11.09.46.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 11 Mar 2024 09:46:45 -0700 (PDT)
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
@@ -109,9 +109,9 @@ To: linux-kernel@vger.kernel.org,
 	vincent.guittot@linaro.org,
 	vschneid@redhat.com,
 	pasha.tatashin@soleen.com
-Subject: [RFC 02/14] fork: Clean-up ifdef logic around stack allocation
-Date: Mon, 11 Mar 2024 16:46:26 +0000
-Message-ID: <20240311164638.2015063-3-pasha.tatashin@soleen.com>
+Subject: [RFC 03/14] fork: Clean-up naming of vm_strack/vm_struct variables in vmap stacks code
+Date: Mon, 11 Mar 2024 16:46:27 +0000
+Message-ID: <20240311164638.2015063-4-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 In-Reply-To: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
 References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
@@ -123,71 +123,130 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There is unneeded OR in the ifdef functions that are used to allocate
-and free kernel stacks based on direct map or vmap. Adding dynamic stack
-support would complicate this logic even further.
+There are two data types: "struct vm_struct" and "struct vm_stack" that
+have the same local variable names: vm_stack, or vm, or s, which makes
+code confusing to read.
 
-Therefore, clean up by Changing the order so OR is no longer needed.
+Change the code so the naming is consisent:
+
+struct vm_struct is always called vm_area
+struct vm_stack is always called vm_stack
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- kernel/fork.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ kernel/fork.c | 38 ++++++++++++++++++--------------------
+ 1 file changed, 18 insertions(+), 20 deletions(-)
 
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 0d944e92a43f..32600bf2422a 100644
+index 32600bf2422a..60e812825a7a 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -179,13 +179,7 @@ static inline void free_task_struct(struct task_struct *tsk)
- 	kmem_cache_free(task_struct_cachep, tsk);
- }
+@@ -192,12 +192,12 @@ struct vm_stack {
+ 	struct vm_struct *stack_vm_area;
+ };
  
--/*
-- * Allocate pages if THREAD_SIZE is >= PAGE_SIZE, otherwise use a
-- * kmemcache based allocator.
-- */
--# if THREAD_SIZE >= PAGE_SIZE || defined(CONFIG_VMAP_STACK)
--
--#  ifdef CONFIG_VMAP_STACK
-+#ifdef CONFIG_VMAP_STACK
- /*
-  * vmalloc() is a bit slow, and calling vfree() enough times will force a TLB
-  * flush.  Try to minimize the number of calls by caching stacks.
-@@ -337,7 +331,13 @@ static void free_thread_stack(struct task_struct *tsk)
- 	tsk->stack_vm_area = NULL;
- }
+-static bool try_release_thread_stack_to_cache(struct vm_struct *vm)
++static bool try_release_thread_stack_to_cache(struct vm_struct *vm_area)
+ {
+ 	unsigned int i;
  
--#  else /* !CONFIG_VMAP_STACK */
-+#else /* !CONFIG_VMAP_STACK */
-+
-+/*
-+ * Allocate pages if THREAD_SIZE is >= PAGE_SIZE, otherwise use a
-+ * kmemcache based allocator.
-+ */
-+#if THREAD_SIZE >= PAGE_SIZE
- 
+ 	for (i = 0; i < NR_CACHED_STACKS; i++) {
+-		if (this_cpu_cmpxchg(cached_stacks[i], NULL, vm) != NULL)
++		if (this_cpu_cmpxchg(cached_stacks[i], NULL, vm_area) != NULL)
+ 			continue;
+ 		return true;
+ 	}
+@@ -207,11 +207,12 @@ static bool try_release_thread_stack_to_cache(struct vm_struct *vm)
  static void thread_stack_free_rcu(struct rcu_head *rh)
  {
-@@ -369,8 +369,7 @@ static void free_thread_stack(struct task_struct *tsk)
- 	tsk->stack = NULL;
+ 	struct vm_stack *vm_stack = container_of(rh, struct vm_stack, rcu);
++	struct vm_struct *vm_area = vm_stack->stack_vm_area;
+ 
+ 	if (try_release_thread_stack_to_cache(vm_stack->stack_vm_area))
+ 		return;
+ 
+-	vfree(vm_stack);
++	vfree(vm_area->addr);
  }
  
--#  endif /* CONFIG_VMAP_STACK */
--# else /* !(THREAD_SIZE >= PAGE_SIZE || defined(CONFIG_VMAP_STACK)) */
-+#else /* !(THREAD_SIZE >= PAGE_SIZE) */
+ static void thread_stack_delayed_free(struct task_struct *tsk)
+@@ -228,12 +229,12 @@ static int free_vm_stack_cache(unsigned int cpu)
+ 	int i;
  
- static struct kmem_cache *thread_stack_cache;
+ 	for (i = 0; i < NR_CACHED_STACKS; i++) {
+-		struct vm_struct *vm_stack = cached_vm_stacks[i];
++		struct vm_struct *vm_area = cached_vm_stacks[i];
  
-@@ -409,7 +408,8 @@ void thread_stack_cache_init(void)
- 	BUG_ON(thread_stack_cache == NULL);
- }
+-		if (!vm_stack)
++		if (!vm_area)
+ 			continue;
  
--# endif /* THREAD_SIZE >= PAGE_SIZE || defined(CONFIG_VMAP_STACK) */
-+#endif /* THREAD_SIZE >= PAGE_SIZE */
-+#endif /* CONFIG_VMAP_STACK */
+-		vfree(vm_stack->addr);
++		vfree(vm_area->addr);
+ 		cached_vm_stacks[i] = NULL;
+ 	}
  
- /* SLAB cache for signal_struct structures (tsk->signal) */
- static struct kmem_cache *signal_cachep;
+@@ -263,32 +264,29 @@ static int memcg_charge_kernel_stack(struct vm_struct *vm)
+ 
+ static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ {
+-	struct vm_struct *vm;
++	struct vm_struct *vm_area;
+ 	void *stack;
+ 	int i;
+ 
+ 	for (i = 0; i < NR_CACHED_STACKS; i++) {
+-		struct vm_struct *s;
+-
+-		s = this_cpu_xchg(cached_stacks[i], NULL);
+-
+-		if (!s)
++		vm_area = this_cpu_xchg(cached_stacks[i], NULL);
++		if (!vm_area)
+ 			continue;
+ 
+ 		/* Reset stack metadata. */
+-		kasan_unpoison_range(s->addr, THREAD_SIZE);
++		kasan_unpoison_range(vm_area->addr, THREAD_SIZE);
+ 
+-		stack = kasan_reset_tag(s->addr);
++		stack = kasan_reset_tag(vm_area->addr);
+ 
+ 		/* Clear stale pointers from reused stack. */
+ 		memset(stack, 0, THREAD_SIZE);
+ 
+-		if (memcg_charge_kernel_stack(s)) {
+-			vfree(s->addr);
++		if (memcg_charge_kernel_stack(vm_area)) {
++			vfree(vm_area->addr);
+ 			return -ENOMEM;
+ 		}
+ 
+-		tsk->stack_vm_area = s;
++		tsk->stack_vm_area = vm_area;
+ 		tsk->stack = stack;
+ 		return 0;
+ 	}
+@@ -306,8 +304,8 @@ static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ 	if (!stack)
+ 		return -ENOMEM;
+ 
+-	vm = find_vm_area(stack);
+-	if (memcg_charge_kernel_stack(vm)) {
++	vm_area = find_vm_area(stack);
++	if (memcg_charge_kernel_stack(vm_area)) {
+ 		vfree(stack);
+ 		return -ENOMEM;
+ 	}
+@@ -316,7 +314,7 @@ static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ 	 * free_thread_stack() can be called in interrupt context,
+ 	 * so cache the vm_struct.
+ 	 */
+-	tsk->stack_vm_area = vm;
++	tsk->stack_vm_area = vm_area;
+ 	stack = kasan_reset_tag(stack);
+ 	tsk->stack = stack;
+ 	return 0;
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
