@@ -1,71 +1,72 @@
-Return-Path: <linux-kernel+bounces-98873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4CC878086
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:25:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C707878087
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:25:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE2EE1C2093A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:25:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D533A1F21196
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E1B43AAC;
-	Mon, 11 Mar 2024 13:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A09A44370;
+	Mon, 11 Mar 2024 13:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="h1H8y1/g"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="VXmHK5yF"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F17453FE4F
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B80F41211
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710163407; cv=none; b=pLqaWkeMho53HBmIVBVt1FSv/01fly7T/lr5z6+jn5+eV3d0g0F0T14olJy+sKdXDS1Gsx0u1f95uE8k6HHCppBpFBmPriqYDySX5bBxs3PZhbvDVlpmk4ysOva+4AzErVcAQKTnNF3X7shABiCVPxDF2q3EKt6yYcb82kFBgvU=
+	t=1710163408; cv=none; b=rA7+bgYLjc4UMplrnZf5urD5mWVXEIiS9mDJOYKka2ehbw1WXZQSbIw1NVCk+rOPcautp+nm5ZbMQYbjakphifWZbSxphtjHlZMVMwHzP4cJaBJAmOxCULXru4PhlMATeb5zrPMTiamtJKHRG+Tr813CVQvOPTq9SN3/vTxs/Co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710163407; c=relaxed/simple;
-	bh=veo+1KYcd84Vkkyq1AUfsbLRFWwaOKVUBG3RxoLqPoA=;
+	s=arc-20240116; t=1710163408; c=relaxed/simple;
+	bh=mM1lJpUfEeOdqAGIdoQeUdDslMwrM56HU1w2dUupTZ0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iwmZtXCBl6mqrAa+1Hgp2lEVK1pu4hOlRAqI0my+KueDJkbfeUO80VxsQC15pANbMtS3xIxE4XnL0IFNOU1gILUYJVft1OOeoDY71j83pRwQ7qb15R5LwF11aLtuE3VNGW3wu8hLI0uA6o5GBU3qGKdthJp/687h26FtFXhSv2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=h1H8y1/g; arc=none smtp.client-ip=209.85.208.52
+	 MIME-Version; b=OltP4n21+xyFtYxoijPvWy4bChcZpZeKc/tWLZ55XwEc7/Zf48UDC0Utus0mim3M90gaouipWTjyN86jyfR6osJbwk2wwAUccmrc8dHptDYdqxlOSVd8oN5tEvybX0cgoC74uTpSqAKwfPeeqbFIS0bODUTooiBPUv9OSEcTHQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=VXmHK5yF; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5685d46b199so1357720a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:23:25 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a462b068416so107168466b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1710163404; x=1710768204; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1710163405; x=1710768205; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1mEOen0PdEKYkfvmGwbZYSoDNtgExorL8k9mwAI4fX4=;
-        b=h1H8y1/gvyJLH4F2wjwY/LOGKnlHq2UguVCRjz4InJWpWTxbP2/ggREy64hvwWe6ta
-         yZ6HLkSilZh5emG6jNhQk0E9ez+sP5r4dQndZ68Suj4MZ6IwVLyzmSJcTSzGNj461k/1
-         fjGKcIq62lz/f8sYJ1SzeWw6U5B+pRsjISgRa0DpSw6couPBzpu58EZqYSK/GbQHMIdu
-         oS4KkjxneV5a740LezkS3lzkNUEH+WIpUYmKqFGSyKRTDHI+CLP6gHENZpolOXqNs+LG
-         +au3rVbsfWTA6ol8Xjy30Cq6faEGApsRRReRjwR0rb6KXq1OhluFKgoCWM+hMy/i2glh
-         009w==
+        bh=SEARZa5Wy43/uJEWuUJJQI9Y4wLhs8OmNqyFr5H4dkQ=;
+        b=VXmHK5yFYrs1Ms8T+4ZCDdOnYx6tsnMX0O9x+oRpjevCoa7FnhG6LGNHVObD9fE5B9
+         FFYV+NpsYEl4OrweQ/ZxU886zHVQRsoz1avLndsJ53ng/AHTMOMstohWuN0Stx7UyYLN
+         y1y1+3XfRls9xcMk/4+3ZwUWlGx88yNgddT6310Ev/JUE5YoHtmmYMSdoQi5R0zS5IXo
+         0NRJixtSSGBz0I0MqQKYu37KJO7CGRC4+iXhOVKFaviN4anqzss48/SP3+aAZytoNvMN
+         CVWBcgv0Gauu9WneUjw6wEYq1fO8YZT3dzLY/NCznoDwUS2MzFFET1OfXZb3Fr5r/+HO
+         V1gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710163404; x=1710768204;
+        d=1e100.net; s=20230601; t=1710163405; x=1710768205;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1mEOen0PdEKYkfvmGwbZYSoDNtgExorL8k9mwAI4fX4=;
-        b=q4ERoJ9cRc4cgxMWL1FXYWNHuTYFph3MWjHn6hnokpxuJeXJEq5FhQKatmtwd3vy6j
-         WbmKeznlBCJ5u93Dr4EQURCTUwx3Jz/0684RmyWmMcjwLtcRlWaIfo169QKL7yeSKK83
-         l6iVw8dTlXVp/sBgXntavQyMrjdPnn/AkHn4gjwGlK/v7rII26JqvZiJe+nTxFRRjsbs
-         AU81diAsgknO9Hm/0qo7hlxlZs/HtJMD1dJvevPvTpuHSyz1lTTgP3R7x+QrCMMI998/
-         0XbjgjIoCUn5FQ0FtmRfIbz9HXZUG0cMZpuA0VLwfDqQq3zwBi3hCUXhWhFCRxZuSYD2
-         TC6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWwyx649RwkOoZr4Xkl5NfYoKMw3bsDl7GdchHJPqeF48nQFE4osU841bq5yTNzss7AW63e7G+QMGJr0sEsM37YYNtm+a8mFX7QLB5X
-X-Gm-Message-State: AOJu0YxwzxOK40DwumyQFYnYovHa15TPvTcqvmfpkQpMb0p3lvhSEli7
-	jm/0x0SmV0LGNkfW1piQCU0E4vP6yn8T1uXtJGqx1liSAfn3I93fGYukeCnYEOc=
-X-Google-Smtp-Source: AGHT+IHy1pfzsVAAO8uOlh4i/oemtUAuHPNn6q344i9I8thnD3AGZ55KvJvrZ9C5m4VtldgJ3qaT4w==
-X-Received: by 2002:a17:906:e219:b0:a45:f74d:343a with SMTP id gf25-20020a170906e21900b00a45f74d343amr301393ejb.22.1710163404544;
-        Mon, 11 Mar 2024 06:23:24 -0700 (PDT)
+        bh=SEARZa5Wy43/uJEWuUJJQI9Y4wLhs8OmNqyFr5H4dkQ=;
+        b=jJ2kQUX9rB16ThmKeqbbMT59UBxEL4GgFrpbJc5uJaDGIxBHYsfu1cvjNAaExkYmOL
+         uayz4gmHlfJfIiLGqcfx2migAHITwpM4olMFfenwX76ROGW1DUzn66eCxeeBllSTNw0p
+         diIdnBP/Jn3nXmWLw2bDXDf5FsuOR8If/mdhKqdDmMGGSayK5t7ZYUv64s/bS0YVyRc0
+         3CsGYX+vWU75+9m6MElhr+kPQGi9pkOPKyWf9/k3P/V6r+SdnLrpUSoQlxQ+qj83KRTV
+         VQOwxrb6kKdbTstegkg/0ZT2TUyWr+1WSKsA5LumOEDuLfEhkX/L9ftGsw0yEQzlJMnw
+         4iYg==
+X-Forwarded-Encrypted: i=1; AJvYcCWVqtnZyeRFHgvSNm0P4ap2hB2DcNJX+MHHEpD8OiIIpE4ocOBPGQc/blNglSBQqVIQNCiBNkdED3s8ddagsla34uMWXDbIJwvDSoFR
+X-Gm-Message-State: AOJu0YxnI8xJFZ1igwVUo7RIsC+de3lIr/AASr5LZBOwmfkypLBbcdrG
+	x9i5u+IzFw7BmvurStOvdQIvzyMvShx+049PMEOVt4HKkuaO8Fgyg54Q0pJbVBRfwaqN7zWokC/
+	3
+X-Google-Smtp-Source: AGHT+IFL5EqhKwS6+2fO3vS7G0SSPiXV3Vvv51HVPrGWf8pMTBxVVxVrAQAUuE3HHK6wRH9qYUpBqA==
+X-Received: by 2002:a17:907:d410:b0:a46:2b92:8124 with SMTP id vi16-20020a170907d41000b00a462b928124mr1444316ejc.60.1710163405151;
+        Mon, 11 Mar 2024 06:23:25 -0700 (PDT)
 Received: from raven.blarg.de (p200300dc6f010900023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f01:900:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id i26-20020a170906251a00b00a44cb0bf11bsm2861075ejb.79.2024.03.11.06.23.23
+        by smtp.gmail.com with ESMTPSA id i26-20020a170906251a00b00a44cb0bf11bsm2861075ejb.79.2024.03.11.06.23.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 06:23:23 -0700 (PDT)
+        Mon, 11 Mar 2024 06:23:24 -0700 (PDT)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: richard.henderson@linaro.org,
 	ink@jurassic.park.msu.ru,
@@ -73,9 +74,9 @@ To: richard.henderson@linaro.org,
 	linux-alpha@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH 09/11] arch/alpha/fpreg: add missing includes to fix -Wmissing-prototypes
-Date: Mon, 11 Mar 2024 14:23:04 +0100
-Message-Id: <20240311132306.3420135-9-max.kellermann@ionos.com>
+Subject: [PATCH 10/11] arch/alpha/smc37c669.: make SMC37c669_dump_registers() static
+Date: Mon, 11 Mar 2024 14:23:05 +0100
+Message-Id: <20240311132306.3420135-10-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240311132306.3420135-1-max.kellermann@ionos.com>
 References: <20240311132306.3420135-1-max.kellermann@ionos.com>
@@ -87,35 +88,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fixes:
+This function is only used within this source file.  Fixes
+`-Wmissing-prototypes`:
 
- arch/alpha/lib/fpreg.c:20:1: error: no previous prototype for 'alpha_read_fp_reg' [-Werror=missing-prototypes]
-    20 | alpha_read_fp_reg (unsigned long reg)
-       | ^~~~~~~~~~~~~~~~~
- [...]
+ arch/alpha/kernel/smc37c669.c:2434:1: error: no previous prototype for 'SMC37c669_dump_registers' [-Werror=missing-prototypes]
+  2434 | SMC37c669_dump_registers(void)
+       | ^~~~~~~~~~~~~~~~~~~~~~~~
+
+Also add `#if SMC_DEBUG` because it's only ever used under this
+condition.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- arch/alpha/lib/fpreg.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/alpha/kernel/smc37c669.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/alpha/lib/fpreg.c b/arch/alpha/lib/fpreg.c
-index 7c08b225261c..88e912689140 100644
---- a/arch/alpha/lib/fpreg.c
-+++ b/arch/alpha/lib/fpreg.c
-@@ -5,9 +5,12 @@
-  * (C) Copyright 1998 Linus Torvalds
-  */
+diff --git a/arch/alpha/kernel/smc37c669.c b/arch/alpha/kernel/smc37c669.c
+index bbbd34586de0..ab22ade3dea3 100644
+--- a/arch/alpha/kernel/smc37c669.c
++++ b/arch/alpha/kernel/smc37c669.c
+@@ -2430,13 +2430,16 @@ int __init smcc669_write( struct FILE *fp, int size, int number, unsigned char *
+ }
+ #endif
  
-+#include "../kernel/proto.h"
+-void __init
++#if SMC_DEBUG
++static void __init
+ SMC37c669_dump_registers(void)
+ {
+   int i;
+   for (i = 0; i <= 0x29; i++)
+     printk("-- CR%02x : %02x\n", i, SMC37c669_read_config(i));
+ }
++#endif // SMC_DEBUG
 +
- #include <linux/compiler.h>
- #include <linux/export.h>
- #include <linux/preempt.h>
-+#include <asm/fpu.h>
- #include <asm/thread_info.h>
- 
- #if defined(CONFIG_ALPHA_EV6) || defined(CONFIG_ALPHA_EV67)
+ /*+
+  * ============================================================================
+  * = SMC_init - SMC37c669 Super I/O controller initialization                 =
 -- 
 2.39.2
 
