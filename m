@@ -1,107 +1,182 @@
-Return-Path: <linux-kernel+bounces-99440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFAB0878861
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBED878866
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:56:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 103FFB236CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:55:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 432EAB2484D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526E359B59;
-	Mon, 11 Mar 2024 18:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80EBD54FA2;
+	Mon, 11 Mar 2024 18:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ntJveKEo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xey65aa7"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9562556751;
-	Mon, 11 Mar 2024 18:52:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2DA52F82
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710183150; cv=none; b=QX6AbxZIVBZ27vu9A8iXttmBcTcJRiWjOi5tI/B5yQvQWRzNrqvyC3ohaleaZ37kOktqxjcJI+9kF57lstbmigc7HbgLxHSGiIuINwxIpPfL2ptmIVqsEL90dknhAf4E24oG/KMZ7ZWim5OBwjgXGcwOv4dverrlvcjnLokHHu8=
+	t=1710183287; cv=none; b=BVlTdfc2JI5E3Am2thgZiQncDSBBHIkgK/a7RKHnktKu6c+XMw3EBKFRLyAUCVKJVmMcBhmi8H5M8PISUGyAhwtFHeR/gyXTos5c0yjFlPDmB8e4GAcmIuwgUpUCTCe4pKnY6LQkDlhhB+E8x2ZSxEmXbH9ZeUJ7nGLwnVX6M0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710183150; c=relaxed/simple;
-	bh=8yNZVZwg88lIDwJTE7gfFU15qUPpE2qDq9xtN5uq0HE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SNJ0nQZ1jb3+1pHehq1WZ/43hQpzgE17pjkki8s0oyYqWONxxL77gn1vA5Y+JSi+KK/NDvaBsuG4d2fVRGmsaRafPvVz4huWEEIDjJXwwbek0Bttu8HcFCFhFpXiEPtRAVc8Fk9LE+CMVqGZwl7gPooTnIKcUqOc9Ujn3pPdYsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ntJveKEo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96607C433F1;
-	Mon, 11 Mar 2024 18:52:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710183150;
-	bh=8yNZVZwg88lIDwJTE7gfFU15qUPpE2qDq9xtN5uq0HE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ntJveKEoblrZJlInb3jlKdZ58Pa87F1a9pgyCst25tblq2sAxeYLDUbnv6bBbrizx
-	 amagySKMWlmrkgJOUmUeLB85J15EhIVkVVZoNhRUGKR2oTuQ4ZgYl3Vdb5Uts+uNUS
-	 d6hrW2bV5K2kSJtYUrUBPihL2DSuyDun+/RH0QrEiNxKAlbrGQb8EM577ivqjQh7Xa
-	 wVt8qfHVsjHdDyF9Zo+bzrODh7xBpxWXbTvoIxcrMzUtAGAinHyIKzKywdPgYTtUXQ
-	 /oIt58Q+0l4vLM+8+J+u+UV8Usfw99w81JVSI2R2nwoytOUS8nna+m8VM4MAt3SRQ7
-	 RWv2gK7d/NXHA==
-Date: Mon, 11 Mar 2024 11:52:28 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Simon Horman <horms@kernel.org>,
- Luiz Angelo Daros de Luca <luizluca@gmail.com>, Linus Walleij
- <linus.walleij@linaro.org>, Alvin =?UTF-8?B?xaBpcHJhZ2E=?=
- <alsi@bang-olufsen.dk>, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli
- <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/4] net: dsa: realtek: keep default LED state
- in rtl8366rb
-Message-ID: <20240311115228.5ad9db52@kernel.org>
-In-Reply-To: <20240311-chowchow-of-premium-piety-9e4a0d@lemur>
-References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
-	<20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
-	<388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
-	<20240310113738.GA1623@kernel.org>
-	<09793a72-bfe5-4cb5-a6da-ffee565e6956@kernel.org>
-	<20240311091111.53191e08@kernel.org>
-	<20240311-chowchow-of-premium-piety-9e4a0d@lemur>
+	s=arc-20240116; t=1710183287; c=relaxed/simple;
+	bh=sg1d/ANVhdMJVWpfU8bbvkMp+uD3nzj9x9rv9aGU7ss=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Li38A0c2drftaohUuBo0Cn5IK1kaqyw6w1HVMs0UJsSD9mA2PbhZ98qjTI6vq1KB/VOo2TC6j5WVdG6jNFoQMw2D56HIRLDN8HjrkZBg+km/yX5TFSLB40QHhNpj2+DC/DZWa+o3/5XtLquCnZX00S0ktzQP6lsQPpGR8A/4R78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xey65aa7; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-366248b78d9so14495ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:54:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710183284; x=1710788084; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9EWPj2I4xpYoZRjyOYAm/kocZbdOlLT2RiNEmzadKaY=;
+        b=xey65aa7VE1wIljt/ixV6xel+/R5udOqzmcbCiIrUaErlg1igTj+xHHwuQCYTzh9up
+         gwX6SRiXKyFi/2K6SzwjHRVVhUiSb/E6H1m293SMrMno++CElm7lah0vjw0nbxBPCKF1
+         1KggYhb+LqBJqmmZ+PjaihjMv1sfV3+JTNBadSbrM+lesNUkMK2Ws9704W07WK2+pPYc
+         6yNgIhKkmJeGhuWAccjBZ+gNrzM1cQggQKYtv4DqDvtm1uRcSM2laMjrvR4ONMWaJcGI
+         5Ebo4Df4MVwLcOu1UbbtZ/WX9SPh9X+w0fyq/yEgqaleOURfABAA6PjEc0YfhnymHV3M
+         re1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710183284; x=1710788084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9EWPj2I4xpYoZRjyOYAm/kocZbdOlLT2RiNEmzadKaY=;
+        b=S9hIjTJxrhnTSt5x3AxdaImHl//kZrB5c0BLx7XhSP4Xd0++QVYHno9HFmKh+1BC3o
+         uB11WG+chjiC+nakcCQHKiXY0JTj2a0APGPxNmVTkUkSL/3J5d7ltx1WyEpjf+nYG4cz
+         X9j7uDchwLK82I/NtmKyIR6ML5nSwhOwgHd4XxU1jpiVarwt3P4ExJLg1oGC4J8P69P1
+         7YUUzx8/yOUcScb+S80Bn3wC9Z89uO6PNXd88x2bFIhhdHRBcZ/lbYQs9/E9lbrizcul
+         FsC/go4Y7uSmaVb6nHRRqL8WLNjQ0l0j9OKIDzlOGVDDVcAbLlxaqbZYabJvLgycvZb4
+         xJmg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7C4ZcHPFoisrmgrRbhqe+A1rdve9MV6/c1FJjwG0X6F1ceiLLEwOdfiMBOT3bO6II7dSlzikwb89nePVMTFUhOq/n7p8bGDEg2dT9
+X-Gm-Message-State: AOJu0Yy4a8VhYJZrGJF+y5mnhdJtTg5RVbFTyk0CwQtCDTWCioe6W3TC
+	/JVQGxyYYvwftayEkS/Gw0JN3EwCMyPSM5Jqwy+vIEYyzgMvqM2tYl3k1t25PMuR4wSRd2XLztv
+	hVEVaB2fJ8va17axQSpovbC99ozoMGvTzP/hQ
+X-Google-Smtp-Source: AGHT+IF9Y1AJY3TwC+yrKD+SLGX6DGVejGuk9zVLbhhSZF+Z1op/fddC1zPHT7AUjYPqnvQvkBSi2u31QCO6TEveBME=
+X-Received: by 2002:a05:6e02:1648:b0:366:444b:82d6 with SMTP id
+ v8-20020a056e02164800b00366444b82d6mr6714ilu.15.1710183283551; Mon, 11 Mar
+ 2024 11:54:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240310020509.647319-1-irogers@google.com> <20240310020509.647319-3-irogers@google.com>
+ <CAEf4BzYiH6xRRLFBdUAkjn0uJP=safZod4=1EmEwTTH9PDmVvQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYiH6xRRLFBdUAkjn0uJP=safZod4=1EmEwTTH9PDmVvQ@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 11 Mar 2024 11:54:32 -0700
+Message-ID: <CAP-5=fUQY=ho1OSk-wosw8=7Sjp8MB_kngggP00BXs+nVNj7Pg@mail.gmail.com>
+Subject: Re: [PATCH v1 02/13] libbpf: Make __printf define conditional
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>, 
+	David Laight <David.Laight@aculab.com>, "Michael S. Tsirkin" <mst@redhat.com>, Shunsuke Mie <mie@igel.co.jp>, 
+	Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>, 
+	James Clark <james.clark@arm.com>, Nick Forrington <nick.forrington@arm.com>, 
+	Leo Yan <leo.yan@linux.dev>, German Gomez <german.gomez@arm.com>, Rob Herring <robh@kernel.org>, 
+	John Garry <john.g.garry@oracle.com>, Sean Christopherson <seanjc@google.com>, 
+	Anup Patel <anup@brainfault.org>, Fuad Tabba <tabba@google.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
+	Haibo Xu <haibo1.xu@intel.com>, Peter Xu <peterx@redhat.com>, 
+	Vishal Annapurve <vannapurve@google.com>, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 11 Mar 2024 14:40:44 -0400 Konstantin Ryabitsev wrote:
-> On Mon, Mar 11, 2024 at 09:11:11AM -0700, Jakub Kicinski wrote:
-> > > OK, then this is v2. RFC is state of patch, not some sort of version. Or
-> > > just use b4 which handles this automatically...  
-> > 
-> > Eh, hum. He does according to the X-Mailer header. More importantly
-> > I thought the RFC to PATCH transition resetting version numbering
-> > is how we always operated. Maybe b4 should be fixed?  
-> 
-> There is no way to make it work reliably the way you propose,
+On Mon, Mar 11, 2024 at 10:49=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sat, Mar 9, 2024 at 6:05=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > libbpf depends upon linux/err.h which has a linux/compiler.h
+> > dependency. In the kernel includes, as opposed to the tools version,
+> > linux/compiler.h includes linux/compiler_attributes.h which defines
+> > __printf. As the libbpf.c __printf definition isn't guarded by an
+> > ifndef, this leads to a duplicate definition compilation error when
+> > trying to update the tools/include/linux/compiler.h. Fix this by
+> > adding the missing ifndef.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index afd09571c482..2152360b4b18 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -66,7 +66,9 @@
+> >   */
+> >  #pragma GCC diagnostic ignored "-Wformat-nonliteral"
+> >
+> > -#define __printf(a, b) __attribute__((format(printf, a, b)))
+> > +#ifndef __printf
+> > +# define __printf(a, b)        __attribute__((format(printf, a, b)))
+>
+> styling nit: don't add spaces between # and define, please
+>
+> overall LGTM
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> Two questions, though.
+>
+> 1. It seems like just dropping #define __printf in libbpf.c compiles
+> fine (I checked both building libbpf directly, and BPF selftest, and
+> perf, and bpftool directly, all of them built fine). So we can
+> probably just drop this. I'll need to add __printf on Github, but
+> that's fine.
+>
+> 2. Logistics. Which tree should this patch go through? Can I land it
+> in bpf-next or it's too much inconvenience for you?
 
-Could you describe what the problem is?
-Cover letter + date seems like fairly strong signal to me.
+Thanks Andrii,
 
-> so I strongly suggest that we do it the way b4 currently works:
-> 
-> - a series can start with RFC in the prefixes to indicate that it's not
->   something to be considered for inclusion
-> - when the author feels that the series is ready for maintainers'
->   consideration, they simply drop the RFC and keep the same change-id and
->   versioning info; e.g. [PATCH RFC v3] -> [PATCH v4]
+dropping the #define (1) sgtm but the current compiler.h will fail to
+build libbpf.c without the later compiler.h update in this series.
+This causes another logistic issue for your point 2. Presumably if
+this patch goes through bpf-next, the first patch "tools bpf:
+Synchronize bpf.h with kernel uapi version" should also go through the
+bpf-next.
 
-It's not a pain point for networking.
+Thanks,
+Ian
 
-While I have you - it'd be great if the patchwork bot did not
-repeatedly set patches to Superseded. Sometimes we want to keep and
-apply non-latest version, because the latest version was posted based
-on non-expert review, or we changed our mind.
 
-> Resetting the versioning requires resetting the change-id of the series, or a
-> lot of automation breaks.
-
-What is "change-id of the series"?
+> > +#endif
+> >
+> >  static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
+> >  static bool prog_is_subprog(const struct bpf_object *obj, const struct=
+ bpf_program *prog);
+> > --
+> > 2.44.0.278.ge034bb2e1d-goog
+> >
 
