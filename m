@@ -1,142 +1,181 @@
-Return-Path: <linux-kernel+bounces-98978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A388781CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:40:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BD58781D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:41:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46A12B20BA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:40:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0D771F22A91
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179484087D;
-	Mon, 11 Mar 2024 14:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6302C4087D;
+	Mon, 11 Mar 2024 14:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="FtwoKkDH"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XCrSOVK0"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91ED93FE20
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2ED3FBAD
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710167995; cv=none; b=VqueZcR5jqUTGlDtmLPsSHCEguFHOYM0RHLqLvfSRKSZBBadjQS3DjrxStAR8SL+rGWpK3XxFT46MViiAv/Tqdml19DAIJ1DXj5MpZOG4te9CHBgVu31WepxfzBgLnhIYiugkQqbLWpOT1iaMlhrO8fUgEym4kRcWOs4+TKZSG0=
+	t=1710168048; cv=none; b=hudTJSh9WB57Wit/HyLnXcPHFOVuk9L4yUWJe0zCym/mkuZk37bQ4ASCWUsuWcesh9m57fjZXNQjZNq8oP8zfUroNXRtV/4DT1XkJr6DbXmDwgx3ZQLz/GOk+WHNqYFuXQ3v2D4CYQmh5+Ac8GA7cQBGmGdq+ChVA7gZtg71cLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710167995; c=relaxed/simple;
-	bh=u4RbZxYkIUcZLlV/Aac1nmArqd0mIIwdpdWDUU4vGBc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WOn9de0p9HkR6sQG5tTPf+oIn2JYfo2rhxiztwuRIaZkP/YbJ60zsNAGRfcD4jg4jxXcj3NqoPJXQk4i4RE/cLD03NPQJX/XXGEhj0nqS06AjKPtsqq4d/M27vo/zoO5IWZ7gvvV8UrLgkqhU6SDCEQEFC2/oz4gY8jGTH8f5gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=FtwoKkDH; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so9483233a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1710167991; x=1710772791; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HtzqfIQsJolmXYNugXTjr3G7HqidI6CITo9smjLyZOw=;
-        b=FtwoKkDHraZU1QoV8Gum7FNgNNK37LfUzLn/WibufGarZSGcL8edRvDxuPyl2KGgjV
-         hhRPWMJ4XjwgyCaT/VMpMPhN80X90X9eptqmTeE/4uxl+De2zMxiWc+fAGlp/IMWujoH
-         Pvcy0fRPRV3nf3vzu+ussZJOxEjjULlZ3x+V0=
+	s=arc-20240116; t=1710168048; c=relaxed/simple;
+	bh=Wn3xO+rDkvy90KSBOdwgvLS73TNoU6ZFfpMBDk7zRfs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ujPQA1w/A0NTFsX/uIbgYTGFEpIvuNIAOKQ0VllRjbiflcku+RJVu3n+uRdvEdO/gFnONXiITbjCKh0m5uegen+5LVtg9n0oTN7tZQTLv/INbhiqYmyji/AXFMMPFicE7A1ZpzgSrTM3aTADes/M5Uzj6AzuuPHTvZzyH4/v1nU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XCrSOVK0; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710168045;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KqitDpmr1fCRHRdWH7mB5wNlPTd1FwNOj8yeieg8etw=;
+	b=XCrSOVK0ZK+y1PlA9cuXUsMV8c5GIG+5GIU6iI/ZrjfNmeu58aY1C5vCpWJJ9AAoSCD1xQ
+	2aPmcZIwQ/qmVGoHdYhNp+N1P7KHNjQbcfMVonMNZJhTYVLKYcutWDpDTKSwXBdnpvgWkw
+	i3HtnzrP/t9NSPHG/SoOXyDmiKKKUtI=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-510-W9bVEozqPqKb37AFH0mcyg-1; Mon, 11 Mar 2024 10:40:43 -0400
+X-MC-Unique: W9bVEozqPqKb37AFH0mcyg-1
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-366586f2796so9090835ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:40:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710167991; x=1710772791;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HtzqfIQsJolmXYNugXTjr3G7HqidI6CITo9smjLyZOw=;
-        b=d9LpddBor76qqJH8dDVlnCCMjD6QTxoXzsUaKii62JVvBfLGrmtnhxh7uy6vRVaGQw
-         u3xMKXkD3l4hz6sglLEJNlIzcEMY4/h+6fDvjxaJhSDtTtTT77KDs2Em25D0VDu6px4g
-         baVqlVddN18YuWJWrhjFrpSdi5CKw9o27lEbsKkHyR8xa4o0/7L5EFz7837wq3eA9ooa
-         rPPCu3xWdLNziw04wDwgpV6gCafaFBfucqA84a+lWTrF9q/v1GxB4f/aGkgRV3mV597H
-         fpCoVO04miDCjyw9B8IPn643jyhyl4D2Op6dNYcUFi4VvD7adgcYs9O0Ex8EITsNeN7n
-         qryw==
-X-Forwarded-Encrypted: i=1; AJvYcCVCs+N6qqltxeOro1djQNdldHcqQnhEZpGSTZE8U/eP3oqbG7pX5qaxEEwfbN2/Lj+rGfNGGkVN/OoOP0alnxQSdGlmChnCJ0TJLTIz
-X-Gm-Message-State: AOJu0YxQiYvV/d0sCJegupZwomg+oSFDBLpA8PDKtHEdhhBkbevXRhAq
-	erl615zcr41Lcu1UiHkxJ31pGM+uei59RroO+Vbv54e3q+7VFQKoSL/5VoOM1bROoujsp+OMLJs
-	UEH7aQepBxUxrwFMvEkGdhqQgqZsTfQgkOOKfoA==
-X-Google-Smtp-Source: AGHT+IGf4wdVDNSe9F8sTHDMC/cjLnlVXjyWLYFxWYXRm2kSRwP0f2EzEVpHJ2uhZASUIGetXgmhSfoQf15nQCRa0/A=
-X-Received: by 2002:a17:906:9c8e:b0:a46:13d3:e5e6 with SMTP id
- fj14-20020a1709069c8e00b00a4613d3e5e6mr5401892ejc.0.1710167990841; Mon, 11
- Mar 2024 07:39:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710168042; x=1710772842;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KqitDpmr1fCRHRdWH7mB5wNlPTd1FwNOj8yeieg8etw=;
+        b=ZAmp+X9r5U0ifeTEznVtuYodhjZRAxYjIHXbgOUPR4ECIy5z9ZkqtkZsfN3f0TN38q
+         p1x+TUPu3hOmJifndKM1Qu/o6+pvMy2xqEr+DK7txVsvqDkOcpGL75nLfyCFQOyI8YrC
+         /VTmmX5zyjQtbvB/WQiqJrAN1vPDbjIVy4PIwSKweBM4XWkrEcTbiw/0rRGuc5pSWjy+
+         UZ0rSOr5PvIk/TEucA9AD+7eAyknfU3erS8q/ERUPx5PXOzAlPjioXM2E3AlaXlukEKi
+         JD0XaMdY5RC9+R0WtFF4gDLXs4mguqUc9BL9Q+gBUAAPHFZqs75vMBVLnqQTz3OZmIi5
+         7lOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUBa/CwMZvlkeMe21nlJqPN1NcIv6eErhw39c9RYRSpEzIqK26wuYioLrtE3d9Nyk1bsv7Ya3zJYdH691exOQDeF9+BL9BtUWg/LMCU
+X-Gm-Message-State: AOJu0YzDU8d83l3Fykr88Mit2wvtKHX4KmUC/mo5x1x9mJcVpXfQSVNK
+	qRLbhjx6U+kjp9rkwKwGK2WnHXAJ/E+M71YHnZoDbDJrIvizLbFrI8Ml7NDpAyUIFf/7A7ekKAI
+	9aCjNiGFZnfQT/ASHqRAy6EQ+rMTVOzFudsQ0ztbxzZau+EdZ/V9D6dyoSyQPZA==
+X-Received: by 2002:a05:6e02:214c:b0:365:3a69:1e1a with SMTP id d12-20020a056e02214c00b003653a691e1amr9463902ilv.0.1710168042502;
+        Mon, 11 Mar 2024 07:40:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzn/KqxHnMWSFyQHXvkIcmDWG5JedPe1AmAWvtpZ4KFi0ZaJEX8WsuA3+z/GqEHZRvadyzQw==
+X-Received: by 2002:a05:6e02:214c:b0:365:3a69:1e1a with SMTP id d12-20020a056e02214c00b003653a691e1amr9463877ilv.0.1710168042198;
+        Mon, 11 Mar 2024 07:40:42 -0700 (PDT)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id t1-20020a92c0c1000000b003662f9bfd51sm1741908ilf.12.2024.03.11.07.40.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 07:40:41 -0700 (PDT)
+Date: Mon, 11 Mar 2024 08:40:40 -0600
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Eric Auger <eric.auger@redhat.com>
+Cc: kvm@vger.kernel.org, clg@redhat.com, reinette.chatre@intel.com,
+ linux-kernel@vger.kernel.org, kevin.tian@intel.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] vfio/pci: Disable auto-enable of exclusive INTx
+ IRQ
+Message-ID: <20240311084040.5b2aaada.alex.williamson@redhat.com>
+In-Reply-To: <d57f0df4-b155-4805-9121-53a9a1c23cee@redhat.com>
+References: <20240308230557.805580-1-alex.williamson@redhat.com>
+	<20240308230557.805580-2-alex.williamson@redhat.com>
+	<d57f0df4-b155-4805-9121-53a9a1c23cee@redhat.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307160225.23841-1-lhenriques@suse.de> <20240307160225.23841-4-lhenriques@suse.de>
- <CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
- <87le6p6oqe.fsf@suse.de> <CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
- <20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
-In-Reply-To: <20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Mon, 11 Mar 2024 15:39:39 +0100
-Message-ID: <CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount parameters
-To: Christian Brauner <brauner@kernel.org>
-Cc: Luis Henriques <lhenriques@suse.de>, "Theodore Ts'o" <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 11 Mar 2024 at 14:25, Christian Brauner <brauner@kernel.org> wrote:
+On Mon, 11 Mar 2024 08:36:07 +0100
+Eric Auger <eric.auger@redhat.com> wrote:
 
-> Yeah, so with that I do agree. But have you read my reply to the other
-> thread? I'd like to hear your thoughs on that. The problem is that
-> mount(8) currently does:
->
-> fsconfig(3, FSCONFIG_SET_FLAG, "usrjquota", NULL, 0) = -1 EINVAL (Invalid argument)
->
-> for both -o usrjquota and -o usrjquota=
+> Hi Alex,
+>=20
+> On 3/9/24 00:05, Alex Williamson wrote:
+> > Currently for devices requiring masking at the irqchip for INTx, ie.
+> > devices without DisINTx support, the IRQ is enabled in request_irq()
+> > and subsequently disabled as necessary to align with the masked status
+> > flag.  This presents a window where the interrupt could fire between
+> > these events, resulting in the IRQ incrementing the disable depth twice.
+> > This would be unrecoverable for a user since the masked flag prevents
+> > nested enables through vfio.
+> >
+> > Instead, invert the logic using IRQF_NO_AUTOEN such that exclusive INTx
+> > is never auto-enabled, then unmask as required.
+> > Cc: stable@vger.kernel.org
+> > Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+> > Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > ---
+> >  drivers/vfio/pci/vfio_pci_intrs.c | 17 ++++++++++-------
+> >  1 file changed, 10 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_=
+pci_intrs.c
+> > index 237beac83809..136101179fcb 100644
+> > --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> > +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> > @@ -296,8 +296,15 @@ static int vfio_intx_set_signal(struct vfio_pci_co=
+re_device *vdev, int fd)
+> > =20
+> >  	ctx->trigger =3D trigger;
+> > =20
+> > +	/*
+> > +	 * Devices without DisINTx support require an exclusive interrupt,
+> > +	 * IRQ masking is performed at the IRQ chip.  The masked status is
+> > +	 * protected by vdev->irqlock. Setup the IRQ without auto-enable and
+> > +	 * unmask as necessary below under lock.  DisINTx is unmodified by
+> > +	 * the IRQ configuration and may therefore use auto-enable. =20
+> If I remember correctly the main reason why the
+>=20
+> vdev->pci_2_3 path is left unchanged is due to the fact the irq may not b=
+e exclusive
+> and setting IRQF_NO_AUTOEN could be wrong in that case. May be worth to
+> precise in the commit msg or here? Besides Reviewed-by: Eric Auger
+> <eric.auger@redhat.com> Eric =C2=A0=C2=A0
 
-For "-o usrjquota" this seems right.
+IRQF_SHARED and IRQF_NO_AUTOEN are in fact mutually exclusive.  Even if
+we could disable auto-enable, the driver sharing the interrupt could
+independently enable it.  But really the basis for using IRQF_SHARED is
+that we have device level INTx detection and masking.  The comment here
+is only to note that request_irq() doesn't gratuitously clear DisINTx,
+so the mask state previously applied through config space of the device
+is persistent.  Thanks,
 
-For "-o usrjquota=" it doesn't.  Flags should never have that "=", so
-this seems buggy in more than one ways.
+Alex
+=20
+> > +	 */
+> >  	if (!vdev->pci_2_3)
+> > -		irqflags =3D 0;
+> > +		irqflags =3D IRQF_NO_AUTOEN;
+> > =20
+> >  	ret =3D request_irq(pdev->irq, vfio_intx_handler,
+> >  			  irqflags, ctx->name, vdev);
+> > @@ -308,13 +315,9 @@ static int vfio_intx_set_signal(struct vfio_pci_co=
+re_device *vdev, int fd)
+> >  		return ret;
+> >  	}
+> > =20
+> > -	/*
+> > -	 * INTx disable will stick across the new irq setup,
+> > -	 * disable_irq won't.
+> > -	 */
+> >  	spin_lock_irqsave(&vdev->irqlock, flags);
+> > -	if (!vdev->pci_2_3 && ctx->masked)
+> > -		disable_irq_nosync(pdev->irq);
+> > +	if (!vdev->pci_2_3 && !ctx->masked)
+> > +		enable_irq(pdev->irq);
+> >  	spin_unlock_irqrestore(&vdev->irqlock, flags);
+> > =20
+> >  	return 0; =20
+>=20
 
-> So we need a clear contract with userspace or the in-kernel solution
-> proposed here. I see the following options:
->
-> (1) Userspace must know that mount options such as "usrjquota" that can
->     have no value must be specified as "usrjquota=" when passed to
->     mount(8). This in turn means we need to tell Karel to update
->     mount(8) to recognize this and infer from "usrjquota=" that it must
->     be passed as FSCONFIG_SET_STRING.
-
-Yes, this is what I'm thinking.  Of course this only works if there
-are no backward compatibility issues, if "-o usrjquota" worked in the
-past and some systems out there relied on this, then this is not
-sufficient.
->
-> (2) We use the proposed in-kernel solution where relevant filesystems
->     get the ability to declare this both as a string or as a flag value
->     in their parameter parsing code. That's not a VFS generic thing.
->     It's a per-fs thing.
-
-This encourages inconsistency between filesystems, but if there's no
-other way to preserve backward compatibility, then...
-
->
-> (3) We burden mount(8) with knowing what mount options are string
->     options that are allowed to be empty. This is clearly the least
->     preferable one, imho.
->
-> (4) We add a sentinel such as "usrjquota=default" or
->     "usrjquota=auto" as a VFS level keyword.
-
-I don't really understand how this last one is supposed to fix the issue.
-
-> In any case, we need to document what we want:
->
-> https://github.com/brauner/man-pages-md/blob/main/fsconfig.md
-
-What's the plan with these?  It would be good if "man fsconfig" would
-finally work.
-
-Thanks,
-Miklos
 
