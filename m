@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-99067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DF6878313
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:17:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01103878315
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:18:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDA331C2129F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:17:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95CFBB230F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97AE41E22;
-	Mon, 11 Mar 2024 15:12:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEA257301;
+	Mon, 11 Mar 2024 15:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j1rKxklK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nagn15C+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1571756B71;
-	Mon, 11 Mar 2024 15:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A58056B88;
+	Mon, 11 Mar 2024 15:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710169979; cv=none; b=uqK9n7tXHtaddfsVauYcFEv1RqK3WRbwtgAXvhsg3Txn9ZZgGq29b030/x8SFQjrbooWYKU42hJmP+KLA1G/bbj/15K+69iZan8Cs0/PMFCqSooH9hTkvlO5insQMWcuwaLdIY9LLYWDob+vdWlTUFu/33UloT4jW+hL7MCqCNs=
+	t=1710169981; cv=none; b=ZvLZtC78lMZt9/y8w2TRaM6nGhYvssyPCIC/NNrKlTeqYNpbjY5RTgOlYPDtvXDc8K+SLPVZBYbx1iHR29+sLyGCprhpkZmguv+0ITjV1l4zcb5SPPO0fUWbppY+8oioFP4AYdWpzJ6KRVxlyrY4lkA1SAXGj+AV+c4h7Omns80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710169979; c=relaxed/simple;
-	bh=MstotRqjwZf2eSpZRoKnjVnu8irMqzwmM1ka5cqE2XA=;
+	s=arc-20240116; t=1710169981; c=relaxed/simple;
+	bh=yxJXJBt2rnE90+EW1MbwMjyYjD3W0qZ618LNmt+sM4M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vc+3l5Jm42WJaU7fsdtE2/I+eBa/la2CD3HOFFKSDgrMOtqTbKIeJBNISmjuQf3zMd8iM3GvzfxqqsZfg+fnI8EiyrifB+zwU0ymK1ZttPOuVdTU21XrU6JB5uxJIexfdUmKEVcnkxLrPVF44uEi6CE+kLiWQVBeziscJnYYNns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j1rKxklK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD38C433F1;
-	Mon, 11 Mar 2024 15:12:57 +0000 (UTC)
+	 MIME-Version; b=CkRDM1UG/USwT3CJ4emtL78xOMpxNohxSC+7NOutZpZLhRpzYsdI9JYPovdpphcaMlA1t43x8DcOTRgalfsE2hXzrIdqJUye/I7oWEKw+DyiLY+sYHxPPHGVsnpArCK347yu3F5/Ba51E4ZG+gDvFMkQ227CHP45jro43YwWI7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nagn15C+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A802AC433C7;
+	Mon, 11 Mar 2024 15:12:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710169978;
-	bh=MstotRqjwZf2eSpZRoKnjVnu8irMqzwmM1ka5cqE2XA=;
+	s=k20201202; t=1710169981;
+	bh=yxJXJBt2rnE90+EW1MbwMjyYjD3W0qZ618LNmt+sM4M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j1rKxklKRtkuhsbPP4Yc085ay3ZvqdV7XP3OogCqQG9mEDmu6C6DBbslVVozdlHkN
-	 SJQ6frRutvUGVBnDK59i0PsBoPcYBS6S3baQjQBHa0Sa0VwSXvhBxTsGGN++U4vDX3
-	 ja1nI3OInIjifcW+YCKaN3mdDd2k/Pu+GL7YCc4mc/qAidsETTA1s+5piw9UvUY4PY
-	 /1j2ovntlrQ67dZ+kuR/RkiaeI8fsZrd7yrFjZqrDQm6mds8IE+ijDBVUB7yg8KGD0
-	 tgnBsl6blEWPN9FqQ4UulNwgL2BAHXwYD4eRS9aMFcO5D3v0vCCGQ2mB/ONRjMir/4
-	 h1IZ8Yydr8ZNg==
+	b=Nagn15C+eWmbtXRRAIsxUMaHRO8RJ0CGDOSbLMQJxXFZ/A5ePSnHa3E0/ecPr9r8M
+	 B8FhM+yzT1Nbi5MZXtChzTrgZ/IL5GmJ92asPCco87XspCgb1b4lc3e46Nd0+HxGmK
+	 Ix3a8GHyHAyLsodCOkM/PDjPDr4RouLNIulUBo+aLlDdRlACLQY03Rj0biXzHjfDrV
+	 xfUfngjAJeN82e4zMRYJMBcaY+g/EQGNSs33zeQ0JLrrSyH0eLTmuJf1k4/Lyzsa5V
+	 1hZqWGw2DT0R8QCgGoUAZ9pCbKcw1fbWdANa57lAy5esfilEg+hJWX5g0dOQo/jWAX
+	 UeAW37efDN+xw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,12 +49,13 @@ Cc: Jiawei Wang <me@jwang.link>,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	Syed.SabaKareem@amd.com,
-	Vijendar.Mukunda@amd.com,
+	mario.limonciello@amd.com,
+	jeremy@system76.com,
+	git@augustwikerfors.se,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 18/23] ASoC: amd: yc: add new YC platform variant (0x63) support
-Date: Mon, 11 Mar 2024 11:11:58 -0400
-Message-ID: <20240311151217.317068-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 19/23] ASoC: amd: yc: Fix non-functional mic on Lenovo 21J2
+Date: Mon, 11 Mar 2024 11:11:59 -0400
+Message-ID: <20240311151217.317068-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311151217.317068-1-sashal@kernel.org>
 References: <20240311151217.317068-1-sashal@kernel.org>
@@ -71,34 +72,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Jiawei Wang <me@jwang.link>
 
-[ Upstream commit 316a784839b21b122e1761cdca54677bb19a47fa ]
+[ Upstream commit ed00a6945dc32462c2d3744a3518d2316da66fcc ]
 
-The Lenovo 21J2 (ThinkBook 16 G5+ APO) has this new variant,
-as detected with lspci:
-
-64:00.5 Multimedia controller: Advanced Micro Devices, Inc. [AMD]
-        ACP/ACP3X/ACP6x Audio Coprocessor (rev 63)
+Like many other models, the Lenovo 21J2 (ThinkBook 16 G5+ APO)
+needs a quirk entry for the internal microphone to function.
 
 Signed-off-by: Jiawei Wang <me@jwang.link>
-Link: https://msgid.link/r/20240228073914.232204-1-me@jwang.link
+Link: https://msgid.link/r/20240228073914.232204-2-me@jwang.link
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/yc/pci-acp6x.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/amd/yc/pci-acp6x.c b/sound/soc/amd/yc/pci-acp6x.c
-index 7af6a349b1d41..694b8e3139024 100644
---- a/sound/soc/amd/yc/pci-acp6x.c
-+++ b/sound/soc/amd/yc/pci-acp6x.c
-@@ -162,6 +162,7 @@ static int snd_acp6x_probe(struct pci_dev *pci,
- 	/* Yellow Carp device check */
- 	switch (pci->revision) {
- 	case 0x60:
-+	case 0x63:
- 	case 0x6f:
- 		break;
- 	default:
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 17c8ff7558694..de0d399eae8c4 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -199,6 +199,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21HY"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21J2"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
 2.43.0
 
