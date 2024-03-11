@@ -1,138 +1,115 @@
-Return-Path: <linux-kernel+bounces-99574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64366878A28
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:37:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93FCA878A2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 861601C210A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:37:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 253F71F21842
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F0A57311;
-	Mon, 11 Mar 2024 21:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RZQ+07ad"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040B056B9F;
+	Mon, 11 Mar 2024 21:42:47 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4F256B79;
-	Mon, 11 Mar 2024 21:37:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD18A56B6A
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710193030; cv=none; b=bitSJvH7UpvXi4NrMfJivuCK8idJjUvSWdlUVkllUl2Z/hkq+UmGapBlt9XTrZ+sMeMagpLUqB6klhI48UygvBHf5OhXbFtHW4jFsAnqUgmv+i0soLS6u0A6XTQ0Ff21EqP5kh16gL7NdN6jNZfIHAad76QimkMXzhq6PVttS0I=
+	t=1710193366; cv=none; b=R2rvPrih7wuW0YMAJJDU1mWWdRJKKemRyMvzx5QfLFlAbsUcmgi05QNQir4agGo18GXR3ftSMxUn54K/saMrrVp63psIoLNVVNM/uGzJxz9cve4LRTFgQ6a4F4wfloqaoVdvw8+mLMp1f2Szb3IxNd7WyJxMI4PV0Pcwzj7vBOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710193030; c=relaxed/simple;
-	bh=7/t73ebbv8sRVNFVm6dXGVP8Cy5gtlrNTZRWv0cey24=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ku2XWjmqNMsWnfn0x9cOo1su+onrGaTSdFuFzB3yMK99vPz32K54hyqEKba6e3ynQojyp8NVZaW4UJuYNPnYBHotQn+mIGfWst8yQqOKm/d6pQyL5RNiwY1lp8wSVSOrv9Ww9xtNHvelMgS0CLDeg6afPgS93cjCeXIPG7OsQ/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RZQ+07ad; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710193028; x=1741729028;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7/t73ebbv8sRVNFVm6dXGVP8Cy5gtlrNTZRWv0cey24=;
-  b=RZQ+07adTOQ/ErMs+wf882j5eW36hS/hrPXuldSfcMthmOPahDVjJ61Q
-   A7fcDotHLdC7pGAVOFXw4AdvQMg1QB6BdsRZLI2EU/2KUVIsMU1YCIT0T
-   pRY3z1r8J92zPxPqtWMBiUeC+n2t3pd5wWnOE/WEfE3i/1hVdNBiYR4Gf
-   PyOpJ2snrRYjMGJffMzI0PVnUpBYpbqkGPKuzCqGA0q8qfqvS8BGvpYOb
-   tvpf8fpZ44M+DQANbfmmy9L9PP8oFx06sw6vWjN72YgeqmiuxNZhSYvF8
-   Jd/89R65rmS4SMcvIboIwmW1gAkvoB7bsi4lkFskwlXxuHkGsnpij5mEK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="8641371"
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="8641371"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 14:37:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="11375550"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 11 Mar 2024 14:37:01 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rjnKM-0009Tt-0U;
-	Mon, 11 Mar 2024 21:36:58 +0000
-Date: Tue, 12 Mar 2024 05:36:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Menglong Dong <dongmenglong.8@bytedance.com>, andrii@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-	svens@linux.ibm.com, davem@davemloft.net, dsahern@kernel.org,
-	dave.hansen@linux.intel.com, x86@kernel.org, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, quentin@isovalent.com,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 6/9] bpf: tracing: add multi-link support
-Message-ID: <202403120515.LMAOyTdG-lkp@intel.com>
-References: <20240311093526.1010158-7-dongmenglong.8@bytedance.com>
+	s=arc-20240116; t=1710193366; c=relaxed/simple;
+	bh=GQXaXyc1zQJyIJwVtjwpKqnlF5O4YH+/iBVavsbfGpY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=h+nCBNWtAPykV0KUYFW0hsjuOYRTXIdYNW4gONcWJILSe4MAlt4P7SUTkcrc4OZ/bgi+tSpYDQl8DO8Gbcv5WQraKBed64FAFX0RZPDjNSDmipKBFrRRJgmE18nUqGnN0INfJ1icLEPXyPaQyAVSDv6fLftz7MJwzoUqL83PCSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-182-1CQnVePBPnqOGYOB4eHJow-1; Mon, 11 Mar 2024 21:42:41 +0000
+X-MC-Unique: 1CQnVePBPnqOGYOB4eHJow-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Mar
+ 2024 21:42:46 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 11 Mar 2024 21:42:46 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Matthew Wilcox' <willy@infradead.org>, Dave Chinner <david@fromorbit.com>
+CC: "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: On the optimum size of a batch
+Thread-Topic: On the optimum size of a batch
+Thread-Index: AQHac2YDWJ9ZLWk00E2JGYCnzpWSgrEzDvkw
+Date: Mon, 11 Mar 2024 21:42:46 +0000
+Message-ID: <5c54bfe5123f4e6390400599427c23b7@AcuMS.aculab.com>
+References: <Zeoble0xJQYEAriE@casper.infradead.org>
+ <Ze5onaXsI+LT1+Be@dread.disaster.area>
+ <Ze59byUR80z42m8R@casper.infradead.org>
+In-Reply-To: <Ze59byUR80z42m8R@casper.infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240311093526.1010158-7-dongmenglong.8@bytedance.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Menglong,
+From: Matthew Wilcox
+> Sent: 11 March 2024 03:42
+..
+> But that doesn't necessarily mean that you want a larger batch size.
+> Because you're not just allocating, you're also freeing and over a
+> large enough timescale the number of objects allocated and freed is
+> approximately equal.  In the SLUB case, your batch size needs to be
+> large enough to absorb most of the allcation-vs-free bias jitter; that
+> is if you know they always alternate AFAFAFAFAF a batch size of 2 would
+> be fine.  If you know you get four allocations followed by four frees,
+> having a batch size of 5 woud be fine.  We'd never go to the parent
+> allocator if we got a AFAAFFAAAFFFAAAAFFFFAAFFAFAAFAAFFF pattern.
 
-kernel test robot noticed the following build errors:
+That isn't really the allocation pattern you need to worry about.
+Per cpu free list should be large enough to handle it.
+The problem (as the first people doing a sparc SMP port found) is
+that you'll get one bit of code that 'pumps' items from one
+free list to another.
+So you have to decide that you have too many local free objects
+and then give some back to the global free list.
+Keeping them on the global list as a block of 'n' items can
+make things far better.
+Indeed 'arrays of pointers' are likely to be better than a
+linked list.
 
-[auto build test ERROR on bpf-next/master]
+Caches in front of SLUB (or similar) really shouldn't be needed.
+Except, perhaps, to indicate which list the items come from
+and, maybe for some extra allocation stats.
+There might be rcu oddities - where the memory can't be used
+for a different structure. But there are probably alternative
+solutions to that one.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/bpf-tracing-add-support-to-record-and-check-the-accessed-args/20240311-173954
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20240311093526.1010158-7-dongmenglong.8%40bytedance.com
-patch subject: [PATCH bpf-next v2 6/9] bpf: tracing: add multi-link support
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20240312/202403120515.LMAOyTdG-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240312/202403120515.LMAOyTdG-lkp@intel.com/reproduce)
+The page free code is a different problem.
+I suspect that needs to process batches of items to avoid
+repeated (expensive) atomic accesses.
+But it definitely needs to avoid thrashing the L1 cache.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403120515.LMAOyTdG-lkp@intel.com/
+=09David
 
-All errors (new ones prefixed by >>):
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
-   kernel/bpf/syscall.c: In function 'bpf_tracing_multi_link_release':
->> kernel/bpf/syscall.c:3538:9: error: implicit declaration of function 'bpf_trampoline_multi_unlink_prog'; did you mean 'bpf_trampoline_unlink_prog'? [-Werror=implicit-function-declaration]
-    3538 |         bpf_trampoline_multi_unlink_prog(&multi_link->link);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |         bpf_trampoline_unlink_prog
-   kernel/bpf/syscall.c: In function 'bpf_tracing_prog_attach_multi':
->> kernel/bpf/syscall.c:3815:15: error: implicit declaration of function 'bpf_trampoline_multi_link_prog'; did you mean 'bpf_trampoline_unlink_prog'? [-Werror=implicit-function-declaration]
-    3815 |         err = bpf_trampoline_multi_link_prog(&link->link);
-         |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |               bpf_trampoline_unlink_prog
-   cc1: some warnings being treated as errors
-
-
-vim +3538 kernel/bpf/syscall.c
-
-  3532	
-  3533	static void bpf_tracing_multi_link_release(struct bpf_link *link)
-  3534	{
-  3535		struct bpf_tracing_multi_link *multi_link =
-  3536			container_of(link, struct bpf_tracing_multi_link, link.link);
-  3537	
-> 3538		bpf_trampoline_multi_unlink_prog(&multi_link->link);
-  3539		__bpf_tracing_multi_link_release(multi_link);
-  3540	}
-  3541	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
