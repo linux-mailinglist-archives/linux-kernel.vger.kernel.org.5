@@ -1,272 +1,184 @@
-Return-Path: <linux-kernel+bounces-98698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62DC5877E18
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:26:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5408877E12
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:25:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1933728239E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:26:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44EA71F21C87
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A13FF33CCC;
-	Mon, 11 Mar 2024 10:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2662D781;
+	Mon, 11 Mar 2024 10:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xGMqr62q";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="heVgMOLh";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xGMqr62q";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="heVgMOLh"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b="fZEQPrZM"
+Received: from nikam.ms.mff.cuni.cz (nikam.ms.mff.cuni.cz [195.113.20.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670F638DE5;
-	Mon, 11 Mar 2024 10:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D372617577;
+	Mon, 11 Mar 2024 10:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710152775; cv=none; b=Yfi+UdJN/kRbwT5K5yeGI9Rgx+lJBynYP5XBB+yB+3pypq5UFOh8Sx94EpMfAAmWua2Y+D9WVx0rFOve+W0F80lmrxSzrHNqdoi2CBegOJigcckucAx1/iX6THpmel6wxGl/OR/GICyYIe88R8CNlUB6wLppMIT/E/zcqMoXXKI=
+	t=1710152747; cv=none; b=GdKRtljvJ9Ds5vPAggOc/tLUadJrgqjkFKQtgoSgjoApKsBJesuNCMqj9haH4RnbqzA68pRxblNFY8ag42X8fZHDMBGuw6nShxsSTC/PsT9ELDOJCMgQT8EIM49PQIqIioRMBxtkYMSlJvuZlbkr234U4xyYNBT2agLa1rcfLgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710152775; c=relaxed/simple;
-	bh=gTxTKxq7hX6ZKCzKmQvyu5Rv591nK7Dcm5TczUYz1GQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gv6GXPj6ZTe8nI0gazxPWTpWEkIYSN0ETSGZR8U/UTj7X5/DiUW5oGPp/qoKz/xLwxDa4lNqp6QFlVzo4EecXq89lHvhHZPy7mfrJFNfFov+wNEYR7xm3fpm1Kv1DzaSJ0ocomxEaZgJJna/lbw7QXBr4NaTo4a2GeYcaBAIp9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xGMqr62q; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=heVgMOLh; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xGMqr62q; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=heVgMOLh; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	s=arc-20240116; t=1710152747; c=relaxed/simple;
+	bh=Z7zEDmtLcGezCOC/ZaSnA49BYLacuUO+5ZVKZot6wSQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
+	 References:In-Reply-To; b=Sef7hXX8KS0HhwiqJyaMY2ChHAWIXs0cE4qb3TfJZp5HQBIOwfBU/Be4ST2tBgS61F+8h4TjwxDSZG8QNrFjm4S3argLZobePO1LGzwdDjEWNGTaudMzXkKL5KdjqmEciGMk3HHvYY/AHjvmkc/ds4BlGTWU8y4qntSmxAcGDQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz; dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b=fZEQPrZM; arc=none smtp.client-ip=195.113.20.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz
+Received: from gimli.ms.mff.cuni.cz (gimli.ms.mff.cuni.cz [195.113.20.176])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 81F7B2216C;
-	Mon, 11 Mar 2024 10:26:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710152771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	by nikam.ms.mff.cuni.cz (Postfix) with ESMTPS id 9CE062846D9;
+	Mon, 11 Mar 2024 11:25:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gimli.ms.mff.cuni.cz;
+	s=gen1; t=1710152740;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eNM87c4Pty4kQiOcgpWbP50DmgrTMGqlSYmym96AgQA=;
-	b=xGMqr62qCiz4yIvIN3++w6xKIzmJdJWxQKc0ICWl90bZER3GzEftkgou93bFwoOgCsfLMp
-	KufSd4spThqa1key/tUMzWfYqt8y5pIyFNCyUwZsSV7NNrQ654KFSuvrKkHrObUguP3Wa5
-	7o8STw/235cNhcwS3SYwb9/F2s4VTcw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710152771;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eNM87c4Pty4kQiOcgpWbP50DmgrTMGqlSYmym96AgQA=;
-	b=heVgMOLhP3IqOVq8cNg7apUdg0nDMfh3C8jMHwoK4GaahABQ8fZicHWnBnCv7B7iqL1eYm
-	BknV/ThzSjaSIyDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710152771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eNM87c4Pty4kQiOcgpWbP50DmgrTMGqlSYmym96AgQA=;
-	b=xGMqr62qCiz4yIvIN3++w6xKIzmJdJWxQKc0ICWl90bZER3GzEftkgou93bFwoOgCsfLMp
-	KufSd4spThqa1key/tUMzWfYqt8y5pIyFNCyUwZsSV7NNrQ654KFSuvrKkHrObUguP3Wa5
-	7o8STw/235cNhcwS3SYwb9/F2s4VTcw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710152771;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eNM87c4Pty4kQiOcgpWbP50DmgrTMGqlSYmym96AgQA=;
-	b=heVgMOLhP3IqOVq8cNg7apUdg0nDMfh3C8jMHwoK4GaahABQ8fZicHWnBnCv7B7iqL1eYm
-	BknV/ThzSjaSIyDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	bh=H//5iIeYe7oQRy/0AyjUfWh+gF2wOrcp5xlLc4v3Q74=;
+	b=fZEQPrZMk4AgF+2d7bv0M/4Uyp/cv8UvfL7w2ytblEIuziBl5U9idaSh+7WVs+zUka3q67
+	IPh9PjeXSPww1ZF3qlW929xPMl6uW3s0haBQ02NuCFngt5VLAyDpViSpiuzhjVKn6tqANh
+	zt1j6r7ji8bV6rvH0lecqrF7BWf6nEc=
+Received: from localhost (unknown [213.235.133.102])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B7983136BA;
-	Mon, 11 Mar 2024 10:26:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aOiUKULc7mUvGgAAD6G6ig
-	(envelope-from <lhenriques@suse.de>); Mon, 11 Mar 2024 10:26:10 +0000
-Received: from localhost (brahms.olymp [local])
-	by brahms.olymp (OpenSMTPD) with ESMTPA id eb1f437d;
-	Mon, 11 Mar 2024 10:26:05 +0000 (UTC)
-From: Luis Henriques <lhenriques@suse.de>
-To: Jan Kara <jack@suse.cz>
-Cc: Christian Brauner <brauner@kernel.org>,  Theodore Ts'o <tytso@mit.edu>,
-  Andreas Dilger <adilger.kernel@dilger.ca>,  Alexander Viro
- <viro@zeniv.linux.org.uk>,  Miklos Szeredi <miklos@szeredi.hu>,  Amir
- Goldstein <amir73il@gmail.com>,  linux-ext4@vger.kernel.org,
-  linux-fsdevel@vger.kernel.org,  linux-unionfs@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] fs_parser: handle parameters that can be empty and
- don't have a value
-In-Reply-To: <20240308230911.r5a4xn6f5vp24hil@quack3> (Jan Kara's message of
-	"Sat, 9 Mar 2024 00:09:11 +0100")
-References: <20240229163011.16248-1-lhenriques@suse.de>
-	<20240229163011.16248-2-lhenriques@suse.de>
-	<20240301-gegossen-seestern-683681ea75d1@brauner>
-	<87il269crs.fsf@suse.de> <20240307151356.ishrtxrsge2i5mjn@quack3>
-	<20240308-fahrdienst-torten-eae8f3eed3b4@brauner>
-	<87a5n9t4le.fsf@suse.de> <20240308230911.r5a4xn6f5vp24hil@quack3>
-Date: Mon, 11 Mar 2024 10:26:05 +0000
-Message-ID: <87r0gh6p4y.fsf@suse.de>
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: karelb)
+	by gimli.ms.mff.cuni.cz (Postfix) with ESMTPSA id 5B8F5457B68;
+	Mon, 11 Mar 2024 11:25:40 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[4];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_LAST(0.00)[];
-	 FREEMAIL_CC(0.00)[kernel.org,mit.edu,dilger.ca,zeniv.linux.org.uk,szeredi.hu,gmail.com,vger.kernel.org];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 11 Mar 2024 11:26:16 +0100
+Message-Id: <CZQUKBQF1GZ9.3RSNW5WQBU9L6@gimli.ms.mff.cuni.cz>
+Cc: "Lee Jones" <lee@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Liam Girdwood" <lgirdwood@gmail.com>, "Mark Brown"
+ <broonie@kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+ <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
+Subject: Re: [RFC PATCH v3 4/5] input: add onkey driver for Marvell 88PM886
+ PMIC
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Dmitry
+ Torokhov" <dmitry.torokhov@gmail.com>
+From: "Karel Balej" <karelb@gimli.ms.mff.cuni.cz>
+References: <20240303101506.4187-1-karelb@gimli.ms.mff.cuni.cz>
+ <20240303101506.4187-5-karelb@gimli.ms.mff.cuni.cz>
+ <ZeTgEmjJc_VhYpLm@google.com>
+ <CZL8ZSZAVEBI.349BV2Y6AKIPN@gimli.ms.mff.cuni.cz>
+ <ZeZxI_spu4vwxrs7@google.com>
+ <CZQ1EP61IDOC.1PPYGMIOINGND@gimli.ms.mff.cuni.cz>
+ <3601a374-4161-40e1-8a80-9bbfdae5bd8a@linaro.org>
+In-Reply-To: <3601a374-4161-40e1-8a80-9bbfdae5bd8a@linaro.org>
 
-Jan Kara <jack@suse.cz> writes:
-
-> On Fri 08-03-24 10:12:13, Luis Henriques wrote:
->> Christian Brauner <brauner@kernel.org> writes:
->>=20
->> > On Thu, Mar 07, 2024 at 04:13:56PM +0100, Jan Kara wrote:
->> >> On Fri 01-03-24 15:45:27, Luis Henriques wrote:
->> >> > Christian Brauner <brauner@kernel.org> writes:
->> >> >=20
->> >> > > On Thu, Feb 29, 2024 at 04:30:08PM +0000, Luis Henriques wrote:
->> >> > >> Currently, only parameters that have the fs_parameter_spec 'type=
-' set to
->> >> > >> NULL are handled as 'flag' types.  However, parameters that have=
- the
->> >> > >> 'fs_param_can_be_empty' flag set and their value is NULL should =
-also be
->> >> > >> handled as 'flag' type, as their type is set to 'fs_value_is_fla=
-g'.
->> >> > >>=20
->> >> > >> Signed-off-by: Luis Henriques <lhenriques@suse.de>
->> >> > >> ---
->> >> > >>  fs/fs_parser.c | 3 ++-
->> >> > >>  1 file changed, 2 insertions(+), 1 deletion(-)
->> >> > >>=20
->> >> > >> diff --git a/fs/fs_parser.c b/fs/fs_parser.c
->> >> > >> index edb3712dcfa5..53f6cb98a3e0 100644
->> >> > >> --- a/fs/fs_parser.c
->> >> > >> +++ b/fs/fs_parser.c
->> >> > >> @@ -119,7 +119,8 @@ int __fs_parse(struct p_log *log,
->> >> > >>  	/* Try to turn the type we were given into the type desired by=
- the
->> >> > >>  	 * parameter and give an error if we can't.
->> >> > >>  	 */
->> >> > >> -	if (is_flag(p)) {
->> >> > >> +	if (is_flag(p) ||
->> >> > >> +	    (!param->string && (p->flags & fs_param_can_be_empty))) {
->> >> > >>  		if (param->type !=3D fs_value_is_flag)
->> >> > >>  			return inval_plog(log, "Unexpected value for '%s'",
->> >> > >>  				      param->key);
->> >> > >
->> >> > > If the parameter was derived from FSCONFIG_SET_STRING in fsconfig=
-() then
->> >> > > param->string is guaranteed to not be NULL. So really this is only
->> >> > > about:
->> >> > >
->> >> > > FSCONFIG_SET_FD
->> >> > > FSCONFIG_SET_BINARY
->> >> > > FSCONFIG_SET_PATH
->> >> > > FSCONFIG_SET_PATH_EMPTY
->> >> > >
->> >> > > and those values being used without a value. What filesystem does=
- this?
->> >> > > I don't see any.
->> >> > >
->> >> > > The tempting thing to do here is to to just remove fs_param_can_b=
-e_empty
->> >> > > from every helper that isn't fs_param_is_string() until we actual=
-ly have
->> >> > > a filesystem that wants to use any of the above as flags. Will lo=
-se a
->> >> > > lot of code that isn't currently used.
->> >> >=20
->> >> > Right, I find it quite confusing and I may be fixing the issue in t=
+Krzysztof Kozlowski, 2024-03-10T21:35:36+01:00:
+> On 10/03/2024 12:35, Karel Balej wrote:
+> > Dmitry Torokhov, 2024-03-04T17:10:59-08:00:
+> >> On Mon, Mar 04, 2024 at 09:28:45PM +0100, Karel Balej wrote:
+> >>> Dmitry,
+> >>>
+> >>> Dmitry Torokhov, 2024-03-03T12:39:46-08:00:
+> >>>> On Sun, Mar 03, 2024 at 11:04:25AM +0100, Karel Balej wrote:
+> >>>>> From: Karel Balej <balejk@matfyz.cz>
+> >>>>>
+> >>>>> Marvell 88PM886 PMIC provides onkey among other things. Add client
+> >>>>> driver to handle it. The driver currently only provides a basic sup=
+port
+> >>>>> omitting additional functions found in the vendor version, such as =
+long
+> >>>>> onkey and GPIO integration.
+> >>>>>
+> >>>>> Signed-off-by: Karel Balej <balejk@matfyz.cz>
+> >>>>> ---
+> >>>>>
+> >>>>> Notes:
+> >>>>>     RFC v3:
+> >>>>>     - Drop wakeup-source.
+> >>>>>     RFC v2:
+> >>>>>     - Address Dmitry's feedback:
+> >>>>>       - Sort includes alphabetically.
+> >>>>>       - Drop onkey->irq.
+> >>>>>       - ret -> err in irq_handler and no initialization.
+> >>>>>       - Break long lines and other formatting.
+> >>>>>       - Do not clobber platform_get_irq error.
+> >>>>>       - Do not set device parent manually.
+> >>>>>       - Use input_set_capability.
+> >>>>>       - Use the wakeup-source DT property.
+> >>>>>       - Drop of_match_table.
+> >>>>
+> >>>> I only said that you should not be using of_match_ptr(), but you sti=
+ll
+> >>>> need to have of_match_table set and have MODULE_DEVICE_TABLE() for t=
 he
->> >> > wrong place.  What I'm seeing with ext4 when I mount a filesystem u=
-sing
->> >> > the option '-o usrjquota' is that fs_parse() will get:
->> >> >=20
->> >> >  * p->type is set to fs_param_is_string
->> >> >    ('p' is a struct fs_parameter_spec, ->type is a function)
->> >> >  * param->type is set to fs_value_is_flag
->> >> >    ('param' is a struct fs_parameter, ->type is an enum)
->> >> >=20
->> >> > This is because ext4 will use the __fsparam macro to set define a
->> >> > fs_param_spec as a fs_param_is_string but will also set the
->> >> > fs_param_can_be_empty; and the fsconfig() syscall will get that par=
-ameter
->> >> > as a flag.  That's why param->string will be NULL in this case.
->> >>=20
->> >> So I'm a bit confused here. Valid variants of these quota options are=
- like
->> >> "usrjquota=3D<filename>" (to set quota file name) or "usrjquota=3D" (=
-to clear
->> >> quota file name). The variant "usrjquota" should ideally be rejected
->> >> because it doesn't make a good sense and only adds to confusion. Now =
-as far
->> >> as I'm reading fs/ext4/super.c: parse_options() (and as far as my tes=
-ting
->> >> shows) this is what is happening so what is exactly the problem you're
->> >> trying to fix?
->> >
->> > mount(8) has no way of easily knowing that for something like
->> > mount -o usrjquota /dev/sda1 /mnt that "usrjquota" is supposed to be
->> > set as an empty string via FSCONFIG_SET_STRING. For mount(8) it is
->> > indistinguishable from a flag because it's specified without an
->> > argument. So mount(8) passes FSCONFIG_SET_FLAG and it seems strange th=
-at
->> > we should require mount(8) to know what mount options are strings or n=
-o.
->> > I've ran into this issue before myself when using the mount api
->> > programatically.
->>=20
->> Right.  A simple usecase is to try to do:
->>=20
->>   mount -t ext4 -o usrjquota=3D /dev/sda1 /mnt/
->>=20
->> It will fail, and this has been broken for a while.
+> >>>> proper module loading support.
+> >>>
+> >>> I removed of_match_table because I no longer need compatible for this=
+ --
+> >>> there are no device tree properties and the driver is being instantia=
+ted
+> >>> by the MFD driver.
+> >>>
+> >>> Is the MODULE_DEVICE_TABLE() entry needed for the driver to probe whe=
+n
+> >>> compiled as module? If that is the case, given what I write above, am=
+ I
+> >>> correct that MODULE_DEVICE_TABLE(platform,...) would be the right thi=
+ng
+> >>> to use here?
+> >>
+> >> Yes, if uevent generated for the device is "platform:<name>" then
+> >> MODULE_DEVICE_TABLE(platform,...) will suffice. I am not sure how MFD
+> >> sets it up (OF modalias or platform), but you should be able to check
+> >> the format looking at the "uevent" attribute for your device in sysfs
+> >> (/sys/devices/bus/platform/...).=20
+> >=20
+> > The uevent is indeed platform.
+> >=20
+> > But since there is only one device, perhaps having a device table is
+> > superfluous and using `MODULE_ALIAS("platform:88pm886-onkey")` is more
+> > fitting?
 >
-> I see. But you have to have new enough mount that is using fsconfig, don't
-> you? Because for me in my test VM this works just fine...
-
-Oh, interesting.  FTR I'm using mount from util-linux 2.39.3, but I
-haven't tried this with older versions.
-
-Cheers,
---=20
-Lu=C3=ADs
-
-
+> Adding aliases for standard IDs and standard cases is almost never
+> correct. If you need module alias, it means your ID table is wrong (or
+> missing, which is usually wrong).
 >
-> But anyway, I get the point. Thanks for educating me :)
+> >=20
+> > Although I don't understand why this is even necessary when the driver
+> > name is such and the module is registered using
+> > `module_platform_driver`...
 >
-> 								Honza
-> --=20
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> ID table and MODULE_DEVICE_TABLE() are necessary for modprobe to work.
+
+I think I understand the practical reasons. My point was that I would
+expect the alias to be added automatically even in the case that the
+device table is absent based solely on the driver name and the
+registration method (*module*_*platform*_driver). Why is that not the
+case? Obviously the driver name matching the mfd_cell name is sufficient
+for the driver to probe when it is built in so the name does seem to
+serve as some identification for the device just as a device table entry
+would.
+
+Furthermore, drivers/input/serio/ioc3kbd.c does not seem to have an ID
+table either, nor a MODULE_ALIAS -- is that a mistake? If not, what
+mechanism causes the driver to probe when compiled as a module? It seems
+to me to effectively be the same setup as with my driver and that does
+not load automatically (because of the missing alias).
+
+> Just run `modinfo`.
+
+Thank you very much,
+K. B.
 
