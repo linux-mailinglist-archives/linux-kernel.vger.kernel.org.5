@@ -1,141 +1,95 @@
-Return-Path: <linux-kernel+bounces-98556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A90D877BF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:53:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79165877BF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:54:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AF011C20D71
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:53:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34556281990
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:54:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA04E12B97;
-	Mon, 11 Mar 2024 08:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C754512E48;
+	Mon, 11 Mar 2024 08:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="sHrHGthp"
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kVsZEDEL"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFBA125C4
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 08:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967B514275;
+	Mon, 11 Mar 2024 08:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710147231; cv=none; b=pRzgwIhRr8dEqOAq9q7O7X1nnirS0fOBWlUHuu/KxqK7BfyiNE1aBpEjVbE6hmN6MLVQ9CbvYoaBkDD+m5sIgqIg7zUnVdw6Qn6gL3eK7/C80KnLftzrjjoHI+tadVBG2YdVrbUqehLRfDsasoqOHfMTZGiJw7l1gOmv7GYUuLE=
+	t=1710147255; cv=none; b=Wu6ouAWvz3zy1s2rOGVxN0/XGfvwpWsTrNxs7GaQuU3MrhHFKvMgYCUSEw0zuPT5RfnOQvQlnIntdz1lVKuRTNoYxNCfDMuTsNvhvZ6n/Kh7Jsd0yTyflQhj2jCb6kvQAK34wq3x20GQZNu91DqWZrRdBTkDGekWmnL6MdASwHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710147231; c=relaxed/simple;
-	bh=fnGQK5mpYPky2EtgEWQVbUO7rqbWN3odhtSAfHQlY20=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=V3VbOUvZDFpMU0dWqTWk+kTEHeTTj/SVXIyP86cifu28KocOKuRYS0El2BRbMfp/najweoLGajvzFYEyLsHwZkbiCUO28B5q6rCUn/yEMG6QHakcz5cfks/3uDoQW0X1iv/He8HioC8AnoJ+qpW7mTYov34LhbJDNfyWjtiLAfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=sHrHGthp; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4TtVtf1CRMz9sZh;
-	Mon, 11 Mar 2024 09:53:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-	s=MBO0001; t=1710147226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tBxxMeFHaNTIFVvrYkndR+gcWNWRWVLtfGRhdSP2/6o=;
-	b=sHrHGthpynjybtW3iaYqn4VDz8W2mUnv6z71ZcETVBTQpDmc7sauHjv28wVIESNz/NT4JO
-	/eVM/ApgVTwerUaZtR+crPq/PZ9QfQrPX1WDUb9R/U+hQMeqrmn84ffVdA6EYR8U8fVs6Q
-	6MKWrZ3VMg106rd65FLMhOoNk88XdMcm1C0OOax6wn91vCLFoo+dRCog61XZh0FdNhLrDV
-	G4ztOUTIEG0WWo+/ygkJP0lKF5CIN1zlM1Yx+VoYodoBkIzP1n5ZyULYJ9x4RqUUP0uzUp
-	U3GKlswqNYL8bbUzk07xidLNJSJeVygSFU7YDvFnpK2JjH330jL778xHvnsOSw==
-From: Frank Oltmanns <frank@oltmanns.dev>
-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <x@xnux.eu>
-Cc: Maxime Ripard <mripard@kernel.org>,  Chen-Yu Tsai <wens@csie.org>,
-  Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,  Thomas Zimmermann
- <tzimmermann@suse.de>,  David Airlie <airlied@gmail.com>,  Daniel Vetter
- <daniel@ffwll.ch>,  Jernej Skrabec <jernej.skrabec@gmail.com>,  Samuel
- Holland <samuel@sholland.org>,  Icenowy Zheng <uwu@icenowy.me>,
-  dri-devel@lists.freedesktop.org,  linux-arm-kernel@lists.infradead.org,
-  linux-sunxi@lists.linux.dev,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/sun4i: tcon: Support keeping dclk rate upon
- ancestor clock changes
-In-Reply-To: <s3iqqnqiqnlujncbb6vnip7hvofgbom54on7fx4hxmyfsk2v2w@gbvpkptsa5g3>
-	(=?utf-8?Q?=22Ond=C5=99ej?= Jirman"'s message of "Sun, 10 Mar 2024 23:23:57
- +0100")
-References: <20240310-tcon_keep_stable_rate-v1-1-0296b0a85c02@oltmanns.dev>
-	<s3iqqnqiqnlujncbb6vnip7hvofgbom54on7fx4hxmyfsk2v2w@gbvpkptsa5g3>
-Date: Mon, 11 Mar 2024 09:53:41 +0100
-Message-ID: <87le6pcfoq.fsf@oltmanns.dev>
+	s=arc-20240116; t=1710147255; c=relaxed/simple;
+	bh=zjl/ZMJ0u3UyGd8OiCAQ8mhecl2n7u9/YwXUtVa6vOM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=RbnSWLsT0wbEa1XUM6mRD7Bxozx76I6f3tE60+z23BlsYSn/1VR0NdaUhpGD7YuDTWMaiDKizo4Z3WsicS4WIcyFRtkaaNmkmSu8WkJ0WQlNtK6t2h9JVWxQe14VchLIoBzE0MWP2J2mCSWoAyXXecdcFxabquKgptaEoSFw6uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kVsZEDEL; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a28a6cef709so400118366b.1;
+        Mon, 11 Mar 2024 01:54:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710147252; x=1710752052; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zjl/ZMJ0u3UyGd8OiCAQ8mhecl2n7u9/YwXUtVa6vOM=;
+        b=kVsZEDELK5TaNBxuNcI0KGlHzukrUW2BaUyS3+qL7Y26IGtwcRMKRGmWLdhG9fey5W
+         zvxj2AqRP7QJhNA4mMFiJ3Z/vBXB6zLJywCVCu/WwFsZL1DS49r/MMdADmlI5s//i0nL
+         b7eYsdkfT+Zvlq9VrG9SeJLdplqyQbIRW1f07VinpZgluoBRsjggNflrxPbab41CMHiC
+         oJD8GgEuJ/xtgcKdTm5vzII6Ye+35COuztjrjd1HokVLa3IsLIRTS4XxhTwYQr2W66p/
+         V2PymaxeUDcggzuWygy0xX8kHf4ZM0vCoqfdgJs2lq75k+DeJN+3sFasyiMqaZYiFL4k
+         XZpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710147252; x=1710752052;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zjl/ZMJ0u3UyGd8OiCAQ8mhecl2n7u9/YwXUtVa6vOM=;
+        b=CdK8To704RUXsIvD3qCo3I6Tx6SInxuPkvIZNqqUpW5YGlQc9MCcb8w1fZdihNMh6f
+         npTCbgoVlkRcCnB9pvwyF4wOjIxsuq7k/UdCxbsNvPS7OrBEjB/DhigNya7060BjwuWc
+         u+t1x7em2HmYHZox8FTGOYfSPhgEOBDgd2JXq6XLlj2RFvLr0xW7A+1Dc1p1rtyQ9jcE
+         D596fVmTAQDjhPtvmnDM0PuxbZI6VaiWuvFX+vzWr0KoTefHHt3JwK1ryVN1A8eMzdkN
+         tYgODlAuH4mpA0jFFIDhrQnpo4rq4M7LnU99S1yZxDXyumAG+3H9Bc0I+ZktbhpO12Sl
+         cpRw==
+X-Forwarded-Encrypted: i=1; AJvYcCVDiX0MjdCi2Xl3xN4xV87Us6d4ZGKCL3s7f2ezmXnV7ZKN4H17eb4WdIYfO/TbYmYuobT0a7O/VUI13tRS9+HQhgIKtv5FudSHbjsQwtKgd15sHXjkyZCsCS62EUsOI916S2Qowr5hGUlJyy2/oPArDyR/yAVC97OTaKKS1ulsCqcdBSZ4C3AI
+X-Gm-Message-State: AOJu0YylZArZwDYiMWOMb1kZLHE3baS3CVZ8BAuLvTX4uC1Wvi0A1Omy
+	O7ov3bolGenhkh4AL/Ye5z2n2QlyH8RtD3SgrF3uE8QDwvpBKi5x
+X-Google-Smtp-Source: AGHT+IFT6TXip3cIv42+mayOPyoOa3YQVhKoI3pYPvMAuNdvx1lgILjvxIdnpKJorYhPPnkmghxVmw==
+X-Received: by 2002:a17:907:d40d:b0:a46:17dd:33da with SMTP id vi13-20020a170907d40d00b00a4617dd33damr3172904ejc.29.1710147248854;
+        Mon, 11 Mar 2024 01:54:08 -0700 (PDT)
+Received: from standask-GA-A55M-S2HP (lu-nat-113-247.ehs.sk. [188.123.113.247])
+        by smtp.gmail.com with ESMTPSA id x19-20020a1709064bd300b00a44e2f3024bsm2649396ejv.68.2024.03.11.01.54.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 01:54:08 -0700 (PDT)
+Date: Mon, 11 Mar 2024 09:54:05 +0100
+From: Stanislav Jakubek <stano.jakubek@gmail.com>
+To: stano.jakubek@gmail.com
+Cc: baolin.wang7@gmail.com, baolin.wang@linux.alibaba.com,
+	conor+dt@kernel.org, devicetree@vger.kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, linux@roeck-us.net,
+	orsonzhai@gmail.com, robh@kernel.org, wim@linux-watchdog.org,
+	zhang.lyra@gmail.com
+Subject: Re: [PATCH] dt-bindings: watchdog: sprd,sp9860-wdt: convert to YAML
+Message-ID: <Ze7GreWtuUtMh6MK@standask-GA-A55M-S2HP>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 4TtVtf1CRMz9sZh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdDUlGdqH7Qv3SDu@standask-GA-A55M-S2HP>
 
-Hello Ond=C5=99ej,
+Hi all,
 
-On 2024-03-10 at 23:23:57 +0100, Ond=C5=99ej Jirman <x@xnux.eu> wrote:
-> Hello Frank,
->
-> On Sun, Mar 10, 2024 at 02:32:29PM +0100, Frank Oltmanns wrote:
->> +static int sun4i_rate_reset_notifier_cb(struct notifier_block *nb,
->> +				      unsigned long event, void *data)
->> +{
->> +	struct sun4i_rate_reset_nb *rate_reset =3D to_sun4i_rate_reset_nb(nb);
->> +
->> +	if (event =3D=3D POST_RATE_CHANGE)
->> +		schedule_delayed_work(&rate_reset->reset_rate_work, msecs_to_jiffies(=
-100));
->
-> If you get multiple reset notifier calls within 100ms of the first one,
-> the delay from the last one will not be 100ms, so this may violate expect=
-ations
-> you're describing in the commit message.
+I was about to remind people that this patch exists, but apparently it
+already got applied without notice? Seems like it's in linux-next already.
 
-Let me start by saying, the implicit expectation is that the new user of
-pll-video0 will get an exclusive lock on pll-video0 (otherwise,
-data-clock would reset pll-video0 after those 100ms rendering the whole
-endeavor of the new user pointless). This constraint makes the chances
-that the above event (two consecutive rate changes within 100ms) occurs
-very slim.
-
-That being said, I don't see a problem with cancelling the delayed work
-on PRE_RATE_CHANGE and restarting it on ABORT_RATE_CHANGE like this:
-
-+static int sun4i_rate_reset_notifier_cb(struct notifier_block *nb,
-+				      unsigned long event, void *data)
-+{
-+	struct sun4i_rate_reset_nb *rate_reset =3D to_sun4i_rate_reset_nb(nb);
-+
-+	if (event =3D=3D PRE_RATE_CHANGE) {
-+		rate_reset->is_cancelled =3D cancel_delayed_work(&rate_reset->reset_rate=
-_work);
-+	} else if ((event =3D=3D POST_RATE_CHANGE) ||
-+		 (event =3D=3D ABORT_RATE_CHANGE) && rate_reset->is_cancelled) {
-+		schedule_delayed_work(&rate_reset->reset_rate_work, msecs_to_jiffies(100=
-));
-+		rate_reset->is_cancelled =3D false;
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-
-The need for this new code is slim (IMHO) but on the other hand it
-doesn't add much complexity. I'll add it in V2 including the
-is_cancelled member in sun4i_rate_reset_nb if I don't receive any
-objections during this week.
-
-Thanks,
-  Frank
-
->
-> schedule_delayed_work doesn't re-schedule the work if it's already pendin=
-g.
->
-> Kind regards,
-> 	o.
+Stanislav
 
