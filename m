@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-98774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB60877F36
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39977877F3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B874CB219B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:42:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA174B217D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE7B3B796;
-	Mon, 11 Mar 2024 11:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631443BBCF;
+	Mon, 11 Mar 2024 11:44:50 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904E62C69A
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B2F3B78E;
+	Mon, 11 Mar 2024 11:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710157363; cv=none; b=HWqejbFQXJXwoiPxr3HOKlFcMZdvH2AsAq1f30+OzbcjBdF3swRBlgGHVAWn3roVS7RMhKHERwjbeAVdO4cmyz0kObw4R9Otzd83tyKRR/8668fZCeNQUY6FEuUkX+kpw6FlZTh/mi4FFIXoU3Ee62eDK+GN4urmD+D/q49SMm8=
+	t=1710157490; cv=none; b=tYRuGduxdOhOjKJvpXaF61aFpgOHpeB081hz+ePoA0zxxhanSXWOjWUZtmqD7cZPy4EcUEWD6MFgmJ/grqz0X/Wy1kqPfDtWJqKOqkK7I/PXDFma3b5Pnxj77FtC+cJjSCCCeombj4fP8VzQSuS45SBXzXsJFZMFg1T9lW/kvtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710157363; c=relaxed/simple;
-	bh=QJ8mCU78FrXZ6n5IJs2I64RMXveWUU9Gf3SWRWrxCv0=;
+	s=arc-20240116; t=1710157490; c=relaxed/simple;
+	bh=ScauDxIHPpzPMivn0k7nmNQRb13dHQ5538K1RuMQE+o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hz3oFwWFjezlDX/GY/m+2b1s9zJPS7PoyyqEuMz1Zl3TftdDygPU/F59Yy1DVbMcwazWYpPjp5OoEolrAvWfFU9TRCztSS9e3XBV0Rl8SaWwfIeUA1M524s8KjXnKLntS90TciLZjnsR03x5ulzcLIe04V2KSloArjz4vKzC+Gk=
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ul+9LMWgFjaKHli813CeFiL/hAOPGa7e5o0V/Q9tcF/gOhRliDEhFrmXyeX3ZKrCtIFpHF8MROyxKdK7iZIWTJk4Aes2lRW4dB+K92PP3/J3aQt4TKB2NUW/7/dN8Z6cpFsDNz0iuE5DYqWPBZuzDucnL+fsb5svUUVyi6T5wSw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42127FEC;
-	Mon, 11 Mar 2024 04:43:16 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.70.189])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACF2E3F64C;
-	Mon, 11 Mar 2024 04:42:36 -0700 (PDT)
-Date: Mon, 11 Mar 2024 11:42:29 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Changbin Du <changbin.du@huawei.com>
-Cc: Ingo Molnar <mingo@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	kasan-dev@googlegroups.com, linux-mm@kvack.org,
-	Alexander Potapenko <glider@google.com>,
-	linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>
-Subject: Re: [PATCH] mm: kmsan: fix instrumentation recursion on preempt_count
-Message-ID: <Ze7uJUynNXDjLmmn@FVFF77S0Q05N>
-References: <20240311112330.372158-1-changbin.du@huawei.com>
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C30691007;
+	Mon, 11 Mar 2024 04:45:23 -0700 (PDT)
+Received: from e130802.arm.com (unknown [10.57.15.44])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D00DA3F64C;
+	Mon, 11 Mar 2024 04:44:43 -0700 (PDT)
+Date: Mon, 11 Mar 2024 11:44:42 +0000
+From: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
+To: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Drew.Reed@arm.com,
+	Adam.Johnston@arm.com, linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH 1/3] remoteproc: Add Arm remoteproc driver
+Message-ID: <20240311114442.GA82865@e130802.arm.com>
+References: <20240301164227.339208-1-abdellatif.elkhlifi@arm.com>
+ <20240301164227.339208-2-abdellatif.elkhlifi@arm.com>
+ <ZeYWKVpeFm1+4mlT@p14s>
+ <20240307194026.GA355455@e130802.arm.com>
+ <CANLsYkzA20rQdTM6AOvFK=3o28GvcoRbckL=ri8RegHqyHaiCw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,55 +59,107 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240311112330.372158-1-changbin.du@huawei.com>
+In-Reply-To: <CANLsYkzA20rQdTM6AOvFK=3o28GvcoRbckL=ri8RegHqyHaiCw@mail.gmail.com>
 
-On Mon, Mar 11, 2024 at 07:23:30PM +0800, Changbin Du wrote:
-> This disables msan check for preempt_count_{add,sub} to fix a
-> instrumentation recursion issue on preempt_count:
+Hi Mathieu,
+
+On Fri, Mar 08, 2024 at 09:44:26AM -0700, Mathieu Poirier wrote:
+> On Thu, 7 Mar 2024 at 12:40, Abdellatif El Khlifi
+> <abdellatif.elkhlifi@arm.com> wrote:
+> >
+> > Hi Mathieu,
+> >
+> > > > +   do {
+> > > > +           state_reg = readl(priv->reset_cfg.state_reg);
+> > > > +           *rst_ack = EXTSYS_RST_ST_RST_ACK(state_reg);
+> > > > +
+> > > > +           if (*rst_ack == EXTSYS_RST_ACK_RESERVED) {
+> > > > +                   dev_err(dev, "unexpected RST_ACK value: 0x%x\n",
+> > > > +                           *rst_ack);
+> > > > +                   return -EINVAL;
+> > > > +           }
+> > > > +
+> > > > +           /* expected ACK value read */
+> > > > +           if ((*rst_ack & exp_ack) || (*rst_ack == exp_ack))
+> > >
+> > > I'm not sure why the second condition in this if() statement is needed.  As far
+> > > as I can tell the first condition will trigger and the second one won't be
+> > > reached.
+> >
+> > The second condition takes care of the following: exp_ack and  *rst_ack are both 0.
+> > This case happens when RST_REQ bit is cleared (meaning: No reset requested) and
+> > we expect the RST_ACK to be 00 afterwards.
+> >
 > 
->   __msan_metadata_ptr_for_load_4() -> kmsan_virt_addr_valid() ->
-> 	preempt_disable() -> __msan_metadata_ptr_for_load_4()
+> This is the kind of conditions that definitely deserve documentation.
+> Please split the conditions in two different if() statements and add a
+> comment to explain what is going on.
+
+Thanks, I'll address that.
+
 > 
-> With this fix, I was able to run kmsan kernel with:
->   o CONFIG_DEBUG_KMEMLEAK=n
->   o CONFIG_KFENCE=n
->   o CONFIG_LOCKDEP=n
+> > > > +/**
+> > > > + * arm_rproc_load() - Load firmware to memory function for rproc_ops
+> > > > + * @rproc: pointer to the remote processor object
+> > > > + * @fw: pointer to the firmware
+> > > > + *
+> > > > + * Does nothing currently.
+> > > > + *
+> > > > + * Return:
+> > > > + *
+> > > > + * 0 for success.
+> > > > + */
+> > > > +static int arm_rproc_load(struct rproc *rproc, const struct firmware *fw)
+> > > > +{
+> > >
+> > > What is the point of doing rproc_of_parse_firmware() if the firmware image is
+> > > not loaded to memory?  Does the remote processor have some kind of default ROM
+> > > image to run if it doesn't find anything in memory?
+> >
+> > Yes, the remote processor has a default FW image already loaded by default.
+> >
 > 
-> KMEMLEAK and KFENCE generate too many false positives in unwinding code.
-> LOCKDEP still introduces instrumenting recursions issue. But these are
-> other issues expected to be fixed.
+> That too would have mandated a comment - otherwise people looking at
+> the code are left wondering, as I did.
 > 
-> Cc: Marco Elver <elver@google.com>
-> Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> ---
->  kernel/sched/core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> > rproc_boot() [1] and _request_firmware() [2] fail if there is no FW file in the filesystem or a filename
+> > provided.
+> >
+> > Please correct me if I'm wrong.
 > 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 9116bcc90346..5b63bb98e60a 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5848,7 +5848,7 @@ static inline void preempt_latency_start(int val)
->  	}
->  }
->  
-> -void preempt_count_add(int val)
-> +void __no_kmsan_checks preempt_count_add(int val)
->  {
->  #ifdef CONFIG_DEBUG_PREEMPT
->  	/*
-> @@ -5880,7 +5880,7 @@ static inline void preempt_latency_stop(int val)
->  		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
->  }
+> You are correct, the remoteproc subsystem expects a firmware image to
+> be provided _and_ loaded into memory.  Providing a dummy image just to
+> get the remote processor booted is a hack, but simply because the
+> subsystem isn't tailored to handle this use case.  So I am left
+> wondering what the plans are for this driver, i.e is this a real
+> scenario that needs to be addressed or just an initial patchset to get
+> a foundation for the driver.
+> 
+> In the former case we need to start talking about refactoring the
+> subsystem so that it properly handles remote processors that don't
+> need a firmware image.  In the latter case I'd rather see a patchset
+> where the firmware image is loaded into RAM.
 
-What prevents a larger loop via one of the calles of preempt_count_{add,sub}()
+This is an initial patchset for allowing to turn on and off the remote processor.
+The FW is already loaded before the Corstone-1000 SoC is powered on and this
+is done through the FPGA board bootloader in case of the FPGA target. Or by the Corstone-1000 FVP model
+(emulator).
 
-For example, via preempt_latency_{start,stop}() ?
+The plan for the driver is as follows:
 
-.. or via some *other* instrumentation that might be placed in those?
+Step 1: provide a foundation driver capable of turning the core on/off
 
-I suspect we should be using noinstr or __always_inline in a bunch of places to
-clean this up properly.
+Step 2: provide mailbox support for comms
 
-Mark.
+Step 3: provide FW reload capability
+
+Steps 2 & 3 are waiting for a HW update so the Cortex-A35 (running Linux) can share memory with
+the remote core.
+
+I'm happy to provide more explanation in the commit log to reflect this status.
+
+Is it OK that we go with step 1 as a foundation please ?
+
+Cheers
+Abdellatif
 
