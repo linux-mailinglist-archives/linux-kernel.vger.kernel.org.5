@@ -1,102 +1,89 @@
-Return-Path: <linux-kernel+bounces-99430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C19A387882F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:52:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0692878831
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:52:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46C70B2429D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:52:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4092A1F231FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF3F664DB;
-	Mon, 11 Mar 2024 18:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51BEA5BAFC;
+	Mon, 11 Mar 2024 18:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RZrX1bLy"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="T1oFG8Kx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D7F664D4;
-	Mon, 11 Mar 2024 18:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8759F5BAD7;
+	Mon, 11 Mar 2024 18:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710182437; cv=none; b=tZV7hmf1mR7evqAsejS3GikNmrLnx66WKB/y5mq4eZ8D2ONJdcQVAWqN3vySqv2UMelPNVs7xMYAOfYkEPh/OBtzjYGRdf/iVj3BKbhwiMKiyLiXGsLpaUKq/OFW/swN2c+R/zbC7bcfvLhTDa5b7S62cO9YEa5oyDU6FCf7mfw=
+	t=1710182445; cv=none; b=BNzA943TAS0hwNGSmnKaAY3K3QQM1+ClNSxcbiIliTt2Am1CV5AMIDcSqWtEwzb402kPieyKWrVT9TekXE5Mgjst3b5q4jLZtlEvIyeo7+fmrYD5UpxfvFThBHql2tnSeGqN7Qm46RONRkIW1KlfG+0pXUxkBCbz25CbeCrCjxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710182437; c=relaxed/simple;
-	bh=NbFoFKDFJZ/lAIRyGGvrwioKM5cI7LsQ0SBfnOwu3Sg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qpA4+3MKvBVJzZiPKjoFGHOxbkGecGk394QzxG2rCa4vLv1FIhbzjbgSsrK6Ow1z3LevJW9l/Tfjwhs+yl7MhUvo2SpipdhLCFd6vf1UGswhe27YdbOkBrqjTg456A8g/+n82EVpJdENeR1zR+Ofl++BmflJYBwK+clbBa5WVhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RZrX1bLy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32B7EC43399;
-	Mon, 11 Mar 2024 18:40:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710182437;
-	bh=NbFoFKDFJZ/lAIRyGGvrwioKM5cI7LsQ0SBfnOwu3Sg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RZrX1bLyIzljat8nEoaKKSd2xkU1YoZFY0lNKZarRlrtwm87McyvJbOFyIhgPS3Oq
-	 xSlcaE/s6dag8E9JSBWQKLcx23JGnxwHvPReBsjXiUBqQYweGpFOffDNuLPBUHvrco
-	 qCpf7rQvBS2uGv4oMpAzd3KQ/wSWPLu3M0MfGmtZqlJHMs0zCqFlE7fYbSB/1jJ9FM
-	 C+miP+9lMGbLDU+G+tx5f4Uw9WiuZGfj3aTBjfas3wkm9D0mCR5wzlZQ7Jb87fr9uk
-	 DWzRGp0HCcfIzGBcMRuxTY8xx7aKd+oCAUfMJlUVyAsIYuB02zOQ6CwHfgLxa0GFQT
-	 M/TuksDGEh3TQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Stuart Henderson <stuarth@opensource.cirrus.com>,
-	Mark Brown <broonie@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	patches@opensource.cirrus.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.19 5/5] ASoC: wm8962: Fix up incorrect error message in wm8962_set_fll
-Date: Mon, 11 Mar 2024 14:40:11 -0400
-Message-ID: <20240311184011.329314-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240311184011.329314-1-sashal@kernel.org>
-References: <20240311184011.329314-1-sashal@kernel.org>
+	s=arc-20240116; t=1710182445; c=relaxed/simple;
+	bh=7QgKIaP0/c6SHvgH07U88g9EjC4h7z7/QxEQtSagdEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SLVhLRTmZkOr2oo6oxxAr0KRZ7b3M0jgEhyz6AC8U3EpDE78dhssLkdtV3XooF6iHcXDKfrLOmr3iDA9N1hqJSdM0W7kRTDPhihZeeA8wpjbAb7UKfdLAjzeMbsaFEeQmYjP7HgFoSp0lHAvp0u3jTaQIuw6zp5ItbtI0OXBcmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=T1oFG8Kx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17DE4C433F1;
+	Mon, 11 Mar 2024 18:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1710182445;
+	bh=7QgKIaP0/c6SHvgH07U88g9EjC4h7z7/QxEQtSagdEQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T1oFG8KxDff2oPYjT41rHf5VSCQZrmhiUs46Nx6XyMTn7TmO70UNEZ8rwtwadwh0s
+	 v8ubwKGotwqP1BbwAI5ShIZR1cJwuCsypNYN+Icwsf+rrkmFmZfZlGp9+2b9fL+7iJ
+	 DqTk+ROJ46nw4HjEdfaeMVY/PbHVNeored29YxZU=
+Date: Mon, 11 Mar 2024 14:40:44 -0400
+From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Simon Horman <horms@kernel.org>, 
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>, Andrew Lunn <andrew@lunn.ch>, 
+	Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/4] net: dsa: realtek: keep default LED state
+ in rtl8366rb
+Message-ID: <20240311-chowchow-of-premium-piety-9e4a0d@lemur>
+References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
+ <20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
+ <388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
+ <20240310113738.GA1623@kernel.org>
+ <09793a72-bfe5-4cb5-a6da-ffee565e6956@kernel.org>
+ <20240311091111.53191e08@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.309
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240311091111.53191e08@kernel.org>
 
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
+On Mon, Mar 11, 2024 at 09:11:11AM -0700, Jakub Kicinski wrote:
+> > OK, then this is v2. RFC is state of patch, not some sort of version. Or
+> > just use b4 which handles this automatically...
+> 
+> Eh, hum. He does according to the X-Mailer header. More importantly
+> I thought the RFC to PATCH transition resetting version numbering
+> is how we always operated. Maybe b4 should be fixed?
 
-[ Upstream commit 96e202f8c52ac49452f83317cf3b34cd1ad81e18 ]
+There is no way to make it work reliably the way you propose, so I strongly
+suggest that we do it the way b4 currently works:
 
-Use source instead of ret, which seems to be unrelated and will always
-be zero.
+- a series can start with RFC in the prefixes to indicate that it's not
+  something to be considered for inclusion
+- when the author feels that the series is ready for maintainers'
+  consideration, they simply drop the RFC and keep the same change-id and
+  versioning info; e.g. [PATCH RFC v3] -> [PATCH v4]
 
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Link: https://msgid.link/r/20240306161439.1385643-5-stuarth@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/codecs/wm8962.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Resetting the versioning requires resetting the change-id of the series, or a
+lot of automation breaks.
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 55e041031d398..74321c16e41f4 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2867,7 +2867,7 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
- 				    WM8962_FLL_FRC_NCO, WM8962_FLL_FRC_NCO);
- 		break;
- 	default:
--		dev_err(component->dev, "Unknown FLL source %d\n", ret);
-+		dev_err(component->dev, "Unknown FLL source %d\n", source);
- 		return -EINVAL;
- 	}
- 
--- 
-2.43.0
-
+-K
 
