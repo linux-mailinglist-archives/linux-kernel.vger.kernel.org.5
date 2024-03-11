@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-99433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCEA087883C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:53:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4978F87883F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9846528374A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:53:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2313B2345A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58FE57300;
-	Mon, 11 Mar 2024 18:45:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631355732B;
+	Mon, 11 Mar 2024 18:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPAf3HK6"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QFGkXz33"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09E0200A6;
-	Mon, 11 Mar 2024 18:45:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1764D3C6A6;
+	Mon, 11 Mar 2024 18:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710182730; cv=none; b=ThCYMqCrMaZgdiLap06Y8TRGA1w919AwlRZJcEisIt0IHGuwhExlh9vDU1mLH0VZJbORp2Q0my6SXTgW8QGrXeuiffDiHdjkLu3vU01DUaylDEfuxRYrlx2JURcwy3LjgPEsT6o8/qCY6dYQb4dYJqhDQ40jFYh1xHn5QBIcTFM=
+	t=1710182731; cv=none; b=qBqllfNOT19nx3BgpIZJGWTNY6lkCyRO6iCysdimuVN/pECNl9pIv4/UBXAAKBHAXt5K3u8r7ow2/8GwuUgN3aGZFz1WAasccO+a2jd+V94ZxClnqDo7sxhoyFspiOXO4poFqiYgjvx/2dkx8eZUrD673V4QeeB9me1RVeh6HDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710182730; c=relaxed/simple;
-	bh=9xm1lqYozJ2Q4DQNtfZO4FjYrrfBluZ5j0bq80UQI/A=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CMEU451z3VNFx+za/ikhwPeooLr/A4dU+14nYyITcbXWqro4xfqtX2g+qmaGaq2BlPAN5M0uVeaM0gJFILAe7Sb/de3ctwJtDXHtZf8R6tntOwQq8sqLvHgpTfUObUqngCQZ1uUq0nsm/Re73eOhO4tBL3D9Ig6S8uan3NTCmBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YPAf3HK6; arc=none smtp.client-ip=209.85.221.42
+	s=arc-20240116; t=1710182731; c=relaxed/simple;
+	bh=qXlbhvjc7gvgg2eHgkj+ypNfZbJZupOIRygjv8P1Xm8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=Ap40FeqwhQMAHeDmIYF5i7tD9DYIvh2xVXnRPBrGijH8ts7uA4UaMJ+7i4t+C7P6WWw+hDL4N2VnzIdMz6j3B/GkDZh0mbvC5KUmm11OqgmT7OhjO7gs+eGCNLv2DL+55AgXWFN2t8Snvu2n0QEymvPYCGTLnk9YpXaSY+NnHKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QFGkXz33; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e94c12f33so1574339f8f.3;
-        Mon, 11 Mar 2024 11:45:28 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33e82c720f8so3549646f8f.3;
+        Mon, 11 Mar 2024 11:45:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710182727; x=1710787527; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=l74WDjBu+9I6yPlAa9MNJUwmc07TrFP9z9L7VLUK9nU=;
-        b=YPAf3HK6DnERas0BMVs0gM/TYzJAr15eR5RLsCWw4UolRXL/rPikZv0h18kEm/6/Gb
-         JKwGEe4t1eX6BuKOMIVzOXTgTiMhSbJKg2UQCUYKVnWnzJzVZM0PttWRxrTRxTioqzte
-         suhToWmgwhjl6Jt63+K+7Cx+K59voE+7arHZzjy5RQiv56BL2l3O2dBVepMqjjVs5kKl
-         TOOolasv9KuXIzFaoEiFkR01sgJXtsDhImJbgFukWq+/CoyUZIomLMo4w1P99sTHaWcR
-         AvaBZZCJU487IeRND4TeCBXPswi7ECEXuIfiD5vvVaBunXZ167OgA73knt1JCJ3T80co
-         eNCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710182727; x=1710787527;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1710182728; x=1710787528; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=l74WDjBu+9I6yPlAa9MNJUwmc07TrFP9z9L7VLUK9nU=;
-        b=XcxLnQl3PmWIB8R8dd53IUNsxJ+WXCrHyuFM98xiVqoY2VPkrka0TFw2P2UqNVEXIv
-         /0zJ9t9SKqjf+VUn1dfnFSB8i0J1No5wV0kr3LQg/Sxn7VqHxfgMs0tjpICrL8pxTqcX
-         oPY7Pq/5WY1cqzcerFZ5hDsFKRBF5EFpYkVYw/wTZWN77Tb4qvHk/feNOqaioI8n6yj9
-         tR9TzqP5HxpHC2uvIYdGU/hlbt1g02+6OKAFhc1wI0t2MO/F3vAHNT320aUbM8vdhgQg
-         N/+iut+d25zmGoW5VhL1H58SHmEgFxmw1GKKzFvQyadXwa2+P+ydyNULBDzMlK/mJMDU
-         ueiA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJOsuuWXSJlVwz84NN7sd3W3BGfTTpy3Mpzk7YOz0kq+bKY+WnbmQse0yq/Q3CJ8HTVg5gsFJw2SsC5SjAic6Lq/zkl7V9r/XXyAJrx6IQDvAKRyr4FTmaWUSl4qwFFHWV4tsWW1PC
-X-Gm-Message-State: AOJu0YykMKKcvrn1jk3Ce8Z4psIFMXLKcbmD1XWoIJ2weFBeinLXuzlm
-	vHrsP1H/AumBjxKo1KzgMdRXiAqdYoGXlZz+f/woGQ80c1SYUWVV
-X-Google-Smtp-Source: AGHT+IH+numVysLS2NubI1tk/3R4g5ig7yCmWUjxwfZ17CiPmqsqLqsoPGyLe/EW7iG/HtwyLvZh6Q==
-X-Received: by 2002:a05:6000:230:b0:33e:96ba:2d48 with SMTP id l16-20020a056000023000b0033e96ba2d48mr2008411wrz.57.1710182726844;
-        Mon, 11 Mar 2024 11:45:26 -0700 (PDT)
+        bh=PseLU3EgM+ls5BiEnnXK9PX3aABYOZpy+sktZvbfHpE=;
+        b=QFGkXz33k3bwMECHB/xvpZCwQVtadoCXqyFs/tmlZi6cjWu6HJkoRnt+Xi29eQ++iS
+         XDPtnBkg77yvbCCcM3ET3yaXAIn4h+eLAGk3GIHu8Mzv0blIEmt0C0aXJePxaTNO2M5E
+         Wu30BQSKCkWvDXSMFXUmGYXs83mFEF/AQlpPbMiZyviQPM+VVih/1auyre88Z9Q8ggBN
+         qNzE1QXFkuQ200uRbhG343DmzIL6cfx32Lh4mqvvqByLLJyyVdpMku8x2K7hW7konNdj
+         TEhVQgo4aQGAkdPHpRWx05qZXnxl8tQ2XS160P8LmZMheJEpyGBS0BlwIyfNyArSmfps
+         cZ9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710182728; x=1710787528;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PseLU3EgM+ls5BiEnnXK9PX3aABYOZpy+sktZvbfHpE=;
+        b=pMaMH42naZP737hizAL7NqLHWFtK2ICUinn/G08wixbRy68nbWzCtMqT1UxJIxObEd
+         PyH4UAcG7HAGOr/aIIwKMVRzv88SPOsHz0ocGjaJz3jHwvSjKixkp0dbL956qXMVljV7
+         q2qVLMJjo6qPwVdG5hdKyac4Cr5IedOk1/5io8KRQQp9wUtz0PH8VbkSXyT7dYFlbneL
+         NEoQxVt1iHlOdq3+Cs0KqujCwa2URQHYPVTeECt/Ve375E8REOoFIFdMmyrtMiH6H+m5
+         hDUYWGL/SPMdjpej+CE86Sq2uNINR765tvcA7ywsvDc8XCYhyjp9WtFpBS2OwGYwZZnH
+         k85Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUfV7mwuHIQETbxvozbOsgt3XCTlb0Umd6CkUdJInNUbKAssl+6lJbD29FY1Wk7fwKd+p1ICRFvUMUQTY7uTgUqh6iizotSbVQ53YnRnfvVYj9KO2NhFW4+uV8YVDPGbBAulKAxKsyX
+X-Gm-Message-State: AOJu0YzvEF1l2kx6lv6M0NzaQy6ZsX/asVVuwZ/LVteWI8hZyrCCYdN4
+	wft/OlcBK0Z2SsFkzFfXloa9XOVnDiSYW/+KYM5ksEIRRpbm4dIs
+X-Google-Smtp-Source: AGHT+IFPxC7107Q8bCZG5/uyqYypiGUbreG5pzm1tajs9Cq29E3KHmuATMsI+JPAr/cP8sHLfJJU8w==
+X-Received: by 2002:a5d:4006:0:b0:33e:75e4:d40e with SMTP id n6-20020a5d4006000000b0033e75e4d40emr4483792wrp.12.1710182728241;
+        Mon, 11 Mar 2024 11:45:28 -0700 (PDT)
 Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id a11-20020adff7cb000000b0033b48190e5esm7012080wrq.67.2024.03.11.11.45.25
+        by smtp.googlemail.com with ESMTPSA id a11-20020adff7cb000000b0033b48190e5esm7012080wrq.67.2024.03.11.11.45.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 11:45:26 -0700 (PDT)
+        Mon, 11 Mar 2024 11:45:27 -0700 (PDT)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Subject: [PATCH 0/2] clk: qcom: clk-alpha-pll: Stromer register cleanup
-Date: Mon, 11 Mar 2024 19:45:18 +0100
-Message-Id: <20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com>
+Date: Mon, 11 Mar 2024 19:45:19 +0100
+Subject: [PATCH 1/2] clk: qcom: clk-alpha-pll: remove invalid Stromer
+ register offset
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,9 +78,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAD5R72UC/x3MQQqDMBBA0avIrDuQRGOgVyldpDptBmIME5VC8
- O4Gl2/xf4VCwlTg2VUQOrjwmhr0o4Mp+PQj5LkZjDKD6rVGH3PwmGPEssm6kOAUyac9o9If6xw
- 5a8YBWp+Fvvy/36/3eV57fkT6awAAAA==
+Message-Id: <20240311-alpha-pll-stromer-cleanup-v1-1-f7c0c5607cca@gmail.com>
+References: <20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com>
+In-Reply-To: <20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com>
 To: Bjorn Andersson <andersson@kernel.org>, 
  Konrad Dybcio <konrad.dybcio@linaro.org>, 
  Michael Turquette <mturquette@baylibre.com>, 
@@ -90,26 +92,43 @@ Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.12.3
 
-This small set contains two patches which are intended to clean
-up the Stromer specific register offsets in 'clk_alpha_pll_regs'
-a bit.
+The offset of the CONFIG_CTL_U register defined for the Stromer
+PLL is wrong. It is not aligned on a 4 bytes boundary which might
+causes errors in regmap operations.
 
-Based on v6.8.
+Maybe the intention behind of using the 0xff value was to indicate
+that the register is not implemented in the PLL, but this is not
+verified anywhere in the code. Moreover, this value is not used
+even in other register offset arrays despite that those PLLs also
+have unimplemented registers.
 
+Additionally, on the Stromer PLLs the current code only touches
+the CONFIG_CTL_U register if the result of pll_has_64bit_config()
+is true which condition is not affected by the change.
+
+Due to the reasons above, simply remove the CONFIG_CTL_U entry
+from the Stromer specific array.
+
+Fixes: e47a4f55f240 ("clk: qcom: clk-alpha-pll: Add support for Stromer PLLs")
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
-Gabor Juhos (2):
-      clk: qcom: clk-alpha-pll: remove invalid Stromer register offset
-      clk: qcom: clk-alpha-pll: reorder Stromer register offsets
+ drivers/clk/qcom/clk-alpha-pll.c | 1 -
+ 1 file changed, 1 deletion(-)
 
- drivers/clk/qcom/clk-alpha-pll.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
----
-base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
-change-id: 20240311-alpha-pll-stromer-cleanup-01b577e75264
+diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+index 05898d2a8b22c..58ae732959803 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.c
++++ b/drivers/clk/qcom/clk-alpha-pll.c
+@@ -212,7 +212,6 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 		[PLL_OFF_USER_CTL] = 0x18,
+ 		[PLL_OFF_USER_CTL_U] = 0x1c,
+ 		[PLL_OFF_CONFIG_CTL] = 0x20,
+-		[PLL_OFF_CONFIG_CTL_U] = 0xff,
+ 		[PLL_OFF_TEST_CTL] = 0x30,
+ 		[PLL_OFF_TEST_CTL_U] = 0x34,
+ 		[PLL_OFF_STATUS] = 0x28,
 
-Best regards,
 -- 
-Gabor Juhos <j4g8y7@gmail.com>
+2.44.0
 
 
