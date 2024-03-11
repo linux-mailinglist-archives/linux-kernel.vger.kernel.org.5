@@ -1,75 +1,128 @@
-Return-Path: <linux-kernel+bounces-98693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7F61877E09
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:22:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC87877E0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:23:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1E39281EE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:22:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C4271C21017
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09D692BB16;
-	Mon, 11 Mar 2024 10:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE94224D7;
+	Mon, 11 Mar 2024 10:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="st0YsnIN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+BU3siB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB66224D7
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C0A37160;
+	Mon, 11 Mar 2024 10:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710152561; cv=none; b=cyEVPHGm4YQXHP4nRG0U3kCs5APWrkvgfzUTX/h5FU4A1Y3+uxJm9D2blDIsoqmykTX0jp7Tv/DXb7LkBP58uzW3ccW8JjzDDmvC2cvOyB1ctGNDXVpJO6yTOk8S8yfyckchlUF0kKdEn7hdam9qqRXtaHzPncjF5H+/nxKIQBE=
+	t=1710152577; cv=none; b=n1SauKi212uR4xjjlJr5sKrK9C3703MYOjc4OlIhzFDlWWEyWLwCS8k15q5aM+HwIqABlLrGfhNl7uidGPFkisJtu5vxPTA20LhUG7HdSCF6f92bBVY2Ascc2BFNXzuMEir4PFGdok/EcfhfxTrTs6T7X7iiJZI9pKVTEOxUkHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710152561; c=relaxed/simple;
-	bh=NNHHZLyZv26sgBeGxvdVNmM6HJZ5hj9Zl2HSEx5V0/o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q+wto1cK2S6IlWeIsMf9RgKfZ52nXz9weNdeCzNRZjraqmgmgAjTVxCBR1p99dmwXC2elOVYhkZn8fF1kUd6u7M/auoclMoUem7vh3wIXRdF4u6YR4XjJT/JhHfeOwn0NJKK0FAPXoEuaITGMErBmnSZHb1mlmeCgupLogmK6Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=st0YsnIN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4B06C433F1;
-	Mon, 11 Mar 2024 10:22:38 +0000 (UTC)
+	s=arc-20240116; t=1710152577; c=relaxed/simple;
+	bh=9cIM+nRjrHPDMX7yHdDPez80yWHfuQAfiv1f2p4e9wA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u6d6DcJgJQ+FZtWttozdM3EZey0X4L7IdjqUqaJ/EjefK+4FeV7l7fxPdUHhhEPjAme2mC6Zwx4dL/XB8LEsYuc9UnrCdYBlqLCeu/dHesIX4rRkOlDaHURtPOJITlRbtoIg/IUj+ccZ4M6BByXFHgX4cHQo2M/Se331XkEubxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+BU3siB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFC41C433F1;
+	Mon, 11 Mar 2024 10:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710152560;
-	bh=NNHHZLyZv26sgBeGxvdVNmM6HJZ5hj9Zl2HSEx5V0/o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=st0YsnIN8DGk5svq78mSzUHDC3atE+DJb36P7okTncDE9FmR1rqvKST3bgJya3zEM
-	 oMQJOKTyMi5spTD/HVc9cpSqAL5FO4Zr31VhUGOXZxf0LVryvMSo9DOqdT1QcRTlRe
-	 roY7k3mTBTMzxitaPXdiQFaEjxbjXSRr7hPNS6iapQYlhRaBa3GYh2/Lq/+FgfSkqp
-	 iisPjzvpm4Xy3y1z+vGBFVw6Uw8Hy/Fe3ssE30pj9UfnVeWNyMlNOQGWDeXe7pez81
-	 Dd3GK7qpfd9PBnixfjmc702E1FZ9IDe/XYXNZE918RKD9lNNkDt4IEx+moF9+rYNIz
-	 CypmM57h/jlow==
-Message-ID: <9c68f756-5ac9-4074-a374-d62b6671f72b@kernel.org>
-Date: Mon, 11 Mar 2024 18:22:36 +0800
+	s=k20201202; t=1710152576;
+	bh=9cIM+nRjrHPDMX7yHdDPez80yWHfuQAfiv1f2p4e9wA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g+BU3siB4Cw2C9qL4QK/PI7tjlvioV2cf+LXmVB4hBgkyC4r771XFllURI1B3o/qS
+	 Q6EEYUqYWz79GIrTU4drGCJKmJgzhnIIzsdVaOHgEs8ZvzFvxTeYqeoaZsgLWgnIbI
+	 5INghdys41B6skIDaY5DqtYT5sLvoOV/ZldKCPJrNsmpIbPgtfbttrfi8h8eqeUPGO
+	 3lpc2wJvcDSneSNCE/OyhYUwtJgiLE4C6WwWJqgFixj0f93w6l8kIw3lRxGbTjI84F
+	 ABcnLLgwTB11N5HoZZRxKnZlDEROxjngtWaZ7VTjzWkC3cHpYZNIsYSTTVUGKUjJEd
+	 l9ZEHjf2LEcDg==
+Date: Mon, 11 Mar 2024 12:22:51 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, kuba@kernel.org,
+	keescook@chromium.org,
+	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
+Message-ID: <20240311102251.GJ12921@unreal>
+References: <20240308182951.2137779-1-leitao@debian.org>
+ <20240310101451.GD12921@unreal>
+ <Ze7YNu5TrzClQcxy@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/2] f2fs: fix to handle error paths of
- {new,change}_curseg()
-Content-Language: en-US
-To: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- niuzhiguo84@gmail.com, ke.wang@unisoc.com, hongyu.jin@unisoc.com
-References: <1710143334-27653-1-git-send-email-zhiguo.niu@unisoc.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <1710143334-27653-1-git-send-email-zhiguo.niu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ze7YNu5TrzClQcxy@gmail.com>
 
-On 2024/3/11 15:48, Zhiguo Niu wrote:
-> {new,change}_curseg() may return error in some special cases,
-> error handling should be did in their callers, and this will also
-> facilitate subsequent error path expansion in {new,change}_curseg().
+On Mon, Mar 11, 2024 at 03:08:54AM -0700, Breno Leitao wrote:
+> Hello Leon,
 > 
-> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> Signed-off-by: Chao Yu <chao@kernel.org>
+> On Sun, Mar 10, 2024 at 12:14:51PM +0200, Leon Romanovsky wrote:
+> > On Fri, Mar 08, 2024 at 10:29:50AM -0800, Breno Leitao wrote:
+> > > struct net_device shouldn't be embedded into any structure, instead,
+> > > the owner should use the priv space to embed their state into net_device.
+> > 
+> > Why?
+> 
+> From my experience, you can leverage all the helpers to deal with the
+> relationship between struct net_device and you private structure. Here
+> are some examples that comes to my mind:
+> 
+> * alloc_netdev() allocates the private structure for you
+> * netdev_priv() gets the private structure for you
+> * dev->priv_destructor sets the destructure to be called when the
+>   interface goes away or failures.
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Everything above is true, but it doesn't relevant to HFI1 devices which
+are not netdev devices.
 
-Thanks,
+> 
+> > > @@ -360,7 +360,11 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
+> > >  	if (!rx)
+> > >  		return -ENOMEM;
+> > >  	rx->dd = dd;
+> > > -	init_dummy_netdev(&rx->rx_napi);
+> > > +	rx->rx_napi = alloc_netdev(sizeof(struct iwl_trans_pcie *),
+> > > +				   "dummy", NET_NAME_UNKNOWN,
+> > 
+> > Will it create multiple "dummy" netdev in the system? Will all devices
+> > have the same "dummy" name?
+> 
+> Are these devices visible to userspace?
+
+HFI devices yes, dummy device no.
+
+> 
+> This allocation are using NET_NAME_UNKNOWN, which implies that the
+> device is not expose to userspace.
+
+Great
+
+> 
+> Would you prefer a different name?
+
+I prefer to see some new wrapper over plain alloc_netdev, which will
+create this dummy netdevice. For example, alloc_dummy_netdev(...).
+
+> 
+> > > +				   init_dummy_netdev); +	if
+> > > (!rx->rx_napi) +		return -ENOMEM;
+> > 
+> > You forgot to release previously allocated "rx" here.
+> 
+> Good catch, I will update.
+
+Thanks
+
+> 
+> Thanks
 
