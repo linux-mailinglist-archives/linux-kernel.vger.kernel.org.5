@@ -1,99 +1,102 @@
-Return-Path: <linux-kernel+bounces-99442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA250878869
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:56:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F91D878896
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:14:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A71BF286A9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:56:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9F121F21A34
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA86656745;
-	Mon, 11 Mar 2024 18:55:52 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E3F54F86;
+	Mon, 11 Mar 2024 19:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="g0t3iAwX"
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB9E56443;
-	Mon, 11 Mar 2024 18:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5EBC56B62;
+	Mon, 11 Mar 2024 19:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710183352; cv=none; b=JBAQTi8cVcT6ueQz56Cq875Qoswax5fl7cqDEPiJXJd4GPAaTFRvefTi1eIYEVLZAPz4UFDYmnpcYwDrXNl4BFZlUvFmJQRso3ojf6Tx3SFLJrmCC9ogQWIj7r+sZf69Er5/iSGdbLPhOly7vvFSGHhQWVFW9nfFlUZ899x2OX0=
+	t=1710184460; cv=none; b=fq5szcaIYCkOxdbiAtM6AbVGnh77JJAW/AI0bVHLgOj7++AY59lEkpJFzDzIhJMyCe2osJXTuJZGy1x7Kw5Q9v+2GTml5zw6ppZxtvqEzTyBN2KO60SEz7r/jWCf3dj2kqd85Nlj9CkC3LTVyT3ohzPdsK9hocaD28X2ur+Qc6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710183352; c=relaxed/simple;
-	bh=u+mjpEFo6fNKY8iblRcstxYCBK04l2AO6isKa5Cqn+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o/89ogHqGFDY7/04yczTlnqXnl02SMaH1aLdD9BT//CDyFfPUYDnJXFrsillamgOdjH9tIskMJDCfGR3FmXi5JffcPsmm/6H0zOhega7izQE4O9kzGAtVVjBdhIyq6Z0vYVVSZNv6nBBiWbZ615Xb3kuuropqtYTH0JrrPYcko0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6058C433F1;
-	Mon, 11 Mar 2024 18:55:47 +0000 (UTC)
-Date: Mon, 11 Mar 2024 18:55:45 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: "Christoph Lameter (Ampere)" <cl@gentwo.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <vireshk@kernel.org>, Will Deacon <will@kernel.org>,
-	Jonathan.Cameron@huawei.com, Matteo.Carlini@arm.com,
-	Valentin.Schneider@arm.com, akpm@linux-foundation.org,
-	anshuman.khandual@arm.com, Eric Mackay <eric.mackay@oracle.com>,
-	dave.kleikamp@oracle.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux@armlinux.org.uk, robin.murphy@arm.com,
-	vanshikonda@os.amperecomputing.com, yang@os.amperecomputing.com,
-	Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
- supported CPUs to 512
-Message-ID: <Ze9TsQ-qVCZMazfI@arm.com>
-References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
- <CGME20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f@eucas1p1.samsung.com>
- <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
+	s=arc-20240116; t=1710184460; c=relaxed/simple;
+	bh=JuZL7oM7lKhmmzj290jDyn9KcxNQoNasVDvwUuItmEo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pzeONZvU/OSPaDCJvA6MXEeaiKK1LChNWx0oGlaaA5DObnZRohw/r5fUhpzaJ4WaYL2PoHhgDZipIMrsptneKCAonx73Kgv211stOt6C4BjclYG53Y1nos3dQ5tdKbKFRMTBZZtDYVdkFvn97+BpR5lY4VYceq3LLBuvt/vf4EM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=g0t3iAwX; arc=none smtp.client-ip=4.36.192.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
+	bh=FGf/tNhnC4YEzI6MSBG52sbqC4xqonb3q4yeuMw8Xfk=; b=g0t3iAwXXc+OmGjPUCKpaYYxEY
+	4e1HCDEJMWgdxdzxOzZscPKhQp6IelAcdS5lyKRoNlSGeNe7jNhCjBUrOq1epQ52eqUd4PdxP3jlv
+	0O3BSrwPC7rO9cdIrDh15mVdJOxXnJFotqy1g0XHugt5Z4VMAqYwOZk6ZKbXr72mlSTJ+TxhvTcWj
+	rXIIfVlpiXyBXyKp1BrzMhddv8jQdMi83CIZ4A6FHIMIwaNZuIH0cShfzQLoVfpP+fSmVpUgAEANf
+	EFjNG4jsJvWOP8zIkvc063waQdkX4PVR0olGY3pypVzFX7MIBJsQNJxWLz4mneduNbb6qYdjtBiqx
+	xnlhk1+w==;
+Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1rjkqo-003cD8-2X;
+	Mon, 11 Mar 2024 13:58:18 -0500
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ wine-devel@winehq.org,
+ =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+ Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
+ Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski <luto@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 04/31] ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+Date: Mon, 11 Mar 2024 13:58:18 -0500
+Message-ID: <4875514.GXAFRqVoOG@camazotz>
+In-Reply-To: <20240219223833.95710-5-zfigura@codeweavers.com>
+References:
+ <20240219223833.95710-1-zfigura@codeweavers.com>
+ <20240219223833.95710-5-zfigura@codeweavers.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Mar 08, 2024 at 03:01:28PM +0100, Marek Szyprowski wrote:
-> On 07.03.2024 02:45, Christoph Lameter (Ampere) wrote:
-> > Currently defconfig selects NR_CPUS=256, but some vendors (e.g. Ampere
-> > Computing) are planning to ship systems with 512 CPUs. So that all CPUs on
-> > these systems can be used with defconfig, we'd like to bump NR_CPUS to 512.
-> > Therefore this patch increases the default NR_CPUS from 256 to 512.
-> >
-> > As increasing NR_CPUS will increase the size of cpumasks, there's a fear that
-> > this might have a significant impact on stack usage due to code which places
-> > cpumasks on the stack. To mitigate that concern, we can select
-> > CPUMASK_OFFSTACK. As that doesn't seem to be a problem today with
-> > NR_CPUS=256, we only select this when NR_CPUS > 256.
-> >
-> > CPUMASK_OFFSTACK configures the cpumasks in the kernel to be
-> > dynamically allocated. This was used in the X86 architecture in the
-> > past to enable support for larger CPU configurations up to 8k cpus.
-[...]
-> This patch landed in today's linux-next as commit 0499a78369ad ("ARM64: 
-> Dynamically allocate cpumasks and increase supported CPUs to 512"). 
-> Unfortunately it triggers the following warning during boot on most of 
-> my ARM64-based test boards. Here is an example from Odroid-N2 board:
+On Monday, 19 February 2024 16:38:06 CDT Elizabeth Figura wrote:
+> +static struct ntsync_obj *get_obj(struct ntsync_device *dev, int fd)
+> +{
+> +	struct file *file = fget(fd);
+> +	struct ntsync_obj *obj;
+> +
+> +	if (file->f_op != &ntsync_obj_fops) {
+> +		fput(file);
+> +		return NULL;
+> +	}
 
-I spent a big part of this afternoon going through the code paths but
-there's nothing obvious that triggered this problem. My suspicion is
-some memory corruption, algorithmically I can't see anything that could
-go wrong with CPUMASK_OFFSTACK. Unfortunately I could not reproduce it
-yet to be able to add some debug info.
+I just noticed during self-review that this fails to check the result of 
+fget() for NULL :-/
 
-So I decided to revert this patch. If we get to the bottom of it during
-the merging window, I can still revive it. Otherwise we'll add it to
-linux-next post -rc1.
+I'll fix this next revision.
 
-Thanks for reporting it and subsequent debugging.
+> +
+> +	obj = file->private_data;
+> +	if (obj->dev != dev) {
+> +		fput(file);
+> +		return NULL;
+> +	}
+> +
+> +	return obj;
+> +}
 
--- 
-Catalin
+
+
 
