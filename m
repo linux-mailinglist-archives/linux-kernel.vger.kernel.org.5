@@ -1,165 +1,248 @@
-Return-Path: <linux-kernel+bounces-99443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D76887886D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:59:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D18B4878873
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6625AB21B86
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:59:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFD351C210DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB855466E;
-	Mon, 11 Mar 2024 18:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85DA54F9D;
+	Mon, 11 Mar 2024 19:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="jGRFXgs0"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cmU9q5yf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24E51EB24
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:59:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF795466E;
+	Mon, 11 Mar 2024 19:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710183564; cv=none; b=NCS0dgQmfIDXo+oW3j4rYjMm+OgAiswUTKHePsdEDfG4lTS4WHYx5fQTjo9x3tn0e4tnLoO2JIqTBHSZXVrmo+peQVMAoo2b/rxojxpfm2DBbgfH45+PbHXT0R1p+KNj/6U4ravNynS0X6J5FSbEzoMBT01BNjbKhy7YI6HqOMI=
+	t=1710183605; cv=none; b=kJwPbiatyor3PCgNkwJofsXgeKWcL5u2gxRghfYkqnrTO4zNJcfJuJP/Wj4clRu7dzjDs0fUmtnuYdAVV1dzxWleRZGRkB0DbGfRGRAoH8qH7hBCJzn/zw0Yn1uaaKTi53ExJb2HboDIOvJ4v8K5fkCqZ8ugRwFqGH4e65Zg9Jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710183564; c=relaxed/simple;
-	bh=F7yEjUH2hqaPjpKrV4lv2CTP/Ykmgg4sI9QI5kdnGhY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GXHNiL/H2RXOwg8g8EWzkj96ijNwVFaj7Ah/WliNqoqiaEUYzcdbgMAFFUCr4JJnQkGPq2RxNiuZ6MuXN6Y6vAPx2Qu41yqnCCc4agxyXYEMftI4LrNNxrvAE+Xxk+0ckr6oL8AGnVjqF+vtmj4APLso6b7Vj3Z89S7c1X38QdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=jGRFXgs0; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42a029c8e76so38960211cf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710183561; x=1710788361; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F7yEjUH2hqaPjpKrV4lv2CTP/Ykmgg4sI9QI5kdnGhY=;
-        b=jGRFXgs0cWiZ6HZPjle47s2nerO8sjQvk84tbHj8QMac/dRhZIhtFpgGtVr3QxeiMi
-         r4UZK+nu1d2Rdt+PI5f4UN66Z/Y/WwWR7eUqOgPqqdqD3pHEnowg9SHt7dZfhIhJFwHX
-         +Qesp7Vh6zsVj6Crg05179bIzww/Qh8R+4tkVr32p047YY8YVIt6pLZvQm4CVFtwLLyd
-         zP8qA1C2BLVJFt6VpEW6mYbU7VUTAq1FNEWljiD5TpwTXOWOBBbOTOlQEcbdp4R8oTxG
-         r974H38nSGskCzYMAm1vdgiuM3t+rcKggEfxcmNxjq1WdyA+v0FrhgeMvUpeM7HANZgD
-         m2jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710183561; x=1710788361;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F7yEjUH2hqaPjpKrV4lv2CTP/Ykmgg4sI9QI5kdnGhY=;
-        b=cnWuDxC1cPyGg3Hmpq4BZDDwVk4GmMrZXGAcoyE+GaL1wHslI8UyNxewGq0EljHniN
-         g4FgP//u4kwrdDUZMD63hjTRUej4uJ44z1ZgcFjmzraTLknbH+ATidFg6ExWCBR4ll+q
-         NJq0GZU4C98xIHa//V7cwUkv0INekqM2fSO1GptvFb179XKFKSD3okv1o84wYQOnP9o/
-         P3vq/BUuhylvxyr4JAVSD4Isyzw8Vena9OeLp59FCYza/MWIZrhVodwbZlDLaHQmTD3i
-         2mXfyrJk6EQB9X1dlFFHeIWIUAQ9tRvokxUO8EHnBa6EHyoHUOgNRxXK72IS6EBgmX7S
-         llXA==
-X-Gm-Message-State: AOJu0YzJZ1PRPm9R+jRupqo6zHUi0XZqQUlRw03FgYoWMGbGY2Zh+WHi
-	7KC1iLacmoKWvKhQQN/ORQtHL+VJgJAIRyxwISrixSamrB/sGMFg+txtex/DQMayfFQuKvpPqN8
-	Li/S2cczvQCvlnpYlDFF4B1vaPnJRNchov2oWGw==
-X-Google-Smtp-Source: AGHT+IHhWoUziIo/dulgzgVm9eXi+3lXMqItaWWRi6EPNkrmYCmfHTmNck2A3vCarMYvNNFfu4ThbWVSvWRNxjTf1Ys=
-X-Received: by 2002:ac8:7d07:0:b0:42f:f7b:f789 with SMTP id
- g7-20020ac87d07000000b0042f0f7bf789mr1493749qtb.40.1710183561602; Mon, 11 Mar
- 2024 11:59:21 -0700 (PDT)
+	s=arc-20240116; t=1710183605; c=relaxed/simple;
+	bh=/aOIFgTHUMEqp9O5NKY1ZNFdcxP6TJE6ObPyADvDy+g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s+LBiikmFnDD/tr8ASg62N1QIn7clzUsDMw9B+Qn4kpZ5tuncHg6aqS+1gO7vcfw+gjFshfARET9q/vCWg0l52wrHhfN2iP3V30qNFxhG8tkk3+z2rQeSQR0CLNq1nKXbpRhEnsrTPFoiXch4tCUzIf2QuJMxvseP9L9E9YV8sU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cmU9q5yf; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710183603; x=1741719603;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/aOIFgTHUMEqp9O5NKY1ZNFdcxP6TJE6ObPyADvDy+g=;
+  b=cmU9q5yfF31GfmCaq/SqN8pjjLfqrt8YFruHaISQ/ae0pFxsN6Vl4edq
+   TP0SGltPUDVvcixm0l0MY3PKILlA9s9cpV8aVzgkexQnucOhFF7wWNtg+
+   t4hyXNqsufTyMmVDkV8sIdgjt9EuI2jxfH5eZKstndJ9BSqUgAT1Ha4WP
+   v1MC107OFLa/J8IZZ0e2ScwDEdOLvRBT+63nXitwX3aVHiDNeR7oi5azn
+   OwNQJQJKe0AAvfu00n4vuU/UOFrlR7bstU8dAunQ4fZmt7Ir9zNUAnLr8
+   otIR6Qb3h9S0Hk5vHJLlZ3JaU7lWlu/9jN0SS4i/yLc8svrVSnW3Xt/KT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4982345"
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="4982345"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 12:00:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="34425075"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 11 Mar 2024 11:59:54 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rjksK-0009NZ-1k;
+	Mon, 11 Mar 2024 18:59:52 +0000
+Date: Tue, 12 Mar 2024 02:59:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Menglong Dong <dongmenglong.8@bytedance.com>, andrii@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+	svens@linux.ibm.com, davem@davemloft.net, dsahern@kernel.org,
+	dave.hansen@linux.intel.com, x86@kernel.org, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, quentin@isovalent.com,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 6/9] bpf: tracing: add multi-link support
+Message-ID: <202403120218.Me518kSk-lkp@intel.com>
+References: <20240311093526.1010158-7-dongmenglong.8@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com> <CAGudoHERLX=X1r0q7yHM22O9udsR=6M+geix7TR3f8ZzHkb-hQ@mail.gmail.com>
-In-Reply-To: <CAGudoHERLX=X1r0q7yHM22O9udsR=6M+geix7TR3f8ZzHkb-hQ@mail.gmail.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Mon, 11 Mar 2024 14:58:45 -0400
-Message-ID: <CA+CK2bBr2wH4=L39ZthRPUnAjVxMqt80bsZj0NPx9xdH=_Mn0Q@mail.gmail.com>
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
-	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
-	dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com, 
-	hca@linux.ibm.com, hch@infradead.org, hpa@zytor.com, 
-	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
-	jroedel@suse.de, juri.lelli@redhat.com, kent.overstreet@linux.dev, 
-	kinseyho@google.com, kirill.shutemov@linux.intel.com, lstoakes@gmail.com, 
-	luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
-	michael.christie@oracle.com, mingo@redhat.com, mst@redhat.com, 
-	npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
-	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, 
-	tglx@linutronix.de, urezki@gmail.com, vincent.guittot@linaro.org, 
-	vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311093526.1010158-7-dongmenglong.8@bytedance.com>
 
-On Mon, Mar 11, 2024 at 1:09=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> w=
-rote:
->
-> On 3/11/24, Pasha Tatashin <pasha.tatashin@soleen.com> wrote:
-> > This is follow-up to the LSF/MM proposal [1]. Please provide your
-> > thoughts and comments about dynamic kernel stacks feature. This is a WI=
-P
-> > has not been tested beside booting on some machines, and running LKDTM
-> > thread exhaust tests. The series also lacks selftests, and
-> > documentations.
-> >
-> > This feature allows to grow kernel stack dynamically, from 4KiB and up
-> > to the THREAD_SIZE. The intend is to save memory on fleet machines. Fro=
-m
-> > the initial experiments it shows to save on average 70-75% of the kerne=
-l
-> > stack memory.
-> >
->
+Hi Menglong,
 
-Hi Mateusz,
+kernel test robot noticed the following build errors:
 
-> Can you please elaborate how this works? I have trouble figuring it
-> out from cursory reading of the patchset and commit messages, that
-> aside I would argue this should have been explained in the cover
-> letter.
+[auto build test ERROR on bpf-next/master]
 
-Sure, I answered your questions below.
+url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/bpf-tracing-add-support-to-record-and-check-the-accessed-args/20240311-173954
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240311093526.1010158-7-dongmenglong.8%40bytedance.com
+patch subject: [PATCH bpf-next v2 6/9] bpf: tracing: add multi-link support
+config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240312/202403120218.Me518kSk-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 503c55e17037436dcd45ac69dea8967e67e3f5e8)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240312/202403120218.Me518kSk-lkp@intel.com/reproduce)
 
-> For example, say a thread takes a bunch of random locks (most notably
-> spinlocks) and/or disables preemption, then pushes some stuff onto the
-> stack which now faults. That is to say the fault can happen in rather
-> arbitrary context.
->
-> If any of the conditions described below are prevented in the first
-> place it really needs to be described how.
->
-> That said, from top of my head:
-> 1. what about faults when the thread holds a bunch of arbitrary locks
-> or has preemption disabled? is the allocation lockless?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403120218.Me518kSk-lkp@intel.com/
 
-Each thread has a stack with 4 pages.
-Pre-allocated page: This page is always allocated and mapped at thread crea=
-tion.
-Dynamic pages (3): These pages are mapped dynamically upon stack faults.
+All errors (new ones prefixed by >>):
 
-A per-CPU data structure holds 3 dynamic pages for each CPU. These
-pages are used to handle stack faults occurring when a running thread
-faults (even within interrupt-disabled contexts). Typically, only one
-page is needed, but in the rare case where the thread accesses beyond
-that, we might use up to all three pages in a single fault. This
-structure allows for atomic handling of stack faults, preventing
-conflicts from other processes. Additionally, the thread's 16K-aligned
-virtual address (VA) and guaranteed pre-allocated page means no page
-table allocation is required during the fault.
+   In file included from kernel/bpf/syscall.c:4:
+   In file included from include/linux/bpf.h:31:
+   In file included from include/linux/memcontrol.h:13:
+   In file included from include/linux/cgroup.h:26:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from kernel/bpf/syscall.c:4:
+   In file included from include/linux/bpf.h:31:
+   In file included from include/linux/memcontrol.h:13:
+   In file included from include/linux/cgroup.h:26:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   In file included from kernel/bpf/syscall.c:4:
+   include/linux/bpf.h:751:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     751 |         ARG_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | ARG_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:752:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     752 |         ARG_PTR_TO_MEM_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:753:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     753 |         ARG_PTR_TO_CTX_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_CTX,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:754:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     754 |         ARG_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:755:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     755 |         ARG_PTR_TO_STACK_OR_NULL        = PTR_MAYBE_NULL | ARG_PTR_TO_STACK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:756:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     756 |         ARG_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:760:38: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     760 |         ARG_PTR_TO_UNINIT_MEM           = MEM_UNINIT | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:762:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     762 |         ARG_PTR_TO_FIXED_SIZE_MEM       = MEM_FIXED_SIZE | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:785:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     785 |         RET_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | RET_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:786:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     786 |         RET_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:787:47: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     787 |         RET_PTR_TO_TCP_SOCK_OR_NULL     = PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:788:50: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     788 |         RET_PTR_TO_SOCK_COMMON_OR_NULL  = PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:790:49: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     790 |         RET_PTR_TO_DYNPTR_MEM_OR_NULL   = PTR_MAYBE_NULL | RET_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:791:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     791 |         RET_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:792:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     792 |         RET_PTR_TO_BTF_ID_TRUSTED       = PTR_TRUSTED    | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~    ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:903:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     903 |         PTR_TO_MAP_VALUE_OR_NULL        = PTR_MAYBE_NULL | PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:904:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     904 |         PTR_TO_SOCKET_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+   include/linux/bpf.h:905:46: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     905 |         PTR_TO_SOCK_COMMON_OR_NULL      = PTR_MAYBE_NULL | PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:906:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     906 |         PTR_TO_TCP_SOCK_OR_NULL         = PTR_MAYBE_NULL | PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
+   include/linux/bpf.h:907:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     907 |         PTR_TO_BTF_ID_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+>> kernel/bpf/syscall.c:3538:2: error: call to undeclared function 'bpf_trampoline_multi_unlink_prog'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    3538 |         bpf_trampoline_multi_unlink_prog(&multi_link->link);
+         |         ^
+   kernel/bpf/syscall.c:3538:2: note: did you mean 'bpf_trampoline_unlink_prog'?
+   include/linux/bpf.h:1368:19: note: 'bpf_trampoline_unlink_prog' declared here
+    1368 | static inline int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
+         |                   ^
+>> kernel/bpf/syscall.c:3815:8: error: call to undeclared function 'bpf_trampoline_multi_link_prog'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    3815 |         err = bpf_trampoline_multi_link_prog(&link->link);
+         |               ^
+   kernel/bpf/syscall.c:3815:8: note: did you mean 'bpf_trampoline_unlink_prog'?
+   include/linux/bpf.h:1368:19: note: 'bpf_trampoline_unlink_prog' declared here
+    1368 | static inline int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
+         |                   ^
+   kernel/bpf/syscall.c:3821:3: error: call to undeclared function 'bpf_trampoline_multi_unlink_prog'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    3821 |                 bpf_trampoline_multi_unlink_prog(&link->link);
+         |                 ^
+   kernel/bpf/syscall.c:6204:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6204 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   28 warnings and 3 errors generated.
 
-When a thread leaves the CPU in normal kernel mode, we check a flag to
-see if it has experienced stack faults. If so, we charge the thread
-for the new stack pages and refill the per-CPU data structure with any
-missing pages.
 
-> 2. what happens if there is no memory from which to map extra pages in
-> the first place? you may be in position where you can't go off cpu
+vim +/bpf_trampoline_multi_unlink_prog +3538 kernel/bpf/syscall.c
 
-When the per-CPU data structure cannot be refilled, and a new thread
-faults, we issue a message indicating a critical stack fault. This
-triggers a system-wide panic similar to a guard page access violation
+  3532	
+  3533	static void bpf_tracing_multi_link_release(struct bpf_link *link)
+  3534	{
+  3535		struct bpf_tracing_multi_link *multi_link =
+  3536			container_of(link, struct bpf_tracing_multi_link, link.link);
+  3537	
+> 3538		bpf_trampoline_multi_unlink_prog(&multi_link->link);
+  3539		__bpf_tracing_multi_link_release(multi_link);
+  3540	}
+  3541	
 
-Pasha
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
