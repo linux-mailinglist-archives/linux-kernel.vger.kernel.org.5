@@ -1,56 +1,85 @@
-Return-Path: <linux-kernel+bounces-98814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2FDC877FCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:17:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A2E877FCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:18:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 501B21F2206A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:17:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A678CB21E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4333D3A7;
-	Mon, 11 Mar 2024 12:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637CD3D54C;
+	Mon, 11 Mar 2024 12:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pU7AuY1I"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rhgt84lg"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08613D57D;
-	Mon, 11 Mar 2024 12:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924573D0A1
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:17:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710159438; cv=none; b=tV5/bk9+F4USvMIRziRB0Fr1IJT3s17bEzvHaaPbUEILtRojTaeASNsMIKkIKeVz9Fg6QuuDOlX+j3iZ2TyK7CU2c3wjP5N1FBbkjv+VcFHAod3lwvuXfBxxlbnEWAvoN6K3oarRxm5a5DAcgsKbNYX46FFcy374Vf72nlRnzLY=
+	t=1710159475; cv=none; b=JWV9BoBYVrM4VbygMsLXdj6K9md8cfarnoMMGSFVoesLeAzCiFWPVveuC47Uh/2bFoQ5/toKR37EP/mHSWCZgdzOkJRqm3Z6NnkX1vzaLy02tawdhpPsS+yZq5jg13Poc6/2VYKDiaCtlpO70UTWcOtpsce4StXqGIQy0EMl36Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710159438; c=relaxed/simple;
-	bh=NMP2UXbhXQeXR5/a88AEqvzN4xBbgLW8HHOoxRUmxAA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uz03VrqBseSLmS9s8xviHZaDE7zGaqi9WVdeY8nufYgLQGlbowwo7AoPsS35KIxYXieuWDQ9GoZt3C+G2NimFQ8dJYbPNjpaVt9lUjOPtP6HWGcOnZnr4s0qbTn4UDGgL+IYoJlQo0EFyqZ8f8L2mIWv6eNjVa9hg+ztkwjwEfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pU7AuY1I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83095C433F1;
-	Mon, 11 Mar 2024 12:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710159437;
-	bh=NMP2UXbhXQeXR5/a88AEqvzN4xBbgLW8HHOoxRUmxAA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pU7AuY1IuYOk86GJ80t2EfDe7LDmTqOwTKM1IJrUsYV0auWz+TsyNvv/KV2L/CwWR
-	 2xBLpofSgmMfJYTfhi0nMcd4RJgYoEgJVLXbaBUmuN1ZU4a17VAcf8sYD0O/s1wvTn
-	 bSKZvW6N+6pw0UgFMEQ4of7kNrsmDbDCjR8EvI4+gTTH/56hhjE5lm+Whpe65TkQR3
-	 CguHexm7mvf0MqNWM8sPpdxfpqUVzv+vx8wQPNVsyBrnhdo6quJNEqbwmLwHyxP/Qk
-	 uqUxDYY8Z2L/61Gvbx2XWuioHtxSRzVDQthCZBBcB8DX9voepNuEDszY3Chrh4esDH
-	 roAD8TVQ/WdmA==
-Date: Mon, 11 Mar 2024 14:17:13 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Breno Leitao <leitao@debian.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	kuba@kernel.org, keescook@chromium.org,
-	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <20240311121713.GK12921@unreal>
-References: <20240308182951.2137779-1-leitao@debian.org>
- <6460dd4b-9b65-49df-beaf-05412e42f706@cornelisnetworks.com>
+	s=arc-20240116; t=1710159475; c=relaxed/simple;
+	bh=J0mGCT5q41xi1p5t+lHJq+UooCCXXdohOtVa1/6aBDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ORcBb+QiPV6x5Wi4EmLFSy4v32cw+LPBZ0CDdm5AeINL/pwh+OQZJYHfdz1Co1b4rE8tiHiOfmpCbp+v7YGgpBLTkBauXSbRSAD2vi7RFlMRn8zhwSkADWWOVSJSqU7+I1dFBnWcNOIQ4pfpBjgiMnDoTFjP/2IiKDvYKaZNAmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rhgt84lg; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4132ab0eea9so4188915e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 05:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710159472; x=1710764272; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=U6fQa4zC1Vwu5wI6rtpeymNqoaanHUlROJ8tIgVYIgE=;
+        b=Rhgt84lgBGsowFQKCFpuP38NMGl3ulqat5lk0niQcA4qM3SYouIuDUxeSUkCJGK7My
+         /OTLDhzekVWXYbTPZ2KkIGB+ECPs3cMFX8+1DoJicJrA5gomncqgPBNv178FNephSHvJ
+         1iC24N47IqL2siEa6zbu0Y8VXCrwNAB9Sz4ZH8NL0GSXezHvaZ94PWvoV+vwLS4K6PuN
+         +vagsrQAdrsQGpOViJvkrBVVPkOGsckYyYiO+X3xprN4oCW9UaB9yEwSL7kiHuCoVNuD
+         HloJXLFdhl6HjfYDgdfd+alihU3cEMWs0+Y4sfCxqpWb3hYTcsLsUN5CHgO2MekE8Kxf
+         /z1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710159472; x=1710764272;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U6fQa4zC1Vwu5wI6rtpeymNqoaanHUlROJ8tIgVYIgE=;
+        b=EaHVEdJ6jEcroTVSmhk9EKWz9m6oTIfRC4mS0D6t+Xs+2cFlL1S5N/6msADokzitzo
+         DT3+I/gdYryHcG7sxzXOCpSkH8MUg/O6/hnI118NwAibFR0RNzfBvV07bBpdsCEVYyg8
+         TAjysUG648kjCGnygKoVUe1UljKBqCsWAazxVZSGjAVMAElHs6OV2tJvWnKvNRyggJS4
+         T9ggKJvD+jBRlACmm7I8KQVXzsWbed0WyAbaztTY1QBj9Q9GPh9MbPVrXtRRH3UuS0mE
+         O12Q53tP4S2pXjTYPIIrn6tXCOfI96U+b+ft3PSma7Ft08h2Od7SmAt4E6FPZP3bWcP0
+         Tt8g==
+X-Gm-Message-State: AOJu0YzquNm57csFDCx7taXWLJVjZNQSvdlt8ax82fYHbH3/tSLdYTlg
+	BF3ca7KAv2EvY9Q4lPM8XrYvti19VRDadhRvyvxkaK032V7y9btL
+X-Google-Smtp-Source: AGHT+IE/JC+x8BD3WkG5RPemyYe2fxsq98/NPNAPTWoJm7c5ZybT0DAVagK6W0pBdZutOD4604pz6g==
+X-Received: by 2002:a5d:604f:0:b0:33e:798f:6d1e with SMTP id j15-20020a5d604f000000b0033e798f6d1emr4267468wrt.37.1710159471477;
+        Mon, 11 Mar 2024 05:17:51 -0700 (PDT)
+Received: from gmail.com (1F2EF295.nat.pool.telekom.hu. [31.46.242.149])
+        by smtp.gmail.com with ESMTPSA id f15-20020adff58f000000b0033dd2c3131fsm6256681wro.65.2024.03.11.05.17.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 05:17:50 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Mon, 11 Mar 2024 13:17:48 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>
+Subject: [GIT PULL] Scheduler changes for v6.9
+Message-ID: <Ze72bF17UQpj7ZZy@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,48 +88,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6460dd4b-9b65-49df-beaf-05412e42f706@cornelisnetworks.com>
 
-On Mon, Mar 11, 2024 at 08:05:45AM -0400, Dennis Dalessandro wrote:
-> On 3/8/24 1:29 PM, Breno Leitao wrote:
-> > struct net_device shouldn't be embedded into any structure, instead,
-> > the owner should use the priv space to embed their state into net_device.
-> > 
-> > Embedding net_device into structures prohibits the usage of flexible
-> > arrays in the net_device structure. For more details, see the discussion
-> > at [1].
-> > 
-> > Un-embed the net_device from struct iwl_trans_pcie by converting it
-> > into a pointer. Then use the leverage alloc_netdev() to allocate the
-> > net_device object at iwl_trans_pcie_alloc.
-> 
-> What does an Omni-Path Architecture driver from Cornelis Networks have to do
-> with an Intel wireless driver?
-> 
-> > The private data of net_device becomes a pointer for the struct
-> > iwl_trans_pcie, so, it is easy to get back to the iwl_trans_pcie parent
-> > given the net_device object.
-> > 
-> > [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> > 
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  drivers/infiniband/hw/hfi1/netdev.h    | 2 +-
-> >  drivers/infiniband/hw/hfi1/netdev_rx.c | 9 +++++++--
-> >  2 files changed, 8 insertions(+), 3 deletions(-)
+Linus,
 
-<...>
+Please pull the latest sched/core git tree from:
 
-> 
-> Leon, please don't accept this until the author resubmits a patch that I either
-> Ack or Test.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2024-03-11
 
-Sure, I will wait for your response.
+   # HEAD: 54de442747037485da1fc4eca9636287a61e97e3 sched/topology: Rename SD_SHARE_PKG_RESOURCES to SD_SHARE_LLC
 
-Thanks
+Scheduler changes for v6.9:
 
-> 
-> Thanks
-> 
-> -Denny
+ - Fix inconsistency in misfit task load-balancing
+
+ - Fix CPU isolation bugs in the task-wakeup logic
+
+ - Rework & unify the sched_use_asym_prio() and sched_asym_prefer() logic
+
+ - Clean up & simplify ->avg_* accesses
+
+ - Misc cleanups & fixes
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Alex Shi (5):
+      sched/topology: Remove duplicate descriptions from TOPOLOGY_SD_FLAGS
+      sched/fair: Remove unused parameter from sched_asym()
+      sched/fair: Rework sched_use_asym_prio() and sched_asym_prefer()
+      sched/fair: Check the SD_ASYM_PACKING flag in sched_use_asym_prio()
+      sched/topology: Rename SD_SHARE_PKG_RESOURCES to SD_SHARE_LLC
+
+David Vernet (3):
+      sched/fair: Remove unnecessary goto in update_sd_lb_stats()
+      sched/fair: Do strict inequality check for busiest misfit task group
+      sched/fair: Simplify the update_sd_pick_busiest() logic
+
+Keisuke Nishimura (2):
+      sched/fair: Take the scheduling domain into account in select_idle_smt()
+      sched/fair: Take the scheduling domain into account in select_idle_core()
+
+Shrikanth Hegde (3):
+      sched/core: Simplify code by removing duplicate #ifdefs
+      sched/fair: Use existing helper functions to access ->avg_rt and ->avg_dl
+      sched/fair: Add READ_ONCE() and use existing helper function to access ->avg_irq
+
+
+ arch/powerpc/kernel/smp.c      |   6 +--
+ include/linux/sched/sd_flags.h |   4 +-
+ include/linux/sched/topology.h |   6 +--
+ kernel/sched/core.c            |   4 +-
+ kernel/sched/fair.c            | 110 +++++++++++++++++------------------------
+ kernel/sched/sched.h           |   2 +-
+ kernel/sched/topology.c        |  35 ++++++-------
+ 7 files changed, 74 insertions(+), 93 deletions(-)
 
