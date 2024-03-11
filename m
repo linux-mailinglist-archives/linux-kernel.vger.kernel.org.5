@@ -1,97 +1,117 @@
-Return-Path: <linux-kernel+bounces-99375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3064F87877E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:37:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E89F878780
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB1E284C32
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:37:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFC631C21701
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7041256473;
-	Mon, 11 Mar 2024 18:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2498F56B99;
+	Mon, 11 Mar 2024 18:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lFlwFl/t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IVZbpevs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0F456B81;
-	Mon, 11 Mar 2024 18:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F8256B8F;
+	Mon, 11 Mar 2024 18:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710182185; cv=none; b=qV0rGQ+8Sg8xRi94ZbcAI43dQyiTsnfKJVTghkT0xNggr7miX8eeAszLNxg0AxSTnLJ8aV7upMU7HGq620/krM+sJEJqVTNGzeD8nFKvo4RIiilKh7T1b4yqWkvHx6vQCe4ZziVOQqZCXYmeqvpHBPxEsuG1AVWs9cqZx35VLcs=
+	t=1710182189; cv=none; b=ZMKYa7FKUXzxZ8FZ/3XgTdMdm1FXJIVKfgokEn6Bqaxk1i1StpJ41fKw7LgfFtmLtvS3UjZhZglBACd2QE9v+hKKzX+CqKza8feaHLwDf1m1G0qZSQe6aykZm0sytALKWBrX6coDGIw4R1V0B/iwQ25UaRkL6tYl80Apg9MbW8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710182185; c=relaxed/simple;
-	bh=Y+UHlDiy8uvUENg5cAI0NilWxjZPgayU30fDLGY9yY0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pBHBjYmDA9MIk42ycB9x9VOU8lHTdc94xwyuOCEUT/MDx9dghUzVmnIf4N3PHgXLm5u6fb9hgtgaATPTYKZxYwLZmmXh2LEjzkfcMIPX5az0yTYuL9PCbHPyXReH9KO0zY113OVH6vT18xiEkkZfpR1Wj/0/n5AiRoAc+y6PmsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lFlwFl/t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC534C433C7;
-	Mon, 11 Mar 2024 18:36:21 +0000 (UTC)
+	s=arc-20240116; t=1710182189; c=relaxed/simple;
+	bh=9ccDM9c454YdhVODsmOP14BtRqS2+UqRY7429uin5Oc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f7MzolCstYeUMi2lLMCG6YCiecOuvC8DQI06Mdk1ET5ZB086nt6BVge4fjGbVoXx7BPhGQuG3LowmKIeLGlz2g8oQGzrR3yiWSEtymq1I+zFgukT5CnRBK9P5cNlMLfdBuqnMGNyJo7fOQaFkYeWKQFZupyUH2L3SvT+VWNkTsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IVZbpevs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E4A9C43390;
+	Mon, 11 Mar 2024 18:36:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710182185;
-	bh=Y+UHlDiy8uvUENg5cAI0NilWxjZPgayU30fDLGY9yY0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lFlwFl/tvCfqrxj0C7qZ8DfCnNiaH5dMxXjn3jrUOKh96FOLWLHR8w5yrb+3QR09Z
-	 /NcryFYsYGnoM32NjGLfyHMt44+MdR1DjrJEESejlVIkr8EgefQGNzvNVU/rNYQmm0
-	 /SRlB/fAap0SlIsdO5Hfylcqag6RBA3VXrjy0XTqxQJsDPsUvDCcd0x4S8YX602DMF
-	 OG4ufA7DvJ62gX7KB840LIPq+h6PtrlomHIUSXeVO8bKhLGcsWHafBBV2tH1HvTUa3
-	 TiTGdODiE/Ad6yCji88KTeToNmq23Y5qfJCM5Eh9OQtgq2AvxhXaPyLJDCbIbtLBjb
-	 A+uxICoOYQYcQ==
+	s=k20201202; t=1710182189;
+	bh=9ccDM9c454YdhVODsmOP14BtRqS2+UqRY7429uin5Oc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=IVZbpevsqMwQNvcfB/koRNPxNnL5ImuEHHZ+CXl5w11XAQ4vHGeSm7Iffr9colPe/
+	 CDe721D7fjYNnVeuM8T/+MrF1xvfzqRsTQfwe9CVlnkJ9j7n2WqDGGixzH3GgKf0xL
+	 reKR5nT20RYxGoYtaGo9oRsHsLyUsr21KmOKzGGQDlQ7KpEJmLYvwkLWwsaq/iMudo
+	 urIrDTQCQiF6IwpwTpyumH2tXJOgLE93KrlN/QvjO2b15v6WwhmfY9SMO0yUqgJAJw
+	 UBUvNKHK9DIYnr/Dv4HpUsJrzsty+kqyGIKHCOB0GZmFeDPiil3cO5yUtAVQnCxp6s
+	 xbphnqBM90Ajw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Thierry Reding <treding@nvidia.com>,
-	Jon Hunter <jonathanh@nvidia.com>,
+Cc: =?UTF-8?q?Alban=20Boy=C3=A9?= <alban.boye@protonmail.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	robh+dt@kernel.org,
-	mark.rutland@arm.com,
-	thierry.reding@gmail.com,
-	devicetree@vger.kernel.org,
-	linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 01/14] arm64: tegra: Set the correct PHY mode for MGBE
-Date: Mon, 11 Mar 2024 14:36:04 -0400
-Message-ID: <20240311183618.327694-1-sashal@kernel.org>
+	liam.r.girdwood@linux.intel.com,
+	yang.jie@linux.intel.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	hdegoede@redhat.com,
+	alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.7 02/14] ASoC: Intel: bytcr_rt5640: Add an extra entry for the Chuwi Vi8 tablet
+Date: Mon, 11 Mar 2024 14:36:05 -0400
+Message-ID: <20240311183618.327694-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240311183618.327694-1-sashal@kernel.org>
+References: <20240311183618.327694-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.9
 Content-Transfer-Encoding: 8bit
 
-From: Thierry Reding <treding@nvidia.com>
+From: Alban Boyé <alban.boye@protonmail.com>
 
-[ Upstream commit 4c892121d43bc2b45896ca207b54f39a8fa6b852 ]
+[ Upstream commit f8b0127aca8c60826e7354e504a12d4a46b1c3bb ]
 
-The PHY is configured in 10GBASE-R, so make sure to reflect that in DT.
+The bios version can differ depending if it is a dual-boot variant of the tablet.
+Therefore another DMI match is required.
 
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Alban Boyé <alban.boye@protonmail.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://msgid.link/r/20240228192807.15130-1-alban.boye@protonmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-index ea13c4a7027c4..81a82933e3500 100644
---- a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-@@ -175,7 +175,7 @@
- 			status = "okay";
- 
- 			phy-handle = <&mgbe0_phy>;
--			phy-mode = "usxgmii";
-+			phy-mode = "10gbase-r";
- 
- 			mdio {
- 				#address-cells = <1>;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 42466b4b1ca45..a290f498ba823 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -685,6 +685,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* Chuwi Vi8 dual-boot (CWI506) */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Insyde"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "i86"),
++			/* The above are too generic, also match BIOS info */
++			DMI_MATCH(DMI_BIOS_VERSION, "CHUWI2.D86JHBNR02"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		/* Chuwi Vi10 (CWI505) */
+ 		.matches = {
 -- 
 2.43.0
 
