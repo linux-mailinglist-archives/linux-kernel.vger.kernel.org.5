@@ -1,173 +1,134 @@
-Return-Path: <linux-kernel+bounces-98643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C1A877D26
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:45:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81702877D27
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:45:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F8D2281A32
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:45:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B15531C20F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68CF18C01;
-	Mon, 11 Mar 2024 09:44:54 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3476D17BD9;
-	Mon, 11 Mar 2024 09:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953F52260A;
+	Mon, 11 Mar 2024 09:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MW96k5cQ"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B98D22064;
+	Mon, 11 Mar 2024 09:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710150294; cv=none; b=gCsQWacMQHI+7x7sEYrUZTl29ZRF4guPa8TzGknAesd7K8GhW2HsuJYw/XF0r8Oa73r82uwGniHMbxVDC/OquVOGoEua1SJcchRjeFObFCs02OHI1MQ3J1iKzVIS0WzrXNEpGZwK/BPcVB8C98Oasbg/MbCfti2ypxW5eDBoVqU=
+	t=1710150308; cv=none; b=Hp0Qqv4aqOHczjFCTHS6fm/Pt8qgkrMfhm8Ge1S+Bd7IYr9N+gRHcYlxBvlAzTNnGFQndI7si+uoWwuTzinD7wGZgocyeFzuFQJOzi2l2nScCMmdJgm17bZ8NcSAFsPxyPbi+y8xQxu1jLA0PeG8vljI4NPtVGKga4KzPzoidHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710150294; c=relaxed/simple;
-	bh=mxn6v4qsoLRyc07OUq5fk0S7LTDOD/Zmjqwktx+NXBw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T5WOEiFO8/noZDypbBIPDZptawDwOAb84kHyvBiB4acv5UH8tzfBW4RXfV23K8zo8tTsPaI5r6Lm+shYWGSh9icA5lsvfcnRLicrO7EZ3wHPfsJfE8lob9w6KCsOBoCPoSnWxbnK+u7AsjZylq7iDd6HgGSBqXxbCFP8Fjgf1zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD1CBFEC;
-	Mon, 11 Mar 2024 02:45:27 -0700 (PDT)
-Received: from [10.57.68.246] (unknown [10.57.68.246])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E3CA03F762;
-	Mon, 11 Mar 2024 02:44:49 -0700 (PDT)
-Message-ID: <1d27e93b-1c6b-4909-859f-e0756974a640@arm.com>
-Date: Mon, 11 Mar 2024 09:44:47 +0000
+	s=arc-20240116; t=1710150308; c=relaxed/simple;
+	bh=z2OHh73biGOQOvhh94EAmWFrnkKV7sHA8EvKeyoKAQY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q09Zsg0SbA/0/g3rCNp1knPwwSIxahmjLvU24oKwVjpk5Btb9GyAvSPKHNky3v71uGZZogC/NhSD/2qGwoqOhaigMhFHXbdT8XUf5EIm/LBYRlTpRTWRByawnyBMVYMqhs0QB5NRoCPj9SFepyNyZEL7Efmvdv0Yl8QzkNdQ8q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MW96k5cQ; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso2568960276.1;
+        Mon, 11 Mar 2024 02:45:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710150306; x=1710755106; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hvdlHR4piVNF+K4lqhyTa6DmBRyDbU95ZsTEoaJ4pfE=;
+        b=MW96k5cQO6FchHjM3ymZJ8UE4UxPrigjdxLFv1wSSBuZ3+2qWtKEJM1CUdS6kuwauD
+         ZZO6VHc6aiS//6ZVixVPUTyg+iwLGyLPSziQxg3vfKny/Vxar6tR/YhVaw3VS8ykrSs1
+         A5rmLuK+wAoF0+zyDlGavpMipIHBgUq6HZOpOC1mV9oMcir68tKb7Shet1/IOT+iwCS1
+         qde9Xg66Msf5TCEnDJnhv+4+ZAMHzPIN7NvugMjrKyXO4Rv0dpdrDAhTu3dwPmEXsERT
+         0KtfFrKHte/F8zNHQKCx0OI6AklLTNZ5v4V9a3+u8uK5tc8IGyhfl7cb8pmW6zsjtHGZ
+         WBzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710150306; x=1710755106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hvdlHR4piVNF+K4lqhyTa6DmBRyDbU95ZsTEoaJ4pfE=;
+        b=JeeApmiynVaTMXGdjIajhSzWSXUFWV0egbl7I1V6cVI03deJdinajzchHV+Y5491Zx
+         jRgF1Cn42MyuDArVwcDlPcngVIy4NGUusUPG9R+18eymc+7lVbnTt6kETGrj0/EnaqtB
+         xNoGjDbiovhfzZdSvRvGsCZY73azqcMqX7JQx9mD2KBMvcd8tHR9of/JNSv2opPlvzas
+         Ai+GbV7nT1v7P26DMOCPk6fQnjT5J6UhzxiCpW2SodYn/wn8sQvfimjohWkUZ3JCMfzq
+         9W0/clV4lOpzim5p7jCIKYUWpy3bSpawWm7AXzoyvBI6ejJ+y9lUI7zS1B1WonleCSeO
+         v8WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWh5o4ZzxYGKqNy03MvUwqDhEeYmlXC5ADyhbI052Khp+l95UIBZs9fFOWjBCeqXgnnxDuc7MzHSOIXCoYAtJRww/34rw+xxPDAmpdvAGGskZJRQtwXWYCYmGHkXqgFzZSy
+X-Gm-Message-State: AOJu0Yw2WYXRxfCl1gp/5/5sn4zfKwaT4U0dbYxVgA5/y+GoqXEy3eKO
+	rhF1BZDkNS8rukwB/3EIaTl6qWlX/Z0d8eMD0QgwMj3OenloJcNtyiszsMLQD1f8Uk1V51euqO1
+	9iT2E7IIAUhA3NqRTN+yAuu7jVXo=
+X-Google-Smtp-Source: AGHT+IHXIvx9RtkZLKht8FNNH7tbt3HWIRTA9GpzWuRcxx9B9FRiKw0n8LPKOHkooxk86b6kiylzZFRxZvCNmkyIyYc=
+X-Received: by 2002:a05:6902:50a:b0:dcd:128:ff3b with SMTP id
+ x10-20020a056902050a00b00dcd0128ff3bmr3061831ybs.38.1710150306234; Mon, 11
+ Mar 2024 02:45:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -v3] mm: swap: fix race between free_swap_and_cache() and
- swapoff()
-Content-Language: en-GB
-To: Huang Ying <ying.huang@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- David Hildenbrand <david@redhat.com>, stable@vger.kernel.org
-References: <20240311084426.447164-1-ying.huang@intel.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240311084426.447164-1-ying.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240229065313.1871095-1-foxywang@tencent.com>
+ <20240229065313.1871095-2-foxywang@tencent.com> <ddc5e199-ef8c-4ce9-8fb0-4f6227fded2d@intel.com>
+In-Reply-To: <ddc5e199-ef8c-4ce9-8fb0-4f6227fded2d@intel.com>
+From: Yi Wang <up2wing@gmail.com>
+Date: Mon, 11 Mar 2024 17:44:55 +0800
+Message-ID: <CAN35MuR+E4-2xKkVjffqEjdZ1NOMnrdpmck+LT6_i2EjCzO_rg@mail.gmail.com>
+Subject: Re: [RESEND v3 1/3] KVM: setup empty irq routing when create vm
+To: "Yang, Weijiang" <weijiang.yang@intel.com>
+Cc: "seanjc@google.com" <seanjc@google.com>, "atishp@atishpatra.org" <atishp@atishpatra.org>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, 
+	"foxywang@tencent.com" <foxywang@tencent.com>, "bp@alien8.de" <bp@alien8.de>, 
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "hpa@zytor.com" <hpa@zytor.com>, 
+	"imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>, 
+	"borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>, "maz@kernel.org" <maz@kernel.org>, 
+	"anup@brainfault.org" <anup@brainfault.org>, "frankja@linux.ibm.com" <frankja@linux.ibm.com>, 
+	"wanpengli@tencent.com" <wanpengli@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/03/2024 08:44, Huang Ying wrote:
-> From: Ryan Roberts <ryan.roberts@arm.com>
-> 
-> There was previously a theoretical window where swapoff() could run and
-> teardown a swap_info_struct while a call to free_swap_and_cache() was
-> running in another thread.  This could cause, amongst other bad
-> possibilities, swap_page_trans_huge_swapped() (called by
-> free_swap_and_cache()) to access the freed memory for swap_map.
-> 
-> This is a theoretical problem and I haven't been able to provoke it from a
-> test case.  But there has been agreement based on code review that this is
-> possible (see link below).
-> 
-> Fix it by using get_swap_device()/put_swap_device(), which will stall
-> swapoff().  There was an extra check in _swap_info_get() to confirm that
-> the swap entry was not free.  This isn't present in get_swap_device()
-> because it doesn't make sense in general due to the race between getting
-> the reference and swapoff.  So I've added an equivalent check directly in
-> free_swap_and_cache().
-> 
-> Details of how to provoke one possible issue:
-> 
-> --8<-----
-> 
-> CPU0                               CPU1
-> ----                               ----
-> shmem_undo_range
->   shmem_free_swap
->     xa_cmpxchg_irq
->     free_swap_and_cache
->       __swap_entry_free
->       /* swap_count() become 0 */
->                                    swapoff
->                                      try_to_unuse
->                                        shmem_unuse /* cannot find swap entry */
->                                        find_next_to_unuse
->                                        filemap_get_folio
->                                        folio_free_swap
->                                        /* remove swap cache */
->                                        /* free si->swap_map[] */
->       swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
-> 
-> --8<-----
-> 
-> Link: https://lkml.kernel.org/r/20240306140356.3974886-1-ryan.roberts@arm.com
-> Closes: https://lore.kernel.org/linux-mm/8734t27awd.fsf@yhuang6-desk2.ccr.corp.intel.com/
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com> [patch description]
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> Hi, Andrew,
-> 
-> If it's not too late.  Please replace v2 of this patch in mm-stable
-> with this version.
+On Fri, Mar 8, 2024 at 12:06=E2=80=AFPM Yang, Weijiang <weijiang.yang@intel=
+com> wrote:
+>
+> On 2/29/2024 2:53 PM, Yi Wang wrote:
+> > From: Yi Wang <foxywang@tencent.com>
 
-Thanks for sorting this out, Huang, Ying! I saw your note asking if I could do
-it, and it was on my list, but I've been busy debugging other urgent issues in
-mm-stable. That should be solved now so unblocks me finishing the testing on my
-large folios swap-out v4 series. Hopefully that will be incomming in the next
-couple of days.
+> > +
+> > +int kvm_setup_empty_irq_routing_lockless(struct kvm *kvm)
+> > +{
+> > +     struct kvm_irq_routing_table *new;
+> > +     u32 i, j;
+> > +
+> > +     new =3D kzalloc(struct_size(new, map, 1), GFP_KERNEL_ACCOUNT);
+> > +     if (!new)
+> > +             return -ENOMEM;
+> > +
+> > +     new->nr_rt_entries =3D 1;
+> > +     for (i =3D 0; i < KVM_NR_IRQCHIPS; i++)
+> > +             for (j =3D 0; j < KVM_IRQCHIP_NUM_PINS; j++)
+> > +                     new->chip[i][j] =3D -1;
+>
+> Maybe it looks nicer by:
+> size =3D sizeof(int) * KVM_NR_IRQCHIPS *KVM_IRQCHIP_NUM_PINS;
+> memset(new->chip, -1, size);
+>
 
-You did previously suggest you wanted some comments around synchronise_rcu() in
-swapoff(), but I don't see those here. I don't think that should hold this up
-though.
+It seems better, I'll update this patch. Thx a lot!
 
-Thanks,
-Ryan
+> > +
+> > +     RCU_INIT_POINTER(kvm->irq_routing, new);
+> > +
+> > +     return 0;
+
+>
 
 
-> 
-> Changes since v2:
-> 
->  - Remove comments for get_swap_device() because it's not correct.
->  - Revised patch description about the race condition description.
-> 
-> Changes since v1:
-> 
->  - Added comments for get_swap_device() as suggested by David
->  - Moved check that swap entry is not free from get_swap_device() to
->    free_swap_and_cache() since there are some paths that legitimately call with
->    a free offset.
-> 
-> Best Regards,
-> Huang, Ying
-> 
->  mm/swapfile.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 2b3a2d85e350..9e0691276f5e 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1609,13 +1609,19 @@ int free_swap_and_cache(swp_entry_t entry)
->  	if (non_swap_entry(entry))
->  		return 1;
->  
-> -	p = _swap_info_get(entry);
-> +	p = get_swap_device(entry);
->  	if (p) {
-> +		if (WARN_ON(data_race(!p->swap_map[swp_offset(entry)]))) {
-> +			put_swap_device(p);
-> +			return 0;
-> +		}
-> +
->  		count = __swap_entry_free(p, entry);
->  		if (count == SWAP_HAS_CACHE &&
->  		    !swap_page_trans_huge_swapped(p, entry))
->  			__try_to_reclaim_swap(p, swp_offset(entry),
->  					      TTRS_UNMAPPED | TTRS_FULL);
-> +		put_swap_device(p);
->  	}
->  	return p != NULL;
->  }
-
+---
+Best wishes
+Yi Wang
 
