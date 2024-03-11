@@ -1,86 +1,50 @@
-Return-Path: <linux-kernel+bounces-98499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6061C877AF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:30:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CB64877B07
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13A2FB20D16
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42D27282377
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9ADE56A;
-	Mon, 11 Mar 2024 06:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uf0sNyAI"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBCA4FC1E;
+	Mon, 11 Mar 2024 06:45:53 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D549563D5
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB0B847B;
+	Mon, 11 Mar 2024 06:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710138649; cv=none; b=ZB5Zfj2YPioMOfh0aJYvaCluQN01W/fCiMZCd3czgJr1tzXDywJwvx9DFg+Hq6py+bMggTIKXUxP9WDpVcZeL7s5gMAztr5L+YbDrLeLibT1awzmod6YUrhE3WfcKsfzyFK/4/Fne0O+C4jQcOxRwjuD4uThIAg6c5aU99PADRE=
+	t=1710139553; cv=none; b=uR3aCPTDu9HrqDDMZr5Asa5rbx/52yMMrBC3YkCjrgAWWUqOHmvBXcR6vzjdeCxgXAc9HqdLV6IVN2eghXI4M0igC6h8Nidj+j/zopm5bf1mZjoNTuiymOTM1BBvHNxpW7Q/Pq2hCD3Eg2UfsPQ0vQLKBGD+By/wLbxN+C8Eiek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710138649; c=relaxed/simple;
-	bh=cmIBHkA2pdJXMvafu0YUa0N9N0kN4IiC2HGINT1wP9Q=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=eQKs3Xa/HM1hwxLIvlXRGwCUkyh3JF6UwyEk+V5YEfqVRQQAN8vNPilbFpAxk1mDK7UqykLyvCHUBlabcPrEmdK1MZJjxSznQ76al18p2sSXLo6+DXS+oVtI8WFr2Dn69y/zF4paHAv5aUJ4+9zKN4+IxSXmwv54qm/V1s0bvDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uf0sNyAI; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e627596554so1690900b3a.2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 23:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710138647; x=1710743447; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XJ7Kf9VmIry7xZNUuPTcVhrx5As2GM5N21xZAtn+OAg=;
-        b=Uf0sNyAIVTpVBVkQif/NaAPpHAjbsRpcWL3nS41tUWqe2YDUAmvoLAtDkJOuazm1fV
-         Nt95O54+TTZR1NQ51m+qhyTEtLIMMrA1qw7gBUrwowrh+YwSMzSCqpA46oGqMrb4w1IY
-         6E576+9+Qc1C9krh2v55mDiCtBogNFtI41N7hE4q/R8xYS0IQbnrLq5Ks53/Axx8zX1S
-         TMlANkMfPHIyzGDaGJd04wOmP6xSn2LrSRBkLvEPUNgcClUSCSC+LE2u35GPiGH2ielB
-         pzIroCJQw5cnzna0A3BDnzbJvTMtf/aq4vkgcZJhU7wlYrl2+VR9LX/C34RK3Ts7j88x
-         o1Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710138647; x=1710743447;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XJ7Kf9VmIry7xZNUuPTcVhrx5As2GM5N21xZAtn+OAg=;
-        b=if2RMKtfV5+zGlLxCsG4iBaY1DFz4sDj4w0EQs2120WzkZE8S2EeUnQQyG6VFZaXNs
-         5BeZma+6l8SZOdq/h0hit6wZM4m2IvDV12erjOD3Cbz+Bdd4trMy7PXXh4MXlJ1k/FBB
-         9ZFclOV94JRLhvIvtY9RTABboKIPl1PRSBqtAUQvMFSfv2o1/IHPFSPP1OZp+yqZTmwb
-         jEa4DQuvazSyZ+G1AilBNCQ+ySr0V8gaSdvgDjbo0zwYP13q+jMLE2AVEpclUUCQkWW1
-         cgnmavwGck4UIblPE6EsJugaoK24rc49pLCjr7q9L6aheacif0q2aIxFoTw3cKN7XKzm
-         Ngcg==
-X-Forwarded-Encrypted: i=1; AJvYcCXeUOeh1lhqlM6mrYP+zxu8Qlo0OjpUYsSVB0+NPIYji0cyR7R/htN0/9nZeSS9ziP+SLpa6XKFNtkbXZnqRJnIhO9l6+q2/XuNvmqA
-X-Gm-Message-State: AOJu0YzfXVQK7ryY+LyqKobGqQHqUBMg+Je4LDDdlfhZW2iNmHNHxcHx
-	e3HBZNZ6/23CtxKwsO3LtZtWMKb4y6Qhc6qkU9/J9nHeBj+sq9A4
-X-Google-Smtp-Source: AGHT+IE2d7g6KEx5Pi0QGiEbt7oNk3z4OQdctup+mwEl0Rlyqk0V6ap/+GtCZwJbxw1uSFnsM+m/JA==
-X-Received: by 2002:a05:6a00:3c85:b0:6e6:35d8:9c56 with SMTP id lm5-20020a056a003c8500b006e635d89c56mr6841451pfb.11.1710138647023;
-        Sun, 10 Mar 2024 23:30:47 -0700 (PDT)
-Received: from DESKTOP-4R0U3NR.siflower.com ([2a09:bac5:80c9:183c::26a:36])
-        by smtp.gmail.com with ESMTPSA id t23-20020a62d157000000b006e56277fd45sm3765410pfl.190.2024.03.10.23.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Mar 2024 23:30:46 -0700 (PDT)
-From: Qingfang Deng <dqfext@gmail.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Atish Patra <atishp@atishpatra.org>,
-	Anup Patel <anup@brainfault.org>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
-Date: Mon, 11 Mar 2024 14:30:18 +0800
-Message-Id: <20240311063018.1886757-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710139553; c=relaxed/simple;
+	bh=qwUigW6kMoBBuAgnR9zbfhElpFowdlZsrFb+xFIqyEg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=N7GiOaW8q7i86OTlk1XUVDcuDVq7SPINqwxArtmrOsoJa5vF0QGaISqB7EVaHNI6iG2HDGapayRYbFfv/pQ2oaQ0n0SRJRbNe1lkTKWZvWltFhEoWYEblFZ+GHs5CdWb3bQW+/PV3lg6/KB7icS1Xe4mhoaSXoLWp0kNyxv+2R4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TtS0706VZzwPPW;
+	Mon, 11 Mar 2024 14:43:19 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id BA421141376;
+	Mon, 11 Mar 2024 14:45:41 +0800 (CST)
+Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 11 Mar
+ 2024 14:45:41 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH RFC] ext4: Validate inode pa before using preallocation blocks
+Date: Mon, 11 Mar 2024 14:38:43 +0800
+Message-ID: <20240311063843.2431708-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,48 +52,233 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-T-Head C908 has the same IRQ num and CSR as previous C9xx cores, but
-reports non-zero marchid and mimpid. Remove the ID checks.
+In ext4 continue & no-journal mode, physical blocks could be allocated
+more than once (caused by writing extent entries failed & reclaiming
+extent cache) in preallocation process, which could trigger a BUG_ON
+(pa->pa_free < len) in ext4_mb_use_inode_pa().
 
-Fixes: 65e9fb081877 ("drivers/perf: riscv_pmu_sbi: add support for PMU variant on T-Head C9xx cores")
-Signed-off-by: Qingfang Deng <dqfext@gmail.com>
+ kernel BUG at fs/ext4/mballoc.c:4681!
+ invalid opcode: 0000 [#1] PREEMPT SMP
+ CPU: 3 PID: 97 Comm: kworker/u8:3 Not tainted 6.8.0-rc7
+ RIP: 0010:ext4_mb_use_inode_pa+0x1b6/0x1e0
+ Call Trace:
+  ext4_mb_use_preallocated.constprop.0+0x19e/0x540
+  ext4_mb_new_blocks+0x220/0x1f30
+  ext4_ext_map_blocks+0xf3c/0x2900
+  ext4_map_blocks+0x264/0xa40
+  ext4_do_writepages+0xb15/0x1400
+  do_writepages+0x8c/0x260
+  writeback_sb_inodes+0x224/0x720
+  wb_writeback+0xd8/0x580
+  wb_workfn+0x148/0x820
+
+Details are shown as following:
+
+0. Given a file with i_size=4096 with one mapped block
+1. Write block no 1, blocks 1~3 are preallocated.
+   ext4_ext_map_blocks
+    ext4_mb_normalize_request
+     size = 16 * 1024
+     size = end - start // Allocate 3 blocks (bs = 4096)
+    ext4_mb_regular_allocator
+     ext4_mb_regular_allocator
+     ext4_mb_regular_allocator
+     ext4_mb_use_inode_pa
+      pa->pa_free -= len // 3 - 1 = 2
+2. Extent buffer head is written failed, es cache and buffer head are
+   reclaimed.
+3. Write blocks 1~3
+   ext4_ext_map_blocks
+    newex.ee_len = 3
+    ext4_ext_check_overlap // Find nothing, there should have been block 1
+    allocated = map->m_len  // 3
+    ext4_mb_new_blocks
+     ext4_mb_use_preallocated
+      ext4_mb_use_inode_pa
+       BUG_ON(pa->pa_free < len) // 2 < 3!
+
+Fix it by adding validation checking for inode pa. If invalid pa is
+detected, stop using inode preallocation, drop invalid pa to avoid it
+being used again, mark group block bitmap as corrupted to avoid allocating
+from the erroneous group.
+
+Fetch a reproducer in Link.
+
+Cc: stable@vger.kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218576
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 ---
- arch/riscv/errata/thead/errata.c | 4 ----
- drivers/perf/riscv_pmu_sbi.c     | 4 +---
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ fs/ext4/mballoc.c | 128 +++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 98 insertions(+), 30 deletions(-)
 
-diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-index b1c410bbc1ae..49ccad5b21bb 100644
---- a/arch/riscv/errata/thead/errata.c
-+++ b/arch/riscv/errata/thead/errata.c
-@@ -125,10 +125,6 @@ static bool errata_probe_pmu(unsigned int stage,
- 	if (!IS_ENABLED(CONFIG_ERRATA_THEAD_PMU))
- 		return false;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index e4f7cf9d89c4..baedbc604b89 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -423,6 +423,9 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac);
+ static bool ext4_mb_good_group(struct ext4_allocation_context *ac,
+ 			       ext4_group_t group, enum criteria cr);
  
--	/* target-c9xx cores report arch_id and impid as 0 */
--	if (arch_id != 0 || impid != 0)
--		return false;
--
- 	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
- 		return false;
++static void ext4_mb_put_pa(struct ext4_allocation_context *ac,
++			struct super_block *sb, struct ext4_prealloc_space *pa);
++
+ static int ext4_try_to_trim_range(struct super_block *sb,
+ 		struct ext4_buddy *e4b, ext4_grpblk_t start,
+ 		ext4_grpblk_t max, ext4_grpblk_t minblocks);
+@@ -4768,6 +4771,79 @@ ext4_mb_pa_goal_check(struct ext4_allocation_context *ac,
+ 	return true;
+ }
  
-diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-index 452aab49db1e..87b83184383a 100644
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -811,9 +811,7 @@ static int pmu_sbi_setup_irqs(struct riscv_pmu *pmu, struct platform_device *pde
- 		riscv_pmu_irq_num = RV_IRQ_PMU;
- 		riscv_pmu_use_irq = true;
- 	} else if (IS_ENABLED(CONFIG_ERRATA_THEAD_PMU) &&
--		   riscv_cached_mvendorid(0) == THEAD_VENDOR_ID &&
--		   riscv_cached_marchid(0) == 0 &&
--		   riscv_cached_mimpid(0) == 0) {
-+		   riscv_cached_mvendorid(0) == THEAD_VENDOR_ID) {
- 		riscv_pmu_irq_num = THEAD_C9XX_RV_IRQ_PMU;
- 		riscv_pmu_use_irq = true;
++/*
++ * check if found pa is valid
++ */
++static bool ext4_mb_pa_is_valid(struct ext4_allocation_context *ac,
++				struct ext4_prealloc_space *pa)
++{
++	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
++	ext4_fsblk_t start;
++	ext4_fsblk_t end;
++	int len;
++
++	if (unlikely(pa->pa_free == 0)) {
++		/*
++		 * We found a valid overlapping pa but couldn't use it because
++		 * it had no free blocks. This should ideally never happen
++		 * because:
++		 *
++		 * 1. When a new inode pa is added to rbtree it must have
++		 *    pa_free > 0 since otherwise we won't actually need
++		 *    preallocation.
++		 *
++		 * 2. An inode pa that is in the rbtree can only have it's
++		 *    pa_free become zero when another thread calls:
++		 *      ext4_mb_new_blocks
++		 *       ext4_mb_use_preallocated
++		 *        ext4_mb_use_inode_pa
++		 *
++		 * 3. Further, after the above calls make pa_free == 0, we will
++		 *    immediately remove it from the rbtree in:
++		 *      ext4_mb_new_blocks
++		 *       ext4_mb_release_context
++		 *        ext4_mb_put_pa
++		 *
++		 * 4. Since the pa_free becoming 0 and pa_free getting removed
++		 * from tree both happen in ext4_mb_new_blocks, which is always
++		 * called with i_data_sem held for data allocations, we can be
++		 * sure that another process will never see a pa in rbtree with
++		 * pa_free == 0.
++		 */
++		ext4_msg(ac->ac_sb, KERN_ERR, "invalid pa, free is 0");
++		return false;
++	}
++
++	start = pa->pa_pstart + (ac->ac_o_ex.fe_logical - pa->pa_lstart);
++	end = min(pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len),
++		  start + EXT4_C2B(sbi, ac->ac_o_ex.fe_len));
++	len = EXT4_NUM_B2C(sbi, end - start);
++
++	if (unlikely(start < pa->pa_pstart)) {
++		ext4_msg(ac->ac_sb, KERN_ERR,
++			 "invalid pa, start(%llu) < pa_pstart(%llu)",
++			 start, pa->pa_pstart);
++		return false;
++	}
++	if (unlikely(end > pa->pa_pstart + EXT4_C2B(sbi, pa->pa_len))) {
++		ext4_msg(ac->ac_sb, KERN_ERR,
++			 "invalid pa, end(%llu) > pa_pstart(%llu) + pa_len(%d)",
++			 end, pa->pa_pstart, EXT4_C2B(sbi, pa->pa_len));
++		return false;
++	}
++	if (unlikely(pa->pa_free < len)) {
++		ext4_msg(ac->ac_sb, KERN_ERR,
++			 "invalid pa, pa_free(%d) < len(%d)", pa->pa_free, len);
++		return false;
++	}
++	if (unlikely(len <= 0)) {
++		ext4_msg(ac->ac_sb, KERN_ERR, "invalid pa, len(%d) <= 0", len);
++		return false;
++	}
++
++	return true;
++}
++
+ /*
+  * search goal blocks in preallocated space
+  */
+@@ -4891,45 +4967,37 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
+ 		goto try_group_pa;
  	}
+ 
+-	if (tmp_pa->pa_free && likely(ext4_mb_pa_goal_check(ac, tmp_pa))) {
++	if (unlikely(!ext4_mb_pa_is_valid(ac, tmp_pa))) {
++		ext4_group_t group;
++
++		tmp_pa->pa_free = 0;
++		atomic_inc(&tmp_pa->pa_count);
++		spin_unlock(&tmp_pa->pa_lock);
++		read_unlock(&ei->i_prealloc_lock);
++
++		ext4_mb_put_pa(ac, ac->ac_sb, tmp_pa);
++		group = ext4_get_group_number(ac->ac_sb, tmp_pa->pa_pstart);
++		ext4_lock_group(ac->ac_sb, group);
++		ext4_mark_group_bitmap_corrupted(ac->ac_sb, group,
++						 EXT4_GROUP_INFO_BBITMAP_CORRUPT);
++		ext4_unlock_group(ac->ac_sb, group);
++		ext4_error(ac->ac_sb, "drop pa and mark group %u block bitmap corrupted",
++			   group);
++		WARN_ON_ONCE(1);
++		goto try_group_pa_unlocked;
++	}
++
++	if (likely(ext4_mb_pa_goal_check(ac, tmp_pa))) {
+ 		atomic_inc(&tmp_pa->pa_count);
+ 		ext4_mb_use_inode_pa(ac, tmp_pa);
+ 		spin_unlock(&tmp_pa->pa_lock);
+ 		read_unlock(&ei->i_prealloc_lock);
+ 		return true;
+-	} else {
+-		/*
+-		 * We found a valid overlapping pa but couldn't use it because
+-		 * it had no free blocks. This should ideally never happen
+-		 * because:
+-		 *
+-		 * 1. When a new inode pa is added to rbtree it must have
+-		 *    pa_free > 0 since otherwise we won't actually need
+-		 *    preallocation.
+-		 *
+-		 * 2. An inode pa that is in the rbtree can only have it's
+-		 *    pa_free become zero when another thread calls:
+-		 *      ext4_mb_new_blocks
+-		 *       ext4_mb_use_preallocated
+-		 *        ext4_mb_use_inode_pa
+-		 *
+-		 * 3. Further, after the above calls make pa_free == 0, we will
+-		 *    immediately remove it from the rbtree in:
+-		 *      ext4_mb_new_blocks
+-		 *       ext4_mb_release_context
+-		 *        ext4_mb_put_pa
+-		 *
+-		 * 4. Since the pa_free becoming 0 and pa_free getting removed
+-		 * from tree both happen in ext4_mb_new_blocks, which is always
+-		 * called with i_data_sem held for data allocations, we can be
+-		 * sure that another process will never see a pa in rbtree with
+-		 * pa_free == 0.
+-		 */
+-		WARN_ON_ONCE(tmp_pa->pa_free == 0);
+ 	}
+ 	spin_unlock(&tmp_pa->pa_lock);
+ try_group_pa:
+ 	read_unlock(&ei->i_prealloc_lock);
++try_group_pa_unlocked:
+ 
+ 	/* can we use group allocation? */
+ 	if (!(ac->ac_flags & EXT4_MB_HINT_GROUP_ALLOC))
 -- 
-2.34.1
+2.39.2
 
 
