@@ -1,115 +1,183 @@
-Return-Path: <linux-kernel+bounces-99321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F61878689
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:44:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC2487869A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE65BB2122C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:44:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B005D281D13
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65A151C58;
-	Mon, 11 Mar 2024 17:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53E552F61;
+	Mon, 11 Mar 2024 17:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DBe8EM3M"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YCr3TBI/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C929A4D9E8
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB7E4D9E6
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710179059; cv=none; b=hsQv4MQJM7M9lfvyKBtCTUQq5fz70wvi7R8AvAezHqbtsUZQaXl4mC+MCsMQvzTnoiiIplNX90lfZ2Ig2CnOuMVigLEU9RnvORBWZfnzvGTJPP7Hm71AhFO3PS2/KM9/103+LGeoiMdvWZgaOzFE0Bt/Ti9+wyZfE7l8SPbfOKU=
+	t=1710179246; cv=none; b=kph7F7idnOOVO9ha1wqdqdJyOcpHw9S7yKbWvhF6So4qCew/fECHoFkfaZcUF1cOVKDeZ2dPrsN6fSQuSUFsT4TARkSFcwN+30dhHGP5GSZeQVzqJV07RcMLiEfS+kJPgBOvxnp2TxoAmhrXDFD/bhsW7meKW4F6c1lca59SWrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710179059; c=relaxed/simple;
-	bh=dVABVYkEnzvrtDxSt88BcX8bbJ/2fnXzw4JV5D5ODLk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kDorW4rhZT2T3JskocFzxL0gtQ8AYCf/b+hAasV4zn6OA5Z+iTqp97ZuuLpdw6NTtOFUtmqeXwZRO7PoYapiO5hp24DrGkKmKw/7kEOD8L/nIQv1TJnT2n5jfIQxKPQ6Zl3s7U5oiPblaYeGpNuNr1VbUJy4eygeFd1zWgfQS3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DBe8EM3M; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-568251882d7so1070a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:44:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710179056; x=1710783856; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6njN+Ix5AAlz5r+8JT2vb+hUlGcvA64q3xEcgqXOsgU=;
-        b=DBe8EM3M+uOHgw1nuC7hfGZRI7t6tM5y4+3JzHaot8whTg7ABkkVNrtoJsGlLD9GX1
-         ZhtYJEh8+STsA2Os6ZcBeQG9iLBswZ11efZMMgXf3Z/xwfJapbhH3akH295fcqiu9CJe
-         k/JreTCCozDDZbXeZ70lNAl4cQOFc4m44g210OVCLwv9GB0VvnTE3txTesLOZQOklO0H
-         x5euopO2KIuD6fUvmeN0eBifPvsC87zDNBl177DBtrnOu66HVP7jIEZaIuLAas2C+pj5
-         xo1VIftcS1OsuRt3WSuqK6T7lHRpvn26FmMn3WkJigIY4wwFPnF/MhhSVEgoxuIQznkK
-         Weqg==
+	s=arc-20240116; t=1710179246; c=relaxed/simple;
+	bh=r7uClMLuZYE7AgrhsTWV2qszim5tbe2WKWP659ugFwM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J8ZngCxewK6sgoPe8v+UK8ybuzCIH+GHX4OIkvBtP1LiUb4mSC29pQGJPUnR26/3ZrQtGHAe4LJ/fIJKxkc1Pl8wTQ8hv5VnVsCTqJgSe+OEQAOCLrPuAnVoHtAUXah9NYcBVk73A+pTuGioswdnb/FiPAPnDsrFdFR6W+uDiw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YCr3TBI/; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710179243;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e3tUcIlJ5o5Hs/7+gdyglVV0O0xMiKwtCqd2APcSMtU=;
+	b=YCr3TBI/ENR1AkFjyEC9HN8lU7DyV0Yx9vVQpC2Ue5fEHaeSSL6abopXJkC+1W+OiX5TOY
+	aJkD+Doa7e4QvgvSa+vmgsevFuTaD1qNWGiqfjxx8RidKOBbQ63C1Rqk1jVkVWH8rnbxOI
+	yxnekcZDM0jA8kEDtAA4HJjLY2jfIxU=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-74-VmhUtWdHNIiDbzbJDaljAw-1; Mon, 11 Mar 2024 13:47:22 -0400
+X-MC-Unique: VmhUtWdHNIiDbzbJDaljAw-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-690b861a1c0so38402876d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:47:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710179056; x=1710783856;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6njN+Ix5AAlz5r+8JT2vb+hUlGcvA64q3xEcgqXOsgU=;
-        b=QUXzZ0kl5M7I+ohlRZSjagF37p3i4outNth8TCAZ7mMp5Gw6NMLl/mrhGMBbE6xnIl
-         aJxzoXvXHWNCCDX5ubIxAllfKge/MFKApiLNc4dzgMBcpq8/BwHxf9FOW492HCRJpEnw
-         DSbfAJHOUizYt0YXJ0Of8HU8sabQF5KpgkFmpHjzqqd5HpmJSPvX6TTaCv4ByKlf0irl
-         CS2tqEWURSy415dwGFeUm8HaFeTTL84hwXV2d/Ls7F7KSSb7E16PZQy6JomIRVRSyQUZ
-         8iE1+G8Ga7hByesgji6JBkVnTorEFklDzMXDLlxUzre4PVjBStztmhpQe3HgzCL8criW
-         mz6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUd/sOdCk710Ra6CJjkAX6um/ai/YkgR/kVgka/WNwLsFYKA2GKALtmyGwMFfKdjRMt/RJWL3vsj/ZnXXXAoiTpFeb/TTSpMz58vKTY
-X-Gm-Message-State: AOJu0YwjRmuC12CUTbWC1iBnZKnxhM0BbOXu7Wz1h+nmbRqnh35/DnuI
-	3xAdpWhRsaG7k8s9Ah97TNynVkHAJAcTMa+pFUHd2lrx6R21uxwdrGFn5LtEsFLSE1wfs6qGH2F
-	4+F1TwoT1gzHyDG82JzYxoGh1xOksaywUGJXCRXkrQ9XV0Rpc6w==
-X-Google-Smtp-Source: AGHT+IEiyXoLtl8FGPR0QpQwioDmfpwtMlSqt/TB1uax5qtbflKwpR9qoDDE3tJQLCaR9qvo9iItIuvqoZmyCSDKVLQ=
-X-Received: by 2002:aa7:d891:0:b0:568:569f:be4c with SMTP id
- u17-20020aa7d891000000b00568569fbe4cmr193644edq.3.1710179053955; Mon, 11 Mar
- 2024 10:44:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710179241; x=1710784041;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e3tUcIlJ5o5Hs/7+gdyglVV0O0xMiKwtCqd2APcSMtU=;
+        b=QNf4g5VoTiwQZrOaHg59s9JpdQt6/G6my3Tzjfu6sr7Zl9ZXKXMi5XlUvP8XVTEgLU
+         eq8zDUuPreFSTh8UsfhnB3VieDktTsJv6P5mo8c1p0TjE7fhAprdw1ZXXy16KleVWDFy
+         trZImTbyMorlSbt5yBRJimb/sTrA+pkR08xwgtaHkNKI7ih6gOJNnb3upIqmVI+U5cc9
+         ojC9VW+pYFFF9N5IToZgvvXMe62okLEmrYInkzzQdsnp4BdRckqmGEz5oZUgwD1dZ58l
+         sLltQG4sWBaew/Mi2309Lr2OfWw1vqFDYsiADbJRIOP/HQlk1YNERa5dnrCHV4FsZuC7
+         CMaw==
+X-Forwarded-Encrypted: i=1; AJvYcCW31MQIG/irNgwM6Fm5BvOtSIbWCNj5CzkRPiwCG1vq98pJNUVgtaa+XOmw/jv0yPuZMURSHlmuIruzUlzyLRrQr/pwo6rKJT/rMUwm
+X-Gm-Message-State: AOJu0YwincDlPnxnRiYrspTzS6xsG4feRZQMPqTRdOxhghNF/Cqbw3Nn
+	c4PjnxVdAqYQWqsm0o0gycyYLhrZunmGE/3nN5Ep29kRXw1jfwf6tNn7CouQtY25odIPBnEMgxe
+	Yus+0ibFRwNGlmAQ2YX08O0S97p/SnkXxgGlT1tgIwwsAW+0/CRqzhk3uvTAYBA1DA0vvWA==
+X-Received: by 2002:a05:6214:247:b0:690:db88:9eb with SMTP id k7-20020a056214024700b00690db8809ebmr1672459qvt.50.1710179241531;
+        Mon, 11 Mar 2024 10:47:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGKkd3g/GU6B6xqvPUivb+7iFgK8i45ZkaZeEfZReIDlgxd3Q+6lkyFcUHq8gFduAC17Jv0uw==
+X-Received: by 2002:a05:6214:247:b0:690:db88:9eb with SMTP id k7-20020a056214024700b00690db8809ebmr1672446qvt.50.1710179241228;
+        Mon, 11 Mar 2024 10:47:21 -0700 (PDT)
+Received: from localhost (ip70-163-216-141.ph.ph.cox.net. [70.163.216.141])
+        by smtp.gmail.com with ESMTPSA id n13-20020a0cfbcd000000b00690bb839b5bsm2842551qvp.135.2024.03.11.10.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 10:47:20 -0700 (PDT)
+Date: Mon, 11 Mar 2024 10:47:19 -0700
+From: Jerry Snitselaar <jsnitsel@redhat.com>
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: mpe@ellerman.id.au, linux-integrity@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, jarkko@kernel.org, 
+	rnsastry@linux.ibm.com, peterhuewe@gmx.de, viparash@in.ibm.com, 
+	devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/3] powerpc/prom_init: Replace
+ linux,sml-base/sml-size with linux,sml-log
+Message-ID: <s2a42qzx4pp7fvgde4p5t7pcwsop4wlm266e2gdgr2gb5y77cn@udrmavhiwqoo>
+References: <20240311132030.1103122-1-stefanb@linux.ibm.com>
+ <20240311132030.1103122-2-stefanb@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306111157.29327-1-petr@tesarici.cz> <20240311182516.1e2eebd8@meshulam.tesarici.cz>
-In-Reply-To: <20240311182516.1e2eebd8@meshulam.tesarici.cz>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 11 Mar 2024 18:43:59 +0100
-Message-ID: <CANn89iKQpSaF5KG5=dT_o=WBeZtCiLcN768eUdYvUew-dLbKaA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] u64_stats: fix u64_stats_init() for lockdep when used
- repeatedly in one file
-To: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Linux regressions mailing list <regressions@lists.linux.dev>, open list <linux-kernel@vger.kernel.org>, 
-	"Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>, stable@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311132030.1103122-2-stefanb@linux.ibm.com>
 
-On Mon, Mar 11, 2024 at 6:25=E2=80=AFPM Petr Tesa=C5=99=C3=ADk <petr@tesari=
-ci.cz> wrote:
->
-> On Wed,  6 Mar 2024 12:11:57 +0100
-> Petr Tesarik <petr@tesarici.cz> wrote:
->
-> > Fix bogus lockdep warnings if multiple u64_stats_sync variables are
-> > initialized in the same file.
-> >
-> > With CONFIG_LOCKDEP, seqcount_init() is a macro which declares:
-> >
-> >       static struct lock_class_key __key;
-> >
-> > Since u64_stats_init() is a function (albeit an inline one), all calls
-> > within the same file end up using the same instance, effectively treati=
-ng
-> > them all as a single lock-class.
->
-> What happens with this fix now?
->
-> IIUC it should be reviewed by Eric, but I don't know through which tree
-> it should be merged. Any plans yet?
+On Mon, Mar 11, 2024 at 09:20:28AM -0400, Stefan Berger wrote:
+> linux,sml-base holds the address of a buffer with the TPM log. This
+> buffer may become invalid after a kexec. To avoid accessing an invalid
+> address or corrupted buffer, embed the whole TPM log in the device tree
+> property linux,sml-log. This helps to protect the log since it is
+> properly carried across a kexec soft reboot with both of the kexec
+> syscalls.
+> 
+> Avoid having the firmware ingest the whole TPM log when calling
+> prom_setprop but only create the linux,sml-log property as a place holder.
+> Insert the actual TPM log during the tree flattening phase.
+> 
+> Fixes: 4a727429abec ("PPC64: Add support for instantiating SML from Open Firmware")
+> Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
+>  arch/powerpc/kernel/prom_init.c | 27 +++++++++++++++++++--------
+>  1 file changed, 19 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+> index e67effdba85c..6f7ca72013c2 100644
+> --- a/arch/powerpc/kernel/prom_init.c
+> +++ b/arch/powerpc/kernel/prom_init.c
+> @@ -211,6 +211,8 @@ static cell_t __prombss regbuf[1024];
+>  
+>  static bool  __prombss rtas_has_query_cpu_stopped;
+>  
+> +static u64 __prombss sml_base;
+> +static u32 __prombss sml_size;
 
-I thought I gave a reply, but apparently not .
+Should inside an #ifdef CONFIG_PPC64 since prom_instantiate_sml() is?
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+>  
+>  /*
+>   * Error results ... some OF calls will return "-1" on error, some
+> @@ -1954,17 +1956,15 @@ static void __init prom_instantiate_sml(void)
+>  	}
+>  	prom_printf(" done\n");
+>  
+> -	reserve_mem(base, size);
+> -
+> -	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-base",
+> -		     &base, sizeof(base));
+> -	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-size",
+> -		     &size, sizeof(size));
+> -
+> -	prom_debug("sml base     = 0x%llx\n", base);
+> +	/* Add property now, defer adding log to tree flattening phase */
+> +	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-log",
+> +		     NULL, 0);
+>  	prom_debug("sml size     = 0x%x\n", size);
+>  
+>  	prom_debug("prom_instantiate_sml: end...\n");
+> +
+> +	sml_base = base;
+> +	sml_size = size;
+>  }
+>  
+>  /*
+> @@ -2645,6 +2645,17 @@ static void __init scan_dt_build_struct(phandle node, unsigned long *mem_start,
+>  		}
+>  		prev_name = sstart + soff;
+>  
+> +		if (!prom_strcmp("linux,sml-log", pname)) {
+> +			/* push property head */
+> +			dt_push_token(OF_DT_PROP, mem_start, mem_end);
+> +			dt_push_token(sml_size, mem_start, mem_end);
+> +			dt_push_token(soff, mem_start, mem_end);
+> +			/* push property content */
+> +			valp = make_room(mem_start, mem_end, sml_size, 1);
+> +			memcpy(valp, (void *)sml_base, sml_size);
+> +			*mem_start = ALIGN(*mem_start, 4);
+> +			continue;
+> +		}
 
-Thanks.
+Same question as above.
+
+Regards,
+Jerry
+
+>  		/* get length */
+>  		l = call_prom("getproplen", 2, 1, node, pname);
+>  
+> -- 
+> 2.43.0
+> 
+
 
