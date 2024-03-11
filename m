@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-99270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FDF98785B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:49:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20AAB8785B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92A061F222B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:49:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 436601C219F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97315788B;
-	Mon, 11 Mar 2024 16:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA03858203;
+	Mon, 11 Mar 2024 16:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="j/q/31gH"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="m3FrBRkb"
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6B656B84
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E76857303
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:46:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710175619; cv=none; b=ZPk88ik0sN4kqsu2BhC5AioMmkH7PZwiydBDEEB0YcH+gdZH0fq6sgnOkVxGLNfIOVcr8sWDZLCJjglFbpU1guJ5jM0NBKOZHVNx42UDMbeKLesSfnh06ti0FwaNED/VqzcSEmHmsXx4Wnjhy8dmzO+DY537brIy9so7rsqeqd0=
+	t=1710175619; cv=none; b=I/pDj0eJ2e0ST8APlTjt92w1yFXndxI56NAh8EH3sMW+TlM5U/ozPt8aaMYnpcslwVuIdlORWfI0tqvHyLRiA79mPq5x45bQ1jTt3jaQ233MlRAwoV6PU7wpwTD0jAsAeSz/hgZ7JPP24NkE8EnUYO0qrdawH3jMvx1UP2NeakQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710175619; c=relaxed/simple;
-	bh=uG0XdE33GnOjaXgw0sEgfD6qMLI1cOfcn+gbSJbqKvs=;
+	bh=/QZnssDAeZpjT2sFmC0j/E2H3o0tSEKpT/2jMGwPGOw=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hMUUAVz5i/ncWvnvfPZ6tKEeMmVADB3jBBT7wA6oqhxATmlTq8FKgPdPUOvCHMnYBczInq8hQ7tQiAVzZYCOawua5bPI7H4xVp9MlSviqLBGeAP8KiBps0Novji9Gh04CdurzclqsuXzvfNDzjFmBU0+BmYOaC8zkfl5DqxbsCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=j/q/31gH; arc=none smtp.client-ip=209.85.222.176
+	 MIME-Version; b=EG49q/4bW7jBtSh2JZPpGRGK/thdpD8eMzQablWP7O3os9ip0sPEUOF64o9OpnHphyZxOSwr1QielHgTpnJl6KUp3UWsNvcmMjpRHjzlytHj2bQFUtQHxKw7UkBKD099465BTaQkAAMlX5i4KHv6dXcvO8l/yXqHLJYMDGw1wKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=m3FrBRkb; arc=none smtp.client-ip=209.85.222.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-78863dc4247so91038685a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:46:57 -0700 (PDT)
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7884a9a47a5so122048385a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:46:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710175616; x=1710780416; darn=vger.kernel.org;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710175617; x=1710780417; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=cK/ZqVdlnureqUddSXvrvjnokezl2c4iuxNaHlbvXOk=;
-        b=j/q/31gHIaFViDLSBz8X5TdFp8y/fs+HWhdHNK5zThNLm6yMOfvGs31ViTHpgsgbOh
-         qE5EXDLQH27ltiNQw9JfOoQfD3ywoNWjLFyaF4z6HpWT38O/d5SdkViur1Xom1h9eHT7
-         0Lq3PGasRrdsKHUQVw+INHtLpHVdMcyxi3LxTDJussbYrp9yoC7GDKj/EnbM3h88r1VD
-         RK5GnF9DQmqv2YHT8A/jE91DBWUWm9YgklL0w1hB6kYSlA4vFlFkZrC2DT+IOM6chxC3
-         IBNBMcTz1ZvcjW/8KQyBO89y1TmBiXJMVl/3vDXstI+JlnFTNh3ML0kS5H7SV1LnIoDS
-         L1bg==
+        bh=q6FpZ49BpunKdsFtEl370XBCgostMe6YS8Mf7VMqlwM=;
+        b=m3FrBRkbW1wH9x988Zv/mO0VhHRfDaVv+k5okI9z8d8zGJ0OTxhr+P98Ds7N0ymveY
+         DW8iDwq6YwWOZtRRKh3JmyFVZduGITXhTF8Igupvz6FtCAOGVP6Djk93KeLl8etbmNuS
+         6TKDtIPia0vhrI976Qa7KEkf32e0W9Y9apsjFC1Akesy9WnHaJWih5+42tboxL+L/sNY
+         tsSEOugU6XXiVDb/pe8Ve78pLnwk+0VVwxyAkZ703tfdMCublXompMRWGfb578k9cESX
+         zOECp1/QDHeAounTyL2o0L6qo1noAYnS7tkQqDD3L9oT2IHa5eWXX/axE/L/ar1BVRvf
+         RodA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710175616; x=1710780416;
+        d=1e100.net; s=20230601; t=1710175617; x=1710780417;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cK/ZqVdlnureqUddSXvrvjnokezl2c4iuxNaHlbvXOk=;
-        b=bjWCGpDAZrw1GEajhqem+EvKaWj4w9KzaF0KzXhq19khShRZaeg5sOlxppForz/SBO
-         M+Pv3dWZeGHDZTihVZPYRyBndsc+YYIrzS9MZ+g/qvd4Vnk2PPbE3dqTv7CaZXusr/VP
-         ddVNXrX/+lRXfeItza3HCKkrM8zLYLaJE5s0MBp3VUd1jaO5UIsa35E/Mnru7uUrdz4g
-         M/vMz1O4uiuAeNYJ78oUolvwH2o/P96DyevxjMv1SWP8Ge4YkIrEPIAxaYDH6CnNHal2
-         I8bX9b/nn9bKCEmXGuNaqjCORi67qbXs/z8yOxGENitTL69we0REJzVUXfHZzMTGMox2
-         67Kw==
-X-Gm-Message-State: AOJu0Yz//QB3SsdA/zkqREjlYS7T6nkXfIYalnNRQOBik/esglVugXNl
-	eZk3rx2QmNjAxUSIOZzAh51a2RQL7tAC/JG8yfDlxQKEywop+nvOP+yGlRWrVDn8nMkd2+ytVmo
-	HExc=
-X-Google-Smtp-Source: AGHT+IEp6VoHaP5KrWImU0EWHAjL+QS9WD2gq+SL5008BAWJX/vKvEeMCLb5ZMa54jxJQaXt/mOFWQ==
-X-Received: by 2002:ae9:e701:0:b0:788:c09:ce3 with SMTP id m1-20020ae9e701000000b007880c090ce3mr7062849qka.46.1710175616304;
-        Mon, 11 Mar 2024 09:46:56 -0700 (PDT)
+        bh=q6FpZ49BpunKdsFtEl370XBCgostMe6YS8Mf7VMqlwM=;
+        b=iWsVdIwff+bgNtDnEPrMcq5dG0wgO1WdLUUxNQkP/gTxFawBk/sJYjmQuFLd3ItPi5
+         kN7RJU/h4d/HkeHqUYVhoTki8gcv+QiBIlAuuCagynkAzuH+r6QFvCt1sww6+PR6Wfik
+         VE4GeY3E3tfP2pcXQj0G1l/fS2LE6Z1+bK+9Bu0PBhEKpwrtBrKrtk+sfESLNMOrr602
+         YPHxVIcO/KO4mj6Pz8QFsgD7kxiCciX4o180fMglN8FD+5eaoBLNicETJa7QKpAduQjf
+         pLjFjDqTnibZeYPbZDAMjHlHqMnuE1tKHJXRaSfPU0t6RZUriA40V2NKsOWbcw7bC6bX
+         ZSEA==
+X-Gm-Message-State: AOJu0YxEZzkcw29uLOdsrFwCIv95bCU3cguHkaIWalymJFZu2X0yLyFM
+	h/dnjpd8pCjAv72OGiUtrxMjl3c+i2JI740Z9yb9pQ3iwOn0u+p31Nj0ABKXzNYbE+Y06I2Dkh7
+	cqXo=
+X-Google-Smtp-Source: AGHT+IGBBQHGTyj0HK6a6nT9QQX2CzgLifOnSoon3yUl5MxZhI+SOhyqTpiNJHmFfzsFPzFEmk6ojA==
+X-Received: by 2002:ae9:e701:0:b0:788:2e8a:1731 with SMTP id m1-20020ae9e701000000b007882e8a1731mr6728530qka.17.1710175617252;
+        Mon, 11 Mar 2024 09:46:57 -0700 (PDT)
 Received: from soleen.c.googlers.com.com (150.254.86.34.bc.googleusercontent.com. [34.86.254.150])
-        by smtp.gmail.com with ESMTPSA id d27-20020a05620a137b00b00788228fbe05sm2851589qkl.17.2024.03.11.09.46.55
+        by smtp.gmail.com with ESMTPSA id d27-20020a05620a137b00b00788228fbe05sm2851589qkl.17.2024.03.11.09.46.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 09:46:55 -0700 (PDT)
+        Mon, 11 Mar 2024 09:46:56 -0700 (PDT)
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -109,9 +109,9 @@ To: linux-kernel@vger.kernel.org,
 	vincent.guittot@linaro.org,
 	vschneid@redhat.com,
 	pasha.tatashin@soleen.com
-Subject: [RFC 13/14] task_stack.h: Add stack_not_used() support for dynamic stack
-Date: Mon, 11 Mar 2024 16:46:37 +0000
-Message-ID: <20240311164638.2015063-14-pasha.tatashin@soleen.com>
+Subject: [RFC 14/14] fork: Dynamic Kernel Stack accounting
+Date: Mon, 11 Mar 2024 16:46:38 +0000
+Message-ID: <20240311164638.2015063-15-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 In-Reply-To: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
 References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
@@ -123,114 +123,97 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-CONFIG_DEBUG_STACK_USAGE is enabled by default on most architectures.
+Add an accounting of amount of stack pages that has been faulted is
+currently in use.
 
-Its purpose is to determine and print the maximum stack depth on
-thread exit.
+Example use case:
+  $ cat /proc/vmstat | grep stack
+  nr_kernel_stack 18684
+  nr_dynamic_stacks_faults 156
 
-The way it works, is it starts from the buttom of the stack and
-searches the first non-zero word in the stack. With dynamic stack it
-does not work very well, as it means it faults every pages in every
-stack.
+The above shows that the kernel stacks use total 18684KiB, out of which
+156KiB were faulted in.
 
-Instead, add a specific version of stack_not_used() for dynamic stacks
-where instead of starting from the buttom of the stack, we start from
-the last page mapped in the stack.
+Given that the pre-allocated stacks are 4KiB, we can determine the total
+number of tasks:
 
-In addition to not doing uncessary page faulting, this search is
-optimized by skipping search through zero pages.
+tasks = (nr_kernel_stack - nr_dynamic_stacks_faults) / 4 = 4632.
 
-Also, because dynamic stack does not end with MAGIC_NUMBER, there is
-no need to skeep the buttom most word in the stack.
+The amount of kernel stack memory without dynamic stack on this machine
+woud be:
+
+4632 * 16 KiB = 74,112 KiB
+
+Therefore, in this example dynamic stacks save: 55,428 KiB
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/Kconfig                     |  1 -
- include/linux/sched/task_stack.h | 38 +++++++++++++++++++++++---------
- 2 files changed, 27 insertions(+), 12 deletions(-)
+ include/linux/mmzone.h |  3 +++
+ kernel/fork.c          | 13 ++++++++++++-
+ mm/vmstat.c            |  3 +++
+ 3 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index da3df347b069..759b2bb7edb6 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1266,7 +1266,6 @@ config DYNAMIC_STACK
- 	depends on HAVE_ARCH_DYNAMIC_STACK
- 	depends on VMAP_STACK
- 	depends on !KASAN
--	depends on !DEBUG_STACK_USAGE
- 	depends on !STACK_GROWSUP
- 	help
- 	  Dynamic kernel stacks allow to save memory on machines with a lot of
-diff --git a/include/linux/sched/task_stack.h b/include/linux/sched/task_stack.h
-index 396d5418ae32..c5fb679b31ee 100644
---- a/include/linux/sched/task_stack.h
-+++ b/include/linux/sched/task_stack.h
-@@ -9,6 +9,7 @@
- #include <linux/sched.h>
- #include <linux/magic.h>
- #include <linux/refcount.h>
-+#include <linux/vmalloc.h>
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index a497f189d988..ba4f1d148c3f 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -198,6 +198,9 @@ enum node_stat_item {
+ 	NR_FOLL_PIN_ACQUIRED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
+ 	NR_FOLL_PIN_RELEASED,	/* pages returned via unpin_user_page() */
+ 	NR_KERNEL_STACK_KB,	/* measured in KiB */
++#ifdef CONFIG_DYNAMIC_STACK
++	NR_DYNAMIC_STACKS_FAULTS_KB, /* KiB of faulted kernel stack memory */
++#endif
+ #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
+ 	NR_KERNEL_SCS_KB,	/* measured in KiB */
+ #endif
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 63e1fd661e17..2520583d160a 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -343,6 +343,9 @@ void dynamic_stack_refill_pages(void)
  
- #ifdef CONFIG_THREAD_INFO_IN_TASK
+ 		mod_lruvec_page_state(page, NR_KERNEL_STACK_KB,
+ 				      PAGE_SIZE / 1024);
++		mod_lruvec_page_state(page,
++				      NR_DYNAMIC_STACKS_FAULTS_KB,
++				      PAGE_SIZE / 1024);
  
-@@ -109,6 +110,21 @@ static inline void dynamic_stack(struct task_struct *tsk)
+ 		page = alloc_pages(THREADINFO_GFP & ~__GFP_ACCOUNT, 0);
+ 		if (unlikely(!page))
+@@ -771,9 +774,17 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
+ 		int i, nr_pages;
  
- static inline void set_task_stack_end_magic(struct task_struct *tsk) {}
+ 		nr_pages = vm->nr_pages;
+-		for (i = 0; i < nr_pages; i++)
++		for (i = 0; i < nr_pages; i++) {
+ 			mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
+ 					      account * (PAGE_SIZE / 1024));
++#ifdef CONFIG_DYNAMIC_STACK
++			if (i >= THREAD_PREALLOC_PAGES) {
++				mod_lruvec_page_state(vm->pages[i],
++						      NR_DYNAMIC_STACKS_FAULTS_KB,
++						      account * (PAGE_SIZE / 1024));
++			}
++#endif
++		}
+ 	} else {
+ 		void *stack = task_stack_page(tsk);
  
-+#ifdef CONFIG_DEBUG_STACK_USAGE
-+static inline unsigned long stack_not_used(struct task_struct *p)
-+{
-+	struct vm_struct *vm_area = p->stack_vm_area;
-+	unsigned long alloc_size = vm_area->nr_pages << PAGE_SHIFT;
-+	unsigned long stack = (unsigned long)p->stack;
-+	unsigned long *n = (unsigned long *)(stack + THREAD_SIZE - alloc_size);
-+
-+	while (!*n)
-+		n++;
-+
-+	return (unsigned long)n - stack;
-+}
-+#endif /* CONFIG_DEBUG_STACK_USAGE */
-+
- #else /* !CONFIG_DYNAMIC_STACK */
- 
- #define task_stack_end_corrupted(task) \
-@@ -123,17 +139,6 @@ static inline bool dynamic_stack_fault(struct task_struct *tsk,
- 	return false;
- }
- 
--#endif /* CONFIG_DYNAMIC_STACK */
--
--static inline int object_is_on_stack(const void *obj)
--{
--	void *stack = task_stack_page(current);
--
--	return (obj >= stack) && (obj < (stack + THREAD_SIZE));
--}
--
--extern void thread_stack_cache_init(void);
--
- #ifdef CONFIG_DEBUG_STACK_USAGE
- #ifdef CONFIG_STACK_GROWSUP
- static inline unsigned long stack_not_used(struct task_struct *p)
-@@ -160,6 +165,17 @@ static inline unsigned long stack_not_used(struct task_struct *p)
- #endif /* CONFIG_STACK_GROWSUP */
- #endif /* CONFIG_DEBUG_STACK_USAGE */
- 
-+#endif /* CONFIG_DYNAMIC_STACK */
-+
-+static inline int object_is_on_stack(const void *obj)
-+{
-+	void *stack = task_stack_page(current);
-+
-+	return (obj >= stack) && (obj < (stack + THREAD_SIZE));
-+}
-+
-+extern void thread_stack_cache_init(void);
-+
- static inline int kstack_end(void *addr)
- {
- 	/* Reliable end of stack detection:
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index db79935e4a54..1ad6eede3d85 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1237,6 +1237,9 @@ const char * const vmstat_text[] = {
+ 	"nr_foll_pin_acquired",
+ 	"nr_foll_pin_released",
+ 	"nr_kernel_stack",
++#ifdef CONFIG_DYNAMIC_STACK
++	"nr_dynamic_stacks_faults",
++#endif
+ #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
+ 	"nr_shadow_call_stack",
+ #endif
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
