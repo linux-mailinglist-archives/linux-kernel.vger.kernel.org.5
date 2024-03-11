@@ -1,116 +1,170 @@
-Return-Path: <linux-kernel+bounces-98942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42CD5878154
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:09:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0C06878163
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:12:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81AB1F23213
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:09:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F6F21C21923
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:12:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DB83FB9C;
-	Mon, 11 Mar 2024 14:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8777D3FBB5;
+	Mon, 11 Mar 2024 14:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XygYDkFi"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R4CJoUl9"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60063E46D
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB0A40BF5;
+	Mon, 11 Mar 2024 14:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710166189; cv=none; b=tUEQ+8EmfcXut4c5IY01EyiYv7P2lR0eEbtOHDLAwZ5sMtd3PIuCvAvK4Xze+znFk+5LE3sYtzjWtlK+he/qpd4pwzzHpdMUAWyqd4UHd3Kyng6gUvUvxldgN67uWkLjbIKo8w0JA+lgyod5Q4y3lpWiHUC5tK8hYAyOaZyrll0=
+	t=1710166329; cv=none; b=KkYDJSOu9Not3sHypF6dgGVO+GiVYW8B8bwDfoyFwDITZam8TO4PfHqtSL08oewZvCiMs/RD26mjZPxQ+cUOX6wqx+mCGzDdvq2mA8qP0w5JnWRdqgNXxMRocvHF+hWBndgR8aK5edUkk6wLiV2U5agRY26LLbJFY1J3CcJG9lQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710166189; c=relaxed/simple;
-	bh=mgxPhZa7itiP3y8g8ze/hDZxipnyP4hm2UnmBNC9sKw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PiDeqjg8J2TzT5iTbi8jD0vJcpaffMigVo5c3/g3/znW474QEhaaqPUrm/NLQ0Lf4sU7PEct0MprQ2Qg1WYKSNa7B6tpLIKJd/VS+iHAEev1tWlRg1tPZ+lrziu5T3lgCRvaPfez9/5g23ZcTAxynHgw34Z2RZ0GJSKfD+XJ1O8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XygYDkFi; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4132f780ee2so2628905e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710166186; x=1710770986; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yl6YfvPFhweYRwRy68I4o7i+ufbSeARu9E5f/nZY69c=;
-        b=XygYDkFi1bkYgo1RRRkW73zdHFOHiUwtQESmVsNePGCqOU2bsBUyoFCIrNkHCPpo+g
-         Em0Mn4WcFwJ1ONg/IDg6m2b9XOVnXCopATRRnlqaM0TJ7G4CPpqyU6+qxeNBafoGXTrM
-         01H/Y5mcGyYOs8diGo3MIf1qAWMteDyWov4q1LFpCs9L7zIfSVI5dpnUMvuzrvOdqTyl
-         UrwvGT9RO/xST30fIGoEPAzuyaKI4ERjJ03pB/LFF5X33+H/AiqnXT3DRQD77Mba+2dj
-         OEDWA4vrXWhOx87sSvaaE4+lTGIhyEKUFZTnbjwTerkJBLgzBK9Oe4yyB45fBRy+ilLh
-         5OoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710166186; x=1710770986;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yl6YfvPFhweYRwRy68I4o7i+ufbSeARu9E5f/nZY69c=;
-        b=FRziUxF/Th8gtfv7PZ7wMd83gu5+25fYnRjGCbY7IEo1SdRRJWBjEWFmo50+VAqDzb
-         EUb8Jy4xZjjEBM6QqJtCR+E3ElB853EBlKrkgNN0uHmS6Pe+5WOcVV9P2em/wYwrhB3v
-         0UlRCx80qRaIFSLIwu9kBVOEMnFXAdOfwBmD5JWPfiN7bcgN2dzCGIxNbHSWmhPEEnAI
-         Wfz2FpLPGrXIAnf1MmxXf7JOWUJe1Vtivf7fYfeCUa1/gxPS//INMD+03doQhFOVhu6I
-         BSl0lQhDomD/+6M8IacR7flKUhPj0EZraWnHtrKCU7n5doMThkQUm8ha2I28Y8iifjxv
-         KKfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJrG8hfziS7j/LL4J95s63mH7XDdnZ1tqrxbaBW/o7eM2M4GZwjaRPLES6x/X6U7QPh5uEe3QATzIWTSlDFKXSjc87Qdpv/XAaIfoL
-X-Gm-Message-State: AOJu0Yx+Rua/LCBbdLMurtDmK52R2WGUR+8WA0jam80gPTQuFAXpoo2t
-	D6zXZ0DN2/WF+WV9X7GPPZsKENhCLQX2zPGukSPTnd8C/HYzmvwCnax0wMd3MOw=
-X-Google-Smtp-Source: AGHT+IGQYnC6s8vq/AC95aOrVG5lPMt5L/uK8n2CYBjMezpKRJ3nt4A8EEH/Dx53g29OqUA7Km8LVA==
-X-Received: by 2002:a05:600c:4f50:b0:413:15a5:5029 with SMTP id m16-20020a05600c4f5000b0041315a55029mr6835212wmq.10.1710166186035;
-        Mon, 11 Mar 2024 07:09:46 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id p8-20020a05600c1d8800b004122b7a680dsm9399239wms.21.2024.03.11.07.09.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 07:09:45 -0700 (PDT)
-Date: Mon, 11 Mar 2024 17:09:41 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Felix N. Kimbu" <felixkimbu1@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	outreachy@lists.linux.dev
-Subject: Re: [PATCH] staging: cfg80211: Remove parentheses prism2_get_station
-Message-ID: <ac756a79-0522-4286-a464-2a62a4fb1cde@moroto.mountain>
-References: <Ze8LBf6xSjCRt4rd@MOLeToid>
+	s=arc-20240116; t=1710166329; c=relaxed/simple;
+	bh=p17h7cnshXjqOHplB90Y1LjRUCbP/fgVQt4Tof1OndI=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=n57R3zCEbVDrVoUKPyLzBV8ZubEgdH4qm44T+Fl7BjW/faTmJ2ZU8RgHAnQO1+cZh3pgzVurpN9tN1Tidoik25hi/HanNdz4S5bWgJ37BFlIGUnltKk/ZCkrTVPbQPdtt0MQewY4zFNauCMXBtoaslD2vjVUlnFoipl3fXEmpjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R4CJoUl9; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42B7dXRU028694;
+	Mon, 11 Mar 2024 14:12:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=yvMGZSaaQ1s4
+	15vCsd80iY/qNbhmhoBdJ9MIzP3HoOQ=; b=R4CJoUl9k6CrWf8UsRTQ5hcXBrZw
+	unUPfdaoE8xVq4v1ncJDnYLJTKVMoFdC4YtWtJ40P3OhS0aw15PqjEwSfAilTGip
+	nfilPubsU3AVIOVQQOEHewEuAcitKwzT+AFWX0rLD+tWP23BnlfmExqJgVC00y5M
+	hP6cyF6+i5gdGfvgXK4Bl2OaEPaJGtERAEHCpUrA8/HBYvqMYQ1hUqCpF3RYkCfH
+	31Nu/HrKdqVrsYM9AFzc86vTQ8CNW8zMFPeRQBWOGlimgPEE3o2W/NX4Y3eLMWuv
+	gDN7VjsYMAvTq451fTX3PJYRnZpv7due9pX+KYbaScOSeOgpQTmQEjfTMg==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wswrss283-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 14:12:02 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 42BEBgrr009634;
+	Mon, 11 Mar 2024 14:11:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3wrguks1vn-1;
+	Mon, 11 Mar 2024 14:11:42 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42BEBgSA009623;
+	Mon, 11 Mar 2024 14:11:42 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 42BEBg04009622;
+	Mon, 11 Mar 2024 14:11:42 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
+	id 190B73A4E; Mon, 11 Mar 2024 19:41:41 +0530 (+0530)
+From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+To: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org,
+        manivannan.sadhasivam@linaro.org, robh@kernel.org
+Cc: quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_schintav@quicinc.com, Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH v7 0/3] arm64: qcom: sa8775p: add cache coherency support for SA8775P
+Date: Mon, 11 Mar 2024 19:41:34 +0530
+Message-Id: <1710166298-27144-1-git-send-email-quic_msarkar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Oao1XsS82IRibvd8GLZ6imECiztuH_aG
+X-Proofpoint-ORIG-GUID: Oao1XsS82IRibvd8GLZ6imECiztuH_aG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ malwarescore=0 priorityscore=1501 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403110107
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ze8LBf6xSjCRt4rd@MOLeToid>
 
-On Mon, Mar 11, 2024 at 02:45:41PM +0100, Felix N. Kimbu wrote:
-> Remove unnecessary parentheses around 'wlandev->msdstate != WLAN_MSD_RUNNING'
-> in static int prism2_get_station(...)
-> 
-> This change ensures adherence to coding style guidelines.
-> 
-> Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
-> ---
->  drivers/staging/wlan-ng/cfg80211.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
-> index 471bb310176f..7451fd2bb580 100644
-> --- a/drivers/staging/wlan-ng/cfg80211.c
-> +++ b/drivers/staging/wlan-ng/cfg80211.c
-> @@ -247,7 +247,7 @@ static int prism2_get_station(struct wiphy *wiphy, struct net_device *dev,
->  
->  	memset(sinfo, 0, sizeof(*sinfo));
->  
-> -	if (!wlandev || (wlandev->msdstate != WLAN_MSD_RUNNING))
-> +	if (!wlandev || wlandev->msdstate != WLAN_MSD_RUNNING)
+Due to some hardware changes, SA8775P has set the NO_SNOOP attribute
+in its TLP for all the PCIe controllers. NO_SNOOP attribute when set,
+the requester is indicating that no cache coherency issues exist for
+the addressed memory on the host i.e., memory is not cached. But in
+reality, requester cannot assume this unless there is a complete
+control/visibility over the addressed memory on the host.
 
-Sorry, we're ignoring this checkpatch warning.
+And worst case, if the memory is cached on the host, it may lead to
+memory corruption issues. It should be noted that the caching of memory
+on the host is not solely dependent on the NO_SNOOP attribute in TLP.
 
-https://lore.kernel.org/all/?q=prism2_get_station
+So to avoid the corruption, this patch overrides the NO_SNOOP attribute
+by setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not
+needed for other upstream supported platforms since they do not set
+NO_SNOOP attribute by default.
 
-regards,
-dan carpenter
+This series is to enable cache snooping logic in both RC and EP driver
+and add the "dma-coherent" property in dtsi to support cache coherency
+in SA8775P platform.
+
+Dependency
+----------
+
+Depends on:
+https://lore.kernel.org/all/1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com/
+https://lore.kernel.org/all/20240306-dw-hdma-v4-4-9fed506e95be@linaro.org/ [1]
+
+V6 -> V7:
+- removed redundant comment in both patches 1 & 2
+- added Reviewed-by and Acked-by tag
+
+V5 -> V6:
+- updated commit message as per comments
+- added Kdoc comments in patch1
+- change variable name from enable_cache_snoop to
+  override_no_snoop
+- sort reg offset define in patch2
+
+V4 -> V5:
+- Updated commit message in both Patch1 and patch2
+- change variable name from no_snoop_override to
+  enable_cache_snoop
+- rebased patch2 on top of [1]
+
+v3 -> v4:
+- added new cfg(cfg_1_34_0) for SA8775P in both RC and EP driver.
+- populated a flag in the data structures instead of doing
+  of_device_is_compatible() in both RC and EP patch.
+- update commit mesaage and added reveiwed-by tag in commit message
+  in dtsi patch.
+
+v2 -> v3:
+- update commit message(8755 -> 8775).
+
+v1 -> v2:
+- update cover letter with explanation.
+- define each of these bits and ORing at usage time rather than
+  directly writing value in register.
+
+Mrinmay Sarkar (3):
+  PCI: qcom: Override NO_SNOOP attribute for SA8775P RC
+  PCI: qcom-ep: Override NO_SNOOP attribute for SA8775P EP
+  arm64: dts: qcom: sa8775p: Mark PCIe EP controller as cache coherent
+
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi     |  1 +
+ drivers/pci/controller/dwc/pcie-qcom-ep.c | 19 ++++++++++++++++---
+ drivers/pci/controller/dwc/pcie-qcom.c    | 24 +++++++++++++++++++++++-
+ 3 files changed, 40 insertions(+), 4 deletions(-)
+
+-- 
+2.7.4
 
 
