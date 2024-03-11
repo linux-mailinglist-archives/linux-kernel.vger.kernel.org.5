@@ -1,170 +1,274 @@
-Return-Path: <linux-kernel+bounces-99632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58384878AF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:52:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E412878AFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:52:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 733671C203A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:52:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BDEA1C2168A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB07858213;
-	Mon, 11 Mar 2024 22:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D11C358ABD;
+	Mon, 11 Mar 2024 22:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y+1K1gxa"
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="km9pNuoL"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706972E40E
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 22:52:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E052658AAC
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 22:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710197555; cv=none; b=W3sTHMf39V6N+f8EHCBSjUVICoYQKPhU7FNnUKkq8oiPUHw75UljtX/L/8fs23wqG5fs91jCP1m5rwccxQvpG1Z38QM8oEPPaF1RQZhKLnSOfoIqHjpwD+SgvfK1PHDgMs9IcNrcbN77WvEqT4IKBeXGx3S6cHo7JBXzXcZ9uiE=
+	t=1710197559; cv=none; b=VyFIk6s2cYqOjNngwHgDPO3X3V5xCaQNmYtlw8VLEyhDdsbUAV4rmKTIajktkUV89qkdV/LSyn8TmCeF87xlPQPNpwXMV31XfQtfmwxiIlHPWQbDKCvZm6GSvlyrKyHFAVIrlU55XcgQPnchVOzt+t7Awro4vsDIdvDl6Wz2Hj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710197555; c=relaxed/simple;
-	bh=3tNuY2Sy9qmDsPWY1JjCOuYp6NlDhqMEB/g+/Q5zep8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BfqGBIuWX9DPxmih+rrMsrxl5SATzDeJuTpcwJTgMK9E0PYLL9kMfOnbYI+Zt8gvZPJQZ9KIv3tsUWvdVF8dvW8elDD4PZnF18e+rqYg6aijxQDMEayYxxImB/Kk0wX/dh9qdb7GQh0DZKJGWpuMcxGO2LqMVLXcGN1IGRepahs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y+1K1gxa; arc=none smtp.client-ip=209.85.222.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7db44846727so1439896241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:52:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710197552; x=1710802352; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sG6rccbriKueItsKjb2cJTEQoJ9sZCgOF8qwmAyEOIk=;
-        b=Y+1K1gxaKSup3QPZQAcwMaYVY13eFWmTYk07xlTCMLyrerOrHD8FGD/XfnPJ1wAAxs
-         nhenkeCNOvV1juVZE12sHn6x6aOrP4bIvfDGuFccGLa4jIE61uG+9yjO/PWqH0j+xl2z
-         /LsBlOzR+Plp0xAlR+u4fAugEsOb8KUcmztS3WRoqFdOnIr4XnZBoa1FkWDdwMJKwufW
-         5QGNJqDd8wmYH0q2G/yfJ1RLc2Tz/PZb2WkxPfqMQ5Ei688DjYV5cyB7mTkhlwqPJzwN
-         seW1/ei0jMF57I6sVnzIhs/P/gLHzEMV3ermiKLUxmrzexxCenO9U0ds+jNfwT7du1SB
-         4c8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710197552; x=1710802352;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sG6rccbriKueItsKjb2cJTEQoJ9sZCgOF8qwmAyEOIk=;
-        b=A/65DKqE6YVjeypYKRPR/BcvxO6nTyZjQ2bn660kNlZ2r/sa1IIr1WCAXVmFJIvm0G
-         qADxGzoX5pWqWJc0b630Vt9gKDPCTHJdSUBmQ2NzWaD6L+TIUhyC9hpqA0LfnZoJ2GSz
-         ShLf+5AfGG4cp5d0YClFnnYm5BzWY57sGmhONVLd0LHKjXLLO8wTJfD9aKhbc576kJPo
-         mAWdaMTq+CfRlBXAcGMzF7reYMbbYmqG6CUTPLFb45anwCh+yI4gDlnxwMwFcqjTB1/6
-         Ejpm6Pj//lN37O+4eaHO59PrHgGJsJvShiUgxoEpnxqBiFuyv4GoevxU/hZUzC1FHveU
-         fV8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWJSxOFTFTj94tzgzzvvh32h5GdDiZ55aZgLs/WKHNwpzuSeuzJj6CE+sZaxfG+xfUw9FbZ16RHqCjtAosQz979enxQtR/+NtRHYs7r
-X-Gm-Message-State: AOJu0YxKkT/3Wjv4U1SXMOtHIk1/V02oQI06EjmfYy6/nsTwgVxHSaYe
-	dDsIJPfIPUfC1PvOXvtCQMI2fN1t8eFBe/Fj3YfGyf6of8Oex8ssjP60ZwpDMAZz2TcK25XXw7G
-	e3H5a5EkHUoXoFE1p/K8JdwaK+EhjvRC+hro=
-X-Google-Smtp-Source: AGHT+IH7qn/+9W5kdTLPVGt8Aqa7YlqUn9/0gVz+ZYZapZNofZ2SvtCNgguWY9fAufPRjGpcezwjUHJnSF0J2s4EgvU=
-X-Received: by 2002:a05:6102:419e:b0:473:ed7:fbc with SMTP id
- cd30-20020a056102419e00b004730ed70fbcmr5238749vsb.5.1710197552386; Mon, 11
- Mar 2024 15:52:32 -0700 (PDT)
+	s=arc-20240116; t=1710197559; c=relaxed/simple;
+	bh=rgIDmib4C1pcvItR/XIbt9mkxni+eJsX9EEpTmbMCyM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dWoP3cphZsKGy0VGAjlmxpRmEgaD1cXk6ahxbr+GYCI9SkjAX4Ivlp/I+103InhFeAJs2KBK0983IcRmlf7MEAWLJuF8I9K2aJ5ZIPhb6aHEDSB+sjS6ycxU3jnQ2adPVNEKR0AWmYns3nQ+y1YBps/wEJ4Q8UXWBeBFMkB3Hdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=km9pNuoL; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710197558; x=1741733558;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=rgIDmib4C1pcvItR/XIbt9mkxni+eJsX9EEpTmbMCyM=;
+  b=km9pNuoLiHz/G6nLpvOVWoki5zJx/SFrK0az82LPEY6V2twett8xb464
+   KzI36izMTur5OSQNI7ByFfdeF/ZgaTXQ+w+WblujtLwPv3GtLDGttcaGi
+   9O2j/ZSGybWS36NYxgnDBH3odyYFSsTPyhm+7tsSzCQnuMY7GfOyJ5ROT
+   gE8WZ6380H6gowyTdgdYmjxevgRJF68WiU76QU1tOiTeikUuO3ezgCQTS
+   RJD9N2++t5J66fyt4xPOVL6LWgtMHv30uvl2cs6zB7ANvgZ+a9ePJB5JA
+   XUAhuBwzuXaFSaNwfFIbJ9j1Gs9xKBgCnJjIwxMV3symnx5JqdjQwl35c
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4743660"
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="4743660"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 15:52:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="11908088"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.212.137.71])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 15:52:36 -0700
+Date: Mon, 11 Mar 2024 15:52:34 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: "Felix N. Kimbu" <felixkimbu1@gmail.com>
+Cc: Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	outreachy@lists.linux.dev
+Subject: Re: [PATCH v2] staging: wlan-ng: p80211conv: fix indentation
+ problems, introduced by previous commit
+Message-ID: <Ze+LMgwYYK6LN79O@aschofie-mobl2>
+References: <Ze9Ie67PCSvBU+og@MOLeToid>
+ <6d643351-8924-4c86-9fb5-9951e016f5db@gmail.com>
+ <b9cc75d2-3e06-43d6-8b70-38d1c97124d2@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311-zswap-xarray-v5-1-a3031feb9c85@kernel.org>
-In-Reply-To: <20240311-zswap-xarray-v5-1-a3031feb9c85@kernel.org>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 12 Mar 2024 06:52:21 +0800
-Message-ID: <CAGsJ_4z1CTzBHLdpyyHpwhQeXmN7dXbsoHJ1zcXFS2x=D2Xedg@mail.gmail.com>
-Subject: Re: [PATCH v5] zswap: replace RB tree with xarray
-To: Chris Li <chrisl@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b9cc75d2-3e06-43d6-8b70-38d1c97124d2@gmail.com>
 
-On Tue, Mar 12, 2024 at 6:26=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
->
-> Very deep RB tree requires rebalance at times. That
-> contributes to the zswap fault latencies. Xarray does not
-> need to perform tree rebalance. Replacing RB tree to xarray
-> can have some small performance gain.
->
-> One small difference is that xarray insert might fail with
-> ENOMEM, while RB tree insert does not allocate additional
-> memory.
->
-> The zswap_entry size will reduce a bit due to removing the
-> RB node, which has two pointers and a color field. Xarray
-> store the pointer in the xarray tree rather than the
-> zswap_entry. Every entry has one pointer from the xarray
-> tree. Overall, switching to xarray should save some memory,
-> if the swap entries are densely packed.
->
-> Notice the zswap_rb_search and zswap_rb_insert always
-> followed by zswap_rb_erase. Use xa_erase and xa_store
-> directly. That saves one tree lookup as well.
->
-> Remove zswap_invalidate_entry due to no need to call
-> zswap_rb_erase any more. Use zswap_free_entry instead.
->
-> The "struct zswap_tree" has been replaced by "struct xarray".
-> The tree spin lock has transferred to the xarray lock.
->
-> Run the kernel build testing 10 times for each version, averages:
-> (memory.max=3D2GB, zswap shrinker and writeback enabled,
-> one 50GB swapfile, 24 HT core, 32 jobs)
->
-> mm-9a0181a3710eb             xarray v5
-> user       3532.385                     3535.658
-> sys        536.231                      530.083
-> real       200.431                      200.176
->
+On Mon, Mar 11, 2024 at 10:34:20PM +0100, Felix N. Kimbu wrote:
+> Thank for you the feedback Philipp, I have checked
+> 
+> and corrected the checkpatch warnings.
+> 
+
+Please follow process for revisioning patches here:
+First Patch Tutorial Section: Revising your patches
+when you send a v3.
+
+> 
+> Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
 > ---
->
->
-> Signed-off-by: Chris Li <chrisl@kernel.org>
-> ---
-> Changes in v5:
-> - Remove zswap_xa_insert(), call xa_store and xa_erase directly.
-> - Remove zswap_reject_xarray_fail.
-> - Link to v4: https://lore.kernel.org/r/20240304-zswap-xarray-v4-1-c4b456=
-70cc30@kernel.org
->
-> Changes in v4:
-> - Remove zswap_xa_search_and_earse, use xa_erase directly.
-> - Move charge of objcg after zswap_xa_insert.
-> - Avoid erase old entry on insert fail error path.
-> - Remove not needed swap_zswap_tree change
-> - Link to v3: https://lore.kernel.org/r/20240302-zswap-xarray-v3-1-590025=
-2f2302@kernel.org
->
-> Changes in v3:
-> - Use xa_cmpxchg instead of zswap_xa_search_and_delete in zswap_writeback=
-_entry.
-> - Use xa_store in zswap_xa_insert directly. Reduce the scope of spinlock.
-> - Fix xa_store error handling for same page fill case.
-> - Link to v2: https://lore.kernel.org/r/20240229-zswap-xarray-v2-1-e50284=
-dfcdb1@kernel.org
->
-> Changes in v2:
-> - Replace struct zswap_tree with struct xarray.
-> - Remove zswap_tree spinlock, use xarray lock instead.
-> - Fold zswap_rb_erase() into zswap_xa_search_and_delete() and zswap_xa_in=
-sert().
-> - Delete zswap_invalidate_entry(), use zswap_free_entry() instead.
-> - Link to v1: https://lore.kernel.org/r/20240117-zswap-xarray-v1-0-6daa86=
-c08fae@kernel.org
-> ---
->  mm/zswap.c | 166 +++++++++++++++----------------------------------------=
-------
->  1 file changed, 41 insertions(+), 125 deletions(-)
-
-It appears to be a suitable figure. And LGTM,
-
-Reviewed-by: Barry Song <baohua@kernel.org>
-
-Thanks
-Barry
+>  drivers/staging/wlan-ng/p80211conv.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/wlan-ng/p80211conv.c
+> b/drivers/staging/wlan-ng/p80211conv.c
+> index a0413928a843..e48a80df87a6 100644
+> --- a/drivers/staging/wlan-ng/p80211conv.c
+> +++ b/drivers/staging/wlan-ng/p80211conv.c
+> @@ -186,9 +186,9 @@ int skb_ether_to_p80211(struct wlandevice *wlandev, u32
+> ethconv,
+>          if (!p80211_wep->data)
+>              return -ENOMEM;
+>          decrypt_check = wep_encrypt(wlandev, skb->data, p80211_wep->data,
+> -                                      skb->len,
+> -                                    wlandev->hostwep &
+> HOSTWEP_DEFAULTKEY_MASK,
+> -                                    p80211_wep->iv, p80211_wep->icv);
+> +                        skb->len,
+> +                        wlandev->hostwep & HOSTWEP_DEFAULTKEY_MASK,
+> +                        p80211_wep->iv, p80211_wep->icv);
+>          if (decrypt_check) {
+>              netdev_warn(wlandev->netdev,
+>                      "Host en-WEP failed, dropping frame (%d).\n",
+> @@ -306,10 +306,10 @@ int skb_p80211_to_ether(struct wlandevice *wlandev,
+> u32 ethconv,
+>              return 1;
+>          }
+>          decrypt_check = wep_decrypt(wlandev, skb->data + payload_offset +
+> 4,
+> -                                    payload_length - 8, -1,
+> -                                    skb->data + payload_offset,
+> -                                    skb->data + payload_offset +
+> -                                    payload_length - 4);
+> +                        payload_length - 8, -1,
+> +                        skb->data + payload_offset,
+> +                        skb->data + payload_offset +
+> +                        payload_length - 4);
+>          if (decrypt_check) {
+>              /* de-wep failed, drop skb. */
+>              netdev_dbg(netdev, "Host de-WEP failed, dropping frame
+> (%d).\n",
+> -- 
+> 2.34.1
+> 
+> On 3/11/24 20:31, Philipp Hortmann wrote:
+> > On 3/11/24 19:07, Felix N. Kimbu wrote:
+> > > This change renames the local variable foo to decrypt_check in functions
+> > > skb_ether_to_p80211(...) and skb_p80211_to_ether(...), giving intuitive
+> > > meaning to the identifier.
+> > > 
+> > > It also indents the parameters to match the the opening parentheses.
+> > > 
+> > > Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
+> > 
+> > Hi Felix,
+> > 
+> > I think the subject names the subsystem "staging" and then the driver
+> > which is "wlan-ng" the file can follow but you cannot omit the driver
+> > name.
+> > 
+> > 
+> > Please check the following checkpatch warnings:
+> > File Nr: 0    Patch: ../../../Downloads/20240311-[PATCH] staging_
+> > p80211conv_ Rename local foo to decrypt_check-15036.txt
+> > WARNING: Possible repeated word: 'the'
+> > #11:
+> > It also indents the parameters to match the the opening parentheses.
+> > 
+> > ERROR: code indent should use tabs where possible
+> > #41: FILE: drivers/staging/wlan-ng/p80211conv.c:189:
+> > +^I^I^I^I  ^I^I^I^I^Iskb->len,$
+> > 
+> > WARNING: please, no space before tabs
+> > #41: FILE: drivers/staging/wlan-ng/p80211conv.c:189:
+> > +^I^I^I^I  ^I^I^I^I^Iskb->len,$
+> > 
+> > CHECK: Alignment should match open parenthesis
+> > #41: FILE: drivers/staging/wlan-ng/p80211conv.c:189:
+> > +        decrypt_check = wep_encrypt(wlandev, skb->data,
+> > p80211_wep->data,
+> > +                                      skb->len,
+> > 
+> > WARNING: line length of 115 exceeds 100 columns
+> > #42: FILE: drivers/staging/wlan-ng/p80211conv.c:190:
+> > +                                    wlandev->hostwep &
+> > HOSTWEP_DEFAULTKEY_MASK,
+> > 
+> > WARNING: line length of 105 exceeds 100 columns
+> > #43: FILE: drivers/staging/wlan-ng/p80211conv.c:191:
+> > +                                    p80211_wep->iv, p80211_wep->icv);
+> > 
+> > CHECK: Alignment should match open parenthesis
+> > #72: FILE: drivers/staging/wlan-ng/p80211conv.c:309:
+> > +        decrypt_check = wep_decrypt(wlandev, skb->data + payload_offset
+> > + 4,
+> > +                                    payload_length - 8, -1,
+> > 
+> > total: 1 errors, 4 warnings, 2 checks, 58 lines checked
+> > 
+> > Thanks for your support.
+> > 
+> > Bye Philipp
+> > 
+> > 
+> > > ---
+> > >   drivers/staging/wlan-ng/p80211conv.c | 30 ++++++++++++++--------------
+> > >   1 file changed, 15 insertions(+), 15 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/wlan-ng/p80211conv.c
+> > > b/drivers/staging/wlan-ng/p80211conv.c
+> > > index 8336435eccc2..a0413928a843 100644
+> > > --- a/drivers/staging/wlan-ng/p80211conv.c
+> > > +++ b/drivers/staging/wlan-ng/p80211conv.c
+> > > @@ -93,7 +93,7 @@ int skb_ether_to_p80211(struct wlandevice
+> > > *wlandev, u32 ethconv,
+> > >       struct wlan_ethhdr e_hdr;
+> > >       struct wlan_llc *e_llc;
+> > >       struct wlan_snap *e_snap;
+> > > -    int foo;
+> > > +    int decrypt_check;
+> > >         memcpy(&e_hdr, skb->data, sizeof(e_hdr));
+> > >   @@ -185,14 +185,14 @@ int skb_ether_to_p80211(struct wlandevice
+> > > *wlandev, u32 ethconv,
+> > >           p80211_wep->data = kmalloc(skb->len, GFP_ATOMIC);
+> > >           if (!p80211_wep->data)
+> > >               return -ENOMEM;
+> > > -        foo = wep_encrypt(wlandev, skb->data, p80211_wep->data,
+> > > -                  skb->len,
+> > > -                  wlandev->hostwep & HOSTWEP_DEFAULTKEY_MASK,
+> > > -                  p80211_wep->iv, p80211_wep->icv);
+> > > -        if (foo) {
+> > > +        decrypt_check = wep_encrypt(wlandev, skb->data,
+> > > p80211_wep->data,
+> > > +                                      skb->len,
+> > > +                                    wlandev->hostwep &
+> > > HOSTWEP_DEFAULTKEY_MASK,
+> > > +                                    p80211_wep->iv, p80211_wep->icv);
+> > > +        if (decrypt_check) {
+> > >               netdev_warn(wlandev->netdev,
+> > >                       "Host en-WEP failed, dropping frame (%d).\n",
+> > > -                    foo);
+> > > +                    decrypt_check);
+> > >               kfree(p80211_wep->data);
+> > >               return 2;
+> > >           }
+> > > @@ -265,7 +265,7 @@ int skb_p80211_to_ether(struct wlandevice
+> > > *wlandev, u32 ethconv,
+> > >       struct wlan_llc *e_llc;
+> > >       struct wlan_snap *e_snap;
+> > >   -    int foo;
+> > > +    int decrypt_check;
+> > >         payload_length = skb->len - WLAN_HDR_A3_LEN - WLAN_CRC_LEN;
+> > >       payload_offset = WLAN_HDR_A3_LEN;
+> > > @@ -305,15 +305,15 @@ int skb_p80211_to_ether(struct wlandevice
+> > > *wlandev, u32 ethconv,
+> > >                      "WEP frame too short (%u).\n", skb->len);
+> > >               return 1;
+> > >           }
+> > > -        foo = wep_decrypt(wlandev, skb->data + payload_offset + 4,
+> > > -                  payload_length - 8, -1,
+> > > -                  skb->data + payload_offset,
+> > > -                  skb->data + payload_offset +
+> > > -                  payload_length - 4);
+> > > -        if (foo) {
+> > > +        decrypt_check = wep_decrypt(wlandev, skb->data +
+> > > payload_offset + 4,
+> > > +                                    payload_length - 8, -1,
+> > > +                                    skb->data + payload_offset,
+> > > +                                    skb->data + payload_offset +
+> > > +                                    payload_length - 4);
+> > > +        if (decrypt_check) {
+> > >               /* de-wep failed, drop skb. */
+> > >               netdev_dbg(netdev, "Host de-WEP failed, dropping frame
+> > > (%d).\n",
+> > > -                   foo);
+> > > +                   decrypt_check);
+> > >               wlandev->rx.decrypt_err++;
+> > >               return 2;
+> > >           }
+> > 
+> 
 
