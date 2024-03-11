@@ -1,159 +1,133 @@
-Return-Path: <linux-kernel+bounces-99665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 223EB878B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:34:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF7FB878B94
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A293B281FE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:34:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 510611F21B9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 176115A103;
-	Mon, 11 Mar 2024 23:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8DEF59163;
+	Mon, 11 Mar 2024 23:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ta9S1zjh"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ICS6mjMY"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4665059B48
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51E157890
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710200080; cv=none; b=drLTb7fkv5F0bZGVsfwHgWkTo91ogOPuVBX3t9zsrZVsuSs/xWJ5VYFVjZvjzYL1BJlhTPcL+nz4WmN6ye6AYI7ndty61YPWfuqt+XvRVy/elkQmx4AZgKWj/HrIeIN4JbrQSzAOaJs9wwsCeNs8YqyyR3gPrxinnufAIyyxeew=
+	t=1710200254; cv=none; b=heZMno7CNelr5fKNJr5aINjsu5XkHPI3LSRA7GXK3BZcn2IsnRqDZVHIGnPgTUfjg2RDb11DnKEpEiSFyTPKKva9T1QX/izlwsNlYl//LiA7ZOMSM+7/oyLtJkZieYCTOdhuvPZUN5bC9j72+bljpZmoHFGLmMFyG75h2FWRu4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710200080; c=relaxed/simple;
-	bh=10qejgMBcinR13l9lIVU4NzpIgEqrpAcOEd3gHCEwfo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KNoRiDhmC+1xmw9orbpynpmLr6ufdOcJUPllK8tQzxuc9u2wS4Hpd0smpG+YuetUT7b7HagJokiOFT2E7HrEybWuoEgWPsePWUNWpehKdtuogwCU03FfNz2tmV+bzaMtYY6UOf0yWw0rCNOzr1FBGRWis61VVuF0XZMT88Pp9t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ta9S1zjh; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710200078; x=1741736078;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=10qejgMBcinR13l9lIVU4NzpIgEqrpAcOEd3gHCEwfo=;
-  b=Ta9S1zjhVa+t2PY3JUu1MGknxy9Q4/STrlB9QkPy3ciUlHQN7K5J1h3J
-   JR7VmVkrfPOFOchIpWjjzRZ20Cx0W5veU0zMNfSSln4ecIlKJrLck0KhU
-   YMCL+yzDmDY4dPecDdKrjN0np5czS0S330BUrLvsp9arX8FUIRnoduOij
-   hvRrHeQDbwL5p/uifWRt0kf3/1mKEQrgIlYXGFOwPvcFmFr6X9lBEafoS
-   8RJZ/Gis5R9B4IZ2mo9LQ8hs+IJdOjZzqjsK3pYF/3d+qROrpHYeM7gwr
-   XoXGPOlVGVyVHo3DRO4QhyN6QXjvCh5QA/b++7XOikDcJ8TPYqhJ7i1fI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="8707420"
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="8707420"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 16:34:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="11919484"
-Received: from siverson-mobl1.amr.corp.intel.com (HELO [10.209.94.13]) ([10.209.94.13])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 16:34:35 -0700
-Message-ID: <bedfa55b-b1d0-4e59-8c94-dbc5f8485a7f@intel.com>
-Date: Mon, 11 Mar 2024 16:34:35 -0700
+	s=arc-20240116; t=1710200254; c=relaxed/simple;
+	bh=UHDfEzsotiT9ePQ0y9StHgbMOf/lrrRURVo481jht18=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=RLJiIrFmXx0JzI5QXP8yrjrmv3l4nOhCcPppAA3QinpAci7SsuWpcD7YRkvScl6/MPlGDvld8McaAhYegRooED8ddjot8q5GBYmh56Undxe4obk8lGvGAteU7GsHM8jE3LNgryKrWjQksAy3IHVrUHwunt+3opxmMjDDG7cURTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ICS6mjMY; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e5dddd3b95so3597085b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:37:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710200252; x=1710805052; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xm7ckg0f9VWSGYhP+vSFLa1BP8tcu5Wgr9BmHroe7cc=;
+        b=ICS6mjMYCTOwufVVhmEp2JHtDfE2EDE23slTRR32ea4HpM1JIOvTmxHhy6IDIp4Yvo
+         zPa5tbgk3owf/QpW4BcLKDWYKLDeRxoIl+P7K8AzOpKItmhV1jWAnKPxsLiRgrZaTAN3
+         FRMRUAmk92nV1waX6t5R5HviJZLILjxjKSqSA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710200252; x=1710805052;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xm7ckg0f9VWSGYhP+vSFLa1BP8tcu5Wgr9BmHroe7cc=;
+        b=Zyd47I8wQoDT5MALjSx8EL2fkfLKnebiHZughYdjSkMnocmcKxrQxiyq6NC6ngaxf9
+         eb9QBJ9V/0HrArzM8SRq5TOyeHGKFQ1YVN6vfLASxWfcRITQpQcOhjlyXE4W2jqyGUcq
+         D061rMMFrne4lVCiaWHIJH6xbiGla658umapyM7c2ztFQb0NjtHaZSK03V1jt0JsB9UZ
+         a+Hyk+0OFda+CyHy7cPintJXQkrWDrrrMkGP8HDgC+IzBcM+7GiT0/dA5hLWAlLMtTLd
+         vlHm7SlnXBFHhFqM/+i+71iI+4C/NxH/h5s3ob7dioGKrC+QxnPbtducc6T/GzwVFt6v
+         20oQ==
+X-Gm-Message-State: AOJu0Yy03epdUI4XODLopjO1JjGg2kdWbtdHjt+2bfkkpB7f5UJOlFsn
+	ZkJrOhNItWOpqc79HuLJAXJma1wF6JPlk3yNo8KwslAkoq2tzaPTSEtaYmgZ5Q==
+X-Google-Smtp-Source: AGHT+IHD9UB7WtYdXSoqrw9ipbo6+l/ogripqDA2ow6WSs0p2YAHLpnIBCy3YZsyucMa8W5txpXHgQ==
+X-Received: by 2002:a05:6a00:2ea8:b0:6e6:758e:4ad6 with SMTP id fd40-20020a056a002ea800b006e6758e4ad6mr11969545pfb.17.1710200252063;
+        Mon, 11 Mar 2024 16:37:32 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t23-20020a62d157000000b006e56277fd45sm5138302pfl.190.2024.03.11.16.37.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 16:37:31 -0700 (PDT)
+Date: Mon, 11 Mar 2024 16:37:31 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>,
+	Kees Cook <keescook@chromium.org>, Li kunyu <kunyu@nfschina.com>,
+	linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org, Mark Brown <broonie@kernel.org>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Shuah Khan <shuah@kernel.org>
+Subject: [GIT PULL] execve updates for v6.9-rc1
+Message-ID: <202403111637.203A9187C7@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 11/14] x86: add support for Dynamic Kernel Stacks
-Content-Language: en-US
-To: Andy Lutomirski <luto@kernel.org>,
- Pasha Tatashin <pasha.tatashin@soleen.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- the arch/x86 maintainers <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
- Christian Brauner <brauner@kernel.org>, bristot@redhat.com,
- Ben Segall <bsegall@google.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com,
- hca@linux.ibm.com, "hch@infradead.org" <hch@infradead.org>,
- "H. Peter Anvin" <hpa@zytor.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, jpoimboe@kernel.org,
- Joerg Roedel <jroedel@suse.de>, juri.lelli@redhat.com,
- Kent Overstreet <kent.overstreet@linux.dev>, kinseyho@google.com,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, lstoakes@gmail.com,
- mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com,
- Ingo Molnar <mingo@redhat.com>, mjguzik@gmail.com,
- "Michael S. Tsirkin" <mst@redhat.com>, Nicholas Piggin <npiggin@gmail.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Petr Mladek <pmladek@suse.com>, Rick P Edgecombe
- <rick.p.edgecombe@intel.com>, Steven Rostedt <rostedt@goodmis.org>,
- Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
- vincent.guittot@linaro.org, vschneid@redhat.com
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <20240311164638.2015063-12-pasha.tatashin@soleen.com>
- <3e180c07-53db-4acb-a75c-1a33447d81af@app.fastmail.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <3e180c07-53db-4acb-a75c-1a33447d81af@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 3/11/24 15:17, Andy Lutomirski wrote:
-> I *think* that all x86 implementations won't fill the TLB for a
-> non-accessed page without also setting the accessed bit,
+Hi Linus,
 
-That's my understanding as well.  The SDM is a little more obtuse about it:
+Please pull these small execve updates for v6.9-rc1. Details below.
 
-> Whenever the processor uses a paging-structure entry as part of
-> linear-address translation, it sets the accessed flag in that entry
-> (if it is not already set).
+Thanks!
 
-but it's there.
+-Kees
 
-But if we start needing Accessed=1 to be accurate, clearing those PTEs
-gets more expensive because it needs to be atomic to lock out the page
-walker.  It basically needs to start getting treated similarly to what
-is done for Dirty=1 on userspace PTEs.  Not the end of the world, of
-course, but one more source of overhead.
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/execve-v6.9-rc1
+
+for you to fetch changes up to 725d50261285ccf02501f2a1a6d10b31ce014597:
+
+  exec: Simplify remove_arg_zero() error path (2024-03-09 13:46:30 -0800)
+
+----------------------------------------------------------------
+execve updates for v6.9-rc1
+
+- Drop needless error path code in remove_arg_zero() (Li kunyu, Kees Cook)
+
+- binfmt_elf_efpic: Don't use missing interpreter's properties (Max Filippov)
+
+- Use /bin/bash for execveat selftests
+
+----------------------------------------------------------------
+Kees Cook (2):
+      selftests/exec: Perform script checks with /bin/bash
+      exec: Simplify remove_arg_zero() error path
+
+Li kunyu (1):
+      exec: Delete unnecessary statements in remove_arg_zero()
+
+Max Filippov (1):
+      fs: binfmt_elf_efpic: don't use missing interpreter's properties
+
+ fs/binfmt_elf_fdpic.c                   |  2 +-
+ fs/exec.c                               | 11 +++--------
+ tools/testing/selftests/exec/execveat.c |  2 +-
+ 3 files changed, 5 insertions(+), 10 deletions(-)
+
+-- 
+Kees Cook
 
