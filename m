@@ -1,254 +1,176 @@
-Return-Path: <linux-kernel+bounces-98856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6334F878055
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:13:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D287A87805A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 867051C21353
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:13:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DAE6B215BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:14:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379423DBB7;
-	Mon, 11 Mar 2024 13:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690003D569;
+	Mon, 11 Mar 2024 13:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RzAF3VmN"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XMwTmTlx"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE803D0C6
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C15D3FB9D;
+	Mon, 11 Mar 2024 13:13:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710162806; cv=none; b=dk5zdQQgbw961T5z5CQF9UQ/XmEX5SEntpe4nWrCYNb67r+l8Y6orZwO89sARsT+AUTriefLNJELNUR7dlYc8PXX7t3DO7/+jkGaKq3bwPh7uXBXtv7pA+aWe3MqKRJXg5LZunfR6djDGxe+Xs+w6yPONv5pRN++HxEmPhIAieg=
+	t=1710162833; cv=none; b=om4crdmYXWLOKn4rS1dSn1Irr0BWgUaF72rJ+41iOHHVMqyeag3rV5n7uQW+20FcgPATYo1U6svtTf9CRJjGn2ymUts03gi4s959W1bVx8/044xGHa+IYQ5ZmzGGOxXopIbnyVvLNwJbeHFYxwN3G+ES9YZCHDJgIDkN26+eoJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710162806; c=relaxed/simple;
-	bh=oklUwL+uJA6fNtuusqrKD0mu1H8aZpzPS0lrskntuAA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=edhxYz+UjMwu9IBXWJEUXb2Snkz8+XtQVT0QAgAcM25UIFSjcoVVQTsevcSg6AdB6QSFGlPOsLQUt4ZS6sGhCAXjTvlAsTbp7T68K18ocYbrteY4H+cMs0HxwFAu6EmC7qGT02Qb9WXXo6TPpm0hjZzExzY/s6++Tm0Zm4Dw0W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RzAF3VmN; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710162803;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SF+hHbhR6PmZRbNnvRDOIoP+U+GWHfuAJbw7MsIUXN0=;
-	b=RzAF3VmNC8pdD51JRqQpFVROoKWgsgL43TW3xnvLJmXxTN0fBK7Olr/Abhsy2FObXnIZiW
-	JWbMMS+ddX+oU5EJbN7AmxYtGHysfKB0r4RA3HwNCFAFdtlGigjOu1jgNcQ68sW/z7ThL2
-	1VwEz0JZnHQ0h9eik+p0ZOoF6KxL/5A=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-182-Udhoi6WwMIqlcHlVxvW-Ng-1; Mon,
- 11 Mar 2024 09:13:20 -0400
-X-MC-Unique: Udhoi6WwMIqlcHlVxvW-Ng-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5ED1538000B0;
-	Mon, 11 Mar 2024 13:13:19 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.5])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A3C7C04125;
-	Mon, 11 Mar 2024 13:13:12 +0000 (UTC)
-Date: Mon, 11 Mar 2024 21:13:08 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Patrick Plenefisch <simonpatp@gmail.com>
-Cc: Mike Snitzer <snitzer@kernel.org>,
-	Goffredo Baroncelli <kreijack@inwind.it>,
-	linux-kernel@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	regressions@lists.linux.dev, dm-devel@lists.linux.dev,
-	linux-btrfs@vger.kernel.org, ming.lei@redhat.com
-Subject: Re: LVM-on-LVM: error while submitting device barriers
-Message-ID: <Ze8DZLBHhCxgzc+r@fedora>
-References: <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
- <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
- <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
- <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
- <ZedaKUge-EBo4CuT@redhat.com>
- <ZeiS/bjJaRcrerWW@fedora>
- <CAOCpoWeoQMh_-MxzxGBnK2Kf5EhvTLs=GrGwJ5XcfGVRTp73Eg@mail.gmail.com>
- <Ze2azGlb1WxVFv7Z@fedora>
- <Ze3RWqLvG18cQ4dz@redhat.com>
- <CAOCpoWf7C=B1sdeUL46sVVtVUDH8+o_T9LGJNTOYqA317uMdmA@mail.gmail.com>
+	s=arc-20240116; t=1710162833; c=relaxed/simple;
+	bh=dgrigR/7NCTojYkAKWD9wX9ICHnAGPtLi21TWc4E8dg=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=L7/72fjuJh/FafHzay48uvPZw23MO8WpZNtRSFa457Z5fkppAVJ5Pv4LAyXhki36MIxbWc8f6HMR6ExntYU9uaRvsDKdkys88SaIDzLc0NQr5LllFUaCbCFDI3v828mKjlKa7i9CeVd9MwsxUYeuiXBNA98ccelVVoYh/y2zApo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XMwTmTlx; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a17a739935so2564207eaf.1;
+        Mon, 11 Mar 2024 06:13:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710162831; x=1710767631; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dezxuW9pGx05LDmCqYlbJ6coIEuJ6OpOhgk2fuSR0X8=;
+        b=XMwTmTlxM6IzRlzCRPmXobHSLTdnUaKtx5o8VwoNCm4g481wCzpsPN1CaRiyNu7/tz
+         CQmh/H7ZKoPv6NRDdi4w/WtK/hH1ULdHvZrZ1IWLSNy+MNWSsxzw2wf5sCDTv3i2DiHY
+         3+22vPZVxBVczhTwengrspEXTMbzXBQKQicM9lh813BpK/QQ+5jSSjnLzDJxFPPK2nUE
+         YCSl2uvqiZyyqd4RceyHWoA7Zt4w/JTrQOndjHp9fwu4n2aFjpoqFyyDEbv5JeWQr3bM
+         0slY2TuK1nAQXJ0khF6ygXcPsaDFIz444ZCUA1YB9u8SgL16LtsaYmcp6vyDYa5Ieh0k
+         TlqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710162831; x=1710767631;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dezxuW9pGx05LDmCqYlbJ6coIEuJ6OpOhgk2fuSR0X8=;
+        b=j3lRCmJfn6OYz7IYn9Zwf06NcEpfiOICQ+HwPdUYXa8cs3ih/9pQkmGn18EeDsEK69
+         frwt3kkPwvd6vEEOslss0mvyEUJavp25hqeAxQbo2GOvZ11nz3AZ4NkHp6dLMXVdRPaR
+         A56y4im3vegOjYWTsoWlzndJTcprw7JkI3oZ0Friy8+JGSnvr6bilpxMKEHIWOY7vIYw
+         r11jz47oWQC2McFgbXhskkGH+M5GZa4kZzFNEIVzU4kfRzzYQxCqgwTRj7lVOxvucdCp
+         wB1Eilo65MyxSepFX0GYMPDIKGg9fujW1GetXjMDrot6c21ATYnrPKQTKq1+UdWmsrnk
+         zxvg==
+X-Forwarded-Encrypted: i=1; AJvYcCW7Lk/0HvHbUtEiKwhFxYm8xZZ7Y62G5GmD2gZbzKG0QCc8N8N5Q6Nfj+IsX2HGwf84kdOzYrjuMaVOwqFjrzWRvh8jnBUCgl2OFz9bYJ9h9Cxl55a/excXksFTanjk1wYp02uBI21qS1ky2rPNhYYEo6SISZn0lkou3vW3lu/f6cW2F+vb
+X-Gm-Message-State: AOJu0YzO/9Uj2U5LrvrQC3tU9sgk3slZ1Q2FN78HpJD4emqmndY9979I
+	33lyN9rXveGSWuDaV9sb5Bak5mpzdOJhDJfFFuInk/MMQUT7e/FU
+X-Google-Smtp-Source: AGHT+IGTQa8y59aDsLASaj7LZksfhOKifn5u3+CiaI7MeePb6ux4rgQVzmT+x0EFZi2xsLFMGaQnYw==
+X-Received: by 2002:a05:6358:480c:b0:17b:f637:7bb with SMTP id k12-20020a056358480c00b0017bf63707bbmr7300635rwn.30.1710162831109;
+        Mon, 11 Mar 2024 06:13:51 -0700 (PDT)
+Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id f1-20020ac87f01000000b0042f37ebfbf2sm2481546qtk.5.2024.03.11.06.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 06:13:50 -0700 (PDT)
+Date: Mon, 11 Mar 2024 09:13:50 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Richard Gobert <richardbgobert@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Eric Dumazet <edumazet@google.com>
+Cc: davem@davemloft.net, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ xeb@mail.ru, 
+ shuah@kernel.org, 
+ idosch@nvidia.com, 
+ razor@blackwall.org, 
+ amcohen@nvidia.com, 
+ petrm@nvidia.com, 
+ jbenc@redhat.com, 
+ bpoirier@nvidia.com, 
+ b.galvani@gmail.com, 
+ gavinl@nvidia.com, 
+ liujian56@huawei.com, 
+ horms@kernel.org, 
+ linyunsheng@huawei.com, 
+ therbert@google.com, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Message-ID: <65ef038e78a8b_20699f29437@willemb.c.googlers.com.notmuch>
+In-Reply-To: <d72bfd79-ce72-49db-b648-930a08b9302e@gmail.com>
+References: <f939c84a-2322-4393-a5b0-9b1e0be8ed8e@gmail.com>
+ <88831c36-a589-429f-8e8b-2ecb66a30263@gmail.com>
+ <CANn89iK5+wqYdqMt_Rg3+jO+Xf4n4yO4kOK0kzNdqh99qgL3iQ@mail.gmail.com>
+ <967ed173-b556-4bfc-b3c8-ff0fc902b951@gmail.com>
+ <65eef506331e8_1db78c2941c@willemb.c.googlers.com.notmuch>
+ <d72bfd79-ce72-49db-b648-930a08b9302e@gmail.com>
+Subject: Re: [PATCH net-next v3 4/4] net: gro: move L3 flush checks to
+ tcp_gro_receive
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOCpoWf7C=B1sdeUL46sVVtVUDH8+o_T9LGJNTOYqA317uMdmA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 10, 2024 at 02:11:11PM -0400, Patrick Plenefisch wrote:
-> On Sun, Mar 10, 2024 at 11:27 AM Mike Snitzer <snitzer@kernel.org> wrote:
-> >
-> > On Sun, Mar 10 2024 at  7:34P -0400,
-> > Ming Lei <ming.lei@redhat.com> wrote:
-> >
-> > > On Sat, Mar 09, 2024 at 03:39:02PM -0500, Patrick Plenefisch wrote:
-> > > > On Wed, Mar 6, 2024 at 11:00 AM Ming Lei <ming.lei@redhat.com> wrote:
-> > > > >
-> > > > > #!/usr/bin/bpftrace
-> > > > >
-> > > > > #ifndef BPFTRACE_HAVE_BTF
-> > > > > #include <linux/blkdev.h>
-> > > > > #endif
-> > > > >
-> > > > > kprobe:submit_bio_noacct,
-> > > > > kprobe:submit_bio
-> > > > > / (((struct bio *)arg0)->bi_opf & (1 << __REQ_PREFLUSH)) != 0 /
-> > > > > {
-> > > > >         $bio = (struct bio *)arg0;
-> > > > >         @submit_stack[arg0] = kstack;
-> > > > >         @tracked[arg0] = 1;
-> > > > > }
-> > > > >
-> > > > > kprobe:bio_endio
-> > > > > /@tracked[arg0] != 0/
-> > > > > {
-> > > > >         $bio = (struct bio *)arg0;
-> > > > >
-> > > > >         if (($bio->bi_flags & (1 << BIO_CHAIN)) && $bio->__bi_remaining.counter > 1) {
-> > > > >                 return;
-> > > > >         }
-> > > > >
-> > > > >         if ($bio->bi_status != 0) {
-> > > > >                 printf("dev %s bio failed %d, submitter %s completion %s\n",
-> > > > >                         $bio->bi_bdev->bd_disk->disk_name,
-> > > > >                         $bio->bi_status, @submit_stack[arg0], kstack);
-> > > > >         }
-> > > > >         delete(@submit_stack[arg0]);
-> > > > >         delete(@tracked[arg0]);
-> > > > > }
-> > > > >
-> > > > > END {
-> > > > >         clear(@submit_stack);
-> > > > >         clear(@tracked);
-> > > > > }
-> > > > >
-> > > >
-> > > > Attaching 4 probes...
-> > > > dev dm-77 bio failed 10, submitter
-> > > >        submit_bio_noacct+5
-> > > >        __send_duplicate_bios+358
-> > > >        __send_empty_flush+179
-> > > >        dm_submit_bio+857
-> > > >        __submit_bio+132
-> > > >        submit_bio_noacct_nocheck+345
-> > > >        write_all_supers+1718
-> > > >        btrfs_commit_transaction+2342
-> > > >        transaction_kthread+345
-> > > >        kthread+229
-> > > >        ret_from_fork+49
-> > > >        ret_from_fork_asm+27
-> > > > completion
-> > > >        bio_endio+5
-> > > >        dm_submit_bio+955
-> > > >        __submit_bio+132
-> > > >        submit_bio_noacct_nocheck+345
-> > > >        write_all_supers+1718
-> > > >        btrfs_commit_transaction+2342
-> > > >        transaction_kthread+345
-> > > >        kthread+229
-> > > >        ret_from_fork+49
-> > > >        ret_from_fork_asm+27
-> > > >
-> > > > dev dm-86 bio failed 10, submitter
-> > > >        submit_bio_noacct+5
-> > > >        write_all_supers+1718
-> > > >        btrfs_commit_transaction+2342
-> > > >        transaction_kthread+345
-> > > >        kthread+229
-> > > >        ret_from_fork+49
-> > > >        ret_from_fork_asm+27
-> > > > completion
-> > > >        bio_endio+5
-> > > >        clone_endio+295
-> > > >        clone_endio+295
-> > > >        process_one_work+369
-> > > >        worker_thread+635
-> > > >        kthread+229
-> > > >        ret_from_fork+49
-> > > >        ret_from_fork_asm+27
-> > > >
-> > > >
-> > > > For context, dm-86 is /dev/lvm/brokenDisk and dm-77 is /dev/lowerVG/lvmPool
-> > >
-> > > io_status is 10(BLK_STS_IOERR), which is produced in submission code path on
-> > > /dev/dm-77(/dev/lowerVG/lvmPool) first, so looks it is one device mapper issue.
-> > >
-> > > The error should be from the following code only:
-> > >
-> > > static void __map_bio(struct bio *clone)
-> > >
-> > >       ...
-> > >       if (r == DM_MAPIO_KILL)
-> > >               dm_io_dec_pending(io, BLK_STS_IOERR);
-> > >       else
-> > >               dm_io_dec_pending(io, BLK_STS_DM_REQUEUE);
-> > >     break;
-> >
-> > I agree that the above bpf stack traces for dm-77 indicate that
-> > dm_submit_bio failed, which would end up in the above branch if the
-> > target's ->map() returned DM_MAPIO_KILL or DM_MAPIO_REQUEUE.
-> >
-> > But such an early failure speaks to the flush bio never being
-> > submitted to the underlying storage. No?
-> >
-> > dm-raid.c:raid_map does return DM_MAPIO_REQUEUE with:
-> >
-> >         /*
-> >          * If we're reshaping to add disk(s)), ti->len and
-> >          * mddev->array_sectors will differ during the process
-> >          * (ti->len > mddev->array_sectors), so we have to requeue
-> >          * bios with addresses > mddev->array_sectors here or
-> >          * there will occur accesses past EOD of the component
-> >          * data images thus erroring the raid set.
-> >          */
-> >         if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
-> >                 return DM_MAPIO_REQUEUE;
-> >
-> > But a flush doesn't have an end_sector (it'd be 0 afaik).. so it seems
-> > weird relative to a flush.
-> >
-> > > Patrick, you mentioned lvmPool is raid1, can you explain how lvmPool is
-> > > built? It is dm-raid1 target or over plain raid1 device which is
-> > > build over /dev/lowerVG?
-> 
-> LVM raid1:
-> lvcreate --type raid1 -m 1 ...
+Richard Gobert wrote:
+> Willem de Bruijn wrote:
+> > Richard Gobert wrote:
+> >> Eric Dumazet wrote:
+> >>> On Sat, Mar 9, 2024 at 4:35=E2=80=AFPM Richard Gobert <richardbgobe=
+rt@gmail.com> wrote:
+> >>>>
+> >>>> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags=
+,
+> >>>> iph->id, ...) against all packets in a loop. These flush checks ar=
+e
+> >>>> relevant only to tcp flows, and as such they're used to determine =
+whether
+> >>>> the packets can be merged later in tcp_gro_receive.
+> >>>>
+> >>>> These checks are not relevant to UDP packets.
+> >>>
+> >>> I do not think this claim is true.
+> >>>
+> >>> Incoming packets  ->  GRO -> GSO -> forwarded packets
+> >>>
+> >>> The {GRO,GSO} step must be transparent, GRO is not LRO.
+> >>
+> >> Sorry, I should rephrase myself. The patch preserves the
+> >> current logic in GRO. These L3 checks (ttl, flags, etc.) are written=
+ to
+> >> NAPI_GRO_CB(p)->{flush,flush_id}, and NAPI_GRO_CB(skb)->is_atomic - =
+and
+> >> all of these are currently used only in tcp_gro_receive.
+> > =
 
-OK, that is the reason, as Mike mentioned.
+> > That was perhaps an oversight when adding UDP GRO?
+> > =
 
-dm-raid.c:raid_map returns DM_MAPIO_REQUEUE, which is translated into
-BLK_STS_IOERR in dm_io_complete().
+> > Simply because the flush is determined in the innermost callback.
+> =
 
-Empty flush bio is sent from btrfs, both .bi_size and .bi_sector are set
-as zero, but the top dm is linear, which(linear_map()) maps new
-bio->bi_iter.bi_sector, and the mapped bio is sent to dm-raid(raid_map()),
-then DM_MAPIO_REQUEUE is returned.
+> It might have been an oversight. From what I have seen it's only releva=
+nt
+> to GRO's UDP fraglist path (it was added in 9fd1ff5d ("udp: Support UDP=
 
-The one-line patch I sent in last email should solve this issue.
+> fraglist GRO/GSO.")). That's the only UDP path that calls skb_gro_recei=
+ve -
+> which may alter the forwarded packets and make GRO/GSO not transparent.=
 
-https://lore.kernel.org/dm-devel/a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it/T/#m8fce3ecb2f98370b7d7ce8db6714bbf644af5459
+> =
 
-But DM_MAPIO_REQUEUE misuse needs close look, and I believe Mike is working
-on that bigger problem.
+> AFAIU NAPI_GRO_CB(p)->flush value is not overwritten in encapsulation -=
+ it
+> is determined by both outer and inner callbacks.
 
-I guess most of dm targets don't deal with empty bio well, at least
-linear & dm-raid, not look into others yet, :-(
+Thanks for the context
 
+> I tried to preserve the current behaviour in GRO - if we want to change=
 
-Thanks,
-Ming
+> this behaviour I'll gladly do it, although I'd prefer to address it in =
+a
+> different patch series. What do you think?
+
+Yes, it's entirely reasonable to leave that out of this series.
 
 
