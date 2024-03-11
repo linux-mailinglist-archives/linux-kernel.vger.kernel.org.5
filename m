@@ -1,100 +1,118 @@
-Return-Path: <linux-kernel+bounces-98788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9C8877F6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:01:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61974877F7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:04:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 047851F225E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:01:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02F36B21C82
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C383D388;
-	Mon, 11 Mar 2024 12:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32A93D978;
+	Mon, 11 Mar 2024 12:03:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BvZp9KN5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="D1rwrRu7"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4E23C068;
-	Mon, 11 Mar 2024 12:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2993C064;
+	Mon, 11 Mar 2024 12:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710158468; cv=none; b=fqaRT4CXbdVDqTy3weJ9a0XSrpz4US7f+yMAvSgQkYtzFzjfPwAys5ZkIpa+22/vTe5WzKoD904oslypY3Ipo6wZNrZfVGj5SvVVPVhKWomkp0mzlzgYhx9MKdUVDJ9xovNQMs5KS4ld/snXkIC7eHzXUIltU5+gSPkxplWYPW8=
+	t=1710158603; cv=none; b=guT371itFtXBYomCFXhaMmfRDxj25OFmgIqYOOfWNSdelyZT+Gm7AlouANirjAdhtbwHoLZP+vF2k1BjTrgYwT92wNrSdIhl1xCg5NI3lC0sX4nUAllwsJDoGybM/Gbg2AfrbxeNWAnUt1r3ZqH28i120DwSccXNuwiXEBADiOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710158468; c=relaxed/simple;
-	bh=lliEJ0rTAJo2Gw0pexcruBzN2lkhcVuR43ot9jWsI2E=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=jk9HPvnqubvnb4IF89xBjAFWmLeexl6dgcGCZmOgyxkIdizXH5Scc8QDWChLDakBDsKLopl+GufpGpo+DMrdRM6Ifn6erWPKYVCxbjxq/k75l9RD59Ive4vSJimPCEQqjJiGp2hHpyCVAZPQUf6RQPCTkR3jQ3WGHO5baAZX2oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BvZp9KN5; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710158467; x=1741694467;
-  h=from:to:in-reply-to:references:subject:message-id:date:
-   mime-version:content-transfer-encoding;
-  bh=lliEJ0rTAJo2Gw0pexcruBzN2lkhcVuR43ot9jWsI2E=;
-  b=BvZp9KN5l0Hcf22/ZKtjZVBLWieE7T9QH9xeo40kGWTSMnV5LeUUcXQe
-   t+Vgwdq72jZ347mGCmln12vnaEosRnSZNnTGpVhC/TYN7aUo3U+hjBGxa
-   ij53XtkfGDceXJLSGHW3rj7ImGzqnhzZj7V8R04vmz1VbImXMjJ6LKGwH
-   oQS8fd7mvD5P+jVD0vNNmUsXjj4MhrjAmk5DdwyXHKzp6n7PLII9Unq8+
-   DpS0jgmtWOz6AqYeISYDVz8I4qZcRoJzP3i1tRdilkUOfFS3/zihpDb7Z
-   +YbiE8J/VAGhM430+yLJcOyETsSOZGESyQUT2sycasElwf15h3MaSWKPU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="15377175"
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="15377175"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:01:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="11032094"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.201])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:01:03 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
- david.e.box@intel.com, kane.chen@intel.corp-partner.google.com, 
- Kane Chen <kane.chen@intel.com>
-In-Reply-To: <20240308033127.1013053-1-kane.chen@intel.com>
-References: <20240308033127.1013053-1-kane.chen@intel.com>
-Subject: Re: [PATCH v2 1/1] platform/x86/intel/pmc: Improve PKGC residency
- counters debug
-Message-Id: <171015845757.2407.106134476792192282.b4-ty@linux.intel.com>
-Date: Mon, 11 Mar 2024 14:00:57 +0200
+	s=arc-20240116; t=1710158603; c=relaxed/simple;
+	bh=TKMT2rdzO+/5ChgLIqApqclXNnkC3VHE5qfko++u4Cs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RaIIOtqDnlrLuJyiKN9rRarxWP+amuDcWl5B0ZAKWRrmwVgxwrU9BNKBp4jmh/0Q9hEOLazPFq9OnahyaYPn+XsC+Oi+wvY+ERHS8gsERhB0/Vm/qHgbhYkb/YNZVHXfBJ45Dyn+9x7uhVArhAxg141P1aIuOxyAl8DGB/3Rpho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=D1rwrRu7; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42B8LItZ018303;
+	Mon, 11 Mar 2024 12:03:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=d99JtsJ
+	ZhHsoZbUbQC6eIvwCP4EmFMN0LTeOQNY2154=; b=D1rwrRu7C/BQnG2TLMCVWw2
+	Oha5UOawSqnKd3YRw7P3c4P0XkqDILZzegxF+2E1ALsjD645GHCsNSoCEvAWS4ll
+	8oUwVZl7DkQzYHf1ADAr4v843y5nLfmfsJ+m3J+s5Qys7r/7FOwYYKnHR4UZvWoZ
+	TeElaxzrIjPH+/kuAUvkx8pUvzAJG5QIiGZYvdxPQhEBZAE5cWF/pSNClqaYtEFD
+	9U2CnAZ/OeF1giDsx3Cn7DlWa1/T/JM+cmVD99ReF+H/vi8bR3XgwBJEG5ls3txX
+	GL5xP9RIt0kL+qyzX9lSvdR54JRUcSsLOWo39W8fidNBI8sq45mMdBjRqbl6e/w=
+	=
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wsxbvgk2b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 12:03:01 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42BC30q3008886
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 12:03:00 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 11 Mar 2024 05:02:55 -0700
+From: Komal Bajaj <quic_kbajaj@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Kishon Vijay
+ Abraham I" <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH 0/4] Add USB Support on Qualcomm's QDU/QRU1000 Platform
+Date: Mon, 11 Mar 2024 17:32:11 +0530
+Message-ID: <20240311120215.16845-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ZCX08ZLZ9iip6Ws4TPoNjUnMzz_vvQgi
+X-Proofpoint-GUID: ZCX08ZLZ9iip6Ws4TPoNjUnMzz_vvQgi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=675 impostorscore=0 adultscore=0 bulkscore=0 clxscore=1011
+ phishscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403110091
 
-On Fri, 08 Mar 2024 11:31:27 +0800, Kane Chen wrote:
+This series adds support of USB3 PHY support for Qualcomm's QDU/QRU1000 Platform.
 
-> The current code only prints PKGC-10 residency when the PKGC-10
-> is not reached in previous 'freeze' attempt. To debug PKGC-10 issues, we
-> also need to know other PKGC residency counters to better triage issues.
-> Ex:
-> 1. When system is stuck in PC2, it can be caused short LTR from device.
-> 2. When system is stuck in PC8, it can be caused by display engine.
-> 
-> [...]
+Komal Bajaj (4):
+  dt-bindings: phy: qcom,usb-snps-femto-v2: Add bindings for QDU1000
+  dt-bindings: phy: qcom,qmp-usb: Add QDU1000 USB3 PHY
+  dt-bindings: usb: dwc3: Add QDU1000 compatible
+  phy: qcpm-qmp-usb: Add support for QDU1000/QRU1000
 
-
-Thank you for your contribution, it has been applied to my local
-review-ilpo branch. Note it will show up in the public
-platform-drivers-x86/review-ilpo branch only once I've pushed my
-local branch there, which might take a while.
-
-The list of commits applied:
-[1/1] platform/x86/intel/pmc: Improve PKGC residency counters debug
-      commit: f117a06ccaf48c8e2637bc3fa35d038c0c92c43d
+ .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml   |  2 +
+ .../bindings/phy/qcom,usb-snps-femto-v2.yaml  |  1 +
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  3 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-usb.c       | 52 +++++++++++++++++++
+ 4 files changed, 58 insertions(+)
 
 --
- i.
+2.42.0
 
 
