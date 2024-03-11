@@ -1,77 +1,178 @@
-Return-Path: <linux-kernel+bounces-99483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E320878912
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:44:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 353AE87885D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD761281C42
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:44:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8E3DB23621
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:55:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FEC55C35;
-	Mon, 11 Mar 2024 19:43:52 +0000 (UTC)
-Received: from smtprelay01.ispgateway.de (smtprelay01.ispgateway.de [80.67.18.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F15B56B63;
-	Mon, 11 Mar 2024 19:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.67.18.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC465677F;
+	Mon, 11 Mar 2024 18:51:30 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185AD56751
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710186231; cv=none; b=ipF1ZaxPLyFJDbGAvYno43UfZcUF1Ivvt6BoIpqN+nASART87uelXig1yEaHXKCkT5LnXEmzrqQgn6K6NMcfWLzZ4HuhqDJkUgJ0g8gY8nxxc0/9SHNJ1E2C0MqTMEc5XmiHUkjpdo7BaUMUfb9VCVfhprE54ylN9aA543qMBdY=
+	t=1710183090; cv=none; b=W6zcXSt5SeU3eCGM0feNTqRkaw98rJZzoQvjlmDfIwGKyCbLdxOvZNe6rsNxiREdLdE/dJbbgEZRKE/145TmJzo5tBsOCjq2davQRPa2hv1ipHc3RpPC79XU9Elu7TQ3/4xNROgO6fspRvmrpFftB9PhEEDjrG0eLniZejU/3dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710186231; c=relaxed/simple;
-	bh=KKQyo51bc/AIZ0093isHt1glyMS5E+CYMY5cLg6WvrE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Ib8JcMCEUKawlCBM8GB3Dh2MLBGtjyP9QYKFXolaI1tr+ttWHASvUmC51uC9s37UAFhW3ThDavSWtS15a6ygsZNU2W56xMYhyTueZkaOSczcOXaQqI6qZGik5yN79Zz+UKtq8xaXOLiIeFC251/A/xDlhG2Z1WWWhHQnmDDw/Hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apitzsch.eu; spf=pass smtp.mailfrom=apitzsch.eu; arc=none smtp.client-ip=80.67.18.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apitzsch.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apitzsch.eu
-Received: from [92.206.191.65] (helo=note-book.lan)
-	by smtprelay01.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.97.1)
-	(envelope-from <git@apitzsch.eu>)
-	id 1rjkh9-000000002Z2-1Jfe;
-	Mon, 11 Mar 2024 19:48:19 +0100
-Message-ID: <a6d43f8cad8323ab59f44a2c7b0fd5a35cbc86d0.camel@apitzsch.eu>
-Subject: Re: [PATCH v4 2/2] leds: rgb: leds-ktd202x: Get device properties
- through fwnode to support ACPI
-From: =?ISO-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
-To: Kate Hsuan <hpa@redhat.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
- linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, Hans de
- Goede <hdegoede@redhat.com>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, linux-kernel@vger.kernel.org
-Date: Mon, 11 Mar 2024 19:48:17 +0100
-In-Reply-To: <20240306025801.8814-3-hpa@redhat.com>
-References: <20240306025801.8814-1-hpa@redhat.com>
-	 <20240306025801.8814-3-hpa@redhat.com>
-Autocrypt: addr=git@apitzsch.eu; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 
+	s=arc-20240116; t=1710183090; c=relaxed/simple;
+	bh=L3czb4yKVFTuEdeekbnrd39IUTZN8nT4xpst5WMpWtU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nNk4Wu0PVWWD6qQEIDuAMtQFXc3FPRJclybi45ctuBrbh79ZevBHHUW78X85cmcucLeiXTZgWp+xISx7IyBV5IB39e/MOHhq3C2IhmHzVOJyw0eqIn9sUcJ8ShsOMy3uOlWR31AlFmB+iFMi3CbYzcLcXVsCtVn0g3EakJvaZ3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01C48FEC;
+	Mon, 11 Mar 2024 11:52:04 -0700 (PDT)
+Received: from [10.57.68.246] (unknown [10.57.68.246])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D730F3F64C;
+	Mon, 11 Mar 2024 11:51:22 -0700 (PDT)
+Message-ID: <499a60c6-eeb8-4bbd-8563-9717c0d2e43d@arm.com>
+Date: Mon, 11 Mar 2024 18:51:20 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 2/5] mm: swap: introduce swap_nr_free() for batched
+ swap_free()
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: chengming.zhou@linux.dev, chrisl@kernel.org, david@redhat.com,
+ hannes@cmpxchg.org, kasong@tencent.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
+ steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
+ willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+ yosryahmed@google.com, yuzhao@google.com, Chuanhua Han
+ <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
+References: <20240304081348.197341-1-21cnbao@gmail.com>
+ <20240304081348.197341-3-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240304081348.197341-3-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Am Mittwoch, dem 06.03.2024 um 10:58 +0800 schrieb Kate Hsuan:
-> This LED controller also installed on a Xiaomi pad2 and it is a x86
-> platform. The original driver is based on device tree and can't be
-> used for this ACPI based system. This patch migrated the driver to
-> use fwnode to access the properties. Moreover, the fwnode API
-> supports device tree so this work won't effect the original
-> implementations.
->=20
-> Signed-off-by: Kate Hsuan <hpa@redhat.com>
+On 04/03/2024 08:13, Barry Song wrote:
+> From: Chuanhua Han <hanchuanhua@oppo.com>
+> 
+> While swapping in a large folio, we need to free swaps related to the whole
+> folio. To avoid frequently acquiring and releasing swap locks, it is better
+> to introduce an API for batched free.
+> 
+> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  include/linux/swap.h |  6 ++++++
+>  mm/swapfile.c        | 35 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 41 insertions(+)
+> 
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 2955f7a78d8d..d6ab27929458 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -481,6 +481,7 @@ extern void swap_shmem_alloc(swp_entry_t);
+>  extern int swap_duplicate(swp_entry_t);
+>  extern int swapcache_prepare(swp_entry_t);
+>  extern void swap_free(swp_entry_t);
+> +extern void swap_nr_free(swp_entry_t entry, int nr_pages);
 
-Tested-by: Andr=C3=A9 Apitzsch <git@apitzsch.eu> # on BQ Aquaris M5
+nit: In my swap-out v4 series, I've created a batched version of
+free_swap_and_cache() and called it free_swap_and_cache_nr(). Perhaps it is
+preferable to align the naming schemes - i.e. call this swap_free_nr(). Your
+scheme doesn't really work when applied to free_swap_and_cache().
+
+>  extern void swapcache_free_entries(swp_entry_t *entries, int n);
+>  extern int free_swap_and_cache(swp_entry_t);
+>  int swap_type_of(dev_t device, sector_t offset);
+> @@ -561,6 +562,11 @@ static inline void swap_free(swp_entry_t swp)
+>  {
+>  }
+>  
+> +void swap_nr_free(swp_entry_t entry, int nr_pages)
+> +{
+> +
+> +}
+> +
+>  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
+>  {
+>  }
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 3f594be83b58..244106998a69 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1341,6 +1341,41 @@ void swap_free(swp_entry_t entry)
+>  		__swap_entry_free(p, entry);
+>  }
+>  
+> +/*
+> + * Called after swapping in a large folio, batched free swap entries
+> + * for this large folio, entry should be for the first subpage and
+> + * its offset is aligned with nr_pages
+> + */
+> +void swap_nr_free(swp_entry_t entry, int nr_pages)
+> +{
+> +	int i;
+> +	struct swap_cluster_info *ci;
+> +	struct swap_info_struct *p;
+> +	unsigned type = swp_type(entry);
+
+nit: checkpatch.py will complain about bare "unsigned", preferring "unsigned
+int" or at least it did for me when I did something similar in my swap-out patch
+set.
+
+> +	unsigned long offset = swp_offset(entry);
+> +	DECLARE_BITMAP(usage, SWAPFILE_CLUSTER) = { 0 };
+
+I don't love this, as it could blow the stack if SWAPFILE_CLUSTER ever
+increases. But the only other way I can think of is to explicitly loop over
+fixed size chunks, and that's not much better.
+
+> +
+> +	/* all swap entries are within a cluster for mTHP */
+> +	VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER);
+> +
+> +	if (nr_pages == 1) {
+> +		swap_free(entry);
+> +		return;
+> +	}
+> +
+> +	p = _swap_info_get(entry);
+
+You need to handle this returning NULL, like swap_free() does.
+
+> +
+> +	ci = lock_cluster(p, offset);
+
+The existing swap_free() calls lock_cluster_or_swap_info(). So if swap is backed
+by rotating media, and clusters are not in use, it will lock the whole swap
+info. But your new version only calls lock_cluster() which won't lock anything
+if clusters are not in use. So I think this is a locking bug.
+
+> +	for (i = 0; i < nr_pages; i++) {
+> +		if (__swap_entry_free_locked(p, offset + i, 1))
+> +			__bitmap_set(usage, i, 1);
+> +	}
+> +	unlock_cluster(ci);
+> +
+> +	for_each_clear_bit(i, usage, nr_pages)
+> +		free_swap_slot(swp_entry(type, offset + i));
+> +}
+> +
+>  /*
+>   * Called after dropping swapcache to decrease refcnt to swap entries.
+>   */
+
+Thanks,
+Ryan
+
 
