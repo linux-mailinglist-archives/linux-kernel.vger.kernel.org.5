@@ -1,130 +1,141 @@
-Return-Path: <linux-kernel+bounces-99289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 096B887860A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:09:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC80F87860E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 040491C2119A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:09:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CE811F21D4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E8C4DA1A;
-	Mon, 11 Mar 2024 17:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590954C61C;
+	Mon, 11 Mar 2024 17:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k57XC0Zv"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OOEYxatM"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B984879E
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B21D4AEC9;
+	Mon, 11 Mar 2024 17:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710176952; cv=none; b=igbXL13GQBdR9QvBw3yVxozGoWW0UV26lMdOmbd79HFyJuKDHjPWjTIL2yE9YI4ENEDvAJ6RyNsEW2U+QGW1JCOC7vtafteeGmxt6E16+pc7Qu6WjcwpKbY6yoL1sqUpj4V9JBNwUkIb0VrMNqYjYMKC3Y6SNeXnMNbZS6M3YUI=
+	t=1710176994; cv=none; b=aZukGRYcP2oronUnKBOwLpMMgac+O793u+rGPyQsMICyvN/FPQ0FHGmJfNc6guo/kvlS2HJHwhCd+AtPfpre0fQmQZHW+166vQPaWJ89ys996MNpg9Hkt/ABeBjQrwn3lQfXp4SvWqWnUbjwb2O4Lrd2mRtucXXMlF9TLBHrHKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710176952; c=relaxed/simple;
-	bh=KWEdPMNMKrcZiiaH9ykrXvu505pv5vfImkvwzahhefU=;
-	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IsKGnqCc+byjmuFfkl0rfCFrgmTNi3JWi9jPAGdGvnvelV9QwxuTIydEcrhquvgcwFGVqjcJ+rxMrEc0r0tdBbQBPDvHFfSQ/SQ5pM+c9gcpv0mT+4r8B3w3G7JulZalpUTS3JbYGC/Fq+XqhKhGyOnuI7WQH/t4rw0xIwtye1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k57XC0Zv; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a44cdb2d3a6so647657566b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710176949; x=1710781749; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gcxaYy4HdUQtSCgmVUifcbC4d1XVexgxS1H8yyjyPBk=;
-        b=k57XC0ZvB+fYmXOfPoMWL6FdvoOOWr2tt43ST7oXElPkMEez9hZtKnKwNqItKWyI+6
-         vbMrrT07iHuGp1enBrGQ8zIq7Uifqs0tQPjssoeSX9JrgRW53jYBCQPv+EZBdPYfRskA
-         WXtnRQx0koE17LmnZMnGUcbNl9p6sPibE9N4jYLIAAPhGvIo7qGmraVnRC/DoLx0tJEa
-         l7/mPheuScgkWTPRz5rPlINXSOCc0MaH7FKNTou1ds3Rw2cEiSDKpRSKtioW+3ocAXQy
-         XczN6aWPCTSH/n7O57xwhfwFggLav6Gd6hV682Z2sxP+GLkrs40Mp78c7IMTX1vvm/sT
-         3UMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710176949; x=1710781749;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gcxaYy4HdUQtSCgmVUifcbC4d1XVexgxS1H8yyjyPBk=;
-        b=rC8AKUXaIcEN0+dUFmGpoLnGqLZuWpMhOL94VGoLgVszSu/gWDf93jIRCMKCcC3dVF
-         aNQu4Bw5y3TTquBN+ucrZiE7/F0KLC6AZzdI6Ao272viAON2fp7LIaXAT8ANv5/BXpQ4
-         BzWQtqTgro9eRCtGDnbwRnh4402PIFKVnPNoymdEdxrWmGZJFojDBFTWlYlJIzJ2Z6RE
-         BDBKeEeUnU/6SHBSRYfvRrGLUOh4cTa+0iRKPz9fwRgwXohCQRR7codMqVyMtLHKxB9v
-         1d44HQ6tFDCjp8/suVXwdUbxQVTtb+PTpVeyVhYCZIpmCqOUR74bUkRyRDc+J8txKI5y
-         xAxg==
-X-Gm-Message-State: AOJu0YxV+ncE4kxaWZauzYtv134BqU4NnzQnEUGpy3zsWTCa9Ubyvzrq
-	4v81kIaGZQ2ux9OlXJMlc9z4CZOHUzGg5SD5fFwakuMVrIbzYlJflopwrlFPepmzu28l1r++qr8
-	JlMC7EUQdQpVHmIHslQd0QpeNOr4=
-X-Google-Smtp-Source: AGHT+IHE2dEZK2oineSipFKnyOWGd3+fSAGb0nn5YD8UZEwcnKjbTYFTKyCU3SwNXJqBqRRQ8AHxFGJnllfxQxj+Blo=
-X-Received: by 2002:a17:906:1849:b0:a45:f5e1:1050 with SMTP id
- w9-20020a170906184900b00a45f5e11050mr703781eje.18.1710176949030; Mon, 11 Mar
- 2024 10:09:09 -0700 (PDT)
+	s=arc-20240116; t=1710176994; c=relaxed/simple;
+	bh=yy7nLIc9ARnpjfGsqcuqP0zQZXEMX49eVq06dLU0h04=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=L6eOIrEswQOSjh38JSVCrLy6HNa8K3UFEh+3KZwlG4rbBEJicWT2x52yg9xc5Tlwmd6BC1HbBRNus80Jnw4vjoA1UrsNStZ800EvPAReSUVxa1IyLVf6sgMtYsG4mQZZlvOiDYZTCiho957IWzchKIsY223FB8KWgKtPULrgEFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OOEYxatM; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710176991;
+	bh=yy7nLIc9ARnpjfGsqcuqP0zQZXEMX49eVq06dLU0h04=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=OOEYxatMo5uTX/liE3V8JTujD6RVwmqScXEq20wkVnKvQCPQp6BdkOCR+qurJbIqt
+	 FVsNOJFGhfW3CH1wX91vAwkkF0+pgDXGkiFeCCuQ85xmp+4NNmqi1bn34jXKxq88Qb
+	 I2Fw4fNQpf/5eXabYSKq90AICCvAgp28ejqIXKbWwczWdd6clPCCgOLB5s+PyNN2OL
+	 fL2AmIiW0UBpUg24faQPjJ1RaPIrqjNja4G5VCwqR+SuOMSt+RJUxQSmDrcWS/1s30
+	 nIblG1ZKfqRVEwqIVTu19PoD24K/0rQDNJ5fkFnsza8emwbkJAPjb0tkCk+mu/r5vv
+	 Ql4koz6WqoJ1A==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DA073378200D;
+	Mon, 11 Mar 2024 17:09:47 +0000 (UTC)
+Message-ID: <f877ce53-a5ee-4447-a57c-339a1e9701f4@collabora.com>
+Date: Mon, 11 Mar 2024 22:10:21 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6f02:f0d:b0:65:b649:35ec with HTTP; Mon, 11 Mar 2024
- 10:09:07 -0700 (PDT)
-In-Reply-To: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Mon, 11 Mar 2024 18:09:07 +0100
-Message-ID: <CAGudoHERLX=X1r0q7yHM22O9udsR=6M+geix7TR3f8ZzHkb-hQ@mail.gmail.com>
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
-	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
-	dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com, 
-	hca@linux.ibm.com, hch@infradead.org, hpa@zytor.com, 
-	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
-	jroedel@suse.de, juri.lelli@redhat.com, kent.overstreet@linux.dev, 
-	kinseyho@google.com, kirill.shutemov@linux.intel.com, lstoakes@gmail.com, 
-	luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
-	michael.christie@oracle.com, mingo@redhat.com, mst@redhat.com, 
-	npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
-	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, 
-	tglx@linutronix.de, urezki@gmail.com, vincent.guittot@linaro.org, 
-	vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ kernel-janitors@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH 1/3] selftests/exec: Add the overall result line
+ accourding to TAP
+Content-Language: en-US
+To: Shuah Khan <shuah@kernel.org>, Eric Biederman <ebiederm@xmission.com>
+References: <20240304155928.1818928-1-usama.anjum@collabora.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240304155928.1818928-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 3/11/24, Pasha Tatashin <pasha.tatashin@soleen.com> wrote:
-> This is follow-up to the LSF/MM proposal [1]. Please provide your
-> thoughts and comments about dynamic kernel stacks feature. This is a WIP
-> has not been tested beside booting on some machines, and running LKDTM
-> thread exhaust tests. The series also lacks selftests, and
-> documentations.
->
-> This feature allows to grow kernel stack dynamically, from 4KiB and up
-> to the THREAD_SIZE. The intend is to save memory on fleet machines. From
-> the initial experiments it shows to save on average 70-75% of the kernel
-> stack memory.
->
+Soft reminder!
 
-Can you please elaborate how this works? I have trouble figuring it
-out from cursory reading of the patchset and commit messages, that
-aside I would argue this should have been explained in the cover
-letter.
-
-For example, say a thread takes a bunch of random locks (most notably
-spinlocks) and/or disables preemption, then pushes some stuff onto the
-stack which now faults. That is to say the fault can happen in rather
-arbitrary context.
-
-If any of the conditions described below are prevented in the first
-place it really needs to be described how.
-
-That said, from top of my head:
-1. what about faults when the thread holds a bunch of arbitrary locks
-or has preemption disabled? is the allocation lockless?
-2. what happens if there is no memory from which to map extra pages in
-the first place? you may be in position where you can't go off cpu
+On 3/4/24 8:59 PM, Muhammad Usama Anjum wrote:
+> The following line is missing from the test's execution. Add it to make
+> it fully TAP conformant:
+>   # Totals: pass:27 fail:0 xfail:0 xpass:0 skip:0 error:0
+> 
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+>  tools/testing/selftests/exec/binfmt_script.py | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/exec/binfmt_script.py b/tools/testing/selftests/exec/binfmt_script.py
+> index 05f94a741c7aa..2c575a2c0eab4 100755
+> --- a/tools/testing/selftests/exec/binfmt_script.py
+> +++ b/tools/testing/selftests/exec/binfmt_script.py
+> @@ -16,6 +16,8 @@ SIZE=256
+>  NAME_MAX=int(subprocess.check_output(["getconf", "NAME_MAX", "."]))
+>  
+>  test_num=0
+> +pass_num=0
+> +fail_num=0
+>  
+>  code='''#!/usr/bin/perl
+>  print "Executed interpreter! Args:\n";
+> @@ -42,7 +44,7 @@ foreach my $a (@ARGV) {
+>  # ...
+>  def test(name, size, good=True, leading="", root="./", target="/perl",
+>                       fill="A", arg="", newline="\n", hashbang="#!"):
+> -    global test_num, tests, NAME_MAX
+> +    global test_num, pass_num, fail_num, tests, NAME_MAX
+>      test_num += 1
+>      if test_num > tests:
+>          raise ValueError("more binfmt_script tests than expected! (want %d, expected %d)"
+> @@ -80,16 +82,20 @@ def test(name, size, good=True, leading="", root="./", target="/perl",
+>          if good:
+>              print("ok %d - binfmt_script %s (successful good exec)"
+>                    % (test_num, name))
+> +            pass_num += 1
+>          else:
+>              print("not ok %d - binfmt_script %s succeeded when it should have failed"
+>                    % (test_num, name))
+> +            fail_num = 1
+>      else:
+>          if good:
+>              print("not ok %d - binfmt_script %s failed when it should have succeeded (rc:%d)"
+>                    % (test_num, name, proc.returncode))
+> +            fail_num = 1
+>          else:
+>              print("ok %d - binfmt_script %s (correctly failed bad exec)"
+>                    % (test_num, name))
+> +            pass_num += 1
+>  
+>      # Clean up crazy binaries
+>      os.unlink(script)
+> @@ -166,6 +172,8 @@ test(name="two-under-trunc-arg", size=int(SIZE/2), arg=" ")
+>  test(name="two-under-leading",   size=int(SIZE/2), leading=" ")
+>  test(name="two-under-lead-trunc-arg", size=int(SIZE/2), leading=" ", arg=" ")
+>  
+> +print("# Totals: pass:%d fail:%d xfail:0 xpass:0 skip:0 error:0" % (pass_num, fail_num))
+> +
+>  if test_num != tests:
+>      raise ValueError("fewer binfmt_script tests than expected! (ran %d, expected %d"
+>                       % (test_num, tests))
 
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+BR,
+Muhammad Usama Anjum
 
