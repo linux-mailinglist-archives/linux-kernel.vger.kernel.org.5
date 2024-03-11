@@ -1,117 +1,119 @@
-Return-Path: <linux-kernel+bounces-98738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FAA6877E9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:07:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073C1877E9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:08:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F316F1F2107D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:07:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5231AB2161A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BA938DD2;
-	Mon, 11 Mar 2024 11:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762E538F84;
+	Mon, 11 Mar 2024 11:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="syi7ZpMy"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kKUbQ/gy"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0D617578
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7B9381AA;
+	Mon, 11 Mar 2024 11:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710155236; cv=none; b=cokNiGwel3rdZfBnGlFWXiphTO6nDwb51wjOOyVqEepcghmJQwnG0dHtnk+CaqEuuCKnBCH49jox4KaeItiy2Zs9e/LsAh6UNpnF5YddjL6J/nlAhDMbO5ipDy8bE5zN+wN1QvTPNKjBRRM+ibOp45o5YLPCfADD3YNbaYNUMG8=
+	t=1710155270; cv=none; b=bMHtb6pg0/urjs8YPa2gFCZF3Q9+gLn/MsOWbVMRmbXOXilewC7OQLaL0Vp6cvzziKw1WAnhtl63MnHJBdmi3RCikoIQ91IU4RJQZ6xjInM0ww0rTi+DG7POlODommyP344uhHj5hNBhQzl0ts017LklLwahnvYkMDFhIDB85C8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710155236; c=relaxed/simple;
-	bh=W91ZrmkUCWxCeZ+4LJQ7adpppMkeWqBS7Bc3hAOZz70=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cGu9beDGTmLr+bKgCKE10p7VC7DGUGmVlgBpH1X9EPu4lxBEN95kjTt78EyyN2xBrLI48IWe6c05x3t1zK61NSq1cJfj39ul4DWaockNmz5msBIXOt5BUvzNEcLDHmm7F3CvpK0EfZx8SVOwfsHHc1GzhZ3fkwu9OK2SBYGi6Y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=syi7ZpMy; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5684c3313cdso1519015a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 04:07:14 -0700 (PDT)
+	s=arc-20240116; t=1710155270; c=relaxed/simple;
+	bh=u9d1JzSR66zNZVrsrBQoXqaf0LOJADaj132DQ7l374M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g5IFrPZI1w3Tq+iEL4Ek+ekKf8tQilBZTBu8iC1rnmy83fThsS4XZ79g5Mew6FCsqTyZ2VNXDly0uAs3ZGy8AwGhIapNfh9jMCoCvL/x/0qUIZS2BRXf7JRTpGSzKgkCBeaDao43cSa2efHGegSA5Tp9/4hsRv/wfotwsOhQ3ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kKUbQ/gy; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e4d88b93e8so1360076a34.0;
+        Mon, 11 Mar 2024 04:07:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710155233; x=1710760033; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=M/U246wolXDSM1/ZcSZeXGHTTK2nDt0fXBaa0zSz5qY=;
-        b=syi7ZpMyi4haWZoR8QnvDcU55YsKvq5CQ+0PUUhFRHjcK3Ojao7vv8pIVnF3lnn0CY
-         ybTX3k1ei6L6TkKdLC3tMVMFCAoDCpEoeYj+3pQFaTXjw2UnEh5rXqukOST1SrJcUrqy
-         LXLLdZ5x1lCdM6LcfwfL0+LpSYX/6gLyW8NFfyZNd5QTDH5aPZ0cFP6SvUGKqjxtUKn/
-         lXv2UHoFZ65TMK8g/n39oANLYe+/lj5DdNS4342qjLjpFjGglWt6TCOKPB8RqZ3O8ENT
-         v5yGPdqS5HT4i6FzdZgu+8adaDXlydX1EXiNP9cpdgdaU1sVfVTCiOkEN7ae9VOLQ8jr
-         z7HA==
+        d=gmail.com; s=20230601; t=1710155268; x=1710760068; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u9d1JzSR66zNZVrsrBQoXqaf0LOJADaj132DQ7l374M=;
+        b=kKUbQ/gyfR0e6VqjCQciMwtX/dDi7Dc2wpbH+ig1mRVj1VmFaNFdbVfPyr3uyRu3Ng
+         tZJa17sUkHzTbs18Z5CHdOnBpAiZxI28yrTcsdhsYrPzz3LnL1P5qzmtcmV4AnYM2Q7m
+         unjiA9Z3WouU5tJRwHT/GwrNHAX83ZE/rN/SnmaY5i+YWtp3YCLjYmDQvHln1ZMQzEdK
+         D31sr4lWm1LSPdyn/9yXqM/dQR8X3WWm4jGh/P+7Sw7cHmElMy6c1Db5yr6Wlig/c8dS
+         yWjXeZ+Eeu0n+OaxpL9ePb1FY/p1oreG2kTV6gs13HpU+HIbTvc5bgkh8YaIob+WR10d
+         mPyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710155233; x=1710760033;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M/U246wolXDSM1/ZcSZeXGHTTK2nDt0fXBaa0zSz5qY=;
-        b=qhac2DXc0Q4JwKHAPFu3MWGvz6jbQXyNmnchiJKvIv6yMR3vQr6JelR7POuP/8l0K5
-         qbrdy2eOR1fmPncZVU2knEgxpqzXiWTnKu8VsKahLt4vJnro9fec7UE3JwLwWJGdO0vU
-         XJb8xC1MriyWsWza8JYVsojYLt3KwIey5fZbcWSz4FGEVs4mmFxj+ECz0MrxX1aqw3lu
-         vO9nt7o8NKNbhlRaXUPQZpJmkUyhsmIyBSUazXYUBRS+l7IQfDlxF7LRQdW1zZhllqF9
-         UEfOaDL60XJDbNwJ8450dFlQ7efoK6c9yJy1DjDLZ8976FGkqaq60yZ+rHqFBSMmgEVU
-         JoYg==
-X-Gm-Message-State: AOJu0YyInaOs09Jd95me92C+/Qyhn0WTqR57vOFiuWOYJ6YvRUkgbsz2
-	3NZwCycUuq4m+aeMrhIOZ8nfSJtdM/gN+dlcgD6Ndlih5WHmKID0y1yB+j4owAlJPg521P9HdWh
-	e
-X-Google-Smtp-Source: AGHT+IHkT/8COS7ltQFjrA4huqIOhMcomaTyFCwkuAWJsY2EJsLFmGtgTZsvrj0L3/jdm88MJ6WGkg==
-X-Received: by 2002:a50:a45a:0:b0:568:32cc:f808 with SMTP id v26-20020a50a45a000000b0056832ccf808mr4328969edb.15.1710155232283;
-        Mon, 11 Mar 2024 04:07:12 -0700 (PDT)
-Received: from localhost.localdomain (h-217-31-164-171.A175.priv.bahnhof.se. [217.31.164.171])
-        by smtp.gmail.com with ESMTPSA id r24-20020aa7d158000000b00568525ab2e8sm1436581edo.55.2024.03.11.04.07.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 04:07:11 -0700 (PDT)
-From: Jens Wiklander <jens.wiklander@linaro.org>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Sudeep Holla <sudeep.holla@arm.com>
-Cc: Marc Bonnici <marc.bonnici@arm.com>,
-	Olivier Deprez <Olivier.Deprez@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH v2] firmware: arm_ffa: fix ffa_notification_info_get()
-Date: Mon, 11 Mar 2024 12:07:00 +0100
-Message-Id: <20240311110700.2367142-1-jens.wiklander@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1710155268; x=1710760068;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u9d1JzSR66zNZVrsrBQoXqaf0LOJADaj132DQ7l374M=;
+        b=aH+Y/pYn882hDkYqxhAD6zsYbigUb+cBXFleTHa50y15NtzMSn3a73MnSNeeRwJAMJ
+         vKWCauA+6ylybW0Gdscgw3PH5M02BFXK9IeBNi2I/axNkSt58ibzHNRnHtsIJg42VFRl
+         xsEO+7nn9SWNIy3Ibdc3gMKkqglOVmXz+ll+2uJgoxPlX7V2cNEUaD69NfE1jHQd4M2u
+         VX1ZtD+y3qt4oIulE3EXo8GtxbgKjvtgM3KAnSFmBp41hj3JOAWsP2sPdyDc+bpnJRlF
+         4R2jpOOyW9QEXBaq5Ix0rAX064HNAObkf9LfQFVfZlAuPMWVNTA3eBXEFZxyXYQ98/8x
+         xBCg==
+X-Forwarded-Encrypted: i=1; AJvYcCXJ/kEd378WU0fIIZbZ2hwuV+wWpLmR6Oy9vp2mrEQ8bU0uOIiQNPJWwEQQnsTJ63wzbwNW/lbihKXpHxZwkgxwom/s1bZYXosDXMNwUQqWMGkfTDi6aSM0f9VcHGMQ9cXRhos6txgaFqgf4PZWgikb9N/rKVORwrJ0sHunpzP3Xr6Ggw==
+X-Gm-Message-State: AOJu0YzOM8iTZpoaZ47ukQ4LgKlEAqzu88nuvEC7p6WzScdiEksQzJp3
+	7rv08q1qJO9aloTo31H06IMi44vVjN7lBpNS8PZtLnUeW/uWhY1tybBA0ZOjZ5rjvCVD0wYuwSO
+	7UWUy8Fz8GOt/DjrzSg/xwQzAacQ=
+X-Google-Smtp-Source: AGHT+IFWQlDG5Q9QZvHc/TFMFGK3Mj4QuHhayOL/c+lQnUCCmF1z3P59KJBls0b5yIanAR4KNRYJnGoF6xtPYH7dHXk=
+X-Received: by 2002:a05:6870:b149:b0:220:9eeb:b4a2 with SMTP id
+ a9-20020a056870b14900b002209eebb4a2mr6371067oal.29.1710155267993; Mon, 11 Mar
+ 2024 04:07:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240310175217.20981-1-animeshagarwal28@gmail.com>
+ <448f9d20-8b45-4794-9440-89d6a6888aee@linaro.org> <011b7c4c-ae44-41eb-b7eb-1a71da669f26@linaro.org>
+ <CAE3Oz82ZC5Vz125iLzjsdvZd1YLd4YgQsrGPgTRJ=ugEc=e=Ow@mail.gmail.com> <087db56b-13c3-4624-b3a3-f02989aa5409@kernel.org>
+In-Reply-To: <087db56b-13c3-4624-b3a3-f02989aa5409@kernel.org>
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+Date: Mon, 11 Mar 2024 16:37:44 +0530
+Message-ID: <CAE3Oz80ef3ESw3cus9wyGy2RrMfJWDAd7zkokUPZkTgLR3m5WQ@mail.gmail.com>
+Subject: Re: [PATCH v6] dt-bindings: imx-pata: Convert to dtschema
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, linux-ide@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-FFA_NOTIFICATION_INFO_GET retrieves information about pending
-notifications. Notifications can be either global or per VCPU. Global
-notifications are reported with the partition ID only in the list of
-endpoints with pending notifications.  ffa_notification_info_get()
-incorrectly expect no ID at all for global notifications. Fix this by
-checking for 1 ID instead of 0.
+On Mon, Mar 11, 2024 at 9:39=E2=80=AFAM Damien Le Moal <dlemoal@kernel.org>=
+ wrote:
+> It is simple: the commit message should always explain *WHAT* you did and
+> *WHY*. This is to give some context to reviewers and to help with checkin=
+g that
+> your code actually does what you explained. This also helps with potentia=
+l
+> future issues with a change as the commit message remains in the git log =
+history.
+>
+> Regardless of the version of your patch, always have the what & why expla=
+ined
+> in your commit message. This implies that the commit message must change =
+if the
+> patch content changes between versions. Keep in mind that the changelog a=
+dded
+> to a patch is lost when the patch is applied, but the commit message rema=
+ins.
 
-Fixes: 3522be48d82b ("firmware: arm_ffa: Implement the NOTIFICATION_INFO_GET interface")
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-Reviewed-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
----
- drivers/firmware/arm_ffa/driver.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you for your feedback and guidance.
+Your advice regarding the necessity of explaining both the *WHAT* and
+*WHY* behind each change is duly noted. Moving forward, I will ensure
+that my commit messages provide comprehensive context to facilitate
+smoother reviewing processes and to maintain a clear log history for
+potential future issues.
 
-diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-index f2556a8e9401..9bc2e10381af 100644
---- a/drivers/firmware/arm_ffa/driver.c
-+++ b/drivers/firmware/arm_ffa/driver.c
-@@ -790,7 +790,7 @@ static void ffa_notification_info_get(void)
- 
- 			part_id = packed_id_list[ids_processed++];
- 
--			if (!ids_count[list]) { /* Global Notification */
-+			if (ids_count[list] == 1) { /* Global Notification */
- 				__do_sched_recv_cb(part_id, 0, false);
- 				continue;
- 			}
--- 
-2.34.1
-
+Thanks & regards,
+Animesh
 
