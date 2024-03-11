@@ -1,130 +1,144 @@
-Return-Path: <linux-kernel+bounces-98514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01670877B4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:26:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07B2E877B56
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0A53281287
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:26:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96B701F218A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E3510796;
-	Mon, 11 Mar 2024 07:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EqOMGGwH"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FAEB10976;
+	Mon, 11 Mar 2024 07:31:41 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A181C20
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C59F9D3;
+	Mon, 11 Mar 2024 07:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710141981; cv=none; b=KhdU869s+asGSltRWORqKeIutmz19X94I/YY1fkoSrnvPi2e08IqgRF1mDPydMrW3gFNUtW+s5D5qaxZs7z2lht3QTethUDuiYX4MW7bSiyLGyzSTVgEXLsLlik9T1FlRJB9X7p6AFsnP9QauuX/mkRMf55tmF9CML7WKazPq7g=
+	t=1710142300; cv=none; b=B5VTk+bjGW+BQXt7JbB9O7LnawEALAP8XPM2c/NXwxije+9dIYDCtA097dw3af54YWblpSTs7pAV6/OWi1GnF/ys+gol2wGo9ngK5QXmFcMF89489aBeovN+Xds4bIfambQ82SWWArxFRCfv9kE3iUqhJNBRNpLLhbPpSXbiT6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710141981; c=relaxed/simple;
-	bh=4A1Ch0SnOg2vriHO4K6Az87fQ2K5aKoZjo2rqINki10=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=doZjGDei4AUbj0DQGy445DZgAx5aMka9zArUMVWZinO5yS1KDSbTen8wjIODkxn5JI/umYuQl9DhRZqrn2AOPushJA0VTehyeEHaVEHooYsWip8wINlj6OzG/1a+OPQmj/5JZlBmLzWPkEhlsNfnIFW0V5cTFkhZ4NKvQotjhn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EqOMGGwH; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5682360e095so4258781a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:26:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710141978; x=1710746778; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nWkn4Jgv2vGWKej5ZM1NioOSMWReqWi9UHuS9WHYkl4=;
-        b=EqOMGGwHfe4zytqQdHkFJqe0UW3dFKCCWDtXidiLqNFwuJS1TQ2/nQJSmZFj6Xq3vu
-         TpoKwr4QTqRLKbOds/fDrPhKnKh13KP3pNpY6NP1Db/+HPoOJcV868VhKO2MDaa2Wu6U
-         VilQqbmuwOYZt5Zuy2TV/sQLyaYGY/UAE8hDGbXIPwLMvwpE/I8iiwXuYYDkFfjGqM9u
-         B2WpGpzG1Z7ZEMDXj1K3Sgd/z9RR1Ahvo/QRm6DR51RTHH31lVPZUct337jcL80lZdMq
-         VxiYjcfrfA+3zXDpmucB3IwpBMSGV1wUGSYert6hKR/IY2XAE6niq3WgYpf5lXF427dn
-         noag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710141978; x=1710746778;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nWkn4Jgv2vGWKej5ZM1NioOSMWReqWi9UHuS9WHYkl4=;
-        b=HyBQx9UUVXtOSymst3iPytnA4TzleFFT4Iol5jk5qFj3i7IW2NHXap5J7u8xDhhYc9
-         x7O6bKNGziTK/sfFR7t/NIlrSIrsES6EPywR92M6YYywPdEkhhjomqjJ7fWizhgqxd9L
-         N3VGHbX+VyIj+na/CKKPWAGGJRhheungzYo2Qd3oo4KZ0YcbG1dFA/Dx0H/6WoOrmvk3
-         TL2IrZrpGJ2jwckXERsZ6PoRlBSekyTMDuQpxuXxxcNHsyp+0JfB8UGPixZQaY2KpuLk
-         UI7UuI/gtNX0Rn8Weu9IC3d3Boxrac6+ia6Re6BsoiiYyIgejYZ2H0aiYKgzv+cfVq7v
-         ZJog==
-X-Forwarded-Encrypted: i=1; AJvYcCWm2rQ/iozSfWf6CcKCcepvfyVzoHPXbBSWf3Q22ANDtwqyJVwq6IvBNlEIY2d8I3rOnpw6ElJY+ARIoZryxWqCgsMIesdWBOujKpg6
-X-Gm-Message-State: AOJu0YwZ6OkeFjc6O6JDLWROqdJzkFhSapAObFTrw9O7S9xBSjkS4Wne
-	OPOkT9zkRNrv7ofeDxpBXJptPT2HKaGvxnRI6NOUKPe4XLK2F63EU38V3Cy/lUrM2KDin6EJ09Z
-	9g20Z4yASjQmNUwX3OPBXs2Gr15I=
-X-Google-Smtp-Source: AGHT+IHlIrKxTq7vP0MeJ2GvPvVKvxoi93bl1RTM4o8dFr26YTt7kFx/WqKjoksumG4QiKtPySZp1LqDHt/GHwhn0II=
-X-Received: by 2002:a50:bb4c:0:b0:566:49f4:c538 with SMTP id
- y70-20020a50bb4c000000b0056649f4c538mr3608881ede.34.1710141978051; Mon, 11
- Mar 2024 00:26:18 -0700 (PDT)
+	s=arc-20240116; t=1710142300; c=relaxed/simple;
+	bh=4vkHIMU5sLhEQ25bNI/O3AvT4oBOKoIMinDU+cLJS8Y=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=T/CdEizTt6tR6R16PKFgDZcTzq/al6I8vloUo6a5n6rGeYDBB2Xcu2Vf8oFCKPkeRazwnOkBUsM0zzENx9Ith4H3TPnfiFj7pBoH75bv+NXaOzjHhC3srq6ek/ceq9nWgKYlFn9/QD/vQ92I2DqTm3J3EXzOKV1MP3dy0WlOeZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TtT103btZz2Bfqg;
+	Mon, 11 Mar 2024 15:29:08 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id DB6641A0178;
+	Mon, 11 Mar 2024 15:31:33 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 11 Mar 2024 15:31:33 +0800
+Subject: Re: [PATCH RFC] ext4: Validate inode pa before using preallocation
+ blocks
+To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>
+References: <20240311063843.2431708-1-chengzhihao1@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <24740a61-d379-b9b5-2e08-07f7a4597fa2@huawei.com>
+Date: Mon, 11 Mar 2024 15:31:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1709892753-27461-1-git-send-email-zhiguo.niu@unisoc.com> <67a7f35d-5cc3-4b5f-968a-e4151c63eb74@kernel.org>
-In-Reply-To: <67a7f35d-5cc3-4b5f-968a-e4151c63eb74@kernel.org>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Mon, 11 Mar 2024 15:26:07 +0800
-Message-ID: <CAHJ8P3KnG6OmjeCq2JE6z-xXVbqjVU=pR+3A9Fz6qgELkeq90Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] f2fs: fix to remove f2fs_bug_on in add_bio_entry
-To: Chao Yu <chao@kernel.org>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	ke.wang@unisoc.com, hongyu.jin@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240311063843.2431708-1-chengzhihao1@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-On Mon, Mar 11, 2024 at 11:54=E2=80=AFAM Chao Yu <chao@kernel.org> wrote:
->
-> On 2024/3/8 18:12, Zhiguo Niu wrote:
-> > add_bio_entry should not trigger system panic when bio_add_page fail,
-> > fix to remove it.
-> >
-> > Fixes: 0b20fcec8651 ("f2fs: cache global IPU bio")
-> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > ---
-> >   fs/f2fs/data.c | 6 ++++--
-> >   1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > index d9494b5..f8ae684 100644
-> > --- a/fs/f2fs/data.c
-> > +++ b/fs/f2fs/data.c
-> > @@ -759,8 +759,10 @@ static void add_bio_entry(struct f2fs_sb_info *sbi=
-, struct bio *bio,
-> >       be->bio =3D bio;
-> >       bio_get(bio);
-> >
-> > -     if (bio_add_page(bio, page, PAGE_SIZE, 0) !=3D PAGE_SIZE)
-> > -             f2fs_bug_on(sbi, 1);
-> > +     if (bio_add_page(bio, page, PAGE_SIZE, 0) !=3D PAGE_SIZE) {
-> > +             bio_put(bio);
->
-> I didn't get it, why new created bio has no space to store one page?
->
-> Thanks,
+ÔÚ 2024/3/11 14:38, Zhihao Cheng Ð´µÀ:
+> In ext4 continue & no-journal mode, physical blocks could be allocated
+> more than once (caused by writing extent entries failed & reclaiming
+> extent cache) in preallocation process, which could trigger a BUG_ON
+> (pa->pa_free < len) in ext4_mb_use_inode_pa().
+> 
+>   kernel BUG at fs/ext4/mballoc.c:4681!
+>   invalid opcode: 0000 [#1] PREEMPT SMP
+>   CPU: 3 PID: 97 Comm: kworker/u8:3 Not tainted 6.8.0-rc7
+>   RIP: 0010:ext4_mb_use_inode_pa+0x1b6/0x1e0
+>   Call Trace:
+>    ext4_mb_use_preallocated.constprop.0+0x19e/0x540
+>    ext4_mb_new_blocks+0x220/0x1f30
+>    ext4_ext_map_blocks+0xf3c/0x2900
+>    ext4_map_blocks+0x264/0xa40
+>    ext4_do_writepages+0xb15/0x1400
+>    do_writepages+0x8c/0x260
+>    writeback_sb_inodes+0x224/0x720
+>    wb_writeback+0xd8/0x580
+>    wb_workfn+0x148/0x820
+> 
+> Details are shown as following:
+> 
+> 0. Given a file with i_size=4096 with one mapped block
+> 1. Write block no 1, blocks 1~3 are preallocated.
+>     ext4_ext_map_blocks
+>      ext4_mb_normalize_request
+>       size = 16 * 1024
+>       size = end - start // Allocate 3 blocks (bs = 4096)
+>      ext4_mb_regular_allocator
+>       ext4_mb_regular_allocator
+>       ext4_mb_regular_allocator
+>       ext4_mb_use_inode_pa
+>        pa->pa_free -= len // 3 - 1 = 2
+> 2. Extent buffer head is written failed, es cache and buffer head are
+>     reclaimed.
+> 3. Write blocks 1~3
+>     ext4_ext_map_blocks
+>      newex.ee_len = 3
+>      ext4_ext_check_overlap // Find nothing, there should have been block 1
+>      allocated = map->m_len  // 3
+>      ext4_mb_new_blocks
+>       ext4_mb_use_preallocated
+>        ext4_mb_use_inode_pa
+>         BUG_ON(pa->pa_free < len) // 2 < 3!
+> 
+> Fix it by adding validation checking for inode pa. If invalid pa is
+> detected, stop using inode preallocation, drop invalid pa to avoid it
+> being used again, mark group block bitmap as corrupted to avoid allocating
+> from the erroneous group.
 
-Dear Chao,
-I got what you mean.
+After marking group block bitmap corrupted, mpage_map_and_submit_extent 
+returns -EFSCORRUPTED from ext4_map_blocks -> ext4_ext_map_blocks -> 
+ext4_mb_new_blocks -> ext4_mb_regular_allocator -> ext4_mb_find_by_goal 
+-> ext4_mb_load_buddy -> ext4_mb_init_cache -> ext4_wait_block_bitmap -> 
+  ext4_validate_block_bitmap-> EXT4_MB_GRP_BBITMAP_CORRUPT(grp).
+I think the checking 'EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)' is not 
+needed in ext4_mb_load_buddy, because all callers have checked it before 
+using e4b. In this case(ext4_mb_regular_allocator), goal group could be 
+skipped if it is corrupted, so ext4_mb_find_by_goal should load 
+buddy(ext4_mb_load_buddy) without checking corrupted and then check 
+corrupted with returning 0. But we can't delete the 
+checking(EXT4_MB_GRP_BBITMAP_CORRUPT(grp)) directly from 
+ext4_validate_block_bitmap, because some ext4_wait_block_bitmap callers 
+may still need it. IOW, there are some logic pathes need the checking, 
+but some don't need.
 
-We are doing bio merge optimization in bio_add_page.
-After looking at all the locations where bio_add_page is called,
-and think it is unreasonable to panic the system if bio_add_page fails.
-but it is not impossible to panic in the current flow about bio_add_page.
-so keeping it as is is a good choice.
-thanks!
-> > +             return;
-> > +     }
-> >
-> >       f2fs_down_write(&io->bio_list_lock);
-> >       list_add_tail(&be->list, &io->bio_list);
+Above problem is independent with the problem solved by this patch, so I 
+send out the patch.
+> 
+> Fetch a reproducer in Link.
+> 
+> Cc: stable@vger.kernel.org
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218576
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>   fs/ext4/mballoc.c | 128 +++++++++++++++++++++++++++++++++++-----------
+>   1 file changed, 98 insertions(+), 30 deletions(-)
+> 
 
