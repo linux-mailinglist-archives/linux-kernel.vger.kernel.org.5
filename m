@@ -1,123 +1,89 @@
-Return-Path: <linux-kernel+bounces-99120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E6178783A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:31:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C69358783AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:31:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2B351F2126D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:31:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 827B42850FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F44C4E1CB;
-	Mon, 11 Mar 2024 15:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5A64AECC;
+	Mon, 11 Mar 2024 15:16:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="acLkFnhn"
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="skhuymnT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82CD4CDE5;
-	Mon, 11 Mar 2024 15:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1DD3FB8F;
+	Mon, 11 Mar 2024 15:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710170116; cv=none; b=U7NDGSmakSZuzx5539m1t11NzXE7mqBBhhQn2w9ROFG3nc4a/SMryWJlQplr6kumvZx4q/HUyxemftdUSRZBwTVFWiB05fukm3Xachk6rnSw0ew7Wd1/Ab7FUMxxAd2i8C0zxLIjmVD09TbNdUP+bJDopkY55laJzP+2WRUz1rQ=
+	t=1710170197; cv=none; b=LBj13DNsBEbHRcIBre9hLSm9hCTPGYlM/7Gks2Re4nSfOFj0kQ8WqcZPmByAJfR1gNaYYugVUzJT7NO4Qw7DE+pggRR24K9u3KWmjpTcmHaa+JG4aXkQ5lH4htBGKvkDhFbQalmD5jXuYMMpuFiXsEnlHCzR6tfRJbeiQY8BDrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710170116; c=relaxed/simple;
-	bh=XhKg+cZDfP4nwiES2xcSxwW8Bp0lPtWE0a+CMh4TiHE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DOzg7HKebUJYNnkBbzglrZrIdtS4AvtcIzPZB8rVsWyKs5Kw7Nm9BShqmjQxWqM2F73gQnJDagY33h6TbuCDDG9Bp/FrsNUMlFf22XqKwbbrQRd7XppDKZRtS2bDMfqUaY6y+cNrLlj7ClS94Y5cvAaobHa7wqtvv80+VBLxp2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=acLkFnhn; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1710170107; x=1710429307;
-	bh=lvIfeHpCjGpzhOm0s3JzfmunEER00+7bS6vjwTGAn0M=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=acLkFnhna3Qw1IgdbexjecmXi8V7354RT7VL4FaPfplLHk7SsRygD/jbOAHvZCH7d
-	 kWIkaEOjdlFrHnV9ZChUoxeJoaoYRKQzWbyRsGL2d7aCUASmD9ZqSt+WE3BP4+x6nS
-	 TkVith2TxdnjCeEJ7AVYzgMf/KuoaUeR6fGdCr1XmFty3yRc1Vwyp5jHN1IviPt9g/
-	 HoTTCouvKi/29S3gJ1+Uw+k0pGaP72oUxc4l9ryghJ31P1IukMWC9MdVD+6kfH+ffx
-	 yEkRxKIyxe9wp/pDJrXHvIvnCp/rAtfhXp2AqJB2rcbHpruRwR1dcjuyQVgCEwM6JE
-	 gkLCmwTVgMEhw==
-Date: Mon, 11 Mar 2024 15:15:00 +0000
-To: Alice Ryhl <aliceryhl@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] rust: sync: add `Arc::into_unique_or_drop`
-Message-ID: <7976d136-3cf7-427d-a047-41c29d25ad32@proton.me>
-In-Reply-To: <CAH5fLggrRANz1GrjEa671Vj0m9=UDeEcGV5vhOxq8XtR6EjUSg@mail.gmail.com>
-References: <20240228-arc-for-list-v2-0-ae93201426b4@google.com> <20240228-arc-for-list-v2-2-ae93201426b4@google.com> <d52c5d95-99cd-4bd4-864f-b704299d3b1b@proton.me> <CAH5fLggrRANz1GrjEa671Vj0m9=UDeEcGV5vhOxq8XtR6EjUSg@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1710170197; c=relaxed/simple;
+	bh=wKdCzd6BnmptS+QJnboMGafnedP7woLGUI8aYnsac7M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HnBTV34TL+IlvqAlhdkeMkRZksHu/OttDizcdpo5uLNQKRMNPnZZyCYeZtiV4x+9rcavGzWBdI9Yd72sFHyBu0xrrcA3JhFKcGVjIS+FNAnqem3gLPgXzXer+4oe9DqxhtCqVUm7DRgpg6Z1yz2ricd6hlMaR2sebuPPT0TXB70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=skhuymnT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E6DC43390;
+	Mon, 11 Mar 2024 15:16:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710170197;
+	bh=wKdCzd6BnmptS+QJnboMGafnedP7woLGUI8aYnsac7M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=skhuymnT6wj0znfcfZZjkDOn+WslqtCW0qO5oNlgmTe0NuIz2Ak8RXXdmmUWD0dpQ
+	 mlXO4OJe2n0e9c2PsgHiGa1ZkK+FcVhzT4SdRcuTnVjsgpkdBFV7GRXyPq/YQM+kCG
+	 OpAH/PdbM5pYT3/1emuYP0y5VuyWLFhY4gbAUcN/dmIxkSXUFVGCkf2W0d0wjIpM/Y
+	 IGVSDq1VYhiEqkwaYw2GrVK9FU/JrdKamPiF48Fe6O/nCIDGLgwkP0yPvVfYBqVljg
+	 klMql6cJ4UlYQuECxe2mAV0/BMJ6iHihVFufryZJr2diUfcmtI5p9CnM9/nL5lYNpP
+	 JvZKQgcO8Mlrg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rjhOK-0000000056X-3qz4;
+	Mon, 11 Mar 2024 16:16:40 +0100
+Date: Mon, 11 Mar 2024 16:16:40 +0100
+From: Johan Hovold <johan@kernel.org>
+To: regressions@lists.linux.dev
+Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Rob Clark <robdclark@gmail.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Kuogee Hsieh <quic_khsieh@quicinc.com>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: drm/msm: DisplayPort hard-reset on hotplug regression in 6.8-rc1
+Message-ID: <Ze8gWHK2ipXIHRAP@hovoldconsulting.com>
+References: <Zd3kvD02Qvsh2Sid@hovoldconsulting.com>
+ <ZesH21DcfOldRD9g@hovoldconsulting.com>
+ <56de6cfb-fe0f-de30-d4d0-03c0fbb0afbb@quicinc.com>
+ <ZeyOmJLlBbwnmaJN@hovoldconsulting.com>
+ <Ze8Ke_M2xHyPYCu-@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ze8Ke_M2xHyPYCu-@hovoldconsulting.com>
 
-On 3/11/24 10:03, Alice Ryhl wrote:
-> On Sat, Mar 9, 2024 at 2:02=E2=80=AFPM Benno Lossin <benno.lossin@proton.=
-me> wrote:
->>
->> On 2/28/24 14:00, Alice Ryhl wrote:
->>> +        // SAFETY: If the refcount reaches a non-zero value, then we h=
-ave destroyed this `Arc` and
->>> +        // will return without further touching the `Arc`. If the refc=
-ount reaches zero, then there
->>> +        // are no other arcs, and we can create a `UniqueArc`.
->>
->> This comment is not explaining why it is safe to call
->> `refcount_dec_and_test` on `refcount`.
->> It dose however explain what you are going to do, so please keep it, but
->> not as a SAFETY comment.
->=20
-> I'll reword.
->=20
->>> +        let is_zero =3D unsafe { bindings::refcount_dec_and_test(refco=
-unt) };
->>> +        if is_zero {
->>> +            // SAFETY: We have exclusive access to the arc, so we can =
-perform unsynchronized
->>> +            // accesses to the refcount.
->>> +            unsafe { core::ptr::write(refcount, bindings::REFCOUNT_INI=
-T(1)) };
->>> +
->>> +            // SAFETY: We own one refcount, so we can create a `Unique=
-Arc`. It needs to be pinned,
->>> +            // since an `Arc` is pinned.
->>
->> The `unsafe` block is only needed due to the `new_unchecked` call, which
->> you could avoid by using `.into()`. The `SAFETY` should also be an
->> `INVARIANT` comment instead.
->>
->>> +            unsafe {
->>> +                Some(Pin::new_unchecked(UniqueArc {
->>> +                    inner: Arc::from_inner(me.ptr),
->>> +                }))
->>> +            }
->=20
-> The from_inner method is also unsafe.
+On Mon, Mar 11, 2024 at 02:43:24PM +0100, Johan Hovold wrote:
 
-Ah I missed that, might be a good reason to split the block.
-It confused me that the SAFETY comment did not mention why calling
-`new_unchecked` is sound.
+> So, while it may still be theoretically possible to hit the resets after
+> the revert, the HPD notify revert effectively "fixed" the regression in
+> 6.8-rc1 by removing the preconditions that now made us hit it (i.e. the
+> half-initialised bridge).
+> 
+> It seems the hotplug state machine needs to be reworked completely, but
+> at least we're roughly back where we were with 6.7 (including that the
+> bus clocks will never be turned of because of the rpm leaks on
+> disconnect).
 
-> I think that using new_unchecked here makes more sense. That method is
-> usually used in the case where something is already pinned, whereas
-> into() is usually used to pin something that was not previously
-> pinned.
-
-I get your argument, but doing it this way avoids an unsafe function
-call. I think it would be fine to use `.into()` in this case.
-Splitting the unsafe block would also be fine with me.
-
---=20
-Cheers,
-Benno
-
+#regzbot introduced: e467e0bde881
+#regzbot fix: 664bad6af3cb
 
