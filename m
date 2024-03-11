@@ -1,127 +1,123 @@
-Return-Path: <linux-kernel+bounces-99119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EE008783A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:30:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E6178783A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:31:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B627281FDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:30:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2B351F2126D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E535F6A037;
-	Mon, 11 Mar 2024 15:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F44C4E1CB;
+	Mon, 11 Mar 2024 15:15:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="drUYlyLt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="acLkFnhn"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338C56A01C;
-	Mon, 11 Mar 2024 15:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82CD4CDE5;
+	Mon, 11 Mar 2024 15:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710170100; cv=none; b=YW4uelz+5b3ptHuOPCYvbYgxYmpCQWUmZ9GnuZ/0rKlDlhq9IO9B6YY0aOJWpJ0KkUeq87y5ydqTljC8rsNAP2AKCv17LSj8wSwhCmVXLVhJ8yZpWC6565cuzM0BsIOkUJoUyLwYFM90Lkb0H7PZ7UClvi7KcYNM55i7IXzdjds=
+	t=1710170116; cv=none; b=U7NDGSmakSZuzx5539m1t11NzXE7mqBBhhQn2w9ROFG3nc4a/SMryWJlQplr6kumvZx4q/HUyxemftdUSRZBwTVFWiB05fukm3Xachk6rnSw0ew7Wd1/Ab7FUMxxAd2i8C0zxLIjmVD09TbNdUP+bJDopkY55laJzP+2WRUz1rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710170100; c=relaxed/simple;
-	bh=kXACYfDvNXWJZ25333pEuC5/kN5XG42wdVPy74Tagjk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EKu4oNfaFQcvq6O1vgbbOu8weotuf2gRanOttg7EEMvFraHXPo0xIuq7gXMro+wP+YEYB51n4xelxYPUaYPNx1eEA6odArxmvudjzVrzdYt4Zv+y3nthv4NQ1z/teSJ3SodxJ87b1RDsTnyZj57b4u5WrVOhT9O9zJ1/39/YPnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=drUYlyLt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01052C433F1;
-	Mon, 11 Mar 2024 15:14:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710170099;
-	bh=kXACYfDvNXWJZ25333pEuC5/kN5XG42wdVPy74Tagjk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=drUYlyLtaNR5rUHLnsb32SBwqig5A4q4tkZ9IXXz3TjjiSQem3CPhRf3G4WPVKAOi
-	 ZhgPVxD5cQ92+X/+NXo4l04G9zsBio3fd8F+7Ke6E6vKVLl5z/EbmuSqKrdM2HUxFr
-	 +tXFf7ARKF6Q05KeXeUPW05lGFfwU0UR/fsElrmWKVghzLSXTCaL/+uvx4gIUl5fry
-	 +xK8W+hKcc7OlcnOu9Vm9gwHTWwLA3pF1A7XvbYK8GwcZnNso7obL3RWq7/SMCfBVw
-	 kxTBRZGidVv/2GcdVwDdl91bPnYx6I1NEYuxtmUqFoWypcSI+/DteCjjcARNJZUYio
-	 P6ztIE4FbtykQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Adam Goldman <adamg@pobox.com>,
-	Sasha Levin <sashal@kernel.org>,
-	linux1394-devel@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 4.19 3/3] firewire: core: use long bus reset on gap count error
-Date: Mon, 11 Mar 2024 11:14:53 -0400
-Message-ID: <20240311151454.318918-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240311151454.318918-1-sashal@kernel.org>
-References: <20240311151454.318918-1-sashal@kernel.org>
+	s=arc-20240116; t=1710170116; c=relaxed/simple;
+	bh=XhKg+cZDfP4nwiES2xcSxwW8Bp0lPtWE0a+CMh4TiHE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DOzg7HKebUJYNnkBbzglrZrIdtS4AvtcIzPZB8rVsWyKs5Kw7Nm9BShqmjQxWqM2F73gQnJDagY33h6TbuCDDG9Bp/FrsNUMlFf22XqKwbbrQRd7XppDKZRtS2bDMfqUaY6y+cNrLlj7ClS94Y5cvAaobHa7wqtvv80+VBLxp2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=acLkFnhn; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1710170107; x=1710429307;
+	bh=lvIfeHpCjGpzhOm0s3JzfmunEER00+7bS6vjwTGAn0M=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=acLkFnhna3Qw1IgdbexjecmXi8V7354RT7VL4FaPfplLHk7SsRygD/jbOAHvZCH7d
+	 kWIkaEOjdlFrHnV9ZChUoxeJoaoYRKQzWbyRsGL2d7aCUASmD9ZqSt+WE3BP4+x6nS
+	 TkVith2TxdnjCeEJ7AVYzgMf/KuoaUeR6fGdCr1XmFty3yRc1Vwyp5jHN1IviPt9g/
+	 HoTTCouvKi/29S3gJ1+Uw+k0pGaP72oUxc4l9ryghJ31P1IukMWC9MdVD+6kfH+ffx
+	 yEkRxKIyxe9wp/pDJrXHvIvnCp/rAtfhXp2AqJB2rcbHpruRwR1dcjuyQVgCEwM6JE
+	 gkLCmwTVgMEhw==
+Date: Mon, 11 Mar 2024 15:15:00 +0000
+To: Alice Ryhl <aliceryhl@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] rust: sync: add `Arc::into_unique_or_drop`
+Message-ID: <7976d136-3cf7-427d-a047-41c29d25ad32@proton.me>
+In-Reply-To: <CAH5fLggrRANz1GrjEa671Vj0m9=UDeEcGV5vhOxq8XtR6EjUSg@mail.gmail.com>
+References: <20240228-arc-for-list-v2-0-ae93201426b4@google.com> <20240228-arc-for-list-v2-2-ae93201426b4@google.com> <d52c5d95-99cd-4bd4-864f-b704299d3b1b@proton.me> <CAH5fLggrRANz1GrjEa671Vj0m9=UDeEcGV5vhOxq8XtR6EjUSg@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.309
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+On 3/11/24 10:03, Alice Ryhl wrote:
+> On Sat, Mar 9, 2024 at 2:02=E2=80=AFPM Benno Lossin <benno.lossin@proton.=
+me> wrote:
+>>
+>> On 2/28/24 14:00, Alice Ryhl wrote:
+>>> +        // SAFETY: If the refcount reaches a non-zero value, then we h=
+ave destroyed this `Arc` and
+>>> +        // will return without further touching the `Arc`. If the refc=
+ount reaches zero, then there
+>>> +        // are no other arcs, and we can create a `UniqueArc`.
+>>
+>> This comment is not explaining why it is safe to call
+>> `refcount_dec_and_test` on `refcount`.
+>> It dose however explain what you are going to do, so please keep it, but
+>> not as a SAFETY comment.
+>=20
+> I'll reword.
+>=20
+>>> +        let is_zero =3D unsafe { bindings::refcount_dec_and_test(refco=
+unt) };
+>>> +        if is_zero {
+>>> +            // SAFETY: We have exclusive access to the arc, so we can =
+perform unsynchronized
+>>> +            // accesses to the refcount.
+>>> +            unsafe { core::ptr::write(refcount, bindings::REFCOUNT_INI=
+T(1)) };
+>>> +
+>>> +            // SAFETY: We own one refcount, so we can create a `Unique=
+Arc`. It needs to be pinned,
+>>> +            // since an `Arc` is pinned.
+>>
+>> The `unsafe` block is only needed due to the `new_unchecked` call, which
+>> you could avoid by using `.into()`. The `SAFETY` should also be an
+>> `INVARIANT` comment instead.
+>>
+>>> +            unsafe {
+>>> +                Some(Pin::new_unchecked(UniqueArc {
+>>> +                    inner: Arc::from_inner(me.ptr),
+>>> +                }))
+>>> +            }
+>=20
+> The from_inner method is also unsafe.
 
-[ Upstream commit d0b06dc48fb15902d7da09c5c0861e7f042a9381 ]
+Ah I missed that, might be a good reason to split the block.
+It confused me that the SAFETY comment did not mention why calling
+`new_unchecked` is sound.
 
-When resetting the bus after a gap count error, use a long rather than
-short bus reset.
+> I think that using new_unchecked here makes more sense. That method is
+> usually used in the case where something is already pinned, whereas
+> into() is usually used to pin something that was not previously
+> pinned.
 
-IEEE 1394-1995 uses only long bus resets. IEEE 1394a adds the option of
-short bus resets. When video or audio transmission is in progress and a
-device is hot-plugged elsewhere on the bus, the resulting bus reset can
-cause video frame drops or audio dropouts. Short bus resets reduce or
-eliminate this problem. Accordingly, short bus resets are almost always
-preferred.
+I get your argument, but doing it this way avoids an unsafe function
+call. I think it would be fine to use `.into()` in this case.
+Splitting the unsafe block would also be fine with me.
 
-However, on a mixed 1394/1394a bus, a short bus reset can trigger an
-immediate additional bus reset. This double bus reset can be interpreted
-differently by different nodes on the bus, resulting in an inconsistent gap
-count after the bus reset. An inconsistent gap count will cause another bus
-reset, leading to a neverending bus reset loop. This only happens for some
-bus topologies, not for all mixed 1394/1394a buses.
-
-By instead sending a long bus reset after a gap count inconsistency, we
-avoid the doubled bus reset, restoring the bus to normal operation.
-
-Signed-off-by: Adam Goldman <adamg@pobox.com>
-Link: https://sourceforge.net/p/linux1394/mailman/message/58741624/
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/firewire/core-card.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/firewire/core-card.c b/drivers/firewire/core-card.c
-index 0e6f96c0e3957..6c464c75ac9d5 100644
---- a/drivers/firewire/core-card.c
-+++ b/drivers/firewire/core-card.c
-@@ -513,7 +513,19 @@ static void bm_work(struct work_struct *work)
- 		fw_notice(card, "phy config: new root=%x, gap_count=%d\n",
- 			  new_root_id, gap_count);
- 		fw_send_phy_config(card, new_root_id, generation, gap_count);
--		reset_bus(card, true);
-+		/*
-+		 * Where possible, use a short bus reset to minimize
-+		 * disruption to isochronous transfers. But in the event
-+		 * of a gap count inconsistency, use a long bus reset.
-+		 *
-+		 * As noted in 1394a 8.4.6.2, nodes on a mixed 1394/1394a bus
-+		 * may set different gap counts after a bus reset. On a mixed
-+		 * 1394/1394a bus, a short bus reset can get doubled. Some
-+		 * nodes may treat the double reset as one bus reset and others
-+		 * may treat it as two, causing a gap count inconsistency
-+		 * again. Using a long bus reset prevents this.
-+		 */
-+		reset_bus(card, card->gap_count != 0);
- 		/* Will allocate broadcast channel after the reset. */
- 		goto out;
- 	}
--- 
-2.43.0
+--=20
+Cheers,
+Benno
 
 
