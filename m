@@ -1,454 +1,248 @@
-Return-Path: <linux-kernel+bounces-98447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FFA0877A44
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:12:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03ECF877A46
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:13:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EB3E1C20C79
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:12:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 272331C20D4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49F953B8;
-	Mon, 11 Mar 2024 04:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523B623AD;
+	Mon, 11 Mar 2024 04:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="S1Mw9Shp"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MkBOXOy+";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="FVmIunWR"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2AE187F
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 04:12:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710130370; cv=none; b=hHPl6T6byNZ5fdwbTJW6gvJ6D08OgHLHxErHuRw+FbgATk/7bRv88hW7iOOupiqI7daU79MILabL3LRFmCF/UD0WUGKaf8HgmHhAyZX+oIlgvnsJVVrEnSq3ES0wUMhIxw/Z/r1toLT0XWLEXB7arlRxQ490ZoNzAfuX1VbCJCM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710130370; c=relaxed/simple;
-	bh=v3Y1AcgFZAQ1Ms+hss6Fq0GxK9fwnXnLHTc1EtpWDag=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aCEdn+QR9Zvnbm4eEHgQDiF/4Fae7Y48qmHWh3nc+4E8WIkKyFWrVt4kV6gA+rtZE4kbPbfUlY7dMTiwXfTzYuo89GnanrenOurerlubaEdTu6eAaAcohKRmOqtGUeuBe5O1x6lyHNv7pYQX3RfqQzAbwNvvsk2FwRyi8IQZHog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=S1Mw9Shp; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d2fad80eacso30932851fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 21:12:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7639B79CB;
+	Mon, 11 Mar 2024 04:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710130422; cv=fail; b=gXkKhJiXPmPdCljWEMtGggNEDO1q+mikLWTlFLpChijtj9JEhefrNFzQgaNMGGaIsMhwLYGBVXxiyo6lBOsOqFmjIgZjY+ZhOUAdvfWzAdnLcx8TAtCyYGqmZZi7gC2sMGv1wP5zZK96koehHSGF7D11UWayAbkzrEpoyyBpCn8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710130422; c=relaxed/simple;
+	bh=TsblDfNQKYoGTfiSA+/R/VeAeaM22kPoJhqyeXCJRC4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IJWPNcMpn3b7LJWOnGMJ6Tcnk+q3/CwUgiRT/EyCvL5qgpSouHPDVzsleRiKlfDF70UCOUVHkKOFhxsllqa2bjZdc24bIGN6EFoa2xrWgQpzrqM+0prNzaTgnPjQuPMlyyHB2VAlxMj0IS46EMnfyHFvtjHDqI46e9b/bpGfpAM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MkBOXOy+; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=FVmIunWR; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42ANgce9024388;
+	Mon, 11 Mar 2024 04:13:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=Q3IotM4HfSJ/bgMSQrgBelG/OyR6FMf3uvZ0UC8vIHo=;
+ b=MkBOXOy+no9wHndXKYsTJGeQ5OJvbdMxeFoHuTrm4yDVyKdK1chs1bqmXrX0wo4Em0fq
+ qsIjHF9ZO3vKo3GKy6vUtfoUg2Yra3bqnPl2iNwuIo3ICjM4S9Iq3+W+DaJQKVDMBnr1
+ veemwm18t+x1/8dgePvK7VE8eqb8VDl51p9f8lSh1TpwI94VPGAUT3LhRLrJRYUAguS8
+ qkJvbfHE/jfDb/gARqUhFmX2TQNoMNGFXr5F3N+gGT+vC8qwTvgt9WLTwRamwysKc8VY
+ O8ZUUo0YPX9R0zHqXEbYRBky1IJRseNimagnjl1uKUVBQ8gHtkXpaqdjigVT5mFOf6bd 6Q== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrgauj87j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 04:13:23 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42B27aDO038051;
+	Mon, 11 Mar 2024 04:13:22 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wre7be5rc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 04:13:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YajTQh/zda7Ee0tJ9ktRyx+7aXPZGHgfzgnvkAolyDd7jBjDmEwj8ZcmjIic6J7hs5RQGC2Y6iTdXLqKghcgSWEH2P2wwojGbRCyHKunaU/s4EWyLQWm9LBkt2QwnmSBkkO2YDgO5FAWQSS6OGbWDcrO4miYjx+M8lhUOyupKuOcBgO9XAYhE7dLeGx2MrDITzS4xCxwLCbsV6QO6DUmHt2ju6Y9WZVxozpqLt8AphslOC4W3daEHCn2Rhxth3ZirtU1air0iHFsvKs1KTXau76ATvvtZKujfqq6/uGoCyd/b3uP0YT0Ky35IlcQssRsZMsQxHx5TvVB969aY47Hxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Q3IotM4HfSJ/bgMSQrgBelG/OyR6FMf3uvZ0UC8vIHo=;
+ b=oMQZ4J8+Mcfy5TbnLZCy3bPf3ande3cM53VJBDFc6CMVAEwAyYJkw+gU5Uz0rOsMUpEAyclrnepJcHkbqEuwKuH8o84gwZHVGRojsxUM+G2QW9VkMrXh6w6FLUBm9rfkybXJx3U/g3hxZ0X2Tc+Xl1DU6Z3y6C9NrJ6ZbTrFIlgd3/gkSFTKaKK1z5FCnYzE3lq+KP/ZMkmZ3dKdEPfrW95JcMuXZX/25u4UL7pWqNdLVeIqugDbouBJgkbZfTc3mpweXvRjAOiZY/Mjd9RmVNtHRaBfJaSVYELqiqoG2yOJMMgIlfYecGq12pHZelR54KOwa28rK1bcB2OMNWx6rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1710130366; x=1710735166; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=biG62qLhI466VyrsDmgefsQv2uWfuN6iCpIsbKi+7ig=;
-        b=S1Mw9ShpwG81r5U9mSDgsPGTO48Elp/4xbsC8L01gEvxopL6Kvhgutl07shUXk3s9a
-         CrmT8SQTOvYNV2f+x5pOGc8WKhMEHNO7gS2bDqf12vAaDS9fxU5OA3u77XNmIZp2wuPu
-         nqcUVXGG6iH26AlmUDD3spI1LRuMGooDIAr7A0ZrD2cKXLAdkzy3VVxTPKQB9kmH/Qwz
-         X+rJ7lLCfWZU3rlf+u63ITFfTNGGe8tRUlqcnIIblrDCLjqN/N2NGJJErJsMS+UlFY8C
-         YZkqQC6lbWP/v8HCQbmyoHdYTrEz9bkUbrNU41qlBHbj/2jYfiSw+pgaXDL3yr7gs0ZA
-         WHjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710130366; x=1710735166;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=biG62qLhI466VyrsDmgefsQv2uWfuN6iCpIsbKi+7ig=;
-        b=L+Li4R32bqRncO2nhPQ1ywvDIrsgrfme3lomutBQuZ9UEyLCsFwndf4v/e0PwKXn6w
-         aUVDo6pEsfsymAoOq4+mLJ0O6yla5MILwz3UQndmKEIUj/0lk4QoIFRyXUKcHbbL6ThA
-         9Y1HgnsygrVikKTzodSeBqKD3i3iYtUNJX1teso8bOqVBCVK7K5bPwH6qb3LW+exIUSU
-         +sIE9LW2lJprQC81qP2ykgRse51VTpp/zb6SCR4AflD8sCDJIaVavbPUnqxBXTlqgrMq
-         QbtVvK5pYIY4sCFUPLXoXVaeX3BK1lzisva1u0t0RGWrgmqa8Kna2Xz+egdcdGC4Rvfc
-         meuA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFgxdHhNkGxdGM/o9apWCuWuh74z7M4ZBytWgsb3FQ2lA+RgNQg7qZZlRpFnitbsqfrmr/6pB1cJXWXWMtXyejba82xQdJ71iDylY+
-X-Gm-Message-State: AOJu0YzxtMOQatv1YJ6ETt7BHkqOm/puRfonZtRWkLBSQkNupNc9fA2k
-	smYGsGY/beCaCBtI08QOtZ3XvPIzQsUz0wv/0WWjrfi6cwvBW+WndsL7te9x3n2ufONdF4KIuGu
-	YitkUiOAhe0Tx1P/f3GJOAeJRnGuL9bRWBs9eOuZuXWSX4xBEVWCpPw==
-X-Google-Smtp-Source: AGHT+IHQCbkM23vKNRpinA0pXXCzXjUdp7+/A7N/Wp7kIr35iwmbNSbiSz5afxqA+cjCWY7PovRqccOiOA/HzYCVAO0=
-X-Received: by 2002:a2e:8e8d:0:b0:2d4:364c:6b4b with SMTP id
- z13-20020a2e8e8d000000b002d4364c6b4bmr1629464ljk.41.1710130366295; Sun, 10
- Mar 2024 21:12:46 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q3IotM4HfSJ/bgMSQrgBelG/OyR6FMf3uvZ0UC8vIHo=;
+ b=FVmIunWRrbwVplh/kyGrlj85o50eXUNO/tSmCfxaoS+urBlnIGFH3GMCvTk/4D5aheCTBbG3u4chIN1JjSzB6cvPrhlk8xIQVdxB1FYsTqimloQGM4MCcbefa4mYeNp/BqiUX4gbg3+wEeN+dv1AX98C986cNJKIouibkViIvt8=
+Received: from CY5PR10MB6216.namprd10.prod.outlook.com (2603:10b6:930:43::12)
+ by CH0PR10MB4940.namprd10.prod.outlook.com (2603:10b6:610:c7::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
+ 2024 04:13:20 +0000
+Received: from CY5PR10MB6216.namprd10.prod.outlook.com
+ ([fe80::34e:f5ab:6420:ca75]) by CY5PR10MB6216.namprd10.prod.outlook.com
+ ([fe80::34e:f5ab:6420:ca75%6]) with mapi id 15.20.7362.031; Mon, 11 Mar 2024
+ 04:13:20 +0000
+Message-ID: <293eb402-73c9-441a-97ec-a5939ed44256@oracle.com>
+Date: Sun, 10 Mar 2024 21:13:18 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] RDMA/cm: add timeout to cm_destroy_id wait
+To: Leon Romanovsky <leon@kernel.org>
+Cc: dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rama.nichanamatlu@oracle.com
+References: <20240309063323.458102-1-manjunath.b.patil@oracle.com>
+ <20240310111744.GE12921@unreal>
+Content-Language: en-US
+From: Manjunath Patil <manjunath.b.patil@oracle.com>
+In-Reply-To: <20240310111744.GE12921@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0037.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::12) To CY5PR10MB6216.namprd10.prod.outlook.com
+ (2603:10b6:930:43::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229232211.161961-1-samuel.holland@sifive.com>
- <20240229232211.161961-4-samuel.holland@sifive.com> <10c4851d-a8d8-4289-a9f9-509c70a0ca22@app.fastmail.com>
- <CAK9=C2X9GR4SVU_VisAakM4Ae4=59D84MkXU-5_0y192Kzv_-Q@mail.gmail.com>
-In-Reply-To: <CAK9=C2X9GR4SVU_VisAakM4Ae4=59D84MkXU-5_0y192Kzv_-Q@mail.gmail.com>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Mon, 11 Mar 2024 09:42:34 +0530
-Message-ID: <CAK9=C2WH+3QzHpUqaQv3TZEJatfgytVOYur5NvhifdheEgU1AQ@mail.gmail.com>
-Subject: Re: [PATCH v5 03/13] riscv: Use IPIs for remote cache/TLB flushes by default
-To: "Stefan O'Rear" <sorear@fastmail.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Jisheng Zhang <jszhang@kernel.org>, 
-	yunhui cui <cuiyunhui@bytedance.com>, Samuel Holland <samuel.holland@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR10MB6216:EE_|CH0PR10MB4940:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6a3881e8-483d-4170-0b66-08dc418195c0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	9DXPQ1iaaRQXjKc+PmTV28Vz3wE/qoejnZrAsSyRxw3IAgS9XCZAXm/UGELYpWtEIwuD7FY6aMQlibiPM4JMflSkxvc3/FOSohOaG8R533efy79befieYAaqW7Ne/f20H++bvN0XVKlcNMWapJA9guxInhDW0RHWiX6GU+lklu5mt8lFVpJT5wNG9mln4hcqOsU3izXdiwJocpo3cpYYMhLyBnbvLK6hR9cBaDO9IeWg8Abxn13EIKPl8EtB9PxHlz/pNtihepcwBpiMP+R7I0q6WEqVkJ5NQB6y3wPKsbTxuqQUA1jv/rOQDn0BfJSBPbmC99EGc0HI35F1V6WZgAp1FGbxEOraTyjqJjVGaCT/Laiba+28Sstd7vTfo+7nQW+OLbEw6InpPvAs6iSKGQqXREqNmi01LI9M6uDMyRXsXR+AMFo0Xlh99U3dogtzP5lBxlV6OagYsUlSQHUCKAFonEcVEaWKLXr0nEReUv/KXPTiGjUTVw8ZdfKtDLhNdG9JTcaUNLlUzbAeED5nWGQq4ImNmi8TVRaY8FWG+oBpvD4sTa5ZAUgEbp9OXmFlxEU6xQOfWMHVTzuRMPe89u95LgE/kVvdTOQSG+OaG7Qg0JKVLu/yhfJvOhodyePX+dMrnE6oZFnzKieLRDI5kZLBdLC6wvilzKo+hB2++0Q=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR10MB6216.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?KzRKbkdxU3hzeW9hdkVURVkzdmcyMEFLR0FSNUw5OUVPY0I5RVo2M0JHQ3FM?=
+ =?utf-8?B?TWc3RXozaGhJRXpnT0RZM28vTTVzTWIwYWxiQ2VhK2xwN25kRGlsQ1Z3Z0Z5?=
+ =?utf-8?B?eThRcVRmSngyREgzQ1lXdXBVQkY5WGVObzk5aElVRkNhTEU4WUlOcnVkc0xV?=
+ =?utf-8?B?cGh1VzRYeHQvd2dNWUhNZTVNcG5DR1JDRnl3Q0xuUERqUjdRcTVtbEtFREEz?=
+ =?utf-8?B?Rmc5MlI4a2ZETWFvMjNiZnA1UnBjK2w1MXl3c0lqRHVma2pXQUk2d2hWc291?=
+ =?utf-8?B?UWtMWUhNWGFnMG9tMEE0bS8wdnpwWkM5dG4vMFpRb1grSGFTZlBaVzlkQ2Rp?=
+ =?utf-8?B?RDFZWVc0R1VRNkZza1V4aGQvQUZVenBXQjltSkFLcFVzTCtrRCtyQ0J6OHBM?=
+ =?utf-8?B?eUZIL2tZRjhsRnBMZEpibTBYZURZdUdjTnFLVGIvMzk5WGUxZWZ1U24raUgz?=
+ =?utf-8?B?L1JhNDlxOUdSOEFRcDgxUEFhUnVzVTFYVmQyZkJMelhTbS8xbmxDNFEwWXFG?=
+ =?utf-8?B?RjN5ZUl3US93c3BPejErZERrZWl6MHRUdHIvYXV6RnczcXJ0VmZDazV4NllD?=
+ =?utf-8?B?RFZLbm5UR250YVNnWm5vWFE4TzVZUHFHQnhTNGtkdTEyeWN6ZVYzWFIwQTBN?=
+ =?utf-8?B?WXBqcW1PdVNQcjZGNzdLZTJFRTRrcU1wRm12RzdzcFp3OVh2dXRhTDg2Vlhi?=
+ =?utf-8?B?T0ZGdE55Z1hYazI2aDBzTkJ4b3d1Y1NRSVkyR2ZLaEhPaXVpS1lCUTdWbnhw?=
+ =?utf-8?B?dzFlSnFJR0ZCL2tBb0ZsMk1Iblc1RStuUmZwL3ZZeGducUNVeExuTWpHeFZD?=
+ =?utf-8?B?RUI5RlNJaWtxMmk2WDJqblNCbmpvZlpSVDkwditMay9xcUFzaEFJL3VPeGJ1?=
+ =?utf-8?B?V2hkT3kxVVl5STVtWklodkRlMUxJQTBZZU9DaEE1NWNBVWg2cUgwTkU4ZzVw?=
+ =?utf-8?B?YjdGQXJ3NUNLRkNRbkkxdFpHbk9zL25qVmRXK3lXSnNUc00rUmdOdzVBMDNs?=
+ =?utf-8?B?VTRRWUhlL25kOWszaUp1ZHZQUDh6SFpzcjZYSm45Ni9DcUI5azFuU3hMMXBm?=
+ =?utf-8?B?cllzVEE5MXVWTHlPTG5Fay9lVUVmSytVTFNKWWFtOWN2cDhLaGNnWU1SU0tv?=
+ =?utf-8?B?ZnBtWFBkUWdpNzRWSCtwdEtsNGl6ZlgraXd4Q09mTGdYb04yYU96WW5CeFM5?=
+ =?utf-8?B?eUErcWc0Mk5USmpXR1RTaCtLc3lrZGVPektBVGcyTFE2TmZrMTAzYjRrR2RP?=
+ =?utf-8?B?RFBkOHRMZWNkdS8xdzhhdmNLTk1rSVpTL3RVZTVPZTdYOVU4bmFVZWczN2Zy?=
+ =?utf-8?B?MUsxOEMyRGJFUER6ZHlsQlpSdUhQNHJyaFZVTnlJVWlEc05xSmNaR3NoQzU0?=
+ =?utf-8?B?M3YzS2l1dDQ1WWpIM1EzUElzNVYvWmtaWFJod29LWlo1VThoa0hGOVF0L2Jn?=
+ =?utf-8?B?d25ETGd4UU1BR0paTnZFZURxS1hMYmhnbmZKajZPcHRBb0tyTlRSaVhpcXJS?=
+ =?utf-8?B?Tzk5bVVJNlRkUjJIYzduNVFIM3lueTB5cE9kN3BxbkVjVGo5L3N4Mm5zMkpv?=
+ =?utf-8?B?YVhUMk1ZeitxRmdUU2VKY0VkaUpiZ2VHekZqWElrbGh0eVJsN2tyb0MyWHVU?=
+ =?utf-8?B?TTBMRWV4R2s2aHkyTTY1a0RoZWt5b0FQMlBGZDlQdTBlL3h6VlZSdXhUS2dM?=
+ =?utf-8?B?TkJRN2pVbkRKZkZIMTl5TGRHanlGNnhVOWgwTDhQUGNCNHJwY05QeFV2aGJH?=
+ =?utf-8?B?a1BXeTE1QUVsV0lPRGYwNGM3a1M1ZG1XdTRPNEllUDNvQk5xaFhMZVBoNFhj?=
+ =?utf-8?B?UXZ5aEJScW5sTVQrQktHc3lMeGw3WmVpc0hPQWdGQ2w2eGJabG1POGRXdzk2?=
+ =?utf-8?B?NkNrbFozR3NYa1Z0azRsS3k5SWlZTEZZYU1YUVBXdTJZNUxnclRGalhET0Nq?=
+ =?utf-8?B?L1ZZZ3JvMXp4bVhlTWdyVlJUekRLRWIrTE5pZ2luNEFLN1lDUG1JNVRzaW1J?=
+ =?utf-8?B?d21SSHk2KzUyK3hhRW85LzQ2emczVGdHZmJoM0NnNnBEdVEvRHNrWVhyK3pw?=
+ =?utf-8?B?Z0NPSGRocmcrVDlrRDRRZDB6a3NtWUZnOFNZTzVWSmRrc0V3Y2t0dC9ZTEFM?=
+ =?utf-8?B?WjFDdkh5YnI5bGF4RkEzY3N4ODVOZHE5Z09ud09HNDZGbWVsNytvMUJ3dHZE?=
+ =?utf-8?B?c3c9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	DhUbexHr5Rn4goNg/tkiEFMJ2tqlbfObBP4Y4i7OtolltTyOrf3MePIG334orfgakmzC9U6Yg2lwqqb8pTgRFxKleGowIePJDT/g0nmvH46u83rngJ+Hj2RqtAPTMd/xxzn1jK+GYmj0refFAbcPSe3QPjtAyXMEBuecna9lHG2c5onhLY5eBMlrp15MHOaoGOW9/IT++l77FNgl8HE29syGxSGP7hoepTZP3ws0tAxMAbwfu0Vg53g1e3Svn33H5UXQT/rHWx8qdD6qxFHxUas3pgFVx1Yp82zA+gfy1CN/e3Z/m/3vWzyT5k/akvBE+a+A4IuDQtpIs3tyLMDegiGBYEAK29GRJuPx3uGe4n3oB2UnjYBYNHVtkDIoN5QkiYS5SMWboueUQh8gg1ZT0E9nQwABNDeO/b1eUo56rMPvzPh7QMix/RQMxYbJZfeNbEsfbdFnTJs/WWiE/dHVnySOzhnhJGNXqXLr9feOXmGFD+n/ywGaKasDecIZglRE2+IBHsQGdJlx0oEcbJEqEwDFK43pJ6NhzRyCTPsV1Nf7mfK9g1XwN88adzgwYuHQEcmigqFGVfvfEOV1QiHGO1KZY+KIL35FcKIlJ/21fic=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a3881e8-483d-4170-0b66-08dc418195c0
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR10MB6216.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 04:13:20.0465
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aWuRCfIcIhspBtrDP8ziLBBBS/pHj2wPUucUwO1B4V2I0Cq3XlXDFAmGScVNOBMPpf77CmTvrqBmtGEzVtertxb7nqE9YPPVAzRer/2Qt+c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4940
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_01,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403110030
+X-Proofpoint-GUID: XqCFzxaiiU7R95mo8NgVfFzaVhYs8bMM
+X-Proofpoint-ORIG-GUID: XqCFzxaiiU7R95mo8NgVfFzaVhYs8bMM
 
-On Mon, Mar 11, 2024 at 9:34=E2=80=AFAM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> On Mon, Mar 11, 2024 at 8:37=E2=80=AFAM Stefan O'Rear <sorear@fastmail.co=
-m> wrote:
-> >
-> > On Thu, Feb 29, 2024, at 6:21 PM, Samuel Holland wrote:
-> > > An IPI backend is always required in an SMP configuration, but an SBI
-> > > implementation is not. For example, SBI will be unavailable when the
-> > > kernel runs in M mode.
-> > >
-> > > Generally, IPIs are assumed to be faster than SBI calls due to the SB=
-I
-> > > context switch overhead. However, when SBI is used as the IPI backend=
-,
-> > > then the context switch cost must be paid anyway, and performing the
-> > > cache/TLB flush directly in the SBI implementation is more efficient
-> > > than inserting an interrupt to the kernel. This is the only scenario
-> > > where riscv_ipi_set_virq_range()'s use_for_rfence parameter is false.
-> > >
-> > > Thus, it makes sense for remote fences to use IPIs by default, and ma=
-ke
-> > > the SBI remote fence extension the special case.
-> >
-> > The historical intention of providing SBI calls for remote fences is th=
-at
-> > it abstracts over hardware that allows for performing remote fences
-> > _without an IPI at all_. The TH1520 is an example of such hardware, sin=
-ce
-> > it can (at least according to the documentation) perform broadcast fenc=
-e,
-> > fence.i, and sfence.vma operations using bits in the mhint register.
-> >
-> > T-Head's public opensbi repository doesn't actually use this feature, a=
-nd
-> > in general SBI remote fences come from a much more optimistic time abou=
-t
-> > how much we can successfully hide from supervisor software. But I don't
-> > think we can generalize that an IPI will always do less work than a SBI
-> > remote fence.
->
-> On platforms where SBI is the only way of injecting IPIs in S-mode, the
-> SBI based remote fences are actually much faster. This is because on
-> such platforms injecting an IPI from a HART to a set of HARTs will
-> require multiple SBI calls which can be directly replaced by one (or
-> few) SBI remote fence SBI calls.
->
-> Most of the current platforms still have M-mode CLINT and depend on
-> SBI IPI for S-mode IPI injection so we should not slow down remote
-> fences for these platforms.
->
-> Until all platforms have moved to RISC-V AIA (which supports S-mode
-> IPIs), we should keep this boot-time choice of SBI RFENCEs versus
-> direct S-mode IPIs.
->
-> IMO, this patch is ahead of its time.
 
-I think this patch is fine since it replaces the static key
-riscv_ipi_for_rfence with riscv_sbi_for_rfence.
 
-I got confused by the removal of riscv_ipi_for_rfence.
+On 3/10/24 4:17 AM, Leon Romanovsky wrote:
+> On Fri, Mar 08, 2024 at 10:33:23PM -0800, Manjunath Patil wrote:
+>> Add timeout to cm_destroy_id, so that userspace can trigger any data
+>> collection that would help in analyzing the cause of delay in destroying
+>> the cm_id.
+>>
+>> New noinline function helps dtrace/ebpf programs to hook on to it.
+>> Existing functionality isn't changed except triggering a probe-able new
+>> function at every timeout interval.
+>>
+>> We have seen cases where CM messages stuck with MAD layer (either due to
+>> software bug or faulty HCA), leading to cm_id getting stuck in the
+>> following call stack. This patch helps in resolving such issues faster.
+>>
+>> kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
+>> ...
+>> 	Call Trace:
+>> 	__schedule+0x2bc/0x895
+>> 	schedule+0x36/0x7c
+>> 	schedule_timeout+0x1f6/0x31f
+>>   	? __slab_free+0x19c/0x2ba
+>> 	wait_for_completion+0x12b/0x18a
+>> 	? wake_up_q+0x80/0x73
+>> 	cm_destroy_id+0x345/0x610 [ib_cm]
+>> 	ib_destroy_cm_id+0x10/0x20 [ib_cm]
+>> 	rdma_destroy_id+0xa8/0x300 [rdma_cm]
+>> 	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
+>> 	ucma_write+0xe0/0x160 [rdma_ucm]
+>> 	__vfs_write+0x3a/0x16d
+>> 	vfs_write+0xb2/0x1a1
+>> 	? syscall_trace_enter+0x1ce/0x2b8
+>> 	SyS_write+0x5c/0xd3
+>> 	do_syscall_64+0x79/0x1b9
+>> 	entry_SYSCALL_64_after_hwframe+0x16d/0x0
+>>
+>> Orabug: 36280065
+> 
+> Not related to the upstream.
+> 
+>>
+>> Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
+>> ---
+>> v3:
+>>   - added #define
+>>
+>> v2:
+>>   - removed sysctl related code
+>>
+>>   drivers/infiniband/core/cm.c | 20 +++++++++++++++++++-
+>>   1 file changed, 19 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+>> index ff58058aeadc..793103cf8152 100644
+>> --- a/drivers/infiniband/core/cm.c
+>> +++ b/drivers/infiniband/core/cm.c
+>> @@ -34,6 +34,7 @@ MODULE_AUTHOR("Sean Hefty");
+>>   MODULE_DESCRIPTION("InfiniBand CM");
+>>   MODULE_LICENSE("Dual BSD/GPL");
+>>   
+>> +#define CM_DESTORY_ID_WAIT_TIMEOUT 10000 /* msecs */
+> 
+> CM_DESTORY_ID_WAIT_TIMEOUT -> CM_DESTROY_ID_WAIT_TIMEOUT
+> 
+> Fixed and applied.
+Thank you fixing and applying. Sorry for Orabug and not being careful about the typo.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
-
-Regards,
-Anup
-
->
-> Regards,
-> Anup
->
-> >
-> > -s
-> >
-> > > sbi_ipi_init() already checks riscv_ipi_have_virq_range(), so it only
-> > > calls riscv_ipi_set_virq_range() when no other IPI device is availabl=
-e.
-> > > So we can move the static key and drop the use_for_rfence parameter.
-> > >
-> > > Furthermore, the static branch only makes sense when CONFIG_RISCV_SBI=
- is
-> > > enabled. Optherwise, IPIs must be used. Add a fallback definition of
-> > > riscv_use_sbi_for_rfence() which handles this case and removes the ne=
-ed
-> > > to check CONFIG_RISCV_SBI elsewhere, such as in cacheflush.c.
-> > >
-> > > Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> > > ---
-> > >
-> > > Changes in v5:
-> > >  - Also switch to riscv_use_sbi_for_rfence() in asm/pgalloc.h
-> > >
-> > > Changes in v4:
-> > >  - New patch for v4
-> > >
-> > >  arch/riscv/include/asm/pgalloc.h  |  7 ++++---
-> > >  arch/riscv/include/asm/sbi.h      |  4 ++++
-> > >  arch/riscv/include/asm/smp.h      | 15 ++-------------
-> > >  arch/riscv/kernel/sbi-ipi.c       | 11 ++++++++++-
-> > >  arch/riscv/kernel/smp.c           | 11 +----------
-> > >  arch/riscv/mm/cacheflush.c        |  5 ++---
-> > >  arch/riscv/mm/tlbflush.c          | 31 ++++++++++++++---------------=
---
-> > >  drivers/clocksource/timer-clint.c |  2 +-
-> > >  8 files changed, 38 insertions(+), 48 deletions(-)
-> > >
-> > > diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/as=
-m/pgalloc.h
-> > > index 87468f67951a..6578054977ef 100644
-> > > --- a/arch/riscv/include/asm/pgalloc.h
-> > > +++ b/arch/riscv/include/asm/pgalloc.h
-> > > @@ -8,6 +8,7 @@
-> > >  #define _ASM_RISCV_PGALLOC_H
-> > >
-> > >  #include <linux/mm.h>
-> > > +#include <asm/sbi.h>
-> > >  #include <asm/tlb.h>
-> > >
-> > >  #ifdef CONFIG_MMU
-> > > @@ -90,10 +91,10 @@ static inline pud_t *pud_alloc_one(struct mm_stru=
-ct
-> > > *mm, unsigned long addr)
-> > >
-> > >  static inline void riscv_tlb_remove_ptdesc(struct mmu_gather *tlb, v=
-oid *pt)
-> > >  {
-> > > -     if (riscv_use_ipi_for_rfence())
-> > > -             tlb_remove_page_ptdesc(tlb, pt);
-> > > -     else
-> > > +     if (riscv_use_sbi_for_rfence())
-> > >               tlb_remove_ptdesc(tlb, pt);
-> > > +     else
-> > > +             tlb_remove_page_ptdesc(tlb, pt);
-> > >  }
-> > >
-> > >  #define pud_free pud_free
-> > > diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sb=
-i.h
-> > > index 6e68f8dff76b..ea84392ca9d7 100644
-> > > --- a/arch/riscv/include/asm/sbi.h
-> > > +++ b/arch/riscv/include/asm/sbi.h
-> > > @@ -375,8 +375,12 @@ unsigned long riscv_cached_marchid(unsigned int =
-cpu_id);
-> > >  unsigned long riscv_cached_mimpid(unsigned int cpu_id);
-> > >
-> > >  #if IS_ENABLED(CONFIG_SMP) && IS_ENABLED(CONFIG_RISCV_SBI)
-> > > +DECLARE_STATIC_KEY_FALSE(riscv_sbi_for_rfence);
-> > > +#define riscv_use_sbi_for_rfence() \
-> > > +     static_branch_unlikely(&riscv_sbi_for_rfence)
-> > >  void sbi_ipi_init(void);
-> > >  #else
-> > > +static inline bool riscv_use_sbi_for_rfence(void) { return false; }
-> > >  static inline void sbi_ipi_init(void) { }
-> > >  #endif
-> > >
-> > > diff --git a/arch/riscv/include/asm/smp.h b/arch/riscv/include/asm/sm=
-p.h
-> > > index 0d555847cde6..7ac80e9f2288 100644
-> > > --- a/arch/riscv/include/asm/smp.h
-> > > +++ b/arch/riscv/include/asm/smp.h
-> > > @@ -49,12 +49,7 @@ void riscv_ipi_disable(void);
-> > >  bool riscv_ipi_have_virq_range(void);
-> > >
-> > >  /* Set the IPI interrupt numbers for arch (called by irqchip drivers=
-) */
-> > > -void riscv_ipi_set_virq_range(int virq, int nr, bool use_for_rfence)=
-;
-> > > -
-> > > -/* Check if we can use IPIs for remote FENCEs */
-> > > -DECLARE_STATIC_KEY_FALSE(riscv_ipi_for_rfence);
-> > > -#define riscv_use_ipi_for_rfence() \
-> > > -     static_branch_unlikely(&riscv_ipi_for_rfence)
-> > > +void riscv_ipi_set_virq_range(int virq, int nr);
-> > >
-> > >  /* Check other CPUs stop or not */
-> > >  bool smp_crash_stop_failed(void);
-> > > @@ -104,16 +99,10 @@ static inline bool riscv_ipi_have_virq_range(voi=
-d)
-> > >       return false;
-> > >  }
-> > >
-> > > -static inline void riscv_ipi_set_virq_range(int virq, int nr,
-> > > -                                         bool use_for_rfence)
-> > > +static inline void riscv_ipi_set_virq_range(int virq, int nr)
-> > >  {
-> > >  }
-> > >
-> > > -static inline bool riscv_use_ipi_for_rfence(void)
-> > > -{
-> > > -     return false;
-> > > -}
-> > > -
-> > >  #endif /* CONFIG_SMP */
-> > >
-> > >  #if defined(CONFIG_HOTPLUG_CPU) && (CONFIG_SMP)
-> > > diff --git a/arch/riscv/kernel/sbi-ipi.c b/arch/riscv/kernel/sbi-ipi.=
-c
-> > > index a4559695ce62..1026e22955cc 100644
-> > > --- a/arch/riscv/kernel/sbi-ipi.c
-> > > +++ b/arch/riscv/kernel/sbi-ipi.c
-> > > @@ -13,6 +13,9 @@
-> > >  #include <linux/irqdomain.h>
-> > >  #include <asm/sbi.h>
-> > >
-> > > +DEFINE_STATIC_KEY_FALSE(riscv_sbi_for_rfence);
-> > > +EXPORT_SYMBOL_GPL(riscv_sbi_for_rfence);
-> > > +
-> > >  static int sbi_ipi_virq;
-> > >
-> > >  static void sbi_ipi_handle(struct irq_desc *desc)
-> > > @@ -72,6 +75,12 @@ void __init sbi_ipi_init(void)
-> > >                         "irqchip/sbi-ipi:starting",
-> > >                         sbi_ipi_starting_cpu, NULL);
-> > >
-> > > -     riscv_ipi_set_virq_range(virq, BITS_PER_BYTE, false);
-> > > +     riscv_ipi_set_virq_range(virq, BITS_PER_BYTE);
-> > >       pr_info("providing IPIs using SBI IPI extension\n");
-> > > +
-> > > +     /*
-> > > +      * Use the SBI remote fence extension to avoid
-> > > +      * the extra context switch needed to handle IPIs.
-> > > +      */
-> > > +     static_branch_enable(&riscv_sbi_for_rfence);
-> > >  }
-> > > diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-> > > index 45dd4035416e..8e6eb64459af 100644
-> > > --- a/arch/riscv/kernel/smp.c
-> > > +++ b/arch/riscv/kernel/smp.c
-> > > @@ -171,10 +171,7 @@ bool riscv_ipi_have_virq_range(void)
-> > >       return (ipi_virq_base) ? true : false;
-> > >  }
-> > >
-> > > -DEFINE_STATIC_KEY_FALSE(riscv_ipi_for_rfence);
-> > > -EXPORT_SYMBOL_GPL(riscv_ipi_for_rfence);
-> > > -
-> > > -void riscv_ipi_set_virq_range(int virq, int nr, bool use_for_rfence)
-> > > +void riscv_ipi_set_virq_range(int virq, int nr)
-> > >  {
-> > >       int i, err;
-> > >
-> > > @@ -197,12 +194,6 @@ void riscv_ipi_set_virq_range(int virq, int nr,
-> > > bool use_for_rfence)
-> > >
-> > >       /* Enabled IPIs for boot CPU immediately */
-> > >       riscv_ipi_enable();
-> > > -
-> > > -     /* Update RFENCE static key */
-> > > -     if (use_for_rfence)
-> > > -             static_branch_enable(&riscv_ipi_for_rfence);
-> > > -     else
-> > > -             static_branch_disable(&riscv_ipi_for_rfence);
-> > >  }
-> > >
-> > >  static const char * const ipi_names[] =3D {
-> > > diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> > > index 55a34f2020a8..47c485bc7df0 100644
-> > > --- a/arch/riscv/mm/cacheflush.c
-> > > +++ b/arch/riscv/mm/cacheflush.c
-> > > @@ -21,7 +21,7 @@ void flush_icache_all(void)
-> > >  {
-> > >       local_flush_icache_all();
-> > >
-> > > -     if (IS_ENABLED(CONFIG_RISCV_SBI) && !riscv_use_ipi_for_rfence()=
-)
-> > > +     if (riscv_use_sbi_for_rfence())
-> > >               sbi_remote_fence_i(NULL);
-> > >       else
-> > >               on_each_cpu(ipi_remote_fence_i, NULL, 1);
-> > > @@ -69,8 +69,7 @@ void flush_icache_mm(struct mm_struct *mm, bool loc=
-al)
-> > >                * with flush_icache_deferred().
-> > >                */
-> > >               smp_mb();
-> > > -     } else if (IS_ENABLED(CONFIG_RISCV_SBI) &&
-> > > -                !riscv_use_ipi_for_rfence()) {
-> > > +     } else if (riscv_use_sbi_for_rfence()) {
-> > >               sbi_remote_fence_i(&others);
-> > >       } else {
-> > >               on_each_cpu_mask(&others, ipi_remote_fence_i, NULL, 1);
-> > > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > > index 8d12b26f5ac3..0373661bd1c4 100644
-> > > --- a/arch/riscv/mm/tlbflush.c
-> > > +++ b/arch/riscv/mm/tlbflush.c
-> > > @@ -78,10 +78,10 @@ static void __ipi_flush_tlb_all(void *info)
-> > >
-> > >  void flush_tlb_all(void)
-> > >  {
-> > > -     if (riscv_use_ipi_for_rfence())
-> > > -             on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
-> > > -     else
-> > > +     if (riscv_use_sbi_for_rfence())
-> > >               sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE,=
- FLUSH_TLB_NO_ASID);
-> > > +     else
-> > > +             on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
-> > >  }
-> > >
-> > >  struct flush_tlb_range_data {
-> > > @@ -102,7 +102,6 @@ static void __flush_tlb_range(struct cpumask
-> > > *cmask, unsigned long asid,
-> > >                             unsigned long start, unsigned long size,
-> > >                             unsigned long stride)
-> > >  {
-> > > -     struct flush_tlb_range_data ftd;
-> > >       bool broadcast;
-> > >
-> > >       if (cpumask_empty(cmask))
-> > > @@ -118,20 +117,18 @@ static void __flush_tlb_range(struct cpumask
-> > > *cmask, unsigned long asid,
-> > >               broadcast =3D true;
-> > >       }
-> > >
-> > > -     if (broadcast) {
-> > > -             if (riscv_use_ipi_for_rfence()) {
-> > > -                     ftd.asid =3D asid;
-> > > -                     ftd.start =3D start;
-> > > -                     ftd.size =3D size;
-> > > -                     ftd.stride =3D stride;
-> > > -                     on_each_cpu_mask(cmask,
-> > > -                                      __ipi_flush_tlb_range_asid,
-> > > -                                      &ftd, 1);
-> > > -             } else
-> > > -                     sbi_remote_sfence_vma_asid(cmask,
-> > > -                                                start, size, asid);
-> > > -     } else {
-> > > +     if (!broadcast) {
-> > >               local_flush_tlb_range_asid(start, size, stride, asid);
-> > > +     } else if (riscv_use_sbi_for_rfence()) {
-> > > +             sbi_remote_sfence_vma_asid(cmask, start, size, asid);
-> > > +     } else {
-> > > +             struct flush_tlb_range_data ftd;
-> > > +
-> > > +             ftd.asid =3D asid;
-> > > +             ftd.start =3D start;
-> > > +             ftd.size =3D size;
-> > > +             ftd.stride =3D stride;
-> > > +             on_each_cpu_mask(cmask, __ipi_flush_tlb_range_asid, &ft=
-d, 1);
-> > >       }
-> > >
-> > >       if (cmask !=3D cpu_online_mask)
-> > > diff --git a/drivers/clocksource/timer-clint.c
-> > > b/drivers/clocksource/timer-clint.c
-> > > index 09fd292eb83d..0bdd9d7ec545 100644
-> > > --- a/drivers/clocksource/timer-clint.c
-> > > +++ b/drivers/clocksource/timer-clint.c
-> > > @@ -251,7 +251,7 @@ static int __init clint_timer_init_dt(struct
-> > > device_node *np)
-> > >       }
-> > >
-> > >       irq_set_chained_handler(clint_ipi_irq, clint_ipi_interrupt);
-> > > -     riscv_ipi_set_virq_range(rc, BITS_PER_BYTE, true);
-> > > +     riscv_ipi_set_virq_range(rc, BITS_PER_BYTE);
-> > >       clint_clear_ipi();
-> > >  #endif
-> > >
-> > > --
-> > > 2.43.1
-> > >
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
+-Manjunath
+> 
+> Thanks
 
