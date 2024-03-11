@@ -1,80 +1,57 @@
-Return-Path: <linux-kernel+bounces-98435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A4AA877A2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:42:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AD5D877A29
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:41:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5E451F21E39
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:42:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 263941C20A57
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AD21C33;
-	Mon, 11 Mar 2024 03:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C6B23AD;
+	Mon, 11 Mar 2024 03:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="QiBDC3ez"
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MwlOgmeM"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6695C17D2
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 03:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C1115B3;
+	Mon, 11 Mar 2024 03:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710128569; cv=none; b=bvCQRLW7O1igA+jsd8ljsYaZA0/G21kTNrDK+6elA7Z8f9wopdB/dQ/H+4oatwyavEZlD+V9S4uAWGCNV4KXRn6PDJ/V+PUvYeiK8zI1dWfWHy90n6FLqVO41CuWnD0mjBECq0400ZPC5UYSUd3Vlvy92g9tTmmhFq2SjCGT9pA=
+	t=1710128508; cv=none; b=ddC9Wl62bGG6kJfMYEtyevfhIEVnUyZd5YAbtUvgISvfLJJEEvVEnJ5jkZt+8AqjBg0LybcApNmwWe21fNdJXE8uvXasidp86Aj5ntKXRqGP9q+nm/IJG02TfA7YJLoUcyRQMJVJGqufHQkPsnNT7NYEQJPCieXcvVAZiBaAUEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710128569; c=relaxed/simple;
-	bh=nTj62qPuEPgCw8J7Jf3n7nB5xucwl9i5v865mvfsmaw=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CyWpQ7u8q0GSNrckYSqSFFjp0kJqQKa/XRwoRct0za9xOesUB+jZUAUVOOEGzYsym5PX9l9Z5IEFnzc9vFziZwRtbOTFhlGK2uD7t4ioyaVj1EGdWjmiMfF5i0tbC44KcrzFy6ym22tezQL6eAgk1LTKL2qDzbb4CGXCdkIR1ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=QiBDC3ez; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1710128556;
-	bh=4JXa6hLg74UpGshYZU1AguiXPGhfRos4Ba7QkqRukZc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=QiBDC3ezm11b2Im4aNj21lpmPotKo4kokjq0TVuATxSAnR9akKYFkHxaTUHb3zVXW
-	 StmmE4JOhS77ZwnsHVjFNZG+1PbktpCp91KiEW6LrUTi3/7opeCU9Rb7b97HDtk/Z6
-	 WWHoV1BQFXuNn1N5gMELmOnqO10G7JkZ0DjErJNs=
-Received: from localhost ([223.104.74.172])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id AA2BEEEA; Mon, 11 Mar 2024 11:42:34 +0800
-X-QQ-mid: xmsmtpt1710128554tx9slqkvq
-Message-ID: <tencent_9C4C2E93BF6E6F9A61B2C8B72B800839BD05@qq.com>
-X-QQ-XMAILINFO: OKpEC/bXOl3KoZeQXg/7NFPrZ4XlfQnIMhpOScRXYy1jVk3PhopjBhGbOmp/QW
-	 CJTBPYxQuetLW7lc0Rs/1paE99ASBOFRflhS7O/mwg6L48yIYHM7TS6VW5d+hG7u8mXCI1vWNu5I
-	 BppiIrXGnN1iZuk2dkpQyKGyZv+kMIrhVItpV4N4zvMUoHI6HiJx0c4YoVom1OZlbmkKg+l36jnl
-	 A0VG9mZG+XEdDcnZjkqNG9Kz4hCw7LwBLJsill6HBbr/NXbTsycR1MCn5YI5fVH48SBb4NtSxmCg
-	 GdZxM8x+KAHLNRVZJXgGIo9OMV+UOQ5bTeHaZhPmlrAMBcGfn43klkP079uASn/UJQsT2aIGsKE4
-	 a/Baksjbjkrobq+g56bBZUyIhye2DudDL76NasSVqo33PQSby60H50pl1I/pT2ejf2aTr46jaURq
-	 3yMLP1y+8efqtEM03++UJ3mjVA/Rz8/VPyOH6KwfwYqhyzoJh0efgV+y82QHIE8ntN8Pn5iiEt1m
-	 KQYM5xZBtd6TwczxzmeKiAJ2bIyTxCB+TXGBEvwfdGlnFWP05VeinbRSgEOzwRwGNwDhB6e15MpD
-	 dD/OAwOzwwArFyovw59N0+GYsHqdscWNhC3Zq5+161y+37cPGmzkoRRUeux8l9rANuNeGIeUQFhV
-	 LAiXv+45K8qGfZtWqEDrEifovc1Mozon/Ueyt493Rz85K7xYF0wvA7mwhC/MyLqo1DXIQ7owWb93
-	 uGJ7zJy86bs/39RHsfjjticjJwmCIR5Rq6QC/JcUd9BWUx06n8ycJIWfuJRJgzT7DObJ1YFA7fLN
-	 bL+c5rSBEL9s5vqqkYBg/hKvpr2voGeCaXHheiaAS4h9SgfbiNhOtExHW2LSbT77CVfejFnKtu4G
-	 e9UzBa4nFNa5VuV75/2dKzCKAEStnIdtLUQi4B4F/olaacHm3NJUcN4u5S7Y+31Fut1YR1LcojOs
-	 RMZfY/J3DomRACe65IdJ4o2CcyWEvL
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-Sender: kenneth-lee-2012@foxmail.com
-Date: Mon, 11 Mar 2024 11:41:26 +0800
-From: Kenneth-Lee-2012@foxmail.com
-To: Andrea Parri <parri.andrea@gmail.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
-	paulmck@kernel.org
-Subject: Re: Question about PB rule of LKMM
-X-OQ-MSGID: <20240311034104.7iffcia4k5rxvgog@kllt01>
-References: <ZejC+lutRuwXQrMz@andrea>
- <Zenip+8BDM3p+MUh@andrea>
- <eb8f2a21-d388-424d-8504-ccd7bdb53a93@rowland.harvard.edu>
- <ZeoFBkB1BeTdEQsn@andrea>
- <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
- <ZeoQvj3l6moF9KdQ@andrea>
- <tencent_3FCF3AA5E98BC9395F98803764A6B2F7CC07@qq.com>
- <ZeuFQdk/zcjkILbC@andrea>
- <tencent_454C12FBD6076C20C3955565E6D6354E4F0A@qq.com>
- <Ze0afrfXMe4oJ4ez@andrea>
+	s=arc-20240116; t=1710128508; c=relaxed/simple;
+	bh=IkVWhXDcD+dqXR0sg2CSh+0xLf+knakijimU2ebVXAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sNajBsrNYwQo2gO3/BdwS6kiLrgQJnSBqMY1jfS2wLMqznfsZJB3hEr53ttUyO2i4n2GiIK+pgK6OjAqMJOgNOV/V3GhuIcWLIEiOwwwBqlWJFIqeY66WDDftvgYbwc3YM04/QkkFRZrqD/ioL6bg7F5sLt4yRgZ/tu7QW5ne48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MwlOgmeM; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=0IhkeUfnkckGUpoB8ltx//YeJvd8V+1fi/yffsV3/DE=; b=MwlOgmeMRShI7BYlx0kHstVhwm
+	hgt4enB2uKdIIl4DUlbLzZAgYM+QIr0KyS8j52ssOJiKK7PECYrI8ur2Yg5lhXRWltKMEAENneSrE
+	GHF2O/16j7srHcEfH1vx8OVCLBeawcyjEPMfWR5ILjY3IwDhtYunJROk/J/tl8BnjxKVlEZWsxgjS
+	/Dcp6AB0D3HSZ35TjxPeb3I+2/djM5Cb2ToUPaPhPiBtf+sa1MAWGDDGrh9ASCl4fblf2yqAt41AG
+	oKTvkpanedvcrvAYsgMMKbeDl8FCEstEYqcbWMyZohgNKPC1eaDyPE2cqGu+fFt4kOPYA90L6LhUm
+	Ta8tWEPg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rjWXf-0000000HKj2-0ofC;
+	Mon, 11 Mar 2024 03:41:35 +0000
+Date: Mon, 11 Mar 2024 03:41:35 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Dave Chinner <david@fromorbit.com>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: On the optimum size of a batch
+Message-ID: <Ze59byUR80z42m8R@casper.infradead.org>
+References: <Zeoble0xJQYEAriE@casper.infradead.org>
+ <Ze5onaXsI+LT1+Be@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,106 +60,100 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Ze0afrfXMe4oJ4ez@andrea>
+In-Reply-To: <Ze5onaXsI+LT1+Be@dread.disaster.area>
 
-On Sun, Mar 10, 2024 at 03:27:10AM +0100, Andrea Parri wrote:
-> Date: Sun, 10 Mar 2024 03:27:10 +0100
-> From: Andrea Parri <parri.andrea@gmail.com>
-> To: Kenneth-Lee-2012@foxmail.com
-> Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
->  paulmck@kernel.org
-> Subject: Re: Question about PB rule of LKMM
+On Mon, Mar 11, 2024 at 01:12:45PM +1100, Dave Chinner wrote:
+> > Batch size      Cost of allocating 100          thousand        million
+> > 1               500 (5 * 100)                   5000            5M
+> > 2               300 (6 * 50)                    3000            3M
+> > 4               200 (8 * 25)                    2000            2M
+> > 8               156 (12 * 13)                   1500            1.5M
+> > 16              140 (20 * 7)                    1260            1.25M
+> > 32              144 (36 * 4)                    1152            1.13M
+> > 64              136 (68 * 2)                    1088            1.06M
+> > 128             132 (132 * 1)                   1056            1.03M
 > 
-> > > Remark that, in the CAT language, the identity relation ({(e, e) : each event e})
-> > > is a subset of R* (the _reflexive_-transitive closure of R) for any relation R.
-> > > 
-> > > The link at stake, (P0:Wx1, P0:Rx), is the result of the following composition:
-> > > 
-> > >   [Marked]         ; (overwrite & ext)? ; cumul-fence*     ; [Marked]          ; rfe?            ; [Marked]
-> > >   (P0:Wx1, P0:Wx1)   (P0:Wx1, P1:Wx8)     (P1:Wx8, P1:Wx8)   (P1:Wx8, P1:Wx8))   (P1:Wx8, P0:Rx)   (P0:Rx, P0:Rx)
-> > > 
+> Isn't this just repeating the fundamental observation that SLUB is
+> based on?  i.e. it can use high-order pages so that it can
+> pre-allocate optimally sized batches of objects regardless of their
+> size? i.e.  it tries to size the backing page order to allocate in
+> chunks of 30-40 objects at a time?
+
+What SLUB is currently doing is inefficient.  One of the conversations
+I had (off-list) about appropriate batch size is in relation to SLUB-ng
+where one of the participants claimed that the batch size of 32 was
+obviously too small (it wasn't; the performance problem was due to a
+bug).
+
+What you're thinking about is the cost of allocating from the page
+allocator (which is now much cheaper than it used to be, but should
+be cheaper than it currently is).  But there is another inefficiency
+to consider, which is that the slab allocator has a per-slab lock,
+and while you can efficiently remove and add a number of objects to
+a single slab, you might only have one or two free objects per slab.
+To work around this some of the more performance sensitive parts of the
+kernel have implemented their own allocator in front of slab.  This is
+clearly a bad thing for all of us, and hence Vlastimil has been working
+on a better approach.
+
+https://lore.kernel.org/linux-mm/20231129-slub-percpu-caches-v3-0-6bcf536772bc@suse.cz/
+
+> Except for SLUB we're actually allocating in the hundreds of
+> millions to billions of objects on machines with TBs of RAM. IOWs we
+> really want to be much further down the curve than 8 - batches of at
+> least 32-64 have significantly lower cost and that matters when
+> scaling to (and beyond) hundreds of millions of objects....
+
+But that doesn't necessarily mean that you want a larger batch size.
+Because you're not just allocating, you're also freeing and over a
+large enough timescale the number of objects allocated and freed is
+approximately equal.  In the SLUB case, your batch size needs to be
+large enough to absorb most of the allcation-vs-free bias jitter; that
+is if you know they always alternate AFAFAFAFAF a batch size of 2 would
+be fine.  If you know you get four allocations followed by four frees,
+having a batch size of 5 woud be fine.  We'd never go to the parent
+allocator if we got a AFAAFFAAAFFFAAAAFFFFAAFFAFAAFAAFFF pattern.
+
+> > This is a simple model for only one situation.  If we have a locking
+> > contention breakdown, the overhead cost might be much higher than 4 units,
+> > and that would lead us to a larger batch size.
 > > 
-> > So the cumul-fence relation includes the same Store? This is hard to
-> > understand, because it is defined as:
-> > 
-> >   let cumul-fence = [Marked] ; (A-cumul(strong-fence | po-rel) | wmb |
-> > 	po-unlock-lock-po) ; [Marked] ; rmw-sequence
-> > 
-> > There is at lease a rmw-sequence in the relation link.
-> > 
-> > I doubt we have different understanding on the effect of
-> > reflexive operator. Let's discuss this with an example. Say we have two
-> > relation r1 and r2. r1 have (e1, e2) while r2 have (e2, e3). Then we got
-> > (e1, e3) for (r1;r2). The (;) operator joins r1's range to r2's domain.
-> > 
-> > If we upgrade (r1;r2) to  (r1?;r2), (r1?) become {(m1, m1), (m1, m2), (m2,
-> > m2)}, it is r1 plus all identity of all elements used in r1's relations.
-> > 
-> > So (r1?;r2) is {(m1, m3), (m2, m3)}. If we consider this link:
-> > 
-> >   e1 ->r1 ->e2 ->r2 e3
-> > 
-> > A question mark on r1 means both (e1, e3) and (e2, e3) are included in
-> > the final definition. The r1 is ignore-able in the definition. The event
-> > before or behind the ignore-able relation both belong to the definition.
-> > 
-> > But this doesn't means r1 is optional. If r1 is empty, (r1?;r2) will
-> > become empty, because there is no event element in r1's relations.
-> > 
-> > So I think the reflexive-transitive operation on cumul-fence cannot make
-> > this relation optional. You should first have such link in the code.
+> > Another consideration is how much of each object we have to touch.
+> > put_pages_list() is frequently called with batches of 500 pages.  In order
+> > to free a folio, we have to manipulate its contents, so touching at least
+> > one cacheline per object.
 > 
-> In Cat, r1? is better described by (following your own wording) "r1 plus
-> all identity of all elements (i.e. not necessarily in r1)".
+> Right, that's simply the cost of the batch cache footprint issue
+> rather than a "fixed cost mitigation" described for allocation.
+
+No, it's not, it's an illustration that too large a batch size can
+actively harm you.
+
+> So I'm not sure what you're trying to say here? We've known about
+> these batch optimisation considerations for a long, long time and
+> that batch size optimisation is always algorithm and access pattern
+> dependent, so.... ???
+
+People forget these "things we've always known".  I went looking and
+couldn't find a good writeup of this, so did my own.  In addition to the
+percpu slub batch size, various people have opined that the folio_batch
+size (15 objects) is too small for doing things like writeback and
+readahead.  They're going to have to bring data to convince me.
+
+> > And we make multiple passes over the batch,
+> > first decrementing the refcount, removing it from the lru list; second
+> > uncharging the folios from the memcg (writes to folio->memcg_data);
+> > third calling free_pages_prepare which, eg, sets ->mapping to NULL;
+> > fourth putting the folio on the pcp list (writing to the list_head).
 > 
-> As an example, in the scenario at stake, cumul-fence is empty while both
-> cumul-fence? and cumul-fence* match the identity relation on all events.
-> 
-> Here is a (relatively old, but still accurate AFAICR) article describing
-> these and other notions as used in Herd:  (cf. table at the bottom)
-> 
->   https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/LWNLinuxMM/herd.html
-> 
-> Said this, I do think the best way to familiarize with these notions and
-> check one's understanding is to spend time using the herd tool itself.
-> 
+> Sounds like "batch cache footprint" would be reduced by inverting
+> that algorithm and doing all the work on a single object in a single
+> pass, rahter than doing it in multiple passes.  That way the cache
+> footprint of the batch is determined entirely by the size of the
+> data structures accessed to process each object in the batch.
 
-Excuse me, May I ask one last question? I tried the herd tool on the
-discussed example. But it seems it is not protected by the hb acyclic
-rule. I can replace the linux-kernel.cat with lock.cat on the test:
-
-	P0(int *x)
-	{
-		int r1;
-		WRITE_ONCE(*x, 1);
-		r1 = READ_ONCE(*x);
-	}
-	P1(int *x)
-	{
-		WRITE_ONCE(*x, 8);
-	}
-	locations[0:r1; x]
-	exists (0:r1=8)
-
-It can still ensure the P0:Wx execute before P0:Rx:
-
-	Test test Allowed
-	States 3
-	0:r1=1; [x]=1;
-	0:r1=1; [x]=8;
-	0:r1=8; [x]=8;
-	Ok
-	Witnesses
-	Positive: 1 Negative: 2
-	Condition exists (0:r1=8)
-	Observation test Sometimes 1 2
-
-The example doesn't prove the hb rule is necessary. Is this
-understanding correct? Thanks.
-
->   Andrea
-
--- 
-			-Kenneth Lee
+Well, now you're just opining without having studied the problem, and
+I have, so I can say confidently that you're wrong.  You could read
+the code if you like.
 
 
