@@ -1,196 +1,160 @@
-Return-Path: <linux-kernel+bounces-99212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7563C8784F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:21:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 294E78784FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:21:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DED0C1F266C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:21:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84CB7B21594
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90965820C;
-	Mon, 11 Mar 2024 16:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1941058AB2;
+	Mon, 11 Mar 2024 16:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DXuzGXTL"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b="WTTbpKjX"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2068.outbound.protection.outlook.com [40.107.20.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C05C56B85;
-	Mon, 11 Mar 2024 16:17:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710173869; cv=none; b=tBOFqAKrWDF1hZ6AMAf1Z82e4RncVdG5s6Rf+EoBzkgPH560g0+SOxkV3JkpqNcQuesW+HnnoT07SEjY6uSozXg3zG0tFT+RfnXhJwl2kze9cySGw1XOV7g/Owr1vAayCzvhCB4PH++IXxONrbcp9sg7YOMcYLiYmSerkkPCqx8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710173869; c=relaxed/simple;
-	bh=ruyWOEutbzTX21I1GbtMMknQjZcW/AmsekAFWxYC848=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SxrQiH4Hvjj5rAqGuF30njOjwuApsi0iUxiLNEVLQlz45OOe+IDrdXaeaMTl3gRkXSNgwhPqs6+T96239Go+ZiZN3/Rxr6DdGxXfEli4yfYGM0jmS28Mrf0NG8fkvocEa+bMjO4cm8rx6Chwl8OpakUg72rjD8OizCBGAr4aOY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DXuzGXTL; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33e7ae72312so2690224f8f.1;
-        Mon, 11 Mar 2024 09:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710173866; x=1710778666; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ImRzpHgQ7+uutfuh8SJRk0DTE4K/6LtArW0nv9lfM+k=;
-        b=DXuzGXTLwNXREXvwONtgEqoG4t9uQ/1EkX0ek2WbQgwBx9M+lDtkdpBgZ0DOfCxXhD
-         0JhH55g00qQLe4SR8rvAGwC85lI3vjE8C6+tNyw+NcYr5+lROMgiitqbSanW5wVTtmF7
-         9D9Tc3TELUqFlOQlRP0XOdGQa8WvHmdFWNOmdtoLJVtLDUoG1Q0isVxgmkEDiHTCOq+5
-         QZY97HmxuUsSYdzr6COZ6TP4rcZYpwowVzp7YqyJrhyFuTQpvEdF+TZbLMwrMP8yMhG0
-         EFSL8uqCSoIVVkVnizh0USUO+wZEnLPSLf7ZJWySKNPkVtFlerFwCngilcS4wbBvQ1ch
-         UgFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710173866; x=1710778666;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ImRzpHgQ7+uutfuh8SJRk0DTE4K/6LtArW0nv9lfM+k=;
-        b=hHOs0nBGGYLXhd6KRJY2fEFTA9Gj0Rw/WZ9+rYrEBSErm1luX5WG7mvkvOIHtxNwhD
-         u2HQHBCV3IIDWNMnXi/cwYsoErtjzRSV94TQVsT/M7LoZVNMrGsqlM1XH/2imZZlB0oY
-         w9h+5yyM8myTlgGTHidXInvy1Fy/4JahG4nFZUK1ViNFUq0NnwMCD8x43WQQKxgSGlRP
-         gFLr+DJdgUzo8+SHYuByk06kHBBhkTkBZ97MLmsE5bkEAIgGPVtM0WMJbxXKMl6MSHhV
-         VdnI1mvNvEpouiUh7Rgg90THgg5EAlhdwEQlHdSB80uRsjglmY3+IjHUIM8fxtcfHTrq
-         tYRw==
-X-Forwarded-Encrypted: i=1; AJvYcCVPkC9tkJlRJ8Qg9b49Ti7Vv4R/HkjvawxOABXI/M0jKCWkdsddqwL1CLuKqzdBX2yijZp/7VkiROj8kj3Dakz7GlvBqQ8uJwKnPT1Ti2+zkhN0RHU61d/Wi0eYeiOqiQR8uNDX3EJSN9OQ4RmJYH5SRDSSZGY1y0aT
-X-Gm-Message-State: AOJu0YwUTZl8sfV+e3CUtjnyvIXbpeWDsImGOHn9ryOEwBb92e4KVAGQ
-	WH5OV09aeJac+Jui0FxAnc/QiNAO8T5rwFGDvPGE/vr9ZbqiFIvP
-X-Google-Smtp-Source: AGHT+IEG0QdNGOuIWSe9NXJvczTc8p7SlmtsuTs9Nh46GFsp/syoRmIiV9TumgTcGzwe4lIUdTQkcw==
-X-Received: by 2002:a5d:6611:0:b0:33e:5a33:b169 with SMTP id n17-20020a5d6611000000b0033e5a33b169mr4250288wru.28.1710173865721;
-        Mon, 11 Mar 2024 09:17:45 -0700 (PDT)
-Received: from vasant-suse.suse.cz ([2001:9e8:ab47:8200:c3b9:43af:f8e1:76f9])
-        by smtp.gmail.com with ESMTPSA id ba14-20020a0560001c0e00b0033e96fe9479sm2823815wrb.89.2024.03.11.09.17.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 09:17:45 -0700 (PDT)
-From: Vasant Karasulli <vsntk18@gmail.com>
-To: x86@kernel.org
-Cc: joro@8bytes.org,
-	cfir@google.com,
-	dan.j.williams@intel.com,
-	dave.hansen@linux.intel.com,
-	ebiederm@xmission.com,
-	erdemaktas@google.com,
-	hpa@zytor.com,
-	jgross@suse.com,
-	jslaby@suse.cz,
-	keescook@chromium.org,
-	kexec@lists.infradead.org,
-	kvm@vger.kernel.org,
-	linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	luto@kernel.org,
-	martin.b.radev@gmail.com,
-	mhiramat@kernel.org,
-	mstunes@vmware.com,
-	nivedita@alum.mit.edu,
-	peterz@infradead.org,
-	rientjes@google.com,
-	seanjc@google.com,
-	stable@vger.kernel.org,
-	thomas.lendacky@amd.com,
-	virtualization@lists.linux-foundation.org,
-	Joerg Roedel <jroedel@suse.de>,
-	Vasant Karasulli <vkarasulli@suse.de>
-Subject: [PATCH v4 9/9] x86/kexec/64: Support kexec under SEV-ES with AP Jump Table Blob
-Date: Mon, 11 Mar 2024 17:17:27 +0100
-Message-Id: <20240311161727.14916-10-vsntk18@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240311161727.14916-1-vsntk18@gmail.com>
-References: <20240311161727.14916-1-vsntk18@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EBA24AEEB;
+	Mon, 11 Mar 2024 16:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710173870; cv=fail; b=J9T1vLGFqk7cvaFDjaShgAziQZrcCL4/bqzKWOCFge5ndPEhQarBshkKYob1URY2fvnRUAvurWadjSUijD4zPJjwwTNS1QpACRS5z5DuM9Vy4Hg1O9CgVnVrNaV5exNe/qVt0moAN0wHER1FtOS7H/2R59Ch3HyMDtxIcxSXmDo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710173870; c=relaxed/simple;
+	bh=x4HEW0OREup/eDBRIFv0u8UwLQm2d74zi1NAoG0YqWA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WdcSFxaJLdnRuduIAWmfhF8+4rOAZoqi88IGUoxf3+DP65a1AROGBA2+OhrYEGBj+AcHo80Tu+bfhJkKAQphHVnJVBBYa2jmoGAaXKKhZeK9QkbCPfsnNnx8Q8aroLdnoY7IzEq4B8uFtu0xwPqAz+iwwgx+egvNmkc+VmvIA+I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com; spf=fail smtp.mailfrom=nokia.com; dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b=WTTbpKjX; arc=fail smtp.client-ip=40.107.20.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rh2p4H0va+BkaW7r9Jg/6jpCGP6f8w0TqF9O6TwgZ6NtHFZ7VXXsP99/aI9ObiHp4SHPzLbBFw4YHoru1wcnHhXGo5dOP2gUmjiScg7Kb+Jbd+9z4AB1fp2pbbHofU6lDKiZnXcq+nYxKS7xBYaHvAP8qDRMZemhSQDPosiOcOlwNAvp/3gORCLyz6XCRwVG+EFTJOf/U2yU0a3lVGva4xC4vHcMzwWaIAIAngP0P1EWuoHyhDnbpnK9phmEjyKfU0hAJnaNXA0T0uYowMh28jAHAtvnX1/5MQVc73KNehqv0/FHyp2hjAENnn1dEShP6pn4q148+rlSIBXNK1Ru2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x4HEW0OREup/eDBRIFv0u8UwLQm2d74zi1NAoG0YqWA=;
+ b=jg6iqbTzfnU4W/zQrR3V+oU1HNfOfrjsUaHyembpcbijuJucVOq7dtNtqJ9dhYej1sN3Pc3bd9AbLn/I4gpajD1Nn+6d0FqP5ir11D62IiPLKZCeEeirDK1mUOrVll+m/QPeobLTmG9s4wnDSbsq3DKdqRga6zOX6E/2jesm2bVlx3UncsMoGktcDG7O4evWsLrelFqkRthmkfkV2eEc2LxdxPDrF6/+mcQXpH62AmpFpsIUe1WlTtXzldbCE8+uBqzm668msHjnWzE0M775CnqMmrvYXzbnJZZ/md3InQlb3qUn6Zv+O8/i5ftOgJtGono6spfsRIozKwyaiBXuXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x4HEW0OREup/eDBRIFv0u8UwLQm2d74zi1NAoG0YqWA=;
+ b=WTTbpKjXJVeUxsGPKqVnmTp+ekgP9fHpj8vC4RyADzzESFAr/blmCyGxPdh1uyZlU+LdoOB3+/PAdNZ8fVt9YUZVEs1FJRLzneRQI7zzsdD/VVuM3ul4Ww46XcBo8VuXIuyW9aydy1qFkoGQhlEcaYpNvGvwE6ChRa+GJGLet0tAT5xLqigAqiA+qYg01XzOlfCgNeXgpNrCOSQoHQWTHyqTHjq7EUsov2PM2NUu3AyEk6/LYjXm6gw10T3D+L5MjudeilecHETcAoyZVhlGR5O4xlkyQCo7u8PtNRZM/ED7lmH6glmTCMH7GkEyx0RrG7HOm29dCKeUNTiUBT6mDw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia.com;
+Received: from PAWPR07MB9688.eurprd07.prod.outlook.com (2603:10a6:102:383::17)
+ by PAXPR07MB7725.eurprd07.prod.outlook.com (2603:10a6:102:15e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
+ 2024 16:17:45 +0000
+Received: from PAWPR07MB9688.eurprd07.prod.outlook.com
+ ([fe80::995b:5be7:51dd:e540]) by PAWPR07MB9688.eurprd07.prod.outlook.com
+ ([fe80::995b:5be7:51dd:e540%4]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
+ 16:17:45 +0000
+Message-ID: <c0001d35-a75a-4cdf-917b-8e1ec159502d@nokia.com>
+Date: Mon, 11 Mar 2024 17:17:43 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+ <Ze8sl01dgGTLcREs@shell.armlinux.org.uk>
+Content-Language: en-US
+From: Stefan Wiehler <stefan.wiehler@nokia.com>
+Organization: Nokia
+In-Reply-To: <Ze8sl01dgGTLcREs@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR3P281CA0144.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:95::15) To PAWPR07MB9688.eurprd07.prod.outlook.com
+ (2603:10a6:102:383::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAWPR07MB9688:EE_|PAXPR07MB7725:EE_
+X-MS-Office365-Filtering-Correlation-Id: d2165aba-c1bb-4199-fb19-08dc41e6c907
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	V+S2OKCjHhmIHqYiV0X5mY8pnb4n5sZsNAqbajYNXqWMJCyLNF3uXGWn3dvRbfWxHLy3vJ//HFMsQXrRHc2WkrwyAm0w+FWS5JT/BlX+NQjHZmTyaHUybWHRfQxZ+XQ/MlBahz3VBbOg1uG/FgeThNxQNxCc0RQyIxgzj0VmHPnnr1NF6qPKwXvW7hnKFBPkWkUVkRCNhGOYL+uiowcmE5jA34V5k2CE1VccR7Ul73ArboFaetqd6izPLEvGe6Q8z1AVYohict/GfskZVHM7hwKxZ0+YFbQv93O8jEJnMRLMgmucuUm+JvKUz7LPnfLBgk+xMKhPNAg1tYcH9uNmgeMydd5OJ8YE+nVx0YQhzP/aJCBxRvdAW0tLBVQ2ftI4ACWiUKQPiRcDgNq2442V3eR1XNbNuaWBgHZohOalKq1So4hd3U7GAb9qYCBBqkgTXtVDeitftbiTpzmh07z+9kj0epFiRzoKPn8BGqLCPpGPYiINL7GHaeoi0ftza9blwIXpDrtk9HUA5iz0n1fWgIOyCo3DRYPJ3bH5xEmXPlXJMzhYuJv1s8WDjLkB4nLKCet6PJrHbah25CoaT82CA0112ngNFUKcBQkFKvtbPxNOUFRnkOtB8wIZc2p1LSK08PkyRFlgqzVaJZEPZKBk4ZXifp0QoTzdYqNocEh4BeA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAWPR07MB9688.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RkJ3aE95RlhyRzF0SzVJaHJZQjBsd0tJY1NtTFRaWjY4MTY1UUhLUWtmZjZZ?=
+ =?utf-8?B?VnFDdG5CZ3AzekFySEZLcHltWElad3dGbGJKVG14ZzBBR1d6RE1ITDZVdTY2?=
+ =?utf-8?B?M3BGOG9xd0tQSTZDYmFWYkJBVUtHem5uSlNzcXB4bkZvVmZsTWVxemthWVNP?=
+ =?utf-8?B?TEt6T0JMVmlZZWZBSnlzd0ZuWE9WMStEazhjcCtnVjUzNXdRVk1uNmdGUWhL?=
+ =?utf-8?B?bThTUzU4VG5Yb3RWZnlJc215VHM3Zi9DUjIvOTcyTkQ3V2VrWVF0a1RxRUJo?=
+ =?utf-8?B?amZSc20vVGdmR2JzSTNpcUlKVVBrTnc3TysvUGVVOWFUd1hJZkRycEp4ZUNP?=
+ =?utf-8?B?d0lDZXJYL1loblViUW1lS0orbGU3dHlybWhjd0NKWjFaN1l0UFBEckVENVFp?=
+ =?utf-8?B?S056eFh1RGc3MVlHd3ZUNWFjKzNucENldUhhVUsrT0V1ZHc2Q1lWSTZtQ1JM?=
+ =?utf-8?B?TXVXbjNqQXZhdkZqRmlqNUpCSmJXYTFMR2djUzFEa2xUMENXak1hbEtBSFVt?=
+ =?utf-8?B?cDJVSGV6eE0yQW9tY0FWSE5wd04yanNpdlg3ZmFoU2dOS2ZZUGVueXFHZHVW?=
+ =?utf-8?B?ZjBHTGh4YzUrcEpKQXJadHJRTy9wVzFkdk9qQUw4ZjRxMDlSQ1k4Tm1HRnUv?=
+ =?utf-8?B?cTBDWXlrT1pHUTRNWmtwRTRza1MvcTVEVEIzcG5SMWJBdXZNY3FBazY3M1hJ?=
+ =?utf-8?B?RDZhdEJybzl3bklCMjVvTnhhamJLaEY2S1pIZmpmMGFMQjdDWDMrTk11MWMv?=
+ =?utf-8?B?RkhWTlRRRS82Qk81T2draTI1RjZUYkx5SGZmeGxiVDcyZEQxalN5WllnaDFS?=
+ =?utf-8?B?SlBnTWpMQVU4YUNjdnhVMmQ0SStzZzdGaEV3eHpBZ253cys4UHVpN25MRW9k?=
+ =?utf-8?B?SE52dUMzLy9zek5Ka0ZrWUY2TElHaXdRSEw0MStXU0E4ZXhUN1FDYzg4dUZU?=
+ =?utf-8?B?NFBrMkM0NlFZZ3ltOEhYK203YVFKZTRKOFRLR2VtcTVxVmZ4Vy92aHQyNURu?=
+ =?utf-8?B?aHpwQ1Q3SUYxbXQ2d3FMWFMxZVl0TXFLaUpKR2VEMWJpaTVrYm9OUGh4RnR0?=
+ =?utf-8?B?VGNpcXA0T04wVnkzV011ZXNMWFB5M1dHOEZIaUJTaUJKRW5ZdVVPNjFFTkxO?=
+ =?utf-8?B?UWhkaEtZZVVNaExsNEd1WGlyOGdjMDRWK2dadnV6L0tTZDFpeWUyK0c1a1lF?=
+ =?utf-8?B?T1d5VWlId1dvbTNKVFdoMEZjWGZaNjVpamZyNlpOQWt3WTEyV2pUOXg5ejdR?=
+ =?utf-8?B?NHpmUEhkTlRFZ2hmZUR6U3NEQk9vRlhYbjRxR3g0SFRxa0VsaHUwdlA1Wkp1?=
+ =?utf-8?B?T1o1U3laM2pPY2NndnIvd3pjaS9CR1ZQM3VKTXNUZHBoNng4RVJzbW9HMTlI?=
+ =?utf-8?B?NCsxNlZZb1VkbXdwOHFoQTdXZWpBT00wdHFBRnQ0NXhGVngzN0RIczhmNlB3?=
+ =?utf-8?B?M055K04yU2xvZ3EwYlVEa2FSVTBPT3VCb2JtTmxqeExsY3JaeXBXK3YvbmdH?=
+ =?utf-8?B?NmxNbStnSk5OU3JuQnZ5NjYwZ3llUm5hSFhBNEdrZ1A4L25zd0x5Q3pGeHVC?=
+ =?utf-8?B?SHV4WHdreGNYL3JJMk5ldEtkVTM0VFlqblZEUUVTeUdNQmNyU2ZLSkQ3WTVI?=
+ =?utf-8?B?NlhTZTVpRXhVdkRIdUxRWUx6Mk9kS0FGLy9KN2N4WFhTak1GNko0SFdqa052?=
+ =?utf-8?B?ZDdpYXdWZ0VUQTNObHRpaXYrM3dCbEJ3cmpQYUFlcGhVTFlzQXkvakZnRGJp?=
+ =?utf-8?B?TVloNnVGbWM5cGphcXl4WFBWcFQvejIvQ1NOcjlSWXZtTTVtQXZIcGJOS1p1?=
+ =?utf-8?B?VFVwc2FSYWhkMVlYeTZsdTRYRmVmeXZma2ZYYS9zejJJQUdIUVhyVjZZRW96?=
+ =?utf-8?B?LzZsOWh0bWN0MTZRMG9TTmY3RC9yUyt6TS9LWXRRaGc3eFVWK1JNZHBDYlFO?=
+ =?utf-8?B?T0R6Ymc1U1laSWdwSURjOXN5bnJ4Z2U2REFEV3R0dHNYbDlmL1B2REZwS0p4?=
+ =?utf-8?B?QkFRU2JMZlc5ZmgxcTBwVzJFZmxRZldGRHo1cHJEd0pubnlXblRYTWk0UEU5?=
+ =?utf-8?B?b2ZUdE5QYWNrbVdaQWF3NGhMR1FvUDNVWXNPdXp1TzVQcWFGNXV1bjVRVkJV?=
+ =?utf-8?B?VzdDalNVaEdObDBSZENkS3lrcy9BRWxoUWlYVVVCN3lOUkdjdnE3TDQ4M3hz?=
+ =?utf-8?B?dk5wNVU1SFlyQUd4TDFvMHo4eVJQd3NjNjhXL3BmeDdkUm1SWDVGb3JiSm84?=
+ =?utf-8?B?bDY2TmJPaGpPZmtWWnVkZS9Vc1FRPT0=?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2165aba-c1bb-4199-fb19-08dc41e6c907
+X-MS-Exchange-CrossTenant-AuthSource: PAWPR07MB9688.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 16:17:45.2106
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bYasUfHG+brMLG99N/l92n/79NqePdgfpmk1Z1ZbcwOh/JG2bK8/pRVqI2InQC/AN05YXq+8NR0Ux/gG/4nMo9zNT/sdIKrf21dqDB9JPJk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR07MB7725
 
-From: Joerg Roedel <jroedel@suse.de>
+> So what do I do about this? I see you submitted this to the patch system
+> on the 8th March, but proposed a different approach on the 9th March. I
+> don't see evidence that Paul is happy with the original approach either
+> and there's no ack/r-b's on anything here.
 
-When the AP jump table blob is installed the kernel can hand over the
-APs from the old to the new kernel. Enable kexec when the AP jump
-table blob has been installed.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Vasant Karasulli <vkarasulli@suse.de>
----
- arch/x86/include/asm/sev.h         |  2 ++
- arch/x86/kernel/machine_kexec_64.c |  3 ++-
- arch/x86/kernel/sev.c              | 15 +++++++++++++++
- 3 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index 2dbd2238325a..26027083a2a9 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -217,6 +217,7 @@ void snp_accept_memory(phys_addr_t start, phys_addr_t end);
- u64 snp_get_unsupported_features(u64 status);
- u64 sev_get_status(void);
- void sev_es_stop_this_cpu(void);
-+bool sev_kexec_supported(void);
- #else
- static inline void sev_es_ist_enter(struct pt_regs *regs) { }
- static inline void sev_es_ist_exit(void) { }
-@@ -246,6 +247,7 @@ static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
- static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
- static inline u64 sev_get_status(void) { return 0; }
- static inline void sev_es_stop_this_cpu(void) { }
-+static inline bool sev_kexec_supported(void) { return true; }
- #endif
-
- #endif
-diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-index 3671ea1a5045..6013ba6fc16e 100644
---- a/arch/x86/kernel/machine_kexec_64.c
-+++ b/arch/x86/kernel/machine_kexec_64.c
-@@ -28,6 +28,7 @@
- #include <asm/setup.h>
- #include <asm/set_memory.h>
- #include <asm/cpu.h>
-+#include <asm/sev.h>
-
- #ifdef CONFIG_ACPI
- /*
-@@ -269,7 +270,7 @@ static void load_segments(void)
-
- static bool machine_kexec_supported(void)
- {
--	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-+	if (!sev_kexec_supported())
- 		return false;
-
- 	return true;
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 73477eeb7de2..66e85b82d170 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -1456,6 +1456,21 @@ static void __init sev_es_setup_play_dead(void)
- static inline void sev_es_setup_play_dead(void) { }
- #endif
-
-+bool sev_kexec_supported(void)
-+{
-+	if (!cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-+		return true;
-+
-+	/*
-+	 * KEXEC with SEV-ES and more than one CPU is only supported
-+	 * when the AP jump table is installed.
-+	 */
-+	if (num_possible_cpus() > 1)
-+		return sev_ap_jumptable_blob_installed;
-+	else
-+		return true;
-+}
-+
- static void __init alloc_runtime_data(int cpu)
- {
- 	struct sev_es_runtime_data *data;
---
-2.34.1
-
+I think we need to wait for feedback from Will Deacon regarding the new
+arch_spin_lock() based approach. So please abandon the original proposal in the
+patch system, at least for now…
 
