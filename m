@@ -1,194 +1,163 @@
-Return-Path: <linux-kernel+bounces-99331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19A928786C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:53:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CB7A8786C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:54:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73BCAB2289D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:53:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EE341C20F77
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1471452F82;
-	Mon, 11 Mar 2024 17:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A0F537EE;
+	Mon, 11 Mar 2024 17:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="txaR7T4E"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2084.outbound.protection.outlook.com [40.107.94.84])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a+iMSDGM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vVairj1w";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a+iMSDGM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vVairj1w"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67DAD4C631
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.84
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710179600; cv=fail; b=akfe1wY+myQ4e4dna++TgZkGy5aGl6djqgtqnb8HDDKPu9VfNmnsJV9vRsKM+0XgkpX5cM6VVW6iDHabMQ51nvyi+pF9dej+9rxsQ6/qcYN9xk7Li3+CvBAi4JG1N3ZtzGRdiUlPVr9vXW13prZVLU1JeOa+WSv7YUc7GYV7X8o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710179600; c=relaxed/simple;
-	bh=GMpEh3QfKOMy4eeihYHkcN04PimeEYW5r9l15Htk/VU=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=tLelAhXA77tvfKtbjjqYqs/AB8t7N9IxtGFIyoxZHESbA5plryvVZpKn2qh51djGZpCFagAqoZvOK7KSOLepo6G16PD0ZD/ueZsUdbhg7qum1/42vMjhbja4UhvCfE9iHj7YcVa1i1UtRWHWIqRVCFZEXt0d8wZJZIw7P8TQZZc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=txaR7T4E; arc=fail smtp.client-ip=40.107.94.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X4oGMgune31lH2UEYi3ECF4wuHSRhxnlZ7ifVrjLrYD/74b2hN+hk31vececGZCPw9p6ZVPXSkTNHzWyrzsjbc5H05RDAO0xmx9Uft6XLxmsWpwDgoXQOvkG0p5Z21DWCvhVukReCdXWyHMazL/MS4ML9/xA+xAzKi4Y+ByP6HcxWnoOuCCUYdxWN1NQPkFDsWl3CdygyL7Lv+lcdQ7kr+2dg3OhjiBHCVeyIjQKQDIoFQXX1t00No7zueakTcGR0qBto0NpnWLz4kHkAvRXtt8nDm6FXEIFeqnim2F/3c3MGF83Mf5VGgEiXwhcpeKOnKucNTdtzG27kOdYjHbCFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RE93fuFQII58KMsWvEkHZhB7aaBgFa+z1ntygROVoCU=;
- b=XCI6++w7AN9+qGDiQP3XfC/ywTwSLQbEc1pO6UzTpEVIYEu+X781xuSNod7DLZZvkeH51eD/R5KZtuJJkoAT6hZTZy9x5/D94EUtkrVPu3HKxTQl/yO6iInuRB0PfNGm1JQuJcQ37QJjEiKy4YpqCTcnQXqq4kKUzEiV/BYb68j7EFrSRiuC/jvG3cVucPNhshNXxyNHGjq/89TJg0ruSVG9YAcXX6vzhmnV2ZZekOSUWs8bC4qlZ1H365MJhhbhHYt5lfheHSzcdqZ1XXGa/hPS/XC5anGaTFK0twNFPm7+1BiDHD9VTTFxm+cSqGartCoydOr92k1v/vjXU33ZLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RE93fuFQII58KMsWvEkHZhB7aaBgFa+z1ntygROVoCU=;
- b=txaR7T4E1UfzEOdAhJxyno2lLwctKP5TADwmnzgVDVrhkNX4DrO8+Q7/sR0A/WSi7KHvwLU5uEdI0Ox62/jUiz7v54V6W9H93zqvZB5zjqJnt4E4Oxwvb28WyTxFcwWpJxoqdErawpCylpp8Ynky1//bXShXH78/6B+UMxAJmEo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by MW3PR12MB4396.namprd12.prod.outlook.com (2603:10b6:303:59::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
- 2024 17:53:16 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7362.031; Mon, 11 Mar 2024
- 17:53:16 +0000
-Message-ID: <16c80cd7-9b1a-4361-bf00-9b1ae49ff653@amd.com>
-Date: Mon, 11 Mar 2024 18:52:56 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amdgpu: add ring buffer information in devcoredump
-Content-Language: en-US
-To: Sunil Khatri <sunil.khatri@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240311151109.5336-1-sunil.khatri@amd.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20240311151109.5336-1-sunil.khatri@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0165.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ba::20) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC07524AF;
+	Mon, 11 Mar 2024 17:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710179685; cv=none; b=XXbzWR8TH3fmgb0HS4kiOFK7cGQV0PqcvYQiVMhwETJjCFdzNQnHYokFrHzl4eYZr034DJB1WT/iR7R6WLUJGmWiuYVoWbOl3AsekQOv5iQbei0RItKcU2Nte2pjP0dxjRs79qaDkHLKoprCzpMe4iYTyQdK1+m4fboClbIHLUA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710179685; c=relaxed/simple;
+	bh=BQzSLPqPmRNY3f4OGi1qZV6xc7n2Vd7CQK7C55WEBNw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zyt2gakVHMO0TSUXB7WHbSppd4Mt9hJG5vjQMitYek6VHBI2JyfBY5GEPRQNvNwCNlMsFD5XJ3h3b5/3tw8P5t5s/m/aN/2acEc/8VhroGo9EEo73ZRYhiNaynQdp/BRHMY/w8sOX9eB64dts9AB/GaoSx+7+CfE2Xep7y3WIDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a+iMSDGM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vVairj1w; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a+iMSDGM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vVairj1w; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CBA3234F22;
+	Mon, 11 Mar 2024 17:54:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710179681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PQYXUbvbtW2whG6gczcLXf9OVJOGW4gwzkH+ZHqJFn8=;
+	b=a+iMSDGMRQNnmhZeMtpbU+L+RuDGPxrQlVH5xax8Hevk7luRSh5UeQ2RwbiCAGtsCKmUJQ
+	Qe6wMUFT5GmjgisnGumrvJ6gR2hKUU3qJqxktrR6vNHgm5MPY8Pjp5eBLH8k++Vj9/4Ugm
+	skiGdWXYOBGoIWIWkNEXCIS5798hFcg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710179681;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PQYXUbvbtW2whG6gczcLXf9OVJOGW4gwzkH+ZHqJFn8=;
+	b=vVairj1wW/0sAKo/rr7Mtd/YQnM5pThBYbI0PZgjVuXsTJNOPv9RPb+G5aLakfOAx4UGfA
+	+sC9VUjhx1AVOQCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710179681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PQYXUbvbtW2whG6gczcLXf9OVJOGW4gwzkH+ZHqJFn8=;
+	b=a+iMSDGMRQNnmhZeMtpbU+L+RuDGPxrQlVH5xax8Hevk7luRSh5UeQ2RwbiCAGtsCKmUJQ
+	Qe6wMUFT5GmjgisnGumrvJ6gR2hKUU3qJqxktrR6vNHgm5MPY8Pjp5eBLH8k++Vj9/4Ugm
+	skiGdWXYOBGoIWIWkNEXCIS5798hFcg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710179681;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PQYXUbvbtW2whG6gczcLXf9OVJOGW4gwzkH+ZHqJFn8=;
+	b=vVairj1wW/0sAKo/rr7Mtd/YQnM5pThBYbI0PZgjVuXsTJNOPv9RPb+G5aLakfOAx4UGfA
+	+sC9VUjhx1AVOQCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B5A30136BA;
+	Mon, 11 Mar 2024 17:54:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id s89NLGFF72UmMgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 11 Mar 2024 17:54:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 182C2A0807; Mon, 11 Mar 2024 18:54:41 +0100 (CET)
+Date: Mon, 11 Mar 2024 18:54:41 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+352d78bd60c8e9d6ecdc@syzkaller.appspotmail.com>
+Cc: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org,
+	elic@nvidia.com, jack@suse.cz, jasowang@redhat.com,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, mst@redhat.com,
+	nathan@kernel.org, ndesaulniers@google.com, parav@nvidia.com,
+	syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_xattr_inode_iget (2)
+Message-ID: <20240311175441.o3ppno62leqgo2lw@quack3>
+References: <0000000000005b767405ffd4e4ec@google.com>
+ <00000000000044b90e061326b102@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|MW3PR12MB4396:EE_
-X-MS-Office365-Filtering-Correlation-Id: 811de83f-acb4-456b-8f99-08dc41f42127
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xVeyoAleG6BZX64HK6hq6vWbrQDrxdxu+pwd0hSjJbx+VthTbskP89yiUnA/dxgxa8bR/AMEJ7fk6SvIsbKNcDu5UaqzHicliOJEYlAM7SBDpBOO4G+NKqLO2kWvIpZszGaQu3F7pdMCzyvH2DB0SnkbDfRAQr/sr7gPg45i/kgICwKUsVtrI0H9xrLMC+wahgdPXelRpWocuwHe1vTPnE8OK7pdZ00/VCwYt6fNOIOL4d+Rxf/g5HV9maKEcMP360sulT5oDYOk4UJCVGEx/xDTEHNA64t39RvDS2/CJSVDopW+B2h3B6s0SuXldwOoTT+X4HNLj781uPotwQfC3xqx+AftdI/7MxW5UW2BEgK1tC1zRy4eExRMzXiX53rV81MjlIqoFNxjecDYNytV171LlKCUUyQzoXGI8ucvBY0WPs/GJE2/FmEbORXJK4dTxUIG1qcaM52dAp6t06lPLzXrg0g5DjoVuc8GdUEYxF/VCMAhqhAJr7g752XNZ0MWBPX0G2ZgMa+PMjuZ3D3/T0kQ7gtjZRv0dtuorJZ5BdJllEmNUoJieT5p6EC9GQweylLUBu4iHShKjRGBibuWZmqWqJzQE6w1yKhdwPZ+zNBoB+UmsDDcgRxvUm3VLz14Rv6pHOVglgktsMTQTTYcPG0332SqhYMNjvLoVqWWtXg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a0RqUTdjTkFVaHU5ellPSWNGUTBqNktKc0dURk9jVC9kODU3c3hxZU5hbE9D?=
- =?utf-8?B?dmRiUERGdWxzTnh6VlFFcCtXVnlrcnMxYWV5ek5nbFBGYXlBWWtOdTF2ZXVw?=
- =?utf-8?B?VnRSRElrWUJiWnNseXlpRzJZYmw4ajFhYTJ5a250N1F2b0pzNkRmQTRBdTY3?=
- =?utf-8?B?WDR4SWNTZnEvUy9oSmQ3YjRObnRFM3ByejQrbzU4MEJpZzIxaVZwL3o5ZHND?=
- =?utf-8?B?RFh3TDl6ViszM0EzTStWVlByaWJqcVdyRUlMa01wbnVEc1NNNUFhenBjOG5q?=
- =?utf-8?B?RGNPdkxVV2RwK2RjSDBpNXNHVGJxNUIyM1lHdElDcW9WNUVXNlpCTUJIaVlH?=
- =?utf-8?B?eXVOZFZsbTRmZmt0cy8ySjdBU3pkNnRJMnljS0NWRnkxTWphNkoySDlkNk9Q?=
- =?utf-8?B?dXZRalJoSzUzLy9hVHRPZFoxSTd4c3ZmMHlCNlc2YTNxNFU5WHFaVHhsMmQz?=
- =?utf-8?B?ZVVxRzFrTFZnUXVRRnBBOTNUMTVVaTd1eUU1MDJEUGRjS0ljTlRyajJRcVBO?=
- =?utf-8?B?ckVCOW9INnZhQW5LL1gwRi9GRHBnNmVNbks3cjF5WGhNQjltMjhIcGUyU290?=
- =?utf-8?B?Zk5ySlBGVDVJRDNxdXpTbXp6WWxGK3c3S1lmMUNUeUhVOGJYZkY5bHllZXJ2?=
- =?utf-8?B?cGQvVU4vUTdGbkx3T0xwZVZ1SjcyQlFselRWaElzaDZ2ekFxQktIa0RkalAz?=
- =?utf-8?B?bDJ2NGdTUFZRWGgyRlFoTzc3NkVGenoxWjRvQ2l4RkNYMGgvSzhPRkRYMkdv?=
- =?utf-8?B?N1dnR0lLR2FZb0U4eGUyR3NWNzdtNHBFbmNMTnVSRUVlVWQ5N2ZKcjRLMXE0?=
- =?utf-8?B?Z3AxUVdocmgwaHRIK3VveHloMzRCWHVyRjZBQlFnRVpEREc0UnhoL0dJTUV1?=
- =?utf-8?B?MzdGRjFmZzZZWXc2VnJNVGZKekFLczVoR2dsVW4yYkJoQm9jRldXUTB5bEJK?=
- =?utf-8?B?QU80TEdNNWxDeUQwK2d3T0ZSdjk5ZXdIM2lNRVlDOWMyZUxVYzI3SlpPUndx?=
- =?utf-8?B?Y3MzZ25Mc3NmRTB5WEQ4MWczZFdsdDBzcmFVNmdIenAwS2dXVnVMZE9wMUpV?=
- =?utf-8?B?QlRuQyt1VWppSEdYOThvOXVVbHl6eXhTYkdiYWNzcjFhVDNZOEs3Z3RoM1E0?=
- =?utf-8?B?TFhDMU94eTV3eTFic1p2eEU4bUEvVjRrU0NOZGkwOXJtczROM2FjT1MzUW1F?=
- =?utf-8?B?NDMwMXAwWjZGQUM1WHhVY1Q0d25NeDJiMTd4bHk1NUdTbTlQODA4bmIvRjRz?=
- =?utf-8?B?dnpkUzcvUnhkUFVlTmV4UzhGT3p4aXVvQmVBYUZDRUloZE1SZlR5b2lvbTNS?=
- =?utf-8?B?MEYySksrQUUxK2I1SU5nL3R2VzRObzRzeEh2aFBISllwOGlPSnNzamtCNmZT?=
- =?utf-8?B?QjFnTnBkQjFYMmRrMm9wNlN2OHJzVXM3RUNNa2Z1SE9zMWZUK3BVaXUwL1Fj?=
- =?utf-8?B?UjZIZ2h6SU1JVzVNS1VKMEFzdVUyanVPZVBMVlhPZmpsZjk5YW01akxoM1dH?=
- =?utf-8?B?bnprUW1tS1plQXJYZm93Mnl2QWxXS3NXUjhVL0tNMWU0Y3pWektEcTRKampQ?=
- =?utf-8?B?UDlUOTNLU0lJbFVzeWt4WUl1UGhnL2lqOE1EcUNpcWtDVnp6NUIvRElrdGh0?=
- =?utf-8?B?bndyd2JjcWpFZ3ZTc0tvMkJ3UXdNVCtVUmZUdmhZRWpDSWRiT2RjQWlrbGto?=
- =?utf-8?B?S2NlWWFIVTlBSVZhblBta0JyTDVJazFPTHpQUnFzc1JETU4zMUZXNCs4MkJY?=
- =?utf-8?B?RTVNWnZzQ2tDZFpoY1ozNlV6QnBNK3crcEZoV1gwekl2d25MSDJ2bUV1aGY1?=
- =?utf-8?B?SWdHTHJsYWhPYWNKR0hwU0V2RmxJd21CK2VURjE2ZXJkZE1FL0pVOGUyRFVh?=
- =?utf-8?B?MDRCNW92YWlCQ1RmOVZkT0VuL2JpNkV0Ym1oN3M4MkM1dG9Na1UweHRYUWVB?=
- =?utf-8?B?SEJSdUk0OEZycnhESEJLRlUxL3p4dGJ1ZERsSXFNWW1jMXpRREhzclJhTkJN?=
- =?utf-8?B?MVFnYmNmOHB4bE8zY3BRUmg1R3RRVmw0YkpKemZoR3lhQjFCdkZjT2duOUdk?=
- =?utf-8?B?UnRTQ2VFYWdlRG94bUZQVWFCU3QwN1ZIUHl3a2FZb0cxVzdkWHRZY1Y0QVl2?=
- =?utf-8?Q?dn3egcX2Pwem55tDN+XKD86yu?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 811de83f-acb4-456b-8f99-08dc41f42127
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 17:53:16.5850
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d5cR+V0oMfLUvkyqpfSh73vqT9sb1N92wGsPC0JUk77uWBnfYo01/Ls2TvnGIHx4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4396
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000044b90e061326b102@google.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: *
+X-Spam-Score: 1.68
+X-Spamd-Result: default: False [1.68 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.02)[52.34%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=56c2c781bb4ee18];
+	 TAGGED_RCPT(0.00)[352d78bd60c8e9d6ecdc];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Flag: NO
 
-Am 11.03.24 um 16:11 schrieb Sunil Khatri:
-> Add relevant ringbuffer information such as
-> rptr, wptr,rb mask, ring name, ring size and also
-> the rings content for each ring on a gpu reset.
->
-> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+On Fri 08-03-24 06:06:04, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f08e0a180000
+> start commit:   610a9b8f49fb Linux 6.7-rc8
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=56c2c781bb4ee18
+> dashboard link: https://syzkaller.appspot.com/bug?extid=352d78bd60c8e9d6ecdc
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a4d65ee80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1715ad7ee80000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
+ 
+Makes sense.
 
-I think printing the mask still might be useful, but that's just a nit pick.
+#syz fix: fs: Block writes to mounted block devices
 
-With or without it the patch is Reviewed-by: Christian König 
-<christian.koenig@amd.com>
-
-Regards,
-Christian.
-
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 21 +++++++++++++++++++++
->   1 file changed, 21 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> index 6d059f853adc..a0dbccad2f53 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> @@ -215,6 +215,27 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
->   			   fault_info->status);
->   	}
->   
-> +	drm_printf(&p, "Ring buffer information\n");
-> +	for (int i = 0; i < coredump->adev->num_rings; i++) {
-> +		int j = 0;
-> +		struct amdgpu_ring *ring = coredump->adev->rings[i];
-> +
-> +		drm_printf(&p, "ring name: %s\n", ring->name);
-> +		drm_printf(&p, "Rptr: 0x%llx Wptr: 0x%llx RB mask: %x\n",
-> +			   amdgpu_ring_get_rptr(ring),
-> +			   amdgpu_ring_get_wptr(ring),
-> +			   ring->buf_mask);
-> +		drm_printf(&p, "Ring size in dwords: %d\n",
-> +			   ring->ring_size / 4);
-> +		drm_printf(&p, "Ring contents\n");
-> +		drm_printf(&p, "Offset \t Value\n");
-> +
-> +		while (j < ring->ring_size) {
-> +			drm_printf(&p, "0x%x \t 0x%x\n", j, ring->ring[j/4]);
-> +			j += 4;
-> +		}
-> +	}
-> +
->   	if (coredump->reset_vram_lost)
->   		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
->   	if (coredump->adev->reset_info.num_regs) {
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
