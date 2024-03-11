@@ -1,149 +1,115 @@
-Return-Path: <linux-kernel+bounces-99662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C75B2878B8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11006878B8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:34:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67DC7B20E1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:32:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 896E6B211DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895915914A;
-	Mon, 11 Mar 2024 23:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0FE58AD7;
+	Mon, 11 Mar 2024 23:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RaiNqyD8"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vS+l3KuH";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0gFjP9gc"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443F758234
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570FA58AC0
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710199953; cv=none; b=VbRdHz1rwvVmRO/x++x/iP5n2gTtpbRxATv032eIO9c70IAWkV+rlJPHctmEwrLbhmieB5QiFL7My2JuPzFW8Gw7BgsHSbXABr597zLks00gQj8NrB2TOWgLge4z9ocfAevNF8eiFpztzD+MgLq5Pm87Q95SBtbbrHDqo0LgSuQ=
+	t=1710200042; cv=none; b=kwcB65mjmRpxTksZROjJr4d19MJ61Jy2AfAh9WrUXMSbc56hAgVlX4yjZXhLBMUUujYTZV3m91btPNPVyvHYqALiyt5nwpPcycsTZwOP6cnBiNIqAdlSouP9Nab4DeVWMvEVkLyeaqTC9J+BpBQXjiCQRXFJvwnIdqKPNc1X+H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710199953; c=relaxed/simple;
-	bh=t5pomvoQwrYYJsz4aXS3tiUT97cwLl9LUNnWMt48nQA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ewaA7e3CQxSrkyyUB9MPzijedk3Y2PioB1zc7uUjF+Hscb5wECYp/Marw21auawMzDJXmc6k+wb11AxIpaXhr5QofaS4jFOMbG52tlXC39YkXvgOKLFgn3VS4+2cvtAMeVB2iBMrxtiBJBWqU/eGaYr7S/ns2vvS+ID4BFcEtTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RaiNqyD8; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e64647af39so4663858b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:32:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710199951; x=1710804751; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rocyJSHIiY7wv0/b0Thl11+2BE5Ia+FwDy18IRd8ak4=;
-        b=RaiNqyD8IZXhruRJA30yzx1tDfySHiCdN0rlNMZnKwDyQSrHy9BMWNuKfIi3qZxi7+
-         wvouhh2q8phnBSGZy5qPYQwvYZ4S62RK+TtneAuM+erLNe46C1neayJ3S3I6s4NxvsJV
-         jw5IqsMFpL0HBjo0H2oviArFrty3r2TJLOcvg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710199951; x=1710804751;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rocyJSHIiY7wv0/b0Thl11+2BE5Ia+FwDy18IRd8ak4=;
-        b=ZYA0QzrMfsSAa9Jt4o8AuOCOFziq9SbrDz8v4NG9j8IYi6wmIzx+RfELmxc7erjjxr
-         /610oaMdAhoZ3Ti/+NCS6u8iTFjSHP4hg1eMV80k4ziIuAADXoHd3OGrNdQnyyW1hYzk
-         J18cX+e+t1V/gqfgm6I+tJHjsddf7uODL6RTgg6IaH8McBJdqgyFtOJCjChLFq1tHjYp
-         7obFK4OkZdZNfFAh0P9Flk0aHrzPxGNZ6qS32dQXgMr6dg0HVCDHERp529FIh3Zd65Ip
-         DjgucybU+MNcb6AfT5cVM4xYObS6TQBz2MYDM5hw2KMDyKaTVlfrc5tb1B7qZCarhFDQ
-         B0bw==
-X-Gm-Message-State: AOJu0YyttmDcUcegtPlwxNduD1TROkQehwo4IYWEiQKzeHm4+TI1DGC/
-	SNBv7DLWqazHM3Q7TvGrfqqh67oINH+pNOl045vvbwK9R5ikVSjlRIW6GUis/iRwbapYHXU1hpk
-	=
-X-Google-Smtp-Source: AGHT+IFqC+a+5N9q8R+wAyOEWs64DQCVyVOI08tRng0GTb6I+DT81HbKdJ23wlNYS0YdfpAXsJo3mg==
-X-Received: by 2002:a05:6a20:7d88:b0:1a1:4ded:c9d2 with SMTP id v8-20020a056a207d8800b001a14dedc9d2mr10338257pzj.41.1710199951623;
-        Mon, 11 Mar 2024 16:32:31 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id z1-20020a62d101000000b006e553cab65bsm5105634pfg.207.2024.03.11.16.32.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 16:32:31 -0700 (PDT)
-Date: Mon, 11 Mar 2024 16:32:30 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	David Heidelberg <david@ixit.cz>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Kees Cook <keescook@chromium.org>, Kunwu Chan <chentao@kylinos.cn>,
-	linux-hardening@vger.kernel.org,
-	=?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>,
-	Tony Luck <tony.luck@intel.com>
-Subject: [GIT PULL] pstore updates for v6.9-rc1
-Message-ID: <202403111631.BB91A2422@keescook>
+	s=arc-20240116; t=1710200042; c=relaxed/simple;
+	bh=hPCi7ihbEkOSNP09ah/2V2E0qHDA6/vPKx1XuJCvf6s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=KkmU8FFZDwJgk9QhsrS7ZwjOXY2RVTld36wYvf1annlUAPMaoF8vyQXgP8+84BijvdppbNv86+es66AsORj1A/9komxzuxt+GFKxsij26ft2jUVZexo3dLoByxYa27DGDVH/YNOQr1HZRR3DcK/8I2qJa0DBk0Ug+g9qdEuZQ6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vS+l3KuH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0gFjP9gc; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710200039;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MIw7l9VNfGqq4sdtjnnvblmtZxj6z+GMUpQZ0ibxA1g=;
+	b=vS+l3KuHzoSjIJCPO78146fytSCTpgzxWZpwCYU0EKZZ6BRtn39CDliyzMHbnSwf/0TunE
+	qF4ufjYpyeAgtYiakoJbJE9MnGRMr1rBRzeET/7jyHHt8yOaui6tx5+mykEGQddq5C/ipr
+	OS/E/sTYB2TB7vItXhDJoe4nhNmS/4SIVM3pPTanCpMe2E468a9cVwPw17E+bwuj9P53Os
+	quyrRc4PM7VKgLi/iSdA3FMb5t2JhxHtMlgFlTcAzaW/dpousjiqYmqIj3Act51yRe+InE
+	ynd6WUwN/T7VPLGAqmpSJ8Bm50EWMOrNrb0XnYuybMHVjwH5OsqaiQPY1NI25w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710200039;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MIw7l9VNfGqq4sdtjnnvblmtZxj6z+GMUpQZ0ibxA1g=;
+	b=0gFjP9gcUjMNAgXkt9mSb0rnWrsmA2k/IePHaBi5pmWDDtFJiK/evfEKL0E61XQ/7bd2js
+	Nk6xXc8jSkwIigDA==
+To: Pasha Tatashin <pasha.tatashin@soleen.com>, Andy Lutomirski
+ <luto@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, the
+ arch/x86 maintainers <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
+ Christian Brauner <brauner@kernel.org>, bristot@redhat.com, Ben Segall
+ <bsegall@google.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com,
+ hca@linux.ibm.com, "hch@infradead.org" <hch@infradead.org>, "H. Peter
+ Anvin" <hpa@zytor.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>, Jason
+ Gunthorpe <jgg@ziepe.ca>, jpoimboe@kernel.org, Joerg Roedel
+ <jroedel@suse.de>, juri.lelli@redhat.com, Kent Overstreet
+ <kent.overstreet@linux.dev>, kinseyho@google.com, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, lstoakes@gmail.com, mgorman@suse.de,
+ mic@digikod.net, michael.christie@oracle.com, Ingo Molnar
+ <mingo@redhat.com>, mjguzik@gmail.com, "Michael S. Tsirkin"
+ <mst@redhat.com>, Nicholas Piggin <npiggin@gmail.com>, "Peter Zijlstra
+ (Intel)" <peterz@infradead.org>, Petr Mladek <pmladek@suse.com>, Rick P
+ Edgecombe <rick.p.edgecombe@intel.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Suren Baghdasaryan <surenb@google.com>, Uladzislau
+ Rezki <urezki@gmail.com>, vincent.guittot@linaro.org, vschneid@redhat.com
+Subject: Re: [RFC 11/14] x86: add support for Dynamic Kernel Stacks
+In-Reply-To: <CA+CK2bA22AP2jrbHjdN8nYFbYX2xJXQt+=4G3Rjw_Lyn5NOyKA@mail.gmail.com>
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <20240311164638.2015063-12-pasha.tatashin@soleen.com>
+ <3e180c07-53db-4acb-a75c-1a33447d81af@app.fastmail.com>
+ <CA+CK2bA22AP2jrbHjdN8nYFbYX2xJXQt+=4G3Rjw_Lyn5NOyKA@mail.gmail.com>
+Date: Tue, 12 Mar 2024 00:33:58 +0100
+Message-ID: <87frwwpcm1.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Mon, Mar 11 2024 at 19:10, Pasha Tatashin wrote:
+> On Mon, Mar 11, 2024 at 6:17=E2=80=AFPM Andy Lutomirski <luto@kernel.org>=
+ wrote:
+>> Also, I think the whole memory allocation concept in this whole
+>> series is a bit odd.  Fundamentally, we *can't* block on these stack
+>> faults -- we may be in a context where blocking will deadlock.  We
+>> may be in the page allocator.  Panicing due to kernel stack
+>> allocation would be very unpleasant.
+>
+> We never block during handling stack faults. There's a per-CPU page
+> pool, guaranteeing availability for the faulting thread. The thread
+> simply takes pages from this per-CPU data structure and refills the
+> pool when leaving the CPU. The faulting routine is efficient,
+> requiring a fixed number of loads without any locks, stalling, or even
+> cmpxchg operations.
 
-Please pull these handful of pstore updates for v6.9-rc1. Details below.
+Is this true for any context including nested exceptions and #NMI?
 
-Thanks!
+Thanks,
 
--Kees
-
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
-
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v6.9-rc1
-
-for you to fetch changes up to c8d25d696f526a42ad8cf615dc1131c0b00c662e:
-
-  pstore/zone: Don't clear memory twice (2024-03-09 12:33:22 -0800)
-
-----------------------------------------------------------------
-pstore updates for v6.9-rc1
-
-- Make PSTORE_RAM available by default on arm64 (Nícolas F. R. A. Prado)
-
-- Allow for dynamic initialization in modular build (Guilherme G. Piccoli)
-
-- Add missing allocation failure check (Kunwu Chan)
-
-- Avoid duplicate memory zeroing (Christophe JAILLET)
-
-- Avoid potential double-free during pstorefs umount
-
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      pstore/zone: Don't clear memory twice
-
-Guilherme G. Piccoli (1):
-      efi: pstore: Allow dynamic initialization based on module parameter
-
-Kees Cook (1):
-      pstore: inode: Only d_invalidate() is needed
-
-Kunwu Chan (1):
-      pstore/zone: Add a null pointer check to the psz_kmsg_read
-
-Nícolas F. R. A. Prado (2):
-      pstore/ram: Register to module device table
-      arm64: defconfig: Enable PSTORE_RAM
-
- arch/arm64/configs/defconfig      |  1 +
- drivers/firmware/efi/efi-pstore.c | 43 +++++++++++++++++++++++++++++++--------
- fs/pstore/inode.c                 | 10 +++------
- fs/pstore/ram.c                   |  1 +
- fs/pstore/zone.c                  |  3 ++-
- 5 files changed, 42 insertions(+), 16 deletions(-)
-
--- 
-Kees Cook
+        tglx
 
