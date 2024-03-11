@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-99531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5CA08789A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:46:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18AF18789A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:46:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0118B210DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:46:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE50D1F22023
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E87E5677A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917C156B74;
 	Mon, 11 Mar 2024 20:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="td2zp50G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GLGmSRcn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61ECD433CC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B6B53807;
 	Mon, 11 Mar 2024 20:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710189958; cv=none; b=SNJw6Hl3vCxLgp1oM/stjZklXquZ6vItYe9OiZrZzMCQY+xFPw0mANKY+MMjzgHFWGVr7d+UDpKjVEO8OhN/cfKclYTI4acdsTPdRSIXf1jUe7pdPcM96N0kKroZV2SVYPdjqJytGUTsoiMjqxbIpRHWkyWMvzP+xOp/KJuPQnw=
+	t=1710189958; cv=none; b=DbQa1MZuvl4u3/94MAK/sBwk7WuZsdNdL7ojC1ORcap4b1J6CvcogpdaAPwCV4MvqJLiCQ6gwZ96ZX/icv/Y9+hxthWKqmQiOZwz9uVKTlyMQwVGdcRNSOvpoMZqwunAx+MCcNjttkkNv7qYN00ow3B+SJXDrWGO4xh9XvRnC1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710189958; c=relaxed/simple;
-	bh=UuuVmb738blr2pB61tpIDxHO3PUHT5WkafuK2N/sEFA=;
+	bh=hs6WHjvRmbJudqL2dyXIyQo9wvOsoRsFOzjiQ+KCyr0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jVm69r6t1oLUIxWY5R5QidempGGFznBEwo06/T43lNvrkxpY1ATS7UeGOumMKlyPmMEVLlWyr11/65zTGnAmuJm7iQLjxUzEpYFdOw+0ex1F6XUp0o4gN+zjFYAzDj4xaW59v1a41UVXnzKYphPKY7LcsDzJ1CMDFhhGmj54gQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=td2zp50G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71566C433F1;
-	Mon, 11 Mar 2024 20:45:57 +0000 (UTC)
+	 MIME-Version; b=OrZwtGBbdqpFkWm0+j8/JRHSWOjbgSSZUYgC2e9wbx/vhUQwKDdyjHtotWrTVukG5XjCIFFnrxR1gmshJPcaW0Hav/fh4Mx8P+ArxOvz6xKvVgPeAGGN7YZA13X56cmBWD8PfL2tIfRRurVIGTR5RQSADxSTbINwpHx0ah5gB/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GLGmSRcn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31DA6C43330;
+	Mon, 11 Mar 2024 20:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710189958;
-	bh=UuuVmb738blr2pB61tpIDxHO3PUHT5WkafuK2N/sEFA=;
+	bh=hs6WHjvRmbJudqL2dyXIyQo9wvOsoRsFOzjiQ+KCyr0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=td2zp50GqM3oHJlnxChlumu1/94uTMfKJnHQqsPeNz16+H1HzcBmhqMqLCxRnMiFT
-	 Y6uES8HIJjl+SwTjfzxxHWYm+HL7Z3FRMMt8SbJ9+lErFtA6V6qmidyHFf/O1V3gPa
-	 orY1Iuv9SnlsA0OQmdzQMplsz01BPPxSnwAYPYfxwwBz9IRoHNmVTJxQ6dT1g+Bpj/
-	 Mb9LP01sZNLXrNR4tN0kff+1oELPmWRnlNUDDrlBJc+JG4mFHKCS6+OQ6l5d0PfAln
-	 GJtW1BE+HA8yuyegskWeYCXue0tYoSL4okBtkLcYd9TO1WiASR7WDg5ifi0C/Yigm1
-	 fEFGgsi50HezQ==
+	b=GLGmSRcnglAYFoU2dg75r1a8ysLh7ADCj/UW8G9z5COG6rYaR+oFko6vN9VFr0HdX
+	 4SZcXS4bFb43mkNF98vNQx+WEswCo+05vvuffzq5yqSUZSkTl4as+le6RKnMR6dE6z
+	 brQ6rl5Cw21Bzgqntp4cOov83EzMP9hRMrtIDP5X2kGvwsLTiVYq0x4F55dVgJyNTc
+	 /hTvuGG7ALQGfh5WTTzWdXWKU1BgvJqyYu8vMMh+m4ur+ygHV0fUBVpfk/7oQuit74
+	 vO/L0FIzD4tXZWhv5AAPmrdQbXVJNbH2NBYkV03VekMlczaoeAaLXulGrRlo2PdUmG
+	 uxELAUxdm0z6Q==
 From: SeongJae Park <sj@kernel.org>
 To: 
 Cc: honggyu.kim@sk.com,
@@ -49,9 +49,9 @@ Cc: honggyu.kim@sk.com,
 	damon@lists.linux.dev,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 1/4] mm/damon/paddr: implement damon_folio_young()
-Date: Mon, 11 Mar 2024 13:45:42 -0700
-Message-Id: <20240311204545.47097-2-sj@kernel.org>
+Subject: [RFC PATCH v2 2/4] mm/damon/paddr: implement damon_folio_mkold()
+Date: Mon, 11 Mar 2024 13:45:43 -0700
+Message-Id: <20240311204545.47097-3-sj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240311204545.47097-1-sj@kernel.org>
 References: <20240311204545.47097-1-sj@kernel.org>
@@ -63,67 +63,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-damon_pa_young() receives physical address, get the folio covering the
-address, and show if the folio is accessed since the last check.  Split
-the internal logic for checking access to the given folio, for future
-reuse of the logic from code that already got the folio of the address
-of the question.  Also, change the rmap walker function's name from
-__damon_pa_young() to damon_folio_young_one(), for consistent naming.
+damon_pa_mkold() receives a physical address, finds the folio covering
+the address, and makes the folio as old.  Split the internal logic for
+checking access to the given folio, for future reuse of the logic.
+Also, change the name of the rmap walker from __damon_pa_mkold() to
+damon_folio_mkold_one() for more consistent naming.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- mm/damon/paddr.c | 32 +++++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 13 deletions(-)
+ mm/damon/paddr.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
 diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index 5e6dc312072c..25c3ba2a9eaf 100644
+index 25c3ba2a9eaf..310b803c6277 100644
 --- a/mm/damon/paddr.c
 +++ b/mm/damon/paddr.c
-@@ -79,8 +79,8 @@ static void damon_pa_prepare_access_checks(struct damon_ctx *ctx)
- 	}
- }
+@@ -16,8 +16,8 @@
+ #include "../internal.h"
+ #include "ops-common.h"
  
--static bool __damon_pa_young(struct folio *folio, struct vm_area_struct *vma,
+-static bool __damon_pa_mkold(struct folio *folio, struct vm_area_struct *vma,
 -		unsigned long addr, void *arg)
-+static bool damon_folio_young_one(struct folio *folio,
++static bool damon_folio_mkold_one(struct folio *folio,
 +		struct vm_area_struct *vma, unsigned long addr, void *arg)
  {
- 	bool *accessed = arg;
  	DEFINE_FOLIO_VMA_WALK(pvmw, folio, vma, addr, 0);
-@@ -111,38 +111,44 @@ static bool __damon_pa_young(struct folio *folio, struct vm_area_struct *vma,
- 	return *accessed == false;
+ 
+@@ -31,33 +31,38 @@ static bool __damon_pa_mkold(struct folio *folio, struct vm_area_struct *vma,
+ 	return true;
  }
  
--static bool damon_pa_young(unsigned long paddr, unsigned long *folio_sz)
-+static bool damon_folio_young(struct folio *folio)
+-static void damon_pa_mkold(unsigned long paddr)
++static void damon_folio_mkold(struct folio *folio)
  {
 -	struct folio *folio = damon_get_folio(PHYS_PFN(paddr));
- 	bool accessed = false;
  	struct rmap_walk_control rwc = {
- 		.arg = &accessed,
--		.rmap_one = __damon_pa_young,
-+		.rmap_one = damon_folio_young_one,
+-		.rmap_one = __damon_pa_mkold,
++		.rmap_one = damon_folio_mkold_one,
  		.anon_lock = folio_lock_anon_vma_read,
  	};
  	bool need_lock;
  
 -	if (!folio)
--		return false;
+-		return;
 -
  	if (!folio_mapped(folio) || !folio_raw_mapping(folio)) {
- 		if (folio_test_idle(folio))
--			accessed = false;
-+			return false;
- 		else
--			accessed = true;
+ 		folio_set_idle(folio);
 -		goto out;
-+			return true;
++		return;
  	}
  
  	need_lock = !folio_test_anon(folio) || folio_test_ksm(folio);
  	if (need_lock && !folio_trylock(folio))
 -		goto out;
-+		return false;
++		return;
  
  	rmap_walk(folio, &rwc);
  
@@ -131,21 +124,19 @@ index 5e6dc312072c..25c3ba2a9eaf 100644
  		folio_unlock(folio);
  
 -out:
-+	return accessed;
 +}
 +
-+static bool damon_pa_young(unsigned long paddr, unsigned long *folio_sz)
++static void damon_pa_mkold(unsigned long paddr)
 +{
 +	struct folio *folio = damon_get_folio(PHYS_PFN(paddr));
-+	bool accessed;
 +
 +	if (!folio)
-+		return false;
++		return;
 +
-+	accessed = damon_folio_young(folio);
- 	*folio_sz = folio_size(folio);
++	damon_folio_mkold(folio);
  	folio_put(folio);
- 	return accessed;
+ }
+ 
 -- 
 2.39.2
 
