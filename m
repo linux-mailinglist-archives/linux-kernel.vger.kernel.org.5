@@ -1,118 +1,207 @@
-Return-Path: <linux-kernel+bounces-98875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36CA4878089
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:25:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D18F587808D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9BB8281487
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:25:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 013381C20C52
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2859D446BA;
-	Mon, 11 Mar 2024 13:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB4045007;
+	Mon, 11 Mar 2024 13:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="aFtMVzve"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="v5kj+ak5";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="XDy1K3kw";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gPFBFEt/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+81grTX6"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24D54204C
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041C344C94;
+	Mon, 11 Mar 2024 13:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710163409; cv=none; b=Ha4bQHOKrYvdbxxDG+pks+WqfXTcHtSf08a6zJ14PqATB1p7A51QF/nzJt1gvf8M4so0FZbMvF8dVW/9pzTSzF7Mf0Fi4XPKgB8+5JBIdvZ6CdgCgfXfJD96B/z/PaiNCHV0wt5T+7gO9UIIRCP4hvKdQjnG/01Wbtx/P7xQxrA=
+	t=1710163416; cv=none; b=N0r2dt5Av87GbURdtddyGaAlT4JB+8exMPj7Fe3o1bUzjR9SZwv85ZAXtFlqVXx5Axx65LJSkYtXgspvHa5ERDgZhnABf07lj8GvkXaeXWafNmU78k28NrI29TCNLPKXdH/61uuEXhCuIQpCWHHMTNuW3/j4A/TUXCHsjtAHHfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710163409; c=relaxed/simple;
-	bh=xFq2r254un10Vo9LCdFpXbLV/oBD8Dnl4Uq8M82cuaM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dxRAMquTF0OV07oUPq7VRuvaAzyG4tuwLzVaY5jQsa7f913TUBbtlDbzD8fsn8vRNtwNhdZ3ACkm18kYh+h1XWT6XcVJFr09y7DrYE+UJTkR2zdYfDuwM2RtphdnBbgI5st3pN4A3CXoDkx+PSkvn3lyJh7EgAi8aDLPRBD18QA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=aFtMVzve; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a45fd0a0980so236951366b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:23:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1710163406; x=1710768206; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2c8Be14Vo5XsbELfBJJCoD5NMAbQazGtWYb9r4LXMpE=;
-        b=aFtMVzveYSBwQd1SF3wit0yf/llnVYD38WFYe/MfDtp3RYdgBn4FzcW/K6+mst5vHF
-         yui3mFJBD83J3QEqY4YpzBTiIMwGb1Vn0WoMn1B41SFf2gDf4R2GiJPRqM0Zy5sp5xC3
-         32tc6ZKIbEZcPVQb5TR50cXxCUOtav2PwbIk9wkn9rgDSKplAkqIjlkmaXfZ3xQACJN2
-         3w/+93sbE8nYeeSKa94BCeQ4UXH4NTmXnHFAI4Jwiz0x29wmgSHxgWTkSV9XW1lk5unO
-         3AqjrW3fle1JIJIwmLxlUd9zlNlDVL/akn3EheLJBmuaSzl2P8LsFtEsGeQHzCtErKkT
-         /DYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710163406; x=1710768206;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2c8Be14Vo5XsbELfBJJCoD5NMAbQazGtWYb9r4LXMpE=;
-        b=S1vE8Q/TtyjBiuT12pBZiuABl3CrBHuN08ExeT3P+yFKoiWloI3GF7cxXe0tZ8+Gce
-         imayiA0VXePxPxuh89un9akXHBoztNs6cMRYW5aG+Ep2VvfGOZhb2fzLiVIN+JWXq/PK
-         99Y0n7QjGWr5F0mfdnMEKLvWKtaoZu7R0wHuWOXIFoPUU77ywvK1dpvw353ez50J3dIO
-         A2z1Mw0kNmAXmMUkRkGzzQjIfcvVDOAbJQWE4WBaPfStFufjT/zP7k5uBktylfdvTO73
-         Khra+0FDMCnG1BqDy9BMKAxmJCH5xtBisFi6YaHOxlhxf7ncP6IDs5/QPnN1z4NUycP1
-         wX4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVMg8oJ02LSGZO5MlwMtlz+kDwqsRPRQozaMsB3FZiiLtyWrYHi4OqHmijBUHDuU4C/3tKTzOU1N6DDGsj2+IASm2jQ2XiFnHGfZhSo
-X-Gm-Message-State: AOJu0YxF4fCJr/0r2Saakx6s+wxOWNxsimv7y7RtzcRHpVPM7COhO8QH
-	m40ADNbrXJpzyNvoILzmBm+0bRzvScinyo9cbCCcHlIJMtL1ytGUVTzbsVPHmdI=
-X-Google-Smtp-Source: AGHT+IFiK5DxhHhYV196iGsvV+mZzp0074MZ9wUlVApB+317DFC5cWlRCMV+BM4l5k6aFzdnL402ww==
-X-Received: by 2002:a17:907:d30b:b0:a3e:b523:90b with SMTP id vg11-20020a170907d30b00b00a3eb523090bmr4861550ejc.14.1710163406323;
-        Mon, 11 Mar 2024 06:23:26 -0700 (PDT)
-Received: from raven.blarg.de (p200300dc6f010900023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f01:900:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id i26-20020a170906251a00b00a44cb0bf11bsm2861075ejb.79.2024.03.11.06.23.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 06:23:25 -0700 (PDT)
-From: Max Kellermann <max.kellermann@ionos.com>
-To: richard.henderson@linaro.org,
-	ink@jurassic.park.msu.ru,
-	mattst88@gmail.com,
-	linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH 11/11] arch/alpha/smc37c669: add missing includes to fix -Wmissing-prototypes
-Date: Mon, 11 Mar 2024 14:23:06 +0100
-Message-Id: <20240311132306.3420135-11-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240311132306.3420135-1-max.kellermann@ionos.com>
-References: <20240311132306.3420135-1-max.kellermann@ionos.com>
+	s=arc-20240116; t=1710163416; c=relaxed/simple;
+	bh=brj7PcDebxzqy5h/4qUh9EuMYF6nl92kPq5iO4h0qlo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dKGFep3BKSMoEeQsciBH0XDl6i1p5t7E3T4h3pkHvbi7PDZxceFDoMU24fa1vdqgsSFayR6B6isk/Y9HQETDGw8TEzsQKeuPUGasuxpynFbvCqW+VHCB6AeaVBGIajE9KVXG5LTuvDtxAP42m2PI8L3ZmIFGiDOGeZfK0OOAuVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=v5kj+ak5; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=XDy1K3kw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gPFBFEt/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+81grTX6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1B5095C6F9;
+	Mon, 11 Mar 2024 13:23:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710163412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CJbAerBqTbOOE1+wiI2WyrWukn4dJy5uIYJHUCts2AY=;
+	b=v5kj+ak5ixoKhwkClCLxwWmQlsBerHX+GElP1+wVjkkTZwJ5DiQyEX79QIeg8xByZJTk2S
+	r1Jn3x4O+piA8WeDQSURdSUMMGKahuBfIl5jO+aM1n64QQeWZ0cmy3NBpoDrFjW77/xFEW
+	G5E1RPtFESZ9dleWttKaVxZeX0xB7x0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710163412;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CJbAerBqTbOOE1+wiI2WyrWukn4dJy5uIYJHUCts2AY=;
+	b=XDy1K3kwBLDjAjRAqdufyorJpTP1CEScUh+3UhLZfLp45DGZAT360LfDiBMSw/COKxkFa1
+	7bI7/iJgR9WxqOAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710163410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CJbAerBqTbOOE1+wiI2WyrWukn4dJy5uIYJHUCts2AY=;
+	b=gPFBFEt/hhRUBNldPBe6CJkUyRAbwoNtDaTuoikTAtKSH7UTOHh2LIyyea01EwbrvBrgtR
+	9rHt0UqLPm6HB7WUl+Kndn/t1+6WRVvaQtjgpW1Zu4fCoctEcn1Gj+oqe1UA7bRZHtASwo
+	3H31eLj9QDP6bjr9cSRNHYSHuM44W8U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710163410;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CJbAerBqTbOOE1+wiI2WyrWukn4dJy5uIYJHUCts2AY=;
+	b=+81grTX6TA27Urm9RoHwlcpr4VPQeFv/2t4x24NL5id9ej1P7CGqVXNtcQwhky7UBUyRaB
+	UPbWI/lNaLlXwnBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4FDD113695;
+	Mon, 11 Mar 2024 13:23:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id d50qENEF72UxVgAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Mon, 11 Mar 2024 13:23:29 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id 8b1d090d;
+	Mon, 11 Mar 2024 13:23:25 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: "Theodore Ts'o" <tytso@mit.edu>,  Andreas Dilger
+ <adilger.kernel@dilger.ca>,  Alexander Viro <viro@zeniv.linux.org.uk>,
+  Christian Brauner <brauner@kernel.org>,  Jan Kara <jack@suse.cz>,  Amir
+ Goldstein <amir73il@gmail.com>,  linux-ext4@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  linux-unionfs@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount
+ parameters
+In-Reply-To: <CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
+	(Miklos Szeredi's message of "Mon, 11 Mar 2024 11:53:03 +0100")
+References: <20240307160225.23841-1-lhenriques@suse.de>
+	<20240307160225.23841-4-lhenriques@suse.de>
+	<CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
+	<87le6p6oqe.fsf@suse.de>
+	<CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
+Date: Mon, 11 Mar 2024 13:23:25 +0000
+Message-ID: <87cys0x5pu.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 URIBL_BLOCKED(0.00)[suse.de:email,szeredi.hu:email];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[szeredi.hu:email,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_LAST(0.00)[];
+	 FREEMAIL_CC(0.00)[mit.edu,dilger.ca,zeniv.linux.org.uk,kernel.org,suse.cz,gmail.com,vger.kernel.org];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -3.10
+X-Spam-Flag: NO
 
-Fixes:
+Miklos Szeredi <miklos@szeredi.hu> writes:
 
- arch/alpha/kernel/smc37c669.c:2467:13: error: no previous prototype for 'SMC669_Init' [-Werror=missing-prototypes]
-  2467 | void __init SMC669_Init ( int index )
-       |             ^~~~~~~~~~~
+> On Mon, 11 Mar 2024 at 11:34, Luis Henriques <lhenriques@suse.de> wrote:
+>>
+>> Miklos Szeredi <miklos@szeredi.hu> writes:
+>>
+>> > On Thu, 7 Mar 2024 at 19:17, Luis Henriques <lhenriques@suse.de> wrote:
+>> >>
+>> >> This patch fixes the usage of mount parameters that are defined as st=
+rings
+>> >> but which can be empty.  Currently, only 'lowerdir' parameter is in t=
+his
+>> >> situation for overlayfs.  But since userspace can pass it in as 'flag'
+>> >> type (when it doesn't have a value), the parsing will fail because a
+>> >> 'string' type is assumed.
+>> >
+>> > I don't really get why allowing a flag value instead of an empty
+>> > string value is fixing anything.
+>> >
+>> > It just makes the API more liberal, but for what gain?
+>>
+>> The point is that userspace may be passing this parameter as a flag and
+>> not as a string.  I came across this issue with ext4, by doing something
+>> as simple as:
+>>
+>>     mount -t ext4 -o usrjquota=3D /dev/sda1 /mnt/
+>>
+>> (actually, the trigger was fstest ext4/053)
+>>
+>> The above mount should succeed.  But it fails because 'usrjquota' is set
+>> to a 'flag' type, not 'string'.
+>
+> The above looks like a misparsing, since the equals sign clearly
+> indicates that this is not a flag.
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- arch/alpha/kernel/smc37c669.c | 3 +++
- 1 file changed, 3 insertions(+)
+No, not really.  The same thing happens without the '=3D':
 
-diff --git a/arch/alpha/kernel/smc37c669.c b/arch/alpha/kernel/smc37c669.c
-index ab22ade3dea3..be71ea825690 100644
---- a/arch/alpha/kernel/smc37c669.c
-+++ b/arch/alpha/kernel/smc37c669.c
-@@ -1,6 +1,9 @@
- /*
-  * SMC 37C669 initialization code
-  */
-+
-+#include "proto.h" // for the SMC669_Init() prototype
-+
- #include <linux/kernel.h>
- 
- #include <linux/mm.h>
--- 
-2.39.2
+mount -t ext4 -o usrjquota /dev/loop0p1 /mnt/=20
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/loop0p1, mis=
+sing codepage or helper program, or other error.
+       dmesg(1) may have more information after failed mount system call.
 
+The parsing code gets a FSCONFIG_SET_FLAG instead of FSCONFIG_SET_STRING.
+
+>> Note that I couldn't find a way to reproduce the same issue in overlayfs
+>> with this 'lowerdir' parameter.  But looking at the code the issue is
+>> similar.
+>
+> In overlayfs the empty lowerdir parameter has a special meaning when
+> lowerdirs are appended instead of parsed in one go.   As such it won't
+> be used from /etc/fstab for example, as that would just result in a
+> failed mount.
+>
+> I don't see a reason to allow it as a flag for overlayfs, since that
+> just add ambiguity to the API.
+
+Fine with me.  But it'd be nice to double-check (by testing) that when
+overlayfs gets a 'lowerdir' without a value it really is doing what you'd
+expect it to do.
+
+Cheers,
+--=20
+Lu=C3=ADs
 
