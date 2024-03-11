@@ -1,155 +1,342 @@
-Return-Path: <linux-kernel+bounces-98720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C90AB877E5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:49:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A84F9877E60
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:49:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 340C1B216E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:49:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206EE1F2101D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:49:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41B1936B01;
-	Mon, 11 Mar 2024 10:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFEBA37169;
+	Mon, 11 Mar 2024 10:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="wa8p3djt"
-Received: from out203-205-221-155.mail.qq.com (out203-205-221-155.mail.qq.com [203.205.221.155])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JHFhCL4Y"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B60199AD
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:48:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B320B2C69A;
+	Mon, 11 Mar 2024 10:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710154105; cv=none; b=P6YnkX/+6dw9KpH72kRzToEKlYBENrqWpZCUWgXS5DR5ZLj12GBB9mGYl6jCMt7VBJ5Oc9SJzJg86vhZ38Gjsd9eXjODO+7hnf1yVk/wgMVsL3pcO5NR/zuFWKjyfqslY/HuYPIXl2h+E+OJSioe2tv+3m1XKAndtPh9F3rcqZQ=
+	t=1710154184; cv=none; b=J/y/paBQBPG4vcnLLGgl0HFlcFY+CyuPxYa5gite+iOeUIhVpnKLCY5RKNM3Ji1MrAz6U8UmbS3kAppYkzjQsQhu5YgURv34sSGyIgYZ4RXz8K31kg2SkSoyrsCx9mkvwDKU60uXxH8TKScoQ1YVdqHpt2RLFEm5xWll3V6Ud9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710154105; c=relaxed/simple;
-	bh=u7lJIQiGFJaiLYFrbNMt/+qQVYShImyArwbHI/t7fRw=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=ryN7MqQceUnlpKgL3EORMaVrqrusL0mSP5hNF1n7/PTvVrwMd3lOJyxE+0ZsPPSkvXPHSr304YRgTKm98FCAFkhBRg6XZgpkQx1WAorpk3UkEPkkGZWyDb8pcIrNzXVaPwEPNqqP/O5rU5UhrHXg1Rx0MR85I68KwNvipG31DnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=wa8p3djt; arc=none smtp.client-ip=203.205.221.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1710154093;
-	bh=ERBSc0Wgyuw8/bY8P/pT1Iga4mFQ1r/VjlA6SHnWbMc=;
-	h=From:To:Cc:Subject:Date;
-	b=wa8p3djtCl2NC95sj1m/7HcUiV5MwEkk9KWQXIa4abVtju6apyk14dqV45uvFXj/8
-	 oHHcGQ9ACHfYWfuDU43ddqi+ep5iLFR/K9Ez6HKopgC5Ncbx/zy6Qcthbmcq6oS4Op
-	 CIf0Vv9310Kl5MO9jE+TGWH5v+xWjd0Iyqx3vMbs=
-Received: from localhost.localdomain ([58.208.182.212])
-	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
-	id BF783C2D; Mon, 11 Mar 2024 18:47:55 +0800
-X-QQ-mid: xmsmtpt1710154075t9nxfgrpw
-Message-ID: <tencent_4B50D08D2E6211E4F9B867F0531F2C05BA0A@qq.com>
-X-QQ-XMAILINFO: NPS3ZrBWpSdgwmZoGF8L3qHSPnepBxH/g50XR6uvTWEemFW4HPGPTU7ONGN+L5
-	 h62JwZaaypXsJLW0XnqgDflVczBy0BHBQ4CaMFH09mWsdaxyiNheN8rD78Xdm3FSjyG3r9N3+Npo
-	 clWfwJSkDSnd1vytEAYqC4iyOWvmPLhM3lL9CdMeVjbMEYERTLBDf5nA1a5XMiv0cf3H7k9zUf6v
-	 WG5Cs8MRIOQK+gkvVpq9iKjrsaOGtYoJX+n6yqHpTd90qZSyUOdGfjodOiXblphbOHjiXOl9u9I0
-	 myVtF8NNgExxZdxXYJ9i6ovCJA98bGT7797Auw6F6RW47MVsMVOYN002VFOWo+RjuT9oXQ+phCxS
-	 R1MfGrOPjPiPvFlw8vFHTQu1kfQVhNX9mSweaFICPxONj3SmOiljtuX1pQQPd8c5ZJvhOHz7RuA3
-	 5jAIjPc5hHCGb+bXc+qwhwHRzOiQKlnX8bxz1A6/obbP296SnEjAsO5h4ufdHJBh7WAom6l8ZExL
-	 oB+iVGNB2TKg9ieVU0A5cUfJL6lSYwxCX3OzIATOr+BbUJP8+ZmBBCDmfTtaoZ+CM+GkPnzerMw6
-	 mn7FA1MB7m96/8KvAEx7SwDDJ3kEpxXcQCXVCGrH6aDIgXTpZXcn0PeEK1wof0YPup24Ic8608K6
-	 QO7jz5qgsibJ+7oITizyWjGdI99vkNntf8rYBsrzE1ZHgyWnuOIPxhp14eH+QAkeHavpKbRXap2y
-	 cH76lBWZ+LAy5boTSbqaWHT6naILEhY+b/+lKe2m0s/Pl9WypQnWTaYz8/7AgKQG/i0iA9jAEC3U
-	 igLm9jln6mbU5Xo8hRTIHm4W7f0zxr10HjfQa6MoRj2c1cwatvm3TEqOUy24471Xn4dpYeWcnXxv
-	 6S3LM6L6PPrGWE9xOZ/3JVnwvDzK0R9GiXI7mhUcN9/q0rOKQHG03xQZ8EhY0UxTXLxAkMJPybcf
-	 pSN0LHlKpg1nr2wYtb8G2/6Vc9FftGspK7ujuDIEVeDg1Y9Uz6CfnVgRnJ/KnQlEhgWX80l8D5jW
-	 qZ84c3MpYfQewIcjFvTlSdWgmW6IBuhlfoABk7PaW17BCyjCkyCDiYmt6di8esXqEVYcxUWA==
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: francisco_flynn <francisco_flynn@foxmail.com>
-To: dave.hansen@linux.intel.com,
-	luto@kernel.org,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	x86@kernel.org
-Cc: hpa@zytor.com,
-	rdunlap@infradead.org,
-	francisco_flynn@foxmail.com,
-	akpm@linux-foundation.org,
-	bhelgaas@google.com,
-	mawupeng1@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86/mmu: treat WC memory as MMIO
-Date: Mon, 11 Mar 2024 18:47:49 +0800
-X-OQ-MSGID: <20240311104750.2149241-1-francisco_flynn@foxmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710154184; c=relaxed/simple;
+	bh=zdumg2HTNXjDkRGH9WQHi7LXj63DIJGejKy1zfiZJiM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=uEECx3zUj3ZXZ2BQcRT9hbU2/1Z16j18U0UwecMgoEwIXn9AUON3wpRcARmdUuDUFJKvJ5tiaaLiuDCKHRtwfbo8arZRdecopkdbfaWq2cHmmYZRbULTEjLgyW0FaM9iNTYIhc4GhTN4SbreLWdTOmTLkGYkd4WTCLpjoE0I/sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=JHFhCL4Y; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42BAn95H109286;
+	Mon, 11 Mar 2024 05:49:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1710154149;
+	bh=GCbA1hnNHwTujCBaxSWTiyZacv4uOD7uipAFx1zBfFY=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=JHFhCL4YHUQc+/SPUXonmLe9ov71U5c6i8s4PvDJ8zDgF1mGpDRsQXX3SCmTStG7/
+	 AH7FGQf/0/3/KF4Fh/pVf3aSdP3hCAIG5sQSdwr/YmPieKnjdAqIXjE/nTaqHR+AP4
+	 rO3hCvh8IQWlpdDXOQEis7Je2wkj0bIcCu2vTgys=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42BAn9hJ116567
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 11 Mar 2024 05:49:09 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Mar 2024 05:49:09 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Mar 2024 05:49:09 -0500
+Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42BAn3Dt109815;
+	Mon, 11 Mar 2024 05:49:04 -0500
+Message-ID: <86a067c4-3b28-448d-8c58-c7a9e80d697f@ti.com>
+Date: Mon, 11 Mar 2024 16:19:02 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/6] arm64: dts: ti: k3-j784s4: Add overlay to enable
+ QSGMII mode with CPSW9G
+Content-Language: en-US
+To: Andrew Davis <afd@ti.com>, Peter Rosin <peda@axentia.se>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Tero
+ Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
+ Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>
+References: <20240131101441.1362409-1-c-vankar@ti.com>
+ <20240131101441.1362409-6-c-vankar@ti.com>
+ <7960af47-5d6a-4e54-9d58-a145311321f6@ti.com>
+From: Chintan Vankar <c-vankar@ti.com>
+In-Reply-To: <7960af47-5d6a-4e54-9d58-a145311321f6@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-when doing kvm_tdp_mmu_map for WC memory, such as pages
-allocated by amdgpu ttm driver for ttm_write_combined
-caching mode(e.g. host coherent in vulkan),
-the spte would be set to WB, in this case, vcpu write
-to these pages would goes to cache first, and never
-be write-combined and host-coherent anymore. so
-WC memory should be treated as MMIO, and the effective
-memory type is depending on guest PAT.
 
-Signed-off-by: francisco_flynn <francisco_flynn@foxmail.com>
----
- arch/x86/include/asm/memtype.h | 2 ++
- arch/x86/kvm/mmu/spte.c        | 5 +++--
- arch/x86/mm/pat/memtype.c      | 8 ++++++++
- 3 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/memtype.h b/arch/x86/include/asm/memtype.h
-index 113b2fa51849..b49887d8580e 100644
---- a/arch/x86/include/asm/memtype.h
-+++ b/arch/x86/include/asm/memtype.h
-@@ -23,6 +23,8 @@ extern void memtype_free_io(resource_size_t start, resource_size_t end);
- 
- extern bool pat_pfn_immune_to_uc_mtrr(unsigned long pfn);
- 
-+extern bool pat_pfn_is_wc(unsigned long pfn);
-+
- bool x86_has_pat_wp(void);
- enum page_cache_mode pgprot2cachemode(pgprot_t pgprot);
- 
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 4a599130e9c9..7842458dafa8 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -88,9 +88,10 @@ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access)
- static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
- {
- 	if (pfn_valid(pfn))
--		return !is_zero_pfn(pfn) && PageReserved(pfn_to_page(pfn)) &&
-+		return !is_zero_pfn(pfn) &&
-+			(PageReserved(pfn_to_page(pfn)) || pat_pfn_is_wc(pfn)) &&
- 			/*
--			 * Some reserved pages, such as those from NVDIMM
-+			 * Some reserved or WC pages, such as those from NVDIMM
- 			 * DAX devices, are not for MMIO, and can be mapped
- 			 * with cached memory type for better performance.
- 			 * However, the above check misconceives those pages
-diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-index 0904d7e8e126..a5dd906cd987 100644
---- a/arch/x86/mm/pat/memtype.c
-+++ b/arch/x86/mm/pat/memtype.c
-@@ -716,6 +716,14 @@ bool pat_pfn_immune_to_uc_mtrr(unsigned long pfn)
- }
- EXPORT_SYMBOL_GPL(pat_pfn_immune_to_uc_mtrr);
- 
-+bool pat_pfn_is_wc(unsigned long pfn)
-+{
-+	enum page_cache_mode cm = lookup_memtype(PFN_PHYS(pfn));
-+
-+	return cm == _PAGE_CACHE_MODE_WC;
-+}
-+EXPORT_SYMBOL_GPL(pat_pfn_is_wc);
-+
- /**
-  * memtype_reserve_io - Request a memory type mapping for a region of memory
-  * @start: start (physical address) of the region
--- 
-2.25.1
+On 31/01/24 21:20, Andrew Davis wrote:
+> On 1/31/24 4:14 AM, Chintan Vankar wrote:
+>> From: Siddharth Vadapalli <s-vadapalli@ti.com>
+>>
+>> The J7 Quad Port Add-On Ethernet Card for J784S4 EVM supports
+>> QSGMII mode. Use the overlay to configure CPSW9G ports in QSGMII
+>> mode with the Add-On Ethernet Card connected to the ENET Expansion
+>> 1 slot on the EVM.
+>>
+>> Add support to reset the PHY from kernel by using gpio-hog and
+>> gpio-reset.
+>>
+>> Add aliases for CPSW9G ports to enable kernel to fetch MAC Addresses
+>> directly from U-Boot.
+>>
+>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/Makefile               |   7 +-
+>>   .../ti/k3-j784s4-evm-quad-port-eth-exp1.dtso  | 147 ++++++++++++++++++
+>>   2 files changed, 153 insertions(+), 1 deletion(-)
+>>   create mode 100644 
+>> arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/Makefile 
+>> b/arch/arm64/boot/dts/ti/Makefile
+>> index 52c1dc910308..836bc197d932 100644
+>> --- a/arch/arm64/boot/dts/ti/Makefile
+>> +++ b/arch/arm64/boot/dts/ti/Makefile
+>> @@ -81,6 +81,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-pcie1-ep.dtbo
+>>   # Boards with J784s4 SoC
+>>   dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
+>>   dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
+>> +dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm-quad-port-eth-exp1.dtbo
+>>   # Build time test only, enabled by CONFIG_OF_ALL_DTBS
+>>   k3-am625-beagleplay-csi2-ov5640-dtbs := k3-am625-beagleplay.dtb \
+>> @@ -109,6 +110,8 @@ k3-j721e-evm-pcie0-ep-dtbs := 
+>> k3-j721e-common-proc-board.dtb \
+>>       k3-j721e-evm-pcie0-ep.dtbo
+>>   k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
+>>       k3-j721s2-evm-pcie1-ep.dtbo
+>> +k3-j784s4-evm-quad-port-eth-exp1-dtbs := k3-j784s4-evm.dtb \
+>> +    k3-j784s4-evm-quad-port-eth-exp1.dtbo
+>>   dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+>>       k3-am625-beagleplay-csi2-tevi-ov5640.dtb \
+>>       k3-am625-sk-csi2-imx219.dtb \
+>> @@ -121,7 +124,8 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+>>       k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
+>>       k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
+>>       k3-j721e-evm-pcie0-ep.dtb \
+>> -    k3-j721s2-evm-pcie1-ep.dtb
+>> +    k3-j721s2-evm-pcie1-ep.dtb \
+>> +    k3-j784s4-evm-quad-port-eth-exp1.dtb
+>>   # Enable support for device-tree overlays
+>>   DTC_FLAGS_k3-am625-beagleplay += -@
+>> @@ -132,3 +136,4 @@ DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
+>>   DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
+>>   DTC_FLAGS_k3-j721e-common-proc-board += -@
+>>   DTC_FLAGS_k3-j721s2-common-proc-board += -@
+>> +DTC_FLAGS_k3-j784s4-evm += -@
+>> diff --git 
+>> a/arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso 
+>> b/arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+>> new file mode 100644
+>> index 000000000000..0667389b07be
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+>> @@ -0,0 +1,147 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only OR MIT */
+>> +/**
+>> + * DT Overlay for CPSW9G in QSGMII mode using J7 Quad Port ETH EXP 
+>> Add-On Ethernet Card with
+>> + * J784S4 EVM. The Add-On Ethernet Card has to be connected to ENET 
+>> Expansion 1 slot on the
+>> + * board.
+>> + *
+>> + * Product Datasheet: https://www.ti.com/lit/ug/spruj74/spruj74.pdf
+>> + *
+>> + * Link to QSGMII Daughtercard: 
+>> https://www.ti.com/tool/J721EXENETXPANEVM
+>> + *
+>> + * Copyright (C) 2024 Texas Instruments Incorporated - 
+>> https://www.ti.com/
+>> + */
+>> +
+>> +/dts-v1/;
+>> +/plugin/;
+>> +
+>> +#include <dt-bindings/gpio/gpio.h>
+>> +#include <dt-bindings/phy/phy-cadence.h>
+>> +#include <dt-bindings/phy/phy.h>
+>> +
+>> +#include "k3-pinctrl.h"
+>> +#include "k3-serdes.h"
+>> +
+>> +&{/} {
+>> +    aliases {
+>> +        ethernet1 = 
+>> "/bus@100000/ethernet@c000000/ethernet-ports/port@5";
+> 
+> Didn't you already set ethernet1 to be main_cpsw1_port1 in the base, 
+> does this
+> actually behave the way you want?
 
+Yes. It behaves the way it is configured, explanation of how it
+configures MAC addresses is explained at:
+https://lore.kernel.org/all/0512d57f-af22-4bd8-8266-33d943d7eb4a@ti.com/
+
+> 
+> Otherwise looks okay,
+> 
+> Reviewed-by: Andrew Davis <afd@ti.com>
+> 
+>> +        ethernet2 = 
+>> "/bus@100000/ethernet@c000000/ethernet-ports/port@6";
+>> +        ethernet3 = 
+>> "/bus@100000/ethernet@c000000/ethernet-ports/port@7";
+>> +        ethernet4 = 
+>> "/bus@100000/ethernet@c000000/ethernet-ports/port@8";
+>> +        ethernet5 = 
+>> "/bus@100000/ethernet@c200000/ethernet-ports/port@1";
+>> +    };
+>> +};
+>> +
+>> +&main_cpsw0 {
+>> +    status = "okay";
+>> +};
+>> +
+>> +&main_cpsw0_port5 {
+>> +    status = "okay";
+>> +    phy-handle = <&cpsw9g_phy1>;
+>> +    phy-mode = "qsgmii";
+>> +    mac-address = [00 00 00 00 00 00];
+>> +    phys = <&cpsw0_phy_gmii_sel 5>, <&serdes2_qsgmii_link>;
+>> +    phy-names = "mac", "serdes";
+>> +};
+>> +
+>> +&main_cpsw0_port6 {
+>> +    status = "okay";
+>> +    phy-handle = <&cpsw9g_phy2>;
+>> +    phy-mode = "qsgmii";
+>> +    mac-address = [00 00 00 00 00 00];
+>> +    phys = <&cpsw0_phy_gmii_sel 6>, <&serdes2_qsgmii_link>;
+>> +    phy-names = "mac", "serdes";
+>> +};
+>> +
+>> +&main_cpsw0_port7 {
+>> +    status = "okay";
+>> +    phy-handle = <&cpsw9g_phy0>;
+>> +    phy-mode = "qsgmii";
+>> +    mac-address = [00 00 00 00 00 00];
+>> +    phys = <&cpsw0_phy_gmii_sel 7>, <&serdes2_qsgmii_link>;
+>> +    phy-names = "mac", "serdes";
+>> +};
+>> +
+>> +&main_cpsw0_port8 {
+>> +    status = "okay";
+>> +    phy-handle = <&cpsw9g_phy3>;
+>> +    phy-mode = "qsgmii";
+>> +    mac-address = [00 00 00 00 00 00];
+>> +    phys = <&cpsw0_phy_gmii_sel 8>, <&serdes2_qsgmii_link>;
+>> +    phy-names = "mac", "serdes";
+>> +};
+>> +
+>> +&main_cpsw0_mdio {
+>> +    status = "okay";
+>> +    pinctrl-names = "default";
+>> +    pinctrl-0 = <&mdio0_default_pins>;
+>> +    bus_freq = <1000000>;
+>> +    reset-gpios = <&exp2 17 GPIO_ACTIVE_LOW>;
+>> +    reset-post-delay-us = <120000>;
+>> +    #address-cells = <1>;
+>> +    #size-cells = <0>;
+>> +
+>> +    cpsw9g_phy0: ethernet-phy@16 {
+>> +        reg = <16>;
+>> +    };
+>> +    cpsw9g_phy1: ethernet-phy@17 {
+>> +        reg = <17>;
+>> +    };
+>> +    cpsw9g_phy2: ethernet-phy@18 {
+>> +        reg = <18>;
+>> +    };
+>> +    cpsw9g_phy3: ethernet-phy@19 {
+>> +        reg = <19>;
+>> +    };
+>> +};
+>> +
+>> +&exp2 {
+>> +    /* Power-up ENET1 EXPANDER PHY. */
+>> +    qsgmii-line-hog {
+>> +        gpio-hog;
+>> +        gpios = <16 GPIO_ACTIVE_HIGH>;
+>> +        output-low;
+>> +    };
+>> +
+>> +    /* Toggle MUX2 for MDIO lines */
+>> +    mux-sel-hog {
+>> +        gpio-hog;
+>> +        gpios = <13 GPIO_ACTIVE_HIGH>, <14 GPIO_ACTIVE_HIGH>, <15 
+>> GPIO_ACTIVE_HIGH>;
+>> +        output-high;
+>> +    };
+>> +};
+>> +
+>> +&main_pmx0 {
+>> +    mdio0_default_pins: mdio0-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            J784S4_IOPAD(0x05c, PIN_INPUT, 4) /* (AC36) 
+>> MCASP2_AXR0.MDIO1_MDIO */
+>> +            J784S4_IOPAD(0x058, PIN_INPUT, 4) /* (AE37) 
+>> MCASP2_AFSX.MDIO1_MDC */
+>> +        >;
+>> +    };
+>> +};
+>> +
+>> +&serdes_ln_ctrl {
+>> +    idle-states = <J784S4_SERDES0_LANE0_PCIE1_LANE0>, 
+>> <J784S4_SERDES0_LANE1_PCIE1_LANE1>,
+>> +              <J784S4_SERDES0_LANE2_IP3_UNUSED>, 
+>> <J784S4_SERDES0_LANE3_USB>,
+>> +              <J784S4_SERDES1_LANE0_PCIE0_LANE0>, 
+>> <J784S4_SERDES1_LANE1_PCIE0_LANE1>,
+>> +              <J784S4_SERDES1_LANE2_PCIE0_LANE2>, 
+>> <J784S4_SERDES1_LANE3_PCIE0_LANE3>,
+>> +              <J784S4_SERDES2_LANE0_QSGMII_LANE5>, 
+>> <J784S4_SERDES2_LANE1_QSGMII_LANE6>,
+>> +              <J784S4_SERDES2_LANE2_QSGMII_LANE7>, 
+>> <J784S4_SERDES2_LANE3_QSGMII_LANE8>;
+>> +};
+>> +
+>> +&serdes_wiz2 {
+>> +    status = "okay";
+>> +};
+>> +
+>> +&serdes2 {
+>> +    status = "okay";
+>> +    #address-cells = <1>;
+>> +    #size-cells = <0>;
+>> +    serdes2_qsgmii_link: phy@0 {
+>> +        reg = <2>;
+>> +        cdns,num-lanes = <1>;
+>> +        #phy-cells = <0>;
+>> +        cdns,phy-type = <PHY_TYPE_QSGMII>;
+>> +        resets = <&serdes_wiz2 3>;
+>> +    };
+>> +};
 
