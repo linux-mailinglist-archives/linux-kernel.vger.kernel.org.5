@@ -1,121 +1,92 @@
-Return-Path: <linux-kernel+bounces-99589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCDBE878A62
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:00:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F5DD878A67
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 456B4281B27
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:00:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 616C71C21569
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67BEE5821C;
-	Mon, 11 Mar 2024 21:59:53 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C2757860;
+	Mon, 11 Mar 2024 22:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sTjaV4ln"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954FC5788F
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF4D56B9D;
+	Mon, 11 Mar 2024 22:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710194393; cv=none; b=uLM8O1zRxzYVKYbacr/SkNEBuhXrknxj2hltLyYXQissTO/7kuRsaRUrNEG973pxITO2PcnHX8h+C7P498MLwM6n0smUGSmcMYrUEPaH4aqQrvL0oZGyshNr/gIgSlOcibQs7EFcgAXlGpLlaPTbudyBqiAgqGq0aHowieul8ew=
+	t=1710194435; cv=none; b=VLdpITIyFIXbf2wdtdSWMvImn5J2Dq+eNpFmGfVO5tJ+/f2H4WbJNAUSJZFVvANK+qKMEes+ZgBbgQy0NVKl0LdWP41Jsov3PPfgWHVA3xXoc7E1C4yhONnKbahf36SJM93pFfFtPmIRVjHNOn4Mc2BQiuWc4VnZ3xhqRqGDwok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710194393; c=relaxed/simple;
-	bh=J0af8rTU5N8DEwYEax+Abb4w87fJFVFWbwKgVA1K+cg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L9JVgNz07k+g79L+sKb08zUwM36rJApggDF0bTAhd0N9Q+66xOenVfoRNzt0Icc5s+QRh+Gh5SSujIl4URP9dgu14xa/fW4/w93IuMjJnRG0EGxFotjB9GuG0uUZ4zqiqP+FGCaw7gAjypNUnzSGM0Pf5mLuoPgx5Xj8qroldO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rjngQ-0006D5-2f; Mon, 11 Mar 2024 22:59:46 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rjngP-005nF6-MQ; Mon, 11 Mar 2024 22:59:45 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rjngP-004JCM-1z;
-	Mon, 11 Mar 2024 22:59:45 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Paul Burton <paulburton@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH 3/3] auxdisplay: img-ascii-lcd: Convert to platform remove callback returning void
-Date: Mon, 11 Mar 2024 22:59:24 +0100
-Message-ID:  <44de2d4c1fed6fe96b68ba9ad768d297b8f392a5.1710194084.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1710194084.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1710194084.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1710194435; c=relaxed/simple;
+	bh=AvPE0MWkoiSBvXUofuuPo2NvsFXH3G0ZocpFpP/0V8U=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=LiqYmJ3/hT321In6vqlVhJQhIKMxBBRh4cYW0qlptzRCNq2imGae00Twopx6FE8A5rx+N36kW5A1JBIZmqXrai0hope3RqMjQfcrLJsBWp+1CXJErtPs7CWLyGiidBcwfL359jDHDZ6C8rJ4z0H5b5i8x37Y8Na1g05mbBL4vYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sTjaV4ln; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 890EBC43394;
+	Mon, 11 Mar 2024 22:00:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710194434;
+	bh=AvPE0MWkoiSBvXUofuuPo2NvsFXH3G0ZocpFpP/0V8U=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=sTjaV4lnoZZdQpJanXFJGv7qQ4RSt1AeT7BEZrr/6OpYFVxZiRlJ1TuLHg9jhaggk
+	 XbnUx++51+30OqxW1mIOGyGYTHIu9wuPWhWFxouTIrmsqF8UyGRZHsdkitlbD2jrSr
+	 Hh3Qr9nyFqkXqdzWe5wy5gwGKnkZWjxnubFSK1oTbCfznLz7TvevfR6LOsO35CWize
+	 A+kzlHjmQvdbJvG4nfoWFAm2f+CZg8lHynNnq+yceBlZYvdPzSxljEdF3mQNMO60eT
+	 Mj/tPg0wf0HXQujK7R08q/7QB6ya/dcqn1CL8V1ZffHvORZKVqmObXlCTxp+FRQjBh
+	 OA7nIP5CA/K3Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6FAC5C395F1;
+	Mon, 11 Mar 2024 22:00:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1840; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=J0af8rTU5N8DEwYEax+Abb4w87fJFVFWbwKgVA1K+cg=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl736+kkRAF5euv5xWKRVnttsXYNGO5YcyhXrj3 zNGLmw3h8yJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZe9+vgAKCRCPgPtYfRL+ ToVrCACtgQ3byPvcqkYc7egHYXqIgIEew3R5CGgGy+npZ8Y+0SzVdhUG2/5P6BmbcT0FqxcdmU8 91OdVr0Fu0Yvf1QlczqdY5GUrl8iu6+bqHlwSJeiU69OTmhQUfPXGF8ZUhBn6zhpQN0BCgpltLG RU+5yLaU8IlkBdyHV7izWk1CzA+0tt6N19VOOAc5HDYgrCi0ZyhQkHGSMetUTw0eg9RtU/f0vrg yTt+rFSUGzp4vrLtpyCHUo/ak+AO1OXjAnP8f6Lf8atP1maFwM74RYrgfubfi3rJTZgLbF3q5IJ iYFKCZNwDDQRECgfDsY0cCwdEMLayYOo0dc2vSj6v5WR6DpK
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4] net: netconsole: Add continuation line prefix to
+ userdata messages
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171019443445.9697.5244091581871121870.git-patchwork-notify@kernel.org>
+Date: Mon, 11 Mar 2024 22:00:34 +0000
+References: <20240308002525.248672-1-thepacketgeek@gmail.com>
+In-Reply-To: <20240308002525.248672-1-thepacketgeek@gmail.com>
+To: Matthew Wood <thepacketgeek@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, corbet@lwn.net, leitao@debian.org, netdev@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
+Hello:
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+On Thu,  7 Mar 2024 16:25:24 -0800 you wrote:
+> Add a space (' ') prefix to every userdata line to match docs for
+> dev-kmsg. To account for this extra character in each userdata entry,
+> reduce userdata entry names (directory name) from 54 characters to 53.
+> 
+> According to the dev-kmsg docs, a space is used for subsequent lines to
+> mark them as continuation lines.
+> 
+> [...]
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/auxdisplay/img-ascii-lcd.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Here is the summary with links:
+  - [net-next,v4] net: netconsole: Add continuation line prefix to userdata messages
+    https://git.kernel.org/netdev/net-next/c/2b3953585953
 
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index 925c4cd101e9..0c91e39389c1 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -279,13 +279,12 @@ static int img_ascii_lcd_probe(struct platform_device *pdev)
-  *
-  * Return: 0
-  */
--static int img_ascii_lcd_remove(struct platform_device *pdev)
-+static void img_ascii_lcd_remove(struct platform_device *pdev)
- {
- 	struct img_ascii_lcd_ctx *ctx = platform_get_drvdata(pdev);
- 
- 	sysfs_remove_link(&pdev->dev.kobj, "message");
- 	linedisp_unregister(&ctx->linedisp);
--	return 0;
- }
- 
- static struct platform_driver img_ascii_lcd_driver = {
-@@ -294,7 +293,7 @@ static struct platform_driver img_ascii_lcd_driver = {
- 		.of_match_table	= img_ascii_lcd_matches,
- 	},
- 	.probe	= img_ascii_lcd_probe,
--	.remove	= img_ascii_lcd_remove,
-+	.remove_new = img_ascii_lcd_remove,
- };
- module_platform_driver(img_ascii_lcd_driver);
- 
+You are awesome, thank you!
 -- 
-2.43.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
