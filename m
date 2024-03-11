@@ -1,59 +1,80 @@
-Return-Path: <linux-kernel+bounces-98433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD7B877A26
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A4AA877A2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A382F1F20FDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:37:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5E451F21E39
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29B31878;
-	Mon, 11 Mar 2024 03:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AD21C33;
+	Mon, 11 Mar 2024 03:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="O7eNa62v"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7892C15A5;
-	Mon, 11 Mar 2024 03:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="QiBDC3ez"
+Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6695C17D2
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 03:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710128263; cv=none; b=ohEuV0UtFkG6wPORfqyiHe2GceM3QaM8cGqME18j3SFdX4qlncNGxrGCidDUnM7HdBY0LR5nCV17Ffiwi/T6UW70SYUrgTznYwBMImrGxZsEYsMHHRapAvQrB2EF7B7gqBnvg6mi6g4BTpt+plTE29ZxrFiWtf/kb45iM6SAeyY=
+	t=1710128569; cv=none; b=bvCQRLW7O1igA+jsd8ljsYaZA0/G21kTNrDK+6elA7Z8f9wopdB/dQ/H+4oatwyavEZlD+V9S4uAWGCNV4KXRn6PDJ/V+PUvYeiK8zI1dWfWHy90n6FLqVO41CuWnD0mjBECq0400ZPC5UYSUd3Vlvy92g9tTmmhFq2SjCGT9pA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710128263; c=relaxed/simple;
-	bh=Wp+2CFODpwjtPtjrozncJ1/Odwiekwv08Kdnw072T34=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EfFbdGK5oRIyWDTUGMfa1HMkHWYfKppUpQESvolmjHufRsgLkC/OZ+v8jwcODWmrYpVHU5kb6Tw2spcypmrh4zupoMjADF34k0yMbWSrS//Mjzo0d2DX4QJttKFJJ7lwTrzoMVIJH/24pm9s8Y4mGwlKazApIFzz16k0xssVqSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=O7eNa62v; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id EF0D320B74C0; Sun, 10 Mar 2024 20:37:34 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EF0D320B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710128254;
-	bh=UA0/rPCEp3CPu3Py2kKstccVQHFEChGVFCd3s6bNOCY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O7eNa62v5yOKH3TpBPuKFXXrisL6p2BF4SYAFhQRjUWjXQRr7Qg1Ke9yu907Ttqe5
-	 hHoXUPqvqPoomIXmdW6glJiSb1M2C8j7lpTBY8hlrSVIcScoT6ylXqNuXXRfRXl1N8
-	 hwrq0wh3zbXCcQU+7k1Wbz2QKrjdR9J9qAELPMHc=
-Date: Sun, 10 Mar 2024 20:37:34 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Ani Sinha <anisinha@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Olaf Hering <olaf@aepfle.de>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
- keyfile format
-Message-ID: <20240311033734.GA16436@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1709297778-20420-1-git-send-email-shradhagupta@linux.microsoft.com>
- <4547D425-64EF-4974-A131-56811F25B9E6@redhat.com>
+	s=arc-20240116; t=1710128569; c=relaxed/simple;
+	bh=nTj62qPuEPgCw8J7Jf3n7nB5xucwl9i5v865mvfsmaw=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CyWpQ7u8q0GSNrckYSqSFFjp0kJqQKa/XRwoRct0za9xOesUB+jZUAUVOOEGzYsym5PX9l9Z5IEFnzc9vFziZwRtbOTFhlGK2uD7t4ioyaVj1EGdWjmiMfF5i0tbC44KcrzFy6ym22tezQL6eAgk1LTKL2qDzbb4CGXCdkIR1ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=QiBDC3ez; arc=none smtp.client-ip=203.205.221.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1710128556;
+	bh=4JXa6hLg74UpGshYZU1AguiXPGhfRos4Ba7QkqRukZc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=QiBDC3ezm11b2Im4aNj21lpmPotKo4kokjq0TVuATxSAnR9akKYFkHxaTUHb3zVXW
+	 StmmE4JOhS77ZwnsHVjFNZG+1PbktpCp91KiEW6LrUTi3/7opeCU9Rb7b97HDtk/Z6
+	 WWHoV1BQFXuNn1N5gMELmOnqO10G7JkZ0DjErJNs=
+Received: from localhost ([223.104.74.172])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id AA2BEEEA; Mon, 11 Mar 2024 11:42:34 +0800
+X-QQ-mid: xmsmtpt1710128554tx9slqkvq
+Message-ID: <tencent_9C4C2E93BF6E6F9A61B2C8B72B800839BD05@qq.com>
+X-QQ-XMAILINFO: OKpEC/bXOl3KoZeQXg/7NFPrZ4XlfQnIMhpOScRXYy1jVk3PhopjBhGbOmp/QW
+	 CJTBPYxQuetLW7lc0Rs/1paE99ASBOFRflhS7O/mwg6L48yIYHM7TS6VW5d+hG7u8mXCI1vWNu5I
+	 BppiIrXGnN1iZuk2dkpQyKGyZv+kMIrhVItpV4N4zvMUoHI6HiJx0c4YoVom1OZlbmkKg+l36jnl
+	 A0VG9mZG+XEdDcnZjkqNG9Kz4hCw7LwBLJsill6HBbr/NXbTsycR1MCn5YI5fVH48SBb4NtSxmCg
+	 GdZxM8x+KAHLNRVZJXgGIo9OMV+UOQ5bTeHaZhPmlrAMBcGfn43klkP079uASn/UJQsT2aIGsKE4
+	 a/Baksjbjkrobq+g56bBZUyIhye2DudDL76NasSVqo33PQSby60H50pl1I/pT2ejf2aTr46jaURq
+	 3yMLP1y+8efqtEM03++UJ3mjVA/Rz8/VPyOH6KwfwYqhyzoJh0efgV+y82QHIE8ntN8Pn5iiEt1m
+	 KQYM5xZBtd6TwczxzmeKiAJ2bIyTxCB+TXGBEvwfdGlnFWP05VeinbRSgEOzwRwGNwDhB6e15MpD
+	 dD/OAwOzwwArFyovw59N0+GYsHqdscWNhC3Zq5+161y+37cPGmzkoRRUeux8l9rANuNeGIeUQFhV
+	 LAiXv+45K8qGfZtWqEDrEifovc1Mozon/Ueyt493Rz85K7xYF0wvA7mwhC/MyLqo1DXIQ7owWb93
+	 uGJ7zJy86bs/39RHsfjjticjJwmCIR5Rq6QC/JcUd9BWUx06n8ycJIWfuJRJgzT7DObJ1YFA7fLN
+	 bL+c5rSBEL9s5vqqkYBg/hKvpr2voGeCaXHheiaAS4h9SgfbiNhOtExHW2LSbT77CVfejFnKtu4G
+	 e9UzBa4nFNa5VuV75/2dKzCKAEStnIdtLUQi4B4F/olaacHm3NJUcN4u5S7Y+31Fut1YR1LcojOs
+	 RMZfY/J3DomRACe65IdJ4o2CcyWEvL
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+Sender: kenneth-lee-2012@foxmail.com
+Date: Mon, 11 Mar 2024 11:41:26 +0800
+From: Kenneth-Lee-2012@foxmail.com
+To: Andrea Parri <parri.andrea@gmail.com>
+Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
+	paulmck@kernel.org
+Subject: Re: Question about PB rule of LKMM
+X-OQ-MSGID: <20240311034104.7iffcia4k5rxvgog@kllt01>
+References: <ZejC+lutRuwXQrMz@andrea>
+ <Zenip+8BDM3p+MUh@andrea>
+ <eb8f2a21-d388-424d-8504-ccd7bdb53a93@rowland.harvard.edu>
+ <ZeoFBkB1BeTdEQsn@andrea>
+ <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
+ <ZeoQvj3l6moF9KdQ@andrea>
+ <tencent_3FCF3AA5E98BC9395F98803764A6B2F7CC07@qq.com>
+ <ZeuFQdk/zcjkILbC@andrea>
+ <tencent_454C12FBD6076C20C3955565E6D6354E4F0A@qq.com>
+ <Ze0afrfXMe4oJ4ez@andrea>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,254 +83,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4547D425-64EF-4974-A131-56811F25B9E6@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <Ze0afrfXMe4oJ4ez@andrea>
 
-Thanks, will incorporate all these changes in next version
+On Sun, Mar 10, 2024 at 03:27:10AM +0100, Andrea Parri wrote:
+> Date: Sun, 10 Mar 2024 03:27:10 +0100
+> From: Andrea Parri <parri.andrea@gmail.com>
+> To: Kenneth-Lee-2012@foxmail.com
+> Cc: Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org,
+>  paulmck@kernel.org
+> Subject: Re: Question about PB rule of LKMM
+> 
+> > > Remark that, in the CAT language, the identity relation ({(e, e) : each event e})
+> > > is a subset of R* (the _reflexive_-transitive closure of R) for any relation R.
+> > > 
+> > > The link at stake, (P0:Wx1, P0:Rx), is the result of the following composition:
+> > > 
+> > >   [Marked]         ; (overwrite & ext)? ; cumul-fence*     ; [Marked]          ; rfe?            ; [Marked]
+> > >   (P0:Wx1, P0:Wx1)   (P0:Wx1, P1:Wx8)     (P1:Wx8, P1:Wx8)   (P1:Wx8, P1:Wx8))   (P1:Wx8, P0:Rx)   (P0:Rx, P0:Rx)
+> > > 
+> > 
+> > So the cumul-fence relation includes the same Store? This is hard to
+> > understand, because it is defined as:
+> > 
+> >   let cumul-fence = [Marked] ; (A-cumul(strong-fence | po-rel) | wmb |
+> > 	po-unlock-lock-po) ; [Marked] ; rmw-sequence
+> > 
+> > There is at lease a rmw-sequence in the relation link.
+> > 
+> > I doubt we have different understanding on the effect of
+> > reflexive operator. Let's discuss this with an example. Say we have two
+> > relation r1 and r2. r1 have (e1, e2) while r2 have (e2, e3). Then we got
+> > (e1, e3) for (r1;r2). The (;) operator joins r1's range to r2's domain.
+> > 
+> > If we upgrade (r1;r2) to  (r1?;r2), (r1?) become {(m1, m1), (m1, m2), (m2,
+> > m2)}, it is r1 plus all identity of all elements used in r1's relations.
+> > 
+> > So (r1?;r2) is {(m1, m3), (m2, m3)}. If we consider this link:
+> > 
+> >   e1 ->r1 ->e2 ->r2 e3
+> > 
+> > A question mark on r1 means both (e1, e3) and (e2, e3) are included in
+> > the final definition. The r1 is ignore-able in the definition. The event
+> > before or behind the ignore-able relation both belong to the definition.
+> > 
+> > But this doesn't means r1 is optional. If r1 is empty, (r1?;r2) will
+> > become empty, because there is no event element in r1's relations.
+> > 
+> > So I think the reflexive-transitive operation on cumul-fence cannot make
+> > this relation optional. You should first have such link in the code.
+> 
+> In Cat, r1? is better described by (following your own wording) "r1 plus
+> all identity of all elements (i.e. not necessarily in r1)".
+> 
+> As an example, in the scenario at stake, cumul-fence is empty while both
+> cumul-fence? and cumul-fence* match the identity relation on all events.
+> 
+> Here is a (relatively old, but still accurate AFAICR) article describing
+> these and other notions as used in Herd:  (cf. table at the bottom)
+> 
+>   https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/LWNLinuxMM/herd.html
+> 
+> Said this, I do think the best way to familiarize with these notions and
+> check one's understanding is to spend time using the herd tool itself.
+> 
 
-Regards,
-Shradha
-On Wed, Mar 06, 2024 at 02:57:12PM +0530, Ani Sinha wrote:
-> 
-> 
-> > On 01-Mar-2024, at 18:26, Shradha Gupta <shradhagupta@linux.microsoft.com> wrote:
-> > 
-> > If the network configuration strings are passed as a combination of IPv and
-> > IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
-> > configuration format.
-> > With these changes, the keyfile config generation logic scans through the
-> > list twice to generate IPv4 and IPv6 sections for the configuration files
-> > to handle this support.
-> > 
-> > Built-on: Rhel9
-> > Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > ---
-> > tools/hv/hv_kvp_daemon.c | 152 ++++++++++++++++++++++++++++-----------
-> > 1 file changed, 112 insertions(+), 40 deletions(-)
-> > 
-> > diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> > index 318e2dad27e0..7e84e40b55fb 100644
-> > --- a/tools/hv/hv_kvp_daemon.c
-> > +++ b/tools/hv/hv_kvp_daemon.c
-> > @@ -76,6 +76,11 @@ enum {
-> > DNS
-> > };
-> > 
-> > +enum {
-> > + IPV4 = 1,
-> > + IPV6
-> > +};
-> > +
-> > static int in_hand_shake;
-> > 
-> > static char *os_name = "";
-> > @@ -1171,6 +1176,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
-> > return 0;
-> > }
-> > 
-> > +int ip_version_check(const char *input_addr)
-> > +{
-> > + struct in6_addr addr;
-> > +
-> > + if (inet_pton(AF_INET, input_addr, &addr))
-> > + return IPV4;
-> > + else if (inet_pton(AF_INET6, input_addr, &addr))
-> > + return IPV6;
-> > + else
-> > + return -EINVAL;
-> > +}
-> > +
-> > /*
-> >  * Only IPv4 subnet strings needs to be converted to plen
-> >  * For IPv6 the subnet is already privided in plen format
-> > @@ -1197,14 +1214,56 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
-> > return plen;
-> > }
-> > 
-> > +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-> > +  int ip_sec)
-> > +{
-> > + char addr[INET6_ADDRSTRLEN], *output_str;
-> > + int ip_offset = 0, error, ip_ver;
-> > + char *param_name;
-> > +
-> > + output_str = malloc(strlen(ip_string));
-> > +
-> > + if (!output_str)
-> > + return 1;
-> > +
-> > + output_str[0] = '\0';
-> > +
-> > + if (type == DNS)
-> > + param_name = "dns";
-> > + else
-> > + param_name = "gateway";
-> > +
-> > + while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-> > +   (MAX_IP_ADDR_SIZE * 2))) {
-> > + ip_ver = ip_version_check(addr);
-> > +
-> > + if ((ip_ver == IPV4 && ip_sec == IPV4) ||
-> > +    (ip_ver == IPV6 && ip_sec == IPV6)) {
-> > + strcat(output_str, addr);
-> > + strcat(output_str, ",");
-> 
-> We need to check if we are not going out of bounds here. So existing length of output_str + length of addr + 1 should be < strlen(ip_string) which is the length of the buffer. See parse_ip_val_buffer() how it does out of bounds check.
-> 
-> > + } else {
-> > + continue;
-> > + }
-> > + }
-> > +
-> > + if (strlen(output_str)) {
-> > + output_str[strlen(output_str) - 1] = '\0';
-> > + error = fprintf(f, "%s=%s\n", param_name, output_str);
-> > + if (error <  0)
-> > + return error;
-> > + }
-> > +
-> > + return 0;
-> > +}
-> > +
-> > static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-> > - int is_ipv6)
-> > + int ip_sec)
-> > {
-> > char addr[INET6_ADDRSTRLEN];
-> > char subnet_addr[INET6_ADDRSTRLEN];
-> > int error, i = 0;
-> > int ip_offset = 0, subnet_offset = 0;
-> > - int plen;
-> > + int plen, ip_ver;
-> > 
-> > memset(addr, 0, sizeof(addr));
-> > memset(subnet_addr, 0, sizeof(subnet_addr));
-> > @@ -1216,10 +1275,13 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-> >       subnet_addr,
-> >       (MAX_IP_ADDR_SIZE *
-> > 2))) {
-> > - if (!is_ipv6)
-> > + ip_ver = ip_version_check(addr);
-> > + if (ip_ver == IPV4 && ip_sec == IPV4)
-> > plen = kvp_subnet_to_plen((char *)subnet_addr);
-> > - else
-> > + else if (ip_ver == IPV6 && ip_sec == IPV6)
-> > plen = atoi(subnet_addr);
-> > + else
-> > + continue;
-> > 
-> > if (plen < 0)
-> > return plen;
-> > @@ -1242,8 +1304,8 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
-> > char if_filename[PATH_MAX];
-> > char nm_filename[PATH_MAX];
-> > FILE *ifcfg_file, *nmfile;
-> > + int ip_sections_count;
-> > char cmd[PATH_MAX];
-> > - int is_ipv6 = 0;
-> > char *mac_addr;
-> > int str_len;
-> > 
-> > @@ -1421,52 +1483,62 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
-> > if (error)
-> > goto setval_error;
-> > 
-> > - if (new_val->addr_family & ADDR_FAMILY_IPV6) {
-> > - error = fprintf(nmfile, "\n[ipv6]\n");
-> > - if (error < 0)
-> > - goto setval_error;
-> > - is_ipv6 = 1;
-> > - } else {
-> > - error = fprintf(nmfile, "\n[ipv4]\n");
-> > - if (error < 0)
-> > - goto setval_error;
-> > - }
-> > -
-> > /*
-> > - * Now we populate the keyfile format
-> > + * The keyfile format expects the IPv6 and IPv4 configuration in
-> > + * different sections. Therefore we iterate through the list twice,
-> > + * once to populate the IPv4 section and the next time for IPv6
-> > */
-> > + ip_sections_count = 1;
-> > + do {
-> > + if (ip_sections_count == 1) {
-> > + error = fprintf(nmfile, "\n[ipv4]\n");
-> > + if (error < 0)
-> > + goto setval_error;
-> > + } else {
-> > + error = fprintf(nmfile, "\n[ipv6]\n");
-> > + if (error < 0)
-> > + goto setval_error;
-> > + }
-> > 
-> > - if (new_val->dhcp_enabled) {
-> > - error = kvp_write_file(nmfile, "method", "", "auto");
-> > - if (error < 0)
-> > - goto setval_error;
-> > - } else {
-> > - error = kvp_write_file(nmfile, "method", "", "manual");
-> > + /*
-> > + * Now we populate the keyfile format
-> > + */
-> > +
-> > + if (new_val->dhcp_enabled) {
-> > + error = kvp_write_file(nmfile, "method", "", "auto");
-> > + if (error < 0)
-> > + goto setval_error;
-> > + } else {
-> > + error = kvp_write_file(nmfile, "method", "", "manual");
-> > + if (error < 0)
-> > + goto setval_error;
-> > + }
-> > +
-> > + /*
-> > + * Write the configuration for ipaddress, netmask, gateway and
-> > + * name services
-> > + */
-> > + error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> > +     (char *)new_val->sub_net,
-> > +     ip_sections_count);
-> > if (error < 0)
-> > goto setval_error;
-> > - }
-> > 
-> > - /*
-> > - * Write the configuration for ipaddress, netmask, gateway and
-> > - * name services
-> > - */
-> > - error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> > -     (char *)new_val->sub_net, is_ipv6);
-> > - if (error < 0)
-> > - goto setval_error;
-> > -
-> > - /* we do not want ipv4 addresses in ipv6 section and vice versa */
-> > - if (is_ipv6 != is_ipv4((char *)new_val->gate_way)) {
-> > - error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
-> > + error = process_dns_gateway_nm(nmfile,
-> > +       (char *)new_val->gate_way,
-> > +       GATEWAY, ip_sections_count);
-> > if (error < 0)
-> > goto setval_error;
-> > - }
-> > 
-> > - if (is_ipv6 != is_ipv4((char *)new_val->dns_addr)) {
-> > - error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
-> > + error = process_dns_gateway_nm(nmfile,
-> > +       (char *)new_val->dns_addr, DNS,
-> > +       ip_sections_count);
-> > if (error < 0)
-> > goto setval_error;
-> > - }
-> > +
-> > + ip_sections_count++;
-> > + } while (ip_sections_count <= 2);
-> > +
-> > fclose(nmfile);
-> > fclose(ifcfg_file);
-> > 
-> > -- 
-> > 2.34.1
-> > 
+Excuse me, May I ask one last question? I tried the herd tool on the
+discussed example. But it seems it is not protected by the hb acyclic
+rule. I can replace the linux-kernel.cat with lock.cat on the test:
+
+	P0(int *x)
+	{
+		int r1;
+		WRITE_ONCE(*x, 1);
+		r1 = READ_ONCE(*x);
+	}
+	P1(int *x)
+	{
+		WRITE_ONCE(*x, 8);
+	}
+	locations[0:r1; x]
+	exists (0:r1=8)
+
+It can still ensure the P0:Wx execute before P0:Rx:
+
+	Test test Allowed
+	States 3
+	0:r1=1; [x]=1;
+	0:r1=1; [x]=8;
+	0:r1=8; [x]=8;
+	Ok
+	Witnesses
+	Positive: 1 Negative: 2
+	Condition exists (0:r1=8)
+	Observation test Sometimes 1 2
+
+The example doesn't prove the hb rule is necessary. Is this
+understanding correct? Thanks.
+
+>   Andrea
+
+-- 
+			-Kenneth Lee
+
 
