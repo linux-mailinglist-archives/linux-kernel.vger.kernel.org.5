@@ -1,188 +1,254 @@
-Return-Path: <linux-kernel+bounces-98443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 113EA877A39
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:57:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5B78877A3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:01:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34A1F1C20EA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:57:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57DB21F21F44
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644521C3D;
-	Mon, 11 Mar 2024 03:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 422257489;
+	Mon, 11 Mar 2024 04:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IdgcnmM0"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J9tB7avO"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC8917D2;
-	Mon, 11 Mar 2024 03:57:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D2CC1860
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 04:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710129459; cv=none; b=hc/rfpse83pz1HfaPl/yRg3RjCSCltloXUTctJmc7iBaglhVWv44UQPNWgq867xhMgln9R3Tczv/3zP6vW71oNXCk6Zogh/QsaMAEpFnFKu5h+VUN8nbKyVgrjyUYvPllEe6u5V/qOyMsJc83LO5GGMxhWUeiMrQKP94UgowiZE=
+	t=1710129667; cv=none; b=pU2pvFhcDqHU12mOnIyQPohzE3VUZYJVEOaB7TuA/FYqKCsClJZbLLkkqe3U5ksCL4P38hSsSkQX8Q2zBK/opDC0Wu5LXbwpqqk98MjJhRAhXdW4ddy9/EH2PtfoLsqvoZkCddeURXg7N0z6g+Y3hhVP5OLG9UpFJNM7tOOTAzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710129459; c=relaxed/simple;
-	bh=E5DR2QAGZKW3fWpqoXgtS2AIabafQ43OF6KIow5fYZg=;
+	s=arc-20240116; t=1710129667; c=relaxed/simple;
+	bh=rZi0TGzdyLW1WeqbJYHxPHjlp/Ci1sJz1HPaw88Nqks=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X2uepMlXon0EpmElwDNj7TVQSvD6FjtPxxBy4LqThP32T6aGWZ2j7Qht2uOPNCre8t/XtBIGxy6tYtJ+951ZHvMrPk6dnLRnywy462//KDWHI6PXKlRBLuHcfXa78nzoJqeW3pwrXk53IIz3Skk2qkUex0KyfBiygYuwkFcpxtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IdgcnmM0; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29baaf3c018so1758630a91.0;
-        Sun, 10 Mar 2024 20:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710129457; x=1710734257; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5MR5N+6tV8+kHbX9z2W52LwKBRqNhKx905qdwAYtFt4=;
-        b=IdgcnmM01wOt9uc03FsAhYl94nwpmJ0+XfiXOqiTCCHW+Ce5elxhs5zdpOEP4N+JZY
-         U7p2c64yLc2mDEMH5V6rGjzzuovyr9KoQkoifTEy/y3Ba2IzHZ0FR4E55fkx7CIAk/+D
-         XS/JXX2T6DqQJxYb8iTinF3bxqiPciiFKBJLrZp4WoMsB7hjmBmZ4TqeFVNJToiaN+/n
-         ALn+YIQ9tMRgZ5BUWUJWhR6Hf8nyi34SRhyVY3/NWA/AzydH1r/UhGwgHlSX+gkjRWUN
-         laGj0XSabH5b3aZb8S9VVkJ4vdTpTegI/BIcGIv+fxQbkzGC3GYTpcrehlo4W6CXS8gY
-         Iihw==
+	 To:Cc:Content-Type; b=GBamSlA5c/E/MN+Vg+UPk+bUO+pDw1uD2GKbzuZn9//qjSmZ1/Ru9oGUz9+Qgm3clkhxbjNi5+gg17JXIptHPb19kZxY4S+N7sURFQKXAikl1HsAkYfVLth15JaUDnwjOVPxfgi0PU7kvI/PMRRzH73D2AZjKMneiBrpTK9Hmhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J9tB7avO; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710129664;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M2U/8cLx3dve7P4IJjHpYHx0RULwN13Wx0LsSxS6gyA=;
+	b=J9tB7avOBSibs6MBseKYEcnzfobvlwxm7UaXwb9qvY5lhqyUbKEj1LQFrqCy2y8Geojo1P
+	lMJRKYbGNftYZRK/CMHNFqtFAf56kIRk3e6qi7xYGwnYl9IVFzN6gakT0Z+L64RCI2yRR7
+	YZlzxTHc9nQAJz3k/VgCIzvnJtoD4OE=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-679-6p91MkA-MeaEBU0jY-wKcg-1; Mon, 11 Mar 2024 00:01:00 -0400
+X-MC-Unique: 6p91MkA-MeaEBU0jY-wKcg-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5c66a69ec8eso3533891a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 21:01:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710129457; x=1710734257;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5MR5N+6tV8+kHbX9z2W52LwKBRqNhKx905qdwAYtFt4=;
-        b=o5OOMuxsJLW4HhXpCPmo/+/+r5V3CdnyNdi6db8Mx4o7yfJAxtEDsGIxqSxTewAAD0
-         es/EOgKHUmuLEmNxFlceLIMf1mBdxDZt+wIY4cJsDVmSISJJannfuD8cRrYt0D6PD6+j
-         WQYUNJ2DknBbj8b0lNxabOUg6jqRAPPkcLnOHtqVg8RrLv/62zKtQxC2rAo5AtVyDNmP
-         Y43Nr/7BOC46NJZvAAiqZSgaLcldzo2ZFMT/yVY9/+9fwgMQtAjRpAemf0WhTSXExw1q
-         yEAK0AoQMBmglJVCoeC/ELn+K46gC+oupDk8AZGBjT0JuzHCCVlBY26Ca9epSMSqdjdK
-         ThXg==
-X-Forwarded-Encrypted: i=1; AJvYcCUdlH0jFMRtfeMXpOib6JMeX3bAL105hOefGLzaH2BqhW8eBwX5wJeMgMsrd1jxyhGjNIbcLIyo528q0/segahbUb99gmbyvZQpIDDw
-X-Gm-Message-State: AOJu0YzMgxskBYqPzG5OHedoVAW+Jnm2h23irR2a7uJDL+95OPTo+muG
-	P1meQGDihJvUzvdjD5AvXEn59+NelNOVPN0DVJotDqk12j2wT7PpYxwX2COMiqijaFcFiqmHz+k
-	/i86lX/5ukw93p40ijC65zmO9kE0=
-X-Google-Smtp-Source: AGHT+IE8BJ8QeV2pCmW5/kH081A5KoEUPB1+YyDMzuNPyxTI3P2Npgayk4BVAKb2+dZfiXLHgSTFi6fJS+DT4FroFPo=
-X-Received: by 2002:a17:90a:4586:b0:29b:4dfc:7c34 with SMTP id
- v6-20020a17090a458600b0029b4dfc7c34mr2900133pjg.33.1710129457333; Sun, 10 Mar
- 2024 20:57:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710129660; x=1710734460;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M2U/8cLx3dve7P4IJjHpYHx0RULwN13Wx0LsSxS6gyA=;
+        b=GAUPIg5zKi9ti0gFdN+ih/G/MY5b+tyJkxUZlIqpaXnuwtf78kkOfGEgtBHKRPUAyY
+         5l+h/v2OrW26crEyYBotm1oXQROLsmKzCvkJk/zaZKEaPGqETE7+j7nB+RSh0nYFBVC3
+         0l5eWik3bHBZbetxR8CSNqexEULGEfGBOF451DJW36ESUlRr5Fyc7TPFT2AfLSqvpeb2
+         t8DDAoevsbVdk1zfexN/WyIKKlVq23DICJLRkOdrD19QvZr58zS3dn/5cG+LTOWfLRe/
+         maRf9y4bq1l55CHj/vzOO174mRTSUmgNpr5SLDRFsGgOGGTehBJMQtkRLKBI9Of/PYCT
+         q02A==
+X-Forwarded-Encrypted: i=1; AJvYcCUiqMdX8YMsHQsFa9t+Gk4Wbnk7GFj36uIUy8XknN/bHe9lDlk8ykAJuiZ8/8dfTxXydcIAc9wfbvBiOJiP8EyNhwwiZ2WI6GIk/Tx1
+X-Gm-Message-State: AOJu0YwPD6QjPmfiUBTvvlzPgwCPlauq1hkJX5dK6Yjdod2/XhBGkb82
+	0LV1AZuE7VDy9ytIPZ+uN/KD2gYSSgW7KXo+ERjjhUNUCxiUX/fWwcvIsVNVPvAgTWJJ+lxa5hU
+	0crzefQleaLbf2/Ts68jdNFMUBb3YVRWUqg24ocvIzLd/d8XL9SzFvvXv9RK6XO7bP1hKnLS+GV
+	xsottntn3lZbzUqY3dwbkx82DnNAhVZa2Sipx8
+X-Received: by 2002:a17:90a:fd92:b0:29b:bd2c:7238 with SMTP id cx18-20020a17090afd9200b0029bbd2c7238mr3908741pjb.7.1710129659795;
+        Sun, 10 Mar 2024 21:00:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFlzVpYifmiq3kPP1nBEaLaTDBKlwZXFbqzpZKku1ileIZWpeswDU4nOMch5iZXL/GpxbvnXQOshFnSjHN0OS4=
+X-Received: by 2002:a17:90a:fd92:b0:29b:bd2c:7238 with SMTP id
+ cx18-20020a17090afd9200b0029bbd2c7238mr3908714pjb.7.1710129659509; Sun, 10
+ Mar 2024 21:00:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311035502.7112-1-qiang.zhang1211@gmail.com>
-In-Reply-To: <20240311035502.7112-1-qiang.zhang1211@gmail.com>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Mon, 11 Mar 2024 11:57:26 +0800
-Message-ID: <CALm+0cXCO3L2BYHDzDkNjSrvSXdE+DB=9oeykavcqRr6=BkGTg@mail.gmail.com>
-Subject: Re: [PATCH] rcu-tasks: Avoid rtp_irq_work triggering when the
- rcu-tasks GP is ongoing
-To: paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org, 
-	neeraj.upadhyay@kernel.org
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
+ <7d478cb842e28094f4d6102e593e3de25ab27dfe.camel@redhat.com>
+ <223aeca6435342ec8a4d57c959c23303@huawei.com> <20240301065141-mutt-send-email-mst@kernel.org>
+ <ffbe60c2732842a3b81e6ae0f58d2556@huawei.com>
+In-Reply-To: <ffbe60c2732842a3b81e6ae0f58d2556@huawei.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Mon, 11 Mar 2024 12:00:47 +0800
+Message-ID: <CACGkMEsFtJTMFVHt8pJ39Ge8nTJcsX=R_dYghz_93+_Yn--ZDQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+To: wangyunjian <wangyunjian@huawei.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Paolo Abeni <pabeni@redhat.com>, 
+	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>, "kuba@kernel.org" <kuba@kernel.org>, 
+	"bjorn@kernel.org" <bjorn@kernel.org>, "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>, 
+	"maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>, 
+	"jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>, xudingke <xudingke@huawei.com>, 
+	"liwei (DT)" <liwei395@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Mar 4, 2024 at 9:45=E2=80=AFPM wangyunjian <wangyunjian@huawei.com>=
+ wrote:
 >
-> This commit generate rcu_task_gp_in_progress() to check whether
-> the rcu-tasks GP is ongoing, if is ongoing, avoid trigger
-> rtp_irq_work to wakeup rcu tasks kthreads in call_rcu_tasks_generic().
 >
-> The test results are as follows:
 >
-> echo call_rcu_tasks_iw_wakeup > /sys/kernel/debug/tracing/set_ftrace_filter
-> echo 1 > /sys/kernel/debug/tracing/function_profile_enabled
-> insmod rcutorture.ko torture_type=tasks-tracing fwd_progress=4
-> sleep 600
-> rmmod rcutorture.ko
-> echo 0 > /sys/kernel/debug/tracing/function_profile_enabled
-> echo > /sys/kernel/debug/tracing/set_ftrace_filter
+> > -----Original Message-----
+> > From: Michael S. Tsirkin [mailto:mst@redhat.com]
+> > Sent: Friday, March 1, 2024 7:53 PM
+> > To: wangyunjian <wangyunjian@huawei.com>
+> > Cc: Paolo Abeni <pabeni@redhat.com>; willemdebruijn.kernel@gmail.com;
+> > jasowang@redhat.com; kuba@kernel.org; bjorn@kernel.org;
+> > magnus.karlsson@intel.com; maciej.fijalkowski@intel.com;
+> > jonathan.lemon@gmail.com; davem@davemloft.net; bpf@vger.kernel.org;
+> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; kvm@vger.kernel.o=
+rg;
+> > virtualization@lists.linux.dev; xudingke <xudingke@huawei.com>; liwei (=
+DT)
+> > <liwei395@huawei.com>
+> > Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+> >
+> > On Fri, Mar 01, 2024 at 11:45:52AM +0000, wangyunjian wrote:
+> > > > -----Original Message-----
+> > > > From: Paolo Abeni [mailto:pabeni@redhat.com]
+> > > > Sent: Thursday, February 29, 2024 7:13 PM
+> > > > To: wangyunjian <wangyunjian@huawei.com>; mst@redhat.com;
+> > > > willemdebruijn.kernel@gmail.com; jasowang@redhat.com;
+> > > > kuba@kernel.org; bjorn@kernel.org; magnus.karlsson@intel.com;
+> > > > maciej.fijalkowski@intel.com; jonathan.lemon@gmail.com;
+> > > > davem@davemloft.net
+> > > > Cc: bpf@vger.kernel.org; netdev@vger.kernel.org;
+> > > > linux-kernel@vger.kernel.org; kvm@vger.kernel.org;
+> > > > virtualization@lists.linux.dev; xudingke <xudingke@huawei.com>;
+> > > > liwei (DT) <liwei395@huawei.com>
+> > > > Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy
+> > > > support
+> > > >
+> > > > On Wed, 2024-02-28 at 19:05 +0800, Yunjian Wang wrote:
+> > > > > @@ -2661,6 +2776,54 @@ static int tun_ptr_peek_len(void *ptr)
+> > > > >         }
+> > > > >  }
+> > > > >
+> > > > > +static void tun_peek_xsk(struct tun_file *tfile) {
+> > > > > +       struct xsk_buff_pool *pool;
+> > > > > +       u32 i, batch, budget;
+> > > > > +       void *frame;
+> > > > > +
+> > > > > +       if (!ptr_ring_empty(&tfile->tx_ring))
+> > > > > +               return;
+> > > > > +
+> > > > > +       spin_lock(&tfile->pool_lock);
+> > > > > +       pool =3D tfile->xsk_pool;
+> > > > > +       if (!pool) {
+> > > > > +               spin_unlock(&tfile->pool_lock);
+> > > > > +               return;
+> > > > > +       }
+> > > > > +
+> > > > > +       if (tfile->nb_descs) {
+> > > > > +               xsk_tx_completed(pool, tfile->nb_descs);
+> > > > > +               if (xsk_uses_need_wakeup(pool))
+> > > > > +                       xsk_set_tx_need_wakeup(pool);
+> > > > > +       }
+> > > > > +
+> > > > > +       spin_lock(&tfile->tx_ring.producer_lock);
+> > > > > +       budget =3D min_t(u32, tfile->tx_ring.size, TUN_XDP_BATCH)=
+;
+> > > > > +
+> > > > > +       batch =3D xsk_tx_peek_release_desc_batch(pool, budget);
+> > > > > +       if (!batch) {
+> > > >
+> > > > This branch looks like an unneeded "optimization". The generic loop
+> > > > below should have the same effect with no measurable perf delta - a=
+nd
+> > smaller code.
+> > > > Just remove this.
+> > > >
+> > > > > +               tfile->nb_descs =3D 0;
+> > > > > +               spin_unlock(&tfile->tx_ring.producer_lock);
+> > > > > +               spin_unlock(&tfile->pool_lock);
+> > > > > +               return;
+> > > > > +       }
+> > > > > +
+> > > > > +       tfile->nb_descs =3D batch;
+> > > > > +       for (i =3D 0; i < batch; i++) {
+> > > > > +               /* Encode the XDP DESC flag into lowest bit for c=
+onsumer to
+> > differ
+> > > > > +                * XDP desc from XDP buffer and sk_buff.
+> > > > > +                */
+> > > > > +               frame =3D tun_xdp_desc_to_ptr(&pool->tx_descs[i])=
+;
+> > > > > +               /* The budget must be less than or equal to tx_ri=
+ng.size,
+> > > > > +                * so enqueuing will not fail.
+> > > > > +                */
+> > > > > +               __ptr_ring_produce(&tfile->tx_ring, frame);
+> > > > > +       }
+> > > > > +       spin_unlock(&tfile->tx_ring.producer_lock);
+> > > > > +       spin_unlock(&tfile->pool_lock);
+> > > >
+> > > > More related to the general design: it looks wrong. What if
+> > > > get_rx_bufs() will fail (ENOBUF) after successful peeking? With no
+> > > > more incoming packets, later peek will return 0 and it looks like
+> > > > that the half-processed packets will stay in the ring forever???
+> > > >
+> > > > I think the 'ring produce' part should be moved into tun_do_read().
+> > >
+> > > Currently, the vhost-net obtains a batch descriptors/sk_buffs from th=
+e
+> > > ptr_ring and enqueue the batch descriptors/sk_buffs to the
+> > > virtqueue'queue, and then consumes the descriptors/sk_buffs from the
+> > > virtqueue'queue in sequence. As a result, TUN does not know whether
+> > > the batch descriptors have been used up, and thus does not know when =
+to
+> > return the batch descriptors.
+> > >
+> > > So, I think it's reasonable that when vhost-net checks ptr_ring is
+> > > empty, it calls peek_len to get new xsk's descs and return the descri=
+ptors.
+> > >
+> > > Thanks
+> >
+> > What you need to think about is that if you peek, another call in paral=
+lel can get
+> > the same value at the same time.
 >
-> head /sys/kernel/debug/tracing/trace_stat/function*
->
-> original: 56376  apply patch: 33521
->
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> ---
->
+> Thank you. I have identified a problem. The tx_descs array was created wi=
+thin xsk's pool.
+> When xsk is freed, the pool and tx_descs are also freed. Howerver, some d=
+escs may
+> remain in the virtqueue'queue, which could lead to a use-after-free scena=
+rio.
 
-This test is based on the following environment:
-runqemu nographic kvm slirp qemuparams="-smp 4 -m 2048M -drive
-file=$PWD/share.img,if=virtio"  -d
+This can probably solving by when xsk pool is disabled, signal the
+vhost_net to drop those descriptors.
 
 Thanks
-Zqiang
 
-> original:
-> ==> /sys/kernel/debug/tracing/trace_stat/function0 <==
->   Function                               Hit    Time            Avg             s^2
->   --------                               ---    ----            ---             ---
->   call_rcu_tasks_iw_wakeup             13217    19292.52 us     1.459 us        8.834 us
+> Currently,
+> I do not have an idea to solve this concurrency problem and believe this =
+scenario may
+> not be appropriate for reusing the ptr_ring.
 >
-> ==> /sys/kernel/debug/tracing/trace_stat/function1 <==
->   Function                               Hit    Time            Avg             s^2
->   --------                               ---    ----            ---             ---
->   call_rcu_tasks_iw_wakeup             15146    22377.01 us     1.477 us        22.873 us
+> Thanks
 >
-> ==> /sys/kernel/debug/tracing/trace_stat/function2 <==
->   Function                               Hit    Time            Avg             s^2
->   --------                               ---    ----            ---             ---
->   call_rcu_tasks_iw_wakeup             12561    18125.76 us     1.443 us        6.372 us
+> >
+> >
+> > > >
+> > > > Cheers,
+> > > >
+> > > > Paolo
+> > >
 >
-> ==> /sys/kernel/debug/tracing/trace_stat/function3 <==
->   Function                               Hit    Time            Avg             s^2
->   --------                               ---    ----            ---             ---
->   call_rcu_tasks_iw_wakeup             15452    21770.57 us     1.408 us        6.710 us
->
-> apply patch:
-> ==> /sys/kernel/debug/tracing/trace_stat/function0 <==
->   Function                               Hit    Time            Avg             s^2
->   --------                               ---    ----            ---             ---
->   call_rcu_tasks_iw_wakeup              8334    15121.13 us     1.814 us        4.457 us
->
-> ==> /sys/kernel/debug/tracing/trace_stat/function1 <==
->   Function                               Hit    Time            Avg             s^2
->   --------                               ---    ----            ---             ---
->   call_rcu_tasks_iw_wakeup              8355    15760.51 us     1.886 us        14.775 us
->
-> ==> /sys/kernel/debug/tracing/trace_stat/function2 <==
->   Function                               Hit    Time            Avg             s^2
->   --------                               ---    ----            ---             ---
->   call_rcu_tasks_iw_wakeup              7219    14194.27 us     1.966 us        42.440 us
->
-> ==> /sys/kernel/debug/tracing/trace_stat/function3 <==
->   Function                               Hit    Time            Avg             s^2
->   --------                               ---    ----            ---             ---
->   call_rcu_tasks_iw_wakeup              9613    19850.04 us     2.064 us        91.023 us
->
->  kernel/rcu/tasks.h | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 147b5945d67a..36c7e1d441d0 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -317,6 +317,11 @@ static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp)
->         rcuwait_wake_up(&rtp->cbs_wait);
->  }
->
-> +static int rcu_task_gp_in_progress(struct rcu_tasks *rtp)
-> +{
-> +       return rcu_seq_state(rcu_seq_current(&rtp->tasks_gp_seq));
-> +}
-> +
->  // Enqueue a callback for the specified flavor of Tasks RCU.
->  static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->                                    struct rcu_tasks *rtp)
-> @@ -375,7 +380,8 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->         }
->         rcu_read_unlock();
->         /* We can't create the thread unless interrupts are enabled. */
-> -       if (needwake && READ_ONCE(rtp->kthread_ptr))
-> +       if (needwake && READ_ONCE(rtp->kthread_ptr) &&
-> +                       !rcu_task_gp_in_progress(rtp))
->                 irq_work_queue(&rtpcp->rtp_irq_work);
->  }
->
-> --
-> 2.17.1
->
+
 
