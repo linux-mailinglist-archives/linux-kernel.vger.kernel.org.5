@@ -1,112 +1,255 @@
-Return-Path: <linux-kernel+bounces-99129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE05F8783BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:33:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F2F18783C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E610B23928
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:33:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8CE31F21583
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D234C52F87;
-	Mon, 11 Mar 2024 15:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A705D53390;
+	Mon, 11 Mar 2024 15:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="OEcv+PhY"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hUpYZYb+"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E1347796
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A6C53E14
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710170705; cv=none; b=uIuqps91yjrWSBflvk0UjCX858+D4Yx7MobgukX35wtL5CxSCQFk1O1HhzRb6wyV20F6I73iV/9/bsj7pR1JURqqvibbUWqThuGczzoYojS0AOIxiXJwrWYVzIbSB0shF4hlJTgMIM7VJY3y7/gUGYE2m6BuAsHD9v2hJqWXKcY=
+	t=1710170708; cv=none; b=B8mnV73+M/SInpedOfEbT9QWcRqNQjwEAoTvp91ceSF86o0H0y+W38kwv9gU6yG5vjc4+sv6Ch3jdkGMX6tq1QyHST3wohxAYlctQGcgo+NjOe2JiDydF7D+noO/2WitImtvuAMek3jXqHRjWloV9KJ/SpwzAO2GEPMDmnGpFBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710170705; c=relaxed/simple;
-	bh=cCHkeAEUWjV0vuh+yfaK6MzpjAQN3B4EWJ1HtNvhjr4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To; b=oakiQRfgAe/udkKnY4XTty+KJaL5c1A7O9bZ8JUSWHI0cGEDlvW0n8fEyxaFkIw0P/dBM4G9B2WliEfxb0CnN1ywH+NSOX1N2oCezrfyZQNVY5vVvQrE5mRhH9Z/BCPM0lxxArJYCDvdC0P8K/9Temer8eotYqSN6r2b4snJLYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=OEcv+PhY; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2BB6F20012;
-	Mon, 11 Mar 2024 15:25:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710170701;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bHLMM6VOo42thQAgvftidBXfGDSJiFdOugL44M1CGn0=;
-	b=OEcv+PhYpbpMG8EzgmI7H8jCQjKaYUvG0gs3XwcKmTvJSgqllCI8oFyOrXsDFX3PjB62Li
-	r/+dtsZC4gz71xlDqJA6JhR8XnX8yrNVTO7Xc6UFU2Ja+cZXDVJnQhd7r/JDUgje4U4w+t
-	A6rIYwpjMZnM0VIBCbH0Lb2HXfqxRA85MXtk9+o3B268v8czRQzIxvqYfOVieSYNBecKkY
-	VOZNGBg6eS53YvAePOc2SWT//SpENUx6KQquaMtHPHcp6F7iDfy16a9GoS7vvqXeiy4dvq
-	kK24sGiPq5NEzjFLcsJlndy4dkuHU8go4vtt3RA1Hh3xGu4Sj+iwUc9B74Vb+g==
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Mon, 11 Mar 2024 16:24:56 +0100
-Subject: [PATCH 3/3] scripts/decode_stacktrace.sh: add '-h' flag
+	s=arc-20240116; t=1710170708; c=relaxed/simple;
+	bh=PE1Bf4VbdQgAuWtq0+E7lFlpiUpbWAvzt5gpUklHuFw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g6r3fWga4Q+rjaWn81DLgGi1bl6ydZhgi4TGCB9h1cbA9bp32n1orbQNJdNnW7BkOwCso3Lm8LEvo2pdVWk43qOLVRM/VdCT3n32fenKK2UpzyE8yX7eInj46FmkXdhT8wic7Rd4Y7+5UOufee6NTCwe8bt1uTVJtX8bO7owstA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hUpYZYb+; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710170707; x=1741706707;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=PE1Bf4VbdQgAuWtq0+E7lFlpiUpbWAvzt5gpUklHuFw=;
+  b=hUpYZYb+DeYhgeZqsPdKV/+J14n4+80ont388TgVigTYtCwvskBDT9hO
+   2NGOIT8pR2PU+Rat+4s4cQqcwfa/lVbRasOpYTiSqziNhxIufWty3hhRi
+   FYwJ4lkN42g+Q3+mOLSbnlzCXNPvucxaVlK+a/rdBrgwwClgE9mAqHwxt
+   xfLtj3ZnSoT/MxmgsoVf6yQB4X5VUCpT1UurktXyF1fg4Tigc3l7I/t8q
+   TBFOJpl3SRwtGQxHYFsY/l5EF4WFFif4owubXlyVcwMvJxGfVyJ/RlcxG
+   RaBK5cBofhiteQObzcea9RJAhQy3TthTxovY697+9ewhs8J6Br0K7Gbuo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4953836"
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="4953836"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 08:25:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="11782707"
+Received: from brianlap-mobl.amr.corp.intel.com (HELO [10.212.126.207]) ([10.212.126.207])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 08:25:05 -0700
+Message-ID: <58c91c6d-b828-41fd-9001-a399cc2cab99@linux.intel.com>
+Date: Mon, 11 Mar 2024 10:25:03 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] Re: [PATCH v11] ASoc: tas2783: Add tas2783 codec
+ driver
+Content-Language: en-US
+To: "Ding, Shenghao" <shenghao-ding@ti.com>,
+ "broonie@kernel.org" <broonie@kernel.org>
+Cc: "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz"
+ <perex@perex.cz>, "13916275206@139.com" <13916275206@139.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+ "bard.liao@intel.com" <bard.liao@intel.com>,
+ "mengdong.lin@intel.com" <mengdong.lin@intel.com>,
+ "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+ "Lu, Kevin" <kevin-lu@ti.com>, "tiwai@suse.de" <tiwai@suse.de>,
+ "soyer@irl.hu" <soyer@irl.hu>, "Baojun.Xu@fpt.com" <Baojun.Xu@fpt.com>,
+ "Navada Kanyana, Mukund" <navada@ti.com>
+References: <20240305132646.638-1-shenghao-ding@ti.com>
+ <52752743-b4fc-44b3-96d8-21c8cfd2bc3c@linux.intel.com>
+ <433f1e2469ec4f33b4c0a06d03775652@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <433f1e2469ec4f33b4c0a06d03775652@ti.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240311-decode_stacktrace-find_module-improvements-v1-3-8bea42b421aa@bootlin.com>
-References: <20240311-decode_stacktrace-find_module-improvements-v1-0-8bea42b421aa@bootlin.com>
-In-Reply-To: <20240311-decode_stacktrace-find_module-improvements-v1-0-8bea42b421aa@bootlin.com>
-To: Konstantin Khlebnikov <koct9i@gmail.com>, 
- Stephen Boyd <swboyd@chromium.org>, Sasha Levin <sashal@kernel.org>, 
- =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: luca.ceresoli@bootlin.com
 
-When no parameters are passed, the usage instructions are presented only
-when debuginfod-find is not found. This makes sense because with debuginfod
-none of the positional parameters are needed. However it means that users
-having debuginfod-find installed will have no chance of reading the usage
-text without opening the file.
 
-Many programs have a '-h' flag to get the usage, so add such a flag.
-Invoking 'scripts/decode_stacktrace.sh -h' will now show the usage text and
-exit.
 
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
----
- scripts/decode_stacktrace.sh | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-index b56e79060e9f..e8c9976062d0 100755
---- a/scripts/decode_stacktrace.sh
-+++ b/scripts/decode_stacktrace.sh
-@@ -7,6 +7,7 @@ usage() {
- 	echo "Usage:"
- 	echo "	$0 -r <release>"
- 	echo "	$0 [<vmlinux> [<base_path>|auto [<modules_path>]]]"
-+	echo "	$0 -h"
- }
- 
- # Try to find a Rust demangler
-@@ -32,7 +33,10 @@ fi
- READELF=${UTIL_PREFIX}readelf${UTIL_SUFFIX}
- ADDR2LINE=${UTIL_PREFIX}addr2line${UTIL_SUFFIX}
- 
--if [[ $1 == "-r" ]] ; then
-+if [[ $1 == "-h" ]] ; then
-+	usage
-+	exit 0
-+elif [[ $1 == "-r" ]] ; then
- 	vmlinux=""
- 	basepath="auto"
- 	modpath=""
+>>> +			dev_sum == 0) {
+>>> +			dev_dbg(tas_dev->dev, "No dev in calibrated data
+>> V2.");
+>>> +			return;
+>>> +		}
+>>> +		crc = crc32(~0, cali_data.data, 12 + dev_sum * 24) ^ ~0;
+>>> +		if (crc == tmp_val[3 + dev_sum * 6]) {
+>>> +			tas2783_apply_calibv2(tas_dev, tmp_val);
+>>> +			dev_dbg(tas_dev->dev, "V2: %ptTs", &tmp_val[40]);
+>>> +		} else {
+>>> +			dev_dbg(tas_dev->dev,
+>>> +				"V2: CRC 0x%08x not match 0x%08x\n",
+>>> +				crc, tmp_val[41]);
+>>> +		}
+>>> +	} else {
+>>> +		/* Calibrated Data V1 */
+>>> +		/* 8 devs * 20 bytes calibrated data/dev + 4 bytes Timestamp
+>> */
+>>> +		crc = crc32(~0, cali_data.data, 164) ^ ~0;
+>>> +		if (crc == tmp_val[41]) {
+>>> +			/* Date and time of when calibration was done. */
+>>> +			tas2783_apply_calibv1(tas_dev, tmp_val);
+>>> +			dev_dbg(tas_dev->dev, "V1: %ptTs", &tmp_val[40]);
+>>> +		} else {
+>>> +			dev_dbg(tas_dev->dev,
+>>> +				"V1: CRC 0x%08x not match 0x%08x\n",
+>>> +				crc, tmp_val[41]);
+>>> +		}
+>>
+>> The CRC check should be used to determine if the v1 or v2 should be used.
+>> This is really broken IMHO, you could detect the wrong layout then flag that
+>> the CRC is bad without even trying the other layout...
+> 
+> It seemed not easy to add an extra CRC in V1, especially for the old device in the end users.
+> As you know, the V1 is stored in raw data. In order to take care of the
+> old devices have been already in the end users, the V1 part has to keep here.
 
--- 
-2.34.1
+I was referreing to the existing CRC at the end...
 
+ * V1:
+ *	Calibrated Data of Dev 0(unique_id offset 0) (20 bytes)
+ *	Calibrated Data of Dev 1(unique_id offset 1) (20 bytes)
+ *	Calibrated Data of Dev 2(unique_id offset 2) (20 bytes)
+ *	Calibrated Data of Dev 3(unique_id offset 3) (20 bytes)
+ *	Calibrated Data of Dev 4(unique_id offset 4) (20 bytes)
+ *	Calibrated Data of Dev 5(unique_id offset 5) (20 bytes)
+ *	Calibrated Data of Dev 6(unique_id offset 6) (20 bytes)
+ *	Calibrated Data of Dev 7(unique_id offset 7) (20 bytes)
+ *	TimeStamp of Calibration (4 bytes)
+ *	CRC (4 bytes) <<<< HERE
+ *	Reserved (88 bytes)
+
+Presumably the CRC covers all the data above, so you could first check
+if the format is V1 or V2 by checking the CRC values, then check the
+binary value as confirmation. You're doing the opposite comparison.
+
+>>> +	}
+>>> +}
+>>> +
+>>> +static void tasdevice_dspfw_ready(const struct firmware *fmw,
+>>> +	void *context)
+>>> +{
+>>> +	struct tasdevice_priv *tas_dev =
+>>> +		(struct tasdevice_priv *) context;
+>>> +	struct tas2783_firmware_node *p;
+>>> +	struct regmap *map = tas_dev->regmap;
+>>> +	unsigned char *buf = NULL;
+>>> +	int offset = 0, img_sz;
+>>> +	int ret;
+>>> +
+>>> +	if (!fmw || !fmw->data) {
+>>> +		dev_warn(tas_dev->dev,
+>>> +			"%s: failed to read %s: work in bypass-dsp mode.\n",
+>>> +			__func__, tas_dev->dspfw_binaryname);
+>>> +		return;
+>>> +	}
+>>> +	buf = (unsigned char *)fmw->data;
+>>> +
+>>> +	img_sz = get_unaligned_le32(&buf[offset]);
+>>> +	offset  += sizeof(img_sz);
+>>> +	if (img_sz != fmw->size) {
+>>> +		dev_warn(tas_dev->dev, "%s: size not matching, %d %u.",
+>>> +			__func__, (int)fmw->size, img_sz);
+>>> +		return;
+>>> +	}
+>>> +
+>>> +	while (offset < img_sz) {
+>>> +		p = (struct tas2783_firmware_node *)(buf + offset);
+>>> +		if (p->length > 1) {
+>>> +			ret = regmap_bulk_write(map, p->download_addr,
+>>> +			buf + offset + sizeof(unsigned int) * 5, p->length);
+>>> +		} else {
+>>> +			ret = regmap_write(map, p->download_addr,
+>>> +				*(buf + offset + sizeof(unsigned int) * 5));
+>>> +		}
+>>> +
+>>> +		if (ret != 0) {
+>>> +			dev_dbg(tas_dev->dev,
+>>> +				"%s: load FW fail: %d, work in bypass.\n",
+>>> +				__func__, ret);
+>>> +			return;
+>>> +		}
+>>> +		offset += sizeof(unsigned int) * 5 + p->length;
+
+>>> +		} else {
+>>> +			/* Capture stream is the echo ref data for voice.
+>>> +			 * Without playback, it can't be active.
+>>
+>> That makes case for [1] above.
+>>
+>> I also don't get the concept of 'active'. Even when the playback is muted, you
+>> do want to provide a reference stream, don't you?
+> When playback is muted, it will turn off echo ref.
+
+What does 'turn off' mean?
+
+This could be
+a) the echo reference is made of zero-value samples but is transmitted
+on the link
+b) the echo reference is no longer transmitted and the stream is
+disabled with a bank switch.
+
+>>
+>> Also don't we have a potential race condition, you set the 'pstream'
+>> status for the playback but use it for capture. What tells you that this cannot
+>> be executed concurrently?
+> Capture in tas2783 can be unmute during playback is unmute.
+> No playback, no capture.
+
+I can't follow your answer.
+
+What I was asking is whether we can have a case where tas_dev->pstream
+can be tested while it's being set by another thread.
+
+>>> +			 */
+>>> +			if (tas_dev->pstream == true) {
+>>> +				ret = regmap_update_bits(map,
+>>> +					TAS2873_REG_PWR_CTRL,
+>>> +					TAS2783_REG_AEF_MASK,
+>>> +					TAS2783_REG_AEF_ACTIVE);
+>>> +				if (ret) {
+>>> +					dev_err(tas_dev->dev,
+>>> +						"%s: AEF enable failed.\n",
+>>> +						__func__);
+>>> +					goto out;
+>>> +				}
+>>> +			} else {
+>>> +				dev_err(tas_dev->dev,
+>>> +					"%s: No playback, no AEF!",
+>> __func__);
+>>> +				ret = -EINVAL;
+>>> +			}
+>>> +		}
+>>> +	}
+>>> +out:
+>>> +	if (ret)
+>>> +		dev_err(tas_dev->dev, "Mute or unmute %d failed %d.\n",
+>>> +			mute, ret);
+>>> +
+>>> +	return ret;
+>>> +}
+> 
 
