@@ -1,87 +1,90 @@
-Return-Path: <linux-kernel+bounces-98749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E111F877EB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:15:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2392F877EB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:15:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118AA1C20CFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:15:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19091F20FE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633483D986;
-	Mon, 11 Mar 2024 11:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1810F3A8C0;
+	Mon, 11 Mar 2024 11:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="k3aJhzFV"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2133.outbound.protection.outlook.com [40.107.94.133])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="rcVgD0KX"
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2040.outbound.protection.outlook.com [40.107.14.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB2D3D556;
-	Mon, 11 Mar 2024 11:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418C43D546;
+	Mon, 11 Mar 2024 11:14:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.40
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710155680; cv=fail; b=q3O1Tk9VsOAvcjy4fLpcx99TfuOWQJDQZ6532GZBJODsecDzScWzHNXMH1h/Sy1wVfWbktERsNFrdUzGCmOmKIa8aeKs8HfswVZQo+yLFBhnglBTip837ZCUyIsd5fDyKaPRH3IGNjrmXwc6+g+NDd/eK6vfbUgVjgM8UU7ua8k=
+	t=1710155679; cv=fail; b=XQyRgDYpjk77/ZVRgvIs/1FJ8qipsGHDMthFG28nmshfO1GlHNgegjNaGPH8BwsVsNSRkFuBRMhCmBGYA6Sd4KKvdLxGf1ovdOki3bfIg50qKBKq6XgWsIC2Dm4ynTQuIzXVRfYQbuJ8ohPwBeQm5UZyJsdWt7olrlOs1ZJAKv0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710155680; c=relaxed/simple;
-	bh=LqZxRBu72sZ5DtA6tqfahM0Zsk7K+kpu0T/sAawRyPA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=STRXfSjyZ6mx9Wgwt5sd25SOMVxc7Rb/EUO4NfandrmDjTTXrSM944TcJ7rVw0Zr3KuZG7UXbBDSjmyeGL4l2QfbDyJx3lfE3S2YS9IklBeH6+XotXJ1leX4i9ENvv9hGGgknm3prfHdNN4/5GCYApBOuQjUW/34u3jAuMEy5zo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=k3aJhzFV; arc=fail smtp.client-ip=40.107.94.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+	s=arc-20240116; t=1710155679; c=relaxed/simple;
+	bh=RsDkI5GlRealG3XfhGBR0WsvMeEDEmZK3qXsIOZoKio=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BqikaHoVcNrUa9Zs7hMraTBjlTL/yOHGIeRiXSwK0J8+OIu3L9oAX11fEzYGNVPcnqjhBnQk0sL4WF4VjylqLtKHnyKqh09AJ1/ICnws3V5yZUTbhIUx1S5n8FDo0dPSdgZBfT79fe0CV7pWpnvcsgNeNXbGa6geEP6Vk7bSiQg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=rcVgD0KX; arc=fail smtp.client-ip=40.107.14.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j+RALAhWGdWmtwbPJSUjeoGOKJ8p7qFSVb+SCREveH+Lk3pCkRT5eUEGvVR7rcRZ28gdTxgjdnE6lgFOfeSDZVxhtc2grojYG1ViW405nsYEqoxpPiud9Ji01PqSTPZtzrveII2yh0iLZo0kiFANkhqUedHCvDeYKy1huulJBUrFBxcT22R74YDY2wcwOJX2irtV+3hXhD9B0Zn/isBWP50CNgTBZbTlERuKCRZ97s9ZUWHMmA55HnlSYbzOEX98PF+Fax1cRjKL8tWM2dh45sGXZrhxCknU3VV67vnaMCRtMVLm/rF6dXOShrgk7RRraQOaF4ocYNdX4xQGFJpNNg==
+ b=kVXRzCZwyaIa7ewGzC7C8EmVT8hjJP3pcht3+DYj5CuiARyfGgF6nzirZNSqi95jeZyVXDPlMPfY8Iq0B1uagmnB+4c7AfTtft6ijc9/lHvNVQ0F42DNHKIrYBVyHsSVah0Qk2stjY738GNrASPYJsFY1VC87hSdtJ00V7y/xuKwbvpoypNnwh1YSREEv589BC/sMp2ZMhSm9sQrX0Ex8mAHxsKO2S2S3uMDPOqX+V1N2Me85quSzEi4fPycRiWJNxzEfFwHfo0w28QdVWXLVefnakkG27ywliw78Htji4wsMipMqR9tyv6WC+HFy2ray0c6f1/lB3Q4Oyk5qgJFyA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X0u40wOJfOwoU4DKcUXVHsuNz8t8DGXO0rERZzjej3E=;
- b=PJvDroDVvrF3Mr4d2kiU9owGQkCqJG3Pk9PVEPWUyQ2disdY1cD78okH/cvdxoMAPbl8coD6QZCEKCdPPJAMWujSZ4StMYbXVhedY5kuJGo2zSwXw3Set4vUtmcOoV3Zp4b4x8EGrHqk/Wg2KZZjjVPUxSQwbKEk9XnheJMS5c6+Q3CC15VMl5viHeM7VxUPh0i120B2zItkDro+QWr1wb1lDO1uNbNaZlGWmOrh5dAzxfmrQADkNjRbO79Isb5K5STGTd9nIBIZE5AqY3zY92gs+aPogZFKZZ3BZuybssud9hGyCKMkjeu+06fpEfxN3fRI0CrkXyFl7fXRw339zA==
+ bh=Oq+9ih4N4PlGzWqjRA4TbHrwiNaic4itHjhTLfn3qt4=;
+ b=C27Hgc9e7gTVOMobA8+fEh4086hxgxitPwXsxBFblf2U8576JYJkCyfLPxWQhNjaPeQ+UHExQ2UvTTYavfxQJYd6Z0/wk7JdD63UcYSz5dc2KFEo1/aOhoNBRuks1EB0CU1zzblLKKBoGx7ebJnE8ujWsH8i+Vis1J8ZnoPYQaAfDhsB52oTJs3CRZnrQX8aFmXZ9CZTRReJsDvdswxgDgRv/hOPhX6Y4bRKaTSisbE6JZvZOoIVZnIfTjuACUA3vXHkHnQb7nHqFqbklLeuAnCYmIXdQA+TbnKP+PN5qUvuM/efQHjij+olQFpIlr1bDj//6yju0vSXMIT2/5pYpA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X0u40wOJfOwoU4DKcUXVHsuNz8t8DGXO0rERZzjej3E=;
- b=k3aJhzFVv4h3FT0dkNfOuG9xUJPfp1JCscWRpsoh4uvJjmwvjb69BmS9iPB0Qs3CVLiaCEkJ2v4Ea8bW7KN/4Ad9DOtha7Rd9jm0RX+wu70xz7FHpZlRGtrU0Yx3RTNMOZnrngeGOERC813IHwCCHbv5Yqzrb5ldDoQuuDR6BT0=
+ bh=Oq+9ih4N4PlGzWqjRA4TbHrwiNaic4itHjhTLfn3qt4=;
+ b=rcVgD0KXFho/KClJeGK8zXXPeH2zTJI8tiYSN1kyqS9ZibYbgMvSRIIpN07PJCLG0cTOIaN3BNd1pxpnApyY+sc7BebhaomuUjRtRH5KPxigLww6TEbrHF60lptj7a0N3Ib/wILSRdZIv5H7JUUUrxIK7MfHkcVTGt7hmMeme9w=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
- CO1PR01MB6741.prod.exchangelabs.com (2603:10b6:303:f2::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7362.35; Mon, 11 Mar 2024 11:14:36 +0000
-Received: from DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7362.031; Mon, 11 Mar 2024
- 11:14:36 +0000
-From: Chanh Nguyen <chanh@os.amperecomputing.com>
-To: Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Justin Ledford <justinledford@google.com>,
-	devicetree@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+ by DU2PR04MB9145.eurprd04.prod.outlook.com (2603:10a6:10:2f4::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
+ 2024 11:14:34 +0000
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::4bee:acb0:401a:3a01]) by DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::4bee:acb0:401a:3a01%7]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
+ 11:14:34 +0000
+From: Chancel Liu <chancel.liu@nxp.com>
+To: shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	linux-imx@nxp.com,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-	Open Source Submission <patches@amperecomputing.com>
-Cc: Phong Vo <phong@os.amperecomputing.com>,
-	Thang Nguyen <thang@os.amperecomputing.com>,
-	Quan Nguyen <quan@os.amperecomputing.com>,
-	Chanh Nguyen <chanh@os.amperecomputing.com>
-Subject: [PATCH 2/3] hwmon: (max31790): Support config PWM output becomes TACH
-Date: Mon, 11 Mar 2024 18:13:46 +0700
-Message-Id: <20240311111347.23067-3-chanh@os.amperecomputing.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240311111347.23067-1-chanh@os.amperecomputing.com>
-References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
+	linux-arm-kernel@lists.infradead.org
+Cc: Chancel Liu <chancel.liu@nxp.com>
+Subject: [PATCH v3 3/5] ASoC: fsl: Let imx-audio-rpmsg register platform device for card
+Date: Mon, 11 Mar 2024 20:13:47 +0900
+Message-ID: <20240311111349.723256-4-chancel.liu@nxp.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240311111349.723256-1-chancel.liu@nxp.com>
+References: <20240311111349.723256-1-chancel.liu@nxp.com>
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0088.apcprd02.prod.outlook.com
- (2603:1096:4:90::28) To DM6PR01MB5947.prod.exchangelabs.com
- (2603:10b6:5:1dd::12)
+X-ClientProxiedBy: SI2P153CA0032.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:190::23) To DB9PR04MB9498.eurprd04.prod.outlook.com
+ (2603:10a6:10:360::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,129 +92,143 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|CO1PR01MB6741:EE_
-X-MS-Office365-Filtering-Correlation-Id: da385cf0-3817-4bc1-6637-08dc41bc6fac
+X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DU2PR04MB9145:EE_
+X-MS-Office365-Filtering-Correlation-Id: 818634b5-35f6-4a48-ef09-08dc41bc6e5e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	WfsU27adHcRdXAKZcrfNjjsPccytwwdugpig6Qhy/8em//icqzmxU4Hg0z3iHK3pix1ARI+tVNpHvb+Qj8uE2QZfb77kBVOpTGcq4Dkboykgj2i8ZO98XAEagTEckAChryq7vmb56vyAP4dAua8/fyQTIr/2yQvNgjnxeZPLrcyPSF13JUAFcjKHtXLKpMZfV0WmCZAp6QNALxPvHF5prwEhRCkeJEGh9Ez9CNwcGCEf4wR9Kli8e9grTgnATdWpOAuidYTjnwFA+k3zOaefxWyzkrccSNrRJsA+Ayt5rgkBV4rpp6jVyjO/HyrHD3qohF/D6m1JldTAancuBR89IdoZ68G51xLW3qnlByaxjitYwH7w6lO8hrYmHX7t5DlfjixeKY00wn1BYrOsTb4dXu0NcMkYJiesxF1zU0jk6ymqLEnh3H/JDK9tOER9l4Dc7xcQU8ek2tivVKuDpAu8Rk4RGr0hiiaUeKjghM2JQXAc9dHLneQ09numaLFmMYuWPVj3c8tnJeM9Fjg2L8wFOGFMhjIIYIhUpYgSqCSY4Sxat78wpDutCGTDExEKEohJsWfdf3FeMlAJGDcxu5yBu/M35mhfcodh+pFy8/46s4HmUVd88vTRfDE5jJ10Lv7QH95CZvbNloW5GfvTg2u+TkU4/BASrHTB/T6HAJBdP8xRQPyxPCYt7e47lCaCnCIgHGF55zTf9qQWEv0VGu0fX77TcmZaxONJUcTahvsl8kU=
+	rP51D5sTwYvm7ujbSRSklNgMcpULRAlHHwhaboxLzwcfkEOzayEpQ6puoH3VRln1l0g8uVcwlJ3iOUuqRNn8Ru5zr8Cnh+rug5BqEZy3OV4nL/+XmdLXy6zdhS4hfJkhC3OkU7uhFemLphQYNv6xcffyRQ5LGOrAaX46FgCmPgZUCnOizJnZN4Sxwnm6a7X2Tnza0XeSPA9UVsjIzQPov3OhrihQz5ClGCoNMI86UlZkfEbJZssAsPAFH5bfJozU7JjxsqP2X7HE5UoIyjmZijBOl7pDHr5rYHFLDnW1UxOF1fe6Rr4dXvocqRJNvvF8XeZQ0E4scDWAk+jFJa9Ag5Rm2xb2VPb4dOTuZw3OOJSwcE5iox9WoZ7amuejxAT8+RMPB+kk10nhqg43g5ocGtnTB2mc+u39YpmqlmAFWOo+1JBaj5lDcPimv4nro33/1JbM7CzZ4VFO0kC64UkHsvwyNp391sA4d6dkll2nxXezB9N/3IXrhpM/hDX5YyJeXwtDre7B/DMEviCKdbfeRul82WeWKuTHCQabtSGiSbO7Sx4u0dAJ3QCUavmKvmmbwysWNpl/Dajl5IpqTjfWvSVBOvYrQnAdR94ApomoZFjYRmCv1Ley4D4yG/MbtyL7pPLQS9F51jZK7JuzJFyuQ24cQvDYAoFiPdAWjiUkPx3FqXALZjNDcm1t4iBpTG6ekoQ72VT1kXt4HXO1IvDJy5jVDXvDxZ7H5Rp6phzs930=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(52116005)(38350700005)(921011);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(52116005)(921011)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Tj8yy3k1htddNRIYszg9O5MvkKU5CFeYBNPlneH+ScfQAEihxgLsgsuDCuk4?=
- =?us-ascii?Q?7soO20w7PD88KXObcwEntOX1ZWiKOxM6U9TOiEt1NUAhUMR/nWI/IpwlZarf?=
- =?us-ascii?Q?Y/KPHuoHXbfNkc8+gLcJyJ1DY1Y9vZt8C/Rc8yAK//NTdVPo7unPOJXsI3vS?=
- =?us-ascii?Q?inCukDh6VltWG3cc8wu+3kVYBpcNQ3eRq/QQxWV6kp4Gzor9wFj/aNe7oRqY?=
- =?us-ascii?Q?B/WRNHGYUvDJWzhljy+ptrR8Xky/tPxjvNRXeiPFJh+9UEYWbvPBAmPC2sdp?=
- =?us-ascii?Q?N2NhDhq3CPyvCrvc9GGjyx2SH3+WPJfMzZxYhkgY7J0IiwA9P676nMhf1UQ0?=
- =?us-ascii?Q?Ai+J8x1bUAlijAxvDo+n1TySy7fTW6gUgvJrzyObLrfFUtOlNZFF41INAz0b?=
- =?us-ascii?Q?WqxvvI5Np8jh46pjLDx/NxTEbXo4wW2bI6sjpKAD6yjWXCmuisjeeD6NciCY?=
- =?us-ascii?Q?aqNSyYfJfWDG53Tcax6bHOMc0sU+uFfxRT3OL1tN9miJHb8eNWEW1sBQOVT3?=
- =?us-ascii?Q?BhhGwL06adPuNN+XcSbJGWj8BD8WLgrT3cTUkXIvF2lActj1sonlJzb6NGBE?=
- =?us-ascii?Q?ZJ5kw4WqT1vgWEXxusG3FmWtRJKli+CVhj1VUkP6vIE+sz6TrSyEzBtgf7IQ?=
- =?us-ascii?Q?hvcDUlWgtz5P9drQWXAL3ENQjkyaBjKq9sGaRz6tM6akj1j+q7msPpXHSi6/?=
- =?us-ascii?Q?YT3uS/nsSAjZewvLvub8ADlNZBuJhA+c2yZb3tbaMmZ8PqaKw/lx3iETZUr1?=
- =?us-ascii?Q?3B8x8oJehGYZ8cFK09weL4inGkuVOwrRRWhlzqv5xn7qm9H2G9YL/UCeSQrX?=
- =?us-ascii?Q?2tSSgT0V3QgyDnnX2PfLuIBdgrLtgM6RFneHPz5Qp5HgYxqbpcnN8hXy1R0m?=
- =?us-ascii?Q?OAlLrIw0Y+x3jlPF5wcFDM5hVKptme955tu7zoKqOlSf7OVV5ZTHEJfR6d8O?=
- =?us-ascii?Q?DHhEnxS9xLp3rYMUXTHBMZEG1ZiE+RDutrwqY3Ft/KbxycbfkVeCHICReFHq?=
- =?us-ascii?Q?uNrvZD+1w7A54bD0rR+4GFaSoqsTetUFWh5MM4OSZOvdgtfrwoo1UrrHXaCd?=
- =?us-ascii?Q?odToK9xQaoxkou+SnNWSBIE+pFRyud+r7Bq69oq0yS+YQgXsIuvaKqcmq8JL?=
- =?us-ascii?Q?RewilZ8PwJ22U+eWalZC+juDY26UtHVUU1pTZfPqNuTRZkoQyjppLhfZfR+Z?=
- =?us-ascii?Q?POLYEwA24xY0Fkgn7/xl/VvAGFC2h+3T/RoOY3GDiDCl/xOIfPYzdYOdd7p3?=
- =?us-ascii?Q?GV6deHB/qYy0AL+6ljqEjzeI/syF8TKNRAT8/FUgj/Hzrt/ybb0pOrLCkeyU?=
- =?us-ascii?Q?OIuyyL3ZGKq3bp2WnC8cySYH7yUuer7pA0LmtsP3K5C2Lxhjet2BnmrcY++A?=
- =?us-ascii?Q?BvFoYskBpKEtUwx8Z/NIA576KGeeSoK05+rVn6oaDEl97GlLXihRFWgFx0V3?=
- =?us-ascii?Q?Bn/RAfdwOI0y53y93oMtWLa4dYcC1cNeO65rMlmFKS6tqYuio/Fsn4X/Ton3?=
- =?us-ascii?Q?7kqCc0pHf4BS3sWR0ZbBI9hQTa5BmkgeZtakY0Tm8uTjLlj42p8mvHvpCct4?=
- =?us-ascii?Q?FKVRwAmOUt8LG5/xj6Gv0cAhJHhXRqF8Go1txw0UKYvBPSjQcIpli34EX9wg?=
- =?us-ascii?Q?XW0Nke2Scrc7K8P9UYC3cXo=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da385cf0-3817-4bc1-6637-08dc41bc6fac
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
+	=?us-ascii?Q?jHbFeeABRlAKx2xtl6hZ4KxrD8eqUlaD8uW/Due+6GIx9QbDWi/XdRx37pkw?=
+ =?us-ascii?Q?vz4T7r9Yni5TboDMXneFYTtsmlP5EuSfBhFG103e2lAnSjNYdIQX4yvkLx9l?=
+ =?us-ascii?Q?FMcQNEGICdmJx9k3h04s/JC7ogTbHBmO7a5/IyfyUZr5C8lRjeOdmRPWGlAA?=
+ =?us-ascii?Q?/1uBbAZmGqDgp/9DBjOXfiKVzDF6IXNH96q7CO+vmwqkCtrT6LRMjoa7lAaC?=
+ =?us-ascii?Q?vDY6cggHa/f7lgQkGUchD0LNtjnCPswVlOysRvaOa4BcvDak5j9r/rPMAYzG?=
+ =?us-ascii?Q?CuafbV0VQrUeiFcmsotH6o738nf4oxKcM65YwWnqHbgy1DrZeIMGzuVw7fsF?=
+ =?us-ascii?Q?fXvlNJr0BfwvfzHSaD7RJSW1KX4XpF3cOal62Tn+AY+0OHvb42RU7p9Mfzdp?=
+ =?us-ascii?Q?hA8oG2hnssuODAme8NWtwFthbaz90dlBxqA3Do9l71JHqu1PHmAqaFxCneZi?=
+ =?us-ascii?Q?t8q75aMTKw0b5xDuMm75rerqrveRxVMoizfs8m+F1+a8x8N2yKPz2aqNZxa9?=
+ =?us-ascii?Q?T9nDR5GjJqf/ooiFD46KJ6T4INoyDbxXWYkVjTCZsg6KOxxia9PbRhXIJgqj?=
+ =?us-ascii?Q?3ZsNu8rqVMRe83UCkC73wdUOB9bK5iijP+O7jYYAjoWJ1bPImq56Rps5tJ76?=
+ =?us-ascii?Q?h8Tm89Rghyu5bGxVE7DBSxFFhjtkAHfXuYFbbdAc4yUJVhMUEVDN2rAnEwYH?=
+ =?us-ascii?Q?FrQLOasrQh3YgosGQFXf1oGZCq0Yy/eHIezNXIunh0rIF+3KyjJn9KeqAdoK?=
+ =?us-ascii?Q?VXhe8a53Mo9LLE6zBGIeQGC50HbdkwfiJ5oLWY2suyctioC8P/wZ1f+RdS3Y?=
+ =?us-ascii?Q?dNKFpNm/Gytr7cuAGyJVo4pzFty2wxsRVbN8Dcqx62a4pwCKu9GOGdcpBHg3?=
+ =?us-ascii?Q?mQ4ySa447JQ1XTgXplfB7VSm66zY21/7vIV/oZW8INQxtgscJr+tewejd2th?=
+ =?us-ascii?Q?2stICoccH/Qem8ao7d0QnJ07YnfWe+9+Vq/2cv6mbv4NYq4QOJrEtmHfXwkG?=
+ =?us-ascii?Q?3F6JCeVVc0FnNAiI75lTqw6/ojr8cbBZcI9NW9U1MBEq9Xa2t8DA0G3QHVwP?=
+ =?us-ascii?Q?VHnQFmaCVKTSxMTBaeViOZmxEF+T66nkLFd5PkQmg0KWU0RJmGHzJ6DuuBCd?=
+ =?us-ascii?Q?z7pFq7egWMf0tS/QWAfW4ZmIEWmXccyupaFzh8B6/AyiWoTAmmyhR7Il31cE?=
+ =?us-ascii?Q?s4aRhcJjaDt+mIeFizUOWGkCqsYDUDYlsbuXPm/I1OT49G0fT46A2SOWmPvu?=
+ =?us-ascii?Q?W8aXgX7bDCXYwEsbCWg7V6BnhYUgto/leuBQ7yPQ5PSR/CnNQTJiqXWzDkR1?=
+ =?us-ascii?Q?dlDiHacJVxsgaQU1fR1OV08ZJr1XZH2N5gy1N6zEd1kPgqTxIQb9mZdmzM26?=
+ =?us-ascii?Q?EYvHgYOQnIojSUgZbxi6ly+dDDr03RRUNKtsSbZhNyVsYlMStz7vxG5K95JG?=
+ =?us-ascii?Q?GMwikuiHr/6XnYdrQtDtGA2P24uD0lZkfl48IOpElIhpXcwVSs4Nn2gd3xtv?=
+ =?us-ascii?Q?IUotX+77Wzpqru/YfsYyqxncWX76awkghsKP6ekRFzrlZnM3MB1S+3wiNj1R?=
+ =?us-ascii?Q?30j2Wm7zDe+OUPRMJPhcVQ8/Hi8nYWEWrCvlRsA7?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 818634b5-35f6-4a48-ef09-08dc41bc6e5e
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 11:14:36.6883
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 11:14:34.2881
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wH7hqo8vO/dENqX/ZBAiniDmvvDKl1jEYt9mXE5e6mTJTAEIfw+b9MruQMrD7Pdro36iLM4apm3p0jY2R1COiZL3No9pKzTGmXKwn+gl543GZ44QI1qahFeuZl+7I8qa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB6741
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8NYbpR1uwtobhKYLxgST7xU5tJm1QcIniMBW0dMbiXOLtSHkpoMvsiEUBMHjm3zBIsL0qygPzklqDLl+JL/hvw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9145
 
-PWMOUT pins on MAX31790 can be configured as a tachometer input pin by
-setting bit[0] in the Configuration Register. When the bit[0] of a channel
-is set, the PWMOUT pin becomes the tach input pin for the channel plus six.
+Let imx-audio-rpmsg register platform device for card. So that card
+register and unregister can be controlled by rpmsg driver's register
+and unregister.
 
-This commit allows the kernel to set those pins when necessary if the
-pwmout-pin-as-tach-input DT property exists.
-
-Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
+Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
 ---
- drivers/hwmon/max31790.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ sound/soc/fsl/fsl_rpmsg.c       | 11 -----------
+ sound/soc/fsl/imx-audio-rpmsg.c | 17 ++++++++++++++++-
+ 2 files changed, 16 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-index 3dc95196b229..33ca8d1721c0 100644
---- a/drivers/hwmon/max31790.c
-+++ b/drivers/hwmon/max31790.c
+diff --git a/sound/soc/fsl/fsl_rpmsg.c b/sound/soc/fsl/fsl_rpmsg.c
+index 00852f174a69..53bd517e59d6 100644
+--- a/sound/soc/fsl/fsl_rpmsg.c
++++ b/sound/soc/fsl/fsl_rpmsg.c
+@@ -240,17 +240,6 @@ static int fsl_rpmsg_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_pm_disable;
+ 
+-	rpmsg->card_pdev = platform_device_register_data(&pdev->dev,
+-							 "imx-audio-rpmsg",
+-							 PLATFORM_DEVID_AUTO,
+-							 NULL,
+-							 0);
+-	if (IS_ERR(rpmsg->card_pdev)) {
+-		dev_err(&pdev->dev, "failed to register rpmsg card\n");
+-		ret = PTR_ERR(rpmsg->card_pdev);
+-		goto err_pm_disable;
+-	}
+-
+ 	return 0;
+ 
+ err_pm_disable:
+diff --git a/sound/soc/fsl/imx-audio-rpmsg.c b/sound/soc/fsl/imx-audio-rpmsg.c
+index 40820d5ad92d..38aafb8954c7 100644
+--- a/sound/soc/fsl/imx-audio-rpmsg.c
++++ b/sound/soc/fsl/imx-audio-rpmsg.c
 @@ -12,6 +12,7 @@
- #include <linux/init.h>
- #include <linux/jiffies.h>
- #include <linux/module.h>
-+#include <linux/property.h>
- #include <linux/slab.h>
+  */
+ struct imx_audio_rpmsg {
+ 	struct platform_device *rpmsg_pdev;
++	struct platform_device *card_pdev;
+ };
  
- /* MAX31790 registers */
-@@ -506,9 +507,12 @@ static int max31790_probe(struct i2c_client *client)
- {
- 	struct i2c_adapter *adapter = client->adapter;
- 	struct device *dev = &client->dev;
-+	u8 pwmout_to_tach[NR_CHANNEL];
- 	struct max31790_data *data;
- 	struct device *hwmon_dev;
- 	int err;
-+	u8 tmp;
-+	int i;
+ static int imx_audio_rpmsg_cb(struct rpmsg_device *rpdev, void *data, int len,
+@@ -95,6 +96,16 @@ static int imx_audio_rpmsg_probe(struct rpmsg_device *rpdev)
+ 		ret = PTR_ERR(data->rpmsg_pdev);
+ 	}
  
- 	if (!i2c_check_functionality(adapter,
- 			I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA))
-@@ -528,6 +532,33 @@ static int max31790_probe(struct i2c_client *client)
- 	if (err)
- 		return err;
- 
-+	if (device_property_present(dev, "pwmout-pin-as-tach-input")) {
-+		err = device_property_read_u8_array(dev, "pwmout-pin-as-tach-input",
-+						    pwmout_to_tach, NR_CHANNEL);
-+		if (err) {
-+			/* The pwmout-pin-as-tach-input is an array of six values */
-+			dev_warn(dev, "The pwmout-pin-as-tach-input property exist but malform");
-+		} else {
-+			for (i = 0; i < NR_CHANNEL; i++) {
-+				tmp = data->fan_config[i];
-+				if (pwmout_to_tach[i])
-+					data->fan_config[i] |= MAX31790_FAN_CFG_TACH_INPUT;
-+				else
-+					data->fan_config[i] &= ~(MAX31790_FAN_CFG_TACH_INPUT);
-+
-+				if (tmp != data->fan_config[i]) {
-+					err = i2c_smbus_write_byte_data(client,
-+									MAX31790_REG_FAN_CONFIG(i),
-+									data->fan_config[i]);
-+					if (err < 0)
-+						dev_warn(dev,
-+							 "Fail to apply fan configuration at channel %d",
-+							 i);
-+				}
-+			}
-+		}
++	data->card_pdev = platform_device_register_data(&rpdev->dev,
++							"imx-audio-rpmsg",
++							PLATFORM_DEVID_AUTO,
++							rpdev->id.name,
++							strlen(rpdev->id.name) + 1);
++	if (IS_ERR(data->card_pdev)) {
++		dev_err(&rpdev->dev, "failed to register rpmsg card.\n");
++		ret = PTR_ERR(data->card_pdev);
 +	}
 +
- 	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name,
- 							 data,
- 							 &max31790_chip_info,
+ 	return ret;
+ }
+ 
+@@ -105,6 +116,9 @@ static void imx_audio_rpmsg_remove(struct rpmsg_device *rpdev)
+ 	if (data->rpmsg_pdev)
+ 		platform_device_unregister(data->rpmsg_pdev);
+ 
++	if (data->card_pdev)
++		platform_device_unregister(data->card_pdev);
++
+ 	dev_info(&rpdev->dev, "audio rpmsg driver is removed\n");
+ }
+ 
+@@ -113,6 +127,7 @@ static struct rpmsg_device_id imx_audio_rpmsg_id_table[] = {
+ 	{ .name = "rpmsg-micfil-channel" },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(rpmsg, imx_audio_rpmsg_id_table);
+ 
+ static struct rpmsg_driver imx_audio_rpmsg_driver = {
+ 	.drv.name	= "imx_audio_rpmsg",
+@@ -126,5 +141,5 @@ module_rpmsg_driver(imx_audio_rpmsg_driver);
+ 
+ MODULE_DESCRIPTION("Freescale SoC Audio RPMSG interface");
+ MODULE_AUTHOR("Shengjiu Wang <shengjiu.wang@nxp.com>");
+-MODULE_ALIAS("platform:imx_audio_rpmsg");
++MODULE_ALIAS("rpmsg:imx_audio_rpmsg");
+ MODULE_LICENSE("GPL v2");
 -- 
-2.17.1
+2.43.0
 
 
