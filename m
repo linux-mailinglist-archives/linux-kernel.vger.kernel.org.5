@@ -1,116 +1,111 @@
-Return-Path: <linux-kernel+bounces-98797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2182877F94
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:05:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DD92877F95
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:06:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D7E3283632
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:05:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC8D0283824
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05703C082;
-	Mon, 11 Mar 2024 12:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1A63D0A3;
+	Mon, 11 Mar 2024 12:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EiLNERKX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Mg9M+WTn"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F183B7AC;
-	Mon, 11 Mar 2024 12:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32193C460
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710158738; cv=none; b=pWLwCfenJErBdbn8Sv5dsCZSOL/xhmpUQrMLgqbI/6qp07QMEKrSrGTiOKZuN1MYBbyaa8wrUW3RDhuML7pG/7pDkFC7jMPBVuoPmNSaXtsc4QsZFqXbM8Fh4ppy8NDps6DIUO2FKSAvuSDY8HSkBWBfb9Vba+yrvGjc05FkiVQ=
+	t=1710158745; cv=none; b=iZD5mAfSPyalyS5fNHx8ktnGYHrgUYDiId9Ora+eudXTo6NcRaVjwF/Awq13rakf6v+bknAdKkKwdO4AYaHnIiVYCcADf/vZucoAVzyhCIhZpHWbgiMgSwh/8z2fghv7VgZoOLnZhs83ddnAdRRDiYvtFp9aNtMSdVodGr5kuSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710158738; c=relaxed/simple;
-	bh=uSTCg+F+kw498x2HNia8q+5D0uqMlyFbtWRaerhDL/w=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=LYBfh6nQ/lInGziR6DHXjj7rTqEwOJlwkw8NS/4kTnyaK/fzzVIqRDYsQVcKs68jzfVZ8GNLGhUs12yC2jyVI+iWXkFh6JHnQJMc+RIPDuqnGlAeI2FulPWk8efqtvZEKt0pjJ5o5+CGm06JtfIJH76Dnysr1wz4wvcrN4j0L2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EiLNERKX; arc=none smtp.client-ip=192.198.163.18
+	s=arc-20240116; t=1710158745; c=relaxed/simple;
+	bh=KImMKTG1EAP2NsDmf0Yhr0pijdhknh+XUu4hVW9JTdM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B5Pwyss5D4IdZr82IhPk+8AG3OolCyfbvor9ss3ZMGOBBO1MJS8dMJEpoGlHgdjfoW+z/mPp/mOPIgZ8nup0h5HfrSHzhb+01CgdvFZSBgT2Dak7UCYWh1uVyGZRwBA/AkAY2tggPIvA2lRYPXHHgxyHIi7/fe0gBX5C9V7ok5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Mg9M+WTn; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710158738; x=1741694738;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=uSTCg+F+kw498x2HNia8q+5D0uqMlyFbtWRaerhDL/w=;
-  b=EiLNERKXltHQZnbVXng9aQkk0LPnyVX3fBDmh307bsL7qLuwWE9ZoMbh
-   v5cpNOXHda121wgmsJ1KwpXPlO/ka9PdzIQwtJHlNV87GeAj/lBFRkUS1
-   lJIy5HlyGMFCU5tH4kV2trURDibbQeU90P1R17WEF1EXu8AbHl+fjMNDN
-   ZGXSQrzLUG5jL+wJFp5FN+Czuu/Vy1M6S3PbFjBl7d+djB01v48g+Ukn+
-   g/r4yvOpFGUjzrGXz27GmhkBUwjaXiPzBkPy9zsVWNfg+SByc01ZmEXY7
-   5Qw9VP6yf95Lfj/EGXfqoO7EkTElF1quXfpUJZCbCHr9fFVT9ZHW31S0H
+  t=1710158744; x=1741694744;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KImMKTG1EAP2NsDmf0Yhr0pijdhknh+XUu4hVW9JTdM=;
+  b=Mg9M+WTnjuEbrJNqMN14jmaMfoM/IgFTvLdT56T6fJMBVKEQqKGPM2cn
+   H3OddqxaTgeFgfBcKj/JCfyniz9KgppXN7QO/hLSZwSYi3YfvMQUHQ/pc
+   5feE74cNgLc3xVTJ9wUcJ3HsiEZjTIkqxqGgZu4dfd6fs+HvYjyxFI7DR
+   nUrZs30TY59+BKUDs9CRHkJolII5SeWWt73n31v4dHOXOYau6A2uIdh/T
+   kfi77ztOnMA5mZcckA/HeAcIZU5UGRpDN4Vjs/mCygm44Fu/nGUciHJJ0
+   9CoZmF+ETLJ39rU81dpS3/YRcwyplRHeBU53IBNLt4fBad525shQWp02D
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="4659508"
+X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="4676524"
 X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="4659508"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:05:37 -0700
+   d="scan'208";a="4676524"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:05:43 -0700
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="937049707"
 X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="11719654"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.201])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:05:33 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 11 Mar 2024 14:05:29 +0200 (EET)
-To: Kate Hsuan <hpa@redhat.com>
-cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
-    linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
-    Hans de Goede <hdegoede@redhat.com>, 
-    =?ISO-8859-15?Q?Andr=E9_Apitzsch?= <git@apitzsch.eu>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/2] KTD2026 indicator LED for X86 Xiaomi Pad2
-In-Reply-To: <20240306025801.8814-1-hpa@redhat.com>
-Message-ID: <fc522d02-d1e9-22e8-6cbd-8a8d66e3ba77@linux.intel.com>
-References: <20240306025801.8814-1-hpa@redhat.com>
+   d="scan'208";a="937049707"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 11 Mar 2024 05:05:40 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 55FB4177; Mon, 11 Mar 2024 14:05:39 +0200 (EET)
+Date: Mon, 11 Mar 2024 14:05:39 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@intel.com, hpa@zytor.com, seanjc@google.com, ele.reshetova@intel.com, 
+	rick.p.edgecombe@intel.com, x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] x86/tdx: Enable ENUM_TOPOLOGY
+Message-ID: <fivnqmu4rfm22ps4mevrmeq2oncjwxe6i2t5foptxxhdb6dzgp@dur4zezgxd23>
+References: <20240309210230.239045-1-kirill.shutemov@linux.intel.com>
+ <20240309210230.239045-5-kirill.shutemov@linux.intel.com>
+ <95ba9bb3-7c48-4d99-b05e-5a45a796af3c@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <95ba9bb3-7c48-4d99-b05e-5a45a796af3c@linux.intel.com>
 
-On Wed, 6 Mar 2024, Kate Hsuan wrote:
+On Sat, Mar 09, 2024 at 07:56:11PM -0800, Kuppuswamy Sathyanarayanan wrote:
+> 
+> On 3/9/24 1:02 PM, Kirill A. Shutemov wrote:
+> > TDX 1.0 generates a #VE when accessing topology-related CPUID leafs
+> > (0xB and 0x1F) and the X2APIC_APICID MSR. The kernel returns all
+> > zeros on CPUID #VEs. In practice, this means that the kernel can only
+> > boot with a plain topology. Any complications will cause problems.
+> 
+> Is this issue only for TDX 1.0? What about TDX > 1.0?
 
-> This patch added the support for Xiaomi Pad2 indicator LED. This work
-> included two parts.
-> 1. Added the KTD2026 swnode description to describe the LED controller.
-> 2. Migrated the original driver to fwnode to support x86 platform.
-> 
-> Moreover, the LED trigger is set to bq27520-0-charging for Xiaomi Pad2
-> so the LED will be turned on when charging.
-> 
-> --
-> Changes in v4:
-> 1. Fix double casting.
-> 2. Since force casting a pointer value to int will trigger a compiler
->    warning, the type of num_leds was changed to unsigned long. 
-> 
-> Changes in v3:
-> 1. Drop the patch "leds-ktd202x: Skip regulator settings for Xiaomi
->    pad2"
-> 
-> Changes in v2:
-> 1. Typo and style fixes.
-> 2. The patch 0003 skips all the regulator setup for Xiaomi pad2 since
->    KTD2026 on Xiaomi pad2 is already powered by BP25890RTWR. So, the
->    sleep can be removed when removing the module.
-> 
-> Kate Hsuan (2):
->   platform: x86-android-tablets: other: Add swnode for Xiaomi pad2
->     indicator LED
->   leds: rgb: leds-ktd202x: Get device properties through fwnode to
->     support ACPI
+TDX 1.0 defines the baseline for TDX. Any change in behaviour will be
+gated by explicit opt-in. In this case, it is ENUM_TOPOLOGY.
 
-Hi,
+> > The ENUM_TOPOLOGY feature allows the VMM to provide topology
+> > information to the guest in a safe manner. Enabling the feature
+> > eliminates topology-related #VEs: the TDX module virtualizes
+> > accesses to the CPUID leafs and the MSR.
+> >
+> > Enable ENUM_TOPOLOGY if it is available.
+> 
+> I cant find the ENUM_TOPOLOGY in ABI spec (https://cdrdv2.intel.com/v1/dl/getContent/795381).
+> 
+> Can you point me to the correct document?
 
-I took the patch 1/2 now into pdx86/review-ilpo where it will propagate 
-into pdx86/for-next.
+I guess JSON dump is out of sync with the PDF doc. See this:
+
+https://cdrdv2.intel.com/v1/dl/getContent/733579
 
 -- 
- i.
-
+  Kiryl Shutsemau / Kirill A. Shutemov
 
