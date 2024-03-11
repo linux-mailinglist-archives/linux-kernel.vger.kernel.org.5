@@ -1,243 +1,138 @@
-Return-Path: <linux-kernel+bounces-99469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9E48788E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:26:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58F368788EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B467B21142
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:26:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 884A31C20AD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70EF156765;
-	Mon, 11 Mar 2024 19:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05ED554FB1;
+	Mon, 11 Mar 2024 19:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A8vzJc5a"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PhJVSfHI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CCD85674D
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B172154BCC
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710185197; cv=none; b=eoIKTzkdoD7kITBWpz+Ll9Rb+I3wqvDJHGfKtwZa3fSJIacFEVWW7Fav/3AGYRpjwHFmk8Z+QJn7gLbfWfjH5pNlfnVpmz+/pl4kivEGz0Y3hzSYcxirK9gtRD+0HXxJuP0bC1gfYn9xoaZ6KA266Si5+5xwankHNrhNegoFkno=
+	t=1710185314; cv=none; b=NAXWM1miW3+73jb8o0sxNyCmGnR5Btg9wRi4+jhFKfTJIISvCFkjE7V2r4nQzwIF0IJm/EA9fWhO+ROtNpqXFXSr83yeJw64jzJVF3LSonlRAEqkErSKcYUpPBBtBU1wD8co6ShdnAUhzc4g0K8O9lLCh9PZyqB5c/lcCG8Abmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710185197; c=relaxed/simple;
-	bh=75zgoSt/KEgbcevTlEMIQKyVfjhLWf+hwPRqmMbzczg=;
+	s=arc-20240116; t=1710185314; c=relaxed/simple;
+	bh=o2h7eUf6KHi6kWXMN+bTe9GJKu4J7HhYQa+OrrVRTI8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=INSfTGHT/LU7iKb72FlZ7m7zVNQ1gYtfDZ7AfLgWmi68Y27bOImDcjBA1ZHhDzKXLFhKtvEAEUladEqSB+o5nNArqqPosHy8rWs6S5/5hCdgeFiLmD8GUD/hiNPvRU3c/3iouZA17Q0PHuZPM4Odp7uOTuQRrNjXzLnBrj7R1Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A8vzJc5a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10ABBC433C7;
-	Mon, 11 Mar 2024 19:26:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710185197;
-	bh=75zgoSt/KEgbcevTlEMIQKyVfjhLWf+hwPRqmMbzczg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=A8vzJc5aWVizIc8V3XKsd0W0fjz1AlNAKkT1x3/P5/AzqSJzjZYJHnyrndWjz0pgg
-	 y8b13e/XSGDFx3L2+qUX+49yE7wObdojyELHviAQ56RZPw57NT3jPQA0HOjE1+tBuL
-	 /XZWXywnUjlcBTVPZrALwyVzGxZHgvnz7RqfAgC+/H3p3t7BK97EYWCcr4fh0w97sO
-	 6Jv6POTtXhSYyTnOMm8J6q+JbvACj50aKnoQvv/hZxBx1why6RVosOsay9v1SuK+nd
-	 xs4JBufYlwp+FDpfgOpjdu80ljyz+LbytyZg+v2AtbWQ7/iQuSGBBRsI5BTgSRpnUs
-	 z+m+wt2bsOpvw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 84363CE0B68; Mon, 11 Mar 2024 12:26:36 -0700 (PDT)
-Date: Mon, 11 Mar 2024 12:26:36 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
-	andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
-	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
-	mattst88@gmail.com, krypton@ulrich-teichert.org,
-	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
-	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
-	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com
-Subject: Re: [PATCH 26/30] sched: handle preempt=voluntary under PREEMPT_AUTO
-Message-ID: <36eef8c5-8ecd-4c90-8851-1c2ab342e2bb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240213055554.1802415-27-ankur.a.arora@oracle.com>
- <65e3cd87.050a0220.bc052.7a29@mx.google.com>
- <87frx514jz.fsf@oracle.com>
- <12a20651-5429-43df-88d7-9d01ff6212c6@joelfernandes.org>
- <63380f0a-329c-43df-8e6c-4818de5eb371@paulmck-laptop>
- <d956c2e9-492d-4559-b9f9-400f37f523bf@joelfernandes.org>
- <6054a8e0-eb95-45a3-9901-fe2a31b6fe4e@paulmck-laptop>
- <87plw5pd2x.fsf@oracle.com>
- <e36b84bc-09c4-4b2e-bad0-f72530a9b15e@paulmck-laptop>
- <87wmq9mkx2.fsf@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=N8Kyi64Rl8Ank45YoLM59Yygrsg2SiDAgRHHXkklDhmoJ8pG+BhjnYVoiX+fmZXNHDL6S+BFwqWfbuZld4bTUpjBzDi1w5NF+YrvnQZ6NpFw7ljDBZHJ0wBxmby4woTeeElduUh7sB/RwIFV2eaFWtNQNnA8vKhp5QGx7V8Az70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PhJVSfHI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710185311;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FAVXB/mXoK7CZU4s1o0G19dHxslq0BXaeV69BqYUoiw=;
+	b=PhJVSfHI2DRTSafBU7gJKuIAWZhB2mKMXxo690c4EwMjOkG2jUjtpuSlBGRmVrezJVUbzl
+	ydDFowJAfYlUQnanclwdNtbxcWtOTqp4uKFDZYwSfV7kWkPYlieIUdIKyd6pXMvDp577oP
+	gmdsEze2kGEIE0+YszXg8FiICAqmRLY=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-619-y62_UMvMMkaEPLSgua7WKA-1; Mon, 11 Mar 2024 15:28:30 -0400
+X-MC-Unique: y62_UMvMMkaEPLSgua7WKA-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6e4e54fb7b4so2215639a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:28:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710185309; x=1710790109;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FAVXB/mXoK7CZU4s1o0G19dHxslq0BXaeV69BqYUoiw=;
+        b=glzpmm4XmUkS+rcuF2BcMspX0ISufoVd4KNzs9FkP0sItqQIMUDkmVkuNu8UoADSwQ
+         Mx/WyKMlQBdMMJB8HCEuz6LQ0oFihWydfjBoMAAABWa9GsU2l2eF2fERI6NqmewEj/QW
+         Ql0Ay85oDYgIBcFxfJsGFAr56H2YwJSfXN1XKxI/GsFY6wb0GdAvPMOXXWG+KlGkEmRZ
+         L6rUWOP1mT+aH15z4Sv2ziC47O5BWhRacmp/ciEn9skfhQufNLF2uyPn+WHxxehOMsqb
+         0Sc1u3TyWOi05FgfWooPOFVfRrDfLdoVnnhtSU2bU18xxneQD1Vgu58gfkCwCUzVHQC5
+         zE0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWDByEmfvP0Ic2cAHVRZ1Hx9dyI/eLku0KRyyr/m4xumBblxtSuRBrvvkA7VfWNMgAMhZn3j/+8hHpKyNSDw+s5hcnYf8LTPSXkgtiT
+X-Gm-Message-State: AOJu0Yw9QGQY1IJ0OlRcm55w/n0kH7b97uqvPF0M2Y6s/Wn1xqSvclAg
+	jdZkRzIsGelDvGLDaxnslehbhIAzqKm1/NLsrv3bo0pqww6OL4wlLIvZdZAcEbhvTmTIgwqdPl8
+	UMFLS3QFnxzCmDjmHl8W30Ar8zZ5JzzmjyU8TYqfjwyvGcr/9sfFLq4qj0A4fbg==
+X-Received: by 2002:a4a:a44c:0:b0:5a2:3c1:a624 with SMTP id w12-20020a4aa44c000000b005a203c1a624mr3727472ool.1.1710185309492;
+        Mon, 11 Mar 2024 12:28:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF/VMFWq2kIQEJ16kIMzxcU9BTefs+9QqGcG3RbD0ZtdZlOIyjSBXC6THIfOoARSG3/qusrVQ==
+X-Received: by 2002:a4a:a44c:0:b0:5a2:3c1:a624 with SMTP id w12-20020a4aa44c000000b005a203c1a624mr3727456ool.1.1710185309168;
+        Mon, 11 Mar 2024 12:28:29 -0700 (PDT)
+Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id h7-20020a05620a400700b007882e50260fsm2950520qko.104.2024.03.11.12.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 12:28:28 -0700 (PDT)
+Date: Mon, 11 Mar 2024 15:28:26 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: BUG selftests/mm]
+Message-ID: <Ze9bWkrD6UBZ2ErV@x1n>
+References: <a9e3120d-8b79-4435-b113-ceb20aa45ee2@alu.unizg.hr>
+ <4a5c8d28-7f73-4c15-b288-641f0ccc91c2@redhat.com>
+ <Ze8Wr2qH8V0LMi_5@x1n>
+ <b5ff4c70-6379-4cc7-8c92-778d80a6a658@redhat.com>
+ <Ze8fYF5I4mlUGHd9@x1n>
+ <CAJHvVcie+N+4j60m_Dxh7QzbZLmsjnq2-04peuqE8VkkMq984A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87wmq9mkx2.fsf@oracle.com>
+In-Reply-To: <CAJHvVcie+N+4j60m_Dxh7QzbZLmsjnq2-04peuqE8VkkMq984A@mail.gmail.com>
 
-On Sun, Mar 10, 2024 at 09:50:33PM -0700, Ankur Arora wrote:
+On Mon, Mar 11, 2024 at 11:59:59AM -0700, Axel Rasmussen wrote:
+> I'd prefer not to require root or CAP_SYS_ADMIN or similar for
+> UFFDIO_POISON, because those control access to lots more things
+> besides, which we don't necessarily want the process using UFFD to be
+> able to do. :/
 > 
-> Paul E. McKenney <paulmck@kernel.org> writes:
-> 
-> > On Thu, Mar 07, 2024 at 08:22:30PM -0800, Ankur Arora wrote:
-> >>
-> >> Paul E. McKenney <paulmck@kernel.org> writes:
-> >>
-> >> > On Thu, Mar 07, 2024 at 07:15:35PM -0500, Joel Fernandes wrote:
-> >> >>
-> >> >>
-> >> >> On 3/7/2024 2:01 PM, Paul E. McKenney wrote:
-> >> >> > On Wed, Mar 06, 2024 at 03:42:10PM -0500, Joel Fernandes wrote:
-> >> >> >> Hi Ankur,
-> >> >> >>
-> >> >> >> On 3/5/2024 3:11 AM, Ankur Arora wrote:
-> >> >> >>>
-> >> >> >>> Joel Fernandes <joel@joelfernandes.org> writes:
-> >> >> >>>
-> >> >> >> [..]
-> >> >> >>>> IMO, just kill 'voluntary' if PREEMPT_AUTO is enabled. There is no
-> >> >> >>>> 'voluntary' business because
-> >> >> >>>> 1. The behavior vs =none is to allow higher scheduling class to preempt, it
-> >> >> >>>> is not about the old voluntary.
-> >> >> >>>
-> >> >> >>> What do you think about folding the higher scheduling class preemption logic
-> >> >> >>> into preempt=none? As Juri pointed out, prioritization of at least the leftmost
-> >> >> >>> deadline task needs to be done for correctness.
-> >> >> >>>
-> >> >> >>> (That'll get rid of the current preempt=voluntary model, at least until
-> >> >> >>> there's a separate use for it.)
-> >> >> >>
-> >> >> >> Yes I am all in support for that. Its less confusing for the user as well, and
-> >> >> >> scheduling higher priority class at the next tick for preempt=none sounds good
-> >> >> >> to me. That is still an improvement for folks using SCHED_DEADLINE for whatever
-> >> >> >> reason, with a vanilla CONFIG_PREEMPT_NONE=y kernel. :-P. If we want a new mode
-> >> >> >> that is more aggressive, it could be added in the future.
-> >> >> >
-> >> >> > This would be something that happens only after removing cond_resched()
-> >> >> > might_sleep() functionality from might_sleep(), correct?
-> >> >>
-> >> >> Firstly, Maybe I misunderstood Ankur completely. Re-reading his comments above,
-> >> >> he seems to be suggesting preempting instantly for higher scheduling CLASSES
-> >> >> even for preempt=none mode, without having to wait till the next
-> >> >> scheduling-clock interrupt. Not sure if that makes sense to me, I was asking not
-> >> >> to treat "higher class" any differently than "higher priority" for preempt=none.
-> >> >>
-> >> >> And if SCHED_DEADLINE has a problem with that, then it already happens so with
-> >> >> CONFIG_PREEMPT_NONE=y kernels, so no need special treatment for higher class any
-> >> >> more than the treatment given to higher priority within same class. Ankur/Juri?
-> >> >>
-> >> >> Re: cond_resched(), I did not follow you Paul, why does removing the proposed
-> >> >> preempt=voluntary mode (i.e. dropping this patch) have to happen only after
-> >> >> cond_resched()/might_sleep() modifications?
-> >> >
-> >> > Because right now, one large difference between CONFIG_PREEMPT_NONE
-> >> > an CONFIG_PREEMPT_VOLUNTARY is that for the latter might_sleep() is a
-> >> > preemption point, but not for the former.
-> >>
-> >> True. But, there is no difference between either of those with
-> >> PREEMPT_AUTO=y (at least right now).
-> >>
-> >> For (PREEMPT_AUTO=y, PREEMPT_VOLUNTARY=y, DEBUG_ATOMIC_SLEEP=y),
-> >> might_sleep() is:
-> >>
-> >> # define might_resched() do { } while (0)
-> >> # define might_sleep() \
-> >>         do { __might_sleep(__FILE__, __LINE__); might_resched(); } while (0)
-> >>
-> >> And, cond_resched() for (PREEMPT_AUTO=y, PREEMPT_VOLUNTARY=y,
-> >> DEBUG_ATOMIC_SLEEP=y):
-> >>
-> >> static inline int _cond_resched(void)
-> >> {
-> >>         klp_sched_try_switch();
-> >>         return 0;
-> >> }
-> >> #define cond_resched() ({                       \
-> >>         __might_resched(__FILE__, __LINE__, 0); \
-> >>         _cond_resched();                        \
-> >> })
-> >>
-> >> And, no change for (PREEMPT_AUTO=y, PREEMPT_NONE=y, DEBUG_ATOMIC_SLEEP=y).
-> >
-> > As long as it is easy to restore the prior cond_resched() functionality
-> > for testing in the meantime, I should be OK.  For example, it would
-> > be great to have the commit removing the old functionality from
-> > cond_resched() at the end of the series,
-> 
-> I would, of course, be happy to make any changes that helps testing,
-> but I think I'm missing something that you are saying wrt
-> cond_resched()/might_sleep().
-> 
-> There's no commit explicitly removing the core cond_reshed()
-> functionality: PREEMPT_AUTO explicitly selects PREEMPT_BUILD and selects
-> out PREEMPTION_{NONE,VOLUNTARY}_BUILD.
-> (That's patch-1 "preempt: introduce CONFIG_PREEMPT_AUTO".)
-> 
-> For the rest it just piggybacks on the CONFIG_PREEMPT_DYNAMIC work
-> and just piggybacks on (!CONFIG_PREEMPT_DYNAMIC && CONFIG_PREEMPTION):
-> 
-> #if !defined(CONFIG_PREEMPTION) || defined(CONFIG_PREEMPT_DYNAMIC)
-> 	/* ... */
-> #if defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
-> 	/* ... */
-> #elif defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
-> 	/* ... */
-> #else /* !CONFIG_PREEMPTION */
-> 	/* ... */
-> #endif /* PREEMPT_DYNAMIC && CONFIG_HAVE_PREEMPT_DYNAMIC_CALL */
-> 
-> #else /* CONFIG_PREEMPTION && !CONFIG_PREEMPT_DYNAMIC */
-> static inline int _cond_resched(void)
-> {
-> 	klp_sched_try_switch();
-> 	return 0;
-> }
-> #endif /* !CONFIG_PREEMPTION || CONFIG_PREEMPT_DYNAMIC */
-> 
-> Same for might_sleep() (which really amounts to might_resched()):
-> 
-> #ifdef CONFIG_PREEMPT_VOLUNTARY_BUILD
->        /* ... */
-> #elif defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
->       /* ... */
-> #elif defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
->       /* ... */
-> #else
-> # define might_resched() do { } while (0)
-> #endif /* CONFIG_PREEMPT_* */
-> 
-> But, I doubt that I'm telling you anything new. So, what am I missing?
+> Ratelimiting seems fairly reasonable to me. I do see the concern about
+> dropping some addresses though.
 
-It is really a choice at your end.
+Do you know how much could an admin rely on such addresses?  How frequent
+would MCE generate normally in a sane system?
 
-Suppose we enable CONFIG_PREEMPT_AUTO on our fleet, and find that there
-was some small set of cond_resched() calls that provided sub-jiffy
-preemption that matter to some of our workloads.  At that point, what
-are our options?
+> Perhaps we can mitigate that concern by defining our own ratelimit
+> interval/burst configuration?
 
-1.	Revert CONFIG_PREEMPT_AUTO.
+Any details?
 
-2.	Revert only the part that disables the voluntary preemption
-	semantics of cond_resched().  Which, as you point out, ends up
-	being the same as #1 above.
+> Another idea would be to only ratelimit it if !CONFIG_DEBUG_VM or
+> similar. Not sure if that's considered valid or not. :)
 
-3.	Hotwire a voluntary preemption into the required locations.
-	Which we would avoid doing due to upstream-acceptance concerns.
+This, OTOH, sounds like an overkill..
 
-So, how easy would you like to make it for us to use as much of
-CONFIG_PREEMPT_AUTO=y under various possible problem scenarios?
+I just checked again on the detail of ratelimit code, where we by default
+it has:
 
-Yes, in a perfect world, we would have tested this already, but I
-am still chasing down problems induced by simple rcutorture testing.
-Cowardly of us, isn't it?  ;-)
+#define DEFAULT_RATELIMIT_INTERVAL	(5 * HZ)
+#define DEFAULT_RATELIMIT_BURST		10
 
-							Thanx, Paul
+So it allows a 10 times burst rather than 2.. IIUC it means even if
+there're continous 10 MCEs it won't get suppressed, until the 11th came, in
+5 seconds interval.  I think it means it's possibly even less of a concern
+to directly use pr_err_ratelimited().
+
+Thanks,
+
+-- 
+Peter Xu
+
 
