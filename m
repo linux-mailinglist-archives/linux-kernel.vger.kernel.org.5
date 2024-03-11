@@ -1,205 +1,188 @@
-Return-Path: <linux-kernel+bounces-98442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 601F2877A38
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:56:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113EA877A39
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 04:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBA881F21D1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:56:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34A1F1C20EA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C1B1FA1;
-	Mon, 11 Mar 2024 03:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644521C3D;
+	Mon, 11 Mar 2024 03:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YwAKF7/r"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IdgcnmM0"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84AB71851;
-	Mon, 11 Mar 2024 03:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC8917D2;
+	Mon, 11 Mar 2024 03:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710129363; cv=none; b=bL1vljHRQNJDOSA/6GzFanEscJaEpvXaiDcQkRIuOB/UTCsx+1sgMZr/T3hUKoIsvfAw7kcMXtiJPMPwS31tED5VKPy5X2v4Lw33n7xgRlbg+HiJAxnuCPoHprQgsJleRWPa2nVy2bji2xpT+8qdmwltD30C0BbnYbvZncbsdNE=
+	t=1710129459; cv=none; b=hc/rfpse83pz1HfaPl/yRg3RjCSCltloXUTctJmc7iBaglhVWv44UQPNWgq867xhMgln9R3Tczv/3zP6vW71oNXCk6Zogh/QsaMAEpFnFKu5h+VUN8nbKyVgrjyUYvPllEe6u5V/qOyMsJc83LO5GGMxhWUeiMrQKP94UgowiZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710129363; c=relaxed/simple;
-	bh=y04QF4+5cZz4ZOvx0ly7MHtfHjrzslgDE4Mwuna6xFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rrLwhJZjP86ZohVFsvX9ASb8CsnFdb8UYhRk9JxvZfSNIyIG8ottdCvfLukieQ5hltp5tcBqACUDIMGAFxF62s8maLf7sCTtMYbzwhDRKl8mObWuDtCrQlurhzhzDlzmZJtUBXt9cZ03pXRK+HA3UPZ5M7IZEVmgS63jZPB4a8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YwAKF7/r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06164C433F1;
-	Mon, 11 Mar 2024 03:56:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710129363;
-	bh=y04QF4+5cZz4ZOvx0ly7MHtfHjrzslgDE4Mwuna6xFs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=YwAKF7/rSvI9BD+26YZyKnY2a3DAPfQtqb1ZH/8TkRthXLUi0J/yaazBgh8S2EXvp
-	 CZtc5KfRaUznkopVxZ6nTAMHXwjWIqeeidUq4YX2HhXmCKzojxcmjve4uHsH7EBoxT
-	 HTr2wpwPXi2t6rRI9dyw5Dm0ztMrC3oX7bfLKdsHU2fyarRn85MCbNoGYyyF+FprxL
-	 KJ6/Nk98D3plXui//Pu36xL1aPnKIVZRiSvIi915lyGjaumQsYNJQsNabglK+M+/82
-	 9KRxiYNoyhGWtAyhR/LXbot47UimjNcc0b4qMGgWhNW6TMWVdPqDUeQBBffeiremiz
-	 D2frXILxYeIsg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 971EDCE129E; Sun, 10 Mar 2024 20:56:02 -0700 (PDT)
-Date: Sun, 10 Mar 2024 20:56:02 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
-	andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
-	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
-	mattst88@gmail.com, krypton@ulrich-teichert.org,
-	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
-	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
-	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com, rcu@vger.kernel.org
-Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
- PREEMPT_COUNT=y
-Message-ID: <0965542e-80a7-4837-b14e-903c635aa828@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-16-ankur.a.arora@oracle.com>
- <20240310100330.GA2705505@joelbox2>
- <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
- <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
+	s=arc-20240116; t=1710129459; c=relaxed/simple;
+	bh=E5DR2QAGZKW3fWpqoXgtS2AIabafQ43OF6KIow5fYZg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X2uepMlXon0EpmElwDNj7TVQSvD6FjtPxxBy4LqThP32T6aGWZ2j7Qht2uOPNCre8t/XtBIGxy6tYtJ+951ZHvMrPk6dnLRnywy462//KDWHI6PXKlRBLuHcfXa78nzoJqeW3pwrXk53IIz3Skk2qkUex0KyfBiygYuwkFcpxtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IdgcnmM0; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29baaf3c018so1758630a91.0;
+        Sun, 10 Mar 2024 20:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710129457; x=1710734257; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5MR5N+6tV8+kHbX9z2W52LwKBRqNhKx905qdwAYtFt4=;
+        b=IdgcnmM01wOt9uc03FsAhYl94nwpmJ0+XfiXOqiTCCHW+Ce5elxhs5zdpOEP4N+JZY
+         U7p2c64yLc2mDEMH5V6rGjzzuovyr9KoQkoifTEy/y3Ba2IzHZ0FR4E55fkx7CIAk/+D
+         XS/JXX2T6DqQJxYb8iTinF3bxqiPciiFKBJLrZp4WoMsB7hjmBmZ4TqeFVNJToiaN+/n
+         ALn+YIQ9tMRgZ5BUWUJWhR6Hf8nyi34SRhyVY3/NWA/AzydH1r/UhGwgHlSX+gkjRWUN
+         laGj0XSabH5b3aZb8S9VVkJ4vdTpTegI/BIcGIv+fxQbkzGC3GYTpcrehlo4W6CXS8gY
+         Iihw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710129457; x=1710734257;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5MR5N+6tV8+kHbX9z2W52LwKBRqNhKx905qdwAYtFt4=;
+        b=o5OOMuxsJLW4HhXpCPmo/+/+r5V3CdnyNdi6db8Mx4o7yfJAxtEDsGIxqSxTewAAD0
+         es/EOgKHUmuLEmNxFlceLIMf1mBdxDZt+wIY4cJsDVmSISJJannfuD8cRrYt0D6PD6+j
+         WQYUNJ2DknBbj8b0lNxabOUg6jqRAPPkcLnOHtqVg8RrLv/62zKtQxC2rAo5AtVyDNmP
+         Y43Nr/7BOC46NJZvAAiqZSgaLcldzo2ZFMT/yVY9/+9fwgMQtAjRpAemf0WhTSXExw1q
+         yEAK0AoQMBmglJVCoeC/ELn+K46gC+oupDk8AZGBjT0JuzHCCVlBY26Ca9epSMSqdjdK
+         ThXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUdlH0jFMRtfeMXpOib6JMeX3bAL105hOefGLzaH2BqhW8eBwX5wJeMgMsrd1jxyhGjNIbcLIyo528q0/segahbUb99gmbyvZQpIDDw
+X-Gm-Message-State: AOJu0YzMgxskBYqPzG5OHedoVAW+Jnm2h23irR2a7uJDL+95OPTo+muG
+	P1meQGDihJvUzvdjD5AvXEn59+NelNOVPN0DVJotDqk12j2wT7PpYxwX2COMiqijaFcFiqmHz+k
+	/i86lX/5ukw93p40ijC65zmO9kE0=
+X-Google-Smtp-Source: AGHT+IE8BJ8QeV2pCmW5/kH081A5KoEUPB1+YyDMzuNPyxTI3P2Npgayk4BVAKb2+dZfiXLHgSTFi6fJS+DT4FroFPo=
+X-Received: by 2002:a17:90a:4586:b0:29b:4dfc:7c34 with SMTP id
+ v6-20020a17090a458600b0029b4dfc7c34mr2900133pjg.33.1710129457333; Sun, 10 Mar
+ 2024 20:57:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
+References: <20240311035502.7112-1-qiang.zhang1211@gmail.com>
+In-Reply-To: <20240311035502.7112-1-qiang.zhang1211@gmail.com>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Mon, 11 Mar 2024 11:57:26 +0800
+Message-ID: <CALm+0cXCO3L2BYHDzDkNjSrvSXdE+DB=9oeykavcqRr6=BkGTg@mail.gmail.com>
+Subject: Re: [PATCH] rcu-tasks: Avoid rtp_irq_work triggering when the
+ rcu-tasks GP is ongoing
+To: paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org, 
+	neeraj.upadhyay@kernel.org
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Mar 10, 2024 at 08:48:28PM -0400, Joel Fernandes wrote:
-> On 3/10/2024 2:56 PM, Paul E. McKenney wrote:
-> > On Sun, Mar 10, 2024 at 06:03:30AM -0400, Joel Fernandes wrote:
-> >> Hello Ankur and Paul,
-> >>
-> >> On Mon, Feb 12, 2024 at 09:55:39PM -0800, Ankur Arora wrote:
-> >>> With PREEMPT_RCU=n, cond_resched() provides urgently needed quiescent
-> >>> states for read-side critical sections via rcu_all_qs().
-> >>> One reason why this was necessary: lacking preempt-count, the tick
-> >>> handler has no way of knowing whether it is executing in a read-side
-> >>> critical section or not.
-> >>>
-> >>> With PREEMPT_AUTO=y, there can be configurations with (PREEMPT_COUNT=y,
-> >>> PREEMPT_RCU=n). This means that cond_resched() is a stub which does
-> >>> not provide for quiescent states via rcu_all_qs().
-> >>>
-> >>> So, use the availability of preempt_count() to report quiescent states
-> >>> in rcu_flavor_sched_clock_irq().
-> >>>
-> >>> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> >>> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> >>> ---
-> >>>  kernel/rcu/tree_plugin.h | 11 +++++++----
-> >>>  1 file changed, 7 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> >>> index 26c79246873a..9b72e9d2b6fe 100644
-> >>> --- a/kernel/rcu/tree_plugin.h
-> >>> +++ b/kernel/rcu/tree_plugin.h
-> >>> @@ -963,13 +963,16 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
-> >>>   */
-> >>>  static void rcu_flavor_sched_clock_irq(int user)
-> >>>  {
-> >>> -	if (user || rcu_is_cpu_rrupt_from_idle()) {
-> >>> +	if (user || rcu_is_cpu_rrupt_from_idle() ||
-> >>> +	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) &&
-> >>> +	     !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)))) {
-> >>
-> >> I was wondering if it makes sense to even support !PREEMPT_RCU under
-> >> CONFIG_PREEMPT_AUTO.
-> >>
-> >> AFAIU, this CONFIG_PREEMPT_AUTO series preempts the kernel on
-> >> the next tick boundary in the worst case, with all preempt modes including
-> >> the preempt=none mode.
-> >>
-> >> Considering this, does it makes sense for RCU to be non-preemptible in
-> >> CONFIG_PREEMPT_AUTO=y? Because if that were the case, and a read-side critical
-> >> section extended beyond the tick, then it prevents the PREEMPT_AUTO preemption
-> >> from happening, because rcu_read_lock() would preempt_disable().
-> > 
-> > Yes, it does make sense for RCU to be non-preemptible in kernels
-> > built with CONFIG_PREEMPT_AUTO=y and either CONFIG_PREEMPT_NONE=y or
-> > CONFIG_PREEMPT_VOLUNTARY=y.
-> > As noted in earlier discussions, there are
-> 
-> Sorry if I missed a discussion, appreciate a link.
+>
+> This commit generate rcu_task_gp_in_progress() to check whether
+> the rcu-tasks GP is ongoing, if is ongoing, avoid trigger
+> rtp_irq_work to wakeup rcu tasks kthreads in call_rcu_tasks_generic().
+>
+> The test results are as follows:
+>
+> echo call_rcu_tasks_iw_wakeup > /sys/kernel/debug/tracing/set_ftrace_filter
+> echo 1 > /sys/kernel/debug/tracing/function_profile_enabled
+> insmod rcutorture.ko torture_type=tasks-tracing fwd_progress=4
+> sleep 600
+> rmmod rcutorture.ko
+> echo 0 > /sys/kernel/debug/tracing/function_profile_enabled
+> echo > /sys/kernel/debug/tracing/set_ftrace_filter
+>
+> head /sys/kernel/debug/tracing/trace_stat/function*
+>
+> original: 56376  apply patch: 33521
+>
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> ---
+>
 
-It is part of the discussion of the first version of this patch series,
-if I recall correctly.
+This test is based on the following environment:
+runqemu nographic kvm slirp qemuparams="-smp 4 -m 2048M -drive
+file=$PWD/share.img,if=virtio"  -d
 
-> > systems that are adequately but not abundantly endowed with memory.
-> > Such systems need non-preemptible RCU to avoid preempted-reader OOMs.
-> 
-> Then why don't such systems have a problem with CONFIG_PREEMPT_DYNAMIC=y and
-> preempt=none mode? CONFIG_PREEMPT_DYNAMIC forces CONFIG_PREEMPT_RCU=y. There's
-> no way to set CONFIG_PREEMPT_RCU=n with CONFIG_PREEMPT_DYNAMIC=y and
-> preempt=none boot parameter.  IMHO, if this feature is inconsistent with
-> CONFIG_PREEMPT_DYNAMIC, that makes it super confusing.  In fact, I feel
-> CONFIG_PREEMPT_AUTO should instead just be another "preempt=auto" boot parameter
-> mode added to CONFIG_PREEMPT_DYNAMIC feature, otherwise the proliferation of
-> CONFIG_PREEMPT config options is getting a bit insane. And likely going to be
-> burden to the users configuring the PREEMPT Kconfig option IMHO.
+Thanks
+Zqiang
 
-Because such systems are built with CONFIG_PREEMPT_DYNAMIC=n.
-
-You could argue that we should just build with CONFIG_PREEMPT_AUTO=n,
-but the long-term goal of eliminating cond_resched() will make that
-ineffective.
-
-> > Note well that non-preemptible RCU explicitly disables preemption across
-> > all RCU readers.
-> 
-> Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
-> being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
-> preemption in preempt=none. So the "Don't preempt the kernel" behavior has
-> changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
-> CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
-> the way. It is like saying, you want an option for CONFIG_PREEMPT_RCU to be set
-> to =n for CONFIG_PREEMPT=y kernels, sighting users who want a fully-preemptible
-> kernel but are worried about reader preemptions.
-
-Such users can simply avoid building with either CONFIG_PREEMPT_NONE=y
-or with CONFIG_PREEMPT_VOLUNTARY=y.  They might also experiment with
-CONFIG_RCU_BOOST=y, and also with short timeouts until boosting.
-If that doesn't do what they need, we talk with them and either help
-them configure their kernels, make RCU do what they need, or help work
-out some other way for them to get their jobs done.
-
-> That aside, as such, I do agree your point of view, that preemptible readers
-> presents a problem to folks using preempt=none in this series and we could
-> decide to keep CONFIG_PREEMPT_RCU optional for whoever wants it that way. I was
-> just saying that I want CONFIG_PREEMPT_AUTO's preempt=none mode to be somewhat
-> consistent with CONFIG_PREEMPT_DYNAMIC's preempt=none. Because I'm pretty sure a
-> week from now, no one will likely be able to tell the difference ;-). So IMHO
-> either CONFIG_PREEMPT_DYNAMIC should be changed to make CONFIG_PREEMPT_RCU
-> optional, or this series should be altered to force CONFIG_PREEMPT_RCU=y.
-> 
-> Let me know if I missed something.
-
-Why not key off of the value of CONFIG_PREEMPT_DYNAMIC?  That way,
-if both CONFIG_PREEMPT_AUTO=y and CONFIG_PREEMPT_DYNAMIC=y, RCU is
-always preemptible.  Then CONFIG_PREEMPT_DYNAMIC=y enables boot-time
-(and maybe even run-time) switching between preemption flavors, while
-CONFIG_PREEMPT_AUTO instead enables unconditional preemption of any
-region of code that has not explicitly disabled preemption (or irq or
-bh or whatever).
-
-But one way or another, we really do need non-preemptible RCU in
-conjunction with CONFIG_PREEMPT_AUTO=y.
-
-Also, I don't yet see CONFIG_PREEMPT_AUTO in -next.
-
-							Thanx, Paul
+> original:
+> ==> /sys/kernel/debug/tracing/trace_stat/function0 <==
+>   Function                               Hit    Time            Avg             s^2
+>   --------                               ---    ----            ---             ---
+>   call_rcu_tasks_iw_wakeup             13217    19292.52 us     1.459 us        8.834 us
+>
+> ==> /sys/kernel/debug/tracing/trace_stat/function1 <==
+>   Function                               Hit    Time            Avg             s^2
+>   --------                               ---    ----            ---             ---
+>   call_rcu_tasks_iw_wakeup             15146    22377.01 us     1.477 us        22.873 us
+>
+> ==> /sys/kernel/debug/tracing/trace_stat/function2 <==
+>   Function                               Hit    Time            Avg             s^2
+>   --------                               ---    ----            ---             ---
+>   call_rcu_tasks_iw_wakeup             12561    18125.76 us     1.443 us        6.372 us
+>
+> ==> /sys/kernel/debug/tracing/trace_stat/function3 <==
+>   Function                               Hit    Time            Avg             s^2
+>   --------                               ---    ----            ---             ---
+>   call_rcu_tasks_iw_wakeup             15452    21770.57 us     1.408 us        6.710 us
+>
+> apply patch:
+> ==> /sys/kernel/debug/tracing/trace_stat/function0 <==
+>   Function                               Hit    Time            Avg             s^2
+>   --------                               ---    ----            ---             ---
+>   call_rcu_tasks_iw_wakeup              8334    15121.13 us     1.814 us        4.457 us
+>
+> ==> /sys/kernel/debug/tracing/trace_stat/function1 <==
+>   Function                               Hit    Time            Avg             s^2
+>   --------                               ---    ----            ---             ---
+>   call_rcu_tasks_iw_wakeup              8355    15760.51 us     1.886 us        14.775 us
+>
+> ==> /sys/kernel/debug/tracing/trace_stat/function2 <==
+>   Function                               Hit    Time            Avg             s^2
+>   --------                               ---    ----            ---             ---
+>   call_rcu_tasks_iw_wakeup              7219    14194.27 us     1.966 us        42.440 us
+>
+> ==> /sys/kernel/debug/tracing/trace_stat/function3 <==
+>   Function                               Hit    Time            Avg             s^2
+>   --------                               ---    ----            ---             ---
+>   call_rcu_tasks_iw_wakeup              9613    19850.04 us     2.064 us        91.023 us
+>
+>  kernel/rcu/tasks.h | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 147b5945d67a..36c7e1d441d0 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -317,6 +317,11 @@ static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp)
+>         rcuwait_wake_up(&rtp->cbs_wait);
+>  }
+>
+> +static int rcu_task_gp_in_progress(struct rcu_tasks *rtp)
+> +{
+> +       return rcu_seq_state(rcu_seq_current(&rtp->tasks_gp_seq));
+> +}
+> +
+>  // Enqueue a callback for the specified flavor of Tasks RCU.
+>  static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+>                                    struct rcu_tasks *rtp)
+> @@ -375,7 +380,8 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+>         }
+>         rcu_read_unlock();
+>         /* We can't create the thread unless interrupts are enabled. */
+> -       if (needwake && READ_ONCE(rtp->kthread_ptr))
+> +       if (needwake && READ_ONCE(rtp->kthread_ptr) &&
+> +                       !rcu_task_gp_in_progress(rtp))
+>                 irq_work_queue(&rtpcp->rtp_irq_work);
+>  }
+>
+> --
+> 2.17.1
+>
 
