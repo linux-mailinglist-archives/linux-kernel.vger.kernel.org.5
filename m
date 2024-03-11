@@ -1,250 +1,357 @@
-Return-Path: <linux-kernel+bounces-99191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D9E08784B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 145998784B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:12:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A11BA1C21378
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:11:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3787A1C208F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825BE482C4;
-	Mon, 11 Mar 2024 16:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540D647F7C;
+	Mon, 11 Mar 2024 16:12:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="nTy3fWIp"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="lVxgJ9go"
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2DF4206B;
-	Mon, 11 Mar 2024 16:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710173510; cv=fail; b=aw19bMxx1mamK4UIZnGACd6jKQ9ltp2I86cZmncZORZJeIyIuM1b6aADjoag8gU3i4fMF1haXTINaL3dCXdQYaITm7ZSmDwKh6Bk5kwZrK1rKmrJF81bBZ7ShdUrvxA2CRbf3J+4Rs3cdLIm+mP1rsiHp74La0ieijY15AvyNrQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710173510; c=relaxed/simple;
-	bh=Xv6DyDW1Ta4jHEtfJiepbxlEeNpGS2gqoiV7Wr3UcnE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=KZbR7IAI+f+RQKgYm3pJ+rcSg/kJ/zTlD7SMfnBdUe22dvTyGhmRk23kgBfjUcYmy5cRouOG8H1pLpG+7GyIwlOkVevdyYZpbJLd6+jSoVcLCf9F0TLsL5Kbj+aBCkkB6QjoWNVvfD+lkaa3HkvbvXnELmVT1hSwHshrDFSVAH4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=nTy3fWIp; arc=fail smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42BG39XW029178;
-	Mon, 11 Mar 2024 09:11:39 -0700
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wt54n01dg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 09:11:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YHAcFbPc02OMdzH0BgHJjJOv0fmp7irGAxPgbBVZ9oidS8inEc760uFpGzspHGaGOaKKryoya3/XDDjU5SmMI2dpjzXAkP5VxPKRCNPjvJfl9l0SB1myU3Boq3KJs5K/ecP1+RkMji3hGNZnJdrYf7Rymwkq7QTbRI+XewWY8hTPRtXMMZplfexMPrwfp4jMmSOdk0zdiS3lqkbR6oRQHXhhiWN0gWcmp8sVgwDj0aoqprxHDagsPpscTZT8tGe1aulgM83ptXQQUycQvFhmB1Bveu2c6ILI1/tQS8JYMfg/s32n4+TLKzj5N7ER1hQ7BXFtjntwq6YOkhoKbbSK4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xv6DyDW1Ta4jHEtfJiepbxlEeNpGS2gqoiV7Wr3UcnE=;
- b=J92ad1jSxfD0XTWOdUaaf5KClnfdCNahUrDPmbajs+5FZW32kK5cJAtKX/Vn5r2APIALEeNflbbOh6vPPpZ7KGKU3qfKD1pmVzksEpj6h5ERg+geBRthIxG3tarYhpdv/xzdE0J1yg65txRsH1Z5RSVlzX76wWRQX2DSGRQr5spDWeoyqCiw1zcFTGzlV1o24TBoWVfaEeLZSMXypJTpGfUFid6uRIm2EOE6K611oVtfZj2+Bk0bAhxUdi8PdMUbHWnTa+fC1e5tLos79Tx+9b0PCxTFsutmRIbHlXCEmPM3fm0ZEGonyo1GfDOrB/jLF+trvTnj5jU8pR0iwAmrGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xv6DyDW1Ta4jHEtfJiepbxlEeNpGS2gqoiV7Wr3UcnE=;
- b=nTy3fWIpSxyfBcV/B1yc8QRNZmPEaOHMwNaM3VTBzWVhyxHaa+SN1tx2aRW70njMnTiJQ/4L5qCEvezjbyKUOgBb5R1UwLXiJOvtHa/VxNazWT/rv7ee4YlNen7eZM+j1Ti39qS7oAuC85vZAzEukbH0PVhAxXTam+q+BNPGp8o=
-Received: from SN7PR18MB5314.namprd18.prod.outlook.com (2603:10b6:806:2ef::8)
- by DM4PR18MB5122.namprd18.prod.outlook.com (2603:10b6:8:4a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.33; Mon, 11 Mar
- 2024 16:11:34 +0000
-Received: from SN7PR18MB5314.namprd18.prod.outlook.com
- ([fe80::926a:6eb8:6d4b:656a]) by SN7PR18MB5314.namprd18.prod.outlook.com
- ([fe80::926a:6eb8:6d4b:656a%7]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
- 16:11:33 +0000
-From: Bharat Bhushan <bbhushan2@marvell.com>
-To: Stefan Berger <stefanb@linux.ibm.com>,
-        "keyrings@vger.kernel.org"
-	<keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org"
-	<linux-crypto@vger.kernel.org>,
-        "herbert@gondor.apana.org.au"
-	<herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "saulo.alessandre@tse.jus.br" <saulo.alessandre@tse.jus.br>,
-        "lukas@wunner.de" <lukas@wunner.de>
-Subject: RE: [EXTERNAL] Re:  [PATCH v5 05/12] crypto: ecc - Implement
- vli_mmod_fast_521 for NIST p521
-Thread-Topic: [EXTERNAL] Re:  [PATCH v5 05/12] crypto: ecc - Implement
- vli_mmod_fast_521 for NIST p521
-Thread-Index: AQHac7zgfvWREWp5TkqNt/DFQYJH/bEytbqw
-Date: Mon, 11 Mar 2024 16:11:33 +0000
-Message-ID: 
- <SN7PR18MB5314BE0B64652FCCE7193C41E3242@SN7PR18MB5314.namprd18.prod.outlook.com>
-References: <20240306222257.979304-1-stefanb@linux.ibm.com>
- <20240306222257.979304-6-stefanb@linux.ibm.com>
- <SN7PR18MB53143E3480E99EA90B9FEB88E3242@SN7PR18MB5314.namprd18.prod.outlook.com>
- <5ea60bdb-6059-4345-bf46-004c0af8382c@linux.ibm.com>
-In-Reply-To: <5ea60bdb-6059-4345-bf46-004c0af8382c@linux.ibm.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR18MB5314:EE_|DM4PR18MB5122:EE_
-x-ms-office365-filtering-correlation-id: 22a70f1c-12ae-4325-27c7-08dc41e5ebc8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- rGtgr7eCXG1qtNA5jwGoEpqqKdKUp06R9x3O/IZqplt+eUAuvZEKCbj9yY/Pvi08gmU1tSCfXKwDXNuzyO/76rGAb31Awek61xbs5h/AfBmDn39FVz/J5s9nmS8lEyo1PPSYk+zVvL+cTLqczFiZJ00OHxRw3t9UGcItypvsEneIw/uqSYBdeBG5y5wL/bIYEGroxRC9oCAGiSwYNtqehvVgbTxDoU5LcWRx5HKin6tpsCDQJyn2DBAL5iUFChWMots+S0QEkbQV9pXUs3DSjFwzHSxHUxu1v1vZY8N9Iv+B1hjcMC0GkSmap+Bb6gCD5xh8/wmbxTZsIEstcXowVBMj8ANGJ6X7DlB4zHpNPCf54NLVU7L3lbyX2W8tsyqnl8Pd0u/gd0DRECPyGyqPmku8B/61GrECuE3H3h3sK+ypBjC54omzIqMSi1EyyhaxtWxMPkL+//piO2h1S7byM+PKICT0xMpZqm9Ot/nl2qUZG0ctZsUmnpgJmU/f0iFPesCS0em9yNAGIyl3k3MZI7QFYjdbBE6LTeiBfXaBnElAD7Bf6P9/rTJVHjdf5PcM0aFedYOUEJLytL6JzFZfLmlC0+icCb5HeRX6refsentthgkm4FT1KR1hJrWtSomxNBp6cVxU9W6VlGAMhaFzNu5o1+EtYVa9lTRCPo3QpWK/q/aFRGNKMzFK8GLJHIJWStF2sYR1UYrLESzlVTLrX0SffqPZ2aLGpy+VGCx6Krw=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR18MB5314.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?enlaSEdRTGNKektMR0dnRlRBY1o1am5sZXl0MVZWMUV0dnZQZnlQL2JseHMy?=
- =?utf-8?B?YlhBWFhvTVN2TkZHd3A2YXY3bkI0TnBEOVlLRVo3NDM0QjdiS3ZGYXAyY3BJ?=
- =?utf-8?B?UXhVQlBwRTRFOFhnWjdNYnZGL3NEOHg4WURIakd4QndVRVR1d2NHM1NsR2Zn?=
- =?utf-8?B?dUlRUzhPR3l1YUhjYi9MOEF1SFdGNGJGSld5ZEJDaGQ1WnhhUUlnUkFVNVRG?=
- =?utf-8?B?L0hQM3FvS0svcjljV3NYVUxmSkRvZjRja09JeXZGMUQxakJZU3NxUmhwM3FF?=
- =?utf-8?B?b29KNGpjQ2dvc0lMQTFCTkd5R1FvRnFPYWFydUpMcnpXdHN4U3l0WnVMRXJT?=
- =?utf-8?B?a0RrNHBOQmhjWHE5bHp6VG9OYWd6b2p1dmc1ZStyVHdTU2JkVjZORGsySWxB?=
- =?utf-8?B?R2x2WUlUYTlSbGUyKzBGQng1a2traVhhU29aTWd2em9sOGtYbUtxdGNOa1Vo?=
- =?utf-8?B?ZFhsOGJ1WW5HcnU3NDUzdEhld1pxcUozd3h0eWE1cjkzTWhpVG9rZGJCZjlS?=
- =?utf-8?B?U0lMV1VPWFgxUHJ0Tmh3SHVJZHAzVTRxNlM2WFBkUWxIKzFLRWVBN3hXWlRw?=
- =?utf-8?B?UzhvS2hTZFgydlVNTExkVXYwMmlXeS84amhvUnk2SWNCVElOVUN3ajRZSm03?=
- =?utf-8?B?VThVZXU3WndzTnp3bTFWLzJnMjRkT2VrWVZJc3BqM3NzYVpyZ0lIdVJmMGdD?=
- =?utf-8?B?dGwrY2VXOGx3d3hhcys3cVA1QkRJNEpnenN5Yy9vV2RGdWloL3pMVHB5RC82?=
- =?utf-8?B?RS92YXBXOXZCVnhmL2F4Si9Td0dPZFpyYXdWWC96eU9pTVd5YVNZQUlWMmhw?=
- =?utf-8?B?THRjN0swRnRRaXhGTnJBSjVKbjdLZUp0T0NDblVUeFNiM1kwMGRjT1h1L2pk?=
- =?utf-8?B?Qm1RcE5qNWxIa1dna3BqUWExSWFoTVRkYTZDbGJKMm44WWhwUWdEZ0RidHFM?=
- =?utf-8?B?bHhSZGJBK1NrbjZxZHB2eE5ZL1VUNGd6QXk2MEVDcFhNTEVSaW5LVmhxcG9X?=
- =?utf-8?B?bDJJL3hzZUhCVFR6QVhlZFhHT1BBeWdsMzFhUzl3L1FpVkI5eG0yWE5WUTd4?=
- =?utf-8?B?UjVIQTFJTkY4TnZUNkpaZVQ1ZFZySG5qNjR2eXJxaE1FQlZFWUV1QXBBbWl5?=
- =?utf-8?B?eit0dzB5SVdHdlpkTVB1dEFzZmc5Y3U0RDYrZnpzTEdOZlFzRklidVNmc3Z2?=
- =?utf-8?B?MjYzaW93dTIvdUJnYmZPbGdWMkl5blhNUEdDQ0VzeHNHdWxxQWRQWW8wdmgy?=
- =?utf-8?B?SnlMc0NXVlhIYldoaXR3M1c5TUx3U2RPYTVZY0JlSHhHckFqeG43WkxZT2tJ?=
- =?utf-8?B?cmh1ampXNlI3UlBEVXZUQzhPRDF3c0FpWURjMlJvSGpwN1RBeDJ2RndVdjBr?=
- =?utf-8?B?NTh5R0dCd2haTTg1QjRtOGdPWDhYUVM3ejBQRktJOHJMcy96VlBXZVZyQ2Rt?=
- =?utf-8?B?TjFUaDZYbEM0YXkyMVd1OGNLa1c0YU1lUnI4S3BaZlYwWnhnK1dFQlMvdjBM?=
- =?utf-8?B?ZVhmQWp4K1dUeGlQZTRhbHBVMjFvVDZ3K3dheEpSaTBVZGpzWlpGaHpINVNo?=
- =?utf-8?B?YVpDRkU4RmxaUFBvWHhIZFNxQlltZkd5UXM2enBXNUlYVHkwNjdwenFaSzZQ?=
- =?utf-8?B?Z3hCZ2dTSDVsRHExZFZIbEpob0RaUG9DbU81Q21lcWU0enJnVlRmYXlKdjJG?=
- =?utf-8?B?Y01jZldDUXdHUm96ajJ1ZlZNVkJoTG9RVmxZa1ZvblFqSmNBTS9hZ1RtOG9l?=
- =?utf-8?B?WE53Z0RCQnJxTkg0Q2EwSkF4TGhDZTNvenl2QW1GdnJHTWpXb1IydDNBa2R6?=
- =?utf-8?B?Rzl1d0FoN0RaN1loYUt2czF3KzZtQm1oNHNhLy9wcjhLcVR6Zk5wYnhaVDdx?=
- =?utf-8?B?anhub2E1SGVFSEs3Njh1b0Jyc0kxRDU0RVBsb2xUZGdhR1lPaDZqVnRJSkVr?=
- =?utf-8?B?cThPSy9KNTF4OS9NN2d0c0lzb2c5VDh2QkJuNVBtcHI0M0o0QXRLSTlVOGFX?=
- =?utf-8?B?RXdNYzNLQnFxNStBYnZXY0x5L1k1Qk1OVzBkNlFVY1ROU3hlZC9CVW1GaVMv?=
- =?utf-8?B?YkhYL0FPSWg4dTJSeGsyQ2J5QlRYQ1h5R3pyUFFhR0o3a0ZWb0w4YmJwa2pR?=
- =?utf-8?Q?eiIf/uXu/Xcy+XTa0kOoCIDoe?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542554AEC1
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:12:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710173546; cv=none; b=P+I3IjIPFhhr4GXnXg0XBZAicSEzkJKHJqlAnzZuGTgp3VzbJstiJuRAJlkPhotLM0qPEIF2x6HQMnyPNpshK7XAJXHa13nAxYKbI871916IWWbRah8G+PeM7gWYHwuz6Nu56B4fHdiDPJSux/NEBgY5y5DbDJC9kIZZxb3zsu4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710173546; c=relaxed/simple;
+	bh=R+SayAQZPNsrQCGIPKRPT8zODJZd7Em+eDjR+ljv420=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZvlcIbVXht8/LPuaL3tcKOjnxcj5nApN44XXnPFlhS+Nzl6rLyOgvqiiEeF6CgQ5AQQFzFTBsqWp5pRmoFGc9aEhZRx2O5qQNGYg7oa6jvMfDOV+HGbMo1+PP4nVaWH84a2WzczwX2Ynp2Nw2KbAFCJXXJRG9ikExiMxgL0f2tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=lVxgJ9go; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-690c73735b5so16608736d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710173541; x=1710778341; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8rae8DczRYY1qVTc5krNA5vQiwAZfYKBrfNd8phx9FQ=;
+        b=lVxgJ9gorX7fC9BqHjK5V0jvkX/cfIoh1FtZEhiSP9PM7Ha3fB7AY2rHCJ4JeEgS0Y
+         f3dgJZHA6RKtIZpTH6Qnl8akSZwJNRAomO1bvw+UFNGaIcH72FO+qxCLvYc1Fe+fe+fJ
+         rpPgrzx3unYXv5GHd43Q4LfpRWy/N0NuBe49LWn7VWYfz+YFfPe6Z8nVSeFJNs4XXg3X
+         AdLnKQXkzOFMq55qHXrx1h8sAbQAGbUFvo3k4sKWjHAxRi57ttMQzvbhhlub7dm3YGOH
+         eLbX2EELsQ28hykmZ+7byfknspS9gRjbCuH33E2BYX1zX5iuoBhh6cqRnIzyeDogvKDd
+         YQDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710173541; x=1710778341;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8rae8DczRYY1qVTc5krNA5vQiwAZfYKBrfNd8phx9FQ=;
+        b=HJhF065FeHp8BTBnohHS5tqtJrX2O9PpatNelaDCGHgorHHm4sHOc8gD0ENLiiy4lh
+         eGTl4gDK5tfG4u/QHY1DnNaf7NeozBLrA46GBUHv2dJiexP9FpOJJVK/Jp6K4xnuvVd4
+         Sim0Mg3Rf4aJqUhDOK9o8cvWPux5N1HfndVLxrSi98Pq+x+AFE0sx8tbpo0lC5rIn6WS
+         5bIOKVC3b7E0sTCBtHv050v3TR0SdX6EFZjuFdkbFEib7CMANN0jP7aTezAQP93xcNg6
+         VZroO+TsH8LJ4Qzc2csAJI0dG9orJNz4d7fHuWNI7nSl85fG10JDDZDoab2z2l40Qq1r
+         sDvw==
+X-Forwarded-Encrypted: i=1; AJvYcCXeXljwg1v+4+rseMwkM3kutlrZoj+GVpePGR+uCNH4w6iF+8WtoZ92znVRxqYQw91Mq9vx1lpuyMk5HpVqR9cAddb0Qx8Gf/OYpb5+
+X-Gm-Message-State: AOJu0YweyYDgcA9KTkflIJLVQRVhzx9UWMZCkGrZ7AKriU1vzQ/RvDzD
+	u7gdygid1jzbq1OClGVrRtjQY/0GQKosY7Ewg5DoaDqGrUj8Lh+5e+JtamHGdV8=
+X-Google-Smtp-Source: AGHT+IF1lXMtfLql23ntUBZ5Bx3lRSL4pD/LtPVgSinUp2k9OQFjpcIS4RA39FA+WPNkw9m4xQHQ4Q==
+X-Received: by 2002:a0c:fa82:0:b0:690:aed1:bd8f with SMTP id o2-20020a0cfa82000000b00690aed1bd8fmr7127592qvn.57.1710173540994;
+        Mon, 11 Mar 2024 09:12:20 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id p6-20020a0cf546000000b00690d2ed0d74sm1115722qvm.115.2024.03.11.09.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 09:12:20 -0700 (PDT)
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>,
+	Nhat Pham <nphamcs@gmail.com>,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] mm: zswap: optimize zswap pool size tracking
+Date: Mon, 11 Mar 2024 12:12:13 -0400
+Message-ID: <20240311161214.1145168-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR18MB5314.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22a70f1c-12ae-4325-27c7-08dc41e5ebc8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2024 16:11:33.8821
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VMRzvKZ8AQYUELWce/UodIQGwTKljqLjDHTBLEB6iSiliNaC5CURoc3d6rqln6q0H8V6h1DUMwzops+e3/lLUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR18MB5122
-X-Proofpoint-ORIG-GUID: m63t-pk6QPssKGB_BEehWXEdoqX7-4ZR
-X-Proofpoint-GUID: m63t-pk6QPssKGB_BEehWXEdoqX7-4ZR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
+Content-Transfer-Encoding: 8bit
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU3RlZmFuIEJlcmdlciA8
-c3RlZmFuYkBsaW51eC5pYm0uY29tPg0KPiBTZW50OiBNb25kYXksIE1hcmNoIDExLCAyMDI0IDc6
-MzMgUE0NCj4gVG86IEJoYXJhdCBCaHVzaGFuIDxiYmh1c2hhbjJAbWFydmVsbC5jb20+OyBrZXly
-aW5nc0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBjcnlwdG9Admdlci5rZXJuZWwub3JnOyBo
-ZXJiZXJ0QGdvbmRvci5hcGFuYS5vcmcuYXU7IGRhdmVtQGRhdmVtbG9mdC5uZXQNCj4gQ2M6IGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHNhdWxvLmFsZXNzYW5kcmVAdHNlLmp1cy5icjsg
-bHVrYXNAd3VubmVyLmRlDQo+IFN1YmplY3Q6IFtFWFRFUk5BTF0gUmU6IFtQQVRDSCB2NSAwNS8x
-Ml0gY3J5cHRvOiBlY2MgLSBJbXBsZW1lbnQNCj4gdmxpX21tb2RfZmFzdF81MjEgZm9yIE5JU1Qg
-cDUyMQ0KPiA+IA0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IA0KPiANCj4gT24gMy8xMS8yNCAwMTowNywg
-QmhhcmF0IEJodXNoYW4gd3JvdGU6DQo+ID4gTWlub3Igbml0cw0KPiA+DQo+ID4+IC0tLS0tT3Jp
-Z2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+IEZyb206IFN0ZWZhbiBCZXJnZXIgPHN0ZWZhbmJAbGlu
-dXguaWJtLmNvbT4NCj4gPj4gU2VudDogVGh1cnNkYXksIE1hcmNoIDcsIDIwMjQgMzo1MyBBTQ0K
-PiA+PiBUbzoga2V5cmluZ3NAdmdlci5rZXJuZWwub3JnOyBsaW51eC1jcnlwdG9Admdlci5rZXJu
-ZWwub3JnOw0KPiA+PiBoZXJiZXJ0QGdvbmRvci5hcGFuYS5vcmcuYXU7IGRhdmVtQGRhdmVtbG9m
-dC5uZXQNCj4gPj4gQ2M6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHNhdWxvLmFsZXNz
-YW5kcmVAdHNlLmp1cy5icjsNCj4gPj4gbHVrYXNAd3VubmVyLmRlOyBTdGVmYW4gQmVyZ2VyIDxz
-dGVmYW5iQGxpbnV4LmlibS5jb20+DQo+ID4+IFN1YmplY3Q6IFtFWFRFUk5BTF0gW1BBVENIIHY1
-IDA1LzEyXSBjcnlwdG86IGVjYyAtIEltcGxlbWVudA0KPiA+PiB2bGlfbW1vZF9mYXN0XzUyMSBm
-b3IgTklTVCBwNTIxDQo+ID4+DQo+ID4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+PiAtIEltcGxlbWVudCB2
-bGlfbW1vZF9mYXN0XzUyMSBmb2xsb3dpbmcgdGhlIGRlc2NyaXB0aW9uIGZvciBob3cgdG8NCj4g
-Pj4gY2FsY3VsYXRlIHRoZSBtb2R1bHVzIGZvciBOSVNUIFA1MjEgaW4gdGhlIE5JU1QgcHVibGlj
-YXRpb24NCj4gPj4gIlJlY29tbWVuZGF0aW9ucyBmb3IgRGlzY3JldGUgTG9nYXJpdGhtLUJhc2Vk
-IENyeXB0b2dyYXBoeTogRWxsaXB0aWMNCj4gPj4gQ3VydmUgRG9tYWluIFBhcmFtZXRlcnMiDQo+
-ID4+IHNlY3Rpb24gRy4xLjQuDQo+ID4+DQo+ID4+IE5JU1QgcDUyMSByZXF1aXJlcyA5IDY0Yml0
-IGRpZ2l0cywgc28gaW5jcmVhc2UgdGhlIEVDQ19NQVhfRElHSVRTIHNvDQo+ID4+IHRoYXQgYXJy
-YXlzIGZpdCB0aGUgbGFyZ2VyIG51bWJlcnMuDQo+ID4+DQo+ID4+IFNpZ25lZC1vZmYtYnk6IFN0
-ZWZhbiBCZXJnZXIgPHN0ZWZhbmJAbGludXguaWJtLmNvbT4NCj4gPj4gVGVzdGVkLWJ5OiBMdWth
-cyBXdW5uZXIgPGx1a2FzQHd1bm5lci5kZT4NCj4gPj4gLS0tDQo+ID4+ICAgY3J5cHRvL2VjYy5j
-ICAgICAgICAgICAgICAgICAgfCAzMSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+
-ID4+ICAgaW5jbHVkZS9jcnlwdG8vaW50ZXJuYWwvZWNjLmggfCAgMiArLQ0KPiA+PiAgIDIgZmls
-ZXMgY2hhbmdlZCwgMzIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+Pg0KPiA+PiBk
-aWZmIC0tZ2l0IGEvY3J5cHRvL2VjYy5jIGIvY3J5cHRvL2VjYy5jIGluZGV4DQo+ID4+IGY1M2Zi
-NGQ2YWY5OS4uMzczNjYwZTdiMTlkDQo+ID4+IDEwMDY0NA0KPiA+PiAtLS0gYS9jcnlwdG8vZWNj
-LmMNCj4gPj4gKysrIGIvY3J5cHRvL2VjYy5jDQo+ID4+IEBAIC05MDIsNiArOTAyLDMxIEBAIHN0
-YXRpYyB2b2lkIHZsaV9tbW9kX2Zhc3RfMzg0KHU2NCAqcmVzdWx0LCBjb25zdA0KPiA+PiB1NjQg
-KnByb2R1Y3QsICAjdW5kZWYgQU5ENjRIICAjdW5kZWYgQU5ENjRMDQo+ID4+DQo+ID4+ICsvKiBD
-b21wdXRlcyByZXN1bHQgPSBwcm9kdWN0ICUgY3VydmVfcHJpbWUNCj4gPj4gKyAqIGZyb20gIlJl
-Y29tbWVuZGF0aW9ucyBmb3IgRGlzY3JldGUgTG9nYXJpdGhtLUJhc2VkIENyeXB0b2dyYXBoeToN
-Cj4gPj4gKyAqICAgICAgIEVsbGlwdGljIEN1cnZlIERvbWFpbiBQYXJhbWV0ZXJzIiBHLjEuNA0K
-PiA+PiArICovDQo+ID4+ICtzdGF0aWMgdm9pZCB2bGlfbW1vZF9mYXN0XzUyMSh1NjQgKnJlc3Vs
-dCwgY29uc3QgdTY0ICpwcm9kdWN0LA0KPiA+PiArCQkJCWNvbnN0IHU2NCAqY3VydmVfcHJpbWUs
-IHU2NCAqdG1wKSB7DQo+ID4+ICsJY29uc3QgdW5zaWduZWQgaW50IG5kaWdpdHMgPSA5Ow0KPiA+
-PiArCXNpemVfdCBpOw0KPiA+PiArDQo+ID4+ICsJZm9yIChpID0gMDsgaSA8IG5kaWdpdHM7IGkr
-KykNCj4gPj4gKwkJdG1wW2ldID0gcHJvZHVjdFtpXTsNCj4gPj4gKwl0bXBbOF0gJj0gMHgxZmY7
-DQo+ID4+ICsNCj4gPj4gKwl2bGlfc2V0KHJlc3VsdCwgdG1wLCBuZGlnaXRzKTsNCj4gDQo+IEkg
-aGF2ZSBhbHNvIG1vZGlmaWVkIHRoaXMgaGVyZSBub3cgdG8gaW5pdGlhbGl6ZSAncmVzdWx0JyBm
-cm9tIGxvd2VzdA0KPiA1MjEgYmlzIG9mIHByb2R1Y3Qgd2l0aG91dCB0aGUgZGV0b3VyIHRocm91
-Z2ggdG1wLg0KPiANCj4gPj4gKw0KPiA+PiArDQo+ID4+ICsJZm9yIChpID0gMDsgaSA8IG5kaWdp
-dHM7IGkrKykNCj4gPj4gKwkJdG1wW2ldID0gKHByb2R1Y3RbOCArIGldID4+IDkpIHwgKHByb2R1
-Y3RbOSArIGldIDw8IDU1KTsNCj4gPj4gKwl0bXBbOF0gJj0gMHgxZmY7DQo+ID4+ICsNCj4gPj4g
-Kwl2bGlfbW9kX2FkZChyZXN1bHQsIHJlc3VsdCwgdG1wLCBjdXJ2ZV9wcmltZSwgbmRpZ2l0cyk7
-IH0NCj4gPj4gKw0KPiA+PiArDQo+ID4+ICAgLyogQ29tcHV0ZXMgcmVzdWx0ID0gcHJvZHVjdCAl
-IGN1cnZlX3ByaW1lIGZvciBkaWZmZXJlbnQgY3VydmVfcHJpbWVzLg0KPiA+PiAgICAqDQo+ID4+
-ICAgICogTm90ZSB0aGF0IGN1cnZlX3ByaW1lcyBhcmUgZGlzdGluZ3Vpc2hlZCBqdXN0IGJ5IGhl
-dXJpc3RpYyBjaGVjaw0KPiA+PiBhbmQgQEAgLQ0KPiA+PiA5NDEsNiArOTY2LDEyIEBAIHN0YXRp
-YyBib29sIHZsaV9tbW9kX2Zhc3QodTY0ICpyZXN1bHQsIHU2NCAqcHJvZHVjdCwNCj4gPj4gICAJ
-Y2FzZSA2Og0KPiA+PiAgIAkJdmxpX21tb2RfZmFzdF8zODQocmVzdWx0LCBwcm9kdWN0LCBjdXJ2
-ZV9wcmltZSwgdG1wKTsNCj4gPj4gICAJCWJyZWFrOw0KPiA+PiArCWNhc2UgOToNCj4gPg0KPiA+
-IENhbiB3ZSB1c2UgRUNDX0NVUlZFX05JU1RfUDM4NF9ESUdJVFMsIEVDQ19DVVJWRV9OSVNUX1Ay
-NTZfRElHSVRTDQo+IGluIHRoaXMgZnVuY3Rpb24/DQo+ID4NCj4gPiBBbmQgZGVmaW5lIEVDQ19D
-VVJWRV9OSVNUX1A1MjFfRElHSVRTLCB3aGljaCBpcyBzYW1lIGFzDQo+IEVDQ19NQVhfRElHSVRT
-IGRlZmluZWQgYmVsb3cgaW4gdGhpcyBwYXRjaD8NCj4gPg0KPiA+PiArCQlpZiAoY3VydmUtPm5i
-aXRzID09IDUyMSkgew0KPiANCj4gSWYgSSByZXBsYWNlIHRoZSBudW1iZXJzIHdpdGggdGhlc2Ug
-aGFzaC1kZWZpbmVzJ3MgaW4gaGVyZSAoaW4gYW4gYWRkaXRpb25hbCBwYXRjaA0KPiBvbiBleGlz
-dGluZyBjb2RlKSB0aGVuIEkgY2FuIGp1c3QgYWJvdXQgcmVtb3ZlIHRoZSBjaGVjayBvbiBuYml0
-cyBoZXJlIGFzIHdlbGwuLi4gPw0KDQpZZXMsIGNhbiB1c2Ugc2FtZSBkZWZpbmUgaGVyZS4NCg0K
-VGhhbmtzDQotQmhhcmF0DQoNCj4gDQo+IA0KPiA+PiArCQkJdmxpX21tb2RfZmFzdF81MjEocmVz
-dWx0LCBwcm9kdWN0LCBjdXJ2ZV9wcmltZSwNCj4gPj4gdG1wKTsNCj4gPj4gKwkJCWJyZWFrOw0K
-PiA+PiArCQl9DQo+ID4+ICsJCWZhbGx0aHJvdWdoOw0KPiA+PiAgIAlkZWZhdWx0Og0KPiA+PiAg
-IAkJcHJfZXJyX3JhdGVsaW1pdGVkKCJlY2M6IHVuc3VwcG9ydGVkIGRpZ2l0cyBzaXplIVxuIik7
-DQo+ID4+ICAgCQlyZXR1cm4gZmFsc2U7DQo+ID4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2NyeXB0
-by9pbnRlcm5hbC9lY2MuaA0KPiA+PiBiL2luY2x1ZGUvY3J5cHRvL2ludGVybmFsL2VjYy5oIGlu
-ZGV4IDRhNTU2YjQxODczZS4uZGUxN2JjZGViNTNhDQo+ID4+IDEwMDY0NA0KPiA+PiAtLS0gYS9p
-bmNsdWRlL2NyeXB0by9pbnRlcm5hbC9lY2MuaA0KPiA+PiArKysgYi9pbmNsdWRlL2NyeXB0by9p
-bnRlcm5hbC9lY2MuaA0KPiA+PiBAQCAtMzMsNyArMzMsNyBAQA0KPiA+PiAgICNkZWZpbmUgRUND
-X0NVUlZFX05JU1RfUDE5Ml9ESUdJVFMgIDMNCj4gPj4gICAjZGVmaW5lIEVDQ19DVVJWRV9OSVNU
-X1AyNTZfRElHSVRTICA0DQo+ID4+ICAgI2RlZmluZSBFQ0NfQ1VSVkVfTklTVF9QMzg0X0RJR0lU
-UyAgNg0KPiA+PiAtI2RlZmluZSBFQ0NfTUFYX0RJR0lUUyAgICAgICAgICAgICAgKDUxMiAvIDY0
-KSAvKiBkdWUgdG8gZWNyZHNhICovDQo+ID4+ICsjZGVmaW5lIEVDQ19NQVhfRElHSVRTICAgICAg
-ICAgICAgICBESVZfUk9VTkRfVVAoNTIxLCA2NCkgLyogTklTVCBQNTIxICovDQo+ID4+DQo+ID4+
-ICAgI2RlZmluZSBFQ0NfRElHSVRTX1RPX0JZVEVTX1NISUZUIDMNCj4gPj4NCj4gPj4gLS0NCj4g
-Pj4gMi40My4wDQo+ID4+DQo+ID4NCg==
+Profiling the munmap() of a zswapped memory region shows 50%(!) of the
+total cycles currently going into updating the zswap_pool_total_size.
+
+There are three consumers of this counter:
+- store, to enforce the globally configured pool limit
+- meminfo & debugfs, to report the size to the user
+- shrink, to determine the batch size for each cycle
+
+Instead of aggregating everytime an entry enters or exits the zswap
+pool, aggregate the value from the zpools on-demand:
+
+- Stores aggregate the counter anyway upon success. Aggregating to
+  check the limit instead is the same amount of work.
+
+- Meminfo & debugfs might benefit somewhat from a pre-aggregated
+  counter, but aren't exactly hotpaths.
+
+- Shrinking can aggregate once for every cycle instead of doing it for
+  every freed entry. As the shrinker might work on tens or hundreds of
+  objects per scan cycle, this is a large reduction in aggregations.
+
+The paths that benefit dramatically are swapin, swapoff, and
+unmaps. There could be millions of pages being processed until
+somebody asks for the pool size again. This eliminates the pool size
+updates from those paths entirely.
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ fs/proc/meminfo.c     |  3 +-
+ include/linux/zswap.h |  2 +-
+ mm/zswap.c            | 98 +++++++++++++++++++++----------------------
+ 3 files changed, 49 insertions(+), 54 deletions(-)
+
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index 45af9a989d40..245171d9164b 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -89,8 +89,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 	show_val_kb(m, "SwapTotal:      ", i.totalswap);
+ 	show_val_kb(m, "SwapFree:       ", i.freeswap);
+ #ifdef CONFIG_ZSWAP
+-	seq_printf(m,  "Zswap:          %8lu kB\n",
+-		   (unsigned long)(zswap_pool_total_size >> 10));
++	show_val_kb(m, "Zswap:          ", zswap_total_pages());
+ 	seq_printf(m,  "Zswapped:       %8lu kB\n",
+ 		   (unsigned long)atomic_read(&zswap_stored_pages) <<
+ 		   (PAGE_SHIFT - 10));
+diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+index 341aea490070..2a85b941db97 100644
+--- a/include/linux/zswap.h
++++ b/include/linux/zswap.h
+@@ -7,7 +7,6 @@
+ 
+ struct lruvec;
+ 
+-extern u64 zswap_pool_total_size;
+ extern atomic_t zswap_stored_pages;
+ 
+ #ifdef CONFIG_ZSWAP
+@@ -27,6 +26,7 @@ struct zswap_lruvec_state {
+ 	atomic_long_t nr_zswap_protected;
+ };
+ 
++unsigned long zswap_total_pages(void);
+ bool zswap_store(struct folio *folio);
+ bool zswap_load(struct folio *folio);
+ void zswap_invalidate(swp_entry_t swp);
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 9a3237752082..7c39327a7cc2 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -43,8 +43,6 @@
+ /*********************************
+ * statistics
+ **********************************/
+-/* Total bytes used by the compressed storage */
+-u64 zswap_pool_total_size;
+ /* The number of compressed pages currently stored in zswap */
+ atomic_t zswap_stored_pages = ATOMIC_INIT(0);
+ /* The number of same-value filled pages currently stored in zswap */
+@@ -264,45 +262,6 @@ static inline struct zswap_tree *swap_zswap_tree(swp_entry_t swp)
+ 	pr_debug("%s pool %s/%s\n", msg, (p)->tfm_name,		\
+ 		 zpool_get_type((p)->zpools[0]))
+ 
+-static bool zswap_is_full(void)
+-{
+-	return totalram_pages() * zswap_max_pool_percent / 100 <
+-			DIV_ROUND_UP(zswap_pool_total_size, PAGE_SIZE);
+-}
+-
+-static bool zswap_can_accept(void)
+-{
+-	return totalram_pages() * zswap_accept_thr_percent / 100 *
+-				zswap_max_pool_percent / 100 >
+-			DIV_ROUND_UP(zswap_pool_total_size, PAGE_SIZE);
+-}
+-
+-static u64 get_zswap_pool_size(struct zswap_pool *pool)
+-{
+-	u64 pool_size = 0;
+-	int i;
+-
+-	for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
+-		pool_size += zpool_get_total_size(pool->zpools[i]);
+-
+-	return pool_size;
+-}
+-
+-static void zswap_update_total_size(void)
+-{
+-	struct zswap_pool *pool;
+-	u64 total = 0;
+-
+-	rcu_read_lock();
+-
+-	list_for_each_entry_rcu(pool, &zswap_pools, list)
+-		total += get_zswap_pool_size(pool);
+-
+-	rcu_read_unlock();
+-
+-	zswap_pool_total_size = total;
+-}
+-
+ /*********************************
+ * pool functions
+ **********************************/
+@@ -540,6 +499,28 @@ static struct zswap_pool *zswap_pool_find_get(char *type, char *compressor)
+ 	return NULL;
+ }
+ 
++static unsigned long zswap_max_pages(void)
++{
++	return totalram_pages() * zswap_max_pool_percent / 100;
++}
++
++unsigned long zswap_total_pages(void)
++{
++	struct zswap_pool *pool;
++	u64 total = 0;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(pool, &zswap_pools, list) {
++		int i;
++
++		for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
++			total += zpool_get_total_size(pool->zpools[i]);
++	}
++	rcu_read_unlock();
++
++	return total >> PAGE_SHIFT;
++}
++
+ /*********************************
+ * param callbacks
+ **********************************/
+@@ -912,7 +893,6 @@ static void zswap_entry_free(struct zswap_entry *entry)
+ 	}
+ 	zswap_entry_cache_free(entry);
+ 	atomic_dec(&zswap_stored_pages);
+-	zswap_update_total_size();
+ }
+ 
+ /*
+@@ -1317,7 +1297,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ 	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
+ #else
+ 	/* use pool stats instead of memcg stats */
+-	nr_backing = zswap_pool_total_size >> PAGE_SHIFT;
++	nr_backing = zswap_total_pages();
+ 	nr_stored = atomic_read(&zswap_nr_stored);
+ #endif
+ 
+@@ -1385,6 +1365,10 @@ static void shrink_worker(struct work_struct *w)
+ {
+ 	struct mem_cgroup *memcg;
+ 	int ret, failures = 0;
++	unsigned long thr;
++
++	/* Reclaim down to the accept threshold */
++	thr = zswap_max_pages() * zswap_accept_thr_percent / 100;
+ 
+ 	/* global reclaim will select cgroup in a round-robin fashion. */
+ 	do {
+@@ -1432,10 +1416,9 @@ static void shrink_worker(struct work_struct *w)
+ 			break;
+ 		if (ret && ++failures == MAX_RECLAIM_RETRIES)
+ 			break;
+-
+ resched:
+ 		cond_resched();
+-	} while (!zswap_can_accept());
++	} while (zswap_total_pages() > thr);
+ }
+ 
+ static int zswap_is_page_same_filled(void *ptr, unsigned long *value)
+@@ -1476,6 +1459,7 @@ bool zswap_store(struct folio *folio)
+ 	struct zswap_entry *entry, *dupentry;
+ 	struct obj_cgroup *objcg = NULL;
+ 	struct mem_cgroup *memcg = NULL;
++	unsigned long max_pages, cur_pages;
+ 
+ 	VM_WARN_ON_ONCE(!folio_test_locked(folio));
+ 	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
+@@ -1487,6 +1471,7 @@ bool zswap_store(struct folio *folio)
+ 	if (!zswap_enabled)
+ 		goto check_old;
+ 
++	/* Check cgroup limits */
+ 	objcg = get_obj_cgroup_from_folio(folio);
+ 	if (objcg && !obj_cgroup_may_zswap(objcg)) {
+ 		memcg = get_mem_cgroup_from_objcg(objcg);
+@@ -1497,15 +1482,20 @@ bool zswap_store(struct folio *folio)
+ 		mem_cgroup_put(memcg);
+ 	}
+ 
+-	/* reclaim space if needed */
+-	if (zswap_is_full()) {
++	/* Check global limits */
++	cur_pages = zswap_total_pages();
++	max_pages = zswap_max_pages();
++
++	if (cur_pages >= max_pages) {
+ 		zswap_pool_limit_hit++;
+ 		zswap_pool_reached_full = true;
+ 		goto shrink;
+ 	}
+ 
+ 	if (zswap_pool_reached_full) {
+-	       if (!zswap_can_accept())
++		unsigned long thr = max_pages * zswap_accept_thr_percent / 100;
++
++		if (cur_pages > thr)
+ 			goto shrink;
+ 		else
+ 			zswap_pool_reached_full = false;
+@@ -1581,7 +1571,6 @@ bool zswap_store(struct folio *folio)
+ 
+ 	/* update stats */
+ 	atomic_inc(&zswap_stored_pages);
+-	zswap_update_total_size();
+ 	count_vm_event(ZSWPOUT);
+ 
+ 	return true;
+@@ -1711,6 +1700,13 @@ void zswap_swapoff(int type)
+ 
+ static struct dentry *zswap_debugfs_root;
+ 
++static int debugfs_get_total_size(void *data, u64 *val)
++{
++	*val = zswap_total_pages() * PAGE_SIZE;
++	return 0;
++}
++DEFINE_DEBUGFS_ATTRIBUTE(total_size_fops, debugfs_get_total_size, NULL, "%llu");
++
+ static int zswap_debugfs_init(void)
+ {
+ 	if (!debugfs_initialized())
+@@ -1732,8 +1728,8 @@ static int zswap_debugfs_init(void)
+ 			   zswap_debugfs_root, &zswap_reject_compress_poor);
+ 	debugfs_create_u64("written_back_pages", 0444,
+ 			   zswap_debugfs_root, &zswap_written_back_pages);
+-	debugfs_create_u64("pool_total_size", 0444,
+-			   zswap_debugfs_root, &zswap_pool_total_size);
++	debugfs_create_file("pool_total_size", 0444,
++			    zswap_debugfs_root, NULL, &total_size_fops);
+ 	debugfs_create_atomic_t("stored_pages", 0444,
+ 				zswap_debugfs_root, &zswap_stored_pages);
+ 	debugfs_create_atomic_t("same_filled_pages", 0444,
+-- 
+2.44.0
+
 
