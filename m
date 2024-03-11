@@ -1,139 +1,162 @@
-Return-Path: <linux-kernel+bounces-99613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FAAD878AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:30:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 777A4878AC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A45D9B211F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D03D228225D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C275822A;
-	Mon, 11 Mar 2024 22:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4455812A;
+	Mon, 11 Mar 2024 22:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="EQRJ3ksG"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iCVVhgFm"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D649F2E40E
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 22:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD0C54736
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 22:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710196241; cv=none; b=pOBpIVkkcye50kbm7un5U8jk3rMg9DChLtaAyS391kVYMUXgTTHLJ7KnJH8Ikd4PhHLoGUehSQ6egcA789+aUQv96S82dOfGPMZv83uS0D+9DDiOUZhxklj9QCDlSiRGD7rJh7inMuLbpfpUver8AT0MkOAjyzImG/dhcSNGDZY=
+	t=1710196261; cv=none; b=VI8VPYdSDcTpc9XFNtHOIVGE2GLf3jaKIdNanjAHe1Hd2Egx2xNgGzx/V4nWfbFx0qE23xWBkYFp24ZK/uSTRVx4KcGVPXMeQU9w1Qy6asXA16Jq5dsiGDHVGG2kvEkt7DKhXHenDmftlfc3FVUYqYClW6Gq4BH0Bx/2VX2Zrfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710196241; c=relaxed/simple;
-	bh=OdMd+J50CNM+50f8uOMI7+ZekRCkUMCn9VJu8tzX+/s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M1l4Cjd6cb3NPOOThuGqY73jD2+5lqfg+liREEXcJWu29+lHz6r/xbNTNOJT+cywGqOryEsxCY3jGQqI7cdDzuCpoMCMkr7MYyv7pe0YJGXgy4DJiPeP/5Zj6l04PlGGGUkGDH1N4dWxYbukcgx2jgNhjVwADO71pMxVxhONX6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=EQRJ3ksG; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c1ec2d05feso2335619b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:30:39 -0700 (PDT)
+	s=arc-20240116; t=1710196261; c=relaxed/simple;
+	bh=ccEPIRBsx8Z3efNFka2XMIqeialKRn15JJ1iLrYfxvQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BKlWuuMLA+shmEFYCU0y3xvBGVc0DQ+/Z/XORFSQup0ktyTNhcRxx6KRxlaq69B7MeuBewj58zuptzrNnV7WEIJvKPmhYNMSRslnJ4PW4NOu4YQUduTZR1EKplg754zJY6Q6nqmZBBOsiokBr/y7OMYOUowC3aL6Jv2op/OShqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iCVVhgFm; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7db9cad9dbcso1911034241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:30:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1710196239; x=1710801039; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EUgfNiSuiTtBVNEOakTU6DEDXoHV6YA4dJcvkvf2wRA=;
-        b=EQRJ3ksGEJfiPWiyb1C5o4HUUIJKuzKy6HMRmEOyrSHTD0EyPpdDPccXtGjGKp1+km
-         a7vVvzvOwwuK9pUccmOW+/3HmzcwVix/w7tALNxjPwOYhTLnhgTng5RyorPrDwFU5coy
-         WsQo8sYfNl9uKUbNq/n4W4jAUZEy7zKxd5Tgzkb3gxyTvL9hS03IefzTCCILUyGTvl9b
-         Gj23R1UoKMylhSTz047MyM1y5Ad4WlQo78pvc2l9o1iXxpfyBKabvLfcFTxfUx4PewGW
-         HG9xTkoUiZuY0VaTCRxMQcPlmu6594a8VOOrSqQchN8xGp4TAYqp5DVAl5qnBthUdXYr
-         BCMQ==
+        d=gmail.com; s=20230601; t=1710196259; x=1710801059; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IbQrm7vb6lcaupZxQt2vA7yORilaHaySRWOgYMwjdKI=;
+        b=iCVVhgFmxe+WZE+TAj4BCW82fEJYnPIf+NYJPwaabVzgd2KICeE4HG9V1TZTxqwvrl
+         3ytTAqzx0bovpevdhxTms/UInZcku7du06WXzgESNpcoCuEYwidKvg5hiRfERcZ9HRuA
+         V0P2UfqNTHjPjPb0F3nFCgAnV9I/Buo+P20lp/QQJHma+i+0v6KxPMVvaspHH5GdU5eg
+         KwONdDQ1Rp4g85XObJh3Ccl1Hf2U7zq8RYf64SSRxz0BjRtD8CmbTDu6Ap2tJkjKvtzD
+         hm1HyDT1AmShI6Lb2esUSVQ47OUJe+vJoXaCwsBy3XE+sajMR9pcNTMf3icVzQzo6x0N
+         i09A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710196239; x=1710801039;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EUgfNiSuiTtBVNEOakTU6DEDXoHV6YA4dJcvkvf2wRA=;
-        b=q7XJhutK0JrY86jYaT4J7zI0iEu98Oz/wcOV+4y6GdMVd2s3+Z/+/B+z59910TYz6P
-         rxsIqhtlsKsrM0fCd3QuOXmZiXs9EIjVrv7qaPq/S4KUCrtfPs0HpMuabNiWhPNnG8kS
-         wbh2uYpcuu/tQJ362FxqrO4HajbstRkEweEZW52gqmCYUbYkxs5XNklnNtIuCYyH9VcN
-         NsYA0VJglC15URBkniUymAJ0G9aPpkByzj+1Dg0iPltrJcvKcdeMcsmRnxGErhgXQaMF
-         ppI44TMi1TyGeAdbR0VvawgycquSxji9NwQkcTrD2ecvoGa57PtpA7oftEI4hMQTPTca
-         dVEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhpsHNIL8cEdLlewUYEfoPuwhDP9FPOvybdrMKG1d5JBSQRocIbIcsVfn8oXzybiQcwJ2uAH4Emq/slyuLxdOoCsa0OBvC/Xk4MjVa
-X-Gm-Message-State: AOJu0YwYqOWFSE16ntwJMlo2eVDUzPdW7OBakrgbK+OB4nFhzHkgA6xF
-	gOYjovH6+M1NjxmMsdt6CBbnR/LkiL3UumY1LpVG81p1b17QPijX/yjsJx9Rb5Q=
-X-Google-Smtp-Source: AGHT+IHzsBVmxmvEd9yydjX8lSJ0aEa8zA7lYZdmXFKIknpvvZOV4bw6iQkCUwQW11vi3oEDLGEQsg==
-X-Received: by 2002:a05:6808:1403:b0:3c2:3a65:eaf9 with SMTP id w3-20020a056808140300b003c23a65eaf9mr2279381oiv.9.1710196238894;
-        Mon, 11 Mar 2024 15:30:38 -0700 (PDT)
-Received: from dev-mliang.dev.purestorage.com ([208.88.159.128])
-        by smtp.gmail.com with ESMTPSA id gu17-20020a056a004e5100b006e572d86152sm4964638pfb.91.2024.03.11.15.30.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 15:30:38 -0700 (PDT)
-From: Michael Liang <mliang@purestorage.com>
-To: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Tariq Toukan <tariqt@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	stable@vger.kernel.org,
-	Michael Liang <mliang@purestorage.com>,
-	Mohamed Khalfella <mkhalfella@purestorage.com>,
-	Yuanyuan Zhong <yzhong@purestorage.com>
-Subject: [PATCH] net/mlx5: offset comp irq index in name by one
-Date: Mon, 11 Mar 2024 16:30:18 -0600
-Message-Id: <20240311223018.580975-1-mliang@purestorage.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1710196259; x=1710801059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IbQrm7vb6lcaupZxQt2vA7yORilaHaySRWOgYMwjdKI=;
+        b=ulo88/8hXh+xFBZ6FX8OaOyP4cccVFoV8COyY7lw0D5wlPfXbyJhNVstNIJT26y28a
+         3JTKhFwuvEoUEJfxENbGB28jcLKpMq2vQmtZweADMwhLBMIR5FJAvTWGSU6HmcB0Qg0q
+         FULZVsMH2QHQjFsWacg4DZYb0D6fQO1JbsFMYOzojgnBIBGMFXAhcrobmflRehP/aePL
+         Pp24P2GD3xEp/Xr/Ozqe/V74YpoGOeaNlKBF2tbEjt6Z6DpGsP8nr2rvIXVzCTkAtAvC
+         oOBBNujDqjzK9/HRdMKmcyTW61aw2gCfwgXjpa/XiitJ9P8NTPq04mU7YTjZ6saXyq+J
+         mDiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWBlRw0SBa8tFl+oWEuSPItRJBDgMi/GgPM0lAdsHrAj0hPjXFvA4+Drh7IZxX1SkU4Iwjkkttc83UDg8JyJgA6Fy3MlwJs3ApJNhuy
+X-Gm-Message-State: AOJu0Yyhr8AAzZsZqe8K6SvmanKo8TX9xKG3KyCOJ3T9IvUrqGeSa5h6
+	RfhHowlYwQBYEgs9o2204aT0d1FcuosEAcCwR729DdmNpGpiS1lIVkJHWLPMvAYqzANaQXwqi7Q
+	HqAhx5sAnZZeMjctxSvUi6otxNPo=
+X-Google-Smtp-Source: AGHT+IHpWeNRmtXpj0XUQvDlRqFRbkrPZRGONY17K7X3qg/HBjfAXo0NJmE8vv3shR2KQiFJH37T66AFsBDIlEIG+Yw=
+X-Received: by 2002:a05:6102:3565:b0:473:23ae:c11f with SMTP id
+ bh5-20020a056102356500b0047323aec11fmr2870966vsb.1.1710196259114; Mon, 11 Mar
+ 2024 15:30:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240311150058.1122862-1-ryan.roberts@arm.com> <20240311150058.1122862-6-ryan.roberts@arm.com>
+In-Reply-To: <20240311150058.1122862-6-ryan.roberts@arm.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 12 Mar 2024 06:30:40 +0800
+Message-ID: <CAGsJ_4zq4jdDdG6Cne6SESSmJQJnGwaQF5y3BHOaLHFdED0zYg@mail.gmail.com>
+Subject: Re: [PATCH v4 5/6] mm: vmscan: Avoid split during shrink_folio_list()
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>, 
+	Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The mlx5 comp irq name scheme is changed a little bit between
-commit 3663ad34bc70 ("net/mlx5: Shift control IRQ to the last index")
-and commit 3354822cde5a ("net/mlx5: Use dynamic msix vectors allocation").
-The index in the comp irq name used to start from 0 but now it starts
-from 1. There is nothing critical here, but it's harmless to change
-back to the old behavior, a.k.a starting from 0.
+On Mon, Mar 11, 2024 at 11:01=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com=
+> wrote:
+>
+> Now that swap supports storing all mTHP sizes, avoid splitting large
+> folios before swap-out. This benefits performance of the swap-out path
+> by eliding split_folio_to_list(), which is expensive, and also sets us
+> up for swapping in large folios in a future series.
+>
+> If the folio is partially mapped, we continue to split it since we want
+> to avoid the extra IO overhead and storage of writing out pages
+> uneccessarily.
+>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>  mm/vmscan.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index cf7d4cf47f1a..0ebec99e04c6 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1222,11 +1222,12 @@ static unsigned int shrink_folio_list(struct list=
+_head *folio_list,
+>                                         if (!can_split_folio(folio, NULL)=
+)
+>                                                 goto activate_locked;
+>                                         /*
+> -                                        * Split folios without a PMD map=
+ right
+> -                                        * away. Chances are some or all =
+of the
+> -                                        * tail pages can be freed withou=
+t IO.
+> +                                        * Split partially mapped folios =
+map
+> +                                        * right away. Chances are some o=
+r all
+> +                                        * of the tail pages can be freed
+> +                                        * without IO.
+>                                          */
+> -                                       if (!folio_entire_mapcount(folio)=
+ &&
+> +                                       if (!list_empty(&folio->_deferred=
+_list) &&
 
-Fixes: 3354822cde5a ("net/mlx5: Use dynamic msix vectors allocation")
-Reviewed-by: Mohamed Khalfella <mkhalfella@purestorage.com>
-Reviewed-by: Yuanyuan Zhong <yzhong@purestorage.com>
-Signed-off-by: Michael Liang <mliang@purestorage.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hi Ryan,
+After reconsidering our previous discussion about PMD-mapped large
+folios, I've pondered
+the possibility of PMD-mapped Transparent Huge Pages (THPs) being
+mapped by multiple
+processes. In such a scenario, if one process decides to unmap a
+portion of the folio while
+others retain the entire mapping, it raises questions about how the
+system should handle
+this situation. Would the large folio be placed in a deferred list? If
+so, splitting it might not
+yield benefits, as neither I/O nor swap slots would increase in this
+case by not splitting it.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index 4dcf995cb1a2..6bac8ad70ba6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -19,6 +19,7 @@
- #define MLX5_IRQ_CTRL_SF_MAX 8
- /* min num of vectors for SFs to be enabled */
- #define MLX5_IRQ_VEC_COMP_BASE_SF 2
-+#define MLX5_IRQ_VEC_COMP_BASE 1
- 
- #define MLX5_EQ_SHARE_IRQ_MAX_COMP (8)
- #define MLX5_EQ_SHARE_IRQ_MAX_CTRL (UINT_MAX)
-@@ -246,6 +247,7 @@ static void irq_set_name(struct mlx5_irq_pool *pool, char *name, int vecidx)
- 		return;
- 	}
- 
-+	vecidx -= MLX5_IRQ_VEC_COMP_BASE;
- 	snprintf(name, MLX5_MAX_IRQ_NAME, "mlx5_comp%d", vecidx);
- }
- 
-@@ -585,7 +587,7 @@ struct mlx5_irq *mlx5_irq_request_vector(struct mlx5_core_dev *dev, u16 cpu,
- 	struct mlx5_irq_table *table = mlx5_irq_table_get(dev);
- 	struct mlx5_irq_pool *pool = table->pcif_pool;
- 	struct irq_affinity_desc af_desc;
--	int offset = 1;
-+	int offset = MLX5_IRQ_VEC_COMP_BASE;
- 
- 	if (!pool->xa_num_irqs.max)
- 		offset = 0;
--- 
-2.34.1
+Regarding PTE-mapped large folios, the absence of an indicator like
+"entire_map" makes it
+challenging to identify cases where the entire folio is mapped. Thus,
+splitting seems to be
+the only viable solution in such circumstances.
 
+>                                             split_folio_to_list(folio,
+>                                                                 folio_lis=
+t))
+>                                                 goto activate_locked;
+> --
+> 2.25.1
+
+Thanks
+Barry
 
