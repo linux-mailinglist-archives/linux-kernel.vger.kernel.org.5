@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-99062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEF57878303
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:16:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0396878309
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:16:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EDD8B22192
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:16:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66EEC1F220D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:16:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC825467A;
-	Mon, 11 Mar 2024 15:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980DC54BFE;
+	Mon, 11 Mar 2024 15:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JtlyvqH0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j20kLSyk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9491F44375;
-	Mon, 11 Mar 2024 15:12:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D896054F91;
+	Mon, 11 Mar 2024 15:12:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710169967; cv=none; b=pb8FUnN568E8SgK0pHr2R7JdHo7p/wnyvWcy792FQmcdzsiIJjmwDV+6+6W/nXF+DT/tXk3IapbhiIpEmRMiO23Uf/cUKcBhVKNkGxkY5LWwzr1TYmg16UW8boQP9GU3Q9pSTmx9/Fnk0w64UdxwypKSIP32HCkIMvDloSudqQE=
+	t=1710169970; cv=none; b=Q5Gpkz1phbqwDQK/JQ3wjGXS+67Gv3msxWBQNig6D6hMPyBnqqbIyMeGc+8sqyMo2c2GbXXDmzjYlOyAtcIGm4rplmebnjlQGQb9fvDuC5HRUoGD6zBiUGqxT8/imreztt5ayXISrl16xUh9lt3E1ap7EX7SJSUFymb6vLdqmvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710169967; c=relaxed/simple;
-	bh=jkL9pcfs3sRnSPlvjikdgvSxArB73ECs5GBn3OKS72M=;
+	s=arc-20240116; t=1710169970; c=relaxed/simple;
+	bh=qExPU8C2HXd+ID3W+ZzNQdWxRTKsDvz5q7M7trnFqHc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=flCxS9g26vIusfjyY4vvNd72ZZp30W368XNC/uisboK0Loo5UJOXsnFEJi0chLLkdLABXKQEXiN5xJMMAlKM6+ZL9aQ10o8cyiKhmmQN28xMGItHG20QabubNtXi71mPR0BBn4D0DT5d9Ng622NUJUCYd9MOrkqTjPcHZe6C+2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JtlyvqH0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6BD3C43390;
-	Mon, 11 Mar 2024 15:12:45 +0000 (UTC)
+	 MIME-Version; b=qEFD2s0vnhGgO0eZvvfVw52mZK4WpjTmVmJy2FRuuFTeMz4i5Vmeblhcn9XQz+10ImQizlSZKY59cK1qoF/69fnnu+oB7eJpg96m9TYpKUp7pvxgjrnpKW4FnKqsIsDo4MqmwJbluU58afDzkRJ3ZPuqpo0Uk6TwwFe5ps5ynag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j20kLSyk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2D02C43390;
+	Mon, 11 Mar 2024 15:12:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710169967;
-	bh=jkL9pcfs3sRnSPlvjikdgvSxArB73ECs5GBn3OKS72M=;
+	s=k20201202; t=1710169970;
+	bh=qExPU8C2HXd+ID3W+ZzNQdWxRTKsDvz5q7M7trnFqHc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JtlyvqH06S4VHV2OHqCDORJvywxAOJjBE5neDUZjwzd/ayHWzQhwwJ29uUlaxPvk1
-	 SmYRSWZq7jgnoM0dPIjCy1qTThaupgcXsJCBXPtDSjH0LRkOJeGDfA4cgHlIOIHfJC
-	 ScgZylm90YEWKSaSgcdDwhvZKfC0JorhMDzQUSxSP+bHF0DQ7ZLTNdkt3AL9k6pCzY
-	 gVZau+v+LFavx6QjM5m2TDuktSk9zv2XtodDxyDd8SzlXmk/ZE6wTRqxlRUHQAZ6RR
-	 HAtj7sucwtWkG1gVvICu9iLOQgFVyfVsuXFdJ/cstfg9lEDBq/cL3O7Guc1AjwzCvT
-	 c2Vl0DXJOOGeg==
+	b=j20kLSyku3e9Kl1tjAucxhaBW/DjMKsUAJKUseKuDyPE3hCZHZYnlvLoYolVUhqAk
+	 sGijBZZOuO79m6q249LyKmBWEwXartX7/+lIdHQlNgvXkfAyz4QREQAhJvfAFQUV2N
+	 7X4csblkkeplxFvPdo3rtyCFEUOtaLVX6yypWDIqPcBivoCtf9ZZX48B1whTf2GrRL
+	 +aVFAiI0GzErTPdCZKH8fwhpk/n0uH72Aip4oTpnrzz2o7kdnuQgUz3c9jisYnOdfA
+	 fr4qKorV0CcP4nPCmJnoAnE7yw51hptW82Su4xz9NVm6/GjrchB60hW3Fb5NyIFvnR
+	 dKDLU90tHX6Lw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Paolo Abeni <pabeni@redhat.com>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Kailang Yang <kailang@realtek.com>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	martineau@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	shuah@kernel.org,
-	netdev@vger.kernel.org,
-	mptcp@lists.linux.dev,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 14/23] selftests: mptcp: explicitly trigger the listener diag code-path
-Date: Mon, 11 Mar 2024 11:11:54 -0400
-Message-ID: <20240311151217.317068-14-sashal@kernel.org>
+	perex@perex.cz,
+	tiwai@suse.com,
+	sbinding@opensource.cirrus.com,
+	luke@ljones.dev,
+	andy.chi@canonical.com,
+	shenghao-ding@ti.com,
+	ruinairas1992@gmail.com,
+	vitalyr@opensource.cirrus.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 15/23] ALSA: hda/realtek - ALC285 reduce pop noise from Headphone port
+Date: Mon, 11 Mar 2024 11:11:55 -0400
+Message-ID: <20240311151217.317068-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311151217.317068-1-sashal@kernel.org>
 References: <20240311151217.317068-1-sashal@kernel.org>
@@ -72,87 +72,33 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.9
 Content-Transfer-Encoding: 8bit
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Kailang Yang <kailang@realtek.com>
 
-[ Upstream commit b4b51d36bbaa3ddb93b3e1ca3a1ef0aa629d6521 ]
+[ Upstream commit b34bf65838f7c6e785f62681605a538b73c2808c ]
 
-The mptcp diag interface already experienced a few locking bugs
-that lockdep and appropriate coverage have detected in advance.
+It had pop noise from Headphone port when system reboot state.
+If NID 58h Index 0x0 to fill default value, it will reduce pop noise.
 
-Let's add a test-case triggering the relevant code path, to prevent
-similar issues in the future.
-
-Be careful to cope with very slow environments.
-
-Note that we don't need an explicit timeout on the mptcp_connect
-subprocess to cope with eventual bug/hang-up as the final cleanup
-terminating the child processes will take care of that.
-
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://lore.kernel.org/r/20240223-upstream-net-20240223-misc-fixes-v1-10-162e87e48497@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Link: https://lore.kernel.org/r/7493e207919a4fb3a0599324fd010e3e@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/mptcp/diag.sh | 30 ++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/net/mptcp/diag.sh b/tools/testing/selftests/net/mptcp/diag.sh
-index 4d8c59be1b30c..ff9a4f45f852f 100755
---- a/tools/testing/selftests/net/mptcp/diag.sh
-+++ b/tools/testing/selftests/net/mptcp/diag.sh
-@@ -20,7 +20,7 @@ flush_pids()
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index eb45e5c3db8c6..ebde2ea8fa812 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3684,6 +3684,7 @@ static void alc285_hp_init(struct hda_codec *codec)
+ 	int i, val;
+ 	int coef38, coef0d, coef36;
  
- 	ip netns pids "${ns}" | xargs --no-run-if-empty kill -SIGUSR1 &>/dev/null
- 
--	for _ in $(seq 10); do
-+	for _ in $(seq $((timeout_poll * 10))); do
- 		[ -z "$(ip netns pids "${ns}")" ] && break
- 		sleep 0.1
- 	done
-@@ -91,6 +91,15 @@ chk_msk_nr()
- 	__chk_msk_nr "grep -c token:" "$@"
- }
- 
-+chk_listener_nr()
-+{
-+	local expected=$1
-+	local msg="$2"
-+
-+	__chk_nr "ss -inmlHMON $ns | wc -l" "$expected" "$msg - mptcp" 0
-+	__chk_nr "ss -inmlHtON $ns | wc -l" "$expected" "$msg - subflows"
-+}
-+
- wait_msk_nr()
- {
- 	local condition="grep -c token:"
-@@ -306,5 +315,24 @@ flush_pids
- chk_msk_inuse 0 "many->0"
- chk_msk_cestab 0 "many->0"
- 
-+chk_listener_nr 0 "no listener sockets"
-+NR_SERVERS=100
-+for I in $(seq 1 $NR_SERVERS); do
-+	ip netns exec $ns ./mptcp_connect -p $((I + 20001)) \
-+		-t ${timeout_poll} -l 0.0.0.0 >/dev/null 2>&1 &
-+done
-+
-+for I in $(seq 1 $NR_SERVERS); do
-+	mptcp_lib_wait_local_port_listen $ns $((I + 20001))
-+done
-+
-+chk_listener_nr $NR_SERVERS "many listener sockets"
-+
-+# graceful termination
-+for I in $(seq 1 $NR_SERVERS); do
-+	echo a | ip netns exec $ns ./mptcp_connect -p $((I + 20001)) 127.0.0.1 >/dev/null 2>&1 &
-+done
-+flush_pids
-+
- mptcp_lib_result_print_all_tap
- exit $ret
++	alc_write_coefex_idx(codec, 0x58, 0x00, 0x1888); /* write default value */
+ 	alc_update_coef_idx(codec, 0x4a, 1<<15, 1<<15); /* Reset HP JD */
+ 	coef38 = alc_read_coef_idx(codec, 0x38); /* Amp control */
+ 	coef0d = alc_read_coef_idx(codec, 0x0d); /* Digital Misc control */
 -- 
 2.43.0
 
