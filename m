@@ -1,148 +1,135 @@
-Return-Path: <linux-kernel+bounces-98910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA0668780F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:53:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F9C38780F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:53:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 700FC1F22F92
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:53:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A7F8284ED2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:53:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C53341C9D;
-	Mon, 11 Mar 2024 13:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4513FB2E;
+	Mon, 11 Mar 2024 13:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FCjhUJjY"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WBI0Af/A"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912F841C75;
-	Mon, 11 Mar 2024 13:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055BA33070;
+	Mon, 11 Mar 2024 13:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710165115; cv=none; b=RescJhxne2pyf5noKID8yVYVj7JD91SHftaZzXHU7aTxWNlDo3a417UWO3B/mwM2b5MP1ETofOFq5HBDuihQ45T0OtIW5AclgMP3rk8CD/jdhptnbWVeBV+/UoFQkwikF13MVEcsxOYeFzBTfwpLSbPM5HItDVE9Moq1qqQMUEk=
+	t=1710165174; cv=none; b=hH4cwAD8kV6/EgXFYpq8bkN5KzWoxjC6uQMeQIbBTGroChXIx5IBUuSeaIb/13/hDnZf/4n2ccU2UNmLjVtaQnR7aQfdLchA8cMJwNpnPJdmhOzpkUh1Gs3xpBYTsNUt8sMFlu9XIFCaVtK7Ckw2FACK5F4LbCfoiylKBV7ntKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710165115; c=relaxed/simple;
-	bh=fk8+pHNwZ+V+8pwYHpfe6hlSCZDViN8UYNJwkK5pIq8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R7QQ6yAs+8tP55lJf+5t0stY9AmG6wtBBxByo5FEtX6OXOl4QR+ijB58tKEIzI2CUjSx97YfrW9eS/m97cPjC8rWpVVn3SbWRZkbbAuPYfA0gwibAudAMXJo75Ptyn6E3r01QaD5uIyQMVLpKImwVcVowlw/afBW90ct1G0hjp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=FCjhUJjY; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5F01160008;
-	Mon, 11 Mar 2024 13:51:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710165105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wqvBp7CTjNGNq3lMlyQxO2tIzGlpj4RvXf7GeO4YvHI=;
-	b=FCjhUJjYOsF7o6Jhz1pQAUlOve06jtPRI2fntcRFQib57uk4O0EB4Z/CglfIikkxVE3n36
-	d7dPrWLhsQUtFQv3SMXP+OaUKe+zOOjLmTx/j4/479JILNcx2IH2GE2Jkiap444Qhgec83
-	SeB9i01Ba7IFvYq9L+IhaqHpCZvaAXahfddUkn+nftyciIdk/bVDlAmcknKd/+mTeIT7tu
-	0XU9sp6r6m17WlWaviKMvaEVFwEWV4h6j/e85A7r0VKWkN1zI99GDsb5m+25w+AbJNex6D
-	Ybh9Frhz+vfRTwshaSfudbJ/6UUoI+BijEgHdQiWT98ykGl/acXo0T8LNGdiRw==
-Date: Mon, 11 Mar 2024 14:51:43 +0100
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: thomas.perrot@bootlin.com
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, Claudiu Beznea
- <claudiu.beznea@tuxon.dev>, "David S . Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: macb: remove change_mtu callback
-Message-ID: <20240311145143.2d0e492a@device-28.home>
-In-Reply-To: <20240311091211.720789-1-thomas.perrot@bootlin.com>
-References: <20240311091211.720789-1-thomas.perrot@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1710165174; c=relaxed/simple;
+	bh=ogDW4usrkBQKvu63zZhNHxHlG4aF4TlGEfKwECbLXEM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=RI4Xyc36CgMLd6twge1KVT5YF6RNUX/I0gy8+oc/dc64pbvccGDavRpKmFzZsrB+/1bh4dcjbHg/hvw8IROX5W/wXcglzAmrKNNHIbbGIm2+9VgWykfyQW2benk0Q1CsxpA6x/qcvTZc2wCuasnLnUMwl5KkClPCpDgnioPwI40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WBI0Af/A; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710165173; x=1741701173;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ogDW4usrkBQKvu63zZhNHxHlG4aF4TlGEfKwECbLXEM=;
+  b=WBI0Af/Ad++C9a8AebTOJqWeOouvKOdktk0H9zMExHdoITmPrTIUoXTF
+   ZF1gdDnTtN2X66T1GH6jnsMUU1W2m4WHQ6lhiQD9pFDl9IvRyYblL7rew
+   FRUYY4qjjA1wJyn3J2J8rNixiNE5aaWj/G+lbLQ1YPpdXSRH6kuuv3ey9
+   DB6XYFahZfEKDdrSrustsVb+IMyibB4kZYZb6g/xU5zORyCfDH2t5Do6V
+   vsHxe5q/Camd0sgrcCG0PIUK/VBT/pJGQ1akWNl/mIEqqrA0FZqbJCBTS
+   tb8xStMtzMU9+NJO47IMHwwXhKlFi6/lK3ugx7TkhRE1ZE1zr0oMisily
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="15388670"
+X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
+   d="scan'208";a="15388670"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 06:52:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
+   d="scan'208";a="11166577"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.201])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 06:52:44 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: linux-kselftest@vger.kernel.org,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Babu Moger <babu.moger@amd.com>,
+	=?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= <maciej.wieczor-retman@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v2 00/13] selftests/resctrl: resctrl_val() related cleanups & improvements
+Date: Mon, 11 Mar 2024 15:52:17 +0200
+Message-Id: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello Thomas,
+Hi all,
 
-On Mon, 11 Mar 2024 10:12:11 +0100
-thomas.perrot@bootlin.com wrote:
+This series does a number of cleanups into resctrl_val() and
+generalizes it by removing test name specific handling from the
+function.
 
-> Subject: [PATCH v2] net: macb: remove change_mtu callback
+One of the changes improves MBA/MBM measurement by narrowing down the
+period the resctrl FS derived memory bandwidth numbers are measured
+over. My feel is it didn't cause noticeable difference into the numbers
+because they're generally good anyway except for the small number of
+outliers. To see the impact on outliers, I'd need to setup a test to
+run large number of replications and do a statistical analysis, which
+I've not spent my time on. Even without the statistical analysis, the
+new way to measure seems obviously better and makes sense even if I
+cannot see a major improvement with the setup I'm using.
 
-You need to specify in the subject whether this patch targets net (for
-bug fixes, in which case you need a Fixes: tag) or net-next for new
-features/improvements.
+This series has some conflicts with SNC series from Maciej and also
+with the MBA/MBM series from Babu.
 
-You can use this parameter in your git format-patch command to have it
-set properly :
+--
+ i.
 
---subject-prefix="PATCH net-next" (or net)
+v2:
+- Resolved conflicts with kselftest/next
+- Spaces -> tabs correction
 
-Thanks,
+Ilpo Järvinen (13):
+  selftests/resctrl: Convert get_mem_bw_imc() fd close to for loop
+  selftests/resctrl: Calculate resctrl FS derived mem bw over sleep(1)
+    only
+  selftests/resctrl: Consolidate get_domain_id() into resctrl_val()
+  selftests/resctrl: Use correct type for pids
+  selftests/resctrl: Cleanup bm_pid and ppid usage & limit scope
+  selftests/resctrl: Rename measure_vals() to measure_mem_bw_vals() &
+    document
+  selftests/resctrl: Add ->measure() callback to resctrl_val_param
+  selftests/resctrl: Add ->init() callback into resctrl_val_param
+  selftests/resctrl: Simplify bandwidth report type handling
+  selftests/resctrl: Make some strings passed to resctrlfs functions
+    const
+  selftests/resctrl: Convert ctrlgrp & mongrp to pointers
+  selftests/resctrl: Remove mongrp from MBA test
+  selftests/resctrl: Remove test name comparing from
+    write_bm_pid_to_resctrl()
 
-Maxime
+ tools/testing/selftests/resctrl/cache.c       |   6 +-
+ tools/testing/selftests/resctrl/cat_test.c    |   5 +-
+ tools/testing/selftests/resctrl/cmt_test.c    |  21 +-
+ tools/testing/selftests/resctrl/mba_test.c    |  34 ++-
+ tools/testing/selftests/resctrl/mbm_test.c    |  33 ++-
+ tools/testing/selftests/resctrl/resctrl.h     |  48 ++--
+ tools/testing/selftests/resctrl/resctrl_val.c | 269 ++++++------------
+ tools/testing/selftests/resctrl/resctrlfs.c   |  55 ++--
+ 8 files changed, 224 insertions(+), 247 deletions(-)
 
-> From: Thomas Perrot <thomas.perrot@bootlin.com>
-> 
-> Because it doesn't allow MTU changes when the interface is up, although
-> it is not necessary.
-> 
-> This callback has been added to add in a first implementation of the Jumbo
-> support [1],since it has been reworked and moved to the probe [2].
-> 
-> With this patch the core will set the MTU, regardless of if the interface
-> is up or not.
-> 
-> [1] commit a5898ea09aad ("net: macb: Add change_mtu callback with
->     jumbo support")
-> [2] commit 44770e1180de ("ethernet: use core min/max MTU checking")
-> 
-> Signed-off-by: Thomas Perrot <thomas.perrot@bootlin.com>
-> ---
-> 
-> Changes since v2:
->  - Update the commit message.
-> 
->  drivers/net/ethernet/cadence/macb_main.c | 11 -----------
->  1 file changed, 11 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-> index 898debfd4db3..0532215e5236 100644
-> --- a/drivers/net/ethernet/cadence/macb_main.c
-> +++ b/drivers/net/ethernet/cadence/macb_main.c
-> @@ -3017,16 +3017,6 @@ static int macb_close(struct net_device *dev)
->  	return 0;
->  }
-> 
-> -static int macb_change_mtu(struct net_device *dev, int new_mtu)
-> -{
-> -	if (netif_running(dev))
-> -		return -EBUSY;
-> -
-> -	dev->mtu = new_mtu;
-> -
-> -	return 0;
-> -}
-> -
->  static int macb_set_mac_addr(struct net_device *dev, void *addr)
->  {
->  	int err;
-> @@ -3897,7 +3887,6 @@ static const struct net_device_ops macb_netdev_ops = {
->  	.ndo_get_stats		= macb_get_stats,
->  	.ndo_eth_ioctl		= macb_ioctl,
->  	.ndo_validate_addr	= eth_validate_addr,
-> -	.ndo_change_mtu		= macb_change_mtu,
->  	.ndo_set_mac_address	= macb_set_mac_addr,
->  #ifdef CONFIG_NET_POLL_CONTROLLER
->  	.ndo_poll_controller	= macb_poll_controller,
-> --
-> 2.44.0
-> 
+-- 
+2.39.2
 
 
