@@ -1,183 +1,196 @@
-Return-Path: <linux-kernel+bounces-99029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A49878296
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:59:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 279B787829E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:01:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 092A9B2151D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:59:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AD381C2200B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920ED446B8;
-	Mon, 11 Mar 2024 14:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="RkK6CGw9"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 832D0446AF
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75234120B;
+	Mon, 11 Mar 2024 15:01:13 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECF73BBDD
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710169005; cv=none; b=Cz+8hE1GywVrPS71sjtfhB8Vz0rJYko23E7m6M9RwWAXmgyUBLHP7nsYQQkSDhfYwE4FrGNOgsZc+Amwd44+lkc+y98TCWVbXhw5Cj2a5fegV13qRCt4wSAiBAFRVzSleNYzNUDPpFGibXcyo7fMZcLRs9+4pCPpwJjlmoOkq6U=
+	t=1710169273; cv=none; b=mA8szk/LCY/YMjih5USjo+UflUy/rrnGrYtOdP+/CK8utzxIrCR7BlX0v/EeRU2xmwlIRGn0g/YaEtFxBAtmaxUyUYmsNO3MWnUA01OidAd8iLYnMKFqitMrY2eLMGjs/IUOb4TBNEkEreJoVbYJh5dWGqW+CyrVZ++RhwzzaRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710169005; c=relaxed/simple;
-	bh=uu83XHZpqS5kO/WOuCT5FQLzPQ3U0FfXQvrF8UheWmg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=Jy0soV9B7srlX9m8J6ZbzMdmLgNk/P19svEiFryxj2Yluf8XO3qmfsVh73lqqe3Oi+nbd3cSGqMrYyHpxKW733x6Iu0YsIgYKdQj77vewgD4mm6RIHlxc2xSBvn8wtLWwro2eFOwoTbnaeuJsH6bWa+PTQ0HS8BzMpW2i5DnEo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=RkK6CGw9; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240311145640euoutp02452e282ce4d2e2900b90989ab025ff78~7vaUi3KgI0523905239euoutp02H
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:56:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240311145640euoutp02452e282ce4d2e2900b90989ab025ff78~7vaUi3KgI0523905239euoutp02H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1710169000;
-	bh=uOPd2AwFVdGKb+UngFBePmqdQoXqrn4uH0VfBRH90zo=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=RkK6CGw91isXmWz7NCu8mBBKkjgSkwvNssUVCy4UD5IWlcL5wiZ8INxSBdHX/FOt1
-	 dBQJgS7aUF7xggzbGH8OLf/ZfH/g7REWyRbxGoh+i0HRzFBL+d9xbcFJd9ZOMH16Sx
-	 ZmwWHl16SWC9r2IbG2f3k+UwJw2z/NswDvDL4A1A=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240311145639eucas1p1c2f9d8b6e5fa1c36088b4babf0c0056d~7vaUBXqwo2427124271eucas1p1k;
-	Mon, 11 Mar 2024 14:56:39 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id B8.01.09539.7AB1FE56; Mon, 11
-	Mar 2024 14:56:39 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240311145639eucas1p2dee661847c8c8a29dcba021d800ca73a~7vaTYZ1MU1472714727eucas1p25;
-	Mon, 11 Mar 2024 14:56:39 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240311145639eusmtrp290064aef32d0f8802d12f1e81dc11274~7vaTXWamJ1058210582eusmtrp2d;
-	Mon, 11 Mar 2024 14:56:39 +0000 (GMT)
-X-AuditID: cbfec7f2-515ff70000002543-61-65ef1ba733ca
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id BC.6F.10702.7AB1FE56; Mon, 11
-	Mar 2024 14:56:39 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240311145638eusmtip1ea6702de7106114eb7a6c1426ce239d7~7vaSRcF-G3139931399eusmtip1A;
-	Mon, 11 Mar 2024 14:56:37 +0000 (GMT)
-Message-ID: <8abb1a69-6cbd-4a36-ab1d-d269cdafa391@samsung.com>
-Date: Mon, 11 Mar 2024 15:56:37 +0100
+	s=arc-20240116; t=1710169273; c=relaxed/simple;
+	bh=eOBr/yYdOAbWD5OIITZd9JbZlckdWJZij0ZtTq1v/98=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ms6xOsdp2EKMmk960n7ZzxJZF70gOeaXSXTCKRHnKGEz91vyib9AC5rd9xRn/RelekfrMTl1s04RBN/0ywCXFEMqIkPu1p5RIpK8t+bMrBiPA5xPZz6kqvGNuLOnMNuEPVEkfmjbPCUiLEl/wcDZ1XiNYzKHfoW7uE089pPPXZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0477DFEC;
+	Mon, 11 Mar 2024 08:01:47 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C45B3F64C;
+	Mon, 11 Mar 2024 08:01:07 -0700 (PDT)
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Huang Ying <ying.huang@intel.com>,
+	Gao Xiang <xiang@kernel.org>,
+	Yu Zhao <yuzhao@google.com>,
+	Yang Shi <shy828301@gmail.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Chris Li <chrisl@kernel.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] Swap-out mTHP without splitting
+Date: Mon, 11 Mar 2024 15:00:52 +0000
+Message-Id: <20240311150058.1122862-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
- supported CPUs to 512
-Content-Language: en-US
-To: Mark Rutland <mark.rutland@arm.com>, "Christoph Lameter (Ampere)"
-	<cl@linux.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, "linux-pm@vger.kernel.org"
-	<linux-pm@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Viresh
-	Kumar <vireshk@kernel.org>, Will Deacon <will@kernel.org>,
-	Jonathan.Cameron@huawei.com, Matteo.Carlini@arm.com,
-	Valentin.Schneider@arm.com, akpm@linux-foundation.org,
-	anshuman.khandual@arm.com, Eric Mackay <eric.mackay@oracle.com>,
-	dave.kleikamp@oracle.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux@armlinux.org.uk,
-	robin.murphy@arm.com, vanshikonda@os.amperecomputing.com,
-	yang@os.amperecomputing.com, Nishanth Menon <nm@ti.com>, Stephen Boyd
-	<sboyd@kernel.org>
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <Ze71H4AdY786nSvn@FVFF77S0Q05N>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZduzned3l0u9TDV7OMraYs34Nm8W+E8kW
-	75f1MFpc//aG0eLAs0vMFk//LWO3WLXwGpvFpsfXWC0u75rDZnFvzX9Wi8+9RxgtDk3dy2ix
-	9PpFJovfy74zWbz5cZbJYu6XqcwWBz88YbX4d20ji8X2+T+ZLV7eusNisfnBMTaLljumFr1L
-	TrI7iHusmbeG0ePytYvMHi1H3rJ6bFrVyeax6dMkdo8TM36zeDy5Mp3JY/OSeo+PT2+xeHRf
-	vsHucfzGdiaPz5vkAniiuGxSUnMyy1KL9O0SuDLmN1xiLvjKW/Gs8xlbA+MS7i5GTg4JAROJ
-	rx9WMXUxcnEICaxglNg9cxEbhPOFUWLV7G+sEM5nRonWIwuYYFrOztvKDGILCSxnlPh4nwei
-	6COjxI5pRxlBErwCdhJfd90As1kEVCVOPVjLDhEXlDg58wkLiC0qIC9x/9YMsLiwQKLEq+0L
-	wIYyC4hL3HoyH2yZiECYxO7zn8HuYxZYyyrR+eYN2FA2AUOJrrddbCA2p4COxJxP/SwQzfIS
-	29/OYQZpkBBo45LoXfUc6mwXiRsfLjJC2MISr45vYYewZST+75zPBNHQziix4Pd9KGcCo0TD
-	81tQHdYSd879AlrHAbRCU2L9Ln2IsKPEq7717CBhCQE+iRtvBSGO4JOYtG06M0SYV6KjTQii
-	Wk1i1vF1cGsPXrjEPIFRaRZSuMxC8v8sJO/MQti7gJFlFaN4amlxbnpqsWFearlecWJucWle
-	ul5yfu4mRmCaPf3v+KcdjHNffdQ7xMjEwXiIUYKDWUmE97XO21Qh3pTEyqrUovz4otKc1OJD
-	jNIcLErivKop8qlCAumJJanZqakFqUUwWSYOTqkGJhNdZ4742F8h58z+xYuofzh1Mu3kes49
-	Gbq8WXe/sirPNao9HR0R3Tppna1kpdp2jt9JH838jb7MMFgnwPsnZNex/4c/+F5O3Tbx6sTG
-	KxLmU0RexGj8ijj1UOrG3E2swoKceoHBXsVLdKbHSXCWLhbvNzy2d0eakXQp3/LWCbezrM5V
-	26qz84X+nubJu2tJhPPTtIl3ix6dT/di2PlmSvm6rB35J8Wfux5pNQ6pinnw6U1Zofxj5aab
-	Sg6JJ2K/X5z61idQPiQ7dEbUTLUvPy1/aOzaHh1wrlLw4ou+nPqgD8FtmRVZub9VI0KXTy8M
-	2f3717NzbNFiiosntp2euTC25PzUOv07Fl83KXD5KbEUZyQaajEXFScCAAm8wP4iBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEKsWRmVeSWpSXmKPExsVy+t/xu7rLpd+nGrRMZrOYs34Nm8W+E8kW
-	75f1MFpc//aG0eLAs0vMFk//LWO3WLXwGpvFpsfXWC0u75rDZnFvzX9Wi8+9RxgtDk3dy2ix
-	9PpFJovfy74zWbz5cZbJYu6XqcwWBz88YbX4d20ji8X2+T+ZLV7eusNisfnBMTaLljumFr1L
-	TrI7iHusmbeG0ePytYvMHi1H3rJ6bFrVyeax6dMkdo8TM36zeDy5Mp3JY/OSeo+PT2+xeHRf
-	vsHucfzGdiaPz5vkAnii9GyK8ktLUhUy8otLbJWiDS2M9AwtLfSMTCz1DI3NY62MTJX07WxS
-	UnMyy1KL9O0S9DLmN1xiLvjKW/Gs8xlbA+MS7i5GTg4JAROJs/O2MncxcnEICSxllOhetYcR
-	IiEjcXJaAyuELSzx51oXG0TRe0aJvVNusIMkeAXsJL7uugHWwCKgKnHqwVqouKDEyZlPWEBs
-	UQF5ifu3ZoDFhQUSJV5tX8AMYjMLiEvcejKfCcQWEQiTeHmiiwlkAbPAWlaJprPPoE56zSSx
-	+ep3sA1sAoYSXW9BzuDk4BTQkZjzqZ8FYpKZRNfWLkYIW15i+9s5zBMYhWYhOWQWkoWzkLTM
-	QtKygJFlFaNIamlxbnpusZFecWJucWleul5yfu4mRmBi2Xbs55YdjCtffdQ7xMjEwXiIUYKD
-	WUmE97XO21Qh3pTEyqrUovz4otKc1OJDjKbA0JjILCWanA9MbXkl8YZmBqaGJmaWBqaWZsZK
-	4ryeBR2JQgLpiSWp2ampBalFMH1MHJxSDUydd9+kau6+wWGxWFX3XuaMbiNxn7zSEK5zdxvN
-	pVX9GITnCdrMFTne8Ptl/cMNXvp9gW/dJr7dUJ8Wv79y37nlUbUraySfFvy9/JZ9b9Plnw7v
-	/Cunb7s/d/php6cTIhm+G4UXK84wafsZLz3VMvzu3PPn2KV/XxIpncc3eZPAzGXe/St+188V
-	zH470dbvbvCOn5rHu/gt502/rcSnpSzFenrq5Sd5S3TWK2XnqU77smLJvSU/gxQ6D7Kd59W6
-	wbkru0D1aLZuyqLVOZ/3vH1x+qjF6wtKny5F3L+afPiis/AdB1fno1yy275tzl13wfSvedub
-	Vzw9pVwFV4q/LHBL2e27ze5xa3PpOvkbrx4kKrEUZyQaajEXFScCAAeoS561AwAA
-X-CMS-MailID: 20240311145639eucas1p2dee661847c8c8a29dcba021d800ca73a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f
-References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
-	<CGME20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f@eucas1p1.samsung.com>
-	<c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
-	<ZesmAO1jJfEjTwxd@arm.com>
-	<f160a532-1d31-41a7-b8ae-de8575c395e9@samsung.com>
-	<e3952dc0-ec28-e7c7-e858-c47f146c93de@linux.com>
-	<Ze71H4AdY786nSvn@FVFF77S0Q05N>
+Content-Transfer-Encoding: 8bit
 
-On 11.03.2024 13:12, Mark Rutland wrote:
-> On Fri, Mar 08, 2024 at 09:08:59AM -0800, Christoph Lameter (Ampere) wrote:
->> On Fri, 8 Mar 2024, Marek Szyprowski wrote:
->>>>> It looks that cpufreq-dt and/or opp drivers needs some adjustments
->>>>> related with this change.
->>>> That's strange. Is this with defconfig? I wonder whether NR_CPUS being
->>>> larger caused the issue with this specific code. Otherwise
->>>> CPUMASK_OFFSTACK may not work that well on arm64.
->> cpumask handling must use the accessor functions provided in
->> include/linux/cpumask.h for declaring and accessing cpumasks. It is likely
->> related to the driver opencoding one of the accessors.
-> I took a look at both the OPP code and the cpufreq-dt code and it looks like
-> those are doign the right thing w.r.t. cpumask manipulation (i.e. they only use
-> the cpumask accessors, and use the cpumask_var_*() functions to dynamically
-> allocate/free cpumasks). Maybe I've missed something, but superficially those
-> look right.
->
-> Marek, can you try reverting this commit and trying defconfig + NR_CPUS=512?
+Hi All,
 
-Yes, with $subject reverted and CONFIG_NR_CPUS=512 everything works 
-fine, so it must be something else broken.
+This series adds support for swapping out multi-size THP (mTHP) without needing
+to first split the large folio via split_huge_page_to_list_to_order(). It
+closely follows the approach already used to swap-out PMD-sized THP.
 
-> That'll have CPUMASK_OFFSTACK=n, and:
->
-> * If that blows up, we know the problem is independent of CPUMASK_OFFSTACK, and
->    has something to do with large cpumasks (either a driver bug, or elsewhere).
->
-> * If that doesn't blow up, it suggests the problem is related to
->    CPUMASK_OFFSTACK rather than with large cpumasks specifically.
->
-> Either way, we probably need to revert this patch for now, as this won't have
-> enough time to soak in linux-next in time for v6.9.
+There are a couple of reasons for swapping out mTHP without splitting:
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+  - Performance: It is expensive to split a large folio and under extreme memory
+    pressure some workloads regressed performance when using 64K mTHP vs 4K
+    small folios because of this extra cost in the swap-out path. This series
+    not only eliminates the regression but makes it faster to swap out 64K mTHP
+    vs 4K small folios.
+
+  - Memory fragmentation avoidance: If we can avoid splitting a large folio
+    memory is less likely to become fragmented, making it easier to re-allocate
+    a large folio in future.
+
+  - Performance: Enables a separate series [4] to swap-in whole mTHPs, which
+    means we won't lose the TLB-efficiency benefits of mTHP once the memory has
+    been through a swap cycle.
+
+I've done what I thought was the smallest change possible, and as a result, this
+approach is only employed when the swap is backed by a non-rotating block device
+(just as PMD-sized THP is supported today). Discussion against the RFC concluded
+that this is sufficient.
+
+
+Performance Testing
+===================
+
+I've run some swap performance tests on Ampere Altra VM (arm64) with 8 CPUs. The
+VM is set up with a 35G block ram device as the swap device and the test is run
+from inside a memcg limited to 40G memory. I've then run `usemem` from
+vm-scalability with 70 processes, each allocating and writing 1G of memory. I've
+repeated everything 6 times and taken the mean performance improvement relative
+to 4K page baseline:
+
+| alloc size |            baseline |       + this series |
+|            |  v6.6-rc4+anonfolio |                     |
+|:-----------|--------------------:|--------------------:|
+| 4K Page    |                0.0% |                1.4% |
+| 64K THP    |              -14.6% |               44.2% |
+| 2M THP     |               87.4% |               97.7% |
+
+So with this change, the 64K swap performance goes from a 15% regression to a
+44% improvement. 4K and 2M swap improves slightly too.
+
+This test also acts as a good stress test for swap and, more generally mm. A
+couple of existing bugs were found as a result [5] [6].
+
+
+---
+The series applies against mm-unstable (d7182786dd0a). Although I've
+additionally been running with a couple of extra fixes to avoid the issues at
+[6].
+
+
+Changes since v3 [3]
+====================
+
+ - Renamed SWAP_NEXT_NULL -> SWAP_NEXT_INVALID (per Huang, Ying)
+ - Simplified max offset calculation (per Huang, Ying)
+ - Reinstated struct percpu_cluster to contain per-cluster, per-order `next`
+   offset (per Huang, Ying)
+ - Removed swap_alloc_large() and merged its functionality into
+   scan_swap_map_slots() (per Huang, Ying)
+ - Avoid extra cost of folio ref and lock due to removal of CLUSTER_FLAG_HUGE
+   by freeing swap entries in batches (see patch 2) (per DavidH)
+ - vmscan splits folio if its partially mapped (per Barry Song, DavidH)
+ - Avoid splitting in MADV_PAGEOUT path (per Barry Song)
+ - Dropped "mm: swap: Simplify ssd behavior when scanner steals entry" patch
+   since it's not actually a problem for THP as I first thought.
+
+
+Changes since v2 [2]
+====================
+
+ - Reuse scan_swap_map_try_ssd_cluster() between order-0 and order > 0
+   allocation. This required some refactoring to make everything work nicely
+   (new patches 2 and 3).
+ - Fix bug where nr_swap_pages would say there are pages available but the
+   scanner would not be able to allocate them because they were reserved for the
+   per-cpu allocator. We now allow stealing of order-0 entries from the high
+   order per-cpu clusters (in addition to exisiting stealing from order-0
+   per-cpu clusters).
+
+
+Changes since v1 [1]
+====================
+
+ - patch 1:
+    - Use cluster_set_count() instead of cluster_set_count_flag() in
+      swap_alloc_cluster() since we no longer have any flag to set. I was unable
+      to kill cluster_set_count_flag() as proposed against v1 as other call
+      sites depend explicitly setting flags to 0.
+ - patch 2:
+    - Moved large_next[] array into percpu_cluster to make it per-cpu
+      (recommended by Huang, Ying).
+    - large_next[] array is dynamically allocated because PMD_ORDER is not
+      compile-time constant for powerpc (fixes build error).
+
+
+[1] https://lore.kernel.org/linux-mm/20231010142111.3997780-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/20231017161302.2518826-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-mm/20231025144546.577640-1-ryan.roberts@arm.com/
+[4] https://lore.kernel.org/linux-mm/20240304081348.197341-1-21cnbao@gmail.com/
+[5] https://lore.kernel.org/linux-mm/20240311084426.447164-1-ying.huang@intel.com/
+[6] https://lore.kernel.org/linux-mm/79dad067-1d26-4867-8eb1-941277b9a77b@arm.com/
+
+Thanks,
+Ryan
+
+
+Ryan Roberts (6):
+  mm: swap: Remove CLUSTER_FLAG_HUGE from swap_cluster_info:flags
+  mm: swap: free_swap_and_cache_nr() as batched free_swap_and_cache()
+  mm: swap: Simplify struct percpu_cluster
+  mm: swap: Allow storage of all mTHP orders
+  mm: vmscan: Avoid split during shrink_folio_list()
+  mm: madvise: Avoid split during MADV_PAGEOUT and MADV_COLD
+
+ include/linux/pgtable.h |  28 ++++
+ include/linux/swap.h    |  33 +++--
+ mm/huge_memory.c        |   3 -
+ mm/internal.h           |  48 +++++++
+ mm/madvise.c            | 101 ++++++++------
+ mm/memory.c             |  13 +-
+ mm/swapfile.c           | 298 ++++++++++++++++++++++------------------
+ mm/vmscan.c             |   9 +-
+ 8 files changed, 332 insertions(+), 201 deletions(-)
+
+--
+2.25.1
 
 
