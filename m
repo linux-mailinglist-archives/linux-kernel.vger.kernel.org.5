@@ -1,298 +1,327 @@
-Return-Path: <linux-kernel+bounces-99277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0123E8785D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C673D8785D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAAA22817D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:55:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CE75281B35
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D6B4D11D;
-	Mon, 11 Mar 2024 16:55:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpDcimtS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C30C4AEDA;
-	Mon, 11 Mar 2024 16:55:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC94482E5;
+	Mon, 11 Mar 2024 16:56:11 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5066A53E0D
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710176139; cv=none; b=dR9k2KIYh4RMqe1rGq8EnF8GOdM2M9O3vtjrNgI3ByCcaEJB2gzOPfFZOsfmmeJ/PPRn7ja2izMUDyRf8hy6tpaFjNVZXHBxZ4gmS2COZGbdKW31E9JabpgwxB4tSJXVpzToq0uDcp2FKSxqiXP0+B8eRg6cYl3qSlVWQJr+r7c=
+	t=1710176170; cv=none; b=flqxy0xpUuiC/LjQyEoW3/PnxrfBY1Ug8xrX8cSI6HYSqdFXKRqI53pQrLk2TSKf/x9iOim0q98egfy5YSpWNPT9E6t5HoN2j3t3FuOgFJqzGPB8U9mPaiBOxJcSrHvXXZyuJogAQv+26FysIsFRXiJztpyoRLZjH7J/wnddon0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710176139; c=relaxed/simple;
-	bh=QBY8yBI+jD/WBDEFOQqo+a95NUPLPrB7wWpPMM8YHPo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ECF14MS5zdd8CFEaQyHfDIul9UtX1Y88BQqF1ajqKMjE0VDn5nLxQv3MkV4YD06IpKOvJ6OZNdyR1gOUoa51z+PldAFdD3jwVSzYL1EfTuAXWOvAXjK7Z1ChKNlRkfWhuKGG2pfc8al1TXkBKxOop7OlmJ9LwhUimVdvBjmhKkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UpDcimtS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A1FC43399;
-	Mon, 11 Mar 2024 16:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710176139;
-	bh=QBY8yBI+jD/WBDEFOQqo+a95NUPLPrB7wWpPMM8YHPo=;
-	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:From;
-	b=UpDcimtSdjhcOQaEPAOry33amGLofgoTr2C0SJMLlb90GodD85ERmPqrLLrC5iPUq
-	 dDocLlEIs6kUYvM5rQHYTUiBSCEgA74KlnmwiUuwyH1tuvs4AqMvHKAkF7Nha2dUh2
-	 5uIQds1PXNZ56Wl/ipAKlo7BOO0VZ6dpqi4MT2bRaB1tyQVEeIxzEKLB14i2efnQX4
-	 pSmNSEPMLa+V9syD0YlXspKugy12H0zycg071J0do2pYckzmFqqmvU2Sf1SFfYCEdx
-	 EYj/fmKwZn3XxEL7BrSailaNiWQQ+XU2NomF2O1ROTxy+3W9vbVSo63YAg0TCuBr4q
-	 BxOVlHVo9oMDQ==
-Date: Mon, 11 Mar 2024 10:55:37 -0600
-From: Rob Herring <robh@kernel.org>
-To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, frowand.list@gmail.com,
-	vgupta@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
-	guoren@kernel.org, monstr@monstr.eu, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu, dinguyen@kernel.org, chenhuacai@kernel.org,
-	tsbogend@alpha.franken.de, jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-	mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
-	glaubitz@physik.fu-berlin.de, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	chris@zankel.net, jcmvbkbc@gmail.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	kernel@quicinc.com
-Subject: Re: [PATCH v4 2/4] of: reserved_mem: Add code to dynamically
- allocate reserved_mem array
-Message-ID: <20240311165537.GA1370807-robh@kernel.org>
-References: <20240308191204.819487-1-quic_obabatun@quicinc.com>
- <20240308191204.819487-3-quic_obabatun@quicinc.com>
+	s=arc-20240116; t=1710176170; c=relaxed/simple;
+	bh=iVbrXEh86PG2ScBwA5U67Zu+kmuCtBYhi9GDJBy218Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sz0F0P9Gjt4xiWSf9qT9z542empm8DDWoQxrrswa7JMvrW5G5mbc/+ttOdCkNILbgt85JnjKv81OvW9xU4XGFSOA4AZEpD+McSC8barce8o958FeRHWfOAIvGpx6JKB/sJj0r945a1TaPF2GuDZK5MKTEiPUVk6Y4fa5/Le7lZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58538FEC;
+	Mon, 11 Mar 2024 09:56:44 -0700 (PDT)
+Received: from [10.57.68.246] (unknown [10.57.68.246])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03BDB3F64C;
+	Mon, 11 Mar 2024 09:56:00 -0700 (PDT)
+Message-ID: <01c61b90-df90-4819-978b-414bb717ef64@arm.com>
+Date: Mon, 11 Mar 2024 16:55:58 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308191204.819487-3-quic_obabatun@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 1/5] arm64: mm: swap: support THP_SWAP on hardware
+ with MTE
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: chengming.zhou@linux.dev, chrisl@kernel.org, david@redhat.com,
+ hannes@cmpxchg.org, kasong@tencent.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
+ steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
+ willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+ yosryahmed@google.com, yuzhao@google.com, Barry Song
+ <v-songbaohua@oppo.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Kemeng Shi <shikemeng@huaweicloud.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Peter Collingbourne <pcc@google.com>, Peter Xu <peterx@redhat.com>,
+ Lorenzo Stoakes <lstoakes@gmail.com>, "Mike Rapoport (IBM)"
+ <rppt@kernel.org>, Hugh Dickins <hughd@google.com>,
+ "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>
+References: <20240304081348.197341-1-21cnbao@gmail.com>
+ <20240304081348.197341-2-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240304081348.197341-2-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 08, 2024 at 11:12:02AM -0800, Oreoluwa Babatunde wrote:
-> The reserved_mem array is statically allocated with a size of
-> MAX_RESERVED_REGIONS(64). Therefore, if the number of reserved_mem
-> regions exceeds this size, there will not be enough space to store
-> all the data.
+On 04/03/2024 08:13, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
 > 
-> Hence, extend the use of the static array by introducing a
-> dynamically allocated array based on the number of reserved memory
-> regions specified in the DT.
+> Commit d0637c505f8a1 ("arm64: enable THP_SWAP for arm64") brings up
+> THP_SWAP on ARM64, but it doesn't enable THP_SWP on hardware with
+> MTE as the MTE code works with the assumption tags save/restore is
+> always handling a folio with only one page.
 > 
-> On architectures such as arm64, memblock allocated memory is not
-> writable until after the page tables have been setup. Hence, the
-> dynamic allocation of the reserved_mem array will need to be done only
-> after the page tables have been setup.
+> The limitation should be removed as more and more ARM64 SoCs have
+> this feature. Co-existence of MTE and THP_SWAP becomes more and
+> more important.
 > 
-> As a result, a temporary static array is still needed in the initial
-> stages to store the information of the dynamically-placed reserved memory
-> regions because the start address is selected only at run-time and is not
-> stored anywhere else.
-> It is not possible to wait until the reserved_mem array is allocated
-> because this is done after the page tables are setup and the reserved
-> memory regions need to be initialized before then.
+> This patch makes MTE tags saving support large folios, then we don't
+> need to split large folios into base pages for swapping out on ARM64
+> SoCs with MTE any more.
 > 
-> After the reserved_mem array is allocated, all entries from the static
-> array is copied over to the new array, and the rest of the information
-> for the statically-placed reserved memory regions are read in from the
-> DT and stored in the new array as well.
+> arch_prepare_to_swap() should take folio rather than page as parameter
+> because we support THP swap-out as a whole. It saves tags for all
+> pages in a large folio.
 > 
-> Once the init process is completed, the temporary static array is
-> released back to the system because it is no longer needed. This is
-> achieved by marking it as __initdata.
+> As now we are restoring tags based-on folio, in arch_swap_restore(),
+> we may increase some extra loops and early-exitings while refaulting
+> a large folio which is still in swapcache in do_swap_page(). In case
+> a large folio has nr pages, do_swap_page() will only set the PTE of
+> the particular page which is causing the page fault.
+> Thus do_swap_page() runs nr times, and each time, arch_swap_restore()
+> will loop nr times for those subpages in the folio. So right now the
+> algorithmic complexity becomes O(nr^2).
 > 
-> Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+> Once we support mapping large folios in do_swap_page(), extra loops
+> and early-exitings will decrease while not being completely removed
+> as a large folio might get partially tagged in corner cases such as,
+> 1. a large folio in swapcache can be partially unmapped, thus, MTE
+> tags for the unmapped pages will be invalidated;
+> 2. users might use mprotect() to set MTEs on a part of a large folio.
+> 
+> arch_thp_swp_supported() is dropped since ARM64 MTE was the only one
+> who needed it.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Kemeng Shi <shikemeng@huaweicloud.com>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Peter Collingbourne <pcc@google.com>
+> Cc: Steven Price <steven.price@arm.com>
+> Cc: Yosry Ahmed <yosryahmed@google.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Lorenzo Stoakes <lstoakes@gmail.com>
+> Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> Cc: Hugh Dickins <hughd@google.com>
+> CC: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+> Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> Reviewed-by: Steven Price <steven.price@arm.com>
+> Acked-by: Chris Li <chrisl@kernel.org>
 > ---
->  drivers/of/fdt.c             | 15 +++++++---
->  drivers/of/of_private.h      |  1 +
->  drivers/of/of_reserved_mem.c | 53 ++++++++++++++++++++++++++++++++++--
->  3 files changed, 62 insertions(+), 7 deletions(-)
+>  arch/arm64/include/asm/pgtable.h | 19 ++------------
+>  arch/arm64/mm/mteswap.c          | 43 ++++++++++++++++++++++++++++++++
+>  include/linux/huge_mm.h          | 12 ---------
+>  include/linux/pgtable.h          |  2 +-
+>  mm/page_io.c                     |  2 +-
+>  mm/swap_slots.c                  |  2 +-
+>  6 files changed, 48 insertions(+), 32 deletions(-)
 > 
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index fe6c75c5a8c0..2468360d6053 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -614,13 +614,15 @@ void __init fdt_scan_reserved_mem_reg_nodes(void)
->  	}
->  }
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 401087e8a43d..7a54750770b8 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -45,12 +45,6 @@
+>  	__flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
+>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
 >  
-> +int total_reserved_mem_cnt = MAX_RESERVED_REGIONS;
-> +
-
-Put this in of_reserved_mem.c.
-
->  /*
->   * fdt_scan_reserved_mem() - scan a single FDT node for reserved memory
->   */
->  static int __init fdt_scan_reserved_mem(void)
->  {
->  	int node, child;
-> -	int dynamic_nodes_cnt = 0;
-> +	int dynamic_nodes_cnt = 0, count = 0;
->  	int dynamic_nodes[MAX_RESERVED_REGIONS];
->  	const void *fdt = initial_boot_params;
->  
-> @@ -643,6 +645,8 @@ static int __init fdt_scan_reserved_mem(void)
->  		uname = fdt_get_name(fdt, child, NULL);
->  
->  		err = __reserved_mem_reserve_reg(child, uname);
-> +		if (!err)
-> +			count++;
->  
->  		/*
->  		 * Delay allocation of the dynamically-placed regions
-> @@ -657,12 +661,16 @@ static int __init fdt_scan_reserved_mem(void)
->  
->  	for (int i = 0; i < dynamic_nodes_cnt; i++) {
->  		const char *uname;
-> +		int err;
->  
->  		child = dynamic_nodes[i];
->  		uname = fdt_get_name(fdt, child, NULL);
->  
-> -		__reserved_mem_alloc_size(child, uname);
-> +		err = __reserved_mem_alloc_size(child, uname);
-> +		if (!err)
-> +			count++;
->  	}
-> +	total_reserved_mem_cnt = count;
->  	return 0;
->  }
->  
-
-> @@ -715,8 +723,6 @@ void __init early_init_fdt_scan_reserved_mem(void)
->  			break;
->  		memblock_reserve(base, size);
->  	}
+> -static inline bool arch_thp_swp_supported(void)
+> -{
+> -	return !system_supports_mte();
+> -}
+> -#define arch_thp_swp_supported arch_thp_swp_supported
 > -
-> -	fdt_init_reserved_mem();
+>  /*
+>   * Outside of a few very special situations (e.g. hibernation), we always
+>   * use broadcast TLB invalidation instructions, therefore a spurious page
+> @@ -1095,12 +1089,7 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>  #ifdef CONFIG_ARM64_MTE
+>  
+>  #define __HAVE_ARCH_PREPARE_TO_SWAP
+> -static inline int arch_prepare_to_swap(struct page *page)
+> -{
+> -	if (system_supports_mte())
+> -		return mte_save_tags(page);
+> -	return 0;
+> -}
+> +extern int arch_prepare_to_swap(struct folio *folio);
+>  
+>  #define __HAVE_ARCH_SWAP_INVALIDATE
+>  static inline void arch_swap_invalidate_page(int type, pgoff_t offset)
+> @@ -1116,11 +1105,7 @@ static inline void arch_swap_invalidate_area(int type)
 >  }
 >  
->  /**
-> @@ -1405,6 +1411,7 @@ void __init unflatten_device_tree(void)
->  	of_alias_scan(early_init_dt_alloc_memory_arch);
+>  #define __HAVE_ARCH_SWAP_RESTORE
+> -static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> -{
+> -	if (system_supports_mte())
+> -		mte_restore_tags(entry, &folio->page);
+> -}
+> +extern void arch_swap_restore(swp_entry_t entry, struct folio *folio);
 >  
->  	unittest_unflatten_overlay_base();
-> +	fdt_init_reserved_mem();
-
-This change belongs in patch 1.
-
+>  #endif /* CONFIG_ARM64_MTE */
+>  
+> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+> index a31833e3ddc5..295836fef620 100644
+> --- a/arch/arm64/mm/mteswap.c
+> +++ b/arch/arm64/mm/mteswap.c
+> @@ -68,6 +68,13 @@ void mte_invalidate_tags(int type, pgoff_t offset)
+>  	mte_free_tag_storage(tags);
 >  }
 >  
->  /**
-> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-> index 542e37a37a24..447b63413b39 100644
-> --- a/drivers/of/of_private.h
-> +++ b/drivers/of/of_private.h
-> @@ -42,6 +42,7 @@ extern struct mutex of_mutex;
->  extern raw_spinlock_t devtree_lock;
->  extern struct list_head aliases_lookup;
->  extern struct kset *of_kset;
-> +extern int total_reserved_mem_cnt;
->  
->  #if defined(CONFIG_OF_DYNAMIC)
->  extern int of_property_notify(int action, struct device_node *np,
-> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-> index d62f1956024c..3c4373b021be 100644
-> --- a/drivers/of/of_reserved_mem.c
-> +++ b/drivers/of/of_reserved_mem.c
-> @@ -26,7 +26,8 @@
->  
->  #include "of_private.h"
->  
-> -static struct reserved_mem reserved_mem[MAX_RESERVED_REGIONS];
-> +static struct reserved_mem reserved_mem_array[MAX_RESERVED_REGIONS] __initdata;
-> +static struct reserved_mem *reserved_mem __refdata = reserved_mem_array;
->  static int reserved_mem_count;
->  
->  static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
-> @@ -54,6 +55,48 @@ static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
->  	return err;
->  }
->  
-> +/**
-> + * alloc_reserved_mem_array() - allocate memory for the reserved_mem
-> + * array using memblock
-> + *
-> + * This function is used to allocate memory for the reserved_mem array
-> + * according to the total number of reserved memory regions defined in
-> + * the DT.
-> + * After the new array is allocated, the information stored in the
-> + * initial static array is copied over to this new array and the
-> + * new array is used from this point on.
-> + */
-> +static int __init alloc_reserved_mem_array(void)
+> +static inline void __mte_invalidate_tags(struct page *page)
 > +{
-> +	struct reserved_mem *new_array;
-> +	size_t alloc_size, copy_size, memset_size;
+> +	swp_entry_t entry = page_swap_entry(page);
 > +
-> +	alloc_size = array_size(total_reserved_mem_cnt, sizeof(*new_array));
-> +	if (alloc_size == SIZE_MAX)
-> +		return -1;
-
-Use EOVERFLOW
-
-> +
-> +	new_array = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
-> +	if (!new_array)
-> +		return -ENOMEM;
-> +
-> +	copy_size = array_size(reserved_mem_count, sizeof(*new_array));
-> +	if (copy_size == SIZE_MAX)
-> +		goto overlow_err;
-
-This is the only path for goto, so move the cleanup here.
-
-> +
-> +	memset_size = alloc_size - copy_size;
-> +
-> +	memcpy(new_array, reserved_mem, copy_size);
-> +	memset(new_array + reserved_mem_count, 0, memset_size);
-> +
-> +	reserved_mem = new_array;
-> +	return 0;
-> +
-> +overlow_err:
-> +	memblock_free(new_array, alloc_size);
-> +	total_reserved_mem_cnt = MAX_RESERVED_REGIONS;
-> +	return -1;
-
-Use EOVERFLOW
-
+> +	mte_invalidate_tags(swp_type(entry), swp_offset(entry));
 > +}
 > +
->  /*
->   * fdt_reserved_mem_save_node() - save fdt node for second pass initialization
->   */
-> @@ -62,7 +105,7 @@ void __init fdt_reserved_mem_save_node(unsigned long node, const char *uname,
+>  void mte_invalidate_tags_area(int type)
 >  {
->  	struct reserved_mem *rmem = &reserved_mem[reserved_mem_count];
->  
-> -	if (reserved_mem_count == ARRAY_SIZE(reserved_mem)) {
-> +	if (reserved_mem_count == total_reserved_mem_cnt) {
->  		pr_err("not enough space for all defined regions.\n");
->  		return;
+>  	swp_entry_t entry = swp_entry(type, 0);
+> @@ -83,3 +90,39 @@ void mte_invalidate_tags_area(int type)
 >  	}
-> @@ -303,7 +346,11 @@ static void __init __rmem_check_for_overlap(void)
->   */
->  void __init fdt_init_reserved_mem(void)
->  {
-> -	int i;
-> +	int i, ret;
+>  	xa_unlock(&mte_pages);
+>  }
 > +
-> +	ret = alloc_reserved_mem_array();
-> +	if (ret)
-> +		pr_err("Failed to allocate memory for reserved_mem array with err: %d", ret);
+> +int arch_prepare_to_swap(struct folio *folio)
+> +{
+> +	long i, nr;
+> +	int err;
+> +
+> +	if (!system_supports_mte())
+> +		return 0;
+> +
+> +	nr = folio_nr_pages(folio);
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		err = mte_save_tags(folio_page(folio, i));
+> +		if (err)
+> +			goto out;
+> +	}
+> +	return 0;
+> +
+> +out:
+> +	while (i--)
+> +		__mte_invalidate_tags(folio_page(folio, i));
+> +	return err;
+> +}
+> +
+> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
 
-As printing a message is the only error handling, better to just print 
-something in alloc_reserved_mem_array() and return void.
+I'm still not a fan of the fact that entry could be anywhere within folio.
 
+> +{
+> +	if (system_supports_mte()) {
+
+nit: if you do:
+
+if (!system_supports_mte())
+	return;
+
+It will be consistent with arch_prepare_to_swap() and reduce the indentation of
+the main body.
+
+> +		long i, nr = folio_nr_pages(folio);
+> +
+> +		entry.val -= swp_offset(entry) & (nr - 1);
+
+This assumes that folios are always stored in swap with natural alignment. Is
+that definitely a safe assumption? My swap-out series is currently ensuring that
+folios are swapped-out naturally aligned, but that is an implementation detail.
+
+Your cover note for swap-in says that you could technically swap in a large
+folio without it having been swapped-out large. If you chose to do that in
+future, this would break, right? I don't think it's good to couple the swap
+storage layout to the folio order that you want to swap into. Perhaps that's an
+argument for passing each *page* to this function with its exact, corresponding
+swap entry?
+
+> +		for (i = 0; i < nr; i++) {
+> +			mte_restore_tags(entry, folio_page(folio, i));
+> +			entry.val++;
+> +		}
+> +	}
+> +}
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index de0c89105076..e04b93c43965 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -535,16 +535,4 @@ static inline int split_folio_to_order(struct folio *folio, int new_order)
+>  #define split_folio_to_list(f, l) split_folio_to_list_to_order(f, l, 0)
+>  #define split_folio(f) split_folio_to_order(f, 0)
 >  
->  	fdt_scan_reserved_mem_reg_nodes();
+> -/*
+> - * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP due to
+> - * limitations in the implementation like arm64 MTE can override this to
+> - * false
+> - */
+> -#ifndef arch_thp_swp_supported
+> -static inline bool arch_thp_swp_supported(void)
+> -{
+> -	return true;
+> -}
+> -#endif
+> -
+>  #endif /* _LINUX_HUGE_MM_H */
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index e1b22903f709..bfcfe3386934 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1106,7 +1106,7 @@ static inline int arch_unmap_one(struct mm_struct *mm,
+>   * prototypes must be defined in the arch-specific asm/pgtable.h file.
+>   */
+>  #ifndef __HAVE_ARCH_PREPARE_TO_SWAP
+> -static inline int arch_prepare_to_swap(struct page *page)
+> +static inline int arch_prepare_to_swap(struct folio *folio)
+>  {
+>  	return 0;
+>  }
+> diff --git a/mm/page_io.c b/mm/page_io.c
+> index ae2b49055e43..a9a7c236aecc 100644
+> --- a/mm/page_io.c
+> +++ b/mm/page_io.c
+> @@ -189,7 +189,7 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+>  	 * Arch code may have to preserve more data than just the page
+>  	 * contents, e.g. memory tags.
+>  	 */
+> -	ret = arch_prepare_to_swap(&folio->page);
+> +	ret = arch_prepare_to_swap(folio);
+>  	if (ret) {
+>  		folio_mark_dirty(folio);
+>  		folio_unlock(folio);
+> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> index 90973ce7881d..53abeaf1371d 100644
+> --- a/mm/swap_slots.c
+> +++ b/mm/swap_slots.c
+> @@ -310,7 +310,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+>  	entry.val = 0;
 >  
-> -- 
-> 2.34.1
-> 
+>  	if (folio_test_large(folio)) {
+> -		if (IS_ENABLED(CONFIG_THP_SWAP) && arch_thp_swp_supported())
+> +		if (IS_ENABLED(CONFIG_THP_SWAP))
+>  			get_swap_pages(1, &entry, folio_nr_pages(folio));
+>  		goto out;
+>  	}
+
 
