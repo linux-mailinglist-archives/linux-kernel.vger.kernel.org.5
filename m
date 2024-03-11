@@ -1,93 +1,125 @@
-Return-Path: <linux-kernel+bounces-99552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 175408789E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:12:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 412A98789E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6CBE281BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:12:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72AED1C20FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A1556B76;
-	Mon, 11 Mar 2024 21:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3AD56B77;
+	Mon, 11 Mar 2024 21:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rP8rqt9Z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="kInH08S0"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43DB54FA9;
-	Mon, 11 Mar 2024 21:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A6356B6A;
+	Mon, 11 Mar 2024 21:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710191511; cv=none; b=J/T82UW0ad2ucphizP+y1wWpYYqf/dAFO3KnccP+segHXZNE/EoiYONPx6HSCsZvYJJXlO8xu3pMsoSaz4MaEBe5Zlw+rdxurgRXYgZnqgRCnhxh7FJsQ05E+L0OXwYh/OyWu4eYXFuYQT1OD8hV2rrArWeVgdp1gGfrz27wup4=
+	t=1710191528; cv=none; b=YHFgplJgrbHJYOd7GQ5S9pfIS62hwthUxGnHQkcPvH3+2fIdfYYO1j9pCEbuoQs0ytLfHO9QWxOX+7aLP8N9q8IFo8zpMG4OntsWtTjazvqgIF6c+dIxct6lhUZEDqxSxSwDR5wKErd1NaC+0pEvqomy9UkeTiqYirSwIFKV+PY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710191511; c=relaxed/simple;
-	bh=5KYeLP/Z7vfTMDvVH57E3WBbpcqd5Ed7Gv0l/gsgDTs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=civ0Eg7cNlV2M58YaLcr2WESLrGw34vmlvdh6yoJbPoNeXF22b2IDlsZSVY96EIxii2KTMW/3nUxuZYBWa9jt/HY4wDEOb0+V3NZpnYlV03FO4Kz6YokRx+AasKaeNS2u92gxsU+c9gZLTKMW6bx5WWOirEOPkzDmHDggBVWTGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rP8rqt9Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6D47C433F1;
-	Mon, 11 Mar 2024 21:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710191511;
-	bh=5KYeLP/Z7vfTMDvVH57E3WBbpcqd5Ed7Gv0l/gsgDTs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rP8rqt9ZaRKGisJCWcWgf4QTpH4FzeNOquAoSwpsM7HHH3LYm03hV9RhPhsNnG2tu
-	 4cabvk9Ov2bxHHDzbp02RMzFMJHD+EH1Y0ulcQWG3VJlfQ2Zx0MMfAxIoxml7UbcQQ
-	 43ghmZsFIqYvz/9gztBeeWfWMjK5HVvhrvU5Yy6n5/r6etTVqCwY0Vlq4kxZvEYa6f
-	 dqIRKMXaZuC80pCqEvlsutSQtdy/DvI0bSwfi5cTtRruVb6usghq3xMLzPCcLsfrff
-	 3YDaxB8KJok6zU6REckYq55AjwoZAnoux/OGr3Hea2S0Es5TaK6nIR0vjsdzAhaE0Q
-	 S7oy89IkwYTuw==
-Date: Mon, 11 Mar 2024 14:11:50 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Yury Norov <yury.norov@gmail.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Rasmus Villemoes
- <linux@rasmusvillemoes.dk>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Andrew Lunn
- <andrew@lunn.ch>, Mark Brown <broonie@kernel.org>, Ratheesh Kannoth
- <rkannoth@marvell.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 0/5] Add support for QMC HDLC
-Message-ID: <20240311141150.4ebde44b@kernel.org>
-In-Reply-To: <20240307113909.227375-1-herve.codina@bootlin.com>
-References: <20240307113909.227375-1-herve.codina@bootlin.com>
+	s=arc-20240116; t=1710191528; c=relaxed/simple;
+	bh=iemc9BTvqpWfP6M7W2cS/ZtgzbQgKVdjsex36dyysc8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rxOrajjum7dqfhEwOPoqyoF5JSD6MrVu9QKEqBHX4K0x1SLf+nZoAQLqZeqcq5rQ5VQ/xXknocW18rVEm19FBt1843y8cICc+XeCzkQ571DBq3PzKv+jXi9IQaTPsnc6VrM7v0Ke8O2my9+EyxJAUZR5OWjhNXB0u3KqOzr4wy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=kInH08S0; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id CB43C1C006B; Mon, 11 Mar 2024 22:12:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1710191522;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=suhwUbS3La/q9vF4wC7Q3GDRSJw09sPh4CSFxcpujg0=;
+	b=kInH08S0Pt8uBvMxcP2uhk8fWfeAb1okNTMDd6vuBWEt3dAOcKwqxJJ1cpPZAK1WLVFiQh
+	CFoWxwsObpDqARMRm0n+908kBVZpGjO6ZqsBFx9BD8evC2Fje4b1W6e3H/IydCt/yV2+iN
+	J+tUvKlRjhMj0hOuS/9ufn4Dg+oHkvE=
+Date: Mon, 11 Mar 2024 22:12:02 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Hou Tao <houtao1@huawei.com>, Sohil Mehta <sohil.mehta@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org
+Subject: Re: [PATCH AUTOSEL 4.19 1/4] x86/mm: Move is_vsyscall_vaddr() into
+ asm/vsyscall.h
+Message-ID: <Ze9zol7kZucywfOy@duo.ucw.cz>
+References: <20240229204208.2862333-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J1nK2iNWXPRkPHfT"
+Content-Disposition: inline
+In-Reply-To: <20240229204208.2862333-1-sashal@kernel.org>
 
-On Thu,  7 Mar 2024 12:39:03 +0100 Herve Codina wrote:
-> This series introduces the QMC HDLC support.
-> 
-> Patches were previously sent as part of a full feature series and were
-> previously reviewed in that context:
-> "Add support for QMC HDLC, framer infrastructure and PEF2256 framer" [1]
-> 
-> In order to ease the merge, the full feature series has been split and
-> needed parts were merged in v6.8-rc1:
->  - "Prepare the PowerQUICC QMC and TSA for the HDLC QMC driver" [2]
->  - "Add support for framer infrastructure and PEF2256 framer" [3]
-> 
-> This series contains patches related to the QMC HDLC part (QMC HDLC
-> driver):
->  - Introduce the QMC HDLC driver (patches 1 and 2)
->  - Add timeslots change support in QMC HDLC (patch 3)
->  - Add framer support as a framer consumer in QMC HDLC (patch 4)
-> 
-> Compare to the original full feature series, a modification was done on
-> patch 3 in order to use a coherent prefix in the commit title.
-> 
-> I kept the patches unsquashed as they were previously sent and reviewed.
-> Of course, I can squash them if needed.
 
-Applied, thank you!
+--J1nK2iNWXPRkPHfT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> Move is_vsyscall_vaddr() into asm/vsyscall.h to make it available for
+> copy_from_kernel_nofault_allowed() in arch/x86/mm/maccess.c.
+
+This seems to be just part of a patch -- it does not move anything --
+and we should not really need it for 4.19, as we don't have those
+copy_from_kernel_nofault_allowed changes.
+
+Best regards,
+								Pavel
+							=09
+
+> +++ b/arch/x86/include/asm/vsyscall.h
+> @@ -4,6 +4,7 @@
+> =20
+>  #include <linux/seqlock.h>
+>  #include <uapi/asm/vsyscall.h>
+> +#include <asm/page_types.h>
+> =20
+>  #ifdef CONFIG_X86_VSYSCALL_EMULATION
+>  extern void map_vsyscall(void);
+> @@ -22,4 +23,13 @@ static inline bool emulate_vsyscall(struct pt_regs *re=
+gs, unsigned long address)
+>  }
+>  #endif
+> =20
+> +/*
+> + * The (legacy) vsyscall page is the long page in the kernel portion
+> + * of the address space that has user-accessible permissions.
+> + */
+> +static inline bool is_vsyscall_vaddr(unsigned long vaddr)
+> +{
+> +	return unlikely((vaddr & PAGE_MASK) =3D=3D VSYSCALL_ADDR);
+> +}
+> +
+>  #endif /* _ASM_X86_VSYSCALL_H */
+
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--J1nK2iNWXPRkPHfT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZe9zogAKCRAw5/Bqldv6
+8hbCAJ90bmk+FFZg/PTzuaLCwvZ7uaouHACfSIPDNgnMYXrB2dTvZ2dSQb5mO4g=
+=OE+O
+-----END PGP SIGNATURE-----
+
+--J1nK2iNWXPRkPHfT--
 
