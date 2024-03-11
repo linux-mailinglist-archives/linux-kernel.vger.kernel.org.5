@@ -1,134 +1,186 @@
-Return-Path: <linux-kernel+bounces-98592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E30F2877C61
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:15:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37881877C5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7893B2822AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:15:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90FC7B21015
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:15:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4886222318;
-	Mon, 11 Mar 2024 09:15:09 +0000 (UTC)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313BA182A1;
+	Mon, 11 Mar 2024 09:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BfrQxIV6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43437210FE
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF9117BD9
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148508; cv=none; b=VlMxYAhRHUZjmoBiCppj/KJrlhMb+68B9DzZMpxp7KK6c4Hq5geXcIdoPsryZNENFGWI9/O01tKH8QeUgrFJLi+A/tlSVdy0FQ2UyYGY+Zlq/z7vxfCHdrMpn9ChB7WaFKdisy/lp9bly3vnpmbuky5KZvxzO3lgWR/0GOl7Gtw=
+	t=1710148500; cv=none; b=sAyeu79p2R/AMxcL1VGBGfbXM/r+Z3U8Ix/fcIE0aPp33s3ux1hskHpr0HpZ8Q+8o6UZj0OeCSkNDg5HL9aAjHXoYfav/GIMxJdmeJgk0Z2/pdYsnFpjQN9U9YqVMk9sQz3wktHO8/nRcM6VJ8L01H98ca5jZ66B+ua1iNL0kdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148508; c=relaxed/simple;
-	bh=QO/GNzNkf2YcryLx1EP1noGR45Eqf4Z0zlwExKfufq0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HtACpdCZx6B2qi3DDDK+tObsGRdlbIwhSWClI5Dsp730ATBKpGGaxY9FsLkB1cikHMhvcdMj/GKDfe8ZH7YcsdLbOuXWpOcvZywKOTGvP/C0iysiAJfJea37G4AX03SLiO48UIsHk+vC39uHpqoV517ALVP61woGSUKFnr4Piak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-609408d4b31so39263657b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:15:07 -0700 (PDT)
+	s=arc-20240116; t=1710148500; c=relaxed/simple;
+	bh=dTmP7n59FaCUQQ3ImK3x9jf1hCqcfHxKJ2ZB9x5NqCg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YAkyDsNDvL7phQZrO03D2NZg1x3R1Z9zNFnfgodSWoRjgL4gxMz3s8iAUqraRV3NsKRzyplS6nJmq4K/xBfalIlkdKTsc9b2Q8fUNazBACYHTezLNgq7jcWEnyO/womeR73iw4uY00cCSYaX7OUaTczQoYE16e0IlM3lrCY0QDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BfrQxIV6; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710148497;
+	h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k643lTHeRSqr4QYf+RtUFasbXAmnhk9kZSa7ujrmtgQ=;
+	b=BfrQxIV6nxtbCHttEkuCPaG3AUuI6wiKCZRp6fWzDTmGfBjq0IQVWKXRORRWeKUEFoQCCA
+	QKUoYA9qBfgrV1JPb16oIP3upsAtS3WlfZNOcDIexBAF/IbB9jYLJxFEqpP4F26QAQENu3
+	U6kIGRFNVIRgexg5xQf5K8DEu3XXzDE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-475-tGPwdM0uOt203koiR2ddqA-1; Mon, 11 Mar 2024 05:14:54 -0400
+X-MC-Unique: tGPwdM0uOt203koiR2ddqA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33e6d36db5dso2222614f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:14:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710148504; x=1710753304;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Afomj2qqE2Ncus3hWAy0Jm8sIwQF0kbqpG+NUNMGeg4=;
-        b=S487ArIEEEUGTha9Wc5VybAKbwQaf2gF6AQCl5DYdnGmpupcd7N8gwG+qbIrHRKtsO
-         zfegvzUWNmAwokc4BsXOvK9gbJkVElJZ6qJMWMitUX6v3YvD4hKNfsF9DAanTda2thxN
-         4CIVe3ivU4nVeuTUwtR0OgqfgSPuj+sAScgGryy1jjW6ZL4n34ZHV7GwmKyXIe254iXw
-         8b65SlyCRMOsx55tG3GRKNWWm3H5zhV4Ffn3Ygavv4UIu1IwbX325dHhe4EEMPac+gzX
-         PQSU8/7KZc6bNCoLqfydJHypo/m60WeWCInMKUBaJh6fNVDi2fSJX/KUMQ8s1hzuvLLw
-         xwbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTSzHfi65zFjgXDP8M0UUGT+btEur/ueLtW3aLdzGqJN4zSmITnSZoWsNcoKpBdQInQouDLQ7WzvNna07GexZERGaP6YgItUybo2jA
-X-Gm-Message-State: AOJu0Yy2m525SczqcGXh7UkCCbxnb54Xl924tckgdoWiL5ML7csU7Qky
-	y1m4g5OqGRHx0PKfupgwsID+unyXcrC7GOVhR3giqkuyslpki0ySoUQLdEOCHxc=
-X-Google-Smtp-Source: AGHT+IGrM7/YMRWaNQlh6267WbTSBuXUYzoPedg7sgvD5fFhGO0cXQPst/PZ0e+Rwv0npUYYsJwZFw==
-X-Received: by 2002:a0d:fd85:0:b0:609:fd77:904a with SMTP id n127-20020a0dfd85000000b00609fd77904amr4626697ywf.49.1710148504030;
-        Mon, 11 Mar 2024 02:15:04 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id bt9-20020a05690c072900b0060a20aae5ecsm922138ywb.28.2024.03.11.02.15.03
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1710148493; x=1710753293;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k643lTHeRSqr4QYf+RtUFasbXAmnhk9kZSa7ujrmtgQ=;
+        b=S5v1Td7YVSBn9weBzwI2kKwjrqFs1we81EWM8gD7OZbfuiRuuH/+hLxVGUQptbKbCX
+         hJf2RrIM9VhMXx5D3C02fFE1hLVUhWo8bEgCo+Ood/V1nJOsY+MAujwLBQvW1z+7xQmD
+         6qe2ovlpsGBKvVd4vVgGTT95NEWdPkKI/aMxCV3Pr+NtnRgqsiJu4ZXzbJCTC9U1E5cX
+         gl86rNtL66RjT5U4Rdt7ApE00bp8uRYrV/7h01wJAHHQ0wXTnXZxHtbflSo3uvGVEn/5
+         pOg49iM7K58GTf7pKC0Z8XpYq39wqN4YUoibE74m/7eEKLDrkhShz0YQciOJFIJiK1/M
+         pgjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWDnufOIqkXP8wp4WR0/PgXmWeyEgMqV68PLHv3cHMjiFSs0liujHbVCgVevnxag9TSFNURnPMyU9FK97q38GKK/S4oFLbGORMhb2+4
+X-Gm-Message-State: AOJu0YynshEKBpcARy4z7FkMDMIq/sE/OBFApeRFtYrWhihauLIihlR9
+	iAiKBQyBqg1BxeJChQSgowEnpnsPleqnGEfKjVHW8gFnecakGiB+4/y4ebQ+rqIQ1z1Ad8MB/+x
+	l3HB89ndjjjIuc7UwnX6lqD4LIR4SsNFZ2okPnWw+gxxNt0rfOdyqrYMynUT9QA==
+X-Received: by 2002:a05:600c:3ac9:b0:413:2ab0:8305 with SMTP id d9-20020a05600c3ac900b004132ab08305mr974920wms.13.1710148493516;
+        Mon, 11 Mar 2024 02:14:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFrobxE7nSHH4f78nQxa+KpCMwCWrli005wc4GIi67hGLEZz82HkSrLQfxBBbBqOHWRKOZGFQ==
+X-Received: by 2002:a05:600c:3ac9:b0:413:2ab0:8305 with SMTP id d9-20020a05600c3ac900b004132ab08305mr974909wms.13.1710148493278;
+        Mon, 11 Mar 2024 02:14:53 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id n4-20020a05600c4f8400b00412ff941abasm14934328wmq.21.2024.03.11.02.14.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 02:15:03 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso3918721276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:15:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUnm9hCensd/dt6CjB68KV+FC4z2+PfrvfOTKBM0fs69K3LsEbg0bcgbeAItIf8x0MPO2oE+Y8QiyitJHbteSQGli2hlolG4RHPbCay
-X-Received: by 2002:a25:9d85:0:b0:dcf:5be3:3ed4 with SMTP id
- v5-20020a259d85000000b00dcf5be33ed4mr3877372ybp.17.1710148502987; Mon, 11 Mar
- 2024 02:15:02 -0700 (PDT)
+        Mon, 11 Mar 2024 02:14:52 -0700 (PDT)
+Message-ID: <e14204f8-5c25-4130-952b-d5a31edc015f@redhat.com>
+Date: Mon, 11 Mar 2024 10:14:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307151231.654025-1-liuyuntao12@huawei.com>
- <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com> <42892794-7668-4eb0-8d2f-c78ca0daf370@huawei.com>
- <2a90581c-f1df-4d6b-8f0b-8e7cbf150ed9@app.fastmail.com> <346e15e5-49e9-4a7f-b163-c3316225baab@huawei.com>
-In-Reply-To: <346e15e5-49e9-4a7f-b163-c3316225baab@huawei.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 11 Mar 2024 10:14:50 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXKk9S9voKVPvO+xvn1zFW3FnKyVHQGDkC7b9Ynkcnvmw@mail.gmail.com>
-Message-ID: <CAMuHMdXKk9S9voKVPvO+xvn1zFW3FnKyVHQGDkC7b9Ynkcnvmw@mail.gmail.com>
-Subject: Re: [PATCH-next v2] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To: "liuyuntao (F)" <liuyuntao12@huawei.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
-	Fangrui Song <maskray@google.com>, Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, 
-	Mike Rapoport <rppt@kernel.org>, Rob Herring <robh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Linus Walleij <linus.walleij@linaro.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v2 3/7] vfio: Introduce interface to flush virqfd inject
+ workqueue
+Content-Language: en-US
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: kvm@vger.kernel.org, clg@redhat.com, reinette.chatre@intel.com,
+ linux-kernel@vger.kernel.org, kevin.tian@intel.com
+References: <20240308230557.805580-1-alex.williamson@redhat.com>
+ <20240308230557.805580-4-alex.williamson@redhat.com>
+From: Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <20240308230557.805580-4-alex.williamson@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Yuntao,
 
-On Sat, Mar 9, 2024 at 2:24=E2=80=AFPM liuyuntao (F) <liuyuntao12@huawei.co=
-m> wrote:
-> On 2024/3/9 16:20, Arnd Bergmann wrote:
-> > On Sat, Mar 9, 2024, at 07:14, liuyuntao (F) wrote:
-> >> On 2024/3/8 21:15, Arnd Bergmann wrote:
-> >>> On Thu, Mar 7, 2024, at 16:12, Yuntao Liu wrote:
-> >>
-> >> Thanks for the tests, CONFIG_LD_DEAD_CODE_DATA_ELIMINATION and
-> >> CONFIG_TRIM_UNUSED_KSYMS do indeed result in a significant improvement=
-.
-> >> I found that arm32 still doesn't support CONFIG_LTO_CLANG. I've done
-> >> some work on it, but without success. I'd like to learn more about the
-> >> CONFIG_LTO_CLANG patch. Do you have any relevant links?
-> >
-> > I did not try to get it to boot and gave up when I did not see
-> > any size improvement. I think there were previous attempts to
-> > do it elsewhere, which I did not try to find.
-> >
+
+On 3/9/24 00:05, Alex Williamson wrote:
+> In order to synchronize changes that can affect the thread callback,
+> introduce an interface to force a flush of the inject workqueue.  The
+> irqfd pointer is only valid under spinlock, but the workqueue cannot
+> be flushed under spinlock.  Therefore the flush work for the irqfd is
+> queued under spinlock.  The vfio_irqfd_cleanup_wq workqueue is re-used
+> for queuing this work such that flushing the workqueue is also ordered
+> relative to shutdown.
 >
-> I tested this patch, the size improvement was only about one
-> ten-thousandth, and the compilation time had increased by about a quarter=
-,
-> and the kernel did not boot.
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Eric
+> ---
+>  drivers/vfio/virqfd.c | 21 +++++++++++++++++++++
+>  include/linux/vfio.h  |  2 ++
+>  2 files changed, 23 insertions(+)
 >
-> Strangely, LTO has actually increased the compilation time
-> significantly, which seems contrary to its purpose.
+> diff --git a/drivers/vfio/virqfd.c b/drivers/vfio/virqfd.c
+> index 29c564b7a6e1..532269133801 100644
+> --- a/drivers/vfio/virqfd.c
+> +++ b/drivers/vfio/virqfd.c
+> @@ -101,6 +101,13 @@ static void virqfd_inject(struct work_struct *work)
+>  		virqfd->thread(virqfd->opaque, virqfd->data);
+>  }
+>  
+> +static void virqfd_flush_inject(struct work_struct *work)
+> +{
+> +	struct virqfd *virqfd = container_of(work, struct virqfd, flush_inject);
+> +
+> +	flush_work(&virqfd->inject);
+> +}
+> +
+>  int vfio_virqfd_enable(void *opaque,
+>  		       int (*handler)(void *, void *),
+>  		       void (*thread)(void *, void *),
+> @@ -124,6 +131,7 @@ int vfio_virqfd_enable(void *opaque,
+>  
+>  	INIT_WORK(&virqfd->shutdown, virqfd_shutdown);
+>  	INIT_WORK(&virqfd->inject, virqfd_inject);
+> +	INIT_WORK(&virqfd->flush_inject, virqfd_flush_inject);
+>  
+>  	irqfd = fdget(fd);
+>  	if (!irqfd.file) {
+> @@ -213,3 +221,16 @@ void vfio_virqfd_disable(struct virqfd **pvirqfd)
+>  	flush_workqueue(vfio_irqfd_cleanup_wq);
+>  }
+>  EXPORT_SYMBOL_GPL(vfio_virqfd_disable);
+> +
+> +void vfio_virqfd_flush_thread(struct virqfd **pvirqfd)
+> +{
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&virqfd_lock, flags);
+> +	if (*pvirqfd && (*pvirqfd)->thread)
+> +		queue_work(vfio_irqfd_cleanup_wq, &(*pvirqfd)->flush_inject);
+> +	spin_unlock_irqrestore(&virqfd_lock, flags);
+> +
+> +	flush_workqueue(vfio_irqfd_cleanup_wq);
+> +}
+> +EXPORT_SYMBOL_GPL(vfio_virqfd_flush_thread);
+> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+> index 89b265bc6ec3..8b1a29820409 100644
+> --- a/include/linux/vfio.h
+> +++ b/include/linux/vfio.h
+> @@ -356,6 +356,7 @@ struct virqfd {
+>  	wait_queue_entry_t		wait;
+>  	poll_table		pt;
+>  	struct work_struct	shutdown;
+> +	struct work_struct	flush_inject;
+>  	struct virqfd		**pvirqfd;
+>  };
+>  
+> @@ -363,5 +364,6 @@ int vfio_virqfd_enable(void *opaque, int (*handler)(void *, void *),
+>  		       void (*thread)(void *, void *), void *data,
+>  		       struct virqfd **pvirqfd, int fd);
+>  void vfio_virqfd_disable(struct virqfd **pvirqfd);
+> +void vfio_virqfd_flush_thread(struct virqfd **pvirqfd);
+>  
+>  #endif /* VFIO_H */
 
-The purpose of LTO is to reduce code size. Doing so requires more
-processing, hence the total build time increases.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
