@@ -1,138 +1,187 @@
-Return-Path: <linux-kernel+bounces-98492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A737A877AD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:03:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94EA1877AD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B867282546
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:03:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AD561C216C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6443CA47;
-	Mon, 11 Mar 2024 06:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQUBZumc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A7C8F4A
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5105ACA47;
+	Mon, 11 Mar 2024 06:05:11 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256158F4A;
+	Mon, 11 Mar 2024 06:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710136988; cv=none; b=jr+Cp9tJasHQCAZFAiCNJOdBXT4RRx0dk64PEkZQBwhAz/Ru8YZYL2QKKBaWTZ3cKzySdbp71Lg7WctWcmC5T8IUUanstzO/KlQtmvs7DA+PuUJBjp1h95mk8kA1idPscLVzG9EBgQFRposjAXGAUOmiPJyP9H3a7jdW8xj6Wec=
+	t=1710137110; cv=none; b=H5q/ONfzV1D43AcLubvgHl9anhckgjEZFfO26DQiEqgAxpTv6SDCr/bW7t7uvfT4aGEssxTt5LLaZ+terrqGc+BnHxLbUvexQmcixds4wBcXhyEzILnebhEwYmyL82iOXdDBxBXt9lnf5XvBpgIuZfETMeQdEApcuaehQHNvT3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710136988; c=relaxed/simple;
-	bh=rHKHOs/CfioDRsDzlTyobjWIyq8en/YqyDBEXhad4Bs=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=gMJfcRngDL/9qzGHvILD3G3qabrjUbE/Cvt3ckFDRgsh82QgqLlt5mdbMCx2wUWKWXA/0Syit/OYgW5l3NAlhY9XeQv9z92szFFpYGM1majDti4JMqRQeZsEAn6rZqlJgX1uCHqwk477aN/VRwINxPi4/zez2UAGehNkxsPD9u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fQUBZumc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D270C433F1;
-	Mon, 11 Mar 2024 06:03:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710136987;
-	bh=rHKHOs/CfioDRsDzlTyobjWIyq8en/YqyDBEXhad4Bs=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=fQUBZumcdZeGJOZxYogFlDP8CxOy2NzhsptKPGEe9ceUUUZwKS5BSN0XRnqdv+mqK
-	 FabhdP15mjigTh0eXo6u3lylbMuxPlA6gj1nPa/jX3Sc+FF95rkIvFwy1XHDuSt528
-	 8zBU4+PN4cPg2bIq6lSJKN2QXu6ySluw0i64yKJ8N2wKlPA31pjRNPzMNGOn0Wlvm2
-	 hOfPVHDcKXnAawrwqrtTyNEdybuVY3U1JY2h48ck8DOpZAEcoWmhFIEZPKg7ivJIqh
-	 MzsFP34o2ZmjSiwo5Wi+eOfWyF/kUPYVrxZw81VGYwdGXiM+ITzkaWq7Czbdc5AAqu
-	 S5aG3hDHULSkQ==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 514311200043;
-	Mon, 11 Mar 2024 02:03:06 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 11 Mar 2024 02:03:06 -0400
-X-ME-Sender: <xms:mZ7uZTwhUKDoB3VvZpa1UHC5O9fNcVHw4GVHq20D6zOHHoPgk0dvIQ>
-    <xme:mZ7uZbQqQDNYN6vaTIm2yGUB29_sR0kbzHOBjIuvCJv7P7hmtIQ8MdtDsvPf8YzJQ
-    amta3JmMs90PbMTsgw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjedtgdeludcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvddttdffjeefgeeggfelfefggefhheeffefftefggfelgeduveevtefh
-    feejveeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
-    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
-    guvg
-X-ME-Proxy: <xmx:mZ7uZdU-AObKIuhhe9Uq4vZYd51S8os2D0kXu_POqxBSXouEnPPA-g>
-    <xmx:mZ7uZdiKzQ3RJdJ6KwIQE9y5W0JZuUmZgUHbfBJPHYG1NOvsb1Lf_g>
-    <xmx:mZ7uZVDypRaLIrBcqqlhf0wOaKoJc4pobTimAtyHAFIUHAnX1uF4hQ>
-    <xmx:mp7uZdxl7jTfP9FPqWJRNdwPGicZ32KZg-G6VHqqtLMMTAOBGbP-I9B0xq0>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A32BCB6008D; Mon, 11 Mar 2024 02:03:05 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1710137110; c=relaxed/simple;
+	bh=TXK5HSlimSGNRAJ7qO57SuGX/bRuFSCVlzTsdBRuad0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ePowLJ+pinAs8iil8RpvxiFs0uyMBPkUdV0Iy+zxmoZ4lsjYncWNevuM3xT8Rbm/lgHlYCAICCLx2MtOIQAdfh5kg52arBY/tR1cFVjZHzbCyjCdOQYmoVPXBk/fgKsCCodK+mQtrlnAu6OyfBYl3x6dp3Ui3JPw7BWtQRdAYsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 143F1FEC;
+	Sun, 10 Mar 2024 23:05:38 -0700 (PDT)
+Received: from [10.162.42.8] (a077893.blr.arm.com [10.162.42.8])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B65C3F73F;
+	Sun, 10 Mar 2024 23:04:57 -0700 (PDT)
+Message-ID: <379bf6df-3568-43c0-9a68-4a5693bf5ccc@arm.com>
+Date: Mon, 11 Mar 2024 11:34:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e90c2e69-17ea-4875-bb36-8a6d846f05e6@app.fastmail.com>
-In-Reply-To: <6c3451ed-6346-45e2-940e-851cb99a1b63@alliedtelesis.co.nz>
-References: <20240306235021.976083-1-chris.packham@alliedtelesis.co.nz>
- <20240306235021.976083-4-chris.packham@alliedtelesis.co.nz>
- <87edclgoon.fsf@BL-laptop>
- <CAHp75VfmSWH3FWEHU+bGYDuo-nt1DJhY5Fvs83A-RGrtrsgWTw@mail.gmail.com>
- <8177b94d-82c9-42b6-85eb-728dec762162@app.fastmail.com>
- <CAHp75VfiaWFricM4Or771P0LJVoFoEmQtoJo1hySo=BRS-59DQ@mail.gmail.com>
- <6c3451ed-6346-45e2-940e-851cb99a1b63@alliedtelesis.co.nz>
-Date: Mon, 11 Mar 2024 07:02:35 +0100
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Chris Packham" <Chris.Packham@alliedtelesis.co.nz>,
- "Andy Shevchenko" <andy.shevchenko@gmail.com>
-Cc: "Gregory Clement" <gregory.clement@bootlin.com>,
- "Andy Shevchenko" <andy@kernel.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Rob Herring" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "Conor Dooley" <conor+dt@kernel.org>, "Andrew Lunn" <andrew@lunn.ch>,
- "Sebastian Hesselbarth" <sebastian.hesselbarth@gmail.com>,
- "Lee Jones" <lee@kernel.org>,
- "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v5 3/3] ARM: dts: marvell: Add 7-segment LED display on x530
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 00/11] coresight: Move remaining AMBA ACPI devices into
+ platform driver
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
+References: <20240222082142.3663983-1-anshuman.khandual@arm.com>
+ <8ef57dd9-a16d-4847-89f5-a309c4ccb849@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <8ef57dd9-a16d-4847-89f5-a309c4ccb849@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Mar 10, 2024, at 21:22, Chris Packham wrote:
-> On 8/03/24 23:34, Andy Shevchenko wrote:
->> On Fri, Mar 8, 2024 at 12:19=E2=80=AFPM Arnd Bergmann <arnd@kernel.or=
-g> wrote:
->>> On Fri, Mar 8, 2024, at 10:56, Andy Shevchenko wrote:
->>>> On Fri, Mar 8, 2024 at 9:36=E2=80=AFAM Gregory CLEMENT <gregory.cle=
-ment@bootlin.com> wrote:
->>>>>
->>>>> Normally, this patch should be taken in mvebu and then merged by
->>>>> arm-soc. However, I haven't seen any other patch touching this fil=
-e (so
->>>>> no risk of merge conflict) and I think it's too late for me to mak=
-e a
->>>>> new pull request to arm-soc. So I'm not against it being taken wit=
-h the
->>>>> rest of the patches. However, I think it would be a good idea to s=
-ee
->>>>> what Arnd thinks about it.
->
-> FYI ./scripts/get_maintainer.pl -f arch/arm/boot/dts/marvell isn't=20
-> picking up Arnd should it?
 
-No, as Gregory writes, the intended way for platform specific
-patches is to go through the maintainer for that platform,
-in this case him, who then sends pull requests to me.
 
-Since it was late in the merge window, he suggested skipping
-this step as an exception, which is something we can always do
-if there is an important reason, just like you skip can all
-maintainers and go directly to Linus if necessary, but the
-maintainers file only documents the normal case.
+On 3/5/24 23:55, Suzuki K Poulose wrote:
+> On 22/02/2024 08:21, Anshuman Khandual wrote:
+>> This moves remaining AMBA ACPI devices into respective platform drivers for
+>> enabling ACPI based power management support. This series applies on kernel
+>> v6.8-rc5 release. This series has been built, and boot tested on a DT based
+>> (RB5) and ACPI supported coresight platform (N1SDP).
+> 
+> Please rebase your series on coresight next and fix build failures with the extra warnings turned ON (should be on by default with next).
 
-     Arnd
+I did rebase the series (which required some rebase related changes for some) on
+coresight next i.e with the following commit as HEAD.
+
+a4f3057d19ff ("coresight-tpda: Change qcom,dsb-element-size to qcom,dsb-elem-bits")
+
+Although did not see any warning either with = m or = y based coresight options.
+Is there any other particular config which needs to be enabled for these warnings
+to come up ?
+
+> 
+> 
+> Suzuki
+> 
+>>
+>> https://git.gitlab.arm.com/linux-arm/linux-anshuman.git (amba_other_acpi_migration_v5)
+>>
+>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+>> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: coresight@lists.linaro.org
+>> Cc: linux-stm32@st-md-mailman.stormreply.com
+>>
+>> Changes in V5:
+>>
+>> - Used table->mask to filter out bits from pid in coresight_get_uci_data_from_amba()
+>> - Dropped custom masks such as STM_AMBA_MASK and TMC_AMBA_MASK
+>> - Modified tmc_etr_setup_caps() to accept struct csdev_access argument
+>> - Reverted back tmc_etr_setup_caps() call site position in tmc_probe()
+>> - Changed replicator and funnel devices to use the new helpers earlier in series
+>> - Updated the commit messages regarding xxx_probe() refactoring and renaming
+>>
+>> Changes in V4:
+>>
+>> https://lore.kernel.org/all/20240123054608.1790189-1-anshuman.khandual@arm.com/
+>>
+>> - Fixed PM imbalance in etm4_probe() error path with pm_runtime_disable()
+>> - Restored back the pm_runtime_disable() on platform probe error paths
+>>    in replicator, funnel, catu, tpiu, tmc and stm devices
+>> - Dropped dev_caps argument from __tmc_probe()
+>> - Changed xxxx_platform_remove() for platform_driver->remove_new() callback
+>>
+>> Changes in V3:
+>>
+>> https://lore.kernel.org/all/20231208053939.42901-1-anshuman.khandual@arm.com/
+>>
+>> - Split coresight_init_driver/remove_driver() helpers into a separate patch
+>> - Added 'drvdata->pclk' comments in replicator, funnel, tpiu, tmc, and stm devices
+>> - Updated funnel, and replicator drivers to use these new helpers
+>> - Check for drvdata instead of drvdata->pclk in suspend and resume paths in catu,
+>>    tmc and debug devices
+>> - Added patch to extract device name from AMBA pid based table lookup for stm
+>> - Added patch to extract device properties from AMBA pid based table look for tmc
+>> - Dropped pm_runtime_put() from common __probe() functions
+>> - Handled pm_runtime_put() in AMBA driver in success path
+>> - Handled pm_runtime_put() in platform driver in both success and error paths
+>>
+>> Changes in V2:
+>>
+>> https://lore.kernel.org/all/20231201062053.1268492-1-anshuman.khandual@arm.com/
+>>
+>> - Dropped redundant devm_ioremap_resource() hunk from tmc_platform_probe()
+>> - Defined coresight_[init|remove]_driver() for both AMBA/platform drivers
+>> - Changed catu, tmc, tpiu, stm and debug coresight drivers to use the new
+>>    helpers avoiding build issues arising from module_amba_driver(), and
+>>    module_platform_driver() being on the same file
+>>
+>> Changes in V1:
+>>
+>> https://lore.kernel.org/all/20231027072943.3418997-1-anshuman.khandual@arm.com/
+>>
+>> - Replaced all IS_ERR() instances with IS_ERR_OR_NULL() as per Suzuki
+>>
+>> Changes in RFC:
+>>
+>> https://lore.kernel.org/all/20230921042040.1334641-1-anshuman.khandual@arm.com/
+>>
+>> Anshuman Khandual (11):
+>>    coresight: etm4x: Fix unbalanced pm_runtime_enable()
+>>    coresight: stm: Extract device name from AMBA pid based table lookup
+>>    coresight: tmc: Extract device properties from AMBA pid based table lookup
+>>    coresight: Add helpers registering/removing both AMBA and platform drivers
+>>    coresight: replicator: Move ACPI support from AMBA driver to platform driver
+>>    coresight: funnel: Move ACPI support from AMBA driver to platform driver
+>>    coresight: catu: Move ACPI support from AMBA driver to platform driver
+>>    coresight: tpiu: Move ACPI support from AMBA driver to platform driver
+>>    coresight: tmc: Move ACPI support from AMBA driver to platform driver
+>>    coresight: stm: Move ACPI support from AMBA driver to platform driver
+>>    coresight: debug: Move ACPI support from AMBA driver to platform driver
+>>
+>>   drivers/acpi/arm64/amba.c                     |   8 -
+>>   drivers/hwtracing/coresight/coresight-catu.c  | 142 +++++++++++++---
+>>   drivers/hwtracing/coresight/coresight-catu.h  |   1 +
+>>   drivers/hwtracing/coresight/coresight-core.c  |  29 ++++
+>>   .../hwtracing/coresight/coresight-cpu-debug.c | 141 ++++++++++++++--
+>>   .../coresight/coresight-etm4x-core.c          |   3 +
+>>   .../hwtracing/coresight/coresight-funnel.c    |  86 +++++-----
+>>   drivers/hwtracing/coresight/coresight-priv.h  |  10 ++
+>>   .../coresight/coresight-replicator.c          |  81 +++++-----
+>>   drivers/hwtracing/coresight/coresight-stm.c   | 115 +++++++++++--
+>>   .../hwtracing/coresight/coresight-tmc-core.c  | 153 +++++++++++++++---
+>>   drivers/hwtracing/coresight/coresight-tmc.h   |   2 +
+>>   drivers/hwtracing/coresight/coresight-tpiu.c  | 102 ++++++++++--
+>>   include/linux/coresight.h                     |   7 +
+>>   14 files changed, 721 insertions(+), 159 deletions(-)
+>>
+> 
 
