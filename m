@@ -1,150 +1,187 @@
-Return-Path: <linux-kernel+bounces-98620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289A1877CBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:30:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43055877CC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1F911F219A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:30:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74CBA1C20E86
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4545020DCC;
-	Mon, 11 Mar 2024 09:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Af7c2xdJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9506D18659;
+	Mon, 11 Mar 2024 09:30:54 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045F81B7F5
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:30:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C2B17561
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710149403; cv=none; b=Tmo61kmEddrVGpp43e9ElB1pqatqUDVpjjb4AmnHNwOqX4dFcLzYsaKfEziOxVZi5BdTq/h6J7oUKMaDT7ToWyl2EYpVgQ7JKpcImKEJF8neDtSoStZd4eP+0RA8ST+HUJwE1gSzDDtghtUBv+bi5DIT2OSzHMBnNELWjMvgBgg=
+	t=1710149454; cv=none; b=p3MyCl1z6tEehAA/3OnuU2Dv6dy0fGIU7eLYLDGEBUFWFIESDnMvfD4gPCkVqpBKOYjxXoJtyhvfs2rdMr0Iy1O5t9tggeyvY0pUu+AHWHkah00+pXpoNtLje4+TsmXKDBqfj5BncMRWgtYQwS0GcFsDavHWfRlQqNVCPYf8V0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710149403; c=relaxed/simple;
-	bh=Nkp7FKBZ7PEcXihd4+KUr6u1TqOc6m8McJG6ktm5IUQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AsSReUe41TxPZZZxgul2bem6bTCJYZQP0PwYp0MwxEbpfivnoGUhMIrktndXoYmMOb1F1/2cjIUHRYoNkF0OuXCSH13BN80+EgDAwBC+aHONEU3GgKGxxgdsusAvB6fGIfq99a9Amm2glNXfwyeL4rAg/mW+qO327FTVs4pDPAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Af7c2xdJ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710149400;
-	h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vq0fbqV8AiPaISwYCdRzUvNs1bOqySy/93nFBxxjiZ8=;
-	b=Af7c2xdJtFfwaR6OrTx/YBQ8HVA2ke8ufZq7Tr3UN8UXBoK4rdick4TMjzRKRCS2lWadWh
-	6ieevqXbz8SJQLwF16vkbbPwZRNhV6PVSYnkxTFTnyiJmVyfKh000yh9vw9YmvIaRxxcdc
-	lyqkcX29+O+BvIO20SoPlToPA2aj4Dk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-175-MIsRCvf2Mly2g60UQLXP1g-1; Mon, 11 Mar 2024 05:29:58 -0400
-X-MC-Unique: MIsRCvf2Mly2g60UQLXP1g-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-412d557cea6so14486295e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:29:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710149397; x=1710754197;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vq0fbqV8AiPaISwYCdRzUvNs1bOqySy/93nFBxxjiZ8=;
-        b=bsnIYJxE7L46Pu9REEfDWejR7+oPfkbGEooM2PpVXCt3qy4Wus7y0tN4RNdNQKk28e
-         ltaCVxi2Egm5AlMVo2t7rsjLoh5KnRi7b8EZ1JkJRbTAyLOWyeC+rBMxDOGUHJE1s24o
-         6/O7JCr1H42nDHbv0L9LmzRwoYqY7iOTxKrjyPFmnTOV+rkj7UKTbRcTaTeBlBNXaN6x
-         bqOFc4IHNbNTpRImqdCGl8j7GZYaK/dGmMFpTzKqT+PUKkwdsCG9qUnvU8wNkD5XW1Nt
-         96eDom5Mksv9YZOIjdBiC0KjQHkdGhaw2MqYiBRnpSK+YlUaym18c2P08lXYcdH6F45Y
-         rPjg==
-X-Forwarded-Encrypted: i=1; AJvYcCW7vTasAmqFaNHJLHObhdzMDJJaBQpIom5hz1+6AW7yi7NvPjL7s5W0l9S7+e7A0wvcUKFJqZgyGJUknN/M6asq66sliIjso4yBf3m2
-X-Gm-Message-State: AOJu0Yyb7MZob5EEJPUOd8Ctik0Y06mEmpHrKGHp9psSLLLZ2SejmH0U
-	k31EamW4OElXC9OsUoMtVTPVT61/qJxPigPeWhcEBz3jSx1tkLe31aZNHoLXDTOkjbsl5kfZjUM
-	j1vAG0Mtx8SEqS9yEzYvrtf7O8/mFvPfVkJHKtu9GT9WqiHi72mqQlcPsN3/VrA==
-X-Received: by 2002:a05:600c:46ce:b0:413:189e:d67b with SMTP id q14-20020a05600c46ce00b00413189ed67bmr4404658wmo.6.1710149397697;
-        Mon, 11 Mar 2024 02:29:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE5v5SUG6m1goUhCZWogka/nDskTIWkmZ83IYLNOE+yRiFPV22EK88uuq2kD+5UuB+1c1qZFA==
-X-Received: by 2002:a05:600c:46ce:b0:413:189e:d67b with SMTP id q14-20020a05600c46ce00b00413189ed67bmr4404642wmo.6.1710149397335;
-        Mon, 11 Mar 2024 02:29:57 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id n11-20020a05600c3b8b00b0041315c8ceeasm8592981wms.24.2024.03.11.02.29.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 02:29:56 -0700 (PDT)
-Message-ID: <532d5a85-f74f-4e4d-a0fa-f8363910786d@redhat.com>
-Date: Mon, 11 Mar 2024 10:29:55 +0100
+	s=arc-20240116; t=1710149454; c=relaxed/simple;
+	bh=8ubKSyzVaaBrztU45QKm/bQ8zC4NfIF1wOLHO3M3UQo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g64NYwcVoI/citallzhQ/nM8wukVOxq0igMD4sn7kkRmi4SwJf49NcAAn7+oo7pWbVFPqRJy1EZ6Bbi+Kt0NT9MMfAGlmeKsLrrrn02C4UvLylUK1EpRZ9Sq1EIyN+ZpVBUDJ8Vyp/f1qqYrg99+DstqqQiT6Qe0nkjuXk5uDEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TtWhR2Szvz3F0MV;
+	Mon, 11 Mar 2024 17:29:59 +0800 (CST)
+Received: from kwepemd100011.china.huawei.com (unknown [7.221.188.204])
+	by mail.maildlp.com (Postfix) with ESMTPS id A72B11A0172;
+	Mon, 11 Mar 2024 17:30:41 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100011.china.huawei.com
+ (7.221.188.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Mon, 11 Mar
+ 2024 17:30:40 +0800
+Date: Mon, 11 Mar 2024 17:30:36 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Marco Elver <elver@google.com>
+CC: Changbin Du <changbin.du@huawei.com>, Alexander Potapenko
+	<glider@google.com>, Andrew Morton <akpm@linux-foundation.org>,
+	<kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] kmsan: instrumentation recursion problems
+Message-ID: <20240311093036.44txy57hvhevybsu@M910t>
+References: <20240308043448.masllzeqwht45d4j@M910t>
+ <CANpmjNOc4Z6Qy_L3pjuW84BOxoiqXgLC1tWbJuZwRUZqs2ioMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v2 7/7] vfio/fsl-mc: Block calling interrupt handler
- without trigger
-Content-Language: en-US
-To: Alex Williamson <alex.williamson@redhat.com>
-Cc: kvm@vger.kernel.org, clg@redhat.com, reinette.chatre@intel.com,
- linux-kernel@vger.kernel.org, kevin.tian@intel.com,
- diana.craciun@oss.nxp.com, stable@vger.kernel.org
-References: <20240308230557.805580-1-alex.williamson@redhat.com>
- <20240308230557.805580-8-alex.williamson@redhat.com>
-From: Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <20240308230557.805580-8-alex.williamson@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOc4Z6Qy_L3pjuW84BOxoiqXgLC1tWbJuZwRUZqs2ioMA@mail.gmail.com>
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd100011.china.huawei.com (7.221.188.204)
 
-Hi Alex,
-On 3/9/24 00:05, Alex Williamson wrote:
-> The eventfd_ctx trigger pointer of the vfio_fsl_mc_irq object is
-> initially NULL and may become NULL if the user sets the trigger
-> eventfd to -1.  The interrupt handler itself is guaranteed that
-> trigger is always valid between request_irq() and free_irq(), but
-> the loopback testing mechanisms to invoke the handler function
-> need to test the trigger.  The triggering and setting ioctl paths
-> both make use of igate and are therefore mutually exclusive.
+On Fri, Mar 08, 2024 at 10:39:15AM +0100, Marco Elver wrote:
+> On Fri, 8 Mar 2024 at 05:36, 'Changbin Du' via kasan-dev
+> <kasan-dev@googlegroups.com> wrote:
+> >
+> > Hey, folks,
+> > I found two instrumentation recursion issues on mainline kernel.
+> >
+> > 1. recur on preempt count.
+> > __msan_metadata_ptr_for_load_4() -> kmsan_virt_addr_valid() -> preempt_disable() -> __msan_metadata_ptr_for_load_4()
+> >
+> > 2. recur in lockdep and rcu
+> > __msan_metadata_ptr_for_load_4() -> kmsan_virt_addr_valid() -> pfn_valid() -> rcu_read_lock_sched() -> lock_acquire() -> rcu_is_watching() -> __msan_metadata_ptr_for_load_8()
+> >
+> >
+> > Here is an unofficial fix, I don't know if it will generate false reports.
+> >
+> > $ git show
+> > commit 7f0120b621c1cbb667822b0f7eb89f3c25868509 (HEAD -> master)
+> > Author: Changbin Du <changbin.du@huawei.com>
+> > Date:   Fri Mar 8 20:21:48 2024 +0800
+> >
+> >     kmsan: fix instrumentation recursions
+> >
+> >     Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> >
+> > diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
+> > index 0db4093d17b8..ea925731fa40 100644
+> > --- a/kernel/locking/Makefile
+> > +++ b/kernel/locking/Makefile
+> > @@ -7,6 +7,7 @@ obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
+> >
+> >  # Avoid recursion lockdep -> sanitizer -> ... -> lockdep.
+> >  KCSAN_SANITIZE_lockdep.o := n
+> > +KMSAN_SANITIZE_lockdep.o := n
+> 
+> This does not result in false positives?
 >
-> The vfio-fsl-mc driver does not make use of irqfds, nor does it
-> support any sort of masking operations, therefore unlike vfio-pci
-> and vfio-platform, the flow can remain essentially unchanged.
->
-> Cc: Diana Craciun <diana.craciun@oss.nxp.com>
-> Cc: stable@vger.kernel.org
-> Fixes: cc0ee20bd969 ("vfio/fsl-mc: trigger an interrupt via eventfd")
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+I saw a lot of reports but seems not related to this.
 
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+[    2.742743][    T0] BUG: KMSAN: uninit-value in unwind_next_frame+0x3729/0x48a0
+[    2.744404][    T0]  unwind_next_frame+0x3729/0x48a0
+[    2.745623][    T0]  arch_stack_walk+0x1d9/0x2a0
+[    2.746838][    T0]  stack_trace_save+0xb8/0x100
+[    2.747928][    T0]  set_track_prepare+0x88/0x120
+[    2.749095][    T0]  __alloc_object+0x602/0xbe0
+[    2.750200][    T0]  __create_object+0x3f/0x4e0
+[    2.751332][    T0]  pcpu_alloc+0x1e18/0x2b00
+[    2.752401][    T0]  mm_init+0x688/0xb20
+[    2.753436][    T0]  mm_alloc+0xf4/0x180
+[    2.754510][    T0]  poking_init+0x50/0x500
+[    2.755594][    T0]  start_kernel+0x3b0/0xbf0
+[    2.756724][    T0]  __pfx_reserve_bios_regions+0x0/0x10
+[    2.758073][    T0]  x86_64_start_kernel+0x92/0xa0
+[    2.759320][    T0]  secondary_startup_64_no_verify+0x176/0x17b
 
-Eric
-> ---
->  drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-> index d62fbfff20b8..82b2afa9b7e3 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-> @@ -141,13 +141,14 @@ static int vfio_fsl_mc_set_irq_trigger(struct vfio_fsl_mc_device *vdev,
->  	irq = &vdev->mc_irqs[index];
->  
->  	if (flags & VFIO_IRQ_SET_DATA_NONE) {
-> -		vfio_fsl_mc_irq_handler(hwirq, irq);
-> +		if (irq->trigger)
-> +			eventfd_signal(irq->trigger);
->  
->  	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
->  		u8 trigger = *(u8 *)data;
->  
-> -		if (trigger)
-> -			vfio_fsl_mc_irq_handler(hwirq, irq);
-> +		if (trigger && irq->trigger)
-> +			eventfd_signal(irq->trigger);
->  	}
->  
->  	return 0;
 
+> Does
+> KMSAN_ENABLE_CHECKS_lockdep.o := n
+> work as well? If it does, that is preferred because it makes sure
+> there are no false positives if the lockdep code unpoisons data that
+> is passed and used outside lockdep.
+> 
+> lockdep has a serious impact on performance, and not sanitizing it
+> with KMSAN is probably a reasonable performance trade-off.
+> 
+Disabling checks is not working here. The recursion become this:
+
+__msan_metadata_ptr_for_load_4() -> kmsan_get_metadata() -> virt_to_page_or_null() -> pfn_valid() -> lock_acquire() -> __msan_unpoison_alloca() -> kmsan_get_metadata()
+
+> >  ifdef CONFIG_FUNCTION_TRACER
+> >  CFLAGS_REMOVE_lockdep.o = $(CC_FLAGS_FTRACE)
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index b2bccfd37c38..8935cc866e2d 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -692,7 +692,7 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+> >   * Make notrace because it can be called by the internal functions of
+> >   * ftrace, and making this notrace removes unnecessary recursion calls.
+> >   */
+> > -notrace bool rcu_is_watching(void)
+> > +notrace __no_sanitize_memory bool rcu_is_watching(void)
+> 
+> For all of these, does __no_kmsan_checks instead of __no_sanitize_memory work?
+> Again, __no_kmsan_checks (function-only counterpart to
+> KMSAN_ENABLE_CHECKS_.... := n) is preferred if it works as it avoids
+> any potential false positives that would be introduced by not
+> instrumenting.
+> 
+This works because it is not unpoisoning local variables.
+
+> >  {
+> >         bool ret;
+> >
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 9116bcc90346..33aa4df8fd82 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -5848,7 +5848,7 @@ static inline void preempt_latency_start(int val)
+> >         }
+> >  }
+> >
+> > -void preempt_count_add(int val)
+> > +void __no_sanitize_memory preempt_count_add(int val)
+> >  {
+> >  #ifdef CONFIG_DEBUG_PREEMPT
+> >         /*
+> > @@ -5880,7 +5880,7 @@ static inline void preempt_latency_stop(int val)
+> >                 trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
+> >  }
+> >
+> > -void preempt_count_sub(int val)
+> > +void __no_sanitize_memory preempt_count_sub(int val)
+> >  {
+> >  #ifdef CONFIG_DEBUG_PREEMPT
+> >
+> >
+> > --
+> > Cheers,
+> > Changbin Du
+
+-- 
+Cheers,
+Changbin Du
 
