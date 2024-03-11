@@ -1,91 +1,98 @@
-Return-Path: <linux-kernel+bounces-99373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EC5F878777
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:37:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3064F87877E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE8B3B224B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:36:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB1E284C32
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1356C55E75;
-	Mon, 11 Mar 2024 18:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7041256473;
+	Mon, 11 Mar 2024 18:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="KDm0NJ3M"
-Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lFlwFl/t"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C913654FB7;
-	Mon, 11 Mar 2024 18:35:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0F456B81;
+	Mon, 11 Mar 2024 18:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710182151; cv=none; b=Q2O7pK+cLwiiTDolpSSPLxMs1Dcdi+rrD6EiBxkMn+/EENTc0HBjjJNLNHrh8LukFM46M6zyJgfO58RxSShFiubnxmxsURxXxFclk6rYw215CKNX6mEas1ocwuGsDoNZ3wevM58BWfe+Cf0gGeW6+5VOTFRytRFlApUyZ9ffFhw=
+	t=1710182185; cv=none; b=qV0rGQ+8Sg8xRi94ZbcAI43dQyiTsnfKJVTghkT0xNggr7miX8eeAszLNxg0AxSTnLJ8aV7upMU7HGq620/krM+sJEJqVTNGzeD8nFKvo4RIiilKh7T1b4yqWkvHx6vQCe4ZziVOQqZCXYmeqvpHBPxEsuG1AVWs9cqZx35VLcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710182151; c=relaxed/simple;
-	bh=1qqTjwiqgN85QvoiAJaeXNcYRAKfZNdrXjznxqp5uzg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eNs1my3/1UPM9dZegF/nKiL0xYef1zpokhSv4Osxsowx7S10EYqg3mhdqY6zyIZWCmlK3LNekdYGBMXQC/0JRUaoOMeZQz71LjfNY4G8nLiujrzOqh+UgtcEHVH7SI41+rEOD8tz5RjGDmk8usA33s5bgFjDAa1O8TwCqT7rHT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=KDm0NJ3M; arc=none smtp.client-ip=199.89.1.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4TtlpF2QrLzlgVnY;
-	Mon, 11 Mar 2024 18:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:references:content-language:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1710182147; x=1712774148; bh=Jei4j646X+qAfUBer/BW9QqC
-	wZVGvbPajQsPIyjkMCg=; b=KDm0NJ3MH7y4Eu4RVntOJLioFNM+2UQI28pqbztV
-	zT2lNOLbQjyr12SLe1aiIFHe/D+ih3IBIIcnEKL9UT2Kjo94tboz+XyzHyRFrIcG
-	l8NQcE+q4s8nBU2ZJPWeDU0+W331sDDxN3hMr0ZxV47bWR5Wiy1lOsa+aF3CLfn7
-	iweVQpK1v41BLCWbQ9KDJuKaEzE405jNecUjl19EpqgB+CHA1CqGomUWmElY15pe
-	JZE07RcR840GGUvcYrM3+UoyJfQSTmQoOTFSlXZCVvee7uH2sKGnyp79Iw3ppRNs
-	4IGOt8ZdpZgTrJDp8LVDxuX6Vqk6FV9Lt1Kb6EnNYj/Ufw==
-X-Virus-Scanned: by MailRoute
-Received: from 009.lax.mailroute.net ([127.0.0.1])
- by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id 8AVUPSADpCp8; Mon, 11 Mar 2024 18:35:47 +0000 (UTC)
-Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net [73.231.117.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4TtlpB6fD6zlgVnW;
-	Mon, 11 Mar 2024 18:35:46 +0000 (UTC)
-Message-ID: <0aca7640-e6e1-4ab6-93a1-d4fea1683c6f@acm.org>
-Date: Mon, 11 Mar 2024 11:35:45 -0700
+	s=arc-20240116; t=1710182185; c=relaxed/simple;
+	bh=Y+UHlDiy8uvUENg5cAI0NilWxjZPgayU30fDLGY9yY0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pBHBjYmDA9MIk42ycB9x9VOU8lHTdc94xwyuOCEUT/MDx9dghUzVmnIf4N3PHgXLm5u6fb9hgtgaATPTYKZxYwLZmmXh2LEjzkfcMIPX5az0yTYuL9PCbHPyXReH9KO0zY113OVH6vT18xiEkkZfpR1Wj/0/n5AiRoAc+y6PmsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lFlwFl/t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC534C433C7;
+	Mon, 11 Mar 2024 18:36:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710182185;
+	bh=Y+UHlDiy8uvUENg5cAI0NilWxjZPgayU30fDLGY9yY0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lFlwFl/tvCfqrxj0C7qZ8DfCnNiaH5dMxXjn3jrUOKh96FOLWLHR8w5yrb+3QR09Z
+	 /NcryFYsYGnoM32NjGLfyHMt44+MdR1DjrJEESejlVIkr8EgefQGNzvNVU/rNYQmm0
+	 /SRlB/fAap0SlIsdO5Hfylcqag6RBA3VXrjy0XTqxQJsDPsUvDCcd0x4S8YX602DMF
+	 OG4ufA7DvJ62gX7KB840LIPq+h6PtrlomHIUSXeVO8bKhLGcsWHafBBV2tH1HvTUa3
+	 TiTGdODiE/Ad6yCji88KTeToNmq23Y5qfJCM5Eh9OQtgq2AvxhXaPyLJDCbIbtLBjb
+	 A+uxICoOYQYcQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Thierry Reding <treding@nvidia.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Sasha Levin <sashal@kernel.org>,
+	robh+dt@kernel.org,
+	mark.rutland@arm.com,
+	thierry.reding@gmail.com,
+	devicetree@vger.kernel.org,
+	linux-tegra@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 01/14] arm64: tegra: Set the correct PHY mode for MGBE
+Date: Mon, 11 Mar 2024 14:36:04 -0400
+Message-ID: <20240311183618.327694-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] scsi: ufs: Re-use exec_dev_cmd
-Content-Language: en-US
-To: Avri Altman <avri.altman@wdc.com>,
- "James E . J . Bottomley" <jejb@linux.ibm.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc: Bean Huo <beanhuo@micron.com>, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240309081104.5006-1-avri.altman@wdc.com>
- <20240309081104.5006-3-avri.altman@wdc.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240309081104.5006-3-avri.altman@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.7.9
+Content-Transfer-Encoding: 8bit
 
-On 3/9/24 00:11, Avri Altman wrote:
-> Move out the actual command issue from exec_dev_cmd so it can be used
-> elsewhere.  While at it, remove a redundant "lrbp->cmd = NULL"
-> assignment.
-> 
-> Also, the device management commands that are originated from the
-> ufs-bsg code path, are being traced now, which wasn't the case before.
+From: Thierry Reding <treding@nvidia.com>
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+[ Upstream commit 4c892121d43bc2b45896ca207b54f39a8fa6b852 ]
+
+The PHY is configured in 10GBASE-R, so make sure to reflect that in DT.
+
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
+index ea13c4a7027c4..81a82933e3500 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
+@@ -175,7 +175,7 @@
+ 			status = "okay";
+ 
+ 			phy-handle = <&mgbe0_phy>;
+-			phy-mode = "usxgmii";
++			phy-mode = "10gbase-r";
+ 
+ 			mdio {
+ 				#address-cells = <1>;
+-- 
+2.43.0
 
 
