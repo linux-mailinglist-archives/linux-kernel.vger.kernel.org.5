@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-98728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6402F877E77
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:57:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D18877E7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB8C1B21A3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:57:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 445B31C215DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363A63B79F;
-	Mon, 11 Mar 2024 10:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BBCA3D0C6;
+	Mon, 11 Mar 2024 10:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b="F3G2wuWk"
+	dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b="T9VRpWjV"
 Received: from SE2P216CU007.outbound.protection.outlook.com (mail-koreacentralazon11020002.outbound.protection.outlook.com [52.101.154.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB31838F82;
-	Mon, 11 Mar 2024 10:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70463BB48;
+	Mon, 11 Mar 2024 10:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.154.2
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710154601; cv=fail; b=FVYeFDahgy9jo50BeZMm/Tc26gjRTg2VQPu0EjY//SGO0U5KKgSQ1jW8X9ASABn800D6MhUWeC/6qcTIQ0eno/aJplNygcugEj5MLsUHLv9zt6rm12Ev8QmlNfM9JBOCd7/gIchxXnIvdrPWz7YnYaJIkA7vDM07CC+NFBm0s3Q=
+	t=1710154606; cv=fail; b=oatQlZLxQr4g1XU4+CHkAHiPCzTpImF6i0VISWVcFf8y6bjXFiQFRriLtkePzwySDQN26Fpv4a3rKZ1W2w9W4U6arXO1jQxTSu4TPDgSlYXRD0/j7tZDM+2G7JyzIe5mgb6CBsT3vPrjjSbU1uKNHMcEXgTC2q2H5nXtQWR+0L0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710154601; c=relaxed/simple;
-	bh=c699SjHFtTzC7I067eLP9WqVNL2aredc7aHxW6xMntE=;
+	s=arc-20240116; t=1710154606; c=relaxed/simple;
+	bh=KF2KkhwY97yPpKXUVmpbF3i7xpjsEMSKD3I5xXqOQ9Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=D5y2rSRPa5iV9iYzgHW4+LccYOnTffkKXvdu3qDAU8vCOSq5jTTQoIgjwnsx8SdSOje40QZjO88Ibdv6fkkxOEmp05FC50eRyjB/luQZlwMN5KG9R/MDQ+CCWWF+oYP3460xp/KVYs1PLmvuxCgNQTgFym28be/9fjtQReEQOzo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com; spf=pass smtp.mailfrom=chipsnmedia.com; dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b=F3G2wuWk; arc=fail smtp.client-ip=52.101.154.2
+	 Content-Type:MIME-Version; b=XKV3BxofgjG7CN7rEoTBsy0Aq6Yb9DIG0oWg+Kid1CfU8MeZAiYBMrYlqIdZbxY8HiNe5YyrqyBJmO4vw++UhsCALwftVNMbKUSXxDAQgmbP6gt1d+eP52PFCzhaeWhgV7fn1zyTwfMsmO9vDV1i/055oENcK62Qq+4GeKyDL1A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com; spf=pass smtp.mailfrom=chipsnmedia.com; dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b=T9VRpWjV; arc=fail smtp.client-ip=52.101.154.2
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chipsnmedia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gb2bawGp5cP34Uk03W1SCXn37hVi3m80AUxWin/lP1xiWngdTjuZeBWUJ8rgmFhmEFbkaFBPXxzYSqFnJFoaH/tenDLwIw4+pvRMuArwrDprGlyrhrEwEeVea3djYhRftYsChyg/XwbxYBdesDXPzwa1yVxFF4E90PfWr66yx+fGZkX1yEutGysG0fw7FJXKRc7BpAt9/D4khoan67LRVPijkW/OGuoLTS/AGD7IYkeCuZwKAu5aBGYkY9pwml4IjfAjgL9B3yxBr0QJtTuSQGHBhwVrvcJd9Gy54TuDTtC3o3kKnTF5ku/X+i8YK9xzxgDe/ZaeXlAF6kMgdBiJhg==
+ b=GOb2xBqX/Uz0Va4dn5ABwrAaKy8hFVZ/jnNc1AQce4bPlF2qDFawF84dwbPvjRuu7rLR3v+2oPNIvJ698k7Hw/qTIB7dl5xZUP3rhb9vmlaY3qJX/IgD2gY7rMT3Mv8/mAdqdTrnW5VXc++0T4qQZlN8EWBgyyFtQyl0qCjFBEpT3s6BiJ35KZaUn1nhrg3CmyXxsFh8n3Ca9iWq9s0MfwRnnk5CZUrp+HC94vdfh5OHlTyBb5V8kHiKprkauih8WPBKSIR5YwKlGx2pWaX2J7FQ/nd1MNbp/RmssKLzF1+ipk1lSr58zKIV963wCfEK/n/MUp7tUGPzPQmcS4LIAg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pBu1pcMHOWrYRIuELwvfaJNrJcQdtFs5qXu5g0hd17c=;
- b=NUAP3motvxX6mn2naE64itbYZgGsbBOL+r+StEa16oWkkokveS6qpYcKx0lkNPy5NcVYZAmaYK9bNuh3rw3jloWjM20Wce15lbXmtPBrvCjw+yT6YnVp4nIZ56MWf7Wn4kztMqGIPid9ssJ8NByUhi9OTFAB3mx9yxEuaFM5DDqfMwqnLXz5IdFom6H1O52Xg4e1v5+anmMZyKvrWAmUKKET8zF5k0vKpPItxKXuSfjGI/6cV24hhMRn/I1kooxIOyxqDCy/C1wGH1GHR6bQRSmENd5suahLlUx/CG/zRvjKi6OIuZZhm/WisWXpex3vzC48sx8F+qSl0BZMNOds5A==
+ bh=JA4o8o+vK0XyEfLgBuETe7CuY9cS1ojcn8q/FWut3IE=;
+ b=LsURu7fj5BLPFLO0qjimtC09JPhBdCouruRtt16LHF7doEOBj1Cru2MJ/+zfWAVJ6gcJgr9KyX60OjFHdpV5/kq4B+W1f2QOqqKBR4UrrGkaSLLwHA5+ZfgstkVjY7eXHTrGpjASRWY4xH5BITgYKSztqo64IQiXG0NFLSrb68KrzfD2optUjC2sLh+kYCwr0Vo4uoSx3IHvIoOUtmAeGb+JIg0QX2i7hdjErjfZXpEIt+s+wC6x1LfR4oaJwpYYgm8y4KSiGVXTe1QiuvJSlDYrOj+VVmRua3EhH36o8wR0OdvjggGxywpq4XoVUj93wf0xtKm6F/489Gr7eq6org==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=chipsnmedia.com; dmarc=pass action=none
  header.from=chipsnmedia.com; dkim=pass header.d=chipsnmedia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chipsnmedia.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pBu1pcMHOWrYRIuELwvfaJNrJcQdtFs5qXu5g0hd17c=;
- b=F3G2wuWkJ5eJ29EbRCX8VTyqgZp8RtgJkKMN12JwNJn2ujEWppH4Yr8WlqiDAZQHa3C/dwNawvdYgJ3TGkQgNfSo/hTgd0e/paxYaKWJ/rNZgOJjsGsFbmvZ3HIkLI99ya64P7eFe+0KIHTp4q02Phnd/GQXic8s88YTCulawjw=
+ bh=JA4o8o+vK0XyEfLgBuETe7CuY9cS1ojcn8q/FWut3IE=;
+ b=T9VRpWjVUM24Dn3SDl6zkQbwq2dpy5SaRWmxOjsNTPjTWuA/39Hl5FH4HDxFht4Ohe8xpyR9bvrgqqOEZssqFpDs4sp2/WBX0H6nzg7FJhMEaslOAz0vruT0aTaV2wOnpUHrtXXyTEAQ17Is3MPiwOOQk5M1eiFpkvthOUqhisY=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=chipsnmedia.com;
 Received: from SE1P216MB1303.KORP216.PROD.OUTLOOK.COM (2603:1096:101:15::5) by
@@ -66,9 +66,9 @@ Cc: linux-media@vger.kernel.org,
 	lafley.kim@chipsnmedia.com,
 	b-brnich@ti.com,
 	"Jackson.lee" <jackson.lee@chipsnmedia.com>
-Subject: [RESEND PATCH v2 2/4] media: chips-media: wave5: Support runtime suspend/resume
-Date: Mon, 11 Mar 2024 19:56:21 +0900
-Message-Id: <20240311105623.20406-3-jackson.lee@chipsnmedia.com>
+Subject: [RESEND PATCH v2 3/4] media: chips-media: wave5: Use helpers to calculate bytesperline and sizeimage.
+Date: Mon, 11 Mar 2024 19:56:22 +0900
+Message-Id: <20240311105623.20406-4-jackson.lee@chipsnmedia.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240311105623.20406-1-jackson.lee@chipsnmedia.com>
 References: <20240311105623.20406-1-jackson.lee@chipsnmedia.com>
@@ -83,400 +83,886 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SE1P216MB1303:EE_|SE1P216MB2024:EE_
-X-MS-Office365-Filtering-Correlation-Id: 25069910-1368-47a6-d792-08dc41b9e8be
+X-MS-Office365-Filtering-Correlation-Id: cbdb33b7-5776-461f-5a9d-08dc41b9e8e3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	kCNt3y5e5ZDeYTgEWydzXOfFb2EAY0DshyJtiW+Prl5lzT/w+gyoO/n/LO5IV/P4JAsefxi6tBU/mZPADlVDPcjgbr+4TioJvYvJwF2lWfFsKnXNo99pgKs09+I7tDdWLDtGelUffEkEfQPP9USs6yp+LLd0YIZT3Wo8h1GHafXAN2rHUboIfrdPUJXVUAjA0qWET6AlonEwvZXZ7YHCGSaCrpOCieNNojgX7GMm9bvAl6ZxmWhdFaIYR/V3p5p8OZaMgLxneotp32m+768XIQlv9ljI5/o8TqOOfKxvfDgVOYgebu/QRhD3HzKRkoAb9+pLoL/ODujzbuylEQZIlR5clhBjtH3AIE8oTTyvpaK6MdWuRr2ua5Nioh9xeBTlqXT5/tRjIMCsiW5BYn0J751YWJz0ZJ4z59jdL5hpaN11DsAcf2tDgqflgcoBeB9S6m0zfmEdVRUFMEfDsCXXW6gEl46grgUAFy0wtjeoMU3z4/mni/K560H/Ec57APM9P7HjDVptgSXAwfFa/X1DhPVrY71b2c9ZWCh2eez7GpzqWQuBNRv7BgrxG6GxPg4PDWQLZjA7ixdI6NOdqkYbml++4uIBfCHehdvcqRIE0SvR4SCI0sXJMX2iyYLTqEltfnxLXTEHxubYw6/tLHC+jKRBauUCSh1hWc3JJYpg+Rz4ddIrIbVR1WMGfPm4Eqb5CCKuKajE8wWqivfBciUbZA==
+	kbHkxL+Ball9Wc0on3/E3qCTEBMmb5yqtaEblozYb1nG7HSljW2y7M/MCmbWKPXlShstMENzoaZIA23DzMn448ynPQtzxcEKbdZZzry1i4wIjQXqQVdvQpX8NQ/nUqPyQrszaJidFqDZKwRJTmuLLZHbmzfJp2hZsI+Ad+i2HHyCk2j1mdCV4TKNzZp1CaK/oRiHnoqTDHDbZDvj4CYFP4Emz0KHb2jtfjcG/kABZ7kivICdv/NR9yP9k+rjBAnvSDSOA0xE79A0aeAtJWBR3ZkFabKbWQHstOFMn++f82dsLS5+5PnNKa9MPxppDBRC7BiIxy6XMADXQWmxAMK1XwNoafDtXpfvEIfuv4d0WePh+SU2BI+NjyCisVip6lVAzuNMUaWCOLPLdoXGJ2vq+dhNlTcVClr/ly6AdE/8ANzbe1lOCwUI717I0w49P3P+rLR+A07K7ST2IrfaxSSvXySsYcxkhfeEZfVPIsEsF7kDKPh12Yayuo8E2sNmQn9W9QUymbgfokIonVEJyUk+UhRZXsbyzrYx04slgRitP8sxf9zDIv1Uc20+YTWsMNkjFYBbHKrmTHyht1qcGxd20UaFdAA+RnQMPIgqzv0O3Id/pKefCi/1vj5Kv+rN29vZU873WU2cl3DNph856/o0o2BoP2Y+PZAzmU00ehKim4OExAeEsibYDgTWhSmhtg8mZ9h3iGgfplRbLjbhnu272YtOKWPh//JYc/x7ipqR15Y=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SE1P216MB1303.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(52116005)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?jRR7m5irvb264qJDRSkz4TN0tcgRdGO4BIe/93FSlYM3uKJYQfxw7qI8iYAS?=
- =?us-ascii?Q?ogHFn6Y8FVzLY+O0NCpVmP13zTBd1RNrCiSByseRUVUthERQWiElADAkb84A?=
- =?us-ascii?Q?14BIYi13Jqf/6jq6sUjnp9Ejy3lBDg+4a1Uuw7EDyZh0lcktjMAPmRxUwTWg?=
- =?us-ascii?Q?uF7WaLT414UuERsoWUiOcuzTtguXjkVZY9DX+GTrx3HCtiYBoGMy2jc0acDs?=
- =?us-ascii?Q?hifUf1cjpBYQbtZmRCTmNn/NEigsEck1SZ/bmEsxq6PrSeD7Ovb3lNyT0gi0?=
- =?us-ascii?Q?R5B+lHi6QnAWNCJxvZZSzSKucoolb69O/gNLZ7QF66Qy19eCS4q6E5ieLD1r?=
- =?us-ascii?Q?hrs5cYDpMJiLgNApXAyDP5nTjnw+oenXklOBe0rz304LuY6lcwtQ+441VAiT?=
- =?us-ascii?Q?NW+0iJorDfytvy0YPUjIEaFayHTJmvn3T5tnGTRbbENJm8d+YgsmhBH/+1kx?=
- =?us-ascii?Q?hAXtys8iMis4c1L8P5mfHo7kU5xLTSj0lRhVXLGMsKAnVET/2hVjRrYemkoL?=
- =?us-ascii?Q?2rzvAgItgd4MSyEH8LK/ZqLrWvGDU6O/rM4wEYGGsUH9S2snY6zW+L+YACNp?=
- =?us-ascii?Q?0+NJ7IIeIBlAV69Ut+WlCkbzGIQcu/ukXPjzdN6Adn3m2yCcxb9jUyos3enE?=
- =?us-ascii?Q?Nmxh6DudHxjKkX1QuvRat6h7KA9ET1rAH0yXVDSFDsid0kuEnEeZjOLNsCrt?=
- =?us-ascii?Q?qxpoVC4voiBuN3JpYuswLZ0fqMU4taJ0qCcQgHjKjSiM25+HAACj/ZHONcN/?=
- =?us-ascii?Q?V0BEUxZGLovV9OxW5YiM9MZGygMr8x6eRInBX96TEo2GBwlh/1/5a/1mjlbX?=
- =?us-ascii?Q?hAf7iALDlNRpc1faKsZBUKnLM25hBI+sd1f75CTSgawun4iluk5lNBYusSFi?=
- =?us-ascii?Q?UAj86OvjyTJ+n96WUdwNBl407RAgMI+vJ8J0ZsDGt3Ak5DV8Y1Sc0lWDm15Y?=
- =?us-ascii?Q?dNzS2d88OwkyVF4Y4x+fzVw5QHlLAwsMwZ4Xs3TlIBGM1mFPpn13cOb1SMwx?=
- =?us-ascii?Q?eWqxiLI/rvmQi6/U/fT+4Kl9FikVIQz85sEDSusSRcmPkdh+phb61Aq1ANVV?=
- =?us-ascii?Q?XU41MB4x7FCb83UbNLBf5mhSYwtI0nrPsQxf54ILtLbYeameMqSTw1XRHPHK?=
- =?us-ascii?Q?KY/4JMldrsnj1qhRpC4vUArR06qTwxbs7aOWlc6uVgQUen9C4DB9kQIT+6An?=
- =?us-ascii?Q?QS943vwuEEyHpqo9eo+9PXbNZ8B0eswnO6GlLEk5I6Fb8CLul3/aVFMM0N8k?=
- =?us-ascii?Q?aSIB8pi/A5xPN1V9ZYPli7n7k6wB3pm4MuGngQ0kaVG/tKHYvxFucugUNOc5?=
- =?us-ascii?Q?Goz6BXj2PFw8hRWCBCQgokFHM/crrGGMQTTUYxFwdDV/2fr2N3/FZoQEyoQE?=
- =?us-ascii?Q?dbYm6F3VT5unkOQs5ZcIbKDVUQdMwn+F9j0uo2CGA/J9VoBMCKRqHDzLEL6h?=
- =?us-ascii?Q?+yG4naRulgyzNWJeJhl7M0nr4dRaiFhdpm6+rN7OAes64e5cruRl1opVxiKo?=
- =?us-ascii?Q?zIH2FwKv7mN25EzxZTgJi1pqbfKRJX27Ct9K/PvXijqmGOL2u2FOy7sV7+U/?=
- =?us-ascii?Q?2Cu+Hu6AEmjW6wyLCPVI2eAg87fEGZ00ADZS3hz652vCCcNUFSxxNlqJPcCL?=
- =?us-ascii?Q?OFwGfhoN2neuUR7VtHRcDeU=3D?=
+	=?us-ascii?Q?ga10kyAOV3xrE/ULiM3NUZ+gpZtq9d7uI72lIqBxD+MOGWdkafClGIUoqu0S?=
+ =?us-ascii?Q?8cHmYlxICjpEx9I90SqTwTSqt4MBWPoBiZOBD25ozl/idWZ5yOKs8RnUIYHb?=
+ =?us-ascii?Q?zOL0guKbeU+lafbtYAFBvb5N6MdtzDL74Og4dzawTKhTkhJXgaBVNH3k5J6B?=
+ =?us-ascii?Q?Au7khyCNlkAZrysEzmMhasgIOlTQ7Dnom45f6sVTvbqUbsmXn2R2BWMWXbXa?=
+ =?us-ascii?Q?G6qLzzsrSJ0coEhZI0fyzApYnlYfb8a1EJ+94aXhs5/NFu7AYixG8pcWTxyX?=
+ =?us-ascii?Q?8gDUly9Cs0JPYz48J1YvuA1Dj5wFIZcw22b8Em3rtqNw/pWezHpCJuOBp5xb?=
+ =?us-ascii?Q?CqtTD1M3xdx9akjcrD4pryM2zPt3X/c46zsxHkcKraHKg9IEmK9RvBbmE7Jd?=
+ =?us-ascii?Q?uvz8MMCmOm4Z310J32/JSyUJrcaIY4054hn6OkIACtmWY07sjmj8Ow29Yxz6?=
+ =?us-ascii?Q?l/WedRtGjzECbKtJCp7ZZnk0gLfFF+UaL8oncS8qp6ctiRQtkHocunpEsmo5?=
+ =?us-ascii?Q?QKFa9kOlOSeIkAOqNcET/+rEevThrn/UMxLurz5UD5jEGLMAyHCa8OTow84/?=
+ =?us-ascii?Q?LYKVsx9uWBeDzpnWlldFQVG08Ikt5G2u2cZ+Povu3zVAilOaXdVUfKggszgX?=
+ =?us-ascii?Q?cj0/2qQLDcrdEfBJQMGjnymjXAqUswxLhZv9rm2AvGozml3zH9T8mJhsSOqX?=
+ =?us-ascii?Q?7H6E03shpjUOpYyVKeRs9y24D3ZH3y9CwsueaVGY2xDLPJM6jm36uQPkSSTj?=
+ =?us-ascii?Q?nsbJ6hDaVNU/8Uf1l4OW6GN5RCbFmQyZdht8SF+k88RoIg2ysajnpyy8hu53?=
+ =?us-ascii?Q?jzM0sQBQnlANxzXT0/11fSXwI5LxVUirl8HyyU5qx/UiMNKw1OWnOsNsGope?=
+ =?us-ascii?Q?cG35F3ZqPNRqrHa5CiitP1xenDemJ89L/34a48EsPBXV6vtg0bJzy4VfDyjQ?=
+ =?us-ascii?Q?fIKCDNEZyxXhqiUkh+fwJey2GljgCeboO6pVpOpXm6p7Q0xyPyM9hc3nZFAs?=
+ =?us-ascii?Q?/qqjdh/hBHjMkYz1uo5qoOVYNEY7fmHOBUIvopdVfMbyW+yMOSGvJXAO3fFf?=
+ =?us-ascii?Q?nc4ACkNe5u7HZasL9rGJLL7ktxIEQ3aHxR+yOIv74L20tHA86aJv53sWLX91?=
+ =?us-ascii?Q?HY50vpQgss0aPRtD618zD0LSW2b/+MFsTv3e55/i3KtR5NebRw0pX5ZfsatT?=
+ =?us-ascii?Q?Qpto8jxLS59zp2rVmJHRClGilDHclfNoEItU/eosYQhQ2RvBQLgsREsoTAyT?=
+ =?us-ascii?Q?w9axKAAQZNgS0zToj9XnWYs2lcLQa51m9J/wEtJ6WMwImSzh5gRAhWdEIT/q?=
+ =?us-ascii?Q?j4K2h9TY40/q1oq56bkb5YL3hDWxGZArrnrY4tmqxcvLpUVKt9aJ+u+JLp6+?=
+ =?us-ascii?Q?iwl5B1Hbf600Rs9M2B8Wkb06OdJ744BrR00stdhTersF1Tai1GS0Hok1fPAt?=
+ =?us-ascii?Q?agYNdcBY+SGYBRg75pyjTqxTgH2wkwrxYcfxNEYtHFve9oW0UQKkLKpCjAp6?=
+ =?us-ascii?Q?mu6+6M1N2sIw72dvI9izGMn6lPwVdWL5k645/lZauUw6ZirKkr4aza4x2zIt?=
+ =?us-ascii?Q?dKybNvA92S4OPyQWvnQR+GFpW6FA/0NwDHgOBfklWmOtaUMKwOyuMz1dZiOk?=
+ =?us-ascii?Q?eAGKz7cNhuVupGBjdiG8EHY=3D?=
 X-OriginatorOrg: chipsnmedia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25069910-1368-47a6-d792-08dc41b9e8be
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbdb33b7-5776-461f-5a9d-08dc41b9e8e3
 X-MS-Exchange-CrossTenant-AuthSource: SE1P216MB1303.KORP216.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 10:56:31.0502
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 10:56:31.3134
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4d70c8e9-142b-4389-b7f2-fa8a3c68c467
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ntfbn6T7Uh6+o7UMA/IR00I6QPt/hSWpav6anELbHB8kawt139kjQ+Nfsa4adcpfRQLjuD8gUcQduAj/cAFTqb7S+EAddJki2MR9uoiL7aA=
+X-MS-Exchange-CrossTenant-UserPrincipalName: L3jQUapOAUixCWJWyHYC75K3tA3JhHU0j+/kGcloXYWQPmD83abRgr9gZQY7NKHup+ZC3u8Ta96Y2pj5pXI10CANUhuZaTtKvqGxuTIPdvI=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SE1P216MB2024
 
 From: "Jackson.lee" <jackson.lee@chipsnmedia.com>
 
-For saving a power resource, we support runtime suspend/resume for an encoder/decoder.
-So our vpu module's power turns on only if an encoder/decoder is used.
+Use v4l2-common helper functions to calculate bytesperline and sizeimage, instead of calculating in a wave5 driver directly.
+In case of raw(YUV) v4l2_pix_format, the wave5 driver updates v4l2_pix_format_mplane struct through v4l2_fill_pixfmt_mp() function.
+Encoder and Decoder need same bytesperline and sizeimage values for same v4l2_pix_format.
+So, a wave5_update_pix_fmt is refactored to support both together.
 
 Signed-off-by: Jackson.lee <jackson.lee@chipsnmedia.com>
 Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
 ---
- .../platform/chips-media/wave5/wave5-hw.c     |  4 +-
- .../chips-media/wave5/wave5-vpu-dec.c         | 16 ++++++-
- .../chips-media/wave5/wave5-vpu-enc.c         | 15 +++++++
- .../platform/chips-media/wave5/wave5-vpu.c    | 43 +++++++++++++++++++
- .../platform/chips-media/wave5/wave5-vpuapi.c | 14 ++++--
- .../media/platform/chips-media/wave5/wave5.h  |  3 ++
- 6 files changed, 88 insertions(+), 7 deletions(-)
+ .../platform/chips-media/wave5/wave5-helper.c |  24 ++
+ .../platform/chips-media/wave5/wave5-helper.h |   4 +
+ .../chips-media/wave5/wave5-vpu-dec.c         | 245 ++++--------------
+ .../chips-media/wave5/wave5-vpu-enc.c         | 179 +++++--------
+ .../platform/chips-media/wave5/wave5-vpu.h    |   4 -
+ .../chips-media/wave5/wave5-vpuconfig.h       |  25 +-
+ 6 files changed, 164 insertions(+), 317 deletions(-)
 
-diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c b/drivers/media/platform/chips-media/wave5/wave5-hw.c
-index 4a262822bf17..826b92b7b582 100644
---- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
-+++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
-@@ -1084,8 +1084,8 @@ int wave5_vpu_re_init(struct device *dev, u8 *fw, size_t size)
- 	return setup_wave5_properties(dev);
- }
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.c b/drivers/media/platform/chips-media/wave5/wave5-helper.c
+index 8433ecab230c..53cad4d17aa7 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-helper.c
++++ b/drivers/media/platform/chips-media/wave5/wave5-helper.c
+@@ -7,6 +7,8 @@
  
--static int wave5_vpu_sleep_wake(struct device *dev, bool i_sleep_wake, const uint16_t *code,
--				size_t size)
-+int wave5_vpu_sleep_wake(struct device *dev, bool i_sleep_wake, const uint16_t *code,
-+			 size_t size)
+ #include "wave5-helper.h"
+ 
++#define DEFAULT_BS_SIZE(width, height) ((width) * (height) / 8 * 3)
++
+ const char *state_to_str(enum vpu_instance_state state)
  {
- 	u32 reg_val;
- 	struct vpu_buf *common_vb;
+ 	switch (state) {
+@@ -211,3 +213,25 @@ void wave5_return_bufs(struct vb2_queue *q, u32 state)
+ 		v4l2_m2m_buf_done(vbuf, state);
+ 	}
+ }
++
++void wave5_update_pix_fmt(struct v4l2_pix_format_mplane *pix_mp,
++			  unsigned int width,
++			  unsigned int height,
++			  const struct v4l2_frmsize_stepwise frmsize)
++{
++	v4l2_apply_frmsize_constraints(&width, &height, &frmsize);
++
++	if (pix_mp->pixelformat == V4L2_PIX_FMT_HEVC ||
++	    pix_mp->pixelformat == V4L2_PIX_FMT_H264) {
++		pix_mp->width = width;
++		pix_mp->height = height;
++		pix_mp->num_planes = 1;
++		pix_mp->plane_fmt[0].bytesperline = 0;
++		pix_mp->plane_fmt[0].sizeimage = max(DEFAULT_BS_SIZE(width, height),
++						     pix_mp->plane_fmt[0].sizeimage);
++	} else {
++		v4l2_fill_pixfmt_mp(pix_mp, pix_mp->pixelformat, width, height);
++	}
++	pix_mp->flags = 0;
++	pix_mp->field = V4L2_FIELD_NONE;
++}
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.h b/drivers/media/platform/chips-media/wave5/wave5-helper.h
+index 6cee1c14d3ce..a8ecd1920207 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-helper.h
++++ b/drivers/media/platform/chips-media/wave5/wave5-helper.h
+@@ -28,4 +28,8 @@ const struct vpu_format *wave5_find_vpu_fmt_by_idx(unsigned int idx,
+ 						   const struct vpu_format fmt_list[MAX_FMTS]);
+ enum wave_std wave5_to_vpu_std(unsigned int v4l2_pix_fmt, enum vpu_instance_type type);
+ void wave5_return_bufs(struct vb2_queue *q, u32 state);
++void wave5_update_pix_fmt(struct v4l2_pix_format_mplane *pix_mp,
++			  unsigned int width,
++			  unsigned int height,
++			  const struct v4l2_frmsize_stepwise frmsize);
+ #endif
 diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-index ef227af72348..a199877c643b 100644
+index a199877c643b..43d0a21193dd 100644
 --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
 +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-@@ -5,6 +5,7 @@
-  * Copyright (C) 2021-2023 CHIPS&MEDIA INC
-  */
- 
-+#include <linux/pm_runtime.h>
- #include "wave5-helper.h"
- 
+@@ -11,115 +11,74 @@
  #define VPU_DEC_DEV_NAME "C&M Wave5 VPU decoder"
-@@ -518,6 +519,8 @@ static void wave5_vpu_dec_finish_decode(struct vpu_instance *inst)
- 	if (q_status.report_queue_count == 0 &&
- 	    (q_status.instance_queue_count == 0 || dec_info.sequence_changed)) {
- 		dev_dbg(inst->dev->dev, "%s: finishing job.\n", __func__);
-+		pm_runtime_mark_last_busy(inst->dev->dev);
-+		pm_runtime_put_autosuspend(inst->dev->dev);
- 		v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
- 	}
- }
-@@ -1382,6 +1385,7 @@ static int wave5_vpu_dec_start_streaming(struct vb2_queue *q, unsigned int count
- 	int ret = 0;
+ #define VPU_DEC_DRV_NAME "wave5-dec"
  
- 	dev_dbg(inst->dev->dev, "%s: type: %u\n", __func__, q->type);
-+	pm_runtime_resume_and_get(inst->dev->dev);
- 
- 	v4l2_m2m_update_start_streaming_state(m2m_ctx, q);
- 
-@@ -1425,13 +1429,15 @@ static int wave5_vpu_dec_start_streaming(struct vb2_queue *q, unsigned int count
- 			}
- 		}
- 	}
+-#define DEFAULT_SRC_SIZE(width, height) ({			\
+-	(width) * (height) / 8 * 3;					\
+-})
 -
-+	pm_runtime_mark_last_busy(inst->dev->dev);
-+	pm_runtime_put_autosuspend(inst->dev->dev);
- 	return ret;
- 
- free_bitstream_vbuf:
- 	wave5_vdi_free_dma_memory(inst->dev, &inst->bitstream_vbuf);
- return_buffers:
- 	wave5_return_bufs(q, VB2_BUF_STATE_QUEUED);
-+	pm_runtime_put_autosuspend(inst->dev->dev);
- 	return ret;
- }
- 
-@@ -1517,6 +1523,7 @@ static void wave5_vpu_dec_stop_streaming(struct vb2_queue *q)
- 	bool check_cmd = TRUE;
- 
- 	dev_dbg(inst->dev->dev, "%s: type: %u\n", __func__, q->type);
-+	pm_runtime_resume_and_get(inst->dev->dev);
- 
- 	while (check_cmd) {
- 		struct queue_status_info q_status;
-@@ -1540,6 +1547,9 @@ static void wave5_vpu_dec_stop_streaming(struct vb2_queue *q)
- 		streamoff_output(q);
- 	else
- 		streamoff_capture(q);
-+
-+	pm_runtime_mark_last_busy(inst->dev->dev);
-+	pm_runtime_put_autosuspend(inst->dev->dev);
- }
- 
- static const struct vb2_ops wave5_vpu_dec_vb2_ops = {
-@@ -1626,7 +1636,7 @@ static void wave5_vpu_dec_device_run(void *priv)
- 	int ret = 0;
- 
- 	dev_dbg(inst->dev->dev, "%s: Fill the ring buffer with new bitstream data", __func__);
--
-+	pm_runtime_resume_and_get(inst->dev->dev);
- 	ret = fill_ringbuffer(inst);
- 	if (ret) {
- 		dev_warn(inst->dev->dev, "Filling ring buffer failed\n");
-@@ -1709,6 +1719,8 @@ static void wave5_vpu_dec_device_run(void *priv)
- 
- finish_job_and_return:
- 	dev_dbg(inst->dev->dev, "%s: leave and finish job", __func__);
-+	pm_runtime_mark_last_busy(inst->dev->dev);
-+	pm_runtime_put_autosuspend(inst->dev->dev);
- 	v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
- }
- 
-diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-index f04baa93a9b7..013e2bb37fbb 100644
---- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-@@ -5,6 +5,7 @@
-  * Copyright (C) 2021-2023 CHIPS&MEDIA INC
-  */
- 
-+#include <linux/pm_runtime.h>
- #include "wave5-helper.h"
- 
- #define VPU_ENC_DEV_NAME "C&M Wave5 VPU encoder"
-@@ -1310,6 +1311,7 @@ static int wave5_vpu_enc_start_streaming(struct vb2_queue *q, unsigned int count
- 	struct v4l2_m2m_ctx *m2m_ctx = inst->v4l2_fh.m2m_ctx;
- 	int ret = 0;
- 
-+	pm_runtime_resume_and_get(inst->dev->dev);
- 	v4l2_m2m_update_start_streaming_state(m2m_ctx, q);
- 
- 	if (inst->state == VPU_INST_STATE_NONE && q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
-@@ -1364,9 +1366,13 @@ static int wave5_vpu_enc_start_streaming(struct vb2_queue *q, unsigned int count
- 	if (ret)
- 		goto return_buffers;
- 
-+	pm_runtime_mark_last_busy(inst->dev->dev);
-+	pm_runtime_put_autosuspend(inst->dev->dev);
- 	return 0;
- return_buffers:
- 	wave5_return_bufs(q, VB2_BUF_STATE_QUEUED);
-+	pm_runtime_mark_last_busy(inst->dev->dev);
-+	pm_runtime_put_autosuspend(inst->dev->dev);
- 	return ret;
- }
- 
-@@ -1408,6 +1414,7 @@ static void wave5_vpu_enc_stop_streaming(struct vb2_queue *q)
- 	 */
- 
- 	dev_dbg(inst->dev->dev, "%s: type: %u\n", __func__, q->type);
-+	pm_runtime_resume_and_get(inst->dev->dev);
- 
- 	if (wave5_vpu_both_queues_are_streaming(inst))
- 		switch_state(inst, VPU_INST_STATE_STOP);
-@@ -1432,6 +1439,9 @@ static void wave5_vpu_enc_stop_streaming(struct vb2_queue *q)
- 		streamoff_output(inst, q);
- 	else
- 		streamoff_capture(inst, q);
-+
-+	pm_runtime_mark_last_busy(inst->dev->dev);
-+	pm_runtime_put_autosuspend(inst->dev->dev);
- }
- 
- static const struct vb2_ops wave5_vpu_enc_vb2_ops = {
-@@ -1478,6 +1488,7 @@ static void wave5_vpu_enc_device_run(void *priv)
- 	u32 fail_res = 0;
- 	int ret = 0;
- 
-+	pm_runtime_resume_and_get(inst->dev->dev);
- 	switch (inst->state) {
- 	case VPU_INST_STATE_PIC_RUN:
- 		ret = start_encode(inst, &fail_res);
-@@ -1491,6 +1502,8 @@ static void wave5_vpu_enc_device_run(void *priv)
- 			break;
- 		}
- 		dev_dbg(inst->dev->dev, "%s: leave with active job", __func__);
-+		pm_runtime_mark_last_busy(inst->dev->dev);
-+		pm_runtime_put_autosuspend(inst->dev->dev);
- 		return;
- 	default:
- 		WARN(1, "Execution of a job in state %s is invalid.\n",
-@@ -1498,6 +1511,8 @@ static void wave5_vpu_enc_device_run(void *priv)
- 		break;
+ static const struct vpu_format dec_fmt_list[FMT_TYPES][MAX_FMTS] = {
+ 	[VPU_FMT_TYPE_CODEC] = {
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_HEVC,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_H264,
+-			.max_width = 8192,
+-			.min_width = 32,
+-			.max_height = 4320,
+-			.min_height = 32,
+ 		},
+ 	},
+ 	[VPU_FMT_TYPE_RAW] = {
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_YUV420,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV12,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV21,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_YUV422P,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV16,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV61,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_YUV420M,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV12M,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV21M,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_YUV422M,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV16M,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV61M,
+-			.max_width = 8192,
+-			.min_width = 8,
+-			.max_height = 4320,
+-			.min_height = 8,
+ 		},
  	}
- 	dev_dbg(inst->dev->dev, "%s: leave and finish job", __func__);
-+	pm_runtime_mark_last_busy(inst->dev->dev);
-+	pm_runtime_put_autosuspend(inst->dev->dev);
- 	v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
- }
+ };
  
-diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-index 0d90b5820bef..8e08461b3515 100644
---- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-@@ -10,6 +10,7 @@
- #include <linux/clk.h>
- #include <linux/firmware.h>
- #include <linux/interrupt.h>
-+#include <linux/pm_runtime.h>
- #include "wave5-vpu.h"
- #include "wave5-regdefine.h"
- #include "wave5-vpuconfig.h"
-@@ -117,6 +118,38 @@ static int wave5_vpu_load_firmware(struct device *dev, const char *fw_name,
- 	return 0;
- }
- 
-+static int wave5_pm_suspend(struct device *dev)
-+{
-+	struct vpu_device *vpu = dev_get_drvdata(dev);
-+
-+	if (pm_runtime_suspended(dev))
-+		return 0;
-+
-+	wave5_vpu_sleep_wake(dev, true, NULL, 0);
-+	clk_bulk_disable_unprepare(vpu->num_clks, vpu->clks);
-+
-+	return 0;
-+}
-+
-+static int wave5_pm_resume(struct device *dev)
-+{
-+	struct vpu_device *vpu = dev_get_drvdata(dev);
-+	int ret = 0;
-+
-+	wave5_vpu_sleep_wake(dev, false, NULL, 0);
-+	ret = clk_bulk_prepare_enable(vpu->num_clks, vpu->clks);
-+	if (ret) {
-+		dev_err(dev, "Enabling clocks, fail: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct dev_pm_ops wave5_pm_ops = {
-+	SET_RUNTIME_PM_OPS(wave5_pm_suspend, wave5_pm_resume, NULL)
++static const struct v4l2_frmsize_stepwise dec_frmsize[FMT_TYPES] = {
++	[VPU_FMT_TYPE_CODEC] = {
++		.min_width = W5_MIN_DEC_PIC_WIDTH,
++		.max_width = W5_MAX_DEC_PIC_WIDTH,
++		.step_width = W5_DEC_CODEC_STEP_WIDTH,
++		.min_height = W5_MIN_DEC_PIC_HEIGHT,
++		.max_height = W5_MAX_DEC_PIC_HEIGHT,
++		.step_height = W5_DEC_CODEC_STEP_HEIGHT,
++	},
++	[VPU_FMT_TYPE_RAW] = {
++		.min_width = W5_MIN_DEC_PIC_WIDTH,
++		.max_width = W5_MAX_DEC_PIC_WIDTH,
++		.step_width = W5_DEC_RAW_STEP_WIDTH,
++		.min_height = W5_MIN_DEC_PIC_HEIGHT,
++		.max_height = W5_MAX_DEC_PIC_HEIGHT,
++		.step_height = W5_DEC_RAW_STEP_HEIGHT,
++	},
 +};
 +
- static int wave5_vpu_probe(struct platform_device *pdev)
- {
- 	int ret;
-@@ -232,6 +265,12 @@ static int wave5_vpu_probe(struct platform_device *pdev)
- 		 (match_data->flags & WAVE5_IS_DEC) ? "'DECODE'" : "");
- 	dev_info(&pdev->dev, "Product Code:      0x%x\n", dev->product_code);
- 	dev_info(&pdev->dev, "Firmware Revision: %u\n", fw_revision);
-+
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, 5000);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+	wave5_vpu_sleep_wake(&pdev->dev, true, NULL, 0);
-+
- 	return 0;
- 
- err_enc_unreg:
-@@ -254,6 +293,9 @@ static int wave5_vpu_remove(struct platform_device *pdev)
- {
- 	struct vpu_device *dev = dev_get_drvdata(&pdev->dev);
- 
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
-+
- 	mutex_destroy(&dev->dev_lock);
- 	mutex_destroy(&dev->hw_lock);
- 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
-@@ -281,6 +323,7 @@ static struct platform_driver wave5_vpu_driver = {
- 	.driver = {
- 		.name = VPU_PLATFORM_DEVICE_NAME,
- 		.of_match_table = of_match_ptr(wave5_dt_ids),
-+		.pm = &wave5_pm_ops,
- 		},
- 	.probe = wave5_vpu_probe,
- 	.remove = wave5_vpu_remove,
-diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.c b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.c
-index 1a3efb638dde..b0911fef232f 100644
---- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.c
-+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.c
-@@ -6,6 +6,8 @@
-  */
- 
- #include <linux/bug.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/delay.h>
- #include "wave5-vpuapi.h"
- #include "wave5-regdefine.h"
- #include "wave5.h"
-@@ -200,9 +202,13 @@ int wave5_vpu_dec_close(struct vpu_instance *inst, u32 *fail_res)
- 	if (!inst->codec_info)
- 		return -EINVAL;
- 
-+	pm_runtime_resume_and_get(inst->dev->dev);
-+
- 	ret = mutex_lock_interruptible(&vpu_dev->hw_lock);
--	if (ret)
-+	if (ret) {
-+		pm_runtime_put_sync(inst->dev->dev);
- 		return ret;
-+	}
- 
- 	do {
- 		ret = wave5_vpu_dec_finish_seq(inst, fail_res);
-@@ -234,7 +240,7 @@ int wave5_vpu_dec_close(struct vpu_instance *inst, u32 *fail_res)
- 
- unlock_and_return:
- 	mutex_unlock(&vpu_dev->hw_lock);
--
-+	pm_runtime_put_sync(inst->dev->dev);
- 	return ret;
+ /*
+  * Make sure that the state switch is allowed and add logging for debugging
+  * purposes
+@@ -234,74 +193,6 @@ static void wave5_handle_src_buffer(struct vpu_instance *inst, dma_addr_t rd_ptr
+ 	inst->remaining_consumed_bytes = consumed_bytes;
  }
  
-@@ -702,6 +708,8 @@ int wave5_vpu_enc_close(struct vpu_instance *inst, u32 *fail_res)
- 	if (!inst->codec_info)
- 		return -EINVAL;
+-static void wave5_update_pix_fmt(struct v4l2_pix_format_mplane *pix_mp, unsigned int width,
+-				 unsigned int height)
+-{
+-	switch (pix_mp->pixelformat) {
+-	case V4L2_PIX_FMT_YUV420:
+-	case V4L2_PIX_FMT_NV12:
+-	case V4L2_PIX_FMT_NV21:
+-		pix_mp->width = round_up(width, 32);
+-		pix_mp->height = round_up(height, 16);
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = width * height * 3 / 2;
+-		break;
+-	case V4L2_PIX_FMT_YUV422P:
+-	case V4L2_PIX_FMT_NV16:
+-	case V4L2_PIX_FMT_NV61:
+-		pix_mp->width = round_up(width, 32);
+-		pix_mp->height = round_up(height, 16);
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = width * height * 2;
+-		break;
+-	case V4L2_PIX_FMT_YUV420M:
+-		pix_mp->width = round_up(width, 32);
+-		pix_mp->height = round_up(height, 16);
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = width * height;
+-		pix_mp->plane_fmt[1].bytesperline = round_up(width, 32) / 2;
+-		pix_mp->plane_fmt[1].sizeimage = width * height / 4;
+-		pix_mp->plane_fmt[2].bytesperline = round_up(width, 32) / 2;
+-		pix_mp->plane_fmt[2].sizeimage = width * height / 4;
+-		break;
+-	case V4L2_PIX_FMT_NV12M:
+-	case V4L2_PIX_FMT_NV21M:
+-		pix_mp->width = round_up(width, 32);
+-		pix_mp->height = round_up(height, 16);
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = width * height;
+-		pix_mp->plane_fmt[1].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[1].sizeimage = width * height / 2;
+-		break;
+-	case V4L2_PIX_FMT_YUV422M:
+-		pix_mp->width = round_up(width, 32);
+-		pix_mp->height = round_up(height, 16);
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = width * height;
+-		pix_mp->plane_fmt[1].bytesperline = round_up(width, 32) / 2;
+-		pix_mp->plane_fmt[1].sizeimage = width * height / 2;
+-		pix_mp->plane_fmt[2].bytesperline = round_up(width, 32) / 2;
+-		pix_mp->plane_fmt[2].sizeimage = width * height / 2;
+-		break;
+-	case V4L2_PIX_FMT_NV16M:
+-	case V4L2_PIX_FMT_NV61M:
+-		pix_mp->width = round_up(width, 32);
+-		pix_mp->height = round_up(height, 16);
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = width * height;
+-		pix_mp->plane_fmt[1].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[1].sizeimage = width * height;
+-		break;
+-	default:
+-		pix_mp->width = width;
+-		pix_mp->height = height;
+-		pix_mp->plane_fmt[0].bytesperline = 0;
+-		pix_mp->plane_fmt[0].sizeimage = max(DEFAULT_SRC_SIZE(width, height),
+-						     pix_mp->plane_fmt[0].sizeimage);
+-		break;
+-	}
+-}
+-
+ static int start_decode(struct vpu_instance *inst, u32 *fail_res)
+ {
+ 	struct v4l2_m2m_ctx *m2m_ctx = inst->v4l2_fh.m2m_ctx;
+@@ -397,9 +288,11 @@ static int handle_dynamic_resolution_change(struct vpu_instance *inst)
+ 			initial_info->pic_crop_rect.top - initial_info->pic_crop_rect.bottom;
  
-+	pm_runtime_resume_and_get(inst->dev->dev);
-+
- 	ret = mutex_lock_interruptible(&vpu_dev->hw_lock);
- 	if (ret)
- 		return ret;
-@@ -733,9 +741,9 @@ int wave5_vpu_enc_close(struct vpu_instance *inst, u32 *fail_res)
+ 		wave5_update_pix_fmt(&inst->src_fmt, initial_info->pic_width,
+-				     initial_info->pic_height);
++						     initial_info->pic_height,
++						     dec_frmsize[VPU_FMT_TYPE_CODEC]);
+ 		wave5_update_pix_fmt(&inst->dst_fmt, initial_info->pic_width,
+-				     initial_info->pic_height);
++						     initial_info->pic_height,
++						     dec_frmsize[VPU_FMT_TYPE_RAW]);
  	}
  
- 	wave5_vdi_free_dma_memory(vpu_dev, &p_enc_info->vb_task);
--
- 	mutex_unlock(&vpu_dev->hw_lock);
+ 	v4l2_event_queue_fh(fh, &vpu_event_src_ch);
+@@ -548,12 +441,7 @@ static int wave5_vpu_dec_enum_framesizes(struct file *f, void *fh, struct v4l2_f
+ 	}
  
-+	pm_runtime_put_sync(inst->dev->dev);
+ 	fsize->type = V4L2_FRMSIZE_TYPE_CONTINUOUS;
+-	fsize->stepwise.min_width = vpu_fmt->min_width;
+-	fsize->stepwise.max_width = vpu_fmt->max_width;
+-	fsize->stepwise.step_width = 1;
+-	fsize->stepwise.min_height = vpu_fmt->min_height;
+-	fsize->stepwise.max_height = vpu_fmt->max_height;
+-	fsize->stepwise.step_height = 1;
++	fsize->stepwise = dec_frmsize[VPU_FMT_TYPE_CODEC];
+ 
  	return 0;
  }
+@@ -589,14 +477,10 @@ static int wave5_vpu_dec_try_fmt_cap(struct file *file, void *fh, struct v4l2_fo
+ 		width = inst->dst_fmt.width;
+ 		height = inst->dst_fmt.height;
+ 		f->fmt.pix_mp.pixelformat = inst->dst_fmt.pixelformat;
+-		f->fmt.pix_mp.num_planes = inst->dst_fmt.num_planes;
+ 	} else {
+-		const struct v4l2_format_info *info = v4l2_format_info(vpu_fmt->v4l2_pix_fmt);
+-
+-		width = clamp(f->fmt.pix_mp.width, vpu_fmt->min_width, vpu_fmt->max_width);
+-		height = clamp(f->fmt.pix_mp.height, vpu_fmt->min_height, vpu_fmt->max_height);
++		width = f->fmt.pix_mp.width;
++		height = f->fmt.pix_mp.height;
+ 		f->fmt.pix_mp.pixelformat = vpu_fmt->v4l2_pix_fmt;
+-		f->fmt.pix_mp.num_planes = info->mem_planes;
+ 	}
  
-diff --git a/drivers/media/platform/chips-media/wave5/wave5.h b/drivers/media/platform/chips-media/wave5/wave5.h
-index 063028eccd3b..6125eff938a8 100644
---- a/drivers/media/platform/chips-media/wave5/wave5.h
-+++ b/drivers/media/platform/chips-media/wave5/wave5.h
-@@ -56,6 +56,9 @@ int wave5_vpu_get_version(struct vpu_device *vpu_dev, u32 *revision);
+ 	if (p_dec_info->initial_info_obtained) {
+@@ -604,9 +488,9 @@ static int wave5_vpu_dec_try_fmt_cap(struct file *file, void *fh, struct v4l2_fo
+ 		height = inst->dst_fmt.height;
+ 	}
  
- int wave5_vpu_init(struct device *dev, u8 *fw, size_t size);
+-	wave5_update_pix_fmt(&f->fmt.pix_mp, width, height);
+-	f->fmt.pix_mp.flags = 0;
+-	f->fmt.pix_mp.field = V4L2_FIELD_NONE;
++	wave5_update_pix_fmt(&f->fmt.pix_mp, width,
++					     height,
++					     dec_frmsize[VPU_FMT_TYPE_RAW]);
+ 	f->fmt.pix_mp.colorspace = inst->colorspace;
+ 	f->fmt.pix_mp.ycbcr_enc = inst->ycbcr_enc;
+ 	f->fmt.pix_mp.quantization = inst->quantization;
+@@ -719,6 +603,7 @@ static int wave5_vpu_dec_try_fmt_out(struct file *file, void *fh, struct v4l2_fo
+ {
+ 	struct vpu_instance *inst = wave5_to_vpu_inst(fh);
+ 	const struct vpu_format *vpu_fmt;
++	int width, height;
  
-+int wave5_vpu_sleep_wake(struct device *dev, bool i_sleep_wake, const uint16_t *code,
-+			 size_t size);
+ 	dev_dbg(inst->dev->dev,
+ 		"%s: fourcc: %u width: %u height: %u num_planes: %u colorspace: %u field: %u\n",
+@@ -727,20 +612,18 @@ static int wave5_vpu_dec_try_fmt_out(struct file *file, void *fh, struct v4l2_fo
+ 
+ 	vpu_fmt = wave5_find_vpu_fmt(f->fmt.pix_mp.pixelformat, dec_fmt_list[VPU_FMT_TYPE_CODEC]);
+ 	if (!vpu_fmt) {
++		width = inst->src_fmt.width;
++		height = inst->src_fmt.height;
+ 		f->fmt.pix_mp.pixelformat = inst->src_fmt.pixelformat;
+-		f->fmt.pix_mp.num_planes = inst->src_fmt.num_planes;
+-		wave5_update_pix_fmt(&f->fmt.pix_mp, inst->src_fmt.width, inst->src_fmt.height);
+ 	} else {
+-		int width = clamp(f->fmt.pix_mp.width, vpu_fmt->min_width, vpu_fmt->max_width);
+-		int height = clamp(f->fmt.pix_mp.height, vpu_fmt->min_height, vpu_fmt->max_height);
+-
++		width = f->fmt.pix_mp.width;
++		height = f->fmt.pix_mp.height;
+ 		f->fmt.pix_mp.pixelformat = vpu_fmt->v4l2_pix_fmt;
+-		f->fmt.pix_mp.num_planes = 1;
+-		wave5_update_pix_fmt(&f->fmt.pix_mp, width, height);
+ 	}
+ 
+-	f->fmt.pix_mp.flags = 0;
+-	f->fmt.pix_mp.field = V4L2_FIELD_NONE;
++	wave5_update_pix_fmt(&f->fmt.pix_mp, width,
++					     height,
++					     dec_frmsize[VPU_FMT_TYPE_CODEC]);
+ 
+ 	return 0;
+ }
+@@ -782,7 +665,9 @@ static int wave5_vpu_dec_s_fmt_out(struct file *file, void *fh, struct v4l2_form
+ 	inst->quantization = f->fmt.pix_mp.quantization;
+ 	inst->xfer_func = f->fmt.pix_mp.xfer_func;
+ 
+-	wave5_update_pix_fmt(&inst->dst_fmt, f->fmt.pix_mp.width, f->fmt.pix_mp.height);
++	wave5_update_pix_fmt(&inst->dst_fmt, f->fmt.pix_mp.width,
++					     f->fmt.pix_mp.height,
++					     dec_frmsize[VPU_FMT_TYPE_RAW]);
+ 
+ 	return 0;
+ }
+@@ -1005,6 +890,7 @@ static int wave5_vpu_dec_queue_setup(struct vb2_queue *q, unsigned int *num_buff
+ 	struct vpu_instance *inst = vb2_get_drv_priv(q);
+ 	struct v4l2_pix_format_mplane inst_format =
+ 		(q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) ? inst->src_fmt : inst->dst_fmt;
++	unsigned int i;
+ 
+ 	dev_dbg(inst->dev->dev, "%s: num_buffers: %u | num_planes: %u | type: %u\n", __func__,
+ 		*num_buffers, *num_planes, q->type);
+@@ -1018,31 +904,9 @@ static int wave5_vpu_dec_queue_setup(struct vb2_queue *q, unsigned int *num_buff
+ 		if (*num_buffers < inst->fbc_buf_count)
+ 			*num_buffers = inst->fbc_buf_count;
+ 
+-		if (*num_planes == 1) {
+-			if (inst->output_format == FORMAT_422)
+-				sizes[0] = inst_format.width * inst_format.height * 2;
+-			else
+-				sizes[0] = inst_format.width * inst_format.height * 3 / 2;
+-			dev_dbg(inst->dev->dev, "%s: size[0]: %u\n", __func__, sizes[0]);
+-		} else if (*num_planes == 2) {
+-			sizes[0] = inst_format.width * inst_format.height;
+-			if (inst->output_format == FORMAT_422)
+-				sizes[1] = inst_format.width * inst_format.height;
+-			else
+-				sizes[1] = inst_format.width * inst_format.height / 2;
+-			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u\n",
+-				__func__, sizes[0], sizes[1]);
+-		} else if (*num_planes == 3) {
+-			sizes[0] = inst_format.width * inst_format.height;
+-			if (inst->output_format == FORMAT_422) {
+-				sizes[1] = inst_format.width * inst_format.height / 2;
+-				sizes[2] = inst_format.width * inst_format.height / 2;
+-			} else {
+-				sizes[1] = inst_format.width * inst_format.height / 4;
+-				sizes[2] = inst_format.width * inst_format.height / 4;
+-			}
+-			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u | size[2]: %u\n",
+-				__func__, sizes[0], sizes[1], sizes[2]);
++		for (i = 0; i < *num_planes; i++) {
++			sizes[i] = inst_format.plane_fmt[i].sizeimage;
++			dev_dbg(inst->dev->dev, "%s: size[%u]: %u\n", __func__, i, sizes[i]);
+ 		}
+ 	}
+ 
+@@ -1564,20 +1428,15 @@ static const struct vb2_ops wave5_vpu_dec_vb2_ops = {
+ static void wave5_set_default_format(struct v4l2_pix_format_mplane *src_fmt,
+ 				     struct v4l2_pix_format_mplane *dst_fmt)
+ {
+-	unsigned int dst_pix_fmt = dec_fmt_list[VPU_FMT_TYPE_RAW][0].v4l2_pix_fmt;
+-	const struct v4l2_format_info *dst_fmt_info = v4l2_format_info(dst_pix_fmt);
+-
+ 	src_fmt->pixelformat = dec_fmt_list[VPU_FMT_TYPE_CODEC][0].v4l2_pix_fmt;
+-	src_fmt->field = V4L2_FIELD_NONE;
+-	src_fmt->flags = 0;
+-	src_fmt->num_planes = 1;
+-	wave5_update_pix_fmt(src_fmt, 720, 480);
+-
+-	dst_fmt->pixelformat = dst_pix_fmt;
+-	dst_fmt->field = V4L2_FIELD_NONE;
+-	dst_fmt->flags = 0;
+-	dst_fmt->num_planes = dst_fmt_info->mem_planes;
+-	wave5_update_pix_fmt(dst_fmt, 736, 480);
++	wave5_update_pix_fmt(src_fmt, W5_DEF_DEC_PIC_WIDTH,
++				      W5_DEF_DEC_PIC_HEIGHT,
++				      dec_frmsize[VPU_FMT_TYPE_CODEC]);
 +
- int wave5_vpu_reset(struct device *dev, enum sw_reset_mode reset_mode);
++	dst_fmt->pixelformat = dec_fmt_list[VPU_FMT_TYPE_RAW][0].v4l2_pix_fmt;
++	wave5_update_pix_fmt(dst_fmt, W5_DEF_DEC_PIC_WIDTH,
++				      W5_DEF_DEC_PIC_HEIGHT,
++				      dec_frmsize[VPU_FMT_TYPE_RAW]);
+ }
  
- int wave5_vpu_build_up_dec_param(struct vpu_instance *inst, struct dec_open_param *param);
+ static int wave5_vpu_dec_queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq)
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+index 013e2bb37fbb..5a32bb138158 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
++++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+@@ -15,65 +15,52 @@ static const struct vpu_format enc_fmt_list[FMT_TYPES][MAX_FMTS] = {
+ 	[VPU_FMT_TYPE_CODEC] = {
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_HEVC,
+-			.max_width = W5_MAX_ENC_PIC_WIDTH,
+-			.min_width = W5_MIN_ENC_PIC_WIDTH,
+-			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+-			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_H264,
+-			.max_width = W5_MAX_ENC_PIC_WIDTH,
+-			.min_width = W5_MIN_ENC_PIC_WIDTH,
+-			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+-			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+ 		},
+ 	},
+ 	[VPU_FMT_TYPE_RAW] = {
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_YUV420,
+-			.max_width = W5_MAX_ENC_PIC_WIDTH,
+-			.min_width = W5_MIN_ENC_PIC_WIDTH,
+-			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+-			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV12,
+-			.max_width = W5_MAX_ENC_PIC_WIDTH,
+-			.min_width = W5_MIN_ENC_PIC_WIDTH,
+-			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+-			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV21,
+-			.max_width = W5_MAX_ENC_PIC_WIDTH,
+-			.min_width = W5_MIN_ENC_PIC_WIDTH,
+-			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+-			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_YUV420M,
+-			.max_width = W5_MAX_ENC_PIC_WIDTH,
+-			.min_width = W5_MIN_ENC_PIC_WIDTH,
+-			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+-			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV12M,
+-			.max_width = W5_MAX_ENC_PIC_WIDTH,
+-			.min_width = W5_MIN_ENC_PIC_WIDTH,
+-			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+-			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+ 		},
+ 		{
+ 			.v4l2_pix_fmt = V4L2_PIX_FMT_NV21M,
+-			.max_width = W5_MAX_ENC_PIC_WIDTH,
+-			.min_width = W5_MIN_ENC_PIC_WIDTH,
+-			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+-			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+ 		},
+ 	}
+ };
+ 
++static const struct v4l2_frmsize_stepwise enc_frmsize[FMT_TYPES] = {
++	[VPU_FMT_TYPE_CODEC] = {
++		.min_width = W5_MIN_ENC_PIC_WIDTH,
++		.max_width = W5_MAX_ENC_PIC_WIDTH,
++		.step_width = W5_ENC_CODEC_STEP_WIDTH,
++		.min_height = W5_MIN_ENC_PIC_HEIGHT,
++		.max_height = W5_MAX_ENC_PIC_HEIGHT,
++		.step_height = W5_ENC_CODEC_STEP_HEIGHT,
++	},
++	[VPU_FMT_TYPE_RAW] = {
++		.min_width = W5_MIN_ENC_PIC_WIDTH,
++		.max_width = W5_MAX_ENC_PIC_WIDTH,
++		.step_width = W5_ENC_RAW_STEP_WIDTH,
++		.min_height = W5_MIN_ENC_PIC_HEIGHT,
++		.max_height = W5_MAX_ENC_PIC_HEIGHT,
++		.step_height = W5_ENC_RAW_STEP_HEIGHT,
++	},
++};
++
+ static int switch_state(struct vpu_instance *inst, enum vpu_instance_state state)
+ {
+ 	switch (state) {
+@@ -106,46 +93,6 @@ static int switch_state(struct vpu_instance *inst, enum vpu_instance_state state
+ 	return -EINVAL;
+ }
+ 
+-static void wave5_update_pix_fmt(struct v4l2_pix_format_mplane *pix_mp, unsigned int width,
+-				 unsigned int height)
+-{
+-	switch (pix_mp->pixelformat) {
+-	case V4L2_PIX_FMT_YUV420:
+-	case V4L2_PIX_FMT_NV12:
+-	case V4L2_PIX_FMT_NV21:
+-		pix_mp->width = width;
+-		pix_mp->height = height;
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = round_up(width, 32) * height * 3 / 2;
+-		break;
+-	case V4L2_PIX_FMT_YUV420M:
+-		pix_mp->width = width;
+-		pix_mp->height = height;
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = round_up(width, 32) * height;
+-		pix_mp->plane_fmt[1].bytesperline = round_up(width, 32) / 2;
+-		pix_mp->plane_fmt[1].sizeimage = round_up(width, 32) * height / 4;
+-		pix_mp->plane_fmt[2].bytesperline = round_up(width, 32) / 2;
+-		pix_mp->plane_fmt[2].sizeimage = round_up(width, 32) * height / 4;
+-		break;
+-	case V4L2_PIX_FMT_NV12M:
+-	case V4L2_PIX_FMT_NV21M:
+-		pix_mp->width = width;
+-		pix_mp->height = height;
+-		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[0].sizeimage = round_up(width, 32) * height;
+-		pix_mp->plane_fmt[1].bytesperline = round_up(width, 32);
+-		pix_mp->plane_fmt[1].sizeimage = round_up(width, 32) * height / 2;
+-		break;
+-	default:
+-		pix_mp->width = width;
+-		pix_mp->height = height;
+-		pix_mp->plane_fmt[0].bytesperline = 0;
+-		pix_mp->plane_fmt[0].sizeimage = width * height / 8 * 3;
+-		break;
+-	}
+-}
+-
+ static int start_encode(struct vpu_instance *inst, u32 *fail_res)
+ {
+ 	struct v4l2_m2m_ctx *m2m_ctx = inst->v4l2_fh.m2m_ctx;
+@@ -360,13 +307,8 @@ static int wave5_vpu_enc_enum_framesizes(struct file *f, void *fh, struct v4l2_f
+ 			return -EINVAL;
+ 	}
+ 
+-	fsize->type = V4L2_FRMSIZE_TYPE_CONTINUOUS;
+-	fsize->stepwise.min_width = vpu_fmt->min_width;
+-	fsize->stepwise.max_width = vpu_fmt->max_width;
+-	fsize->stepwise.step_width = 1;
+-	fsize->stepwise.min_height = vpu_fmt->min_height;
+-	fsize->stepwise.max_height = vpu_fmt->max_height;
+-	fsize->stepwise.step_height = 1;
++	fsize->type = V4L2_FRMSIZE_TYPE_STEPWISE;
++	fsize->stepwise = enc_frmsize[VPU_FMT_TYPE_CODEC];
+ 
+ 	return 0;
+ }
+@@ -392,6 +334,7 @@ static int wave5_vpu_enc_try_fmt_cap(struct file *file, void *fh, struct v4l2_fo
+ {
+ 	struct vpu_instance *inst = wave5_to_vpu_inst(fh);
+ 	const struct vpu_format *vpu_fmt;
++	int width, height;
+ 
+ 	dev_dbg(inst->dev->dev, "%s: fourcc: %u width: %u height: %u num_planes: %u field: %u\n",
+ 		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix_mp.height,
+@@ -399,20 +342,18 @@ static int wave5_vpu_enc_try_fmt_cap(struct file *file, void *fh, struct v4l2_fo
+ 
+ 	vpu_fmt = wave5_find_vpu_fmt(f->fmt.pix_mp.pixelformat, enc_fmt_list[VPU_FMT_TYPE_CODEC]);
+ 	if (!vpu_fmt) {
++		width = inst->dst_fmt.width;
++		height = inst->dst_fmt.height;
+ 		f->fmt.pix_mp.pixelformat = inst->dst_fmt.pixelformat;
+-		f->fmt.pix_mp.num_planes = inst->dst_fmt.num_planes;
+-		wave5_update_pix_fmt(&f->fmt.pix_mp, inst->dst_fmt.width, inst->dst_fmt.height);
+ 	} else {
+-		int width = clamp(f->fmt.pix_mp.width, vpu_fmt->min_width, vpu_fmt->max_width);
+-		int height = clamp(f->fmt.pix_mp.height, vpu_fmt->min_height, vpu_fmt->max_height);
+-
++		width = f->fmt.pix_mp.width;
++		height = f->fmt.pix_mp.height;
+ 		f->fmt.pix_mp.pixelformat = vpu_fmt->v4l2_pix_fmt;
+-		f->fmt.pix_mp.num_planes = 1;
+-		wave5_update_pix_fmt(&f->fmt.pix_mp, width, height);
+ 	}
+ 
+-	f->fmt.pix_mp.flags = 0;
+-	f->fmt.pix_mp.field = V4L2_FIELD_NONE;
++	wave5_update_pix_fmt(&f->fmt.pix_mp, width,
++					     height,
++					     enc_frmsize[VPU_FMT_TYPE_CODEC]);
+ 	f->fmt.pix_mp.colorspace = inst->colorspace;
+ 	f->fmt.pix_mp.ycbcr_enc = inst->ycbcr_enc;
+ 	f->fmt.pix_mp.quantization = inst->quantization;
+@@ -500,6 +441,7 @@ static int wave5_vpu_enc_try_fmt_out(struct file *file, void *fh, struct v4l2_fo
+ {
+ 	struct vpu_instance *inst = wave5_to_vpu_inst(fh);
+ 	const struct vpu_format *vpu_fmt;
++	int width, height;
+ 
+ 	dev_dbg(inst->dev->dev, "%s: fourcc: %u width: %u height: %u num_planes: %u field: %u\n",
+ 		__func__, f->fmt.pix_mp.pixelformat, f->fmt.pix_mp.width, f->fmt.pix_mp.height,
+@@ -507,21 +449,18 @@ static int wave5_vpu_enc_try_fmt_out(struct file *file, void *fh, struct v4l2_fo
+ 
+ 	vpu_fmt = wave5_find_vpu_fmt(f->fmt.pix_mp.pixelformat, enc_fmt_list[VPU_FMT_TYPE_RAW]);
+ 	if (!vpu_fmt) {
++		width = inst->src_fmt.width;
++		height = inst->src_fmt.height;
+ 		f->fmt.pix_mp.pixelformat = inst->src_fmt.pixelformat;
+-		f->fmt.pix_mp.num_planes = inst->src_fmt.num_planes;
+-		wave5_update_pix_fmt(&f->fmt.pix_mp, inst->src_fmt.width, inst->src_fmt.height);
+ 	} else {
+-		int width = clamp(f->fmt.pix_mp.width, vpu_fmt->min_width, vpu_fmt->max_width);
+-		int height = clamp(f->fmt.pix_mp.height, vpu_fmt->min_height, vpu_fmt->max_height);
+-		const struct v4l2_format_info *info = v4l2_format_info(vpu_fmt->v4l2_pix_fmt);
+-
++		width = f->fmt.pix_mp.width;
++		height = f->fmt.pix_mp.height;
+ 		f->fmt.pix_mp.pixelformat = vpu_fmt->v4l2_pix_fmt;
+-		f->fmt.pix_mp.num_planes = info->mem_planes;
+-		wave5_update_pix_fmt(&f->fmt.pix_mp, width, height);
+ 	}
+ 
+-	f->fmt.pix_mp.flags = 0;
+-	f->fmt.pix_mp.field = V4L2_FIELD_NONE;
++	wave5_update_pix_fmt(&f->fmt.pix_mp, width,
++					     height,
++					     enc_frmsize[VPU_FMT_TYPE_RAW]);
+ 
+ 	return 0;
+ }
+@@ -568,7 +507,11 @@ static int wave5_vpu_enc_s_fmt_out(struct file *file, void *fh, struct v4l2_form
+ 	inst->quantization = f->fmt.pix_mp.quantization;
+ 	inst->xfer_func = f->fmt.pix_mp.xfer_func;
+ 
+-	wave5_update_pix_fmt(&inst->dst_fmt, f->fmt.pix_mp.width, f->fmt.pix_mp.height);
++	wave5_update_pix_fmt(&inst->dst_fmt, f->fmt.pix_mp.width,
++					     f->fmt.pix_mp.height,
++					     enc_frmsize[VPU_FMT_TYPE_CODEC]);
++	inst->conf_win.width = inst->dst_fmt.width;
++	inst->conf_win.height = inst->dst_fmt.height;
+ 
+ 	return 0;
+ }
+@@ -584,12 +527,17 @@ static int wave5_vpu_enc_g_selection(struct file *file, void *fh, struct v4l2_se
+ 	switch (s->target) {
+ 	case V4L2_SEL_TGT_CROP_DEFAULT:
+ 	case V4L2_SEL_TGT_CROP_BOUNDS:
+-	case V4L2_SEL_TGT_CROP:
+ 		s->r.left = 0;
+ 		s->r.top = 0;
+ 		s->r.width = inst->dst_fmt.width;
+ 		s->r.height = inst->dst_fmt.height;
+ 		break;
++	case V4L2_SEL_TGT_CROP:
++		s->r.left = 0;
++		s->r.top = 0;
++		s->r.width = inst->conf_win.width;
++		s->r.height = inst->conf_win.height;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -612,8 +560,10 @@ static int wave5_vpu_enc_s_selection(struct file *file, void *fh, struct v4l2_se
+ 
+ 	s->r.left = 0;
+ 	s->r.top = 0;
+-	s->r.width = inst->src_fmt.width;
+-	s->r.height = inst->src_fmt.height;
++	s->r.width = min(s->r.width, inst->dst_fmt.width);
++	s->r.height = min(s->r.height, inst->dst_fmt.height);
++
++	inst->conf_win = s->r;
+ 
+ 	return 0;
+ }
+@@ -1151,8 +1101,8 @@ static void wave5_set_enc_openparam(struct enc_open_param *open_param,
+ 	open_param->wave_param.lambda_scaling_enable = 1;
+ 
+ 	open_param->line_buf_int_en = true;
+-	open_param->pic_width = inst->dst_fmt.width;
+-	open_param->pic_height = inst->dst_fmt.height;
++	open_param->pic_width = inst->conf_win.width;
++	open_param->pic_height = inst->conf_win.height;
+ 	open_param->frame_rate_info = inst->frame_rate;
+ 	open_param->rc_enable = inst->rc_enable;
+ 	if (inst->rc_enable) {
+@@ -1456,20 +1406,15 @@ static const struct vb2_ops wave5_vpu_enc_vb2_ops = {
+ static void wave5_set_default_format(struct v4l2_pix_format_mplane *src_fmt,
+ 				     struct v4l2_pix_format_mplane *dst_fmt)
+ {
+-	unsigned int src_pix_fmt = enc_fmt_list[VPU_FMT_TYPE_RAW][0].v4l2_pix_fmt;
+-	const struct v4l2_format_info *src_fmt_info = v4l2_format_info(src_pix_fmt);
+-
+-	src_fmt->pixelformat = src_pix_fmt;
+-	src_fmt->field = V4L2_FIELD_NONE;
+-	src_fmt->flags = 0;
+-	src_fmt->num_planes = src_fmt_info->mem_planes;
+-	wave5_update_pix_fmt(src_fmt, 416, 240);
++	src_fmt->pixelformat = enc_fmt_list[VPU_FMT_TYPE_RAW][0].v4l2_pix_fmt;
++	wave5_update_pix_fmt(src_fmt, W5_DEF_ENC_PIC_WIDTH,
++				      W5_DEF_ENC_PIC_HEIGHT,
++				      enc_frmsize[VPU_FMT_TYPE_RAW]);
+ 
+ 	dst_fmt->pixelformat = enc_fmt_list[VPU_FMT_TYPE_CODEC][0].v4l2_pix_fmt;
+-	dst_fmt->field = V4L2_FIELD_NONE;
+-	dst_fmt->flags = 0;
+-	dst_fmt->num_planes = 1;
+-	wave5_update_pix_fmt(dst_fmt, 416, 240);
++	wave5_update_pix_fmt(dst_fmt, W5_DEF_ENC_PIC_WIDTH,
++				      W5_DEF_ENC_PIC_HEIGHT,
++				      enc_frmsize[VPU_FMT_TYPE_CODEC]);
+ }
+ 
+ static int wave5_vpu_enc_queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq)
+@@ -1734,6 +1679,8 @@ static int wave5_vpu_open_enc(struct file *filp)
+ 	v4l2_ctrl_handler_setup(v4l2_ctrl_hdl);
+ 
+ 	wave5_set_default_format(&inst->src_fmt, &inst->dst_fmt);
++	inst->conf_win.width = inst->dst_fmt.width;
++	inst->conf_win.height = inst->dst_fmt.height;
+ 	inst->colorspace = V4L2_COLORSPACE_REC709;
+ 	inst->ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
+ 	inst->quantization = V4L2_QUANTIZATION_DEFAULT;
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.h b/drivers/media/platform/chips-media/wave5/wave5-vpu.h
+index 32b7fd3730b5..691d6341fcda 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-vpu.h
++++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.h
+@@ -38,10 +38,6 @@ enum vpu_fmt_type {
+ 
+ struct vpu_format {
+ 	unsigned int v4l2_pix_fmt;
+-	unsigned int max_width;
+-	unsigned int min_width;
+-	unsigned int max_height;
+-	unsigned int min_height;
+ };
+ 
+ static inline struct vpu_instance *wave5_to_vpu_inst(struct v4l2_fh *vfh)
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuconfig.h b/drivers/media/platform/chips-media/wave5/wave5-vpuconfig.h
+index d9751eedb0f9..e6a34ae7084e 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-vpuconfig.h
++++ b/drivers/media/platform/chips-media/wave5/wave5-vpuconfig.h
+@@ -30,10 +30,27 @@
+ 
+ #define MAX_NUM_INSTANCE                32
+ 
+-#define W5_MIN_ENC_PIC_WIDTH            256
+-#define W5_MIN_ENC_PIC_HEIGHT           128
+-#define W5_MAX_ENC_PIC_WIDTH            8192
+-#define W5_MAX_ENC_PIC_HEIGHT           8192
++#define W5_DEF_DEC_PIC_WIDTH            720U
++#define W5_DEF_DEC_PIC_HEIGHT           480U
++#define W5_MIN_DEC_PIC_WIDTH            32U
++#define W5_MIN_DEC_PIC_HEIGHT           32U
++#define W5_MAX_DEC_PIC_WIDTH            8192U
++#define W5_MAX_DEC_PIC_HEIGHT           4320U
++#define W5_DEC_CODEC_STEP_WIDTH         1U
++#define W5_DEC_CODEC_STEP_HEIGHT        1U
++#define W5_DEC_RAW_STEP_WIDTH           32U
++#define W5_DEC_RAW_STEP_HEIGHT          16U
++
++#define W5_DEF_ENC_PIC_WIDTH            416U
++#define W5_DEF_ENC_PIC_HEIGHT           240U
++#define W5_MIN_ENC_PIC_WIDTH            256U
++#define W5_MIN_ENC_PIC_HEIGHT           128U
++#define W5_MAX_ENC_PIC_WIDTH            8192U
++#define W5_MAX_ENC_PIC_HEIGHT           8192U
++#define W5_ENC_CODEC_STEP_WIDTH         8U
++#define W5_ENC_CODEC_STEP_HEIGHT        8U
++#define W5_ENC_RAW_STEP_WIDTH           32U
++#define W5_ENC_RAW_STEP_HEIGHT          16U
+ 
+ //  application specific configuration
+ #define VPU_ENC_TIMEOUT                 60000
 -- 
 2.43.0
 
