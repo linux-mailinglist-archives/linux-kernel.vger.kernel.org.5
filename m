@@ -1,176 +1,119 @@
-Return-Path: <linux-kernel+bounces-98857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D287A87805A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:14:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AE5A87805B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:16:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DAE6B215BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:14:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 399D61C21379
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690003D569;
-	Mon, 11 Mar 2024 13:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B243D3A7;
+	Mon, 11 Mar 2024 13:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XMwTmTlx"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="McIIT54j"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C15D3FB9D;
-	Mon, 11 Mar 2024 13:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEB83CF7E
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710162833; cv=none; b=om4crdmYXWLOKn4rS1dSn1Irr0BWgUaF72rJ+41iOHHVMqyeag3rV5n7uQW+20FcgPATYo1U6svtTf9CRJjGn2ymUts03gi4s959W1bVx8/044xGHa+IYQ5ZmzGGOxXopIbnyVvLNwJbeHFYxwN3G+ES9YZCHDJgIDkN26+eoJM=
+	t=1710162975; cv=none; b=bR4asFmliuqS9n4vbeECtlmMLnetuiwL5oShU0zn/MEuNUCKQVEa72CVBGr9ViOfSgfVCMZpAJY6KBzWYXmOf0ePdfJEgdYSE27qhKQR2RbUvvGQbova4fLfYcSFIx0ab/wb7Gist9M8olBg5XOeg2rW+69A/un1/7seRgGAZqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710162833; c=relaxed/simple;
-	bh=dgrigR/7NCTojYkAKWD9wX9ICHnAGPtLi21TWc4E8dg=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=L7/72fjuJh/FafHzay48uvPZw23MO8WpZNtRSFa457Z5fkppAVJ5Pv4LAyXhki36MIxbWc8f6HMR6ExntYU9uaRvsDKdkys88SaIDzLc0NQr5LllFUaCbCFDI3v828mKjlKa7i9CeVd9MwsxUYeuiXBNA98ccelVVoYh/y2zApo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XMwTmTlx; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a17a739935so2564207eaf.1;
-        Mon, 11 Mar 2024 06:13:51 -0700 (PDT)
+	s=arc-20240116; t=1710162975; c=relaxed/simple;
+	bh=R83UERplwF/KQ5zSe+MgQMSo687FJg2FimupNdkCCUI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UBdwUHaYoSWn7T0yQEb0dGCeQ/a2YHl7gbq3WFRQ82VPOufRA+502fBzTe+KNBUrnKKsep22C7g5p5dXl/LKB4Nvdc1I5FsIpZTmmJbrwwHtyu5pLD6td1cmw9K0w1GS3liIP9Iz+hKAt6zQOGX6xZA1EjN9WxxTwJnfTpfX6QU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=McIIT54j; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d109e82bd0so59300621fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:16:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710162831; x=1710767631; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dezxuW9pGx05LDmCqYlbJ6coIEuJ6OpOhgk2fuSR0X8=;
-        b=XMwTmTlxM6IzRlzCRPmXobHSLTdnUaKtx5o8VwoNCm4g481wCzpsPN1CaRiyNu7/tz
-         CQmh/H7ZKoPv6NRDdi4w/WtK/hH1ULdHvZrZ1IWLSNy+MNWSsxzw2wf5sCDTv3i2DiHY
-         3+22vPZVxBVczhTwengrspEXTMbzXBQKQicM9lh813BpK/QQ+5jSSjnLzDJxFPPK2nUE
-         YCSl2uvqiZyyqd4RceyHWoA7Zt4w/JTrQOndjHp9fwu4n2aFjpoqFyyDEbv5JeWQr3bM
-         0slY2TuK1nAQXJ0khF6ygXcPsaDFIz444ZCUA1YB9u8SgL16LtsaYmcp6vyDYa5Ieh0k
-         TlqQ==
+        d=suse.com; s=google; t=1710162971; x=1710767771; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Sw4tENrKm2Q6sGgH1kKiwJ8p2ROgVDUkRiPZUykVBHw=;
+        b=McIIT54jWllkjZnN85iFKUWpsBR41/y+Ie+2JWIi5STrJLAy+K2dAOFlUuxnLef0ex
+         mEp+t7fKc9A3j9pDVSQk+fAbRGUdo0oVcVXM+/v/5F1NOc1GTxnXEPrjbpWAgJFvEYrj
+         DQMkrg8S5BUycySGwTVJbGsKxmVW2UUblmQ0VE8sWma7ND2Jsi8LsiViAHN9dhhnveTh
+         voJcbJvQcb++mWqtcBVc98JcheanP6unMjE7QqCk08nA9nUqTIjHLMjKS778hCWImkLy
+         voptMbyPWKpH3+Vla03h0bGmwjRe3Q3cjGEpPt7mMRjg/7e5KInkk1TVHeO4a0ZEpCi5
+         EQiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710162831; x=1710767631;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dezxuW9pGx05LDmCqYlbJ6coIEuJ6OpOhgk2fuSR0X8=;
-        b=j3lRCmJfn6OYz7IYn9Zwf06NcEpfiOICQ+HwPdUYXa8cs3ih/9pQkmGn18EeDsEK69
-         frwt3kkPwvd6vEEOslss0mvyEUJavp25hqeAxQbo2GOvZ11nz3AZ4NkHp6dLMXVdRPaR
-         A56y4im3vegOjYWTsoWlzndJTcprw7JkI3oZ0Friy8+JGSnvr6bilpxMKEHIWOY7vIYw
-         r11jz47oWQC2McFgbXhskkGH+M5GZa4kZzFNEIVzU4kfRzzYQxCqgwTRj7lVOxvucdCp
-         wB1Eilo65MyxSepFX0GYMPDIKGg9fujW1GetXjMDrot6c21ATYnrPKQTKq1+UdWmsrnk
-         zxvg==
-X-Forwarded-Encrypted: i=1; AJvYcCW7Lk/0HvHbUtEiKwhFxYm8xZZ7Y62G5GmD2gZbzKG0QCc8N8N5Q6Nfj+IsX2HGwf84kdOzYrjuMaVOwqFjrzWRvh8jnBUCgl2OFz9bYJ9h9Cxl55a/excXksFTanjk1wYp02uBI21qS1ky2rPNhYYEo6SISZn0lkou3vW3lu/f6cW2F+vb
-X-Gm-Message-State: AOJu0YzO/9Uj2U5LrvrQC3tU9sgk3slZ1Q2FN78HpJD4emqmndY9979I
-	33lyN9rXveGSWuDaV9sb5Bak5mpzdOJhDJfFFuInk/MMQUT7e/FU
-X-Google-Smtp-Source: AGHT+IGTQa8y59aDsLASaj7LZksfhOKifn5u3+CiaI7MeePb6ux4rgQVzmT+x0EFZi2xsLFMGaQnYw==
-X-Received: by 2002:a05:6358:480c:b0:17b:f637:7bb with SMTP id k12-20020a056358480c00b0017bf63707bbmr7300635rwn.30.1710162831109;
-        Mon, 11 Mar 2024 06:13:51 -0700 (PDT)
-Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id f1-20020ac87f01000000b0042f37ebfbf2sm2481546qtk.5.2024.03.11.06.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 06:13:50 -0700 (PDT)
-Date: Mon, 11 Mar 2024 09:13:50 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Richard Gobert <richardbgobert@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Eric Dumazet <edumazet@google.com>
-Cc: davem@davemloft.net, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- xeb@mail.ru, 
- shuah@kernel.org, 
- idosch@nvidia.com, 
- razor@blackwall.org, 
- amcohen@nvidia.com, 
- petrm@nvidia.com, 
- jbenc@redhat.com, 
- bpoirier@nvidia.com, 
- b.galvani@gmail.com, 
- gavinl@nvidia.com, 
- liujian56@huawei.com, 
- horms@kernel.org, 
- linyunsheng@huawei.com, 
- therbert@google.com, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <65ef038e78a8b_20699f29437@willemb.c.googlers.com.notmuch>
-In-Reply-To: <d72bfd79-ce72-49db-b648-930a08b9302e@gmail.com>
-References: <f939c84a-2322-4393-a5b0-9b1e0be8ed8e@gmail.com>
- <88831c36-a589-429f-8e8b-2ecb66a30263@gmail.com>
- <CANn89iK5+wqYdqMt_Rg3+jO+Xf4n4yO4kOK0kzNdqh99qgL3iQ@mail.gmail.com>
- <967ed173-b556-4bfc-b3c8-ff0fc902b951@gmail.com>
- <65eef506331e8_1db78c2941c@willemb.c.googlers.com.notmuch>
- <d72bfd79-ce72-49db-b648-930a08b9302e@gmail.com>
-Subject: Re: [PATCH net-next v3 4/4] net: gro: move L3 flush checks to
- tcp_gro_receive
+        d=1e100.net; s=20230601; t=1710162971; x=1710767771;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sw4tENrKm2Q6sGgH1kKiwJ8p2ROgVDUkRiPZUykVBHw=;
+        b=m8fQbc2Vm6aSUx5AyilVMgDMlsKD7DoAfPrd/d1wMTQcbdpmkxv9lTHyDcJ3kPv+Wg
+         UkP3clzJdNPxyNAyqO9yRQzH75i7gEnx857uxvFkz8b+Rh6QURlXvKWjXPal81zcacfc
+         64oXIj4p5VtJGgWGqj/H8WW+73LQGPYglJOcpI54FhaX3fBofkxYSckwku1uiE4XN5qw
+         HLv6++jy8MVdr7zcIZjQV6UwQoufsK8Bk8mrwuTvnBqc85uGu3EeieJOmI9hhS46nx6G
+         V4DQrddIv2vKUgtfFh18xc/IE4gxyVzel99h3Xvg5A4+s/arqaBjKaw2FHMc1DezJXJq
+         mwSA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTgqlYroud/s8xEcaE8rtdeSwaAeSVd+IrT8wycX/HXoTnjyd23nKb31pTEDFhTXGQ8fIMDCt0/EZM6aEYJP7lHXSOzxmJlgKUpbGJ
+X-Gm-Message-State: AOJu0YwuEGHfxw7PLrbKbKLF9rE7fVMzkd9f23SbFxSzYtM5pB/GRuyR
+	Lxfinos85Weqrc9yPGJjn91xBxJVNTKjKdWhe5yhAoCHndmsnFiCrPpQdenO72fSEaYGh4gAPC6
+	h
+X-Google-Smtp-Source: AGHT+IEIykn5pR2lAPGY3OjFEnaMje7wcvAv6WYUVhhakvp/PSb+swLecLc6+LkuX8uqyRwQmHOP3g==
+X-Received: by 2002:a2e:aa26:0:b0:2d0:aa06:f496 with SMTP id bf38-20020a2eaa26000000b002d0aa06f496mr3695777ljb.40.1710162971012;
+        Mon, 11 Mar 2024 06:16:11 -0700 (PDT)
+Received: from ?IPV6:2003:e5:873a:400:704b:6dbb:e7c0:786e? (p200300e5873a0400704b6dbbe7c0786e.dip0.t-ipconnect.de. [2003:e5:873a:400:704b:6dbb:e7c0:786e])
+        by smtp.gmail.com with ESMTPSA id f5-20020a2ea0c5000000b002d417020a9fsm1133150ljm.83.2024.03.11.06.16.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 06:16:10 -0700 (PDT)
+Message-ID: <3891dbee-173b-4fb3-a7f5-512dbe8264af@suse.com>
+Date: Mon, 11 Mar 2024 14:16:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC][PATCH 02/34] x86/xen: Remove early "debug" physical address
+ lookups
+Content-Language: en-US
+To: Dave Hansen <dave.hansen@linux.intel.com>, linux-kernel@vger.kernel.org
+Cc: kirill.shutemov@linux.intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+ x86@kernel.org, bp@alien8.de
+References: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
+ <20240222183929.E17C1B9C@davehans-spike.ostc.intel.com>
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+In-Reply-To: <20240222183929.E17C1B9C@davehans-spike.ostc.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Richard Gobert wrote:
-> Willem de Bruijn wrote:
-> > Richard Gobert wrote:
-> >> Eric Dumazet wrote:
-> >>> On Sat, Mar 9, 2024 at 4:35=E2=80=AFPM Richard Gobert <richardbgobe=
-rt@gmail.com> wrote:
-> >>>>
-> >>>> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags=
-,
-> >>>> iph->id, ...) against all packets in a loop. These flush checks ar=
-e
-> >>>> relevant only to tcp flows, and as such they're used to determine =
-whether
-> >>>> the packets can be merged later in tcp_gro_receive.
-> >>>>
-> >>>> These checks are not relevant to UDP packets.
-> >>>
-> >>> I do not think this claim is true.
-> >>>
-> >>> Incoming packets  ->  GRO -> GSO -> forwarded packets
-> >>>
-> >>> The {GRO,GSO} step must be transparent, GRO is not LRO.
-> >>
-> >> Sorry, I should rephrase myself. The patch preserves the
-> >> current logic in GRO. These L3 checks (ttl, flags, etc.) are written=
- to
-> >> NAPI_GRO_CB(p)->{flush,flush_id}, and NAPI_GRO_CB(skb)->is_atomic - =
-and
-> >> all of these are currently used only in tcp_gro_receive.
-> > =
+On 22.02.24 19:39, Dave Hansen wrote:
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+> 
+> The __pa() facility is subject to debugging checks if CONFIG_DEBUG_VIRTUAL=y.
+> One of those debugging checks is whether the physical address is valid
+> on the platform.  That information is normally available via CPUID.  But
+> the __pa() code currently looks it up in 'boot_cpu_data' which is not
+> fully set up in early Xen PV boot.
+> 
+> The Xen PV code currently tries to get this info with
+> get_cpu_address_sizes() which also depends on 'boot_cpu_data' to be at
+> least somewhat set up.  The result is that the c->x86_phys_bits gets a
+> sane value, but not one that has anything to do with the hardware.  In
+> other words, the CONFIG_DEBUG_VIRTUAL checks are performed with what
+> amounts to garbage inputs.
+> 
+> Garbage checks are worse than no check at all.  Move over to the
+> "nodebug" variant to axe the checks.
+> 
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Juergen Gross <jgross@suse.com>
 
-> > That was perhaps an oversight when adding UDP GRO?
-> > =
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
-> > Simply because the flush is determined in the innermost callback.
-> =
 
-> It might have been an oversight. From what I have seen it's only releva=
-nt
-> to GRO's UDP fraglist path (it was added in 9fd1ff5d ("udp: Support UDP=
-
-> fraglist GRO/GSO.")). That's the only UDP path that calls skb_gro_recei=
-ve -
-> which may alter the forwarded packets and make GRO/GSO not transparent.=
-
-> =
-
-> AFAIU NAPI_GRO_CB(p)->flush value is not overwritten in encapsulation -=
- it
-> is determined by both outer and inner callbacks.
-
-Thanks for the context
-
-> I tried to preserve the current behaviour in GRO - if we want to change=
-
-> this behaviour I'll gladly do it, although I'd prefer to address it in =
-a
-> different patch series. What do you think?
-
-Yes, it's entirely reasonable to leave that out of this series.
+Juergen
 
 
