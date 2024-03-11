@@ -1,305 +1,362 @@
-Return-Path: <linux-kernel+bounces-98594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B340B877C67
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:15:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E9E877C6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:16:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D69391C20967
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:15:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC02D2822EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1771182C5;
-	Mon, 11 Mar 2024 09:15:14 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D92E2209F;
+	Mon, 11 Mar 2024 09:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Apg67rbE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795CF1426D
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:15:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059962E3F9
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148513; cv=none; b=LizUg6JBb/9WjUd0XhIUzqpdDng+v/CcIRCTDldekK9aYRKvoPQkFCG/OvvlVhk/0/o1oMHfViQI46gGRivQ65X8jbVuCiSe8xWPyjrvUTECkpEfIqvyd+kc79m8QBtnf77sgbaV3QuK8n3O9RFsuxMT+H8VklqvdYv4ElPKq0E=
+	t=1710148537; cv=none; b=j35D37Dl6sTmjY2da3IlPBhKkBt1HJrMZ3U36Q4Esi90s8VGExQ9eCLW+MUufUCfyAizL0fLoDaA8+sIYspxPKs908+K7QmCBvHh8InOiDAkgEmAtK/CeBf+WGlSg8EeRjz1Dev5wUIy0bZP1PgNg/nJAtReo1JGABsLUWxRVFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148513; c=relaxed/simple;
-	bh=+a79OneknX1EqTbxlS6yjHd1PpaOgGh0aDEWwjpLBcU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=PC/Npj4ANu/m4xfN+wCnvGa7cRhnolyByaiuX+qkXfsmEcyMrEIBzQh3CX+Hw8sJSw1p3EqJpa+pWRXyXL6mlsYK4B8v6rrHpUQoK6Y6OqfcyuaAxIZfYfvBbN4Xjug2fcm9K+JvnlSMVihAdOhNG8u38L0dl5c1JXzGf75/c7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3662dbb587eso28614835ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:15:11 -0700 (PDT)
+	s=arc-20240116; t=1710148537; c=relaxed/simple;
+	bh=OljCXpTTC9xEaAZuuMjFKsBZIOGdHba4C+7wKVG9xqY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fgcTowdnph3U85aRl0vZiu92VNDNYffkcJQTLskf4SNOmrKNZHjayAu42Gsnmyn59gQrnNdIs0AOPmzOuXEJ3I6/tVo+DHM2VjKMSUT6fdJ00W4nyWQl3iJ1RbRzdwjNPZAP5OJi9+UOSAROf/zXOLQ8yahH+JPnVyyeBC5GsY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Apg67rbE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710148532;
+	h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rq057kQqGxIYfRwHYU+lAiC5V15R+aNnjhBGpM/TJFk=;
+	b=Apg67rbE735Dt5sXeG5ppPfL7xAOSrjE7i1ELdmnoo0qE8Mm53q45V/t+GgAOKldqAxDoB
+	WWrHwa1okRsP3V16+0wvAWKG5V1dW63PbxyqJJLFUpGASPA2hp2ve8HK90mazlHz4xiB54
+	Wb3F8SAKS+PL/iG0YjDRyGLitEk+9x8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-118-w_OFd-ygMSOn3yULty8fRA-1; Mon, 11 Mar 2024 05:15:31 -0400
+X-MC-Unique: w_OFd-ygMSOn3yULty8fRA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-412edc9d70aso25714665e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:15:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710148510; x=1710753310;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d+1f4PZqhiHK9OVcIZgHUxd/qGBfnABnvkeOocsCZJc=;
-        b=ucK+GOD/rBtoB/1jhmUkWr4Hc/dovKqNB79dkzkwDdhbmbONu1JCfBJdSMl6Xivi1J
-         eOaifz63p3FIOJdZtl2TqzhD++OYbEl2PJuVUT2BwzVhMWRIPhQB2iueAJxa4HXAWxY6
-         qOOWW+18YixKGnlr/Oeji0gvf74KLGz0PVIcTSDyLetHtdRXeCIBBuHgKsyScXgkG9gu
-         VNYVr69PVKOLNUGnWl32FkYz1/fuhJKey8tG4f1WoWPtekMLFuDZZaNjMx521fPch1fO
-         gV55h6kd9zCw6Ag+3hQY38qGrGfeWfqCMVgSv3RYQit/XGC8c3oUbIepbknK3WFv9Crk
-         ygig==
-X-Forwarded-Encrypted: i=1; AJvYcCVgtwpwLukVFtepDR0SLh4+Pn6iEmfhj44VHU9b8n3GlPArjpquh7/ffp/jp980uHk0ASEABfm1pEq1Mj606PgKfZYO6CeNtKDrj9YB
-X-Gm-Message-State: AOJu0YxCzYvBt19+iQyRfT/ezF0P53RdrwBWeDiZ57w4A+9ZCOlRf6jz
-	ethZPWs64BgrfQPHqat5+qs6LypFe9KykRM9FbTzMYs3O5aD2tcZWTn9V44bkkJt6KGHZkWUfOi
-	dxRBUwBSWCWWO66SGjFNMdq9viJSaAtq7ETeSdspT5f9IY6yyj19L+ns=
-X-Google-Smtp-Source: AGHT+IEL4r7BJbNvFakfKZsdnCrwX4acORTbl21kM1zYXOasAzDfSE7ExoEdA8j5jAXqntsaBCEerTw9188hXZs2HYH/K9tj1vhq
+        d=1e100.net; s=20230601; t=1710148530; x=1710753330;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rq057kQqGxIYfRwHYU+lAiC5V15R+aNnjhBGpM/TJFk=;
+        b=dFN6aDY/mVGhvVNs3Ue+d/Sun9fcpebNex0SjZ2FAVYQmSIA/X5RHM0YVi+bnhaoY4
+         bcxjy1cw4Uts2c8Zkce1KAS3UFjwofb2WVh6BaVWAkOkBK0Eesj0AEDLIJKPD1F7lesn
+         gArd+HYdvFZX7+QehnujUvEDmXPrawORCyLWWpMtBQjm/Rt9qFgjo+gI5Ek+Mf1YQ0yU
+         bvE+1BZ3aPY71HKGa8uNQrBjhhw6l0vJNG6yCoRwt1dB12Jb0/Exw8fM5F7qjUeifqxe
+         GkXIaoL2fGj70mD7WAKjdiLy3HTKgArIb+JCN2YJ7m7oQ+GhDUt5R6lhHm7xUPGVunqA
+         wQZg==
+X-Forwarded-Encrypted: i=1; AJvYcCUvRlM8ssrEcUt5+zVoyu1cpTzx+90C5JSjy3Cps2Qltk/zx1r//CWe+ac6V3q5ogLMG5DqmpvK/jT/4HvuHzpTMEHXdll3boQtB6bE
+X-Gm-Message-State: AOJu0YwfbMO2KrzKYvWFIKx+Oz+k7jxUFu2odQ++r/aV3d2Xl9kjLxHk
+	KPzOOtSoo9XxjogJohwbrbZPDf7TZptIFrywRqa1yZkmokwch1BHaRMNFOjXyPt2XFoSRdUQxHe
+	d+g3brbSeGm5Gu+4WFUvRMSBrzE6cH6XliAo3GMfxCL/4KPKoauTU/u1aEaBNpQ==
+X-Received: by 2002:a05:600c:1e17:b0:413:2f3b:1d42 with SMTP id ay23-20020a05600c1e1700b004132f3b1d42mr159630wmb.18.1710148530150;
+        Mon, 11 Mar 2024 02:15:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IECTj7+qhQBRTz6RPuyxVPemGxXBcSMWnmrmKwsBP1VHKV5OyEHl4RI88jsU4vFl5t0vOWYFg==
+X-Received: by 2002:a05:600c:1e17:b0:413:2f3b:1d42 with SMTP id ay23-20020a05600c1e1700b004132f3b1d42mr159608wmb.18.1710148529725;
+        Mon, 11 Mar 2024 02:15:29 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id n4-20020a05600c4f8400b00412ff941abasm14934328wmq.21.2024.03.11.02.15.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 02:15:29 -0700 (PDT)
+Message-ID: <39b0ed62-58e0-4e71-ac22-6426d9ded2e7@redhat.com>
+Date: Mon, 11 Mar 2024 10:15:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:128c:b0:366:471c:935c with SMTP id
- y12-20020a056e02128c00b00366471c935cmr117707ilq.2.1710148510636; Mon, 11 Mar
- 2024 02:15:10 -0700 (PDT)
-Date: Mon, 11 Mar 2024 02:15:10 -0700
-In-Reply-To: <CALm+0cVun=SSczF2hJPJFZU85NMmntScWAFLL7e9pXJiVt+qWw@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007d76cf06135efac5@google.com>
-Subject: Re: [syzbot] [mm?] [input?] [usb?] INFO: rcu detected stall in asm_exc_page_fault
-From: syzbot <syzbot+360faf5c01a5be55581d@syzkaller.appspotmail.com>
-To: qiang.zhang1211@gmail.com
-Cc: akpm@linux-foundation.org, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-usb@vger.kernel.org, 
-	pasha.tatashin@soleen.com, qiang.zhang1211@gmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v2 4/7] vfio/pci: Create persistent INTx handler
+Content-Language: en-US
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: kvm@vger.kernel.org, clg@redhat.com, reinette.chatre@intel.com,
+ linux-kernel@vger.kernel.org, kevin.tian@intel.com, stable@vger.kernel.org
+References: <20240308230557.805580-1-alex.williamson@redhat.com>
+ <20240308230557.805580-5-alex.williamson@redhat.com>
+From: Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <20240308230557.805580-5-alex.williamson@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
->>
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    90d35da658da Linux 6.8-rc7
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=122f6f6a180000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=119d08814b43915b
->> dashboard link: https://syzkaller.appspot.com/bug?extid=360faf5c01a5be55581d
->> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124056de180000
->>
->> Downloadable assets:
->> disk image: https://storage.googleapis.com/syzbot-assets/fb2c1adf4ec3/disk-90d35da6.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/09c5b88a8ceb/vmlinux-90d35da6.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/5e5cbc312e49/bzImage-90d35da6.xz
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+360faf5c01a5be55581d@syzkaller.appspotmail.com
->
-> #syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
-want either no args or 2 args (repo, branch), got 1
 
-> master
+On 3/9/24 00:05, Alex Williamson wrote:
+> A vulnerability exists where the eventfd for INTx signaling can be
+> deconfigured, which unregisters the IRQ handler but still allows
+> eventfds to be signaled with a NULL context through the SET_IRQS ioctl
+> or through unmask irqfd if the device interrupt is pending.
 >
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 7019a40457a6..69e344f07e68 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -9233,6 +9233,7 @@ void show_state_filter(unsigned int state_filter)
->                  */
->                 touch_nmi_watchdog();
->                 touch_all_softlockup_watchdogs();
-> +               rcu_cpu_stall_reset();
->                 if (state_filter_match(state_filter, p))
->                         sched_show_task(p);
->         }
+> Ideally this could be solved with some additional locking; the igate
+> mutex serializes the ioctl and config space accesses, and the interrupt
+> handler is unregistered relative to the trigger, but the irqfd path
+> runs asynchronous to those.  The igate mutex cannot be acquired from the
+> atomic context of the eventfd wake function.  Disabling the irqfd
+> relative to the eventfd registration is potentially incompatible with
+> existing userspace.
 >
+> As a result, the solution implemented here moves configuration of the
+> INTx interrupt handler to track the lifetime of the INTx context object
+> and irq_type configuration, rather than registration of a particular
+> trigger eventfd.  Synchronization is added between the ioctl path and
+> eventfd_signal() wrapper such that the eventfd trigger can be
+> dynamically updated relative to in-flight interrupts or irqfd callbacks.
 >
+> Cc: stable@vger.kernel.org
+> Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+> Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Eric
+> ---
+>  drivers/vfio/pci/vfio_pci_intrs.c | 145 ++++++++++++++++--------------
+>  1 file changed, 78 insertions(+), 67 deletions(-)
 >
->
->>
->> rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: {
->>  1-....
->>  } 4831 jiffies s: 1849 root: 0x2/.
->> rcu: blocking rcu_node structures (internal RCU debug):
->> Sending NMI from CPU 0 to CPUs 1:
->>  kthread+0x2ef/0x390 kernel/kthread.c:388
->> NMI backtrace for cpu 1
->> CPU: 1 PID: 5232 Comm: syz-executor.3 Not tainted 6.8.0-rc7-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
->> RIP: 0010:format_decode+0x546/0x1bb0
->> Code: 85 96 01 00 00 45 84 ff 0f 84 8d 01 00 00 48 bb 00 ff ff ff 00 ff ff ff 48 8b 44 24 20 42 0f b6 04 30 84 c0 0f 85 4d 10 00 00 <48> 8b 54 24 48 48 21 da 48 8b 44 24 28 42 0f b6 04 30 84 c0 48 8d
->> RSP: 0000:ffffc900001efa20 EFLAGS: 00000046
->> RAX: 0000000000000000 RBX: ffffff00ffffff00 RCX: ffff8880219e0000
->> RDX: ffff8880219e0000 RSI: 0000000000000025 RDI: 0000000000000000
->> RBP: ffffc900001efb10 R08: ffffffff8b57a4c8 R09: ffffffff8b57a1aa
->> R10: 0000000000000002 R11: ffff8880219e0000 R12: ffffffff8bab75e6
->> R13: ffffffff8bab75e6 R14: dffffc0000000000 R15: 0000000000000025
->> FS:  0000555555c82480(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007f74dc087056 CR3: 0000000021bc6000 CR4: 00000000003506f0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>  <NMI>
->>  </NMI>
->>  <IRQ>
->>  vsnprintf+0x14f/0x1da0 lib/vsprintf.c:2776
->>  sprintf+0xda/0x120 lib/vsprintf.c:3028
->>  print_time kernel/printk/printk.c:1324 [inline]
->>  info_print_prefix+0x16b/0x310 kernel/printk/printk.c:1350
->>  record_print_text kernel/printk/printk.c:1399 [inline]
->>  printk_get_next_message+0x408/0xce0 kernel/printk/printk.c:2828
->>  console_emit_next_record kernel/printk/printk.c:2868 [inline]
->>  console_flush_all+0x42d/0xec0 kernel/printk/printk.c:2967
->>  console_unlock+0x13b/0x4d0 kernel/printk/printk.c:3036
->>  vprintk_emit+0x508/0x720 kernel/printk/printk.c:2303
->>  _printk+0xd5/0x120 kernel/printk/printk.c:2328
->>  printk_stack_address arch/x86/kernel/dumpstack.c:72 [inline]
->>  show_trace_log_lvl+0x438/0x520 arch/x86/kernel/dumpstack.c:285
->>  sched_show_task+0x50c/0x6d0 kernel/sched/core.c:9171
->>  show_state_filter+0x19e/0x270 kernel/sched/core.c:9216
->>  kbd_keycode drivers/tty/vt/keyboard.c:1524 [inline]
->>  kbd_event+0x30fa/0x4910 drivers/tty/vt/keyboard.c:1543
->>  input_to_handler drivers/input/input.c:132 [inline]
->>  input_pass_values+0x945/0x1200 drivers/input/input.c:161
->>  input_event_dispose drivers/input/input.c:378 [inline]
->>  input_handle_event drivers/input/input.c:406 [inline]
->>  input_repeat_key+0x3fd/0x6c0 drivers/input/input.c:2263
->>  call_timer_fn+0x17e/0x600 kernel/time/timer.c:1700
->>  expire_timers kernel/time/timer.c:1751 [inline]
->>  __run_timers+0x621/0x830 kernel/time/timer.c:2038
->>  run_timer_softirq+0x67/0xf0 kernel/time/timer.c:2051
->>  __do_softirq+0x2bb/0x942 kernel/softirq.c:553
->>  invoke_softirq kernel/softirq.c:427 [inline]
->>  __irq_exit_rcu+0xf1/0x1c0 kernel/softirq.c:632
->>  irq_exit_rcu+0x9/0x30 kernel/softirq.c:644
->>  sysvec_apic_timer_interrupt+0x97/0xb0 arch/x86/kernel/apic/apic.c:1076
->>  </IRQ>
->>  <TASK>
->>  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:649
->> RIP: 0010:page_table_check_set+0x58/0x700 mm/page_table_check.c:109
->> Code: 95 ff 85 ed 0f 84 5f 03 00 00 49 bf 00 00 00 00 00 fc ff df 48 c1 e3 06 48 bd 00 00 00 00 00 ea ff ff 48 8d 3c 2b 48 89 3c 24 <e8> 33 e9 ff ff 49 89 c6 4c 8d 64 2b 08 4c 89 e5 48 c1 ed 03 42 80
->> RSP: 0000:ffffc90004d0f650 EFLAGS: 00000202
->> RAX: 0000000000000000 RBX: 0000000001c8ae80 RCX: ffff8880219e0000
->> RDX: ffff8880219e0000 RSI: 0000000000000001 RDI: ffffea0001c8ae80
->> RBP: ffffea0000000000 R08: ffffffff81fdf590 R09: 1ffffffff1f0880d
->> R10: dffffc0000000000 R11: fffffbfff1f0880e R12: 0000000000000000
->> R13: 0000000000000001 R14: 00000000722ba025 R15: dffffc0000000000
->>  __page_table_check_ptes_set+0x220/0x280 mm/page_table_check.c:196
->>  page_table_check_ptes_set include/linux/page_table_check.h:74 [inline]
->>  set_ptes include/linux/pgtable.h:241 [inline]
->>  set_pte_range+0x885/0x8b0 mm/memory.c:4549
->>  filemap_map_order0_folio mm/filemap.c:3513 [inline]
->>  filemap_map_pages+0xee2/0x1830 mm/filemap.c:3559
->>  do_fault_around mm/memory.c:4716 [inline]
->>  do_read_fault mm/memory.c:4749 [inline]
->>  do_fault mm/memory.c:4888 [inline]
->>  do_pte_missing mm/memory.c:3745 [inline]
->>  handle_pte_fault mm/memory.c:5164 [inline]
->>  __handle_mm_fault+0x485d/0x72d0 mm/memory.c:5305
->>  handle_mm_fault+0x27e/0x770 mm/memory.c:5470
->>  do_user_addr_fault arch/x86/mm/fault.c:1355 [inline]
->>  handle_page_fault arch/x86/mm/fault.c:1498 [inline]
->>  exc_page_fault+0x456/0x870 arch/x86/mm/fault.c:1554
->>  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
->> RIP: 0033:0x7f74dc087080
->> Code: Unable to access opcode bytes at 0x7f74dc087056.
->> RSP: 002b:00007ffe028d3bb8 EFLAGS: 00010246
->> RAX: 00007f74dcdfb9d0 RBX: 00007f74dcdfb6c0 RCX: 00007f74dc07de67
->> RDX: 0000000000000003 RSI: 0000000000020000 RDI: 00007f74dcdfb6c0
->> RBP: 0000000000000000 R08: 00000000ffffffff R09: 0000000000000000
->> R10: 0000000000021000 R11: 0000000000000206 R12: 00007ffe028d3e60
->> R13: ffffffffffffffc0 R14: 0000000000001000 R15: 0000000000000000
->>  </TASK>
->>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->>  </TASK>
->> task:kworker/u4:0    state:I stack:24400 pid:11    tgid:11    ppid:2      flags:0x00004000
->> Workqueue:  0x0 (events_unbound)
->> Call Trace:
->>  <TASK>
->>  context_switch kernel/sched/core.c:5400 [inline]
->>  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->>  __schedule_loop kernel/sched/core.c:6802 [inline]
->>  schedule+0x149/0x260 kernel/sched/core.c:6817
->>  worker_thread+0xc26/0x1000 kernel/workqueue.c:2802
->>  kthread+0x2ef/0x390 kernel/kthread.c:388
->>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->>  </TASK>
->> task:kworker/u4:1    state:I stack:23344 pid:12    tgid:12    ppid:2      flags:0x00004000
->> Workqueue:  0x0 (bat_events)
->> Call Trace:
->>  <TASK>
->>  context_switch kernel/sched/core.c:5400 [inline]
->>  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->>  __schedule_loop kernel/sched/core.c:6802 [inline]
->>  schedule+0x149/0x260 kernel/sched/core.c:6817
->>  worker_thread+0xc26/0x1000 kernel/workqueue.c:2802
->>  kthread+0x2ef/0x390 kernel/kthread.c:388
->>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->>  </TASK>
->> task:kworker/R-mm_pe state:I stack:28752 pid:13    tgid:13    ppid:2      flags:0x00004000
->> Call Trace:
->>  <TASK>
->>  context_switch kernel/sched/core.c:5400 [inline]
->>  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->>  __schedule_loop kernel/sched/core.c:6802 [inline]
->>  schedule+0x149/0x260 kernel/sched/core.c:6817
->>  rescuer_thread+0xc45/0xda0 kernel/workqueue.c:2937
->>  kthread+0x2ef/0x390 kernel/kthread.c:388
->>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->>  </TASK>
->> task:rcu_tasks_kthre state:I stack:27448 pid:14    tgid:14    ppid:2      flags:0x00004000
->> Call Trace:
->>  <TASK>
->>  context_switch kernel/sched/core.c:5400 [inline]
->>  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->>  __schedule_loop kernel/sched/core.c:6802 [inline]
->>  schedule+0x149/0x260 kernel/sched/core.c:6817
->>  rcu_tasks_one_gp+0x7f5/0xda0 kernel/rcu/tasks.h:578
->>  rcu_tasks_kthread+0x186/0x1b0 kernel/rcu/tasks.h:625
->>  kthread+0x2ef/0x390 kernel/kthread.c:388
->>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->>  </TASK>
->> task:rcu_tasks_trace state:I stack:27144 pid:15    tgid:15    ppid:2      flags:0x00004000
->> Call Trace:
->>  <TASK>
->>  context_switch kernel/sched/core.c:5400 [inline]
->>  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->>  __schedule_loop kernel/sched/core.c:6802 [inline]
->>  schedule+0x149/0x260 kernel/sched/core.c:6817
->>  rcu_tasks_one_gp+0x7f5/0xda0 kernel/rcu/tasks.h:578
->>  rcu_tasks_kthread+0x186/0x1b0 kernel/rcu/tasks.h:625
->>  kthread+0x2ef/0x390 kernel/kthread.c:388
->>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->>  </TASK>
->> task:ksoftirqd/0
->>
->>
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://goo.gl/tpsmEJ for more information about syzbot.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>
->> If the report is already addressed, let syzbot know by replying with:
->> #syz fix: exact-commit-title
->>
->> If you want syzbot to run the reproducer, reply with:
->> #syz test: git://repo/address.git branch-or-commit-hash
->> If you attach or paste a git patch, syzbot will apply it before testing.
->>
->> If you want to overwrite report's subsystems, reply with:
->> #syz set subsystems: new-subsystem
->> (See the list of subsystem names on the web dashboard)
->>
->> If the report is a duplicate of another one, reply with:
->> #syz dup: exact-subject-of-another-report
->>
->> If you want to undo deduplication, reply with:
->> #syz undup
->>
+> diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+> index 75c85eec21b3..fb5392b749ff 100644
+> --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> @@ -90,11 +90,15 @@ static void vfio_send_intx_eventfd(void *opaque, void *unused)
+>  
+>  	if (likely(is_intx(vdev) && !vdev->virq_disabled)) {
+>  		struct vfio_pci_irq_ctx *ctx;
+> +		struct eventfd_ctx *trigger;
+>  
+>  		ctx = vfio_irq_ctx_get(vdev, 0);
+>  		if (WARN_ON_ONCE(!ctx))
+>  			return;
+> -		eventfd_signal(ctx->trigger);
+> +
+> +		trigger = READ_ONCE(ctx->trigger);
+> +		if (likely(trigger))
+> +			eventfd_signal(trigger);
+>  	}
+>  }
+>  
+> @@ -253,100 +257,100 @@ static irqreturn_t vfio_intx_handler(int irq, void *dev_id)
+>  	return ret;
+>  }
+>  
+> -static int vfio_intx_enable(struct vfio_pci_core_device *vdev)
+> +static int vfio_intx_enable(struct vfio_pci_core_device *vdev,
+> +			    struct eventfd_ctx *trigger)
+>  {
+> +	struct pci_dev *pdev = vdev->pdev;
+>  	struct vfio_pci_irq_ctx *ctx;
+> +	unsigned long irqflags;
+> +	char *name;
+> +	int ret;
+>  
+>  	if (!is_irq_none(vdev))
+>  		return -EINVAL;
+>  
+> -	if (!vdev->pdev->irq)
+> +	if (!pdev->irq)
+>  		return -ENODEV;
+>  
+> +	name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)", pci_name(pdev));
+> +	if (!name)
+> +		return -ENOMEM;
+> +
+>  	ctx = vfio_irq_ctx_alloc(vdev, 0);
+>  	if (!ctx)
+>  		return -ENOMEM;
+>  
+> +	ctx->name = name;
+> +	ctx->trigger = trigger;
+> +
+>  	/*
+> -	 * If the virtual interrupt is masked, restore it.  Devices
+> -	 * supporting DisINTx can be masked at the hardware level
+> -	 * here, non-PCI-2.3 devices will have to wait until the
+> -	 * interrupt is enabled.
+> +	 * Fill the initial masked state based on virq_disabled.  After
+> +	 * enable, changing the DisINTx bit in vconfig directly changes INTx
+> +	 * masking.  igate prevents races during setup, once running masked
+> +	 * is protected via irqlock.
+> +	 *
+> +	 * Devices supporting DisINTx also reflect the current mask state in
+> +	 * the physical DisINTx bit, which is not affected during IRQ setup.
+> +	 *
+> +	 * Devices without DisINTx support require an exclusive interrupt.
+> +	 * IRQ masking is performed at the IRQ chip.  Again, igate protects
+> +	 * against races during setup and IRQ handlers and irqfds are not
+> +	 * yet active, therefore masked is stable and can be used to
+> +	 * conditionally auto-enable the IRQ.
+> +	 *
+> +	 * irq_type must be stable while the IRQ handler is registered,
+> +	 * therefore it must be set before request_irq().
+>  	 */
+>  	ctx->masked = vdev->virq_disabled;
+> -	if (vdev->pci_2_3)
+> -		pci_intx(vdev->pdev, !ctx->masked);
+> +	if (vdev->pci_2_3) {
+> +		pci_intx(pdev, !ctx->masked);
+> +		irqflags = IRQF_SHARED;
+> +	} else {
+> +		irqflags = ctx->masked ? IRQF_NO_AUTOEN : 0;
+> +	}
+>  
+>  	vdev->irq_type = VFIO_PCI_INTX_IRQ_INDEX;
+>  
+> +	ret = request_irq(pdev->irq, vfio_intx_handler,
+> +			  irqflags, ctx->name, vdev);
+> +	if (ret) {
+> +		vdev->irq_type = VFIO_PCI_NUM_IRQS;
+> +		kfree(name);
+> +		vfio_irq_ctx_free(vdev, ctx, 0);
+> +		return ret;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> -static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
+> +static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev,
+> +				struct eventfd_ctx *trigger)
+>  {
+>  	struct pci_dev *pdev = vdev->pdev;
+> -	unsigned long irqflags = IRQF_SHARED;
+>  	struct vfio_pci_irq_ctx *ctx;
+> -	struct eventfd_ctx *trigger;
+> -	unsigned long flags;
+> -	int ret;
+> +	struct eventfd_ctx *old;
+>  
+>  	ctx = vfio_irq_ctx_get(vdev, 0);
+>  	if (WARN_ON_ONCE(!ctx))
+>  		return -EINVAL;
+>  
+> -	if (ctx->trigger) {
+> -		free_irq(pdev->irq, vdev);
+> -		kfree(ctx->name);
+> -		eventfd_ctx_put(ctx->trigger);
+> -		ctx->trigger = NULL;
+> -	}
+> -
+> -	if (fd < 0) /* Disable only */
+> -		return 0;
+> -
+> -	ctx->name = kasprintf(GFP_KERNEL_ACCOUNT, "vfio-intx(%s)",
+> -			      pci_name(pdev));
+> -	if (!ctx->name)
+> -		return -ENOMEM;
+> -
+> -	trigger = eventfd_ctx_fdget(fd);
+> -	if (IS_ERR(trigger)) {
+> -		kfree(ctx->name);
+> -		return PTR_ERR(trigger);
+> -	}
+> +	old = ctx->trigger;
+>  
+> -	ctx->trigger = trigger;
+> +	WRITE_ONCE(ctx->trigger, trigger);
+>  
+> -	/*
+> -	 * Devices without DisINTx support require an exclusive interrupt,
+> -	 * IRQ masking is performed at the IRQ chip.  The masked status is
+> -	 * protected by vdev->irqlock. Setup the IRQ without auto-enable and
+> -	 * unmask as necessary below under lock.  DisINTx is unmodified by
+> -	 * the IRQ configuration and may therefore use auto-enable.
+> -	 */
+> -	if (!vdev->pci_2_3)
+> -		irqflags = IRQF_NO_AUTOEN;
+> -
+> -	ret = request_irq(pdev->irq, vfio_intx_handler,
+> -			  irqflags, ctx->name, vdev);
+> -	if (ret) {
+> -		ctx->trigger = NULL;
+> -		kfree(ctx->name);
+> -		eventfd_ctx_put(trigger);
+> -		return ret;
+> +	/* Releasing an old ctx requires synchronizing in-flight users */
+> +	if (old) {
+> +		synchronize_irq(pdev->irq);
+> +		vfio_virqfd_flush_thread(&ctx->unmask);
+> +		eventfd_ctx_put(old);
+>  	}
+>  
+> -	spin_lock_irqsave(&vdev->irqlock, flags);
+> -	if (!vdev->pci_2_3 && !ctx->masked)
+> -		enable_irq(pdev->irq);
+> -	spin_unlock_irqrestore(&vdev->irqlock, flags);
+> -
+>  	return 0;
+>  }
+>  
+>  static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
+>  {
+> +	struct pci_dev *pdev = vdev->pdev;
+>  	struct vfio_pci_irq_ctx *ctx;
+>  
+>  	ctx = vfio_irq_ctx_get(vdev, 0);
+> @@ -354,10 +358,13 @@ static void vfio_intx_disable(struct vfio_pci_core_device *vdev)
+>  	if (ctx) {
+>  		vfio_virqfd_disable(&ctx->unmask);
+>  		vfio_virqfd_disable(&ctx->mask);
+> +		free_irq(pdev->irq, vdev);
+> +		if (ctx->trigger)
+> +			eventfd_ctx_put(ctx->trigger);
+> +		kfree(ctx->name);
+> +		vfio_irq_ctx_free(vdev, ctx, 0);
+>  	}
+> -	vfio_intx_set_signal(vdev, -1);
+>  	vdev->irq_type = VFIO_PCI_NUM_IRQS;
+> -	vfio_irq_ctx_free(vdev, ctx, 0);
+>  }
+>  
+>  /*
+> @@ -641,19 +648,23 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
+>  		return -EINVAL;
+>  
+>  	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
+> +		struct eventfd_ctx *trigger = NULL;
+>  		int32_t fd = *(int32_t *)data;
+>  		int ret;
+>  
+> -		if (is_intx(vdev))
+> -			return vfio_intx_set_signal(vdev, fd);
+> +		if (fd >= 0) {
+> +			trigger = eventfd_ctx_fdget(fd);
+> +			if (IS_ERR(trigger))
+> +				return PTR_ERR(trigger);
+> +		}
+>  
+> -		ret = vfio_intx_enable(vdev);
+> -		if (ret)
+> -			return ret;
+> +		if (is_intx(vdev))
+> +			ret = vfio_intx_set_signal(vdev, trigger);
+> +		else
+> +			ret = vfio_intx_enable(vdev, trigger);
+>  
+> -		ret = vfio_intx_set_signal(vdev, fd);
+> -		if (ret)
+> -			vfio_intx_disable(vdev);
+> +		if (ret && trigger)
+> +			eventfd_ctx_put(trigger);
+>  
+>  		return ret;
+>  	}
+
 
