@@ -1,314 +1,200 @@
-Return-Path: <linux-kernel+bounces-98593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD90877C65
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:15:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44EC4877C6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:16:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41D8D1C20D97
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:15:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED94F2822AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5099717562;
-	Mon, 11 Mar 2024 09:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA1B29CFD;
+	Mon, 11 Mar 2024 09:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCV5vGPc"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D6Y0QbU0"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6541C22F14;
-	Mon, 11 Mar 2024 09:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 832C517578;
+	Mon, 11 Mar 2024 09:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148512; cv=none; b=GCzDqaRtFiRBn34lrZGxq9Lp1CLAvZ+UVNDk3QnpiZ9S/MP5emIq2c46H1SddbcUVsg6gPkiSMZTM5r4zcxoyIV38XudA42tKk3EYrpSN0sK2CVCKhgmLmom4mfhcxZ0r6yyAXjZ4znN41llII2Mg/0s74TdKZpxEAE0+On3e6I=
+	t=1710148515; cv=none; b=Da5nInxzfpBrRh/8Hvnje1hycxCCrjZRn3i3EfthvbttTw5RvN33UdxFeH3gVDIqHlYJcC+Wu8uPETHkjjEeAp2FXAw8YXlLT9NdLfBqcARYqPhMjnozITKaTNB6JtEmGW24chsXWj7o0x6BYUsYkJKbzHQt2675a8a83qJYlJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148512; c=relaxed/simple;
-	bh=GhLIU5sRaBTZKgau5yc14KuQA31H1roC2T/f0x3Fi+k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZNH25FrWIvnE95fPitOXaKpe+LmaYx5fttzl8yXwceQQdX4xJULIz1liqPMBhsDRaegLWqs7FAGFQ0/MkoDNywxvAyr7ngmUjfLk1j03G1HhQ76l5JpiPjniYC6eIxG/7ynWupOxglV73yjiUJ8eqcw4LLUxt4BX1ynqWwCU68c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nCV5vGPc; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1710148515; c=relaxed/simple;
+	bh=rguz1TbWj7waSq9k6cTHsDuJxtVExG1UCcqMJ6lcxCU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hxtrD+I5W1RjPzjLCXUUsOZ9ZwkdLc4SaJg6wwy4F0eGchDhRh+a9+GQL4gX/CyERPgDpFFBVhpDqvI1aVNqH4y3ab0jy5Vs3+OUBO+/gPowKg/hePfWnZiHZCtGi7SSrgnzLcVCCbiMrAQFJwgY0jgXgAdgUMCW9LdAwv53UIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D6Y0QbU0; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5c66b093b86so3799484a12.0;
-        Mon, 11 Mar 2024 02:15:10 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-512e39226efso3957574e87.0;
+        Mon, 11 Mar 2024 02:15:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710148510; x=1710753310; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MWhBUNsPmm62H/e0c8fmAcvywcTD8S5kwEzqcIxgQ8c=;
-        b=nCV5vGPcTWUYrDsJ8ZCo8QU4KEE031kvdF7f8OoehwUP+zxz3p2DiAMq3vlpxueNtN
-         RXK6sd0WIcEcyEHlOnhkU/PvmuKzAD9ftjAQYLqTevW+ReL/1dzQ8T4S1WMMlYg4IkII
-         nJ6vsKC3C9jBo73b/SAZ4aUpLkvqRU2i8Irb1EMCnDFteorcPp4v1cin0HCtm/I9tEp2
-         PJx//26nFt3PSJ7qM3q6RSqrKtX4NQFRnp2Jd9t42DdN9zqsaBnLI2KMSDk7dtboptqM
-         9dlrLuOY4y/q8/JX2YoqTuwpKNO54JhBFdxZHyCOGsschJNp1rFxoecjjMjYtkZU3TCy
-         dL8w==
+        d=gmail.com; s=20230601; t=1710148511; x=1710753311; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hVfC7dWRDVEdwYmburdeFeTuR7MqSLqjlM27oJ2hlUQ=;
+        b=D6Y0QbU07E7yCmqG/5e4yuhGGdCeIhaqry0dpFsxkGlVbRiaZegx21awdUYiFSU9Xd
+         gB/+GGERM0h8h5E86l1A22QhnKGfuBzaD1LTiAZshZXzqrQ8VAyz7oP2FH//4MiESRPj
+         jlernuh/bdNR8yCx+wpeE9QUuLdr650gN7PtuzfTM2E4HmPe8mGHFi8TD8tsk28ZwCQj
+         23nqMjzwzxq73nsqWNIC2s2POdtM41/ZqItIBs/HyFTs04d0Cpn3t8ykUaRnyMBitNeJ
+         4fSjEgXPvKTzxey8UrqoAnxspwgzRDi+9B9h2tRNSaSGcGJ5hde4gceY7LHXz68zMM2N
+         RGuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710148510; x=1710753310;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MWhBUNsPmm62H/e0c8fmAcvywcTD8S5kwEzqcIxgQ8c=;
-        b=Opri9sINrAc2NXXdaKrhPLrN3IxaruILODWmGaDks5jBWgBedrfqw0GQ1hue+PflzY
-         tFfYmxYDAFoC3J/fg8OgeuzGADwRDmRySrgdEBecy5ElreXA5KIuii5Uoq443qPD0NSx
-         H5uIWo7oJb1cfXSehcNCnLSxYKoMeuZo8uuA86mrLOQd3BUUhfzanqmJFT+0AHcHMvPz
-         mbxxO2ZA5ZuOZbSL3Lum8FgN+CHdZvxI/GLoFkW0c85u62dXXhTzRPPRt232r1JsTFr5
-         LQL8n5c84VR20arRW/G9jAwYkiIU9QN0SeIwqwOQT/JEr8jhS7SD1mhObopSDlUgL4hv
-         11EQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW5dsCXGQNqGoWqd56XtQKAYfw0G7TtPTJF/qeozpm4mReMbuMIjLG9czmW5+O0tSIytfpfJcCh5J5Oqnyy3x+r9+WAg4dly932FOZjRzAkQyLA6n2XRJI/pKjhknJ5FXKfNotIrB+abZeBlyndFHAgYzCi91RFxM/iZeQ/4qIzDY2sBHg=
-X-Gm-Message-State: AOJu0Yz0Nb/cKy6WdWMGeSDK9QdP5G4+OE7FrnGBSx+ON6doc6LMiHcE
-	u/mB0wPrlMw8HXqmkyCpdbWXIu0J7jengDv4o3NxtscbNZ4D6gPsGfZHYq7FZLUTj904VVZR/x4
-	Ht/sAO7ItxyQ9grWLrewJSI4JVe8=
-X-Google-Smtp-Source: AGHT+IGEF8HVRO+OB9AHJrnM3e1i1OuhRKOD7oSnDWd/K1yvW1ptiJK1DEDo1LYr8J7cqqWsg8Boqm/w7XqXFGr8ces=
-X-Received: by 2002:a17:90a:72ce:b0:29b:a345:620a with SMTP id
- l14-20020a17090a72ce00b0029ba345620amr8375253pjk.20.1710148509691; Mon, 11
- Mar 2024 02:15:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710148511; x=1710753311;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hVfC7dWRDVEdwYmburdeFeTuR7MqSLqjlM27oJ2hlUQ=;
+        b=R0VGTKolPZkvUCD0m534ugPE+cOotARblIWqPkBZLng7QHG/8Fp4024rATvoo3Eqsb
+         ZNKS9QDsvUrV4yODgkKXlVcp2qA69fmKSPxnZk9EHfBjw6/qtiW1OA2KEjHceivKKnBf
+         JwtEyHbIcFuTF9tKr4ZW4V71qnar8aUxevCBgMB3iJfJCkk3ovAvu3l4cmML9q+42EZJ
+         Npjm3FTiBOdj3HbPk8UFjC5u09qGhT8EIL17pEMdfA5lNNPuPpjfpg71nNYIDfmYWJdx
+         O7DpR23mdF5k4HnUVxIYFMlzcn5cz0FdhW6a/VQPU8d+i3ZKKGHjqeG5ldSxhTYTu4wN
+         UwCg==
+X-Forwarded-Encrypted: i=1; AJvYcCWRj0fzJZ+/bDqaUneWKatjeSMpHPunxY4lvll+lUGYqxgKBShs8qtOzSChEFeYOfY/RmvbAMbOSRwTjNJrkQBM3lrraOfNOt7HgX4xzpq9ttHOsvezZjUgHw8yEMirD1hVfMsLT1Kq8j65Gab+p9B1CvyPlRejUhKcqPnmVVxYnUc7jw==
+X-Gm-Message-State: AOJu0YzG/4Lqzo+k8E9XUSebth62ox+jOYhEfYtidPkXUKPKmI0K0mpH
+	MX30hiQbI/nZttGNfeT42ZwUD3NKyWw48aMv9mXcP7z6SjQG8Lji
+X-Google-Smtp-Source: AGHT+IF9BcQoQLLpHtF0e37ZBQTx1DJ5KD7KbcJ7irjGDUuJqjlydGfnwUtZ+Q152Mw6uXTpfNY+2w==
+X-Received: by 2002:ac2:484a:0:b0:513:3741:7357 with SMTP id 10-20020ac2484a000000b0051337417357mr3957581lfy.56.1710148511259;
+        Mon, 11 Mar 2024 02:15:11 -0700 (PDT)
+Received: from [172.16.183.82] ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id h4-20020a056512350400b005139c3c584bsm951164lfs.241.2024.03.11.02.15.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 02:15:11 -0700 (PDT)
+Message-ID: <02e2210d-9164-431e-8fe2-226cb1aa2d48@gmail.com>
+Date: Mon, 11 Mar 2024 11:15:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000006dbb0b06133aacee@google.com>
-In-Reply-To: <0000000000006dbb0b06133aacee@google.com>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Mon, 11 Mar 2024 17:14:58 +0800
-Message-ID: <CALm+0cVun=SSczF2hJPJFZU85NMmntScWAFLL7e9pXJiVt+qWw@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] [input?] [usb?] INFO: rcu detected stall in asm_exc_page_fault
-To: syzbot <syzbot+360faf5c01a5be55581d@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-usb@vger.kernel.org, 
-	pasha.tatashin@soleen.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 0/5] Support ROHM BU27034 ALS sensor
+Content-Language: en-US, en-GB
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ linux-iio@vger.kernel.org, Shreeya Patel <shreeya.patel@collabora.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Paul Gazzillo <paul@pgazz.com>, Rob Herring <robh+dt@kernel.org>,
+ Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+ linux-kernel@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <cover.1680263956.git.mazziesaccount@gmail.com>
+ <ff8d6d14-6b48-4347-8525-e05eeb9721ff@gmail.com>
+ <20240309175056.3862630f@jic23-huawei>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20240309175056.3862630f@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    90d35da658da Linux 6.8-rc7
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=122f6f6a180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=119d08814b43915b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=360faf5c01a5be55581d
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124056de180000
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/fb2c1adf4ec3/disk-90d35da6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/09c5b88a8ceb/vmlinux-90d35da6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5e5cbc312e49/bzImage-90d35da6.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+360faf5c01a5be55581d@syzkaller.appspotmail.com
+On 3/9/24 19:50, Jonathan Cameron wrote:
+> On Mon, 4 Mar 2024 14:38:38 +0200
+> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-master
+>> I just found out that the BU27034 sensor which was developed when I
+>> wrote this driver had some "manufacturing issues"... The full model
+>> number was BU27034NUC. The has been cancelled, and, as far as I know, no
+>> significant number of those were manufactured.
+> 
+> ouch. We all have some cancelled products in our history!
+> When that happens I usually go eat cake and moan at anyone standing
+> near by.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7019a40457a6..69e344f07e68 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9233,6 +9233,7 @@ void show_state_filter(unsigned int state_filter)
-                 */
-                touch_nmi_watchdog();
-                touch_all_softlockup_watchdogs();
-+               rcu_cpu_stall_reset();
-                if (state_filter_match(state_filter, p))
-                        sched_show_task(p);
-        }
+I like that approach :) Luckily, this was just a sensor. It was much 
+more painful back in the Nokia when some of the BTS variants were 
+cancelled. It flushed 'man years' of work instead of 'man months' :)
 
+> At least this seems like there will be some direct use of
+> the work done (sometimes you just have to list the things learnt along
+> the way).
 
+Yes! It wasn't all wasted effort!
 
+>> One thing that has _not_ changed though is the part-id :rolleyes:
+> 
+> *sigh* Not even a version number?
 
->
-> rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: {
->  1-....
->  } 4831 jiffies s: 1849 root: 0x2/.
-> rcu: blocking rcu_node structures (internal RCU debug):
-> Sending NMI from CPU 0 to CPUs 1:
->  kthread+0x2ef/0x390 kernel/kthread.c:388
-> NMI backtrace for cpu 1
-> CPU: 1 PID: 5232 Comm: syz-executor.3 Not tainted 6.8.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-> RIP: 0010:format_decode+0x546/0x1bb0
-> Code: 85 96 01 00 00 45 84 ff 0f 84 8d 01 00 00 48 bb 00 ff ff ff 00 ff ff ff 48 8b 44 24 20 42 0f b6 04 30 84 c0 0f 85 4d 10 00 00 <48> 8b 54 24 48 48 21 da 48 8b 44 24 28 42 0f b6 04 30 84 c0 48 8d
-> RSP: 0000:ffffc900001efa20 EFLAGS: 00000046
-> RAX: 0000000000000000 RBX: ffffff00ffffff00 RCX: ffff8880219e0000
-> RDX: ffff8880219e0000 RSI: 0000000000000025 RDI: 0000000000000000
-> RBP: ffffc900001efb10 R08: ffffffff8b57a4c8 R09: ffffffff8b57a1aa
-> R10: 0000000000000002 R11: ffff8880219e0000 R12: ffffffff8bab75e6
-> R13: ffffffff8bab75e6 R14: dffffc0000000000 R15: 0000000000000025
-> FS:  0000555555c82480(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f74dc087056 CR3: 0000000021bc6000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <NMI>
->  </NMI>
->  <IRQ>
->  vsnprintf+0x14f/0x1da0 lib/vsprintf.c:2776
->  sprintf+0xda/0x120 lib/vsprintf.c:3028
->  print_time kernel/printk/printk.c:1324 [inline]
->  info_print_prefix+0x16b/0x310 kernel/printk/printk.c:1350
->  record_print_text kernel/printk/printk.c:1399 [inline]
->  printk_get_next_message+0x408/0xce0 kernel/printk/printk.c:2828
->  console_emit_next_record kernel/printk/printk.c:2868 [inline]
->  console_flush_all+0x42d/0xec0 kernel/printk/printk.c:2967
->  console_unlock+0x13b/0x4d0 kernel/printk/printk.c:3036
->  vprintk_emit+0x508/0x720 kernel/printk/printk.c:2303
->  _printk+0xd5/0x120 kernel/printk/printk.c:2328
->  printk_stack_address arch/x86/kernel/dumpstack.c:72 [inline]
->  show_trace_log_lvl+0x438/0x520 arch/x86/kernel/dumpstack.c:285
->  sched_show_task+0x50c/0x6d0 kernel/sched/core.c:9171
->  show_state_filter+0x19e/0x270 kernel/sched/core.c:9216
->  kbd_keycode drivers/tty/vt/keyboard.c:1524 [inline]
->  kbd_event+0x30fa/0x4910 drivers/tty/vt/keyboard.c:1543
->  input_to_handler drivers/input/input.c:132 [inline]
->  input_pass_values+0x945/0x1200 drivers/input/input.c:161
->  input_event_dispose drivers/input/input.c:378 [inline]
->  input_handle_event drivers/input/input.c:406 [inline]
->  input_repeat_key+0x3fd/0x6c0 drivers/input/input.c:2263
->  call_timer_fn+0x17e/0x600 kernel/time/timer.c:1700
->  expire_timers kernel/time/timer.c:1751 [inline]
->  __run_timers+0x621/0x830 kernel/time/timer.c:2038
->  run_timer_softirq+0x67/0xf0 kernel/time/timer.c:2051
->  __do_softirq+0x2bb/0x942 kernel/softirq.c:553
->  invoke_softirq kernel/softirq.c:427 [inline]
->  __irq_exit_rcu+0xf1/0x1c0 kernel/softirq.c:632
->  irq_exit_rcu+0x9/0x30 kernel/softirq.c:644
->  sysvec_apic_timer_interrupt+0x97/0xb0 arch/x86/kernel/apic/apic.c:1076
->  </IRQ>
->  <TASK>
->  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:649
-> RIP: 0010:page_table_check_set+0x58/0x700 mm/page_table_check.c:109
-> Code: 95 ff 85 ed 0f 84 5f 03 00 00 49 bf 00 00 00 00 00 fc ff df 48 c1 e3 06 48 bd 00 00 00 00 00 ea ff ff 48 8d 3c 2b 48 89 3c 24 <e8> 33 e9 ff ff 49 89 c6 4c 8d 64 2b 08 4c 89 e5 48 c1 ed 03 42 80
-> RSP: 0000:ffffc90004d0f650 EFLAGS: 00000202
-> RAX: 0000000000000000 RBX: 0000000001c8ae80 RCX: ffff8880219e0000
-> RDX: ffff8880219e0000 RSI: 0000000000000001 RDI: ffffea0001c8ae80
-> RBP: ffffea0000000000 R08: ffffffff81fdf590 R09: 1ffffffff1f0880d
-> R10: dffffc0000000000 R11: fffffbfff1f0880e R12: 0000000000000000
-> R13: 0000000000000001 R14: 00000000722ba025 R15: dffffc0000000000
->  __page_table_check_ptes_set+0x220/0x280 mm/page_table_check.c:196
->  page_table_check_ptes_set include/linux/page_table_check.h:74 [inline]
->  set_ptes include/linux/pgtable.h:241 [inline]
->  set_pte_range+0x885/0x8b0 mm/memory.c:4549
->  filemap_map_order0_folio mm/filemap.c:3513 [inline]
->  filemap_map_pages+0xee2/0x1830 mm/filemap.c:3559
->  do_fault_around mm/memory.c:4716 [inline]
->  do_read_fault mm/memory.c:4749 [inline]
->  do_fault mm/memory.c:4888 [inline]
->  do_pte_missing mm/memory.c:3745 [inline]
->  handle_pte_fault mm/memory.c:5164 [inline]
->  __handle_mm_fault+0x485d/0x72d0 mm/memory.c:5305
->  handle_mm_fault+0x27e/0x770 mm/memory.c:5470
->  do_user_addr_fault arch/x86/mm/fault.c:1355 [inline]
->  handle_page_fault arch/x86/mm/fault.c:1498 [inline]
->  exc_page_fault+0x456/0x870 arch/x86/mm/fault.c:1554
->  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-> RIP: 0033:0x7f74dc087080
-> Code: Unable to access opcode bytes at 0x7f74dc087056.
-> RSP: 002b:00007ffe028d3bb8 EFLAGS: 00010246
-> RAX: 00007f74dcdfb9d0 RBX: 00007f74dcdfb6c0 RCX: 00007f74dc07de67
-> RDX: 0000000000000003 RSI: 0000000000020000 RDI: 00007f74dcdfb6c0
-> RBP: 0000000000000000 R08: 00000000ffffffff R09: 0000000000000000
-> R10: 0000000000021000 R11: 0000000000000206 R12: 00007ffe028d3e60
-> R13: ffffffffffffffc0 R14: 0000000000001000 R15: 0000000000000000
->  </TASK>
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> task:kworker/u4:0    state:I stack:24400 pid:11    tgid:11    ppid:2      flags:0x00004000
-> Workqueue:  0x0 (events_unbound)
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  worker_thread+0xc26/0x1000 kernel/workqueue.c:2802
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> task:kworker/u4:1    state:I stack:23344 pid:12    tgid:12    ppid:2      flags:0x00004000
-> Workqueue:  0x0 (bat_events)
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  worker_thread+0xc26/0x1000 kernel/workqueue.c:2802
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> task:kworker/R-mm_pe state:I stack:28752 pid:13    tgid:13    ppid:2      flags:0x00004000
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  rescuer_thread+0xc45/0xda0 kernel/workqueue.c:2937
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> task:rcu_tasks_kthre state:I stack:27448 pid:14    tgid:14    ppid:2      flags:0x00004000
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  rcu_tasks_one_gp+0x7f5/0xda0 kernel/rcu/tasks.h:578
->  rcu_tasks_kthread+0x186/0x1b0 kernel/rcu/tasks.h:625
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> task:rcu_tasks_trace state:I stack:27144 pid:15    tgid:15    ppid:2      flags:0x00004000
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5400 [inline]
->  __schedule+0x177f/0x49a0 kernel/sched/core.c:6727
->  __schedule_loop kernel/sched/core.c:6802 [inline]
->  schedule+0x149/0x260 kernel/sched/core.c:6817
->  rcu_tasks_one_gp+0x7f5/0xda0 kernel/rcu/tasks.h:578
->  rcu_tasks_kthread+0x186/0x1b0 kernel/rcu/tasks.h:625
->  kthread+0x2ef/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> task:ksoftirqd/0
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
->
+No.
+
+> Even unreleased / prototype parts should have
+> different IDs if anything in the interface changed.
+
+..tell me about it... Well, I tried to send feedback - but I am not 
+convinced this is not happening again. I think I could fill a book with 
+feedback which has had not been listened in the past - but who knows, 
+occasionally feedback also works. So, we can keep trying. :)
+
+>> My preferred approach would be to convert the in-tree bu27034 driver to
+>> support this new variant. I think it makes sense because:
+>> - (I expect) the amount of code to review will be much smaller this way
+>>     than it would be if current driver was completely removed, and new one
+>>     submitted.
+>> - This change will not break existing users as there should not be such
+>>     (judging the statement that the original BU27034NUC was cancelled
+>>     before it was sold "en masse").
+>>
+>> It sure is possible to drop the existing driver and submit a new one
+>> too, but I think it will be quite a bit more work with no strong benefits.
+> 
+> Agreed, modify the existing driver. Just needs a clear statement in
+> patch descriptions that the original part is not expected to be in the wild.
+
+ack.
+
+>> I expect the rest of the information to be shared to me during the next
+>> couple of days, and I hope I can start testing the driver immediately
+>> when I get the HW.
+>>
+>> My question is, do you prefer the changes to be sent as one "support
+>> BU27034ANUC patch, of would you rather see changes splitted to pieces
+>> like: "adapt lux calculation to support BU27034ANUC", "remove obsolete
+>> DATA2 channel", "remove unsupported gains"...? Furthermore, the DT
+>> compatible was just rohm,bu27034 and did not include the ending "nuc".
+> 
+> Separate patches preferred for each feature / type of change. Mostly
+> they'll hopefully be trivial to review.
+
+I've drafted most of the changes and it seems they are more or less 
+trivial. I've not yet received the hardware so the changes are 100% 
+untested though.
+
+>> Should that compatible be removed and a new one with "anuc"-suffix be
+>> added to denote the new sensor?
+> 
+> Yes. The binding patch in particular will need a really clear statement
+> that we believe there are none in products in the wild.
+
+ack.
+
+>> I am truly sorry for all the unnecessary reviewing and maintenance work
+>> you guys did. I can assure you I didn't go through it for fun either -
+>> even if the coding was fun :) I guess even the "upstream early" process
+>> has it's weaknesses...
+> 
+> True enough. It's always 'interesting' to not know if / when a product
+> you've upstreamed code for will launch.
+
+Indeed. Almost as interesting as having patches for a new product in 
+your "to be sent" - folder for 3 years waiting for the product to launch 
+to get permission to send the patches... Don't we all love maintaining 
+off-tree patches when we have that creeping feeling the patches will 
+never be allowed to be sent...? Asking for a friend :rolleyes:
+
+Yours,
+	-- Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
 
