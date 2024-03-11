@@ -1,141 +1,218 @@
-Return-Path: <linux-kernel+bounces-99290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC80F87860E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:10:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0656878613
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CE811F21D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:10:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 900EE281F20
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590954C61C;
-	Mon, 11 Mar 2024 17:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 030864D59B;
+	Mon, 11 Mar 2024 17:11:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OOEYxatM"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g8ju/OH8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B21D4AEC9;
-	Mon, 11 Mar 2024 17:09:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5C33BB29;
+	Mon, 11 Mar 2024 17:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710176994; cv=none; b=aZukGRYcP2oronUnKBOwLpMMgac+O793u+rGPyQsMICyvN/FPQ0FHGmJfNc6guo/kvlS2HJHwhCd+AtPfpre0fQmQZHW+166vQPaWJ89ys996MNpg9Hkt/ABeBjQrwn3lQfXp4SvWqWnUbjwb2O4Lrd2mRtucXXMlF9TLBHrHKc=
+	t=1710177066; cv=none; b=Rkm+Nyeg2J72lmCqSW4D3yqMj9w+5tzzLwkzXQ7hzCi5Vo/zuT7O1iicR1cD//NJkB4zsNP/3c9EvpUo12O314vB4w5HL8OT6n+GTPcArEZYbuK7MyK07cfnB5s8OvcHqGtjY627KrjXU+lgC4JcSLbBcZ7VTeOFqmD37cIWGUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710176994; c=relaxed/simple;
-	bh=yy7nLIc9ARnpjfGsqcuqP0zQZXEMX49eVq06dLU0h04=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=L6eOIrEswQOSjh38JSVCrLy6HNa8K3UFEh+3KZwlG4rbBEJicWT2x52yg9xc5Tlwmd6BC1HbBRNus80Jnw4vjoA1UrsNStZ800EvPAReSUVxa1IyLVf6sgMtYsG4mQZZlvOiDYZTCiho957IWzchKIsY223FB8KWgKtPULrgEFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OOEYxatM; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710176991;
-	bh=yy7nLIc9ARnpjfGsqcuqP0zQZXEMX49eVq06dLU0h04=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=OOEYxatMo5uTX/liE3V8JTujD6RVwmqScXEq20wkVnKvQCPQp6BdkOCR+qurJbIqt
-	 FVsNOJFGhfW3CH1wX91vAwkkF0+pgDXGkiFeCCuQ85xmp+4NNmqi1bn34jXKxq88Qb
-	 I2Fw4fNQpf/5eXabYSKq90AICCvAgp28ejqIXKbWwczWdd6clPCCgOLB5s+PyNN2OL
-	 fL2AmIiW0UBpUg24faQPjJ1RaPIrqjNja4G5VCwqR+SuOMSt+RJUxQSmDrcWS/1s30
-	 nIblG1ZKfqRVEwqIVTu19PoD24K/0rQDNJ5fkFnsza8emwbkJAPjb0tkCk+mu/r5vv
-	 Ql4koz6WqoJ1A==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DA073378200D;
-	Mon, 11 Mar 2024 17:09:47 +0000 (UTC)
-Message-ID: <f877ce53-a5ee-4447-a57c-339a1e9701f4@collabora.com>
-Date: Mon, 11 Mar 2024 22:10:21 +0500
+	s=arc-20240116; t=1710177066; c=relaxed/simple;
+	bh=SnWDqsNR8fmTdDjQzqXGo9Y1BV3aJUfcIxhmuN3gCeY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vd71HvyEb4FGYfnlFImEYrzFomFphiggLg/56lzLzeGBn5FZ60JJcs4CLDt4JAkndvk86xNImVKXkx5ScYswXl/WOWyYSlkO4XpHAZbV7Vbfz+vmhdRf37MYhxt1FjUM2sSvSbR4iq+dlaKT4q3TvKqpVAmquMMhPBx0b4jh5+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g8ju/OH8; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710177063; x=1741713063;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SnWDqsNR8fmTdDjQzqXGo9Y1BV3aJUfcIxhmuN3gCeY=;
+  b=g8ju/OH8GcMWiTHLqg9wqys/Oo9zwXjmOLBOgS1j4U0MO+tXLony16PK
+   +Vji5IXB5nLU521ONnS8JP0YViK4QU3D+eocrTbCcBRtggID1UiAM0xtL
+   JRGK9sPWFb6gg8r+3v+3mT/8uq304uB3tVIvkfz1xjGF+JVYtx9HFqNIv
+   fN2wDszntwwFo8I4xXhf9LhZFpaAQxFNJ9sytPY/vZe0cZ6iffmv5PKLE
+   ZvkSzwYArhnDoF6jWysvv7VEPoJYCFDqBO2mObRG4ZsbMCeNmxW3bGSvG
+   5gljO2fCrKQvAPNaoWsP+Y4FQyHryHICA6AabCUDK2SKXEB2nn5OXPreA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="30297475"
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="30297475"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 10:11:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="42150015"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 10:10:57 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 322D711FCAC;
+	Mon, 11 Mar 2024 19:10:55 +0200 (EET)
+Date: Mon, 11 Mar 2024 17:10:55 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: Umang Jain <umang.jain@ideasonboard.com>, linux-media@vger.kernel.org,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	willl will <will@willwhang.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Paul Elder <paul.elder@ideasonboard.com>,
+	Mehdi Djait <mehdi.djait@bootlin.com>,
+	Bingbu Cao <bingbu.cao@intel.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Sebastian Reichel <sre@kernel.org>,
+	Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] media: i2c: Add imx283 camera sensor driver
+Message-ID: <Ze87Hya-cqmkqjMC@kekkonen.localdomain>
+References: <20240307214048.858318-1-umang.jain@ideasonboard.com>
+ <20240307214048.858318-3-umang.jain@ideasonboard.com>
+ <Zeq7HBMqqrw4nSPj@kekkonen.localdomain>
+ <171016009901.2924028.16001544322304093037@ping.linuxembedded.co.uk>
+ <Ze8xY1bqTiXzRvKp@kekkonen.localdomain>
+ <171017536692.2924028.6522729664515712567@ping.linuxembedded.co.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- kernel-janitors@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 1/3] selftests/exec: Add the overall result line
- accourding to TAP
-Content-Language: en-US
-To: Shuah Khan <shuah@kernel.org>, Eric Biederman <ebiederm@xmission.com>
-References: <20240304155928.1818928-1-usama.anjum@collabora.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240304155928.1818928-1-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <171017536692.2924028.6522729664515712567@ping.linuxembedded.co.uk>
 
-Soft reminder!
+Hi Kieran,
 
-On 3/4/24 8:59 PM, Muhammad Usama Anjum wrote:
-> The following line is missing from the test's execution. Add it to make
-> it fully TAP conformant:
->   # Totals: pass:27 fail:0 xfail:0 xpass:0 skip:0 error:0
+On Mon, Mar 11, 2024 at 04:42:46PM +0000, Kieran Bingham wrote:
+> Quoting Sakari Ailus (2024-03-11 16:29:23)
+> > Hi Kieran,
+> > 
+> > On Mon, Mar 11, 2024 at 12:28:19PM +0000, Kieran Bingham wrote:
+> > > Hi Sakari, Umang,
+> > > 
+> > > I've replied inline below to a couple of points that I was responsible for.
+> > > 
+> > > > 
+> > > > > +
+> > > > > +struct imx283 {
+> > > > > +     struct device *dev;
+> > > > > +     struct regmap *cci;
+> > > > > +
+> > > > > +     const struct imx283_input_frequency *freq;
+> > > > > +
+> > > > > +     struct v4l2_subdev sd;
+> > > > > +     struct media_pad pad;
+> > > > > +
+> > > > > +     struct clk *xclk;
+> > > > > +
+> > > > > +     struct gpio_desc *reset_gpio;
+> > > > > +     struct regulator_bulk_data supplies[ARRAY_SIZE(imx283_supply_name)];
+> > > > > +
+> > > > > +     /* V4L2 Controls */
+> > > > > +     struct v4l2_ctrl_handler ctrl_handler;
+> > > > > +     struct v4l2_ctrl *exposure;
+> > > > > +     struct v4l2_ctrl *vblank;
+> > > > > +     struct v4l2_ctrl *hblank;
+> > > > > +     struct v4l2_ctrl *vflip;
+> > > > > +
+> > > > > +     unsigned long link_freq_bitmap;
+> > > > > +
+> > > > > +     u16 hmax;
+> > > > > +     u32 vmax;
+> > > > > +};
+> > > > > +
+> > > > > +static inline struct imx283 *to_imx283(struct v4l2_subdev *_sd)
+> > > > > +{
+> > > > > +     return container_of(_sd, struct imx283, sd);
+> > > > 
+> > > > It's a function, you can call _sd sd instead.
+> > > 
+> > > Except then that could 'look' like it is passed as the first and third
+> > > argument to container_of...
+> > 
+> > It's really a non-issue: the third argument is a field name, not a
+> > variable.
 > 
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
->  tools/testing/selftests/exec/binfmt_script.py | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+> That's not so easy to determine when the args are the same name.., but
+> it's fine with me either way.
 > 
-> diff --git a/tools/testing/selftests/exec/binfmt_script.py b/tools/testing/selftests/exec/binfmt_script.py
-> index 05f94a741c7aa..2c575a2c0eab4 100755
-> --- a/tools/testing/selftests/exec/binfmt_script.py
-> +++ b/tools/testing/selftests/exec/binfmt_script.py
-> @@ -16,6 +16,8 @@ SIZE=256
->  NAME_MAX=int(subprocess.check_output(["getconf", "NAME_MAX", "."]))
->  
->  test_num=0
-> +pass_num=0
-> +fail_num=0
->  
->  code='''#!/usr/bin/perl
->  print "Executed interpreter! Args:\n";
-> @@ -42,7 +44,7 @@ foreach my $a (@ARGV) {
->  # ...
->  def test(name, size, good=True, leading="", root="./", target="/perl",
->                       fill="A", arg="", newline="\n", hashbang="#!"):
-> -    global test_num, tests, NAME_MAX
-> +    global test_num, pass_num, fail_num, tests, NAME_MAX
->      test_num += 1
->      if test_num > tests:
->          raise ValueError("more binfmt_script tests than expected! (want %d, expected %d)"
-> @@ -80,16 +82,20 @@ def test(name, size, good=True, leading="", root="./", target="/perl",
->          if good:
->              print("ok %d - binfmt_script %s (successful good exec)"
->                    % (test_num, name))
-> +            pass_num += 1
->          else:
->              print("not ok %d - binfmt_script %s succeeded when it should have failed"
->                    % (test_num, name))
-> +            fail_num = 1
->      else:
->          if good:
->              print("not ok %d - binfmt_script %s failed when it should have succeeded (rc:%d)"
->                    % (test_num, name, proc.returncode))
-> +            fail_num = 1
->          else:
->              print("ok %d - binfmt_script %s (correctly failed bad exec)"
->                    % (test_num, name))
-> +            pass_num += 1
->  
->      # Clean up crazy binaries
->      os.unlink(script)
-> @@ -166,6 +172,8 @@ test(name="two-under-trunc-arg", size=int(SIZE/2), arg=" ")
->  test(name="two-under-leading",   size=int(SIZE/2), leading=" ")
->  test(name="two-under-lead-trunc-arg", size=int(SIZE/2), leading=" ", arg=" ")
->  
-> +print("# Totals: pass:%d fail:%d xfail:0 xpass:0 skip:0 error:0" % (pass_num, fail_num))
-> +
->  if test_num != tests:
->      raise ValueError("fewer binfmt_script tests than expected! (ran %d, expected %d"
->                       % (test_num, tests))
+> > > But if it's fine / accepted otherwise then sure.
+> > 
+> > And please use container_of_const(). :)
+> 
+> Ack. Or rather ... I'll leave that to Umang to handle, as he's managing
+> this driver now.
+> 
+> > > > > +
+> > > > > +/* Determine the exposure based on current hmax, vmax and a given SHR */
+> > > > > +static u64 imx283_exposure(struct imx283 *imx283,
+> > > > > +                        const struct imx283_mode *mode, u64 shr)
+> > > > > +{
+> > > > > +     u32 svr = 0; /* SVR feature is not currently supported */
+> > > > 
+> > > > What does this refer to? I guess you could just drop it as well if it's not
+> > > > supported?
+> > > 
+> > > Keeping this will keep the calculation matching the datasheet, and
+> > > provide clear value for what to update when we/others return to enable
+> > > long exposures.
+> > > 
+> > > So it would be nice to keep as it sort of documents/tracks the
+> > > datasheet.
+> > 
+> > Ack.
+> > 
+> > > 
+> > > 
+> > > > > +     u32 hmax = imx283->hmax;
+> > > > > +     u64 vmax = imx283->vmax;
+> > > > 
+> > > > You're not changing the values here. I wouldn't introduce temporary
+> > > > variables just for that.
+> > > > 
+> > > > > +     u32 offset;
+> > > > > +     u64 numerator;
+> > > > > +
+> > > > > +     /* Number of clocks per internal offset period */
+> > > > > +     offset = mode->mode == IMX283_MODE_0 ? 209 : 157;
+> > > > 
+> > > > Shouldn't this be in the mode definition?
+> > > 
+> > > It could be, but then there would be one copy of 209, and 9 copies of
+> > > 157. 
+> > 
+> > That would still be specified explicitly. Someone adding a new mode would
+> > easily miss this.
+> > 
+> > Or, if you can, derive this from something else that is now a part of the
+> > mode itself.
+> 
+> I don't understand the above, other than ... That's exactly what we're
+> doing here.
+
+Index of the mode, not the mode itself. They're different.
+
+> 
+> *Only* MODE_0 has an offset of 209 in the datasheet. All other modes are
+> 157.
+> 
+> This is the table being codified:
+>   https://pasteboard.co/OsKf4VX7rtrS.png
+
+Ok, fine by me. Maybe a comment at the end of the mode list to check this
+when adding new modes? There are other sources of modes than the datasheet.
 
 -- 
-BR,
-Muhammad Usama Anjum
+Sakari Ailus
 
