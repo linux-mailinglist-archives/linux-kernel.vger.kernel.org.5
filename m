@@ -1,118 +1,166 @@
-Return-Path: <linux-kernel+bounces-98520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF669877B61
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:35:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC4C5877B64
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E11961C20D3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:35:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 829092815B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB8812B70;
-	Mon, 11 Mar 2024 07:35:35 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B03B1119A;
+	Mon, 11 Mar 2024 07:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C3GBFB8v"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8E511721;
-	Mon, 11 Mar 2024 07:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E23310782
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710142535; cv=none; b=HPmCWDfxsB0KN9FIXTb/pSgqT1MSmdOvtY9PkZsdAqudTDwLVif83tAyxuHcCBsB92U882eH9wJw+e++DwxiKsjCS2QBKp7ISJ2D1TPwjLN4RT0cBiDhOcnCgq+0xGSM57T2fJRRPpAx/ie+IT9RYVTeEUpqMmul5aTIChvZLDA=
+	t=1710142579; cv=none; b=YXA5e1TMQNF34BrgE/6Wn34ZysqPPCM3L+jOQz+59mDHs8F297GN1ZALjeGqfRo6dK9ubzVJ0p1hbBkXdwxp0njhoqaTg9ax92QvXivlHtj647iQY/DS2fnX79p7kmVSv3PF7SrB83FWWOL3iWoGmO+6CdGmnQTqhBJHgZBQ5CM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710142535; c=relaxed/simple;
-	bh=7LH2wzc/LZb2FQlVliTCF9VhxXEg9MBUThqc0qpE1JU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Y6a4986lCTsrM4Gb8M9Ncon8mlkQZb8p632ReX0wAF/PCQH07Sbc+Iqvv6+b5E2XQLG/+HlldcDGUmojJShpvqbbkW+DhoB3DDVuJ9+L+PDZ8IIJNP+sS9gLWlinpebLc50aIHKblvZ1EnSCEo/Q4SeRIIi6qUS+EZZy13CwW2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TtT5X5yK0z1h1rl;
-	Mon, 11 Mar 2024 15:33:04 +0800 (CST)
-Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0BEDD14038F;
-	Mon, 11 Mar 2024 15:35:30 +0800 (CST)
-Received: from [10.67.120.108] (10.67.120.108) by
- dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 11 Mar 2024 15:35:29 +0800
-Message-ID: <b2762a93-c8e3-f467-aed6-37c7e124f7c8@huawei.com>
-Date: Mon, 11 Mar 2024 15:35:29 +0800
+	s=arc-20240116; t=1710142579; c=relaxed/simple;
+	bh=ZwyyBrLsPrfkeRO/qCdBrDIYZKyn6HgHwL7Via+LdtA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EtbcQ6T/kb1slfLQOLTXvs/e+pNjVNCa2dJ/NkjfSh1ADv1otfHWEyrHt4LqLVHg7e7GCUY1S+LTE7A35jBHev5cpyF7BgA3uJpV983gmt9hI7LeL+LdRBVk8krsPLmUE3gY29WKsg2L0EIrThfGYeFxNPGUFCF0NdcnvTsGO0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C3GBFB8v; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710142575;
+	h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LZMHRbz3Q3TluA+ZN/XoJw1oDrEBRi2FsoIFf5g/d00=;
+	b=C3GBFB8v/yEJARjyv76pmVNM3a5zdhVQSp7wKFpqHG6DdZeKxsX80BvTqmLho9VmLRGLi1
+	r12z2dTAb78N6CXiBajaLWjLBwXcPvewaWf4BkJIr8dRihY6EqoFuM8OFc+WEj95BhbIuy
+	atO3zalt+MQVTatDDwxmQ6TpCCq3mqc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-649-ReD8UVT6OYedmdKKn9S0KA-1; Mon, 11 Mar 2024 03:36:10 -0400
+X-MC-Unique: ReD8UVT6OYedmdKKn9S0KA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33e6dab9d4cso2230985f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:36:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710142569; x=1710747369;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LZMHRbz3Q3TluA+ZN/XoJw1oDrEBRi2FsoIFf5g/d00=;
+        b=ltv/ajUUIAlUI9b/DwiCpwzxepFC3w9HGpH/8tlLlNJNT7Wz93piWIlNRBzQorMWuw
+         QAtrcfRdvUjKGrvjYOVBXkvwN2B9zDVMocEmkOGagVFjdPYn/DQYUKwraSFaK2BdZA8o
+         D6uePg5ShrqvHBUPkwQrYYALWzhN+Qpn4Kg+9CnU0Z1dqmGhJT62PfrSQ0MRolnEiIM8
+         6a9cE0Se/iQLvHTFTGZaPGzYlvt/J/+y6BTSK56+vOzO5GY1zxnyuqDsuIW51FW5S9fS
+         KfYAChpgKxcsuQCHocw70TyU4OWf0lV/Bvd3yIHRtOBp3tSHsryKWuwJ0kZVgCrPjH5+
+         r2Cw==
+X-Forwarded-Encrypted: i=1; AJvYcCWcYC9ZU45yzlcjU9HUNkOB5ila/UV5SaE8R01MWDkCmIq8cNDh6ZzLlRk2y1jCqTJKbPPYoGT+Q1FKJM1tmuWCLZbXvBFqgk5G5pNz
+X-Gm-Message-State: AOJu0Yx5+BJQ6f48PHUVnLCb3e3OxoDO/J0pQ+tarM93nnbxNMnF/zqw
+	83qrFfYtYujXM4Tlz1mPHnFVLXE8S2bLaYMtHwibcU28IHG/4BpqCasrLJSRvPnTtbpKo/mtETe
+	9whNHJcIumcZUM7dZZ1zdPdseCrvuY2dBP9aziFL2wkCHqNWS8085oJEsH8RLVQ==
+X-Received: by 2002:adf:ee8c:0:b0:33e:7333:41e with SMTP id b12-20020adfee8c000000b0033e7333041emr4260960wro.11.1710142569388;
+        Mon, 11 Mar 2024 00:36:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEGnA+80vIVXmpFSNsV1K8rSwSHZO4dOGQ2TWjNGaeV7iBJ6lgek7BanByJKwojSGMFqJv4fA==
+X-Received: by 2002:adf:ee8c:0:b0:33e:7333:41e with SMTP id b12-20020adfee8c000000b0033e7333041emr4260942wro.11.1710142569014;
+        Mon, 11 Mar 2024 00:36:09 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id q11-20020adff94b000000b0033e95bf4796sm2121880wrr.27.2024.03.11.00.36.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 00:36:08 -0700 (PDT)
+Message-ID: <d57f0df4-b155-4805-9121-53a9a1c23cee@redhat.com>
+Date: Mon, 11 Mar 2024 08:36:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v3 1/3] scsi: libsas: Allow smp_execute_task() arguments
- to be on the stack
-Content-Language: en-CA
-To: Dan Carpenter <dan.carpenter@linaro.org>, <oe-kbuild@lists.linux.dev>,
-	<john.g.garry@oracle.com>, <yanaijie@huawei.com>, <jejb@linux.ibm.com>,
-	<martin.petersen@oracle.com>, <damien.lemoal@opensource.wdc.com>
-CC: <lkp@intel.com>, <oe-kbuild-all@lists.linux.dev>,
-	<linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
-References: <0cf17536-beba-4a8f-836b-553a9e0d1046@moroto.mountain>
-From: yangxingui <yangxingui@huawei.com>
-In-Reply-To: <0cf17536-beba-4a8f-836b-553a9e0d1046@moroto.mountain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggpemm500024.china.huawei.com (7.185.36.203) To
- dggpemd100001.china.huawei.com (7.185.36.94)
+User-Agent: Mozilla Thunderbird
+Reply-To: eric.auger@redhat.com
+Subject: Re: [PATCH v2 1/7] vfio/pci: Disable auto-enable of exclusive INTx
+ IRQ
+Content-Language: en-US
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: kvm@vger.kernel.org, clg@redhat.com, reinette.chatre@intel.com,
+ linux-kernel@vger.kernel.org, kevin.tian@intel.com, stable@vger.kernel.org
+References: <20240308230557.805580-1-alex.williamson@redhat.com>
+ <20240308230557.805580-2-alex.williamson@redhat.com>
+From: Eric Auger <eric.auger@redhat.com>
+In-Reply-To: <20240308230557.805580-2-alex.williamson@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Hi Alex,
 
+On 3/9/24 00:05, Alex Williamson wrote:
+> Currently for devices requiring masking at the irqchip for INTx, ie.
+> devices without DisINTx support, the IRQ is enabled in request_irq()
+> and subsequently disabled as necessary to align with the masked status
+> flag.  This presents a window where the interrupt could fire between
+> these events, resulting in the IRQ incrementing the disable depth twice.
+> This would be unrecoverable for a user since the masked flag prevents
+> nested enables through vfio.
+>
+> Instead, invert the logic using IRQF_NO_AUTOEN such that exclusive INTx
+> is never auto-enabled, then unmask as required.
+> Cc: stable@vger.kernel.org
+> Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> ---
+>  drivers/vfio/pci/vfio_pci_intrs.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+> index 237beac83809..136101179fcb 100644
+> --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> @@ -296,8 +296,15 @@ static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
+>  
+>  	ctx->trigger = trigger;
+>  
+> +	/*
+> +	 * Devices without DisINTx support require an exclusive interrupt,
+> +	 * IRQ masking is performed at the IRQ chip.  The masked status is
+> +	 * protected by vdev->irqlock. Setup the IRQ without auto-enable and
+> +	 * unmask as necessary below under lock.  DisINTx is unmodified by
+> +	 * the IRQ configuration and may therefore use auto-enable.
+If I remember correctly the main reason why the
 
-On 2024/3/11 13:42, Dan Carpenter wrote:
-> Hi Xingui,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Xingui-Yang/scsi-libsas-Allow-smp_execute_task-arguments-to-be-on-the-stack/20240307-174215
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git for-next
-> patch link:    https://lore.kernel.org/r/20240307093733.41222-2-yangxingui%40huawei.com
-> patch subject: [PATCH v3 1/3] scsi: libsas: Allow smp_execute_task() arguments to be on the stack
-> config: i386-randconfig-141-20240308 (https://download.01.org/0day-ci/archive/20240310/202403102353.jUPi6fOP-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202403102353.jUPi6fOP-lkp@intel.com/
-> 
-> New smatch warnings:
-> drivers/scsi/libsas/sas_expander.c:148 smp_execute_task() warn: possible memory leak of '_req'
-> 
-> vim +/_req +148 drivers/scsi/libsas/sas_expander.c
-> 
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  138  static int smp_execute_task(struct domain_device *dev, void *req, int req_size,
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  139  			    void *resp, int resp_size)
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  140  {
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  141  	struct scatterlist req_sg;
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  142  	struct scatterlist resp_sg;
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  143  	void *_req = kmemdup(req, req_size, GFP_KERNEL);
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  144  	void *_resp = alloc_smp_resp(resp_size);
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  145  	int ret;
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  146
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07  147  	if (!_req || !resp)
-> adfd2325dfc5cf6 Xingui Yang     2024-03-07 @148  		return -ENOMEM;
-> 
-> I haven't looked at the callers so I don't know how likely it is for one
-> of the allocations to fail and the other succeed...  But it seems
-> possible.
+vdev->pci_2_3 path is left unchanged is due to the fact the irq may not be exclusive
+and setting IRQF_NO_AUTOEN could be wrong in that case. May be worth to
+precise in the commit msg or here? Besides Reviewed-by: Eric Auger
+<eric.auger@redhat.com> Eric   
 
-Yes, it's possible. This patch has been canceled in v4. Based on John's 
-suggestion, if there are plans to resubmit modifications , we will pay 
-attention to this, thank you.
+> +	 */
+>  	if (!vdev->pci_2_3)
+> -		irqflags = 0;
+> +		irqflags = IRQF_NO_AUTOEN;
+>  
+>  	ret = request_irq(pdev->irq, vfio_intx_handler,
+>  			  irqflags, ctx->name, vdev);
+> @@ -308,13 +315,9 @@ static int vfio_intx_set_signal(struct vfio_pci_core_device *vdev, int fd)
+>  		return ret;
+>  	}
+>  
+> -	/*
+> -	 * INTx disable will stick across the new irq setup,
+> -	 * disable_irq won't.
+> -	 */
+>  	spin_lock_irqsave(&vdev->irqlock, flags);
+> -	if (!vdev->pci_2_3 && ctx->masked)
+> -		disable_irq_nosync(pdev->irq);
+> +	if (!vdev->pci_2_3 && !ctx->masked)
+> +		enable_irq(pdev->irq);
+>  	spin_unlock_irqrestore(&vdev->irqlock, flags);
+>  
+>  	return 0;
 
-Thanks,
-Xingui
 
