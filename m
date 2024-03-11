@@ -1,270 +1,197 @@
-Return-Path: <linux-kernel+bounces-99341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2708E8786E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:01:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFDE28786DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7D331F22DF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:01:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AFBE281281
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73B352F78;
-	Mon, 11 Mar 2024 18:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB69654BD8;
+	Mon, 11 Mar 2024 18:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="VOz5RRMY"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2081.outbound.protection.outlook.com [40.107.212.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WyL2tVQD"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2239C54FBE;
-	Mon, 11 Mar 2024 18:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710180004; cv=fail; b=bNavhhqanBCFyHQR055pv5TVNDRGWj9L9NkIJjUWJ5s0jsLD+RjEPqKLjDDsYoKo32ZnFp9fYIk4LyoEAAdYWl9DqIwHi817icRRGa/taJYAzsm46Hsk5LoCP8VH0QqyQsmLS2KI3N6vjeXyg7GDhAtKnHFu8dbo/6btauk6TIg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710180004; c=relaxed/simple;
-	bh=Oq56hA5WSeO+d/x8cu0Ndk5y7BaAeK4ONkSisqrTv2s=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GY1JI3fGEJZkHVwL6e+1Db2css1nJwHovhI3S+CZ24YZH2JA5jAON8N9unPDhakZvV9A0PCP6oC4OOQ/HMt0nulCAE0G/GuTWeYW+BZUZRG2HOpBtPRr+LwK9c8q0SpCeXJyIcCbXF4cQeyRDjeGUeCpNAEGBVG4cm9lR2fg6rw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=VOz5RRMY; arc=fail smtp.client-ip=40.107.212.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jPZE84xIBBZFajvkewf0pXmK4+RA3XYl/3S99/ZRkm4AnS9+7ktk+3JgHs7LM9klv+QzCtKmrvdHpPusAH3D00aE8wUAQyKEOwzloJpmWJnVAlL6tUg9MbVUdq+dr+081+Iaub5TY5zrwR/jB27s91UtWbGyw2eiKrp/lGUgOXNjeZ14iTPptsT/k4Rc94pOLhqM3RVpX2cczIzQeApVC7st1+LYEUntpqBQ9HzZ9FMdpnVeyccoZHpIphgJTsgFXb/jlCP0oyYvvmfEgfkR8rqm4v+Ait7lS84CzWBx003wCvXaj1bzQ1Fu43tkCoLDlkHYQ8NMPe4rYnzB6Elc+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FTxqHDgRsc3kLsV1HdWdGULcI0HqOb55/uG/SqAhHjg=;
- b=iOWUysTRPHE9q8H+ZAjV6erPu0ey5sA2Jupqx/5umhOJnawoBCVsYbfRYeo3CNiQmo7Uwb55rcCZ9i5s4LE/OBWWEt7BfBQVAXuekM0OXGGmQlebwzKGaUOWKDVHEnRw99ebFhrRUAYjB61UVTk6SiXroM+Hl8nGgcSnpszK4Sk1IOTuYTFEVr8ggm1DFZMqvsOqlvmLACnNIPlNzv6rKF8oqkjAnfAodsdQuSQ6izBjFR0etHlJ+XUeJHrqmyRAdGWfgHw1+BzxJ4qeble5CXea0abhKLs0NDf4z3DmPFxDQ/1r+w7B6IvnYyq/8IokrCVtESj9cAzov5gkXkiBqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FTxqHDgRsc3kLsV1HdWdGULcI0HqOb55/uG/SqAhHjg=;
- b=VOz5RRMYcgxKvDmOoxU++OZA9+OoywnUPeITaDc9ehlwjGVoDZ0tUf5kt9NhtAfmlRxyBsXAfgqesEVSaSqi6pS7hJ6IoGFcyBVY1pnvGiLJ90F2xn6fdf2vT5/OQKs3Bgab3kQXM46hMUTnKv+EHDC1CMCkVPTTcUND0/ucOW0=
-Received: from BN8PR15CA0009.namprd15.prod.outlook.com (2603:10b6:408:c0::22)
- by DM4PR12MB5748.namprd12.prod.outlook.com (2603:10b6:8:5f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
- 2024 17:59:58 +0000
-Received: from BN3PEPF0000B070.namprd21.prod.outlook.com
- (2603:10b6:408:c0:cafe::f4) by BN8PR15CA0009.outlook.office365.com
- (2603:10b6:408:c0::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36 via Frontend
- Transport; Mon, 11 Mar 2024 17:59:58 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BN3PEPF0000B070.mail.protection.outlook.com (10.167.243.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.0 via Frontend Transport; Mon, 11 Mar 2024 17:59:58 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 11 Mar
- 2024 12:59:56 -0500
-Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Mon, 11 Mar 2024 12:59:56 -0500
-From: Tanmay Shah <tanmay.shah@amd.com>
-To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <michal.simek@amd.com>, <ben.levinsky@amd.com>,
-	<tanmay.shah@amd.com>
-CC: <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v13 4/4] remoteproc: zynqmp: parse TCM from device tree
-Date: Mon, 11 Mar 2024 10:59:27 -0700
-Message-ID: <20240311175926.1625180-5-tanmay.shah@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240311175926.1625180-1-tanmay.shah@amd.com>
-References: <20240311175926.1625180-1-tanmay.shah@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B767537E3;
+	Mon, 11 Mar 2024 17:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710180001; cv=none; b=SfzUEy21WwUOg/R44JGpJf+LNyeUeFCEbDpXFja7pHcC118Ie3grjwgEkY8QY2r2JzpT6+Tf8V55EANDjfaOa0FfugCCoxVFbd/mfuGcoXOS8+EU5JfTzoPRtSmnoe0ZD7GgDarYyXs9BPrf4PhKVT67LC3cOTApay51MzKTLTo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710180001; c=relaxed/simple;
+	bh=2c3lV2jTzoYOBHWiSD2R429XF1UT/AUT774OAIhD9X8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QcwXC5lyEoSZd5Maf3RdfscjqxkSQ/g1/N27L0f2D9mFUVtV2MEjVF7usR7aCJKTS0T4IKE55VW951XCBf7xTWtzYzLCnv0x4/wlYFzs9acsMbdnEqmY41f8vCTUNX0+DSXmghm3rwYoSJd0v0jh70+Tpt0PD7bEQ/MqBbQY6Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WyL2tVQD; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29bd4dfbf56so1228973a91.3;
+        Mon, 11 Mar 2024 10:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710179998; x=1710784798; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VwzG5Nm3k5sScApQNXJxPh63PgQB/wEWtXh54ZIc9U4=;
+        b=WyL2tVQDdnLp2RXaf9XmW3L95i8laY0WpA1CdpZc57wlJCJSiXFZPyKdR620TgqGPS
+         tWMXcm8klEg2eDW7dxeA2BOSdKdFgHZvL17t8CpUqmvCov5fu//whn/92vmjwHQSV2d6
+         yO6jTnwShrbycRXcGiJbe4WVm3OfrflxWg/pMH57cdA8tIWcLGbj/KXhNkm2/qgVLNiw
+         uvN2IQqN5Qdl5yQQDfq+TbaNgJ0GPtdlAsMTKm1RCqyRdvi9FTWaCS0gb7dpWMRNGXvC
+         McYqnpGzNz5hy5TVFElA9VDtvkBvmnoHNVmEQed/JGtvn8kViLHSmiPuMUEDRd5RBJyp
+         LlQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710179998; x=1710784798;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VwzG5Nm3k5sScApQNXJxPh63PgQB/wEWtXh54ZIc9U4=;
+        b=I2XNp68b7/GznZyVXjTAZ5eq99FQFfMqhiz+P9qBXzN3/qdrJ2TM3xpQajsMDt+pdT
+         d86BwwgCaBI2f1OqP8spbAu+Rg91Zw81OfApDin5QIAskc/5b0gFooW5b3WH8q00VytC
+         zymrqlUN9ESkCvp22dwwDmL3MSTE2Q8odmxQIvyoV5sR/UX4klV6BKWTvTPM9kgJ1tJc
+         cLpctmMar/sq+MEYrSyLcneb6FniR3bjxfDMzbd6zEaj/RCuixa2g+wJqLRKlPjjQYrW
+         nIbQu63ifyfJGK3RQqDgSd5+hhg5iFSkk94QfMuPVOnE6zKUb0oUeSe/keSg8JvnIJM7
+         ghLA==
+X-Forwarded-Encrypted: i=1; AJvYcCUlCkUh8Bx/MAYKrzXcLKJvpGc48FfCla9vA4DMgYqTtVwoFUlNtUw+MpamY5eOtY/z/wQxSQL52yAKyrNnnRCInvAf4VjGRf5Ip2E/J+uf8bbo8XYlrM5ynOM+4MCO8tEFgKK+u1Id
+X-Gm-Message-State: AOJu0YzcZhE1/GX/NZPh62ft1Us+RsrEndVGE8WkZPCUkdREaQypdE/o
+	bT9qbs9zJoO66cOSO8jdMVvLG84ZQWunpjn0FRmLLZCFeIPUrcpR
+X-Google-Smtp-Source: AGHT+IFKY6YUN4OMd42c8vr9KnFOMejKrxTjFewl0BixWINQ9UOKdO7REdZ3namD0GMu3pRqLoLQpQ==
+X-Received: by 2002:a17:90a:df82:b0:299:4269:b8c9 with SMTP id p2-20020a17090adf8200b002994269b8c9mr5500216pjv.26.1710179998530;
+        Mon, 11 Mar 2024 10:59:58 -0700 (PDT)
+Received: from gmail.com ([205.251.233.182])
+        by smtp.gmail.com with ESMTPSA id z24-20020a17090ab11800b0029bacd0f271sm5952429pjq.31.2024.03.11.10.59.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 10:59:56 -0700 (PDT)
+Sender: Matt Wilson <mswilson@gmail.com>
+Received: by gmail.com (sSMTP sendmail emulation); Mon, 11 Mar 2024 10:59:54 -0700
+Date: Mon, 11 Mar 2024 10:59:54 -0700
+From: Matt Wilson <msw@linux.com>
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, cve@kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	security@kernel.org, Kees Cook <keescook@chromium.org>,
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>,
+	Pavel Machek <pavel@denx.de>, John Haxby <john.haxby@oracle.com>,
+	Marcus Meissner <meissner@suse.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roxana Bradescu <roxabee@chromium.org>,
+	Solar Designer <solar@openwall.com>, Matt Wilson <msw@amazon.com>,
+	Matt Wilson <msw@linux.com>
+Subject: Re: [RFC PATCH 2/2] doc: distros: new document about assessing
+ security vulnerabilities
+Message-ID: <Ze9GmrqiW18GMkU6@uba002e82b7465e.ant.amazon.com>
+References: <20240311150054.2945210-1-vegard.nossum@oracle.com>
+ <20240311150054.2945210-2-vegard.nossum@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB03.amd.com: tanmay.shah@amd.com does not designate
- permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B070:EE_|DM4PR12MB5748:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8c7164a0-116a-499d-51ab-08dc41f510eb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yGu41Vj+WOiyBsB/zqVCCO8ftRTIJ8dtFjxKlpxehjF96Iv2NbDOoBcpTN/uaM21Gnsulj/l6Maio26LGnhtuBjH68nN661JF0MNVwj6ZsOoujbROtFfCBKRpm9UeD4Ta3mURjF+OgQiaErxZhFiGFn4FWH0FH3jiCGpAXflYchVXtVj5DI0oGwjp7AavGCq3xoXv5qu7X4nZQifihrYR/LcJp9yDds/ixGibDGiKB18U4J4jPCRkywPEt7GujHG3Auihq8hDUF04xfTh1hv3CoEIRFyM5UbcN9QMIGHp7Cw9ZpqvRZJlRKiv9pKb5Ae1CuftCyRInXp3szRz9J0NLVjfhco+9zpDb/Tjs4m/POJXjlhb6b8b6FW4EJIli10Wq3J6f48mQTGHy52fvy2Q30HM9DsIA95uJAifqBBVagBeCkrgSeFD3o4Iwom/Jc9Y/EHmHaCNU11ayvSSSjjmA3H24Hj3QcVqDO+5ksdFhXwvCAgKr/H3x5mu9LyUgMLcAmwJMkttXbYheZ1VKAKRw9CzZUIL11eVba50xPruz/FP8TKjULMIo6e7lRnugucvXJr/cF301sNMo2zVIWG6ApxmQ1swoBu+VLCX5SQGh+mtoIDArxUDR2iG9mAsQI4pchwMwWTYpdAXltP07IdVFRLlpy2hP5NVR8H1mRIgvHqNJJSt9qHSEVLmEeppO7u8+a4/ZayGPpS+E1tyt7jCjmWAv3QwAZWjHPHAmKLYsAOJp7m6Nu+2lVDfY6PtV5K
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 17:59:58.5949
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c7164a0-116a-499d-51ab-08dc41f510eb
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B070.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5748
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311150054.2945210-2-vegard.nossum@oracle.com>
 
-ZynqMP TCM information was fixed in driver. Now ZynqMP TCM information
-is available in device-tree. Parse TCM information in driver
-as per new bindings.
+On Mon, Mar 11, 2024 at 04:00:54PM +0100, Vegard Nossum wrote:
+> On February 13, kernel.org became a CVE Numbering Authority (CNA):
+> 
+>   https://www.cve.org/Media/News/item/news/2024/02/13/kernel-org-Added-as-CNA
+> 
+> The kernel.org CNA/CVE team does not provide any kind of assessment of
+> the allocated CVEs or patches. However, this is something that many
+> distributions want and need.
+>
+> Provide a new document that can be used as a guide when assessing
+> vulnerabilities. The hope is to have a common point of reference that
+> can standardize or harmonize the process and hopefully enable more
+> cross-distribution collaboration when it comes to assessing bugfixes.
+> 
+> We deliberately emphasize the difficulty of assessing security impact
+> in the wide variety of configurations and deployments.
+> 
+> Since what most distros probably ultimately want is a type of CVSS score,
+> the guide is written with that in mind. CVSS provides its own "contextual"
+> modifiers, but these are not accurate or nuanced enough to capture the
+> wide variety of kernel configurations and deployments. We therefore focus
+> on practical evaluation under different sets of assumptions.
 
-Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
----
- drivers/remoteproc/xlnx_r5_remoteproc.c | 112 ++++++++++++++++++++++--
- 1 file changed, 107 insertions(+), 5 deletions(-)
+(sending from my msw@linux.com account to emphasize that I am speaking
+only for myself, not my current employer.)
 
-diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-index 42b0384d34f2..d4a22caebaad 100644
---- a/drivers/remoteproc/xlnx_r5_remoteproc.c
-+++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-@@ -74,8 +74,8 @@ struct mbox_info {
- };
- 
- /*
-- * Hardcoded TCM bank values. This will be removed once TCM bindings are
-- * accepted for system-dt specifications and upstreamed in linux kernel
-+ * Hardcoded TCM bank values. This will stay in driver to maintain backward
-+ * compatibility with device-tree that does not have TCM information.
-  */
- static const struct mem_bank_data zynqmp_tcm_banks_split[] = {
- 	{0xffe00000UL, 0x0, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
-@@ -757,6 +757,103 @@ static struct zynqmp_r5_core *zynqmp_r5_add_rproc_core(struct device *cdev)
- 	return ERR_PTR(ret);
- }
- 
-+static int zynqmp_r5_get_tcm_node_from_dt(struct zynqmp_r5_cluster *cluster)
-+{
-+	int i, j, tcm_bank_count, ret, tcm_pd_idx, pd_count;
-+	struct of_phandle_args out_args;
-+	struct zynqmp_r5_core *r5_core;
-+	struct platform_device *cpdev;
-+	struct mem_bank_data *tcm;
-+	struct device_node *np;
-+	struct resource *res;
-+	u64 abs_addr, size;
-+	struct device *dev;
-+
-+	for (i = 0; i < cluster->core_count; i++) {
-+		r5_core = cluster->r5_cores[i];
-+		dev = r5_core->dev;
-+		np = r5_core->np;
-+
-+		pd_count = of_count_phandle_with_args(np, "power-domains",
-+						      "#power-domain-cells");
-+
-+		if (pd_count <= 0) {
-+			dev_err(dev, "invalid power-domains property, %d\n", pd_count);
-+			return -EINVAL;
-+		}
-+
-+		/* First entry in power-domains list is for r5 core, rest for TCM. */
-+		tcm_bank_count = pd_count - 1;
-+
-+		if (tcm_bank_count <= 0) {
-+			dev_err(dev, "invalid TCM count %d\n", tcm_bank_count);
-+			return -EINVAL;
-+		}
-+
-+		r5_core->tcm_banks = devm_kcalloc(dev, tcm_bank_count,
-+						  sizeof(struct mem_bank_data *),
-+						  GFP_KERNEL);
-+		if (!r5_core->tcm_banks)
-+			return -ENOMEM;
-+
-+		r5_core->tcm_bank_count = tcm_bank_count;
-+		for (j = 0, tcm_pd_idx = 1; j < tcm_bank_count; j++, tcm_pd_idx++) {
-+			tcm = devm_kzalloc(dev, sizeof(struct mem_bank_data),
-+					   GFP_KERNEL);
-+			if (!tcm)
-+				return -ENOMEM;
-+
-+			r5_core->tcm_banks[j] = tcm;
-+
-+			/* Get power-domains id of TCM. */
-+			ret = of_parse_phandle_with_args(np, "power-domains",
-+							 "#power-domain-cells",
-+							 tcm_pd_idx, &out_args);
-+			if (ret) {
-+				dev_err(r5_core->dev,
-+					"failed to get tcm %d pm domain, ret %d\n",
-+					tcm_pd_idx, ret);
-+				return ret;
-+			}
-+			tcm->pm_domain_id = out_args.args[0];
-+			of_node_put(out_args.np);
-+
-+			/* Get TCM address without translation. */
-+			ret = of_property_read_reg(np, j, &abs_addr, &size);
-+			if (ret) {
-+				dev_err(dev, "failed to get reg property\n");
-+				return ret;
-+			}
-+
-+			/*
-+			 * Remote processor can address only 32 bits
-+			 * so convert 64-bits into 32-bits. This will discard
-+			 * any unwanted upper 32-bits.
-+			 */
-+			tcm->da = (u32)abs_addr;
-+			tcm->size = (u32)size;
-+
-+			cpdev = to_platform_device(dev);
-+			res = platform_get_resource(cpdev, IORESOURCE_MEM, j);
-+			if (!res) {
-+				dev_err(dev, "failed to get tcm resource\n");
-+				return -EINVAL;
-+			}
-+
-+			tcm->addr = (u32)res->start;
-+			tcm->bank_name = (char *)res->name;
-+			res = devm_request_mem_region(dev, tcm->addr, tcm->size,
-+						      tcm->bank_name);
-+			if (!res) {
-+				dev_err(dev, "failed to request tcm resource\n");
-+				return -EINVAL;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * zynqmp_r5_get_tcm_node()
-  * Ideally this function should parse tcm node and store information
-@@ -835,9 +932,14 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
- 	struct zynqmp_r5_core *r5_core;
- 	int ret, i;
- 
--	ret = zynqmp_r5_get_tcm_node(cluster);
--	if (ret < 0) {
--		dev_err(dev, "can't get tcm node, err %d\n", ret);
-+	r5_core = cluster->r5_cores[0];
-+	if (of_find_property(r5_core->np, "reg", NULL))
-+		ret = zynqmp_r5_get_tcm_node_from_dt(cluster);
-+	else
-+		ret = zynqmp_r5_get_tcm_node(cluster);
-+
-+	if (ret) {
-+		dev_err(dev, "can't get tcm, err %d\n", ret);
- 		return ret;
- 	}
- 
--- 
-2.25.1
+I'm not sure that Linux distributions particularly *want* a CVSS base
+score for kernel CVEs. It is something that downstream _users_ of
+software have come to expect, especially those that operate under
+compliance regimes that suggest or require the use of CVSS in an
+enterprise's vulnerability management function.
 
+Those compliance regimes often suggest using CVSS scores as found in
+the NVD in search of an objective third party assessment of a
+vulnerability. Unfortunately the text of these regulations suggests
+that the base scores generated by the CVSS system, and found in the
+NVD, are a measure of "risk" rather than a contextless measure of
+"impact".
+
+There have been occurrences where a CVSSv3.1 score produced by a
+vendor of software are ignored when the score in the NVD is higher
+(often 9.8 due to NIST's standard practice in producing CVSS scores
+from "Incomplete Data" [1]). I don't know that harmonizing the
+practice of producing CVSSv3.1 base scores across Linux vendors will
+address the problem unless scores that are made available in the NVD
+match.
+
+But, stepping back for a moment I want to make sure that we are
+putting energy into a system that is fit for the Linux community's
+needs. CVSS lacks a strong scientific and statistical basis as an
+information capture and conveyance system. A study of the distribution
+of CVSSv3.1 base scores historically generated [2] shows that while
+the system was designed to resemble a normal distribution, in practice
+it is anything but.
+
+A guide that helps a practitioner evaluate the legitimate risks that
+may be present in a given version, configuration, and use case for the
+Linux kernel could be a very helpful thing. This guide is an excellent
+start for one! But as you rightly call out, CVSS is not a system that
+has an ability to capture all the nuance and context of software the
+likes of the Linux kernel, therefore the focus should be on practical
+evaluation under common use cases.
+
+> Create a new top-level (admittedly rather thin) "book" for information
+> for distros and place the document there as this document is not meant
+> for either developers or users.
+> 
+> See the rendered document at:
+> 
+>   https://vegard.github.io/linux/2024-03-11/security-assessment.html
+
+[...]
+
+> +
+> +CVEs and CVSS scores for the kernel
+> +===================================
+> +
+> +CVSS (`Common Vulnerability Scoring System <https://en.wikipedia.org/wiki/Common_Vulnerability_Scoring_System>`_)
+> +is an open standard for vulnerability scoring and the system which is
+> +commonly used by Linux distributions and various industry and government
+> +bodies.
+> +
+> +We won't go into the details of CVSS here, except to give a guide on how
+> +it could be applied most effectively in the context of the kernel.
+
+If the guide has something to say about CVSS, I (speaking only for
+myself) would like for it to call out the hazards that the system
+presents. I am not convinced that CVSS can be applied effectively in
+the context of the kernel, and would rather this section call out all
+the reasons why it's a fool's errand to try.
+
+--msw
+
+[1] https://nvd.nist.gov/vuln-metrics/cvss
+[2] https://theoryof.predictable.software/articles/a-closer-look-at-cvss-scores/#the-distribution-of-actual-scores
 
