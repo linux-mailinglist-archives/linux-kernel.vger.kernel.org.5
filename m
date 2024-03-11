@@ -1,93 +1,187 @@
-Return-Path: <linux-kernel+bounces-98414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD3FD8779C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:12:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C49308779C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:13:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C12F51C208B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:12:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51FF52814DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40D410E3;
-	Mon, 11 Mar 2024 02:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54BB92C9A;
+	Mon, 11 Mar 2024 02:12:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E9ot7Q4V"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="aDY1vM1H"
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC99A35
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9230138C
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 02:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710123168; cv=none; b=kmFVTmtD0bnzBLlg8Ay3jrk88RX+2xUeq4UYfiXIOzT23ni8jgjoTU51dliCSpb0b3RXCMfi62spar/xatxHFulmN0bMhMl+1Hm0dHpU1C8Fl9lmCV1b0lrXi/W982hoD1CuMetJhNoUk/lr7U/TV9CLuNHRq5f/TvpMa/rjBt8=
+	t=1710123171; cv=none; b=U2pQrW+RGBhvhQ9jvN8GkW70v93MszQ6ztOtb0l0k8GwUtiLEXVkYTELVH8vAADqizVuaDRskYReZNmqt8dQbHIHpTV1HZZR4d/n0+1O0WeMqt1xrCHz7VDPGBWEC5WwzI/y4MHZfbokdy893FgAvy8c5aJur8VTeIplXxaVvNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710123168; c=relaxed/simple;
-	bh=42nfzlzZGGNRqTPL62CdkBCL7Qp58c681aY1xNpzb7c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lwBjfggV0YyvKLYwjizMbOO8Ql9W0K+fQZTkpxN9R+EgWKHUbZ/+Ewze/6TjhSEXaBxBJQrBKarACD1uybqyq4cjZv4uIpoFbSFVZd11IMHXSbdxjMuo615cOPA9QtYiVXFF0axIIc4XBg0x9C/472EfHiLLfOlrFJljHxvnzBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E9ot7Q4V; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5cf2d73a183so3237732a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 19:12:46 -0700 (PDT)
+	s=arc-20240116; t=1710123171; c=relaxed/simple;
+	bh=ut92GWDbkVL4s/+Tc5gm+lbY9BAwJJQ/aiUMQfIxDn4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aMmmgi+q2DbdxHEuE0jlnaDO+Wr5NW0tAlEatPGkmLHf1jJx0yk84L1SxZen/9uIklkY++r/p4bXg6xGnCvUaMfSAj/3Jrx2jzT3jnkOyb4fASVcOv9PE7nQacQvcoeLfxgYgb3OQqdZiOdIpgx5mFE5vbNdIbT70jMNcIjlJ1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=aDY1vM1H; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-221a2d0c5dcso1588399fac.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 19:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710123166; x=1710727966; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=42nfzlzZGGNRqTPL62CdkBCL7Qp58c681aY1xNpzb7c=;
-        b=E9ot7Q4VIaRSe9px+NDOCstgjQJPl3evUrbVYY32QjxdJgolZUKlzkRKt3nA5XWdx5
-         K8FRsjf6repz2NoTFhqjN6M5rEaVMea6ORulXMTkUS4CE/zTwOMAqi1jIZNZOAtIV9v2
-         v0SXRio0i0pICu7wgiqF8x4ylk+M9g0mi7KvnUZW592wV5jNtUJV7GAjKv16+whipChj
-         ZTuYUbX9uL/nuXGXPVGVRyrs9P9MfuasWE6oMekeK5mExjKXgS2xjZ/zCG/E2Jy2mHTO
-         ul1NOInXNz1lhMuBfjBi/fPiuoz0+VJC718ED98b7/MpcUkx7NtncfnwQJCU6fv9iAE9
-         8RSw==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1710123169; x=1710727969; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O5X/JUyfTxQT9RfC2ug9/o+GQees7fe0KS52UCEy/Y4=;
+        b=aDY1vM1HL3xHTq7vTtzAUapvSntjg9ITXTzVJ9jg79pTl3KaNtmjFcjR4Wf12B6pkj
+         Gp3nix7fplYebJoGbQAtd16JL/WMZxc8FV+3tNCYnKXxZxPyy1X4xiTzaOI7NNLkhi+m
+         19hQH5SWGwop1lHteDnf1UZ3kFTS1m4WKVUWjTomYU4OkqSlga7/oec++lBE/kQ9Twpa
+         3MmhpPnEKBV4i9TLKZFNYjRNALBrCuiXaDywznRdv9gcn0D0ZBHnK7SVl0I8rn845vBI
+         lM/gsUPS8KG4IlUO0+Ry9l+ftOoeUxAZK7XUlJsk5/K+Zz9ljL4n3MplCSNd9Q7XGss0
+         /gDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710123166; x=1710727966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=42nfzlzZGGNRqTPL62CdkBCL7Qp58c681aY1xNpzb7c=;
-        b=xTjPMiYqmZnmHPB3Vn1uzDrNz9Gfnl3/pfvcaF6SmhpdYuUTpSMRMTgtHhpPECkkWj
-         ttzDJIHz+kpPlm4mL9gdVXQ0smejg7pqrJVU5vcMm//4sHZmitDUtoRbGV3ShYdX8W/6
-         7t0DeltCNQuiBuf1ldAULVXqVijum7cieSYRj9gTaZfrYGidra4lvXt4xjiqJeLIzWyx
-         fU+rDJcHAAXf6Z37K3zwK8nF5wN6URoVqu6CRoGuDRnwWAMWWCJ7lD2zxg9OlzZYP0r9
-         zgB3Lq335KMqmSQSoVB8nMRS2N3vWemBxn6+mtTO98OYz3htF1JZxPHmSLD6mTQTZiDF
-         rkrw==
-X-Forwarded-Encrypted: i=1; AJvYcCUxOPkqXm6vzChmkjmwKAtcC0/fsVVNzzv0hxMhWeQwOIHSM8QujA6XfPipD8Ge7byV84ycc4dMP+vPCccFwts8Ps7WFHKsqZ/W5plB
-X-Gm-Message-State: AOJu0YxPUwvl9l45eksHJHaMaiUEPD9SVQzcMvg0y7gSXD/IzE7b6pbQ
-	mO3R6vTOLQPJj6h0Ek3yqbWwJTGM2bNSp1EybzHa12bstjZuODmMfdBMXuQLiSFt40lqsQzDda5
-	ypqRCx2QJ1oAqm48fqTz7t+7iqWk=
-X-Google-Smtp-Source: AGHT+IEqisN8VLPqViNCFJ8DyM265wSMI/kyFcH6flJsMrwHibv1TUsXR+hfU4ZzVs1QXlpT/99UHlBg8w+NffzuIc4=
-X-Received: by 2002:a17:90b:e13:b0:29a:72b:df85 with SMTP id
- ge19-20020a17090b0e1300b0029a072bdf85mr8689814pjb.7.1710123166051; Sun, 10
- Mar 2024 19:12:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710123169; x=1710727969;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O5X/JUyfTxQT9RfC2ug9/o+GQees7fe0KS52UCEy/Y4=;
+        b=KRtY2nsA/exxJ+oe4RDPLlTFkUIiDP9oKgwDBkJLn7KDdJuzPFiAP75kb5ZiBSAOGO
+         vrR/3aC4tQcbj/VkMKBBCCL3pZUUgrkJKwKIHfzsBOVIiuIDeXGbSG18cwhydkFh1Zmo
+         xrLomfDsN4wdmOsUQ6JeOgIcDPvCDu0GPkzcIyoii9DH9NEmQi325BDPoFrOEfSfqs+H
+         QZmWJ2EHicTz9SS17VvuIaHkn3+BKLMkYB3i+Qd/CxTyRuIeHpiT1/YMUYjinQLYofBa
+         R1+zyyxdxEt5m6qqSI15QCn3s6xV67e84tIZW2BSya1qboi49ykQ96TPcE9ioEK4q18w
+         3DVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUu/HKT02Tc3n7sA1yqjs04Jr16m8U/sqmDu1TwyYSdSvzVPj1s2e+xPIRFFFBlFC+r7x5xImrTCAImP29UTe/AIt6ODaiHA4awZoVO
+X-Gm-Message-State: AOJu0YyH3rYT8KCNH8O4SogL/XgBPuCP+8Wk/VBNex1jpNE5chVI4PVp
+	+IHuTNWJTCbf7taVQ5JFOlbeqzp0OnxgalC2skox4PBnvdfgBVMJ+rN8lWV52v8=
+X-Google-Smtp-Source: AGHT+IG4+A1cVfYNN4zWw1iLg4uYer2MBhOZ4XSCvr2zHDKMkHOO0oaFFVTsgoKhh5AZRadLaRhaQg==
+X-Received: by 2002:a05:6870:b688:b0:221:95d6:c3d1 with SMTP id cy8-20020a056870b68800b0022195d6c3d1mr6138583oab.37.1710123168605;
+        Sun, 10 Mar 2024 19:12:48 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-47-118.pa.nsw.optusnet.com.au. [49.179.47.118])
+        by smtp.gmail.com with ESMTPSA id y12-20020a056a00038c00b006e57247f4e5sm3160809pfs.8.2024.03.10.19.12.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Mar 2024 19:12:48 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rjV9h-000G8X-1P;
+	Mon, 11 Mar 2024 13:12:45 +1100
+Date: Mon, 11 Mar 2024 13:12:45 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: On the optimum size of a batch
+Message-ID: <Ze5onaXsI+LT1+Be@dread.disaster.area>
+References: <Zeoble0xJQYEAriE@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <170987627011.449367.8705596691078598981.stgit@dwillia2-xfh.jf.intel.com>
-In-Reply-To: <170987627011.449367.8705596691078598981.stgit@dwillia2-xfh.jf.intel.com>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Mon, 11 Mar 2024 10:12:34 +0800
-Message-ID: <CAJhGHyDzCD2PrOi3gf-SZgG16gBCs8XEszXMSWBv7s=+=gsyFA@mail.gmail.com>
-Subject: Re: [PATCH] workqueue: Cleanup subsys attribute registration
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: tj@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zeoble0xJQYEAriE@casper.infradead.org>
 
-On Fri, Mar 8, 2024 at 1:39=E2=80=AFPM Dan Williams <dan.j.williams@intel.c=
-om> wrote:
+On Thu, Mar 07, 2024 at 07:55:01PM +0000, Matthew Wilcox wrote:
+> I've had a few conversations recently about how many objects should be
+> in a batch in some disparate contextx, so I thought I'd write down my
+> opinion so I can refer to it in future.  TLDR: Start your batch size
+> around 10, adjust the batch size when measurements tell you to change it.
+> 
+> In this model, let's look at the cost of allocating N objects from an
+> allocator.  Assume there's a fixed cost, say 4 (units are not relevant
+> here) for going into the allocator and then there's a 1 unit cost per
+> object (eg we're taking a spinlock, pulling N objects out of the data
+> structure and releasing the spinlock again).
+> 
+> Allocating 100 * 1 objects would cost 500 units.  Our best case is that
+> we could save 396 units by allocating a batch of 100.  But we probably
+> don't know how many objects we're going to need to allocate, so we pull
+> objects from the allocator in smaller batches.  Here's a table showing
+> the costs for different batch sizes:
+> 
+> Batch size      Cost of allocating 100          thousand        million
+> 1               500 (5 * 100)                   5000            5M
+> 2               300 (6 * 50)                    3000            3M
+> 4               200 (8 * 25)                    2000            2M
+> 8               156 (12 * 13)                   1500            1.5M
+> 16              140 (20 * 7)                    1260            1.25M
+> 32              144 (36 * 4)                    1152            1.13M
+> 64              136 (68 * 2)                    1088            1.06M
+> 128             132 (132 * 1)                   1056            1.03M
 
-Thanks for the clean.
+Isn't this just repeating the fundamental observation that SLUB is
+based on?  i.e. it can use high-order pages so that it can
+pre-allocate optimally sized batches of objects regardless of their
+size? i.e.  it tries to size the backing page order to allocate in
+chunks of 30-40 objects at a time?
 
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+> You can see the knee of this curve is around 8.  It fluctuates a bit after
+> that depending on how many "left over" objects we have after allocating
+> the 100 it turned out that we needed.  Even if we think we're going to
+> be dealing with a _lot_ of objects (the thousand and million column),
+> we've got most of the advantage by the time we get to 8 (eg a reduction
+> of 3.5M from a total possible reduction of 4M), and while I wouldn't
+> sneeze at getting a few more percentage points of overhead reduction,
+> we're scrabbling at the margins now, not getting big wins.
 
-Thanks
-Lai
+Except for SLUB we're actually allocating in the hundreds of
+millions to billions of objects on machines with TBs of RAM. IOWs we
+really want to be much further down the curve than 8 - batches of at
+least 32-64 have significantly lower cost and that matters when
+scaling to (and beyond) hundreds of millions of objects....
+
+> This is a simple model for only one situation.  If we have a locking
+> contention breakdown, the overhead cost might be much higher than 4 units,
+> and that would lead us to a larger batch size.
+> 
+> Another consideration is how much of each object we have to touch.
+> put_pages_list() is frequently called with batches of 500 pages.  In order
+> to free a folio, we have to manipulate its contents, so touching at least
+> one cacheline per object.
+
+Right, that's simply the cost of the batch cache footprint issue
+rather than a "fixed cost mitigation" described for allocation.
+
+So I'm not sure what you're trying to say here? We've known about
+these batch optimisation considerations for a long, long time and
+that batch size optimisation is always algorithm and access pattern
+dependent, so.... ???
+
+> And we make multiple passes over the batch,
+> first decrementing the refcount, removing it from the lru list; second
+> uncharging the folios from the memcg (writes to folio->memcg_data);
+> third calling free_pages_prepare which, eg, sets ->mapping to NULL;
+> fourth putting the folio on the pcp list (writing to the list_head).
+
+Sounds like "batch cache footprint" would be reduced by inverting
+that algorithm and doing all the work on a single object in a single
+pass, rahter than doing it in multiple passes.  That way the cache
+footprint of the batch is determined entirely by the size of the
+data structures accessed to process each object in the batch.
+
+i.e. if you are going to take an L1 cache miss accessing every
+object in the batch anyway, then reducing batch size doesn't improve
+overall per-object processing efficiency. All it does is keep the
+processing cost down to a single L1 cache miss per object in the
+batch. The tradeoff for this is more frequent batch refills, so this
+only works is the additional fixed cost for obtaining each batch is
+lower than the cost of multiple L1 cache misses per object....
+
+All this says to me is that sometimes the batch size is not actually
+the problem that needs fixing - changing the algorithm
+and/or processing pipeline to remove the possiblity of repeated
+accesses to individual objects in the batch reduces selecting the
+batch size down to the same "fixed cost mitigation" case you started
+with....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
