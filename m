@@ -1,51 +1,50 @@
-Return-Path: <linux-kernel+bounces-99377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 173CB878783
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:37:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D522878786
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:38:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A05C0284C16
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:37:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FC921C2122B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC404084A;
-	Mon, 11 Mar 2024 18:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959B95732E;
+	Mon, 11 Mar 2024 18:36:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bs8jeMT+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DU5+xj9a"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBD654BE8;
-	Mon, 11 Mar 2024 18:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B9C54F92;
+	Mon, 11 Mar 2024 18:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710182195; cv=none; b=PJnUv782kMfCvJlJnBecLaMIFJPwWL3X9vWjoKEZJvr+dh1MAd5xMXGIL7VDHUfPhBouKlzDp4wxZ6Y71TxSKmeFy3LuuivO/KFV5mX4tRVTGFMiX3VOHM8qJkX6f0YrG1pMUOcN6AxjfOnsolUv2jGHK1+laDceyqU7c/2tcM0=
+	t=1710182202; cv=none; b=YwTd+zpC8z+G8dTERm66/Pjz63p1tGio84giokVYHI/AcGEgjgvHdSp4q9Q957ww4DXhuFDkA0slk10RUh0g79FO21gTb8tZraEpfGMfh0x8HAvk/bNdMusq0Bof6XTUs3rN2/uC9TEeYyzyRKFiCWYXOkJetOzueQIzJUI4WS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710182195; c=relaxed/simple;
-	bh=G/OiPWZK5HAkqivFGdw4pb+Z3+zG63y8DlP0bpwmDG4=;
+	s=arc-20240116; t=1710182202; c=relaxed/simple;
+	bh=d3YjCGegKBiNlaqnlaRwjobA7R6W5+YKEQ2B++yBx3M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eocRoaxpQS7ssB6nEYkizqyJPZxKrtmeg2CoyJOpU23K3xv1NXhJGgqyTTI4aHv2viPBgYK/NYGXIW0QyD9skbbjgwfQ1EmTu2SOc9k0+KbAfHuNEccBr7UcjSLHHa4fNbznQnDQx/yI1Brst5hFfjx6achSQ/tHNmPo4dkz2Ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bs8jeMT+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E941FC43394;
-	Mon, 11 Mar 2024 18:36:29 +0000 (UTC)
+	 MIME-Version; b=Lex22auwmzB3CI4+R8OnSjEnyKv/AQHDZrJCvbhJlB3Xfb3BOD85k5bd6QWPR4rzucY+4zIfnnVapXcVI/eOfhB9Vzj10al7MQX4QFpEGGoalWcAYsV6BPuT742BlzS1LV+iQP9JvY61+Et3XsKmOdCakYQ6FqItSdpvHCmo6OA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DU5+xj9a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 135C2C433B1;
+	Mon, 11 Mar 2024 18:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710182195;
-	bh=G/OiPWZK5HAkqivFGdw4pb+Z3+zG63y8DlP0bpwmDG4=;
+	s=k20201202; t=1710182202;
+	bh=d3YjCGegKBiNlaqnlaRwjobA7R6W5+YKEQ2B++yBx3M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bs8jeMT+Ql+3aSFhldKqq8S9hhSCwPWGFzlfu3NyCQFJAo4BpJQ5Qp8HBoX1qZvGD
-	 iWqeSMtIO4/FEM5L+Ny7avlx1DQkf+jtkyZ0UH+SIk71AVnIBIoB7gMTdX4rnFA4zW
-	 /2KRbt73ltTH5iAIyb82pa7TQz3DCA5T9tmnjz6B6HPJfGXPSw4j923tAmb3woA2+n
-	 zAIlp/UibpYaYX/tGMOCDlUnEjgtw8kI8Gz2sR+ED0KyOcq4L1/gLgYubjJaWaQ2gz
-	 mVfbKTDSD4rJim9CQBjXoVQ+fzcwdhWkbbZNxuzzUGWHfhyvhl3tzMXqVDELVZ5VJq
-	 UZYqr6SZT15TQ==
+	b=DU5+xj9a0ciaoyGi6PbqdB/IvKkrzlGFksa8r1LshjvX3P+5OnwnYbxhmDYDd9IpI
+	 pqnV82dYwPM+99jCLBsbo4fJ7OsKlExT6yUWc+t5kmhcGqWwzgYSYcKarAITgwE78h
+	 9e10cotB/TpexgnzVLoo+SWUpRfKswDDVio6mx99JZl1A0Ziq8/R4n+Cs1ahN0c85P
+	 HzIdJQ3HH7MN9Dv0STXcgh0f8l+UO1eI9oWW5vHCLDpTHFage1vaUyt7/KM3xx765T
+	 JmMi6ZJVFYhg5JdDtWF1BrnIAHlTUf1ItME7HhjZaHPfprx2zxXyR4RaK2wqZ6AoIM
+	 JFPtOA2y/fjnA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Michael Kelley <mhklinux@outlook.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+Cc: Saurabh Sengar <ssengar@linux.microsoft.com>,
+	Michael Kelley <mhklinux@outlook.com>,
 	Wei Liu <wei.liu@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	kys@microsoft.com,
@@ -55,13 +54,10 @@ Cc: Michael Kelley <mhklinux@outlook.com>,
 	mingo@redhat.com,
 	bp@alien8.de,
 	x86@kernel.org,
-	dave.hansen@linux.intel.com,
-	luto@kernel.org,
-	peterz@infradead.org,
 	devel@linuxdriverproject.org
-Subject: [PATCH AUTOSEL 6.7 03/14] x86/hyperv: Use slow_virt_to_phys() in page transition hypervisor callback
-Date: Mon, 11 Mar 2024 14:36:06 -0400
-Message-ID: <20240311183618.327694-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 04/14] x86/hyperv: Allow 15-bit APIC IDs for VTL platforms
+Date: Mon, 11 Mar 2024 14:36:07 -0400
+Message-ID: <20240311183618.327694-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311183618.327694-1-sashal@kernel.org>
 References: <20240311183618.327694-1-sashal@kernel.org>
@@ -76,85 +72,56 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.9
 Content-Transfer-Encoding: 8bit
 
-From: Michael Kelley <mhklinux@outlook.com>
+From: Saurabh Sengar <ssengar@linux.microsoft.com>
 
-[ Upstream commit 9fef276f9f416a1e85eb48d3bd38e6018a220bf5 ]
+[ Upstream commit 0d63e4c0ebc2b5c329babde44fd61d3f08db814d ]
 
-In preparation for temporarily marking pages not present during a
-transition between encrypted and decrypted, use slow_virt_to_phys()
-in the hypervisor callback. As long as the PFN is correct,
-slow_virt_to_phys() works even if the leaf PTE is not present.
-The existing functions that depend on vmalloc_to_page() all
-require that the leaf PTE be marked present, so they don't work.
+The current method for signaling the compatibility of a Hyper-V host
+with MSIs featuring 15-bit APIC IDs relies on a synthetic cpuid leaf.
+However, for higher VTLs, this leaf is not reported, due to the absence
+of an IO-APIC.
 
-Update the comments for slow_virt_to_phys() to note this broader usage
-and the requirement to work even if the PTE is not marked present.
+As an alternative, assume that when running at a high VTL, the host
+supports 15-bit APIC IDs. This assumption is safe, as Hyper-V does not
+employ any architectural MSIs at higher VTLs
 
-Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Link: https://lore.kernel.org/r/20240116022008.1023398-2-mhklinux@outlook.com
+This unblocks startup of VTL2 environments with more than 256 CPUs.
+
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+Link: https://lore.kernel.org/r/1705341460-18394-1-git-send-email-ssengar@linux.microsoft.com
 Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Message-ID: <20240116022008.1023398-2-mhklinux@outlook.com>
+Message-ID: <1705341460-18394-1-git-send-email-ssengar@linux.microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/hyperv/ivm.c        | 12 +++++++++++-
- arch/x86/mm/pat/set_memory.c | 12 ++++++++----
- 2 files changed, 19 insertions(+), 5 deletions(-)
+ arch/x86/hyperv/hv_vtl.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-index 02e55237d919a..851107c77f4db 100644
---- a/arch/x86/hyperv/ivm.c
-+++ b/arch/x86/hyperv/ivm.c
-@@ -515,6 +515,8 @@ static bool hv_vtom_set_host_visibility(unsigned long kbuffer, int pagecount, bo
- 	enum hv_mem_host_visibility visibility = enc ?
- 			VMBUS_PAGE_NOT_VISIBLE : VMBUS_PAGE_VISIBLE_READ_WRITE;
- 	u64 *pfn_array;
-+	phys_addr_t paddr;
-+	void *vaddr;
- 	int ret = 0;
- 	bool result = true;
- 	int i, pfn;
-@@ -524,7 +526,15 @@ static bool hv_vtom_set_host_visibility(unsigned long kbuffer, int pagecount, bo
- 		return false;
+diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
+index 96e6c51515f50..cf1b78cb2d043 100644
+--- a/arch/x86/hyperv/hv_vtl.c
++++ b/arch/x86/hyperv/hv_vtl.c
+@@ -16,6 +16,11 @@
+ extern struct boot_params boot_params;
+ static struct real_mode_header hv_vtl_real_mode_header;
  
- 	for (i = 0, pfn = 0; i < pagecount; i++) {
--		pfn_array[pfn] = virt_to_hvpfn((void *)kbuffer + i * HV_HYP_PAGE_SIZE);
-+		/*
-+		 * Use slow_virt_to_phys() because the PRESENT bit has been
-+		 * temporarily cleared in the PTEs.  slow_virt_to_phys() works
-+		 * without the PRESENT bit while virt_to_hvpfn() or similar
-+		 * does not.
-+		 */
-+		vaddr = (void *)kbuffer + (i * HV_HYP_PAGE_SIZE);
-+		paddr = slow_virt_to_phys(vaddr);
-+		pfn_array[pfn] = paddr >> HV_HYP_PAGE_SHIFT;
- 		pfn++;
- 
- 		if (pfn == HV_MAX_MODIFY_GPA_REP_COUNT || i == pagecount - 1) {
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index bda9f129835e9..355dc8f5cb7dd 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -755,10 +755,14 @@ pmd_t *lookup_pmd_address(unsigned long address)
-  * areas on 32-bit NUMA systems.  The percpu areas can
-  * end up in this kind of memory, for instance.
-  *
-- * This could be optimized, but it is only intended to be
-- * used at initialization time, and keeping it
-- * unoptimized should increase the testing coverage for
-- * the more obscure platforms.
-+ * Note that as long as the PTEs are well-formed with correct PFNs, this
-+ * works without checking the PRESENT bit in the leaf PTE.  This is unlike
-+ * the similar vmalloc_to_page() and derivatives.  Callers may depend on
-+ * this behavior.
-+ *
-+ * This could be optimized, but it is only used in paths that are not perf
-+ * sensitive, and keeping it unoptimized should increase the testing coverage
-+ * for the more obscure platforms.
-  */
- phys_addr_t slow_virt_to_phys(void *__virt_addr)
++static bool __init hv_vtl_msi_ext_dest_id(void)
++{
++	return true;
++}
++
+ void __init hv_vtl_init_platform(void)
  {
+ 	pr_info("Linux runs in Hyper-V Virtual Trust Level\n");
+@@ -38,6 +43,8 @@ void __init hv_vtl_init_platform(void)
+ 	x86_platform.legacy.warm_reset = 0;
+ 	x86_platform.legacy.reserve_bios_regions = 0;
+ 	x86_platform.legacy.devices.pnpbios = 0;
++
++	x86_init.hyper.msi_ext_dest_id = hv_vtl_msi_ext_dest_id;
+ }
+ 
+ static inline u64 hv_vtl_system_desc_base(struct ldttss_desc *desc)
 -- 
 2.43.0
 
