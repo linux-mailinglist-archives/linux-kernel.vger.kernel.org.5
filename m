@@ -1,133 +1,96 @@
-Return-Path: <linux-kernel+bounces-99666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF7FB878B94
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:37:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA685878B97
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 510611F21B9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:37:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4900E2823E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8DEF59163;
-	Mon, 11 Mar 2024 23:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468D459157;
+	Mon, 11 Mar 2024 23:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ICS6mjMY"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dn3gJoJ9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51E157890
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:37:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DF257890;
+	Mon, 11 Mar 2024 23:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710200254; cv=none; b=heZMno7CNelr5fKNJr5aINjsu5XkHPI3LSRA7GXK3BZcn2IsnRqDZVHIGnPgTUfjg2RDb11DnKEpEiSFyTPKKva9T1QX/izlwsNlYl//LiA7ZOMSM+7/oyLtJkZieYCTOdhuvPZUN5bC9j72+bljpZmoHFGLmMFyG75h2FWRu4Y=
+	t=1710200430; cv=none; b=OxQ8/L2XkN0Pa9RLp7109T3emMplDQBoqI3a23HWc8KzIfhpsLLdS9zrD/voT7duRDmbRRHETaj3MJHpmXqfuklPsRB9+nUta1B1ynmzaH+oxeU9pTWIqSfNINyq0PLPM5haUDxFsK7Df9EPdAyk8Exh1Lc+0jC3xj8/7nLu9BU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710200254; c=relaxed/simple;
-	bh=UHDfEzsotiT9ePQ0y9StHgbMOf/lrrRURVo481jht18=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RLJiIrFmXx0JzI5QXP8yrjrmv3l4nOhCcPppAA3QinpAci7SsuWpcD7YRkvScl6/MPlGDvld8McaAhYegRooED8ddjot8q5GBYmh56Undxe4obk8lGvGAteU7GsHM8jE3LNgryKrWjQksAy3IHVrUHwunt+3opxmMjDDG7cURTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ICS6mjMY; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e5dddd3b95so3597085b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:37:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710200252; x=1710805052; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Xm7ckg0f9VWSGYhP+vSFLa1BP8tcu5Wgr9BmHroe7cc=;
-        b=ICS6mjMYCTOwufVVhmEp2JHtDfE2EDE23slTRR32ea4HpM1JIOvTmxHhy6IDIp4Yvo
-         zPa5tbgk3owf/QpW4BcLKDWYKLDeRxoIl+P7K8AzOpKItmhV1jWAnKPxsLiRgrZaTAN3
-         FRMRUAmk92nV1waX6t5R5HviJZLILjxjKSqSA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710200252; x=1710805052;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xm7ckg0f9VWSGYhP+vSFLa1BP8tcu5Wgr9BmHroe7cc=;
-        b=Zyd47I8wQoDT5MALjSx8EL2fkfLKnebiHZughYdjSkMnocmcKxrQxiyq6NC6ngaxf9
-         eb9QBJ9V/0HrArzM8SRq5TOyeHGKFQ1YVN6vfLASxWfcRITQpQcOhjlyXE4W2jqyGUcq
-         D061rMMFrne4lVCiaWHIJH6xbiGla658umapyM7c2ztFQb0NjtHaZSK03V1jt0JsB9UZ
-         a+Hyk+0OFda+CyHy7cPintJXQkrWDrrrMkGP8HDgC+IzBcM+7GiT0/dA5hLWAlLMtTLd
-         vlHm7SlnXBFHhFqM/+i+71iI+4C/NxH/h5s3ob7dioGKrC+QxnPbtducc6T/GzwVFt6v
-         20oQ==
-X-Gm-Message-State: AOJu0Yy03epdUI4XODLopjO1JjGg2kdWbtdHjt+2bfkkpB7f5UJOlFsn
-	ZkJrOhNItWOpqc79HuLJAXJma1wF6JPlk3yNo8KwslAkoq2tzaPTSEtaYmgZ5Q==
-X-Google-Smtp-Source: AGHT+IHD9UB7WtYdXSoqrw9ipbo6+l/ogripqDA2ow6WSs0p2YAHLpnIBCy3YZsyucMa8W5txpXHgQ==
-X-Received: by 2002:a05:6a00:2ea8:b0:6e6:758e:4ad6 with SMTP id fd40-20020a056a002ea800b006e6758e4ad6mr11969545pfb.17.1710200252063;
-        Mon, 11 Mar 2024 16:37:32 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t23-20020a62d157000000b006e56277fd45sm5138302pfl.190.2024.03.11.16.37.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 16:37:31 -0700 (PDT)
-Date: Mon, 11 Mar 2024 16:37:31 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>,
-	Kees Cook <keescook@chromium.org>, Li kunyu <kunyu@nfschina.com>,
-	linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org, Mark Brown <broonie@kernel.org>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Shuah Khan <shuah@kernel.org>
-Subject: [GIT PULL] execve updates for v6.9-rc1
-Message-ID: <202403111637.203A9187C7@keescook>
+	s=arc-20240116; t=1710200430; c=relaxed/simple;
+	bh=GhHM2Z484ZX1jCAPVE0yiIxkDV/AUIBM6eUbYoi5D2I=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Vsa535k8U7yR6W2R20wz+adFBfeBbnowoet6stZz1/Lpnez51FhmC5Txcrzwv7GeBv1ghFSP4P6LxUzVf9sLdvDjxk3XM8GCqLgLzh/9wtsNOYLiug4ELmvyFVXBHd+QI4alOx+QXkKXnt7oyC+a6xYd2SCE2o/Zc2mQSuO+pTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dn3gJoJ9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EF179C433F1;
+	Mon, 11 Mar 2024 23:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710200430;
+	bh=GhHM2Z484ZX1jCAPVE0yiIxkDV/AUIBM6eUbYoi5D2I=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Dn3gJoJ9izC7sFePlYlBGByDDJr1qQwgXW0zH5QvE5WdziQmNzZtxOPUkb1Fil20G
+	 dpL9UFCFSjqpGmOTJVMfUvJvdXXHMHloLiIq6MLQgmh4YiPjK/ZOMcL5HyNgqH87Z2
+	 H2S/K9Hc3d5PTdx148Duso34v5MHgrITSUoLDrZVdTxOF3xUB71IdTdZQPj/dKajcL
+	 z13JXjJqnPAdF7kM5vuzAff7nwJGaULoWYh3Y3UghK87nTCjqHzHl2KUR/2HUVy5lk
+	 cVoXZea3E960W6bSpZHphb9R0kVdHa8KoPOTuXQEYfqMfvffkfpBwoLgXsTUaB8o1D
+	 Sm1f4gao8VXHA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D00DFD95056;
+	Mon, 11 Mar 2024 23:40:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] bpf: hardcode BPF_PROG_PACK_SIZE to 2MB *
+ num_possible_nodes()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171020042984.6750.3210035771015171823.git-patchwork-notify@kernel.org>
+Date: Mon, 11 Mar 2024 23:40:29 +0000
+References: <20240311122722.86232-1-puranjay12@gmail.com>
+In-Reply-To: <20240311122722.86232-1-puranjay12@gmail.com>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hello:
 
-Please pull these small execve updates for v6.9-rc1. Details below.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Thanks!
+On Mon, 11 Mar 2024 12:27:22 +0000 you wrote:
+> On some architectures like ARM64, PMD_SIZE can be really large in some
+> configurations. Like with CONFIG_ARM64_64K_PAGES=y the PMD_SIZE is
+> 512MB.
+> 
+> Use 2MB * num_possible_nodes() as the size for allocations done through
+> the prog pack allocator. On most architectures, PMD_SIZE will be equal
+> to 2MB in case of 4KB pages and will be greater than 2MB for bigger page
+> sizes.
+> 
+> [...]
 
--Kees
+Here is the summary with links:
+  - [bpf-next,v2] bpf: hardcode BPF_PROG_PACK_SIZE to 2MB * num_possible_nodes()
+    https://git.kernel.org/bpf/bpf-next/c/d6170e4aaf86
 
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
-
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/execve-v6.9-rc1
-
-for you to fetch changes up to 725d50261285ccf02501f2a1a6d10b31ce014597:
-
-  exec: Simplify remove_arg_zero() error path (2024-03-09 13:46:30 -0800)
-
-----------------------------------------------------------------
-execve updates for v6.9-rc1
-
-- Drop needless error path code in remove_arg_zero() (Li kunyu, Kees Cook)
-
-- binfmt_elf_efpic: Don't use missing interpreter's properties (Max Filippov)
-
-- Use /bin/bash for execveat selftests
-
-----------------------------------------------------------------
-Kees Cook (2):
-      selftests/exec: Perform script checks with /bin/bash
-      exec: Simplify remove_arg_zero() error path
-
-Li kunyu (1):
-      exec: Delete unnecessary statements in remove_arg_zero()
-
-Max Filippov (1):
-      fs: binfmt_elf_efpic: don't use missing interpreter's properties
-
- fs/binfmt_elf_fdpic.c                   |  2 +-
- fs/exec.c                               | 11 +++--------
- tools/testing/selftests/exec/execveat.c |  2 +-
- 3 files changed, 5 insertions(+), 10 deletions(-)
-
+You are awesome, thank you!
 -- 
-Kees Cook
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
