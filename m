@@ -1,188 +1,417 @@
-Return-Path: <linux-kernel+bounces-98512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE673877B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:13:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5283A877B2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36E651F216A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:13:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C96D31F21EE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26569101F7;
-	Mon, 11 Mar 2024 07:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7000A10782;
+	Mon, 11 Mar 2024 07:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Mucoe9yf"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2060.outbound.protection.outlook.com [40.92.42.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UB7nofvc"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA95FC1E
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710141216; cv=fail; b=lkaONkYSehuKn2GKQPCN4S3Mpb50bMn1OQj+Rp+f0Zs87jZaV0R8qbl/kZV0YlvBkuoy/JfvHUaRLU6VwTRaM0YM6w/Wxf4anfNRSLSGAiKVMXjm4+jH013bY37Ee/hzXYqR9pR6clILMTfGZcRaCa2VxXTr2/umBuJrGxFKFKQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710141216; c=relaxed/simple;
-	bh=oV1mPTjEYjtO6I9RlwSRtBFy9T3tpDNIYVm4+R/sMxg=;
-	h=Date:From:To:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=FkHXUChW96eT8QBIWSpOv/FRohgBFovOF9Kht1lZNiCZ3bj47EyYbQiptgmuxdH7gSKS4fN/yWaW0X7ulAVb3rMh3d8hc2yOuc5NNLNKSHTBLW/e/7oTIPIiJbJxDefvuv39i3bcNQ02Hx8hAnHAFnyxOxQAtgFSYg8uTqFX9Fo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Mucoe9yf; arc=fail smtp.client-ip=40.92.42.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lP3ipVEMhChn5JJzGE5sh+EvpvjrwrZZ88hXJ1G+kMs5bK2NoZwfOXMgyIaTogkZREnlFYaAjXx5NG97pE10aQvMC1+QlxKPbqsQ1SZQ19/Yek7hH5Wp/t9EFEj9CQovZPf4/ONr5JfUyijfB0v1W1tjNJihi9dxO4t02XLwpPZ1FdR7zJF5sq18vcAn114oWgPH8rDSvTYri87aJyouIEYxyLW+dZrPWQTShQu2H/jCD6p89dEd/2TaaHhMkwHqNzZwz3hCXMEhGvBOdB3I4HIqaBs78ASJJYcSh6VDuA8OlW8Cu77GhLE5vORjl8+X3rrWW1jwGlGuGQMM2eyGwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pSBcMRfjLpZZVeyLLe4cI/cFyNPhipGw7ebR7kJhXL0=;
- b=JvTyx9MG4hyI4sNY0jpSDNC4vTe/P1HwiGpQ1tkv6Nymm1smGYfMLHpO3C29qy9Oqkv2XUbcDZhV5fhht+uwmdC6wmx2iT9cyql1iQJ0x3vYEZWC4FvgqGBXy1dpjAh5euuB8EKCKpjmFc5I1b4QqMkxfl5/zMQgHNgQHkzDdhdTApScUSD7ximITjjIm2Ii44HcvoLAO0Sv0vCPoSWdgbIYuIPJn9ghUHn+sNQqGrudU+xv2yX4VgcAAg+D7Fux3mhm0gov8ZnU5MXL89aSu8DlJQXszpPI1WEvKCjQNrJV0g+bAFoVw1G7TD+bcDKUB16tnfeSEBO0MUA5s8Nwmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pSBcMRfjLpZZVeyLLe4cI/cFyNPhipGw7ebR7kJhXL0=;
- b=Mucoe9yfWIVa6bwFY92pGzJviK9w44S7APWAUbHl5+bsU8ZQCozVPoNBfP5AczFhWYKSTzjGJGSwty94suHWt1SLbOGFg07FesT7ZPwMo/TFfULNVZaZ0Wggw+DYUb803hfe7kkF3oA1dbGZoflafKevT4ENDVwyJdxahWTWYmX5Pv0YTDLwsYjXdWAOIAPAelW1HF7am0gdlVDjS2viYNsuZU2MDBzOAclMUzaMTg4DQ8e7OtbFb6CtyDeP853c17KpfArROzCeXMp++CvSwMRVNP2jqsFQCc6Nqr7N2XnorVAUYIUYZsXu/M1jgEwyb2SyUebUPbiqLWnjnZUy5Q==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SJ2PR20MB6117.namprd20.prod.outlook.com (2603:10b6:a03:4f3::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
- 2024 07:13:31 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::8615:efe2:7c8e:2041]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::8615:efe2:7c8e:2041%3]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
- 07:13:31 +0000
-Date: Mon, 11 Mar 2024 15:13:25 +0800
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Qingfang Deng <dqfext@gmail.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Atish Patra <atishp@atishpatra.org>, 
-	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Heiko Stuebner <heiko@sntech.de>, Guo Ren <guoren@kernel.org>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
-Message-ID:
- <IA1PR20MB4953ECC3E32E95303872CD14BB242@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <20240311063018.1886757-1-dqfext@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240311063018.1886757-1-dqfext@gmail.com>
-X-TMN: [mY5jkus9ThfQXVe5NQhDRk/JUFRXcXiMuyDr0xgSMhY=]
-X-ClientProxiedBy: PU1PR06CA0021.apcprd06.prod.outlook.com
- (2603:1096:803:2a::33) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <bqysft5r2mjmd72lwz74nz2g6xxwxbyraov77zdlaig2kajwjg@zwufvlnoth4j>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54843FC1E
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:19:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710141567; cv=none; b=c1GD60nwjl/3zjH70bjVNC+xwiK9HGt6b5pd4MvQYFhtfYNvZvZ/6Em8qJSozFC+DjO6DtgZ/zVi4EhK3I8Grkcv7CP2qbKSmd5tESvtH6GOSyT9tsszBLnv6bn33SHlWq213nShs3Ly0WVpuyyCRE9u9cNOvUvaw6asgRvukPU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710141567; c=relaxed/simple;
+	bh=WC5+8tDR91+xKnRO/tE7XqH4sSwR2eYjal+Fn+1msgE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qBkumCaUxz+GQMfbyZEr1+ntM26uENTjV7KTL7xBsbkbe+4hqXY+Qsjt8JeAbF+BybJ0p3wCiDfWeXdYe5+CLwAKc4/LeauAJ9DAd8c5QIh45LPsXqpKW9gayGWLFteevMQCDxdx4FWYF4LeDIQAPZOP+exEy7/1CiOBsab4NXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UB7nofvc; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5684ea117a3so1740758a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710141563; x=1710746363; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NubNxNAwDlfGvOJkZd2n4klGKQ1hS4tYI5czjw3valc=;
+        b=UB7nofvc8sd3CqtvHiE7vnpkVsuzRU+GJgBfbyeGe9QY63l8kHhZQphbHbPL42q+H9
+         nopH1MOmfejazPin/r53Szph65ezu3XiBHNJVvGHC/yMIbSAJ6HOLYY5z14ZvoOy0gs5
+         X+4H6569EtEmbdaOXZb40gqeIht/IF661fC2n+P9uBRaFCDUGDhDsl0CV4ohQ4FmTtHq
+         9+cFIl10uwNJR87+BlqUpIKKPbF2TlAxO7MFLkLA7i0grpIzLzOoa+/53BUS8WU/blEM
+         a5KKF9pi52T79UV+JVJtjfLMWbDOOSZA8DfSheek0duGsCArvLJEv2I46jTo0sem6H53
+         2bfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710141563; x=1710746363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NubNxNAwDlfGvOJkZd2n4klGKQ1hS4tYI5czjw3valc=;
+        b=dcof8IbXCQ7KonukvvnxRXS7w8l9w8LFiqb7cW+KHniXqC6nVoHg2E4wyHuLBMKF6f
+         KkCWYa4ixKOFio0ZBMYBqq6N8AgMptO+5sxIqAiLEpZS23zNh/m6SU/tkUGFxuSsejSf
+         FhHKrTrSSI3xigi02Fe813LaPvANyTEgaH6hT41YGfupOm50ZwLBm9gqmt/xBa7ny3Z6
+         Uyzm932sCPN9h2YX5Cyn8NDMVeuDqauLux5bYZkXAHOpJfWYam+hdhD+Uwru84B/w5TR
+         mAtIZX/lCJyhjJebbD6j0+GH0hYDFT7+sS0D6NmARROe9JEmXFELaHuNdG912wePJgcd
+         EPuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXlXBjigrNuz4E9DRsFiNw6nvqp5HPyz6WYb6T3OYpg4BsQe4WPVEArB6d9lKdgqJH+/BYLDFiys79X19TRIobzsRFUggfD8RVf3HdA
+X-Gm-Message-State: AOJu0YytK96sceSnDp8Slf6hVHZ8zzfC0BX4s6soseGoK+DbE2VeZhlt
+	o+ojyC+orwaUqDUVEBMjh22qVbxfYvHVFqMbvA9ejH1S9o9EF+6cOqxCQqxBjIYr3lFZRpx5h3B
+	D0xbgeWIzjvQzlDxrjaa7JUngZOo=
+X-Google-Smtp-Source: AGHT+IEDGRFbWDhEu2lC9Fr4uWuBzqU/pDLBZ67AIQYHtRGmQzHu09AydfxnXnaDymo+HcFHCvLHOHDmQ9hnHTTq6lM=
+X-Received: by 2002:a50:d5c2:0:b0:565:c814:d891 with SMTP id
+ g2-20020a50d5c2000000b00565c814d891mr3847602edj.0.1710141562481; Mon, 11 Mar
+ 2024 00:19:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SJ2PR20MB6117:EE_
-X-MS-Office365-Filtering-Correlation-Id: 28daab4d-0e01-41bd-0eb6-08dc419ac18c
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fT9itW3QoAywG+h7tl0MYPOxyKlWy//RKrJB+63Jza3oAxOmSi6c5GECg/CJ7Y6bp6VV32WKb/NjCTCw8vr4RwU5MpQuLY4E20tf8g5GIE7LT5nHZ3Zg9DuGyPcghtwRhmLu7sLgITu0F1cctVaUlppFXMQd2BGwQUPArY3PP1qfDj1woSgJsoW1Z5mzczYeDb0suWaHYtXywBJXnKtonojJ8tmBOLaRRXZ6UA/ZqBC1+xjPLOKsC/L66Va4W0udXVZ1hGI/+66N2e7mXsulp3Fv0/S7KvrNNRv4sC59i8FLHrgcKv0NOGYrBTbqF4nkitnFQ59dnaHcC04ajTwYkp/W08kf3rWFQbcj+l2tYbe0nNYlPPP9G7vzRI739ReCXgfT7ErR/M4sYY3R+haDxl2IiFqzpIYAUy3OBKV9aJd5trxJD248b9JCN0LK6NpsSSZp6uMAZABboDc3NYa+TOAq4NWPQh/pmN3VtHmiIa3Wu3Rlq4P2ZeLi03GW4G+PiFbHkDnVq+io2kCrEO/dFR1pQECtUpWoibyef23Iyf1PuJKWA2fBDUSb+a+yziskc82fVuy/8VF1m+LVSAUi8AvgKXiWvmW4cLZ4VkIoOyAuiCvo2didtDz1Djqh5aMqfr/2jM7VMW9WOUnQ3+XI9A+iiM2U62ntDKvTgPoa74o=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ieCbkiSHUyIaypTyQpc1qkmaTs3Z2o2A+itRE83GdvETCK5RNwdUUhzGQe3T?=
- =?us-ascii?Q?UE8jAQonj4CEvpnnXdQJJYIM6uu0VpOaGPBekL1ylT8MvT+7Mp67WF7ZHE4o?=
- =?us-ascii?Q?mAMQIP6nHh3o+bf+JFkSoedOTH1SnuUK4xtH0fcAFjx3rHhPoOtxLDxfZepZ?=
- =?us-ascii?Q?IEmaISgeeV70u7ba23PXCSUeNHQUNNauxQL0YlFLqvC7uklK5kLwcq38OAvT?=
- =?us-ascii?Q?8bFM8piWrowkq1reB3gE5WVdyDWXYYK7OlmTahiS0gx9mRE20v9m9lvqJc+u?=
- =?us-ascii?Q?dSG8KuO6rhYr3Bj0kfWLbKmXc0IfTJwE3W8A44V6vH8gXOPriT963tPtoZUB?=
- =?us-ascii?Q?16XxHzZpvuT4RStS2s6cMW/y2eMU9H8UBUUugQ2y7rmSb3srUwEmqWy6qpme?=
- =?us-ascii?Q?+1O08kn2rabXf8oxDLwhUHE3UhsuQaJPls597BP3Y9YMdF+rFuri/ha+PhJb?=
- =?us-ascii?Q?Ugja2zI0xM3f93fpJu9U+1xTrvKTogVptjIDG/lj8DYLV3Vek2ZajvI93G1H?=
- =?us-ascii?Q?HIDGrN2UHk+ea8UOXTH44rdsOMSQDmUr6vcrSMeHimHWiRG18Ejm0e+tirhR?=
- =?us-ascii?Q?otSZXN6vEPBZr5q9XRf2URusCPOWyapFVSgIH4G4IIfvDUoa45F3aUpTzIsE?=
- =?us-ascii?Q?7HG6gO8+pMwZNtTfC1Ij9FhbTcJXLZR5prKF1BMucnu7JE5SGQMyVnmal299?=
- =?us-ascii?Q?vbiVNTKlnJL1REvJywMiljj2WeNnjGmrJApedKdNVZnRo1LNWbjCm0iKPtzg?=
- =?us-ascii?Q?6JpjeU+PhuBRjs+adwvW3z5twLzBRFnjQM1BM0cERkKl6vciAsrYQPAL2GVV?=
- =?us-ascii?Q?EDI/mWn69+S6B7X3lQ+DhvMW3B0Kx7yYZltZZu0orHusyHxPVmcN1i3ATKPX?=
- =?us-ascii?Q?jCNMaYuOabkNRXKXF4bhW7wyZYLl79a5xmgc+48i4o8jpKnusfraqY9s94Gf?=
- =?us-ascii?Q?VgwsEtKoOLflDprhr6KrHOo2Ss8qagHOCb5Hx+9IoGOKM57cSoaXm2Te6A46?=
- =?us-ascii?Q?1XVLgnXuyoBdrG+yPc8Cg/Fx3Tb+a9yM19RbOGN3VG2FRcLTz1fVVIVjGTcs?=
- =?us-ascii?Q?46jNEmiWzRoQGg3/HenHawUWLnvdlTcldmAtmaWKY+YsDHGR2ZF8HAhxCjvr?=
- =?us-ascii?Q?0x7gJGk6WM6uo8cxOZgWU4AXTkyIUaulfcLluBUhPbZXqko/em72bcgyDjkY?=
- =?us-ascii?Q?HTZSV5OiuCZQJMKvq6X4/gRU/X1JcDZRYmeq1gpZQZ+/YuiBh1Ysu7natffX?=
- =?us-ascii?Q?r2aDkpxgZUdzd6R/UGJy?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28daab4d-0e01-41bd-0eb6-08dc419ac18c
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 07:13:31.4114
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR20MB6117
+References: <1709892753-27461-1-git-send-email-zhiguo.niu@unisoc.com>
+ <1709892753-27461-2-git-send-email-zhiguo.niu@unisoc.com> <ce37ca70-6c84-4a6f-8057-1770a00574d3@kernel.org>
+In-Reply-To: <ce37ca70-6c84-4a6f-8057-1770a00574d3@kernel.org>
+From: Zhiguo Niu <niuzhiguo84@gmail.com>
+Date: Mon, 11 Mar 2024 15:19:11 +0800
+Message-ID: <CAHJ8P3KQg+gtpuX9rbLZafuMBzwvFW4J25RuzTCWM6+RNZd=0g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] f2fs: fix to handle error paths of {new,change}_curseg()
+To: Chao Yu <chao@kernel.org>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	ke.wang@unisoc.com, hongyu.jin@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11, 2024 at 02:30:18PM +0800, Qingfang Deng wrote:
-> T-Head C908 has the same IRQ num and CSR as previous C9xx cores, but
-> reports non-zero marchid and mimpid. Remove the ID checks.
-> 
+On Mon, Mar 11, 2024 at 2:09=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
+>
+> On 2024/3/8 18:12, Zhiguo Niu wrote:
+> > {new,change}_curseg() may return error in some special cases,
+> > error handling should be did in their callers, and this will also
+> > facilitate subsequent error path expansion in {new,change}_curseg().
+> >
+> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> > Signed-off-by: Chao Yu <chao@kernel.org>
+> > ---
+> >   fs/f2fs/extent_cache.c |  2 +-
+> >   fs/f2fs/f2fs.h         |  4 ++--
+> >   fs/f2fs/gc.c           |  7 +++++--
+> >   fs/f2fs/segment.c      | 57 +++++++++++++++++++++++++++++++----------=
+---------
+> >   fs/f2fs/super.c        |  4 +++-
+> >   5 files changed, 46 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
+> > index 48048fa..dce00cf 100644
+> > --- a/fs/f2fs/extent_cache.c
+> > +++ b/fs/f2fs/extent_cache.c
+> > @@ -988,7 +988,7 @@ bool f2fs_lookup_read_extent_cache_block(struct ino=
+de *inode, pgoff_t index,
+> >
+> >   void f2fs_update_read_extent_cache(struct dnode_of_data *dn)
+> >   {
+> > -     return __update_extent_cache(dn, EX_READ);
+> > +     __update_extent_cache(dn, EX_READ);
+>
+> Above change is not related to this patch?
+>
+> Otherwise, it looks good to me.
+>
+> Thanks,
+Dear Chao,
 
-Hi, Qingfang,
+Okay, I see that both functions here are void type, so there is no
+need to use return^^.
+I will remove this part and update.
 
-IIRC, the existed C908 SoC (such as K230) have an early version 
-of C908 core. But C908 core itself may support Sscofpmf.
-So I do not think removing the ID checks is a good idea. Instead, 
-I suggest adding CPUID of your SoC to this check.
+By the way, I did a stability test on this patch and the result passed
+thanks!
 
-Regards,
-Inochi
-
-> Fixes: 65e9fb081877 ("drivers/perf: riscv_pmu_sbi: add support for PMU variant on T-Head C9xx cores")
-> Signed-off-by: Qingfang Deng <dqfext@gmail.com>
-> ---
->  arch/riscv/errata/thead/errata.c | 4 ----
->  drivers/perf/riscv_pmu_sbi.c     | 4 +---
->  2 files changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-> index b1c410bbc1ae..49ccad5b21bb 100644
-> --- a/arch/riscv/errata/thead/errata.c
-> +++ b/arch/riscv/errata/thead/errata.c
-> @@ -125,10 +125,6 @@ static bool errata_probe_pmu(unsigned int stage,
->  	if (!IS_ENABLED(CONFIG_ERRATA_THEAD_PMU))
->  		return false;
->  
-> -	/* target-c9xx cores report arch_id and impid as 0 */
-> -	if (arch_id != 0 || impid != 0)
-> -		return false;
-> -
->  	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
->  		return false;
->  
-> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-> index 452aab49db1e..87b83184383a 100644
-> --- a/drivers/perf/riscv_pmu_sbi.c
-> +++ b/drivers/perf/riscv_pmu_sbi.c
-> @@ -811,9 +811,7 @@ static int pmu_sbi_setup_irqs(struct riscv_pmu *pmu, struct platform_device *pde
->  		riscv_pmu_irq_num = RV_IRQ_PMU;
->  		riscv_pmu_use_irq = true;
->  	} else if (IS_ENABLED(CONFIG_ERRATA_THEAD_PMU) &&
-> -		   riscv_cached_mvendorid(0) == THEAD_VENDOR_ID &&
-> -		   riscv_cached_marchid(0) == 0 &&
-> -		   riscv_cached_mimpid(0) == 0) {
-> +		   riscv_cached_mvendorid(0) == THEAD_VENDOR_ID) {
->  		riscv_pmu_irq_num = THEAD_C9XX_RV_IRQ_PMU;
->  		riscv_pmu_use_irq = true;
->  	}
-> -- 
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>
+> >   }
+> >
+> >   void f2fs_update_read_extent_cache_range(struct dnode_of_data *dn,
+> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > index 4836e7c..7beb074 100644
+> > --- a/fs/f2fs/f2fs.h
+> > +++ b/fs/f2fs/f2fs.h
+> > @@ -3700,10 +3700,10 @@ void f2fs_clear_prefree_segments(struct f2fs_sb=
+_info *sbi,
+> >   void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
+> >   int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_=
+ra);
+> >   bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
+> > -void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
+> > +int f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
+> >   void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
+> >   void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
+> > -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int ty=
+pe,
+> > +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int typ=
+e,
+> >                                       unsigned int start, unsigned int =
+end);
+> >   int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, boo=
+l force);
+> >   int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
+> > diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> > index ca1bf41..8852814 100644
+> > --- a/fs/f2fs/gc.c
+> > +++ b/fs/f2fs/gc.c
+> > @@ -2035,8 +2035,11 @@ static int free_segment_range(struct f2fs_sb_inf=
+o *sbi,
+> >       mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
+> >
+> >       /* Move out cursegs from the target range */
+> > -     for (type =3D CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; typ=
+e++)
+> > -             f2fs_allocate_segment_for_resize(sbi, type, start, end);
+> > +     for (type =3D CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; typ=
+e++) {
+> > +             err =3D f2fs_allocate_segment_for_resize(sbi, type, start=
+, end);
+> > +             if (err)
+> > +                     goto out;
+> > +     }
+> >
+> >       /* do GC to move out valid blocks in the range */
+> >       err =3D f2fs_gc_range(sbi, start, end, dry_run, 0);
+> > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > index 4e4a51a..c1c1308 100644
+> > --- a/fs/f2fs/segment.c
+> > +++ b/fs/f2fs/segment.c
+> > @@ -2863,7 +2863,7 @@ bool f2fs_segment_has_free_slot(struct f2fs_sb_in=
+fo *sbi, int segno)
+> >    * This function always allocates a used segment(from dirty seglist) =
+by SSR
+> >    * manner, so it should recover the existing segment information of v=
+alid blocks
+> >    */
+> > -static void change_curseg(struct f2fs_sb_info *sbi, int type)
+> > +static int change_curseg(struct f2fs_sb_info *sbi, int type)
+> >   {
+> >       struct dirty_seglist_info *dirty_i =3D DIRTY_I(sbi);
+> >       struct curseg_info *curseg =3D CURSEG_I(sbi, type);
+> > @@ -2888,21 +2888,23 @@ static void change_curseg(struct f2fs_sb_info *=
+sbi, int type)
+> >       if (IS_ERR(sum_page)) {
+> >               /* GC won't be able to use stale summary pages by cp_erro=
+r */
+> >               memset(curseg->sum_blk, 0, SUM_ENTRY_SIZE);
+> > -             return;
+> > +             return PTR_ERR(sum_page);
+> >       }
+> >       sum_node =3D (struct f2fs_summary_block *)page_address(sum_page);
+> >       memcpy(curseg->sum_blk, sum_node, SUM_ENTRY_SIZE);
+> >       f2fs_put_page(sum_page, 1);
+> > +     return 0;
+> >   }
+> >
+> >   static int get_ssr_segment(struct f2fs_sb_info *sbi, int type,
+> >                               int alloc_mode, unsigned long long age);
+> >
+> > -static void get_atssr_segment(struct f2fs_sb_info *sbi, int type,
+> > +static int get_atssr_segment(struct f2fs_sb_info *sbi, int type,
+> >                                       int target_type, int alloc_mode,
+> >                                       unsigned long long age)
+> >   {
+> >       struct curseg_info *curseg =3D CURSEG_I(sbi, type);
+> > +     int ret =3D 0;
+> >
+> >       curseg->seg_type =3D target_type;
+> >
+> > @@ -2910,38 +2912,41 @@ static void get_atssr_segment(struct f2fs_sb_in=
+fo *sbi, int type,
+> >               struct seg_entry *se =3D get_seg_entry(sbi, curseg->next_=
+segno);
+> >
+> >               curseg->seg_type =3D se->type;
+> > -             change_curseg(sbi, type);
+> > +             ret =3D change_curseg(sbi, type);
+> >       } else {
+> >               /* allocate cold segment by default */
+> >               curseg->seg_type =3D CURSEG_COLD_DATA;
+> > -             new_curseg(sbi, type, true);
+> > +             ret =3D new_curseg(sbi, type, true);
+> >       }
+> >       stat_inc_seg_type(sbi, curseg);
+> > +     return ret;
+> >   }
+> >
+> > -static void __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
+> > +static int __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
+> >   {
+> >       struct curseg_info *curseg =3D CURSEG_I(sbi, CURSEG_ALL_DATA_ATGC=
+);
+> > +     int ret =3D 0;
+> >
+> >       if (!sbi->am.atgc_enabled)
+> > -             return;
+> > +             return 0;
+> >
+> >       f2fs_down_read(&SM_I(sbi)->curseg_lock);
+> >
+> >       mutex_lock(&curseg->curseg_mutex);
+> >       down_write(&SIT_I(sbi)->sentry_lock);
+> >
+> > -     get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC, CURSEG_COLD_DATA, SS=
+R, 0);
+> > +     ret =3D get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC,
+> > +                                     CURSEG_COLD_DATA, SSR, 0);
+> >
+> >       up_write(&SIT_I(sbi)->sentry_lock);
+> >       mutex_unlock(&curseg->curseg_mutex);
+> >
+> >       f2fs_up_read(&SM_I(sbi)->curseg_lock);
+> > -
+> > +     return ret;
+> >   }
+> > -void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
+> > +int f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
+> >   {
+> > -     __f2fs_init_atgc_curseg(sbi);
+> > +     return __f2fs_init_atgc_curseg(sbi);
+> >   }
+> >
+> >   static void __f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi, int ty=
+pe)
+> > @@ -3069,11 +3074,12 @@ static bool need_new_seg(struct f2fs_sb_info *s=
+bi, int type)
+> >       return false;
+> >   }
+> >
+> > -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int ty=
+pe,
+> > +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int typ=
+e,
+> >                                       unsigned int start, unsigned int =
+end)
+> >   {
+> >       struct curseg_info *curseg =3D CURSEG_I(sbi, type);
+> >       unsigned int segno;
+> > +     int ret =3D 0;
+> >
+> >       f2fs_down_read(&SM_I(sbi)->curseg_lock);
+> >       mutex_lock(&curseg->curseg_mutex);
+> > @@ -3084,9 +3090,9 @@ void f2fs_allocate_segment_for_resize(struct f2fs=
+_sb_info *sbi, int type,
+> >               goto unlock;
+> >
+> >       if (f2fs_need_SSR(sbi) && get_ssr_segment(sbi, type, SSR, 0))
+> > -             change_curseg(sbi, type);
+> > +             ret =3D change_curseg(sbi, type);
+> >       else
+> > -             new_curseg(sbi, type, true);
+> > +             ret =3D new_curseg(sbi, type, true);
+> >
+> >       stat_inc_seg_type(sbi, curseg);
+> >
+> > @@ -3100,6 +3106,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs=
+_sb_info *sbi, int type,
+> >
+> >       mutex_unlock(&curseg->curseg_mutex);
+> >       f2fs_up_read(&SM_I(sbi)->curseg_lock);
+> > +     return ret;
+> >   }
+> >
+> >   static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
+> > @@ -3486,14 +3493,17 @@ int f2fs_allocate_data_block(struct f2fs_sb_inf=
+o *sbi, struct page *page,
+> >       bool from_gc =3D (type =3D=3D CURSEG_ALL_DATA_ATGC);
+> >       struct seg_entry *se =3D NULL;
+> >       bool segment_full =3D false;
+> > +     int ret =3D 0;
+> >
+> >       f2fs_down_read(&SM_I(sbi)->curseg_lock);
+> >
+> >       mutex_lock(&curseg->curseg_mutex);
+> >       down_write(&sit_i->sentry_lock);
+> >
+> > -     if (curseg->segno =3D=3D NULL_SEGNO)
+> > +     if (curseg->segno =3D=3D NULL_SEGNO) {
+> > +             ret =3D -ENOSPC;
+> >               goto out_err;
+> > +     }
+> >
+> >       if (from_gc) {
+> >               f2fs_bug_on(sbi, GET_SEGNO(sbi, old_blkaddr) =3D=3D NULL_=
+SEGNO);
+> > @@ -3546,17 +3556,17 @@ int f2fs_allocate_data_block(struct f2fs_sb_inf=
+o *sbi, struct page *page,
+> >               }
+> >
+> >               if (from_gc) {
+> > -                     get_atssr_segment(sbi, type, se->type,
+> > +                     ret =3D get_atssr_segment(sbi, type, se->type,
+> >                                               AT_SSR, se->mtime);
+> >               } else {
+> >                       if (need_new_seg(sbi, type))
+> > -                             new_curseg(sbi, type, false);
+> > +                             ret =3D new_curseg(sbi, type, false);
+> >                       else
+> > -                             change_curseg(sbi, type);
+> > +                             ret =3D change_curseg(sbi, type);
+> >                       stat_inc_seg_type(sbi, curseg);
+> >               }
+> >
+> > -             if (curseg->segno =3D=3D NULL_SEGNO)
+> > +             if (ret)
+> >                       goto out_err;
+> >       }
+> >
+> > @@ -3599,7 +3609,7 @@ int f2fs_allocate_data_block(struct f2fs_sb_info =
+*sbi, struct page *page,
+> >       up_write(&sit_i->sentry_lock);
+> >       mutex_unlock(&curseg->curseg_mutex);
+> >       f2fs_up_read(&SM_I(sbi)->curseg_lock);
+> > -     return -ENOSPC;
+> > +     return ret;
+> >
+> >   }
+> >
+> > @@ -3829,7 +3839,8 @@ void f2fs_do_replace_block(struct f2fs_sb_info *s=
+bi, struct f2fs_summary *sum,
+> >       /* change the current segment */
+> >       if (segno !=3D curseg->segno) {
+> >               curseg->next_segno =3D segno;
+> > -             change_curseg(sbi, type);
+> > +             if (change_curseg(sbi, type))
+> > +                     goto out_unlock;
+> >       }
+> >
+> >       curseg->next_blkoff =3D GET_BLKOFF_FROM_SEG0(sbi, new_blkaddr);
+> > @@ -3855,12 +3866,14 @@ void f2fs_do_replace_block(struct f2fs_sb_info =
+*sbi, struct f2fs_summary *sum,
+> >       if (recover_curseg) {
+> >               if (old_cursegno !=3D curseg->segno) {
+> >                       curseg->next_segno =3D old_cursegno;
+> > -                     change_curseg(sbi, type);
+> > +                     if (change_curseg(sbi, type))
+> > +                             goto out_unlock;
+> >               }
+> >               curseg->next_blkoff =3D old_blkoff;
+> >               curseg->alloc_type =3D old_alloc_type;
+> >       }
+> >
+> > +out_unlock:
+> >       up_write(&sit_i->sentry_lock);
+> >       mutex_unlock(&curseg->curseg_mutex);
+> >       f2fs_up_write(&SM_I(sbi)->curseg_lock);
+> > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > index 78a7658..f2b6d3f 100644
+> > --- a/fs/f2fs/super.c
+> > +++ b/fs/f2fs/super.c
+> > @@ -4685,7 +4685,9 @@ static int f2fs_fill_super(struct super_block *sb=
+, void *data, int silent)
+> >       if (err)
+> >               goto free_meta;
+> >
+> > -     f2fs_init_inmem_curseg(sbi);
+> > +     err =3D f2fs_init_inmem_curseg(sbi);
+> > +     if (err)
+> > +             goto sync_free_meta;
+> >
+> >       /* f2fs_recover_fsync_data() cleared this already */
+> >       clear_sbi_flag(sbi, SBI_POR_DOING);
 
