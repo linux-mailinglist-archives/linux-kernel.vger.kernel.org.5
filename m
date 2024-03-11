@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-142204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1EDE8A28D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:06:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B84A8A28D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:06:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 834C91F249EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:06:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 266092859A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC7C54F87;
-	Fri, 12 Apr 2024 08:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D72A535B7;
+	Fri, 12 Apr 2024 08:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oyRWCkpB"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KiUuUVgq"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35195026B;
-	Fri, 12 Apr 2024 08:04:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CF355774;
+	Fri, 12 Apr 2024 08:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712909062; cv=none; b=PTEO34UcD7laUrc+0B8VXDYHqVz4EHQhY3DscptqG60/uio1q3tFPLNDc6fS0SYWN117jwqAByNIrpOawT04V9ATCnYAW76EoO67P8XjlfNPsT6yrmTf/j5tBMe4IaPv8DzabB+Ijp7BseZyDsSrtVH+VZHWnyQ21hci1DjydzE=
+	t=1712909072; cv=none; b=sRZMDDOlBO9WqCHSilgFg0UFwVVjCgD1xDQKeUan9+i8onVToNx4vhGte2k9fohKk0RNCcM81RxvOyqAY8DAefLZG99bFNQ2dnwJ6jfOMKj+rP7mNyZ5F5o9oaR7kWc6IBUfdLlNQWPSF/GEhCFuDQjzQU2Y0w04QZLrBtJ+dHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712909062; c=relaxed/simple;
-	bh=oDDRDOX0rARG/d79EVFbhFUsJY5ISutnMkd4KXGt5QI=;
-	h=In-Reply-To:References:Message-Id:From:Date:Subject:To:Cc; b=DJWw+jcoG4PyYB8ZdfOJbEP3pX7TEuckLMS41/dtD7tunLoOIuyNOzTQpK5pZm2shwWQa8AfCmJDjR4dcjaUojxtFg+uUQQGrZLvtYfdLBqvjtLn9QmM49kRmOgqluBitqEbnk+6SwBbgrhSDYketie5DDm6/et/TVvvETHu1fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oyRWCkpB; arc=none smtp.client-ip=90.155.92.199
+	s=arc-20240116; t=1712909072; c=relaxed/simple;
+	bh=d7cFxhCB3YkupKziFZ26ogRn5cKTA+vaajWjvO+U5mw=;
+	h=In-Reply-To:References:Message-Id:From:Date:Subject:To:Cc; b=Ev8cWZaZc7GorpT9qiVN5rhqyZerCE9USkwZgwgKzlJeFrjfKKWY3cvI5KQZqIQ7wlJ/1bNTzie5+6oj4m5t81TxkT5Juk9cHcZP+ggvE1DZWo24BbVLU3D19Fj3y26v7NGbmlbGdmXMDsbS8c74R77iV/vAoTrZ59TKudYqfp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KiUuUVgq; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Sender:Cc:To:Subject:Date:From:
+	d=infradead.org; s=casper.20170209; h=Sender:Cc:To:Subject:Date:From:
 	Message-Id:References:In-Reply-To:Reply-To:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=LA9H/eqQ3lA2kMt4RACHsdsipUNelRXWxmYww27ZE+g=; b=oyRWCkpBqEeoK84MFBcO1qR0Id
-	KoNAhcGT9XqMHthfd06OAwMAToy/Ii2wvAFjlXMYJtEDl7XnpuhALxCS0k6Xt7V8A8c/+DIb8urX2
-	j1r5raqhXsg0LSeKPp3I34QVotLLvWvR1vu3chgCqPHNgBzbgZKKrX6ulkzpevx1l1l+LloO96QBc
-	UkEmD97XegHMeTap6AM9ioZDE3OM42552dFvHyHFeJoM088fAWen90g9SOfiZ27jdl++aCPWWLGrh
-	jNwDahv0Tz5TrkCggZQUnzOykNpq7siBXOXrYMStvmpM690Ud9boKebMj2MHSlWOUFsT4VMe9avtq
-	CRhkczlw==;
+	bh=GHkEo0uIXHettMVCbsHimID5bYVEU0q/Ed8abuN0cqo=; b=KiUuUVgqBsUbNnmujmNFQgElNs
+	vZoxYrB+KxLxZM8vSWCv7Wb/4/fiOLou9IESxOTDVSW30YLzoQxzONYa02q7gx7TiixdWhtDBq++9
+	yq/3xK4KOCRAcA9fYeJjAeHU5N3GxU0wNz3+IAN+UHgLPhbdsS9i08JWzSYOhksV/7AZ6wTFiPax2
+	YGyRJ3Micen4JqhKU5U8SWSj2d60wZPf23KPTBm06XzvUqggj5PN5qy/UJ4NmnLzeG7Y1uek29ekF
+	WtsqJPMJCp0V6rjjByZKuwzsXP/FU/3YxkR2mF//E7u1c3Mm1aB2vY9jTvZeecIGFqEcHejpBn0es
+	F3Xa3sYQ==;
 Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvBtP-0000000926r-2kcE;
-	Fri, 12 Apr 2024 08:04:16 +0000
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rvBtV-00000008izc-39VM;
+	Fri, 12 Apr 2024 08:04:21 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvBtO-00000009KT4-42mn;
-	Fri, 12 Apr 2024 09:04:14 +0100
+	id 1rvBtV-00000009KTB-0quC;
+	Fri, 12 Apr 2024 09:04:21 +0100
 In-Reply-To: <20240412073530.2222496-1-dwmw2@infradead.org>
 References: <20240412073530.2222496-1-dwmw2@infradead.org>
-Message-Id: <20240412073530.2222496-2-dwmw2@infradead.org>
+Message-Id: <20240412073530.2222496-3-dwmw2@infradead.org>
 From: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 11 Mar 2024 12:19:14 +0000
-Subject: [PATCH v2 1/2] ACPICA: Detect FACS even for hardware reduced
- platforms
+Date: Mon, 11 Mar 2024 13:04:07 +0000
+Subject: [PATCH v2 2/2] arm64: acpi: Honour firmware_signature field of FACS,
+ if it exists
 To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
 Cc: Robert Moore <robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
 Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,77 +65,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-ACPICA commit 44fc328a1a14b097d92b8be83989e4bf69b6e6cb
-
-The FACS is optional even on hardware reduced platforms, and may exist
-for the purpose of communicating the hardware_signature field to provoke
-a clean reboot instead of a resume from hibernation.
+If the firmware_signature changes then OSPM should not attempt to resume
+from hibernate, but should instead perform a clean reboot. Set the global
+swsusp_hardware_signature to allow the generic code to include the value
+in the swsusp header on disk, and perform the appropriate check on resume.
 
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Acked-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- drivers/acpi/acpica/tbfadt.c  | 30 +++++++++++++-----------------
- drivers/acpi/acpica/tbutils.c |  7 +------
- 2 files changed, 14 insertions(+), 23 deletions(-)
+ arch/arm64/kernel/acpi.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/acpi/acpica/tbfadt.c b/drivers/acpi/acpica/tbfadt.c
-index 44267a92bce5..3c126c6d306b 100644
---- a/drivers/acpi/acpica/tbfadt.c
-+++ b/drivers/acpi/acpica/tbfadt.c
-@@ -315,23 +315,19 @@ void acpi_tb_parse_fadt(void)
- 				       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
- 				       NULL, FALSE, TRUE, &acpi_gbl_dsdt_index);
+diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+index dba8fcec7f33..e0e7b93c16cc 100644
+--- a/arch/arm64/kernel/acpi.c
++++ b/arch/arm64/kernel/acpi.c
+@@ -26,6 +26,7 @@
+ #include <linux/libfdt.h>
+ #include <linux/smp.h>
+ #include <linux/serial_core.h>
++#include <linux/suspend.h>
+ #include <linux/pgtable.h>
  
--	/* If Hardware Reduced flag is set, there is no FACS */
--
--	if (!acpi_gbl_reduced_hardware) {
--		if (acpi_gbl_FADT.facs) {
--			acpi_tb_install_standard_table((acpi_physical_address)
--						       acpi_gbl_FADT.facs,
--						       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
--						       NULL, FALSE, TRUE,
--						       &acpi_gbl_facs_index);
--		}
--		if (acpi_gbl_FADT.Xfacs) {
--			acpi_tb_install_standard_table((acpi_physical_address)
--						       acpi_gbl_FADT.Xfacs,
--						       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
--						       NULL, FALSE, TRUE,
--						       &acpi_gbl_xfacs_index);
--		}
-+	if (acpi_gbl_FADT.facs) {
-+		acpi_tb_install_standard_table((acpi_physical_address)
-+					       acpi_gbl_FADT.facs,
-+					       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
-+					       NULL, FALSE, TRUE,
-+					       &acpi_gbl_facs_index);
-+	}
-+	if (acpi_gbl_FADT.Xfacs) {
-+		acpi_tb_install_standard_table((acpi_physical_address)
-+					       acpi_gbl_FADT.Xfacs,
-+					       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
-+					       NULL, FALSE, TRUE,
-+					       &acpi_gbl_xfacs_index);
- 	}
- }
- 
-diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.c
-index bb4a56e5673a..15fa68a5ea6e 100644
---- a/drivers/acpi/acpica/tbutils.c
-+++ b/drivers/acpi/acpica/tbutils.c
-@@ -36,12 +36,7 @@ acpi_status acpi_tb_initialize_facs(void)
- {
- 	struct acpi_table_facs *facs;
- 
--	/* If Hardware Reduced flag is set, there is no FACS */
--
--	if (acpi_gbl_reduced_hardware) {
--		acpi_gbl_FACS = NULL;
--		return (AE_OK);
--	} else if (acpi_gbl_FADT.Xfacs &&
-+	if (acpi_gbl_FADT.Xfacs &&
- 		   (!acpi_gbl_FADT.facs
- 		    || !acpi_gbl_use32_bit_facs_addresses)) {
- 		(void)acpi_get_table_by_index(acpi_gbl_xfacs_index,
+ #include <acpi/ghes.h>
+@@ -227,6 +228,15 @@ void __init acpi_boot_table_init(void)
+ 		if (earlycon_acpi_spcr_enable)
+ 			early_init_dt_scan_chosen_stdout();
+ 	} else {
++#ifdef CONFIG_HIBERNATION
++		struct acpi_table_header *facs = NULL;
++		acpi_get_table(ACPI_SIG_FACS, 1, &facs);
++		if (facs) {
++			swsusp_hardware_signature =
++				((struct acpi_table_facs *)facs)->hardware_signature;
++			acpi_put_table(facs);
++		}
++#endif
+ 		acpi_parse_spcr(earlycon_acpi_spcr_enable, true);
+ 		if (IS_ENABLED(CONFIG_ACPI_BGRT))
+ 			acpi_table_parse(ACPI_SIG_BGRT, acpi_parse_bgrt);
 -- 
 2.44.0
 
