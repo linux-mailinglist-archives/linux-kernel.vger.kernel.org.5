@@ -1,267 +1,98 @@
-Return-Path: <linux-kernel+bounces-99046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34A348782C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:07:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C8BE8782C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:11:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFF8B281E80
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:07:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3483D281A01
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8036841C7C;
-	Mon, 11 Mar 2024 15:07:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5EF3F8C3
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:07:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6B841C84;
+	Mon, 11 Mar 2024 15:11:27 +0000 (UTC)
+Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4E341C79
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710169657; cv=none; b=YRgWhabxs8/Cvo62jzcOCwbeXFdSQyWMCzwoOssDLkGCFqmrywkZNOBjp0mhXhgiLEt1fxO1SkEp7QS9tmZZGCDrb7UZh01YTFf6kV77N0BLqwhRdAAWmmIzC9z3C1F3znNeskkYUjN/yLDJkdxrfqd6hxqE8bTN9gB7+8A+3ys=
+	t=1710169887; cv=none; b=K9oEWz4BJlXJ7b70If33ajOGowDHSxPu6Y9e84UrrouuH/TJOwRN7Z7J5jGzTCa6Dugb1IG98CnSzKJNXQ0LwBvskebgVQnsg4J4w0Vp58qLHbm0Gv1W3pczzoRxSsq3vxlevKHaDI9TCS3nt5QbWd6QxrBOqi5dBWxe637wuV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710169657; c=relaxed/simple;
-	bh=hmY7bjUa+uhlEWBa3scG8SsrIKylRM/4tDYziewEonE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=uEPHL9FX5FvC8JiIJhKCl83l3CZjG4hStm7imRZAcp4AWm/LcYhBInVNc9XR3jHo4b+EnmPO/ZcgGd09i5pEmPWtXqucOvScoot9gtGeKNPbdWN6eiJFHYiLG+SOaI+stq/btePz5NPxIHih8ywY4ixjSgZ90AaFc/bDgLkNUjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 253C8FEC;
-	Mon, 11 Mar 2024 08:08:12 -0700 (PDT)
-Received: from [10.57.68.246] (unknown [10.57.68.246])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49CBA3F64C;
-	Mon, 11 Mar 2024 08:07:32 -0700 (PDT)
-Message-ID: <4090ae12-8fb9-4e58-a093-86c13cca1d47@arm.com>
-Date: Mon, 11 Mar 2024 15:07:30 +0000
+	s=arc-20240116; t=1710169887; c=relaxed/simple;
+	bh=aKbkNyegVOyyGFjP/ogRuzQUe4u8kio6NQd41/oE4EA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uqwTQLhKAe5ynPUntmyaw5qdI0GnTU648jTVUjp5SJ1mhf1Z9w9hQ+quWNqM7Sss5uVS+LbBKvyvo0J4oYOXSz4E+nOZdsWaLzfhkPOM8i3Aii3573H0xbUkEWdRvTHtbQ0qKXtfxxcyR5HfeRRjnaRZXaHXw2YG15cUi3dX4fI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
+Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 42BFBB8s005368;
+	Mon, 11 Mar 2024 20:41:11 +0530
+Received: (from sunil@localhost)
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 42BFBB3J005367;
+	Mon, 11 Mar 2024 20:41:11 +0530
+From: Sunil Khatri <sunil.khatri@amd.com>
+To: Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Sunil Khatri <sunil.khatri@amd.com>
+Subject: [PATCH v2] drm/amdgpu: add ring buffer information in devcoredump
+Date: Mon, 11 Mar 2024 20:41:09 +0530
+Message-Id: <20240311151109.5336-1-sunil.khatri@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
- madvise_free
-Content-Language: en-GB
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Barry Song <21cnbao@gmail.com>, Lance Yang <ioworker0@gmail.com>,
- david@redhat.com, Vishal Moola <vishal.moola@gmail.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, shy828301@gmail.com,
- mhocko@suse.com, fengwei.yin@intel.com, xiehuan09@gmail.com,
- wangkefeng.wang@huawei.com, songmuchun@bytedance.com, peterx@redhat.com,
- minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240307061425.21013-1-ioworker0@gmail.com>
- <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
- <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
- <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
- <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
-In-Reply-To: <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 07/03/2024 09:07, Ryan Roberts wrote:
-> On 07/03/2024 08:10, Barry Song wrote:
->> On Thu, Mar 7, 2024 at 9:00 PM Lance Yang <ioworker0@gmail.com> wrote:
->>>
->>> Hey Barry,
->>>
->>> Thanks for taking time to review!
->>>
->>> On Thu, Mar 7, 2024 at 3:00 PM Barry Song <21cnbao@gmail.com> wrote:
->>>>
->>>> On Thu, Mar 7, 2024 at 7:15 PM Lance Yang <ioworker0@gmail.com> wrote:
->>>>>
->>> [...]
->>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned long addr,
->>>>> +                                                struct folio *folio, pte_t *start_pte)
->>>>> +{
->>>>> +       int nr_pages = folio_nr_pages(folio);
->>>>> +       fpb_t flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
->>>>> +
->>>>> +       for (int i = 0; i < nr_pages; i++)
->>>>> +               if (page_mapcount(folio_page(folio, i)) != 1)
->>>>> +                       return false;
->>>>
->>>> we have moved to folio_estimated_sharers though it is not precise, so
->>>> we don't do
->>>> this check with lots of loops and depending on the subpage's mapcount.
->>>
->>> If we don't check the subpage’s mapcount, and there is a cow folio associated
->>> with this folio and the cow folio has smaller size than this folio,
->>> should we still
->>> mark this folio as lazyfree?
->>
->> I agree, this is true. However, we've somehow accepted the fact that
->> folio_likely_mapped_shared
->> can result in false negatives or false positives to balance the
->> overhead.  So I really don't know :-)
->>
->> Maybe David and Vishal can give some comments here.
->>
->>>
->>>> BTW, do we need to rebase our work against David's changes[1]?
->>>> [1] https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat.com/
->>>
->>> Yes, we should rebase our work against David’s changes.
->>>
->>>>
->>>>> +
->>>>> +       return nr_pages == folio_pte_batch(folio, addr, start_pte,
->>>>> +                                        ptep_get(start_pte), nr_pages, flags, NULL);
->>>>> +}
->>>>> +
->>>>>  static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>>>                                 unsigned long end, struct mm_walk *walk)
->>>>>
->>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>>>                  */
->>>>>                 if (folio_test_large(folio)) {
->>>>>                         int err;
->>>>> +                       unsigned long next_addr, align;
->>>>>
->>>>> -                       if (folio_estimated_sharers(folio) != 1)
->>>>> -                               break;
->>>>> -                       if (!folio_trylock(folio))
->>>>> -                               break;
->>>>> +                       if (folio_estimated_sharers(folio) != 1 ||
->>>>> +                           !folio_trylock(folio))
->>>>> +                               goto skip_large_folio;
->>>>
->>>>
->>>> I don't think we can skip all the PTEs for nr_pages, as some of them might be
->>>> pointing to other folios.
->>>>
->>>> for example, for a large folio with 16PTEs, you do MADV_DONTNEED(15-16),
->>>> and write the memory of PTE15 and PTE16, you get page faults, thus PTE15
->>>> and PTE16 will point to two different small folios. We can only skip when we
->>>> are sure nr_pages == folio_pte_batch() is sure.
->>>
->>> Agreed. Thanks for pointing that out.
->>>
->>>>
->>>>> +
->>>>> +                       align = folio_nr_pages(folio) * PAGE_SIZE;
->>>>> +                       next_addr = ALIGN_DOWN(addr + align, align);
->>>>> +
->>>>> +                       /*
->>>>> +                        * If we mark only the subpages as lazyfree, or
->>>>> +                        * cannot mark the entire large folio as lazyfree,
->>>>> +                        * then just split it.
->>>>> +                        */
->>>>> +                       if (next_addr > end || next_addr - addr != align ||
->>>>> +                           !can_mark_large_folio_lazyfree(addr, folio, pte))
->>>>> +                               goto split_large_folio;
->>>>> +
->>>>> +                       /*
->>>>> +                        * Avoid unnecessary folio splitting if the large
->>>>> +                        * folio is entirely within the given range.
->>>>> +                        */
->>>>> +                       folio_clear_dirty(folio);
->>>>> +                       folio_unlock(folio);
->>>>> +                       for (; addr != next_addr; pte++, addr += PAGE_SIZE) {
->>>>> +                               ptent = ptep_get(pte);
->>>>> +                               if (pte_young(ptent) || pte_dirty(ptent)) {
->>>>> +                                       ptent = ptep_get_and_clear_full(
->>>>> +                                               mm, addr, pte, tlb->fullmm);
->>>>> +                                       ptent = pte_mkold(ptent);
->>>>> +                                       ptent = pte_mkclean(ptent);
->>>>> +                                       set_pte_at(mm, addr, pte, ptent);
->>>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>>> +                               }
->>>>
->>>> Can we do this in batches? for a CONT-PTE mapped large folio, you are unfolding
->>>> and folding again. It seems quite expensive.
-> 
-> I'm not convinced we should be doing this in batches. We want the initial
-> folio_pte_batch() to be as loose as possible regarding permissions so that we
-> reduce our chances of splitting folios to the min. (e.g. ignore SW bits like
-> soft dirty, etc). I think it might be possible that some PTEs are RO and other
-> RW too (e.g. due to cow - although with the current cow impl, probably not. But
-> its fragile to assume that). Anyway, if we do an initial batch that ignores all
-> that then do this bit as a batch, you will end up smeering all the ptes with
-> whatever properties were set on the first pte, which probably isn't right.
-> 
-> I've done a similar conversion for madvise_cold_or_pageout_pte_range() as part
-> of my swap-out series v4 (hoping to post imminently, but still working out a
-> latent bug that it triggers). I use ptep_test_and_clear_young() in that, which
-> arm64 can apply per-pte but avoid doing a contpte unfold/fold. I know you have
-> to clear dirty here too, but I think this pattern is preferable.
-> 
-> FYI, my swap-out series also halfway-batches madvise_free_pte_range() so that I
-> can batch free_swap_and_cache() for the swap entry case. Ideally the work you
-> are doing here would be rebased on top of that and plug-in to the approach
-> implemented there. (subject to others' views of course).
-> 
-> I'll cc you when I post it.
+Add relevant ringbuffer information such as
+rptr, wptr,rb mask, ring name, ring size and also
+the rings content for each ring on a gpu reset.
 
-I just sent out the swap-out series v4, as I presed the button I realized I
-forgot to cc you - sorry about that! It's at [1]. Patch 2 and 6 are the
-interesting ones from this PoV.
+Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-[1] https://lore.kernel.org/linux-mm/20240311150058.1122862-1-ryan.roberts@arm.com/
-
-
-> 
->>>
->>> Thanks for your suggestion. I'll do this in batches in v3.
->>>
->>> Thanks again for your time!
->>>
->>> Best,
->>> Lance
->>>
->>>>
->>>>> +                       }
->>>>> +                       folio_mark_lazyfree(folio);
->>>>> +                       goto next_folio;
->>>>> +
->>>>> +split_large_folio:
->>>>>                         folio_get(folio);
->>>>>                         arch_leave_lazy_mmu_mode();
->>>>>                         pte_unmap_unlock(start_pte, ptl);
->>>>> @@ -688,13 +736,28 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>>>                         err = split_folio(folio);
->>>>>                         folio_unlock(folio);
->>>>>                         folio_put(folio);
->>>>> -                       if (err)
->>>>> -                               break;
->>>>> -                       start_pte = pte =
->>>>> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
->>>>> -                       if (!start_pte)
->>>>> -                               break;
->>>>> -                       arch_enter_lazy_mmu_mode();
->>>>> +
->>>>> +                       /*
->>>>> +                        * If the large folio is locked or cannot be split,
->>>>> +                        * we just skip it.
->>>>> +                        */
->>>>> +                       if (err) {
->>>>> +skip_large_folio:
->>>>> +                               if (next_addr >= end)
->>>>> +                                       break;
->>>>> +                               pte += (next_addr - addr) / PAGE_SIZE;
->>>>> +                               addr = next_addr;
->>>>> +                       }
->>>>> +
->>>>> +                       if (!start_pte) {
->>>>> +                               start_pte = pte = pte_offset_map_lock(
->>>>> +                                       mm, pmd, addr, &ptl);
->>>>> +                               if (!start_pte)
->>>>> +                                       break;
->>>>> +                               arch_enter_lazy_mmu_mode();
->>>>> +                       }
->>>>> +
->>>>> +next_folio:
->>>>>                         pte--;
->>>>>                         addr -= PAGE_SIZE;
->>>>>                         continue;
->>>>> --
->>>>> 2.33.1
->>>>>
->>
->> Thanks
->> Barry
-> 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+index 6d059f853adc..a0dbccad2f53 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+@@ -215,6 +215,27 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
+ 			   fault_info->status);
+ 	}
+ 
++	drm_printf(&p, "Ring buffer information\n");
++	for (int i = 0; i < coredump->adev->num_rings; i++) {
++		int j = 0;
++		struct amdgpu_ring *ring = coredump->adev->rings[i];
++
++		drm_printf(&p, "ring name: %s\n", ring->name);
++		drm_printf(&p, "Rptr: 0x%llx Wptr: 0x%llx RB mask: %x\n",
++			   amdgpu_ring_get_rptr(ring),
++			   amdgpu_ring_get_wptr(ring),
++			   ring->buf_mask);
++		drm_printf(&p, "Ring size in dwords: %d\n",
++			   ring->ring_size / 4);
++		drm_printf(&p, "Ring contents\n");
++		drm_printf(&p, "Offset \t Value\n");
++
++		while (j < ring->ring_size) {
++			drm_printf(&p, "0x%x \t 0x%x\n", j, ring->ring[j/4]);
++			j += 4;
++		}
++	}
++
+ 	if (coredump->reset_vram_lost)
+ 		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
+ 	if (coredump->adev->reset_info.num_regs) {
+-- 
+2.34.1
 
 
