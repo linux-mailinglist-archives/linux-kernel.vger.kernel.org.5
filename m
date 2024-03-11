@@ -1,66 +1,58 @@
-Return-Path: <linux-kernel+bounces-99107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A19878382
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:28:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E943878386
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D05C285955
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:28:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC8BE1F25180
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8C765BC3;
-	Mon, 11 Mar 2024 15:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F11AB664BA;
+	Mon, 11 Mar 2024 15:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NyYFcDzf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WewZ5WiV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB19365BCD;
-	Mon, 11 Mar 2024 15:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A216664A3;
+	Mon, 11 Mar 2024 15:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710170073; cv=none; b=Kb/L5oa6LyXE6W8VDYNzYlFo60qBlyAISqaWcTmFMpBJKzkqRy+S9ktxKUhluaDhsvavgCRVG+Ge/rKJX1dDLd77dlUMtPRDKb4vIGyfJTVX5vYCOoA0v06Qs7qYkmCgVQeSrMKJkoGWvtXfgs70cFMheukLChh39wQ8lQKVukI=
+	t=1710170076; cv=none; b=HdoxydN6DrOySj3n2ACthm89urja+bBtvh3yTr++QcUJGqzxavuu14EGlKmpXBFatSON32kklQYaodSG+A2P3acbSpA6YgkDJCDCng8nGUGRx7z6EX8l8X1t96P9mD2EP8zQ2jGg/Kbg6Iue1YW9dpXkQj2T8vjVMm56TVTTvAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710170073; c=relaxed/simple;
-	bh=qRNIXQQ0NDPtwb9S2RGzhZvgH/WxePugxAeFOkz8rAs=;
+	s=arc-20240116; t=1710170076; c=relaxed/simple;
+	bh=Du80a8081lcmLcIyq1r2JOmgELaCBxEoYXMTEtF6bGQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MYqeOj0OS1G+yX6CryU6GoC71lnOpsnQKgIwfXwCaDrwtmSBY3oaIgAJMKrzGfeNcNA9LL7rvsj39wPhgVqR6Ko15cqyEbdobLNfCA12jUtCy3VdSXkIrPnEZZmYaAXnTaWRH7MLaMHMfxTnETdJW5s9JFNlw7iJculTBj3FqEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NyYFcDzf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05185C433C7;
-	Mon, 11 Mar 2024 15:14:31 +0000 (UTC)
+	 MIME-Version; b=lxl1OpXE4MGN7zy0jVaBxbsCM5ALtJaBh+d8ZVImguSVLTYZuSozJI+CRDruD951M91GxTQkN9umTopD5289tItivexCfKO9jLJlevp8QSJS1M6kZdVBZWT/kLbGON96Ec9XhWBMrZ13+heKtf2zGEIc+0QfnsKs15Ln/y+OjpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WewZ5WiV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBC88C43399;
+	Mon, 11 Mar 2024 15:14:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710170073;
-	bh=qRNIXQQ0NDPtwb9S2RGzhZvgH/WxePugxAeFOkz8rAs=;
+	s=k20201202; t=1710170075;
+	bh=Du80a8081lcmLcIyq1r2JOmgELaCBxEoYXMTEtF6bGQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NyYFcDzfWhj8NxSBbWq9MpkDoaAhIlnYIP0eRVYfIWHlY7nswcUnHsHjq3+Klza9c
-	 lle4GDQzeHhvOUjOLCCYKFMcDLTGHAVnyYqJdTnAey79/wERXUO4AO955EPhjGJVrA
-	 UTCZBYnIKvlyCii+6A+8gwc2Wo8F/uWiy4kf7teIgxaI1LX/9Hujm7PyN3HzGL9FSJ
-	 zW3OXDft0WPqkW6+4RuuwuWU/LcDRPyc9guTryuAOOqqcGd1mTHSVkyYO1uKFxrcJU
-	 511cpQzHOBSRgkKZot7Tigp0uGDDqDXa7er9VqOC9w7MxnrBRWFLojDP5BBg5rE7My
-	 0Fytgk8ImF+cQ==
+	b=WewZ5WiV1Dy5BOtlDxCSjDaacAXUbXJ7DzSQpjpyqIPzWSF3zHu1ap9AcbvIqoT+l
+	 kmLghfpKe8hXzxiTiyBO0eGiCZiZ5HFdCLvyBKNYXa2+wzrwQK+FoZG26Xe56jOCr9
+	 lFa1rfvAF4j5vQHD7gyeqay4a5C7H0JyjuLmsgrsO8wwzPnoy03zRbNlcwCo4bIFFA
+	 cRZUUEm8dHAObwn7dxdXI6tN+98Dg76jwjoz+OZPSXtT20H6ePV4rBjcUH+QCIdvhs
+	 CCc62ruF4S5yS1X6JTs1c5hNEe8+zp4tS8EgGFzOop8DVtr96PN/pAo8Q4bIzKRfan
+	 Z7qmzqWDSQTVQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Prike Liang <Prike.Liang@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Yuxuan Hu <20373622@buaa.edu.cn>,
+	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	Hawking.Zhang@amd.com,
-	lijo.lazar@amd.com,
-	le.ma@amd.com,
-	James.Zhu@amd.com,
-	shane.xiao@amd.com,
-	sonny.jiang@amd.com,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.15 3/5] drm/amdgpu: Enable gpu reset for S3 abort cases on Raven series
-Date: Mon, 11 Mar 2024 11:14:19 -0400
-Message-ID: <20240311151424.318621-3-sashal@kernel.org>
+	marcel@holtmann.org,
+	johan.hedberg@gmail.com,
+	luiz.dentz@gmail.com,
+	linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 4/5] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
+Date: Mon, 11 Mar 2024 11:14:20 -0400
+Message-ID: <20240311151424.318621-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311151424.318621-1-sashal@kernel.org>
 References: <20240311151424.318621-1-sashal@kernel.org>
@@ -75,88 +67,56 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.151
 Content-Transfer-Encoding: 8bit
 
-From: Prike Liang <Prike.Liang@amd.com>
+From: Yuxuan Hu <20373622@buaa.edu.cn>
 
-[ Upstream commit c671ec01311b4744b377f98b0b4c6d033fe569b3 ]
+[ Upstream commit 2535b848fa0f42ddff3e5255cf5e742c9b77bb26 ]
 
-Currently, GPU resets can now be performed successfully on the Raven
-series. While GPU reset is required for the S3 suspend abort case.
-So now can enable gpu reset for S3 abort cases on the Raven series.
+During our fuzz testing of the connection and disconnection process at the
+RFCOMM layer, we discovered this bug. By comparing the packets from a
+normal connection and disconnection process with the testcase that
+triggered a KASAN report. We analyzed the cause of this bug as follows:
 
-Signed-off-by: Prike Liang <Prike.Liang@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+1. In the packets captured during a normal connection, the host sends a
+`Read Encryption Key Size` type of `HCI_CMD` packet
+(Command Opcode: 0x1408) to the controller to inquire the length of
+encryption key.After receiving this packet, the controller immediately
+replies with a Command Completepacket (Event Code: 0x0e) to return the
+Encryption Key Size.
+
+2. In our fuzz test case, the timing of the controller's response to this
+packet was delayed to an unexpected point: after the RFCOMM and L2CAP
+layers had disconnected but before the HCI layer had disconnected.
+
+3. After receiving the Encryption Key Size Response at the time described
+in point 2, the host still called the rfcomm_check_security function.
+However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
+had already been released, and when the function executed
+`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
+specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
+
+To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
+rfcomm_recv_frame in rfcomm_process_rx.
+
+Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/soc15.c | 45 +++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 20 deletions(-)
+ net/bluetooth/rfcomm/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
-index 6a3486f52d698..ef5b3eedc8615 100644
---- a/drivers/gpu/drm/amd/amdgpu/soc15.c
-+++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
-@@ -605,11 +605,34 @@ soc15_asic_reset_method(struct amdgpu_device *adev)
- 		return AMD_RESET_METHOD_MODE1;
- }
- 
-+static bool soc15_need_reset_on_resume(struct amdgpu_device *adev)
-+{
-+	u32 sol_reg;
-+
-+	sol_reg = RREG32_SOC15(MP0, 0, mmMP0_SMN_C2PMSG_81);
-+
-+	/* Will reset for the following suspend abort cases.
-+	 * 1) Only reset limit on APU side, dGPU hasn't checked yet.
-+	 * 2) S3 suspend abort and TOS already launched.
-+	 */
-+	if (adev->flags & AMD_IS_APU && adev->in_s3 &&
-+			!adev->suspend_complete &&
-+			sol_reg)
-+		return true;
-+
-+	return false;
-+}
-+
- static int soc15_asic_reset(struct amdgpu_device *adev)
- {
- 	/* original raven doesn't have full asic reset */
--	if ((adev->apu_flags & AMD_APU_IS_RAVEN) ||
--	    (adev->apu_flags & AMD_APU_IS_RAVEN2))
-+	/* On the latest Raven, the GPU reset can be performed
-+	 * successfully. So now, temporarily enable it for the
-+	 * S3 suspend abort case.
-+	 */
-+	if (((adev->apu_flags & AMD_APU_IS_RAVEN) ||
-+	    (adev->apu_flags & AMD_APU_IS_RAVEN2)) &&
-+		!soc15_need_reset_on_resume(adev))
- 		return 0;
- 
- 	switch (soc15_asic_reset_method(adev)) {
-@@ -1490,24 +1513,6 @@ static int soc15_common_suspend(void *handle)
- 	return soc15_common_hw_fini(adev);
- }
- 
--static bool soc15_need_reset_on_resume(struct amdgpu_device *adev)
--{
--	u32 sol_reg;
--
--	sol_reg = RREG32_SOC15(MP0, 0, mmMP0_SMN_C2PMSG_81);
--
--	/* Will reset for the following suspend abort cases.
--	 * 1) Only reset limit on APU side, dGPU hasn't checked yet.
--	 * 2) S3 suspend abort and TOS already launched.
--	 */
--	if (adev->flags & AMD_IS_APU && adev->in_s3 &&
--			!adev->suspend_complete &&
--			sol_reg)
--		return true;
--
--	return false;
--}
--
- static int soc15_common_resume(void *handle)
- {
- 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
+index 8d6fce9005bdd..4f54c7df3a94f 100644
+--- a/net/bluetooth/rfcomm/core.c
++++ b/net/bluetooth/rfcomm/core.c
+@@ -1937,7 +1937,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
+ 	/* Get data directly from socket receive queue without copying it. */
+ 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
+ 		skb_orphan(skb);
+-		if (!skb_linearize(skb)) {
++		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
+ 			s = rfcomm_recv_frame(s, skb);
+ 			if (!s)
+ 				break;
 -- 
 2.43.0
 
