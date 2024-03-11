@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-98950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0FC878185
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CCA9878188
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:23:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221182841AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:23:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7CDF2856A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BAE3FE3F;
-	Mon, 11 Mar 2024 14:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B789C4087A;
+	Mon, 11 Mar 2024 14:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QCPrDa1X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MDjt/wS2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A952208B;
-	Mon, 11 Mar 2024 14:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3ED405FC;
+	Mon, 11 Mar 2024 14:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710167012; cv=none; b=NRiaX7YQnuNh4/HeP9DB2Y6mD1NiRBDzOmMJKC+YuEl0GTbXH+5KVazQLCFBqqkR+9W6X/o2SDrOzoJgMVnYh8oLnJQdTeYgs/xk6D6BYsIC1Hm5ALDEOegXvfpCtDyrCCh1R+HQcD2oHHGNQ9nPbHKT4NKe+Yh9i7+Wj47YjHc=
+	t=1710167015; cv=none; b=UZxmS6eH5sRPpByORz/LF8+rtTuhQcmUful/EGPuNLn+3Ht34QVSBcI99QGLhpfcutZnoKmVhNjHnOux5L0TkFNS/l2071EV7VcMvthnF7ZElL3tvB4EAFrmIftzEm47c5P0vsgBYgtG1gnLW0SRWEHbev903BEnbdok2XYuekM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710167012; c=relaxed/simple;
-	bh=xUQa2duh6dBoxq9pcAdeK/i5MkMLxHJ3k/BzRbYSM7s=;
+	s=arc-20240116; t=1710167015; c=relaxed/simple;
+	bh=zZBpdnMwKO+ducjzdb8dSYuF7wHQwCMGtg62sh1n6Fs=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=kE4DIwzW2BD4Nwg8a6nVyhIokUYhHhscqT4iDZ9QyklnfbqfbQ1UpVP1lqqBU6WQqiu1PDcfDeE6zLc7yfvl6l/IKM7mhrdmk++/mG/cCzipglDRA+Z0K9zO/BG5wP6kb3DBtVaKBe3L8JKSJ0UWaQq58K2KqDQGRDZNpFL3Ws4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QCPrDa1X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A59F8C433C7;
-	Mon, 11 Mar 2024 14:23:31 +0000 (UTC)
+	 Message-Id:Subject; b=qlqbsIeSQ38cI8sQjlWeGbsQmPsK9I1abOZHyulCWZ1fG3hIbeAcgeOKGU915IeghIlY85R4KIhn1NrTjgsKpAUok2p+wmNgH5ay7jammcnRkNsG+GmExYk0BOfu+Zi/p30i/vr8pSoo+Tq3ttz+IP+HQi5eJzNG6uUVXkVi3e0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MDjt/wS2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A48FC433C7;
+	Mon, 11 Mar 2024 14:23:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710167011;
-	bh=xUQa2duh6dBoxq9pcAdeK/i5MkMLxHJ3k/BzRbYSM7s=;
+	s=k20201202; t=1710167014;
+	bh=zZBpdnMwKO+ducjzdb8dSYuF7wHQwCMGtg62sh1n6Fs=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=QCPrDa1XY5vvlnXrPmOE7s/c+PBNmGA0e8BeVdhp29u0wlFq289Gvo6E1T6GwIN9j
-	 bKlDgyiezbA6BBLatZ9Igo8IK4bCprIGJJJ5cs8Zg4frRbvF0tqkIPmhaJTHHBzTx1
-	 Ahx+CUrKY1pZoO039RMSCwOAOED11pjWkthHAfjl1kD+6PY8bgx18A7Sv36GbwuJ2X
-	 9jfRBCF21w99RWVvJ53KocALHZf/LrMZHmeHqZcYiYrAGDpWFulBAVct2CZHsuc+6h
-	 61ulHWjyHcoSP15V7Vqnr5nyFIPbejwGnF0rxGNQF2SWwiVUQDerpgI3HGH+Tk4l1h
-	 xfXu1rFtE5jUw==
-Date: Mon, 11 Mar 2024 08:23:30 -0600
+	b=MDjt/wS2VLgkLpybu49B4ZLz6HTBlKbEZzneDE/qq66JAYnJ4jJlOc4BS4NA1ASYS
+	 tvzNwUquYsUd5SKSzCHI5+hV4m3OILYTQTs7o0sE73VSIuZP3ZrFYwUx8xkm5XSQBo
+	 5fddKwsVxIrEoVZ8dTKpihGy/elfXb6RJVw3QpMGkJ8oAjY7XCBNlGpJ4UlPtHXP5j
+	 nRPDf58ZIy2pU2eYW7Yb8msn5/80tDj1MaP1aeXT2ROVtgKWx25Y0VXFzEBmTRowbX
+	 +R0ByacXJiI8fPdzQKHR6VT1THU/UMuKwm7p7E9/9h2TvB6Etgtwr3W9AQb0oaSKm8
+	 tPy5Pm6sVCy2A==
+Date: Mon, 11 Mar 2024 08:23:33 -0600
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,41 +50,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Luca Weiss <luca@z3ntu.xyz>
-Cc: linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
+To: Komal Bajaj <quic_kbajaj@quicinc.com>
+Cc: Conor Dooley <conor+dt@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, devicetree@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, 
- phone-devel@vger.kernel.org, Adam Honse <calcprogrammer1@gmail.com>
-In-Reply-To: <20240310-samsung-hlte-v1-0-e9b55bf98a48@z3ntu.xyz>
-References: <20240310-samsung-hlte-v1-0-e9b55bf98a48@z3ntu.xyz>
-Message-Id: <171016679093.1126634.17115825771533066372.robh@kernel.org>
-Subject: Re: [PATCH 0/2] Add Samsung Galaxy Note 3 support
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, 
+ linux-arm-msm@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240311120859.18489-1-quic_kbajaj@quicinc.com>
+References: <20240311120859.18489-1-quic_kbajaj@quicinc.com>
+Message-Id: <171016679140.1126674.15590921794307431381.robh@kernel.org>
+Subject: Re: [PATCH 0/3] Add devicetree support of USB for QDU/QRU1000
 
 
-On Sun, 10 Mar 2024 15:13:35 +0100, Luca Weiss wrote:
-> Add the dts for "hlte" which is a phablet from 2013.
+On Mon, 11 Mar 2024 17:38:56 +0530, Komal Bajaj wrote:
+> This series adds devicetree nodes to support interconnects and usb for qdu/qru1000.
+> This is based on previously sent driver series[1].
+> [1]
+> https://lore.kernel.org/linux-arm-msm/20240311120215.16845-1-quic_kbajaj@quicinc.com/
 > 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
-> Adam Honse (1):
->       ARM: dts: qcom: msm8974: Add Samsung Galaxy Note 3
+> Komal Bajaj (3):
+>   arm64: dts: qcom: qdu1000: Add USB3 and PHY support
+>   arm64: dts: qcom: qdu1000-idp: enable USB nodes
+>   arm64: dts: qcom: qru1000-idp: enable USB nodes
 > 
-> Luca Weiss (1):
->       dt-bindings: arm: qcom: Add Samsung Galaxy Note 3
+>  arch/arm64/boot/dts/qcom/qdu1000-idp.dts |  24 +++++
+>  arch/arm64/boot/dts/qcom/qdu1000.dtsi    | 119 +++++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/qru1000-idp.dts |  24 +++++
+>  3 files changed, 167 insertions(+)
 > 
->  Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
->  arch/arm/boot/dts/qcom/Makefile                    |   1 +
->  .../boot/dts/qcom/qcom-msm8974-samsung-hlte.dts    | 403 +++++++++++++++++++++
->  3 files changed, 405 insertions(+)
-> ---
-> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-> change-id: 20240310-samsung-hlte-78d1a287b0a8
-> 
-> Best regards,
 > --
-> Luca Weiss <luca@z3ntu.xyz>
+> 2.42.0
 > 
 > 
 > 
@@ -104,19 +99,32 @@ make sure dt-schema is up to date:
   pip3 install dtschema --upgrade
 
 
-New warnings running 'make CHECK_DTBS=y qcom/qcom-msm8974-samsung-hlte.dtb' for 20240310-samsung-hlte-v1-0-e9b55bf98a48@z3ntu.xyz:
+New warnings running 'make CHECK_DTBS=y qcom/qdu1000-idp.dtb qcom/qru1000-idp.dtb' for 20240311120859.18489-1-quic_kbajaj@quicinc.com:
 
-arch/arm/boot/dts/qcom/qcom-msm8974-samsung-hlte.dtb: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 0]]}
-	from schema $id: http://devicetree.org/schemas/root-node.yaml#
-arch/arm/boot/dts/qcom/qcom-msm8974-samsung-hlte.dtb: l2-cache: Unevaluated properties are not allowed ('qcom,saw' was unexpected)
-	from schema $id: http://devicetree.org/schemas/cache.yaml#
-arch/arm/boot/dts/qcom/qcom-msm8974-samsung-hlte.dtb: idle-states: 'spc' does not match any of the regexes: '^(cpu|cluster)-', 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/cpu/idle-states.yaml#
-arch/arm/boot/dts/qcom/qcom-msm8974-samsung-hlte.dtb: syscon@f9011000: compatible: 'anyOf' conditional failed, one must be fixed:
-	['syscon'] is too short
-	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'amd,pensando-elba-syscon', 'brcm,cru-clkset', 'freecom,fsg-cs2-system-controller', 'fsl,imx93-aonmix-ns-syscfg', 'fsl,imx93-wakeupmix-syscfg', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'hpe,gxp-sysreg', 'intel,lgm-syscon', 'loongson,ls1b-syscon', 'loongson,ls1c-syscon', 'marvell,armada-3700-usb2-host-misc', 'mediatek,mt8135-pctl-a-syscfg', 'mediatek,mt8135-pctl-b-syscfg', 'mediatek,mt8365-syscfg', 'microchip,lan966x-cpu-syscon', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'nuvoton,ma35d1-sys', 'nuvoton,wpcm450-shm', 'rockchip,px30-qos', 'rockchip,rk3036-qos', 'rockchip,rk3066-qos', 'rockchip,rk3128-qos', 'rockchip,rk3228-qos', 'rockchip,rk3288-qos', 'rockchip,rk3368-qos', 'rockchip,rk3399-qos', 'rockchip,rk3568-qos', '
- rockchip,rk3588-qos', 'rockchip,rv1126-qos', 'starfive,jh7100-sysmain', 'ti,am62-usb-phy-ctrl', 'ti,am654-dss-oldi-io-ctrl', 'ti,am654-serdes-ctrl', 'ti,j784s4-pcie-ctrl']
-	from schema $id: http://devicetree.org/schemas/mfd/syscon.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: phy@88e3000: compatible: 'oneOf' conditional failed, one must be fixed:
+	['qcom,qdu1000-usb-hs-phy', 'qcom,usb-snps-hs-7nm-phy'] is too long
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sc8180x-usb-hs-phy', 'qcom,usb-snps-femto-v2-phy']
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sa8775p-usb-hs-phy', 'qcom,sc8280xp-usb-hs-phy']
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sc7280-usb-hs-phy', 'qcom,sdx55-usb-hs-phy', 'qcom,sdx65-usb-hs-phy', 'qcom,sm6375-usb-hs-phy', 'qcom,sm8150-usb-hs-phy', 'qcom,sm8250-usb-hs-phy', 'qcom,sm8350-usb-hs-phy', 'qcom,sm8450-usb-hs-phy']
+	'qcom,usb-snps-hs-5nm-phy' was expected
+	from schema $id: http://devicetree.org/schemas/phy/qcom,usb-snps-femto-v2.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: phy@88e3000: compatible: 'oneOf' conditional failed, one must be fixed:
+	['qcom,qdu1000-usb-hs-phy', 'qcom,usb-snps-hs-7nm-phy'] is too long
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sc8180x-usb-hs-phy', 'qcom,usb-snps-femto-v2-phy']
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sa8775p-usb-hs-phy', 'qcom,sc8280xp-usb-hs-phy']
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sc7280-usb-hs-phy', 'qcom,sdx55-usb-hs-phy', 'qcom,sdx65-usb-hs-phy', 'qcom,sm6375-usb-hs-phy', 'qcom,sm8150-usb-hs-phy', 'qcom,sm8250-usb-hs-phy', 'qcom,sm8350-usb-hs-phy', 'qcom,sm8450-usb-hs-phy']
+	'qcom,usb-snps-hs-5nm-phy' was expected
+	from schema $id: http://devicetree.org/schemas/phy/qcom,usb-snps-femto-v2.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: /soc@0/phy@88e3000: failed to match any schema with compatible: ['qcom,qdu1000-usb-hs-phy', 'qcom,usb-snps-hs-7nm-phy']
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: /soc@0/phy@88e3000: failed to match any schema with compatible: ['qcom,qdu1000-usb-hs-phy', 'qcom,usb-snps-hs-7nm-phy']
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: /soc@0/phy-wrapper@88e5000: failed to match any schema with compatible: ['qcom,qdu1000-qmp-usb3-uni-phy']
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: /soc@0/phy-wrapper@88e5000: failed to match any schema with compatible: ['qcom,qdu1000-qmp-usb3-uni-phy']
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: usb@a6f8800: compatible:0: 'qcom,qdu1000-dwc3' is not one of ['qcom,ipq4019-dwc3', 'qcom,ipq5018-dwc3', 'qcom,ipq5332-dwc3', 'qcom,ipq6018-dwc3', 'qcom,ipq8064-dwc3', 'qcom,ipq8074-dwc3', 'qcom,ipq9574-dwc3', 'qcom,msm8953-dwc3', 'qcom,msm8994-dwc3', 'qcom,msm8996-dwc3', 'qcom,msm8998-dwc3', 'qcom,qcm2290-dwc3', 'qcom,qcs404-dwc3', 'qcom,sa8775p-dwc3', 'qcom,sc7180-dwc3', 'qcom,sc7280-dwc3', 'qcom,sc8280xp-dwc3', 'qcom,sdm660-dwc3', 'qcom,sdm670-dwc3', 'qcom,sdm845-dwc3', 'qcom,sdx55-dwc3', 'qcom,sdx65-dwc3', 'qcom,sdx75-dwc3', 'qcom,sm4250-dwc3', 'qcom,sm6115-dwc3', 'qcom,sm6125-dwc3', 'qcom,sm6350-dwc3', 'qcom,sm6375-dwc3', 'qcom,sm8150-dwc3', 'qcom,sm8250-dwc3', 'qcom,sm8350-dwc3', 'qcom,sm8450-dwc3', 'qcom,sm8550-dwc3', 'qcom,sm8650-dwc3', 'qcom,x1e80100-dwc3']
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: /soc@0/usb@a6f8800: failed to match any schema with compatible: ['qcom,qdu1000-dwc3', 'qcom,dwc3']
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: usb@a6f8800: compatible:0: 'qcom,qdu1000-dwc3' is not one of ['qcom,ipq4019-dwc3', 'qcom,ipq5018-dwc3', 'qcom,ipq5332-dwc3', 'qcom,ipq6018-dwc3', 'qcom,ipq8064-dwc3', 'qcom,ipq8074-dwc3', 'qcom,ipq9574-dwc3', 'qcom,msm8953-dwc3', 'qcom,msm8994-dwc3', 'qcom,msm8996-dwc3', 'qcom,msm8998-dwc3', 'qcom,qcm2290-dwc3', 'qcom,qcs404-dwc3', 'qcom,sa8775p-dwc3', 'qcom,sc7180-dwc3', 'qcom,sc7280-dwc3', 'qcom,sc8280xp-dwc3', 'qcom,sdm660-dwc3', 'qcom,sdm670-dwc3', 'qcom,sdm845-dwc3', 'qcom,sdx55-dwc3', 'qcom,sdx65-dwc3', 'qcom,sdx75-dwc3', 'qcom,sm4250-dwc3', 'qcom,sm6115-dwc3', 'qcom,sm6125-dwc3', 'qcom,sm6350-dwc3', 'qcom,sm6375-dwc3', 'qcom,sm8150-dwc3', 'qcom,sm8250-dwc3', 'qcom,sm8350-dwc3', 'qcom,sm8450-dwc3', 'qcom,sm8550-dwc3', 'qcom,sm8650-dwc3', 'qcom,x1e80100-dwc3']
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: /soc@0/usb@a6f8800: failed to match any schema with compatible: ['qcom,qdu1000-dwc3', 'qcom,dwc3']
 
 
 
