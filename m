@@ -1,109 +1,186 @@
-Return-Path: <linux-kernel+bounces-99300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0424D87863C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:23:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B05687863F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B32DC282F6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:23:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CD331C223B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E924CE05;
-	Mon, 11 Mar 2024 17:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D954CE05;
+	Mon, 11 Mar 2024 17:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VJnXGeuX"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ztfqIqbC"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C90E4AEEB
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CAC3F8F6
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710177794; cv=none; b=eLmAgmteF0DfOkckhkxPbSFZ/i9eAj1WEs6Zd1tpU5UEfOzsX5/Rl46trY1KKWgA+f74ghe51p7h459jsIAsgyPoUDzb6pgD3+QS1G3unjg0f1SkrLBep9eRmS+1zofkvXCzL1YW9hktIoSxyycocloR76ebnWiAD8Wmx5zIcRk=
+	t=1710177812; cv=none; b=YwgLHucwNKZqh2FJwSgLhOW1bdKyEQcwAhytsUo3xGSGUSUSB5VlWFZbd20nnLArQpIYR0Ou+oTXQuWie6Lk6k5zTw5AEwG8jPI8MIEx5EwKTdSfBNWjje8JFkz0u03AYarsF5DImU1FFBToBa9dru+4cm8kZJStXy+7BPhgJCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710177794; c=relaxed/simple;
-	bh=oKUsJDC4xXjk3cXvZ0UkhE+m5A6JJ3EOsCl7WrkesAY=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=uU/sJUODaqG0/UZ99srJRCZn7V89AXzoRyzzEtGi2KCCz+gkOpC/TAxSgBoITRFCA/UABmMAMAKAfa7b1eQNuVpsCr/N35zLAtFj5bdOIBmFkHlSy1r0o4jpeJptoAzt8fL2xZmR3xEAxJtAD5lDWUJgALBDQm3vDkRGV7eYfys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kyletso.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VJnXGeuX; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1710177812; c=relaxed/simple;
+	bh=yZFlhLhcrB6kOYi8DhWwE3UELCDKt6BcqMyQlgjCIUw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=g/Y/alRd+qLCoESq1Y7xgl1ebJWWU+PcEELQfQb9IwmoiN5yAvQd/sZHDicYxeZzhiPLzGoMA2QNaRIIRnZWEgG6/inVivF1cvo4jW5FAqlfdgQwq3XuaMu6lHqavZ3QUn4SZJPSyOEfUIKFjNwq4eG3HtrbAIImPGhyTDio5LY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ztfqIqbC; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kyletso.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so3636722276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:23:12 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso6954862276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710177792; x=1710782592; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=eEFSDQP8nEwgMk7vCT7vaN5aD9pBnwi9LafjzuTKO94=;
-        b=VJnXGeuXXmWKS0uRl6BNBeMoQhcNH/BnuKEhE1cT1f27uNBl6tD2HVSgFnQqPFvomY
-         nZAYqloYaLJn5ezj6znJfy+mpOfQFBmdRPcsovnyWXEUg+QO3eFx2bD8s2sDbGEyAoUa
-         ub2Pq+3qZEadLIT+5hAxqK6kzlBTvA2m/T0Ep39pwjdy5ytwwRb/9gwmGcRnz4dSnJb1
-         HRWeHmvtuIPEHTvsICPXMcILjnqIkbgd3kx7ZKM+7EFHX7KT8FMAElnArQ3cZ8uUNbH7
-         FTdB9M47DMO7ujY1Guuk2r3ErJ9y2jr7C5iFMumX/GqPGIVg71rJ7D3wlZwJf1608AlK
-         Gghw==
+        d=google.com; s=20230601; t=1710177810; x=1710782610; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/HhEj7VyFIjZW59B2BWeffYMQd7D2SERuY842EgbKa4=;
+        b=ztfqIqbCzFZ/pFnoANMPCTO6KTWWGamV1tZz42QEOrkhRWh8G3wxmcTRIHsUrYwqE7
+         Lrk9rmExio4sApihshiBZ66l+u0Z+6gVWBLIBSEsDUd0b+mYKPX6hFdbo272SYcxvY6H
+         /Ft9lUy+yaHgKOH0fvFh2wH1le/LZx5MwCU880GXCd/D++qWb0I0OL93fpySu/sd2uvo
+         vkLDJVYzR/VE6+8Fk8Ac2x7KDNNrPQDnePObTsH0sy1PFFw3Vym+eebj+yWDaTEPXQ+F
+         VhcoQi67eYiTp/a0cBsfrDlQSAFEwsmb/9OTIvfy7dNHARU+MP4YV2idanzbB4Mi9brA
+         L9qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710177792; x=1710782592;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eEFSDQP8nEwgMk7vCT7vaN5aD9pBnwi9LafjzuTKO94=;
-        b=UvbJukldJ4HlHOqqijglNm/KFde5k+KlSr4xOqFdLEfpG+1j0w/axWfSyB++PAjjfH
-         MNUNbaCHxEb5gdwfhgsJyhteJWO9cIDR3O3LHVxc0pmRDPvoTiBFdiXaEikgWF9U8Cet
-         Ceho8w76YdknSQ3KZ/6OoDFVUPEnieFyOFW3KCBxyY2cIYzkxSO8pQ8iTSOe8BlWGFgE
-         jzs11a4dWuJkVz4iBKJ4Kl7ovHPDJIscMsu48HsJKsYVaZEFSA0JwmDzkE6B+IP2BNWb
-         OYXN7wqggKMSlJzJuAtW4ERVdHDyYKOOaeZB/do09bSsgLiYZwjATlI3X18iyPrDlPBQ
-         88rw==
-X-Forwarded-Encrypted: i=1; AJvYcCWt9pxUU0SoBk46jB6jTT8Uszu4QW2GQDa1e3jfwnKKFP8Dio/0CgYFQ53tNXxYa8HM/SDTg17tb+8XkGaPA12lTJZIOrQXMOXcKkTU
-X-Gm-Message-State: AOJu0YzIqu9d77EtTuejGKtTwJPqvsNIoTl5331SScrtQ2QxklMuWOS/
-	vf0UhUfjAsGK2FnuNTbEtAaKBD3AcbKph7xcp0u8+ZWk5dBprqg3UZThdvUovcMj0EI0hTv3fNZ
-	+GmJIPA==
-X-Google-Smtp-Source: AGHT+IEOmE8gBkWsQ+VxVdk/lX9Bz/bX02Oz9mDyF9yTgj6j/8N1NeP6m21R1WLnEHPrOKjNcIihOqVPnS0z
-X-Received: from kyletso-p620lin01.ntc.corp.google.com ([2401:fa00:fc:202:f39:e78f:4944:b22])
- (user=kyletso job=sendgmr) by 2002:a25:c4c4:0:b0:dcc:6bf0:2eb6 with SMTP id
- u187-20020a25c4c4000000b00dcc6bf02eb6mr387095ybf.6.1710177792170; Mon, 11 Mar
- 2024 10:23:12 -0700 (PDT)
-Date: Tue, 12 Mar 2024 01:23:06 +0800
+        d=1e100.net; s=20230601; t=1710177810; x=1710782610;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/HhEj7VyFIjZW59B2BWeffYMQd7D2SERuY842EgbKa4=;
+        b=rzeaHmKhq3peR/I4tsJf56EOgOSwJCruL+uv1H9cjJv8xjFvVfGjUNtEguwcIKax0Q
+         X03HEVPBNW99AqdiNr/s2gjZ8CeDMkNta/mrRS5uiyewRqFM8HjYP8U6IWxEmWkjhPsI
+         rd+7I0gD78TskC2UFkP1F0avYY0dg63HusPclGaxpxnm/Rsbaup5ZFGFOKLVzRYHvL6Q
+         PbK/fYpi7FR8cyWVXI9ZOFxEFSuGKr1zBwmEUldczpGMNxusKF2fCNF63ZuQdS3Ka6n/
+         npPCG2ITiWUy6UC9Od53aKjFQQfWa1ihpr6DcHiJfqHspxaAWfLkebBE+TBA+x+OU1lf
+         S7nQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW8leP8iyjrxR1T/V96xFvKkUKc/rdmZ6WHENiWhLZkilaFOzml71po6dR9GUAl4fLXubD/IPXrR6bpz0TiJ5hUzjq26azCPNv6vsot
+X-Gm-Message-State: AOJu0YwmfiAR24XbyVJUIgv8qcJ4pgFPbBzqtuqbUdKRBL+Xxd3y7fcU
+	QWOR5QVZpjB8V6F432s7pU6gNF0sg3K/EB7J8nGtjXRLtT/a4OUkYwLZg4w8uvGwjhDWVHgW0X2
+	xkA==
+X-Google-Smtp-Source: AGHT+IG0mnBtxFHLaktut+V3gXYUB62C0a0lN7Q53NFVUdtJgunINK62Mbm+Ikuf1ZYr3tHtvitWzHlQ5kE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1889:b0:dc6:dfc6:4207 with SMTP id
+ cj9-20020a056902188900b00dc6dfc64207mr1961789ybb.10.1710177809878; Mon, 11
+ Mar 2024 10:23:29 -0700 (PDT)
+Date: Mon, 11 Mar 2024 10:23:28 -0700
+In-Reply-To: <012b59708114ba121735769de94756fa5af3204d.1709288671.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240311172306.3911309-1-kyletso@google.com>
-Subject: [PATCH v1] usb: typec: tcpm: Update PD of Type-C port upon pd_set
-From: Kyle Tso <kyletso@google.com>
-To: linux@roeck-us.net, heikki.krogerus@linux.intel.com, 
-	gregkh@linuxfoundation.org
-Cc: badhri@google.com, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <cover.1709288671.git.isaku.yamahata@intel.com> <012b59708114ba121735769de94756fa5af3204d.1709288671.git.isaku.yamahata@intel.com>
+Message-ID: <Ze8-EFtsIONMyO3o@google.com>
+Subject: Re: [RFC PATCH 2/8] KVM: Add KVM_MAP_MEMORY vcpu ioctl to
+ pre-populate guest memory
+From: Sean Christopherson <seanjc@google.com>
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, isaku.yamahata@gmail.com, 
+	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	Michael Roth <michael.roth@amd.com>, David Matlack <dmatlack@google.com>, 
+	Federico Parola <federico.parola@polito.it>
+Content-Type: text/plain; charset="us-ascii"
 
-The PD of Type-C port needs to be updated in pd_set. Unlink the Type-C
-port device to the old PD before linking it to a new one.
+On Fri, Mar 01, 2024, isaku.yamahata@intel.com wrote:
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index d1fd9cb5d037..d77c9b79d76b 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4419,6 +4419,69 @@ static int kvm_vcpu_ioctl_get_stats_fd(struct kvm_vcpu *vcpu)
+>  	return fd;
+>  }
+>  
+> +__weak int kvm_arch_vcpu_pre_map_memory(struct kvm_vcpu *vcpu)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +__weak int kvm_arch_vcpu_map_memory(struct kvm_vcpu *vcpu,
+> +				    struct kvm_memory_mapping *mapping)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int kvm_vcpu_map_memory(struct kvm_vcpu *vcpu,
+> +			       struct kvm_memory_mapping *mapping)
+> +{
+> +	bool added = false;
+> +	int idx, r = 0;
 
-Fixes: cd099cde4ed2 ("usb: typec: tcpm: Support multiple capabilities")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 2 ++
- 1 file changed, 2 insertions(+)
+Pointless initialization of 'r'.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 3d505614bff1..896f594b9328 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -6907,7 +6907,9 @@ static int tcpm_pd_set(struct typec_port *p, struct usb_power_delivery *pd)
- 
- 	port->port_source_caps = data->source_cap;
- 	port->port_sink_caps = data->sink_cap;
-+	typec_port_set_usb_power_delivery(p, NULL);
- 	port->selected_pd = pd;
-+	typec_port_set_usb_power_delivery(p, port->selected_pd);
- unlock:
- 	mutex_unlock(&port->lock);
- 	return ret;
--- 
-2.44.0.278.ge034bb2e1d-goog
+> +
+> +	if (mapping->flags & ~(KVM_MEMORY_MAPPING_FLAG_WRITE |
+> +			       KVM_MEMORY_MAPPING_FLAG_EXEC |
+> +			       KVM_MEMORY_MAPPING_FLAG_USER |
+> +			       KVM_MEMORY_MAPPING_FLAG_PRIVATE))
+> +		return -EINVAL;
+> +	if ((mapping->flags & KVM_MEMORY_MAPPING_FLAG_PRIVATE) &&
+> +	    !kvm_arch_has_private_mem(vcpu->kvm))
+> +		return -EINVAL;
+> +
+> +	/* Sanity check */
 
+Pointless comment.
+
+> +	if (!IS_ALIGNED(mapping->source, PAGE_SIZE) ||
+> +	    !mapping->nr_pages ||
+
+> +	    mapping->base_gfn + mapping->nr_pages <= mapping->base_gfn)
+> +		return -EINVAL;
+> +
+> +	vcpu_load(vcpu);
+> +	idx = srcu_read_lock(&vcpu->kvm->srcu);
+> +	r = kvm_arch_vcpu_pre_map_memory(vcpu);
+
+This hooks is unnecessary, x86's kvm_mmu_reload() is optimized for the happy path
+where the MMU is already loaded.  Just make the call from kvm_arch_vcpu_map_memory().
+
+> +	if (r)
+> +		return r;
+
+Which is a good thing, because this leaks the SRCU lock.
+
+> +
+> +	while (mapping->nr_pages) {
+> +		if (signal_pending(current)) {
+> +			r = -ERESTARTSYS;
+
+Why -ERESTARTSYS instead of -EINTR?  The latter is KVM's typical response to a
+pending signal.
+
+> +			break;
+> +		}
+> +
+> +		if (need_resched())
+
+No need to manually check need_resched(), the below is a _conditional_ resched.
+The reason KVM explicitly checks need_resched() in MMU flows is because KVM needs
+to drop mmu_lock before rescheduling, i.e. calling cond_resched() directly would
+try to schedule() while holding a spinlock.
+
+> +			cond_resched();
+> +
+> +		r = kvm_arch_vcpu_map_memory(vcpu, mapping);
+> +		if (r)
+> +			break;
+> +
+> +		added = true;
+> +	}
+> +
+> +	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+> +	vcpu_put(vcpu);
+> +
+> +	if (added && mapping->nr_pages > 0)
+> +		r = -EAGAIN;
+
+No, this clobbers 'r', which might hold a fatal error code.  I don't see any
+reason for common code to ever force -EAGAIN, it can't possibly know if trying
+again is reasonable.
+
+> +
+> +	return r;
+> +}
 
