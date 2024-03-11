@@ -1,60 +1,73 @@
-Return-Path: <linux-kernel+bounces-98490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8440877ACB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:50:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62E89877ACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 06:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08B0D1C21503
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:50:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7B391F222B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 05:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F402DF41;
-	Mon, 11 Mar 2024 05:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C29C2E6;
+	Mon, 11 Mar 2024 05:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OWbVlM1t"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Ae0RyZBu"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49888AD55;
-	Mon, 11 Mar 2024 05:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8903AD55
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 05:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710136228; cv=none; b=ZKc+l8Xm4NAWN6HhqQFNn39MW1wA0ZSaiSzlD6LvWnONLnLSL0BNg7Yz3JfEz0b52azzN22QKTCC0Xh1mNL2akJXV71k9hb571lJWQZkCn9Qj/lCNuuxD0g3q4ipsIvnKOzz8VIm8HuPFsjJzSBrQpAc8fTmh6HfT36rRySxpX0=
+	t=1710136729; cv=none; b=nVQZE6cPG85Qs7+ETiQvpev76ZgZcKn1YQ4VpH8hVmtKFYKnZYNdx27Z2wE/i70zjg/eL4+nPDebbz5HHJXUcHbS4m9IHhV+9kXOYs/vbyvWVVViFWdZKjtwWwtN4o3qKOeYyDLSnqWIcuD5zXKiQUrPrcSoxJtKZZ4XOvf/1AQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710136228; c=relaxed/simple;
-	bh=tFTkwIHFbMWF1tG+3qp3PfDm3XDtdHkyKYz9/9EFam0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cPxyVRIldYI6N/YjQSQFZ6kzElFU/7lUP4QR4OfGB/3wgIJNDXEy15sgR7qIdtVnWZD1m7vzXDkocN11mjNEUgajS2kpVAImhp7lMhT7mUG/yff2OxovOIItJatOtOtOSxWgthhqlXpZR2xfE3KXj3JXZfHK4Bw6NbzjWHg3rEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OWbVlM1t; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710136225; x=1741672225;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=tFTkwIHFbMWF1tG+3qp3PfDm3XDtdHkyKYz9/9EFam0=;
-  b=OWbVlM1tCE2rB3GofoblqhgrhrN6pTzilUaOhiNRqqDQwq4BJ7h107Zx
-   4HpAEW0kcvZ7sJOEzJsGbpnim8549JAUyyG687qW9ypNASSSTNEHoWg3w
-   RGLDG4Cji+cU5oQ072YLuPLzxnGw3B1j6GibJ4iKGUiVwRoDE2kS/rJY/
-   Ju8ZrVLSHzj2c3QjZn84Uq6FyXejpHkW1z57LO7B6Ni7KHnd18eZ8Yyg0
-   cUSer9GkkTdCiDE28+AhpFqkaOnU60EiMoDCr5RaCQqipbFlzIe0T2rU5
-   nbNOiOLAnIG6cyNVeKv2PDPWG5gkIOut1rKtBnIzI4ZLo5S+WHyCzynM7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="27252741"
-X-IronPort-AV: E=Sophos;i="6.07,115,1708416000"; 
-   d="scan'208";a="27252741"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2024 22:50:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,115,1708416000"; 
-   d="scan'208";a="15757161"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.8.198]) ([10.238.8.198])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2024 22:50:16 -0700
-Message-ID: <75151ba8-87fe-444a-b855-0d2e21b36e05@linux.intel.com>
-Date: Mon, 11 Mar 2024 13:50:13 +0800
+	s=arc-20240116; t=1710136729; c=relaxed/simple;
+	bh=SNlJeHoSGuiC4YTmt7+n+q13/150/TRv48G3IjiVdqk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Ach2zQ7B7dpJIwclIk/lLqRgMZizC4xK6SIQ2W/tEZCUU7pkbCEPIIvnbzwrxdmreyWr6zMqgplMjW1trQdizZOLzUYQRDoFHvLGbClFFN8IwXvU39Vnf0EOsMTiC/U6E1yDhThKRXsvu2ks1LJHswA6KAtHFMFDfspjPChs+Zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Ae0RyZBu; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4132a436086so2971035e9.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Mar 2024 22:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1710136726; x=1710741526; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N+/SGeTJ2In+PBSViijiZt2zPtoByX/MEX5Z46fSm+M=;
+        b=Ae0RyZBuchrgUwx52QKJfZJul5TiBj85ctPe/r7azQNqB26eCeUA+/BZIRfRe1d+Mn
+         rSdrWCZvZU47cWqrxw/nlFgBpKSHJSHrSa+qR6N2uUJpYh+YfKGFJZaGTBnik2rY9FD0
+         wL+mrYuFNGhjWhB/KMpQ6ylPIF+KWVQbBYezo1a/icpgt35ChY4fqSrbpcHdb7xpucrr
+         YGOgFSoWZF+/wMik884zuKUqD4G8Aeyja1PfRLyWFPDODtmf3kQ4BNFArLxKqxa0OeYv
+         PAHTG94g4ShUNzPEPoCh3bTgK8tlFodTvlW0ztwS9p5Q0Smkd9xXrbf5sb/gAs8z7bOg
+         CrWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710136726; x=1710741526;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N+/SGeTJ2In+PBSViijiZt2zPtoByX/MEX5Z46fSm+M=;
+        b=C9BsDzv5gf++Ti3HbNtnhC+N6JQTQVcXYDaUsi3abbqJ/NsEdQxct2tANBvNXGJfoZ
+         Ug+OCYkkj6mo6QYoQI3dTFs6KPlGh4XgItIJASAPIFd93nvEhH2/Xj0vnmZ1vwvDIBX3
+         U8aytwkxp9cxnw0m5AARpGB/tGPHuRrwPnt2nSEosR1oaU63nfCPLIpL2bL6BWNbmbkK
+         3nOkoKXYyj0n2U5zHBp18PhQ6lolnXr08vOhCK63IyDh/SS4RuyXdKxOTdk94p406wkE
+         nBbTkp2sb0f4TNkU/kvb64ub3rlKh3/Pg8WnxYdu8QtQFN6XJpUizwJlGcTmzQ6XsfFV
+         gCEg==
+X-Forwarded-Encrypted: i=1; AJvYcCUEf0atKwcw6dSwyC30z2GYpBXOPN3MJ3lrlJwwJluvTOeAS6IUZKiWZvFB+FwYMk8Hry4dCSXLuh4o2wlNHXaKNFkepKGeOoFkThnW
+X-Gm-Message-State: AOJu0YzVTc7+F37bpFWvHAq5mZz0RjdsED+EccuD++TQHF4TZXDfP8C2
+	YZUn+quA/MwYq290YXgobhRpP8Ld56BRzGDLWM5sKengtQBIHLSFqOGl0QEj6DA=
+X-Google-Smtp-Source: AGHT+IGAA4xdFAU+7CwwGo6hGmuRT2qEqlJxSkz/J/OB3B3wRCxURUF7dIhuGE4MoPPkxUsohLZtLw==
+X-Received: by 2002:a05:600c:4ecf:b0:413:1713:864 with SMTP id g15-20020a05600c4ecf00b0041317130864mr4585552wmq.33.1710136726197;
+        Sun, 10 Mar 2024 22:58:46 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.38])
+        by smtp.gmail.com with ESMTPSA id g13-20020a05600c310d00b004131bb71c07sm7820750wmo.11.2024.03.10.22.58.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Mar 2024 22:58:45 -0700 (PDT)
+Message-ID: <01e96d4b-3038-498b-a9b2-2acac51f1d80@tuxon.dev>
+Date: Mon, 11 Mar 2024 07:58:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,206 +75,280 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 28/35] KVM: SEV: Implement gmem hook for initializing
- private pages
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
- linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
- thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
- pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
- jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
- slp@redhat.com, pgonda@google.com, peterz@infradead.org,
- srinivas.pandruvada@linux.intel.com, rientjes@google.com,
- dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, vbabka@suse.cz,
- kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
- sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
- jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
- pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com
-References: <20231230172351.574091-1-michael.roth@amd.com>
- <20231230172351.574091-29-michael.roth@amd.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20231230172351.574091-29-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v4 27/39] clk: at91: sam9x7: add sam9x7 pmc driver
+Content-Language: en-US
+To: Varshini Rajendran <varshini.rajendran@microchip.com>,
+ mturquette@baylibre.com, sboyd@kernel.org, nicolas.ferre@microchip.com,
+ alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+ <20240223172831.672953-1-varshini.rajendran@microchip.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20240223172831.672953-1-varshini.rajendran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
-On 12/31/2023 1:23 AM, Michael Roth wrote:
-> This will handle RMP table updates and direct map changes needed to put
-> a page into a private state before mapping it into an SEV-SNP guest.
->
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
+On 23.02.2024 19:28, Varshini Rajendran wrote:
+> Add a driver for the PMC clocks of sam9x7 Soc family.
+> 
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->   arch/x86/kvm/Kconfig   |  1 +
->   arch/x86/kvm/svm/sev.c | 98 ++++++++++++++++++++++++++++++++++++++++++
->   arch/x86/kvm/svm/svm.c |  2 +
->   arch/x86/kvm/svm/svm.h |  1 +
->   virt/kvm/guest_memfd.c |  4 +-
->   5 files changed, 104 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index 4ec53d6d5773..79c002e1bb5c 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -125,6 +125,7 @@ config KVM_AMD_SEV
->   	depends on KVM_AMD && X86_64
->   	depends on CRYPTO_DEV_SP_PSP && !(KVM_AMD=y && CRYPTO_DEV_CCP_DD=m)
->   	select KVM_GENERIC_PRIVATE_MEM
-> +	select HAVE_KVM_GMEM_PREPARE
->   	help
->   	  Provides support for launching Encrypted VMs (SEV) and Encrypted VMs
->   	  with Encrypted State (SEV-ES) on AMD processors.
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index b2ac696c436a..91f53f4a6059 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -4154,3 +4154,101 @@ void handle_rmp_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u64 error_code)
->   out:
->   	put_page(pfn_to_page(pfn));
->   }
+> Changes in v4:
+> - Changed variable name alloc_mem to clk_mux_buffer to be more
+>   suggestive
+> - Changed description of @f structure member appropriately
+> ---
+>  drivers/clk/at91/Makefile |   1 +
+>  drivers/clk/at91/sam9x7.c | 946 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 947 insertions(+)
+>  create mode 100644 drivers/clk/at91/sam9x7.c
+> 
+> diff --git a/drivers/clk/at91/Makefile b/drivers/clk/at91/Makefile
+> index 89061b85e7d2..8e3684ba2c74 100644
+> --- a/drivers/clk/at91/Makefile
+> +++ b/drivers/clk/at91/Makefile
+> @@ -20,6 +20,7 @@ obj-$(CONFIG_SOC_AT91SAM9) += at91sam9260.o at91sam9rl.o at91sam9x5.o dt-compat.
+>  obj-$(CONFIG_SOC_AT91SAM9) += at91sam9g45.o dt-compat.o
+>  obj-$(CONFIG_SOC_AT91SAM9) += at91sam9n12.o at91sam9x5.o dt-compat.o
+>  obj-$(CONFIG_SOC_SAM9X60) += sam9x60.o
+> +obj-$(CONFIG_SOC_SAM9X7) += sam9x7.o
+>  obj-$(CONFIG_SOC_SAMA5D3) += sama5d3.o dt-compat.o
+>  obj-$(CONFIG_SOC_SAMA5D4) += sama5d4.o dt-compat.o
+>  obj-$(CONFIG_SOC_SAMA5D2) += sama5d2.o dt-compat.o
+> diff --git a/drivers/clk/at91/sam9x7.c b/drivers/clk/at91/sam9x7.c
+> new file mode 100644
+> index 000000000000..d03387d2e35a
+> --- /dev/null
+> +++ b/drivers/clk/at91/sam9x7.c
+> @@ -0,0 +1,946 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * SAM9X7 PMC code.
+> + *
+> + * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
+> + *
+> + * Author: Varshini Rajendran <varshini.rajendran@microchip.com>
+> + *
+> + */
+> +#include <linux/clk.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/slab.h>
 > +
-> +static bool is_pfn_range_shared(kvm_pfn_t start, kvm_pfn_t end)
-> +{
-> +	kvm_pfn_t pfn = start;
+> +#include <dt-bindings/clock/at91.h>
 > +
-> +	while (pfn < end) {
-> +		int ret, rmp_level;
-> +		bool assigned;
+> +#include "pmc.h"
 > +
-> +		ret = snp_lookup_rmpentry(pfn, &assigned, &rmp_level);
-> +		if (ret) {
-> +			pr_warn_ratelimited("SEV: Failed to retrieve RMP entry: PFN 0x%llx GFN start 0x%llx GFN end 0x%llx RMP level %d error %d\n",
-> +					    pfn, start, end, rmp_level, ret);
-> +			return false;
-> +		}
+> +static DEFINE_SPINLOCK(pmc_pll_lock);
+> +static DEFINE_SPINLOCK(mck_lock);
 > +
-> +		if (assigned) {
-> +			pr_debug("%s: overlap detected, PFN 0x%llx start 0x%llx end 0x%llx RMP level %d\n",
-> +				 __func__, pfn, start, end, rmp_level);
-> +			return false;
-> +		}
+> +/**
+> + * enum pll_ids - PLL clocks identifiers
+> + * @PLL_ID_PLLA:	PLLA identifier
+> + * @PLL_ID_UPLL:	UPLL identifier
+> + * @PLL_ID_AUDIO:	Audio PLL identifier
+> + * @PLL_ID_LVDS:	LVDS PLL identifier
+> + * @PLL_ID_PLLA_DIV2:	PLLA DIV2 identifier
+> + * @PLL_ID_MAX:		Max PLL Identifier
+> + */
+> +enum pll_ids {
+> +	PLL_ID_PLLA,
+> +	PLL_ID_UPLL,
+> +	PLL_ID_AUDIO,
+> +	PLL_ID_LVDS,
+> +	PLL_ID_PLLA_DIV2,
+> +	PLL_ID_MAX,
+> +};
 > +
-> +		pfn++;
+> +/**
+> + * enum pll_type - PLL type identifiers
+> + * @PLL_TYPE_FRAC:	fractional PLL identifier
+> + * @PLL_TYPE_DIV:	divider PLL identifier
+> + */
+> +enum pll_type {
+> +	PLL_TYPE_FRAC,
+> +	PLL_TYPE_DIV,
+> +};
+> +
+> +static const struct clk_master_characteristics mck_characteristics = {
+> +	.output = { .min = 32000000, .max = 266666667 },
+> +	.divisors = { 1, 2, 4, 3, 5},
+> +	.have_div3_pres = 1,
+> +};
+> +
+> +static const struct clk_master_layout sam9x7_master_layout = {
+> +	.mask = 0x373,
+> +	.pres_shift = 4,
+> +	.offset = 0x28,
+> +};
+> +
+> +/* Fractional PLL core output range. */
+> +static const struct clk_range plla_core_outputs[] = {
+> +	{ .min = 375000000, .max = 1600000000 },
+> +};
+> +
+> +static const struct clk_range upll_core_outputs[] = {
+> +	{ .min = 600000000, .max = 1200000000 },
+> +};
+> +
+> +static const struct clk_range lvdspll_core_outputs[] = {
+> +	{ .min = 400000000, .max = 800000000 },
+> +};
+> +
+> +static const struct clk_range audiopll_core_outputs[] = {
+> +	{ .min = 400000000, .max = 800000000 },
+> +};
+> +
+> +static const struct clk_range plladiv2_core_outputs[] = {
+> +	{ .min = 375000000, .max = 1600000000 },
+> +};
+> +
+> +/* Fractional PLL output range. */
+> +static const struct clk_range plla_outputs[] = {
+> +	{ .min = 732421, .max = 800000000 },
+> +};
+> +
+> +static const struct clk_range upll_outputs[] = {
+> +	{ .min = 300000000, .max = 600000000 },
+> +};
+> +
+> +static const struct clk_range lvdspll_outputs[] = {
+> +	{ .min = 10000000, .max = 800000000 },
+> +};
+> +
+> +static const struct clk_range audiopll_outputs[] = {
+> +	{ .min = 10000000, .max = 800000000 },
+> +};
+> +
+> +static const struct clk_range plladiv2_outputs[] = {
+> +	{ .min = 366210, .max = 400000000 },
+> +};
+> +
+> +/* PLL characteristics. */
+> +static const struct clk_pll_characteristics plla_characteristics = {
+> +	.input = { .min = 20000000, .max = 50000000 },
+> +	.num_output = ARRAY_SIZE(plla_outputs),
+> +	.output = plla_outputs,
+> +	.core_output = plla_core_outputs,
+> +};
+> +
+> +static const struct clk_pll_characteristics upll_characteristics = {
+> +	.input = { .min = 20000000, .max = 50000000 },
+> +	.num_output = ARRAY_SIZE(upll_outputs),
+> +	.output = upll_outputs,
+> +	.core_output = upll_core_outputs,
+> +	.upll = true,
+> +};
+> +
+> +static const struct clk_pll_characteristics lvdspll_characteristics = {
+> +	.input = { .min = 20000000, .max = 50000000 },
+> +	.num_output = ARRAY_SIZE(lvdspll_outputs),
+> +	.output = lvdspll_outputs,
+> +	.core_output = lvdspll_core_outputs,
+> +};
+> +
+> +static const struct clk_pll_characteristics audiopll_characteristics = {
+> +	.input = { .min = 20000000, .max = 50000000 },
+> +	.num_output = ARRAY_SIZE(audiopll_outputs),
+> +	.output = audiopll_outputs,
+> +	.core_output = audiopll_core_outputs,
+> +};
+> +
+> +static const struct clk_pll_characteristics plladiv2_characteristics = {
+> +	.input = { .min = 20000000, .max = 50000000 },
+> +	.num_output = ARRAY_SIZE(plladiv2_outputs),
+> +	.output = plladiv2_outputs,
+> +	.core_output = plladiv2_core_outputs,
+> +};
+> +
+> +/* Layout for fractional PLL ID PLLA. */
+> +static const struct clk_pll_layout plla_frac_layout = {
+> +	.mul_mask = GENMASK(31, 24),
+> +	.frac_mask = GENMASK(21, 0),
+> +	.mul_shift = 24,
+> +	.frac_shift = 0,
+> +	.div2 = 1,
 
-rmp_level can be got from snp_lookup_rmpentry().
-I think the pfn can be updated according to rmp_level to avoid unnecessary
-loops for 2MB large page, right?
+It seems to me that this is not taken into account (see below).
 
-> +	}
+> +};
 > +
-> +	return true;
-> +}
+> +/* Layout for fractional PLLs. */
+> +static const struct clk_pll_layout pll_frac_layout = {
+> +	.mul_mask = GENMASK(31, 24),
+> +	.frac_mask = GENMASK(21, 0),
+> +	.mul_shift = 24,
+> +	.frac_shift = 0,
+> +};
 > +
-> +static u8 max_level_for_order(int order)
-> +{
-> +	if (order >= KVM_HPAGE_GFN_SHIFT(PG_LEVEL_2M))
-> +		return PG_LEVEL_2M;
+> +/* Layout for DIV PLLs. */
+> +static const struct clk_pll_layout pll_divpmc_layout = {
+> +	.div_mask = GENMASK(7, 0),
+> +	.endiv_mask = BIT(29),
+> +	.div_shift = 0,
+> +	.endiv_shift = 29,
+> +};
 > +
-> +	return PG_LEVEL_4K;
-> +}
+> +/* Layout for DIV PLL ID PLLADIV2. */
+> +static const struct clk_pll_layout plladiv2_divpmc_layout = {
+> +	.div_mask = GENMASK(7, 0),
+> +	.endiv_mask = BIT(29),
+> +	.div_shift = 0,
+> +	.endiv_shift = 29,
+> +	.div2 = 1,
+> +};
 > +
-> +static bool is_large_rmp_possible(struct kvm *kvm, kvm_pfn_t pfn, int order)
-> +{
-> +	kvm_pfn_t pfn_aligned = ALIGN_DOWN(pfn, PTRS_PER_PMD);
+> +/* Layout for DIVIO dividers. */
+> +static const struct clk_pll_layout pll_divio_layout = {
+> +	.div_mask	= GENMASK(19, 12),
+> +	.endiv_mask	= BIT(30),
+> +	.div_shift	= 12,
+> +	.endiv_shift	= 30,
+> +};
 > +
-> +	/*
-> +	 * If this is a large folio, and the entire 2M range containing the
-> +	 * PFN is currently shared, then the entire 2M-aligned range can be
-> +	 * set to private via a single 2M RMP entry.
-> +	 */
-> +	if (max_level_for_order(order) > PG_LEVEL_4K &&
-> +	    is_pfn_range_shared(pfn_aligned, pfn_aligned + PTRS_PER_PMD))
-> +		return true;
+> +/*
+> + * PLL clocks description
+> + * @n:		clock name
+> + * @p:		clock parent
+> + * @l:		clock layout
+> + * @t:		clock type
+> + * @c:		pll characteristics
+> + * @f:		clock flags
+> + * @eid:	export index in sam9x7->chws[] array
+> + */
+> +static const struct {
+> +	const char *n;
+> +	const char *p;
+> +	const struct clk_pll_layout *l;
+> +	u8 t;
+> +	const struct clk_pll_characteristics *c;
+> +	unsigned long f;
+> +	u8 eid;
+> +} sam9x7_plls[][PLL_ID_MAX] = {
+> +	[PLL_ID_PLLA] = {
+> +		{
+> +			.n = "plla_fracck",
+> +			.p = "mainck",
+> +			.l = &plla_frac_layout,
+> +			.t = PLL_TYPE_FRAC,
+> +			/*
+> +			 * This feeds plla_divpmcck which feeds CPU. It should
+> +			 * not be disabled.
+> +			 */
+> +			.f = CLK_IS_CRITICAL | CLK_SET_RATE_GATE,
+> +			.c = &plla_characteristics,
+> +		},
 > +
-> +	return false;
-> +}
-> +
-> +int sev_gmem_prepare(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	kvm_pfn_t pfn_aligned;
-> +	gfn_t gfn_aligned;
-> +	int level, rc;
-> +	bool assigned;
-> +
-> +	if (!sev_snp_guest(kvm))
-> +		return 0;
-> +
-> +	rc = snp_lookup_rmpentry(pfn, &assigned, &level);
-> +	if (rc) {
-> +		pr_err_ratelimited("SEV: Failed to look up RMP entry: GFN %llx PFN %llx error %d\n",
-> +				   gfn, pfn, rc);
-> +		return -ENOENT;
-> +	}
-> +
-> +	if (assigned) {
-> +		pr_debug("%s: already assigned: gfn %llx pfn %llx max_order %d level %d\n",
-> +			 __func__, gfn, pfn, max_order, level);
-> +		return 0;
-> +	}
-> +
-> +	if (is_large_rmp_possible(kvm, pfn, max_order)) {
-> +		level = PG_LEVEL_2M;
-> +		pfn_aligned = ALIGN_DOWN(pfn, PTRS_PER_PMD);
-> +		gfn_aligned = ALIGN_DOWN(gfn, PTRS_PER_PMD);
-> +	} else {
-> +		level = PG_LEVEL_4K;
-> +		pfn_aligned = pfn;
-> +		gfn_aligned = gfn;
-> +	}
-> +
-> +	rc = rmp_make_private(pfn_aligned, gfn_to_gpa(gfn_aligned), level, sev->asid, false);
-> +	if (rc) {
-> +		pr_err_ratelimited("SEV: Failed to update RMP entry: GFN %llx PFN %llx level %d error %d\n",
-> +				   gfn, pfn, level, rc);
-> +		return -EINVAL;
-> +	}
-> +
-> +	pr_debug("%s: updated: gfn %llx pfn %llx pfn_aligned %llx max_order %d level %d\n",
-> +		 __func__, gfn, pfn, pfn_aligned, max_order, level);
-> +
-> +	return 0;
-> +}
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 240518f8d6c7..32cef8626b57 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -5065,6 +5065,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->   	.vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
->   	.vcpu_get_apicv_inhibit_reasons = avic_vcpu_get_apicv_inhibit_reasons,
->   	.alloc_apic_backing_page = svm_alloc_apic_backing_page,
-> +
-> +	.gmem_prepare = sev_gmem_prepare,
->   };
->   
->   /*
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index d953ae41c619..9ece9612dbb9 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -725,6 +725,7 @@ void sev_es_unmap_ghcb(struct vcpu_svm *svm);
->   struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
->   void handle_rmp_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u64 error_code);
->   void sev_snp_init_protected_guest_state(struct kvm_vcpu *vcpu);
-> +int sev_gmem_prepare(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
->   
->   /* vmenter.S */
->   
-> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-> index feec0da93d98..ddea45279fef 100644
-> --- a/virt/kvm/guest_memfd.c
-> +++ b/virt/kvm/guest_memfd.c
-> @@ -66,8 +66,8 @@ static int kvm_gmem_prepare_folio(struct inode *inode, pgoff_t index, struct fol
->   		gfn = slot->base_gfn + index - slot->gmem.pgoff;
->   		rc = kvm_arch_gmem_prepare(kvm, gfn, pfn, compound_order(compound_head(page)));
->   		if (rc) {
-> -			pr_warn_ratelimited("gmem: Failed to prepare folio for index %lx, error %d.\n",
-> -					    index, rc);
-> +			pr_warn_ratelimited("gmem: Failed to prepare folio for index %lx GFN %llx PFN %llx error %d.\n",
-> +					    index, gfn, pfn, rc);
->   			return rc;
->   		}
->   	}
+> +		{
+> +			.n = "plla_divpmcck",
+> +			.p = "plla_fracck",
+> +			.l = &pll_divpmc_layout,
+
+You mentioned in "[PATCH v4 24/39] clk: at91: sam9x7: add support for HW
+PLL freq dividers" that this has div2 but it is registered w/ a layout that
+has .div2 = 0.
+
 
 
