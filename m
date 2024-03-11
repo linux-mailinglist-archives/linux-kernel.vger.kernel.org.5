@@ -1,104 +1,170 @@
-Return-Path: <linux-kernel+bounces-99631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03FC3878AF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:51:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58384878AF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:52:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9761FB21A19
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:51:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 733671C203A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BDD58AC1;
-	Mon, 11 Mar 2024 22:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB07858213;
+	Mon, 11 Mar 2024 22:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Dad3XzQb"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y+1K1gxa"
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EEDE58217;
-	Mon, 11 Mar 2024 22:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706972E40E
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 22:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710197480; cv=none; b=H5O6tp0Kqry2natFzo+WD9AsBHD/ZVPLzU+Lz0/ilFTkpofOOcaRcdtIZLtGKsCqQQmgq882X9xOExKbHWFj3O0CwOO2nmddRD+4jbpTYLylYmTgcEk4Hl9tt4cYOMmySjZW5uAmkBe36e7EAF/KzRidxluYRxGdi8YWJRWfy+c=
+	t=1710197555; cv=none; b=W3sTHMf39V6N+f8EHCBSjUVICoYQKPhU7FNnUKkq8oiPUHw75UljtX/L/8fs23wqG5fs91jCP1m5rwccxQvpG1Z38QM8oEPPaF1RQZhKLnSOfoIqHjpwD+SgvfK1PHDgMs9IcNrcbN77WvEqT4IKBeXGx3S6cHo7JBXzXcZ9uiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710197480; c=relaxed/simple;
-	bh=uChjqVtXwXud2uwj9W+yjNQ4UtXwLPa6GBaoBbuNFAc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=aaHVL6oaO5yDmamVMcBxBGeTtyOisoFFLnjvz0GeFknBYvV3KyOsKW4fOYSbSs9dCxhQuOIC4xbIRHMoGuKuQAj9pb1Lf/ECu7KuL24igo+s0QfpjsGGoT/O6uPA9gRv1vmq6pWnOf5Bv6SjHmbdyKasBAZn7gz6CblM1N9bpWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Dad3XzQb; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710197474;
-	bh=SFaVhlHQebJ5CSD+e2Ejp+rOSd2Ft2Hk6RumE98gU8E=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Dad3XzQbn4PmkK31GLBZqmHDhmkGf5ksfNscAiti5Fj3ZI8+PFLiwF8Pup8k51lHE
-	 XbLX1zo2akWiK+c5Bp6Nm8DHPwQIJYtkn+JzVkkcREHXtBHrMjYpLuV1Tfximdz6kZ
-	 L2CaQU1ANtEtWOd5rWZ+PrjWFclTwUT34zTQVSgvdCBhMXFg70xO2cTdguw9ENx4UD
-	 Rm4X8BuMWBgvPXIQYORWy5Wee75mAzIkop75MZJXFKevJILDLNPhTdalSmUG45Gxoh
-	 7eJr6S/ucLiXQSm4JseTMBL4TpPueThVM1C0bzrs0TROQNmM9wW76kywP0aHBFzUnv
-	 vxf2AgRDBn4+A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TtsSy5nZmz4wyx;
-	Tue, 12 Mar 2024 09:51:14 +1100 (AEDT)
-Date: Tue, 12 Mar 2024 09:51:14 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Rob Herring <robh@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the devicetree tree
-Message-ID: <20240312095114.346c1cba@canb.auug.org.au>
+	s=arc-20240116; t=1710197555; c=relaxed/simple;
+	bh=3tNuY2Sy9qmDsPWY1JjCOuYp6NlDhqMEB/g+/Q5zep8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BfqGBIuWX9DPxmih+rrMsrxl5SATzDeJuTpcwJTgMK9E0PYLL9kMfOnbYI+Zt8gvZPJQZ9KIv3tsUWvdVF8dvW8elDD4PZnF18e+rqYg6aijxQDMEayYxxImB/Kk0wX/dh9qdb7GQh0DZKJGWpuMcxGO2LqMVLXcGN1IGRepahs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y+1K1gxa; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7db44846727so1439896241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 15:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710197552; x=1710802352; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sG6rccbriKueItsKjb2cJTEQoJ9sZCgOF8qwmAyEOIk=;
+        b=Y+1K1gxaKSup3QPZQAcwMaYVY13eFWmTYk07xlTCMLyrerOrHD8FGD/XfnPJ1wAAxs
+         nhenkeCNOvV1juVZE12sHn6x6aOrP4bIvfDGuFccGLa4jIE61uG+9yjO/PWqH0j+xl2z
+         /LsBlOzR+Plp0xAlR+u4fAugEsOb8KUcmztS3WRoqFdOnIr4XnZBoa1FkWDdwMJKwufW
+         5QGNJqDd8wmYH0q2G/yfJ1RLc2Tz/PZb2WkxPfqMQ5Ei688DjYV5cyB7mTkhlwqPJzwN
+         seW1/ei0jMF57I6sVnzIhs/P/gLHzEMV3ermiKLUxmrzexxCenO9U0ds+jNfwT7du1SB
+         4c8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710197552; x=1710802352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sG6rccbriKueItsKjb2cJTEQoJ9sZCgOF8qwmAyEOIk=;
+        b=A/65DKqE6YVjeypYKRPR/BcvxO6nTyZjQ2bn660kNlZ2r/sa1IIr1WCAXVmFJIvm0G
+         qADxGzoX5pWqWJc0b630Vt9gKDPCTHJdSUBmQ2NzWaD6L+TIUhyC9hpqA0LfnZoJ2GSz
+         ShLf+5AfGG4cp5d0YClFnnYm5BzWY57sGmhONVLd0LHKjXLLO8wTJfD9aKhbc576kJPo
+         mAWdaMTq+CfRlBXAcGMzF7reYMbbYmqG6CUTPLFb45anwCh+yI4gDlnxwMwFcqjTB1/6
+         Ejpm6Pj//lN37O+4eaHO59PrHgGJsJvShiUgxoEpnxqBiFuyv4GoevxU/hZUzC1FHveU
+         fV8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWJSxOFTFTj94tzgzzvvh32h5GdDiZ55aZgLs/WKHNwpzuSeuzJj6CE+sZaxfG+xfUw9FbZ16RHqCjtAosQz979enxQtR/+NtRHYs7r
+X-Gm-Message-State: AOJu0YxKkT/3Wjv4U1SXMOtHIk1/V02oQI06EjmfYy6/nsTwgVxHSaYe
+	dDsIJPfIPUfC1PvOXvtCQMI2fN1t8eFBe/Fj3YfGyf6of8Oex8ssjP60ZwpDMAZz2TcK25XXw7G
+	e3H5a5EkHUoXoFE1p/K8JdwaK+EhjvRC+hro=
+X-Google-Smtp-Source: AGHT+IH7qn/+9W5kdTLPVGt8Aqa7YlqUn9/0gVz+ZYZapZNofZ2SvtCNgguWY9fAufPRjGpcezwjUHJnSF0J2s4EgvU=
+X-Received: by 2002:a05:6102:419e:b0:473:ed7:fbc with SMTP id
+ cd30-20020a056102419e00b004730ed70fbcmr5238749vsb.5.1710197552386; Mon, 11
+ Mar 2024 15:52:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/IfuJUAAlcTM8/kWAEoTxo6X";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/IfuJUAAlcTM8/kWAEoTxo6X
-Content-Type: text/plain; charset=US-ASCII
+References: <20240311-zswap-xarray-v5-1-a3031feb9c85@kernel.org>
+In-Reply-To: <20240311-zswap-xarray-v5-1-a3031feb9c85@kernel.org>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 12 Mar 2024 06:52:21 +0800
+Message-ID: <CAGsJ_4z1CTzBHLdpyyHpwhQeXmN7dXbsoHJ1zcXFS2x=D2Xedg@mail.gmail.com>
+Subject: Re: [PATCH v5] zswap: replace RB tree with xarray
+To: Chris Li <chrisl@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Tue, Mar 12, 2024 at 6:26=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
+>
+> Very deep RB tree requires rebalance at times. That
+> contributes to the zswap fault latencies. Xarray does not
+> need to perform tree rebalance. Replacing RB tree to xarray
+> can have some small performance gain.
+>
+> One small difference is that xarray insert might fail with
+> ENOMEM, while RB tree insert does not allocate additional
+> memory.
+>
+> The zswap_entry size will reduce a bit due to removing the
+> RB node, which has two pointers and a color field. Xarray
+> store the pointer in the xarray tree rather than the
+> zswap_entry. Every entry has one pointer from the xarray
+> tree. Overall, switching to xarray should save some memory,
+> if the swap entries are densely packed.
+>
+> Notice the zswap_rb_search and zswap_rb_insert always
+> followed by zswap_rb_erase. Use xa_erase and xa_store
+> directly. That saves one tree lookup as well.
+>
+> Remove zswap_invalidate_entry due to no need to call
+> zswap_rb_erase any more. Use zswap_free_entry instead.
+>
+> The "struct zswap_tree" has been replaced by "struct xarray".
+> The tree spin lock has transferred to the xarray lock.
+>
+> Run the kernel build testing 10 times for each version, averages:
+> (memory.max=3D2GB, zswap shrinker and writeback enabled,
+> one 50GB swapfile, 24 HT core, 32 jobs)
+>
+> mm-9a0181a3710eb             xarray v5
+> user       3532.385                     3535.658
+> sys        536.231                      530.083
+> real       200.431                      200.176
+>
+> ---
+>
+>
+> Signed-off-by: Chris Li <chrisl@kernel.org>
+> ---
+> Changes in v5:
+> - Remove zswap_xa_insert(), call xa_store and xa_erase directly.
+> - Remove zswap_reject_xarray_fail.
+> - Link to v4: https://lore.kernel.org/r/20240304-zswap-xarray-v4-1-c4b456=
+70cc30@kernel.org
+>
+> Changes in v4:
+> - Remove zswap_xa_search_and_earse, use xa_erase directly.
+> - Move charge of objcg after zswap_xa_insert.
+> - Avoid erase old entry on insert fail error path.
+> - Remove not needed swap_zswap_tree change
+> - Link to v3: https://lore.kernel.org/r/20240302-zswap-xarray-v3-1-590025=
+2f2302@kernel.org
+>
+> Changes in v3:
+> - Use xa_cmpxchg instead of zswap_xa_search_and_delete in zswap_writeback=
+_entry.
+> - Use xa_store in zswap_xa_insert directly. Reduce the scope of spinlock.
+> - Fix xa_store error handling for same page fill case.
+> - Link to v2: https://lore.kernel.org/r/20240229-zswap-xarray-v2-1-e50284=
+dfcdb1@kernel.org
+>
+> Changes in v2:
+> - Replace struct zswap_tree with struct xarray.
+> - Remove zswap_tree spinlock, use xarray lock instead.
+> - Fold zswap_rb_erase() into zswap_xa_search_and_delete() and zswap_xa_in=
+sert().
+> - Delete zswap_invalidate_entry(), use zswap_free_entry() instead.
+> - Link to v1: https://lore.kernel.org/r/20240117-zswap-xarray-v1-0-6daa86=
+c08fae@kernel.org
+> ---
+>  mm/zswap.c | 166 +++++++++++++++----------------------------------------=
+------
+>  1 file changed, 41 insertions(+), 125 deletions(-)
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+It appears to be a suitable figure. And LGTM,
 
-  3b8b8f8a4375 ("dt-bindings: display: samsung,exynos-mixer: Fix 'regs' typ=
-o")
+Reviewed-by: Barry Song <baohua@kernel.org>
 
-This is commit
-
-  571c7ed0baa9 ("dt-bindings: display: samsung,exynos-mixer: Fix 'regs' typ=
-o")
-
-in Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/IfuJUAAlcTM8/kWAEoTxo6X
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXviuIACgkQAVBC80lX
-0Gx68wgAoCANd5a5ezC4o6EDHsTXDx//n83SLGKR8SJ7kFSwwr7jRIuDm61b7cN2
-m4twj8THquPmByl7RBsVLLpKXqWOC5Z5arOEzAa5O18u4XbSR4bv9mOfotRF6VbX
-oVkzWgTN5bqkM5PBatAyFkzOSodMJejOTkugSHfBSsaBmn2CLtwkUOkwUdmtUeuM
-Ritv57odYur2XM9bKHGzYJ/nEEJ0v8l2dPQCkt3e5EBf2Fshqi38JPWPRGwni9AN
-GpZpgRcYoAOMpd3SFZfdwy/HTVyDSQoBUrEowftrRJrBSP9UGDSe0qB/QQY/BY7u
-Qm8W/nGKuD6v8EeN24GwqKq8e1pa+A==
-=pEd1
------END PGP SIGNATURE-----
-
---Sig_/IfuJUAAlcTM8/kWAEoTxo6X--
+Thanks
+Barry
 
