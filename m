@@ -1,58 +1,60 @@
-Return-Path: <linux-kernel+bounces-99104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1C6D878379
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:27:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21C9C87837D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E1B32817BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:27:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 535571C21A13
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C5AB657C2;
-	Mon, 11 Mar 2024 15:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00080657A8;
+	Mon, 11 Mar 2024 15:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXdahz/3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GLXnKtA4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52288657A8;
-	Mon, 11 Mar 2024 15:14:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D83F65BA8;
+	Mon, 11 Mar 2024 15:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710170061; cv=none; b=a8taDuelEB+LA9WBc+g+aI6LNq150t2CBhQgc2PGQ1BGPJzoHn1fegFENc5nOfOnNR+4ZXr9ahcEtTeAXz5KOKweFCxUI6qebyZfdKfrY/Z7MmCbB+BIS3X7N3C+EpS1DnvP8a0ioleA8c8M8G30TFKkIzxqdBEO5ykheB9Tr+o=
+	t=1710170068; cv=none; b=XwdgxofIBdgCfkg5JXrdjZlkqF8PiktDNtC8C+80vnns0ctmzjj5WvXRWxtxsio/JRwWJjU3ZUCxCvJkgp0LsQB7khVIoiKVg2Bd8OoyY6BlNYAaa/6AQMEoSuS0XNldl1ELcTCn3Tat260+0cx4tcWIueTZAtADXqbvzifnQDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710170061; c=relaxed/simple;
-	bh=CIckCfCvElbP7qNZyEFS868bjqgWhDCd+IzI7ldl7Hg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tkELtfXPHdWg16TcS45mvrwtBq94afGSgasdVebNXZ7gKeADJHrCqGgQ1jAxVBaaCrrx7Vsgfg3RdyfQ2jQCdXEM8g3dUmCBCydlVoHisI35lvyZ6Q7HvU1KaW6/3ugS4ZPswwsGHw+SQPr9rH/Mt2o3zVqyos75hDzvF3B0X+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXdahz/3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78342C43394;
-	Mon, 11 Mar 2024 15:14:20 +0000 (UTC)
+	s=arc-20240116; t=1710170068; c=relaxed/simple;
+	bh=GnWtl6l52l+gUbfZkM8BRybvjTAPzKv3zjCkOuB8YF4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iQf8OE7B8quCfrq6yUGPVlflZE/X/jeF0Bvqlo3KuWO0B0x5c+aOWPaOyAB8eozr7a9gIxmJlAm4fpmFMQOe7WSmbfU9vKcCMf+Mv7dYnC/MACyhP0vBijupyaicEECoP9cJvuurM6CXLcz84DviQZt+Nj+J8gbhGYDDHb6tpBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GLXnKtA4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57DA1C433F1;
+	Mon, 11 Mar 2024 15:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710170061;
-	bh=CIckCfCvElbP7qNZyEFS868bjqgWhDCd+IzI7ldl7Hg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GXdahz/35VWEIMAPrTAprS3MVHK5R13ChjoZg80H9SQF9N6HX3SI4i+aNGWeRKNLX
-	 a+ZTP2nUxWv3xiFVZIDQNNT8hUDsuX3cnkpj1x3Qu7QBMf7idLd1VAIIlm0/DtDkLl
-	 3Be4T5fWQIcHAyAhQajBE07E+VTQOB6iWETOjHbXPLWbALYFHWmvvvxVcMYvmV2xUF
-	 2HIqMVQQ59dgjtK85JFBoVn+W2LkxEjXdWFSrpAYVrjSsBzZ33d5ManC2srRf8IV+h
-	 mPUnd+crB2pTHqw6xJhZtsL37PRTGUfbBSsErhoe2zj6mvU9yQ8+X3FlVOWdcP777Z
-	 kdAnj4ECwgXZw==
+	s=k20201202; t=1710170067;
+	bh=GnWtl6l52l+gUbfZkM8BRybvjTAPzKv3zjCkOuB8YF4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GLXnKtA4At1C1vv84VegEATsfcIQb1gqFx6U+qVls+PvOcb1UYP17ENNHtCwAQ9A0
+	 XGXta99tFH/P9mgo+h+9reddTrhDAuw88LyQCrIZNJKeR+majI6YyzL/7nDM2k3PzU
+	 H9WdhaGgIe7orkx3K2YcT+Ft9xL7sQM6mANm/xvZjnvQMa7pxxc6bD4IqAm0IZ847K
+	 HIgjXGnfHQ/vlB3CpR8PeMYoWplCa4JWMQlWqz3GqbUpMbFzAkEnsUqmCHry9fDeKc
+	 2kR20O6stuqRYoBl3v2a8bae6HAZbWXHvWwRimUSglrhsGPa0TEExCPms962iRfI8R
+	 Y0vq+mwMz80BQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Adam Goldman <adamg@pobox.com>,
+Cc: Ranjan Kumar <ranjan.kumar@broadcom.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux1394-devel@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 6.1 13/13] firewire: core: use long bus reset on gap count error
-Date: Mon, 11 Mar 2024 11:13:48 -0400
-Message-ID: <20240311151354.318293-13-sashal@kernel.org>
+	sathya.prakash@broadcom.com,
+	sreekanth.reddy@broadcom.com,
+	suganath-prabu.subramani@broadcom.com,
+	jejb@linux.ibm.com,
+	MPT-FusionLinux.pdl@broadcom.com,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 1/5] scsi: mpt3sas: Prevent sending diag_reset when the controller is ready
+Date: Mon, 11 Mar 2024 11:14:17 -0400
+Message-ID: <20240311151424.318621-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240311151354.318293-1-sashal@kernel.org>
-References: <20240311151354.318293-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,66 +63,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.81
+X-stable-base: Linux 5.15.151
 Content-Transfer-Encoding: 8bit
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Ranjan Kumar <ranjan.kumar@broadcom.com>
 
-[ Upstream commit d0b06dc48fb15902d7da09c5c0861e7f042a9381 ]
+[ Upstream commit ee0017c3ed8a8abfa4d40e42f908fb38c31e7515 ]
 
-When resetting the bus after a gap count error, use a long rather than
-short bus reset.
+If the driver detects that the controller is not ready before sending the
+first IOC facts command, it will wait for a maximum of 10 seconds for it to
+become ready. However, even if the controller becomes ready within 10
+seconds, the driver will still issue a diagnostic reset.
 
-IEEE 1394-1995 uses only long bus resets. IEEE 1394a adds the option of
-short bus resets. When video or audio transmission is in progress and a
-device is hot-plugged elsewhere on the bus, the resulting bus reset can
-cause video frame drops or audio dropouts. Short bus resets reduce or
-eliminate this problem. Accordingly, short bus resets are almost always
-preferred.
+Modify the driver to avoid sending a diag reset if the controller becomes
+ready within the 10-second wait time.
 
-However, on a mixed 1394/1394a bus, a short bus reset can trigger an
-immediate additional bus reset. This double bus reset can be interpreted
-differently by different nodes on the bus, resulting in an inconsistent gap
-count after the bus reset. An inconsistent gap count will cause another bus
-reset, leading to a neverending bus reset loop. This only happens for some
-bus topologies, not for all mixed 1394/1394a buses.
-
-By instead sending a long bus reset after a gap count inconsistency, we
-avoid the doubled bus reset, restoring the bus to normal operation.
-
-Signed-off-by: Adam Goldman <adamg@pobox.com>
-Link: https://sourceforge.net/p/linux1394/mailman/message/58741624/
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Ranjan Kumar <ranjan.kumar@broadcom.com>
+Link: https://lore.kernel.org/r/20240221071724.14986-1-ranjan.kumar@broadcom.com
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firewire/core-card.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/scsi/mpt3sas/mpt3sas_base.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firewire/core-card.c b/drivers/firewire/core-card.c
-index 8aaa7fcb2630d..401a77e3b5fa8 100644
---- a/drivers/firewire/core-card.c
-+++ b/drivers/firewire/core-card.c
-@@ -500,7 +500,19 @@ static void bm_work(struct work_struct *work)
- 		fw_notice(card, "phy config: new root=%x, gap_count=%d\n",
- 			  new_root_id, gap_count);
- 		fw_send_phy_config(card, new_root_id, generation, gap_count);
--		reset_bus(card, true);
-+		/*
-+		 * Where possible, use a short bus reset to minimize
-+		 * disruption to isochronous transfers. But in the event
-+		 * of a gap count inconsistency, use a long bus reset.
-+		 *
-+		 * As noted in 1394a 8.4.6.2, nodes on a mixed 1394/1394a bus
-+		 * may set different gap counts after a bus reset. On a mixed
-+		 * 1394/1394a bus, a short bus reset can get doubled. Some
-+		 * nodes may treat the double reset as one bus reset and others
-+		 * may treat it as two, causing a gap count inconsistency
-+		 * again. Using a long bus reset prevents this.
-+		 */
-+		reset_bus(card, card->gap_count != 0);
- 		/* Will allocate broadcast channel after the reset. */
- 		goto out;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
+index e524e1fc53fa3..8325875bfc4ed 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@ -7238,7 +7238,9 @@ _base_wait_for_iocstate(struct MPT3SAS_ADAPTER *ioc, int timeout)
+ 		return -EFAULT;
  	}
+ 
+- issue_diag_reset:
++	return 0;
++
++issue_diag_reset:
+ 	rc = _base_diag_reset(ioc);
+ 	return rc;
+ }
 -- 
 2.43.0
 
