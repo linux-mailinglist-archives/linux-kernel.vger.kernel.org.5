@@ -1,107 +1,114 @@
-Return-Path: <linux-kernel+bounces-99296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2814878627
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:14:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC74987862B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:15:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90B811F2137B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:14:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8647F282EF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F87A4CDE5;
-	Mon, 11 Mar 2024 17:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4BE4CE05;
+	Mon, 11 Mar 2024 17:15:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CZRm1iAL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="OgbHhtDy"
+Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DA04AEE6;
-	Mon, 11 Mar 2024 17:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DD729A9;
+	Mon, 11 Mar 2024 17:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.184.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710177264; cv=none; b=Mwil8vCH3pMOpXp4SmE1ssvFTg7lnVtiPeye6YFNC3L/TwQiVwMiD+gXz0+4ch5fibSRp4YeudIpch3byJcm8jz3HGtQ6FCQFsMaasT5pFeBlyP8HTc1ViwTDIvIXyRfV1ouiWX3jumSPTYH6O6xWSMi6irrGL4isOEEIybhY8c=
+	t=1710177345; cv=none; b=lC0lz3C7jSir1EgpdI2qfiiPp8x5QJJiKZZAneWa3QyAxbgqCw5m2L7It2MCulUbs9nqriQXK01AeMsLW3A9P3Y+5ChAU4aKReN2qHIApxtiXEMXNKc1IJxaCq4/hSlyeU775hZHn6rCPkZ0NJMtWh3jjBiuY0waTtTazJSkf+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710177264; c=relaxed/simple;
-	bh=t3vnkmWShAx/8G71252L599Ej7yx1121Mw9K2xlBgIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=U6zwn5Tr/VLRCu0pBfIWSwokivzYH9LxsxVSHYs15gyYH6rGknuyEQuh3VmCFCXUCyJNc30cE9EIhpF5Li5IBGo4cH4kNTzU/UZMI6ponQn4n1u0z1D8zDQ1WyJ6AzDPwKmS83tPnEWMpKKuRGl9EQdIHrhrv4m3eFO+dHB2eWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CZRm1iAL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 386FFC433F1;
-	Mon, 11 Mar 2024 17:14:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710177263;
-	bh=t3vnkmWShAx/8G71252L599Ej7yx1121Mw9K2xlBgIQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CZRm1iALCVUbGpzHr/TrYAFHOvdjAhlOux8+FJioVXZ6WWxMaghRBZL3oxAxgOhX8
-	 Qy5K+8D0AST8m2f+E02ntTM/vNB8QS2PVGvz++ehiSIe6n+7LwJyjSUs8xDlQIgVke
-	 A0DUHgyQOC9qy9cZF43sJFlwhmWwiah2v7hozV3GVpOqdHPlNFYGT/qvXgXL5GaQ28
-	 Hs3PnkXTNl6mYdCgxnCRDQ/13SjBAs5P2zi6cMDNm9NOa5qVFQLLVs7YYFlAODWKfm
-	 ztc+nspXu+qDHw0vvzk7VccrUsxlBJt2tYPb5zUn6Ul9vCkbgW4oDy7G/uFLfz3CNA
-	 I9n1pqLybpZxg==
-Date: Mon, 11 Mar 2024 10:14:22 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Simon Horman <horms@kernel.org>, Luiz Angelo Daros de Luca
- <luizluca@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Alvin
- =?UTF-8?B?xaBpcHJhZ2E=?= <alsi@bang-olufsen.dk>, Andrew Lunn
- <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/4] net: dsa: realtek: keep default LED state
- in rtl8366rb
-Message-ID: <20240311101422.2f48360e@kernel.org>
-In-Reply-To: <82d38961-8792-49ea-8c9c-5214669e0ef6@kernel.org>
-References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
-	<20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
-	<388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
-	<20240310113738.GA1623@kernel.org>
-	<09793a72-bfe5-4cb5-a6da-ffee565e6956@kernel.org>
-	<20240311091111.53191e08@kernel.org>
-	<82d38961-8792-49ea-8c9c-5214669e0ef6@kernel.org>
+	s=arc-20240116; t=1710177345; c=relaxed/simple;
+	bh=iVIU6NFyJNWSLU77UYtdSmBL6fAO1vYpAxCZgvTdLS8=;
+	h=MIME-Version:Content-Type:Date:Message-ID:CC:Subject:From:To:
+	 References:In-Reply-To; b=GcBKrOqSF8G/ngyWSV5QtWArG3gPD6lf6FzIJZqjlQHu919jJCQTcp1NqY6sOTFJ9/DprCGzMZJNcwrLT01LtBVSAwBrk/wfUaiodd4iqOE3rrrozqljm3ttZHMnT9VI+JcH4zc22nRR81ys+iBD4j5savu/19yh8HzFQw8Bz4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.es; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=OgbHhtDy; arc=none smtp.client-ip=207.171.184.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.es
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1710177344; x=1741713344;
+  h=mime-version:content-transfer-encoding:date:message-id:
+   cc:subject:from:to:references:in-reply-to;
+  bh=iVIU6NFyJNWSLU77UYtdSmBL6fAO1vYpAxCZgvTdLS8=;
+  b=OgbHhtDyMDj2FADfMOCJiGRWs13qJ9NY/pDHHEpaJgRDQ1wzhiUy9PPk
+   HbC1/Q4CxVJMILHPbIuq+6xCIDJmW9G0i4RN05u4lxL7KIFuiqddi+LLw
+   dxoinm/R8fwl2SQH0VmA8yPC1c3LSYgX7S+QRrdcGrq+J536b0XZN6tB9
+   8=;
+X-IronPort-AV: E=Sophos;i="6.07,117,1708387200"; 
+   d="scan'208";a="403096272"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:15:36 +0000
+Received: from EX19MTAEUB002.ant.amazon.com [10.0.17.79:19422]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.37.30:2525] with esmtp (Farcaster)
+ id 8ca03e87-99df-457e-b513-eae1e534586f; Mon, 11 Mar 2024 17:15:34 +0000 (UTC)
+X-Farcaster-Flow-ID: 8ca03e87-99df-457e-b513-eae1e534586f
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUB002.ant.amazon.com (10.252.51.79) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 11 Mar 2024 17:15:34 +0000
+Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
+ (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Mon, 11 Mar
+ 2024 17:15:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 11 Mar 2024 17:15:26 +0000
+Message-ID: <CZR39LW50A9F.1DWG2FYJ3OZP8@amazon.com>
+CC: <jalliste@amazon.co.uk>, <mhiramat@kernel.org>,
+	<akpm@linux-foundation.org>, <pmladek@suse.com>, <rdunlap@infradead.org>,
+	<tsi@tuyoix.net>, <nphamcs@gmail.com>, <gregkh@linuxfoundation.org>,
+	<linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>, <pbonzini@redhat.com>,
+	<seanjc@google.com>, <paulmck@kernel.org>, <nsaenz@amazon.com>
+Subject: Re: [RFC] cputime: Introduce option to force full dynticks
+ accounting on NOHZ & NOHZ_IDLE CPUs
+From: Nicolas Saenz Julienne <nsaenz@amazon.com>
+To: <frederic@kernel.org>
+X-Mailer: aerc 0.16.0-127-gec0f4a50cf77
+References: <20240219175735.33171-1-nsaenz@amazon.com>
+In-Reply-To: <20240219175735.33171-1-nsaenz@amazon.com>
+X-ClientProxiedBy: EX19D031UWA001.ant.amazon.com (10.13.139.88) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
 
-On Mon, 11 Mar 2024 17:19:59 +0100 Krzysztof Kozlowski wrote:
-> No, it does not reset the version number, because RFC->PATCH does not
-> mean that suddenly there were no reviews or changes. We all count in
-> brains from 1, so whatever we see - RFC, RFT, RFkisses or hugs - is the
-> first version we see. Then next one, whatever it is called PATCH,
-> RF-non-comments, RFmorekisses, is v2.
+Hi Frederic,
 
-I'm describing what I see as the prevalent interpretation on netdev,
-more than expressing an opinion. It's not based on any guidance from
-us, people just seem to think that they should reset when they post
-a PATCH.
+On Mon Feb 19, 2024 at 5:57 PM UTC, Nicolas Saenz Julienne wrote:
+> Under certain extreme conditions, the tick-based cputime accounting may
+> produce inaccurate data. For instance, guest CPU usage is sensitive to
+> interrupts firing right before the tick's expiration. This forces the
+> guest into kernel context, and has that time slice wrongly accounted as
+> system time. This issue is exacerbated if the interrupt source is in
+> sync with the tick, significantly skewing usage metrics towards system
+> time.
+>
+> On CPUs with full dynticks enabled, cputime accounting leverages the
+> context tracking subsystem to measure usage, and isn't susceptible to
+> this sort of race conditions. However, this imposes a bigger overhead,
+> including additional accounting and the extra dyntick tracking during
+> user<->kernel<->guest transitions (RmW + mb).
+>
+> So, in order to get the best of both worlds, introduce a cputime
+> configuration option that allows using the full dynticks accounting
+> scheme on NOHZ & NOHZ_IDLE CPUs, while avoiding the expensive
+> user<->kernel<->guest dyntick transitions.
+>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> Signed-off-by: Jack Allister <jalliste@amazon.co.uk>
+> ---
 
-Whether we want to enforce a different scheme is up for a discussion,
-I don't really care. But I do see how not resetting is easier for
-tools, and that I think is a _bad_ reason to add rules.
+Would you be opposed to introducing a config option like this? Any
+alternatives you might have in mind?
 
-> There are RFCs which go to "v4", with significant discussion and review,
-> thus natural next version is "5", not "1".
-> 
-> It's extremely confusing for me to be involved in some sort four
-> revisions of RFC and the suddenly see v1. What happened with my
-> comments? Why its state should be the same as new submission state?
-
-Well, as I said, changelog with links in the cover letter...
-
-> Plus, people do not understand or do not have the same meaning of RFC.
-> Some people send RFC with meaning "do not apply, just some
-> work-in-progress" but some send as regular patch with intention to
-> apply. I really, really saw exactly these two approaches.
-
-Yeah, that I do agree with 100%. People get confused by what RFC means.
-I think it's partially maintainers' fault. Without naming names, there
-are some people who used to apply RFC postings, if they liked the code
-:|
+Nicolas
 
