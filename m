@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-99265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 016BC8785B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:48:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5502B8785B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:48:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB0D328123D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:48:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0939B20DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109885644B;
-	Mon, 11 Mar 2024 16:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2908156B64;
+	Mon, 11 Mar 2024 16:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="2P8Bdxfd"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="SUzPNr44"
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 948305472A
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E0654FA2
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710175614; cv=none; b=LhORN8AiGhVs5srBwctx+VN01LvmDFYwbbVOEweTzV0CCCD5DAUU+QmuZ4DMLyiXiszAChuKympQOn0Ql5AQhNgbavvlk6gDbFRhNXxL6lbwajp38J38VtU2rkpn/yoZOx05fGC3zCME/MN8hYAeAOJke9AUFPTWrCotUjJsvzE=
+	t=1710175615; cv=none; b=bxoA8lqi8AU4NaMffJL237HyFuaKpEajNVQ5pq4wmLbMfk+Cnf9KjUWxYvwX14Wt9BblSECMGooWXybPtsEuFOw3reuyNpDn/LDNZUdKKaHvXLvChjHB45Maz8VaXcsxTHCWU73JJaSV45mhswUzi/OvpE8Y8UDWN84UEMamqlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710175614; c=relaxed/simple;
-	bh=/nr7aaEAvjVHOUDe35kqc9+BWm5yZt4eYB5LCI8io0Q=;
+	s=arc-20240116; t=1710175615; c=relaxed/simple;
+	bh=J5REF2bzCzAX7O0LOHW14nTnyl8YGMv3zounUf7qQr4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CdjypVI2aEqRA+VWkvpYkJbmF9D+HmRA6MNwO8yXxlmJe5Q+YArVH0i4W4K1DgzwJwMv5ZRwiYLVhjJc+56+k7rAMhJJcg96dRv0tjc5gDaRq+8UySmI7B5rZVaDMMV7pWLEs86zn/GGlMvrMaYfSnHitd95QeNo+tEBmCC+u2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=2P8Bdxfd; arc=none smtp.client-ip=209.85.222.173
+	 MIME-Version; b=Rrr3D6t5kuX9VikkA7oYAw55Mk0Z/VFpJ+EJfKBvzyOABDyINM/cl8n9oO7LAWDWCxBZ8maxfMh6FsNj6lNNYBQo+6qRHP1vEukDn3A+zmN9U9lJW5jyD8KFbtPAiAk10R3j/szE1oScfyC04C/gjsL1HYOvx3oaG2grMKSSnJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=SUzPNr44; arc=none smtp.client-ip=209.85.222.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-78852e1e923so96445285a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:46:52 -0700 (PDT)
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78850ab4075so120664885a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:46:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710175611; x=1710780411; darn=vger.kernel.org;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710175612; x=1710780412; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hkZD7ALZVm0P5UALUItr672MRcA6vth2fJOAHe6U29Q=;
-        b=2P8BdxfdiCm33uclKiECOzNcNUfb4Y8S/DMlHKAotrq30fVsjwhZghrWJjwm+s+RwP
-         QQ0iJfAUbbjHzoq9oiyRbUFVbDjW3n3kA8xOiXewnDseUfyGBgKaDY9Vmg5Xq6fa67lJ
-         M9Cm+5AcOYIgT/4KKdi6LccefhVIvAAcIxy/66ZdMJO5IUmCDXn/yl93sIRuo7a8B8wW
-         zLMizkgG7tlWnVjLa4CYGt6lOlUtzkAzem5OC98X/TnbOh7uXNjkW4Fqh8bVipUY6m00
-         Qs/XrfumncsdaZovg3xIaGIo4KOo7/cMZE4UhpvSH/I3O+em5ZAMTbz6I/2Sc6wLWIJd
-         TuyA==
+        bh=UUTioQgK+VFwu4bHGNUstSWJvzqUc2xbAOy5DzulCE4=;
+        b=SUzPNr44BG72fCi5CjWAI1V5z26hOG3O70z6dpgZmoI0Hie9Bb5RZ/y/i+WpfZcpDc
+         zqn15CuFqqma3nQj2QF2/9bV/iowcKNpwOgPKZ9n4u/UP6q2Yk9n/akcXS4zbhIT9uGe
+         nFAgmY57GPDejAT3ytqEbDRKNcfbZ3ii+D9kTwSrZlva/a02KZRvG1F9yQCU3ywJv20s
+         j7IRWwDmDep/P6Gw7ikDRoVbq/KuauaZw+MvlY3WQS4w+RMM2omI38z2Jnsj2SKOiqL8
+         pVEggM2qsy1yrmgr/yOanBVLaasw0ZT6gjEEqvkK1GVbRO88DxHb1XQknFcU9g3YawRG
+         Gq9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710175611; x=1710780411;
+        d=1e100.net; s=20230601; t=1710175612; x=1710780412;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hkZD7ALZVm0P5UALUItr672MRcA6vth2fJOAHe6U29Q=;
-        b=nOrNF3JYOwtwIlSEGCr9ExBBLgExOjEJurWLJYAh/egYbfpAjMLEBs2/G3VVl6vUE+
-         Vq1K68+WrCl830tqsG+TPFzFCrQw50AIk6pqSVPS0GbufUtPstf5SwAbB4EYdkwdyxUG
-         NKMMsKHujcSOirlEjFjDMC0K004yA7QTaqV0fwONQS6ByprJN6dEu8LoxXZ8tOpL4/S6
-         upCbsjfQ42QVA0OyQr46fL4Qyh2hbdXPYjEgjmVchpuyVe/0Ei/Tjs8Y+ZfwMBGe/td9
-         2lWZkEGFxujgbea1PYPATx6YyZjtdogNbMuzs4AHAT/oGl+HffqxNoFpYMCyBrou+Gk3
-         2LZQ==
-X-Gm-Message-State: AOJu0YwK3TFzbsrkPXDndpxE52ZapaJfikRriT2/A+vPA7FBPVfWQKDq
-	cDDQzh8kQRt3fa3rANgLx2t8p578wVwE0EKiq+7BdI/AhOsO1eg6XCBkbcyilunpOprpDTT9Qyq
-	SvLA=
-X-Google-Smtp-Source: AGHT+IHTkS+2s/WrBF0S6nD4DTbIdKAkKUkplrTiXcc/c/8vBDolvcc8zD3FtIujCYDfupcwREXrKQ==
-X-Received: by 2002:a05:620a:15bc:b0:788:50aa:35f7 with SMTP id f28-20020a05620a15bc00b0078850aa35f7mr7780372qkk.30.1710175610969;
-        Mon, 11 Mar 2024 09:46:50 -0700 (PDT)
+        bh=UUTioQgK+VFwu4bHGNUstSWJvzqUc2xbAOy5DzulCE4=;
+        b=UVdzOxkA9jPXIgkTAZ571SIhTm+4JpBEu+GnB2mzCNerWr5oxy1/QHIh/ekg6/Wo4u
+         lakMk0sMIY06T7ldzMkj5iF42yKH9DPBxkp/dZoaxD/ra+EByw52tnld/K5ZmUlY3S4c
+         sHzWyn3BsxxcPIGuqEujQcwsm0NDH79Wmj5SvEfyCCSRn0cIbWQ+n3MDILZCqcLH7Hkc
+         pmjvId48GuCGTGo3J4JF7pLtnFOb5QmAjExSvwFIpgBULCOonKZ9kPseO5WTupTrfIph
+         gMoAaWXXIm558ktBYyhpbJzz84oTGRtE1iEpZ8mtZKwZ0d/WsVQuLcgu55+Fz1DFuI3n
+         MZqg==
+X-Gm-Message-State: AOJu0YxFB249T7CnbwaD3MXFWWTn2wzvYaqIU4itBsMkDFCAfrx2q11S
+	D7oAqsltxi7kD/L2AHC3JxaC6/XHdLrsrnR8N7eDZvoen0Hbqhr8L9grIDb1QbepwBPcoA+FHjY
+	irJE=
+X-Google-Smtp-Source: AGHT+IF4clsrNYnhAmKVCQ5b1CkyUTVuvR4XaNSojXhA81ENz+LMIfO1rJKaTKEeTeVkpkuetWxx/w==
+X-Received: by 2002:a05:620a:5d9a:b0:788:5909:8ce5 with SMTP id xx26-20020a05620a5d9a00b0078859098ce5mr1085134qkn.34.1710175612342;
+        Mon, 11 Mar 2024 09:46:52 -0700 (PDT)
 Received: from soleen.c.googlers.com.com (150.254.86.34.bc.googleusercontent.com. [34.86.254.150])
-        by smtp.gmail.com with ESMTPSA id d27-20020a05620a137b00b00788228fbe05sm2851589qkl.17.2024.03.11.09.46.50
+        by smtp.gmail.com with ESMTPSA id d27-20020a05620a137b00b00788228fbe05sm2851589qkl.17.2024.03.11.09.46.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 09:46:50 -0700 (PDT)
+        Mon, 11 Mar 2024 09:46:51 -0700 (PDT)
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -109,9 +109,9 @@ To: linux-kernel@vger.kernel.org,
 	vincent.guittot@linaro.org,
 	vschneid@redhat.com,
 	pasha.tatashin@soleen.com
-Subject: [RFC 08/14] fork: separate vmap stack alloction and free calls
-Date: Mon, 11 Mar 2024 16:46:32 +0000
-Message-ID: <20240311164638.2015063-9-pasha.tatashin@soleen.com>
+Subject: [RFC 09/14] mm/vmalloc: Add a get_vm_area_node() and vmap_pages_range_noflush() public functions
+Date: Mon, 11 Mar 2024 16:46:33 +0000
+Message-ID: <20240311164638.2015063-10-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 In-Reply-To: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
 References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
@@ -123,133 +123,125 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In preparation for the dynamic stacks, separate out the
-__vmalloc_node_range and vfree calls from the vmap based stack
-allocations. The dynamic stacks will use their own variants of these
-functions.
+get_vm_area_node()
+Unlike the other public get_vm_area_* variants, this one accepts node
+from which to allocate data structure, and also the align, which allows
+to create vm area with a specific alignment.
+
+This call is going to be used by dynamic stacks in order to ensure that
+the stack VM area of a specific alignment, and that even if there is
+only one page mapped, no page table allocations are going to be needed
+to map the other stack pages.
+
+vmap_pages_range_noflush()
+Is already a global function, but was exported through mm/internal.h,
+since we will need it from kernel/fork.c in order to map the initial
+stack pages, move the forward declaration of this function to the
+linux/vmalloc.h header.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- kernel/fork.c | 53 ++++++++++++++++++++++++++++++---------------------
- 1 file changed, 31 insertions(+), 22 deletions(-)
+ include/linux/vmalloc.h | 15 +++++++++++++++
+ mm/internal.h           |  9 ---------
+ mm/vmalloc.c            | 24 ++++++++++++++++++++++++
+ 3 files changed, 39 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 3004e6ce6c65..bbae5f705773 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -204,6 +204,29 @@ static bool try_release_thread_stack_to_cache(struct vm_struct *vm_area)
- 	return false;
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index c720be70c8dd..e18b6ab1584b 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -210,6 +210,9 @@ extern struct vm_struct *__get_vm_area_caller(unsigned long size,
+ 					unsigned long flags,
+ 					unsigned long start, unsigned long end,
+ 					const void *caller);
++struct vm_struct *get_vm_area_node(unsigned long size, unsigned long align,
++				   unsigned long flags, int node, gfp_t gfp,
++				   const void *caller);
+ void free_vm_area(struct vm_struct *area);
+ extern struct vm_struct *remove_vm_area(const void *addr);
+ extern struct vm_struct *find_vm_area(const void *addr);
+@@ -241,10 +244,22 @@ static inline void set_vm_flush_reset_perms(void *addr)
+ 		vm->flags |= VM_FLUSH_RESET_PERMS;
  }
  
-+static inline struct vm_struct *alloc_vmap_stack(int node)
-+{
-+	void *stack;
++int __must_check vmap_pages_range_noflush(unsigned long addr, unsigned long end,
++					  pgprot_t prot, struct page **pages,
++					  unsigned int page_shift);
 +
-+	/*
-+	 * Allocated stacks are cached and later reused by new threads,
-+	 * so memcg accounting is performed manually on assigning/releasing
-+	 * stacks to tasks. Drop __GFP_ACCOUNT.
-+	 */
-+	stack = __vmalloc_node_range(THREAD_SIZE, THREAD_ALIGN,
-+				     VMALLOC_START, VMALLOC_END,
-+				     THREADINFO_GFP & ~__GFP_ACCOUNT,
-+				     PAGE_KERNEL,
-+				     0, node, __builtin_return_address(0));
-+
-+	return (stack) ? find_vm_area(stack) : NULL;
-+}
-+
-+static inline void free_vmap_stack(struct vm_struct *vm_area)
-+{
-+	vfree(vm_area->addr);
-+}
-+
- static void thread_stack_free_rcu(struct rcu_head *rh)
+ #else
+ static inline void set_vm_flush_reset_perms(void *addr)
  {
- 	struct vm_stack *vm_stack = container_of(rh, struct vm_stack, rcu);
-@@ -212,7 +235,7 @@ static void thread_stack_free_rcu(struct rcu_head *rh)
- 	if (try_release_thread_stack_to_cache(vm_stack->stack_vm_area))
- 		return;
- 
--	vfree(vm_area->addr);
-+	free_vmap_stack(vm_area);
  }
++
++static inline
++int __must_check vmap_pages_range_noflush(unsigned long addr, unsigned long end,
++					  pgprot_t prot, struct page **pages,
++					  unsigned int page_shift)
++{
++	return -EINVAL;
++}
+ #endif
  
- static void thread_stack_delayed_free(struct task_struct *tsk)
-@@ -235,7 +258,7 @@ static int free_vm_stack_cache(unsigned int cpu)
- 		if (!vm_area)
- 			continue;
- 
--		vfree(vm_area->addr);
-+		free_vmap_stack(vm_area);
- 		cached_vm_stacks[i] = NULL;
- 	}
- 
-@@ -265,7 +288,6 @@ static int alloc_thread_stack_node(struct task_struct *tsk, int node)
+ /* for /proc/kcore */
+diff --git a/mm/internal.h b/mm/internal.h
+index f309a010d50f..ba1e2ce68157 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -969,19 +969,10 @@ size_t splice_folio_into_pipe(struct pipe_inode_info *pipe,
+  */
+ #ifdef CONFIG_MMU
+ void __init vmalloc_init(void);
+-int __must_check vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+-                pgprot_t prot, struct page **pages, unsigned int page_shift);
+ #else
+ static inline void vmalloc_init(void)
  {
- 	struct vm_struct *vm_area;
- 	int i, j, nr_pages;
--	void *stack;
- 
- 	for (i = 0; i < NR_CACHED_STACKS; i++) {
- 		vm_area = this_cpu_xchg(cached_stacks[i], NULL);
-@@ -273,14 +295,13 @@ static int alloc_thread_stack_node(struct task_struct *tsk, int node)
- 			continue;
- 
- 		if (memcg_charge_kernel_stack(vm_area)) {
--			vfree(vm_area->addr);
-+			free_vmap_stack(vm_area);
- 			return -ENOMEM;
- 		}
- 
- 		/* Reset stack metadata. */
- 		kasan_unpoison_range(vm_area->addr, THREAD_SIZE);
+ }
 -
--		stack = kasan_reset_tag(vm_area->addr);
-+		tsk->stack = kasan_reset_tag(vm_area->addr);
+-static inline
+-int __must_check vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+-                pgprot_t prot, struct page **pages, unsigned int page_shift)
+-{
+-	return -EINVAL;
+-}
+ #endif
  
- 		/* Clear stale pointers from reused stack. */
- 		nr_pages = vm_area->nr_pages;
-@@ -288,26 +309,15 @@ static int alloc_thread_stack_node(struct task_struct *tsk, int node)
- 			clear_page(page_address(vm_area->pages[j]));
- 
- 		tsk->stack_vm_area = vm_area;
--		tsk->stack = stack;
- 		return 0;
- 	}
- 
--	/*
--	 * Allocated stacks are cached and later reused by new threads,
--	 * so memcg accounting is performed manually on assigning/releasing
--	 * stacks to tasks. Drop __GFP_ACCOUNT.
--	 */
--	stack = __vmalloc_node_range(THREAD_SIZE, THREAD_ALIGN,
--				     VMALLOC_START, VMALLOC_END,
--				     THREADINFO_GFP & ~__GFP_ACCOUNT,
--				     PAGE_KERNEL,
--				     0, node, __builtin_return_address(0));
--	if (!stack)
-+	vm_area = alloc_vmap_stack(node);
-+	if (!vm_area)
- 		return -ENOMEM;
- 
--	vm_area = find_vm_area(stack);
- 	if (memcg_charge_kernel_stack(vm_area)) {
--		vfree(stack);
-+		free_vmap_stack(vm_area);
- 		return -ENOMEM;
- 	}
- 	/*
-@@ -316,8 +326,7 @@ static int alloc_thread_stack_node(struct task_struct *tsk, int node)
- 	 * so cache the vm_struct.
- 	 */
- 	tsk->stack_vm_area = vm_area;
--	stack = kasan_reset_tag(stack);
--	tsk->stack = stack;
-+	tsk->stack = kasan_reset_tag(vm_area->addr);
- 	return 0;
+ int __must_check __vmap_pages_range_noflush(unsigned long addr,
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d12a17fc0c17..7dcba463ff99 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2650,6 +2650,30 @@ struct vm_struct *get_vm_area_caller(unsigned long size, unsigned long flags,
+ 				  NUMA_NO_NODE, GFP_KERNEL, caller);
  }
  
++/**
++ * get_vm_area_node - reserve a contiguous and aligned kernel virtual area
++ * @size:	 size of the area
++ * @align:	 alignment of the start address of the area
++ * @flags:	 %VM_IOREMAP for I/O mappings
++ * @node:	 NUMA node from which to allocate the area data structure
++ * @gfp:	 Flags to pass to the allocator
++ * @caller:	 Caller to be stored in the vm area data structure
++ *
++ * Search an area of @size/align in the kernel virtual mapping area,
++ * and reserved it for out purposes.  Returns the area descriptor
++ * on success or %NULL on failure.
++ *
++ * Return: the area descriptor on success or %NULL on failure.
++ */
++struct vm_struct *get_vm_area_node(unsigned long size, unsigned long align,
++				   unsigned long flags, int node, gfp_t gfp,
++				   const void *caller)
++{
++	return __get_vm_area_node(size, align, PAGE_SHIFT, flags,
++				  VMALLOC_START, VMALLOC_END,
++				  node, gfp, caller);
++}
++
+ /**
+  * find_vm_area - find a continuous kernel virtual area
+  * @addr:	  base address
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
