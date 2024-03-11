@@ -1,127 +1,122 @@
-Return-Path: <linux-kernel+bounces-98518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5770B877B5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:34:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 967CD877B5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:35:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89F901C20B3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:34:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E907C281676
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE7310A0A;
-	Mon, 11 Mar 2024 07:34:52 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D6310A0A;
+	Mon, 11 Mar 2024 07:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=testtoast.com header.i=@testtoast.com header.b="jpeIk9MG";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GT3M6dXY"
+Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED463101E2;
-	Mon, 11 Mar 2024 07:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652A1101E2;
+	Mon, 11 Mar 2024 07:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710142492; cv=none; b=VW0zExQzZZ1xGnQTbAL/8+T1CQ9EbNY5UeGa4WQ4Erk4r7G7PHHmrdIBgh3oFQ257Z8ivCFkmCkZ3JjI7ZP/25SaVc25i2bmmSk68+J9SioxGvLFUARpVJbhAFLb14UoxC0iGBt3E/Uh4qrd6QI5jof9Lblz1m7SkimzLE9c9oE=
+	t=1710142521; cv=none; b=qz2jwQp8mV4KnhYnhJrrDNJ/cbwllv4PG4fp/s3H89pvF2hCyzclx4GuX5hRExPxYEwQBshYcu3lvGM9gK8TugnIDiTO2EQEWIoPUjgkezkMwqBFwVRJU4pUGUHgfeb1p+n+RQsPLl9VmXpotgS5/Gd33F3BIyiASwQZcJQOKAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710142492; c=relaxed/simple;
-	bh=F2WA+jUmwJpqPaJEyz8sihZHlVo/f0+UuPqLqVKOfRI=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=uptkpw/WWs0r5/4dOSd2CVxgHdaoRwhE8I+ymdnDeBapOghdwA1ir3mayXRh7cP9D7Knmj7/mmTZ0PGI4TKsiFYDQrAIMp64JLohA1sOTphpuKkcsgWC17v08Lwu6b7dupI1bDIzjbz2kxx3cNzNvlq1xUIoIcDJpfYAVx+tmWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TtT6Y0dCSzbcy2;
-	Mon, 11 Mar 2024 15:33:57 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id A20AA140FC8;
-	Mon, 11 Mar 2024 15:34:41 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 15:34:40 +0800
-Subject: Re: [PATCH RFC] ext4: Validate inode pa before using preallocation
- blocks
-To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>
-References: <20240311063843.2431708-1-chengzhihao1@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <5be2ccf9-18f7-38b2-8081-8916d2b8689b@huawei.com>
-Date: Mon, 11 Mar 2024 15:34:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1710142521; c=relaxed/simple;
+	bh=AT63euh9nACAA8FpxKTo0+f5ix3COISncDmz7k86aZw=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=DD8a75HMV7Kv2xsxyetlAooSdXVyc48mLZ7nc5UYkmh7pBQ9EUGrcZ/3wOYVtZN3EKwz7A0YG2W7L6DvFJehmyrv1GArKuA5J6B17XcAlRE6iF5sugr8s7SSKsW75/dyJbLow8qc4tgwpAd9AG0NjqLMVFVXp8YD2vswv21k9uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=testtoast.com; spf=pass smtp.mailfrom=testtoast.com; dkim=pass (2048-bit key) header.d=testtoast.com header.i=@testtoast.com header.b=jpeIk9MG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GT3M6dXY; arc=none smtp.client-ip=64.147.123.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=testtoast.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=testtoast.com
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 6E7FB1C000A7;
+	Mon, 11 Mar 2024 03:35:17 -0400 (EDT)
+Received: from imap47 ([10.202.2.97])
+  by compute5.internal (MEProxy); Mon, 11 Mar 2024 03:35:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=testtoast.com;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1710142516; x=
+	1710228916; bh=pgvUHd9qCUHGtOhpSeo2XbBXlkhAYOe42MvkFSOBuY0=; b=j
+	peIk9MG6MJ5Ovje7dA2BWAxvx55K8T8/ukYRHDrajaRNg8UC4pzu7xFIHWQ8diSx
+	gPR+VzveRw0dTiPfp9Ij+zqX9IZz4djwKs3Hy/agKG+CYhgA8PW//nqclBUfmxZy
+	oIY5jm2EwnwTy5LWCKFrWZIxpM06TQA+tejFGPrbIFAMpcP3gQUhEJyHsrn7eeRV
+	sHSfxirMwZBsU0Qik6oqnH+zzKow79eH3SwA7bHZfndNPbkQ836LC1p4KmK/GAqJ
+	Jvs5JzGBgHm272Ly1JkgNTzVnEVZooobpC2dlFdZNUXqdnO8m/8xTioICvR0Y/CD
+	59Eot6wJ37UInXifoXNKQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1710142516; x=1710228916; bh=pgvUHd9qCUHGtOhpSeo2XbBXlkhA
+	YOe42MvkFSOBuY0=; b=GT3M6dXYCI0nHt3+PNcBWCgfl7GiaGUV26XnprUB3oef
+	vHT8VSvgSCPw2HiI1te36/ox9ysb/Yq9p1jQfhrOtWayo5HxYqFBWG4dJJLzYD2q
+	iWK055k472jUFtisyZ0LMwdagim46XOCLOWPo9ACj0xJj6wuTsjHe3dRxv3P2fG3
+	QQnV8Yp811krNW8BO3+I479HGkA+m/9vN5EgNzwjGkEK/P8QncT8QZubqSSLee04
+	noZs8wUgcWuFompph9wcCd/Gyvc3MQxCVMNPMmwYVxSBgqUgGK3epxAzcNbBaRiZ
+	Wc6iGEwILGJPL36Gc+veW2iaM1sJJSkPk1T9k8adlw==
+X-ME-Sender: <xms:NLTuZWfkLel_CWAQgk_1v1FAblokO1uschh3sos-uuJbQtcfmcTcfQ>
+    <xme:NLTuZQPmqKwQ94cujAAoD6_UVp6CPGgeacISV99jPKGF-IPij_Qn1jsVCZX2wRW9q
+    rCwdvznI82b0FTBag>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjedtgdduudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftfih
+    rghnucghrghlkhhlihhnfdcuoehrhigrnhesthgvshhtthhorghsthdrtghomheqnecugg
+    ftrfgrthhtvghrnhephedvveeigedujeeufeegffehhfffveduhfeijefgtdffteelgfet
+    ueevieduieejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprhihrghnsehtvghsthhtohgrshhtrdgtohhm
+X-ME-Proxy: <xmx:NLTuZXj5tN4129KaVMHgiegce3SzTeEcJ_IMscP6_eVgnmF3rk0A_A>
+    <xmx:NLTuZT90s7raiV40515gEd5jp2LjUGnJNomYCj_NkZida1qWaecTmg>
+    <xmx:NLTuZSvdMMFK5Q020QhDunAL8G_5yNz7DoKEwAvRYfDJBlfELGXtCw>
+    <xmx:NLTuZXMC0HKkjPpTVGVGA5Lx19nJ1bIdIrirmomUoIA6EGTnB2FmQdQ6Wp0>
+Feedback-ID: idc0145fc:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 02E82A60078; Mon, 11 Mar 2024 03:35:15 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240311063843.2431708-1-chengzhihao1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+Message-Id: <d6a3c20c-f2d8-44e9-be63-d27dfafacba8@app.fastmail.com>
+In-Reply-To: <20240310010211.28653-1-andre.przywara@arm.com>
+References: <20240310010211.28653-1-andre.przywara@arm.com>
+Date: Mon, 11 Mar 2024 20:34:54 +1300
+From: "Ryan Walklin" <ryan@testtoast.com>
+To: "Andre Przywara" <andre.przywara@arm.com>,
+ "Liam Girdwood" <lgirdwood@gmail.com>, "Mark Brown" <broonie@kernel.org>,
+ "Chen-Yu Tsai" <wens@csie.org>, "Lee Jones" <lee@kernel.org>,
+ "Rob Herring" <robh@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+ "Conor Dooley" <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org, "Samuel Holland" <samuel@sholland.org>,
+ "Jernej Skrabec" <jernej.skrabec@gmail.com>,
+ "Chris Morgan" <macromorgan@hotmail.com>, linux-kernel@vger.kernel.org,
+ linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 0/4] regulator: Add X-Powers AXP717 PMIC support
+Content-Type: text/plain
 
-ÔÚ 2024/3/11 14:38, Zhihao Cheng Ð´µÀ:
-> In ext4 continue & no-journal mode, physical blocks could be allocated
-> more than once (caused by writing extent entries failed & reclaiming
-> extent cache) in preallocation process, which could trigger a BUG_ON
-> (pa->pa_free < len) in ext4_mb_use_inode_pa().
-> 
->   kernel BUG at fs/ext4/mballoc.c:4681!
->   invalid opcode: 0000 [#1] PREEMPT SMP
->   CPU: 3 PID: 97 Comm: kworker/u8:3 Not tainted 6.8.0-rc7
->   RIP: 0010:ext4_mb_use_inode_pa+0x1b6/0x1e0
->   Call Trace:
->    ext4_mb_use_preallocated.constprop.0+0x19e/0x540
->    ext4_mb_new_blocks+0x220/0x1f30
->    ext4_ext_map_blocks+0xf3c/0x2900
->    ext4_map_blocks+0x264/0xa40
->    ext4_do_writepages+0xb15/0x1400
->    do_writepages+0x8c/0x260
->    writeback_sb_inodes+0x224/0x720
->    wb_writeback+0xd8/0x580
->    wb_workfn+0x148/0x820
-> 
-> Details are shown as following:
-> 
-> 0. Given a file with i_size=4096 with one mapped block
-> 1. Write block no 1, blocks 1~3 are preallocated.
->     ext4_ext_map_blocks
->      ext4_mb_normalize_request
->       size = 16 * 1024
->       size = end - start // Allocate 3 blocks (bs = 4096)
->      ext4_mb_regular_allocator
->       ext4_mb_regular_allocator
->       ext4_mb_regular_allocator
->       ext4_mb_use_inode_pa
->        pa->pa_free -= len // 3 - 1 = 2
-> 2. Extent buffer head is written failed, es cache and buffer head are
->     reclaimed.
-> 3. Write blocks 1~3
->     ext4_ext_map_blocks
->      newex.ee_len = 3
->      ext4_ext_check_overlap // Find nothing, there should have been block 1
->      allocated = map->m_len  // 3
->      ext4_mb_new_blocks
->       ext4_mb_use_preallocated
->        ext4_mb_use_inode_pa
->         BUG_ON(pa->pa_free < len) // 2 < 3!
-> 
-> Fix it by adding validation checking for inode pa. If invalid pa is
-> detected, stop using inode preallocation, drop invalid pa to avoid it
-> being used again, mark group block bitmap as corrupted to avoid allocating
-> from the erroneous group.
-> 
-> Fetch a reproducer in Link.
-> 
-> Cc: stable@vger.kernel.org
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218576
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->   fs/ext4/mballoc.c | 128 +++++++++++++++++++++++++++++++++++-----------
->   1 file changed, 98 insertions(+), 30 deletions(-)
+On Sun, 10 Mar 2024, at 2:02 PM, Andre Przywara wrote:
+> This patch series adds support for the X-Powers AXP717 PMIC, which is 
+> used recently on new boards with Allwinner SoCs.
 
-Add Jan.
+> Please note that I could not test this driver myself, but had success
+> messages from others. It would be good to hear from Ryan and Chris
+> here on the list, with a Tested-by: tag.
+
+Thanks Andre, tested on an Allwinner H700-based board (Anbernic RG35XX+) with successful bringup of DRAM, boot and regulator reporting via /sys/kernel/debug/regulator/regulator_summary. 
+
+Battery charging not tested but according to vendor datasheet this functionality is internal to the PMIC and can complete without reference to the host, with informational reporting and charging parameters optionally modified by host over I2C or RSB.
+
+Ryan
+
+Tested-by: Ryan Walklin <ryan@testtoast.com>
 
 
