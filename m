@@ -1,112 +1,131 @@
-Return-Path: <linux-kernel+bounces-98859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCD6C87805E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:19:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39D32878065
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0159B20EF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:19:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCE9E1F222B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503F23D3BC;
-	Mon, 11 Mar 2024 13:19:20 +0000 (UTC)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2893E489;
+	Mon, 11 Mar 2024 13:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aB0Qh6IM"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FA53D0C6
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 809D43C47D;
+	Mon, 11 Mar 2024 13:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710163159; cv=none; b=WE/qSGh6U4qGmz/oF+MrKmLNhs/oI5heukFvsQrMCcXtq+eVPDKhrFxWSNUux9w6q+wQWVPRVBrnxPV9Dj1I9RJgJSrNiDE7JMMWqKUjual6HHOb8bd4kuKIr+uRNfoTMs9+pDAg8ZxCh7yVpPjX7PYLe4zCHmO2UpEmUe1efEw=
+	t=1710163259; cv=none; b=VD5RM5yb4rtA1z6COX3owDZV45F9M02EV1OxIG6WZyYmJRhVJgoabYgRDEuSQRAw53zroc7sg4Fl9sTUD/Vucj/PWXXaWzGI5hcYbItFSKwzdXUulYRlXGqq4dkBQH47zuGcGiEEKAMN0Va4qZu978glLjeynOUKuYWBHHvTstA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710163159; c=relaxed/simple;
-	bh=TrQVnMFqRdKxy+Ab7zL92BC7pRmGTjw3QeWTZWzAMBg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BkiE/gRVQMRhpGP0zqjkg1vL/vH+vxzgqo8zV9+tIJOmC3MnVD/GtY+Dcdvslr6fslAlcsSbT08d6IKFZaLQPI6w65lwLJ3pz1fnF8KTq0qm4aVPofA3fewGvlAhesA60cBb31BPc5I+R33MNnDY0JzF44Ke2P+gXXdSeYwyAbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-609eb2cbeccso22927957b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:19:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710163156; x=1710767956;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j7ylCimAbNAWM7sZ5YD/p6CSqTzWJSR4W2A/mtEmsJ0=;
-        b=uB46OUCdS4FgKNIRfkDh2H6Q6CZMhldkA3aGfuxgyOlNC6+za8MwFq8yQEDPDX4Iqq
-         yCNpxMmUJvi0M5vtpErbn6LQClAfTmBrzen/0hpsoHQ0YkAgqicUph85HJJdHZiHZnNU
-         WVgMU/VUIjnCjlkt3XLABBoWfID11wOKVWPHD2YUX8kPW3eguiLMEPodzZktcrwSEkCl
-         2rvXBGF48pWzjNeQYyouzkfhdDdiy6i9wYhN34GEWZ3lJVEGwaSF/Gm51otVGiOOXabE
-         thQNYARsxnhl529f+CzndumoofipKyapdiZx4DMKW/FyKjPKH3BC1vjlgnnFRA9kvpDM
-         XRcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVkrp6uTdS1MQ8IkO/oXTwnVqCcjdiQEuEZtV4FJD1f64BuKRZ14YCgUk4mLjH3S08sj1fLjOGFlpuaf7NGg1+EjGxUvHyg25cRbasu
-X-Gm-Message-State: AOJu0YzEUMe8RagT1aB3LaWTkeSKQMK3qoMPZl0jP8de/hnyYlVXkPqN
-	GuEh/80HA48R/KnTFUsPtEpPR4i2AY7VVg0cIG/LBcwLRJTpnDlE09al254Jy2E=
-X-Google-Smtp-Source: AGHT+IH+C+Z7HRlIQlptDVlJdVJ4RXNzH5TvHQa+XECFVSualLR3ctBmQ/xN0tWBPmH1oIDHUjxxqg==
-X-Received: by 2002:a81:c24d:0:b0:609:ff22:1a88 with SMTP id t13-20020a81c24d000000b00609ff221a88mr4454991ywg.44.1710163156056;
-        Mon, 11 Mar 2024 06:19:16 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id dg20-20020a05690c0fd400b00607c3904416sm1293053ywb.40.2024.03.11.06.19.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 06:19:15 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-609ed7ca444so29958907b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:19:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXQcs3+uNpe0nt0KLQK0y+XA2L3g+OXAPM1wiQMRentlRBhNi2W24n+wW6WfUs80Z9sicIkXFUtvlPY+g2r8OsMd9xW7mh7b6OErE55
-X-Received: by 2002:a25:ae56:0:b0:dc2:3113:8700 with SMTP id
- g22-20020a25ae56000000b00dc231138700mr3507486ybe.24.1710163155413; Mon, 11
- Mar 2024 06:19:15 -0700 (PDT)
+	s=arc-20240116; t=1710163259; c=relaxed/simple;
+	bh=L8tgnmjJu0pZA9NyfyfkDIi6Ml7LyUf1NDZqAO2rndM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LNTbvZEkNBpEBZFCBQDVSJsBLzCP4kfqocSTNypu1cFAppsYx68pW2SiGX3KQn47b5fLcNhJwmU57Psl3rHXXxdGhnnnEitvXe6uhVO73447KlxIL10Xx/4+hVXLTPj/WeUr4E4QPw1j7Uq8bo01d1kYcmqwDP4hS3Nsw7KYPV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aB0Qh6IM; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BCI8Jw005870;
+	Mon, 11 Mar 2024 13:20:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Bi0JfFIbxmrcO+JuI0s9tGF/rGitvqCliyhjBRUI4WQ=;
+ b=aB0Qh6IMn9z1nanQJpB/CND3ub4ikrLKpxlETU57Cnau4ghjmEUdxP5m73op+JTLZIfN
+ ywT338ZmIyPLt1JbGrxyGyyUZYjjTuhKraxGsjGMnnu1yMd5g+S7aA1k+743nEBO783r
+ /XU1DrDoUzoIl0I1Rr/s9wlgFvAl0d5UOPdbFYsXm8uN8U60S1uUSTouNJqJ9YHQBNFh
+ ikc/xwpUEsIHZWeVPrdpp6uxiR0TGcuEnxt44NCByexrxJZLz2ZikSzEKKRzjOvxyc8A
+ egQma2RZg5N4GkbKp5jaYJvsO62CLngjT7TtclDKwtOjgPEQtKCre418X34QppPZFkIm LA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt1ub18s9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 13:20:46 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42BCdvp5002135;
+	Mon, 11 Mar 2024 13:20:46 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt1ub18rv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 13:20:46 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BCWaqc018575;
+	Mon, 11 Mar 2024 13:20:45 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws4t1r7d0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 13:20:45 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BDKfLL49873394
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 13:20:44 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A692F58052;
+	Mon, 11 Mar 2024 13:20:41 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0944F5806B;
+	Mon, 11 Mar 2024 13:20:41 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 11 Mar 2024 13:20:40 +0000 (GMT)
+From: Stefan Berger <stefanb@linux.ibm.com>
+To: mpe@ellerman.id.au, linux-integrity@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, jarkko@kernel.org, rnsastry@linux.ibm.com,
+        peterhuewe@gmx.de, viparash@in.ibm.com, devicetree@vger.kernel.org,
+        jsnitsel@redhat.com, Stefan Berger <stefanb@linux.ibm.com>
+Subject: [RFC PATCH v2 0/3] Preserve TPM log across kexec
+Date: Mon, 11 Mar 2024 09:20:27 -0400
+Message-ID: <20240311132030.1103122-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304085455.125063-1-dawei.li@shingroup.cn>
-In-Reply-To: <20240304085455.125063-1-dawei.li@shingroup.cn>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 11 Mar 2024 14:19:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUW1gXjzHiczHKe=O7fv+qPn29g5UYN41v_-3W1qSax_g@mail.gmail.com>
-Message-ID: <CAMuHMdUW1gXjzHiczHKe=O7fv+qPn29g5UYN41v_-3W1qSax_g@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Calculate THREAD_SIZE from THREAD_SIZE_ORDER
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Xr-xHkLmF9h3KYaSDuSM45usL_Xs_Pz6
+X-Proofpoint-ORIG-GUID: jSeJUwI5ej7dkFGgywgbufOlky76KrWw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 spamscore=0 impostorscore=0 adultscore=0 clxscore=1011
+ bulkscore=0 mlxlogscore=736 malwarescore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2403110100
 
-On Mon, Mar 4, 2024 at 9:55=E2=80=AFAM Dawei Li <dawei.li@shingroup.cn> wro=
-te:
-> Current THREAD_SIZE_OERDER implementatin is not generic for common case.
->
-> Improve it by:
-> - Define THREAD_SIZE_ORDER by specific platform configs.
-> - Calculate THREAD_SIZE by THREAD_SIZE_ORDER.
->
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> ---
->
-> V1 -> V2:
-> - Remove ilog2().
-> - Calculate THREAD_SIZE by THREAD_SIZE_ORDER.
+This series resolves an issue on PowerVM and KVM on Power where the memory
+the TPM log was held in may become inaccessible or corrupted after a kexec
+soft reboot. The solution on these two platforms is to store the whole log
+in the device tree because the device tree is preserved across a kexec with
+either of the two kexec syscalls.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.10.
+Regards,
+   Stefan
 
-Gr{oetje,eeting}s,
+v2:
+ - Added DT bindings patch (2/3)
+ - Reformulated commit messages and addded Fixes tags
+ - Follow Michael's suggestion on prom_init patch (1/3)
 
-                        Geert
+Stefan Berger (3):
+  powerpc/prom_init: Replace linux,sml-base/sml-size with linux,sml-log
+  dt-bindings: tpm: Add linux,sml-log to ibm,vtpm.yaml
+  tpm: of: If available use linux,sml-log to get the log and its size
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+ .../devicetree/bindings/tpm/ibm,vtpm.yaml     | 20 +++++++++--
+ .../devicetree/bindings/tpm/tpm-common.yaml   | 14 +++++++-
+ arch/powerpc/kernel/prom_init.c               | 27 +++++++++-----
+ drivers/char/tpm/eventlog/of.c                | 36 ++++++-------------
+ 4 files changed, 61 insertions(+), 36 deletions(-)
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+2.43.0
+
 
