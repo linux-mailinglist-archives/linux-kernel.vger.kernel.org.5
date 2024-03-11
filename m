@@ -1,195 +1,230 @@
-Return-Path: <linux-kernel+bounces-99166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BEC2878460
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:00:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31461878467
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 176E12837E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:00:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3FBA1F2110C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7221D4AED1;
-	Mon, 11 Mar 2024 16:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A831F4503F;
+	Mon, 11 Mar 2024 16:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MUDmdtTi";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="SytCwpah"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="I3lQTwkg"
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C95B481B1;
-	Mon, 11 Mar 2024 15:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710172800; cv=fail; b=IT+aM2UJb0ODPyxcjb6BsHlraAIXO7R/yYtBUSwvVdFJymmT6FSOyeC0j1+f5JSmJt/yEOHCO/At1GgUj8yZvMn1TdOk6xBquI4Rkc12sbDeF7CJ6Ubc3Urd9tUGyFgrNtLBm+oOBnOXMbLV+U+Xh7wDZLKFRC90txg4OjMP6Mk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710172800; c=relaxed/simple;
-	bh=uomkPK3jNrKS1YVmOzfhXFcHp/I+QNV60gWUlx11xUA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=o5OVTKVOb1P1k7LfdQr1+N+WIPlhoY1svvYBR8N08pYc7P9HPvkRvmdrAzk4ZFMDbTnHx2s1CcCb72NLvQz+99pjhEQUb/stiLDMfq+W78kmDZodUEceEUpf3lYmCaLxR2tUYYi/U4QBnBj74g5dVbsfvsDTaKH4cJsz4kxfxKg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MUDmdtTi; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=SytCwpah; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BFv384029968;
-	Mon, 11 Mar 2024 15:59:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=EJNYlqyGyirNUT/OLqK2Kg6FW63vQwrAO1hpCBGu5Aw=;
- b=MUDmdtTiFiZoFXpYIbpG992wJfloupV/HR5aigHWgiGy9gmOk5v8pGjuHTPFCA0Jre6E
- 1E0Ro8EpUI0hUoxs8oyT9vS01f9tWFTePljjwa4IyoiVvTisbC2LMYbpSYn25JktcudH
- bA8LOmtLbN+iL0zwvJ+0U6XeNdH0vgyoYaA+ceUy88HT5+wGclqDFBsPdJKNPGYIRCFD
- V/sEquxfrkUMqhx8ApiCUa1N/3l4TOZERtzUOMhQ+cJWXszakoYxe5yzJdC1dEooV8WA
- GEftmfMt1P0oPRhRSswKh4aLdmViOaFuR4Ba50LUFYHtoA3P3O2AEPRGvgizgLEFQ1jL 4A== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrej3us3n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Mar 2024 15:59:50 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42BEo8jl009084;
-	Mon, 11 Mar 2024 15:59:49 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wre7c5n5x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Mar 2024 15:59:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cOn0YoyJ/kFYipLWr9Gl8iKtYvXkQfEWgaCw9nK04X8kbkqYW+zvASal+tj4zlgvKlQGyA9gHy/WmO/X2vKFw9eD46pEb5Lrrw2AGqM/k11Vfke5kqO677reVeSeX727jRBzsf3RN/OCQdqsmWN7HSMCyrQj3BpVgEbb8cM14rm/3JeyjPrkDPrkzkC27n7A5xQ/TzyaKqRszIgYEDSstaPP8L+E9SCEDFsu2o3PjdQ6P0cXXzuxeZkDMudp4QPKd/PzC9KLLONFYdebhztfjkvW0NzjHk4c42arAcKg3cMZbq2/A+ulLo916YCzKM5i5ve3LGn+ftSO98rYqqCUJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EJNYlqyGyirNUT/OLqK2Kg6FW63vQwrAO1hpCBGu5Aw=;
- b=FBokzwA6bIgo7jF49rOFlotypmB+9pX1bgZqrqXprWdP0Br5b0FhUbtu07IohxTXPQ8hSk8tpK5LbZhRx+Tso2Ytyz4LMwSPciqJbpnrbnp9/+/dM2UCSAQpCOWKxP1RixTRjf3/qgtapqeN+Mus0YlQRcM755cAHcqZO2TBaqCKEq/QsEQ82cxd2zFCd3okcUR98vTI9P2Nws2QZjX651A3G3IDLDO6MjZ1wjrT+y4k+GmK1GXFZfMRM6dDcgPvRafm/4gej4iwS8QXjK8WZMHTV1y+/PVYaEqN0QjHrlM2G+5hpefOICC8bqpITBnpjLYOn/WNiom9EWNWHc0r2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168851B599
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710172869; cv=none; b=R5W4gOwGA2yzb1y7OoCHqszCgYEJw+D6Fn7DRsoNwaaQXeA6AzwADwvJXnGAZxFN6j9mLjGAviwCgnckWDBFjDJzCahHGbf6naRH+mMnpyfLOKBb3a3eVnAxP2Tex0OrlhFaqtn30It1CwYRRuHIefh2YUyWfQIelr2d5Ccph7Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710172869; c=relaxed/simple;
+	bh=XNQK/9H9S/TRV1NaA5lRp99yrcK2KjfLQCczuJnqzks=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s2BYBK56qsC0q1DJb8uqHlWKKJ3x/mt/g4ujC2yXRb/YeZZapDdecJBKSbLGK8hvs29CD/m1MCno4A+JYdtELVb8Fe1D5OPAYBbTcoSNXINQQ5t4trvhIBGguvu5dVPbIWgFtUn5IPzflqrro4KcY3UeimmItiQ0I3KEh/dDSBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=I3lQTwkg; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-690d103a16fso8331616d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:01:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EJNYlqyGyirNUT/OLqK2Kg6FW63vQwrAO1hpCBGu5Aw=;
- b=SytCwpahfhlTchvkNySMItyU5MmGLHh9m0mZD3a9FdZYfbATQMAflT08bHoBTUDEoRtXK6++AiiuZz9aMybdW1Xb7rQVexQrxWM61SRXtKJ3UBHumulRx+URt7pBGWRYH8POMDgQLGe9MJ2gP22/myVQG93xjCHIvLMPjlRilbs=
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com (2603:10b6:930:7c::10)
- by BY5PR10MB4273.namprd10.prod.outlook.com (2603:10b6:a03:205::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
- 2024 15:59:45 +0000
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::2246:144f:3bb9:60d]) by CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::2246:144f:3bb9:60d%3]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
- 15:59:45 +0000
-Message-ID: <5b05f924-9077-4e68-9925-248470154a90@oracle.com>
-Date: Mon, 11 Mar 2024 10:59:43 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] scsi: target: iscsi: don't warn of R/W when no data
-Content-Language: en-US
-To: lduncan@suse.com, target-devel@vger.kernel.org
-Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, dbond@suse.com,
-        hare@suse.de, cleech@redhat.com
-References: <cover.1701540918.git.lduncan@suse.com>
- <437f863520874ee386b6882ef749bf8d988839ca.1701540918.git.lduncan@suse.com>
-From: michael.christie@oracle.com
-In-Reply-To: <437f863520874ee386b6882ef749bf8d988839ca.1701540918.git.lduncan@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR05CA0027.namprd05.prod.outlook.com
- (2603:10b6:5:3b9::32) To CY8PR10MB7243.namprd10.prod.outlook.com
- (2603:10b6:930:7c::10)
+        d=joelfernandes.org; s=google; t=1710172867; x=1710777667; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D1N7co8NWWbrgWO/PhCUEvz9SlxrSNp3j8wIFjBPjv4=;
+        b=I3lQTwkgg3r+7fykGpEbuvampZ89nWaFoVpxl3TB282cE8mkcA6vkUEsCSpkOarspU
+         wga5UdxEA9nq9+PZUHw3xLWZ0bdkjV/9XBni5uJ0YY52yF8uigMpXgMcEIaYs7XKX4GG
+         lH2zfMLjwD0h/uxN86d4oIKzzRV+alIxl3sFQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710172867; x=1710777667;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D1N7co8NWWbrgWO/PhCUEvz9SlxrSNp3j8wIFjBPjv4=;
+        b=ZV6xOQUkO0GLCXdPtEsvAzoPrTsySfklEwJP9I3AYA39yUxhcTBjrML2ZipYtqoZoo
+         Nrci7ogJ24Ace2Hi2M988iw1Y5eydTvET8g+TKCAVzCcqnQFsY+sU07lmZY9VZTxF4go
+         RCWjkrERQ9Rif6k511nqGOBvAp1wWaGS699OO9bRpRjTg/IA2dk9hd9nRfUbXUvmuZcj
+         BY077lfXjXuRAQSk/k55ULZMzXohMCD8omxTxJ+MjPztKDTfx6sLR6bXdFAoPBovwS4D
+         XJF9avAE+QMWnYgkQTVrRgTAqWAqeN4amQvhvtJyd5m1s4DHuaWevj8hqaxnwFksKcHY
+         Si2g==
+X-Gm-Message-State: AOJu0YyQZsdBn4GZvvrDStzHObaLibkgm5yJI+zEMM6OdMaoDOKxvBHU
+	dte4wmNhayJNVznfAvNDyBJErqTqqaa0VWk0sBFlHRi02sYuG3HxsdjiNNSouwI=
+X-Google-Smtp-Source: AGHT+IEedX26MR8qvP2/dUT7bPe3lDS7rpbDNaTSAZ7d+VClyScny+YtPHr9raeMpVjPgfxQIxx5PA==
+X-Received: by 2002:a05:6214:17c7:b0:690:cf9c:f568 with SMTP id cu7-20020a05621417c700b00690cf9cf568mr3778333qvb.14.1710172866793;
+        Mon, 11 Mar 2024 09:01:06 -0700 (PDT)
+Received: from [10.5.0.2] ([91.196.69.182])
+        by smtp.gmail.com with ESMTPSA id g12-20020a0cf84c000000b00690b8a0e537sm2728405qvo.21.2024.03.11.09.01.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 09:01:05 -0700 (PDT)
+Message-ID: <4e66c40b-5ac9-4b39-b3f6-f963f90d2b33@joelfernandes.org>
+Date: Mon, 11 Mar 2024 12:01:04 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY8PR10MB7243:EE_|BY5PR10MB4273:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9a45d70d-7ecd-42a8-8751-08dc41e445a2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	x1KfelK3u1IuvVbdLLeN3BLxOI0SDMe23ZEkZM3qAJuS7HRBDkmGQmupASs61B0Vp5Bw7K79i9fZybsMzgqgT0K4t6Q3NiksdpyWbuPY+ph64I8JHRQVavma3jP51WQBzN74hkleA0CCg7H07QdmAAP0stsK4A+HOHIi0WBYATw8haI5hOKzs1c2p3xvEHESKHMUEiQafKZ8FTuyKzwB6UMNQ9qxJsnS8sMCclZGrctFVbfaKU5yvNhqnCFZPZzQBgedYa4QZSdSzt6kbW8VXU2G1NUorGjaZxLdFv/iCb+qNf3owOTIngsZqzXsgM1xza4fkhbCGngsjESJCZAd7b3FflPiP0LpUos5MkONjkoH2bsBTfLg4E/JeiQ389HPW/v5TmX9WaZV+LeWem1ncwZnIXRBCyndcwiqsNSGyezo3i+M7udpoglSNk9eg8xLGgNFxUYbaMWE4tUKbTwG4+biMviN0V90czSNSzarl9QY1l6Lvn63VhaDE42gFkTJwVnmv7JlVknkabA15PKrYIPw+o1Ef440koGiOuaWUTxtUTioPgvSPecFYCInKqJnrdU5hJPpIbeZog111GDK+6dEUdi944vsjn+rJ+ywiklYaEnmMcqoehFvxCWlffwhcqROH1R7lkOhyYTgDvHdjfeRLxccwpM+UcHLojWbeUI=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR10MB7243.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?SzAyeVZyTk5xelA1Y3dkaUV1RXBUenZCVjkrb1NMQzV1OUVEZDJkalNaaXFl?=
- =?utf-8?B?OXVLT01XS3Z2UktMTUpZSGZkWW1NVzFaakFtTDgweWxLTW5JbTNZTHNCRkNs?=
- =?utf-8?B?RUVlYXhMaVQyRVRhK2lxQldFU2NoQjlLK0s4bStwZ1BnY2JXRDBZRHI0bjVj?=
- =?utf-8?B?TGp1YUgxNi9rMzl2Rk5GL0lFRFd0cmtEUGJGbGNNR1BnQlA3dE5aNHJkS3o0?=
- =?utf-8?B?a091WTZ4dEdTZFVxdjkrNlRYajhpN1pUelg1cy9PSU54c042dVB6Mld0dGx1?=
- =?utf-8?B?KytLMUU1QzFaVmh6VnFFeU9Wa1BKdGlGcEF6anlzUEYzaitpVUprU05yeDVE?=
- =?utf-8?B?a3hBdW1OS09uaXA4MEtaVFRYL3lNdVBvWmZ4UmVudTFiQkU4dHJTQ292NUc1?=
- =?utf-8?B?MS91Unh1cllzSzh4bkhDN3NvQVI1a3YyTlRzNS9ORWhPcHF2dXI1UlFqR2Ez?=
- =?utf-8?B?OHRxaGN3eFVPTkp3b1lBakZUVlJ1Yy8xSUJ1ZHVjbWFYejFOOVJHaVpWUHBH?=
- =?utf-8?B?MWFZOHcvNENPeHJxa0NLbmV3VmdlT3Z3Tk1yZkxPaklFZEUydFBqUFdLWmht?=
- =?utf-8?B?VFZiZ0FZOUNoNUVTd3NRTkVSVU1NbngrTTJFUis0Um9URFlPbFlaWlROTXhh?=
- =?utf-8?B?bmZzbytQQThXYVR6U084OHdOd2N5aHRiZVNJRTc2YlpxT280YU9OcW80d0JC?=
- =?utf-8?B?MDZCMkpLejVzSGU5NUY0amMrTlljdi9ZbnR0SU9udVZwRThjaG1oSlViUzhy?=
- =?utf-8?B?QjlSNzIwUnAwR3pBWTQ4TURxQ1l4TVFnS0hqWC9lWElYeTZXc1VaZUo0dFJn?=
- =?utf-8?B?a3pnRXVrbEp1UlJxYks5NSt4Y0s4UW5Yc2QwQnBHanNkODBNUTkrd3A5bktw?=
- =?utf-8?B?SWp0NzN6Z1FqTWVHWGRwanVpc3hOcjBORnJRMUVTbFJCTjB6QklSaTRVNU1r?=
- =?utf-8?B?bzh1SHh2U0ViQ3N2MGIxejRadHFrOURabm14NDFNVzR3U0JRL1JzTWxjaHcy?=
- =?utf-8?B?TmpyM2tneHJoYVZhRGpwZit3TzlGZWZSUXlpaUZ5TDlOakRmaFdMU3F4TUZl?=
- =?utf-8?B?OG42NWtrbnQxVjVxY0VVMVkzN09zTnJ1UUJXeG5EdkpYZnJaaTBvQ2FMdDVT?=
- =?utf-8?B?V3ArZ3lRTFZ4UXl2SFhKemFnOUFXSm9Fcng0N01TUEh2OE8zRTBlWnA1MHA5?=
- =?utf-8?B?QS9JN3kxMkU1anZVdkxZMmJQYW9MbElzYk9ta2hJYXlFNm1lTExOMDVlYy9x?=
- =?utf-8?B?dGNKY2swaTFNMUlxRFZidGpEQkQvanB3bE50VitrcitmSHAzTTFvVUJYQWsw?=
- =?utf-8?B?Z1RodktqV1RVN09MbjdMcllubnRKakhiejM0bzlON2Z3SDJqclZZS3p3Wk9Y?=
- =?utf-8?B?QmxDeUNCbnRzYTFmMlZKTlRhc0NkRFdpYlJTcGhobVhlTWNxMG1IYjZGbUR0?=
- =?utf-8?B?QmF3aDQ1RFlUdDBxcVZiSy8wOVdvSjNHL3N3MmtmMU1XUVoxQTE0TXNDQXNa?=
- =?utf-8?B?RnU0ZnJKcXhwTW1XVHpRamk0MXY2Z1V5Q3ErNTdpZ2xzUlVMQ2hVYXZBaHBw?=
- =?utf-8?B?dFcxYUd2WjZtak5TdnpqUVhwZ1lpbGNEQmRSQW1XQTNNbTNMMnZtMGxUVlht?=
- =?utf-8?B?ajNGcmcyUkpseUNuOGNoL2l5U0hGS09LNDI4a3E0ZmJBbWdwTm1TUTQ3LzlL?=
- =?utf-8?B?aktMTzIzQ2Y4TnF3WEtIVUp3TmsrWWx0TXBTeDBDWXp5d2xwdUx6YXhFZWk3?=
- =?utf-8?B?dmpWcm9rdHljUEdkSlEzZ0JCZnVoamgxWDVQMW5tYlJOL09aUnFhNFFrOFhQ?=
- =?utf-8?B?cVczRHpFUmNGTnFGa1NKalU4SHBaVXNtZnV1bEdvS3JzSmR1dXpXbWhyVDIr?=
- =?utf-8?B?Q3plbDFLeFZCb21JU3NEd0FMbHpzTWRsNkh0OUUrV1J3dzdQK3JtSm40ejI4?=
- =?utf-8?B?d0NBTmVHWXk5N1pIYU1peW80ZURzZ0NQUk5CcWlLYzFYaHV2R0ZSclRrSFky?=
- =?utf-8?B?MHZQcTdoczhndWtod3JwZHRqbDRpakNTTHJzb2x0K1QrR1V2NjR6SzlIYU5I?=
- =?utf-8?B?OEhTSnFGSGhveURsbUFVbm41YXgybVA1aXdkcWJ5WlpwdXJpSFJRMHQ2dTQx?=
- =?utf-8?B?WmJhZG44dndkZkV4Wm4wN0JSODVnOWU0c0xBQWo2QW50YXJQU3FsWEFRTmFu?=
- =?utf-8?B?cWc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	vwGKwZsrd7cd+iYXHRr0ydRGyiwEP5zONIwasgWltn3O6M7RZExguPTPSOJjAH90JDEMABPUpBejdNa6R9wrCv8iOlyNXviXSeaOC0AxYmuS/A4kQ84WL7qg/1cf2o/16Z5RzQJHi4oUmUDvXfxCs++YCGhtc674WEQxNIGq+7fnpD2fXvPGxEODx6232Hk3ujYsOdxeKCM8WoAuwHkn+XO6Dfq7KLvkZ+HyjcyYNxATlhPaW4KEoIan1vvSG29JdqS+1VCEUoLKOxEpDIgS8lEmPIdJNciSLd89vHq772IFIP/YZ0Rrwl2SdDu5l/hEXzH7QP4bOzoZaAyMJNzhSXYZftWEavjtE+61f9wMIi7FPc8y20KrQEQVcqRKR38WdTYEdSt0zgAwRBw0DlbAaQb8GstEGd1suOXL0pEXGi5pcGt0nXijII/n8HOwcWfCQmuJEgi04iQx+ZuwX6kIazUtm5CNOgmNAS/tswYfvFg6vhqmZcTezeQuAc+pyubZm/+55SYGKw2cQS5ZZ0tYaAsCM/DXWjwYZQ5tWmGeejpwGtSorHJE0+gF21n0l6ofi6EHzlxSGMiZhPJnShk+PEqHYkaBZProjfCodgpPwuE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a45d70d-7ecd-42a8-8751-08dc41e445a2
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR10MB7243.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 15:59:45.7615
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CRr5C0utA29wpsclMKtxrX/KyZBu0EbRT1SNmA010AyPnNrGMvwCAYQDp9RP6BeJhRgG4G1Ygw/wdRM8tZjQxdpL2e+gToCPCjGgeHhqDrQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4273
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 phishscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403110121
-X-Proofpoint-GUID: cfbwrVrEAsqb-_CqStGx5NbzhcliHHJi
-X-Proofpoint-ORIG-GUID: cfbwrVrEAsqb-_CqStGx5NbzhcliHHJi
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 rcu/dev 2/2] rcu/tree: Add comments explaining
+ now-offline-CPU QS reports
+Content-Language: en-US
+To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
+ urezki@gmail.com, neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
+ rostedt@goodmis.org, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Josh Triplett <josh@joshtriplett.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
+References: <20240308224439.281349-1-joel@joelfernandes.org>
+ <20240308224439.281349-2-joel@joelfernandes.org>
+ <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 12/7/23 11:42 AM, lduncan@suse.com wrote:
-> From: Lee Duncan <lduncan@suse.com>
+
+
+On 3/10/2024 3:43 PM, Paul E. McKenney wrote:
+> On Fri, Mar 08, 2024 at 05:44:38PM -0500, Joel Fernandes (Google) wrote:
+>> This a confusing piece of code (rightfully so as the issue it deals with
+>> is complex). Recent discussions brought up a question -- what prevents the
+>> rcu_implicit_dyntick_qs() from warning about QS reports for offline
+>> CPUs.
+>>
+>> QS reporting for now-offline CPUs should only happen from:
+>> - gp_init()
+>> - rcutree_cpu_report_dead()
+>>
+>> Add some comments to this code explaining how QS reporting is not
+>> missed when these functions are concurrently running.
+>>
+>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > 
-> The LIO target code has a warning about setting the
-> read and/or write header bits with a PDU that has zero
-> transfer length, even though the code mentions that the
-> SPEC (RFC 3720) allows this, and that some initiators
-> set these bits. But in practice such initiators end up
-> flooding the logs with thousands of warning messages for
-> IO that is allowed.
+> Thank you for putting this together!
 > 
+> A couple of questions below.
+> 
+> 							Thanx, Paul
+> 
+>> ---
+>>  kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 35 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index bd29fe3c76bf..f3582f843a05 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -1917,7 +1917,22 @@ static noinline_for_stack bool rcu_gp_init(void)
+> 
+> Would it make sense to tag the earlier arch_spin_lock(&rcu_state.ofl_lock)
+> as preventing grace period from starting concurrently with
+> rcutree_report_cpu_dead()?
 
-I've never seen us hit this. What initiator is doing this and what is 
-the command they are sending?
+Yes, that makes sense.
 
-Is it also related to the first patch? Is some initiator sending 
-something like a TUR with the immediate bit set during some sort of 
-stall/timeout?
+> 
+>>  		trace_rcu_grace_period_init(rcu_state.name, rnp->gp_seq,
+>>  					    rnp->level, rnp->grplo,
+>>  					    rnp->grphi, rnp->qsmask);
+>> -		/* Quiescent states for tasks on any now-offline CPUs. */
+>> +		/*
+>> +		 * === Quiescent states for tasks on any now-offline CPUs. ===
+>> +		 *
+>> +		 * QS reporting for now-offline CPUs should only be performed from
+>> +		 * either here, i.e., gp_init() or from rcutree_report_cpu_dead().
+>> +		 *
+>> +		 * Note that, when reporting quiescent states for now-offline CPUs,
+>> +		 * the sequence of code doing those reports while also accessing
+>> +		 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
+>> +		 * that QS reporting is not missed! Otherwise it possible that
+>> +		 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
+>> +		 * the rnp->lock acquired throughout these QS-reporting
+>> +		 * sequences, which is also acquired in
+>> +		 * rcutree_report_cpu_dead(), so, acquiring ofl_lock is not
+>> +		 * necessary here to synchronize with that function.
+>> +		 */
+> 
+> Would it be better to put the long-form description in the "Hotplug
+> CPU" section of Documentation/RCU/Design/Requirements/Requirements.rst?
+
+Yes, totally. In fact I see the following already in Requirements.rst Hotplug
+section:
+
+During the checking/modification of RCU's hotplug bookkeeping, the
+corresponding CPU's leaf node lock is held. This avoids race conditions
+between RCU's hotplug notifier hooks, the grace period initialization
+code, and the FQS loop, all of which refer to or modify this bookkeeping.
+--
+
+So I/we could just expand it there and refer to the .rst from the code.
+
+> I will be the first to admit that this section is not as detailed as it
+> needs to be.  This section is already referenced by the block comment
+> preceding the WARN_ON_ONCE() in rcu_implicit_dyntick_qs(), which is
+> where people will look first if any of this gets messed up.
+
+Yes great point, and it is referenced in rcu_gp_init() as well.
+> 
+> Then these other places can refer to that comment or to that section of
+> Requirements.rst, allowing them to focus on the corresponding piece of
+> the puzzle.
+
+Makes sense.
+
+>>  		mask = rnp->qsmask & ~rnp->qsmaskinitnext;
+>>  		rnp->rcu_gp_init_mask = mask;
+>>  		if ((mask || rnp->wait_blkd_tasks) && rcu_is_leaf_node(rnp))
+>> @@ -5116,6 +5131,25 @@ void rcutree_report_cpu_dead(void)
+>>  	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
+>>  	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+>>  	rdp->rcu_ofl_gp_state = READ_ONCE(rcu_state.gp_state);
+>> +
+>> +	/*
+>> +	 * === Quiescent state reporting for now-offline CPUs ===
+>> +	 *
+>> +	 * QS reporting for now-offline CPUs should only be performed from
+>> +	 * either here, i.e. rcutree_report_cpu_dead(), or gp_init().
+>> +	 *
+>> +	 * Note that, when reporting quiescent states for now-offline CPUs,
+>> +	 * the sequence of code doing those reports while also accessing
+>> +	 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
+>> +	 * that QS reporting is not missed! Otherwise it possible that
+>> +	 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
+>> +	 * the rnp->lock acquired throughout these QS-reporting sequences, which
+>> +	 * is also acquired in gp_init().
+>> +	 * One slight change to this rule is below, where we release and
+>> +	 * reacquire the lock after a QS report, but before we clear the
+>> +	 * ->qsmaskinitnext bit. That is OK to do, because gp_init() report a
+>> +	 * QS again, if it acquired the rnp->lock before we reacquired below.
+>> +	 */
+> 
+> And then this need only say what is happening right here, but possibly
+> moved to within the following "if" statement, at which point we know that
+> we are in a grace period that cannot end until we report the quiescent
+> state (which releases the rcu_node structure's ->lock) and a new grace
+> period cannot look at this rcu_node structure's ->qsmaskinitnext until
+> we release rcu_state.ofl_lock.
+
+Yes, it makes sense and we should mention the ofl_lock as well as you note.
+
+I have an trip starting in 2 weeks that goes on for 3 weeks shortly so I'm
+scrambling a bit for time, and may get to this only after. If Neeraj is
+interested in documenting this, he is more than welcome, especially since he
+also understands this code very well ;-).
+
+(See what I did there with the 'also' ? :P)
+
+thanks,
+
+ - Joel
+
+
+
 
