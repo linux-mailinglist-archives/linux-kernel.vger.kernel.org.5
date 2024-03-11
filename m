@@ -1,138 +1,77 @@
-Return-Path: <linux-kernel+bounces-98603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B16A0877C83
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:21:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F46F877C85
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E32A281666
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:21:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4501B20B43
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A0351755B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97A4182AF;
 	Mon, 11 Mar 2024 09:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="H2QXL4op"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dhafz4nz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC1B12E48;
-	Mon, 11 Mar 2024 09:21:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CCA17557;
+	Mon, 11 Mar 2024 09:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148874; cv=none; b=d84sBBRStYHjavB6kcr1jlJCJNYtLE2BGguTha/xunxNXa8bdW7oelZK/04L+qAMG0h+wIrdy0NhFohasAThiIkH3ZUEWo+wfDyehYkl8KAHU7m/WB4p33rZC1LyI1Mv0nhepw4DohYt0B6FJSUu1zAh7Jd4+QPXcYLdYJYMIBQ=
+	t=1710148875; cv=none; b=JOv5ehkOzqoudnfFXtfB+E4t49FmSzg1P/W06mRdRTsMP4G4qwojeprg/vxewa4Uhm+k+ZT6Hki3ieLwYXgU9/r9z2SlxxA0ol5bjmbpwvMKa/2fqmQjQYTftNJM944r2+inqlgB88oB80a9DdTm8zw2rGldBCEcESK0E/d/rfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148874; c=relaxed/simple;
-	bh=/hIauNCwOFr9GvZ1GLOdhxActQlNhMaVI4JUq639/L8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nlefkK+g4JJRPxy5ZM4eqh/Ejw9FB+wRPxs364RjqomryOcRCeJNAIAr4mlXR0CB+eEp5NkhM4SecBMbYESBGdPo4LZCv9kyp6ZyCg3VHgYCqxukw2TjO4dePteVH9RHkth+8e0hSJmhUhQSMtJMBzZmhDwm4EWzUGl/uxTWTYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=H2QXL4op; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7C5E0FF806;
-	Mon, 11 Mar 2024 09:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710148863;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=MvrNB1vjlyglGsDHgQXajdb9Gf1WVPwiADdBQtMXZkU=;
-	b=H2QXL4opmZYFbaUOWr9UTc7MgjztMfmCZq/K2E9iWv1x6544XITdkjjgaQM4fQUUsIoYnx
-	JwLOPk7OKA/7iMa3c7+uHWmL8lH8AZ/YFxrr8t6JY4Zdq20fLczpGVX3g/hMN24Nj3htNK
-	rK74orgXDgOwacFqPfJ7oOVZS9jzQLnbER0H7/kTQV7Wa+BIZ4jtwG/K6VVnMslgorzX8h
-	JwLyFpTpIsMpecmadie9eq7l6SRBb891LiWj5z+F2XDJ3SECNAUnPDub43GN0ZqlM9DeNy
-	nHZ4AdHPqoIFmunV+v4vGkzW0x+HjA+lCzBa7ejILHp2CFZD6n+RW77PbjPMlw==
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Jakub Kicinski <kuba@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: thomas.petazzoni@bootlin.com,
-	Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH v2 net-next] ptp: Move from simple ida to xarray
-Date: Mon, 11 Mar 2024 10:21:01 +0100
-Message-Id: <20240311092101.1114687-1-kory.maincent@bootlin.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710148875; c=relaxed/simple;
+	bh=SJy63xxIMOOz80AbALShpGTRJiLYpQy9p+Uz2fnVaTU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tFoHvRIE1ZZaHyCCqOXtM+oUnyXwn45sDevKAsqV5HlHmHKxMlYgl5fxX0d03/WvG4MQmG5kunpZLTbYoAY/XRf8zXouZZx0KXA/6yJu3tbJ0vi4AfB8ieNHvmb1Nx0jbms61jeKacn6nz1uM7iHddNXoUYHLMeJitDWbQ6P31k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dhafz4nz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0AC7C433F1;
+	Mon, 11 Mar 2024 09:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710148874;
+	bh=SJy63xxIMOOz80AbALShpGTRJiLYpQy9p+Uz2fnVaTU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dhafz4nzgKKoOLViiq45Bzuf8CmTVFfmsYGlfFJPD+wTXM5t8txahmcKPKe4OaT/9
+	 GvFxGHqEb3YO7Mi0isgKF5r9G6Hg9/tnshn5cpRxxLlEYshr0bkbDff8bxhmcM3lAd
+	 imya5YPT7VOLi2ZVkT41+7+mqBWF6JlU6stNDngOhm5ZSMQTHDZvFcDLUsh14L4PiQ
+	 ZzdAeQAsvKDYZ/j/kPbY0dNELFlAzvvoPgucMn26Ca173ocAsMZMAGJ4R7T+BbN9O/
+	 7ZLYSlil+7ClZ7KFyxhSdVk9g8JCO7HC8BBFqhb6yXikPpNGPzwD0FJouA/NYXTIM5
+	 pDzDcPvGuMs+g==
+Date: Mon, 11 Mar 2024 09:21:05 +0000
+From: Simon Horman <horms@kernel.org>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>, Andrew Lunn <andrew@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Woojung Huh <woojung.huh@microchip.com>,
+	Arun Ramadoss <arun.ramadoss@microchip.com>, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v1 1/1] net: dsa: microchip: add regmap_range
+ for KSZ9563 chip
+Message-ID: <20240311092105.GD24043@kernel.org>
+References: <20240308105021.2552975-1-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308105021.2552975-1-o.rempel@pengutronix.de>
 
-Move from simple ida to xarray for storing and loading the ptp_clock
-pointer. This prepares support for future hardware timestamp selection by
-being able to link the ptp clock index to its pointer.
+On Fri, Mar 08, 2024 at 11:50:21AM +0100, Oleksij Rempel wrote:
+> Add register validation for KSZ9563.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Change in v2:
-- Update an err value missing
----
- drivers/ptp/ptp_clock.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index 3aaf1a3430c5..9339fd475df0 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -31,7 +31,7 @@ struct class *ptp_class;
- 
- static dev_t ptp_devt;
- 
--static DEFINE_IDA(ptp_clocks_map);
-+static DEFINE_XARRAY_ALLOC(ptp_clocks_map);
- 
- /* time stamp event queue operations */
- 
-@@ -201,7 +201,7 @@ static void ptp_clock_release(struct device *dev)
- 	bitmap_free(tsevq->mask);
- 	kfree(tsevq);
- 	debugfs_remove(ptp->debugfs_root);
--	ida_free(&ptp_clocks_map, ptp->index);
-+	xa_erase(&ptp_clocks_map, ptp->index);
- 	kfree(ptp);
- }
- 
-@@ -246,12 +246,12 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	if (ptp == NULL)
- 		goto no_memory;
- 
--	index = ida_alloc_max(&ptp_clocks_map, MINORMASK, GFP_KERNEL);
--	if (index < 0) {
--		err = index;
-+	err = xa_alloc(&ptp_clocks_map, &index, ptp, xa_limit_31b,
-+		       GFP_KERNEL);
-+	if (err)
- 		goto no_slot;
--	}
- 
-+	err = -ENOMEM;
- 	ptp->clock.ops = ptp_clock_ops;
- 	ptp->info = info;
- 	ptp->devid = MKDEV(major, index);
-@@ -378,7 +378,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	list_del(&queue->qlist);
- 	kfree(queue);
- no_memory_queue:
--	ida_free(&ptp_clocks_map, index);
-+	xa_erase(&ptp_clocks_map, index);
- no_slot:
- 	kfree(ptp);
- no_memory:
-@@ -511,7 +511,7 @@ static void __exit ptp_exit(void)
- {
- 	class_destroy(ptp_class);
- 	unregister_chrdev_region(ptp_devt, MINORMASK + 1);
--	ida_destroy(&ptp_clocks_map);
-+	xa_destroy(&ptp_clocks_map);
- }
- 
- static int __init ptp_init(void)
--- 
-2.25.1
-
+..
 
