@@ -1,220 +1,184 @@
-Return-Path: <linux-kernel+bounces-99271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20AAB8785B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:49:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B5778785BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:51:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 436601C219F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:49:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3EA32816CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA03858203;
-	Mon, 11 Mar 2024 16:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C941482D1;
+	Mon, 11 Mar 2024 16:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="m3FrBRkb"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="WJcB55+c"
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E76857303
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1110B4594B
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710175619; cv=none; b=I/pDj0eJ2e0ST8APlTjt92w1yFXndxI56NAh8EH3sMW+TlM5U/ozPt8aaMYnpcslwVuIdlORWfI0tqvHyLRiA79mPq5x45bQ1jTt3jaQ233MlRAwoV6PU7wpwTD0jAsAeSz/hgZ7JPP24NkE8EnUYO0qrdawH3jMvx1UP2NeakQ=
+	t=1710175872; cv=none; b=VliVZuCrYJcyFRqM6LiCePrktb5/7jvAMliigjx9xuyM8RSruV7dx6hn2ui+vx+BE0+lp93787ZLdSr3Lex6C+H9bDJZGIPvMr+dUuF/pLG99iwTm0eFZV75n6ibuIM7f7dMJYl9MQmFdEBL7Lb9s0xfy9Cjh71JjZcr1im6h2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710175619; c=relaxed/simple;
-	bh=/QZnssDAeZpjT2sFmC0j/E2H3o0tSEKpT/2jMGwPGOw=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EG49q/4bW7jBtSh2JZPpGRGK/thdpD8eMzQablWP7O3os9ip0sPEUOF64o9OpnHphyZxOSwr1QielHgTpnJl6KUp3UWsNvcmMjpRHjzlytHj2bQFUtQHxKw7UkBKD099465BTaQkAAMlX5i4KHv6dXcvO8l/yXqHLJYMDGw1wKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=m3FrBRkb; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7884a9a47a5so122048385a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710175617; x=1710780417; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q6FpZ49BpunKdsFtEl370XBCgostMe6YS8Mf7VMqlwM=;
-        b=m3FrBRkbW1wH9x988Zv/mO0VhHRfDaVv+k5okI9z8d8zGJ0OTxhr+P98Ds7N0ymveY
-         DW8iDwq6YwWOZtRRKh3JmyFVZduGITXhTF8Igupvz6FtCAOGVP6Djk93KeLl8etbmNuS
-         6TKDtIPia0vhrI976Qa7KEkf32e0W9Y9apsjFC1Akesy9WnHaJWih5+42tboxL+L/sNY
-         tsSEOugU6XXiVDb/pe8Ve78pLnwk+0VVwxyAkZ703tfdMCublXompMRWGfb578k9cESX
-         zOECp1/QDHeAounTyL2o0L6qo1noAYnS7tkQqDD3L9oT2IHa5eWXX/axE/L/ar1BVRvf
-         RodA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710175617; x=1710780417;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q6FpZ49BpunKdsFtEl370XBCgostMe6YS8Mf7VMqlwM=;
-        b=iWsVdIwff+bgNtDnEPrMcq5dG0wgO1WdLUUxNQkP/gTxFawBk/sJYjmQuFLd3ItPi5
-         kN7RJU/h4d/HkeHqUYVhoTki8gcv+QiBIlAuuCagynkAzuH+r6QFvCt1sww6+PR6Wfik
-         VE4GeY3E3tfP2pcXQj0G1l/fS2LE6Z1+bK+9Bu0PBhEKpwrtBrKrtk+sfESLNMOrr602
-         YPHxVIcO/KO4mj6Pz8QFsgD7kxiCciX4o180fMglN8FD+5eaoBLNicETJa7QKpAduQjf
-         pLjFjDqTnibZeYPbZDAMjHlHqMnuE1tKHJXRaSfPU0t6RZUriA40V2NKsOWbcw7bC6bX
-         ZSEA==
-X-Gm-Message-State: AOJu0YxEZzkcw29uLOdsrFwCIv95bCU3cguHkaIWalymJFZu2X0yLyFM
-	h/dnjpd8pCjAv72OGiUtrxMjl3c+i2JI740Z9yb9pQ3iwOn0u+p31Nj0ABKXzNYbE+Y06I2Dkh7
-	cqXo=
-X-Google-Smtp-Source: AGHT+IGBBQHGTyj0HK6a6nT9QQX2CzgLifOnSoon3yUl5MxZhI+SOhyqTpiNJHmFfzsFPzFEmk6ojA==
-X-Received: by 2002:ae9:e701:0:b0:788:2e8a:1731 with SMTP id m1-20020ae9e701000000b007882e8a1731mr6728530qka.17.1710175617252;
-        Mon, 11 Mar 2024 09:46:57 -0700 (PDT)
-Received: from soleen.c.googlers.com.com (150.254.86.34.bc.googleusercontent.com. [34.86.254.150])
-        by smtp.gmail.com with ESMTPSA id d27-20020a05620a137b00b00788228fbe05sm2851589qkl.17.2024.03.11.09.46.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 09:46:56 -0700 (PDT)
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-To: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	x86@kernel.org,
-	bp@alien8.de,
-	brauner@kernel.org,
-	bristot@redhat.com,
-	bsegall@google.com,
-	dave.hansen@linux.intel.com,
-	dianders@chromium.org,
-	dietmar.eggemann@arm.com,
-	eric.devolder@oracle.com,
-	hca@linux.ibm.com,
-	hch@infradead.org,
-	hpa@zytor.com,
-	jacob.jun.pan@linux.intel.com,
-	jgg@ziepe.ca,
-	jpoimboe@kernel.org,
-	jroedel@suse.de,
-	juri.lelli@redhat.com,
-	kent.overstreet@linux.dev,
-	kinseyho@google.com,
-	kirill.shutemov@linux.intel.com,
-	lstoakes@gmail.com,
-	luto@kernel.org,
-	mgorman@suse.de,
-	mic@digikod.net,
-	michael.christie@oracle.com,
-	mingo@redhat.com,
-	mjguzik@gmail.com,
-	mst@redhat.com,
-	npiggin@gmail.com,
-	peterz@infradead.org,
-	pmladek@suse.com,
-	rick.p.edgecombe@intel.com,
-	rostedt@goodmis.org,
-	surenb@google.com,
-	tglx@linutronix.de,
-	urezki@gmail.com,
-	vincent.guittot@linaro.org,
-	vschneid@redhat.com,
-	pasha.tatashin@soleen.com
-Subject: [RFC 14/14] fork: Dynamic Kernel Stack accounting
-Date: Mon, 11 Mar 2024 16:46:38 +0000
-Message-ID: <20240311164638.2015063-15-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-In-Reply-To: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+	s=arc-20240116; t=1710175872; c=relaxed/simple;
+	bh=L+hP3J9w7TVemLYSE/M0D2h13kOJTurWbr3SO4jI8Hs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=GHxhva84PApDB6by8N7Ntpd4q/mreM/TlKZHg7xFOJbsyeSdfq2j/p6RZsFcE8t54Rg1sy7HDmmEMR9pzM1H/Ysw4kSo3eOUDceKiAFxURkH5XRsNL0npA073vaaZpoy1gTAyl/bRrIt3+EtwZDN7hwIFalOY+Ansf5xsy7JyP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=WJcB55+c; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240311165107euoutp0173da651116376dcfd20eda16ca1f4bc5~7w_QPj6RK0965009650euoutp01b
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:51:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240311165107euoutp0173da651116376dcfd20eda16ca1f4bc5~7w_QPj6RK0965009650euoutp01b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1710175867;
+	bh=Vi9mqEbEYH5UErZGlgVb79jweozgjkT+UlULfp68xt4=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=WJcB55+cmcqjGu1+a+a4X9cgGRcG6ze/0lPK84xSmS9IoD21ZvhgNEPj+oKKE2AO4
+	 nvQqQi/9DtM+lULe4n4DLMm0xM3Un2sxe726A+KbEOMb4Gkj7vkLMTMEs4AZzgkaPX
+	 9MgF2ug/1b/+ZaXfSXMMNl5T3/mygsZLZu+fAKKY=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240311165106eucas1p22bd86ad0e3b0a2d77b77fe8d4ce0a18c~7w_PCpnL22314023140eucas1p2O;
+	Mon, 11 Mar 2024 16:51:06 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id E3.07.09539.A763FE56; Mon, 11
+	Mar 2024 16:51:06 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240311165105eucas1p10ffea50ffb9581c61818e66628fdafee~7w_OjQxeK0826108261eucas1p1V;
+	Mon, 11 Mar 2024 16:51:05 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240311165105eusmtrp1b2d135d8a79edf681de0688224c0e22f~7w_Oihxew2079320793eusmtrp1K;
+	Mon, 11 Mar 2024 16:51:05 +0000 (GMT)
+X-AuditID: cbfec7f2-515ff70000002543-5a-65ef367aa56e
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 09.60.10702.9763FE56; Mon, 11
+	Mar 2024 16:51:05 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240311165104eusmtip2eb55a56d190fd53be45bb715c73da79d~7w_NZS4mH2032720327eusmtip2j;
+	Mon, 11 Mar 2024 16:51:04 +0000 (GMT)
+Message-ID: <8c8aea4d-e911-44cd-bbec-ead4e44d338a@samsung.com>
+Date: Mon, 11 Mar 2024 17:51:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
+ supported CPUs to 512
+Content-Language: en-US
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, "Christoph Lameter (Ampere)"
+	<cl@linux.com>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+	Will Deacon <will@kernel.org>, Jonathan.Cameron@huawei.com,
+	Matteo.Carlini@arm.com, Valentin.Schneider@arm.com,
+	akpm@linux-foundation.org, anshuman.khandual@arm.com, Eric Mackay
+	<eric.mackay@oracle.com>, dave.kleikamp@oracle.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux@armlinux.org.uk, robin.murphy@arm.com,
+	vanshikonda@os.amperecomputing.com, yang@os.amperecomputing.com, Nishanth
+	Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <Ze8hmCbN7_GDRMVS@arm.com>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf1CTdRzH7/s8z7aHwfRxmvuede5uHXVWYJwK30vjLCmfKz3huP6pzLbx
+	hJyAu21U4p0uAkpgSNTc2G1tGQEHu4gpjrQEJjk4GPHDNtwRKMySxRCcJ8zljPFk8d/r8/68
+	v9/35/O9L4kLtdxNZF6hmlEWSvMlXD5x4Wp4MKk49Q7zYnmnCJlabVx0uVeO7jRUAeS9PwtQ
+	1x8jOLoVbeCh5m88XGSf9nDQ6EUTF03YHnFQSNsDkFP3M0DfeYcxFGlYxNDskhtD5ns6HHXP
+	+zko6mkjkMMSxtGMb5xA525c5aLS8R1IW9/H2y2ibV/bAD3qGcbp0p4gh7Y3n+LS9ru1PLrX
+	ECFo/zU9Rp+rP0kv3PIRdOXoGI92jTkwOmTfnJnwNn9XDpOf9yGj3Jr+Pv+wW3cdKNrXfjwT
+	OY1rwEhCBYgjIbUdTlRFOBWATwqpJgBdlr8xtrgHYFm9H2eLEICfTp/nPD7S3GRYYSHVCODZ
+	gWLWtACgs6WWiDUEVDpc8NzgxpigEuFPPWYOq6+DfXX+Fc8TlBhO+gy8GK+npDDgsOIxxikR
+	9PktWIw3UElwqPwrgtWvcaAvrI4xl0qBFcGKlfvjqGdh3UzJvx4xdARNODtoCR9GK2mWM2Bn
+	9bcYy+thwHWex/JTsP/LKiK2AKQ+A9AamcTYogZAzZ8+wLp2wvHBB8tp5HLCFth6cSsrvwID
+	1a28mAypNXAsuI6dYQ2svaDHWVkAPy8Xsu5noNH1/X+x3UMjeA2QGFe9inHV9sZV2xj/z7UC
+	ohmImCJVQS6jSilkPkpWSQtURYW5yfKjBXaw/GP7o667HcAcWEh2AowETgBJXLJB8NcLQUYo
+	yJEeK2aURw8pi/IZlRM8SRISkSAxR8wIqVypmjnCMApG+biLkXGbNJjiePtuXaLsdrZVHjr4
+	WnRRHgCGRzf79v7gii94o2tAs0fX7yudT6rN3Lj55eore5iDqX0yeZyl9xdyYC6QPqTGta9O
+	vScCYlHqvitZHdtCVtupbUsHpt7NipfRRNfJqswjHbf384fND4Z+vWR6+v5gW1rGhFsG88UP
+	pz6oiJ/0nFG2zaYl7c+KvBM+rR4Lpb25b69MZ25frNHWCb9Q1b++XfMj/hJX34IuT4ct2pzw
+	3HXv/G8l4hPHGyvLbL5pzBY5cWxuaYf3oallYIs7u1uRQMOytOzWnYfkvN8duRuD+jzDW5eK
+	8TMZ7qZOfan3rKJxaW7XTX/XJy6T7cDzayWE6rA05TlcqZL+A6Bj2IggBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEKsWRmVeSWpSXmKPExsVy+t/xe7qVZu9TDS6fNbKYs34Nm8W+E8kW
+	75f1MFpc//aG0eLAs0vMFk//LWO3WLXwGpvFpsfXWC0u75rDZnFvzX9Wi8+9RxgtDk3dy2ix
+	9PpFJovfy74zWbz5cZbJYu6XqcwWBz88YbX4d20ji8X2+T+ZLV7eusNisfnBMTaLljumFr1L
+	TrI7iHusmbeG0ePytYvMHi1H3rJ6bFrVyeax6dMkdo8TM36zeDy5Mp3JY/OSeo+PT2+xeHRf
+	vsHucfzGdiaPz5vkAnii9GyK8ktLUhUy8otLbJWiDS2M9AwtLfSMTCz1DI3NY62MTJX07WxS
+	UnMyy1KL9O0S9DLOTr3JWLCVv+Ll737mBsZLPF2MnBwSAiYSq1bMYO1i5OIQEljKKPHtK4gD
+	kpCRODmtAcoWlvhzrYsNoug9o8T515/ZQRK8AnYSH689YAOxWQRUJfYcmcsKEReUODnzCQuI
+	LSogL3H/1gywemGBRIlX2xcwg9jMAuISt57MZwKxRQR0JS60TWEBWcAscI1V4tSPo1DbdjNL
+	NJ3/CVbFJmAo0fW2C2wbp4C6xMyXTSwQk8wkurZ2MULY8hLb385hnsAoNAvJIbOQLJyFpGUW
+	kpYFjCyrGEVSS4tz03OLjfSKE3OLS/PS9ZLzczcxAhPLtmM/t+xgXPnqo94hRiYOxkOMEhzM
+	SiK8r3XepgrxpiRWVqUW5ccXleakFh9iNAWGxkRmKdHkfGBqyyuJNzQzMDU0MbM0MLU0M1YS
+	5/Us6EgUEkhPLEnNTk0tSC2C6WPi4JRqYMrmOppQM5enJGbOT87DUzfrrV4f+VK0LLJ/0df6
+	mN8J213WPtRoe3/w3M8IoxqZSTaZtr/DtC5Jqd4s2u+QvuHYVtPkI/c+Z7HflRALlpbV0nht
+	OPn9VgWps7umlzf0Ldka/VpKdof6/d3hwbe9jiRy/ZW9dpDr6ZWat0/LdB43OsZ1TZSzl6vn
+	ln3xJHFWom+t6navgDM/g1JvsU+0NjP6cZN7Sq3XlCMPzi8S89vG/XJu8/LVjyu6nrt6rw37
+	tHA33xS3Bl8JnTSp77FVRf1RzyebH5gSXPMq/Ob9bMGo66e0JoqvsOj44161gqGz/61N0t6O
+	uuMZSZ0T3Z90lM/ye/TY5Kd7kc2ziD1yK5VYijMSDbWYi4oTAdOnA2S1AwAA
+X-CMS-MailID: 20240311165105eucas1p10ffea50ffb9581c61818e66628fdafee
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f
+References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
+	<CGME20240308140130eucas1p1259c805a0b6491ce2f69c6fca0264b1f@eucas1p1.samsung.com>
+	<c1f2902d-cefc-4122-9b86-d1d32911f590@samsung.com>
+	<ZesmAO1jJfEjTwxd@arm.com>
+	<f160a532-1d31-41a7-b8ae-de8575c395e9@samsung.com>
+	<e3952dc0-ec28-e7c7-e858-c47f146c93de@linux.com>
+	<Ze71H4AdY786nSvn@FVFF77S0Q05N>
+	<8abb1a69-6cbd-4a36-ab1d-d269cdafa391@samsung.com>
+	<Ze8hmCbN7_GDRMVS@arm.com>
 
-Add an accounting of amount of stack pages that has been faulted is
-currently in use.
+Hi Catalin,
 
-Example use case:
-  $ cat /proc/vmstat | grep stack
-  nr_kernel_stack 18684
-  nr_dynamic_stacks_faults 156
+On 11.03.2024 16:22, Catalin Marinas wrote:
+> On Mon, Mar 11, 2024 at 03:56:37PM +0100, Marek Szyprowski wrote:
+>> On 11.03.2024 13:12, Mark Rutland wrote:
+>>> On Fri, Mar 08, 2024 at 09:08:59AM -0800, Christoph Lameter (Ampere) wrote:
+>>>> On Fri, 8 Mar 2024, Marek Szyprowski wrote:
+>>>>>>> It looks that cpufreq-dt and/or opp drivers needs some adjustments
+>>>>>>> related with this change.
+>>>>>> That's strange. Is this with defconfig? I wonder whether NR_CPUS being
+>>>>>> larger caused the issue with this specific code. Otherwise
+>>>>>> CPUMASK_OFFSTACK may not work that well on arm64.
+>>>> cpumask handling must use the accessor functions provided in
+>>>> include/linux/cpumask.h for declaring and accessing cpumasks. It is likely
+>>>> related to the driver opencoding one of the accessors.
+>>> I took a look at both the OPP code and the cpufreq-dt code and it looks like
+>>> those are doign the right thing w.r.t. cpumask manipulation (i.e. they only use
+>>> the cpumask accessors, and use the cpumask_var_*() functions to dynamically
+>>> allocate/free cpumasks). Maybe I've missed something, but superficially those
+>>> look right.
+>>>
+>>> Marek, can you try reverting this commit and trying defconfig + NR_CPUS=512?
+>> Yes, with $subject reverted and CONFIG_NR_CPUS=512 everything works
+>> fine, so it must be something else broken.
+> Thanks for confirming. Would you mind testing the problematic commit
+> with CONFIG_DEBUG_PER_CPU_MAPS enabled? If it doesn't show anything
+> obvious that can be fixed quickly, I'll revert the commit and queue it
+> again after -rc1 for 6.10 (I haven't sent 6.9 the pull request yet).
 
-The above shows that the kernel stacks use total 18684KiB, out of which
-156KiB were faulted in.
+I've enabled this option, but unfortunately it didn't reveal anything 
+more besides the warning and error I've posted in my initial report. I 
+will try to analyze this issue further, but I won't manage to do this today.
 
-Given that the pre-allocated stacks are 4KiB, we can determine the total
-number of tasks:
-
-tasks = (nr_kernel_stack - nr_dynamic_stacks_faults) / 4 = 4632.
-
-The amount of kernel stack memory without dynamic stack on this machine
-woud be:
-
-4632 * 16 KiB = 74,112 KiB
-
-Therefore, in this example dynamic stacks save: 55,428 KiB
-
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
----
- include/linux/mmzone.h |  3 +++
- kernel/fork.c          | 13 ++++++++++++-
- mm/vmstat.c            |  3 +++
- 3 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index a497f189d988..ba4f1d148c3f 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -198,6 +198,9 @@ enum node_stat_item {
- 	NR_FOLL_PIN_ACQUIRED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
- 	NR_FOLL_PIN_RELEASED,	/* pages returned via unpin_user_page() */
- 	NR_KERNEL_STACK_KB,	/* measured in KiB */
-+#ifdef CONFIG_DYNAMIC_STACK
-+	NR_DYNAMIC_STACKS_FAULTS_KB, /* KiB of faulted kernel stack memory */
-+#endif
- #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
- #endif
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 63e1fd661e17..2520583d160a 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -343,6 +343,9 @@ void dynamic_stack_refill_pages(void)
- 
- 		mod_lruvec_page_state(page, NR_KERNEL_STACK_KB,
- 				      PAGE_SIZE / 1024);
-+		mod_lruvec_page_state(page,
-+				      NR_DYNAMIC_STACKS_FAULTS_KB,
-+				      PAGE_SIZE / 1024);
- 
- 		page = alloc_pages(THREADINFO_GFP & ~__GFP_ACCOUNT, 0);
- 		if (unlikely(!page))
-@@ -771,9 +774,17 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
- 		int i, nr_pages;
- 
- 		nr_pages = vm->nr_pages;
--		for (i = 0; i < nr_pages; i++)
-+		for (i = 0; i < nr_pages; i++) {
- 			mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
- 					      account * (PAGE_SIZE / 1024));
-+#ifdef CONFIG_DYNAMIC_STACK
-+			if (i >= THREAD_PREALLOC_PAGES) {
-+				mod_lruvec_page_state(vm->pages[i],
-+						      NR_DYNAMIC_STACKS_FAULTS_KB,
-+						      account * (PAGE_SIZE / 1024));
-+			}
-+#endif
-+		}
- 	} else {
- 		void *stack = task_stack_page(tsk);
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index db79935e4a54..1ad6eede3d85 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1237,6 +1237,9 @@ const char * const vmstat_text[] = {
- 	"nr_foll_pin_acquired",
- 	"nr_foll_pin_released",
- 	"nr_kernel_stack",
-+#ifdef CONFIG_DYNAMIC_STACK
-+	"nr_dynamic_stacks_faults",
-+#endif
- #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	"nr_shadow_call_stack",
- #endif
+Best regards
 -- 
-2.44.0.278.ge034bb2e1d-goog
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
 
