@@ -1,97 +1,112 @@
-Return-Path: <linux-kernel+bounces-99674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A722878BA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:48:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF1E878BA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:52:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43D1A281674
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:48:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1C342812DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E666859167;
-	Mon, 11 Mar 2024 23:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6AF59163;
+	Mon, 11 Mar 2024 23:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mAfP9QXT"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qioKqVQu"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF42C58AD1
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:47:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF2D57890
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710200878; cv=none; b=UOPcIKaqboh6cyKIjEylf8Wzqp6Dn1iZFKEyDdWutOCM6px7p+8QIznqVgNpsC8J+jRw5SlLqXayBOWskRQzZqGmPS6FlVsZnaSdNrZGZaFokmNcZVwFJAu64jeC4Zk46Hjube66MPlButPAYneQ19Lr0XIX5vdcSQGieeJ4HHM=
+	t=1710201134; cv=none; b=DAQALNVi2EV6uJslKo02biTHtdGJbCxjSNYqFaVEzaeOtQppLnTKVi6YW1Gyobr1ePT6Zn5lbiE+T961jLrJSjUVt+nKv0J3miQlV5690vMpw4CUEfx1Z5NaGzsMUBQVOO1v6qW6/pUjkSi/rS5R+nviCMuZ0muTsb9XZdFCWxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710200878; c=relaxed/simple;
-	bh=47I9y9d6m+sWHb20BjXAdG4iVoGGvHvr9MoKNbZqVB4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qgOTvR6F3gUqeTA/fOap1/yt5Bk+IuSLtDDIA/E19oD59jgzUKKMSvLntxCmylnGSsm66YRl6F7Rcm51CQZB9NfkLjjHSKtfVVy0O4UyPLfK+bKP8pemyWvk8cj1aGTdQaO1wChMRA9X6hUkArTnlS9hbgMgbzHYJwNSll1c9ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mAfP9QXT; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1710201134; c=relaxed/simple;
+	bh=pBZqTh7G7jp+IUnkic52oQI13i+dNvvK3OLg5P87lgg=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tCQaPZSRGxItjKgVJAQjZrAXbwypsMoZDNr1PlbxJlybtOsXSUURCQsupwjHv6EfDSEBYWycQZWahn/RK8mgOkGo4mCAgpQR1gUbu3tYIS5cEJKFHvboQQ4IxYojvPaAN/5UvOsZDZOoUza8nXrKBlZ/nIJbqNvUzC+tT0UyTEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qioKqVQu; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso1686a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:47:56 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso9594679276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:52:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710200875; x=1710805675; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=47I9y9d6m+sWHb20BjXAdG4iVoGGvHvr9MoKNbZqVB4=;
-        b=mAfP9QXTQvwB7FdLdUoeWQtnmDkg4GqIskq0q6UZc35z0GfUz3gpTlDY1AwRh0ERD8
-         MSEu7JY939Jpg4wGpvqPdjnIYssaq+QYdfppwmBOR2Ak4utQ+lVffWVcgw16KzFFzjQ/
-         kI5WoJCmvQzIwtoxoddPuY2Qba9pismti/Iu+2tHF/ouPPm4iSvp2vn+AoBLZtLjR67K
-         G4peMNF6VN9WUMU9/xhANc6QAxBM9aFKmmR0G63IGzmgqanvc3ySkwPiOBSvcG1Lqc2C
-         zMB65sdXg9qRhe135RZ0WlTfqXeW8Tk10GYJILUuKyqJ8CHGvlc8fkzR4wH4I26punve
-         B+Fw==
+        d=google.com; s=20230601; t=1710201132; x=1710805932; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HoDCqku35T7YbxqPd3TAz1OoTvE4SVOE0AIV0UpVVT0=;
+        b=qioKqVQumAqmNc6HjmxXFCDYhK8XtXX2+iNuUtrmcRngP5XKX0UfrSMZDEkbkpFQDo
+         4jCfsfR3vwfbveEqcY3UfdA933FfftexWIZzi9948vhOzn6wecmU51DIfMqUzIHqg8yP
+         MmqLk0TlW+0PiINV09qrnctak22/clAe4/tT+mvNlKbzUEt7DpKs5U0vKnZXe6LtT8gp
+         6uRz8crMEIPQxubEEFhJ5etdhk/469RLOWGgdXVAhc79vXncXLPKcB++EBKSAs8m3MGQ
+         utfVeHwKOsy2SN5XG9bKTvG1VYNSUU6wszA3l7Ps9hrROHQ2zkTUH+xS1PZroVh6Rxs8
+         KovA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710200875; x=1710805675;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=47I9y9d6m+sWHb20BjXAdG4iVoGGvHvr9MoKNbZqVB4=;
-        b=SJnIPLCckmQaRzaOpXt+9WUY/kmyUEwy6OoeW/ljaGa+GBRg/HYchf4iPjVEuXBuyb
-         b+Y2h0ZaVvbUjJ+pt4+XF98kzs6W+3zR2KhLtn+ArQ3u+iS6gxH3qj5A0DW0fS+0E7BG
-         Ph0xzlticK/6CeErCJc7QiV3ndg/Li2kuwkdMBJlrAe/Df5lb1LZkynWLqBPJ8JEzSNN
-         nGt75J8DWIY2HFQEPzF9rKLjtH97+DYh/u3kr4q4U9C8YwD2xgKGdW1jADhzKPtak2Wk
-         DgRUWTQlN8yPboY1EyL2kn6nx7UwO/pz6qeyf4rbyiBW90JFaTtrVCaoFHyLuMUu+an1
-         NNXg==
-X-Forwarded-Encrypted: i=1; AJvYcCW83Ce3RW2Z1Q5ucqi9pVY5MiK784IQlItDKXPJfRR5UygUuxJcP+dhJEUwjgFM8Xt2/j4KLteA5IdUgjIrH+g4ZWnvBwo0tbjwpCA6
-X-Gm-Message-State: AOJu0Yxm9OoOBl3+c8i3RoXKBtHuIH7EOZ177cwaOEZqdpZdyLpdMaD7
-	YKR2tXnZVWBj1YwMpTYhXiRsENnah+kUIIP37R+wZl0cfLRikdw0ws2esJ3bP7s50sRAcXP+nZc
-	El6/A+tNm6YGm1GJlKXBBPP/4XUFl0nivR8Zw
-X-Google-Smtp-Source: AGHT+IETgRPqiRPbjXlytKWnI8hu5RRmZmhuCnz7VkKXbd9crkp5Z06XYH+DNdrtU45ZfgOq+m/uFl50UP0/GeFNtkg=
-X-Received: by 2002:aa7:da44:0:b0:568:55db:8c69 with SMTP id
- w4-20020aa7da44000000b0056855db8c69mr72961eds.4.1710200875068; Mon, 11 Mar
- 2024 16:47:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710201132; x=1710805932;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HoDCqku35T7YbxqPd3TAz1OoTvE4SVOE0AIV0UpVVT0=;
+        b=LHbxAxwlbimdnjV5cjXwj29GZG7/hdRNAxWfhyKi5mQcc3V3JqVHWDqL8xFOcxYm/G
+         sYWqdtoYbWY47Ox9K59LakB9g4ZQ1qKacl0DrMSbUbj0+lQDqGBqSCDdbdFH+x3+MJ9R
+         tl+LFK8Z7i6MoxgyjhQCO6c423Y9wYaleyfOmoxoGDmmVmOGwke0LI6zPEhZkiedkuyF
+         f0HKjCfAgXptthCodG4PVOZAnjfH+ZSgWpuUxqY5iGwYfuCr8xNDlGKev7OmBWI7tbXm
+         pFvkJEJXg2lesykxM+Jrcxtc/RwM2Dd3BFefB5OdDM+/327Fhw2xofWkM2RY3mig1e6K
+         s36A==
+X-Forwarded-Encrypted: i=1; AJvYcCXCn39RgLaWVxnxn6ZB8pd/cR/nWwB9drRG7za3dtv5vxVnFwj97LRsLBbpSJnOoobqmXF2zdk2Qf4BY+98a3wF1QEBMCCS6Ntki19v
+X-Gm-Message-State: AOJu0YzMoJm9ijIWdzGTcq/hfp5DyJieBF4ELCiPA9mQitEqzljxP/mf
+	pA/AExMZPMtsUuLLmQFlejkNGJSXYwyzqf7lrDZhTDZjyP8EdaamjRY3GCAwTstwVPjFZlnt4At
+	oeaN4dq66PSgWnCqE5Q==
+X-Google-Smtp-Source: AGHT+IGvoB6x0HUGO9cKrUhakaBjnzL5PQuqIrdPSs5csd6UtFI4bJM31GyU0eku4GbNJXOK7s5b21fIZKPIOmYT
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a25:dbc2:0:b0:dc6:d233:ffdd with SMTP
+ id g185-20020a25dbc2000000b00dc6d233ffddmr2219113ybf.0.1710201132663; Mon, 11
+ Mar 2024 16:52:12 -0700 (PDT)
+Date: Mon, 11 Mar 2024 23:52:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240305025804.1290919-1-jthies@google.com> <20240305025804.1290919-3-jthies@google.com>
- <44e8142f-d9b3-487b-83fe-39deadddb492@linaro.org>
-In-Reply-To: <44e8142f-d9b3-487b-83fe-39deadddb492@linaro.org>
-From: Jameson Thies <jthies@google.com>
-Date: Mon, 11 Mar 2024 16:47:42 -0700
-Message-ID: <CAMFSARdZLnfUOZcKVFNCwq40bEZgk0Bo_Oe-o8o7iKk7gQ9G2g@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] usb: typec: ucsi: Register cables based on GET_CABLE_PROPERTY
-To: neil.armstrong@linaro.org
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org, 
-	pmalani@chromium.org, bleung@google.com, abhishekpandit@chromium.org, 
-	andersson@kernel.org, dmitry.baryshkov@linaro.org, 
-	fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org, hdegoede@redhat.com, 
-	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
-	linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>, 
-	Linux regressions mailing list <regressions@lists.linux.dev>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240311235210.2937484-1-yosryahmed@google.com>
+Subject: [PATCH] mm: zswap: remove unnecessary check in zswap_find_zpool()
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Hi Neil,
-thanks for catching this. You're right, the UCSI driver doesn't need
-to be sending these commands when they are not supported. I'll post a
-followup patch properly gating ucsi_get_partner_identity and
-ucsi_check_cable.
+zswap_find_zpool() checks if ZSWAP_NR_ZPOOLS > 1, which is always true.
+This is a remnant from a patch version that had ZSWAP_NR_ZPOOLS as a
+config option and never made it upstream. Remove the unnecessary check.
 
-Thanks,
-Jameson
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ mm/zswap.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 9a32377520827..c6267b5e0999a 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -884,12 +884,7 @@ static void zswap_entry_cache_free(struct zswap_entry *entry)
+ 
+ static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
+ {
+-	int i = 0;
+-
+-	if (ZSWAP_NR_ZPOOLS > 1)
+-		i = hash_ptr(entry, ilog2(ZSWAP_NR_ZPOOLS));
+-
+-	return entry->pool->zpools[i];
++	return entry->pool->zpools[hash_ptr(entry, ilog2(ZSWAP_NR_ZPOOLS))];
+ }
+ 
+ /*
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
