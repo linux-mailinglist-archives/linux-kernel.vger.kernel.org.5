@@ -1,80 +1,47 @@
-Return-Path: <linux-kernel+bounces-99220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2837D87851B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:24:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6A2A878548
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:26:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B62701F26B0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:24:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9E431C21429
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C25C4F8B1;
-	Mon, 11 Mar 2024 16:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B91260252;
+	Mon, 11 Mar 2024 16:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TH9rFjT8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rqbCp4MM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99ECA4AEE4
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA895FDD1;
+	Mon, 11 Mar 2024 16:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710173985; cv=none; b=VwkOewtreK9xosDmkPAO48/4479gd2/4afvCfr5xLYg1oYIYdIU4NtcYIubFmbucXTVR0OvwPgsWefWpxwhD9TV8rpNQHNHHZurs4I68QtG207yH59V4I6Qa3k+A9bXLRG/+LS96lpsG/LeNfA/9YvNHGO1+VRpL7w188aCIS3s=
+	t=1710174005; cv=none; b=RXi8xeMD0AxjTnSKi3QV85kwXLEyxrBB3NLrXLlQMULQgO2VGaajPlbkL3s+TzoMbJxKGe/y0hvtlx3mRYRF3m60IPMHhNgHrtDC4ZGCvknDuiqdQlL6E3x+HDtH2FsfM+6zfDFcb7kUeOtxljZpPiCJJFvvbivqTwmFF5JK/OQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710173985; c=relaxed/simple;
-	bh=xEXzD4kw6+Z0h4GXKK73qPjqgcYopWBM+dQs7NidtYw=;
+	s=arc-20240116; t=1710174005; c=relaxed/simple;
+	bh=bsjANis9pyyIfMKzj2iYqOY/tXcCFN8bOMvzR8V7TQk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DxK2gLc6SbRtjNn/Qa5Asnz8eILqwb6UnIRo4MvK6ntqn4TJzKLSUFF0GzTYRQDvcG1RPqcWuHvRAVlXkXR3Lo1+nHfLGT3uKxgTbx63pMU30MX6wxbQtYKqi9LVSgqmC5q/fYBGmF606tf7aL1WGSwkogPgUw7qCKNH/dY+xy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TH9rFjT8; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710173982;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=2mQahgGF7t5ilMRgxp66fiMOHm6Y8WHBX1CjCOYiUkk=;
-	b=TH9rFjT8lol5h7+jzy4qt5b9Y41hOiCwle+guXB0o0e1Hn/6MzW3BJ4BlNW4ifLeucouKw
-	H9zYE6r/ik0m4/SQEoJaMlLiSoCHYqGPnCA7mLA21sBhnfeo23I96J9e4NlZDiTNP/CfiI
-	9MdGUxkUsM5eIxwQmYzHSSD6C2g3euM=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-44-G0BnLGr-PjafHaXo9CX4kw-1; Mon, 11 Mar 2024 12:19:31 -0400
-X-MC-Unique: G0BnLGr-PjafHaXo9CX4kw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a46376dcdcbso54657766b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:19:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710173968; x=1710778768;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2mQahgGF7t5ilMRgxp66fiMOHm6Y8WHBX1CjCOYiUkk=;
-        b=e0WnT9IbgD3N3527kO0hTNnbsCxhTjQyA8jj6cQgCc1+Ffen2KTiI38CurPac4WU4q
-         EzErfPKbJhmRaIcsHz+ZUvwkB4+fRKm8Sm182N0EGkgenS+lFAPjs1nV4+Yg0N1fa+FV
-         /RQrGTZOEL/mv5KS8tmvMOUgBYgBl9Ab03jhT76wZVtwGVza3p9fMCZ8IXzHGTN1yVC3
-         n9GFDgm+O2PxOByqnr+uJhiaPxC0u+aQ4k+6yem6q3UzxVndObeGfnjKxqRldQwiFyst
-         DA1PFoKiLEoFJU6qJDTofIAayG74wB00kilGA6Tvy+tDCSiHAfOSJDwAxIfXM2zYEIXu
-         Vj1g==
-X-Forwarded-Encrypted: i=1; AJvYcCVpHO23FUk0HZvlyqPSJ9Nd+zSlYhIDbyLMHcvFyaIxbbG0NtNEocLiW7LxlrSfMW7vNaGvGfWZhzn6nv1nCEORSUuZHPh4Sko8lk1F
-X-Gm-Message-State: AOJu0Yz8brh/+naEdUztC0sJj+oBcWFnvet4VujwGF9dsbUpjtMnD2IV
-	80nZ+UPVWwWpT1lhtQGiuvDTC0ntCbkwaxogPCwyjeB3HgvA35PCCm13AOmPtphVkJ72xjIM7KI
-	cLOxBwEn8/ZWdODZBVXYqaVxAUuoSll3ZUEG6fhqO4s+dVSYSMdJ+1j4PWZ9bKw==
-X-Received: by 2002:a17:906:358d:b0:a45:84e7:b25a with SMTP id o13-20020a170906358d00b00a4584e7b25amr5447608ejb.12.1710173968675;
-        Mon, 11 Mar 2024 09:19:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEoO7EDAZVtRfBv/pvsoBN7WxmHLuGVQTvibOB0sKCLOJ5yA2DM2cCu/w9a+YzK+thyglRvgw==
-X-Received: by 2002:a17:906:358d:b0:a45:84e7:b25a with SMTP id o13-20020a170906358d00b00a4584e7b25amr5447590ejb.12.1710173968258;
-        Mon, 11 Mar 2024 09:19:28 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c72f:6100:aae:4b84:887c:15bb? (p200300cbc72f61000aae4b84887c15bb.dip0.t-ipconnect.de. [2003:cb:c72f:6100:aae:4b84:887c:15bb])
-        by smtp.gmail.com with ESMTPSA id bn23-20020a170906c0d700b00a462e4d7216sm786317ejb.76.2024.03.11.09.19.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 09:19:27 -0700 (PDT)
-Message-ID: <ef409d5e-5652-4fff-933c-49bda6d75018@redhat.com>
-Date: Mon, 11 Mar 2024 17:19:26 +0100
+	 In-Reply-To:Content-Type; b=CKOlATx/Bg9Yoz6SZAMSKR9YHiIPkJhztoxMl/0+BieILdzMzGrappKz2rkM0eXcdl6H+wUIXlkeg/jyv7DCNw3M9gCYdjhMEOaRvIjPtnTzn3vO33AldUfd28PNCZgq73Yb6LOWOuOky8X4OR0sMKtquRiitTCqu1FVGNTnUho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rqbCp4MM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15B00C433C7;
+	Mon, 11 Mar 2024 16:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710174005;
+	bh=bsjANis9pyyIfMKzj2iYqOY/tXcCFN8bOMvzR8V7TQk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rqbCp4MM3WtRpspyO14gn/KiYr5ko7tINaHOP4PdfuXV9umuLDeU0Wv4mXPjR0Hoc
+	 7XnjPwAw1MdDRkDEO/5Fod6HqKrjwpwKInlL+zPur+PjZErb1JVkMXr9P3WxFF4+tG
+	 DvxWQZTvlUrn3onhBcgq/IfuqNgdsYTQ+A/hBjnPeSgUkpBEW4LOTkRee3G9PuEsn1
+	 XvrddyPbs+aZjcMvdzFdDMXhAfIQCtjZRWYg38BAPa5YEhw0lBMd7B9mIWDRQMiHba
+	 WYpD523/hzdcGG+5DYP41ljI5WqS9xcXtBQ9mmqHkgSQRqXKeXjrpwpfdX+I9ypGVn
+	 0oCw5dXuuK1VQ==
+Message-ID: <82d38961-8792-49ea-8c9c-5214669e0ef6@kernel.org>
+Date: Mon, 11 Mar 2024 17:19:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,107 +49,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] mm/khugepaged: reduce process visible downtime by
- pre-zeroing hugepage
+Subject: Re: [PATCH net-next 2/4] net: dsa: realtek: keep default LED state in
+ rtl8366rb
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Simon Horman <horms@kernel.org>,
+ Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
+ <20240310-realtek-led-v1-2-4d9813ce938e@gmail.com>
+ <388b435f-13c5-446f-b265-6da98ccfd313@kernel.org>
+ <20240310113738.GA1623@kernel.org>
+ <09793a72-bfe5-4cb5-a6da-ffee565e6956@kernel.org>
+ <20240311091111.53191e08@kernel.org>
 Content-Language: en-US
-To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
-Cc: mhocko@suse.com, zokeefe@google.com, shy828301@gmail.com,
- xiehuan09@gmail.com, songmuchun@bytedance.com, minchan@kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240308074921.45752-1-ioworker0@gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240308074921.45752-1-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20240311091111.53191e08@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 08.03.24 08:49, Lance Yang wrote:
-> The patch reduces the process visible downtime during hugepage
-> collapse. This is achieved by pre-zeroing the hugepage before
-> acquiring mmap_lock(write mode) if nr_pte_none >= 256, without
-> affecting the efficiency of khugepaged.
+On 11/03/2024 17:11, Jakub Kicinski wrote:
+> On Sun, 10 Mar 2024 12:47:19 +0100 Krzysztof Kozlowski wrote:
+>>> FWIIW, I think this relates to review of an RFC of this patch-set.
+>>>
+>>> https://lore.kernel.org/netdev/CACRpkda8tQ2u4+jCrpOQXbBd84oW98vmiDgU+GgdYCHuZfn49A@mail.gmail.com/  
+>>
+>> OK, then this is v2. RFC is state of patch, not some sort of version. Or
+>> just use b4 which handles this automatically...
 > 
-> On an Intel Core i5 CPU, the process visible downtime during
-> hugepage collapse is as follows:
-> 
-> | nr_ptes_none  | w/o __GFP_ZERO | w/ __GFP_ZERO  |  Change |
-> --------------------------------------------------—----------
-> |      511      |     233us      |      95us      |  -59.21%|
-> |      384      |     376us      |     219us      |  -41.20%|
-> |      256      |     421us      |     323us      |  -23.28%|
-> |      128      |     523us      |     507us      |   -3.06%|
-> 
-> Of course, alloc_charge_hpage() will take longer to run with
-> the __GFP_ZERO flag.
-> 
-> |       Func           | w/o __GFP_ZERO | w/ __GFP_ZERO |
-> |----------------------|----------------|---------------|
-> | alloc_charge_hpage   |      198us     |      295us    |
-> 
-> But it's not a big deal because it doesn't impact the total
-> time spent by khugepaged in collapsing a hugepage. In fact,
-> it would decrease.
+> Eh, hum. He does according to the X-Mailer header. More importantly
+> I thought the RFC to PATCH transition resetting version numbering
+> is how we always operated. Maybe b4 should be fixed?
 
-It does look sane to me and not overly complicated.
+No, it does not reset the version number, because RFC->PATCH does not
+mean that suddenly there were no reviews or changes. We all count in
+brains from 1, so whatever we see - RFC, RFT, RFkisses or hugs - is the
+first version we see. Then next one, whatever it is called PATCH,
+RF-non-comments, RFmorekisses, is v2.
 
-But, it's an optimization really only when we have quite a bunch of 
-pte_none(), possibly repeatedly so that it really makes a difference.
+There are RFCs which go to "v4", with significant discussion and review,
+thus natural next version is "5", not "1".
 
-Usually, when we repeatedly collapse that many pte_none() we're just 
-wasting a lot of memory and should re-evaluate life choices :)
+It's extremely confusing for me to be involved in some sort four
+revisions of RFC and the suddenly see v1. What happened with my
+comments? Why its state should be the same as new submission state?
 
-So my question is: do we really care about it that much that we care to 
-optimize?
+Plus, people do not understand or do not have the same meaning of RFC.
+Some people send RFC with meaning "do not apply, just some
+work-in-progress" but some send as regular patch with intention to
+apply. I really, really saw exactly these two approaches.
 
-But again, LGTM.
+So no, after RFC v1, goes PATCH v2, after RFC v5, goes PATCH v6.
 
--- 
-Cheers,
-
-David / dhildenb
+Best regards,
+Krzysztof
 
 
