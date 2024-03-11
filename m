@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-99378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D522878786
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:38:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05E4C87878D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 19:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FC921C2122B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:38:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B622E285AC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 18:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959B95732E;
-	Mon, 11 Mar 2024 18:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24FC58107;
+	Mon, 11 Mar 2024 18:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DU5+xj9a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gXdi7d7P"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B9C54F92;
-	Mon, 11 Mar 2024 18:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0180E5788B;
+	Mon, 11 Mar 2024 18:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710182202; cv=none; b=YwTd+zpC8z+G8dTERm66/Pjz63p1tGio84giokVYHI/AcGEgjgvHdSp4q9Q957ww4DXhuFDkA0slk10RUh0g79FO21gTb8tZraEpfGMfh0x8HAvk/bNdMusq0Bof6XTUs3rN2/uC9TEeYyzyRKFiCWYXOkJetOzueQIzJUI4WS4=
+	t=1710182207; cv=none; b=YHPub1tGiTCdRwMbxcFa5s8nmhcd1rzdeHMI6shkEMgse6t99Jyokrqx+J/8jH7nxAfw9hd+U5wl05VdE0xJ3VSqDgCDsQNe5y8PkbGhyzFLLGbW9zeZDsEthrcsvQIUZdNCFYhSyzSLP41Pkk7Jb5BptTJ2dAGeKfOHt3KzaQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710182202; c=relaxed/simple;
-	bh=d3YjCGegKBiNlaqnlaRwjobA7R6W5+YKEQ2B++yBx3M=;
+	s=arc-20240116; t=1710182207; c=relaxed/simple;
+	bh=TrTV18yl4VRw9q2qnX3Xx3k96Du1jyisaNz4ZlqRnRU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Lex22auwmzB3CI4+R8OnSjEnyKv/AQHDZrJCvbhJlB3Xfb3BOD85k5bd6QWPR4rzucY+4zIfnnVapXcVI/eOfhB9Vzj10al7MQX4QFpEGGoalWcAYsV6BPuT742BlzS1LV+iQP9JvY61+Et3XsKmOdCakYQ6FqItSdpvHCmo6OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DU5+xj9a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 135C2C433B1;
-	Mon, 11 Mar 2024 18:36:35 +0000 (UTC)
+	 MIME-Version; b=ZQr4DAxIQ4Q9981+z3sXvkF1snGLuDDOVxd/cRYtu0nmwRvTlAWTJp8p2oQc+RGW95J6K75KG8Ih2K72rGqFxq+vjNnYgM4CrhN114ahVSHYBINlmH8eldKizdUSN5yUswbND2fxegASaD20XYgFhajOlSfeQzUMvTm1xgeccH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gXdi7d7P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BAA4C43390;
+	Mon, 11 Mar 2024 18:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710182202;
-	bh=d3YjCGegKBiNlaqnlaRwjobA7R6W5+YKEQ2B++yBx3M=;
+	s=k20201202; t=1710182206;
+	bh=TrTV18yl4VRw9q2qnX3Xx3k96Du1jyisaNz4ZlqRnRU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DU5+xj9a0ciaoyGi6PbqdB/IvKkrzlGFksa8r1LshjvX3P+5OnwnYbxhmDYDd9IpI
-	 pqnV82dYwPM+99jCLBsbo4fJ7OsKlExT6yUWc+t5kmhcGqWwzgYSYcKarAITgwE78h
-	 9e10cotB/TpexgnzVLoo+SWUpRfKswDDVio6mx99JZl1A0Ziq8/R4n+Cs1ahN0c85P
-	 HzIdJQ3HH7MN9Dv0STXcgh0f8l+UO1eI9oWW5vHCLDpTHFage1vaUyt7/KM3xx765T
-	 JmMi6ZJVFYhg5JdDtWF1BrnIAHlTUf1ItME7HhjZaHPfprx2zxXyR4RaK2wqZ6AoIM
-	 JFPtOA2y/fjnA==
+	b=gXdi7d7PiL2ZsP8LlxeRWcHq6s//+XiS3dknpwlJ1jjB0XsZ6/8UpzQ7R9ub6LILl
+	 LzlotnxuTETVwPGTHpcn7HvjD3LAx41FftnF9qgvNZT5Px9V528QCI2Lf9Ibx9x7uH
+	 DUHZ2l6gY59WF7ijyjDCB+zVkZrTRHPHRQ3rqTtPlTFN08PrO9/gu3cj6cBKfrL0L8
+	 w4BqyjJP/WiLDm2t+C1HpncQ5S7A0h3SlBDjQhytF523fbn0srbuMRuntVYd0mdU4U
+	 BtkSCD/cqq0fEgMpMsjm+cTGJ3oanQJOJsLR5OS4YXUad4zxVTm/kVqVnG+RcYTzZy
+	 kgchEl9Jdzy9g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Saurabh Sengar <ssengar@linux.microsoft.com>,
-	Michael Kelley <mhklinux@outlook.com>,
-	Wei Liu <wei.liu@kernel.org>,
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	kys@microsoft.com,
-	haiyangz@microsoft.com,
-	sthemmin@microsoft.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	x86@kernel.org,
-	devel@linuxdriverproject.org
-Subject: [PATCH AUTOSEL 6.7 04/14] x86/hyperv: Allow 15-bit APIC IDs for VTL platforms
-Date: Mon, 11 Mar 2024 14:36:07 -0400
-Message-ID: <20240311183618.327694-4-sashal@kernel.org>
+	andy.gross@linaro.org,
+	david.brown@linaro.org,
+	robh+dt@kernel.org,
+	mark.rutland@arm.com,
+	linux-arm-msm@vger.kernel.org,
+	linux-soc@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 05/14] arm64: dts: qcom: sc8280xp-crd: limit pcie4 link speed
+Date: Mon, 11 Mar 2024 14:36:08 -0400
+Message-ID: <20240311183618.327694-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311183618.327694-1-sashal@kernel.org>
 References: <20240311183618.327694-1-sashal@kernel.org>
@@ -72,56 +72,36 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.9
 Content-Transfer-Encoding: 8bit
 
-From: Saurabh Sengar <ssengar@linux.microsoft.com>
+From: Johan Hovold <johan+linaro@kernel.org>
 
-[ Upstream commit 0d63e4c0ebc2b5c329babde44fd61d3f08db814d ]
+[ Upstream commit db8138845cebcdd0c709570b8217bd052757b8df ]
 
-The current method for signaling the compatibility of a Hyper-V host
-with MSIs featuring 15-bit APIC IDs relies on a synthetic cpuid leaf.
-However, for higher VTLs, this leaf is not reported, due to the absence
-of an IO-APIC.
+Limit the WiFi PCIe link speed to Gen2 speed (500 MB/s), which is the
+speed that Windows uses.
 
-As an alternative, assume that when running at a high VTL, the host
-supports 15-bit APIC IDs. This assumption is safe, as Hyper-V does not
-employ any architectural MSIs at higher VTLs
-
-This unblocks startup of VTL2 environments with more than 256 CPUs.
-
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
-Link: https://lore.kernel.org/r/1705341460-18394-1-git-send-email-ssengar@linux.microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Message-ID: <1705341460-18394-1-git-send-email-ssengar@linux.microsoft.com>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20240223152124.20042-7-johan+linaro@kernel.org
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/hyperv/hv_vtl.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/boot/dts/qcom/sc8280xp-crd.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
-index 96e6c51515f50..cf1b78cb2d043 100644
---- a/arch/x86/hyperv/hv_vtl.c
-+++ b/arch/x86/hyperv/hv_vtl.c
-@@ -16,6 +16,11 @@
- extern struct boot_params boot_params;
- static struct real_mode_header hv_vtl_real_mode_header;
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+index ffc4406422ae2..41215567b3aed 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
++++ b/arch/arm64/boot/dts/qcom/sc8280xp-crd.dts
+@@ -563,6 +563,8 @@
+ };
  
-+static bool __init hv_vtl_msi_ext_dest_id(void)
-+{
-+	return true;
-+}
+ &pcie4 {
++	max-link-speed = <2>;
 +
- void __init hv_vtl_init_platform(void)
- {
- 	pr_info("Linux runs in Hyper-V Virtual Trust Level\n");
-@@ -38,6 +43,8 @@ void __init hv_vtl_init_platform(void)
- 	x86_platform.legacy.warm_reset = 0;
- 	x86_platform.legacy.reserve_bios_regions = 0;
- 	x86_platform.legacy.devices.pnpbios = 0;
-+
-+	x86_init.hyper.msi_ext_dest_id = hv_vtl_msi_ext_dest_id;
- }
+ 	perst-gpios = <&tlmm 141 GPIO_ACTIVE_LOW>;
+ 	wake-gpios = <&tlmm 139 GPIO_ACTIVE_LOW>;
  
- static inline u64 hv_vtl_system_desc_base(struct ldttss_desc *desc)
 -- 
 2.43.0
 
