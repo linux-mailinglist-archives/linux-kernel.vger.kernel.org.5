@@ -1,63 +1,66 @@
-Return-Path: <linux-kernel+bounces-99098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26E3E87836B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:26:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76E0287836D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9F4E281F71
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:26:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3425B1F27804
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CA463105;
-	Mon, 11 Mar 2024 15:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464E6634EE;
+	Mon, 11 Mar 2024 15:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k3gqqxI3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cDPTg6OZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5883B633EC;
-	Mon, 11 Mar 2024 15:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8960B63415;
+	Mon, 11 Mar 2024 15:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710170049; cv=none; b=tx8bwHC9rZwiB2zNpR5/Bwj8zUpNUuUIJnAcqETqGkWWB+syUl5aiSe21BwLxMFmgNGiKSp8OQfJ3ENnNjoePoJTbPpGYXhYZa9tgmXBpclc9JTpMN/gqwCJYogk4uDRml5YKwHiq+2/gFmrK14XQfXZ/aIRKeJ2UWFF2FFxHzk=
+	t=1710170052; cv=none; b=UlgdJwsduOeWMmRE5aGYCSUan5GlIgvjHMee3t5qSgRolBI/rbE70ypXBQzICrz5JSfoXuFLuVnr+bvNcKecF5tneHwNeGF/GdhRva1I3sXf6k5FEuRm1nV+oI10bVZrOFgk/RJjjVFXx6Ns9E+lybjV31rkslfYIP52agWFLVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710170049; c=relaxed/simple;
-	bh=RGrOirHE3j084FyDubnAZGEumOuMaqgWe3b9VZ19Iww=;
+	s=arc-20240116; t=1710170052; c=relaxed/simple;
+	bh=QJUVeH+AgvcFJfM6dMz3jy0Gjst7gZR+ohiyjAPqPPA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fW668D/CGqkgCTFFNm2MXeQr+F1S48bZ+cXiyxzX3F5mNUisQr1HLw7g5igq5mvsn/Gn2roYXDxjnMDenqpR6qdVIe/n7bKxd3wGePYC7JNJfWXBux/9ChVjs7eMDdPG7e3mUe8XkqK3QPREwgEzR/MKYUumib5obhH+0BzhW4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k3gqqxI3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F3F5C433F1;
-	Mon, 11 Mar 2024 15:14:07 +0000 (UTC)
+	 MIME-Version; b=hZgNNTJFZVDHCzVL3UIXKRhggex3ggMY3XFFoyXLWx/HwcAqTdh/rRT+KucJdL4xBZoteV/E4rp4QqlUKBvaFdjI81SPx+AfIpQ0/6BVLsTMGtHCxbS9ROQDYIr1TawuSo+eeOvEPzwvOhfjgtz7ml61JTF+HgdaNvBbOgIA5+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cDPTg6OZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C775C433F1;
+	Mon, 11 Mar 2024 15:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710170048;
-	bh=RGrOirHE3j084FyDubnAZGEumOuMaqgWe3b9VZ19Iww=;
+	s=k20201202; t=1710170052;
+	bh=QJUVeH+AgvcFJfM6dMz3jy0Gjst7gZR+ohiyjAPqPPA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=k3gqqxI3OJqr73QPN93LWe9swFysqMiETNXRLMaTslfmJoQQ1y2sNLcUf/e8gdROs
-	 QmXbXulHQ2Wh7hhKZfEs4fwY362myAYuiDQ4wAJSfTA2AmPRwjjECPrzAdcHDQDcTA
-	 g2Xv/dliCnHgaX5ocip41W3WRt9DDt/8uyCuuoUWHpesFTazcM6Y0wXx1NlikuBalm
-	 5zOWnO0tcqs/b0XjGfQiqldo8UctjZcd+2WiExL81sLi92oaoIfKUApVaziCWTFb8u
-	 aLtEC5avYwoi6+xiN5lajTF1lFpHrAdbjVtaCutgVT6UK6GO1wGBqsRbTXcLInMCa/
-	 3ItUUax8oCU6A==
+	b=cDPTg6OZiKPSJcCXlnIZ+DMAVfe//vGZA5UZl4Hfc6G9xWN24mkL0ZLSSY/3vdjV6
+	 gqy6kkqy9tMqo/SnLxQhmvj86rMmCXTvGKvK0jvW2mv+KsqsvDl0ZOcnNQ/qSduSSw
+	 jufqS9OtHB4gqYyK6G6sMXjL8WPX3FzlSUL+HJ4TdULJ1U2Y80vHdwhZCOdBuMNUsM
+	 IJijx3Evl1fq8JvP5Zhk81MUnEd13EeyRl2OAEzUCl2feByvjDDVvzJS1ncHUBJ/8T
+	 E/HNy9rbhQCfi4Jfke05LYKD1QKGaGmK7shsJ3EsTjm0gfOt57oee0AxKeew51YK94
+	 dodz+uVZsOwLg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kailang Yang <kailang@realtek.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Prike Liang <Prike.Liang@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	sbinding@opensource.cirrus.com,
-	luke@ljones.dev,
-	andy.chi@canonical.com,
-	shenghao-ding@ti.com,
-	ruinairas1992@gmail.com,
-	vitalyr@opensource.cirrus.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 07/13] ALSA: hda/realtek - ALC285 reduce pop noise from Headphone port
-Date: Mon, 11 Mar 2024 11:13:42 -0400
-Message-ID: <20240311151354.318293-7-sashal@kernel.org>
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	Hawking.Zhang@amd.com,
+	lijo.lazar@amd.com,
+	le.ma@amd.com,
+	James.Zhu@amd.com,
+	shane.xiao@amd.com,
+	sonny.jiang@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 08/13] drm/amdgpu: Enable gpu reset for S3 abort cases on Raven series
+Date: Mon, 11 Mar 2024 11:13:43 -0400
+Message-ID: <20240311151354.318293-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311151354.318293-1-sashal@kernel.org>
 References: <20240311151354.318293-1-sashal@kernel.org>
@@ -72,33 +75,88 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.81
 Content-Transfer-Encoding: 8bit
 
-From: Kailang Yang <kailang@realtek.com>
+From: Prike Liang <Prike.Liang@amd.com>
 
-[ Upstream commit b34bf65838f7c6e785f62681605a538b73c2808c ]
+[ Upstream commit c671ec01311b4744b377f98b0b4c6d033fe569b3 ]
 
-It had pop noise from Headphone port when system reboot state.
-If NID 58h Index 0x0 to fill default value, it will reduce pop noise.
+Currently, GPU resets can now be performed successfully on the Raven
+series. While GPU reset is required for the S3 suspend abort case.
+So now can enable gpu reset for S3 abort cases on the Raven series.
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Link: https://lore.kernel.org/r/7493e207919a4fb3a0599324fd010e3e@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Prike Liang <Prike.Liang@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/amdgpu/soc15.c | 45 +++++++++++++++++-------------
+ 1 file changed, 25 insertions(+), 20 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 75bd7b2fa4ee6..ede3f8b273d79 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3681,6 +3681,7 @@ static void alc285_hp_init(struct hda_codec *codec)
- 	int i, val;
- 	int coef38, coef0d, coef36;
+diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
+index 489c89465c78b..c373a2a3248eb 100644
+--- a/drivers/gpu/drm/amd/amdgpu/soc15.c
++++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
+@@ -584,11 +584,34 @@ soc15_asic_reset_method(struct amdgpu_device *adev)
+ 		return AMD_RESET_METHOD_MODE1;
+ }
  
-+	alc_write_coefex_idx(codec, 0x58, 0x00, 0x1888); /* write default value */
- 	alc_update_coef_idx(codec, 0x4a, 1<<15, 1<<15); /* Reset HP JD */
- 	coef38 = alc_read_coef_idx(codec, 0x38); /* Amp control */
- 	coef0d = alc_read_coef_idx(codec, 0x0d); /* Digital Misc control */
++static bool soc15_need_reset_on_resume(struct amdgpu_device *adev)
++{
++	u32 sol_reg;
++
++	sol_reg = RREG32_SOC15(MP0, 0, mmMP0_SMN_C2PMSG_81);
++
++	/* Will reset for the following suspend abort cases.
++	 * 1) Only reset limit on APU side, dGPU hasn't checked yet.
++	 * 2) S3 suspend abort and TOS already launched.
++	 */
++	if (adev->flags & AMD_IS_APU && adev->in_s3 &&
++			!adev->suspend_complete &&
++			sol_reg)
++		return true;
++
++	return false;
++}
++
+ static int soc15_asic_reset(struct amdgpu_device *adev)
+ {
+ 	/* original raven doesn't have full asic reset */
+-	if ((adev->apu_flags & AMD_APU_IS_RAVEN) ||
+-	    (adev->apu_flags & AMD_APU_IS_RAVEN2))
++	/* On the latest Raven, the GPU reset can be performed
++	 * successfully. So now, temporarily enable it for the
++	 * S3 suspend abort case.
++	 */
++	if (((adev->apu_flags & AMD_APU_IS_RAVEN) ||
++	    (adev->apu_flags & AMD_APU_IS_RAVEN2)) &&
++		!soc15_need_reset_on_resume(adev))
+ 		return 0;
+ 
+ 	switch (soc15_asic_reset_method(adev)) {
+@@ -1285,24 +1308,6 @@ static int soc15_common_suspend(void *handle)
+ 	return soc15_common_hw_fini(adev);
+ }
+ 
+-static bool soc15_need_reset_on_resume(struct amdgpu_device *adev)
+-{
+-	u32 sol_reg;
+-
+-	sol_reg = RREG32_SOC15(MP0, 0, mmMP0_SMN_C2PMSG_81);
+-
+-	/* Will reset for the following suspend abort cases.
+-	 * 1) Only reset limit on APU side, dGPU hasn't checked yet.
+-	 * 2) S3 suspend abort and TOS already launched.
+-	 */
+-	if (adev->flags & AMD_IS_APU && adev->in_s3 &&
+-			!adev->suspend_complete &&
+-			sol_reg)
+-		return true;
+-
+-	return false;
+-}
+-
+ static int soc15_common_resume(void *handle)
+ {
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
 -- 
 2.43.0
 
