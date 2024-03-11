@@ -1,152 +1,120 @@
-Return-Path: <linux-kernel+bounces-99497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 121AB87893B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:05:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5F1878948
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:07:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4427A1C21318
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:05:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325161F21844
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F7A56751;
-	Mon, 11 Mar 2024 20:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CDAF56777;
+	Mon, 11 Mar 2024 20:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="wyEKgURJ"
-Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qpKTJnaU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2C154BCC
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:05:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BAB52F82;
+	Mon, 11 Mar 2024 20:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710187514; cv=none; b=I5MH7JBqOI5gDSFFVXYWnwftosAF0wiB/FPaOvlvxM0vufPx4TrjWNB7GCQu52j8ecRVDQaIIZe+ObV5KPbA4J7g98TK2hB27HEVWgEMMjLVIIDAZ/vYPUzUq8Dhtzqzalq6MGHVUSC8jTVK6QaDOPXvlTx2EHQPHLfDBGeReL8=
+	t=1710187648; cv=none; b=A5w1up8yzpky1u/PEFT8k6dnT6lHOVUmvkFEMgn+mOL5Pl03S4XRIoE+gVMxtD5Jcf2Cl1bOt/ScmOHJdARO/XLXceZFo/trIwv7IKVFVntnni+JKfLMzGtdGSWzbFgQwDi+q9vehOiyGdaxeOH7owDlIXyd6txnBSUs9UQDy9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710187514; c=relaxed/simple;
-	bh=Dd3L8MnUZbt3XNG7D95vnVqMzNTpKO7da/OXJzhdrJY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uR56rBKFXa9oh0462xAhGjYpSAfQzWtvfIalKj/pbMX8FZuqcQ0ijA/EHHGtgnPdN8aYr71eSStTnPGTE/MP00F9i3K+yF5fhNjz/DrvA35ZpEwhLDhIH6Hn3PL1PYA8iymUp4BhvaHzzDEmFkiGhXvedKyMo0hDCOnUCrFMQvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=wyEKgURJ; arc=none smtp.client-ip=37.205.15.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id C4DE01CFAE6;
-	Mon, 11 Mar 2024 21:05:08 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1710187509; bh=UR9/fHtF3ylhFb+vQrKq2FopW5DRuWNRssvKZI8ZonY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=wyEKgURJ/lwuVhrDSJ9tPWRN7winKNNaRknwXJWxewn2lpx4cAtHvgJs6XzuZc9vo
-	 6iX4aBnh3QizG7IyItjoQqmj1Uuz7zyTUDcIlEhiYP1iTTk7MV8m9O+yZZ8nZD7sjI
-	 Jlsvq3IsJaOuCWgX+yRbAGwnA+jNnno69KDEpJ5hjY4nwdSD46calyYGhDtlz82aia
-	 JyvClztpcOJYNRLHUUR9oN3Z/J6n/0+p8YP+Gb73meFyME9cVtiajKOcmwHIyDLGgA
-	 dlRY+OOfeCBWrU8nCdPTp+NHfgx8VMxJJp1x7IPyS1juHZwMhY/8L7iDDqTKop9M6e
-	 MArHNeOxOk1kA==
-Date: Mon, 11 Mar 2024 21:05:07 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Will Deacon <will@kernel.org>, Nicolin Chen <nicolinc@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
- iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
- Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
- <decui@microsoft.com>, Michael Kelley <mhklinux@outlook.com>
-Subject: Re: [PATCH v6 4/6] swiotlb: Fix alignment checks when both
- allocation and DMA masks are present
-Message-ID: <20240311210507.217daf8b@meshulam.tesarici.cz>
-In-Reply-To: <20240308152829.25754-5-will@kernel.org>
-References: <20240308152829.25754-1-will@kernel.org>
-	<20240308152829.25754-5-will@kernel.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1710187648; c=relaxed/simple;
+	bh=WBtBCCMn2JMwUS5VVGHL+yTt7qkPpG1ZJQA8yWr+M5w=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=bG6w2vd26Z3a9bPZd5Yu5/LbJz2G/MAXsAP21Sk5WRQrcYLPnk+seuRBTlaseyTIhE12Pi7Hn83Llf/p2S47pB6NkbeTrHANpPuFkxKyQP2rJfjrV5neu4W8eT8Vp+cHS9n7Tl1JUWl1JgIqFI+IofAwvqx+hSQdOIQWbbn2Zro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qpKTJnaU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DBBCC433F1;
+	Mon, 11 Mar 2024 20:07:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710187648;
+	bh=WBtBCCMn2JMwUS5VVGHL+yTt7qkPpG1ZJQA8yWr+M5w=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=qpKTJnaURjnr9qyMxxS06UflehxFUN6v0OqYQKl6DqRi1nweRVVV/ivK1D5TMqyUe
+	 Go3Ar0AuaK6I7kVk1CdNT9w1bSz26h92HPVVGtPkpGcCqw3VXKlZSK1lxVU3tFP1hu
+	 CBoQTBN7JDL2FRIWrHHc8Gu09GGXq5pYvbFPRFJBNc3GXeL54y441hKHV+TmCLqTo+
+	 ViEDNTStK3tlBuz3EG/eoeOvj52RkgMZD13LEiA/dOCeFD8J3qagtJUO2vFm6a2XWp
+	 ZugulwiUUCbthW5vQ8oE9hwGR+oRtQY9o46qnBscOszPbc5RGMAMEMqkv54kJKxdHs
+	 17b+JtrrT6lWg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 11 Mar 2024 22:07:19 +0200
+Message-Id: <CZR6X7KLX6NC.1BH2NHDTNL3C@kernel.org>
+Cc: "Mimi Zohar" <zohar@linux.ibm.com>, "James Bottomley"
+ <jejb@linux.ibm.com>, "Herbert Xu" <herbert@gondor.apana.org.au>, "David S.
+ Miller" <davem@davemloft.net>, "Shawn Guo" <shawnguo@kernel.org>, "Jonathan
+ Corbet" <corbet@lwn.net>, "Sascha Hauer" <s.hauer@pengutronix.de>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>, "Fabio Estevam"
+ <festevam@gmail.com>, "NXP Linux Team" <linux-imx@nxp.com>, "Ahmad Fatoum"
+ <a.fatoum@pengutronix.de>, "sigma star Kernel Team"
+ <upstream+dcp@sigma-star.at>, "David Howells" <dhowells@redhat.com>, "Li
+ Yang" <leoyang.li@nxp.com>, "Paul Moore" <paul@paul-moore.com>, "James
+ Morris" <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, "Paul E.
+ McKenney" <paulmck@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, "Rafael J. Wysocki"
+ <rafael.j.wysocki@intel.com>, "Tejun Heo" <tj@kernel.org>, "Steven Rostedt
+ (Google)" <rostedt@goodmis.org>, <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+ "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>, "Richard Weinberger"
+ <richard@nod.at>, "David Oberhollenzer" <david.oberhollenzer@sigma-star.at>
+Subject: Re: [PATCH v6 3/6] KEYS: trusted: Introduce NXP DCP-backed trusted
+ keys
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "David Gstir" <david@sigma-star.at>
+X-Mailer: aerc 0.17.0
+References: <20240307153842.80033-1-david@sigma-star.at>
+ <20240307153842.80033-4-david@sigma-star.at>
+ <CZNRMR5YZPQO.1QBLW62A6S840@kernel.org>
+ <655221B7-634C-4493-A781-CF014DFFC8BF@sigma-star.at>
+In-Reply-To: <655221B7-634C-4493-A781-CF014DFFC8BF@sigma-star.at>
 
-On Fri,  8 Mar 2024 15:28:27 +0000
-Will Deacon <will@kernel.org> wrote:
+On Fri Mar 8, 2024 at 9:17 AM EET, David Gstir wrote:
+> Hi Jarkko,
+>
+> > On 07.03.2024, at 20:30, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> [...]
+>
+> >> +
+> >> +static int trusted_dcp_init(void)
+> >> +{
+> >> + int ret;
+> >> +
+> >> + if (use_otp_key)
+> >> + pr_info("Using DCP OTP key\n");
+> >> +
+> >> + ret =3D test_for_zero_key();
+> >> + if (ret) {
+> >> + pr_err("Test for zero'ed keys failed: %i\n", ret);
+> >=20
+> > I'm not sure whether this should err or warn.
+> >=20
+> > What sort of situations can cause the test the fail (e.g.
+> > adversary/interposer, bad configuration etc.).
+>
+> This occurs when the hardware is not in "secure mode". I.e. it=E2=80=99s =
+a bad configuration issue.
+> Once the board is properly configured, this will never trigger again.
+> Do you think a warning is better for this then?
 
-> Nicolin reports that swiotlb buffer allocations fail for an NVME device
-> behind an IOMMU using 64KiB pages. This is because we end up with a
-> minimum allocation alignment of 64KiB (for the IOMMU to map the buffer
-> safely) but a minimum DMA alignment mask corresponding to a 4KiB NVME
-> page (i.e. preserving the 4KiB page offset from the original allocation).
-> If the original address is not 4KiB-aligned, the allocation will fail
-> because swiotlb_search_pool_area() erroneously compares these unmasked
-> bits with the 64KiB-aligned candidate allocation.
-> 
-> Tweak swiotlb_search_pool_area() so that the DMA alignment mask is
-> reduced based on the required alignment of the allocation.
-> 
-> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
-> Reported-by: Nicolin Chen <nicolinc@nvidia.com>
-> Link: https://lore.kernel.org/r/cover.1707851466.git.nicolinc@nvidia.com
-> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-> Reviewed-by: Michael Kelley <mhklinux@outlook.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  kernel/dma/swiotlb.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index c20324fba814..c381a7ed718f 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -981,8 +981,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->  	dma_addr_t tbl_dma_addr =
->  		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
->  	unsigned long max_slots = get_max_slots(boundary_mask);
-> -	unsigned int iotlb_align_mask =
-> -		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
-> +	unsigned int iotlb_align_mask = dma_get_min_align_mask(dev);
->  	unsigned int nslots = nr_slots(alloc_size), stride;
->  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
->  	unsigned int index, slots_checked, count = 0, i;
-> @@ -993,6 +992,14 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->  	BUG_ON(!nslots);
->  	BUG_ON(area_index >= pool->nareas);
->  
-> +	/*
-> +	 * Ensure that the allocation is at least slot-aligned and update
-> +	 * 'iotlb_align_mask' to ignore bits that will be preserved when
-> +	 * offsetting into the allocation.
-> +	 */
-> +	alloc_align_mask |= (IO_TLB_SIZE - 1);
-> +	iotlb_align_mask &= ~alloc_align_mask;
-> +
+Bad configuration is not unexpected configuration so it cannot possibly
+be an error situation as far as Linux is considered. So warning is=20
+appropriate here I'd figure.
 
-I have started writing the KUnit test suite, and the results look
-incorrect to me for this case.
-
-I'm calling swiotlb_tbl_map_single() with:
-
-* alloc_align_mask = 0xfff
-* a device with min_align_mask = 0xfff
-* the 12 lowest bits of orig_addr are 0xfa0
-
-The min_align_mask becomes zero after the masking added by this patch,
-and the 12 lowest bits of the returned address are 0x7a0, i.e. not
-equal to 0xfa0.
-
-In other words, the min_align_mask constraint is not honored. Of course,
-given the above values, it is not possible to honor both min_align_mask
-and alloc_align_mask. I find it somewhat surprising that NVMe does not
-in fact require that the NVME_CTRL_PAGE_SHIFT low bits are preserved,
-as suggested by Nicolin's successful testing.
-
-Why is that?
-
-Does IOMMU do some additional post-processing of the bounce buffer
-address to restore the value of bit 11?
-
-Or is this bit always zero in all real-world scenarios?
-
-Petr T
+BR, Jarkko
 
