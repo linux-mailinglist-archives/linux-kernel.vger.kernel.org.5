@@ -1,122 +1,179 @@
-Return-Path: <linux-kernel+bounces-98843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9E5A87802C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:56:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA2C87802F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:58:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 106C91C2160D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B07D1C21096
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812C43CF7E;
-	Mon, 11 Mar 2024 12:56:35 +0000 (UTC)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F253D388;
+	Mon, 11 Mar 2024 12:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MeW2k1ZU"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA7B22064;
-	Mon, 11 Mar 2024 12:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.40.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DFC22064;
+	Mon, 11 Mar 2024 12:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710161795; cv=none; b=CLYmfL7+YqX8LNxQJTfiNJ8JPedlrttOBKlFp/tWW64Ea7raQap+DNgxlR5WUiW128rdu2afSY1MDZn0HLzdR97E2f4vKcoGm8+MYiwl8NKkpcdZcDq2EtTIHXXMQLflzchfNC3nXeeHSyjwsBqhrhPYSXIbRmBi/jQLGTQkbJ0=
+	t=1710161880; cv=none; b=LLAtxWkZ0W/DCN4jVCqhlMa5xt9VICMATqb9SzARQ6vg11C8zsm3fJCGArwHCHqQLvE6bZah5EFDVtkQbs1qFwpawaXcxlNy+3K8wDAIX7jCZ7Eyf/U/CnWqUK06Sk8lHX4AKHO/Sgy3+cC3Wlcr9rlYDCywwNmmHXAihnxbgWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710161795; c=relaxed/simple;
-	bh=YOWPvJ1PovYucPG7scHldyK0kJUpjkmbzRBUpiky0aA=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=ea4MaOVx2Z/bXUy9nJIr2Jumxsm9GWX4HYjU82fSu+mKn8+3/UVHkd05C/DYUTPaPsInDqUMdoYtZSKxwFBM1OJB+j479WPC8ChYCkrygG6JnLy7rQoebE5cZXf61nvlYNeuFF33yofMwP8CKfRnxt+Sw1RCKefZIetWrMUoBeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at; spf=fail smtp.mailfrom=nod.at; arc=none smtp.client-ip=195.201.40.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id CEA126450941;
-	Mon, 11 Mar 2024 13:56:28 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id PXZWRRISZQ8B; Mon, 11 Mar 2024 13:56:28 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 1F4376450948;
-	Mon, 11 Mar 2024 13:56:28 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id aRa4meSvKNMG; Mon, 11 Mar 2024 13:56:28 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id EB0836450941;
-	Mon, 11 Mar 2024 13:56:27 +0100 (CET)
-Date: Mon, 11 Mar 2024 13:56:27 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Christian Heusel <christian@heusel.eu>
-Cc: David Woodhouse <dwmw2@infradead.org>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	kernel-janitors <kernel-janitors@vger.kernel.org>
-Message-ID: <1349276201.40757.1710161787719.JavaMail.zimbra@nod.at>
-In-Reply-To: <b4oa6jak7f4hiaqcqpmasclaylqdhdzgne75a6nol6z33d4o7z@3soexkn4smz4>
-References: <20240211003907.167891-1-christian@heusel.eu> <b4oa6jak7f4hiaqcqpmasclaylqdhdzgne75a6nol6z33d4o7z@3soexkn4smz4>
-Subject: Re: [PATCH] jffs2: print symbolic error name instead of error code
+	s=arc-20240116; t=1710161880; c=relaxed/simple;
+	bh=EUyIvcW8FlmcqL302oY0iGqszU3ChNJmaialSfxbKz0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=gDRqz75XFOvbW9RfYqL58399XaBDHvjv3gUFDBw8PLbd7GgzX181ZrULtmMlaBesFIrDi/K/9TO4w29VCoKwyfRfj7fdAxcJmJVesivknmHG71BCDZ776JXhP3WMWN8nLgY9fa7g0MphLoE82xidLup/FQZ/aFHp33oKySj3xNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MeW2k1ZU; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d8ddbac4fbso3673312a12.0;
+        Mon, 11 Mar 2024 05:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710161878; x=1710766678; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xQxHW+GvX+Ck+RHTpVlbPLH7yeTCk+IQ8c2Qe9Rhlfc=;
+        b=MeW2k1ZUZL14Ni1VyyQPsbzawDUADeIPJLzUj8R8VV1BWsIxizYQ21j1IVdx2nD989
+         ffe5gYYKAkDmhF+1Kzx4XotHoXaBXIQ1jBnhNsO+40AaENCHuC7ELXAQt/aKQbZPRZ6o
+         mdhaRrM7zTdlGHgnE1ERYHAvWOSuo9G4wEDnhdJMFQMWpV+t1vZuWL0VwH1cZoQgTUgZ
+         tFYtY30QJPj4HzS2vrGIw1hJ4isWrn0lKrilNGuA56Jvy5fGEKv2NXX8R7ufnuSD1dv5
+         fC/UChXSs1XC2N8g+jGTWByLwtm7idGWSyFIRmSU6bmzVKlOyt+XJNEglFoNpLZCnQJQ
+         RCCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710161878; x=1710766678;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xQxHW+GvX+Ck+RHTpVlbPLH7yeTCk+IQ8c2Qe9Rhlfc=;
+        b=F5R+GDpaVKo437MxQiPgUMYBuGzIHnPtxcTdfJYgs308jU16RMqVik97kPn7H9vRkB
+         3DRsvEdR8AlRPm4r2YlLc7CYBWf+hrfu0pJ4zqoLYAeW2eS1J3G1ETj+E/NJsm7I26hM
+         AbkaqLYjUtWxBtccDjlvm1Fv6hlof8azQkoQwTb1EYPQF4vCLIaYsQJWtq9US0uQ1fGo
+         IE+SIAy2oH94OyMCRHXMutLJZJOVBGeMXNoECOddi/qebJng3rTUE/MsfmHel/6waam7
+         nW+jhFrdOq38HQRYSADigMPma2l0c8h4Alt0SgCAq7vOVubUxvQ8Y2M5MTC3vAwi0KLQ
+         QHNw==
+X-Forwarded-Encrypted: i=1; AJvYcCVu8+CipPsXnOwW4HAFkqmzJMw3pZ30ZKIU3+raqsvoZOs2yfd1W+F4GtvGwliLh53+7m1AfzxUMHjIsgi5Q0w18CQvRiqw/p/HnE8d
+X-Gm-Message-State: AOJu0Yw/ppvkEetdiUnIaMl2Ic1qC5I2+pbsP7hyM/7QXel/jN3GpQvK
+	G3iNRFJEk9fqVNqcsx5YTo2zE9XBIlgk5JjxX2+p0MB1plylopqJeNKYLKDd7dc=
+X-Google-Smtp-Source: AGHT+IH7NpuCKxknX3Cmttbabr0nc9IaOJ6HIjgROFgO63EbeUm9OpYEWutFQBq+Yqm4cbsZzTLhjA==
+X-Received: by 2002:a05:6a20:d48c:b0:1a1:7fbf:6a9f with SMTP id im12-20020a056a20d48c00b001a17fbf6a9fmr8353604pzb.46.1710161878399;
+        Mon, 11 Mar 2024 05:57:58 -0700 (PDT)
+Received: from VM-147-239-centos.localdomain ([43.132.141.3])
+        by smtp.gmail.com with ESMTPSA id y6-20020a17090322c600b001dd98195371sm2394255plg.181.2024.03.11.05.57.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 Mar 2024 05:57:58 -0700 (PDT)
+From: Yongzhi Liu <hyperlyzcs@gmail.com>
+To: hdegoede@redhat.com,
+	wentong.wu@intel.com,
+	gregkh@linuxfoundation.org,
+	andi.shyti@linux.intel.com
+Cc: linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jitxie@tencent.com,
+	huntazhang@tencent.com,
+	Yongzhi Liu <hyperlyzcs@gmail.com>
+Subject: [PATCH V3] usb: misc: ljca: Fix double free in error handling path
+Date: Mon, 11 Mar 2024 20:57:48 +0800
+Message-Id: <20240311125748.28198-1-hyperlyzcs@gmail.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <36e56422-d027-4edd-af6e-8ebcebc1dfe3@redhat.com>
+References: <36e56422-d027-4edd-af6e-8ebcebc1dfe3@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: jffs2: print symbolic error name instead of error code
-Thread-Index: W9U2fKy9ORNwIjN+anjPvwswt4VI2w==
+Content-Transfer-Encoding: 8bit
 
------ Urspr=C3=BCngliche Mail -----
-> Von: "Christian Heusel" <christian@heusel.eu>
-> An: "David Woodhouse" <dwmw2@infradead.org>, "richard" <richard@nod.at>, =
-"linux-mtd" <linux-mtd@lists.infradead.org>,
-> "linux-kernel" <linux-kernel@vger.kernel.org>
-> CC: "kernel-janitors" <kernel-janitors@vger.kernel.org>
-> Gesendet: Montag, 11. M=C3=A4rz 2024 13:47:40
-> Betreff: Re: [PATCH] jffs2: print symbolic error name instead of error co=
-de
+When auxiliary_device_add() returns error and then calls
+auxiliary_device_uninit(), callback function ljca_auxdev_release
+calls kfree(auxdev->dev.platform_data) to free the parameter data
+of the function ljca_new_client_device. The callers of
+ljca_new_client_device shouldn't call kfree() again
+in the error handling path to free the platform data.
 
-> On 24/02/11 01:39AM, Christian Heusel wrote:
->> Utilize the %pe print specifier to get the symbolic error name as a
->> string (i.e "-ENOMEM") in the log message instead of the error code to
->> increase its readablility.
->>=20
->> This change was suggested in
->> https://lore.kernel.org/all/92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.m=
-ountain/
->>=20
->> Signed-off-by: Christian Heusel <christian@heusel.eu>
->> ---
->>  fs/jffs2/background.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
->> index 6da92ecaf66d..bb0ee1a59e71 100644
->> --- a/fs/jffs2/background.c
->> +++ b/fs/jffs2/background.c
->> @@ -44,8 +44,8 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb=
-_info
->> *c)
->>=20
->>  =09tsk =3D kthread_run(jffs2_garbage_collect_thread, c, "jffs2_gcd_mtd%=
-d",
->>  =09c->mtd->index);
->>  =09if (IS_ERR(tsk)) {
->> -=09=09pr_warn("fork failed for JFFS2 garbage collect thread: %ld\n",
->> -=09=09=09-PTR_ERR(tsk));
->> +=09=09pr_warn("fork failed for JFFS2 garbage collect thread: %pe\n",
->> +=09=09=09tsk);
->>  =09=09complete(&c->gc_thread_exit);
->>  =09=09ret =3D PTR_ERR(tsk);
->>  =09} else {
->> --
->> 2.43.1
->=20
-> Friendly ping on the above patch, since it's now a month after sending
-> it :)
+Fix this by cleaning up the redundant kfree() in all callers and
+adding kfree() the passed in platform_data on errors which happen
+before auxiliary_device_init() succeeds .
 
-Thanks for the ping. Your patch looks good. I'll queue it.
+Fixes: acd6199f195d ("usb: Add support for Intel LJCA device")
+Signed-off-by: Yongzhi Liu <hyperlyzcs@gmail.com>
+---
+ drivers/usb/misc/usb-ljca.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-Thanks,
-//richard
+diff --git a/drivers/usb/misc/usb-ljca.c b/drivers/usb/misc/usb-ljca.c
+index 35770e608c64..2d30fc1be306 100644
+--- a/drivers/usb/misc/usb-ljca.c
++++ b/drivers/usb/misc/usb-ljca.c
+@@ -518,8 +518,10 @@ static int ljca_new_client_device(struct ljca_adapter *adap, u8 type, u8 id,
+ 	int ret;
+ 
+ 	client = kzalloc(sizeof *client, GFP_KERNEL);
+-	if (!client)
++	if (!client) {
++		kfree(data);
+ 		return -ENOMEM;
++	}
+ 
+ 	client->type = type;
+ 	client->id = id;
+@@ -535,8 +537,10 @@ static int ljca_new_client_device(struct ljca_adapter *adap, u8 type, u8 id,
+ 	auxdev->dev.release = ljca_auxdev_release;
+ 
+ 	ret = auxiliary_device_init(auxdev);
+-	if (ret)
++	if (ret) {
++		kfree(data);
+ 		goto err_free;
++	}
+ 
+ 	ljca_auxdev_acpi_bind(adap, auxdev, adr, id);
+ 
+@@ -590,12 +594,8 @@ static int ljca_enumerate_gpio(struct ljca_adapter *adap)
+ 		valid_pin[i] = get_unaligned_le32(&desc->bank_desc[i].valid_pins);
+ 	bitmap_from_arr32(gpio_info->valid_pin_map, valid_pin, gpio_num);
+ 
+-	ret = ljca_new_client_device(adap, LJCA_CLIENT_GPIO, 0, "ljca-gpio",
++	return ljca_new_client_device(adap, LJCA_CLIENT_GPIO, 0, "ljca-gpio",
+ 				     gpio_info, LJCA_GPIO_ACPI_ADR);
+-	if (ret)
+-		kfree(gpio_info);
+-
+-	return ret;
+ }
+ 
+ static int ljca_enumerate_i2c(struct ljca_adapter *adap)
+@@ -629,10 +629,8 @@ static int ljca_enumerate_i2c(struct ljca_adapter *adap)
+ 		ret = ljca_new_client_device(adap, LJCA_CLIENT_I2C, i,
+ 					     "ljca-i2c", i2c_info,
+ 					     LJCA_I2C1_ACPI_ADR + i);
+-		if (ret) {
+-			kfree(i2c_info);
++		if (ret)
+ 			return ret;
+-		}
+ 	}
+ 
+ 	return 0;
+@@ -669,10 +667,8 @@ static int ljca_enumerate_spi(struct ljca_adapter *adap)
+ 		ret = ljca_new_client_device(adap, LJCA_CLIENT_SPI, i,
+ 					     "ljca-spi", spi_info,
+ 					     LJCA_SPI1_ACPI_ADR + i);
+-		if (ret) {
+-			kfree(spi_info);
++		if (ret)
+ 			return ret;
+-		}
+ 	}
+ 
+ 	return 0;
+-- 
+2.36.1
+
 
