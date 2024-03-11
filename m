@@ -1,271 +1,214 @@
-Return-Path: <linux-kernel+bounces-98993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E6B878205
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:49:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 248E1878208
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A57A1C21765
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:49:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEF621F2387D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62749446D3;
-	Mon, 11 Mar 2024 14:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256B44174A;
+	Mon, 11 Mar 2024 14:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="M57tLDJC";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="7aktardZ"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="v08lnKaG"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2050.outbound.protection.outlook.com [40.107.223.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E03D446BD
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710168529; cv=none; b=Frf6WKWKOUlsyTlyaYNK+Ya3O2iEphXUNELX5N5k9Dtaxq+TFCC7mdXVJsTYPf1ERMOcqev1ByZoXYiXyHtZIQzKra1gAsiMCIcHT5H6vlniXos5lP3d/SkfHD0nJJOq0PGIA/soCyBohbjzLMvGsANb6kDFN4qnWRn/RMCelxE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710168529; c=relaxed/simple;
-	bh=ysVqqR7SLOMO/FjxJCCwZfvV0GMIGtMY+d9+ljZInOU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DpKuoFuzJVdanX2AxU6HzialX/FJFXtJxcj04NqBk3lJaGjNo1wLoNyIPaV9n/3uXuT8nVb+g9tnlPiCxI7Y0ouUGY8BBWKl9AppMpXyQX2PN1cvw6cTtn58DRuDmVR8CPmy6pw58Xd8bhEQLJf77sPL4isau6MsdxCizV3+qqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=M57tLDJC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=7aktardZ; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710168525;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nfJAQs2hKQxLNR77U6uStXoAhiAS5rDNvv3whnriMBc=;
-	b=M57tLDJCUdybTdIIQ6gSX5WazFpSwbUd2PV/olOEoq7C0B0ffzlG/+EBkuYAB17dwGqDeK
-	mH/za+3fwAG+c1QNIZrmucExRI1GvPfAGb85/JacKckPOon05QNInpaw4CPgaSF8p+bYmA
-	rT4QvQTpLsDqoBInNxOv05U942djNcetlAH1QhmifZVY+msh2YZ4gC8K0RP6h0TzAyr4KB
-	3p+76OZXu0o/0R9qqtt8oeFf9RznHpDWIZAV0USAwJm2XbXB5mfSAETp3GfXZLt9//abio
-	1hitOKg3RE7SiUB91SQR0ppOYRSeXuFkGlWe/ECKc8OKeSnsq/16tW6/I2vjhg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710168525;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nfJAQs2hKQxLNR77U6uStXoAhiAS5rDNvv3whnriMBc=;
-	b=7aktardZjQvMc4bpILuI88zPfNkaWAqIoBg2vkEOX0ew9z+SeX9j0hZGHro3YlYT0mIdhb
-	qu+h9+fW0qwAp1Cg==
-To: Sean Anderson <sean.anderson@seco.com>, Mirsad Todorovac
- <mirsad.todorovac@alu.unizg.hr>, linux-kernel@vger.kernel.org
-Cc: Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [BUG] KCSAN: data-race in tick_nohz_idle_stop_tick /
- tick_nohz_next_event
-In-Reply-To: <83b3c900-d4eb-457f-99e6-cb21e0eae4cb@seco.com>
-References: <40ac9903-469a-b1ea-4339-8b06f855450e@alu.unizg.hr>
- <3993c468-fdac-2ff2-c3ee-9784c098694c@alu.unizg.hr>
- <83b3c900-d4eb-457f-99e6-cb21e0eae4cb@seco.com>
-Date: Mon, 11 Mar 2024 15:48:45 +0100
-Message-ID: <87a5n4rfhu.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF8440BEF
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710168554; cv=fail; b=riP39KCwCIXsiPsKuhyWXyzf5mWKZjhtRU8ztHNL+okRiq9/VyZmqBg3KatjJi6JQvAoBtlE6NDT3Urpw4XrvH3BkLKPCOE0fhXhsNdaC3tr0bgfgKY4J5j8fXhlvNHSRLpwgHmt90fhDl0m8AQI+4U66CZ0UHoyV8igtB1X8X0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710168554; c=relaxed/simple;
+	bh=H/c+F43DsclUdC/JobONATNvZfbMRBHzSzB1/Lqs3k4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=iW5NSbgqgCjx7r4AbXjjutsnMo4I0s6TWfUn7R3qeOBZBkmTMz8D1ZKa9XjYFj2bBGD1Zlt3qh1ZF8U9Y55pUsFTOMfVu9dfFCNVYIMmxkrjijojE6caUGI7cCnz6371hYGiQSveKf3e5AOlKWLtH1B+rKhEFbWbzewG7agzg9k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=v08lnKaG; arc=fail smtp.client-ip=40.107.223.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O9WQmBUP6uVKi8DMUxW088sREbHh7Y213mQbdDxgP2cjKF2aG4/IFRU54inqfarPczXoBp839/JeXAnjiIU6RFO8hRjTTUp2XB8C0PcmW9owDT/8zWXkdYY1llfbZoKQO3OM104hweXJMrrdvoPccGC8Me4wZsv0AKIVJoh1fitNi+MPKwSqh/aItMe6chu81wcfuX59EBcx0nxoMQCQDNOdkh2CpG614R9t/Zj9Ld8NIy70jZuvI6f4fFwpKuZ+2zDJ8ApQwPYdGZ1+mfhL2k91okv/YTmaECQ7lpbJaR06WgaFDyOnp/sLPv0ADf9XQsJB/FWEKam00ASW5PsSQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7nNpP+RheVvnOEGJLv/BnKRqbgHJqI24w1TTX2WWqjA=;
+ b=Y+A4hLEAUpztoBOoZACF+EHPiwW33tVYrpSqxBDrXt4dcxNzaSQtCB9Mvsnf/CBNTbaI+xI+BxqfxvY0MTrsjUZKHhqAR3PDXU6k9+9fEPSpsc0J9162KP3tdA1s5u1qj8aFZ8+fw/OJ3OsN0dbh9Mr0Mn2H7/52abGUgr2QphO/4b3PwBpHFQUrYH1Tj//BbZOWiXJwSt6RQUtOM1LBBEhODPsxyMoFFzynnP4cD7XwEZUU7UkRZ3+GSycHNbQWQiVLgKCRslog9v0sItMWmUxdpEpTHbX3WBnfg2NBdVgLjWegG4f39PEF3HBVfmI7M+boI72HXWvV5PC2nU54vg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7nNpP+RheVvnOEGJLv/BnKRqbgHJqI24w1TTX2WWqjA=;
+ b=v08lnKaG99NkbHg8BrQzQdqzEnYyL92ahkJPfgPPt7JXDhmPKxG1XpYEWrCTcGSKI2B6n5aXc9JjOcb/ZBcphXrQg71w79WWN+oZMwUbfzVlSVKn83BUaZOUN8XdP58f78/vT3nvUT/xVr0mF6Y8lf/eYb0rRVjHsOjaXUq5oe8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
+ by CH3PR12MB8850.namprd12.prod.outlook.com (2603:10b6:610:167::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
+ 2024 14:49:09 +0000
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6f48:e3f1:6ff9:75bd]) by PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6f48:e3f1:6ff9:75bd%4]) with mapi id 15.20.7362.031; Mon, 11 Mar 2024
+ 14:49:09 +0000
+Message-ID: <34ed7275-e1a5-4d93-8ba1-ef3c597eaef3@amd.com>
+Date: Mon, 11 Mar 2024 20:18:59 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amdgpu: add ring buffer information in devcoredump
+Content-Language: en-US
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Sunil Khatri <sunil.khatri@amd.com>, Alex Deucher
+ <alexander.deucher@amd.com>, Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240311122212.13713-1-sunil.khatri@amd.com>
+ <9e1dbcbc-f00e-417c-995e-d9c539292e03@amd.com>
+From: "Khatri, Sunil" <sukhatri@amd.com>
+In-Reply-To: <9e1dbcbc-f00e-417c-995e-d9c539292e03@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0144.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:bf::11) To PH7PR12MB5596.namprd12.prod.outlook.com
+ (2603:10b6:510:136::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|CH3PR12MB8850:EE_
+X-MS-Office365-Filtering-Correlation-Id: c47cb122-4000-4b51-9211-08dc41da6864
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	HQuJe88pifnFZ5O7qDCttO0MPyYekMy6o5VFFvK52vXG2CaKR0eiIQPweUKSv/nCgSfrnIeduG9MEqpE5TKePH8mUkW+cXtFlv3apmUv8ItHsdbPe2sUvBK3zYN6KqDg1sOTaWGFjhed6OarvpmXLu33UlfqWwhoCNViLsd+50qRTZzkbfyeE/OpnwZ1lxpiPxEvj8PibVTPb7fwsfbDIrXPHO47SllCf+xCZZacXASBYo6pW9wGdiETHV9hq+GcYEr8FDGoXSDKCO88Qci6ijCa3yfwL6X+9Fjw9oKwsK1QTKNN0pRnfyVytCaab9UKGug3NcO9dwjhbPt8LLe043zJ+yOrNXxiMNreqDTttkMfz+kacdHELSHrI7GitXrNMaYiV2H7ZavOQmvaLD1ZjK6RMggYWeVE5uYUngkax6g2/TfGcqRekHBptf5YREr8ylsoQn2PCYtiEiuWyHOZeuRMoQzbDAekuaz2gdnAMOgsmNiZ9yrGvwf4xabKA1Cgc8c6c/29i9uqQM9v+T3X67M9TDKjHkFsOjHeB275T0LB2sH1QdXYtl2gLWqKtG6m/76TMtHF9O4rtBpKv4oWpIOvDtevfsp6wS8WMlgU51UTY+PGacI3FOXpGQZy/U5GWAG8gNWZq2iRUV9JHuypfgkbvhhxOvxUD9E9RKV1JrU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WmhGQ3BGUVN1eEVySXd4aUlFU2JWcjYxRkQydzV6cnZhamV3NU0zT3ZKcDEx?=
+ =?utf-8?B?bmVZWS9kWlhpWU9Eam03VUhDSkM1ZlJvbTZBYkZHN1NUV3drYXlDNGYydGg2?=
+ =?utf-8?B?SUFRMG5VeUQrU0NHWUREbXlpcUpqN01qOWpIeG1aTzBPR2cvUG9JVi9NbFJS?=
+ =?utf-8?B?UTQzeFh2SW55RTVpOWttY3VsRzFkUHpXMmVtMCszK0d0V2ttbVJ3eTkwMzBI?=
+ =?utf-8?B?YkpGaWtwcEZLTzBxeE5uWVZ1aEp4SjJpVU9nYmozL1lOZGdvbkJ5Yk1oMW8y?=
+ =?utf-8?B?WldCcVFnOVZWdERKNEN6YkpGL2oyS0FTblY2WXFQME9GK3pVRkoycWRreGlF?=
+ =?utf-8?B?ZzkxT2NnTTFlZ2YxS3o2czNHTEdXbUVHWFVnci9MbHZqNCs5aXhpenBoS0pY?=
+ =?utf-8?B?cHp4Q2pWQXlpckM2MmpVaTJjZjVNMjZLcTdmelRQbTg0N1M4dEFPTWZIQ0VQ?=
+ =?utf-8?B?V1BOWjRWbDNuWlM4eit2cGZiYS9RM3hVLytPdnNqRm1LNWQ2Zmc3NkR2dDJy?=
+ =?utf-8?B?Qzd4SlZnMnl4akI1TFRUOG9IWlFraE1DR01GUEdXczZQM3RxT3B4dkJDSlFM?=
+ =?utf-8?B?dXRsSXNoWXJQTC9tamNuOHNieVpCOStzbXdDNitSL1JTNmZQdDk2cnlrRUE4?=
+ =?utf-8?B?VXF6Tnc1SzVlNWVOTUthdUxLREoxd0NVQTIwUFRWZ05xb1AxbDBVek5QVmU2?=
+ =?utf-8?B?WllNUVluWUU2L3RWQjExVmp4cjR6YzcvK2Q0Rkkyb0I3UmJkUnkvQjhpbXZO?=
+ =?utf-8?B?bVhMQWhZODF1bTBBWnRMdzFaZFlvL3g4SXowaTYvK1MrVlBzL2crNTVpREdm?=
+ =?utf-8?B?WWxhVlBYVWpCRjA3U3A4UWdsa1dXVkhTZHFpTHJEL3dyZUtZMEJkVnpVODdJ?=
+ =?utf-8?B?RkZLZC80TzJpTC95alZvVi96cGs3SStZSmhCL2pDK3RnbW0rekRCODNHa29V?=
+ =?utf-8?B?Y3hDUHBPUUZCUTlJQnZ4WHlTbVVkV0xrakg2QnpXakkzc3BUbytaVUVyZGh3?=
+ =?utf-8?B?QVJxTkU3MGJLZzAxODI4KzlSZklndW1HM3JxME45RW83bk9VY3hEcWhxTzRN?=
+ =?utf-8?B?WmhBYTEwb3dYaGVKaWx4VFJzTXgvaWZYRENpUkdVWlh3enplYmpwZlVXcFlt?=
+ =?utf-8?B?R3pLa3pSbWJsV2ZtS08yWWZHNlh4cWV4Nmp4S21oQUtTcThNRU8yb0pwWmZr?=
+ =?utf-8?B?cSswUXhZcFhhaGNIQzZkamY2UkNPZVl0MGFrd2c4VXM0UXlmdHEybzdEUTBJ?=
+ =?utf-8?B?UGFyT3J4WEFjS25KZGZYUm9zajdVQk9VbTl6R3MwUnZiZDllMHB1U3o5VnB0?=
+ =?utf-8?B?bGE4b2VBbExNWjJvUkhxMHBzZWp2YnVmcmFTV1BBLyt0SkVDVGhNR0o0Z0VM?=
+ =?utf-8?B?UWJ2QWVVT2RiSzhaUGN6YzQ0dnJodEFJVkxkOEZrREVQMGszUkg4NG03TWlz?=
+ =?utf-8?B?NXlDLzd1dDB3OEdPNEU3K284dTcwY3FEVW1nSTVIQVkxU0xxcFBWMExtTnpE?=
+ =?utf-8?B?c0xTbVF1Zm0yOG40STdhT1dVczFRZnIvWnFrc0ZFZnliaWxDbWtBSnlyYWhh?=
+ =?utf-8?B?SGxaYmVCcm01b0k1bzB5dUVQUnlvT2VmM3k2VGk0bERFdlVhdkkwelF0S2N1?=
+ =?utf-8?B?TlREWm9JSDlzT3NXdDNpWlMya1VyZzc3WWdSMUdDWG5nY2RtaGtvOGNYMzJh?=
+ =?utf-8?B?ekJrUjhMM0J4aG16MnN4NlZtQ0R3bXZlT3dXNDBOQzA4ODNZblUzdy9sbFVU?=
+ =?utf-8?B?My9Ic1hmVXJSanJJMW95NTlEcm1yU1VLZkU3V0Ruejd2cXdTZTREbVhvS2hM?=
+ =?utf-8?B?Y0g3SG1DMndneWlrNHFMdHBzd2hld2RBQXB4TFpUQ0RWM3FHdDcwTGRhTjVw?=
+ =?utf-8?B?RnYyRnhRMTg3ckJ5dFBHMFo3REl1TGxRNVhNa2ovalovRUZFanlraGZBL1hx?=
+ =?utf-8?B?Q05vbis2YXhpMEs4Slo2RTRWUEpBRTN1UXRNVjQ3UnNnajYzdm84SXJPRkFn?=
+ =?utf-8?B?K3JHdGxna0E2dTMrbjlFbTNBZG9wZmJrUzhzWHdvaTQ0VjYzNnVVQStPN3ky?=
+ =?utf-8?B?ZFZ6US9rWWp5OTRpY1A1YmRkQ0ptbTVrNi9HTE9MNHQ3d3RkeVNmcW5zU3Qr?=
+ =?utf-8?Q?oPRIGq5GQxCRq1DrWL2qW2/PY?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c47cb122-4000-4b51-9211-08dc41da6864
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 14:49:09.3359
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SKHF84dm9uZfN2VuuMu/FYZ8c/xCn5ND3z70DOjymupPfMH7Eebq9HGjy4YzoG/6bcBkM5t6PTTwshaNFxJI/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8850
 
-On Thu, Mar 07 2024 at 14:43, Sean Anderson wrote:
-> On 8/18/23 10:15, Mirsad Todorovac wrote:
+
+On 3/11/2024 7:29 PM, Christian König wrote:
 >
-> The justification seems to be in tick_sched_do_timer:
 >
->         /*
->          * Check if the do_timer duty was dropped. We don't care about
->          * concurrency: This happens only when the CPU in charge went
->          * into a long sleep. If two CPUs happen to assign themselves to
->          * this duty, then the jiffies update is still serialized by
->          * jiffies_lock.
->          *
->          * If nohz_full is enabled, this should not happen because the
->          * tick_do_timer_cpu never relinquishes.
->          */
+> Am 11.03.24 um 13:22 schrieb Sunil Khatri:
+>> Add relevant ringbuffer information such as
+>> rptr, wptr, ring name, ring size and also
+>> the ring contents for each ring on a gpu reset.
+>>
+>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+>> ---
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 21 +++++++++++++++++++++
+>>   1 file changed, 21 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c 
+>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>> index 6d059f853adc..1992760039da 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>> @@ -215,6 +215,27 @@ amdgpu_devcoredump_read(char *buffer, loff_t 
+>> offset, size_t count,
+>>                  fault_info->status);
+>>       }
+>>   +    drm_printf(&p, "Ring buffer information\n");
+>> +    for (int i = 0; i < coredump->adev->num_rings; i++) {
+>> +        int j = 0;
+>> +        struct amdgpu_ring *ring = coredump->adev->rings[i];
+>> +
+>> +        drm_printf(&p, "ring name: %s\n", ring->name);
+>> +        drm_printf(&p, "Rptr: 0x%llx Wptr: 0x%llx\n",
+>> +               amdgpu_ring_get_rptr(ring) & ring->buf_mask,
+>> +               amdgpu_ring_get_wptr(ring) & ring->buf_mask);
 >
-> with the other assignment being in tick_nohz_stop_tick. I'm not familiar
-> enough with this code to say whether we should be using READ/WRITE_ONCE
-> or maybe just data_race (as would be implied by the comment above).
+> Don't apply the mask here. We do have some use cases where the rptr 
+> and wptr are outside the ring buffer.
+Sure i will remove the mask.
+>
+>> +        drm_printf(&p, "Ring size in dwords: %d\n",
+>> +               ring->ring_size / 4);
+>
+> Rather print the mask as additional value here.
+Does that help adding the mask value ?
+>
+>> +        drm_printf(&p, "Ring contents\n");
+>> +        drm_printf(&p, "Offset \t Value\n");
+>> +
+>> +        while (j < ring->ring_size) {
+>> +            drm_printf(&p, "0x%x \t 0x%x\n", j, ring->ring[j/4]);
+>> +            j += 4;
+>> +        }
+>
+>> +        drm_printf(&p, "Ring dumped\n");
+>
+> That seems superfluous.
 
-It wants to be READ/WRITE_ONCE(). Something like the untested below,
-which applies to -next or the master branch of the tip tree.
+Noted
 
-Thanks,
 
-        tglx
----
+Regards
+Sunil
 
---- a/kernel/time/tick-common.c
-+++ b/kernel/time/tick-common.c
-@@ -7,6 +7,7 @@
-  * Copyright(C) 2005-2007, Red Hat, Inc., Ingo Molnar
-  * Copyright(C) 2006-2007, Timesys Corp., Thomas Gleixner
-  */
-+#include <linux/compiler.h>
- #include <linux/cpu.h>
- #include <linux/err.h>
- #include <linux/hrtimer.h>
-@@ -84,7 +85,7 @@ int tick_is_oneshot_available(void)
-  */
- static void tick_periodic(int cpu)
- {
--	if (tick_do_timer_cpu == cpu) {
-+	if (READ_ONCE(tick_do_timer_cpu) == cpu) {
- 		raw_spin_lock(&jiffies_lock);
- 		write_seqcount_begin(&jiffies_seq);
- 
-@@ -215,8 +216,8 @@ static void tick_setup_device(struct tic
- 		 * If no cpu took the do_timer update, assign it to
- 		 * this cpu:
- 		 */
--		if (tick_do_timer_cpu == TICK_DO_TIMER_BOOT) {
--			tick_do_timer_cpu = cpu;
-+		if (READ_ONCE(tick_do_timer_cpu) == TICK_DO_TIMER_BOOT) {
-+			WRITE_ONCE(tick_do_timer_cpu, cpu);
- 			tick_next_period = ktime_get();
- #ifdef CONFIG_NO_HZ_FULL
- 			/*
-@@ -232,7 +233,7 @@ static void tick_setup_device(struct tic
- 						!tick_nohz_full_cpu(cpu)) {
- 			tick_take_do_timer_from_boot();
- 			tick_do_timer_boot_cpu = -1;
--			WARN_ON(tick_do_timer_cpu != cpu);
-+			WARN_ON(READ_ON_ONCE(tick_do_timer_cpu) != cpu);
- #endif
- 		}
- 
-@@ -406,10 +407,10 @@ void tick_assert_timekeeping_handover(vo
- int tick_cpu_dying(unsigned int dying_cpu)
- {
- 	/*
--	 * If the current CPU is the timekeeper, it's the only one that
--	 * can safely hand over its duty. Also all online CPUs are in
--	 * stop machine, guaranteed not to be idle, therefore it's safe
--	 * to pick any online successor.
-+	 * If the current CPU is the timekeeper, it's the only one that can
-+	 * safely hand over its duty. Also all online CPUs are in stop
-+	 * machine, guaranteed not to be idle, therefore there is no
-+	 * concurrency and it's safe to pick any online successor.
- 	 */
- 	if (tick_do_timer_cpu == dying_cpu)
- 		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -8,6 +8,7 @@
-  *
-  *  Started by: Thomas Gleixner and Ingo Molnar
-  */
-+#include <linux/compiler.h>
- #include <linux/cpu.h>
- #include <linux/err.h>
- #include <linux/hrtimer.h>
-@@ -204,7 +205,7 @@ static inline void tick_sched_flag_clear
- 
- static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
- {
--	int cpu = smp_processor_id();
-+	int tick_cpu, cpu = smp_processor_id();
- 
- 	/*
- 	 * Check if the do_timer duty was dropped. We don't care about
-@@ -216,16 +217,18 @@ static void tick_sched_do_timer(struct t
- 	 * If nohz_full is enabled, this should not happen because the
- 	 * 'tick_do_timer_cpu' CPU never relinquishes.
- 	 */
--	if (IS_ENABLED(CONFIG_NO_HZ_COMMON) &&
--	    unlikely(tick_do_timer_cpu == TICK_DO_TIMER_NONE)) {
-+	tick_cpu = READ_ONCE(tick_do_timer_cpu);
-+
-+	if (IS_ENABLED(CONFIG_NO_HZ_COMMON) && unlikely(tick_cpu == TICK_DO_TIMER_NONE)) {
- #ifdef CONFIG_NO_HZ_FULL
- 		WARN_ON_ONCE(tick_nohz_full_running);
- #endif
--		tick_do_timer_cpu = cpu;
-+		WRITE_ONCE(tick_do_timer_cpu, cpu);
-+		tick_cpu = cpu;
- 	}
- 
- 	/* Check if jiffies need an update */
--	if (tick_do_timer_cpu == cpu)
-+	if (tick_cpu == cpu)
- 		tick_do_update_jiffies64(now);
- 
- 	/*
-@@ -610,7 +613,7 @@ bool tick_nohz_cpu_hotpluggable(unsigned
- 	 * timers, workqueues, timekeeping, ...) on behalf of full dynticks
- 	 * CPUs. It must remain online when nohz full is enabled.
- 	 */
--	if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
-+	if (tick_nohz_full_running && READ_ONCE(tick_do_timer_cpu) == cpu)
- 		return false;
- 	return true;
- }
-@@ -890,6 +893,7 @@ static ktime_t tick_nohz_next_event(stru
- {
- 	u64 basemono, next_tick, delta, expires;
- 	unsigned long basejiff;
-+	int tick_cpu;
- 
- 	basemono = get_jiffies_update(&basejiff);
- 	ts->last_jiffies = basejiff;
-@@ -946,9 +950,9 @@ static ktime_t tick_nohz_next_event(stru
- 	 * Otherwise we can sleep as long as we want.
- 	 */
- 	delta = timekeeping_max_deferment();
--	if (cpu != tick_do_timer_cpu &&
--	    (tick_do_timer_cpu != TICK_DO_TIMER_NONE ||
--	     !tick_sched_flag_test(ts, TS_FLAG_DO_TIMER_LAST)))
-+	tick_cpu = READ_ONCE(tick_do_timer_cpu);
-+	if (tick_cpu != cpu &&
-+	    (tick_cpu != TICK_DO_TIMER_NONE || !tick_sched_flag_test(ts, TS_FLAG_DO_TIMER_LAST)))
- 		delta = KTIME_MAX;
- 
- 	/* Calculate the next expiry time */
-@@ -969,6 +973,7 @@ static void tick_nohz_stop_tick(struct t
- 	unsigned long basejiff = ts->last_jiffies;
- 	u64 basemono = ts->timer_expires_base;
- 	bool timer_idle = tick_sched_flag_test(ts, TS_FLAG_STOPPED);
-+	int tick_cpu;
- 	u64 expires;
- 
- 	/* Make sure we won't be trying to stop it twice in a row. */
-@@ -1006,10 +1011,11 @@ static void tick_nohz_stop_tick(struct t
- 	 * do_timer() never gets invoked. Keep track of the fact that it
- 	 * was the one which had the do_timer() duty last.
- 	 */
--	if (cpu == tick_do_timer_cpu) {
--		tick_do_timer_cpu = TICK_DO_TIMER_NONE;
-+	tick_cpu = READ_ONCE(tick_do_timer_cpu);
-+	if (tick_cpu == cpu) {
-+		WRITE_ONCE(tick_do_timer_cpu, TICK_DO_TIMER_NONE);
- 		tick_sched_flag_set(ts, TS_FLAG_DO_TIMER_LAST);
--	} else if (tick_do_timer_cpu != TICK_DO_TIMER_NONE) {
-+	} else if (tick_cpu != TICK_DO_TIMER_NONE) {
- 		tick_sched_flag_clear(ts, TS_FLAG_DO_TIMER_LAST);
- 	}
- 
-@@ -1172,15 +1178,17 @@ static bool can_stop_idle_tick(int cpu,
- 		return false;
- 
- 	if (tick_nohz_full_enabled()) {
-+		int tick_cpu = READ_ONCE(tick_do_timer_cpu);
-+
- 		/*
- 		 * Keep the tick alive to guarantee timekeeping progression
- 		 * if there are full dynticks CPUs around
- 		 */
--		if (tick_do_timer_cpu == cpu)
-+		if (tick_cpu == cpu)
- 			return false;
- 
- 		/* Should not happen for nohz-full */
--		if (WARN_ON_ONCE(tick_do_timer_cpu == TICK_DO_TIMER_NONE))
-+		if (WARN_ON_ONCE(tick_cpu == TICK_DO_TIMER_NONE))
- 			return false;
- 	}
- 
-
+>
+> Regards,
+> Christian.
+>
+>> +    }
+>> +
+>>       if (coredump->reset_vram_lost)
+>>           drm_printf(&p, "VRAM is lost due to GPU reset!\n");
+>>       if (coredump->adev->reset_info.num_regs) {
+>
 
