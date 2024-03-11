@@ -1,182 +1,142 @@
-Return-Path: <linux-kernel+bounces-98812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0897877FC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D01877FC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:15:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 186AF1F214C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:14:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 001231F214D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E21F3BBF7;
-	Mon, 11 Mar 2024 12:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3113C47B;
+	Mon, 11 Mar 2024 12:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G6z5Usrg"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D41e5qru"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA32A3D0C4
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7B4A3B7AC
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710159247; cv=none; b=Kevet9kaWDMkl+LGNARz6aeudMDYk/M66V2n3T7SXvUSEY9QFUVvxYhdymRWjorQdgHOQPzMqqwIITtqzPQWmhrs8iFTTfQzsHcC1kzCxAjuvYI+dK9JN6OOI+/gnEB/WRwmz5zfLntZinJkxSDSEQFkUNXAyT1VtqD1AqttqbQ=
+	t=1710159306; cv=none; b=GWaBNZbluxl5TBdCbp7aZ/TZtgOyml4ak1DskGsnup2hCGdWeB1Z6FG6wq1g//T51zHIBgF8Pswg0jqhyCLHPVgQ6UVaicM+bgmNQVyifte/Q15fxBEBjR6mcT9RPXSMACewy9eS6kD9Ky3k8I1chtW7Ktjn3lM8OsmTz6aVf4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710159247; c=relaxed/simple;
-	bh=6DJzFBMmWQ2NLvNGW+brmaV7Yw5oomBkwLgkECiTVek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZjF31zS2UWj+D6iKz7TIhFgI5FSald0iAWDl/wnx/lQBeRdJWMXyCABiRdp1wakpVuaSWJMaa6WBjR1699KVaVd6Tp4pjmE7RByByC+plkNbamFdOysuBuTrGNom7Kw8CYBSHncugeMTmT2JUO9Xb3OBf0TYtV5XBYivKVkXewI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G6z5Usrg; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710159244;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QzCDBPX0buczc9+Ev0ZIx0kEFDWZGrh6JBV3mqE9g0E=;
-	b=G6z5UsrgFj34hZibvn/gWHqMMfpnVQXgmyIt9tD6L2oHh8FSgL5z2Fp6SmIalsYWVC4piT
-	y+MkSkBLCDEsFFY/baTb0V1OvF7lG23EzctmNmhxdxE9wieVxYRIauTryCI/CzeprkS4J+
-	p1VzW+04Q9GLtlQUIvSCnG8QyHBRCUo=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-205-Iduwqt1zNGCOvLXINSwJug-1; Mon, 11 Mar 2024 08:14:03 -0400
-X-MC-Unique: Iduwqt1zNGCOvLXINSwJug-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-42ef98ebb0cso86829651cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 05:14:03 -0700 (PDT)
+	s=arc-20240116; t=1710159306; c=relaxed/simple;
+	bh=GO3ULI7mQTnxS7jSG4txYsGJozwzQMjf/RmiaZbYSNs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JZE+3KKlxIaKJFO9XowwqEHvzZqNzy/hoU/eizjGws4yIi1JeDfZwn0RtHIwC0NdvkcJYaakox45R78g0GLTRVMiDPmDlQlRjaRWVqEczM3nRMpqT8db75lAX2HIZ0ZDoOlCiKV1zrzP+4T8SIvq/COr2wfgSAZtqoIS7weW0Rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D41e5qru; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-609eb87a847so31805647b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 05:15:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710159304; x=1710764104; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ztprHDXJluvRreDSSFUYa4qqYh/2UMDCZbLeEgV3a7g=;
+        b=D41e5qruE08HfVMPlt3NvNBCAI3C0+CaXCXDTQdowHGUgFzon6kwWudOlzQow9PFWL
+         VZn7QkXPZ0sSoNc6CfD0dUdARWDKIf5pDN1hRh0URNJF9P2tAb+2dK8RrZoAbtyYx+f9
+         uVq/63x9VLve38VnaGkHqqs5antV+9T231c4v7Ehxnd8DCHzqRh3C8icCCUlLxJAzo5x
+         oPoI+EK8X1Wtav+ygWN04JfIyfiTLcILy253q8ZJzib/D6Pf4EJlhdHmOPSJLwS9MOGv
+         lUvXNVLjA+FlWZ0lokvky63N/dn+h9nGUawjRLGxufBtLiACJ7wJOGadbNz5Kq6ycODa
+         3MaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710159243; x=1710764043;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QzCDBPX0buczc9+Ev0ZIx0kEFDWZGrh6JBV3mqE9g0E=;
-        b=UKEsCUR9vOHJQlC7QNUNjGdedinx8RDQQNZ9Kqy+uvDCzb1NAZoXU85AXIYtLNKBXt
-         kcJTK5SbJOpk2BaOYGuPrztF5l8MPGUSIhAnGOr8Wku97/qRZUkHFGKWnjPvvtlDeA6N
-         OubjUgBTROMj8nI9A3p8W5GbmC8IcZCw8sXI7rbzLmZmYYAFV1P55r0W+fyiO8D23bKX
-         KBiHJlbp9g8cSw+MVXJgeiKPr5gcfuL25Gy9lfXbFvkxr5QJ7cZrKys9EWdWJRKDy7Mo
-         GoPdAuigMspOnNeWr47/EeA8SF+jsfiW8v8b4B0rvbWpjU1rHPZmPa9ZKbgw/j8eIFW+
-         tDJw==
-X-Forwarded-Encrypted: i=1; AJvYcCV5M0wfsuNkW+8JltY9ugpLdHaIaxgZO1/eOBZRpt6hazdyxcKaKnoCwfahZzvXCtMVsu5dCouMYF9IQehd7B1tSlV2t6Y/OSSfIPnI
-X-Gm-Message-State: AOJu0YzmSIjptg9GHVDJkdE82Rcn7PnA8cRWSMs4GuUAoeIRQIajT/ym
-	rnNhLqdzZSOQ1CW2GomrNRokOImEtJtGralBtcutIBzy0OOK1gJzoflD82lAKdevXFXN2l+XaHl
-	ykRAcANDGoSrvipk34xALYtB27tIVPv9HYzqXH8BzKT3miMvImWNJECJqvP2NAg==
-X-Received: by 2002:a05:622a:104e:b0:42e:7e4d:9b68 with SMTP id f14-20020a05622a104e00b0042e7e4d9b68mr11922615qte.18.1710159242830;
-        Mon, 11 Mar 2024 05:14:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFaaEEHgfz/XGkgC7OM/cM+pyNBMFMcSUvA0K0p6X2MdL35CNbD+uol0uH63fcKe6BBChws2g==
-X-Received: by 2002:a05:622a:104e:b0:42e:7e4d:9b68 with SMTP id f14-20020a05622a104e00b0042e7e4d9b68mr11922589qte.18.1710159242506;
-        Mon, 11 Mar 2024 05:14:02 -0700 (PDT)
-Received: from [10.16.200.42] (nat-pool-bos-t.redhat.com. [66.187.233.206])
-        by smtp.gmail.com with ESMTPSA id d11-20020ac85acb000000b0042f36f6f9edsm2537980qtd.9.2024.03.11.05.14.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 05:14:02 -0700 (PDT)
-Message-ID: <7591f33e-d64f-49c5-b7c8-deda2b6f0fde@redhat.com>
-Date: Mon, 11 Mar 2024 08:14:01 -0400
+        d=1e100.net; s=20230601; t=1710159304; x=1710764104;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ztprHDXJluvRreDSSFUYa4qqYh/2UMDCZbLeEgV3a7g=;
+        b=VaLyFuO0fyFNtOmeqIqw7zX+54HKrjqHGb/MKx8L8my/1IaunNeQZxVN5gQy/CUzcP
+         +ePtUGD3fvYw8laE2VKj0PNH6Nh7C9a7hmW4NnvHGYHj2UUf9NrD7tO09bjG/H2LHjd0
+         it0d7B8o+OMaf/I1QQb8tCb+zjy+QhwUMW1mwwMQl/fYtlfukfOLSBvHT9LNm/5g+zuO
+         VfcjNAsrQHJmgkOna0zY2pZQb8GCUJkavqRgKYzJ0SzuivW4W8khkGj6kGa+10mO23YP
+         ViJ+f2q0qpfzgwwOURNu+EDBzTm0EwJsSLc6Sw0PXulcGAZOn793QcVRu/I9dN5KUHSs
+         zqwA==
+X-Forwarded-Encrypted: i=1; AJvYcCWyzNGkiADlsEwFsx+/a39PWpLqV5v36suvq9W4RgatKvs0HcBgMTdVzQO+Xt+a46BYVZ2DVgRH3yGtAsrEjKKFBlfNV60CKK2muHlX
+X-Gm-Message-State: AOJu0YwZNg+KSBhGH71oZp0+XR8NQ/0hmNNIwEZKRV0vikUemSy3gSrO
+	Ua3xi9PWlYJZ8Lq1kA7NX4oritr3HR9CTMfucFdWyvpEZCg1mTmrmjIi4MpOXu9GGrSzAngcF1v
+	uxfUUUnOhdqpcvA8MVjoWrqhihaHbjRlxc8ms4g==
+X-Google-Smtp-Source: AGHT+IHynY17WGsLOoumjxLnrUnR73bC37OcgOsdC+TFcMmdjQ0BKIKC6gkzEtM9/PBYdXA556baFQ8iNcTay77a0Sg=
+X-Received: by 2002:a0d:f247:0:b0:609:ddf0:9545 with SMTP id
+ b68-20020a0df247000000b00609ddf09545mr3723247ywf.22.1710159303730; Mon, 11
+ Mar 2024 05:15:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: CVE-2023-52605: ACPI: extlog: fix NULL pointer dereference check
-Content-Language: en-US
-To: Vegard Nossum <vegard.nossum@oracle.com>, cve@kernel.org,
- linux-kernel@vger.kernel.org, linux-cve-announce@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <2024030647-CVE-2023-52605-292a@gregkh>
- <e4906091-598e-4d21-9e8d-4cb088855d6f@oracle.com>
-From: Prarit Bhargava <prarit@redhat.com>
-In-Reply-To: <e4906091-598e-4d21-9e8d-4cb088855d6f@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240311120859.18489-1-quic_kbajaj@quicinc.com> <20240311120859.18489-3-quic_kbajaj@quicinc.com>
+In-Reply-To: <20240311120859.18489-3-quic_kbajaj@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 11 Mar 2024 14:14:52 +0200
+Message-ID: <CAA8EJpqMWBWAEUCiJXm0x7zjZYbP8SkRDgu+w+goYjB=8JBN0A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: qdu1000-idp: enable USB nodes
+To: Komal Bajaj <quic_kbajaj@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Amrit Anand <quic_amrianan@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/10/24 04:10, Vegard Nossum wrote:
-> 
-> (Added author/maintainer to Cc)
-> 
-> On 06/03/2024 07:46, Greg Kroah-Hartman wrote:
->> Description
->> ===========
->>
->> In the Linux kernel, the following vulnerability has been resolved:
->>
->> ACPI: extlog: fix NULL pointer dereference check
->>
->> The gcc plugin -fanalyzer [1] tries to detect various
->> patterns of incorrect behaviour.  The tool reports:
->>
->> drivers/acpi/acpi_extlog.c: In function ‘extlog_exit’:
->> drivers/acpi/acpi_extlog.c:307:12: warning: check of ‘extlog_l1_addr’ 
->> for NULL after already dereferencing it [-Wanalyzer-deref-before-check]
->>      |
->>      |  306 |         ((struct extlog_l1_head *)extlog_l1_addr)->flags 
->> &= ~FLAG_OS_OPTIN;
->>      |      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
->>      |      |                                                  |
->>      |      |                                                  (1) 
->> pointer ‘extlog_l1_addr’ is dereferenced here
->>      |  307 |         if (extlog_l1_addr)
->>      |      |            ~
->>      |      |            |
->>      |      |            (2) pointer ‘extlog_l1_addr’ is checked for 
->> NULL here but it was already dereferenced at (1)
->>      |
->>
->> Fix the NULL pointer dereference check in extlog_exit().
->>
->> The Linux kernel CVE team has assigned CVE-2023-52605 to this issue.
-> 
-> This code is in an __exit function:
-> 
-> diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
-> index e120a96e1eaee..193147769146e 100644
-> --- a/drivers/acpi/acpi_extlog.c
-> +++ b/drivers/acpi/acpi_extlog.c
-> @@ -303,9 +303,10 @@ err:
->   static void __exit extlog_exit(void)
->   {
->       mce_unregister_decode_chain(&extlog_mce_dec);
-> -    ((struct extlog_l1_head *)extlog_l1_addr)->flags &= ~FLAG_OS_OPTIN;
-> -    if (extlog_l1_addr)
-> +    if (extlog_l1_addr) {
-> +        ((struct extlog_l1_head *)extlog_l1_addr)->flags &= 
-> ~FLAG_OS_OPTIN;
->           acpi_os_unmap_iomem(extlog_l1_addr, l1_size);
-> +    }
->       if (elog_addr)
->           acpi_os_unmap_iomem(elog_addr, elog_size);
->       release_mem_region(elog_base, elog_size);
-> 
-> This can only run when you unload a module, which is a privileged
-> operation (restricted to CAP_SYS_MODULE).
-> 
-> Moreover, extlog_l1_addr is only ever assigned in the corresponding
-> module init function, and it looks like it will never be NULL if the
-> module was loaded successfully, at least on a recent mainline kernel.
-> 
-> Since the module exit won't be called unless module init succeeded, I
-> don't see a way to trigger this bug. Is this a vulnerability?
-> 
+On Mon, 11 Mar 2024 at 14:10, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
+>
+> Enable both USB controllers and associated hsphy and qmp phy nodes
+> on QDU1000 IDP.
+>
+> Co-developed-by: Amrit Anand <quic_amrianan@quicinc.com>
+> Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
+> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/qdu1000-idp.dts | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qdu1000-idp.dts b/arch/arm64/boot/dts/qcom/qdu1000-idp.dts
+> index 89b84fb0f70a..126bc71afd90 100644
+> --- a/arch/arm64/boot/dts/qcom/qdu1000-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/qdu1000-idp.dts
+> @@ -500,3 +500,27 @@ &tlmm {
+>  &uart7 {
+>         status = "okay";
+>  };
+> +
+> +&usb_1 {
+> +       status = "okay";
+> +};
+> +
+> +&usb_1_dwc3 {
+> +       dr_mode = "peripheral";
 
-This is certainly not a CVE.
+Are these ports really peripheral-only?
 
-> It might be better to just delete the NULL check altogether.
-> 
-> As usual, I could be wrong...
-> 
+> +       maximum-speed = "high-speed";
+> +};
+> +
+> +&usb_1_hsphy {
+> +       vdda-pll-supply = <&vreg_l8a_0p91>;
+> +       vdda18-supply = <&vreg_l14a_1p8>;
+> +       vdda33-supply = <&vreg_l2a_2p3>;
+> +
+> +       status = "okay";
+> +};
+> +
+> +&usb_1_qmpphy {
+> +       vdda-phy-supply = <&vreg_l8a_0p91>;
+> +       vdda-pll-supply = <&vreg_l3a_1p2>;
+> +
+> +       status = "okay";
+> +};
+> --
+> 2.42.0
+>
+>
 
-When I made this code change I thought the same thing: Perhaps it's 
-better to remove the NULL check given the status of the code.  I assumed 
-that the check was there as a failsafe on unload.
 
-P.
-
-> 
-> Vegard
-> 
-
+-- 
+With best wishes
+Dmitry
 
