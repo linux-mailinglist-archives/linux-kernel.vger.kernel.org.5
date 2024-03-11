@@ -1,145 +1,164 @@
-Return-Path: <linux-kernel+bounces-98804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01C5877FAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:10:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD1D6877FB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:10:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AE32281266
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:10:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA8DCB22301
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687363FB3D;
-	Mon, 11 Mar 2024 12:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C2F3CF79;
+	Mon, 11 Mar 2024 12:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lQSVneRy"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dloQrcOn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1193FB3B;
-	Mon, 11 Mar 2024 12:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7793BBCC;
+	Mon, 11 Mar 2024 12:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710158981; cv=none; b=aTsFuP82Rt2Yx3Km4cuu0cZlQFyPoK1NaQc03vsk3ZtmftCn24JZ8Fkx8YxB04iMPitgcyMgnPnWBBUIBgn/ZXNTRs1zP2rXGQSTPsvf/mOltGh1GiGwvyLWNFCXfdpMxvO5TrKr+VyaU5ExFSxJOx240KKSzbbkYCLLbhLv9Io=
+	t=1710159027; cv=none; b=lnksPT3VkwrTqh/h7AWuik7lUSFTWJtwwST2k/ArSR7b2rZoagGgJ/tnwlZwl/85w8T4ga/iPZ7PhGDoQiMhrb59+zzJfMtTbWfo2ecI8Su17uusMuV0CKLMb/5tCjgZzEhu4yqLeUO4+rSv+ifd3MU3x0YseDd3CPldm4pvEpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710158981; c=relaxed/simple;
-	bh=Pmrmyq7URfLf09kUtXkpAtdm6Y9SQW9j2YoRGpPDU8c=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WJ8UDo44gQid7aTnkFH5u/dWzsMfq7CMbTjlCZqGzIYUPgDpgC/iuX7gP/Uh3p7WW4w8zJUCxIFZ+xHMxeaKUvmBnHVsE0XRTeQ691eQPLT7DgqebzjGWkvnjDX9ANzScKvqXJFdBJ6zJSIVSU7ZOkHKEMXywwFuxMdYrywwc+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lQSVneRy; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42BBnhAA016808;
-	Mon, 11 Mar 2024 12:09:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=+oUg1sXv3xj6/5EFsJRFeSLvuYL6dZItyPy0usT9Wzw=; b=lQ
-	SVneRytmOaqPEfK9h7ryNuL6ZSrIiN52tOp8KBjjhJkEHsrrOObGyQMqpvDCOkGv
-	mRuBarhNOMHEKWEZp2Y2sepoFilnBOzKAx9vzrerJede9Madhtq3cADqzRCx7LJA
-	wi2jEOLqI1TeprzAY/bLjjceTag25Pt2+Rc1+eXRsv0lEpKZ/vbesiFqCLt3nGtb
-	L2ofN7vWn5OiaDP7XDnRtjvMoK2tF5gmBe+8ewDmn+l3AYju7mXC4MxOXt1ecM6C
-	4sVIBSil5qpL+1ef7G0CDtKepFYAytOH0aIV7UzBGG/tVAruqmjapYwZo7CCT3M6
-	JI0g+HeNpHiTR1GmH6wg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wt1dwg1h9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 12:09:36 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42BC9ZEM016045
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 12:09:35 GMT
-Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Mar 2024 05:09:32 -0700
-From: Komal Bajaj <quic_kbajaj@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Komal Bajaj <quic_kbajaj@quicinc.com>,
-        "Amrit
- Anand" <quic_amrianan@quicinc.com>
-Subject: [PATCH 3/3] arm64: dts: qcom: qru1000-idp: enable USB nodes
-Date: Mon, 11 Mar 2024 17:38:59 +0530
-Message-ID: <20240311120859.18489-4-quic_kbajaj@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240311120859.18489-1-quic_kbajaj@quicinc.com>
-References: <20240311120859.18489-1-quic_kbajaj@quicinc.com>
+	s=arc-20240116; t=1710159027; c=relaxed/simple;
+	bh=9qWXx17ikIntTOyse8M12B0v0qduGm1iZ4PJfXmIpkY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nb5oxme09c4blzuI/XfiXBV7NLdQCb4hSGLV0CSWqYuwFppuDKSPBUaceBddp1FL12iz07oyY2SCXJq3LYNTpN4DBPS6VafL2CEUOoyVGT4sOeHV+embMy7M4kLbe/a7pMSgpIa/1iWcxJwYH6XeBZKWCjwNobfHngC2lDYiz04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dloQrcOn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC2D8C433F1;
+	Mon, 11 Mar 2024 12:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710159027;
+	bh=9qWXx17ikIntTOyse8M12B0v0qduGm1iZ4PJfXmIpkY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dloQrcOnr8miZHkrYFRdr5F7iIWOqYnML3SiUDjAyIRIfEp74WSTrMeaCuFPWn8N5
+	 oc9CoE+pbo01kVwBvHz7N0Ustnz8sE0pCzoFbo0pZ68bcsddndteBAcKlYBJrSGhla
+	 20AQ7DRDlEiPyjRrgeHvd1V/WjDmT6uUP/+bc1oBw35Y5ibYw1WL58XdPZW6HHn9nX
+	 mVSs54f6e/rIyvFTzqPvOwRtwbtfL/ZHWLp8S6RT2ghUBll8o1ve7N7z7WlxVe5/ai
+	 gmwF13/wOcomvgulTJJs/+uu1/ov805xXRDvQjNUGAb7ym4DF4p1TNZdmV2Ntn/cV4
+	 30AxntOEULiqA==
+Date: Mon, 11 Mar 2024 13:10:24 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Sebastian Wick <sebastian.wick@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, 
+	dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: Document requirements for driver-specific KMS props
+ in new drivers
+Message-ID: <20240311-nostalgic-tungsten-warthog-c4c561@houat>
+References: <20240229202833.198691-1-sebastian.wick@redhat.com>
+ <20240306-hulking-funky-fox-b9581b@houat>
+ <20240306165009.GB11561@toolbox>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _17xmVMVsZIk9d6ktYGAIRfRwSMgUr0D
-X-Proofpoint-ORIG-GUID: _17xmVMVsZIk9d6ktYGAIRfRwSMgUr0D
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 phishscore=0 priorityscore=1501 mlxlogscore=358 spamscore=0
- suspectscore=0 clxscore=1015 mlxscore=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403110091
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="axw6wumxavhxptqy"
+Content-Disposition: inline
+In-Reply-To: <20240306165009.GB11561@toolbox>
 
-Enable both USB controllers and associated hsphy and qmp phy nodes
-on QRU1000 IDP.
 
-Co-developed-by: Amrit Anand <quic_amrianan@quicinc.com>
-Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
-Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
----
- arch/arm64/boot/dts/qcom/qru1000-idp.dts | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+--axw6wumxavhxptqy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/qcom/qru1000-idp.dts b/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-index 258483af065b..c4d8027b8b20 100644
---- a/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-@@ -467,3 +467,27 @@ &tlmm {
- &uart7 {
- 	status = "okay";
- };
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "peripheral";
-+	maximum-speed = "high-speed";
-+};
-+
-+&usb_1_hsphy {
-+	vdda-pll-supply = <&vreg_l8a_0p91>;
-+	vdda18-supply = <&vreg_l14a_1p8>;
-+	vdda33-supply = <&vreg_l2a_2p3>;
-+
-+	status = "okay";
-+};
-+
-+&usb_1_qmpphy {
-+	vdda-phy-supply = <&vreg_l8a_0p91>;
-+	vdda-pll-supply = <&vreg_l3a_1p2>;
-+
-+	status = "okay";
-+};
---
-2.42.0
+Hi Sebastian,
 
+On Wed, Mar 06, 2024 at 05:50:09PM +0100, Sebastian Wick wrote:
+> On Wed, Mar 06, 2024 at 03:14:15PM +0100, Maxime Ripard wrote:
+> > On Thu, Feb 29, 2024 at 09:28:31PM +0100, Sebastian Wick wrote:
+> > > When extending support for a driver-specific KMS property to addition=
+al
+> > > drivers, we should apply all the requirements for new properties and
+> > > make sure the semantics are the same and documented.
+> > >=20
+> > > Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
+> > > ---
+> > >  Documentation/gpu/drm-kms.rst | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/gpu/drm-kms.rst b/Documentation/gpu/drm-km=
+s.rst
+> > > index 13d3627d8bc0..afa10a28035f 100644
+> > > --- a/Documentation/gpu/drm-kms.rst
+> > > +++ b/Documentation/gpu/drm-kms.rst
+> > > @@ -496,6 +496,11 @@ addition to the one mentioned above:
+> > > =20
+> > >  * An IGT test must be submitted where reasonable.
+> > > =20
+> > > +For historical reasons, non-standard, driver-specific properties exi=
+st. If a KMS
+> > > +driver wants to add support for one of those properties, the require=
+ments for
+> > > +new properties apply where possible. Additionally, the documented be=
+havior must
+> > > +match the de facto semantics of the existing property to ensure comp=
+atibility.
+> > > +
+> >=20
+> > I'm conflicted about this one, really.
+> >=20
+> > On one hand, yeah, it's definitely reasonable and something we would
+> > want on the long run.
+> >=20
+> > But on the other hand, a driver getting its technical debt worked on for
+> > free by anyone but its developpers doesn't seem fair to me.
+>=20
+> Most of the work would have to be done for a new property as well. The
+> only additional work is then documenting the de-facto semantics and
+> moving the existing driver-specific code to the core.
+
+Sure, I think part of the problem with the Broadcast RGB property was
+also that it hasn't been reviewed by anyone when it was submitted for
+vc4.
+
+> Would it help if we spell out that the developers of the driver-specific
+> property shall help with both tasks?
+
+Yes, that's a good idea, and we should probably require that the
+maintainers of the driver that first added that property ack the
+"standardization" work too.
+
+> > Also, I assume this is in reaction to the discussion we had on the
+> > Broadcast RGB property. We used in vc4 precisely because there was some
+> > userspace code to deal with it and we could just reuse it, and it was
+> > documented. So the requirements were met already.
+>=20
+> It was not in drm core and the behavior was not documented properly at
+> least.
+>=20
+> Either way, with Broadcast RGB we were already in a bad situation
+> because it was implemented by 2 drivers independently. This is what I
+> want to avoid in the first place. The cleanup afterwards (thank you!)
+> just exposed the problem.
+
+Actually, I just found out there's three, the third one not being
+compatible at all with the other two:
+https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/gma500/cdv_d=
+evice.c#L471
+
+I'll send a patch to figure that one out once the rest will be merged.
+
+Maxime
+
+--axw6wumxavhxptqy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZe70rwAKCRDj7w1vZxhR
+xQxYAP9q1SJBPEiMwDRctpVhP8hqW4wSqfU9lWtFR0RFBytb2QEAhtpGLd/0R/wf
+65kAq73rt4zUgIctaaBFIM6jbgbl4Qs=
+=V+zm
+-----END PGP SIGNATURE-----
+
+--axw6wumxavhxptqy--
 
