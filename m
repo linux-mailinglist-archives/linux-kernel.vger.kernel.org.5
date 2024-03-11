@@ -1,125 +1,106 @@
-Return-Path: <linux-kernel+bounces-98420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC078779D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 05EF98779DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 03:35:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D23B281758
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:33:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5E8C281616
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 02:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6174310FA;
-	Mon, 11 Mar 2024 02:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA201388;
+	Mon, 11 Mar 2024 02:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MwX7zCyy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="kmIFnJcN"
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D264628;
-	Mon, 11 Mar 2024 02:33:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BC93D62;
+	Mon, 11 Mar 2024 02:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710124394; cv=none; b=lMjVolU0xeckHi6GLp+k7qX7BDpZv7uehOv0O2WMefbVIsnarABmYiGM3osCOp4s+mR1I31Pg7uRbUN8NHf0g6VFX9e78bzjWWge4HQP/LJE/PjlyPTKPcZzrV0D+utQQsJ2egpwvA+Wz7xB0esq+AG+6IDK8r5DMetCtaAS2xo=
+	t=1710124519; cv=none; b=f7dywNLf2ahrtQ9Zd07XmGOYt3IMz6lqBFFLhcrZxmRbRE3h386ffrtuSHfN5CnKkFXmVhTEsV/CSOJFGw1qVx6+1x9T8J/fQa4jYpkvaRo8T/0hXRwtR351ljsszFaN8JSv4AmIjHxBCeFI8OIJS+75dH3FtDcJJ/kDkLrLfBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710124394; c=relaxed/simple;
-	bh=3i9coLbL0xLg8P6CbihMu3LdaGv3HnasLHe1Y9tJoZY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=VyvHhSiGvcjl1kHqozWokuxdSpMF1oKPU2QlhewtyHvsAt17RjBc3qVwDbfwJ4NV6S5bzYBhSS8nWx6WN0gF2Vd5IScPnY628pPuFOyZZ3cfktiMPeDa6IVbQztjyYe9LEs6SShZAkgfoErTlytdMzm1K4dNZW/GKrI7K3bk8CA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MwX7zCyy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B20BC433F1;
-	Mon, 11 Mar 2024 02:33:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710124393;
-	bh=3i9coLbL0xLg8P6CbihMu3LdaGv3HnasLHe1Y9tJoZY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=MwX7zCyyTae4LO2IEm2At4ZoNzeucou9+nzwvdEoryvNILxNxua1dnp5pdJvLhsnd
-	 HXdfHdES6+jQD/bwR759j6hFfSx/du2qK3HBGDqFZPwEP+vxFSLS1D4vsAfWTjZg0e
-	 i6oNZCZ1QwI9YYFPElJIYOWINncK44WKSG5qV+Wiic+Vlc49eVvABw76403OUazAah
-	 uZuKqP+UsUBHygNYB1c2xnMaBh4TYzoAIgcy3lGA0IUmJD1BVfjdv5FhgsjVmiNpRn
-	 4bV7FN3YO5b/7i0iwB5vy0Lk2oOTlfNc7QXayLpKXg1uIYnq4ysXBgeGZJYe0ybE6j
-	 bzd+ZpIrg8DlQ==
-Date: Mon, 11 Mar 2024 10:33:10 +0800
-From: Tzung-Bi Shih <tzungbi@kernel.org>
-To: torvalds@linux-foundation.org
-Cc: briannorris@chromium.org, jwerner@chromium.org, groeck@chromium.org,
-	tzungbi@kernel.org, linux-kernel@vger.kernel.org,
-	chrome-platform@lists.linux.dev
-Subject: [GIT PULL] chrome-platform-firmware changes for v6.9
-Message-ID: <Ze5tZoBl4glQOR6o@google.com>
+	s=arc-20240116; t=1710124519; c=relaxed/simple;
+	bh=WhmjuGV1kq2WCEIDtuCaWUDhxbU/+ZMX+LPouv4Jpx0=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=L89hs5MoeMju+LRWzfT86ju7B8Ogp83j21FZheAe1VmC+nJQ2J2D4JR/GzSriFuOmSIu118taK/W4IRNnFyUQXvb/WNiPa+F6BQE17adUf/x43Hl2hXHvNMMJevD/+JNnPsOlTsd8YgiqCvepVVrugZTgcXS3M8Dygdbn6kFuEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=kmIFnJcN; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710124500; bh=C+MiEF4qC6FAaylAML0xdTY2YhM7+veLwzKbbzTLXok=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=kmIFnJcNDNfWAj2bmooSKy0uGNvlwfJ3NDxvHOlFQGUiSdV68TvplEgqoqUnVgrw3
+	 zHSrLBS4L1Vgt+9aeMb3va51KsCYeuS40sawoo2c53Kj1hnZLnFnl9IGWj2wCs6Uut
+	 JI/Yk7NjdX/gfvHofLH4v1PqQSANFmHAVoVJsvPo=
+Received: from localhost.localdomain ([58.213.8.34])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 8B995E48; Mon, 11 Mar 2024 10:34:57 +0800
+X-QQ-mid: xmsmtpt1710124497t5plveddw
+Message-ID: <tencent_03614198A34E56D038455012AA31022D9C06@qq.com>
+X-QQ-XMAILINFO: Mm/8i8/T4yneLFjWWrRIGkqbOZu0z8AIxOyq+RGDR2OmIiGfEHfbT3yggaBppe
+	 x+5Owg6mNNjoEAAbIRdkBqJmqPPOxnSWCkL/x8/JNqrlqyr/Er8NPHOPK2Odgdf3Wfl9trvb45r1
+	 ZGgig1CzHGTZfkcGQjSWqtyY2RhcBFCl6VKvTw4d4J/pHCgi6J2TcThOgZC0sBpFmImg9qMnKdQk
+	 ZkzOGkc9dOXrK6MuUyouiFAyyWm7Y/u1jLFogBqT1wD61ak2kJdUGphZWVM8TAElO25Jd6/2AWO5
+	 252H1Ps7ELnyxV/rIJTh4zeJaFtKg3fQdFY/md//rE7EErZ634ACM1PVhb7mYkqHy/c9URVhydQr
+	 4BqDq32dWXFz4w7mIA76jUA/BwZZR2eItyGigLDf3PIZhwZ/BwReudQ8sIFfVAKvIn4TIs/ntp9X
+	 D//eMiXXxqUwaaUHTVR36y7xImPkBSn8WXagPj2/anSS1Klud7FUESIAem3UfM/XLnXCHZjmu3y2
+	 NQy/RdUHppO4D9GqL7ML1pdfu/ODveaAjc0lHjHtjQz+BrT38XG3s9mL+SIxEZZYhJOHUMAh91eT
+	 GKL0fwkdfktYZAleB9eg8GBosG8hf6YpEdmj3O/5dEXX8r9Vw2LxNsevcSCpAcXCXlCfD9LyjGvE
+	 clQCLafmM6Ddts/jB8oteHDFz++v2ljoZobAXBUUSlRKf2O7IzMPZ+zGeumlRplpB22Qh0Csj+J1
+	 yeKW+edaCYbPkC4u3jO1hKO6XWAl4/h+Lb6vylBUh2o2yEgvFhPN+NuFxAHNXs/qKW6uBOodBAW6
+	 VOeXQA6q2AlCIlHOaJ2zYcL+mBxR58ADNrjaRYUs+04VKscHopX9VJVdHLZl6B/dDRADFJGrL3dp
+	 Kv+RAiEO/ceg8ZE15tQJCauMW3etZXV1IR98g6UneFwyUQtRMmEvUPBCF54FsRVzaI0gZRGdMMso
+	 KMtOJxzM+3nTgqmbH9u0ZGduadSmvG04a6j9bVZYN48MSpqQDV04O6GlOxwCTp
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: linke li <lilinke99@qq.com>
+To: leon@kernel.org
+Cc: bmt@zurich.ibm.com,
+	jgg@ziepe.ca,
+	lilinke99@qq.com,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of re-reading it
+Date: Mon, 11 Mar 2024 10:34:55 +0800
+X-OQ-MSGID: <20240311023455.72601-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <20240310191910.GG12921@unreal>
+References: <20240310191910.GG12921@unreal>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DE7/ob1FZwYKsm+t"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
+> If value can change between subsequent reads, then you need to use locks
+> to make sure that it doesn't happen. Using READ_ONCE() doesn't solve the
+> concurrency issue, but makes sure that compiler doesn't reorder reads
+> and writes.
 
---DE7/ob1FZwYKsm+t
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This code do not need to prevent other thread from writing on the flags.
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+This topic got quite a bit of discussion [1], quote from it:
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+    (READ_ONCE and WRITE_ONCE)
+    That's often useful - lots of code doesn't really care if you get the
+    old or the new value, but the code *does* care that it gets *one*
+    value, and not some random mix of "I tested one value for validity,
+    then it got reloaded due to register pressure, and I actually used
+    another value".
 
-are available in the Git repository at:
+    And not some "I read one value, and it was a mix of two other values".
+ 
+From the original code, the first read seems to do the same things. So
+READ_ONCE is probably ok here. 
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git=
- tags/tag-chrome-platform-firmware-for-v6.9
+I just want to make sure the flags stored to wqe->sqe.flags is consistent
+with the read used in the if condition.
 
-for you to fetch changes up to 8a0a62941a042612f7487f6c4ff291f9054ff214:
+[1]https://lore.kernel.org/lkml/CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com/
 
-  firmware: coreboot: Replace tag with id table in driver struct (2024-02-1=
-7 08:53:06 +0800)
-
-----------------------------------------------------------------
-chrome platform firmware changes for 6.9
-
-* Improvements
-
-  - Allow userspace to automatically load coreboot modules by adding
-    modaliases and sending uevents.
-
-* Misc
-
-  - Make bus_type const.
-
-----------------------------------------------------------------
-N=EDcolas F. R. A. Prado (3):
-      firmware: coreboot: Generate modalias uevent for devices
-      firmware: coreboot: Generate aliases for coreboot modules
-      firmware: coreboot: Replace tag with id table in driver struct
-
-Ricardo B. Marliere (1):
-      firmware: coreboot: make coreboot_bus_type const
-
- drivers/firmware/google/cbmem.c                |  8 +++++++-
- drivers/firmware/google/coreboot_table.c       | 22 ++++++++++++++++++++--
- drivers/firmware/google/coreboot_table.h       |  3 ++-
- drivers/firmware/google/framebuffer-coreboot.c |  8 +++++++-
- drivers/firmware/google/memconsole-coreboot.c  |  8 +++++++-
- drivers/firmware/google/vpd.c                  |  8 +++++++-
- include/linux/mod_devicetable.h                | 10 ++++++++++
- scripts/mod/devicetable-offsets.c              |  3 +++
- scripts/mod/file2alias.c                       | 10 ++++++++++
- 9 files changed, 73 insertions(+), 7 deletions(-)
-
---DE7/ob1FZwYKsm+t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQS0yQeDP3cjLyifNRUrxTEGBto89AUCZe5tZQAKCRArxTEGBto8
-9AsJAP4wX+mWBEfRaGPCol9VrxD5Yu4WZFTI5vzoOpJFjW5eBQEAwIhvRzvi4oVv
-/DL7voP2h61oD3nn8a7XltNhKvRoKQ8=
-=VW/3
------END PGP SIGNATURE-----
-
---DE7/ob1FZwYKsm+t--
 
