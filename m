@@ -1,150 +1,103 @@
-Return-Path: <linux-kernel+bounces-98686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BD33877DF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:18:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4CB2877DFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:18:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B85EF1F22921
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:18:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 584B61F22B35
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A27B2BB16;
-	Mon, 11 Mar 2024 10:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OXtFdGZo"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC832C870;
+	Mon, 11 Mar 2024 10:18:28 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF1222F07
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E429424A11
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 10:18:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710152290; cv=none; b=d0Bbl2o/EZctJ/dLVPyrrPGmehAPJtmrMgw+RIpjuMi7xi6ewyBkNlcxIOyl6kgr2f/pBZKIaO2KZ8CXRIkIPskZ+K3CrRQVLyzU5hcpHBsW4zYY2if8rgYMY0RzmbYo1wsJ6MHsFiTxSVKqsNvTASCFbU/+IHtWbIL87HdRi4I=
+	t=1710152308; cv=none; b=SHYP47fascKy2dP7MrtIcfxkxKc1fAEJNqYEwcGrlTh/+/GHzon0oC0isz7TLW5vbrrGKQ+odiH9pNuXPLTj4GLfrKXLR5Y2ztydX7j7vJK0tTbkOHhLIY5HBLsNmU/+TXO10/gldS4vgnKbjXHLzO4Tyd8JvOdJrzhBctoicCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710152290; c=relaxed/simple;
-	bh=CgLEEXYxdr+/lRqJ2xUbK+mwBgS3fqIC4vqRFb4hrpI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iTgTGr3TixjhCKwYmIcDlk4mBT6E/fNyiuqT+wSF5307q7RS95ULqryITTIc8+X9uxO5OGd0VfD2zE0iKilVX5eJtSzReAI+L9IwuOhmuyx/dWfgxaSiwpwLpFW39Zy6PZkD+KP3TKIy/wL0TWE8B0d3F9oYB2PDmtznj0uEPaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OXtFdGZo; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51323dfce59so2489246e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 03:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710152287; x=1710757087; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AsP/0qz8QlmA4JVNtkQu7AGls/ZfeI7jmrpsFvcLc28=;
-        b=OXtFdGZob1rgzbKnnH06lTlWoC1Oxv466F2Kk76U/u4Zjxme80ihvvVoRuqE1jwn+G
-         hbq1fbLIV5cu9kpb0qP5QHerNFNNvTGddjE3aybMbywgULTYN9HzuHGHSr1zfke1nYvU
-         OOhd07lxuLS+aHanwi0+ZA1qwKEHA1syCA2R/Q+sSSZ26nsD/T44tt9MhgS4Dpc09d/s
-         XJZWTvu0Nz4nOB0y2o4pc3lkcStsYGVOEKAtYbS1y6+IzyL2Td5LuHFv56pTKSbUKBYn
-         dH2EPbDzpTql+Wlij0yNcCFtwPE3RO56GoXVKEM+/rNxl5u/+xpwNIJu3DLTl0EFPXbh
-         WmZw==
+	s=arc-20240116; t=1710152308; c=relaxed/simple;
+	bh=49p/z+I9ibGX9tkXzASFtaJyfmLbdA1BOuZStIYVDhg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=G/GCh9fQ+Pp0q9LT38PBKWtueepCSBnKkplqaXfncH9XTisAmjo/1dnHotZ/LpTjFuoQWUkZc8ixQKNn9FAc3p0CjJhmazr4XAUoYnkwNv2V8FrYisl6dEugHp2ByIBRMHSjyBjoWz6BzKbWpvGzpKBPwRAA4nAkTFwZ4f6Gleg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-366555ecfe7so7475855ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 03:18:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710152287; x=1710757087;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AsP/0qz8QlmA4JVNtkQu7AGls/ZfeI7jmrpsFvcLc28=;
-        b=ka3V0DeZi415d0xFfhMrs4JqcRrari0WINQBmr7/SVd/hWKgHHQvMd/fQu4687xkOv
-         oi2gv5NeqzxZjGYANwZ6jHb4MQB/wtHgzBSOF2ZI0WKjvr13IZXF8YW0Rw/wXJ1cYyAF
-         7oVLYggY5dBZx+doHL3QH4n72qiWbSKdg+RSUpmpHdASCIB1I7RuCp28kmyxl5RSpvPS
-         xAN2A9tJ+z4OIqvoqf2Yt+efo+sx66ZRWEDJwFWj2U3TzQNMKAsiUj0UFKBIsAewS2wX
-         j0FLi0BjyT/JkbRiGlA9k+g4XOoN7sTM4VyFfGFE0kJS0w8kVNY9e/cNVkduFXVfE8aW
-         Is5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUDwcW1nYHFJCkCpyz1w41LCRs+hzVNrBPXj6hwWKTTP+/paO172WTsW6Uf1eLRk1cVfVxVK1A/x8yUf7w53ZC2QY1Cg2vyM2wMBIGW
-X-Gm-Message-State: AOJu0YyCEvDuyGLLicly9GIDhPXcxQbWKv2B50hJhU2QQG2J7ZD+8Aym
-	8NGGNOFwDAD+ZMStvfFL3prYvbOKkqskxO+P6AcKDwYDI5tSuwsR2Lj4syowKQ0=
-X-Google-Smtp-Source: AGHT+IEPbwnztzbsrRlV9J9paTgwc4a4ZlvV7sSr+jRNTb6Ycx10ADEmEmgJ63NIgvTmv0iTNLY6cw==
-X-Received: by 2002:a19:ae0c:0:b0:512:f679:665b with SMTP id f12-20020a19ae0c000000b00512f679665bmr3752164lfc.42.1710152286635;
-        Mon, 11 Mar 2024 03:18:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id i20-20020a05600c355400b004131035d28csm14552679wmq.23.2024.03.11.03.18.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 03:18:06 -0700 (PDT)
-Message-ID: <c56407f7-b128-4264-b149-89682cd9500d@linaro.org>
-Date: Mon, 11 Mar 2024 11:18:04 +0100
+        d=1e100.net; s=20230601; t=1710152306; x=1710757106;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PeeeQW0zVOCeEC+ecefxOMdD9qh/oMQiVsJYRGRAiHM=;
+        b=Oqx08DfR834qTuRW0KUpFHIbVSHmvNspVKCYKKdhJoQYFHCG41Ws6cBAU1Y+mGjSDY
+         cjLgfZZxltZBKnBc6Mg3n58UUzHJ/esk7Jl/mqFbQa0fEngKR5mUkUMuvhC2jQ98jxU0
+         nGIsUvbF3+PEVUEbd9OnVlQXsB2/OjCXqs4w+u9HAGXtRVdEzdJVklt6P8R2DpTw7lDk
+         AQBgPdlAHAAtp8Y0NQlcTMGWxiENhPO8AlgE7SQnXIiufsIToQ624cHW0tluNT/Yy1nO
+         MdcoTWKO7mNHMlSMnUlZikXdcaY9ln4BBg4uJzTn4C3k4tULOO2jX5zHnFdaraKB79j/
+         38xg==
+X-Forwarded-Encrypted: i=1; AJvYcCW9p7kSOmfERJj+ZMLjLtv5M9HxIGHjDOaosGNyOgiKHP9vpVxvExgI0Bne5GPIVvO4I1DMZax3n3G3znD8kdssRAmhDPanu9ugZGP0
+X-Gm-Message-State: AOJu0Yy3HetWp0RZol800Ae87YBHR9N9gPB5VUKUrKgnWhzFb/NmZyaM
+	mzQlJJAysY7nRuHmXp5OQaXHBj8lCRS8iCuZ3/4R4PG8gbV2AmAkpXqq8wRbQIeC0mPjI8FYY3i
+	Nb2uNi5Pb2qlaBVoN6ejvx9IbYGmSmNRoxyxpnqKyY54ijR2cUKUiml0=
+X-Google-Smtp-Source: AGHT+IGyDFOwFe3vpd5h1XcY9fH/ePmTHy+TjyNNTo4z5/jgrAj391EgLeE6V7W+6kx8BJ7MA89VMnoKdMd5kpqMn7d9cx/tcO9h
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: watchdog: sprd,sp9860-wdt: convert to YAML
-Content-Language: en-US
-To: Stanislav Jakubek <stano.jakubek@gmail.com>
-Cc: baolin.wang7@gmail.com, baolin.wang@linux.alibaba.com,
- conor+dt@kernel.org, devicetree@vger.kernel.org,
- krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux@roeck-us.net, orsonzhai@gmail.com,
- robh@kernel.org, wim@linux-watchdog.org, zhang.lyra@gmail.com
-References: <Ze7GreWtuUtMh6MK@standask-GA-A55M-S2HP>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <Ze7GreWtuUtMh6MK@standask-GA-A55M-S2HP>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:218d:b0:365:26e3:6e47 with SMTP id
+ j13-20020a056e02218d00b0036526e36e47mr348291ila.0.1710152306129; Mon, 11 Mar
+ 2024 03:18:26 -0700 (PDT)
+Date: Mon, 11 Mar 2024 03:18:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b80a0d06135fdc97@google.com>
+Subject: [syzbot] Monthly bpf report (Mar 2024)
+From: syzbot <syzbot+listf53548453a719ea625e4@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 11/03/2024 09:54, Stanislav Jakubek wrote:
-> Hi all,
-> 
-> I was about to remind people that this patch exists, but apparently it
-> already got applied without notice? Seems like it's in linux-next already.
+Hello bpf maintainers/developers,
 
-You are not the first one surprised... I think I could count on fingers
-of one hand the times I received any notification/confirmation from
-watchdog that my patch was applied. That made me waste some time in the
-past for unneeded checks and resends.
+This is a 31-day syzbot report for the bpf subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bpf
 
-Best regards,
-Krzysztof
+During the period, 3 new issues were detected and 2 were fixed.
+In total, 12 issues are still open and 207 have been fixed so far.
 
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 175     No    KMSAN: uninit-value in bpf_prog_run_generic_xdp
+                  https://syzkaller.appspot.com/bug?extid=0e6ddb1ef80986bdfe64
+<2> 94      Yes   KMSAN: uninit-value in ___bpf_prog_run (4)
+                  https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
+<3> 43      Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
+                  https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
+<4> 4       Yes   KMSAN: uninit-value in strnchr
+                  https://syzkaller.appspot.com/bug?extid=9b8be5e35747291236c8
+<5> 3       Yes   INFO: rcu detected stall in sys_unshare (9)
+                  https://syzkaller.appspot.com/bug?extid=872bccd9a68c6ba47718
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
