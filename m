@@ -1,147 +1,131 @@
-Return-Path: <linux-kernel+bounces-99153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6959878422
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:48:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51EBD8783C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7BFC1C21877
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:48:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D8CC282DC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C1E44C60;
-	Mon, 11 Mar 2024 15:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1040482D1;
+	Mon, 11 Mar 2024 15:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nAg2e2qg"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y1IfIw1V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4658047F42;
-	Mon, 11 Mar 2024 15:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D597F4436C;
+	Mon, 11 Mar 2024 15:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710172094; cv=none; b=VI/P9MY/CgcQEvHlGChNo58t1McDTA3AjB3+dl4P+BgJKdnwHvNdMJMrqWmAlay2MKgAeOXjo8uatwojINKcuY1Wxd2AcUGEbihGzbBeUyv8V71IsImRiRu8CjbCTlj9MB9zMPJFXXvPxijegUFNvLlEqe51lYQWKtyw4RvU1Xo=
+	t=1710170889; cv=none; b=aLOmtUj4BXT3cQ7prxDaHZJXh1ijux2Mngu6Y00V1YFZulgBkdzomofj2NcjnTZEM1GRtvfLu9iWRvvWBm0JJ6Atg4BKydeNhhRY7zM/1zdUfuj2AKihllsIXqnDWWSkULL+KwBtWLu6QFsBk4Rznbfqjbt2fsq/yogFEUyRCSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710172094; c=relaxed/simple;
-	bh=yr71qQXj1xpkj19eRzbaCz5p3dRwUcj2g1qzbV3vFa4=;
+	s=arc-20240116; t=1710170889; c=relaxed/simple;
+	bh=em3Se+P5Xrx+0GAaBd00VDrmf7quAlX2gF/aXmOjg44=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LkyZPQHSFRkaBxLM96drE+bIaSqFjBhc1oXGmtpTE49jjrkJiikri5FBe2UTkvQj2aMcdNYhpXpDLwq2adQQBVLqpsMWaf/QOKWlUtP7OHB9RJ3bW2FDe8zEGkaDSmySDTTD0XaQexZxIjyKNIAQ6bWQKvYApGEJ9xrie8Rhw+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nAg2e2qg; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BFhlEj007572;
-	Mon, 11 Mar 2024 15:48:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=GpM9B25vZbrg9rfM6xzk5f114CmAW/JBoG6AuiM4D3U=;
- b=nAg2e2qg+/5tqlQG2b/rXvxUSu26IJ4WAkMlMfA84bhLUJ2rFLRLqL1l7uOgrTUG0nxn
- GQNgBr1xZV9GyoqhqWau2W5K7JjUvux+XIwV+QcALRs5h8lgPnrKa1N2y27SXRjNxYpL
- IPXDEjeDx0J6Yl3jSQ2BAQWV6x+9nBpYDtNxlBQxBEVIxqq1YWjMXY2CRtsNKXCFP1/Q
- wn8CzR6Q54ilUHHj8aXfeWrQXwUM2vnwsP2qScK8IjhHS5w71wjaHeIaLvFIHY4OgTyA
- padjp2hjMraqHb/SXXHYPAPvgEfBjfhgOLXMdtN8QAisN4RXkaN8vkp9GerzBytSCCHN HQ== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt4us030r-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 15:48:10 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BDwNPN014931;
-	Mon, 11 Mar 2024 15:27:57 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws33nh9k8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 15:27:57 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BFRs5714549520
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Mar 2024 15:27:56 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4A85D5806A;
-	Mon, 11 Mar 2024 15:27:54 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B0BA758067;
-	Mon, 11 Mar 2024 15:27:53 +0000 (GMT)
-Received: from [9.61.27.161] (unknown [9.61.27.161])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 11 Mar 2024 15:27:53 +0000 (GMT)
-Message-ID: <78d085ac-3759-46ff-be75-f8c70604ac41@linux.ibm.com>
-Date: Mon, 11 Mar 2024 11:27:53 -0400
+	 In-Reply-To:Content-Type; b=B4PP2hE+a8EvM0TRX4g8NlfObo46QpLIG1bkTFQWuUKKI4FtU7xtaanmiXGQQ0o+9LYYeRLkJQBinl3rb8Qipo5WpfsDLJyh323qlEe0m4wTwCNrAJP07/r9PhZHjSZh2daywWF1GQT0U82f5URQq0PsBFKNPZBi/E8BlgqAK4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y1IfIw1V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78064C433F1;
+	Mon, 11 Mar 2024 15:28:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710170888;
+	bh=em3Se+P5Xrx+0GAaBd00VDrmf7quAlX2gF/aXmOjg44=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Y1IfIw1VUAO6yVnYWHqnM6x3qLyaUGPSZ3qSWE620X0mQMIuJc/CJN3QOYlILZZWD
+	 b6Ym8qqIc/7i/HhouTgEmCykq8SSfTLEji6qb2nwFoZe1po1trqNgZW5BuV7aJ0ANP
+	 mbCqfNiX6Wlasdg7uJBi7ybloBpi/5dwTWd7xVIsxF64eEIkb4N9rAbkvPUhNvfp0V
+	 IBixDJCT999m5RpBVCDuAF8XC3czA+d2QI+ff2ei0Xxj7638VxSgNWIOlW/CMjBvsU
+	 Gt48mLTWEp84D46PDDy3nKxyhe69K/9UoY9fWjE+nGVFqp1p71YVCt8js6brMJ3oL9
+	 hxet0uBW3DISQ==
+Message-ID: <afd248db-921f-4067-b917-a7ea3e807816@kernel.org>
+Date: Mon, 11 Mar 2024 16:28:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] s390/vfio-ap: Ignore duplicate link requests in
- vfio_ap_mdev_link_queue
-To: "Jason J. Herne" <jjherne@linux.ibm.com>, linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com, borntraeger@de.ibm.com,
-        agordeev@linux.ibm.com, gor@linux.ibm.com
-References: <20240306140843.10782-1-jjherne@linux.ibm.com>
- <20240306140843.10782-4-jjherne@linux.ibm.com>
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH AUTOSEL 6.7 14/23] selftests: mptcp: explicitly trigger
+ the listener diag code-path
 Content-Language: en-US
-From: Anthony Krowiak <akrowiak@linux.ibm.com>
-In-Reply-To: <20240306140843.10782-4-jjherne@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, martineau@kernel.org, davem@davemloft.net,
+ edumazet@google.com, shuah@kernel.org, netdev@vger.kernel.org,
+ mptcp@lists.linux.dev, linux-kselftest@vger.kernel.org
+References: <20240311151217.317068-1-sashal@kernel.org>
+ <20240311151217.317068-14-sashal@kernel.org>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20240311151217.317068-14-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: r4pNY4hs7yfW8pfv9QjdT1cuhNoBF8MP
-X-Proofpoint-GUID: r4pNY4hs7yfW8pfv9QjdT1cuhNoBF8MP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 phishscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
- clxscore=1011 suspectscore=0 adultscore=0 mlxlogscore=999 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2403110118
 
-While I don't necessarily object to this change, it is not necessary 
-because this function is only called in situations where the link will 
-not have been made:
+Hi Sasha,
 
-* When an adapter or domain is assigned to the vfio_ap mdev, in which 
-case no queue with the APID of the adaper or the APQI of the domain will 
-have been linked.
+On 11/03/2024 16:11, Sasha Levin wrote:
+> From: Paolo Abeni <pabeni@redhat.com>
+> 
+> [ Upstream commit b4b51d36bbaa3ddb93b3e1ca3a1ef0aa629d6521 ]
 
-* When a queue device is probed, in which case the vfio_ap_queue object 
-is created and linked if the its APQN is assigned to the vfio_ap mdev.
+Thank you for having backported this patch to v6.7 and v6.6 versions.
+But it looks like it depends on commit 9369777c2939 ("selftests: mptcp:
+add mptcp_lib_wait_local_port_listen") which is not in these versions.
 
-In any case, it certainly doesn't hurt and if a future change is made 
-such that this could come into play, the code is already there. So I'll 
-leave it up to you if you want to keep this; if so, you already have my r-b.
+Because CIs will soon use the kselftests from the new v6.8, I think it
+is better to drop this patch from v6.7 and v6.6 versions.
 
-On 3/6/24 9:08 AM, Jason J. Herne wrote:
-> vfio_ap_mdev_link_queue is changed to detect if a matrix_mdev has
-> already linked the given queue. If so, it bails out.
->
-> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
-> Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index b1c1dc0233e1..259130347d00 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -781,10 +781,11 @@ static int vfio_ap_mdev_probe(struct mdev_device *mdev)
->   static void vfio_ap_mdev_link_queue(struct ap_matrix_mdev *matrix_mdev,
->   				    struct vfio_ap_queue *q)
->   {
-> -	if (q) {
-> -		q->matrix_mdev = matrix_mdev;
-> -		hash_add(matrix_mdev->qtable.queues, &q->mdev_qnode, q->apqn);
-> -	}
-> +	if (!q || vfio_ap_mdev_get_queue(matrix_mdev, q->apqn))
-> +		return;
-> +
-> +	q->matrix_mdev = matrix_mdev;
-> +	hash_add(matrix_mdev->qtable.queues, &q->mdev_qnode, q->apqn);
->   }
->   
->   static void vfio_ap_mdev_link_apqn(struct ap_matrix_mdev *matrix_mdev, int apqn)
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
 
