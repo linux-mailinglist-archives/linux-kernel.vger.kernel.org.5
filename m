@@ -1,87 +1,94 @@
-Return-Path: <linux-kernel+bounces-98840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E1C7878021
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A0012878026
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F16F1C2134D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:44:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D18DE1C214B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5F033FB35;
-	Mon, 11 Mar 2024 12:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E633B7AC;
+	Mon, 11 Mar 2024 12:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IFGxQY1E"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="UPRH5TTH"
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0E43FB2A
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DF41364
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710161034; cv=none; b=bKrk1Mki4llTnbEjyB26bup/gziiB0uDlxmUdCPisbZY2B42ka95DPpk3pywNSbPqQreleLVlHDJg4Ryy0mmFqwRS21rKkDaQCT108wIrnxaRVAmAWXrO1O871HZKNTPdqcMTUXTippRfn4R5VReeZrper21+pQMyNaU2BfwCyU=
+	t=1710161385; cv=none; b=G3Q7rNm430RkefaXIYDU0Ccdi2ewC47YyyACdqY1VURsZyu5xjymkbZeCPAsMK0tt/1h1nR64Dc50tWM/wCkjhKgVwkbndh2x1ExDfXMmz9OSXf4x4JMJlvmBeG8uA1NTsrjml44akbP7rB2PC6fztvrzzRIpVASm49QnPAZZGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710161034; c=relaxed/simple;
-	bh=c6teFgXaY0Jm3WrdtjWiBdN7gpyKJTytiFlncrXD050=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=kd5TkDcMj4eq1dzjbNZxGpd9nYSaKji+G7BP0iY5g1jw/n8qd5CMrk9hxE0u3wPGCFpjA83wjoF4bAmo2dm+kOr3GqBxA9bsLCkw+bI1H0ZIg+jorTbtJ1Ksdb3nOrnf0ZcjbkyHOGGQCGRuS7Go85FSX6lblp0QZAcYWJ4XL6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IFGxQY1E; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c1ec2d05feso2026825b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 05:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710161032; x=1710765832; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=c6teFgXaY0Jm3WrdtjWiBdN7gpyKJTytiFlncrXD050=;
-        b=IFGxQY1E+xcE4Cp4woB9KPLiQJA5p6RwOss2jh+k4rcxQANsbiB7hh4nlYk4amMEgD
-         GzVrFLkZ/F+0ZypAwpgpNNvHgtYEtVFaMMmRQ4lvUS0fy/F6MccQOQZeVLi3996QWjqu
-         ppIwC4g94jCveArascJWWC/Sht2fED2V3vikIbYlpa8Y5OJk4uP/XcKnuwWA3XLr8RFA
-         I79mEUq2uG2HeGqoqc7bUd1cn0YxzEiBj5GfQDqzrhDDeh7dvlIcougjB9A1aSg9MGXG
-         bJSIFKAv4Pcjz47rxDe5xDKizgMD5QXTBoYiS/nUJaaZrNR+i+ym9sWhkvRZgRv491ac
-         pf8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710161032; x=1710765832;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c6teFgXaY0Jm3WrdtjWiBdN7gpyKJTytiFlncrXD050=;
-        b=B0RfQv3QCOWDmlNjwpUAvIGhThfbxKuESPQs9Axeip7OevrgJUYf8pbzPXKO/QxbAY
-         7K6QVL62Iu5mf0+2cgJoTejnPhVhyGfL7zmQnBUOuDjro3hdp5oOJlfvIw2Knnew/8nz
-         fMrr7LX259D0NCH6TaYyrN1rOggUkZ+3AWOp6ZwtatHbwKpUhDffkf6GsIhKFiySGUUN
-         e6TYvXc6QGspQhh67t5Y3fstqVvWVAVjnDK8U8DBJxPmKh9DchBq1In52gEdQaEo+/QH
-         Zd0KG+bBrB5WpGLoGTOab+ztd0/mRtvCKGPa4Jt1DXOg4MF9uO8HUFbH06GDa6CjlCQo
-         rKQA==
-X-Gm-Message-State: AOJu0YzXu2a/rsdsyNVVsxgaBIsamcnsHNKhPhtwqgry4jhMFBFe+PuS
-	1lb8i9Cb8rXXy5mEkcqh5Ro4uKCdor50N31HOdQQFbuvZv8W69VkaWUZ2n+4sc6VZYyC25F6q9U
-	yfuvKU8fAadMwIKltLkueAdGbVJGNhtm/kHZCKQ==
-X-Google-Smtp-Source: AGHT+IHT2gVYpwVlswu74w7UKaYIb8JujwzscCCMLUZdX+3cn6BOgroXi7H/6GZSCDeKPsPni0/dKFynpwZ05ufwdC0=
-X-Received: by 2002:a05:6808:6541:b0:3c2:503c:60fa with SMTP id
- fn1-20020a056808654100b003c2503c60famr462697oib.12.1710161031853; Mon, 11 Mar
- 2024 05:43:51 -0700 (PDT)
+	s=arc-20240116; t=1710161385; c=relaxed/simple;
+	bh=jhiwJhcKVBRZIdqpk4E2dgcKQXEmHWRcfgca5ia865s=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=ZBYfJ6gaMK5jc0ToAFX+UPs9fLsbadgzwLHrs08pkqMj3MdVDahb8K/vv0Rdy5CBSJ/55ECMDcfeZ+Yd3cplfaPDcNwtBZZ3ykPmQgibvqtUg289miuiy/1IRbE0SDSDSOthav1oEpxa6RcmhsDDlwefIuuwiR8HaTbOSamRtus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=UPRH5TTH; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710161076; bh=tLb6KWZBoxGV0fA+3X/ShT89VgoRxqI6W6b+OTUce/M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=UPRH5TTHAA5W4ke8bDBV2RPbnylBiihGIrHsEpyLVUgUtdMaHqwSSWpF5Z4G7kblc
+	 DlCtwI6PsiqAP5KKbL1sCvAyO7WIKh7Ba+DjmQc90vlkIMFJZroWa1yMUnp0pRdM3O
+	 3pR3at1YTWPL7DMuObUv0oX3TpDZxfAtkP7ve2NY=
+Received: from pek-lxu-l1.wrs.com ([2408:8409:ce0:38d1:a032:4bf1:303d:acae])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id B22A8861; Mon, 11 Mar 2024 20:44:34 +0800
+X-QQ-mid: xmsmtpt1710161074tbdinx252
+Message-ID: <tencent_7B6E46C35367636DE97C83A16448F7623705@qq.com>
+X-QQ-XMAILINFO: NyTsQ4JOu2J2NvXWLetB1rP6VE8ZT9+4Wd73MXKvJUzIVsyC7VsmFgHvcGDX7S
+	 TTpB5EB7ZNVKqhq3Prsg+NkX2kKxedsz+Y952Q0Hqy/TwzlRgHCGASy9M5lfJvo+DTEoUd1wJuG4
+	 gb9LvUt7veo11P/U99QDsfP+RltGO897ybEzWrWWH1ZgleL5U4yNDdqOs1T0AR3hcDmJDtf5EoPs
+	 o/2W/fENO+Nu6Dib/UIJIYBFsB5XV9KC9o4M0LcSWvubXogHIFEbF25lP6a926qc7efejgZyClKm
+	 JC5FY3DWxmylw+gUA0VHWpSB/Z13BzUQmOK0EF+8FNtNU3EDN8zEcq04Kc2sbkJmg1EZpLkURq10
+	 QTNE3hXjNIPVOl3v6ACQvwf/vf+TFE4Js9est3xuG08wA4epizmpoMfCTRaEcWXifBvHe+i+IceO
+	 7SaxxA5IrJ3hm8/PfuuXaOtOlfiUscuCAQrU4crJqqvIJ0rezX+GkP97ZMj3PaaNmu6Qz+fcwOHk
+	 vxFnkwgtDIgsGemfvBENV7E26tdKIlpCSc9QdJh0ZH5cCEW/Okv0zvnLnQJrSX4Xc5v402GHSfFN
+	 3se7N1BCFw4O4N74d9BL31PyJhnvkMtgdIX8/QcyQrJfmKcllPenjNEtKOdqsVPNtY4orhf+N8cG
+	 Fe4y/3obPDAOCm34YmBLrdp05FYvLoRA7+E2xRrghfI+szpn6UHXH2tzPXzQlM03ArwMyt6cYNtp
+	 OEr633lp+drsI63HVoRN4M5o6jg5dT1can7Tvj7AEAlBXp5LL6XDKlFZxpbwcqVzKzLeaNHUOh/U
+	 hczA8KFOZOm2aS4k4yXKH6LghpW++ZsFQF/jJCopYV50M0HNHkTZUjWvIY3/NSppF0CZG23iAhFO
+	 LdbALPcJWy10KXYyJrkV0E7sKlYNFQh7iiKfA8/1eMVoRngsTvpMJDOVlQ+DpK9w==
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+cc32304f6487ebff9b70@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] KASAN: slab-out-of-bounds Read in btf_datasec_check_meta
+Date: Mon, 11 Mar 2024 20:44:30 +0800
+X-OQ-MSGID: <20240311124429.125440-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000081fb0d06135eb3ca@google.com>
+References: <00000000000081fb0d06135eb3ca@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Roman Lozko <lozko.roma@gmail.com>
-Date: Mon, 11 Mar 2024 13:43:40 +0100
-Message-ID: <CAEhC_Bm+CRyVuBmZC+2uJjkcopaLsWyJhfoQNPshs5nuE5FGrQ@mail.gmail.com>
-Subject: What is the current status of Intel Thread Director support?
-To: ricardo.neri-calderon@linux.intel.com
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi,
+please test oob in btf_datasec_check_meta
 
-May I ask you what happened with the "sched: Introduce IPC classes for
-load balance" patch series?
-As I understand, it is still not merged, which means that mainline
-Linux still does not support Thread Director? If so, are there plans
-to support it?
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
 
-Regards,
-Roman Lozko
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 170d017e8e4a..dda0aa0d7175 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -816,6 +816,8 @@ static bool btf_name_valid_section(const struct btf *btf, u32 offset)
+ 	const char *src = btf_str_by_offset(btf, offset);
+ 	const char *src_limit;
+ 
++	if (!isprint(*src))
++		return false;
+ 	/* set a limit on identifier length */
+ 	src_limit = src + KSYM_NAME_LEN;
+ 	src++;
+
 
