@@ -1,92 +1,106 @@
-Return-Path: <linux-kernel+bounces-99529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E23258789A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:44:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690108789A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:46:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19D211C210A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:44:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E46D1F21FA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5C352F82;
-	Mon, 11 Mar 2024 20:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0C143AAC;
+	Mon, 11 Mar 2024 20:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HKI/BRla"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A6fUVGPl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB6D3C0C;
-	Mon, 11 Mar 2024 20:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0AD3ECC;
+	Mon, 11 Mar 2024 20:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710189877; cv=none; b=FCToJvoTGTp6TRf1v8z9yK/xu5QehBjFR8S0DuFLGxdrt5rR9UjCKyuGIBpjRGulEjJkSzJ5gQ4SKk03qMY9ETMFG+kT05Ss7nfTX8iuqyjzcwSqKCYLY14x1DdBHuHUVZI6APQclAIE0ITWXHA8nRxDY4LTv9cOmIrYesK3Yvk=
+	t=1710189957; cv=none; b=M4qczGomWE69gfz+DXNy90w4yP1px2loa1Dx7TOJpE8oHyMZg3TOYDM+ov+XM6ks/xyIlZRi6k5yrqEDTKMG5LkiCIHwajEA2KClABI9uDu6wJpf4uRq1a9TYKP1NGcud30eAx7YAhdQ/goPIo2EWzXapvJ0c6Cz4B5dXFKywYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710189877; c=relaxed/simple;
-	bh=fcJhJ0MWCqBw8chXp9vtaAHiJeUJVUgJd4Am03lKKY8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tPsGWd7BEwu5aQbsyPH74y2iu7LKZJIJWNTiiL2crUZalC/g/4w/GumNOg+crP4P9uw72/i4E7SL+8QbMsxKKWOMlm4aQ9DVBxuvwTcI2Pg7rE5mYX0fODgbOnMbpGMAq/9vjK1AXjYhZQ7HkVrL+l2wzKc1vVtR2a14pV5T4YQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HKI/BRla; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6510AC433C7;
-	Mon, 11 Mar 2024 20:44:36 +0000 (UTC)
+	s=arc-20240116; t=1710189957; c=relaxed/simple;
+	bh=s5xI8mQzAoMjxpwEaBaKlaL9MAdSZsz/UtdcP8IG03A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VZB1ZXVK8J74vDrLSEZO9MclH3BfFh5Z+MOqf+x3t4+FpZhhHrTCWxF6LwYqrNvafme8bDyt64I49nphFQ69qvueycdFjjflTfrwqUgfg+WjX0DdGG34m9JanDF2JeKBK59nmssuPnGTOS4R8Soy4enevljVMYL8wH5b+tvyWEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A6fUVGPl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A78E1C43390;
+	Mon, 11 Mar 2024 20:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710189876;
-	bh=fcJhJ0MWCqBw8chXp9vtaAHiJeUJVUgJd4Am03lKKY8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=HKI/BRlaYOLgO54Igy/9p4OLYto4NXnD0zMA2B+E6q9lunvb+oDIz/ttQoiSnPfMg
-	 xpPgG/W7cTne0xDiMcRLUBh5IcD65aAbWFyVdS5g8TEdYfr3dD8KZCBvd8YF0//cPm
-	 zeVzTK3wkjox4uGnlE5vT/yMJasMJY3D9rSRfEVS6wLgCPAoXUTSMzrbUkNSxwE3Kc
-	 R2yIxFi6LbcRsD7KJuns4iHm/AB8rRiCy7Cln/00OYyB6wlHvCjeOhx7jYq2e5EXVK
-	 J2e8Pk/Cv5YIWdFh8+xwkwlFFQbA6ki1mLYc06+hpBjlwXmydC3OOnp1tK6H3BsDZV
-	 4NYG91Gx6B2dg==
-Date: Mon, 11 Mar 2024 13:44:35 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: =?UTF-8?B?QXNiasO4cm4=?= Sloth =?UTF-8?B?VMO4bm5lc2Vu?=
- <ast@fiberby.net>
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang
- <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, Daniel Borkmann
- <daniel@iogearbox.net>, Vlad Buslov <vladbu@nvidia.com>, Marcelo Ricardo
- Leitner <mleitner@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, llu@fiberby.dk
-Subject: Re: [PATCH net-next v3 0/3] make skip_sw actually skip software
-Message-ID: <20240311134435.19393f98@kernel.org>
-In-Reply-To: <20240306165813.656931-1-ast@fiberby.net>
-References: <20240306165813.656931-1-ast@fiberby.net>
+	s=k20201202; t=1710189957;
+	bh=s5xI8mQzAoMjxpwEaBaKlaL9MAdSZsz/UtdcP8IG03A=;
+	h=From:To:Cc:Subject:Date:From;
+	b=A6fUVGPlk5NuPRlI/mnP1O/IxeWLCbg00NHinziLuI6WiVNTXi/0/KI2drBkdkUSv
+	 9RfJ1iM7LmzejKD1R5IGpER9kAzambV0NRrW1TElkuDE1uT40NuKg69gC2IYzE+BX0
+	 ivzDHEL7sMthf+yv4+MZXmOvVSTytptVmO+GZ4fc622uSwwFyZ7HgTA1YC0fmTJyJv
+	 MZQoP4byqHrGOMEpMOH2vP57quYbdZPjcWO2cEeaoQ6N181rs64ojbqVP4QNpHw6Cn
+	 vYDGRXvFYL6ibPnaFqbU9q36RnANPS1XGkC6EqfjEoyhTZUxmRKB3iMnKqyvTaaZYO
+	 GJfROvh/RhfSA==
+From: SeongJae Park <sj@kernel.org>
+To: 
+Cc: honggyu.kim@sk.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	SeongJae Park <sj@kernel.org>,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2 0/4] mm/damon: add a DAMOS filter type for page granularity access recheck
+Date: Mon, 11 Mar 2024 13:45:41 -0700
+Message-Id: <20240311204545.47097-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed,  6 Mar 2024 16:58:08 +0000 Asbj=C3=B8rn Sloth T=C3=B8nnesen wrote:
-> During development of flower-route[1], which I
-> recently presented at FOSDEM[2], I noticed that
-> CPU usage, would increase the more rules I installed
-> into the hardware for IP forwarding offloading.
->=20
-> Since we use TC flower offload for the hottest
-> prefixes, and leave the long tail to the normal (non-TC)
-> Linux network stack for slow-path IP forwarding.
-> We therefore need both the hardware and software
-> datapath to perform well.
->=20
-> I found that skip_sw rules, are quite expensive
-> in the kernel datapath, since they must be evaluated
-> and matched upon, before the kernel checks the
-> skip_sw flag.
->=20
-> This patchset optimizes the case where all rules
-> are skip_sw, by implementing a TC bypass for these
-> cases, where TC is only used as a control plane
-> for the hardware path.
+Changes from RFC v1
+(https://lore.kernel.org/r/20240307030013.47041-1-sj@kernel.org)
+- Rename __damon_pa_young() to damon_folio_young_one()
+- Mark the folio as old from the filter for the next check
 
-Linus tagged v6.8 and the merge window for v6.9 has started.
-This feels a bit too risky for me to apply last minute,
-could you repost in 2 weeks once the merge window is over?
---=20
-pw-bot: defer
+DAMON allows users to specify desired ranges of overhead and accuracy of
+the monitoring, and do its best effort to make most lightweight and
+accurate results.  A recent discussion for tiered memory management
+support from DAMON[1] revealed that the best effort accuracy may not
+suffice in some use cases, while increasing the minimum accuracy can
+incur too high overhead.  The discussion further concluded finding
+memory regions of specific access pattern via DAMON first, and then
+double checking the access of the region again in finer granularity
+could help increasing the accuracy while keeping the low overhead.
+
+Add a new type of DAMOS filter, namely YOUNG for such a case.  Like anon
+and memcg, the type of filter is applied to each page of the memory
+region of DAMOS target memory region, and check if the page is accessed
+since the last check.  Because this is a filter type that applied in
+page granularity, the support depends on DAMON operations set.  Because
+there are expected usages of this filter for physical address space
+based DAMOS usage[1], implement the support for only DAMON operations
+set for the physical address space, paddr.
+
+[1] https://lore.kernel.org/r/20240227235121.153277-1-sj@kernel.org
+
+
+SeongJae Park (4):
+  mm/damon/paddr: implement damon_folio_young()
+  mm/damon/paddr: implement damon_folio_mkold()
+  mm/damon: add DAMOS filter type YOUNG
+  mm/damon/paddr: support DAMOS filter type YOUNG
+
+ include/linux/damon.h    |  2 ++
+ mm/damon/paddr.c         | 64 +++++++++++++++++++++++++---------------
+ mm/damon/sysfs-schemes.c |  1 +
+ 3 files changed, 43 insertions(+), 24 deletions(-)
+
+
+base-commit: 13043cde46a19e72d37965b67b74e564623f65e7
+-- 
+2.39.2
+
 
