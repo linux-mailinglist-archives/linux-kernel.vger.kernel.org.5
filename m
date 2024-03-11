@@ -1,80 +1,82 @@
-Return-Path: <linux-kernel+bounces-99241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A06BD878579
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:31:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FE95878578
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5676E28274F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:31:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDE281F20F32
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7388556451;
-	Mon, 11 Mar 2024 16:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A535D55E6A;
+	Mon, 11 Mar 2024 16:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="TxaP6kw1"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2087.outbound.protection.outlook.com [40.107.93.87])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QB9ho/uC"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2078.outbound.protection.outlook.com [40.107.223.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A3951C50
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5714941C6E;
+	Mon, 11 Mar 2024 16:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.78
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710174471; cv=fail; b=DHrqt68cE86wYfScXceocJo2J0q5ffT/Exer3rkzrS6uSfifH/Sh2Ztv5zGvWBW+jRXWuZ7FMSLoPmrU5p8rCZpJUE7T/PKhwgKpZR9XN8MVg+FqeK9ygihNsGJf0p8Y4GTbSDVuC31iPMd3k4KTCaOvaCniQvOyRRF9Z/NnRyk=
+	t=1710174470; cv=fail; b=AAzvman2dKbp9iquoiFBpydmf+DodL/i55ZpVKKjxp5ebqdJdJW3E45QveMutEXYRoccC4WZ7MGIEXn8zMrP1YiJZz9Ul5/7rBU8BCbzzKmCoYtdBugcr1ctxHsnv8tChDfkmqOLcPWxUV8MJvE3X77HTS8lT3KEDRLGE8cMsrM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710174471; c=relaxed/simple;
-	bh=TgR3aW6yW2OwEwMillVZHuG2xrquNQayDBkbeAITTXw=;
+	s=arc-20240116; t=1710174470; c=relaxed/simple;
+	bh=/YZhbkgADG6xq9I1E6nfEezEjBdxrmE1Wot6MLdJRXM=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=gXoOdvjPckB//Iu1NlMAVmHbOK6Jzi00S8iBHFy132zK7TMzk39YyX8bCrFHfdDe546u84x8KcRYLQGU/WmqrP5wGFiDxE+1NXMsPAmsRpYQ/460khEBSWvnK4a8zPfOLPZBcwNsOJSXUVTNTYx2iuekU1alU9NwJAawY3arr+E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=TxaP6kw1; arc=fail smtp.client-ip=40.107.93.87
+	 Content-Type:MIME-Version; b=KInGsfEXLz6720lHsa7pDAkw6DGI0SgAyOlkgVDPiOtAPOJGGrQDux38AyRzakMR1FKMV4Zd6VXY8J49CAZTbrg0D7cnyKm4g7bVtllMIdSGFYhKYIxad5pkD1lO3k/OnpIiwfI3BQBGGrk3ef0nrG3xVerqxLGwaYQXuAYqgeU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QB9ho/uC; arc=fail smtp.client-ip=40.107.223.78
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ebma8sIcpz9cnj3u7DXlZV9oJXf0E+N4d4Rij4DASvN+mrSZpaMXCckNVyjNQWMj2XdQiiW6KQnJDq0HtLg2HjLEVzDtoaIJk8NuPA0YHugYJbHILkUjdhITnbR60Mi30PsTafKKODKR9hEKE3ouzKExSJNf65t9P4hqX2B3L3ljcVI0kPlilmFuH5ZRVyPjrHVzLTc/8wl6IOC2WYR7Tg/oX1UtIC/FK2Fy0SnqCjZg9/dkNgGRgKpBsDruqFxhg5XldMVeDVKDfL+RUm0MlLBWFURwkOeVKEsLKiCKtlWCKKMQ6asUU26+gOZ1ygZXNukN+BY7M0eLNJa/obe4xA==
+ b=RDffvOKopjvSx+Q0w+pUpq9CbWvU8oedHMQZZSk7163hDOsDRLjZ3HcQq3PwrGGHYTT6E00vzixIqbcslByhZQJU0neUEBLTPbyaLIFF562BgRjPG7CK22bQwfBXqjAKwpneA7VkCzoSsc6+w0YVdkNQbbDD/K4Ap7ANCqIvhCPm83dibTbAsCOFTy47szeIw/OUqICPLJPcnt/quxGo/8z3Trllx3sdGgWWWyBbbd1fElPzRQG5XXtgqRTaJcc23elqOCv+vpSG/5/OQ1/v8CzXblJpH2daF3SEfl7lGIcw9/c2ATknENSTJs/ZIyCO09N/lloLAUyp5lt2ZkTo9g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LGA/nQTR5CkWGjoAOSvpy7emcLH+X8o9TpW4AeV8djM=;
- b=Cp7B/uBV60WzTtXu038BxpLUsa6VkPSpRyfbS1GcZvXJdAItnoxDcVtycbVUkGK+PuHmki9u0LcHr6dBU13tHBWxLm7zgHn8vIN/44ZCoi9GABgzadUO/KIsHpZDZbeX22YGNcgiLCHnDGq9/Uwtv7OtAhfjJplTOF0y9Xh4RJr6RvNxx7+LO2DVqzP7b6bzLJDH/5111JHeADfPlUDxyBCP9dhZO3F9H36va4X+qRKpGd74EHeYjkzskgXlEBLOthUZSEdT1xYFbrPPAKaVbdpk220YVCzXNIXjLlsxG9+mOknd2YybssoLmWo/sa6Up5Au+WlB7SNwWpoW2bisIg==
+ bh=3MbUMF+W/lFlW6i3qt2RW/tLLwDvTYHSNoCz/loXHBo=;
+ b=VEgwsAa6Dz6UR6IZoGjnxyp5Vb3rZQjHLMpzXfJm/GILYM0b4X6NAgI9ckhU7LYTq9mr1UFS7oGjNxJWu/2iYyx0kk2LAjsYfS124YmevgdxwWHDcx5xvEI21fbB9UuwGfII5Xf3rg4agNl7FalmwDv2QUknyQTTO+Jt+u0h7WKsGcEcv9W7jvH5CW7i/yeu/m/8/riWfxuSNtO/l+tCvS+6HVbmFO5toI8idhaQ8yAF83gGRKqNZG/D4FSwXIQgYqdD2+KuBodxDkO5558mBUb4Fd+wR03V6QEKjy1ueXu63Gmd4Vbk7Mjnd6BYLmzp46I6ILUeHzOY5lZPmw+H6g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LGA/nQTR5CkWGjoAOSvpy7emcLH+X8o9TpW4AeV8djM=;
- b=TxaP6kw1I63k6s0fzH+KL6RIwLvwTtORawiNpnsMMQxOQDmXyEAQLTb06aQsIpVgHawPI237rggzQ0TUSPliIaFDo03YesPQsfF+HfntJLxoOmP8dxQKS1SKm9vbhnKpz1VMnclECdzjluy2LArwCh2wKpZFqofSOH8W0qSSuLU=
+ bh=3MbUMF+W/lFlW6i3qt2RW/tLLwDvTYHSNoCz/loXHBo=;
+ b=QB9ho/uCkKIYOwbokb6YdY2iA3tj1fz45aMrqN1A7v+1hcLDVP/pcaNz0IEosWVIjhjy6Iw26JWAmsFTaA3lehdaLF6K2FGqq5wDXAcSW7sbVWLm71b5AuXFfv3N8BoA7QXXEPo3ceoyxMWPvrCfX7WCls0hN2RUwJ+ebrG0SfE=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by DS0PR12MB7899.namprd12.prod.outlook.com (2603:10b6:8:149::9) with
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
+ by DM6PR12MB4267.namprd12.prod.outlook.com (2603:10b6:5:21e::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Mon, 11 Mar
- 2024 16:27:47 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7362.031; Mon, 11 Mar 2024
- 16:27:47 +0000
-Message-ID: <06e02957-4cfe-4dba-a7a3-fa08e7a199c3@amd.com>
-Date: Mon, 11 Mar 2024 17:27:40 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: add ring buffer information in devcoredump
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
+ 2024 16:27:46 +0000
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::8b3e:57e8:d574:309a]) by BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::8b3e:57e8:d574:309a%4]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
+ 16:27:45 +0000
+Message-ID: <2c45d7fb-06e4-468d-9415-0eaa48c5250b@amd.com>
+Date: Mon, 11 Mar 2024 11:27:42 -0500
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH v12 2/4] dt-bindings: remoteproc: add Tightly Coupled
+ Memory (TCM) bindings
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ andersson@kernel.org, mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+References: <20240301181638.814215-1-tanmay.shah@amd.com>
+ <20240301181638.814215-3-tanmay.shah@amd.com>
+ <fb78bdda-2ec7-4fcc-888e-233905a9386c@linaro.org>
 Content-Language: en-US
-To: "Khatri, Sunil" <sukhatri@amd.com>, Sunil Khatri <sunil.khatri@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240311122212.13713-1-sunil.khatri@amd.com>
- <9e1dbcbc-f00e-417c-995e-d9c539292e03@amd.com>
- <34ed7275-e1a5-4d93-8ba1-ef3c597eaef3@amd.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <34ed7275-e1a5-4d93-8ba1-ef3c597eaef3@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0197.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ad::20) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+From: Tanmay Shah <tanmay.shah@amd.com>
+In-Reply-To: <fb78bdda-2ec7-4fcc-888e-233905a9386c@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR01CA0021.prod.exchangelabs.com (2603:10b6:805:b6::34)
+ To BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,150 +84,250 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DS0PR12MB7899:EE_
-X-MS-Office365-Filtering-Correlation-Id: 51be8f33-a4a4-489b-2d14-08dc41e82f9b
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|DM6PR12MB4267:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3e64b5a6-73a6-47ca-eeb0-08dc41e82efd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	GHKJhc95zhq3R6qFaPLRWwkzdJC4RdO2wfXbJDEV4H3t8NOc2tAZNo6gnkm1H153DyDOsqObihiKP4dFNhWPjKuXir7aUEMhDip+TJolb14xV4jZXSVXs7txhrNmvVyrB9wq3wqYpFolYR/OhilRxu9ii4JYpiOjqQZMU+frj8utWPtLS5hkb87eC5+DhYp0EDKdSpSnItLpZZ1HhC0J8ad9cDotL+GGEHVerSabunGQrw97uW1osbry6nN1b+60oNgRJNLHWVyJC0I/8Gml9YI7r6xrv7ItO2BsFopGG2nL0DU8LBY0V+OgrGT5wUaFDq/NKnO6AsiuUstZ16RtGSHSKFQvBpOjnBsqnMbTmpt3HpZRUi/Oc0/yLP07dCy75IOmKVm65jigKiNj77ayMLQ1owdWt5kdMXTmJzxNXpr7cc7vzZLC4y0klaLD47mTjo7yL19ps6RFG/xXj8WOZJ5S9ov7rhKtau8eTDXnH6PDjrzDflxkhRaUSqxLPQ60qMnHiF9F6wH9+QHOArEWzO9tDVhbGrfGNh/N11f0oBWLpmRQU2iBGmgFfyUT7USKsD4D68hsPOfLKk1pb1PUF7Kjnt23RgvfEkYl9RO4UNznHP2ibzxCsLZNMavaTkvwoGItJvw8qjFF9y5vvbo2HOGfGLlhWOQ4H7tUeVNhR4Q=
+	liV2DI5vGbtL9wVYuPYDn7Xz0jwhZBMWlCLc3zWdP60T7yAP9QWTng3z3EYhMpcwUgXNccl6vnfGeSdqeqxKcB4/IWnvZii3CaDxDgPPLem2+j737H7Fk2frz5qLaeyt/jJJ74kCgG9CDMqrJyA+UNSRgaKxzO0PnRK/EtkQDBsQJq2sZYHlVlFFlb0i0tZejCie8KhPRhPMpOJsAruu4qETEktloQ3Cdd1lcLkztl4SxAd/cpiIdLds9IOlw3eXfjiMKzTAsBytin0v1qu6dMZ4QXk8RQ6gREDCrkox5xncXQ1DG0UqWO2wLVvCOCmlZ0DzPL/4lRhf6Xk1atCyD4pb/L9sfDyIso00fXX0KOoR0iD3RY6zwnIFnD5jNeR/YLvJGEuSUrL53JKH4LwO8nHUlQA0Am2xX+ftFqTNgqKcT9HqS6pLJJMWCA3A+vhaRzALYOMJxCBiRFwLs4KGI9Ks7BprC9fFdMy79vIIPRx8AxTqWXAh+Dd7XNetqaTNIawJ/F90Y7VUAkVcTHukVGmWsP34JRa97k8hoKx8r9tpOhzWzQ4JsXeSfBGjUUWQhOi/7hsfgXVkfRElea6e6g4X6LLvTs2S2UMwTL7xDYk5uVGcK5RFNm346ZHAO7qAcalUqfZKhuou3m1QZJfopDt50oHGEe7r0EFQ0iStujI=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?b012eXV5blQrS1dNTTdOTHZOV2d4aGZLU0hvTjVtMnl5ZlkyUjVmMDdTNlhU?=
- =?utf-8?B?Q2VaRHFwbGIySHhtc0hDVUVVdzVUVFZSTVU0WWVzbVBwL3NxQzlyTlZ4ZHZO?=
- =?utf-8?B?Tm9mR1EyY3ZyTzFWcFQvejYzVWVOSEFJTnJwRnRQVlM1OC9XMExFSzF0aHlC?=
- =?utf-8?B?aXRjRm13QXFOSXNTK2dDdVNjRHFLSEtvOWFPeTB1WXZLTXZ5YWM3Ry9Ldi93?=
- =?utf-8?B?SkF4bzhWdXNvaUc2enJ1aU9Jei9ERnFVZEF5Q3RIYzZ1bHlidjRicnZsdXk1?=
- =?utf-8?B?WWRBVGlMNytDd1VheURXaWN2VFoxL3dWeFg0VWZ4aFBxZ3lqckJCMk51NW9h?=
- =?utf-8?B?MXhjVDltUndpMk9qM2ZHMjJZbmJnYWJJNVV5aGVrUVNFajl6WEp5RlJSWU1l?=
- =?utf-8?B?cCtEWWtJallHa2Z3VTJiUlpubVIvWVpSYnlLL1RqdkxNdXFObkNGbkE1MGFH?=
- =?utf-8?B?aGp4WFY2KzdLTnppcTVjTmxISlJwOUo1MjFCU05zRGc5YTY5QUs2QmFIZWhK?=
- =?utf-8?B?TDBFWVNSRUVQNjg0R0Y1d2FTdWlTT1piWWFUTDBUSTAvWXJna2VGU2YwbUdI?=
- =?utf-8?B?ajlMZi9xMFJoY3p5TnM3bVgxQVlWa3QzRTJIa3J4N3pDR29UR2JFWjVvODEw?=
- =?utf-8?B?VU1jeHdrS2IrVGY4bjFtQzNMWjNUOFdTTzRpTVhEV0tzejkrV1p5R2xaUzVq?=
- =?utf-8?B?SUM0aFNjUHBzd1NaZjdtMURVdUZkRzhHNG1lNmlIbTE4TFZHWmtMSzNyenZN?=
- =?utf-8?B?UlpWbVRUV2Zkamg4WW5LM1pDWnhKbVc5Z0hHVjVUWlNVUXk2dW1meERkTk9t?=
- =?utf-8?B?OUZLazFlSWJXZTZEUk9FMVkwWXo3RzhsZnlNQUdCYkh5TkdrR1cvTVZzei8v?=
- =?utf-8?B?WER3TWN0dThEd2M1SVFHaHc5L0g3aW91U3dKSzFncHZFYlVWVW9hMG1wc1Bp?=
- =?utf-8?B?aWJQWjNkZkMrUDZaRXZUd3YvQ0xhM2E0NUdaUTJzd3p5LzBjRVlvdFFPUzlN?=
- =?utf-8?B?THI4VE5sNlVna0JsMVdoeFNXVWVLZElYVEs1dWU0OUxkMjlYWk1rNENWSk9q?=
- =?utf-8?B?QXA0S2VCUFFJUzBLRThWVUVWRlJ3bWsvSm9ialdtYTJmY1Z1WVBrL0FwMDVE?=
- =?utf-8?B?alo0NGVadzVzWTBUMDdJTEw0RjFsYks5S3B3U3lIekIrQnpoZ3M0TWEvdEly?=
- =?utf-8?B?QjdIa3RPdUJXRTFTOWZHTjdMeWZXT2swQVlkU09CZTZYd21aRUkxVWxMVmNZ?=
- =?utf-8?B?K2Z2cGQ0UDBBWmZiMU1ML0d1bkF3cmhucGJrcERSQUZOVW9xY0ZvRTArdUlr?=
- =?utf-8?B?MUhMMHVLOTE4a1FnVEFnd002Q09DNkYyZ2VrRGR5UE9mWlUrTXVRMGovK3ZC?=
- =?utf-8?B?YSsrWXA0L2Z2RUhneFFsNjNuWmlQZ0JmTzRXUnBuVHRMTmlTajlXVE9wR1A0?=
- =?utf-8?B?RjIrM1ZMMERicFZ1VXEwMHQwMU1iVG02RGUzM1JIZUdPVTRaOXdPSWQ4Q01D?=
- =?utf-8?B?VGF3Qkc4YkRocmVEUWZxRC9IYXVYNGVPUUN5QVgxbHludXUra2FrQkJJK1JO?=
- =?utf-8?B?UGNrNi8yYWxpTVJtOU1HOHZzY2VQRXM1VTZJZGhuMjNxdmdITDVDT1dTRXRq?=
- =?utf-8?B?TW5DRHRTNHRkclc1dklPam5nSjdBUGlqaFlFdmVSb0pkSzNvVm1qMXZBUWFt?=
- =?utf-8?B?OUl2bTRad0NJSlNPQWM0em0xbkM2T2xvVlJBT3VRTnFWRjhhOTg5bDEzNGZn?=
- =?utf-8?B?TVRIK085VHVwa09ZQ3lya2VCNFRHUytUZWw3MVoxaTRrMGFRM3FBQ25PTU9h?=
- =?utf-8?B?Y1FZYXRTbWJENE53eTl6YndhejR2R3M1ZGVnWkpGdEY2TDhGakZUQjl2SDVX?=
- =?utf-8?B?SklMTkRXa2QvYVRaSlJWT0R0aEo0Y3gyL0g0YnliczlBVzRUVFd0cmh6UGo3?=
- =?utf-8?B?WitNd0M5MkxxejAycTB3VHlnTjF4NDRKVlZMWmkyTm54V21CbVVxNExnTks0?=
- =?utf-8?B?b3M3SW1HSDgyRDlWT1lvZkVmVzIzUzdqZG5tTjZha1ZUd25EQUhZbUFRS29Z?=
- =?utf-8?B?SDgzRG9sWko1T3VkVnRpUUtLM3FVTTJIQWp4SDBmQ2NvQXI1Qk91MnFWMmtm?=
- =?utf-8?Q?2t6c=3D?=
+	=?utf-8?B?b3hKNytnc2o0a3NncFpsT2FhQmh0YjlYcy9YdXdKQmpzdXNGbWZTUkxZT2J2?=
+ =?utf-8?B?a2xTS2hjSFhBa29UVzVGSTE2ZzJyMlprVUhHT2dRbTJlY3FsZlBkT1RxTWtz?=
+ =?utf-8?B?OUdSNXM1UkY0NFowSkh4aGRWYVdkU09aVlFIL2RaRGUwTlExMTZDV1R5RW9U?=
+ =?utf-8?B?cHNXbVlJUHlpaEFlTlM0MVBocTl2dHJjaG1taEYzdW8xYkM1Q2FrUkR0aDFC?=
+ =?utf-8?B?cTRybDNvcmJRSnJGRUpVTFNSMk9EalBQN3lZMFFaY3ZDNEJkU1JVRXZDUlFT?=
+ =?utf-8?B?K0hNNCt6NGxUVFE1S241c0FFOE1YTk9xa3VOdkZHczRoeEJVUlZjNWhFZUJ0?=
+ =?utf-8?B?UDVUczVsWWNtU1N1RlhrQ3piUkpIcXRCTUtXZDNueERFZXVmWG83ZWp6VXdm?=
+ =?utf-8?B?RTVobU5XUnVEREE1UDBQQ3c4Myt3L1JCZHF0WmtVb1JaVDNVWmY1cUVOT0xX?=
+ =?utf-8?B?MjBlZGxsdEpvMktJaU9rTWp6dG9Hbm0xSWdRemZQT3R4RTBmYnBXT1ZhZjR1?=
+ =?utf-8?B?SVhWL3lOSXZnbWNWdDUrSVB1ZjBER3poa05rMGljTjE0dllMMjd3dDRJT3hO?=
+ =?utf-8?B?VTZMYVVuMU9qSjl6Y1pudjVLNnBydGwrazBkV0lHdXhEc2k2VTlDSGhKVEpT?=
+ =?utf-8?B?dTlXNlhoMXdINUZQYUtjb2FhR3dOaHhkUDkxck8vbWtJUG5NaG1XVFA5NzFr?=
+ =?utf-8?B?a1ZhNVRsZGJzL1pvM0pZTllkcldvMmlCNHJXUXNpRndwd2pJMys5SS96L25M?=
+ =?utf-8?B?aGF3ZlpEbzNwM2NETW0wZXNsUUE2dDYvZGR6RW1kcjUrRzVIZXNmeC9ZRVF3?=
+ =?utf-8?B?YUk5R1JUUTE4NkJlN0h2Z281ODgrUmFlM2R3SEtOSmdZbjRSYkgzOFJJWXIw?=
+ =?utf-8?B?YjRjdS9XZnV5YmsxbEFLUUtEdVJ6KzNveWJERnFGNkszMVd3Mm1oMExiZEpG?=
+ =?utf-8?B?dFJZT3N1bzJjWExZTkpieFVWbzdjVzJBZmozblNlMDNpYnZ3ZCtyVkNHY2Zh?=
+ =?utf-8?B?aXlqL0NodEdTWmpaQXFjZm54aC9PbHRXV2UybU5nLytSemFrVmxQWkJGaWwz?=
+ =?utf-8?B?Mi9ISGQyYUxGVTJnUG93bnkwQllrdHBkZEZWWmQ5OGNWKzZXcVF3MGU1eVh0?=
+ =?utf-8?B?bGI0alJ4a3BYRmdtUWtsU214Smw4VG5mMVVFQk1ybDNidG5JcUtlcFpZdUxQ?=
+ =?utf-8?B?UWc5M2dxVGFRN1loMGhLZ3Z1S1VoT05iRkVNMkJUVTZjUEZmNTF4Nm8veTBi?=
+ =?utf-8?B?dHIrNUE4dlBHS2JxOFJUOTA2cER0RE1teVg0MC9wUlIyN1o5M2FTRW0rTFRU?=
+ =?utf-8?B?YW55dHNkVlR1NjdvTGdOdUlUMlFnbXJIMFgvMHdjUVRwY2c0OElGVXpUWGtZ?=
+ =?utf-8?B?SStLZExUa05mQXpadmRSVXJscUlSMlFkUFNrS3g5czhnWDdmZnVNN2h0VGlL?=
+ =?utf-8?B?blpFOFluL1ZxczFUK1dXWW1zSEh1TzZSZXB4K2p5Q1FZcmZyMW5MUFdDUXNH?=
+ =?utf-8?B?MXFuWkR3cDlPdlFwWUxIU3lsNWJZQVZabmpodkhXeGJuNU8zQS9GakNLTUNH?=
+ =?utf-8?B?RGpFekcwbjV3a1F0Y2R6eUpRMFd5alpPeEFqYTI1UGNnMEYwM2VUWlVGQlNB?=
+ =?utf-8?B?MlZ2SmlMR1RXRDF5Q3VXWlJVY3hDWTRINmpGT0I5WVgzdWNyMTQwQm9zeHRY?=
+ =?utf-8?B?ZkpuTkZNSnJySDlqWUVzOGU1WEZLaE5JdXlCK1BOR09tMnZVRGJkWmhrdDF2?=
+ =?utf-8?B?cllwV21JRW1BQS9QTkQyakdlNkR3SVU0S0hCNVBPRUs2ekxCeTJTVDlIV0tp?=
+ =?utf-8?B?NHNHUzBOcUlOVjlkT0JnMnd4Q0pQTTREZkV6VmI2RkdIdDR3YnVjdnlvcjdK?=
+ =?utf-8?B?cnAvanBxdk1mdkN0ZWdmYlBSckNHZEhRZUFOaWd6YURSK3dKMnNoNC9ZOGxB?=
+ =?utf-8?B?aXhTTjhpUVVYVlRzMEUyb2l6clMrVVZRQm52MjltNjhjdGZVYUR3MkdyTDQv?=
+ =?utf-8?B?UU5RQ0J5M3g3elV1L3JhRU5TbWpSang3MG9yeVFYa1RSYnhtL1krOGlQdG1q?=
+ =?utf-8?B?dld5NmVxZGVuVU1PVjJKcDZjWHlubmxqaUdrem9YQ0ZvZ0ZUV2dQblVROFRW?=
+ =?utf-8?Q?Q3OZm9HNKf484r3lNlZ5YnvPR?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51be8f33-a4a4-489b-2d14-08dc41e82f9b
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e64b5a6-73a6-47ca-eeb0-08dc41e82efd
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 16:27:46.9611
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2024 16:27:45.7937
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DlzUIm5+yl/bPasZAq1ZRuKGo13IG0kSojGm+Jr5IltHYgszPmwcKwZ/phbcnBZE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7899
+X-MS-Exchange-CrossTenant-UserPrincipalName: drfKqFHRe3YxkUQl2EdV24BE2bOIiLOIxxr3t0IafaPZItUjLn+MV2ACKXUfhUcL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4267
 
-Am 11.03.24 um 15:48 schrieb Khatri, Sunil:
+Hello Krzysztof,
+
+Thanks for reviews. Please find my comments below.
+
+On 3/9/24 7:25 AM, Krzysztof Kozlowski wrote:
+> On 01/03/2024 19:16, Tanmay Shah wrote:
+> > From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> > 
+> > Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+> > UltraScale+ platform. It will help in defining TCM in device-tree
+> > and make it's access platform agnostic and data-driven.
+> > 
+> > Tightly-coupled memories(TCMs) are low-latency memory that provides
+> > predictable instruction execution and predictable data load/store
+> > timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+> > banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
+> > 
+> > The TCM resources(reg, reg-names and power-domain) are documented for
+> > each TCM in the R5 node. The reg and reg-names are made as required
+> > properties as we don't want to hardcode TCM addresses for future
+> > platforms and for zu+ legacy implementation will ensure that the
+> > old dts w/o reg/reg-names works and stable ABI is maintained.
+> > 
+> > It also extends the examples for TCM split and lockstep modes.
+> > 
+> > Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> > Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> > ---
+> > 
+> > Changes in v12:
+> >   - add "reg", "reg-names" and "power-domains" in pattern properties
+> >   - add "reg" and "reg-names" in required list
+> >   - keep "power-domains" in required list as it was before the change
+> > 
+> > Changes in v11:
+> >   - Fix yamllint warning and reduce indentation as needed
+> > 
+> >  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 188 ++++++++++++++++--
+> >  1 file changed, 168 insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+> > index 78aac69f1060..dc6ce308688f 100644
+> > --- a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+> > +++ b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+> > @@ -20,9 +20,21 @@ properties:
+> >    compatible:
+> >      const: xlnx,zynqmp-r5fss
+> >  
+> > +  "#address-cells":
+> > +    const: 2
+> > +
+> > +  "#size-cells":
+> > +    const: 2
+> > +
+> > +  ranges:
+> > +    description: |
+> > +      Standard ranges definition providing address translations for
+> > +      local R5F TCM address spaces to bus addresses.
+> > +
+> >    xlnx,cluster-mode:
+> >      $ref: /schemas/types.yaml#/definitions/uint32
+> >      enum: [0, 1, 2]
+> > +    default: 1
+> >      description: |
+> >        The RPU MPCore can operate in split mode (Dual-processor performance), Safety
+> >        lock-step mode(Both RPU cores execute the same code in lock-step,
+> > @@ -37,7 +49,7 @@ properties:
+> >        2: single cpu mode
+> >  
+> >  patternProperties:
+> > -  "^r5f-[a-f0-9]+$":
+> > +  "^r5f@[0-9a-f]+$":
+> >      type: object
+> >      description: |
+> >        The RPU is located in the Low Power Domain of the Processor Subsystem.
+> > @@ -54,8 +66,17 @@ patternProperties:
+> >        compatible:
+> >          const: xlnx,zynqmp-r5f
+> >  
+> > +      reg:
+> > +        minItems: 1
+> > +        maxItems: 4
+> > +
+> > +      reg-names:
+> > +        minItems: 1
+> > +        maxItems: 4
+> > +
+> >        power-domains:
+> > -        maxItems: 1
+> > +        minItems: 2
+> > +        maxItems: 5
+> >  
+> >        mboxes:
+> >          minItems: 1
+> > @@ -101,35 +122,162 @@ patternProperties:
+> >  
+> >      required:
+> >        - compatible
+> > +      - reg
+> > +      - reg-names
+> >        - power-domains
+> >  
+> > -    unevaluatedProperties: false
+> > -
+> >  required:
+> >    - compatible
+> > +  - "#address-cells"
+> > +  - "#size-cells"
+> > +  - ranges
+> > +
+> > +allOf:
+> > +  - if:
+> > +      properties:
+> > +        xlnx,cluster-mode:
+> > +          enum:
+> > +            - 1
+> > +    then:
+> > +      patternProperties:
+> > +        "^r5f@[0-9a-f]+$":
+> > +          type: object
+> > +
+> > +          properties:
+> > +            reg:
+> > +              minItems: 1
+> > +              items:
+> > +                - description: ATCM internal memory
+> > +                - description: BTCM internal memory
+> > +                - description: extra ATCM memory in lockstep mode
+> > +                - description: extra BTCM memory in lockstep mode
+> > +
+> > +            reg-names:
+> > +              minItems: 1
+> > +              items:
+> > +                - const: atcm0
+> > +                - const: btcm0
+> > +                - const: atcm1
+> > +                - const: btcm1
 >
-> On 3/11/2024 7:29 PM, Christian König wrote:
->>
->>
->> Am 11.03.24 um 13:22 schrieb Sunil Khatri:
->>> Add relevant ringbuffer information such as
->>> rptr, wptr, ring name, ring size and also
->>> the ring contents for each ring on a gpu reset.
->>>
->>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->>> ---
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 21 +++++++++++++++++++++
->>>   1 file changed, 21 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c 
->>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->>> index 6d059f853adc..1992760039da 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->>> @@ -215,6 +215,27 @@ amdgpu_devcoredump_read(char *buffer, loff_t 
->>> offset, size_t count,
->>>                  fault_info->status);
->>>       }
->>>   +    drm_printf(&p, "Ring buffer information\n");
->>> +    for (int i = 0; i < coredump->adev->num_rings; i++) {
->>> +        int j = 0;
->>> +        struct amdgpu_ring *ring = coredump->adev->rings[i];
->>> +
->>> +        drm_printf(&p, "ring name: %s\n", ring->name);
->>> +        drm_printf(&p, "Rptr: 0x%llx Wptr: 0x%llx\n",
->>> +               amdgpu_ring_get_rptr(ring) & ring->buf_mask,
->>> +               amdgpu_ring_get_wptr(ring) & ring->buf_mask);
->>
->> Don't apply the mask here. We do have some use cases where the rptr 
->> and wptr are outside the ring buffer.
-> Sure i will remove the mask.
->>
->>> +        drm_printf(&p, "Ring size in dwords: %d\n",
->>> +               ring->ring_size / 4);
->>
->> Rather print the mask as additional value here.
-> Does that help adding the mask value ?
+> Why power domains are flexible?
 
-I think it should help as a reminder that rptr & wptr needs to be masked 
-to become valid indexes.
+User may not want to use all the TCMs. For example, if users want to turn-on only TCM-A and rest of them want to keep off, then
 
-Some hw generations have really crude workarounds where we have to 
-allocate an extra page after the ring buffer because the hw is buddy and 
-sometimes tries to read command from there as well.
+they can avoid having power-domains of other TCMs in the device-tree. This helps with less power-consumption when needed.
 
-So when we see a hang with some rptr and wptr values which don't fit 
-into the mask we will know that the hw has another issue in that direction.
+Hence flexible list of power-domains list.
 
-Regards,
-Christian.
+I can certainly mention "items:" under power-domains property.
 
->>
->>> +        drm_printf(&p, "Ring contents\n");
->>> +        drm_printf(&p, "Offset \t Value\n");
->>> +
->>> +        while (j < ring->ring_size) {
->>> +            drm_printf(&p, "0x%x \t 0x%x\n", j, ring->ring[j/4]);
->>> +            j += 4;
->>> +        }
->>
->>> +        drm_printf(&p, "Ring dumped\n");
->>
->> That seems superfluous.
+
 >
-> Noted
+> > +
+> > +    else:
+> > +      patternProperties:
+> > +        "^r5f@[0-9a-f]+$":
+> > +          type: object
+> > +
+> > +          properties:
+> > +            reg:
+> > +              minItems: 1
+> > +              items:
+> > +                - description: ATCM internal memory
+> > +                - description: BTCM internal memory
+> > +
+> > +            reg-names:
+> > +              minItems: 1
+> > +              items:
+> > +                - const: atcm0
+> > +                - const: btcm0
+> > +
+> > +            power-domains:
+> > +              maxItems: 3
+>
+> Please list power domains.
+
+Okay. But minItems will be still what's mentioned above i.e. 2.
+
+I hope it's fine.
+
+
+>
+> >  
+> >  additionalProperties: false
 >
 >
-> Regards
-> Sunil
+> Best regards,
+> Krzysztof
 >
->>
->> Regards,
->> Christian.
->>
->>> +    }
->>> +
->>>       if (coredump->reset_vram_lost)
->>>           drm_printf(&p, "VRAM is lost due to GPU reset!\n");
->>>       if (coredump->adev->reset_info.num_regs) {
->>
-
 
