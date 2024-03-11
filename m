@@ -1,133 +1,113 @@
-Return-Path: <linux-kernel+bounces-98800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73166877F9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:07:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6668A877FA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2AFC1C221AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:07:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 223D1281F69
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4183BBF7;
-	Mon, 11 Mar 2024 12:07:12 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB60F3C699;
+	Mon, 11 Mar 2024 12:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="N7Y5hjW7"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6648B3B78E
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 12:07:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD6D3BB4D;
+	Mon, 11 Mar 2024 12:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710158832; cv=none; b=pkhl1Lbz5k6DVRiDalzU7qsMuH3LsFaw+8LE0Q5Nm0gF3bcyESYwbsSfRF2aZGkx4DN31sV+fyLmx96WAHnr3YLsvR1zS4tTxRDzmjVaTJ9ujTuZFNkaS3bsTXR55tI1RCBc3CiLRmJOkq5pjEatmEKDejLATOAHhZdwhmdDMow=
+	t=1710158967; cv=none; b=k8+VOwZI46H5aTUndtlu8C6TxtRmbDEuU/hvpj+67B5dc4PkMaqWmoDVnRm53ywzEg8SgzC1ciqV+OZJEdY0Wpt7Cogm+TNZFzpD55ruAXK/PKqNv68LfJU2SIVnv/fge8i6R+F4UWNGeqyn8TEG144T+eZJ8cWVPEKq8gDX9/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710158832; c=relaxed/simple;
-	bh=B+m2Bjcxx1YSgN6LpD3F3IefXoQbz8pZeaCQuEGQC7o=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XlYQwZ2S6UvDnvlXonAQ/msLmzAmmnp7ntymTdiZFOSnfklg7dKbUeI44lMZs2cDbd0kc2Di0iY/CHWE49vYposKasgPg2pIGFqVh4zVnakPQTdtkiYYW++qvdMbeWQfEOM7C0sqeR1v1yH60YON2M/6fJlh/bsgbBqIdK0eias=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ttb7K0DgjzsXKF;
-	Mon, 11 Mar 2024 20:05:01 +0800 (CST)
-Received: from kwepemd100011.china.huawei.com (unknown [7.221.188.204])
-	by mail.maildlp.com (Postfix) with ESMTPS id 808DA1400F4;
-	Mon, 11 Mar 2024 20:07:05 +0800 (CST)
-Received: from M910t (10.110.54.157) by kwepemd100011.china.huawei.com
- (7.221.188.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Mon, 11 Mar
- 2024 20:07:03 +0800
-Date: Mon, 11 Mar 2024 20:06:59 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Mark Rutland <mark.rutland@arm.com>
-CC: Changbin Du <changbin.du@huawei.com>, Ingo Molnar <mingo@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra
-	<peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
- Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>, <kasan-dev@googlegroups.com>,
-	<linux-mm@kvack.org>, Alexander Potapenko <glider@google.com>,
-	<linux-kernel@vger.kernel.org>, Marco Elver <elver@google.com>
-Subject: Re: [PATCH] mm: kmsan: fix instrumentation recursion on preempt_count
-Message-ID: <20240311120659.2la4s5vwms5jebut@M910t>
-References: <20240311112330.372158-1-changbin.du@huawei.com>
- <Ze7uJUynNXDjLmmn@FVFF77S0Q05N>
+	s=arc-20240116; t=1710158967; c=relaxed/simple;
+	bh=x9v2GWeFlfIHp0JNmuyrqOBpLdPgK6vBD+t0jhwe8J8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A1CxdSuwfQ1KgQNycRHlbfnvBtaDotTqtJ8yUmKZYCDcSnPA5UsX2/oc73LCtf0Cjb+9iuMuaRN5x8JR0WWV51h3ObCJsuzRh/sB81quvJNtGCEiFAImQrMO74PjkDVvFZmgbtTFeW+4Agl6QQyGnk8G0RM7vdhYur1OPhuYDQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=N7Y5hjW7; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42B9hX9Q010458;
+	Mon, 11 Mar 2024 12:09:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=13iRbuA
+	zEN4/rqqqSsQriIM4KVRkwG/g8NSKHL4QHq4=; b=N7Y5hjW7WndvoOoRjdjHvYH
+	vOHb6asCgREcCEXLq7U/XBPYyPV3VybqFIhgzsy+Chm2pvi+GpDLYaSDjRsIIZiR
+	gJ9AtdyiBEWRzLvsBI/xpLJkbQSDG4hNGjNmGhV3PTzVU2KL7P4ht8VZOHnbUGIN
+	QoioYOu9ziQPGw6XcCQI+jZe9BkIqzcMY9peUB6iFPei/LEv//rzwO+xgU040kK7
+	UD+mIVJp0rw+6c6+QbyqRjm3aMhRSz/BpbyKgWgQyHDVDL2VKXxW0m22tsK9mVjM
+	vTuBv2D7cn0GDVEZFaIYTkn8wosQTPFx3tqx9fDi6zAjX9ZQqetVmOI1nfdIJgg=
+	=
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wsv208vms-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 12:09:21 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42BC9Kux015880
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 12:09:20 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 11 Mar 2024 05:09:17 -0700
+From: Komal Bajaj <quic_kbajaj@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH 0/3] Add devicetree support of USB for QDU/QRU1000
+Date: Mon, 11 Mar 2024 17:38:56 +0530
+Message-ID: <20240311120859.18489-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Ze7uJUynNXDjLmmn@FVFF77S0Q05N>
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100011.china.huawei.com (7.221.188.204)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0eBu9HwON2s7TZz9RMQyRtcoa-p9CeFI
+X-Proofpoint-ORIG-GUID: 0eBu9HwON2s7TZz9RMQyRtcoa-p9CeFI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=2 priorityscore=1501 mlxscore=2
+ impostorscore=0 bulkscore=0 mlxlogscore=168 spamscore=2 adultscore=0
+ suspectscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403110091
 
-On Mon, Mar 11, 2024 at 11:42:29AM +0000, Mark Rutland wrote:
-> On Mon, Mar 11, 2024 at 07:23:30PM +0800, Changbin Du wrote:
-> > This disables msan check for preempt_count_{add,sub} to fix a
-> > instrumentation recursion issue on preempt_count:
-> > 
-> >   __msan_metadata_ptr_for_load_4() -> kmsan_virt_addr_valid() ->
-> > 	preempt_disable() -> __msan_metadata_ptr_for_load_4()
-> > 
-> > With this fix, I was able to run kmsan kernel with:
-> >   o CONFIG_DEBUG_KMEMLEAK=n
-> >   o CONFIG_KFENCE=n
-> >   o CONFIG_LOCKDEP=n
-> > 
-> > KMEMLEAK and KFENCE generate too many false positives in unwinding code.
-> > LOCKDEP still introduces instrumenting recursions issue. But these are
-> > other issues expected to be fixed.
-> > 
-> > Cc: Marco Elver <elver@google.com>
-> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
-> > ---
-> >  kernel/sched/core.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 9116bcc90346..5b63bb98e60a 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -5848,7 +5848,7 @@ static inline void preempt_latency_start(int val)
-> >  	}
-> >  }
-> >  
-> > -void preempt_count_add(int val)
-> > +void __no_kmsan_checks preempt_count_add(int val)
-> >  {
-> >  #ifdef CONFIG_DEBUG_PREEMPT
-> >  	/*
-> > @@ -5880,7 +5880,7 @@ static inline void preempt_latency_stop(int val)
-> >  		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
-> >  }
-> 
-> What prevents a larger loop via one of the calles of preempt_count_{add,sub}()
-> 
-> For example, via preempt_latency_{start,stop}() ?
-> 
-> ... or via some *other* instrumentation that might be placed in those?
-> 
-> I suspect we should be using noinstr or __always_inline in a bunch of places to
-> clean this up properly.
->
-In my local build, these two are not that small for inlining. (I has preempt_off
-tracer enabled).
+This series adds devicetree nodes to support interconnects and usb for qdu/qru1000.
+This is based on previously sent driver series[1].
+[1]
+https://lore.kernel.org/linux-arm-msm/20240311120215.16845-1-quic_kbajaj@quicinc.com/
 
-$ readelf -s vmlinux | grep -sw -E 'preempt_count_add|preempt_count_sub'
-157043: ffffffff81174de0   186 FUNC    GLOBAL DEFAULT    1 preempt_count_add
-157045: ffffffff81174eb0   216 FUNC    GLOBAL DEFAULT    1 preempt_count_sub
+Komal Bajaj (3):
+  arm64: dts: qcom: qdu1000: Add USB3 and PHY support
+  arm64: dts: qcom: qdu1000-idp: enable USB nodes
+  arm64: dts: qcom: qru1000-idp: enable USB nodes
 
-The noinstr adds __no_sanitize_memory to the tagged functions so we might see
-many false positives.
+ arch/arm64/boot/dts/qcom/qdu1000-idp.dts |  24 +++++
+ arch/arm64/boot/dts/qcom/qdu1000.dtsi    | 119 +++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/qru1000-idp.dts |  24 +++++
+ 3 files changed, 167 insertions(+)
 
-> Mark.
+--
+2.42.0
 
--- 
-Cheers,
-Changbin Du
 
