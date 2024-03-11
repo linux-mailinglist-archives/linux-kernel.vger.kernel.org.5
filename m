@@ -1,116 +1,146 @@
-Return-Path: <linux-kernel+bounces-99577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 823A0878A2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:49:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433A3878A3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:53:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C9B9281808
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:49:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34241281923
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2E257302;
-	Mon, 11 Mar 2024 21:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A5F56B99;
+	Mon, 11 Mar 2024 21:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kt30xZwi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="fJtL0kAs"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E00A56B88
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D38954FA3;
+	Mon, 11 Mar 2024 21:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710193757; cv=none; b=Q8wWA5nXUNDooksZkEcIZU39ECzqU6wxV0zbxUi4QiWtDEAftTtEJJLERoEqPbQGTyTrk94fcWjpuJJ0w5FHC0dCOknQngyhekY78kFE24yFenGaELKOQNdiYIImKy/91QTziiBMcK+RIE/5fKzh9lcjCFug3Vu2uC05HozCuMM=
+	t=1710193987; cv=none; b=RanAtnm4ugL0aoFDFuYZMtp8SATveqRiSjazot8nL6UIXTl9WB/+Qp0i2+/skNdwU5rGA0tXy21aEipSEus+iR02V96zturuTDBlcThP4kix9WGaBn4BYtTcf05UI9e5TvIu0MrD9pmvsRQtfZmfmNtekChzukCQc1L0JoKEebg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710193757; c=relaxed/simple;
-	bh=eEjkdRQEd59H50uW8dgJSWnuFy20b7EzlfZ82fVd7SU=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=gBivS5KAENNG1wL5CwyT2df+XZhRtB/nPMUDlHJ4sJAV6JzFKYt+AfPi+0wPeACSdAIR7Xfg6qbm5kPyCS018IGjLwYr0a/IfTo0978dQlLVrtvQBA4imEhA0Ga+Gfisg+YxT12+NpupCEy39J1GX6qQN9nCxpXE1pOnkzU4BBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Kt30xZwi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710193754;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=wIL5uIc3/B5vYqNrwsTJakvRJ6Iyj3VheIuyfLhQ2KI=;
-	b=Kt30xZwiKf9R4Ha7dLJbc1R0HJxrBJm6bxq9KLXO6R2lAm4/VRaGL5QUw06BGwy6lHYLDc
-	zxybRAfiI1F/g3QJkz7FQtCFa8z7RdZgnCxi9FQ/98e0DO+J8qjEHtE73cVZDxeVUjNbbL
-	u3ZqkPDHLj/EUGrvu/Yl/veJyQEskDs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-269-LVJsQRu_NNituUYISq4hOA-1; Mon, 11 Mar 2024 17:49:08 -0400
-X-MC-Unique: LVJsQRu_NNituUYISq4hOA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	s=arc-20240116; t=1710193987; c=relaxed/simple;
+	bh=TEbZeeq0clAFzFr8sJBQjy0R1YDwtydGn/bR0N7ihtk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hYkKMEkOTEvgd8tJWmwfW7ISKSks8a6ndfV8tSQUc+tA5/nJ2E7Xz2Y+A7dx0cm20vYNccya2jhEPuunfwKA0AIQvN5XDDnOCqf44ukOT9qk4Kioa3gJvhaScyBvz7snOA88HrhWZP2gVKvIUFubLt+Y+nFk88NBF3JhsnE2wvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=fJtL0kAs; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710193982;
+	bh=vaJGZhR9qPd/L0aYICX0fyHav/PoQko1EdlrEY0dVpk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fJtL0kAsCqmQzFsOkFdhiriv4UBCPTio2mIlr9O0BiqAth/wsGzYIczIzCIqIOBhF
+	 TIO42VPbqH6u+bDb6L5bZi9FybuJ9gPKCcB5EsLw1IsvTjUD1zfoCI8wqrASiWPk7A
+	 Cxc3LBFcegZ/acXGGNptlB1mPu/rSVqBc7YzxbLPNzWPfdK/PsCL79IS09sNznCzix
+	 JeAXgD2tS+R1X7CX81udm97de/BW5E59KBHYK3KMMDHkGjjWFhT1UiLLWuUq4lCTIX
+	 NYwZSyB34lJqhlEzbcnWHZLdX52mSWCAQW12swdaeZb5XD3azNs85ilmgw0iOUAy9v
+	 pCx0qumFKSmnw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1D27D101A526;
-	Mon, 11 Mar 2024 21:49:08 +0000 (UTC)
-Received: from localhost (unknown [10.22.8.139])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 394BE2024517;
-	Mon, 11 Mar 2024 21:49:07 +0000 (UTC)
-Date: Mon, 11 Mar 2024 18:49:06 -0300
-From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To: LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>,
-	stable-rt <stable-rt@vger.kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Carsten Emde <C.Emde@osadl.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Daniel Wagner <daniel.wagner@suse.com>,
-	Tom Zanussi <tom.zanussi@linux.intel.com>,
-	Clark Williams <williams@redhat.com>,
-	Mark Gross <markgross@kernel.org>, Pavel Machek <pavel@denx.de>,
-	Jeff Brady <jeffreyjbrady@gmail.com>,
-	Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 5.10.211-rt103
-Message-ID: <Ze98UsSvLqvlkS1_@uudg.org>
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ttr9p23S1z4wyy;
+	Tue, 12 Mar 2024 08:53:02 +1100 (AEDT)
+Date: Tue, 12 Mar 2024 08:53:01 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Nathan Chancellor <nathan@kernel.org>
+Subject: Re: linux-next: manual merge of the rust tree with the mm tree
+Message-ID: <20240312085301.66009b5f@canb.auug.org.au>
+In-Reply-To: <20240129133352.25a3ee19@canb.auug.org.au>
+References: <20240129133352.25a3ee19@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: multipart/signed; boundary="Sig_/0EeIemxenT6BELO.q6Mw7g5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hello RT-list!
+--Sig_/0EeIemxenT6BELO.q6Mw7g5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'm pleased to announce the 5.10.211-rt103 stable release.
+Hi all,
 
-This release is an update to the new stable 5.10.211 version, with no
-extra changes.
+On Mon, 29 Jan 2024 13:33:52 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the rust tree got a conflict in:
+>=20
+>   Documentation/process/changes.rst
+>=20
+> between commit:
+>=20
+>   3d21fad38152 ("kbuild: raise the minimum supported version of LLVM to 1=
+3.0.1")
+>=20
+> from the mm-non-mm-unstable branch of the mm tree and commit:
+>=20
+>   c5fed8ce6549 ("rust: upgrade to Rust 1.75.0")
+>=20
+> from the rust tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc Documentation/process/changes.rst
+> index d7306b8cad13,eab7e2f8c196..000000000000
+> --- a/Documentation/process/changes.rst
+> +++ b/Documentation/process/changes.rst
+> @@@ -30,8 -30,8 +30,8 @@@ you probably needn't concern yourself w
+>           Program        Minimal version       Command to check the versi=
+on
+>   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>   GNU C                  5.1              gcc --version
+>  -Clang/LLVM (optional)  11.0.0           clang --version
+>  +Clang/LLVM (optional)  13.0.1           clang --version
+> - Rust (optional)        1.74.1           rustc --version
+> + Rust (optional)        1.75.0           rustc --version
+>   bindgen (optional)     0.65.1           bindgen --version
+>   GNU make               3.82             make --version
+>   bash                   4.2              bash --version
 
-You can get this release via the git tree at:
+This is now a conflict between the mm-nonmm-stable tree and Linus' tree.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+--=20
+Cheers,
+Stephen Rothwell
 
-  branch: v5.10-rt
-  Head SHA1: bffc88bd708c173b98b61469378f763e44c733e1
+--Sig_/0EeIemxenT6BELO.q6Mw7g5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Or to build 5.10.211-rt103 directly, the following patches should be applied:
+-----BEGIN PGP SIGNATURE-----
 
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXvfT0ACgkQAVBC80lX
+0Gyc/Qf+MrjrfMBCrce+EE0iuAjie/dz822tB9IcGEYvQXbIiwRH9pyehHvT2Gyv
+Em7z04I9vVZFaVLyAeYwPRMcjdTpYt/yXnnSkrs1MYVxvm23yEfM6k7Ge6cqPMLK
+77Po/q3shq7Sp+y+Ekv1VR2EMQLMjdEBXZcGAeI8Bo4dCtNLN4uedVQUSVsnn0aQ
+XVsXTIkbmNvBdTVoq1XI/D9BultgY+Z2yfCg6JRjeX9TeriWSMYOP1hEuYcX4+Ep
+J+OWYKRMWV+lxlTrAD37bYFMhXaLSJKEVQ2ffATev2IDxTWpDv71EUvjYVrlBXd3
+HDx1j0oHRxnqYnXZFAR4R+qvaBHb9g==
+=RmQv
+-----END PGP SIGNATURE-----
 
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.211.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.211-rt103.patch.xz
-
-Signing key fingerprint:
-
-  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
-
-All keys used for the above files and repositories can be found on the
-following git repository:
-
-   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
-
-Enjoy!
-Luis
-
+--Sig_/0EeIemxenT6BELO.q6Mw7g5--
 
