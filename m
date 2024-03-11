@@ -1,86 +1,173 @@
-Return-Path: <linux-kernel+bounces-98641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6A6877D20
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:43:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64C1A877D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:45:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F7DB1C21087
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:43:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F8D2281A32
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB771A27D;
-	Mon, 11 Mar 2024 09:43:37 +0000 (UTC)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD8617BA1;
-	Mon, 11 Mar 2024 09:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68CF18C01;
+	Mon, 11 Mar 2024 09:44:54 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3476D17BD9;
+	Mon, 11 Mar 2024 09:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710150216; cv=none; b=KR7jCYUilwQbGpmbERLTqErcI/KSxp6Y9bJGZ6N6/Aa3IAy4N/I7PE7eaOzsbU8+G0LDhTo2A7l6Pl/2N7SVofpVIetY4HyFx+ETTPHdj6AXUI3BwVu/dFKTbwW6/fC/1A/W0cZT6g6zNfx8ZAIjNcrGhlbd5d26mq66P9jY0zI=
+	t=1710150294; cv=none; b=gCsQWacMQHI+7x7sEYrUZTl29ZRF4guPa8TzGknAesd7K8GhW2HsuJYw/XF0r8Oa73r82uwGniHMbxVDC/OquVOGoEua1SJcchRjeFObFCs02OHI1MQ3J1iKzVIS0WzrXNEpGZwK/BPcVB8C98Oasbg/MbCfti2ypxW5eDBoVqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710150216; c=relaxed/simple;
-	bh=Cj1/33qi3GNppvfePk5/WIg6MglQ7s/hn6w2TWXaCa0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g99ZcHdrQ1fgGIN4ioKqSw9Sw5HZy08yJA50G3I2UVTkvdJLA0G5GIDWw5itxvzGir6LLkV+bfZklf5h4qDCWE9PgQeS4jXn5Y2ApscNIPcZ4OZSxajoxo0VYR07HN4+f6N6cDIlOQrTuD/hi17kJg0QhmahzA73CsubxbgUe4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so5418596a12.0;
-        Mon, 11 Mar 2024 02:43:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710150213; x=1710755013;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=472ntTQJuYHJsEv7z4LlYOPd8nn+YNyDn677YGOjcrw=;
-        b=LDaEYMD0xQn2ZkfaaaLF77i4UMP4QqTTrTBGZSivZRaqz9VCLuUF9we5K+mRzNLt2B
-         o6ASW+fCGQ37EqlGOAYktQ7rQ2es64iHndTp7tc6EWEPOBeyC9wuZewV8L1v1WFLlkgQ
-         WKjbXtZZJSUCGM2ketWTXpTKCGGsYbTSmwbqUGxPJRiKM554yJ8ky3GM4PAEuKsttt5E
-         h2ToJemH5St0fqUdK2IYR0uMv1gIrfR3XmQdI5AogYUOyUcYVbThTwx9LA9BEW9KgO+J
-         IXR/VaNhtDMrMjNu2v7l/FDNXFUR4rcZPWVusA9X9tEgKyglMOe/KF4AY4NSz7HkRlWc
-         ko9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUH0NHQ1rIcDoIqOS7gfMs+euKR8gByHV9gCLz1dGTI47JHHorNlSiFQ5sdZdoyGZZTPxIjHTq+Cf44fniBNFLlwuHoToP371XJk0vXLQPfO5vXmA59NaDEaRN1FSNYSqvuBrD/1rqjCe/9fCRCjYaILzRfikkxgqfUdald08wV
-X-Gm-Message-State: AOJu0YzyqV5fAbYZqvN1yQI7mZjpIgJDfJHXVzeCvtNouirIdFLbErXs
-	T+uH4eAonw5MJtmIEc5XuSXw+0HQy+AEfydCTSCgQ8XGu8W4kLh3
-X-Google-Smtp-Source: AGHT+IFL91Hb14rmPEw8qOSXIsU1i6Gvi/0AB+QZUtjciiVtlXuLkNKojNel443SysQ5aGIG2Z5oPw==
-X-Received: by 2002:a17:906:a14c:b0:a3d:4ed8:f5bf with SMTP id bu12-20020a170906a14c00b00a3d4ed8f5bfmr3349896ejb.2.1710150213303;
-        Mon, 11 Mar 2024 02:43:33 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
-        by smtp.gmail.com with ESMTPSA id e3-20020a170906314300b00a4558314ea0sm2739025eje.15.2024.03.11.02.43.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 02:43:33 -0700 (PDT)
-Date: Mon, 11 Mar 2024 02:43:30 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Matthew Wood <thepacketgeek@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v4] net: netconsole: Add continuation line
- prefix to userdata messages
-Message-ID: <Ze7SQlSOxLd+cOPA@gmail.com>
-References: <20240308002525.248672-1-thepacketgeek@gmail.com>
- <20240308201728.59e2e0ff@kernel.org>
+	s=arc-20240116; t=1710150294; c=relaxed/simple;
+	bh=mxn6v4qsoLRyc07OUq5fk0S7LTDOD/Zmjqwktx+NXBw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T5WOEiFO8/noZDypbBIPDZptawDwOAb84kHyvBiB4acv5UH8tzfBW4RXfV23K8zo8tTsPaI5r6Lm+shYWGSh9icA5lsvfcnRLicrO7EZ3wHPfsJfE8lob9w6KCsOBoCPoSnWxbnK+u7AsjZylq7iDd6HgGSBqXxbCFP8Fjgf1zY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD1CBFEC;
+	Mon, 11 Mar 2024 02:45:27 -0700 (PDT)
+Received: from [10.57.68.246] (unknown [10.57.68.246])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E3CA03F762;
+	Mon, 11 Mar 2024 02:44:49 -0700 (PDT)
+Message-ID: <1d27e93b-1c6b-4909-859f-e0756974a640@arm.com>
+Date: Mon, 11 Mar 2024 09:44:47 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308201728.59e2e0ff@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -v3] mm: swap: fix race between free_swap_and_cache() and
+ swapoff()
+Content-Language: en-GB
+To: Huang Ying <ying.huang@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ David Hildenbrand <david@redhat.com>, stable@vger.kernel.org
+References: <20240311084426.447164-1-ying.huang@intel.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240311084426.447164-1-ying.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 08, 2024 at 08:17:28PM -0800, Jakub Kicinski wrote:
-> On Thu,  7 Mar 2024 16:25:24 -0800 Matthew Wood wrote:
-> > Fixes: df03f830d099 ("net: netconsole: cache userdata formatted string in netconsole_target")
-> > Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+On 11/03/2024 08:44, Huang Ying wrote:
+> From: Ryan Roberts <ryan.roberts@arm.com>
 > 
-> Breno, LG?
+> There was previously a theoretical window where swapoff() could run and
+> teardown a swap_info_struct while a call to free_swap_and_cache() was
+> running in another thread.  This could cause, amongst other bad
+> possibilities, swap_page_trans_huge_swapped() (called by
+> free_swap_and_cache()) to access the freed memory for swap_map.
+> 
+> This is a theoretical problem and I haven't been able to provoke it from a
+> test case.  But there has been agreement based on code review that this is
+> possible (see link below).
+> 
+> Fix it by using get_swap_device()/put_swap_device(), which will stall
+> swapoff().  There was an extra check in _swap_info_get() to confirm that
+> the swap entry was not free.  This isn't present in get_swap_device()
+> because it doesn't make sense in general due to the race between getting
+> the reference and swapoff.  So I've added an equivalent check directly in
+> free_swap_and_cache().
+> 
+> Details of how to provoke one possible issue:
+> 
+> --8<-----
+> 
+> CPU0                               CPU1
+> ----                               ----
+> shmem_undo_range
+>   shmem_free_swap
+>     xa_cmpxchg_irq
+>     free_swap_and_cache
+>       __swap_entry_free
+>       /* swap_count() become 0 */
+>                                    swapoff
+>                                      try_to_unuse
+>                                        shmem_unuse /* cannot find swap entry */
+>                                        find_next_to_unuse
+>                                        filemap_get_folio
+>                                        folio_free_swap
+>                                        /* remove swap cache */
+>                                        /* free si->swap_map[] */
+>       swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+> 
+> --8<-----
+> 
+> Link: https://lkml.kernel.org/r/20240306140356.3974886-1-ryan.roberts@arm.com
+> Closes: https://lore.kernel.org/linux-mm/8734t27awd.fsf@yhuang6-desk2.ccr.corp.intel.com/
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com> [patch description]
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> Hi, Andrew,
+> 
+> If it's not too late.  Please replace v2 of this patch in mm-stable
+> with this version.
 
-Yes, I've just added my "Reviwed-by"
+Thanks for sorting this out, Huang, Ying! I saw your note asking if I could do
+it, and it was on my list, but I've been busy debugging other urgent issues in
+mm-stable. That should be solved now so unblocks me finishing the testing on my
+large folios swap-out v4 series. Hopefully that will be incomming in the next
+couple of days.
+
+You did previously suggest you wanted some comments around synchronise_rcu() in
+swapoff(), but I don't see those here. I don't think that should hold this up
+though.
+
+Thanks,
+Ryan
+
+
+> 
+> Changes since v2:
+> 
+>  - Remove comments for get_swap_device() because it's not correct.
+>  - Revised patch description about the race condition description.
+> 
+> Changes since v1:
+> 
+>  - Added comments for get_swap_device() as suggested by David
+>  - Moved check that swap entry is not free from get_swap_device() to
+>    free_swap_and_cache() since there are some paths that legitimately call with
+>    a free offset.
+> 
+> Best Regards,
+> Huang, Ying
+> 
+>  mm/swapfile.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 2b3a2d85e350..9e0691276f5e 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1609,13 +1609,19 @@ int free_swap_and_cache(swp_entry_t entry)
+>  	if (non_swap_entry(entry))
+>  		return 1;
+>  
+> -	p = _swap_info_get(entry);
+> +	p = get_swap_device(entry);
+>  	if (p) {
+> +		if (WARN_ON(data_race(!p->swap_map[swp_offset(entry)]))) {
+> +			put_swap_device(p);
+> +			return 0;
+> +		}
+> +
+>  		count = __swap_entry_free(p, entry);
+>  		if (count == SWAP_HAS_CACHE &&
+>  		    !swap_page_trans_huge_swapped(p, entry))
+>  			__try_to_reclaim_swap(p, swp_offset(entry),
+>  					      TTRS_UNMAPPED | TTRS_FULL);
+> +		put_swap_device(p);
+>  	}
+>  	return p != NULL;
+>  }
+
 
