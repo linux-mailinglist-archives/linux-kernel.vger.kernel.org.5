@@ -1,277 +1,288 @@
-Return-Path: <linux-kernel+bounces-99164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7258287845B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D2787845C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA858283040
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:00:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 557AA283317
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6323482CF;
-	Mon, 11 Mar 2024 15:59:43 +0000 (UTC)
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E56547F7C;
+	Mon, 11 Mar 2024 15:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="ayo64gUb"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A246D4503F;
-	Mon, 11 Mar 2024 15:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5574503F;
+	Mon, 11 Mar 2024 15:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710172783; cv=none; b=CV8ZQIjV14AvXP6A80jR4zoQEh2I48B7ix+VYyZ5trImh1IHRPxwFYNRfuzAbPjcrP1sIiSAJMP57zwRfCls+OGfG/dFI+HyF/4VUf1Cx5gs2aVDnIZFdMXFhyDttm6zfp8Q3WJYvoDnb7vTHlDf+RjHIpXr2IrO0QmYnNcwLho=
+	t=1710172793; cv=none; b=OdEW/Ps8GCTfIt4X2bmcZ4Yus8xU0jsvthwTFvkfZC5m+vABBs6mvRg9BE7sITRsVV5GRLjqlNbcy5/yluyS3Oz6lYBdlrZxJ2LxHAIUEpZ2z8NPdGVpVBaF1KOoM/j2GXuc4tGFjGdQkLmVhwgO7SU3WIZgSXouV2NS+FQEsbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710172783; c=relaxed/simple;
-	bh=zX3RXgMU2woct70wnJ9OoknW9J4jADZXkktqaUGoOmM=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=I3wfqh/shYv39U7S2uEyEoPE9rAfb38zMm6kQBDoO94xKm3FOpZWrFeh6hhapAuzLK/9JilbPEQ13lZPWMEEPvq/0fN/BhrS76C8aAGcA6jQ3ft30bh3qulYQbH9BPxpiUaAldsW65NVsWsWW9FPY+bwSHjbkciKhgJpdtKNvVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-221b9142995so946309fac.1;
-        Mon, 11 Mar 2024 08:59:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710172781; x=1710777581;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sahXLkTv1AizHAzx7D7y1KuDCbu0bSUcDiURF2qrqAQ=;
-        b=ZizCfnG2aNgx+rXPAN5kPMYBwNVlyJf38tuRZ2isahuTF3/zPW1T/W+Z4+JABMIA21
-         IJUVPKtf9w64yIVxXbRDWp/5vgPg/b7sCGS8XaZOC9nG4VF0lu21j8VKK/o3t7BrNG2L
-         LLGYV2jGc7a00gVZk1e7NdVfm4hSM4h2jaOUwxMQBkXLeaQEWq83vZKHCrOw7w6qSEkU
-         aEc+KRGfTCWW40EUDAkPaak4pCUcFaGHKHkBfLAlg2Po04FpF+STb+ZNQXbsxgyzkdnw
-         XZ36hNQ/0d74tNsYRJbodOVRSz12CmolmweKg6x7JQSuU+VVIVH5NcGc3C6fVRtxQFKj
-         ONaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXidy9A8MNgDtdXExKv6CSxI/YWCMBoYZ7Xj3w18Zt7UmYhmbgqzTuBQ/g37zNw7RBCvMTj5dw4HaBaqO+WsLHXVYFYbqiuYTGWIg/cchUx62QLYrsw6XFZTRLTgYLFugPApHz/Pxg=
-X-Gm-Message-State: AOJu0YwAb1Gat/RZm/9wWwbXCyoIJ7KEEZVHHgqDFDnWFVOg0hNxqLFS
-	j5+3JzdGn+Lpg1tckHmU//SeBWyOst7bDryDhPjlmZ/4otRmyyN7cwRmblEZmHa5IGyAZ6E9OEp
-	FlOpSnlmnsN6uioQ1wYvCjRQv507V9jYok+4=
-X-Google-Smtp-Source: AGHT+IF2a3pjhvaF9kmj+oIiOfrH3grh4hNiN0zf3zN9NxndEwOF8W9ORQYoQm/q9bAg2bXFLDsqATR1As2bmVfR0KY=
-X-Received: by 2002:a05:6870:2185:b0:221:c9e7:7220 with SMTP id
- l5-20020a056870218500b00221c9e77220mr6291731oae.3.1710172780779; Mon, 11 Mar
- 2024 08:59:40 -0700 (PDT)
+	s=arc-20240116; t=1710172793; c=relaxed/simple;
+	bh=ZMxApj46SsIn/A/FYyzsDQTT5R6LSY4H8Sz+r/0c5ec=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FQn2dG7XtBPsZ4EDbyBWoks10bak0JHBDlr+atiI5qF7ilEvvEL4GZutodoeRdXWzOZ92Vn0TMiz75+nlaTuXoX73lxlEKQF07oXarG9Oqa7PbkjQOUCcmZ+vhCQDRXYEvk7yYpTJBbKGQJXTMehKqqFmi0elqztLbb24qyK8VU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=ayo64gUb; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 61177418B9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1710172782; bh=ovGPDVXdpSFMq6eQyToO9ymTw7UrWGF9MGWubRqygzo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ayo64gUb2k+HtMvK3s5oBhb9cG/pfpmSE/pyQ8FA0ZezK0/ZraDaqL8ljUUyik+Hw
+	 GG5WFOFDMOZKkvBnCisJx8RGu2zWAv40X9VzQVat9AgRcWB4VsvPSaU7xziLMEQgwJ
+	 pZwC7JCUmySZzfLKCURU25DGPYDdsAeHM/CwhPuJiOHzFmbxqRWfKVpWHE2yq6vb7E
+	 NyCmllRjHQB9TdGC4EtvcDbrrWFGaSGgAECusm7Tw8OuhhfmZKX3JRJFRRrb6C6Ulh
+	 AO/ADy5UwP41ymVHeBNWqRnyVq4RfB2Qndzx/DM7N4Aq/OryrN2q0YjXtYuwqh9JxJ
+	 L8MVJ2QyCgmew==
+Received: from localhost (mdns.lwn.net [45.79.72.68])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 61177418B9;
+	Mon, 11 Mar 2024 15:59:41 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Documentation for 6.9
+Date: Mon, 11 Mar 2024 09:59:37 -0600
+Message-ID: <87cys0hi8m.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 11 Mar 2024 16:59:29 +0100
-Message-ID: <CAJZ5v0gvbDaDihXq5WTocekjDgL34v4L9ZWVMpnFkkCC0p4Ntg@mail.gmail.com>
-Subject: [GIT PULL] ACPI updates for v6.9-rc1
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Hi Linus,
+The following changes since commit b7b2ffc3ca59b06397550f96febe95f3f153eb1e:
 
-Please pull from the tag
+  docs: translations: use attribute to store current language (2024-02-21 13:41:37 -0700)
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-6.9-rc1
+are available in the Git repository at:
 
-with top-most commit 817d2371e4d53be202bb6d7df9a9b9c0c342ab21
+  git://git.lwn.net/linux.git tags/docs-6.9
 
- Merge branches 'acpi-x86', 'acpi-video', 'acpi-apei' and 'acpi-misc'
+for you to fetch changes up to 0c8e9b538ed7ecf4159b080ab0dafca3941c69db:
 
-on top of commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+  docs: verify/bisect: fixes, finetuning, and support for Arch (2024-03-07 04:19:43 -0700)
 
- Linux 6.8-rc7
+----------------------------------------------------------------
+A moderately busy cycle for development this time around.
 
-to receive ACPI updates for 6.9-rc1.
+- Some cleanup of the main index page for easier navigation
 
-These modify the ACPI device events and processor enumeration code to take
-the "enabled" _STA bit into account as mandated by the ACPI specification,
-convert several platform drivers to using a remove callback that returns
-void, add some new quirks for ACPI IRQ override and other things, address
-assorted issues and clean up code.
+- Rework some of the other top-level pages for better readability and, with
+  luck, fewer merge conflicts in the future.
 
-Specifics:
+- Submit-checklist improvements, hopefully the first of many.
 
- - Rearrange Device Check and Bus Check notification handling in the
-   ACPI device hotplug code to make it get the "enabled" _STA bit into
-   account (Rafael Wysocki).
+- New Italian translations
 
- - Modify acpi_processor_add() to skip processors with the "enabled"
-   _STA bit clear, as per the specification (Rafael Wysocki).
+- A fair number of kernel-doc fixes and improvements.  We have also dropped
+  the recommendation to use an old version of Sphinx.
 
- - Stop failing Device Check notification handling without a valid
-   reason (Rafael Wysocki).
+- A new document from Thorsten on bisection
 
- - Defer enumeration of devices that depend on a device with an ACPI
-   device ID equalt to INTC10CF to address probe ordering issues on
-   some platforms (Wentong Wu).
+..and lots of fixes and updates.
 
- - Constify acpi_bus_type (Ricardo Marliere).
+Expect minor merge conflicts with the vfio, edac, and gpio-brgl trees,
+all of which are long since (and correctly) resolved in linux-next.
 
- - Make the ACPI-specific suspend-to-idle code take the Low-Power S0
-   Idle MSFT UUID into account on non-AMD systems (Rafael Wysocki).
+----------------------------------------------------------------
+Abhishek Pandit-Subedi (1):
+      coding-style: Add guidance to prefer dev_dbg
 
- - Add ACPI IRQ override quirks for some new platforms (Sergey
-   Kalinichev, Maxim Kudinov, Alexey Froloff, Sviatoslav Harasymchuk,
-   Nicolas Haye).
+Akira Yokosawa (4):
+      docs: Restore "smart quotes" for quotes
+      docs: kerneldoc-preamble.sty: Remove code for Sphinx <2.4
+      docs: Move ja_JP/howto.rst to ja_JP/process/howto.rst
+      docs: Makefile: Add dependency to $(YNL_INDEX) for targets other than htmldocs
 
- - Make the NFIT parsing code use acpi_evaluate_dsm_typed() (Andy
-   Shevchenko).
+Andrew Ballance (1):
+      docs: sphinx-pre-install fix-noto-sans-cjk on fedora
 
- - Fix a memory leak in acpi_processor_power_exit() (Armin Wolf).
+Anna-Maria Behnsen (2):
+      drm/vram-helper: Fix 'multi-line' kernel-doc comments
+      scripts/kernel-doc: Do not process backslash lines in comments
 
- - Make it possible to quirk the CSI-2 and MIPI DisCo for Imaging
-   properties parsing and add a quirk for Dell XPS 9315 (Sakari Ailus).
+Carlos Bilbao (2):
+      docs: Correct formatting of title in admin-guide/index.rst
+      docs: Include simplified link titles in main index
 
- - Prevent false-positive static checker warnings from triggering by
-   intializing some variables in the ACPI thermal code to zero (Colin
-   Ian King).
+Christoph Anton Mitterer (1):
+      docs: proc.rst: comm: mention the included NUL
 
- - Add DELL0501 handling to acpi_quirk_skip_serdev_enumeration() and
-   make that function generic (Hans de Goede).
+Davide Benini (1):
+      doc:it_IT: add translation for I2C summary and protocol
 
- - Make the ACPI backlight code handle fetching EDID that is longer than
-   256 bytes (Mario Limonciello).
+Federico Vaga (2):
+      doc:it_IT: first translation for locking/
+      doc:it_IT: remove unreferenced and not translated page
 
- - Skip initialization of GHES_ASSIST structures for Machine Check
-   Architecture in APEI (Avadhut Naik).
+Guilherme G. Piccoli (1):
+      docs: Document possible_cpus parameter
 
- - Convert several plaform drivers in the ACPI subsystem to using a
-   remove callback that returns void (Uwe Kleine-K=C3=B6nig).
+Hunter Chasens (1):
+      docs: admin-guide: Update bootloader and installation instructions
 
- - Drop the long-deprecated custom_method debugfs interface that is
-   problematic from the security standpoint (Rafael Wysocki).
+Jeffrey Hugo (1):
+      Documentation: embargoed-hardware-issues.rst: Fix Trilok's email
 
- - Use %pe in a couple of places in the ACPI code for easier error
-   decoding (Onkarnath).
+Johannes Berg (1):
+      kernel-doc: handle #if in enums as well
 
- - Fix register width information handling during system memory
-   accesses in the ACPI CPPC library (Jarred White).
+Jonathan Corbet (3):
+      docs: rework the driver-api top-level page
+      docs: rework the userspace-api top page
+      Merge branch 'docs-fixes' into docs-mw
 
- - Add AMD CPPC V2 support for family 17h processors to the ACPI CPPC
-   library (Perry Yuan).
+Juntong Deng (1):
+      kasan: Add documentation for CONFIG_KASAN_EXTRA_INFO
 
-Thanks!
+Konstantin Ryabitsev (1):
+      Documentation: update mailing list addresses
 
+Krzysztof Kozlowski (1):
+      docs: maintainer: add existing SoC and netdev profiles
 
----------------
+Leo Yan (1):
+      Documentation: userspace-api: Document perf ring buffer mechanism
 
-Alexey I. Froloff (1):
-      ACPI: resource: Do IRQ override on Lunnen Ground laptops
+Lu Dai (1):
+      docs/zh_CN: accurate translation of "function"
 
-Andy Shevchenko (1):
-      ACPI: NFIT: Switch to use acpi_evaluate_dsm_typed()
+Lukas Bulwahn (4):
+      doc:it_IT: fix a typo in the config name in RCU torture
+      docs: drop the version constraints for sphinx and dependencies
+      docs: submit-checklist: structure by category
+      docs: submit-checklist: use subheadings
 
-Armin Wolf (1):
-      ACPI: processor_idle: Fix memory leak in acpi_processor_power_exit()
+Michael Kelley (1):
+      docs: Fix subsystem APIs page so ungrouped entries have their own header
 
-Avadhut Naik (1):
-      ACPI: APEI: Skip initialization of GHES_ASSIST structures for
-Machine Check Architecture
+Ran.Park (1):
+      Fixed case issue with 'fault-injection' in documentation
 
-Colin Ian King (1):
-      ACPI: thermal_lib: Initialize temp_decik to zero
+Randy Dunlap (2):
+      kernel-doc: drop looking for "MACDOC"
+      doc-guide: kernel-doc: tell about object-like macros
 
-Hans de Goede (2):
-      ACPI: x86: Move acpi_quirk_skip_serdev_enumeration() out of
-CONFIG_X86_ANDROID_TABLETS
-      ACPI: x86: Add DELL0501 handling to acpi_quirk_skip_serdev_enumeratio=
-n()
+Sakari Ailus (1):
+      kernel-doc: Support arrays of pointers struct fields
 
-Jarred White (1):
-      ACPI: CPPC: Use access_width over bit_width for system memory accesse=
-s
+SeongJae Park (1):
+      MAINTAINERS: Set the field name for subsystem profile section
 
-Mario Limonciello (1):
-      ACPI: video: Handle fetching EDID that is longer than 256 bytes
+Thorsten Blum (8):
+      Documentation: coding-style: Fix indentation in code-blocks
+      Documentation: coding-style: Update syntax highlighting for code-blocks
+      Documentation: multiple .rst files: Fix grammar and more consistent formatting
+      Documentation: admin-guide: tainted-kernels.rst: Add missing article and comma
+      README: Fix spelling/capitalization
+      docs: dev-tools: checkpatch.rst: Fix grammar
+      docs: scripts: sphinx-pre-install: Fix building docs with pyyaml package
+      docs: Makefile: Fix make cleandocs by deleting generated .rst files
 
-Maxim Kudinov (1):
-      ACPI: resource: Add MAIBENBEN X577 to irq1_edge_low_force_override
+Thorsten Leemhuis (2):
+      docs: new text on bisecting which also covers bug validation
+      docs: verify/bisect: fixes, finetuning, and support for Arch
 
-Nicolas Haye (1):
-      ACPI: resource: Skip IRQ override on ASUS ExpertBook B1502CVA
+Vegard Nossum (8):
+      docs: add blurb about target audience to maintainer-profile
+      scripts/kernel-doc: reindent
+      scripts/kernel-doc: add modeline for vim users
+      scripts/kernel-doc: simplify function printing
+      scripts/kernel-doc: separate out function signature
+      scripts/kernel-doc: simplify signature printing
+      doc: kerneldoc.py: fix indentation
+      docs: kernel_feat.py: fix build error for missing files
 
-Onkarnath (1):
-      ACPI: use %pe for better readability of errors while printing
+Vincenzo Mezzela (1):
+      docs: staging: fix typo in docs
 
-Perry Yuan (1):
-      ACPI: CPPC: enable AMD CPPC V2 support for family 17h processors
-
-Rafael J. Wysocki (7):
-      ACPI: PM: s2idle: Enable Low-Power S0 Idle MSFT UUID for non-AMD syst=
-ems
-      ACPI: Drop the custom_method debugfs interface
-      ACPI: scan: Fix device check notification handling
-      ACPI: scan: Relocate acpi_bus_trim_one()
-      ACPI: scan: Make acpi_processor_add() check the device enabled bit
-      ACPI: scan: Rework Device Check and Bus Check notification handling
-      ACPI: scan: Consolidate Device Check and Bus Check notification handl=
-ing
-
-Ricardo B. Marliere (1):
-      ACPI: bus: make acpi_bus_type const
-
-Sakari Ailus (3):
-      ACPI: utils: Make acpi_handle_path() not static
-      ACPI: property: Ignore bad graph port nodes on Dell XPS 9315
-      ACPI: property: Polish ignoring bad data nodes
-
-Sergey Kalinichev (1):
-      ACPI: resource: Use IRQ override on Maibenben X565
-
-Sviatoslav Harasymchuk (1):
-      ACPI: resource: Add IRQ override quirk for ASUS ExpertBook B2502FBA
-
-Uwe Kleine-K=C3=B6nig (8):
-      ACPI: APEI: GHES: Convert to platform remove callback returning void
-      ACPI: TAD: Convert to platform remove callback returning void
-      ACPI: AGDI: Convert to platform remove callback returning void
-      ACPI: DPTF: Convert to platform remove callback returning void
-      ACPI: GED: Convert to platform remove callback returning void
-      ACPI: fan: Convert to platform remove callback returning void
-      ACPI: pfr_telemetry: Convert to platform remove callback returning vo=
-id
-      ACPI: pfr_update: Convert to platform remove callback returning void
-
-Wentong Wu (1):
-      ACPI: scan: Defer enumeration of devices with a _DEP pointing to
-IVSC device
-
----------------
-
- Documentation/firmware-guide/acpi/index.rst        |   1 -
- .../firmware-guide/acpi/method-customizing.rst     |  89 -----------
- arch/x86/kernel/acpi/cppc.c                        |   2 +-
- drivers/acpi/Kconfig                               |  14 --
- drivers/acpi/Makefile                              |   1 -
- drivers/acpi/acpi_processor.c                      |   5 +-
- drivers/acpi/acpi_tad.c                            |   5 +-
- drivers/acpi/acpi_video.c                          |  28 ++--
- drivers/acpi/acpi_watchdog.c                       |   2 +-
- drivers/acpi/apei/ghes.c                           |  17 +-
- drivers/acpi/apei/hest.c                           |  51 ++++++
- drivers/acpi/arm64/agdi.c                          |   8 +-
- drivers/acpi/bus.c                                 |   2 +-
- drivers/acpi/cppc_acpi.c                           |  31 +++-
- drivers/acpi/custom_method.c                       | 103 ------------
- drivers/acpi/dptf/dptf_pch_fivr.c                  |   6 +-
- drivers/acpi/dptf/dptf_power.c                     |   6 +-
- drivers/acpi/evged.c                               |   5 +-
- drivers/acpi/fan_core.c                            |   6 +-
- drivers/acpi/internal.h                            |   2 +
- drivers/acpi/mipi-disco-img.c                      |  71 +++++++++
- drivers/acpi/nfit/core.c                           |   5 +-
- drivers/acpi/pci_slot.c                            |   2 +-
- drivers/acpi/pfr_telemetry.c                       |   6 +-
- drivers/acpi/pfr_update.c                          |   6 +-
- drivers/acpi/processor_idle.c                      |   2 +
- drivers/acpi/property.c                            |   3 +
- drivers/acpi/resource.c                            |  42 +++++
- drivers/acpi/scan.c                                | 172 +++++++++++------=
-----
- drivers/acpi/thermal_lib.c                         |   8 +-
- drivers/acpi/utils.c                               |   2 +-
- drivers/acpi/x86/s2idle.c                          |  37 +++--
- drivers/acpi/x86/utils.c                           |  38 ++++-
- include/acpi/acpi_bus.h                            |  16 +-
- include/linux/acpi.h                               |   1 +
- 35 files changed, 414 insertions(+), 381 deletions(-)
+ Documentation/ABI/testing/sysfs-bus-vdpa           |   10 +-
+ Documentation/Makefile                             |    5 +-
+ Documentation/RCU/torture.rst                      |    2 +-
+ Documentation/admin-guide/README.rst               |   69 +-
+ Documentation/admin-guide/index.rst                |    2 +
+ Documentation/admin-guide/kernel-parameters.txt    |    5 +
+ Documentation/admin-guide/tainted-kernels.rst      |    4 +-
+ .../verify-bugs-and-bisect-regressions.rst         | 1952 +++++++++++++++
+ Documentation/conf.py                              |    6 +-
+ Documentation/dev-tools/checkpatch.rst             |    4 +-
+ Documentation/dev-tools/kasan.rst                  |   21 +
+ Documentation/doc-guide/kernel-doc.rst             |   45 +
+ Documentation/doc-guide/maintainer-profile.rst     |    7 +
+ Documentation/doc-guide/sphinx.rst                 |   18 +-
+ Documentation/driver-api/index.rst                 |  169 +-
+ Documentation/fault-injection/index.rst            |    2 +-
+ Documentation/filesystems/proc.rst                 |    4 +-
+ Documentation/index.rst                            |   52 +-
+ .../maintainer/maintainer-entry-profile.rst        |    3 +
+ Documentation/networking/bridge.rst                |    2 +-
+ Documentation/process/changes.rst                  |    4 +-
+ Documentation/process/coding-style.rst             |   13 +-
+ .../process/embargoed-hardware-issues.rst          |    2 +-
+ Documentation/process/howto.rst                    |    4 +-
+ Documentation/process/researcher-guidelines.rst    |    2 +-
+ Documentation/process/submit-checklist.rst         |  161 +-
+ Documentation/sphinx/kerneldoc-preamble.sty        |    7 +-
+ Documentation/sphinx/kerneldoc.py                  |    6 +-
+ Documentation/sphinx/requirements.txt              |    7 +-
+ Documentation/staging/rpmsg.rst                    |    2 +-
+ Documentation/subsystem-apis.rst                   |    2 +
+ Documentation/translations/it_IT/RCU/index.rst     |   19 +
+ Documentation/translations/it_IT/RCU/torture.rst   |  369 +++
+ .../translations/it_IT/core-api/index.rst          |   12 +
+ .../translations/it_IT/i2c/i2c-protocol.rst        |   99 +
+ Documentation/translations/it_IT/i2c/index.rst     |   46 +
+ Documentation/translations/it_IT/i2c/summary.rst   |   64 +
+ Documentation/translations/it_IT/index.rst         |    2 +
+ Documentation/translations/it_IT/locking/index.rst |   20 +
+ .../translations/it_IT/locking/lockdep-design.rst  |  678 ++++++
+ .../translations/it_IT/locking/lockstat.rst        |  230 ++
+ .../translations/it_IT/locking/locktorture.rst     |  181 ++
+ .../translations/it_IT/locking/locktypes.rst       |  547 +++++
+ .../translations/it_IT/networking/netdev-FAQ.rst   |   13 -
+ .../translations/it_IT/process/coding-style.rst    |    6 +-
+ .../translations/it_IT/subsystem-apis.rst          |   47 +
+ Documentation/translations/ja_JP/index.rst         |    2 +-
+ .../translations/ja_JP/{ => process}/howto.rst     |    0
+ .../translations/sp_SP/process/coding-style.rst    |    6 +-
+ .../sp_SP/process/embargoed-hardware-issues.rst    |    2 +-
+ .../sp_SP/process/researcher-guidelines.rst        |    2 +-
+ .../translations/zh_CN/process/coding-style.rst    |    4 +-
+ .../zh_CN/process/embargoed-hardware-issues.rst    |    2 +-
+ .../zh_CN/userspace-api/accelerators/ocxl.rst      |    4 +-
+ .../translations/zh_TW/process/coding-style.rst    |    4 +-
+ .../zh_TW/process/embargoed-hardware-issues.rst    |    2 +-
+ Documentation/userspace-api/index.rst              |   47 +-
+ Documentation/userspace-api/perf_ring_buffer.rst   |  830 +++++++
+ MAINTAINERS                                        |    9 +-
+ README                                             |    2 +-
+ drivers/gpu/drm/drm_gem_vram_helper.c              |   44 +-
+ include/drm/drm_gem_vram_helper.h                  |   16 +-
+ scripts/kernel-doc                                 | 2531 ++++++++++----------
+ scripts/sphinx-pre-install                         |   32 +-
+ 64 files changed, 6857 insertions(+), 1607 deletions(-)
+ create mode 100644 Documentation/admin-guide/verify-bugs-and-bisect-regressions.rst
+ create mode 100644 Documentation/translations/it_IT/RCU/index.rst
+ create mode 100644 Documentation/translations/it_IT/RCU/torture.rst
+ create mode 100644 Documentation/translations/it_IT/i2c/i2c-protocol.rst
+ create mode 100644 Documentation/translations/it_IT/i2c/index.rst
+ create mode 100644 Documentation/translations/it_IT/i2c/summary.rst
+ create mode 100644 Documentation/translations/it_IT/locking/index.rst
+ create mode 100644 Documentation/translations/it_IT/locking/lockdep-design.rst
+ create mode 100644 Documentation/translations/it_IT/locking/lockstat.rst
+ create mode 100644 Documentation/translations/it_IT/locking/locktorture.rst
+ create mode 100644 Documentation/translations/it_IT/locking/locktypes.rst
+ delete mode 100644 Documentation/translations/it_IT/networking/netdev-FAQ.rst
+ create mode 100644 Documentation/translations/it_IT/subsystem-apis.rst
+ rename Documentation/translations/ja_JP/{ => process}/howto.rst (100%)
+ create mode 100644 Documentation/userspace-api/perf_ring_buffer.rst
 
