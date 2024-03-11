@@ -1,204 +1,119 @@
-Return-Path: <linux-kernel+bounces-98525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E05877B7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:55:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E4A877B7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0376D2822AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:55:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 067DC1C20D40
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0916D11717;
-	Mon, 11 Mar 2024 07:55:39 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01ACF10A12;
+	Mon, 11 Mar 2024 07:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vp7o9uXQ"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C71F1C33;
-	Mon, 11 Mar 2024 07:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72331C33
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710143738; cv=none; b=TyESY5/3Gdc4xdXC//ilmlY9HnDz3AAtqh1i8EjBwGqs9wbI+HUkB9sGNE+5Q6n97+RPeQLXgHg7xCKSqb0K939Wii0JNyW+QeiBdOA4QrYsNfbOFYdhoMFCy+KDIv2P9fM9VgTiG4GO6ooCb++3QXTRoViWm9/84eVBJl6xXyU=
+	t=1710143825; cv=none; b=U7hdkzyRqNArgJqfOfC9EwOIYQXxx7AohqLp/q3EHsGVmO0ZbW/X7jza3wrQSkbcvxZ6HE0f01Yw7LRHiFD0az6qFnZADnh2Tj6NZvF5QTjXhIFrnx4KpyOusWpwbCeqzmOCK0l6qnBoTX/IFX/U370eCfmVJcBAIVqFPM2T2Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710143738; c=relaxed/simple;
-	bh=/qk/PxlGm1WvdPUtKgJrgC5mcmmOT+1hrUu8hH8Vgts=;
-	h=Subject:From:To:CC:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=E4Z2PE1wAv1syUwA6UzdbbR61zS5RVPoXYm97MSlm0bPbm8ecOWPORlxl4I1qzg5Ii3OrI2qCFOrb24vQiBsLoZPB7ChZzHfDl+aG5R9+Q+8TEAAI+SsxQn0gCS7iI3QoAVQ8GplGnLWLISUiQXNv3zjtNR9C4bTcnU90reCR3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TtTXf6503z1h1v9;
-	Mon, 11 Mar 2024 15:53:06 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1043B1402E1;
-	Mon, 11 Mar 2024 15:55:32 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 15:55:31 +0800
-Subject: Re: [PATCH RFC 1/2] iomap: Add a IOMAP_DIO_MAY_INLINE_COMP flag
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: Dave Chinner <david@fromorbit.com>
-CC: <brauner@kernel.org>, <djwong@kernel.org>, <jack@suse.cz>,
-	<tytso@mit.edu>, <linux-xfs@vger.kernel.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-ext4@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20240229113849.2222577-1-chengzhihao1@huawei.com>
- <20240229113849.2222577-2-chengzhihao1@huawei.com>
- <ZeEkFUCUQ4eR7AlX@dread.disaster.area>
- <3de3ede5-31e0-2b7b-f523-9fd22090401f@huawei.com>
-Message-ID: <8263025e-15e6-fbc7-2826-f6f9ac3d9043@huawei.com>
-Date: Mon, 11 Mar 2024 15:55:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1710143825; c=relaxed/simple;
+	bh=l1GlUN2HihV5LZtSj9DtGfp1vdhPKdNbmWkJ1oSjdUk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lyiEzCHOnc1sbNGhyFAo9fC2kkstEJNQ9xO1hXI74agpxmIQ/abhpEIXJvPPyTR0fbGP8R51jmYwHMWZhbALzptlaQhfs1u17UeLEV9EPwerOtY6Ly3Bnv+Le21FTNO0xqNOlSDre7KbJAQuMAWLBlUaZfMEI7ZTdYcLCABDJzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vp7o9uXQ; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso3518736276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 00:57:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710143822; x=1710748622; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l1GlUN2HihV5LZtSj9DtGfp1vdhPKdNbmWkJ1oSjdUk=;
+        b=Vp7o9uXQyhhX2v0i4fq4tPHIp4Ob5RIfj9ZfxL/PpbVe09OsEPmsppxLOf0FkbVg3J
+         gRCpXYp5y9srvjeMO8WrJvumu5eB8nYo+vJ3Wh1CPkXNtUXUeN6L4z/6MsD7fmaU+XnI
+         AFd5/E7c0lTfPbPm6Z2uIK+R9Gww9No5bSQJNvfMA7AWXMXOokpXInpwulc5YXjgLWcl
+         bqWd61bjWEUpitkyXrSUuC5mCe5+l2ZHO4onZFjQI46gets0IWCa7N1NImtHLCZalPI2
+         Rg7H3Tkt1ZMwLJQ0giHgJZtnO9INSxFmx7OPCNlIXQKVi2P4t4iM7fCzuEhukqr0Tpzp
+         v/ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710143822; x=1710748622;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l1GlUN2HihV5LZtSj9DtGfp1vdhPKdNbmWkJ1oSjdUk=;
+        b=OUD73FumCt9qlFsvvdWe59wAayhqrwBdHCvs2JWKJ0+KjYfhqc3//ODUtABij0WhnH
+         fUIftxDh1EkPQNs6V2pGOoExdU6cz6Iiw3z2UDHG/tAowh6nRxiRL9+LxY1cgUiJWZ2S
+         53H7GI776Ml2u+8490QpJy0TMnaIJDVeaeZ26hE9e0zSBR0Njkqgw0JH0T3X51MJTKZy
+         V7AzVAHa548gyFwtVI12HQrrhq3DO+SL5oB8lGW8KSAEeJDj2OnU9RsZ2smV2sfKOVq5
+         htOyfXmRFYeBVvGgww8hG4y5Py7xG3liZUcAn0YyETITm8/siaoW+x7aicU++fR2aEfr
+         FDig==
+X-Forwarded-Encrypted: i=1; AJvYcCXH6IPQuE/V2r7SBxKD85q+9ttcsjciXgxnrSgjO47knhBH7lVVhY3lu37E2Ko+0ji7Hv9ZOQWJy4WZ+o8HnrBnct7o2phsTH60SJ84
+X-Gm-Message-State: AOJu0Yw8dT6/n8WpT/R/ULzRMxlN/lo3jL3mNzpJ1Ec4YH6VlQ1m1P06
+	A/x0EUN11//9LchUw/1wnUT5757akZ+6UAYg8bMwmjDqPm7FrEJvBFpt0LDFMeoquQM/2QQEkKp
+	WxxtpuyZEFQLvBcHRRf3pSY9+IDM=
+X-Google-Smtp-Source: AGHT+IHQJ4sUl3hCowXQDe0G866xiBo0JEIoRHtVzKJEsNjcvbr/+8mWIMLpp4/LFmK4KbAnHgxImO4hBvPL4+xmG/I=
+X-Received: by 2002:a05:6902:c7:b0:dd0:c2a:26f9 with SMTP id
+ i7-20020a05690200c700b00dd00c2a26f9mr3178090ybs.27.1710143821857; Mon, 11 Mar
+ 2024 00:57:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <3de3ede5-31e0-2b7b-f523-9fd22090401f@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+References: <20240311063018.1886757-1-dqfext@gmail.com> <IA1PR20MB4953ECC3E32E95303872CD14BB242@IA1PR20MB4953.namprd20.prod.outlook.com>
+In-Reply-To: <IA1PR20MB4953ECC3E32E95303872CD14BB242@IA1PR20MB4953.namprd20.prod.outlook.com>
+From: Qingfang Deng <dqfext@gmail.com>
+Date: Mon, 11 Mar 2024 15:56:29 +0800
+Message-ID: <CALW65jZ+q8sDiRKgsRL9n+939HNUCnkKuO=YJjHB5Js=WYQeOg@mail.gmail.com>
+Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
+To: Inochi Amaoto <inochiama@outlook.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Atish Patra <atishp@atishpatra.org>, 
+	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Andrew Jones <ajones@ventanamicro.com>, 
+	Conor Dooley <conor.dooley@microchip.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2024/3/1 18:02, Zhihao Cheng 写道:
-> 在 2024/3/1 8:40, Dave Chinner 写道:
-> 
-Hi Dave. Friendly ping.
-> Hi Dave, thanks for your detailed and nice suggestions, I have a few 
-> questions below.
->> On Thu, Feb 29, 2024 at 07:38:48PM +0800, Zhihao Cheng wrote:
->>> It will be more efficient to execute quick endio process(eg. non-sync
->>> overwriting case) under irq process rather than starting a worker to
->>> do it.
->>> Add a flag to control DIO to be finished inline(under irq context), 
->>> which
->>> can be used for non-sync overwriting case.
->>> Besides, skip invalidating pages if DIO is finished inline, which will
->>> keep the same logic with dio_bio_end_aio in non-sync overwriting case.
->>>
->>> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
->>
->> A nice idea, but I don't think an ext4 specific API flag is the
->> right way to go about enabling this. The iomap dio code knows if
->> the write is pure overwrite already - we have the IOMAP_F_DIRTY flag
->> for that, and we combine this with IOMAP_DIO_WRITE_THROUGH to do the
->> pure overwrite FUA optimisations.
->>
->> That is:
->>
->>         /*
->>                   * Use a FUA write if we need datasync semantics, 
->> this is a pure
->>                   * data IO that doesn't require any metadata updates 
->> (including
->>                   * after IO completion such as unwritten extent 
->> conversion) and
->>                   * the underlying device either supports FUA or 
->> doesn't have
->>                   * a volatile write cache. This allows us to avoid 
->> cache flushes
->>                   * on IO completion. If we can't use writethrough and 
->> need to
->>                   * sync, disable in-task completions as dio 
->> completion will
->>                   * need to call generic_write_sync() which will do a 
->> blocking
->>                   * fsync / cache flush call.
->>                   */
->>                  if (!(iomap->flags & (IOMAP_F_SHARED|IOMAP_F_DIRTY)) &&
->>                      (dio->flags & IOMAP_DIO_WRITE_THROUGH) &&
->>                      (bdev_fua(iomap->bdev) || 
->> !bdev_write_cache(iomap->bdev)))
->>                          use_fua = true;
->>
->> Hence if we want to optimise pure overwrites that have no data sync
->> requirements, we already have the detection and triggers in place to
->> do this. We just need to change the way we set up the IO flags to
->> allow write-through (i.e. non-blocking IO completions) to use inline
->> completions.
->>
->> In __iomap_dio_rw():
->>
->> +    /* Always try to complete inline. */
->> +    dio->flags |= IOMAP_DIO_INLINE_COMP;
->>     if (iov_iter_rw(iter) == READ) {
->> -               /* reads can always complete inline */
->> -               dio->flags |= IOMAP_DIO_INLINE_COMP;
->> ....
->>
->>     } else {
->> +        /* Always try write-through semantics. If we can't
->> +         * use writethough, it will be disabled along with
->> +         * IOMAP_DIO_INLINE_COMP before dio completion is run
->> +         * so it can be deferred to a task completion context
->> +         * appropriately.
->> +         */
->> +               dio->flags |= IOMAP_DIO_WRITE | IOMAP_DIO_WRITE_THROUGH;
-> 
-> There is a behavior change here, if we set IOMAP_DIO_WRITE_THROUGH 
-> unconditionally, non-datasync IO will be set with REQ_FUA, which means 
-> that device will flush writecache for each IO, will it affect the 
-> performance in non-sync dio case?
->>         iomi.flags |= IOMAP_WRITE;
->> -               dio->flags |= IOMAP_DIO_WRITE;
->> .....
->>         /* for data sync or sync, we need sync completion processing */
->>                  if (iocb_is_dsync(iocb)) {
->>                          dio->flags |= IOMAP_DIO_NEED_SYNC;
->>
->> -                      /*
->> -                       * For datasync only writes, we optimistically 
->> try using
->> -                       * WRITE_THROUGH for this IO. This flag 
->> requires either
->> -                       * FUA writes through the device's write cache, 
->> or a
->> -                       * normal write to a device without a volatile 
->> write
->> -                       * cache. For the former, Any non-FUA write 
->> that occurs
->> -                       * will clear this flag, hence we know before 
->> completion
->> -                       * whether a cache flush is necessary.
->> -                       */
->> -                       if (!(iocb->ki_flags & IOCB_SYNC))
->> -                               dio->flags |= IOMAP_DIO_WRITE_THROUGH;
->> +            * For sync writes we know we are going to need
->> +            * blocking completion processing, so turn off
->> +            * writethrough now.
->> +            */
->>             if (iocb->ki_flags & IOCB_SYNC) {
->>                 dio->flags &= ~(IOMAP_DIO_WRITE_THROUGH |
->>                         IOMAP_DIO_INLINE_COMP);
->>             }
->>                  }
->>
-> 
-> [...]
->>
->> However, this does mean that any spinlock taken in the ->end_io()
->> callbacks now needs to be irq safe. e.g. in xfs_dio_write_end_io()
->> the spinlock protection around inode size updates will need to use
->> an irq safe locking, as will the locking in the DIO submission path
->> that it serialises against in xfs_file_write_checks(). That probably
->> is best implemented as a separate spinlock.
->>
->> There will also be other filesystems that need to set IOMAP_F_DIRTY
->> unconditionally (e.g. zonefs) because they always take blocking
->> locks in their ->end_io callbacks and so must always run in task
->> context...
-> Should we add a new flag(eg. IOMAP_F_ENDIO_IRQ ?) to indicate that the 
-> endio cannot be done under irq? Because I think IOMAP_F_DIRTY means that 
-> the metadata needs to be written, if we add a new semantics(endio must 
-> be done in defered work) for this flag, the code will looks a little 
-> complicated.
-> 
-> 
-> .
+Hi Inochi,
 
+On Mon, Mar 11, 2024 at 3:13=E2=80=AFPM Inochi Amaoto <inochiama@outlook.co=
+m> wrote:
+>
+> On Mon, Mar 11, 2024 at 02:30:18PM +0800, Qingfang Deng wrote:
+> > T-Head C908 has the same IRQ num and CSR as previous C9xx cores, but
+> > reports non-zero marchid and mimpid. Remove the ID checks.
+> >
+>
+> Hi, Qingfang,
+>
+> IIRC, the existed C908 SoC (such as K230) have an early version
+> of C908 core. But C908 core itself may support Sscofpmf.
+> So I do not think removing the ID checks is a good idea. Instead,
+> I suggest adding CPUID of your SoC to this check.
+
+As of Feb 2024, the latest C908 revision does not support Sscofpmf.
+You may Google "C908R1S0" to see its user manual.
+But I think you're right. Even though C908 does not have Sscofpmf,
+T-Head may release new SoCs which do have Sscofpmf, and the check will
+break. I will submit a new patch with your suggested changes.
+
+Regards,
+Qingfang
+>
+> Regards,
+> Inochi
+>
 
