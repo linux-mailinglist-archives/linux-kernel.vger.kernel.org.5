@@ -1,122 +1,118 @@
-Return-Path: <linux-kernel+bounces-98519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967CD877B5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:35:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF669877B61
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E907C281676
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:35:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E11961C20D3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 07:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D6310A0A;
-	Mon, 11 Mar 2024 07:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=testtoast.com header.i=@testtoast.com header.b="jpeIk9MG";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GT3M6dXY"
-Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB8812B70;
+	Mon, 11 Mar 2024 07:35:35 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652A1101E2;
-	Mon, 11 Mar 2024 07:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8E511721;
+	Mon, 11 Mar 2024 07:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710142521; cv=none; b=qz2jwQp8mV4KnhYnhJrrDNJ/cbwllv4PG4fp/s3H89pvF2hCyzclx4GuX5hRExPxYEwQBshYcu3lvGM9gK8TugnIDiTO2EQEWIoPUjgkezkMwqBFwVRJU4pUGUHgfeb1p+n+RQsPLl9VmXpotgS5/Gd33F3BIyiASwQZcJQOKAI=
+	t=1710142535; cv=none; b=HPmCWDfxsB0KN9FIXTb/pSgqT1MSmdOvtY9PkZsdAqudTDwLVif83tAyxuHcCBsB92U882eH9wJw+e++DwxiKsjCS2QBKp7ISJ2D1TPwjLN4RT0cBiDhOcnCgq+0xGSM57T2fJRRPpAx/ie+IT9RYVTeEUpqMmul5aTIChvZLDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710142521; c=relaxed/simple;
-	bh=AT63euh9nACAA8FpxKTo0+f5ix3COISncDmz7k86aZw=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=DD8a75HMV7Kv2xsxyetlAooSdXVyc48mLZ7nc5UYkmh7pBQ9EUGrcZ/3wOYVtZN3EKwz7A0YG2W7L6DvFJehmyrv1GArKuA5J6B17XcAlRE6iF5sugr8s7SSKsW75/dyJbLow8qc4tgwpAd9AG0NjqLMVFVXp8YD2vswv21k9uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=testtoast.com; spf=pass smtp.mailfrom=testtoast.com; dkim=pass (2048-bit key) header.d=testtoast.com header.i=@testtoast.com header.b=jpeIk9MG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GT3M6dXY; arc=none smtp.client-ip=64.147.123.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=testtoast.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=testtoast.com
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id 6E7FB1C000A7;
-	Mon, 11 Mar 2024 03:35:17 -0400 (EDT)
-Received: from imap47 ([10.202.2.97])
-  by compute5.internal (MEProxy); Mon, 11 Mar 2024 03:35:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=testtoast.com;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1710142516; x=
-	1710228916; bh=pgvUHd9qCUHGtOhpSeo2XbBXlkhAYOe42MvkFSOBuY0=; b=j
-	peIk9MG6MJ5Ovje7dA2BWAxvx55K8T8/ukYRHDrajaRNg8UC4pzu7xFIHWQ8diSx
-	gPR+VzveRw0dTiPfp9Ij+zqX9IZz4djwKs3Hy/agKG+CYhgA8PW//nqclBUfmxZy
-	oIY5jm2EwnwTy5LWCKFrWZIxpM06TQA+tejFGPrbIFAMpcP3gQUhEJyHsrn7eeRV
-	sHSfxirMwZBsU0Qik6oqnH+zzKow79eH3SwA7bHZfndNPbkQ836LC1p4KmK/GAqJ
-	Jvs5JzGBgHm272Ly1JkgNTzVnEVZooobpC2dlFdZNUXqdnO8m/8xTioICvR0Y/CD
-	59Eot6wJ37UInXifoXNKQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710142516; x=1710228916; bh=pgvUHd9qCUHGtOhpSeo2XbBXlkhA
-	YOe42MvkFSOBuY0=; b=GT3M6dXYCI0nHt3+PNcBWCgfl7GiaGUV26XnprUB3oef
-	vHT8VSvgSCPw2HiI1te36/ox9ysb/Yq9p1jQfhrOtWayo5HxYqFBWG4dJJLzYD2q
-	iWK055k472jUFtisyZ0LMwdagim46XOCLOWPo9ACj0xJj6wuTsjHe3dRxv3P2fG3
-	QQnV8Yp811krNW8BO3+I479HGkA+m/9vN5EgNzwjGkEK/P8QncT8QZubqSSLee04
-	noZs8wUgcWuFompph9wcCd/Gyvc3MQxCVMNPMmwYVxSBgqUgGK3epxAzcNbBaRiZ
-	Wc6iGEwILGJPL36Gc+veW2iaM1sJJSkPk1T9k8adlw==
-X-ME-Sender: <xms:NLTuZWfkLel_CWAQgk_1v1FAblokO1uschh3sos-uuJbQtcfmcTcfQ>
-    <xme:NLTuZQPmqKwQ94cujAAoD6_UVp6CPGgeacISV99jPKGF-IPij_Qn1jsVCZX2wRW9q
-    rCwdvznI82b0FTBag>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjedtgdduudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftfih
-    rghnucghrghlkhhlihhnfdcuoehrhigrnhesthgvshhtthhorghsthdrtghomheqnecugg
-    ftrfgrthhtvghrnhephedvveeigedujeeufeegffehhfffveduhfeijefgtdffteelgfet
-    ueevieduieejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprhihrghnsehtvghsthhtohgrshhtrdgtohhm
-X-ME-Proxy: <xmx:NLTuZXj5tN4129KaVMHgiegce3SzTeEcJ_IMscP6_eVgnmF3rk0A_A>
-    <xmx:NLTuZT90s7raiV40515gEd5jp2LjUGnJNomYCj_NkZida1qWaecTmg>
-    <xmx:NLTuZSvdMMFK5Q020QhDunAL8G_5yNz7DoKEwAvRYfDJBlfELGXtCw>
-    <xmx:NLTuZXMC0HKkjPpTVGVGA5Lx19nJ1bIdIrirmomUoIA6EGTnB2FmQdQ6Wp0>
-Feedback-ID: idc0145fc:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 02E82A60078; Mon, 11 Mar 2024 03:35:15 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1710142535; c=relaxed/simple;
+	bh=7LH2wzc/LZb2FQlVliTCF9VhxXEg9MBUThqc0qpE1JU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Y6a4986lCTsrM4Gb8M9Ncon8mlkQZb8p632ReX0wAF/PCQH07Sbc+Iqvv6+b5E2XQLG/+HlldcDGUmojJShpvqbbkW+DhoB3DDVuJ9+L+PDZ8IIJNP+sS9gLWlinpebLc50aIHKblvZ1EnSCEo/Q4SeRIIi6qUS+EZZy13CwW2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TtT5X5yK0z1h1rl;
+	Mon, 11 Mar 2024 15:33:04 +0800 (CST)
+Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0BEDD14038F;
+	Mon, 11 Mar 2024 15:35:30 +0800 (CST)
+Received: from [10.67.120.108] (10.67.120.108) by
+ dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 11 Mar 2024 15:35:29 +0800
+Message-ID: <b2762a93-c8e3-f467-aed6-37c7e124f7c8@huawei.com>
+Date: Mon, 11 Mar 2024 15:35:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <d6a3c20c-f2d8-44e9-be63-d27dfafacba8@app.fastmail.com>
-In-Reply-To: <20240310010211.28653-1-andre.przywara@arm.com>
-References: <20240310010211.28653-1-andre.przywara@arm.com>
-Date: Mon, 11 Mar 2024 20:34:54 +1300
-From: "Ryan Walklin" <ryan@testtoast.com>
-To: "Andre Przywara" <andre.przywara@arm.com>,
- "Liam Girdwood" <lgirdwood@gmail.com>, "Mark Brown" <broonie@kernel.org>,
- "Chen-Yu Tsai" <wens@csie.org>, "Lee Jones" <lee@kernel.org>,
- "Rob Herring" <robh@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
- "Conor Dooley" <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, "Samuel Holland" <samuel@sholland.org>,
- "Jernej Skrabec" <jernej.skrabec@gmail.com>,
- "Chris Morgan" <macromorgan@hotmail.com>, linux-kernel@vger.kernel.org,
- linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 0/4] regulator: Add X-Powers AXP717 PMIC support
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v3 1/3] scsi: libsas: Allow smp_execute_task() arguments
+ to be on the stack
+Content-Language: en-CA
+To: Dan Carpenter <dan.carpenter@linaro.org>, <oe-kbuild@lists.linux.dev>,
+	<john.g.garry@oracle.com>, <yanaijie@huawei.com>, <jejb@linux.ibm.com>,
+	<martin.petersen@oracle.com>, <damien.lemoal@opensource.wdc.com>
+CC: <lkp@intel.com>, <oe-kbuild-all@lists.linux.dev>,
+	<linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
+References: <0cf17536-beba-4a8f-836b-553a9e0d1046@moroto.mountain>
+From: yangxingui <yangxingui@huawei.com>
+In-Reply-To: <0cf17536-beba-4a8f-836b-553a9e0d1046@moroto.mountain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggpemm500024.china.huawei.com (7.185.36.203) To
+ dggpemd100001.china.huawei.com (7.185.36.94)
 
-On Sun, 10 Mar 2024, at 2:02 PM, Andre Przywara wrote:
-> This patch series adds support for the X-Powers AXP717 PMIC, which is 
-> used recently on new boards with Allwinner SoCs.
 
-> Please note that I could not test this driver myself, but had success
-> messages from others. It would be good to hear from Ryan and Chris
-> here on the list, with a Tested-by: tag.
 
-Thanks Andre, tested on an Allwinner H700-based board (Anbernic RG35XX+) with successful bringup of DRAM, boot and regulator reporting via /sys/kernel/debug/regulator/regulator_summary. 
+On 2024/3/11 13:42, Dan Carpenter wrote:
+> Hi Xingui,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Xingui-Yang/scsi-libsas-Allow-smp_execute_task-arguments-to-be-on-the-stack/20240307-174215
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git for-next
+> patch link:    https://lore.kernel.org/r/20240307093733.41222-2-yangxingui%40huawei.com
+> patch subject: [PATCH v3 1/3] scsi: libsas: Allow smp_execute_task() arguments to be on the stack
+> config: i386-randconfig-141-20240308 (https://download.01.org/0day-ci/archive/20240310/202403102353.jUPi6fOP-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes: https://lore.kernel.org/r/202403102353.jUPi6fOP-lkp@intel.com/
+> 
+> New smatch warnings:
+> drivers/scsi/libsas/sas_expander.c:148 smp_execute_task() warn: possible memory leak of '_req'
+> 
+> vim +/_req +148 drivers/scsi/libsas/sas_expander.c
+> 
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  138  static int smp_execute_task(struct domain_device *dev, void *req, int req_size,
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  139  			    void *resp, int resp_size)
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  140  {
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  141  	struct scatterlist req_sg;
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  142  	struct scatterlist resp_sg;
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  143  	void *_req = kmemdup(req, req_size, GFP_KERNEL);
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  144  	void *_resp = alloc_smp_resp(resp_size);
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  145  	int ret;
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  146
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07  147  	if (!_req || !resp)
+> adfd2325dfc5cf6 Xingui Yang     2024-03-07 @148  		return -ENOMEM;
+> 
+> I haven't looked at the callers so I don't know how likely it is for one
+> of the allocations to fail and the other succeed...  But it seems
+> possible.
 
-Battery charging not tested but according to vendor datasheet this functionality is internal to the PMIC and can complete without reference to the host, with informational reporting and charging parameters optionally modified by host over I2C or RSB.
+Yes, it's possible. This patch has been canceled in v4. Based on John's 
+suggestion, if there are plans to resubmit modifications , we will pay 
+attention to this, thank you.
 
-Ryan
-
-Tested-by: Ryan Walklin <ryan@testtoast.com>
-
+Thanks,
+Xingui
 
