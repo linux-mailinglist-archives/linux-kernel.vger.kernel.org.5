@@ -1,170 +1,125 @@
-Return-Path: <linux-kernel+bounces-98952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6850E878189
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:24:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F0FC878185
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 15:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F399285D95
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:24:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221182841AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9D34122D;
-	Mon, 11 Mar 2024 14:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BAE3FE3F;
+	Mon, 11 Mar 2024 14:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JwYCEpQp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QCPrDa1X"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6638D40873
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 14:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A952208B;
+	Mon, 11 Mar 2024 14:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710167017; cv=none; b=MAaXVNbhIM7NTN4ljDBrWKXnoJu1LEXjAIPzZ1vQpM7rRN4ECv2M1QF3/Q/w2myHLlmDn1kTRIS9D1WB45jFJZsYRz37VOdSfydpGg2Y/OlIj40X/YPQsTpyFttuRkRs042F/2Vh35UFIinki9MdXSBbPdpNCAQfvodcA3J6aAI=
+	t=1710167012; cv=none; b=NRiaX7YQnuNh4/HeP9DB2Y6mD1NiRBDzOmMJKC+YuEl0GTbXH+5KVazQLCFBqqkR+9W6X/o2SDrOzoJgMVnYh8oLnJQdTeYgs/xk6D6BYsIC1Hm5ALDEOegXvfpCtDyrCCh1R+HQcD2oHHGNQ9nPbHKT4NKe+Yh9i7+Wj47YjHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710167017; c=relaxed/simple;
-	bh=fa9XFAx9obZMO3B1JrvGxK3phLC5+gaUosXQRL9JBXU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kqt4nvRNEJaTjuvoI2/mOH2n+DuBzoHCHqD4LR5xHW5xhrPST19YUmEU1UOnoGUKgiAU7j9ppxkGq/q5l0d61keN9TzzNlwBpLufFLDKhJ7N7Wz+k9lBqszYddPgZuB5iVwfe/4c02g8fYZa5cL1fLqyf7zk4cu8X42dJTVpnik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JwYCEpQp; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710167014;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=mcf3zxaA2/sjs65yJU+BuOcFQDAU/c/WjG2T49wjTRk=;
-	b=JwYCEpQpTKzQ5KbqK4DnINB0tiZX0pRGJntn3jj1fk1qwOLsI5aiUHLWV2DruHWactmIwz
-	+o1WdOqDL657AWmnjvG9Zmx7HgdvAfkYpBjNdUJwIqIUBx1OfwiOsec/CXopg5F1nvA9q+
-	ysWb3vxLo3fINslGvW2VlVQklmqaivs=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-393-5mAfM2UENm6tVnZthwIFmA-1; Mon, 11 Mar 2024 10:23:31 -0400
-X-MC-Unique: 5mAfM2UENm6tVnZthwIFmA-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-513a1ed3ff8so1438000e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 07:23:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710167009; x=1710771809;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mcf3zxaA2/sjs65yJU+BuOcFQDAU/c/WjG2T49wjTRk=;
-        b=cbkG8neMsXwcu/0sphk7CZZcD/Pu+B87cLpk62/6zhYo8gqSXGVoNDa6XzjeychDPb
-         ps3OYHsKLsTYq/hZtcIG0qWtaX3c6ilDojcPB41id0iN152Se35cNaeio7sMap5QQK5+
-         U1ieEve/pkTHj44De6dqkargX5KtM7ElgR3ITikUvdNko50DoPq5kOeFYgKYUw7UbmMn
-         k7D2KUcXI67tfi3Gm8no4hFnwnBNDbycSSaWmfZpoBgeTHm/DUYqQXyy6rp9TOqqKqEJ
-         cGd+V53uTCWfWTTf6tXG3BFw0Ia0a3oM9xr90i+Y0CK03c28jXk9PrrNkN9IJygvYXKE
-         fplA==
-X-Forwarded-Encrypted: i=1; AJvYcCUxJq2JtNpMoGmg7a+hDMZz2IbDdnqkWznlXfKRdiHwTB43Zcpl+eiTs3WW2oOe4hdWe3N+u5wWF1DScdv0z7SUxvHcJC13Yvcls+ao
-X-Gm-Message-State: AOJu0Yy3gAgpTO3WdV0gM+Ai0qmioaJo1++REEhXPgs0tCKYUpotwJGG
-	cqUSlpCfEY0kHsSaueff8m/Vf9Bn26LfhkUKHN9FAvxiE3ZNTc/f5oygpEAuBcRx1jrtURqDTWg
-	yn/pmjuRLzX8AW3mgeXMOj62liQgRLsLZYhhQCU7DTI+Gcylo0t//xKX5qM2QeA==
-X-Received: by 2002:a19:3807:0:b0:513:8f53:cab0 with SMTP id f7-20020a193807000000b005138f53cab0mr4566952lfa.27.1710167009757;
-        Mon, 11 Mar 2024 07:23:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH4GtFvDr6xQlX8J6xMadJVdLCHI39/5fwrh+GPsoGYKQ0Np7yncZS/GYTcv4UgbIHFDYe5+Q==
-X-Received: by 2002:a19:3807:0:b0:513:8f53:cab0 with SMTP id f7-20020a193807000000b005138f53cab0mr4566943lfa.27.1710167009369;
-        Mon, 11 Mar 2024 07:23:29 -0700 (PDT)
-Received: from [192.168.10.81] ([151.49.77.21])
-        by smtp.googlemail.com with ESMTPSA id et8-20020a056402378800b00566a4dec01fsm2972343edb.11.2024.03.11.07.23.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 07:23:28 -0700 (PDT)
-Message-ID: <bb3af2ec-fc5b-433d-aa43-ea4d9a2b8863@redhat.com>
-Date: Mon, 11 Mar 2024 15:23:26 +0100
+	s=arc-20240116; t=1710167012; c=relaxed/simple;
+	bh=xUQa2duh6dBoxq9pcAdeK/i5MkMLxHJ3k/BzRbYSM7s=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=kE4DIwzW2BD4Nwg8a6nVyhIokUYhHhscqT4iDZ9QyklnfbqfbQ1UpVP1lqqBU6WQqiu1PDcfDeE6zLc7yfvl6l/IKM7mhrdmk++/mG/cCzipglDRA+Z0K9zO/BG5wP6kb3DBtVaKBe3L8JKSJ0UWaQq58K2KqDQGRDZNpFL3Ws4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QCPrDa1X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A59F8C433C7;
+	Mon, 11 Mar 2024 14:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710167011;
+	bh=xUQa2duh6dBoxq9pcAdeK/i5MkMLxHJ3k/BzRbYSM7s=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=QCPrDa1XY5vvlnXrPmOE7s/c+PBNmGA0e8BeVdhp29u0wlFq289Gvo6E1T6GwIN9j
+	 bKlDgyiezbA6BBLatZ9Igo8IK4bCprIGJJJ5cs8Zg4frRbvF0tqkIPmhaJTHHBzTx1
+	 Ahx+CUrKY1pZoO039RMSCwOAOED11pjWkthHAfjl1kD+6PY8bgx18A7Sv36GbwuJ2X
+	 9jfRBCF21w99RWVvJ53KocALHZf/LrMZHmeHqZcYiYrAGDpWFulBAVct2CZHsuc+6h
+	 61ulHWjyHcoSP15V7Vqnr5nyFIPbejwGnF0rxGNQF2SWwiVUQDerpgI3HGH+Tk4l1h
+	 xfXu1rFtE5jUw==
+Date: Mon, 11 Mar 2024 08:23:30 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] KVM: Common MMU changes for 6.9
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240308223702.1350851-1-seanjc@google.com>
- <20240308223702.1350851-3-seanjc@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20240308223702.1350851-3-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+To: Luca Weiss <luca@z3ntu.xyz>
+Cc: linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ phone-devel@vger.kernel.org, Adam Honse <calcprogrammer1@gmail.com>
+In-Reply-To: <20240310-samsung-hlte-v1-0-e9b55bf98a48@z3ntu.xyz>
+References: <20240310-samsung-hlte-v1-0-e9b55bf98a48@z3ntu.xyz>
+Message-Id: <171016679093.1126634.17115825771533066372.robh@kernel.org>
+Subject: Re: [PATCH 0/2] Add Samsung Galaxy Note 3 support
 
-On 3/8/24 23:36, Sean Christopherson wrote:
-> Two small cleanups in what is effectively common MMU code.
-> 
-> The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
-> 
->    Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
-> 
-> are available in the Git repository at:
-> 
->    https://github.com/kvm-x86/linux.git tags/kvm-x86-generic-6.9
-> 
-> for you to fetch changes up to ea3689d9df50c283cb5d647a74aa45e2cc3f8064:
-> 
->    KVM: fix kvm_mmu_memory_cache allocation warning (2024-02-22 17:02:26 -0800)
 
-Pulled, thanks.
+On Sun, 10 Mar 2024 15:13:35 +0100, Luca Weiss wrote:
+> Add the dts for "hlte" which is a phablet from 2013.
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+> Adam Honse (1):
+>       ARM: dts: qcom: msm8974: Add Samsung Galaxy Note 3
+> 
+> Luca Weiss (1):
+>       dt-bindings: arm: qcom: Add Samsung Galaxy Note 3
+> 
+>  Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+>  arch/arm/boot/dts/qcom/Makefile                    |   1 +
+>  .../boot/dts/qcom/qcom-msm8974-samsung-hlte.dts    | 403 +++++++++++++++++++++
+>  3 files changed, 405 insertions(+)
+> ---
+> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+> change-id: 20240310-samsung-hlte-78d1a287b0a8
+> 
+> Best regards,
+> --
+> Luca Weiss <luca@z3ntu.xyz>
+> 
+> 
+> 
 
-Paolo
 
-> ----------------------------------------------------------------
-> KVM common MMU changes for 6.9:
-> 
->    - Harden KVM against underflowing the active mmu_notifier invalidation
->      count, so that "bad" invalidations (usually due to bugs elsehwere in the
->      kernel) are detected earlier and are less likely to hang the kernel.
-> 
->    - Fix a benign bug in __kvm_mmu_topup_memory_cache() where the object size
->      and number of objects parameters to kvmalloc_array() were swapped.
-> 
-> ----------------------------------------------------------------
-> Arnd Bergmann (1):
->        KVM: fix kvm_mmu_memory_cache allocation warning
-> 
-> Sean Christopherson (1):
->        KVM: Harden against unpaired kvm_mmu_notifier_invalidate_range_end() calls
-> 
->   virt/kvm/kvm_main.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
+My bot found new DTB warnings on the .dts files added or changed in this
+series.
+
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not. No need to reply
+unless the platform maintainer has comments.
+
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
+
+  pip3 install dtschema --upgrade
+
+
+New warnings running 'make CHECK_DTBS=y qcom/qcom-msm8974-samsung-hlte.dtb' for 20240310-samsung-hlte-v1-0-e9b55bf98a48@z3ntu.xyz:
+
+arch/arm/boot/dts/qcom/qcom-msm8974-samsung-hlte.dtb: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 0]]}
+	from schema $id: http://devicetree.org/schemas/root-node.yaml#
+arch/arm/boot/dts/qcom/qcom-msm8974-samsung-hlte.dtb: l2-cache: Unevaluated properties are not allowed ('qcom,saw' was unexpected)
+	from schema $id: http://devicetree.org/schemas/cache.yaml#
+arch/arm/boot/dts/qcom/qcom-msm8974-samsung-hlte.dtb: idle-states: 'spc' does not match any of the regexes: '^(cpu|cluster)-', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/cpu/idle-states.yaml#
+arch/arm/boot/dts/qcom/qcom-msm8974-samsung-hlte.dtb: syscon@f9011000: compatible: 'anyOf' conditional failed, one must be fixed:
+	['syscon'] is too short
+	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'amd,pensando-elba-syscon', 'brcm,cru-clkset', 'freecom,fsg-cs2-system-controller', 'fsl,imx93-aonmix-ns-syscfg', 'fsl,imx93-wakeupmix-syscfg', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'hpe,gxp-sysreg', 'intel,lgm-syscon', 'loongson,ls1b-syscon', 'loongson,ls1c-syscon', 'marvell,armada-3700-usb2-host-misc', 'mediatek,mt8135-pctl-a-syscfg', 'mediatek,mt8135-pctl-b-syscfg', 'mediatek,mt8365-syscfg', 'microchip,lan966x-cpu-syscon', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'nuvoton,ma35d1-sys', 'nuvoton,wpcm450-shm', 'rockchip,px30-qos', 'rockchip,rk3036-qos', 'rockchip,rk3066-qos', 'rockchip,rk3128-qos', 'rockchip,rk3228-qos', 'rockchip,rk3288-qos', 'rockchip,rk3368-qos', 'rockchip,rk3399-qos', 'rockchip,rk3568-qos', '
+ rockchip,rk3588-qos', 'rockchip,rv1126-qos', 'starfive,jh7100-sysmain', 'ti,am62-usb-phy-ctrl', 'ti,am654-dss-oldi-io-ctrl', 'ti,am654-serdes-ctrl', 'ti,j784s4-pcie-ctrl']
+	from schema $id: http://devicetree.org/schemas/mfd/syscon.yaml#
+
+
+
+
 
 
