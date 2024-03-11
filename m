@@ -1,121 +1,136 @@
-Return-Path: <linux-kernel+bounces-98733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AAC5877E86
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:01:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25838877E89
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 12:01:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 238692827B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:01:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57BA91C216EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 11:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1656938DD2;
-	Mon, 11 Mar 2024 11:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06263A1BF;
+	Mon, 11 Mar 2024 11:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UMl7D/G9"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="evVksw/R"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A59E1B599
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8906639FF7
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 11:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710154862; cv=none; b=fgypzZR6gvB9Enp/HAGKVZc8TcKCfChnkSa0WgFtnXqeMn7GUsu9splp3vflFOlBxVKYwVolkeCES03FUIp1BO9mhC4gny4wXaKKmUMHKiIQ12YGZ5dlb8C/WS5sZ6oIy++SjiNKWTBqwOXPVzisvlUbkjsWaVymnZS7HzKmw98=
+	t=1710154867; cv=none; b=L4feECUOHDNPmqYiTM77/0Ux5qlYPwxhJSQBsmhPvaoH1BtSecVHF9qZaelC7oWDljS4QSib+YyKU2Ns/s9e8BsvgDAVPi+J1KJjsfFqmQzUuHWeT+SOAnvjJ7eJNpKMbhiCgoNcGO5ngYejxhxLmVPxnX9VS5Ih+lkR91gTsfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710154862; c=relaxed/simple;
-	bh=EJwC2X4/a4PrYYGENHc96zyVnf31IyxcNikfeTn9Iqo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Oo222N5qQajvPunDj/i/ZBmdIxYxsqeqE0BRobSaY7KjeltDssua47BTaD5OIkBfPXCMJK79NBCQYPSx8U+VUN1Ax21uAZL1wb/YAGm1jCFK1P7RqI6XzIDbjKZcN06PjO9QZyHnXkBO4QVe1VKsKjmcysjZko6m4XYnJbCf0CQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UMl7D/G9; arc=none smtp.client-ip=209.85.167.48
+	s=arc-20240116; t=1710154867; c=relaxed/simple;
+	bh=fAjEWASOcvzkRnUw6xezzj5HnL43BJmAQOHi2d403CQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U1CjIaFNm8/JMqqOZvZjZKMNtdk6yWYWj9zUr4dYMSVJe3w/z3yyGsnqKs6bY6Xia5Xt3s8tvlOjENsvO47ljVLOk4eC24GiNYtclxYTO8XC//NrM0QLPNyhAwPMGKONecaByWYXMS0XCuLaS13fkRMTybiDm4FtP6EuCTcwNI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=evVksw/R; arc=none smtp.client-ip=209.85.167.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512f54fc2dbso3648562e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 04:01:00 -0700 (PDT)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c2313de2ceso1534880b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 04:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710154859; x=1710759659; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S1M9CrsxURK9osAlAJKJLTrbinlvddAx/ivsJ1lbXFE=;
-        b=UMl7D/G9HQJXCSTp48O4jUirKGfQnk+0/h8/npTw9iNhoJVsbUOn1ZhGdeY3DaBSgR
-         Sajq+hsljsPELgy5rCNZUabvKvVtw0yuzcw2tUAbw6MmrIJL+E1oObRDaxVCExNcS47+
-         5SziGTwcfcoI23xcfAvzBXnTNz/i3ztdvUvOOrNtZPiOZNwcCaq3h2gYwEOS6TUt26/i
-         io0p7hM4KcTDSvxWgXzg8aSrrMzJl3Htul5/NR/wg09KNvYDYEG/NY9qVuCeKkDaMY8V
-         k9EeGAnv188eugy44RfrJimlcWHGQz3ydTyipkTrQMj01xKe8tTleMCaXaVTD8dR+hy2
-         HNjw==
+        d=linaro.org; s=google; t=1710154864; x=1710759664; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w8BY+YO3if2lvYNHvMPH3qE1q2AnqB9hh6Oit0y/824=;
+        b=evVksw/RwNAWJ3OcxClIMJFHjuC29HO7AIgBvv34IAfxFwqhQTMNcCg1tdE3y34IxS
+         gN2C4o/S8TowpmLuT2ua/6YTr7OBvDHQitFRaXoOPwLtwqCpaQuIFESSkbsgU/47bg3o
+         szaSbpmBHAOF7eC5A2kaCKnqJm6IaXa6CyncJU86Uaikf+Uq4edSDvAxBJWxTIjr0PO+
+         h/CoUBqAh71sQh6XR+d6R67/s8cBbwReKOOdVSRnwS8ThZlByEB9MgezyETXSatqKrIK
+         iT7CIbMKIjLtP2I022sQunVq/BChoCTUY2H4ATKtOhCrQouzw67IDif2L8Yj67cSCctg
+         n9hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710154859; x=1710759659;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S1M9CrsxURK9osAlAJKJLTrbinlvddAx/ivsJ1lbXFE=;
-        b=i2JXkdgOqyt8CqYTC8kYVl+O38NIHMNJDI6tsubrgODFvANgEXOiZSBoD0PNMO+V+5
-         eCBKPCbmnLdOuutA8EORJu1EEvom3yLYQVSFIGNPzbF09bDNZIZvL2jevKW6Nei5cyJ+
-         z90MErRSEoGEzAzIhUvElSkswQntvEs0XMbCXeexe5pnD9vOEAe311MQbVSbCvA+KgSr
-         7tYVCX6IdMbK3FqhzZGl7ZO4g0YZAZJQ+e5bXg/JgdlehChi959TczqlciijTT7oJlws
-         mDu0FvVIu4D8C6M1hv6lGAoRG9GqOZO/bw9vBtww4P7ysszKeQm+TA2uTyi0kN0lJWO6
-         yhOw==
-X-Forwarded-Encrypted: i=1; AJvYcCX4GZusLQiieSvDUiFwLbdOmwXXFYwjxac9CupoIixkKI6hqHJ1qd8W3OeYLvHf+u6HGV78JZVjT4P24Te3lMNf/vnUkj64opD/dGHJ
-X-Gm-Message-State: AOJu0YzW74w0PrcWCIwPM/T8D2xPVveC7oAskDKRBqaaL8bXJWrw4TFT
-	02MorHKJKAAMxJnCHEzqJYLmXSEV8nRGAUNIKlwHN6mDC7wIPlIXC6V4IYIICw0=
-X-Google-Smtp-Source: AGHT+IFwCGdoVdTpdQaznB2idQvFXubh9UWyyPMuumHmhiYMoRkMnvTiGe/Fhx2f7ORUyE/itJx+5g==
-X-Received: by 2002:a05:6512:ea2:b0:513:b0d4:da40 with SMTP id bi34-20020a0565120ea200b00513b0d4da40mr706289lfb.20.1710154857841;
-        Mon, 11 Mar 2024 04:00:57 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id eo5-20020a056512480500b00513179f6c22sm1045933lfb.96.2024.03.11.04.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 04:00:57 -0700 (PDT)
-Date: Mon, 11 Mar 2024 14:00:53 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
-	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] gpio: nomadik: remove BUG_ON() in nmk_gpio_populate_chip()
-Message-ID: <ae643df0-3a3e-4270-8dbf-be390ee4b478@moroto.mountain>
+        d=1e100.net; s=20230601; t=1710154864; x=1710759664;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w8BY+YO3if2lvYNHvMPH3qE1q2AnqB9hh6Oit0y/824=;
+        b=euz9RFf+fzFX0DHc4nlqNSzORr9awxe1hgNJ8BSLo8H//LtC7Q0JQxTJcewVjmHxm/
+         XKNzVAHm3zQM8ojWU2A5zITl65qFv+8u8fSLGomiL5/sh9eF6ifA6X4IQ6bb2CcAKZ0f
+         ckaI1L3FBFCUEMf64JkKLhbBbZxPfXoisWEAp36ySgp6AQsH0l68WXjYQR94cKHa+oOh
+         ny+RiAoKIyzqDb4TAmONeKfdNwGn9E+A91NXA7MklzYu3pvFug5RYdvP2KdYxM4dKwc6
+         vIN8leC1r9FfJdH7F5hUrjpUacVWsDmCtZBipZOCASQQ6jqanfLsYERSgJAkYmUZ1Bx6
+         Cmhg==
+X-Gm-Message-State: AOJu0YwnNgRSeg1tV2vgw/EWh1vgeqMxhaidpUmNuE78swxiG5z5Q+a+
+	LYi6ClWH5jLsSog21kvdRSuFuLKZLIa7GyBNVxO2uwnShYf4N2X9QlLdU42Y0CzZqnpoPnzqtSm
+	8cud1JV6LjE3zFNcs7hbe+CvhMQV/V/9qfcKg2Q==
+X-Google-Smtp-Source: AGHT+IHbbuVIG+1MZi+oJqz/D8yV/jdYo7caCm1gu8b8zftneCGuZdTmvPo+cStcFkBmT+2xvPHhFu0FEoP2R4PD0QU=
+X-Received: by 2002:a05:6870:1197:b0:220:fffc:e085 with SMTP id
+ 23-20020a056870119700b00220fffce085mr5304400oau.18.1710154864524; Mon, 11 Mar
+ 2024 04:01:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+References: <20240307092104.937440-1-jens.wiklander@linaro.org> <ZerVwbT8cbXuzviy@lpieralisi>
+In-Reply-To: <ZerVwbT8cbXuzviy@lpieralisi>
+From: Jens Wiklander <jens.wiklander@linaro.org>
+Date: Mon, 11 Mar 2024 12:00:53 +0100
+Message-ID: <CAHUa44GVSFhdrsULSnn8KjG2LJJWEUVdVyaJwCOgH01QLaVFTw@mail.gmail.com>
+Subject: Re: [PATCH] firmware: arm_ffa: fix ffa_notification_info_get()
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	Sudeep Holla <sudeep.holla@arm.com>, Marc Bonnici <marc.bonnici@arm.com>, 
+	Olivier Deprez <Olivier.Deprez@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Using BUG_ON() is discouraged and also the check wasn't done early
-enough to prevent an out of bounds access.  Check earlier and return
-an error instead of calling BUG().
+On Fri, Mar 8, 2024 at 10:09=E2=80=AFAM Lorenzo Pieralisi <lpieralisi@kerne=
+l.org> wrote:
+>
+> On Thu, Mar 07, 2024 at 10:21:04AM +0100, Jens Wiklander wrote:
+> > FFA_NOTIFICATION_INFO_GET retries information about pending
+>
+> s/retries/retrieves/
+>
+> > notifications. Notifications can be either global or per VCPU. Global
+> > notifications are represented by the VM ID only, or 0 in the absence of
+> > a hypervisor.
+>
+> I would just say "Global notifications are reported with the partition
+> ID only in the list of endpoints with pending notifications".
+>
+> > ffa_notification_info_get() incorrectly expect no ID at all
+> > for global notifications. Fix this by checking for 1 ID instead of 0.
+> >
+> > Fixes: 3522be48d82b ("firmware: arm_ffa: Implement the NOTIFICATION_INF=
+O_GET interface")
+> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > ---
+> >  drivers/firmware/arm_ffa/driver.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Reviewed-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
 
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/gpio/gpio-nomadik.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Thanks, I'll update the commit message accordingly.
 
-diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
-index 463a765620dc..5e2f9b51ece3 100644
---- a/drivers/gpio/gpio-nomadik.c
-+++ b/drivers/gpio/gpio-nomadik.c
-@@ -533,6 +533,11 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct fwnode_handle *fwnode,
- 	}
- 
- #ifdef CONFIG_PINCTRL_NOMADIK
-+	if (id >= ARRAY_SIZE(nmk_gpio_chips)) {
-+		dev_err(dev, "populate: invalid id: %u\n", id);
-+		platform_device_put(gpio_pdev);
-+		return ERR_PTR(-EINVAL);
-+	}
- 	/* Already populated? */
- 	nmk_chip = nmk_gpio_chips[id];
- 	if (nmk_chip) {
-@@ -606,7 +611,6 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct fwnode_handle *fwnode,
- 	}
- 
- #ifdef CONFIG_PINCTRL_NOMADIK
--	BUG_ON(nmk_chip->bank >= ARRAY_SIZE(nmk_gpio_chips));
- 	nmk_gpio_chips[id] = nmk_chip;
- #endif
- 	return nmk_chip;
--- 
-2.43.0
+Cheers,
+Jens
 
+>
+> > diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_f=
+fa/driver.c
+> > index c183c7d39c0f..ff1f37a4b28c 100644
+> > --- a/drivers/firmware/arm_ffa/driver.c
+> > +++ b/drivers/firmware/arm_ffa/driver.c
+> > @@ -790,7 +790,7 @@ static void ffa_notification_info_get(void)
+> >
+> >                       part_id =3D packed_id_list[ids_processed++];
+> >
+> > -                     if (!ids_count[list]) { /* Global Notification */
+> > +                     if (ids_count[list] =3D=3D 1) { /* Global Notific=
+ation */
+> >                               __do_sched_recv_cb(part_id, 0, false);
+> >                               continue;
+> >                       }
+> > --
+> > 2.34.1
+> >
 
