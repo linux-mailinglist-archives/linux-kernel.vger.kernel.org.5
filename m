@@ -1,140 +1,128 @@
-Return-Path: <linux-kernel+bounces-98901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8088780D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:46:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17F3A8780DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:48:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAD57281F8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:46:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 498A81C210C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA2A3DB8C;
-	Mon, 11 Mar 2024 13:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD3F3EA76;
+	Mon, 11 Mar 2024 13:48:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UcuanKhH"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="IsAE6hBp";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eLRZZ7Kp"
+Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F3F3D97A
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829D13D980
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710164768; cv=none; b=m9c4YuRoOju5wX8fbHby6Imkidzm3VjgJFawxcpgEqRbPQPLP/+EcaNnV7nSL/a+mCQUTW+1HVpcENrixnMgkzOPdkx9P8ob30rkOymfsBhsc2+Sa3h8YFAeVBwST3fRy5ml3mXTxyPWBgjfAw/sC0zLxNBYYW3w+5fNHiPcJQ0=
+	t=1710164908; cv=none; b=sBEl58NVP+t9aXqb4gkLNrG/Fz6GeOxY5slK33Zyyc6aaCJ98XRPWCotGWWI8MQJr3w0MySqlGUYiYYm+C7Oq3C+PFRSo9ZEr+hcMaJu7cIHMDn8qpVT2zklM6N/hfnAjUB0LaKC38ubTTqTkngV89Ywe12N+2ivuY/qG3ByKpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710164768; c=relaxed/simple;
-	bh=IGgikpxQA5YTN1TUXE1XFOVsILWNGyTkicWdb23T6C8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A8JzEeghQjWv2EmKTz0ywRWTJgKsrGy+cR37Th4ctjYBPJXjNgVHXfDEUzeDf6xx7zVwsdINhkNg7wGYA4q65IwY5KIwlhgwl668xC1ndQUFGqXCHci0D7HZEg0MgTmhkkorL2cTfREbnmEQKfyz7U8gwfe37+2pghl8268Ax0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UcuanKhH; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710164765;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RSlrT+2IDrrNRqEUFQFgMF+IOBL1czDMXtZxeSZV+Vk=;
-	b=UcuanKhHvRybOFBWK5Dxm1FpTNCOdkrR8w+YmMLpJlD0zHPRmaV3k1VsUvAEhESbWSGmJo
-	pCI7Ajbe3KYMie2qtuBDoa/BDeWM3uC+O/M/sdG2j+8Csd21zAtZLzvXiGYMf9DIq40ph+
-	kAgLogfS2oVxhWtSOxr/e9h0GzThBNo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-313-GgAJRwTVPFWGTm2ZfP6lVQ-1; Mon,
- 11 Mar 2024 09:45:56 -0400
-X-MC-Unique: GgAJRwTVPFWGTm2ZfP6lVQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 45B0128B6AB1;
-	Mon, 11 Mar 2024 13:45:56 +0000 (UTC)
-Received: from [10.22.9.132] (unknown [10.22.9.132])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C6716492BC4;
-	Mon, 11 Mar 2024 13:45:55 +0000 (UTC)
-Message-ID: <2e6c684b-bfbf-4850-b484-a1ace58a4c69@redhat.com>
-Date: Mon, 11 Mar 2024 09:45:55 -0400
+	s=arc-20240116; t=1710164908; c=relaxed/simple;
+	bh=JwFhNcltET/5iR5Z82DtdMceMKD4NjNi9mXexJ1CDpc=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=vAEJn2/9RiiFQ37XlNrVUu/LkP6RFFNKKg3tOxxhgytTX1UD2ntHp4OOOKwe+azUyZuLEHqqdexQwfblv7VMWumBI5v016gTK9LwuB0HUHx/6UsqfDJ8wLQ24km8tTZPRFf8l9uGLRCmwaLgpOLp8TOCehLEtDUfRs6AucmhhIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=IsAE6hBp; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eLRZZ7Kp; arc=none smtp.client-ip=64.147.123.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 0E0431C000B1;
+	Mon, 11 Mar 2024 09:48:24 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 11 Mar 2024 09:48:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1710164904; x=1710251304; bh=Q8T7XcaJvG
+	uNzCsIyXIKyrBjX/uVrAZPhM5aHBDGPpw=; b=IsAE6hBp0ZCG8iEiAKjtixhoP+
+	/i1UkOUjHFNiFpAdAH5xjWvemKwclUBei6moHoWv2iDTulL6xFGjQvK9AeshB/0k
+	EYJP0E1D70IH79rcTs8kSFTUINExqluHYsoF1s0wBabB5pKSwsYRgYiKVZ/oNYAc
+	DGEXEwmFkISPMc1f6vm1wDIGOW6p8BRC+1B2Kc+ySwqtykOq1VCROQ3SUDAW1hu3
+	dF1vmDOw45n67yJ08KCAPUvWlt29CnJvgRV9psbln7FD1WAJ/NRaxj9tqLqNu1r9
+	HjCKJ+V8BuGDh1Yul+cqKEsjSWvsYkdzLyanTC7tvrV1P7Rf342bG5FQ/6/Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1710164904; x=1710251304; bh=Q8T7XcaJvGuNzCsIyXIKyrBjX/uV
+	rAZPhM5aHBDGPpw=; b=eLRZZ7KpCDeV6Ed0XWeZLbboxDSbDbbUBpktDo25cmYe
+	iil348nvocGT12b+UtB9vgBOx0HZ5R3uuEiR0Gl7BiCFGu2KYHqJ0mMDZjqGxyR/
+	ZO5IbmkQOvGBNfsCt8IZ+PB9b2+rRQtb5xFBGCXZFLuXEQGAEHA65zp1L1BuRVIE
+	A78Ga/ojuwETCWhU1LZN8bnU4Hk7cwPZRTRhRdOSa4OS5Hj8IgkCXvWLQdb7zVjK
+	qLIMwx5/WdhizIaFmdIUkpsEDZV8D52p9C2dbyTMHX8uZPMF9pPiBzNued8J4G2s
+	iTxGINj2mqSPOtWocC+/8oAVGgsKOcRyE8omz6dZXg==
+X-ME-Sender: <xms:qAvvZXMTOXWeEkOxj1_ivpTztBGNI3kamLRAd5a_jNSd_FUrPx6ZtQ>
+    <xme:qAvvZR-2wCDeX6oGvNM7be7iMwPHB1Jpiq9w3-_6mLeZqlX6K3bwD4vIuxmJZvTZc
+    qan1Y_KQMar1DdLHSE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjedugdehiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:qAvvZWS9odMm2XRS-fddCN2QOH3zOxHsuRaAF1n1VKJtQkii6BTjTA>
+    <xmx:qAvvZbvnGAEYrxAqlDycKrD3rSMd2FhjRzxVEYYzdJc9R65e69WrmA>
+    <xmx:qAvvZfdwdN6xYyZ0P9DqsLE3jyo_0FWkR6bTMkELivAeZmDC71BcHw>
+    <xmx:qAvvZQoGqnivnutqMo6cU6mzEq2MUZZUvq10QnDoXL7LY1j4BL83_9MfWm0>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 47BA3B6008D; Mon, 11 Mar 2024 09:48:24 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [tip: locking/core] locking/qspinlock: Fix 'wait_early' set but
- not used warning
-Content-Language: en-US
-To: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Cc: linux-tip-commits@vger.kernel.org, kernel test robot <lkp@intel.com>,
- Boqun Feng <boqun.feng@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org
-References: <20240222150540.79981-2-longman@redhat.com>
- <170912480380.398.9234775487451824502.tip-bot2@tip-bot2>
- <Ze7jhCaWwAd3U0di@gmail.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <Ze7jhCaWwAd3U0di@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Message-Id: <8f27c774-7197-48da-a6f2-6d375bd848f0@app.fastmail.com>
+In-Reply-To: 
+ <f713d82fe6526288f51fc138cd16681cec6b43a6.1710164592.git.geert@linux-m68k.org>
+References: 
+ <f713d82fe6526288f51fc138cd16681cec6b43a6.1710164592.git.geert@linux-m68k.org>
+Date: Mon, 11 Mar 2024 14:47:31 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fork: Use THREAD_SIZE_ORDER
+Content-Type: text/plain
 
-On 3/11/24 06:57, Ingo Molnar wrote:
-> * tip-bot2 for Waiman Long <tip-bot2@linutronix.de> wrote:
+On Mon, Mar 11, 2024, at 14:44, Geert Uytterhoeven wrote:
+> Use the existing THREAD_SIZE_ORDER definition instead of calculating it
+> from THREAD_SIZE and PAGE_SIZE.
 >
->> The following commit has been merged into the locking/core branch of tip:
->>
->> Commit-ID:     ca4bc2e07b716509fd279d2b449bb42f4263a9c8
->> Gitweb:        https://git.kernel.org/tip/ca4bc2e07b716509fd279d2b449bb42f4263a9c8
->> Author:        Waiman Long <longman@redhat.com>
->> AuthorDate:    Thu, 22 Feb 2024 10:05:37 -05:00
->> Committer:     Ingo Molnar <mingo@kernel.org>
->> CommitterDate: Wed, 28 Feb 2024 13:08:37 +01:00
->>
->> locking/qspinlock: Fix 'wait_early' set but not used warning
->>
->> When CONFIG_LOCK_EVENT_COUNTS is off, the wait_early variable will be
->> set but not used. This is expected. Recent compilers will not generate
->> wait_early code in this case.
->>
->> Add the __maybe_unused attribute to wait_early for suppressing this
->> W=1 warning.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> Signed-off-by: Ingo Molnar <mingo@kernel.org>
->> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
->> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->> Link: https://lore.kernel.org/r/20240222150540.79981-2-longman@redhat.com
->>
->> Closes: https://lore.kernel.org/oe-kbuild-all/202312260422.f4pK3f9m-lkp@intel.com/
->> ---
->>   kernel/locking/qspinlock_paravirt.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
->> index 6a0184e..ae2b12f 100644
->> --- a/kernel/locking/qspinlock_paravirt.h
->> +++ b/kernel/locking/qspinlock_paravirt.h
->> @@ -294,8 +294,8 @@ static void pv_wait_node(struct mcs_spinlock *node, struct mcs_spinlock *prev)
->>   {
->>   	struct pv_node *pn = (struct pv_node *)node;
->>   	struct pv_node *pp = (struct pv_node *)prev;
->> +	bool __maybe_unused wait_early;
->>   	int loop;
->> -	bool wait_early;
-> On a second thought, shouldn't this be solved via lockevent_cond_inc()'s
-> !CONFIG_LOCK_EVENT_COUNTS stub explicitly marking the variable as used, via
-> !something like:
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  kernel/fork.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
->     #define lockevent_cond_inc(ev, c)		do { (void)(c); } while (0)
->
-> or so, instead of uglifying the usage site?
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 0d944e92a43ffa13..e79fdfe1f0bf4953 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -252,9 +252,9 @@ static int memcg_charge_kernel_stack(struct vm_struct *vm)
+>  	int ret;
+>  	int nr_charged = 0;
+> 
+> -	BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
+> +	BUG_ON(vm->nr_pages != THREAD_SIZE_ORDER);
+> 
 
-Right, that should work too. Thanks for the suggestion. I will post 
-another to do that.
+That doesn't look right, THREAD_SIZE_ORDER not the number of
+pages but the the log2 of it, right?
 
-Cheers,
-Longman
+I think you want '(1 << THREAD_SIZE_ORDER)', but at that point
+it doesn't actually look simpler than the existing code.
 
+    Arnd
 
