@@ -1,193 +1,315 @@
-Return-Path: <linux-kernel+bounces-98547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8494C877BD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:43:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCD53877BDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:44:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39C1628130A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:43:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81F28281532
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 08:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2926E125B4;
-	Mon, 11 Mar 2024 08:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A492F125CE;
+	Mon, 11 Mar 2024 08:44:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WKNg6Bgb"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pGy0NHHU"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9CD91173F;
-	Mon, 11 Mar 2024 08:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899C6134C9
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 08:44:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710146578; cv=none; b=rZKzAuDpn/WJLnk3TaVE8FYG/eWhb8YNLw3/nJT65TDtQrmHyinmLSgy+6f1QXshYIWN78IG/XG4Cv33c5iBAelOUN6iQJmXpoAIwhk04eMSCaFeKTdgTbF/SvfvJMP+GkUMD1F9VRur9nHUWeNFK7yFFL3cnM/x7/PwR9OeEA4=
+	t=1710146646; cv=none; b=T9cMXMVxtXDGm5ppploEizLrS0FHleARGRFIPa0Pdw0LZVS5BmJ2YeVBwuEWQeSZr0FYx+yT+0b/DBQ6Lp9ik2gJpygg0tOBw3E0Ya98FBdOfR5u16Khp02t2ud/2MrXcDoQ/Pz/yHMZ+wizqDwtnPi5ssSlsSaYDLlJgF22IzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710146578; c=relaxed/simple;
-	bh=nFtFkNNeWFq1qGq8aKTKJOBUm95N5gYay+CiAaz/Bqg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
-	 In-Reply-To:Content-Type; b=d4rlNAL/nVWbEdPiqW07sDfQ/ddXHaOyHMsAQ7i83UrFONHRJmBDzTQDP3mN5yfBkxkKtSBOsAuRVrWg8Jxcv0tDnFN1OC0+0gKH+z09VkBDJUcmOjLzVQtkcK4wRF9kvHDczV37rUItyv7Siw/LrAj4lM5FjiFl7eEXp7GXNGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WKNg6Bgb; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42B4Yabx026682;
-	Mon, 11 Mar 2024 08:42:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:from:subject:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=rbBiPLaD7aT3pY+ebUIPfAuhH4QRqD2CZRFmflsXf9M=; b=WK
-	Ng6BgbP0xIueqP9GSkcMWYNp7L+m/wHtET7b9bXiO0yDS7mNCCOmQP52fCYzqwXg
-	PvF5CMTTmyVl0Wu3nd/U7efHMIsmewKVYHpT64uhGOLjxwtQE4TsYQ5cME6+qGHD
-	IUTVpXeoBvEIQRgQb0wHYNSUuKy7U6yzUwq2NzecS8mjonOw41nO1YItxspbCMDE
-	5wiFyW7l7z8L5IVTwBhvexoGyS7Lo9oZWC8dBIq6NjsoXk+2axp10JTYPU/5epNu
-	HFOPt3q4K0rsHc49vjYyxJMLkLP1f6Ba1/QZWYtS8M7zN9EjuYMA2ReSes8vJLv3
-	d5gmYGs5kUuTAm8qvHAg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wssgv8hd7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 08:42:21 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42B8gLgo012316
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 08:42:21 GMT
-Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 11 Mar
- 2024 01:42:14 -0700
-Message-ID: <2b0d8c5b-7e79-41ff-bc57-003d1b947c16@quicinc.com>
-Date: Mon, 11 Mar 2024 14:12:06 +0530
+	s=arc-20240116; t=1710146646; c=relaxed/simple;
+	bh=4yAabAOW5y86cLzd/eEKqcAB/jCkZr6aV2T8AY250g4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NRgW/gf7Q/wsDo8KIJfyA8SAHFCg9k/CEsT3riNCuIhmM2DcY2qM+tHjD8x3MFZCwmIPCKslFSOq1ihkBOKVLMOquDiO6TccKvykTxoBLsn8x0g3AqDoyNNvr8s0ABf/khU7Adyx3tqchXfUEXhROmtTabqCrO8nmTQtwwwfNTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pGy0NHHU; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d4141c4438so61599581fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 01:44:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710146643; x=1710751443; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7eBCaB1KJSJv4nuU5XUfD5CciJ2EmxrAEpbHEbAM5m0=;
+        b=pGy0NHHUVeP57AriTAZK9diNpUQ/NMyuwd6NA72PeAES3sKCHUakG4pmuCor+YIAiZ
+         meEs827GLxvF2dHSFPven9FDjYykUiakFDAGbriOt4G5xMIIMghUEAKCCrPeJJZH4jiN
+         ciN6IOBaeULL3NwohL0z8LE9mHpOmyr9gJ8rICFJGshu+BkJU++FTZANxcXUI4EDvVhB
+         cdLcKizvC0PijBrYiPHSOh0QYIvmZM3bYwNWgRVvLU1HYoUZRqzCTTrm+FD3P1cG5Mjx
+         3hijAaX3Fb454lU749+4PSp7HmbwLZHpG12pn+CRB3VPJ6l6xK+raMz2V53BKPEBDxi5
+         kYiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710146643; x=1710751443;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7eBCaB1KJSJv4nuU5XUfD5CciJ2EmxrAEpbHEbAM5m0=;
+        b=SFJ/zhnJSxIcxxvSHHzzE0Eoro+eXS6weh32pXUwB22RE2mqWI255SIPDqxlhjTBQy
+         lm1HUxOH6pXhZczvbt7tWmhe/2cbwv1dlVzn5HbsvdGeXwmpj31dEiHYU6mvA/qrAx0Y
+         kHBMAv0QB32Dl0ZdjiOlyLtlyqw4U2h2SJdGvXlMbqIMYw8syM5TSN7embmN0r3qVkVL
+         hRv6ZVZt/P6givLVcBgEE44g5VcRH1CXfI8tL/J3WRlndkWw063G787qTQTsk2gzIfIc
+         WIZ70mJwUkW1FB5IexPtvcjDc6hV8aY1uqBUXcEL4oqCbvucvip3iSmqoHDplXzQrOy9
+         WHhw==
+X-Forwarded-Encrypted: i=1; AJvYcCX0rsl9b6mAjiXjmcq6l/WUKgywvbyLsZguGz/7/Mh9N/3ilb4gpIQ/R+2LU8N1Z6LWjlw9/6IbryHj0dAb3HSiqgaRJM4H7em5aDRw
+X-Gm-Message-State: AOJu0YzYhDVxsHwIzDTwH4WaXkMK1nu/IqZFgqlwnmoGhcTlAqH47oqY
+	C/oFLSU0wZuarp/md/aaaCM+lSY8HdXPvFlawH/om2bXcYae1v8ga4Z+rR0Lh3NwLgcRCRfiJLC
+	wkR5DnmnWoK3T5FtQazk8HzgAsQrnaUWItyMH1Q==
+X-Google-Smtp-Source: AGHT+IGd74H0Tb8RkEUhAjuh5XS90k+4Px0sLtRsOQcICeykxEYg8zLOFufJFbWW7qQkb5jU/EmxBljEWy75QB9CPN4=
+X-Received: by 2002:a2e:850e:0:b0:2d3:982d:aaee with SMTP id
+ j14-20020a2e850e000000b002d3982daaeemr3258850lji.16.1710146642679; Mon, 11
+ Mar 2024 01:44:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Subject: Re: [PATCH v9 4/5] iommu/arm-smmu: add ACTLR data and support for
- SM8550
-To: Will Deacon <will@kernel.org>
-CC: <robin.murphy@arm.com>, <joro@8bytes.org>, <dmitry.baryshkov@linaro.org>,
-        <konrad.dybcio@linaro.org>, <jsnitsel@redhat.com>,
-        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
-        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
-        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
-        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
-        <quic_molvera@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <saravanak@google.com>
-References: <20240123144543.9405-1-quic_bibekkum@quicinc.com>
- <20240123144543.9405-5-quic_bibekkum@quicinc.com>
- <20240213134714.GC28926@willie-the-truck>
- <201fef09-50ab-436b-af63-4535c7510d15@quicinc.com>
- <20240221132101.GB7273@willie-the-truck>
-Content-Language: en-US
-In-Reply-To: <20240221132101.GB7273@willie-the-truck>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: D7s9_4USJISRv-v30YVnG93YgSELK_Bw
-X-Proofpoint-ORIG-GUID: D7s9_4USJISRv-v30YVnG93YgSELK_Bw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_04,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- clxscore=1011 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
- impostorscore=0 mlxscore=0 spamscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403110064
+References: <20240308152723.831620-1-dtatulea@nvidia.com>
+In-Reply-To: <20240308152723.831620-1-dtatulea@nvidia.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Mon, 11 Mar 2024 10:43:26 +0200
+Message-ID: <CAC_iWjJyDUbK+2+u=Uqeo7r7-Hy5aZQ=12eTEKaBnm8qYnR_8Q@mail.gmail.com>
+Subject: Re: [PATCH net v3] net: esp: fix bad handling of pages from page_pool
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: almasrymina@google.com, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jesper Dangaard Brouer <brouer@redhat.com>, Matteo Croce <mcroce@microsoft.com>, leonro@nvidia.com, 
+	gal@nvidia.com, stable@vger.kernel.org, 
+	"Anatoli N . Chechelnickiy" <Anatoli.Chechelnickiy@m.interpipe.biz>, Ian Kumlien <ian.kumlien@gmail.com>, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Dragos,
 
+On Fri, 8 Mar 2024 at 17:27, Dragos Tatulea <dtatulea@nvidia.com> wrote:
+>
+> When the skb is reorganized during esp_output (!esp->inline), the pages
+> coming from the original skb fragments are supposed to be released back
+> to the system through put_page.
+>  But if the skb fragment pages are
+> originating from a page_pool, calling put_page on them will trigger a
+> page_pool leak which will eventually result in a crash.
+>
 
-On 2/21/2024 6:51 PM, Will Deacon wrote:
-> On Wed, Feb 21, 2024 at 02:25:26PM +0530, Bibek Kumar Patro wrote:
->> On 2/13/2024 7:17 PM, Will Deacon wrote:
->>> On Tue, Jan 23, 2024 at 08:15:42PM +0530, Bibek Kumar Patro wrote:
->>>> Add ACTLR data table for SM8550 along with support for
->>>> same including SM8550 specific implementation operations.
->>>>
->>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
->>>> ---
->>>>    drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 90 ++++++++++++++++++++++
->>>>    1 file changed, 90 insertions(+)
->>>>
->>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->>>> index 6004c6d9a7b2..db15b1eade97 100644
->>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->>>> @@ -23,6 +23,86 @@
->>>>
->>>>    #define CPRE			(1 << 1)
->>>>    #define CMTLB			(1 << 0)
->>>> +#define PREFETCH_SHIFT		8
->>>> +#define PREFETCH_DEFAULT	0
->>>> +#define PREFETCH_SHALLOW	(1 << PREFETCH_SHIFT)
->>>> +#define PREFETCH_MODERATE	(2 << PREFETCH_SHIFT)
->>>> +#define PREFETCH_DEEP		(3 << PREFETCH_SHIFT)
->>>> +#define PREFETCH_SWITCH_GFX	(5 << 3)
->>>> +
->>>> +static const struct actlr_config sm8550_apps_actlr_cfg[] = {
->>>> +	{ 0x18a0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
->>>> +	{ 0x18e0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
->>>> +	{ 0x0800, 0x0020, PREFETCH_DEFAULT | CMTLB },
->>>> +	{ 0x1800, 0x00c0, PREFETCH_DEFAULT | CMTLB },
->>>> +	{ 0x1820, 0x0000, PREFETCH_DEFAULT | CMTLB },
->>>> +	{ 0x1860, 0x0000, PREFETCH_DEFAULT | CMTLB },
->>>> +	{ 0x0c01, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
->>>> +	{ 0x0c02, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
->>>> +	{ 0x0c03, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
->>>> +	{ 0x0c04, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
->>>> +	{ 0x0c05, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
->>>> +	{ 0x0c06, 0x0020, PREFETCH_DEEP | CPRE | CMTLB },
->>>
->>> [...]
->>>
->>> Isn't this effectively hard-coding the topology of the SoC in the driver?
->>> Wouldn't it better describing higher-level prefetch properties in the DT
->>> nodes corresponding to the upstream devices?
->>
->> Since prefetch data stored in this table represent settings for the
->> ACTLR register, and doesn't exactly define the hardware (So in this
->> manner prefetch data won't exactly be a part of soc topology ?).
-> 
-> The first two columns of the table are StreamID/Mask pairs, no? How is that
-> _not_ the SoC topology? I really think it would be better to define some
-> high-level prefetch properties in the DT binding which can be put on the
-> master nodes.
-> 
->> So it seemed apt not to use the device tree for storing the prefetch
->> property. Hence we reverted from the DT approach (initial proposal in
->> RFC to piggyback on iommus property to store prefetch settings) back to use
->> driver for storing this data.
->>
->> Some drivers use the same approach for storing their platform specific
->> data. Examples being
->> drivers/phy/qualcomm/phy-qcom-qmp-combo.c
->> drivers/soc/qcom/llcc-qcom.c
->> These drivers were taken as reference for storing platform specific ACTLR
->> data.
-> 
-> I don't know anything about those drivers, but on the SMMU side we already
-> have ways to describe the topology in the DT and the driver is using them,
-> so I'm struggling to see the need to add these tables as well.
-> 
-> But as I said before, if Robin and the DT folks prefer this approach,
-> then I won't get in the way.
-> 
+Indeed if you call put_page, you will leak a page. But won't that skb
+eventually be freed by skb_free_head()?
 
-With the driver approach at the current state of patches, it has been 
-ACKed by DT folks and it seems there has been no concern/objection from 
-Robin till now.
-So can this patch go ahead Will?
-Let us know Robin of your opinion as well please.
+Thanks
+/Ilias
 
-Thanks & regards,
-Bibek
-
-> Will
+> This leak can be easily observed when using CONFIG_DEBUG_VM and doing
+> ipsec + gre (non offloaded) forwarding:
+>
+>   BUG: Bad page state in process ksoftirqd/16  pfn:1451b6
+>   page:00000000de2b8d32 refcount:0 mapcount:0 mapping:0000000000000000 in=
+dex:0x1451b6000 pfn:0x1451b6
+>   flags: 0x200000000000000(node=3D0|zone=3D2)
+>   page_type: 0xffffffff()
+>   raw: 0200000000000000 dead000000000040 ffff88810d23c000 000000000000000=
+0
+>   raw: 00000001451b6000 0000000000000001 00000000ffffffff 000000000000000=
+0
+>   page dumped because: page_pool leak
+>   Modules linked in: ip_gre gre mlx5_ib mlx5_core xt_conntrack xt_MASQUER=
+ADE nf_conntrack_netlink nfnetlink iptable_nat nf_nat xt_addrtype br_netfil=
+ter rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi ib_umad rdma_cm =
+ib_ipoib iw_cm ib_cm ib_uverbs ib_core overlay zram zsmalloc fuse [last unl=
+oaded: mlx5_core]
+>   CPU: 16 PID: 96 Comm: ksoftirqd/16 Not tainted 6.8.0-rc4+ #22
+>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-g=
+f21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+>   Call Trace:
+>    <TASK>
+>    dump_stack_lvl+0x36/0x50
+>    bad_page+0x70/0xf0
+>    free_unref_page_prepare+0x27a/0x460
+>    free_unref_page+0x38/0x120
+>    esp_ssg_unref.isra.0+0x15f/0x200
+>    esp_output_tail+0x66d/0x780
+>    esp_xmit+0x2c5/0x360
+>    validate_xmit_xfrm+0x313/0x370
+>    ? validate_xmit_skb+0x1d/0x330
+>    validate_xmit_skb_list+0x4c/0x70
+>    sch_direct_xmit+0x23e/0x350
+>    __dev_queue_xmit+0x337/0xba0
+>    ? nf_hook_slow+0x3f/0xd0
+>    ip_finish_output2+0x25e/0x580
+>    iptunnel_xmit+0x19b/0x240
+>    ip_tunnel_xmit+0x5fb/0xb60
+>    ipgre_xmit+0x14d/0x280 [ip_gre]
+>    dev_hard_start_xmit+0xc3/0x1c0
+>    __dev_queue_xmit+0x208/0xba0
+>    ? nf_hook_slow+0x3f/0xd0
+>    ip_finish_output2+0x1ca/0x580
+>    ip_sublist_rcv_finish+0x32/0x40
+>    ip_sublist_rcv+0x1b2/0x1f0
+>    ? ip_rcv_finish_core.constprop.0+0x460/0x460
+>    ip_list_rcv+0x103/0x130
+>    __netif_receive_skb_list_core+0x181/0x1e0
+>    netif_receive_skb_list_internal+0x1b3/0x2c0
+>    napi_gro_receive+0xc8/0x200
+>    gro_cell_poll+0x52/0x90
+>    __napi_poll+0x25/0x1a0
+>    net_rx_action+0x28e/0x300
+>    __do_softirq+0xc3/0x276
+>    ? sort_range+0x20/0x20
+>    run_ksoftirqd+0x1e/0x30
+>    smpboot_thread_fn+0xa6/0x130
+>    kthread+0xcd/0x100
+>    ? kthread_complete_and_exit+0x20/0x20
+>    ret_from_fork+0x31/0x50
+>    ? kthread_complete_and_exit+0x20/0x20
+>    ret_from_fork_asm+0x11/0x20
+>    </TASK>
+>
+> The suggested fix is to introduce a new wrapper (skb_page_unref) that
+> covers page refcounting for page_pool pages as well.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
+> Reported-and-tested-by: Anatoli N.Chechelnickiy <Anatoli.Chechelnickiy@m.=
+interpipe.biz>
+> Reported-by: Ian Kumlien <ian.kumlien@gmail.com>
+> Link: https://lore.kernel.org/netdev/CAA85sZvvHtrpTQRqdaOx6gd55zPAVsqMYk_=
+Lwh4Md5knTq7AyA@mail.gmail.com
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Mina Almasry <almasrymina@google.com>
+> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> Changes in v2:
+> - Fixes in tags.
+>
+> Changes in v3:
+> - Rebased to ipsec tree.
+> ---
+>  include/linux/skbuff.h | 10 ++++++++++
+>  net/ipv4/esp4.c        |  8 ++++----
+>  net/ipv6/esp6.c        |  8 ++++----
+>  3 files changed, 18 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 2dde34c29203..d9a1ccfb5708 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -3448,6 +3448,16 @@ static inline void skb_frag_ref(struct sk_buff *sk=
+b, int f)
+>
+>  bool napi_pp_put_page(struct page *page, bool napi_safe);
+>
+> +static inline void
+> +skb_page_unref(const struct sk_buff *skb, struct page *page, bool napi_s=
+afe)
+> +{
+> +#ifdef CONFIG_PAGE_POOL
+> +       if (skb->pp_recycle && napi_pp_put_page(page, napi_safe))
+> +               return;
+> +#endif
+> +       put_page(page);
+> +}
+> +
+>  static inline void
+>  napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
+>  {
+> diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
+> index 4dd9e5040672..d33d12421814 100644
+> --- a/net/ipv4/esp4.c
+> +++ b/net/ipv4/esp4.c
+> @@ -95,7 +95,7 @@ static inline struct scatterlist *esp_req_sg(struct cry=
+pto_aead *aead,
+>                              __alignof__(struct scatterlist));
+>  }
+>
+> -static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
+> +static void esp_ssg_unref(struct xfrm_state *x, void *tmp, struct sk_buf=
+f *skb)
+>  {
+>         struct crypto_aead *aead =3D x->data;
+>         int extralen =3D 0;
+> @@ -114,7 +114,7 @@ static void esp_ssg_unref(struct xfrm_state *x, void =
+*tmp)
+>          */
+>         if (req->src !=3D req->dst)
+>                 for (sg =3D sg_next(req->src); sg; sg =3D sg_next(sg))
+> -                       put_page(sg_page(sg));
+> +                       skb_page_unref(skb, sg_page(sg), false);
+>  }
+>
+>  #ifdef CONFIG_INET_ESPINTCP
+> @@ -260,7 +260,7 @@ static void esp_output_done(void *data, int err)
+>         }
+>
+>         tmp =3D ESP_SKB_CB(skb)->tmp;
+> -       esp_ssg_unref(x, tmp);
+> +       esp_ssg_unref(x, tmp, skb);
+>         kfree(tmp);
+>
+>         if (xo && (xo->flags & XFRM_DEV_RESUME)) {
+> @@ -639,7 +639,7 @@ int esp_output_tail(struct xfrm_state *x, struct sk_b=
+uff *skb, struct esp_info *
+>         }
+>
+>         if (sg !=3D dsg)
+> -               esp_ssg_unref(x, tmp);
+> +               esp_ssg_unref(x, tmp, skb);
+>
+>         if (!err && x->encap && x->encap->encap_type =3D=3D TCP_ENCAP_ESP=
+INTCP)
+>                 err =3D esp_output_tail_tcp(x, skb);
+> diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
+> index 6e6efe026cdc..7371886d4f9f 100644
+> --- a/net/ipv6/esp6.c
+> +++ b/net/ipv6/esp6.c
+> @@ -112,7 +112,7 @@ static inline struct scatterlist *esp_req_sg(struct c=
+rypto_aead *aead,
+>                              __alignof__(struct scatterlist));
+>  }
+>
+> -static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
+> +static void esp_ssg_unref(struct xfrm_state *x, void *tmp, struct sk_buf=
+f *skb)
+>  {
+>         struct crypto_aead *aead =3D x->data;
+>         int extralen =3D 0;
+> @@ -131,7 +131,7 @@ static void esp_ssg_unref(struct xfrm_state *x, void =
+*tmp)
+>          */
+>         if (req->src !=3D req->dst)
+>                 for (sg =3D sg_next(req->src); sg; sg =3D sg_next(sg))
+> -                       put_page(sg_page(sg));
+> +                       skb_page_unref(skb, sg_page(sg), false);
+>  }
+>
+>  #ifdef CONFIG_INET6_ESPINTCP
+> @@ -294,7 +294,7 @@ static void esp_output_done(void *data, int err)
+>         }
+>
+>         tmp =3D ESP_SKB_CB(skb)->tmp;
+> -       esp_ssg_unref(x, tmp);
+> +       esp_ssg_unref(x, tmp, skb);
+>         kfree(tmp);
+>
+>         esp_output_encap_csum(skb);
+> @@ -677,7 +677,7 @@ int esp6_output_tail(struct xfrm_state *x, struct sk_=
+buff *skb, struct esp_info
+>         }
+>
+>         if (sg !=3D dsg)
+> -               esp_ssg_unref(x, tmp);
+> +               esp_ssg_unref(x, tmp, skb);
+>
+>         if (!err && x->encap && x->encap->encap_type =3D=3D TCP_ENCAP_ESP=
+INTCP)
+>                 err =3D esp_output_tail_tcp(x, skb);
+> --
+> 2.42.0
+>
 
