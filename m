@@ -1,115 +1,112 @@
-Return-Path: <linux-kernel+bounces-98864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A14B5878070
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:22:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCD6C87805E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:19:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 418411F22D2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:22:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0159B20EF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CC6D3D986;
-	Mon, 11 Mar 2024 13:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="exreY1fl"
-Received: from out203-205-251-80.mail.qq.com (out203-205-251-80.mail.qq.com [203.205.251.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503F23D3BC;
+	Mon, 11 Mar 2024 13:19:20 +0000 (UTC)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074913D541;
-	Mon, 11 Mar 2024 13:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FA53D0C6
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710163330; cv=none; b=XgCIo0Hbigrn3UZK1mOhEkVySwwyNP2uhCxxMLrEBDJSEUXlZaeWwPZVBBpUU58bWK7H2CAnw7BdcFBe57B5ykUAiyu7Grz3+kSMfAxYMwwyrE1pmlrX7aOzM5SiBz4i8LAPbDKzxjUcvrKQbJ1c5A0jFYK3zwZjnn7w2rQpf78=
+	t=1710163159; cv=none; b=WE/qSGh6U4qGmz/oF+MrKmLNhs/oI5heukFvsQrMCcXtq+eVPDKhrFxWSNUux9w6q+wQWVPRVBrnxPV9Dj1I9RJgJSrNiDE7JMMWqKUjual6HHOb8bd4kuKIr+uRNfoTMs9+pDAg8ZxCh7yVpPjX7PYLe4zCHmO2UpEmUe1efEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710163330; c=relaxed/simple;
-	bh=3+xxg4ETzFMb63127mOvBTZyTlYXtPpq7mf4zurTLq8=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=oUcuk8t8hsPf9OWebUUSMHB4rHVGqp8hLH5MRI/oTCmNyQXegfryN7ePxRvau0aHuVQTeNn1lwzA/WpyDjPOAYWk7GGr8LArfzBfCdRKNJWGvXOAWn9PyMdn2qW1xqF3ml49UdFqyjbdITHS8R4x5A866eU6ojMNOY7OkEX4ahw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=exreY1fl; arc=none smtp.client-ip=203.205.251.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710163024; bh=jmpH0Xkw0Njp0yvCShHoL5DVGZlUug/nMtr2L4QpBJ4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=exreY1flqzqsX+X/AraI0T1Nju60JrXKeyNndBVXS0zQJetgD7r9zeQgqjvJyuu29
-	 XhZ1BNlf/B9SdhHQ05DJbmTH7ecz2wD7JM1OT6aXaLqq2X9kN/lGRVsWrnvYUdxZ1J
-	 q7Gzgu+3iCMq6n6tWBXeL/+PzMpMsRejGMHtmVQo=
-Received: from pek-lxu-l1.wrs.com ([2408:8409:ce0:38d1:a032:4bf1:303d:acae])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id 43B1EC66; Mon, 11 Mar 2024 21:16:59 +0800
-X-QQ-mid: xmsmtpt1710163019tizb048h8
-Message-ID: <tencent_E4EB1B6A2584BA2BBBB733409EAE1B524B08@qq.com>
-X-QQ-XMAILINFO: MmpliBmRb3iCgT0VMlIhb+FmTZpopN2STe9Rpls2NzUeAxSrxH/8n5o9V1Q532
-	 XalIkpEluGgCj+13jp8n+U3FhVcjxGqz+JRiNu2Y86z9DqWgnJW3hIQqhwg5H758gHGZQCN2KQZU
-	 r/WZLhpjr0sDyi1NkA1nsmAbY4PrwqVZM/rTgPiY1/mX0ab0RmZ7YBd1wjEiq41zGojj9IxANxNa
-	 wI2kehu+cTFurcyI88BkV07/88joj4kbhU88Ain3klpc+Ldz9EYpM2WEOXpjExZNoTc4wvgVBVdC
-	 PRCPVy5muBMh1mYZuclcZVyegXKhf83Q1IWBDvuJ8Gs+9UKM7HwsbZe10TbRnfgBp8h/D8vfIQ0M
-	 qU0eSEst5bwjpv2SDKa6ryidJwK5XaNeqG5+zbCBiXZqACBpwqnX6f+J/JlrjGl6l+5E/vCFVy8G
-	 IqBq20PXFXWjezNSDdghACiNUNFrZRFhydhpnmExLDNGn3pCwHv2MbCO5HwolKRCgmM2Pc4jidKF
-	 /Xq80gc/OKGHdNjgabz5qcbMK6JvVvlCeRN2zUxOOOWc0IJk4RwFsDrxe8witxvER7sfVTBTMB2C
-	 3GjLR+PBEgCeS3CYrwU3VsyXW5Iy5UZVQC1iNPL67UutL8f8iEW2XrEkRkg/c0hl87/SQwtHjEr9
-	 Wyh3Auu+N7Kbe1Z1Xck/Lj5M1rLSiIeL7W32Q8/XV6d6JNe6nv+2sm2z5e5RWMUYETJG90ujnNVT
-	 kL9RBcKB+GKbEJr/YO6kx62ks/9aPnZAMFmo+RTg292Mgpqc121wkKWGW/l2bL2ogBI3yNK5pVXI
-	 ttrtgncvCMEfFoJtAv3LxTzvpPidPPV7OxNhQvScOLKL4Ok/zPbQQRmFNFKQEnTVzhiAnpl+f4gG
-	 aUXF37kApDf6oxNxjcGZEp+tvd/m7bhoE+db+gNiEFAEo0pT5mzW4X42gax59EKn/kU3dllEHh
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+cc32304f6487ebff9b70@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	sdf@google.com,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH bpf-next] bpf: fix oob in btf_name_valid_section
-Date: Mon, 11 Mar 2024 21:16:59 +0800
-X-OQ-MSGID: <20240311131658.161143-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000081fb0d06135eb3ca@google.com>
-References: <00000000000081fb0d06135eb3ca@google.com>
+	s=arc-20240116; t=1710163159; c=relaxed/simple;
+	bh=TrQVnMFqRdKxy+Ab7zL92BC7pRmGTjw3QeWTZWzAMBg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BkiE/gRVQMRhpGP0zqjkg1vL/vH+vxzgqo8zV9+tIJOmC3MnVD/GtY+Dcdvslr6fslAlcsSbT08d6IKFZaLQPI6w65lwLJ3pz1fnF8KTq0qm4aVPofA3fewGvlAhesA60cBb31BPc5I+R33MNnDY0JzF44Ke2P+gXXdSeYwyAbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-609eb2cbeccso22927957b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:19:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710163156; x=1710767956;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j7ylCimAbNAWM7sZ5YD/p6CSqTzWJSR4W2A/mtEmsJ0=;
+        b=uB46OUCdS4FgKNIRfkDh2H6Q6CZMhldkA3aGfuxgyOlNC6+za8MwFq8yQEDPDX4Iqq
+         yCNpxMmUJvi0M5vtpErbn6LQClAfTmBrzen/0hpsoHQ0YkAgqicUph85HJJdHZiHZnNU
+         WVgMU/VUIjnCjlkt3XLABBoWfID11wOKVWPHD2YUX8kPW3eguiLMEPodzZktcrwSEkCl
+         2rvXBGF48pWzjNeQYyouzkfhdDdiy6i9wYhN34GEWZ3lJVEGwaSF/Gm51otVGiOOXabE
+         thQNYARsxnhl529f+CzndumoofipKyapdiZx4DMKW/FyKjPKH3BC1vjlgnnFRA9kvpDM
+         XRcA==
+X-Forwarded-Encrypted: i=1; AJvYcCVkrp6uTdS1MQ8IkO/oXTwnVqCcjdiQEuEZtV4FJD1f64BuKRZ14YCgUk4mLjH3S08sj1fLjOGFlpuaf7NGg1+EjGxUvHyg25cRbasu
+X-Gm-Message-State: AOJu0YzEUMe8RagT1aB3LaWTkeSKQMK3qoMPZl0jP8de/hnyYlVXkPqN
+	GuEh/80HA48R/KnTFUsPtEpPR4i2AY7VVg0cIG/LBcwLRJTpnDlE09al254Jy2E=
+X-Google-Smtp-Source: AGHT+IH+C+Z7HRlIQlptDVlJdVJ4RXNzH5TvHQa+XECFVSualLR3ctBmQ/xN0tWBPmH1oIDHUjxxqg==
+X-Received: by 2002:a81:c24d:0:b0:609:ff22:1a88 with SMTP id t13-20020a81c24d000000b00609ff221a88mr4454991ywg.44.1710163156056;
+        Mon, 11 Mar 2024 06:19:16 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id dg20-20020a05690c0fd400b00607c3904416sm1293053ywb.40.2024.03.11.06.19.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 06:19:15 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-609ed7ca444so29958907b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 06:19:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXQcs3+uNpe0nt0KLQK0y+XA2L3g+OXAPM1wiQMRentlRBhNi2W24n+wW6WfUs80Z9sicIkXFUtvlPY+g2r8OsMd9xW7mh7b6OErE55
+X-Received: by 2002:a25:ae56:0:b0:dc2:3113:8700 with SMTP id
+ g22-20020a25ae56000000b00dc231138700mr3507486ybe.24.1710163155413; Mon, 11
+ Mar 2024 06:19:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240304085455.125063-1-dawei.li@shingroup.cn>
+In-Reply-To: <20240304085455.125063-1-dawei.li@shingroup.cn>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 11 Mar 2024 14:19:03 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUW1gXjzHiczHKe=O7fv+qPn29g5UYN41v_-3W1qSax_g@mail.gmail.com>
+Message-ID: <CAMuHMdUW1gXjzHiczHKe=O7fv+qPn29g5UYN41v_-3W1qSax_g@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Calculate THREAD_SIZE from THREAD_SIZE_ORDER
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Check the first char of the BTF DATASEC names.
+On Mon, Mar 4, 2024 at 9:55=E2=80=AFAM Dawei Li <dawei.li@shingroup.cn> wro=
+te:
+> Current THREAD_SIZE_OERDER implementatin is not generic for common case.
+>
+> Improve it by:
+> - Define THREAD_SIZE_ORDER by specific platform configs.
+> - Calculate THREAD_SIZE by THREAD_SIZE_ORDER.
+>
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>
+> V1 -> V2:
+> - Remove ilog2().
+> - Calculate THREAD_SIZE by THREAD_SIZE_ORDER.
 
-Fixes: bd70a8fb7ca4 ("bpf: Allow all printable characters in BTF DATASEC names")
-Reported-and-tested-by: syzbot+cc32304f6487ebff9b70@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- kernel/bpf/btf.c | 2 ++
- 1 file changed, 2 insertions(+)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.10.
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 170d017e8e4a..dda0aa0d7175 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -816,6 +816,8 @@ static bool btf_name_valid_section(const struct btf *btf, u32 offset)
- 	const char *src = btf_str_by_offset(btf, offset);
- 	const char *src_limit;
- 
-+	if (!isprint(*src))
-+		return false;
- 	/* set a limit on identifier length */
- 	src_limit = src + KSYM_NAME_LEN;
- 	src++;
--- 
-2.43.0
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
