@@ -1,106 +1,90 @@
-Return-Path: <linux-kernel+bounces-98882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99A768780A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9DA87809C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34EFD1F21B31
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:28:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C74A1F21866
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26933FE2B;
-	Mon, 11 Mar 2024 13:28:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E653D549;
+	Mon, 11 Mar 2024 13:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EyRdoZjS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="2TI3C4KE"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428DB3FB93;
-	Mon, 11 Mar 2024 13:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B5113D3B8;
+	Mon, 11 Mar 2024 13:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710163696; cv=none; b=Py5Y7s49k3ltOhq1FwZ5+oiI2Oa41xBvT33XX9GeRwQK6NTtX6F2OnvT0dqFqPLuyTUxF2DwKU1HC5JGcphUUWvejZUlCTrxuVFLkPeB+Pordehm3Dp+T/rrni3jgN2vl/04D9zLc8nsC9bvpkl2KdnP+Ua+xvy25MPSYgFWz/M=
+	t=1710163692; cv=none; b=n1sryEJI2g1WbTwoFE5Vlw6uRXKu3J6RhW9qmS7PrFZN9f+bFOzaQ3pVHDFQ8LyreCKYr/yNB/NZRt534hov0D3ESNz/5NGHwASDA3K5aIbWwbLyn3ol8vkr1oHuYkQWIgYQKj44REaQKzkaImywsv5HDuPig4AoiM6bx1z5fyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710163696; c=relaxed/simple;
-	bh=sp8wPVWLcMFirjt1xb+bkWZ4tLirl6iWsWdIf0hhyrg=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=KxOz32VSntoRUoo+SY6vFICPrORZtI9NQBjoVYWpqPFBbsE9dMoISC8s2yw5XUxKvbfpxwFKBoP9xqr9Y0lnh8VG8fiVx0vzrXHWOGOQ4DqF+qWBgSHAjUhn6ZKqbUJbbnocngoZe5HOZhJF5Fd8/oZ9cBiZ8kPgIkl+i2yyGlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EyRdoZjS; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710163694; x=1741699694;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=sp8wPVWLcMFirjt1xb+bkWZ4tLirl6iWsWdIf0hhyrg=;
-  b=EyRdoZjSzBWbANkbyCEuYUKhvhBgQrJi8xh2JrruXi56DOo0UFMiUyD6
-   M9lPHKCSfppgLpefIET43TW3CIkAtqyMvFUQjchGTcIvRmMpqnMuech9Z
-   6Cao+es1nQNmReHEYChPLveLMWG0Zf9Q+vb4q1phmzmXY8TbPCFnFjYlU
-   VE3T6ic/AiRlxh1S8ZyRf3hS69ERMSv58qas85l6h8xZ6FwRMsi4+DjFE
-   Hk48CGaOhGeITEXvBsVttVBybzFamH5SD5n1y3zU6QkgmRIAEkAr/Naso
-   J5dW7L0xiwFVshVM9L2z5Q5xaiPwvhwMVIpkWp6xHkNJkKs7TAW7p7vTM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="15963217"
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="15963217"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 06:28:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="11259697"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.201])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 06:28:06 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 11 Mar 2024 15:28:00 +0200 (EET)
-To: Gergo Koteles <soyer@irl.hu>
-cc: Ike Panhc <ike.pan@canonical.com>, Hans de Goede <hdegoede@redhat.com>, 
-    Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    linux-input@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] map Fn + R key on newer Lenovo Yogas and
- Legions
-In-Reply-To: <cover.1710065750.git.soyer@irl.hu>
-Message-ID: <f77afd46-a238-630e-e77f-2c2506097554@linux.intel.com>
-References: <cover.1710065750.git.soyer@irl.hu>
+	s=arc-20240116; t=1710163692; c=relaxed/simple;
+	bh=GQQ1bl/o8G29EUhq7LWesXSsxkHYPUoSZvjAF8nhAq0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DNW2f3NDt+JszhS1zNUN7XaH4o76NVsmTPIYRzPqJSTQkM0Ry2H+emrI7vQODHhy/j7QzOw9PpPeAra72rmwvZG5COLZU34a6mAXqo7rR74THNwF+VLdzYnTD51szVA/jZwDo1WG6GO91EU3zFzLfPhDOdQrUk2XVnaUewJyXCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=2TI3C4KE; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710163688;
+	bh=GQQ1bl/o8G29EUhq7LWesXSsxkHYPUoSZvjAF8nhAq0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=2TI3C4KEK3UF4vgPRMr8V43ERNDiKd8ZFL9KrX/KoSdIcvHwZQeKTOJ14ybiQMVvn
+	 jDN9oMK9SYhPL9hfZ3b2vXkufkgQFrjFYUR/K2EQWVHQ9YJeD3oMB2W90VWBmRMUc1
+	 UE3a4U3oN7FTFhFoaSSOvuP0b5Sxi7YQ/TBs0qjk862Z6Ol+Yw75UVCGZYQRKahYBl
+	 ec7tXv8sQ9w6m3pq0+NHEKOBTUTsyBaPzPD2WuCj8FOpvOqPraFms9MQ0pUPkl1v/U
+	 Ph7bFjBGgxVzpr7VQiT8vKobL5yokuFMMD/UNtaZ7e3WM0IN6RdZL+EL8T4XDSQMSx
+	 nQP9LfStRJaMw==
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7EC7D3780016;
+	Mon, 11 Mar 2024 13:28:07 +0000 (UTC)
+Date: Mon, 11 Mar 2024 09:28:05 -0400
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Chris Bainbridge <chris.bainbridge@gmail.com>
+Cc: Thorsten Leemhuis <linux@leemhuis.info>, regressions@lists.linux.dev,
+	trivial@kernel.org,
+	Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Fix typo in reporting-regressions.rst
+Message-ID: <939d580a-9646-4e58-aadc-1eb40f17e0b5@notapiano>
+References: <ZeoDMtLGIHvbavW2@debian.local>
+ <cd766a41-4dfa-4f57-8af2-163023acbead@leemhuis.info>
+ <Ze2PT8oamTSm23ny@debian.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Ze2PT8oamTSm23ny@debian.local>
 
-On Sun, 10 Mar 2024, Gergo Koteles wrote:
+On Sun, Mar 10, 2024 at 10:45:35AM +0000, Chris Bainbridge wrote:
+> On Sun, Mar 10, 2024 at 08:57:55AM +0100, Thorsten Leemhuis wrote:
+> > Which leads to the question: how much do you care that you patch makes
+> > it in? If you would like to have a fresh commit in the kernel (which is
+> > totally valid thing to want!) we definitely could improve your
+> > submission and then adjust Nícolas changes on top of it -- but if you
+> > don't care at all we could just directly take Nícolas patch.
+> 
+> I don't care - just take the other patch. But please fix the multiple
+> incorrect spellings of colon ('collon') first.
 
-> Hi All,
-> 
-> This patch series adds a new KEY_REFRESH_RATE_TOGGLE input event code 
-> and maps the Fn + R key to it in the ideapad-laptop driver.
-> 
-> It affects two WMI keycodes. I couldn't try the 0x0a.
-> 
-> Regards,
-> Gergo
-> 
-> Changes in v2:
->  - use KEY_REFRESH_RATE_TOGGLE instead of KEY_FN_R
-> 
-> [1]: https://lore.kernel.org/all/cover.1708399689.git.soyer@irl.hu/
-> 
-> Gergo Koteles (2):
->   Input: allocate keycode for Display refresh rate toggle
->   platform/x86: ideapad-laptop: map Fn + R key to
->     KEY_REFRESH_RATE_TOGGLE
+Oh wow, I looked it up before writing and was confident that was the right
+spelling... Thanks for pointing it out, will fix in v2 after Thorsten gives any
+other feedback he might have.
 
-Hi,
-
-As mentioned in the other thread, please redo this on top of 
-pdx86/for-next.
-
--- 
- i.
-
+Thanks,
+Nícolas
 
