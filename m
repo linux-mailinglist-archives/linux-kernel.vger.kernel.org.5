@@ -1,99 +1,93 @@
-Return-Path: <linux-kernel+bounces-99550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB1D8789DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:10:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 175408789E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 22:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B7281F21919
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:10:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6CBE281BF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8F05731E;
-	Mon, 11 Mar 2024 21:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A1556B76;
+	Mon, 11 Mar 2024 21:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ntk2KMgQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rP8rqt9Z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F2756B63;
-	Mon, 11 Mar 2024 21:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43DB54FA9;
+	Mon, 11 Mar 2024 21:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710191432; cv=none; b=hW10LFUT4DpL94/KJzRK3PBcWMbtlMpGEjW35TpF4MQZx2e4vvwUILMjM2dfGWX+x+Q8b7mB5dSQXg/hQ9qTpJJE4nl+ZbYVwKrJm1+ndve4OEFVXgFjwjL8lpZj4ftQeLnX2Lvn6mDC3hq56zhmzNx42UjRDxYkMSZsAF/ngyY=
+	t=1710191511; cv=none; b=J/T82UW0ad2ucphizP+y1wWpYYqf/dAFO3KnccP+segHXZNE/EoiYONPx6HSCsZvYJJXlO8xu3pMsoSaz4MaEBe5Zlw+rdxurgRXYgZnqgRCnhxh7FJsQ05E+L0OXwYh/OyWu4eYXFuYQT1OD8hV2rrArWeVgdp1gGfrz27wup4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710191432; c=relaxed/simple;
-	bh=+o7mv1cjyYTsa9bpXsMjAc0mxBD9nIfC2qmi/mgGAnk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=fQLea35LfY8OEM009p3MeJUb7fithRc/gVGPpGJmM2+mHZPXdZICOXv8HlGT6y8sDGOZEPixqFf/0A3nP2s0qW/cYSyYx2Itn5eaRPY2et/zgAGFBZFuYqVxy1sBjmoLExwdpkfGkKwJYmhOQIDyeI9oXuAKeDEmljP+f1wCZbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ntk2KMgQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B8C94C43390;
-	Mon, 11 Mar 2024 21:10:31 +0000 (UTC)
+	s=arc-20240116; t=1710191511; c=relaxed/simple;
+	bh=5KYeLP/Z7vfTMDvVH57E3WBbpcqd5Ed7Gv0l/gsgDTs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=civ0Eg7cNlV2M58YaLcr2WESLrGw34vmlvdh6yoJbPoNeXF22b2IDlsZSVY96EIxii2KTMW/3nUxuZYBWa9jt/HY4wDEOb0+V3NZpnYlV03FO4Kz6YokRx+AasKaeNS2u92gxsU+c9gZLTKMW6bx5WWOirEOPkzDmHDggBVWTGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rP8rqt9Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6D47C433F1;
+	Mon, 11 Mar 2024 21:11:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710191431;
-	bh=+o7mv1cjyYTsa9bpXsMjAc0mxBD9nIfC2qmi/mgGAnk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ntk2KMgQSTVcYWlrhUHpgdMsE2qJ6qfWeFom25F0RQubqoGPry/0Ve30ujYOw4Aa3
-	 5nXd4owp0m7Gyju/1ibdupJc48jC7rn3GAIcChJ5IKEJqw51iJar58nayZpUbYGzzH
-	 YI+wN9e8x0xhm6kIDAKpjfB5t8kX840XuO1dSRusSZwc40N4UqG0AwoD8w2IMqudPU
-	 TNSLEEJxRc7DHufxQAEKhVkTz/kamDjdm4NY6lkEINGRnuGRTH77K2ZnYatIsDyTKp
-	 KdSYcEAxwOjYBtCbXcNi7ww6lQKvV+NkQquthjfxrC8V9xjnC2ieL8+vvihBkTRpVO
-	 RCxnTivu8qfDw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9C07CC395F1;
-	Mon, 11 Mar 2024 21:10:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1710191511;
+	bh=5KYeLP/Z7vfTMDvVH57E3WBbpcqd5Ed7Gv0l/gsgDTs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rP8rqt9ZaRKGisJCWcWgf4QTpH4FzeNOquAoSwpsM7HHH3LYm03hV9RhPhsNnG2tu
+	 4cabvk9Ov2bxHHDzbp02RMzFMJHD+EH1Y0ulcQWG3VJlfQ2Zx0MMfAxIoxml7UbcQQ
+	 43ghmZsFIqYvz/9gztBeeWfWMjK5HVvhrvU5Yy6n5/r6etTVqCwY0Vlq4kxZvEYa6f
+	 dqIRKMXaZuC80pCqEvlsutSQtdy/DvI0bSwfi5cTtRruVb6usghq3xMLzPCcLsfrff
+	 3YDaxB8KJok6zU6REckYq55AjwoZAnoux/OGr3Hea2S0Es5TaK6nIR0vjsdzAhaE0Q
+	 S7oy89IkwYTuw==
+Date: Mon, 11 Mar 2024 14:11:50 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Yury Norov <yury.norov@gmail.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Rasmus Villemoes
+ <linux@rasmusvillemoes.dk>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, Andrew Lunn
+ <andrew@lunn.ch>, Mark Brown <broonie@kernel.org>, Ratheesh Kannoth
+ <rkannoth@marvell.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v7 0/5] Add support for QMC HDLC
+Message-ID: <20240311141150.4ebde44b@kernel.org>
+In-Reply-To: <20240307113909.227375-1-herve.codina@bootlin.com>
+References: <20240307113909.227375-1-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: dsa: mt7530: disable LEDs before reset
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171019143163.14853.15330891015381229970.git-patchwork-notify@kernel.org>
-Date: Mon, 11 Mar 2024 21:10:31 +0000
-References: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
-In-Reply-To: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
-To: Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: arinc.unal@arinc9.com, daniel@makrotopia.org, dqfext@gmail.com,
- sean.wang@mediatek.com, andrew@lunn.ch, f.fainelli@gmail.com,
- olteanv@gmail.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, matthias.bgg@gmail.com,
- angelogioacchino.delregno@collabora.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue,  5 Mar 2024 06:39:51 +0200 you wrote:
-> Disable LEDs just before resetting the MT7530 to avoid
-> situations where the ESW_P4_LED_0 and ESW_P3_LED_0 pin
-> states may cause an unintended external crystal frequency
-> to be selected.
+On Thu,  7 Mar 2024 12:39:03 +0100 Herve Codina wrote:
+> This series introduces the QMC HDLC support.
 > 
-> The HT_XTAL_FSEL (External Crystal Frequency Selection)
-> field of HWTRAP (the Hardware Trap register) stores a
-> 2-bit value that represents the state of the ESW_P4_LED_0
-> and ESW_P4_LED_0 pins (seemingly) sampled just after the
-> MT7530 has been reset, as:
+> Patches were previously sent as part of a full feature series and were
+> previously reviewed in that context:
+> "Add support for QMC HDLC, framer infrastructure and PEF2256 framer" [1]
 > 
-> [...]
+> In order to ease the merge, the full feature series has been split and
+> needed parts were merged in v6.8-rc1:
+>  - "Prepare the PowerQUICC QMC and TSA for the HDLC QMC driver" [2]
+>  - "Add support for framer infrastructure and PEF2256 framer" [3]
+> 
+> This series contains patches related to the QMC HDLC part (QMC HDLC
+> driver):
+>  - Introduce the QMC HDLC driver (patches 1 and 2)
+>  - Add timeslots change support in QMC HDLC (patch 3)
+>  - Add framer support as a framer consumer in QMC HDLC (patch 4)
+> 
+> Compare to the original full feature series, a modification was done on
+> patch 3 in order to use a coherent prefix in the commit title.
+> 
+> I kept the patches unsquashed as they were previously sent and reviewed.
+> Of course, I can squash them if needed.
 
-Here is the summary with links:
-  - net: dsa: mt7530: disable LEDs before reset
-    https://git.kernel.org/netdev/net-next/c/2920dd92b980
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Applied, thank you!
 
