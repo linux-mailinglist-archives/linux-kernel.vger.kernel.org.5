@@ -1,77 +1,109 @@
-Return-Path: <linux-kernel+bounces-98604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F46F877C85
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:21:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930D1877C8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:22:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4501B20B43
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:21:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C52081C20F7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97A4182AF;
-	Mon, 11 Mar 2024 09:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D897417996;
+	Mon, 11 Mar 2024 09:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dhafz4nz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b7warfEt"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CCA17557;
-	Mon, 11 Mar 2024 09:21:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87F231642B;
+	Mon, 11 Mar 2024 09:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148875; cv=none; b=JOv5ehkOzqoudnfFXtfB+E4t49FmSzg1P/W06mRdRTsMP4G4qwojeprg/vxewa4Uhm+k+ZT6Hki3ieLwYXgU9/r9z2SlxxA0ol5bjmbpwvMKa/2fqmQjQYTftNJM944r2+inqlgB88oB80a9DdTm8zw2rGldBCEcESK0E/d/rfs=
+	t=1710148898; cv=none; b=qaLBtuTZz39/W48pT5jRHr60cm04jOIoUiS5VWt2qpLv3wqlD3UuAtF3Z8F+y8s/qpd5+4Mb5K3nHJe+W6JSaYEhvNcHXnq5y7Z1f9Q0O53gD1iJgdPgfppGmWRhhLXtclAOTfyaFntYI8u+A6ntQNFEKorRagryWplR6Sopbq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148875; c=relaxed/simple;
-	bh=SJy63xxIMOOz80AbALShpGTRJiLYpQy9p+Uz2fnVaTU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tFoHvRIE1ZZaHyCCqOXtM+oUnyXwn45sDevKAsqV5HlHmHKxMlYgl5fxX0d03/WvG4MQmG5kunpZLTbYoAY/XRf8zXouZZx0KXA/6yJu3tbJ0vi4AfB8ieNHvmb1Nx0jbms61jeKacn6nz1uM7iHddNXoUYHLMeJitDWbQ6P31k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dhafz4nz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0AC7C433F1;
-	Mon, 11 Mar 2024 09:21:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710148874;
-	bh=SJy63xxIMOOz80AbALShpGTRJiLYpQy9p+Uz2fnVaTU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dhafz4nzgKKoOLViiq45Bzuf8CmTVFfmsYGlfFJPD+wTXM5t8txahmcKPKe4OaT/9
-	 GvFxGHqEb3YO7Mi0isgKF5r9G6Hg9/tnshn5cpRxxLlEYshr0bkbDff8bxhmcM3lAd
-	 imya5YPT7VOLi2ZVkT41+7+mqBWF6JlU6stNDngOhm5ZSMQTHDZvFcDLUsh14L4PiQ
-	 ZzdAeQAsvKDYZ/j/kPbY0dNELFlAzvvoPgucMn26Ca173ocAsMZMAGJ4R7T+BbN9O/
-	 7ZLYSlil+7ClZ7KFyxhSdVk9g8JCO7HC8BBFqhb6yXikPpNGPzwD0FJouA/NYXTIM5
-	 pDzDcPvGuMs+g==
-Date: Mon, 11 Mar 2024 09:21:05 +0000
-From: Simon Horman <horms@kernel.org>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v1 1/1] net: dsa: microchip: add regmap_range
- for KSZ9563 chip
-Message-ID: <20240311092105.GD24043@kernel.org>
-References: <20240308105021.2552975-1-o.rempel@pengutronix.de>
+	s=arc-20240116; t=1710148898; c=relaxed/simple;
+	bh=GVbr1/fS1wvn76XTylvE5OL/EQRMM9H9ThuJC6BQ5A8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=F3h2biVujuypC9jQiQKlnxwVmH7wesMMR2IkKDOZxWPKJIDJnLWTbZ5zaPOTX7eIHCctwa/kAghaVXFeiHj2ZuGVU0PaJ1E04a6LiKEWCdyNmD7WDMYQ03EZLQMuOQWDEr7DK/XYFWHmPAEAWU/b+kJsU5UEnHSQans2/b5YmpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b7warfEt; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d2505352e6so60550871fa.3;
+        Mon, 11 Mar 2024 02:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710148895; x=1710753695; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E+GcVXdcO9QKtnQAcCLqs2Ny4ab4g7aLnhL8kh6HOy8=;
+        b=b7warfEtX2LtRPifET499KeWBkg+Jbu/zU3oUuY9iZXwcYkLfLrGdqqAoKSqE87lgV
+         sHMEVCkOdevuMZr3K5lxX/NoOz68PgigvW9nLWWj2jrtxQ8xALQ8xnJ7PHhdhOK5I9MK
+         XE1aScZNktqXP2kG96FAaqujK71ys4/J/77wEgHyWxfOkfPa/GjXCM/u29WF+DzrbpOt
+         2j+ea0xtOUoTBGnOyNBcUL1bc97OwkUk/oyh5omYAFLmGb1lhZRkWkTwoNvRwp9BFG4Q
+         /iJfgqxdrmesHDK+aWkHUpdlm9wm1t69bmnRuoKTLwb2as9QxjAwvyDVFhCv5SF3VrNa
+         trhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710148895; x=1710753695;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=E+GcVXdcO9QKtnQAcCLqs2Ny4ab4g7aLnhL8kh6HOy8=;
+        b=vSu2fJWH287nihGtxo6S5PXbgcXV1BFpoSugWAZu4iyYIMQUecNf6jNkEj5X+nTUwv
+         TLAVUlNxLHDH/wSMTA7OfrTLT9bVuM1ONPYa2GktgKKttHYfTdc/zL4QR75YfenR4dhU
+         IAVMiWmB1joUTVsxifhQM770NXkeLpa5i13mph69OV0OTvZOJwd2ORz6KoK97zgvwZ83
+         7oZqxRG58evAFIJRsiDv3eGLD5Alp24DJLbtDxShA0ESyxRoMIdPUheWgcBSwddyZZpB
+         8ngVZpjhd0WOeivAkryYC9IzwLqCS8Mhy2ud4/M0rkpt/rbE8JkfDlbE9htw5KWuMmXx
+         7jGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVkpS5PVU4/CLnGrULNFZr9zFyXmF2zFzV49AShDy4+Up7mAEC2LQ7bNhKK82Uzu9Bl2gApRRkxhqNUpuylBc5UHgI8UuUaPdQeRogqNd+p5Tuy9UQtkLTPEA+W0vLRfFzKmCslJglKiei+YFySgqF+Cbk74EaqQbCEoyI0QJmEPTNm/svv
+X-Gm-Message-State: AOJu0Yy8tAvOgemMxJZ2K0hne73HyIZoyOG1chGlj/4O90p3gI6WofD+
+	lubVFALVzlOqncvZhxNT0QbO3xH+TLH9Cc6vvkx2V50CJzjG7Y95
+X-Google-Smtp-Source: AGHT+IF/mVYs7RwzHMtzyKiKUdkLdENmM9Gi8g1QgX4e0dUeruZb1iGkzoY4fimwsOQtYWyz2/aKfg==
+X-Received: by 2002:a2e:9487:0:b0:2d2:ad40:a7de with SMTP id c7-20020a2e9487000000b002d2ad40a7demr3875262ljh.20.1710148894406;
+        Mon, 11 Mar 2024 02:21:34 -0700 (PDT)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id s11-20020a05600c45cb00b00413128042d0sm13672681wmo.48.2024.03.11.02.21.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 02:21:34 -0700 (PDT)
+Message-ID: <f79a26d8-c6d1-43b1-b872-6705417b4101@gmail.com>
+Date: Mon, 11 Mar 2024 10:21:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308105021.2552975-1-o.rempel@pengutronix.de>
+Subject: Re: [PATCH net-next v3 4/4] net: gro: move L3 flush checks to
+ tcp_gro_receive
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+ xeb@mail.ru, shuah@kernel.org, idosch@nvidia.com, razor@blackwall.org,
+ amcohen@nvidia.com, petrm@nvidia.com, jbenc@redhat.com, bpoirier@nvidia.com,
+ b.galvani@gmail.com, gavinl@nvidia.com, liujian56@huawei.com,
+ horms@kernel.org, linyunsheng@huawei.com, therbert@google.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <f939c84a-2322-4393-a5b0-9b1e0be8ed8e@gmail.com>
+ <88831c36-a589-429f-8e8b-2ecb66a30263@gmail.com>
+ <65ed8c9d8dc5a_193375294e6@willemb.c.googlers.com.notmuch>
+From: Richard Gobert <richardbgobert@gmail.com>
+In-Reply-To: <65ed8c9d8dc5a_193375294e6@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 08, 2024 at 11:50:21AM +0100, Oleksij Rempel wrote:
-> Add register validation for KSZ9563.
+Willem de Bruijn wrote:
+> Richard Gobert wrote:
+>> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
+>> iph->id, ...) against all packets in a loop. These flush checks are
+>> relevant only to tcp flows, and as such they're used to determine whether
+>> the packets can be merged later in tcp_gro_receive.
+>>
+>> These checks are not relevant to UDP packets.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> These are network protocol coalescing invariants. Why would they be
+> limited to certain transport protocols only?
 
-Reviewed-by: Simon Horman <horms@kernel.org>
-
-..
+Thanks for the review, I'll fix the typos.
+I replied to Eric's comment about the relevancy of these checks for UDP.
 
