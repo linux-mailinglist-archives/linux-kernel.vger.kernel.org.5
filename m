@@ -1,112 +1,149 @@
-Return-Path: <linux-kernel+bounces-99675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF1E878BA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:52:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4873D878BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:55:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1C342812DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:52:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7EB31F21BBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 23:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6AF59163;
-	Mon, 11 Mar 2024 23:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90A65917D;
+	Mon, 11 Mar 2024 23:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qioKqVQu"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RCpIijKg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF2D57890
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADBA58AAC;
+	Mon, 11 Mar 2024 23:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710201134; cv=none; b=DAQALNVi2EV6uJslKo02biTHtdGJbCxjSNYqFaVEzaeOtQppLnTKVi6YW1Gyobr1ePT6Zn5lbiE+T961jLrJSjUVt+nKv0J3miQlV5690vMpw4CUEfx1Z5NaGzsMUBQVOO1v6qW6/pUjkSi/rS5R+nviCMuZ0muTsb9XZdFCWxY=
+	t=1710201339; cv=none; b=u7w10IYzYefBFNJXeK+Y93aLlUyztrY4nSU8jNvepm0MyoKY5t67q2vKI3NfK/+RPfTo99P/ESBkMtCyIGoOX3oZS+VjZxdqzcTUZskCZHqxzds+pDtygvneuOJub1Ip7fZl/FN0oB0e5V27FE+J4AZ+Qx2nDfMN8hIrTLiW0GM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710201134; c=relaxed/simple;
-	bh=pBZqTh7G7jp+IUnkic52oQI13i+dNvvK3OLg5P87lgg=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tCQaPZSRGxItjKgVJAQjZrAXbwypsMoZDNr1PlbxJlybtOsXSUURCQsupwjHv6EfDSEBYWycQZWahn/RK8mgOkGo4mCAgpQR1gUbu3tYIS5cEJKFHvboQQ4IxYojvPaAN/5UvOsZDZOoUza8nXrKBlZ/nIJbqNvUzC+tT0UyTEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qioKqVQu; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso9594679276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710201132; x=1710805932; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HoDCqku35T7YbxqPd3TAz1OoTvE4SVOE0AIV0UpVVT0=;
-        b=qioKqVQumAqmNc6HjmxXFCDYhK8XtXX2+iNuUtrmcRngP5XKX0UfrSMZDEkbkpFQDo
-         4jCfsfR3vwfbveEqcY3UfdA933FfftexWIZzi9948vhOzn6wecmU51DIfMqUzIHqg8yP
-         MmqLk0TlW+0PiINV09qrnctak22/clAe4/tT+mvNlKbzUEt7DpKs5U0vKnZXe6LtT8gp
-         6uRz8crMEIPQxubEEFhJ5etdhk/469RLOWGgdXVAhc79vXncXLPKcB++EBKSAs8m3MGQ
-         utfVeHwKOsy2SN5XG9bKTvG1VYNSUU6wszA3l7Ps9hrROHQ2zkTUH+xS1PZroVh6Rxs8
-         KovA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710201132; x=1710805932;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HoDCqku35T7YbxqPd3TAz1OoTvE4SVOE0AIV0UpVVT0=;
-        b=LHbxAxwlbimdnjV5cjXwj29GZG7/hdRNAxWfhyKi5mQcc3V3JqVHWDqL8xFOcxYm/G
-         sYWqdtoYbWY47Ox9K59LakB9g4ZQ1qKacl0DrMSbUbj0+lQDqGBqSCDdbdFH+x3+MJ9R
-         tl+LFK8Z7i6MoxgyjhQCO6c423Y9wYaleyfOmoxoGDmmVmOGwke0LI6zPEhZkiedkuyF
-         f0HKjCfAgXptthCodG4PVOZAnjfH+ZSgWpuUxqY5iGwYfuCr8xNDlGKev7OmBWI7tbXm
-         pFvkJEJXg2lesykxM+Jrcxtc/RwM2Dd3BFefB5OdDM+/327Fhw2xofWkM2RY3mig1e6K
-         s36A==
-X-Forwarded-Encrypted: i=1; AJvYcCXCn39RgLaWVxnxn6ZB8pd/cR/nWwB9drRG7za3dtv5vxVnFwj97LRsLBbpSJnOoobqmXF2zdk2Qf4BY+98a3wF1QEBMCCS6Ntki19v
-X-Gm-Message-State: AOJu0YzMoJm9ijIWdzGTcq/hfp5DyJieBF4ELCiPA9mQitEqzljxP/mf
-	pA/AExMZPMtsUuLLmQFlejkNGJSXYwyzqf7lrDZhTDZjyP8EdaamjRY3GCAwTstwVPjFZlnt4At
-	oeaN4dq66PSgWnCqE5Q==
-X-Google-Smtp-Source: AGHT+IGvoB6x0HUGO9cKrUhakaBjnzL5PQuqIrdPSs5csd6UtFI4bJM31GyU0eku4GbNJXOK7s5b21fIZKPIOmYT
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a25:dbc2:0:b0:dc6:d233:ffdd with SMTP
- id g185-20020a25dbc2000000b00dc6d233ffddmr2219113ybf.0.1710201132663; Mon, 11
- Mar 2024 16:52:12 -0700 (PDT)
-Date: Mon, 11 Mar 2024 23:52:10 +0000
+	s=arc-20240116; t=1710201339; c=relaxed/simple;
+	bh=BuwxzEM/Bxcww15ApUyz1+fwftuGUlKv1u90MSb2jyc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ro3PQcBDB4r/Q15JMucJo/1L+dzMLnX/ExTBf+DF8g41brGlK8zNyVQqxBEfK9j3ae1kPNP7uAF6Ztih4o994XfQOK8nSTqUhzpUKHIPlUD/wxhwkHpe6fZiIqUdVFTkTCakm0AQTbiPRG44CFh3Eu9C3xycqXPVXER4r8awfG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RCpIijKg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D1F9C433F1;
+	Mon, 11 Mar 2024 23:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710201338;
+	bh=BuwxzEM/Bxcww15ApUyz1+fwftuGUlKv1u90MSb2jyc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=RCpIijKgQgoTSA/YgO5HGnRv3Hf9/Bg6Rr/EDvLtzPQgyI+KITZQdfzApLBYH/2PR
+	 s+tHpIkNnd8px5/X+EeLzzDUEUxl4H6mHKD7AvraOplbNr9dli6MZME3EdEtvGdXmW
+	 pYgwXcM/XGtMTZLpBDr1vnz9eKE2woypzmXew2bH20+gC0+Ppn9o7pbtmBsRmcFH9m
+	 loWPfwQV4KR5r0ugMkELBAZyXvtHC01/1dYPOrTKg+8ho4iv3F+9jgD25U1TOI/DHW
+	 /G2XFIzJ6EOA4Z8DOgLJP87E7bD9F/NFCdNPVlq5ocwS+QZGfqhDQkih2/FSDmDMwq
+	 k0zzq9tzTDy1A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 0244FCE1A25; Mon, 11 Mar 2024 16:55:37 -0700 (PDT)
+Date: Mon, 11 Mar 2024 16:55:37 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
+	Jesper Brouer <jesper@cloudflare.com>
+Subject: Re: [PATCH v2] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <aa4909dd-98f2-4185-833d-666c640786c6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ZeFPz4D121TgvCje@debian.debian>
+ <CAO3-PboqKqjqrAScqzu6aB8d+fOq97_Wuz8b7d5uoMKT-+-WvQ@mail.gmail.com>
+ <CANn89iLCv0f3vBYt8W+_ZDuNeOY1jDLDBfMbOj7Hzi8s0xQCZA@mail.gmail.com>
+ <CAO3-PboZwTiSmVxVFFfAm94o+LgK=rnm1vbJvMhzSGep+RYzaQ@mail.gmail.com>
+ <ed57b5fa-8b44-48de-904e-fe8da1939292@paulmck-laptop>
+ <CAO3-Pbp0Pxbbgmjf03wKo6MDrQYE7uiL+mUnheT9UA9Pjj5bUQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240311235210.2937484-1-yosryahmed@google.com>
-Subject: [PATCH] mm: zswap: remove unnecessary check in zswap_find_zpool()
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAO3-Pbp0Pxbbgmjf03wKo6MDrQYE7uiL+mUnheT9UA9Pjj5bUQ@mail.gmail.com>
 
-zswap_find_zpool() checks if ZSWAP_NR_ZPOOLS > 1, which is always true.
-This is a remnant from a patch version that had ZSWAP_NR_ZPOOLS as a
-config option and never made it upstream. Remove the unnecessary check.
+On Mon, Mar 11, 2024 at 05:58:16PM -0500, Yan Zhai wrote:
+> On Fri, Mar 1, 2024 at 4:29 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Fri, Mar 01, 2024 at 11:30:29AM -0600, Yan Zhai wrote:
+> > > Hi Eric,
+> > >
+> > > On Fri, Mar 1, 2024 at 2:30 AM Eric Dumazet <edumazet@google.com> wrote:
+> > > >
+> > > > I could not see the reason for 1sec (HZ) delays.
+> > > >
+> > > > Would calling rcu_softirq_qs() every ~10ms instead be a serious issue ?
+> > > >
+> > > The trouble scenarios are often when we need to detach an ad-hoc BPF
+> > > tracing program, or restart a monitoring service. It is fine as long
+> > > as they do not block for 10+ seconds or even completely stall under
+> > > heavy traffic. Raising a QS every few ms or HZ both work in such
+> > > cases.
+> > >
+> > > > In anycase, if this all about rcu_tasks, I would prefer using a macro
+> > > > defined in kernel/rcu/tasks.h
+> > > > instead of having a hidden constant in a networking core function.
+> > >
+> > > Paul E. McKenney was suggesting either current form or
+> > >
+> > >          local_bh_enable();
+> > >          if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> > >                  rcu_softirq_qs_enable(local_bh_enable());
+> > >          else
+> > >                  local_bh_enable();
+> > >
+> > > With an interval it might have to be
+> > > "rcu_softirq_qs_enable(local_bh_enable(), &next_qs);" to avoid an
+> > > unnecessary extern/static var. Will it make more sense to you?
+> >
+> > I was thinking in terms of something like this (untested):
+> >
+> >         #define rcu_softirq_qs_enable(enable_stmt, oldj) \
+> >         do { \
+> >                 if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
+> >                     time_after(oldj + HZ / 10, jiffies) { \
+> >                         rcu_softirq_qs(); \
+> >                         (oldj) = jiffies; \
+> >                 } \
+> >                 do  { enable_stmt; } while (0) \
+> >         } while (0)
+> >
+> > Then the call could be "rcu_softirq_qs_enable(local_bh_enable(), last_qs)",
+> > where last_qs is initialized by the caller to jiffies.
+> >
+> > The reason for putting "enable_stmt;" into anothor do-while loop is
+> > in case someone typos an "else" as the first part of the "enable_stmt"
+> > argument.
+> >
+> > Would that work?
+> >
+> Thanks Paul, just got time to continue this thread as I was
+> travelling. I think it is probably better to move
+> preempt_disable/enable into the macro to avoid the friction. And also
+> since this can affect NAPI thread, NAPI busy loop and XDP cpu map
+> thread (+Jesper who reminded me about this), let me send a v3 later to
+> cover all of those places.
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/zswap.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+OK, looking forward to seeing what you come up with.
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 9a32377520827..c6267b5e0999a 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -884,12 +884,7 @@ static void zswap_entry_cache_free(struct zswap_entry *entry)
- 
- static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
- {
--	int i = 0;
--
--	if (ZSWAP_NR_ZPOOLS > 1)
--		i = hash_ptr(entry, ilog2(ZSWAP_NR_ZPOOLS));
--
--	return entry->pool->zpools[i];
-+	return entry->pool->zpools[hash_ptr(entry, ilog2(ZSWAP_NR_ZPOOLS))];
- }
- 
- /*
--- 
-2.44.0.278.ge034bb2e1d-goog
-
+							Thanx, Paul
 
