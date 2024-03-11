@@ -1,140 +1,141 @@
-Return-Path: <linux-kernel+bounces-99535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 130D28789B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:47:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E8428789B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 21:47:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97A05281D7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:47:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 718971C20C5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 20:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18C7656B70;
-	Mon, 11 Mar 2024 20:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD2353807;
+	Mon, 11 Mar 2024 20:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="kn7LzldE"
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="r7rxotb2"
+Received: from sonic306-27.consmr.mail.ne1.yahoo.com (sonic306-27.consmr.mail.ne1.yahoo.com [66.163.189.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CBE354FA1
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C949F3CF6A
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.189.89
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710190011; cv=none; b=DjWTk96vSwZaCDzjXII+P7XslSUcoKp3L58XIoYhYDDS9nkFjKrV6ZPuGWGeaTQi1v2S6cZ5p+RQKNOvDgrou7EtWTuxQIwy8MHjk6Nv1cYnoS5POLBMZ2N9vzYFkYtF87DZrbIxk5mpL1/FpNDys+mAj6AOf574pm0R2xXFe2c=
+	t=1710190052; cv=none; b=FD+n/noiG0dDAe9ow7/j/GEPApqHaktbNCOeMEMNFSfV0a9XYXpq60W3zJGoqPuaOaCws8EGH2/826xyMYP16bamkiYesqtlkDp7uwEZ4/lzcKf2mrtDwW6uWN+FFP7DFuHWuDs+GoMqLGxpxSQvizc2J1cl+bLvmLYMOOpT0tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710190011; c=relaxed/simple;
-	bh=GL8gtGxJFo4rRuGjv65ntVbUl3g/4tkAZDn4iD3WG+g=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=oFN2VJKVXYCTs8tRKCj9fdnZlcRmJjetk9plQUkUx4oiaZ0TKXrJaJqgfZa87UNeznT+F/UoKf4MPjZZgyfh0ei5fzjbBeP2kmU6v8CUGBlt4Syy0lRT0/dNaRTEbT04mKOkd/Zg2Mnf5JBmf6HuhS9azm8qDvcgvYzAtODD5s4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=kn7LzldE; arc=none smtp.client-ip=192.134.164.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=UxyrIsgqNyhoQiWr/nMWx3jRYkmIAK+lVYg1CgDwTXM=;
-  b=kn7LzldE/uGw6D5aRqFQgu9J6KyWDUYUfiZUEbfhvym3wZVpa11CWDaL
-   arj4iqlpT6h81UPWe9v89hafcBzQx9cNGXfLa/bo5ogumIMibJFATLwEJ
-   HrwhKlYnugMd2AmcLpEcfqH4ApL2N6A5jpNo7L1PJ5Ax1CQ12ERABzBPt
-   w=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.07,117,1708383600"; 
-   d="scan'208";a="81848605"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 21:46:39 +0100
-Date: Mon, 11 Mar 2024 21:46:38 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-cc: "Felix N. Kimbu" <felixkimbu1@gmail.com>, 
-    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
-    outreachy@lists.linux.dev
-Subject: Re: [PATCH] staging: cfg80211: Remove parentheses
- prism2_get_station
-In-Reply-To: <5f6b7fad-5ad3-44a0-9e10-3e1c13109abd@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2403112146230.3216@hadrien>
-References: <Ze8LBf6xSjCRt4rd@MOLeToid> <4936c555-2c53-d421-126c-48804a26887d@inria.fr> <5f6b7fad-5ad3-44a0-9e10-3e1c13109abd@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	s=arc-20240116; t=1710190052; c=relaxed/simple;
+	bh=tSout2TqFMMn1aVNiQh1eTMMgTL81OOw9wbOBN5R21U=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type:
+	 References; b=K+67aXeyzgOL4laqmkjBx51I6txwT0O/A7/MFmFAWAfzqaJvBFmTFLwqI1k92N+a6sY1xeIf3dRD1T4i00tFJOJQxxXmK/vwsBaVSkj2SXd85j5otDQI+pcba1dUr2UQ49XtHAOn4z33rU7Ko+GQ65tCK/q9zuxjaTsBLyvAI2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=r7rxotb2; arc=none smtp.client-ip=66.163.189.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710190043; bh=R+3yYbDK/b0o/B6YZnnajyfQUTD2GpVdBRpsPhQlXns=; h=Date:To:Cc:From:Subject:References:From:Subject:Reply-To; b=r7rxotb2Q7UefoQeogvGb/sqCFP1ozvTgiwBx/aGDMkFkmW1dKsmX8nJdD79dTSnqUdwGIQLbDM9xoptEH2z70Xq/RSYitVRziHwBjzkZTAn2Bz26VgQu26QJK+8OFMpYRUpMYYd6ymw7i2q8HgZyX2AXgSfoqotlEBpmomy2LB8ebYI0UNxQWHpHM4HyVBy6jGSS2QjmwtBWlV0k6yUjKHLK/iJ4CRVXx4ZdjEXoJcFmvp+WPHugMqQ/nhTkb5FxUE39UoKPNtsdcx66E3EwYtbU7P00Ro+4jiTTq8eT2PkHbL1ubGmxXZ9I+ePBY4cRJvoKbmkKBoX7AvMoyaU5g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710190043; bh=/8tcXfGJighrM3waXPPmsADLIMO6dMC1a1lM+jLWWRK=; h=X-Sonic-MF:Date:To:From:Subject:From:Subject; b=PnUXH6iopAn6VVRQiSQVNmtydguMTpgtg0BVCUdLTlDNMOlg8Cz4h3o8Ohp7qSG25B+PeEWBrkezq1X0JUAxlNfCzVvkYlxm+aZ/VoJV0XVYax5r6OuT37JtsonU/8NeA2MyfcS5QR3+k10JhgoJxuk0wzWlvHFA3UMLk3PxBpPsUuE8svjoXVYvSzH6uXkfHXKf31baZaEK1PXdAeR6TgxVpWd4u5ddJK05ZQB0dkI3Eaa/Q9EW1nUCprdUTcBrZPsWzSNNlv9pF4GJSRUxWUIZdCQGpJKCKV39rauy2fUSAJtQaMLnybSYCkr7K5yrvqTgOvFeghYFsDYJw47mwg==
+X-YMail-OSG: 9giBdIsVM1k2TqWuek9tZkaVKqqkQyda.X76UOnNNoALeLsguuIOSwpmj_dfaBa
+ I.1M2TYfDa.tGKQZia_ImbS9D8bNUo7fJEI.NWVggAJW96r11bKugavYyPFo2OGzFxIAdZA2IJPC
+ djVB4Bsz2pmLIa1rvHzBl3KnQQfjbUysB4jCIm6ZkGlb8HLMrQ55geiipbg4Ut_OwMOsYiu0u5Hw
+ LI3Hp0A3GKudeilmXlMEXq5LrMoq4aDK3ehUF9Z7fueKUvuJrRKpvZ.F07UMI8LXc_HlBZSK_.an
+ ZUl_nn97BcQqPI8ytPd8ldrz8TrOXVbgd0Fe25nAw_GDEDb009kryVquaZtHqiuNMu5.9IopDHSX
+ RLkAF.dmWTGL28OKbkW6whqfbmVcqZB.WkW7e8MlUw7W7nDsLJnz1O2iI.noJboK4scAmEFySfkZ
+ s3PwAXnQoR9VdbiRAP3.FscOaw1ghTAsUHaIqeUt3SBmov5ni2rAwqJKkcVzMqir0GS8ZL._yexN
+ _pw_9QI.VPz_I6Jt8ltoLEPV12CMrH8TiXZ0ovOLVunBhICvytN7sIUL4xUlcH3BaQvlV.l8Z_qJ
+ eRBTShWM7fcWJ0Lyouco04bMfZ4.QsVwON9Q.4rgvosO9YbOVS33DI0BK.5rlXxBgI44q3WqlIcy
+ Jr6TM22wkVAHvD_2bzQx1h.koQVMczoYr7rFdr6QwoNcfSmZKeowftUMkUdK.ISE5yyOJGkCG1wt
+ KUVh_Dh5YKGOG0Ym6wpmQgfglV9PmVQmGr4Iexio1hnm58Jd_cOu8y6s4SjCHsx8ZA_NdsgeI5_c
+ nFTWt.k1vvO.rlTwiISM8s17loVSIwp1yGShFpE328PDXLvhlqeJqjwuot6y3hf0l2aE_qxm47Jm
+ VKzzvpFauyCNQ1bOyEiJLuA8z5f16kT3Ebzhvq_6l8N8w8nkEot3xY5FnRpb0e3SGt8IZBnzVY2a
+ 2dKet55DSdDd3b3Fy4gAMzTRDVdkXvVyN3j0DeOUoJWwj3Sdx5xVxXoMUomgWUfnic.TEPa7niZu
+ gtj87cTMxkVyitexEk8eGcb423LW18iL5UOoPeR10Tgg.TXdN4t.xHI3DOHE3lACmPzSNcX47hra
+ seINNPL3EBmZHedhCT0xnkVs8yp_Jn3TF1dlfQe2KHAdbh5cEbbjRIv_Cect6fZvrZry9IGlBOWu
+ aahhpOax9qzawV0oodVIigTS_UdS7jH0eSPXt1nBs4bzjTNQzqDgZyOpLD64R1EmT.arWTA6VuWc
+ yIsHhm1hc_NvXO6H3ZwchJmd1HdnEwutMeHYLTV_QI_f6LqYfdk39lhcLzf8IFo1m3jFGHL4oydW
+ 9qosxyu8KlSrR.aCensB.TUAb2Eap2_WUMt0Xc5TF6qR5NEzQwTO.GCh8weYuUOvZCLSqsguw8Rs
+ ybuFGw6r7u3KhIXb72HAj4Bmk3cGqAFSbiaZwZakqkOZWMWyTYuBM2Pa4o1OVsFDJKPvKNTPmuqk
+ Oj9nws3HnAhM4TD2ue57vqaVcmgxG9qR1m8ub_crTgk9FqDywY_HZE3aTffR4iU.Bgj6rHrTpNOF
+ 7saow24jq7vTqR7xNbo1Umc0nxnQXquNvCww5JgvQz2nl0pUhnKAbeDVp0Us2cMNKrXpiMb92YdO
+ WpjGXDecgKYDfMA2lf9HzjAOOe5C3Nl0CrGwixat2xjHKQKLxmJgtmUMwn41j.3KTJwf4P3Ewx.U
+ i1V8v2CAbWwbvH3oj6nA4YgZGuK__B__lV30vDnlbRSDwjhsMdyQuqPa70qB.ioalTHHzN9DEz8w
+ FR3VS3y5egExvpd4CgL2AWekKJdz40cFUpKTM3XMjgTPA3RXfjgNeqZ6O1fsxxyMhR3CjhhR46zq
+ 0Uf7qNhZNAeyFG03zEK0E37FDzd8KAf_rZVJIn.4gw.89jaGwLZfYeZTEVYbHiMTeMQBjMbuzBPT
+ zypOTL29MBcbdDwb2_RlwERpMzY3HKP5RUgnD9cXWr9544DsFs4HWYNfKwl9XV2232xkWiN8WMj2
+ gpgW0nNSk0jchj00pJo6v4pHhmJHzFKRUoizH.zDZWrDFES1HL0niBhnG.g3Hq8KiEMTPWCKtvOy
+ T1LHZ6yVTx0hwv7ovu03Fqe0LIpxhTToBsahk9cJz971tGJor59FKUwlfoG9chwc5xeG.KrCvglT
+ jHqHkSk9dJ_7ofag5xfVU74Jlmie06sea0UCN9GI8jQzCTCudBp2q9KXV7g3OB1Rf_gw_8_trnxY
+ aVWY3bQqyicZ0Us_8YmQ9lgvHZR_ElFyxMNGaEINJ8FKQCHVHU0lm0Ey1T5GFTW38xnRBonFo17R
+ eFGnL_u51o_fgWtKLBVk-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: b1d92f14-2d7c-4784-b5b9-4c2920e16dc3
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Mon, 11 Mar 2024 20:47:23 +0000
+Received: by hermes--production-gq1-5c57879fdf-qprqq (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 9e979ddbf4eb120d89b6003a87edbfd3;
+          Mon, 11 Mar 2024 20:47:18 +0000 (UTC)
+Message-ID: <5f321246-e0ba-4882-a42d-fe174d593aaf@schaufler-ca.com>
+Date: Mon, 11 Mar 2024 13:47:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LSM List <linux-security-module@vger.kernel.org>,
+ Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ roberto Sassu <roberto.sassu@huaweicloud.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+Subject: [GIT PULL] Smack patches for 6.9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <5f321246-e0ba-4882-a42d-fe174d593aaf.ref@schaufler-ca.com>
+X-Mailer: WebService/1.1.22129 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
+Hello Linus,
 
+Here is the Smack pull request for v6.9.
 
-On Mon, 11 Mar 2024, Philipp Hortmann wrote:
+There are 6 patches. One is a simple refactoring to remove
+code duplication. The other five, from Roberto Sassu, correct
+the in-memory inode initialization path used by ramfs in Smack.
+This is necessary for ramfs to correctly handle directory label
+transmutation.
 
-> On 3/11/24 18:05, Julia Lawall wrote:
-> >
-> >
-> > On Mon, 11 Mar 2024, Felix N. Kimbu wrote:
-> >
-> > > Remove unnecessary parentheses around 'wlandev->msdstate !=
-> > > WLAN_MSD_RUNNING'
-> > > in static int prism2_get_station(...)
-> >
-> > You don't need the name of the function in the subject line.  That
-> > information doesn't help understand the patch.
-> >
-> > julia
->
-> Hi Julia,
->
-> I think we do not need the function name in the subject but we need something
-> to distinguish between the patches. The subject line needs to be a little
-> unique. Otherwise we will have 100 patches like "[PATCH] staging: cfg80211:
-> Remove parentheses" when we are unlucky. Any better proposal for a Subject
-> uniqueness is welcome.
->
-> Function name for this purpose is OK for me.
+All has been in the next branch and pass all tests.
 
-OK, no problem.
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-thanks,
-julia
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
->
-> Thanks for your support.
->
-> Bye Philipp
->
->
-> >
-> > >
-> > > This change ensures adherence to coding style guidelines.
-> > >
-> > > Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
-> > > ---
-> > >   drivers/staging/wlan-ng/cfg80211.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/staging/wlan-ng/cfg80211.c
-> > > b/drivers/staging/wlan-ng/cfg80211.c
-> > > index 471bb310176f..7451fd2bb580 100644
-> > > --- a/drivers/staging/wlan-ng/cfg80211.c
-> > > +++ b/drivers/staging/wlan-ng/cfg80211.c
-> > > @@ -247,7 +247,7 @@ static int prism2_get_station(struct wiphy *wiphy,
-> > > struct net_device *dev,
-> > >
-> > >   	memset(sinfo, 0, sizeof(*sinfo));
-> > >
-> > > -	if (!wlandev || (wlandev->msdstate != WLAN_MSD_RUNNING))
-> > > +	if (!wlandev || wlandev->msdstate != WLAN_MSD_RUNNING)
-> > >   		return -EOPNOTSUPP;
-> > >
-> > >   	/* build request message */
-> > > --
-> > > 2.34.1
-> > >
-> > >
-> > >
-> >
->
->
+are available in the Git repository at:
+
+  https://github.com/cschaufler/smack-next tags/Smack-for-6.9
+
+for you to fetch changes up to 69b6d71052b54fb10feba68564ccb41c0f0ce1e9:
+
+  Smack: use init_task_smack() in smack_cred_transfer() (2024-02-14 10:47:06 -0800)
+
+----------------------------------------------------------------
+Smack updates for v6.9.
+
+Improvements to the initialization of in-memory inodes.
+A fix in ramfs to propery ensure the initialization of
+in-memory inodes.
+Removal of duplicated code in smack_cred_transfer().
+
+----------------------------------------------------------------
+Casey Schaufler (1):
+      Smack: use init_task_smack() in smack_cred_transfer()
+
+Roberto Sassu (5):
+      smack: Set SMACK64TRANSMUTE only for dirs in smack_inode_setxattr()
+      smack: Handle SMACK64TRANSMUTE in smack_inode_setsecurity()
+      smack: Always determine inode labels in smack_inode_init_security()
+      smack: Initialize the in-memory inode in smack_inode_init_security()
+      ramfs: Initialize security of in-memory inodes
+
+ fs/ramfs/inode.c           |  32 +++++++++++++-
+ security/smack/smack_lsm.c | 102 +++++++++++++++++++++++++--------------------
+ 2 files changed, 87 insertions(+), 47 deletions(-)
+
 
