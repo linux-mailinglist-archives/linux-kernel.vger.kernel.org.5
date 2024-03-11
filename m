@@ -1,230 +1,209 @@
-Return-Path: <linux-kernel+bounces-99170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31461878467
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:01:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1DC887846D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 17:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3FBA1F2110C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:01:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4344F1F21249
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 16:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A831F4503F;
-	Mon, 11 Mar 2024 16:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="I3lQTwkg"
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3344AEC0;
+	Mon, 11 Mar 2024 16:01:27 +0000 (UTC)
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168851B599
-	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 16:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 499D8481C7;
+	Mon, 11 Mar 2024 16:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710172869; cv=none; b=R5W4gOwGA2yzb1y7OoCHqszCgYEJw+D6Fn7DRsoNwaaQXeA6AzwADwvJXnGAZxFN6j9mLjGAviwCgnckWDBFjDJzCahHGbf6naRH+mMnpyfLOKBb3a3eVnAxP2Tex0OrlhFaqtn30It1CwYRRuHIefh2YUyWfQIelr2d5Ccph7Y=
+	t=1710172886; cv=none; b=dar8FgKPKHvvxdTusA+DClLOkUbgr53S1ERZy4QKwCMmkedB9itSq3z+znVZbvn9l9b44fpCHvlS0XJyHHMnX5jFZDvCFVz8VC7imruDPSsRvINapbmcRWJrhTIdbEvDaF/K65ckJp++/iNg/0OLJhrDVfmm+/R6uSyB/EYMJTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710172869; c=relaxed/simple;
-	bh=XNQK/9H9S/TRV1NaA5lRp99yrcK2KjfLQCczuJnqzks=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s2BYBK56qsC0q1DJb8uqHlWKKJ3x/mt/g4ujC2yXRb/YeZZapDdecJBKSbLGK8hvs29CD/m1MCno4A+JYdtELVb8Fe1D5OPAYBbTcoSNXINQQ5t4trvhIBGguvu5dVPbIWgFtUn5IPzflqrro4KcY3UeimmItiQ0I3KEh/dDSBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=I3lQTwkg; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-690d103a16fso8331616d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710172867; x=1710777667; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D1N7co8NWWbrgWO/PhCUEvz9SlxrSNp3j8wIFjBPjv4=;
-        b=I3lQTwkgg3r+7fykGpEbuvampZ89nWaFoVpxl3TB282cE8mkcA6vkUEsCSpkOarspU
-         wga5UdxEA9nq9+PZUHw3xLWZ0bdkjV/9XBni5uJ0YY52yF8uigMpXgMcEIaYs7XKX4GG
-         lH2zfMLjwD0h/uxN86d4oIKzzRV+alIxl3sFQ=
+	s=arc-20240116; t=1710172886; c=relaxed/simple;
+	bh=spDxJWO92dYpglndypBxFdVLYfWnGC2H1RBYNFmayJo=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=RcX988LwBx4ajR4VD73fu9zzq4w+2jiJnnsEBwEkW3KfBMKZGjfztk/PeQaw8yyZwV+g22RGWMZXTVQMU0y0xJk07af8RX/ZPK3p63FEVo2LyLpnNPoKFmFfCZsN7OH3k0Ejp4xIZeqf+usFH/gtZWqp8s9lAZ5cLXmVk2shzjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-220ce420472so1454776fac.1;
+        Mon, 11 Mar 2024 09:01:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710172867; x=1710777667;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D1N7co8NWWbrgWO/PhCUEvz9SlxrSNp3j8wIFjBPjv4=;
-        b=ZV6xOQUkO0GLCXdPtEsvAzoPrTsySfklEwJP9I3AYA39yUxhcTBjrML2ZipYtqoZoo
-         Nrci7ogJ24Ace2Hi2M988iw1Y5eydTvET8g+TKCAVzCcqnQFsY+sU07lmZY9VZTxF4go
-         RCWjkrERQ9Rif6k511nqGOBvAp1wWaGS699OO9bRpRjTg/IA2dk9hd9nRfUbXUvmuZcj
-         BY077lfXjXuRAQSk/k55ULZMzXohMCD8omxTxJ+MjPztKDTfx6sLR6bXdFAoPBovwS4D
-         XJF9avAE+QMWnYgkQTVrRgTAqWAqeN4amQvhvtJyd5m1s4DHuaWevj8hqaxnwFksKcHY
-         Si2g==
-X-Gm-Message-State: AOJu0YyQZsdBn4GZvvrDStzHObaLibkgm5yJI+zEMM6OdMaoDOKxvBHU
-	dte4wmNhayJNVznfAvNDyBJErqTqqaa0VWk0sBFlHRi02sYuG3HxsdjiNNSouwI=
-X-Google-Smtp-Source: AGHT+IEedX26MR8qvP2/dUT7bPe3lDS7rpbDNaTSAZ7d+VClyScny+YtPHr9raeMpVjPgfxQIxx5PA==
-X-Received: by 2002:a05:6214:17c7:b0:690:cf9c:f568 with SMTP id cu7-20020a05621417c700b00690cf9cf568mr3778333qvb.14.1710172866793;
-        Mon, 11 Mar 2024 09:01:06 -0700 (PDT)
-Received: from [10.5.0.2] ([91.196.69.182])
-        by smtp.gmail.com with ESMTPSA id g12-20020a0cf84c000000b00690b8a0e537sm2728405qvo.21.2024.03.11.09.01.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 09:01:05 -0700 (PDT)
-Message-ID: <4e66c40b-5ac9-4b39-b3f6-f963f90d2b33@joelfernandes.org>
-Date: Mon, 11 Mar 2024 12:01:04 -0400
+        d=1e100.net; s=20230601; t=1710172884; x=1710777684;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WRJDUbmCO2USSChQ6z+l2fPpbRAxlnCr5YaUGmQ1gYg=;
+        b=W7Ftv9lwR6FOCjDOV8Q0t4NmitonRUxU+XznV7O4GnNujG1a0SkwXrCKpFVD67XzS6
+         eV4GjbrAL9wJ33Kx6eysypAAS6GBTKYNiTcg9f1qB8fdSxwiYUvzKzilMMvY7Fseqa9m
+         9vYjoYt++Cs0li1jGyIpcBgcdl36eyIV743MrYQlnxu8OMQwcAncQA8auvMhdTQ1GVBg
+         0MWi/W5qSEY4tL/kt8E2DUiJv/fMA8e2DNLeUlYOwUqU6MsuwEkyzhGxgYxwbb1WnXyo
+         7C6A9h+YzDT9L2UL4oWJYvNXpdAu+177N+vHS1iWhDRoqwSMad//4LAH6j49+2Zv1iVE
+         sYVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTJYMMGcWNMNzoMX8Ztjq0xOxLGeOKP9UOn8UIQB7qi6tSyC4QvqE1sL3thkz/x1vC38sk/a8POcxHTDAk2rPxl8UqRbJJgL8wSa4Gyu1YuGFDSZftRQdrAddih7vUBqLIA0qWRj6UMg==
+X-Gm-Message-State: AOJu0Yw2jKvld29PYZPbOLlgWa+yGzOy70zKGQnJ6QIL6AH5XAKLzlAr
+	GSoh4Q/tLKlV+ZmTJIzebKz0YN/+Glv0sUUnFHmP4QXSsAAqDObRokNF7GLwzuO8vfl2iGiO3M3
+	7NIci5rs6I4qZv+I1/EJ08NM3NP4=
+X-Google-Smtp-Source: AGHT+IFNohavfWXuSkU+2HXKlvZAwheN54+g4aqnyDfXAlGylKTxjFn7Bb4h8M1nCkwqlNICMbZYVPhBDPgos4qb4L8=
+X-Received: by 2002:a05:6870:168f:b0:221:bdc9:6a1d with SMTP id
+ j15-20020a056870168f00b00221bdc96a1dmr6762240oae.2.1710172884346; Mon, 11 Mar
+ 2024 09:01:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 rcu/dev 2/2] rcu/tree: Add comments explaining
- now-offline-CPU QS reports
-Content-Language: en-US
-To: paulmck@kernel.org
-Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
- urezki@gmail.com, neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
- rostedt@goodmis.org, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
-References: <20240308224439.281349-1-joel@joelfernandes.org>
- <20240308224439.281349-2-joel@joelfernandes.org>
- <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 11 Mar 2024 17:01:13 +0100
+Message-ID: <CAJZ5v0i-nMb_TiYUxEQvzuUER_6fAs8Or96EU1isyrAywMPm1w@mail.gmail.com>
+Subject: [GIT PULL] Thermal control updates for v6.9-rc1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux PM <linux-pm@vger.kernel.org>, 
+	ACPI Devel Maling List <linux-acpi@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Linus,
+
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ thermal-6.9-rc1
+
+with top-most commit dcb497ec993265dfc5fffa60b486c1ad353e9ad5
+
+ Merge branches 'thermal-core' and 'thermal-intel'
+
+on top of commit 841c35169323cd833294798e58b9bf63fa4fa1de
+
+ Linux 6.8-rc4
+
+to receive thermal control updates for 6.9-rc1.
+
+These mostly change the thermal core in a few ways allowing thermal
+drivers to be simplified, in particular in their removal and failing
+probe handling parts that are notoriously prone to errors, and propagate
+the changes to several drivers.
+
+Apart from that, support for a new platform is added (Intel Lunar
+Lake-M), some bugs are fixed and some code is cleaned up, as usual.
+
+Specifics:
+
+ - Store zone trips table and zone operations directly in struct
+   thermal_zone_device (Rafael Wysocki).
+
+ - Fix up flex array initialization during thermal zone device
+   registration (Nathan Chancellor).
+
+ - Rework writable trip points handling in the thermal core and
+   several drivers (Rafael Wysocki).
+
+ - Thermal core code cleanups (Dan Carpenter, Flavio Suligoi).
+
+ - Use thermal zone accessor functions in the int340x Intel thermal
+   driver (Rafael Wysocki).
+
+ - Add Lunar Lake-M PCI ID to the int340x Intel thermal driver (Srinivas
+   Pandruvada).
+
+ - Minor fixes for thermal governors (Rafael Wysocki, Di Shen).
+
+ - Trip point handling fixes for the iwlwifi wireless driver (Rafael
+   Wysocki).
+
+ - Code cleanups (Rafael Wysocki, AngeloGioacchino Del Regno).
+
+Thanks!
 
 
+---------------
 
-On 3/10/2024 3:43 PM, Paul E. McKenney wrote:
-> On Fri, Mar 08, 2024 at 05:44:38PM -0500, Joel Fernandes (Google) wrote:
->> This a confusing piece of code (rightfully so as the issue it deals with
->> is complex). Recent discussions brought up a question -- what prevents the
->> rcu_implicit_dyntick_qs() from warning about QS reports for offline
->> CPUs.
->>
->> QS reporting for now-offline CPUs should only happen from:
->> - gp_init()
->> - rcutree_cpu_report_dead()
->>
->> Add some comments to this code explaining how QS reporting is not
->> missed when these functions are concurrently running.
->>
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> Thank you for putting this together!
-> 
-> A couple of questions below.
-> 
-> 							Thanx, Paul
-> 
->> ---
->>  kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++++++-
->>  1 file changed, 35 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index bd29fe3c76bf..f3582f843a05 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -1917,7 +1917,22 @@ static noinline_for_stack bool rcu_gp_init(void)
-> 
-> Would it make sense to tag the earlier arch_spin_lock(&rcu_state.ofl_lock)
-> as preventing grace period from starting concurrently with
-> rcutree_report_cpu_dead()?
+AngeloGioacchino Del Regno (1):
+      thermal: core: Change governor name to const char pointer
 
-Yes, that makes sense.
+Dan Carpenter (1):
+      thermal: core: remove unnecessary check in trip_point_hyst_store()
 
-> 
->>  		trace_rcu_grace_period_init(rcu_state.name, rnp->gp_seq,
->>  					    rnp->level, rnp->grplo,
->>  					    rnp->grphi, rnp->qsmask);
->> -		/* Quiescent states for tasks on any now-offline CPUs. */
->> +		/*
->> +		 * === Quiescent states for tasks on any now-offline CPUs. ===
->> +		 *
->> +		 * QS reporting for now-offline CPUs should only be performed from
->> +		 * either here, i.e., gp_init() or from rcutree_report_cpu_dead().
->> +		 *
->> +		 * Note that, when reporting quiescent states for now-offline CPUs,
->> +		 * the sequence of code doing those reports while also accessing
->> +		 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
->> +		 * that QS reporting is not missed! Otherwise it possible that
->> +		 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
->> +		 * the rnp->lock acquired throughout these QS-reporting
->> +		 * sequences, which is also acquired in
->> +		 * rcutree_report_cpu_dead(), so, acquiring ofl_lock is not
->> +		 * necessary here to synchronize with that function.
->> +		 */
-> 
-> Would it be better to put the long-form description in the "Hotplug
-> CPU" section of Documentation/RCU/Design/Requirements/Requirements.rst?
+Di Shen (1):
+      thermal: gov_power_allocator: Avoid overwriting PID coefficients
+from setup time
 
-Yes, totally. In fact I see the following already in Requirements.rst Hotplug
-section:
+Flavio Suligoi (1):
+      thermal: core: Remove excess empty line from a comment
 
-During the checking/modification of RCU's hotplug bookkeeping, the
-corresponding CPU's leaf node lock is held. This avoids race conditions
-between RCU's hotplug notifier hooks, the grace period initialization
-code, and the FQS loop, all of which refer to or modify this bookkeeping.
---
+Nathan Chancellor (1):
+      thermal: core: Move initial num_trips assignment before memcpy()
 
-So I/we could just expand it there and refer to the .rst from the code.
+Rafael J. Wysocki (22):
+      thermal: gov_fair_share: Fix dependency on trip points ordering
+      thermal: gov_bang_bang: Fix possible cooling device state ping-pong
+      iwlwifi: mvm: Drop unused fw_trips_index[] from iwl_mvm_thermal_device
+      iwlwifi: mvm: Populate trip table before registering thermal zone
+      iwlwifi: mvm: Use for_each_thermal_trip() for walking trip points
+      thermal: sysfs: Fix up white space in trip_point_temp_store()
+      thermal: core: Store zone trips table in struct thermal_zone_device
+      thermal: ACPI: Discard trips table after zone registration
+      thermal: intel: Discard trip tables after zone registration
+      thermal: core: Store zone ops in struct thermal_zone_device
+      thermal: ACPI: Constify acpi_thermal_zone_ops
+      thermal: intel: Adjust ops handling during thermal zone registration
+      thermal: Get rid of CONFIG_THERMAL_WRITABLE_TRIPS
+      thermal: core: Add flags to struct thermal_trip
+      thermal: core: Drop the .set_trip_hyst() thermal zone operation
+      thermal: intel: Set THERMAL_TRIP_FLAG_RW_TEMP directly
+      mlxsw: core_thermal: Set THERMAL_TRIP_FLAG_RW_TEMP directly
+      wifi: iwlwifi: mvm: Set THERMAL_TRIP_FLAG_RW_TEMP directly
+      thermal: imx: Set THERMAL_TRIP_FLAG_RW_TEMP directly
+      thermal: of: Set THERMAL_TRIP_FLAG_RW_TEMP directly
+      thermal: core: Eliminate writable trip points masks
+      thermal: intel: int340x_thermal: Use thermal zone accessor functions
 
-> I will be the first to admit that this section is not as detailed as it
-> needs to be.  This section is already referenced by the block comment
-> preceding the WARN_ON_ONCE() in rcu_implicit_dyntick_qs(), which is
-> where people will look first if any of this gets messed up.
+Srinivas Pandruvada (1):
+      thermal: int340x: processor_thermal: Add Lunar Lake-M PCI ID
 
-Yes great point, and it is referenced in rcu_gp_init() as well.
-> 
-> Then these other places can refer to that comment or to that section of
-> Requirements.rst, allowing them to focus on the corresponding piece of
-> the puzzle.
+Zhang Rui (1):
+      thermal/intel: Fix intel_tcc_get_temp() to support negative CPU
+temperature
 
-Makes sense.
+---------------
 
->>  		mask = rnp->qsmask & ~rnp->qsmaskinitnext;
->>  		rnp->rcu_gp_init_mask = mask;
->>  		if ((mask || rnp->wait_blkd_tasks) && rcu_is_leaf_node(rnp))
->> @@ -5116,6 +5131,25 @@ void rcutree_report_cpu_dead(void)
->>  	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
->>  	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
->>  	rdp->rcu_ofl_gp_state = READ_ONCE(rcu_state.gp_state);
->> +
->> +	/*
->> +	 * === Quiescent state reporting for now-offline CPUs ===
->> +	 *
->> +	 * QS reporting for now-offline CPUs should only be performed from
->> +	 * either here, i.e. rcutree_report_cpu_dead(), or gp_init().
->> +	 *
->> +	 * Note that, when reporting quiescent states for now-offline CPUs,
->> +	 * the sequence of code doing those reports while also accessing
->> +	 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
->> +	 * that QS reporting is not missed! Otherwise it possible that
->> +	 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
->> +	 * the rnp->lock acquired throughout these QS-reporting sequences, which
->> +	 * is also acquired in gp_init().
->> +	 * One slight change to this rule is below, where we release and
->> +	 * reacquire the lock after a QS report, but before we clear the
->> +	 * ->qsmaskinitnext bit. That is OK to do, because gp_init() report a
->> +	 * QS again, if it acquired the rnp->lock before we reacquired below.
->> +	 */
-> 
-> And then this need only say what is happening right here, but possibly
-> moved to within the following "if" statement, at which point we know that
-> we are in a grace period that cannot end until we report the quiescent
-> state (which releases the rcu_node structure's ->lock) and a new grace
-> period cannot look at this rcu_node structure's ->qsmaskinitnext until
-> we release rcu_state.ofl_lock.
-
-Yes, it makes sense and we should mention the ofl_lock as well as you note.
-
-I have an trip starting in 2 weeks that goes on for 3 weeks shortly so I'm
-scrambling a bit for time, and may get to this only after. If Neeraj is
-interested in documenting this, he is more than welcome, especially since he
-also understands this code very well ;-).
-
-(See what I did there with the 'also' ? :P)
-
-thanks,
-
- - Joel
-
-
-
+ arch/arm/configs/imx_v6_v7_defconfig               |  1 -
+ drivers/acpi/thermal.c                             | 61 +++++++----------
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_thermal.c |  2 +-
+ drivers/net/ethernet/mellanox/mlxsw/core_thermal.c | 12 ++--
+ drivers/net/wireless/intel/iwlwifi/mvm/mvm.h       |  2 -
+ drivers/net/wireless/intel/iwlwifi/mvm/tt.c        | 73 ++++++++++----------
+ drivers/platform/x86/acerhdf.c                     |  2 +-
+ drivers/thermal/Kconfig                            | 11 ----
+ drivers/thermal/da9062-thermal.c                   |  2 +-
+ drivers/thermal/gov_bang_bang.c                    |  2 +-
+ drivers/thermal/gov_fair_share.c                   | 16 +++--
+ drivers/thermal/gov_power_allocator.c              |  2 +
+ drivers/thermal/imx_thermal.c                      |  6 +-
+ drivers/thermal/intel/Kconfig                      |  2 -
+ .../intel/int340x_thermal/int340x_thermal_zone.c   | 43 ++++--------
+ .../intel/int340x_thermal/int340x_thermal_zone.h   |  2 -
+ .../int340x_thermal/processor_thermal_device.c     |  8 +--
+ .../int340x_thermal/processor_thermal_device.h     |  1 +
+ .../int340x_thermal/processor_thermal_device_pci.c | 13 ++--
+ drivers/thermal/intel/intel_pch_thermal.c          | 28 ++++----
+ drivers/thermal/intel/intel_quark_dts_thermal.c    | 34 ++++------
+ drivers/thermal/intel/intel_soc_dts_iosf.c         | 77 +++++++++-------------
+ drivers/thermal/intel/intel_soc_dts_iosf.h         |  2 -
+ drivers/thermal/intel/intel_tcc.c                  | 12 ++--
+ drivers/thermal/intel/x86_pkg_temp_thermal.c       | 47 +++++--------
+ drivers/thermal/rcar_thermal.c                     |  2 +-
+ drivers/thermal/st/st_thermal.c                    |  2 +-
+ drivers/thermal/thermal_core.c                     | 76 +++++++++------------
+ drivers/thermal/thermal_core.h                     |  2 +-
+ drivers/thermal/thermal_helpers.c                  | 10 +--
+ drivers/thermal/thermal_hwmon.c                    |  4 +-
+ drivers/thermal/thermal_of.c                       | 37 ++++-------
+ drivers/thermal/thermal_sysfs.c                    | 38 +++++------
+ drivers/thermal/thermal_trip.c                     |  6 +-
+ include/linux/intel_tcc.h                          |  2 +-
+ include/linux/thermal.h                            | 37 ++++++-----
+ 36 files changed, 282 insertions(+), 395 deletions(-)
 
