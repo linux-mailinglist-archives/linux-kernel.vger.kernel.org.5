@@ -1,103 +1,101 @@
-Return-Path: <linux-kernel+bounces-98893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5BAB8780C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:41:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01F368780C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 14:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70B50283A98
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:41:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93D581F21BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 13:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1333A3DB89;
-	Mon, 11 Mar 2024 13:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3039222064;
+	Mon, 11 Mar 2024 13:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="hTDPl9nL"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rDK09Sbx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C7222064;
-	Mon, 11 Mar 2024 13:40:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772D43FB21
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 13:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710164459; cv=none; b=NS0ATb5baIdECZbqUdV3IICU6qDfWDNWFrnYn2P6YCSLcYQS3b4mrve9L+EWKjMLTql3ij2hkI/xboWAcM9qnGqpZedJL+ie2NoIpjWzWh2whleQ/O5DZc9X0NoFunwELuTvDOXIjikGbNotaJW9BtNXUnlnpkyF+rvOXiQDur8=
+	t=1710164527; cv=none; b=faflU63AbSV4xbaSHhWVML4lKYwCChr/JhyCwM6LI2FBKvlZkVAPXqVNDEsnN6Zyz7dStfvTe8i6ZeFN9rZVK+9tejO36lqrinS88mcqQhQ6vCqmDILyM4nSZL2YqT6ohe7KDZGRK3aPYSdiBq6E7YIzI8dWy2O1EIx89BnIEWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710164459; c=relaxed/simple;
-	bh=k+J8N5R8sr7l5fncY01oycsxa0zAXE4WNpZdcwc6X9Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=afLgtvtwzX4ZjbL+zaTwXIBEhVSKoyc0puTFhYbuu7piRZ+tjpR1wON+by8NO9kMoA4eqUobw9xypoBWx2/3w9A5aNmqQkZOdIQtrNQa8wWqOuLy7KQMeHDHUoJBPGy52lGYiijjVScOZsZs9vxWTD8CUu6lR/P7/0Ryos9qerg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=hTDPl9nL; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=8VK8L/sGnEGTTfqH1UQDPWwZhR03D/2fXwjVW002TQ0=; t=1710164457;
-	x=1710596457; b=hTDPl9nLiGf5O3Y/gje7aXRVQqDjgIQTwOTZJYSpfcxelPJ8FWYlF8qRKdqav
-	LBtXVS3LBlJevgF0aVOtUEtpzMs7stzqchyOjJYdy6cvqtpYE6Sy0jl+kcamHLubgAuBPMNHazSY6
-	f92n6QaCKURAwvZhOEchsj6xHLU8ykPF4zPFoRcF2DhRo8FjRkZUR/DUa3fiamgQFYW4Dx+hbC2u8
-	0ZNom6PRJOkq7cp28NZmvwYR5eqNs/VO4iTDKyA1QHxIXwoW5TXtGSb7+C3VQsXjs/mrFyczGAYQk
-	MFdcLQb6JbYsZ+Tl4Pm3O1u69WWGdIvivMT0x4kLk0AdAuv19A==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rjftb-0007K8-8v; Mon, 11 Mar 2024 14:40:51 +0100
-Message-ID: <e73a0418-33ad-470d-8740-97694e6dd6b1@leemhuis.info>
-Date: Mon, 11 Mar 2024 14:40:51 +0100
+	s=arc-20240116; t=1710164527; c=relaxed/simple;
+	bh=GBZJtwDWuIO+GSAmxpBqcvQHRzPIx+s/dcBLIqAv15w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f/ebTdhmEhhKxVDJZohiTmTlmDpyxiOidY28sxF0PyuIl1iVVehJGnvGOnirJ3zWPDDP4Bi6FM+FYAttSikoXQWfuh8aF2X4EDQkw2Ky0LL0rcvdiH7Q1v+pdKdCaw1sRBW74T5kvDdhb8kDLhPG4UzYlug0dW8Kgn2HAfn4qlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rDK09Sbx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2530C433C7;
+	Mon, 11 Mar 2024 13:42:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710164527;
+	bh=GBZJtwDWuIO+GSAmxpBqcvQHRzPIx+s/dcBLIqAv15w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rDK09SbxurXhUorcOf6awSEAQvnvNLlxJLmf9KRq/b2egdLPROcJkjVRaDN4kyvsT
+	 oXn23UW1E2sJK0JEkx4NL/2CXElPinlkkjpd7eoCpiJPamEEYyLEUv9ggR/0f3KaXI
+	 QPAFx1hqABrcy7dUMY4ax6zJxaBGkvBH9QP9nbUPGJDsgN7KSQi7r6PFom4o8zfNzL
+	 NpD2zYXAg8sF3N7nBrk4jXcv0zJam+Sywn/HMjytc+95TTva/Z3mOm6c5ZZQeBnjoi
+	 K7FWsMaC/PiUP9k0LNtINsI+zqTIty2LNI5oLUiUAvMtEWZcRxt19jTI6GVTjZQjVF
+	 Dm60qwKkpuHbw==
+Date: Mon, 11 Mar 2024 13:42:02 +0000
+From: Lee Jones <lee@kernel.org>
+To: Michal Hocko <mhocko@suse.com>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Juergen Gross <jgross@suse.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Cooper <Andrew.Cooper3@citrix.com>
+Subject: Re: CVE-2023-52514: x86/reboot: VMCLEAR active VMCSes before
+ emergency reboot
+Message-ID: <20240311134202.GQ86322@google.com>
+References: <2024030251-CVE-2023-52514-c93d@gregkh>
+ <Ze7d0YCDKdu_LJWc@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] docs: handling-regressions.rst: Update regzbot
- command fixed-by to fix
-Content-Language: en-US, de-DE
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: kernel@collabora.com, regressions@lists.linux.dev,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- workflows@vger.kernel.org
-References: <20240308-regzbot-fixes-v1-0-577a4fe16e12@collabora.com>
- <20240308-regzbot-fixes-v1-2-577a4fe16e12@collabora.com>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20240308-regzbot-fixes-v1-2-577a4fe16e12@collabora.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1710164457;edbd8592;
-X-HE-SMSGID: 1rjftb-0007K8-8v
+In-Reply-To: <Ze7d0YCDKdu_LJWc@tiehlicka>
 
-Thx for this!
+On Mon, 11 Mar 2024, Michal Hocko wrote:
 
-On 08.03.24 15:10, Nícolas F. R. A. Prado wrote:
-> On the reference documentation for regzbot, the fixed-by command has
-> been renamed to fix. Update the kernel documentation accordingly.
+> On Sat 02-03-24 22:52:59, Greg KH wrote:
+> > Description
+> > ===========
+> > 
+> > In the Linux kernel, the following vulnerability has been resolved:
+> > 
+> > x86/reboot: VMCLEAR active VMCSes before emergency reboot
+> > 
+> > VMCLEAR active VMCSes before any emergency reboot, not just if the kernel
+> > may kexec into a new kernel after a crash.  Per Intel's SDM, the VMX
+> > architecture doesn't require the CPU to flush the VMCS cache on INIT.  If
+> > an emergency reboot doesn't RESET CPUs, cached VMCSes could theoretically
+> > be kept and only be written back to memory after the new kernel is booted,
+> > i.e. could effectively corrupt memory after reboot.
+> > 
+> > Opportunistically remove the setting of the global pointer to NULL to make
+> > checkpatch happy.
+> > 
+> > The Linux kernel CVE team has assigned CVE-2023-52514 to this issue.
 > 
-> Link: https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-> Link: https://gitlab.com/knurd42/regzbot/-/commit/6d8d30f6bda84e1b711121bb98a07a464d3f089a
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-
-Reviewed-by: Thorsten Leemhuis <linux@leemhuis.info>
-
-> ---
->  Documentation/process/handling-regressions.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I do not really see the security aspect of this fix. Guests systems
+> shouldn't be able to trigger host reboot nor any untrusted entity should
+> on the host either or this would be a serious security hole.
 > 
-> diff --git a/Documentation/process/handling-regressions.rst b/Documentation/process/handling-regressions.rst
-> index 42b13f77b019..ce6753a674f3 100644
-> --- a/Documentation/process/handling-regressions.rst
-> +++ b/Documentation/process/handling-regressions.rst
-> @@ -432,7 +432,7 @@ or itself is a reply to that mail:
->   * Mark a regression as fixed by a commit that is heading upstream or already
->     landed::
->  
-> -       #regzbot fixed-by: 1f2e3d4c5d
-> +       #regzbot fix: 1f2e3d4c5d
->  
->   * Mark a regression as a duplicate of another one already tracked by regzbot::
->  
-> 
+> Or am I missing something?
+
+Thanks for reporting.
+
+If Sean and/or Paolo agree, we can revoke the CVE for you.
+
+-- 
+Lee Jones [李琼斯]
 
