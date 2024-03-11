@@ -1,45 +1,39 @@
-Return-Path: <linux-kernel+bounces-98653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-98654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD62877D71
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:56:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DE61877D72
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 10:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E0B61F22063
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:56:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E5AB1F21F28
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Mar 2024 09:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7C8224F2;
-	Mon, 11 Mar 2024 09:55:43 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1177214298;
-	Mon, 11 Mar 2024 09:55:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827B32BAF2;
+	Mon, 11 Mar 2024 09:55:52 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C08B14298
+	for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 09:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710150943; cv=none; b=Qe5MENJPU2cPEi7L2x6yh5IB2cohRRwKru2EbpZ2zuyLV1FU9zMh8k65or682PzVCK6oNxG1zk+dUnsSTRcXWimOIO/6LNz1sBf93kiT2dhtiPiXanZUKi3/diZ+mxGZzxpi3YW3WW3e/VRoZOlRyhDz3ax+JhlQG+bTCyv0LK0=
+	t=1710150952; cv=none; b=tc3dYq+eN0hX9KmL2tkf/aNjbQ5SDPLItBbkdZDoA4HGNyIBZvvWGPZQNW20/mrU9NfbmN2D72hYNBbR5sHz5J4P0boWLFg8Hyddt1eObG8YP5FHEWJIpgigb0ELWlQKhgpH4qHm5qOFddMMYnEXk4ua24qVxUdMHwvznZ236Eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710150943; c=relaxed/simple;
-	bh=/G1pRxVpybCCgbzIYw/qaSFDYYkjvbz6HGEWdab+gl8=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=QSBjK9ny9drztieMgz/pTV5sF+HRkTGkkT8Yr+Vm9Z/iv40rvT+4MbRkjlOzJWu5ehGa0EQdBvvKZa+wtNebQCsWCDvzZS57QcEsbu+sY4HjFENE4M607uSMfU2iDwoXCEPdbAlOYOO+rJhhktV0pmP7Hz+62HiIsCdT/p1K/jg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TtXFl63Hvz24j5C;
-	Mon, 11 Mar 2024 17:55:23 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 52B56140155;
-	Mon, 11 Mar 2024 17:55:37 +0800 (CST)
-Received: from [10.67.120.192] (10.67.120.192) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 17:55:36 +0800
-Message-ID: <d9d10da3-5b13-4a48-9236-d29fdf48220e@huawei.com>
-Date: Mon, 11 Mar 2024 17:55:36 +0800
+	s=arc-20240116; t=1710150952; c=relaxed/simple;
+	bh=PVQ0nLXJeQRQT9nyBVKRT/9QcfjaLIzaAdJ3AvAhDxQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T8yC7SIHMcJ79uI34g34pRY+DMBRMks+BmKSwBEKLcjUhTA5yFiBO+aUfzPDeVlX4hnKqX8/Q/zMvMTYNrXtmlBxEPwVE4Fl1k2ZG3AKkqCMVK/DiRfzpChH7F8OOlCl/bJKUNejjmHAMSQHCcCrBi/TXj8zoTG+Zje3KdVYv14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E748FEC;
+	Mon, 11 Mar 2024 02:56:26 -0700 (PDT)
+Received: from [10.57.68.246] (unknown [10.57.68.246])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E8603F762;
+	Mon, 11 Mar 2024 02:55:46 -0700 (PDT)
+Message-ID: <37bc1a30-7613-4404-b123-c351e36fc800@arm.com>
+Date: Mon, 11 Mar 2024 09:55:44 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,38 +41,74 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
-	<salil.mehta@huawei.com>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <jiri@resnulli.us>,
-	<shenjian15@huawei.com>, <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V5 net-next 4/4] net: hns3: add support to query scc
- version by devlink info
-To: Simon Horman <horms@kernel.org>
-References: <20240309100044.2351166-1-shaojijie@huawei.com>
- <20240309100044.2351166-5-shaojijie@huawei.com>
- <20240311091904.GA24043@kernel.org>
-From: Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <20240311091904.GA24043@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
+ madvise_free
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>, Lance Yang <ioworker0@gmail.com>,
+ Vishal Moola <vishal.moola@gmail.com>, akpm@linux-foundation.org,
+ zokeefe@google.com, shy828301@gmail.com, mhocko@suse.com,
+ fengwei.yin@intel.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com,
+ songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240307061425.21013-1-ioworker0@gmail.com>
+ <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
+ <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
+ <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
+ <501c9f77-1459-467a-8619-78e86b46d300@arm.com>
+ <8f84c7d6-982a-4933-a7a7-3f640df64991@redhat.com>
+ <e6bc142e-113d-4034-b92c-746b951a27ed@redhat.com>
+ <d24f8553-33f2-4ae7-a06d-badaf9462d84@arm.com>
+ <CAGsJ_4za-2xpg21phWi2WWLF1iPXhoc1xM__FDTwYYBBKsTPgw@mail.gmail.com>
+ <a07deb2c-49e1-4324-8e70-e897605faa9d@redhat.com>
+ <b1bf4b62-8e9b-470f-a300-d13c24177688@arm.com>
+ <b174d4e1-e1ef-4766-91bc-de822eee30fb@redhat.com>
+ <CAGsJ_4xXS0MsxRVTbf74DY_boQVUE2oP=AP6JmdXZSqsAOZzRQ@mail.gmail.com>
+ <f3b1cb43-cb33-4db4-a3dd-0c787e30b113@arm.com>
+ <CAGsJ_4wGe9SdMvojw_2XchEttrbww3RttoOENoF-O4bLWUd_rw@mail.gmail.com>
+ <60dc7309-cb38-45e3-b2c0-ff0119202a12@arm.com>
+ <CAGsJ_4yaJ5weXd8N=zwoo1xa8jvEdZnFOGQ0pjUXB1EUsrRTcA@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4yaJ5weXd8N=zwoo1xa8jvEdZnFOGQ0pjUXB1EUsrRTcA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600007.china.huawei.com (7.193.23.208)
 
+[...]
 
-on 2024/3/11 17:19, Simon Horman wrote:
->> +#define HNAE3_SCC_VERSION_BYTE1_SHIFT	8
->> +#define HNAE3_SCC_VERSION_BYTE1_MASK	GENMASK(15, 8)
->> +#define HNAE3_SCC_VERSION_BYTE0_SHIFT	0
->> +#define HNAE3_SCC_VERSION_BYTE0_MASK	GENMASK(7, 0)
-> Not strictly related to this patch, but FWIIW, I suspect that
-> hnae3_set_field() and hnae3_get_field() could be reworked to use / replaced
-> by use of FIELD_PREP and FIELD_GET.  In which case I suspect that the
-> *_SHIFT #defines would no longer be needed.
+>>>>> we don't want reclamation overhead later. and we want memories immediately
+>>>>> available to others.
+>>>>
+>>>> But by that logic, you also don't want to leave the large folio partially mapped
+>>>> all the way until the last subpage is CoWed. Surely you would want to reclaim it
+>>>> when you reach partial map status?
+>>>
+>>> To some extent, I agree. But then we will have two many copies. The last
+>>> subpage is small, and a safe place to copy instead.
+>>>
+>>> We actually had to tune userspace to decrease partial map as too much
+>>> partial map both unfolded CONT-PTE and wasted too much memory. if a
+>>> vma had too much partial map, we disabled mTHP on this VMA.
+>>
+>> I actually had a whacky idea around introducing selectable page size ABI
+>> per-process that might help here. I know Android is doing work to make the
+>> system 16K page compatible. You could run most of the system processes with 16K
+>> ABI on top of 4K kernel. Then those processes don't even have the ability to
+>> madvise/munmap/mprotect/mremap anything less than 16K alignment so that acts as
+>> an anti-fragmentation mechanism while allowing non-16K capable processes to run
+>> side-by-side. Just a passing thought...
+> 
+> Right, this project faces a challenge in supporting legacy
+> 4KiB-aligned applications.
+> but I don't find it will be an issue to run 16KiB-aligned applications
+> on a kernel whose
+> page size is 4KiB.
 
-Yes, using FIELD_PREP and FIELD_GET is a better option.
-But I'm not going to modify this patch.
-If it's necessary, I will send a cleanup patch later to
-replace all hnae3_set_field/hnae3_get_field in driver.
+Yes, agreed that a 16K-aligned (or 64K-aligned) app will work without issue on
+4K kernel, but it will also use getpagesize() and know what the page size is.
+I'm suggesting you could actually run these apps on a 4K kernel but with a 16K
+ABI and potentially get close to the native 16K performance out of them. It's
+just a thought though - I don't have any data that actually shows this is better
+than just running on a 4K kernel with a 4K ABI, and using 16K or 64K mTHP
+opportunistically.
 
 
