@@ -1,82 +1,408 @@
-Return-Path: <linux-kernel+bounces-100377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6B41879684
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:39:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42DD2879689
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1483284526
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:39:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9A1284538
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8346E7AE7D;
-	Tue, 12 Mar 2024 14:39:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D355F7BB0A;
+	Tue, 12 Mar 2024 14:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qk15nKWb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gx7jBqVl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA9978286;
-	Tue, 12 Mar 2024 14:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FA87A72C
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710254343; cv=none; b=fuF8PQXmiVEhylsSB+J1wWCZIf780eVqJszUPSIu+aYwOQR5G+Cdx0b2644CGEktnXvmthu306BuUyksORWQxuHQviV2tIOTkZP/vmntqM2L29/K+lO8P/ojEf81RFjY9IDXl3usDVrtCJgVQ+TSq9NpKyjaxwc/PY6ZrYO9zYQ=
+	t=1710254356; cv=none; b=D9RofnznXwCtYHvRbO1Cx9ZLVFzKXoTKh5qPbDjDxSmTjwZpVDdBQ0s58NGnN3lhiIGTs8kMhVwkC5x0O9kx/U7/UfRHjkaXF7YHfHpxNenphx1IRFOnQFMyuoYw1BS4E1DOk7jNwZU4Dw52r0kocrEE+xyx1hbJkJl0aNepRAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710254343; c=relaxed/simple;
-	bh=/Z2dRN0q7F8MZHucPON6tOK3BRflqMmKjUqtKpm71Cw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CIYlwDwwae/J7ocqdQRzqtZTa31YkDqajjwVThPgxDohMm+JCUUqpgxwEDdk6uu40nhPss728PLuj63ogPLWP24h6ouh1PUDkzw2pKlK+8WRCCs9tvB7HaaeTXn81CFjEtBc23wMGBz/5cUgN4xpNv9xXxHDZDy/IyD8tGCkaPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qk15nKWb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 190C4C433C7;
-	Tue, 12 Mar 2024 14:39:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710254343;
-	bh=/Z2dRN0q7F8MZHucPON6tOK3BRflqMmKjUqtKpm71Cw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qk15nKWb3ry5gpfvIhUYFSccnXh7w+au8jty/cGGtdFxbeKX2wfSQ+eQyuVr0R6HL
-	 gr7/1js5B8SXU33710L8N/dyCsdFhEKLUuUZYg2X4fRUJ2Dz/knhfpOb/Dutqu4Ium
-	 woC5M8i2dvluKwB+CSLI5wEo6Zt0bTKqciigmraKSeCoGAE/B78MMXhWuTSHbLx7Xn
-	 CReD7Wn2yP8tsFrnslqVsOerUQ8plcqtYsKyHRVB4qDQdoKG1ZzHNetXRGNrZOZLHQ
-	 7Te4Zg8BVez1mpvMvf14R3Nf+ybC9n4Puz6OVCiKkfLECTAI5dPqouVV95dy+OcpSa
-	 yYeCoNqEMyO+w==
-Date: Tue, 12 Mar 2024 08:39:00 -0600
-From: Rob Herring <robh@kernel.org>
-To: Nikita Travkin <nikita@trvn.ru>
-Cc: Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Andy Gross <agross@kernel.org>, Sebastian Reichel <sre@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] dt-bindings: platform: Add Acer Aspire 1 EC
-Message-ID: <171025431615.2202401.13229596237294661341.robh@kernel.org>
-References: <20240312-aspire1-ec-v4-0-bd8e3eea212f@trvn.ru>
- <20240312-aspire1-ec-v4-1-bd8e3eea212f@trvn.ru>
+	s=arc-20240116; t=1710254356; c=relaxed/simple;
+	bh=6G228Lphk0rlkU29bdOENgX5OXrMOrVaqWm38EVzM0Y=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=lpoHBjQ275VsawSAioBDJgVG/jt5gfFSn2uxJ7S/81tDMCJmKmkwg+ivRMlo6+zFY3pmBaTaYC7TFo5p5wvOcefWAH2Hjy2oLH2IJwOsFoEzkah+KyBELbCpDz9n1//ctKzewcqT5VgcjCzwMEcj0hzh2lcYaOJZv/UuBmmXdh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gx7jBqVl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710254353;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XMJRtZVN7j/hb0lf5DmhVFdq1TvSh1Jy4166EHZPeco=;
+	b=Gx7jBqVlQWzGYSQKGIlmDPECiPZntPxp3oBfAxBUt4p9N0YhLeBPa1SNuwGCWEAIE+Hp+Y
+	WiYRGtmiDVeeIQ6/B31Wr+Nwy70TYLXBJWHpMJn271fueLK2+cznSpCaCpDP/NmpnO823M
+	viucHErMvbHFLvEJutYfSVYAEidx+0M=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-612-6BA6fyAFN7GDnRxt7lHTjQ-1; Tue, 12 Mar 2024 10:39:12 -0400
+X-MC-Unique: 6BA6fyAFN7GDnRxt7lHTjQ-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5ce67a3f275so2851153a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:39:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710254351; x=1710859151;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XMJRtZVN7j/hb0lf5DmhVFdq1TvSh1Jy4166EHZPeco=;
+        b=oupj0O9DG7WplYnugjGj8zFeWt2DoRGEfgQ8Z/lk7+rkjF9H4nU1Pn0eaL5obvzIBF
+         REF8uN0mTq8MFe+kPMapCKMivjpa2o3WGjyu6ACg7g1Fi7aCoXDTFtSxDJACSAAYjZt5
+         PqhQOPOSMi9pK20d+IAGG0BTUca/J7CFZH/Jc99TxZVzW3WAo2DlXiWPWoULLwWkHg79
+         l5HzbV5RRC/MilFIyIjBhxKcA5P++sq6Ta8VfDffqhWD43UeA62Z6EvMMyQzqOswdHIX
+         XVW2QgOE5ZcVtLVUh3Dd1Dtv2fk3uG5jUwWK0NyEe7/o7FwVIy7Dc4hMhEapyGO6F8CM
+         tM9A==
+X-Gm-Message-State: AOJu0YwyWmia0IMriV4otc61HfBVUAARCEaAvcn2Y0Qm6rZ2JoNtUYp7
+	Xudw7EZ7wLTKgCd/75zR5iEatucwXcVUHUouZgomEpcXP5GkFa39ALU3SaKFE4bHsCcJH6ydKMA
+	8of8wUUJjvKF9bM99SupgngzsejLZWRaQLDSkLwBiBFj0ndl5aaTW5D6Dn5gQ+A==
+X-Received: by 2002:a05:6a20:3b86:b0:1a1:484b:bb72 with SMTP id b6-20020a056a203b8600b001a1484bbb72mr5382584pzh.51.1710254351255;
+        Tue, 12 Mar 2024 07:39:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHPP5p51xPHF2DD8z81UogPopL+7AvbfQe8qKjS8v04/Cfcqoeaa+s5PtsgFBJjF90oaSKGoQ==
+X-Received: by 2002:a05:6a20:3b86:b0:1a1:484b:bb72 with SMTP id b6-20020a056a203b8600b001a1484bbb72mr5382568pzh.51.1710254350762;
+        Tue, 12 Mar 2024 07:39:10 -0700 (PDT)
+Received: from fc37-ani ([27.6.216.53])
+        by smtp.googlemail.com with ESMTPSA id q66-20020a17090a17c800b0029bb1631819sm694127pja.0.2024.03.12.07.39.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 07:39:10 -0700 (PDT)
+Date: Tue, 12 Mar 2024 20:09:03 +0530 (IST)
+From: Ani Sinha <anisinha@redhat.com>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+    "K. Y. Srinivasan" <kys@microsoft.com>, 
+    Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
+    Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>, 
+    Michael Kelley <mikelley@microsoft.com>, Olaf Hering <olaf@aepfle.de>, 
+    Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v2] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination
+ for keyfile format
+In-Reply-To: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
+Message-ID: <2d4aeba3-79db-67f7-9d38-5a55788e7cc7@redhat.com>
+References: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312-aspire1-ec-v4-1-bd8e3eea212f@trvn.ru>
+Content-Type: text/plain; charset=US-ASCII
 
 
-On Tue, 12 Mar 2024 13:42:07 +0500, Nikita Travkin wrote:
-> Add binding for the EC found in the Acer Aspire 1 laptop.
-> 
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+
+On Tue, 12 Mar 2024, Shradha Gupta wrote:
+
+> If the network configuration strings are passed as a combination of IPv and
+> IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
+> configuration format.
+> With these changes, the keyfile config generation logic scans through the
+> list twice to generate IPv4 and IPv6 sections for the configuration files
+> to handle this support.
+>
+> Built-on: Rhel9
+> Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
 > ---
->  .../bindings/platform/acer,aspire1-ec.yaml         | 60 ++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
-> 
+>  Changes in v2
+>  * Use calloc to avoid initialization later
+>  * Return standard error codes
+>  * Free the output_str pointer on completion
+>  * Add out-of bound checks while writing to buffers
+> ---
+>  tools/hv/hv_kvp_daemon.c | 173 +++++++++++++++++++++++++++++----------
+>  1 file changed, 132 insertions(+), 41 deletions(-)
+>
+> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+> index 318e2dad27e0..ae65be004eb1 100644
+> --- a/tools/hv/hv_kvp_daemon.c
+> +++ b/tools/hv/hv_kvp_daemon.c
+> @@ -76,6 +76,12 @@ enum {
+>  	DNS
+>  };
+>
+> +enum {
+> +	IPV4 = 1,
+> +	IPV6,
+> +	IP_TYPE_MAX
+> +};
+> +
+>  static int in_hand_shake;
+>
+>  static char *os_name = "";
+> @@ -102,6 +108,7 @@ static struct utsname uts_buf;
+>
+>  #define MAX_FILE_NAME 100
+>  #define ENTRIES_PER_BLOCK 50
+> +#define MAX_IP_ENTRIES 64
+>
+>  struct kvp_record {
+>  	char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
+> @@ -1171,6 +1178,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
+>  	return 0;
+>  }
+>
+> +int ip_version_check(const char *input_addr)
+> +{
+> +	struct in6_addr addr;
+> +
+> +	if (inet_pton(AF_INET, input_addr, &addr))
+> +		return IPV4;
+> +	else if (inet_pton(AF_INET6, input_addr, &addr))
+> +		return IPV6;
+> +	else
+> +		return -EINVAL;
+> +}
+> +
+>  /*
+>   * Only IPv4 subnet strings needs to be converted to plen
+>   * For IPv6 the subnet is already privided in plen format
+> @@ -1197,14 +1216,71 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
+>  	return plen;
+>  }
+>
+> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
+> +				  int ip_sec)
+> +{
+> +	char addr[INET6_ADDRSTRLEN], *output_str;
+> +	int ip_offset = 0, error = 0, ip_ver;
+> +	char *param_name;
+> +
+> +	output_str = (char *)calloc(INET6_ADDRSTRLEN * MAX_IP_ENTRIES,
+> +				    sizeof(char));
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Can we define INET6_ADDRSTRLEN * MAX_IP_ENTRIES as something like
+OUTSTR_BUF_SZ or some such? Then it becomes more readable here and below.
+
+> +
+> +	if (!output_str)
+> +		return -ENOMEM;
+> +
+> +	memset(addr, 0, sizeof(addr));
+
+
+> +
+> +	if (type == DNS) {
+> +		param_name = "dns";
+> +	} else if (type == GATEWAY) {
+> +		param_name = "gateway";
+> +	} else {
+> +		error = -EINVAL;
+> +		goto cleanup;
+> +	}
+
+If you move the above check before you allocate memory for output_str, you
+can return right away without doing a free().
+
+> +
+> +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
+> +				   (MAX_IP_ADDR_SIZE * 2))) {
+> +		ip_ver = ip_version_check(addr);
+> +		if (ip_ver < 0)
+> +			continue;
+> +
+> +		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
+> +		    (ip_ver == IPV6 && ip_sec == IPV6)) {
+> +			if (((INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str)) >
+> +			    (strlen(addr))) {
+> +				strcat(output_str, addr);
+> +				strcat(output_str, ",");
+
+Your bound check does not take into consideration one additional character
+(the ","). It should be
+
+(INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str) > strlen(addr) + 1
+
+> +			}
+> +			memset(addr, 0, sizeof(addr));
+> +
+> +		} else {
+> +			memset(addr, 0, sizeof(addr));
+
+if you do memset() at the beginning of the loop, you do not need to do
+this separately for both branches. Plus there would be no need to do this
+at the beginning of the function as well.
+So you could do something like:
+
+while(1) {
+  memset(addr ...);
+  if (!parse_ip_val_buffer(...))
+      break;
+  ...
+}
+
+
+> +			continue;
+> +		}
+> +	}
+> +
+> +	if (strlen(output_str)) {
+
+                // remove the last comma character
+
+> +		output_str[strlen(output_str) - 1] = '\0';
+> +		error = fprintf(f, "%s=%s\n", param_name, output_str);
+> +		if (error <  0)
+> +			goto cleanup;
+
+You need to free memory regardless of whether there is an error or not.
+
+> +	}
+> +
+> +cleanup:
+> +	free(output_str);
+> +	return error;
+> +}
+> +
+>  static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+> -				int is_ipv6)
+> +				int ip_sec)
+>  {
+>  	char addr[INET6_ADDRSTRLEN];
+>  	char subnet_addr[INET6_ADDRSTRLEN];
+>  	int error, i = 0;
+>  	int ip_offset = 0, subnet_offset = 0;
+> -	int plen;
+> +	int plen, ip_ver;
+>
+>  	memset(addr, 0, sizeof(addr));
+>  	memset(subnet_addr, 0, sizeof(subnet_addr));
+> @@ -1216,10 +1292,16 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+>  						       subnet_addr,
+>  						       (MAX_IP_ADDR_SIZE *
+>  							2))) {
+> -		if (!is_ipv6)
+> +		ip_ver = ip_version_check(addr);
+> +		if (ip_ver < 0)
+> +			continue;
+> +
+> +		if (ip_ver == IPV4 && ip_sec == IPV4)
+>  			plen = kvp_subnet_to_plen((char *)subnet_addr);
+> -		else
+> +		else if (ip_ver == IPV6 && ip_sec == IPV6)
+>  			plen = atoi(subnet_addr);
+> +		else
+> +			continue;
+>
+>  		if (plen < 0)
+>  			return plen;
+> @@ -1238,12 +1320,11 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+>
+>  static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+>  {
+> -	int error = 0;
+> +	int error = 0, ip_type;
+>  	char if_filename[PATH_MAX];
+>  	char nm_filename[PATH_MAX];
+>  	FILE *ifcfg_file, *nmfile;
+>  	char cmd[PATH_MAX];
+> -	int is_ipv6 = 0;
+>  	char *mac_addr;
+>  	int str_len;
+>
+> @@ -1421,52 +1502,62 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+>  	if (error)
+>  		goto setval_error;
+>
+> -	if (new_val->addr_family & ADDR_FAMILY_IPV6) {
+> -		error = fprintf(nmfile, "\n[ipv6]\n");
+> -		if (error < 0)
+> -			goto setval_error;
+> -		is_ipv6 = 1;
+> -	} else {
+> -		error = fprintf(nmfile, "\n[ipv4]\n");
+> -		if (error < 0)
+> -			goto setval_error;
+> -	}
+> -
+>  	/*
+> -	 * Now we populate the keyfile format
+> +	 * The keyfile format expects the IPv6 and IPv4 configuration in
+> +	 * different sections. Therefore we iterate through the list twice,
+> +	 * once to populate the IPv4 section and the next time for IPv6
+>  	 */
+> +	ip_type = IPV4;
+> +	do {
+> +		if (ip_type == IPV4) {
+> +			error = fprintf(nmfile, "\n[ipv4]\n");
+> +			if (error < 0)
+> +				goto setval_error;
+> +		} else {
+> +			error = fprintf(nmfile, "\n[ipv6]\n");
+> +			if (error < 0)
+> +				goto setval_error;
+> +		}
+>
+> -	if (new_val->dhcp_enabled) {
+> -		error = kvp_write_file(nmfile, "method", "", "auto");
+> -		if (error < 0)
+> -			goto setval_error;
+> -	} else {
+> -		error = kvp_write_file(nmfile, "method", "", "manual");
+> +		/*
+> +		 * Now we populate the keyfile format
+> +		 */
+> +
+> +		if (new_val->dhcp_enabled) {
+> +			error = kvp_write_file(nmfile, "method", "", "auto");
+> +			if (error < 0)
+> +				goto setval_error;
+> +		} else {
+> +			error = kvp_write_file(nmfile, "method", "", "manual");
+> +			if (error < 0)
+> +				goto setval_error;
+> +		}
+> +
+> +		/*
+> +		 * Write the configuration for ipaddress, netmask, gateway and
+> +		 * name services
+> +		 */
+> +		error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+> +					     (char *)new_val->sub_net,
+> +					     ip_type);
+>  		if (error < 0)
+>  			goto setval_error;
+> -	}
+>
+> -	/*
+> -	 * Write the configuration for ipaddress, netmask, gateway and
+> -	 * name services
+> -	 */
+> -	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+> -				     (char *)new_val->sub_net, is_ipv6);
+> -	if (error < 0)
+> -		goto setval_error;
+> -
+> -	/* we do not want ipv4 addresses in ipv6 section and vice versa */
+> -	if (is_ipv6 != is_ipv4((char *)new_val->gate_way)) {
+> -		error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
+> +		error = process_dns_gateway_nm(nmfile,
+> +					       (char *)new_val->gate_way,
+> +					       GATEWAY, ip_type);
+>  		if (error < 0)
+>  			goto setval_error;
+> -	}
+>
+> -	if (is_ipv6 != is_ipv4((char *)new_val->dns_addr)) {
+> -		error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
+> +		error = process_dns_gateway_nm(nmfile,
+> +					       (char *)new_val->dns_addr, DNS,
+> +					       ip_type);
+>  		if (error < 0)
+>  			goto setval_error;
+> -	}
+> +
+> +		ip_type++;
+> +	} while (ip_type < IP_TYPE_MAX);
+> +
+>  	fclose(nmfile);
+>  	fclose(ifcfg_file);
+>
+> --
+> 2.34.1
+>
+>
 
 
