@@ -1,127 +1,74 @@
-Return-Path: <linux-kernel+bounces-100870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB293879E72
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:24:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0E44879E76
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:24:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78DCD28411B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:24:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C9BCB22F7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CE314402E;
-	Tue, 12 Mar 2024 22:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F40144027;
+	Tue, 12 Mar 2024 22:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n87115ES"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FWKydBdN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E14F14375A;
-	Tue, 12 Mar 2024 22:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4345144035;
+	Tue, 12 Mar 2024 22:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710282243; cv=none; b=ZVod/i8UD5YBOsmvYCKPwBJsSWj1Sv7FFqmp3s2sTyLVbFuczvx/zO9vxD8ldovkqjU8aCM41sHzwmCELgc16TvfeRIAJuWBSPa4S+FeSVrvuxRG2sFZW/82R1/FLce3twpkuvHBk3Xr31/OUDhpWy51oTHlOlkCqmY6BBVnVk8=
+	t=1710282244; cv=none; b=fsC+Hzh2azIV0WYF8TL9E0kMeTp+WInYdybjq4PA6LuoMTLIF63Od3uPzWK9Btgccs2DZLgu6cD35Z3ty4ePDuZnQzefyjPYkEB6PWICm1+9hAv6q9WkJN7F2zi1mjfetDfOgKqgaDXFSOdgeRzIMHW1HDHTqY/nHEP5FrtRppo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710282243; c=relaxed/simple;
-	bh=sVJXME02Eu6eBM/W+6bAl2txUWT5DlFFqAiPiAJlsAw=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Y0cNLXIatgBA+1CKzDHk6wUs1UvSMueSd8lu/7FFbKa7o7trP6LQehROIeUf85HMjfuZx3aKzoPKAWTcydDJmLVvRcE4BkwRhHkrYSgzbLjEX5LANoqTVoTH4TvBuje0IdGRK56shez1+L2iqE2lWzIpI1kOpNq3AjaU6zPQYz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n87115ES; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3C073C433C7;
-	Tue, 12 Mar 2024 22:24:03 +0000 (UTC)
+	s=arc-20240116; t=1710282244; c=relaxed/simple;
+	bh=ofqfLzVJ0ZtU3uN+KHSVIAdR9gUkSwiuAjGmqMKWSH8=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=NB5yTgQ50YjCfIKzdJLUo0eaLBDJ9wXTOuMJMNa2eKY8ZY+eWKa1AwIyzJfoelJ9rqaBqM2zLLRNq3xqHijJxBCtsdCpdikikmw0oZB+Ldzkgw91knQ68L3cglnfO7C3UOrb8Wxk3EVwhHZ5vqhf1nLrBnlMPMifRFSzqytVDZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FWKydBdN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A801DC433C7;
+	Tue, 12 Mar 2024 22:24:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710282243;
-	bh=sVJXME02Eu6eBM/W+6bAl2txUWT5DlFFqAiPiAJlsAw=;
+	s=k20201202; t=1710282244;
+	bh=ofqfLzVJ0ZtU3uN+KHSVIAdR9gUkSwiuAjGmqMKWSH8=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=n87115ESNuqRdxF+ZRhkyQgwmCz8hfzcSU1dBt1s/ibxe3EUsSvwDUbtbUMhub27H
-	 FIMDxq8X5gwBDA/aWJEYQ3IIbVKzW6clt82Oc5DUKl78yvvy/DvX2iNT9IstLknraL
-	 NDylQnonCUNF9KrARS+MmexfXzrLDbOeurg3SXubouvDofeLcT78CO/di8isC2Jyty
-	 Ie2h+Arh4uUI96JMbzcXim16EKeeqFRPu1INUmhFZllp7VUpN3fkezDa9XzQUIQyws
-	 F7ntAk8r7FDvpLSrF0ZJZsAGyGqidp+P2YL/wVUCJN0IY0TigHF3JW8mAxuz4M94mu
-	 7qEV1PH4PGMYA==
+	b=FWKydBdN+VLYE1c90pSHMdBBuNHDWCKKvc39TB0+f91BuJx5y5nhFFkKJD/zbIB7X
+	 VsDGP2vhxDuYPr0hXUxjjCNPAXQJJgQpMIFLfmeRcpogJSNpxrK6yKPo3u+oqhcV27
+	 3UAw2TVaJyOAbqrX93rYaDSrsSLC7h6uIZ3X0G0fvGEDV4NF1xNOM4GqeZsR6xcOai
+	 MtNL00bkQjBIlWXnvmbJFplogB63p9fRHRO2Pxje78fnt92ZeO31v0OZXKi+GFRY2i
+	 9jsAj5NA9GSeNTd6muXbWF55nxzXAqoyiJgC6EL3//a637Yr3mwDKDMSfmRHC7mON2
+	 778/2csxGlqhQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0F0FFD95053;
-	Tue, 12 Mar 2024 22:24:03 +0000 (UTC)
-Subject: Re: [GIT PULL] hardening updates for v6.9-rc1
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 92603D95053;
+	Tue, 12 Mar 2024 22:24:04 +0000 (UTC)
+Subject: Re: [GIT PULL] NFSD changes for v6.9
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <202403111702.828C918E55@keescook>
-References: <202403111702.828C918E55@keescook>
-X-PR-Tracked-List-Id: <linux-kbuild.vger.kernel.org>
-X-PR-Tracked-Message-Id: <202403111702.828C918E55@keescook>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.9-rc1
-X-PR-Tracked-Commit-Id: 3fe1eb4dd2e4b872ffb7b9b081b34ffcfa934ba7
+In-Reply-To: <ZfBZekuzxPL1zBVz@manet.1015granger.net>
+References: <ZfBZekuzxPL1zBVz@manet.1015granger.net>
+X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZfBZekuzxPL1zBVz@manet.1015granger.net>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.9
+X-PR-Tracked-Commit-Id: 9b350d3e349f2c4ba4e046001446d533471844a7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 216532e147b2fee6ee830f4a844bbc3cbb9137af
-Message-Id: <171028224303.16151.15003389057998252941.pr-tracker-bot@kernel.org>
-Date: Tue, 12 Mar 2024 22:24:03 +0000
-To: Kees Cook <keescook@chromium.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Andy Shevchenko <andy@kernel.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>, Bill Wendling <morbo@google.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Fangrui Song <maskray@google.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Guixiong Wei <guixiongwei@gmail.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jani Nikula <"ja ni.nikula"@intel.com>,
-	Jingzi Meng <mengjingzi@iie.ac.cn>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Juergen Gross <jgross@suse.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	kernel test robot <lkp@intel.com>, linux-doc@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	llvm@lists.linux.dev, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Marco Elver <elver@google.com>, Mark Rutland <mark.rutland@arm.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Wajdeczko <michal.wajdeczko@intel.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, Nicolas Schier <n.schier@avm.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>,
-	Sachin Sant <sachinp@linux.ibm.com>, Sam Ravnborg <sam@ravnborg.org>,
-	syzkaller <syzkaller@googlegroups.com>,
-	Tanzir Hasan <tanzirh@google.com>,
-	Tycho Andersen <tandersen@netflix.com>,
-	Vasiliy Kovalev <kovalev@altlinux.org>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>
+X-PR-Merge-Commit-Id: a01c9fe32378636ae65bec8047b5de3fdb2ba5c8
+Message-Id: <171028224459.16151.4186471773665004988.pr-tracker-bot@kernel.org>
+Date: Tue, 12 Mar 2024 22:24:04 +0000
+To: Chuck Lever <chuck.lever@oracle.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Mon, 11 Mar 2024 18:18:31 -0700:
+The pull request you sent on Tue, 12 Mar 2024 09:32:42 -0400:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.9-rc1
+> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.9
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/216532e147b2fee6ee830f4a844bbc3cbb9137af
+https://git.kernel.org/torvalds/c/a01c9fe32378636ae65bec8047b5de3fdb2ba5c8
 
 Thank you!
 
