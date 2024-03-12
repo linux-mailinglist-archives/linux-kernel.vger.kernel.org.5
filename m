@@ -1,527 +1,188 @@
-Return-Path: <linux-kernel+bounces-99862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CF5D878E79
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:14:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5AB878E7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:16:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 184261F225E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:14:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F4041C21F19
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAB3D3984D;
-	Tue, 12 Mar 2024 06:14:18 +0000 (UTC)
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6243FE46;
+	Tue, 12 Mar 2024 06:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="vRVN7e2q"
+Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11011005.outbound.protection.outlook.com [52.101.128.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D824E2E3EF;
-	Tue, 12 Mar 2024 06:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710224057; cv=none; b=VWZ5wx42sbhda3U64wVGnb3Q2I98Nj85AdrDZN5OIs1xjXKkyEcYUE8X77sbjG/jL6cc6DDDUmtbxVfxpCQqcztQkbY1HdgVOoppJFMcxqKskA9ASw5qIrqUKOwEmu2OvQfcTaR8DNDhSbsbWdRscZ5d8xcWjF5h5Mlx3vrtcCk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710224057; c=relaxed/simple;
-	bh=8rdKn5qNAExNjkXbTn10cc1Q2+Zo7aImTOmx+JryztI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yb+Wd3DSY10+7LsyzdAYufTOZsRLhYPdFdN4MhJZ5kZ4TRuGR/NYg9vpEBboBW39Jv3BxitAZB/HvO5nlnHCMApbtfLOEtnNUvuiIGDZKMcA71n67uOD1WSEyRu9f4Z16aIfjwEvb6++zQdcgo7TrZE7oePMlGWsB342Sc4m6Yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so3373494a12.3;
-        Mon, 11 Mar 2024 23:14:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710224055; x=1710828855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4bKLlfKsDNs2d/W4ZG9d/7+1WGOXPO6kNhFqvy115PU=;
-        b=Nhg4ymVHuNi+UtRzfpm+JtQ0jo1srPj5E428RakEpx8Dn5CHY7Oeia6qqTrd+VzsVa
-         +Q1PcJLMBceqkhw9/EWmsJtGdJRKj1eKMQvDJ2zy74rlngGhte1m9HqOfPdyTjdIiZZJ
-         NNxGY12B1vObk3W60v7Z45t1sLemIj23HyhgeLJ5Qo0YOtFer/SMIVHGY9EsPzG45pIv
-         OCawefgqcNZUKoLYEdFM/2LFL0t7RkVxBxiUZd3xR/irUDVzOzr+kW3Y4dYDvxzIgnfl
-         bbpTMJX1DOtwJQ0SWNnrXuH1xMaNHPZKFsT5+kD/kR3u6u+9oym3eiFbkMmJVHiFIOK3
-         bfOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXB04w5TysgQF30Y10J9GuIM61Km/apOkgotUNMLfAMCekmOUcGs9XkzANRU2t5fbIA579wbYpwEoY98RnHrYtikfNbtrQ1REiQAZX7qLbiHtin7KOYMTnULCsWrBhEN+6oC9GRQJL1LnEN6QkENw==
-X-Gm-Message-State: AOJu0YyNmGuo1RrxntddBp8EmKZcx5W3xG4/UbRTAuiCWl9mMkTwtJNf
-	8GnxxqknWcPwKHPOXMnS+FYcOVZS1LDu6rVzjkeLb2UU4DNsz1nSdaMKzmmOup/GqjTH4Nx90PS
-	+9F/4Q10C4C4DolxF0vaMT+EoQ3w=
-X-Google-Smtp-Source: AGHT+IGz6hFN1HCMN2L6jNRTe2vy4IZ9XPp+cK/cZSI03A9WI4rDHt4g2XE2BfFJqs2bgtKiSNjxJJJVQyOSNrEBLoE=
-X-Received: by 2002:a17:90b:4b52:b0:29c:67:115a with SMTP id
- mi18-20020a17090b4b5200b0029c0067115amr4521365pjb.42.1710224054819; Mon, 11
- Mar 2024 23:14:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788042E41C;
+	Tue, 12 Mar 2024 06:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.5
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710224172; cv=fail; b=Y9yAmnJ4vzJXPpdgrg4ZbZHitU+CkJprdcIN5OtG4t4nSMVIMruogQmxWTy+FbdZbFx58E9h26s3dL1+DoWA0Us5/t7gVohZqikmAJL8ABu9naQ+iwYvPW8Qm1xuqZRgzF95iKF+bAd8OHWdZ0/nkCMTQADHLgUfaNdanpKsgd4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710224172; c=relaxed/simple;
+	bh=C1sKk/8yEduVRzoUaqH6XRUvtSLCvjWT1dmeOhtCRxg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Z0PI9y5h7v4UZU085iEToc2alLPtOYhCJ/HTxV2qjbEKUuqhSHxKIW1qTYxzKlef4fqu4l3aocv7McfJJSJ5zSCMqxhQrYeJCEmc2gVEHgMXduoP4VTpvFi62uBTxmlTtNjEYMJYL4tQQdHrhKt/17i7PmaTb/MVA+vpEWUJLNY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=vRVN7e2q; arc=fail smtp.client-ip=52.101.128.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LgiBZRqoqfNlxgIqzeFkCtzXgyaMiWkueWq42ZHO12IMP1Llyliz894vnuyL6drnfYmG0AhkxURX3KLsDhDJb1tGUek/UkGPZXPQienvSHS4ntoTwyGvvOUEV+g1kmT0kbeW55ySghp4F6kBMPd0qy7nn2p90Hn5I35qevCEaxBMx46dklxWRW/dJ/uYMzrGyuglR1USj4UsKgTIKEnJiHA8ibMyzphhLnnE1MHavbvicSFxsK91e2GrDyBKekms+C3dCakZ5tZYTd1Sl+xnWv0AYpqbyR863ihoT+Bx+1HUYfyjnquf89c36ybw3HPUUAG4h9lV9+WxM0NEACKTeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3RkquM5/cO3Lq776cKhbTsIE8JytwM6TQi45HAbw8XI=;
+ b=FAi45tAJW/NSyXftDSlj6DkTEJteqq1SRYVA1Wv5d/LrobO1GS9Lzh0S5B8cb3bqC7LwHuM7iHRraDd++qyjhlK3LGX5VsgQHcZi7JwwxZbtbmlqwwekfJ2SyZhGvjV3MGlSVX7RUGRwZ1Ek78WwBPKbTkAtXIJ4pAc+x8ZhzJxv4Fh9a9ly/zS55I8/Gkei8Jz/OLKf2FPyIKRIRD3l790fJA7jcY2ERUvtR9SrFORoDhePBPerUeF42V3Vg1fjTm1wQcbgwwJUjudgUSjXDYqZZgh0IKssXgZKMta4/6Tn52cT7Z/5i1UbMn6TQigfJY7BfdHj/dwGvZnWYRpwxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3RkquM5/cO3Lq776cKhbTsIE8JytwM6TQi45HAbw8XI=;
+ b=vRVN7e2qYmFipxIr4JQGLrbVYcl84Spjtuw8rudR7kzeGaRpe1w3UvydCsvZTV+L9+TOgtJQXYKZerQl5xs9oEYJu+r7hEA/gUCAiSkutALUeaD2zRbeURZ4+4+XjHexnahudiObzG42F0eR5l9uYPATxZKCeGPdpjhDzvzmHepPXPqReYHWZmlJSCc01C2wITO1rz9bsL8K9JB6tTPhPpwM0okUXSWeSHk9rk1wzsrTkUm1IilyDsrIy0I65omEvjNADmfG7y6OrU3R1zXO8NttqpxBcZsJ+d20SJ1W/E1de6Wftj0EI2MWulRInQw8a99KTKQ1wB5UidIWuND+KQ==
+Received: from PS1PR03CA0024.apcprd03.prod.outlook.com (2603:1096:803:3d::36)
+ by SEYPR04MB6750.apcprd04.prod.outlook.com (2603:1096:101:db::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.34; Tue, 12 Mar
+ 2024 06:16:01 +0000
+Received: from HK3PEPF00000220.apcprd03.prod.outlook.com
+ (2603:1096:803:3d:cafe::85) by PS1PR03CA0024.outlook.office365.com
+ (2603:1096:803:3d::36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.17 via Frontend
+ Transport; Tue, 12 Mar 2024 06:16:00 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ HK3PEPF00000220.mail.protection.outlook.com (10.167.8.42) with Microsoft SMTP
+ Server id 15.20.7386.12 via Frontend Transport; Tue, 12 Mar 2024 06:15:59
+ +0000
+From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To: patrick@stwcx.xyz
+Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v6 00/22] Add i2c-mux and eeprom devices for Meta Yosemite 4
+Date: Tue, 12 Mar 2024 14:15:32 +0800
+Message-Id: <20240312061556.496605-1-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240302001139.604829-1-weilin.wang@intel.com> <20240302001139.604829-2-weilin.wang@intel.com>
-In-Reply-To: <20240302001139.604829-2-weilin.wang@intel.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 11 Mar 2024 23:14:03 -0700
-Message-ID: <CAM9d7cjvJgd0ZRnmX+8OYs2YHjDCyt25kHxHQ4yjmR+n9CiMDg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 1/6] perf stat: Parse and find tpebs events when
- parsing metrics to prepare for perf record sampling
-To: weilin.wang@intel.com
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK3PEPF00000220:EE_|SEYPR04MB6750:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 0d1bd067-06e1-477e-94b8-08dc425be2e2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4B6kJSw3xwCrj/RPSrsJix1JeL2TObdDB29zLrOqY5saGnRqfw3k9DEa93GV/4f2PG1St5pQvYqnIwnu4THzxPuL8MNrDiEb9QznTKi7DbjqJ0DC5a+5FjnCIBLYg3eEB9b5VKsLGdQ8/xpvpsvygsHeHekM+JYI7vkWqtWGKvG/FiwctZfyZOH4YC+AWhuN8Lt70nh+8tgyxVd+h9rQAZCkLrMs8kKJXRTt1WMy/fiYTtFBaTPwdj+dnyPiXlIwNQaf/ft8HN4aRVtoLywffFFy5+dCZhfHQIsuPzkxrJZYoZZ2gWBJj3Ds7mHEh8juDNwAejodAPIn2cbnW8iowHPzJ3i+a6FUzC0He6vcylNoyqGHrEUxOgJ+gARZzf0DR1MVcCsPwaJEV/Scv7SavR/xqpqpO1v5RdPW3MqjXrvCRRZ8uLvz+qDyw1U94NZzHfWaPb6OI9VZdThgajRfXBQQ0k3srj2DRcmjRTnMu/u1QiYhQbVMpcJ9LaVGCcqlGAB05YtAJ78pAp+F+jCfNRbCsUm5SGMlJBxTcLgmp2BbFw6p+S7V4PJyYGdq6qSj6FZqKzG2OPaCSttXCsd1lUi3i4wZonhPJGy2s0tIMddDn4qjqZyAI9KHK/NZRPhJ6rSt3NVxmIxk/0T0enPGbMppfsdb2AjrbGng6zgyHaqYbKfo5kKPFsh32K3llaObC3kb3Ct3kHM9S9lN2D7P5zY17SJkcpdw/lZFf+mr3v2i9k28j02tDRS2nKqHWa2g
+X-Forefront-Antispam-Report:
+	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(82310400014)(1800799015)(7416005)(36860700004)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 06:15:59.3537
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d1bd067-06e1-477e-94b8-08dc425be2e2
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource:
+	HK3PEPF00000220.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR04MB6750
 
-On Fri, Mar 1, 2024 at 4:11=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> Metrics that use tpebs values would use the :retire_latency keyword in
-> formulas. We put all these events into a list and pass the list to perf
-> record to collect their retire latency value.
->
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/perf/builtin-stat.c     | 38 +++++++++++++---
->  tools/perf/util/metricgroup.c | 81 +++++++++++++++++++++++++++++------
->  tools/perf/util/metricgroup.h | 10 ++++-
->  tools/perf/util/stat.h        |  2 +
->  4 files changed, 112 insertions(+), 19 deletions(-)
->
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 6bba1a89d030..5a3093541cff 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -162,6 +162,7 @@ static struct perf_stat_config stat_config =3D {
->         .ctl_fd                 =3D -1,
->         .ctl_fd_ack             =3D -1,
->         .iostat_run             =3D false,
-> +       .tpebs_event_size =3D 0,
+Changelog:
+  - v6
+    - Revise i2c duty-cycle for meeting 400khz spec
+  - v5
+    - Support medusa board adc sensors
+    - support NIC eeprom
+  - v4
+    - Re-format gpio linename
+    - Revise i2c device node names
+    - Split patches by logic changes
+  - v3
+    - Correct patch for revising gpio name
+  - v2
+    - Revise mx31790 fan tach config
+    - Add mctp config for NIC
+    - Support mux to cpld
+    - Revise gpio name
+  - v1
+    - Add gpio and eeprom behind i2c-mux
+    - Remove redundant idle-state setting for i2c-mux
+    - Enable adc 15, wdt2,spi gpio for yosemite4 use
+    - Revise quad mode to dual mode to avoid WP pin influnece the SPI
+    - Revise power sensor adm1281 for yosemite4 schematic change
+    - Add gpio pca9506 I/O expander for yosemite4 use
+    - remove space for adm1272 compatible
+    - enable interrupt setting for pca9555
+    - add eeprom for yosemite4 medusa board/BSM use
+    - remove temperature sensor for yosemite4 schematic change
+    - add power sensor for power module reading
+    - Revise adc128d818 adc mode for yosemite4 schematic change
+    - Revise ina233 for yosemite4 schematic change
+    - Remove idle state setting for yosemite4 NIC connection
+    - Initialize bmc gpio state
+    - Revise mx31790 fan tach config
+    - Add mctp config for NIC
+    - Support mux to cpld
+    - Revise gpio name
 
-Usually you don't need to add 0 initial value as it's the default.
+Delphine CC Chiu (22):
+  ARM: dts: aspeed: yosemite4: Revise i2c-mux devices
+  ARM: dts: aspeed: yosemite4: Enable adc15
+  ARM: dts: aspeed: yosemite4: Enable spi-gpio setting
+  ARM: dts: aspeed: yosemite4: Enable watchdog2
+  ARM: dts: aspeed: yosemite4: Revise quad mode to dual mode
+  ARM: dts: aspeed: yosemite4: Revise power sensor adm1281 for schematic
+    change
+  ARM: dts: aspeed: yosemite4: Add gpio pca9506
+  ARM: dts: aspeed: yosemite4: Remove space for adm1272 compatible
+  ARM: dts: aspeed: yosemite4: Enable interrupt setting for pca9555
+  ARM: dts: aspeed: yosemite4: Add power sensor for power module reading
+  ARM: dts: aspeed: yosemite4: Add eeprom for yosemite4 use
+  ARM: dts: aspeed: yosemite4: Remove temperature sensor for yosemite4
+    schematic change
+  ARM: dts: aspeed: yosemite4: Revise adc128d818 adc mode for yosemite4
+    schematic change
+  ARM: dts: aspeed: yosemite4: Revise ina233 config for yosemite4
+    schematic change
+  ARM: dts: aspeed: yosemite4: Remove idle state setting for yosemite4
+    NIC connection
+  ARM: dts: aspeed: yosemite4: Initialize bmc gpio state
+  ARM: dts: aspeed: yosemite4: Revise mx31790 fan tach config
+  ARM: dts: aspeed: yosemite4: add mctp config for NIC
+  ARM: dts: aspeed: yosemite4: support mux to cpld
+  ARM: dts: aspeed: yosemite4: support medusa board adc sensors
+  ARM: dts: aspeed: yosemite4: support NIC eeprom
+  ARM: dts: aspeed: yosemite4: Revise i2c duty-cycle
 
+ .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 1258 +++++++++++++++--
+ 1 file changed, 1151 insertions(+), 107 deletions(-)
 
->  };
->
->  static bool cpus_map_matched(struct evsel *a, struct evsel *b)
-> @@ -686,6 +687,12 @@ static enum counter_recovery stat_handle_error(struc=
-t evsel *counter)
->         return COUNTER_FATAL;
->  }
->
-> +static int __run_perf_record(void)
-> +{
-> +       pr_debug("Prepare perf record for retire_latency\n");
-> +       return 0;
-> +}
-> +
->  static int __run_perf_stat(int argc, const char **argv, int run_idx)
->  {
->         int interval =3D stat_config.interval;
-> @@ -703,6 +710,15 @@ static int __run_perf_stat(int argc, const char **ar=
-gv, int run_idx)
->         int err;
->         bool second_pass =3D false;
->
-> +       //Prepare perf record for sampling event retire_latency before fo=
-rk and prepare workload
+-- 
+2.25.1
 
-We prefer C style comments /* ... */.
-
-
-> +       if (stat_config.tpebs_event_size > 0) {
-> +               int ret;
-> +
-> +               ret =3D __run_perf_record();
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
->         if (forks) {
->                 if (evlist__prepare_workload(evsel_list, &target, argv, i=
-s_pipe, workload_exec_failed_signal) < 0) {
->                         perror("failed to prepare workload");
-> @@ -2106,7 +2122,9 @@ static int add_default_attributes(void)
->                                                 stat_config.metric_no_thr=
-eshold,
->                                                 stat_config.user_requeste=
-d_cpu_list,
->                                                 stat_config.system_wide,
-> -                                               &stat_config.metric_event=
-s);
-> +                                               &stat_config.metric_event=
-s,
-> +                                               &stat_config.tpebs_events=
-,
-> +                                               &stat_config.tpebs_event_=
-size);
-
-Hmm.. the argument list is too long.  Maybe we need to think
-about just passing a pointer to the stat_config instead.
-
-
->         }
->
->         if (smi_cost) {
-> @@ -2139,7 +2157,9 @@ static int add_default_attributes(void)
->                                                 stat_config.metric_no_thr=
-eshold,
->                                                 stat_config.user_requeste=
-d_cpu_list,
->                                                 stat_config.system_wide,
-> -                                               &stat_config.metric_event=
-s);
-> +                                               &stat_config.metric_event=
-s,
-> +                                               &stat_config.tpebs_events=
-,
-> +                                               &stat_config.tpebs_event_=
-size);
->         }
->
->         if (topdown_run) {
-> @@ -2173,7 +2193,9 @@ static int add_default_attributes(void)
->                                                 /*metric_no_threshold=3D*=
-/true,
->                                                 stat_config.user_requeste=
-d_cpu_list,
->                                                 stat_config.system_wide,
-> -                                               &stat_config.metric_event=
-s) < 0)
-> +                                               &stat_config.metric_event=
-s,
-> +                                               &stat_config.tpebs_events=
-,
-> +                                               &stat_config.tpebs_event_=
-size) < 0)
->                         return -1;
->         }
->
-> @@ -2214,7 +2236,9 @@ static int add_default_attributes(void)
->                                                         /*metric_no_thres=
-hold=3D*/true,
->                                                         stat_config.user_=
-requested_cpu_list,
->                                                         stat_config.syste=
-m_wide,
-> -                                                       &stat_config.metr=
-ic_events) < 0)
-> +                                                       &stat_config.metr=
-ic_events,
-> +                                                       /*&stat_config.tp=
-ebs_events=3D*/NULL,
-> +                                                       /*stat_config.tpe=
-bs_event_size=3D*/0) < 0)
->                                 return -1;
->
->                         evlist__for_each_entry(metric_evlist, metric_evse=
-l) {
-> @@ -2736,6 +2760,8 @@ int cmd_stat(int argc, const char **argv)
->                 }
->         }
->
-> +       INIT_LIST_HEAD(&stat_config.tpebs_events);
-
-You can move it to the initializer using LIST_HEAD_INIT().
-
-> +
->         /*
->          * Metric parsing needs to be delayed as metrics may optimize eve=
-nts
->          * knowing the target is system-wide.
-> @@ -2748,7 +2774,9 @@ int cmd_stat(int argc, const char **argv)
->                                                 stat_config.metric_no_thr=
-eshold,
->                                                 stat_config.user_requeste=
-d_cpu_list,
->                                                 stat_config.system_wide,
-> -                                               &stat_config.metric_event=
-s);
-> +                                               &stat_config.metric_event=
-s,
-> +                                               &stat_config.tpebs_events=
-,
-> +                                               &stat_config.tpebs_event_=
-size);
->
->                 zfree(&metrics);
->                 if (ret) {
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
-c
-> index b24a1c177a80..5ee96d2f16c9 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -277,7 +277,8 @@ static bool contains_metric_id(struct evsel **metric_=
-events, int num_events,
->   */
->  static int setup_metric_events(const char *pmu, struct hashmap *ids,
->                                struct evlist *metric_evlist,
-> -                              struct evsel ***out_metric_events)
-> +                              struct evsel ***out_metric_events,
-> +                              size_t tpebs_event_size)
->  {
->         struct evsel **metric_events;
->         const char *metric_id;
-> @@ -286,7 +287,7 @@ static int setup_metric_events(const char *pmu, struc=
-t hashmap *ids,
->         bool all_pmus =3D !strcmp(pmu, "all") || perf_pmus__num_core_pmus=
-() =3D=3D 1 || !is_pmu_core(pmu);
->
->         *out_metric_events =3D NULL;
-> -       ids_size =3D hashmap__size(ids);
-> +       ids_size =3D hashmap__size(ids) - tpebs_event_size;
->
->         metric_events =3D calloc(ids_size + 1, sizeof(void *));
->         if (!metric_events)
-> @@ -323,6 +324,7 @@ static int setup_metric_events(const char *pmu, struc=
-t hashmap *ids,
->                 }
->         }
->         if (matched_events < ids_size) {
-> +               pr_debug("Error: matched_events =3D %lu, ids_size =3D %lu=
-\n", matched_events, ids_size);
->                 free(metric_events);
->                 return -EINVAL;
->         }
-> @@ -670,7 +672,9 @@ static int decode_all_metric_ids(struct evlist *perf_=
-evlist, const char *modifie
->  static int metricgroup__build_event_string(struct strbuf *events,
->                                            const struct expr_parse_ctx *c=
-tx,
->                                            const char *modifier,
-> -                                          bool group_events)
-> +                                          bool group_events,
-> +                                          struct list_head *tpebs_events=
- __maybe_unused,
-> +                                          size_t *tpebs_event_size)
->  {
->         struct hashmap_entry *cur;
->         size_t bkt;
-> @@ -683,8 +687,47 @@ static int metricgroup__build_event_string(struct st=
-rbuf *events,
->         hashmap__for_each_entry(ctx->ids, cur, bkt) {
->                 const char *sep, *rsep, *id =3D cur->pkey;
->                 enum perf_tool_event ev;
-> +               char *p =3D strstr(id, ":R");
-> +               char *p1 =3D strstr(id, "@R");
-
-Can you please add a comment on what you are doing here?
-
-> +
-> +               if (p =3D=3D NULL && p1) {
-> +                       p =3D strstr(p1+1, "@R");
-> +                       if (p =3D=3D NULL)
-> +                               p =3D p1;
-> +                       p =3D p+1;
-> +               }
-> +
-> +               if (p) {
-> +                       struct tpebs_event *new_event =3D malloc(sizeof(s=
-truct tpebs_event));
-> +                       char *name;
-> +                       char *at;
->
-> -               pr_debug("found event %s\n", id);
-> +                       pr_debug("event name %s\n", id);
-> +                       new_event->tpebs_name =3D strdup(id);
-> +                       *p =3D '\0';
-> +                       name =3D malloc(strlen(id) + 2);
-> +                       if (!name)
-> +                               return -ENOMEM;
-
-Note the previous two allocations can also fail. :)
-
-> +
-> +                       at =3D strchr(id, '@');
-> +                       if (at !=3D NULL) {
-> +                               pr_debug("tpebs name %s\n", id);
-> +                               *at =3D '/';
-> +                               at =3D strchr(id, '@');
-> +                               *at =3D '/';
-> +                               strcpy(name, id);
-> +                               strcat(name, "p");
-> +                       } else {
-> +                               strcpy(name, id);
-> +                               strcat(name, ":p");
-> +                       }
-> +                       new_event->name =3D name;
-> +                       *tpebs_event_size +=3D 1;
-> +                       pr_debug("retire_latency required, tpebs_event_si=
-ze=3D%lu, new_event=3D%s\n",
-> +                       *tpebs_event_size, new_event->name);
-
-Broken indentation.
-
-
-> +                       list_add_tail(&new_event->nd, tpebs_events);
-> +                       continue;
-> +               }
->
->                 /* Always move tool events outside of the group. */
->                 ev =3D perf_tool_event__from_str(id);
-> @@ -1449,7 +1492,8 @@ static int build_combined_expr_ctx(const struct lis=
-t_head *metric_list,
->  static int parse_ids(bool metric_no_merge, struct perf_pmu *fake_pmu,
->                      struct expr_parse_ctx *ids, const char *modifier,
->                      bool group_events, const bool tool_events[PERF_TOOL_=
-MAX],
-> -                    struct evlist **out_evlist)
-> +                    struct evlist **out_evlist, struct list_head *tpebs_=
-events,
-> +                    size_t *tpebs_event_size)
->  {
->         struct parse_events_error parse_error;
->         struct evlist *parsed_evlist;
-> @@ -1492,7 +1536,7 @@ static int parse_ids(bool metric_no_merge, struct p=
-erf_pmu *fake_pmu,
->                 }
->         }
->         ret =3D metricgroup__build_event_string(&events, ids, modifier,
-> -                                             group_events);
-> +                                             group_events, tpebs_events,=
- tpebs_event_size);
->         if (ret)
->                 return ret;
->
-> @@ -1531,7 +1575,9 @@ static int parse_groups(struct evlist *perf_evlist,
->                         bool system_wide,
->                         struct perf_pmu *fake_pmu,
->                         struct rblist *metric_events_list,
-> -                       const struct pmu_metrics_table *table)
-> +                       const struct pmu_metrics_table *table,
-> +                       struct list_head *tpebs_events,
-> +                       size_t *tpebs_event_size)
->  {
->         struct evlist *combined_evlist =3D NULL;
->         LIST_HEAD(metric_list);
-> @@ -1563,7 +1609,8 @@ static int parse_groups(struct evlist *perf_evlist,
->                                         /*modifier=3D*/NULL,
->                                         /*group_events=3D*/false,
->                                         tool_events,
-> -                                       &combined_evlist);
-> +                                       &combined_evlist,
-> +                                       tpebs_events, tpebs_event_size);
->                 }
->                 if (combined)
->                         expr__ctx_free(combined);
-> @@ -1618,14 +1665,15 @@ static int parse_groups(struct evlist *perf_evlis=
-t,
->                 }
->                 if (!metric_evlist) {
->                         ret =3D parse_ids(metric_no_merge, fake_pmu, m->p=
-ctx, m->modifier,
-> -                                       m->group_events, tool_events, &m-=
->evlist);
-> +                                       m->group_events, tool_events, &m-=
->evlist,
-> +                                       tpebs_events, tpebs_event_size);
->                         if (ret)
->                                 goto out;
->
->                         metric_evlist =3D m->evlist;
->                 }
->                 ret =3D setup_metric_events(fake_pmu ? "all" : m->pmu, m-=
->pctx->ids,
-> -                                         metric_evlist, &metric_events);
-> +                                         metric_evlist, &metric_events, =
-*tpebs_event_size);
->                 if (ret) {
->                         pr_err("Cannot resolve IDs for %s: %s\n",
->                                 m->metric_name, m->metric_expr);
-> @@ -1692,16 +1740,21 @@ int metricgroup__parse_groups(struct evlist *perf=
-_evlist,
->                               bool metric_no_threshold,
->                               const char *user_requested_cpu_list,
->                               bool system_wide,
-> -                             struct rblist *metric_events)
-> +                             struct rblist *metric_events,
-> +                             struct list_head *tpebs_events,
-> +                             size_t *tpebs_event_size)
->  {
->         const struct pmu_metrics_table *table =3D pmu_metrics_table__find=
-();
->
-> +       pr_debug("Test debugging\n");
-> +
-
-Can you please remove these debug messages before submitting?
-
-Thanks,
-Namhyung
-
-
->         if (!table)
->                 return -EINVAL;
->
->         return parse_groups(perf_evlist, pmu, str, metric_no_group, metri=
-c_no_merge,
->                             metric_no_threshold, user_requested_cpu_list,=
- system_wide,
-> -                           /*fake_pmu=3D*/NULL, metric_events, table);
-> +                           /*fake_pmu=3D*/NULL, metric_events, table, tp=
-ebs_events,
-> +                           tpebs_event_size);
->  }
->
->  int metricgroup__parse_groups_test(struct evlist *evlist,
-> @@ -1715,7 +1768,9 @@ int metricgroup__parse_groups_test(struct evlist *e=
-vlist,
->                             /*metric_no_threshold=3D*/false,
->                             /*user_requested_cpu_list=3D*/NULL,
->                             /*system_wide=3D*/false,
-> -                           &perf_pmu__fake, metric_events, table);
-> +                           &perf_pmu__fake, metric_events, table,
-> +                           /*tpebs_events=3D*/NULL,
-> +                           /*tpebs_event_size=3D*/0);
->  }
->
->  struct metricgroup__has_metric_data {
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.=
-h
-> index d5325c6ec8e1..7c24ed768ff3 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -66,6 +66,12 @@ struct metric_expr {
->         int runtime;
->  };
->
-> +struct tpebs_event {
-> +       struct list_head nd;
-> +       const char *name;
-> +       const char *tpebs_name;
-> +};
-> +
->  struct metric_event *metricgroup__lookup(struct rblist *metric_events,
->                                          struct evsel *evsel,
->                                          bool create);
-> @@ -77,7 +83,9 @@ int metricgroup__parse_groups(struct evlist *perf_evlis=
-t,
->                               bool metric_no_threshold,
->                               const char *user_requested_cpu_list,
->                               bool system_wide,
-> -                             struct rblist *metric_events);
-> +                             struct rblist *metric_events,
-> +                             struct list_head *tpebs_events,
-> +                             size_t *tpebs_event_size);
->  int metricgroup__parse_groups_test(struct evlist *evlist,
->                                    const struct pmu_metrics_table *table,
->                                    const char *str,
-> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-> index d6e5c8787ba2..b987960df3c5 100644
-> --- a/tools/perf/util/stat.h
-> +++ b/tools/perf/util/stat.h
-> @@ -109,6 +109,8 @@ struct perf_stat_config {
->         struct cpu_aggr_map     *cpus_aggr_map;
->         u64                     *walltime_run;
->         struct rblist            metric_events;
-> +       struct list_head         tpebs_events;
-> +       size_t                   tpebs_event_size;
->         int                      ctl_fd;
->         int                      ctl_fd_ack;
->         bool                     ctl_fd_close;
-> --
-> 2.43.0
->
 
