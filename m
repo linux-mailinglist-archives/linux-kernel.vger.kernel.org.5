@@ -1,148 +1,201 @@
-Return-Path: <linux-kernel+bounces-100292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EEDB87951F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:30:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B6D879522
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:30:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EB2CB21B6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:30:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C69BD1F2390E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7927A72A;
-	Tue, 12 Mar 2024 13:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23DF7A135;
+	Tue, 12 Mar 2024 13:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BQvwX6kd"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="nzpdpbZC"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2088.outbound.protection.outlook.com [40.107.101.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354AB7A71C
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710250190; cv=none; b=AdIdPdzUwLbLoNWOFFZzLGjNQmZ7iDIa5VFOtMKbmxQgSpnJNzwPMu7pcO5sl4gBom2Iqfhh27mwsWsB0qjntxScGeSgjPUxYuvDvGmo4RipfKbFXkj17resfPCgqu6+5sho+yzqWEJeLYXdj0BJC6ofs5np9+pKPzkm/RbpzYE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710250190; c=relaxed/simple;
-	bh=CeQUf6duqfcgE2UiAog44q2605GN+QLpjdFo2IcF8Io=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LSGenfJgyIzr4RQpmteswSPQt8tYOfX3LhpurjaVNXfYgtG5UU4ifPxECX7qS2huUvMczzbxAAb2Pfckoq5kEWnfrjSGqt11/QHP2at7U40xic4MIirlBaIwax7dbBN2pyB03rXr1JYWbKWfqxG3u1G9DhHU2CS4+Gl2I9hgYXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BQvwX6kd; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-29c4fe68666so177618a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 06:29:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710250188; x=1710854988; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GEpybsUIu7Ie6lckJfM0SLnsbZaN3ghhlo+SnNx7CE0=;
-        b=BQvwX6kdBvEdDbKIhQFSzlSouVWurAVw0Vig3PDR+NMpLaeToQZiskiv390KmSOEfm
-         zNegYTeuOhkaxM7XUNchX7g1ef4vYaWYTFTVi9Kvt0p3I9Rnl/Bb4/eyJd+FuFoKKq7O
-         YYY+tHXas2NZTqb4wyGVz+PEFu6wmAaJz33QnJbbtFHONwhy/YsIJK9cyOLIbk8a9V5Y
-         0AOkUOARmpyg44ERfan7EES+3hn0XIT1boBcsJbo4+YxrnGhbCs9+TDiOgWNn+adBpJL
-         ALZtTsb0C5RKeizoBMn7VzVTpeDVE6IhZovMgIJrbI/AfrfzvcONJimOsKq6YgP0IrIb
-         cmBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710250188; x=1710854988;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GEpybsUIu7Ie6lckJfM0SLnsbZaN3ghhlo+SnNx7CE0=;
-        b=tVr4JIhK/NEZzEVWYIPWnoWspl2Sxn3RbHuhJ8yqz0hBRZPGlm1FaUyG8ZXqPZW3vK
-         gtpJLUnrRLN1cLrRyMwxOrQKtLxI2ye1dzBvWZSQoDX1Ct7np1/vGsNh6JWj06OMxY2V
-         EW/en0k5IWCqaxs2ulJxEvKZikr55Io75Ws+bi8PgZrE6MiHCFSHJajmUANOI+G4gAyb
-         0/3A/u4655OftH2f3qfPv/VSC87oco1NjIIs0QBZJgA12c6cR5HIpotFmRkn+d4Nn85+
-         RSllIp3eI1uIVSMEQoVjk3a0Lf9uqw+G/oY4j0czmL+4RKR404mEXLWjyO7+ar1eWiOK
-         KH+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVOwxbEiQt3WrsVTZ+hhDu2Rk3tFrHHeOSi7DVQihi4gyGCRoHxM8fU7VV3DlO3NZuZBNwDBZbZR/d4P2EWSrsGQbT0TiJijHg5XVFv
-X-Gm-Message-State: AOJu0YzL33WNpX5oOOnJ4yHbK41uf6/hUTyQUVnlUpVQoh9fAk8U7z9Q
-	9r2BHaYpOHGa0Aezeg0hXiDzJlExZtPQAjJ3D7DYt2/jTtnaaO9sUKACXJNmEK/49z9z17H8fK1
-	bi/runw1QWzuxm4BhYQKvsynhsN9nQqpu5Bqmtk/N1hF10cMhKJA=
-X-Google-Smtp-Source: AGHT+IEOKVXB/sYjmsJkpYkH4NtqHv7IijuWxCyStTO41Lztb/c8UsJbZy0Bun8lpCHIIB1tD2aJmPaCOAADj8YTAz4=
-X-Received: by 2002:a17:90a:d906:b0:29b:2eab:6bda with SMTP id
- c6-20020a17090ad90600b0029b2eab6bdamr337869pjv.35.1710250188368; Tue, 12 Mar
- 2024 06:29:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7CD79B91;
+	Tue, 12 Mar 2024 13:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.88
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710250236; cv=fail; b=ajStugiVEGpiMZEDu912bgambXHV6x9kYoQgyQXHSNzI/deBJ85y68VVVfFZ1I+kUGx/Jmqj6w+sAFmcTdxoAEKQp9pyYV4WEyZ+YLTPl8zAj6tBW4nmFbwMRFRa72eeQQT8Dsze9fBoYoh+BsxzR2355YEmBWx71SDWHkWFO4s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710250236; c=relaxed/simple;
+	bh=uKa4ySdzNc1cZ5h8Iwex/A/+EZ08ZUjZb1uh2Va7MH8=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=TzoAYiVtsEUWhNaFYzM4fUJSNMZ/v+cJVL1fMIbhr8YL1H1KWj4Kq0XqjUM6uU+sx92Uy+YaBNA9O1jPqvAf+CNgQL/Hh8FAWAXIxgblJ+rGXnObqT89Yw1L97sQo/Hv8mn8EmTmdNrzVgosTUvD+5PXmPjDGq1Lg15HnW+KPrc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=nzpdpbZC; arc=fail smtp.client-ip=40.107.101.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mp9QRQOw1hq5PsbSHWLh47/uVUtx3r9ioHvA/MKUgY9WdJg9fHl5EacAYGKax4ZPbPJ2E0xWYypOXt59TWjduuXwhu0amX2UVTIoHY2o1VmfO0CYUgvGtniQ8xBDZ6aLWzgskCVGI/6vYyC966X4Kb+efL0KK/1wcrh0YxsPrGfwdcw6RADsQ2Iw3V9bmknbmA4tlnVdgTsDFkumlcdcX81H/LGjjhrsRM7mguDvJx6WiyGpoIr+vHMFCsH7+N9GQtBOyyQqyw+uFr+QahGf+yTSzOrljITL3mzqf6Dgorc+iI1XzCFtvh5NpfD65DDY1U7+FyP6QqcHzyN1E2ORDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dQIkRgtMO98DMD2R864vzuS9HeYyFfC2IuP6wuMQduc=;
+ b=dHhBYY0ybQk/tn7SzKCEftBL9In2HktywZle7xrtbKwnSKcIm8NVnNhOILE9h48/NGEoEEqNBHjYzwmqmhV/b9ogx0aLh+Mvk8QUT5lr/A1nRa0WYXZR8eW4EhtXsrQ7Ie9tdp2VagfO40pwTdYrMIYUnUW/T3ZZ3Tb51DfEbs+GkIy9rqt9U9auP3uWA/5KZMx7LCAe7J5NpGVXA4SabcXz3e+zMPhwFLArvSMcQbVh2CGqCSrG0fHcRkB9Z5pcUayrFf6qOk9Y+qFpiKyHTk2MNMV42J6JHc51WlOrWUaPKWEHxCzyFPejMMu0BWkNTHAnG1SPGYGoLDG8T+iEGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dQIkRgtMO98DMD2R864vzuS9HeYyFfC2IuP6wuMQduc=;
+ b=nzpdpbZCaKKiMXkbRE6gs9x+lasLnFab2ibUMuIoNOKs63lkIFPPvUbgk4xHmJSFRfeElreuFRAi6oC+QodDJtU2z4HR7mqi6jNZXaKRwHsLWlxFeZ/0y/pmI30Vx/2z7U/UzXgJwR9zBmLkU0USQKxJ4vkwk5y6hKkuRLygeRc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by IA0PR12MB8715.namprd12.prod.outlook.com (2603:10b6:208:487::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Tue, 12 Mar
+ 2024 13:30:30 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::873e:e31:6eff:36a4]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::873e:e31:6eff:36a4%5]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
+ 13:30:30 +0000
+Message-ID: <af8acdb7-8cc9-422a-a38d-8a4507ab11a1@amd.com>
+Date: Tue, 12 Mar 2024 08:30:24 -0500
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
+ Monitoring Counters (ABMC)
+Content-Language: en-US
+To: Reinette Chatre <reinette.chatre@intel.com>,
+ Peter Newman <peternewman@google.com>
+Cc: James Morse <james.morse@arm.com>, corbet@lwn.net, fenghua.yu@intel.com,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org,
+ peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com,
+ lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com,
+ leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com,
+ kirill.shutemov@linux.intel.com, jithu.joseph@intel.com,
+ kai.huang@intel.com, kan.liang@linux.intel.com,
+ daniel.sneddon@linux.intel.com, pbonzini@redhat.com, sandipan.das@amd.com,
+ ilpo.jarvinen@linux.intel.com, maciej.wieczor-retman@intel.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, eranian@google.com
+References: <20231201005720.235639-1-babu.moger@amd.com>
+ <32a588e2-7b09-4257-b838-4268583a724d@intel.com>
+ <088878bd-7533-492d-838c-6b39a93aad4d@amd.com>
+ <9b20589b-6220-4ae7-bfc4-4a826b7114b1@intel.com>
+ <5ddb7031-a828-4001-bfdf-5477cb85e9ed@amd.com>
+ <1738493b-3248-4c9e-82a8-1599a033440d@intel.com>
+ <369ab28a-f3fa-4359-8e73-4dcf214c9b6e@amd.com>
+ <54687d59-d0e4-4fe7-b25f-dc1fead01ea1@intel.com>
+ <11487a31-908e-d474-50c6-65617d417deb@amd.com>
+ <c73f444b-83a1-4e9a-95d3-54c5165ee782@intel.com>
+ <55b545fd-2851-0d0f-ac37-ec59838fb4b4@amd.com>
+ <1f366890-d9ff-4ac4-9af9-1ea3128a87fc@intel.com>
+ <41ca7504-c3fb-ddb6-e149-4ff82019d678@amd.com>
+ <CALPaoCi=PCWr6U5zYtFPmyaFHU_iqZtZL-LaHC2mYxbETXk3ig@mail.gmail.com>
+ <1d3e8b68-28fa-419b-b129-0c39df34f718@intel.com>
+ <CALPaoChJPkfrMgFDhtZqwK7O8=A71CKLzQjEMG6LbgB9RhdzvA@mail.gmail.com>
+ <e90ce54c-a830-4ba5-8b28-aeef06705d01@intel.com>
+ <46065d68-8334-4b76-bc68-c2695e7b98de@amd.com>
+ <ec15db92-24bb-46eb-963c-e872ff2ac9e3@intel.com>
+From: "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <ec15db92-24bb-46eb-963c-e872ff2ac9e3@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM5PR08CA0029.namprd08.prod.outlook.com
+ (2603:10b6:4:60::18) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308202209.2452-1-daweilics@gmail.com>
-In-Reply-To: <20240308202209.2452-1-daweilics@gmail.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 12 Mar 2024 14:29:36 +0100
-Message-ID: <CAKfTPtD+sN+ADsxNcyVddk0MAMSkGMtM1E91Fie8dGysL=SCDA@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: fix initial util_avg calculation
-To: Dawei Li <daweilics@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|IA0PR12MB8715:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2dc0601b-0243-48a9-80b4-08dc429895ee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rnUUMfolqyQqALCgrChkEFSnApAZQ31sIJV4jsoujZaTzzs8btAeEvNjjjVl1DU/QOVhoqMtASiusyMxnlZMY9OONuYmGqmDG1oH7s33lUR2xoRQmafLmLCs/47aXqRdnULJ0olaKWR338zAsPqQQyzmYPk0kxNjCQDXVlc/18/2oOT+2rKuqfoUcIggPhe7vIiZS2tB82gF2UCFsFCg4Wb8bc5ngTX0HIs8iSTB/snStbOQ/CQKkKw5TBq8BCnrwydP4zCuRLoDNFtHp84mtKCcVhA2+6okvL527gFaOy+WW3q5kBk/Fh3VSnvOreYkpAIJ9vn8brL+i/56DKftzYHIu27r/UGDgQgtRCzvpv8lGIqMztBenp43WZS7EKgCFX6Zg4B/jnG0yyLl3DsmeqGqeuqiPvPPjmt1Kb1Ds6bOFAY0bdLR3J803LK16CgRZVFJippm5C0wwtXL8r0m6BWgnZad7tAWJGTzOpNwIEpjGqlhQWHLFJ2tmdS2EqHPZsJfpIsZ/UMVTGzVyWLPHNL3Q7zmCH9qFo3k1jxYwDCoLpHoOEyx0ON0GuHqPm49yUGGC3Q8OZO/VHmIsHJ2IcJO+tfKJjxY2CrD4wU7aQEA6FenaQ5QtR/tKbLNLtveUOe1cBgFm4WajYWqw9BrmPg650QUsnhpcEtcBcTgp10=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ejMyaWlsQ2FqdmhvaE1rQ25WblJZVzE5U0lrSVRWdlFheEdzMlk3NW1XYjZX?=
+ =?utf-8?B?WitHRVAxNnJaeTZRYUh2R3NaWXZSK2pCTVk3ek1lUVhzNXo0M0ZBRDFGeWdM?=
+ =?utf-8?B?V2FMdEZCd05qSjcybDQwcGFXc3piRjZzbk5hWGsydTdXSHFYSUM0eFkraldh?=
+ =?utf-8?B?RjJEZjVyR25sdkJWdXpXaTN3Q01kTmxNTGlnNUdya0hYVk1PTW5Qem1mNXdJ?=
+ =?utf-8?B?RDJETkdTZ1Y2WFFKSUxNQ1N1QmtNRWRyT3I1TXBPSEg4Nm11eXkyOEFETzVo?=
+ =?utf-8?B?YTI4OGluMG52eDNPZ09DSXdDb24wR1ZySzNvOXY2N0ZOUytoMTBWRTNaWGti?=
+ =?utf-8?B?OUZkYmhoamtCVklhWDU5d2dhVzVuQjI2ODB1RVgwV0ZYK1VDb3AwZVFldU9a?=
+ =?utf-8?B?aXYzZTRrN0tPZVNnRFcvN2dLTk02a1dnM1lMbnE1dEdTZGJobEZzdlN6UjFq?=
+ =?utf-8?B?SFk1K2hkQTFBNVZHUnZBNGpXY1RSY2UxVi96eDk2clJIZG1ETnZKb05GTmhx?=
+ =?utf-8?B?bDMvOEQ3ZVA3OTVDOWFkVkhZODdvYnF0TmZXaVNzVUZaRGc2Qkl4aXpPSHpD?=
+ =?utf-8?B?NU1XN3ZteEduMW43aU1pM3Q2NHFjR3hVd09BK3ZLNHRQWFE1OUZXcVVONy9m?=
+ =?utf-8?B?VXpzNitlcmJySklGaGNQTnJVakhNeXZlYW5UWE9JeHRiS3VIVWQzVkFVSW1w?=
+ =?utf-8?B?WEE1SjB4SzZHOUlqTWRvU090NFpMdmRNYm1xZ2pVblJQNXc3eTBKOUp3UlU5?=
+ =?utf-8?B?d2c5RG9EK2dEYm9DTjB3QmxwclZ6aHVQOFNUMVpZLzJGd2ZHdnBWSkRZMXVP?=
+ =?utf-8?B?dnVnU0NNNXRjMXphU0lBOTN4ajRDYVBxbUl6blJmYnJlcW1SVzl5enVscXpr?=
+ =?utf-8?B?VU9NWkJVTGxKVUw5dDVFVk9OUllRcmhOamVWZUdSQWVYcnhBbCs3Mnh2ZnFt?=
+ =?utf-8?B?TW1pSm52REdmaGNZelIwdUhoNC9zenNUUmVWRlNMOFdtTGFaRlkvMElqNWpL?=
+ =?utf-8?B?KzFROTNQQlg3ZENpdzREa1VJTWlBWkhJSHFLRlFUM0N5VTd3VnFRWVk0RHA3?=
+ =?utf-8?B?WWwzOEFVazRIS3B5UGZUR0llSlF4REt3enM5RE9mdUhzdHpqS2JzUzFTZW1v?=
+ =?utf-8?B?bURsc29GZHRDWXhDR0lVa05oZUFIYzFwZ3orZFkzQUs1VjhuSWdFKzAzelA3?=
+ =?utf-8?B?YnF3ZU5qNjBhR1BlZHNzcFBCaVdDTzVkL3lQVnJNbU94MlM4czk2VEVmdUlN?=
+ =?utf-8?B?Nks0dTV3UUQzbWVNT3ZtaW9qZ3hNZ1JPZzlFM0tWaXpnOVN5dktOdEh2TVVZ?=
+ =?utf-8?B?TUdpME5HclY2bXU4S0doRldmRVp0SGZTTkgxa2xuV2laK2JSbHhQUTZ6aGxO?=
+ =?utf-8?B?THB2NHEzU0Zwd1BqUmttMkpVMlpxV0FjZnlEbnlpblNnL0Rub0RaUENqZmdT?=
+ =?utf-8?B?R015OWhKUDJoeFpaVnJOYzgvOHcxSEg0N1dONVAwb2hHbFlWNGFpdUJSQmtD?=
+ =?utf-8?B?STRGbFdOalNPVFBMbHBIN1lsVXhRM2Yxd240QUVuWnpPZEdRbEl4LzFtL0Za?=
+ =?utf-8?B?MGdCR0Q1MmltbUhvd2RRemh2RXJGcDhieFlFWExDRjluN1RQZldrN0lGKzZp?=
+ =?utf-8?B?Y08wSkE3eEZQYU03dVVTS3hYYS9FemRFTlZYeWlYbkR0ckRvbEIvV29la0Ux?=
+ =?utf-8?B?VnlDL3JqVmRVZ1NzVXFHbCs4RVN6YXBLd1l1OFpBN1c0NytJOHBUMHV3K2hw?=
+ =?utf-8?B?VEJPbGN0eDZaLytWaTJiTG11RlhpbG9xcFBEVTlSNWQzczRZQ29ydGpyM2Js?=
+ =?utf-8?B?S0t1MmN3Y2EzN0NtWk5CUGZoUk1KaVFCL2lBWC9VVE5GblZsMnhKVFJaRCti?=
+ =?utf-8?B?UnUwYndteElWVklkK000YVhLM1o0RzZvYTVpQTRRZnpQSjY5NnVvRXRHUjh2?=
+ =?utf-8?B?azlkakpGS29pUEV6cGN5YURKT2pqVmVFbVlNb3VVTU9SVjF5MXo2aDY3bTlZ?=
+ =?utf-8?B?VnI1bWYwNTFEd0xVT04wdzFaTThlT3VNcmduZjBEeCs5VnE1UkVSYXBnTDhw?=
+ =?utf-8?B?OEpTNXdWRDRSdXZta21KYVRCSmZmekJGUDRJTXJrVmg2OEx3RDk1UUhhdzJK?=
+ =?utf-8?Q?96LY=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dc0601b-0243-48a9-80b4-08dc429895ee
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 13:30:29.9193
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VDKt/H5sAsJ4MZa2Fhuxbk/6NYQfqsWIJtD0jUwE/aSp7OxQFGcJzzxQvTqS2bdy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8715
 
-On Fri, 8 Mar 2024 at 21:23, Dawei Li <daweilics@gmail.com> wrote:
->
-> According to the comment for post_init_entity_util_avg(), it seems that
-> we are assuming se->load.weight has the same scale/unit as that of
-> cfs_rq->avg.load_avg.
->
-> As far as I understand, se->load.weight is the scaled-up load, instead
-> of the true weight (as mapped directly from the nice value) of a task.
-> When CONFIG_32BIT is set, we have load == weight; when CONFIG_64BIT is
-> set, we have load == weight * 1024. However, cfs_rq->avg.load_avg is
-> the sum of true weights of tasks, as se->avg.load_avg corresponds to
-> the true weight of a task.
->
-> Based on how sa->util_avg is calculated in the code, we could be
-> inflating sa->util_avg by 1024 times? Could this be the reason why
-> "However, in many cases, the above util_avg does not give a desired
-> value. ... "?
 
-No, this is about the fact that this estimation of util_avg can give
-insane value because even the correct se_weight(se) can go up to 88761
-whereas util_avg should never go above 1024
+On 3/8/24 11:20, Reinette Chatre wrote:
+> Hi Babu,
+> 
+> On 3/7/2024 7:50 PM, Moger, Babu wrote:
+>> I am also thinking about replacing the newline requirement for multiple
+>> groups. Domains separate by "," and groups separate by ";".
+>>
+>> Something like this..
+>>
+>> "/c1/m1/00=_,01=_;/c1/m2/00=_,01=_;/c1/m3/00=lt,01=lt"
+>>
+>> Thoughts?
+>>
+> 
+> I would prefer that resctrl uses as consistent interface as possible
+> between the different files. There are a few files that already
+> take domains as input (schemata, mbm_total_bytes_config,
+> mbm_local_bytes_config) and they all separate domains by ";".
+> I thus find it most appropriate to stick with ";" between domains.
+> 
+> Regarding separation of groups, in schemata file for example it is
+> already custom to separate groups (resources in that case) with "\n".
+> 
 
->
-> I'm not entirely sure about it. Posting this for clarification and
-> comments.
+Ok. Sure.
 
-Good catch.
-
-The commit message needs to be updated to remove your question above
-but otherwise looks good
-
->
-> Signed-off-by: Dawei Li <daweilics@gmail.com>
-> ---
->  kernel/sched/fair.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6a16129f9a5c..0d13e52e1a92 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_entity *se)
->   * With new tasks being created, their initial util_avgs are extrapolated
->   * based on the cfs_rq's current util_avg:
->   *
-> - *   util_avg = cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.weight
-> + *   util_avg = cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
-> + *             * se_weight(se)
->   *
->   * However, in many cases, the above util_avg does not give a desired
->   * value. Moreover, the sum of the util_avgs may be divergent, such
-> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct *p)
->
->         if (cap > 0) {
->                 if (cfs_rq->avg.util_avg != 0) {
-> -                       sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
-> +                       sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
->                         sa->util_avg /= (cfs_rq->avg.load_avg + 1);
->
->                         if (sa->util_avg > cap)
-> --
-> 2.40.1
->
+-- 
+Thanks
+Babu Moger
 
