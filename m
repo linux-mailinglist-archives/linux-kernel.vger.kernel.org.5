@@ -1,105 +1,155 @@
-Return-Path: <linux-kernel+bounces-100194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C19287935E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:53:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69090879368
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5787B28180E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:53:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6DB1C22432
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF61E7A120;
-	Tue, 12 Mar 2024 11:53:37 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810DA79DC9;
+	Tue, 12 Mar 2024 11:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="b9LbA1nX"
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8104279B9F;
-	Tue, 12 Mar 2024 11:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B499E56471;
+	Tue, 12 Mar 2024 11:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710244417; cv=none; b=PJStqaoFdqHbWi8gK5x67FKXrEw1KyHiujavo5TXQgz+obyOF3xjvxCHa7Fg+BgEwab1JhHx0urkMp3GQoXJzYbj7yTBv5D2Osfddl3twvhjObbDdU8s6UduoR2pLflf1uM/AEQpVeuMYlKHexhxu04ZMsyXHwGzEPAHi2OlT1Y=
+	t=1710244567; cv=none; b=bHydrDmT76TuhVlPV0jeMaNBOa8EMjk6hkUS1ykj84SnjHyzCKaODW/APgPJccIRZ6Prm8XRGW/PEFc4pDZMHarCDEskiXSynx9QCDLPiZpzV8400J49LS2xojaixs9Wrx0NtbQ2iwSx88XQtWuTi9r0gc7QAL/g7FzJoOJwRqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710244417; c=relaxed/simple;
-	bh=OFWQHarI5fCAkqHhPKoFup+10oTzUofGo9Ywf9n4jY4=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=pCGBp+A9lRbloSf35JLhKhGVYyIxYVPzXpJUcjVtNs8ZQ9Q7ekeYbpsoP1TZxfcGBiQri5G6i2ubXszwFUeu4VKitKn5Cuo25YcnO7xQX1qaZtINUlIj5oqYhbpsXSVjIACXH+5iruPWJZbgueH84JleQlYvbdgcTX89JG3nUvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2600BC433C7;
-	Tue, 12 Mar 2024 11:53:37 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1rk0jP-00000001u6w-2fLz;
-	Tue, 12 Mar 2024 07:55:43 -0400
-Message-ID: <20240312115543.500445373@goodmis.org>
-User-Agent: quilt/0.67
-Date: Tue, 12 Mar 2024 07:54:57 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 2/2] ring-buffer: Reuse rb_watermark_hit() for the poll logic
-References: <20240312115455.666920175@goodmis.org>
+	s=arc-20240116; t=1710244567; c=relaxed/simple;
+	bh=PQ1onOCNmoZb1WuqiYG6mAiWg8oiBlv8sMZhEhOIYKY=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=LvNIwFhJgQtv0zL896aodkWt6/7fVAX8UlE3gY2VdkRmGlkpBc7aLmj5/7PFxDbBEpkI9q7nBvKk3trJWONcVhUrRVoOWnc+vA084d8WW0OaHONYe7PbZXqkKLTZPUaKKZi+O0kPYJ2NryZwWhE6AMMsg1J9P5jBZu9CWtj66fI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=b9LbA1nX; arc=none smtp.client-ip=194.87.146.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by box.trvn.ru (Postfix) with ESMTPSA id 4D5C9400F9;
+	Tue, 12 Mar 2024 16:56:00 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+	t=1710244560; bh=PQ1onOCNmoZb1WuqiYG6mAiWg8oiBlv8sMZhEhOIYKY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=b9LbA1nXQS7ZXbM3dG8CTpXPxZlSykZXR39MuuUxOMG45JbPXtqcATRkzKCI14UqB
+	 IVDhXsqErW0SJ+8jLlHmuXcSUaRp36hw1Fa0SBv5YLRdfiF59pD68VngE4xQYTloyq
+	 hFfluotxz7MEhTWeyTe1i3AQUrDapEYEXicOlr0X92X6I3Xw5oZkQjg36Ih8LzlZsA
+	 1X1O4LS8hhNOaOaaKlY1RkzxrziPm37E1Z9x6jGSy4RZk8R9wkRq2ZKQGRmcuieCTl
+	 MDx9jzLZdBxcSP1V6CGY953aotJh4RWoOefsRcDzMTAaA/bH/2adPSekss4QKhVSe5
+	 IGfQ04BOzkSpA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Date: Tue, 12 Mar 2024 16:55:58 +0500
+From: Nikita Travkin <nikita@trvn.ru>
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>, Sebastian Reichel <sre@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>, Bjorn
+ Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] platform: Add ARM64 platform directory
+In-Reply-To: <5d4434fc-862e-4430-a2a0-758887d7596d@linaro.org>
+References: <20240312-aspire1-ec-v4-0-bd8e3eea212f@trvn.ru>
+ <20240312-aspire1-ec-v4-2-bd8e3eea212f@trvn.ru>
+ <5d4434fc-862e-4430-a2a0-758887d7596d@linaro.org>
+Message-ID: <7ecbcea00a4b59d7afdb529dce12801b@trvn.ru>
+X-Sender: nikita@trvn.ru
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Bryan O'Donoghue писал(а) 12.03.2024 16:36:
+> On 12/03/2024 08:42, Nikita Travkin wrote:
+>> Some ARM64 based laptops and computers require vendor/board specific
+>> drivers for their embedded controllers. Even though usually the most
+>> important functionality of those devices is implemented inside ACPI,
+>> unfortunately Linux doesn't currently have great support for ACPI on
+>> platforms like Qualcomm Snapdragon that are used in most ARM64 laptops
+>> today. Instead Linux relies on Device Tree for Qualcomm based devices
+>> and it's significantly easier to reimplement the EC functionality in
+>> a dedicated driver than to make use of ACPI code.
+>>
+>> This commit introduces a new platform/arm64 subdirectory to give a
+>> place to such drivers for EC-like devices.
+>>
+>> A new MAINTAINERS entry is added for this directory. Patches to files in
+>> this directory will be taken up by the platform-drivers-x86 team (i.e.
+>> Hans de Goede and Mark Gross).
+>>
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+>>   MAINTAINERS                     |  9 +++++++++
+>>   drivers/platform/Kconfig        |  2 ++
+>>   drivers/platform/Makefile       |  1 +
+>>   drivers/platform/arm64/Kconfig  | 19 +++++++++++++++++++
+>>   drivers/platform/arm64/Makefile |  6 ++++++
+>>   5 files changed, 37 insertions(+)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index b43102ca365d..ec8d706a99aa 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -3050,6 +3050,15 @@ F:	drivers/mmc/host/sdhci-of-arasan.c
+>>   N:	zynq
+>>   N:	xilinx
+>>   +ARM64 PLATFORM DRIVERS
+>> +M:	Hans de Goede <hdegoede@redhat.com>
+>> +M:	Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>> +L:	platform-driver-x86@vger.kernel.org
+>> +S:	Maintained
+>> +Q:	https://patchwork.kernel.org/project/platform-driver-x86/list/
+>> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+> 
+> Surely some sort of Arm specific mailing list should be added here ? platform-drivers-x86 for arm64 platform drivers standalone, makes little sense.
+> 
 
-The check for knowing if the poll should wait or not is basically the
-exact same logic as rb_watermark_hit(). The only difference is that
-rb_watermark_hit() also handles the !full case. But for the full case, the
-logic is the same. Just call that instead of duplicating the code in
-ring_buffer_poll_wait().
+We agreed with Hans that pdx86 list/tree can work for EC drivers for
+other platforms because many maintainers familiar with ECs through x86
+are already there.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+> Perhaps for each new SoC class added - you could add the appropriate mailing list linux-arm-msm is suspiciously missing from the list even though the only driver that will live in this directory after this series is a qcom based device.
+> 
+> And if tomorrow someone added a Rockchip based EC controller then you'd assume the rockchip mailing list should get a ping.
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index adfe603a769b..6ef763f57c66 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -963,21 +963,16 @@ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
- 
- 		poll_wait(filp, &rbwork->full_waiters, poll_table);
- 
--		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
--		if (!cpu_buffer->shortest_full ||
--		    cpu_buffer->shortest_full > full)
--			cpu_buffer->shortest_full = full;
--		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
--		if (full_hit(buffer, cpu, full))
-+		if (rb_watermark_hit(buffer, cpu, full))
- 			return EPOLLIN | EPOLLRDNORM;
- 		/*
- 		 * Only allow full_waiters_pending update to be seen after
--		 * the shortest_full is set. If the writer sees the
--		 * full_waiters_pending flag set, it will compare the
--		 * amount in the ring buffer to shortest_full. If the amount
--		 * in the ring buffer is greater than the shortest_full
--		 * percent, it will call the irq_work handler to wake up
--		 * this list. The irq_handler will reset shortest_full
-+		 * the shortest_full is set (in rb_watermark_hit). If the
-+		 * writer sees the full_waiters_pending flag set, it will
-+		 * compare the amount in the ring buffer to shortest_full.
-+		 * If the amount in the ring buffer is greater than the
-+		 * shortest_full percent, it will call the irq_work handler
-+		 * to wake up this list. The irq_handler will reset shortest_full
- 		 * back to zero. That's done under the reader_lock, but
- 		 * the below smp_mb() makes sure that the update to
- 		 * full_waiters_pending doesn't leak up into the above.
--- 
-2.43.0
+I believe that even though those drivers are "board specific" (Hans
+asked to only include EC drivers here, and we have soc/ for other things
+anyway) they are not at all "platform"/"soc" specific, so I'm not sure
+adding arm lists here is a great idea:
 
+I don't think these drivers would be too specific to the SoC given it's
+just an i2c peripheral most of the time, and considering that it seems
+there soon will be many WoA devices with socs from many vendors, we would
+just have a collection of all the arm platform lists here...
 
+So even if for now, while all existing WoA devices use Snapdragon chips,
+we could get away with adding linux-arm-msm, it may end up just spamming
+all the platform lists for no reason when the list grows...
+
+I think it's better for the contributors to CC the relevant list for
+their board themselves, which is easily done implicitly by adding dts
+changes along the way, like in this series.
+
+Of course if you and other people on linux-arm-msm are fine with that
+possibility, we could add an extra list there and see if it gets out of
+hand.
+
+Nikita
+
+> 
+> ---
+> bod
 
