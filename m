@@ -1,129 +1,157 @@
-Return-Path: <linux-kernel+bounces-99763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97321878CF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:20:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE28878CF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:22:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 337381F21BDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:20:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5C92827F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8799F6FBF;
-	Tue, 12 Mar 2024 02:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F821AD2C;
+	Tue, 12 Mar 2024 02:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="bJEXJ4r6"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="MjinCQYJ"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6526F6FB6
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6281A945A
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:21:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710210033; cv=none; b=ZIZkM68xocalrq9SLIumnu0R5uZn5s11UZFWmfeMS8r7P+7BfMvtWB9xFZ3MKAIvs+hxXZEZ+qUkzYLbutoax6c9+Zh7gTF7cmZj6szDQJJ4S62xV5dMvTwY3+sHur+hWf4o0H/NxTsHiKcYjkNdzGBxiRPJHYd/mTF86YlHYGg=
+	t=1710210122; cv=none; b=O6z6YpVaLby9BFLvdxNDzN+DtzTmwKBfCcgh/OgWmhu7iQ9gSSDOQXCqhFaUTYMSYcJ37NpaUxXDkcnfco/dDTksn3OdZBqWUjXDYCg5TwRxAjzNVbSdsQW5P3SeTHNCtv9MF76p8a7wGJ6jYIyR3WgdhkZfVAp+HRVj/58fnsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710210033; c=relaxed/simple;
-	bh=PMk/rTFNC8v/WZbxXaUIU5/HY2l7wQbZqSq8PeM/KF8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AkMy6KPQZ6vS0gLza0ZezU9ijQoYOAiVsALyqghClhdxgquH7cYi0xTB2OU29kh1LoxbPdhQmTRPux4h/OvbhrJAgTigaEA+5RPp7FKA/ho8T1K2x5/TsXggs9slpAGuM8//CENTNuPLCWB/1kG5dAYALI8pylIVw4CE85bz1QY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=bJEXJ4r6; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dda51bb52eso9252055ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:20:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710210031; x=1710814831; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MRqA0g05W48N7EVchL2+ZCRtUYEZmKtpe/WU4nz0oWY=;
-        b=bJEXJ4r6ziqnTWVMjaZd0sLhoVIkDh/U2WLBHclMcEUXAXFg/UPbMpFRYErHba9X5f
-         aCaKY931bz0g7s4wOuXs974gBqwC6C4/nVfV5QVNvsVLqqVvKCZyoG/XcKsHZGZbJVyb
-         sY+rXXl1yjw02OfyZiXgrVZelx31KReiGKhWpoWBIW7G5dMrW0WFlG21j+qWSKkK+qQz
-         VxdzQTLsMerZznUKKAKUrfrPsbmJHm6dkANC+ztTmP06qYhKDeoiPN2iYGveG2JUzahH
-         wv2vQigVU44rtguIlKg7rV0oisltxhla7kpGO1IsN67u+5InSrxaBnWc4OMJ4zZFjUce
-         0YBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710210031; x=1710814831;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MRqA0g05W48N7EVchL2+ZCRtUYEZmKtpe/WU4nz0oWY=;
-        b=LwiZd0FYcFJi3Fumk0f0a8fNe9Ckh3a4Vz5DVTOLcqIztZCUILEyCDa2M9G2rHfqje
-         H48C+p2xcATNOoB5imQSnSjQxt+P1lKp6L58F371cb5WvCI2qf8+4B0Vb3tojVwSUpCV
-         N6bryozlZFYWqj/azZ0KuSk81J2CL7qLHaIG1rdR7dNuCyVYhXJPGp5zN/LwcD8N8I/x
-         kHFnVLEOTsNQvQnzvY7/jx4/ZXYS8zGuIiPpbOGd+GaOFobBSI8FiPMQNRPe7e7KeIUZ
-         TQFMLv2CODqXpBEO7XTiUvgGA3hclHBM3ep9VI2B0aGERZOAqWSDbMRnoAzB0aidjfRP
-         GU3g==
-X-Gm-Message-State: AOJu0YxXVX/VAbuNn+golTYzIq5OfXGpzVKGZ6Jx25FJ3zhyeZlYvtgd
-	WJ74X7TvyOor+bItiXOC3byWIyTtKmfuDeb8DwTRAfFqZRckti7ihTvmt/wQh54=
-X-Google-Smtp-Source: AGHT+IHRzmrrD/vL7SV/zQC2oOq7RNpJg6XVo2QWxnj/zrg5gCaGqRzQXEVdk40YCrf7mEvIJxwvJw==
-X-Received: by 2002:a17:902:d58b:b0:1dd:b6b8:a689 with SMTP id k11-20020a170902d58b00b001ddb6b8a689mr572370plh.6.1710210031582;
-        Mon, 11 Mar 2024 19:20:31 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id a6-20020a170902ecc600b001db5bdd5e33sm5394175plh.48.2024.03.11.19.20.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 19:20:31 -0700 (PDT)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	Samuel Holland <samuel.holland@sifive.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] riscv: Fix spurious errors from __get/put_kernel_nofault
-Date: Mon, 11 Mar 2024 19:19:13 -0700
-Message-ID: <20240312022030.320789-1-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.43.1
+	s=arc-20240116; t=1710210122; c=relaxed/simple;
+	bh=epRTf1wLs43NkiHRFVg/kOBMSreaIeFhsSZmxUVSZMU=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=RSviRCyQUoZYDczvxDl5MEePofjQFVb6tcFxmrSizv4zAzBf+r8oUthUnANCYki7AqKp/LKl7DQdgbwA9FS9l3QwGf+F8J1DeQZetrR+ZIlEgqpG6xQ5vLRmIibV/MEUijY8hYsm8xJThDQwe8qRDh3r60CtuUMpLObG8MuTeEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=MjinCQYJ; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42C2KvjU1107798
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Mon, 11 Mar 2024 19:20:58 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42C2KvjU1107798
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1710210062;
+	bh=25o8RezCz/80azo9KF9KOroEFSSWkg8pHxdIqDA7QWg=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=MjinCQYJOwkr/GeS6myIyc5fiKaO2Jc6L1Aas4l12yyMkbi9pF+p3BmHPieTdqOkZ
+	 cGhZ0/0Ct+NBK+Ta954sRgeRzGlC0WPeICXOLDfBHReqMVl357P7jT+TYr+2GH/R1e
+	 JPaS5v8Ps3uU8nBBmWFIRiu7qb+1Ylkf2l46STFhRAEZrQ5AWPbrD5dw7d7pvFuoK/
+	 nWbYe1zFwItOZ5VeNTWoyhGMSF7vxUaVH4IsAbcTMVwp+mzVJSDoJTPwkYuveTeQNR
+	 +uGe4p9G2m8nf/rVw4evqkBOahg2pka7mZfLvHMYdQcK3d46AP1XjtyttzxZqnxtsg
+	 3s8ZDreVs1uww==
+Date: Mon, 11 Mar 2024 19:20:54 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Andy Lutomirski <luto@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+CC: Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Christian Brauner <brauner@kernel.org>,
+        bristot@redhat.com, Ben Segall <bsegall@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, dianders@chromium.org,
+        dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com,
+        "hch@infradead.org" <hch@infradead.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, jpoimboe@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, juri.lelli@redhat.com,
+        Kent Overstreet <kent.overstreet@linux.dev>, kinseyho@google.com,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        lstoakes@gmail.com, mgorman@suse.de, mic@digikod.net,
+        michael.christie@oracle.com, Ingo Molnar <mingo@redhat.com>,
+        mjguzik@gmail.com, "Michael S. Tsirkin" <mst@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>, vincent.guittot@linaro.org,
+        vschneid@redhat.com
+Subject: Re: [RFC 11/14] x86: add support for Dynamic Kernel Stacks
+User-Agent: K-9 Mail for Android
+In-Reply-To: <0645946c-f4f5-43b1-a9a0-03ed139036b3@app.fastmail.com>
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com> <20240311164638.2015063-12-pasha.tatashin@soleen.com> <3e180c07-53db-4acb-a75c-1a33447d81af@app.fastmail.com> <bedfa55b-b1d0-4e59-8c94-dbc5f8485a7f@intel.com> <ef0419dd-9d7b-4b77-b63a-5f11aaefb570@app.fastmail.com> <08EFDEDB-7BBB-4D9C-B7E5-D7370EC609BE@gmail.com> <dd67a2b9-35ef-4cf8-b303-9e6b8692b390@intel.com> <D4D747C5-2B0E-44B0-A550-BA05BE0AF2FA@zytor.com> <0645946c-f4f5-43b1-a9a0-03ed139036b3@app.fastmail.com>
+Message-ID: <83E86178-FBC7-49C5-B624-8B8106D10CBC@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-These macros did not initialize __kr_err, so they could fail even if
-the access did not fault.
+On March 11, 2024 7:16:38 PM PDT, Andy Lutomirski <luto@kernel=2Eorg> wrote=
+:
+>On Mon, Mar 11, 2024, at 6:25 PM, H=2E Peter Anvin wrote:
+>> On March 11, 2024 5:53:33 PM PDT, Dave Hansen <dave=2Ehansen@intel=2Eco=
+m> wrote:
+>>>On 3/11/24 16:56, Nadav Amit wrote:
+>>>> So you can look on the dirty-bit, which is not being set
+>>>> speculatively and save yourself one problem=2E
+>>>Define "set speculatively"=2E :)
+>>>
+>>>> If software on one logical processor writes to a page while software
+>>>> on another logical processor concurrently clears the R/W flag in the
+>>>> paging-structure entry that maps the page, execution on some
+>>>> processors may result in the entry=E2=80=99s dirty flag being set (du=
+e to the
+>>>> write on the first logical processor) and the entry=E2=80=99s R/W fla=
+g being
+>>>> clear (due to the update to the entry on the second logical
+>>>> processor)=2E
+>>>
+>>>In other words, you'll see both a fault *AND* the dirty bit=2E  The wri=
+te
+>>>never retired and the dirty bit is set=2E
+>>>
+>>>Does that count as being set speculatively?
+>>>
+>>>That's just the behavior that the SDM explicitly admits to=2E
+>>
+>> Indeed; both the A and D bits are by design permissive; that is, the=20
+>> hardware can set them at any time=2E
+>>
+>> The only guarantees are:
+>>
+>> 1=2E The hardware will not set the A bit on a not present late, nor the=
+ D=20
+>> bit on a read only page=2E
+>
+>Wait a sec=2E  What about setting the D bit on a not-present page?
+>
+>I always assumed that the actual intended purpose of the D bit was for th=
+ings like file mapping=2E  Imagine an alternate universe in which Linux use=
+d hardware dirty tracking instead of relying on do_wp_page, etc=2E
+>
+>mmap(=2E=2E=2E, MAP_SHARED): PTE is created, read-write, clean
+>
+>user program may or may not write to the page=2E
+>
+>Now either munmap is called or the kernel needs to reclaim memory=2E  So =
+the kernel checks if the page is dirty and, if so, writes it back, and then=
+ unmaps it=2E
+>
+>Now some silly people invented SMP, so this needs an atomic operation:  x=
+chg the PTE to all-zeros, see if the dirty bit is set, and, if itt's set, w=
+rite back the page=2E  Otherwise discard it=2E
+>
+>Does this really not work on Intel CPU?
+>
 
-Cc: stable@vger.kernel.org
-Fixes: d464118cdc41 ("riscv: implement __get_kernel_nofault and __put_user_nofault")
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
-Found while testing the unaligned access speed series[1]. The observed
-behavior was that with RISCV_EFFICIENT_UNALIGNED_ACCESS=y, the
-copy_from_kernel_nofault() in prepend_copy() failed every time when
-filling out /proc/self/mounts, so all of the mount points were "xxx".
+Sorry, I should have been more clear=2E
 
-I'm surprised this hasn't been seen before. For reference, I'm compiling
-with clang 18.
-
-[1]: https://lore.kernel.org/linux-riscv/20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com/
-
- arch/riscv/include/asm/uaccess.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
-index ec0cab9fbddd..72ec1d9bd3f3 100644
---- a/arch/riscv/include/asm/uaccess.h
-+++ b/arch/riscv/include/asm/uaccess.h
-@@ -319,7 +319,7 @@ unsigned long __must_check clear_user(void __user *to, unsigned long n)
- 
- #define __get_kernel_nofault(dst, src, type, err_label)			\
- do {									\
--	long __kr_err;							\
-+	long __kr_err = 0;						\
- 									\
- 	__get_user_nocheck(*((type *)(dst)), (type *)(src), __kr_err);	\
- 	if (unlikely(__kr_err))						\
-@@ -328,7 +328,7 @@ do {									\
- 
- #define __put_kernel_nofault(dst, src, type, err_label)			\
- do {									\
--	long __kr_err;							\
-+	long __kr_err = 0;						\
- 									\
- 	__put_user_nocheck(*((type *)(src)), (type *)(dst), __kr_err);	\
- 	if (unlikely(__kr_err))						\
--- 
-2.43.1
-
+Hardware will not set a bit that would correspond to a prohibited access=
+=2E
 
