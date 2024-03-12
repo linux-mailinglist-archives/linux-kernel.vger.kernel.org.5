@@ -1,46 +1,73 @@
-Return-Path: <linux-kernel+bounces-100663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D755879B79
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:34:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC764879B7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:34:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89B6BB24374
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:34:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52C4E2835CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B73E1420A8;
-	Tue, 12 Mar 2024 18:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CBB140E5B;
+	Tue, 12 Mar 2024 18:34:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="huSxnsmb"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9431DDC9;
-	Tue, 12 Mar 2024 18:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HlhZA/4g"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9141DDC9
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710268438; cv=none; b=TCIKm/h8ErsjsiIbbzAMldQzK1NvDiEW4kIBA3JAMz3YpI96glxNUILl7ycH1uXesNCDHkHFuNa3AFQ2acpqgMX8v4NUHJKAOy2Ay0n1jSrzw95SXCkchmTU8fF1EgOTWpuhqxIV03Ll71NdgEFYAtAjQ2KYh+anGT16lri51a4=
+	t=1710268479; cv=none; b=j1oqYOUbgENrDrTWZIwQkUMoQoAKQ2NuR3v6iG7VWOaOgdrR3En7kM+C3j+Dh5f0gx97kBg4kBdjN7W+yCELHRgpNc3AJvb9EQC8BJdVKl3RogtmHULk6uA8x2JbGmEE9PygZduwC7IH3vEpioFNbDH7Kc5uaOZ17x5ra8jDbaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710268438; c=relaxed/simple;
-	bh=ijhnuffNcILFouxKfyqglG/acU+UDWarC+AJ6fu6/Gc=;
+	s=arc-20240116; t=1710268479; c=relaxed/simple;
+	bh=pGuULm/CHXM11bgwq9+j2y5waqyjjkr9xF1BTqDkZJM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mrAR51wPKsC7qLwT46JV3rAZYJQ1FAbxy5K93m2nhfts5rdKYTHDHmMCfYW2n5m6HAA7H34bw3VQ0o2VMdqTIrGL31tOqoGhaISPHiLBgap2i1YT/9TgQsTOpeyb0/xF+zq7O9xUAiO8OSdhCeOzWzwxWXIsn1AJfvTeXuHJldo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=huSxnsmb; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.137.106.151] (unknown [167.220.2.23])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 82E0520B74C0;
-	Tue, 12 Mar 2024 11:33:56 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 82E0520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710268436;
-	bh=VdDw0jy/dWElqQTjBY8o3DI+PCxpiEFvUC2SxNbC8p0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=huSxnsmbkMPs8Og/JWl83P4lKRuDq/6lAjJoQI9l5mRc3e2tETI7D/7/rBXYu2mug
-	 shxYBFq4NtqGAJsYHSsKvOp6xcI4fi0+8xChbmdjGOBkAafpY+HAb+vnLx5qw5mpgK
-	 KTF1UjzAWZ9vGSnS4ymBoKrtqqxG47IioaH03N/M=
-Message-ID: <be0289fe-3bb6-4a53-8125-62b640e5e31b@linux.microsoft.com>
-Date: Tue, 12 Mar 2024 11:33:56 -0700
+	 In-Reply-To:Content-Type; b=G+I6wxc/E7LBxl4E9PwlzT7yhcghFZzE/KbRGTq8nLAMv/A65f6ZNMswapVTt03YYSuMu5rycwix0sI5jPGoy542kZ73ufdZID/uIsY/Ro1IA4XNcmtDSxN/wSo7R+bVL+JSRcdTF1/A5j2863hEGPyYxmuv8bighpWgYNAuetQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HlhZA/4g; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4132cc37e21so14653895e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:34:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710268475; x=1710873275; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vv4Sm7UZXVqdBGX8hplEk2uRkZer1n7N2k6G4yb6swM=;
+        b=HlhZA/4grcr0v8d4aNO0PG70QRQAP9VyRhOxnzfwTQOLi0LhBi+AVFW0E/uCRwOd+h
+         Rw4Iqqgn/LNya1MOTJ+nZMtJJyHWRhSULEc8Ivr6vJ0SgnaMH3NHRoJFq4xDXRMKoyGP
+         nEkgQRn9NVRBapMbLB47sBsyOW4UYCyVE9bLRmEcTvrptCHsJLMRdNc97lm7Mxoc/3ye
+         LMFe0LdecAHhEH+ouGZ4OEg76wBrtJY0KVapHeAZOS/y/QI5xlUmJBjWlQSyToYhwlXC
+         JDEi9fvNnfHgwh6bssxHgWBh+gC06/FC3m9GYiiZd2h+pLd86X/Z7Z01bkpTSf+kxNzN
+         +Wkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710268475; x=1710873275;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vv4Sm7UZXVqdBGX8hplEk2uRkZer1n7N2k6G4yb6swM=;
+        b=djjeREj2KabyOoxKs60cC8ytugp3WkHpnAFNOJOZ41OERQF2AxwWdxftR1qgAOf3rG
+         Avj4jF0l/dgEvl0WbDNEs1nLJD2WZRd4w0FvHoEvAFtS/6xjeHlWU+cdpPBRsB7RY4j0
+         mX+zjbLTHWcYZSJCXGPe3oVCl3NCKF77LuoPtmWUNnGen7S0I3C5InrXTQm8RCvM9YHm
+         iQLEmdbyRjy7xbPJiSTc0Vh2G1tRFuyp4Nuek/X+MgzzBajHBnxilhQfHiYbtg5s2bqC
+         Z/J+VAWj8bW3m+3W4PbNKTVKQFpYa0g9O3/C0XilwfFlDR70YzssTTOU+gw8BshCtaYk
+         dpAA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOcmudVPon/6uVBendRG2g1dApD9cq0BnEvErntv+uyI/XP+8t+Test7MA+71uQkMSExt961zRoBdsr/3WcTZeoZC+zp/pssl72OHA
+X-Gm-Message-State: AOJu0Yy+iaJogSNZylHP7Ie4LbrBni4YlRsCANNnEyGT609N+OyOneOV
+	mOuEpijekrHgExQM3wxvW8q0ZFPQThpO3mLFjLCGHHRcAcKw4W8IBBDWWJPhhbc=
+X-Google-Smtp-Source: AGHT+IHYNgNP421vNaL5nXSlSaT4BZLzBe/yll6vafwoUuA66iFoHfjPfZkvNbfiFEeYo/m5gaX4uA==
+X-Received: by 2002:a05:600c:5385:b0:413:2ab7:4396 with SMTP id hg5-20020a05600c538500b004132ab74396mr4743708wmb.18.1710268475495;
+        Tue, 12 Mar 2024 11:34:35 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id u18-20020a05600c19d200b0041316e91c99sm13277255wmq.1.2024.03.12.11.34.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 11:34:35 -0700 (PDT)
+Message-ID: <3d602e0b-a49c-4281-bc51-f8c015c5606f@linaro.org>
+Date: Tue, 12 Mar 2024 19:34:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,170 +75,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v14 15/19] fsverity: consume builtin signature via LSM
- hook
-Content-Language: en-CA
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
- tytso@mit.edu, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
- eparis@redhat.com, paul@paul-moore.com, linux-doc@vger.kernel.org,
- linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
- dm-devel@lists.linux.dev, audit@vger.kernel.org,
- linux-kernel@vger.kernel.org, Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1709768084-22539-1-git-send-email-wufan@linux.microsoft.com>
- <1709768084-22539-16-git-send-email-wufan@linux.microsoft.com>
- <20240312025712.GE1182@sol.localdomain>
-From: Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <20240312025712.GE1182@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v13 2/4] dt-bindings: remoteproc: add Tightly Coupled
+ Memory (TCM) bindings
+Content-Language: en-US
+To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
+ mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+References: <20240311175926.1625180-1-tanmay.shah@amd.com>
+ <20240311175926.1625180-3-tanmay.shah@amd.com>
+ <d498d76e-b021-4cf7-adca-63f1cd3e1542@linaro.org>
+ <fdad2198-5d3a-4bce-8249-8b2f9f75f84a@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <fdad2198-5d3a-4bce-8249-8b2f9f75f84a@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-
-
-On 3/11/2024 7:57 PM, Eric Biggers wrote:
-> On Wed, Mar 06, 2024 at 03:34:40PM -0800, Fan Wu wrote:
->> fsverity represents a mechanism to support both integrity and
->> authenticity protection of a file, supporting both signed and unsigned
->> digests.
+On 12/03/2024 18:42, Tanmay Shah wrote:
+> 
+> 
+> On 3/12/24 7:13 AM, Krzysztof Kozlowski wrote:
+>> On 11/03/2024 18:59, Tanmay Shah wrote:
+>>> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>>>
+>>> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+>>> UltraScale+ platform. It will help in defining TCM in device-tree
+>>> and make it's access platform agnostic and data-driven.
+>>>
+>>> Tightly-coupled memories(TCMs) are low-latency memory that provides
+>>> predictable instruction execution and predictable data load/store
+>>> timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+>>> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
+>>>
+>>> The TCM resources(reg, reg-names and power-domain) are documented for
+>>> each TCM in the R5 node. The reg and reg-names are made as required
+>>> properties as we don't want to hardcode TCM addresses for future
+>>> platforms and for zu+ legacy implementation will ensure that the
+>>> old dts w/o reg/reg-names works and stable ABI is maintained.
+>>>
+>>> It also extends the examples for TCM split and lockstep modes.
+>>>
+>>> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>>> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+>>> ---
+>>>
+>>> Changes in v13:
+>>>   - Have power-domains property for lockstep case instead of
+>>>     keeping it flexible.
+>>>   - Add "items:" list in power-domains property
 >>
->> An LSM which controls access to a resource based on authenticity and
->> integrity of said resource, can then use this data to make an informed
->> decision on the authorization (provided by the LSM's policy) of said
->> claim.
 >>
->> This effectively allows the extension of a policy enforcement layer in
->> LSM for fsverity, allowing for more granular control of how a
->> particular authenticity claim can be used. For example, "all (built-in)
->> signed fsverity files should be allowed to execute, but only these
->> hashes are allowed to be loaded as kernel modules".
->>
->> This enforcement must be done in kernel space, as a userspace only
->> solution would fail a simple litmus test: Download a self-contained
->> malicious binary that never touches the userspace stack. This
->> binary would still be able to execute.
->>
->> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
->> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> As I've said before, this commit message needs some work.  It currently doesn't
-> say anything about what the patch actually does.
-Apologies, I must have missed your previous comment. I appreciate your 
-feedback and will ensure that the commit message clearly describes what 
-the patch does in the next version. Thank you for pointing this out.
+> Hi Krzysztof,
+> 
+> Thanks for RB. I provided explanation of flexible power-domains in
+> previous patchset. I am happy to send new revision removing
+> minItems if you dis-agree.
 
-> 
-> BTW, please make sure you're Cc'ing the fsverity mailing list
-> (fsverity@lists.linux.dev), not fscrypt (linux-fscrypt@vger.kernel.org).
-Thanks for the info.
+Thanks for the explanation, it sounds fine, thus patch LGTM.
 
-> 
->> diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
->> index 13e4b18e5dbb..64618a6141ab 100644
->> --- a/Documentation/filesystems/fsverity.rst
->> +++ b/Documentation/filesystems/fsverity.rst
->> @@ -461,7 +461,9 @@ Enabling this option adds the following:
->>   
->>   3. A new sysctl "fs.verity.require_signatures" is made available.
->>      When set to 1, the kernel requires that all verity files have a
->> -   correctly signed digest as described in (2).
->> +   correctly signed digest as described in (2). Note that verification
->> +   happens as long as the file's signature exists regardless the state of
->> +   "fs.verity.require_signatures".
->>   
->>   The data that the signature as described in (2) must be a signature of
->>   is the fs-verity file digest in the following format::
-> 
-> Doesn't anything else in this file need to be updated to document the IPE
-> support?
-> 
-Yes, I can add more details of IPE support in the built-in signature 
-section.
+Best regards,
+Krzysztof
 
->> diff --git a/fs/verity/open.c b/fs/verity/open.c
->> index 6c31a871b84b..f917023255c8 100644
->> --- a/fs/verity/open.c
->> +++ b/fs/verity/open.c
->> @@ -8,6 +8,7 @@
->>   #include "fsverity_private.h"
->>   
->>   #include <linux/mm.h>
->> +#include <linux/security.h>
->>   #include <linux/slab.h>
->>   
->>   static struct kmem_cache *fsverity_info_cachep;
->> @@ -172,12 +173,28 @@ static int compute_file_digest(const struct fsverity_hash_alg *hash_alg,
->>   	return err;
->>   }
->>   
->> +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
->> +static int fsverity_inode_setsecurity(struct inode *inode,
->> +				      const struct fsverity_descriptor *desc)
->> +{
->> +	return security_inode_setsecurity(inode, FS_VERITY_INODE_SEC_NAME,
->> +					  desc->signature,
->> +					  le32_to_cpu(desc->sig_size), 0);
-> 
-> Please call it something like FS_VERITY_INODE_BUILTIN_SIG to make it clear that
-> it's the builtin signature.
->
-Thanks for the suggestion, I will take the name.
-
->> +}
->> +#else
->> +static inline int fsverity_inode_setsecurity(struct inode *inode,
->> +					     const struct fsverity_descriptor *desc)
->> +{
->> +	return 0;
->> +}
->> +#endif /* CONFIG_IPE_PROP_FS_VERITY*/
-> 
-> The above comment mentions CONFIG_IPE_PROP_FS_VERITY, but it doesn't appear
-> anywhere else in the patch.
->
-The CONFIG_IPE_PROP_FS_VERITY KCONFIG switch is introduced in a 
-subsequent patch. Merging these two patches might not be the best 
-approach. I can switch to using CONFIG_FS_VERITY_BUILTIN_SIGNATURES 
-instead, which may be more appropriate for the current context.
-
->> +struct fsverity_info *fsverity_create_info(struct inode *inode,
->>   					   struct fsverity_descriptor *desc)
->>   {
->>   	struct fsverity_info *vi;
->> @@ -242,6 +259,13 @@ struct fsverity_info *fsverity_create_info(const struct inode *inode,
->>   		spin_lock_init(&vi->hash_page_init_lock);
->>   	}
->>   
->> +	err = fsverity_inode_setsecurity(inode, desc);
->> +	if (err == -EOPNOTSUPP)
->> +		err = 0;
-> 
-> What is the "err == -EOPNOTSUPP" case intended to handle?
->
-The -EOPNOTSUPP is designed to signal situations where the called LSM 
-hook does not support associating the passed name with a value, but the 
-hook call itself does not encounter any errors. Also, -EOPNOTSUPP is the 
-default return value of security_inode_setsecurity when no LSM has 
-registered the hook. In summary, it indicates that no hook call 
-succeeded, but no critical error occurred.
-
->> diff --git a/fs/verity/signature.c b/fs/verity/signature.c
->> index 90c07573dd77..42f58f4e45d0 100644
->> --- a/fs/verity/signature.c
->> +++ b/fs/verity/signature.c
->> @@ -41,7 +41,9 @@ static struct key *fsverity_keyring;
->>    * @sig_size: size of signature in bytes, or 0 if no signature
->>    *
->>    * If the file includes a signature of its fs-verity file digest, verify it
->> - * against the certificates in the fs-verity keyring.
->> + * against the certificates in the fs-verity keyring. Note that verification
->> + * happens as long as the file's signature exists regardless the state of
->> + * fsverity_require_signatures.
-> 
-> Can you please make this mention explicitly that the LSM hook is relying on that
-> behavior?
-Sure, I can add this info.
--Fan
-> 
-> - Eric
 
