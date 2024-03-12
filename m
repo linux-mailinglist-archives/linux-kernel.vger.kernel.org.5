@@ -1,228 +1,153 @@
-Return-Path: <linux-kernel+bounces-100274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 825458794B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:59:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D35178794CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:09:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A15A281580
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:59:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91CC0285837
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6B47A143;
-	Tue, 12 Mar 2024 12:59:26 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2389F6997E;
+	Tue, 12 Mar 2024 13:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AqJ5nOW1"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9323A1F95F;
-	Tue, 12 Mar 2024 12:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8A758112
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710248365; cv=none; b=CpdQuV/rB5ScEej3EKT6R0/EXO/vtUeA5NSDqf7/Eksmm3wdJ591oe4jA/kMw6Cm1kEYvDIqhD7Cel/1ld4Fe8Tgl28PeRhJ/vmyCVUnNmWoGftLoby7GPJrCDqeI9xvlV/JdXWNJr7d+S4yOiCWqg0ixXuZzNz8HUvs3pe2rHg=
+	t=1710248990; cv=none; b=ZWbluQLWPKNncBylF8a+R40dRTAmc1ms8xemkHgBvwlPpqcQTGXCEbxNeaxt4LHfb20SC4WSvhww0sa4JcM7sdhp+7lKvOKfMKV0vCJIazMkjQ5Ccq556RGCtDLTQ62rHcxAh6l5Og6KMUCst9GIyIzv3e1RN5gos9ThmaP9aIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710248365; c=relaxed/simple;
-	bh=7tSnGJBsA/vNSf47BJiztKMZrl6p5LWxW1fFH8nv4jQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=m0maPNgBDl0XW1uCO6WH/TGHlMQ8IFbf1TjqHBJiPnLf0yYMd41dBymwBWHk2m/XGs0re/hxFhXS0rOLLnVuXeWjHT3isN8dIZdtwaLK3yRWnBrfQeUvL02NLBUpb7cXT3SQvEy9IBgeymPWZZDy3TKbmi5mjDY2a7Q4Iyh5dJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TvDHL2ypGz4f3lfX;
-	Tue, 12 Mar 2024 20:59:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 1B4BC1A0199;
-	Tue, 12 Mar 2024 20:59:18 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBGjUfBlZsnnGg--.25952S3;
-	Tue, 12 Mar 2024 20:59:17 +0800 (CST)
-Subject: Re: [PATCH 3/4] iomap: don't increase i_size if it's not a write
- operation
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
- david@fromorbit.com, tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com
-References: <20240311122255.2637311-1-yi.zhang@huaweicloud.com>
- <20240311122255.2637311-4-yi.zhang@huaweicloud.com>
- <20240311154829.GU1927156@frogsfrogsfrogs>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <4a9e607e-36d1-4ea7-1754-c443906b3a1c@huaweicloud.com>
-Date: Tue, 12 Mar 2024 20:59:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1710248990; c=relaxed/simple;
+	bh=z3Krd6PYBcsF/RiHX60uQhCJAD+W/Ot4T/9sQ/BX0mo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pEpYnmPY90NzAHy67s+GtaKpz1aHcsxHGx1oLNhMa/J3NpFLOGnZ60DYxGhup9YCvHBFiVQu4FRAdm+/U4QXGw4Ab/i/sDdVRZQSdBvtFjXa4+hZVfojA5WqvZJowIvg2nDg4axPZ8UptNI/2JgairY5QqAXbt7QhcGbMBZPsNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AqJ5nOW1; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbc00f6c04so3773541276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 06:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710248988; x=1710853788; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+48G+vRsg7+lgPK5qgS5JPtHJWZ7UC5Q8Af8HqedyCE=;
+        b=AqJ5nOW1DE7ZqU9Gf70IjT+GZCdq+OY8ObvzbqUWE/meC5rVIvRVDrbFyMCcNDytaD
+         N3OpiWtYms+5WPkFw5UeMGZp1BgECDQpSd+hxT54YcNDMnufeVzrhj1vxED2A5t6kVSU
+         xwhaO0+MDzaPQeoVuWlqi95mPRepZhDyB08JFSqZyIwzEEp+jcZocSCYal4aEe9dc2X4
+         J4SMDWdmm+YF/g3TDGu2fhwS+tYe2PsMJJBCgH38iMUxvAiQc0a9AK9K92NyyVEhiTG7
+         NRt5zAuW1P154xUt3rI+ipcPWbLM0xg2bLJfHDibfzBk/HfAKQ6zHKYpQJNkWFNnzdD9
+         FH2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710248988; x=1710853788;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+48G+vRsg7+lgPK5qgS5JPtHJWZ7UC5Q8Af8HqedyCE=;
+        b=K11fbWYxFKhF0h6bFeoIcbqckujNUcodOgnkQouGwav/SUuG1d/SpmDJo6rX/C/SAr
+         HnDazFURftL/gCB/3SqWLxvCrf0rL4ldnYAkrTCMpTUa2b9v0NSf6VqqzrO7/FoMZgb6
+         uLBwt0IM7sXM7QQUErLwEtzR+PwTFqmF8tOVHRlTzLxbgyMMmMqX7liYmYKaLELtoE00
+         ZZb+17VIvI4xnYtstHY80UR2j8kEyqnOwt3MqN439mBUYuJjbhLjKBH6ceBVUjCbxLW8
+         fJskOmPrH74k8K5dPCXhGm4LR9rcBrOqUBmPXv0T9VqAxgUqvu5GrjspqdGZ7EchcjxX
+         WJFA==
+X-Forwarded-Encrypted: i=1; AJvYcCVhpcpTSCe2B1m7Ct/1RA37IqOQgdPWX0Dcymap6kOYBmjsxGygjNHkrkqGRvkIFIg6Dp2uhfoCIDXJm5B9KviqgXHTObkhrZ6SnCzM
+X-Gm-Message-State: AOJu0Yw5LCjD4tWNkzysyDbA3OaoXMSvIrgruBPmHKiEyIprzCnFSU+D
+	d2jewMVYG5668YNznv2RinhE1qrF4n+tBD+z0gYKQLIuam4g5HkAyOdD7+jQE0U9IciGKQmZu7c
+	f1D3Uxat0hDel69xGHWH2qThPO/s=
+X-Google-Smtp-Source: AGHT+IFnO0pN11NYUrGM946wzMKaXTqTxPNQY42/zJlOr91aUkRgRbcbVrsHkueI/v7rrSkhiWcUFRRT7bDYPw3TcS8=
+X-Received: by 2002:a25:f621:0:b0:dc6:d093:8622 with SMTP id
+ t33-20020a25f621000000b00dc6d0938622mr6648021ybd.15.1710248987491; Tue, 12
+ Mar 2024 06:09:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240311154829.GU1927156@frogsfrogsfrogs>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBXKBGjUfBlZsnnGg--.25952S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxtFy7KF1kCr4xAr48WFWkXrb_yoW7Cr4fpr
-	98KayDCF4ktF47Wr1DJF98Xr1Yy34rKrW7Cry7Gay3ZF1qyr4xKF18Wa4F9F1UJ3sxAr4f
-	XF4vy3s5WF15Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
-	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1zuWJUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+References: <20240308074921.45752-1-ioworker0@gmail.com> <ef409d5e-5652-4fff-933c-49bda6d75018@redhat.com>
+In-Reply-To: <ef409d5e-5652-4fff-933c-49bda6d75018@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Tue, 12 Mar 2024 21:09:35 +0800
+Message-ID: <CAK1f24k_+qAqxKGMpKziouuds=PQ6kfKyQ8D3SYEyW7cQOAJWw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/khugepaged: reduce process visible downtime by
+ pre-zeroing hugepage
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com, 
+	shy828301@gmail.com, xiehuan09@gmail.com, songmuchun@bytedance.com, 
+	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/3/11 23:48, Darrick J. Wong wrote:
-> On Mon, Mar 11, 2024 at 08:22:54PM +0800, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> Increase i_size in iomap_zero_range() and iomap_unshare_iter() is not
->> needed, the caller should handle it. Especially, when truncate partial
->> block, we could not increase i_size beyond the new EOF here. It doesn't
->> affect xfs and gfs2 now because they set the new file size after zero
->> out, it doesn't matter that a transient increase in i_size, but it will
->> affect ext4 because it set file size before truncate.
-> 
->>                                                       At the same time,
->> iomap_write_failed() is also not needed for above two cases too, so
->> factor them out and move them to iomap_write_iter() and
->> iomap_zero_iter().
-> 
-> This change should be a separate patch with its own justification.
-> Which is, AFAICT, something along the lines of:
-> 
-> "Unsharing and zeroing can only happen within EOF, so there is never a
-> need to perform posteof pagecache truncation if write begin fails."
+Hey David,
 
-Sure.
+Thanks for taking time to review!
 
-> 
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Doesn't this patch fix a bug in ext4?
+On Tue, Mar 12, 2024 at 12:19=E2=80=AFAM David Hildenbrand <david@redhat.co=
+m> wrote:
+>
+> On 08.03.24 08:49, Lance Yang wrote:
+> > The patch reduces the process visible downtime during hugepage
+> > collapse. This is achieved by pre-zeroing the hugepage before
+> > acquiring mmap_lock(write mode) if nr_pte_none >=3D 256, without
+> > affecting the efficiency of khugepaged.
+> >
+> > On an Intel Core i5 CPU, the process visible downtime during
+> > hugepage collapse is as follows:
+> >
+> > | nr_ptes_none  | w/o __GFP_ZERO | w/ __GFP_ZERO  |  Change |
+> > --------------------------------------------------=E2=80=94----------
+> > |      511      |     233us      |      95us      |  -59.21%|
+> > |      384      |     376us      |     219us      |  -41.20%|
+> > |      256      |     421us      |     323us      |  -23.28%|
+> > |      128      |     523us      |     507us      |   -3.06%|
+> >
+> > Of course, alloc_charge_hpage() will take longer to run with
+> > the __GFP_ZERO flag.
+> >
+> > |       Func           | w/o __GFP_ZERO | w/ __GFP_ZERO |
+> > |----------------------|----------------|---------------|
+> > | alloc_charge_hpage   |      198us     |      295us    |
+> >
+> > But it's not a big deal because it doesn't impact the total
+> > time spent by khugepaged in collapsing a hugepage. In fact,
+> > it would decrease.
+>
+> It does look sane to me and not overly complicated.
+>
+> But, it's an optimization really only when we have quite a bunch of
+> pte_none(), possibly repeatedly so that it really makes a difference.
+>
+> Usually, when we repeatedly collapse that many pte_none() we're just
+> wasting a lot of memory and should re-evaluate life choices :)
 
-Yeah, the same as Christoph answered.
+Agreed! It seems that the default value of max_pte_none may be set too
+high, which could result in the memory wastage issue we're discussing.
 
-> 
->> ---
->>  fs/iomap/buffered-io.c | 59 +++++++++++++++++++++---------------------
->>  1 file changed, 30 insertions(+), 29 deletions(-)
->>
->> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
->> index 093c4515b22a..19f91324c690 100644
->> --- a/fs/iomap/buffered-io.c
->> +++ b/fs/iomap/buffered-io.c
->> @@ -786,7 +786,6 @@ static int iomap_write_begin(struct iomap_iter *iter, loff_t pos,
->>  
->>  out_unlock:
->>  	__iomap_put_folio(iter, pos, 0, folio);
->> -	iomap_write_failed(iter->inode, pos, len);
->>  
->>  	return status;
->>  }
->> @@ -838,34 +837,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
->>  		size_t copied, struct folio *folio)
->>  {
->>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
->> -	loff_t old_size = iter->inode->i_size;
->> -	size_t ret;
->> -
->> -	if (srcmap->type == IOMAP_INLINE) {
->> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
->> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
->> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
->> -				copied, &folio->page, NULL);
->> -	} else {
->> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
->> -	}
->>  
->> -	/*
->> -	 * Update the in-memory inode size after copying the data into the page
->> -	 * cache.  It's up to the file system to write the updated size to disk,
->> -	 * preferably after I/O completion so that no stale data is exposed.
->> -	 */
->> -	if (pos + ret > old_size) {
->> -		i_size_write(iter->inode, pos + ret);
->> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
->> -	}
->> -	__iomap_put_folio(iter, pos, ret, folio);
->> -
->> -	if (old_size < pos)
->> -		pagecache_isize_extended(iter->inode, old_size, pos);
->> -	if (ret < len)
->> -		iomap_write_failed(iter->inode, pos + ret, len - ret);
->> -	return ret;
->> +	if (srcmap->type == IOMAP_INLINE)
->> +		return iomap_write_end_inline(iter, folio, pos, copied);
->> +	if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
->> +		return block_write_end(NULL, iter->inode->i_mapping, pos, len,
->> +				       copied, &folio->page, NULL);
->> +	return __iomap_write_end(iter->inode, pos, len, copied, folio);
->>  }
->>  
->>  static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->> @@ -880,6 +858,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->>  
->>  	do {
->>  		struct folio *folio;
->> +		loff_t old_size;
->>  		size_t offset;		/* Offset into folio */
->>  		size_t bytes;		/* Bytes to write to folio */
->>  		size_t copied;		/* Bytes copied from user */
->> @@ -912,8 +891,10 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->>  		}
->>  
->>  		status = iomap_write_begin(iter, pos, bytes, &folio);
->> -		if (unlikely(status))
->> +		if (unlikely(status)) {
->> +			iomap_write_failed(iter->inode, pos, bytes);
->>  			break;
->> +		}
->>  		if (iter->iomap.flags & IOMAP_F_STALE)
->>  			break;
->>  
->> @@ -927,6 +908,24 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->>  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
->>  		status = iomap_write_end(iter, pos, bytes, copied, folio);
->>  
->> +		/*
->> +		 * Update the in-memory inode size after copying the data into
->> +		 * the page cache.  It's up to the file system to write the
->> +		 * updated size to disk, preferably after I/O completion so that
->> +		 * no stale data is exposed.
->> +		 */
->> +		old_size = iter->inode->i_size;
->> +		if (pos + status > old_size) {
->> +			i_size_write(iter->inode, pos + status);
->> +			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
->> +		}
->> +		__iomap_put_folio(iter, pos, status, folio);
-> 
-> Why is it necessary to hoist the __iomap_put_folio calls from
-> iomap_write_end into iomap_write_iter, iomap_unshare_iter, and
-> iomap_zero_iter?  None of those functions seem to use it, and it makes
-> more sense to me that iomap_write_end releases the folio that
-> iomap_write_begin returned.
-> 
+>
+> So my question is: do we really care about it that much that we care to
+> optimize?
 
-Because we have to update i_size before __iomap_put_folio() in
-iomap_write_iter(). If not, once we unlock folio, it could be raced
-by the backgroud write back which could start writing back and call
-folio_zero_segment() (please see iomap_writepage_handle_eof()) to
-zero out the valid data beyond the not updated i_size. So we
-have to move out __iomap_put_folio() out together with the i_size
-updating.
+IMO, although it may not be our main concern, reducing the impact of
+khugepaged on the process remains crucial. I think that users also prefer
+minimal interference from khugepaged.
 
-Thanks,
-Yi.
+>
+> But again, LGTM.
 
+Thanks again for your time!
+
+Best,
+Lance
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
