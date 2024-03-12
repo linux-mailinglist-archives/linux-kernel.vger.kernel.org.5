@@ -1,240 +1,247 @@
-Return-Path: <linux-kernel+bounces-99854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D4CF878E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:00:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 747EE878E53
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:57:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5561E1C22219
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:00:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D78201F228A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B971EF12;
-	Tue, 12 Mar 2024 06:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926BA2B2D7;
+	Tue, 12 Mar 2024 05:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mdt/g/wn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IrBY+nO3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFFD1CD33
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 06:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710223240; cv=fail; b=XIbWWZxHXLjPlxS1L3T/MJ9IQix+RnUNPr+OIScTX9Po3ggBIM6BrrC2zkN79Hx6MblGvPEbtFv1USvIPuJldKSquasrCHSjwpDlGNmO9ryCca+iWpGJx2mZnRwZfYs+aV3otjl6fSznaDukLJUTbFo6xdEgHLpDX0GOiWgGc4k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710223240; c=relaxed/simple;
-	bh=NY3q18MsjVTdAQ1CMEVYLj4iJRV6T+4nUuVU9/AK7lc=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=inIae52vJFnAOV0G6XTxyombT4QfOh9ohCIra4KQ2we7+rXkX9qDqcEser6DGdA/EE8EvlpqzX+x5YT5UaFukXFy/MRsq06y10+IJrZO8+XTCYFlcJOUbQfld9h6b6fiD0aT5/ct1RkFoEeEKc5BJzdgvWWxo6JikSZiudFTF2k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mdt/g/wn; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB39FECC
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 05:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710223046; cv=none; b=HwZpiRsN1G6x20cNVB7Xnq35YDIG/Wq6J0oIHgsnZgWOTAKVR0BoR9kEtP55WjiMew7+6d69lZO3GpXZHT5lN8BGawyl4AxLd5voCGA2zB9V/aVbuFJYvvtP1njx9sTM1wuNECza4OoXU5PDPO5Zf2XXws8cfz9M5hoI6lXRXlU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710223046; c=relaxed/simple;
+	bh=BHVgi0sIBN+jZAkaSd+ERPJlhw4+5J9qwW41gm3rHdk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qXReS6F4de+1CvDkHa721xPOCJlMrTQZs+J3dZ/lgOfVsSq+0fNGu50vUX4ZllgFrwAYBPUvIQiaXwbU40TbSfa4N6Wz6J/bEDT6dp9nD0FCgr819RYHrlz/r8oE7OW7ugOFxCL/tMA+KhiWtyanrT6idWpaarZdcNGbwe6uriM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IrBY+nO3; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710223237; x=1741759237;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=NY3q18MsjVTdAQ1CMEVYLj4iJRV6T+4nUuVU9/AK7lc=;
-  b=mdt/g/wn4Y6+KTHE0u8Avn7gUp4UsRCkIULuiw3quq/X8TD7Nor66jRS
-   QFBbJqHpkR1l9JV9xXHYeY88mwK7ihVNvoQV8Y4OR2RPHKKuV6c0N9MXo
-   H6IBrDXvoTVUtF3vqP8gtYnF43Dhz+W3kiWKoAYTPae7cTQwo4n2dGWGl
-   MR094EVsYFdgwpyJ04PlAl982P+RGXMEHCVt4uahmuvGXdwzgWsN4zRuh
-   WphFH1oSz5XsfsuDDmiAbiktNkocTyEF9pS966i4e/HsfcfImDBIXM+pG
-   liujbwuZGilNbge23Aio+4CJ01+6eGy7t3ktzfX2bykV12PtXTWRjos/S
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4786948"
+  t=1710223045; x=1741759045;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=BHVgi0sIBN+jZAkaSd+ERPJlhw4+5J9qwW41gm3rHdk=;
+  b=IrBY+nO3qiJ2MzYroL/mkcBQ7T8jtF1rvLwnk8M+8jXZXEz+jaSpgt7n
+   XptmcGrnaLJvSyh3iPbToMX4wyZJanQvcL2WTan1Su+A0Fq9vHoNbiq9m
+   PIDc4W3SH2xz3bfZnnVL2kMDsgtgdsCb8zhB90N/tKP0ksXt+Xt0G3Q3c
+   mmJRzcGsnWe06PRgYdcMiv3UUBVWSIfHZgPstZA2+GKOBft+OHiszk0qj
+   DBEv7v3YQQZOUZYeabzUCa51TUSpbZimDK/5D9TmeBQGXf9DDuIq7B/vF
+   8vhd4Ok5M7XCfBYd6iMWHRcABy8FXUSqtuL3hJgUmKENVM/V59ffwJ6P/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="5051669"
 X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="4786948"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 23:00:35 -0700
+   d="scan'208";a="5051669"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 22:57:23 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="11868956"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Mar 2024 23:00:28 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Mar 2024 23:00:27 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Mar 2024 23:00:27 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 11 Mar 2024 23:00:27 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 23:00:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QPjlpfXz2AcI0dFXfotIPGkQfBCqe2T88E1+0cMo3Zny17B8CBVmLcwwb+PN4nwICCnLhRIbeI73R8NUaQUgwvi6kD3rfblBjgfpBrAWwvpAgzzfMose8of6eXNNmSFLR80XkPErT/ls0D8BGppmyP+xbfPzkQu7T+AdpCsFZ6vFxIzQHnAsU0EOPc4FOndI+OtZtXRleXzURtMfqe8tWIeVT2T3FfH9X+u8CDFWDZZ9iV85PhZh32g79XQrEOxL1RupeFb8bdERxf2crRF/E1mIvsDlr2DAuhJ7zBq5FNvvveMsQNp6SeDfgjtH4wbyRob7bOmNLPiXvIrH0UhEcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g+iSWjS+11OzBRZj+fNY3f925cXTWTfpf5QSEHHeBXk=;
- b=eEDrLwF7r7VoZSvAbqyU6L+fyZpT3fDDpPWeo/4Vt7aJJY+GZetSU63AzX/RgX9tLel4zZwDVbk0b6t0U8kw6hxiH5McOuy5Vw8N4YG0X48XEBVUovpedEx/s7LdpQqYuWd+JuSkj0FLPbK7wIq+zbmFXrwHLF54T8sAA2Sz7KfA8hkdEZVrxsxowk+E0mLjqYebUkjYV8Phzr2y2PVJK6E93G6dWXib7uTcRsrQziCwCfbCyUb7e/tMgQaas+9qHl9Gt9cMDX0ITwmgWXKF+NNY7Qsq0py3GjF6GuZKLQqkvh8CT/e4czz+sgNk24tkKFNkF6Q+tUjZhm28ANUOPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
- by SJ2PR11MB7548.namprd11.prod.outlook.com (2603:10b6:a03:4cb::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.16; Tue, 12 Mar
- 2024 06:00:25 +0000
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::7118:c3d4:7001:cf9d]) by CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::7118:c3d4:7001:cf9d%6]) with mapi id 15.20.7386.016; Tue, 12 Mar 2024
- 06:00:24 +0000
-Date: Tue, 12 Mar 2024 13:53:36 +0800
-From: Yujie Liu <yujie.liu@intel.com>
-To: "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-CC: kernel test robot <lkp@intel.com>, Zhen Lei <thunder.leizhen@huawei.com>,
-	<oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>, "Luis
- Chamberlain" <mcgrof@kernel.org>
-Subject: Re: ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function
- kallsyms_lookup_name: .text+0x90): relocation R_RISCV_PCREL_HI20 out of
- range: -524416 is not in [-524288, 524287]; references
- kallsyms_seqs_of_names
-Message-ID: <Ze/t4Ks0VfCBCXP0@yujie-X299>
-References: <202402061302.HkByW9x0-lkp@intel.com>
- <bd30f81c-9e6a-578e-d496-6b7f355a3b79@huaweicloud.com>
- <efdec661-628f-2f6e-cd3e-c66a915d3aa2@huaweicloud.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <efdec661-628f-2f6e-cd3e-c66a915d3aa2@huaweicloud.com>
-X-ClientProxiedBy: SI2PR02CA0002.apcprd02.prod.outlook.com
- (2603:1096:4:194::22) To CY5PR11MB6392.namprd11.prod.outlook.com
- (2603:10b6:930:37::15)
+   d="scan'208";a="16114065"
+Received: from sbrowne-mobl.amr.corp.intel.com (HELO [10.209.68.239]) ([10.209.68.239])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 22:57:24 -0700
+Message-ID: <fa7cee6f-954b-4acf-a438-17ae3d1e781a@linux.intel.com>
+Date: Mon, 11 Mar 2024 22:57:22 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|SJ2PR11MB7548:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4735bff7-4d80-47cd-f36a-08dc4259b542
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tVlh1ut/3htQ9SV13ZCpfwAeti9vPBZsgSuRct7dv/Rt8gWVzT07wlrbppoWbbrWP9Yu9EsES8nkCHq10tjuGnfvrjvwFGQ4qSJoFn/cDBtvVr0eB7J+c3s2Q31WZJsq34fYXFuEWao9692jL0sGUcOK6Dvt4RpQlBP+mNQzjHOHE+3dTgRFpD1H+psFPC5BLV4hnnZb0U5KREcZ2zxUJkuRjOIGxVC+AqSvEWjC3BlmtdVlwviWaszCaCUgwR3qcSFjpXU4CiT4xwD9aB4vDOJFCosHMLbhdFgE2QZvDz+fU2/JxSTKYd07zVp+A7h9mAvXgW5o+EFg0K1Z2APsRbOdRJOB1l2e+NiSZjCDvD7g4M9OQVxk8+QS9IAWVnv9dJrKTwZElqKsyhmSWYo1gLNewvev5eywJsXiVGQqWkq0E4QNDjnOFN+D3GrBmWbvk/YM8jcyi0YBkWKf1n0WD8+ZhTrzpc1ayM8MDpfzvjNzAGcotS0vhJfqE5T+pr7j/CzXVZIXBD9abcpJepHrpVsSpCHyBLzlPF1X610UPvCEzsrgKfxg1V+xNkMiqqXAD4oWYf8BFxKh6xllAGqKeX1dCP1fxaJyrV5pfTY7MLUw27x3fSg0Y6V3ZY6TQx2+
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2m1bvlBHZgJa2LeBf0l9HJsUomij/u1KOGElDlt6tMTMb2wXITMtmt7JVyqp?=
- =?us-ascii?Q?NX0ky9odrjiVQOn76Q8pEUne0cT8FY3D1mysjnS+U7lUblhmrvY2GIOh3D9n?=
- =?us-ascii?Q?r5Tq7dayVIteAvhPjIxosDWaLa9EACLwsgq8MPbvAAUtEwkQyDITrxbadsyQ?=
- =?us-ascii?Q?jKSPA5MlUDAZd2lz8TkdwOC/DMijUqmWwjyKqXGWRgg8UW4pYay6y7mxfWPr?=
- =?us-ascii?Q?t43dnZXuLPPiVRYzCvSrVO/LuRLOibK2fsxP1rebpAhw7sXop4sXpsctvEf0?=
- =?us-ascii?Q?BYv5VxjN5c/7kMLGYbC1Bw+VLplK1a+y/iMDdObzbpmRgSv+prch7pFkl0nr?=
- =?us-ascii?Q?OE0QXEEO3FRmJP6YEXLDtcYj+LS1FXzbKKJJkagczWTo47Nv36U5/7uTpdoa?=
- =?us-ascii?Q?bSJo4NHfgkQIJy/i74HbVXdaXm3Yjy7mokTc9eJyH0IR/RxWNgfcueUMnlkY?=
- =?us-ascii?Q?5chYXCqU+as5peRoA1OPMA77yW9iTjeSs9NFaNSnkGM2iwCbfnk2fRoNe8YW?=
- =?us-ascii?Q?x11rTbQwmmxJ4ujjCggFolySVrDcQLBEDnPjocluf0fx9KKHAx9fsypy8g8K?=
- =?us-ascii?Q?1GcxB3JIh0L9z/z4S5/eb82ZgEoF08ZAgu3MVgp1bs6L6992JKclSv76cVed?=
- =?us-ascii?Q?xssqTYgXhASfxSkJ+qKAYEikPp1tZ7WEFDLlMklcu/vYuwf32eXyQoiivhVC?=
- =?us-ascii?Q?ZvMSUQa8WC07jQJp76lMSo2gghcUhnn3D5NYU6S/jOu6oZL+zWu9dFbvRiPy?=
- =?us-ascii?Q?wEZFvUprlFILqxR0WLBo3u572kOCGCacbhRUDHqq7nPbIQVDxFQyibiGvduT?=
- =?us-ascii?Q?xg3e6816UruXcPOAqCrNBwQIoNr0XB3gAjmSr1mc8q3xP321qzi0ZhThwVU4?=
- =?us-ascii?Q?p1UnPV4ogxGkuW39HJwSzVZSt+yC4t6+T9IBtLDhvSZeZmG3Nh4RsuKWvfEW?=
- =?us-ascii?Q?S3fXQpznXwDUNCBRXD7K1aT6xJ175tt1cTNpWcnmdgD2Bxiz1UzUu0ShNMY3?=
- =?us-ascii?Q?R+Hb15xHO5Gbphnwz3JVg5xlxOm5/3IYJdpne78xCIVgN0s3J0t9IwUsx07s?=
- =?us-ascii?Q?aOFoR0GGadfsd3DDBYzmuh0NWg8pMzIRbxA8KtLxn+cxApB/6sBpFIQb/KiB?=
- =?us-ascii?Q?18ZoHzCgvCQ0yXRpELPZjP8QTIp12brrsP6j4htESr/Ewe5UybmIR12elKF+?=
- =?us-ascii?Q?VoGnhjq6hjbWdUSidmkB6LwPlfPx5YCmdr8F0B9g6u2xpTZXGalN/2i6FU/n?=
- =?us-ascii?Q?fzQ3tKTu2stLaa2Ktt5N5i12NRdjumhrBbGrptls5IZLAHBQrTjFspjXLwww?=
- =?us-ascii?Q?xrLq4leR1lVweTNdk5aSGAg70rSKXuc7vY+zplGfAUnfUvwrt1aMuv9Y8o8h?=
- =?us-ascii?Q?Nnlrd29eJo23cjVvczy/V4BpBX3fCrb7LqLv15OUXLTQQHP3iPw69CW34boM?=
- =?us-ascii?Q?b31VwszkPXQBCa3YuEniXjXPRSqUUbbhgMPRiRBzHCvBEmYYSpv43Y7BMzlz?=
- =?us-ascii?Q?xYbhyryovQ3sRVGgo17AIAQbJddvwigNbo+kW8fTZqLbuPfhrUMRevyLZPni?=
- =?us-ascii?Q?qmLMpuPDA7bTVFExx+od6TD/khgXIaOpC/1Ya+X4?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4735bff7-4d80-47cd-f36a-08dc4259b542
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 06:00:24.2113
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vku0xgXnyOyyedO5oi1c+TD8VsjBjpK1nF9txJoKsMnToDD7Mvg1bOzKvY3G47SqI6cjvCOF2gCtGpU9qH7f3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7548
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 11/14] x86/sev: Extend the config-fs attestation
+ support for an SVSM
+Content-Language: en-US
+To: Tom Lendacky <thomas.lendacky@amd.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Dan Williams <dan.j.williams@intel.com>, Michael Roth
+ <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
+References: <cover.1709922929.git.thomas.lendacky@amd.com>
+ <a6d236e247c4a0258e5e28c7378350389997cc59.1709922929.git.thomas.lendacky@amd.com>
+ <93f36ae1-35b3-4852-8b36-3277f250408e@intel.com>
+ <805b863c-1631-477d-9faf-f7569a8d80e4@amd.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <805b863c-1631-477d-9faf-f7569a8d80e4@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Zhen,
 
-On Tue, Feb 20, 2024 at 08:27:15PM +0800, Leizhen (ThunderTown) wrote:
-> > On 2024/2/6 13:19, kernel test robot wrote:
-> >> Hi Zhen,
-> >>
-> >> FYI, the error/warning still remains.
-> > 
-> > I'm trying to reproduce it. But I'm having a little trouble getting
-> > the environment ready.
-> 
-> Sorry, I tried but it was not reproduced. I made the following two changes
-> to the steps in the 'reproduce' link:
-> 1. Put linux and lkp-tests in two directories of the same level. Because:
->    $ git fetch --no-tags linus master
->    error: RPC failed; HTTP 403 curl 22 The requested URL returned error: 403
->    fatal: error reading section header 'acknowledgments'
-> 2. Compiler was specified by following the prompts.
->    COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-17 ~/lkp-tests/kbuild/make.cross W=1 O=build_dir ARCH=riscv olddefconfig
->    COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-17 ~/lkp-tests/kbuild/make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
->    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+On 3/11/24 9:16 AM, Tom Lendacky wrote:
+> On 3/10/24 00:06, Kuppuswamy, Sathyanarayanan wrote:
+>>
+>> On 3/8/24 10:35 AM, Tom Lendacky wrote:
+>>> When an SVSM is present, the guest can also request attestation reports
+>>> from the SVSM. These SVSM attestation reports can be used to attest the
+>>> SVSM and any services running within the SVSM.
+>>>
+>>> Extend the config-fs attestation support to allow for an SVSM attestation
+>>> report. This involves creating four (4) new config-fs attributes:
+>>>
+>>>    - 'svsm' (input)
+>>>      This attribute is used to determine whether the attestation request
+>>>      should be sent to the SVSM or to the SEV firmware.
+>>>
+>>>    - 'service_guid' (input)
+>>>      Used for requesting the attestation of a single service within the
+>>>      SVSM. A null GUID implies that the SVSM_ATTEST_SERVICES call should
+>>>      be used to request the attestation report. A non-null GUID implies
+>>>      that the SVSM_ATTEST_SINGLE_SERVICE call should be used.
+>>>
+>>>    - 'service_manifest_version' (input)
+>>>      Used with the SVSM_ATTEST_SINGLE_SERVICE call, the service version
+>>>      represents a specific service manifest version be used for the
+>>>      attestation report.
+>>>
+>>>    - 'manifestblob' (output)
+>>>      Used to return the service manifest associated with the attestation
+>>>      report.
+>>>
+>>> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+>>> ---
+>>>   Documentation/ABI/testing/configfs-tsm  |  59 ++++++++++
+>>>   arch/x86/include/asm/sev.h              |  31 ++++-
+>>>   arch/x86/kernel/sev.c                   |  50 ++++++++
+>>>   drivers/virt/coco/sev-guest/sev-guest.c | 147 ++++++++++++++++++++++++
+>>>   drivers/virt/coco/tsm.c                 |  95 ++++++++++++++-
+>>>   include/linux/tsm.h                     |  11 ++
+>>>   6 files changed, 390 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/Documentation/ABI/testing/configfs-tsm b/Documentation/ABI/testing/configfs-tsm
+>>> index dd24202b5ba5..a4663610bf7c 100644
+>>> --- a/Documentation/ABI/testing/configfs-tsm
+>>> +++ b/Documentation/ABI/testing/configfs-tsm
+>
+>>> +
+>>> +What:        /sys/kernel/config/tsm/report/$name/svsm
+>>> +Date:        January, 2024
+>>> +KernelVersion:    v6.9
+>>> +Contact:    linux-coco@lists.linux.dev
+>>> +Description:
+>>> +        (WO) Attribute is visible if a TSM implementation provider
+>>> +        supports the concept of attestation reports for TVMs running
+>>> +        under an SVSM, like SEV-SNP. Specifying a 1 (or other boolean
+>>
+>> Since service_guid can be used for non SVSM services as well, can we use
+>> a generic term "service" here? And let user specify the service type
+>> (like service=svsm)
+>
+> I suppose that's possible. I think we would need a better term than just service, though, since service_guid is specific to a service within the service provider... so maybe service_provider.
 
-Sorry for our late reply. We rechecked this case and noticed that this
-issue can be reproduced by clang-15, but can't be reproduced by newer
-version of clang. Not sure if this is a flaw in old version of LLVM
-toolchain, just for your information.
+I am ok with service_provider
 
-$ COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-15 ~/lkp-tests/kbuild/make.cross W=1 ARCH=riscv
-..
-  LD      .tmp_vmlinux.kallsyms1
-ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function kallsyms_lookup_name: .text+0x70): relocation R_RISCV_PCREL_HI20 out of range: -524416 is not in [-524288, 524287]; references kallsyms_num_syms
->>> referenced by kallsyms.c
->>> defined in vmlinux.a(kernel/kallsyms.o)
+>
+>>
+>>> +        equivalent, e.g. "Y") implies that the attestation report
+>>> +        should come from the SVSM.
+>>> +        Secure VM Service Module for SEV-SNP Guests v1.00 Section 7.
+>>> +        https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
+>>> +
+>>> +What:        /sys/kernel/config/tsm/report/$name/service_guid
+>>> +Date:        January, 2024
+>>> +KernelVersion:    v6.9
+>>> +Contact:    linux-coco@lists.linux.dev
+>>> +Description:
+>>> +        (WO) Attribute is visible if a TSM implementation provider
+>>> +        supports the concept of attestation reports for TVMs running
+>>> +        under an SVSM, like SEV-SNP. Specifying a empty or null GUID
+>>> +        (00000000-0000-0000-0000-000000) requests all active services
+>>> +        within the SVSM be part of the attestation report. Specifying
+>>> +        a non-null GUID requests an attestation report of just the
+>>> +        specified service using the manifest form specified by the
+>>> +        service_manifest_version attribute.
+>>> +        Secure VM Service Module for SEV-SNP Guests v1.00 Section 7.
+>>> +        https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
+>>> +
+>>
+>> I think it will be useful to the user if there is a attribute to list the service GUIDs
+>> supported. It can help prevent user using incorrect or unsupported GUIDs.
+>
+> A list of supported GUIDs can be obtained from the manifest of a all-services attestation request.
 
-ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function kallsyms_lookup_name: .text+0x90): relocation R_RISCV_PCREL_HI20 out of range: -524416 is not in [-524288, 524287]; references kallsyms_seqs_of_names
->>> referenced by kallsyms.c
->>> defined in vmlinux.a(kernel/kallsyms.o)
-..
+So they have to make a request twice? Once with a NULL GUID to get the
+manifest with all service list, and another to make service-specific request?
+There should be a fixed list of service GUIDs, right? Why not list them by
+default?
 
-Thanks,
-Yujie
+>
+>>  >> +    if (guid_is_null(&desc->service_guid)) {
+>>> +        call_id = SVSM_ATTEST_CALL(SVSM_ATTEST_SERVICES);
+>>> +    } else {
+>>> +        export_guid(attest_call.service_guid, &desc->service_guid);
+>>> +        attest_call.service_manifest_version = desc->service_manifest_version;
+>>> +
+>>> +        call_id = SVSM_ATTEST_CALL(SVSM_ATTEST_SINGLE_SERVICE);
+>>> +    }
+>>
+>> Above initialization will not change during retry, right? Why not move it above
+>> retry?
+>
+> True, will move it outside of the loop.
+>
+>>
+>
+>>> +
+>>> +    /* Obtain the GUID string length */
+>>> +    guid_len = (len && buf[len - 1] == '\n') ? len - 1 : len;
+>>> +    if (guid_len && guid_len != UUID_STRING_LEN)
+>>> +        return -EINVAL;
+>>> +
+>>
+>> I don't think you need above checks. I think guid_parse will fail, if it is not
+>> a valid GUID.
+>
+> Yes and no. The guid_parse() function will succeed if the string is longer than UUID_STRING_LEN as long as it is a valid UUID up to UUID_STRING_LEN. In other words, guid_parse() of:
+>
+>     aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+>
+> and
+>     aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee-gg
+>
+> both succeed.
+>
+> I'm ok with eliminating the length calculation and check if everyone is in favor of doing that given the above behavior.
 
-> 
-> Image is finally generated, so there should be no problem with the above steps being adjusted:
-> $ ls build_dir/arch/riscv/boot/
-> dts  Image  loader  loader.bin  loader.lds  loader.o
-> 
-> By the way, all the symbols to be reported "relocation R_RISCV_PCREL_HI20 out of range" is
-> generated by the tool kallsyms (scripts/kallsyms.c). So, it seems that the tool kallsyms
-> have not been executed. And this error is not caused by my patches.
-> 
-> > 
-> >>
-> >> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> >> head:   54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
-> >> commit: 60443c88f3a89fd303a9e8c0e84895910675c316 kallsyms: Improve the performance of kallsyms_lookup_name()
-> >> date:   1 year, 3 months ago
-> >> config: riscv-randconfig-r064-20240120 (https://download.01.org/0day-ci/archive/20240206/202402061302.HkByW9x0-lkp@intel.com/config)
-> >> compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-> >> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240206/202402061302.HkByW9x0-lkp@intel.com/reproduce)
-> >>
-> >> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> >> the same patch/commit), kindly add following tags
-> >> | Reported-by: kernel test robot <lkp@intel.com>
-> >> | Closes: https://lore.kernel.org/oe-kbuild-all/202402061302.HkByW9x0-lkp@intel.com/
-> >>
-> >> All errors (new ones prefixed by >>):
-> >>
-> >>>> ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function kallsyms_lookup_name: .text+0x90): relocation R_RISCV_PCREL_HI20 out of range: -524416 is not in [-524288, 524287]; references kallsyms_seqs_of_names
-> >>    >>> referenced by kallsyms.c
-> >>    >>> defined in vmlinux.a(kernel/kallsyms.o)
-> >>
-> > 
+Got it. Existing callers of guid_parse() does not seem to care about it. But I am fine either way.
+
+>
+>>
+>>> +    if (guid_len == UUID_STRING_LEN) {
+>>> +        rc = guid_parse(buf, &report->desc.service_guid);
+>>> +        if (rc)
+>>> +            return rc;
+>>> +    } else {
+>>> +        report->desc.service_guid = guid_null;
+>>
+>> I think the default value will be guid_null right, why reset it to NULL for every failed attempt?
+>
+> Default, yes. But what if it is written once, then a second time with an invalid GUID. Should the previously written GUID still be used?
+>
+
+If the user write fails, why update the state? IMO, we can leave it at the old value. But, lets see what others think.
+
+> Thanks,
+> Tom
+>
+>>
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
 
