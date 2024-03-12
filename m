@@ -1,180 +1,155 @@
-Return-Path: <linux-kernel+bounces-100434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C89879782
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFFC879788
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:28:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFC802848D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:27:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12260284543
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3F47C6D2;
-	Tue, 12 Mar 2024 15:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213917C6D0;
+	Tue, 12 Mar 2024 15:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="es9oHh4H"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="HLp8TxPN"
+Received: from sonic304-27.consmr.mail.ne1.yahoo.com (sonic304-27.consmr.mail.ne1.yahoo.com [66.163.191.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21927B3E5
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DEC87C0AD
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.191.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710257250; cv=none; b=GU5JoI20NJRSHKVa6MiAkXDfMA/PEQj+jb7QFpSxS7nnyeCFZW35H49gH2wUeUPcSoF2cBjtkxMlzUQL/vB+zRKHkSvAi8oFLqpWZlU2hXs771P38gL9I6ip86jS5MdNjYqU8QljV73eEcd1I+J3JIfXBh0hTRzCH10WdYbv61s=
+	t=1710257287; cv=none; b=WXjGbvi78U49MY85XQUXvz937sWFgGLNB0KLZ/+M3cslDoQrAuSIJk3iwA6YnIUn31GfMvAX1Veb2fG2qA7qz61qa6tC/ZxBKGU2AhSDnnLXveGyasNdSKDZJlKgwhMTKvPK89AtJv/KUK8+k17XI0dc4Bi2x4JMO4o+jngCGog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710257250; c=relaxed/simple;
-	bh=w7z1eLBV/cGTuzfm8y67GKU7V01cuMnBpwQKthEkV1A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hP85q3CzjNF+ybDdiG/YwkyC3CLwmPIp272fb6ILyqIJEfiavqB0eZEQgb478o3+hgRT18d/4PtKxS2iOHADuCt2IY2s/abnUimtBk893UXHBvd03O9mVEHC2E1WFoRctFkhP+803Ts4pv7ZY9brzbQ1wjJvYXJ4yO+wd77L+oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=es9oHh4H; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710257247;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=uC39AaHxCXn4out0wHELXA5Z5h6XuwlzMRRIrhomGFU=;
-	b=es9oHh4HsijzKJggidN5pBzUWOcj7tNiYYoO9wijNVbt8fykuTW5S+oyryijs/A49uH8ap
-	cpVeaw5GcquNcnbvEdPmO5j416O5CUvjtbEAYAqkWnxzV6wMjGRmeiTnEnKAlgGGBm5JBW
-	NBqfTrAbycnNHBUewJNft2apRmyN8gM=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-195-DEH-UrGPN5eOJCjWMMiXFg-1; Tue, 12 Mar 2024 11:27:25 -0400
-X-MC-Unique: DEH-UrGPN5eOJCjWMMiXFg-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6e6999fd41cso1493675b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 08:27:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710257244; x=1710862044;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uC39AaHxCXn4out0wHELXA5Z5h6XuwlzMRRIrhomGFU=;
-        b=VTlExmlYU2gioL64q2qYd/apXmcfv2+l3okttN0oJeI4NX9mLoZHGt/TUgKw/yGxyq
-         5st6NAlcemBC9g2OiSf5hWapiEiYpf9w4pSh75g/y4LF0/hjlmRVPVHmDen3sycDoqD0
-         PnrVugQ/POdEwRxZsXqETnNZD3CgAYc/rTxs1C1mHOMx825kNQdqYDmkpJ+dO+wDLEVs
-         0fQI6+sDeg2dIxaV+BdesJwomWwHnmzToiAochb3DR+cWH+PnEUM8zKLB8pHZ5pqFR1z
-         0Nx+sG0MDKFkmETYOy8RRqa0wRmN/weDKdOY4w4kK21p2TaZeTlcNC5UGkP8cEFdN9ZU
-         eGXg==
-X-Forwarded-Encrypted: i=1; AJvYcCVH+gr5ZoMJtfzhu5UtNrmaskiHgES+OBZv6ffoYrSwAJ1m4IOsQe4ll4xK5Jta3O/RQKc7u2nouuGnZpMSXZ976Rdpn1FUXAT6yAgF
-X-Gm-Message-State: AOJu0YztDj2mZSAImtkztbNvzDh3ug0LoYKRJ0VQ0gFKqBlKR746qD0y
-	IV6oT5PFojLkGxUiTwqKCh//gYEEJUjYtvv9WJyz/tNXdeK2yrWARJjP03U/11XzshmXWGzDAdI
-	Joiemkc5bNGCBeQs3xL54uZVAWudbblgZVNigM1i5bbE+Y+mkNXy+RtNPseuv5w==
-X-Received: by 2002:a05:6a20:1824:b0:1a1:67c7:3ba4 with SMTP id bk36-20020a056a20182400b001a167c73ba4mr8580919pzb.51.1710257244525;
-        Tue, 12 Mar 2024 08:27:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFWH08GPkN3yS9nkXqOwjXA9YHlNM8PdeCaFjXBLasZR3oXnUTRMuqMWcHPzMZk6gzAxntf0Q==
-X-Received: by 2002:a05:6a20:1824:b0:1a1:67c7:3ba4 with SMTP id bk36-20020a056a20182400b001a167c73ba4mr8580902pzb.51.1710257244235;
-        Tue, 12 Mar 2024 08:27:24 -0700 (PDT)
-Received: from kernel-devel.local ([240d:1a:c0d:9f00:6883:65ff:fe1c:cf69])
-        by smtp.gmail.com with ESMTPSA id m5-20020aa78a05000000b006e6ab7cb10esm969668pfa.186.2024.03.12.08.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 08:27:23 -0700 (PDT)
-From: Shigeru Yoshida <syoshida@redhat.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Shigeru Yoshida <syoshida@redhat.com>,
-	syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com
-Subject: [PATCH net] hsr: Fix uninit-value access in hsr_get_node()
-Date: Wed, 13 Mar 2024 00:27:19 +0900
-Message-ID: <20240312152719.724530-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1710257287; c=relaxed/simple;
+	bh=5MJYpTNTNhUetTcUdghPwxeLV+FyZFcY1u3AGIcpjZU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OeWIH3vkZgME+5u76tw5VGFe9uADz4sbFbj1NSi+7fHeYpCumo8HFbCJs2vWLhhyjFGiZyUINjoPobiwMmUa4Iga0DdPNlK44A4D/2HngkpMw7xVpHXlqbRSbL3acdbcO1UA9xTZPCGoTBGP3EkkL2UUCWTxJRac+yRgKmTOM4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=HLp8TxPN; arc=none smtp.client-ip=66.163.191.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710257277; bh=eGVPF7E1Lj3mHWTls/amPaEcn2mVOw9rawL5hlgBYKk=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=HLp8TxPNIJPkz69Ui9a1WEYC+4KHxartu8SSitkH+R/E0rOxA/cQZTqH5pzOdagGyB+e02y2NzwkI7zbRgYXHpJYhwNhNWjh/14TUFeZzchzvA0dMGdZ4b0qOy81pSGgy22H04sEGQP3gLFQl080UOxKBNVMLws76XL1HxdwJyk2yH65/cEAnTndAS/8AyaF8SURHLZ8ue3RtiwE+5mjhCBDk/XubHX7h6sJxNqpJchakr4Vz1hFrzf65HEhNJjH+YiGnLN5aTjMEkjJX8uNWjSIgBK9VRnLz+Y2V25IXBTOe6BuWSHpkothLXri+htAXK9KEwQIzW+4JdhsMbcBPQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1710257277; bh=pmU62dXCIh+9gCpNR5ZrCUiEvNUy09Rq4Fk7k3ky77b=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=IbuCwWkdw2pyEaY6b8p0eBRXRtuLHgDRqAgkiQnLqsCi/h1nxl5FihYR8wRqMEVa+33Lg+sUEcDkb3Ix4fOnLAu9gZBQkbQyEUz/eQcp52ksdvzVmq/BTcQ6UOvfkqHALF8cc/12SXdTulwnrLyKzOptH3T7/+pWDtv0c3mH3vOKkTekbsnlhr7at4fdseqasoITf5SigDuayrW784FG0QpvNAJGoLGuoYl2d0LEUXkY/OeldpsUDhw0e4aoNVA6Ep2YIBZVFcMeqbylTgOroUmiQGTryKT3S8aefteJH8gdK2eOVUBJmdB2EsGrsPY1olZyj6od5np7c7snbIMffw==
+X-YMail-OSG: b7OktG4VM1lWpvB9IRXTkQhMZIpWJbBRSPqfCu7rii1FCDHMrOQyacOsWI6kFL4
+ d.n4mdfaGo15ZDP63JchbdRxwpTD0TFbCWHBroKr3YhStRtM4jlNfvZyhdGCfiw9Ufz.i3qb7f.a
+ S5pbrvqQtiAtJqDbz9TPEstRy9zUb3Bij.4tVZkW392UIkU0NAAtz9gB6XmjyH1Gqk_92rh2VeuW
+ ZZwwpCPcHuNcfrMSihoYuH_Z3_fS8NLJM66Vffgxcpx5eUVDtRh02sbWpxkbaZEodJhN5.eAodp0
+ grjw89tSagGTMt.Aq8qOvnIStaBm0toWJM9PqkyB47IP7fgwC3GoIgkV.bcQXgSe9IjAOZ2hyj6V
+ AcdOQbP5D8cbAOdLIk7ycTjxLu4uej.B6VVKshzGEXFYCNcnuryxHJhLFIqIgLqcQtaS2mRqyzrv
+ Jse4FtX_8qMeGjB7Whdj7Y3VzJDtvhnE.nq31sWrtluTm57JZK715xaGEOmcwpHiJDEmb2cV5qIe
+ 7LuQuB03QygjGfcJmJz340rZmbacVmIGtkKgNC4Rgc7YzMdTPuZEVYYcuDijGXDlQQS3rzCY.LFQ
+ v120AEm46e6W7W60kotgGaw_9uAXcMgvFDaYKkkwo7XOfqg7pI01NMFIaqGaMI6LGbwX004627PQ
+ RsL3YbUsEHe281Q1iRw9EQunJftNJEO7SaTMUmJgVUWBBWUht87D9oZls3NfmhAlPeSGA65BAsbs
+ wumr9l997vQc6EUO.cxVkq0a9gbVD1lQSTcDQB3cy4_B2LlN4Pti95p75jYS2ZXVRrbWMVOQkyEP
+ TZ8kO3GjlegHX3oykL.4qPvfSpiYzNYO4VNQqn_Cu0rG16EsZwowoMt1Pug6ddjfFjGROrwbk82q
+ xgLigTsllzzy4P3K3KX7HnAsC5IhQAMVkKAG7CgPsfbuPdjHu_1_ZRwBRsssUq3aNfFvSPXmO0_m
+ 5EZvN9GynKBiCuqlWfcTKArswzRWOzUtMfGIS1IjSsivu5TE3LAEs.y9ZSpdZLjTzF0q7WAYTerl
+ 1mi3hnGGgg6PS53F3uvZoGekTV3KArEmY66hKhpYoVvlWiwdcZzBIB4uDqJAepQWtR9iVOl5CJry
+ X8JSUM1U.QWL0iK2ScNmzw4ho_sS9FvRHv6O7Jhr.mkEiuof8ZAatTpWo4pIrCKPeYHjHHRIzES8
+ L45GivdLxKXQgvofmZFj7lHbjjdqYCALHWoPIEj8lqUoziSq4n1IFJw6AgOfcAT5uY9UiNvjew3P
+ m4sbRHMCo1RBdIAP5yMlYnbV3ZGFajmVkeC6Sgom8E03sNADJA.Mz5g_eyRlnKKMW4tAAeztJY5u
+ uGP6GyLPfaCjg.cBdTrDQDMJnr1Rqh7mU_usugKuqeQ2BVIeAKhRYXqDQNtCAYwgDQYKhpyqYxYQ
+ LACd7qBzaB2zYoZLzNir3DlSziAuPUg06GH0ePfrDslsSywn4rFCJQDY9EAp1ynLzSpZ7qDtUdFO
+ 1WOHojMRtzQ8a2pW32Kp7KiShk1IqLifoVREndrJ2Z1JPshLZVjDxaa32hZ1JOlUkBAtv9RXacfX
+ 0IY_hqTfk7x8._xPxhsbgSXmRh4NA1CHrcvg7OlGnZhU0n3IvizlcND_uDAveImQqZzs1NTcZIWo
+ WF02mLOKXDs7q18lbT_FtDfvDTCdusq8PuzQB3mmUgtmxjeddACvrGfGSvgslqQKqKyDvq9HlTNf
+ rO95FjMuel.nsayWHv.TZWrla4dNuyaaKYWxt1rTMWhmxmWTx03qtgYHio.YS9CKtnmgv1kdMBGD
+ zyZP5z.GW6DS.SjtmpX2.cZP6KEvmLgTM4M9WnS3VNTWyWy4W3aTmdIYgV870iWcSgXgdUGOdv5M
+ sjBWZ449ZmXQlfl5ORf.Hae48jFQONt73MlEyL8zyLr1TSEAq4dARuqVHbEcy3vuh4J30I2K2EZt
+ edkfJVHsoKMqsY5zr_ZXJnmwczRe7DwC1vPOkwer1k56xEx2nsRTKRKIoo3gEGPA5EubtVWDQpNn
+ vDRKqTY0cLeMZxp2.eJQonIvD5omO_qp3Jtj5ijMRYlrUTxDlrbyzD09PuMv7lOMejSRnwVdBB3r
+ I.zO1CjXgBNLhWyMaK4wgKSSX5VqQMBbbmj6JY.46s9.3vdAI6DFdAFKvIFmq.sWNDnaEwfIT5jo
+ 681ZiWJASXFwl6g6gefVkdDObqrl_hcl.Lj_VsoyK9eX0YihdjNhCC6W0_WeaHgwTem9slhfBDmv
+ WoQ68vyp98ovW2FFD9AhbMVBdXLQazOA_Z__NET8IuMayknlK2wPxqvQkF438XLs1SR5UT4GM6zy
+ M6GMHB5Mz5p_lXwWh7_A-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 67f0e72b-458e-49c0-991a-8ad2498ed3aa
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Tue, 12 Mar 2024 15:27:57 +0000
+Received: by hermes--production-gq1-5c57879fdf-hrd4s (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID fcf6ea82c067483bfc22e1d02e0654ff;
+          Tue, 12 Mar 2024 15:27:51 +0000 (UTC)
+Message-ID: <f122b3a9-1208-4c0b-9289-73eb070a8337@schaufler-ca.com>
+Date: Tue, 12 Mar 2024 08:27:49 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v15 05/11] LSM: Create lsm_list_modules system call
+Content-Language: en-US
+To: Paul Moore <paul@paul-moore.com>, "Dmitry V. Levin" <ldv@strace.io>
+Cc: linux-security-module@vger.kernel.org, jmorris@namei.org,
+ serge@hallyn.com, keescook@chromium.org, john.johansen@canonical.com,
+ penguin-kernel@i-love.sakura.ne.jp, stephen.smalley.work@gmail.com,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, mic@digikod.net,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <20230912205658.3432-1-casey@schaufler-ca.com>
+ <20230912205658.3432-6-casey@schaufler-ca.com>
+ <20240312101630.GA903@altlinux.org>
+ <CAHC9VhRgjNT2YnVgCqMJnyr227qUjmfrWZ+LBnu_DGxnJZgeKw@mail.gmail.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CAHC9VhRgjNT2YnVgCqMJnyr227qUjmfrWZ+LBnu_DGxnJZgeKw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.22129 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-KMSAN reported the following uninit-value access issue [1]:
+On 3/12/2024 6:25 AM, Paul Moore wrote:
+> On Tue, Mar 12, 2024 at 6:16 AM Dmitry V. Levin <ldv@strace.io> wrote:
+>> On Tue, Sep 12, 2023 at 01:56:50PM -0700, Casey Schaufler wrote:
+>> [...]
+>>> --- a/security/lsm_syscalls.c
+>>> +++ b/security/lsm_syscalls.c
+>>> @@ -55,3 +55,42 @@ SYSCALL_DEFINE4(lsm_get_self_attr, unsigned int, attr, struct lsm_ctx __user *,
+>>>  {
+>>>       return security_getselfattr(attr, ctx, size, flags);
+>>>  }
+>>> +
+>>> +/**
+>>> + * sys_lsm_list_modules - Return a list of the active security modules
+>>> + * @ids: the LSM module ids
+>>> + * @size: pointer to size of @ids, updated on return
+>>> + * @flags: reserved for future use, must be zero
+>>> + *
+>>> + * Returns a list of the active LSM ids. On success this function
+>>> + * returns the number of @ids array elements. This value may be zero
+>>> + * if there are no LSMs active. If @size is insufficient to contain
+>>> + * the return data -E2BIG is returned and @size is set to the minimum
+>>> + * required size. In all other cases a negative value indicating the
+>>> + * error is returned.
+>>> + */
+>>> +SYSCALL_DEFINE3(lsm_list_modules, u64 __user *, ids, size_t __user *, size,
+>>> +             u32, flags)
+>> I'm sorry but the size of userspace size_t is different from the kernel one
+>> on 32-bit compat architectures.
+> D'oh, yes, thanks for pointing that out.  It would have been nice to
+> have caught that before v6.8 was released, but I guess it's better
+> than later.
+>
+>> Looks like there has to be a COMPAT_SYSCALL_DEFINE3(lsm_list_modules, ...)
+>> now.  Other two added lsm syscalls also have this issue.
+> Considering that Linux v6.8, and by extension these syscalls, are only
+> a few days old, I think I'd rather see us just modify the syscalls and
+> avoid the compat baggage.  I'm going to be shocked if anyone has
+> shifted to using the new syscalls yet, and even if they have (!!),
+> moving from a "size_t" type to a "u64" should be mostly transparent
+> for the majority of native 64-bit systems.  Those running the absolute
+> latest kernels on 32-bit systems with custom or bleeding edge
+> userspace *may* see a slight hiccup, but I think that user count is in
+> the single digits, if not zero.
+>
+> Let's fix this quickly with /size_t/u64/ in v6.8.1 and avoid the
+> compat shim if we can.
+>
+> Casey, do you have time to put together a patch for this (you should
+> fix the call chains below the syscalls too)?  If not, please let me
+> know and I'll get a patch out ASAP.
 
-=====================================================
-BUG: KMSAN: uninit-value in hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
- hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
- fill_frame_info net/hsr/hsr_forward.c:577 [inline]
- hsr_forward_skb+0xe12/0x30e0 net/hsr/hsr_forward.c:615
- hsr_dev_xmit+0x1a1/0x270 net/hsr/hsr_device.c:223
- __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
- netdev_start_xmit include/linux/netdevice.h:4954 [inline]
- xmit_one net/core/dev.c:3548 [inline]
- dev_hard_start_xmit+0x247/0xa10 net/core/dev.c:3564
- __dev_queue_xmit+0x33b8/0x5130 net/core/dev.c:4349
- dev_queue_xmit include/linux/netdevice.h:3134 [inline]
- packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
- packet_snd net/packet/af_packet.c:3087 [inline]
- packet_sendmsg+0x8b1d/0x9f30 net/packet/af_packet.c:3119
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- __sys_sendto+0x735/0xa10 net/socket.c:2191
- __do_sys_sendto net/socket.c:2203 [inline]
- __se_sys_sendto net/socket.c:2199 [inline]
- __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Grumble. Yes, I'll get right on it.
 
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- kmem_cache_alloc_node+0x5e9/0xb10 mm/slub.c:3523
- kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
- __alloc_skb+0x318/0x740 net/core/skbuff.c:651
- alloc_skb include/linux/skbuff.h:1286 [inline]
- alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6334
- sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2787
- packet_alloc_skb net/packet/af_packet.c:2936 [inline]
- packet_snd net/packet/af_packet.c:3030 [inline]
- packet_sendmsg+0x70e8/0x9f30 net/packet/af_packet.c:3119
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- __sys_sendto+0x735/0xa10 net/socket.c:2191
- __do_sys_sendto net/socket.c:2203 [inline]
- __se_sys_sendto net/socket.c:2199 [inline]
- __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 1 PID: 5033 Comm: syz-executor334 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
-
-If the packet type ID field in the Ethernet header is either ETH_P_PRP or
-ETH_P_HSR, but it is not followed by an HSR tag, hsr_get_skb_sequence_nr()
-reads an invalid value as a sequence number. This causes the above issue.
-
-This patch fixes the issue by returning NULL if the Ethernet header is not
-followed by an HSR tag.
-
-Fixes: f266a683a480 ("net/hsr: Better frame dispatch")
-Reported-and-tested-by: syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=2ef3a8ce8e91b5a50098 [1]
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
- net/hsr/hsr_framereg.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
-index 6d14d935ee82..26329db09210 100644
---- a/net/hsr/hsr_framereg.c
-+++ b/net/hsr/hsr_framereg.c
-@@ -228,6 +228,10 @@ struct hsr_node *hsr_get_node(struct hsr_port *port, struct list_head *node_db,
- 	 */
- 	if (ethhdr->h_proto == htons(ETH_P_PRP) ||
- 	    ethhdr->h_proto == htons(ETH_P_HSR)) {
-+		/* Check if skb contains hsr_ethhdr */
-+		if (skb->mac_len < sizeof(struct hsr_ethhdr))
-+			return NULL;
-+
- 		/* Use the existing sequence_nr from the tag as starting point
- 		 * for filtering duplicate frames.
- 		 */
--- 
-2.43.0
-
+>
+> Thanks all.
+>
 
