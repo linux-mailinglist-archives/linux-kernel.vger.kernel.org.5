@@ -1,73 +1,44 @@
-Return-Path: <linux-kernel+bounces-100413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E11B8879721
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:06:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58720879726
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 108F61C21CA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:06:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8FABB21B35
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0B227B3F6;
-	Tue, 12 Mar 2024 15:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TvhpX5Va"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6418016439;
+	Tue, 12 Mar 2024 15:08:04 +0000 (UTC)
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218497BAF9
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A0978286
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710255955; cv=none; b=rEM+n83ErJcIBqGOZ0Md+4IuaNWJ7rsBT5EMos9drO7J5TFXUPCVUX/yROscyMXszTyGUI4A/sPjTjg8ICeWWqbm4AIaf7YiG0818JToOJC92gy9UOaUlbuta3NYJFQ6da75isJwlJcfTnRA2SXNadpq2mrybHfA+7YEOyDYPus=
+	t=1710256084; cv=none; b=RBopoapxv8O3NW2j8CH2/eYgrDzCC6mt2685rACIAgeMQ4a/Udos9SgO310zu+S7mz7QzDN5a7m+xXQbIthwwZJ/rTDENZ6QKqXl2yAA7Z769gDMfCOu75g9NJJRAbqpAgeY06TPKWZSfPMEQ29vkGsG+lJ3Aqgy4BY68dNhLYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710255955; c=relaxed/simple;
-	bh=gwvlVXMj8YzA9NTNKw5EKX6GuDQ9HZKERGAoTtteNgw=;
+	s=arc-20240116; t=1710256084; c=relaxed/simple;
+	bh=WAR6vC6GYDlT8W8h2fxdm6hhR5Qj23dpzfqj30x+ais=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ak4k8b+oqkOzResjCbEWEGIVhkqDs07UtE9BoiOgOCMz2pacGjcIX4vEnytdIpvBOl6TwzderVuHKHgZmL6BRiYng+3GormqlcbpfiD2L1jKcwnGLBn+xAjeAmgQLr4XaMZqrml+iPJwO6Nz7RwanK1m4jJBT4EACJrlseJt5g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TvhpX5Va; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33e95b68b3eso2182769f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 08:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710255952; x=1710860752; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zYqdQQe+WczGEpCgZYhlnOFJftP0P2ToYmG/ZyjPUWg=;
-        b=TvhpX5VaElIiH5BcTeIGtaidfUOu6UwUb4DwCVsSrsRpCbDV1eHYfG4zCDewC0GhRH
-         eVw13Qawpg6wwthXroC64kvjrzy4gPpjkcRRZZQFhB0UtOi/q5pSgP7JwwRZHyRdnRXR
-         wtjiEE20SOjAsroPgDtzIvb0EI5qIbn6EIsMS8IGc4/sRQkHLHrOLUX2ArkGhC+Q20Tt
-         /nLmTl89z8N8b7w/cO6Ali6TYOU30IsY6pBL/ZK5NgUT2zuIXRysX2JtFw56ejgwsMu1
-         fgedpFRyJyPm+mgAZxAT12rpCXC/nba8Do3//35NxIZqS2ZwNq60nc8G4srevAVJCwxk
-         l0pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710255952; x=1710860752;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zYqdQQe+WczGEpCgZYhlnOFJftP0P2ToYmG/ZyjPUWg=;
-        b=uHtIXQwzx65hs624gA6hsAQfkXT4zZVyAknHovQxrmi4Fjhob9pJ7lw1mYvaPfR/zP
-         YprOvVBqMOkoOmqyVX5YjQF3JizMgfjRRmmyKtp4J/hSU5KzudFwlzmXRWTuJ8AVYJyn
-         EN8B3wRgPwkJIyULq/Q6CtNHVODMjF83tMwyLgorNMleNnBuiXaS/S4wDdULwb8k/wFJ
-         jrn68M7A6VIT19CHtBmqs5Zlti/2CBIDHWMTdFI09PtfCjMLTHQaSP7fN+c0kKWad7CZ
-         jFOT6IN3TlwzM01U9kocXUunGjlYIvz4E/kkgAPMkh/BXfDCDDujE+N15fX+mftlBrFG
-         WR/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWUKuqWSGa8CJGIh1kCw0BMzsU880Kbs5mXAHaOl07w46cY3oTbpZR9GCS/nFmt5rLI8lr4GsxyPMr34wLS/IGZQ1grx1j7Tg0h3K3C
-X-Gm-Message-State: AOJu0YwumUaRlvdQbxCqmcRJJw1OQ4ismaKC/oJNXnKX6jPI8jfYFH0q
-	JXDBiyN9vksWTrCxsi+cohOSs1Nh0XoYyMzDKn1UDr8csoByMsU4KkjEiiyRKqI=
-X-Google-Smtp-Source: AGHT+IE+DzqnVMCFpQavnFuorsliCJRjh9NfcuUo2WAPFlSKOVBYqoFxasK1ZqCcterU2zRfqNYkWQ==
-X-Received: by 2002:a5d:5505:0:b0:33d:277d:a2c7 with SMTP id b5-20020a5d5505000000b0033d277da2c7mr5763716wrv.16.1710255952383;
-        Tue, 12 Mar 2024 08:05:52 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id b12-20020a5d45cc000000b0033e786abf84sm9216968wrs.54.2024.03.12.08.05.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 08:05:51 -0700 (PDT)
-Message-ID: <0df9adfe-c869-4502-93e1-fb3516aedc0c@linaro.org>
-Date: Tue, 12 Mar 2024 16:05:49 +0100
+	 In-Reply-To:Content-Type; b=f3j55Dbb0cuUIxlwRhRAYZZyLnPlpO1+K40jzNC1cT2PNuYqQcfV9NDr85GAw8YYH7l2X31x6vqQBQJc3MbWYLlzX6Je3qe1jBUx+WOmTeXKhGIpwmdxMgOF655b7c8bfhbCmwazr5KRT8VLx9uvv1k3BrNMQQ7dQYdJXZ92mDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TvGj11JMYz9xqts
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 22:48:05 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 3317114059E
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 23:07:54 +0800 (CST)
+Received: from [10.48.131.93] (unknown [10.48.131.93])
+	by APP2 (Coremail) with SMTP id GxC2BwAXUCTDb_BlMeMqBA--.36492S2;
+	Tue, 12 Mar 2024 16:07:53 +0100 (CET)
+Message-ID: <9284cda7-d7e3-4390-bf62-58092e97d1c8@huaweicloud.com>
+Date: Tue, 12 Mar 2024 16:07:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,208 +46,81 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] dt-bindings: i2c: renesas,riic: Document R9A09G057
- support
+Subject: Re: [PATCH RESEND 1/1] um: oops on accessing a non-present page in
+ the vmalloc area
 Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
- Chris Brandt <chris.brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240308172726.225357-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240308172726.225357-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <7082ed3b-d6d0-4228-b7a6-7c0e0e46b8e2@linaro.org>
- <CA+V-a8tM29h10DULurMJtBZBnLK_ZF7pH_Y0bhZTvWO0O7-G-Q@mail.gmail.com>
- <2974085a-d9b4-4a66-b60f-c02a06a74647@linaro.org>
- <CAMuHMdVgp_vFnWr5ruzdyc1vNQKoCdM=pLZmgmkDjmUHvQBJJw@mail.gmail.com>
- <b04f9c39-9797-40b8-a25b-8154ad559cd5@linaro.org>
- <CAMuHMdV6yHcTaZKMJxS7sabzhCGKt4i6bjKJiNDaCoHkeZXUvA@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAMuHMdV6yHcTaZKMJxS7sabzhCGKt4i6bjKJiNDaCoHkeZXUvA@mail.gmail.com>
+To: Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ "open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+ =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
+References: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
+From: Petr Tesarik <petrtesarik@huaweicloud.com>
+In-Reply-To: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwAXUCTDb_BlMeMqBA--.36492S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uryxuF1fWr4kuw17XF1UZFb_yoW8XF4DpF
+	W5Ga18trZFg3W2kanrX3sFvr4IkasrJ3W2kr4DA34Fvw1q9FyfArW3GwnxCw1j9ryrGa18
+	KrWYyr9Fyw4DJw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF
+	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+	v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2
+	IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+	6r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUouWlDUUUU
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
-On 12/03/2024 15:06, Geert Uytterhoeven wrote:
-> Hi Krzysztof,
+On 2/23/2024 3:04 PM, Petr Tesarik wrote:
+> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 > 
-> On Tue, Mar 12, 2024 at 12:04 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->> On 11/03/2024 10:00, Geert Uytterhoeven wrote:
->>>>>>> -          - renesas,riic-r9a07g054  # RZ/V2L
->>>>>>> -      - const: renesas,riic-rz      # generic RIIC compatible
->>>>>>> +    oneOf:
->>>>>>> +      - items:
->>>>>>> +          - enum:
->>>>>>> +              - renesas,riic-r7s72100   # RZ/A1H
->>>>>>> +              - renesas,riic-r7s9210    # RZ/A2M
->>>>>>> +              - renesas,riic-r9a07g043  # RZ/G2UL and RZ/Five
->>>>>>> +              - renesas,riic-r9a07g044  # RZ/G2{L,LC}
->>>>>>> +              - renesas,riic-r9a07g054  # RZ/V2L
->>>>>>> +          - const: renesas,riic-rz      # generic RIIC compatible
->>>>>>> +
->>>>>>> +      - items:
->>>>>>> +          - enum:
->>>>>>> +              - renesas,riic-r9a09g057  # RZ/V2H(P)
->>>>>>
->>>>>> No, that does not look right. If you added generic compatible for all
->>>>>> RIIC then how can you add a new RIIC compatible which does not follow
->>>>>> generic one?
->>>>>>
->>>>> The generic compatible above which was added previously was for the
->>>>> RZ/(A) SoCs and not for all the RIICs. The RZ/G2L family was also
->>>>
->>>> No, it said: "generic RIIC compatible". It did not say "RIIC RZ/A". It
->>>> said RIIC RZ
->>>
->>> At the time the original bindings were written, only RZ/A1, RZ/T1,
->>> and RZ/N1 existed, and all RIIC modules present in these SoCs were
->>> identical.  Later, we got RZ/A2, which also included a compatible
->>> RIIC block.
->>>
->>> Somewhere along the timeline, the marketing department became creative,
->>> and we got RZ/G1 (RZ/G1[HMNEC]) and RZ/G2 (RZ/G2[HMNE]), which were
->>> unrelated to earlier RZ series :-(  When marketing started smoking
->>> something different, we got RZ/G2L, which is unrelated to RZ/G2,
->>> but reuses some parts from RZ/A.  Recently, we got RZ/G3S, which is
->>> similar to RZ/G2L...
->>
->> That's fine, but then the comment "generic RIIC compatible" is confusing
->> for anyone not knowing this. Commit msg could also mention why the
->> generic compatible covers actually entirely different hardware. The
->> commit msg so far focused on the differences between these hardwares,
->> thus my questions - why do you create generic compatibles which are not
->> generic?
+> If a segmentation fault is caused by accessing an address in the vmalloc
+> area, check that the target page is present.
 > 
-> I agree the comment should be updated when adding a new variant which
-> is not compatible with the old generic variant (i.e. in this patch).
-> 
->>>> So don't use generic compatibles as fallbacks. That's the point.
->>>
->>> It's indeed difficult to predict the future. So SoC-specific compatible
->>> values are safer.
->>> At the same time, we want to avoid having to add compatible values for
->>> each and every SoC to each driver, so we try to group SoCs per family.
->>> For R-Car that worked out reasonably well, however, for RZ...
->>
->> I did not propose that. Nothing changes in your driver with my proposal.
->> Use SoC-compatibles only: for fallbacks and for specific(frontbacks?) parts.
->>
->> To give you some sort of guidance for any future submission:
->> 1. Use SoC-like fallback compatible, prepended with SoC-specific compatible.
->> 2. If you insist on generic fallback compatible, its usage should be
->> limited to the cases where you can guarantee for 99.9% that future
->> devices will be compatible with this. I doubt anyone can guarantee that,
->> thus we keep repeating on mailing lists the same: go to point (1).
-> 
-> Personally, I am not such a big fan of method 1, for several reasons:
-> 
->   - Support for new SoCs is not always added in chronological SoC
->     release date order.  So you could end up with:
-> 
->         compatible = "vendor,socB-foo", "vendor,socA-foo";
-> 
->      with socA being (much) newer than socB.
+> Currently, if the kernel hits a guard page in the vmalloc area, UML blindly
+> assumes that the fault is caused by a stale mapping and will be fixed by
+> flush_tlb_kernel_vm(). Unsurprisingly, if the fault is caused by accessing
+> a guard page, no mapping is created, and when the faulting instruction is
+> restarted, it will cause exactly the same fault again, effectively creating
+> an infinite loop.
 
-Which is not a problem. We already have such examples in Qualcomm and
-once you get used to seeing it, no one wonders. Of course it's not like
-we target such reversed compatibility, but if it happens - does not
-matter. compatible expresses compatibility, not timeframe.
+Ping. Any comment on this fix?
+
+Petr T
 
 > 
->   - Worse, adding support for different modules in different SoCs
->     can be unordered, too, leading to
+> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> ---
+>  arch/um/kernel/trap.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
->         compatible = "vendor,socB-foo", "vendor,socA-foo";
-> 
->     but
-> 
->         compatible = "vendor,socA-bar", "vendor,socB-bar";
-
-Yeah, that looks not nice, indeed, but it's a rare case and still does
-not matter for actual meaning. compatible does not express timeframe.
-
-> 
->     Which is inconsistent.  Fortunately we now have "make dtbs_check"
->     to catch mistakes there.
-> 
->   - When a third SoC arrives, which one do you pick?
-> 
->         compatible = "vendor,socC-foo", "vendor,socA-foo";
-> 
->     or
-> 
->         compatible = "vendor,socC-foo", "vendor,socB-foo";
-
-compatibility defines this.
-
-> 
->     Obviously you pick the former (unless you detected the issues
->     below first ;-)
-> 
->   - When socA-foo turns out to be slightly different from socB-foo,
->     socC-foo, ... you have to add of_device_id entries for all
->     socX-foo to the driver.  With a family-specific fallback, you'd
->     be limited to one entry for the family-specific callback and
->     a second entry for the misbehaving socA.
-
-Yes and we have exactly that kind of argument from Bjorn A. for
-Qualcomm. I repeat: this means your generic family-fallback changes
-meaning, which is not really correct. Bindings (and DTS) are used for
-outside projects, so if you need to change the driver for generic
-fallback, all outside projects might be affected. You basically changed
-ABI without telling it to anyone.
-
-Best regards,
-Krzysztof
+> diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+> index 6d8ae86ae978..d5b85f1bfe33 100644
+> --- a/arch/um/kernel/trap.c
+> +++ b/arch/um/kernel/trap.c
+> @@ -206,11 +206,15 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+>  	int err;
+>  	int is_write = FAULT_WRITE(fi);
+>  	unsigned long address = FAULT_ADDRESS(fi);
+> +	pte_t *pte;
+>  
+>  	if (!is_user && regs)
+>  		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
+>  
+>  	if (!is_user && (address >= start_vm) && (address < end_vm)) {
+> +		pte = virt_to_pte(&init_mm, address);
+> +		if (!pte_present(*pte))
+> +			page_fault_oops(regs, address, ip);
+>  		flush_tlb_kernel_vm();
+>  		goto out;
+>  	}
 
 
