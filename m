@@ -1,225 +1,150 @@
-Return-Path: <linux-kernel+bounces-100508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CF918798DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:24:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D1BB8798E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 480601C21DAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:24:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC05C2842BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C29557E108;
-	Tue, 12 Mar 2024 16:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895F57D41F;
+	Tue, 12 Mar 2024 16:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cCeIlxrh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LfIwvXW6"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDC17C6DE;
-	Tue, 12 Mar 2024 16:24:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F68CAD5C;
+	Tue, 12 Mar 2024 16:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710260649; cv=none; b=C3h+gLmP7hrnLq3YPEk8iO49TzjzZUlGTWBzZkYInPYbNhNZx5Itmv2ggY62Ne2E8c7UFwYptZBqQygNDkpfQutMyYErL5w4LwraIxV4mvEbguTguiF6yuLGkN48zLeYM1NvNCqMjki0IkROtY88MGrl+dajMSlvsJgLQO8RFoE=
+	t=1710260725; cv=none; b=XxNp9JC+wI8YUYay0wqACHkTT/JpZPrEy4p1+Wgkh7n/RVwDw3CTICwhnDJaARUPlnpfWGSiJcsjDwa/SqXyMj3wNbvjwiMkKRxWdiRgEIcEX63PREZVIRlX/05rikQa/IUZsvKE+dTZ3FtpV5/Lx9csrnHIDtB0uMBSFR3JAuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710260649; c=relaxed/simple;
-	bh=8n2fKf4FY7dMDRLjK5X8wbktc/tbVnl2rTOrGpLEM1k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XlpsjyzgWpBt0JlaCCYtH12yXuYwz/g5IU5Nwrhgz6tW1W/BHQhZkSHuoQXguMQDwOok89BSnLWerOK1lskGjvpMhYLGjQy9rFfi3SGWshjf1iK9rLHaJx3Nt2/HNdsuCguLWA9csCiAi13p6OA25ghZ4TI2mD3Xtgz9zPP64E8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cCeIlxrh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C614C433F1;
-	Tue, 12 Mar 2024 16:24:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710260648;
-	bh=8n2fKf4FY7dMDRLjK5X8wbktc/tbVnl2rTOrGpLEM1k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cCeIlxrh8lgfHk4zmd8tyjDO0plw4Y81Fpmn10i6qA5XBGMCvt00hBI0/qqg26lkW
-	 rJJXoywLn5xbOGQcb6PCqe8yrCmcxghgnmjYeXfLI93WZMNCdQsnFEld3J6y6XDBRy
-	 abQNNGWQcx7NuM5isTdmHr5FqmPeK7d5MmZ3ttSlJCHEGaG3IHdlX8agCbpNeuIQOa
-	 WkI/S4u56GYnIuTLJahUPG5uIkIIyUC2R8K7OXdB6eeZoIl3xCMG5TEDw1pSE+/tlW
-	 P0Gw4LM99S1xNloylybcBYv2qyeLwNEw7Jaakv84EGXE8OO3YdtUo7aB5SQvzF6sCP
-	 sTQDpq+YcScgQ==
-Date: Tue, 12 Mar 2024 09:24:07 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
-	david@fromorbit.com, tytso@mit.edu, jack@suse.cz,
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH 3/4] iomap: don't increase i_size if it's not a write
- operation
-Message-ID: <20240312162407.GC1927156@frogsfrogsfrogs>
-References: <20240311122255.2637311-1-yi.zhang@huaweicloud.com>
- <20240311122255.2637311-4-yi.zhang@huaweicloud.com>
- <20240311154829.GU1927156@frogsfrogsfrogs>
- <4a9e607e-36d1-4ea7-1754-c443906b3a1c@huaweicloud.com>
+	s=arc-20240116; t=1710260725; c=relaxed/simple;
+	bh=FKqPwv8fmZYtCQqlF7LSJcgqG/Bdfs+UfdZdl9iIowo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lCA0p99vMfSyVV45tYZ36i/3XlPjpxcdQYDdgzq2JYBAwRaGC9UFoBL+2QYjfzPHwG1UjLKSfQp+hnV1KWg4bRl3uajYfrF4b06uqdtbYrkqWgYEz1sAgcXt+3zzqJpAFdM1kwb0Tvn0+9zVvBUsGFDs1sv148SBvN1JJbCuFMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LfIwvXW6; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42CBwfBK019350;
+	Tue, 12 Mar 2024 16:25:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=rnquy9/lu+MkzRCfqfD7IRHO13mqattlw1+Mkjnu3uU=; b=Lf
+	IwvXW6pg97ldTNpumYS2MXd/eRIt7Zgy5AziQwh+QnfseTWkkFxkkWBwmFf0+WfT
+	lUJOoLr6pOGRPTSwvEH8DGfw0mycyVpY2TE5sVtu1cn46iqtIQBlEQqlH7WAOca2
+	5WdHHF3qliiMrL5JEOvmD9Kr0loDatNMzLPN1RglnkitV6ZVUN9a/sq0eWxi47ZS
+	IKu4FbFvWxp/BseXliEMQLT/u4pl7roX5l81WK0BSzPvDbcRl0qbL5ef1y2Kc0Om
+	YpC4mCFc3Z3eUFMK4zKrO3/FVjqXRm4tXGwjApEhqueiA/rRLfvjZ7uvqR3GjF1o
+	Qb63XHuX7QRq+AARdUuQ==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wtjef15hx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 16:25:19 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42CGPHwd010651
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 16:25:17 GMT
+Received: from [10.216.60.182] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Mar
+ 2024 09:25:14 -0700
+Message-ID: <ffa32cab-fa74-0c37-b3c9-c3c41cff9f9c@quicinc.com>
+Date: Tue, 12 Mar 2024 21:55:08 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a9e607e-36d1-4ea7-1754-c443906b3a1c@huaweicloud.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] soc: qcom: llcc: Add llcc device availability check
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzk@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240220122805.9084-1-quic_mojha@quicinc.com>
+ <20332b6f-e0cc-4356-83ec-0c9771481083@kernel.org>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20332b6f-e0cc-4356-83ec-0c9771481083@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Rti3HYmDwVgeZxDqx1QZmjDjjBglBIu6
+X-Proofpoint-GUID: Rti3HYmDwVgeZxDqx1QZmjDjjBglBIu6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_10,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403120123
 
-On Tue, Mar 12, 2024 at 08:59:15PM +0800, Zhang Yi wrote:
-> On 2024/3/11 23:48, Darrick J. Wong wrote:
-> > On Mon, Mar 11, 2024 at 08:22:54PM +0800, Zhang Yi wrote:
-> >> From: Zhang Yi <yi.zhang@huawei.com>
-> >>
-> >> Increase i_size in iomap_zero_range() and iomap_unshare_iter() is not
-> >> needed, the caller should handle it. Especially, when truncate partial
-> >> block, we could not increase i_size beyond the new EOF here. It doesn't
-> >> affect xfs and gfs2 now because they set the new file size after zero
-> >> out, it doesn't matter that a transient increase in i_size, but it will
-> >> affect ext4 because it set file size before truncate.
-> > 
-> >>                                                       At the same time,
-> >> iomap_write_failed() is also not needed for above two cases too, so
-> >> factor them out and move them to iomap_write_iter() and
-> >> iomap_zero_iter().
-> > 
-> > This change should be a separate patch with its own justification.
-> > Which is, AFAICT, something along the lines of:
-> > 
-> > "Unsharing and zeroing can only happen within EOF, so there is never a
-> > need to perform posteof pagecache truncation if write begin fails."
-> 
-> Sure.
-> 
-> > 
-> >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> > 
-> > Doesn't this patch fix a bug in ext4?
-> 
-> Yeah, the same as Christoph answered.
-> 
-> > 
-> >> ---
-> >>  fs/iomap/buffered-io.c | 59 +++++++++++++++++++++---------------------
-> >>  1 file changed, 30 insertions(+), 29 deletions(-)
-> >>
-> >> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> >> index 093c4515b22a..19f91324c690 100644
-> >> --- a/fs/iomap/buffered-io.c
-> >> +++ b/fs/iomap/buffered-io.c
-> >> @@ -786,7 +786,6 @@ static int iomap_write_begin(struct iomap_iter *iter, loff_t pos,
-> >>  
-> >>  out_unlock:
-> >>  	__iomap_put_folio(iter, pos, 0, folio);
-> >> -	iomap_write_failed(iter->inode, pos, len);
-> >>  
-> >>  	return status;
-> >>  }
-> >> @@ -838,34 +837,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
-> >>  		size_t copied, struct folio *folio)
-> >>  {
-> >>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
-> >> -	loff_t old_size = iter->inode->i_size;
-> >> -	size_t ret;
-> >> -
-> >> -	if (srcmap->type == IOMAP_INLINE) {
-> >> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
-> >> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
-> >> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
-> >> -				copied, &folio->page, NULL);
-> >> -	} else {
-> >> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
-> >> -	}
-> >>  
-> >> -	/*
-> >> -	 * Update the in-memory inode size after copying the data into the page
-> >> -	 * cache.  It's up to the file system to write the updated size to disk,
-> >> -	 * preferably after I/O completion so that no stale data is exposed.
-> >> -	 */
-> >> -	if (pos + ret > old_size) {
-> >> -		i_size_write(iter->inode, pos + ret);
-> >> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
-> >> -	}
-> >> -	__iomap_put_folio(iter, pos, ret, folio);
-> >> -
-> >> -	if (old_size < pos)
-> >> -		pagecache_isize_extended(iter->inode, old_size, pos);
-> >> -	if (ret < len)
-> >> -		iomap_write_failed(iter->inode, pos + ret, len - ret);
-> >> -	return ret;
-> >> +	if (srcmap->type == IOMAP_INLINE)
-> >> +		return iomap_write_end_inline(iter, folio, pos, copied);
-> >> +	if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
-> >> +		return block_write_end(NULL, iter->inode->i_mapping, pos, len,
-> >> +				       copied, &folio->page, NULL);
-> >> +	return __iomap_write_end(iter->inode, pos, len, copied, folio);
-> >>  }
-> >>  
-> >>  static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
-> >> @@ -880,6 +858,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
-> >>  
-> >>  	do {
-> >>  		struct folio *folio;
-> >> +		loff_t old_size;
-> >>  		size_t offset;		/* Offset into folio */
-> >>  		size_t bytes;		/* Bytes to write to folio */
-> >>  		size_t copied;		/* Bytes copied from user */
-> >> @@ -912,8 +891,10 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
-> >>  		}
-> >>  
-> >>  		status = iomap_write_begin(iter, pos, bytes, &folio);
-> >> -		if (unlikely(status))
-> >> +		if (unlikely(status)) {
-> >> +			iomap_write_failed(iter->inode, pos, bytes);
-> >>  			break;
-> >> +		}
-> >>  		if (iter->iomap.flags & IOMAP_F_STALE)
-> >>  			break;
-> >>  
-> >> @@ -927,6 +908,24 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
-> >>  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
-> >>  		status = iomap_write_end(iter, pos, bytes, copied, folio);
-> >>  
-> >> +		/*
-> >> +		 * Update the in-memory inode size after copying the data into
-> >> +		 * the page cache.  It's up to the file system to write the
-> >> +		 * updated size to disk, preferably after I/O completion so that
-> >> +		 * no stale data is exposed.
-> >> +		 */
-> >> +		old_size = iter->inode->i_size;
-> >> +		if (pos + status > old_size) {
-> >> +			i_size_write(iter->inode, pos + status);
-> >> +			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
-> >> +		}
-> >> +		__iomap_put_folio(iter, pos, status, folio);
-> > 
-> > Why is it necessary to hoist the __iomap_put_folio calls from
-> > iomap_write_end into iomap_write_iter, iomap_unshare_iter, and
-> > iomap_zero_iter?  None of those functions seem to use it, and it makes
-> > more sense to me that iomap_write_end releases the folio that
-> > iomap_write_begin returned.
-> > 
-> 
-> Because we have to update i_size before __iomap_put_folio() in
-> iomap_write_iter(). If not, once we unlock folio, it could be raced
-> by the backgroud write back which could start writing back and call
-> folio_zero_segment() (please see iomap_writepage_handle_eof()) to
-> zero out the valid data beyond the not updated i_size. So we
-> have to move out __iomap_put_folio() out together with the i_size
-> updating.
 
-Ahah.  Please make a note of that in the comment for dunces like me.
 
-	/*
-	 * Update the in-memory inode size after copying the data into
-	 * the page cache.  It's up to the file system to write the
-	 * updated size to disk, preferably after I/O completion so that
-	 * no stale data is exposed.  Only once that's done can we
-	 * unlock and release the folio.
-	 */
-
---D
-
-> Thanks,
-> Yi.
+On 3/7/2024 3:51 PM, Krzysztof Kozlowski wrote:
+> On 20/02/2024 13:28, Mukesh Ojha wrote:
+>> When llcc driver is enabled  and llcc device is not
+>> physically there on the SoC, client can get
+>> -EPROBE_DEFER on calling llcc_slice_getd() and it
+>> is possible they defer forever.
 > 
+> Please wrap commit message according to Linux coding style / submission
+> process (neither too early nor over the limit):
+> https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
+
+Noted.
+
+> 
+>>
+>> Let's add a check device availabilty and set the
+>> appropriate applicable error in drv_data.
+>>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> ---
+>>   drivers/soc/qcom/llcc-qcom.c | 23 ++++++++++++++++++++++-
+>>   1 file changed, 22 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+>> index 4ca88eaebf06..cb336b183bba 100644
+>> --- a/drivers/soc/qcom/llcc-qcom.c
+>> +++ b/drivers/soc/qcom/llcc-qcom.c
+>> @@ -769,6 +769,27 @@ static const struct qcom_sct_config x1e80100_cfgs = {
+>>   };
+>>   
+>>   static struct llcc_drv_data *drv_data = (void *) -EPROBE_DEFER;
+>> +static DEFINE_MUTEX(dev_avail);
+>> +
+>> +static bool is_llcc_device_available(void)
+>> +{
+>> +	static struct llcc_drv_data *ptr;
+>> +
+>> +	mutex_lock(&dev_avail);
+>> +	if (!ptr) {
+>> +		struct device_node *node;
+>> +
+>> +		node = of_find_node_by_name(NULL, "system-cache-controller");
+> 
+> Why do you look names by name? This create undocumented ABI. >
+> NAK (also for any future uses of such of_find_node_by_name()).
+
+I agree, what if we add a common compatible string like qcom,llcc to all 
+llcc supported SoCs.
+
+-Mukesh
+> 
+> Best regards,
+> Krzysztof
 > 
 
