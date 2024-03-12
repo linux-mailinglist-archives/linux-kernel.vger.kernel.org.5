@@ -1,233 +1,174 @@
-Return-Path: <linux-kernel+bounces-100236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A2DC8793DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:12:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2C7E8793E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:13:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4EC8B21B66
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:12:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21DEB1C21881
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECCB7A121;
-	Tue, 12 Mar 2024 12:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B26079DBB;
+	Tue, 12 Mar 2024 12:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t4ONObyr";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t4ONObyr"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Du2Tdef9"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B326D79B92;
-	Tue, 12 Mar 2024 12:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37A079DD3
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710245556; cv=none; b=FjWff7XIe182wl4eRR3m1YxIKzRoYxh4sHjePagE6JaW8YvQQRRZSw7G6kM3MFjlbXJTOGzTfsVmfQ/vxHTANn5mi1nmkyE2IRa4jJ6W32EdRD4DHvqotqvJw0efWecvqIu0oMQUOVwyKD37uTRLFBgmxdi+/zLhgPXn3r8uPIE=
+	t=1710245622; cv=none; b=RSmpnt7wQdvBmd1z4+DgzjgNJUrVHM+OtIJ6pf4Wohe4UEljeppqgzufJbeDDU1G7P221NPQBXVyADHxxOX57MH8LLY7ACaYpy3JJLb+dBXVOb+zaRw6MvjWwktHd0dcJ3UdIZvAbw0PaRgToPSruvh0la061+raWnlkux4rBBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710245556; c=relaxed/simple;
-	bh=TCGQqF+18Os3C61odwkuSi1jlFApKK2G+8qPngHoerU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ueucj43gHUvwsRJqc5oKoNjD6yEmUukuezBjUq13m0Xnup7RLgpZlDCo9cTjC12zAn1kvdrliCB3f67xYwR1gzPgNlxDP3FrlQyyHgKRbJIci1X/CbleJxGpIMr+qf/Je8KYmbU8sOCWIojS2qrEAPIsblOw+88I70WySyUB2Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t4ONObyr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t4ONObyr; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8EF825D48F;
-	Tue, 12 Mar 2024 12:12:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710245551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=K16N6xfHk8sdlVr00y/RAqVmoBWADQMREpiQqIg7t24=;
-	b=t4ONObyr5++QAsGvG2nciQwD8Hmtahsr1LrTL4diIVIimxQa5tahC8VWGYSIi0BSgxYsVF
-	xf3vQmI/1L9n/fPmv6zfgWdWr4nMvIPT2fTmcUoj3VY4oWOKOcti20Lb2PuCZWCRxJAJ0W
-	JzxNmPyLso/f3vWK2HF3yGa6QJcoKgI=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710245551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=K16N6xfHk8sdlVr00y/RAqVmoBWADQMREpiQqIg7t24=;
-	b=t4ONObyr5++QAsGvG2nciQwD8Hmtahsr1LrTL4diIVIimxQa5tahC8VWGYSIi0BSgxYsVF
-	xf3vQmI/1L9n/fPmv6zfgWdWr4nMvIPT2fTmcUoj3VY4oWOKOcti20Lb2PuCZWCRxJAJ0W
-	JzxNmPyLso/f3vWK2HF3yGa6QJcoKgI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 025B413795;
-	Tue, 12 Mar 2024 12:12:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id e0raKa5G8GUybwAAD6G6ig
-	(envelope-from <mpdesouza@suse.com>); Tue, 12 Mar 2024 12:12:30 +0000
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-Date: Tue, 12 Mar 2024 09:12:14 -0300
-Subject: [PATCH] selftests: livepatch: Test atomic replace against multiple
- modules
+	s=arc-20240116; t=1710245622; c=relaxed/simple;
+	bh=n5SObae7rIgP3WuI3Oafco62Kx82PN6kqZ3/u654/9o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rnYjANHDLbuiFJL+15eoaOkU6G+QCIfsxbeT7ctFqnfRCwZUJ2Gu1HeW+5UB+lGEa31rdL0dukcIR3Mmshp6mFsZ0ZQWlH7vfTKiOMxbw9EhMyE+JnvmvnCJhaNbRLTcbckFnrfRIRW5AiUP6YWPYux/mRyEKncz/i3aWQCzYmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Du2Tdef9; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513a81b717cso2520953e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 05:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710245619; x=1710850419; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IeNjj6bUySc6Dz5cs+WAby9RLAUh3bKNwWv8sDdcQ/w=;
+        b=Du2Tdef9zCoCbLaKF9VARaC8f5XtmFc23+4c5P4/K1+3jWqFJSKH9Om1IPzrHh5DUI
+         4JJK6KAGcRBq+ykLyAFh8ZsbITKKmp2FAbrxmOfLIwTEHDhHyF0T9y9P2VNONy4nuaHN
+         2+T0tj8pDhnlZLtQvHhZmufXJf0IzIpjMcVMwBeuELEL/lR/I/6vK4NpSMGjCq41kX59
+         k+Bpg3NJc6/c8Q/drP7GLMenP0WSPFAN/wj/RiK+2JSooZe/5qNK0dUGSwpOLQh3CDB0
+         /B913OPukRpnRS0LDQC6kA32F2EyxZjY+7l2lF034JMygwclle5Mr/CDfKExgG3ycvr+
+         j4hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710245619; x=1710850419;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IeNjj6bUySc6Dz5cs+WAby9RLAUh3bKNwWv8sDdcQ/w=;
+        b=rJLQClsT9gTaH1415mLOJF0lyqKIZn7EXpD1PbPiLkeaH63k9kBcGV+PUjvWPlcTsT
+         /s6+rBuaRcokeOL9QbSciWuAh0FEdZj/Q7Az3jze973CxPClGpLvNByrRKG/hGWTHgVV
+         J40OcJa89S3oEkO1LrJm7Jj5Gw29JoPPuSuR13GcEVCg0MX5zK0Nu4vmSv9FlnszTd1A
+         MiKojrzm3SqnEbKIhjvmwFULwB6yx9yxqUNpuGQdf2+YcGO7rUhmrsBivh8x1SumXuBm
+         QP4unWmspFuBc+q1k1DOzjAXUsLswXRO0SWwRRtnuGeUuwZT+7e7nnvdpvEardO1RyQQ
+         u61Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX1ZGtQuPd++lMTusDdsYJY2GJ3vbDS02PseP7T7GWARIKghUiuTODWZT5+xBQDP1SdgufG9iw7sbd4tdTMqQ2H4eDNjQIkMUBhCDPF
+X-Gm-Message-State: AOJu0YwZiBuKpDL02BUzTxZll7lEAUYad0q0pZ3OW0CjNReKM04e8cH/
+	AN1X3s+KcLxcOyE7hWHOH7eD9ZDI2MzefDgf4UZylAmqUIc3K6FVNA6mjteWymM=
+X-Google-Smtp-Source: AGHT+IE+Hv9yqlcJzr3znGE7FJFFAQ56k0pEHj+cdxa9TnV0HtsVSsKmZ1j8GAG6IsorR4YUSfUq9A==
+X-Received: by 2002:ac2:5184:0:b0:513:c174:c3f6 with SMTP id u4-20020ac25184000000b00513c174c3f6mr795431lfi.40.1710245619109;
+        Tue, 12 Mar 2024 05:13:39 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id l15-20020a5d526f000000b0033e7a102cfesm8892757wrc.64.2024.03.12.05.13.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 05:13:38 -0700 (PDT)
+Message-ID: <d498d76e-b021-4cf7-adca-63f1cd3e1542@linaro.org>
+Date: Tue, 12 Mar 2024 13:13:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 2/4] dt-bindings: remoteproc: add Tightly Coupled
+ Memory (TCM) bindings
+Content-Language: en-US
+To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
+ mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+References: <20240311175926.1625180-1-tanmay.shah@amd.com>
+ <20240311175926.1625180-3-tanmay.shah@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240311175926.1625180-3-tanmay.shah@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240312-lp-selftest-new-test-v1-1-9c843e25e38e@suse.com>
-X-B4-Tracking: v=1; b=H4sIAJ1G8GUC/x2MsQqAMAwFf0UyG6hBB/0VcRD7qgGp0ogK4r9b3
- O6Gu4cMSWHUFQ8lnGq6xSxVWdC0jHEGq89O4qR2Ii2vOxvWcMAOjrj4B9QelbjQNlNDOd0Tgt7
- /th/e9wN74hgqZgAAAA==
-To: Josh Poimboeuf <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
- Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, 
- Joe Lawrence <joe.lawrence@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, live-patching@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Marcos Paulo de Souza <mpdesouza@suse.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710245547; l=4155;
- i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
- bh=TCGQqF+18Os3C61odwkuSi1jlFApKK2G+8qPngHoerU=;
- b=6I4T/Hq9iTuDvZav28jPnVOWoSOcY5/v9CIIdVWciio2q5+O0WHtfceAsRk/38QsKeD/du0qD
- fe9yUsHkNcpDkEKJsG79NCf2pQVbCCVDPhWmUkl04bokw5XSXbHVR06
-X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
- pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=t4ONObyr
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -4.51
-X-Rspamd-Queue-Id: 8EF825D48F
-X-Spam-Flag: NO
 
-This new test checks if a livepatch with replace attribute set replaces
-all previously applied livepatches.
+On 11/03/2024 18:59, Tanmay Shah wrote:
+> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> 
+> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+> UltraScale+ platform. It will help in defining TCM in device-tree
+> and make it's access platform agnostic and data-driven.
+> 
+> Tightly-coupled memories(TCMs) are low-latency memory that provides
+> predictable instruction execution and predictable data load/store
+> timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
+> 
+> The TCM resources(reg, reg-names and power-domain) are documented for
+> each TCM in the R5 node. The reg and reg-names are made as required
+> properties as we don't want to hardcode TCM addresses for future
+> platforms and for zu+ legacy implementation will ensure that the
+> old dts w/o reg/reg-names works and stable ABI is maintained.
+> 
+> It also extends the examples for TCM split and lockstep modes.
+> 
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> ---
+> 
+> Changes in v13:
+>   - Have power-domains property for lockstep case instead of
+>     keeping it flexible.
+>   - Add "items:" list in power-domains property
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- tools/testing/selftests/livepatch/Makefile         |  3 +-
- .../selftests/livepatch/test-atomic-replace.sh     | 71 ++++++++++++++++++++++
- 2 files changed, 73 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/livepatch/Makefile b/tools/testing/selftests/livepatch/Makefile
-index 35418a4790be..e92f61208d35 100644
---- a/tools/testing/selftests/livepatch/Makefile
-+++ b/tools/testing/selftests/livepatch/Makefile
-@@ -10,7 +10,8 @@ TEST_PROGS := \
- 	test-state.sh \
- 	test-ftrace.sh \
- 	test-sysfs.sh \
--	test-syscall.sh
-+	test-syscall.sh \
-+	test-atomic-replace.sh
- 
- TEST_FILES := settings
- 
-diff --git a/tools/testing/selftests/livepatch/test-atomic-replace.sh b/tools/testing/selftests/livepatch/test-atomic-replace.sh
-new file mode 100755
-index 000000000000..09a3dcdcb8de
---- /dev/null
-+++ b/tools/testing/selftests/livepatch/test-atomic-replace.sh
-@@ -0,0 +1,71 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2024 SUSE
-+# Author: Marcos Paulo de Souza <mpdesouza@suse.com>
-+
-+. $(dirname $0)/functions.sh
-+
-+MOD_REPLACE=test_klp_atomic_replace
-+
-+setup_config
-+
-+# - Load three livepatch modules.
-+# - Load one more livepatch with replace being set, and check that only one
-+#   livepatch module is being listed.
-+
-+start_test "apply one liveptach to replace multiple livepatches"
-+
-+for mod in test_klp_livepatch test_klp_syscall test_klp_callbacks_demo; do
-+	load_lp $mod
-+done
-+
-+nmods=$(ls /sys/kernel/livepatch | wc -l)
-+if [ $nmods -ne 3 ]; then
-+	die "Expecting three modules listed, found $nmods"
-+fi
-+
-+load_lp $MOD_REPLACE replace=1
-+
-+nmods=$(ls /sys/kernel/livepatch | wc -l)
-+if [ $nmods -ne 1 ]; then
-+	die "Expecting only one moduled listed, found $nmods"
-+fi
-+
-+disable_lp $MOD_REPLACE
-+unload_lp $MOD_REPLACE
-+
-+check_result "% insmod test_modules/test_klp_livepatch.ko
-+livepatch: enabling patch 'test_klp_livepatch'
-+livepatch: 'test_klp_livepatch': initializing patching transition
-+livepatch: 'test_klp_livepatch': starting patching transition
-+livepatch: 'test_klp_livepatch': completing patching transition
-+livepatch: 'test_klp_livepatch': patching complete
-+% insmod test_modules/test_klp_syscall.ko
-+livepatch: enabling patch 'test_klp_syscall'
-+livepatch: 'test_klp_syscall': initializing patching transition
-+livepatch: 'test_klp_syscall': starting patching transition
-+livepatch: 'test_klp_syscall': completing patching transition
-+livepatch: 'test_klp_syscall': patching complete
-+% insmod test_modules/test_klp_callbacks_demo.ko
-+livepatch: enabling patch 'test_klp_callbacks_demo'
-+livepatch: 'test_klp_callbacks_demo': initializing patching transition
-+test_klp_callbacks_demo: pre_patch_callback: vmlinux
-+livepatch: 'test_klp_callbacks_demo': starting patching transition
-+livepatch: 'test_klp_callbacks_demo': completing patching transition
-+test_klp_callbacks_demo: post_patch_callback: vmlinux
-+livepatch: 'test_klp_callbacks_demo': patching complete
-+% insmod test_modules/test_klp_atomic_replace.ko replace=1
-+livepatch: enabling patch 'test_klp_atomic_replace'
-+livepatch: 'test_klp_atomic_replace': initializing patching transition
-+livepatch: 'test_klp_atomic_replace': starting patching transition
-+livepatch: 'test_klp_atomic_replace': completing patching transition
-+livepatch: 'test_klp_atomic_replace': patching complete
-+% echo 0 > /sys/kernel/livepatch/test_klp_atomic_replace/enabled
-+livepatch: 'test_klp_atomic_replace': initializing unpatching transition
-+livepatch: 'test_klp_atomic_replace': starting unpatching transition
-+livepatch: 'test_klp_atomic_replace': completing unpatching transition
-+livepatch: 'test_klp_atomic_replace': unpatching complete
-+% rmmod test_klp_atomic_replace"
-+
-+exit 0
-
----
-base-commit: efb3b8b2308470f08266a9ac9cbf42a0fd9ea572
-change-id: 20240229-lp-selftest-new-test-e4de120f95c5
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
--- 
-Marcos Paulo de Souza <mpdesouza@suse.com>
+Krzysztof
 
 
