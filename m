@@ -1,313 +1,316 @@
-Return-Path: <linux-kernel+bounces-100347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C343A879604
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:24:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EDCF879611
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79E702862C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:24:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AF91B24997
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:26:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A4137C096;
-	Tue, 12 Mar 2024 14:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RaCO4OmZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3C2C7AE74;
+	Tue, 12 Mar 2024 14:26:37 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E3D7BAF6;
-	Tue, 12 Mar 2024 14:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8322F79B97;
+	Tue, 12 Mar 2024 14:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710253456; cv=none; b=JxMh4WCObDJWrKmNZC0Yfm8E08tTNpbx6te6GlY7wkVOlWtHPxedUj8hGSCTEQHCeFmxuVaWsabylPIqhJMCWOJLf8p4TEpyYPN2uoH4LkAXoa9PmvnQxvFrp7Trx4KgNws9dHq8sX+lE9rCveW308FwwHHMygX9FqpZAQU1X0c=
+	t=1710253597; cv=none; b=ccT6V7U9Oky1Q0nDGs0u4gTZxw2ebf7ZMhWZ6HvfqUis8o8vRH5M389X/rX4z2ZvmRp6WU2o2pRaewQ5L5UY+Dn/O8OJu/U2or1S7EOllO6BRyX+hEU1mkc8s58L+dXs8jlTd6WHqlf9VpqGOwetJqvF7gj6xdNcQz0v2xFer9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710253456; c=relaxed/simple;
-	bh=q6T87hUD5gO8HiHv1jhJS969Nl+81V50e8kMxP7/ldY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DMZHmV27/dLkzBws4I1iFi1LUmEP1nWXdliWYqApqSeyz83AEXxgLFIbLUiSrTARzYHaYLbxHPjVb9ygciLFg8+58mNElg602sUgkNCULctASxTSv3annaBi/WRwAGUU2lpOxDpaTM/H/S4658lRDDWab8Rh0LCpfAACfc9qscM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RaCO4OmZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 412B4C43394;
-	Tue, 12 Mar 2024 14:24:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710253456;
-	bh=q6T87hUD5gO8HiHv1jhJS969Nl+81V50e8kMxP7/ldY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RaCO4OmZ+q0+oNKx8K06PtTZVOYs3I8UUZiOAAkOl2/SMpmFUF9yQvJhhuetTg8QR
-	 ICzmzW26NLjOjxriPkRChGkKoQSOBHsd1PYJeRpmGxntQrwvz3R9l6fLHVviE6KntR
-	 PiKLgdxjEZeUm4+hmNcjLdyXFYMd5j33GvsZ3dJ1AZJZxhqRBoTT0PMI+yu27Bw6FF
-	 y+LtvCY+R/48LHdEIn44l5fKWhlJB+qyTZ6dLfmP0V1cpwQzqPoDo+mfB1carZiIKN
-	 ChleVdq159G21ulUzQt0Qjq2AJSkmWBRRTSikxSG+Ax0/wQV/Gp1ABcgmVez1DY77b
-	 LQLpmsRLaKf1A==
-From: legion@kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Cc: Alexey Gladkov <legion@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	kbd@lists.linux.dev,
-	linux-api@vger.kernel.org,
-	linux-fbdev@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [PATCH v3 2/2] VT: Allow to get max font width and height
-Date: Tue, 12 Mar 2024 15:23:58 +0100
-Message-ID: <78fcb9ad77b88edee8768806ce6a4d23f6d33118.1710252966.git.legion@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1710252966.git.legion@kernel.org>
-References: <cover.1708960303.git.legion@kernel.org> <cover.1710252966.git.legion@kernel.org>
+	s=arc-20240116; t=1710253597; c=relaxed/simple;
+	bh=FPvsVl876rG8CBqJE13zeDuxuUzvIKzJX5nocq9iv8Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Ua+oPMoeome7/+HcTpDN9B6k9R2knfHh3y4a8bqkWHlBe+8XTi4oM8Tsj+oQsVhduWFws8GExoFnarjfevngBNChfFChZ37IAOaCdxmqG4jm8yY/vZoE+hcGckZ7bDl/D7yf1Srwyy4RN3aRooOZHoxwezQ4JQwKngJXD/aiRcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TvG9H719Kz1Z1kw;
+	Tue, 12 Mar 2024 22:24:03 +0800 (CST)
+Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
+	by mail.maildlp.com (Postfix) with ESMTPS id D0D1418002D;
+	Tue, 12 Mar 2024 22:26:30 +0800 (CST)
+Received: from [10.67.120.108] (10.67.120.108) by
+ dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 12 Mar 2024 22:26:30 +0800
+Message-ID: <b11f812a-aec1-bd07-1483-fe15431f4ca1@huawei.com>
+Date: Tue, 12 Mar 2024 22:26:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v5 3/3] scsi: libsas: Fix the failure of adding phy with
+ zero-address to port
+Content-Language: en-CA
+To: John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
+	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+	<damien.lemoal@opensource.wdc.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
+References: <20231204122932.55741-1-yangxingui@huawei.com>
+ <20231204122932.55741-4-yangxingui@huawei.com>
+ <336b3084-dfae-4e91-ba31-7e08ba4e5591@oracle.com>
+ <8742e128-3ac8-aa56-0596-037c38e05089@huawei.com>
+ <d2fc59e0-4aa0-46fa-aaef-1d5f707d988e@oracle.com>
+From: yangxingui <yangxingui@huawei.com>
+In-Reply-To: <d2fc59e0-4aa0-46fa-aaef-1d5f707d988e@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggpemm500001.china.huawei.com (7.185.36.107) To
+ dggpemd100001.china.huawei.com (7.185.36.94)
 
-From: Alexey Gladkov <legion@kernel.org>
+Hi John,
 
-The Console drivers has more restrictive font size limits than vt_ioctl.
-This leads to errors that are difficult to handle. If a font whose size
-is not supported is used, an EINVAL error will be returned, which is
-also returned in case of errors in the font itself. At the moment there
-is no way to understand what font sizes the current console driver
-supports.
-
-To solve this problem, we need to transfer information about the
-supported font to userspace from the console driver.
-
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
----
- drivers/video/console/newport_con.c | 21 +++++++++++++++++----
- drivers/video/console/sticon.c      | 25 +++++++++++++++++++++++--
- drivers/video/console/vgacon.c      | 21 ++++++++++++++++++++-
- drivers/video/fbdev/core/fbcon.c    | 22 +++++++++++++++++++++-
- 4 files changed, 81 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
-index e8e4f82cd4a1..87f174a95fa8 100644
---- a/drivers/video/console/newport_con.c
-+++ b/drivers/video/console/newport_con.c
-@@ -33,6 +33,9 @@
- 
- #define NEWPORT_LEN	0x10000
- 
-+#define NEWPORT_MAX_FONT_WIDTH 8
-+#define NEWPORT_MAX_FONT_HEIGHT 16
-+
- #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
- 
- static unsigned char *font_data[MAX_NR_CONSOLES];
-@@ -328,8 +331,8 @@ static void newport_init(struct vc_data *vc, int init)
- {
- 	int cols, rows;
- 
--	cols = newport_xsize / 8;
--	rows = newport_ysize / 16;
-+	cols = newport_xsize / NEWPORT_MAX_FONT_WIDTH;
-+	rows = newport_ysize / NEWPORT_MAX_FONT_HEIGHT;
- 	vc->vc_can_do_color = 1;
- 	if (init) {
- 		vc->vc_cols = cols;
-@@ -507,8 +510,8 @@ static int newport_set_font(int unit, struct console_font *op, unsigned int vpit
- 
- 	/* ladis: when I grow up, there will be a day... and more sizes will
- 	 * be supported ;-) */
--	if ((w != 8) || (h != 16) || (vpitch != 32)
--	    || (op->charcount != 256 && op->charcount != 512))
-+	if ((w != NEWPORT_MAX_FONT_WIDTH) || (h != NEWPORT_MAX_FONT_HEIGHT) ||
-+	    (vpitch != 32) || (op->charcount != 256 && op->charcount != 512))
- 		return -EINVAL;
- 
- 	if (!(new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size,
-@@ -569,6 +572,15 @@ static int newport_font_default(struct vc_data *vc, struct console_font *op, cha
- 	return newport_set_def_font(vc->vc_num, op);
- }
- 
-+static int newport_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = info->max_width = NEWPORT_MAX_FONT_WIDTH;
-+	info->min_height = info->max_height = NEWPORT_MAX_FONT_HEIGHT;
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-+
-+	return 0;
-+}
-+
- static int newport_font_set(struct vc_data *vc, struct console_font *font,
- 			    unsigned int vpitch, unsigned int flags)
- {
-@@ -688,6 +700,7 @@ const struct consw newport_con = {
- 	.con_scroll	  = newport_scroll,
- 	.con_switch	  = newport_switch,
- 	.con_blank	  = newport_blank,
-+	.con_font_info	  = newport_font_info,
- 	.con_font_set	  = newport_font_set,
- 	.con_font_default = newport_font_default,
- 	.con_save_screen  = newport_save_screen
-diff --git a/drivers/video/console/sticon.c b/drivers/video/console/sticon.c
-index 992a4fa431aa..d32ca458eb77 100644
---- a/drivers/video/console/sticon.c
-+++ b/drivers/video/console/sticon.c
-@@ -56,6 +56,11 @@
- #define BLANK 0
- static int vga_is_gfx;
- 
-+#define STICON_MIN_FONT_WIDTH 6
-+#define STICON_MIN_FONT_HEIGHT 6
-+#define STICON_MAX_FONT_WIDTH 32
-+#define STICON_MAX_FONT_HEIGHT 32
-+
- #define STI_DEF_FONT	sticon_sti->font
- 
- /* borrowed from fbcon.c */
-@@ -180,8 +185,10 @@ static int sticon_set_font(struct vc_data *vc, struct console_font *op,
- 	struct sti_cooked_font *cooked_font;
- 	unsigned char *data = op->data, *p;
- 
--	if ((w < 6) || (h < 6) || (w > 32) || (h > 32) || (vpitch != 32)
--	    || (op->charcount != 256 && op->charcount != 512))
-+	if (!in_range(w, STICON_MIN_FONT_WIDTH, STICON_MAX_FONT_WIDTH) ||
-+	    !in_range(h, STICON_MIN_FONT_HEIGHT, STICON_MAX_FONT_HEIGHT) ||
-+	    (vpitch != 32) ||
-+	    (op->charcount != 256 && op->charcount != 512))
- 		return -EINVAL;
- 	pitch = ALIGN(w, 8) / 8;
- 	bpc = pitch * h;
-@@ -273,6 +280,19 @@ static int sticon_font_set(struct vc_data *vc, struct console_font *font,
- 	return sticon_set_font(vc, font, vpitch);
- }
- 
-+static int sticon_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = STICON_MIN_FONT_WIDTH;
-+	info->min_height = STICON_MIN_FONT_HEIGHT;
-+
-+	info->max_width = STICON_MAX_FONT_WIDTH;
-+	info->max_height = STICON_MAX_FONT_HEIGHT;
-+
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-+
-+	return 0;
-+}
-+
- static void sticon_init(struct vc_data *c, int init)
- {
-     struct sti_struct *sti = sticon_sti;
-@@ -371,6 +391,7 @@ static const struct consw sti_con = {
- 	.con_scroll		= sticon_scroll,
- 	.con_switch		= sticon_switch,
- 	.con_blank		= sticon_blank,
-+	.con_font_info		= sticon_font_info,
- 	.con_font_set		= sticon_font_set,
- 	.con_font_default	= sticon_font_default,
- 	.con_build_attr		= sticon_build_attr,
-diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-index 8ef1579fa57f..b75d31ef3353 100644
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -61,6 +61,10 @@ static struct vgastate vgastate;
- #define BLANK 0x0020
- 
- #define VGA_FONTWIDTH       8   /* VGA does not support fontwidths != 8 */
-+
-+#define VGACON_MAX_FONT_WIDTH VGA_FONTWIDTH
-+#define VGACON_MAX_FONT_HEIGHT 32
-+
- /*
-  *  Interface used by the world
-  */
-@@ -1013,6 +1017,19 @@ static int vgacon_adjust_height(struct vc_data *vc, unsigned fontheight)
- 	return 0;
- }
- 
-+static int vgacon_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = VGACON_MAX_FONT_WIDTH;
-+	info->min_height = 0;
-+
-+	info->max_width = VGACON_MAX_FONT_WIDTH;
-+	info->max_height = VGACON_MAX_FONT_HEIGHT;
-+
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-+
-+	return 0;
-+}
-+
- static int vgacon_font_set(struct vc_data *c, struct console_font *font,
- 			   unsigned int vpitch, unsigned int flags)
- {
-@@ -1022,7 +1039,8 @@ static int vgacon_font_set(struct vc_data *c, struct console_font *font,
- 	if (vga_video_type < VIDEO_TYPE_EGAM)
- 		return -EINVAL;
- 
--	if (font->width != VGA_FONTWIDTH || font->height > 32 || vpitch != 32 ||
-+	if (font->width != VGACON_MAX_FONT_WIDTH ||
-+	    font->height > VGACON_MAX_FONT_HEIGHT || vpitch != 32 ||
- 	    (charcount != 256 && charcount != 512))
- 		return -EINVAL;
- 
-@@ -1177,6 +1195,7 @@ const struct consw vga_con = {
- 	.con_scroll = vgacon_scroll,
- 	.con_switch = vgacon_switch,
- 	.con_blank = vgacon_blank,
-+	.con_font_info = vgacon_font_info,
- 	.con_font_set = vgacon_font_set,
- 	.con_font_get = vgacon_font_get,
- 	.con_resize = vgacon_resize,
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 46823c2e2ba1..e10abe416159 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -101,6 +101,9 @@ enum {
- 	FBCON_LOGO_DONTSHOW	= -3	/* do not show the logo */
- };
- 
-+#define FBCON_MAX_FONT_WIDTH 32
-+#define FBCON_MAX_FONT_HEIGHT 32
-+
- static struct fbcon_display fb_display[MAX_NR_CONSOLES];
- 
- static struct fb_info *fbcon_registered_fb[FB_MAX];
-@@ -2456,6 +2459,21 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
- 	return ret;
- }
- 
-+
-+static int fbcon_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = 0;
-+	info->min_height = 0;
-+
-+	info->max_width = FBCON_MAX_FONT_WIDTH;
-+	info->max_height = FBCON_MAX_FONT_HEIGHT;
-+
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-+
-+	return 0;
-+}
-+
-+
- /*
-  *  User asked to set font; we are guaranteed that charcount does not exceed 512
-  *  but lets not assume that, since charcount of 512 is small for unicode support.
-@@ -2483,7 +2501,8 @@ static int fbcon_set_font(struct vc_data *vc, struct console_font *font,
- 	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
- 		return -EINVAL;
- 
--	if (font->width > 32 || font->height > 32)
-+	if (font->width > FBCON_MAX_FONT_WIDTH ||
-+	    font->height > FBCON_MAX_FONT_HEIGHT)
- 		return -EINVAL;
- 
- 	/* Make sure drawing engine can handle the font */
-@@ -3158,6 +3177,7 @@ static const struct consw fb_con = {
- 	.con_scroll 		= fbcon_scroll,
- 	.con_switch 		= fbcon_switch,
- 	.con_blank 		= fbcon_blank,
-+	.con_font_info 		= fbcon_font_info,
- 	.con_font_set 		= fbcon_set_font,
- 	.con_font_get 		= fbcon_get_font,
- 	.con_font_default	= fbcon_set_def_font,
--- 
-2.44.0
-
+On 2023/12/6 2:13, John Garry wrote:
+> On 05/12/2023 13:22, yangxingui wrote:
+>>
+>> On 2023/12/5 2:05, John Garry wrote:
+>>> On 04/12/2023 12:29, Xingui Yang wrote:
+>>>> When the expander device which attached many SATA disks is connected to
+>>>> the host, first disable and then enable the local phy. The following 
+>>>> BUG()
+>>>> will be triggered with a small probability:
+>>>>
+>>>> [562240.051046] sas: phy19 part of wide port with phy16
+>>>
+>>> Please use code from latest kernel. This again seems to be the old 
+>>> comment format.
+>> Ok.
+>>>
+>>>> [562240.051197] sas: ex 500e004aaaaaaa1f phy19:U:0 attached: 
+>>>> 0000000000000000 (no device)
+>>>
+>>> The log at 562240.051046 tells that phy19 formed a wideport with 
+>>> phy16, but then here we see that phy19 has attached SAS address 0. 
+>>> How did we form a wideport with a phy with sas address 0? Sorry if I 
+>>> asked this before, but I looked through the thread and it is not clear.
+>> Ok, the early address of phy19 is not 0, and forms a wide port with 
+>> phy16. But now phy19 has been unregistered and the sas address of 
+>> phy19 is set to 0.
+> 
+> ok, so the old logs are simply misleading: "sas: phy19 part of wide port 
+> with phy16" implies that we have joined phy19 to a wideport with phy16.
+> 
+> Indeed, my change to that vague print is more than 4.5 years old now - 
+> see commit a5b38d3159.
+> 
+> Sorry to say, but that does not fill me full of confidence that the 
+> changes in this series are suitable for a mainline kernel. Please don't 
+> do that. Test against the very recent mainline kernel.
+This problem will occasionally occur in new versions. I updated a 
+version and split the patch to make this problem easier to deal with.
+> 
+>>
+>>>
+>>>> [562240.051203] sas: done REVALIDATING DOMAIN on port 0, pid:435909, 
+>>>> res 0x0
+>>>> <...>
+>>>> [562240.062536] sas: ex 500e004aaaaaaa1f phy0 new device attached
+>>>> [562240.062616] sas: ex 500e004aaaaaaa1f phy00:U:5 attached: 
+>>>> 0000000000000000 (stp)
+>>>> [562240.062680]  port-7:7:0: trying to add phy phy-7:7:19 fails: 
+>>>> it's already part of another port
+>>>> [562240.085064] ------------[ cut here ]------------
+>>>> [562240.096612] kernel BUG at drivers/scsi/scsi_transport_sas.c:1083!
+>>>> [562240.109611] Internal error: Oops - BUG: 0 [#1] SMP
+>>>> [562240.343518] Process kworker/u256:3 (pid: 435909, stack limit = 
+>>>> 0x0000000003bcbebf)
+>>>> [562240.421714] Workqueue: 0000:b4:02.0_disco_q 
+>>>> sas_revalidate_domain [libsas]
+>>>> [562240.437173] pstate: 40c00009 (nZcv daif +PAN +UAO)
+>>>> [562240.450478] pc : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
+>>>> [562240.465283] lr : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
+>>>> [562240.479751] sp : ffff0000300cfa70
+>>>> [562240.674822] Call trace:
+>>>> [562240.682709]  sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
+>>>> [562240.694013]  sas_ex_get_linkrate.isra.5+0xcc/0x128 [libsas]
+>>>> [562240.704957]  sas_ex_discover_end_dev+0xfc/0x538 [libsas]
+>>>> [562240.715508]  sas_ex_discover_dev+0x3cc/0x4b8 [libsas]
+>>>> [562240.725634]  sas_ex_discover_devices+0x9c/0x1a8 [libsas]
+>>>> [562240.735855]  sas_ex_revalidate_domain+0x2f0/0x450 [libsas]
+>>>> [562240.746123]  sas_revalidate_domain+0x158/0x160 [libsas]
+>>>> [562240.756014]  process_one_work+0x1b4/0x448
+>>>> [562240.764548]  worker_thread+0x54/0x468
+>>>> [562240.772562]  kthread+0x134/0x138
+>>>> [562240.779989]  ret_from_fork+0x10/0x18
+>>>>
+>>>> What causes this problem:
+>>>> 1. For phy19, when the phy is attached and added to the parent wide 
+>>>> port,
+>>>> the path is:
+>>>> sas_rediscover()
+>>>>      ->sas_discover_new()
+>>>>          ->sas_ex_discover_devices()
+>>>>              ->sas_ex_discover_dev()
+>>>>                  -> sas_add_parent_port()
+>>>>
+>>>> ex_phy->port was not set and when it is removed from parent wide 
+>>>> port the
+>>>> path is:
+>>>> sas_rediscover()
+>>>>      ->sas_unregister_devs_sas_addr()
+>>>
+>>>
+>>> Sorry, but that is not a callpath. Maybe you condensed it. Please 
+>>> expand it.
+I updated a version and split the patch to make this problem easier to 
+deal with.
+>> Ok.
+>>>
+>>>>
+>>>> Then the sas address of phy19 becomes 0, and since ex_phy->port is 
+>>>> NULL,
+>>>> phy19 was not removed from the parent wide port's phy_list.
+>>>>
+>>>> 2. For phy0, it is connected to a new sata device and the path is:
+>>>> sas_rediscover()
+>>>>      ->sas_discover_new()->sas_ex_phy_discover()
+>>>>                              ->sas_ex_phy_discover_helper()
+>>>>                                  ->sas_set_ex_phy()
+>>>>                          ->sas_ex_discover_devices()
+>>>>                              ->sas_ex_discover_dev()
+>>>>                                  ->sas_ex_discover_end_dev()
+>>>>                                      ->sas_port_alloc() // Create 
+>>>> port-7:7:0
+>>>>                                      ->sas_ex_get_linkrate()
+>>>>                                          ->sas_port_add_phy()
+>>>>
+>>>> The type of the newly connected device is stp, but the linkrate is 5 
+>>>> which
+>>>> less than 1.5G, then the sas address is set to 0 in sas_set_ex_phy().
+>>>
+>>> I don't understand why we do anything when in this state. linkrate == 
+>>> 5 means phy reset in progress. Can we just bail out until the SATA 
+>>> phy is in a decent shape? I assume that when the SATA phy is in "up" 
+>>> state that we get a broadcast event and can re-evaluate.
+>> You are saying that we use a method similar to SAS_SATA_SPINUP_HOLD?
+> 
+> Maybe. Can we simply re-use SAS_SATA_SPINUP_HOLD handling? Is it suitable?
+ From the SAS Protocol Layer - 4 (SPL-4) interpretation of 
+RESET_IN_PROGRESS, Phy is enabled and the expander phy is performing an 
+SMP PHY CONTROL function (see 9.4.3.28) phy operation of LINK RESET or 
+HARD RESET.
+This value is returned if the specified phy contained a value of 8h to 
+Fh in this field when an SMP PHY CONTROL function phy operation of LINK 
+RESET or HARD RESET phy operation is processed.
+Maybe, we should not need to perform operations of LINK RESET.
+> 
+>>>
+>>>> Subsequently, a new port port-7:7:0 was created and tried to add 
+>>>> phy19 with
+>>>> the same zero-address to this new port. However, phy19 still belongs to
+>>>> another port, then a BUG() was triggered in sas_ex_get_linkrate().
+>>>>
+>>>> Fix the problem as follows:
+>>>> 1. Use sas_port_add_ex_phy() instead of sas_port_add_phy() when 
+>>>> ex_phy is
+>>>> added to the parent port.
+>>>
+>>> this seems ok
+>>>
+>>>>
+>>>> 2. Set ex_dev->parent_port to NULL when the number of phy on the port
+>>>> becomes 0.
+>>>>
+>>>> 3. When phy->attached_dev_type != NO_DEVICE, do not set the zero 
+>>>> address
+>>>> for phy->attached_sas_addr.
+>>>>
+>>>> Fixes: 2908d778ab3e ("[SCSI] aic94xx: new driver")
+>>>> Fixes: 7d1d86518118 ("[SCSI] libsas: fix false positive 'device 
+>>>> attached' conditions")
+>>>> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+>>>> ---
+>>>>   drivers/scsi/libsas/sas_expander.c | 10 ++++++----
+>>>>   1 file changed, 6 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/scsi/libsas/sas_expander.c 
+>>>> b/drivers/scsi/libsas/sas_expander.c
+>>>> index 7aa968b85e1e..9152152d5e10 100644
+>>>> --- a/drivers/scsi/libsas/sas_expander.c
+>>>> +++ b/drivers/scsi/libsas/sas_expander.c
+>>>> @@ -45,7 +45,7 @@ static void sas_add_parent_port(struct 
+>>>> domain_device *dev, int phy_id)
+>>>>           BUG_ON(sas_port_add(ex->parent_port));
+>>>>           sas_port_mark_backlink(ex->parent_port);
+>>>>       }
+>>>> -    sas_port_add_phy(ex->parent_port, ex_phy->phy);
+>>>> +    sas_port_add_ex_phy(ex->parent_port, ex_phy);
+>>>>   }
+>>>>   /* ---------- SMP task management ---------- */
+>>>> @@ -261,8 +261,7 @@ static void sas_set_ex_phy(struct domain_device 
+>>>> *dev, int phy_id,
+>>>>       /* help some expanders that fail to zero sas_address in the 'no
+>>>>        * device' case
+>>>>        */
+>>>
+>>> Please pay attention to this comment. It seems that some expanders 
+>>> require us to explicitly zero the SAS address.
+>> Yes, we have reviewed this point, and its modification is for some 
+>> expanders to report that the sas address isn't zero in the "no device" 
+>> case. The current modification does not affect its original problem 
+>> fix, we just removed its linkrate judgment.
+> 
+> ok
+> 
+>>>
+>>>> -    if (phy->attached_dev_type == SAS_PHY_UNUSED ||
+>>>> -        phy->linkrate < SAS_LINK_RATE_1_5_GBPS)
+>>>> +    if (phy->attached_dev_type == SAS_PHY_UNUSED)
+>>>>           memset(phy->attached_sas_addr, 0, SAS_ADDR_SIZE);
+>>>>       else
+>>>>           memcpy(phy->attached_sas_addr, dr->attached_sas_addr, 
+>>>> SAS_ADDR_SIZE);
+>>>> @@ -1864,9 +1863,12 @@ static void 
+>>>> sas_unregister_devs_sas_addr(struct domain_device *parent,
+>>>>       if (phy->port) {
+>>>>           sas_port_delete_phy(phy->port, phy->phy);
+>>>>           sas_device_set_phy(found, phy->port);
+>>>> -        if (phy->port->num_phys == 0)
+>>>> +        if (phy->port->num_phys == 0) {
+>>>>               list_add_tail(&phy->port->del_list,
+>>>>                   &parent->port->sas_port_del_list);
+>>>> +            if (ex_dev->parent_port == phy->port)
+>>>> +                ex_dev->parent_port = NULL;
+>>>
+>>> This does not feel like the right place to do this. So the port which 
+>>> we queue to free is the ex_dev->parent_port, right?
+>> Yes, we found that if ex_dev->parent_port is not set to NULL, after 
+>> the port is released, if there is a new ex_phy connection, use-after-free 
+> 
+> Do you mean really a memory use-after-free, like which KASAN would report?
+Yes, it will trigger panic.
+> 
+> 
+>> problems will occur. And the current branch is to determine whether 
+>> the number of phys on the port is 0. I think it is more appropriate to 
+>> set parent_port. Do you have any better suggestions?
+> 
+> Let me check again...
+> 
+>>>
+>>> BTW, do you know why it's called ex_dev->parent_port and not 
+>>> ex_dev->port? I find the name parent_port confusing...
+>> It is the port connected to the upper-level device, so named  
+>> parent_port.
+> 
+> But isn't this just the sas_port for the expander device attachment to 
+> the host and more closely associated to the expander itself?
+> 
+> Thanks,
+> John
+> 
+> .
+Thanks,
+Xingui
 
