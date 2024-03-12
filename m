@@ -1,178 +1,202 @@
-Return-Path: <linux-kernel+bounces-100809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F85879D81
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E36F879D67
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6058FB21357
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:30:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6EFEB226A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B86143737;
-	Tue, 12 Mar 2024 21:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71FA143736;
+	Tue, 12 Mar 2024 21:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hjibWYV2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="77AmclRT";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CWCkO8em";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B4fjSacG"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="kBC1xJIQ"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5848716FF3B
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:30:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFDF142913
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710279015; cv=none; b=R9q11Ymc7ZtsJw5DXFlQ7Dj2AemPzEFdjRtj8Jb06CpegYjxlVZjnHKCbQtvpNZ+gaoSvK01yLakIJ/tkXCBfGnLh6P7hfCj2eQHodOuQjrPQ1vPO3h/AfsRtuU9X1EE72LYXqz0fa7zi/O5JszmYvTg61HUy0fMYF+bxLWWbdY=
+	t=1710278685; cv=none; b=rdygqFBUnYviDbQZ268EVoFpvD+rp3XXIGWNgpzOKAwJWT8rCTpHoTWoXMveRZJwXMSgbfPNJlSZmn1f68YFNmWF/NFMTkiLYwdidkZhNAMq+lnh1GKdtNuG1SaNrw3XF2P6HTPeR5P4k2OPSPbj9jPMu7/vlorH1Bt+o4UFUAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710279015; c=relaxed/simple;
-	bh=RIvCH5330AZwKZMq4buSpCOtnJNHJ90elB11Bpe+me0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uzNeDL33Yk/MXzFDugxLgUs50L7x+xX2EAx7QV/plDr68aXTh18DCKhCby3f2XgNezxaKznfsWUX7h8t80rHT5FKHiFstZMfaWjVHXyZ1jHqiPAXz1XhYAolbbU281RXFK2XvlwNn0AW7Zn+2kZUANoKdMacXyORBCyHZU5Yqh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hjibWYV2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=77AmclRT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CWCkO8em; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B4fjSacG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CB06521BE4;
-	Tue, 12 Mar 2024 21:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710279010;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rv3pH8/gpDisWCQoznqBwhpmAdKptqyYTVgazHVMUSU=;
-	b=hjibWYV2Ol3mUDxM6inDFVyIQ1/k/N50q8jPX6GTqDyUQbaMy3fFyHaYbrT8Z4M92ulZFK
-	HezWFM1MtwtGXlH7tkJrFc3y7zmRzBGmdtP3BSnNlSnBPtqIW2NhqPsSCdn4Py4r2mldWp
-	g2drrJQwa6umpniXrZzW/isZMdicCiI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710279010;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rv3pH8/gpDisWCQoznqBwhpmAdKptqyYTVgazHVMUSU=;
-	b=77AmclRTql7Xr2LM51YqxKiVG6++FTjOukm4z7Ha29Mt1ooNLSYWLsfF6PXzE6a3n90Ye+
-	hx4hO544q9lenDCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710279009;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rv3pH8/gpDisWCQoznqBwhpmAdKptqyYTVgazHVMUSU=;
-	b=CWCkO8emZqp0vpZkrJBfIkYLt0n9bNIdlqZJKfKtbsyg+BxYZtZKziMTJvm1NvCI2WpsKT
-	vBo2CpXHH0Tz5fakSqv7b3s5gwusxdFaOJKvArM8J8sM5sNSR3YrPESUM3Xcsdassv6c8F
-	BtMF3DQ0dr9AqAwkFuwMKtDQjUPPgEg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710279009;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rv3pH8/gpDisWCQoznqBwhpmAdKptqyYTVgazHVMUSU=;
-	b=B4fjSacGmKsyVMhzZV/GXxBh3Rha8OmfpuOSf9wy3Z+TkxtOby3JIF/kcObTcTHh0tzwpz
-	8Mm+uNPgYg69gzDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B04461364F;
-	Tue, 12 Mar 2024 21:30:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tnahKmHJ8GX1KAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 12 Mar 2024 21:30:09 +0000
-Date: Tue, 12 Mar 2024 22:22:59 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
-	vbabka@suse.cz
-Subject: Re: [GIT PULL] AFFS update for 6.9
-Message-ID: <20240312212259.GX2604@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1710185320.git.dsterba@suse.com>
- <CAHk-=wji0u+OOtmAOD-5JV3SXcRJF___k_+8XNKmak0yd5vW1Q@mail.gmail.com>
+	s=arc-20240116; t=1710278685; c=relaxed/simple;
+	bh=F0sqTGMrHxdHeDg55as8YijyH+ZlgfiEJaxaOVwAX/o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tncGXln3u6VcptElL4QpFf/KWkkTutCF6AzeAX4WMP3dQvB7XU/52SwEIewj/FCJFzQynM5Dd+VF9cWebhT8fSqqqst+FkICkUMHTvxy7T0up6lHLyafYv+/lsP9kroRfFclAhBm/tIu6iYcQbKJXVHnETmtClKAQzbliEoYsh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=kBC1xJIQ; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dc75972f25so3097485ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1710278682; x=1710883482; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=POJmgEct7odPCU2lHiEFfrvljmEVEMGIYXU9CkBwZGw=;
+        b=kBC1xJIQIlRVxinsBAEZg8lBM7UtWvjzOgCMhpwPcliEwfDCx6h/5e26I4zFUGZ9Bd
+         AZ8E9jkRgKNAGqxYIMXpp7cSlIAiIHtappGM/UaKOWXJQQfqZ1EJ0v0ISkI6WX970z92
+         VmyWkay78THZ1WReXWaB2gMlkKbJaAsgzeoUkh8eJDhRIMgs2kOu+9ye4b2fWvok1Yyr
+         hDvGc+zjZva/11d/O6j/Sw+vm4vJcTgbBHNJfjWwNZEgy2ZBAnH6dZaVvTMw8z0EmJVN
+         bjqF4cIlWLZVOAE2w3vEp+ctQm5MLLvTl6eXfUVeltXtiyxDL8UCrRY0nWEc+6tQonAi
+         li2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710278682; x=1710883482;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=POJmgEct7odPCU2lHiEFfrvljmEVEMGIYXU9CkBwZGw=;
+        b=HM54esWXQAauEZFoopBNs06UshFdCuLh4N1JNQzR6w3qF8UqExQ9yZE+PaR3fl7FfR
+         eNIO0aGlMI0MSE876zP2Fy9kQDoGhsEetZXqCEn4AkM9jStHRUMSamvdPzaPBbTcJhbB
+         BOCKN4HFyQoEVgdn2C4uJYJ5z/DWw6ACxQOcQGyuIl62vYPwWDP5aiqyj3trMYuUITva
+         brcNNzj44x0mqg/hMQ0iS3F+g1D+stds5rycB6TIUhOHh2WnWNUtQFNMuFEHL0v6DAq8
+         Eej7oDWGeqLaDYq696FPxklIQnmYWwM6AqPrWTUFdiJ4jJMHSgPEM0iVQ1WdcuABduap
+         8vUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUA+n0RBNwPz3g9EU06s0571rBzmq+dSgyn212hbMzGbt8xvO5FrrUiwL+mYdrV1oBDqpy6jfYJC/1pxXlXyROV5i16k92evt56fO7L
+X-Gm-Message-State: AOJu0Yz4hsuNpuljQUwIEoqSgbTrUCE9e5byQ6o9xs++F3nAhLSvEJwk
+	NvZKfgmm5i72UE6IP9f/fwKh3jkmKlW+7OMTqP9asiQoh92PCWeT5dAf3vs7paA=
+X-Google-Smtp-Source: AGHT+IEwScSJtysO1OwJWcVDCi/FLHLz22ZYjopeyUGf6UmugoZJ0G9YjmPWpPXpJ6LYpcSejUezgw==
+X-Received: by 2002:a17:903:4292:b0:1dd:6fc5:1c5c with SMTP id ju18-20020a170903429200b001dd6fc51c5cmr3880349plb.52.1710278682675;
+        Tue, 12 Mar 2024 14:24:42 -0700 (PDT)
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id l5-20020a170902f68500b001dca99546d2sm7148489plg.70.2024.03.12.14.24.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 14:24:42 -0700 (PDT)
+From: Samuel Holland <samuel.holland@sifive.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>,
+	linux-riscv@lists.infradead.org
+Cc: Samuel Holland <samuel.holland@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: Add tracepoints for SBI calls and returns
+Date: Tue, 12 Mar 2024 14:23:34 -0700
+Message-ID: <20240312212441.2322765-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wji0u+OOtmAOD-5JV3SXcRJF___k_+8XNKmak0yd5vW1Q@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CWCkO8em;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=B4fjSacG
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-3.00)[100.00%];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -4.21
-X-Rspamd-Queue-Id: CB06521BE4
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024 at 01:02:47PM -0700, Linus Torvalds wrote:
-> On Mon, 11 Mar 2024 at 12:37, David Sterba <dsterba@suse.com> wrote:
-> >
-> > please pull one change to AFFS that removes use of SLAB_MEM_SPREAD,
-> > which is going to be removed from MM code.
-> 
-> I've pulled this, but I don't really see the point in removing these
-> one by one like this.
-> 
-> SLAB_MEM_SPREAD is already a no-op, the MM people could just do a
-> coccinelle thing to remove it everywhere.
+These are useful for measuring the latency of SBI calls. The SBI HSM
+extension is excluded because those functions are called from contexts
+such as cpuidle where instrumentation is not allowed.
 
-That's of course valid and was also suggested as an option. However I
-would prefer to let actively maintained code pick the patches first
-and then do the rest as sed or coccinelle script. This usually leaves
-whitespace damage behind and not everybody takes the care to fix it
-manually.
+Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+---
 
-I agree that for AFFS it's a bit too much for just one change but I did
-not realize that as I happened to do the same change for btrfs.
+ arch/riscv/include/asm/trace.h | 60 ++++++++++++++++++++++++++++++++++
+ arch/riscv/kernel/sbi.c        |  7 ++++
+ 2 files changed, 67 insertions(+)
+ create mode 100644 arch/riscv/include/asm/trace.h
 
-> I think you could do 90% even just using a few variations of 'sed', eg
-> variations on
-> 
->    git grep -l 'SLAB_MEM_SPREAD' |
->         xargs sed -i 's/SLAB_MEM_SPREAD *|//'
-> 
->    git grep -l 'SLAB_MEM_SPREAD' |
->         xargs sed -i 's/| *SLAB_MEM_SPREAD//'
-> 
-> and then some manual fixups for (a) whitespace cleanup of the result
-> and (b) the couple of cases where it wasn't a bitwise or into other
-> fields (or where the bitwise or was on a different line)
-> 
-> And then you'd end up with something like the attached.
+diff --git a/arch/riscv/include/asm/trace.h b/arch/riscv/include/asm/trace.h
+new file mode 100644
+index 000000000000..f96091f83c25
+--- /dev/null
++++ b/arch/riscv/include/asm/trace.h
+@@ -0,0 +1,60 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM riscv
++
++#if !defined(_TRACE_RISCV_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_RISCV_H
++
++#include <linux/tracepoint.h>
++
++TRACE_EVENT_CONDITION(sbi_call,
++
++	TP_PROTO(int ext, int fid),
++
++	TP_ARGS(ext, fid),
++
++	TP_CONDITION(ext != SBI_EXT_HSM),
++
++	TP_STRUCT__entry(
++		__field(int, ext)
++		__field(int, fid)
++	),
++
++	TP_fast_assign(
++		__entry->ext = ext;
++		__entry->fid = fid;
++	),
++
++	TP_printk("ext=0x%x fid=%d", __entry->ext, __entry->fid)
++);
++
++TRACE_EVENT_CONDITION(sbi_return,
++
++	TP_PROTO(int ext, long error, long value),
++
++	TP_ARGS(ext, error, value),
++
++	TP_CONDITION(ext != SBI_EXT_HSM),
++
++	TP_STRUCT__entry(
++		__field(long, error)
++		__field(long, value)
++	),
++
++	TP_fast_assign(
++		__entry->error = error;
++		__entry->value = value;
++	),
++
++	TP_printk("error=%ld value=0x%lx", __entry->error, __entry->value)
++);
++
++#endif /* _TRACE_RISCV_H */
++
++#undef TRACE_INCLUDE_PATH
++#undef TRACE_INCLUDE_FILE
++
++#define TRACE_INCLUDE_PATH asm
++#define TRACE_INCLUDE_FILE trace
++
++#include <trace/define_trace.h>
+diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+index e66e0999a800..a1d21d8f5293 100644
+--- a/arch/riscv/kernel/sbi.c
++++ b/arch/riscv/kernel/sbi.c
+@@ -14,6 +14,9 @@
+ #include <asm/smp.h>
+ #include <asm/tlbflush.h>
+ 
++#define CREATE_TRACE_POINTS
++#include <asm/trace.h>
++
+ /* default SBI version is 0.1 */
+ unsigned long sbi_spec_version __ro_after_init = SBI_SPEC_VERSION_DEFAULT;
+ EXPORT_SYMBOL(sbi_spec_version);
+@@ -31,6 +34,8 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+ {
+ 	struct sbiret ret;
+ 
++	trace_sbi_call(ext, fid);
++
+ 	register uintptr_t a0 asm ("a0") = (uintptr_t)(arg0);
+ 	register uintptr_t a1 asm ("a1") = (uintptr_t)(arg1);
+ 	register uintptr_t a2 asm ("a2") = (uintptr_t)(arg2);
+@@ -46,6 +51,8 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+ 	ret.error = a0;
+ 	ret.value = a1;
+ 
++	trace_sbi_return(ext, ret.error, ret.value);
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL(sbi_ecall);
+-- 
+2.43.1
 
-I don't know if MM people have such change queued but you could apply
-the diff at the end of 6.9, the formatting seems OK.
 
