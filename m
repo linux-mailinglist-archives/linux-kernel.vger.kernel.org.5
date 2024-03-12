@@ -1,204 +1,84 @@
-Return-Path: <linux-kernel+bounces-100588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10EE1879A7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:17:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A150879A7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:17:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F5FE1F245D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:17:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEBC61F244DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:17:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B5B139562;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8521D1386D8;
 	Tue, 12 Mar 2024 17:16:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="SQjMNBqD"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XRiwiPAF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ADAB1386CD
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:16:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2BD51384AC;
+	Tue, 12 Mar 2024 17:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710263810; cv=none; b=jyqrb2MwqveO8BmBMZIrS49T2fcunwZmTxc94r9FtWVvquXBtYnTI51kEivigAb9smhrhZ2DSa0EnZQ096fKKUd0VV2hkftwntDDitVgWxMNv7SeqT8ju+o8xATTPMrM9wbMBCUw9grXoc003WWXWwMbuNu4tHaxB+ZORtGwah4=
+	t=1710263810; cv=none; b=YoDug9bRdXFWwNZls/4TzWXE5neQ2rhQXUPFEK4FeEar9u41oIzfAoSPI0egLGG8jJ3/SxQDZzHzPt0njrkyCJSmxpAMwmBaa0DnT9yqG4YKHQ/BZfFn/ojwoUYf4443q58+x/niWKFv3t/6hGCAkombx8CW8fpUmkKySRlEUnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710263810; c=relaxed/simple;
-	bh=QlsrG0Ev+JX2ByEVuh2NX2tX3x6JjPtrtcIj6hDRD4w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K7f6bqFhiatVSSBIRxOcHpaNeSMdOCTGOaOiC+WbG9h/KWDp3wIpDY7oXmVGIQT8MqYuCELgMgC7jgeK0vafGLvyd47oAmQr4OGaWyywbU3PeQs3o3/Cclgo9EYSXkUA6VlvxKoRZHh4zSTr/bi8uKa7gZ0h1DE8fAOt1h3R5pQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=SQjMNBqD; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60a046c5262so40267327b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:16:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1710263808; x=1710868608; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rII1IKE/cKHA5fIIIZqL0Y1Zv3aUlIm70c4nt3V1iEg=;
-        b=SQjMNBqD4Zt+biI0XpBwQ4bbKDZHlLeE5ID7vB3t8HH7mPMH6E+MP+v7tGh6KZc3hK
-         QdbxoP1zfDjIBDTHaLY7Hn2GZZJnXNDrbf38IYl6R5Y9NjbVSU+9j9bMYW59MRwjOL7I
-         B/0wIVUo0WiaSSp3agu8pB2ArIaKJ10GFR6mwiYUbG2SfYESn8Zdem2YtHMW+pX2gzSq
-         xRFNCRWDNZZ6PWT/hMVzK8ccNrD9koCJRhDNQ539E+KGdvLB18kgCQsLQNoVEW1fOb20
-         g0MdZDk0soQlZ+0tJcYFqlA1V4YDaF2vvLZRYlDMmNaF8ayXTgRYKf+HKpB2cZeY77NL
-         FRzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710263808; x=1710868608;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rII1IKE/cKHA5fIIIZqL0Y1Zv3aUlIm70c4nt3V1iEg=;
-        b=G+Zm8Ok/uyLxm6tkyWH6xWiXu4ZcqlkLHcmhObL0IfXjNidVvaUaqzAg2hZ7fJusZ8
-         GSNM8HY1DKRPWjgyJpfgKruzEMeFSJXNerL7ZgEq+QRQqls+CawaNtWrm1xUWwOjbpVJ
-         lh0IAO1pd4/EIExJksP+aqzdO46Ks5OgvF3RRLv92z3KjQDZycUV9tMpqhHp5yn/7BA5
-         TjaFCzowd0IyEJB70ig0SlBcPTPTOpG6zIxmNBJyncMazepP3Sy+ToQzfgwSrPTELefB
-         aKo/KYKYGqmNsv5UkyGRQWosVqIVnX1BFI4YtSIf0oti0e8fLvY0G8bqD0ekin4EkC2u
-         4jow==
-X-Forwarded-Encrypted: i=1; AJvYcCWLF1PaEagO9nb0GJiuXuylbPHQT7UkBjbwfTinWgAIxDjUt/GdzywKMdbxODCjW+uvI7SEOUDbpbNzXIHFJStekuiNRxD5iwtJ7scF
-X-Gm-Message-State: AOJu0Yy2LKiGoOhYOQlkakvS5YToQTvA607x9pzoTE7AvMFw0njTvgUQ
-	eYSKknU56X7NYCuamIXsRBddK9fl+NVWRCjsrH0/Vqb7xAcqFFVL3FymFLQjlycnFKODZR8pB5Y
-	yoxzO4M7k1XznqXfcrG9SWunJGtxrvrFq7jYQSw==
-X-Google-Smtp-Source: AGHT+IEj9EfshNeokW7F6t3Ra3Sz3cKWHPwa5TivvodeNbVUWtKqmMbXPGwP0AB75Z1YUxyvdBxChi3+dAVQzuLVV2Q=
-X-Received: by 2002:a25:2d25:0:b0:dcc:744d:b485 with SMTP id
- t37-20020a252d25000000b00dcc744db485mr102839ybt.33.1710263808011; Tue, 12 Mar
- 2024 10:16:48 -0700 (PDT)
+	bh=aQeZaK+TULHgRWkvv2I+BpJx4y9OlHXVOYa9vHfBBy4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gvwInpcTYGYlYez6NlcE5Pwi/f8sNGPLyYzfreusnYPC2mQgYgjZmHp4rNEFe8/sri90XbeZtF6qIEIK1hZXWrlaSJBf8rr8NPSpn0eWevU2MlfJCbVsw/FOijLt0PX0wcT4JAnakJ47BaCGC2RmR13kUpe1dkwIemvrWvqp0cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XRiwiPAF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85AA7C43399;
+	Tue, 12 Mar 2024 17:16:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710263810;
+	bh=aQeZaK+TULHgRWkvv2I+BpJx4y9OlHXVOYa9vHfBBy4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=XRiwiPAFaEGmafJCxxNLa1ivfAv5L1cEU+bXPOJhOxJ2AEqEok7LcfLwCHCcMrMpr
+	 3WSX2S1lnp3wGe/W60SopIDVr2IUXu8vIy5fOq5e/9q3PBzuOvPvnKTZ4u8zKJS4VI
+	 duhoG9v/4a6lz+AtB3iYSdRTrS9gLUcDeKW7ZGcBlBQnNSqUJxNfr06SWFS49kdu+8
+	 nsv4m830llErNUPM5km2Uvegj8tX2xgGD8PnZ0eC6fK1KTzJpbDKdSExtAuHMdPnb8
+	 AbPnOffsQXzer7x8Iux1SkXXDod8dhbgN5z1p3ZMw/Kx33PrVJm8mx5wfO1mA8nOT2
+	 Sjb4yxMdXOEig==
+Date: Tue, 12 Mar 2024 10:16:48 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Daniil Dulov <d.dulov@aladdin.ru>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Doug Berger <opendmb@gmail.com>, Paolo Abeni
+ <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: Re: [PATCH net-next] net: phy: mdio-bcm-unimac: Cast denominator to
+ unsigned long to avoid overflow
+Message-ID: <20240312101648.14a23b5c@kernel.org>
+In-Reply-To: <20240312165358.7712-1-d.dulov@aladdin.ru>
+References: <20240312165358.7712-1-d.dulov@aladdin.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1710226514.git.andrea.porta@suse.com>
-In-Reply-To: <cover.1710226514.git.andrea.porta@suse.com>
-From: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date: Tue, 12 Mar 2024 17:16:32 +0000
-Message-ID: <CAPY8ntCcz7ysTq_78Rb8ohLLETTYZeoZ3DXdPFvDLAkPc9jPWw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] dmaengine: bcm2835: add BCM2711 40-bit DMA support
-To: Andrea della Porta <andrea.porta@suse.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, 
-	Scott Branden <sbranden@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Saenz Julienne <nsaenz@kernel.org>, 
-	dmaengine@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Andrea
+On Tue, 12 Mar 2024 19:53:58 +0300 Daniil Dulov wrote:
+> The expression priv->clk_freq * 2 can lead to overflow that will cause
+> a division by zero. So, let's cast it to unsigned long to avoid it.
 
-On Tue, 12 Mar 2024 at 09:12, Andrea della Porta <andrea.porta@suse.com> wrote:
->
-> * Spam *
-> The BCM2711 has 4 DMA channels with a 40-bit address range, allowing them
-> to access the full 4GB of memory on a Pi 4.
-> This patchset aims to update the dma engine for BCM* chipset with respect
-> to current advancements in downstream vendor tree. In particular, it
-> supports the BCM2711 DMA engine in terms of extended DMA addressing to 40 bit.
->
-> Changes with respect to the first version (see [1]) of this patchset:
->
-> * dropped support of the new BCM2712. It will be the focus of a subsequent
->   patch.
->
-> * merged patchset from Stefan Wahren [2] to support newer chipset with a
->   platform agnostic design, while also retaining the new features added
->   from downstream [1], as follows:
->
->   - patches from 1 to 5 are preparatory, adding some features and bugfix
->     common to all chipsets.
->   - patches from 6 to 12 add hw abstraction
->   - patches 13 to 15 eventually add 40 bit and BCM2711 support
->
-> * fixed a couple of bugs from [2] relative to address shifting on 40 bit
->   support specific code
->
-> * added the relevant entries in the dts and DT binding that was missing
->   in the first patch
->
-> * used FIELD_PREP() wherever appropriate as advised in [3]
->
-> * of_match_node() has been replaced by the more generic device_get_match_data(),
->   as per [4]
->
-> * fixed several errors and warnings from checkpatch
->
->
-> Please note that there is still a pending discussion around here [5]:
-> this patch still use the current approach (used in both downstream
-> code and in Stefan's redesigned patchset) of getting the address as it is
-> (dma_addr_t) and just add the relevant offset when needed (on 40 bit
-> channel, see .addr_offset in struct bcm2835_dma_cfg). This is not
-> optimal but still deemed as less hacky than using DMA internals (see
-> [6]). As soon as there will be guidelines for [5] or dma_map_resource()
-> will take care of dma_ranges, a subsequent patch will adjust accordingly.
->
-> Since there is an ongoing effort from Dave Stevenson to upstream a
-> patchset with similar goals, I'm adding him to the email loop in order
-> seek for collaboration.
+## Form letter - net-next-closed
 
-Please hold fire on these patches until we resolve the dma-ranges question.
-If the dma-ranges are defined correctly, then the cb_offset is not
-required as the mapping deals with it.
+The merge window for v6.9 has begun and we have already posted our pull
+request. Therefore net-next is closed for new drivers, features, code
+refactoring and optimizations. We are currently accepting bug fixes only.
 
-At present we have a mess with the 32bit DMA controllers, and need to
-clean it up whilst still having old DT files work. Fixing it up also
-requires fixing the DMA users (primarily MMC, SPI, and vc4 HDMI
-audio), so will need some care over patch ordering to avoid
-regressions.
-If at all possible then I would like to avoid the same mess on the 40
-bit controllers too.
+Please repost when net-next reopens after March 25th.
 
-Thanks
-  Dave
+RFC patches sent for review only are obviously welcome at any time.
 
-FWIW my work in progress branch is currently
-https://github.com/6by9/linux/tree/mainline_2712_rp1_dma_vc4_rc5,
-which includes my fixed up set of Stefan's patches, as well as all the
-other patches that need working on for Pi5 support upstream.
-
-> Many thanks,
->
-> Andrea
->
-> Links:
-> [1] https://lore.kernel.org/linux-arm-kernel/cover.1706948717.git.andrea.porta@suse.com/
-> [2] https://lore.kernel.org/linux-arm-kernel/13ec386b-2305-27da-9765-8fa3ad71146c@i2se.com/T/
-> [3] https://lore.kernel.org/linux-arm-kernel/YguMW8n1q0ZV5tKH@matsya/
-> [4] https://lore.kernel.org/linux-arm-kernel/1e71c153-e482-409c-b229-9b9c0662b67e@arm.com/
-> [5] https://lore.kernel.org/all/CAPY8ntByJYzSv0kTAc1kY0Dp=vwrzcA0oWiPpyg7x7_BQwGSnA@mail.gmail.com/
-> [6] https://lkml.org/lkml/2024/2/5/1161
->
-> Andrea della Porta (11):
->   dmaengine: bcm2835: Fix several spellos
->   dmaengine: bcm2835: Support common dma-channel-mask
->   dmaengine: bcm2835: move CB info generation into separate function
->   dmaengine: bcm2835: move CB final extra info generation into function
->   dmaengine: bcm2835: make address increment platform independent
->   dmaengine: bcm2385: drop info parameters
->   dmaengine: bcm2835: pass dma_chan to generic functions
->   dmaengine: bcm2835: introduce multi platform support
->   dt-bindings: dma: Added bcm2711-dma
->   dmaengine: bcm2835: Add BCM2711 40-bit DMA support
->   ARM: dts: bcm2711: add bcm2711-dma node
->
-> Dom Cobley (2):
->   dmaengine: bcm2835: Support dma flags for multi-beat burst
->   dmaengine: bcm2835: Fixes for dma_abort
->
-> Phil Elwell (2):
->   dmaengine: bcm2835: Add support for per-channel flags
->   dmaengine: bcm2835: Add NO_WAIT_RESP, DMA_WIDE_SOURCE and
->     DMA_WIDE_DEST flag
->
->  .../bindings/dma/brcm,bcm2835-dma.yaml        |    4 +-
->  arch/arm/boot/dts/broadcom/bcm2711.dtsi       |   16 +
->  drivers/dma/bcm2835-dma.c                     | 1084 +++++++++++++----
->  3 files changed, 892 insertions(+), 212 deletions(-)
->
-> --
-> 2.35.3
->
->
+See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
+-- 
+pw-bot: defer
 
