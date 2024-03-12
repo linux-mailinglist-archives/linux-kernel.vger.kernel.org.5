@@ -1,116 +1,115 @@
-Return-Path: <linux-kernel+bounces-100385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDBCE8796A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:44:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1AF8796AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:45:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 722C8B249BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:44:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66F031F21D92
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6731F7B3DC;
-	Tue, 12 Mar 2024 14:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71E17BB04;
+	Tue, 12 Mar 2024 14:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aukJ/eNk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y4W57fqD"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CECD1DFD8;
-	Tue, 12 Mar 2024 14:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA987AE64
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710254666; cv=none; b=Zqg7t7CxhbdV6Z3QkrgZ7qaR+eKaS49T3A/gBuDvumvR8PpbGE91DgaWqzKN0RadjS46a/oK4jFyejs+jmGPeGhcwuII/2k5Xn98ScTvWobrAcN+VxoGzl3yZcgmiiPtsJNlBWWhinkoisIKOQ5E3j8I59KYIcVI850tU0SmlGw=
+	t=1710254690; cv=none; b=iQcWEKYSDFQhEOJCB4RqHrqpp0Ch1P90Rp2S2BQy7pKrIC1bwuJCxaisBTkvqicmS1vu3y7E3zpB1Qady2rMFmVgGo2hyvCjP74ovLXgKQjWy9hJQ7bJQbBUgA6swseaAj6RC06AYAi2uPvq6DPArl52mHhBPnhsUyo1NSRqPYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710254666; c=relaxed/simple;
-	bh=Dy35dwPt2qxF2qUUrlFwaycsRiwdy9dn4pHsT5ZLSGM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UIaUPFdeapmKPx6WA4JrRXEXNB++Ndsga5Cu2CqmLHFoG1mx693F15FhyHgp6zyra3ENCM9dJdshIqFpxuAJnKVi6HBBZNFBX8g2EEZ6BegcEqbnoGv98RwmMtk3UpfnYzcea0AB16kLsRSvz/ptav9Hdj5z3woPE+vVN57u710=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aukJ/eNk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA9E7C433C7;
-	Tue, 12 Mar 2024 14:44:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710254666;
-	bh=Dy35dwPt2qxF2qUUrlFwaycsRiwdy9dn4pHsT5ZLSGM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aukJ/eNkN+YxIpLAdDkVRaOAwmdrbNrNZgs82sjROJOwJ1cRhWzZAp3hKMU0o6by+
-	 ClTlHTyUvbdjvyY4/G74hRToq/cZ9BrgDhaB+HPsKPBThz5V0mnvS4Q4WgBQvcptpR
-	 04z6b6XP7us+6me/XmilaA8rQnRctidem5GuYEJRvHPnybkiiNXO4JEYbRUM4OiaPY
-	 UFJRlCI98zvgAzsZLe3qUDx3DzX1Q/Ugn7gqlwF7kxh6x+dvQaqjTZDbJmQj3umXD3
-	 1PXAX/9vH+gF3+GRdcEgLVCtkdJFbDDShjF9MVbGV0IHrKEFATopahqSygkBb4KvY3
-	 s3KPe9CIlkidg==
-Date: Tue, 12 Mar 2024 14:44:19 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Saurabh Singh Sengar <ssengar@linux.microsoft.com>,
-	Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev, linux-um@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com,
-	linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org,
-	"Gabriel L. Somlo" <gsomlo@gmail.com>
-Subject: Re: [PATCH 2/7] of: Create of_root if no dtb provided by firmware
-Message-ID: <e83b606a-e34e-423f-b26b-df745052d06b@sirena.org.uk>
-References: <20240217060843.GA16460@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <CAL_Jsq+Feu9NnzTNx=XU5vgHhibGAQXvkuTeWbpu8gJ3rVrzcw@mail.gmail.com>
- <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
+	s=arc-20240116; t=1710254690; c=relaxed/simple;
+	bh=l7PXpZXI01MHCt+hHEmDQ8I/JZ4vbfrmDPTT2vYwv68=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=doxhJ6SLSLItLBk0sNl12J0lduTPUeptWzuFQsbu7R5T+jeC68qSaoPGqMpXbqUQE7r+lixF6hL0LvkJMVcwcQd8rlu/qQQT8mWHyamntyfRGvAO22enbLKG0CrxZLJJ8nONBsZMrj7rpEMn3iYEuT+qsN7EASr1IWLJ5k5O0i8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y4W57fqD; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d27fef509eso92236311fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710254687; x=1710859487; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hmj+F0z52Li+K1sTvSePjF0GjlsGyqeJSli7wVVMSxg=;
+        b=y4W57fqDpXLk9d6w30F7ClHmWQSP+T4jklHSO7kY6nrPHs2ipWmAxfymt/rToDL6Pc
+         KvwIlqIZOVv8zPB+YTf41D627J3/RBSZxyM1ft4GbGMHfMoekm7fBOxP5o2j/PPjcdic
+         IJfmjeGuXJ54F7bVoUdDKnbuF1lN2+or/IXwcbcqkeLileMzByz7MyBHtkDP4r1APRZL
+         Cayc6H3kpsTuVjnKu/1OtQ/Iec/utwp5OGMRUymFyvxPYwnn6k7BsYQte/k9L0X+katC
+         dEnEo8b2OEossfJRoaLcpTFqeOwnRjMEXBhQDYbq31azB5yKWEwjE03HmtO7taSYkRnX
+         C3Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710254687; x=1710859487;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hmj+F0z52Li+K1sTvSePjF0GjlsGyqeJSli7wVVMSxg=;
+        b=QqdJPSuTZBtUeAXg7MGHIoOrU1KKqFSac6dHqR1W/c6GbvR5IvI21TJNSjqTLUzyRY
+         k9xEpPYH2HG+mBo1T9YxpI6bHdGJRrzpOAfd56SxvZJclLr2jcLWUp4AP6rsxX0IDPGa
+         Uwrzp8tYT0EIED8P+kXN6As5jAzVlF/7lcE5U+yzpx9B9Jl8kLn5iu80y6bdkVg8GefD
+         f7zvwjunP7jzbWLG2FdC4d/US7Lu7+n7UdtNC6p7oA9rgRQoQzVLdnFQJihvWooQeslj
+         Czp1B2OCMyBQYPFBgH1rToLo03yh/Cq5a035xPG9m2AE7/HPKYM7RAthMJCkFUw/cS8f
+         zAfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWiLrh4p5ttGJkYK5aOnCg8hvBDNjU+VtG0HZciLJ7Br5ZtZ7cBxGpZDKZyA5Uf7FEkgDkLtVGpgVABAzSuPc7gaF56BmXHKFPxC8mw
+X-Gm-Message-State: AOJu0YyFyocs26LBclC6AZmqrLIxDnJ27xSa7jNqv0nxpybS0c6SQB/l
+	TRXt9r4Iql1n81LdS4QDVaVZ09GlRQbwVtBSCpf3XDMkjXA89BwTfe8yWVA51rY=
+X-Google-Smtp-Source: AGHT+IFFBjF9LuTxcCz5RrKNbfWJ5SkfQz9Wt8O54/LYbK1vtsUcRNeb2QIqZOgtU22jErtQ9pTySQ==
+X-Received: by 2002:a2e:9804:0:b0:2d4:529c:f490 with SMTP id a4-20020a2e9804000000b002d4529cf490mr1424131ljj.35.1710254686722;
+        Tue, 12 Mar 2024 07:44:46 -0700 (PDT)
+Received: from [172.30.205.61] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id u10-20020a2e9b0a000000b002d406e8f01asm1626480lji.71.2024.03.12.07.44.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 07:44:46 -0700 (PDT)
+Message-ID: <9af62237-98ec-4130-8523-f6c9cb0ad281@linaro.org>
+Date: Tue, 12 Mar 2024 15:44:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="A8PYQDEZ5U6Pm1op"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
-X-Cookie: Oh, so there you are!
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] media: qcom: camss: Add per sub-device type resources
+To: Gjorgji Rosikopulos <quic_grosikop@quicinc.com>, rfoss@kernel.org,
+ todor.too@gmail.com, bryan.odonoghue@linaro.org, andersson@kernel.org,
+ mchehab@kernel.org
+Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, laurent.pinchart@ideasonboard.com,
+ hverkuil-cisco@xs4all.nl, quic_hariramp@quicinc.com
+References: <20240227122415.491-1-quic_grosikop@quicinc.com>
+ <20240227122415.491-2-quic_grosikop@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240227122415.491-2-quic_grosikop@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---A8PYQDEZ5U6Pm1op
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 03:41:32PM +0100, Geert Uytterhoeven wrote:
-> On Wed, Feb 21, 2024 at 3:06=E2=80=AFPM Rob Herring <robh+dt@kernel.org> =
-wrote:
+On 2/27/24 13:24, Gjorgji Rosikopulos wrote:
+> From: Radoslav Tsvetkov <quic_rtsvetko@quicinc.com>
+> 
+> Currently resources structure grows with additional parameters required for
+> each sub-deivce. However each sub-device has some specific resources or
+> configurations which need to be passed during the initialization.
+> 
+> This change adds per sub-device type structure to simplify the things
+> and removes the magical void pointer to hw_ops.
 
->     static int __init regulator_init_complete(void)
->     {
->             /*
->              * Since DT doesn't provide an idiomatic mechanism for
->              * enabling full constraints and since it's much more natural
->              * with DT to provide them just assume that a DT enabled
->              * system has full constraints.
->              */
->             if (of_have_populated_dt())
->                     has_full_constraints =3D true;
->=20
->             ...
->     }
->     late_initcall_sync(regulator_init_complete);
+I'm not quite sure what the benefit here is, as opposed to simply
+extending <name>_device?
 
-> (The latter looks a bit futile, as have_full_constraints() already
->  contains a check for of_have_populated_dt()?)
+Generally, I think the driver state as of today is somewhat backwards..
 
-Yes, it's duplicated and we should remove it.
+We define a common set of resources, and then assign them subdev-specific
+ops, instead of defining the subdev and consuming clocks/pds/resets
+within a subdevice there..
 
---A8PYQDEZ5U6Pm1op
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXwakIACgkQJNaLcl1U
-h9A8ewf+MxFaGvrtn8DK977EqCU2BEx8094DvO7eMo0nyAJUm2gxwqKrhgdxDEFY
-I0g6tj4LKJmyrLH4jH1T84U85aVm9il1PX4OUNyIHtHqrTvZuxonx1hbMfHWnq4d
-varya5+YeCMfo3B8heD4RSSmX4ewG6Jgb+IeDl/Jn8On2Pys75Sh1Bk8mbbunG+H
-pOK8gTFj5jOaR6JoX/gsoYsifocZ0s96AqUqmk+i7zxdX6qJhGDaD7azW/qhJAUv
-+E/x/KzOuerVx8mX2drUIR9jk/s1+t3mgTJZKAYoGUDW2PwG9wPb8tqtofX2ghXU
-ZgSshLDLKjTalXEyonUkGEadKnNxmA==
-=/ZcU
------END PGP SIGNATURE-----
-
---A8PYQDEZ5U6Pm1op--
+Konrad
 
