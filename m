@@ -1,111 +1,182 @@
-Return-Path: <linux-kernel+bounces-100179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18713879315
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:35:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B14C1879318
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:36:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACF38B2206C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:35:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4F51C21916
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F7F79B84;
-	Tue, 12 Mar 2024 11:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UmeYNJEG"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3663069D0A;
-	Tue, 12 Mar 2024 11:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF3A79B88;
+	Tue, 12 Mar 2024 11:36:20 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1E920304;
+	Tue, 12 Mar 2024 11:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710243334; cv=none; b=sxn2pyqahLdzf4juxRQy0yPGeZEmw3kSoaJUPbD9Tdb+eWUCHFKUBJZvB9XHhjjK9SxnK3Tr/zoeKsNO5/yJDXLUjF4aN4JRBdnK2/G/r/nXTF+oRz2uWBL6rESlzwD7j01Mg5PQ6jXR0A2W3pqz74ixOerKRCOq3Q3QgTTOvVg=
+	t=1710243380; cv=none; b=b4Zj/W2hJ9W03jtw95kTKg75f9McQvRQ+9pBz5X5eeeSKNnKtdfPGuWr28LgHjMqdFdffiWZ1aYyhk9N10Zew/xAk95FeETwCENQJtxKX5I329PFSAsyxA0BBarzbH7PQjVXdRFG38DC4txbhRcVRb/tg+untf3eMm2AP6cTmDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710243334; c=relaxed/simple;
-	bh=O9SDTjN4m4+ACDZlbjWHiqnW6+aHwqWTMkM+PP87lSE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=beytL5CLh+eH3VfOGwDOb3xOGTs9Mwk9zpPccViX7MwBwpsz8c0wW7ZW4/pwmoyVBL6CeXrXUeLCdbyF3zXB+qjDkxsj6kLRFrMy5MwePWLSHMSBCZHqipGsx+qnuCUpuwGTaa25xdlctdGoWpdEiM7Ia5zA1oI+P5b6Qeb1NKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UmeYNJEG; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29bd0669781so2052452a91.1;
-        Tue, 12 Mar 2024 04:35:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710243332; x=1710848132; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HTp9zNusEHYNa4JuUgat9/OWqEmIx9Z3+sIRQXRqG48=;
-        b=UmeYNJEGfaRsZaVUuK+eIH+I533aKipoAx9Xi871HyaIMNpjxRZm6DeMt9iUhnY2Ee
-         RYZWHDK4BOooYTQpaJVYOrQMGQfaA7Ti8mesQtKXmIPyJxpSFW/6x0pJVAb20vGE+c5D
-         EVaCon9NeROArqE9cX1UF87l/eFiAkWkoMtg7xCzVKr7iXgKc6c6LE6aqbmWlIInIklh
-         nqfnatxAjfcET420+ZSvtXEO3tE0SbHMHvFfZ2KmXYGDaPeh2PUqPIWaEzyfe8/kHJC5
-         s1MvCAulWoE7I0kGx0LamhbAJ/T11MbwuXEqGoHFSX+5sS5ORGL7nfrCjZW+lGJjvtZL
-         tMDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710243332; x=1710848132;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HTp9zNusEHYNa4JuUgat9/OWqEmIx9Z3+sIRQXRqG48=;
-        b=BSEYJnkzfC/ahamFF6GXsFCQbMUMcSsADxmFPC4n9bGZ4MtJL5EvJziRdvo94Lfnj+
-         8w2nztdExkDOMXYp9bi4QW/ghZDivXcrhJxghTB3dAD53TJCXF2fVOhStsXaUoj3RQt3
-         VL817qz7iSIbPOE0jNa0ulkbBPpvusxoJcgrM5aQnv10RSrvuH0WulSbggSXHiwZbvE/
-         tK86fjmQAQaoM2VAMtPfWuBAuMBQXeJ/8PhHd81dXqFsjNhnOYH+ERQzVLdsFbCqzKGY
-         1eVYzwqopD9xJNJ6VVumd4BM8Q37qTtk1vkLIEPZ+dmDet8PatyxlRKDxCqBV+gy0oCF
-         2KCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVnvAFc4mApGHm4VENNCeIJ2rBF8OR+4kwAeckumWUh0e5PDsZT3dqesS+XQ2yBl0Ew16402QE8NPRorvOBko051QsK+Lv74p3/hjlkh+JLPkXhIgTV9MC7noXzd3GBdEjR
-X-Gm-Message-State: AOJu0Yw+rAsrwEpVcjmjUxehY4c2ouvEWFjsXGaErf77yzbl61V/bAFS
-	lvObIMiPoRxQPdAgtzbCG0wKKcTVmZC6AMXAgoKYzwl3ztPD02YgKNv9Iw5s
-X-Google-Smtp-Source: AGHT+IED26I8/64mXLsxuC7CSlYxSuV8S6W1vv/N52uGphSfMXZGRXioHOND8IQSdjGjlRAkdm7n8g==
-X-Received: by 2002:a17:90a:4096:b0:29b:7a28:a795 with SMTP id l22-20020a17090a409600b0029b7a28a795mr7240463pjg.12.1710243332481;
-        Tue, 12 Mar 2024 04:35:32 -0700 (PDT)
-Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
-        by smtp.gmail.com with ESMTPSA id f12-20020a17090a654c00b0029ba4d9b128sm5472286pjs.57.2024.03.12.04.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 04:35:32 -0700 (PDT)
-From: Zqiang <qiang.zhang1211@gmail.com>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org
-Cc: qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu-tasks: Remove unnecessary lazy_jiffies in call_rcu_tasks_generic_timer()
-Date: Tue, 12 Mar 2024 19:35:24 +0800
-Message-Id: <20240312113524.7654-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1710243380; c=relaxed/simple;
+	bh=TPg3Td+XLiyE8SiOwEwur+rbcT0GJ58OK6ENOzskB78=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BsUZB7vdxKmuXJyU5ANpyD3EWLR+yKykEdEFKjTnhJh9/Cy+lmYkkCNiswBSUgsz66KYpqg7+SIE2zYwYoiImfEbz2JWa1ZslFuoLqVMATk1pDKR8kj1yyL8g7z78fCXqVmIdpPxDM/cKzmab9DvgasHFT6GX/Uwsolr0OqPYd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 36FC51007;
+	Tue, 12 Mar 2024 04:36:54 -0700 (PDT)
+Received: from [10.37.129.2] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 301233F762;
+	Tue, 12 Mar 2024 04:36:15 -0700 (PDT)
+From: Balint Dobszay <balint.dobszay@arm.com>
+To: Sumit Garg <sumit.garg@linaro.org>
+Cc: op-tee@lists.trustedfirmware.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ jens.wiklander@linaro.org, corbet@lwn.net, sudeep.holla@arm.com,
+ rdunlap@infradead.org, krzk@kernel.org, gyorgy.szing@arm.com
+Subject: Re: [PATCH v3 0/4] TEE driver for Trusted Services
+Date: Tue, 12 Mar 2024 12:36:13 +0100
+X-Mailer: MailMate (1.14r5937)
+Message-ID: <173F2BEA-50F1-4339-A072-473ED7CC7DC9@arm.com>
+In-Reply-To: <CAFA6WYPNV5F3h=naCtg=fYr8zfB3rho+G1B6-rggLe_PkqvgnQ@mail.gmail.com>
+References: <20240305101745.213933-1-balint.dobszay@arm.com>
+ <CAFA6WYPNV5F3h=naCtg=fYr8zfB3rho+G1B6-rggLe_PkqvgnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-The rcu_tasks_percpu structure's->lazy_timer is queued only when
-the rcu_tasks structure's->lazy_jiffies is not equal to zero in
-call_rcu_tasks_generic(), if the lazy_timer callback is invoked,
-that means the lazy_jiffes is not equal to zero, this commit
-therefore remove lazy_jiffies check in call_rcu_tasks_generic_timer().
+Hi Sumit,
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- kernel/rcu/tasks.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 6 Mar 2024, at 11:40, Sumit Garg wrote:
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index b1254cf3c210..439e0b9a2656 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -299,7 +299,7 @@ static void call_rcu_tasks_generic_timer(struct timer_list *tlp)
- 
- 	rtp = rtpcp->rtpp;
- 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
--	if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
-+	if (!rcu_segcblist_empty(&rtpcp->cblist)) {
- 		if (!rtpcp->urgent_gp)
- 			rtpcp->urgent_gp = 1;
- 		needwake = true;
--- 
-2.17.1
+> Hi Balint,
+>
+> On Tue, 5 Mar 2024 at 15:48, Balint Dobszay <balint.dobszay@arm.com> wr=
+ote:
+>>
+>> This series introduces a TEE driver for Trusted Services [1].
+>>
+>> Trusted Services is a TrustedFirmware.org project that provides a
+>> framework for developing and deploying device Root of Trust services i=
+n
+>> FF-A [2] Secure Partitions. The project hosts the reference
+>> implementation of Arm Platform Security Architecture [3] for Arm
+>> A-profile devices.
+>>
+>> The FF-A Secure Partitions are accessible through the FF-A driver in
+>> Linux. However, the FF-A driver doesn't have a user space interface so=
 
+>> user space clients currently cannot access Trusted Services. The goal =
+of
+>> this TEE driver is to bridge this gap and make Trusted Services
+>> functionality accessible from user space.
+>>
+>> Changelog:
+>> v2[6] -> v3:
+>>   - Add patch "tee: Refactor TEE subsystem header files" from Sumit
+>>   - Remove unnecessary includes from core.c
+>>   - Remove the mutex from "struct ts_context_data" since the same
+>>     mechanism could be implemented by reusing the XArray's internal lo=
+ck
+>>   - Rename tee_shm_pool_op_*_helper functions as suggested by Sumit
+>>   - Replace pr_* with dev_* as previously suggested by Krzysztof
+>>
+>
+> I will also suggest you to add a maintainer's entry for this new
+> Trusted Services TEE driver.
+
+Sure, will do. I plan to post v4 next week.
+
+Regards,
+Balint
+
+>> v1[5] -> v2:
+>>   - Refactor session handling to use XArray instead of IDR and linked
+>>     list (the linked list was redundant as pointed out by Jens, and ID=
+R
+>>     is now deprecated in favor of XArray)
+>>   - Refactor tstee_probe() to not call tee_device_unregister() before
+>>     calling tee_device_register()
+>>   - Address comments from Krzysztof and Jens
+>>   - Address documentation comments from Randy
+>>   - Use module_ffa_driver() macro instead of separate module init / ex=
+it
+>>     functions
+>>   - Reformat max line length 100 -> 80
+>>
+>> RFC[4] -> v1:
+>>   - Add patch for moving pool_op helper functions to the TEE subsystem=
+,
+>>     as suggested by Jens
+>>   - Address comments from Sumit, add patch for documentation
+>>
+>> [1] https://www.trustedfirmware.org/projects/trusted-services/
+>> [2] https://developer.arm.com/documentation/den0077/
+>> [3] https://www.arm.com/architecture/security-features/platform-securi=
+ty
+>> [4] https://lore.kernel.org/linux-arm-kernel/20230927152145.111777-1-b=
+alint.dobszay@arm.com/
+>> [5] https://lore.kernel.org/lkml/20240213145239.379875-1-balint.dobsza=
+y@arm.com/
+>> [6] https://lore.kernel.org/lkml/20240223095133.109046-1-balint.dobsza=
+y@arm.com/
+>>
+>>
+>> Balint Dobszay (3):
+>>   tee: optee: Move pool_op helper functions
+>>   tee: tstee: Add Trusted Services TEE driver
+>>   Documentation: tee: Add TS-TEE driver
+>>
+>> Sumit Garg (1):
+>>   tee: Refactor TEE subsystem header files
+>>
+>>  Documentation/tee/index.rst         |   1 +
+>>  Documentation/tee/ts-tee.rst        |  71 ++++
+>>  MAINTAINERS                         |   1 +
+>>  drivers/tee/Kconfig                 |   1 +
+>>  drivers/tee/Makefile                |   1 +
+>>  drivers/tee/amdtee/amdtee_private.h |   2 +-
+>>  drivers/tee/amdtee/call.c           |   2 +-
+>>  drivers/tee/amdtee/core.c           |   3 +-
+>>  drivers/tee/amdtee/shm_pool.c       |   2 +-
+>>  drivers/tee/optee/call.c            |   2 +-
+>>  drivers/tee/optee/core.c            |  66 +---
+>>  drivers/tee/optee/device.c          |   2 +-
+>>  drivers/tee/optee/ffa_abi.c         |   8 +-
+>>  drivers/tee/optee/notif.c           |   2 +-
+>>  drivers/tee/optee/optee_private.h   |  14 +-
+>>  drivers/tee/optee/rpc.c             |   2 +-
+>>  drivers/tee/optee/smc_abi.c         |  11 +-
+>>  drivers/tee/tee_core.c              |   2 +-
+>>  drivers/tee/tee_private.h           |  35 --
+>>  drivers/tee/tee_shm.c               |  66 +++-
+>>  drivers/tee/tee_shm_pool.c          |   2 +-
+>>  drivers/tee/tstee/Kconfig           |  11 +
+>>  drivers/tee/tstee/Makefile          |   3 +
+>>  drivers/tee/tstee/core.c            | 482 +++++++++++++++++++++++++++=
++
+>>  drivers/tee/tstee/tstee_private.h   |  92 ++++++
+>>  include/linux/tee_core.h            | 306 ++++++++++++++++++
+>>  include/linux/tee_drv.h             | 285 ++--------------
+>>  include/uapi/linux/tee.h            |   1 +
+>>  28 files changed, 1087 insertions(+), 389 deletions(-)
+>>  create mode 100644 Documentation/tee/ts-tee.rst
+>>  create mode 100644 drivers/tee/tstee/Kconfig
+>>  create mode 100644 drivers/tee/tstee/Makefile
+>>  create mode 100644 drivers/tee/tstee/core.c
+>>  create mode 100644 drivers/tee/tstee/tstee_private.h
+>>  create mode 100644 include/linux/tee_core.h
+>>
+>> --
+>> 2.34.1
+>>
 
