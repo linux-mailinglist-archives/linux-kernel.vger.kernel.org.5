@@ -1,123 +1,78 @@
-Return-Path: <linux-kernel+bounces-99721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A08D9878C3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:26:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B36D878C42
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 147BAB21312
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:26:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB5351C21200
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443541842;
-	Tue, 12 Mar 2024 01:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF2353BE;
+	Tue, 12 Mar 2024 01:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G+C6M9/C"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dssKHF2w"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DC07E2;
-	Tue, 12 Mar 2024 01:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1525F811;
+	Tue, 12 Mar 2024 01:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710206786; cv=none; b=IJw9Sv55kVnettdj1ndjEPm9vy/Ll2QO6vZLbN3rSGBUKGm0BBMHcU9gGMHxPo+vtC5IBWqZZvDglkVovopPi5I2haqCEPqHqdiCS3yyCvYv/0bMXZNXHtN/9iyg+yFayh9kpTKAlozVDxp5IZmzOJ/oU7L+THGd2qYErQKk/Es=
+	t=1710207005; cv=none; b=kKMXNTdcvOiAdaxSJaVh7FdwYJaUVAGm79lkUHeEHcd5Cuqj8UNOQI4jBpyUl3KH4TLrdN06mff9Uo7LxVEPgjk3GrNFNSzGsd65eTRWv+Sc7l1qe6mkebrGS6rQ5miHM6Z0Ez0UOF9EwQPo3yk0aSOGUeWXTiBsAdLkwLrtlEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710206786; c=relaxed/simple;
-	bh=GyA2AfVBUEUaHKxyGNy7I8OR2zGDzYXGB8bS0wH502E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JDD6i+/ZbcPlaGxzmYrbHv/7lZLV8h66I9223vDJTkcs5fOAj5BzJKwyG+uEgvIHlv2icACna11q6b4ogalDbEMFVVI8Xmv65QexAbAAPHKa8X8WQykcfQfhWQqv3VyRddzfxWcZ2VlVLJSMnU7NxmFVzDr2zm5fA2WL3wvVIT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G+C6M9/C; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-413328344acso2183165e9.3;
-        Mon, 11 Mar 2024 18:26:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710206783; x=1710811583; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kscZcOUOHWXZr8d7Aotv9yaf5lVIDmR/3s4rt3vEiJE=;
-        b=G+C6M9/CvNcFPVWzOo3s/Up8DWBySnEx4afjJKWshiJ2S0ShzhciD45zw995Sn7uis
-         K+bG+ccVBqex/o5Xh/BTSoB4U69ct9pRo9Yist/LnIy+2PWxBDECCy8inZMhWaTxJlQP
-         8X6HIWOMAwFO7wpNRSuIbyG6LmQ7QRToPyengeVItakieyqDpRtucZO1RAQUCghSM7Qy
-         mlxHrHHJE+vKhvrG5ITeriOA4aA0YhnCKSHTpK0H8owajfe9V1FPmo0EGA+EL7HJJGoK
-         taI0lpE1Ug6nVo+deyxiyUeT1GFHJRo9GK0QxFV9CZrD+73srxolbkOaUu2pxIVKM8EM
-         PgKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710206783; x=1710811583;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kscZcOUOHWXZr8d7Aotv9yaf5lVIDmR/3s4rt3vEiJE=;
-        b=pTXMy/UjWAR1SplmhBbxuTkvZNZkHvId7Uu54qpshTAlkHpuUzPYXhR2McdRtcqVkw
-         zlC7HCPbOWC6vsyOJYzTakVQA5Ny11MyE8rds3LKBJyZMMlwKYUNfmHnldNKZKoStlCJ
-         VdbfkwueR+f+5qGav6xwEeCNB+yh286YskFtdoo3nc/A9ExHSdSfzyVmWb8SbSs+vuEA
-         Kjb9eLQTk56Pj31VPKj29AZMt2KkvqQ8p20P/mQ4JWjB9pI3+Ogdq0yi8vDCYHpeZMT/
-         mhCk7GCE0Irv8349TFlvz9X4h6FoqnW7ygMRvMpoKI/LbEF/MbtypWuG3U1SMk92c+zP
-         CBBA==
-X-Forwarded-Encrypted: i=1; AJvYcCXThmdKkQKLNsvpfYGMInSoSiLAtIhsfBZCIK30zz/4pacqI4vtQUDr1XuvswEP+CCVojvtaEf8StnhiYs38C3w52Dq0Aw7pdvnvahFRjmYvGWrUXsW5yuDgXOb7JboMYxj
-X-Gm-Message-State: AOJu0YxxGgEM7Z4qzEr1dkFJRD1VCo67ZPOI8cvZUGeqf8EJUcZN9Ckw
-	KS+XN/EmXiYLyi/kP/GTSuIqom5lJ3oDk/hteW4pDH424XK36YG9uuSdk2wNV9PIqHDYF/i0yHP
-	tL37oCy9wnGHX1TOcWwhkJAYqEdU=
-X-Google-Smtp-Source: AGHT+IFKW6cUCi0saeWKoL0AaPNypvf3M3iB9lYDups/lcLoaLFuXEDNeokVJOWFfqCOeeGiVXcf3F0gL0U6FksOyb4=
-X-Received: by 2002:adf:f50f:0:b0:33e:7a7c:a058 with SMTP id
- q15-20020adff50f000000b0033e7a7ca058mr4928022wro.18.1710206783102; Mon, 11
- Mar 2024 18:26:23 -0700 (PDT)
+	s=arc-20240116; t=1710207005; c=relaxed/simple;
+	bh=zNReEfidZjW7TzC29kl2o6cK/Ja/nTmzX+A/3j/LoCU=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=a0pCpbJfxEnCHZKlpNXS+j48G68VUPHmiwYdqkzpa+U1wbv/VTzj8SMnk7hEGCM/osyT5e4lWSXxRHNp6fOLj85FYZ4oIx2+SMpRCaJWMMh860KKKL4z4ztf8ziXPA8wvAQcVfusOpjLu3aUbyoriPjU/kWem0AKqbD3BvWa6+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dssKHF2w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E13F3C43390;
+	Tue, 12 Mar 2024 01:30:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710207004;
+	bh=zNReEfidZjW7TzC29kl2o6cK/Ja/nTmzX+A/3j/LoCU=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=dssKHF2wCxjIubgJ8fZYQGJzzsGzOZqERFxe73vaA0C73pkifDogwZfzILvmTqz2F
+	 1buMoEpFfBFXdjv5M+BG/2Ymrr6T/DQ8jodRvWoD5doE8obOz+f39V5x9YDCy6w2pG
+	 OpoO2Dhvka76SmS4jUgaGd0xW2B6TeQXIGxKx2HOK8DnExivwk/5NqOEFPDSLovdvK
+	 5HqBIIb8dqVqFr+o9gGGe1A32V3MoAIdWMU4MfEfEFw77dxfuuvGu/eI/iMJK/NM3A
+	 ss8Gz9zphw8bW2KoCjm74pmDvEe6oTsOBZwMOrYP5S9jayDxGrNvUzVQ2gTAHi4Rvc
+	 HIeHVzd15UUow==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BAD34D95055;
+	Tue, 12 Mar 2024 01:30:04 +0000 (UTC)
+Subject: Re: [GIT PULL] EDAC updates for v6.9
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240311155651.GAZe8pw0urOnUZj1y_@fat_crate.local>
+References: <20240311155651.GAZe8pw0urOnUZj1y_@fat_crate.local>
+X-PR-Tracked-List-Id: <linux-edac.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240311155651.GAZe8pw0urOnUZj1y_@fat_crate.local>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v6.9
+X-PR-Tracked-Commit-Id: af65545a0f82d7336f62e34f69d3c644806f5f95
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b0402403e54ae9eb94ce1cbb53c7def776e97426
+Message-Id: <171020700473.888.16637533826672826953.pr-tracker-bot@kernel.org>
+Date: Tue, 12 Mar 2024 01:30:04 +0000
+To: Borislav Petkov <bp@alien8.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>, linux-edac <linux-edac@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240227151115.4623-1-puranjay12@gmail.com>
-In-Reply-To: <20240227151115.4623-1-puranjay12@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 11 Mar 2024 18:26:11 -0700
-Message-ID: <CAADnVQLPf2-saMJxv65zqDAjc8JX-08dRUP3hbrAh=q+2xiqzg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/1] Support kCFI + BPF on arm64
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, 
-	Mark Rutland <mark.rutland@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Mark Brown <broonie@kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 7:11=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
-m> wrote:
->
-> On ARM64 with CONFIG_CFI_CLANG, CFI warnings can be triggered by running
-> the bpf selftests. This is because the JIT doesn't emit proper CFI prolog=
-ues
-> for BPF programs, callbacks, and struct_ops trampolines.
->
-> Example Warning:
->
->  CFI failure at bpf_rbtree_add_impl+0x120/0x1d4 (target: bpf_prog_fb8b097=
-ab47d164a_less+0x0/0x98; expected type: 0x9e4709a9)
->  WARNING: CPU: 0 PID: 1488 at bpf_rbtree_add_impl+0x120/0x1d4
+The pull request you sent on Mon, 11 Mar 2024 16:57:11 +0100:
 
-..
+> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v6.9
 
-> Running the selftests causes no CFI warnings:
-> ---------------------------------------------
->
-> test_progs: Summary: 454/3613 PASSED, 62 SKIPPED, 74 FAILED
-> test_tag: OK (40945 tests)
-> test_verifier: Summary: 789 PASSED, 0 SKIPPED, 0 FAILED
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b0402403e54ae9eb94ce1cbb53c7def776e97426
 
-Catalin, Mark,
+Thank you!
 
-Could you please review and hopefully ack arm64 generic bits ?
-
-The JIT changes largely mimic x86 changes and look correct to me.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
