@@ -1,127 +1,92 @@
-Return-Path: <linux-kernel+bounces-100465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3248797DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:43:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DB418797E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:45:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8932F1F22AD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:43:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E07A3282027
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31807CF04;
-	Tue, 12 Mar 2024 15:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D7F7CF01;
+	Tue, 12 Mar 2024 15:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TemBDO3n"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ln2Ui+Nm"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27DBF79B65;
-	Tue, 12 Mar 2024 15:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 504007C6D6;
+	Tue, 12 Mar 2024 15:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710258186; cv=none; b=GV4Ev5kMvke3HhqQh/j9XpNV+u8ieOO4J3FTjMJzkrMBq43mYJYqyJ3iaxwX1dYlRHPqjFVqQSJdDdOxXSR+AqH8d/yYlgoYmJofe9KvroKpGjVl3azdVxlJqdhwQNJk+ugbypG/vUoyE8ZOp7yRQpCHO4l4P+66b1Q08L8Yu34=
+	t=1710258335; cv=none; b=PC7NEogFKcdFnjOpBPXcj+3BDnX9PaZWhL6hekbKvPVHoUT3+BUJvGYhvL6dteDWOBjcoup6Br7GTJbcpJQGDTsvQnEvFDD6Pzofv72sRnBOBP29XAATrMLqEn5UIZm79UZ9RrA6o1/QRn1258J5EwfPQ4cVKqUpOEAed3CWfyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710258186; c=relaxed/simple;
-	bh=saSsJLPGKVqRyifWAvITNA+MsAjtts2uqCkZdCGrjgs=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=ekeFA6reD+erHbw4vaE4wLZnceCBCD1z60Kj492/vfK0FIE8RWWDHqkWNKNA5MB+wgWxvbu1Nd98L8/EA0aG5ygSiM6AUr8TlxJ43kUatsuNqjM18y++1fpBLo+DRxGMpSRIuQWKIhAYsHjz3gVZpiBP6Jn266bfjnbpSzujd8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TemBDO3n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4F2CC433C7;
-	Tue, 12 Mar 2024 15:43:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710258185;
-	bh=saSsJLPGKVqRyifWAvITNA+MsAjtts2uqCkZdCGrjgs=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=TemBDO3nAYXN5PjNextlJQDVn+cFCmHn/AifJjXH6yecbnsdNN8Ous1QY12Ws6cGx
-	 2eRXf8mSyuVI3HwcyjjVcIk91kh534i8hyGyDbalN1eZXfkQs8Pu56OJvudVLCWp2N
-	 fPdsDzwUn+99Jh8zVJwhktzAUB1IG0habTa2gU7ksuArwToqzBSa4vmVRZNSsKrp1s
-	 fjKckEktCEAjODpf8UymIbvTGSTv1tpJyXHGaFaWJSsUinXKYRGwerCLQ2p5D3yzM8
-	 QsDbA09IbM0jG5La0Z+u23T/tBCKlpI3Xg4/J7AIfG6p9yk0veQNhXzNbAmvlykzNi
-	 iWrLDRvuUxmAw==
+	s=arc-20240116; t=1710258335; c=relaxed/simple;
+	bh=plViXgocX+43FaFVTkiMAQknhg2JZxGAilsVKhvdKAk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=G2MYBNOIWfwYZg4timqI6782OwP/c2VJ0d//d0byDgxn09mdZgai5zL7MLrt6nIyUlicJp4dyq96IsW0xz7PfLJBru5GVAO8OeG85pruJk/RgiMquke+GGoYpW+X0+pXIo3pvJUG0XmCrFP26mYYFHxifltjoVyWApi2ctf4Zeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ln2Ui+Nm; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 42CE6240004;
+	Tue, 12 Mar 2024 15:45:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710258328;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=plViXgocX+43FaFVTkiMAQknhg2JZxGAilsVKhvdKAk=;
+	b=Ln2Ui+NmcUK/CDH0MoZtYntEKO5E7fhSSA5YIBgdEajx0GBy6VQvfTz4y2ZgbDybP/ruPd
+	+LL/SNBbO1lALCSNU6lMI1MxdqdT4HBr3lEIE9vujPy609D4g3kP8x2xXUYIoIfpnx4MX7
+	U95J13boUNeOCw8NDAnFj9hcv+bu+EGXYObP1wdbVwniZH4j0LZk268E61rzhdJATID5/J
+	w+dMNTtdn1yBVkmkrHwxjyLzImO2iM75OEss1rBJyEriwXA9bc0o/0lBoczmYDTLC57fXA
+	NLdQlYOUgs49UYWYqO/sQXZxFRqAkzpWhSqFZ95koU1qw118qyPSAKq9SJ6vhg==
+Date: Tue, 12 Mar 2024 16:45:26 +0100
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Elad Nachman <enachman@marvell.com>
+Cc: <taras.chornyi@plvision.eu>, <davem@davemloft.net>,
+ <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+ <andrew@lunn.ch>, <thomas.petazzoni@bootlin.com>,
+ <miquel.raynal@bootlin.com>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] net: marvell: prestera: fix memory use after free
+Message-ID: <20240312164526.4a0e242a@kmaincent-XPS-13-7390>
+In-Reply-To: <20240311135112.2642491-3-enachman@marvell.com>
+References: <20240311135112.2642491-1-enachman@marvell.com>
+	<20240311135112.2642491-3-enachman@marvell.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 12 Mar 2024 17:43:01 +0200
-Message-Id: <CZRVXE96ZZA8.33VFES8S07YS9@kernel.org>
-Subject: Re: [RFC PATCH v2 3/3] tpm: of: If available use linux,sml-log to
- get the log and its size
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <mpe@ellerman.id.au>,
- <linux-integrity@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
-Cc: <linux-kernel@vger.kernel.org>, <rnsastry@linux.ibm.com>,
- <peterhuewe@gmx.de>, <viparash@in.ibm.com>, <devicetree@vger.kernel.org>,
- <jsnitsel@redhat.com>
-X-Mailer: aerc 0.17.0
-References: <20240311132030.1103122-1-stefanb@linux.ibm.com>
- <20240311132030.1103122-4-stefanb@linux.ibm.com>
- <CZR7B45P71XS.53XNZD9FWZSL@kernel.org>
- <916fb19b-daf8-4c1b-bc25-f071d2b3ae33@linux.ibm.com>
-In-Reply-To: <916fb19b-daf8-4c1b-bc25-f071d2b3ae33@linux.ibm.com>
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Mon Mar 11, 2024 at 10:33 PM EET, Stefan Berger wrote:
->
->
-> On 3/11/24 16:25, Jarkko Sakkinen wrote:
-> > On Mon Mar 11, 2024 at 3:20 PM EET, Stefan Berger wrote:
-> >> If linux,sml-log is available use it to get the TPM log rather than th=
-e
-> >> pointer found in linux,sml-base. This resolves an issue on PowerVM and=
- KVM
-> >> on Power where after a kexec the memory pointed to by linux,sml-base m=
-ay
-> >> have become inaccessible or corrupted. Also, linux,sml-log has replace=
-d
-> >> linux,sml-base and linux,sml-size on these two platforms.
-> >>
-> >> Keep the handling of linux,sml-base/sml-size for powernv platforms tha=
-t
-> >> provide the two properties via skiboot.
-> >>
-> >> Fixes: c5df39262dd5 ("drivers/char/tpm: Add securityfs support for eve=
-nt log")
-> >> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> >=20
-> > I'm worried about not being up to date and instead using "cached" value=
-s
-> > when verifying anything from a security chip. Does this guarantee that
-> > TPM log is corrupted and will not get updated somehow?
->
->
-> What do you mean 'guarantee that TPM log is corrupted'?
+On Mon, 11 Mar 2024 15:51:11 +0200
+Elad Nachman <enachman@marvell.com> wrote:
 
-I presume that this is for power architecture but I have no idea what
-leads log being corrupted, and is the scope all of that that arch or
-some subset of CPUs.
-
-The commit message is not very detailed on kexec scenario. It more like
-assumes that reader knows all the detail beforehand. So probably this
-will start to make sense once the backing story is improved, that's
-all.
-
-> The TPM was handed over from the firmware to Linux and the firmware then=
+> From: Elad Nachman <enachman@marvell.com>
+>=20
+> Prestera driver routing module cleanup process would
+> release memory and then reference it again, and eventually
+> free it again.
+> Remove the redundant first memory free call.
+> All such double free calls were detected using KASAN.
 =20
-> freed all memory associated with the log and will then not create a new=
-=20
-> log or touch the TPM or do anything that would require an update to the=
-=20
-> handed-over log. Linux also does not append to the firmware log. So=20
-> whatever we now find in linux,sml-log would be the latest firmware log=20
-> and the state of the 'firmware PCRs' computed from it should correspond=
-=20
-> to the current state of the 'firmware PCRs'.
+Not directly related to this patch but I am wondering if
+the call to prestera_port_sfp_unbind(port) is not missing in
+prestera_destroy_ports() function?
 
-So on what CPU this happens and is there any bigger picture for that
-design choice in the firmware?
-
-If it is a firmware bug, this should emit FW_BUG log message. If not,
-then this commit message should provide the necessary context.
-
-BR, Jarkko
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
