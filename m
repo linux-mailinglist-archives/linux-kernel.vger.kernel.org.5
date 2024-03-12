@@ -1,112 +1,259 @@
-Return-Path: <linux-kernel+bounces-100448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7648797B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:36:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 371B48797B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC0BF1C21A71
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:36:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AD521C209E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1728E7C6DE;
-	Tue, 12 Mar 2024 15:36:10 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454C97CF1E;
+	Tue, 12 Mar 2024 15:36:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="De7W//s0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351A27C0B2
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:36:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407237C0BC;
+	Tue, 12 Mar 2024 15:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710257769; cv=none; b=Z+a3G4af93wMh5i6me5pRT+PMFj4DNwxxYbHd9Jr2iq0lBAZlRgXpT6BRXJbXaItXfRLbusbUxcOsZZhXEzF0gh0tdxLNS8xd+8WWggdP70IQvCYshDQX7dliVIvu/70e1UfD6U4jO9qeEBF4cDLCqs3PxmSTRkgVhxPXuKQTfg=
+	t=1710257791; cv=none; b=hcyYdbWfnJjCjn+SK7BjqvS4BNnAMxxCc2N+uXBxovjEb/oGWrIYyGHWlSRN5z0bytNor1JQhqZ/yVbwj65AcnvaNMcZaqKd9BRbwweN4GKt3WaM8hB16jF6fq/KBDEYUy8CWz1h4OCEZPUaSciGhukHvZxlGZgAVNtzh1iXbFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710257769; c=relaxed/simple;
-	bh=px16BB2yL1LGNNnF1idex0fwqAdQ6VLGIXIo4UIpP4M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RDW6xri+16RbJFpYDf/IXoFHmepDAt1FoZFxHGJ27xblPcOytM6B2hyJq5P0ks7kdUN881GlZJmQuab3yKl1xt2HeLbOugG+qoGTvyEW7Wf2VV57iLgIoGCM4mWtBdRyLKBcVKxh2XDE9K2ayKpOyH1HFOS1NF2MCt1aYQY2wk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4826974"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="4826974"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:36:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="914399956"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="914399956"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:36:05 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy@kernel.org>)
-	id 1rk4Ad-0000000Bvnx-1G7J;
-	Tue, 12 Mar 2024 17:36:03 +0200
-Date: Tue, 12 Mar 2024 17:36:03 +0200
-From: Andy Shevchenko <andy@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, Paul Burton <paulburton@kernel.org>
-Subject: Re: [PATCH 3/3] auxdisplay: img-ascii-lcd: Convert to platform
- remove callback returning void
-Message-ID: <ZfB2Y1P5VRZWEUqu@smile.fi.intel.com>
-References: <cover.1710194084.git.u.kleine-koenig@pengutronix.de>
- <44de2d4c1fed6fe96b68ba9ad768d297b8f392a5.1710194084.git.u.kleine-koenig@pengutronix.de>
- <CAMuHMdVvmN2xns_76zSDpUX-v8V16mSP12A=Y4gght9cdgNb+A@mail.gmail.com>
- <r5ydocz3u3ng6voax2iveoqvvqpuo6s3defjkpqzmuoj222clw@76ilb4kbjlrw>
+	s=arc-20240116; t=1710257791; c=relaxed/simple;
+	bh=wKVJV0Guheiy5ccw9xsQRL2O+QCrf6YHcmhC4LaNjE0=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PnI+M+ApFzljAYESxCFRbudhEZ+2G/JXwceyzrE0jX8H/Ium/iT2oNP0sHd+Gjvex1X2mkeJng/769SvOWgBHk1+7ON88E9zyd97Wm7tPDYNE+BW0LVUoRyQGNGXJWUsPDZBIV3MGLt0O4QHyPK/zIPB7O6w11/d1Bb6P0MrPVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=De7W//s0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70274C433F1;
+	Tue, 12 Mar 2024 15:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710257790;
+	bh=wKVJV0Guheiy5ccw9xsQRL2O+QCrf6YHcmhC4LaNjE0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=De7W//s0w15UCZPDbgdyFNkOCQE3mhlTM3jHRJAAeoO5ATF/9jpLZnofPIa6oENaY
+	 MDEoDaVjXrFRFvf4Lb0u1JF2IZlnMcPbhZMhWoepwX3v61zCZSk69KBCKibLnsHInH
+	 aG4GZHDFoyXvyCrLg+FZTC3ohnawBnF9GzWoz8RgwlBzt4h8amanr+bSa8pwDsMJeT
+	 7gnf0TVU4tNWegwQaDAFqSHlSCSTF1jD7qESq99MccIAF7NPCi6mkB6Ndsp7pz+qbK
+	 BXQf7K79e6kgRPaTqIgVJ+g5VT3bdJmjTofr6bM4O7ignAjfzLraPSnZpgeYqxOeIJ
+	 L0LTIKtPRrK/A==
+Received: from [209.214.232.173] (helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rk4B1-00BmAg-D8;
+	Tue, 12 Mar 2024 15:36:27 +0000
+Date: Tue, 12 Mar 2024 15:36:19 +0000
+Message-ID: <87v85rpimk.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Mostafa Saleh <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] KVM: arm64: Add PSCI SYSTEM_OFF2 function for hibernation
+In-Reply-To: <20240312135958.727765-2-dwmw2@infradead.org>
+References: <20240312135958.727765-1-dwmw2@infradead.org>
+	<20240312135958.727765-2-dwmw2@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <r5ydocz3u3ng6voax2iveoqvvqpuo6s3defjkpqzmuoj222clw@76ilb4kbjlrw>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 209.214.232.173
+X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, dwmw@amazon.co.uk, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Tue, Mar 12, 2024 at 11:27:37AM +0100, Uwe Kleine-König wrote:
-> On Tue, Mar 12, 2024 at 09:17:54AM +0100, Geert Uytterhoeven wrote:
-> > On Mon, Mar 11, 2024 at 10:59 PM Uwe Kleine-König
-> > <u.kleine-koenig@pengutronix.de> wrote:
-> > > The .remove() callback for a platform driver returns an int which makes
-> > > many driver authors wrongly assume it's possible to do error handling by
-> > > returning an error code. However the value returned is ignored (apart
-> > > from emitting a warning) and this typically results in resource leaks.
-> > >
-> > > To improve here there is a quest to make the remove callback return
-> > > void. In the first step of this quest all drivers are converted to
-> > > .remove_new(), which already returns void. Eventually after all drivers
-> > > are converted, .remove_new() will be renamed to .remove().
-> > >
-> > > Trivially convert this driver from always returning zero in the remove
-> > > callback to the void returning variant.
-> > >
-> > > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > 
-> > Thanks for your patch!
-> > 
-> > > --- a/drivers/auxdisplay/img-ascii-lcd.c
-> > > +++ b/drivers/auxdisplay/img-ascii-lcd.c
-> > > @@ -279,13 +279,12 @@ static int img_ascii_lcd_probe(struct platform_device *pdev)
-> > >   *
-> > >   * Return: 0
-> > 
-> > Please remove this line.
+On Tue, 12 Mar 2024 13:51:28 +0000,
+David Woodhouse <dwmw2@infradead.org> wrote:
 > 
-> Good catch, thanks.
+> From: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> @Andy: Should I resend this patch? Or the whole series? Or do you want
-> to fixup while applying?
+> The PSCI v1.3 specification (alpha) adds support for a SYSTEM_OFF2 function
+> which is analogous to ACPI S4 state. This will allow hosting environments
+> to determine that a guest is hibernated rather than just powered off, and
+> ensure that they preserve the virtual environment appropriately to allow
+> the guest to resume safely (or bump the hardware_signature in the FACS to
+> trigger a clean reboot instead).
+> 
+> The beta version will be changed to say that PSCI_FEATURES returns a bit
+> mask of the supported hibernate types, which is implemented here.
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> ---
+>  Documentation/virt/kvm/api.rst       | 11 +++++++++
+>  arch/arm64/include/asm/kvm_host.h    |  2 ++
+>  arch/arm64/include/uapi/asm/kvm.h    |  6 +++++
+>  arch/arm64/kvm/arm.c                 |  5 ++++
+>  arch/arm64/kvm/hyp/nvhe/psci-relay.c |  2 ++
+>  arch/arm64/kvm/psci.c                | 37 ++++++++++++++++++++++++++++
+>  include/uapi/linux/kvm.h             |  1 +
+>  include/uapi/linux/psci.h            |  5 ++++
+>  8 files changed, 69 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index bd93cafd3e4e..f5963c3770a5 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6761,6 +6761,10 @@ the first `ndata` items (possibly zero) of the data array are valid.
+>     the guest issued a SYSTEM_RESET2 call according to v1.1 of the PSCI
+>     specification.
+>  
+> + - for arm64, data[0] is set to KVM_SYSTEM_EVENT_SHUTDOWN_FLAG_PSCI_OFF2
+> +   if the guest issued a SYSTEM_OFF2 call according to v1.3 of the PSCI
+> +   specification.
+> +
+>   - for RISC-V, data[0] is set to the value of the second argument of the
+>     ``sbi_system_reset`` call.
+>  
+> @@ -6794,6 +6798,13 @@ either:
+>   - Deny the guest request to suspend the VM. See ARM DEN0022D.b 5.19.2
+>     "Caller responsibilities" for possible return values.
+>  
+> +Hibernation using the PSCI SYSTEM_OFF2 call is enabled with the
+> +KVM_CAP_ARM_SYSTEM_OFF2 VM capability. If a guest invokes the PSCI
 
-Not big deal, I'll fix it whilst applying.
-Thank you!
+Checking that PSCI 1.3 is enabled for the guest should be enough, no?
+I don't think providing yet another level of optionally brings us
+much, other than complexity.
+
+> +SYSTEM_OFF2 function, KVM will exit to userspace with the
+> +KVM_SYSTEM_EVENT_SHUTDOWN event type and with data[0] set to
+> +KVM_SYSTEM_EVENT_SHUTDOWN_FLAG_PSCI_OFF2. The only supported hibernate
+> +type for the SYSTEM_OFF2 function is HIBERNATE_OFF (0x0).
+> +
+>  ::
+>  
+>  		/* KVM_EXIT_IOAPIC_EOI */
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 21c57b812569..d6da0eb1c236 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -274,6 +274,8 @@ struct kvm_arch {
+>  #define KVM_ARCH_FLAG_TIMER_PPIS_IMMUTABLE		6
+>  	/* Initial ID reg values loaded */
+>  #define KVM_ARCH_FLAG_ID_REGS_INITIALIZED		7
+> +	/* PSCI SYSTEM_OFF2 (hibernate) enabled for the guest */
+> +#define KVM_ARCH_FLAG_SYSTEM_OFF2_ENABLED		8
+>  	unsigned long flags;
+>  
+>  	/* VM-wide vCPU feature set */
+> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+> index 964df31da975..66736ff04011 100644
+> --- a/arch/arm64/include/uapi/asm/kvm.h
+> +++ b/arch/arm64/include/uapi/asm/kvm.h
+> @@ -484,6 +484,12 @@ enum {
+>   */
+>  #define KVM_SYSTEM_EVENT_RESET_FLAG_PSCI_RESET2	(1ULL << 0)
+>  
+> +/*
+> + * Shutdown caused by a PSCI v1.3 SYSTEM_OFF2 call.
+> + * Valid only when the system event has a type of KVM_SYSTEM_EVENT_SHUTDOWN.
+> + */
+> +#define KVM_SYSTEM_EVENT_SHUTDOWN_FLAG_PSCI_OFF2	(1ULL << 0)
+> +
+>  /* run->fail_entry.hardware_entry_failure_reason codes. */
+>  #define KVM_EXIT_FAIL_ENTRY_CPU_UNSUPPORTED	(1ULL << 0)
+>  
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index a25265aca432..1c58762272eb 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -98,6 +98,10 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>  		r = 0;
+>  		set_bit(KVM_ARCH_FLAG_SYSTEM_SUSPEND_ENABLED, &kvm->arch.flags);
+>  		break;
+> +	case KVM_CAP_ARM_SYSTEM_OFF2:
+> +		r = 0;
+> +		set_bit(KVM_ARCH_FLAG_SYSTEM_OFF2_ENABLED, &kvm->arch.flags);
+> +		break;
+>  	case KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE:
+>  		new_cap = cap->args[0];
+>  
+> @@ -238,6 +242,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  	case KVM_CAP_VCPU_ATTRIBUTES:
+>  	case KVM_CAP_PTP_KVM:
+>  	case KVM_CAP_ARM_SYSTEM_SUSPEND:
+> +	case KVM_CAP_ARM_SYSTEM_OFF2:
+>  	case KVM_CAP_IRQFD_RESAMPLE:
+>  	case KVM_CAP_COUNTER_OFFSET:
+>  		r = 1;
+> diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> index d57bcb6ab94d..0d4bea0b9ca2 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+> @@ -264,6 +264,8 @@ static unsigned long psci_1_0_handler(u64 func_id, struct kvm_cpu_context *host_
+>  	switch (func_id) {
+>  	case PSCI_1_0_FN_PSCI_FEATURES:
+>  	case PSCI_1_0_FN_SET_SUSPEND_MODE:
+> +	case PSCI_1_3_FN_SYSTEM_OFF2:
+> +	case PSCI_1_3_FN64_SYSTEM_OFF2:
+
+nit: order by version number.
+
+>  	case PSCI_1_1_FN64_SYSTEM_RESET2:
+>  		return psci_forward(host_ctxt);
+>  	case PSCI_1_0_FN64_SYSTEM_SUSPEND:
+> diff --git a/arch/arm64/kvm/psci.c b/arch/arm64/kvm/psci.c
+> index 1f69b667332b..59570eea8aa7 100644
+> --- a/arch/arm64/kvm/psci.c
+> +++ b/arch/arm64/kvm/psci.c
+> @@ -194,6 +194,12 @@ static void kvm_psci_system_off(struct kvm_vcpu *vcpu)
+>  	kvm_prepare_system_event(vcpu, KVM_SYSTEM_EVENT_SHUTDOWN, 0);
+>  }
+>  
+> +static void kvm_psci_system_off2(struct kvm_vcpu *vcpu)
+> +{
+> +	kvm_prepare_system_event(vcpu, KVM_SYSTEM_EVENT_SHUTDOWN,
+> +				 KVM_SYSTEM_EVENT_SHUTDOWN_FLAG_PSCI_OFF2);
+> +}
+> +
+>  static void kvm_psci_system_reset(struct kvm_vcpu *vcpu)
+>  {
+>  	kvm_prepare_system_event(vcpu, KVM_SYSTEM_EVENT_RESET, 0);
+> @@ -353,6 +359,11 @@ static int kvm_psci_1_x_call(struct kvm_vcpu *vcpu, u32 minor)
+>  			if (test_bit(KVM_ARCH_FLAG_SYSTEM_SUSPEND_ENABLED, &kvm->arch.flags))
+>  				val = 0;
+>  			break;
+> +		case PSCI_1_3_FN_SYSTEM_OFF2:
+> +		case PSCI_1_3_FN64_SYSTEM_OFF2:
+> +			if (test_bit(KVM_ARCH_FLAG_SYSTEM_OFF2_ENABLED, &kvm->arch.flags))
+> +				val = 1UL << PSCI_1_3_HIBERNATE_TYPE_OFF;
+> +			break;
+
+Testing the PSCI version should be enough (minor >= 3). Same thing
+goes the the capability: checking that the host supports 1.3 should be
+enough.
+
+	M.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Without deviation from the norm, progress is not possible.
 
