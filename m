@@ -1,273 +1,212 @@
-Return-Path: <linux-kernel+bounces-100300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E30F9879540
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:42:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66B6B87954D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:48:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 132001C2194B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:42:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D2F8285EEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08077A15A;
-	Tue, 12 Mar 2024 13:42:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EA22AE66;
-	Tue, 12 Mar 2024 13:42:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4B37A720;
+	Tue, 12 Mar 2024 13:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="a0mDb4pR";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lDFatT0+"
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270715B1E1;
+	Tue, 12 Mar 2024 13:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710250961; cv=none; b=rBQ9c+YnnrZ5t5FnX1jeqakkiocaE/6ae95tBa/0xCdr8NTa0ZvUPWvqfc/FhjuQQule7Wm5exNdpAhBIFkh7RT9FDL2IkMvrmo+42Qpl27hXPgg8nDzpI2CEwDjd5Khj9CX2BLAR67JP5EOc3mPMuZgZ3uuFihQebzBAIYZjbk=
+	t=1710251281; cv=none; b=C61Tlq9wpPL0nUlqZ4AH03jE/5XGYGQgtha7AS5yx/gmBl1gFSccYI0mXIjtknYGgECc4OiWSPWJAZweLSEFvXthZ+1LlV0go9kGL6KEisDG3AVI6RKoWQa9dde89NWw7eJyBm+RW6BUrMg3PUuE73XgUzcLL2opI39nC6+ry2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710250961; c=relaxed/simple;
-	bh=ObYGB8T5nuRNWsZgRFUd+ZoV0/TpnhIVjozczQJugAM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bDsSzfUmRjoaPAg4pEaRZrtLoVDiPn1vgTcfCi9mw6SdTxDxrWmSxNWmjl07KcNQrUyW1fEApSNw4jCxrJsoLZcjOWFtB5f4aBlsLnJLyKypEt4MTsXfZO5t7/T4SsslgLRxZICcKgf2M3Eu2TYnRVGgZOOoHzWIVfotfXbyj2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31EAE1007;
-	Tue, 12 Mar 2024 06:43:15 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.69.97])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E9313F762;
-	Tue, 12 Mar 2024 06:42:34 -0700 (PDT)
-Date: Tue, 12 Mar 2024 13:42:28 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "Bj\"orn T\"opel" <bjorn@kernel.org>
-Cc: Puranjay Mohan <puranjay12@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Guo Ren <guoren@kernel.org>,
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-	Deepak Gupta <debug@rivosinc.com>,
-	Sia Jee Heng <jeeheng.sia@starfivetech.com>,
-	"Bj\"orn T\"opel" <bjorn@rivosinc.com>,
-	Song Shuai <suagrfillet@gmail.com>,
-	Cl'ement L'eger <cleger@rivosinc.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Jisheng Zhang <jszhang@kernel.org>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
-Message-ID: <ZfBbxPDd0rz6FN2T@FVFF77S0Q05N>
-References: <20240306165904.108141-1-puranjay12@gmail.com>
- <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1710251281; c=relaxed/simple;
+	bh=3PLdIJmYTKB6gkGFZ9Bne0cSJ5xec83W3smNXqUjWso=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=QUwEUZDeT0FbTV58vV5LmOh1cKsqTlbQczCSxxMJhjjnH77wDtgeek9vrhuQfbw0bmBPpK+LXOoiJw8ZzjqWeIQ6+LytWe1QcInbajogIxYUz27I1xV+G+vn7t3+GMiSzS8TktDNpeJba8V97LK8RK3qqBKNtJamP6i7DwTSOOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=a0mDb4pR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lDFatT0+; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id CCA9A1C000A3;
+	Tue, 12 Mar 2024 09:47:55 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 12 Mar 2024 09:47:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1710251275;
+	 x=1710337675; bh=Bjy1wqXHISa4mvQY02jG8JIIsUcNLSlrmrkVMNTQWAQ=; b=
+	a0mDb4pRPVrLP1HPtkBSgW5ZnB73TtkkPT/FZBnpMqxewQgvPuWImXb3uDemLx/m
+	wSvjez4eA0/rIa1hZphVSvBUDbfuiNFsBl2VpcfTrTktFUy/J0PfsGGcg+sIxMUG
+	9DQRTtKVZ8CU6I24rKRRhdpmSDAiWDHQM+k6TYBv4xG1pe34dOYklPduJmIoFhpS
+	CrAzShryLlcID3SwMGy2utRETRh/LOuzSFiausMAYvZ/Uxxat6Nqx8w+P6ccrbET
+	gXnzd1Dz9q6/RYQhp6beKDT1olhi+7dRcUKjJy1xMJa4GqkfeQQcCkESrG/lKobW
+	Y0ll+aRUbwddS/axfJWbag==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710251275; x=
+	1710337675; bh=Bjy1wqXHISa4mvQY02jG8JIIsUcNLSlrmrkVMNTQWAQ=; b=l
+	DFatT0+nF31R7ZyBzAe8mHgWuGi+srr48TLHIeBwT4u5C1KeQc3pKqj0sk7w6Lqc
+	N2FyBjNcrgu5GBOEwZts/IFFVATcmzvDgx1rDTgGImMMqKxPXRkhIS+PmDaH1Isw
+	KTqSbP7U3dpgoK95KM6l9Iig8lRwh4nM7CuwYxeGwvg2q6xACelIyOvP5bwgJC9g
+	BXsjLudbuM7r10pO4VKbrARM1qCajmRD5WCFGArCa8URjWrAz+K/WrINwB73npMR
+	QiWrmvpe7HGRxh1UXdSXwgt/yufpBxFksDod08NIuFZKJ7nGnj3BAykGvVJF8ter
+	4O+SqYaU4F1kcF7SGIULA==
+X-ME-Sender: <xms:CV3wZZWs9P2zX9yCI8RlclX0s0av5QUUrtKdQO6JzPxaznGMxGvAQg>
+    <xme:CV3wZZl1jYtKseL0Oji4Uy3tb54p3lbwswOzMKrqDcc-5v0e7pEhPDaK3pijRwLA8
+    Kdf7HafcHX7jADKjo0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgdehiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:CV3wZVbgTpEeWDXrLXE4N0-I43eo4OF7LhSGGIX-fmoGMnDWP1pDFQ>
+    <xmx:CV3wZcU0TmTecnXndyvJG_ls_NoyU3abBFWCmBnnsBMXA72Bo8Lnuw>
+    <xmx:CV3wZTk6lbB_Vd0gtjRgz0uuMUUrd08nj2Dx3KR_fu41JBuOTpEj1Q>
+    <xmx:CV3wZZecS909lb2jNM3D0mMNkhNEuuHtMGODT63XkGUlMgKkFgbSAw>
+    <xmx:C13wZXyNzd7ziPJAGYzgNhfiJVr7M3VjwuKuW8M3dg-HEXju4t1XwCi0-TI>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 3AE4CB6008F; Tue, 12 Mar 2024 09:47:53 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
+Message-Id: <0a4e4505-cf04-4481-955c-1e35cf97ff8d@app.fastmail.com>
+In-Reply-To: 
+ <CAMuE1bGkZ=ifyofCUfm4JVS__dgYG41kecS4TxBaHJvyJ607PQ@mail.gmail.com>
+References: <20240312095005.8909-1-maimon.sagi@gmail.com>
+ <7bf7d444-4a08-4df4-9aa1-9cd28609d166@app.fastmail.com>
+ <CAMuE1bGkZ=ifyofCUfm4JVS__dgYG41kecS4TxBaHJvyJ607PQ@mail.gmail.com>
+Date: Tue, 12 Mar 2024 14:47:32 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Sagi Maimon" <maimon.sagi@gmail.com>
+Cc: "Richard Cochran" <richardcochran@gmail.com>,
+ "Andy Lutomirski" <luto@kernel.org>, datglx@linutronix.de,
+ "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Peter Zijlstra" <peterz@infradead.org>,
+ "Johannes Weiner" <hannes@cmpxchg.org>,
+ "Sohil Mehta" <sohil.mehta@intel.com>,
+ "Rick Edgecombe" <rick.p.edgecombe@intel.com>,
+ "Nhat Pham" <nphamcs@gmail.com>, "Palmer Dabbelt" <palmer@sifive.com>,
+ "Kees Cook" <keescook@chromium.org>,
+ "Alexey Gladkov" <legion@kernel.org>,
+ "Mark Rutland" <mark.rutland@arm.com>,
+ "Miklos Szeredi" <mszeredi@redhat.com>,
+ "Casey Schaufler" <casey@schaufler-ca.com>, reibax@gmail.com,
+ "David S . Miller" <davem@davemloft.net>,
+ "Christian Brauner" <brauner@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
+ Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v6] posix-timers: add clock_compare system call
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Bjorn
+On Tue, Mar 12, 2024, at 13:15, Sagi Maimon wrote:
+> On Tue, Mar 12, 2024 at 1:19=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> =
+wrote:
+>> On Tue, Mar 12, 2024, at 10:50, Sagi Maimon wrote:
+>> > +     kc_a =3D clockid_to_kclock(clock_a);
+>> > +     if (!kc_a) {
+>> > +             error =3D -EINVAL;
+>> > +             return error;
+>> > +     }
+>> > +
+>> > +     kc_b =3D clockid_to_kclock(clock_b);
+>> > +     if (!kc_b) {
+>> > +             error =3D -EINVAL;
+>> > +             return error;
+>> > +     }
+>>
+>> I'm not sure if we really need to have it generic enough to
+>> support any combination of clocks here. It complicates the
+>> implementation a bit but it also generalizes the user space
+>> side of it.
+>>
+>> Can you think of cases where you want to compare against
+>> something other than CLOCK_MONOTONIC_RAW or CLOCK_REALTIME,
+>> or are these going to be the ones that you expect to
+>> be used anyway?
+>>
+> sure, one example is syncing two different PHCs (which was originally
+> why we needed this syscall)
+> I hope that I have understand your note and that answers your question.
 
-(apologies, my corporate mail server has butchered your name here).
+Right, that is clearly a sensible use case.
 
-There's a big info dump below; I realise this sounds like a sales pitch for
-CALL_OPS, but my intent is more to say "here are some dragons you may not have
-spotted".
+I'm still trying to understand the implementation for the case
+where you have two different PHCs and both implement=20
+clock_get_crosstimespec(). Rather than averaging between
+two snapshots here, I would expect this to result in
+something like
 
-On Thu, Mar 07, 2024 at 08:27:40PM +0100, Bj"orn T"opel wrote:
-> Puranjay!
-> 
-> Puranjay Mohan <puranjay12@gmail.com> writes:
-> 
-> > This patch enables support for DYNAMIC_FTRACE_WITH_CALL_OPS on RISC-V.
-> > This allows each ftrace callsite to provide an ftrace_ops to the common
-> > ftrace trampoline, allowing each callsite to invoke distinct tracer
-> > functions without the need to fall back to list processing or to
-> > allocate custom trampolines for each callsite. This significantly speeds
-> > up cases where multiple distinct trace functions are used and callsites
-> > are mostly traced by a single tracer.
-> >
-> > The idea and most of the implementation is taken from the ARM64's
-> > implementation of the same feature. The idea is to place a pointer to
-> > the ftrace_ops as a literal at a fixed offset from the function entry
-> > point, which can be recovered by the common ftrace trampoline.
-> 
-> Not really a review, but some more background; Another rationale (on-top
-> of the improved per-call performance!) for CALL_OPS was to use it to
-> build ftrace direct call support (which BPF uses a lot!). Mark, please
-> correct me if I'm lying here!
+      ktime_a1 +=3D xtstamp_b.sys_monoraw - xtstamp_a1.sys_monoraw;
 
-Yep; it gives us the ability to do a number of per-callsite things, including
-direct calls.
+in order get two device timestamps ktime_a1 and ktime_b
+that reflect the snapshots as if they were taken
+simulatenously. Am I missing some finer detail here,
+or is this something you should do?
 
-> On Arm64, CALL_OPS makes it possible to implement direct calls, while
-> only patching one BL instruction -- nice!
+>> > +     if (crosstime_support_a) {
+>> > +             ktime_a1 =3D xtstamp_a1.device;
+>> > +             ktime_a2 =3D xtstamp_a2.device;
+>> > +     } else {
+>> > +             ktime_a1 =3D timespec64_to_ktime(ts_a1);
+>> > +             ktime_a2 =3D timespec64_to_ktime(ts_a2);
+>> > +     }
+>> > +
+>> > +     ktime_a =3D ktime_add(ktime_a1, ktime_a2);
+>> > +
+>> > +     ts_offs =3D ktime_divns(ktime_a, 2);
+>> > +
+>> > +     ts_a1 =3D ns_to_timespec64(ts_offs);
+>>
+>> Converting nanoseconds to timespec64 is rather expensive,
+>> so I wonder if this could be changed to something cheaper,
+>> either by returning nanoseconds in the end and consistently
+>> working on those, or by doing the calculation on the
+>> timespec64 itself.
+>>
+> I prefer returning timespec64, so this system call aligns with other
+> system calls like clock_gettime for example.
+> As far as doing the calculation on timespec64 itself, that looks more
+> expansive to me, but I might be wrong.
 
-The key thing here isn't that we patch a single instruction (since we have ot
-patch the ops pointer too!); it's that we can safely patch either of the ops
-pointer or BL/NOP at any time while threads are concurrently executing.
+In the general case, dividing a 64-bit variable by some other
+variable is really expensive and will take hundreds of cycles.
+This one is a bit cheaper because the division is done using
+a constant divider of NS_PER_SEC, which can get optimized fairly
+well on many systems by turning it into an equivalent 128-bit
+multiplication plus shift.
 
-If you have a multi-instruction sequence, then threads can be preempted
-mid-sequence, and it's very painful/complex to handle all of the races that
-entails.
+For the case where you start out with a timespec64, I would
+expect it to be cheaper to calculate the nanosecond difference
+between ts_a1 and ts_a2 to add half of that to the timespec
+than to average two large 64-bit values and convert that back
+to a timespec afterwards. This should be fairly easy to try
+out if you can test a 32-bit kernel. We could decide that
+there is no need to care about anything bug 64-bit kernels
+here, in which case your current version should be just as
+good for both the crosstime_support_a and !crosstime_support_a
+cases.
 
-For example, if your callsites use a sequence:
-
-	AUIPC <tmp>, <funcptr>
-	JALR <tmp2>, <funcptr>(<tmp>)
-
-Using stop_machine() won't allow you to patch that safely as some threads
-could be stuck mid-sequence, e.g.
-
-	AUIPC <tmp>, <funcptr>
-	[ preempted here ]
-	JALR <tmp2>, <funcptr>(<tmp>)
-
-.. and you can't update the JALR to use a new funcptr immediate until those
-have completed the sequence.
-
-There are ways around that, but they're complicated and/or expensive, e.g.
-
-* Use a sequence of multiple patches, starting with replacing the JALR with an
-  exception-generating instruction with a fixup handler, which is sort-of what
-  x86 does with UD2. This may require multiple passes with
-  synchronize_rcu_tasks() to make sure all threads have seen the latest
-  instructions, and that cannot be done under stop_machine(), so if you need
-  stop_machine() for CMODx reasons, you may need to use that several times with
-  intervening calls to synchronize_rcu_tasks().
-
-* Have the patching logic manually go over each thread and fix up the pt_regs
-  for the interrupted thread. This is pretty horrid since you could have nested
-  exceptions and a task could have several pt_regs which might require
-  updating.
-
-The CALL_OPS approach is a bit easier to deal with as we can patch the
-per-callsite pointer atomically, then we can (possibly) enable/disable the
-callsite's branch, then wait for threads to drain once. 
-
-As a heads-up, there are some latent/generic issues with DYNAMIC_FTRACE
-generally in this area (CALL_OPs happens to side-step those, but trampoline
-usage is currently affected):
-
-  https://lore.kernel.org/lkml/Zenx_Q0UiwMbSAdP@FVFF77S0Q05N/
-
-.. I'm looking into fixing that at the moment, and it looks like that's likely
-to require some per-architecture changes.
-
-> On RISC-V we cannot use use the same ideas as Arm64 straight off,
-> because the range of jal (compare to BL) is simply too short (+/-1M).
-> So, on RISC-V we need to use a full auipc/jal pair (the text patching
-> story is another chapter, but let's leave that aside for now). Since we
-> have to patch multiple instructions, the cmodx situation doesn't really
-> improve with CALL_OPS.
-
-The branch range thing is annoying, but I think this boils down to the same
-problem as arm64 has with needing a "MOV <tmp>, LR" instruction that we have to
-patch in once at boot time. You could do the same and patch in the AUIPC once,
-e.g. have
-
-| 	NOP
-| 	NOP 
-| func:
-| 	AUIPC <tmp>, <common_ftrace_caller>
-| 	JALR <tmp2>, <common_ftrace_caller>(<tmp>) // patched with NOP
-
-.. which'd look very similar to arm64's sequence:
-
-| 	NOP
-| 	NOP
-| func:
-| 	MOV X9, LR
-| 	BL ftrace_caller // patched with NOP
-
-.. which I think means it *might* be better from a cmodx perspective?
-
-> Let's say that we continue building on your patch and implement direct
-> calls on CALL_OPS for RISC-V as well.
-> 
-> From Florent's commit message for direct calls:
-> 
->   |    There are a few cases to distinguish:
->   |    - If a direct call ops is the only one tracing a function:
->   |      - If the direct called trampoline is within the reach of a BL
->   |        instruction
->   |         -> the ftrace patchsite jumps to the trampoline
->   |      - Else
->   |         -> the ftrace patchsite jumps to the ftrace_caller trampoline which
->   |            reads the ops pointer in the patchsite and jumps to the direct
->   |            call address stored in the ops
->   |    - Else
->   |      -> the ftrace patchsite jumps to the ftrace_caller trampoline and its
->   |         ops literal points to ftrace_list_ops so it iterates over all
->   |         registered ftrace ops, including the direct call ops and calls its
->   |         call_direct_funcs handler which stores the direct called
->   |         trampoline's address in the ftrace_regs and the ftrace_caller
->   |         trampoline will return to that address instead of returning to the
->   |         traced function
-> 
-> On RISC-V, where auipc/jalr is used, the direct called trampoline would
-> always be reachable, and then first Else-clause would never be entered.
-> This means the the performance for direct calls would be the same as the
-> one we have today (i.e. no regression!).
-> 
-> RISC-V does like x86 does (-ish) -- patch multiple instructions, long
-> reach.
-> 
-> Arm64 uses CALL_OPS and patch one instruction BL.
-> 
-> Now, with this background in mind, compared to what we have today,
-> CALL_OPS would give us (again assuming we're using it for direct calls):
-> 
-> * Better performance for tracer per-call (faster ops lookup) GOOD
-> * Larger text size (function alignment + extra nops) BAD
-> * Same direct call performance NEUTRAL
-> * Same complicated text patching required NEUTRAL
-
-Is your current sequence safe for preemptible kernels (i.e. with PREEMPT_FULL=y
-or PREEMPT_DYNAMIC=y + "preempt=full" on the kernel cmdline) ?
-
-Looking at v6.8, IIUC you have:
-
-	// unpatched		//patched
-	NOP			AUIPC
-	NOP			JALR
-
-What prevents a thread being preempted mid-sequence such that it executes:
-
-	NOP
-	[ preempted ]
-	[ stop_machine() used to patch text ]
-	[ restored ]
-	JALR
-
-.. ?
-
-.. or when changing the call:
-
-	AUIPC		// old funcptr
-	[ preempted ]
-	[ stop_machine() used to patch text ]
-	[ restored ]
-	JALR		// new funcptr
-.. ?
-
-I suspect those might both be broken, but it's difficult to hit the race and so
-testing hasn't revealed that so far.
-
-> It would be interesting to see how the per-call performance would
-> improve on x86 with CALL_OPS! ;-)
-
-Heh. ;)
-
-> I'm trying to wrap my head if it makes sense to have it on RISC-V, given
-> that we're a bit different from Arm64. Does the scale tip to the GOOD
-> side?
->
-> Oh, and we really need to see performance numbers on real HW! I have a
-> VF2 that I could try this series on.
-
-I'll have to leave those two to you. I suspect the preempt/stop_machine()
-might just tip that from NEUTRAL to GOOD.
-
-Mark.
+     Arnd
 
