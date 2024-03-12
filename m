@@ -1,174 +1,124 @@
-Return-Path: <linux-kernel+bounces-100430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73B20879772
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36175879779
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:24:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2979A1F23755
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:23:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF2AB1F24EB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB0D7C0A5;
-	Tue, 12 Mar 2024 15:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9A07C6D6;
+	Tue, 12 Mar 2024 15:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rigdOnXH"
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxa/mtLK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE6A7A71D
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA5AE7BB08;
+	Tue, 12 Mar 2024 15:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710257009; cv=none; b=p1KVVhHIoQLzx06rUf2ih/9docL6/0ZyJjVKUYeScjLKjNcX7S5TE/Tv64ETl8hgCxoOHoWrgkZRUYlT/FLrg5zOH+6Kj1qCqEVxr+rkEl3TbsWTt7mLvZy+euUpNPerEvmBuCE5b44PiGwBgF71InvS9kBtSQHM8yVkbvj7YSw=
+	t=1710257074; cv=none; b=WRd6g+LBLqQlOm9MuJkzfbA08WsfSEkAlEPHMKT1dXgOlcLpsQ440fMRvlwfIoHvTYy00QnSSp89NfIV9bfcg1baMxr7qDyLsZ73ozWtssGfO+2RlCXGzhC3X3h4W1lO/LFCUZlPz+qpKvq264FH0UXFjFs4Q2ngb6YY0ZakK+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710257009; c=relaxed/simple;
-	bh=NKeq8I2ypWn1MTZg/ytCtrtFUFYIsegN3wqrzMQ/leY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lvEQgDwfEmAR7aB2D1RN7KSI2637dBQ85Kbgm0aS0LrCbLEeducHYkMXqRFt2nW/+XERzOvyJLp0JZzim1fAOmrnevB9XUzmZ/KxF7Q1qXPWX4hhMoOJmM5PrYmg6ba9a/eSi+XPUoWISYY1PvjBUlAqj9b5e6Bhc0RqkrQF5eY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rigdOnXH; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <38beee7c-aceb-4d59-ac79-e7e412a01588@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710257004;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xrI0LmH16nBL8Fs5qJACoyJ/98w4jqaFfRvlIhPxmt4=;
-	b=rigdOnXH1zLZxxRdzAfFhhFARZneuylNq3K5BJxQBbvup7nGm3dqF0e7mDM7zar+2allmS
-	cj0WJXZKJUeVM8gT4oi6jSTgGsS4eHbHUr2R7xzt8rQQ1HyGcrstbzXmn07LinKmvJaaYs
-	4mVpgLQGR5/NbNTafw24wjDJevg7MZs=
-Date: Tue, 12 Mar 2024 23:22:54 +0800
+	s=arc-20240116; t=1710257074; c=relaxed/simple;
+	bh=nqKmQTSmr2KuGua3AdiEOFKyMoOcoM2xLn6yrACNOR4=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UPQTdGFALdpOtiIJ94XA9/oTbs5N0UDIbyvYX/Fy9Jm1FsTQg+ArZO2VTX8Lf1BakDyCD1+1u5YWGUrbw1MA8Qcv7yrQv+lop7LqR4l5zJVFtNz2VamlbLoOkL0OsIS4pn/x8wuW3aGSQDkzXcdti8sDn1dXYVOcS4X2vLnWWFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxa/mtLK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C3BC433F1;
+	Tue, 12 Mar 2024 15:24:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710257073;
+	bh=nqKmQTSmr2KuGua3AdiEOFKyMoOcoM2xLn6yrACNOR4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=sxa/mtLKCqHRQ47Z3IGh8g9wEghLqDd4mEdsnmIZ8+rKVeNnIOe7nLGAm8nDyfpfj
+	 9KxyWcia6zoGbsG0CtfaZAKs7CFMwLVbGzY4t9ApEYLyUI08BKL131Efsf5saBdez6
+	 rHerJrF3Zq92BkXrsRTgoXJH099pAxBbqeRbXZRXepBR0iRLuBYDuXi57aDpIDf5Nk
+	 LfxsBtnoRnotjh3fEOqOxOuK2VwGVlBhw7FExY/kO9fzAbb0z0JF+68a0SzxECKKkL
+	 LkwIwhgvT/op/wvS116Vy2CGPWSBUv7lp5r9crmuinVWb4keHgw0k87cRWbQlixRKK
+	 EISGo5xgHdODA==
+Received: from [209.214.232.173] (helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rk3zS-00Blz8-6P;
+	Tue, 12 Mar 2024 15:24:30 +0000
+Date: Tue, 12 Mar 2024 15:24:23 +0000
+Message-ID: <87wmq7pj6g.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Mostafa Saleh <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] Add PSCI v1.3 SYSTEM_OFF2 support for hibernation
+In-Reply-To: <20240312135958.727765-1-dwmw2@infradead.org>
+References: <20240312135958.727765-1-dwmw2@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH v2] mm/slub: Simplify get_partial_node()
-Content-Language: en-US
-To: sxwjean@me.com, Christoph Lameter <cl@linux.com>,
- Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Xiongwei Song <xiongwei.song@windriver.com>
-References: <20240312140532.64124-1-sxwjean@me.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20240312140532.64124-1-sxwjean@me.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 209.214.232.173
+X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, dwmw@amazon.co.uk, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 2024/3/12 22:05, sxwjean@me.com wrote:
-> From: Xiongwei Song <xiongwei.song@windriver.com>
+On Tue, 12 Mar 2024 13:51:27 +0000,
+David Woodhouse <dwmw2@infradead.org> wrote:
 > 
-> Remove the check of !kmem_cache_has_cpu_partial() because it is always
-> false, we've known this by calling kmem_cache_debug() before calling
-> remove_partial(), so we can remove the check.
+> The upcoming PSCI v1.3 specification adds support for a SYSTEM_OFF2
+
+Pointer to the spec? Crucially, this is in the Alpha state, meaning
+that it is still subject to change [1].
+
+> function which is analogous to ACPI S4 state. This will allow hosting 
+> environments to determine that a guest is hibernated rather than just 
+> powered off, and ensure that they preserve the virtual environment 
+> appropriately to allow the guest to resume safely (or bump the 
+> hardware_signature in the FACS to trigger a clean reboot instead).
 > 
-> Meanwhile, redo filling cpu partial and add comment to improve the
-> readability.
+> This adds support for it to KVM, and to the guest hibernate code.
 > 
-> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
-> ---
-> Changes in v2:
->  - Use "#if IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL)" to instead 
->    "if (IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL))" to fix build error.
->    (Thanks Chengming Zhou)
->  - Add __maybe_unused for partial_slabs to prevent compiler warning.
-> 
-> v1: 
->  https://lore.kernel.org/linux-kernel/20240311132720.37741-1-sxwjean@me.com/T/
-> ---
->  mm/slub.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index a3ab096c38c0..ab526960ee5b 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2588,7 +2588,7 @@ static struct slab *get_partial_node(struct kmem_cache *s,
->  {
->  	struct slab *slab, *slab2, *partial = NULL;
->  	unsigned long flags;
-> -	unsigned int partial_slabs = 0;
-> +	unsigned int __maybe_unused partial_slabs = 0;
->  
->  	/*
->  	 * Racy check. If we mistakenly see no partial slabs then we
-> @@ -2620,19 +2620,21 @@ static struct slab *get_partial_node(struct kmem_cache *s,
->  		if (!partial) {
->  			partial = slab;
->  			stat(s, ALLOC_FROM_PARTIAL);
-> -		} else {
-> -			put_cpu_partial(s, slab, 0);
-> -			stat(s, CPU_PARTIAL_NODE);
-> -			partial_slabs++;
-> +
-> +			/* Fill cpu partial if needed from next iteration, or break */
-> +			if (IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL))
-> +				continue;
-> +			else
-> +				break;
->  		}
-> -#ifdef CONFIG_SLUB_CPU_PARTIAL
-> -		if (!kmem_cache_has_cpu_partial(s)
-> -			|| partial_slabs > s->cpu_partial_slabs / 2)
-> +
-> +#if IS_ENABLED(CONFIG_SLUB_CPU_PARTIAL)
+> Strictly, we should perhaps also allow the guest to detect PSCI v1.3, 
+> but when v1.1 was added in commit 512865d83fd9 it was done 
+> unconditionally, which seems wrong. Shouldn't we have a way for 
+> userspace to control what gets exposed, rather than silently changing 
+> the guest behaviour with newer host kernels? Should I add a 
+> KVM_CAP_ARM_PSCI_VERSION?
 
-Hmm, these two CONFIG_SLUB_CPU_PARTIAL look verbose to me :(
+Do you mean something like 85bd0ba1ff98?
 
-How about using just one, maybe like this?
+	M.
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 2ef88bbf56a3..a018c715b648 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2620,19 +2620,16 @@ static struct slab *get_partial_node(struct kmem_cache *s,
- 		if (!partial) {
- 			partial = slab;
- 			stat(s, ALLOC_FROM_PARTIAL);
-+#ifdef CONFIG_SLUB_CPU_PARTIAL
- 		} else {
- 			put_cpu_partial(s, slab, 0);
- 			stat(s, CPU_PARTIAL_NODE);
--			partial_slabs++;
--		}
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--		if (!kmem_cache_has_cpu_partial(s)
--			|| partial_slabs > s->cpu_partial_slabs / 2)
--			break;
-+			if (++partial_slabs > s->cpu_partial_slabs / 2)
-+				break;
- #else
--		break;
-+			break;
- #endif
--
-+		}
- 	}
- 	spin_unlock_irqrestore(&n->list_lock, flags);
- 	return partial;
+[1] https://documentation-service.arm.com/static/65e59325837c4d065f6556a6
 
-
-> +		put_cpu_partial(s, slab, 0);
-> +		stat(s, CPU_PARTIAL_NODE);
-> +
-> +		if (++partial_slabs > s->cpu_partial_slabs/2)
->  			break;
-> -#else
-> -		break;
->  #endif
-> -
->  	}
->  	spin_unlock_irqrestore(&n->list_lock, flags);
->  	return partial;
+-- 
+Without deviation from the norm, progress is not possible.
 
