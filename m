@@ -1,220 +1,213 @@
-Return-Path: <linux-kernel+bounces-100378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD1D4879687
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:39:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39CD7879692
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7CE1C221F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:39:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FE351F224E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43A27AE73;
-	Tue, 12 Mar 2024 14:39:16 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7605978286;
-	Tue, 12 Mar 2024 14:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A0B7B3C0;
+	Tue, 12 Mar 2024 14:41:48 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299E0446DB;
+	Tue, 12 Mar 2024 14:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710254356; cv=none; b=s1ozK8e4K8K+EV/s543Lqcv6H2U/6nRrf54J0i5wSXdrPoB5i8+DM1VkHf72YYtOR+FB08AU6JQQebT6d3fytemJSCA7V52F4e9WxBTz1tPggWmoLsV+W9qPZNqc9fiMeclwbhOBYfvhP+nNGpAnQEadnVBzAEr+/pZa2S2uvxU=
+	t=1710254508; cv=none; b=UR/sfJ/cm29CjB+UI/dqjCUpnU/xuLdcnKySxeRZQD3f12uGo2ApK58necONZS43WYfBaOZBH4RD+AuRliSsFLjiS3PlgMbzhynMEgEW4pHoRS9zzIzWwV/Apg9LpIVp61PXr/9gmP+o41m6Tk5015BLBzddc05/7VclPUNevx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710254356; c=relaxed/simple;
-	bh=A4yPPNx2A/vP3ZK0ygDuOKWhQXboHEU9aZot/+5ZzZ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aVNxgun9oVCRc2jeHVQDln1MOhNaNRKuCeE25bqG9EDxetTVkKGPyT2z45YiJvbE8r+7HGC0H/BhPu2C6Li8AITyeMLnAgMhsz9+VVY4SLGbjmh3VV6EtHKG/L3MUUwUIbsso9ExSwcxse8zhz1LVyqtLj7SOr3Rh1XHaquQfsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2F98FEC;
-	Tue, 12 Mar 2024 07:39:49 -0700 (PDT)
-Received: from [10.57.50.231] (unknown [10.57.50.231])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15E053F73F;
-	Tue, 12 Mar 2024 07:39:09 -0700 (PDT)
-Message-ID: <9f95ba15-b75c-414c-b87a-e88fddc77ebf@arm.com>
-Date: Tue, 12 Mar 2024 14:39:08 +0000
+	s=arc-20240116; t=1710254508; c=relaxed/simple;
+	bh=uOpsSVCbQLH9NXmsb8YDOq8vdcXwSuTFtG7lRr025Hs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RHionPf1XAqYdN5SW0kMWoITz7evdFqS9MWJQ/ne9wJZJCIrgAoUPxMe28H8h1PiI9ZFy8wsp3/rAE9vH35PQu86iOwFEnp7R75U1KTO68gPgarFvXc7Qf2L+YwkhtL77Q4p7VxY9HJdEdYpujJSEBpRY31yIJPvDwvZbTv4Di0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-609f1f97864so55695997b3.0;
+        Tue, 12 Mar 2024 07:41:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710254505; x=1710859305;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FXmOsnx/ac8DtMDdTaI7xWpzg70Sr5+vs/F3ep2Teoo=;
+        b=Gb9rK+6amKsX1tPvJNdbvw5LUCDa0lbKzhQ6CTIDLPI6AUmQTe92Wyfb1c/kZo6cLW
+         byEcwcsTKCBeeQCcA9ivK0OEGy3QJITbyhp+CSavgfjWBvhwV8xmjMHfSi53aQX6aWEb
+         u6AWe5vvDXETZClkghmQ4NuM+ExRp4tXek+klFiSRTFf6X4cpTPb+P0dzK9rikyb+mni
+         Pu4wbsTn5EgkJqx6CWo8ET/RmkiklZ/6CJamKnB682aaWDiejHUj63yxVb6iuZKl/436
+         CG3ScmoXC0KlD9QX8Y9qXi4XaM2WIWPS6S4G3q/eDXHeoa4RZ15/H6ixpLk1uny/8xP8
+         gSIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWUBly8RdBEm4ypHM0E3uUZtHD9TAhnBa/TEapq/m/J+cf9D768rFmHifQTkKhGUYmJLdTXDwMRIB+oETXM+hVfVeVZlPN7PBCdUpXJFJR3oWQIbhrJzDwMaxCW+v/0HlmSz239Q5uDqlPX7RZrduhFNBIn8yqq4kSfowQ+lfaFauOp2VrGQ6rqXg==
+X-Gm-Message-State: AOJu0YyRHBNFygXosKKgoJFke1vnxxFlalCxKTsz27o1jfFD120/ZCLD
+	XwH4BhE2wxVCj+yc1gRoiPDdZRF7O3Chf058jZ2LMu5ICBBAUpjAzORpYgzStd4=
+X-Google-Smtp-Source: AGHT+IFLwd80llousdW43NQpvSVAF9TrBV6DC7CPUdtOC5qyNcQLYMvcQCQWU24VbvyzJLfnk6Vsog==
+X-Received: by 2002:a5b:f09:0:b0:dc7:45d3:ffd0 with SMTP id x9-20020a5b0f09000000b00dc745d3ffd0mr7126482ybr.1.1710254504686;
+        Tue, 12 Mar 2024 07:41:44 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id w12-20020a25918c000000b00dcd9e3d3fd0sm1654333ybl.19.2024.03.12.07.41.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 07:41:44 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-db3a09e96daso4788449276.3;
+        Tue, 12 Mar 2024 07:41:44 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVXnV3/HQE+LAvydLJTu+RgETy5FoiWEpsmakY+GgBjoA8xGbK8ZdBSJx07+hvYmaldzGtxB5Q4qFi1XIvWyJQlWxeUZJRya4dVKJHRpWHDKrYjzP7k3mLduc1trd6n3JA3FN8GAeIPcNfDn05Zh8rzWEezCL7F9mnH/nrBbCg1sTn3n9AhJKvgJw==
+X-Received: by 2002:a25:4886:0:b0:dbe:9509:141c with SMTP id
+ v128-20020a254886000000b00dbe9509141cmr6367424yba.30.1710254504263; Tue, 12
+ Mar 2024 07:41:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V6 05/11] coresight: replicator: Move ACPI support from
- AMBA driver to platform driver
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240312102318.2285165-1-anshuman.khandual@arm.com>
- <20240312102318.2285165-6-anshuman.khandual@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240312102318.2285165-6-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240217060843.GA16460@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <CAL_Jsq+Feu9NnzTNx=XU5vgHhibGAQXvkuTeWbpu8gJ3rVrzcw@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+Feu9NnzTNx=XU5vgHhibGAQXvkuTeWbpu8gJ3rVrzcw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 12 Mar 2024 15:41:32 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
+Message-ID: <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
+Subject: Re: [PATCH 2/7] of: Create of_root if no dtb provided by firmware
+To: Rob Herring <robh+dt@kernel.org>
+Cc: Saurabh Singh Sengar <ssengar@linux.microsoft.com>, Frank Rowand <frowand.list@gmail.com>, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
+	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
+	devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
+	"Gabriel L. Somlo" <gsomlo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/03/2024 10:23, Anshuman Khandual wrote:
-> Add support for the dynamic replicator device in the platform driver, which
-> can then be used on ACPI based platforms. This change would now allow
-> runtime power management for replicator devices on ACPI based systems.
-> 
-> The driver would try to enable the APB clock if available. Also, rename the
-> code to reflect the fact that it now handles both static and dynamic
-> replicators. But first this refactors replicator_probe() making sure it can
-> be used both for platform and AMBA drivers, by moving the pm_runtime_put()
-> to the callers.
-> 
-> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: coresight@lists.linaro.org
-> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
-> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
-> Reviewed-by: James Clark <james.clark@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Changes in V6:
-> 
-> - Added clk_disable_unprepare() for pclk in replicator_probe() error path
-> - Added WARN_ON(!drvdata) check in replicator_platform_remove()
-> - Added additional elements for acpi_device_id[]
-> 
->   drivers/acpi/arm64/amba.c                     |  1 -
->   .../coresight/coresight-replicator.c          | 68 ++++++++++++-------
->   2 files changed, 45 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-> index 171b5c2c7edd..270f4e3819a2 100644
-> --- a/drivers/acpi/arm64/amba.c
-> +++ b/drivers/acpi/arm64/amba.c
-> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
->   	{"ARMHC503", 0}, /* ARM CoreSight Debug */
->   	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
->   	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
-> -	{"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */
->   	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
->   	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
->   	{"", 0},
-> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-> index ddb530a8436f..ed9be5435f94 100644
-> --- a/drivers/hwtracing/coresight/coresight-replicator.c
-> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
-> @@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
->    * @base:	memory mapped base address for this component. Also indicates
->    *		whether this one is programmable or not.
->    * @atclk:	optional clock for the core parts of the replicator.
-> + * @pclk:	APB clock if present, otherwise NULL
->    * @csdev:	component vitals needed by the framework
->    * @spinlock:	serialize enable/disable operations.
->    * @check_idfilter_val: check if the context is lost upon clock removal.
-> @@ -38,6 +39,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
->   struct replicator_drvdata {
->   	void __iomem		*base;
->   	struct clk		*atclk;
-> +	struct clk		*pclk;
->   	struct coresight_device	*csdev;
->   	spinlock_t		spinlock;
->   	bool			check_idfilter_val;
-> @@ -243,6 +245,10 @@ static int replicator_probe(struct device *dev, struct resource *res)
->   			return ret;
->   	}
->   
-> +	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
-> +	if (IS_ERR(drvdata->pclk))
-> +		return -ENODEV;
-> +
->   	/*
->   	 * Map the device base for dynamic-replicator, which has been
->   	 * validated by AMBA core
-> @@ -285,11 +291,12 @@ static int replicator_probe(struct device *dev, struct resource *res)
->   	}
->   
->   	replicator_reset(drvdata);
-> -	pm_runtime_put(dev);
->   
->   out_disable_clk:
->   	if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
->   		clk_disable_unprepare(drvdata->atclk);
-> +	if (ret && !IS_ERR_OR_NULL(drvdata->pclk))
-> +		clk_disable_unprepare(drvdata->pclk);
->   	return ret;
->   }
->   
-> @@ -301,29 +308,34 @@ static int replicator_remove(struct device *dev)
->   	return 0;
->   }
->   
-> -static int static_replicator_probe(struct platform_device *pdev)
-> +static int replicator_platform_probe(struct platform_device *pdev)
->   {
-> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->   	int ret;
->   
->   	pm_runtime_get_noresume(&pdev->dev);
->   	pm_runtime_set_active(&pdev->dev);
->   	pm_runtime_enable(&pdev->dev);
->   
-> -	/* Static replicators do not have programming base */
-> -	ret = replicator_probe(&pdev->dev, NULL);
-> -
-> -	if (ret) {
-> -		pm_runtime_put_noidle(&pdev->dev);
-> +	ret = replicator_probe(&pdev->dev, res);
-> +	pm_runtime_put(&pdev->dev);
-> +	if (ret)
->   		pm_runtime_disable(&pdev->dev);
-> -	}
->   
->   	return ret;
->   }
->   
-> -static void static_replicator_remove(struct platform_device *pdev)
-> +static void replicator_platform_remove(struct platform_device *pdev)
->   {
-> +	struct replicator_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
-> +
-> +	if (WARN_ON(!drvdata))
-> +		return;
-> +
->   	replicator_remove(&pdev->dev);
->   	pm_runtime_disable(&pdev->dev);
-> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-> +		clk_put(drvdata->pclk);
->   }
->   
->   #ifdef CONFIG_PM
-> @@ -334,6 +346,8 @@ static int replicator_runtime_suspend(struct device *dev)
->   	if (drvdata && !IS_ERR(drvdata->atclk))
->   		clk_disable_unprepare(drvdata->atclk);
->   
-> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-> +		clk_disable_unprepare(drvdata->pclk);
->   	return 0;
->   }
->   
-> @@ -344,6 +358,8 @@ static int replicator_runtime_resume(struct device *dev)
->   	if (drvdata && !IS_ERR(drvdata->atclk))
->   		clk_prepare_enable(drvdata->atclk);
->   
-> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-> +		clk_prepare_enable(drvdata->pclk);
+Hi Rob,
 
-nit: drvdata is != NULL, so could drop it.
+CC broonie
+CC somlo
 
-Rest looks fine
+On Wed, Feb 21, 2024 at 3:06=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wr=
+ote:
+> On Fri, Feb 16, 2024 at 11:08=E2=80=AFPM Saurabh Singh Sengar
+> <ssengar@linux.microsoft.com> wrote:
+> > On Fri, Feb 16, 2024 at 05:05:51PM -0800, Frank Rowand wrote:
+> > > When enabling CONFIG_OF on a platform where 'of_root' is not populate=
+d
+> > > by firmware, we end up without a root node. In order to apply overlay=
+s
+> > > and create subnodes of the root node, we need one. Create this root n=
+ode
+> > > by unflattening an empty builtin dtb.
+> > >
+> > > If firmware provides a flattened device tree (FDT) then the FDT is
+> > > unflattened via setup_arch(). Otherwise, the call to
+> > > unflatten(_and_copy)?_device_tree() will create an empty root node.
+> > >
+> > > We make of_have_populated_dt() return true only if the DTB was loaded=
+ by
+> > > firmware so that existing callers don't change behavior after this
+> > > patch. The call in the of platform code is removed because it prevent=
+s
+> > > overlays from creating platform devices when the empty root node is
+> > > used.
+> > >
+> > > [sboyd@kernel.org: Update of_have_populated_dt() to treat this empty =
+dtb
+> > > as not populated. Drop setup_of() initcall]
+> > >
+> > > Signed-off-by: Frank Rowand <frowand.list@gmail.com>
+> > > Link: https://lore.kernel.org/r/20230317053415.2254616-2-frowand.list=
+@gmail.com
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 
-Suzuki
+Thanks for your patch, which is now commit 7b937cc243e5b1df ("of:
+Create of_root if no dtb provided by firmware") in dt-rh/for-next
+(next-20240312 and later).
 
+On my OrangeCrab FPGA running Linux on LiteX/VexRiscv-V, the attached
+OLED display now fails to probe:
+
+    -ssd130x-i2c 0-003c: supply vcc not found, using dummy regulator
+    -[drm] Initialized ssd130x 1.0.0 20220131 for 0-003c on minor 0
+    +ssd130x-i2c 0-003c: incomplete constraints, dummy supplies not allowed
+    +ssd130x-i2c 0-003c: error -ENODEV: Failed to get VCC regulator
+
+> > > @@ -1645,6 +1635,21 @@ static inline bool of_device_is_system_power_c=
+ontroller(const struct device_node
+> > >       return of_property_read_bool(np, "system-power-controller");
+> > >  }
+> > >
+> > > +/**
+> > > + * of_have_populated_dt() - Has DT been populated by bootloader
+> > > + *
+> > > + * Return: True if a DTB has been populated by the bootloader and it=
+ isn't the
+> > > + * empty builtin one. False otherwise.
+> > > + */
+> > > +static inline bool of_have_populated_dt(void)
+> > > +{
+> > > +#ifdef CONFIG_OF
+> > > +     return of_property_present(of_root, "compatible");
+> >
+> > This adds the strict check for compatible which makes compatible
+> > to be mandatory for root nodes. So far, DeviceTree without compatible
+> > property in root nodes can work. Do we want to make this documented
+> > somewhere ?
+>
+> It already is in the DT spec and schemas.
+
+How many systems in the wild violate this?
+
+Apparently the DTS generated by LiteX does not have a root compatible
+(and model) property, hence of_have_populated_dt() returns false.
+While my gateware and DTS is quite old, a quick look at recent
+litex_json2dts_linux.py history shows this is still true for current LiteX.
+
+Now, how is this related to the failure I am seeing?
+
+drivers/regulator/core.c has:
+
+    static bool have_full_constraints(void)
+    {
+            return has_full_constraints || of_have_populated_dt();
+    }
+
+and
+
+    static int __init regulator_init_complete(void)
+    {
+            /*
+             * Since DT doesn't provide an idiomatic mechanism for
+             * enabling full constraints and since it's much more natural
+             * with DT to provide them just assume that a DT enabled
+             * system has full constraints.
+             */
+            if (of_have_populated_dt())
+                    has_full_constraints =3D true;
+
+            ...
+    }
+    late_initcall_sync(regulator_init_complete);
+
+(The latter looks a bit futile, as have_full_constraints() already
+ contains a check for of_have_populated_dt()?)
+
+When have_full_constraints() returns false, any dummy regulator will
+fail to probe.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
