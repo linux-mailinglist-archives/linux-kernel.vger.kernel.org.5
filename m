@@ -1,194 +1,236 @@
-Return-Path: <linux-kernel+bounces-100919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A382D879FA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:21:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 444D8879FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:26:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0AD41C21547
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:21:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C573E1F22274
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F8D47768;
-	Tue, 12 Mar 2024 23:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA17647768;
+	Tue, 12 Mar 2024 23:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kxGgPj9G"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FED26286;
-	Tue, 12 Mar 2024 23:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WAXfcqsS"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8F914293
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 23:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710285695; cv=none; b=HXIoeksZBEOjM3QcBW5FP3PsYNYuZcVZAQzdhjheTqZ70LI+fHnCEzhnyVbPgR3yXY18aQy+OY8/R9zi0N8cog90R7ayNZAd/vIb1p8jvdtZ/qKE1Sag1r8U/HMzPJ2l0hjzs6aplhJNX59nr9cey/vLclTB5o2zy+Gl7PjUpMk=
+	t=1710285971; cv=none; b=GwiwUfsSl2RM0fSNRu9KSxJ8+lXubqdYXmdfv5QcpbPFhHG+OOCcybYuXpMQCP0JRmkJyonx6A2oH9egFWuYoSsCg5muqWdCy2RlAJTBHDUBftcySm9nTaJm/xMCW5H+LKXgrZG3IiRWL6sWfnKudzjpqEuJAhmc+hISNadJMyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710285695; c=relaxed/simple;
-	bh=l+PQQeX29hSIYRsGK1E3f+tT9i3VuGNzzWMESaSJlkk=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=sUUJxXk4idQMjWRqxSNrEiaRdg0USMqkWdMarvLDTkuV7JEHEQTCmJjZn+1Jlk8G21B1/lJywNlWe0sq1pbv7iV1JCGMueQ5GcjNTNDmAWuulHf+zlinf/5CjjXKJyD60EzIz+T4vyCaKPMEnJwdFRbTKPMO6xbUbdwlPFxJ9Q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kxGgPj9G; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 8E49120B74C0;
-	Tue, 12 Mar 2024 16:21:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8E49120B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710285693;
-	bh=tYBQWRvnBjxq98SdJfkL9cZnOn2TzWgczlpG8jTrEPc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=kxGgPj9GySi9b7OwPqzycLrmw1f8UYvo7R4+lMUvfrGpK7szA/FysjSeV0ID33dgZ
-	 WZjOyjsLmn2M3PKvr9dZo0YYxVoGtHCvK2IOTkccOHF7GhRPyXH3E3gRVf6xhT/Kie
-	 x+vbPy4aC3L7oIi4yhJoBK/chyziKwlkzge7Xu2s=
-From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: haiyangz@microsoft.com,
-	mhklinux@outlook.com,
-	mhkelley58@gmail.com,
-	kys@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	catalin.marinas@arm.com,
-	tglx@linutronix.de,
-	daniel.lezcano@linaro.org,
-	arnd@arndb.de
-Subject: [PATCH] hyperv-tlfs: Rename some HV_REGISTER_* defines for consistency
-Date: Tue, 12 Mar 2024 16:21:27 -0700
-Message-Id: <1710285687-9160-1-git-send-email-nunodasneves@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1710285971; c=relaxed/simple;
+	bh=WIfgWGxS84Wv7+YJukG5i0Wvzatwm4oH1A+s9RndxRs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zxk9LFI2PfuitOXLvX42k/BUO6QCNZf5ltCPk1DJnoP9AaaMYeciUSPrsLhOxMUbjUFP28tH1HbXnQ7nUCW5oYzPItt/nW2SKgZEN2dnN9eKYxO9AuiXAg/09cprtvAEnZVWofNVwj7TIstQ37WPiD9M3yfu95qaMgMfvCaliDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WAXfcqsS; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dd10ebcd702so5206059276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710285969; x=1710890769; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XpyYuRrjheLrXK53urAFXychZQj84CDy3elPQHJg8tI=;
+        b=WAXfcqsS8jJWtrOM+u3n9wjfzNwCo9/c/0Q0TMQ6HvAwP7onCNjIDpzakdA+LkCTDe
+         PN9Xf4ZoB4isIBvD2Y5KZoGVhZry5Fyo1WnHAkT6MqIddp3bdmfwcuzWzjMK0Yombvvh
+         Ab7ET2ife5UxCb0Dh+bayAklxPA+M93YG+WieNmt7eoGGid5DE1kB0vOvoJMubZ8ol3S
+         QwL276Vpgk/R5//vsyZ0XBVJz7qXmuxTsxBHM384Ood3qTF/VYU8ClsCqZUoIhZ+e70s
+         jd/tOZksqkfJaKyU+cJ3i3A1NBjP22Ethl7T+GWv3w8d5v21g3q0fCQ3s4vt4PkSsv6P
+         NMDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710285969; x=1710890769;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XpyYuRrjheLrXK53urAFXychZQj84CDy3elPQHJg8tI=;
+        b=POAFgvsZMbtIpuvbyfM0S/IbRAsoxSw9rxsPN5KSfzMay6P1LcE9M1lkb2PZA7BNmy
+         W1MKokFzMV3RikP8jydPUZqvH5vNGkILMjrQ1xrEp2/N9LkCkjDzFwp0HDfqbrYXhMO9
+         0q5awXnoQ6lYeZ1jJEXj+eoJ91Bvs7u8/fJ0mmyZyRTF6JwKB7Je2Qh9hUvylfBbvf9/
+         Cpqco+7yA2E/3kwjZIuO6a8ok+c3TDAVDRCVzDqUEirkp9zfi2R6Z231k0kCFwcdUALy
+         45kQNFyDRTYSALLcF2vdW7HYqa5rDT9ikpl9rLH28l7gELPEOx/XXXmwIGrB6kmSGvZv
+         kRmA==
+X-Forwarded-Encrypted: i=1; AJvYcCXkY1GsL57x3Hxrk3kNqHE2qy7q5LGCVOeShqw3i52CL5JtieCKawIBnCe9M3crmXoj4v+rWsVhE08u6lYu5/QGUkI6FOK6/VFtmmYb
+X-Gm-Message-State: AOJu0YzaQReeCWnakadcUu7aauVr2a5et6w7gFeJKbSIWgUESaDMhu6A
+	DvZPzOSpcBPulHBxi71gx8cq6sDdLkkeyZ3/aAX0QLkJYmPZJ/p0znEAIjtvL60UhZjWMLJEYDn
+	kmkXdRmfRM5i64fH1Q32DTjqIwvo=
+X-Google-Smtp-Source: AGHT+IFLmaDdzdhg+pSCcZtXe4YXB0XArxJCa0kY88975yeZVmf1zRBHeHSS64+FIk1Z5l+BVqyXQqat/DI5W4t30+c=
+X-Received: by 2002:a25:910e:0:b0:dc7:4ad4:c977 with SMTP id
+ v14-20020a25910e000000b00dc74ad4c977mr864806ybl.25.1710285967766; Tue, 12 Mar
+ 2024 16:26:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240306222838.15087-1-daweilics@gmail.com> <65f3016c-c060-4d74-ad0f-d1981d1c6eeb@arm.com>
+In-Reply-To: <65f3016c-c060-4d74-ad0f-d1981d1c6eeb@arm.com>
+From: Dawei Li <daweilics@gmail.com>
+Date: Tue, 12 Mar 2024 16:25:31 -0700
+Message-ID: <CAG5MgCpW3xwSGgF6VBPiSMkwOz793NO4_nLNhJeqyBhs+jN30w@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: simplify __calc_delta()
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Rename HV_REGISTER_GUEST_OSID to HV_REGISTER_GUEST_OS_ID. This matches
-the existing HV_X64_MSR_GUEST_OS_ID.
+Hi Pierre,
+Thank you for the review!
 
-Rename HV_REGISTER_CRASH_* to HV_REGISTER_GUEST_CRASH_*. Including
-GUEST_ is consistent with other #defines such as
-HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE. The new names also match the TLFS
-document more accurately, i.e. HvRegisterGuestCrash*.
+On Tue, Mar 12, 2024 at 6:18=E2=80=AFAM Pierre Gondois <pierre.gondois@arm.=
+com> wrote:
+>
+> Hello Dawei,
+>
+> On 3/6/24 23:28, Dawei Li wrote:
+> > Based on how __calc_delta() is called now, the input parameter, weight
+> > is always NICE_0_LOAD. I think we don't need it as an input parameter
+> > now?
+>
+> Maybe
+>    5e963f2bd4654a202a8a05aa3a86cb0300b10e6c ("sched/fair: Commit to EEVDF=
+")
+> should be referenced to explain that the case where (weight =3D< lw.weigh=
+t)
+> doesn't exist anymore and that NICE_0_LOAD could be incorporated in
+> __calc_delta() directly.
+>
+>
+> Also I think indirect forms are preferred in general:
+> "I think we don't need it as an input parameter now ?" ->
+> "The 'weight' parameter doesn't seem to be required anymore"
+> (same note for the whole commit message)
+>
+> >
+> > Also, when weight is always NICE_0_LOAD, the initial fact value is
+> > always 2^10, and the first fact_hi will always be 0. Thus, we can get
+> > rid of the first if bock.
+> >
+> > The previous comment "(delta_exec * (weight * lw->inv_weight)) >>
+> > WMULT_SHIFT" seems to be assuming that lw->weight * lw->inv_weight is
+> > always (approximately) equal to 2^WMULT_SHIFT. However, when
+> > CONFIG_64BIT is set, lw->weight * lw->inv_weight is (approximately)
+> > equal to 2^WMULT_SHIFT * 2^10. What remains true for both CONFIG_32BIT
+> > and CONFIG_64BIT is: scale_load_down(lw->weight) * lw->inv_weight is
+> > (approximately) equal to 2^WMULT_SHIFT. (Correct me if I am wrong.)
+>
+> I think the comment is more about explaining that:
+>    X * lw.weight
+> equals:
+>    X * lw->inv_weight >> WMULT_SHIFT
+>
+I assume you mean
+X / lw->weight
+equals:
+X * lw->inv_weight >> WMULT_SHIFT
+However, this is not always true, and that's why I'd like to revise
+it. It is true for
+CONFIG_32BIT. However, For CONFIG_64BIT, we have lw->weight * lw->inv_weigh=
+t =3D
+2**WMULT_SHIFT * 2**10. Thus,
+X / lw->weight
+equals:
+X * lw->inv_weight >> (WMULT_SHIFT + 10)
 
-Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
----
- arch/arm64/hyperv/hv_core.c          | 14 +++++++-------
- arch/arm64/hyperv/mshyperv.c         |  2 +-
- arch/arm64/include/asm/hyperv-tlfs.h | 12 ++++++------
- arch/x86/kernel/cpu/mshyperv.c       |  2 +-
- include/asm-generic/hyperv-tlfs.h    | 16 ++++++++--------
- 5 files changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/arch/arm64/hyperv/hv_core.c b/arch/arm64/hyperv/hv_core.c
-index b54c34793701..f1ebc025e1df 100644
---- a/arch/arm64/hyperv/hv_core.c
-+++ b/arch/arm64/hyperv/hv_core.c
-@@ -160,22 +160,22 @@ void hyperv_report_panic(struct pt_regs *regs, long err, bool in_die)
- 		return;
- 	panic_reported = true;
- 
--	guest_id = hv_get_vpreg(HV_REGISTER_GUEST_OSID);
-+	guest_id = hv_get_vpreg(HV_REGISTER_GUEST_OS_ID);
- 
- 	/*
- 	 * Hyper-V provides the ability to store only 5 values.
- 	 * Pick the passed in error value, the guest_id, the PC,
- 	 * and the SP.
- 	 */
--	hv_set_vpreg(HV_REGISTER_CRASH_P0, err);
--	hv_set_vpreg(HV_REGISTER_CRASH_P1, guest_id);
--	hv_set_vpreg(HV_REGISTER_CRASH_P2, regs->pc);
--	hv_set_vpreg(HV_REGISTER_CRASH_P3, regs->sp);
--	hv_set_vpreg(HV_REGISTER_CRASH_P4, 0);
-+	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P0, err);
-+	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P1, guest_id);
-+	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P2, regs->pc);
-+	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P3, regs->sp);
-+	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P4, 0);
- 
- 	/*
- 	 * Let Hyper-V know there is crash data available
- 	 */
--	hv_set_vpreg(HV_REGISTER_CRASH_CTL, HV_CRASH_CTL_CRASH_NOTIFY);
-+	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_CTL, HV_CRASH_CTL_CRASH_NOTIFY);
- }
- EXPORT_SYMBOL_GPL(hyperv_report_panic);
-diff --git a/arch/arm64/hyperv/mshyperv.c b/arch/arm64/hyperv/mshyperv.c
-index 99362716ac87..03ac88bb9d10 100644
---- a/arch/arm64/hyperv/mshyperv.c
-+++ b/arch/arm64/hyperv/mshyperv.c
-@@ -46,7 +46,7 @@ static int __init hyperv_init(void)
- 
- 	/* Setup the guest ID */
- 	guest_id = hv_generate_guest_id(LINUX_VERSION_CODE);
--	hv_set_vpreg(HV_REGISTER_GUEST_OSID, guest_id);
-+	hv_set_vpreg(HV_REGISTER_GUEST_OS_ID, guest_id);
- 
- 	/* Get the features and hints from Hyper-V */
- 	hv_get_vpreg_128(HV_REGISTER_FEATURES, &result);
-diff --git a/arch/arm64/include/asm/hyperv-tlfs.h b/arch/arm64/include/asm/hyperv-tlfs.h
-index 54846d1d29c3..bc30aadedfe9 100644
---- a/arch/arm64/include/asm/hyperv-tlfs.h
-+++ b/arch/arm64/include/asm/hyperv-tlfs.h
-@@ -37,12 +37,12 @@
-  * - On x86, HV_MSR_ indicates an MSR accessed via rdmsrl/wrmsrl
-  * - On ARM, HV_MSR_ indicates a VP register accessed via hypercall
-  */
--#define HV_MSR_CRASH_P0		(HV_REGISTER_CRASH_P0)
--#define HV_MSR_CRASH_P1		(HV_REGISTER_CRASH_P1)
--#define HV_MSR_CRASH_P2		(HV_REGISTER_CRASH_P2)
--#define HV_MSR_CRASH_P3		(HV_REGISTER_CRASH_P3)
--#define HV_MSR_CRASH_P4		(HV_REGISTER_CRASH_P4)
--#define HV_MSR_CRASH_CTL	(HV_REGISTER_CRASH_CTL)
-+#define HV_MSR_CRASH_P0		(HV_REGISTER_GUEST_CRASH_P0)
-+#define HV_MSR_CRASH_P1		(HV_REGISTER_GUEST_CRASH_P1)
-+#define HV_MSR_CRASH_P2		(HV_REGISTER_GUEST_CRASH_P2)
-+#define HV_MSR_CRASH_P3		(HV_REGISTER_GUEST_CRASH_P3)
-+#define HV_MSR_CRASH_P4		(HV_REGISTER_GUEST_CRASH_P4)
-+#define HV_MSR_CRASH_CTL	(HV_REGISTER_GUEST_CRASH_CTL)
- 
- #define HV_MSR_VP_INDEX		(HV_REGISTER_VP_INDEX)
- #define HV_MSR_TIME_REF_COUNT	(HV_REGISTER_TIME_REF_COUNT)
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 56e731d8f513..909a6236a4c0 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -450,7 +450,7 @@ static void __init ms_hyperv_init_platform(void)
- 				/* To be supported: more work is required.  */
- 				ms_hyperv.features &= ~HV_MSR_REFERENCE_TSC_AVAILABLE;
- 
--				/* HV_REGISTER_CRASH_CTL is unsupported. */
-+				/* HV_MSR_CRASH_CTL is unsupported. */
- 				ms_hyperv.misc_features &= ~HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE;
- 
- 				/* Don't trust Hyper-V's TLB-flushing hypercalls. */
-diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-index 32514a870b98..87e3d49a4e29 100644
---- a/include/asm-generic/hyperv-tlfs.h
-+++ b/include/asm-generic/hyperv-tlfs.h
-@@ -636,14 +636,14 @@ struct hv_retarget_device_interrupt {
- /*
-  * Synthetic register definitions equivalent to MSRs on x86/x64
-  */
--#define HV_REGISTER_CRASH_P0		0x00000210
--#define HV_REGISTER_CRASH_P1		0x00000211
--#define HV_REGISTER_CRASH_P2		0x00000212
--#define HV_REGISTER_CRASH_P3		0x00000213
--#define HV_REGISTER_CRASH_P4		0x00000214
--#define HV_REGISTER_CRASH_CTL		0x00000215
--
--#define HV_REGISTER_GUEST_OSID		0x00090002
-+#define HV_REGISTER_GUEST_CRASH_P0	0x00000210
-+#define HV_REGISTER_GUEST_CRASH_P1	0x00000211
-+#define HV_REGISTER_GUEST_CRASH_P2	0x00000212
-+#define HV_REGISTER_GUEST_CRASH_P3	0x00000213
-+#define HV_REGISTER_GUEST_CRASH_P4	0x00000214
-+#define HV_REGISTER_GUEST_CRASH_CTL	0x00000215
-+
-+#define HV_REGISTER_GUEST_OS_ID		0x00090002
- #define HV_REGISTER_VP_INDEX		0x00090003
- #define HV_REGISTER_TIME_REF_COUNT	0x00090004
- #define HV_REGISTER_REFERENCE_TSC	0x00090017
--- 
-2.25.1
+> Also, if CONFIG_64BIT is set, we should have:
+>    weight / lw.weight =3D=3D scale_load_down(lw->weight) * 2**10 * lw->in=
+v_weight
+>
 
+weight / lw->weight should be equal to scale_load_down(weight) /
+scale_load_down(lw->weight)
+=3D scale_load_down(weight) * lw->inv_weight / (2**WMULT_SHIFT)
+Right?
+
+> So IIUC, either both lines should be update, either none.
+> (meaning that:
+>    delta_exec * NICE_0_LOAD / lw->weight
+> should be changed to
+>    delta_exec * scale_load_down(NICE_0_LOAD) / lw->weight
+
+I think this is not correct? scale_load_down(NICE_0_LOAD) is the true
+weight, as mapped
+directly from the task's nice/priority value, while lw->weight is the
+scaled_up load.
+Their units/scales don't match.
+
+I am quite new to the source code. I could be wrong. But would like to
+see more clarifications
+on this.
+
+> )
+>
+> I assume it's better to let the comment as is.
+>
+>
+> >
+> > Also updated the comment for calc_delta_fair() to make it more
+> > accurate.
+> >
+> > Signed-off-by: Dawei Li <daweilics@gmail.com>
+> > ---
+> >   kernel/sched/fair.c | 29 ++++++++++-------------------
+> >   1 file changed, 10 insertions(+), 19 deletions(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 6a16129f9a5c..c5cdb15f7d62 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -252,32 +252,23 @@ static void __update_inv_weight(struct load_weigh=
+t *lw)
+> >   }
+> >
+> >   /*
+> > - * delta_exec * weight / lw.weight
+> > + * delta_exec * NICE_0_LOAD / lw->weight
+> >    *   OR
+> > - * (delta_exec * (weight * lw->inv_weight)) >> WMULT_SHIFT
+> > + * (delta_exec * scale_load_down(NICE_0_LOAD) * lw->inv_weight) >> WMU=
+LT_SHIFT
+> >    *
+> > - * Either weight :=3D NICE_0_LOAD and lw \e sched_prio_to_wmult[], in =
+which case
+> > - * we're guaranteed shift stays positive because inv_weight is guarant=
+eed to
+> > - * fit 32 bits, and NICE_0_LOAD gives another 10 bits; therefore shift=
+ >=3D 22.
+> > - *
+> > - * Or, weight =3D< lw.weight (because lw.weight is the runqueue weight=
+), thus
+> > - * weight/lw.weight <=3D 1, and therefore our shift will also be posit=
+ive.
+> > + * We're guaranteed shift stays positive because inv_weight is guarant=
+eed to
+> > + * fit 32 bits, and scale_load_down(NICE_0_LOAD) gives another 10 bits=
+;
+> > + * therefore shift >=3D 22.
+> >    */
+> > -static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct l=
+oad_weight *lw)
+> > +static u64 __calc_delta(u64 delta_exec, struct load_weight *lw)
+> >   {
+> > -     u64 fact =3D scale_load_down(weight);
+> > -     u32 fact_hi =3D (u32)(fact >> 32);
+> > +     u64 fact =3D scale_load_down(NICE_0_LOAD);
+> > +     int fact_hi;
+> >       int shift =3D WMULT_SHIFT;
+> >       int fs;
+>
+> NIT: maybe re-ordering the variables to have a reverse tree
+>
+> Otherwise, the patch looks good to me,
+> Regards,
+> Pierre
 
