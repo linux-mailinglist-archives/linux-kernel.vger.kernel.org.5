@@ -1,191 +1,223 @@
-Return-Path: <linux-kernel+bounces-99909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1222E878F0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:24:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E86FE878F0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F23F1C20D59
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:24:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 543C3B21357
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7306995C;
-	Tue, 12 Mar 2024 07:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279106995A;
+	Tue, 12 Mar 2024 07:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="neUouczJ"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="TEIceE4V"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0CB32C84;
-	Tue, 12 Mar 2024 07:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0690069958
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710228248; cv=none; b=ZvEj9pindJSu0qtVt32MmsjgbwOaMu9qDJ2f/FTH4nvFuGl09XlPVRDGJcoT983oiHTvtpPdI/sCRdupdAbM+3ECHt1lvpVrjuchXlerU3XRYGeC5iWZkyQX5n/Ol7L8l8GVHs8Cq+49+ib75kcZN2zMKQP06Jz71e0n/gOXKCU=
+	t=1710228445; cv=none; b=M4rOcP0MMvhdWo3Fs418YU67QiC4RfrEwN3veAKeMs3Zz54IIpTSFT0SZmt0EFFvgPA6K1W2aDCxmvL9fMhtnquiU6BS9FCZ6bbNzJJDxB6AcHkoyVygjzNqWQmFHZ0o23wp2SabU5CtbBS9wu0kVLbbBdHaeBrB7V5pGi6o9BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710228248; c=relaxed/simple;
-	bh=GFewVEBBjXTCg6pPRyLzX1Aees4I5q0KrCFb3G3hCno=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=EExhGlgERbpiqcAlqF0tkRBO7e7AGBsmbUdDMeAJ4ZHtHyzBYLIqx4UQsNdjyeG9Jj2S1ojBhG2X2BRi6UvzefYttoq9i+dZLYxu4mPW2ygAKEt53gTDYs7dEj/eP3YaBW/8Hh7e143jejjfdL+BmA5SITfrDIonXg5uTEy/UQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=neUouczJ; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6da202aa138so3352943b3a.2;
-        Tue, 12 Mar 2024 00:24:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710228246; x=1710833046; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nKEepurocW2wMDsEwr7aAkhw/260KFoxQ25h+rdxZo4=;
-        b=neUouczJEYbSfY8PhJd5ztV+6tsNaarHNmLAx8nNRzMyqM1hJjrc9H7idavFNqokUz
-         0HnFS71Rjtd9xZFj1fDQ3l6l03cHxp04d0vuL3jddyUU4xv3XVP083jzXv9dQDhw4XNz
-         KpgR9BTFiYlK985qFEuT0wO4+G/bESbASEr7gAcLfsdg58d4t63T9WCvNWB4xKHD6izE
-         pBZrdVeq5dV12WV/PYsi7Y7sJfuls/FtSwI4QRvta01XV4tCQR9bBaDqQRxJqSN6qfY4
-         RGEW+wavAf9YQIFA8VF0zUP6X5/UsINAfkgUNKWumtrPGANhkEv8KSTogyxv4L7EXhO0
-         5J6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710228246; x=1710833046;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nKEepurocW2wMDsEwr7aAkhw/260KFoxQ25h+rdxZo4=;
-        b=QR11BvIEDxj2tmlMhJIeLUkMzGWp315q/4gA55uHs/YUHRuDK5JmyjAd/qa8qaN5Mi
-         D/LQVS9OHQKTemLHcYvNShPTxb5nHyRYZLYc/sfPgyitSp+KVYJ0996mrd3sNBXd8K+P
-         Pf5Ffbvg1zvxrJ+zYh8pt8aYa8sgkeA913NFpO0beTSgJQHgXtT91oGq9XaKQL8wdlVw
-         6Sm5bNDAhIp/Sa4tGmRDYbR3JF399QsSzd06sKYGK/Vhmzil2sMCxF+Fvok4tPQkACCQ
-         9NQnQ55GFPXQ5OwUV2eKMxM90Si2FL4UGAt5cGjAUdfsJX224nt9ejmelPaxnsXsJTRr
-         6f9w==
-X-Forwarded-Encrypted: i=1; AJvYcCV9y4kfjG+ITpGt/yjAooKvHeD4uZo+m18CkmZups1amY9e305GnikIqernHuJX3PqZuWYJ17uidBYtriVdao+noaAIpeHLJvFdKRwJEcdT2ySiI+DaWsCTyTTfFsH8mxQX
-X-Gm-Message-State: AOJu0YzTaHi9t1MeroptfxxO4pRsYVAQqp1UhmlMPlMmRGtog1uxJPdD
-	Yp49xD1VgwpJmoPgEKfTCciE0bYv+S1gxhomX8UrLjU0MjdpkjyN8GtS/TsF
-X-Google-Smtp-Source: AGHT+IF/qZBhbkr2KvfBIzUERorO9PixdlfZ6sB1oJizlyjnrZOOOOQs4aBBAll0USgd20ivTeECGA==
-X-Received: by 2002:a05:6a00:2291:b0:6e6:3237:a461 with SMTP id f17-20020a056a00229100b006e63237a461mr12074880pfe.9.1710228245696;
-        Tue, 12 Mar 2024 00:24:05 -0700 (PDT)
-Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
-        by smtp.gmail.com with ESMTPSA id e6-20020a056a0000c600b006e4432027d1sm5611541pfj.142.2024.03.12.00.24.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 00:24:05 -0700 (PDT)
-From: Zqiang <qiang.zhang1211@gmail.com>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org
-Cc: qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcutorture: Make rcutorture support print rcu-tasks gp state
-Date: Tue, 12 Mar 2024 15:23:57 +0800
-Message-Id: <20240312072357.23517-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1710228445; c=relaxed/simple;
+	bh=rau2ZXhw2u4iwC+3dkjnjkUaq/e+8lozHDLSMOcuGUQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AdLqMQ6PfmqCL3ivZvejudv84XMkQW8XS9mFfpiBOwUi1k93g1XGNFb6b2WGMLnUyqc3uP6x/K+vyKOGZ1RPg4X5PFf5PZ7OnieksnTpOPl6sTwdEJv8oEmhjrlca3Q4nS5TZvEFVudwIEbl37PfCbFe6YHuq/T8f6x3OYwmgbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=TEIceE4V; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1710228434; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=kSSt8SHpYapetnfBjwiq6UQNHHnNk1Xqt0pSKtWzsiU=;
+	b=TEIceE4VZQ95NcQh+ctSRTGybQZ9NWOK/7Kupl7/+DC+pwCEgu/Nsokqu+uN2sIzqJhGhuMXQ2PU9Ca5vpSuwtfkgf7mzFYAjXViEu49F+t6DQv0lK23MDz/rmX2IFtqq7oNpADK4zkx0ZicFluYdEaHrM+OzT00TgZy10yvhcA=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W2KyR9a_1710228432;
+Received: from 30.97.56.54(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W2KyR9a_1710228432)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Mar 2024 15:27:14 +0800
+Message-ID: <081dc7bb-ae60-4a38-b9c8-560280cf5cf8@linux.alibaba.com>
+Date: Tue, 12 Mar 2024 15:27:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/migrate: put dest folio on deferred split list if
+ source was there.
+To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Huang Ying <ying.huang@intel.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+References: <20240311195848.135067-1-zi.yan@sent.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20240311195848.135067-1-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This commit make rcu-tasks related rcutorture test support rcu-tasks
-gp state printing when the writer stall occurs or the at the end of
-rcutorture test.
 
-The test is as follows:
-[ 3872.548702] tasks-tracing:  Start-test grace-period state: g4560 f0x0
-[ 4332.661283] tasks-tracing:  End-test grace-period state: g41540 f0x0 total-gps=36980
 
-[ 4401.381138] tasks:  Start-test grace-period state: g8 f0x0
-[ 4565.619354] tasks:  End-test grace-period state: g1732 f0x0 total-gps=1724
+On 2024/3/12 03:58, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> Commit 616b8371539a6 ("mm: thp: enable thp migration in generic path")
+> did not check if a THP is on deferred split list before migration, thus,
+> the destination THP is never put on deferred split list even if the source
+> THP might be. The opportunity of reclaiming free pages in a partially
+> mapped THP during deferred list scanning is lost, but no other harmful
+> consequence is present[1]. Checking source folio deferred split list
+> status before page unmapped and add destination folio to the list if
+> source was after migration.
+> 
+> [1]: https://lore.kernel.org/linux-mm/03CE3A00-917C-48CC-8E1C-6A98713C817C@nvidia.com/
+> 
+>  From v1:
+> 1. Used dst to get correct deferred split list after migration
+>     (per Ryan Roberts).
+> 
+> Fixes: 616b8371539a ("mm: thp: enable thp migration in generic path")
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>   mm/huge_memory.c | 22 ----------------------
+>   mm/internal.h    | 23 +++++++++++++++++++++++
+>   mm/migrate.c     | 26 +++++++++++++++++++++++++-
+>   3 files changed, 48 insertions(+), 23 deletions(-)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 9859aa4f7553..c6d4d0cdf4b3 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -766,28 +766,6 @@ pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma)
+>   	return pmd;
+>   }
+>   
+> -#ifdef CONFIG_MEMCG
+> -static inline
+> -struct deferred_split *get_deferred_split_queue(struct folio *folio)
+> -{
+> -	struct mem_cgroup *memcg = folio_memcg(folio);
+> -	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
+> -
+> -	if (memcg)
+> -		return &memcg->deferred_split_queue;
+> -	else
+> -		return &pgdat->deferred_split_queue;
+> -}
+> -#else
+> -static inline
+> -struct deferred_split *get_deferred_split_queue(struct folio *folio)
+> -{
+> -	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
+> -
+> -	return &pgdat->deferred_split_queue;
+> -}
+> -#endif
+> -
+>   void folio_prep_large_rmappable(struct folio *folio)
+>   {
+>   	if (!folio || !folio_test_large(folio))
+> diff --git a/mm/internal.h b/mm/internal.h
+> index d1c69119b24f..8fa36e84463a 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -1107,6 +1107,29 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+>   				   unsigned long addr, pmd_t *pmd,
+>   				   unsigned int flags);
+>   
+> +#ifdef CONFIG_MEMCG
+> +static inline
+> +struct deferred_split *get_deferred_split_queue(struct folio *folio)
+> +{
+> +	struct mem_cgroup *memcg = folio_memcg(folio);
+> +	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
+> +
+> +	if (memcg)
+> +		return &memcg->deferred_split_queue;
+> +	else
+> +		return &pgdat->deferred_split_queue;
+> +}
+> +#else
+> +static inline
+> +struct deferred_split *get_deferred_split_queue(struct folio *folio)
+> +{
+> +	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
+> +
+> +	return &pgdat->deferred_split_queue;
+> +}
+> +#endif
+> +
+> +
+>   /*
+>    * mm/mmap.c
+>    */
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 73a052a382f1..591e65658535 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -20,6 +20,7 @@
+>   #include <linux/pagemap.h>
+>   #include <linux/buffer_head.h>
+>   #include <linux/mm_inline.h>
+> +#include <linux/mmzone.h>
+>   #include <linux/nsproxy.h>
+>   #include <linux/ksm.h>
+>   #include <linux/rmap.h>
+> @@ -1037,7 +1038,10 @@ static int move_to_new_folio(struct folio *dst, struct folio *src,
+>   enum {
+>   	PAGE_WAS_MAPPED = BIT(0),
+>   	PAGE_WAS_MLOCKED = BIT(1),
+> -	PAGE_OLD_STATES = PAGE_WAS_MAPPED | PAGE_WAS_MLOCKED,
+> +	PAGE_WAS_ON_DEFERRED_LIST = BIT(2),
+> +	PAGE_OLD_STATES = PAGE_WAS_MAPPED |
+> +			  PAGE_WAS_MLOCKED |
+> +			  PAGE_WAS_ON_DEFERRED_LIST,
+>   };
+>   
+>   static void __migrate_folio_record(struct folio *dst,
+> @@ -1168,6 +1172,17 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+>   		folio_lock(src);
+>   	}
+>   	locked = true;
+> +	if (folio_test_large_rmappable(src) &&
 
-[ 4589.006917] tasks-rude:  Start-test grace-period state: g8 f0x0
-[ 5059.379321] tasks-rude:  End-test grace-period state: g8508 f0x0 total-gps=8500
+IMO, you should check folio_test_large() before calling 
+folio_test_large_rmappable(), since the PG_large_rmappable flag is 
+stored in the first tail page.
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- kernel/rcu/rcu.h        |  8 ++++++++
- kernel/rcu/rcutorture.c |  3 +++
- kernel/rcu/tasks.h      | 25 +++++++++++++++++++++++++
- 3 files changed, 36 insertions(+)
-
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 86fce206560e..3353e3697645 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -556,6 +556,14 @@ static inline unsigned long rcu_get_jiffies_lazy_flush(void) { return 0; }
- static inline void rcu_set_jiffies_lazy_flush(unsigned long j) { }
- #endif
- 
-+#ifdef CONFIG_TASKS_RCU_GENERIC
-+void rcutaskstorture_get_gp_data(enum rcutorture_type test_type, int *flags,
-+				unsigned long *gp_seq);
-+#else
-+static inline void rcutaskstorture_get_gp_data(enum rcutorture_type test_type, int *flags,
-+				unsigned long *gp_seq) { }
-+#endif
-+
- #if defined(CONFIG_TREE_RCU)
- void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
- 			    unsigned long *gp_seq);
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index dd7d5ba45740..91c03f37fd97 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2267,6 +2267,7 @@ rcu_torture_stats_print(void)
- 				       &flags, &gp_seq);
- 		srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp,
- 					&flags, &gp_seq);
-+		rcutaskstorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
- 		wtp = READ_ONCE(writer_task);
- 		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %#x cpu %d\n",
- 			 rcu_torture_writer_state_getname(),
-@@ -3391,6 +3392,7 @@ rcu_torture_cleanup(void)
- 
- 	rcutorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
- 	srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp, &flags, &gp_seq);
-+	rcutaskstorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
- 	pr_alert("%s:  End-test grace-period state: g%ld f%#x total-gps=%ld\n",
- 		 cur_ops->name, (long)gp_seq, flags,
- 		 rcutorture_seq_diff(gp_seq, start_gp_seq));
-@@ -3763,6 +3765,7 @@ rcu_torture_init(void)
- 	rcu_torture_print_module_parms(cur_ops, "Start of test");
- 	rcutorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
- 	srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp, &flags, &gp_seq);
-+	rcutaskstorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
- 	start_gp_seq = gp_seq;
- 	pr_alert("%s:  Start-test grace-period state: g%ld f%#x\n",
- 		 cur_ops->name, (long)gp_seq, flags);
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index e83adcdb49b5..b1254cf3c210 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -2149,6 +2149,31 @@ late_initcall(rcu_tasks_verify_schedule_work);
- static void rcu_tasks_initiate_self_tests(void) { }
- #endif /* #else #ifdef CONFIG_PROVE_RCU */
- 
-+void rcutaskstorture_get_gp_data(enum rcutorture_type test_type, int *flags,
-+				unsigned long *gp_seq)
-+{
-+	switch (test_type) {
-+	case RCU_TASKS_FLAVOR:
-+#ifdef CONFIG_TASKS_RCU
-+		*gp_seq = rcu_seq_current(&rcu_tasks.tasks_gp_seq);
-+#endif
-+		break;
-+	case RCU_TASKS_RUDE_FLAVOR:
-+#ifdef CONFIG_TASKS_RUDE_RCU
-+		*gp_seq = rcu_seq_current(&rcu_tasks_rude.tasks_gp_seq);
-+#endif
-+		break;
-+	case RCU_TASKS_TRACING_FLAVOR:
-+#ifdef CONFIG_TASKS_TRACE_RCU
-+		*gp_seq = rcu_seq_current(&rcu_tasks_trace.tasks_gp_seq);
-+#endif
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(rcutaskstorture_get_gp_data);
-+
- void __init tasks_cblist_init_generic(void)
- {
- 	lockdep_assert_irqs_disabled();
--- 
-2.17.1
-
+> +		!list_empty(&src->_deferred_list)) {
+> +		struct deferred_split *ds_queue = get_deferred_split_queue(src);
+> +
+> +		spin_lock(&ds_queue->split_queue_lock);
+> +		ds_queue->split_queue_len--;
+> +		list_del_init(&src->_deferred_list);
+> +		spin_unlock(&ds_queue->split_queue_lock);
+> +		old_page_state |= PAGE_WAS_ON_DEFERRED_LIST;
+> +	}
+> +
+>   	if (folio_test_mlocked(src))
+>   		old_page_state |= PAGE_WAS_MLOCKED;
+>   
+> @@ -1307,6 +1322,15 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+>   	if (old_page_state & PAGE_WAS_MAPPED)
+>   		remove_migration_ptes(src, dst, false);
+>   
+> +	if (old_page_state & PAGE_WAS_ON_DEFERRED_LIST) {
+> +		struct deferred_split *ds_queue = get_deferred_split_queue(dst);
+> +
+> +		spin_lock(&ds_queue->split_queue_lock);
+> +		ds_queue->split_queue_len++;
+> +		list_add(&dst->_deferred_list, &ds_queue->split_queue);
+> +		spin_unlock(&ds_queue->split_queue_lock);
+> +	}
+> +
+>   out_unlock_both:
+>   	folio_unlock(dst);
+>   	set_page_owner_migrate_reason(&dst->page, reason);
 
