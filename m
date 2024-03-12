@@ -1,137 +1,220 @@
-Return-Path: <linux-kernel+bounces-100410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7C10879715
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:04:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E42B0879717
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:04:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58EF7B226A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:04:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13BA01C20F31
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282D57BB17;
-	Tue, 12 Mar 2024 15:03:46 +0000 (UTC)
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF607C0AF;
+	Tue, 12 Mar 2024 15:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J90xF/C4"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252777BB04
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710255825; cv=none; b=XEyauJ4clHaMppqsefUo4XVmmkexzq4jD/xt4K4ivvkb53VdHCKantOjs6ZX7y9m68M9qH/vncr7POvR2mkt2rBFqhwOjCTHDRfe7MMhvj20PTLc0OQpr1GjS/qT+D/UBzvPn/kBRa7XRcXb1p2wAekdz4ngU3xqSBcL546H9nU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710255825; c=relaxed/simple;
-	bh=DdPKwpRi0VDYYvuq7yPFpvwVjwU1zF+taFqF1vSfFwY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KCjUx5xKltCCJSlIh7mcOadr+GH9A6k1+MvgTelFoDF69KzhY8Jcrjdfd4qCWjhiubPIDUqCSVbmlFwtI81TUfin8XMrMeN3KsjAF1Y133El0/8ffzHzXjH1Ut3wrwMOmlDPO6ljcZUvVQ6N/5wJksdMy67gq+3+0P/E8DiB/4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TvGbw0g5Kz9xFm8
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 22:43:40 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id B6B6F140F13
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 23:03:27 +0800 (CST)
-Received: from [10.48.131.93] (unknown [10.48.131.93])
-	by APP2 (Coremail) with SMTP id GxC2BwCHvSG3bvBl_NYqBA--.20885S2;
-	Tue, 12 Mar 2024 16:03:27 +0100 (CET)
-Message-ID: <dc48c7c6-1aa9-4bf3-9a0d-f5acd6574228@huaweicloud.com>
-Date: Tue, 12 Mar 2024 16:03:17 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399AB7C08A;
+	Tue, 12 Mar 2024 15:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710255837; cv=fail; b=m5+CD7eJTSZ6rFb8CoEpnD1x+wQxUM1gP7Dn1uBoe+o5COYUXEQ5LimemZ0ySf4salktTvDmHAxtGUU3Qj1tilKa/a5309iqjVR8xEwKv8EFBDKn5sDc3YnfV7iE7we6UedO1yVz+pS1jmUEWaR0eyWMKPI1dEpmSOJuoZsyHAw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710255837; c=relaxed/simple;
+	bh=JsNV4+6OEzKXLbdRo1NsYJYSB8jhUvudYM0UwP4AdMM=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EmE5uXzyaq9z+QXiXAt2GAo+AWQOW8xTlbumPilQA4oWFP5LzsZcku8XwMc89zh1CA4M+vmbQaLaNtUr3mcQipXNMsNx4peD5IaJJwlb/5uJQN79IWjZZadlBVFhv4H31JDPyjN/wucc7OXh/kR39KfVzzxO7sEcRL6tGU/t1iU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J90xF/C4; arc=fail smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710255835; x=1741791835;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=JsNV4+6OEzKXLbdRo1NsYJYSB8jhUvudYM0UwP4AdMM=;
+  b=J90xF/C4rRnsgMiR+yGDmUaAKyhi16KLrvaBEllkzaP+dQeRnYzA8pXt
+   90g+ubW/c++1+FOIRbwPiBgUDaokVu+l8/DIHA1ZIWnQ6TnGidx6hA+/f
+   Rs4Uz3OYCfQhm9d3dZ+/dS7sp7EObugrTVRKVkl52I1oDWkMwsaA4GOcM
+   zoCZWbeeiqWlX0KLAtlarp/MGVRvAjpp+b169JRN0TBsVFKIdO+BCIE5R
+   nGZQnFhtq4BYZuCejynsyXKIuKlXwRhUmSHc+7vx0yCPe+Ctc5bWbmFxe
+   RhKUXN5nQjnH4q/US9W0noyy0QRJgFS6iBfsbmDV8QgLhNdJZ0zklazl6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="22487950"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="22487950"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:03:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="16221597"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Mar 2024 08:03:29 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 12 Mar 2024 08:03:29 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 12 Mar 2024 08:03:29 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 12 Mar 2024 08:03:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ANk8xEUF4jrge6YAM8Yl15e9xdag5rOL8h7zb0IreR6XobWru6i11TTq5xQOd1k2OPLQmHu9lXQzsndHoHs8bjMS0p03NY9+nVetN6UmSc4h0FAi823K4Volmf9kfIeJN4MYn+V5opdjxbSg1O4hFKTxbvgOftyAbAMsmSblOZ/ZUdXOfWYfBlRpPLzetgBd1ZCzFv4jgSnRCnmv4meP9pfthGEkKK7yiMMnbuceMlp7kEJyLv57WkY7L7vgTh6R4EGMo2PHZ9tKrAB6HeyGFesteN9rFIxwA36fBhAJrvY/5CqePSseNMjC5QAd4TayT8lmwt8ZiIA7kHo9xVc8rg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CRvKRKIH8nIZJdwv7P3/i2QPuiGL/VpusnCqCrebE0c=;
+ b=FKuQeiJtoxpRYMt+kHXj4CWSVWQuFruT2D66NW5iFOTIxWm7S9+YGJY9WYYrGFpVutFHvB+Tw8JleGdXfNIMqsG+mjVZXuYVznPgVSir2o6yFCkqVyxYTj8lETABF/7K3Al4DFFpup4WZSXAeiCXrMtiRS2YGY8AbjS6oD7KRN+rLY7+UjBYdDUK5Vj5YyT3DFbqKqCCzXMsN66qRMrxwMrpbjIIlTmkp4XeikOYmXE0/zipNljGe6EF1nBB60H6lZtb2sFkDxH3kuEaYVnnJI5VzE2TEJ68tpASNK6TIlnB1V9+IYaYyxLas1PThEwNZzJcwlNLczY57nAlx0Z2Gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MW4PR11MB7164.namprd11.prod.outlook.com (2603:10b6:303:212::6)
+ by MW3PR11MB4556.namprd11.prod.outlook.com (2603:10b6:303:5b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.17; Tue, 12 Mar
+ 2024 15:03:27 +0000
+Received: from MW4PR11MB7164.namprd11.prod.outlook.com
+ ([fe80::b5bc:2406:7431:8c1]) by MW4PR11MB7164.namprd11.prod.outlook.com
+ ([fe80::b5bc:2406:7431:8c1%7]) with mapi id 15.20.7386.015; Tue, 12 Mar 2024
+ 15:03:27 +0000
+Message-ID: <7d463faa-94ae-4c62-b3bc-b4d1084e4600@intel.com>
+Date: Tue, 12 Mar 2024 08:03:25 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] crypto: x86/aesni - Update aesni_set_key() to return void
+Content-Language: en-US
+To: Ard Biesheuvel <ardb@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<herbert@gondor.apana.org.au>, <davem@davemloft.net>, <ebiggers@kernel.org>,
+	<x86@kernel.org>
+References: <20230607053558.GC941@sol.localdomain>
+ <20240311213232.128240-1-chang.seok.bae@intel.com>
+ <CAMj1kXEQpFhDaxJ-rBb221ggdZEYWPzeoueKJr5SqRx60Ezf-w@mail.gmail.com>
+From: "Chang S. Bae" <chang.seok.bae@intel.com>
+In-Reply-To: <CAMj1kXEQpFhDaxJ-rBb221ggdZEYWPzeoueKJr5SqRx60Ezf-w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR04CA0024.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::34) To MW4PR11MB7164.namprd11.prod.outlook.com
+ (2603:10b6:303:212::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] x86/entry: Use one cmpq in NMI entry to check RIP for
- nested NMIs
-To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>,
- "open list:X86 ENTRY CODE" <linux-kernel@vger.kernel.org>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
- =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
-References: <20240229083711.721-1-petrtesarik@huaweicloud.com>
-Content-Language: en-US
-From: Petr Tesarik <petrtesarik@huaweicloud.com>
-In-Reply-To: <20240229083711.721-1-petrtesarik@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:GxC2BwCHvSG3bvBl_NYqBA--.20885S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uryxuF1fWrWUGFyUuw1xKrg_yoW8Wr17pF
-	4fCwn5KF1ku34SqFn3K3Z2vFW2vF4SqF45uFWakrWYyayYq3yUKryI9r48J348Zrn3Gayf
-	tF4jqrWrJ3Wjva7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
-	6r4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
-	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aP
-	UUUUU==
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR11MB7164:EE_|MW3PR11MB4556:EE_
+X-MS-Office365-Filtering-Correlation-Id: 818808c2-6e88-439c-0262-08dc42a59245
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I20zBGyBYiKaca2bpDT+bs/DTeszrAwUgVqUTtc+chMB4akkQFuNfUr0TYMOKooleYA+MAshuZqr5gsOJzHrEJwgb0Tmnac3bqdEj8fF0Baq6RqGRqo3xwyXNljKUfkNtvESlnJKj6yQJN3V55b+b7O5asqdWO9heje+f74Kraw84sKW1pxmlK0QXUjcQGpY+ifAYBqaqvnipJmQIpMofDON89fpAYib9gT2Ud1ZYHdzmAwz3MhXwL60NJ3QrMFswwkB41k1ADiA3wXsdczAEzxX65tz8P+JwWxW8XLWBuVtaN6bOaDQVdGv4xph9jwr92Lt0WCYu2Z4pQcwf082YnO4EFXR1nxgz18YZMidhZ9XfZAs2RUQFy6beEwz/XkN75+cFrfT6ozo6JQqiVUTSEmUPQdii7/55WQG1Xv0aG8HkoH4+38IxR1vIHM1LkrENQxbpbx9AcEIlG71YtBOrbxDE2YoWmKlWEV02DxkC4V79KK0ivr9mTzwiu83ySuWKcJj+SrN48wsr7sLYib3AQn4lwPjeHewX7bHpY7RWTGxB/aYQ5Xw3xf0QJTA4I2/YMwrsiljk7hItXP7QuwGemWylhg9pHrgC8ED+cRzB2LlSIh5bPo1F5d/5OfVqaWbR1jbHX6Nor3FXKykhv7thiBO3FPc1hRiJh+UM+mGw4o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB7164.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SFRCRkRyT0p5YWdiTXBVNklORzhuMWl2NkdIRUtQdk1kRVIrejNRS2psd1M5?=
+ =?utf-8?B?eFNKL3NTS2hEOEVNZmRBR05vS1RwYll1N0R6d1ozVGNKMjRQODRyRUJ3dEJq?=
+ =?utf-8?B?cG02dUphQjhSTGZ2OGVqMzR3YnRMaUhvSGZaamdjRXhXSHcxUC94YzQ2UWZK?=
+ =?utf-8?B?ekZEWUsvUkhXcFUyRjBNdUUyb0ZWRm5RMTMvR2U2TjdZbjVhTUxGWjlBeUMv?=
+ =?utf-8?B?dTkyU3lKQXVCQXU4MU1ub3pLS01PRzIxZHdHQkw1RjIwdzV3dUluOTBNa2Jp?=
+ =?utf-8?B?cThzbENPaThDS0dCbXQxZWFLU0tGQnA2S25jQW9MdG1lcEloM1h5K2RQMWND?=
+ =?utf-8?B?RFdLcC91aTlQaVVKMEdFYXBFcm5sUUxkc2VGUDhIaFlBZUtUU2R6RmhoUkgz?=
+ =?utf-8?B?dUc4VzZrc093Qnc0UXpRMkozRWI1NHBkSHkrZXM4c1h0bzRLRlE4bDdudkFJ?=
+ =?utf-8?B?Q0NnRGIzVmw0TXVYSFR3anZ6OVN5TldSQjUvcnJDMHVRcjI3U1JPdC92WmRS?=
+ =?utf-8?B?V2hMNlpFQi9kZWdZdzdlU1JQeFVpeFNWZzYwK0lNbjZCc3o4OG90MG1yWEs1?=
+ =?utf-8?B?dXJtcmVqdWUwWDQzcEFseEgyQkJYWGpvc0thWGQwS2MxSmE4SkxFS3R4cmds?=
+ =?utf-8?B?b3JJRUppVmJsZWVIWWY3L1dsU0NhYTRwazJVd2dwK2ZLQjNvWHpxUzhiTTBh?=
+ =?utf-8?B?eTFXRjUyTTU0QWxWUGJ5dURFRkxMZmNQSSs5VndFSUNVOVltTm44NlRhd21w?=
+ =?utf-8?B?VWh1M2FQUW5uZjZVTUxOVGs2VlpJdzNVV2tucnhkcTJOczNPelpPY285dHJX?=
+ =?utf-8?B?MHFoRlIrYjY5SEplSE1rNEtHOU9wVjJ0SmpQZEFRdmloMFZTdjIrYlVPR0ZH?=
+ =?utf-8?B?RUx0WEZqdFB0N0R6MVdNSnQ5TmlqcGxpU3FmWWRtY2FteTZxME5BeThMZVhY?=
+ =?utf-8?B?SnVadVlmbXZuczVnVTh4S0NZaUYzN1dDcjZoOWhNTWlqVUJ3NXFzNXVMa3Uv?=
+ =?utf-8?B?MkxKWEhocllUU0tzekxZbno2Z3FiSHQ0MmJEMG1hb0dtcnhpWDBlMThwZmVK?=
+ =?utf-8?B?ZUM4YjNTdjN2OEhtOGdYaEVIclpFT0xTRGVTWUxwb3BxZDBYMEJVc3ByWUhG?=
+ =?utf-8?B?MWx1eEhmdnlLbi9jK0NTQmlIU0N6cVBPRkRlei9CbFFWRnk5VHNXOGZxWVRr?=
+ =?utf-8?B?RzB4cW56Z1hkaTlYQnlZOWVJRUZWUEJVdkFmWG52VUlqWGRRT1dCUllHSGtL?=
+ =?utf-8?B?cUtCT3BjNUsxSGdhQnZZYmJ3YW1kUmNUOGlsUlgvUVYvSTdTeWFNVzgweDVX?=
+ =?utf-8?B?N2ozVk9zN0xsY3F2NzJ1UjNoRjZ5dEpUMElOd2p3RFVmYW1NWmVlWlNPcEFX?=
+ =?utf-8?B?dURnc2VPa0ltclpJSDQzdnVrajdHUU1QMnVYcGh1b0tOTHRMNEZUR2RId3dO?=
+ =?utf-8?B?V2JMZXlUaFVQKzB0NXNseURoL24wUi9tMEQyYXVPZmlaY1JEYVBiV0NDZUVI?=
+ =?utf-8?B?Z2t4QmNlUjMyV0NwZitGTHJmaTNlNnM3UWJrN2lnemxPcmlxOTVJVHppZjNR?=
+ =?utf-8?B?eFB1U01OSUVQSmJBZkRvbnpMcmhYa0xOV0YweGdmU2JXdXpVTEJYSFhQbTlm?=
+ =?utf-8?B?VzV0eTZET3BhcnY4bEsvdHIrV1EzYUVNY2JBRkZFRUc0Y2c3c1ZvckpGTHd3?=
+ =?utf-8?B?cXpHeXdOV0dEaWk3ZmxwMUJUaXROamkrckw3emhiek1HOEsxM1k0amg4ZmVx?=
+ =?utf-8?B?MTRXT21hME04YTg5TTVzMm5MOWJML3hsbWQxS1JaSDJTNFpYZEUyc1g1MjNm?=
+ =?utf-8?B?RktpS09lRXZSa3NwYjhMcmhoR1dKenAySUExVEVNR2FPZDYyNGE1bkd4cEpF?=
+ =?utf-8?B?aVhOMENzM25OVTlodGI4ZDZsS1UwZktKOUU1WXltNXlEb21YK09sVGRuUzF1?=
+ =?utf-8?B?ZzdMdWhRcGMxeHYrR0N0cFBFM0FwNG0vM25qQ0JzSnJ6WU5GVjRNTDBjcndV?=
+ =?utf-8?B?aUN1MlB3WlRzRGZWN0FMRmQyWWk4M2lNL2xNdjh4Y0JJZ2ZRY3REUDRpUDQx?=
+ =?utf-8?B?bHgyRmFPT2QxMVlmUFVmcTloS2FLMWJXMTdjZmxtditZNWZvWHJQclVXUEk3?=
+ =?utf-8?B?b240QWhXSTk3MVBuZjlneWZqV1VRdkhiSjMvbjgwdEpOL3hFdEtPcFlvSkxj?=
+ =?utf-8?B?Wmc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 818808c2-6e88-439c-0262-08dc42a59245
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB7164.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 15:03:27.2582
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FXHi5atmJY4/6RkGwzI1l+kfvGGI1hNJO3gy/gPXcs++/utPIXFsJPFpLgrquiniH9e0M4XSXYQekIRUdifq8dlRhpDd4fsNrqgD7RMU1GQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4556
+X-OriginatorOrg: intel.com
 
-On 2/29/2024 9:37 AM, Petr Tesarik wrote:
-> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+On 3/12/2024 12:46 AM, Ard Biesheuvel wrote:
+> On Mon, 11 Mar 2024 at 22:48, Chang S. Bae <chang.seok.bae@intel.com> wrote:
+>>
+>> @@ -241,7 +241,7 @@ static int aes_set_key_common(struct crypto_aes_ctx *ctx,
+>>                  err = aes_expandkey(ctx, in_key, key_len);
+>>          else {
+>>                  kernel_fpu_begin();
+>> -               err = aesni_set_key(ctx, in_key, key_len);
+>> +               aesni_set_key(ctx, in_key, key_len);
 > 
-> Optimize the check whether a nested NMI occurred between repeat_nmi and
-> end_repeat_nmi. Although this is not a hot path, this is standard code to
-> check whether a value is within a given range; it is slightly faster, takes
-> up less bytes of code and saves one entry in the branch predictor.
-> 
-> This patch also removes the only relocation for end_repeat_nmi, removing
-> the need for ANNOTATE_NOENDBR.
+> This will leave 'err' uninitialized.
 
-Any comment on this?
+Ah, right. Thanks for catching it.
 
-Kind regards
-Petr T
+Also, upon reviewing aes_expandkey(), I noticed there's no error case, 
+except for the key length sanity check.
 
-> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> ---
->  arch/x86/entry/entry_64.S | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index 9bb485977629..cae40076e109 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -1251,13 +1251,10 @@ SYM_CODE_START(asm_exc_nmi)
->  	 * the outer NMI.
->  	 */
->  
-> -	movq	$repeat_nmi, %rdx
-> -	cmpq	8(%rsp), %rdx
-> -	ja	1f
-> -	movq	$end_repeat_nmi, %rdx
-> -	cmpq	8(%rsp), %rdx
-> -	ja	nested_nmi_out
-> -1:
-> +	movq	8(%rsp), %rdx
-> +	subq	$repeat_nmi, %rdx
-> +	cmpq	$(end_repeat_nmi - repeat_nmi), %rdx
-> +	jb	nested_nmi_out
->  
->  	/*
->  	 * Now check "NMI executing".  If it's set, then we're nested.
-> @@ -1383,8 +1380,6 @@ repeat_nmi:
->  	.endr
->  	subq	$(5*8), %rsp
->  end_repeat_nmi:
-> -	ANNOTATE_NOENDBR // this code
-> -
->  	/*
->  	 * Everything below this point can be preempted by a nested NMI.
->  	 * If this happens, then the inner NMI will change the "iret"
+While addressing this, perhaps additional cleanup is considerable like:
 
+@@ -233,19 +233,20 @@ static int aes_set_key_common(struct 
+crypto_aes_ctx *ctx,
+  {
+         int err;
+
+-       if (key_len != AES_KEYSIZE_128 && key_len != AES_KEYSIZE_192 &&
+-           key_len != AES_KEYSIZE_256)
+-               return -EINVAL;
++       err = aes_check_keylen(key_len);
++       if (err)
++               return err;
+
+         if (!crypto_simd_usable())
+-               err = aes_expandkey(ctx, in_key, key_len);
++               /* no error with a valid key length  */
++               aes_expandkey(ctx, in_key, key_len);
+         else {
+                 kernel_fpu_begin();
+-               err = aesni_set_key(ctx, in_key, key_len);
++               aesni_set_key(ctx, in_key, key_len);
+                 kernel_fpu_end();
+         }
+
+-       return err;
++       return 0;
+  }
+
+Thanks,
+Chang
 
