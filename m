@@ -1,75 +1,80 @@
-Return-Path: <linux-kernel+bounces-99938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32653878F72
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:06:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D36B2878F77
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33DA71C21882
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:06:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 881BF281C56
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E55E69D09;
-	Tue, 12 Mar 2024 08:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B7369D0F;
+	Tue, 12 Mar 2024 08:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FuodP9dm"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Mf47vl3L"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652306A031
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 08:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E0469D00;
+	Tue, 12 Mar 2024 08:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710230739; cv=none; b=rcHa5g/xrIXoTeqDN3FYnc/ahsuYttminOPn4Wo4vM4b2JkIGoCIqYlnxrNo/3c8pUKKVLdICtVmNB9wk9cLY5ZJY3P6X+nWCdpP7hR3b/odKZk4HtpEES36uCpm+NRPPlO5psb8q+v9wt3I0t6zWEsFR/k63QbNlVdgtYkLeAM=
+	t=1710230806; cv=none; b=mj4orm2TFEFYy259qpCXcq1r5xgRG3ZBaHvat7YVz0bhDOe/+8DYkUxIbm1yQ83VQ5+Bksi7Ro1ZavdQmTIU3e/ePsQ5PoQgddm/kmus9bTpTCAUs4jf6tCsukcSnE7L8a4WdFDg6AWcfjGhdOJueoLvvBzIX+3tYc+3YJmuBwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710230739; c=relaxed/simple;
-	bh=br278IECTs6mwg8AYiFME7l+eNV3wXD/c6J7sStxOjI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=pXIijSyRV3vcNxVuzbgQRm6VbEqK8IGEZBXoqMKJwAn0iIWR0OLUSIhg9hZOofwUMzmuAdPX0326xK+PNaGAhzOjYgoWRe8h2paO9gN7ZlKdnvChJeYz+hRzgCmKxpI9nUdAzD2tBPx77icSxTAbKY4tjULqN71QhfqxoRWG0pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FuodP9dm; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-512e4f4e463so7139502e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 01:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710230734; x=1710835534; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jNhIiSk+Z5h7g58HyZqwQPvyGLzPtdGbAZ8dMYbx7vI=;
-        b=FuodP9dmrZw9YIjG4knejp0NEAy63GqUQ4OT9oqg6+jWFQcIatjCF9r0VCmN2KJ4zS
-         YRUn6B7KYhQOtVerJzpe8JBbxj1wS8OtA81CABQBv43TqiDxi0/SwoW1PouJy/v416qG
-         omAkJwNZcVOfnXduVnPI/F+fNjeyZnoipdrxUNpYLWk1eu229tD32nQewD6ufeJIQ5az
-         E5yMztLvyeCkvCjCCAZekMFNZnwci0dlbwlDKRzC5phqdpwYerU9p+r6/jq1DhWBG0mq
-         AdiRxrFOzeFoURLwFPpN+7lK0q1RX1PLxzw3yDmmULZSWUJzdMBeQus4/tIg9ihBPy0J
-         0OfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710230734; x=1710835534;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jNhIiSk+Z5h7g58HyZqwQPvyGLzPtdGbAZ8dMYbx7vI=;
-        b=JJ62Ch4gVRaFD7FriLxahG10cFHALJnWigoc9mLNGLPnMGcAnBd51IdUi/DKnUjAxb
-         6EcJtvSoaW8daL8S8e0a1jPTRzNmGsLRm62SMdrG7QBaQC9pcuVP+zy5N884JcO6bvrP
-         noa28ADrXtKp2vIeS0qERYDXfn6b7PpGecBaIjvFXQopEcJUJZRG37WkHMYQ9ipusMPL
-         mZoUKmD+wTLS6WVjIwwdnEnCvcS0me/6OS6JlnkopDxKmcbxiU9xiVTHV16OHeqCHD12
-         DtOQwxX8oknqVJbG5Rf6tBQICZ5Fw99StSrj08ayMpCZ8jPbgTx9ww5lKTVP8F3VYCwE
-         6faw==
-X-Forwarded-Encrypted: i=1; AJvYcCWAgPcrRdb6A7S4FH8MbGdVhPZaU20bDWGwZ1k6CZ+2Bi5Do/agWmiGAgwSr35ljL27I2I1+k/SfR3aIGv8p3j06adrY/AVk/OZiqLq
-X-Gm-Message-State: AOJu0YyArKlEknQHGB2VJLLY3lpcqgTMosiUhC+OE0RzcdxKbYHYmfqF
-	hwZxB7toLR3QwA1k4sHM3Ex0s3n8hOVmTr3Gk0bPg2444l2iPX2clke4A9tj5bI=
-X-Google-Smtp-Source: AGHT+IG4QPJ/TiB3jCYWhKuqaIF6uwCpxH4sxUSkpI/eODFRgTCdlGv3wdSZiCSU8jKcNYNuaJYh1A==
-X-Received: by 2002:a05:6512:3b12:b0:513:2329:4308 with SMTP id f18-20020a0565123b1200b0051323294308mr2609363lfv.14.1710230734412;
-        Tue, 12 Mar 2024 01:05:34 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:8238:61bd:7273:ad90? ([2a01:e0a:982:cbb0:8238:61bd:7273:ad90])
-        by smtp.gmail.com with ESMTPSA id co11-20020a0560000a0b00b0033e94233284sm5231038wrb.78.2024.03.12.01.05.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 01:05:33 -0700 (PDT)
-Message-ID: <fd983e63-b546-4260-93ec-ebee4d158f21@linaro.org>
-Date: Tue, 12 Mar 2024 09:05:32 +0100
+	s=arc-20240116; t=1710230806; c=relaxed/simple;
+	bh=loyLU4g6Zw9kjPLNyvmCoapQCZCe19iImHhWuu9Onio=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kLPcxh08mN7AttFr6TFQa48aGS67x3sKV1b42ZuRJWnI+oHuN99FlMK1h/3DWJm6gmE8dj1ndvK7IwCyIZDf26unBZF22aJHBJ6F9vFpWiefXuJKfsvFqoe8zc76NiNLWYP615+HWNldJYnPosoJlJtTYP5Q6nRAtW2mZS8WH5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Mf47vl3L; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42C7uXBE018333;
+	Tue, 12 Mar 2024 08:06:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BEHUUGBRVWHM0oJZ353lAyKYuBhe2eOkFIuCO80ZIgM=;
+ b=Mf47vl3Lb8O2kmp0jJKSbiDyen0PCwj3uIk/sSSSxa07KNQOtF2H51MhCzwP6wh6wpVS
+ BRhIETSiUsVeZ707dHgqNSy3auTK5ETJeJrv9YLg1pBhUXBVQK/vCqUBw40HHe1G7boq
+ ZteUxzvVP05aTRtUQJFRoyJ6PBQL7YMm5ooIBdQNiV4XPtHnJ+UZwv4luk9AGcL0FJB+
+ 4kSUfVhkQ0UgK6FqvGfmKldnBWF9Yi2bOLMgHUjRavnCB0EB7m1AnZqNXDelb5sNJ8yp
+ OOAYNkE5NzmMa2CfnO5XGU0ZbmEi6enkBYBzCN66CjyRjGmRihKc68840wF8uWOQG/VD 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtht2s8rq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 08:06:38 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42C80Bop030544;
+	Tue, 12 Mar 2024 08:06:38 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtht2s8rc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 08:06:38 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42C5Wf5h015089;
+	Tue, 12 Mar 2024 08:06:37 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws33nnr7r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 08:06:37 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42C86VqV50594154
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 12 Mar 2024 08:06:33 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 992502004B;
+	Tue, 12 Mar 2024 08:06:31 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 437E920040;
+	Tue, 12 Mar 2024 08:06:31 +0000 (GMT)
+Received: from [9.152.224.118] (unknown [9.152.224.118])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 12 Mar 2024 08:06:31 +0000 (GMT)
+Message-ID: <36141145-6838-45eb-a6d6-1c052b6fb076@linux.ibm.com>
+Date: Tue, 12 Mar 2024 09:06:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,119 +82,233 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 6/7] arm64: dts: qcom: sm8650: add GPU nodes
-Content-Language: en-US, fr
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Clark
- <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
- Bjorn Andersson <andersson@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- iommu@lists.linux.dev, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20240216-topic-sm8650-gpu-v3-0-eb1f4b86d8d3@linaro.org>
- <20240216-topic-sm8650-gpu-v3-6-eb1f4b86d8d3@linaro.org>
- <58d5b209-94f6-43be-89e0-b14f5e30fd8c@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <58d5b209-94f6-43be-89e0-b14f5e30fd8c@linaro.org>
+Subject: Re: [PATCH net-next v2 11/11] net/smc: implement DMB-merged
+ operations of loopback-ism
+To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com,
+        twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org
+References: <20240307095536.29648-1-guwen@linux.alibaba.com>
+ <20240307095536.29648-12-guwen@linux.alibaba.com>
+From: Jan Karcher <jaka@linux.ibm.com>
+Organization: IBM - Network Linux on Z
+In-Reply-To: <20240307095536.29648-12-guwen@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Ck5CYi2OFVpM6ofcKTAdoBwRI6sttqjQ
+X-Proofpoint-ORIG-GUID: Y65Urj8U7fSLhu3KyfcVIt6ROA4JMJ3A
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_06,2024-03-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ clxscore=1015 adultscore=0 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 priorityscore=1501
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403120062
 
-On 12/03/2024 01:20, Konrad Dybcio wrote:
-> 
-> 
-> On 2/16/24 12:03, Neil Armstrong wrote:
->> Add GPU nodes for the SM8650 platform.
->>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sm8650.dtsi | 166 +++++++++++++++++++++++++++++++++++
->>   1 file changed, 166 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
->> index 62e6ae93a9a8..27dcef27b6ad 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
->> @@ -2589,6 +2589,128 @@ tcsr: clock-controller@1fc0000 {
->>               #reset-cells = <1>;
->>           };
->> +        gpu: gpu@3d00000 {
->> +            compatible = "qcom,adreno-43051401", "qcom,adreno";
->> +            reg = <0x0 0x03d00000 0x0 0x40000>,
->> +                  <0x0 0x03d9e000 0x0 0x1000>,
->> +                  <0x0 0x03d61000 0x0 0x800>;
->> +            reg-names = "kgsl_3d0_reg_memory",
->> +                    "cx_mem",
->> +                    "cx_dbgc";
->> +
->> +            interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
->> +
->> +            iommus = <&adreno_smmu 0 0x0>,
->> +                 <&adreno_smmu 1 0x0>;
->> +
->> +            operating-points-v2 = <&gpu_opp_table>;
->> +
->> +            qcom,gmu = <&gmu>;
->> +
->> +            status = "disabled";
->> +
->> +            zap-shader {
->> +                memory-region = <&gpu_micro_code_mem>;
->> +            };
->> +
->> +            /* Speedbin needs more work on A740+, keep only lower freqs */
->> +            gpu_opp_table: opp-table {
->> +                compatible = "operating-points-v2";
->> +
->> +                opp-680000000 {
->> +                    opp-hz = /bits/ 64 <680000000>;
->> +                    opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
->> +                };
-> 
-> I got a memo from krzk that we should be sorting OPPs low-to-high,
-> could you please reorder these (and under gmu)?
 
-Ack, I also add 3 more OPPs that works with all speedbins.
 
-Neil
+On 07/03/2024 10:55, Wen Gu wrote:
+> This implements operations related to merging sndbuf with peer DMB in
+> loopback-ism. The DMB won't be freed until no sndbuf is attached to it.
+
+Hi Wen Gu,
+
+while I'm still reviewing let me drop a lockdep finding.
 
 > 
-> Otherwise lgtm
+> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+> ---
+>   net/smc/smc_loopback.c | 136 +++++++++++++++++++++++++++++++++++------
+>   net/smc/smc_loopback.h |   3 +
+>   2 files changed, 119 insertions(+), 20 deletions(-)
 > 
-> Konrad
+> diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
+> index 6828e0ad3e90..7e772f3772de 100644
+> --- a/net/smc/smc_loopback.c
+> +++ b/net/smc/smc_loopback.c
 
+[...]
+
+>   
+> @@ -170,8 +249,22 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
+>   {
+>   	struct smc_lo_dmb_node *rmb_node = NULL, *tmp_node;
+>   	struct smc_lo_dev *ldev = smcd->priv;
+> -
+> -	read_lock(&ldev->dmb_ht_lock);
+> +	struct smc_connection *conn;
+> +
+> +	if (!sf)
+> +		/* since sndbuf is merged with peer DMB, there is
+> +		 * no need to copy data from sndbuf to peer DMB.
+> +		 */
+> +		return 0;
+> +
+> +	/* read_lock_bh() is used here just to make lockdep
+> +	 * happy, because spin_(un)lock_bh(&conn->send_lock) wraps
+> +	 * smc_lo_move_data() and if we use read_lock() here, lockdep
+> +	 * will complain about SOFTIRQ-safe -> SOFTIRQ-unsafe lock
+> +	 * order detected, but in fact ldev->dmb_ht_lock will never
+> +	 * be held in bh context.
+> +	 */
+> +	read_lock_bh(&ldev->dmb_ht_lock);
+>   	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_tok) {
+>   		if (tmp_node->token == dmb_tok) {
+>   			rmb_node = tmp_node;
+> @@ -182,19 +275,14 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
+>   		read_unlock(&ldev->dmb_ht_lock);
+>   		return -EINVAL;
+>   	}
+> -	read_unlock(&ldev->dmb_ht_lock);
+> +	read_unlock_bh(&ldev->dmb_ht_lock);
+>   
+>   	memcpy((char *)rmb_node->cpu_addr + offset, data, size);
+>   
+> -	if (sf) {
+> -		struct smc_connection *conn =
+> -			smcd->conn[rmb_node->sba_idx];
+> -
+> -		if (conn && !conn->killed)
+> -			smcd_cdc_rx_handler(conn);
+> -		else
+> -			return -EPIPE;
+> -	}
+> +	conn = smcd->conn[rmb_node->sba_idx];
+> +	if (!conn || conn->killed)
+> +		return -EPIPE;
+> +	smcd_cdc_rx_handler(conn);
+
+[ 2385.528515] ============================================
+[ 2385.528517] WARNING: possible recursive locking detected
+[ 2385.528519] 6.8.0-loopback_ism-g30af186e8a18-dirty #12 Not tainted
+[ 2385.528521] --------------------------------------------
+[ 2385.528522] smcapp/51326 is trying to acquire lock:
+[ 2385.528524] 000000018707a128 (&smc->conn.send_lock){+...}-{2:2}, at: 
+smc_tx_sndbuf_nonempty+0xba/0x1c0 [smc]
+[ 2385.528552]
+                but task is already holding lock:
+[ 2385.528554] 0000000187078728 (&smc->conn.send_lock){+...}-{2:2}, at: 
+smc_cdc_get_slot_and_msg_send+0x66/0xa0 [smc]
+[ 2385.528568]
+                other info that might help us debug this:
+[ 2385.528570]  Possible unsafe locking scenario:
+
+[ 2385.528572]        CPU0
+[ 2385.528573]        ----
+[ 2385.528574]   lock(&smc->conn.send_lock);
+[ 2385.528576]   lock(&smc->conn.send_lock);
+[ 2385.528579]
+                 *** DEADLOCK ***
+
+[ 2385.528580]  May be due to missing lock nesting notation
+
+[ 2385.528582] 3 locks held by smcapp/51326:
+[ 2385.528584]  #0: 0000000187078378 (sk_lock-AF_SMC){+.+.}-{0:0}, at: 
+smc_recvmsg+0x3c/0x2b0 [smc]
+[ 2385.528598]  #1: 0000000187078728 (&smc->conn.send_lock){+...}-{2:2}, 
+at: smc_cdc_get_slot_and_msg_send+0x66/0xa0 [smc]
+[ 2385.528613]  #2: 0000000187079ce8 (slock-AF_SMC){+...}-{2:2}, at: 
+smc_cdc_msg_recv+0x56/0xe0 [smc]
+[ 2385.528627]
+                stack backtrace:
+[ 2385.528660] CPU: 3 PID: 51326 Comm: smcapp Not tainted 
+6.8.0-loopback_ism-g30af186e8a18-dirty #12
+[ 2385.528663] Hardware name: IBM 3906 M04 704 (LPAR)
+[ 2385.528664] Call Trace:
+[ 2385.528666]  [<000000012db60788>] dump_stack_lvl+0x90/0x120
+[ 2385.528671]  [<000000012cc6d088>] validate_chain+0x560/0x960
+[ 2385.528677]  [<000000012cc6f644>] __lock_acquire+0x654/0xd58
+[ 2385.528680]  [<000000012cc70a04>] lock_acquire.part.0+0xec/0x260
+[ 2385.528683]  [<000000012cc70c24>] lock_acquire+0xac/0x170
+[ 2385.528687]  [<000000012dba4ccc>] _raw_spin_lock_bh+0x5c/0xb0
+[ 2385.528690]  [<000003ff80453b32>] smc_tx_sndbuf_nonempty+0xba/0x1c0 [smc]
+[ 2385.528702]  [<000003ff8045428a>] smc_tx_pending+0x32/0x60 [smc]
+[ 2385.528712]  [<000003ff80451f02>] smc_cdc_msg_recv_action+0x3c2/0x528 
+[smc]
+[ 2385.528723]  [<000003ff804520cc>] smc_cdc_msg_recv+0x64/0xe0 [smc]
+[ 2385.528734]  [<000003ff80452a4c>] smcd_cdc_rx_handler+0x64/0x70 [smc]
+[ 2385.528745]  [<000003ff80459f7e>] smc_lo_move_data+0xde/0x100 [smc]
+[ 2385.528755]  [<000003ff804533e0>] smcd_tx_ism_write+0x68/0x90 [smc]
+[ 2385.528766]  [<000003ff804528a4>] smcd_cdc_msg_send+0x74/0x118 [smc]
+[ 2385.528776]  [<000003ff804529b8>] 
+smc_cdc_get_slot_and_msg_send+0x70/0xa0 [smc]
+[ 2385.528788]  [<000003ff804543ec>] smc_tx_consumer_update+0xe4/0x1b0 [smc]
+[ 2385.528798]  [<000003ff8045458e>] smc_rx_update_consumer+0x86/0x170 [smc]
+[ 2385.528809]  [<000003ff80455ba8>] smc_rx_recvmsg+0x3b8/0x6e8 [smc]
+[ 2385.528820]  [<000003ff804388a4>] smc_recvmsg+0xdc/0x2b0 [smc]
+[ 2385.528831]  [<000000012d8a6d58>] sock_recvmsg+0x70/0xb0
+[ 2385.528837]  [<000000012d8aa0c8>] __sys_recvfrom+0xa8/0x128
+[ 2385.528840]  [<000000012d8ab3ca>] __do_sys_socketcall+0x1ca/0x398
+[ 2385.528844]  [<000000012db8d4c4>] __do_syscall+0x244/0x308
+[ 2385.528847]  [<000000012dba6140>] system_call+0x70/0x98
+[ 2385.528850] INFO: lockdep is turned off.
+
+
+I did not investigate deeper, yet. Just an early heads up that there 
+might be something broken.
+
+Thank you
+- Jan
+
+
+>   	return 0;
+>   }
+>   
+> @@ -226,6 +314,9 @@ static const struct smcd_ops lo_ops = {
+>   	.query_remote_gid = smc_lo_query_rgid,
+>   	.register_dmb = smc_lo_register_dmb,
+>   	.unregister_dmb = smc_lo_unregister_dmb,
+> +	.support_dmb_nocopy = smc_lo_support_dmb_nocopy,
+> +	.attach_dmb = smc_lo_attach_dmb,
+> +	.detach_dmb = smc_lo_detach_dmb,
+>   	.add_vlan_id = smc_lo_add_vlan_id,
+>   	.del_vlan_id = smc_lo_del_vlan_id,
+>   	.set_vlan_required = smc_lo_set_vlan_required,
+> @@ -304,12 +395,17 @@ static int smc_lo_dev_init(struct smc_lo_dev *ldev)
+>   	smc_lo_generate_id(ldev);
+>   	rwlock_init(&ldev->dmb_ht_lock);
+>   	hash_init(ldev->dmb_ht);
+> +	atomic_set(&ldev->dmb_cnt, 0);
+> +	init_waitqueue_head(&ldev->ldev_release);
+> +
+>   	return smcd_lo_register_dev(ldev);
+>   }
+>   
+>   static void smc_lo_dev_exit(struct smc_lo_dev *ldev)
+>   {
+>   	smcd_lo_unregister_dev(ldev);
+> +	if (atomic_read(&ldev->dmb_cnt))
+> +		wait_event(ldev->ldev_release, !atomic_read(&ldev->dmb_cnt));
+>   }
+>   
+>   static void smc_lo_dev_release(struct device *dev)
+> diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
+> index 24ab9d747613..9156a6c37e65 100644
+> --- a/net/smc/smc_loopback.h
+> +++ b/net/smc/smc_loopback.h
+> @@ -30,6 +30,7 @@ struct smc_lo_dmb_node {
+>   	u32 sba_idx;
+>   	void *cpu_addr;
+>   	dma_addr_t dma_addr;
+> +	refcount_t refcnt;
+>   };
+>   
+>   struct smc_lo_dev {
+> @@ -37,9 +38,11 @@ struct smc_lo_dev {
+>   	struct device dev;
+>   	u16 chid;
+>   	struct smcd_gid local_gid;
+> +	atomic_t dmb_cnt;
+>   	rwlock_t dmb_ht_lock;
+>   	DECLARE_BITMAP(sba_idx_mask, SMC_LO_MAX_DMBS);
+>   	DECLARE_HASHTABLE(dmb_ht, SMC_LO_DMBS_HASH_BITS);
+> +	wait_queue_head_t ldev_release;
+>   };
+>   #endif
+>   
 
