@@ -1,334 +1,94 @@
-Return-Path: <linux-kernel+bounces-100266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB4F879446
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:38:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE4FB879452
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:42:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CE431F246C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:38:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF3551C222EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23F656773;
-	Tue, 12 Mar 2024 12:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="RNnWbBup"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2B47A15E;
-	Tue, 12 Mar 2024 12:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033BC56B7F;
+	Tue, 12 Mar 2024 12:42:06 +0000 (UTC)
+Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42BF811
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710247121; cv=none; b=J0ci8FuBq/sZhI7Jrw328JyoNNVLZOtKblUNPQEbpMv0yKbQTjZQZW+r1oDGJxqtgdgF+ChmUdHRlC+QYqNXJkZx/f11r4gsAcF+lIlNsalJrFFkB45j+5AVQIDgtJP71B1PZmBeVGlUV+g0u2SRaFwh7szSyhDdZdfZVP6EVso=
+	t=1710247325; cv=none; b=CbY+T3BoLilQskmOtnvtljVFyjStn0jNSEgFRzwSemcPLtl1cB1QeidEuiik3wT3PbZQl2dDmuRKG3IJupdn6M7pIpRR7cb2tmlu7BbWlb7ZIxEYCmXfzpGfLvt6WIjUC0M1M0LJ6wMPzHREQUjvGk5nqY4FtRRwmGD7RN+G1uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710247121; c=relaxed/simple;
-	bh=GkAYNH3txNSYtyzxuiX102WxRl42aZ7qyZWzRykfmMA=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=TmVPrFjFfaRmkp9XuyqT8UrnKoEUyZhn1utKZofQ20mbj9Jqf+bBfFfqP4BA5u93K0f75Dvky1ydTfHN/s57ByDnGHWzUV4+r8UuEnV9lY2PeEXKhigrKTjxTFw+r2IHu8ccjMeDPftHycPcTzl+PsU4wJEoqnqhyHES73xQP0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=RNnWbBup; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 7982120B74C0; Tue, 12 Mar 2024 05:38:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7982120B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710247113;
-	bh=sDwJ3xsCeoh5Z54rGko8eW0A7PXt+rXt9R3ZVFeOvpw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RNnWbBupf2BCZ+CJUxFMW57gwfOevD24X/oS1pfxuVT+2ekyDVb2L/wkBwdKLabSQ
-	 RUiyuGDykqTp0721U0UItp8w59yvH75J8wTEBmlbHODwYBygwH1WRR2uAUIlvsa6py
-	 nHrnVoWqO9bghKvLnqe8w3u8DSTwrITOC2chpcPg=
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org
-Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Olaf Hering <olaf@aepfle.de>,
-	Ani Sinha <anisinha@redhat.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: [PATCH v2] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for keyfile format
-Date: Tue, 12 Mar 2024 05:38:32 -0700
-Message-Id: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1710247325; c=relaxed/simple;
+	bh=rzlfGowy5qucAgz9TKASwnEblWyJA1Ow00NPlbCzPSE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WbmS18F2pqTRs0aVYNMybPrCNptZMExKGdy/VdTFo41/sBVefMpPC2ZGMpA8EmsWCA6V56YS8ZOLg3TfXLlh/rmaVrpmB6/SRzOKc5ftqDxrIVZFcYXcFqHDGAUILpp+nbGDHYIlKQjMb7G6FV9wdNQzVdsxynDdINBSeW102mA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
+Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 42CCfoGB257095;
+	Tue, 12 Mar 2024 18:11:50 +0530
+Received: (from sunil@localhost)
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 42CCfo67257094;
+	Tue, 12 Mar 2024 18:11:50 +0530
+From: Sunil Khatri <sunil.khatri@amd.com>
+To: Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Sunil Khatri <sunil.khatri@amd.com>
+Subject: [PATCH 1/2] drm/amdgpu: add the IP information of the soc
+Date: Tue, 12 Mar 2024 18:11:47 +0530
+Message-Id: <20240312124148.257067-1-sunil.khatri@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-If the network configuration strings are passed as a combination of IPv and
-IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
-configuration format.
-With these changes, the keyfile config generation logic scans through the
-list twice to generate IPv4 and IPv6 sections for the configuration files
-to handle this support.
+Add all the IP's information on a SOC to the
+devcoredump.
 
-Built-on: Rhel9
-Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
 ---
- Changes in v2
- * Use calloc to avoid initialization later
- * Return standard error codes
- * Free the output_str pointer on completion
- * Add out-of bound checks while writing to buffers
----
- tools/hv/hv_kvp_daemon.c | 173 +++++++++++++++++++++++++++++----------
- 1 file changed, 132 insertions(+), 41 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-index 318e2dad27e0..ae65be004eb1 100644
---- a/tools/hv/hv_kvp_daemon.c
-+++ b/tools/hv/hv_kvp_daemon.c
-@@ -76,6 +76,12 @@ enum {
- 	DNS
- };
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+index a0dbccad2f53..611fdb90a1fc 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+@@ -196,6 +196,25 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
+ 			   coredump->reset_task_info.process_name,
+ 			   coredump->reset_task_info.pid);
  
-+enum {
-+	IPV4 = 1,
-+	IPV6,
-+	IP_TYPE_MAX
-+};
++	/* GPU IP's information of the SOC */
++	if (coredump->adev) {
++		drm_printf(&p, "\nIP Information\n");
++		drm_printf(&p, "SOC Family: %d\n", coredump->adev->family);
++		drm_printf(&p, "SOC Revision id: %d\n", coredump->adev->rev_id);
 +
- static int in_hand_shake;
- 
- static char *os_name = "";
-@@ -102,6 +108,7 @@ static struct utsname uts_buf;
- 
- #define MAX_FILE_NAME 100
- #define ENTRIES_PER_BLOCK 50
-+#define MAX_IP_ENTRIES 64
- 
- struct kvp_record {
- 	char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
-@@ -1171,6 +1178,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
- 	return 0;
- }
- 
-+int ip_version_check(const char *input_addr)
-+{
-+	struct in6_addr addr;
-+
-+	if (inet_pton(AF_INET, input_addr, &addr))
-+		return IPV4;
-+	else if (inet_pton(AF_INET6, input_addr, &addr))
-+		return IPV6;
-+	else
-+		return -EINVAL;
-+}
-+
- /*
-  * Only IPv4 subnet strings needs to be converted to plen
-  * For IPv6 the subnet is already privided in plen format
-@@ -1197,14 +1216,71 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
- 	return plen;
- }
- 
-+static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-+				  int ip_sec)
-+{
-+	char addr[INET6_ADDRSTRLEN], *output_str;
-+	int ip_offset = 0, error = 0, ip_ver;
-+	char *param_name;
-+
-+	output_str = (char *)calloc(INET6_ADDRSTRLEN * MAX_IP_ENTRIES,
-+				    sizeof(char));
-+
-+	if (!output_str)
-+		return -ENOMEM;
-+
-+	memset(addr, 0, sizeof(addr));
-+
-+	if (type == DNS) {
-+		param_name = "dns";
-+	} else if (type == GATEWAY) {
-+		param_name = "gateway";
-+	} else {
-+		error = -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-+				   (MAX_IP_ADDR_SIZE * 2))) {
-+		ip_ver = ip_version_check(addr);
-+		if (ip_ver < 0)
-+			continue;
-+
-+		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
-+		    (ip_ver == IPV6 && ip_sec == IPV6)) {
-+			if (((INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str)) >
-+			    (strlen(addr))) {
-+				strcat(output_str, addr);
-+				strcat(output_str, ",");
-+			}
-+			memset(addr, 0, sizeof(addr));
-+
-+		} else {
-+			memset(addr, 0, sizeof(addr));
-+			continue;
++		for (int i = 0; i < coredump->adev->num_ip_blocks; i++) {
++			struct amdgpu_ip_block *ip =
++				&coredump->adev->ip_blocks[i];
++			drm_printf(&p, "IP type: %d IP name: %s\n",
++				   ip->version->type,
++				   ip->version->funcs->name);
++			drm_printf(&p, "IP version: (%d,%d,%d)\n\n",
++				   ip->version->major,
++				   ip->version->minor,
++				   ip->version->rev);
 +		}
 +	}
 +
-+	if (strlen(output_str)) {
-+		output_str[strlen(output_str) - 1] = '\0';
-+		error = fprintf(f, "%s=%s\n", param_name, output_str);
-+		if (error <  0)
-+			goto cleanup;
-+	}
-+
-+cleanup:
-+	free(output_str);
-+	return error;
-+}
-+
- static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
--				int is_ipv6)
-+				int ip_sec)
- {
- 	char addr[INET6_ADDRSTRLEN];
- 	char subnet_addr[INET6_ADDRSTRLEN];
- 	int error, i = 0;
- 	int ip_offset = 0, subnet_offset = 0;
--	int plen;
-+	int plen, ip_ver;
- 
- 	memset(addr, 0, sizeof(addr));
- 	memset(subnet_addr, 0, sizeof(subnet_addr));
-@@ -1216,10 +1292,16 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
- 						       subnet_addr,
- 						       (MAX_IP_ADDR_SIZE *
- 							2))) {
--		if (!is_ipv6)
-+		ip_ver = ip_version_check(addr);
-+		if (ip_ver < 0)
-+			continue;
-+
-+		if (ip_ver == IPV4 && ip_sec == IPV4)
- 			plen = kvp_subnet_to_plen((char *)subnet_addr);
--		else
-+		else if (ip_ver == IPV6 && ip_sec == IPV6)
- 			plen = atoi(subnet_addr);
-+		else
-+			continue;
- 
- 		if (plen < 0)
- 			return plen;
-@@ -1238,12 +1320,11 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
- 
- static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- {
--	int error = 0;
-+	int error = 0, ip_type;
- 	char if_filename[PATH_MAX];
- 	char nm_filename[PATH_MAX];
- 	FILE *ifcfg_file, *nmfile;
- 	char cmd[PATH_MAX];
--	int is_ipv6 = 0;
- 	char *mac_addr;
- 	int str_len;
- 
-@@ -1421,52 +1502,62 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- 	if (error)
- 		goto setval_error;
- 
--	if (new_val->addr_family & ADDR_FAMILY_IPV6) {
--		error = fprintf(nmfile, "\n[ipv6]\n");
--		if (error < 0)
--			goto setval_error;
--		is_ipv6 = 1;
--	} else {
--		error = fprintf(nmfile, "\n[ipv4]\n");
--		if (error < 0)
--			goto setval_error;
--	}
--
- 	/*
--	 * Now we populate the keyfile format
-+	 * The keyfile format expects the IPv6 and IPv4 configuration in
-+	 * different sections. Therefore we iterate through the list twice,
-+	 * once to populate the IPv4 section and the next time for IPv6
- 	 */
-+	ip_type = IPV4;
-+	do {
-+		if (ip_type == IPV4) {
-+			error = fprintf(nmfile, "\n[ipv4]\n");
-+			if (error < 0)
-+				goto setval_error;
-+		} else {
-+			error = fprintf(nmfile, "\n[ipv6]\n");
-+			if (error < 0)
-+				goto setval_error;
-+		}
- 
--	if (new_val->dhcp_enabled) {
--		error = kvp_write_file(nmfile, "method", "", "auto");
--		if (error < 0)
--			goto setval_error;
--	} else {
--		error = kvp_write_file(nmfile, "method", "", "manual");
-+		/*
-+		 * Now we populate the keyfile format
-+		 */
-+
-+		if (new_val->dhcp_enabled) {
-+			error = kvp_write_file(nmfile, "method", "", "auto");
-+			if (error < 0)
-+				goto setval_error;
-+		} else {
-+			error = kvp_write_file(nmfile, "method", "", "manual");
-+			if (error < 0)
-+				goto setval_error;
-+		}
-+
-+		/*
-+		 * Write the configuration for ipaddress, netmask, gateway and
-+		 * name services
-+		 */
-+		error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-+					     (char *)new_val->sub_net,
-+					     ip_type);
- 		if (error < 0)
- 			goto setval_error;
--	}
- 
--	/*
--	 * Write the configuration for ipaddress, netmask, gateway and
--	 * name services
--	 */
--	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
--				     (char *)new_val->sub_net, is_ipv6);
--	if (error < 0)
--		goto setval_error;
--
--	/* we do not want ipv4 addresses in ipv6 section and vice versa */
--	if (is_ipv6 != is_ipv4((char *)new_val->gate_way)) {
--		error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
-+		error = process_dns_gateway_nm(nmfile,
-+					       (char *)new_val->gate_way,
-+					       GATEWAY, ip_type);
- 		if (error < 0)
- 			goto setval_error;
--	}
- 
--	if (is_ipv6 != is_ipv4((char *)new_val->dns_addr)) {
--		error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
-+		error = process_dns_gateway_nm(nmfile,
-+					       (char *)new_val->dns_addr, DNS,
-+					       ip_type);
- 		if (error < 0)
- 			goto setval_error;
--	}
-+
-+		ip_type++;
-+	} while (ip_type < IP_TYPE_MAX);
-+
- 	fclose(nmfile);
- 	fclose(ifcfg_file);
- 
+ 	if (coredump->ring) {
+ 		drm_printf(&p, "\nRing timed out details\n");
+ 		drm_printf(&p, "IP Type: %d Ring Name: %s\n",
 -- 
 2.34.1
 
