@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-100439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FF77879796
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:31:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3793E879799
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:32:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3D43B22EEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:31:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8FB82848CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAAF87C6F6;
-	Tue, 12 Mar 2024 15:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CD07C6D6;
+	Tue, 12 Mar 2024 15:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s7rNhgdZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b78phves"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BC877C0B1;
-	Tue, 12 Mar 2024 15:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D4FF4FA;
+	Tue, 12 Mar 2024 15:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710257492; cv=none; b=PDcmbigm6gLf/0KzztvCMIQVSQFt+lUW9VHT0U0JhtNKi2VqNXJnT1JkyGuEAhS/yFucp1u1HSLa+/MZCJCadiakvb7VgKmqVXtUo3pTD/n7uRv+LRRprfzhuGoZ3+0un2pgjD/umT0WrYvb/rlsYkzjraSwTnV0NN/aRdTuLTg=
+	t=1710257555; cv=none; b=BIHabCJG2KUSKVuxc4oDWahOC/fo6ctllVGkiJSy6ETMd+KMONevYZgW8r6O4EnHdIBVLqf928laW0Od8ZhtGnQoF0IA8ArKwtpQ5m7JIte1nRbWWC13w8Vcu+IYJcwilbF/nPwWPgzoKHyPHglDpLNPF+CHoTpV4WYnvy9qbY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710257492; c=relaxed/simple;
-	bh=AB3f0oe5VQwbDBA3sbXZIh/T3+n5F4eIfPvO3h0claU=;
+	s=arc-20240116; t=1710257555; c=relaxed/simple;
+	bh=B699QGzqbXGKmn7SCx9L3vDjnq6OqBfZza3oOdqYJNU=;
 	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
-	 Cc:Message-ID:Date; b=n1hvjMwVjtZuMk4rTNtCm4TNXMl6qd7zZFx5nLOfMBKkQg6rkHq786jhwamHtOAKnyO4a3rbHYaCH2Xt6KyEXZIM5sXM6y15+3bZP/+7uObYornx7e28i0uaLgSsrcXLa10R0IIULbyRx46zagJkkBhL4F9LlWI3aR/IypTLmN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s7rNhgdZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC41BC43394;
-	Tue, 12 Mar 2024 15:31:29 +0000 (UTC)
+	 Cc:Message-ID:Date; b=hiYfMQZmY72ZjIdFYF1SozTgz/xSundkC+r+1dWdqrjFqEdnE4gNEyi5so1irXf57jHp5hSXBvTFTToM5Pra5rCUaoxB4QbWp5MyRPM0NUJU632k7Wna/62VX9qgd4TUYGZYIZT8f0SeYJ8XiyXrjRYxPAerlqDFCCJBG8hoQeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b78phves; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86242C433C7;
+	Tue, 12 Mar 2024 15:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710257491;
-	bh=AB3f0oe5VQwbDBA3sbXZIh/T3+n5F4eIfPvO3h0claU=;
+	s=k20201202; t=1710257555;
+	bh=B699QGzqbXGKmn7SCx9L3vDjnq6OqBfZza3oOdqYJNU=;
 	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=s7rNhgdZJeuIPZPdWpCxscx0yw/uvXTi2/htWFXHogJA1V1Yu2orZwspE+XQJoSc3
-	 o0UBmjo+iPmz5TVxBs2Cs8JhkiOk5rwX/ixi+AOn5ng9+czTiDVqFBhHNhTKs5lzlN
-	 B2mgr88HhOcTJUU+H0JdWPYr5OcfrvUwSL6QoxZKSk24djs4lPonhFLmlgt3izGrLe
-	 T3mpPxqK1Sp5X2bAq9aYa93duF5xUqkgFJi7xmZ2aCnrDD754Ohr9mib0hQBGnXMO1
-	 b+VpbKxNx24JRf+IFBc0KfsTufDIAO3Rj9M/H5aK5O2Lj4K0kXoQC2Wjj8hjkbz9vE
-	 tyF/bmUakCKTw==
+	b=b78phvese5WkORrMEAdhLdcw3mIJkLLDnhOEjrrVmXijBl0xr/2M0zq+Q5uxPnZzh
+	 HiQI1cF7qYRN4gtHpLyIij87ik+RMD5x6rfW3k5p4nZwCfBcA6LCg1Y4fdkqUmXpwy
+	 omlAX26md23Dwed1LOIvKaVbsNPjkEbLc2ODA+FkQen4yfY9gje7Az3cZjix49VbPn
+	 0PGh8sKG7A0DTvDvubdvYBwx4i3BIxEYstWK9GZoBycpEnoZa0HAqxNkBknDIVEdlI
+	 7aH8ovhcoTA5+wY3HMrYopzo6GS+E1rTTpkVrpneiKZ70hvSMdtc0FrEsDUR1NsNcI
+	 rVHaGRImE4atA==
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,40 +48,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Re: [v3] ssb: Fix potential NULL pointer dereference in
- ssb_device_uevent()
+Subject: Re: [PATCH v2] wifi: brcmfmac: pcie: handle randbuf allocation
+ failure
 From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240306123028.164155-1-rand.sec96@gmail.com>
-References: <20240306123028.164155-1-rand.sec96@gmail.com>
-To: Rand Deeb <rand.sec96@gmail.com>
-Cc: Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, deeb.rand@confident.ru,
- lvc-project@linuxtesting.org, voskresenski.stanislav@confident.ru,
- khoroshilov@ispras.ru, Rand Deeb <rand.sec96@gmail.com>
+In-Reply-To: <20240306140437.18177-1-duoming@zju.edu.cn>
+References: <20240306140437.18177-1-duoming@zju.edu.cn>
+To: Duoming Zhou <duoming@zju.edu.cn>
+Cc: linux-kernel@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+ brcm80211@lists.linux.dev, linux-wireless@vger.kernel.org,
+ minipli@grsecurity.net, hdegoede@redhat.com, arend.vanspriel@broadcom.com,
+ arnd@arndb.de, Duoming Zhou <duoming@zju.edu.cn>
 User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <171025748752.1969294.6301568129349383051.kvalo@kernel.org>
-Date: Tue, 12 Mar 2024 15:31:29 +0000 (UTC)
+Message-ID: <171025755133.1969294.16879379450612075833.kvalo@kernel.org>
+Date: Tue, 12 Mar 2024 15:32:33 +0000 (UTC)
 
-Rand Deeb <rand.sec96@gmail.com> wrote:
+Duoming Zhou <duoming@zju.edu.cn> wrote:
 
-> The ssb_device_uevent() function first attempts to convert the 'dev' pointer
-> to 'struct ssb_device *'. However, it mistakenly dereferences 'dev' before
-> performing the NULL check, potentially leading to a NULL pointer
-> dereference if 'dev' is NULL.
+> The kzalloc() in brcmf_pcie_download_fw_nvram() will return null
+> if the physical memory has run out. As a result, if we use
+> get_random_bytes() to generate random bytes in the randbuf, the
+> null pointer dereference bug will happen.
 > 
-> To fix this issue, move the NULL check before dereferencing the 'dev' pointer,
-> ensuring that the pointer is valid before attempting to use it.
+> In order to prevent allocation failure, this patch adds a separate
+> function using buffer on kernel stack to generate random bytes in
+> the randbuf, which could prevent the kernel stack from overflow.
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
+> Fixes: 91918ce88d9f ("wifi: brcmfmac: pcie: Provide a buffer of random bytes to the device")
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
 
 Patch applied to wireless-next.git, thanks.
 
-789c17185fb0 ssb: Fix potential NULL pointer dereference in ssb_device_uevent()
+316f790ebcf9 wifi: brcmfmac: pcie: handle randbuf allocation failure
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240306123028.164155-1-rand.sec96@gmail.com/
+https://patchwork.kernel.org/project/linux-wireless/patch/20240306140437.18177-1-duoming@zju.edu.cn/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
