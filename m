@@ -1,117 +1,119 @@
-Return-Path: <linux-kernel+bounces-99956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE8B8878FD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:38:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 797D6878FD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:38:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DCE6282589
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:38:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABB2C1C21747
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E24577A0F;
-	Tue, 12 Mar 2024 08:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACA9077F2C;
+	Tue, 12 Mar 2024 08:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="da+a25s0"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="eAkPn0EO"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00DB0C8DD;
-	Tue, 12 Mar 2024 08:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A5177649;
+	Tue, 12 Mar 2024 08:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710232710; cv=none; b=MJiflShcxrhy+AYTr2KRISM+KtKE1O/RhzeVkXjTjVaCLRrcSWiqrf1loLLXctnTCkIUFgPe+OJeHG1yoWUDVlfvBqLH/suRiOo4L+w6psI2z5zD9PKdwdtlqysR8G0/3B3MbADfeIeVNI+HKD1lBAhQTjjPHxmTBNvs+NIFWb8=
+	t=1710232713; cv=none; b=PTc4X+VUja0b0zSLLkwWG62cqgzROFwih9r7N3Jf0+knXhTbD+iLLFjdaivzq0ok4lSOnnp2C8x39qB5ngsKZggFnEaNpc29lIUPAzy58ZltbJOAtL+WPoZvup9PHHESh5uUjZK2lamk1kDDO0jIse3JUGf5/D9w7dYPhlIglm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710232710; c=relaxed/simple;
-	bh=cADERAidf+JiG6/MllhsUnCwa5dSvHrvwMt2pI41UK4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rEeW5MF4sbLOGX6eSbEVOZQVQnRbkgtVSWATiAEXn8BdGqS9THKzqsmpIonky2v8q9jQYHtuAUWnvVlTihYprmS+x0J+LDYjU6YX0jsz8S7y2YzzIykvaSfCI/u3jJH6jdSBgUSioONRtoXEBAmzXUkG9/DKDAYAF+SPdHIXzUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=da+a25s0; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D340FE0005;
-	Tue, 12 Mar 2024 08:38:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	s=arc-20240116; t=1710232713; c=relaxed/simple;
+	bh=D0Dav/Qn1cv9bfxKazHy8Ke0NZ+LD2IcglLT273M/Jg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ORKLsYJwtxZsxI+K/08whOdXUAiKkLisiy/NtZ6D5tdjkRfnQlgWyQtUGeSZA/7eOS7VWkQCWAuk/EeA4pfL0uFdF7mU/7knC9k1COhi9tdU4lmqKPGxSSCh6SVA6/KeiJai7qc/KwqiZptZrtCmol9AE4+l8gJth7RQ02B1+S4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=eAkPn0EO; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id B5A651C006B; Tue, 12 Mar 2024 09:38:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
 	t=1710232706;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+y2WCRg38vZjx+jg3Hy0I1hvQc4HDSJn/8wv1tgeMPA=;
-	b=da+a25s08RVCs6ZnhisGvFDQsAwIINFRgmU2YyAgUGEky+9XVBVrD8SXHePUa0Q8LMJbTa
-	27ZdBhTElzHzH9F5CbB+v4OmAbnfa2YlAi4lImVz97hgEZw2TRD7HyIEZCYtiPzGIHX/Zl
-	frEVAuK40PeKHO7E5Y6LGUeeHnCJ+vPQyqq2RPrQJ53r4X0NEBjizcv30H3tw+yhtr9Zkb
-	/R+MqMyHc28Xk0cX4q8rcczB4edWo26nmLsuldu7mhTxj9iqwMswUdHVGRyc2UjCLKH89d
-	bu7Khks1iQYqWt/rY7J1ZDc1QB0BajOi/4dJiJfmZ4sni/4oKI9MLHSf3ml3cQ==
-Message-ID: <7780460c-abc3-4009-9f95-28d123a9a23d@arinc9.com>
-Date: Tue, 12 Mar 2024 11:38:08 +0300
+	bh=LR2nwwqmgN2QbjgHc3Koo0qVoLVq9J7DOCiQPH0RGMA=;
+	b=eAkPn0EOGw/osV4V95LaZ/AYDfXEWT0hpGgcikEcoVVy9btE2li73UchXhO44I2/SETQsz
+	KKnKF/aJqRm+Nt0L4wj1lpU4tEu97pX4Rg2qSV5JO/4Pl+fh6YvCFjsJVilkwN0jWkCAyH
+	viJd2lwZGjHsu+GuxK09lvW+p6+PmZQ=
+Date: Tue, 12 Mar 2024 09:38:25 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Chanho Min <chanho.min@lge.com>, Arnd Bergmann <arnd@arndb.de>,
+	tsahee@annapurnalabs.com, atenart@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	rjui@broadcom.com, sbranden@broadcom.com, andrew@lunn.ch,
+	gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
+	matthias.bgg@gmail.com, magnus.damm@gmail.com,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.1 12/12] arm64: dts: Fix dtc interrupt_provider
+ warnings
+Message-ID: <ZfAUgYj0ksDmGuhN@amd.ucw.cz>
+References: <20240229204039.2861519-1-sashal@kernel.org>
+ <20240229204039.2861519-12-sashal@kernel.org>
+ <Ze9x6qqGYdRiWy3h@duo.ucw.cz>
+ <CAMuHMdX-ht_Vetq7+Xh0TqWOcnCdi=3d0VvfgXBF4ExtzGcRDg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: dsa: mt7530: disable LEDs before reset
-To: patchwork-bot+netdevbpf@kernel.org,
- Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: daniel@makrotopia.org, dqfext@gmail.com, sean.wang@mediatek.com,
- andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, matthias.bgg@gmail.com,
- angelogioacchino.delregno@collabora.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
- <171019143163.14853.15330891015381229970.git-patchwork-notify@kernel.org>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <171019143163.14853.15330891015381229970.git-patchwork-notify@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Q9rn6aD/S92U1E3N"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdX-ht_Vetq7+Xh0TqWOcnCdi=3d0VvfgXBF4ExtzGcRDg@mail.gmail.com>
 
-On 12.03.2024 00:10, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
-> 
-> This patch was applied to netdev/net-next.git (main)
-> by Jakub Kicinski <kuba@kernel.org>:
-> 
-> On Tue,  5 Mar 2024 06:39:51 +0200 you wrote:
->> Disable LEDs just before resetting the MT7530 to avoid
->> situations where the ESW_P4_LED_0 and ESW_P3_LED_0 pin
->> states may cause an unintended external crystal frequency
->> to be selected.
->>
->> The HT_XTAL_FSEL (External Crystal Frequency Selection)
->> field of HWTRAP (the Hardware Trap register) stores a
->> 2-bit value that represents the state of the ESW_P4_LED_0
->> and ESW_P4_LED_0 pins (seemingly) sampled just after the
->> MT7530 has been reset, as:
->>
->> [...]
-> 
-> Here is the summary with links:
->    - net: dsa: mt7530: disable LEDs before reset
->      https://git.kernel.org/netdev/net-next/c/2920dd92b980
-> 
-> You are awesome, thank you!
 
-I am once again calling for this patch to be reverted on the net-next tree
-on the basis of:
+--Q9rn6aD/S92U1E3N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- This patch did not go through a proper reviewing process. There are
-   proposed changes on the code it changes regarding the scope and the
-   method of the patch, and improvements to be made on the patch log.
+Hi!
 
-- This patch should be backported to stable releases, therefore it
-   shouldn't be on the net-next tree and should be submitted to the net tree
-   instead.
+> > > From: Rob Herring <robh@kernel.org>
+> > >
+> > > [ Upstream commit 91adecf911e5df78ea3e8f866e69db2c33416a5c ]
+> > >
+> > > The dtc interrupt_provider warning is off by default. Fix all the war=
+nings
+> > > so it can be enabled.
+> >
+> > We don't have that warning in 6.1 and likely won't enable it, so we
+> > should not need this.
+>=20
+> Still, this fixes issues in DTS that were not noticed before because
+> the checks were disabled.
 
-Arınç
+Is this patch known to fix user-visible behaviour?
+
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--Q9rn6aD/S92U1E3N
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZfAUgQAKCRAw5/Bqldv6
+8l6HAJ48NTNe0sjM5dmXZJpgVt2yUt0QewCgusqrfmeYba20Wbn4F2DCto9qrKQ=
+=NHYi
+-----END PGP SIGNATURE-----
+
+--Q9rn6aD/S92U1E3N--
 
