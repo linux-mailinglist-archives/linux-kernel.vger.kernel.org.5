@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-100078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E397879179
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:53:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92CD287917B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33BB32820BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:53:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0D30B222B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C0278297;
-	Tue, 12 Mar 2024 09:53:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4472E7828F;
+	Tue, 12 Mar 2024 09:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Sx/9NCG4"
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RhjP3V/S"
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF8D8464;
-	Tue, 12 Mar 2024 09:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823B678281;
+	Tue, 12 Mar 2024 09:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710237210; cv=none; b=abjDfhSXZXuqE9uKod3UgEAGhbp89ws5ROjHb1m1oprnt5kuz3OD3VqAwwE1fIdkAhbWqC/mISFFtw66wARmu4TiNx6E0T+IYOqvPh+Ws5qMUU2ro4zegqv2qxQiyvjhkwIQ7hmCymSfKqwyWgBAzxYqSyHM6noorBF0iIlnmfI=
+	t=1710237227; cv=none; b=AlhAvdLQuERk3lXGyD7dwdQYeJZHTtauaXOxw7sIX4t+dHNZBctXgHAyLpymPh5FhcKpXU68P+YD2nvz97HFJHuniwnP9dUqfJwOxaE/oZ2Y0eptNwjRL6AHp0Scd953Iu3D8p2k7ebJIrOKEM+FJPUZuhO6GOBxt1o4OdTWEqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710237210; c=relaxed/simple;
-	bh=RFDDbq8euVk0TxUnNL3xwGP+YlE16DFFZY5QCqpVL0w=;
+	s=arc-20240116; t=1710237227; c=relaxed/simple;
+	bh=sUamQysyu6qncLunL28VRaKzze+Y8PjsFwjFSAPvlns=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kYH3xXHG9DcV7pC5KYS+kPd/dPTGWmAUBPlbM5knbApxbNoHVhjFiYZYyxejDdpJ+F8IRPJcIK+rguR2YahYPD/5alWoLIre2P99kzXzyV/piKFm4FvXg6D8KFbrOpMY4NCcEdguWP+/F5iqbQ1WqmMdTypmQ8M+zFEXfmgxxRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Sx/9NCG4; arc=none smtp.client-ip=115.124.30.100
+	 In-Reply-To:Content-Type; b=aRFEExAAst3WL/siHnB3J7BfIJkQeFgZztjE/KmAXv1Lcx8RI/MNQ9MZovxQ0tWA0Gc9ZSIGM8eGfKl2LVOrSHBNpKko0steTQQFFz6v81EV37MN9l8YE8ZUH2FzYhlNLVGVatAZs11rlUYsf/sdvW5ifE0Dmt9SpL1GWaTfgsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RhjP3V/S; arc=none smtp.client-ip=115.124.30.111
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1710237203; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=yRJsbW86ZB7Cabx/3xt4bUBooR3H0NOFgHD/1ETRSWY=;
-	b=Sx/9NCG4JObAIsXpiylIyVS+u5ehyXelcthbkNM6iNAFMsOh/vZBoKkVuD2XUUFBpNx28TBNe38rLzaTaRULlmsbqsrQuKB8gxCFBzWdulRHV9We0onwGTNm05xHfepsgmwqnD42xuHN+cbAtEIH7S7NxWF0IE2LNyYOKc5QeXU=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W2LUhZF_1710237201;
-Received: from 30.221.129.234(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W2LUhZF_1710237201)
+	t=1710237222; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=xQKHCh361SfWZRmqI7leh9Mlmi1eAF8yjLMSaUPV8LQ=;
+	b=RhjP3V/SGYM7fOvnyYt9jX8IbgGwFmTS/z/eCVfZUku/n3h087JZHf1uytQQGWewBDMAuSvO/1yd1ASIVPuLGf3c77lure1LlWSllSe2ZCvtWphK+3JUGZYnMU0nPKqbXzRfpQz+9McDz74D67r1irSSHOzTu4EoRvBBMiTosMg=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W2LY0LL_1710237220;
+Received: from 30.221.132.227(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W2LY0LL_1710237220)
           by smtp.aliyun-inc.com;
-          Tue, 12 Mar 2024 17:53:22 +0800
-Message-ID: <aec870fb-c36b-412d-9581-bbacdd50551d@linux.alibaba.com>
-Date: Tue, 12 Mar 2024 17:53:21 +0800
+          Tue, 12 Mar 2024 17:53:41 +0800
+Message-ID: <79d3441c-fb7e-4e02-a381-99e8d639ad1c@linux.alibaba.com>
+Date: Tue, 12 Mar 2024 17:53:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,265 +48,244 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] net/smc: Avoid -Wflex-array-member-not-at-end
- warnings
-To: Jan Karcher <jaka@linux.ibm.com>,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Wenjia Zhang <wenjia@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>,
- Tony Lu <tonylu@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-Cc: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- Kees Cook <keescook@chromium.org>
-References: <ZeIhOT44ON5rjPiP@neat>
- <71aa847b-2edc-44a2-beb7-3610bf744937@linux.alibaba.com>
- <1cb9a110-c877-4420-9b23-1e7980f1300a@linux.ibm.com>
- <82c1dc9e-d5b6-40e3-9d81-d18cc270724b@embeddedor.com>
- <d145d2c7-5cbd-4da5-be14-b25d00baad19@linux.alibaba.com>
- <fd7e4c2f-0d8f-4b1c-86af-9bf472cb7d0f@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <fd7e4c2f-0d8f-4b1c-86af-9bf472cb7d0f@linux.ibm.com>
+Subject: Re: [PATCH 1/2] ACPI/AEST: Initial AEST driver
+Content-Language: en-US
+To: Marc Zyngier <maz@kernel.org>
+Cc: catalin.marinas@arm.com, will@kernel.org, lpieralisi@kernel.org,
+ guohanjun@huawei.com, sudeep.holla@arm.com, xueshuai@linux.alibaba.com,
+ baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org,
+ linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Tyler Baicar <baicar@os.amperecomputing.com>,
+ Ruidong Tian <tianruidong@linux.alibaba.com>
+References: <20240304111517.33001-1-tianruidong@linux.alibaba.com>
+ <20240304111517.33001-2-tianruidong@linux.alibaba.com>
+ <86wmqi19pg.wl-maz@kernel.org>
+ <aaad88c3-333d-4714-a9ca-3b66c8a5d9c8@linux.alibaba.com>
+ <8734szr8y9.wl-maz@kernel.org>
+From: Ruidong Tian <tianruidong@linux.alibaba.com>
+In-Reply-To: <8734szr8y9.wl-maz@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 2024/3/12 15:54, Jan Karcher wrote:
-> 
-> 
-> On 11/03/2024 11:59, Wen Gu wrote:
+在 2024/3/9 18:33, Marc Zyngier 写道:
+> On Fri, 08 Mar 2024 03:43:30 +0000,
+> Ruidong Tian <tianruidong@linux.alibaba.com> wrote:
 >>
+>> 在 2024/3/4 20:07, Marc Zyngier 写道:
+>>> On Mon, 04 Mar 2024 11:15:16 +0000,
+>>> Ruidong Tian<tianruidong@linux.alibaba.com>  wrote:
+>>>> diff --git a/arch/arm64/include/asm/ras.h b/arch/arm64/include/asm/ras.h
+>>>> new file mode 100644
+>>>> index 000000000000..2fb0d9741567
+>>>> --- /dev/null
+>>>> +++ b/arch/arm64/include/asm/ras.h
+>>>> @@ -0,0 +1,38 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +#ifndef __ASM_RAS_H
+>>>> +#define __ASM_RAS_H
+>>>> +
+>>>> +#include <linux/types.h>
+>>>> +#include <linux/bits.h>
+>>>> +
+>>>> +#define ERR_STATUS_AV		BIT(31)
+>>>> +#define ERR_STATUS_V		BIT(30)
+>>>> +#define ERR_STATUS_UE		BIT(29)
+>>>> +#define ERR_STATUS_ER		BIT(28)
+>>>> +#define ERR_STATUS_OF		BIT(27)
+>>>> +#define ERR_STATUS_MV		BIT(26)
+>>>> +#define ERR_STATUS_CE		(BIT(25) | BIT(24))
+>>>> +#define ERR_STATUS_DE		BIT(23)
+>>>> +#define ERR_STATUS_PN		BIT(22)
+>>>> +#define ERR_STATUS_UET		(BIT(21) | BIT(20))
+>>>> +#define ERR_STATUS_CI		BIT(19)
+>>>> +#define ERR_STATUS_IERR 	GENMASK_ULL(15, 8)
+>>>> +#define ERR_STATUS_SERR 	GENMASK_ULL(7, 0)
+>>> All these bits need to be defined in arch/arm64/tools/sysreg as
+>>> ERXSTATUS_EL1 fields.
 >>
->> On 2024/3/8 07:46, Gustavo A. R. Silva wrote:
->>>
->>>
->>> On 3/7/24 02:17, Jan Karcher wrote:
->>>>
->>>>
->>>> On 04/03/2024 10:00, Wen Gu wrote:
->>>>>
->>>>>
->>>>> On 2024/3/2 02:40, Gustavo A. R. Silva wrote:
->>>>>> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
->>>>>> ready to enable it globally.
->>>>>>
->>>>>> There are currently a couple of objects in `struct smc_clc_msg_proposal_area`
->>>>>> that contain a couple of flexible structures:
->>>>>>
->>>>
->>>> Thank you Gustavo for the proposal.
->>>> I had to do some reading to better understand what's happening and how your patch solves this.
->>>>
->>>>>> struct smc_clc_msg_proposal_area {
->>>>>>     ...
->>>>>>     struct smc_clc_v2_extension             pclc_v2_ext;
->>>>>>     ...
->>>>>>     struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
->>>>>>     ...
->>>>>> };
->>>>>>
->>>>>> So, in order to avoid ending up with a couple of flexible-array members
->>>>>> in the middle of a struct, we use the `struct_group_tagged()` helper to
->>>>>> separate the flexible array from the rest of the members in the flexible
->>>>>> structure:
->>>>>>
->>>>>> struct smc_clc_smcd_v2_extension {
->>>>>>          struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
->>>>>>                              u8 system_eid[SMC_MAX_EID_LEN];
->>>>>>                              u8 reserved[16];
->>>>>>          );
->>>>>>          struct smc_clc_smcd_gid_chid gidchid[];
->>>>>> };
->>>>>>
->>>>>> With the change described above, we now declare objects of the type of
->>>>>> the tagged struct without embedding flexible arrays in the middle of
->>>>>> another struct:
->>>>>>
->>>>>> struct smc_clc_msg_proposal_area {
->>>>>>          ...
->>>>>>          struct smc_clc_v2_extension_hdr        pclc_v2_ext;
->>>>>>          ...
->>>>>>          struct smc_clc_smcd_v2_extension_hdr    pclc_smcd_v2_ext;
->>>>>>          ...
->>>>>> };
->>>>>>
->>>>>> We also use `container_of()` when we need to retrieve a pointer to the
->>>>>> flexible structures.
->>>>>>
->>>>>> So, with these changes, fix the following warnings:
->>>>>>
->>>>>> In file included from net/smc/af_smc.c:42:
->>>>>> net/smc/smc_clc.h:186:49: warning: structure containing a flexible array member is not at the end of another 
->>>>>> structure [-Wflex-array-member-not-at-end]
->>>>>>    186 |         struct smc_clc_v2_extension             pclc_v2_ext;
->>>>>>        |                                                 ^~~~~~~~~~~
->>>>>> net/smc/smc_clc.h:188:49: warning: structure containing a flexible array member is not at the end of another 
->>>>>> structure [-Wflex-array-member-not-at-end]
->>>>>>    188 |         struct smc_clc_smcd_v2_extension pclc_smcd_v2_ext;
->>>>>>        | ^~~~~~~~~~~~~~~~
->>>>>>
->>>>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>>>>> ---
->>>>>>   net/smc/smc_clc.c |  5 +++--
->>>>>>   net/smc/smc_clc.h | 24 ++++++++++++++----------
->>>>>>   2 files changed, 17 insertions(+), 12 deletions(-)
->>>>>>
->>>>>> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
->>>>>> index e55026c7529c..3094cfa1c458 100644
->>>>>> --- a/net/smc/smc_clc.c
->>>>>> +++ b/net/smc/smc_clc.c
->>>>>> @@ -853,8 +853,9 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
->>>>>>       pclc_smcd = &pclc->pclc_smcd;
->>>>>>       pclc_prfx = &pclc->pclc_prfx;
->>>>>>       ipv6_prfx = pclc->pclc_prfx_ipv6;
->>>>>> -    v2_ext = &pclc->pclc_v2_ext;
->>>>>> -    smcd_v2_ext = &pclc->pclc_smcd_v2_ext;
->>>>>> +    v2_ext = container_of(&pclc->pclc_v2_ext, struct smc_clc_v2_extension, _hdr);
->>>>>> +    smcd_v2_ext = container_of(&pclc->pclc_smcd_v2_ext,
->>>>>> +                   struct smc_clc_smcd_v2_extension, hdr);
->>>>>>       gidchids = pclc->pclc_gidchids;
->>>>>>       trl = &pclc->pclc_trl;
->>>>>> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
->>>>>> index 7cc7070b9772..5b91a1947078 100644
->>>>>> --- a/net/smc/smc_clc.h
->>>>>> +++ b/net/smc/smc_clc.h
->>>>>> @@ -134,12 +134,14 @@ struct smc_clc_smcd_gid_chid {
->>>>>>                */
->>>>>>   struct smc_clc_v2_extension {
->>>>>> -    struct smc_clnt_opts_area_hdr hdr;
->>>>>> -    u8 roce[16];        /* RoCEv2 GID */
->>>>>> -    u8 max_conns;
->>>>>> -    u8 max_links;
->>>>>> -    __be16 feature_mask;
->>>>>> -    u8 reserved[12];
->>>>>> +    struct_group_tagged(smc_clc_v2_extension_hdr, _hdr,
->>>>>> +        struct smc_clnt_opts_area_hdr hdr;
->>>>>> +        u8 roce[16];        /* RoCEv2 GID */
->>>>>> +        u8 max_conns;
->>>>>> +        u8 max_links;
->>>>>> +        __be16 feature_mask;
->>>>>> +        u8 reserved[12];
->>>>>> +    );
->>>>>>       u8 user_eids[][SMC_MAX_EID_LEN];
->>>>>>   };
->>>>>> @@ -159,8 +161,10 @@ struct smc_clc_msg_smcd {    /* SMC-D GID information */
->>>>>>   };
->>>>>>   struct smc_clc_smcd_v2_extension {
->>>>>> -    u8 system_eid[SMC_MAX_EID_LEN];
->>>>>> -    u8 reserved[16];
->>>>>> +    struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
->>>>>> +        u8 system_eid[SMC_MAX_EID_LEN];
->>>>>> +        u8 reserved[16];
->>>>>> +    );
->>>>>>       struct smc_clc_smcd_gid_chid gidchid[];
->>>>>>   };
->>>>>> @@ -183,9 +187,9 @@ struct smc_clc_msg_proposal_area {
->>>>>>       struct smc_clc_msg_smcd            pclc_smcd;
->>>>>>       struct smc_clc_msg_proposal_prefix    pclc_prfx;
->>>>>>       struct smc_clc_ipv6_prefix pclc_prfx_ipv6[SMC_CLC_MAX_V6_PREFIX];
->>>>>> -    struct smc_clc_v2_extension        pclc_v2_ext;
->>>>>> +    struct smc_clc_v2_extension_hdr        pclc_v2_ext;
->>>>>>       u8            user_eids[SMC_CLC_MAX_UEID][SMC_MAX_EID_LEN];
->>>>>> -    struct smc_clc_smcd_v2_extension    pclc_smcd_v2_ext;
->>>>>> +    struct smc_clc_smcd_v2_extension_hdr    pclc_smcd_v2_ext;
->>>>>>       struct smc_clc_smcd_gid_chid
->>>>>>                   pclc_gidchids[SMCD_CLC_MAX_V2_GID_ENTRIES];
->>>>>>       struct smc_clc_msg_trail        pclc_trl;
->>>>>
->>>>> Thank you! Gustavo. This patch can fix this warning well, just the name
->>>>> '*_hdr' might not be very accurate, but I don't have a good idea ATM.
->>>>
->>>> I agree. Should we chose this option we should come up for a better name.
->>>>
->>>>>
->>>>> Besides, I am wondering if this can be fixed by moving
->>>>> user_eids of smc_clc_msg_proposal_area into smc_clc_v2_extension,
->>>>> and
->>>>> pclc_gidchids of smc_clc_msg_proposal_area into smc_clc_smcd_v2_extension.
->>>>>
->>>>> so that we can avoid to use the flexible-array in smc_clc_v2_extension
->>>>> and smc_clc_smcd_v2_extension.
->>>>
->>>> I like the idea and put some thought into it. The only thing that is not perfectly clean IMO is the following:
->>>> By the current definition it is easily visible that we are dealing with a variable sized array. If we move them into 
->>>> the structs one could think they are always at their MAX size which they are not.
->>>> E.g.: An incoming proposal can have 0 UEIDs indicated by the eid_cnt.
->>>> That said nothing a comment can't fix.
->>>>
->>>>  From what i have seen the offset and length calculations regarding the "real" size of those structs is fine with 
->>>> your proposal.
->>>>
->>>> Can you verify that your changes also resolve the warnings?
->>>
->>> I can confirm that the changes Wen Gu is proposing also resolve the warnings.
->>>
->>> Wen,
->>>
->>> If you send a proper patch, you can include the following tags:
->>>
->>> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>> Build-tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>>
->>
->> Hi Gustavo, thank you for the confirmation that my proposal can fix the warning.
->>
->> But I found that I may have something missed in my proposal when I think further.
->> My proposal changed the sizes of struct smc_clc_v2_extension and smc_clc_smcd_v2_extension,
->> and some places in SMC need them, such as the fill of kvec in smc_clc_send_proposal().
->>
->> So my proposal may involve more changes to current SMC code, and I think it is
->> not as clean as your solution. So I perfer yours now.
+>> This file only describes the system register, but RAS MMIO registers
+>> use these bits too. Would it be appropriate to define them in
+>> arch/arm64/tools/sysreg?
 > 
-> Hi Wen Gu,
-> 
-> you're right. I missed that the offset calculation is broken with your proposal since the full size of the array is 
-> already included in this case which means we would have to subtract the empty slots instead of adding the full ones.
-> My bad. Thinking about adding a testcase to sxplicit check the size of the CLC Messages send in the future.
-> 
+> You are using them for system registers, they need to be defined
+> there. The fact that they are also used to MMIO is anecdotal.
 
-That's OK. I am the one who brings this mistake.
-Sometimes the details only become clear when start writing the code.
+There might have been some misunderstanding. AEST interface can be 
+SR(processor) or MMIO(GIC, SMMU, Memory), All these two types of nodes 
+have ERR<n>STATUS register, and AEST driver need to operate these filed 
+both in SR and MMIO register.
 
->>
->> And as for the name, I think maybe we can use '*_elems' as a suffix, at least it
->> is unambiguous. So it will be smc_clc_v2_extension_elems and smc_clc_smcd_v2_extension_elems.
->>
->>
->> Jan, what do you think of the name '*_elems' ?
 > 
-> Hmm... I think it is way better than priv. One more proposal from my side would be *_fixed since this is the fixed 
-> content and not variable. I'm open for both.
+> [...]
 > 
-> Which one would you prefer more?
+>>>> +#define CASE_READ_CLEAR(x, clear)					\
+>>>> +	case (x): {							\
+>>>> +		res = read_sysreg_s(SYS_##x##_EL1);			\
+>>>> +		if (clear)						\
+>>>> +			write_sysreg_s(0, SYS_##x##_EL1);		\
+>>>> +		break;							\
+>>>> +	}
+>>> Please don't use macros with side effects. This is horrible to debug.
+>>> Instead, *return* the value from the macro, or pass the variable you
+>>> want to affect as a parameter.
+>>
+>> OK, I will pass **res** as a parameter like this:
+>>
+>>    #define CASE_READ_CLEAR(res, x, clear)			\
+>> 	  case (x): {						\
+>> 		  res = read_sysreg_s(SYS_##x##_EL1);		\
+>> 		  if (clear)					\
+>> 			  write_sysreg_s(0, SYS_##x##_EL1);	\
+>> 		  break;					\
+>> 	  }
+>>
+>>>
+>>> Also, what ensures the synchronisation of this write? How is the W1TC
+>>> aspect enforced?
+>>
+>> aest_proc is just call in irq context, one ras error is just routed to
+>> one core, so it is thread safe. And this is a Write-After-Read (WAR)
+>> Hazards with dependence，can i assume that pipeline would guarantee
+>> the order of writing and reading?
 > 
+> You are missing the point. WAR hazarding doesn't mean that the write
+> has taken effect, and can be delayed for as long as the CPU decides
+> to, until the nest context synchronisation event.
+> 
+> The W1TC question still stands.
 
-'*_fixed' is better, thank you!
+OK, i will add an ISB at the end of aest_proc to ensure all writes has 
+taken effect.
+
+> 
+> [...] >
+>>>> +static u64 aest_iomem_read_clear(u64 base, u32 offset, bool clear)
+>>>> +{
+>>>> +	u64 res;
+>>>> +
+>>>> +	res = readq((void *)(base + offset));
+>>>> +	if (clear)
+>>>> +		writeq(0, (void *)(base + offset));
+>>> Do you need the explicit synchronisation? What ordering are you trying
+>>> to guarantee?
+>>
+>> This read and write use the same address, pipeline would guarantee
+>> the order of writing and reading.
+> 
+> You are missing the point again. Non-relaxed accessors come with a DMB
+> that enforces ordering with younger reads and older writes. Why do you
+> need those?
+>
+
+I get it. Relaxed accesses are still guaranteed to be ordered when 
+operating MMIO address. I will use readq/writeq_relaxed in next version.
+
+> [...]
+	>
+>>>> +static int __init aest_register_gsi(u32 gsi, int trigger, void *data,
+>>>> +					irq_handler_t aest_irq_func)
+>>>> +{
+>>>> +	int cpu, irq;
+>>>> +
+>>>> +	irq = acpi_register_gsi(NULL, gsi, trigger, ACPI_ACTIVE_HIGH);
+>>>> +
+>>>> +	if (irq == -EINVAL) {
+>>>> +		pr_err("failed to map AEST GSI %d\n", gsi);
+>>>> +		return -EINVAL;
+>>>> +	}
+>>>> +
+>>>> +	if (gsi < 16) {
+>>>> +		pr_err("invalid GSI %d\n", gsi);
+>>>> +		return -EINVAL;
+>>>> +	} else if (gsi < 32) {
+>>>> +		if (ppi_idx >= AEST_MAX_PPI) {
+>>>> +			pr_err("Unable to register PPI %d\n", gsi);
+>>>> +			return -EINVAL;
+>>>> +		}
+>>>> +		ppi_irqs[ppi_idx] = irq;
+>>>> +		enable_percpu_irq(irq, IRQ_TYPE_NONE);
+>>> Enabling the PPI before requesting it? Looks... great. And how does
+>>> this work on a system that supports EPPIs, which are in the
+>>> [1119:1056] range?
+>>
+>> It is better to enable it after request it, i will fix it next version.
+>> My machine do not use EPPI as RAS interrupt, i can not test it now. Can
+>> we support EPPI in later patch?
+> 
+> No, because you shouldn't even have to care. Can you see a single
+> driver in the tree that do this?
+
+OK，I will fix it next version.
+
+> 
+>>
+>>>
+>>> Also, if you get a trigger as a parameter, why the IRQ_TYPE_NONE?
+>>>
+>> Sorry，I do not really understand this comment, should I use
+>> (IRQ_LEVEL | IRQ_PER_CPU)?
+> 
+> You tell me. Either the trigger is relevant, or it isn't. But I assume
+> it is passed as a parameter to the function for a good reason.
 
 
-Hi Gustavo,
+> 
+>>
+>>>> +		for_each_possible_cpu(cpu) {
+>>>> +			memcpy(per_cpu_ptr(ppi_data[ppi_idx], cpu), data,
+>>>> +			       sizeof(struct aest_node));
+>>>> +		}
+>>>> +		if (request_percpu_irq(irq, aest_irq_func, "AEST",
+>>>> +				       ppi_data[ppi_idx++])) {
+>>>> +			pr_err("failed to register AEST IRQ %d\n", irq);
+>>>> +			return -EINVAL;
+>>>> +		}
+>>>> +	} else if (gsi < 1020) {
+>>>> +		if (request_irq(irq, aest_irq_func, IRQF_SHARED, "AEST",
+>>>> +				data)) {
+>>> Why SHARED? Who would share a RAS interrupt?????
+>>
+>> Multi AEST nodes may use the same interrupt, for example, one DDRC with
+>> a RAS interrupt has two sub channels, these two sub channel is described
+>> as two AEST node in AEST table, so they share the same one. In another
+>> case, SMMU has two RAS node, TCU and TBU, they may also share the same
+>> interrupt.
+> 
+> I still find it odd, but hey, if that's the way people want to handle
+> RAS, they might as well OR all of them and wire it to the RESET pin.
+> 
 
-Sorry to complicate things. Could you please post a v2 with the new name updated (avoid using 'hdr') ?
-
-Thank you!
+It depends on HW designer especially for DDRC, and i think **SHARED** is 
+more compatible. But in fact, I'm not sure if driver should assume that 
+all RAS interruptions are no shared. If AEST driver set IRQ no shared, 
+does it need to loop through all AEST node first to ensure no node 
+sharing interrupt?
 
 >>
->> Thanks!
->>
->>> Thanks!
->>> -- 
->>> Gustavo
 >>>
->>>>
->>>> [...]
->>>>
->>>>>   };
->>>>>
->>>>>
->>>>> Thanks!
->>>>> Wen Gu
->>>>
->>>> Thanks you
->>>> - Jan
+>>>> +			pr_err("failed to register AEST IRQ %d\n", irq);
+>>>> +			return -EINVAL;
+>>> Same question about extended SPIs.
+>>>
+>>> All in all, this whole logic is totally useless. It isn't the driver's
+>>> job to classify the GIC INTIDs...
+>>
+>> AEST use both PPI and SPI, it seems that AEST driver must recognize
+>> INTID in order to request irq number with different function, do you
+>> have better solution here?
+> 
+> Again, you should have to look at the INTID, ever. That's none of your
+> business, and you don't even know what interrupt controller the system
+> is presenting you anyway. The way to identify a per-CPU interrupt is
+> to use the irq_is_percpu_devid() helper, and not to mess with
+> pointless heuristics.
+
+OK, it will be fixed in next version.
+> 
+> Thanks,
+> 
+> 	M.
+> 
 
