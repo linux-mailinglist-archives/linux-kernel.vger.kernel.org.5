@@ -1,145 +1,138 @@
-Return-Path: <linux-kernel+bounces-100736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B288879C84
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:00:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F42A879C87
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D2271C21AAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:00:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E40B61F216EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1C51428E3;
-	Tue, 12 Mar 2024 19:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66464142657;
+	Tue, 12 Mar 2024 20:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W6gUpd5q"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ssdzl1tc"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660E97D406
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422A37D406
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710273595; cv=none; b=MCN7d/NQbFGQAOf7OOTE6lQTU3PchEJiUU4B44ZYr+GC9S5nbr4HlSzayfCcHIZosj9fuxT/gAo5sjPTyqP1plk+KKEsvzXwFTbt1NMShGDlIXXqpBa8nEjmSkx35H1L1Z4O+g5TXrqWqHx20PGG6RD8lADHJcW/u1Brx/8rh8s=
+	t=1710273682; cv=none; b=KAxiTz9rMXxvmCgXTxRF/6k1R+9tT6FAJtsy6j1nvP/0lijUTtLvYpxJpTjeYS7y0qQTmIbbRGqzFuCqp+4iIOa+j28jHzH+xe62YUxjCSaPlN5Y6vaofReUIMzEZrxxLfSjOQMcxX5VpBL99ZffPX2SuqNEKGd2n5WUmENejps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710273595; c=relaxed/simple;
-	bh=vxyILqM2pTOQjWI17vsz1rK/+KP34kv9dRm9oT70tnc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KMlk3dMZkrzKJpbKhMjQe42S8PnpIZ4hmk2k625jD8bts26lBk2dKcIjGMs7CaHDpURvL1//rrah8B9jqyoV7buN7DhVaqHvCo9p3ZEF6cnoHxFO9giylXGh3pLOvdG5gEKavbe/9m4Oss9jbYDsWyXBTMN4yLLGsa81Z/geuT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W6gUpd5q; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso4039253276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710273591; x=1710878391; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pi49WpRFUlZ79OB0qX5D/qCdjX5AaLtrt3eQtgbokw4=;
-        b=W6gUpd5qqXnAQwLC1OddBvoPqZaf9YndiLIWOvSsBndGA1dWtDtQhmoW+OHWstfp+9
-         ouvefFbI302XO1MdliHqWSb2jXpp/S82VpQWUD/41ghVOHKG91I1zcevgZx88rsWMoxl
-         +AnyDXyaj5hJu+pm0LzbDE5JPm1EA21gp+mxgn70ECOx1YIeMlU+o3eUPh0hPX4TagIV
-         l1VHsu14aLA12eT1MVsYPggmvEOcA8tV7zO1Xz7KjGsFWBrVJc5jXidhaxEi3J7wI06P
-         JhMOIyWR/Nh1B5cfLOlQayHjyKfB2RsEJ7vFWyvKmuXAT0YsuNvO3et7b6oydj23gMt6
-         vb/Q==
+	s=arc-20240116; t=1710273682; c=relaxed/simple;
+	bh=0a8n08WPCW1Zky1uteVZ0stAKm5h/96u1j8Uh3AQSwg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ueyg6oOM0/vmfjt7M5+ACRNAF7snfCOoN43wnVYTKrwQqBCx0ePqq5gOn5iNmWSTY2WVSJ0ExvhDd1KzGCPkPbKOfCiHu5ZPFOpKQxeMj1Rcr8voRB8ofxM9UbWKbYwPQzd0SiisAvwtn0T+Dv7GRVRZkUHVRzhf3/7eXFJiin8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ssdzl1tc; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710273680;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sq8Q7APw4DcVkqWc+oejv1fuFkz+jT1GPn/e6E4W0Yk=;
+	b=Ssdzl1tcJyX3A5Ni+bh5+qjHz6HBHNM5e1zo3guh50e8sMRROo6pMGe0W7hb4lVouv/L7Q
+	oaR3ZJRPvVvHS3CWjWMJXlTSldoW7PWoi0MzCRufktfh/mQvA8OkqN/AANS0tm6S3sRl4Y
+	c18n03dEieLWj6cYsGVc1YpXN4J59ao=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-281-_UKF141UMwaesL5cKyYTSQ-1; Tue, 12 Mar 2024 16:01:18 -0400
+X-MC-Unique: _UKF141UMwaesL5cKyYTSQ-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-42ef59a624fso4362771cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:01:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710273591; x=1710878391;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pi49WpRFUlZ79OB0qX5D/qCdjX5AaLtrt3eQtgbokw4=;
-        b=FNnkdYSNU/McA1MRkqDxl23qIeYk6N5LWer3UyYP+weeYcUQbg/wZNHooa2DUkfadG
-         YiFwd8YK1uUDLCwBIyZRFqCJBIrF08ODK/cMVBCg7VYtaMs+OgaZBvXv3UA7TfvSWo7Z
-         6kUwZf1lcdbfE13bmTYDuC6oP2I6YpdgCBkohdHPxbQ0VfbmbE4thKTwqvcxHZsARnZ0
-         3YSpu9yQ5pEVlDOJG2sEw7zJwlzJrCXQFZuyRgDFc/U3Cr/NFq6U233xI28u4htEFpfe
-         qenUlCRTEQiISoWoJzOWKA/1gIBg3jg6V4Bl9zLrbidPx/aMwUVYwK71iItT8h5bJ2zE
-         eRew==
-X-Forwarded-Encrypted: i=1; AJvYcCXIQo6UnKehb+VxUW0n0BJI8X3S9KhC64JdyQBPKHJd6nqbHEj34xppghr6yW6kZjxH2Xq5pC3Q/wWXcbAcd0YwN+MeiDKBPriiN+t8
-X-Gm-Message-State: AOJu0Yx93umM7a7RsIAyOM6ACz3P0gfkoI6plHXVPqj1OqAAW+uY096Y
-	foDoEAxkB+iZee5TK69RnH1Sv/NRJ0CKvejNZ3YaTTM3B4IyDD3F66t7z/iVNFEwCn1ZUBMDJKk
-	kWdctIXktsPHCsxTScSZZdh+SsdUzsNM2JcJ8hmbMnSpk6rJZ
-X-Google-Smtp-Source: AGHT+IEBM2eUt+FpOxElMNCpfGkf+edtkynWu93yFwNKNJhesWhAXHF3tYfjLASjxZiHcG9P10bBu5NJcDFB0iKXjYA=
-X-Received: by 2002:a25:2648:0:b0:dcd:a9ad:7d67 with SMTP id
- m69-20020a252648000000b00dcda9ad7d67mr475562ybm.8.1710273591311; Tue, 12 Mar
- 2024 12:59:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710273677; x=1710878477;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sq8Q7APw4DcVkqWc+oejv1fuFkz+jT1GPn/e6E4W0Yk=;
+        b=cbTQnTs4CPCFwr1QHDeD/cx1aYloFcesAj8WCbuNdkxqk5bq6zOMmYYvI+7XphrEGf
+         WPbc3BLK7D8Hdsd/NLybXmz9kiY2W0KIAkluA674vQFg+UUD1J3HIliuuFYYFPTTNM4j
+         V40LGCksH64dNRxcLPWlruuG1sIrolG+7xfeu6rLrj1Y+LQpZAxLJ6VZpWkyX7T0AT3h
+         tmikJfl+9fzN/XsrotkuhZAu8GFWuZoxSdG8nMQhxybp1iVoIUSyzvzOk2cbW0PuqhS+
+         vg9swKhjcFsftJZ+Yd8Ir9XitkhgjrKclJckX8lpAMW6GDJwAO7+atwn9SopbLHHmUzY
+         KFHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIMPzAXbXhnUk/QEsekWKr0VQ2JqQZQ+L8TxoL4XdEHOWAyoPxyZIU7sZNdQRNdczpbNziEcn630gREAJNW8IFsyr2wEkTz0OySsxv
+X-Gm-Message-State: AOJu0Yz4L1FZ95701gj68PD8G9aUUimG+qSsTyi9iW1sna7m+RekR4hF
+	rmFRPYmM2qg3ag0Sa621R3z3S6iwhzLtt6W4hVC92LR/QABfi1/i92Q1m+OsjlmN4fdiIGqyu4r
+	ou1vO/elicR9GZV2x8vOR4u8hVuLAqf6/cS0Rhc5lynftubDG5zi+wrbMQ3sSww==
+X-Received: by 2002:a05:620a:2715:b0:788:79d3:402e with SMTP id b21-20020a05620a271500b0078879d3402emr3492044qkp.7.1710273677507;
+        Tue, 12 Mar 2024 13:01:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGFci8LJ7emFKeNaMhqM4be32i5qK2b8ngNE0xIpit/UyC+7KzN+KAk6ieS3wmiUOL3/zXkrQ==
+X-Received: by 2002:a05:620a:2715:b0:788:79d3:402e with SMTP id b21-20020a05620a271500b0078879d3402emr3492030qkp.7.1710273677131;
+        Tue, 12 Mar 2024 13:01:17 -0700 (PDT)
+Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id f18-20020a05620a12f200b007882915ca34sm3977850qkl.40.2024.03.12.13.01.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 13:01:16 -0700 (PDT)
+Date: Tue, 12 Mar 2024 16:01:14 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mike Rapoport <rppt@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH RFC 00/13] mm/treewide: Remove pXd_huge() API
+Message-ID: <ZfC0ioxUrCK5sX1k@x1n>
+References: <20240306104147.193052-1-peterx@redhat.com>
+ <f9b786bf-27d9-4e16-b8d2-2a2666d917df@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223-topic-sm8650-upstream-hdk-v1-0-ccca645cd901@linaro.org>
- <20240223-topic-sm8650-upstream-hdk-v1-2-ccca645cd901@linaro.org>
- <8a1b08df-dc44-6f9f-c819-33491308699e@linaro.org> <65d60ed4-e52c-4f98-84e1-4d753e29adfc@linaro.org>
-In-Reply-To: <65d60ed4-e52c-4f98-84e1-4d753e29adfc@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 12 Mar 2024 21:59:39 +0200
-Message-ID: <CAA8EJppT_hnzkzf0txesadt1MNky=d1swx9kD15RS3KQN2VHqw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sm8650: add support for the
- SM8650-HDK board
-To: neil.armstrong@linaro.org
-Cc: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f9b786bf-27d9-4e16-b8d2-2a2666d917df@csgroup.eu>
 
-On Tue, 12 Mar 2024 at 20:45, Neil Armstrong <neil.armstrong@linaro.org> wrote:
->
-> On 03/03/2024 00:26, Vladimir Zapolskiy wrote:
-> > Hi Neil,
-> >
-> > On 2/23/24 10:52, Neil Armstrong wrote:
-> >> The SM8650-HDK is an embedded development platforms for the
-> >> Snapdragon 8 Gen 3 SoC aka SM8650, with the following features:
-> >> - Qualcomm SM8650 SoC
-> >> - 16GiB On-board LPDDR5
-> >> - On-board WiFi 7 + Bluetooth 5.3/BLE
-> >> - On-board UFS4.0
-> >> - M.2 Key B+M Gen3x2 PCIe Slot
-> >> - HDMI Output
-> >> - USB-C Connector with DP Almode & Audio Accessory mode
-> >> - Micro-SDCard Slot
-> >> - Audio Jack with Playback and Microphone
-> >> - 2 On-board Analog microphones
-> >> - 2 On-board Speakers
-> >> - 96Boards Compatible Low-Speed and High-Speed connectors [1]
-> >>    - For Camera, Sensors and external Display cards
-> >>      - Compatible with the Linaro Debug board [2]
-> >
-> > what are these [1] and [2] references? Probably there might be some links.
->
-> Indeed
->
-> >
-> >>      - SIM Slot for Modem
-> >>      - Debug connectors
-> >>      - 6x On-Board LEDs
-> >>
-> >> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> >> ---
-> >>   arch/arm64/boot/dts/qcom/Makefile       |    1 +
-> >>   arch/arm64/boot/dts/qcom/sm8650-hdk.dts | 1259 +++++++++++++++++++++++++++++++
-> >>   2 files changed, 1260 insertions(+)
+Hi, Christophe,
 
+On Mon, Mar 11, 2024 at 09:58:47AM +0000, Christophe Leroy wrote:
+> Hi Peter, and nice job you are doing in cleaning up things around _huge 
+> stuff.
 
-> >
-> >> +&pcie_1_phy_aux_clk {
-> >> +    clock-frequency = <1000>;
-> >> +};
-> >> +
-> >
-> > May be put the clock above after &pcie1_phy like in the list of gcc
-> > source clocks?
->
-> Ack
+Thanks.  I appreciate your help along the way on Power.
 
-IIUC, this is not the actual frequency of the clock.
+> 
+> One thing that might be worth looking at also at some point is the mess 
+> around pmd_clear_huge() and pud_clear_huge().
+> 
+> I tried to clean things up with commit c742199a014d ("mm/pgtable: add 
+> stubs for {pmd/pub}_{set/clear}_huge") but it was reverted because of 
+> arm64 by commit d8a719059b9d ("Revert "mm/pgtable: add stubs for 
+> {pmd/pub}_{set/clear}_huge"")
+> 
+> So now powerpc/8xx has to implement pmd_clear_huge() and 
+> pud_clear_huge() allthough 8xx page hierarchy only has 2 levels.
 
+Those are so far out of my radar, as my focus right now is still more on
+hugetlbfs relevant side of things, while kernel mappings are not yet
+directly involved in hugetlbfs, even though they're still huge mappings.
+
+It's a pity to know that broke arm and got reverted, as that looks like a
+good thing to clean it up if ever possible.  I tend to agree with you that
+it seems for 3lvl we should define pgd_huge*() instead of pud_huge*(), so
+that it looks like the only way to provide such a treewide clean API is to
+properly define those APIs for aarch64, and define different pud helpers
+for either 3/4 levels.  But I confess I don't think I fully digested all
+the bits.
+
+Thanks,
 
 -- 
-With best wishes
-Dmitry
+Peter Xu
+
 
