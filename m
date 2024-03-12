@@ -1,206 +1,175 @@
-Return-Path: <linux-kernel+bounces-99776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A44C878D1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:45:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F1A6878D26
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC926282C24
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:45:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFA0E1F21D7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551F28BE7;
-	Tue, 12 Mar 2024 02:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KipOmKom"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715D3AD4B;
+	Tue, 12 Mar 2024 02:45:43 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2112.outbound.protection.partner.outlook.cn [139.219.146.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B909F79C0;
-	Tue, 12 Mar 2024 02:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710211505; cv=none; b=h78QUDTPEK3pVVC7TCwq1tVTXWlMpKTpWr1Ol9TTG98eu4dcNL5FmaxdPnro9XcfphIYd0BgytiE8rzaGjkMxRaEww/o7XtiLmjAhpfkHmyHGriAWfgGsZatrAdoRb3OQRsdFR+A3mniYUoyaHcmzra6F9ecV3vJf4wa0sn7WFg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710211505; c=relaxed/simple;
-	bh=0dvdXXyJ1ESxem/rFpA82FAbmKBH4mm6+/qvqOws/sA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VCkbo1AE2zsUI1zT7g09pcK1M/qvk6s2eny8gzeFSNwz/QcBPsT4Cfb4ssXcCxJqYtZHtU32NpXeMtL1Frja/e14SX/uZVtZg31xa4ra2POWu1Hj9PVuV/7JobblBrS5IEdTZRRLIH1IbHXtpDCBsLBpj1AS8xv7xM5jL24bkf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KipOmKom; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710211504; x=1741747504;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0dvdXXyJ1ESxem/rFpA82FAbmKBH4mm6+/qvqOws/sA=;
-  b=KipOmKomAq3ANsYJDJtgpgtIRidJRuvNU8YL9y3lBwEvSAmM+q72uRNx
-   RVKyXvQqH/OhEqcYxC/7vVUKBioaJZXOJ4cU4QGibuhITQCo8X71e9vB1
-   DRpaNRNXrU+kDWTFBGzD4w4CIJ3xXi79PTWH8yhS04FsRal4qy8dLvH6y
-   RfxecAWnoFoVVdHoQz579x3sEBlH7p/aOMxq4w2b9WO2BhwSneQSIzWzI
-   Ln5qoOzCIBUMEHCV6N1BpEwa/q364tjNSEQPt0+1aOsBQIy6z70Iv46+/
-   aDjMVDQHE7wfagNm4o8YpC5NIg5k+MG1JY+3hnR/p2pYQb76rkT5o7gkf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4760893"
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="4760893"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 19:45:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="11295410"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.125.243.127]) ([10.125.243.127])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 19:44:59 -0700
-Message-ID: <b3650606-712a-468d-9101-04c61c60531a@intel.com>
-Date: Tue, 12 Mar 2024 10:44:56 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A947482;
+	Tue, 12 Mar 2024 02:45:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710211542; cv=fail; b=R3v+dUm97jCOC70/VfeXDjw/VN6sHhoQcz88jFWc5JQ9Xv5BeQEytPJRkTDpo4WZaoRc6DgskUMGdrw7KkJ/1UXo9GmXVWHXIhKW3tQQLOPRnCDUM0nsYVr8AdvvA6NVrDU6oBm7WZZkA6v8FunZFmzjeMDgjQnkAM/Blusqeuo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710211542; c=relaxed/simple;
+	bh=cvE1iY6j1g7PYcGYBktFyGnkuJ+N7v4wDIyPQJhKStk=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=PhjhcPYICZQI18sT/1qhd87cFh4RyfyNmQrrN+gGYCPw3nVmn805QxoA+KLiJizNn3TO9aWAf2n4fqjcDtJUgTjxWiNIywALivebslwtKI8wTDTzTyMXfiOaolCu3LxtCfZISIfdlfwswwQUcwNTjG7iwqEHNDCW2KFfyge9cKM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PKERtY7cEtHrlCDu3rT4GsrfaipkpbppcHFwL/cYcZEatFYG0BbUckOVcahhJc2c3qLlcTBNB/qmlXFF9UhblQWzIC4L/pDT829gjjWQX+TpkW3ba3mrBPRaLqwDen1lxRsww3a3g+CCrMyBpweCJU3fL9oApp5YCQ0SPM/P7CrUWQbQROx7562yVb+d/+Gmm9YBkWmu88Phs5Ez78iJgXjWdXzmhT8+gBP8iPMlgfXhuyuFYNPQai0Dg/dhAZORnNYhL0+kdoZQ7fnJxCJy2VnBicfs4oIKyDGDigiFXRo8QKopWLVStI/9J9Hgdv2ldCNpmJtBY9NfZnOpldqSXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iqcsnIrJ8sPmElkzWKcIofUPyC/sXNuZQb/yrEyc3wU=;
+ b=g+fxLAFd20BGxjKHyecFuBISQxLhjTbGEU8hmGzUJVO1CkQrczEnqwt8WaRvG8CbGoril/yhf3u6EYmBTzfaOLntKPCIMTMxLLXp+3m5F4tP7saHuDtienBQ/RHcQeZi5ldfqH9QxaqrIcjDPtb3NOj9rfrocy+XXdQim6aLlGwHjS4IlR4qO7Y9sgz6nXaBSErKExshJDgi//xwUYKVlWTAWcmxZULbjze2nw1T83Hg9jWEO6beNYXx0+iOWCgYY80Ea4/kva45rI+EVH9pj+m1dQMNzBkixKU6o/BIHJ09/GpCpvZULr41vPYwQfx+ntXU6UpjuwJqP9Oq9/8cnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:25::10) by SHXPR01MB0575.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:1e::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.45; Tue, 12 Mar
+ 2024 02:45:28 +0000
+Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ ([fe80::b0af:4c9d:2058:a344]) by
+ SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
+ with mapi id 15.20.7249.041; Tue, 12 Mar 2024 02:45:28 +0000
+From: Changhuang Liang <changhuang.liang@starfivetech.com>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Jack Zhu <jack.zhu@starfivetech.com>,
+	Changhuang Liang <changhuang.liang@starfivetech.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Subject: [v1] staging: media: starfive: Clean pad selection in isp_try_format()
+Date: Mon, 11 Mar 2024 19:45:20 -0700
+Message-Id: <20240312024520.11022-1-changhuang.liang@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BJSPR01CA0024.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:c::36) To SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:25::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] kvm/cpuid: set proper GuestPhysBits in
- CPUID.0x80000008
-Content-Language: en-US
-To: Gerd Hoffmann <kraxel@redhat.com>, kvm@vger.kernel.org
-Cc: Tom Lendacky <thomas.lendacky@amd.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>,
- "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)"
- <linux-kernel@vger.kernel.org>
-References: <20240311104118.284054-1-kraxel@redhat.com>
- <20240311104118.284054-3-kraxel@redhat.com>
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240311104118.284054-3-kraxel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SHXPR01MB0671:EE_|SHXPR01MB0575:EE_
+X-MS-Office365-Filtering-Correlation-Id: ae8b754c-f47e-4c34-2d42-08dc423e79ce
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bOOaeHKFVUtIBDLw66TX1DqcaseZqYVxQAXuEq9o5xFCPjhnJgcmLrTUhU6tKWKavyXiC/mzq0G54AHcxEKmuwpcingwkKFVAogC3NApqIatQmeu8dVAw6x9rMHMSLKyOEIhIaucOHTIWjDPkXOWyKmWcRBtaiW+3VNq/9NHn6p4C2rc8n5NlQdzZoTorzm3dCIsksN8WOwKW+Ma7SF8rD3elTRYmvyV9T0kJ4ApZlJq55F0gV6vCPF75n5rG76H6fee2us8SjQu34cbtTAJ+1Vrug/rYwaFr7g/d8hIPJFy1UmNagR1bzYfKamG+J6M6BW2DkCxuXSOJJWMrF30fSTAlwLikZBLGJzmLuodOgtltkSdg8FbZV3Gwyf7t9NukR5+sMm1rK6xVL8crbPIxUly9m4w99SrEZgGpeZrNsXT4mz9jaFWtF8K9ya/Vs+YHoajCmc+UDKp+Um9USaCELv6r2HVgR8T4ZZghzyLDE7p3blYkBxq/epPlD7jibKDmNxkhNaGxac7p0wShRIg+FlNwGcQSJuz27WgTQKkQKiPZcEco0d8TUiFonEYQ4nK4qV1wAHR7pHQqdsVu+exudZTvTA36kKtp43c5WV3gwis5jLZWQNuUsHnLW/qklo/
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(41320700004)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?dTXd6btUGXHBFcJkKsHmQ1T9o3w96MXKJHkDrNtdyIVkdTDeBbIhZq1zEpeb?=
+ =?us-ascii?Q?h4ZGf5nzOx9h2aOQqmN+E04I64nUiGaP+TBpywr3kgW+5xSF8/xj6HVpnVNY?=
+ =?us-ascii?Q?YfuKkE5sVdqXB61iTe7HNk7maJ6qho95HmGEURWrzUxSyung43tIGmdcmk6p?=
+ =?us-ascii?Q?bnoYTVuoxq6KOWrlxuBKjShgdjVqE1y2JMS579oJZqZayxqLakEgIdGyV5mn?=
+ =?us-ascii?Q?q47uYM4CAHJ1Sih2kSRT1KbRPLLPXZu1EbmqKHEiA/KyD5tLRNMan+zH3piA?=
+ =?us-ascii?Q?NtNL1TkcDS7iS674i7WSoIWh/QbX29uCGrGBjg0kYbs4JqsY+cq8FsN6ZdHW?=
+ =?us-ascii?Q?neoG3TzHa8TxrpY9pHTN1Xpz3cfwnZfHfOH1devo5OqwlMPjL9rf+w29jW5y?=
+ =?us-ascii?Q?4bGFlYZFukmpZYinfXcSiMwhsG2foMpTtBEiEpeQE0nr51X779Q8yaXtkG7G?=
+ =?us-ascii?Q?mHKJ8Kh9puVJdFH2CLJfgdOBtc9BnAFBcpbmPZuiDN1upfvB5YagGD/scdr6?=
+ =?us-ascii?Q?PBBxwqADveohtC2b5RlwH/jqZ0SYHoUaj8mtefU9oJYyYlJ5BpY0/A8df4UU?=
+ =?us-ascii?Q?R97ANBqKp8cI4O6k/i5tS3IAksDaGwWxq9aDK1YPTMPk8NIZln+BgQFHWoub?=
+ =?us-ascii?Q?rniUk0T3mt3lAfSzG9Oqttgln6lf7ZnIxL00Q1exGekzivfZ3doSJl50ED1j?=
+ =?us-ascii?Q?YPVY6c2hgqTd525LhU55UBsHiSzgNIt1Jpb8doevbnISFKgftKuxzIdlqtWw?=
+ =?us-ascii?Q?HOo8PoMp50MXCa9M+i03MteGu70YyIoCdOP8MWyUDN70I0khAeBLVuaMvDFy?=
+ =?us-ascii?Q?gyaeMlZLjlvz9aYHGMePJd1e2nVqc7Zo6pRzDeUJwZR4hWjfrTqKe8XFQ0Jn?=
+ =?us-ascii?Q?oQ5fO7AVXKmx4SxSELGpETDZwju5sZl6RIaF4h3CNbdyszjhHgQ73WB5+A2A?=
+ =?us-ascii?Q?INPwjhGS6Bn/qL547a/LUarpfT/uwDTH8JVNsbar0syov4su6wHOZbs55bYF?=
+ =?us-ascii?Q?JFsypWI4xVjHqA3BuSDTaqNH9Mq+bR5dcG7IrjZuakrzFd5ZHH9+6kUaja6V?=
+ =?us-ascii?Q?iv20TvnGcSh1JpEuiWQh+XlP3knhhxE1zP65vw/ZCHq5QoPkeu1l3WptwBI8?=
+ =?us-ascii?Q?SrvVFVsPhKViCXCXpf/Htk/07aFTnVM9clAh+2I/0p/jHUhROlhA9q01wJsd?=
+ =?us-ascii?Q?a0iGx9BAsCZIR4yC2xoZLRwQLE1wGwJeyi90w3arWfGPmG3HuUY3lZLj3NeA?=
+ =?us-ascii?Q?5Rfv0JhrNzz4c5jMEeHfTEwrKB/ffVCiaxUEHPq51ffzajCOx17NBLXje6oI?=
+ =?us-ascii?Q?61OfVMFexAuY8WcqaGNJwtTK3CLKHo0Q94SbwfXbR0LTEqmnEucVLcDYJGV0?=
+ =?us-ascii?Q?xji8gIMv/w5QLpmAyEkXkM9eUJZTOf+DcthI8FdHH5qC/EilfsivSYNsy35s?=
+ =?us-ascii?Q?hkjkJ+BSaVglF/i34Ys7IBzRTF85SXgXFbo/zvKZd13r0jNum0+C1YBA+h93?=
+ =?us-ascii?Q?sJjwFHB7MBtXlbUXMVH/OyCQ7N6xOBzohlWFXkO9t3+AQWsi2DIy5FrlSL66?=
+ =?us-ascii?Q?DHtJM8iP30KoQbeDoe1+Trr0CUdD5ddwa5DQgkkauag2RkwYDpK3aYYaM5da?=
+ =?us-ascii?Q?7qehTMviLmNDG7VHhF6di+w=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae8b754c-f47e-4c34-2d42-08dc423e79ce
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 02:45:28.0241
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7sI19hZ/dqRU7okSDiJy3cQfb/ZrPjwpshoejwkwDqmelK7ZGCpco0BcIImbZ7ZvvPJBUzoiU6nYqgpM/pjozC7EWlg5d1anRuz5kWjYrNS9LYAiz4YyKre9vk16/5D0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0575
 
-On 3/11/2024 6:41 PM, Gerd Hoffmann wrote:
-> The AMD APM (3.35) defines GuestPhysBits (EAX[23:16]) as:
-> 
->    Maximum guest physical address size in bits.  This number applies
->    only to guests using nested paging.  When this field is zero, refer
->    to the PhysAddrSize field for the maximum guest physical address size.
-> 
-> Tom Lendacky confirmed that the purpose of GuestPhysBits is software use
-> and KVM can use it as described below.  Hardware always returns zero
-> here.
-> 
-> Use the GuestPhysBits field to communicate the max addressable GPA to
-> the guest.  Typically this is identical to the max effective GPA, except
-> in case the CPU supports MAXPHYADDR > 48 but does not support 5-level
-> TDP.
-> 
-> GuestPhysBits is set only in case TDP is enabled, otherwise it is left
-> at zero.
-> 
-> GuestPhysBits will be used by the guest firmware to make sure resources
-> like PCI bars are mapped into the addressable GPA.
-> 
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-> ---
->   arch/x86/kvm/mmu.h     |  2 ++
->   arch/x86/kvm/cpuid.c   | 31 +++++++++++++++++++++++++++++--
->   arch/x86/kvm/mmu/mmu.c |  5 +++++
->   3 files changed, 36 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 60f21bb4c27b..b410a227c601 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
->   	return boot_cpu_data.x86_phys_bits;
->   }
->   
-> +u8 kvm_mmu_get_max_tdp_level(void);
-> +
->   void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
->   void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
->   void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index c638b5fb2144..cd627dead9ce 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -1221,8 +1221,22 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->   		entry->eax = entry->ebx = entry->ecx = 0;
->   		break;
->   	case 0x80000008: {
-> +		/*
-> +		 * GuestPhysAddrSize (EAX[23:16]) is intended for software
-> +		 * use.
-> +		 *
-> +		 * KVM's ABI is to report the effective MAXPHYADDR for the
-> +		 * guest in PhysAddrSize (phys_as), and the maximum
-> +		 * *addressable* GPA in GuestPhysAddrSize (g_phys_as).
-> +		 *
-> +		 * GuestPhysAddrSize is valid if and only if TDP is enabled,
-> +		 * in which case the max GPA that can be addressed by KVM may
-> +		 * be less than the max GPA that can be legally generated by
-> +		 * the guest, e.g. if MAXPHYADDR>48 but the CPU doesn't
-> +		 * support 5-level TDP.
-> +		 */
->   		unsigned int virt_as = max((entry->eax >> 8) & 0xff, 48U);
-> -		unsigned int phys_as;
-> +		unsigned int phys_as, g_phys_as;
->   
->   		if (!tdp_enabled) {
->   			/*
-> @@ -1232,11 +1246,24 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->   			 * for memory encryption affect shadow paging, too.
->   			 */
->   			phys_as = boot_cpu_data.x86_phys_bits;
-> +			g_phys_as = 0;
->   		} else {
-> +			/*
-> +			 * If TDP is enabled, the effective guest MAXPHYADDR
-> +			 * is the same as the raw bare metal MAXPHYADDR, as
-> +			 * reductions to HPAs don't affect GPAs.  The max
-> +			 * addressable GPA is the same as the max effective
-> +			 * GPA, except that it's capped at 48 bits if 5-level
-> +			 * TDP isn't supported (hardware processes bits 51:48
-> +			 * only when walking the fifth level page table).
-> +			 */
+The code to select isp_dev->formats[] is overly complicated.  We can
+just use the "pad" as the index.  This will making adding new pads
+easier in future patches.  No functional change.
 
-If the comment in previous patch gets changed as I suggested, this one 
-needs to be updated as well.
+Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+---
+ drivers/staging/media/starfive/camss/stf-isp.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-Anyway, the patch itself looks good.
-
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-
->   			phys_as = entry->eax & 0xff;
-> +			g_phys_as = phys_as;
-> +			if (kvm_mmu_get_max_tdp_level() < 5)
-> +				g_phys_as = min(g_phys_as, 48);
->   		}
->   
-> -		entry->eax = phys_as | (virt_as << 8);
-> +		entry->eax = phys_as | (virt_as << 8) | (g_phys_as << 16);
->   		entry->ecx &= ~(GENMASK(31, 16) | GENMASK(11, 8));
->   		entry->edx = 0;
->   		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 2d6cdeab1f8a..ffd32400fd8c 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5267,6 +5267,11 @@ static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
->   	return max_tdp_level;
->   }
->   
-> +u8 kvm_mmu_get_max_tdp_level(void)
-> +{
-> +	return tdp_root_level ? tdp_root_level : max_tdp_level;
-> +}
-> +
->   static union kvm_mmu_page_role
->   kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
->   				union kvm_cpu_role cpu_role)
+diff --git a/drivers/staging/media/starfive/camss/stf-isp.c b/drivers/staging/media/starfive/camss/stf-isp.c
+index d50616ef351e..4e6e26736852 100644
+--- a/drivers/staging/media/starfive/camss/stf-isp.c
++++ b/drivers/staging/media/starfive/camss/stf-isp.c
+@@ -10,9 +10,6 @@
+ 
+ #include "stf-camss.h"
+ 
+-#define SINK_FORMATS_INDEX	0
+-#define SOURCE_FORMATS_INDEX	1
+-
+ static int isp_set_selection(struct v4l2_subdev *sd,
+ 			     struct v4l2_subdev_state *state,
+ 			     struct v4l2_subdev_selection *sel);
+@@ -94,10 +91,7 @@ static void isp_try_format(struct stf_isp_dev *isp_dev,
+ 		return;
+ 	}
+ 
+-	if (pad == STF_ISP_PAD_SINK)
+-		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
+-	else if (pad == STF_ISP_PAD_SRC)
+-		formats = &isp_dev->formats[SOURCE_FORMATS_INDEX];
++	formats = &isp_dev->formats[pad];
+ 
+ 	fmt->width = clamp_t(u32, fmt->width, STFCAMSS_FRAME_MIN_WIDTH,
+ 			     STFCAMSS_FRAME_MAX_WIDTH);
+@@ -123,7 +117,7 @@ static int isp_enum_mbus_code(struct v4l2_subdev *sd,
+ 		if (code->index >= ARRAY_SIZE(isp_formats_sink))
+ 			return -EINVAL;
+ 
+-		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
++		formats = &isp_dev->formats[code->pad];
+ 		code->code = formats->fmts[code->index].code;
+ 	} else {
+ 		struct v4l2_mbus_framefmt *sink_fmt;
+-- 
+2.25.1
 
 
