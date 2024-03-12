@@ -1,188 +1,193 @@
-Return-Path: <linux-kernel+bounces-99950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 019A0878FC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:31:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B2F878FC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:33:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2564C1C20CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:31:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A017FB215F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1397671B5F;
-	Tue, 12 Mar 2024 08:31:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C8D779F1;
+	Tue, 12 Mar 2024 08:33:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ArsYcGPK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="C7Qz3kig"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9DF71B42;
-	Tue, 12 Mar 2024 08:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DD16996B;
+	Tue, 12 Mar 2024 08:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710232283; cv=none; b=EXwEMxjeMK+Qy7JKJdm5H6j6XBrUMQM1K8IrVWqXeYB+7zBlxu1pOTx3woQJc40L3mO4RygU/dZ0BkrVyl5rxdeWfmWDEx87EgUV1I04RDP3QheMjV95Yuajr9cfxAH26220k9RbpIB13ereFHZ63uLwyQteJy0PUdwisOmD2bI=
+	t=1710232420; cv=none; b=j6qdDCLGezoB2kHDgcvQPIa31Yw+8FRDvcGOwWjaI379S3HIZYV4TOqmkrvfM+nx3J+9R8JCKZLsvX59WBj+IzqLgpUWbS0qd/UmdV64Hvw7zDuA49o7ROi6Hqh/5bcg3Uxq8SVOQXWvp4rSiTbSmrTLd4XQL9J8MoGegbk3ltE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710232283; c=relaxed/simple;
-	bh=ncyot6GZVlpy2LYZy0ZH/PUatwzNeQz1tW9YE81ui3c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i2M/xypdRlztkhCqy8CsJmdXDv4+2LdHqqHofXQOlssNTt5J8Be+5cZm4y6WIYS7AdpsDxMoI9HzAsXrEpKhgKY0xq4306yXqZ92C9UpYtry0EFPKMZ301su0TrtdOJhmAQh5+Ic+nzcyR9XhHOAR3kz58qCRQyIByzUPDwvnFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ArsYcGPK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 969D2C433C7;
-	Tue, 12 Mar 2024 08:31:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710232282;
-	bh=ncyot6GZVlpy2LYZy0ZH/PUatwzNeQz1tW9YE81ui3c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ArsYcGPK1Nefx4rCHDQ5BLI3uYbqXqHkK96AybpsjZT7FAKKxhDT5Z4mUffTfMlWl
-	 Fxzphszn3bX/RXuJCge442ZflprWulEV1qLtYVbEPRhYefNHp+XNT9xHWWlwEFJaFG
-	 iJXdp7rBBmI5NFQDh8t925ZE4jpQ79M1rSeuCpL2ErLl7iQb1xHiGyf/Vxmtx7Y6AZ
-	 hMqm/DWW+CUhqMrW//3EX1oEBBWHIcBqedYtrWwH8OpP+zp4wIJfwlWS8FLUkMC3Ax
-	 IUZt3iMScNzb2t4hH/ddHY2xZUEXdVlh+vBEtayNtjGV5k5c7kGRDKDWK1VKHAdB6e
-	 BnZn2hH4i+OoA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rjxXk-000000007Ib-21Kk;
-	Tue, 12 Mar 2024 09:31:28 +0100
-Date: Tue, 12 Mar 2024 09:31:28 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Kuogee Hsieh <quic_khsieh@quicinc.com>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org, regressions@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: drm/msm: DisplayPort hard-reset on hotplug regression in 6.8-rc1
-Message-ID: <ZfAS4MOXn_3Nk2OR@hovoldconsulting.com>
-References: <Zd3kvD02Qvsh2Sid@hovoldconsulting.com>
- <ZesH21DcfOldRD9g@hovoldconsulting.com>
- <56de6cfb-fe0f-de30-d4d0-03c0fbb0afbb@quicinc.com>
- <ZeyOmJLlBbwnmaJN@hovoldconsulting.com>
- <Ze8Ke_M2xHyPYCu-@hovoldconsulting.com>
- <b1ae6e39-10c3-0ee1-11f4-3436c3e4ec1a@quicinc.com>
+	s=arc-20240116; t=1710232420; c=relaxed/simple;
+	bh=F4FI4TEPmW6HpghVEUhvigjPs95L9pRHfmQ3RJKOSKg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LeoFEYRm+Qllfxnyj7lTatbCLe+k3LGAKd7U2KS3xCvTu5UUqBmPdPrcSieWs+zJapovo419bBtU4VIqaWsvTGEzSUFHW5MLvuSiqPGZEZ5d3TwO8f8RQPf1HfEirFc2g/EbTgqjdjHsOHQhBhqHVR1oXsg75s74zEP8VRSZvzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=C7Qz3kig; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0EAC593;
+	Tue, 12 Mar 2024 09:33:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710232394;
+	bh=F4FI4TEPmW6HpghVEUhvigjPs95L9pRHfmQ3RJKOSKg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=C7Qz3kigD9GNZy34kDrQUh7pe9knNdMvGCsHIFWupmNT9euyeNzhRPLokgcAwjYSe
+	 xv7OeALkvDippmDwvpecImnh5KIZJc+mmuRSKnV2sIqpZPPBdulCXJShiKd2APNpd2
+	 FClD5W0J3NGLwG645fprzZvc3nNWX2XxqZbKEV/I=
+Message-ID: <b08c99fe-c221-4eb8-9b1a-1420cb5c32f3@ideasonboard.com>
+Date: Tue, 12 Mar 2024 10:33:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1ae6e39-10c3-0ee1-11f4-3436c3e4ec1a@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dmaengine: xilinx: dpdma: Fix race condition in
+ vsync IRQ
+Content-Language: en-US
+To: Vishal Sagar <vishal.sagar@amd.com>, laurent.pinchart@ideasonboard.com,
+ vkoul@kernel.org
+Cc: michal.simek@amd.com, dmaengine@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ varunkumar.allagadapa@amd.com
+References: <20240228042124.3074044-1-vishal.sagar@amd.com>
+ <20240228042124.3074044-2-vishal.sagar@amd.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240228042124.3074044-2-vishal.sagar@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 11, 2024 at 09:51:29AM -0700, Abhinav Kumar wrote:
-> On 3/11/2024 6:43 AM, Johan Hovold wrote:
-> > On Sat, Mar 09, 2024 at 05:30:17PM +0100, Johan Hovold wrote:
-> >> On Fri, Mar 08, 2024 at 09:50:17AM -0800, Abhinav Kumar wrote:
+Hi,
 
-> >>> I have posted my analysis with the patch here as a RFC y'day:
-> >>>
-> >>> https://patchwork.freedesktop.org/patch/581758/
-
-> > I was able to reproduce the reset with some of my debug printks in place
-> > after reapplying the reverted hpd notify change so I have an explanation
-> > for (one of) the ways we can up in this state now.
-> > 
-> > This does not match description of the problem in the fix linked to
-> > above and I don't think that patch solves the underlying issue even if
-> > it may make the race window somewhat smaller. More details below.
-
-> Its the same condition you described below that enable does not go 
-> through and we bail out as we are in ST_DISCONNECTED.
-
-It's closely related but clearly not the same as user space is not
-involved in the reset I see.
- 
-> > Turns out there are paths like that and we hit those more often before
-> > reverting e467e0bde881 ("drm/msm/dp: use drm_bridge_hpd_notify().
-> > 
-> > Specifically, when a previous connect attempt did not enable the bridge
-> > fully so that it is still in the ST_MAINLINK_READY when we receive a
-> > disconnect event, dp_hpd_unplug_handle() will turn of the link clock.
-> > 
-> > [  204.527625] msm-dp-display ae98000.displayport-controller: dp_bridge_hpd_notify - link_ready = 1, status = 2
-> > [  204.531553] msm-dp-display ae98000.displayport-controller: dp_hpd_unplug_handle
-> > [  204.533261] msm-dp-display ae98000.displayport-controller: dp_ctrl_off_link
-> > 
-> > A racing connect event, such as the one I described earlier, can then
-> > try to enable the bridge again but dp_bridge_atomic_enable() just bails
-> > out early (and leaks a rpm reference) because we're now in
-> > ST_DISCONNECTED:
-> > 
-> > [  204.535773] msm-dp-display ae98000.displayport-controller: dp_bridge_hpd_notify - link_ready = 1, status = 1
-> > [  204.536187] [CONNECTOR:35:DP-2] status updated from disconnected to connected
-> > [  204.536905] msm-dp-display ae98000.displayport-controller: dp_display_notify_disconnect - would clear link ready (1), state = 0
-> > [  204.537821] msm-dp-display ae98000.displayport-controller: dp_bridge_atomic_check - link_ready = 1
-> > [  204.538063] msm-dp-display ae98000.displayport-controller: dp_display_send_hpd_notification - hpd = 0, link_ready = 1
-> > [  204.542778] msm-dp-display ae98000.displayport-controller: dp_bridge_atomic_enable
-> > [  204.586547] msm-dp-display ae98000.displayport-controller: dp_bridge_atomic_enable - state = 0 (rpm leak?)
-> > 
-> > Clearing link_ready already in dp_display_notify_disconnect() would make
-> > the race window slightly smaller, but it would essentially just paper
-> > over the bug as the events are still not serialised. Notably, there is
-> > no user space interaction involved here and it's the spurious connect
-> > event that triggers the bridge enable.
-
-> Yes, it only narrows down the race condition window. The issue can still 
-> happen if the commit / modeset was issued before we marked link_ready as 
-> false.
+On 28/02/2024 06:21, Vishal Sagar wrote:
+> From: Neel Gandhi <neel.gandhi@xilinx.com>
 > 
-> And yes, I was only targetting a short term fix till we rework the HPD. 
-> That will happen only incrementally as its a delicate piece of code.
+> The vchan_next_desc() function, called from
+> xilinx_dpdma_chan_queue_transfer(), must be called with
+> virt_dma_chan.lock held. This isn't correctly handled in all code paths,
+> resulting in a race condition between the .device_issue_pending()
+> handler and the IRQ handler which causes DMA to randomly stop. Fix it by
+> taking the lock around xilinx_dpdma_chan_queue_transfer() calls that are
+> missing it.
+> 
+> Signed-off-by: Neel Gandhi <neel.gandhi@amd.com>
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Signed-off-by: Vishal Sagar <vishal.sagar@amd.com>
+> 
+> Link: https://lore.kernel.org/all/20220122121407.11467-1-neel.gandhi@xilinx.com
+> ---
+>   drivers/dma/xilinx/xilinx_dpdma.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
 
-Ok, thanks for confirming. Please also make that clear in the commit
-message of any patch.
+This fixes a lockdep warning:
 
-I am however not sure that your patch (RFC) is needed at this point as
-the HPD revert fixes the 6.8-rc1 regression, and moving the clearing of
-link_ready can actually make things worse as it makes any spurious
-hotplug event always be processed (not just if they happen after
-dp_display_send_hpd_notification()).
+WARNING: CPU: 1 PID: 466 at drivers/dma/xilinx/xilinx_dpdma.c:834
 
-I'll reply to you patch as well.
- 
-> > So, while it may still be theoretically possible to hit the resets after
-> > the revert, the HPD notify revert effectively "fixed" the regression in
-> > 6.8-rc1 by removing the preconditions that now made us hit it (i.e. the
-> > half-initialised bridge).
+Afaics, this issue has been around since the initial commit, in v5.10, 
+and the fix applies on top of v5.10. I have tested this on v6.2, which 
+is where the DP support was added to the board I have.
 
-> Not entirely. In the bug which was reported before the patch 
-> e467e0bde881 ("drm/msm/dp: use drm_bridge_hpd_notify() got landed, its a 
-> classic example of how this issue can happen with userspace involvement 
-> and not just fbdev client which was your case.
+So I think you can add:
 
-Sure, but you already added some kind of band-aid for that issue, right?
+Fixes: 7cbb0c63de3f ("dmaengine: xilinx: dpdma: Add the Xilinx 
+DisplayPort DMA engine driver")
 
-	https://lore.kernel.org/all/1664408211-25314-1-git-send-email-quic_khsieh@quicinc.com/
+  Tomi
 
-How likely is it that you'd still hit that? Have you had an reports of
-anyone actually hitting that issue since the above workaround was
-merged?
+> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
+> index b82815e64d24..28d9af8f00f0 100644
+> --- a/drivers/dma/xilinx/xilinx_dpdma.c
+> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
+> @@ -1097,12 +1097,14 @@ static void xilinx_dpdma_chan_vsync_irq(struct  xilinx_dpdma_chan *chan)
+>   	 * Complete the active descriptor, if any, promote the pending
+>   	 * descriptor to active, and queue the next transfer, if any.
+>   	 */
+> +	spin_lock(&chan->vchan.lock);
+>   	if (chan->desc.active)
+>   		vchan_cookie_complete(&chan->desc.active->vdesc);
+>   	chan->desc.active = pending;
+>   	chan->desc.pending = NULL;
+>   
+>   	xilinx_dpdma_chan_queue_transfer(chan);
+> +	spin_unlock(&chan->vchan.lock);
+>   
+>   out:
+>   	spin_unlock_irqrestore(&chan->lock, flags);
+> @@ -1264,10 +1266,12 @@ static void xilinx_dpdma_issue_pending(struct dma_chan *dchan)
+>   	struct xilinx_dpdma_chan *chan = to_xilinx_chan(dchan);
+>   	unsigned long flags;
+>   
+> -	spin_lock_irqsave(&chan->vchan.lock, flags);
+> +	spin_lock_irqsave(&chan->lock, flags);
+> +	spin_lock(&chan->vchan.lock);
+>   	if (vchan_issue_pending(&chan->vchan))
+>   		xilinx_dpdma_chan_queue_transfer(chan);
+> -	spin_unlock_irqrestore(&chan->vchan.lock, flags);
+> +	spin_unlock(&chan->vchan.lock);
+> +	spin_unlock_irqrestore(&chan->lock, flags);
+>   }
+>   
+>   static int xilinx_dpdma_config(struct dma_chan *dchan,
+> @@ -1495,7 +1499,9 @@ static void xilinx_dpdma_chan_err_task(struct tasklet_struct *t)
+>   		    XILINX_DPDMA_EINTR_CHAN_ERR_MASK << chan->id);
+>   
+>   	spin_lock_irqsave(&chan->lock, flags);
+> +	spin_lock(&chan->vchan.lock);
+>   	xilinx_dpdma_chan_queue_transfer(chan);
+> +	spin_unlock(&chan->vchan.lock);
+>   	spin_unlock_irqrestore(&chan->lock, flags);
+>   }
+>   
 
-Note that I, and other users of the X13s, only started hitting the
-resets with 6.8-rc1, which broke hotplug notification and resulted in
-the half-initialised bridges.
-
-I'm not saying it's impossible to hit the unclocked access still, just
-that that does not seem to be relevant for the regression.
- 
-> > It seems the hotplug state machine needs to be reworked completely, but
-> > at least we're roughly back where we were with 6.7 (including that the
-> > bus clocks will never be turned of because of the rpm leaks on
-> > disconnect).
-
-> Yes, we already landed that revert but I am also planning to land the 
-> patch I had posted till we rework HPD.
-
-Ok, but please consider the implications that would have for any
-spurious connect events first.
-
-Johan
 
