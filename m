@@ -1,131 +1,123 @@
-Return-Path: <linux-kernel+bounces-99722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95AFB878C3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:27:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A08D9878C3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5FEC1C211A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:27:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 147BAB21312
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F4E10E3;
-	Tue, 12 Mar 2024 01:27:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443541842;
+	Tue, 12 Mar 2024 01:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="CK2gOGzN"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G+C6M9/C"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A045A7E2
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 01:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DC07E2;
+	Tue, 12 Mar 2024 01:26:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710206872; cv=none; b=O3ebbxxDK7pcQ2CnZt2RKpWXZtOgPUlcqqWqUNFYiUpEGXfbTEijXVeA5GfGU8Tj0qESClq+ngh8F6ss8n+aA2anLIvQe+QCpGQP1mTPur4vgjbstkbtN8xcg+UphCxy7iWZPNppfVQUJaYquhWhgVB3jjIOfjqVQs5WqDU7IBU=
+	t=1710206786; cv=none; b=IJw9Sv55kVnettdj1ndjEPm9vy/Ll2QO6vZLbN3rSGBUKGm0BBMHcU9gGMHxPo+vtC5IBWqZZvDglkVovopPi5I2haqCEPqHqdiCS3yyCvYv/0bMXZNXHtN/9iyg+yFayh9kpTKAlozVDxp5IZmzOJ/oU7L+THGd2qYErQKk/Es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710206872; c=relaxed/simple;
-	bh=Ic2cF0xSH/QyhwLS/9FJwMuYD7oaUzcuMX32hHgJqV8=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=ounDp4mwnekfBTdKaqzSwIjrNpNhKwbBY9P/8WubUPUPXiCO2iTG2hRZjvryfUUMsxnzhEOwlQxy367r7sHConHZmUZTi8d6hJMNApyThAZdKn2JOVSlFBO7AfysQ6QQrQCH4z1x2S8bhou5AnDXzkUnMgUNriVrqoTItQ1V/xU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=CK2gOGzN; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42C1Q1kc1082275
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 11 Mar 2024 18:26:01 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42C1Q1kc1082275
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024021201; t=1710206764;
-	bh=aZNtJKbvwiBbsnZ/2/GhPG+RCGU3s1Hafyp1VbH9Ya0=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=CK2gOGzNI4OotmR7tnasLevJ0kZ+6wcq6/2wTmIyK2TxrG/9gmmUaHYyCekJye5GN
-	 kKYJhkmkryxZahcZaAFey6gXkSmx+mmuSaVUTCv9U6ehMP2N3YqMzMHXxg8C88vKpP
-	 HF86dpb9uLUucVjJJyMxd0soO/vh4jdOJ3ujRTTBxnlkH4iD13Iiv0//fRl/U1uFC/
-	 gVHLG2+THu7W83zCzTJ+0PiTtL42i9q4rL3HvBcLFgOAkkQD/oz2It0a7Qy2N1OXF7
-	 CZv22XqDlWpS43n9HnmNVXHMpqPgWgBY8XfYE3FXxLnAqMPEBsdIuUDAZ+jWczEtbO
-	 yEtAMPPmVSKIw==
-Date: Mon, 11 Mar 2024 18:25:56 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Dave Hansen <dave.hansen@intel.com>, Nadav Amit <nadav.amit@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-CC: Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Christian Brauner <brauner@kernel.org>,
-        bristot@redhat.com, Ben Segall <bsegall@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, dianders@chromium.org,
-        dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com,
-        "hch@infradead.org" <hch@infradead.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, jpoimboe@kernel.org,
-        Joerg Roedel <jroedel@suse.de>, juri.lelli@redhat.com,
-        Kent Overstreet <kent.overstreet@linux.dev>, kinseyho@google.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        lstoakes@gmail.com, mgorman@suse.de, mic@digikod.net,
-        michael.christie@oracle.com, Ingo Molnar <mingo@redhat.com>,
-        mjguzik@gmail.com, "Michael S. Tsirkin" <mst@redhat.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>, vincent.guittot@linaro.org,
-        vschneid@redhat.com
-Subject: Re: [RFC 11/14] x86: add support for Dynamic Kernel Stacks
-User-Agent: K-9 Mail for Android
-In-Reply-To: <dd67a2b9-35ef-4cf8-b303-9e6b8692b390@intel.com>
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com> <20240311164638.2015063-12-pasha.tatashin@soleen.com> <3e180c07-53db-4acb-a75c-1a33447d81af@app.fastmail.com> <bedfa55b-b1d0-4e59-8c94-dbc5f8485a7f@intel.com> <ef0419dd-9d7b-4b77-b63a-5f11aaefb570@app.fastmail.com> <08EFDEDB-7BBB-4D9C-B7E5-D7370EC609BE@gmail.com> <dd67a2b9-35ef-4cf8-b303-9e6b8692b390@intel.com>
-Message-ID: <D4D747C5-2B0E-44B0-A550-BA05BE0AF2FA@zytor.com>
+	s=arc-20240116; t=1710206786; c=relaxed/simple;
+	bh=GyA2AfVBUEUaHKxyGNy7I8OR2zGDzYXGB8bS0wH502E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JDD6i+/ZbcPlaGxzmYrbHv/7lZLV8h66I9223vDJTkcs5fOAj5BzJKwyG+uEgvIHlv2icACna11q6b4ogalDbEMFVVI8Xmv65QexAbAAPHKa8X8WQykcfQfhWQqv3VyRddzfxWcZ2VlVLJSMnU7NxmFVzDr2zm5fA2WL3wvVIT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G+C6M9/C; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-413328344acso2183165e9.3;
+        Mon, 11 Mar 2024 18:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710206783; x=1710811583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kscZcOUOHWXZr8d7Aotv9yaf5lVIDmR/3s4rt3vEiJE=;
+        b=G+C6M9/CvNcFPVWzOo3s/Up8DWBySnEx4afjJKWshiJ2S0ShzhciD45zw995Sn7uis
+         K+bG+ccVBqex/o5Xh/BTSoB4U69ct9pRo9Yist/LnIy+2PWxBDECCy8inZMhWaTxJlQP
+         8X6HIWOMAwFO7wpNRSuIbyG6LmQ7QRToPyengeVItakieyqDpRtucZO1RAQUCghSM7Qy
+         mlxHrHHJE+vKhvrG5ITeriOA4aA0YhnCKSHTpK0H8owajfe9V1FPmo0EGA+EL7HJJGoK
+         taI0lpE1Ug6nVo+deyxiyUeT1GFHJRo9GK0QxFV9CZrD+73srxolbkOaUu2pxIVKM8EM
+         PgKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710206783; x=1710811583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kscZcOUOHWXZr8d7Aotv9yaf5lVIDmR/3s4rt3vEiJE=;
+        b=pTXMy/UjWAR1SplmhBbxuTkvZNZkHvId7Uu54qpshTAlkHpuUzPYXhR2McdRtcqVkw
+         zlC7HCPbOWC6vsyOJYzTakVQA5Ny11MyE8rds3LKBJyZMMlwKYUNfmHnldNKZKoStlCJ
+         VdbfkwueR+f+5qGav6xwEeCNB+yh286YskFtdoo3nc/A9ExHSdSfzyVmWb8SbSs+vuEA
+         Kjb9eLQTk56Pj31VPKj29AZMt2KkvqQ8p20P/mQ4JWjB9pI3+Ogdq0yi8vDCYHpeZMT/
+         mhCk7GCE0Irv8349TFlvz9X4h6FoqnW7ygMRvMpoKI/LbEF/MbtypWuG3U1SMk92c+zP
+         CBBA==
+X-Forwarded-Encrypted: i=1; AJvYcCXThmdKkQKLNsvpfYGMInSoSiLAtIhsfBZCIK30zz/4pacqI4vtQUDr1XuvswEP+CCVojvtaEf8StnhiYs38C3w52Dq0Aw7pdvnvahFRjmYvGWrUXsW5yuDgXOb7JboMYxj
+X-Gm-Message-State: AOJu0YxxGgEM7Z4qzEr1dkFJRD1VCo67ZPOI8cvZUGeqf8EJUcZN9Ckw
+	KS+XN/EmXiYLyi/kP/GTSuIqom5lJ3oDk/hteW4pDH424XK36YG9uuSdk2wNV9PIqHDYF/i0yHP
+	tL37oCy9wnGHX1TOcWwhkJAYqEdU=
+X-Google-Smtp-Source: AGHT+IFKW6cUCi0saeWKoL0AaPNypvf3M3iB9lYDups/lcLoaLFuXEDNeokVJOWFfqCOeeGiVXcf3F0gL0U6FksOyb4=
+X-Received: by 2002:adf:f50f:0:b0:33e:7a7c:a058 with SMTP id
+ q15-20020adff50f000000b0033e7a7ca058mr4928022wro.18.1710206783102; Mon, 11
+ Mar 2024 18:26:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20240227151115.4623-1-puranjay12@gmail.com>
+In-Reply-To: <20240227151115.4623-1-puranjay12@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 11 Mar 2024 18:26:11 -0700
+Message-ID: <CAADnVQLPf2-saMJxv65zqDAjc8JX-08dRUP3hbrAh=q+2xiqzg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/1] Support kCFI + BPF on arm64
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, 
+	Mark Rutland <mark.rutland@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Mark Brown <broonie@kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On March 11, 2024 5:53:33 PM PDT, Dave Hansen <dave=2Ehansen@intel=2Ecom> w=
-rote:
->On 3/11/24 16:56, Nadav Amit wrote:
->> So you can look on the dirty-bit, which is not being set
->> speculatively and save yourself one problem=2E
->Define "set speculatively"=2E :)
+On Tue, Feb 27, 2024 at 7:11=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
+m> wrote:
 >
->> If software on one logical processor writes to a page while software
->> on another logical processor concurrently clears the R/W flag in the
->> paging-structure entry that maps the page, execution on some
->> processors may result in the entry=E2=80=99s dirty flag being set (due =
-to the
->> write on the first logical processor) and the entry=E2=80=99s R/W flag =
-being
->> clear (due to the update to the entry on the second logical
->> processor)=2E
+> On ARM64 with CONFIG_CFI_CLANG, CFI warnings can be triggered by running
+> the bpf selftests. This is because the JIT doesn't emit proper CFI prolog=
+ues
+> for BPF programs, callbacks, and struct_ops trampolines.
 >
->In other words, you'll see both a fault *AND* the dirty bit=2E  The write
->never retired and the dirty bit is set=2E
+> Example Warning:
 >
->Does that count as being set speculatively?
+>  CFI failure at bpf_rbtree_add_impl+0x120/0x1d4 (target: bpf_prog_fb8b097=
+ab47d164a_less+0x0/0x98; expected type: 0x9e4709a9)
+>  WARNING: CPU: 0 PID: 1488 at bpf_rbtree_add_impl+0x120/0x1d4
+
+..
+
+> Running the selftests causes no CFI warnings:
+> ---------------------------------------------
 >
->That's just the behavior that the SDM explicitly admits to=2E
+> test_progs: Summary: 454/3613 PASSED, 62 SKIPPED, 74 FAILED
+> test_tag: OK (40945 tests)
+> test_verifier: Summary: 789 PASSED, 0 SKIPPED, 0 FAILED
 
-Indeed; both the A and D bits are by design permissive; that is, the hardw=
-are can set them at any time=2E
+Catalin, Mark,
 
-The only guarantees are:
+Could you please review and hopefully ack arm64 generic bits ?
 
-1=2E The hardware will not set the A bit on a not present late, nor the D =
-bit on a read only page=2E
-
-2=2E *Provided that the user has invalidated the page entry in the TLB*, h=
-ardware guarantees the respective bits will be set before a dependent memor=
-y access is made visible=2E Thus the bits are guaranteed to reflect a stric=
-t superset of operations performed architecturally=2E
+The JIT changes largely mimic x86 changes and look correct to me.
 
