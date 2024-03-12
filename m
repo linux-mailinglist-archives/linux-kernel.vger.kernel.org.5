@@ -1,119 +1,111 @@
-Return-Path: <linux-kernel+bounces-100464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C08F8797D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:42:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B208797DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:43:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9690285ABB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:42:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6C581F22A1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B227A7C6E5;
-	Tue, 12 Mar 2024 15:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648457D073;
+	Tue, 12 Mar 2024 15:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="i4m6k7XQ"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LUIH071w"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878C67C0B1
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618177CF10;
+	Tue, 12 Mar 2024 15:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710258173; cv=none; b=bhLeRgdZX0brK8eZY2kYiZyL7vQNuo1jvMn1jRTCNPKBcfLSfHYyY3oZeGneQNfsssRFzAUg6hd/FClINqW3+HadvzTHRQL481QDra/tQlT1tQ9Ov6RMF4WWdR6ndXbRA1Sjmict17GvwP9RVkMqM04djYOTD88L205fRkgnyWQ=
+	t=1710258188; cv=none; b=h0Ax0VHw7h7GWvBOoo+dyRnQdAZz+HmyvsSpPxVM4uZkm48AsK/zayRHdIvnRm39qJyceYiLxktSAuRnqZMOUg8AGM/1D/8U0vTgIkNay2wwtDFVto//PlUPMxzkvGhAMu4hfu0Y6Y067jccdGuqSN2pAeYdI8ut2kwK4Gw1Pcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710258173; c=relaxed/simple;
-	bh=D2tjCaFOD85nEnhCR05G4D9nbK1x8BdziW9THhyUTAY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KSA755jBywvWspmBnyn7hFlFJQY4TD0abtxW5hoGSFZTignlrIOqRl3wm/fVf5+BB5TdU1DuSLUDh2fbyk0JRyx4aXrXVbSPsJ0UWiO/bKvAp7UuszXzSUGrFHLYxINeG5i9RLMjLuZskCr/OZt9GUmVaJh18uciuQs8589yspc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=i4m6k7XQ; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3666ffc850eso51405ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 08:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710258170; x=1710862970; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D2tjCaFOD85nEnhCR05G4D9nbK1x8BdziW9THhyUTAY=;
-        b=i4m6k7XQaNWFGX8iEZbaov2f1OT6TCHT/gCJoVXTr4qX/RkFx3iIp7LrIkwwJ/vb7q
-         5dXYU9BXAbPSdyYY5RyqNRnfP2QKEMHSBGRzhri41H5avGIK8zm8dAi7YSoMc3oY8M3t
-         5SSqGucfUhVwVIszA7SWs38sEZrrwHnIwxHY+0Sp4c5XayQfKhBTAi256vXh1/e6Jk+C
-         vKx4TKBPyxDBFZyt4cpASIooQA/Vx21aMVHbQdjVKDrExO7QXvysoyD3N9qQItHq0Thb
-         vKLnMlMV5XJ6REJwrDzjm8CdbEAGy54oaP8nXck687ZNRStjGXM9oC72bvA+PxWxuqe4
-         3RkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710258170; x=1710862970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D2tjCaFOD85nEnhCR05G4D9nbK1x8BdziW9THhyUTAY=;
-        b=THY+/6yvMXyTNYYVwMijaGdMTe9XMlfe+FQHTn+1sfb4uRq3dC0BHQyYYB53QKwgGO
-         J4jY9tNkDtrKzTCySSLEEZrpHN/g+Vv/DaCrdWUnfAyPyQKE4gbPW+caszxeiBTDsYzd
-         cD5jttvl+BSKUQe8/9jto8Rhn1wfSDposfTjSmVq41VS8zc0qZPKE7iJxkMvx1VFtVhT
-         /jrj6G2+hs7zFAvbCIZfpC6ukVeMIpqYgr3f5mdbfiLWVyRWEP42TaqcM2GrBvdJZMet
-         cyffJohny6zk9H2HyCHKLK/vRWAT4WQgnILtMxRFKX2eHTrTnwWHVsG9ZdEmC1akGjs1
-         Z20w==
-X-Forwarded-Encrypted: i=1; AJvYcCWVzQB6rRXCTLZzISyxBjV6Seie7n6Dz9QkppEN+ywIJAF5B7lZ35AQ1N8jBBB0A00z1yj2QWJul8RH08O82mVaqHg1tibAY47hzcdP
-X-Gm-Message-State: AOJu0YxweX70W2Ne7Y+QlDs3njUNUn1x2OscHd6Yx3AIP65Ipf4SjmDh
-	W/2NVwWdypDA5lGT9Z4HhV5nza6sJYJK5+eZuxPCtD5bT/pO5/FnRSfo0CMqS+Qp7ew4lQTcwaV
-	wi+Ht9FT3hbYcyNXAXirFIBuIu+8LlQAyBHr/JqJ+DZlqDyoNfQ95lQk=
-X-Google-Smtp-Source: AGHT+IGyr7fkPVmix7QIrcf09wKbqAG8ltOURX3fpz48z+SfwWPk4mdK5NdWsXlA1EfCdZ2UKlHIGUs11L92l22VPFs=
-X-Received: by 2002:a05:6e02:1ca5:b0:365:fe08:6ec5 with SMTP id
- x5-20020a056e021ca500b00365fe086ec5mr259243ill.12.1710258170384; Tue, 12 Mar
- 2024 08:42:50 -0700 (PDT)
+	s=arc-20240116; t=1710258188; c=relaxed/simple;
+	bh=bZ7KFfWAgmonZ5xuDLjCI1VRdG2i0RpJPL/iyHsbdeM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D/I8hUo3CHofMk1MTZMBmFatu0k4c2BkUdglEIjG2ULea8/5iADJ+F1y+z8nTiaoXE2LNG4xW+dOMLiqyOqmOqXkCjMJwyvNxdYTC9Kg/bsj/s93i04hUeH2WOfIfoqvFgQdaG1ZBd4WP15yVCPvic/qwlPrl6NLEyonvnoRu2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LUIH071w; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710258188; x=1741794188;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bZ7KFfWAgmonZ5xuDLjCI1VRdG2i0RpJPL/iyHsbdeM=;
+  b=LUIH071wAlNjLERXfleCFJiuLaWQ9EszcCJWJwXzySVVXzm8CwwJ62FT
+   YWnYHcS5j3qwwtuyZaXcjbztu9WB8ocS1qJUyqJQwyY2NKyiA4+NlKvb/
+   LhPeYYOwWDyBfPy7g3SUIqjFh3y2X/2ArJY5O9mzDfvgkOhKE/trL4QAJ
+   QyTglyp2Ftik0hc8TvfWV9dHtdsUye+dY/PiWBAykB8MZUsnCS0YnkyUn
+   fxGGQhfYMYns1B/SB/PLNC4RiGd2NyLBj59b9cq5apDpyb5mljMpgkK9q
+   cHT8R1N2UXPn66CfdHrYWsZVEYVDz3D+l1OJuMTfV37fN+0scuSbsdf6U
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4839026"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="4839026"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:43:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="914400103"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="914400103"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:43:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rk4HN-0000000BvuI-0qCL;
+	Tue, 12 Mar 2024 17:43:01 +0200
+Date: Tue, 12 Mar 2024 17:43:00 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH] lib/bitmap: Fix bitmap_scatter() and bitmap_gather()
+ kernel doc
+Message-ID: <ZfB4BOknvWRFbn6O@smile.fi.intel.com>
+References: <20240312085403.224248-1-herve.codina@bootlin.com>
+ <ZfB30-rLXEnJtjrY@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Ze9vjxv42PN_QGZv@x1> <Ze93VPYpegMMt5kk@x1>
-In-Reply-To: <Ze93VPYpegMMt5kk@x1>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 12 Mar 2024 08:42:36 -0700
-Message-ID: <CAP-5=fWw8qGB4Djm34_Apjf6jEk+LdhKP2pSkF2Z2q-qWW1UPA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] perf beauty: Move uapi/linux/fs.h copy out of the
- directory used to build perf
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfB30-rLXEnJtjrY@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Mar 11, 2024 at 2:27=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> It is mostly used only to generate string tables, not to build perf, so
-> move it to the tools/perf/trace/beauty/include/ hierarchy, that is used
-> just for scrapping.
->
-> The only case where it was being used to build was in
-> tools/perf/trace/beauty/sync_file_range.c, because some older systems
-> doesn't have the SYNC_FILE_RANGE_WRITE_AND_WAIT define, just use the
-> system's linux/fs.h header instead, defining it if not available.
->
-> This is something that should've have been done already, as happened
-> with the linux/socket.h scrapper, do it now as Ian suggested while doing
-> an audit/refactor session in the headers used by perf.
->
-> No other tools/ living code uses it, just <linux/fs.h> coming from
-> either 'make install_headers' or from the system /usr/include/
-> directory.
->
-> Suggested-by: Ian Rogers <irogers@google.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Link: https://lore.kernel.org/lkml/CAP-5=3DfWZVrpRufO4w-S4EcSi9STXcTAN2ER=
-LwTSN7yrSSA-otQ@mail.gmail.com
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+On Tue, Mar 12, 2024 at 05:42:11PM +0200, Andy Shevchenko wrote:
+> On Tue, Mar 12, 2024 at 09:54:03AM +0100, Herve Codina wrote:
+> > The make htmldoc command failed with the following error
+> >   ... include/linux/bitmap.h:524: ERROR: Unexpected indentation.
+> >   ... include/linux/bitmap.h:524: CRITICAL: Unexpected section title or transition.
+> > 
+> > Move the visual representation to a literal block.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+..
 
-Thanks,
-Ian
+> > This patch fixes de5f84338970 ("lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers")
+> > available in net-next and linux-next
+> 
+> Not sure about rules of net-next, but I would add Fixes FWIW:
+> 
+> Fixes: de5f84338970 ("lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers")
+
+And probably Reported-by...
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
