@@ -1,189 +1,122 @@
-Return-Path: <linux-kernel+bounces-99783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C865878D45
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:57:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25689878D4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:00:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5CD51F22354
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:57:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D9731C21C8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74EE8AD58;
-	Tue, 12 Mar 2024 02:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093F7945A;
+	Tue, 12 Mar 2024 02:59:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BuJToceU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pmFvsPsI"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865888BE7;
-	Tue, 12 Mar 2024 02:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1350BA39;
+	Tue, 12 Mar 2024 02:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710212235; cv=none; b=AO+O3VmLnXtO5gNkobO7OrmJQ9SWpJe7ioIKZmoMArl8Z1fhyfg42Ij+fTheo/N6qZF3WZpEkBXiscdMVvRSeWbNA2sqrod/gyRLW1T8stAn39mc2+1z31b7kvqWQg3AEWWEWMjt+5xH970+8hGczac2vMXLq3mKv89SPKYUcRY=
+	t=1710212385; cv=none; b=Of6Mof1zshWBuWbFWV1G6KM9RCrYt2bKX+NB/MN8zh+03ZFKs+eqAKga/UHrF5z8jNp/ct3KPjVoEiBXtYeG2YA7SF3R6vvfmCoiVb6KmOo0/SbG99l/V1Hg7jP9VB1j3lIl7Fk8ppNG83cnZ33CtD5lsWHkYkFR2csdhfoIROM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710212235; c=relaxed/simple;
-	bh=JuGozl3Rp1HWn76gH4B/w7ED+gwkYd5CwT5FVvVs2ko=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jK6UG5kDibzvw4RiRbzYdLI/E+6OBUGFyV08ergbiy6g1zID+ud7+t3eOpGuOal9iESyY3rJPoF9kIImexzACj2N5j4Vtbr8TuiaR0PE4hNZzf6nSCx1kptbVhFp/cusxEs+RGt9JQbWBNq5SFgW5DtfB2jwfnX5bMmxJfBngeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BuJToceU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BFB3C433C7;
-	Tue, 12 Mar 2024 02:57:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710212235;
-	bh=JuGozl3Rp1HWn76gH4B/w7ED+gwkYd5CwT5FVvVs2ko=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BuJToceUyzjtMyTX+M6+0aviaN1EBPAsesFnTfszl5Y3gq63stmXW8MRYC3j0guwf
-	 D3NJEIzZSofB7vxeWf++eb8a8gjLqr0OsgNAWfLaAOGrjYQbcH2VrTOZU29yLltSod
-	 fMW4ENbfD1AfMe/8SUmhrkhlOHnwgCDg70rZCw5099VYqTOO1hIWOksFp99Zlc1BjV
-	 yTP3qlxdEQ9R4FBqRYcYGF+DnjByGbViSQlJ7cjQKZmZfAKgQodww1Pv2M1o0bN1ih
-	 +HbqTsQMzqrpqIAYmBzhtMv0kHpoDpMwH/Eup5acjlncKW/Z/DdFPYecTV38V/NLv3
-	 Fr2vZvzn2C0pQ==
-Date: Mon, 11 Mar 2024 19:57:12 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Fan Wu <wufan@linux.microsoft.com>
-Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-	serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
-	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com,
-	linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-	dm-devel@lists.linux.dev, audit@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v14 15/19] fsverity: consume builtin signature via
- LSM hook
-Message-ID: <20240312025712.GE1182@sol.localdomain>
-References: <1709768084-22539-1-git-send-email-wufan@linux.microsoft.com>
- <1709768084-22539-16-git-send-email-wufan@linux.microsoft.com>
+	s=arc-20240116; t=1710212385; c=relaxed/simple;
+	bh=jCdBNatzGEdZ2CfTazqC7lWaSN8WBO9A2pZTJlA6Cgw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=a2khZ6Hf1MrBq2bsLAZY0ij0KVkbCduQeIPPDeMj1iyviidZ1cLKgAai4RRwCzyYDHMQ0W034ByxucAmLIImCInwy8tWo7yf6KGWQxMlKptDM+PQ8qY1gg9GMpvcVEknAs9LVo2vb+xFOW8K6bnPQ4YzgD+C/XNwQeSFAgSyNAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pmFvsPsI; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42C2IuPR004529;
+	Tue, 12 Mar 2024 02:59:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=jtKpQuokls/6ATw0gnJnkxEntL0Z3Hy3xmSu/hjvtqM=; b=pm
+	FvsPsIZ/jl1X+GSICPsldV5KT1UkoT0+XX1qzS67SubXY9G/pM/nVkM1jJdawwAL
+	GVOmBz3RIKmNohZcHaqbUgtE7fjnhgohYkpRmtG+/I1GNmMGqzB9nmlxB4J5HRs6
+	ZYUcUN4VbKabJaAKZuV2gQ/V7kxloXifci9C0ExahA9IfKmlQwwm6KoxtPfgK+nO
+	O4t9twV3cjKOkpg+Y0rpPKoGAmUtr2cv20q5awgxd5gSPeE+AWkbcmYyQbKsvflu
+	+8ugfn7J+wQBq6/kD7hrtZ4hmV0I9dMYoymu2Kn5OMvJhVvgex9OwXp0Ra5FwAc2
+	IELUMqbiG2b1XMu9ZROQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wte5d01rq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 02:59:39 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42C2xd09028977
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 02:59:39 GMT
+Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 11 Mar 2024 19:59:33 -0700
+From: Tengfei Fan <quic_tengfan@quicinc.com>
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linus.walleij@linaro.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dmitry.baryshkov@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH v3 0/2] update SM4450 pinctrl document
+Date: Tue, 12 Mar 2024 10:58:05 +0800
+Message-ID: <20240312025807.26075-1-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1709768084-22539-16-git-send-email-wufan@linux.microsoft.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: IMHCGhf4FCpzxA6osyvFgY1vHman8jHb
+X-Proofpoint-GUID: IMHCGhf4FCpzxA6osyvFgY1vHman8jHb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_02,2024-03-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 phishscore=0 suspectscore=0 mlxlogscore=787
+ malwarescore=0 clxscore=1015 lowpriorityscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403120022
 
-On Wed, Mar 06, 2024 at 03:34:40PM -0800, Fan Wu wrote:
-> fsverity represents a mechanism to support both integrity and
-> authenticity protection of a file, supporting both signed and unsigned
-> digests.
-> 
-> An LSM which controls access to a resource based on authenticity and
-> integrity of said resource, can then use this data to make an informed
-> decision on the authorization (provided by the LSM's policy) of said
-> claim.
-> 
-> This effectively allows the extension of a policy enforcement layer in
-> LSM for fsverity, allowing for more granular control of how a
-> particular authenticity claim can be used. For example, "all (built-in)
-> signed fsverity files should be allowed to execute, but only these
-> hashes are allowed to be loaded as kernel modules".
-> 
-> This enforcement must be done in kernel space, as a userspace only
-> solution would fail a simple litmus test: Download a self-contained
-> malicious binary that never touches the userspace stack. This
-> binary would still be able to execute.
-> 
-> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+Update compatible name, consolidate or remove functions to match with
+SM4450 driver.
 
-As I've said before, this commit message needs some work.  It currently doesn't
-say anything about what the patch actually does.
+Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+---
 
-BTW, please make sure you're Cc'ing the fsverity mailing list
-(fsverity@lists.linux.dev), not fscrypt (linux-fscrypt@vger.kernel.org).
+v2 -> v3:
+   - update patche commit message for [PATCH v3 2/2]
+   - consolidate or remove some functions for match with SM4450 pinctrl
+     driver
 
-> diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
-> index 13e4b18e5dbb..64618a6141ab 100644
-> --- a/Documentation/filesystems/fsverity.rst
-> +++ b/Documentation/filesystems/fsverity.rst
-> @@ -461,7 +461,9 @@ Enabling this option adds the following:
->  
->  3. A new sysctl "fs.verity.require_signatures" is made available.
->     When set to 1, the kernel requires that all verity files have a
-> -   correctly signed digest as described in (2).
-> +   correctly signed digest as described in (2). Note that verification
-> +   happens as long as the file's signature exists regardless the state of
-> +   "fs.verity.require_signatures".
->  
->  The data that the signature as described in (2) must be a signature of
->  is the fs-verity file digest in the following format::
+v1 -> v2:
+  - update patches commit message
+  - Remove excess Spaces
 
-Doesn't anything else in this file need to be updated to document the IPE
-support?
+previous discussion here:
+[1] v2: https://lore.kernel.org/linux-arm-msm/20240129092512.23602-1-quic_tengfan@quicinc.com/
+[2] v1: https://lore.kernel.org/linux-arm-msm/20240124023305.15755-1-quic_tengfan@quicinc.com/
 
-> diff --git a/fs/verity/open.c b/fs/verity/open.c
-> index 6c31a871b84b..f917023255c8 100644
-> --- a/fs/verity/open.c
-> +++ b/fs/verity/open.c
-> @@ -8,6 +8,7 @@
->  #include "fsverity_private.h"
->  
->  #include <linux/mm.h>
-> +#include <linux/security.h>
->  #include <linux/slab.h>
->  
->  static struct kmem_cache *fsverity_info_cachep;
-> @@ -172,12 +173,28 @@ static int compute_file_digest(const struct fsverity_hash_alg *hash_alg,
->  	return err;
->  }
->  
-> +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> +static int fsverity_inode_setsecurity(struct inode *inode,
-> +				      const struct fsverity_descriptor *desc)
-> +{
-> +	return security_inode_setsecurity(inode, FS_VERITY_INODE_SEC_NAME,
-> +					  desc->signature,
-> +					  le32_to_cpu(desc->sig_size), 0);
+Tengfei Fan (2):
+  dt-bindings: pinctrl: qcom: update compatible name for match with
+    driver
+  dt-bindings: pinctrl: qcom: update functions to match with driver
 
-Please call it something like FS_VERITY_INODE_BUILTIN_SIG to make it clear that
-it's the builtin signature.
+ .../bindings/pinctrl/qcom,sm4450-tlmm.yaml    | 54 +++++++------------
+ 1 file changed, 19 insertions(+), 35 deletions(-)
 
-> +}
-> +#else
-> +static inline int fsverity_inode_setsecurity(struct inode *inode,
-> +					     const struct fsverity_descriptor *desc)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_IPE_PROP_FS_VERITY*/
 
-The above comment mentions CONFIG_IPE_PROP_FS_VERITY, but it doesn't appear
-anywhere else in the patch.
+base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
+-- 
+2.17.1
 
-> +struct fsverity_info *fsverity_create_info(struct inode *inode,
->  					   struct fsverity_descriptor *desc)
->  {
->  	struct fsverity_info *vi;
-> @@ -242,6 +259,13 @@ struct fsverity_info *fsverity_create_info(const struct inode *inode,
->  		spin_lock_init(&vi->hash_page_init_lock);
->  	}
->  
-> +	err = fsverity_inode_setsecurity(inode, desc);
-> +	if (err == -EOPNOTSUPP)
-> +		err = 0;
-
-What is the "err == -EOPNOTSUPP" case intended to handle?
-
-> diff --git a/fs/verity/signature.c b/fs/verity/signature.c
-> index 90c07573dd77..42f58f4e45d0 100644
-> --- a/fs/verity/signature.c
-> +++ b/fs/verity/signature.c
-> @@ -41,7 +41,9 @@ static struct key *fsverity_keyring;
->   * @sig_size: size of signature in bytes, or 0 if no signature
->   *
->   * If the file includes a signature of its fs-verity file digest, verify it
-> - * against the certificates in the fs-verity keyring.
-> + * against the certificates in the fs-verity keyring. Note that verification
-> + * happens as long as the file's signature exists regardless the state of
-> + * fsverity_require_signatures.
-
-Can you please make this mention explicitly that the LSM hook is relying on that
-behavior?
-
-- Eric
 
