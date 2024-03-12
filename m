@@ -1,140 +1,128 @@
-Return-Path: <linux-kernel+bounces-100619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C76F879AD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:46:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F5D8879AD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4501C221A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:46:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C154284086
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF441386BC;
-	Tue, 12 Mar 2024 17:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168817CF35;
+	Tue, 12 Mar 2024 17:54:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hp/GvCMy"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="LyOMGNti"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3677D406
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42D31137C24
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:54:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710265609; cv=none; b=kqHttZNMvY61kmeaGtS0rZ3WfSW483+Ugbeyemls6kw6hWs8XR0WKc+YPVh4FxtsSZZ9ry/Rl/OHYElUHx9f55xQvw9BQSYjxmm5nNmi3B8LwD3/tpH6DkXmyuq2/tFr33ay4ylIkjhy6XJwpxfkpF3yoBGxZtky1vHkfdiQ7WE=
+	t=1710266078; cv=none; b=AeNQPYBKQkpzy5VXfzM3y3JpcBwe0JP3gesmA6nDA12UkcqqXWXZCghBTzUy6VGyW6UL/XTlsqwPBLjgvv9TFUAo4qAOn6H+BEvCcosHSJuwWICYGPHSZY2lC1yenNaDbt6E5XhAFnTbskHSdo0Zgy8mGEFzof38YTsULfZB7+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710265609; c=relaxed/simple;
-	bh=rPfGN5w2HwyLrxgDW8705e7jnqF6QYY783ggHhVlM+I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UYwXn43WwGsw25koB935Vb6qw9rER4g4sQ7m3NHjeVprHCwE/KtmChxrqw/ypvj8F5XWxpsTqA+v7bTliWc7KYUqF9Z7zn1Vq4UF8Eh2+PvCxs+oXECCDDGzsmsavUW2l/blpN+cGL1comJJ1ZQU7pzgX95zsgUS2rx4gfV/dxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hp/GvCMy; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1684c53c-05b6-4098-b80f-d7d3de15b393@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710265604;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GIl/8fsjmUJ+Og5Be9zzqTrcqB0qVzN1neR02nmTM7g=;
-	b=Hp/GvCMyTBwsj+Vl2sUT+N4TWlN6+mDejoQl8jHCvEs3fDvpdRmgIRhbhZE+6iBh50nkn1
-	5lFLIEtRaGi8KxL97BKcxAITnty/0+t4Tx9y7cq3EGLH5LrE0wLibNvjPvzGjHiT0Firsl
-	m/+TiMp96v79b86qE3u/DhUtxLy8MYg=
-Date: Tue, 12 Mar 2024 13:46:40 -0400
+	s=arc-20240116; t=1710266078; c=relaxed/simple;
+	bh=1dMqk2JDvIME7s9z3lYxtaHNAky6PAHnCcMJUONdnAM=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=l6Z0CTnARKgHJZ3AHQNRcKcThZuyF31CcD5C/DQPZnmcN8M+OUIIjDChz+ddIfIH+6pV4GObBOhuttWZEzjB0c295+clPMNZXwJTB4vJcZWRGSQqGdaMyJHVIcFZVfJhSZ72pfpn4FUxaLMQU+ukFAhpx2Ec3oy8N4tngeXLxHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=LyOMGNti; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dd3c6c8dbbso9720685ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1710266075; x=1710870875; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7Lc1k3V9a/jyoMl1MPlT4vJVEugebv8lX4qr+r+dj/4=;
+        b=LyOMGNtib6fhUmht/Y2QKIU68g7NV8cMONB0Qy4GSngMWqYVgwmKDUwA4litHJ1DQd
+         G44O4t6Hn7Hh49ueRaIaCY222dMtELYMOZDe3YR2Fd6vnCuzK6ScJQRRlKEUmN0e6nid
+         dbZhDWk0hHFcbZGdQ9fNlppbkUmTNgOj4Ah+OF4TzmSbRBCWgMn8W/HnfOfQ3TdYxHJO
+         TeNtcXfLzsYJRJdtZNvJeg5prcBo3fDn/l1FNDuQmok08hZ4dcUM4Gn0GmKP8huR9GDB
+         mL9CJ8ky5E729+61Lz6JzFwkmQMI+EBrFzVnbMEpZfrF9hR4dHCxSaNcG815bUlcTn3m
+         6JfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710266075; x=1710870875;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Lc1k3V9a/jyoMl1MPlT4vJVEugebv8lX4qr+r+dj/4=;
+        b=TBjUI0BLVjjGDbdybRKVKsVSEB3UjpKp4S0cYd/R0Ig6B6OK8iQs268F9bhgjoTx/N
+         TEnInvyOpfojtjkmxBdyKoMVC0PBEKEI8nvPC+/xKGaN028ElbUYuFX/B1DF70KSg6Ca
+         62MxQNN+N/r5xgi34EXSgTZJGTqIIdBwLnQQHtleBZLe4T61yoNeFflEYdkdqUMj8q3z
+         vN90cDv/esX7k44Gqa6Eff7eGrQggXvKhmiENvb15KBzBG6tWtde4dMJDJOzJKUUzjWv
+         j7MyB/y00ms/MUzFLrL1lFJjteER/40aDFN8TtEhmI9x+0EBQvw3wnc6chBWpg/0icdi
+         jSCg==
+X-Forwarded-Encrypted: i=1; AJvYcCWCDBZWQzKYPCF4ooiQBQNNs/NpCEPkGsjUDy2trK2ZacFGULZ1wut7/6VoLfFs35JhzI1XTAltLNuIoA51q0h00+0zFVNGE5Mq4ojj
+X-Gm-Message-State: AOJu0YwIsxUXwbriKSkqh7RQN+2LivPO6qIR4i+6HysHSOLhd32OunJo
+	m0lVazpwzg94eGEj3elibzYU3BrdYs073yx+5E9l2tVAumNx8eYF8m4XB6Xo6HM=
+X-Google-Smtp-Source: AGHT+IFU7Wcw3x+gYZo9ooLBLSB40PkntNMm1FYmyQCfzwq08peolf7EsabpWj4e6VcNcbf/cLTDVg==
+X-Received: by 2002:a17:902:8a91:b0:1dd:7350:29f6 with SMTP id p17-20020a1709028a9100b001dd735029f6mr2507951plo.3.1710266075395;
+        Tue, 12 Mar 2024 10:54:35 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id kj14-20020a17090306ce00b001dd3bc79142sm7004708plb.264.2024.03.12.10.54.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 10:54:34 -0700 (PDT)
+Message-ID: <085beb85-d1a4-4cb0-969b-e0f895a95738@kernel.dk>
+Date: Tue, 12 Mar 2024 11:54:33 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] dmaengine: xilinx: dpdma: Fix race condition in
- vsync IRQ
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10/5.15] io_uring: fix registered files leak
 Content-Language: en-US
-To: Vishal Sagar <vishal.sagar@amd.com>, laurent.pinchart@ideasonboard.com,
- vkoul@kernel.org
-Cc: michal.simek@amd.com, dmaengine@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- varunkumar.allagadapa@amd.com
-References: <20240228042124.3074044-1-vishal.sagar@amd.com>
- <20240228042124.3074044-2-vishal.sagar@amd.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <20240228042124.3074044-2-vishal.sagar@amd.com>
+From: Jens Axboe <axboe@kernel.dk>
+To: Fedor Pchelkin <pchelkin@ispras.ru>
+Cc: Pavel Begunkov <asml.silence@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
+ io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Alexey Khoroshilov <khoroshilov@ispras.ru>, lvc-project@linuxtesting.org,
+ Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+ Roman Belyaev <belyaevrd@yandex.ru>
+References: <20240312142313.3436-1-pchelkin@ispras.ru>
+ <8a9993c7-fd4d-44ff-8971-af59c7f3052c@kernel.dk>
+ <466e842f-66c6-4530-8c16-2b008fc3fbc6-pchelkin@ispras.ru>
+ <fb57be64-4da6-418b-9369-eae0db42a570@kernel.dk>
+In-Reply-To: <fb57be64-4da6-418b-9369-eae0db42a570@kernel.dk>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-Hi Vishal,
+On 3/12/24 9:21 AM, Jens Axboe wrote:
+> On 3/12/24 9:14 AM, Fedor Pchelkin wrote:
+>> On 24/03/12 08:34AM, Jens Axboe wrote:
+>>> On 3/12/24 8:23 AM, Fedor Pchelkin wrote:
+>>
+>> [...]
+>>
+>>>> I feel io_uring-SCM related code should be dropped entirely from the
+>>>> stable branches as the backports already differ greatly between versions
+>>>> and some parts are still kept, some have been dropped in a non-consistent
+>>>> order. Though this might contradict with stable kernel rules or be
+>>>> inappropriate for some other reason.
+>>>
+>>> Looks fine to me, and I agree, it makes much more sense to drop it all
+>>> from 5.10/5.15-stable as well to keep them in sync with upstream. And I
+>>> think this is fine for stable, dropping code is always a good thing.
+>>>
+>>
+>> Alright, got it. So that would require dropping it from all of the
+>> supported 5.4, 6.1, 6.6, 6.7, too.
+>>
+>> Would it be okay if I'll send this as a series?
+> 
+> Yeah I think so, keeping the code more in sync is always a good thing
+> when it comes to stable. Just make sure you mark the backport commits
+> with the appropriate upstream shas. Thanks!
 
-On 2/27/24 23:21, Vishal Sagar wrote:
-> From: Neel Gandhi <neel.gandhi@xilinx.com>
-> 
-> The vchan_next_desc() function, called from
-> xilinx_dpdma_chan_queue_transfer(), must be called with
-> virt_dma_chan.lock held. This isn't correctly handled in all code paths,
-> resulting in a race condition between the .device_issue_pending()
-> handler and the IRQ handler which causes DMA to randomly stop. Fix it by
-> taking the lock around xilinx_dpdma_chan_queue_transfer() calls that are
-> missing it.
-> 
-> Signed-off-by: Neel Gandhi <neel.gandhi@amd.com>
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> Signed-off-by: Vishal Sagar <vishal.sagar@amd.com>
-> 
-> Link: https://cas5-0-urlprotect.trendmicro.com:443/wis/clicktime/v1/query?url=https%3a%2f%2flore.kernel.org%2fall%2f20220122121407.11467%2d1%2dneel.gandhi%40xilinx.com&umid=a486940f-2fe3-47f4-9b3f-416e59036eab&auth=d807158c60b7d2502abde8a2fc01f40662980862-a75e22540e8429d70f26093b45d38995a0e6e1e8
-> ---
->  drivers/dma/xilinx/xilinx_dpdma.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
-> index b82815e64d24..28d9af8f00f0 100644
-> --- a/drivers/dma/xilinx/xilinx_dpdma.c
-> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
-> @@ -1097,12 +1097,14 @@ static void xilinx_dpdma_chan_vsync_irq(struct  xilinx_dpdma_chan *chan)
->          * Complete the active descriptor, if any, promote the pending
->          * descriptor to active, and queue the next transfer, if any.
->          */
-> +       spin_lock(&chan->vchan.lock);
->         if (chan->desc.active)
->                 vchan_cookie_complete(&chan->desc.active->vdesc);
->         chan->desc.active = pending;
->         chan->desc.pending = NULL;
-> 
->         xilinx_dpdma_chan_queue_transfer(chan);
-> +       spin_unlock(&chan->vchan.lock);
-> 
->  out:
->         spin_unlock_irqrestore(&chan->lock, flags);
-> @@ -1264,10 +1266,12 @@ static void xilinx_dpdma_issue_pending(struct dma_chan *dchan)
->         struct xilinx_dpdma_chan *chan = to_xilinx_chan(dchan);
->         unsigned long flags;
-> 
-> -       spin_lock_irqsave(&chan->vchan.lock, flags);
-> +       spin_lock_irqsave(&chan->lock, flags);
-> +       spin_lock(&chan->vchan.lock);
->         if (vchan_issue_pending(&chan->vchan))
->                 xilinx_dpdma_chan_queue_transfer(chan);
-> -       spin_unlock_irqrestore(&chan->vchan.lock, flags);
-> +       spin_unlock(&chan->vchan.lock);
-> +       spin_unlock_irqrestore(&chan->lock, flags);
->  }
-> 
->  static int xilinx_dpdma_config(struct dma_chan *dchan,
-> @@ -1495,7 +1499,9 @@ static void xilinx_dpdma_chan_err_task(struct tasklet_struct *t)
->                     XILINX_DPDMA_EINTR_CHAN_ERR_MASK << chan->id);
-> 
->         spin_lock_irqsave(&chan->lock, flags);
-> +       spin_lock(&chan->vchan.lock);
->         xilinx_dpdma_chan_queue_transfer(chan);
-> +       spin_unlock(&chan->vchan.lock);
->         spin_unlock_irqrestore(&chan->lock, flags);
->  }
+I'll just do these backports myself, thanks for bringing it up.
 
-I also ran into this issue and came up with the same fix [1].
+-- 
+Jens Axboe
 
-Reviewed-by: Sean Anderson <sean.anderson@linux.dev>
-
-[1] https://lore.kernel.org/dmaengine/20240308210034.3634938-2-sean.anderson@linux.dev/
 
