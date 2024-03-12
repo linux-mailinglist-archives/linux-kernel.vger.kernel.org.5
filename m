@@ -1,114 +1,147 @@
-Return-Path: <linux-kernel+bounces-99926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96EE4878F44
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:54:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0DEB878F41
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:52:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C95761C2099C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:54:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2CE01C2109D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398AD69D03;
-	Tue, 12 Mar 2024 07:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C374269975;
+	Tue, 12 Mar 2024 07:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="immu3X6c"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="or+eoyVy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB69F6996F
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110DF16FF2B;
+	Tue, 12 Mar 2024 07:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710230048; cv=none; b=mmV263KiCwsMMRpf9mgvswIe6OkjBI/212RGKxXq6nRdbmYqukfLlAs+Vt0Ey8dxFLwFXyQyv4v6Sh51Ri7YqLpUoxK0xGnJB4QZjlFRWQ9LkS6HTwwCOpdlvni5FF9BfFwU+V2l39V/QiSbG3s8dX9hO11owp+IasfuHLTxkqw=
+	t=1710229961; cv=none; b=IlRTs8Ehw7bE67lmA4JG+Ey367rbhWeRn4sqw1reab5Wd2l5x/XZQHAZSwjWfpuQPHGv1ZboqYtEcOeNiRMQuP02f1O+KosxLHcgWJOFZeDU5PlcRTmS/D37lY+8BeSb9R86b1hfPlys7CGsWTG7RnVyiQg1YU9jgOCh0GMjTu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710230048; c=relaxed/simple;
-	bh=NxNmcKhf9PiRD5MQkaPrTZ0o2xgPuVzoEHnYIYjDzZo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=pbKNOSFimCP0PLiBmkGhJX6wizU/GwI2oslciZttlswmm2QaoDgLDX7t4VN5bCcEXCjDJNsbIJ/4nmBRBapes65oZFIqRszwHrZRhz0GXC7BJ/YfMxgAu5d11DhiOShsXojE6MNye5pczS6W6hgeYGH8HNi7fLkKCpZ4kqInA7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=immu3X6c; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710230047; x=1741766047;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=NxNmcKhf9PiRD5MQkaPrTZ0o2xgPuVzoEHnYIYjDzZo=;
-  b=immu3X6cP0BEgXSBWBXgXsk7Iu1eyG8mmnej8uk1nyT5ERReiSNrUwu7
-   FTlRzwloUU178WAnpC1EadFM12Cwe0JfNfb+YpGAm4X9AJJZ88fVPpVcw
-   /QL2NRjOVqCTFoUBaDsDrM0SVvgk9hyL+tF/giZRVyD0KcTVuyLPD7TZA
-   vi4zLUeXOBXgrtd6p2NStKbCQxz/+T3B6JMzSPcG2S0DP0SpaW84J4fpC
-   FBBnTEMrTiBfYz0ZqnbxK3g12PCZ1VLr7CZIjJ/djIlbGHnHXDv9tV+Np
-   jPdO/3e0Jtl1KDnOIupTkb+uK7CeCoYq/S6lHLoJsZ6wQ9b4z8g39dgwu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="16364924"
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="16364924"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 00:54:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="34630087"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 00:54:02 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  David Hildenbrand
- <david@redhat.com>,  Matthew Wilcox <willy@infradead.org>,  Gao Xiang
- <xiang@kernel.org>,  Yu Zhao <yuzhao@google.com>,  Yang Shi
- <shy828301@gmail.com>,  Michal Hocko <mhocko@suse.com>,  Kefeng Wang
- <wangkefeng.wang@huawei.com>,  Barry Song <21cnbao@gmail.com>,  Chris Li
- <chrisl@kernel.org>,  <linux-mm@kvack.org>,
-  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/6] mm: swap: Simplify struct percpu_cluster
-In-Reply-To: <20240311150058.1122862-4-ryan.roberts@arm.com> (Ryan Roberts's
-	message of "Mon, 11 Mar 2024 15:00:55 +0000")
-References: <20240311150058.1122862-1-ryan.roberts@arm.com>
-	<20240311150058.1122862-4-ryan.roberts@arm.com>
-Date: Tue, 12 Mar 2024 15:52:08 +0800
-Message-ID: <87cyrz51lj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710229961; c=relaxed/simple;
+	bh=pPdblc9BNa6xMJbEOXOEvKiHrD0Gt9YejfwF6KCsXuE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ez6Fpa52WlnkrVZ5FqpSv3y92ZWMbRNos0T0sdGRZI7+m1cIgCerefVVKyhXXoVS5aH6iU+del96/PxgnX7d8xOTlOUgMVNTVmFHau6E5RAoafRAPZ+y0Paw+3HjYhRfjqAarZ/GYHGms0aazGJ0vy+bNO77UCeNTfzABLX+xac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=or+eoyVy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37D43C433C7;
+	Tue, 12 Mar 2024 07:52:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710229960;
+	bh=pPdblc9BNa6xMJbEOXOEvKiHrD0Gt9YejfwF6KCsXuE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=or+eoyVyA+bhQqmC/ZM64SUyqR6OxiupKbMH+fpY96t+wkRKf4pzKEIBMziijAh0Q
+	 bxLxXQa/kNwik8fE91GwuQYtMKUzk3Yd7VD/SB1kR7KQC7Kg+vrZIAKz1bRPlWLUQJ
+	 lPZAlOt7l/mRKSSKBv6vo2SUn9smoZOajJX+WWP4yk3l9KPYSw0dX7ysVyhD1Hyr3v
+	 vB/ePActrxkDOfY567KAWNvw9dsvLQhAilku7dZeVvzn5tZq68pP7HMUefCDFTmNfd
+	 sYbC5wMifEG/r/6xUb5TirohbZaEhNfMTPUmPAmbh/tIwrTDuYsZLXRPniVyu/gcCd
+	 SGo5pt5p7/gwA==
+Date: Tue, 12 Mar 2024 09:52:36 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Breno Leitao <leitao@debian.org>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, keescook@chromium.org,
+	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
+Message-ID: <20240312075236.GL12921@unreal>
+References: <20240308182951.2137779-1-leitao@debian.org>
+ <20240310101451.GD12921@unreal>
+ <Ze7YNu5TrzClQcxy@gmail.com>
+ <20240311102251.GJ12921@unreal>
+ <20240311112532.71f1cb35@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240311112532.71f1cb35@kernel.org>
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+On Mon, Mar 11, 2024 at 11:25:32AM -0700, Jakub Kicinski wrote:
+> On Mon, 11 Mar 2024 12:22:51 +0200 Leon Romanovsky wrote:
+> > > From my experience, you can leverage all the helpers to deal with the
+> > > relationship between struct net_device and you private structure. Here
+> > > are some examples that comes to my mind:
+> > > 
+> > > * alloc_netdev() allocates the private structure for you
+> > > * netdev_priv() gets the private structure for you
+> > > * dev->priv_destructor sets the destructure to be called when the
+> > >   interface goes away or failures.  
+> > 
+> > Everything above is true, but it doesn't relevant to HFI1 devices which
+> > are not netdev devices.
+> 
+> Why are they abusing struct net_device then?
 
-> struct percpu_cluster stores the index of cpu's current cluster and the
-> offset of the next entry that will be allocated for the cpu. These two
-> pieces of information are redundant because the cluster index is just
-> (offset / SWAPFILE_CLUSTER). The only reason for explicitly keeping the
-> cluster index is because the structure used for it also has a flag to
-> indicate "no cluster". However this data structure also contains a spin
-> lock, which is never used in this context, as a side effect the code
-> copies the spinlock_t structure, which is questionable coding practice
-> in my view.
->
-> So let's clean this up and store only the next offset, and use a
-> sentinal value (SWAP_NEXT_INVALID) to indicate "no cluster".
-> SWAP_NEXT_INVALID is chosen to be 0, because 0 will never be seen
-> legitimately; The first page in the swap file is the swap header, which
-> is always marked bad to prevent it from being allocated as an entry.
-> This also prevents the cluster to which it belongs being marked free, so
-> it will never appear on the free list.
->
-> This change saves 16 bytes per cpu. And given we are shortly going to
-> extend this mechanism to be per-cpu-AND-per-order, we will end up saving
-> 16 * 9 = 144 bytes per cpu, which adds up if you have 256 cpus in the
-> system.
->
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Care to explain what is the abuse here?
+HFI1 uses init_dummy_netdev() exactly as it should be used according to
+the commit message.
 
-LGTM, Thanks!
+This netdevice is controlled by HFI1 lifetime model and used for NAPI.
+https://lore.kernel.org/netdev/1231906495.22571.79.camel@pasglop/
 
---
-Best Regards,
-Huang, Ying
+> If you're willing to take care of removing the use of NAPI from this
+> driver completely, that'd be great.
 
+I have no plans to remove NAPI from HFI1 driver. We are not against to
+accept Bruno's removal patch, but we are asking for justification
+in commit message.
+
+> 
+> > > > Will it create multiple "dummy" netdev in the system? Will all devices
+> > > > have the same "dummy" name?  
+> > > 
+> > > Are these devices visible to userspace?  
+> > 
+> > HFI devices yes, dummy device no.
+> > 
+> > > 
+> > > This allocation are using NET_NAME_UNKNOWN, which implies that the
+> > > device is not expose to userspace.  
+> > 
+> > Great
+> > 
+> > > 
+> > > Would you prefer a different name?  
+> > 
+> > I prefer to see some new wrapper over plain alloc_netdev, which will
+> > create this dummy netdevice. For example, alloc_dummy_netdev(...).
+> 
+> Nope, no bona fide APIs for hacky uses.
+
+Interesting position, instead of making simple and self descriptive API
+which is impossible to misuse, you prefer complexity.
+
+HFI1 is not alone in using init_dummy_netdev():
+➜  kernel git:(rdma-next) ✗ git grep "init_dummy_netdev(&"
+rivers/infiniband/hw/hfi1/netdev_rx.c: init_dummy_netdev(&rx->rx_napi);
+drivers/net/ethernet/ibm/emac/mal.c:    init_dummy_netdev(&mal->dummy_dev);
+drivers/net/ethernet/marvell/prestera/prestera_rxtx.c:  init_dummy_netdev(&sdma->napi_dev);
+drivers/net/ethernet/mediatek/mtk_eth_soc.c:    init_dummy_netdev(&eth->dummy_dev);
+drivers/net/ipa/gsi.c:  init_dummy_netdev(&gsi->dummy_dev);
+drivers/net/wireless/ath/ath10k/core.c: init_dummy_netdev(&ar->napi_dev);
+drivers/net/wireless/ath/ath11k/ahb.c:          init_dummy_netdev(&irq_grp->napi_ndev);
+drivers/net/wireless/ath/ath11k/pcic.c:         init_dummy_netdev(&irq_grp->napi_ndev);
+drivers/net/wireless/ath/ath12k/pci.c:          init_dummy_netdev(&irq_grp->napi_ndev);
+drivers/net/wireless/ath/wil6210/netdev.c:      init_dummy_netdev(&wil->napi_ndev);
+drivers/net/wireless/intel/iwlwifi/pcie/trans.c:                init_dummy_netdev(&trans_pcie->napi_dev);
+drivers/net/wireless/mediatek/mt76/dma.c:       init_dummy_netdev(&dev->napi_dev);
+drivers/net/wireless/mediatek/mt76/dma.c:       init_dummy_netdev(&dev->tx_napi_dev);
+drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c:     init_dummy_netdev(&bus->mux_dev);
+drivers/net/wireless/realtek/rtw88/pci.c:       init_dummy_netdev(&rtwpci->netdev);
+drivers/net/wireless/realtek/rtw89/core.c:      init_dummy_netdev(&rtwdev->netdev);
+drivers/net/wwan/t7xx/t7xx_netdev.c:    init_dummy_netdev(&ctlb->dummy_dev);
+net/mptcp/protocol.c:   init_dummy_netdev(&mptcp_napi_dev);
+net/xfrm/xfrm_input.c:  init_dummy_netdev(&xfrm_napi_dev);
+
+Thanks
 
