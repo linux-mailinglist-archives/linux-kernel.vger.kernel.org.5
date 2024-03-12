@@ -1,178 +1,229 @@
-Return-Path: <linux-kernel+bounces-99755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CA9878CC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:09:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10906878CC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C563B21993
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:08:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B58A82826B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5AD5CB5;
-	Tue, 12 Mar 2024 02:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EC879CC;
+	Tue, 12 Mar 2024 02:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="THzlY49V"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2058.outbound.protection.outlook.com [40.107.7.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQ1qkU7K"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6051C17;
-	Tue, 12 Mar 2024 02:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710209328; cv=fail; b=hCrqtgP1QYMg2vdch9D5LmqHUkGVNDQk9bVMC72BhkD+VMbmvuVVASYNw7NBascVUo/CwsPJuQLOrylCau4Tv+dyyxE1wEsW+j35O4/3LMxIa+RMEsOPOEXbUYJYQWoOYI4ynFoM02ZrFTlQLOJ/0G1c5An+iBfEDB8OAGFCHPI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710209328; c=relaxed/simple;
-	bh=cPlM6RRfTArcZr3iwxTo/BHW8iYYy/5n+k8siOPcnGU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=EY2DJ4WZ1fymZP9xz72Rxu0sNo0j/mDZ/SNg0TCrUpDfFCSgILqQas/Lxadcrg+8/T9E5u/a2K7pMH8B7nJFZ6ujP3kjJWItc6e1rTsJaYtpnLcuaerq1zyKfPVFB7BpWr9sjd3RrRgIfGYvSsDmJYPD7nuJFiEGhcxN+6pIGWE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=THzlY49V; arc=fail smtp.client-ip=40.107.7.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Moy1I1zh3+ksQbCYyEst9hhE+m+nWV+WKHpoROhW3Ly7RNOTStXYNV0xo1G2jyD6ZX/ifJTzdW2VF6NlLAnqjPU3deQw4DP9btBAUoh5ZI4JB6LxPoLjfeYGs0OsJ/N+U22E2pcvYKkLe9i6DkYx/nHouQHEPz8Kjgup0IYpGNTi0hvv3i1As0AObI3EpZ6acCYNMZHXmqzd+NP5JdjXjC5ZzxGJWzGvj9RAPsEXkVtY8E7nTaxyhDXSTezRYz3e99kh4oR9tGsGQJ+VOhAoRkKmwxxswKJSl6EgSsmANOyr71pYX0FM0fTvVt3t/VcGm5mjWq6nNE6tfMPVmYUj3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cPlM6RRfTArcZr3iwxTo/BHW8iYYy/5n+k8siOPcnGU=;
- b=S05fsuKWR34MsyOlw2gN8L++heEQu049/Hy5vKVYAm24My9v0/qtLnsCeuMYSrBoEqsKfsXbQn8xTKUSgFyOV0vr4MLrAJ325ug4j3woxM6jjZ5ND/gNClt5eYgmereKSpBso9gx941UcCgWAs6P/sNmAtkFEeHPkTbNizp5vASe8Wnzbg7UltFen6ece4YM9uXCYGLoBgwnObF/Cm4/phqALAbT6EwtFt9cU6a1liwsMrmuSYE17XYMXjJ0jxkeB9qOkZRFugYZKYRfvFN8s98a7BUyRRC1LseB7vYGsT4JkT/oW1U1x+1rqEXKlLsloDkbH83Cdw/abqZoYK6IYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cPlM6RRfTArcZr3iwxTo/BHW8iYYy/5n+k8siOPcnGU=;
- b=THzlY49VAMLqxtstweRoDjU9FJDAWisJVgBGGCdBEdH3uY5Sgp5lIbNKzCFMdTuejPA4IGi9WYnJ0khc/V9LvmsE1LB+uAXUNO2FnY4U2hfb7Te98jtmGlIbzlKldyDYSBMz9xNFftv7ahttZ8G77TXVSLNqY3GBUZMwa0nN8qQ=
-Received: from DB9PR04MB9377.eurprd04.prod.outlook.com (2603:10a6:10:36b::13)
- by DU2PR04MB8709.eurprd04.prod.outlook.com (2603:10a6:10:2dc::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Tue, 12 Mar
- 2024 02:08:41 +0000
-Received: from DB9PR04MB9377.eurprd04.prod.outlook.com
- ([fe80::b3d4:17c4:91b7:101d]) by DB9PR04MB9377.eurprd04.prod.outlook.com
- ([fe80::b3d4:17c4:91b7:101d%5]) with mapi id 15.20.7362.024; Tue, 12 Mar 2024
- 02:08:41 +0000
-From: Joy Zou <joy.zou@nxp.com>
-To: Mark Brown <broonie@kernel.org>, Alexander Stein
-	<alexander.stein@ew.tq-group.com>
-CC: Jacky Bai <ping.bai@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "shawnguo@kernel.org"
-	<shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "kernel@pengutronix.de"
-	<kernel@pengutronix.de>, "festevam@gmail.com" <festevam@gmail.com>,
-	dl-linux-imx <linux-imx@nxp.com>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>
-Subject: RE: [EXT] Re: [PATCH v2 2/3] regulator: pca9450: add pca9451a support
-Thread-Topic: [EXT] Re: [PATCH v2 2/3] regulator: pca9450: add pca9451a
- support
-Thread-Index: AQHac4+7u0hmWzGzAUKgnbLEggIvnLEyQHEAgABIawCAANLeUA==
-Date: Tue, 12 Mar 2024 02:08:41 +0000
-Message-ID:
- <DB9PR04MB937723C4354245735A9B8FA3E12B2@DB9PR04MB9377.eurprd04.prod.outlook.com>
-References: <20240311084758.377889-1-joy.zou@nxp.com>
- <20240311084758.377889-3-joy.zou@nxp.com> <6027895.lOV4Wx5bFT@steina-w>
- <5b257caf-5a14-4c82-9999-061a0093a831@sirena.org.uk>
-In-Reply-To: <5b257caf-5a14-4c82-9999-061a0093a831@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB9PR04MB9377:EE_|DU2PR04MB8709:EE_
-x-ms-office365-filtering-correlation-id: 73284e0b-0598-42ed-c4a0-08dc423956e2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Qn+XRP13/AahS5oHwA3JYo/8OPtuE/iWlNVkgUyiqLRTv/dFXJjO3AHUzAx3xW2lo/K+gq8qPsoJWN7z3EUaakb5KNzKvTqSw/WdbAFluyqezbMjGVFJ+3UN4DeYanjOwDOqtALW054UyxfwUGfW73Necc/ugc3qeErAJXiAqGH8gNAxKr0ntu/htTlX6h5yasC+Gg/sPqWwbWxlzeXyecKl9A9mX9miZn5vCRlEyqd9A31Z1UktI8TjrHLtrbgr5fbx9T7Lz7oJ3/CtilIKM9+lN2d/uVxNoULeNacmLXscuBOo7bpYfjsc1n6t0rJR/QhvISj1CLztXU6gocwrYOdFVJLm0p+mU8CkUTMHozqwnM7ISPujiZVZx9vag+2RalVOF4jAvDf6rp9SKzIfgHjlYM0FEGG8x35Vz/rZc1jgNiwnA2PrfluXomii/dSJuMIIxW09iYgaxQtHPNH0F9wPxWtJUY6dn+97AiOQiKx2xtnNjIWCdUf4IRTvNcyJCCICpjEUbEtfzAp3VjzlRJUlX7mWGh1JKb8hgiL07fE5+wzsc5UskNw5i8gfaEZoEVoC/1NzAffK/miaQJJ56EcuMmnE4V7NlZyUqr4gkEnn/vecUVmiC4tMlUX3qIdFHV2nEw1xLm6x+kVLhyhIuoIxC9ZvbhSCus1bPo4cZUrTciS7s+zWdTRTLgBrr8SAgKtaUbD0Srl4E2f/kVH7oYGf5SU0d5j67lAxiYsLerk=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9377.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?TUdXa3ZuSjFnQzVlcUtsSHNhZCs3c0pwOFlsYVVJeEp1TGdRNGljQ1dxeG9j?=
- =?gb2312?B?UFI4MnRIQkpYSWZUUGZYSWhlL1phZEtvcDFGV0dxU1VvbnhjV3Uydysra3JR?=
- =?gb2312?B?OUlNQ255WFdJeXV0NE1QMXpTWFB3UGRNZ0Mxd1NqSnM0S0VUa21DZUtPWlJF?=
- =?gb2312?B?U0FkWXhyZWp6TWJDcE9BdExQdmxlcmtkYkhQRTJCcGpBUXlpVmR5bERhM29j?=
- =?gb2312?B?bVVTTk5ZeVJxNEF6TU9Pd2VsT2YwSjJFWEFJbmdSeWYwZ25jMVNNTFdReHV6?=
- =?gb2312?B?UWplTzczVlBOWGQ4dklhS0crQ1pROUY1elloTnNsRzUrc1VXS2lSODM0Z1Rh?=
- =?gb2312?B?TjZ3S01GeEwzcUFOd2RKRUVRNUxLM2x3UndVSFZwQldqYk5UL2ZsVzR4Ymtu?=
- =?gb2312?B?b2NlMnY3SHg1bi81NWZyek1SRDE5bWVoTmVvVEtmbU16WlVyVkhaYzZVRVZM?=
- =?gb2312?B?M0g0WDlhc1YxOVppZWJrUTNBMGErTDk3bW1yNUtMNmVENUFrZHc5RVNENFpF?=
- =?gb2312?B?WUlZT0hZZHhjZ3BMa0NIei90dmtJSWdkTzhySi9aOWdKZlFFV2J2STkzOHpJ?=
- =?gb2312?B?K0hzaGgyZG1qZnRtUGFkbEtqUm1SYWNLR05oR1hZRTVlUmNtOVhMSGw3MVhV?=
- =?gb2312?B?eVZHTVdrNkE0T0VIV2RPSDlQbVlzaUhUc0Z6b2N3RWE5eHZOQllXY1BMeG5m?=
- =?gb2312?B?UHUvYmlmdjVQN1dVc1VjVE1HTi9Ha1BveGZvSmhHYnN4b0NqUEFXejZJYmJF?=
- =?gb2312?B?YTFOaHlnNUYxbVRnV0xkbHBpd0pXWjdDTExrOWs0Nm5BK3VHMmJBUnUydHJm?=
- =?gb2312?B?Ni93UjRHU08wY0krTldsbXVwWXMzY2NJbkM0VlE3VXg2L1VDMmx4ZDhpRDBs?=
- =?gb2312?B?ZU8vR1lZMFR0YThoa1BjUURpM1l4S0NqV3dUdzdjbDl0dWQrZ0J5R20yNGVU?=
- =?gb2312?B?eWtiMGc0aDBpUm4zZGNkWHdWMjVqMnVITlFTNzFtTjRnbmFSSEZlTEhCL3cy?=
- =?gb2312?B?dWFjKytOdTluK2lyVWQwL0tLbVlIQVVaTUcwVmZIRHFOMWxOMUkyWGNLVlhQ?=
- =?gb2312?B?OUIrUngvcXVMRE81QlBOSXIzMG93QjdJN2F4OWhDa1lQa2hqL1hMQ2hkRjRi?=
- =?gb2312?B?Zlk1ano2VVJ4eFZWMUVITTN2WU1kTXBvVW03b0Y2Y1pmMjUrbFR1Z1crRmd3?=
- =?gb2312?B?ZFJEcFdGTWNZVG1kMHUwYm85OEVFZGxXeTJsT2JFSjVvMDFsWWVUSXZPc0Jw?=
- =?gb2312?B?S2JYS2lNcnhyYlVxUHpqb25wV1ptazlMM1BndWVHZ3I4dXJ2SUd0dDhTK2Na?=
- =?gb2312?B?dlplY1ZFemhESkJ3QzJuSW52Ni8yUnQvM2QrTDFPZ0ptdWpHbW55Vy8yc1pm?=
- =?gb2312?B?WmZLK094K2NicDZTWXdvVEZMVTY3SExVRWRDbGlmZmpERnN4bkxObkVxNmNy?=
- =?gb2312?B?L3dicytybkRyNEc1bUxPSWJnZGkvZGgxa3crNFVzeTBlTkdNQi9DL0p2Q1A3?=
- =?gb2312?B?dFFHRlFrRFhvbDBZTTZ5S1BMWjFtWklSbEtmaEJCQkJQUkZiaWVleE94UTZr?=
- =?gb2312?B?ZGw1Y2NBMzhpNXNsZXNYZ2JoRG5lanVZYXoxdWhSeU5jZktTRUNTZmVhSHNl?=
- =?gb2312?B?V1U0clM3bThXZEkzOGMzWThtV3J2cUFTeG1peU83djhZL2VIOXZsTlViSVBt?=
- =?gb2312?B?dnFZVmR1bHp0VzkwdjI5QVFMVllmOUZxSENQTVpVOVpYMDFhS3NGcFNtU2FN?=
- =?gb2312?B?cWJ0R2x0YU5rYVVNVzlvQWRFSTBQUmlrNEtrdWhGbFpDQXNiTmYxSkhIUjUy?=
- =?gb2312?B?SEYxdy9GMGZDS1FCVTlCQnBxZG5qT3hqd2hXV0p0Y1d4c0Y2a0ZaanZUQlRG?=
- =?gb2312?B?aXhYS0NVdlhHaGgyT1ZITjB6MkNNR2NPV3dIMGNSdTJ5MGlJWUdlMkZuaytV?=
- =?gb2312?B?UVNuSUNXU3NoNExjU3B6YkxqbUw0dEpqK1VsNFAzeVMwbklncGFYQ3IwQ0Js?=
- =?gb2312?B?ay9URmg3TUJLS0VUZXpGQW44VDNEbzR5WFlsUGhsZ3VLUk5yZGNCRVJWdHpC?=
- =?gb2312?B?emppWEloUFNDZG1rWm90LzFSemFES0RVVnJlRmlCMzdsNHpXVDkyYXhyL2tP?=
- =?gb2312?Q?aIW8=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5E779C0;
+	Tue, 12 Mar 2024 02:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710209379; cv=none; b=VPNeafI1D45HEKvcRtm24FUGzoV5crV5QHQlbuPLSuIWGh0FyUPfdOphZrdZZYJ/GUpE195rC7K2UA3x22IZ3rR3ZnBQZh2L3YXpwGMKawcFCxTz0kejccapdNOO6Plwpzh2j3iAFtKAJw7e18la8Ac5NHLan72UINkc1TPta6A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710209379; c=relaxed/simple;
+	bh=MUN7lvB0UfY/wJL8qyyPEvDzT/66bkDUGhfDsuGFPYg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UG3dhBTmHuSUFLgvolaqyuRF7bRhIdX07GZ8igRbuAE94zHvc+u2qzmw313NXbfJq1IVD4uB0CSFflXQlHkLuxYjNqI8bMvLUyM+563UIELv4P0Xr2OMNPCAQzQ2Y4R1YJO16TiUMHaaPF/cAxR741iQwjoGV678iEqpbsKPPkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TQ1qkU7K; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33e285a33bdso2931514f8f.2;
+        Mon, 11 Mar 2024 19:09:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710209376; x=1710814176; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O7OazjLh3TJZJaBxgYhNmL2BYNu/aO7IPEXCMBRgvJk=;
+        b=TQ1qkU7K1LIz072vCKojVBdHTguIKr0PDP7G0Ksy5EyEQPIaeXfwq38iCT1nUD+21p
+         vkRH3hL+wKcbQef5pi4j0M3JlEmsMP2bJ4DvsxlFfVfMIZ0zBGmZukYRQQxjdHVnfMhc
+         GxH/hXrAX48DS0aUHp4ideUmS2OBKXA7QscPpFM8G5O4RlVuAbdph1gI8xKmJWjLg83o
+         GP2E0/iW1ad6hrMUqzL+VjDG5pJbkVlO2hvYF4zKC68M/pd1/6rrWWFfOYjp4PIZDvkk
+         LpwSwu/I6WsXRspS/+fq9UgpxUAFvHOPzFFySkMiVNS+DxkfVhwHn8TXy0he4Ap4e9ja
+         D6Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710209376; x=1710814176;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O7OazjLh3TJZJaBxgYhNmL2BYNu/aO7IPEXCMBRgvJk=;
+        b=OApJ2pE/DB1ratz3ZA0YvEkbfTrND8RRd1DH1uHOsNlLOoHezhwCNdE6dr7AOXH0BT
+         HZNIGvOAI16q1oJibESBXEUnKjZvtLBJ8oxzBdbJQU/2as0LzT2VhxqFNiGcoiNpNvIR
+         0vBp9mWYghuRae5i0l5dLkDLdTX6aBV2LBFy3NmDmph6FZeLom8NhuS0NoDQYX/MO9vJ
+         91huYSEJs22Y2EhPgJfQZTZldZ0mVQ0OFtmboUkqSMGsNMbCbnpcmw7QKZRO/fiI5WG1
+         muTWylxTyXDjwWaCplzUr8dc72Gtmq+UdWAbmmF38a1Sl5fgGcbJ1AKexYk/Q1WcIjjM
+         B3vA==
+X-Forwarded-Encrypted: i=1; AJvYcCUdsa5COikWxxa3WK5bu3L71y8Gd3wDhzRdUAXSvUFEZcNh+2mZignmRPbnpC0eB2qRwxwcmKWi79p4rIVkri2SPmTTs18ikStMH4bNknPez/5THY6x7GEBb3XnPUvd3eq3JF4aw6nau6wMaQsEMT1BfrypKj9ZNAwauISaVEwV2+oZUF61pq8AI9C1fDkbA5oWjifhw6sXbRn9b8GZLrftGvck80ve215iotIu7/5RRJbX19rpVUr/BwhHM+YDVSIqCk0ZnRaB3GecFyYRnX/NGfDhnumsNCQJ7g==
+X-Gm-Message-State: AOJu0YzNar4qdJGkYE/rKROcW6n+fqhheBajHhfpM0EhGGs1VLde8ApX
+	BuXVdpTk+vIv3I+0V8H5LOtCYizYEFIR7qu3WoJC91mjLhwkCjLQdIgABvTCrb5z0RKzimQsDPO
+	XycjVn8jqkRBWJbXfVdIGbqgWqd0=
+X-Google-Smtp-Source: AGHT+IEicWbuFZqdg/xqQNzdGQlw9skotEo3jcZk3zVibmZ6sCWBpxxOKUqsLebol1eFrvMKXlFvA4Sc4ycQD3B2uCo=
+X-Received: by 2002:a5d:424d:0:b0:33e:7adc:516c with SMTP id
+ s13-20020a5d424d000000b0033e7adc516cmr5003733wrr.57.1710209376134; Mon, 11
+ Mar 2024 19:09:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9377.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73284e0b-0598-42ed-c4a0-08dc423956e2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2024 02:08:41.7828
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2VH+Kfm3ec9A8MMsJwe4Wrs8ObPqCtqZLrzDqNUxOwyrqjPS27IEUlNGZ4WQaMax
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8709
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+In-Reply-To: <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 11 Mar 2024 19:09:25 -0700
+Message-ID: <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+To: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmsgQnJvd24gPGJyb29u
-aWVAa2VybmVsLm9yZz4NCj4gU2VudDogMjAyNMTqM9TCMTHI1SAyMToyOA0KPiBUbzogQWxleGFu
-ZGVyIFN0ZWluIDxhbGV4YW5kZXIuc3RlaW5AZXcudHEtZ3JvdXAuY29tPg0KPiBDYzogSmFja3kg
-QmFpIDxwaW5nLmJhaUBueHAuY29tPjsgbGdpcmR3b29kQGdtYWlsLmNvbTsNCj4gcm9iaCtkdEBr
-ZXJuZWwub3JnOyBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc7DQo+IGNvbm9yK2R0
-QGtlcm5lbC5vcmc7IHNoYXduZ3VvQGtlcm5lbC5vcmc7IHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU7
-DQo+IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsga2VybmVsQHBlbmd1dHJv
-bml4LmRlOw0KPiBmZXN0ZXZhbUBnbWFpbC5jb207IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54
-cC5jb20+Ow0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIu
-a2VybmVsLm9yZzsgaW14QGxpc3RzLmxpbnV4LmRldjsNCj4gSm95IFpvdSA8am95LnpvdUBueHAu
-Y29tPg0KPiBTdWJqZWN0OiBbRVhUXSBSZTogW1BBVENIIHYyIDIvM10gcmVndWxhdG9yOiBwY2E5
-NDUwOiBhZGQgcGNhOTQ1MWEgc3VwcG9ydA0KPiANCj4gT24gTW9uLCBNYXIgMTEsIDIwMjQgYXQg
-MTA6MDk6MTJBTSArMDEwMCwgQWxleGFuZGVyIFN0ZWluIHdyb3RlOg0KPiA+ID4gKwkJCS5vZl9t
-YXRjaCA9IG9mX21hdGNoX3B0cigiQlVDSzEiKSwNCj4gPiA+ICsJCQkucmVndWxhdG9yc19ub2Rl
-ID0gb2ZfbWF0Y2hfcHRyKCJyZWd1bGF0b3JzIiksDQo+ID4gPiArCQkJLmlkID0gUENBOTQ1MF9C
-VUNLMSwNCj4gPiA+ICsJCQkub3BzID0gJnBjYTk0NTBfZHZzX2J1Y2tfcmVndWxhdG9yX29wcywN
-Cj4gPiA+ICsJCQkudHlwZSA9IFJFR1VMQVRPUl9WT0xUQUdFLA0KPiANCj4gUGxlYXNlIGRlbGV0
-ZSB1bm5lZWRlZCBjb250ZXh0IGZyb20gbWFpbHMgd2hlbiByZXBseWluZy4gIERvaW5nIHRoaXMN
-Cj4gbWFrZXMgaXQgbXVjaCBlYXNpZXIgdG8gZmluZCB5b3VyIHJlcGx5IGluIHRoZSBtZXNzYWdl
-LCBoZWxwaW5nIGVuc3VyZSBpdA0KPiB3b24ndCBiZSBtaXNzZWQgYnkgcGVvcGxlIHNjcm9sbGlu
-ZyB0aHJvdWdoIHRoZSBpcnJlbGV2YW50IHF1b3RlZCBtYXRlcmlhbC4NClRoYW5rcyBmb3IgeW91
-ciByZW1pbmRlciENCkkgd2lsbCBkZWxldGUgdW5uZWVkZWQgY29udGV4dCBmcm9tIG1haWxzIHdo
-ZW4gcmVwbHlpbmcuDQpCUg0KSm95IFpvdQ0K
+On Mon, Mar 11, 2024 at 7:01=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dongme=
+nglong.8@bytedance.com> wrote:
+>
+> On Tue, Mar 12, 2024 at 9:46=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Mar 11, 2024 at 2:34=E2=80=AFAM Menglong Dong
+> > <dongmenglong.8@bytedance.com> wrote:
+> > >
+> > > In this commit, we add the 'accessed_args' field to struct bpf_prog_a=
+ux,
+> > > which is used to record the accessed index of the function args in
+> > > btf_ctx_access().
+> > >
+> > > Meanwhile, we add the function btf_check_func_part_match() to compare=
+ the
+> > > accessed function args of two function prototype. This function will =
+be
+> > > used in the following commit.
+> > >
+> > > Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
+> > > ---
+> > >  include/linux/bpf.h |   4 ++
+> > >  kernel/bpf/btf.c    | 108 ++++++++++++++++++++++++++++++++++++++++++=
++-
+> > >  2 files changed, 110 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 95e07673cdc1..0f677fdcfcc7 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -1461,6 +1461,7 @@ struct bpf_prog_aux {
+> > >         const struct btf_type *attach_func_proto;
+> > >         /* function name for valid attach_btf_id */
+> > >         const char *attach_func_name;
+> > > +       u64 accessed_args;
+> > >         struct bpf_prog **func;
+> > >         void *jit_data; /* JIT specific data. arch dependent */
+> > >         struct bpf_jit_poke_descriptor *poke_tab;
+> > > @@ -2565,6 +2566,9 @@ struct bpf_reg_state;
+> > >  int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)=
+;
+> > >  int btf_check_type_match(struct bpf_verifier_log *log, const struct =
+bpf_prog *prog,
+> > >                          struct btf *btf, const struct btf_type *t);
+> > > +int btf_check_func_part_match(struct btf *btf1, const struct btf_typ=
+e *t1,
+> > > +                             struct btf *btf2, const struct btf_type=
+ *t2,
+> > > +                             u64 func_args);
+> > >  const char *btf_find_decl_tag_value(const struct btf *btf, const str=
+uct btf_type *pt,
+> > >                                     int comp_idx, const char *tag_key=
+);
+> > >  int btf_find_next_decl_tag(const struct btf *btf, const struct btf_t=
+ype *pt,
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index 170d017e8e4a..c2a0299d4358 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -6125,19 +6125,24 @@ static bool is_int_ptr(struct btf *btf, const=
+ struct btf_type *t)
+> > >  }
+> > >
+> > >  static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *f=
+unc_proto,
+> > > -                          int off)
+> > > +                          int off, int *aligned_idx)
+> > >  {
+> > >         const struct btf_param *args;
+> > >         const struct btf_type *t;
+> > >         u32 offset =3D 0, nr_args;
+> > >         int i;
+> > >
+> > > +       if (aligned_idx)
+> > > +               *aligned_idx =3D -ENOENT;
+> > > +
+> > >         if (!func_proto)
+> > >                 return off / 8;
+> > >
+> > >         nr_args =3D btf_type_vlen(func_proto);
+> > >         args =3D (const struct btf_param *)(func_proto + 1);
+> > >         for (i =3D 0; i < nr_args; i++) {
+> > > +               if (aligned_idx && offset =3D=3D off)
+> > > +                       *aligned_idx =3D i;
+> > >                 t =3D btf_type_skip_modifiers(btf, args[i].type, NULL=
+);
+> > >                 offset +=3D btf_type_is_ptr(t) ? 8 : roundup(t->size,=
+ 8);
+> > >                 if (off < offset)
+> > > @@ -6207,7 +6212,7 @@ bool btf_ctx_access(int off, int size, enum bpf=
+_access_type type,
+> > >                         tname, off);
+> > >                 return false;
+> > >         }
+> > > -       arg =3D get_ctx_arg_idx(btf, t, off);
+> > > +       arg =3D get_ctx_arg_idx(btf, t, off, NULL);
+> > >         args =3D (const struct btf_param *)(t + 1);
+> > >         /* if (t =3D=3D NULL) Fall back to default BPF prog with
+> > >          * MAX_BPF_FUNC_REG_ARGS u64 arguments.
+> > > @@ -6217,6 +6222,9 @@ bool btf_ctx_access(int off, int size, enum bpf=
+_access_type type,
+> > >                 /* skip first 'void *__data' argument in btf_trace_##=
+name typedef */
+> > >                 args++;
+> > >                 nr_args--;
+> > > +               prog->aux->accessed_args |=3D (1 << (arg + 1));
+> > > +       } else {
+> > > +               prog->aux->accessed_args |=3D (1 << arg);
+> >
+> > What do you need this aligned_idx for ?
+> > I'd expect that above "accessed_args |=3D (1 << arg);" is enough.
+> >
+>
+> Which aligned_idx? No aligned_idx in the btf_ctx_access(), and
+> aligned_idx is only used in the btf_check_func_part_match().
+>
+> In the btf_check_func_part_match(), I need to compare the
+> t1->args[i] and t2->args[j], which have the same offset. And
+> the aligned_idx is to find the "j" according to the offset of
+> t1->args[i].
+
+And that's my question.
+Why you don't do the max of accessed_args across all attach
+points and do btf_check_func_type_match() to that argno
+instead of nargs1.
+This 'offset +=3D btf_type_is_ptr(t1) ? 8 : roundup...
+is odd.
 
