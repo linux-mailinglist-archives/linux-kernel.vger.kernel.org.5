@@ -1,123 +1,156 @@
-Return-Path: <linux-kernel+bounces-100485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDA5E879875
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:59:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77A14879873
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D0911F2425F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:59:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8951F2409D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C447E776;
-	Tue, 12 Mar 2024 15:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="qys1UsJy";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fmejt48P"
-Received: from wfhigh4-smtp.messagingengine.com (wfhigh4-smtp.messagingengine.com [64.147.123.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC8B7D093
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1559C7E566;
+	Tue, 12 Mar 2024 15:57:49 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8996116FF3B;
+	Tue, 12 Mar 2024 15:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710259082; cv=none; b=E5mXZMf1W79NlGjlVnDYmRtz/aKFAYXn15Kbg+NFaFbD0pmcM1TC4Qom2f+WvtvXg62/1FZuAr87R5BUUTV8Kle+r5UpruipQ188eaHbR9RfSVBCtHvNGQIhOG7DSfK8f3gcsKRKV5LAU3lBUP+ja+O91Xv3L3G/EuWPpT7LfRs=
+	t=1710259068; cv=none; b=tEny7+y/TOyiRf94sEyYvhA/DeSnlO8l1yfDUOei427PGRUp86bKgoER/FMjR4QeMen4Ld/Q7RRoBBV4bJ+wDt3yKSx5zT6ZK22YNXRVTpyZHotrK0vfxOmoNTGUTW9jDuNmGU1WWxduXgP/jpk02U0aVIk4EZLRS9Qmbd5M8Gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710259082; c=relaxed/simple;
-	bh=OHpe7uyThgZlN6Pl7adIfVnWrEppX1cFzmO61w5qHNE=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=EH1rZWDgTZLlEEjdtN6hvwAesYwJzoUzQWANXPFSuFtkiRBcyT37Y2lv54ThXMQg9Yz+oCqnjDHGz5g2SUfqrwvLgGtcwjz39RlRzCb2BvIhEnmLMsLtMU63lOYsKlKPNDf8l5XGw0zhaSyzrK7XePoFJEDM9Llo18eXWgmLjaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=qys1UsJy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fmejt48P; arc=none smtp.client-ip=64.147.123.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 74B6B1800091;
-	Tue, 12 Mar 2024 11:57:59 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 12 Mar 2024 11:58:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1710259078; x=1710345478; bh=YsSZl05VvN
-	YlGGdKIaMVn8wUwHQ4u1oI58NKNni6V1I=; b=qys1UsJyeX3yLUg4PihUdb26AH
-	qq20AEaNCirPfdNWR8Bd6BfTfAqpJP2iG1HHNMFz2Gbsk6OYsxGi4wlTGix2F5Ba
-	E5n5JtVFsJevWBwSj7+DZ4ooixj7UACpCVmedJdo9g6aIZJWJkL3747Q2zSr/OzS
-	sLD6rXYz1Q96YUZXl8LcijHWrXyJiE5dAoSNjfqnFJcYojgy+DMIYThDRQ38fftw
-	fvxOF8yGaIXfIt59C5VMHTa0ygU/7UJqIIUpyTStL36Mpm9d8fy2/lGHTHOYfGw/
-	Q35Ntgmo8yHuhubCbh7L7CdokCu7FC0hvDXUJ4uQziW0dA8NacpzcLXE5XnQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710259078; x=1710345478; bh=YsSZl05VvNYlGGdKIaMVn8wUwHQ4
-	u1oI58NKNni6V1I=; b=fmejt48PIO2b38tcaMKE720ij2JonoIKc09Q0DfZsDf9
-	t/tbOml5mQsKIdwbaJkUDjXsDA3WxjM8NDnraK6WnIbKQDS4OFvjqJMFfbI3JXr1
-	PwodZ5HwNnxe8I7KLDUma0amKIJqGjv+xF5QHix68o/cJwQyJmQg1GnlhSe8zzsr
-	YsViJpG3/KaXhnssPYMO+12lX4GlNwMFpmKaWNdh7aK6C3leCskH3+wTuPcAK90o
-	VYOnm/g+LVU0tKKO8760fSMaFUJT9/cL7dyWzHtEBx/X0LizaqnofJj5+HWBCgcz
-	10d6/IuK2pNOpeqozz0NJ+u3RGbtGykXxGxxmZKhrQ==
-X-ME-Sender: <xms:hnvwZSmpJtwrKMV_P2Q0JqIS_W17l0cJNmhfPTJrcB6DiuSQwsjQ5g>
-    <xme:hnvwZZ34MkAVF28b6k-0vtn7xmKVAzv5ZKeCB5x0hvufeLJ5yQt8jSpXgSExaPjKx
-    6p3t4O-QEIXsFB2_ZI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgdekvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:hnvwZQpBLW86WJqTkkaiu5a2VlI7daSPZWz1kpRO8ABprBvG8P_ppQ>
-    <xmx:hnvwZWkZz-RI6McBdcqq9ykHKWnZt5nlY7LX6Y-NUNNpLqND4GzShQ>
-    <xmx:hnvwZQ3sETR6zyyXHXbomrprMHMQv8W5P7UXr8BFF4ivSqu2GL69PQ>
-    <xmx:hnvwZdvLl6gcbYBOicPasQXmz14j_aquccEOolRR4hajkUGzU-c7Rw>
-    <xmx:hnvwZRnkbywgzHyNAjT_3ddwhy-hCx1OvXpO1-UIL-Ufl_vEERaLQEl7S3g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A9CB9B6008D; Tue, 12 Mar 2024 11:57:58 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1710259068; c=relaxed/simple;
+	bh=qHTdrZJMFBSmWNwbyHjOmWb7ZpYhhu2kMlfqSqKfUEs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KfVPWif/5hLh1eZwRayH3q3lKC0h/JtC2u0n2NNk+gl3dQZzVJ9sFWU+PgDWjW+9mviMU5hFW/bjJQQek+jP9FLu8rh21hX9Sf+uBMRvSvGAzrIQ1XEDyoBAQ3QfkFmLvPXryrdcL+1BWmgGLQ1OcNoENtuHjlxc/FWsajPEzak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE2391007;
+	Tue, 12 Mar 2024 08:58:22 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 558A63F73F;
+	Tue, 12 Mar 2024 08:57:42 -0700 (PDT)
+Date: Tue, 12 Mar 2024 15:57:39 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>, Marc Zyngier <maz@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Mostafa Saleh <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] arm64: Use SYSTEM_OFF2 PSCI call to power off
+ for hibernate
+Message-ID: <ZfB7c9ifUiZR6gy1@bogus>
+References: <20240312135958.727765-1-dwmw2@infradead.org>
+ <20240312135958.727765-3-dwmw2@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <35b27047-4e5f-4e22-ab7e-cd5ee983a232@app.fastmail.com>
-In-Reply-To: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
-References: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
-Date: Tue, 12 Mar 2024 16:57:38 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Philipp Hortmann" <philipp.g.hortmann@gmail.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc: "Larry Finger" <Larry.Finger@lwfinger.net>,
- "Johannes Berg" <johannes@sipsolutions.net>, "Kalle Valo" <kvalo@kernel.org>
-Subject: Re: [RFC] staging: wlan-ng: Driver broken since kernel 5.15
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312135958.727765-3-dwmw2@infradead.org>
 
-On Sat, Mar 9, 2024, at 23:09, Philipp Hortmann wrote:
-> Hi,
->
-> I would remove the driver from the mainline kernel. What are your thoughts?
->
-> I bought two WLAN devices (DUT: D-Link DWL-122 and T-Sinus 111 data) 
-> that are supported by wlan-ng driver. Issue is that the driver is not 
-> working anymore.
+On Tue, Mar 12, 2024 at 01:51:29PM +0000, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> 
+> The PSCI v1.3 specification (alpha) adds support for a SYSTEM_OFF2
+> function which is analogous to ACPI S4 state. This will allow hosting
+> environments to determine that a guest is hibernated rather than just
+> powered off, and handle that state appropriately on subsequent launches.
+> 
+> Since commit 60c0d45a7f7a ("efi/arm64: use UEFI for system reset and
+> poweroff") the EFI shutdown method is deliberately preferred over PSCI
+> or other methods. So register a SYS_OFF_MODE_POWER_OFF handler which
+> *only* handles the hibernation, leaving the original PSCI SYSTEM_OFF as
+> a last resort via the legacy pm_power_off function pointer.
+> 
+> The hibernation code already exports a system_entering_hibernation()
+> function which is be used by the higher-priority handler to check for
+> hibernation. That existing function just returns the value of a static
+> boolean variable from hibernate.c, which was previously only set in the
+> hibernation_platform_enter() code path. Set the same flag in the simpler
+> code path around the call to kernel_power_off() too.
+> 
+> An alternative way to hook SYSTEM_OFF2 into the hibernation code would
+> be to register a platform_hibernation_ops structure with an ->enter()
+> method which makes the new SYSTEM_OFF2 call. But that would have the
+> unwanted side-effect of making hibernation take a completely different
+> code path in hibernation_platform_enter(), invoking a lot of special dpm
+> callbacks.
+> 
+> Another option might be to add a new SYS_OFF_MODE_HIBERNATE mode, with
+> fallback to SYS_OFF_MODE_POWER_OFF. Or to use the sys_off_data to
+> indicate whether the power off is for hibernation.
+> 
+> But this version works and is relatively simple.
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> ---
+>  drivers/firmware/psci/psci.c | 35 +++++++++++++++++++++++++++++++++++
+>  kernel/power/hibernate.c     |  5 ++++-
+>  2 files changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+> index d9629ff87861..69d2f6969438 100644
+> --- a/drivers/firmware/psci/psci.c
+> +++ b/drivers/firmware/psci/psci.c
+> @@ -78,6 +78,7 @@ struct psci_0_1_function_ids get_psci_0_1_function_ids(void)
+>  
+>  static u32 psci_cpu_suspend_feature;
+>  static bool psci_system_reset2_supported;
+> +static bool psci_system_off2_supported;
+>  
+>  static inline bool psci_has_ext_power_state(void)
+>  {
+> @@ -333,6 +334,28 @@ static void psci_sys_poweroff(void)
+>  	invoke_psci_fn(PSCI_0_2_FN_SYSTEM_OFF, 0, 0, 0);
+>  }
+>  
+> +#ifdef CONFIG_HIBERNATION
+> +static int psci_sys_hibernate(struct sys_off_data *data)
+> +{
+> +	if (system_entering_hibernation())
+> +		invoke_psci_fn(PSCI_FN_NATIVE(1_3, SYSTEM_OFF2),
+> +			       PSCI_1_3_HIBERNATE_TYPE_OFF, 0, 0);
+> +	return NOTIFY_DONE;
+> +}
+> +
+> +static int __init psci_hibernate_init(void)
+> +{
+> +	if (psci_system_off2_supported) {
+> +		/* Higher priority than EFI shutdown, but only for hibernate */
+> +		register_sys_off_handler(SYS_OFF_MODE_POWER_OFF,
+> +					 SYS_OFF_PRIO_FIRMWARE + 2,
+> +					 psci_sys_hibernate, NULL);
+> +	}
+> +	return 0;
+> +}
+> +subsys_initcall(psci_hibernate_init);
 
-I don't think it matters much either way. I did send the patches
-to remove wlan drivers that were either using the old pcmcia
-interfaces or the old wireless extensions that I think we should
-try to eventually kill off entirely, but this driver uses neither
-of them and as a result has a lower maintenance cost.
+Looked briefly at register_sys_off_handler and it should be OK to call
+it from psci_init_system_off2() below. Any particular reason for having
+separate initcall to do this ? We can even eliminate the need for
+psci_init_system_off2 if it can be called from there. What am I missing ?
 
-On the other hand, there is also little benefit in keeping the
-driver if it's known to be broken, given how better USB wireless
-adapters are dirt cheap and widely available. Even if we find and
-fix all the bugs in this driver, any supported 802.11n device
-would be better in practice.
-
-       Arnd
+--
+Regards,
+Sudeep
 
