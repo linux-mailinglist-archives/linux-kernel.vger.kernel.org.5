@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-100108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10DE8791E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:25:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 958E98791EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:25:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17904B220C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:25:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BF3CB22195
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9B579DC9;
-	Tue, 12 Mar 2024 10:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A72987A12C;
+	Tue, 12 Mar 2024 10:24:08 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F6778B4D;
-	Tue, 12 Mar 2024 10:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A8F78299;
+	Tue, 12 Mar 2024 10:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710239043; cv=none; b=T//T6yaXjcNN1w6X9CEPrbOvqOTRdN2RbEZ7X5UIqY0s1Gfnm2wsvsru9i7dMfKdNxdO4wvooPHWy2+CCQYnvGOCMshMe4DOLObIYzUOhg0zRHznLvmb26E8B7S6sNBA/DP81n//lZ7dQ/neTEp2Fp/ss91ydK7bPJcGysc7Wts=
+	t=1710239048; cv=none; b=jqHn4LDD0g1aCm39kdgZlXvIThBjv3H+JO1gA14+RNSC9rtDFnhZwNof8U5f38jZ5IDdrsYp+MMwxuUqZGX8HUznOMiYv08DksmUsHjVfVAY6LKsSoY70aOPgc2/ajWqqvQot8WvrZ3ofbQlCf7g5U3oVfLxtZSzjp7jiVREg6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710239043; c=relaxed/simple;
-	bh=z7l3loO6svYylaY9I6QDjBcJ6s33IkTFitpNrSCtJ10=;
+	s=arc-20240116; t=1710239048; c=relaxed/simple;
+	bh=efNe2m/NZkZ0S9YWE1rlRRqE6EdvRa6ctgOIVdL33Ac=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R8qRWgmpVU9CXQ2HPk3YKUAPq1Wl3Js6Nu80liSAf2NAsEDTtQI/V8Eh2veTMD2lHpT67nyGSn1gKVc8+czUBZ/yUlYNpiI4J74JUG4iClxXg1mxe/v7fNu1dPHuCsRcvVi0oo5IpYnHUt91t1bAmzr/alKgtE+/PANWy9FLfww=
+	 MIME-Version; b=DwHvVzFHeJrY40ZEsmqwliP3HuJlnoLNbsBorNu3D8VBjdBeo1r/51GfiKAsmkvQsvliJoH7sUp5w0+JnqmqLNYSvTvy8qsb2gRDiQoms+TZqZUOJ0AIXkNDCKawz2+Mrt5Df7azFRdEslaX2iRSLSwWBzGcFs83Xhxf9UZ1qvk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B47AC1007;
-	Tue, 12 Mar 2024 03:24:37 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1BEE1007;
+	Tue, 12 Mar 2024 03:24:42 -0700 (PDT)
 Received: from a077893.arm.com (unknown [10.163.52.80])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6DC433F73F;
-	Tue, 12 Mar 2024 03:23:56 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 205C43F73F;
+	Tue, 12 Mar 2024 03:24:00 -0700 (PDT)
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	suzuki.poulose@arm.com
@@ -46,9 +46,9 @@ Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	linux-kernel@vger.kernel.org,
 	coresight@lists.linaro.org,
 	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH V6 05/11] coresight: replicator: Move ACPI support from AMBA driver to platform driver
-Date: Tue, 12 Mar 2024 15:53:12 +0530
-Message-Id: <20240312102318.2285165-6-anshuman.khandual@arm.com>
+Subject: [PATCH V6 06/11] coresight: funnel: Move ACPI support from AMBA driver to platform driver
+Date: Tue, 12 Mar 2024 15:53:13 +0530
+Message-Id: <20240312102318.2285165-7-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240312102318.2285165-1-anshuman.khandual@arm.com>
 References: <20240312102318.2285165-1-anshuman.khandual@arm.com>
@@ -60,15 +60,15 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for the dynamic replicator device in the platform driver, which
-can then be used on ACPI based platforms. This change would now allow
-runtime power management for replicator devices on ACPI based systems.
+Add support for the dynamic funnel device in the platform driver, which can
+then be used on ACPI based platforms. This change would allow runtime power
+management for ACPI based systems.
 
 The driver would try to enable the APB clock if available. Also, rename the
 code to reflect the fact that it now handles both static and dynamic
-replicators. But first this refactors replicator_probe() making sure it can
-be used both for platform and AMBA drivers, by moving the pm_runtime_put()
-to the callers.
+funnels. But first this refactors funnel_probe() making sure it can be used
+both for platform and AMBA drivers, by moving the pm_runtime_put() to the
+callers.
 
 Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
 Cc: Sudeep Holla <sudeep.holla@arm.com>
@@ -86,47 +86,47 @@ Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
 Changes in V6:
 
-- Added clk_disable_unprepare() for pclk in replicator_probe() error path
-- Added WARN_ON(!drvdata) check in replicator_platform_remove()
+- Added clk_disable_unprepare() for pclk in funnel_probe() error path
+- Added WARN_ON(!drvdata) check in funnel_platform_remove()
 - Added additional elements for acpi_device_id[]
 
  drivers/acpi/arm64/amba.c                     |  1 -
- .../coresight/coresight-replicator.c          | 68 ++++++++++++-------
- 2 files changed, 45 insertions(+), 24 deletions(-)
+ .../hwtracing/coresight/coresight-funnel.c    | 72 ++++++++++++-------
+ 2 files changed, 48 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-index 171b5c2c7edd..270f4e3819a2 100644
+index 270f4e3819a2..afb6afb66967 100644
 --- a/drivers/acpi/arm64/amba.c
 +++ b/drivers/acpi/arm64/amba.c
-@@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
- 	{"ARMHC503", 0}, /* ARM CoreSight Debug */
+@@ -28,7 +28,6 @@ static const struct acpi_device_id amba_id_list[] = {
  	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
  	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
--	{"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */
  	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
- 	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
+-	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
  	{"", 0},
-diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-index ddb530a8436f..ed9be5435f94 100644
---- a/drivers/hwtracing/coresight/coresight-replicator.c
-+++ b/drivers/hwtracing/coresight/coresight-replicator.c
-@@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
-  * @base:	memory mapped base address for this component. Also indicates
-  *		whether this one is programmable or not.
-  * @atclk:	optional clock for the core parts of the replicator.
+ };
+ 
+diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
+index ff3ea0670a5b..3b4be10a0f0c 100644
+--- a/drivers/hwtracing/coresight/coresight-funnel.c
++++ b/drivers/hwtracing/coresight/coresight-funnel.c
+@@ -36,6 +36,7 @@ DEFINE_CORESIGHT_DEVLIST(funnel_devs, "funnel");
+  * struct funnel_drvdata - specifics associated to a funnel component
+  * @base:	memory mapped base address for this component.
+  * @atclk:	optional clock for the core parts of the funnel.
 + * @pclk:	APB clock if present, otherwise NULL
-  * @csdev:	component vitals needed by the framework
+  * @csdev:	component vitals needed by the framework.
+  * @priority:	port selection order.
   * @spinlock:	serialize enable/disable operations.
-  * @check_idfilter_val: check if the context is lost upon clock removal.
-@@ -38,6 +39,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
- struct replicator_drvdata {
+@@ -43,6 +44,7 @@ DEFINE_CORESIGHT_DEVLIST(funnel_devs, "funnel");
+ struct funnel_drvdata {
  	void __iomem		*base;
  	struct clk		*atclk;
 +	struct clk		*pclk;
  	struct coresight_device	*csdev;
+ 	unsigned long		priority;
  	spinlock_t		spinlock;
- 	bool			check_idfilter_val;
-@@ -243,6 +245,10 @@ static int replicator_probe(struct device *dev, struct resource *res)
+@@ -236,6 +238,10 @@ static int funnel_probe(struct device *dev, struct resource *res)
  			return ret;
  	}
  
@@ -135,13 +135,14 @@ index ddb530a8436f..ed9be5435f94 100644
 +		return -ENODEV;
 +
  	/*
- 	 * Map the device base for dynamic-replicator, which has been
- 	 * validated by AMBA core
-@@ -285,11 +291,12 @@ static int replicator_probe(struct device *dev, struct resource *res)
+ 	 * Map the device base for dynamic-funnel, which has been
+ 	 * validated by AMBA core.
+@@ -272,12 +278,13 @@ static int funnel_probe(struct device *dev, struct resource *res)
+ 		goto out_disable_clk;
  	}
  
- 	replicator_reset(drvdata);
 -	pm_runtime_put(dev);
+ 	ret = 0;
  
  out_disable_clk:
  	if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
@@ -151,59 +152,17 @@ index ddb530a8436f..ed9be5435f94 100644
  	return ret;
  }
  
-@@ -301,29 +308,34 @@ static int replicator_remove(struct device *dev)
- 	return 0;
- }
- 
--static int static_replicator_probe(struct platform_device *pdev)
-+static int replicator_platform_probe(struct platform_device *pdev)
- {
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	int ret;
- 
- 	pm_runtime_get_noresume(&pdev->dev);
- 	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
- 
--	/* Static replicators do not have programming base */
--	ret = replicator_probe(&pdev->dev, NULL);
--
--	if (ret) {
--		pm_runtime_put_noidle(&pdev->dev);
-+	ret = replicator_probe(&pdev->dev, res);
-+	pm_runtime_put(&pdev->dev);
-+	if (ret)
- 		pm_runtime_disable(&pdev->dev);
--	}
- 
- 	return ret;
- }
- 
--static void static_replicator_remove(struct platform_device *pdev)
-+static void replicator_platform_remove(struct platform_device *pdev)
- {
-+	struct replicator_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
-+
-+	if (WARN_ON(!drvdata))
-+		return;
-+
- 	replicator_remove(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
-+	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_put(drvdata->pclk);
- }
- 
- #ifdef CONFIG_PM
-@@ -334,6 +346,8 @@ static int replicator_runtime_suspend(struct device *dev)
+@@ -298,6 +305,9 @@ static int funnel_runtime_suspend(struct device *dev)
  	if (drvdata && !IS_ERR(drvdata->atclk))
  		clk_disable_unprepare(drvdata->atclk);
  
 +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
 +		clk_disable_unprepare(drvdata->pclk);
++
  	return 0;
  }
  
-@@ -344,6 +358,8 @@ static int replicator_runtime_resume(struct device *dev)
+@@ -308,6 +318,8 @@ static int funnel_runtime_resume(struct device *dev)
  	if (drvdata && !IS_ERR(drvdata->atclk))
  		clk_prepare_enable(drvdata->atclk);
  
@@ -212,80 +171,118 @@ index ddb530a8436f..ed9be5435f94 100644
  	return 0;
  }
  #endif
-@@ -353,31 +369,32 @@ static const struct dev_pm_ops replicator_dev_pm_ops = {
- 			   replicator_runtime_resume, NULL)
+@@ -316,55 +328,61 @@ static const struct dev_pm_ops funnel_dev_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(funnel_runtime_suspend, funnel_runtime_resume, NULL)
  };
  
--static const struct of_device_id static_replicator_match[] = {
-+static const struct of_device_id replicator_match[] = {
- 	{.compatible = "arm,coresight-replicator"},
- 	{.compatible = "arm,coresight-static-replicator"},
+-static int static_funnel_probe(struct platform_device *pdev)
++static int funnel_platform_probe(struct platform_device *pdev)
+ {
++	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	int ret;
+ 
+ 	pm_runtime_get_noresume(&pdev->dev);
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+ 
+-	/* Static funnel do not have programming base */
+-	ret = funnel_probe(&pdev->dev, NULL);
+-
+-	if (ret) {
+-		pm_runtime_put_noidle(&pdev->dev);
++	ret = funnel_probe(&pdev->dev, res);
++	pm_runtime_put(&pdev->dev);
++	if (ret)
+ 		pm_runtime_disable(&pdev->dev);
+-	}
+ 
+ 	return ret;
+ }
+ 
+-static void static_funnel_remove(struct platform_device *pdev)
++static void funnel_platform_remove(struct platform_device *pdev)
+ {
++	struct funnel_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
++
++	if (WARN_ON(!drvdata))
++		return;
++
+ 	funnel_remove(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
++	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
++		clk_put(drvdata->pclk);
+ }
+ 
+-static const struct of_device_id static_funnel_match[] = {
++static const struct of_device_id funnel_match[] = {
+ 	{.compatible = "arm,coresight-static-funnel"},
  	{}
  };
  
--MODULE_DEVICE_TABLE(of, static_replicator_match);
-+MODULE_DEVICE_TABLE(of, replicator_match);
+-MODULE_DEVICE_TABLE(of, static_funnel_match);
++MODULE_DEVICE_TABLE(of, funnel_match);
  
  #ifdef CONFIG_ACPI
--static const struct acpi_device_id static_replicator_acpi_ids[] = {
-+static const struct acpi_device_id replicator_acpi_ids[] = {
- 	{"ARMHC985", 0, 0, 0}, /* ARM CoreSight Static Replicator */
-+	{"ARMHC98D", 0, 0, 0}, /* ARM CoreSight Dynamic Replicator */
- 	{}
+-static const struct acpi_device_id static_funnel_ids[] = {
+-	{"ARMHC9FE", 0, 0, 0},
++static const struct acpi_device_id funnel_acpi_ids[] = {
++	{"ARMHC9FE", 0, 0, 0}, /* ARM Coresight Static Funnel */
++	{"ARMHC9FF", 0, 0, 0}, /* ARM CoreSight Dynamic Funnel */
+ 	{},
  };
  
--MODULE_DEVICE_TABLE(acpi, static_replicator_acpi_ids);
-+MODULE_DEVICE_TABLE(acpi, replicator_acpi_ids);
+-MODULE_DEVICE_TABLE(acpi, static_funnel_ids);
++MODULE_DEVICE_TABLE(acpi, funnel_acpi_ids);
  #endif
  
--static struct platform_driver static_replicator_driver = {
--	.probe          = static_replicator_probe,
--	.remove_new     = static_replicator_remove,
-+static struct platform_driver replicator_driver = {
-+	.probe          = replicator_platform_probe,
-+	.remove_new     = replicator_platform_remove,
- 	.driver         = {
--		.name   = "coresight-static-replicator",
-+		.name   = "coresight-replicator",
+-static struct platform_driver static_funnel_driver = {
+-	.probe          = static_funnel_probe,
+-	.remove_new      = static_funnel_remove,
+-	.driver         = {
+-		.name   = "coresight-static-funnel",
++static struct platform_driver funnel_driver = {
++	.probe		= funnel_platform_probe,
++	.remove_new	= funnel_platform_remove,
++	.driver		= {
++		.name   = "coresight-funnel",
  		/* THIS_MODULE is taken care of by platform_driver_register() */
--		.of_match_table = of_match_ptr(static_replicator_match),
--		.acpi_match_table = ACPI_PTR(static_replicator_acpi_ids),
-+		.of_match_table = of_match_ptr(replicator_match),
-+		.acpi_match_table = ACPI_PTR(replicator_acpi_ids),
- 		.pm	= &replicator_dev_pm_ops,
+-		.of_match_table = static_funnel_match,
+-		.acpi_match_table = ACPI_PTR(static_funnel_ids),
++		.of_match_table = funnel_match,
++		.acpi_match_table = ACPI_PTR(funnel_acpi_ids),
+ 		.pm	= &funnel_dev_pm_ops,
  		.suppress_bind_attrs = true,
  	},
-@@ -386,7 +403,13 @@ static struct platform_driver static_replicator_driver = {
- static int dynamic_replicator_probe(struct amba_device *adev,
- 				    const struct amba_id *id)
+@@ -373,7 +391,13 @@ static struct platform_driver static_funnel_driver = {
+ static int dynamic_funnel_probe(struct amba_device *adev,
+ 				const struct amba_id *id)
  {
--	return replicator_probe(&adev->dev, &adev->res);
+-	return funnel_probe(&adev->dev, &adev->res);
 +	int ret;
 +
-+	ret = replicator_probe(&adev->dev, &adev->res);
++	ret = funnel_probe(&adev->dev, &adev->res);
 +	if (!ret)
 +		pm_runtime_put(&adev->dev);
 +
 +	return ret;
  }
  
- static void dynamic_replicator_remove(struct amba_device *adev)
-@@ -416,13 +439,12 @@ static struct amba_driver dynamic_replicator_driver = {
+ static void dynamic_funnel_remove(struct amba_device *adev)
+@@ -410,12 +434,12 @@ static struct amba_driver dynamic_funnel_driver = {
  
- static int __init replicator_init(void)
+ static int __init funnel_init(void)
  {
--	return coresight_init_driver("replicator", &dynamic_replicator_driver,
--				     &static_replicator_driver);
-+	return coresight_init_driver("replicator", &dynamic_replicator_driver, &replicator_driver);
+-	return coresight_init_driver("funnel", &dynamic_funnel_driver, &static_funnel_driver);
++	return coresight_init_driver("funnel", &dynamic_funnel_driver, &funnel_driver);
  }
  
- static void __exit replicator_exit(void)
+ static void __exit funnel_exit(void)
  {
--	coresight_remove_driver(&dynamic_replicator_driver, &static_replicator_driver);
-+	coresight_remove_driver(&dynamic_replicator_driver, &replicator_driver);
+-	coresight_remove_driver(&dynamic_funnel_driver, &static_funnel_driver);
++	coresight_remove_driver(&dynamic_funnel_driver, &funnel_driver);
  }
  
- module_init(replicator_init);
+ module_init(funnel_init);
 -- 
 2.25.1
 
