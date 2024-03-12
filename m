@@ -1,248 +1,156 @@
-Return-Path: <linux-kernel+bounces-100625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8406A879AEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:03:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10431879AF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE7571F22365
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:03:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93291B22186
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8632139571;
-	Tue, 12 Mar 2024 18:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65061386D9;
+	Tue, 12 Mar 2024 18:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="byB2xwYL"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HPba/kW7"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6577C084
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AD41386C5
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710266613; cv=none; b=TIybhNYnf+FcQKbggyxrlzNidIicD11WtUykEnGunNnYtW3eRJHCMJRSDlL1yzVrRax1tgNY+rwSGZZA3QnwYnHWX/qSy6kQNZOaEeGdyc5/jnOOqyYOjSmO0L/jPuLXaPUggtPWxIPnkSXfEwqaxnFDwrB2cqhL0QM4nQlUmak=
+	t=1710266652; cv=none; b=K3dOce0W0oqzS4hzT4uY4mt4otkyORKYnjMtkZjfiMlh1WPJZX6Prw3rs0vBNmXg5RaGeGDMb1IKMhwMQSmMZu5SkXSFXOF+wIPCxsU0nYaZUUBU07COGSudyViBczXSMdF77LjxAQ8c3ET26SInYY9OC6tOOahMRDMP0aPAHNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710266613; c=relaxed/simple;
-	bh=tl6GootnZJCViCd3hZwiY8NFba7wM+1REiO8IHBWDPc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EgwswdfhXBEZZjCDoYqp/S1nT58BRihV66UvVS+PRsE5K5fPoiAiTm0wWm2U+2qMoh2ZBkIvcgyn98JBzg52dKEAB9qQKXnG5eXEmKP0n/DwKaXwwQef/cR/QYpV85iXtq2Ysn2X5Apt7ui6YWtZSMBk9WYGEWgzSiFkssqa21M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=byB2xwYL; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513b022a238so2546388e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710266608; x=1710871408; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HREX7H/9qDu7coR15IdnVSKnBY8ogVJjtclSGzuYtSo=;
-        b=byB2xwYL2uMXdT+AGWZk1vADQYsd8X/4BQ9dYHL4IhnYxhJzlS40m1SXxBtQby9Znw
-         CNcMaL0y+sAfR4TgAGobCc2h2Jh6GxS5huXbUOF+XbEZxfMYk4S/5gvlKUQ6P4E3rT+d
-         7LjvNL0fmqtdlJ7t6xquaZOODeA37REKzmWOn+zCrjNLPR2yR/YGJx3B8UMVH7AtWPtA
-         60W5ZtFtRD6Tf5ayYHscZZrP8iHkGaBTr8ow0rUjjFHBLKPqRp8uT93xy5cy34iP6U4+
-         FHRafyBSNGEYymB3M6GcwR4+SqPuEDWS6GvrU3HD8o5jVfzszd1XRUYKg2kgg7Kww7p7
-         h51Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710266608; x=1710871408;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HREX7H/9qDu7coR15IdnVSKnBY8ogVJjtclSGzuYtSo=;
-        b=p3o9Rmsy6Ki743BBa05E6sjW2Jf3llsklW/YNsZFXSWGcoTfs7YR5thaXxVJN/Q5XM
-         IB6pc6Xoa452YHIYmkhyC4Tz94ytbpOERCc50hma7Ge8WGArDqA+QSr/I0LNH73GVBqL
-         ZKxXPkLsUSBBS3gZdyf6TIvzB6nO23Tq2O8wX/38b73BnUDv7phy840TkMTf0GWckJEF
-         ntXqb8KMBN7dpJsssxujdKr1A2dtLB0TXcFYNKo0aH4hX5L8e8mu5Z+6VbqmADOWez9j
-         BS8H9lAlxmCIiE5PJVwp5fAtN/QchSKBG0lT+54JfioGvYWngUEcDoEhEytE3yp2KaDN
-         dMHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWDHkdHn6sRv9QH5HufXwCtXIxCESS13ZjdvXkz9hxJlN0trTeANE/Q0avEetwLJVe7zBHIOgpNiQVHu5ZJPIL8BMu/S33sWWktOMOs
-X-Gm-Message-State: AOJu0YzzWcHSvscdxM5XuPfT+spm09HzQrcJA01qDExZKMaN2GI6+WnN
-	Z3U9oRfYV41Usw1L8FfVnAIGfdPZjskFJ/2YAfcYckxl3IAknKHWF15AEIlAau8=
-X-Google-Smtp-Source: AGHT+IH4QkVIYDqyhzAKmOcXC+nBQU3/7sOVXezpH3hXulIwAWJtf0fWxm8Rb21sEMqvyOTNR1ZG+Q==
-X-Received: by 2002:a05:6512:ba4:b0:513:a72c:de7c with SMTP id b36-20020a0565120ba400b00513a72cde7cmr2898449lfv.46.1710266608394;
-        Tue, 12 Mar 2024 11:03:28 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id bq7-20020a5d5a07000000b0033e95794186sm6250688wrb.83.2024.03.12.11.03.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 11:03:27 -0700 (PDT)
-Message-ID: <c441a132-b16b-4244-a712-8971c902d4d7@baylibre.com>
-Date: Tue, 12 Mar 2024 19:03:25 +0100
+	s=arc-20240116; t=1710266652; c=relaxed/simple;
+	bh=VClP0cN2QUMlvYkmVebFXGy+sO8rF6yXMKxzDT2+OIA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pO0FBUBxnwaeqOizasVGisJQLbhzVkL4OddJG2YbvPMBK5dEf1nq+wl7ZPo3xbxb+aAxs5TuYkt8b6xX8VNlB3WfplnmAER/RFrPX5dDS1C791FvRt6DlDccViRRduyRJ7uNeMqODPcWSZtmJ7DikywgMTjwheDz7K5QEDSAcIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HPba/kW7; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=l9BkDiTDTN4Ez0UwJxL2yXwhyy26CV45Z6H2eGThHSE=; b=HPba/kW79bVSH+uTlz2Jl9XCPo
+	SZ/+LWoFtS7FEjXiVnUKR+APwxAio6ByPV95NmbIkVqv+YoUtB7Y6j0v/T7VwUisnszmiC3cInMxb
+	n8d4yg0nFXUY8kFJylH3fD9Vrv4W/zGO8jXyMhBafy/81TRTZPW33w75trF1yFyuXcz2Cq+EZ1Rxj
+	ROjZp0YMmSp1HZOom6GryIW7u+u5RGLnBhhHrGfcwxTSDkLg4Ub7d1Y6s/rmNbyeqVvY/lPy32B65
+	f6v4YdieARkC3+erOlioxVVoFgSL/0LgF0U3jneyc1cJgwgqADDCnF/HnxSFaJ46n9DijN88XTR8F
+	ggTAKXwQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rk6Tx-00000006xrQ-1HRG;
+	Tue, 12 Mar 2024 18:04:09 +0000
+Date: Tue, 12 Mar 2024 11:04:09 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Lee Jones <lee@kernel.org>, Kees Cook <keescook@chromium.org>
+Cc: Michal Hocko <mhocko@suse.com>, cve@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Joel Granados <j.granados@samsung.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: CVE-2023-52596: sysctl: Fix out of bounds access for empty
+ sysctl registers
+Message-ID: <ZfCZGevmDe149QeX@bombadil.infradead.org>
+References: <2024030645-CVE-2023-52596-b98e@gregkh>
+ <Ze68r7_aTn6Vjbpj@tiehlicka>
+ <Ze9-Xmn8v4P_wppv@bombadil.infradead.org>
+ <20240312091730.GU86322@google.com>
+ <ZfAkOFAV15BDMU7F@tiehlicka>
+ <ZfBwuDyzLl5M0mhC@bombadil.infradead.org>
+ <20240312154910.GC1522089@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/18] ASoC: codecs: mt6357: add MT6357 codec
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- Nicolas Belin <nbelin@baylibre.com>
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-12-4fa1cea1667f@baylibre.com>
- <9891855d-2284-42e4-9d3a-35ba406540e8@sirena.org.uk>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <9891855d-2284-42e4-9d3a-35ba406540e8@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312154910.GC1522089@google.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
++ Kees,
 
-
-On 26/02/2024 17:09, Mark Brown wrote:
-> On Mon, Feb 26, 2024 at 03:01:50PM +0100, amergnat@baylibre.com wrote:
+On Tue, Mar 12, 2024 at 03:49:10PM +0000, Lee Jones wrote:
+> On Tue, 12 Mar 2024, Luis Chamberlain wrote:
 > 
->> index 000000000000..13e95c227114
->> --- /dev/null
->> +++ b/sound/soc/codecs/mt6357.c
->> @@ -0,0 +1,1805 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * MT6357 ALSA SoC audio codec driver
->> + *
+> > On Tue, Mar 12, 2024 at 10:45:28AM +0100, Michal Hocko wrote:
+> > > On Tue 12-03-24 09:17:30, Lee Jones wrote:
+> > > [...]
+> > > > > Backporting this is fine, but wouldn't fix an issue unless an external
+> > > > > module had empty sysctls. And exploiting this is not possible unless
+> > > > > you purposely build an external module which could end up with empty
+> > > > > sysctls.
+> > > 
+> > > Thanks for the clarification Luis!
+> > > 
+> > > > Thanks for the amazing explanation Luis.
+> > > > 
+> > > > If I'm reading this correctly, an issue does exist, but an attacker
+> > > > would have to lay some foundations before it could be triggered.  Sounds
+> > > > like loading of a malicious or naive module would be enough.
+> > > 
+> > > If the bar is set as high as a kernel module to create and empty sysctl
+> > > directory then I think it is safe to say that the security aspect is
+> > > mostly moot. There are much simpler ways to attack the system if you are
+> > > able to load a kernel module.
+> > 
+> > Indeed, a simple BUG_ON(1) on external modules cannot possible be a
+> > source of a CVE. And so this becomes BUG_ON(when_sysctl_empty()) where
 > 
-> Please use a C++ comment for the whole comment to make it clearer that
-> this is intentional.
+> Issues that are capable of crashing the kernel in any way, including
+> with WARN() or BUG() are being considered weaknesses and presently get
+> CVEs.
 
-ok
+Its not possible to crash any released kernel with the out of bounds issue
+today, the commit is just a fix for a future world with empty sysctls
+which just don't exist today.
 
+Yes you can crash an external module with an empty sysctl on kernels
+without that commit, but an empty sysctl is not common practice for
+external modules, they'd have to have custom #ifdefs embedded as noted
+earlier with the example crash. So your average external module should
+not be able to crash existing kernels. The scope of a crash then would
+be external modules that used older kernels without the fix starting after
+v6.6. Since the fix is already meged on v6.6+ the scope of possible
+kernels is small, and you'd need a specially crafted sysctl empty array
+to do so.
+
+> > when_sysctl_empty() is hypotethical and I think the source of this
+> > question for CVE. Today's that not at boot time or dynamically with
+> > any linux kernel sources released, and so its only possible if:
+> > 
+> >   a) As Joel indicated if you backported an empty sysctl array (which
+> >   would be unless you carried all the infrastructure to support it).
+> > 
+> >   b) an external module has an empty sysctl
 > 
->> +static void set_playback_gpio(struct mt6357_priv *priv, bool enable)
->> +{
->> +	if (enable) {
->> +		/* set gpio mosi mode */
->> +		regmap_write(priv->regmap, MT6357_GPIO_MODE2_CLR, GPIO_MODE2_CLEAR_ALL);
->> +		regmap_write(priv->regmap, MT6357_GPIO_MODE2_SET, GPIO8_MODE_SET_AUD_CLK_MOSI |
->> +								  GPIO9_MODE_SET_AUD_DAT_MOSI0 |
->> +								  GPIO10_MODE_SET_AUD_DAT_MOSI1 |
->> +								  GPIO11_MODE_SET_AUD_SYNC_MOSI);
-> 
-> This would be a lot more legible if you worked out the values to set and
-> then had a single set of writes, currently the indentation makes it very
-> hard to read.  Similarly for other similar functions.
+> So what we're discussing here is weather this situation is
+> _possible_, however unlikely.
 
-ok
+I tried my best to summarize that world as we see it above.
 
-> 
->> +static int mt6357_put_volsw(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
->> +	struct mt6357_priv *priv = snd_soc_component_get_drvdata(component);
->> +	struct soc_mixer_control *mc = (struct soc_mixer_control *)kcontrol->private_value;
->> +	unsigned int reg;
->> +	int ret;
->> +
->> +	ret = snd_soc_put_volsw(kcontrol, ucontrol);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	switch (mc->reg) {
->> +	case MT6357_ZCD_CON2:
->> +		regmap_read(priv->regmap, MT6357_ZCD_CON2, &reg);
->> +		priv->ana_gain[ANALOG_VOLUME_HPOUTL] =
->> +			(reg & AUD_HPL_GAIN_MASK) >> AUD_HPL_GAIN_SFT;
->> +		priv->ana_gain[ANALOG_VOLUME_HPOUTR] =
->> +			(reg & AUD_HPR_GAIN_MASK) >> AUD_HPR_GAIN_SFT;
->> +		break;
-> 
-> It would probably be less code and would definitely be clearer and
-> simpler to just read the values when we need them rather than constatly
-> keeping a cache separate to the register cache.
+> You are the maintainer here, so the final decision is yours.  If you say
+> this situation is impossible and the CVE should be revoked, I'll go
+> ahead and do just that.
 
-Actually you must save the values because the gain selected by the user 
-will be override to do a ramp => volume_ramp(.....):
-- When you switch on the HP, you start from gain=-40db to final_gain 
-(selected by user).
-- When you switch off the HP, you start from final_gain (selected by 
-user) to gain=-40db.
+To the best of our ability, from our perspective, upon our review, the
+only way to trigger a crash would be with sysctls on external modules
+loaded on these kernels:
 
-Also, the microphone's gain change when it's enabled/disabled.
+ * v6.6 up to v6.6.15 (v6.6.16 has the fix backported) so 16 releases
+ * v6.7 up to v6.7.3  (v6.7.4 has the fix backported) so 4 releases
 
-So, it can implemented differently but currently it's aligned with the 
-other MTK codecs and I don't see any resource wasted here.
+External modules having empty sysctls should be rare, however possible.
+So these 20 release would be affected by a crash with specially crafted
+external modules. I suppose one way to exploit this, might be for a
+vendor providing an external safe-looking module with #ifdefs which make
+a sysctl seem non-empty but in reality it would be. That issue would
+exist for 20 kernel releases. Could someone craft something with the out
+of bounds access given the context to do something evil? Your domain of
+expertise, your call, not ours.
 
-> 
->> +	/* ul channel swap */
->> +	SOC_SINGLE("UL LR Swap", MT6357_AFE_UL_DL_CON0, AFE_UL_LR_SWAP_SFT, 1, 0),
-> 
-> On/off controls should end in Switch.
-
-Sorry, I don't understand your comment. Can you reword it please ?
-
-> 
->> +static const char * const hslo_mux_map[] = {
->> +	"Open", "DACR", "Playback", "Test mode"
->> +};
->> +
->> +static int hslo_mux_map_value[] = {
->> +	0x0, 0x1, 0x2, 0x3,
->> +};
-> 
-> Why not just use a normal mux here, there's no missing values or
-> reordering?  Similarly for other muxes.
-
-I've dug into some other codecs and it's done like that, but I've 
-probably misunderstood something.
-
-The only bad thing I see is enum is missing currently:
-
-enum {
-	PGA_MUX_OPEN = 0,
-	PGA_MUX_DACR,
-	PGA_MUX_PB,
-	PGA_MUX_TM,
-	PGA_MUX_MASK = 0x3,
-};
-
-static const char * const hslo_mux_map[] = {
-	"Open", "DACR", "Playback", "Test mode"
-};
-
-static int hslo_mux_map_value[] = {
-	PGA_MUX_OPEN, PGA_MUX_DACR, PGA_MUX_PB, PGA_MUX_TM,
-};
-
-> 
->> +static unsigned int mt6357_read(struct snd_soc_component *codec, unsigned int reg)
->> +{
->> +	struct mt6357_priv *priv = snd_soc_component_get_drvdata(codec);
->> +	unsigned int val;
->> +
->> +	pr_debug("%s() reg = 0x%x", __func__, reg);
->> +	regmap_read(priv->regmap, reg, &val);
->> +	return val;
->> +}
-> 
-> Remove these, there are vastly more logging facilities as standard in
-> the regmap core.
-
-ok
-
-> 
->> +/* Reg bit defines */
->> +/* MT6357_GPIO_DIR0 */
->> +#define GPIO8_DIR_MASK				BIT(8)
->> +#define GPIO8_DIR_INPUT				0
-> 
-> Please namespace your defines, these look very generic.
-
-ok
-
--- 
-Regards,
-Alexandre
+  Luis
 
