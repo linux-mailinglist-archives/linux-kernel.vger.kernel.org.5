@@ -1,144 +1,130 @@
-Return-Path: <linux-kernel+bounces-100200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A3E1879377
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:59:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07ED687937F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:00:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 368F52847F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:59:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D6C7B22584
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C68ED79DD0;
-	Tue, 12 Mar 2024 11:58:56 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040B479DD5;
+	Tue, 12 Mar 2024 12:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aRb4kCVc";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ytpMkHWg"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7245679B98;
-	Tue, 12 Mar 2024 11:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B933658207;
+	Tue, 12 Mar 2024 12:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710244736; cv=none; b=tA3BDTdJaQuh2KexFSc//auAGTwYHgkh/PoqxcuahNCd0elfgUvc0pyz8A6ABC8UpGNCdqsvIJih3Z+KrZwfHbQaHgfzOvAoKj8T8ebGlOEhTq9hVKeD8LlgEekKSxsnHBXArxFzk3TfsGVqEMdPs09F6ycdEhlV/3T8sFrDWBs=
+	t=1710244822; cv=none; b=oY30JEo5kJncIGb8SXDHtg/8nuMC3kvxrTiBMaJsnv4mVWAeFYKRQzGpY8dUpxWXYXmINHAI84+sikUWOIcevL69I0uyjR9BnWY5jIk8t7K4uI9e0Y1GRvu/4xd7YRTwen+Rai14BPkQ62m9+o6yzmdcfR/HCJJ+2UYQU9SrPHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710244736; c=relaxed/simple;
-	bh=PLmC6BbRmhT98s/2WERHDrru1CT+5wjpeaXBWOT4hco=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type; b=FVaCpaCFmCuOETS2a1ylfEL4QZnu4r6MAltxLsjnHwROKBB1Vd9fkFZ0HlRajqdR+g2uVL9PNJk3tv7QUUjtDYQqb5A+CJSx6lkWFWOJG107iSkYP7wl06AxqNwTaAUkvvccWpXBELaFQ0uyMTPNjeLPiN6dAHbYfCPPStvF8zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TvBtq5Qzkz1gxtv;
-	Tue, 12 Mar 2024 19:56:19 +0800 (CST)
-Received: from kwepemd100008.china.huawei.com (unknown [7.221.188.193])
-	by mail.maildlp.com (Postfix) with ESMTPS id 00D001A016C;
-	Tue, 12 Mar 2024 19:58:46 +0800 (CST)
-Received: from [10.67.121.2] (10.67.121.2) by kwepemd100008.china.huawei.com
- (7.221.188.193) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Tue, 12 Mar
- 2024 19:58:45 +0800
-Message-ID: <65F04374.20308@hisilicon.com>
-Date: Tue, 12 Mar 2024 19:58:44 +0800
-From: Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+	s=arc-20240116; t=1710244822; c=relaxed/simple;
+	bh=KM1UBwQkbdFws82BZPs7LJL/AWBztGJFkHtykBh7GUg=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=L4IlHIiYUcqUFrjlmpOg8AQUeirAcsZAsc06LVjJtUnnzmOBjImaKFTf8KTEk6eg+KPDH0ERXI/NFewBRp5/HY9rfHyPWHkN+YCsu4oCE2bR1dXkRkKfoHeph+3GyRBVVhlyC64p4EW9SqjEKP9w7Hk/JWhAiKFFEAP1LxwIwj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aRb4kCVc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ytpMkHWg; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 12 Mar 2024 12:00:17 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710244818;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DZ8pXc6XEwmfIru+Hl3JIXfbLQwZTEjs/716tqLpL/o=;
+	b=aRb4kCVc2cvdabyVQZnGcdAJqjeS49m1t88ISkDOfltuP1OY+dvfA/Egt53/VlIpBe6H+p
+	kvtrvMYzsIsgwWsWti595ZYq+VefNRAxN25VAB4uBYkIAkR2Pf1f5jHol1n/yB0w+eMbPz
+	i08SyZxyWPEiSpPjsUfItIllKUgnFc+zSQjAOGpbypq6zjCVyfREZ3NsEy1XtA7NvzNYMA
+	VrPZ4V4myv1dzJj22PfTiZ0lMl3Od+FoDxcqR9bF+zX2HJgLIUWJVfTu5FrUZ9S794tOpo
+	trYRKUW0sLxR+jb+Z99c309vPk0aOtYJ7T8hja7nLC1tuZpSxNNYeLN3QvMHgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710244818;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DZ8pXc6XEwmfIru+Hl3JIXfbLQwZTEjs/716tqLpL/o=;
+	b=ytpMkHWg3SlGaG+bhrbdJnxm+ib0/p+JLho/swgxGjlQkOW7OkGeOxJ8kaCfK4TYx9cLeF
+	KlMManHsXIYQKXDQ==
+From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/balancing: Fix a couple of outdated function
+ names in comments
+Cc: Honglei Wang <jameshongleiwang@126.com>, Ingo Molnar <mingo@kernel.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <5biu@gmail.com>
+References: <5biu@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-To: Yang Xiwen <forbidden405@outlook.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Jiancheng Xue <xuejiancheng@hisilicon.com>, Alex Elder
-	<elder@linaro.org>, Peter Griffin <peter.griffin@linaro.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] arm64: dts: hi3798cv200: fix GICR size, add cache
- info, maintenance irq and GICH, GICV spaces
-References: <20240219-cache-v3-0-a33c57534ae9@outlook.com> <SEZPR06MB695952078B51C4549191F8AB962B2@SEZPR06MB6959.apcprd06.prod.outlook.com> <65F03D79.2070008@hisilicon.com> <SEZPR06MB69599C39A47E625A0C3CB83F962B2@SEZPR06MB6959.apcprd06.prod.outlook.com>
-In-Reply-To: <SEZPR06MB69599C39A47E625A0C3CB83F962B2@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <171024481767.398.13644214266877553008.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100008.china.huawei.com (7.221.188.193)
 
-Hi Yang,
+The following commit has been merged into the sched/core branch of tip:
 
-On 2024/3/12 19:46, Yang Xiwen wrote:
-> On 3/12/2024 7:33 PM, Wei Xu wrote:
->> Hi Yang,
->>
->> On 2024/3/12 19:19, Yang Xiwen wrote:
->>> On 2/19/2024 11:05 PM, Yang Xiwen via B4 Relay wrote:
->>>> The patchset fixes some warnings reported by the kernel during boot.
->>>>
->>>> The cache size info is from Processor_Datasheet_v2XX.pdf [1], Section
->>>> 2.2.1 Master Processor.
->>>>
->>>> The cache line size and the set-associative info are from Cortex-A53
->>>> Documentation [2].
->>>>
->>>>   From the doc, it can be concluded that L1 i-cache is 4-way assoc, L1
->>>> d-cache is 2-way assoc and L2 cache is 16-way assoc. Calculate the dts
->>>> props accordingly.
->>>>
->>>> Also, to use KVM's VGIC code, GICH, GICV registers spaces and maintenance
->>>> IRQ are added to the dts with verification.
->>>>
->>>> [1]: https://github.com/96boards/documentation/blob/master/enterprise/poplar/hardware-docs/Processor_Datasheet_v2XX.pdf
->>>> [2]: https://developer.arm.com/documentation/ddi0500/j/Level-1-Memory-System
->>>>
->>>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->>>> ---
->>>> Changes in v3:
->>>> - send patches to stable (Andrew Lunn)
->>>> - rewrite the commit logs more formally (Andrew Lunn)
->>>> - rename l2-cache0 to l2-cache (Krzysztof Kozlowski)
->>>> - Link to v2: https://lore.kernel.org/r/20240218-cache-v2-0-1fd919e2bd3e@outlook.com
->>>>
->>>> Changes in v2:
->>>> - arm64: dts: hi3798cv200: add GICH, GICV register spces and
->>>>     maintainance IRQ.
->>>> - Link to v1: https://lore.kernel.org/r/20240218-cache-v1-0-2c0a8a4472e7@outlook.com
->>>>
->>>> ---
->>>> Yang Xiwen (3):
->>>>         arm64: dts: hi3798cv200: fix the size of GICR
->>>>         arm64: dts: hi3798cv200: add GICH, GICV register space and irq
->>>>         arm64: dts: hi3798cv200: add cache info
->>>>
->>>>    arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 43 +++++++++++++++++++++++++-
->>>>    1 file changed, 42 insertions(+), 1 deletion(-)
->>>> ---
->>>> base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
->>>> change-id: 20240218-cache-11c8bf7566c2
->>>>
->>>> Best regards,
->>> May someone apply this patchset to their tree so that it can land in stable at the end? This is a fix, not adding new functionalities. It's been 2 weeks already.
->>>
->> Sorry for the delay, I am too busy to catch up with this cycle.
->> I will go through this patch set and maybe apply it during the next cycle.
-> 
-> 
-> No problem. I'm just a bit worried if this patch is getting lost. It's good to know it's still maintained. Because i've seen some maintainers not reviewing any patches for over 1 year already, with their names and emails still in MAINTAINERS.
+Commit-ID:     d72cf62438d67b911212f8d4cf65d6167c1541ba
+Gitweb:        https://git.kernel.org/tip/d72cf62438d67b911212f8d4cf65d6167c1541ba
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Tue, 12 Mar 2024 11:33:50 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 12 Mar 2024 12:00:01 +01:00
 
-Thanks for the understanding!
+sched/balancing: Fix a couple of outdated function names in comments
 
-> 
-> 
-> By the way, I think fixes and new features are in different cycles? Most maintainers seem to have multiple branches to handle this.
+The 'idle_balance()' function hasn't existed for years, and there's no
+load_balance_newidle() either - both are sched_balance_newidle() today.
 
-Yes, they can be in different cycle. But now is the merge window.
+Reported-by: Honglei Wang <jameshongleiwang@126.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/ZfAwNufbiyt/5biu@gmail.com
+---
+ kernel/sched/fair.c | 2 +-
+ kernel/sched/pelt.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Best Regards,
-Wei
-
-> 
-> 
->>
->> Best Regards,
->> Wei
-> 
-> 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 4b3c4a1..a19ea29 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6866,7 +6866,7 @@ dequeue_throttle:
+ 
+ #ifdef CONFIG_SMP
+ 
+-/* Working cpumask for: sched_balance_rq, load_balance_newidle. */
++/* Working cpumask for: sched_balance_rq(), sched_balance_newidle(). */
+ static DEFINE_PER_CPU(cpumask_var_t, load_balance_mask);
+ static DEFINE_PER_CPU(cpumask_var_t, select_rq_mask);
+ static DEFINE_PER_CPU(cpumask_var_t, should_we_balance_tmpmask);
+diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+index f80955e..3a96da2 100644
+--- a/kernel/sched/pelt.c
++++ b/kernel/sched/pelt.c
+@@ -208,7 +208,7 @@ ___update_load_sum(u64 now, struct sched_avg *sa,
+ 	 * se has been already dequeued but cfs_rq->curr still points to it.
+ 	 * This means that weight will be 0 but not running for a sched_entity
+ 	 * but also for a cfs_rq if the latter becomes idle. As an example,
+-	 * this happens during idle_balance() which calls
++	 * this happens during sched_balance_newidle() which calls
+ 	 * sched_balance_update_blocked_averages().
+ 	 *
+ 	 * Also see the comment in accumulate_sum().
 
