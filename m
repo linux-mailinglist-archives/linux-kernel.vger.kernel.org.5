@@ -1,89 +1,100 @@
-Return-Path: <linux-kernel+bounces-99885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 885A4878EC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:21:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 502FA878EC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8151C21EAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:21:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C29928501B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1059B58AA9;
-	Tue, 12 Mar 2024 06:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDDB659B78;
+	Tue, 12 Mar 2024 06:18:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="09Fp62vz"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2064.outbound.protection.outlook.com [40.107.215.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="N87hEi6d"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B0C6086F;
-	Tue, 12 Mar 2024 06:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710224239; cv=fail; b=HN0PoE29mO9Qj8ZEACKy59BsI527roVp5n1CEoaG097SU5Z0ZdzDi/PxFqcFdy5pHMTbQbxe/irYYK73PKvTZawilwoaNV9WZjsPMJrD1SS43XtkyODhnaHh5+kpQ0IsGKxIas7gRyvDFYbT0y7+cQsymtuPRSOiR/kmpIsg34E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710224239; c=relaxed/simple;
-	bh=huDWpqifYwaXk57pkbH+EMef93IO/1MUbhbuDMD7oZA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k6c8SHpIEmfR6KSR8tLsQ7lGA2CJG1GUS3kanpY2XzC/WtRYEg7QRChFcJ/SIPT4pfMLlba3FpikV+ZSQFn/VqAaqyRPl2ybMz+k+LErSjmFOPRCqGQorUGZX3cwxU4cazPZ5VDAuplRlZW8p31RaBZPkHqs10Ao9ZosFeXSxAY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=09Fp62vz; arc=fail smtp.client-ip=40.107.215.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=StSVDf/nCcqpbpZt/XrKAkjmz+TGcU6PpsPyvOQ+bnkr/NmvQ51N3nuDlJhOw8tlQE7XANc/Jc+76pAQDt11xQ8Ch0do9No9MJzwyRHrPo6EoBojlHpXo8RH56DZdk3kOK0PZV6yC7mJw2yySwBKhMCjERhZBK4FkjTYOqBldytF4XR+rFoZoTgmy++BOj/sql5jIRwUuLLsDO6SHXIhmSdlCjnr37hLM8zCrUlk5y53aUY6CdpIC7Mbc4E0kqJyXuPMtfyr5+A6GwrOSk2FKFOvxZjpxxP0zDeTKp4SIcFPnw+aoZ64MQqbpZ2nd+vBzlc3QikN/lKbOEdPsvu8aQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rd3HIM5WyL6SNThkdGueerfKvyKQ76+KUnD7777t0BE=;
- b=ct7Wu7Fz+eazeLW9mXk3uIGP+CnmkBd0Nlq/dP6e11nrHFICwldbHlmGCQQDs16Wi4gKDsT+gwM/OivPDEuhAmnQoTHt3dTGtUDVShXLrX0mpq6m6eROaWeCz1z1vDd/FZZPLy5HMtR5/DtyiyFM2tloLydwAlIMR71GJmxzrrCalJXAGNb0BFQ/1Cgf06iw9755Hgpac+Gvz5IqU7qb565fYldj0LB3PL7u8VVEtYwhHeXG2jKk4XzGiFW2SCuE4djmgluVnc6EdzP2LlrcIolVPGKxC4IRPfv3UFmObePeO/buHkmbdh+bBv6WUNZBQtAlOeltqJMAWuzvBs7EZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rd3HIM5WyL6SNThkdGueerfKvyKQ76+KUnD7777t0BE=;
- b=09Fp62vzEN3WOhYUn+B9ghByBi/8V4hKMVS6U9lemX2PAB2h3vFsAww4osAawFrm2OemyOXjGgLJp71p1hWIBOET9bdCrrcETfcgfvVveJQuMHb46+C/evw322Qi0djiHgk7UjfnAnebBbCaK0JTOBGFt4GSCdyJ5PhPmx9Nm0YgAGvt+SkK0S/QuXNkWkuL9sRFvQVo2qU0M0zgRQmQOQmXK4mVU4cJ+DQG43ujn7eLOfXGy5PFGPDfSBAjEEwGAlImhCRGshcTFFpxw9zUq8igRz2/08ofbSRg7s4P5ol2D3JqTQTqgRIAwfSVatSBEZEjig079M1HoDyYRuG7AQ==
-Received: from PS1PR01CA0022.apcprd01.prod.exchangelabs.com
- (2603:1096:300:75::34) by TYSPR04MB7637.apcprd04.prod.outlook.com
- (2603:1096:405:38::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.33; Tue, 12 Mar
- 2024 06:17:13 +0000
-Received: from HK3PEPF00000220.apcprd03.prod.outlook.com
- (2603:1096:300:75:cafe::ed) by PS1PR01CA0022.outlook.office365.com
- (2603:1096:300:75::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35 via Frontend
- Transport; Tue, 12 Mar 2024 06:17:12 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK3PEPF00000220.mail.protection.outlook.com (10.167.8.42) with Microsoft SMTP
- Server id 15.20.7386.12 via Frontend Transport; Tue, 12 Mar 2024 06:17:12
- +0000
-From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To: patrick@stwcx.xyz,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 22/22] ARM: dts: aspeed: yosemite4: Revise i2c duty-cycle
-Date: Tue, 12 Mar 2024 14:15:54 +0800
-Message-Id: <20240312061556.496605-23-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240312061556.496605-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20240312061556.496605-1-Delphine_CC_Chiu@wiwynn.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3646159B5A
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 06:17:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710224280; cv=none; b=dLc9WSAvzvFiVbv8RGDGoPcw0IVT11GQG3niDERHsDYuXwdG7kfpeQTGE9EDBxo2PaW4Lq6QaD6e90rjEWriojhJUyt182PguS3krlyBtesk5m5GYxdYZXPmk8H6EUrlJSy1rc6xmeZZIrhkmtLWOUs01sAng6P05kDaP5SDa5E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710224280; c=relaxed/simple;
+	bh=nmhtM2hCPPzOA3PI1UXfFRGQ2/QNiXyNuDJau9M3uBI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qNaFhyKvYRjjL97BME6CkwexZPEu3TbqHgT0FK8T/qL52gIWZasUo3aEU6YxW48WH8cEqTNq13GRfp3A/BSg8MBuqCKaZXASO6BgBOu5/Lfl6YeAQpKkZEJatdUlyN8cibkAZibVDAC9hpOBc6LoT6nXchelmsDMYOU5fLTB8/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=N87hEi6d; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-783045e88a6so318255985a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 23:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1710224276; x=1710829076; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fgGl/GezxVhRISLyx8tZ9PTH8m4h7yDB3m04Y7JMT5Y=;
+        b=N87hEi6diJng+w7+kr1gATEIjESXvtw+Akc9f6rIK63qn+rl+fDI9YzT3pZIvLm2AS
+         OabDFtRqCET9CeXl9TW1mvwAw+q5Iu2x8e+dI/ZOY1Cfo4Pvg4LUdE98CjZm50RoeSQJ
+         9ymy2k0sf7H86rm0Dysxp5qPoueOXY3sgFMAgpvPmX1ruTqp0SBnhC3ADYXksDFcVFCq
+         ZjtzN2DQqaPe4+byUBjTn/bvgLNg6yJ3WQPxYdioeQdXirc3fdG+iDg8VDKRhhoWNeIh
+         4zsxKVOOpG+K9JAD1D45Uhd8/QurjMHKsCswPJIeKzSDVNdZWisjkRAUW3KIRBJtxEC2
+         y21Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710224276; x=1710829076;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fgGl/GezxVhRISLyx8tZ9PTH8m4h7yDB3m04Y7JMT5Y=;
+        b=jEDyOEt/uyFAeHIV+/C4nyAL8Q2k0y2Q/Mq2DT2yfvYal+J/V4wgmhdH1dzPd7eKE+
+         DS0hhu6AXfCUU7AomGJmuNU5/QB/67ARaoVx3ARhTqz/6qTCZprBBaY4RlDOOUuxW2bm
+         s0E/wr8YDD8pKp0Bxvvy0+UkGRENXBmlM3aguOTHR1hW/oopJFt0jXH0zaPft56srjWC
+         18zII6ppoRY8vEmUKohspUzRzuAa5RLU8RaTRkg85kPK2WjEXl1gVSEhg1C3B/eVe0Rs
+         ZvG/AH2ggNWoKyHvllTWcEd3ii1Jg8ACz60qKCtb4GMhLxDDNOP8onwqiEKoWyjwiA4N
+         Ov4g==
+X-Forwarded-Encrypted: i=1; AJvYcCW8YQyBT5wZoqQFTOpiOuYwTC3tSGNYgtNZk7KdjqsL1pTgCu56nY3Uzsi/g46tbaxWR9kHiRezd+Ku5UYk7py4w8LDqmzz/tJtSKfl
+X-Gm-Message-State: AOJu0Yy8nKjqezC6VWlVNP8gw2tvgDARVaf599oZ/rd8S1r5Ky2NGE2w
+	1Ur/W8BPVzd5xWy2fmMubqTun3/Tz+pBfYJoF/eoNNO7ce3xBW6xwG763y0npIo=
+X-Google-Smtp-Source: AGHT+IGQVjf55XaSaA7QRv11XERHDa0ikizCRigRPLUcQWIpU3ODAYNJ7IKwN9aaMW4bZrAoONZoqw==
+X-Received: by 2002:a05:620a:4494:b0:788:7dc5:cf8f with SMTP id x20-20020a05620a449400b007887dc5cf8fmr499319qkp.35.1710224276179;
+        Mon, 11 Mar 2024 23:17:56 -0700 (PDT)
+Received: from n231-228-171.byted.org ([147.160.184.133])
+        by smtp.gmail.com with ESMTPSA id m18-20020a05620a221200b00787b93d8df1sm3394396qkh.99.2024.03.11.23.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 23:17:55 -0700 (PDT)
+From: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+To: "Gregory Price" <gourry.memverge@gmail.com>,
+	aneesh.kumar@linux.ibm.com,
+	mhocko@suse.com,
+	tj@kernel.org,
+	john@jagalactic.com,
+	"Eishan Mirakhur" <emirakhur@micron.com>,
+	"Vinicius Tavares Petrucci" <vtavarespetr@micron.com>,
+	"Ravis OpenSrc" <Ravis.OpenSrc@micron.com>,
+	"Alistair Popple" <apopple@nvidia.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Huang Ying <ying.huang@intel.com>,
+	"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	nvdimm@lists.linux.dev,
+	linux-cxl@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: "Ho-Ren (Jack) Chuang" <horenc@vt.edu>,
+	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
+	qemu-devel@nongnu.org
+Subject: [PATCH v2 0/1] Improved Memory Tier Creation for CPUless NUMA Nodes
+Date: Tue, 12 Mar 2024 06:17:26 +0000
+Message-Id: <20240312061729.1997111-1-horenchuang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,59 +102,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF00000220:EE_|TYSPR04MB7637:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 417a07e1-91c3-4b54-8de9-08dc425c0e84
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	aJDAGWvgIafchb9IisdcirFuUVga15rQijMjQYWnQStNjWvDQ3adJ50CcgA8IdIbC1D5yUYzc04b29HBlR4MRZE277/2eJrcdysolkMjPl1+E82AMH/gLYcNnqXvpCr/mA4ByvrwPa59YHKYfi1MB2ahfh5xEpTZUjWRM6w9CEXjkxqWHRp6T2vAquohwcQX2WHIFUrzdY9ydBU5rBFoTW/uDaAba/0KIAXuNeEWmIU91/RXWogA6oyqPTo5lVkq6mXpyQwefRMNfH1qAapcVDO3Fhp/ojZXoZQDrbHwWelqtm3qJEM3fWL7CYGKERvtHVUehQht/8/4zTr28H8Cc3B7sigwH7raZNuPdU9TruDN/DmHjEiJbgO4S55EgboEsUFnV9lTu19org7KIBFjjbmD6TArvFEBsGkVBTz6y1GrCnVIppJQLkAwg5VDe08UZG3BDe/GAkOJiC8YV/b72MF5Rcmuf+un7osVEgm6f+LOOvw6dvsKaIZNN1lb7zJ6ekoYYrXEb26tRIp46Cr7PIEtvLHgM1jBb2Z8RZ5msh0lIxCAQH6sMRpoWq9udmBquviOQO4kC3jXkkOmv/oIfoJ3i14zthXLtfxbq5h/A7xKQolfZUY2Ur0zbgMdvwiF8QH0q5yE0jNnwQoGEnJLm/10ZUSUX7OL2vGLdxuGUAL+izhy2vo23xsJ/4CCgwY82wBJKxq0ixIxrvPMWRVHriFm7UnTVSEW4PUp0oU0Bkxm82czb1QP9I2pvfFM5Ggm
-X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(36860700004)(376005)(7416005)(1800799015)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 06:17:12.5104
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 417a07e1-91c3-4b54-8de9-08dc425c0e84
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK3PEPF00000220.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR04MB7637
 
-Revise duty cycle SMB11 and SMB16 to high: 40%, low: 60%,
-to meet 400kHz-i2c clock low time spec (> 1.3 us) from EE request
+When a memory device, such as CXL1.1 type3 memory, is emulated as
+normal memory (E820_TYPE_RAM), the memory device is indistinguishable
+from normal DRAM in terms of memory tiering with the current implementation.
+The current memory tiering assigns all detected normal memory nodes
+to the same DRAM tier. This results in normal memory devices with
+different attributions being unable to be assigned to the correct memory tier,
+leading to the inability to migrate pages between different types of memory.
+https://lore.kernel.org/linux-mm/PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com/T/
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
----
- arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts | 2 ++
- 1 file changed, 2 insertions(+)
+This patchset automatically resolves the issues. It delays the initialization
+of memory tiers for CPUless NUMA nodes until they obtain HMAT information
+at boot time, eliminating the need for user intervention.
+If no HMAT is specified, it falls back to using `default_dram_type`.
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index c2d184b21567..c86e4a5397c4 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -761,6 +761,7 @@ eeprom@54 {
- &i2c10 {
- 	status = "okay";
- 	bus-frequency = <400000>;
-+	i2c-clk-high-min-percent = <40>;
- 	i2c-mux@74 {
- 		compatible = "nxp,pca9544";
- 		i2c-mux-idle-disconnect;
-@@ -1306,6 +1307,7 @@ &i2c15 {
- 	mctp-controller;
- 	multi-master;
- 	bus-frequency = <400000>;
-+	i2c-clk-high-min-percent = <40>;
- 
- 	mctp@10 {
- 		compatible = "mctp-i2c-controller";
+Example usecase:
+We have CXL memory on the host, and we create VMs with a new system memory
+device backed by host CXL memory. We inject CXL memory performance attributes
+through QEMU, and the guest now sees memory nodes with performance attributes
+in HMAT. With this change, we enable the guest kernel to construct
+the correct memory tiering for the memory nodes.
+
+-v2:
+ Thanks to Ying's comments,
+ * Rewrite cover letter & patch description
+ * Rename functions, don't use _hmat
+ * Abstract common functions into find_alloc_memory_type()
+ * Use the expected way to use set_node_memory_tier instead of modifying it
+-v1:
+ * https://lore.kernel.org/linux-mm/20240301082248.3456086-1-horenchuang@bytedance.com/T/
+
+
+Ho-Ren (Jack) Chuang (1):
+  memory tier: acpi/hmat: create CPUless memory tiers after obtaining
+    HMAT info
+
+ drivers/acpi/numa/hmat.c     | 11 ++++++
+ drivers/dax/kmem.c           | 13 +------
+ include/linux/acpi.h         |  6 ++++
+ include/linux/memory-tiers.h |  8 +++++
+ mm/memory-tiers.c            | 70 +++++++++++++++++++++++++++++++++---
+ 5 files changed, 92 insertions(+), 16 deletions(-)
+
 -- 
-2.25.1
+Ho-Ren (Jack) Chuang
 
 
