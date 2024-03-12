@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-99701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B8A878BF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:36:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5C8878BF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:40:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5388EB20F73
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:36:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D5FD1C21157
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:40:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161997E6;
-	Tue, 12 Mar 2024 00:35:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33B410E3;
+	Tue, 12 Mar 2024 00:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="dCvedYoi"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TYeK7gbU"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA8D63A
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 00:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C15063C;
+	Tue, 12 Mar 2024 00:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710203755; cv=none; b=ceoh6vha6qiUOp4appBmW/75PLx8IqSZA6tmlIUONqEDKkyB/UWdrhQrTsmuSMdpDCl7yukijfMxFxtSnyc2HVdSIqKU3j7XJ3scwyj4v3B+gKbysWF4M4mKofkxWsC7wTv0g+/1xD6c5tlk8ijSfD0FV+L1OXUkIfjXqMr5Hsw=
+	t=1710204004; cv=none; b=aAveOlbGuNVA5abAlIXVRTX1CFGFazN/kNeQ9CjPMwexl/9AkKxhd/tUbpzuI3P+2506pz/USbZ4QOnoHRfKOr5GfUIoR0mD7OCMPid5msMsUjh2IfxNG/c0d2qzpdwnLK6Qndf3qxKlud/aYTDxh7JPMfXADoPMRmCkftPyvLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710203755; c=relaxed/simple;
-	bh=TpIS1vfLQJyDHgGigTC7f68IgnLxdrd1hjqFVH29Dyo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ei6T1BWzzdJZtan6h1NWhWE+8CDEqOyxoeayAvS2lbfmDuK1Cd/PqaIgfDfNUx4qZPkEb6PwCRsn1fpVaTafdyQqhltdZsbqIYr+rhTSL743m/vXPY7XIy3TrmrQv1fWjdjUH7+IcNcfZ1nJKTsSnpGb1vytmK4dsdQbS7KB7NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=dCvedYoi; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-42f2a4f77a6so18401561cf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:35:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710203752; x=1710808552; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3JTBtDRaEpoCIigQxhZrQrfkOxHxP/G0rOetjigew6g=;
-        b=dCvedYoif454sBMmgIqHjnytCQ8hSk7xMByOxuFMIzFVHwRliYU20r2sByyemC/ye7
-         5b+E8BorU1thbbtgCIP3Vj3DP7XTOoyINAxnmW9tkDDz3DVIpoRL26WXgZlLh/H3YzNK
-         3yuQ3CEwgo+zN8KAi+IE+nv7SXZGtY2hg2g2KbUwI92oeUvjFU8sLKOQP80BZs6usndI
-         OCgP+gzdsoE6xykz88TX9AMHMdnagDNhxvUzTPvphZmiCxFW9L01XypSfG6frnj1Pta2
-         OKwj/9xhDcK+XDoMHl9x9BScSqGO1oDCn6tzFvnnihMMXdC596bCHAWisU+DAEnm+U6j
-         9dFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710203752; x=1710808552;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3JTBtDRaEpoCIigQxhZrQrfkOxHxP/G0rOetjigew6g=;
-        b=gHzHF6qZav8Ofh0y+zukeYLraCTgupDDxrffymTvqIF+t1Lkvm6w2s64Koq1f+HIKh
-         IKuHQYRKdXeltPNUGxuTAP962TJcWRzRQbU+xkCO2H7cus3eRLzJXVSjRTecURht+SWA
-         OKljYJJBi4I7Hktrc11OfrCZjNKGnq3EPzeiqtxz03ZdMnbBE+0B3CDfB3ZsN5FQEImx
-         YJG8/pZq+JjFrZnGOs2j6sNZmQiFaj2ZFEG+L4m+/x8LKp8SJ8iNBcbKTdA+z8gvtV1D
-         D0Fka9ruT9n0PPN8QNVwkOcNPiswVjq2oqTmoOc6zADcIYCSZk7jiZR8Vz3RPr4PhgeJ
-         UVFw==
-X-Forwarded-Encrypted: i=1; AJvYcCX32IYtxynMjCdbrXQBQ3obkVbxZcZG4GxsFH6o7OpdUxS/nLrz5hM4Kj4OJkl3Hi0i0N41xaVaipPvQ2SUwM0jXIvRjxp+n2cR8aAv
-X-Gm-Message-State: AOJu0YyoidMUtYfJbj5RGBufo9E6BagyzhLTRABPrc5NvG+P4kLjqFf+
-	SivND64/6x/gMs8xAEg5NnxvBfPJqiH/5+6SUw3OcapbvLdtjbp+pyhkaCjs73U=
-X-Google-Smtp-Source: AGHT+IEf0OlYbf0aVPGX+KApg4PvxZ0cB3JvU5qic6wZx79zx+tbwWq5OvM38n+dAE1aOcxr4lfC8A==
-X-Received: by 2002:a05:622a:3cd:b0:42e:fcf5:b0a0 with SMTP id k13-20020a05622a03cd00b0042efcf5b0a0mr589449qtx.66.1710203752404;
-        Mon, 11 Mar 2024 17:35:52 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.8.176])
-        by smtp.gmail.com with ESMTPSA id o9-20020ac84289000000b0042c78553d1dsm3211862qtl.28.2024.03.11.17.35.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 17:35:51 -0700 (PDT)
-Message-ID: <100d5414-11fa-4c47-9c35-51f5fad2d6e6@sifive.com>
-Date: Mon, 11 Mar 2024 19:35:49 -0500
+	s=arc-20240116; t=1710204004; c=relaxed/simple;
+	bh=TVP1c9LRa4PI7mhKO6pbClkiwq07NdPr2Iczsma9oJg=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=X+E+m1RSxxN6U8FaDClwRkhLYisQBRmxGG3S01eQgwGcC64khd3WeBIShUPdpx4J2VTasBZzNHmBQYQpw2sSjsWCYK+GT7lMdYdtCVyrMzbdjEczYAh8hoiDwTbFdOa8bahMZgUwP3QhxponKjoKdPCq7UgIb2baCbM5H/iRdWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TYeK7gbU; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710204002; x=1741740002;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=TVP1c9LRa4PI7mhKO6pbClkiwq07NdPr2Iczsma9oJg=;
+  b=TYeK7gbU7gnoI33tXvGWqcxtew1sDQCvx0rBZURx1HxuD6aV26TXJqpw
+   Tty9ntKKPSWFt7WKHEn7mBTuajGmWMkl99FbJbsSWpKZ7ZABlE+HyZDTB
+   l3FESIZC4byJkAcmPfIwPkJsXvgnkb5Z7ycrJMcO9XyOBQ/uhteWbb2tP
+   wlAurUc4g3LHQD1ttxHX+CTR7zcikpTzVRy8KCACKaXr8LH6KVV4xr26I
+   9iDyUn1BFWOlRoBqFdYDeyozAVPVJ6k9zXIlD2wL5C0UbyUOlRUocAExf
+   cqWTxiYUU9hjCGlSiMVU13/nsKodn71nNE6Qez/XS2tZY4zbgRqhWo2xB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="5078310"
+X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
+   d="scan'208";a="5078310"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:40:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
+   d="scan'208";a="15835061"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.125.242.247]) ([10.125.242.247])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:39:59 -0700
+Message-ID: <d20abcde-2d54-45cb-b821-1ff1af5cbb86@linux.intel.com>
+Date: Tue, 12 Mar 2024 08:39:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,124 +62,100 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [External] [PATCH v5 08/13] riscv: Avoid TLB flush loops when
- affected by SiFive CIP-1200
-Content-Language: en-US
-To: yunhui cui <cuiyunhui@bytedance.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Alexandre Ghiti <alexghiti@rivosinc.com>, Jisheng Zhang <jszhang@kernel.org>
-References: <20240229232211.161961-1-samuel.holland@sifive.com>
- <20240229232211.161961-9-samuel.holland@sifive.com>
- <CAEEQ3w=8dVxO=qtW6_-SChLJ5No+7nGgf+1fXz0wSeBhb0Kk0A@mail.gmail.com>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <CAEEQ3w=8dVxO=qtW6_-SChLJ5No+7nGgf+1fXz0wSeBhb0Kk0A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Binbin Wu <binbin.wu@linux.intel.com>
+Subject: Re: [PATCH 21/21] KVM: x86: Add gmem hook for determining max NPT
+ mapping level
+To: Paolo Bonzini <pbonzini@redhat.com>, michael.roth@amd.com
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+ isaku.yamahata@intel.com, thomas.lendacky@amd.com
+References: <20240227232100.478238-1-pbonzini@redhat.com>
+ <20240227232100.478238-22-pbonzini@redhat.com>
+In-Reply-To: <20240227232100.478238-22-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Yunhui,
 
-On 2024-02-29 8:48 PM, yunhui cui wrote:
-> Hi Samuel,
-> 
-> On Fri, Mar 1, 2024 at 7:22 AM Samuel Holland <samuel.holland@sifive.com> wrote:
->>
->> Since implementations affected by SiFive errata CIP-1200 always use the
->> global variant of the sfence.vma instruction, they only need to execute
->> the instruction once. The range-based loop only hurts performance.
->>
->> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
->> ---
->>
->> (no changes since v4)
->>
->> Changes in v4:
->>  - Only set tlb_flush_all_threshold when CONFIG_MMU=y.
->>
->> Changes in v3:
->>  - New patch for v3
->>
->>  arch/riscv/errata/sifive/errata.c | 5 +++++
->>  arch/riscv/include/asm/tlbflush.h | 2 ++
->>  arch/riscv/mm/tlbflush.c          | 2 +-
->>  3 files changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/errata/sifive/errata.c b/arch/riscv/errata/sifive/errata.c
->> index 3d9a32d791f7..716cfedad3a2 100644
->> --- a/arch/riscv/errata/sifive/errata.c
->> +++ b/arch/riscv/errata/sifive/errata.c
->> @@ -42,6 +42,11 @@ static bool errata_cip_1200_check_func(unsigned long  arch_id, unsigned long imp
->>                 return false;
->>         if ((impid & 0xffffff) > 0x200630 || impid == 0x1200626)
->>                 return false;
->> +
->> +#ifdef CONFIG_MMU
->> +       tlb_flush_all_threshold = 0;
->> +#endif
->> +
->>         return true;
->>  }
->>
->> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
->> index 463b615d7728..8e329721375b 100644
->> --- a/arch/riscv/include/asm/tlbflush.h
->> +++ b/arch/riscv/include/asm/tlbflush.h
->> @@ -66,6 +66,8 @@ void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
->>                                unsigned long uaddr);
->>  void arch_flush_tlb_batched_pending(struct mm_struct *mm);
->>  void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
->> +
->> +extern unsigned long tlb_flush_all_threshold;
->>  #else /* CONFIG_MMU */
->>  #define local_flush_tlb_all()                  do { } while (0)
->>  #endif /* CONFIG_MMU */
->> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
->> index 365e0a0e4725..22870f213188 100644
->> --- a/arch/riscv/mm/tlbflush.c
->> +++ b/arch/riscv/mm/tlbflush.c
->> @@ -11,7 +11,7 @@
->>   * Flush entire TLB if number of entries to be flushed is greater
->>   * than the threshold below.
->>   */
->> -static unsigned long tlb_flush_all_threshold __read_mostly = 64;
->> +unsigned long tlb_flush_all_threshold __read_mostly = 64;
->>
->>  static void local_flush_tlb_range_threshold_asid(unsigned long start,
->>                                                  unsigned long size,
->> --
->> 2.43.1
->>
-> 
-> If local_flush_tlb_all_asid() is used every time, more PTWs will be
-> generated. Will such modifications definitely improve the overall
-> performance?
 
-This change in this commit specifically applies to older SiFive SoCs with a bug
-making single-page sfence.vma instructions unsafe to use. In this case, a single
-call to local_flush_tlb_all_asid() is optimal, yes.
+On 2/28/2024 7:21 AM, Paolo Bonzini wrote:
+> From: Michael Roth<michael.roth@amd.com>
+>
+> In the case of SEV-SNP, whether or not a 2MB page can be mapped via a
+> 2MB mapping in the guest's nested page table depends on whether or not
+> any subpages within the range have already been initialized as private
+> in the RMP table. The existing mixed-attribute tracking in KVM is
+> insufficient here, for instance:
+>
+>    - gmem allocates 2MB page
+>    - guest issues PVALIDATE on 2MB page
+>    - guest later converts a subpage to shared
+>    - SNP host code issues PSMASH to split 2MB RMP mapping to 4K
+>    - KVM MMU splits NPT mapping to 4K
 
-> Hi Alex, Samuel,
-> The relationship between flush_xx_range_asid() and nr_ptes is
-> basically linear growth (y=kx +b), while flush_all_asid() has nothing
-> to do with nr_ptes (y=c).
-> Some TLBs may do some optimization. The operation of flush all itself
-> requires very few cycles, but there is a certain delay between
-> consecutive flush all.
-> The intersection of the two straight lines is the optimal solution of
-> tlb_flush_all_threshold. In actual situations, continuous
-> flush_all_asid will not occur. One problem caused by flush_all_asid()
-> is that multiple flush entries require PTW, which causes greater
-> latency.
-> Therefore, the value of tlb_flush_all_threshold needs to be considered
-> or quantified. Maybe doing local_flush_tlb_page_asid() based on the
-> actual nr_ptes_in_range would give better overall performance.
-> What do you think?
+Is here a sentence missing that "guest converts the shared subpage back
+to private"?
+Otherwise, it conflicts with the following statement "there are no mixed
+attributes".
 
-Yes, this was something Alex brought up when adding this threshold, that it
-should be tuned for various scenarios. That still needs to be done. This patch
-just covers one specific case where we know the optimal answer due to an erratum.
 
-Regards,
-Samuel
+> At this point there are no mixed attributes, and KVM would normally
+> allow for 2MB NPT mappings again, but this is actually not allowed
+> because the RMP table mappings are 4K and cannot be promoted on the
+> hypervisor side, so the NPT mappings must still be limited to 4K to
+> match this.
+>
+> Add a hook to determine the max NPT mapping size in situations like
+> this.
+>
+> Signed-off-by: Michael Roth<michael.roth@amd.com>
+> Message-Id:<20231230172351.574091-31-michael.roth@amd.com>
+> Signed-off-by: Paolo Bonzini<pbonzini@redhat.com>
+> ---
+>   arch/x86/include/asm/kvm-x86-ops.h | 1 +
+>   arch/x86/include/asm/kvm_host.h    | 1 +
+>   arch/x86/kvm/mmu/mmu.c             | 7 +++++++
+>   3 files changed, 9 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index 42474acb7375..436e3c157fae 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -140,6 +140,7 @@ KVM_X86_OP(vcpu_deliver_sipi_vector)
+>   KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
+>   KVM_X86_OP_OPTIONAL(get_untagged_addr)
+>   KVM_X86_OP_OPTIONAL_RET0(gmem_prepare)
+> +KVM_X86_OP_OPTIONAL_RET0(gmem_validate_fault)
+>   KVM_X86_OP_OPTIONAL(gmem_invalidate)
+>   
+>   #undef KVM_X86_OP
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index e523b204697d..259e6bb1e447 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1806,6 +1806,7 @@ struct kvm_x86_ops {
+>   	gva_t (*get_untagged_addr)(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags);
+>   	int (*gmem_prepare)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
+>   	void (*gmem_invalidate)(kvm_pfn_t start, kvm_pfn_t end);
+> +	int (*gmem_validate_fault)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, u8 *max_level);
+>   };
+>   
+>   struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 6b4cb71668df..bcf12ac489f9 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4339,6 +4339,13 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
+>   			       fault->max_level);
+>   	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
+>   
+> +	r = static_call(kvm_x86_gmem_validate_fault)(vcpu->kvm, fault->pfn,
+> +						     fault->gfn, &fault->max_level);
+> +	if (r) {
+> +		kvm_release_pfn_clean(fault->pfn);
+> +		return r;
+> +	}
+> +
+>   	return RET_PF_CONTINUE;
+>   }
+>   
 
 
