@@ -1,704 +1,212 @@
-Return-Path: <linux-kernel+bounces-100314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5980F87959B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:04:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2906A879596
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1B3C1F22992
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:04:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 945D9B245CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D769E7AE5B;
-	Tue, 12 Mar 2024 14:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91AD7AE51;
+	Tue, 12 Mar 2024 14:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="JZ6vWtgH"
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="NG000tOB"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2041.outbound.protection.outlook.com [40.107.220.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A847AE4E;
-	Tue, 12 Mar 2024 14:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710252269; cv=none; b=N27tWEeayf92yeZTJXCea9GY74u48C96/xR3XfrBn3PZ47+2X7oLQfCovvhaKu6QJVEjl15UU3aRdWHvkS2qqbUmca5p3Bvqcs1syY3baNZ6mkR38ppViugqJH9tBKXcACUOfT795rQzcManEkX6dGbTmYVpqEO51ItIXB/+nsw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710252269; c=relaxed/simple;
-	bh=NegQwbq7aQAG93ZzCl8VOSFqRNJey7M0gumGchVH2nA=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=HzknOAkvW3auCcgIP/wZIbDTb9lUAY3Vgv4QF2OLf16fMvwzOx+IqlQm41ZxjzkwyylYI7oAaZl6+xZyPxIMPQB+3QIfsCoJc1J59yztQ01B7Z0t+b8o06ayj4BFh4fcAuEkLgbli8sEJCKXKXOSn4L5PXO8g90AJC2jL+u25GY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=JZ6vWtgH; arc=none smtp.client-ip=194.87.146.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	by box.trvn.ru (Postfix) with ESMTPSA id D8BD5400F9;
-	Tue, 12 Mar 2024 19:04:05 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-	t=1710252254; bh=NegQwbq7aQAG93ZzCl8VOSFqRNJey7M0gumGchVH2nA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JZ6vWtgHPOHcB/J9j2gX1j8RMSzqAdqupHcHChxkL+4DpgHb16isEui+ATooy63Xt
-	 f2QbAwb1TzWPwwTG/esVMtmO7QhOPe2p9emQz+is8PT2gJ/6yLNqZQXoFZvhm5o6/V
-	 6y6FDgyzsr1dQS28krqi79gjKfRn2dR3nJzElGVXcFokGDYuAhcL1QAFxPLZJXb6hy
-	 yESJ30iSrqOkK7+PYvMEOtUHDnuQfsy6xosHV6alOkTt5M7Uj6OHGZxrIJwINmGhS/
-	 D9wft5qw7sH64oKbVt4FoR5qvvxuzO8epijZgY9OCcDbkUmSdp5aoxIr1Ey48YIVCO
-	 Sacq0xI+JJY0g==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E2B7A72C;
+	Tue, 12 Mar 2024 14:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710252264; cv=fail; b=dM334Gz4p5h1Pn9x2F91D+zKB2tUnfD3P4xt17gZhjatJzNCmZnqFgp6i8leIZXI2doR4TLdrvIOGh8oJOElOf7ggINJlszHnZwCiXsycJw5vtVBbqrnhq2GStd/jbG0yvVRkqGIcm0HfhNHFFFRTWdnNkxmrF6PmkrzctqBMUM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710252264; c=relaxed/simple;
+	bh=NiAnTGhryo6F7FSyuocMQdkHzLLLPs1ZhNPR56IlhGQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=nj8BAEPwJe9U6kFZBI0ZyL1F6BAbVg7z/YGz37TirXPSrVSoULepFmAIzeaUvYb7S9FbKcd+5I0incUqEtKsfvU6KsdBuuEOexFBHs/NOEPY0rJebOKlL2rDG1ws/jJwb5ymj1RWuQCL3PtA2Js5wfQaqwehPJX7L0BvWn9oMvs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=NG000tOB; arc=fail smtp.client-ip=40.107.220.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UOx2/ZLyXAX0Dwirj5g8pufoA7tLIAqUXQS85fru38tZXOOXZW6LPeUNOyricHPZoyg2TfhHMIKEWEtWUpmu6B0OU5Eqpn9HHxnVuNlw5ng9GWyspJ7TJ+3rLoNc3m9qTCTNJUA6CqCsMvaY+hYKa4kylOKqibr8cjhdeFngBxsp9Tr0pAbM1uG2hWVte+x+wDT9oGNS4KvqXSaevbLMg99HrXsGgr9WLhVw0aUES0Kr+7rsPgHySdQQ3uCP+T/Ozr8RPO7ehkEOboLzvfRibpBaIVHl+YsWqKSSFxD2EzEqCySe9T5M2urcWmq9neyLOo20fOpim0wz8+HChCiJzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sAs0n1hGkbtM8H5DeQISTi2KQvvBuOUn1wFmrucRiO4=;
+ b=Vfj6XAzSRB2HUV6dHmhyj/tdnZnrN7EoMQJShOBs1enJLNOggouEr4fgVwB2RPJgkh34GpQdvV8/LWUYpeDqXGeS9vjAZX+36rYtJZLZkouAol4g22/GwHJWaU+mkQwAR/xvkNkS61i+bYXVlN+Fu80YQT3iEOSoB/DNrIss1R2qotbvQYd50VDFiEEYS7HM+0NX/2RcPHnDB9saUp1RFde2Q6zzvqOkdDWZchaFp06gsa+y5oTi/P58YeJUT4tUcK53h4gQmXmR0uwxxLKfC/JOJCBGp/ZtExHEQP+V9PYEsjJmSnhGPMWP9FcTYseTZIt9nc6/YnBSoECfdRoGGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sAs0n1hGkbtM8H5DeQISTi2KQvvBuOUn1wFmrucRiO4=;
+ b=NG000tOBRNKrTGh5Ge+DIOzUtxToRVx76/30ctKCtL90Br0OxKYegN+KD+aErHQR7rpoGa++jel7m1nwWLrrxXDrUtdzjPw29LlDihCptDKG27jREzDhKuEqvMqbUtR69hL69c3TQaBAdzgcOawkecQIeCHS3HGXKa5sz0zanv0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by PH0PR12MB7815.namprd12.prod.outlook.com (2603:10b6:510:28a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Tue, 12 Mar
+ 2024 14:04:17 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::4c26:40af:e1fd:849e]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::4c26:40af:e1fd:849e%7]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
+ 14:04:17 +0000
+Message-ID: <c8c88a28-30be-4034-9fe7-9c9de5247c53@amd.com>
+Date: Tue, 12 Mar 2024 09:04:13 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/9] x86/sev: KEXEC/KDUMP support for SEV-ES guests
+Content-Language: en-US
+To: Vasant k <vsntk18@gmail.com>
+Cc: x86@kernel.org, joro@8bytes.org, cfir@google.com,
+ dan.j.williams@intel.com, dave.hansen@linux.intel.com,
+ ebiederm@xmission.com, erdemaktas@google.com, hpa@zytor.com,
+ jgross@suse.com, jslaby@suse.cz, keescook@chromium.org,
+ kexec@lists.infradead.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+ linux-kernel@vger.kernel.org, luto@kernel.org, martin.b.radev@gmail.com,
+ mhiramat@kernel.org, mstunes@vmware.com, nivedita@alum.mit.edu,
+ peterz@infradead.org, rientjes@google.com, seanjc@google.com,
+ stable@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ Vasant Karasulli <vkarasulli@suse.de>
+References: <20240311161727.14916-1-vsntk18@gmail.com>
+ <f1ff678d-88fd-4893-b01a-04e1a60670ce@amd.com>
+ <CAF2zH5qZKEmECy=9vG4sLmdDt5k7nC=MwjKvJLyVfPyFzt+0hA@mail.gmail.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+Autocrypt: addr=thomas.lendacky@amd.com; keydata=
+ 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
+ vFkWitqCJg==
+In-Reply-To: <CAF2zH5qZKEmECy=9vG4sLmdDt5k7nC=MwjKvJLyVfPyFzt+0hA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR03CA0083.namprd03.prod.outlook.com
+ (2603:10b6:5:3bb::28) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 12 Mar 2024 19:03:58 +0500
-From: Nikita Travkin <nikita@trvn.ru>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, Sebastian Reichel <sre@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>, Bjorn
- Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
- Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, linux-arm-msm@vger.kernel.org,
- platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v4 3/4] platform: arm64: Add Acer Aspire 1 embedded
- controller driver
-In-Reply-To: <6c6fe918-b2b1-a27c-8c94-a883547dd040@linux.intel.com>
-References: <20240312-aspire1-ec-v4-0-bd8e3eea212f@trvn.ru>
- <20240312-aspire1-ec-v4-3-bd8e3eea212f@trvn.ru>
- <6c6fe918-b2b1-a27c-8c94-a883547dd040@linux.intel.com>
-Message-ID: <ad08e6c65a424cd955e94da3beb30246@trvn.ru>
-X-Sender: nikita@trvn.ru
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|PH0PR12MB7815:EE_
+X-MS-Office365-Filtering-Correlation-Id: 60bbe057-c449-4b8c-1edd-08dc429d4e3d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	EhaLjkM5lXCLkJXZFkpQL9RSnc0DIsicQ4aYPr98Xv0T4CO4dk4vtiMxuVtEVJB4YgVo6F2WSnv2chazH2jjaHUmAsbZWhycO22h8YdTb3xTlYRuBiQyscjZ541H7hKSTU+fLEuhsqCRbREv3g5LCyuvR83pGzc7bMMdwZht9AStivtVuDp9Eb0C0eDrawFtPmMyUHg+TDjjx1FeLjWOIN171Visne2W/j0O0Q393AoW4HLHu+4is8ikoWrIrEVkD0yZstdVskJKH81uRMElYzfZqK/AZ8TGtsvwTwcjMFjxarnvnnIXb+b/ZJpbHJlE9OtKlSuT5sg4X9auhOeK1T5tE6VuUbA+r9fezHd2R74WycyNZ7/SwmET/R80vUW9p7/RfvdoxVFZhHzVj8JGVtEq0KTVsYtDw2p4Jg8Ve6kquzUl3b4o6z3+7ry2bOccznFpxiDhSf48V0yBSej3Ub/6OGE0RaOHhJevF4iilXOEAE+TIlwzi5cIGS76pAiWjEMFG9B1ke8mTOdLsmBg3qjwLQuan56TCfkppUaEI1t+MV/X03+rTWYcLoM/lJ793VDLBitRNBJx1ns5GDcJU0JrMG2izv1F9f6QmYYSRFCe3NDiXnubh/+5jLlx47+0h2lt5K8K/XSQYwzahm3sQuGuxw1FnvjnFlnIHHUug6M=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?N3lZVFlyeFNMa1kyVnIxWlpJdFZjNEV0Q0ZTRWVmbDMzWWxMWUJpbHU0a2lh?=
+ =?utf-8?B?Tmlvb1BLWThDWCtQU0g2aU80VFNsV3pTOE9EM0IrQTA3bUVhMzB0NWN1QUxh?=
+ =?utf-8?B?V2p0cHNGSmVSMFJibHhheDJHL1pUQ2pMTkZkbkRPT1hVMTRvdlNCWllJcUpI?=
+ =?utf-8?B?dkZSU2ZxcjRQUHJHNU9KMnlOMndUL0hHQmNNeHN4Rk96MWVNODZsaURXS1FQ?=
+ =?utf-8?B?bUZMeHRVblA4ZzJBNjY5YUNaNjNUQVVDYkJJL1ZPVW0vYlkzM2l3bVdmWkVB?=
+ =?utf-8?B?bk5qUHY4Y2k4YVNpME5McGg0WCt6UWZxaDUvVThWTndmOGljUTNZMFZmMUZq?=
+ =?utf-8?B?Z0w5Rm1OWjJvTVQ5YklBZVpoRzJjdFgyamMrMDJVK0EvL01pYy9Zc3ZraW01?=
+ =?utf-8?B?SG1uK1JpUzdnTlJiY2ZHbTZmWVljNEs0a0NaczlxYlJqYWRka3dLRFQyWi9H?=
+ =?utf-8?B?TEtXYU1XSkZOV3BGcEY3dTNPMCtyOFlpMGY0Wml0THJCV3pEMVp0RXNtWWE4?=
+ =?utf-8?B?R3IxRU1IRWxmNWtHQW5aclJXQ0ZLRW9XUjc5VDFzSDl5SFNscmtmY1hTb1lS?=
+ =?utf-8?B?WXN6eWdBVHdveWZaOW0rcmN3eHlPTVF2R0lmMzRZV0ltQlFzZ3F0V3g3UmY5?=
+ =?utf-8?B?MEpKZkxvdlV6MTNBQVJqT09ieXBtV0FMTGU0bzZWUWF6WHZPRXFHSXBncXhO?=
+ =?utf-8?B?QUhobTRXNU4yOTVlUHpTLzlRSThIb0wvTHd6UUtaMFdhNk1ER2dlVHFhT2NH?=
+ =?utf-8?B?Z0YwVVBEVTRuMm5XOWJvanNWRkVobHBNdGtlWEh6UU5mU2drUnlZRTF4SlJy?=
+ =?utf-8?B?aWRTb29id0NTV3ZXQUVIWU9UQ2QxNktqNmRPUnR6cEl4MEk2cUp5QXRGSm5J?=
+ =?utf-8?B?enUxTkw4RXB5TmcvRTU0WW9OR0dxTGpwZTlXRHV6c2hGdmhRYm5JY0NJNTBE?=
+ =?utf-8?B?djBzMTNrZnp0NHZnTjl5TTl6aDRCaUhzbGZwd1RFeUNINDl5eW5FSDRhQnA4?=
+ =?utf-8?B?emRLNTI4d1UzZko0bnhYOFlndjBKbHJqYU1rRFk4Y3dlZFpsVGlFR1h4Q1o3?=
+ =?utf-8?B?MUFBTXorR2h5MFovdUpmOUhsWm9ucytPYnBBeXNWcE9pUnhJb24rUW5uZ1Bu?=
+ =?utf-8?B?NGlEYjRJUFIzMTlaSlZUSlR5SVlPNnFOODdkZVlsck82VEdaY3dSSE5sZlhk?=
+ =?utf-8?B?eCtxNnJiUUFYcEpRaW84WDFPUmVKQ2tzUlA4eFgzZWJrdmk0VUhscWh6NUJK?=
+ =?utf-8?B?RkxpeEZIZ2Q5RHIra1RxMjc3ejE3bWhsc21tVEJHclpJdVUrNFQ0RVhVUnRW?=
+ =?utf-8?B?eXEvUTF3TTRZdWpyd3NodUplQ2MySzJRYWRMWjlqaWVYRHRleEZIVkIrS3FW?=
+ =?utf-8?B?Zzc3TE0wYWhlYVZYVU9wWjQrSGIzaUlKRDBDVlQvaC90ZjFpdlFhbGJDbTd4?=
+ =?utf-8?B?T3NKd2JobDExMldiOWJ1T1J4eWZVTlFqM2VzUmhNVVhsZnZkNVNWK0lJWnh2?=
+ =?utf-8?B?dENpcEl5NFJPREtKMjlVdWI3bi9YSTQwR2tad1V0YWlCa3pSWUs2bjhSUWs3?=
+ =?utf-8?B?emIwUnQzeTZwS1ZWZnZBci9IOU01eDNFQXUzZEV5OFNpdkRXM0Jrb2NhVzJB?=
+ =?utf-8?B?cmt0SWkwUUR4a3JMMUd0dHgyYWlrQ0t3by8wN3NrSm5tRjg2N0l4bllGNmlH?=
+ =?utf-8?B?dldhamx6cld3aS9YUVJCVzlMSi9wNzVYNFdHMG12OTJvNk1kOStZdzhHNUNC?=
+ =?utf-8?B?U2xyeE1ha3M2alY3Y2ZHd1RSWFM5cXBTUlRKZ2llNTRGOThBN2E2RmtQSDFR?=
+ =?utf-8?B?RFo4VUExWG5WL1BWOEFDQW5BczNBUUpCODB4eFpuaDZGMkpLd0Y4WGRkTTBQ?=
+ =?utf-8?B?SW9rVFdhYVE5TGFXaitYVEhZY1BhWDIraWFvNCtTZDU2N1FGK2V0QW5oSGpU?=
+ =?utf-8?B?Yk1YcUo3Y0FPMXM1UzJUSzZ0ekhlaEpiOEJUQ1I3dXJWdmlJdTRpSkJtWnVJ?=
+ =?utf-8?B?N2t3NDlVYllFR0tsVHhjTFBwUFVSYStyWW1sRmRVbE9EMmtsaldpZjBUQ1Nz?=
+ =?utf-8?B?R09mZVhoRDZobFZYRlliMHNQUUg0RDlYTyttaGdNa3g5cjQyNUF4SGw3RFdB?=
+ =?utf-8?Q?PoUl+l8Kdz+ILVssWZdpXdmvn?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60bbe057-c449-4b8c-1edd-08dc429d4e3d
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 14:04:17.2431
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rbQl671zEPSOMWEEzOn+AJtHQW7RbeAxLFAKBTFV5sFRtN+jSWa59veCAuw5XsreDHkQxBkhvZ/fz7xCyMwKPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7815
 
-Ilpo Järvinen писал(а) 12.03.2024 17:31:
-> On Tue, 12 Mar 2024, Nikita Travkin wrote:
+On 3/11/24 15:32, Vasant k wrote:
+> Hi Tom,
 > 
->> Acer Aspire 1 is a Snapdragon 7c based laptop. It uses an embedded
->> controller to perform a set of various functions, such as:
->>
->> - Battery and charger monitoring;
->> - Keyboard layout control (i.e. fn_lock settings);
->> - USB Type-C DP alt mode HPD notifications;
->> - Laptop lid status.
->>
->> Unfortunately, while all this functionality is implemented in ACPI, it's
->> currently not possible to use ACPI to boot Linux on such Qualcomm
->> devices. To allow Linux to still support the features provided by EC,
->> this driver reimplments the relevant ACPI parts. This allows us to boot
->> the laptop with Device Tree and retain all the features.
->>
->> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->> ---
->>  drivers/platform/arm64/Kconfig           |  16 +
->>  drivers/platform/arm64/Makefile          |   2 +
->>  drivers/platform/arm64/acer-aspire1-ec.c | 555 +++++++++++++++++++++++++++++++
->>  3 files changed, 573 insertions(+)
->>
->> diff --git a/drivers/platform/arm64/Kconfig b/drivers/platform/arm64/Kconfig
->> index 644b83ede093..07d47879a9e3 100644
->> --- a/drivers/platform/arm64/Kconfig
->> +++ b/drivers/platform/arm64/Kconfig
->> @@ -16,4 +16,20 @@ menuconfig ARM64_PLATFORM_DEVICES
->>
->>  if ARM64_PLATFORM_DEVICES
->>
->> +config EC_ACER_ASPIRE1
->> +	tristate "Acer Aspire 1 Emedded Controller driver"
->> +	depends on I2C
->> +	depends on DRM
->> +	depends on POWER_SUPPLY
->> +	depends on INPUT
->> +	help
->> +	  Say Y here to enable the EC driver for the (Snapdragon-based)
->> +	  Acer Aspire 1 laptop. The EC handles battery and charging
->> +	  monitoring as well as some misc functions like the lid sensor
->> +	  and USB Type-C DP HPD events.
->> +
->> +	  This driver provides battery and AC status support for the mentioned
->> +	  laptop where this information is not properly exposed via the
->> +	  standard ACPI devices.
->> +
->>  endif # ARM64_PLATFORM_DEVICES
->> diff --git a/drivers/platform/arm64/Makefile b/drivers/platform/arm64/Makefile
->> index f91cdc7155e2..4fcc9855579b 100644
->> --- a/drivers/platform/arm64/Makefile
->> +++ b/drivers/platform/arm64/Makefile
->> @@ -4,3 +4,5 @@
->>  #
->>  # This dir should only include drivers for EC-like devices.
->>  #
->> +
->> +obj-$(CONFIG_EC_ACER_ASPIRE1)	+= acer-aspire1-ec.o
->> diff --git a/drivers/platform/arm64/acer-aspire1-ec.c b/drivers/platform/arm64/acer-aspire1-ec.c
->> new file mode 100644
->> index 000000000000..3941e24c5c7c
->> --- /dev/null
->> +++ b/drivers/platform/arm64/acer-aspire1-ec.c
->> @@ -0,0 +1,555 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/* Copyright (c) 2023, Nikita Travkin <nikita@trvn.ru> */
->> +
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/power_supply.h>
->> +#include <linux/i2c.h>
->> +#include <linux/input.h>
->> +#include <linux/delay.h>
->> +
->> +#include <linux/usb/typec_mux.h>
->> +#include <drm/drm_bridge.h>
->> +
->> +#define ASPIRE_EC_EVENT			0x05
->> +
->> +#define ASPIRE_EC_EVENT_WATCHDOG	0x20
->> +#define ASPIRE_EC_EVENT_KBD_BKL_ON	0x57
->> +#define ASPIRE_EC_EVENT_KBD_BKL_OFF	0x58
->> +#define ASPIRE_EC_EVENT_LID_CLOSE	0x9b
->> +#define ASPIRE_EC_EVENT_LID_OPEN	0x9c
->> +#define ASPIRE_EC_EVENT_BKL_UNBLANKED	0x9d
->> +#define ASPIRE_EC_EVENT_BKL_BLANKED	0x9e
->> +#define ASPIRE_EC_EVENT_FG_INF_CHG	0x85
->> +#define ASPIRE_EC_EVENT_FG_STA_CHG	0xc6
->> +#define ASPIRE_EC_EVENT_HPD_DIS		0xa3
->> +#define ASPIRE_EC_EVENT_HPD_CON		0xa4
->> +
->> +#define ASPIRE_EC_FG_DYNAMIC		0x07
->> +#define ASPIRE_EC_FG_STATIC		0x08
->> +
->> +#define ASPIRE_EC_FG_FLAG_PRESENT	BIT(0)
+>         Right,  it just escaped my mind that the SNP uses the secrets page
+> to hand over APs to the next stage.  I will correct that in the next
+
+Not quite... The MADT table lists the APs and the GHCB AP Create NAE event 
+is used to start the APs.
+
+Thanks,
+Tom
+
+> version.  Please let me know if you have any corrections or improvement
+> suggestions on the rest of the patchset.
 > 
-> Add #include <linux/bits.h>
+> Thanks,
+> Vasant
 > 
-
-Ack
-
->> +#define ASPIRE_EC_FG_FLAG_FULL		BIT(1)
->> +#define ASPIRE_EC_FG_FLAG_DISCHARGING	BIT(2)
->> +#define ASPIRE_EC_FG_FLAG_CHARGING	BIT(3)
->> +
->> +#define ASPIRE_EC_RAM_READ		0x20
->> +#define ASPIRE_EC_RAM_WRITE		0x21
->> +
->> +#define ASPIRE_EC_RAM_WATCHDOG		0x19
->> +#define ASPIRE_EC_RAM_KBD_MODE		0x43
->> +
->> +#define ASPIRE_EC_RAM_KBD_FN_EN		BIT(0)
->> +#define ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP	BIT(5)
->> +#define ASPIRE_EC_RAM_KBD_ALWAYS_SET	BIT(6)
->> +#define ASPIRE_EC_RAM_KBD_NUM_LAYER_EN	BIT(7)
->> +
->> +#define ASPIRE_EC_RAM_KBD_MODE_2	0x60
->> +
->> +#define ASPIRE_EC_RAM_KBD_MEDIA_NOTIFY	BIT(3)
->> +
->> +#define ASPIRE_EC_RAM_HPD_STATUS	0xf4
->> +#define ASPIRE_EC_HPD_CONNECTED		0x03
->> +
->> +#define ASPIRE_EC_RAM_LID_STATUS	0x4c
->> +#define ASPIRE_EC_LID_OPEN		BIT(6)
->> +
->> +#define ASPIRE_EC_RAM_ADP		0x40
->> +#define ASPIRE_EC_AC_STATUS		BIT(0)
->> +
->> +struct aspire_ec {
->> +	struct i2c_client *client;
->> +	struct power_supply *bat_psy;
->> +	struct power_supply *adp_psy;
->> +	struct input_dev *idev;
->> +
->> +	bool bridge_configured;
->> +	struct drm_bridge bridge;
->> +	struct work_struct work;
-> 
-> Include missing.
-> 
-
-Will add too.
-
->> +static int aspire_ec_ram_read(struct i2c_client *client, u8 off, u8 *data, u8 data_len)
->> +{
->> +	i2c_smbus_write_byte_data(client, ASPIRE_EC_RAM_READ, off);
->> +	i2c_smbus_read_i2c_block_data(client, ASPIRE_EC_RAM_READ, data_len, data);
->> +	return 0;
->> +}
->> +
->> +static int aspire_ec_ram_write(struct i2c_client *client, u8 off, u8 data)
->> +{
->> +	u8 tmp[2] = {off, data};
->> +
->> +	i2c_smbus_write_i2c_block_data(client, ASPIRE_EC_RAM_WRITE, sizeof(tmp), tmp);
->> +	return 0;
->> +}
->> +
->> +static irqreturn_t aspire_ec_irq_handler(int irq, void *data)
->> +{
->> +	struct aspire_ec *ec = data;
->> +	int id;
->> +	u8 tmp;
->> +
->> +	/*
->> +	 * The original ACPI firmware actually has a small sleep in the handler.
->> +	 *
->> +	 * It seems like in most cases it's not needed but when the device
->> +	 * just exits suspend, our i2c driver has a brief time where data
->> +	 * transfer is not possible yet. So this delay allows us to suppress
->> +	 * quite a bunch of spurious error messages in dmesg. Thus it's kept.
->> +	 */
->> +	usleep_range(15000, 30000);
->> +
->> +	id = i2c_smbus_read_byte_data(ec->client, ASPIRE_EC_EVENT);
->> +	if (id < 0) {
->> +		dev_err(&ec->client->dev, "Failed to read event id: %pe\n", ERR_PTR(id));
->> +		return IRQ_HANDLED;
->> +	}
->> +
->> +	switch (id) {
->> +	case 0x0: /* No event */
->> +		break;
->> +
->> +	case ASPIRE_EC_EVENT_WATCHDOG:
->> +		/*
->> +		 * Here acpi responds to the event and clears some bit.
->> +		 * Notify (\_SB.I2C3.BAT1, 0x81) // Information Change
->> +		 * Notify (\_SB.I2C3.ADP1, 0x80) // Status Change
->> +		 */
->> +		aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_WATCHDOG, &tmp, sizeof(tmp));
->> +		aspire_ec_ram_write(ec->client, ASPIRE_EC_RAM_WATCHDOG, tmp & 0xbf);
-> 
-> Magic 0xbf? Is this a clear bit operation which should use
-> 	tmp & ~DEFINEDNAME
-> ?
-> 
-
-Right, unfortunately I couldn't get much more from the decompiled dsdt.
-But given I've already called this event "watchdog" could name the bit
-the same too. Will change.
-
->> +		break;
->> +
->> +	case ASPIRE_EC_EVENT_LID_CLOSE:
->> +		/* Notify (\_SB.LID0, 0x80) // Status Change */
->> +		input_report_switch(ec->idev, SW_LID, 1);
->> +		input_sync(ec->idev);
->> +		break;
->> +
->> +	case ASPIRE_EC_EVENT_LID_OPEN:
->> +		/* Notify (\_SB.LID0, 0x80) // Status Change */
->> +		input_report_switch(ec->idev, SW_LID, 0);
->> +		input_sync(ec->idev);
->> +		break;
->> +
->> +	case ASPIRE_EC_EVENT_FG_INF_CHG:
->> +		/* Notify (\_SB.I2C3.BAT1, 0x81) // Information Change */
-> 
-> fallthrough;
-> 
-> I'm not 100% sure if it's needed because you only have a comment there but 
-> it surely doesn't hurt to have it.
->
-
-Ack, given both you and Bryan think it's better to have it here, will add.
-
->> +	case ASPIRE_EC_EVENT_FG_STA_CHG:
->> +		/* Notify (\_SB.I2C3.BAT1, 0x80) // Status Change */
->> +		power_supply_changed(ec->bat_psy);
->> +		power_supply_changed(ec->adp_psy);
->> +		break;
->> +
->> +	case ASPIRE_EC_EVENT_HPD_DIS:
->> +		if (ec->bridge_configured)
->> +			drm_bridge_hpd_notify(&ec->bridge, connector_status_disconnected);
->> +		break;
->> +
->> +	case ASPIRE_EC_EVENT_HPD_CON:
->> +		if (ec->bridge_configured)
->> +			drm_bridge_hpd_notify(&ec->bridge, connector_status_connected);
->> +		break;
->> +
->> +	case ASPIRE_EC_EVENT_BKL_BLANKED:
->> +	case ASPIRE_EC_EVENT_BKL_UNBLANKED:
->> +		/* Display backlight blanked on FN+F6. No action needed. */
->> +		break;
->> +
->> +	case ASPIRE_EC_EVENT_KBD_BKL_ON:
->> +	case ASPIRE_EC_EVENT_KBD_BKL_OFF:
->> +		/*
->> +		 * There is a keyboard backlight connector on Aspire 1 that is
->> +		 * controlled by FN+F8. There is no kb backlight on the device though.
->> +		 * Seems like this is used on other devices like Acer Spin 7.
->> +		 * No action needed.
->> +		 */
->> +		break;
->> +
->> +	default:
->> +		dev_warn(&ec->client->dev, "Unknown event id=0x%x\n", id);
->> +	}
->> +
->> +	return IRQ_HANDLED;
->> +}
->> +
->> +/*
->> + * Power supply.
->> + */
->> +
->> +struct aspire_ec_bat_psy_static_data {
->> +	u8 unk1;
->> +	u8 flags;
->> +	__le16 unk2;
->> +	__le16 voltage_design;
->> +	__le16 capacity_full;
->> +	__le16 unk3;
->> +	__le16 serial;
->> +	u8 model_id;
->> +	u8 vendor_id;
->> +} __packed;
->> +
->> +static const char * const aspire_ec_bat_psy_battery_model[] = {
->> +	"AP18C4K",
->> +	"AP18C8K",
->> +	"AP19B8K",
->> +	"AP16M4J",
->> +	"AP16M5J",
->> +};
->> +
->> +static const char * const aspire_ec_bat_psy_battery_vendor[] = {
->> +	"SANYO",
->> +	"SONY",
->> +	"PANASONIC",
->> +	"SAMSUNG",
->> +	"SIMPLO",
->> +	"MOTOROLA",
->> +	"CELXPERT",
->> +	"LGC",
->> +	"GETAC",
->> +	"MURATA",
->> +};
->> +
->> +struct aspire_ec_bat_psy_dynamic_data {
->> +	u8 unk1;
->> +	u8 flags;
->> +	u8 unk2;
->> +	__le16 capacity_now;
->> +	__le16 voltage_now;
->> +	__le16 current_now;
->> +	__le16 unk3;
->> +	__le16 unk4;
->> +} __packed;
-> 
-> What are the ARM64 rules when it comes to unaligned access? If it's not 
-> always supported, you need to use get_unaligned_le16() for accessing those 
-> __le16 fields.
-> 
-
-Hm, you're right, arm64 spec definitely has something about alignment
-checks so it's better to use that even though I'm not exactly sure about
-exact rules. (though I guess in times like that I'd think "why can't
-compiler take care of this" haha) Will use it for ddat fields.
-
->> +static int aspire_ec_bat_psy_get_property(struct power_supply *psy,
->> +				      enum power_supply_property psp,
->> +				      union power_supply_propval *val)
->> +{
->> +	struct aspire_ec *ec = power_supply_get_drvdata(psy);
->> +	struct aspire_ec_bat_psy_static_data sdat;
->> +	struct aspire_ec_bat_psy_dynamic_data ddat;
->> +
->> +	i2c_smbus_read_i2c_block_data(ec->client, ASPIRE_EC_FG_STATIC, sizeof(sdat), (u8 *)&sdat);
->> +	i2c_smbus_read_i2c_block_data(ec->client, ASPIRE_EC_FG_DYNAMIC, sizeof(ddat), (u8 *)&ddat);
->> +
->> +	switch (psp) {
->> +	case POWER_SUPPLY_PROP_STATUS:
->> +		val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
->> +		if (ddat.flags & ASPIRE_EC_FG_FLAG_CHARGING)
->> +			val->intval = POWER_SUPPLY_STATUS_CHARGING;
->> +		else if (ddat.flags & ASPIRE_EC_FG_FLAG_DISCHARGING)
->> +			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
->> +		else if (ddat.flags & ASPIRE_EC_FG_FLAG_FULL)
->> +			val->intval = POWER_SUPPLY_STATUS_FULL;
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
->> +		val->intval = le16_to_cpu(ddat.voltage_now) * 1000;
-> 
-> linux/units.h provides something that can often be used instead of 10^n 
-> literals.
-> 
-
-This is a conversion from Milli-Units to Micro-Units so I guess the best
-way to define that using existing consts would be (MICRO/MILLI)
-
-I will add '#define MILLI_TO_MICRO 1000' and use that here.
-
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
->> +		val->intval = le16_to_cpu(sdat.voltage_design) * 1000;
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_CHARGE_NOW:
->> +		val->intval = le16_to_cpu(ddat.capacity_now) * 1000;
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_CHARGE_FULL:
->> +		val->intval = le16_to_cpu(sdat.capacity_full) * 1000;
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_CAPACITY:
->> +		val->intval = le16_to_cpu(ddat.capacity_now) * 100;
->> +		val->intval /= le16_to_cpu(sdat.capacity_full);
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_CURRENT_NOW:
->> +		val->intval = (s16)le16_to_cpu(ddat.current_now) * 1000;
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_PRESENT:
->> +		val->intval = !!(ddat.flags & ASPIRE_EC_FG_FLAG_PRESENT);
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_SCOPE:
->> +		val->intval = POWER_SUPPLY_SCOPE_SYSTEM;
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_MODEL_NAME:
->> +		if (sdat.model_id - 1 < ARRAY_SIZE(aspire_ec_bat_psy_battery_model))
->> +			val->strval = aspire_ec_bat_psy_battery_model[sdat.model_id - 1];
-> 
-> Underflow handling (also here, the other place was mentioned already)?
-
-Ack, I'm going to update if for both.
-
-> 
->> +		else
->> +			val->strval = "Unknown";
->> +		break;
->> +
->> +	case POWER_SUPPLY_PROP_MANUFACTURER:
->> +		if (sdat.vendor_id - 3 < ARRAY_SIZE(aspire_ec_bat_psy_battery_vendor))
->> +			val->strval = aspire_ec_bat_psy_battery_vendor[sdat.vendor_id - 3];
->> +		else
->> +			val->strval = "Unknown";
->> +		break;
->> +
->> +	default:
->> +		return -EINVAL;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static enum power_supply_property aspire_ec_bat_psy_props[] = {
->> +	POWER_SUPPLY_PROP_STATUS,
->> +	POWER_SUPPLY_PROP_VOLTAGE_NOW,
->> +	POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
->> +	POWER_SUPPLY_PROP_CHARGE_NOW,
->> +	POWER_SUPPLY_PROP_CHARGE_FULL,
->> +	POWER_SUPPLY_PROP_CAPACITY,
->> +	POWER_SUPPLY_PROP_CURRENT_NOW,
->> +	POWER_SUPPLY_PROP_PRESENT,
->> +	POWER_SUPPLY_PROP_SCOPE,
->> +	POWER_SUPPLY_PROP_MODEL_NAME,
->> +	POWER_SUPPLY_PROP_MANUFACTURER,
->> +};
->> +
->> +static const struct power_supply_desc aspire_ec_bat_psy_desc = {
->> +	.name		= "aspire-ec-bat",
->> +	.type		= POWER_SUPPLY_TYPE_BATTERY,
->> +	.get_property	= aspire_ec_bat_psy_get_property,
->> +	.properties	= aspire_ec_bat_psy_props,
->> +	.num_properties	= ARRAY_SIZE(aspire_ec_bat_psy_props),
->> +};
->> +
->> +static int aspire_ec_adp_psy_get_property(struct power_supply *psy,
->> +				      enum power_supply_property psp,
->> +				      union power_supply_propval *val)
->> +{
->> +	struct aspire_ec *ec = power_supply_get_drvdata(psy);
->> +	u8 tmp;
->> +
->> +	switch (psp) {
->> +	case POWER_SUPPLY_PROP_ONLINE:
->> +		aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_ADP, &tmp, sizeof(tmp));
->> +		val->intval = !!(tmp & ASPIRE_EC_AC_STATUS);
->> +		break;
->> +
->> +	default:
->> +		return -EINVAL;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static enum power_supply_property aspire_ec_adp_psy_props[] = {
->> +	POWER_SUPPLY_PROP_ONLINE,
->> +};
->> +
->> +static const struct power_supply_desc aspire_ec_adp_psy_desc = {
->> +	.name		= "aspire-ec-adp",
->> +	.type		= POWER_SUPPLY_TYPE_MAINS,
->> +	.get_property	= aspire_ec_adp_psy_get_property,
->> +	.properties	= aspire_ec_adp_psy_props,
->> +	.num_properties	= ARRAY_SIZE(aspire_ec_adp_psy_props),
->> +};
->> +
->> +/*
->> + * USB-C DP Alt mode HPD.
->> + */
->> +
->> +static int aspire_ec_bridge_attach(struct drm_bridge *bridge, enum drm_bridge_attach_flags flags)
->> +{
->> +	return flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR ? 0 : -EINVAL;
->> +}
->> +
->> +static void aspire_ec_bridge_update_hpd_work(struct work_struct *work)
->> +{
->> +	struct aspire_ec *ec = container_of(work, struct aspire_ec, work);
->> +	u8 tmp;
->> +
->> +	aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_HPD_STATUS, &tmp, sizeof(tmp));
->> +	if (tmp == ASPIRE_EC_HPD_CONNECTED)
->> +		drm_bridge_hpd_notify(&ec->bridge, connector_status_connected);
->> +	else
->> +		drm_bridge_hpd_notify(&ec->bridge, connector_status_disconnected);
->> +}
->> +
->> +static void aspire_ec_bridge_hpd_enable(struct drm_bridge *bridge)
->> +{
->> +	struct aspire_ec *ec = container_of(bridge, struct aspire_ec, bridge);
->> +
->> +	schedule_work(&ec->work);
->> +}
->> +
->> +static const struct drm_bridge_funcs aspire_ec_bridge_funcs = {
->> +	.hpd_enable = aspire_ec_bridge_hpd_enable,
->> +	.attach = aspire_ec_bridge_attach,
->> +};
->> +
->> +/*
->> + * Sysfs attributes.
->> + */
->> +
->> +static ssize_t fn_lock_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +{
->> +	struct aspire_ec *ec = i2c_get_clientdata(to_i2c_client(dev));
->> +	u8 tmp;
->> +
->> +	aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_KBD_MODE, &tmp, sizeof(tmp));
->> +
->> +	return sysfs_emit(buf, "%d\n", !(tmp & ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP));
-> 
-> %u
-
-Ack.
-
-> 
->> +}
->> +
->> +static ssize_t fn_lock_store(struct device *dev, struct device_attribute *attr,
->> +			     const char *buf, size_t count)
->> +{
->> +	struct aspire_ec *ec = i2c_get_clientdata(to_i2c_client(dev));
->> +	u8 tmp;
->> +
->> +	bool state;
->> +	int ret;
->> +
->> +	ret = kstrtobool(buf, &state);
->> +	if (ret)
->> +		return ret;
->> +
->> +	aspire_ec_ram_read(ec->client, ASPIRE_EC_RAM_KBD_MODE, &tmp, sizeof(tmp));
->> +
->> +	if (state)
->> +		tmp &= ~ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP;
->> +	else
->> +		tmp |= ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP;
->> +
->> +	aspire_ec_ram_write(ec->client, ASPIRE_EC_RAM_KBD_MODE, tmp);
->> +
->> +	return count;
->> +}
->> +
->> +static DEVICE_ATTR_RW(fn_lock);
->> +
->> +static struct attribute *aspire_ec_attributes[] = {
->> +	&dev_attr_fn_lock.attr,
->> +	NULL
->> +};
->> +
->> +static const struct attribute_group aspire_ec_attribute_group = {
->> +	.attrs = aspire_ec_attributes
->> +};
->> +
->> +static int aspire_ec_probe(struct i2c_client *client)
->> +{
->> +	struct power_supply_config psy_cfg = {0};
->> +	struct device *dev = &client->dev;
->> +	struct fwnode_handle *fwnode;
->> +	struct aspire_ec *ec;
->> +	int ret;
->> +	u8 tmp;
->> +
->> +	ec = devm_kzalloc(dev, sizeof(*ec), GFP_KERNEL);
->> +	if (!ec)
->> +		return -ENOMEM;
->> +
->> +	ec->client = client;
->> +	i2c_set_clientdata(client, ec);
->> +
->> +	/* Battery status reports */
->> +	psy_cfg.drv_data = ec;
->> +	ec->bat_psy = devm_power_supply_register(dev, &aspire_ec_bat_psy_desc, &psy_cfg);
->> +	if (IS_ERR(ec->bat_psy))
->> +		return dev_err_probe(dev, PTR_ERR(ec->bat_psy),
->> +				     "Failed to register battery power supply\n");
->> +
->> +	ec->adp_psy = devm_power_supply_register(dev, &aspire_ec_adp_psy_desc, &psy_cfg);
->> +	if (IS_ERR(ec->adp_psy))
->> +		return dev_err_probe(dev, PTR_ERR(ec->adp_psy),
->> +				     "Failed to register ac power supply\n");
-> 
-> AC
-
-Ack.
-
-> 
->> +	/* Lid switch */
->> +	ec->idev = devm_input_allocate_device(dev);
->> +	if (!ec->idev)
->> +		return -ENOMEM;
->> +
->> +	ec->idev->name = "aspire-ec";
->> +	ec->idev->phys = "aspire-ec/input0";
->> +	input_set_capability(ec->idev, EV_SW, SW_LID);
->> +
->> +	ret = input_register_device(ec->idev);
->> +	if (ret)
->> +		return dev_err_probe(dev, ret, "Input device register failed\n");
->> +
->> +	/* Enable the keyboard fn keys */
->> +	tmp = ASPIRE_EC_RAM_KBD_FN_EN | ASPIRE_EC_RAM_KBD_ALWAYS_SET;
->> +	tmp |= ASPIRE_EC_RAM_KBD_MEDIA_ON_TOP;
->> +	aspire_ec_ram_write(client, ASPIRE_EC_RAM_KBD_MODE, tmp);
->> +
->> +	aspire_ec_ram_read(client, ASPIRE_EC_RAM_KBD_MODE_2, &tmp, sizeof(tmp));
->> +	tmp |= ASPIRE_EC_RAM_KBD_MEDIA_NOTIFY;
->> +	aspire_ec_ram_write(client, ASPIRE_EC_RAM_KBD_MODE_2, tmp);
->> +
->> +	ret = devm_device_add_group(dev, &aspire_ec_attribute_group);
->> +	if (ret)
->> +		return dev_err_probe(dev, ret, "Failed to create attribute group\n");
-> 
-> Can't you just .dev_groups ?
-
-Oh, I've missed that this exists, will use it instead.
-
-> 
-> 
-> In general, this felt to be in a quite good shape already, good work!
-
-Thanks for your review!
-Nikita
 
