@@ -1,170 +1,370 @@
-Return-Path: <linux-kernel+bounces-99925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93048878F43
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:54:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6F8E878F48
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:55:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B75181C2118E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:54:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87A432847E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 07:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91EA169973;
-	Tue, 12 Mar 2024 07:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2CA6997D;
+	Tue, 12 Mar 2024 07:55:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b="diDTqarM"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2135.outbound.protection.outlook.com [40.107.215.135])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mqT7zjqC"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3B469969
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.135
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710230046; cv=fail; b=tIGR2C2OFbN7fDWnqfBC5F8O/+aJGV7IUNZHaV3LYNiELfNHBpRxLaiDBm/mV6dYyg6N0Zk7y7eIKAhFd+9qTZSlfFa4vimADkJ2oyeX3qsDFVvs7ezSvjrHsARwpMjCAUfh0rcyAZEzPiVP+aU6tlRtmh9TvYkBpeO8tHkc2hg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710230046; c=relaxed/simple;
-	bh=IaL3BrcwObFnWycQ4tH3yIaUoIx9jbFqDW3+VmYxy4k=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=PkJUL9cWhlOKSH/vWaZ59HzT0QVT/gKzwbU+JeVO43DdN7HpgiUdTy7F719S0vGbppl1zbJZvFLSAwQJDKu9f6qQrocqKLQeLtiYZ70XqgLCVlSosOrc4QK0TITBqCKdh72RMkWAYkcotYhUOMaoJaVrYgSTH0McGzqZ/LLoyKU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com; spf=pass smtp.mailfrom=jaguarmicro.com; dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b=diDTqarM; arc=fail smtp.client-ip=40.107.215.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jaguarmicro.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UTyKL+s55JrCUVoIfXdFiXgYn2ZqU1x0ejVptxEOXIAtza7he5X3a879OTdFwBE5rrzoCCfdMsNgAcu1vPmw0ba+RrH6My8DVP5Evzkbq7XEcRmRakmIEYUe4yxvd+eMiEVIQZ2A3PGO0rjgMELGwYLA3TVVZQotWWN36Fq94Cdqwa9RJvjbTOhwULFuZjDX0lGx/k9ETB6SP5nDH40kQB9ZGo1OhsP8AdFSayMTswUTJrn3esSdeTwDPD3EdX0I+MUoLMprp/3vD5mRPxPgswef+mQTKRlB/5ivGbKZ3eyC3fbgTO2pRUjmubHzW4y8j+2x3pnFVA4sHj1qKltBiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bPY+m1H8evBrdj61K74ptXmE8HCUFqT75R5ziaZeWBU=;
- b=mhJSgRx4gz0AtdEphLyX6i2p4+cdrpMQA4HXbacLNWkzDIDLcIDsFGMrxCgYgDPI5vTRjJgF4a5S6E9qF+G409w0kgg25HHxBSi9mcT7lk3c0jaEcjdoTsYsZ4rOEeMbXZ/zlKPW2pkFAF9TYOw9LExV4QyLr00cVDcc91fY8veQ3GNnoz8GZyI2l2lQmWis3YlLzAchYSsfYqXsNMeR+KGvoGN6JxFgcm7iszFsEzwwo5+GhaIHnvc9p2jDOW7ZYgFU+WIfKb1dAi3Z/BFoexat1htISbSOWEZVtn+MxGh3A4gGLpe+fSS338ZQGRI2cxP9gSU4oz1TmqGM4B7W9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
- header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bPY+m1H8evBrdj61K74ptXmE8HCUFqT75R5ziaZeWBU=;
- b=diDTqarMhW44r6eix79/FND4gMBtWJjoxMXfxqGEXHr3rv+NIuXAg37bsV7yl3AgSJEFhMycJrLUIrAcsx25ZkvypPdc5Zv5f8gYQtSnTsZaMkuQG7HkMFQfmfIRyyo0BNViICtaT9vHrVW+PTT2yUG5tfW+ID/xzLeFhMiuimTiBVyFPpMVZm6p8iB139KxJrhBdJ4MEjEP1DgUhjSGLw3Y5TJlGgNTceUbJNo5DnWANxDdTqUG+4IhF8tag8YT1XmLfwPkogRt1bwe7DS4ZwxDtJ9fhHDnQJy4/1Pc6KypCYlkob7WHlJHLr06m+ED6WctCmWruppsdpXim6vXrA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=jaguarmicro.com;
-Received: from KL1PR0601MB5773.apcprd06.prod.outlook.com
- (2603:1096:820:b1::13) by TYZPR06MB5250.apcprd06.prod.outlook.com
- (2603:1096:400:1fc::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.33; Tue, 12 Mar
- 2024 07:53:56 +0000
-Received: from KL1PR0601MB5773.apcprd06.prod.outlook.com
- ([fe80::1ecf:ff1c:bbe9:49e3]) by KL1PR0601MB5773.apcprd06.prod.outlook.com
- ([fe80::1ecf:ff1c:bbe9:49e3%5]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
- 07:53:53 +0000
-From: Rex Nie <rex.nie@jaguarmicro.com>
-To: james.morse@arm.com
-Cc: fenghua.yu@intel.com,
-	reinette.chatre@intel.com,
-	ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: [PATCH v2] fs/resctrl: fix domid loss precision issue
-Date: Tue, 12 Mar 2024 15:53:49 +0800
-Message-Id: <20240312075349.977-1-rex.nie@jaguarmicro.com>
-X-Mailer: git-send-email 2.39.0.windows.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0174.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::30) To KL1PR0601MB5773.apcprd06.prod.outlook.com
- (2603:1096:820:b1::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C049C69D00;
+	Tue, 12 Mar 2024 07:55:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710230112; cv=none; b=IWL6cmYSUMLfGvIPCWwzmOfvNXx9vjSNf7A2HXr/jTNIsRIAXdlVSueBT24kKInQ8umqkgHZ4QkJ5Fp1COfhpy2x5PU+nvAyuOGPNzkfyhcEaQD5/YK7HLixEYgKGp2glZdrx0yXhy0EhTRB117VTQ//RSW8OMYANtMIAFnqDqE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710230112; c=relaxed/simple;
+	bh=nW54QLvxLUE86tN4pbBK4afc+iEkoEeu461+c2/5ZnA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mzcz/bVlXGNh2483Ff2d3HgoK5NqUjitepLWpFpvo6413JQNYR1V7hG5mqMNXyKBCFdL7y3wKwoVPAoIG4eoBmm/+Lt3ZxkXIFHIbgA1u2Ip4bxTB/fefecT1aAwvotLJxVRaLxeZMkLnOf1XelXDm5LZ2XNT8NrmKOxywPQQso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mqT7zjqC; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42C7lMZ4027833;
+	Tue, 12 Mar 2024 07:54:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=o7LxOeWqm1j/kchabVECauOS2s34gMo+ClRG1T94Dwo=;
+ b=mqT7zjqCnyR2F08mJRj3tzxGfRCrVj4L3FM1d2i6gzwTjPUy4bEG9G50YVV8/aNgFS+T
+ H1unTaQFp+UWHYAXu2mMmL2ixhiDeW9VPKY61UPlsPtbOgumwzGr1dgexv8b1YOnAkDs
+ /VmVU+QKGfxTx67IbXceE7EIa+uADjCMQd51rkcS+wCwhLd7T1gcm0Lgj0gWKKNYpEfL
+ vq9sEZ+kXTC0OdK8EATFbes4Co9ToVLU5kgdV1H9098Q66pjjNbz7x8dvsMMrVDKZylI
+ 9xx5OS5NHWnIDVABxq6ufvLQ4R1Fa3EgKPNIgOpkal1F+Ssv9RoT6TagitDzV5KKTFi2 oA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtjyag3eu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 07:54:53 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42C7nPaf003131;
+	Tue, 12 Mar 2024 07:54:53 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtjyag3ea-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 07:54:52 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42C6qVFJ020437;
+	Tue, 12 Mar 2024 07:54:51 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws3kkwj8h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 07:54:51 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42C7slMM37486896
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 12 Mar 2024 07:54:49 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 78A3A2004D;
+	Tue, 12 Mar 2024 07:54:47 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 370F52004B;
+	Tue, 12 Mar 2024 07:54:47 +0000 (GMT)
+Received: from [9.152.224.118] (unknown [9.152.224.118])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 12 Mar 2024 07:54:47 +0000 (GMT)
+Message-ID: <fd7e4c2f-0d8f-4b1c-86af-9bf472cb7d0f@linux.ibm.com>
+Date: Tue, 12 Mar 2024 08:54:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: KL1PR0601MB5773:EE_|TYZPR06MB5250:EE_
-X-MS-Office365-Filtering-Correlation-Id: 63b509c5-8925-4496-f8cb-08dc42698fc9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	LQp3+xKCNSK2igTEqpiU3VhTckpTb7cwgW40iEdlXjiPTz4y8PcjgHZnFLE+AtxUCfJijXS2ULDtWKrkyusatfZsZZmFj5Yg9xZG0PtvMSBOW4bbtDAHEaBEStqtzbfOCwZxmuo0XTb93FINxtxiqPqR6Fnr0M9MtmZN7fvd4k0cWhtftbhpOUGlw1RF6PTFb21zrcgIQSBI87IA9cjuNv5PcRGTR54xCMgXYHnIeNIiPCL4/+7EnwvqjqIVRt59BC9QQYbwhnonUIk1DNcXOsgvI8ioeHEchki+Dniwxa6Wez5TUwawuj5QICxfph4H0Ir78rsDu2H6Wv4PSFmewF28gFc+vyePv+K5DP2oVdjRCMVrVjesBxu//R8P1HGiboTdf6ZXx+nuGO4PTpfjVi5XLPtA9zRKELbEYj2f1E7C7dYkuIQBcL8jaiF3QYGJg1Zr7xy0Dg1WSJ3Vu9axHaGaBJTmC20MmK4CHgaq4015ywp9ODAN+S74JYjaH2XmLU2/UK9aUUmVk0/UEYxzQ+SHS5T7Vd6W0GlRnfcHFpQOo0W6jo7OLdtDxSINNnN1gKX4z5BxmNdqQ7YW4Ml8VsDJDX2k7mM8W/ThI3ZlRyaVHr06d8pmbyEU8veHDE1WLp8ss2QPCRvWcVjjmxutn5+U1TQaGx2X2tUi3im6+iKJQS420uhVvBrM6/KHBtiB0rUTQGZRUsY5YKe1nP7bZl84jvGZrsDLefqKMB/XAMM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB5773.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(376005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?kaMAGe4NFOaCfSoxrEuEeT8T853kctmr8Zw0bJCeP5c5+m+u27/+ngrKTKdN?=
- =?us-ascii?Q?BUI1l2JvGHTP4RGNbwDyCtnVkzOHKYW4LO7XcgTZWtHPK1SvEg5HML5M9zAj?=
- =?us-ascii?Q?Dg4AiXzfxNpIguSx1mX2zNTWDakKIHSilyMNcdJn4Mf+OpcXBwawFoFaFZj4?=
- =?us-ascii?Q?OgcSiJZHFqyymiQ4Co2734VbgUeYXL51P6OmNuJ+UHMwtLotaRZijGbbB+Q6?=
- =?us-ascii?Q?2//pVjO16ZoZ/7giPogCxtu21HPVGxo9G1yP5TWNKcPuQiOQgdFx6iP36tpE?=
- =?us-ascii?Q?Qz1SdXJ8nyLxjvVrZlfAT3l3kt5r9X0nGSREAY49llz6/DG6tRIOwf07+nfE?=
- =?us-ascii?Q?2+1RvalZ2HU4eMnKe6RFyYT56RTy4k2PkMYdttljlsvInbfiQ3bbqO+LNcIP?=
- =?us-ascii?Q?opxeOr4AN9N19k6lHZlmnmZb2T5fiGL6et941Mk5haQfzUuQYmamGhFZJEXi?=
- =?us-ascii?Q?wnqmFXGu3V10IJVyPguyp7kqSY1cU6/G4A0yTtvZhTme4NlryUXNAg93md2G?=
- =?us-ascii?Q?rKjhzxMLCaRgh6R1pw8LvFDh1Ti+l8MfSdYYLB5kls7BwBcnIcnDXT59KLVv?=
- =?us-ascii?Q?c2+FA5SJo21XdhoIR41SWkxY/A8UUfPBoUNyvINNMJwrNbFZx079hXs+zPW5?=
- =?us-ascii?Q?D39PnJdxo8ifPMsvHj06HrZjru4w8HorJkHWFV7frS6oBzMaHG7on+eJdfeb?=
- =?us-ascii?Q?g3tDfc6a0DRuSIHpTmYbRSdVKpQ+EJT6IErQb/vXQw7kIrP3NQPWzDCWfV6a?=
- =?us-ascii?Q?j8nTWZ88J6xJ74iTPI36bwTQgLrktF9i0MIsRurLv6OdYXEffylz5hK9bmgw?=
- =?us-ascii?Q?NN1lDsJRR+c3CnTqjIWcmw52W3xh/XcZUk8q29Lb9tW6SI5+PYR7Sd2IFfHL?=
- =?us-ascii?Q?S4p9nolP7EReaCVuQ6sFpoA5/xGjlz763RxbIIJfSjtkwDa9EVyFOmhoCGfw?=
- =?us-ascii?Q?gRaJiLhi7djq3/W595gOZDTDXPcb22DTsHNZtz3OIC2pTrFt3GIZqtcQSvWL?=
- =?us-ascii?Q?ISq3bYm1z/UGe498o9mTj3nvmfz/vYdDIwjB4LRRD4B5foY63w1fHJAknlh2?=
- =?us-ascii?Q?VYW7E4mSwXVoj6CJoFqSxaDEFqzt8nqdzdAbWPW0nNo20Tp5DHmVmHLg0rY+?=
- =?us-ascii?Q?gOq13e3mO0vV5MdgHs7hlEd2+6YciZSkWW5bA1hsZn5hEGZwgCvzam9JKJuj?=
- =?us-ascii?Q?URZhDrCzDYtv3rcS5RqVutiXX6RshlUQRWFPKwHYbWkbrmBEatAmq8pECD9V?=
- =?us-ascii?Q?PQKpNUvMe8o/TqcV6IAnKhCBfdqECKZek97IgtTs0lcN8OMMdiHMSvqibFA/?=
- =?us-ascii?Q?kYMa5mBuZ+PUjExawoOr/ofglhs1M/tGzuqm4xscfhVnYYLQDSh+8oKUcor9?=
- =?us-ascii?Q?MSVQc7CUP4LCxYSlC2SXiq9abXadkGAc/6FLpfT4qWVNOl3uNcicWRzLLxY8?=
- =?us-ascii?Q?nqXczBiEInzO71XZpz1SOJ/M1GdK+63T5gJf9GOzyq7NXOc/FA9Gj6cu0YGZ?=
- =?us-ascii?Q?wqgp989HTCyBSViYXbnNN3r+x8oHD2liRGpc+txT8NKr2vstrj6zamYwOcuQ?=
- =?us-ascii?Q?eUQtAVjPRyp48c74GeO6MEV/X5OHp5ID45G35+b9?=
-X-OriginatorOrg: jaguarmicro.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63b509c5-8925-4496-f8cb-08dc42698fc9
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB5773.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 07:53:53.2619
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R7KeTaF+PSrHFsecuGEm/RpGG8l1w7bmshQFYY+hviJstNvaMi2A4OPXDMWpk+LCy0/zTc0BCSV77r6V60rkUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5250
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] net/smc: Avoid -Wflex-array-member-not-at-end
+ warnings
+To: Wen Gu <guwen@linux.alibaba.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+References: <ZeIhOT44ON5rjPiP@neat>
+ <71aa847b-2edc-44a2-beb7-3610bf744937@linux.alibaba.com>
+ <1cb9a110-c877-4420-9b23-1e7980f1300a@linux.ibm.com>
+ <82c1dc9e-d5b6-40e3-9d81-d18cc270724b@embeddedor.com>
+ <d145d2c7-5cbd-4da5-be14-b25d00baad19@linux.alibaba.com>
+From: Jan Karcher <jaka@linux.ibm.com>
+Organization: IBM - Network Linux on Z
+In-Reply-To: <d145d2c7-5cbd-4da5-be14-b25d00baad19@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NByB9XodbPGvXpdRdzVkkLmBTagFQ-jG
+X-Proofpoint-GUID: qXaI_Ah3RyMXBY4DUhIKKhqD2zXuQRoa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_06,2024-03-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 priorityscore=1501
+ bulkscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403120060
 
-Below statement from mkdir_mondata_subdir function will loss precision,
-because it assigns int to 14 bits bitfield.
-	priv.u.domid = d->id;
 
-On some platforms(e.g.,x86), the max cache_id is the amount of L3 caches,
-so it is not in the range of 0x3fff. But some platforms use higher
-cache_id, e.g., arm uses cache_id as locator for cache MSC. This will
-cause below issue if cache_id > 0x3fff likes:
-/sys/fs/resctrl/mon_groups/p1/mon_data/mon_L3_1048564 # cat llc_occupancy
-cat: read error: No such file or directory
 
-This is the call trace when cat llc_occupancy:
-rdtgroup_mondata_show()
-	domid = md.u.domid
-	d = resctrl_arch_find_domain(r, domid)
+On 11/03/2024 11:59, Wen Gu wrote:
+> 
+> 
+> On 2024/3/8 07:46, Gustavo A. R. Silva wrote:
+>>
+>>
+>> On 3/7/24 02:17, Jan Karcher wrote:
+>>>
+>>>
+>>> On 04/03/2024 10:00, Wen Gu wrote:
+>>>>
+>>>>
+>>>> On 2024/3/2 02:40, Gustavo A. R. Silva wrote:
+>>>>> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+>>>>> ready to enable it globally.
+>>>>>
+>>>>> There are currently a couple of objects in `struct 
+>>>>> smc_clc_msg_proposal_area`
+>>>>> that contain a couple of flexible structures:
+>>>>>
+>>>
+>>> Thank you Gustavo for the proposal.
+>>> I had to do some reading to better understand what's happening and 
+>>> how your patch solves this.
+>>>
+>>>>> struct smc_clc_msg_proposal_area {
+>>>>>     ...
+>>>>>     struct smc_clc_v2_extension             pclc_v2_ext;
+>>>>>     ...
+>>>>>     struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
+>>>>>     ...
+>>>>> };
+>>>>>
+>>>>> So, in order to avoid ending up with a couple of flexible-array 
+>>>>> members
+>>>>> in the middle of a struct, we use the `struct_group_tagged()` 
+>>>>> helper to
+>>>>> separate the flexible array from the rest of the members in the 
+>>>>> flexible
+>>>>> structure:
+>>>>>
+>>>>> struct smc_clc_smcd_v2_extension {
+>>>>>          struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
+>>>>>                              u8 system_eid[SMC_MAX_EID_LEN];
+>>>>>                              u8 reserved[16];
+>>>>>          );
+>>>>>          struct smc_clc_smcd_gid_chid gidchid[];
+>>>>> };
+>>>>>
+>>>>> With the change described above, we now declare objects of the type of
+>>>>> the tagged struct without embedding flexible arrays in the middle of
+>>>>> another struct:
+>>>>>
+>>>>> struct smc_clc_msg_proposal_area {
+>>>>>          ...
+>>>>>          struct smc_clc_v2_extension_hdr        pclc_v2_ext;
+>>>>>          ...
+>>>>>          struct smc_clc_smcd_v2_extension_hdr    pclc_smcd_v2_ext;
+>>>>>          ...
+>>>>> };
+>>>>>
+>>>>> We also use `container_of()` when we need to retrieve a pointer to the
+>>>>> flexible structures.
+>>>>>
+>>>>> So, with these changes, fix the following warnings:
+>>>>>
+>>>>> In file included from net/smc/af_smc.c:42:
+>>>>> net/smc/smc_clc.h:186:49: warning: structure containing a flexible 
+>>>>> array member is not at the end of another structure 
+>>>>> [-Wflex-array-member-not-at-end]
+>>>>>    186 |         struct smc_clc_v2_extension             pclc_v2_ext;
+>>>>>        |                                                 ^~~~~~~~~~~
+>>>>> net/smc/smc_clc.h:188:49: warning: structure containing a flexible 
+>>>>> array member is not at the end of another structure 
+>>>>> [-Wflex-array-member-not-at-end]
+>>>>>    188 |         struct smc_clc_smcd_v2_extension pclc_smcd_v2_ext;
+>>>>>        |                                                 
+>>>>> ^~~~~~~~~~~~~~~~
+>>>>>
+>>>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>>>> ---
+>>>>>   net/smc/smc_clc.c |  5 +++--
+>>>>>   net/smc/smc_clc.h | 24 ++++++++++++++----------
+>>>>>   2 files changed, 17 insertions(+), 12 deletions(-)
+>>>>>
+>>>>> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+>>>>> index e55026c7529c..3094cfa1c458 100644
+>>>>> --- a/net/smc/smc_clc.c
+>>>>> +++ b/net/smc/smc_clc.c
+>>>>> @@ -853,8 +853,9 @@ int smc_clc_send_proposal(struct smc_sock *smc, 
+>>>>> struct smc_init_info *ini)
+>>>>>       pclc_smcd = &pclc->pclc_smcd;
+>>>>>       pclc_prfx = &pclc->pclc_prfx;
+>>>>>       ipv6_prfx = pclc->pclc_prfx_ipv6;
+>>>>> -    v2_ext = &pclc->pclc_v2_ext;
+>>>>> -    smcd_v2_ext = &pclc->pclc_smcd_v2_ext;
+>>>>> +    v2_ext = container_of(&pclc->pclc_v2_ext, struct 
+>>>>> smc_clc_v2_extension, _hdr);
+>>>>> +    smcd_v2_ext = container_of(&pclc->pclc_smcd_v2_ext,
+>>>>> +                   struct smc_clc_smcd_v2_extension, hdr);
+>>>>>       gidchids = pclc->pclc_gidchids;
+>>>>>       trl = &pclc->pclc_trl;
+>>>>> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
+>>>>> index 7cc7070b9772..5b91a1947078 100644
+>>>>> --- a/net/smc/smc_clc.h
+>>>>> +++ b/net/smc/smc_clc.h
+>>>>> @@ -134,12 +134,14 @@ struct smc_clc_smcd_gid_chid {
+>>>>>                */
+>>>>>   struct smc_clc_v2_extension {
+>>>>> -    struct smc_clnt_opts_area_hdr hdr;
+>>>>> -    u8 roce[16];        /* RoCEv2 GID */
+>>>>> -    u8 max_conns;
+>>>>> -    u8 max_links;
+>>>>> -    __be16 feature_mask;
+>>>>> -    u8 reserved[12];
+>>>>> +    struct_group_tagged(smc_clc_v2_extension_hdr, _hdr,
+>>>>> +        struct smc_clnt_opts_area_hdr hdr;
+>>>>> +        u8 roce[16];        /* RoCEv2 GID */
+>>>>> +        u8 max_conns;
+>>>>> +        u8 max_links;
+>>>>> +        __be16 feature_mask;
+>>>>> +        u8 reserved[12];
+>>>>> +    );
+>>>>>       u8 user_eids[][SMC_MAX_EID_LEN];
+>>>>>   };
+>>>>> @@ -159,8 +161,10 @@ struct smc_clc_msg_smcd {    /* SMC-D GID 
+>>>>> information */
+>>>>>   };
+>>>>>   struct smc_clc_smcd_v2_extension {
+>>>>> -    u8 system_eid[SMC_MAX_EID_LEN];
+>>>>> -    u8 reserved[16];
+>>>>> +    struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
+>>>>> +        u8 system_eid[SMC_MAX_EID_LEN];
+>>>>> +        u8 reserved[16];
+>>>>> +    );
+>>>>>       struct smc_clc_smcd_gid_chid gidchid[];
+>>>>>   };
+>>>>> @@ -183,9 +187,9 @@ struct smc_clc_msg_proposal_area {
+>>>>>       struct smc_clc_msg_smcd            pclc_smcd;
+>>>>>       struct smc_clc_msg_proposal_prefix    pclc_prfx;
+>>>>>       struct smc_clc_ipv6_prefix 
+>>>>> pclc_prfx_ipv6[SMC_CLC_MAX_V6_PREFIX];
+>>>>> -    struct smc_clc_v2_extension        pclc_v2_ext;
+>>>>> +    struct smc_clc_v2_extension_hdr        pclc_v2_ext;
+>>>>>       u8            user_eids[SMC_CLC_MAX_UEID][SMC_MAX_EID_LEN];
+>>>>> -    struct smc_clc_smcd_v2_extension    pclc_smcd_v2_ext;
+>>>>> +    struct smc_clc_smcd_v2_extension_hdr    pclc_smcd_v2_ext;
+>>>>>       struct smc_clc_smcd_gid_chid
+>>>>>                   pclc_gidchids[SMCD_CLC_MAX_V2_GID_ENTRIES];
+>>>>>       struct smc_clc_msg_trail        pclc_trl;
+>>>>
+>>>> Thank you! Gustavo. This patch can fix this warning well, just the name
+>>>> '*_hdr' might not be very accurate, but I don't have a good idea ATM.
+>>>
+>>> I agree. Should we chose this option we should come up for a better 
+>>> name.
+>>>
+>>>>
+>>>> Besides, I am wondering if this can be fixed by moving
+>>>> user_eids of smc_clc_msg_proposal_area into smc_clc_v2_extension,
+>>>> and
+>>>> pclc_gidchids of smc_clc_msg_proposal_area into 
+>>>> smc_clc_smcd_v2_extension.
+>>>>
+>>>> so that we can avoid to use the flexible-array in smc_clc_v2_extension
+>>>> and smc_clc_smcd_v2_extension.
+>>>
+>>> I like the idea and put some thought into it. The only thing that is 
+>>> not perfectly clean IMO is the following:
+>>> By the current definition it is easily visible that we are dealing 
+>>> with a variable sized array. If we move them into the structs one 
+>>> could think they are always at their MAX size which they are not.
+>>> E.g.: An incoming proposal can have 0 UEIDs indicated by the eid_cnt.
+>>> That said nothing a comment can't fix.
+>>>
+>>>  From what i have seen the offset and length calculations regarding 
+>>> the "real" size of those structs is fine with your proposal.
+>>>
+>>> Can you verify that your changes also resolve the warnings?
+>>
+>> I can confirm that the changes Wen Gu is proposing also resolve the 
+>> warnings.
+>>
+>> Wen,
+>>
+>> If you send a proper patch, you can include the following tags:
+>>
+>> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> Build-tested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>
+> 
+> Hi Gustavo, thank you for the confirmation that my proposal can fix the 
+> warning.
+> 
+> But I found that I may have something missed in my proposal when I think 
+> further.
+> My proposal changed the sizes of struct smc_clc_v2_extension and 
+> smc_clc_smcd_v2_extension,
+> and some places in SMC need them, such as the fill of kvec in 
+> smc_clc_send_proposal().
+> 
+> So my proposal may involve more changes to current SMC code, and I think 
+> it is
+> not as clean as your solution. So I perfer yours now.
 
-d is null here because of lossing precision
+Hi Wen Gu,
 
-Signed-off-by: Rex Nie <rex.nie@jaguarmicro.com>
----
- fs/resctrl/internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+you're right. I missed that the offset calculation is broken with your 
+proposal since the full size of the array is already included in this 
+case which means we would have to subtract the empty slots instead of 
+adding the full ones.
+My bad. Thinking about adding a testcase to sxplicit check the size of 
+the CLC Messages send in the future.
 
-diff --git a/fs/resctrl/internal.h b/fs/resctrl/internal.h
-index 7a6f46b4edd0..096317610949 100644
---- a/fs/resctrl/internal.h
-+++ b/fs/resctrl/internal.h
-@@ -94,7 +94,7 @@ union mon_data_bits {
- 	struct {
- 		unsigned int rid		: 10;
- 		enum resctrl_event_id evtid	: 8;
--		unsigned int domid		: 14;
-+		u32				domid;
- 	} u;
- };
- 
--- 
-2.34.1
+> 
+> And as for the name, I think maybe we can use '*_elems' as a suffix, at 
+> least it
+> is unambiguous. So it will be smc_clc_v2_extension_elems and 
+> smc_clc_smcd_v2_extension_elems.
+> 
+> 
+> Jan, what do you think of the name '*_elems' ?
 
+Hmm... I think it is way better than priv. One more proposal from my 
+side would be *_fixed since this is the fixed content and not variable. 
+I'm open for both.
+
+Which one would you prefer more?
+
+> 
+> Thanks!
+> 
+>> Thanks!
+>> -- 
+>> Gustavo
+>>
+>>>
+>>> [...]
+>>>
+>>>>   };
+>>>>
+>>>>
+>>>> Thanks!
+>>>> Wen Gu
+>>>
+>>> Thanks you
+>>> - Jan
 
