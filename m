@@ -1,185 +1,226 @@
-Return-Path: <linux-kernel+bounces-99753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3461878CB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:03:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F00D878CBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:06:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6988B21905
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:03:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11A14281DDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1698CAD22;
-	Tue, 12 Mar 2024 02:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0A979CF;
+	Tue, 12 Mar 2024 02:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R6FdAWUk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="cXcf1zwv"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20298F40;
-	Tue, 12 Mar 2024 02:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD741C2E
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710209000; cv=none; b=u1lq6XS+0FLUlyXYHEtHQS6PU6Ifnb+opHn93gKu4FsFc7wsM0pw2AtHlHtDUT+Kh7ZHsVAjCImjKOM2CYcKO5EukOKrRh27Od1rqRK5+4XSLCOXFw49LwHZNfGQroaarkzLtM3kY/7qK8QeEdxgqhgXPrQf3QoHJSE+SlKO8KY=
+	t=1710209149; cv=none; b=APP5z7iCwCwH9alVJS38+7BEYOFqKAEy/OS59V9smC6oeXVUZW/ZGJ3wiW8kazdQ77XnOUqZxeIlCvc/aXEHOVmMIRBbghfQx48BAE3BzL6Ruw7ykct0OJN9jMphW5B8gxpcxd/CPTenU1h2UfnOxGjiuXlvHJvcz0FNLDcLY1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710209000; c=relaxed/simple;
-	bh=F1UWRYBFJdCW+74ZqeqL7g6SBFDCsG5OQ97xi6+pv1Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RzpfEIbF6kk11ElRKpvdrbhC3SMz64o5hZTWPGulnFzqdG9+zgGo0tgvVyicr5t9GeHWMU/TTZUMHIOKaubsxBnKynnSz5X3qm8sHrefywD5N3mDccI+F8CCGt83XBL/RXeR7ouD1qiz+pw2k1Yekb2HgUo2yH2JMJcG96Nwdo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R6FdAWUk; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710208998; x=1741744998;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F1UWRYBFJdCW+74ZqeqL7g6SBFDCsG5OQ97xi6+pv1Q=;
-  b=R6FdAWUkbmYMqODVqPipF1wFuyCGIHE/HW8hP930mu9x2niIq0T/Ui96
-   adSBHM6WWgP/Dl4hhQjtIXIyDL/dwR8SvSp786AK+PO72s+WUK63Cmq8X
-   ySAYujxsHnwBG521yB9OSuY5PbbFXhn9Bjjhi/ISYm92BnaTQK9AT1Z0L
-   myDw0P2Mm6RquxImJIXMs1pYwZ+0uU9fNo7QL2q+nabyM/KXAZOpcQSeV
-   U575GsoXrS/hJqvRHiyuUd4GfYodIfR2okmRNCy7HBkuq4Mdk+wSnLI75
-   g80guP23sv374s7OhtNb47wCPQdcPNrCx31LM+0nshPZltmjVV6n9dC8U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="5506654"
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="5506654"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 19:03:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="16062904"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 19:03:16 -0700
-Date: Mon, 11 Mar 2024 19:03:15 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chen Yu <yu.c.chen@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 080/130] KVM: TDX: restore host xsave state when exit
- from the guest TD
-Message-ID: <20240312020315.GF935089@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <2894ed10014279f4b8caab582e3b7e7061b5dad3.1708933498.git.isaku.yamahata@intel.com>
- <Zel7kFS31SSVsSaJ@chenyu5-mobl2>
- <20240308205838.GA713729@ls.amr.corp.intel.com>
- <ZeyOR/YaubFwyiOC@chenyu5-mobl2>
+	s=arc-20240116; t=1710209149; c=relaxed/simple;
+	bh=u+cghnX8IkuhizDm1mtP5lcke/YetyNGJY33fxG2Q9s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LqjUFaRF3Qc8dOKqtJSCJesdVQ0R0zo3L8+UWocrpSs36vy8U68TzHVjkmHjf2JEIggUuvyCTQs7nY6YO9eNPjuDMFDhAMY4ICrHOQxhDZ/I6mNWLPeuvDU1jmIixxPHjCrEMHXerEmECKIha0H/YqcJ7FwfvgR9+BlLHNiMu/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=cXcf1zwv; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29b7b9a4908so2232693a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:05:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1710209146; x=1710813946; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nuFUN/hOP8k7Y+FzC49ZRi5HcBAhtMCwCDKyd6VJ7Rk=;
+        b=cXcf1zwveq2BZWd/hk/hHFZ2bcBAjvdrll3461JJbiXfEV9/3pMGWlPuG/pNBmFeWn
+         efLes1S0DvG6ddCay1haGI+KNrUIGrvHtaGEQn2QwONhSa59Vtp7qwluT7qkTkskd1bt
+         ZEVE1tLa/71CjFipBFpNl4IIiO1ydlP+FnQGuct76Bj2d7vsiG2rcaoD+Yac0BDlhTmC
+         jOVjwt/UyyYGtGxS+6Ipa4w1EyBEixkiT8ksDCT7lM/4fPpepGC7JuMD+KQLUGUN5CFr
+         yL4YcFEjbwIvbbEI22rhvTobOMG7tWg+ce70c1y+mivokvwmGYcIurpPA9a2Hg/LdMC5
+         E81g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710209146; x=1710813946;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nuFUN/hOP8k7Y+FzC49ZRi5HcBAhtMCwCDKyd6VJ7Rk=;
+        b=vNReiJw54zXgKmnkjhywRJYP3r06WnppTe8kHRH9iOqEcBWWHzayQQsU8276FvzcPP
+         u+WI0ojNukp3Y4HvAAjsWbDhsqDTPOfL9a36skZKitoxPz8YRdxldyle3cXelvrtEtTk
+         OEB9HoRdVjOlX7PTrpT77A+JLzbgu+oNl9Ug7fREX2mTFpZj0tut3EAwywpzGPPBAYic
+         4i8GBC1OQ/pxrCeLY5hIX/++ZslcXR71neDbacae03DP2r+dQ4qqi30OmDl3WHpYqz+U
+         o1QL36HROTXHLGjyKBj6MjOwEVWW9XbnRQlAmzBj5z9Q5VJOAr7eb6Db4Nr9xcuzeSW2
+         sypg==
+X-Forwarded-Encrypted: i=1; AJvYcCXxWxh3udpSJToO4VgM/lDZcM3C9R0EGPFRLkDPal8AOeB/68FVzfS5E4p4VSoUHSJKiKP/XzpLkzO48ANoz8SM3eaHpQNWSVbiLgwT
+X-Gm-Message-State: AOJu0YySZOajI4mpcVN10ktTJIIAq4tL+tUbiCGWzJDV+teNYdaQ76tr
+	WTm4IevZYihc5L0ftMp5yKqOK5QNaxTUg28y2MW6Njam7T40Vj/BxckkuWecZ2MGwW7a7CHjmO9
+	ddsHCLZL+nk7MLFhPTqTbOCNc+DMorT67I9plsw==
+X-Google-Smtp-Source: AGHT+IF0WyYVLRMqbAbNjbiNEwXcYruNNPa78bRdIpKnuRBjtBqbGNQqz6kUmi5cKSh3oZKwaTTzkPnN9f3bSgCjkEM=
+X-Received: by 2002:a17:90b:46d3:b0:29b:ae33:6ef2 with SMTP id
+ jx19-20020a17090b46d300b0029bae336ef2mr6174052pjb.38.1710209146474; Mon, 11
+ Mar 2024 19:05:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZeyOR/YaubFwyiOC@chenyu5-mobl2>
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-8-dongmenglong.8@bytedance.com> <CAADnVQK4tdefa3s=sim69Sc+ztd-hHohPEDXaUNVTU-mLNYUiw@mail.gmail.com>
+In-Reply-To: <CAADnVQK4tdefa3s=sim69Sc+ztd-hHohPEDXaUNVTU-mLNYUiw@mail.gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Tue, 12 Mar 2024 10:05:35 +0800
+Message-ID: <CALz3k9iabeOwHSrPb9mkfCuOebanh3+bAfi7xh3kBBN0DzHC3A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 7/9] libbpf: don't free btf if
+ program of multi-link tracing existing
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 10, 2024 at 12:28:55AM +0800,
-Chen Yu <yu.c.chen@intel.com> wrote:
+On Tue, Mar 12, 2024 at 9:55=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Mar 11, 2024 at 2:35=E2=80=AFAM Menglong Dong
+> <dongmenglong.8@bytedance.com> wrote:
+> >
+> > By default, the kernel btf that we load during loading program will be
+> > freed after the programs are loaded in bpf_object_load(). However, we
+> > still need to use these btf for tracing of multi-link during attaching.
+> > Therefore, we don't free the btfs until the bpf object is closed if any
+> > bpf programs of the type multi-link tracing exist.
+> >
+> > Meanwhile, introduce the new api bpf_object__free_btf() to manually fre=
+e
+> > the btfs after attaching.
+> >
+> > Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c   | 47 ++++++++++++++++++++++++++++++----------
+> >  tools/lib/bpf/libbpf.h   |  2 ++
+> >  tools/lib/bpf/libbpf.map |  1 +
+> >  3 files changed, 38 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 567ad367e7aa..fd5428494a7e 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -8267,6 +8267,39 @@ static int bpf_object_prepare_struct_ops(struct =
+bpf_object *obj)
+> >         return 0;
+> >  }
+> >
+> > +void bpf_object__free_btfs(struct bpf_object *obj)
+> > +{
+> > +       int i;
+> > +
+> > +       /* clean up module BTFs */
+> > +       for (i =3D 0; i < obj->btf_module_cnt; i++) {
+> > +               close(obj->btf_modules[i].fd);
+> > +               btf__free(obj->btf_modules[i].btf);
+> > +               free(obj->btf_modules[i].name);
+> > +       }
+> > +       free(obj->btf_modules);
+> > +       obj->btf_modules =3D NULL;
+> > +       obj->btf_module_cnt =3D 0;
+> > +
+> > +       /* clean up vmlinux BTF */
+> > +       btf__free(obj->btf_vmlinux);
+> > +       obj->btf_vmlinux =3D NULL;
+> > +}
+> > +
+> > +static void bpf_object_early_free_btf(struct bpf_object *obj)
+> > +{
+> > +       struct bpf_program *prog;
+> > +
+> > +       bpf_object__for_each_program(prog, obj) {
+> > +               if (prog->expected_attach_type =3D=3D BPF_TRACE_FENTRY_=
+MULTI ||
+> > +                   prog->expected_attach_type =3D=3D BPF_TRACE_FEXIT_M=
+ULTI ||
+> > +                   prog->expected_attach_type =3D=3D BPF_MODIFY_RETURN=
+_MULTI)
+> > +                       return;
+> > +       }
+> > +
+> > +       bpf_object__free_btfs(obj);
+> > +}
+> > +
+> >  static int bpf_object_load(struct bpf_object *obj, int extra_log_level=
+, const char *target_btf_path)
+> >  {
+> >         int err, i;
+> > @@ -8307,18 +8340,7 @@ static int bpf_object_load(struct bpf_object *ob=
+j, int extra_log_level, const ch
+> >         /* clean up fd_array */
+> >         zfree(&obj->fd_array);
+> >
+> > -       /* clean up module BTFs */
+> > -       for (i =3D 0; i < obj->btf_module_cnt; i++) {
+> > -               close(obj->btf_modules[i].fd);
+> > -               btf__free(obj->btf_modules[i].btf);
+> > -               free(obj->btf_modules[i].name);
+> > -       }
+> > -       free(obj->btf_modules);
+> > -
+> > -       /* clean up vmlinux BTF */
+> > -       btf__free(obj->btf_vmlinux);
+> > -       obj->btf_vmlinux =3D NULL;
+> > -
+> > +       bpf_object_early_free_btf(obj);
+> >         obj->loaded =3D true; /* doesn't matter if successfully or not =
+*/
+> >
+> >         if (err)
+> > @@ -8791,6 +8813,7 @@ void bpf_object__close(struct bpf_object *obj)
+> >         usdt_manager_free(obj->usdt_man);
+> >         obj->usdt_man =3D NULL;
+> >
+> > +       bpf_object__free_btfs(obj);
+> >         bpf_gen__free(obj->gen_loader);
+> >         bpf_object__elf_finish(obj);
+> >         bpf_object_unload(obj);
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index 5723cbbfcc41..c41a909ea4c1 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -299,6 +299,8 @@ LIBBPF_API struct bpf_program *
+> >  bpf_object__find_program_by_name(const struct bpf_object *obj,
+> >                                  const char *name);
+> >
+> > +LIBBPF_API void bpf_object__free_btfs(struct bpf_object *obj);
+> > +
+>
+> It shouldn't be exported.
+> libbpf should clean it up when bpf_object is freed.
 
-> On 2024-03-08 at 12:58:38 -0800, Isaku Yamahata wrote:
-> > On Thu, Mar 07, 2024 at 04:32:16PM +0800,
-> > Chen Yu <yu.c.chen@intel.com> wrote:
-> > 
-> > > On 2024-02-26 at 00:26:22 -0800, isaku.yamahata@intel.com wrote:
-> > > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > > 
-> > > > On exiting from the guest TD, xsave state is clobbered.  Restore xsave
-> > > > state on TD exit.
-> > > > 
-> > > > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > > ---
-> > > > v19:
-> > > > - Add EXPORT_SYMBOL_GPL(host_xcr0)
-> > > > 
-> > > > v15 -> v16:
-> > > > - Added CET flag mask
-> > > > 
-> > > > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > > ---
-> > > >  arch/x86/kvm/vmx/tdx.c | 19 +++++++++++++++++++
-> > > >  arch/x86/kvm/x86.c     |  1 +
-> > > >  2 files changed, 20 insertions(+)
-> > > > 
-> > > > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> > > > index 9616b1aab6ce..199226c6cf55 100644
-> > > > --- a/arch/x86/kvm/vmx/tdx.c
-> > > > +++ b/arch/x86/kvm/vmx/tdx.c
-> > > > @@ -2,6 +2,7 @@
-> > > >  #include <linux/cpu.h>
-> > > >  #include <linux/mmu_context.h>
-> > > >  
-> > > > +#include <asm/fpu/xcr.h>
-> > > >  #include <asm/tdx.h>
-> > > >  
-> > > >  #include "capabilities.h"
-> > > > @@ -534,6 +535,23 @@ void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> > > >  	 */
-> > > >  }
-> > > >  
-> > > > +static void tdx_restore_host_xsave_state(struct kvm_vcpu *vcpu)
-> > > > +{
-> > > > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
-> > > > +
-> > > > +	if (static_cpu_has(X86_FEATURE_XSAVE) &&
-> > > > +	    host_xcr0 != (kvm_tdx->xfam & kvm_caps.supported_xcr0))
-> > > > +		xsetbv(XCR_XFEATURE_ENABLED_MASK, host_xcr0);
-> > > > +	if (static_cpu_has(X86_FEATURE_XSAVES) &&
-> > > > +	    /* PT can be exposed to TD guest regardless of KVM's XSS support */
-> > > > +	    host_xss != (kvm_tdx->xfam &
-> > > > +			 (kvm_caps.supported_xss | XFEATURE_MASK_PT | TDX_TD_XFAM_CET)))
-> > > > +		wrmsrl(MSR_IA32_XSS, host_xss);
-> > > > +	if (static_cpu_has(X86_FEATURE_PKU) &&
-> > > > +	    (kvm_tdx->xfam & XFEATURE_MASK_PKRU))
-> > > > +		write_pkru(vcpu->arch.host_pkru);
-> > > > +}
-> > > 
-> > > Maybe one minor question regarding the pkru restore. In the non-TDX version
-> > > kvm_load_host_xsave_state(), it first tries to read the current setting
-> > > vcpu->arch.pkru = rdpkru(); if this setting does not equal to host_pkru,
-> > > it trigger the write_pkru on host. Does it mean we can also leverage that mechanism
-> > > in TDX to avoid 1 pkru write(I guess pkru write is costly than a read pkru)?
-> > 
-> > Yes, that's the intention.  When we set the PKRU feature for the guest, TDX
-> > module unconditionally initialize pkru.
-> 
-> I see, thanks for the information. Please correct me if I'm wrong, and I'm not sure
-> if wrpkru instruction would trigger the TD exit. The TDX module spec[1] mentioned PKS
-> (protected key for supervisor pages), but does not metion PKU for user pages. PKS
-> is controlled by MSR IA32_PKRS. The TDX module will passthrough the MSR IA32_PKRS
-> write in TD, because TDX module clears the PKS bitmap in VMCS:
-> https://github.com/intel/tdx-module/blob/tdx_1.5/src/common/helpers/helpers.c#L1723
-> so neither write to MSR IA32_PKRS nor wrpkru triggers TD exit.
+Yes, libbpf will clean up the btfs when bpf_object is freed in
+this commit. And I'm trying to offer a way to early free the btfs
+by the users manual to reduce the memory usage. Or, the
+btfs that we opened will keep existing until we close the
+bpf_object.
 
-wrpkru instruction in TDX guest doesn't cause exit to TDX module.  TDX module
-runs with CR4.PKE=0.  The value of pkru doesn't matter to the TDX module.
-When exiting from TDX module to the host VMM, PKRU is initialized to zero with
-xrestr.  So it doesn't matter.
+This is optional, I can remove it if you prefer.
 
-We need to refer to NP-SEAMLDR for the register value for TDX module on
-SEAMCALL. It sets up the register values for TDX module on SEAMCALL.
-
-
-> However, after a second thought, I found that after commit 72a6c08c44e4, the current
-> code should not be a problem, because write_pkru() would first read the current pkru
-> settings and decide whether to update to the pkru register.
-> 
-> > Do you have use case that wrpkru()
-> > (without rdpkru()) is better?
-> 
-> I don't have use case yet. But with/without rdpkru() in tdx_restore_host_xsave_state(),
-> there is no much difference because write_pkru() has taken care of it if I understand
-> correctly.
-
-The code in this hunk is TDX version of kvm_load_guest_xsave_state().  We case 
-follow the VMX case at the moment.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Thanks!
+Menglong Dong
 
