@@ -1,157 +1,234 @@
-Return-Path: <linux-kernel+bounces-99847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C581E878E37
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:44:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3490878E3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:44:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E0A228344C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:44:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D2131F22575
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85CD2DF84;
-	Tue, 12 Mar 2024 05:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="alu+yz/x"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4DB81E48C;
+	Tue, 12 Mar 2024 05:44:27 +0000 (UTC)
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F12720304;
-	Tue, 12 Mar 2024 05:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B14433BD;
+	Tue, 12 Mar 2024 05:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710222252; cv=none; b=RpJyXoQls47gTklAp9W+FDb+213SSHWFEW6Lcsgau5b4awqM6Hf0sGuav7IV+rQ2svEiJIbf3ghweAbpDfP6yKkljieSmfUnsoTpV5EJJdvuFCYbCfhOLWe4KhdsVhlgjswIYq8wcVxpEH6v3sud898JA0Oc6ChPQoBUSS1/CME=
+	t=1710222267; cv=none; b=ul+XYmjzxIHak+SOsQFCXcol4fVuS3EzvTu6iTNnH6SJWN33Ay3CJxB8Ux+AeI6wK1v2eEH2YkvHhf51G7mnRU4BBeg9XQjzqPRv7BouKUsJ4cM3jqIcp0Cv//F2xlYmv5Ec1V1L4nYdfdNKrrFobfLAWX2iURrBrwAZKrQ/UEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710222252; c=relaxed/simple;
-	bh=YUA5xCks3DL01daXHdbAKUuXLaWBHujC/db7Mi41JeM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PZLzNMq3myQmTdR2JiPl/67O/F0tM5KF10qMyO2Dic2L/noSvCtvxFqnbm5XLsk9ozVKFl+ep4Amwspko6dGiUAoHLWQY78+0Mseoh7QT6Tcq3q5ICF7/Yd2KuRhafzFAUbSoY6g+1GpezRX2OaGgk1MBYASqiQvMKS78eh9T88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=alu+yz/x; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710222251; x=1741758251;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=YUA5xCks3DL01daXHdbAKUuXLaWBHujC/db7Mi41JeM=;
-  b=alu+yz/x7b/HBgt+nH+JoDNpiXHA+61J/8+WZC4bXcHPDEBloksE7cid
-   04q2BfUTTBeNf8Y2gm7N1/io+j/8lWUf0r2UYApar2tOKuaXHKlJ8h8z5
-   S4atthKaOqTg1ZvTedQzz/8pj2KccsL4JOvyk/8UjxqUeC2OGZp6itiR2
-   nVOCfHiDi3ieASr00yRk250fkmlQH24LO3C2lLRqfmbhasmxjJJzTS+oS
-   q/s2zwAf/sFSdAL+Q5KHW6NhUB1ZAtgNFQojnKGMC6NoJb8yHquB0xgd+
-   XnWzox3Iqcn4DvmYds9M0cQB6cLG9Z5IIx+zIAb3zMMKKhn3EcFKsNMhy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="5042637"
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="5042637"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 22:44:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="48866108"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.125.242.247]) ([10.125.242.247])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 22:44:07 -0700
-Message-ID: <f1e2d2f7-f5cb-488b-8f9d-647d2f4e7480@linux.intel.com>
-Date: Tue, 12 Mar 2024 13:44:04 +0800
+	s=arc-20240116; t=1710222267; c=relaxed/simple;
+	bh=vsDdw5AoKb7t2Fr1pwSs+CiRh2m89COXoT7sPIXGtCk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cBPhthXDfd4VBOu+TqEulbSTbIZqRU4x2HjnJR3dBuECWPd7aEmhiSQImAcB0XXTFCOC6qi+qiHSbLRFmJjFUkytyARF8eFbs2CsrlrxeiTXnObP8gOddoWA8tDQ3Ew6X5tdY8RNcsoNQRXopaZ7Db8klXcz0ueoLR/2waEbDOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29bbff1505dso1801485a91.0;
+        Mon, 11 Mar 2024 22:44:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710222264; x=1710827064;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mikke4cs+ZZ27PoBUQOVOzuXIffj5gVMRmy7vQDDZeE=;
+        b=crvDmJWMjRjYUJD+7kdWDwblbdE2EhbuSDrs2/7xzooe9nZKt2b2B/nM8y6CFjPimJ
+         JY5qNe18pY/1Ho9+fBY7uIPejKHb3qyqTqTciapmiP0WgvVayyB+51zcCUZ1Cp+Y/qhS
+         Jr1+4mcpvA+h6oEHxiCs9I4MppiVo0ubC7/61hFwZvysU46oYVQgb5McAy8mxZeoNhYl
+         R3/C0eVMO1BrbQxdBnNV5JkW4vgShRrhRH8hqRxarEhP4lASOwvQR4jeto+rsDJgMRCm
+         28f/vARFZ/2kDR7Y+Y+w3iSl50xj6lhYO6/zIHEY4fA5sMSBIWL218VZvD4vfso+tj4e
+         61sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW3BIGTipUvFpYTLoeaXxJQEDNZ/GPbdWdTU3uCpEVPfqhKynB1q1ylUuqRX5SseXLluuXspIGcNyG+1jGIYUlDWP3bMnNU4qwd31lNgqhqxZrPMwOXu/5PGEbbsPL+La3nTD4a9nexnqG0HaxHHA==
+X-Gm-Message-State: AOJu0YxjttC4vNnVi3iFLJYDLj7v63gFVtRFBM5L2CJpqILI3/D6zXtA
+	kf7mSTFEOIwrnDR9pdvLBjcnwA3tNOhp3RdnAIQagZVC/8dTgnyPLRqaKiwJg5onW4vSAdxVRls
+	Jyk+atvnfKSGG9Y1THtPvPazUhyc=
+X-Google-Smtp-Source: AGHT+IGYx33ZxIgxGQWOQHAYzCM45EMtSCfx0vcZ8NbS22ydjPzGF/yHICSx7ZDQqMdZFviAJ/dqszz2s+bT4LtR+EI=
+X-Received: by 2002:a17:90b:4b46:b0:29c:32ad:2fbe with SMTP id
+ mi6-20020a17090b4b4600b0029c32ad2fbemr1207866pjb.49.1710222263698; Mon, 11
+ Mar 2024 22:44:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/16] KVM: x86/mmu: WARN if upper 32 bits of legacy #PF
- error code are non-zero
-To: Sean Christopherson <seanjc@google.com>, Kai Huang <kai.huang@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
- Isaku Yamahata <isaku.yamahata@intel.com>,
- Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>,
- Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>,
- David Matlack <dmatlack@google.com>
-References: <20240228024147.41573-1-seanjc@google.com>
- <20240228024147.41573-7-seanjc@google.com>
- <3779953f-4d07-41d7-b450-bbc2afffaa43@intel.com>
- <ZeEOTxUTSkYnP9Y0@google.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZeEOTxUTSkYnP9Y0@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240311225617.179184-1-retpolanne@posteo.net>
+In-Reply-To: <20240311225617.179184-1-retpolanne@posteo.net>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 11 Mar 2024 22:44:12 -0700
+Message-ID: <CAM9d7civcSVL92SYhssCjYzaomyJNfn0CHWz7ErGwKY-H8_Kfw@mail.gmail.com>
+Subject: Re: [PATCH v2] perf lock contention: skip traceiter functions
+To: Anne Macedo <retpolanne@posteo.net>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 3/1/2024 7:07 AM, Sean Christopherson wrote:
-> On Fri, Mar 01, 2024, Kai Huang wrote:
->>
->> On 28/02/2024 3:41 pm, Sean Christopherson wrote:
->>> WARN if bits 63:32 are non-zero when handling an intercepted legacy #PF,
->> I found "legacy #PF" is a little bit confusing but I couldn't figure out a
->> better name either :-)
-
-Me too.
-
->>
->>> as the error code for #PF is limited to 32 bits (and in practice, 16 bits
->>> on Intel CPUS).  This behavior is architectural, is part of KVM's ABI
->>> (see kvm_vcpu_events.error_code), and is explicitly documented as being
->>> preserved for intecerpted #PF in both the APM:
-
-"intecerpted" -> "intercepted"
-
->>>
->>>     The error code saved in EXITINFO1 is the same as would be pushed onto
->>>     the stack by a non-intercepted #PF exception in protected mode.
->>>
->>> and even more explicitly in the SDM as VMCS.VM_EXIT_INTR_ERROR_CODE is a
->>> 32-bit field.
->>>
->>> Simply drop the upper bits of hardware provides garbage, as spurious
->> "of" -> "if" ?
->>
->>> information should do no harm (though in all likelihood hardware is buggy
->>> and the kernel is doomed).
->>>
->>> Handling all upper 32 bits in the #PF path will allow moving the sanity
->>> check on synthetic checks from kvm_mmu_page_fault() to npf_interception(),
->>> which in turn will allow deriving PFERR_PRIVATE_ACCESS from AMD's
->>> PFERR_GUEST_ENC_MASK without running afoul of the sanity check.
->>>
->>> Note, this also why Intel uses bit 15 for SGX (highest bit on Intel CPUs)
->> "this" -> "this is" ?
->>
->>> and AMD uses bit 31 for RMP (highest bit on AMD CPUs); using the highest
->>> bit minimizes the probability of a collision with the "other" vendor,
->>> without needing to plumb more bits through microcode.
->>>
->>> Signed-off-by: Sean Christopherson <seanjc@google.com>
->>> ---
->>>    arch/x86/kvm/mmu/mmu.c | 7 +++++++
->>>    1 file changed, 7 insertions(+)
->>>
->>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->>> index 7807bdcd87e8..5d892bd59c97 100644
->>> --- a/arch/x86/kvm/mmu/mmu.c
->>> +++ b/arch/x86/kvm/mmu/mmu.c
->>> @@ -4553,6 +4553,13 @@ int kvm_handle_page_fault(struct kvm_vcpu *vcpu, u64 error_code,
->>>    	if (WARN_ON_ONCE(fault_address >> 32))
->>>    		return -EFAULT;
->>>    #endif
->>> +	/*
->>> +	 * Legacy #PF exception only have a 32-bit error code.  Simply drop the
->> "have" -> "has" ?
-> This one I'll fix by making "exception" plural.
+On Mon, Mar 11, 2024 at 3:57=E2=80=AFPM Anne Macedo <retpolanne@posteo.net>=
+ wrote:
 >
-> Thanks much for the reviews!
+> The perf lock contention program currently shows the caller of the locks
+> as __traceiter_contention_begin+0x??. This caller can be ignored, as it i=
+s
+> from the traceiter itself. Instead, it should show the real callers for
+> the locks.
 >
->>> +	 * upper bits as KVM doesn't use them for #PF (because they are never
->>> +	 * set), and to ensure there are no collisions with KVM-defined bits.
->>> +	 */
->>> +	if (WARN_ON_ONCE(error_code >> 32))
->>> +		error_code = lower_32_bits(error_code);
->>>    	vcpu->arch.l1tf_flush_l1d = true;
->>>    	if (!flags) {
->> Reviewed-by: Kai Huang <kai.huang@intel.com>
+> When fiddling with the --stack-skip parameter, the actual callers for
+> the locks start to show up. However, just ignore the
+> __traceiter_contention_begin and the __traceiter_contention_end symbols
+> so the actual callers will show up.
+>
+> Before this patch is applied:
+>
+> sudo perf lock con -a -b -- sleep 3
+>  contended   total wait     max wait     avg wait         type   caller
+>
+>          8      2.33 s       2.28 s     291.18 ms     rwlock:W   __tracei=
+ter_contention_begin+0x44
+>          4      2.33 s       2.28 s     582.35 ms     rwlock:W   __tracei=
+ter_contention_begin+0x44
+>          7    140.30 ms     46.77 ms     20.04 ms     rwlock:W   __tracei=
+ter_contention_begin+0x44
+>          2     63.35 ms     33.76 ms     31.68 ms        mutex   trace_co=
+ntention_begin+0x84
+>          2     46.74 ms     46.73 ms     23.37 ms     rwlock:W   __tracei=
+ter_contention_begin+0x44
+>          1     13.54 us     13.54 us     13.54 us        mutex   trace_co=
+ntention_begin+0x84
+>          1      3.67 us      3.67 us      3.67 us      rwsem:R   __tracei=
+ter_contention_begin+0x44
+>
+> Before this patch is applied - using --stack-skip 5
+>
+> sudo perf lock con --stack-skip 5 -a -b -- sleep 3
+>  contended   total wait     max wait     avg wait         type   caller
+>
+>          2      2.24 s       2.24 s       1.12 s      rwlock:W   do_epoll=
+_wait+0x5a0
+>          4      1.65 s     824.21 ms    412.08 ms     rwlock:W   do_exit+=
+0x338
+>          2    824.35 ms    824.29 ms    412.17 ms     spinlock   get_sign=
+al+0x108
+>          2    824.14 ms    824.14 ms    412.07 ms     rwlock:W   release_=
+task+0x68
+>          1     25.22 ms     25.22 ms     25.22 ms        mutex   cgroup_k=
+n_lock_live+0x58
+>          1     24.71 us     24.71 us     24.71 us     spinlock   do_exit+=
+0x44
+>          1     22.04 us     22.04 us     22.04 us      rwsem:R   lock_mm_=
+and_find_vma+0xb0
+>
+> After this patch is applied:
+>
+> sudo ./perf lock con -a -b -- sleep 3
+>  contended   total wait     max wait     avg wait         type   caller
+>
+>          4      4.13 s       2.07 s       1.03 s      rwlock:W   release_=
+task+0x68
+>          2      2.07 s       2.07 s       1.03 s      rwlock:R   mm_updat=
+e_next_owner+0x50
+>          2      2.07 s       2.07 s       1.03 s      rwlock:W   do_exit+=
+0x338
+>          1     41.56 ms     41.56 ms     41.56 ms        mutex   cgroup_k=
+n_lock_live+0x58
+>          2     36.12 us     18.83 us     18.06 us     rwlock:W   do_exit+=
+0x338
+>
+> changes since v1:
+>
+> - consider trace_contention and __traceiter_contention functions as
+> optional (i.e. check if sym is null to avoid segfault)
+>
+> changes since v0:
+>
+> - skip trace_contention functions
+> - use sym->end instead of __traceiter_contention_end for text_end
+>
+> Signed-off-by: Anne Macedo <retpolanne@posteo.net>
+> ---
+>  tools/perf/util/machine.c | 21 +++++++++++++++++++++
+>  tools/perf/util/machine.h |  2 +-
+>  2 files changed, 22 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 527517db3182..968f69364f9a 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -3266,6 +3266,18 @@ bool machine__is_lock_function(struct machine *mac=
+hine, u64 addr)
+>
+>                 sym =3D machine__find_kernel_symbol_by_name(machine, "__l=
+ock_text_end", &kmap);
+>                 machine->lock.text_end =3D map__unmap_ip(kmap, sym->start=
+);
+> +
+> +               sym =3D machine__find_kernel_symbol_by_name(machine, "__t=
+raceiter_contention_begin", &kmap);
+> +               if (sym) {
+> +                       machine->traceiter.text_start =3D map__unmap_ip(k=
+map, sym->start);
+> +                       machine->traceiter.text_end =3D map__unmap_ip(kma=
+p, sym->end);
+> +               }
+> +
+> +               sym =3D machine__find_kernel_symbol_by_name(machine, "tra=
+ce_contention_begin", &kmap);
+> +               if (sym) {
+> +                       machine->trace.text_start =3D map__unmap_ip(kmap,=
+ sym->start);
+> +                       machine->trace.text_end =3D map__unmap_ip(kmap, s=
+ym->end);
+> +               }
+>         }
+>
+>         /* failed to get kernel symbols */
+> @@ -3280,5 +3292,14 @@ bool machine__is_lock_function(struct machine *mac=
+hine, u64 addr)
+>         if (machine->lock.text_start <=3D addr && addr < machine->lock.te=
+xt_end)
+>                 return true;
+>
+> +       /* traceiter functions currently don't have their own section
+> +        * but we consider them lock functions
+> +        */
+> +       if (machine->traceiter.text_start <=3D addr && addr < machine->tr=
+aceiter.text_end)
+> +               return true;
+> +
+> +       if (machine->trace.text_start <=3D addr && addr < machine->trace.=
+text_end)
+> +               return true;
 
+You cannot simply check these as they are set optionally.
+
+Thanks,
+Namhyung
+
+
+> +
+>         return false;
+>  }
+> diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+> index e28c787616fe..4312f6db6de0 100644
+> --- a/tools/perf/util/machine.h
+> +++ b/tools/perf/util/machine.h
+> @@ -49,7 +49,7 @@ struct machine {
+>         struct {
+>                 u64       text_start;
+>                 u64       text_end;
+> -       } sched, lock;
+> +       } sched, lock, traceiter, trace;
+>         pid_t             *current_tid;
+>         size_t            current_tid_sz;
+>         union { /* Tool specific area */
+> --
+> 2.39.2
+>
 
