@@ -1,140 +1,190 @@
-Return-Path: <linux-kernel+bounces-99810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FFA3878DB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:02:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D56878DBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA0C31F21A72
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:02:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C368281FA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F86ABA26;
-	Tue, 12 Mar 2024 04:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8AF0B673;
+	Tue, 12 Mar 2024 04:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="utHMcUDo"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yjhUyvpi"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C48D16FF2B;
-	Tue, 12 Mar 2024 04:02:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB6A16FF2B
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710216153; cv=none; b=FKNYM6myVlsuWoIPfDdfSs88BOMVA1L+nHTnGPjdTsZqC2HoM1J0nYIJqk3ZjOwWfWCaUCGbDjRsft8uHxLxjX/KkjKMx+o2qFNzx3KhxOarNqHdtJeeV3wKHNz+2leOw6Q0gprmhN8V/ZWXmYQmTnyLhB4c3JmVq9FaEf6TvqY=
+	t=1710216278; cv=none; b=Xof7757OrJFiuby3sBpI3nLOYFNmom4JjF+uUCQ8i9TCGFESM6YXLaSS/XVPkUOJDBlPzj0gjfrXdJ/QmNZHso2ik7Kah/PhnXy7q6fdguBT8O+BxrltkYTcTZbit5QWUnegGDndYAa9eCfj3XUNN9tbACJdkD37RczMinDNWM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710216153; c=relaxed/simple;
-	bh=7Lpi3zRSX3+XjOy2RJIFHZfKHQGjDfsjho8arA+oqrg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SNypRMwXyG3pLlrWc8rfoy6D0raMZqZbTvMoiVH8egV597+EN/BT0WuBwkHkxHkEB1WqEQGjERT7tCZQaMd64nM5bwRPaTuM25/NXfkttHbSaQlargBoYgSFNcpMfrUf82rA+STsPn08KV2t8nlshOf3p9ybpwyTp7cJYq78nuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=utHMcUDo; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710216149;
-	bh=uOUe4BCyHFHmDX7eGTeEvemo/yakiIcj/f9yFYq2KTI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=utHMcUDoCvgXSVq8aXiKSou//3l/Rwbai/U+7CNS6uHW9eQwRk1pInDPnPQkbhTKB
-	 E6KenBT0xVEaZErw2OBI+MFNalNfqrKsmB4d2lM006/za+YJXdCKFx09DxwvjCAyx8
-	 zfiEVIhZq4/eewEey6LSYJkMhqq72uPKGGYKVsYFWc4Cq0ChtSBtkQCRc/yDmqonbt
-	 5I6DLIHBpWE8n2mia656yU/k8MF5QDkEyf20ScvtmFXd3aCff55KWMUF3HZOWeDtUb
-	 U4fxxSUBMAbAj9Q/Zsi5zYJ2/VdHP1TFVYJK4hSgGot13P9gMoipg+zrtmFzXQSStd
-	 eFvTW1ZIS0MuA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tv0N46gvDz4wcq;
-	Tue, 12 Mar 2024 15:02:28 +1100 (AEDT)
-Date: Tue, 12 Mar 2024 15:02:28 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Christian Brauner <brauner@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Chao Yu <chao@kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the f2fs
- tree
-Message-ID: <20240312150228.31190b3c@canb.auug.org.au>
-In-Reply-To: <20240229104140.2927da29@canb.auug.org.au>
-References: <20240229104140.2927da29@canb.auug.org.au>
+	s=arc-20240116; t=1710216278; c=relaxed/simple;
+	bh=TApHmX3ZfnF/JWvRBVZ/APk2hxMJw/vVztjTlsQKCug=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=K2piMXvzDTIGd0ZTGQsPT9tDCRubGWQTALXc8YUJWzgsk21S21HMdElGp2wwozSJ0hwnfH6oOSI9wh/O7QNhH8VefAyn9EbXUjddB86S3PMSGj3An/hsMO3EsPwL/kE8ALTwwacyDvyWj2zV9FAAdOlqg27tQ9SP9pJj/rk1AGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yjhUyvpi; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6dbdcfd39so6734467276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710216275; x=1710821075; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DKGHJnbXSzQyoajwNYJ2VuXwhIvgziwgeBLpVKyZTQA=;
+        b=yjhUyvpiP9J1YMgY6HQNhO7XiO1tHQp52hRBvWSub+YwVj+k80krkUvxDuC5e/QBrD
+         BqwCoP2dv0MrCEOyz/POvZToUF8zIl68QiaN0ywDa72IUGChloDCBnQiYI8keXmkPLpl
+         hnO1GBblpUaU+y5vQ+c1z0b3jsQv9ULiCkYtYUJZB5pB/uFB02SEFNGbD8RzxESmjXOR
+         P7W0EQYRVmp0k3icemvgi6AUZuXhoJP0nry7nyBRhnHcLwlyH2HZIrtkrkESbpkqSPTb
+         7/cAqMmnCupYAqhUqGIqh2hWKn+LMyVCRDztdXa858VF5uQL2MVB+c7gTtyK0Joya6Th
+         3MgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710216275; x=1710821075;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DKGHJnbXSzQyoajwNYJ2VuXwhIvgziwgeBLpVKyZTQA=;
+        b=WKH3tdgVX9YELThegz31DNJFOFp4uuyLDhiDo69aGWokoLhIp+cuG2mYEC/S6wPxul
+         z1YmeNJsbqfHoAG8NbHwa8HFVHHdo3Y3pG34CKylWRd+40/9KG+A4EoHCdHE6PmVTgmU
+         m0NKryWSUXCKECu8b8OUxaHF62sb7h3q3mQkr41D/bhIn8cVWlkFmYONYPIV/Wahw6Fj
+         4h5y9/iyBWLIc4fL31/ZL/hFiMMUfiDsh0tL+nPJc0Cb5VT0cjLAxCrJJtvg8zaXov5d
+         4OAKnWM+sa83q5Nvyyk+7iXjM+meVyg6idSl5nAZ/RX26G5rwdLzMGG3pCRK4Q/pGQcw
+         gUhA==
+X-Forwarded-Encrypted: i=1; AJvYcCUNoxJkXukg3CXhImvlh88yoOJXocRiYBiAh6652aA35mjZDO31epp3w8bJKdjLhDIQYeABiJKoYShLPFuvBnAN+2fH2vsUiv79N7Ol
+X-Gm-Message-State: AOJu0Yy29KIq0Hk/0cV6GYW1LaugdK3OdXNmGaNmMdRlOL2MMQ4g1hfV
+	hE9ESLX6kx9LjseU86LDieOggVPAfJbnyuXJZMAJ6MQXfAEXN/2DxrGQS37GgwvJcXAjLRnzxBX
+	xr+wVaXaKtaeG4TblJA==
+X-Google-Smtp-Source: AGHT+IHSM/RCW6tdjFD+iaaWS3QoWG/+A1iS87q9c84LEMGLBoDbTTaanEuiOY0eoHyvPbAVrOaVG1EO9mlzIkNe
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a25:c712:0:b0:dcf:6b50:9bd7 with SMTP
+ id w18-20020a25c712000000b00dcf6b509bd7mr2202554ybe.7.1710216275352; Mon, 11
+ Mar 2024 21:04:35 -0700 (PDT)
+Date: Tue, 12 Mar 2024 04:04:33 +0000
+In-Reply-To: <20240312023411.GA22705@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/pFeyoMquibdqUJ=FIlQlIiY";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0
+References: <20240311161214.1145168-1-hannes@cmpxchg.org> <Ze-BH5HDNUG5ohJS@google.com>
+ <20240312023411.GA22705@cmpxchg.org>
+Message-ID: <Ze_UUeajWWkKpZJ0@google.com>
+Subject: Re: [PATCH 1/2] mm: zswap: optimize zswap pool size tracking
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
---Sig_/pFeyoMquibdqUJ=FIlQlIiY
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Mar 11, 2024 at 10:34:11PM -0400, Johannes Weiner wrote:
+> On Mon, Mar 11, 2024 at 10:09:35PM +0000, Yosry Ahmed wrote:
+> > On Mon, Mar 11, 2024 at 12:12:13PM -0400, Johannes Weiner wrote:
+> > > Profiling the munmap() of a zswapped memory region shows 50%(!) of the
+> > > total cycles currently going into updating the zswap_pool_total_size.
+> > 
+> > Yikes. I have always hated that size update scheme FWIW.
+> > 
+> > I have also wondered whether it makes sense to just maintain the number
+> > of pages in zswap as an atomic, like zswap_stored_pages. I guess your
+> > proposed scheme is even cheaper for the load/invalidate paths because we
+> > do nothing at all.  It could be an option if the aggregation in other
+> > paths ever becomes a problem, but we would need to make sure it
+> > doesn't regress the load/invalidate paths. Just sharing some thoughts.
+> 
+> Agree with you there. I actually tried doing it that way at first, but
+> noticed zram uses zs_get_total_pages() and actually wants a per-pool
+> count. I didn't want the backend to have to update two atomics, so I
+> settled for this version.
 
-Hi all,
+Could be useful to document this context if you send a v2. This version
+is a big improvement anyway, so hopefully we don' t need to revisit.
 
-On Thu, 29 Feb 2024 10:41:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> Today's linux-next merge of the vfs-brauner tree got a conflict in:
->=20
->   fs/f2fs/super.c
->=20
-> between commit:
->=20
->   5fa6a97d2784 ("f2fs: introduce SEGS_TO_BLKS/BLKS_TO_SEGS for cleanup")
->=20
-> from the f2fs tree and commit:
->=20
->   512383ae4910 ("f2fs: port block device access to files")
->=20
-> from the vfs-brauner tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc fs/f2fs/super.c
-> index 09ffdd554f9c,09e82624eff5..000000000000
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@@ -4206,9 -4265,9 +4206,9 @@@ static int f2fs_scan_devices(struct f2f
->   			} else {
->   				FDEV(i).start_blk =3D FDEV(i - 1).end_blk + 1;
->   				FDEV(i).end_blk =3D FDEV(i).start_blk +
->  -					(FDEV(i).total_segments <<
->  -					sbi->log_blocks_per_seg) - 1;
->  +						SEGS_TO_BLKS(sbi,
->  +						FDEV(i).total_segments) - 1;
-> - 				FDEV(i).bdev_handle =3D bdev_open_by_path(
-> + 				FDEV(i).bdev_file =3D bdev_file_open_by_path(
->   					FDEV(i).path, mode, sbi->sb, NULL);
->   			}
->   		}
+> 
+> > > There are three consumers of this counter:
+> > > - store, to enforce the globally configured pool limit
+> > > - meminfo & debugfs, to report the size to the user
+> > > - shrink, to determine the batch size for each cycle
+> > > 
+> > > Instead of aggregating everytime an entry enters or exits the zswap
+> > > pool, aggregate the value from the zpools on-demand:
+> > > 
+> > > - Stores aggregate the counter anyway upon success. Aggregating to
+> > >   check the limit instead is the same amount of work.
+> > > 
+> > > - Meminfo & debugfs might benefit somewhat from a pre-aggregated
+> > >   counter, but aren't exactly hotpaths.
+> > > 
+> > > - Shrinking can aggregate once for every cycle instead of doing it for
+> > >   every freed entry. As the shrinker might work on tens or hundreds of
+> > >   objects per scan cycle, this is a large reduction in aggregations.
+> > > 
+> > > The paths that benefit dramatically are swapin, swapoff, and
+> > > unmaps. There could be millions of pages being processed until
+> > > somebody asks for the pool size again. This eliminates the pool size
+> > > updates from those paths entirely.
+> > 
+> > This looks like a big win, thanks! I wonder if you have any numbers of
+> > perf profiles to share. That would be nice to have, but I think the
+> > benefit is clear regardless.
+> 
+> I deleted the perf files already, but can re-run it tomorrow.
 
-This is now a conflict between the f2fs tree and Linus' tree.
+Thanks!
 
---=20
-Cheers,
-Stephen Rothwell
+> 
+> > I also like the implicit cleanup when we switch to maintaining the
+> > number of pages rather than bytes. The code looks much better with all
+> > the shifts and divisions gone :)
+> > 
+> > I have a couple of comments below. With them addressed, feel free to
+> > add:
+> > Acked-by: Yosry Ahmed <yosryahmed@google.com>
+> 
+> Thanks!
+> 
+> > > @@ -1385,6 +1365,10 @@ static void shrink_worker(struct work_struct *w)
+> > >  {
+> > >  	struct mem_cgroup *memcg;
+> > >  	int ret, failures = 0;
+> > > +	unsigned long thr;
+> > > +
+> > > +	/* Reclaim down to the accept threshold */
+> > > +	thr = zswap_max_pages() * zswap_accept_thr_percent / 100;
+> > 
+> > This calculation is repeated twice, so I'd rather keep a helper for it
+> > as an alternative to zswap_can_accept(). Perhaps zswap_threshold_page()
+> > or zswap_acceptance_pages()?
+> 
+> Sounds good. I went with zswap_accept_thr_pages().
 
---Sig_/pFeyoMquibdqUJ=FIlQlIiY
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Even better.
 
------BEGIN PGP SIGNATURE-----
+> 
+> > > @@ -1711,6 +1700,13 @@ void zswap_swapoff(int type)
+> > >  
+> > >  static struct dentry *zswap_debugfs_root;
+> > >  
+> > > +static int debugfs_get_total_size(void *data, u64 *val)
+> > > +{
+> > > +	*val = zswap_total_pages() * PAGE_SIZE;
+> > > +	return 0;
+> > > +}
+> > > +DEFINE_DEBUGFS_ATTRIBUTE(total_size_fops, debugfs_get_total_size, NULL, "%llu");
+> > 
+> > I think we are missing a newline here to maintain the current format
+> > (i.e "%llu\n").
+> 
+> Oops, good catch! I had verified the debugfs file (along with the
+> others) with 'grep . *', which hides that this is missing. Fixed up.
+> 
+> Thanks for taking a look. The incremental diff is below. I'll run the
+> tests and recapture the numbers tomorrow, then send v2.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXv09QACgkQAVBC80lX
-0GxTMQf/ZOA3yXMwPh52RY76VAhqrcGgY7TSrfDmLEbKOGZp9dLEV7D27bTzdpaQ
-mLjd/J/CXTBJ8lGNn5CTIT7XhLNplJRj65pWQk/yW2VewWgveQdOETKBFQPrd0Ak
-rPhYFOGyMLXxW7l7dwpTOkceXgzir4vSjYhMJJykDQabmziN5vAhJNFB1TOR8C08
-vmUBNrpfBCoNzgYPLInF8BdnX5VO6AS+4r2kOtyjxJtH92jiJonFFIdnfFG9RfKb
-1TCJpjscC1jVkwX/R5Fp+RMIPrCQjkJbVHh5xi6koQnSnSgfrfZJG5xm9VenuOga
-b9NXeh2BGXpFRXUas8CMKspUKjcSfA==
-=rMU4
------END PGP SIGNATURE-----
-
---Sig_/pFeyoMquibdqUJ=FIlQlIiY--
+LGTM. Feel free to carry the Ack forward.
 
