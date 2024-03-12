@@ -1,134 +1,146 @@
-Return-Path: <linux-kernel+bounces-99687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4436D878BC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:08:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5EFD878BCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:09:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED787281BAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:08:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C7A61F2160B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03AD811;
-	Tue, 12 Mar 2024 00:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A83F26FBF;
+	Tue, 12 Mar 2024 00:08:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NBcMzKgL"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="UKT0mLkE"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE000370
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 00:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2E7567F
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 00:08:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710202088; cv=none; b=raCrz/mt57KD79U0gfLLgECRxEgFzNo1k3CnoUHecC7Ctbvce1TMD47qZBX6TQN9Y/pYUYhcnihnvuMSKWVu4RNSM83hARQ8FRlLc2wbr1SafFBKJ7C4lSgK/FuVaiv6FWZesyT24HPCGqGuLKCHHv18mp2/hNlvv7U1A4tyHIg=
+	t=1710202135; cv=none; b=awSP8E23jpD4B9/6yPGgj821lKi+EVPAX7n/E2ND7Dq9nogEVSdQ9bBHCe+g575cB6xEg3uNW9z1zYxOrKPn9/8ZYcuGZU5Nm/EWywUN53efMmVYAFGjTa4uQJ+tq98cFo5PiAEFqL1lON92Jy1cSJhKW2p4BPeZ4Jc/5u39WAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710202088; c=relaxed/simple;
-	bh=l6rVoLL7b5GYnY86FxsMiWPpqEw2YPCNBuuoZ8f4T38=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=kUt9jiKPv7Gonkb+dTp62fv8rZ21HUILfyWKH40pipC72sh05ORBkV5eGaco9stmlT2VbIDyA3IdpGgunbBCzn/1b7XLFsYwlzFal4TrEuSP8XrqyGQGz7eakOxjUz/4kdit2hf9xbOVTOAH4+D8iWiQpKAKoZpVbWCC1DbxYQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NBcMzKgL; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dced704f17cso8520221276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:08:06 -0700 (PDT)
+	s=arc-20240116; t=1710202135; c=relaxed/simple;
+	bh=/C3VJItrs0o7vvnGQLjOLjLnoEcD/Axem3JkzmQPo9g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZacoTyxYNHreIU0LfDGoOFSf0kszmqnJ/lWT5gQX/stJDPDyvKJ8AuSp1L/TIRrRSqQ2MjuCTFLwatWLKFMM/I+kwK14isx9TasfRv0JUvzpfpF2gpct3oV1CUWw5gznouFdzOWhSjfYiMH+Ui0xLOp4B9jFqXuPJgRZt6BCLvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=UKT0mLkE; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42efa84f7b5so44427751cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:08:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710202086; x=1710806886; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pum+V0ZuZEgl9/jYMpYphQnY8pqiA+YW9T5jbGt8uRw=;
-        b=NBcMzKgLEfN0BungWxGhN6WGxnrtYOf4wVN2zMaDYZ8HpR7p/53fLBVvhCOF4FbBOC
-         VuvfO4G+uE077eqJISDKMnTOwZHJKeYthhbFBSKnZLNtZSWh9NiEcNwQ20NkKdPocfDy
-         N99HKEIyCNzU54XTJ0pd7Bx9vwH73VsnHfJsD+tfGoCxDne4YLKFSD9uLmm9ziu2y5pY
-         KIDBSESjACFonf4khiHuNgsxh+sPE4ZBdYqkiMxR6rzMlfxeSyTh1ZDGH5MmoghD79pJ
-         a/mKoFNWXYOH+kTpu8LZbUjkGeCUDFG/6hyFfQHAjXRq2t/14WTQh71dwJvqFj7woLF0
-         XaiA==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710202133; x=1710806933; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AnBY48HsUFUFKc13ajCqh9BG/16i5QkSsCcX73NoIzo=;
+        b=UKT0mLkEhs8Bl01vvKWBI4JcwoV6DBnn6sZVLVpAYIly8OOkuiFM/ufSmx0dzU2L9a
+         BWtwinfL3vactbjXu+mhIzDJU9JCBuRRVyJAiIlKwz6IYbLM0sCxxp/xRxmgpR5S1lqr
+         tGyiPbEHT+MBP98KJXy9qpqZtxdWeMRir5eqB9ViyFiytT+qWzWbfx/m6+aZzn2hpDQt
+         k+B54zMCj0VUyHkQVKKtohvQx7G8oMeycdBM0Kt6XxYbo5PqAspHmgM8mQIa8KWPwbs0
+         Th+pnmFHYtH56cXYOWhEkXfzpM5onMrAJ/8V0ci+nWDXJg3t3aFRtIVu8eU980R9SLKh
+         8sFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710202086; x=1710806886;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pum+V0ZuZEgl9/jYMpYphQnY8pqiA+YW9T5jbGt8uRw=;
-        b=wqMfHMMrbNllt6G/RG9Uh86kVHEg0H3wqeHaVGWv67mkVewKWRAUTedLTzoBUPcQhk
-         N54WppqlZKjH8/ouRVV9xTm7VyP82Z5Ai14GQmMYk8VYC6TuKORJqW7F4BuwJfAWwur+
-         nTBv55Q3BicQP9tijRZamNe5J0IcEqkWYePgQsgRx7XLNp7DWXiXEvL3YIWiQS5rUCm6
-         +d90DY/nIPqbL6LIt9p1iuLCMKCqakEZ3rqTnkyjNuQkULt9Nye2yh+xbchZGVH4Mxe+
-         xAzJuaFaccfhwJqb4/9IeFU9o/zmAau0SxOxmtf3FBIhz/d78MY/Twsq5R7J1v8/EirA
-         ZV7w==
-X-Forwarded-Encrypted: i=1; AJvYcCX/LG694rtVBfX31jYsFj3U9pTcfaEojCwLAwl69WkT6ZSmkNxItKRnwXmmtgEa1scvvEo4jlXOXHWzMnH7nY5DeOC7os+VQwEXS8z+
-X-Gm-Message-State: AOJu0Yz0OrZiWEVGSxQgh+xZlX83qz434bJnDjqbnM8UpRLUvTw+NKth
-	WXT6O5Q8tvZXQSvSvrw5ATxgeI1WSk1rwK4tO2m89/HaGTyuWT/NR618iIgmcsZF3discMZ77tD
-	tvQ==
-X-Google-Smtp-Source: AGHT+IEVKzIpLefkYwyffPzY5rPsN9c/eliMN4nhjFt7FymhL9wQsQdn682GY/SO83Yj7xm2vR5Ew7/BGnQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:4ad:b0:dcc:94b7:a7a3 with SMTP id
- r13-20020a05690204ad00b00dcc94b7a7a3mr418633ybs.12.1710202085872; Mon, 11 Mar
- 2024 17:08:05 -0700 (PDT)
-Date: Mon, 11 Mar 2024 17:08:04 -0700
-In-Reply-To: <Ze6L/Tnrvs7eayqG@yilunxu-OptiPlex-7050>
+        d=1e100.net; s=20230601; t=1710202133; x=1710806933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AnBY48HsUFUFKc13ajCqh9BG/16i5QkSsCcX73NoIzo=;
+        b=boTLTV8Ii8JGM5R4WrN5quuBQ6aKLdHt9CVoHsD2WOzkM/AIpdOOB2bFe2vSdZKmNX
+         bEWEM/BnOZWpTWTodN7tBRge32WT+RwkwPpVSm73p2pzdLe717IE0+majt7ENFrOHSR+
+         k0/kf2AInoHuSivmuuksYopdd+uMZ76vCq5PtZFwpmZbKNAGkqdCDu7O1wW0Jnas2DaM
+         daFwZ7cYONuOGumEXz2fS3gTG5aG7p3XGzyfjhm2J3fRSTAR+ixRF/B/jMm6hh+JNI7/
+         m0imaKpObhtHBatoks08jCX9k/ftEGZFZqbmRUlQto1DSVQX3z0UfT1ofT+FLJKyrvYV
+         lJrA==
+X-Gm-Message-State: AOJu0YyReb6f/VQ9rUGWzlIh0BD/tozStDEyRcmtuDFUHVqV9rc0iHoU
+	hkk33YK1HhlFrHjV0hIra5SxGdwH85/bxu6IG8hbpZpA4FLCFkr0LWjJhqPFqxqMdsNNIjtxf5n
+	dxYLstrONqFuJWyaj74pmEl9/VzVmDt/G4yfYsQ==
+X-Google-Smtp-Source: AGHT+IFclJ3u+ZdSsmwur/E7OHzlyZd0+Q+MXWI4kYlZH3wpOUFOLSiwEmYSM3EPMVo3LpV3zVQHzIbAtD83uPkQQSo=
+X-Received: by 2002:ac8:5f13:0:b0:42e:db75:3cf9 with SMTP id
+ x19-20020ac85f13000000b0042edb753cf9mr14493400qta.27.1710202133152; Mon, 11
+ Mar 2024 17:08:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-10-seanjc@google.com>
- <ZeqZ+BDTN5bIx0rm@yilunxu-OptiPlex-7050> <ZeufCK2Yj_8Bx7EV@google.com> <Ze6L/Tnrvs7eayqG@yilunxu-OptiPlex-7050>
-Message-ID: <Ze-c5KHDmpz7M6eN@google.com>
-Subject: Re: [PATCH 09/16] KVM: x86/mmu: Move private vs. shared check above
- slot validity checks
-From: Sean Christopherson <seanjc@google.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <20240311164638.2015063-12-pasha.tatashin@soleen.com> <3e180c07-53db-4acb-a75c-1a33447d81af@app.fastmail.com>
+ <CA+CK2bA22AP2jrbHjdN8nYFbYX2xJXQt+=4G3Rjw_Lyn5NOyKA@mail.gmail.com> <1ac305b1-d28f-44f6-88e5-c85d9062f9e8@app.fastmail.com>
+In-Reply-To: <1ac305b1-d28f-44f6-88e5-c85d9062f9e8@app.fastmail.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Mon, 11 Mar 2024 20:08:16 -0400
+Message-ID: <CA+CK2bBU2zwu_V6hpOonswyuft5gWQh1H9tBbYP8efLRRAAdQQ@mail.gmail.com>
+Subject: Re: [RFC 11/14] x86: add support for Dynamic Kernel Stacks
+To: Andy Lutomirski <luto@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, "the arch/x86 maintainers" <x86@kernel.org>, 
+	Borislav Petkov <bp@alien8.de>, Christian Brauner <brauner@kernel.org>, bristot@redhat.com, 
+	Ben Segall <bsegall@google.com>, Dave Hansen <dave.hansen@linux.intel.com>, dianders@chromium.org, 
+	dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com, 
+	"hch@infradead.org" <hch@infradead.org>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Jacob Pan <jacob.jun.pan@linux.intel.com>, Jason Gunthorpe <jgg@ziepe.ca>, jpoimboe@kernel.org, 
+	Joerg Roedel <jroedel@suse.de>, juri.lelli@redhat.com, 
+	Kent Overstreet <kent.overstreet@linux.dev>, kinseyho@google.com, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, lstoakes@gmail.com, mgorman@suse.de, 
+	mic@digikod.net, michael.christie@oracle.com, Ingo Molnar <mingo@redhat.com>, 
+	mjguzik@gmail.com, "Michael S. Tsirkin" <mst@redhat.com>, Nicholas Piggin <npiggin@gmail.com>, 
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Petr Mladek <pmladek@suse.com>, 
+	Rick P Edgecombe <rick.p.edgecombe@intel.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Uladzislau Rezki <urezki@gmail.com>, vincent.guittot@linaro.org, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11, 2024, Xu Yilun wrote:
-> On Fri, Mar 08, 2024 at 03:28:08PM -0800, Sean Christopherson wrote:
-> > On Fri, Mar 08, 2024, Xu Yilun wrote:
-> > > On Tue, Feb 27, 2024 at 06:41:40PM -0800, Sean Christopherson wrote:
-> > > > @@ -4410,6 +4405,16 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> > > >  	fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
-> > > >  	smp_rmb();
-> > > >  
-> > > > +	/*
-> > > > +	 * Check for a private vs. shared mismatch *after* taking a snapshot of
-> > > > +	 * mmu_invalidate_seq, as changes to gfn attributes are guarded by the
-> > > > +	 * invalidation notifier.
-> > > 
-> > > I didn't see how mmu_invalidate_seq influences gfn attribute judgement.
-> > > And there is no synchronization between the below check and
-> > > kvm_vm_set_mem_attributes(), the gfn attribute could still be changing
-> > > after the snapshot.
-> > 
-> > There is synchronization.  If kvm_vm_set_mem_attributes() changes the attributes,
-> > and thus bumps mmu_invalidate_seq, after kvm_faultin_pfn() takes its snapshot,
-> > then is_page_fault_stale() will detect that an invalidation related to the gfn
-> > occured and resume the guest *without* installing a mapping in KVM's page tables.
-> > 
-> > I.e. KVM may read the old, stale gfn attributes, but it will never actually
-> > expose the stale attirubtes to the guest.
-> 
-> That makes sense!  I was just thinking of the racing for below few lines,
-> 
-> 	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
-> 		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> 		return -EFAULT;
-> 	}
-> 
-> But the guarding is actually for the whole kvm_faultin_pfn(). It is the
-> the same mechanism between getting old gfn attributes and getting old pfn.
-> 
-> I wonder if we could instead add some general comments at
-> 
->    fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
-> 
-> about the snapshot and is_page_fault_stale() thing.
+> >> There are some other options: you could pre-map
+> >
+> > Pre-mapping would be expensive. It would mean pre-mapping the dynamic
+> > pages for every scheduled thread, and we'd still need to check the
+> > access bit every time a thread leaves the CPU.
+>
+> That's a write to four consecutive words in memory, with no locking requi=
+red.
 
-Yeah, I'll add a comment.  The only reason not to add a comment is that, ideally,
-the comment/documentation would live in common KVM code, not x86.  But this code
-already has a few big comments about the mmu_notifier retry logic, one more
-definitely won't hurt.
+You convinced me, this might not be that bad. At the thread creation
+time we will save the locations of the unmapped thread PTE's, and set
+them on every schedule. There is a slight increase in scheduling cost,
+but perhaps it is not as bad as I initially thought. This approach,
+however, makes this dynamic stac feature much safer, and can be easily
+extended to all arches that support access/dirty bit tracking.
+
+>
+> > Dynamic thread faults
+> > should be considered rare events and thus shouldn't significantly
+> > affect the performance of normal context switch operations. With 8K
+> > stacks, we might encounter only 0.00001% of stacks requiring an extra
+> > page, and even fewer needing 16K.
+>
+> Well yes, but if you crash 0.0001% of the time due to the microcode not l=
+iking you, you lose. :)
+>
+> >
+> >> Also, I think the whole memory allocation concept in this whole series=
+ is a bit odd.  Fundamentally, we *can't* block on these stack faults -- we=
+ may be in a context where blocking will deadlock.  We may be in the page a=
+llocator.  Panicing due to kernel stack allocation  would be very unpleasan=
+t.
+> >
+> > We never block during handling stack faults. There's a per-CPU page
+> > pool, guaranteeing availability for the faulting thread. The thread
+> > simply takes pages from this per-CPU data structure and refills the
+> > pool when leaving the CPU. The faulting routine is efficient,
+> > requiring a fixed number of loads without any locks, stalling, or even
+> > cmpxchg operations.
+>
+> You can't block when scheduling, either.  What if you can't refill the po=
+ol?
+
+Why can't we (I am not a scheduler guy)? IRQ's are not yet disabled,
+what prevents us from blocking while the old process has not yet been
+removed from the CPU?
 
