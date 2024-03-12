@@ -1,367 +1,298 @@
-Return-Path: <linux-kernel+bounces-99777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42B02878D27
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:46:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45AAF878D30
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:49:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D574B21E06
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:46:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 975CAB21EAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FDACAD2C;
-	Tue, 12 Mar 2024 02:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863D6AD4B;
+	Tue, 12 Mar 2024 02:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BgrUt4Wd"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="WfkGS4Xb"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5204053A1;
-	Tue, 12 Mar 2024 02:45:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36B6883D
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710211542; cv=none; b=qVYjYQ+A240gnloeLMDru6oitrjrmOwfv+CAyyMdpjXL/FZGRn1xXsIGfZZygB3fkczAesxrNxEmdK9itg2D+tRuU8ptfuAMd3XO6koOese7t8YnB9NnvNHKj+uPwJTbQtJCU30tE+eMHNfGeNSSYmlqGnqIC5Ym4s2qIKWNqAk=
+	t=1710211764; cv=none; b=aPt+k+m1K2iDTR1mLCpJnhxlh0WuYb31dMiY6ccPKsiw7kj9ov0sPQ8U1bhRoNIwd6+F5aSuzE8smFVP24Cx4cqqEnNmPdfCBaCB6x74sbDCyO7vBCo+7y8yCQwUKlOxhV7ZkYdqZuDfxoWovZXHQ7wu19FeOF29D+tZ48fDzlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710211542; c=relaxed/simple;
-	bh=sJ+l+E/VHR/guBPSrktOtGce38nElCTRPvus+ARJhb4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kbImLsqoEs9K6IfD2tpCFRsbIy53UIIBUh55EFct0tZSTc9GKXF29tukbZz3/HIaUqfP0DsU+yo3zrCzLGPRwsQf3kT2GoTPddf6cziqgOrKO+dwlwDrlSwQ4WELRNQFMdBJmAx7T7X0+imJqP+OTE8WtHImNZDVHTmoTcPv2GM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BgrUt4Wd; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=LR+o5zx6xwTvGFqahXOz00NdsDR6t5e6f6CcML+dlxs=; b=BgrUt4WdadJ0f7/2G+ZQGGr/Sz
-	++FE+t9xZ9M/Wf1J7p9XqDMoGq/5uJWG4G+cUpHTT3q15rTmfnQlpqCWReYebnvBKTHBjTXfUOvsv
-	gN59aBHSGQzpgUingDpB/ph9p4GPsvq/hI24BB5waWN70a4CQ/1gbvAJ+XsfsCwbd902KxdAT/NCO
-	fwErWMAg6vHCzAprNODWIuAjRsp7bvrAXIoXi/pScZ/DRlYX+SY2KFQOLKt09/ktiWifTeBtYUyst
-	9/9Exp5lMEDDtWqKbSGT9Q9jSGIkHRcLiHvcO7FZJHhmhiNMtm5NG9EZB4SKLJBbTQnoNVGUqIgvn
-	Y/hCP5HA==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjs91-000000042zE-3WL5;
-	Tue, 12 Mar 2024 02:45:35 +0000
-Message-ID: <50ec3230-c2c9-4c16-899e-d93d164a3e79@infradead.org>
-Date: Mon, 11 Mar 2024 19:45:34 -0700
+	s=arc-20240116; t=1710211764; c=relaxed/simple;
+	bh=LG8tjvBnuxxg899SAnLnow23FrwucP99leAXJLBMDyk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H+/GHw46SYxrEncL5eZhjzoHsBHBoaI/nrssl6gJaI/IbAh54poQijXCQL+nYt+PfhcDiopZSSdxABnNWRaENqA3Jw48++nArbyIgEH5UPQglag7FV9xV+/UqrGU0ELvv/zQTv0XDnbPlWDOxq4jvJZE77TYbdsRbELDQJYXagw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=WfkGS4Xb; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29bb5bec0e4so2546312a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1710211761; x=1710816561; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kp8FDAIHogCGtdOtPeOiQYNfgQ9IDPgMIvR+XSfvvHk=;
+        b=WfkGS4XbLbTYwVv62QrPovHbbApLL4JUmXpJ5WtAN8jlZ2e8FnXxGgwOUWChToIaXF
+         UTkx+bcDlDJ3zvesem2GDR1fhYpTNdBGRYj9WOriUb2b6kaxoFs+5gzBpoayhAxb/k8V
+         2HIdfu88t+uPRer8yK8vOV1F0L5MT4BOx8P5fs3ZFRD5RaxiwHGmmIYnwfYymT4ObgHz
+         Ka4IpN7Cdus8aQWbxWdB4rd2WfaAK8ZAtlDE1a0xPGJkU4jPulzyvaBi6TxawtDx5Bfv
+         jA9dmIT37wn27bNd06h99C34fj/XvJmYxvT4C2Z9aiomAiV9nAdCuA5El4iCK8d+/YAB
+         Xscg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710211761; x=1710816561;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kp8FDAIHogCGtdOtPeOiQYNfgQ9IDPgMIvR+XSfvvHk=;
+        b=SRxfc1oiiXMmPFNLFVPa997bAALCtz4EocBcY6gpZVeUrPgGVEL3pllH3yGkbtn03r
+         N1W0Aw1XuH060By27PZyj4axgzgwQmdkK5eTxP4G+mz7nqrcs/aXCnoMYRZ7DyD7dVeL
+         9GZs6VZlf9+CvCSlN1iMVmOxuCiHVWhqOhA6QzhyD6WMhgd13C1LRzba22EbFzA2Du8q
+         wR5F5soQkgrMVU36TBIib8ATWZrMNae5JrUa9BoCYNFDCzXynruNPTfMhqAtxXaSWGZe
+         x4iHlZsMJZ0yqnihcct9O4mH3CIjX/eenEhNcqI2k+SHwDJ5IsOJuZbf8PgnnBYZp0VR
+         73rg==
+X-Forwarded-Encrypted: i=1; AJvYcCWI8o5iXyEK9Es2zosBuSxEs1cFw0cgDjW3jPEwt/2uQShxhz2rjA8LQ9/PqyJyYOTvcWqXkNfgmIJ60u+3A6ldF7tBxOUv6yL/eAMM
+X-Gm-Message-State: AOJu0YzjdkLGbrv63rPCB9fjr3r5CeIqOsLbuURRrHbK/19TIp6O2unc
+	EQQgaBn6keV18ifc6RAp4+t2rc9EtZCD+Hm77FjFO6DcW6fgNsoFwMht/VfcmShCadywPjp3UBi
+	w7Ekchl0dpUq8OHNy5w3HuwNPZGD4GjgrxetaQg==
+X-Google-Smtp-Source: AGHT+IETNLgyzh6uZkS12wgDyCLo8umv6nNmoijBBhhnpR8bMML+3pXMk3jZN+hl1DDgFHg+n8EoqP5QSNQlrqeKH1w=
+X-Received: by 2002:a17:90a:5d8c:b0:29a:2860:28b9 with SMTP id
+ t12-20020a17090a5d8c00b0029a286028b9mr6080591pji.48.1710211761009; Mon, 11
+ Mar 2024 19:49:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 8/8] clavis: Introduce new LSM called clavis
-Content-Language: en-US
-To: Eric Snowberg <eric.snowberg@oracle.com>,
- linux-security-module@vger.kernel.org
-Cc: dhowells@redhat.com, dwmw2@infradead.org, herbert@gondor.apana.org.au,
- davem@davemloft.net, ardb@kernel.org, jarkko@kernel.org,
- paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
- zohar@linux.ibm.com, roberto.sassu@huawei.com, dmitry.kasatkin@gmail.com,
- mic@digikod.net, casey@schaufler-ca.com, stefanb@linux.ibm.com,
- linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
- linux-integrity@vger.kernel.org
-References: <20240311161111.3268190-1-eric.snowberg@oracle.com>
- <20240311161111.3268190-9-eric.snowberg@oracle.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240311161111.3268190-9-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+ <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com> <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+In-Reply-To: <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Tue, 12 Mar 2024 10:49:10 +0800
+Message-ID: <CALz3k9jy43zLe6DFjjA8K4mMFPNOxkagOEs2o8RY468ZWwfVSw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Mar 12, 2024 at 10:42=E2=80=AFAM =E6=A2=A6=E9=BE=99=E8=91=A3 <dongm=
+englong.8@bytedance.com> wrote:
+>
+> On Tue, Mar 12, 2024 at 10:09=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Mar 11, 2024 at 7:01=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <do=
+ngmenglong.8@bytedance.com> wrote:
+> > >
+> > > On Tue, Mar 12, 2024 at 9:46=E2=80=AFAM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Mon, Mar 11, 2024 at 2:34=E2=80=AFAM Menglong Dong
+> > > > <dongmenglong.8@bytedance.com> wrote:
+> > > > >
+> > > > > In this commit, we add the 'accessed_args' field to struct bpf_pr=
+og_aux,
+> > > > > which is used to record the accessed index of the function args i=
+n
+> > > > > btf_ctx_access().
+> > > > >
+> > > > > Meanwhile, we add the function btf_check_func_part_match() to com=
+pare the
+> > > > > accessed function args of two function prototype. This function w=
+ill be
+> > > > > used in the following commit.
+> > > > >
+> > > > > Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
+> > > > > ---
+> > > > >  include/linux/bpf.h |   4 ++
+> > > > >  kernel/bpf/btf.c    | 108 ++++++++++++++++++++++++++++++++++++++=
++++++-
+> > > > >  2 files changed, 110 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > > index 95e07673cdc1..0f677fdcfcc7 100644
+> > > > > --- a/include/linux/bpf.h
+> > > > > +++ b/include/linux/bpf.h
+> > > > > @@ -1461,6 +1461,7 @@ struct bpf_prog_aux {
+> > > > >         const struct btf_type *attach_func_proto;
+> > > > >         /* function name for valid attach_btf_id */
+> > > > >         const char *attach_func_name;
+> > > > > +       u64 accessed_args;
+> > > > >         struct bpf_prog **func;
+> > > > >         void *jit_data; /* JIT specific data. arch dependent */
+> > > > >         struct bpf_jit_poke_descriptor *poke_tab;
+> > > > > @@ -2565,6 +2566,9 @@ struct bpf_reg_state;
+> > > > >  int btf_prepare_func_args(struct bpf_verifier_env *env, int subp=
+rog);
+> > > > >  int btf_check_type_match(struct bpf_verifier_log *log, const str=
+uct bpf_prog *prog,
+> > > > >                          struct btf *btf, const struct btf_type *=
+t);
+> > > > > +int btf_check_func_part_match(struct btf *btf1, const struct btf=
+_type *t1,
+> > > > > +                             struct btf *btf2, const struct btf_=
+type *t2,
+> > > > > +                             u64 func_args);
+> > > > >  const char *btf_find_decl_tag_value(const struct btf *btf, const=
+ struct btf_type *pt,
+> > > > >                                     int comp_idx, const char *tag=
+_key);
+> > > > >  int btf_find_next_decl_tag(const struct btf *btf, const struct b=
+tf_type *pt,
+> > > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > > > index 170d017e8e4a..c2a0299d4358 100644
+> > > > > --- a/kernel/bpf/btf.c
+> > > > > +++ b/kernel/bpf/btf.c
+> > > > > @@ -6125,19 +6125,24 @@ static bool is_int_ptr(struct btf *btf, c=
+onst struct btf_type *t)
+> > > > >  }
+> > > > >
+> > > > >  static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_typ=
+e *func_proto,
+> > > > > -                          int off)
+> > > > > +                          int off, int *aligned_idx)
+> > > > >  {
+> > > > >         const struct btf_param *args;
+> > > > >         const struct btf_type *t;
+> > > > >         u32 offset =3D 0, nr_args;
+> > > > >         int i;
+> > > > >
+> > > > > +       if (aligned_idx)
+> > > > > +               *aligned_idx =3D -ENOENT;
+> > > > > +
+> > > > >         if (!func_proto)
+> > > > >                 return off / 8;
+> > > > >
+> > > > >         nr_args =3D btf_type_vlen(func_proto);
+> > > > >         args =3D (const struct btf_param *)(func_proto + 1);
+> > > > >         for (i =3D 0; i < nr_args; i++) {
+> > > > > +               if (aligned_idx && offset =3D=3D off)
+> > > > > +                       *aligned_idx =3D i;
+> > > > >                 t =3D btf_type_skip_modifiers(btf, args[i].type, =
+NULL);
+> > > > >                 offset +=3D btf_type_is_ptr(t) ? 8 : roundup(t->s=
+ize, 8);
+> > > > >                 if (off < offset)
+> > > > > @@ -6207,7 +6212,7 @@ bool btf_ctx_access(int off, int size, enum=
+ bpf_access_type type,
+> > > > >                         tname, off);
+> > > > >                 return false;
+> > > > >         }
+> > > > > -       arg =3D get_ctx_arg_idx(btf, t, off);
+> > > > > +       arg =3D get_ctx_arg_idx(btf, t, off, NULL);
+> > > > >         args =3D (const struct btf_param *)(t + 1);
+> > > > >         /* if (t =3D=3D NULL) Fall back to default BPF prog with
+> > > > >          * MAX_BPF_FUNC_REG_ARGS u64 arguments.
+> > > > > @@ -6217,6 +6222,9 @@ bool btf_ctx_access(int off, int size, enum=
+ bpf_access_type type,
+> > > > >                 /* skip first 'void *__data' argument in btf_trac=
+e_##name typedef */
+> > > > >                 args++;
+> > > > >                 nr_args--;
+> > > > > +               prog->aux->accessed_args |=3D (1 << (arg + 1));
+> > > > > +       } else {
+> > > > > +               prog->aux->accessed_args |=3D (1 << arg);
+> > > >
+> > > > What do you need this aligned_idx for ?
+> > > > I'd expect that above "accessed_args |=3D (1 << arg);" is enough.
+> > > >
+> > >
+> > > Which aligned_idx? No aligned_idx in the btf_ctx_access(), and
+> > > aligned_idx is only used in the btf_check_func_part_match().
+> > >
+> > > In the btf_check_func_part_match(), I need to compare the
+> > > t1->args[i] and t2->args[j], which have the same offset. And
+> > > the aligned_idx is to find the "j" according to the offset of
+> > > t1->args[i].
+> >
+> > And that's my question.
+> > Why you don't do the max of accessed_args across all attach
+> > points and do btf_check_func_type_match() to that argno
+> > instead of nargs1.
+> > This 'offset +=3D btf_type_is_ptr(t1) ? 8 : roundup...
+> > is odd.
+>
+> Hi, I'm trying to make the bpf flexible enough. Let's take an example,
+> now we have the bpf program:
+>
+> int test1_result =3D 0;
+> int BPF_PROG(test1, int a, long b, char c)
+> {
+>     test1_result =3D a + c;
+>     return 0;
+> }
+>
+> In this program, only the 1st and 3rd arg is accessed. So all kernel
+> functions whose 1st arg is int and 3rd arg is char can be attached
+> by this bpf program, even if their 2nd arg is different.
+>
+> And let's take another example for struct. This is our bpf program:
+>
+> int test1_result =3D 0;
+> int BPF_PROG(test1, long a, long b, char c)
+> {
+>     test1_result =3D c;
+>     return 0;
+> }
+>
+> Only the 3rd arg is accessed. And we have following kernel function:
+>
+> int kernel_function1(long a, long b, char c)
+> {
+> xxx
+> }
+>
+> struct test1 {
+>     long a;
+>     long b;
+> };
+> int kernel_function2(struct test1 a, char b)
+> {
+> xxx
+> }
+>
+> The kernel_function1 and kernel_function2 should be compatible,
+> as the bpf program only accessed the ctx[2], whose offset is 16.
+> And the arg in kernel_function1() with offset 16 is "char c", the
+> arg in kernel_function2() with offset 16 is "char b", which is
+> compatible.
+>
+> That's why we need to check the consistency of accessed args
+> by offset instead of function arg index.
+>
 
+And that's why I didn't share the code with btf_check_func_type_match().
+In btf_check_func_part_match(), I'm trying to check the "real" accessed
+args of t1 and t2, not by the function index, which has quite a difference
+with btf_check_func_type_match().
 
-On 3/11/24 09:11, Eric Snowberg wrote:
-> In the future it is envisioned this LSM could be enhanced to provide
-> access control for UEFI Secure Boot Advanced Targeting (SBAT).  Using
-> the same clavis= boot param and storing the additional contents within
-> the new RT UEFI var, SBAT restrictions could be maintained across kexec.
-
-What does "RT" mean here?
-
-(more below)
-
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> ---
->  Documentation/admin-guide/LSM/clavis.rst | 190 +++++++++++++++++++++++
->  MAINTAINERS                              |   7 +
->  crypto/asymmetric_keys/signature.c       |   4 +
->  include/linux/lsm_hook_defs.h            |   2 +
->  include/linux/security.h                 |   7 +
->  include/uapi/linux/lsm.h                 |   1 +
->  security/Kconfig                         |  10 +-
->  security/clavis/Makefile                 |   1 +
->  security/clavis/clavis.c                 |  25 +++
->  security/clavis/clavis.h                 |   4 +
->  security/clavis/clavis_keyring.c         |  83 ++++++++++
->  security/security.c                      |  16 +-
->  12 files changed, 344 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/admin-guide/LSM/clavis.rst
->  create mode 100644 security/clavis/clavis.c
-> 
-
-
-> diff --git a/Documentation/admin-guide/LSM/clavis.rst b/Documentation/admin-guide/LSM/clavis.rst
-> new file mode 100644
-> index 000000000000..b0a73defb4fc
-> --- /dev/null
-> +++ b/Documentation/admin-guide/LSM/clavis.rst
-> @@ -0,0 +1,190 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=====
-> +Clavis
-> +=====
-> +
-> +Clavis is a Linux Security Module that provides mandatory access control to
-> +system kernel keys (i.e. builtin, secondary, machine and platform). These
-> +restrictions will prohit keys from being used for validation. Upon boot, the
-
-                     prohibit
-
-> +Clavis LSM is provided a key id as a boot param.  This single key is then
-> +used as the root of trust for any access control modifications made going
-> +forward. Access control updates must be signed and validated by this key.
-> +
-> +Clavis has its own keyring.  All ACL updates are applied through this keyring.
-> +The update must be signed by the single root of trust key.
-> +
-> +When enabled, all system keys are prohibited from being used until an ACL is
-> +added for it. There is two exceptions to this rule, builtin keys may be used
-
-What is     "it"?  The predecessor seems to be "all system keys" (plural).
-
-
-> +to validate both signed kernels and modules.
-> +
-> +Adding system kernel keys can only be performed by the machine owner, this
-
-                                                                  owner;
-
-> +could be through the Machine Owner Key (MOK) or the UEFI Secure Boot DB. It
-> +is possible the machine owner and system administrator may be different
-> +people. The system administrator will not be able to make ACL updates without
-> +them being signed by the machine owner.
-> +
-> +On UEFI platforms, the root of trust key shall survive a kexec. Trying to
-> +defeat or change it from the command line is not allowed.  The original boot
-> +param is stored in UEFI and will always be referenced following a kexec.
-> +
-> +The Clavis LSM contains a system keyring call .clavis.  It contains a single
-> +asymmetric key that is use to validate anything added to it.  This key can only
-> +be added during boot and must be a preexisting system kernel key.  If the
-> +clavis= boot param is not used, the keyring does not exist and the feature
-> +can not be used until the next power on reset.
-
-So just a reboot won't cause it to be used?  Must be power off/on?
-
-> +
-> +The only user space components are OpenSSL and the keyctl utility. A new
-> +key type call clavis_key_acl is used for ACL updates. Any number of signed
-> +clavis_key_acl entries may be added to the .clavis keyring. The clavis_key_acl
-> +contains the subject key identifer along with the allowed usage type for
-
-                            identifier
-
-> +the key.
-> +
-> +The format is as follows:
-> +::
-> +
-> +  XX:YYYYYYYYYYY
-> +
-> +  XX - Single byte of the key type
-> +	VERIFYING_MODULE_SIGNATURE            00
-> +	VERIFYING_FIRMWARE_SIGNATURE          01
-> +	VERIFYING_KEXEC_PE_SIGNATURE          02
-> +	VERIFYING_KEY_SIGNATURE               03
-> +	VERIFYING_KEY_SELF_SIGNATURE          04
-> +	VERIFYING_UNSPECIFIED_SIGNATURE       05
-> +  :  - ASCII colon
-> +  YY - Even number of hexadecimal characters representing the key id
-> +
-> +The clavis_key_acl must be S/MIME signed by the sole asymmetric key contained
-> +within the .clavis keyring.
-> +
-> +In the future if new features are added, new key types could be created.
-> +
-> +Usage Examples
-> +==============
-> +
-> +How to create a signing key:
-> +----------------------------
-> +
-> +::
-> +
-> +  cat <<EOF > clavis-lsm.genkey
-> +  [ req ]
-> +  default_bits = 4096
-> +  distinguished_name = req_distinguished_name
-> +  prompt = no
-> +  string_mask = utf8only
-> +  x509_extensions = v3_ca
-> +  [ req_distinguished_name ]
-> +  O = TEST
-> +  CN = Clavis LSM key
-> +  emailAddress = john.doe@foo.com
-
-There is a foo.com  ;)
-
-> +  [ v3_ca ]
-> +  basicConstraints=CA:TRUE
-> +  subjectKeyIdentifier=hash
-> +  authorityKeyIdentifier=keyid:always,issuer
-> +  keyUsage=digitalSignature
-> +  EOF
-> +
-> +  openssl req -new -x509 -utf8 -sha256 -days 3650 -batch \
-> +        -config clavis-lsm.genkey -outform DER \
-> +        -out clavis-lsm.x509 -keyout clavis-lsm.priv
-> +
-> +How to get the Subject Key Identifier
-> +-------------------------------------
-> +::
-> +
-> +  openssl x509 -in ./clavis-lsm.x509 -inform der \
-> +        -ext subjectKeyIdentifier  -nocert \
-> +        | tail -n +2 | cut -f2 -d '='| tr -d ':'
-> +  4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
-> +
-> +How to enroll the signing key into the MOK
-> +------------------------------------------
-> +
-> +The key must now be added to the machine or platform keyrings.  This
-> +indicates the key was added by the system owner. To add to the machine
-> +keyring on x86 do:
-> +::
-> +
-> +  mokutil --import ./clavis-lsm.x509
-> +
-> +and then reboot and enroll the key through the MokManager.
-> +
-> +How to enable the Clavis LSM
-> +----------------------------
-> +
-> +Add the key id to the clavis= boot param.  With the example above the
-> +key id is the subject key identifer: 4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
-
-                             identifier:
-
-> +
-> +Add the following boot param:
-> +::
-> +
-> +  clavis=4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
-> +
-> +After booting there will be a single key contained in the .clavis keyring:
-> +::
-> +
-> +  $ keyctl show %:.clavis
-> +  Keyring
-> +    254954913 ----swrv      0     0  keyring: .clavis
-> +    301905375 ---lswrv      0     0   \_ asymmetric: TEST: Clavis LSM key: 4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
-> +
-> +The original clavis= boot param will persist across any kexec. Changing it or
-> +removing it has no effect.
-> +
-> +
-> +How to sign an entry to be added to the .clavis keyring:
-> +-------------------------------------------------------
-> +
-> +In this example we have 3 keys in the machine keyring.  Our Clavis LSM key, a
-> +key we want to use for kernel verification and a key we want to use for module
-> +verification.
-> +::
-> +
-> +  $ keyctl show %:.machine
-> +   Keyring
-> +    999488265 ---lswrv      0     0  keyring: .machine
-> +    912608009 ---lswrv      0     0   \_ asymmetric: TEST: Module Key: 17eb8c5bf766364be094c577625213700add9471
-> +    646229664 ---lswrv      0     0   \_ asymmetric: TEST: Kernel Key: b360d113c848ace3f1e6a80060b43d1206f0487d
-> +   1073737099 ---lswrv      0     0   \_ asymmetric: TEST: Clavis LSM key: 4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
-> +
-> +To update the .clavis kerying acl list.  First create a file containing the
-
-                                 ACL list:
-?
-
-> +key usage type followed by a colon and the key id that we want to allow to
-> +validate that usage.  In the first example we are saying key
-> +17eb8c5bf766364be094c577625213700add9471 is allowed to validate kernel modules.
-> +In the second example we are saying key b360d113c848ace3f1e6a80060b43d1206f0487d
-> +is allowed to validate signed kernels.
-> +
-> +::
-> +
-> +  echo "00:17eb8c5bf766364be094c577625213700add9471" > module-acl.txt
-> +  echo "02:b360d113c848ace3f1e6a80060b43d1206f0487d" > kernel-acl.txt
-> +
-> +Now both these files must be signed by the key contained in the .clavis keyring:
-> +
-> +::
-> +
-> +  openssl smime -sign -signer clavis-lsm.x509 -inkey clavis-lsm.priv -in module-acl.txt \
-> +        -out module-acl.pkcs7 -binary -outform DER -nodetach -noattr
-> +
-> +  openssl smime -sign -signer clavis-lsm.x509 -inkey clavis-lsm.priv -in kernel-acl.txt \
-> +        -out kernel-acl.pkcs7 -binary -outform DER -nodetach -noattr
-> +
-> +Afterwards the ACL list in the clavis keyring can be updated:
-> +::
-> +
-> +  keyctl padd clavis_key_acl "" %:.clavis < module-acl.pkcs7
-> +  keyctl padd clavis_key_acl "" %:.clavis < kernel-acl.pkcs7
-> +
-> +  keyctl show %:.clavis
-> +
-> +  Keyring
-> +    254954913 ----swrv      0     0  keyring: .clavis
-> +    301905375 ---lswrv      0     0   \_ asymmetric: TEST: Clavis LSM key: 4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
-> +   1013065475 --alswrv      0     0   \_ clavis_key_acl: 02:b360d113c848ace3f1e6a80060b43d1206f0487d
-> +    445581284 --alswrv      0     0   \_ clavis_key_acl: 00:17eb8c5bf766364be094c577625213700add9471
-> +
-> +Now the 17eb8c5bf766364be094c577625213700add9471 key can be used for
-> +validating kernel modules and the b360d113c848ace3f1e6a80060b43d1206f0487d
-> +key can be used to validate signed kernels.
-
-
-
-> diff --git a/security/security.c b/security/security.c
-> index 4cb832b00c40..d1da60a1b7a4 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-
-> @@ -5313,6 +5314,19 @@ void security_key_post_create_or_update(struct key *keyring, struct key *key,
->  	call_void_hook(key_post_create_or_update, keyring, key, payload,
->  		       payload_len, flags, create);
->  }
-> +
-> +/**
-> + * security_key_verify_signature - verify signature
-> + * @key: key
-> + * @public_key_signature: signature
-
-Above should be "@sig:".
-
-> + *
-> + * See wheather signature verification is allowed based on the ACL for
-
-          whether
-
-> + * key usage.
-> + */
-> +int security_key_verify_signature(const struct key *key, const struct public_key_signature *sig)
-> +{
-> +	return call_int_hook(key_verify_signature, key, sig);
-> +}
->  #endif	/* CONFIG_KEYS */
->  
->  #ifdef CONFIG_AUDIT
-
--- 
-#Randy
+> I'm not sure if I express my idea clearly, is this what you are
+> asking?
+>
+> Thanks!
+> Menglong Dong
 
