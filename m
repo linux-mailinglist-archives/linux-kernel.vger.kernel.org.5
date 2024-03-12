@@ -1,171 +1,120 @@
-Return-Path: <linux-kernel+bounces-99946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 865FC878F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:18:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51F57878F99
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C1AF1F227AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:18:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFBB8B215EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806EA69D0F;
-	Tue, 12 Mar 2024 08:18:48 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77BC169D0E;
+	Tue, 12 Mar 2024 08:21:00 +0000 (UTC)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5D8D30B;
-	Tue, 12 Mar 2024 08:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC60B651;
+	Tue, 12 Mar 2024 08:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710231528; cv=none; b=FcF241yVgTlNjZaBFNEbnRhtpbTyI1IB1qaEb80clHK2kXVUKCyUZhn6qVMqsD8mRFSTNII85GPFVAHBQC57H6LgNZZciDfosrR2S3bnYO7XdP+AK3AEccCPMlYJvvRIdCOExygrLV2WUorusm/VWbLMBoLafY9ivz4tV5/j6Rg=
+	t=1710231660; cv=none; b=i7vVKx2ybpegAZAtsuW99z+wCrp6w/gEoeRNnxwmx5n61U6ceTpLcosr2YKBpak4G/peUSMVpDZFmCnumKYIWbiHlIxKzCuaopsDr2jo+ZRY+sbOzIwyF8dqU2RssCahYwcMs8QIDaWy++NxGOrIgjlLt/WOcMuwS+7bMi134IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710231528; c=relaxed/simple;
-	bh=hPd+xJ5jOSC8o1CG2r+WXG2uyyLrv5AmWrxsGZg+GLg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=EUXlMogEXL2ovJiojKypNOGRL5R5+89FqNZSc3qX8JCo2Nh0FO/1Jow95Jt7dwbUafTIhku9q+2XHWXgLP2D6+lgcgHLNdQKaFfzkpyrIarovWRLgSH4u8IcnBj8aqnVunv8tbtgXHqc4MfZ09UEKCs+npmMJwVoGdV8xXTIguY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tv63W6RRPz4f3jqP;
-	Tue, 12 Mar 2024 16:18:31 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8ADC71A0199;
-	Tue, 12 Mar 2024 16:18:35 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBHZD_BlXa7TGg--.10688S3;
-	Tue, 12 Mar 2024 16:18:35 +0800 (CST)
-Subject: Re: [PATCH 1/4] xfs: match lock mode in
- xfs_buffered_write_iomap_begin()
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
- david@fromorbit.com, tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com
-References: <20240311122255.2637311-1-yi.zhang@huaweicloud.com>
- <20240311122255.2637311-2-yi.zhang@huaweicloud.com>
- <20240311153415.GS1927156@frogsfrogsfrogs>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <04c14e02-9968-3fda-39a6-c3b44c78a2ba@huaweicloud.com>
-Date: Tue, 12 Mar 2024 16:18:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1710231660; c=relaxed/simple;
+	bh=EC1IWzMZWa+M6F4YkLaSooXMV/yvn8uCENWgAg33cJk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Dw29Ph77om122qu2MXzvZdwl2VxDusHbpURxX4rDrc1ZskXXtIqeeKr3pTcUvt0qxf6XvaodIeRtdIZKAzxe6VwSZD8Jy6YqioGp6Xrrcehdl3J2jBFw6/BciNewEHKbEYzb97nDFJpGqqvwNyzuyZt8ytIKae5spV5BPexeMQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-60a068e26d8so41906897b3.3;
+        Tue, 12 Mar 2024 01:20:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710231657; x=1710836457;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H1bR56IqKqOsxuwkSHrydMHa9KKLbHNZNQKlBX5dtWc=;
+        b=l98G609jMIShf3FaUBEmjbR2CwnIHe8YNxQ5px7z40Jxghbu/D5PWSJLjIyl+dZHV4
+         Hmal/747my9yPq+qSQl+D1vKU/chDQxeZm14GwFMKLTq1x4H0+6WwcxXceQAVROw1nHF
+         9m5TFo+bhAUfz72MZSXD+sgoslr0J3AciRT6QNvSdE2snfgMF1h8Baa4HnQZABr4UKsU
+         AYCBI2uRC/3teMHHpSzQ1+R92jhtSNETPBfZNHMBcHUV2tNgbpfVTOQtfL9KtkC3JrR1
+         12xTTaGwLMAkcuTfs5HJkx+sVN0b501904Pt59N55x5ywv8krKYPcf6xBvh4VUH+ClUE
+         9rxw==
+X-Forwarded-Encrypted: i=1; AJvYcCWhyo2DbdMcZ96ERNjkQiEuHE6gU5d7FbHN07zKcXjlJbsMAPzeZ+7Wv1FM80lDwUGeLufQ11b80AemW6/yKLseFRlcbXL3HVPAuUqLcKX8kAorng1VuhYojarsgqjmjp0l973x9U4Rw7Qo9PMN9vQFjgoWT15h7viukLcpI3kb5idp2hraiYysimbn10Wf02A1gs/ESAH6jdL2UPUnEZ9LD27/
+X-Gm-Message-State: AOJu0Yw4lul1rhJNMSkxSoe87DndXOZysmF76VuqFktgN4i4ez/8Rh96
+	//y61uom+XbDXBKcplNI+AFHHdTNvSEZ8+bxqQZbSwyYCbbo9jkhEj3M8FORfE8=
+X-Google-Smtp-Source: AGHT+IGBk4eB0rHB9ARQyEmNJxLv7mX6XRRN+t8Wxl+8NL+F8ffzBrSwKgAwYdQ4FKG38M0c10nLiw==
+X-Received: by 2002:a81:6f03:0:b0:609:f87b:aad3 with SMTP id k3-20020a816f03000000b00609f87baad3mr8413864ywc.31.1710231656818;
+        Tue, 12 Mar 2024 01:20:56 -0700 (PDT)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id p195-20020a0de6cc000000b0060a08edc81dsm1809121ywe.4.2024.03.12.01.20.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 01:20:55 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60a0579a931so35226217b3.0;
+        Tue, 12 Mar 2024 01:20:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWl7vNUutERS6gABnipE7gG922zZeTYDqDOGTR8Gesy6U2azfSe5jBiP28OFXaJDTmHm8OihUTKB2/wv4mHP9NcVdESzEQpFLlmdS7EcGl7uCkuY8aUxIBKVTbJuFuW7OnD1dJ+zKjyyZ5HGgMHhg2V4923hK50TMsKIkTsXJ3tCU5RNqsC3Q1StM1S6HPiIuAyE62VyW9rByRSP9us0dxi/HAj
+X-Received: by 2002:a81:a105:0:b0:60a:243:547c with SMTP id
+ y5-20020a81a105000000b0060a0243547cmr8805841ywg.44.1710231655739; Tue, 12 Mar
+ 2024 01:20:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240311153415.GS1927156@frogsfrogsfrogs>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBXKBHZD_BlXa7TGg--.10688S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJFyUAr4xCr47JryDuFy8Zrb_yoW5XF15pr
-	n7KayqkrZ2vF1Yvr40qryYvF10g3W7Jw1UAr15Wan3uw1Dtr4fKr4093Wru3W8Ars2k34v
-	gF4UGr1ku34ayFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+References: <20240229204039.2861519-1-sashal@kernel.org> <20240229204039.2861519-12-sashal@kernel.org>
+ <Ze9x6qqGYdRiWy3h@duo.ucw.cz>
+In-Reply-To: <Ze9x6qqGYdRiWy3h@duo.ucw.cz>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 12 Mar 2024 09:20:44 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX-ht_Vetq7+Xh0TqWOcnCdi=3d0VvfgXBF4ExtzGcRDg@mail.gmail.com>
+Message-ID: <CAMuHMdX-ht_Vetq7+Xh0TqWOcnCdi=3d0VvfgXBF4ExtzGcRDg@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.1 12/12] arm64: dts: Fix dtc interrupt_provider warnings
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Rob Herring <robh@kernel.org>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Florian Fainelli <florian.fainelli@broadcom.com>, 
+	Chanho Min <chanho.min@lge.com>, Arnd Bergmann <arnd@arndb.de>, tsahee@annapurnalabs.com, 
+	atenart@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, rjui@broadcom.com, sbranden@broadcom.com, andrew@lunn.ch, 
+	gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
+	matthias.bgg@gmail.com, magnus.damm@gmail.com, 
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/3/11 23:34, Darrick J. Wong wrote:
-> On Mon, Mar 11, 2024 at 08:22:52PM +0800, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> Commit 1aa91d9c9933 ("xfs: Add async buffered write support") replace
->> xfs_ilock(XFS_ILOCK_EXCL) with xfs_ilock_for_iomap() when locking the
->> writing inode, and a new variable lockmode is used to indicate the lock
->> mode. Although the lockmode should always be XFS_ILOCK_EXCL, it's still
->> better to use this variable instead of useing XFS_ILOCK_EXCL directly
->> when unlocking the inode.
->>
->> Fixes: 1aa91d9c9933 ("xfs: Add async buffered write support")
-> 
-> AFAICT, xfs_ilock_for_iomap can change lockmode from SHARED->EXCL, but
-> never changed away from EXCL, right?  
+Hi Pavel,
 
-Yes.
+On Mon, Mar 11, 2024 at 10:04=E2=80=AFPM Pavel Machek <pavel@ucw.cz> wrote:
+> > From: Rob Herring <robh@kernel.org>
+> >
+> > [ Upstream commit 91adecf911e5df78ea3e8f866e69db2c33416a5c ]
+> >
+> > The dtc interrupt_provider warning is off by default. Fix all the warni=
+ngs
+> > so it can be enabled.
+>
+> We don't have that warning in 6.1 and likely won't enable it, so we
+> should not need this.
 
-> And xfs_buffered_write_iomap_begin
-> sets it to EXCL (and never changes it), right?
+Still, this fixes issues in DTS that were not noticed before because
+the checks were disabled.
 
-Yes.
+Gr{oetje,eeting}s,
 
-> 
-> This seems like more of a code cleanup/logic bomb removal than an actual
-> defect that someone could actually hit, correct?
-> 
+                        Geert
 
-Yes, it's not a real problem.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-> If the answers are {yes, yes, yes} then:
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> 
-> --D
-> 
-> 
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->> ---
->>  fs/xfs/xfs_iomap.c | 10 +++++-----
->>  1 file changed, 5 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
->> index 18c8f168b153..ccf83e72d8ca 100644
->> --- a/fs/xfs/xfs_iomap.c
->> +++ b/fs/xfs/xfs_iomap.c
->> @@ -1149,13 +1149,13 @@ xfs_buffered_write_iomap_begin(
->>  	 * them out if the write happens to fail.
->>  	 */
->>  	seq = xfs_iomap_inode_sequence(ip, IOMAP_F_NEW);
->> -	xfs_iunlock(ip, XFS_ILOCK_EXCL);
->> +	xfs_iunlock(ip, lockmode);
->>  	trace_xfs_iomap_alloc(ip, offset, count, allocfork, &imap);
->>  	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, IOMAP_F_NEW, seq);
->>  
->>  found_imap:
->>  	seq = xfs_iomap_inode_sequence(ip, 0);
->> -	xfs_iunlock(ip, XFS_ILOCK_EXCL);
->> +	xfs_iunlock(ip, lockmode);
->>  	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, 0, seq);
->>  
->>  found_cow:
->> @@ -1165,17 +1165,17 @@ xfs_buffered_write_iomap_begin(
->>  		if (error)
->>  			goto out_unlock;
->>  		seq = xfs_iomap_inode_sequence(ip, IOMAP_F_SHARED);
->> -		xfs_iunlock(ip, XFS_ILOCK_EXCL);
->> +		xfs_iunlock(ip, lockmode);
->>  		return xfs_bmbt_to_iomap(ip, iomap, &cmap, flags,
->>  					 IOMAP_F_SHARED, seq);
->>  	}
->>  
->>  	xfs_trim_extent(&cmap, offset_fsb, imap.br_startoff - offset_fsb);
->> -	xfs_iunlock(ip, XFS_ILOCK_EXCL);
->> +	xfs_iunlock(ip, lockmode);
->>  	return xfs_bmbt_to_iomap(ip, iomap, &cmap, flags, 0, seq);
->>  
->>  out_unlock:
->> -	xfs_iunlock(ip, XFS_ILOCK_EXCL);
->> +	xfs_iunlock(ip, lockmode);
->>  	return error;
->>  }
->>  
->> -- 
->> 2.39.2
->>
->>
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
