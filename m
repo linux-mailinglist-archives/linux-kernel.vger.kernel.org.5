@@ -1,151 +1,128 @@
-Return-Path: <linux-kernel+bounces-99745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32062878C8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:52:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0EF878C90
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:52:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EBE21F21CDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:51:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E400B215FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19165613C;
-	Tue, 12 Mar 2024 01:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X+aNpiql"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C9B53A1;
+	Tue, 12 Mar 2024 01:52:35 +0000 (UTC)
+Received: from smtpbgeu1.qq.com (smtpbgeu1.qq.com [52.59.177.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2EF11842;
-	Tue, 12 Mar 2024 01:51:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8452469D;
+	Tue, 12 Mar 2024 01:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.59.177.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710208305; cv=none; b=NCleHHT8yM8RMALE1pxk2D1d2uYWv5cMhIt2rmGhbkZooBw4+JDbG+7CtrBr+ZDXH6O3NE9bQmCAcsYcgk5sj8MtTIdMVeEp8d9pArZytWrUA8FxyVPtAgdIagkO1eBTBiyBZWYQMCFDi+lIYocRRQ7dQWeCL2AFujEJzmBhVOU=
+	t=1710208355; cv=none; b=BUSs4UC4oX5sJvfitbDWXZmPdJj5UJ9UrFQjAxh73J8xl9D0b0a3VGuUKV/c3zHULA/mT4JDYeO99rfePQvM7dRFzSpi9T/PifcBeSWjkS/Vaut4m8wJZv3icJAmh7+u3P7NdZ6Y2pq9lyZ10nK/4X5enLQnTqdOM9xDBMmqIzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710208305; c=relaxed/simple;
-	bh=ArRWAWBpJ3etLudFkCPT+4Xfr92xcoH1FAZA3SWgHRw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SsQuyO5noBeFxxbL54bbWASVq4KfQ6afIIHyEqRNB/b21oPRAdPopmPVGEJ3ezXzW8wc3ENEJz7aTGXxEETnLpLLaW/zj/UvwkOpibbVIho/hCxdo9+AL+2j0MoPbYuvrGLhHPw9TY1ixpPoGQJ/4S+zeusju4wA9I+DApvpkYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X+aNpiql; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33e6aca1ca9so4852836f8f.2;
-        Mon, 11 Mar 2024 18:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710208302; x=1710813102; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aKvBVych6YCWus4gRNHRR8iBtRNOaryODuyFk+IiwIg=;
-        b=X+aNpiqlfNLa15xtiizq7yUkjhhQo4D8wSaenGLmpd+ev87vyCI2kxuCeMDYdoKRVe
-         KPchzNkC3myzkZfIm3FIpxZokp4q0ReLKupbcTDHrSzZfByzl/2APvc+ZCDjLiKZiKWp
-         214mT4iWxeNyqlbfzs7a1JZk/ONNApUzoSDABYHiRbz0HIutVwGzwizR5u43ue+VBdnO
-         pJSWmoTSAdQyvPuelIac5XIc6gD3DWX4XsKzk3vDySlQXro6f4spNtn2Raa4UUBRBze8
-         Uv/X7n37vtP+njUwtIwKY5g3xxthPLYmTAnbyv7w5rBFVoDFfxvkuZY84iIWw6o5pLIo
-         SGDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710208302; x=1710813102;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aKvBVych6YCWus4gRNHRR8iBtRNOaryODuyFk+IiwIg=;
-        b=u8ASxJILzAqdp1WWcwvux3KMCm8wF6l0mKskSDnFYwPEpg8rXntAEalwve3M0LW5xd
-         FFrDBdWmtIDESRRS2ojQQvR8qLiJ/ozDMIYYXaTr9Dy4uC3d4rdclt/bsEwXmIeJRC88
-         g7jvO+1wfRx9ouhH4vRULl1++GpjsaJ8nNpsTAc4So9WQzLU7TwRVD+5Iyjq3+nRiMcn
-         O+dwMl0l5BysXqihIbmD5sIyXFdaE6lo7hDbD6vYiWL3Ltt1BJF2lFUqk3nNRVkgF/Pq
-         bap0S6UMh2LuYCh6xE+27JcliUPgEv9zg8wnF6J9zahSLSmfdl4u8C7v7vzRqKvfLLAd
-         d8ng==
-X-Forwarded-Encrypted: i=1; AJvYcCWha1hYlnBiTgL6iFwhKHpP+CutqMxriFR0fkFo5XC8edxEaH3I06Dd/LkhT3mE3qVQa7C+0LHvNkp6iU3wkizRmJkz3Nu6uNQJFSu9mUW9qIb9qZAdxzS0+0Bzcm3T2YF3nenIVroAPsDElOoF/51Hh/rF1AT8ImYTwD1718xJDKUs1ESPv+T5gokiNf8JHhjC8AwsZbrcP1u2dCnrfup2aIPGBq2QaG+J/dR8WBh2UW9TpU0SuTcEWvikKooJNpslCKOFfYiHbO1sr5yit5Crh+rWLuj6jp1E/g==
-X-Gm-Message-State: AOJu0YxtVb9s8WT3ZS+6mtGJUhht/J1hrYJ1V1uRl1Mf0ipmIa/jX1jk
-	V2gXL8s8ENYLDpiI3t3maZvRU+sV7ijSlZjuHZFL9PxVDqxmRCqba5CvQjddjq4G/ej/hBN4lX7
-	tXHrPVxEfg6m7NupwLtC6wncljXQ=
-X-Google-Smtp-Source: AGHT+IEB/YPizRPdSM8g0e75qq4Trwgwdg1LF6SZVgxJUmKpI+Q9QIjihr7HmFgR5GDbRJDy4Pav6rzymzHVBMyXxJg=
-X-Received: by 2002:adf:ea06:0:b0:33e:48f9:169d with SMTP id
- q6-20020adfea06000000b0033e48f9169dmr403840wrm.31.1710208301974; Mon, 11 Mar
- 2024 18:51:41 -0700 (PDT)
+	s=arc-20240116; t=1710208355; c=relaxed/simple;
+	bh=oZSt8rOcfsApDGaXioQ83dqa7XFV7dDDeX7YZCZIXWU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qjFzsdOGiOHt9eDon2HoTqMH9nfNRjO6zPRISximx74/9ERa4sBh6gyEBNgbD1yh4mJ9sn7Xo0DUhQIy89bF1flNg9VSIN3t9SGgG6eufpJyu7hiE0GQQX5bKIXyYKQanmjyQznX+j9V7Vo2vyw6gs/pJOv/4KTOM9VmVCAbFnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=52.59.177.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+X-QQ-mid: bizesmtp90t1710208311tl9p0klz
+X-QQ-Originating-IP: s65UGkHpF2o9p4eY6Dtwin3B09Ieh1+LZF8N2A+5T0M=
+Received: from localhost.localdomain ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 12 Mar 2024 09:51:50 +0800 (CST)
+X-QQ-SSF: 01400000000000C0B000000A0000000
+X-QQ-FEAT: +ynUkgUhZJknQdj8DNcL8xe+8WjYPGdGsyvtr2K5zIPQKmQCiczINsccDoZnI
+	HJVUjYUBSd8lDwyrexXgUWl244sLWMjP/w183+z4b7bftBLDzY8Av2OVl0ez4k8xWxj4Ez6
+	9bVlrmszXEyztdKczipe13X4bYZh5IuP41Fln6ESwV+oA6cicmCuKIwX7ZNkZJz93pIUj7v
+	K1mnHPGJ90iJTHa42FrY7yqdJfyTmUY9CCMSQZ63hJbTL/gFnxQGDXbRfvAWznFG7sQs2Re
+	ZNzEZHRww3pRL4dz/zhx/1Un5HB+rQsTUwDuXR0C+bVsLICZ6YakvdM0lacMi7Y3lLjFS1e
+	bkslMyyfKivbHZAYWVB+XnhmA1TuQ71x+ZCKACRgFIB4IO3XDOJprc4GMqP0dnDc8DtVFwD
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 4870457541553938088
+From: WangYuli <wangyuli@uniontech.com>
+To: wangyuli@uniontech.com,
+	marcel@holtmann.org,
+	luiz.dentz@gmail.com
+Cc: Larry.Finger@lwfinger.net,
+	guanwentao@uniontech.com,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH] Bluetooth: Add device 0bda:4853 to blacklist/quirk table
+Date: Tue, 12 Mar 2024 09:51:33 +0800
+Message-ID: <893FB314C6C03130+20240312015133.232214-1-wangyuli@uniontech.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com> <20240311093526.1010158-6-dongmenglong.8@bytedance.com>
-In-Reply-To: <20240311093526.1010158-6-dongmenglong.8@bytedance.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 11 Mar 2024 18:51:30 -0700
-Message-ID: <CAADnVQKw4HUbwvivysVBQPpA2MC2e56MwrvJy89qs8rx_ixOnw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 5/9] bpf: verifier: add btf to the function
- args of bpf_check_attach_target
-To: Menglong Dong <dongmenglong.8@bytedance.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
 
-On Mon, Mar 11, 2024 at 2:35=E2=80=AFAM Menglong Dong
-<dongmenglong.8@bytedance.com> wrote:
->
-> Add target btf to the function args of bpf_check_attach_target(), then
-> the caller can specify the btf to check.
->
-> Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
-> ---
->  include/linux/bpf_verifier.h | 1 +
->  kernel/bpf/syscall.c         | 6 ++++--
->  kernel/bpf/trampoline.c      | 1 +
->  kernel/bpf/verifier.c        | 8 +++++---
->  4 files changed, 11 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 4b0f6600e499..6cb20efcfac3 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -811,6 +811,7 @@ static inline void bpf_trampoline_unpack_key(u64 key,=
- u32 *obj_id, u32 *btf_id)
->  int bpf_check_attach_target(struct bpf_verifier_log *log,
->                             const struct bpf_prog *prog,
->                             const struct bpf_prog *tgt_prog,
-> +                           struct btf *btf,
->                             u32 btf_id,
->                             struct bpf_attach_target_info *tgt_info);
->  void bpf_free_kfunc_btf_tab(struct bpf_kfunc_btf_tab *tab);
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index d1cd645ef9ac..6128c3131141 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3401,9 +3401,11 @@ static int bpf_tracing_prog_attach(struct bpf_prog=
- *prog,
->                  * need a new trampoline and a check for compatibility
->                  */
->                 struct bpf_attach_target_info tgt_info =3D {};
-> +               struct btf *btf;
->
-> -               err =3D bpf_check_attach_target(NULL, prog, tgt_prog, btf=
-_id,
-> -                                             &tgt_info);
-> +               btf =3D tgt_prog ? tgt_prog->aux->btf : prog->aux->attach=
-_btf;
+This new device is part of a Realtek RTW8852BE chip. Without this change
+the device utilizes an obsolete version of the firmware that is encoded
+in it rather than the updated Realtek firmware and config files from
+the firmware directory. The latter files implement many new features.
 
-I think it's better to keep this bit inside bpf_check_attach_target(),
-since a lot of other code in there is working with if (tgt_prog) ...
-so if the caller messes up passing tgt_prog->aux->btf with tgt_prog
-the bug will be difficult to debug.
+The device table is as follows:
 
-> +               err =3D bpf_check_attach_target(NULL, prog, tgt_prog, btf=
-,
-> +                                             btf_id, &tgt_info);
+T: Bus=03 Lev=01 Prnt=01 Port=09 Cnt=03 Dev#= 4 Spd=12 MxCh= 0
+D: Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs= 1
+P: Vendor=0bda ProdID=4853 Rev= 0.00
+S: Manufacturer=Realtek
+S: Product=Bluetooth Radio
+S: SerialNumber=00e04c000001
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E: Ad=81(I) Atr=03(Int.) MxPS= 16 Ivl=1ms
+E: Ad=02(O) Atr=02(Bulk) MxPS= 64 Ivl=0ms
+E: Ad=82(I) Atr=02(Bulk) MxPS= 64 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E: Ad=03(O) Atr=01(Isoc) MxPS= 0 Ivl=1ms
+E: Ad=83(I) Atr=01(Isoc) MxPS= 0 Ivl=1ms
+I: If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E: Ad=03(O) Atr=01(Isoc) MxPS= 9 Ivl=1ms
+E: Ad=83(I) Atr=01(Isoc) MxPS= 9 Ivl=1ms
+I: If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E: Ad=03(O) Atr=01(Isoc) MxPS= 17 Ivl=1ms
+E: Ad=83(I) Atr=01(Isoc) MxPS= 17 Ivl=1ms
+I: If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E: Ad=03(O) Atr=01(Isoc) MxPS= 25 Ivl=1ms
+E: Ad=83(I) Atr=01(Isoc) MxPS= 25 Ivl=1ms
+I: If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E: Ad=03(O) Atr=01(Isoc) MxPS= 33 Ivl=1ms
+E: Ad=83(I) Atr=01(Isoc) MxPS= 33 Ivl=1ms
+I: If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E: Ad=03(O) Atr=01(Isoc) MxPS= 49 Ivl=1ms
+E: Ad=83(I) Atr=01(Isoc) MxPS= 49 Ivl=1ms
+
+Link: https://lore.kernel.org/all/20230810144507.9599-1-Larry.Finger@lwfinger.net/
+Cc: stable@vger.kernel.org
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+Signed-off-by: WangYuli <wangyuli@uniontech.com>
+---
+ drivers/bluetooth/btusb.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 06e915b57283..d9c621d15fee 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -542,6 +542,8 @@ static const struct usb_device_id quirks_table[] = {
+ 	/* Realtek 8852BE Bluetooth devices */
+ 	{ USB_DEVICE(0x0cb8, 0xc559), .driver_info = BTUSB_REALTEK |
+ 						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x0bda, 0x4853), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
+ 	{ USB_DEVICE(0x0bda, 0x887b), .driver_info = BTUSB_REALTEK |
+ 						     BTUSB_WIDEBAND_SPEECH },
+ 	{ USB_DEVICE(0x0bda, 0xb85b), .driver_info = BTUSB_REALTEK |
+-- 
+2.43.0
+
 
