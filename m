@@ -1,142 +1,85 @@
-Return-Path: <linux-kernel+bounces-100319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05EAA8795AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:07:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 768488795AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:08:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0A392836C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:07:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8E71F24FFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE6A7A72D;
-	Tue, 12 Mar 2024 14:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i5Rje2GO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C26A7A72F;
+	Tue, 12 Mar 2024 14:08:06 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B589D78298
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BEEA78298
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710252457; cv=none; b=bkQmuWOfX8D4WEna6y9zS09bEbRDGXKDfRIRqXiE74cWs7Mb1PslPcNvH67ZPs7qhUI3WD8vn5o18oazN9UhBjtA++ww+pEtf9fFcM8CmyuS2ms07NJ8q5v0CcFHx8jo6FxuiMgd5/+T9vI7/Hii9a8T59tilFOYx8dS1U5n4bs=
+	t=1710252486; cv=none; b=dJye+u2e5r7wJovXc4TupUACTaOlRfaS+GdRdR+E71pFCJ7akxcmrtQvOIYOrLvcUsvVSNe5vq8UN3r0emCFPQBt4xp0VwyDGM1WrQw6XtgbnBBjVq3yDDDRs1GpscNJ7nwHruWyQJyaxHzNYAXvwAm6qQ3jAjx6UocX1bsIyT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710252457; c=relaxed/simple;
-	bh=VxlpGxDihZXj7jY5GEg/ShwUNDeC49+jqJqaSIfPhsY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uNKFhnlQ1XR22fhKe95I6xhaghP7tJ+6S3UUPzNi86aQwhzFGN4ImwMHOcbgqE046lYPTsAsstjEif1bEBetATU49Gv9BcijB5vfGdd0S8PkHLuRWAkxymZgFgsk50dbSZOxqUBoNHqi1loBZd0PSoezFrhgd2e0IV/LMxU5thI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i5Rje2GO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EAEEC433C7;
-	Tue, 12 Mar 2024 14:07:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710252457;
-	bh=VxlpGxDihZXj7jY5GEg/ShwUNDeC49+jqJqaSIfPhsY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=i5Rje2GOhhmmf2q6wh8tnNGuD3tTEdAt2GDgKJqBRsX83vpcz+vGfagvrnOnCBkML
-	 jSth+OmJ0TmjvkKv/FHbMjGA9SKfvslDXJiOSsUgD/Qzf+nHqxX5fOv24mr0lK42ed
-	 MVPfgfPkavIORcva44kvaPz20jSzsV6BY3BETPNO2nkia7j0w9Qth401Nx1dWJOpDj
-	 0sHQKRzLSyrUiHHiGbnhg45kuRXaRhBokjUDzKs7sXjTrWg6f4oDGiOIH7oUY9w0Z+
-	 6pzkeManYXfsh0kdOBXcQOWR6G0ULbZVy5Bh9UH5NVPMLppD3yUZZfadwNclBfbHhl
-	 r3oA8T0eYwlwg==
-Date: Tue, 12 Mar 2024 14:07:31 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Qingfang Deng <dqfext@gmail.com>
-Cc: Inochi Amaoto <inochiama@outlook.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Atish Patra <atishp@atishpatra.org>,
-	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Heiko Stuebner <heiko@sntech.de>, Guo Ren <guoren@kernel.org>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
-Message-ID: <20240312-evil-resource-66370b68b9b4@spud>
-References: <20240311063018.1886757-1-dqfext@gmail.com>
- <IA1PR20MB4953ECC3E32E95303872CD14BB242@IA1PR20MB4953.namprd20.prod.outlook.com>
- <CALW65jZ+q8sDiRKgsRL9n+939HNUCnkKuO=YJjHB5Js=WYQeOg@mail.gmail.com>
+	s=arc-20240116; t=1710252486; c=relaxed/simple;
+	bh=HHVDSFp36ZnZErKZO9wmMVy6SRsc9Fju0AWIIIYPKSk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=TKxrgpmetc4AsEETo9OJ2tladMPxkveH/APNkJlsCTELLPMftiAIHHJiJgYD3O8XXGyzyRaYu2vQMNql8GVdTL5lShPr4EKwhpaRBm4Q2aBt5kJ6kUg5ZxHvplnsKTReyhfiJTg7Yoz0YAYd/WCHrf714ZfskFz4KMFsyCl4rdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c8a87a58e5so304455539f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:08:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710252484; x=1710857284;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CRxbYyAl65YGCI67bVSRKMZcJ777VEo8CqlNScBoQqs=;
+        b=C2xRzaIZzwb1IxmfRdAnHFTKelcbEJqOstIscBNDqp89oirnudwlsQKUB4nVBbQzAd
+         jWFBFBT3MKEGU4H4cXrZ84UX1BVUgbTnyEacaO9S3oxGsMMBqQBjP7vDWROFKB9+O2Yz
+         ol2CGuxjvnypcTLvH2docnpFLMCMWgOgnkdg0k9SLIvze72hImmhou4HvjOB8uEjm+FF
+         vA7zJDS8f2pzvFPdHZLo6gKPB/6ngWUzuDp+hncAKTxrytKXUAxt+RPrkzam4iQDXBpK
+         fnKIyZSeVJDcZUzNn1gDsE4E9kDTPYdd5gikUhSIoXSLaTazm+rWs70/rKlU4HqZ2E1E
+         5VIw==
+X-Gm-Message-State: AOJu0YyDrHeENsyKomW5z8v5ZXiYTVQbYGOvsuW++wCMujolk2FgR5yF
+	289R93mMjnAwhvChcMYWHOe8YMFzPFcE5z4C84wVsh5VxizIolKrBOPQPnt77xRqsFFq9FKY5lX
+	YCY1/QK+Y7o8ASJGnzjVx2FXy/t6e5K5GLMcCD+IR3KBgm/R9Mci1CHQ5hw==
+X-Google-Smtp-Source: AGHT+IFIwSTCU3UVGry21b/AXH+QRACbvZwjrdsA5TJxonFxftKG/2wmtwt125G5mhHrX3vEuM08OBAWFvb4epFP8/ZIBqbWbnZH
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Pq4l/U+EGNQPJ6t+"
-Content-Disposition: inline
-In-Reply-To: <CALW65jZ+q8sDiRKgsRL9n+939HNUCnkKuO=YJjHB5Js=WYQeOg@mail.gmail.com>
+X-Received: by 2002:a05:6638:2581:b0:476:e064:b02b with SMTP id
+ s1-20020a056638258100b00476e064b02bmr407170jat.0.1710252483815; Tue, 12 Mar
+ 2024 07:08:03 -0700 (PDT)
+Date: Tue, 12 Mar 2024 07:08:03 -0700
+In-Reply-To: <ZfBbcgv4PHg7SojP@zeus>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c640a80613772f82@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KMSAN: uninit-value in nci_dev_up
+From: syzbot <syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, ryasuoka@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
---Pq4l/U+EGNQPJ6t+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On Mon, Mar 11, 2024 at 03:56:29PM +0800, Qingfang Deng wrote:
-> Hi Inochi,
->=20
-> On Mon, Mar 11, 2024 at 3:13=E2=80=AFPM Inochi Amaoto <inochiama@outlook.=
-com> wrote:
-> >
-> > On Mon, Mar 11, 2024 at 02:30:18PM +0800, Qingfang Deng wrote:
-> > > T-Head C908 has the same IRQ num and CSR as previous C9xx cores, but
-> > > reports non-zero marchid and mimpid. Remove the ID checks.
-> > >
-> >
-> > Hi, Qingfang,
-> >
-> > IIRC, the existed C908 SoC (such as K230) have an early version
-> > of C908 core. But C908 core itself may support Sscofpmf.
-> > So I do not think removing the ID checks is a good idea. Instead,
-> > I suggest adding CPUID of your SoC to this check.
->=20
-> As of Feb 2024, the latest C908 revision does not support Sscofpmf.
-> You may Google "C908R1S0" to see its user manual.
-> But I think you're right. Even though C908 does not have Sscofpmf,
-> T-Head may release new SoCs which do have Sscofpmf, and the check will
-> break. I will submit a new patch with your suggested changes.
+Reported-and-tested-by: syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com
 
-If on an SoC where they have updated vector to 1.0 and implemented both
-Zicbom and Svpbmt instead of their custom stuff they did not implement
-Sscofpmf I think we can expect they won't move away from their custom
-implementation soon.
-I do agree that we should not remove the ID checks entirely, but I also
-do not want to be adding an ID for every SoC that needs this. I think we
-should be getting this information from DT going forward.
-The DT parsing is done prior to the application of boot time
-alternatives, so I think we could apply the "erratum" based on the DT.
+Tested on:
 
-I'm also pretty sure that we can also modify the existing code for the
-archid =3D=3D impid =3D=3D 0x0 case to set a pseudo isa extension so that t=
-he
-perf driver could do call riscv_isa_eextension_available() and not worry
-about the specfic conditions in which that is true. It'd be something
-like this patch:
-https://lore.kernel.org/linux-riscv/20240110073917.2398826-8-peterlin@andes=
-tech.com/
-Just without removing the archid =3D=3D impid =3D=3D 0x0 case from the erra=
-ta
-code. If you're lost after reading that, I can probably throw together
-some untested code for it.
+commit:         9f8413c4 Merge tag 'cgroup-for-6.8' of git://git.kerne..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=127fa91a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ea9413ea6749baf5574
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16060901180000
 
-Thanks,
-Conor.
-
---Pq4l/U+EGNQPJ6t+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfBhowAKCRB4tDGHoIJi
-0qpNAQDkCoYYNr9WEQUhd2aEI/zbE3vwTfDh+2GK9L7+lQaBUAD/Ub+ksm3LncKt
-mAWaii+Of3v6TKIm+8K1yjxEtDdKlQE=
-=5JMP
------END PGP SIGNATURE-----
-
---Pq4l/U+EGNQPJ6t+--
+Note: testing is done by a robot and is best-effort only.
 
