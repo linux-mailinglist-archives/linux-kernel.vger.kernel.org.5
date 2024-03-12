@@ -1,133 +1,142 @@
-Return-Path: <linux-kernel+bounces-100589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FFC6879A83
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:18:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 704F4879A88
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:19:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4EB2B24AA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:18:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 259FD281D9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C956F1384B8;
-	Tue, 12 Mar 2024 17:18:21 +0000 (UTC)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A5C138499;
+	Tue, 12 Mar 2024 17:19:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="mLp1Ekhg"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB02C7D409;
-	Tue, 12 Mar 2024 17:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEADC138483
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710263901; cv=none; b=GqjfWKJl2YPz/uyeQ5VlAKVeOtTpM0Rc0saKmxGv9roH5kGkLrYVknP32sty1P5YfIbiGclI2i+MNn8+O2A5UEtvm7/XD0j0ibcj7V0yhOl+c+DNL2tqwuK6BoAYP6+olMe/OtmVIp+PXTOgjrtSFHlpgFFrgmZkl9r4H7sf0xk=
+	t=1710263971; cv=none; b=m2HsNy701y8bVW66CU4rN0zdjR2jyM6zL8Sgw59SQLCdaouV+I9V0uSdOgWHLu2AQV/qbzcNsJMGaQjiBf964TdOE9VDi0/Eob8eNY9hRKzMsgnWI3WzX5olitH7lubrvkG1TuozkguettEZ8FHfZGG3gYQAFUic/f9DCFJaiVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710263901; c=relaxed/simple;
-	bh=plX6EgCmcJWhUvceDb/7oSiljuyjZpOsiV3pjRLCfiM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Uj0nc5DcIcaEq6T+GXpfrdk0CV/nJLDEqUnVkkwZjtnsJ+AxKn2s/r2ysm1B+MaPPxSlaTQI/pifYITomk8xViMEnY8LsOrlyWxsR8QiDcdafP6ZDRh0NZAZQE8HLcZ5u1ycraaJ/k6DGpkTEakgjpBDzdUjqvG1bkMdueoYxbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5682ecd1f81so163959a12.0;
-        Tue, 12 Mar 2024 10:18:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710263898; x=1710868698;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4zdMrue1cvNB0PeW8F/5e6/jetcP3kc0nJi/2UVb+5g=;
-        b=NyKdikQXaLkqRw9Ohj24dypf8Hcm/I3/AYDsxji73KofiNQ50VEUn0iKLycN60nbAc
-         zVoVN8qjwVW9rIkxoAa6/qhkLBDcHEAUhCdR/5P72VdWI3i4GdAHCUogofQq5aMl2I7C
-         eJct3wKKlwcABxFcC36DD8GE8CDY8jw2lCpbl0wi87w16oseOKb0+VfoCBbeQkyubT63
-         Fl6cF9LCW+tFYokxN2BFImEbj7QMnU6DX1SnIoH+hyGn4Nkvb0z6iGBMo+gvik679YQ2
-         Lm5mMolbthbd9eyPqsv9xHQmat47YbYe6+8XKxnF5YTdElWLfpFE4Cg4Rq7+3P69tAUO
-         3+Yw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrarWKoI1mWWUyB60BN8LCGBNSN6lyURS4Z1VXugCIVyWT7nB7IdCdwcBS1PhPghxOAZdvnJ0rnV84murQUYVOFTq7mxMCeDR2bnKLHVW3S7PkqEGXWvNIy+jiCFDqFwJnM5M3yI6mIJlg3dAyZRWRyENn/HM03zJNidT3L4qvabVIBo6NkF6ybtHpJH1kPZTtuksv1i+6TPXIVVQlQ4pAuZ807tXe1F0=
-X-Gm-Message-State: AOJu0Yw47mxkEA1RJxKRlYGNHpQjLVnQyXSLZ+653WVkyEqcAXz44GU6
-	EfayZCmwgzMuWB4Bd3LORqW5ixxqt3pfhp31MxFtF3/+FwJrbGRqZ+fTDb+4Kws=
-X-Google-Smtp-Source: AGHT+IGgHx0iwc0ZmqQ8wRKsOrJJRTQOOCfWJKcfS7tMxDoNdqJsGAsMN2QL5+AP9Bc5BbfiYEVhGg==
-X-Received: by 2002:a50:d582:0:b0:565:f9c1:d925 with SMTP id v2-20020a50d582000000b00565f9c1d925mr754137edi.0.1710263897640;
-        Tue, 12 Mar 2024 10:18:17 -0700 (PDT)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id o8-20020a056402038800b00567566227a5sm4091472edv.18.2024.03.12.10.18.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 10:18:17 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a461c50deccso29608166b.0;
-        Tue, 12 Mar 2024 10:18:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWKHV3Zcj3T8Y+3LeF7Aa6mwTAHLPWTgZKspoPSxFeRUREzIa/MJPfUdX5HnyKPfDkhvUwYGpoA22b/Vl1infVvXLME2lXdiS1IneSqI3kZOzjy119sSlVKMiIjPSoP4MYPNr/9zLyjcdTS0hmVeJYzxeEUNMs4xylJ8CGhEH6LnuOD/Lv5UlUj8hmAtIoB5ZhBHQe2Iq6ZP1rzsOrKylqv+OqZgWHaoJ8=
-X-Received: by 2002:a17:907:c287:b0:a45:ed7f:2667 with SMTP id
- tk7-20020a170907c28700b00a45ed7f2667mr759548ejc.17.1710263896947; Tue, 12 Mar
- 2024 10:18:16 -0700 (PDT)
+	s=arc-20240116; t=1710263971; c=relaxed/simple;
+	bh=hdtuhTEpAOXd9JCt1DPtGZWNz6gzkTQigsXJb9JT4bY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Hqa/5Ee0fiTbtD6z9qaRS8SaAMl222BHEDlCUkZndjEQs6H78h5u0QUR59Jxhwqz8AbWOo/ldBWUS3mIDQUKfxIhIqaFUUR6RDYYzpP3awvyhUDiOSl1dplviB3tZiQ9xfGplPyQJEtYHY4DKRUlpqKO7ZvjwIlgBwF1PjVX0zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=mLp1Ekhg; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [IPV6:2601:646:8002:4640:7285:c2ff:fefb:fd4] ([IPv6:2601:646:8002:4640:7285:c2ff:fefb:fd4])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42CHIGVW1562136
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 12 Mar 2024 10:18:16 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42CHIGVW1562136
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1710263899;
+	bh=Qe3oFmqY5MEQgBRHG9tAoiRCX5zfTbErpUtF36h8c24=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=mLp1EkhgGinRLcAGo8uGBaxXRz4LyCYuneOqQidnn7SHNigpbVDY+9R9UYgZaugvz
+	 pybLWZ5O1JTDCT4asghe5oUkn6PLjyI/zfGKtfiwR5bN4zqH9pRFu90V+e88Aebqp2
+	 vszN1QorH3ASTGbSs4NJ5WS1jmYrdiI0HWqDN2dFYjbIGrmJY68nFyzsJFMdMpfPcZ
+	 p0LUGdVWGyBe3LoXS2WoQkQ/ea0HIp1eUXwRnqkBiTiIDXE+WV2By5fA4lbPCQEbB+
+	 CcWgj1ozJ4SJm3cdsS8LRFyiI4ADdFFe/NIsv56OqXZwHXXQLSFDnY14wTBYTp4UTd
+	 YH5rvrAVUJrZQ==
+Message-ID: <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com>
+Date: Tue, 12 Mar 2024 10:18:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <2f598709-fccb-4364-bf15-f9c171b440aa@wdc.com> <20240311-zugeparkt-mulden-48b143bf51e0@brauner>
- <20240311224259.GV2604@twin.jikos.cz> <20240312-ruhephase-belegen-d4ab0b192203@brauner>
-In-Reply-To: <20240312-ruhephase-belegen-d4ab0b192203@brauner>
-From: Neal Gompa <neal@gompa.dev>
-Date: Tue, 12 Mar 2024 10:17:40 -0700
-X-Gmail-Original-Message-ID: <CAEg-Je-XoSd_5HtBi8p7O8STB9_J4RZKKDtJqaQWtG_3vdbdRw@mail.gmail.com>
-Message-ID: <CAEg-Je-XoSd_5HtBi8p7O8STB9_J4RZKKDtJqaQWtG_3vdbdRw@mail.gmail.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-To: Christian Brauner <brauner@kernel.org>
-Cc: David Sterba <dsterba@suse.cz>, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	Miklos Szeredi <mszeredi@redhat.com>, David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Mar 12, 2024 at 7:27=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
->
-> On Mon, Mar 11, 2024 at 11:43:00PM +0100, David Sterba wrote:
-> > On Mon, Mar 11, 2024 at 02:43:11PM +0100, Christian Brauner wrote:
-> > > On Mon, Mar 11, 2024 at 08:12:33AM +0000, Johannes Thumshirn wrote:
-> > > > On 08.03.24 03:29, Kent Overstreet wrote:
-> > > > > Add a new statx field for (sub)volume identifiers, as implemented=
- by
-> > > > > btrfs and bcachefs.
-> > > > >
-> > > > > This includes bcachefs support; we'll definitely want btrfs suppo=
-rt as
-> > > > > well.
-> > > >
-> > > > For btrfs you can add the following:
-> > > >
-> > > >
-> > > >  From 82343b7cb2a947bca43234c443b9c22339367f68 Mon Sep 17 00:00:00 =
-2001
-> > > > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > > > Date: Mon, 11 Mar 2024 09:09:36 +0100
-> > > > Subject: [PATCH] btrfs: provide subvolume id for statx
-> > > >
-> > > > Add the inode's subvolume id to the newly proposed statx subvol fie=
-ld.
-> > > >
-> > > > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > > > ---
-> > >
-> > > Thanks, will fold, once I hear from Josef.
-> >
-> > We're OK with it.
->
-> Thanks!
-
-
-Well, I guess I'm fine with the whole thing then if everyone else is.
-
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
+Content-Language: en-US
+To: Pasha Tatashin <pasha.tatashin@soleen.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org,
+        bp@alien8.de, brauner@kernel.org, bristot@redhat.com,
+        bsegall@google.com, dave.hansen@linux.intel.com, dianders@chromium.org,
+        dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com,
+        hch@infradead.org, jacob.jun.pan@linux.intel.com, jgg@ziepe.ca,
+        jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com,
+        kent.overstreet@linux.dev, kinseyho@google.com,
+        kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org,
+        mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com,
+        mingo@redhat.com, mjguzik@gmail.com, mst@redhat.com, npiggin@gmail.com,
+        peterz@infradead.org, pmladek@suse.com, rick.p.edgecombe@intel.com,
+        rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de,
+        urezki@gmail.com, vincent.guittot@linaro.org, vschneid@redhat.com
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+On 3/11/24 09:46, Pasha Tatashin wrote:
+> This is follow-up to the LSF/MM proposal [1]. Please provide your
+> thoughts and comments about dynamic kernel stacks feature. This is a WIP
+> has not been tested beside booting on some machines, and running LKDTM
+> thread exhaust tests. The series also lacks selftests, and
+> documentations.
+> 
+> This feature allows to grow kernel stack dynamically, from 4KiB and up
+> to the THREAD_SIZE. The intend is to save memory on fleet machines. From
+> the initial experiments it shows to save on average 70-75% of the kernel
+> stack memory.
+> 
+> The average depth of a kernel thread depends on the workload, profiling,
+> virtualization, compiler optimizations, and driver implementations.
+> However, the table below shows the amount of kernel stack memory before
+> vs. after on idling freshly booted machines:
+> 
+> CPU           #Cores #Stacks  BASE(kb) Dynamic(kb)   Saving
+> AMD Genoa        384    5786    92576       23388    74.74%
+> Intel Skylake    112    3182    50912       12860    74.74%
+> AMD Rome         128    3401    54416       14784    72.83%
+> AMD Rome         256    4908    78528       20876    73.42%
+> Intel Haswell     72    2644    42304       10624    74.89%
+> 
+> Some workloads with that have millions of threads would can benefit
+> significantly from this feature.
+> 
+
+Ok, first of all, talking about "kernel memory" here is misleading. 
+Unless your threads are spending nearly all their time sleeping, the 
+threads will occupy stack and TLS memory in user space as well.
+
+Second, non-dynamic kernel memory is one of the core design decisions in 
+Linux from early on. This means there are lot of deeply embedded 
+assumptions which would have to be untangled.
+
+Linus would, of course, be the real authority on this, but if someone 
+would ask me what the fundamental design philosophies of the Linux 
+kernel are -- the design decisions which make Linux Linux, if you will 
+-- I would say:
+
+	1. Non-dynamic kernel memory
+	2. Permanent mapping of physical memory
+	3. Kernel API modeled closely after the POSIX API
+	   (no complicated user space layers)
+	4. Fast system call entry/exit (a necessity for a
+	   kernel API based on simple system calls)
+	5. Monolithic (but modular) kernel environment
+	   (not cross-privilege, coroutine or message passing)
+
+Third, *IF* this is something that should be done (and I personally 
+strongly suspect it should not), at least on x86-64 it probably should 
+be for FRED hardware only. With FRED, it is possible to set the #PF 
+event stack level to 1, which will cause an automatic stack switch for 
+#PF in kernel space (only). However, even in kernel space, #PF can sleep 
+if it references a user space page, in which case it would have to be 
+demoted back onto the ring 0 stack (there are multiple ways of doing 
+that, but it does entail an overhead.)
+
+	-hpa
 
