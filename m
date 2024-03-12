@@ -1,83 +1,120 @@
-Return-Path: <linux-kernel+bounces-100946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD7F879FF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:55:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BAEA879FF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:56:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFCAE28371F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:55:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B4B51F2233E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5865C4AEEF;
-	Tue, 12 Mar 2024 23:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 316514AEC7;
+	Tue, 12 Mar 2024 23:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K7uFle32"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Usr2HyC0"
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9709047796;
-	Tue, 12 Mar 2024 23:55:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD994643B
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 23:56:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710287747; cv=none; b=FjCa1m2/1KenSyhtjZPrXfdHwDhg1lT8cmuXNYlmithJJWgo/s0SGkZe+oofzKXrayKr88+jvmarToOdOKp/EiSzRgE9GvG3s3anZflgbDvtANoanXEZbQ7BRcC1ppUapFQ6Tt2FkSr8b+KdLCE5TXac5xj/fsB+EJj5ihqc0Ns=
+	t=1710287812; cv=none; b=JXVCAA20hxTyGTU6gRcd1kj3Tt+YlTUDOGl/zl1dPEk8BK4URaYFgjUhY9kST5B7jECpFxIy1IyY3SvLjamXTbxU43FHjl7qTEF8EeklbkqcOMFuUM7tvpxnGU1icG7G0zi6xDlh7ktrnCNn0d3RQ9xSt/8o1MVDC/Uu5K4txRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710287747; c=relaxed/simple;
-	bh=lWVOaAa1PbN4cR2qaaPG+mAy5NHELjQFGPdecwhzW0w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WlnFRgDs0R4x6tGIhZigBlw+GMI5T8JMcWyL0QIGq+IzeelyVMoq2eiwqIta0kIc6kSMvvPO4Bo07NJJX8v1o7gc1RMFbu051qdKnNThm/mMp/yRwCw2l0mwyL9dd12fGT956j6S8mKeUzL52cTiJ1+Xom9SKWz4DuZNcFpwigs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K7uFle32; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC5DEC433C7;
-	Tue, 12 Mar 2024 23:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710287747;
-	bh=lWVOaAa1PbN4cR2qaaPG+mAy5NHELjQFGPdecwhzW0w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=K7uFle32iOGRXQBVt6IXGvExopg5GE2QahRWr0HC7sCN0DLj2W1D0+khFeKVybwtw
-	 eQnOur50Hze75Sv2WyebymAWUcAotmIN+0c3LLAUJGL4whO4gXgqhByOJhTILmRh2w
-	 AfzVhCafu83fa/EZ0gfUwPyApbCxPIOfN6fKiR+MBYM61vde6Pk78QPKOJOX2Ox22v
-	 /MQMg/05/FOXqZUWjsL8Tc6zk79akPY2fzHRgrrX1XXJQUsYhBpYBeQlVpL+nXp96p
-	 xNdtEtci5vOmi+F6tSj9c37fkJ5QPm8ptLgPiWWI1pElWDlVUMo5mBc0mUrL29bPcM
-	 zMPc7O39yv5lg==
-Date: Tue, 12 Mar 2024 16:55:44 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Cc: ahmed.zaki@intel.com, aleksander.lobakin@intel.com,
- alexandre.torgue@foss.st.com, andrew@lunn.ch, corbet@lwn.net,
- davem@davemloft.net, dtatulea@nvidia.com, edumazet@google.com,
- gal@nvidia.com, hkallweit1@gmail.com, jacob.e.keller@intel.com,
- jiri@resnulli.us, joabreu@synopsys.com, justinstitt@google.com,
- kory.maincent@bootlin.com, leon@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, liuhangbin@gmail.com,
- maxime.chevallier@bootlin.com, netdev@vger.kernel.org, pabeni@redhat.com,
- paul.greenwalt@intel.com, przemyslaw.kitszel@intel.com,
- rdunlap@infradead.org, richardcochran@gmail.com, saeed@kernel.org,
- tariqt@nvidia.com, vadim.fedorenko@linux.dev, vladimir.oltean@nxp.com,
- wojciech.drewek@intel.com
-Subject: Re: [PATCH RFC v2 6/6] tools: ynl: ethtool.py: Output timestamping
- statistics from tsinfo-get operation
-Message-ID: <20240312165544.75ced7e1@kernel.org>
-In-Reply-To: <20240309084440.299358-7-rrameshbabu@nvidia.com>
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
-	<20240309084440.299358-1-rrameshbabu@nvidia.com>
-	<20240309084440.299358-7-rrameshbabu@nvidia.com>
+	s=arc-20240116; t=1710287812; c=relaxed/simple;
+	bh=093KVda26WqmqdJht4WhK6nR+8yU7yPh9WYzE3fzY7Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=unklYNXMy0WXltwlZnkANCtPpNrCMgcec4spgefR46UQFFJeqFPOcbBD9W68fhVu6EsTJxxQ0tqZBlFsQcgr9vIdv7YCMJbSiVRHwz/hGIySJsdadiGYS6C6Laz/mnbd0PIGtBp5E1S/czGp2NtuKML79r6QM6PD5uhaHFYDsXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Usr2HyC0; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42a029c8e62so38591821cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:56:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1710287810; x=1710892610; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zl9PC7FMZlnjsGfkV0mu1AuaGsWjNCYzUqWD8hwrZds=;
+        b=Usr2HyC0zap0I51WQ4AOjvcHDJ52/pGaqx0+9TN/K0M0JKXWbe2QJVqw3wpuySQljX
+         HVk0CmWQBiTIYk+pjxvzsVSHvGke+VAbNcpelvvYKSj5suP/E9ZlJvDtwbbL6sMLQ1RB
+         5vdpT83NM7GeJB+I30Cio/M8vUl66kqGz1356YAS2RR62LBmFSGTNeJnd6KhZmgJCypv
+         6cb3wf1t4o5H80D5X7si/VliOnbldr/oZl9o+6EOQxF7j7f5QcVYYE9jsP6F3GNWDmu1
+         z4fwzlWuyszg68TmY0ObHfl6jfy1r1niEhXoJU1SHhrAgdeIzzfMO2rSj6Zjzdx0HGrU
+         aFsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710287810; x=1710892610;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zl9PC7FMZlnjsGfkV0mu1AuaGsWjNCYzUqWD8hwrZds=;
+        b=DA/hz9oJ/QX8YlzFydxe8bw981sfVolfRpJhQXHmvyH3TfNZPCXr7n3PZswDEeNMSS
+         P96nHRgnqvhJlH9wtm4eacMKhMEc+yi4zcvGXLNMA8NhMQSFBcmFQtpwya5A4uK/n/zU
+         rbOk0qMy4tMJuZqSynUVIvElegIpf24dfiJV6z9F+sVAH1FkDvyszfT3DADBRfysERMf
+         sJeD905Z3tSCAI9kKFzcXf/nLkB1jlR6IeysCeDVr2DYrJQk9B5pWwJzKCZUhJHiJ5tM
+         gsqQaWX3s14GNPDgvmjQ/cqL9vk0da9Jn1oR8cp3LKupuWcFs8U8ebqfj+NCCA77L4X5
+         AqoA==
+X-Forwarded-Encrypted: i=1; AJvYcCVacTppzMDjH7oD4m4JuF5K1iBrJmW45DdKltXk+bTTmVzB0WR5HgM4lVBIBzKqlKVNZlSJ2q+kpvM0/LyDIfIpZOXh4MfR6jHdoOos
+X-Gm-Message-State: AOJu0YxJaF06s7hzy4RNRU60IuBdRrgVMkvTPjhgca8BAUmx2pZg3Hxf
+	nBR8yjo9JgG5V++GlQqA8V8uFkZgDZiJQA2njiDl0FdbZFe5Tqpdmdgl4xJO4wM=
+X-Google-Smtp-Source: AGHT+IE8Dmw1Z80zDDEuGQisqIkLb3ATdKh/kIXXdSWtfBQ7CA9QAFZ+Fy8t43y0MFgM+taz+MT7xQ==
+X-Received: by 2002:a0c:fc41:0:b0:690:7a4f:d670 with SMTP id w1-20020a0cfc41000000b006907a4fd670mr13082479qvp.8.1710287809872;
+        Tue, 12 Mar 2024 16:56:49 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.8.176])
+        by smtp.gmail.com with ESMTPSA id r6-20020a0cf606000000b0069046d929a3sm4080243qvm.145.2024.03.12.16.56.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 16:56:48 -0700 (PDT)
+Message-ID: <1c24d9d8-36dd-4bf1-a1b0-afd371fbb809@sifive.com>
+Date: Tue, 12 Mar 2024 18:56:47 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 2/4] riscv: Include riscv_set_icache_flush_ctx prctl
+Content-Language: en-US
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+ Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Alexandre Ghiti <alex@ghiti.fr>
+References: <20240312-fencei-v13-0-4b6bdc2bbf32@rivosinc.com>
+ <20240312-fencei-v13-2-4b6bdc2bbf32@rivosinc.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240312-fencei-v13-2-4b6bdc2bbf32@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Sat,  9 Mar 2024 00:44:40 -0800 Rahul Rameshbabu wrote:
-> +        req = {
-> +          'header': {
-> +            'flags': 1 << 2,
-> +          },
-> +        }
+On 2024-03-12 6:53 PM, Charlie Jenkins wrote:
+> Support new prctl with key PR_RISCV_SET_ICACHE_FLUSH_CTX to enable
+> optimization of cross modifying code. This prctl enables userspace code
+> to use icache flushing instructions such as fence.i with the guarantee
+> that the icache will continue to be clean after thread migration.
+> 
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/mmu.h       |   2 +
+>  arch/riscv/include/asm/processor.h |  10 ++++
+>  arch/riscv/include/asm/switch_to.h |  23 ++++++++
+>  arch/riscv/mm/cacheflush.c         | 111 +++++++++++++++++++++++++++++++++++++
+>  arch/riscv/mm/context.c            |  19 ++++---
+>  include/uapi/linux/prctl.h         |   6 ++
+>  kernel/sys.c                       |   6 ++
+>  7 files changed, 169 insertions(+), 8 deletions(-)
 
-You should be able to use the name of the flag instead of the raw value.
-Jiri added that recently, IIRC.
+Thanks for the updates!
+
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+
 
