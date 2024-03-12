@@ -1,136 +1,136 @@
-Return-Path: <linux-kernel+bounces-100125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA753879213
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:33:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F39BA879237
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:35:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C493284427
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:33:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31BE91C21384
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C185466B;
-	Tue, 12 Mar 2024 10:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="WhjR2Xpx"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8817869C;
+	Tue, 12 Mar 2024 10:35:07 +0000 (UTC)
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54FB635F18;
-	Tue, 12 Mar 2024 10:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300D741C89
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710239578; cv=none; b=PaySdLaYjDQGM4SqVSZJ5ceA1egnAXf9F8Liy5b8Vh6z9ctlLj2Z1hdxP3UsDnm4J+MDekWJpoMLAChM7a/2tlP73mxY9vfNppOXsmzhZv4Apc4v2+yrXvtMCJmaiU0bqZqkfMcf+mtB17T4toPeRCq21T4WOYjt5d37wgXQo+I=
+	t=1710239707; cv=none; b=UP6oodvAb9o+9Vy8h9lMEOgR9JFupClRcXJfGrIFYV6IpPhEgfKkgbHljgNfi3d75KOkogdVNOwvm83jCne1BHHHO1y3nOJNfqHI/Zv2XrPbQhsIRdgBhG3MAKSkvQLmOjrWMcgcasTmTPG9yEY9pzeDwoB97K7ShhGQSNySpds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710239578; c=relaxed/simple;
-	bh=7IM+v4sCwMimkJ1ZXA117FFaV50XcO43VM3+gBWy65g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Uf5+cM/U4XYANz7zOMtaaYQL503epQldxpVdUqJlzXw6oKuFO4ZLmE1/V7gsy4tJ/miuN9HUN2Les2zzoN5EnU/n5G3aceeIvmVLuxIhTfsBnFi6RGYjNw3GLLVuFF6ITLPQ4biTS4z+kEkfJcA/Xt5bDVgegFFKZoNxTesAKa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=WhjR2Xpx; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1710239571;
-	bh=WAJdAg2kSVxd3biZa1Q3GiQlxvq8aCBQjEnXtrdMZQc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=WhjR2XpxEiPKrQ1UxYUIKDVVtrEY/A16XeUHH+p3tVkIPYZbSPSK7huCOZ9+EGJrn
-	 jmmBglW76EAQAZA0xMrdgDmIsfa7yJuLAhdZ4QjZXTuYz6VdgH0pQipie0omSQtxi3
-	 x0OIJJhmBV1opHy0gGEjVxsiPU5Jz2Cmnu8bJ7d2HyT/sVcCWrZB4t+jwDCorJ/Z7g
-	 Uq0eSwfQ4vOLUiMhEG5uX0nWXbzcfKfjE5DJA+PEHbyCPfhMCkz1u54ZfiRFBIN3tS
-	 QSJqAF3zo/BRQ3x+xIdcnEKIFkh31tl6eZziDO+eCpeXZtS/mbdIf6EcPtKcnImw6k
-	 DwgrCoGA7JCEA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tv92W2Nl8z4wcq;
-	Tue, 12 Mar 2024 21:32:51 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Rob Herring <robh@kernel.org>, Stefan Berger <stefanb@linux.ibm.com>
-Cc: linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, jarkko@kernel.org, rnsastry@linux.ibm.com,
- peterhuewe@gmx.de, viparash@in.ibm.com
-Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
- with linux,sml-log
-In-Reply-To: <20240308205751.GA1249866-robh@kernel.org>
-References: <20240306155511.974517-1-stefanb@linux.ibm.com>
- <20240306155511.974517-2-stefanb@linux.ibm.com>
- <87jzmenx2c.fsf@mail.lhotse> <20240307215214.GB3110385-robh@kernel.org>
- <851536a5-ad8f-4d65-8c33-707e2fe762df@linux.ibm.com>
- <20240308205751.GA1249866-robh@kernel.org>
-Date: Tue, 12 Mar 2024 21:32:50 +1100
-Message-ID: <87a5n34u5p.fsf@mail.lhotse>
+	s=arc-20240116; t=1710239707; c=relaxed/simple;
+	bh=XBc7Af1NkUozACweWiULsPD5xPfiFYsgN8mpnQ4+IEo=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=IObkDpBf+17YBYb62KpuhGSFK5QMEZSXb0Nz2kHXrJ2oc2EMqT1/38aDGCipaL+tIbWNDC9MjRThSNIFeqFOT7yUl6VnP55Kz4pJsreTb2MN1ysBsV8rrDr5Jni0sdb7CK2RSCvlP3cLPetdI8FB5Bo5jpxYWn5ZHTetxzIHIBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
+	by andre.telenet-ops.be with bizsmtp
+	id xmb22B0020SSLxL01mb2E4; Tue, 12 Mar 2024 11:35:02 +0100
+Received: from geert (helo=localhost)
+	by ramsan.of.borg with local-esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rjzTJ-003RY5-Tk;
+	Tue, 12 Mar 2024 11:35:01 +0100
+Date: Tue, 12 Mar 2024 11:35:01 +0100 (CET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Christian Brauner <brauner@kernel.org>
+cc: linux-fsdevel@vger.kernel.org, 
+    Linus Torvalds <torvalds@linux-foundation.org>, 
+    Alexander Viro <viro@zeniv.linux.org.uk>, 
+    Seth Forshee <sforshee@kernel.org>, Tycho Andersen <tycho@tycho.pizza>, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] pidfd: add pidfdfs
+In-Reply-To: <20240213-vfs-pidfd_fs-v1-2-f863f58cfce1@kernel.org>
+Message-ID: <71bc82f4-b2df-c813-3aba-107d95c67d33@linux-m68k.org>
+References: <20240213-vfs-pidfd_fs-v1-0-f863f58cfce1@kernel.org> <20240213-vfs-pidfd_fs-v1-2-f863f58cfce1@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-Rob Herring <robh@kernel.org> writes:
-> On Fri, Mar 08, 2024 at 07:23:35AM -0500, Stefan Berger wrote:
->> On 3/7/24 16:52, Rob Herring wrote:
->> > On Thu, Mar 07, 2024 at 09:41:31PM +1100, Michael Ellerman wrote:
->> > > Stefan Berger <stefanb@linux.ibm.com> writes:
->> > > > linux,sml-base holds the address of a buffer with the TPM log. This
->> > > > buffer may become invalid after a kexec and therefore embed the whole TPM
->> > > > log in linux,sml-log. This helps to protect the log since it is properly
->> > > > carried across a kexec with both of the kexec syscalls.
->> > > > 
->> > > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->> > > > ---
->> > > >   arch/powerpc/kernel/prom_init.c | 8 ++------
->> > > >   1 file changed, 2 insertions(+), 6 deletions(-)
->> > > > 
->> 
->> > 
->> > 
->> > > Also adding the new linux,sml-log property should be accompanied by a
->> > > change to the device tree binding.
->> > > 
->> > > The syntax is not very obvious to me, but possibly something like?
->> > > 
->> > > diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
->> > > index 50a3fd31241c..cd75037948bc 100644
->> > > --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
->> > > +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
->> > > @@ -74,8 +74,6 @@ required:
->> > >     - ibm,my-dma-window
->> > >     - ibm,my-drc-index
->> > >     - ibm,loc-code
->> > > -  - linux,sml-base
->> > > -  - linux,sml-size
->> > 
->> > Dropping required properties is an ABI break. If you drop them, an older
->> > OS version won't work.
->> 
->> 1) On PowerVM and KVM on Power these two properties were added in the Linux
->> code. I replaced the creation of these properties with creation of
->> linux,sml-log (1/2 in this series). I also replaced the handling of
->> these two (2/2 in this series) for these two platforms but leaving it for
->> powernv systems where the firmware creates these.
+ 	Hi Christian,
+
+On Tue, 13 Feb 2024, Christian Brauner wrote:
+> This moves pidfds from the anonymous inode infrastructure to a tiny
+> pseudo filesystem. This has been on my todo for quite a while as it will
+> unblock further work that we weren't able to do simply because of the
+> very justified limitations of anonymous inodes. Moving pidfds to a tiny
+> pseudo filesystem allows:
 >
-> Okay, I guess your case is not a ABI break if the kernel is populating 
-> it and the same kernel consumes it. 
+> * statx() on pidfds becomes useful for the first time.
+> * pidfds can be compared simply via statx() and then comparing inode
+>  numbers.
+> * pidfds have unique inode numbers for the system lifetime.
+> * struct pid is now stashed in inode->i_private instead of
+>  file->private_data. This means it is now possible to introduce
+>  concepts that operate on a process once all file descriptors have been
+>  closed. A concrete example is kill-on-last-close.
+> * file->private_data is freed up for per-file options for pidfds.
+> * Each struct pid will refer to a different inode but the same struct
+>  pid will refer to the same inode if it's opened multiple times. In
+>  contrast to now where each struct pid refers to the same inode. Even
+>  if we were to move to anon_inode_create_getfile() which creates new
+>  inodes we'd still be associating the same struct pid with multiple
+>  different inodes.
+> * Pidfds now go through the regular dentry_open() path which means that
+>  all security hooks are called unblocking proper LSM management for
+>  pidfds. In addition fsnotify hooks are called and allow for listening
+>  to open events on pidfds.
 >
-> You failed to answer my question on using /reserved-memory. Again, why 
-> can't that be used? That is the standard way we prevent chunks of memory 
-> from being clobbered.
+> The tiny pseudo filesystem is not visible anywhere in userspace exactly
+> like e.g., pipefs and sockfs. There's no lookup, there's no complex
+> inode operations, nothing. Dentries and inodes are always deleted when
+> the last pidfd is closed.
+>
+> The code is entirely optional and fairly small. If it's not selected we
+> fallback to anonymous inodes. Heavily inspired by nsfs which uses a
+> similar stashing mechanism just for namespaces.
+>
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
 
-Yes I think that would mostly work. I don't see support for
-/reserved-memory in kexec-tools, so that would need fixing I think.
+Thanks for your patch, which is now commit cb12fd8e0dabb9a1
+("pidfd: add pidfs") upstream.
 
-My logic was that the memory is not special. It's just a buffer we
-allocated during early boot to store the log. There isn't anything else
-in the system that relies on that memory remaining untouched. So it
-seemed cleaner to just put the log in the device tree, rather than a
-pointer to it.
+> --- a/fs/Kconfig
+> +++ b/fs/Kconfig
+> @@ -174,6 +174,12 @@ source "fs/proc/Kconfig"
+> source "fs/kernfs/Kconfig"
+> source "fs/sysfs/Kconfig"
+>
+> +config FS_PIDFD
+> +	bool "Pseudo filesystem for process file descriptors"
+> +	depends on 64BIT
 
-Having the log external to the device tree creates several problems,
-like the crash kernel region colliding with it, it being clobbered by
-kexec, etc.
+I think it would have been good if this dependency would have been
+explained in the commit message.  I.e. why does this depend on 64BIT?
 
-cheers
+What is the risk this will not stay entirely optional?  I.e. can it
+become a requirement for modern userspace, and thus be used as a stick
+to kill support for 32-bit architectures?
+
+> +	help
+> +	  Pidfdfs implements advanced features for process file descriptors.
+> +
+> config TMPFS
+> 	bool "Tmpfs virtual memory file system support (former shm fs)"
+> 	depends on SHMEM
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
 
