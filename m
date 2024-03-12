@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-100346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 673A2879600
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:24:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C343A879604
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0726D1F22D7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:24:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79E702862C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F857B3EF;
-	Tue, 12 Mar 2024 14:24:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A4137C096;
+	Tue, 12 Mar 2024 14:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TuX+KZ1g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RaCO4OmZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B797B3C7;
-	Tue, 12 Mar 2024 14:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E3D7BAF6;
+	Tue, 12 Mar 2024 14:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710253454; cv=none; b=p+utODWUZYYYhReW3mICIoc97pAQA10b0KO9I5taxCa4ao2sIoBADKqLSxtNqQq/yuaxEIh4Z1nchYfv5OreuUEtim4/GslvCQ7J48eKFO9aVEW/F2sbIFXoOEFq6RgwTI+0+S5D+C7gnbs4dMnE58MlHg1a18LbtiF1yCY9+Mk=
+	t=1710253456; cv=none; b=JxMh4WCObDJWrKmNZC0Yfm8E08tTNpbx6te6GlY7wkVOlWtHPxedUj8hGSCTEQHCeFmxuVaWsabylPIqhJMCWOJLf8p4TEpyYPN2uoH4LkAXoa9PmvnQxvFrp7Trx4KgNws9dHq8sX+lE9rCveW308FwwHHMygX9FqpZAQU1X0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710253454; c=relaxed/simple;
-	bh=9qlk7GD9pq1DJKHl/qvH6Vvyk7ogZ7rO5bWU0G4xQ30=;
+	s=arc-20240116; t=1710253456; c=relaxed/simple;
+	bh=q6T87hUD5gO8HiHv1jhJS969Nl+81V50e8kMxP7/ldY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gGx3zTtbgejqWt72k7VEat8s/f6M+JgB3lqvJo2tVSID/zPeXWjV3wIXx0k9A3wRJc/iw08235xDKWD3J+bI6nqHLYlsw0pzvzQmJP8sWvwrPfGZCt8n62pfRaNxn6+m7NWPrS6FXVAkb0NmaXie98RLS2qwZENZcdVqmCup/J4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TuX+KZ1g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03DF3C43399;
-	Tue, 12 Mar 2024 14:24:11 +0000 (UTC)
+	 MIME-Version; b=DMZHmV27/dLkzBws4I1iFi1LUmEP1nWXdliWYqApqSeyz83AEXxgLFIbLUiSrTARzYHaYLbxHPjVb9ygciLFg8+58mNElg602sUgkNCULctASxTSv3annaBi/WRwAGUU2lpOxDpaTM/H/S4658lRDDWab8Rh0LCpfAACfc9qscM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RaCO4OmZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 412B4C43394;
+	Tue, 12 Mar 2024 14:24:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710253453;
-	bh=9qlk7GD9pq1DJKHl/qvH6Vvyk7ogZ7rO5bWU0G4xQ30=;
+	s=k20201202; t=1710253456;
+	bh=q6T87hUD5gO8HiHv1jhJS969Nl+81V50e8kMxP7/ldY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TuX+KZ1gFoe0h5o4Ny53zZrvAWMtdFr0qqQHm43GN9Zis1Ml7oGsZuykoiJsWKYyq
-	 OW+xdKp6f63QOwCVv/3NJspSL+g24ak46iT0jId8NJW2eC0rujYYNR79qgX6jxcLM5
-	 7uoBI9P6OQlM7x7Qp3QeddhLJ76YV0lEqynHLaM3GLM57RCq90KD/CD7E7lyGohZzb
-	 nP6uokfCONJCFZHCXkPrhY1o1fpdVTTJniDRXwnNNW2Zo8Sn659EyWQ15+WcdtLOO2
-	 YUZfpCSZQURktpMFptyluii7cHICOxWOztUaS+1j7JznPNXu66TCYACq0GazjlPBlC
-	 8vTw4lM0cbX2Q==
+	b=RaCO4OmZ+q0+oNKx8K06PtTZVOYs3I8UUZiOAAkOl2/SMpmFUF9yQvJhhuetTg8QR
+	 ICzmzW26NLjOjxriPkRChGkKoQSOBHsd1PYJeRpmGxntQrwvz3R9l6fLHVviE6KntR
+	 PiKLgdxjEZeUm4+hmNcjLdyXFYMd5j33GvsZ3dJ1AZJZxhqRBoTT0PMI+yu27Bw6FF
+	 y+LtvCY+R/48LHdEIn44l5fKWhlJB+qyTZ6dLfmP0V1cpwQzqPoDo+mfB1carZiIKN
+	 ChleVdq159G21ulUzQt0Qjq2AJSkmWBRRTSikxSG+Ax0/wQV/Gp1ABcgmVez1DY77b
+	 LQLpmsRLaKf1A==
 From: legion@kernel.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jiri Slaby <jirislaby@kernel.org>
@@ -49,9 +49,9 @@ Cc: Alexey Gladkov <legion@kernel.org>,
 	linux-api@vger.kernel.org,
 	linux-fbdev@vger.kernel.org,
 	linux-serial@vger.kernel.org
-Subject: [PATCH v3 1/2] VT: Add KDFONTINFO ioctl
-Date: Tue, 12 Mar 2024 15:23:57 +0100
-Message-ID: <ed056326540f04b72c97a276fbcc316e1b2f6371.1710252966.git.legion@kernel.org>
+Subject: [PATCH v3 2/2] VT: Allow to get max font width and height
+Date: Tue, 12 Mar 2024 15:23:58 +0100
+Message-ID: <78fcb9ad77b88edee8768806ce6a4d23f6d33118.1710252966.git.legion@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1710252966.git.legion@kernel.org>
 References: <cover.1708960303.git.legion@kernel.org> <cover.1710252966.git.legion@kernel.org>
@@ -65,135 +65,248 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexey Gladkov <legion@kernel.org>
 
-Each driver has its own restrictions on font size. There is currently no
-way to understand what the requirements are. The new ioctl allows
-userspace to get the minmum and maximum font size values.
+The Console drivers has more restrictive font size limits than vt_ioctl.
+This leads to errors that are difficult to handle. If a font whose size
+is not supported is used, an EINVAL error will be returned, which is
+also returned in case of errors in the font itself. At the moment there
+is no way to understand what font sizes the current console driver
+supports.
+
+To solve this problem, we need to transfer information about the
+supported font to userspace from the console driver.
 
 Signed-off-by: Alexey Gladkov <legion@kernel.org>
 ---
- drivers/tty/vt/vt.c       | 24 ++++++++++++++++++++++++
- drivers/tty/vt/vt_ioctl.c | 13 +++++++++++++
- include/linux/console.h   |  2 ++
- include/linux/vt_kern.h   |  1 +
- include/uapi/linux/kd.h   | 13 ++++++++++++-
- 5 files changed, 52 insertions(+), 1 deletion(-)
+ drivers/video/console/newport_con.c | 21 +++++++++++++++++----
+ drivers/video/console/sticon.c      | 25 +++++++++++++++++++++++--
+ drivers/video/console/vgacon.c      | 21 ++++++++++++++++++++-
+ drivers/video/fbdev/core/fbcon.c    | 22 +++++++++++++++++++++-
+ 4 files changed, 81 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 156efda7c80d..8c2a3d98b5ec 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -4680,6 +4680,30 @@ int con_font_op(struct vc_data *vc, struct console_font_op *op)
- 	return -ENOSYS;
+diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
+index e8e4f82cd4a1..87f174a95fa8 100644
+--- a/drivers/video/console/newport_con.c
++++ b/drivers/video/console/newport_con.c
+@@ -33,6 +33,9 @@
+ 
+ #define NEWPORT_LEN	0x10000
+ 
++#define NEWPORT_MAX_FONT_WIDTH 8
++#define NEWPORT_MAX_FONT_HEIGHT 16
++
+ #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
+ 
+ static unsigned char *font_data[MAX_NR_CONSOLES];
+@@ -328,8 +331,8 @@ static void newport_init(struct vc_data *vc, int init)
+ {
+ 	int cols, rows;
+ 
+-	cols = newport_xsize / 8;
+-	rows = newport_ysize / 16;
++	cols = newport_xsize / NEWPORT_MAX_FONT_WIDTH;
++	rows = newport_ysize / NEWPORT_MAX_FONT_HEIGHT;
+ 	vc->vc_can_do_color = 1;
+ 	if (init) {
+ 		vc->vc_cols = cols;
+@@ -507,8 +510,8 @@ static int newport_set_font(int unit, struct console_font *op, unsigned int vpit
+ 
+ 	/* ladis: when I grow up, there will be a day... and more sizes will
+ 	 * be supported ;-) */
+-	if ((w != 8) || (h != 16) || (vpitch != 32)
+-	    || (op->charcount != 256 && op->charcount != 512))
++	if ((w != NEWPORT_MAX_FONT_WIDTH) || (h != NEWPORT_MAX_FONT_HEIGHT) ||
++	    (vpitch != 32) || (op->charcount != 256 && op->charcount != 512))
+ 		return -EINVAL;
+ 
+ 	if (!(new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size,
+@@ -569,6 +572,15 @@ static int newport_font_default(struct vc_data *vc, struct console_font *op, cha
+ 	return newport_set_def_font(vc->vc_num, op);
  }
  
-+int con_font_info(struct vc_data *vc, struct console_font_info *info)
++static int newport_font_info(struct vc_data *vc, struct console_font_info *info)
 +{
-+	int rc = -EINVAL;
++	info->min_width = info->max_width = NEWPORT_MAX_FONT_WIDTH;
++	info->min_height = info->max_height = NEWPORT_MAX_FONT_HEIGHT;
++	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
 +
-+	info->min_height = 0;
-+	info->max_height = max_font_height;
++	return 0;
++}
 +
-+	info->min_width = 0;
-+	info->max_width = max_font_width;
+ static int newport_font_set(struct vc_data *vc, struct console_font *font,
+ 			    unsigned int vpitch, unsigned int flags)
+ {
+@@ -688,6 +700,7 @@ const struct consw newport_con = {
+ 	.con_scroll	  = newport_scroll,
+ 	.con_switch	  = newport_switch,
+ 	.con_blank	  = newport_blank,
++	.con_font_info	  = newport_font_info,
+ 	.con_font_set	  = newport_font_set,
+ 	.con_font_default = newport_font_default,
+ 	.con_save_screen  = newport_save_screen
+diff --git a/drivers/video/console/sticon.c b/drivers/video/console/sticon.c
+index 992a4fa431aa..d32ca458eb77 100644
+--- a/drivers/video/console/sticon.c
++++ b/drivers/video/console/sticon.c
+@@ -56,6 +56,11 @@
+ #define BLANK 0
+ static int vga_is_gfx;
+ 
++#define STICON_MIN_FONT_WIDTH 6
++#define STICON_MIN_FONT_HEIGHT 6
++#define STICON_MAX_FONT_WIDTH 32
++#define STICON_MAX_FONT_HEIGHT 32
++
+ #define STI_DEF_FONT	sticon_sti->font
+ 
+ /* borrowed from fbcon.c */
+@@ -180,8 +185,10 @@ static int sticon_set_font(struct vc_data *vc, struct console_font *op,
+ 	struct sti_cooked_font *cooked_font;
+ 	unsigned char *data = op->data, *p;
+ 
+-	if ((w < 6) || (h < 6) || (w > 32) || (h > 32) || (vpitch != 32)
+-	    || (op->charcount != 256 && op->charcount != 512))
++	if (!in_range(w, STICON_MIN_FONT_WIDTH, STICON_MAX_FONT_WIDTH) ||
++	    !in_range(h, STICON_MIN_FONT_HEIGHT, STICON_MAX_FONT_HEIGHT) ||
++	    (vpitch != 32) ||
++	    (op->charcount != 256 && op->charcount != 512))
+ 		return -EINVAL;
+ 	pitch = ALIGN(w, 8) / 8;
+ 	bpc = pitch * h;
+@@ -273,6 +280,19 @@ static int sticon_font_set(struct vc_data *vc, struct console_font *font,
+ 	return sticon_set_font(vc, font, vpitch);
+ }
+ 
++static int sticon_font_info(struct vc_data *vc, struct console_font_info *info)
++{
++	info->min_width = STICON_MIN_FONT_WIDTH;
++	info->min_height = STICON_MIN_FONT_HEIGHT;
++
++	info->max_width = STICON_MAX_FONT_WIDTH;
++	info->max_height = STICON_MAX_FONT_HEIGHT;
 +
 +	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
 +
-+	console_lock();
-+	if (vc->vc_mode != KD_TEXT)
-+		rc = -EINVAL;
-+	else if (vc->vc_sw->con_font_info)
-+		rc = vc->vc_sw->con_font_info(vc, info);
-+	else
-+		rc = -ENOSYS;
-+	console_unlock();
-+
-+	return rc;
++	return 0;
 +}
 +
+ static void sticon_init(struct vc_data *c, int init)
+ {
+     struct sti_struct *sti = sticon_sti;
+@@ -371,6 +391,7 @@ static const struct consw sti_con = {
+ 	.con_scroll		= sticon_scroll,
+ 	.con_switch		= sticon_switch,
+ 	.con_blank		= sticon_blank,
++	.con_font_info		= sticon_font_info,
+ 	.con_font_set		= sticon_font_set,
+ 	.con_font_default	= sticon_font_default,
+ 	.con_build_attr		= sticon_build_attr,
+diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
+index 8ef1579fa57f..b75d31ef3353 100644
+--- a/drivers/video/console/vgacon.c
++++ b/drivers/video/console/vgacon.c
+@@ -61,6 +61,10 @@ static struct vgastate vgastate;
+ #define BLANK 0x0020
+ 
+ #define VGA_FONTWIDTH       8   /* VGA does not support fontwidths != 8 */
++
++#define VGACON_MAX_FONT_WIDTH VGA_FONTWIDTH
++#define VGACON_MAX_FONT_HEIGHT 32
++
  /*
-  *	Interface exported to selection and vcs.
+  *  Interface used by the world
   */
-diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-index 8c685b501404..b3b4e4b69366 100644
---- a/drivers/tty/vt/vt_ioctl.c
-+++ b/drivers/tty/vt/vt_ioctl.c
-@@ -479,6 +479,19 @@ static int vt_k_ioctl(struct tty_struct *tty, unsigned int cmd,
- 		break;
- 	}
+@@ -1013,6 +1017,19 @@ static int vgacon_adjust_height(struct vc_data *vc, unsigned fontheight)
+ 	return 0;
+ }
  
-+	case KDFONTINFO: {
-+		struct console_font_info fnt_info;
++static int vgacon_font_info(struct vc_data *vc, struct console_font_info *info)
++{
++	info->min_width = VGACON_MAX_FONT_WIDTH;
++	info->min_height = 0;
 +
-+		if (copy_from_user(&fnt_info, up, sizeof(fnt_info)))
-+			return -EFAULT;
-+		ret = con_font_info(vc, &fnt_info);
-+		if (ret)
-+			return ret;
-+		if (copy_to_user(up, &fnt_info, sizeof(fnt_info)))
-+			return -EFAULT;
-+		break;
-+	}
++	info->max_width = VGACON_MAX_FONT_WIDTH;
++	info->max_height = VGACON_MAX_FONT_HEIGHT;
 +
- 	default:
- 		return -ENOIOCTLCMD;
- 	}
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 779d388af8a0..5bea6f6c2042 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -20,6 +20,7 @@
- #include <linux/types.h>
++	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
++
++	return 0;
++}
++
+ static int vgacon_font_set(struct vc_data *c, struct console_font *font,
+ 			   unsigned int vpitch, unsigned int flags)
+ {
+@@ -1022,7 +1039,8 @@ static int vgacon_font_set(struct vc_data *c, struct console_font *font,
+ 	if (vga_video_type < VIDEO_TYPE_EGAM)
+ 		return -EINVAL;
  
- struct vc_data;
-+struct console_font_info;
- struct console_font_op;
- struct console_font;
- struct module;
-@@ -59,6 +60,7 @@ struct consw {
- 			unsigned int lines);
- 	int	(*con_switch)(struct vc_data *vc);
- 	int	(*con_blank)(struct vc_data *vc, int blank, int mode_switch);
-+	int	(*con_font_info)(struct vc_data *vc, struct console_font_info *info);
- 	int	(*con_font_set)(struct vc_data *vc, struct console_font *font,
- 			unsigned int vpitch, unsigned int flags);
- 	int	(*con_font_get)(struct vc_data *vc, struct console_font *font,
-diff --git a/include/linux/vt_kern.h b/include/linux/vt_kern.h
-index c1f5aebef170..6bda4cc1fe6f 100644
---- a/include/linux/vt_kern.h
-+++ b/include/linux/vt_kern.h
-@@ -32,6 +32,7 @@ void do_blank_screen(int entering_gfx);
- void do_unblank_screen(int leaving_gfx);
- void poke_blanked_console(void);
- int con_font_op(struct vc_data *vc, struct console_font_op *op);
-+int con_font_info(struct vc_data *vc, struct console_font_info *info);
- int con_set_cmap(unsigned char __user *cmap);
- int con_get_cmap(unsigned char __user *cmap);
- void scrollback(struct vc_data *vc);
-diff --git a/include/uapi/linux/kd.h b/include/uapi/linux/kd.h
-index 6b384065c013..781e086e55bf 100644
---- a/include/uapi/linux/kd.h
-+++ b/include/uapi/linux/kd.h
-@@ -183,8 +183,19 @@ struct console_font {
+-	if (font->width != VGA_FONTWIDTH || font->height > 32 || vpitch != 32 ||
++	if (font->width != VGACON_MAX_FONT_WIDTH ||
++	    font->height > VGACON_MAX_FONT_HEIGHT || vpitch != 32 ||
+ 	    (charcount != 256 && charcount != 512))
+ 		return -EINVAL;
  
- #define KD_FONT_FLAG_DONT_RECALC 	1	/* Don't recalculate hw charcell size [compat] */
+@@ -1177,6 +1195,7 @@ const struct consw vga_con = {
+ 	.con_scroll = vgacon_scroll,
+ 	.con_switch = vgacon_switch,
+ 	.con_blank = vgacon_blank,
++	.con_font_info = vgacon_font_info,
+ 	.con_font_set = vgacon_font_set,
+ 	.con_font_get = vgacon_font_get,
+ 	.con_resize = vgacon_resize,
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index 46823c2e2ba1..e10abe416159 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -101,6 +101,9 @@ enum {
+ 	FBCON_LOGO_DONTSHOW	= -3	/* do not show the logo */
+ };
  
-+#define KDFONTINFO	0x4B73	/* font information */
++#define FBCON_MAX_FONT_WIDTH 32
++#define FBCON_MAX_FONT_HEIGHT 32
 +
-+#define KD_FONT_INFO_FLAG_LOW_SIZE	(1U << 0) /* 256 */
-+#define KD_FONT_INFO_FLAG_HIGH_SIZE	(1U << 1) /* 512 */
-+
-+struct console_font_info {
-+	unsigned int min_width, min_height;	/* minimal font size */
-+	unsigned int max_width, max_height;	/* maximum font size */
-+	unsigned int flags;			/* KD_FONT_INFO_FLAG_* */
-+};
-+
- /* note: 0x4B00-0x4B4E all have had a value at some time;
-    don't reuse for the time being */
--/* note: 0x4B60-0x4B6D, 0x4B70-0x4B72 used above */
-+/* note: 0x4B60-0x4B6D, 0x4B70-0x4B73 used above */
+ static struct fbcon_display fb_display[MAX_NR_CONSOLES];
  
- #endif /* _UAPI_LINUX_KD_H */
+ static struct fb_info *fbcon_registered_fb[FB_MAX];
+@@ -2456,6 +2459,21 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
+ 	return ret;
+ }
+ 
++
++static int fbcon_font_info(struct vc_data *vc, struct console_font_info *info)
++{
++	info->min_width = 0;
++	info->min_height = 0;
++
++	info->max_width = FBCON_MAX_FONT_WIDTH;
++	info->max_height = FBCON_MAX_FONT_HEIGHT;
++
++	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
++
++	return 0;
++}
++
++
+ /*
+  *  User asked to set font; we are guaranteed that charcount does not exceed 512
+  *  but lets not assume that, since charcount of 512 is small for unicode support.
+@@ -2483,7 +2501,8 @@ static int fbcon_set_font(struct vc_data *vc, struct console_font *font,
+ 	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
+ 		return -EINVAL;
+ 
+-	if (font->width > 32 || font->height > 32)
++	if (font->width > FBCON_MAX_FONT_WIDTH ||
++	    font->height > FBCON_MAX_FONT_HEIGHT)
+ 		return -EINVAL;
+ 
+ 	/* Make sure drawing engine can handle the font */
+@@ -3158,6 +3177,7 @@ static const struct consw fb_con = {
+ 	.con_scroll 		= fbcon_scroll,
+ 	.con_switch 		= fbcon_switch,
+ 	.con_blank 		= fbcon_blank,
++	.con_font_info 		= fbcon_font_info,
+ 	.con_font_set 		= fbcon_set_font,
+ 	.con_font_get 		= fbcon_get_font,
+ 	.con_font_default	= fbcon_set_def_font,
 -- 
 2.44.0
 
