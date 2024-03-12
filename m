@@ -1,141 +1,119 @@
-Return-Path: <linux-kernel+bounces-100839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04FDC879DEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:53:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA1F2879DED
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:53:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C9A11C20A9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:53:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E4951F21B90
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B981214375A;
-	Tue, 12 Mar 2024 21:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D97143759;
+	Tue, 12 Mar 2024 21:53:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="XogGqnUM"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DcMXjwU6"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A594AEEB
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:53:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228EF143748
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710280416; cv=none; b=FaKDA5c5PuRb6WEI/+1EsGnPJbCMVgY4DjRzzryepQJf288PwQUDxVTxYQhs7PKwCNUSgeLKy63mQrPLzHzTFPRUixKnK1Tj8PKIJkBwiEvHB5/AIfQpuzKNN+e26Qr0p4Mrhjv93Th57A3oVYUvcV/MitLgSQRZHl4Q1G8aOyM=
+	t=1710280429; cv=none; b=lS2LGfXJm5bSE8w1kir/lMSVxrIZFHXnRVFNk6YGHORizu7AKhi+6UQAv+QWkPRGDWg1MmOEUUkhaYEqGK0LzWGxOuEbBgZDeNDhv9s+G8R/YTJE0E5NPiVgUKeqqk370pJWSFbbeK/7wxtdGGDC6trIZey+HAjtuQOe9dXmF1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710280416; c=relaxed/simple;
-	bh=GoH2vZtMQEyHzGMu+xjFvhPYeQ0PSvOxNtV0ej76tc8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ov/TAZdZwx/hBG+IN36WHWTKIhJ9yadFlpE7W45BMnpCYxqla/wpdthWccBfcXJJRtHI4aBjltGcZpivAuN341CY0fuQdPMqKpmWQNlAy++F6BELuj5po2FwWMOAG19DhwExcUOgJfE4OATBJsrotl54J6g2VRCcXd5YD6TScBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=XogGqnUM; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dd3c6c8dbbso10043095ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:53:34 -0700 (PDT)
+	s=arc-20240116; t=1710280429; c=relaxed/simple;
+	bh=G/4hgM5wTxTmcKRjygTzdn2/ODwGo/XzRcupSuCiDhk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P6/xnVuHiJZHGaNHpPCH9DQMjL+YF9k2mUnAHFs1IM2TIJBvghFqi8JIMwW1yjvDO65Eks0SYx9rdSEPm4YE86yRtvfU75DSdi3g8+HeXYgfPeRlqJD8yAWk+GsFRzjZQkdrcyzA5OsjobYQ3Hs0Wtp9zElQhEpK+Ps/EWOnXrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DcMXjwU6; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso3732040b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:53:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1710280414; x=1710885214; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jgAoRXoGVuTzBazMoZQBPTv5bpPC2DD6aVA+CvxbndY=;
-        b=XogGqnUM7Bh5JnuGKX06R/t/aiIHEjMIZc3n0YJXm9qy17C5KE2EMmkT4jIjsZRc+H
-         iHaaWfyDOtg8cY1T1XXgkM4hhZcfH6mx4cBz6rxxk0LoEPf/RIlo/H2Cz5XlBawAjnC4
-         cHVf975xy9zEAKCSx7CRpeU54++CYA5IrKic0EY03Y/Jf7lwgNRe00mWQGzhOLtakdy9
-         QsO2GuZIeP5uUUbpkU8epQ6F+4dNH0DKJQVU5lzhkC/3iuJhYkoDXfhqjQYYOeYUiTk1
-         cveG00kt4oO+O0PdddOwdQCvFbawaTvKxu6zdu9ZR4I06nMVbZ35RE5bFb1pz6PUxr5l
-         9xRg==
+        d=chromium.org; s=google; t=1710280427; x=1710885227; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WRdVUDa2pta5KTvFc1TATmL7fgNoVWU4s2HJtfq2h88=;
+        b=DcMXjwU6D7ZrXjjXKE4tykgbSaRw0TFieADBO1R/PU2HXROSSmvjPox8tWcagM2njS
+         UQ0ULslyDc2QlWNuhArc2JqJISt31OdL0q7odDIDghiq4/qqFYNPD+QIzVQSf6MfkSBJ
+         ErRA3azwkH4JAnvq8ZcMaXI00exrsBAVTO1kU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710280414; x=1710885214;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1710280427; x=1710885227;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jgAoRXoGVuTzBazMoZQBPTv5bpPC2DD6aVA+CvxbndY=;
-        b=d3v8PSZhZwl1pMVU/aHR9JfpzI2yfpO4/UTBMmpbiVsAqw4WZi3PwzQ7nB60jBlKvc
-         s6k7zAyZ5YHPoVG3bhl0dmyCIx83lMsVEDQoiOu9n4Mc8lfIpxpBoO6RVJAajR6LlkGX
-         jazrigQkc/iQEQ0IbMEbWMt1l44C3M+kjXf/Ex7iJNFswsd0LXrmKI7a7Wjtz+LZGcXl
-         1NDaiImqNQe2qeCOC8Tmyt7sgUzxHjuXVvP9AbcSeXQfJyS9dwcG6NS6UwdTCfSoy7Ah
-         +mFeFsVjqlpl0Y3LI9NoORPpnO0cQrSSGH3+19kQLCFSuBU3NvIZ8W0wWO+N8eM4K+g9
-         5SBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWLIjBanEK+qGqaqUAPCXa5wpxzIW5jf/1tdS/cwNDE+v+MIzxEXPVA72FRa7aj2qRlXvCXKwHUauUHXgCxWPh26ww9HoO1KCaZ9zIZ
-X-Gm-Message-State: AOJu0YwodyoljhIjAcAZDgL4JQQHGmtfwwDpEwJS/EAVymg+auCUlzD2
-	/18WpAGUWT7aIfaEiiwsdtiEUKEZJMu5ewdt1Djrks2tCLuc6UX7lF3QLUTQYe8=
-X-Google-Smtp-Source: AGHT+IFm+/i67+6f03mMl5NqpTg05G9OjYuNth18e7nFR3xYoxgZgBTMSLZXo7FSveVxVdE8GFo8GA==
-X-Received: by 2002:a17:902:8a91:b0:1dd:7350:29f6 with SMTP id p17-20020a1709028a9100b001dd735029f6mr3069799plo.3.1710280414017;
-        Tue, 12 Mar 2024 14:53:34 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id p6-20020a170902e74600b001dd69a072absm7228013plf.178.2024.03.12.14.53.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 14:53:33 -0700 (PDT)
-Message-ID: <72921846-16d0-438f-a6b0-eef704542e6d@kernel.dk>
-Date: Tue, 12 Mar 2024 15:53:31 -0600
+        bh=WRdVUDa2pta5KTvFc1TATmL7fgNoVWU4s2HJtfq2h88=;
+        b=FfaA9xmcGbA9JHgRFdDK4OwtCE6H7Tbn+TogBYB3+Qqsn7Dh+NhOxHteoUfqbpvlPs
+         ha7EdvK0fR+fUlzKvugPMFacdGAzbv6tNig1XhA3HuEAp8BxDStZbg1USp/dfgZILmwl
+         MNl7b3Nuo6SCPHmq9XEnhy/OOK905GkPQS0Q9w0tQ2XUKt2OMIyLfAbBTwcLvF86Or0H
+         Bb6ybYsg/wk7VAmnnSBHKbKfuE4JkcQ6lXFt9BdBP1O2l6cDA8grtjfD8qx2R1I7M4tw
+         8d3qcWn0V0eUxNgJ60DFwnwnkInk8yTz3RYFOgC8dNbDqZR4Gc37PdL8UseHp555m1d0
+         VQTw==
+X-Forwarded-Encrypted: i=1; AJvYcCXTCP+gbaUhMQSLvAA/u6lQVicDztfgG9/MrNd4ki9hRc7ffwywMgbVJ1larwtE7yFpJWeV6dOmQ4EMM4VmSihHc9xNgJGB6APzNOVC
+X-Gm-Message-State: AOJu0Yygdgr0ZbyIq5pSvip1gAHv7SBjCSSVJR6/oVtaBhRlvFX45/KP
+	E3Cpcu5YTjITe4yfO9LmPoBngk5ePmSO3bgfHENcEpBYQivqgcsJC4oDbH+chA==
+X-Google-Smtp-Source: AGHT+IFqNTbSHg5S7yBJU7eqizCMy2N+F3f//0dRar/vDWfMpE1iigmGI34L3PlR68X94oFiT6tW4A==
+X-Received: by 2002:a05:6a00:4fcb:b0:6e6:afa3:7b32 with SMTP id le11-20020a056a004fcb00b006e6afa37b32mr843588pfb.6.1710280427387;
+        Tue, 12 Mar 2024 14:53:47 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v21-20020aa78095000000b006e694719fa0sm4235092pff.147.2024.03.12.14.53.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 14:53:46 -0700 (PDT)
+Date: Tue, 12 Mar 2024 14:53:46 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 2/2] gcc-plugins: disable plugins when gmp.h is
+ unavailable
+Message-ID: <202403121452.701C91AF6E@keescook>
+References: <20240312-gcc-plugins-gmp-v1-0-c5e082437b9e@linutronix.de>
+ <20240312-gcc-plugins-gmp-v1-2-c5e082437b9e@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Networking for v6.9
-Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, davem@davemloft.net,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com,
- bpf@vger.kernel.org, Tejun Heo <tj@kernel.org>
-References: <20240312042504.1835743-1-kuba@kernel.org>
- <CAHk-=wgknyB6yR+X50rBYDyTnpcU4MukJ2iQ5mQQf+Xzm9N9Dw@mail.gmail.com>
- <20240312133427.1a744844@kernel.org> <20240312134739.248e6bd3@kernel.org>
- <CAHk-=wiOaBLqarS2uFhM1YdwOvCX4CZaWkeyNDY1zONpbYw2ig@mail.gmail.com>
- <39c3c4dc-d852-40b3-a662-6202c5422acf@kernel.dk>
- <20240312144806.5f9c5d8e@kernel.org>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240312144806.5f9c5d8e@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240312-gcc-plugins-gmp-v1-2-c5e082437b9e@linutronix.de>
 
-On 3/12/24 3:48 PM, Jakub Kicinski wrote:
-> On Tue, 12 Mar 2024 15:40:07 -0600 Jens Axboe wrote:
->> Hmm, I wonder if the below will fix it. At least from the timer side,
->> we should not be using the cached clock.
->>
->>
->> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
->> index 9a85bfbbc45a..646b50e1c914 100644
->> --- a/block/blk-iocost.c
->> +++ b/block/blk-iocost.c
->> @@ -1044,7 +1044,7 @@ static void ioc_now(struct ioc *ioc, struct ioc_now *now)
->>  	unsigned seq;
->>  	u64 vrate;
->>  
->> -	now->now_ns = blk_time_get_ns();
->> +	now->now_ns = ktime_get_ns();
->>  	now->now = ktime_to_us(now->now_ns);
->>  	vrate = atomic64_read(&ioc->vtime_rate);
+On Tue, Mar 12, 2024 at 04:03:30PM +0100, Thomas Weiﬂschuh wrote:
+> The header gmp.h is meant to be picked up from the host system.
 > 
-> Let me try this, 'cause doing the revert while listening to some
-> meeting is beyond me :)
+> When it is unavailable the plugin build fails:
+> 
+> In file included from ../crosstools/gcc-13.2.0-nolibc/i386-linux/bin/../lib/gcc/i386-linux/13.2.0/plugin/include/gcc-plugin.h:28,
+>                  from ../scripts/gcc-plugins/gcc-common.h:7,
+>                  from ../scripts/gcc-plugins/stackleak_plugin.c:30:
+> ../crosstools/gcc-13.2.0-nolibc/i386-linux/bin/../lib/gcc/i386-linux/13.2.0/plugin/include/system.h:703:10: fatal error: gmp.h: No such file or directory
+>   703 | #include <gmp.h>
+>       |          ^~~~~~~
+> 
+> Signed-off-by: Thomas Weiﬂschuh <thomas.weissschuh@linutronix.de>
+> ---
+>  scripts/gcc-plugins/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
+> index e383cda05367..a664fb5cdde5 100644
+> --- a/scripts/gcc-plugins/Kconfig
+> +++ b/scripts/gcc-plugins/Kconfig
+> @@ -10,6 +10,7 @@ menuconfig GCC_PLUGINS
+>  	depends on HAVE_GCC_PLUGINS
+>  	depends on CC_IS_GCC
+>  	depends on $(success,test -e $(shell,$(CC) -print-file-name=plugin)/include/plugin-version.h)
+> +	depends on $(host-cc-option,-include gmp.h)
 
-Thanks! I think the better fix is probably the one below. I pondered
-adding a WARN_ON_ONCE() here, but I think just checking for in_task
-state is probably the saner way forward, just in case... But I strongly
-suspect the previous one should sort it for you.
-
-
-diff --git a/block/blk.h b/block/blk.h
-index a19b7b42e650..5cac4e29ae17 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -534,7 +534,7 @@ static inline u64 blk_time_get_ns(void)
- {
- 	struct blk_plug *plug = current->plug;
- 
--	if (!plug)
-+	if (!plug || !in_task())
- 		return ktime_get_ns();
- 
- 	/*
+Why does the prior depends not fail? That's where plugin detection is
+happening.
 
 -- 
-Jens Axboe
-
+Kees Cook
 
