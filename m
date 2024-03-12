@@ -1,146 +1,103 @@
-Return-Path: <linux-kernel+bounces-100913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19DFD879F91
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 105CB879F8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:13:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C0CE1C20AC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:16:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D4851C21305
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7520E47F60;
-	Tue, 12 Mar 2024 23:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3280346B9B;
+	Tue, 12 Mar 2024 23:13:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="uXpoSmgh"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aJbE9yie"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14AB46421;
-	Tue, 12 Mar 2024 23:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C968467;
+	Tue, 12 Mar 2024 23:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710285372; cv=none; b=QJCSkHBzbJCWnbow7gEIAAWudUrdHZHdNZQJ5a659dwtorwa+/+BJTx876y0J9gz4s6eMpmth2T4E98TMDmDs8NCgvPSLvAQinmm8dzj4ThaZKhph8NrPXpbOT+ip68mgv/k8g+zbU3aBP5CSM3Rbhgx7NpdNlrKh0bEmNGWgJE=
+	t=1710285196; cv=none; b=Q6BI/qjHlwi2S7p33TIeb9MMgxXHNIwHM5vhVUOkFWFbH0s5z240IMq0rYJ2WrE4gl5Dmv/S/k+JOd7v6I6WhrjDPOvQByZTe+8yRDLf49bGAWmKGCYOCFjiGGGs8kTSlgJgT0P9x3egyWorWqXr3Wbn3YXiuS+odQnJKfE4f14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710285372; c=relaxed/simple;
-	bh=yYbbljqBsdMlF8ejFt7shK2VJEBf8Yc2Wg5G7/EOOqE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Mw/odQibJoydNcNGPeQrZ33cdv3E4wsj0JByeLVmjTB2cmC8QtUN4hocnPzz7Smf4tW5pLf3KKzzssBjpmRRn3TIRZSqst6kFvGi7vhsJADjqUQO1j9ZeZ7Dk3H7CpYXpufklju4KPza+ebOjKM1RJQkDO12wBzzia+4z6ZLEW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=uXpoSmgh; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710285033;
-	bh=z/6KbviX2L2Ehh45YDU0JszSdB7+7eemzTYCuV49oao=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=uXpoSmgh0cYJbyBoL7LPyjKXN2idaLZdAD/Ga6TPv4UVP3+rBuu+XTN8ObM8vrMLn
-	 EtliZRQjsH+5pRTIVOjHtX219aj0VQkx9b8Cmuucqq6oKXP6KKbDeOTUoLbUhJ2q/M
-	 0H/CD5mesCo0SdPwfvLMTE/8E1rZr42tNbMmHa5yaCYa0tFiJwarFsqKvDw7iDdFwY
-	 qjQYoyupf93jG0pr3bxXE7Gh5AokpmY76G5bHFFZYjCXhGROkX+v6IvPxppoe/1V2B
-	 30fCy+We09HHC3FAny3lbnNSUIow/xX9nvy5wdbDzhipKi6Lh5lIXprivQJJqbT5b4
-	 AXYS8DegHKq5A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TvTrm6Dstz4wx5;
-	Wed, 13 Mar 2024 10:10:32 +1100 (AEDT)
-Date: Wed, 13 Mar 2024 10:10:30 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the asm-generic tree with the
- kbuild tree
-Message-ID: <20240313101030.093d755c@canb.auug.org.au>
-In-Reply-To: <20240307093807.60efa4ec@canb.auug.org.au>
-References: <20240307093807.60efa4ec@canb.auug.org.au>
+	s=arc-20240116; t=1710285196; c=relaxed/simple;
+	bh=7NwAqzcbnrvXpLI+g+cYC9rPgqiwHgqcCGd321u9IaY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QFoELQB+yUG3Yls+gMJ0ih2f90A1y6ITS6vxUKYxfOD8gymiNCZJEV+YSVcRd0EBAoZp+/hdRLpBP9Cm+x7F6HaB87pCzBRElkduLl753zq+FngWiiO3vwSspg/IhygVLaWKWnnDECK6kXd3rVV+5PgVLoc7sT+f4jO9nNWEEkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aJbE9yie; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B6D6C433C7;
+	Tue, 12 Mar 2024 23:13:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710285195;
+	bh=7NwAqzcbnrvXpLI+g+cYC9rPgqiwHgqcCGd321u9IaY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aJbE9yiePEehho9goUJFvFbQiYTBmie9ybqS8PYl4CbfH4mGo7nZBFYiJVzhXDH/h
+	 r0DB0A0X4I/37xQkdTbGWom5qNLYBUo4/wlMwrCTZUiQMDr5GvSxFWOCWIRXxfubFA
+	 U06YJHKHBhw0Y/AkpM765vfubCmIE2rSxbzWEllVKkOy8qm5tcRGwZnxZO2ogeo5qK
+	 vnpEbwxLh5NfLOV6lgkl3ebeb1ChaA8BXCtq0oVLJt7yjgatR6GE813/yIlEKOSkQ0
+	 DShnQjxKoV7Y5kEs8leNLcQmAFLsSv1EkFwwHtfEYwJY9cXc1gtRsia8KRlIYnzOmb
+	 y/LGfMFvIkXVw==
+Date: Wed, 13 Mar 2024 00:13:13 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Nicolas Saenz Julienne <nsaenz@amazon.com>
+Cc: jalliste@amazon.co.uk, mhiramat@kernel.org, akpm@linux-foundation.org,
+	pmladek@suse.com, rdunlap@infradead.org, tsi@tuyoix.net,
+	nphamcs@gmail.com, gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	pbonzini@redhat.com, seanjc@google.com, paulmck@kernel.org
+Subject: Re: [RFC] cputime: Introduce option to force full dynticks
+ accounting on NOHZ & NOHZ_IDLE CPUs
+Message-ID: <ZfDhiakZWIYGSUTl@pavilion.home>
+References: <20240219175735.33171-1-nsaenz@amazon.com>
+ <CZR39LW50A9F.1DWG2FYJ3OZP8@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oevCpfALKmGAao5f80NhQNQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CZR39LW50A9F.1DWG2FYJ3OZP8@amazon.com>
 
---Sig_/oevCpfALKmGAao5f80NhQNQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Le Mon, Mar 11, 2024 at 05:15:26PM +0000, Nicolas Saenz Julienne a écrit :
+> Hi Frederic,
+> 
+> On Mon Feb 19, 2024 at 5:57 PM UTC, Nicolas Saenz Julienne wrote:
+> > Under certain extreme conditions, the tick-based cputime accounting may
+> > produce inaccurate data. For instance, guest CPU usage is sensitive to
+> > interrupts firing right before the tick's expiration. This forces the
+> > guest into kernel context, and has that time slice wrongly accounted as
+> > system time. This issue is exacerbated if the interrupt source is in
+> > sync with the tick, significantly skewing usage metrics towards system
+> > time.
+> >
+> > On CPUs with full dynticks enabled, cputime accounting leverages the
+> > context tracking subsystem to measure usage, and isn't susceptible to
+> > this sort of race conditions. However, this imposes a bigger overhead,
+> > including additional accounting and the extra dyntick tracking during
+> > user<->kernel<->guest transitions (RmW + mb).
+> >
+> > So, in order to get the best of both worlds, introduce a cputime
+> > configuration option that allows using the full dynticks accounting
+> > scheme on NOHZ & NOHZ_IDLE CPUs, while avoiding the expensive
+> > user<->kernel<->guest dyntick transitions.
+> >
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> > Signed-off-by: Jack Allister <jalliste@amazon.co.uk>
+> > ---
+> 
+> Would you be opposed to introducing a config option like this? Any
+> alternatives you might have in mind?
 
-Hi all,
+I'm not opposed to the idea no. It is not the first time I hear about people
+using generic virt Cputime accounting for precise stime/utime measurements on
+benchmarks. But let me sit down and have a look at your patch. Once I find
+my way through performance regression reports and rcutorture splats anyway...
 
-On Thu, 7 Mar 2024 09:38:07 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Today's linux-next merge of the asm-generic tree got a conflict in:
->=20
->   arch/hexagon/Kconfig
->=20
-> between commit:
->=20
->   6b1c2a19cb30 ("hexagon: select FRAME_POINTER instead of redefining it")
->=20
-> from the kbuild tree and commit:
->=20
->   ba89f9c8ccba ("arch: consolidate existing CONFIG_PAGE_SIZE_*KB definiti=
-ons")
->=20
-> from the asm-generic tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc arch/hexagon/Kconfig
-> index 89672ef0666f,1414052e7d6b..000000000000
-> --- a/arch/hexagon/Kconfig
-> +++ b/arch/hexagon/Kconfig
-> @@@ -7,9 -7,11 +7,13 @@@ config HEXAGO
->   	select ARCH_32BIT_OFF_T
->   	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->   	select ARCH_NO_PREEMPT
->  +	select ARCH_WANT_FRAME_POINTERS
->   	select DMA_GLOBAL_POOL
->  +	select FRAME_POINTER
-> + 	select HAVE_PAGE_SIZE_4KB
-> + 	select HAVE_PAGE_SIZE_16KB
-> + 	select HAVE_PAGE_SIZE_64KB
-> + 	select HAVE_PAGE_SIZE_256KB
->   	# Other pending projects/to-do items.
->   	# select HAVE_REGS_AND_STACK_ACCESS_API
->   	# select HAVE_HW_BREAKPOINT if PERF_EVENTS
-
-This is now a conflict between the kbuild tree and Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oevCpfALKmGAao5f80NhQNQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXw4OYACgkQAVBC80lX
-0GyFWQf+JrU0hLnizJkTOHdkDs3rzwlBxeBRgsw9BYR9XjlMLmR6HBCdvoGIl2VU
-9kWnR39KY7BnODMEC+zFbnt/P85RRj6dcPUj3NgVDGZeNIPL4KoEz1cqF4oNg4KS
-N3EaoRuKxDESWLfatOL+bnA6M2tKj+Ku96Hh1unStdXa/cgyuaDjnxXNoOGmX4o3
-9wc8EESmVXCkq4T5qxWuPY7pFn6Ne+PbMsPcFxaBNXepTNtu54pJIdbgyWsYnYxU
-3znrx7m7QNrXeUcSnNFk9mHmKCSVMWh+unbg33nFl5tc5sPOeVl0A2wv9WnZY2eP
-YSdoRoYl4fYM+wIhEmNWqC/62zWXAA==
-=Pp10
------END PGP SIGNATURE-----
-
---Sig_/oevCpfALKmGAao5f80NhQNQ--
+Thanks!
 
