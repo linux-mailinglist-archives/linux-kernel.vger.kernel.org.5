@@ -1,108 +1,109 @@
-Return-Path: <linux-kernel+bounces-100262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD28879437
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:34:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D4687943C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:35:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA03281E5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:34:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BACE61C231C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E501543AAB;
-	Tue, 12 Mar 2024 12:34:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E66C9811
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C88056450;
+	Tue, 12 Mar 2024 12:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ub5jhZKg"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1373811
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:35:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710246878; cv=none; b=FASWBru8JyGP7XN5WqLLUAue4oT42lGebqs13HvJn89qCe4AEtkPWJgmcQqAIxfRUZviy9jAOOcP3ELLJ9RPF2xPN5wphy/25GzANaQ9ggn45e7/xGTAMl6Bpo7PJmhl91HSfhv7W7dM7BI7+ETix/S6SWdq0cwmvJxpVWVVs0U=
+	t=1710246953; cv=none; b=Ef41JX2x+TqyHF8AmRKLGFwO+kGOmi9lSYnLHXAESPCAt+Eu+nI9uSYsBN3x+jluW87eE0A42AiBNhJzGq2TifvfJBRIU/bnwi77ENLWb13uoNelOW46fS+sGy4dbidAVIG3DYIneW89RDSRCfx0aeqIc9LToYDvORnFRzGhgDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710246878; c=relaxed/simple;
-	bh=00ALwGCpmxxMsJj+o8wyLH2RHkjByrRU74ql53w1Eug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LGNQ15SzjGQHGPKlO4GJDhmVoUoIkwunTUMlFk5dXW2ZfjdFU5iirOEq0XOjxSqRyei+Gc4aIVo7cVImmtdmqZpFCvKlONRItahnT/hJ0XUMLVhihx74KdCwthZo9cyIR+YBY8/Ba6B9pwkvI0mAN9dJLkB2Y8F5ANZJcf9I1qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2FB4D1007;
-	Tue, 12 Mar 2024 05:35:12 -0700 (PDT)
-Received: from [10.1.27.122] (XHFQ2J9959.cambridge.arm.com [10.1.27.122])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 696043F73F;
-	Tue, 12 Mar 2024 05:34:29 -0700 (PDT)
-Message-ID: <e73c12ff-5234-44d5-a2b3-99cdc61a9c37@arm.com>
-Date: Tue, 12 Mar 2024 12:34:27 +0000
+	s=arc-20240116; t=1710246953; c=relaxed/simple;
+	bh=qYQ0JG/iS1IbYFpGyQjCg6wBVOUOXL3yCkQafpIV1Eg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NYFoc5C99p5UF5rRGOnj1m777x0vc6O/ld9vNC95PdZ1QUIr3AISdUYTukjDgoBxxggk72EzRL8CKB33bP62oSq/mBqk6mFac87cDh3TV+EK/LP/9ArNBMuu/Vwm5pHvk8Vobq2kTtpdgIdqrxhETKVeCJtRvwGjplTaezZp5Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ub5jhZKg; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710246952; x=1741782952;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qYQ0JG/iS1IbYFpGyQjCg6wBVOUOXL3yCkQafpIV1Eg=;
+  b=Ub5jhZKgntWjVim1zM4rlmVOMeAsrnB7q63Tkl/r+p6S2vhAa4/AyZPW
+   Af8rZPSfUTh4iUw3w3ZPW47NeGChYUh956A76v+zGo0K8um6cglmcJpoC
+   U92CimqcTgubEzqOQzNKemQRUIXD69msBWpkLUfJVpvIbElkX1QrRJhry
+   MNeeIrp01tVUTaLlEcwQrNKnD4aeOYDquR+L2R7S18CLCxIjkqlRhyy0F
+   eezLWj+MSs2VBNvqxShRtEtxwoKMgHSPs1sIa+Df8N77eLATSiASBhgRj
+   1dTyoEtIuxyDe6aUOjdgfuNmMt1K0Ld5ibbNc36t00wpZZNA6P3FcimKd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4823961"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="4823961"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 05:35:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="937051832"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="937051832"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Mar 2024 05:35:47 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id AD4CA27D; Tue, 12 Mar 2024 14:35:46 +0200 (EET)
+Date: Tue, 12 Mar 2024 14:35:46 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] x86/mm: Fix LAM inconsistency during context switch
+Message-ID: <3a56vovcqy7ju5og76nqlekfruq42i56wmp4oek3jgkffvzjby@q5guufebkpzr>
+References: <20240312035951.3535980-1-yosryahmed@google.com>
+ <20240312035951.3535980-2-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 3/5] mm: swap: make should_try_to_free_swap()
- support large-folio
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org
-Cc: chengming.zhou@linux.dev, chrisl@kernel.org, david@redhat.com,
- hannes@cmpxchg.org, kasong@tencent.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
- steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
- willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
- yosryahmed@google.com, yuzhao@google.com, Chuanhua Han
- <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
-References: <20240304081348.197341-1-21cnbao@gmail.com>
- <20240304081348.197341-4-21cnbao@gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240304081348.197341-4-21cnbao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312035951.3535980-2-yosryahmed@google.com>
 
-On 04/03/2024 08:13, Barry Song wrote:
-> From: Chuanhua Han <hanchuanhua@oppo.com>
-> 
-> should_try_to_free_swap() works with an assumption that swap-in is always done
-> at normal page granularity, aka, folio_nr_pages = 1. To support large folio
-> swap-in, this patch removes the assumption.
-> 
-> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
-> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> Acked-by: Chris Li <chrisl@kernel.org>
-> ---
->  mm/memory.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index abd4f33d62c9..e0d34d705e07 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3837,7 +3837,7 @@ static inline bool should_try_to_free_swap(struct folio *folio,
->  	 * reference only in case it's likely that we'll be the exlusive user.
->  	 */
->  	return (fault_flags & FAULT_FLAG_WRITE) && !folio_test_ksm(folio) &&
-> -		folio_ref_count(folio) == 2;
-> +		folio_ref_count(folio) == (1 + folio_nr_pages(folio));
+On Tue, Mar 12, 2024 at 03:59:50AM +0000, Yosry Ahmed wrote:
+> diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+> index 76e91fc68c5f3..748d2b3bdb985 100644
+> --- a/arch/x86/kernel/process_64.c
+> +++ b/arch/x86/kernel/process_64.c
+> @@ -753,10 +753,12 @@ static long prctl_map_vdso(const struct vdso_image *image, unsigned long addr)
+>  static void enable_lam_func(void *__mm)
+>  {
+>  	struct mm_struct *mm = __mm;
+> +	unsigned long lam = mm_lam_cr3_mask(mm);
+> +	u64 untag_mask = mm_untag_mask(mm);
+>  
 
-I don't think this is correct; one reference has just been added to the folio in
-do_swap_page(), either by getting from swapcache (swap_cache_get_folio()) or by
-allocating. If it came from the swapcache, it could be a large folio, because we
-swapped out a large folio and never removed it from swapcache. But in that case,
-others may have partially mapped it, so the refcount could legitimately equal
-the number of pages while still not being exclusively mapped.
+Maybe push these mm dereferences inside the if block below?
+I am not sure if compiler can re-order operations past this_cpu_read().
 
-I'm guessing this logic is trying to estimate when we are likely exclusive so
-that we remove from swapcache (release ref) and can then reuse rather than CoW
-the folio? The main CoW path currently CoWs page-by-page even for large folios,
-and with Barry's recent patch, even the last page gets copied. So not sure what
-this change is really trying to achieve?
-
-
+>  	if (this_cpu_read(cpu_tlbstate.loaded_mm) == mm) {
+> -		write_cr3(__read_cr3() | mm->context.lam_cr3_mask);
+> -		set_tlbstate_lam_mode(mm);
+> +		write_cr3(__read_cr3() | lam);
+> +		cpu_tlbstate_update_lam(lam, untag_mask);
+>  	}
 >  }
 >  
->  static vm_fault_t pte_marker_clear(struct vm_fault *vmf)
 
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
