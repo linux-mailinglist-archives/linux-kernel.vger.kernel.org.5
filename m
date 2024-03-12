@@ -1,138 +1,197 @@
-Return-Path: <linux-kernel+bounces-100260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6D59879432
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:32:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96BD9879435
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:32:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04C281C2349F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:32:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0FA3B227AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED9E927711;
-	Tue, 12 Mar 2024 12:31:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XkdddlV5";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="d/TNS+wq"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862C557307;
+	Tue, 12 Mar 2024 12:32:14 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9647A725;
-	Tue, 12 Mar 2024 12:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035A9BE4E;
+	Tue, 12 Mar 2024 12:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710246698; cv=none; b=F6tm0qNO7u1vkk80cQOPAtXC5HhwJRt//XJfnRFiv9AgUDUB/rUf/BvUZx/v54xVFhSBkbKEOdOgmLaie9kPy4dgsuCiFd0VA1uQilS6Bemo4OAxunYhPtwO9gKUM+r1nrQAhCMnilqhCHALzL9rxolXWPbv7mAMR7xeiemnbYo=
+	t=1710246733; cv=none; b=XBICoIVGRklg5JpsQQfxm3nuI9LWgltO7FrCFw8rlKkcuvbCf01CiRtdwabv5xW3nkDbuuiMIytRFjJCZRdo4ys6sg58XYaOfeAUniU6F34Fn+cjdxSR51XMGRVs0IPAGINVhKW5L05uQxg71/j35QJ3C5A+eutekpBCNgzXrMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710246698; c=relaxed/simple;
-	bh=YUDwPmmGmifLTp4K+qwrTBLYO/VCERhHUUN5j5QK+34=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=kHDd7iExh0dl/k8lClPJtaAV3A389ZObqiyt8iXk7GMQwkde5oRIqqxHYip6dBiLU7PTw2zDhQLiOyXuknSNFYLSazgY+CiEWbGlElkktyHPJRny7xgZDMB68NWxdsPLBsJiIQZjeZVJYYbCvGaV6FmDlQ40wl+TKT4bTNkzekc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XkdddlV5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=d/TNS+wq; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 12 Mar 2024 12:31:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710246694;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ovi0JJjQ7hxlr3V/9fUor1xDG+wtgSVwvDQfNMYBdpM=;
-	b=XkdddlV5cxbLqJFDoAkaL0N9t/0TKnUvo1eH5XFG2PTaPDzFtPc1pmrbqVONn6xvgnkZjh
-	DtDOt2pEh/lZO++LnwK3vWMVE6uPt6kprPqgadMM38IaHpMagNsl0gsi6tXY01kPPVGIrM
-	M8oelyUvXZmXil+n2dhmgZGygl2fgwAzVtZL0UzJBTe41AcqsZLv4KT0SSwEzfJQTcUp3B
-	xaUWozscDId4064o9nBbllsEfdtkzSfDWBXTHgfEeUMJlLfatOcK9murVDF/FT/q3mSQA6
-	ujUx3CmdfIJCRxfXY+Zw8zuPDH5fbb7xiyrcNb9EFnxVN6kTbmPYd9HZThEL1A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710246694;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ovi0JJjQ7hxlr3V/9fUor1xDG+wtgSVwvDQfNMYBdpM=;
-	b=d/TNS+wqqz3hitWA/3PXF0NsyL8k47y13OpBrIlj9uVB7DtYR95FQe/6ZjADOcHX81ZJJz
-	uCkT6uPtk0wIcFDw==
-From:
- tip-bot2 for =?utf-8?q?Andr=C3=A9_R=C3=B6sti?= <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: core/entry] entry: Respect changes to system call number by
- trace_sys_enter()
-Cc: an.roesti@gmail.com, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240311211704.7262-1-an.roesti@gmail.com>
-References: <20240311211704.7262-1-an.roesti@gmail.com>
+	s=arc-20240116; t=1710246733; c=relaxed/simple;
+	bh=/g7B/ioTRVrLBJ0KUmDdgTSPZPbItDsNOgmeSr4A6T4=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=EKDqm4M36S4SR3mC5KbQhjI8tVbCX5rDr1qncIs8Uw+nwNxYXV27S1+J0sx6F2mNuwRkyb9Eu06W6fNTA53J00X3q+CbZKSMK5ue/EBQtPys7GUI9dPDgBo/Pb6GSVQC9XiIdhUe6UU5qMRcRs7j+EgKUSWZpuwVYTyjNic8Yho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TvCgv00xrz4f3jcx;
+	Tue, 12 Mar 2024 20:31:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id A63171A0199;
+	Tue, 12 Mar 2024 20:32:00 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBE+S_BlweXlGg--.27994S3;
+	Tue, 12 Mar 2024 20:32:00 +0800 (CST)
+Subject: Re: [PATCH 2/4] xfs: convert delayed extents to unwritten when
+ zeroing post eof blocks
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
+ david@fromorbit.com, tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com,
+ chengzhihao1@huawei.com, yukuai3@huawei.com
+References: <20240311122255.2637311-1-yi.zhang@huaweicloud.com>
+ <20240311122255.2637311-3-yi.zhang@huaweicloud.com>
+ <20240311153737.GT1927156@frogsfrogsfrogs>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <aab454d0-d8f3-61c8-0d14-a5ae4c35746e@huaweicloud.com>
+Date: Tue, 12 Mar 2024 20:31:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171024669388.398.6202671416393382328.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240311153737.GT1927156@frogsfrogsfrogs>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgCXaBE+S_BlweXlGg--.27994S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF4fZw4ruFW3trWrZFykGrg_yoWrur4UpF
+	Z3K3W5GF43tw12vwn7AFn8Ww1Fvas7Cr48Ar13Wwn5Z3sIyr1IgFykC3WY9w18C39Iy3W2
+	vF4UWFyI9w4YvFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-The following commit has been merged into the core/entry branch of tip:
+On 2024/3/11 23:37, Darrick J. Wong wrote:
+> On Mon, Mar 11, 2024 at 08:22:53PM +0800, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> Current clone operation could be non-atomic if the destination of a file
+>> is beyond EOF, user could get a file with corrupted (zeroed) data on
+>> crash.
+>>
+>> The problem is about to pre-alloctions. If you write some data into a
+>> file [A, B) (the position letters are increased one by one), and xfs
+>> could pre-allocate some blocks, then we get a delayed extent [A, D).
+>> Then the writeback path allocate blocks and convert this delayed extent
+>> [A, C) since lack of enough contiguous physical blocks, so the extent
+>> [C, D) is still delayed. After that, both the in-memory and the on-disk
+>> file size are B. If we clone file range into [E, F) from another file,
+>> xfs_reflink_zero_posteof() would call iomap_zero_range() to zero out the
+>> range [B, E) beyond EOF and flush range. Since [C, D) is still a delayed
+>> extent, it will be zeroed and the file's in-memory && on-disk size will
+>> be updated to D after flushing and before doing the clone operation.
+>> This is wrong, because user can user can see the size change and read
+>> zeros in the middle of the clone operation.
+>>
+>> We need to keep the in-memory and on-disk size before the clone
+>> operation starts, so instead of writing zeroes through the page cache
+>> for delayed ranges beyond EOF, we convert these ranges to unwritten and
+>> invalidating any cached data over that range beyond EOF.
+>>
+>> Suggested-by: Dave Chinner <david@fromorbit.com>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>>  fs/xfs/xfs_iomap.c | 29 +++++++++++++++++++++++++++++
+>>  1 file changed, 29 insertions(+)
+>>
+>> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+>> index ccf83e72d8ca..2b2aace25355 100644
+>> --- a/fs/xfs/xfs_iomap.c
+>> +++ b/fs/xfs/xfs_iomap.c
+>> @@ -957,6 +957,7 @@ xfs_buffered_write_iomap_begin(
+>>  	struct xfs_mount	*mp = ip->i_mount;
+>>  	xfs_fileoff_t		offset_fsb = XFS_B_TO_FSBT(mp, offset);
+>>  	xfs_fileoff_t		end_fsb = xfs_iomap_end_fsb(mp, offset, count);
+>> +	xfs_fileoff_t		eof_fsb = XFS_B_TO_FSBT(mp, XFS_ISIZE(ip));
+>>  	struct xfs_bmbt_irec	imap, cmap;
+>>  	struct xfs_iext_cursor	icur, ccur;
+>>  	xfs_fsblock_t		prealloc_blocks = 0;
+>> @@ -1035,6 +1036,22 @@ xfs_buffered_write_iomap_begin(
+>>  	}
+>>  
+>>  	if (imap.br_startoff <= offset_fsb) {
+>> +		/*
+>> +		 * For zeroing out delayed allocation extent, we trim it if
+>> +		 * it's partial beyonds EOF block, or convert it to unwritten
+>> +		 * extent if it's all beyonds EOF block.
+>> +		 */
+>> +		if ((flags & IOMAP_ZERO) &&
+>> +		    isnullstartblock(imap.br_startblock)) {
+>> +			if (offset_fsb > eof_fsb)
+>> +				goto convert_delay;
+>> +			if (end_fsb > eof_fsb) {
+>> +				end_fsb = eof_fsb + 1;
+>> +				xfs_trim_extent(&imap, offset_fsb,
+>> +						end_fsb - offset_fsb);
+>> +			}
+>> +		}
+>> +
+>>  		/*
+>>  		 * For reflink files we may need a delalloc reservation when
+>>  		 * overwriting shared extents.   This includes zeroing of
+>> @@ -1158,6 +1175,18 @@ xfs_buffered_write_iomap_begin(
+>>  	xfs_iunlock(ip, lockmode);
+>>  	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, 0, seq);
+>>  
+>> +convert_delay:
+>> +	end_fsb = min(end_fsb, imap.br_startoff + imap.br_blockcount);
+>> +	xfs_iunlock(ip, lockmode);
+>> +	truncate_pagecache_range(inode, offset, XFS_FSB_TO_B(mp, end_fsb));
+>> +	error = xfs_iomap_write_direct(ip, offset_fsb, end_fsb - offset_fsb,
+>> +				       flags, &imap, &seq);
+> 
+> I expected this to be a direct call to xfs_bmapi_convert_delalloc.
+> What was the reason not for using that?
+> 
 
-Commit-ID:     fb13b11d53875e28e7fbf0c26b288e4ea676aa9f
-Gitweb:        https://git.kernel.org/tip/fb13b11d53875e28e7fbf0c26b288e4ea67=
-6aa9f
-Author:        Andr=C3=A9 R=C3=B6sti <an.roesti@gmail.com>
-AuthorDate:    Mon, 11 Mar 2024 21:17:04=20
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 12 Mar 2024 13:23:32 +01:00
+It's because xfs_bmapi_convert_delalloc() isn't guarantee to convert
+enough blocks once a time, it may convert insufficient blocks since lack
+of enough contiguous free physical blocks. If we are going to use it, I
+suppose we need to introduce a new helper something like
+xfs_convert_blocks(), add a loop to do the conversion.
 
-entry: Respect changes to system call number by trace_sys_enter()
+xfs_iomap_write_direct() has done all the work of converting, but the
+name of this function is non-obviousness than xfs_bmapi_convert_delalloc(),
+I can change to use it if you think xfs_bmapi_convert_delalloc() is
+better. :)
 
-When a probe is registered at the trace_sys_enter() tracepoint, and that
-probe changes the system call number, the old system call still gets
-executed.  This worked correctly until commit b6ec41346103 ("core/entry:
-Report syscall correctly for trace and audit"), which removed the
-re-evaluation of the syscall number after the trace point.
+Thanks,
+Yi.
 
-Restore the original semantics by re-evaluating the system call number
-after trace_sys_enter().=20
+> --D
+> 
+>> +	if (error)
+>> +		return error;
+>> +
+>> +	trace_xfs_iomap_alloc(ip, offset, count, XFS_DATA_FORK, &imap);
+>> +	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, IOMAP_F_NEW, seq);
+>> +
+>>  found_cow:
+>>  	seq = xfs_iomap_inode_sequence(ip, 0);
+>>  	if (imap.br_startoff <= offset_fsb) {
+>> -- 
+>> 2.39.2
+>>
+>>
 
-The performance impact of this re-evaluation is minimal because it only
-takes place when a trace point is active, and compared to the actual trace
-point overhead the read from a cache hot variable is negligible.
-
-Fixes: b6ec41346103 ("core/entry: Report syscall correctly for trace and audi=
-t")
-Signed-off-by: Andr=C3=A9 R=C3=B6sti <an.roesti@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240311211704.7262-1-an.roesti@gmail.com
----
- kernel/entry/common.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 88cb3c8..90843cc 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -57,8 +57,14 @@ long syscall_trace_enter(struct pt_regs *regs, long syscal=
-l,
- 	/* Either of the above might have changed the syscall number */
- 	syscall =3D syscall_get_nr(current, regs);
-=20
--	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
-+	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT)) {
- 		trace_sys_enter(regs, syscall);
-+		/*
-+		 * Probes or BPF hooks in the tracepoint may have changed the
-+		 * system call number as well.
-+		 */
-+		syscall =3D syscall_get_nr(current, regs);
-+	}
-=20
- 	syscall_enter_audit(regs, syscall);
-=20
 
