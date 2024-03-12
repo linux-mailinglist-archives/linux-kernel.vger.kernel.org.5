@@ -1,159 +1,170 @@
-Return-Path: <linux-kernel+bounces-100761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BEBB879CD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:27:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B801879CD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:27:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7DF81F22177
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:27:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B422228327F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A3A142910;
-	Tue, 12 Mar 2024 20:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0999143725;
+	Tue, 12 Mar 2024 20:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Cw8/tuwE"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PuyKhozq"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339D11386AA
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861091386AA
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710275213; cv=none; b=fnSWfh9hXT3HeGZNBwUjo/g0CHp6p2Fy/Qcph3UfEetBXPcC1nOavpa3/wEpnH39l5kVsIKE8iqAzu8rkF0Qh+tBBqoI3tRsu/87PQyhBuRAwMFaTj0ACY5bkpZJX3qAnDqTLSRwQY2yNw0HFjLRz4djWQVwj1c40LHOz3OAn3I=
+	t=1710275206; cv=none; b=n5doN7QYZdPfFCNh6FrQaa89p9KxqqydzWOH6MmCmMV1cn4CVphIxKE3bHHSQH70k7lVvu/KhZGUUE9niRiKxbYI1NqV0XcFTXR/j/do+W/uKWYsmAJUbJLcRB1ECOH+gzAD6TO0UB63u7ztb9G6O4n8vCFveCos2gCKKOGwI+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710275213; c=relaxed/simple;
-	bh=6QqCqncS8fTFBYJS77lc/hwVrLjNV1a8m1Jo+xCPFRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VAwMYuSZSxYR0PHgwXwFk2ZfIItUX/b3SSsnHlaFmzz/zK86cb0K02oTxODLknkYCJYJYbeElB0sc7ZFT7BCXpcBaxNZBFJRCBKp5ya/35pXINvh5OpywQFD4iueM/YiDQWpLQBjoch1tpUBGdjqqBXcS+7NBe3J8KmBiQAmIG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Cw8/tuwE; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=vB/FuN5JdbTJIQDfsr256losXLHU4seda82ExkFZ/Bc=; b=Cw8/tuwEQaWKJA8VMqnvHjabrs
-	VdnsLEs4hM7BCCkv1GHT7sEjEnyJWjAssG0WgahqpMd2du/xFRidWBu8yNaiLTk6OlIhZMq6FNFoq
-	HdNs2CCG4y3kyn3nEJSMc8/8Se/II0NrrCkkAp0ejGBJsX8UAagUfVeeIdu19Iip+hoAN3J3qTKiu
-	Z0mx0ST5O4K21+N60hI1LzezAQ5BaJLs0IswlxqrrcqDkQIB6iFEbtOj8Pa87zsz0EWrtXGj5DVQX
-	toixFVPj4HvdjVao7dAWUzhO5fcVEj2b4GVgbUHslfnPC/KbtF8ap1ILRrt8DOW2+l/iMIp8XMRBH
-	72whPzgg==;
-Received: from [189.6.17.125] (helo=mail.igalia.com)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rk8hj-009VrP-Gy; Tue, 12 Mar 2024 21:26:32 +0100
-Date: Tue, 12 Mar 2024 17:26:17 -0300
-From: Melissa Wen <mwen@igalia.com>
-To: =?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Cc: Arthur Grillo <arthurgrillo@riseup.net>, 
-	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>, 
-	=?utf-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi, 
-	Louis Chauvet <louis.chauvet@bootlin.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com, 
-	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com, 
-	Pekka Paalanen <pekka.paalanen@collabora.com>
-Subject: Re: [PATCH 0/7] Additions to "Reimplement line-per-line pixel
- conversion for plane reading" series
-Message-ID: <x6vrj6l7mpn5hwrx4ceafdaagqbbcsj5n753wrx2bapzl5w27e@ye4e2kgi3fcm>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
- <4b01ba61-9184-4a17-9fe6-59eb88a21214@igalia.com>
+	s=arc-20240116; t=1710275206; c=relaxed/simple;
+	bh=Yh+LhS5yhRkoUraEclEvC+FapyUA4I8kLPY2KFzzQ6E=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ZVrvBTY1Pk8FLeM8FYZacUyNZanUJ3oQX9zbCXKDcVCtFDyiKGfwm8XyuQgLYDcxU+1j5Z5KbZvXVTWaEXEKNwWtXq5fGwq5ke6Q1tkGl+xoVQ1G7eK/Pq9E9CoD7GHhRNULlEZxAq4nRqG7ufJaZUPgG9AMp4wOIrgcNx75fFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PuyKhozq; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbee93a3e1so7728363276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710275203; x=1710880003; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qkdeVHiZ4dO2mKNOI6prWlI/035w5V9mRcS9wJoax+0=;
+        b=PuyKhozqlfbC+6hjQddM8pdLLVWSOXVaU+Qw5kWbrPZi8VvDIU6rEYnZ0YlPJults/
+         LnKpQhiNDnMV3RY1NbpN4XoQMk9zhOoeb1R2U4BqIYLaiYoxmc7S43aejdEjwf3z43d2
+         5AYQ+IATL+JlW3ZV4UKmKUUYmHegeYGcPbP1I29y8ZpOzpc2JMlFQ4L0dSIpgFKd8OQm
+         AHfasU3Jac1Mnzde8e3VyJ8atIrEg2Rh9pjE9y2VFye0CFBIVtoQ4kitdL3J0XaQsDTg
+         STsvy1rnghf+urEwTL7Qg4kISHFOIYms9zMTzVOn/i8H16Gn0yMGPGJYWx/jrLdeYCNc
+         Pofw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710275203; x=1710880003;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qkdeVHiZ4dO2mKNOI6prWlI/035w5V9mRcS9wJoax+0=;
+        b=Bo71XSXoaQB2Th7iS+1JYFp05eRYTaeiQuqq6HFEw8fvEG0ZKCuB5ymeMb87D2JYsO
+         8c3B4BwUXbbERadPH+fkmRi6n+bydCNHblcZ+9Eleh1zVZmKGupQGxfFokP9CiVF1Sfi
+         PLs4QJBJYDOg8dEUsxrU8g2MRRHqhrP1qY2vqKCCbuRgfkNpC8XkzGBJMrSMwoGubAFI
+         gdpKrsIyWFRCgnj52VjwzgE/yGGxFpgysACzxPyFB+DjK7Rgf3zCS2ZmcUo+ch5PMMBJ
+         xF/R3CrvCmERFthghF75OeEXFwqmVihhEZclFBEykW3gRZZJTlxLjqLS30tc11ljmaio
+         w0Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCV4Aha7iFf+dFaN9A4c5ublAC13sZo8epzgBmwwEepa9WkPOdG2WI3KZcsgEUllrqbXCgSEAQ1j795vh9RVMPM1iYYUCQKGWrBfvsZE
+X-Gm-Message-State: AOJu0Yy752/8mYczjavt6rZRh6e0nmpAcNXIg2m9skxnMRwCCF/vNVPB
+	qd4gHuxw/kq4JsRM33iJkCHTktdjJS/YEqlJ0HMilWq9jm5r433KYrCBpiHJp0kzeKcopjeIE+f
+	O/g==
+X-Google-Smtp-Source: AGHT+IFUmGhOgcd89e4lrqvlrIUFlYT8TKtqW8wVsN51aYrWhEhHnUI06gztJWUkIbtg80Ly0GbAPRIO8Ug=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:114a:b0:dc6:d890:1a97 with SMTP id
+ p10-20020a056902114a00b00dc6d8901a97mr59614ybu.9.1710275203718; Tue, 12 Mar
+ 2024 13:26:43 -0700 (PDT)
+Date: Tue, 12 Mar 2024 13:26:42 -0700
+In-Reply-To: <20240311172431.zqymfqd4xlpd3pft@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4b01ba61-9184-4a17-9fe6-59eb88a21214@igalia.com>
+Mime-Version: 1.0
+References: <20231016115028.996656-1-michael.roth@amd.com> <20231016115028.996656-5-michael.roth@amd.com>
+ <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com> <ZcY2VRsRd03UQdF7@google.com>
+ <84d62953-527d-4837-acf8-315391f4b225@arm.com> <ZcZBCdTA2kBoSeL8@google.com> <20240311172431.zqymfqd4xlpd3pft@amd.com>
+Message-ID: <ZfC6gnqVhZQJnB_3@google.com>
+Subject: Re: [PATCH RFC gmem v1 4/8] KVM: x86: Add gmem hook for invalidating memory
+From: Sean Christopherson <seanjc@google.com>
+To: Michael Roth <michael.roth@amd.com>
+Cc: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, "tabba@google.com" <tabba@google.com>, linux-coco@lists.linux.dev, 
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	pbonzini@redhat.com, isaku.yamahata@intel.com, ackerleytng@google.com, 
+	vbabka@suse.cz, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	jroedel@suse.de, pankaj.gupta@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-On 03/08, Maíra Canal wrote:
-> Hi Arthur,
+On Mon, Mar 11, 2024, Michael Roth wrote:
+> On Fri, Feb 09, 2024 at 07:13:13AM -0800, Sean Christopherson wrote:
+> > On Fri, Feb 09, 2024, Steven Price wrote:
+> > > >> One option that I've considered is to implement a seperate CCA ioctl to
+> > > >> notify KVM whether the memory should be mapped protected.
+> > > > 
+> > > > That's what KVM_SET_MEMORY_ATTRIBUTES+KVM_MEMORY_ATTRIBUTE_PRIVATE is for, no?
+> > > 
+> > > Sorry, I really didn't explain that well. Yes effectively this is the
+> > > attribute flag, but there's corner cases for destruction of the VM. My
+> > > thought was that if the VMM wanted to tear down part of the protected
+> > > range (without making it shared) then a separate ioctl would be needed
+> > > to notify KVM of the unmap.
+> > 
+> > No new uAPI should be needed, because the only scenario time a benign VMM should
+> > do this is if the guest also knows the memory is being removed, in which case
+> > PUNCH_HOLE will suffice.
+> > 
+> > > >> This 'solves' the problem nicely except for the case where the VMM
+> > > >> deliberately punches holes in memory which the guest is using.
+> > > > 
+> > > > I don't see what problem there is to solve in this case.  PUNCH_HOLE is destructive,
+> > > > so don't do that.
+> > > 
+> > > A well behaving VMM wouldn't PUNCH_HOLE when the guest is using it, but
+> > > my concern here is a VMM which is trying to break the host. In this case
+> > > either the PUNCH_HOLE needs to fail, or we actually need to recover the
+> > > memory from the guest (effectively killing the guest in the process).
+> > 
+> > The latter.  IIRC, we talked about this exact case somewhere in the hour-long
+> > rambling discussion on guest_memfd at PUCK[1].  And we've definitely discussed
+> > this multiple times on-list, though I don't know that there is a single thread
+> > that captures the entire plan.
+> > 
+> > The TL;DR is that gmem will invoke an arch hook for every "struct kvm_gmem"
+> > instance that's attached to a given guest_memfd inode when a page is being fully
+> > removed, i.e. when a page is being freed back to the normal memory pool.  Something
+> > like this proposed SNP patch[2].
+> > 
+> > Mike, do have WIP patches you can share?
 > 
-> Would it be possible for you to coordinate with Louis and create a
-> single series with all the modification?
+> Sorry, I missed this query earlier. I'm a bit confused though, I thought
+> the kvm_arch_gmem_invalidate() hook provided in this patch was what we
+> ended up agreeing on during the PUCK call in question.
+
+Heh, I trust your memory of things far more than I trust mine.  I'm just proving
+Cunningham's Law.  :-)
+
+> There was an open question about what to do if a use-case came along
+> where we needed to pass additional parameters to
+> kvm_arch_gmem_invalidate() other than just the start/end PFN range for
+> the pages being freed, but we'd determined that SNP and TDX did not
+> currently need this, so I didn't have any changes planned in this
+> regard.
 > 
-> I don't see a reason to submit fixes to a series that it is still
-> on review.
+> If we now have such a need, what we had proposed was to modify
+> __filemap_remove_folio()/page_cache_delete() to defer setting
+> folio->mapping to NULL so that we could still access it in
+> kvm_gmem_free_folio() so that we can still access mapping->i_private_list
+> to get the list of gmem/KVM instances and pass them on via
+> kvm_arch_gmem_invalidate().
 
-I agree. Moreover, the fix for drm_fixp2int_round() should go in a
-single patch detached from these multiple work branches, since it
-is addressing an issue already upstream.
+Yeah, this is what I was remembering.  I obviously forgot that we didn't have a
+need to iterate over all bindings at this time.
 
-Thanks,
+> So that's doable, but it's not clear from this discussion that that's
+> needed.
 
-Melissa
+Same here.  And even if it is needed, it's not your problem to solve.  The above
+blurb about needing to preserve folio->mapping being free_folio() is sufficient
+to get the ARM code moving in the right direction.
 
-> 
-> Best Regards,
-> - Maíra
-> 
-> On 3/6/24 17:03, Arthur Grillo wrote:
-> > These are some patches that add some fixes/features to the series by
-> > Louis Chauvet[1], it was based on top of the patches from v4.
-> > 
-> > Patches #2 and #3 should be amended to "[PATCH v4 11/14] drm/vkms: Add
-> > YUV support". To make patch #3 work, we need patch #1. So, please, add
-> > it before the patch that #2 and #3 amend to.
-> > 
-> > Patches #4 to #6 should be amended to "[PATCH v4 14/14] drm/vkms: Create
-> > KUnit tests for YUV conversions". While doing the additions, I found
-> > some compilation issues, so I fixed them (patch #4). That's when I
-> > thought that it would be good to add some documentation on how to run
-> > them (patch #7), this patch should be added to the series as new patch.
-> > 
-> > [1]: https://lore.kernel.org/r/20240304-yuv-v4-0-76beac8e9793@bootlin.com
-> > 
-> > To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> > To: Melissa Wen <melissa.srw@gmail.com>
-> > To: Maíra Canal <mairacanal@riseup.net>
-> > To: Haneen Mohammed <hamohammed.sa@gmail.com>
-> > To: Daniel Vetter <daniel@ffwll.ch>
-> > To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > To: Maxime Ripard <mripard@kernel.org>
-> > To: Thomas Zimmermann <tzimmermann@suse.de>
-> > To: David Airlie <airlied@gmail.com>
-> > To: arthurgrillo@riseup.net
-> > To: Jonathan Corbet <corbet@lwn.net>
-> > To: pekka.paalanen@haloniitty.fi
-> > To: Louis Chauvet <louis.chauvet@bootlin.com>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: jeremie.dautheribes@bootlin.com
-> > Cc: miquel.raynal@bootlin.com
-> > Cc: thomas.petazzoni@bootlin.com
-> > Cc: seanpaul@google.com
-> > Cc: marcheu@google.com
-> > Cc: nicolejadeyee@google.com
-> > 
-> > Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> > ---
-> > Arthur Grillo (7):
-> >        drm: Fix drm_fixp2int_round() making it add 0.5
-> >        drm/vkms: Add comments
-> >        drm/vkmm: Use drm_fixed api
-> >        drm/vkms: Fix compilation issues
-> >        drm/vkms: Add comments to format tests
-> >        drm/vkms: Change the gray RGB representation
-> >        drm/vkms: Add how to run the Kunit tests
-> > 
-> >   Documentation/gpu/vkms.rst                    |  11 +++
-> >   drivers/gpu/drm/vkms/tests/vkms_format_test.c |  81 +++++++++++++++++++--
-> >   drivers/gpu/drm/vkms/vkms_drv.h               |   4 +
-> >   drivers/gpu/drm/vkms/vkms_formats.c           | 101 +++++++++++++++++++-------
-> >   include/drm/drm_fixed.h                       |   2 +-
-> >   5 files changed, 165 insertions(+), 34 deletions(-)
-> > ---
-> > base-commit: 9658aba38ae9f3f3068506c9c8e93e85b500fcb4
-> > change-id: 20240306-louis-vkms-conv-61362ff12ab8
-> > 
-> > Best regards,
+Thanks!
+
+> If the idea to block/kill the guest if VMM tries to hole-punch,
+> and ARM CCA already has plans to wire up the shared/private flags in
+> kvm_unmap_gfn_range(), wouldn't that have all the information needed to
+> kill that guest? At that point, kvm_gmem_free_folio() can handle
+> additional per-page cleanup (with additional gmem/KVM info plumbed in
+> if necessary).
 
