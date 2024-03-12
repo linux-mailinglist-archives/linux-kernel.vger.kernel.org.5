@@ -1,234 +1,132 @@
-Return-Path: <linux-kernel+bounces-100244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 559ED8793EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:15:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 085768793EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:15:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ACD4285935
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:15:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 091881C229C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:15:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0367A131;
-	Tue, 12 Mar 2024 12:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="AAQtm6hv"
-Received: from smtp-bc0b.mail.infomaniak.ch (smtp-bc0b.mail.infomaniak.ch [45.157.188.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E704B7A71D;
+	Tue, 12 Mar 2024 12:14:57 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D253A79B9D
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:15:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6648679B9D;
+	Tue, 12 Mar 2024 12:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710245725; cv=none; b=rRamf/fmW1ClDW5NFyHQm88R2JCiQWy4lQx0PySnBJ0NkJV2zI0oHA/jR/riS8G9tldhwrIrfinxaeOO/4SBUH4WPc+1RSsXJT4CDJXCwb+biO797TZMdDBa5lAEqmYNGw11tZ1lBuFxAm3i2U4WN4Azg0XFuQCQPIM3ezN4rzA=
+	t=1710245697; cv=none; b=pST/fy+Ocz/A0uM8Hsq2OxcDDieA3N1h575iQz52mbxlOe8Vbd06WNIWvlFEXNDNNuso0hjy9hphkfbnLDDagK+icqhp5zO8lX2rapTCadF5IP2KrCZSiMPpFBq3zSCsfB1JZERQdkL81iwTEE+U4xudNqMmWGxNIRf21ZiirQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710245725; c=relaxed/simple;
-	bh=UIPlBlQ2gSp7viPBKsB16/eqMI1pgjsYrWQKabWN1/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sRjqCQMrlgpAgX2AoIfHwZWttP+SJm/AtEgO4ousLBtY86Ulq+I/k/f023AfFBh14Ww2i2JcobxcMSyTKa5oqjdETPEqnfY5tq9b1PL4EM78bZVcHreLrV/nlUFYGYUBwgmxsI6iHCpM1VK2rc0pM9ZJFGoSEuwvm+jN1Bk2x74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=AAQtm6hv; arc=none smtp.client-ip=45.157.188.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TvCJf11Fxz3my;
-	Tue, 12 Mar 2024 13:15:14 +0100 (CET)
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4TvCJc1dKzzsW;
-	Tue, 12 Mar 2024 13:15:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1710245714;
-	bh=UIPlBlQ2gSp7viPBKsB16/eqMI1pgjsYrWQKabWN1/s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AAQtm6hvd8D/0qDhpfGiSpJYAJ7c4ZRRdmzxuwHAMDZ5D0rNCT9rpMwm0n6kBYZLn
-	 MIieECao+whDew4238DUdSRRjeO6cebzxSywIl7f+OXZViuaJ/cEfbfTEn2VgfYZI/
-	 vd+XiTlMZIXWiNScOcBSP9ExwIwlT9QI5LQs6vEU=
-Date: Tue, 12 Mar 2024 13:15:01 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Rae Moar <rmoar@google.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>, 
-	David Gow <davidgow@google.com>, Kees Cook <keescook@chromium.org>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	James Morris <jamorris@linux.microsoft.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Thara Gopinath <tgopinath@microsoft.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v2 4/7] kunit: Handle test faults
-Message-ID: <20240312.iuVoThuud2oi@digikod.net>
-References: <20240301194037.532117-1-mic@digikod.net>
- <20240301194037.532117-5-mic@digikod.net>
- <CA+GJov7in4o6bXt_JDqeGjjD08yOweiUshesS4cUWTHYfgJAwQ@mail.gmail.com>
+	s=arc-20240116; t=1710245697; c=relaxed/simple;
+	bh=1e/tnORAfVTt0tc+nSWh2oyeh8iQEgGUxbCVnO19WCg=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=W9O8ffrQHevnA7g7/6uoghPWDjDJzXnVpQSpdN7v4S7Y+xGa+X9ysqS+AWiDHSeUCNPLOcIRmkBwH5H1i9k9Kjum4hmULrmzKWyGoqn2jZhsvKBFKZCxg1ZSSwgPRLDjes3gArgualWv1vaMzrG19lEAeuP+NBktxU3iZfYBU1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03DDFC433C7;
+	Tue, 12 Mar 2024 12:14:57 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1rk143-00000001uYe-1Xw1;
+	Tue, 12 Mar 2024 08:17:03 -0400
+Message-ID: <20240312121506.972039112@goodmis.org>
+User-Agent: quilt/0.67
+Date: Tue, 12 Mar 2024 08:15:06 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ joel@joelfernandes.org,
+ linke li <lilinke99@qq.com>,
+ Rabin Vincent <rabin@rab.in>
+Subject: [PATCH v4 0/2] tracing/ring-buffer: Fix wakeup of ring buffer waiters
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+GJov7in4o6bXt_JDqeGjjD08yOweiUshesS4cUWTHYfgJAwQ@mail.gmail.com>
-X-Infomaniak-Routing: alpha
 
-On Mon, Mar 11, 2024 at 05:21:11PM -0400, Rae Moar wrote:
-> On Fri, Mar 1, 2024 at 2:40 PM Mickaël Salaün <mic@digikod.net> wrote:
-> >
-> > Previously, when a kernel test thread crashed (e.g. NULL pointer
-> > dereference, general protection fault), the KUnit test hanged for 30
-> > seconds and exited with a timeout error.
-> >
-> > Fix this issue by waiting on task_struct->vfork_done instead of the
-> > custom kunit_try_catch.try_completion, and track the execution state by
-> > initially setting try_result with -EFAULT and only setting it to 0 if
-> 
-> Hello!
-> 
-> Thanks for your patch! This has been tested and seems pretty good to
-> me but I just have a few questions. First, do you mean here "setting
-> try_result with -EINTR"  instead?
+[ Sorry for the spam, but I just noticed kernel-test-robot complained
+  about KernelDoc format, which this fixes ]
 
-Good catch, I indeed meant -EINTR.
 
-> 
-> But happy to add the tested-by.
-> 
-> Tested-by: Rae Moar <rmoar@google.com>
-> 
-> Thanks!
-> -Rae
-> 
-> > the test passed.
-> >
-> > Fix kunit_generic_run_threadfn_adapter() signature by returning 0
-> > instead of calling kthread_complete_and_exit().  Because thread's exit
-> > code is never checked, always set it to 0 to make it clear.
-> >
-> > Fix the -EINTR error message, which couldn't be reached until now.
-> >
-> > This is tested with a following patch.
-> >
-> > Cc: Brendan Higgins <brendanhiggins@google.com>
-> > Cc: David Gow <davidgow@google.com>
-> > Cc: Rae Moar <rmoar@google.com>
-> > Cc: Shuah Khan <skhan@linuxfoundation.org>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> > Link: https://lore.kernel.org/r/20240301194037.532117-5-mic@digikod.net
-> > ---
-> >
-> > Changes since v1:
-> > * Added Kees's Reviewed-by.
-> > ---
-> >  include/kunit/try-catch.h |  3 ---
-> >  lib/kunit/try-catch.c     | 14 +++++++-------
-> >  2 files changed, 7 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
-> > index c507dd43119d..7c966a1adbd3 100644
-> > --- a/include/kunit/try-catch.h
-> > +++ b/include/kunit/try-catch.h
-> > @@ -14,13 +14,11 @@
-> >
-> >  typedef void (*kunit_try_catch_func_t)(void *);
-> >
-> > -struct completion;
-> >  struct kunit;
-> >
-> >  /**
-> >   * struct kunit_try_catch - provides a generic way to run code which might fail.
-> >   * @test: The test case that is currently being executed.
-> > - * @try_completion: Completion that the control thread waits on while test runs.
-> >   * @try_result: Contains any errno obtained while running test case.
-> >   * @try: The function, the test case, to attempt to run.
-> >   * @catch: The function called if @try bails out.
-> > @@ -46,7 +44,6 @@ struct kunit;
-> >  struct kunit_try_catch {
-> >         /* private: internal use only. */
-> >         struct kunit *test;
-> > -       struct completion *try_completion;
-> >         int try_result;
-> >         kunit_try_catch_func_t try;
-> >         kunit_try_catch_func_t catch;
-> > diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> > index cab8b24b5d5a..c6ee4db0b3bd 100644
-> > --- a/lib/kunit/try-catch.c
-> > +++ b/lib/kunit/try-catch.c
-> > @@ -18,7 +18,7 @@
-> >  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
-> >  {
-> >         try_catch->try_result = -EFAULT;
-> > -       kthread_complete_and_exit(try_catch->try_completion, -EFAULT);
-> > +       kthread_exit(0);
-> >  }
-> >  EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
-> >
-> > @@ -26,9 +26,12 @@ static int kunit_generic_run_threadfn_adapter(void *data)
-> >  {
-> >         struct kunit_try_catch *try_catch = data;
-> >
-> > +       try_catch->try_result = -EINTR;
-> >         try_catch->try(try_catch->context);
-> > +       if (try_catch->try_result == -EINTR)
-> > +               try_catch->try_result = 0;
-> >
-> > -       kthread_complete_and_exit(try_catch->try_completion, 0);
-> > +       return 0;
-> 
-> Really my only question is why we do not need to still do a
-> kthread_exit(0) here? I realize we are not checking the thread's exit
-> code but isn't it safer to call kthread_exit(). I'm new to kthread so
-> I am not too sure.
+A patch was sent to "fix" the wait_index variable that is used to help with
+waking of waiters on the ring buffer. The patch was rejected, but I started
+looking at associated code. Discussing it on IRC with Mathieu Desnoyers
+we discovered a design flaw.
 
-This function is the body of the thread, and as we can see in the
-signature it should return an integer that will then be passed to
-kthread_exit() (by kthread-specific code).  It is then useless to
-directly call kthread_exit() here, and it is cleaner to follow common
-thread function signature.
+The waiter reads "wait_index" then enters a "wait loop". After adding
+itself to the wait queue, if the buffer is filled or a signal is pending
+it will exit out. If wait_index is different, it will also exit out.
+(Note, I noticed that the check for wait_index was after the schedule()
+call and should have been before it, but that's besides the point).
 
-> 
-> >  }
-> >
-> >  static unsigned long kunit_test_timeout(void)
-> > @@ -58,13 +61,11 @@ static unsigned long kunit_test_timeout(void)
-> >
-> >  void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
-> >  {
-> > -       DECLARE_COMPLETION_ONSTACK(try_completion);
-> >         struct kunit *test = try_catch->test;
-> >         struct task_struct *task_struct;
-> >         int exit_code, time_remaining;
-> >
-> >         try_catch->context = context;
-> > -       try_catch->try_completion = &try_completion;
-> >         try_catch->try_result = 0;
-> >         task_struct = kthread_create(kunit_generic_run_threadfn_adapter,
-> >                                      try_catch, "kunit_try_catch_thread");
-> > @@ -75,8 +76,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
-> >         }
-> >         get_task_struct(task_struct);
-> >         wake_up_process(task_struct);
-> > -
-> > -       time_remaining = wait_for_completion_timeout(&try_completion,
-> > +       time_remaining = wait_for_completion_timeout(task_struct->vfork_done,
-> >                                                      kunit_test_timeout());
-> >         if (time_remaining == 0) {
-> >                 try_catch->try_result = -ETIMEDOUT;
-> > @@ -92,7 +92,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
-> >         if (exit_code == -EFAULT)
-> >                 try_catch->try_result = 0;
-> >         else if (exit_code == -EINTR)
-> > -               kunit_err(test, "wake_up_process() was never called\n");
-> > +               kunit_err(test, "try faulted\n");
-> >         else if (exit_code == -ETIMEDOUT)
-> >                 kunit_err(test, "try timed out\n");
-> >         else if (exit_code)
-> > --
-> > 2.44.0
-> >
-> 
+The race is what happens if the waker updates the wait_index,
+a new waiter comes in and reads the updated wait_index before it adds
+itself to the queue, it will miss the update!
+
+These patches fix the design by converting the ring_buffer_wait()
+to use the wait_event_interruptible() interface.
+
+Then the wait_to_pipe() caller will pass its own condition into
+the ring_buffer_wait() to be checked by the wait_event_interruptible().
+
+- The first patch restructures the ring_buffer_wait() to use the
+  wait_event_interruptible() logic. It does not change the interface,
+  but adds a local "cond" condition callback function that will be
+  what it defaults to in the second patch if NULL is passed in.
+
+  The default cond function is just a "wait once" function. That
+  is, the first time it is called (before the wait_event_interruptible()
+  calls schedule) will set the "once" variable to one and return
+  false. The next time it is called (after wait_event_interruptible()
+  wakes up) it will return true to break out of the loop.
+
+- The second patch changes the ring_buffer_wait() interface to allow
+  the caller to define its own "cond" callback. That will be checked
+  in wait_event_interruptible() along with checking if the proper
+  amount of data in the ring buffer has been hit.
+
+Changes since v3: https://lore.kernel.org/all/20240312120252.998983805@goodmis.org/
+
+- I should have checked before sending v2, but after I did, I noticed
+  that kernel-test-robot reported that the cond and data parameters
+  added to ring_buffer_wait() were not added to the kerneldoc above it.
+
+Changes since v2: https://lore.kernel.org/all/20240308202402.234176464@goodmis.org/
+
+- Patches 1-3 of v2 have been accepted.
+
+- Instead of breaking ring_buffer_wait() into three functions that do
+  a prepare_to_wait(), wait() and finish_wait(), have ring_buffer_wait()
+  take a condition callback function and a data parameter.
+
+  The ring_buffer_wait() now uses a wait_event_interruptible() code,
+  and added a helper function to do check its own conditions, and also
+  to call the passed in condition function and allow the caller to
+  specify other conditions to break out of the event loop.
+
+Changes since v1: https://lore.kernel.org/lkml/20240308183816.676883229@goodmis.org/
+
+- My tests triggered a warning about calling a mutex_lock() after a
+  prepare_to_wait() that changed the task's state. Convert the affected
+  mutex over to a spinlock.
+
+
+Steven Rostedt (Google) (2):
+      ring-buffer: Use wait_event_interruptible() in ring_buffer_wait()
+      tracing/ring-buffer: Fix wait_on_pipe() race
+
+----
+ include/linux/ring_buffer.h  |   4 +-
+ include/linux/trace_events.h |   5 +-
+ kernel/trace/ring_buffer.c   | 119 ++++++++++++++++++++++++++-----------------
+ kernel/trace/trace.c         |  43 +++++++++++-----
+ 4 files changed, 109 insertions(+), 62 deletions(-)
 
