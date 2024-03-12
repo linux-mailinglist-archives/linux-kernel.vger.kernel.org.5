@@ -1,118 +1,149 @@
-Return-Path: <linux-kernel+bounces-100401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CE0B8796F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:55:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3B668796F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 025D71F25FC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:55:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8379B1F2631A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDE17BB13;
-	Tue, 12 Mar 2024 14:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3717C0BB;
+	Tue, 12 Mar 2024 14:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="W0mq3kG8"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UNS+aEge"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99395F4FA;
-	Tue, 12 Mar 2024 14:54:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E970353819
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710255301; cv=none; b=W8M3pQLzwpz4Ff0+Dx9nZDeeK8eOxhXN2l026JoeMCNPHim/XrJGN2+2trzr5SblMAh+rTgoj7RD6QngjybZQ9DdYEH6u9DG3W07hEKrV9S/3oZE7KwX0O8tehAIf5c9qhQDZ9u4s//DGCn9WGuj2K2vP0kVE5hRkbdG+U+DdxE=
+	t=1710255305; cv=none; b=WdwwuXoDepOwRfOuz0vpHJasO0yFXuXQkP9cR5wcgQvsRMz7qNaxT4fw9I/Q0eS0WD+9dKEH84SBKrqVhHdZejPiVjQB4u+kMPB5QGKz3gjLrn9mvlqK7pTk0ANHgLeZ5n2ZMeqJPgRG5YidGU6dKgrNM/q4ZZ8ztp14nY9c+yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710255301; c=relaxed/simple;
-	bh=PRWIirwilphIw4zcMNTt1c46izhHLa0/pjMpYw4ic/o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dB5yCEJa9L3lKcDUuu2njYRhmbgbt1FDlNuRlFvbPlggVVE1VaD2UtUyQ6GX8JfhpGU4U7mW/bW1YFfRZCIM89VAzx014IMBtaU9RCAGq4XrI7P+VSquua9KS8ejnLOMF5Qa6xGHxcREfpWPKmH5vJSTaqnkBw5TMvLMmQ+Mtd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=W0mq3kG8; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710255297;
-	bh=PRWIirwilphIw4zcMNTt1c46izhHLa0/pjMpYw4ic/o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=W0mq3kG86LmhXg334vp1B8RhZDdbMeVpYdLAytnolcZyjPNfr2kXn9W5lEeixOCCK
-	 0KmgcInRX8B+FH1LhTbg2EK9zAnwoD7fQt1o7szRtSJduS5tr418smUTWytNHSsx9c
-	 A/8oELBaufMoRsGYc1EXP6BDAttBKUC6Y2dAy3f5JtztfuvHKt2VXujhe3zz2iynMN
-	 y7SYzLBUDaM7HX7tmyEVt7ss7JCHiJFfChIBbyUG6hZTcEi7DWN1evdnztmYn2wV0j
-	 EHH1e+uQBe13DRKMp537t6nk1gMuORiF+BfV/eAqHJxgQL/PllwTWlOh+cBvFWED4M
-	 EPNrpYnulqzZw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 197EA37811D4;
-	Tue, 12 Mar 2024 14:54:56 +0000 (UTC)
-Message-ID: <4572ff92-ca26-4e61-a756-b9456896faef@collabora.com>
-Date: Tue, 12 Mar 2024 15:54:55 +0100
+	s=arc-20240116; t=1710255305; c=relaxed/simple;
+	bh=DDfUIdnijAuJWftOaI8gQjBFRStMC4lg425/BJpM4sY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=XaHzfUSGHcRl2P01cym+wgdKCqm+fQBHZPAZwy7S1fyruM4Qgztm4h4raSccqYgANL1cCFGN968iIJ5QC3D/nlZkVKQJrhVmMCpO+HZb+ztejTEQLW9gF7kE2WVAwyxr66KMb+K8KcYNFNmbIQoRxEb2YJjkBFTERzNzVzQs+k4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UNS+aEge; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56840d872aeso4178188a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:55:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1710255299; x=1710860099; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5SYF1vLE9jS9lHa/Lxeh3cLzahFtVKKJvxnK0nnbLy0=;
+        b=UNS+aEgeF5jP2h4cTbkswNHHLIhUoPmBv0yOmMYDY0Gq8z5/DuP5gdPKsosMqekdnu
+         uAnYKSu6GAtzw0PjsFgxK0HgRVfAWlRJuF0sq3miNAR0RIhECJ0NNcLnjpdAJuRulPv4
+         O8hZWFQqPCpEWj3HUH1eG4q9vA7LAu5gDXaibvEGpEWaCRJCrtVN0eR6K0Y22x2o7X1C
+         Iq8IVRZg1L18RaKiXDh0UZgaiNqCgb+IDNm8r5dOSvJji3xK+2FcYRdnxadOss/brsgB
+         6twnvmvZNcyJl7Spd4R368J8T3TfaDGbv+EgiOGlDxHbOUJXsSdMd+9yxm/WuO/oIUM7
+         avyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710255299; x=1710860099;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5SYF1vLE9jS9lHa/Lxeh3cLzahFtVKKJvxnK0nnbLy0=;
+        b=wzP0Z4pjhC0A/wsHIW2z/jYOp9YverVa6sBIQMn6UV1dvq/si205uL1xUVqK+Ljean
+         K3z3yPqpMRSDc57EWaL5hixw8R7R/NDVMAQGGqRx5Ir7vgfaBbvcztUanAHYoqRj9OVS
+         2PdJCNv7xbcdghcSWssqW2+9H3FXIKIeYnkPoXeAxE+5j1Md3MzShJh8DtbYFjBcB7SC
+         5iVxha37SaOpKJGLqXfbJxR+vlfneZEVHUZA4sMGkYZUpUt6RUQ/FX3cgyCm0jasXndf
+         e38wdepwCjEkiB3wgsgIPM5LqmpEjEjsrDlAAfL33rfVpm2e/B/uK9969ekSfT2yTAro
+         l5rA==
+X-Forwarded-Encrypted: i=1; AJvYcCWIlwFUXYdk3tmegncbWJ34AKud7nrG07SxQtIJBPrFzjc+zJrDAD1yrH5mA15XjmULBVFpzNWAuURqMYxtb/HFXY3Fheq+41ciZG7o
+X-Gm-Message-State: AOJu0YzCvCUAH67E0MQmxunzOzFyvsM9r9HQRQmVgi4i9jN6FkWZQH/c
+	hBnt2rdY/kriNiFUxdTLug1fpmc1vUJN0LIDLBk5NJXT++wXaupAnP9nKmKrGhI=
+X-Google-Smtp-Source: AGHT+IHTCEd1KcEWXIxRvBMp2fHsUsFbWuiExy7uhV9mFw2+mgvnVuNnxQFW4a+S8SxpNhUQ3nrX4g==
+X-Received: by 2002:a50:f681:0:b0:568:1444:af5f with SMTP id d1-20020a50f681000000b005681444af5fmr7321923edn.4.1710255298962;
+        Tue, 12 Mar 2024 07:54:58 -0700 (PDT)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id ca8-20020aa7cd68000000b005671d898b32sm4138164edb.23.2024.03.12.07.54.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 07:54:58 -0700 (PDT)
+Date: Tue, 12 Mar 2024 15:54:57 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] printk for 6.9
+Message-ID: <ZfBswbsqObB4H73_@alley>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/18] ASoC: codecs: mt6357: add MT6357 codec
-Content-Language: en-US
-To: Alexandre Mergnat <amergnat@baylibre.com>
-Cc: Flora Fu <flora.fu@mediatek.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>, Will Deacon <will@kernel.org>,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- Nicolas Belin <nbelin@baylibre.com>
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-12-4fa1cea1667f@baylibre.com>
- <1641a853-88cb-43a8-bb95-653f5329a682@collabora.com>
- <253b4b6c-d8ba-40a3-adbb-4455af57d780@baylibre.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <253b4b6c-d8ba-40a3-adbb-4455af57d780@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Il 12/03/24 15:50, Alexandre Mergnat ha scritto:
-> 
-> 
-> On 26/02/2024 16:25, AngeloGioacchino Del Regno wrote:
->>> +    if (enable) {
->>> +        /* set gpio mosi mode */
->>> +        regmap_write(priv->regmap, MT6357_GPIO_MODE2_CLR, GPIO_MODE2_CLEAR_ALL);
->>> +        regmap_write(priv->regmap, MT6357_GPIO_MODE2_SET, 
->>> GPIO8_MODE_SET_AUD_CLK_MOSI |
->>> +                                  GPIO9_MODE_SET_AUD_DAT_MOSI0 |
->>> +                                  GPIO10_MODE_SET_AUD_DAT_MOSI1 |
->>> +                                  GPIO11_MODE_SET_AUD_SYNC_MOSI);
->>
->> Are you sure that you need to write to MODE2_SET *and* to MODE2?!
-> 
-> This is downstream code and these registers aren't in my documentation.
-> I've removed the MODE2_SET write and test the audio: it's still working.
-> 
-> So I will keep the spurious write removed for v2. :)
-> 
+Hi Linus,
 
-Usually, MediaTek registers are laid out like "REG" being R/legacy-W and
-"REG_SET/CLR" for setting and clearing bits in "REG" internally, and that
-might account for internal latencies and such.
+please pull the latest printk changes from
 
-Can you please try to remove the MODE2 write instead of the MODE2_SET one
-and check if that works?
+  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-6.9
 
-You're already using the SETCLR way when manipulating registers in here,
-so I would confidently expect that to work.
+========================================
 
-Cheers,
-Angelo
+Printk changes for 6.9 improve the behavior during panic. The issues were
+found when testing the ongoing changes introducing atomic consoles and
+printk kthreads.
+
+- pr_flush() has to wait for the last reserved record instead
+  of the last finalized one. Note that records are finalized
+  in random order when generated by more CPUs in parallel.
+
+- Ignore non-finalized records during panic(). Messages printed
+  on panic-CPU are always finalized. Messages printed by other
+  CPUs might never be finalized when the CPUs get stopped.
+
+- Block new printk() calls on non-panic CPUs completely. Backtraces
+  are printed before entering the panic mode. Later messages
+  would just mess information printed by the panic CPU.
+
+- Do not take console_lock in console_flush_on_panic() at all.
+  The original code did try_lock()/console_unlock(). The unlock part
+  might cause a deadlock when panic() happened in a scheduler code.
+
+- Fix conversion of 64-bit sequence number for 32-bit atomic
+  operations.
+
+----------------------------------------------------------------
+John Ogness (12):
+      printk: nbcon: Relocate 32bit seq macros
+      printk: Use prb_first_seq() as base for 32bit seq macros
+      printk: ringbuffer: Do not skip non-finalized records with prb_next_seq()
+      printk: ringbuffer: Clarify special lpos values
+      printk: For @suppress_panic_printk check for other CPU in panic
+      printk: Add this_cpu_in_panic()
+      printk: ringbuffer: Cleanup reader terminology
+      printk: Wait for all reserved records with pr_flush()
+      printk: ringbuffer: Skip non-finalized records in panic
+      printk: Avoid non-panic CPUs writing to ringbuffer
+      panic: Flush kernel log buffer at the end
+      dump_stack: Do not get cpu_sync for panic CPU
+
+Petr Mladek (1):
+      printk: Disable passing console lock owner completely during panic()
+
+Sebastian Andrzej Siewior (1):
+      printk: Adjust mapping for 32bit seq macros
+
+ include/linux/printk.h            |   2 +
+ kernel/panic.c                    |   8 +
+ kernel/printk/nbcon.c             |  41 +----
+ kernel/printk/printk.c            | 101 +++++++-----
+ kernel/printk/printk_ringbuffer.c | 337 ++++++++++++++++++++++++++++++++------
+ kernel/printk/printk_ringbuffer.h |  54 +++++-
+ lib/dump_stack.c                  |  16 +-
+ 7 files changed, 420 insertions(+), 139 deletions(-)
 
