@@ -1,169 +1,121 @@
-Return-Path: <linux-kernel+bounces-100613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79C38879AC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:40:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E0A879AC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A3901C21F46
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:40:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73AF0284D85
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04A21386B8;
-	Tue, 12 Mar 2024 17:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A093B137C24;
+	Tue, 12 Mar 2024 17:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mxWqv2o3"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="W+TkKQkE"
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F4E79B88;
-	Tue, 12 Mar 2024 17:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7911212FB2C
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710265206; cv=none; b=jx8AT0M74LqaZvKwbUY2EiKJ4WDdIE6fY2VcNF+VdMCW+X7IeEvg018Ynk5Psh0TtWY9dTmf2bZ7yC1UeCLMUGZyXnRy2UuwMcCImuG8gmmmzjwJ+oqay3VAH/QJuCLBunbWrg2PpM46MbR63KFcGJgWvpRhRcVlbaHtNMC9zOw=
+	t=1710265214; cv=none; b=Q3VAppd0mnP5+4/Bw6tT8vykbks4ZSIlxb/h784y1LcFhxOi5AJcPKiso/9SpZba5RRm7KeMqpLfZWtR7mnS9BdoYpM1krPGLgWC1IVqc6V/TBVsEn3L/uItZy+z/PDxmAGwyP9yT3H1R3AkCoy86CsH2yXAjuGTXiTsyJZtbqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710265206; c=relaxed/simple;
-	bh=Br3uRoA41PH3rKX38t0nLALjaWCDTy4SnEoif7CKVgI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=YKv4JmxMO8ci60CKVwP8x/7aPeZVOeXhCMcUVP8Kj78xkMjCnGefOWu74WEMZ0KxvhtQGVrHgu6PBjSQT9W8b2GoeqiKIeG16R80JabA76zHnXCbVJ719GNRvHSOpaicJDSLH73H5p3VPRI3ksKulu2HSoy6Pd3dZRFqP+EsQgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mxWqv2o3; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42CGm89f012778;
-	Tue, 12 Mar 2024 17:39:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=a7qnMApgBR/eHj6sfot4oJkw/Nh/flE5MclON4r0cOk=; b=mx
-	Wqv2o3w7B6mN112SxJn55l3i3amgVtjVMveg1aXHIN+5SFaWREGqy2Q2PjuUzIot
-	4c+CQToony2BBMP+pYRdO0dD5Xelg3Xj0h4Y1yy44LDYhROSMnqyNyVCzlxGv7Wd
-	sLQpRDtrCXD2ZZ4IA/ROLBN/GvbDBBm4okw4cQXiVtWHmW5AuSZTZaVCCA4XC5q8
-	m0a4UyzA0q0ajU4IPgsKeNDKzG8FwF6RNJAYSfrrusCxY5Olk24QJhe/g8P6R3+0
-	nXkzvqyOXus8vigpNv8hU4hcULq9Btv/Nt1W08Rgg7LqKTY6M5WXSnnOzY+a1JV9
-	WcHl9tQeHUSo215fB+Ig==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wtfwn1nd3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 17:39:53 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42CHdqvU026374
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 17:39:52 GMT
-Received: from [10.110.70.168] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Mar
- 2024 10:39:48 -0700
-Message-ID: <8e125a99-543d-8328-a2a9-100e223e4faf@quicinc.com>
-Date: Tue, 12 Mar 2024 10:39:46 -0700
+	s=arc-20240116; t=1710265214; c=relaxed/simple;
+	bh=JuEmybPeAFM2LXxM+nRHiwifY+hWL0Xv8pXcFAmrED0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XPM0olSHyqpLPVMBIUELjDB3j8q7ZItPKnihIBt2Y4NL31LgdriA7igtghVZZR95CKjW8OFIcP5y+ZPqpbmvlLlDzXUEDUqr73fpCv+bAkDWVpa3MD9d/N5WXyLQFMsPFc0qIG7eCK2R/d5jVXSTKrvnqp+5D7r7gORuv+WCsc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=W+TkKQkE; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7dc1d027ca8so93906241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1710265211; x=1710870011; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mpw2E4SJc0M22jdFp92JFgYe9UBmYMEBdWoo4cjNNVw=;
+        b=W+TkKQkEpb4Zao7wbb1+ptCv8+DxRgNs96EbQF5pnz/Pc6z5D33oRxC7TFLehvC+bN
+         aWaB9clofrKyENEW/60uHOKEY1XLPuOd9LnzWlZAODLh8flucAbCEy+rsPpOo0M2qwjr
+         D+8g88+XPDURVFqQvWtzICvkx47p1ZRNJ6kBWkmhUcHw99TRgOvUCrJrx3WFDzDHIAVA
+         fj7aEflJ7gGJk9eDCRT/1AdPo25In50/x/+49ZQy07rpbLva+kyM0YFjCrxA/2+nNkF+
+         w/wO+V5CbWOAE+sVMAkWZ1OZhFMma0DK1kwQdq7YLBf1ZN1f9GQpdp+5VvlP07S+vH9b
+         lHWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710265211; x=1710870011;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mpw2E4SJc0M22jdFp92JFgYe9UBmYMEBdWoo4cjNNVw=;
+        b=T540V2bnIAQelhmSLJQKxvEC7Il9bIQSUg2V3M+4EM+sGl29neXqvw3IdIRb1xh4dR
+         304e5aJXyF378fOBGjdRJJVQRMwNayO2ZyDJYXmDvk9rPOYwlTwpXaJifEAY84ew01LT
+         hTNire8hTLeOQKmqObxTcsOliyMKuZEEUpy3T7VbG0ME0RKwoPSVO6B4Z/23166NJK0k
+         ZJtpXUH4N4CMCeIP+ltwWBk2lzxu5DubeBMnHotgjCi7fTqPgw7wjJFEAQmV3fmPcYAe
+         GY6wgs0PEXmh+6aq4NaqBdkT1FX1/SFf7r5PM6us9XvpRRwibXKZObjYZ6JE/fFCxc/O
+         v3Gw==
+X-Forwarded-Encrypted: i=1; AJvYcCWR6+PzzQjEkIqs34tKo45jZ8GTgzRxCJlsKhnI7ETSUU1IAZkiWjpjFxq318fLjvbsKjRFPFCI1zMGJsdBAI0vQsKu71QNd0j1jrCJ
+X-Gm-Message-State: AOJu0YxF9XfKlLVDrIvP6yKV+lqgv0gqJYCp+BOkDBJjDB1pZpzBM+MI
+	yHHbEBcK4budnfZL1RBBUATdMBYdcj7+EdTXVwvjqgk0aFk7z33D8nv/BjEK0O0=
+X-Google-Smtp-Source: AGHT+IEd4hdtpXCmBTFIuQSY5VdumAtaZdC3rn4gdZrVXmnlmWQRxKpf+oJQ07k7pUQvySNuNaMayA==
+X-Received: by 2002:a1f:7d07:0:b0:4d3:4aad:1b9c with SMTP id y7-20020a1f7d07000000b004d34aad1b9cmr911341vkc.0.1710265211052;
+        Tue, 12 Mar 2024 10:40:11 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.8.176])
+        by smtp.gmail.com with ESMTPSA id j6-20020a0cc346000000b0068f6e1c3582sm3790897qvi.146.2024.03.12.10.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 10:40:10 -0700 (PDT)
+Message-ID: <f9cc5817-234e-4612-acbb-29977e0da760@sifive.com>
+Date: Tue, 12 Mar 2024 12:40:09 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/msm/dp: move link_ready out of HPD event thread
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] clocksource: timer-riscv: Clear timer interrupt on
+ timer initialization
 Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>
-CC: <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>,
-        Sean Paul
-	<sean@poorly.run>,
-        "Marijn Suijten" <marijn.suijten@somainline.org>,
-        David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh
-	<quic_khsieh@quicinc.com>,
-        <dri-devel@lists.freedesktop.org>, <swboyd@chromium.org>,
-        <quic_jesszhan@quicinc.com>, <quic_parellan@quicinc.com>,
-        <quic_bjorande@quicinc.com>, Rob Clark
-	<robdclark@chromium.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240308214532.1404038-1-quic_abhinavk@quicinc.com>
- <ZfApxyVAJMK4bL8O@hovoldconsulting.com>
- <ZfCFsmNv62-KMkA6@hovoldconsulting.com>
- <ZfCKDGq9n9WG3Quj@hovoldconsulting.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <ZfCKDGq9n9WG3Quj@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>
+Cc: atishp@rivosinc.com, Anup Patel <apatel@ventanamicro.com>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Ley Foon Tan <lftan.linux@gmail.com>, stable@vger.kernel.org
+References: <20240306172330.255844-1-leyfoon.tan@starfivetech.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240306172330.255844-1-leyfoon.tan@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 2wSykTCw-l23V69a4tWlgiYfn4H8PA7w
-X-Proofpoint-GUID: 2wSykTCw-l23V69a4tWlgiYfn4H8PA7w
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-12_10,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- bulkscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0 priorityscore=1501
- suspectscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2403120133
 
-
-
-On 3/12/2024 9:59 AM, Johan Hovold wrote:
-> On Tue, Mar 12, 2024 at 05:41:23PM +0100, Johan Hovold wrote:
->> On Tue, Mar 12, 2024 at 11:09:11AM +0100, Johan Hovold wrote:
->>> On Fri, Mar 08, 2024 at 01:45:32PM -0800, Abhinav Kumar wrote:
->>
->>>> @@ -466,6 +466,8 @@ static int dp_display_notify_disconnect(struct device *dev)
->>>>   {
->>>>   	struct dp_display_private *dp = dev_get_dp_display_private(dev);
->>>>   
->>>> +	dp->dp_display.link_ready = false;
->>>
->>> As I also pointed out in the other thread, setting link_ready to false
->>> here means that any spurious connect event (during physical disconnect)
->>> will always be processed, something which can currently lead to a leaked
->>> runtime pm reference.
->>>
->>> Wasting some power is of course preferred over crashing the machine, but
->>> please take it into consideration anyway.
->>>
->>> Especially if your intention with this patch was to address the resets
->>> we saw with sc8280xp which are gone since the HPD notify revert (which
->>> fixed the hotplug detect issue that left the bridge in a
->>> half-initialised state).
->>
->> Heh. This is getting ridiculous. I just tried running with this patch
->> and it again breaks hotplug detect in a VT console and in X (where I
->> could enable a reconnected external display by running xrandr twice
->> before).
->>
->> So, please, do not apply this one.
+On 2024-03-06 11:23 AM, Ley Foon Tan wrote:
+> In the RISC-V specification, the stimecmp register doesn't have a default
+> value. To prevent the timer interrupt from being triggered during timer
+> initialization, clear the timer interrupt by writing stimecmp with a
+> maximum value.
 > 
-> To make things worse, I indeed also hit the reset when disconnecting
-> after such a failed hotplug.
+> Fixes: 9f7a8ff6391f ("RISC-V: Prefer sstc extension if available")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
 > 
-> Johan
+> ---
+> v3:
+> Resolved comment from Samuel Holland.
+> - Function riscv_clock_event_stop() needs to be called before
+>   clockevents_config_and_register(), move riscv_clock_event_stop().
+> 
+> v2:
+> Resolved comments from Anup.
+> - Moved riscv_clock_event_stop() to riscv_timer_starting_cpu().
+> - Added Fixes tag
+> ---
+>  drivers/clocksource/timer-riscv.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Ack, I will hold off till I analyze your issues more which you have 
-listed in separate replies. Especially about the spurious connect, I 
-believe you are trying to mention that, by adding logs, you are able to 
-delay the processing of a connect event to *make* it like a spurious 
-one? In case, I got this part wrong, can you pls explain the spurious 
-connect scenario again?
-
-A short response on why this change was made is that commit can be 
-issued by userspace or the fbdev client. So userspace involvement only 
-makes commit happen from a different path. It would be incorrect to 
-assume the issues from the earlier bug and the current one are different 
-only because there was userspace involvement in that one and not this.
-
-Because in the end, it manifests itself in the same way that 
-atomic_enable() did not go through after an atomic_disable() and the 
-next atomic_disable() crashes.
-
-Reverting the hpd_notify patch only eliminated some paths but I think 
-both you and me agree the issue can still happen and in the very same 
-way. So till someone else reports this issue, till HPD is reworked, I 
-wanted to do whats possible to avoid this situation. If users are fine 
-with what we have, I have no inclination to push this.
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
 
 
