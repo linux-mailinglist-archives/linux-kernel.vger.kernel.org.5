@@ -1,114 +1,133 @@
-Return-Path: <linux-kernel+bounces-100098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01B788791C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:18:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5318791C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84D59B220FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:18:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEFD2B2204B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 639157829F;
-	Tue, 12 Mar 2024 10:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4555978679;
+	Tue, 12 Mar 2024 10:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dei4+eqv"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Stw4074s"
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA47F7829A
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247427828D;
+	Tue, 12 Mar 2024 10:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710238676; cv=none; b=JbYIzUjs7bu3NffGIop33fYAbQNv9lksrwRm1AjTaIX5aSMqO/8zmVnfwtElOgBBJl0uCO7U2ctPk0PUWOJJQHRh855HDlhhgRn4BlrmWWLiUgrugSmHiZy2YKd/BwC65nyDTo/+IZfbep7uIq6AsbDh04gsRrPf0BIjUCYdylI=
+	t=1710238711; cv=none; b=hjBGk381Xbt2g+PNQhGdvQgGlslNftGVdAHxvOxwfPSzZaUyCMM43Msuu35B7yKneExYKw7oTPARH+m7gZVFvVSj9ZwPdQUajt7jIOeyF1VgJQ90GvZl9Upa69l9lAZ/fNdyBJk3h+y1cFGKXRlcgrECFnvWY1mAWC7dBKvV/rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710238676; c=relaxed/simple;
-	bh=KojB4xkaFuE4MJ9zubYBSac71fPHzJgQlnS7Y+9ruVc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LisVRCT11+QB1jrqLdriyqLkKeC3MODsSYvLyLL7zauvASotJf/jvBJ6tx4M/OiwLtewbTuSFOuPmdpmzuHCyStqSf5UfHzIfNw5uqaF4RhWVRrbaZN0jPdisGL331ToX8OEUbvPOXsfjE0LgcP+oIbK7z4z5hZF4CKtxEP6A80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dei4+eqv; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5131bec457eso4170906e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 03:17:54 -0700 (PDT)
+	s=arc-20240116; t=1710238711; c=relaxed/simple;
+	bh=+vzRwUzxMTDEpVxojsrJfPSG+44198EEiXVjMk0b4lc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DQGmC0oxI+PAleX1PCRVI2ie3fxDKOvRfDvhrVWNnKFiQBTaBVnW12S5TKgotmq/x5LBQKVosor/Z21L2YtB2qq9QWxf98SZy6B+/uty3dkKoTfrotyZfvfvt/dmmGqZcZyfSLahdgghBya2l1WMM503/V+5c53zEPkfI2HIEU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Stw4074s; arc=none smtp.client-ip=209.85.217.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-4727e38ec10so761046137.1;
+        Tue, 12 Mar 2024 03:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710238673; x=1710843473; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BZBvJIr7e5TBk4ekhuSghKo9zs3SCMYDyaA6DVacIQs=;
-        b=dei4+eqv86X5ThL4BTlULOtVN5qaMi7Hy8d9+TTIBMLPWfqDZubtJsOy4j4k48aV6G
-         NjWeVh2ETuHaTBszEchvld1+IsDIbEVFA86usjh6drvV97z90ZI/VLnltUrQDVmse9jt
-         h06eD4wJHiH446gY+esRtt2JcnFzdTeuADnoYMfTBbPP5f2mwXz2gez3eQB+uB/ueXL+
-         gksnkB3rcNgUglg3ukkqvKQco8fD5XPkp32xEBdODxY8PHyFckGjel3RVM8jjukhUkY1
-         xEvEQo54ArTJPmc7NIqEj9NmUm3oNnUyHPAi1vmXACBu6OIgYoFz3EAMCP/RaJjE0E5i
-         7KiQ==
+        d=gmail.com; s=20230601; t=1710238709; x=1710843509; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=v/TtoKF7cuacbpGcpjgtdgMi1EiHHySKw9WaAnGkjzM=;
+        b=Stw4074sgdE9AP5hnID13kQYwLbicDbVjcuO+DX27zkZK7NYleyxY0qGGw4iuX9YME
+         iy/CFVldq/CjXJdig/1JvYM28G6aegjk+/CulBb8soIcdpfwDIh4PrXnk/lhM3cQWfTp
+         7U0GTSmUVqYEXcnU+P93RY77RzWbizDy5EQ/2QGccZgd1Q3FexYMRhJUN+zLrzkhceCK
+         Mh8HdxOFOCicRDIlOy+XVQ3wY0nX0PkJprvEHXukGseDP0Qv/v87zzTCHiYlrzfSw7U5
+         m2EBv1ldgh/cC3GNxKyagknxMQaU6ZvojF9M65cUARk7QNbJBd9dA3K4cwwOLKvaaQqR
+         crAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710238673; x=1710843473;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZBvJIr7e5TBk4ekhuSghKo9zs3SCMYDyaA6DVacIQs=;
-        b=LHtnsQXJ8EyHbdjRcDCIJS717pHrd2+Cf1oHTSvYlJWaVWC3NFE8h4sd1zXNUW02KN
-         Irp3F++PckOW/S1KJNEJpQPyYvg+68oD8qlml25lSYCGIFZE3TgmoHSdIUpJ9pf5VXsX
-         vdaKj03Z46emh+2JjaFMsAd9yaW5w95zNkFCF7QrIhaz3XzYKC5pd4p/c1C//frT3NRN
-         H+OKMNW4FLOmgd2iKtM/BMaNQO2cM/x0pn1l6vmdvNh3pJJPK0Uuq8BrXrhGCy2JCMvR
-         LwkzSQ8iL1NUxuuNl2vX/w7P5LRTyDC6JCD7PpD9QDDk5hCoNTBz47Tz5FOblWQDYipV
-         +iTg==
-X-Forwarded-Encrypted: i=1; AJvYcCU0R4C/8gz29MUlfsEi/U4QoqNw17D7rp2chLm4lA2IagQSi4Np1lZgdnhF5PGqx2FTRD+I1yk9HvEyJ+yC5Fm/Z7pJd1OvbewiIVe5
-X-Gm-Message-State: AOJu0YzZywi0lc/bzMn6lHJaopJaQAhWtbxF7wEauK9UB4XKyk5fFX2n
-	vkwdSja/yGVtKYkmMUQRHJ9AbL/HI5WdSQe2VRFBatR6nuYlZhJoqH+v7iOScVc=
-X-Google-Smtp-Source: AGHT+IEdCZYVeqOZ5eSBUGTdFCd0Cu+ATr4HkA4tamaL5IM0hr8UUL7knE8TH6X76Ak+3NGf+LDqZg==
-X-Received: by 2002:a19:5f1c:0:b0:513:b9c2:71c0 with SMTP id t28-20020a195f1c000000b00513b9c271c0mr567725lfb.9.1710238672993;
-        Tue, 12 Mar 2024 03:17:52 -0700 (PDT)
-Received: from [172.30.205.61] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id b4-20020a056512060400b0051329001f53sm1493941lfe.54.2024.03.12.03.17.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 03:17:52 -0700 (PDT)
-Message-ID: <dc4d49bf-d644-44b6-8a4d-c5a3062284f0@linaro.org>
-Date: Tue, 12 Mar 2024 11:17:52 +0100
+        d=1e100.net; s=20230601; t=1710238709; x=1710843509;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v/TtoKF7cuacbpGcpjgtdgMi1EiHHySKw9WaAnGkjzM=;
+        b=RKG5KSCtj1ac37F7M1Gtwjxu8T50MwvjqKqxGg9kLrFHRCzRHn0t/MRHjxKO76LNi4
+         ZUMFmpvV8WaBCQ5MGHjsgU3PyjMEglvxnkDAZfHRPyGk+a4ElD4gIcT1oLgis4Paan76
+         YopXkIu+d9by3rsmd8c4EQcFhEK+9NQNr8JLgdLTCM7RIUnjnDBIcZZ6Gz0CrZus8OZ3
+         JNjjXqKaRbK/ASfxl3OuwZNI23v043HsumxR0ZUplOyF6Do7Np264zJLw6Sh+AVlLzo9
+         Rk/JBcXEioLSyvv6J5sP3x3mhMgIjfMyVPKzpjwZ90yim46i9+r2jy7aXle7tuWhtmn0
+         xFdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXul2iPYk6U122Pjhmk8TFoztW39gOd0tDQzh1hYP2AbhYisMRhLOSk+DWhP01y4yoeeV8IkgD2pV8T09+fLvOP/NfYHaY4kn95RVzvXOq2WSdE3aQFfjEX94/yO6gGFiNwAuib
+X-Gm-Message-State: AOJu0YynZ23wCo1syx4X88e1pKdLRDtaJpcOmCgWyAqdFUFfpbKzv4do
+	4/PfBz8dswBL81YA7vLK09pCpC9HEQmggv4ySMISewPAa9p2b+Dgx9QCJCZ1w0GV/vnTVfpZz7I
+	WAbuo1VAUkAM/rY77yK3T/tKtGsU=
+X-Google-Smtp-Source: AGHT+IHg34ksh5Vb8nFOPwXj8ahKVbhIjUruuiOlKBdvSNe99Anup77tCH67cK21OhJVVEyLM9Hc3BDc70tkwVkn0OQ=
+X-Received: by 2002:a67:f041:0:b0:472:64f5:f0a5 with SMTP id
+ q1-20020a67f041000000b0047264f5f0a5mr5959821vsm.18.1710238708956; Tue, 12 Mar
+ 2024 03:18:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp: Add missing hs_phy_irq in USB
- nodes
-Content-Language: en-US
-To: Krishna Kurapati <quic_kriskura@quicinc.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
- quic_jackp@quicinc.com
-References: <20240219075720.640529-1-quic_kriskura@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240219075720.640529-1-quic_kriskura@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240312094259.770554-1-e.velu@criteo.com> <fd37860e-306f-42bf-9a1d-e4d98ddf338c@molgen.mpg.de>
+In-Reply-To: <fd37860e-306f-42bf-9a1d-e4d98ddf338c@molgen.mpg.de>
+From: Erwan Velu <erwanaliasr1@gmail.com>
+Date: Tue, 12 Mar 2024 11:18:17 +0100
+Message-ID: <CAL2JzuzjRTHzKPVU9+zfFeEgfDQPeRDUuaUjsqgDfgQ865en8Q@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH v3] i40e: Prevent setting MTU if greater
+ than MFS
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Erwan Velu <e.velu@criteo.com>, linux-kernel@vger.kernel.org, 
+	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, intel-wired-lan@lists.osuosl.org, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+
+> Am 12.03.24 um 10:42 schrieb Erwan Velu:
+> > Commit 6871a7de705b6f6a4046f0d19da9bcd689c3bc8e from iPXE project is
+> > setting the MFS to 0x600 = 1536.
+>
+> Please add a link, as most people do not have the iPXE archive checked
+> out. Maybe also add the commit message summary.
+I will, thanks.
+
+> > At boot time the i40e driver complains about it with
+> > the following message but continues.
+> >
+> >       MFS for port 1 has been set below the default: 600
+> Hmm, but 1536 > 600. So the log message is incorrect?
+
+As mentioned earlier in the commit message, the 600 is 0x600 = 1536.
+I can offer a patch to report it in decimal or add an explicit 0x prefix.
+
+> > If the MTU size is increased, the driver accept it but large packets will not
+> accept*s*
+Fixed.
 
 
+[...]
+> > At least, this commit prevents setting up an MTU greater than the current MFS.
+> > It will avoid being in the position of having an MTU set to 9000 on the
+> > netdev with a firmware refusing packets larger than 1536.
+> Maybe add the new log message.
+Done.
 
-On 2/19/24 08:57, Krishna Kurapati wrote:
-> Recent binding update [1] indicates that there are hs_phy_irq
-> present in primary and secondary usb controllers of sc8280xp.
-> 
-> Add the missing hs_phy_irq for these controllers. Since the driver
-> doesn't use this interrupt, this change has been only compile
-> tested.
-> 
-> [1]: https://lore.kernel.org/all/20231227091951.685-2-quic_kriskura@quicinc.com/
-> 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
+> One last formal nit: Please use a line length limit of 75 characters per
+> line.
+Done.
 
-I don't have the docs to back it up, but I trust you do..
+> > +     mfs = pf->hw.phy.link_info.max_frame_size;
+> > +     max_mtu = mfs - I40E_PACKET_HDR_PAD;
+> > +     if (new_mtu > max_mtu) {
+> > +             netdev_err(netdev, "Error changing mtu to %d, Max is %d. MFS is too small.\n",
+> > +                        new_mtu, max_mtu);
+>
+> The other log messages capitalize MTU.
+Yeah but the exact previous one was in the same case. Shall I bump all
+of them to upper or lower cast ?
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Konrad
+> The rest looks reasonable.
+Thx for the review.
 
