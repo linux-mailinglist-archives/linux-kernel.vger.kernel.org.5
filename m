@@ -1,234 +1,92 @@
-Return-Path: <linux-kernel+bounces-100826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0420879DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:44:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22869879DB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:45:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A78A1F2264A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:44:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC5FF1F22813
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5615145333;
-	Tue, 12 Mar 2024 21:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eN0zEUzc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4BE145B04;
+	Tue, 12 Mar 2024 21:43:07 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB64E1448C0;
-	Tue, 12 Mar 2024 21:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D61614534F
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710279783; cv=none; b=fBiaJkpFvbSkVp/lrmpaAVUmao8E+WuJNVgchOpFUaAv9Zb5CzRkzE2SHr4kJcot9zRKT7sF+xVcwCdJKcRShDpy0MijdgUXo2ho7FQxDvPdZxB9uQEYy3BTWOmxPTJAdMIO1XPLMAOcrJR+mBRuJ6qbNFWSHt+flk7rRrip2R4=
+	t=1710279787; cv=none; b=u5WNgAm13bUqBndr32UokEY4QxTnWl/Hoh/xlxcSFxzHSXml4qjgUJhMDBS4Zo1PDAgZax8YAF03/9kOA9H3pgf/6Z5rUEW3B1BqQ6avVlFpCaF7vNq6stHeyCz8v10u7ql83g1adxRBToSI9Iqw2uW9xVYjEvDQB/kIhbkz4rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710279783; c=relaxed/simple;
-	bh=zWLx2GxDeEK0EZRN9uxA4roG5ab9+WL2q0h+bTlfNq4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nNdP1w/jpG9Zxt+T4GsPPwdt30dqoWKLBtB6fpK9Qoc53xthHdn4C2oohsK2de9F56b3kX7iLnRabtZr4FZsKoaihNXLfXxoPlxDe3cSXyZtzKY1qBZV9yhvcTHky7AGp/Iot+HmH3sZikFuS+8tM+LjJuPk8JBrfu9C6QXPdrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eN0zEUzc; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710279782; x=1741815782;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zWLx2GxDeEK0EZRN9uxA4roG5ab9+WL2q0h+bTlfNq4=;
-  b=eN0zEUzc3TfCgHlKzlmT+qgu0VsKw6LjIoxL5Z4UeLjwKZmSALwmY+22
-   QY3yJ6nAt1OR1GZ755Cht1Ri2tYnyhpOPUX2yaRF+BsQeI/mtrMB+Huq1
-   6uOueDii50o+/9iYQjA8fOnG66I6jIt2El45yV8mA66MeHib8+0JciJgf
-   yNXVj17iCb27EraKiHNxd6nrrJJZLPLv4vWRkxcHUHtcQBmdfOjzzyCPq
-   dDOVEj2oArrHSE3thc9NksTf9d7pxkaqETkLnWv3xlIpf8hamUK1zTxnS
-   KgEv7Bz2l1Bjecl7gzrK8TTs8std+Wl+GKZkqYImLPoEp2UPlT4luOJSD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4884877"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="4884877"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 14:42:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="12280165"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 14:42:56 -0700
-From: Tony Luck <tony.luck@intel.com>
-To: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Peter Newman <peternewman@google.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	x86@kernel.org
-Cc: Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-	James Morse <james.morse@arm.com>,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Babu Moger <babu.moger@amd.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Drew Fustini <dfustini@baylibre.com>,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	patches@lists.linux.dev,
-	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v16 9/9] x86/resctrl: Add info files to show mappings from domains to lists of cpus
-Date: Tue, 12 Mar 2024 14:42:47 -0700
-Message-ID: <20240312214247.91772-10-tony.luck@intel.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240312214247.91772-1-tony.luck@intel.com>
-References: <20240312214247.91772-1-tony.luck@intel.com>
+	s=arc-20240116; t=1710279787; c=relaxed/simple;
+	bh=+ntyJa0Ew8nKgl61n+Nh2FH6rWw/YsnJ8ujp1FK4Ip4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ZJh2g7IVtQazgObcuzBBOPzSZDDfl+7Qwp1oXOlzTNY4W+Xi8yV4B8LoBGBgmzE0nN6oeTvVX3SifGpPJ2QzjmWsK6nIRqwVmRRRRgeJHazo1vV/YGIaXxF+NVoHPOwthzuXon3gcFzdwC0ZMfY/ys4c/4/dESFz0q+NupR0gsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3666f119204so2992785ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:43:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710279784; x=1710884584;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WPwkHRiTWni56jLRMYYCYOfrKQED61Y88uUu4x05NAw=;
+        b=p6cb6TzApwrETqV1guWSI/jWIpRo2RKGzQOj/7DaANnmwbra9pTCotkerqcleD30UO
+         b4cOSoylmqi1sKoO8vLfAM/nlY/eq42rqV3ay1Qh95xuu4p3bdBEfwLvXpCnO3VSMuo6
+         anevcHynYfhwqamkpYaxhncWW8pfL8vQDY560XME2j4khDGQ82KZjdWf9ejWhsLaQAU/
+         lB596BZ/3tfhiAYgQK+mtrFVp6X81xp63jlJSrlYiGbv0hngmpHmLaR93OfM7RpJ0F4l
+         flVYWPbRAFroz5Sphm+ZsLgl2hAfxRKLwae3UTiJ3hZYBCb9ZWwVsexrVO+v/xjtuHwU
+         D4bA==
+X-Forwarded-Encrypted: i=1; AJvYcCXg7gYFnDwiskuMwqnn6UHYgqcyiZdj6LXZZ4Nj2KePD3Wlsjex+KnLZj10CF1tNy7OS2+8JctPVE8PN1t1h4Qp4JCZ8y89QWo/WBBA
+X-Gm-Message-State: AOJu0YyP2vLDICrHJQdzyWAYkSG9OFqNJkD+9kSFxR3jzoM7RrLJtJeH
+	CegPNbkG+vGQz3fWwwU+EuAoHjRdrLsHNcg53Qa+Ok9wIz8Kwwymxq2TB2eKukF3Bc+cLKcyzzV
+	Ac4f6cDZXjxWu1L1Mt0m32zWQVwGSkoWvTk9AFb4WusrcG8Jg0MaB5UY=
+X-Google-Smtp-Source: AGHT+IFOpyNj3FNGoLTzOFEnZ+tR7pSAuEVi60fFlN8TuPJlT3LzUp25kdsOJOotvBru3ani52Sg/5sSOVe3e3YqU/YqtNadiw2j
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:b2c:b0:365:fe0a:b366 with SMTP id
+ e12-20020a056e020b2c00b00365fe0ab366mr42803ilu.1.1710279784538; Tue, 12 Mar
+ 2024 14:43:04 -0700 (PDT)
+Date: Tue, 12 Mar 2024 14:43:04 -0700
+In-Reply-To: <000000000000ac8cda0603cbb34c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000634c606137d8b99@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in insert_state (2)
+From: syzbot <syzbot+d21c74a99c319e88007a@syzkaller.appspotmail.com>
+To: anand.jain@oracle.com, brauner@kernel.org, clm@fb.com, dsterba@suse.com, 
+	johannes.thumshirn@wdc.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Users who want to find out which CPUs are part of which resctrl domain
-need to jump through some hoops in /sys to find the lists of CPUs. This
-is extra complicated when Sub-NUMA cluster is enabled on a system since
-there is no simple indication that this feature is active, or how many
-numa nodes are present per L3 cache.
+syzbot suspects this issue was fixed by commit:
 
-Add files in each resource info directory to provide this information
-in each of "list" and "bitmap" form.
+commit a1912f712188291f9d7d434fba155461f1ebef66
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Wed Nov 22 17:17:55 2023 +0000
 
-E.g.
+    btrfs: remove code for inode_cache and recovery mount options
 
-$ cat /sys/fs/resctrl/info/domain_cpu_list
-0: 0-35,72-107
-1: 36-71,108-143
-$ cat /sys/fs/resctrl/info/domain_cpu_map
-0: 0000,00000fff,ffffff00,0000000f,ffffffff
-1: ffff,fffff000,000000ff,fffffff0,00000000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14342f8e180000
+start commit:   f7757129e3de Merge tag 'v6.5-p3' of git://git.kernel.org/p..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
+dashboard link: https://syzkaller.appspot.com/bug?extid=d21c74a99c319e88007a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1202e640680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e949f3a80000
 
-Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- Documentation/arch/x86/resctrl.rst     | 19 +++++++++
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 57 ++++++++++++++++++++++++++
- 2 files changed, 76 insertions(+)
+If the result looks correct, please mark the issue as fixed by replying with:
 
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index 15f1cff6ee76..8c42ad3369fd 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -261,6 +261,25 @@ with the following files:
- 		bytes) at which a previously used LLC_occupancy
- 		counter can be considered for re-use.
- 
-+Subdirectories of all resource types contain these files:
-+
-+"domain_cpu_list"
-+		Provides a list of CPU numbers associated with each
-+		domain for this resource.
-+		Example::
-+
-+			# cat /sys/fs/resctrl/info/L3/domain_cpu_list
-+			0: 0-35,72-107
-+			1: 36-71,108-143
-+
-+"domain_cpu_map"
-+		Same as above but the CPUs are listed in bitmap format.
-+		Example::
-+
-+			# cat /sys/fs/resctrl/info/L3/domain_cpu_map
-+			0: 0000,00000fff,ffffff00,0000000f,ffffffff
-+			1: ffff,fffff000,000000ff,fffffff0,00000000
-+
- Finally, in the top level of the "info" directory there is a file
- named "last_cmd_status". This is reset with every "command" issued
- via the file system (making new directories or writing to any of the
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 40e6bb8a8fc8..54673def7e9f 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -957,6 +957,20 @@ static int rdt_num_closids_show(struct kernfs_open_file *of,
- 	return 0;
- }
- 
-+static int rdt_ctrl_cpus_show(struct kernfs_open_file *of,
-+			      struct seq_file *seq, void *v)
-+{
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
-+	struct rdt_ctrl_domain *d;
-+
-+	list_for_each_entry(d, &r->ctrl_domains, hdr.list)
-+		seq_printf(seq, is_cpu_list(of) ? "%d: %*pbl\n" : "%d: %*pb\n",
-+			   d->hdr.id, cpumask_pr_args(&d->hdr.cpu_mask));
-+
-+	return 0;
-+}
-+
- static int rdt_default_ctrl_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
-@@ -1103,6 +1117,19 @@ static int rdt_num_rmids_show(struct kernfs_open_file *of,
- 	return 0;
- }
- 
-+static int rdt_mon_cpus_show(struct kernfs_open_file *of,
-+			     struct seq_file *seq, void *v)
-+{
-+	struct rdt_resource *r = of->kn->parent->priv;
-+	struct rdt_mon_domain *d;
-+
-+	list_for_each_entry(d, &r->mon_domains, hdr.list)
-+		seq_printf(seq, is_cpu_list(of) ? "%d: %*pbl\n" : "%d: %*pb\n",
-+			   d->hdr.id, cpumask_pr_args(&d->hdr.cpu_mask));
-+
-+	return 0;
-+}
-+
- static int rdt_mon_features_show(struct kernfs_open_file *of,
- 				 struct seq_file *seq, void *v)
- {
-@@ -1810,6 +1837,21 @@ static struct rftype res_common_files[] = {
- 		.seq_show	= rdt_num_closids_show,
- 		.fflags		= RFTYPE_CTRL_INFO,
- 	},
-+	{
-+		.name		= "domain_cpu_list",
-+		.mode		= 0444,
-+		.kf_ops		= &rdtgroup_kf_single_ops,
-+		.seq_show	= rdt_ctrl_cpus_show,
-+		.flags		= RFTYPE_FLAGS_CPUS_LIST,
-+		.fflags		= RFTYPE_CTRL_INFO,
-+	},
-+	{
-+		.name		= "domain_cpu_map",
-+		.mode		= 0444,
-+		.kf_ops		= &rdtgroup_kf_single_ops,
-+		.seq_show	= rdt_ctrl_cpus_show,
-+		.fflags		= RFTYPE_CTRL_INFO,
-+	},
- 	{
- 		.name		= "mon_features",
- 		.mode		= 0444,
-@@ -1824,6 +1866,21 @@ static struct rftype res_common_files[] = {
- 		.seq_show	= rdt_num_rmids_show,
- 		.fflags		= RFTYPE_MON_INFO,
- 	},
-+	{
-+		.name		= "domain_cpu_list",
-+		.mode		= 0444,
-+		.kf_ops		= &rdtgroup_kf_single_ops,
-+		.seq_show	= rdt_mon_cpus_show,
-+		.flags		= RFTYPE_FLAGS_CPUS_LIST,
-+		.fflags		= RFTYPE_MON_INFO,
-+	},
-+	{
-+		.name		= "domain_cpu_map",
-+		.mode		= 0444,
-+		.kf_ops		= &rdtgroup_kf_single_ops,
-+		.seq_show	= rdt_mon_cpus_show,
-+		.fflags		= RFTYPE_MON_INFO,
-+	},
- 	{
- 		.name		= "cbm_mask",
- 		.mode		= 0444,
--- 
-2.44.0
+#syz fix: btrfs: remove code for inode_cache and recovery mount options
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
