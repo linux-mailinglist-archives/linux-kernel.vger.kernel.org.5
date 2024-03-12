@@ -1,134 +1,157 @@
-Return-Path: <linux-kernel+bounces-99960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6D44878FDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:42:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A733B879010
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D54B1F21DF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:42:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28E65283F18
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117BB77A0F;
-	Tue, 12 Mar 2024 08:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE18F78265;
+	Tue, 12 Mar 2024 08:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="WL0F5bKh"
-Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="FapqdML2"
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D563F2AD05;
-	Tue, 12 Mar 2024 08:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFCFD77F07;
+	Tue, 12 Mar 2024 08:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710232937; cv=none; b=M4EWYo8qNewSmn/tlrPq3aER4MY8cerSsHuA0LNEWSaf0u2xrLrzljO4NvBIuXQciwTPqRnEgAMpA36iLU9HVCCWiafi3+HmQn8HWjD97O5yRllebXGiic9r/wwUS4XNtEjmUh29csbs7Q+0nbaj1NflKQ10i1oKUPctxWfFpnk=
+	t=1710233549; cv=none; b=DVIf2wldrCvCmdQqjBRFBmQdLWeCfCV9GVG1ae6VBr06od7OJy7NXurBOOLnO5zoTQh/GMGFE7cnAKol5E+qU835IuuS3FJhmqPJLE5XDEZFlUlVyw9UjWhKroBNPjC6+EZ6vTuQgDjouJFq24vWaC0At0JYAKRKRPa57e6dHeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710232937; c=relaxed/simple;
-	bh=TkQc0LJpx1K2SN7U/Lb6gwYCHyLR5+4QLPPXGZLIyYU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F9VKS4zS6MQwfP2EEQKDihHCTQfgLqXCwk5QxV1q4x/BwuuszYe3/LecQliYIvgLYAyRACxrLy1LtGPUQbo6tLUhEATwSceTS7gN6+LxLfALIMzCzH69TlRcf4+xhsVymuvUaPULL1gPda8jBlKklrak9KrG8HkFJ3yM2IJpEgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=WL0F5bKh; arc=none smtp.client-ip=203.205.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1710232926;
-	bh=nsWR5G0TESRsR1Ba3uGvn81H+502dSAJciQiGCQRQEo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=WL0F5bKhMC6WFiRirGDlx/wlOQJK+yuB6MG54Muc1lVyi9Nb4mTDmTvdfFWXFXXxS
-	 0O6DtSvtG3IK4UxFfsjURemUH1cnJLRJYiT62JrVCYql6rMvDGfJTTCSxRDuFPUeup
-	 YCt5e2m7oIEMPxfyz131+4gU/OLCdSnPyqof1kiY=
-Received: from [172.17.78.110] ([58.208.182.212])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id A818E4BD; Tue, 12 Mar 2024 16:42:01 +0800
-X-QQ-mid: xmsmtpt1710232921t1kfupkjf
-Message-ID: <tencent_AA5D14EAA36D58807959EE9AFC9E07548108@qq.com>
-X-QQ-XMAILINFO: MyIXMys/8kCtb9++LIiO4CpfoxdndEQDr5bx1HMICsi2UMMy2DzEGniMw+y23Q
-	 E7uoqJ7o8iktc6QJPbNFzpnu/S49SSdixvSbo6IPwNSicbLy1rGfFPogIJlpjpt6tYX81YfzqkYH
-	 klgr5trTVaOWzu1Ra+T55SQZrRE5ReZsTy5oBxs21zIehFBilU6/OppKDpvW43hLSVQhUSthQOxG
-	 Zk2u/val3VwSqexVS8wOsvrnHcg7G2vrfI18+t0q1vwZiUr9vX/M1MMQvXh78+OYGlfOxeq7XXbA
-	 WlEvjxzXHo9/1vrgCZS7MG9WL0n9n2Upg43MAxbtOjQ/Y5C9YIcZctchOPbNIcpBaWBkwyf28RJ6
-	 cRy0aRztYHERvGgruPGJ6Q5/vIJXRq8CplNWJOtcEyi1ZiPy/V4DA8TACtXs7+0k/2GDOMnhMtf8
-	 7KpgySW+lcyW6iPb38gFRJEZDMuYUQQa7cu/WbolSx3Ya5mdnySzXdN6JvepXN0JbW0+rGksShCp
-	 D4CODil0kg6c5U8J5N9R5FEQT9/kkwM+YfFts4XFrp7zWbCg1mlzVDGfOKZ0zM8+LGeu3o1IpKFo
-	 WD1Jf47pn68g0xbbIUxAf2Gl7WRP3JALn9VnjYik6u3clpnnATaomQDFCYiWcsmpvoWB+epai4pQ
-	 RBsl/ezwHEG5RH6w+NK0ZVycuSl3InCnFgSJBqHzZuvmKPehxkADfKPK11xldtLxN9pXThQ3R1h8
-	 ZThe5Tov7h04k5yRwoBmkL/gR4eCzKnkhc1WpogN0JsMOTG6gPtoH428MLq8mYuLtCe5NtALjJJ5
-	 H8TaxbcSITLGyPazIJdIaDr+cgBsG49ESLoGjaLnkHR8aKB3uUVVG6wnhAyFOaE9uElL314wA1eW
-	 aUq5257kVD7cSXhH36lnf8LNUVX+OYj2WSOtOKH0hIspa9MUf1mfOMhgHRh7vewL9hTccUPfErHQ
-	 5zGX1hhERh7R9mPMUHQkRiGpebFINNaVTC4C+yt6K1stGcNGN+/Q==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-X-OQ-MSGID: <b05a6763-3c74-4da9-bcb7-6581aa0511d1@foxmail.com>
-Date: Tue, 12 Mar 2024 16:42:01 +0800
+	s=arc-20240116; t=1710233549; c=relaxed/simple;
+	bh=slL5bRycpHhI2+Y7J6KNxlIBy/lluYrU3g56qphs/Tw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=swL55mjBfOG5wFPtbSgu5yv6Fr3Y1IJtJnu7Nabb1nvnkQSnfqrGLybFXVL7IunFH7BQ/fIKU77bfHSM50gBc9IESBQ9jjP8EibqX28nRcv35iHTL/lN+rbdXzg9ecrijmeOyaaVNzD2zkewuJ/AGAEmXJ9WtlDNjlwjb7PzY7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=FapqdML2; arc=none smtp.client-ip=194.87.146.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by box.trvn.ru (Postfix) with ESMTPSA id E6630400F9;
+	Tue, 12 Mar 2024 13:42:19 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+	t=1710232941; bh=slL5bRycpHhI2+Y7J6KNxlIBy/lluYrU3g56qphs/Tw=;
+	h=From:Subject:Date:To:Cc:From;
+	b=FapqdML2C4/6AC9fAy5pBSc7KVObiY7aABWf24FdWul2S9QlDKemBiErH4YP0VjEM
+	 VfN/8mnBsqSyPWw7csIC3PJcEbVvAKoNv6XgOJbNmAPHPvv+t4msbAl37ggeG5LMSz
+	 GTIoRsSb6xrzKPxhI1ruMkGDJIF2hEFtOjEyWfovFbzMaoHyMmtIwpyfZc1HdipCOr
+	 XjCY8Mbm5keZQOTVM4LCWU+yGKBvBllmMzIfC/DL/kWlk6ueV/FZrRJNRvpSFJy78m
+	 u/3mulPJ5QFEVRi4AhKQtQqGvMcrn9CZSQeoJ/iUJkNkO0rU93vKsAus43fzo4iJ6M
+	 hlBZLc3uo2gFw==
+From: Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH v4 0/4] platform: arm64: Acer Aspire 1 embedded controller
+Date: Tue, 12 Mar 2024 13:42:06 +0500
+Message-Id: <20240312-aspire1-ec-v4-0-bd8e3eea212f@trvn.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/mmu: treat WC memory as MMIO
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
- hpa@zytor.com, rdunlap@infradead.org, akpm@linux-foundation.org,
- bhelgaas@google.com, mawupeng1@huawei.com, linux-kernel@vger.kernel.org,
- pbonzini@redhat.com, peterz@infradead.org, bhelgaas@google.com,
- kvm@vger.kernel.org
-References: <tencent_4B50D08D2E6211E4F9B867F0531F2C05BA0A@qq.com>
- <Ze8vM6HcU4vnXVSS@google.com>
-From: francisco flynn <francisco_flynn@foxmail.com>
-In-Reply-To: <Ze8vM6HcU4vnXVSS@google.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAF4V8GUC/1XMQQ6CMBCF4auQrq2ZmSINrryHcTGUUbtB0mKjI
+ dzdQkKE5XvJ948qSvAS1bkYVZDko391eZSHQrkndw/Rvs1bEZBBgkpz7H0Q1OJ01ZiWHDtkSyq
+ DPsjdf5bY9Zb308fhFb5LO+H8rhm7zSTUoBuuBR2RBbCXIaTuGN5qjiTaQKQdpAwdl/VJGNiy2
+ 0OzwhKIYAdNhkCuQVNnbvAPp2n6AUpcigsUAQAA
+To: Hans de Goede <hdegoede@redhat.com>, 
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+ Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org, 
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
+ Nikita Travkin <nikita@trvn.ru>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2665; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=slL5bRycpHhI2+Y7J6KNxlIBy/lluYrU3g56qphs/Tw=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBl8BVoNtD/XcPJO4FKbwDVc2v3P0F8OnfolTAbY
+ Vi5SvGn5lyJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZfAVaAAKCRBDHOzuKBm/
+ dTXqD/9mLhyNTyI0MH6CWQDuTVLVYqpnYMOOCYwoWd2zSovWgp6HSI67FmmCHt/neu48iFk9o1f
+ 5xNcN+KSj7Y8X16eZFfWf1bAtO3ZmJdJa5qctNftmh3xN7fQ4Tiiz+/gMSfQYhB9dnXDKZgQT28
+ /16c528q0nnFqV57FrOsq0aQjG4SamUJwzRKtsFJkLEGmnO7+9Xp7b393XCbwMZwpAUkWp4I5Pc
+ 0p91Or8ds9B0cXDaMcJJwoJmKz7/kq9V7H7kTRURBw7bqtSoFF3xQb8sHFXWphWdnaSUNd6dLvz
+ UHi4jlonmJWXRSWn3j77I5q+A1y1vbiGidYz60lXyZ6ptb2LVVBT+aEPq9vr67dB0aVhn/+T7mS
+ 2GDrD0l1Ws7B46Vztz+46EgncHgHwA0kobex6WwYtktBsxgHJJ3LF/mR97kfw7ckoOUsbLuX1xK
+ aREfsfDZLMfOz46um2V/B4WzvgQdauiukbZN3BmFFOQBVkFOE79n/O9+KsAMJQtVqn4zNo0xCr1
+ D0uJUulbAp3gT/vKlVtuYWKZxNT0CIHEzworVdJ/OqmCUK/fFtFsby6ahluFWsIXXNh+z3z/uVf
+ Ce2QTFOuUxkRpWx8RY8xFgg5vILwq653Evf2R8QkmOHIJFwsdX43xwA+aOF2c0F/vgmuf+Dv0II
+ jTY8p8xLc0BRFBg==
+X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
+ fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 
+The laptop contains an embedded controller that provides a set of
+features:
 
+- Battery and charger monitoring
+- USB Type-C DP alt mode HPD monitoring
+- Lid status detection
+- Small amount of keyboard configuration*
 
-On 2024/3/12 00:20, Sean Christopherson wrote:
-> On Mon, Mar 11, 2024, francisco_flynn wrote:
->> when doing kvm_tdp_mmu_map for WC memory, such as pages
->> allocated by amdgpu ttm driver for ttm_write_combined
->> caching mode(e.g. host coherent in vulkan),
->> the spte would be set to WB, in this case, vcpu write
->> to these pages would goes to cache first, and never
->> be write-combined and host-coherent anymore. so
->> WC memory should be treated as MMIO, and the effective
->> memory type is depending on guest PAT.
-> 
-> No, the effective memtype is not fully guest controlled.  By forcing the EPT memtype
-> to UC, the guest can only use UC or WC.  I don't know if there's a use case for
+[*] The keyboard is handled by the same EC but it has a dedicated i2c
+bus and is already enabled. This port only provides fn key behavior
+configuration.
 
-Well,it's actually the host mapping memory WC and guest uses WC,
-one use case is virtio-gpu host blob, which is to map physical GPU buffers into guest
+Unfortunately, while all this functionality is implemented in ACPI, it's
+currently not possible to use ACPI to boot Linux on such Qualcomm
+devices. Thus this series implements and enables a new driver that
+provides support for the EC features.
 
-> the host mapping memory WC while the guest uses WB, but it should be a moot point,
-> because this this series should do what you want (allow guest to map GPU buffers
-> as WC).
-> 
-> https://lore.kernel.org/all/20240309010929.1403984-1-seanjc@google.com
-> 
+The EC would be one of the last pieces to get almost full support for the
+Acer Aspire 1 laptop in the upstream Linux kernel.
 
-yes, this is what i want, but for virtio-gpu device, if we mapping WC typed 
-GPU buffer into guest, kvm_arch_has_noncoherent_dma would return false, 
-so on cpu without self-snoop support, guest PAT will be ignored, the effective
-memory type would be set to WB, causing data inconsistency.
+This series is similar to the EC driver for Lenovo Yoga C630, proposed
+in [1] but seemingly never followed up...
 
-+	if (!static_cpu_has(X86_FEATURE_SELFSNOOP) &&
-+	    !kvm_arch_has_noncoherent_dma(vcpu->kvm))
-                return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+[1] https://lore.kernel.org/all/20230205152809.2233436-1-dmitry.baryshkov@linaro.org/
 
+Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+---
+Changes in v4:
+- Move to platform/arm64 (Sebastian, Hans)
+- Drop fn mode dt property (Rob)
+- Add fn_lock attribute in sysfs (Rob)
+- Report psy present correctly (Sebastian)
+- Link to v3: https://lore.kernel.org/r/20240220-aspire1-ec-v3-0-02cb139a4931@trvn.ru
 
->> Signed-off-by: francisco_flynn <francisco_flynn@foxmail.com>
->> ---
->>  arch/x86/include/asm/memtype.h | 2 ++
->>  arch/x86/kvm/mmu/spte.c        | 5 +++--
-> 
-> Please use get_maintainers.pl.
+Changes in v3:
+- Supress warning on few no-op events.
+- Invert the fn key behavior (Rob, Conor)
+- Link to v2: https://lore.kernel.org/r/20231212-aspire1-ec-v2-0-ca495ea0a7ac@trvn.ru
 
-sure.
+Changes in v2:
+- Drop incorrectly allowed reg in the ec connector binding (Krzysztof)
+- Minor style changes (Konrad)
+- Link to v1: https://lore.kernel.org/r/20231207-aspire1-ec-v1-0-ba9e1c227007@trvn.ru
 
-> 
->>  arch/x86/mm/pat/memtype.c      | 8 ++++++++
->>  3 files changed, 13 insertions(+), 2 deletions(-)
+---
+Nikita Travkin (4):
+      dt-bindings: platform: Add Acer Aspire 1 EC
+      platform: Add ARM64 platform directory
+      platform: arm64: Add Acer Aspire 1 embedded controller driver
+      arm64: dts: qcom: acer-aspire1: Add embedded controller
+
+ .../bindings/platform/acer,aspire1-ec.yaml         |  60 +++
+ MAINTAINERS                                        |   9 +
+ arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts   |  40 +-
+ drivers/platform/Kconfig                           |   2 +
+ drivers/platform/Makefile                          |   1 +
+ drivers/platform/arm64/Kconfig                     |  35 ++
+ drivers/platform/arm64/Makefile                    |   8 +
+ drivers/platform/arm64/acer-aspire1-ec.c           | 555 +++++++++++++++++++++
+ 8 files changed, 709 insertions(+), 1 deletion(-)
+---
+base-commit: a1184cae56bcb96b86df3ee0377cec507a3f56e0
+change-id: 20231206-aspire1-ec-6b3d2cac1a72
+
+Best regards,
+-- 
+Nikita Travkin <nikita@trvn.ru>
 
 
