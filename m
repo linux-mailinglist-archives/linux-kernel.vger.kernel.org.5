@@ -1,201 +1,229 @@
-Return-Path: <linux-kernel+bounces-100082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 814E4879189
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:59:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D2A879192
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:59:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A514D1C21E8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:59:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3734EB2215A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2BF78294;
-	Tue, 12 Mar 2024 09:58:55 +0000 (UTC)
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C03E78299;
+	Tue, 12 Mar 2024 09:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JvHBhK+P"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2067.outbound.protection.outlook.com [40.107.223.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909B13D3A7;
-	Tue, 12 Mar 2024 09:58:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710237535; cv=none; b=erbELIqKzO4NzYp52o7SwlWwnTLyjmfHWFCFBePh1Y7na9c3UWANWJrEHllME1VEFRK8URP0DltMuKT0lcAql8oqYnOTfXho1Dbi1HKy5cVUN/8Fp2/2Q7DDYmHc9t4O5U4SCE+RyB9AYOARTiPmZM5asaDXvcgIFb9P0Iw/iyA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710237535; c=relaxed/simple;
-	bh=QHjgskI+6ieUNPFaPC5BHzyiUHPZJleyhFwOjBB8fCw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W4KaQnhetGXOsafxsBOJbJ/3P9CjeTDaWE9VsMuBl3qsqiNfnDTeFeVAAxBSb3YcsjELxgwc3NqvriI1B6gv27KfQNed4540QlNwdvds8nVkJ+yCT2T3EfZCjrwgVBeT+NS1M0b45X7maXb++R8NMU/r2VtIfSzBerbdR1Wz2LI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a446b5a08f0so952231866b.1;
-        Tue, 12 Mar 2024 02:58:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710237532; x=1710842332;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=20zYEyLo1uGBdyGD+mW32vGX9bbntfXqOZr+grOdraU=;
-        b=I5HQ/7yY9J1rrUMEf96DjgG4riK8/UIWWxQqDE1XuN3oUdEHLjcpPjFqRFwnDzZh7C
-         xaNj11nPT8C6mxiLTsBdc7pLItSUomdFrDHCqRMphKKW4DuxUZYTDVrbhnSifCh+FWov
-         sUGE+xA/mNT9HgIc23YkeygB4p2+vZ2HPyyxH9pyUbtR1XTf52vp0X9703Le9l4F34ve
-         quhCtVVgrSec2Vv9SLrRLfVCV5+EsPfmrWwq65LzXLBgsrHikTykRQNOaoBGRaH6qrTP
-         iCbxnYsrLIOxB5FbkaeGfB40kMnFdssB1tRXmszt4c32uoi21gl36vrfE5mcHJWyXve/
-         E8mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWEXt5cxwrs21SpqK7sgnNmz0MXyUW/vt9VTX8iiBE2o3btuL6kZkB4ZiyQoYYxcBRxEm7oC+AZkWO7ARARiC+wFNq/CFubmWbGdbxoiQI0bAMk7Xgj12Jris00kPfz2jkpVyeyE8vOvAt5
-X-Gm-Message-State: AOJu0YzC783SsazURvNDjlLO9xw1Y/xphzd8XLAAz5Ut7h3utaw4Zmk3
-	chIwYNHNe8HcK2uGewmqd9iYkrYGDFOdP8AxIwPjOsSLIJvuFCLItEJ/323U
-X-Google-Smtp-Source: AGHT+IETibp12PRvFiYm7GCLEuY75A3XYmbwPESL8NCFgIZrDYNPsB62x0W0nbzgHX6FS6gL+9y8Ww==
-X-Received: by 2002:a17:907:7e98:b0:a46:13e9:25bd with SMTP id qb24-20020a1709077e9800b00a4613e925bdmr8175116ejc.15.1710237531715;
-        Tue, 12 Mar 2024 02:58:51 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id ci8-20020a170907266800b00a462fa148dbsm1440058ejc.30.2024.03.12.02.58.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 02:58:51 -0700 (PDT)
-Message-ID: <4c775fca-5def-4a2d-8437-7130b02722a2@kernel.org>
-Date: Tue, 12 Mar 2024 10:58:50 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DB177F32;
+	Tue, 12 Mar 2024 09:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710237582; cv=fail; b=jFg9z/cD/ayovKvzDDIhNS6zw/Qua06GDOzP1SV2tuWsv9I6tfmsULaZho68gOCGhTDvNi9Xs7vB88yYlOYLkboFaB5DW7KAbxaaLkGAnrjR8OswSyV6DCqjmAeHqm2pjUUAyyhNkHt74258pSgKw2eiYzuRIOt504j5mWtoWbA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710237582; c=relaxed/simple;
+	bh=OACp1nH4REljyLAay6XzNvFfchubv4NVK7YzwpDLKtg=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=T1J4AFZm+y69u30Y+CL1k3AO+x5kyLKopYOc4nS8gKHMKhpolO0saI060emUYeE2wATzdsPBx82F7ofFNXzH8p5Kbx4nfeR3p/EYsxaP97KZfQLE9+S7lcHwZxsJHB7rk70PxD8Z8Ash684Uy0GhcEOGZD+VFVRM2cTs5rMu9Ls=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JvHBhK+P; arc=fail smtp.client-ip=40.107.223.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MvQ4x6F6eEEx1OlnwOaBFFCtuDoVmMX68HQttK1Oh/m+JVVGzHsDYpfJ9kexXsPNNs0Hy6GM+P+kqxK/isR8G9W54SXoyj4fDNR5L80ZVUB3xP5A9o3Li6iLdX7T4NiDmX/dEzhIadSGVExEt1QB3o9AaJSuYLXbM3sVKkMDq3hPzeHwCrrXCM6YdDNAMwXYxI+yG4yDwgGV8rff78JUweu9D06MXWh/fVhWTLsDj6HvRNGELfkQ+ixqv+OuIPa8AEyBekPYf5UiyoNJUh45s0Dle+5wJ0nk5mG1qD9JaKO30aejK6q812WcVf27/OG+ghstM/LNMMzV+TeMEcZ1ww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hB3gntr3TXpoBwP0sncA5cPKjAGXe+wDUTCw1rR1XbM=;
+ b=IOpoRrEF5UZCoIs8TJvhWu0gDjE1UO+/u8b4/j1X7/b2NuuiilP1F4QBHKQer6GpGMMWitV5LhHCgFuhKvk+sYFFP94e2X4kQlAc8tDtqISQBGKDX5n/2sX8bupgXUnDfhntrPwKg+jYaQgQ7/VslRAKk2CAXTpBv94V1Gv9c/TMX0ta15G3YNx+pUAIQPW+65Bgxmk2D7lloxJrOm4pDZQJmGvqqq9bkuvAipdqEzvHvjEmRtXrjLqf5SOB3nXDSPlNhwJ5Gyxnv2ckELKTj/FWMol5YSRBFl8TSI8QgtQSQaxSi9ljVkRZD1nY25eB5wUZoyX9w/5hvT7Yuq1ENA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hB3gntr3TXpoBwP0sncA5cPKjAGXe+wDUTCw1rR1XbM=;
+ b=JvHBhK+PhmcYsa8PcPKs+3c1NED8NDjuQFeaCaDbBJHBG9w0G+Qjgb+K406H4xzgYTTzeXpR9fQrMt7EO4DupkOmK6XNJ1PQPpFkgen/X8J1rvvYv2zKDiy1VaItzMnzEeV6QnZJw/F/yxeJ1X7rcyVyemZnDIH4ZZ79pePRWBY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5712.namprd12.prod.outlook.com (2603:10b6:510:1e3::13)
+ by IA1PR12MB7542.namprd12.prod.outlook.com (2603:10b6:208:42e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Tue, 12 Mar
+ 2024 09:59:37 +0000
+Received: from PH7PR12MB5712.namprd12.prod.outlook.com
+ ([fe80::9dcb:30:4f52:82f5]) by PH7PR12MB5712.namprd12.prod.outlook.com
+ ([fe80::9dcb:30:4f52:82f5%5]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
+ 09:59:37 +0000
+Message-ID: <ae49f714-24c9-485d-b2f3-a319a53ba1a3@amd.com>
+Date: Tue, 12 Mar 2024 15:29:26 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] perf vendor events amd: Add Zen 5 core events
+To: Ian Rogers <irogers@google.com>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+ namhyung@kernel.org, mark.rutland@arm.com,
+ alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+ adrian.hunter@intel.com, eranian@google.com, ravi.bangoria@amd.com,
+ ananth.narayan@amd.com
+References: <cover.1710133771.git.sandipan.das@amd.com>
+ <0d18c3a93083f12481f27dcc5f5795877fa02b90.1710133771.git.sandipan.das@amd.com>
+ <CAP-5=fUV=6my-+z0Qc+TS2+CbKT1DqsLbpHZrZLitqpAnDd2-A@mail.gmail.com>
+Content-Language: en-US
+From: Sandipan Das <sandipan.das@amd.com>
+In-Reply-To: <CAP-5=fUV=6my-+z0Qc+TS2+CbKT1DqsLbpHZrZLitqpAnDd2-A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0158.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:c8::11) To PH7PR12MB5712.namprd12.prod.outlook.com
+ (2603:10b6:510:1e3::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: kexec verbose dumps with 6.8 [was: [PATCH v4 1/7] kexec_file: add
- kexec_file flag to control debug printing]
-Content-Language: en-US
-To: Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc: kexec@lists.infradead.org, x86@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
- akpm@linux-foundation.org, joe@perches.com, nathan@kernel.org,
- conor@kernel.org
-References: <20231213055747.61826-1-bhe@redhat.com>
- <20231213055747.61826-2-bhe@redhat.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
- rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
- rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
- i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
- wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
- ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
- cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
- 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
- w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
- YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABzSFKaXJpIFNsYWJ5
- IDxqaXJpc2xhYnlAa2VybmVsLm9yZz7CwXcEEwEIACEFAlW3RUwCGwMFCwkIBwIGFQgJCgsC
- BBYCAwECHgECF4AACgkQvSWxBAa0cEnVTg//TQpdIAr8Tn0VAeUjdVIH9XCFw+cPSU+zMSCH
- eCZoA/N6gitEcnvHoFVVM7b3hK2HgoFUNbmYC0RdcSc80pOF5gCnACSP9XWHGWzeKCARRcQR
- 4s5YD8I4VV5hqXcKo2DFAtIOVbHDW+0okOzcecdasCakUTr7s2fXz97uuoc2gIBB7bmHUGAH
- XQXHvdnCLjDjR+eJN+zrtbqZKYSfj89s/ZHn5Slug6w8qOPT1sVNGG+eWPlc5s7XYhT9z66E
- l5C0rG35JE4PhC+tl7BaE5IwjJlBMHf/cMJxNHAYoQ1hWQCKOfMDQ6bsEr++kGUCbHkrEFwD
- UVA72iLnnnlZCMevwE4hc0zVhseWhPc/KMYObU1sDGqaCesRLkE3tiE7X2cikmj/qH0CoMWe
- gjnwnQ2qVJcaPSzJ4QITvchEQ+tbuVAyvn9H+9MkdT7b7b2OaqYsUP8rn/2k1Td5zknUz7iF
- oJ0Z9wPTl6tDfF8phaMIPISYrhceVOIoL+rWfaikhBulZTIT5ihieY9nQOw6vhOfWkYvv0Dl
- o4GRnb2ybPQpfEs7WtetOsUgiUbfljTgILFw3CsPW8JESOGQc0Pv8ieznIighqPPFz9g+zSu
- Ss/rpcsqag5n9rQp/H3WW5zKUpeYcKGaPDp/vSUovMcjp8USIhzBBrmI7UWAtuedG9prjqfO
- wU0ETpLnhgEQAM+cDWLL+Wvc9cLhA2OXZ/gMmu7NbYKjfth1UyOuBd5emIO+d4RfFM02XFTI
- t4MxwhAryhsKQQcA4iQNldkbyeviYrPKWjLTjRXT5cD2lpWzr+Jx7mX7InV5JOz1Qq+P+nJW
- YIBjUKhI03ux89p58CYil24Zpyn2F5cX7U+inY8lJIBwLPBnc9Z0An/DVnUOD+0wIcYVnZAK
- DiIXODkGqTg3fhZwbbi+KAhtHPFM2fGw2VTUf62IHzV+eBSnamzPOBc1XsJYKRo3FHNeLuS8
- f4wUe7bWb9O66PPFK/RkeqNX6akkFBf9VfrZ1rTEKAyJ2uqf1EI1olYnENk4+00IBa+BavGQ
- 8UW9dGW3nbPrfuOV5UUvbnsSQwj67pSdrBQqilr5N/5H9z7VCDQ0dhuJNtvDSlTf2iUFBqgk
- 3smln31PUYiVPrMP0V4ja0i9qtO/TB01rTfTyXTRtqz53qO5dGsYiliJO5aUmh8swVpotgK4
- /57h3zGsaXO9PGgnnAdqeKVITaFTLY1ISg+Ptb4KoliiOjrBMmQUSJVtkUXMrCMCeuPDGHo7
- 39Xc75lcHlGuM3yEB//htKjyprbLeLf1y4xPyTeeF5zg/0ztRZNKZicgEmxyUNBHHnBKHQxz
- 1j+mzH0HjZZtXjGu2KLJ18G07q0fpz2ZPk2D53Ww39VNI/J9ABEBAAHCwV8EGAECAAkFAk6S
- 54YCGwwACgkQvSWxBAa0cEk3tRAAgO+DFpbyIa4RlnfpcW17AfnpZi9VR5+zr496n2jH/1ld
- wRO/S+QNSA8qdABqMb9WI4BNaoANgcg0AS429Mq0taaWKkAjkkGAT7mD1Q5PiLr06Y/+Kzdr
- 90eUVneqM2TUQQbK+Kh7JwmGVrRGNqQrDk+gRNvKnGwFNeTkTKtJ0P8jYd7P1gZb9Fwj9YLx
- jhn/sVIhNmEBLBoI7PL+9fbILqJPHgAwW35rpnq4f/EYTykbk1sa13Tav6btJ+4QOgbcezWI
- wZ5w/JVfEJW9JXp3BFAVzRQ5nVrrLDAJZ8Y5ioWcm99JtSIIxXxt9FJaGc1Bgsi5K/+dyTKL
- wLMJgiBzbVx8G+fCJJ9YtlNOPWhbKPlrQ8+AY52Aagi9WNhe6XfJdh5g6ptiOILm330mkR4g
- W6nEgZVyIyTq3ekOuruftWL99qpP5zi+eNrMmLRQx9iecDNgFr342R9bTDlb1TLuRb+/tJ98
- f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
- DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
- S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20231213055747.61826-2-bhe@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5712:EE_|IA1PR12MB7542:EE_
+X-MS-Office365-Filtering-Correlation-Id: c10d07fa-a2b9-43c1-21c1-08dc427b2044
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	9N0VVnOMX5gbzToL1Pv/2+8gx6HjdsOtuHVforawRGIbK5poiAFrfvSldhJojYYpDuiyBXMNq8GIl/IQfw0WeMS/Sgb7mhsmYipbKDG0m/sBT2drlqMh0RriRUiu4c4ddOReLawhw1WCLzP5iYgM6BtdrXnffAxkYnJ5dOqpFDoV666lH7pBTotXJoAnO+1Ltg8ta3kmmI29HuvUW0EYeSsbtPcOVGKNqwTG2OVB55oN2YcgvVOr3YmwM4U+x9cF+OYth2/hdJ/Z4mTTzEtmJsUA30sVE1OQxANIWPlAZC+clZ6KWpiaBZrXm9jn9tk5LYh/D7UMdpysskpKV7VCr3zY5RYGssUOBWeN1Q6JoL6Nr0PH7mYkdXFJ2Tupl+swrOotTebAGRl0pb8PtotlXHFTPLaxGN+rSHekO9iBpD33l7cy3HFUUrJjh8UIRQCzhwmsUhEdSN6KZ6mqLQxKD0fwe3Oxz9XjantAvdRZ39w4wX714YXz3KdfizcZkJQ1WPG03Ai/EQFHr66/A7PnS4ViaSxD1PkPyQdtHyx6gJkJy4eQ55sTvr+a69qqBwcBbyUNZNtf3w5gySq+13lVIOLwVDi+a6Uox56dYoZaC/k=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5712.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VytFQW96eHl6dnBqY2VMM3ZjYVRwaW1vaWpUMWg5UnFnRTJBUGlieHAwQS9j?=
+ =?utf-8?B?dVJmMnJBdm9hT3M5eVMzcnhzUHhvT0RvenE0a1hIcTZuZXFMVnU0VmpOQ1BL?=
+ =?utf-8?B?bWY0b2t1STFjd01kSllOVC95cWpuWTBtcE1FU0xNWjg1TmNXVll3d2xoODN3?=
+ =?utf-8?B?MTE4N0c2SEl0OVEraGI2TXQ3OXV0TllkcDUvSzZ0MjhZNFIxeGJ3RXJ3alNF?=
+ =?utf-8?B?T0lmTkpFTURNQ3RiYWVTZmFNUzMybC9lRXgrVmMxUkF6OGdoRXA1RWlhekZs?=
+ =?utf-8?B?Y1RoS0ZySmpVUTFXRG11TTZXUk9rRktvZmlzSTA2K1VHMXRlOXYrYXcwMUd6?=
+ =?utf-8?B?Y1BQZEZFZUdHNGllVkVDOVBCUitFR3dJS1pDM0JnNVliZ0d6Njg1U1lscHpo?=
+ =?utf-8?B?ZzEvb2NDWUpVUG9YaEJqZE9MVk45cEN4L2JleElwNVFqeXBqQk1iVXNINDF3?=
+ =?utf-8?B?NElEZXZ4Nk5tam52NG5FUFhUSDVSdlF0VWpmMy85Y1VOUDF6Q1QrZklwWjVF?=
+ =?utf-8?B?Uzc4Z09reXNUdU5NRUhuSXJhMElwQXpHQzdnVnVCMnRBZi93eEIzb08xUXVZ?=
+ =?utf-8?B?dWl3VFEwM21Oa2xpZjQzM3U3YUpaU1ZpS3k2c1ljVmJBYTd0Sm5iOWRRM1Nr?=
+ =?utf-8?B?dS9zTTQ1dnA2dUpkUmRaamNWckdncHFtQk1Uc0ZJLzVBYWlCYUZNM3p6eHJ5?=
+ =?utf-8?B?K08zQ1F5ZkJTRGhrUWFoc1ExbDMxQ3B5ZlNxV2xPK3huSlZOYjhiZTZDSHYw?=
+ =?utf-8?B?bFJSWkwwbm9sMnVIa211YnJUWis3NW8rVTN0anFPVXU4MFBQMDFzQ0dlOXUr?=
+ =?utf-8?B?VHM3anVXNDF6blRsRnFxK251bDFoNWZLVVV2eFVUVW9ubUNlNHJQTU1URm40?=
+ =?utf-8?B?N2xOOE1iRzh5ZGpCSHc0NzNYZ2RONnV5MDFTQkh5SUxGZjdEcnhGd0szd0dY?=
+ =?utf-8?B?MEtGY2dNdE43aWZlcUVjMWtleGdEWmo2Zk5oRm1iaUprL2xQaUtGRTRydGlR?=
+ =?utf-8?B?dmpvdlBCeHZNWkowS2ZlUHhqZUhMdUx4VlkrRlVmWkwwQUFtby9ZNWtuUFM5?=
+ =?utf-8?B?S0g4cnRIeUZORldMQ2R0dERFN1RwMStWd21JdFVqM3F2em1FR2YwcHpBSDhy?=
+ =?utf-8?B?THBqcTdrY3JHZnZVWE40NFhhUzFuSjJ6d0FUQ1J1QTE0Z1JYT0dQUmxWVjRz?=
+ =?utf-8?B?Uk50VHl0cERHWVZXQW4vYXZvamgwKy9CYWNpeXZCb1JVTWZZdWVUUWlkZ25S?=
+ =?utf-8?B?QzVBTjNwWEx6WG14MHJXNmViN21UWW5ld3IyV1IwWTYwZlRhbERJcEI4dEpl?=
+ =?utf-8?B?SENQVStmSG9xbCt5L0wyMW1uVzNWWmJ5TDM2NDI5SllyZWV5djZwWUFWN25D?=
+ =?utf-8?B?YnBONDB6eW5GRWovbTBBRTNvRWUzNzl0K3BDSnlVZ3BGUXUxakVlVmxDbTkv?=
+ =?utf-8?B?MHFxMUIvQmpnUG01cWEzMWZVMjR3Tno3ZDdpMVdJNm9SanEzWUovVExjL0Fv?=
+ =?utf-8?B?eWp0OVArYWg3N0tPZG52SWI4YzY1VStHZkNZYXJ0Und5cUh3L2Y2bjY5eDN1?=
+ =?utf-8?B?K2FoU0RvVVNIalJkWnNUdTZPb0U2MFNGUEFHTTdJVko5eXo1c3F5VUR1NlNG?=
+ =?utf-8?B?V0lNNFYvRm5VYWZFM0dlNDJudzdNQms2VEVQTHZtSXdtTVV4STQ2Sld3UTh1?=
+ =?utf-8?B?V0x1eHVkTlltUmt5dVNFdmVidjRHUWhVSGZFN0xiYXZEc1FoYkh4YmlQd1Jj?=
+ =?utf-8?B?SFM5RG5SL0djSndUdkRibUFnVDFkV2Rua1JTc3krZXhsQnd6SXhvcWxWQ21h?=
+ =?utf-8?B?aEtldHpBbERVUFZ5YUdNbjZ6K3lRS0RGN1ErYkVyWDZaVkVqSmU2ZWcvYngx?=
+ =?utf-8?B?ZWZYSzE1blA4NmkzRDBIWlN5VENBWmFyajFnQTBlVVBVQ3FWWXZENWdSVG9r?=
+ =?utf-8?B?RFRPME5xUDBUMW41T0lYZFBXandxODRRejU4aTVlRVFNY3FwZTUxcVBFWVg3?=
+ =?utf-8?B?c1M3cmt4cUZTUjZXM2tBNGhmdm45RDlVa0E3L0N6aFhsRHp2d1hkRWJDSHFM?=
+ =?utf-8?B?RG9ZcnVGRnNTUlY5NzRoQkNIeDIrdWh1QjR6Z1BGdE1RSDYraEUwOVpuNUNO?=
+ =?utf-8?Q?Bq6J/k8AiNdR4Lv1wvdYnFtQj?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c10d07fa-a2b9-43c1-21c1-08dc427b2044
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5712.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 09:59:37.3010
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FaSI+3+CAwBJpDLnEr+Uzr3UytnIM3rLBMvX7+g2znsx1Pxs4V2NlU9hpUTUMR83HuRlXG25+mmKUQVljEATFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7542
 
-On 13. 12. 23, 6:57, Baoquan He wrote:
-> When specifying 'kexec -c -d', kexec_load interface will print loading
-> information, e.g the regions where kernel/initrd/purgatory/cmdline
-> are put, the memmap passed to 2nd kernel taken as system RAM ranges,
-> and printing all contents of struct kexec_segment, etc. These are
-> very helpful for analyzing or positioning what's happening when
-> kexec/kdump itself failed. The debugging printing for kexec_load
-> interface is made in user space utility kexec-tools.
+On 3/11/2024 11:10 PM, Ian Rogers wrote:
+> On Sun, Mar 10, 2024 at 10:23 PM Sandipan Das <sandipan.das@amd.com> wrote:
+>>
+>> Add core events taken from Section 1.4 "Core Performance Monitor
+>> Counters" of the Performance Monitor Counters for AMD Family 1Ah Model
+>> 00h-0Fh Processors document available at the link below. This
+>> constitutes events which capture information on op dispatch, execution
+>> and retirement, branch prediction, L1 and L2 cache activity,
+>> TLB activity, etc.
+>>
+>> Link: https://bugzilla.kernel.org/attachment.cgi?id=305974
+>> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+>> ---
+>>  .../pmu-events/arch/x86/amdzen5/branch.json   |  82 ++
+>>  .../pmu-events/arch/x86/amdzen5/cache.json    | 605 +++++++++++++
+>>  .../pmu-events/arch/x86/amdzen5/core.json     | 122 +++
+>>  .../arch/x86/amdzen5/floating-point.json      | 830 ++++++++++++++++++
+>>  .../pmu-events/arch/x86/amdzen5/memory.json   | 180 ++++
+>>  .../pmu-events/arch/x86/amdzen5/other.json    | 168 ++++
+>>  6 files changed, 1987 insertions(+)
+>>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/branch.json
+>>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/cache.json
+>>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/core.json
+>>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/floating-point.json
+>>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/memory.json
+>>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen5/other.json
+>>
+>> diff --git a/tools/perf/pmu-events/arch/x86/amdzen5/branch.json b/tools/perf/pmu-events/arch/x86/amdzen5/branch.json
+>> new file mode 100644
+>> index 000000000000..208c646c59ca
+>> --- /dev/null
+>> +++ b/tools/perf/pmu-events/arch/x86/amdzen5/branch.json
+>> @@ -0,0 +1,82 @@
+>> +[
+>> +  {
+>> +    "EventName": "bp_l2_btb_correct",
+>> +    "EventCode": "0x8b",
+>> +    "BriefDescription": "L2 branch prediction overrides existing prediction (speculative)."
+>> +  },
+>> +  {
+>> +    "EventName": "bp_dyn_ind_pred",
+>> +    "EventCode": "0x8e",
+>> +    "BriefDescription": "Dynamic indirect predictions (branch used the indirect predictor to make a prediction)."
+>> +  },
+>> +  {
+>> +    "EventName": "bp_de_redirect",
+>> +    "EventCode": "0x91",
+>> +    "BriefDescription": "Instruction decoder corrects the predicted target and resteers the branch predictor."
+>> +  },
+>> +  {
+>> +    "EventName": "ex_ret_brn",
+>> +    "EventCode": "0xc2",
+>> +    "BriefDescription": "Retired branch instructions (all types of architectural control flow changes, including exceptions and interrupts)."
+>> +  },
 > 
-> Whereas, with kexec_file_load interface, 'kexec -s -d' print nothing.
-> Because kexec_file code is mostly implemented in kernel space, and the
-> debugging printing functionality is missed. It's not convenient when
-> debugging kexec/kdump loading and jumping with kexec_file_load
-> interface.
+> So the "bp_" prefix means branch predictor, but here this is an "ex_"
+> prefix. You've put them both in the topic "branch".
 > 
-> Now add KEXEC_FILE_DEBUG to kexec_file flag to control the debugging
-> message printing. And add global variable kexec_file_dbg_print and
-> macro kexec_dprintk() to facilitate the printing.
+> [ ... snip ... ]
 > 
-> This is a preparation, later kexec_dprintk() will be used to replace the
-> existing pr_debug(). Once 'kexec -s -d' is specified, it will print out
-> kexec/kdump loading information. If '-d' is not specified, it regresses
-> to pr_debug().
+>> diff --git a/tools/perf/pmu-events/arch/x86/amdzen5/other.json b/tools/perf/pmu-events/arch/x86/amdzen5/other.json
+>> new file mode 100644
+>> index 000000000000..9d49a23622e9
+>> --- /dev/null
+>> +++ b/tools/perf/pmu-events/arch/x86/amdzen5/other.json
+>> @@ -0,0 +1,168 @@
+>> +[
+>> +  {
+>> +    "EventName": "bp_redirects.resync",
+>> +    "EventCode": "0x9f",
+>> +    "BriefDescription": "Redirects of the branch predictor caused by resyncs.",
+>> +    "UMask": "0x01"
+>> +  },
 > 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-..
-> --- a/include/linux/kexec.h
-> +++ b/include/linux/kexec.h
-..
-> @@ -500,6 +500,13 @@ static inline int crash_hotplug_memory_support(void) { return 0; }
->   static inline unsigned int crash_get_elfcorehdr_size(void) { return 0; }
->   #endif
->   
-> +extern bool kexec_file_dbg_print;
-> +
-> +#define kexec_dprintk(fmt, ...)					\
-> +	printk("%s" fmt,					\
-> +	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
-> +	       ##__VA_ARGS__)
+> Here is a branch predictor "bp_" event but the topic is "other", why
+> isn't it a topic of branch?
+> 
+> Given the number of events categorized as topic "other" wouldn't it be
+> better to regenerate the events just using the prefix to set the
+> topic?
+> 
 
-This means you dump it _always_. Only with different levels.
-
-And without any prefix whatsoever, so people see bloat like this in 
-their log now:
-[  +0.000001] 0000000000001000-000000000009ffff (1)
-[  +0.000002] 000000007f96d000-000000007f97efff (3)
-[  +0.000002] 0000000000800000-0000000000807fff (4)
-[  +0.000001] 000000000080b000-000000000080bfff (4)
-[  +0.000002] 0000000000810000-00000000008fffff (4)
-[  +0.000001] 000000007f97f000-000000007f9fefff (4)
-[  +0.000001] 000000007ff00000-000000007fffffff (4)
-[  +0.000002] 0000000000000000-0000000000000fff (2)
-
-without actually knowing what that is.
-
-There should be nothing logged if that is not asked for and especially 
-if kexec load went fine, right?
-
-Can this be redesigned, please?
-
-Actually what was wrong on the pr_debug()s? Can you simply turn them on 
-from the kernel when -d is passed to kexec instead of all this?
-
-..
-> --- a/kernel/kexec_core.c
-> +++ b/kernel/kexec_core.c
-> @@ -52,6 +52,8 @@ atomic_t __kexec_lock = ATOMIC_INIT(0);
->   /* Flag to indicate we are going to kexec a new kernel */
->   bool kexec_in_progress = false;
->   
-> +bool kexec_file_dbg_print;
-
-Ugh, and a global flag for this?
-
-thanks,
--- 
-js
-suse labs
-
+Sure, I'll reorganize them.
 
