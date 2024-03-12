@@ -1,153 +1,108 @@
-Return-Path: <linux-kernel+bounces-100798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8297879D68
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:25:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA1A1879D69
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:25:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36EA3B21E71
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:24:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 601F6283C73
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA3014374D;
-	Tue, 12 Mar 2024 21:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDA3E14372B;
+	Tue, 12 Mar 2024 21:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OJ4OEhbC"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="hhvx0OEE"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04E314372B
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:24:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8177143736
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710278686; cv=none; b=pXE+APmaK5Xu/bSw4cW7A0veWa8XExEPGCaVWrKdU/cAlRWu+e/uAE13OmbzRpC8CzOlr7yhxY9lz2iy+eZP7Flq9+Y5SOo48fd9FgSqrHdEWJ6BWEBtNzC0unCeYcsXPpKg8xwzMIWZgmjPJgypcnXDb014YCbZ5Rdc6MmWYj8=
+	t=1710278713; cv=none; b=dS+T+bIYhQI16fTgZA6/06EbMSBMzxPoe+nil/dUKerj2q6a2bqH11vZCKoqOaplKWnIhSbymevAQKL3ARF4uhsEoiE2hU4QOR4c8lk09JFPHJlVa8LAXtkmcn7IGrFVtHk8qMKm5OhR2nXrp1DwMQIZy5O09Pywec/gTduO+Zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710278686; c=relaxed/simple;
-	bh=zn+NCXHkplgUV+dXIwohdLE+F3/a8X6VbE67wHJakVs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=uzokEjKzF/hrT3ti5GPScPxMSAnsIdqh/W1BbXTu66cnqFFFfhgLnQfhpamvt5ObxejZloTta9xGHjZht3WBX+iQq7H+N3SUB7IivVoCFinjvH+4NtLYI1egFIBad7R4hPewUkYZR1uNium6gTgJm3oiArQLUXORQTuwka5FvvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OJ4OEhbC; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e6b75211ceso36733b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:24:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710278684; x=1710883484; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yyVVkBcjoN3+kr62FySlopYdKOwyFmOO0p91aujbCWk=;
-        b=OJ4OEhbCEvZV1VtObrZPylTYiwgnxTCu/xGWvXUGuK/xhCxAXqFa1X9FtavvU8ggZF
-         nPdkFSPMw6ItbKn0LbcoNKIQM1Rw9xf4u2Zs1SStWIXlD5XxnzwuuaJSkuJ7hBdXST8j
-         VADG7a9vXMMFPXH3+T8+kxKt/gPYEHfFIRKa/py7lKBT7KO0/JX7iKF859VfmS3A7ejO
-         iFnLUm3Jy8p2wHT+dVdY9HHDX08f/TLiLDB/uifMbanrouX8DaibtU9ZYjwx4tJPTMm+
-         SW5xsXnsy0a7hYBN5akWCdri8/xwuhdqJrwSLjCkOVZAANjOovqWdzvX8B62vDE9zBs3
-         KRsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710278684; x=1710883484;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yyVVkBcjoN3+kr62FySlopYdKOwyFmOO0p91aujbCWk=;
-        b=eJX3rK4Wxy/B/aliuyzpx4i1bYCTooiDuXE32a7ojY29rfQzMUI0h5t6sLuxx7HqHm
-         78s+fqBJfTKrcOBWQg/Uz2pplsTpMJLud4fo3ChD7uvLGyE08ZdVhrHgKD+WOlNgnekU
-         rHJMbQtMJfP4I4vh5NpUmRdIltqmOfbHPzPjgBUM60vXslfsCw05fwc4p0q25Sp4XT0H
-         KfU7+CQ+a1NermVEZ5xHegG/creou5qPrxHM+iV8nseS+Pav8C9Pf6K9qXgUQPsSrfv9
-         yey1XG0GHIAcY6uVzSSfSoWV416qTWAvFZ6nElffRMdlZsWmP2UBHQ+U+yTzBO4V4SKD
-         oDTA==
-X-Forwarded-Encrypted: i=1; AJvYcCWEdrqTRvJP92ig2DIajmONTmp8+s+qrS7sRYOiCLYrCdsWZWle6Uyr00W2RN72Sk08ZZCH3qivkvrVDivzNZBnjLzaM+QpjbAeOgJx
-X-Gm-Message-State: AOJu0YwHrxcZrdDlmWXceYINJ3W7oy2w1yQo3F3y7ffVsNspd6NoL6cI
-	De4dj4EIl06pMx5uqwdaN8ZmeoXsravsJURl8OVY/tKP6BpiT/ck7wBZoc9uJW0=
-X-Google-Smtp-Source: AGHT+IEcPiVY1OjLAeekn6g0s+Gbrp+3mGgtAJv9ETaGR3blWskKI0IHXdhBc+Qx2zE+ySIm38grIw==
-X-Received: by 2002:aa7:8885:0:b0:6e5:adb9:b955 with SMTP id z5-20020aa78885000000b006e5adb9b955mr777749pfe.23.1710278683901;
-        Tue, 12 Mar 2024 14:24:43 -0700 (PDT)
-Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.67])
-        by smtp.gmail.com with ESMTPSA id x19-20020a056a00189300b006e6b0c7c453sm775010pfh.216.2024.03.12.14.24.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 14:24:43 -0700 (PDT)
-Date: Wed, 13 Mar 2024 02:54:39 +0530
-From: Ayush Tiwari <ayushtiw0110@gmail.com>
-To: outreachy@lists.linux.dev, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-	florian.c.schilhabel@googlemail.com, Larry.Finger@lwfinger.net
-Cc: outreachy@lists.linux.dev
-Subject: [PATCH] staging: rtl8712: removing redundant paranthesis chk_fwhdr
-Message-ID: <ZfDIF+6MrdrX79nd@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1710278713; c=relaxed/simple;
+	bh=j+yEwyamaUCXJSLGv8ZZia2aKUXSvlfJ5JuGwVu7BDI=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Ok61IHtWSjfEFXyBYO+8gkhXte0gf4XvhUGou+Y0ARRplqKW5a0swM1wIZCz0lGlgFYP0iZCx2ktiN+05WE3VSdpMfSYH5VPeLWtFK9PClUt9C20yAkm9hWtfLJez1ClYH4NdJCka8ZnGZQvG/2OiCBIjoOhdsE89uJ3m6eInCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=hhvx0OEE; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 440E12C02A7;
+	Wed, 13 Mar 2024 10:25:08 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1710278708;
+	bh=j+yEwyamaUCXJSLGv8ZZia2aKUXSvlfJ5JuGwVu7BDI=;
+	h=From:To:Subject:Date:References:In-Reply-To:From;
+	b=hhvx0OEEA11/O5EjlxdgjyEi7CYoYjellvmTzlgrx7ZsMgD7QAkV9vrf2whl3fQx8
+	 B8xNWvcfJRLdmuN7HDxkOG8ofN8+kOoNHSxlcfrYkGLIWZE2wp3PpzI9M/WvisZFqk
+	 A3fl5T/adjhYjWrPTZ8OtdEi4pLYVxo98JB1BcauH3TqPcMe3s6MraWEciLdKsVZkx
+	 YhnvPO/bDTVDkE92M5hT5l4SZ8Sfu3d26wlqWbAJQyQGNHLi0HQ+ddoOtD9QoLyTxZ
+	 BFkYNUVzF6/jE8JO5WKR4hBfpKJXu8ey011HB6eVHFPn2Bw8s8os16ZA9M8uLztkTe
+	 6IUY8kL5tjiOg==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B65f0c8340000>; Wed, 13 Mar 2024 10:25:08 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 13 Mar 2024 10:25:07 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.040; Wed, 13 Mar 2024 10:25:07 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: "x86@kernel.org" <x86@kernel.org>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: Adding an interrupt to a PCI device via an ACPI entry
+Thread-Topic: Adding an interrupt to a PCI device via an ACPI entry
+Thread-Index: AQHadLvTcmvpPwDP9EGYKm6sb+rMpLEzxByA
+Date: Tue, 12 Mar 2024 21:25:07 +0000
+Message-ID: <2e69f8b2-f4ee-4ffb-b60e-1ec56920c44e@alliedtelesis.co.nz>
+References: <20b215fd-51bd-4450-a2ff-110e88d11e95@alliedtelesis.co.nz>
+In-Reply-To: <20b215fd-51bd-4450-a2ff-110e88d11e95@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E8F59A39C70C47428905179CA369E40B@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65f0c834 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=VwQbUJbxAAAA:8 a=B6gf8EdhjJN4HKKAV2IA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=hN4QJW1WrX8A:10 a=CYH-uuMP9ukA:10 a=AjGcO6oz07-iQ99wixmX:22
+X-SEG-SpamProfiler-Score: 0
 
-Removing redundant parentheses in 'if ((pfwhdr->signature != 0x8712) && (pfwhdr->signature != 0x8192))' in static u8 chk_fwhdr(struct fw_hdr *pfwhdr, u32 ulfilelength). This will ensure adherence to coding style guidelines
-
-Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
----
- drivers/staging/rtl8712/hal_init.c |  2 +-
- key.pem                            | 28 ++++++++++++++++++++++++++++
- staging                            |  1 +
- 3 files changed, 30 insertions(+), 1 deletion(-)
- create mode 100644 key.pem
- create mode 120000 staging
-
-diff --git a/drivers/staging/rtl8712/hal_init.c b/drivers/staging/rtl8712/hal_init.c
-index 1148075f0cd6..9f41b2c086ca 100644
---- a/drivers/staging/rtl8712/hal_init.c
-+++ b/drivers/staging/rtl8712/hal_init.c
-@@ -138,7 +138,7 @@ static u8 chk_fwhdr(struct fw_hdr *pfwhdr, u32 ulfilelength)
- 	u32	fwhdrsz, fw_sz;
- 
- 	/* check signature */
--	if ((pfwhdr->signature != 0x8712) && (pfwhdr->signature != 0x8192))
-+	if (pfwhdr->signature != 0x8712 && pfwhdr->signature != 0x8192)
- 		return _FAIL;
- 	/* check fw_priv_sze & sizeof(struct fw_priv) */
- 	if (pfwhdr->fw_priv_sz != sizeof(struct fw_priv))
-diff --git a/key.pem b/key.pem
-new file mode 100644
-index 000000000000..ef912436e976
---- /dev/null
-+++ b/key.pem
-@@ -0,0 +1,28 @@
-+-----BEGIN PRIVATE KEY-----
-+MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC8i/6L5h4wSbaP
-+tn9whe9BfKa0jpiiy+F9L0fJEWGKqUqxMUL3D48LJsqTgt8vP6ORMcSQmtQ1ijyv
-+f9s0N5/sNci9dYeiVhzArlcZi4IOEkfkn/lgRoz4WOsZ6NQzgsk6ctctavrlHUwB
-+e6RQHFyEC9BOmCq6PTPMtPTeTrQvjzm68gMiQfoNT86/uho+eKxABYBOZEN1DObt
-+Q2wEbJOhiZ+UfknJd5BuxLXFLLeutYNHT+jzymVETfH6Zqr5U+NS/68H8tVRSy5w
-+zwMZ38yQc5RI0fhI/u+6Lsikf0sJYV4sNaUkElclfzKFRE9RNc8McQcjbY8RUVvG
-+81qbKvDxAgMBAAECggEAB62YcpWu7LQmbpN10h0U1rEJpY2vB+Yklcal9jldJFqW
-+M5a4IuaBIpOe/ph+7Tt6tjrKxewVheP4v67bEYp4WpQAIOhXMH8Fkbp9H98Er1JY
-+QiZaRJeVkwwlRXtWn423vcfCcn409GftL0bxNIqgdod39qi6CLaIVFGZgoS9pWLD
-+lrrEnK8nlq8/4bs/bPyZqoiEIUXTC9IAHhlmmwL1diLYmTOTIFn0XN3kqxMwz50D
-+81Bh/pPZXXsL4f3an9v/68prsM4NgJMXvHh/qWGY8L75QyoPn69/6d4mETBDCSeL
-+BAA1Ac2z2UlC6uqlM5A4/F1IEilrtDIFMD6r3UMZDwKBgQD1Zbx3A3VV/HDlH2CN
-+Tzf/Er2xUPYbPHJCALbZVwEM8zNTeIysMM3LeqWXfbJ4JpfkU575QLCaAC1PdQJT
-+AjNLqo9eYzsir6pj18HqBN/MxIujhbLGA78oD5fYRTL+5sXl0m1xkJq+ngkWbx6Y
-+ByfZFZ/UIUMST8kU8nVlNuFN1wKBgQDEsXO0PH5f0RkdbRVBQvVIdj5kfR94bheW
-+s7apwU07uYvlLiLrikRgC3Q60a7K3H7tfxkP5rjKUr+CyH+rlsL+WL4gJjBi4D13
-+XQeFlNbZieNNrnOctFCnGPlUSmte4Ubd1QEplUkbYkfvh5XKIklAfLsQPf17FQr/
-+ZAE/2YIOdwKBgGfXCQ0DdZ9RFySdRmoFX5icAZEKxVl5FpA/ZSBK5LLqJonntP8Y
-+F71GxNN56Q9WpWeEyvyGFzTTZlj9FmKxx6r5HXm/W8KtuthM8E1qiplHgh9L7/5C
-+j50QHBz0C0Q5uvwpMw6fNhv7G7VWiAek34PI1r0Y5hzVji1C+9I8itI5AoGAYGsU
-+at/UmyenBhO4/ZrTHkhIYX4sdR6SlZ9XBXPqZkKYXyn0mD3ZMrOqsEKlSnA4EDfj
-+kzXok9VoZ7XdT8HBqGjcGmpeAbomp2KFE2hYwZ6kPCouJj0F5EOLxVQNuh74XDnU
-+LgwuICxXUwXF2aZg/immkVmx7inskDD3o9L9vBUCgYBhCpayQcy9hswdDVICOEst
-+U9VXwVAbwfdmPTLiKacRQdw44zhBcsBB0wi1dszvGvSlAlB+ChFM6MxALEdbvTln
-+Jxwsyxx9KXuoryhcTlHQikBOYxmrqPAhdrPh8H2tdiv2yX35x9g7E/XkRZZxMfkL
-+H7x8vakFgGNcX2NITZBM4Q==
-+-----END PRIVATE KEY-----
-diff --git a/staging b/staging
-new file mode 120000
-index 000000000000..ecd48e46fcb1
---- /dev/null
-+++ b/staging
-@@ -0,0 +1 @@
-+/home/ayush/git/kernels/staging
-\ No newline at end of file
--- 
-2.40.1
-
+DQpPbiAxMy8wMy8yNCAwOToyOCwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4gSGkgQWxsLA0KPg0K
+PiBJcyB0aGVyZSBhIHdheSB0byBhZGQgaW5mb3JtYXRpb24gYWJvdXQgYSBQQ0kgZGV2aWNlIHZp
+YSBhbiBBQ1BJIA0KPiBlbnRyeT8gSSdtIHRyeWluZyB0byBkZWFsIHdpdGggYSBkZXZpY2UgdGhh
+dCBoYXMgYW4gZXJyYXR1bSB3aGVyZSANCj4gcmVndWxhciBQQ0ktZSBNU0kgaW50ZXJydXB0cyBk
+b24ndCB3b3JrLiBUaGUgd29ya2Fyb3VuZCBpcyB0byBjb25uZWN0IA0KPiBhIGRlZGljYXRlZCBJ
+TlQgb3V0cHV0IGxpbmUgdG8gYW4gaW50ZXJydXB0IGlucHV0IG9uIHRoZSBib2FyZC4gVGhlIA0K
+PiBoYXJkd2FyZSBkZXNpZ24gaGFzIGRvbmUgdGhpcyBidXQgSSdtIHRyeWluZyB0byBmaWd1cmUg
+b3V0IGhvdyB0byBtYWtlIA0KPiB0aGF0IHdvcmsgd2l0aCBBQ1BJIGRlc2NyaWJpbmcgdGhlIGhh
+cmR3YXJlLg0KPg0KPiBJIGtub3cgaW4gZGV2aWNldHJlZSBsYW5kIEkgY2FuIGRvIHRoaXMgd2l0
+aCBzb21ldGhpbmcgbGlrZQ0KPg0KPiAmcGNpYyB7DQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBteWRldmljZUAxLDAgew0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGNvbXBhdGlibGUgPSAicGNpMTIzNCw1Njc4IjsNCj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MHgwMDAwMDAwMCAw
+IDAgMCAwPjsNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBpbnRlcnJ1cHQtcGFyZW50ID0gPCZpbnRjPjsNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbnRlcnJ1cHRzID0gPDEgSVJRX1RZUEVfTEVWRUxfTE9X
+PjsNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH07DQo+IH07DQo+DQo+IEFuZCB0
+aGVuIHdoZW4gbXkgZHJpdmVyIGlzIGJvdW5kIHRvIGRldmljZSB0aGUgdXN1YWwgaXJxIHJlc291
+cmNlIA0KPiBzdHVmZiB3aWxsIGdpdmUgbWUgdGhlIHJpZ2h0IGludGVycnVwdCBsaW5lLg0KPg0K
+PiBJcyB0aGVyZSBhIHdheSBvZiBleHByZXNzaW5nIHRoaXMga2luZCBvZiB0aGluZyBpbiBBQ1BJ
+Pw0KDQpMb29raW5nIGF0IA0KaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC9sYXRlc3Qv
+ZmlybXdhcmUtZ3VpZGUvYWNwaS9lbnVtZXJhdGlvbi5odG1sI3BjaS1oaWVyYXJjaHktcmVwcmVz
+ZW50YXRpb24gDQpzZWVtcyBwcm9taXNpbmcuDQoNCg==
 
