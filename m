@@ -1,108 +1,85 @@
-Return-Path: <linux-kernel+bounces-99814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB3E878DC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:18:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F20A7878DC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:21:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C5F11C214C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:18:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAC4228259E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:21:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E7CBA4B;
-	Tue, 12 Mar 2024 04:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD19FBE48;
+	Tue, 12 Mar 2024 04:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ua6qTmuI"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="idN/k94N"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E7CB664;
-	Tue, 12 Mar 2024 04:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020FDB66F;
+	Tue, 12 Mar 2024 04:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710217093; cv=none; b=nLMTkUhWcGipPcgexjVNfA+cCd9/6HpgWgq/TDdDJ4ZY3WHpixV84JK+6n8kXEkzw+JWGFgv/7Y0l0aKG/eUPzEO5JHFgtU2PDWa8i64W0hCDQ2bICxlbrTjP7lZTOLqWbfKXTpDyagsUiDoQMQKwyKNnDHkd1swXSOwPvpy3QQ=
+	t=1710217256; cv=none; b=b6+HPF+qJZux/nHdYEI8bbjRM2CHGbtfBw+ftgkXvf8ylMeyEclcAOyO1jTsmBnjudz293p+mo9dXDZFLRliAYAbHXKyYMGKd3g6VoMWzGmfMkijVMXERzDCj6fwhQLMFyCX0zw44F2xVCNF74epquqiE6AaioXmcF8YlM8sqDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710217093; c=relaxed/simple;
-	bh=67KsywSeBnA4HTsQSTCm+nlNA0yqUyueJPuLjaB1n70=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=TAXZ2cfpzKFLOnO7wdWWrH7jt5ZhvD2wJdD9apiY/386ABb5n85VC9+9lFH/0dZHRw4oWYpnSNwB1gqcqFfpY5trh2jNdBgdDp/lhu8uesVp02w7dECoNRlc8P1kzI9AintYgoeFIyorqZ5bKxGfLX6ZRFoNVI9fg6krnQj3SCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ua6qTmuI; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710217088;
-	bh=9TvvWnAfPR3GqDnwETa657mhuumzJIgbVqn/uYZ9sjA=;
+	s=arc-20240116; t=1710217256; c=relaxed/simple;
+	bh=6jUkBlOs8/qYxnY11jCaAhAjrJV89oOkFL8yos84uFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=mwu2wSMa9RQL1p/B3QPvf9W/hTjUZj46mFzrAdGIWa5RGmZnh62unY65WyLJsZO16FDQRMxnkSu984Upjxie17WLew1Q2Ym518FLLWKjOJZm+2+jcDMpTtrVfX1Sf+AJaaNXMotQ/3XHsi81EHe8hVijeUjLIyb26oY+BfYXMic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=idN/k94N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 625E2C433C7;
+	Tue, 12 Mar 2024 04:20:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710217255;
+	bh=6jUkBlOs8/qYxnY11jCaAhAjrJV89oOkFL8yos84uFQ=;
 	h=Date:From:To:Cc:Subject:From;
-	b=ua6qTmuIHrj2pMCdfYmkSduM/1FXSTNAxoMQzt4Eno/zX6qQ+GiTUrUEmaecGTZ6l
-	 l1eCqJX2H37xadDTIDON5PDDIUVVV50TcqORAUZvyroTZGW5akrt6LPvb2IYw5oWR2
-	 9veqvK7V1/tavkCuVkQSyDm/Q9xJKIFuF5rHqZZI29XsKFWq9EixI3auawJNjCT31G
-	 PuqXjfDfausdLykIZEVfP6FK8xqxXS8rQHXNEZO9a0cdoX2doadLy1OtjgRiCJWcr5
-	 Ba/xAe0BiECFvaobaEyMGc36PVWQ1t+YCtsgcAXUhg/OEE0EViDNhxQ/2aAoOpWStx
-	 nxYNlTMCEW36w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tv0k81Kwbz4wb2;
-	Tue, 12 Mar 2024 15:18:08 +1100 (AEDT)
-Date: Tue, 12 Mar 2024 15:18:07 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Wei Liu <wei.liu@kernel.org>
-Cc: Nuno Das Neves <nunodasneves@linux.microsoft.com>, Linux Kernel Mailing
- List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the hyperv tree
-Message-ID: <20240312151807.52478738@canb.auug.org.au>
+	b=idN/k94NnT6596YAEgOX2Quo0sYcm1GHsfHDV7e4KnNxWCkGfBFfmOfirB/t9H0ln
+	 AfJlqrSd0UlL6rCHLjvn8mg+hsBgUuPcZWAZXSV3gG1/JMNc9MYIRZPQwJ0CrX1aRN
+	 NCmHZ0wZGJTO8/+y7ND9MXouOZmRWNvBxXHS3M1xHr7lZpRRjTe6Hni9mu6xkjRNjt
+	 swgz8BcmKdfOwpz+MqCpEbj505M8vQYzD+tbyIAOgU5MvIFwHNw01E1lqCUNVOvhBc
+	 KbrBU/vCghbyqap1UYtXr2QV2Yf2dHLDrMsu8bmWZLp6ALZCxtJaUgVYkhKNrq/yUj
+	 sLR3zK8aYy0Qw==
+Date: Mon, 11 Mar 2024 21:20:53 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Andrey Albershteyn <aalbersh@redhat.com>
+Subject: [GIT PULL] fsverity updates for 6.9
+Message-ID: <20240312042053.GI1182@sol.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=EPy4Pepr7P67gHlSpSx8Sz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---Sig_/=EPy4Pepr7P67gHlSpSx8Sz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
-Hi all,
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
 
-After merging the hyperv tree, today's linux-next build (i386 defconfig)
-failed like this:
+are available in the Git repository at:
 
-arch/x86/kernel/cpu/mshyperv.c:355:5: error: no previous prototype for 'hv_=
-get_hypervisor_version' [-Werror=3Dmissing-prototypes]
-  355 | int hv_get_hypervisor_version(union hv_hypervisor_version_info *inf=
-o)
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+  https://git.kernel.org/pub/scm/fs/fsverity/linux.git tags/fsverity-for-linus
 
-Caused by commit
+for you to fetch changes up to 8e43fb06e10d2c811797740dd578c5099a3e6378:
 
-  1634df06ea12 ("mshyperv: Introduce hv_get_hypervisor_version function")
+  fsverity: remove hash page spin lock (2024-02-01 15:19:23 -0800)
 
-I have reverted that commit for today.
+----------------------------------------------------------------
 
---=20
-Cheers,
-Stephen Rothwell
+Slightly improve data verification performance by eliminating an
+unnecessary lock.
 
---Sig_/=EPy4Pepr7P67gHlSpSx8Sz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+----------------------------------------------------------------
+Andrey Albershteyn (1):
+      fsverity: remove hash page spin lock
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXv138ACgkQAVBC80lX
-0GwwhQf/Vtj0UmGnlX3ApN0WWVsXI5guGkshSbgZt5KffUQxchbeqpYM3P1bVXwP
-NjxGIzeCPGtkpVDDlhC6J0aJb7TDR2faaXQOv0lt2VKm/DZUV9hryIBMmuz6TIE/
-s4/23yoIlmcgEPjeezN5o3V8DjhRwIOTuxAY4EmJEtJpEm4yb3PwIVRKU/xOY3m9
-9kzfvxKQRlwBKVJ646xv1I1HaVBqM33ggBJ/Ka53RaPvI72YU5JSTESA/bJsDHNz
-Pbe715jOqCkLxxj0JH2ppkWF0dLyY8cjNN3SDkJEIXB9iJyYpWhfShttmludlrc+
-l1P4HC6Uwt0yFlcxX7K4bY35/a9WAQ==
-=LFWH
------END PGP SIGNATURE-----
-
---Sig_/=EPy4Pepr7P67gHlSpSx8Sz--
+ fs/verity/fsverity_private.h |  1 -
+ fs/verity/open.c             |  1 -
+ fs/verity/verify.c           | 48 ++++++++++++++++++++++----------------------
+ 3 files changed, 24 insertions(+), 26 deletions(-)
 
