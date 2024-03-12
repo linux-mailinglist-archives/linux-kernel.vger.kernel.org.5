@@ -1,213 +1,303 @@
-Return-Path: <linux-kernel+bounces-100529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D38987992D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A53E879933
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:42:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E96182843AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:41:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01345283938
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:42:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E507EEED;
-	Tue, 12 Mar 2024 16:41:29 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959787E78E;
+	Tue, 12 Mar 2024 16:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d/iSciIw"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B187E119
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41A015BF;
+	Tue, 12 Mar 2024 16:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710261688; cv=none; b=gSZqsfweoGhNANYxUXw3t/5wOE6rHRLjO/4Y0JLhYGNh1qc+HVPtQUd6mnoKFXAhH9DtI+5cDrh5tueZKViLNhGPVC/Nabi94B3BI8fS7pCGX7e8+b5hWGulfuQryQe9bJKS5Ik6U9dKPS0KUsCyrl8QyB/sjCiJq/xPllbmRQw=
+	t=1710261754; cv=none; b=JSgeGS0tVWvZHHOYhnYS9B7j2omVCZT+7DmyCEVa/DB1HpUYhmkZea/Nvgg1VDJNaYaoWhhSdaVDQWHHSMHdpDDExtmo/0R3JLs//VSF+nq2Sas0zx6qoyqXWk3IDtXxZcO0TMR0p+Qp9Y9LBpy4qhXmjn1rpKrIPYXrEWANa4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710261688; c=relaxed/simple;
-	bh=Ia/g7gpINNg1xSYQR5fZ/mdVyEIzl5Oml3hHMK0dNQ0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NtpvX24HuNow8zsOgx5f5QKsx52SmqzwGTQoHh3PrbJnAuGG9mEBYH+OoruO1Lnlhkh+lbeVFYyUaRSl8Qda30PTlghi3GibwwTwbfuJSJ321wdGrYd2jooJisItqEg1/pp8G7vFN4FJlkec1HI3gVcf1muU8qo+Yw067Agj+Ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c8bcaf249aso175313639f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 09:41:26 -0700 (PDT)
+	s=arc-20240116; t=1710261754; c=relaxed/simple;
+	bh=IOgqkFC+7YdtEWrDEG6VjFtw1asWxY5nI0CrswHAChw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AirsjUnB326vLJHYVfcOpl8EJhyJUYObcTbvo92ujtEPioQlfOIV1YHkxAwMRNqurXlcY0gcNr9ODJhSktIAXX4diTthGWBU8Up27IK09A5mKeZsj2dLaE0Z9i0isftffBUq4Og4kSbGryrdROgIYUKY8et3ch2v52cLXhch7Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d/iSciIw; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33e9df3416bso1255106f8f.3;
+        Tue, 12 Mar 2024 09:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710261751; x=1710866551; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OLfmcQWu5XXgWrSqV2rZUXevRLdZ2i834nrQ0vcBR5U=;
+        b=d/iSciIwroGieURQlgA8fpaiaFKGNwcyk4A5FC2l9dhiKW6spTNPbw824j8YQbxmJn
+         VaB1YYFXAw6zMZpjeJ8ybd6gVqTIcQ8SECsb9Gnq5t8WpFswyAocjSaErpZXlq/BJmcH
+         KwTPcDoxYZakRsMKF4gbErmSAYHTPFQDtHIdKUTZ1M6tqsIzYjHudZNrU3MqBHWTtnnc
+         mLG1OMez6Qc9U//258c1SDybIw5CFRqg4DJemZMoTV4VJSu3zWZNIjRM2ol4PeDbUUwf
+         nptpMqqrc7XZfW6H2Hz0bKYvgzb5R/RJM9xGf1FL0KwBGe7NHyNWMCH79dbAwYso6FYZ
+         bSDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710261686; x=1710866486;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BguXlgsVtvypY7Tu4G0mFoycCRJNmFBusc/imnjbyPM=;
-        b=tmZJwAWEl98fM0JmuX8iBTZG8yZxirSddU1UNklgmd35BVJHhZkWbOEBSLvP3k/Amj
-         b3b9huor3NWMRjnweS9TDPOIGcG/ez6SXx7ex2i+chO3JHc8zKqR6jraZQA9J7I2ESnc
-         C1RUH97JN/QUMOoWxi35XuMY0YVeLLSeTxXV0XP/Qi6NOARdNFi9pEqlSRWBCVaSTCb/
-         QNfFDNnzidr786tXqkMzp7VPEkSa+zs01jW4OANfsrdrtjiuXM475358gFqthfqfqLv7
-         1Sm+wNlrfKPNyLUEG+xBw6o30TJh9MSfAGOtFBOfdxzopHjObVy+yZrxCQrbVujUc6rM
-         wU2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW10Tc0OQccldMoetgOkLRjrHy9PwaGx9hDC9+uN6HJfssdya5cpNUBPDq6IZtghTBwO0o28fxoyqI/WuBWOLpQ5acybOEAs2P7ihnI
-X-Gm-Message-State: AOJu0YyzcvjP9SNMLheSK2GaCSG9FNGAfI7kOHXjSzVUHhacvAv7Rb61
-	whtBRoGHL6ZPx5wxMDS7sGQf0KOOYYIqT+LlcgGFzirt6p8Ump1traz0JdwjlHisqsEGyYyEs5M
-	W+UP1dt0TjOShwcReNyo1pRnW8VUXWte4I79d1zW/39fqE9YGoKZXzo8=
-X-Google-Smtp-Source: AGHT+IFAYgwq6zkOJm8YlnnDQkKflTW5gxeK0NaExGE0yzvzCuGBdS8akXQB2L3FYqdbNdeQl2/HK8nbPxnZgv7/bD9cQwOlJGsd
+        d=1e100.net; s=20230601; t=1710261751; x=1710866551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OLfmcQWu5XXgWrSqV2rZUXevRLdZ2i834nrQ0vcBR5U=;
+        b=KQ29HysbZoOwqUlT5JGrEL05JJ0+wffQIvkiU7SxZ1Adjzyf1VLJh+hAy2V4BLY2PX
+         jjNMRr5hG89XcjAHXnXBP4WJT8lDWqYtD3tVKPJKrIS/gd5rLJHUnorigb0DEn9mV7uy
+         rtAuBYb0VUtJr6kiW3NIKZ0YFym6ic/0hIt/rcmXxeln5s30mUkZ5ZX7DBq60oj6TkdV
+         ntwRbzkeeuTEbmYHpVUl5CVTWpP20y95y97V72HZ79PYMgwJsOayXXepxfyBOWcrhZUT
+         VkFCzTkyORul1m1CLZzO9ebmpfD+HQTMCMmW89jP1FNB25xOYKX//FIv2bezUfg9YRXE
+         yHTw==
+X-Forwarded-Encrypted: i=1; AJvYcCVNssiKARFpffZ8LoFSbrjGVSAKhQXuefJJFx41gcDFjND5KLa3vPRqxsTM4wa0CCYlkJDjb5BW78pkswMq8V/BMe+Q891K3xaq6iOJgUVVkZistZI7i2ZBJEHJBBs0XAkH2pm+x8ASHdHFPA/f4Qkhk8594XPW+YTG8PWdR6pUB70qTtOiOOekI8y1OABLrihS9A+JPTyQOWhnH3/qdRuAcG6psA0ixnNyyDERJ4EbbTkj8IXs7pK0dCpq7L7WRBMeTxdisQ1i4o26e1b6Mhqh8hSRr5Bn3LhxSQ==
+X-Gm-Message-State: AOJu0Yx4f6A3li4NgbiVm58JtzoXKBefug+tQwcyttaSpOxX5RWiDfuU
+	QKXIk84fwa6J3YFyeIuU2cI9Lfw7kuNqaIJ6yPj5DTuTH7cQnLFq3VxpLIcNXFji9x68OAeB90l
+	7ghPlqBXrzQiHMVduxhgbAKbv/ok=
+X-Google-Smtp-Source: AGHT+IEa+4UMJem4Fp/QIrh+BONIvwnIkZaOvOjaYS7rj5IxmTt11nQG4gevX9xIkt30Kg19GjMMdC27opnimO5UKuk=
+X-Received: by 2002:adf:fa91:0:b0:33e:11c3:7ebf with SMTP id
+ h17-20020adffa91000000b0033e11c37ebfmr6854846wrr.62.1710261750841; Tue, 12
+ Mar 2024 09:42:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3419:b0:7c8:c7ec:2b71 with SMTP id
- n25-20020a056602341900b007c8c7ec2b71mr81804ioz.3.1710261686407; Tue, 12 Mar
- 2024 09:41:26 -0700 (PDT)
-Date: Tue, 12 Mar 2024 09:41:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004aa700061379547e@google.com>
-Subject: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve
-From: syzbot <syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+ <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com> <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+In-Reply-To: <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 12 Mar 2024 09:42:17 -0700
+Message-ID: <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+To: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Mon, Mar 11, 2024 at 7:42=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dongme=
+nglong.8@bytedance.com> wrote:
+>
+> On Tue, Mar 12, 2024 at 10:09=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Mar 11, 2024 at 7:01=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <do=
+ngmenglong.8@bytedance.com> wrote:
+> > >
+> > > On Tue, Mar 12, 2024 at 9:46=E2=80=AFAM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Mon, Mar 11, 2024 at 2:34=E2=80=AFAM Menglong Dong
+> > > > <dongmenglong.8@bytedance.com> wrote:
+> > > > >
+> > > > > In this commit, we add the 'accessed_args' field to struct bpf_pr=
+og_aux,
+> > > > > which is used to record the accessed index of the function args i=
+n
+> > > > > btf_ctx_access().
+> > > > >
+> > > > > Meanwhile, we add the function btf_check_func_part_match() to com=
+pare the
+> > > > > accessed function args of two function prototype. This function w=
+ill be
+> > > > > used in the following commit.
+> > > > >
+> > > > > Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
+> > > > > ---
+> > > > >  include/linux/bpf.h |   4 ++
+> > > > >  kernel/bpf/btf.c    | 108 ++++++++++++++++++++++++++++++++++++++=
++++++-
+> > > > >  2 files changed, 110 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > > index 95e07673cdc1..0f677fdcfcc7 100644
+> > > > > --- a/include/linux/bpf.h
+> > > > > +++ b/include/linux/bpf.h
+> > > > > @@ -1461,6 +1461,7 @@ struct bpf_prog_aux {
+> > > > >         const struct btf_type *attach_func_proto;
+> > > > >         /* function name for valid attach_btf_id */
+> > > > >         const char *attach_func_name;
+> > > > > +       u64 accessed_args;
+> > > > >         struct bpf_prog **func;
+> > > > >         void *jit_data; /* JIT specific data. arch dependent */
+> > > > >         struct bpf_jit_poke_descriptor *poke_tab;
+> > > > > @@ -2565,6 +2566,9 @@ struct bpf_reg_state;
+> > > > >  int btf_prepare_func_args(struct bpf_verifier_env *env, int subp=
+rog);
+> > > > >  int btf_check_type_match(struct bpf_verifier_log *log, const str=
+uct bpf_prog *prog,
+> > > > >                          struct btf *btf, const struct btf_type *=
+t);
+> > > > > +int btf_check_func_part_match(struct btf *btf1, const struct btf=
+_type *t1,
+> > > > > +                             struct btf *btf2, const struct btf_=
+type *t2,
+> > > > > +                             u64 func_args);
+> > > > >  const char *btf_find_decl_tag_value(const struct btf *btf, const=
+ struct btf_type *pt,
+> > > > >                                     int comp_idx, const char *tag=
+_key);
+> > > > >  int btf_find_next_decl_tag(const struct btf *btf, const struct b=
+tf_type *pt,
+> > > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > > > index 170d017e8e4a..c2a0299d4358 100644
+> > > > > --- a/kernel/bpf/btf.c
+> > > > > +++ b/kernel/bpf/btf.c
+> > > > > @@ -6125,19 +6125,24 @@ static bool is_int_ptr(struct btf *btf, c=
+onst struct btf_type *t)
+> > > > >  }
+> > > > >
+> > > > >  static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_typ=
+e *func_proto,
+> > > > > -                          int off)
+> > > > > +                          int off, int *aligned_idx)
+> > > > >  {
+> > > > >         const struct btf_param *args;
+> > > > >         const struct btf_type *t;
+> > > > >         u32 offset =3D 0, nr_args;
+> > > > >         int i;
+> > > > >
+> > > > > +       if (aligned_idx)
+> > > > > +               *aligned_idx =3D -ENOENT;
+> > > > > +
+> > > > >         if (!func_proto)
+> > > > >                 return off / 8;
+> > > > >
+> > > > >         nr_args =3D btf_type_vlen(func_proto);
+> > > > >         args =3D (const struct btf_param *)(func_proto + 1);
+> > > > >         for (i =3D 0; i < nr_args; i++) {
+> > > > > +               if (aligned_idx && offset =3D=3D off)
+> > > > > +                       *aligned_idx =3D i;
+> > > > >                 t =3D btf_type_skip_modifiers(btf, args[i].type, =
+NULL);
+> > > > >                 offset +=3D btf_type_is_ptr(t) ? 8 : roundup(t->s=
+ize, 8);
+> > > > >                 if (off < offset)
+> > > > > @@ -6207,7 +6212,7 @@ bool btf_ctx_access(int off, int size, enum=
+ bpf_access_type type,
+> > > > >                         tname, off);
+> > > > >                 return false;
+> > > > >         }
+> > > > > -       arg =3D get_ctx_arg_idx(btf, t, off);
+> > > > > +       arg =3D get_ctx_arg_idx(btf, t, off, NULL);
+> > > > >         args =3D (const struct btf_param *)(t + 1);
+> > > > >         /* if (t =3D=3D NULL) Fall back to default BPF prog with
+> > > > >          * MAX_BPF_FUNC_REG_ARGS u64 arguments.
+> > > > > @@ -6217,6 +6222,9 @@ bool btf_ctx_access(int off, int size, enum=
+ bpf_access_type type,
+> > > > >                 /* skip first 'void *__data' argument in btf_trac=
+e_##name typedef */
+> > > > >                 args++;
+> > > > >                 nr_args--;
+> > > > > +               prog->aux->accessed_args |=3D (1 << (arg + 1));
+> > > > > +       } else {
+> > > > > +               prog->aux->accessed_args |=3D (1 << arg);
+> > > >
+> > > > What do you need this aligned_idx for ?
+> > > > I'd expect that above "accessed_args |=3D (1 << arg);" is enough.
+> > > >
+> > >
+> > > Which aligned_idx? No aligned_idx in the btf_ctx_access(), and
+> > > aligned_idx is only used in the btf_check_func_part_match().
+> > >
+> > > In the btf_check_func_part_match(), I need to compare the
+> > > t1->args[i] and t2->args[j], which have the same offset. And
+> > > the aligned_idx is to find the "j" according to the offset of
+> > > t1->args[i].
+> >
+> > And that's my question.
+> > Why you don't do the max of accessed_args across all attach
+> > points and do btf_check_func_type_match() to that argno
+> > instead of nargs1.
+> > This 'offset +=3D btf_type_is_ptr(t1) ? 8 : roundup...
+> > is odd.
+>
+> Hi, I'm trying to make the bpf flexible enough. Let's take an example,
+> now we have the bpf program:
+>
+> int test1_result =3D 0;
+> int BPF_PROG(test1, int a, long b, char c)
+> {
+>     test1_result =3D a + c;
+>     return 0;
+> }
+>
+> In this program, only the 1st and 3rd arg is accessed. So all kernel
+> functions whose 1st arg is int and 3rd arg is char can be attached
+> by this bpf program, even if their 2nd arg is different.
+>
+> And let's take another example for struct. This is our bpf program:
+>
+> int test1_result =3D 0;
+> int BPF_PROG(test1, long a, long b, char c)
+> {
+>     test1_result =3D c;
+>     return 0;
+> }
+>
+> Only the 3rd arg is accessed. And we have following kernel function:
+>
+> int kernel_function1(long a, long b, char c)
+> {
+> xxx
+> }
+>
+> struct test1 {
+>     long a;
+>     long b;
+> };
+> int kernel_function2(struct test1 a, char b)
+> {
+> xxx
+> }
+>
+> The kernel_function1 and kernel_function2 should be compatible,
+> as the bpf program only accessed the ctx[2], whose offset is 16.
+> And the arg in kernel_function1() with offset 16 is "char c", the
+> arg in kernel_function2() with offset 16 is "char b", which is
+> compatible.
 
-syzbot found the following issue on:
+I see.
+I thought you're sharing the trampoline across attachments.
+(since bpf prog is the same).
+But above approach cannot possibly work with a shared trampoline.
+You need to create individual trampoline for all attachment
+and point them to single bpf prog.
 
-HEAD commit:    df4793505abd Merge tag 'net-6.8-rc8' of git://git.kernel.o..
-git tree:       bpf
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11fd0092180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c11c5c676adb61f0
-dashboard link: https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1509c4ae180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10babc01180000
+tbh I'm less excited about this feature now, since sharing
+the prog across different attachments is nice, but it won't scale
+to thousands of attachments.
+I assumed that there will be a single trampoline with max(argno)
+across attachments and attach/detach will scale to thousands.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d2e80ee1112b/disk-df479350.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b35ea54cd190/vmlinux-df479350.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/59f69d999ad2/bzImage-df479350.xz
+With individual trampoline this will work for up to a hundred
+attachments max.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com
-
-============================================
-WARNING: possible recursive locking detected
-6.8.0-rc7-syzkaller-gdf4793505abd #0 Not tainted
---------------------------------------------
-strace-static-x/5063 is trying to acquire lock:
-ffffc900096f10d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
-
-but task is already holding lock:
-ffffc900098410d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&rb->spinlock);
-  lock(&rb->spinlock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-4 locks held by strace-static-x/5063:
- #0: ffff88807857e068 (&pipe->mutex/1){+.+.}-{3:3}, at: __pipe_lock fs/pipe.c:103 [inline]
- #0: ffff88807857e068 (&pipe->mutex/1){+.+.}-{3:3}, at: pipe_write+0x1cc/0x1a40 fs/pipe.c:465
- #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #1: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
- #2: ffffc900098410d8 (&rb->spinlock){-.-.}-{2:2}, at: __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
- #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #3: ffffffff8e130be0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
-
-stack backtrace:
-CPU: 0 PID: 5063 Comm: strace-static-x Not tainted 6.8.0-rc7-syzkaller-gdf4793505abd #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain+0x15c0/0x58e0 kernel/locking/lockdep.c:3856
- __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
- __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
- ____bpf_ringbuf_reserve kernel/bpf/ringbuf.c:459 [inline]
- bpf_ringbuf_reserve+0x5c/0x70 kernel/bpf/ringbuf.c:451
- bpf_prog_9efe54833449f08e+0x2d/0x47
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
- __traceiter_contention_end+0x7b/0xb0 include/trace/events/lock.h:122
- trace_contention_end+0xf6/0x120 include/trace/events/lock.h:122
- __pv_queued_spin_lock_slowpath+0x939/0xc60 kernel/locking/qspinlock.c:560
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
- queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
- queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
- do_raw_spin_lock+0x271/0x370 kernel/locking/spinlock_debug.c:116
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
- _raw_spin_lock_irqsave+0xe1/0x120 kernel/locking/spinlock.c:162
- __bpf_ringbuf_reserve+0x211/0x4f0 kernel/bpf/ringbuf.c:424
- ____bpf_ringbuf_reserve kernel/bpf/ringbuf.c:459 [inline]
- bpf_ringbuf_reserve+0x5c/0x70 kernel/bpf/ringbuf.c:451
- bpf_prog_9efe54833449f08e+0x2d/0x47
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
- __traceiter_contention_end+0x7b/0xb0 include/trace/events/lock.h:122
- trace_contention_end+0xd7/0x100 include/trace/events/lock.h:122
- __mutex_lock_common kernel/locking/mutex.c:617 [inline]
- __mutex_lock+0x2e4/0xd70 kernel/locking/mutex.c:752
- __pipe_lock fs/pipe.c:103 [inline]
- pipe_write+0x1cc/0x1a40 fs/pipe.c:465
- call_write_iter include/linux/fs.h:2087 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xa81/0xcb0 fs/read_write.c:590
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x4e8593
-Code: c7 c2 a8 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
-RSP: 002b:00007ffeda768928 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000012 RCX: 00000000004e8593
-RDX: 0000000000000012 RSI: 0000000000817140 RDI: 0000000000000002
-RBP: 0000000000817140 R08: 0000000000000010 R09: 0000000000000090
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000012
-R13: 000000000063f460 R14: 0000000000000012 R15: 0000000000000001
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Let's step back.
+What is the exact use case you're trying to solve?
+Not an artificial one as selftest in patch 9, but the real use case?
 
