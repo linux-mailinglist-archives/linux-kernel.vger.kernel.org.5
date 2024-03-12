@@ -1,96 +1,129 @@
-Return-Path: <linux-kernel+bounces-100392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEFCC8796D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:49:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A58EC8796F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:55:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F120A1C21B1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:49:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52F881F265FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81A857B3E6;
-	Tue, 12 Mar 2024 14:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3647A7BAF6;
+	Tue, 12 Mar 2024 14:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gbnix6EA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="BvTG8xQe"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C196577655;
-	Tue, 12 Mar 2024 14:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B35BF4FA;
+	Tue, 12 Mar 2024 14:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710254967; cv=none; b=YVBa2bH3a7HJVDZ6UKGiyR1ggctgZB0tcoUenhz7z740TC2bVr0+4BXyZUVmqZqL6JR/tlCgFpU9SNTdyDm5zvxvGp6oW6jsPvc8QgfvGI5Om0A+bhhb/wWiq33h8lSKxD8AHNX5HbBnYFLlaBd8E4pddj1VAexTJYYHMRJD51M=
+	t=1710255350; cv=none; b=gx4WaS+vXHFDcgN7ELZWWxakrnPCdvxSous0DxemWBBijQeIOsZ91KNaASxaIlCXB9SSW+CQ0kKnXJs549mrjpoBQ82cHNPNAWkaib6+P2WCgt+zMUNDHD2b1G9fZKJvAoUZrEQo+cWzvuZNwTnR8NtgnSiV2Yg257hfpyO1qrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710254967; c=relaxed/simple;
-	bh=FeRCMT2GZqh+FkzLaT7miC0EprP3DvKZFBNkhmQycKk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wrp4XAuyqsSNwJI8tleYLC+QFO7QyHTUK3YMT3wyliwvcL8rRIPRVFe9jpgIOdibW1xsTIAtDpf88uIolizpoZI36/erPyPa36vaUnDP6HTa7uhYBii2hCkhAyROLS5R6FMyxDIo1e3ZNaEBkd8ik1x5r/7uFIYjmTJu1eMtgPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gbnix6EA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BA5AC433F1;
-	Tue, 12 Mar 2024 14:49:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710254967;
-	bh=FeRCMT2GZqh+FkzLaT7miC0EprP3DvKZFBNkhmQycKk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Gbnix6EALh0+qAryKwkBbQFz7L2GbxXhHkkD4M406tKBM1aze8tWl/eBu3DmTA2UZ
-	 5a6Rd+r7r+1Se95FX4tpIBWXCWn8EACdlQ4H0NRFCRlG2ama2pM0kr/y4Dwxnv7L70
-	 K2XG0wDGQAuBoC2C6ckb/UgJ2SHKNbbK4AZ8FDAzX2mvL/bDeQ41BAO47hATvW17Ty
-	 oM33r1mHKEAtPpj9rLbeQlfH1IVUKcvXZowqGag2ZMp0kbr2YiaWR6Gk+OrrbQjg6S
-	 jXVukFwKBtT9t9rOzghoJJU1iu98uT+UbptlAwu24M7ZvAO/PqInYlo2QMclV8Elzn
-	 gp4cf9aAd9wZA==
-Date: Tue, 12 Mar 2024 14:49:23 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] string: Convert helpers selftest to KUnit
-Message-ID: <102f201b-2ad3-4b41-b1bc-5280437aa820@sirena.org.uk>
-References: <20240301202524.make.800-kees@kernel.org>
- <20240301202732.2688342-2-keescook@chromium.org>
+	s=arc-20240116; t=1710255350; c=relaxed/simple;
+	bh=Usc6II35rVzJzpenuRz/2bqBjACu/dy3zUh+dVjJGIA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=q/O0bLSIlea0C0ZyB0T22cyfDibH3mDknXFQZAXPKSlVkV2lTdMzJoi9ueiy5MN25udSlpMlLrpAbRR8DU98GtCJZkJLAtlx+jFSte5UCcDB15jPKvvOPA6r889Sji2j5ssKdcoHpG2BRjoUqpVVaBhjpB4NdAXticFDx+pBtWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=BvTG8xQe; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 3DD392136C;
+	Tue, 12 Mar 2024 15:50:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1710255002;
+	bh=KnYzDyMeuR48i4fmNxkTQzPwgnl3FF6TOTdlr9ivhJs=; h=From:To:Subject;
+	b=BvTG8xQe0m0s8Lms5yOHgjAzMv4CUox3XM7B4jHt6xq90vwhoo+fyyao36uGs9Yjj
+	 SGPZZxF2iv4xM/6ocuvAiTUZlKmxYMIiiMteZEhhQPKyQjpIoFiIeJvTX+v4b2MvSN
+	 UPV+imeMVPcrIenApjZBIIt9axE+gDRdXgK7+u+wciQYLcShuu++oIbVkfLx1AvrU5
+	 eIJg54Q0I7J7yfeyVmx1I8SVIeBMf5wdgQ1k+SM1ZKAwAHv2yEZVs3c7oV067sjT+C
+	 TQLK1/ABLj7iAbMzXwRovde4+9h9BBQQg/joqQDtQbkNKzdjmxxNqhHcsG0LwLPTES
+	 8KPRK05ah6nAg==
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Francesco Dolcini <francesco.dolcini@toradex.com>,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Jo=C3=A3o=20Paulo=20Silva=20Gon=C3=A7alves?= <joao.goncalves@toradex.com>
+Subject: [PATCH v1] arm64: dts: ti: verdin-am62: use SD1 CD as GPIO
+Date: Tue, 12 Mar 2024 15:49:56 +0100
+Message-Id: <20240312144956.40211-1-francesco@dolcini.it>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XZgOaFjFlqex7GrJ"
-Content-Disposition: inline
-In-Reply-To: <20240301202732.2688342-2-keescook@chromium.org>
-X-Cookie: Oh, so there you are!
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
---XZgOaFjFlqex7GrJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+TI SDHCI IP has a hardware debounce timer of 1 second as described in
+commit 7ca0f166f5b2 ("mmc: sdhci_am654: Add workaround for card detect
+debounce timer"), because of this the boot time increases of up to 1
+second.
 
-On Fri, Mar 01, 2024 at 12:27:31PM -0800, Kees Cook wrote:
-> Convert test-string_helpers.c to KUnit so it can be easily run with
-> everything else.
->=20
-> Failure reporting doesn't need to be open-coded in most places, for
-> example, forcing a failure in the expected output for upper/lower
-> testing looks like this:
+Workaround the issue the same way that is done on
+arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts, using the SD1 CD as
+GPIO.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Nishanth Menon <nm@ti.com>
+Reported-by: João Paulo Silva Gonçalves <joao.goncalves@toradex.com>
+Closes: https://lore.kernel.org/all/0e81af80de3d55e72f79af83fa5db87f5c9938f8.camel@toradex.com/
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+---
+ arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
---XZgOaFjFlqex7GrJ
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+index e8d8857ad51f..a9bf2c17f95a 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+@@ -457,6 +457,13 @@ AM62X_IOPAD(0x01c4, PIN_INPUT, 7) /* (B14) SPI0_D1.GPIO1_19 */ /* SODIMM 161 */
+ 		>;
+ 	};
+ 
++	/* Verdin SD_1_CD# as GPIO */
++	pinctrl_sd1_cd_gpio: main-gpio1-48-default-pins {
++		pinctrl-single,pins = <
++			AM62X_IOPAD(0x240, PIN_INPUT_PULLUP, 7) /* (D17) MMC1_SDCD.GPIO1_48 */ /* SODIMM 84 */
++		>;
++	};
++
+ 	/* Verdin DSI_1_INT# (pulled-up as active-low) */
+ 	pinctrl_dsi1_int: main-gpio1-49-default-pins {
+ 		pinctrl-single,pins = <
+@@ -571,7 +578,6 @@ AM62X_IOPAD(0x230, PIN_INPUT,        0) /* (A22) MMC1_DAT0 */ /* SODIMM 80 */
+ 			AM62X_IOPAD(0x22c, PIN_INPUT,        0) /* (B21) MMC1_DAT1 */ /* SODIMM 82 */
+ 			AM62X_IOPAD(0x228, PIN_INPUT,        0) /* (C21) MMC1_DAT2 */ /* SODIMM 70 */
+ 			AM62X_IOPAD(0x224, PIN_INPUT,        0) /* (D22) MMC1_DAT3 */ /* SODIMM 72 */
+-			AM62X_IOPAD(0x240, PIN_INPUT_PULLUP, 0) /* (D17) MMC1_SDCD */ /* SODIMM 84 */
+ 		>;
+ 	};
+ 
+@@ -1441,8 +1447,10 @@ &sdhci0 {
+ /* Verdin SD_1 */
+ &sdhci1 {
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_sdhci1>;
++	pinctrl-0 = <&pinctrl_sdhci1>, <&pinctrl_sd1_cd_gpio>;
++	cd-gpios = <&main_gpio1 48 GPIO_ACTIVE_LOW>;
+ 	disable-wp;
++	ti,fails-without-test-cd;
+ 	vmmc-supply = <&reg_sdhc1_vmmc>;
+ 	vqmmc-supply = <&reg_sdhc1_vqmmc>;
+ 	status = "disabled";
+-- 
+2.39.2
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXwa3IACgkQJNaLcl1U
-h9CINQf9FZyCr1mwwp0I0ZAvYxN46NqkeDDqh+wPU6w/4KHNRiUlyQfkNRkAA+Xp
-J+5TZcZE7OILqEngLybT0YW7vgEfBTGn6NmKimShCJPz1eQkHlpTYJj97IdgSd1x
-y1US39o1HeQ2FjJhdDYpPB+oP7x6D/kNirLmwDO3apllBdGOKJdUrRt4op3xX0kE
-Ati+hous5ZkNRKCbdk06Esgza2V8KunLQS66F1pamYICOFtvbLce8PwpGa7p4osr
-OX1P7ilURCNOTf6f0++n2UI77pwN9cW8a2j9CRneXNcRz3+M7KE09B+XOc6Cee9D
-rAns/5JTYWJzFu0SPe/1g2dxpTVBrg==
-=pn9z
------END PGP SIGNATURE-----
-
---XZgOaFjFlqex7GrJ--
 
