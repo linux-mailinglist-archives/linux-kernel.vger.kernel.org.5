@@ -1,70 +1,109 @@
-Return-Path: <linux-kernel+bounces-100321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873E38795AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:09:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E018795B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:09:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCD072834E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:09:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B2221F21E3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265557A72E;
-	Tue, 12 Mar 2024 14:09:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 390DB7A73F;
+	Tue, 12 Mar 2024 14:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SDPhDzwz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N0JOed2Y"
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BF77A72F;
-	Tue, 12 Mar 2024 14:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20E287A726
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710252568; cv=none; b=eRgOYCgG6aVOBDSkMb7751LERHW7fb5JglBUV2xBmJurSIXFN9hNqmTVpEkGrdKOg1mC9vlU/iUUNaVTqK5qLamq5koW2tzavwGVrdlOWaCNv9aAH0TKGMOubNCkyBEJzYXoGRAVzCi7IZw/k38sMzC/X+xyCFem6TG9p/lgnwo=
+	t=1710252589; cv=none; b=h0Weu2wO7Q4jiBrnNx4AAlfzr2Q1eZnQ4Gb6QkxDVdhtE0GfnsnxhhDEK3bhZvRIK4CVRwMcGZpCzw2tW19XH+UVFGEzW1yDp7tCmUFmJNCZnCwk/3uREYXfxxR4zdXvYlT9r5FRLY/wvBacAmO3NgrbJHBDNkzkTYJDPpfIXRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710252568; c=relaxed/simple;
-	bh=OHs6gIp06vpbC5HdsLdDt0/n/SfwHjJGPz0I98zSqfs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KNFcLXevuEu0FBGjX9tkVaeHFkDz5E7lXliJYv4st6wHJoxgBZt3fijV1+rI478f7CVVXgakDCkV6XCJZki2ht9p0gX+RKJB4xoGRV98CEgFQrYT2bYWycmEfLJFkFaA7gBuxYAgHdVsuXUAMrYKotFrRVBVbwbIrJdp8osy0p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SDPhDzwz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03886C433F1;
-	Tue, 12 Mar 2024 14:09:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710252568;
-	bh=OHs6gIp06vpbC5HdsLdDt0/n/SfwHjJGPz0I98zSqfs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SDPhDzwzLqpuGijqDS+OzUrakyRVTlV1DR+spBDFh//uvaNDw4JC9VkrVVAbDkq3d
-	 S53lr4jBcpaLd04yul/H5zKEMrAfsy0dY1vPYMXluXzxbHFH4YYg+Srz/w1H6M8SPe
-	 RHkzEMq1FXDffGOuklgN/QnvkO9mdWHNEnjoWPAKWl7OBrWw2on5uXOnwDzDr/+dA1
-	 0WV4mTZJzWPk/IGLBnA5xqQevzs2wf3zMpCk/MySOti4UC0ndNQAzUZNCu5HPvd48f
-	 1tYrsP91FWoL3iQv3hukk3F3h9Zixx5lv1m5cH2ubbDzyH+VLBr9ZXazJE1woVvBoD
-	 Oy8lQU/9ly9dg==
-Date: Tue, 12 Mar 2024 15:09:23 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-fsdevel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Seth Forshee <sforshee@kernel.org>, Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] pidfd: add pidfdfs
-Message-ID: <20240312-akzeptabel-ablegen-d82c1e8f4e23@brauner>
-References: <20240213-vfs-pidfd_fs-v1-0-f863f58cfce1@kernel.org>
- <20240213-vfs-pidfd_fs-v1-2-f863f58cfce1@kernel.org>
- <71bc82f4-b2df-c813-3aba-107d95c67d33@linux-m68k.org>
+	s=arc-20240116; t=1710252589; c=relaxed/simple;
+	bh=zu+uZ/8084vv+m/AogKImKAueKFkXxPoXHpto1b+ruQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AuMRxpH0WJEap0CKWmwxeZaELnYWT/kngRViCcIoPghI79j2laCihBcSK0bHcQpQe/51FD3KRuEKZn9UP+wJDVOa0bn3+D34DuIXEeWKI0vVtKRIKyfRCijJawezAoCNLac0v4CIf1pTImLUyEfid9EwcQgWppYtE34pfgyLpfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N0JOed2Y; arc=none smtp.client-ip=209.85.210.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e0f43074edso3780099a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:09:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710252587; x=1710857387; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zu+uZ/8084vv+m/AogKImKAueKFkXxPoXHpto1b+ruQ=;
+        b=N0JOed2Yh+PwnmLX0NDNMDPn09Bz9b01NNf+hu6I/rEu/sSM1AJc9xwYd0+z99U2xt
+         97+PaVtlPsHU/x86ymrKgYQEUkyyxpm2kXpoNtRVvrhx2iYccnZpSEgxWdMYJTYIxTzb
+         /9qF9OFv0y2/neGiZ2hrlRNYpRgFfcOA67ZObqMG3AkJbqPYAY2A5cqgZDeGSdGh/Uhg
+         6yIkzFmXeh8c5N51FHY7Pw1Rufu62W2dBpZmkl6huNJutk3faFMgAy3I7oDY3HEo36VF
+         J50lAFMHGMYffWhT82DYIA3TeHO3sp29VVZf8VZMqb/yHOiT3euvKAZZMltQNZgv9IzE
+         X3SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710252587; x=1710857387;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zu+uZ/8084vv+m/AogKImKAueKFkXxPoXHpto1b+ruQ=;
+        b=nd+RWgP8m/oOyzhiYY6P/G8Xd7Ax0Oo9c6JpKF1ICugDcnrG60qEGKnKm8cBfMCFkI
+         KsfY4D8src7RsX9dXeGOGGmkAB0GvdK75Joh1oxiPQJVizs9qoubSEQr1Zj+/+P1rz1F
+         23v4A1qUYA6ZEy8Y7K14xhtVvgUeUdif76QMQsmxHG2h/bXevouAMlCvdWt/6IHhXkM7
+         iiwwtnM0OVSiTOAIMa01Qr+7xnXuQqoIVFunFD6sempV4KW5mDDm+mdzKRKjTqgYFc7Q
+         G9zz/5kpugonWTXl/IFF6PqxFZ81sYOJwWQlHlSw6DX+uY1pOr6b1J8W598o3STnf+Na
+         r9Tw==
+X-Forwarded-Encrypted: i=1; AJvYcCUxlGFA5BNXf45hVoj3dL1aDGYx58B6tBKCxWsDmHdLgbbevg2/F7jn9DgaEmo+otihq1ZXI/D2CUekQz98Bnv3pez1KBXkuzCVedY5
+X-Gm-Message-State: AOJu0Yybiwxv6W0fvtikaF5TabE2uL2C70VawKRB3URZ/FYgGnB8vDAL
+	JiUHkJCAubGsFz4iNANCCHEzxIKY+YMygSf184hCUkXWQPhMQEY2JO60X1YXnOg40NE8IPqdyBq
+	vQsJhljgX7gw439gyS+relHdNsPM=
+X-Google-Smtp-Source: AGHT+IE+c+ZdOXmBGc3GWGBArNuHaUYW7pUu2NOq0nVv7TTeFNzcJ/MRGEdssQkYOkouITD9YMFOcPhJlm4xc+GpLn8=
+X-Received: by 2002:a05:6870:7e14:b0:221:c8a9:563d with SMTP id
+ wx20-20020a0568707e1400b00221c8a9563dmr7791776oab.3.1710252587056; Tue, 12
+ Mar 2024 07:09:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <71bc82f4-b2df-c813-3aba-107d95c67d33@linux-m68k.org>
+References: <Ze9Ie67PCSvBU+og@MOLeToid> <Ze+JxSpqc/eHfCKn@aschofie-mobl2>
+In-Reply-To: <Ze+JxSpqc/eHfCKn@aschofie-mobl2>
+From: Felix Kimbu <felixkimbu1@gmail.com>
+Date: Tue, 12 Mar 2024 15:09:35 +0100
+Message-ID: <CAK=vLxKtR_rgU3A=w7AEddM4fbtTtmAQ85aCVHYbqyEXcjP=SA@mail.gmail.com>
+Subject: Re: [PATCH] staging: p80211conv: Rename local foo to decrypt_check
+To: Alison Schofield <alison.schofield@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-staging@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, outreachy@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> What is the risk this will not stay entirely optional?  I.e. can it
-> become a requirement for modern userspace, and thus be used as a stick
-> to kill support for 32-bit architectures?
+On Mon, Mar 11, 2024 at 11:46=E2=80=AFPM Alison Schofield
+<alison.schofield@intel.com> wrote:
+> 'rc' is typically used for cases like this. If the name of the function
+> being called is reasonably intuitive, then 'rc' suffices for the return
+> value.
 
-Yeah, Linus has requested to remove the config option.
-I'm about to send him a patch.
+Greetings Alison,
+Thank you for the feedback, well noted.
+
+> 'Also' signals that this patch is trying to do more than one thing.
+> One type of 'thing' per patch please.
+
+Dan has already address this, perhaps, I did not write the message correctl=
+y,
+suggesting that the patch does more than one thing.
+
+> The commit message prefixes are off. Please see First Patch Tutorial
+> Section: "Following the Driver commit style"
+>
+> Patch fails checkpatch. Please see First Patch Tutorial Sections:
+> "Git post-commit hooks" and "Understand patch best practices"
+
+I will definitely fix these, thanks again immensely.
+--
 
