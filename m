@@ -1,92 +1,116 @@
-Return-Path: <linux-kernel+bounces-100828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22869879DB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E649879DB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:46:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC5FF1F22813
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:45:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D86511F227B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4BE145B04;
-	Tue, 12 Mar 2024 21:43:07 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8A5143C4A;
+	Tue, 12 Mar 2024 21:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="KKRfRaWe"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D61614534F
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33F9143C74
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710279787; cv=none; b=u5WNgAm13bUqBndr32UokEY4QxTnWl/Hoh/xlxcSFxzHSXml4qjgUJhMDBS4Zo1PDAgZax8YAF03/9kOA9H3pgf/6Z5rUEW3B1BqQ6avVlFpCaF7vNq6stHeyCz8v10u7ql83g1adxRBToSI9Iqw2uW9xVYjEvDQB/kIhbkz4rI=
+	t=1710279876; cv=none; b=Pq13MqD6gvf/IN9y8JR+zWHPuH2v/oJP/6dIXo81o25oX1gPlNOftLX6x6xzISCfilieNi9IWQSJCC0PnLKScmLVWT/2M6tzLPx5wo49TcgF7I2uypM12c0GIGLy95ahLyAniBAWeyYFzUQvCwD1YZt7esqU/QwX0H+PMGvPKcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710279787; c=relaxed/simple;
-	bh=+ntyJa0Ew8nKgl61n+Nh2FH6rWw/YsnJ8ujp1FK4Ip4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ZJh2g7IVtQazgObcuzBBOPzSZDDfl+7Qwp1oXOlzTNY4W+Xi8yV4B8LoBGBgmzE0nN6oeTvVX3SifGpPJ2QzjmWsK6nIRqwVmRRRRgeJHazo1vV/YGIaXxF+NVoHPOwthzuXon3gcFzdwC0ZMfY/ys4c/4/dESFz0q+NupR0gsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3666f119204so2992785ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:43:05 -0700 (PDT)
+	s=arc-20240116; t=1710279876; c=relaxed/simple;
+	bh=XwiL2+kAZDq+JSypY/KCkgWIbQMNeeVzIuxHI5gIcF4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tn+eZnuh44Qwv0jvOZZO35RtbbFRIdEmIemBGhYxjzV1f8+eP0CpD5BW6EFb6M7Hjgp4JLQjxxnCthDHCLtU+tjuwOwCYRb6Cx5+qsnvR2gxV+vMkyhM3bNUtmZyrbV/3BWBStQXlV6PKGBIrOpS8Ni6a4PM22zMMfO2Ubn5QvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=KKRfRaWe; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5139d80f8b6so4061192e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1710279873; x=1710884673; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+QBam0nDIK6OKPia5iCGv4lhBlNNZUHT9InuuVs5DM8=;
+        b=KKRfRaWeA6WSJdE01jClK/UZ9c6TbaidThWmnu5tE+bYqU3vaT19gg9q1g4EBuR2hW
+         PfrPpUU+cHjfITAphWWvAg/c2+9qxtNLlhQPJHmt0MoogdJ5WuLTFrkz3WbcTb0nRtCo
+         PX7RvAUAW8e2nmLuUzA2wIYw+qss/+WxynHU0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710279784; x=1710884584;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WPwkHRiTWni56jLRMYYCYOfrKQED61Y88uUu4x05NAw=;
-        b=p6cb6TzApwrETqV1guWSI/jWIpRo2RKGzQOj/7DaANnmwbra9pTCotkerqcleD30UO
-         b4cOSoylmqi1sKoO8vLfAM/nlY/eq42rqV3ay1Qh95xuu4p3bdBEfwLvXpCnO3VSMuo6
-         anevcHynYfhwqamkpYaxhncWW8pfL8vQDY560XME2j4khDGQ82KZjdWf9ejWhsLaQAU/
-         lB596BZ/3tfhiAYgQK+mtrFVp6X81xp63jlJSrlYiGbv0hngmpHmLaR93OfM7RpJ0F4l
-         flVYWPbRAFroz5Sphm+ZsLgl2hAfxRKLwae3UTiJ3hZYBCb9ZWwVsexrVO+v/xjtuHwU
-         D4bA==
-X-Forwarded-Encrypted: i=1; AJvYcCXg7gYFnDwiskuMwqnn6UHYgqcyiZdj6LXZZ4Nj2KePD3Wlsjex+KnLZj10CF1tNy7OS2+8JctPVE8PN1t1h4Qp4JCZ8y89QWo/WBBA
-X-Gm-Message-State: AOJu0YyP2vLDICrHJQdzyWAYkSG9OFqNJkD+9kSFxR3jzoM7RrLJtJeH
-	CegPNbkG+vGQz3fWwwU+EuAoHjRdrLsHNcg53Qa+Ok9wIz8Kwwymxq2TB2eKukF3Bc+cLKcyzzV
-	Ac4f6cDZXjxWu1L1Mt0m32zWQVwGSkoWvTk9AFb4WusrcG8Jg0MaB5UY=
-X-Google-Smtp-Source: AGHT+IFOpyNj3FNGoLTzOFEnZ+tR7pSAuEVi60fFlN8TuPJlT3LzUp25kdsOJOotvBru3ani52Sg/5sSOVe3e3YqU/YqtNadiw2j
+        d=1e100.net; s=20230601; t=1710279873; x=1710884673;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+QBam0nDIK6OKPia5iCGv4lhBlNNZUHT9InuuVs5DM8=;
+        b=bIerk/Xk5GxlJohdzC3IoNq+HWZfT6HPsXz+z1+lLbqIOL+/tMgJqr6zYFUfcS90IX
+         5UvidVHVaDLBL2MNqciEZ9+pjkaAU+bt0wsh8C0rAyjfsqKwkFH3Dtw8xZZ9FG9hxZoa
+         Ze4pLnqGVHei3+/RyutThflVDSyPMDw7/i+CtBw87CvOIYtn1XRO/fdZtxsXlTxe/vnu
+         N17x6Oz0M9fbyEjivfGRaDxvnphUOsytlUhPMc4JFEo3CeB1sLjFSrXWdlg0qIXr8CU1
+         qmaiJ5JXaqBpRZrkN9J5bIiLNc0sMDdHWsPUC9hwppZo19TT57eilV5/aoQCkbO4ind0
+         gKXw==
+X-Forwarded-Encrypted: i=1; AJvYcCUbmwJIdq1A9LwXHiu+I3M/G92zTqTUaJE0gWHRauI4TEkU8iwi5Ic/0HEykiqGHnQV0uMRkxwWmPW3VosJnzOOG4qfUTVsicSkT01E
+X-Gm-Message-State: AOJu0YwKPSUz4DUodiOFgpp79nbjc43ZQDffsAgZd25O1K5T6EupIPdn
+	x40sMpXaQjOckljC5YMG3XXO263i1O+aIYmwEHujL+z0IAN/XeXb6JaOKe5ryBk+CVP6i8TwOU6
+	aZb2jpA==
+X-Google-Smtp-Source: AGHT+IGYXSzui40sAOARuLzSdl3JJ1kMd+x3NuMX/kHb2RliY0ysTU1qQ4bD+SgKmKq4g2uT+iA88g==
+X-Received: by 2002:a05:6512:3ae:b0:513:c2aa:6b87 with SMTP id v14-20020a05651203ae00b00513c2aa6b87mr1304155lfp.39.1710279872857;
+        Tue, 12 Mar 2024 14:44:32 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id r3-20020ac24d03000000b005139f4ffdd9sm1578659lfi.30.2024.03.12.14.44.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 14:44:31 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d208be133bso69181991fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:44:30 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUAJFYFPZXhC4yecUnUESQVplaTzojRgvkZ0LcQHOwGGuTMjSEiQDPdhQ275Gx0Qz5jxK+1BS5NOG5/n7eWVpmUnruPjnlv8WBJpUGj
+X-Received: by 2002:ac2:484a:0:b0:513:5a38:f545 with SMTP id
+ 10-20020ac2484a000000b005135a38f545mr8283446lfy.62.1710279870592; Tue, 12 Mar
+ 2024 14:44:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b2c:b0:365:fe0a:b366 with SMTP id
- e12-20020a056e020b2c00b00365fe0ab366mr42803ilu.1.1710279784538; Tue, 12 Mar
- 2024 14:43:04 -0700 (PDT)
-Date: Tue, 12 Mar 2024 14:43:04 -0700
-In-Reply-To: <000000000000ac8cda0603cbb34c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000634c606137d8b99@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in insert_state (2)
-From: syzbot <syzbot+d21c74a99c319e88007a@syzkaller.appspotmail.com>
-To: anand.jain@oracle.com, brauner@kernel.org, clm@fb.com, dsterba@suse.com, 
-	johannes.thumshirn@wdc.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <ZetHwrCb0KXE0xFI@tardis> <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
+ <ZfDEIs63EBIYBJIC@boqun-archlinux> <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+In-Reply-To: <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 12 Mar 2024 14:44:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
+Message-ID: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for v6.9]
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org, 
+	tglx@linutronix.de, rcu@vger.kernel.org, joel@joelfernandes.org, 
+	neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com, 
+	frederic@kernel.org, bigeasy@linutronix.de, anna-maria@linutronix.de, 
+	chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot suspects this issue was fixed by commit:
+On Tue, 12 Mar 2024 at 14:34, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> and here is a log where this fails:
+>
+> https://gist.github.com/ffainelli/ed08a2b3e853f59343786ebd20364fc8
 
-commit a1912f712188291f9d7d434fba155461f1ebef66
-Author: Josef Bacik <josef@toxicpanda.com>
-Date:   Wed Nov 22 17:17:55 2023 +0000
+You could try the 'initcall_debug' kernel command line.
 
-    btrfs: remove code for inode_cache and recovery mount options
+It will make the above *much* noisier, but it might - thanks to all
+the new noise - show exactly *what* is being crazy slow to initialize.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14342f8e180000
-start commit:   f7757129e3de Merge tag 'v6.5-p3' of git://git.kernel.org/p..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=d21c74a99c319e88007a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1202e640680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e949f3a80000
+Because right now it's just radio silence in between those
 
-If the result looks correct, please mark the issue as fixed by replying with:
+  [    1.926435] bcmgenet f0480000.ethernet: GENET 5.0 EPHY: 0x0000
+  [  162.148135] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
 
-#syz fix: btrfs: remove code for inode_cache and recovery mount options
+things, and that's presumably because some random initcall there just
+takes forever to time out.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+             Linus
 
