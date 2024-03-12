@@ -1,334 +1,139 @@
-Return-Path: <linux-kernel+bounces-100375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD18B879677
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:35:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 427788795F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2F60B237D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:35:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1E20B23A9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E06F7D06D;
-	Tue, 12 Mar 2024 14:33:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E551C7AE68;
+	Tue, 12 Mar 2024 14:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="VrAepsAI"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="yPI9Gd9b"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DDF7D065;
-	Tue, 12 Mar 2024 14:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9010E77655
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710254036; cv=none; b=SK1DorCVKDGR7H3H9g93+BKJQ+TNVp40mfGZUytrRYcoxIHugGEWDO0XwDfi0+lXe+fhKMH7lCNyfBVJ3rq9b+GecNjXYGMC0WVhma7kI4kyARcEr/NnUJrjxD86UlPvcvEXTRfKgQFH3xxQrh7X9F6PHETWvkk/kOAiGWVlhoE=
+	t=1710253412; cv=none; b=GDYwRqVbzAOnuXyaBwciXUeGNI5LGfEnp5NLnLWTFB7kZ7gParmki2P0iAc94REtuqtPTVxFZ/CkillgsSqfzDnwZ8QdLpl0PAxYK6WKeXZYi/p3B0+XlBc5B6PPU87zOM/5tg97NSQPX98sRlXjXjByFgwt22LFOJMP+Dj4ofQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710254036; c=relaxed/simple;
-	bh=QXKPqysuD6oO5l8ruAWIhkoOSvCJPcKxJiHgWWZSnpk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j/fjFVt7QogAUVojgoSMbY+4m9zoRLKaEycU9Op9DIwdI6k3qy//sXnW3dsb6v4oiWTXrKJfxpd3ytpSSKgtmx5BpAFC76ezWOrNRxG1ljfZfnu+F8LOkLPGFNRMnYDQqcxYQPdE0820exOAf8zCujGr0wSQGjjKR8v+ltDcXJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=VrAepsAI; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from localhost.ispras.ru (unknown [10.10.165.6])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 45E7540AC4FD;
-	Tue, 12 Mar 2024 14:23:41 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 45E7540AC4FD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1710253421;
-	bh=pAMT/TBWHWaIUciFurxSw62HZ6yTRhT83dDM+QxPhsA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=VrAepsAI4ps0CYWkU7kRCb5S+JjriIcyBvaV3bmKcU+aZgDGjjrzrG4AJ5aOBqHiz
-	 gAPaq0aIj/TdS2pOYETVqg9vZGyWG6e4eIGYG3AYRx7TZlw6gc+bIhMexc/WsnYBJS
-	 pldWs9ToOaFxWU0rQFyTHNADhxtqSjqGk82IVVUg=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable@vger.kernel.org,
-	io-uring@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	lvc-project@linuxtesting.org,
-	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Roman Belyaev <belyaevrd@yandex.ru>
-Subject: [PATCH 5.10/5.15] io_uring: fix registered files leak
-Date: Tue, 12 Mar 2024 17:23:12 +0300
-Message-ID: <20240312142313.3436-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710253412; c=relaxed/simple;
+	bh=gf9yMtKzRBlOhLL/fmxIguN/CTFdrmIfHjtFEg9Eo+g=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=l6mJkTtFAOovz6oHm2xu54L/cvveEWxenmLSFaKmMHGcJpGEeSePqA/7KuhYBUwSHS7vtWgANE1RyUbrNVwf/f1xG5hGV6nCCK+4vl+wYb7QNhHq12q4KxfV2cO8HXd11ymPt0Bq8jJ/RgoA9cm+kp9s9VTxzbXKrfheWvCaha4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=yPI9Gd9b; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dca3951ad9so45494535ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:23:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1710253409; x=1710858209; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3ixjDXdUDhwXI0JLFZkupTe/KFpB3Bws3seOjqAl5dc=;
+        b=yPI9Gd9b0/sHZX4nK0ssdhSH1TyxAh6WrCWLTY9SS+lNVJPhJB+BVACb5H53ie+hbX
+         hYBweQcZp3gfut0+IYunnyabD75TuihKhTugYI+PbgBwFoJLAbIR7wT8AGXeXE45NtWF
+         pOmjMW8c4dCHy5g3DCZ0kv5itqwE8MzLpT3SJ+LQ2MyK41t6qjPMyCIIK3CDTeIrGNrs
+         yOD5kBdcGWRVcRflPZDnHFNDWkVVTzIoiNUERgaBjkJpmSUOOkioWDiwT1934PY94t1Y
+         PU/BGcuI+lqwUMYyBJj97zSnOFPuYX4dEX6rmy3MpNW/5fFzAOlralB9A0vqFGhL4oGO
+         J9BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710253409; x=1710858209;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ixjDXdUDhwXI0JLFZkupTe/KFpB3Bws3seOjqAl5dc=;
+        b=G7AaDJq720d91NBiXlW3JZKVlEQyypGYOjdlC7cIBjiXLhJ10FhTb4Eh9o3Y60346W
+         ZaSmqRXF0H3Ia+bp9PJUjt0UVSAG7lKnVlAKdK4n6HIXE/Yj9hK4NplYPQJ7338nW+if
+         hoGasYnL/ttGL3Ei5rOdIKcX4cIr30ph98a1shArhXhk0AFIJ5LY8aiW9pqmn3lAokQJ
+         UhdIyNifyqAeOpDdpWPKSv1RyVysz6Rv78DUJ3sjd3hIvjZIXqqMiqH7jb4wukCGKj5H
+         QeoewUpYW7hE6b2rf8dX0ov6564Dl88C/Mam5qipiC2UyGIham9fD9iBJQB3dy4X95t9
+         Tzyg==
+X-Forwarded-Encrypted: i=1; AJvYcCVjmEPzCTBfmiZr1QWUB9NsbVMqE6/oC7D93piPUOLD1kTxe+dvpD754dfEUMI8WKHLpCz2MSA/7H254I9Eg2GljcmLlL3DxgBETXTd
+X-Gm-Message-State: AOJu0YxIEZ3anhBWWqczcrFkJD1CPCeRiNmko8KOfoQOQWQkiZkP6Miv
+	FtaIovL60B+TyKyy7aM/0NBcTSaN9RRD9JwAMaj+X5XHtf8n9hm6ouVtZ4PHAA4=
+X-Google-Smtp-Source: AGHT+IF5Tdh4z8JQsHyW1PPsqQuYiflOdAu+RNp46pn6g+B0xVaFC5Y6Ggu7odCPQpbbShIDcpWR1Q==
+X-Received: by 2002:a17:902:e74a:b0:1dd:a134:5680 with SMTP id p10-20020a170902e74a00b001dda1345680mr6869873plf.69.1710253408730;
+        Tue, 12 Mar 2024 07:23:28 -0700 (PDT)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id jy8-20020a17090342c800b001dd5806eff3sm6836433plb.306.2024.03.12.07.23.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 07:23:28 -0700 (PDT)
+Date: Tue, 12 Mar 2024 07:23:28 -0700 (PDT)
+X-Google-Original-Date: Tue, 12 Mar 2024 07:23:26 PDT (-0700)
+Subject:     Re: [PATCH v9 03/10] irqchip/riscv-intc: Introduce Andes hart-level interrupt controller
+In-Reply-To: <871q93eehn.ffs@tglx>
+CC: peterlin@andestech.com, acme@kernel.org, adrian.hunter@intel.com,
+  ajones@ventanamicro.com, alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+  anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org, conor+dt@kernel.org,
+  Conor Dooley <conor.dooley@microchip.com>, Conor Dooley <conor@kernel.org>, devicetree@vger.kernel.org,
+  Evan Green <evan@rivosinc.com>, geert+renesas@glider.be, guoren@kernel.org, Heiko Stuebner <heiko@sntech.de>,
+  irogers@google.com, jernej.skrabec@gmail.com, jolsa@kernel.org, jszhang@kernel.org,
+  krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+  linux-perf-users@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+  linux-sunxi@lists.linux.dev, locus84@andestech.com, magnus.damm@gmail.com,
+  Mark Rutland <mark.rutland@arm.com>, mingo@redhat.com, n.shubin@yadro.com, namhyung@kernel.org,
+  Paul Walmsley <paul.walmsley@sifive.com>, peterlin@andestech.com, peterz@infradead.org,
+  prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org,
+  Sunil V L <sunilvl@ventanamicro.com>, tim609@andestech.com, uwu@icenowy.me, wens@csie.org,
+  Will Deacon <will@kernel.org>, inochiama@outlook.com, unicorn_wang@outlook.com, wefu@redhat.com,
+  randolph@andestech.com
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: tglx@linutronix.de
+Message-ID: <mhng-d47edbdb-0a36-4adb-9575-8af094d80e5e@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-No upstream commit exists for this patch.
+On Fri, 23 Feb 2024 01:06:44 PST (-0800), tglx@linutronix.de wrote:
+> On Fri, Feb 23 2024 at 09:54, Thomas Gleixner wrote:
+>> On Fri, Feb 23 2024 at 09:49, Thomas Gleixner wrote:
+>>> On Thu, Feb 22 2024 at 22:36, Thomas Gleixner wrote:
+>>>> Palmer, feel free to take this through the riscv tree. I have no other
+>>>> changes pending against that driver.
+>>>
+>>> Aargh. Spoken too early. This conflicts with Anups AIA series.
+>>>
+>>>   https://lore.kernel.org/all/20240222094006.1030709-1-apatel@ventanamicro.com
+>>>
+>>> So I rather take the pile through my tree and deal with the conflicts
+>>> localy than inflicting it on next.
+>>
+>>> Palmer?
+>>
+>> Nah. I just apply the two intc patches localy and give you a tag to pull
+>> from so we carry both the same commits. Then I can deal with the
+>> conflicts on my side trivially.
+>
+> Here you go:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-for-riscv-02-23-24
+>
+> Contains:
+>
+>   f4cc33e78ba8 ("irqchip/riscv-intc: Introduce Andes hart-level interrupt controller")
+>   96303bcb401c ("irqchip/riscv-intc: Allow large non-standard interrupt number")
+>
+> on top of v6.8-rc1
 
-Backport of commit 705318a99a13 ("io_uring/af_unix: disable sending
-io_uring over sockets") introduced registered files leaks in 5.10/5.15
-stable branches when CONFIG_UNIX is enabled.
+Sorry I missed this.  I just merged this into my testing tree, it might 
+take a bit to show up because I've managed to break my VPN so I can't 
+poke the tester box right now...
 
-The 5.10/5.15 backports removed io_sqe_file_register() calls from
-io_install_fixed_file() and __io_sqe_files_update() so that newly added
-files aren't passed to UNIX-related skbs and thus can't be put during
-unregistering process. Skbs in the ring socket receive queue are released
-but there is no skb having reference to the newly updated file.
-
-In other words, when CONFIG_UNIX is enabled there would be no fput() when
-files are unregistered for the corresponding fget() from
-io_install_fixed_file() and __io_sqe_files_update().
-
-Drop several code paths related to SCM_RIGHTS as a partial change from
-commit 6e5e6d274956 ("io_uring: drop any code related to SCM_RIGHTS").
-This code is useless in stable branches now, too, but is causing leaks in
-5.10/5.15.
-
-As stated above, the affected code was removed in upstream by
-commit 6e5e6d274956 ("io_uring: drop any code related to SCM_RIGHTS").
-
-Fresher stables from 6.1 have io_file_need_scm() stub function which
-usage is effectively equivalent to dropping most of SCM-related code.
-
-5.4 seems not to be affected with this problem since SCM-related
-functions have been dropped there by the backport-patch.
-
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
-
-Fixes: 705318a99a13 ("io_uring/af_unix: disable sending io_uring over sockets")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
-I feel io_uring-SCM related code should be dropped entirely from the
-stable branches as the backports already differ greatly between versions
-and some parts are still kept, some have been dropped in a non-consistent
-order. Though this might contradict with stable kernel rules or be
-inappropriate for some other reason.
-
- io_uring/io_uring.c | 177 --------------------------------------------
- 1 file changed, 177 deletions(-)
-
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index 936abc6ee450..6ad078a3bf30 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -62,7 +62,6 @@
- #include <linux/net.h>
- #include <net/sock.h>
- #include <net/af_unix.h>
--#include <net/scm.h>
- #include <linux/anon_inodes.h>
- #include <linux/sched/mm.h>
- #include <linux/uaccess.h>
-@@ -7989,15 +7988,6 @@ static void io_free_file_tables(struct io_file_table *table)
- 
- static void __io_sqe_files_unregister(struct io_ring_ctx *ctx)
- {
--#if defined(CONFIG_UNIX)
--	if (ctx->ring_sock) {
--		struct sock *sock = ctx->ring_sock->sk;
--		struct sk_buff *skb;
--
--		while ((skb = skb_dequeue(&sock->sk_receive_queue)) != NULL)
--			kfree_skb(skb);
--	}
--#else
- 	int i;
- 
- 	for (i = 0; i < ctx->nr_user_files; i++) {
-@@ -8007,7 +7997,6 @@ static void __io_sqe_files_unregister(struct io_ring_ctx *ctx)
- 		if (file)
- 			fput(file);
- 	}
--#endif
- 	io_free_file_tables(&ctx->file_table);
- 	io_rsrc_data_free(ctx->file_data);
- 	ctx->file_data = NULL;
-@@ -8159,170 +8148,10 @@ static struct io_sq_data *io_get_sq_data(struct io_uring_params *p,
- 	return sqd;
- }
- 
--#if defined(CONFIG_UNIX)
--/*
-- * Ensure the UNIX gc is aware of our file set, so we are certain that
-- * the io_uring can be safely unregistered on process exit, even if we have
-- * loops in the file referencing.
-- */
--static int __io_sqe_files_scm(struct io_ring_ctx *ctx, int nr, int offset)
--{
--	struct sock *sk = ctx->ring_sock->sk;
--	struct scm_fp_list *fpl;
--	struct sk_buff *skb;
--	int i, nr_files;
--
--	fpl = kzalloc(sizeof(*fpl), GFP_KERNEL);
--	if (!fpl)
--		return -ENOMEM;
--
--	skb = alloc_skb(0, GFP_KERNEL);
--	if (!skb) {
--		kfree(fpl);
--		return -ENOMEM;
--	}
--
--	skb->sk = sk;
--	skb->scm_io_uring = 1;
--
--	nr_files = 0;
--	fpl->user = get_uid(current_user());
--	for (i = 0; i < nr; i++) {
--		struct file *file = io_file_from_index(ctx, i + offset);
--
--		if (!file)
--			continue;
--		fpl->fp[nr_files] = get_file(file);
--		unix_inflight(fpl->user, fpl->fp[nr_files]);
--		nr_files++;
--	}
--
--	if (nr_files) {
--		fpl->max = SCM_MAX_FD;
--		fpl->count = nr_files;
--		UNIXCB(skb).fp = fpl;
--		skb->destructor = unix_destruct_scm;
--		refcount_add(skb->truesize, &sk->sk_wmem_alloc);
--		skb_queue_head(&sk->sk_receive_queue, skb);
--
--		for (i = 0; i < nr; i++) {
--			struct file *file = io_file_from_index(ctx, i + offset);
--
--			if (file)
--				fput(file);
--		}
--	} else {
--		kfree_skb(skb);
--		free_uid(fpl->user);
--		kfree(fpl);
--	}
--
--	return 0;
--}
--
--/*
-- * If UNIX sockets are enabled, fd passing can cause a reference cycle which
-- * causes regular reference counting to break down. We rely on the UNIX
-- * garbage collection to take care of this problem for us.
-- */
--static int io_sqe_files_scm(struct io_ring_ctx *ctx)
--{
--	unsigned left, total;
--	int ret = 0;
--
--	total = 0;
--	left = ctx->nr_user_files;
--	while (left) {
--		unsigned this_files = min_t(unsigned, left, SCM_MAX_FD);
--
--		ret = __io_sqe_files_scm(ctx, this_files, total);
--		if (ret)
--			break;
--		left -= this_files;
--		total += this_files;
--	}
--
--	if (!ret)
--		return 0;
--
--	while (total < ctx->nr_user_files) {
--		struct file *file = io_file_from_index(ctx, total);
--
--		if (file)
--			fput(file);
--		total++;
--	}
--
--	return ret;
--}
--#else
--static int io_sqe_files_scm(struct io_ring_ctx *ctx)
--{
--	return 0;
--}
--#endif
--
- static void io_rsrc_file_put(struct io_ring_ctx *ctx, struct io_rsrc_put *prsrc)
- {
- 	struct file *file = prsrc->file;
--#if defined(CONFIG_UNIX)
--	struct sock *sock = ctx->ring_sock->sk;
--	struct sk_buff_head list, *head = &sock->sk_receive_queue;
--	struct sk_buff *skb;
--	int i;
--
--	__skb_queue_head_init(&list);
--
--	/*
--	 * Find the skb that holds this file in its SCM_RIGHTS. When found,
--	 * remove this entry and rearrange the file array.
--	 */
--	skb = skb_dequeue(head);
--	while (skb) {
--		struct scm_fp_list *fp;
--
--		fp = UNIXCB(skb).fp;
--		for (i = 0; i < fp->count; i++) {
--			int left;
--
--			if (fp->fp[i] != file)
--				continue;
--
--			unix_notinflight(fp->user, fp->fp[i]);
--			left = fp->count - 1 - i;
--			if (left) {
--				memmove(&fp->fp[i], &fp->fp[i + 1],
--						left * sizeof(struct file *));
--			}
--			fp->count--;
--			if (!fp->count) {
--				kfree_skb(skb);
--				skb = NULL;
--			} else {
--				__skb_queue_tail(&list, skb);
--			}
--			fput(file);
--			file = NULL;
--			break;
--		}
--
--		if (!file)
--			break;
--
--		__skb_queue_tail(&list, skb);
--
--		skb = skb_dequeue(head);
--	}
--
--	if (skb_peek(&list)) {
--		spin_lock_irq(&head->lock);
--		while ((skb = __skb_dequeue(&list)) != NULL)
--			__skb_queue_tail(head, skb);
--		spin_unlock_irq(&head->lock);
--	}
--#else
- 	fput(file);
--#endif
- }
- 
- static void __io_rsrc_put_work(struct io_rsrc_node *ref_node)
-@@ -8433,12 +8262,6 @@ static int io_sqe_files_register(struct io_ring_ctx *ctx, void __user *arg,
- 		io_fixed_file_set(io_fixed_file_slot(&ctx->file_table, i), file);
- 	}
- 
--	ret = io_sqe_files_scm(ctx);
--	if (ret) {
--		__io_sqe_files_unregister(ctx);
--		return ret;
--	}
--
- 	io_rsrc_node_switch(ctx, NULL);
- 	return ret;
- out_fput:
--- 
-2.44.0
-
+>
+> Thanks,
+>
+>         tglx
 
