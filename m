@@ -1,84 +1,83 @@
-Return-Path: <linux-kernel+bounces-99748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A135878C96
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:54:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36A4E878C9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:56:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABD5D281751
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:54:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 064D9B21746
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:56:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F076FB2;
-	Tue, 12 Mar 2024 01:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6966FB9;
+	Tue, 12 Mar 2024 01:55:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="gqzO+a1j"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XUhqZm9T"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CBB61C17
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 01:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE8215BF;
+	Tue, 12 Mar 2024 01:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710208438; cv=none; b=Vn7L0c6KPiaiIbWKWl9Hq3dzg+2Zhg5qQJvymlvKjYsKJIa/yuDs7y30fziomhQkJdtpkPwU1WYtoURkThAPXXLZz7NfmJot5EUQuACBqkcRigf/sXidCD3+KkpUlL83norMeHfUpotx8MRPBB/3lzK/fSvXiW4VEMRVfmYvZSk=
+	t=1710208547; cv=none; b=RTtF7QFrsxIi34zqmdAwM5iw6niv5MhhshqeCYuvOEEYAaA5yzOvbeYK2Ctt1BqML15fVZaWsnrctAK3moM2mIXOlRhEJ0zpfPM/lI3KPZRe7fj2ebmRpOi9+61TsL6sJZeG0V0uQ/lhSXaI44VYeq5OTCvtSa4Ldt/CPRzxUYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710208438; c=relaxed/simple;
-	bh=I3fTBn/wVvCv8wJz3S0c7XFDmGuGRN+xuP6W+JUCPFI=;
+	s=arc-20240116; t=1710208547; c=relaxed/simple;
+	bh=zshZgIMKPMwYAHrRgT1ICEsjyoVZMcPQc3ur1N+Oe4Y=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ux6xq5QWKApmj7XyOLzd3TXHCTbxX47hGI/0GLPiZZ4WKlJuBukoYvF6qyxI9E5Czyk6VWIgCjJfvWKIs3bNLezvseypMj4VquCKl2XE+eBYcRzBaHcuI+vKs1AoYppkBohVHb5iL3e4WYfZJpoxN5u2dEBmNCIHM+Mr/jyYQ7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=gqzO+a1j; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5dc949f998fso4625370a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 18:53:56 -0700 (PDT)
+	 To:Cc:Content-Type; b=qz8M+N0mklDlU9KkAQ98LT4iuzyMhXVetSNt3jbUxYiQFvTISwdNi7aPmHVmAODUSJZGcrQar4bWwQKDM6w9zggw12brNDxprWc4vTOQhX5HOwGyhf0FsfVYa7aiDLUEXyLbADI6g1Pc/FyVAO8ouhvzBILtrdPU0BGzQvJ2jas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XUhqZm9T; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33e959d8bc0so1541033f8f.1;
+        Mon, 11 Mar 2024 18:55:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1710208436; x=1710813236; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710208543; x=1710813343; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m+8U24REJsycoMY3gapLXd6No4Kdp5va5OvGqVZaNtY=;
-        b=gqzO+a1jjHOI/w0pMfToI1QKtDcRnyMXI1L4htcnM9oM3BxUP5MzM64TykQ1A/w61B
-         6SN/UpkjdOP/nLhZYMxzhkf8I1bt098WSz2tbezMnBmbXzK1vSkzxRCr8zwY23epb+Hq
-         DwyNxPr4uAglsLiod8M5wN3XSVQztL9k2Tp8h+TsVRhyLfTqLN4yAscHjE9s4XdONMG6
-         rQI98uDiDheGtIYYe3ikSJZFDL+DpK7Fof38hYjjh7hhvmvNvRVBJ9z6xdbZtgnGTfww
-         0s9ah7zPLeQ/eP8dnV6Ocnt06QcFG5Mz3K5dRAaYWlLI7UWaVi0l8kTd77ldtBLe7SAP
-         DjMg==
+        bh=qUQTgV/c1LY6TxFowY3rUQdPlQN/M6/pFPRnz+ClL7I=;
+        b=XUhqZm9TlkZPioqABRqiq039TeH1jzD3vYOdz1n0kYugPuTlsMQ2J4mPd1oOcKvQgA
+         Iy1Ta6Wejb1yIxbVOtqiyvyRg5v3lSUShVjYcKz48BDR5urY0AG/CoUVzGfPOePnKQoQ
+         pJ0UzOjcBqv4wRnwyrJRius+tjaBydacWFvw2dYdp2gXx8XrD/YWSo+rPMlMT9DC5/0j
+         cwqpqavJohYoF4xGXbUWGvTALrUIx2zceA5ctfO/wKj9mloyZLot12+cPp0iLm0KONx9
+         tWGupsb23beyQgARD0oY85c+pJcNHJNfBqkZRKCe318n5Inyx942F99YuzGTa1eHhjHP
+         ymUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710208436; x=1710813236;
+        d=1e100.net; s=20230601; t=1710208543; x=1710813343;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m+8U24REJsycoMY3gapLXd6No4Kdp5va5OvGqVZaNtY=;
-        b=hOT38En+hg8VmuB1Exs/ZWlMvfvqGWziVugbFbogOxxMVuOXUzxWN/O52HfIK4xaWd
-         7vUcSjlPdjQwBdRNxqfsM5Hqdxwd1ZQiJuy1jvPS/NzzzxO9z+J0iL3ic1mbhCYtQuW+
-         lyPDx4VTxvOrJjHxvpLd2yDPKTdqm06cS2IGJUIqbd3/Ptglc8vWxusKljaCGxU7VBLe
-         A+/sCgygfMX0IuUfcmcD0roH2g5HJmk0yhj4n0fT3rt8fnVDycUL0TgeRVdrwXv2uBrU
-         GxhbA/FDvuoNQy05VPhlNWZ8Ha/q0CtkX1lHoNFimBIMQo/sRmVvJZBNLpHbWt5QoIz+
-         E7ow==
-X-Forwarded-Encrypted: i=1; AJvYcCUpd/bz0Z9onJ3hHASGOoBYjCNWrWQuVJhGxoN7K8GZz/FTJ3dHUIq44YoU3P75pAvftsgydXMCtg+wrQBynQ3N0GtGIAczSCZBR+nO
-X-Gm-Message-State: AOJu0YwcSw1L0CdfkAAAgAoP8Fjr8LJ0Jc8Ws+fiCLQkDxOwQRRBPOMK
-	0phgQAm0dsezZBQ0kF0RHA8LYU7OUCvkLn9pNS29sobXQXIrDPhGwQY7Y5WuePXocaNWJfu6bEO
-	FUUlkJ4tmzA9iTK/KRhdetZkDme5lLTeZae/JlQ==
-X-Google-Smtp-Source: AGHT+IGOVuFmtgDB4ZKZlti8h1HNW5R33qsIGe5aBgT97QBW6StCjxMixdB7ixy5JtN/Q4HVD/m09pDHUBGfcjfmCjc=
-X-Received: by 2002:a05:6a20:429a:b0:1a1:4a4c:9f5e with SMTP id
- o26-20020a056a20429a00b001a14a4c9f5emr646029pzj.49.1710208436407; Mon, 11 Mar
- 2024 18:53:56 -0700 (PDT)
+        bh=qUQTgV/c1LY6TxFowY3rUQdPlQN/M6/pFPRnz+ClL7I=;
+        b=bC/755AlKCrcGKXTfwntJdvqB5kbWk7+vcVjzxypn8JwE5oHkaXzO9RjJnexjfgrgR
+         3c14VJL+Xq6o+bOFWdngOqkQLJzMepX7JllBCifX1PPAen1cz12Q+b45JvIW59cGwf7v
+         eb2VmTKWaDqEmXjVtZy0f4CqANO5j9SALmmDZoFMBlsLQaaVYezPmRUYM0r4PAsLGOKr
+         ltHGZVOOKE9N9sb0CApMqudF/LQZ3BOirfLRupSVLJaNMp+n7zrcg7qTUhioZvlWkxmr
+         uxgDxRYhhU4kS6ADRcmsJE6ghUGvX2RAJRTRb3+O1WnbE6/Emm5/UlARaVc29FPJiz+H
+         IO1w==
+X-Forwarded-Encrypted: i=1; AJvYcCUP9C+Dq5rVZtfw5eOZm4zC6gZc+Yy1oEzFXMFgfb7V95vyVjFrOGSVlNCCMOegOqCv6PEvDQafR31jleqq7/ntZV12ah6XvtNFvlix4zqeJj4I3RT3ljhexi//uUvF4MSJEy5jQ+zysdfjJhpeE73JVgYBsvWuBnHOt9TqqYn3rxg3zhplaTH9mBQ6uflaB+jCUoQu7xVyBcTGshum8moLxnwSeQkJev/qImNWjDiBEqSQ11enKWse/zG9hsx8b1GolmMupcFZh+UJxICu/6GeuvKqlqcYg70dYg==
+X-Gm-Message-State: AOJu0Yyq04wMSJHx7NBO0FtZ2ytz837FXkSsxMl/QsCukO+GT/D+WOZs
+	MFH4f5WXelTVfO7hWbqSSohVWadkwwEIJhdCJ+vo4NLq3DB7GaZqYizRmkdK4rrNekGU77sF6YU
+	4cfLjLfKipJaub1eAdifJvs5io8E=
+X-Google-Smtp-Source: AGHT+IF9WvwCtzNHUsfNfLjeVXn5IKrULfW4spgTCxiFBM0s3KVbOpftBxulltD2FNgWguOKkvH7qH1ag5mO6L5+G/8=
+X-Received: by 2002:adf:ec8c:0:b0:33e:1ee1:ef92 with SMTP id
+ z12-20020adfec8c000000b0033e1ee1ef92mr6682508wrn.67.1710208543538; Mon, 11
+ Mar 2024 18:55:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
- <20240311093526.1010158-3-dongmenglong.8@bytedance.com> <CAADnVQK57PziY+xdzW=d3HaG-bn87E3p9zf7thvmqV1t0iR4Yg@mail.gmail.com>
-In-Reply-To: <CAADnVQK57PziY+xdzW=d3HaG-bn87E3p9zf7thvmqV1t0iR4Yg@mail.gmail.com>
-From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Date: Tue, 12 Mar 2024 09:53:45 +0800
-Message-ID: <CALz3k9jNY8NmB-=qKogA=WVC1dGA=git_hy95UoJV2=KLfhb5g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next v2 2/9] bpf: refactor the
- modules_array to ptr_array
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com> <20240311093526.1010158-8-dongmenglong.8@bytedance.com>
+In-Reply-To: <20240311093526.1010158-8-dongmenglong.8@bytedance.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 11 Mar 2024 18:55:32 -0700
+Message-ID: <CAADnVQK4tdefa3s=sim69Sc+ztd-hHohPEDXaUNVTU-mLNYUiw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 7/9] libbpf: don't free btf if program of
+ multi-link tracing existing
+To: Menglong Dong <dongmenglong.8@bytedance.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
 	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
@@ -97,106 +96,114 @@ Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 9:49=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Mon, Mar 11, 2024 at 2:35=E2=80=AFAM Menglong Dong
+<dongmenglong.8@bytedance.com> wrote:
 >
-> On Mon, Mar 11, 2024 at 2:34=E2=80=AFAM Menglong Dong
-> <dongmenglong.8@bytedance.com> wrote:
-> >
-> > Refactor the struct modules_array to more general struct ptr_array, whi=
-ch
-> > is used to store the pointers.
-> >
-> > Meanwhiles, introduce the bpf_try_add_ptr(), which checks the existing =
-of
-> > the ptr before adding it to the array.
-> >
-> > Seems it should be moved to another files in "lib", and I'm not sure wh=
-ere
-> > to add it now, and let's move it to kernel/bpf/syscall.c for now.
-> >
-> > Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
-> > ---
-> >  include/linux/bpf.h      | 10 +++++++++
-> >  kernel/bpf/syscall.c     | 37 +++++++++++++++++++++++++++++++
-> >  kernel/trace/bpf_trace.c | 48 ++++++----------------------------------
-> >  3 files changed, 54 insertions(+), 41 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 0f677fdcfcc7..997765cdf474 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -304,6 +304,16 @@ struct bpf_map {
-> >         s64 __percpu *elem_count;
-> >  };
-> >
-> > +struct ptr_array {
-> > +       void **ptrs;
-> > +       int cnt;
-> > +       int cap;
-> > +};
-> > +
-> > +int bpf_add_ptr(struct ptr_array *arr, void *ptr);
-> > +bool bpf_has_ptr(struct ptr_array *arr, struct module *mod);
-> > +int bpf_try_add_ptr(struct ptr_array *arr, void *ptr);
-> > +
-> >  static inline const char *btf_field_type_name(enum btf_field_type type=
-)
-> >  {
-> >         switch (type) {
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index f63f4da4db5e..4f230fd1f8e4 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -479,6 +479,43 @@ static void bpf_map_release_memcg(struct bpf_map *=
-map)
-> >  }
-> >  #endif
-> >
-> > +int bpf_add_ptr(struct ptr_array *arr, void *ptr)
-> > +{
-> > +       void **ptrs;
-> > +
-> > +       if (arr->cnt =3D=3D arr->cap) {
-> > +               arr->cap =3D max(16, arr->cap * 3 / 2);
-> > +               ptrs =3D krealloc_array(arr->ptrs, arr->cap, sizeof(*pt=
-rs), GFP_KERNEL);
-> > +               if (!ptrs)
-> > +                       return -ENOMEM;
-> > +               arr->ptrs =3D ptrs;
-> > +       }
-> > +
-> > +       arr->ptrs[arr->cnt] =3D ptr;
-> > +       arr->cnt++;
-> > +       return 0;
-> > +}
-> > +
-> > +bool bpf_has_ptr(struct ptr_array *arr, struct module *mod)
+> By default, the kernel btf that we load during loading program will be
+> freed after the programs are loaded in bpf_object_load(). However, we
+> still need to use these btf for tracing of multi-link during attaching.
+> Therefore, we don't free the btfs until the bpf object is closed if any
+> bpf programs of the type multi-link tracing exist.
 >
-> Don't you need 'void *mod' here?
+> Meanwhile, introduce the new api bpf_object__free_btf() to manually free
+> the btfs after attaching.
 >
+> Signed-off-by: Menglong Dong <dongmenglong.8@bytedance.com>
+> ---
+>  tools/lib/bpf/libbpf.c   | 47 ++++++++++++++++++++++++++++++----------
+>  tools/lib/bpf/libbpf.h   |  2 ++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 38 insertions(+), 12 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 567ad367e7aa..fd5428494a7e 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8267,6 +8267,39 @@ static int bpf_object_prepare_struct_ops(struct bp=
+f_object *obj)
+>         return 0;
+>  }
+>
+> +void bpf_object__free_btfs(struct bpf_object *obj)
+> +{
+> +       int i;
+> +
+> +       /* clean up module BTFs */
+> +       for (i =3D 0; i < obj->btf_module_cnt; i++) {
+> +               close(obj->btf_modules[i].fd);
+> +               btf__free(obj->btf_modules[i].btf);
+> +               free(obj->btf_modules[i].name);
+> +       }
+> +       free(obj->btf_modules);
+> +       obj->btf_modules =3D NULL;
+> +       obj->btf_module_cnt =3D 0;
+> +
+> +       /* clean up vmlinux BTF */
+> +       btf__free(obj->btf_vmlinux);
+> +       obj->btf_vmlinux =3D NULL;
+> +}
+> +
+> +static void bpf_object_early_free_btf(struct bpf_object *obj)
+> +{
+> +       struct bpf_program *prog;
+> +
+> +       bpf_object__for_each_program(prog, obj) {
+> +               if (prog->expected_attach_type =3D=3D BPF_TRACE_FENTRY_MU=
+LTI ||
+> +                   prog->expected_attach_type =3D=3D BPF_TRACE_FEXIT_MUL=
+TI ||
+> +                   prog->expected_attach_type =3D=3D BPF_MODIFY_RETURN_M=
+ULTI)
+> +                       return;
+> +       }
+> +
+> +       bpf_object__free_btfs(obj);
+> +}
+> +
+>  static int bpf_object_load(struct bpf_object *obj, int extra_log_level, =
+const char *target_btf_path)
+>  {
+>         int err, i;
+> @@ -8307,18 +8340,7 @@ static int bpf_object_load(struct bpf_object *obj,=
+ int extra_log_level, const ch
+>         /* clean up fd_array */
+>         zfree(&obj->fd_array);
+>
+> -       /* clean up module BTFs */
+> -       for (i =3D 0; i < obj->btf_module_cnt; i++) {
+> -               close(obj->btf_modules[i].fd);
+> -               btf__free(obj->btf_modules[i].btf);
+> -               free(obj->btf_modules[i].name);
+> -       }
+> -       free(obj->btf_modules);
+> -
+> -       /* clean up vmlinux BTF */
+> -       btf__free(obj->btf_vmlinux);
+> -       obj->btf_vmlinux =3D NULL;
+> -
+> +       bpf_object_early_free_btf(obj);
+>         obj->loaded =3D true; /* doesn't matter if successfully or not */
+>
+>         if (err)
+> @@ -8791,6 +8813,7 @@ void bpf_object__close(struct bpf_object *obj)
+>         usdt_manager_free(obj->usdt_man);
+>         obj->usdt_man =3D NULL;
+>
+> +       bpf_object__free_btfs(obj);
+>         bpf_gen__free(obj->gen_loader);
+>         bpf_object__elf_finish(obj);
+>         bpf_object_unload(obj);
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 5723cbbfcc41..c41a909ea4c1 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -299,6 +299,8 @@ LIBBPF_API struct bpf_program *
+>  bpf_object__find_program_by_name(const struct bpf_object *obj,
+>                                  const char *name);
+>
+> +LIBBPF_API void bpf_object__free_btfs(struct bpf_object *obj);
+> +
 
-Oops, it should be void *ptr here, my mistake~
-
-> > +{
-> > +       int i;
-> > +
-> > +       for (i =3D arr->cnt - 1; i >=3D 0; i--) {
-> > +               if (arr->ptrs[i] =3D=3D mod)
-> > +                       return true;
-> > +       }
-> > +       return false;
-> > +}
->
-> ...
->
-> > -               kprobe_multi_put_modules(arr.mods, arr.mods_cnt);
-> > -               kfree(arr.mods);
-> > +               kprobe_multi_put_modules((struct module **)arr.ptrs, ar=
-r.cnt);
->
-> Do you really need to type cast? Compiler doesn't convert void**
-> automatically?
-
-Yeah, the compiler reports errors without this casting.
+It shouldn't be exported.
+libbpf should clean it up when bpf_object is freed.
 
