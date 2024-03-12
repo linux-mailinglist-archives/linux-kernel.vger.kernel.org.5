@@ -1,118 +1,159 @@
-Return-Path: <linux-kernel+bounces-100812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F954879D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:38:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B4AC879D8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:39:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DDC41F224CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:38:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8FA7283493
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:39:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6237143734;
-	Tue, 12 Mar 2024 21:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="SzI4tb33"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E24D143740;
+	Tue, 12 Mar 2024 21:39:14 +0000 (UTC)
+Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645DC4CDE0
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:37:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11D44CDE0;
+	Tue, 12 Mar 2024 21:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710279473; cv=none; b=qbfUF388vu4JQZJUTKFaEljCYPL+qKOfuQ4keq2zn4jxOB8Wq84z6DwsewGxqmKjQUIXXBMijwZ36m2pRLAtD0MXu/vMhP4xwNGQNJ2d7yhJ3p9nFkAsWKzhSQNUn4/CZGzIuVFBui0pFS8LdJT4dixxTPALyOsdhyIh8ArWOmY=
+	t=1710279554; cv=none; b=EXwOpLp4knaiArh4dBR7OBXF4to6y403m1kB20skn5o9aVnjuRInqV+BPNvKGEVdcXgXJ/ixRp9FbqC0cpRVOfxXXQIjlHYOvxDvsOro2lf1ciHqN0w/CDdU1l0c0QB7cVCKaozHbHcOPaau3aLShDR9tKMX5Cka9E78x1AVq4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710279473; c=relaxed/simple;
-	bh=KYZS8k9mVRtK7VpRUxpvKuIvX9l0yqURCDNIPiro8Pw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eFGnYRcmu3C6OcBRTNKV6eTLkfhpj2dG0kBGLYFAcrDM36PIlZizAHdkWtYmDEQPfhspEtMgkbCTMHf7QP1vF7JbfxBhnTSe9ZtHEyKKKYDvtpCu6kLzX8rPw0PwlKbp7cbkqiFyhN/vdb5vRi4nrtQGbKHVYsOcH/Q4qBoyKd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=SzI4tb33; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [IPV6:2601:646:8002:4640:7285:c2ff:fefb:fd4] ([IPv6:2601:646:8002:4640:7285:c2ff:fefb:fd4])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42CLaWIK1697040
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Tue, 12 Mar 2024 14:36:33 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42CLaWIK1697040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024021201; t=1710279397;
-	bh=RJ6XaDgEz2DLax9EMzFHq+cdHoLC0FUJtliEoq1/zbc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=SzI4tb33XKwcapGVtECc4PFS1Mg6xwLKcQe85zGUfzhNscSAFhHM+mpedeoD9/Mnw
-	 ttyeN60qWpkCDe+8ZbUGpbEU7MQ2IYgDiIydtsWVa/QNBe0FoAQwD8Q9txbUIJErF3
-	 nMyZqkcLHfAuSQspvc5Z0SvNY4YuQcHHtUgkk0oTvKfXWhGto36ljWImPF5N2QpuHZ
-	 SCBOlR9Kyuv25sGz6LBdozcKXfm5Sk4ZgEeuPtbWJNKL3w74Ul3AUOf8aNP0XXEMAR
-	 PpGrBpPrdAKQ9ipTDJswtiZoiCpvkR4G5avDtj1PdYJm6vdbSOMUWOKLux28kGtio7
-	 vOneQoNEQEeAg==
-Message-ID: <f949f712-eacf-49a0-91ea-8062e2d1f5e0@zytor.com>
-Date: Tue, 12 Mar 2024 14:36:27 -0700
+	s=arc-20240116; t=1710279554; c=relaxed/simple;
+	bh=jCOUl/hgH4m5xXQ4Gf/fSkRvMuN269rszqvSe0P/8zE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ql2uXgWMDao/ejTiFbI5Zx7CkoeXZvPKgj5C+FohHfxdwEJss6oM4+t1uM73KiB57DIXBsjCjAapLDYR6OILUHMP7GGmIMmsmt8qTe8KQ0jK0XS4xgB1KH6z50Q2LFfD+cfz7dISWO8wDo6rPgWkNAaf5Ygkq8ZeyschnKVfe7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
+Received: from localhost (localhost [127.0.0.1])
+	by sonata.ens-lyon.org (Postfix) with ESMTP id 70816A034B;
+	Tue, 12 Mar 2024 22:39:03 +0100 (CET)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id lKQgqEeYEGbq; Tue, 12 Mar 2024 22:39:03 +0100 (CET)
+Received: from begin.home (aamiens-653-1-111-57.w83-192.abo.wanadoo.fr [83.192.234.57])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by sonata.ens-lyon.org (Postfix) with ESMTPSA id 1ECC4A02D1;
+	Tue, 12 Mar 2024 22:39:03 +0100 (CET)
+Received: from samy by begin.home with local (Exim 4.97)
+	(envelope-from <samuel.thibault@ens-lyon.org>)
+	id 1rk9pu-000000076so-2s5z;
+	Tue, 12 Mar 2024 22:39:02 +0100
+Date: Tue, 12 Mar 2024 22:39:02 +0100
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+To: Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
+	Alexey Gladkov <legion@kernel.org>,
+	Jiry Slaby <jirislaby@kernel.org>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] fbcon: Increase maximum font width x height to 64 x 64
+Message-ID: <20240312213902.3zvqaghlopjusv6m@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
+	Alexey Gladkov <legion@kernel.org>,
+	Jiry Slaby <jirislaby@kernel.org>, linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-Content-Language: en-US
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de,
-        brauner@kernel.org, bristot@redhat.com, bsegall@google.com,
-        dave.hansen@linux.intel.com, dianders@chromium.org,
-        dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com,
-        hch@infradead.org, jacob.jun.pan@linux.intel.com, jgg@ziepe.ca,
-        jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com,
-        kent.overstreet@linux.dev, kinseyho@google.com,
-        kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org,
-        mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com,
-        mingo@redhat.com, mjguzik@gmail.com, mst@redhat.com, npiggin@gmail.com,
-        peterz@infradead.org, pmladek@suse.com, rick.p.edgecombe@intel.com,
-        rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de,
-        urezki@gmail.com, vincent.guittot@linaro.org, vschneid@redhat.com
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com>
- <CA+CK2bC+bgOfohCEEW7nwAdakVmzg=RhUjjw=+Rw3wFALnOq-Q@mail.gmail.com>
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <CA+CK2bC+bgOfohCEEW7nwAdakVmzg=RhUjjw=+Rw3wFALnOq-Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20170609 (1.8.3)
 
-On 3/12/24 12:45, Pasha Tatashin wrote:
->>
->> Ok, first of all, talking about "kernel memory" here is misleading.
-> 
-> Hi Peter,
-> 
-> I re-read my cover letter, and I do not see where "kernel memory" is
-> mentioned. We are talking about kernel stacks overhead that is
-> proportional to the user workload, as every active thread has an
-> associated kernel stack. The idea is to save memory by not
-> pre-allocating all pages of kernel-stacks, but instead use it as a
-> safeguard when a stack actually becomes deep. Come-up with a solution
-> that can handle rare deeper stacks only when needed. This could be
-> done through faulting on the supported hardware (as proposed in this
-> series), or via pre-map on every schedule event, and checking the
-> access when thread goes off cpu (as proposed by Andy Lutomirski to
-> avoid double faults on x86) .
-> 
-> In other words, this feature is only about one very specific type of
-> kernel memory that is not even directly mapped (the feature required
-> vmapped stacks).
-> 
->> Unless your threads are spending nearly all their time sleeping, the
->> threads will occupy stack and TLS memory in user space as well.
-> 
-> Can you please elaborate, what data is contained in the kernel stack
-> when thread is in user space? My series requires thread_info not to be
-> in the stack by depending on THREAD_INFO_IN_TASK.
-> 
+This remains relatively simple by just enlarging integers.
 
-My point is that what matters is total memory use, not just memory used 
-in the kernel. Amdahl's law.
+It wouldn't be that simple to get to the console's 64x128 maximum, as it would
+require 128b integers.
 
-	-hpa
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
+Index: linux-6.4/drivers/video/fbdev/core/fbcon.c
+===================================================================
+--- linux-6.4.orig/drivers/video/fbdev/core/fbcon.c
++++ linux-6.4/drivers/video/fbdev/core/fbcon.c
+@@ -101,6 +101,9 @@ enum {
+ 	FBCON_LOGO_DONTSHOW	= -3	/* do not show the logo */
+ };
+ 
++#define FBCON_MAX_FONT_WIDTH	(sizeof(((struct fb_pixmap *) 0)->blit_x) * 8)
++#define FBCON_MAX_FONT_HEIGHT	(sizeof(((struct fb_pixmap *) 0)->blit_y) * 8)
++
+ static struct fbcon_display fb_display[MAX_NR_CONSOLES];
+ 
+ struct fb_info *fbcon_registered_fb[FB_MAX];
+@@ -2485,12 +2488,12 @@ static int fbcon_set_font(struct vc_data
+ 	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
+ 		return -EINVAL;
+ 
+-	if (font->width > 32 || font->height > 32)
++	if (font->width > FBCON_MAX_FONT_WIDTH || font->height > FBCON_MAX_FONT_HEIGHT)
+ 		return -EINVAL;
+ 
+ 	/* Make sure drawing engine can handle the font */
+-	if (!(info->pixmap.blit_x & BIT(font->width - 1)) ||
+-	    !(info->pixmap.blit_y & BIT(font->height - 1)))
++	if (!(info->pixmap.blit_x & BIT_ULL(font->width - 1)) ||
++	    !(info->pixmap.blit_y & BIT_ULL(font->height - 1)))
+ 		return -EINVAL;
+ 
+ 	/* Make sure driver can handle the font length */
+@@ -3084,8 +3087,8 @@ void fbcon_get_requirement(struct fb_inf
+ 			vc = vc_cons[i].d;
+ 			if (vc && vc->vc_mode == KD_TEXT &&
+ 			    info->node == con2fb_map[i]) {
+-				caps->x |= 1 << (vc->vc_font.width - 1);
+-				caps->y |= 1 << (vc->vc_font.height - 1);
++				caps->x |= 1ULL << (vc->vc_font.width - 1);
++				caps->y |= 1ULL << (vc->vc_font.height - 1);
+ 				charcnt = vc->vc_font.charcount;
+ 				if (caps->len < charcnt)
+ 					caps->len = charcnt;
+@@ -3096,8 +3099,8 @@ void fbcon_get_requirement(struct fb_inf
+ 
+ 		if (vc && vc->vc_mode == KD_TEXT &&
+ 		    info->node == con2fb_map[fg_console]) {
+-			caps->x = 1 << (vc->vc_font.width - 1);
+-			caps->y = 1 << (vc->vc_font.height - 1);
++			caps->x = 1ULL << (vc->vc_font.width - 1);
++			caps->y = 1ULL << (vc->vc_font.height - 1);
+ 			caps->len = vc->vc_font.charcount;
+ 		}
+ 	}
+Index: linux-6.4/include/linux/fb.h
+===================================================================
+--- linux-6.4.orig/include/linux/fb.h
++++ linux-6.4/include/linux/fb.h
+@@ -143,8 +143,8 @@ struct fb_event {
+ };
+ 
+ struct fb_blit_caps {
+-	u32 x;
+-	u32 y;
++	u64 x;
++	u64 y;
+ 	u32 len;
+ 	u32 flags;
+ };
+@@ -191,10 +191,10 @@ struct fb_pixmap {
+ 	u32 scan_align;		/* alignment per scanline		*/
+ 	u32 access_align;	/* alignment per read/write (bits)	*/
+ 	u32 flags;		/* see FB_PIXMAP_*			*/
+-	u32 blit_x;             /* supported bit block dimensions (1-32)*/
+-	u32 blit_y;             /* Format: blit_x = 1 << (width - 1)    */
++	u64 blit_x;             /* supported bit block dimensions (1-64)*/
++	u64 blit_y;             /* Format: blit_x = 1 << (width - 1)    */
+ 	                        /*         blit_y = 1 << (height - 1)   */
+-	                        /* if 0, will be set to 0xffffffff (all)*/
++	                        /* if 0, will be set to ~0ull (all)     */
+ 	/* access methods */
+ 	void (*writeio)(struct fb_info *info, void __iomem *dst, void *src, unsigned int size);
+ 	void (*readio) (struct fb_info *info, void *dst, void __iomem *src, unsigned int size);
 
