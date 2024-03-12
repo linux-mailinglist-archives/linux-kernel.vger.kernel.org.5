@@ -1,161 +1,136 @@
-Return-Path: <linux-kernel+bounces-99781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A1B878D37
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:56:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ADB7878D3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 749DB1F221F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:56:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6D64B21F6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE428F5D;
-	Tue, 12 Mar 2024 02:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216BAAD53;
+	Tue, 12 Mar 2024 02:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TI6RKdtH"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="d2Ova4t3"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E6A79C3;
-	Tue, 12 Mar 2024 02:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4180B67F
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710212175; cv=none; b=TJ0rKAAx3NldJFWjBGM4udEr2/n5m0GkU7HChYjrCNGPlZF7FeM0iyrmVspFU00sIgsH71t5J3UHIh8Qi3CPWmJ+lreu/Xpna2XNZFHWnPBsijkPUUD8IORhlE6JR1yinVmxeZCK/f70QqfFg49DDpeooMt+Ky+Rxy+7c29uN/E=
+	t=1710212195; cv=none; b=UfAJ451iNtlMxjRieErBMTD90ZlxBvdZX75J2FJwn409wESBj98AtxlB+Ge8In9BwiyLhrLrPtmRIKb4K8RL+ztzOHN947pOwiE42QHEMjnTtG/jn08c1cjfNOMPqomFzUYYEIIPV6hNhCD3NARdj3bqx+QsG9jxx/X/iPwHsQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710212175; c=relaxed/simple;
-	bh=Byby3dPab9clHdBpqGNxzWvALlnFyqoIXHFndqlr3zc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UuNzHOhItCO6TRO7DPrk2NGnfbpirGOLb4NxAXTPhvK9/nN2g012GKjazwmNa9d1P+Jw0al3CXFutj5gnElcnKIAzUtnGsibOc2jjmpMU5TeZuY0+rvkoi5QGVgBzaVEAPMRtLm9D+e+BGSlLTGZbLKTDpA5GYWNHQlJvRWM7Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TI6RKdtH; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710212173; x=1741748173;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Byby3dPab9clHdBpqGNxzWvALlnFyqoIXHFndqlr3zc=;
-  b=TI6RKdtHYFAADlZ20p78s6EnKUM1JO1Kdp3ORiB7yW+OCEVBX8CXfey3
-   zQ5h5g3nPreCzW6i3VCTGPnzYTHPStdF8M99r1L9V9Ts1qhHSRL7+cwBm
-   g6WfLqjvzqDHi92IyKWJNQxJhYWsNSrmU/eyiECLDpB9upN5zYUDA/nqI
-   33XYKRhy14ttWWq2kV4gPQOq2HKx7nPghxDaCg6Csf7XXAiZlRcNIlPZJ
-   TBl1xAGsX4/LdOEVAZLODzQ9eMi5B1ROzNdRBuPTNyrUE+8/M49lmTCIb
-   DldAwBqLg/e0d8b7sAoDT0Lq6Tb6OTKYkVvBnCnrR42ItXjlRq5xuqV/S
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4762026"
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="4762026"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 19:56:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="11478107"
-Received: from sbrowne-mobl.amr.corp.intel.com (HELO [10.209.68.239]) ([10.209.68.239])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 19:56:11 -0700
-Message-ID: <d861ff54-e3db-4beb-999b-05e60c99945d@linux.intel.com>
-Date: Mon, 11 Mar 2024 19:56:10 -0700
+	s=arc-20240116; t=1710212195; c=relaxed/simple;
+	bh=8duYlw7yiLaMQiEjvPs64/nXpWh4xT1l7do/uy0Ifvk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HagPZUrwZOCzDoPRxuK8qtlqBDVdU2yyfqIjL7URJVjz2lHrQ8jP57j+79S6rWJhGo4rfjq1qAf5VUwgSeO61W7pqESy+MT9PGjUbpkKX9hZ4DXQf0NCtk4guahbU8q4KTl9E2/cdnU0c8XEeVFa3sLS33LK+r2UIZLpEEdES94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=d2Ova4t3; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-29bf998872fso1081556a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1710212192; x=1710816992; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8duYlw7yiLaMQiEjvPs64/nXpWh4xT1l7do/uy0Ifvk=;
+        b=d2Ova4t3LH8K/YV1te1DCzhVl3PLbvJaG/iY2pzTDJkcosWx6A/MdUZ/mM4MW9sfUR
+         GQ5sY5+buMi0xl8pZAl6oybDues4UiLqfZLkGdHy7hPxqm0DSdeog5UKj7At1YM1DJbF
+         l6UuGZe+F+ck+GPIQFyxK9ZWsB8KHcJnj8TP5e3nSaFDsrIcxIZjimixhc84Rouc2Ru1
+         jU20/9p6MyfoCzVO+QitGrjhtK31dySWPAfyxG2PMVfo2ka/f/+TxRDVMZ2SEVhhX4tC
+         +C70CU73YnvAnGtEokTXbWYERGIAFzRa+RhVapWsKkGeZhM3DUaa0u5ykhQUncKB7WlF
+         EL8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710212192; x=1710816992;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8duYlw7yiLaMQiEjvPs64/nXpWh4xT1l7do/uy0Ifvk=;
+        b=GxAzvbaeTkewoD2RM4A19WdoAOcL8wrQVYBtoyEelsZfymxk9bnL/iblaEblwZJFYT
+         Ix9XY1PgA+GJ9xqhEX2OhL591u/kmZ+IuP/R9wLp/R7O6nCkArwllijbFdyiqBgUm269
+         WZbv8B+btDMNiOfToSfFEBJm7M+3NXZeWxHlEFFDFkYQ2x+UblAUO9RYtlnuR9+qMSKw
+         y7MqlXdV086tU6Wlwy92TwnHj34FHImbZzu3U5nT2Rqw5GaJyDdgj83M0Clq2CIiLJi5
+         +4ryAPBaddbH6yPAVVJJv+18VCNMfpwg9GcAzXDjxVRSDaLzoG0lDUrQJNuJl2YTx5hF
+         el1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXkNTgrv8HaAWKdXWs/1VMyF5JpBzktTgzEdhcbTOfEbYu0feVAHdLg28jxdG1Td9DpJowsityAwxmxvn6IHtYvUK7QMlng0jkZ7xXN
+X-Gm-Message-State: AOJu0Ywi7xgIIJPuqvKWf/Pa5TPZcfoupuFBf04IcRdKa69Mrq02e4/W
+	74LPKlBguzA3x63gBiqyw4fiIk+QOxkb46bqrdZ+0nMxlPyWN3JziaWRM0mvWP4KZhDes2BC64E
+	dmjv2s/JZyxx/QW8wdruMtbexnT11yvWlyv3mjA==
+X-Google-Smtp-Source: AGHT+IEEbNdZpfvWrZfgFQVH2ecv7uQ4oHjBsb6d+e9PBZQkR1FkO3HlcgN1IPWibJVLKEs+f74flvYnRRAAWujNw0M=
+X-Received: by 2002:a17:90a:f305:b0:299:63fe:3a27 with SMTP id
+ ca5-20020a17090af30500b0029963fe3a27mr5454778pjb.19.1710212192599; Mon, 11
+ Mar 2024 19:56:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] Drivers: hv: vmbus: Leak pages if
- set_memory_encrypted() fails
-Content-Language: en-US
-To: mhklinux@outlook.com, rick.p.edgecombe@intel.com, kys@microsoft.com,
- haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
- gregkh@linuxfoundation.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, kirill.shutemov@linux.intel.com,
- dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-coco@lists.linux.dev
-Cc: elena.reshetova@intel.com
-References: <20240311161558.1310-1-mhklinux@outlook.com>
- <20240311161558.1310-2-mhklinux@outlook.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240311161558.1310-2-mhklinux@outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-8-dongmenglong.8@bytedance.com> <CAADnVQK4tdefa3s=sim69Sc+ztd-hHohPEDXaUNVTU-mLNYUiw@mail.gmail.com>
+ <CALz3k9iabeOwHSrPb9mkfCuOebanh3+bAfi7xh3kBBN0DzHC3A@mail.gmail.com> <CAADnVQKsrLB-2bD53R4ZdzUVdx1aqkgom1rzGCGKK0M3Uc+csQ@mail.gmail.com>
+In-Reply-To: <CAADnVQKsrLB-2bD53R4ZdzUVdx1aqkgom1rzGCGKK0M3Uc+csQ@mail.gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Tue, 12 Mar 2024 10:56:21 +0800
+Message-ID: <CALz3k9jJtxVRmgGM4F-33m1wp=aCShnqdaX+7pZ9UmHwntFgXw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 7/9] libbpf: don't free btf if
+ program of multi-link tracing existing
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On 3/11/24 9:15 AM, mhkelley58@gmail.com wrote:
-> From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+On Tue, Mar 12, 2024 at 10:13=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> In CoCo VMs it is possible for the untrusted host to cause
-> set_memory_encrypted() or set_memory_decrypted() to fail such that an
-> error is returned and the resulting memory is shared. Callers need to
-> take care to handle these errors to avoid returning decrypted (shared)
-> memory to the page allocator, which could lead to functional or security
-> issues.
+> On Mon, Mar 11, 2024 at 7:05=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dong=
+menglong.8@bytedance.com> wrote:
+> >
+> > > >
+> > > > +LIBBPF_API void bpf_object__free_btfs(struct bpf_object *obj);
+> > > > +
+> > >
+> > > It shouldn't be exported.
+> > > libbpf should clean it up when bpf_object is freed.
+> >
+> > Yes, libbpf will clean up the btfs when bpf_object is freed in
+> > this commit. And I'm trying to offer a way to early free the btfs
+> > by the users manual to reduce the memory usage. Or, the
+> > btfs that we opened will keep existing until we close the
+> > bpf_object.
+> >
+> > This is optional, I can remove it if you prefer.
 >
-> VMBus code could free decrypted pages if set_memory_encrypted()/decrypted()
-> fails. Leak the pages if this happens.
->
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-> ---
-LGTM
+> Let's not extend libbpf api unless we really need to.
+> bpf_program__attach_trace_multi_opts() and
+> *skel*__attach() can probably free them.
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->  drivers/hv/connection.c | 29 ++++++++++++++++++++++-------
->  1 file changed, 22 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-> index 3cabeeabb1ca..f001ae880e1d 100644
-> --- a/drivers/hv/connection.c
-> +++ b/drivers/hv/connection.c
-> @@ -237,8 +237,17 @@ int vmbus_connect(void)
->  				vmbus_connection.monitor_pages[0], 1);
->  	ret |= set_memory_decrypted((unsigned long)
->  				vmbus_connection.monitor_pages[1], 1);
-> -	if (ret)
-> +	if (ret) {
-> +		/*
-> +		 * If set_memory_decrypted() fails, the encryption state
-> +		 * of the memory is unknown. So leak the memory instead
-> +		 * of risking returning decrypted memory to the free list.
-> +		 * For simplicity, always handle both pages the same.
-> +		 */
-> +		vmbus_connection.monitor_pages[0] = NULL;
-> +		vmbus_connection.monitor_pages[1] = NULL;
->  		goto cleanup;
-> +	}
->  
->  	/*
->  	 * Set_memory_decrypted() will change the memory contents if
-> @@ -337,13 +346,19 @@ void vmbus_disconnect(void)
->  		vmbus_connection.int_page = NULL;
->  	}
->  
-> -	set_memory_encrypted((unsigned long)vmbus_connection.monitor_pages[0], 1);
-> -	set_memory_encrypted((unsigned long)vmbus_connection.monitor_pages[1], 1);
-> +	if (vmbus_connection.monitor_pages[0]) {
-> +		if (!set_memory_encrypted(
-> +			(unsigned long)vmbus_connection.monitor_pages[0], 1))
-> +			hv_free_hyperv_page(vmbus_connection.monitor_pages[0]);
-> +		vmbus_connection.monitor_pages[0] = NULL;
-> +	}
->  
-> -	hv_free_hyperv_page(vmbus_connection.monitor_pages[0]);
-> -	hv_free_hyperv_page(vmbus_connection.monitor_pages[1]);
-> -	vmbus_connection.monitor_pages[0] = NULL;
-> -	vmbus_connection.monitor_pages[1] = NULL;
-> +	if (vmbus_connection.monitor_pages[1]) {
-> +		if (!set_memory_encrypted(
-> +			(unsigned long)vmbus_connection.monitor_pages[1], 1))
-> +			hv_free_hyperv_page(vmbus_connection.monitor_pages[1]);
-> +		vmbus_connection.monitor_pages[1] = NULL;
-> +	}
->  }
->  
->  /*
+That's a good idea! Should we add a "bool free_btf" field
+to struct bpf_trace_multi_opts? bpf_program__attach_trace_multi_opts()
+can be called multi times for a bpf_object, which has multi bpf
+program of type tracing multi-link. Or, can we free the btfs
+automatically if we found all tracing multi-link programs are attached?
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Thanks!
+Menglong Dong
 
+> I don't see a use case where you'd want to keep them afterwards.
 
