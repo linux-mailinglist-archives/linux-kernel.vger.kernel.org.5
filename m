@@ -1,121 +1,104 @@
-Return-Path: <linux-kernel+bounces-100397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F818796E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:52:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 298B18796EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:52:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B55C282E29
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:52:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B9681C2197E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C369E7BAF2;
-	Tue, 12 Mar 2024 14:52:31 +0000 (UTC)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFC97BAF9;
+	Tue, 12 Mar 2024 14:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jNSads/v"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA2917B3E8;
-	Tue, 12 Mar 2024 14:52:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470B17B3F8;
+	Tue, 12 Mar 2024 14:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710255151; cv=none; b=AQA7fZyuNFCi1b2hNfCj2It/kJn/+w5j6zzCQTc7HcrSjlL7RcXHwMIaA1yFwe8zEihuvvA9ys8/LBuppyIVlnd1Mh2jUYyEOpEApkhrwnlrC4ruvATHDaWuyAdBOFCUJC260FjdwyPp6fJHkVnjsPEhgBz6PRdUMXJxg02FJy4=
+	t=1710255165; cv=none; b=j60tQrZuo8menCNqwUntpViXFrMvYklO8rAOyGR33cPU19J2JGvUWYtP8qESaR2rKskmCf1BrvKCNqqMGYa8DCYFvkz867EKj1ZOnOW52kTcOTdA5P4i2AJoxHYKppyr315igqGARUV3Qri0/iVtLcHhc9EY17p3hZ4EyhaB0no=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710255151; c=relaxed/simple;
-	bh=HqLKdg5D/2l4/chJuAGqtrhx3KH6eTcOmIIabi94HGU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V6cOBNcsFTXgeF9PZ9dhZfuuSPvPsU2uIvJmWWkD6jdwjIX4VaGu/25IyFMqTl7SV6FoK3sYohr9NxQQoVUIMHPWjKhP1juZdvcEfdufk+mlcI8wNU8T/Q2LK/X51cQeq8uFx7bdH7f054MzB/iGJF70w1HaEWIPHrx+Ng9pnko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso4126838276.0;
-        Tue, 12 Mar 2024 07:52:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710255147; x=1710859947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4YdHy//nTWN9K6sgwTweLyEZnjTzGOH6tr4kEOlMF6A=;
-        b=uXoTifmFUwTp7R7q58ZkYNWOWhZM+9m5f1a7nLkYMs7+yKKeQ8yRCIv0EshL/7dZGG
-         l/qxK2N2arbAwRIbjBK7SBJuT1FAc2ATcF0V+ABI7lyAt/mwOPmCIS+m/K7JAOf+Mmac
-         hLAh+XhVMh9PoTounoFqZ95IwUcUnPbjYnqHxPqwKdGK4qUVmB6ofBDM+q4ZV7WGJ14A
-         jYx/R1T9ad7wTyybqLY7ClwYN1jYoIsKJJrlu+4vwy5+l8u/1DBy9oHyA1H0mQR0yt51
-         cPtfv0mCSb7/6hLAdV0nfqcEAUveYhcuSnc0Tf0Z2b0LmlTHzWCtUiBy/U3ObjnTAJtv
-         ohpg==
-X-Forwarded-Encrypted: i=1; AJvYcCXvMl4OvLhBR5lnADMFJmKIpVDXX4aRUI111tUaed6I3/bxyThPri0N7mG+3MiFQLkvR5oUfQuM9MBQYf/+bEpHJnZvM01u9mvDXLvI1mJeGPCiLT2MZpWHGv7+bIthFd3cqh9FlV+5ufz9MwTrZHppX+E4M+HemA5uQ9I0TAMQeXv75aovR9wIZw==
-X-Gm-Message-State: AOJu0Yxlg0m4z4IFdPORpnzQQ2TQrecjx9S4GUItioR2Z6a76Xu6WzBg
-	kcmYSUkBWHJ901FOCCdefSPIMVDA637VOFW5QiS6x+gDpDSMFmeTX26z87+/fBw=
-X-Google-Smtp-Source: AGHT+IGC3eOF6aEUAaq8H8yfjKC2A/URb+pw4dA8ooND3Idn/anFWU+vrLrVmk7OxZHizPoSoE+ZVQ==
-X-Received: by 2002:a25:e0d7:0:b0:dc7:46e7:7aea with SMTP id x206-20020a25e0d7000000b00dc746e77aeamr7560509ybg.47.1710255147203;
-        Tue, 12 Mar 2024 07:52:27 -0700 (PDT)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id o6-20020a256b46000000b00dc230f91674sm1684528ybm.26.2024.03.12.07.52.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 07:52:26 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dbed0710c74so3511473276.1;
-        Tue, 12 Mar 2024 07:52:26 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVnsq1VslzYjmbltTmTWtTviHZ3Np0SjELWeQVZeduqSTWyD6gYCQif7Wns7/XtSu5uZRL+IDnz0PuhgKKlBFOkUN+cOREoYRUxemHLTChS0Fjgg/Os63ZVhzRv1f2jokm/q03bu3+56S4IvMlcRpFnp7H1eXLjnuVy9SIpbDtIfwY8lMkChRPhgw==
-X-Received: by 2002:a25:26cd:0:b0:dcd:ef35:91d5 with SMTP id
- m196-20020a2526cd000000b00dcdef3591d5mr6727921ybm.2.1710255146517; Tue, 12
- Mar 2024 07:52:26 -0700 (PDT)
+	s=arc-20240116; t=1710255165; c=relaxed/simple;
+	bh=hcVQn7I4DVIFWHwTEXd0MZq0+Qko6RLpLkLPp0r0R+E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EEG/b06zxA1MHRDKmDfXWXAKwggKbS9Iwgv9rWWQwPAaeEWd3agMjl/CrODKSlkm3xKUPI34ngdeDqe2oVamu3x3udM/zwyLgaboZCLdb/WFC+yUt4jn4RkUn4SFxlfSUdGoq7WbKByeLE2ndSXZfDVMPHPi78AtJfjgA/TWpfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jNSads/v; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710255164; x=1741791164;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hcVQn7I4DVIFWHwTEXd0MZq0+Qko6RLpLkLPp0r0R+E=;
+  b=jNSads/vOMf8eOHlOoe/GIXnzXMey3rWCs7HmkCOI9IetKHdYkW5FzLT
+   4ibWdt1FEsE+prOBnTtLGLgL6oQYjXBvEtVpAAPmDvhYhe3ks2PgLyNdc
+   90EU3R2HLJLGBFTqdztvOVvHb2jr6pFNujVz9GZORktjLzC/KrvUpTUoM
+   cN5K38NGwdEb3eIIe+LOuyjHGIs30Jxzy7NC6FdMRXrm+ZGUqzp/zv8ei
+   x0AEncKFxrLv13b2BIqi09EN/rUENjnSlct4a16eCXCgv++Y6/uRcBsAh
+   p8X8eCPa0KqYbhGyJb+gIx9uuZEVAgNK9chTtFwZQWHMu0v6xc+ejebGS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="8786001"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="8786001"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 07:52:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="937051896"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="937051896"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Mar 2024 07:52:39 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 4B7D12B7; Tue, 12 Mar 2024 16:52:38 +0200 (EET)
+Date: Tue, 12 Mar 2024 16:52:38 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: mhklinux@outlook.com
+Cc: rick.p.edgecombe@intel.com, kys@microsoft.com, haiyangz@microsoft.com, 
+	wei.liu@kernel.org, decui@microsoft.com, gregkh@linuxfoundation.org, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-coco@lists.linux.dev, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, elena.reshetova@intel.com
+Subject: Re: [PATCH 0/5] Handle set_memory_XXcrypted() errors in Hyper-V
+Message-ID: <fvtb2pwt2gzeottujs67kw3psxxjqrp6j2n6jeqiiqnsrhw4kg@til7ozahrbbm>
+References: <20240311161558.1310-1-mhklinux@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217060843.GA16460@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <CAL_Jsq+Feu9NnzTNx=XU5vgHhibGAQXvkuTeWbpu8gJ3rVrzcw@mail.gmail.com> <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 12 Mar 2024 15:52:14 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU83qwmO5swSQq79Zci7SP_xkNsjmQ4dYo-Pjw8d65fmg@mail.gmail.com>
-Message-ID: <CAMuHMdU83qwmO5swSQq79Zci7SP_xkNsjmQ4dYo-Pjw8d65fmg@mail.gmail.com>
-Subject: Re: [PATCH 2/7] of: Create of_root if no dtb provided by firmware
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Saurabh Singh Sengar <ssengar@linux.microsoft.com>, Frank Rowand <frowand.list@gmail.com>, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
-	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
-	devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
-	"Gabriel L. Somlo" <gsomlo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311161558.1310-1-mhklinux@outlook.com>
 
-On Tue, Mar 12, 2024 at 3:41=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Wed, Feb 21, 2024 at 3:06=E2=80=AFPM Rob Herring <robh+dt@kernel.org> =
-wrote:
-> > On Fri, Feb 16, 2024 at 11:08=E2=80=AFPM Saurabh Singh Sengar
-> > <ssengar@linux.microsoft.com> wrote:
-> > > This adds the strict check for compatible which makes compatible
-> > > to be mandatory for root nodes. So far, DeviceTree without compatible
-> > > property in root nodes can work. Do we want to make this documented
-> > > somewhere ?
-> >
-> > It already is in the DT spec and schemas.
->
-> How many systems in the wild violate this?
->
-> Apparently the DTS generated by LiteX does not have a root compatible
-> (and model) property, hence of_have_populated_dt() returns false.
-> While my gateware and DTS is quite old, a quick look at recent
-> litex_json2dts_linux.py history shows this is still true for current Lite=
-X.
+On Mon, Mar 11, 2024 at 09:15:53AM -0700, mhkelley58@gmail.com wrote:
+> From: Michael Kelley <mhklinux@outlook.com>
+> Michael Kelley (1):
+>   Drivers: hv: vmbus: Don't free ring buffers that couldn't be
+>     re-encrypted
+> 
+> Rick Edgecombe (4):
+>   Drivers: hv: vmbus: Leak pages if set_memory_encrypted() fails
+>   Drivers: hv: vmbus: Track decrypted status in vmbus_gpadl
+>   hv_netvsc: Don't free decrypted memory
+>   uio_hv_generic: Don't free decrypted memory
+> 
+>  drivers/hv/channel.c         | 16 ++++++++++++----
+>  drivers/hv/connection.c      | 11 +++++++----
+>  drivers/net/hyperv/netvsc.c  |  7 +++++--
+>  drivers/uio/uio_hv_generic.c | 12 ++++++++----
+>  include/linux/hyperv.h       |  1 +
+>  5 files changed, 33 insertions(+), 14 deletions(-)
 
-https://github.com/enjoy-digital/litex/issues/1905
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
