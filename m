@@ -1,111 +1,101 @@
-Return-Path: <linux-kernel+bounces-99710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA21878C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:59:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD88878C17
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:03:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00F12B21C72
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:59:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8E3FB21CC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463DAEC3;
-	Tue, 12 Mar 2024 00:59:37 +0000 (UTC)
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28FE0653
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 00:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C6B17CD;
+	Tue, 12 Mar 2024 01:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Kr3vSSyP"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4961653;
+	Tue, 12 Mar 2024 01:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710205176; cv=none; b=XaQLHhZz8WFTpKXE1k/whMCQ/vMmv9IJ0MJPJtNfQx73Ixgcyd0mEv+oblfIKipLzGfGqatySIieZnDZ8Xj5yTeIm44iyRbXBFbDaXML/8WMAlxr7vYBjxQaLbSsg1MXevwB8Fc0WHwtgZA20R5ZCrVOBth3Iu6yaaqrnV2SizY=
+	t=1710205398; cv=none; b=S2mQwskGk3x9rpf7uocujA+l68gxnmlf4q/27Hq9Fxp9tmdR0YVG3vhDyKrfflI2KUPW2Y2efE786oUQ9sJ0yokHUwNQlgNmjq7JDZoB+cveX4IofoifSCM83FWk5CpStxrDg7+yTawlc5/sd57jr9fs84+T1vYPTbdaNOH8qos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710205176; c=relaxed/simple;
-	bh=ehQzi0VDIe1b2WTUB/ybZzZ2wSe0Tj1feDXSIdWfEbo=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=TGzhJlQGd1LkalrTSWSOXQLsYnj2zZ8At9zUytzz0mya6Xc4xvXyrJivt+2kLZpsdUUx7He0tbq2rpb5bQbx25N6Pl2zsptcLeleV5ZDQCViMaEDSk6n7eXYCXizXC/SPTBQH8xsMZkJo/NTroWFZXovdCqe/hMOsa05ypIzmF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [218.12.16.65])
-	by mail-app2 (Coremail) with SMTP id by_KCgBHjI7cqO9l9WJWAA--.23030S2;
-	Tue, 12 Mar 2024 08:59:20 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org,
-	jglisse@redhat.com,
-	akpm@linux-foundation.org,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH] lib/test_hmm.c: handle src_pfns and dst_pfns allocation failure
-Date: Tue, 12 Mar 2024 08:59:05 +0800
-Message-Id: <20240312005905.9939-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:by_KCgBHjI7cqO9l9WJWAA--.23030S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw4xJw1fur17WFWkCw1kGrg_yoW8AF4rpF
-	W8Ga4YyryUA34j9FyUXF10kr42kan8Aa1akrsFv3s3uFs8JFyxJ3yfAryrWF10v397AFs2
-	vFW5ta4DXF1UJw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
-	AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUjuHq7UUUU
-	U==
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwMSAWXvDBcFrQAGss
+	s=arc-20240116; t=1710205398; c=relaxed/simple;
+	bh=4EA1F03Y5lBS4e+B0GkGj9LBCoZMKjVs2nvhaANcl3s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HKn4ItCb1FHzvUUfYuZRGJhY3WFJywNaTnFYkyHzt8MGaXDVopnp5h+pfBXQQLM4/feh0BDL89GQM4IsksqfpmF5d4fm8SvniJ0NGxxO7tZwLovjgLICkjjJLahg6NlZE6whPNO0ndltXmmFxL7Ux5H+xTj7H73Dzf69k4x8D60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Kr3vSSyP; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=8OttdZlrG4D6n3/bWArb231lKpBo0dIW6y37zc5CZQ4=; b=Kr3vSSyP3usEfrbHqWqNQT6C3v
+	p8ShX6NQ0jQ0h6m7vLjc0kJjht6nXakuEFxRF0jMi95vopHMnAJK96GYqyHC6vlvrPH1hh27rTUwW
+	FbNrpLsqLKooJJhCEjSJTbW26m8N8loFhsU10SR0qFZaTnBBI561QPHuuJQ6vh9baJ3k=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rjqY5-00A0Ed-2W; Tue, 12 Mar 2024 02:03:21 +0100
+Date: Tue, 12 Mar 2024 02:03:21 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Justin Swartz <justin.swartz@risingedge.co.za>
+Cc: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] net: dsa: mt7530: disable LEDs before reset
+Message-ID: <0793ba6a-6cc9-4764-a2eb-f2766d860315@lunn.ch>
+References: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
+ <6064ba52-2470-4c56-958c-35632187f148@arinc9.com>
+ <d45083788db8b0b1ace051adecfe6a3a@risingedge.co.za>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d45083788db8b0b1ace051adecfe6a3a@risingedge.co.za>
 
-The kcalloc() in dmirror_device_evict_chunk() will return null if
-the physical memory has run out. As a result, if src_pfns or dst_pfns
-is dereferenced, the null pointer dereference bug will happen.
+> (b) When a cable attached to an active peer is connected to
+> Port 3 (lan4) before reset, the incorrect crystal frequency
+> selection (0b11 = 25MHz) always occurs:
+> 
+>               [7]      [8]     [10]    [12]
+>               :        :       :       :
+>               _________         ______________________________________
+> ESW_P4_LED_0           |_______|
+>               _________         _______
+> ESW_P3_LED_0           |_______|       |______________________________
+> 
+>                         :     : :     :
+>                         [9]...: [11]..:
+> 
+>  [7] Port 4 LED Off. Port 3 LED Off.
+>  [8] Signals inverted. (reset_control_assert; reset_control_deassert)
+>  [9] Period of 320 usec.
+> [10] Signals inverted.
+> [11] Period of 300 usec.
+> [12] Signals reflect the bootstrapped configuration.
 
-Moreover, the device is going away. If the kcalloc() fails, the pages
-mapping a chunk could not be evicted. So add a __GFP_NOFAIL flag in
-kcalloc().
+Shame the patch has already been accepted. The text in this email
+would of made a cool commit message.
 
-Finally, as there is no need to have physically contiguous memory,
-Switch kcalloc() to kvcalloc() in order to avoid failing allocations.
-
-Fixes: b2ef9f5a5cb3 ("mm/hmm/test: add selftest driver for HMM")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- lib/test_hmm.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-index 717dcb83012..b823ba7cb6a 100644
---- a/lib/test_hmm.c
-+++ b/lib/test_hmm.c
-@@ -1226,8 +1226,8 @@ static void dmirror_device_evict_chunk(struct dmirror_chunk *chunk)
- 	unsigned long *src_pfns;
- 	unsigned long *dst_pfns;
- 
--	src_pfns = kcalloc(npages, sizeof(*src_pfns), GFP_KERNEL);
--	dst_pfns = kcalloc(npages, sizeof(*dst_pfns), GFP_KERNEL);
-+	src_pfns = kvcalloc(npages, sizeof(*src_pfns), GFP_KERNEL | __GFP_NOFAIL);
-+	dst_pfns = kvcalloc(npages, sizeof(*dst_pfns), GFP_KERNEL | __GFP_NOFAIL);
- 
- 	migrate_device_range(src_pfns, start_pfn, npages);
- 	for (i = 0; i < npages; i++) {
-@@ -1250,8 +1250,8 @@ static void dmirror_device_evict_chunk(struct dmirror_chunk *chunk)
- 	}
- 	migrate_device_pages(src_pfns, dst_pfns, npages);
- 	migrate_device_finalize(src_pfns, dst_pfns, npages);
--	kfree(src_pfns);
--	kfree(dst_pfns);
-+	kvfree(src_pfns);
-+	kvfree(dst_pfns);
- }
- 
- /* Removes free pages from the free list so they can't be re-allocated */
--- 
-2.17.1
-
+      Andrew
 
