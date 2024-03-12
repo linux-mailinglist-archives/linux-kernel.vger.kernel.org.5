@@ -1,123 +1,166 @@
-Return-Path: <linux-kernel+bounces-100700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86345879C1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:09:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09332879C20
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:09:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 806FCB25A25
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:09:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ADE71F23A68
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8979114290F;
-	Tue, 12 Mar 2024 19:08:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70BFD142657;
+	Tue, 12 Mar 2024 19:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="IrBQsnD6"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="rRUaChy0"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9391420D2
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3611142634;
+	Tue, 12 Mar 2024 19:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710270533; cv=none; b=QDtsTXDvHmZCuG2uxjGkvJnAVAEByBFj8kIgz3EZMou74x+dHTSOBXSNwjwfqeI5abeooBiCcNwipNDwTi7+D2jrMZHf0ZGepXerQ/NmwsuK8GyzNXRyUOl5kxyvlyWb9rKMuxyCSpKU9N6ghWVlm1fC8kxUegD8dnE3nap3Q/w=
+	t=1710270546; cv=none; b=ZfWKkCJkxDsMeYMm5EAOvHd0z0aCSsij6JLN/BuGkafnpKE4VN8F1Ze07Grs4O/bz5cGe58/Eokwg7uAHBAUagwmrvymZA8Z/oHn+mQNroi2+r7dvk9Gl3bH/po/E4TX2QhxEPCcbvpY8z5cBoHleMaRTytiVE7J0U9aZYA9jJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710270533; c=relaxed/simple;
-	bh=ubelwNN49JPtWt+zM54LAg+rdIolQj6lmX/MT8AH0ag=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T9ghpBhYoAdNBmp2Z0Mnjz5eOBG1HppSKEsTg0yXC163739mSFg5um9yTnryKBocAkFgUmyAcDzei0mnGLGsLyAnreSMrNlfIUUIiNpFjf3Z8L5J3zSy65EU2v5bwqWN9j9vc6yUByPP9iDf3JBQ86P0yhLMjpTPNFrujZEtVJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=IrBQsnD6; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-513298d6859so5794547e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1710270529; x=1710875329; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LjcZWf/nXIQyIPUNxD3DTUa5JiAHVZAbpXSBI/PF41I=;
-        b=IrBQsnD6EXNfsWnVKPgDe3DHwnsYe6BNtSBWwzS+532D5zEDYdjMTkfmJu9zwFsnTF
-         btwAKBPRvBDxWFMiZxJIa6Bgk5nyMtOMXMSR9E3nUuL6ohaeO7qZJROoEA/cRRZp7fo6
-         sdZnmbWoTArO6BK9QZyy/uvd+k41vbeQJ3FciyVADTg8Ql+3mBxUeoodx9+KV/aifEt+
-         Zd77Mnln2SVrNbu/rlp3oVXRkKlrY2slTY8i5+3GOvfTnZc1t2f4jZneteU9e6oo7LJp
-         qiwcShDoawsTThu8PiHhRnEmLMtKbg7QGissaESn3KfPnFSA5Zq+GDIRuldq8E8uAxpY
-         udhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710270529; x=1710875329;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LjcZWf/nXIQyIPUNxD3DTUa5JiAHVZAbpXSBI/PF41I=;
-        b=o83GfXSNmdtDNr2IuVqmR/bGrNh7jl+wKFg3sEa1kMHfk1Wu5HsyuQGMgOoZVGNPzV
-         gJg030OeufzUVncbmBIfdI4jknhMMpXAbbF7FnoYGb9s0bdwMl3k6aBO26XqoInWJvDD
-         C+23oSGqKr6HctonFVh1D3I7hCLrBMEhKLQKiBrTDmfQDoxiS2unFAc8p96wlxhP011e
-         oKp4LpEJvR3eoMubOM1XJtchp0JgqBQcFIHSmNlmhWTLLChSjR1DU4rIa1F3xs/APPML
-         PlU3SpT9CBphGMM/SHUugjWN0l6WddnmDVP6H0B7W2OkHJwYyVva3pENzPeRtlCrjjXf
-         Y3Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCV/YQAitKI7IgePN5J8wx5DGgJZeYaBkuAmWT4LQQpHQVxeg9GXsiAHOxkbyJOShZkQf8A2CLGAriJLdceSDHbCxggIn6rEx0HWjNpG
-X-Gm-Message-State: AOJu0YyiD8MGavLlzsKnz6YI7GHQJ+nAzDWAlzKMHwFWxiDyIM94NDBb
-	oayKbX7S3PHC1AwG/PzMg6D5bVDHg6pTtwvcO3GFXxQTvTvbkp5YgEIZ+S7lhJZ4ezMZCygzOBn
-	M9sn1VONxxeGV+2LivC/RNlBFGqeTZ3pO/bqHdA==
-X-Google-Smtp-Source: AGHT+IFqepFRXOh28CrZ94R8jR8QHTaaYGZhvEkRfy88tewlac/0l7Q1dZRIj80W2YM5/JpGF/ZIincLgKne/q2GfrQ=
-X-Received: by 2002:a05:6512:3b94:b0:513:a977:933b with SMTP id
- g20-20020a0565123b9400b00513a977933bmr2233994lfv.42.1710270529032; Tue, 12
- Mar 2024 12:08:49 -0700 (PDT)
+	s=arc-20240116; t=1710270546; c=relaxed/simple;
+	bh=JZX5DPUe2Tn3QeB1xQN2/1/4oqxHA8hTmLbS2TW1Gw4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V8FBb7LwIhr1dngarmgSl61eYIJolMoXN7SXSgLWD6VugviSVSAIHSYGw/RlEuhJ8r3oMNvh353dggaFLTXH03TxYLJ7ZOIBwkByKwQSpn7pAW2uPRCiZYACJN+G0WOvoknz9MaO2xN2yos6rGW2GZkwnFxpujQkCtWrT8jHpdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=rRUaChy0; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42CIuxSN002406;
+	Tue, 12 Mar 2024 19:08:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=SlihXnpmGmd9lmDDDePxLPY4NbCMyKzYmvjmqDLRl9U=;
+ b=rRUaChy0KA5/hHLyo675GDpV0QrUkz62ncB+8fo4SO2nQyKV9JcnT7nZw5h5DbN4vXg4
+ +bHMK31vBY45Bz57eQ5Ck6LwtEGoxeNwdDxh1H2by/TXTWvzHz75ZUjWFlwAd0zKl+EO
+ psZGNZJ+du6FJSj00g+fKtcVZ0JxMTF7SccxZCFuWjyDzSYJDpBYVgFq3jR6RK7DTpqa
+ W40To1xld54p4bsNJgzF28KUWxeP07EhJ6hQj9C8hIhjkI8IPUi+4ybMjHnA+MouASgO
+ YqbjETNSB67DoPiyJfmFDrzHfne4b+FZp93Poriqya28Sbzcq1KUCsNbvsCEXm93oSL3 nQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtvsa87er-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 19:08:54 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42CIuwWp002332;
+	Tue, 12 Mar 2024 19:08:53 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtvsa87e3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 19:08:53 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42CIon3c020437;
+	Tue, 12 Mar 2024 19:08:52 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws3km0x86-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 19:08:52 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42CJ8nIG17498482
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 12 Mar 2024 19:08:51 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DE7EE58059;
+	Tue, 12 Mar 2024 19:08:48 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 23A6558065;
+	Tue, 12 Mar 2024 19:08:48 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 12 Mar 2024 19:08:48 +0000 (GMT)
+Message-ID: <e1b818ae-c932-4d25-98a5-26b258b63365@linux.ibm.com>
+Date: Tue, 12 Mar 2024 15:08:47 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306172330.255844-1-leyfoon.tan@starfivetech.com> <f9cc5817-234e-4612-acbb-29977e0da760@sifive.com>
-In-Reply-To: <f9cc5817-234e-4612-acbb-29977e0da760@sifive.com>
-From: Atish Kumar Patra <atishp@rivosinc.com>
-Date: Tue, 12 Mar 2024 12:08:38 -0700
-Message-ID: <CAHBxVyGuy=LngEeGkTAD17UDP1j18028XQbzdDYTL1gLFMDskg@mail.gmail.com>
-Subject: Re: [PATCH v3] clocksource: timer-riscv: Clear timer interrupt on
- timer initialization
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <apatel@ventanamicro.com>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Ley Foon Tan <lftan.linux@gmail.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] tpm: of: If available Use linux,sml-log to get the
+ log and its size
+Content-Language: en-US
+To: Jarkko Sakkinen <jarkko@kernel.org>,
+        Michael Ellerman
+ <mpe@ellerman.id.au>,
+        linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, rnsastry@linux.ibm.com, peterhuewe@gmx.de,
+        viparash@in.ibm.com
+References: <20240306155511.974517-1-stefanb@linux.ibm.com>
+ <20240306155511.974517-3-stefanb@linux.ibm.com>
+ <CZNS7FO53BHK.6NO93P0C0VY5@kernel.org>
+ <CZNS9K4BJPQ8.2MD4WZS8YMI3W@kernel.org>
+ <663a3834-056e-4dda-99dd-16ee8734100e@linux.ibm.com>
+ <877ci74u0w.fsf@mail.lhotse> <CZRW3GY5O5C0.R5HY5SOFCFJA@kernel.org>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CZRW3GY5O5C0.R5HY5SOFCFJA@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: FmkvrwcYsISQ2f9e8fbNFAVaaIupA038
+X-Proofpoint-GUID: KbovTr4OsFOA-wqfFNJciTwuXBLAzX0K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_12,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ mlxscore=0 malwarescore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2403120146
 
-On Tue, Mar 12, 2024 at 10:40=E2=80=AFAM Samuel Holland
-<samuel.holland@sifive.com> wrote:
->
-> On 2024-03-06 11:23 AM, Ley Foon Tan wrote:
-> > In the RISC-V specification, the stimecmp register doesn't have a defau=
-lt
-> > value. To prevent the timer interrupt from being triggered during timer
-> > initialization, clear the timer interrupt by writing stimecmp with a
-> > maximum value.
-> >
-> > Fixes: 9f7a8ff6391f ("RISC-V: Prefer sstc extension if available")
-> > Cc: <stable@vger.kernel.org>
-> > Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> >
-> > ---
-> > v3:
-> > Resolved comment from Samuel Holland.
-> > - Function riscv_clock_event_stop() needs to be called before
-> >   clockevents_config_and_register(), move riscv_clock_event_stop().
-> >
-> > v2:
-> > Resolved comments from Anup.
-> > - Moved riscv_clock_event_stop() to riscv_timer_starting_cpu().
-> > - Added Fixes tag
-> > ---
-> >  drivers/clocksource/timer-riscv.c | 3 +++
-> >  1 file changed, 3 insertions(+)
->
-> Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-> Tested-by: Samuel Holland <samuel.holland@sifive.com>
->
 
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+
+On 3/12/24 11:50, Jarkko Sakkinen wrote:
+> On Tue Mar 12, 2024 at 12:35 PM EET, Michael Ellerman wrote:
+>> Stefan Berger <stefanb@linux.ibm.com> writes:
+>>> On 3/7/24 15:00, Jarkko Sakkinen wrote:
+>>>> On Thu Mar 7, 2024 at 9:57 PM EET, Jarkko Sakkinen wrote:
+>>>>> in short summary: s/Use/use/
+>>>>>
+>>>>> On Wed Mar 6, 2024 at 5:55 PM EET, Stefan Berger wrote:
+>>>>>> If linux,sml-log is available use it to get the TPM log rather than the
+>>>>>> pointer found in linux,sml-base. This resolves an issue on PowerVM and KVM
+>>>>>> on Power where after a kexec the memory pointed to by linux,sml-base may
+>>>>>> have been corrupted. Also, linux,sml-log has replaced linux,sml-base and
+>>>>>> linux,sml-size on these two platforms.
+>>>>>>
+>>>>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>>>>>
+>>>>> So shouldn't this have a fixed tag, or not?
+>>>>
+>>>> In English: do we want this to be backported to stable kernel releases or not?
+>>>
+>>> Ideally, yes. v3 will have 3 patches and all 3 of them will have to be
+>>> backported *together* and not applied otherwise if any one of them
+>>> fails. Can this be 'guaranteed'?
+>>
+>> You can use Depends-on: <previous commit SHA> to indicate the relationship.
+>>
+>> cheers
+> 
+> Thanks, I've missed depends-on tag.
+> 
+> Stefan, please add also "Cc: stable@vger.kernel.org" just to make sure
+> that I don't forget to add it.
+
+Yeah, once we know whether this is the way forward or not... I posted v2 
+as RFC to figure this out.
+
+v2's 2/3 patch will only apply to 6.8. To avoid any inconsistencies 
+between code and bindings we cannot even go further back with this 
+series (IFF it's the way forward at all). So I am inclined to remove the 
+Fixes tags. I also find little under Documentation about the Depends-on 
+tag and what it's supposed to be formatted like -- a commit hash of 1/3 
+appearing in 2/3 for example? The commit hash is not stable at this 
+point so I couldn't created it.
+
+> Right, and since these are so small scoped commits, and bug fixes in
+> particular, it is also possible to do PR during the release cycle.
+> 
+> BR, Jarkko
 
