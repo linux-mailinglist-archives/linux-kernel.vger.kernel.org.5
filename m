@@ -1,216 +1,225 @@
-Return-Path: <linux-kernel+bounces-100162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E4918792CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:16:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C994C8792D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:20:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A5671F2326C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:16:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CCA81F2156A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D61D779B75;
-	Tue, 12 Mar 2024 11:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7F7379B85;
+	Tue, 12 Mar 2024 11:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cXWA79EV"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="VPapf6gr";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SAcRHzfP"
+Received: from fhigh4-smtp.messagingengine.com (fhigh4-smtp.messagingengine.com [103.168.172.155])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D4C69D0A;
-	Tue, 12 Mar 2024 11:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330B269D0C;
+	Tue, 12 Mar 2024 11:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710242197; cv=none; b=YLCk1dg/aF04ySFGy6ylxdNRGXhYZoHnREWsR35VspanaYA27tiHOR1iH8jDZ/6Vj5+YKX//OoVzUbPht+ml+Fa19yvyEsA3zD7Q7wCGVYjSipxUoh1VQyE4yv+nlvUAxFeuWGFyh283BYJniTTcRjxo5HKuMMfiR3Fgv8DhrvQ=
+	t=1710242389; cv=none; b=SzJFJVQWnU6YnP3XaCQqp7cnx3AfxKQ0fNnnOqk0q+PiORAojvb24Qxq+TJEZ053lT4sWVBVkBSJrqI6FQC2rY85f4DGFUJovKwIZr6yS87IXb55ZN925J5iEvlgQLd6qU+D0/amwNpaqYc1v7emXFpr0mNPKk/B64yMtdX0T6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710242197; c=relaxed/simple;
-	bh=rXCQMoPnbQrK2DoGOWi/2IAc66hjG44/JK5fA2xDgi8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=toqymQ1l57ozO55EWWv356P1dMJjHLPGuqB/cXgi8kE7MUhu4V1T1R4tE3ktwRxPoBudiwuMOKVYVh9sZd9PAuRNX0pP5IROh7YsN4Hi2RMP/YwNI2D4F1OCMqZ0Djp4feBT993vFvgnxlzwFaqoJgjgYdmrCFU0Ev3p5AmrG7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cXWA79EV; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513c53ed3d8so38088e87.3;
-        Tue, 12 Mar 2024 04:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710242193; x=1710846993; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gLdQNFOVM/pPG6LlBIiHy/tpPuE7zfP+IIyyMxjL5xE=;
-        b=cXWA79EVHu1BP96mVtSRtOB6O2oJf72D79ZnRo2tIGvnwROeo+j9U/spqbKAdgiAAo
-         xeMW+dhP6WSBZPPGIo+CccD6BVYBpxj0DJXivFdzQKgo7ZZkN6SrcFaFjrpqLupV/pZW
-         o1iTVZHAsQQZFQ550ECTWnxGXo/fJB3tYjehw02y6OMOIjmXIRCsRvukVjFLu4cB7fYp
-         6P546kU3nuRbf+4VDUvr6dj+8Qu+LvFhl8GOqZrQlupzg9uc2zzCniabxDrbPibeK65Z
-         92n1LnC7qeCeUnL8S+rDs2VVHfGlbQ3aDrVX3R/bXqwqA925rlit2Uz/nJSgChlJN32j
-         2cTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710242193; x=1710846993;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gLdQNFOVM/pPG6LlBIiHy/tpPuE7zfP+IIyyMxjL5xE=;
-        b=j9hPAhFdgClCo7sbYcUqYaIckQY5319VahKSCi9qdndjseLDKuV9JRWLXodsPzNMGd
-         g8D1t4kq7NPGeDxnqlh2y+0UhRu88quvcFU9ZOdRQD4fGnUT0NkAZVKY8h/LtTWiWSqE
-         VS6+YXHMAYJzhIr69pktRN7CsqQ/ff2j6HQFXLMDA8oseWQxI0B+HcksavyLeAhbdyik
-         My3sAc7FCigFavwdbz5wb3qfLr//YxpWzYA/JKrK5fz4tfP96ukTH/4SN1+2R56YjHJy
-         YHgH5N+1UqM7eFFP38P1SIkzYCAB0mJ6bFoZo1Wcby6L0yM0amdJx8NUMLS8hA9VbKtf
-         ko4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWUdRigjk+5ruTBmoj+02giAq4AXcpAPNhEquYz4Vt7/9uLJ4dbQfp4wxiSJ/qyn317nzmcidN7E/5p0v+D8AvY4m4THE0V7RWS
-X-Gm-Message-State: AOJu0YyUzePPVdIledr2rYqv/hgkp25KOJioz1MjY/R4aD8GVCYSszg0
-	dUOiPskykA80HM8YTU7j3G6anZryFJMLkvBCbHKgimwWNETlKZSBlBgrOhg1
-X-Google-Smtp-Source: AGHT+IFyVcVoLljfPDittekwPfe4Jrbzt/eefSFN+OHvxQ9dAdAe195eMEtO7thTNgrVEMF3jjcjaA==
-X-Received: by 2002:a05:6512:34c5:b0:513:2858:6a67 with SMTP id w5-20020a05651234c500b0051328586a67mr4515249lfr.63.1710242193072;
-        Tue, 12 Mar 2024 04:16:33 -0700 (PDT)
-Received: from [172.16.183.82] ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id f12-20020a0565123b0c00b005131d145ae6sm234027lfv.57.2024.03.12.04.16.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 04:16:32 -0700 (PDT)
-Message-ID: <6dd0d822-046c-4dd2-9532-79d7ab96ec05@gmail.com>
-Date: Tue, 12 Mar 2024 13:16:31 +0200
+	s=arc-20240116; t=1710242389; c=relaxed/simple;
+	bh=CQCphKWr4o25jDk8CXK4sQL5dE4RRsnaO39JGnEXsBk=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=ZhaXLCUb9XEE9AD3tuKJIsNY+YuK0GJJP7ycET2b3x1YPF5b2TyCwBugWYi6ZfbdSH3spCq0oLK82tulcDNwfGGEIynyt5V73qWRgXdu+rFtmoGNBbyn/+w8pofbW8kohyKQ8QwYhOfOmI02/40yeK5NlmeXa06tWXl1365BuIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=VPapf6gr; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SAcRHzfP; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 1BFFF1140150;
+	Tue, 12 Mar 2024 07:19:46 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 12 Mar 2024 07:19:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1710242386;
+	 x=1710328786; bh=YRT9uyaC97F1MKGGv+BnROns3fVOkRDmiWjZt3YyyvI=; b=
+	VPapf6grS6pV/lcvu1jh2cuW2/02JzQH/gsZg7thaJNEQKsB/fJt4j4CiKRWuA3Y
+	+mFt/as935gZ1F87Im5BvWXLCMnah9IFoFGE9w9uqYZo7xV4rwY5AdDJgZDptT01
+	BgZT4gIk3Jwxepo2a2NN30D5mNaVSdLTgxIP4pxq0g3vBgNX9+Xevylh4UzYOPol
+	JjykPX8l+faKq/7njBEIPZH70EAHNna2DGNraQvbWj3RArWrGl7wL3W+GGoqCx2/
+	3/pAUNSdwW2DXw/Q6cs0LIPMTxWlrml80/+rDT1EugBK9YWQSVXdQhlcPZtuDrIp
+	acBshciDKglR82Vw+IHBCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710242386; x=
+	1710328786; bh=YRT9uyaC97F1MKGGv+BnROns3fVOkRDmiWjZt3YyyvI=; b=S
+	AcRHzfPnfr2lqcel970ZOU51cSCBWkUybtxt23FZu+6uYWz1VWCZFTffztgeSheV
+	jD/LkkPwpxaTe5WKpqM132dTokJx1zWhqWAGT9mDTexzbABvmlEuXZs8pVPSnLoI
+	+b0sO2JLiD6WK9ThyyAtUUuFVj0wtvDDcQJrCMIcBBBuFyn2HEP+Ec6j2gKNco38
+	VXyrG09P2eVJXxh7v0Qa3dyt/tQU/56Bqs6FP+6wIdnoyRYwpVh307lAAI9QMOno
+	ZwSvzYK2gIYlqrbq7br5C7viNb2fes/tF/vp39VOwJqX5T1labGM/dyK+ElZ1jFa
+	uc+fzowxyEZ9N3ZG+lNlg==
+X-ME-Sender: <xms:UTrwZRJbFYezQJqKbvrcdR-V-qowY5mlPFmIySt5uRq46_PZJ22Y4w>
+    <xme:UTrwZdIOeIzklaevJaIM8S2Cxo2rh3lJucbhMuwc-A07oocKt-5visU-8Vqs2mAt2
+    UKksDGV31shFM6Xw_o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgddvjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:UTrwZZtTZ2lBXV9FfpNpUzSKlOOIgb6OYzeULw5Jyz6vRQm0mtaZdA>
+    <xmx:UTrwZSZH43ddw2MmcbQ_s_QQdZISnNexDVlRSubNYHDQpKlaTtpdZQ>
+    <xmx:UTrwZYYz_QTbXskec5eswQE-UoPP2tzh93IS9tuBQrd7MwFnU_2cOA>
+    <xmx:UTrwZWDwh9B2of9OJvn6Kd3fNw6KYpjCiakv8FIpHBHppFYkd0k7Tg>
+    <xmx:UjrwZZG-VTJnpoD0o2Kw_MTpuQPsNthd0hL1DzA6VqCvj2JdeAQ-0w>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 47B8FB6008D; Tue, 12 Mar 2024 07:19:45 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [drivers/iio] Question about `iio_gts_build_avail_time_table`
-Content-Language: en-US, en-GB
-To: Chenyuan Yang <chenyuan0y@gmail.com>, jic23@kernel.org, lars@metafoo.de,
- linux-iio@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Zijie Zhao <zzjas98@gmail.com>
-References: <CALGdzur-rsLbd4BcgtR9QV2=ZH8xHAVySjm2z2TT=Aog74mdPw@mail.gmail.com>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <CALGdzur-rsLbd4BcgtR9QV2=ZH8xHAVySjm2z2TT=Aog74mdPw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-Id: <7bf7d444-4a08-4df4-9aa1-9cd28609d166@app.fastmail.com>
+In-Reply-To: <20240312095005.8909-1-maimon.sagi@gmail.com>
+References: <20240312095005.8909-1-maimon.sagi@gmail.com>
+Date: Tue, 12 Mar 2024 12:17:48 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Sagi Maimon" <maimon.sagi@gmail.com>,
+ "Richard Cochran" <richardcochran@gmail.com>,
+ "Andy Lutomirski" <luto@kernel.org>, datglx@linutronix.de,
+ "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Peter Zijlstra" <peterz@infradead.org>,
+ "Johannes Weiner" <hannes@cmpxchg.org>,
+ "Sohil Mehta" <sohil.mehta@intel.com>,
+ "Rick Edgecombe" <rick.p.edgecombe@intel.com>,
+ "Nhat Pham" <nphamcs@gmail.com>, "Palmer Dabbelt" <palmer@sifive.com>,
+ "Kees Cook" <keescook@chromium.org>, "Alexey Gladkov" <legion@kernel.org>,
+ "Mark Rutland" <mark.rutland@arm.com>,
+ "Miklos Szeredi" <mszeredi@redhat.com>,
+ "Casey Schaufler" <casey@schaufler-ca.com>, reibax@gmail.com,
+ "David S . Miller" <davem@davemloft.net>,
+ "Christian Brauner" <brauner@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ Linux-Arch <linux-arch@vger.kernel.org>, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v6] posix-timers: add clock_compare system call
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Chenyuan!
+On Tue, Mar 12, 2024, at 10:50, Sagi Maimon wrote:
+> Some user space applications need to read a couple of different clocks.
+> Each read requires moving from user space to kernel space.
+> Reading each clock separately (syscall) introduces extra
+> unpredictable/unmeasurable delay. Minimizing this delay contributes to=
+ user
+> space actions on these clocks (e.g. synchronization etc).
+>
+> Introduce a new system call clock_compare, which can be used to measure
+> the offset between two clocks, from variety of types: PHC, virtual PHC
+> and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
+> The system call returns the clocks timestamps.
+>
+> When possible, use crosstimespec to sync read values.
+> Else, read clock A twice (before, and after reading clock B) and avera=
+ge these
+> times =E2=80=93 to be as close as possible to the time we read clock B.
+>
+> Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
 
-Thank you for pointing out the problems :)
+I like this a lot better than the previous versions I looked at,
+so just a few ideas here how this might be improved further.
 
-On 3/11/24 21:48, Chenyuan Yang wrote:
-> Dear Linux Developers for IIO Driver,
-> 
-> We are curious about the functionality of
-> `iio_gts_build_avail_time_table`
-> (https://elixir.bootlin.com/linux/latest/source/drivers/iio/industrialio-gts-helper.c#L363)
-> 
-> ```
-> static int iio_gts_build_avail_time_table(struct iio_gts *gts)
-> {
->    int *times, i, j, idx = 0, *int_micro_times;
-> 
->    if (!gts->num_itime)
->      return 0;
-> 
->    times = kcalloc(gts->num_itime, sizeof(int), GFP_KERNEL);
->    if (!times)
->      return -ENOMEM;
-> 
->    /* Sort times from all tables to one and remove duplicates */
->    for (i = gts->num_itime - 1; i >= 0; i--) {
->      int new = gts->itime_table[i].time_us;
-> 
->      if (times[idx] < new) {
->        times[idx++] = new;
->        continue;
->      }
-> 
->      for (j = 0; j <= idx; j++) {
->        if (times[j] > new) {
->          memmove(&times[j + 1], &times[j],
->                                  (idx - j) * sizeof(int));
->          times[j] = new;
->          idx++;
->        }
->      }
->    ...
-> }
-> ```
-> 
-> For this function, we are trying to understand how it works but not
-> sure how this sorting is done.
-> 
-> 1. When the gts->itime_table[i].time_us is zero, e.g., the time
-> sequence is `3, 0, 1`, the inner for-loop will not terminate and do
-> out-of-bound writes. This is because once `times[j] > new`, the value
-> `new` will be added in the current position and the `times[j]` will be
-> moved to `j+1` position, which makes the if-condition always hold.
-> Meanwhile, idx will be added one, making the loop keep running without
-> termination and out-of-bound write.
-> 2. If none of the gts->itime_table[i].time_us is zero, the elements
-> will just be copied without being sorted as described in the comment
-> "Sort times from all tables to one and remove duplicates".
-> 
-> Please correct us if we miss some key prerequisites for this function
-> or the data structure.
-> Thanks in advance!
+> +/**
+> + * clock_compare - Get couple of clocks time stamps
+> + * @clock_a:	clock a ID
+> + * @clock_b:	clock b ID
+> + * @tp_a:		Pointer to a user space timespec64 for clock a storage
+> + * @tp_b:		Pointer to a user space timespec64 for clock b storage
+> + *
+> + * clock_compare gets time sample of two clocks.
+> + * Supported clocks IDs: PHC, virtual PHC and various system clocks.
+> + *
+> + * In case of PHC that supports crosstimespec and the other clock is=20
+> Monotonic raw
+> + * or system time, crosstimespec will be used to synchronously capture
+> + * system/device time stamp.
+> + *
+> + * In other cases: Read clock_a twice (before, and after reading=20
+> clock_b) and
+> + * average these times =E2=80=93 to be as close as possible to the ti=
+me we=20
+> read clock_b.
+> + *
+> + * Returns:
+> + *	0		Success. @tp_a and @tp_b contains the time stamps
+> + *	-EINVAL		@clock a or b ID is not a valid clock ID
+> + *	-EFAULT		Copying the time stamp to @tp_a or @tp_b faulted
+> + *	-EOPNOTSUPP	Dynamic POSIX clock does not support crosstimespec()
+> + **/
+> +SYSCALL_DEFINE5(clock_compare, const clockid_t, clock_a, const=20
+> clockid_t, clock_b,
+> +		struct __kernel_timespec __user *, tp_a, struct __kernel_timespec=20
+> __user *,
+> +		tp_b, int64_t __user *, offs_err)
 
-You are correct. The sorting is not working as intended! It has only 
-worked and passed the tests because the arrays in the test and driver 
-code have been ordered in "descending time" - order. The code above has 
-done a copying of items in reverse order, resulting a working set of 
-available times.
+The system call is well-formed in the way that the ABI is the
+same across all supported architectures, good.
 
-> A possible patch based on our understanding is attached.
+A minor issue is the use of int64_t, which in user interfaces
+can cause namespace problems. Please change that to the kernel
+side __s64 type.
 
-I copied your suggested fix here for my initial thoughts:
+> +	kc_a =3D clockid_to_kclock(clock_a);
+> +	if (!kc_a) {
+> +		error =3D -EINVAL;
+> +		return error;
+> +	}
+> +
+> +	kc_b =3D clockid_to_kclock(clock_b);
+> +	if (!kc_b) {
+> +		error =3D -EINVAL;
+> +		return error;
+> +	}
 
-diff --git a/drivers/iio/industrialio-gts-helper.c 
-b/drivers/iio/industrialio-gts-helper.c
-index 7653261d2dc2..0667da988295 100644
---- a/drivers/iio/industrialio-gts-helper.c
-+++ b/drivers/iio/industrialio-gts-helper.c
-@@ -375,19 +375,17 @@ static int iio_gts_build_avail_time_table(struct 
-iio_gts *gts)
-  	for (i = gts->num_itime - 1; i >= 0; i--) {
-  		int new = gts->itime_table[i].time_us;
+I'm not sure if we really need to have it generic enough to
+support any combination of clocks here. It complicates the
+implementation a bit but it also generalizes the user space
+side of it.
 
--		if (times[idx] < new) {
--			times[idx++] = new;
--			continue;
--		}
-+		times[idx] = new;
+Can you think of cases where you want to compare against
+something other than CLOCK_MONOTONIC_RAW or CLOCK_REALTIME,
+or are these going to be the ones that you expect to
+be used anyway?
 
-The idea of the check which has been removed was to assign the value in 
-the array in first free spot if it is bigger than the last value. As you 
-pointed out, the implementation is wrong, but I think the idea is Ok. 
-Here you do unconditional assignment which is slightly sub-optimal.
+> +	if (crosstime_support_a) {
+> +		ktime_a1 =3D xtstamp_a1.device;
+> +		ktime_a2 =3D xtstamp_a2.device;
+> +	} else {
+> +		ktime_a1 =3D timespec64_to_ktime(ts_a1);
+> +		ktime_a2 =3D timespec64_to_ktime(ts_a2);
+> +	}
+> +
+> +	ktime_a =3D ktime_add(ktime_a1, ktime_a2);
+> +
+> +	ts_offs =3D ktime_divns(ktime_a, 2);
+> +
+> +	ts_a1 =3D ns_to_timespec64(ts_offs);
 
-  		for (j = 0; j <= idx; j++) {
-  			if (times[j] > new) {
-  				memmove(&times[j + 1], &times[j],
-  					(idx - j) * sizeof(int));
-  				times[j] = new;
--				idx++;
-+				break;
-  			}
-  		}
-+		idx++;
-  	}
-  	/* create a list of times formatted as list of IIO_VAL_INT_PLUS_MICRO */
+Converting nanoseconds to timespec64 is rather expensive,
+so I wonder if this could be changed to something cheaper,
+either by returning nanoseconds in the end and consistently
+working on those, or by doing the calculation on the
+timespec64 itself.
 
-
-I will fire-up a setup with the IIO-GTS Kunit tests, and alter the order 
-of times in array for the available times test.
-
-I would appreciate if you could post formal fixup-patch in inline 
-message as per usual Linux review and merge process. That would simplify 
-the process for Jonathan and other reviewers. Please, let me know if you 
-don't want to send a formal fix. In that case I will write a fix by myself.
-
-Finally, your finding and report is _very much_ appreciated! Thanks!
-
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+     Arnd
 
