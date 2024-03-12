@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-100156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A10E38792B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:06:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B3A8792B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07253B22D30
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:06:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48B6F1C218BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E31F79B8C;
-	Tue, 12 Mar 2024 11:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6383B7995C;
+	Tue, 12 Mar 2024 11:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YOzIEZzc"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s+lZkKDj"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C187993A
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DB069D0C
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710241594; cv=none; b=BVaNL5VThXA7vFMNY8IgmGZkwDjWmCPlU+C9M7A9zqZVkEsGU6GVppoZXxRo8Bfl864Wx50VRbvGARQHbo5CXN6E++ONDTB5fnDSKZkz9WoHhVa4EvmNVNtVS23XRt0YG5gSbZZdbDhQrOnRfFRYmKLShpVIT/nNhKaxukU6buI=
+	t=1710241671; cv=none; b=kZFL+RhcPCZpjqGB+M3R5iuahbE3VzWc7o+boH5I5hLOC/ZyJQYhSFUHontpVH0sZlvgEbUbKgQKZPL3iY8siWJ0mTlarYr2pebyHHHbHR0EKVC6wYvCdpgYAmpIipQCV9FL+WCMy4Cu8xjEGLW+9ZUDit5cpH9TuAJ+uQYQTEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710241594; c=relaxed/simple;
-	bh=w+AB7Sp+b/znW0SVPB2eljSKguLQXeDaePXRLGAqj0U=;
+	s=arc-20240116; t=1710241671; c=relaxed/simple;
+	bh=MmhrOasdT6Y/pnrhGjGokwxbalIfRJx5zYSaOB0QgCw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DZGlMermr+7XZh47y471KM9RBvXMVWBUE/v+CT07nTS0KLTacOPAGrq+xPvL/YqYTgsLwOIG/X3VWSS45BYWDeLbXd3mllt7/tRAF/HtxQ8ZkJ+S6toWoc7VzN6MYjc0Lqk20cOPad3J3AJYDSnMy9cWRf2iP11ZJMT2Oh5kT48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YOzIEZzc; arc=none smtp.client-ip=209.85.221.47
+	 In-Reply-To:Content-Type; b=EUcBiKZV70gmwfXj9MjRSIXBqqlrz6FBBqdwkzsh920/PzvnpeOD4QB/dfQEga6TWz0FqZX8cgJfIMfjt4kXg83f//wuuwm0XwuxnhedpCXoSzFoLyuIDQf727DSc41JlDcWoDPlrU3phfz2WZMP6qgZx5hrxp76cqMov1u3+50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s+lZkKDj; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33e70d71756so2833141f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:06:32 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33e99915809so1558881f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:07:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710241591; x=1710846391; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710241668; x=1710846468; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=spUMTMUiMjAcBN2l3x+y2DNU2c3Bpq7uaLcrzi5uyvE=;
-        b=YOzIEZzchHgtTHAZmWpcXKo3EhhkL44bXRv5E8xb1qTbGOLpI9GJYEI/gDmOBG3vBm
-         VfqXAiOPT7nv/1qzB+DBNZ4iB2IWt7c+mjILefu7g5DeaWCYWdmIPDMxA6xbhRlgkFd8
-         ZmHJwIuiJUlSmm0a2QZZNg5An7KP4kkC/DInBd7iFo3gnay6TfgqxYjm0M0VfkAJ4lJe
-         zC6/REIElBM5l+q5ophHckSKm+8wGYKyDksoU9led4KCGhup5q0a0V9MvfSKRFv33Ss2
-         /NVK3mbxzP5E26E+oNMTT+dEf3ptRG1EXC0KluF5ALPbDcIFjxWCwkaTO4VUUrcPqXUO
-         jmcQ==
+        bh=aPeEGWoW+IoEdT4+n4ujFIP7VtdCdwMH4+qLi484W70=;
+        b=s+lZkKDjciUSqWbjQTQeZ1y08esUMCuuROjh+3uF4GAiJoyUdkdQQuC3SqZ9NEpoyq
+         khl7D8Vtk761JJ22KmdiTd6NvhURRyeS95x9KJ6IUiQHTMkKWOLu05GmmcW1e5Ll1R9V
+         iaPeUiQsUkaDv5Uxx6/U9SwZ98QeMDGX3dF0GustCIyHmbA2jSzDhKfm2aowFv2QJxVb
+         9R7tdS8HREaI5wGu+S4o0nlWbawqbovnV/jLoImc8g2L+ZIaIKUunAFffW1a8A3YHzgn
+         3nAbYU/lpzoDNwMQf9VF0c6r+ehzUwnx8s/6vZIy8T7jTcyUZqwadDHV1kgXAsXwBjOr
+         gwRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710241591; x=1710846391;
+        d=1e100.net; s=20230601; t=1710241668; x=1710846468;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=spUMTMUiMjAcBN2l3x+y2DNU2c3Bpq7uaLcrzi5uyvE=;
-        b=ev3jvaBzHc7LLc+13l32I9IOB+68Ee6p/5Ygc8unM03AJ3UlgExEmPyn/IccXiWum4
-         S6ASNxyoGSKu0BIaYU/TcoNRIU06uGxl60S7sxNILeMsNJ6mGzOVyjoY1JxikA5y7KLr
-         hVDJu9xHiwACfvSqfLdp+JXc5TKOY7qLqIXeIe0Dj2E657eHk6jk52KjvAfNLV1RnWRl
-         f6U24F7hX/I02lMkMsffHzBo0ACRpP6vZ/CCY1wvFqPDjMj4BfA0SlgBYufXLxSOGD/I
-         NzVkUhwKgJEeU8VSJuiBuEdwL4yR4egPvrp0HWezWiSd8vF6dUulkRrZfXOsv7aRR4Af
-         KtSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVYH5g1NLJnivywUgo6OBUZVRQbVr1G39QZv2Ajz4khUnXAJtfApqLHoYRtm4PgrypB4Xful0cTr/vKJJi4cIehdGKXYZCKIjG9ln/8
-X-Gm-Message-State: AOJu0Yy/9c+k1LisV2b1cG7LQbZCMsJ24qqf+iFpvNeAkyUCUtd4FWZ7
-	q7qiuB5IxxyIY8HBrB7bwgfKbERJiQbMyc8mwW2o7SBdMsbb/iGjUxJiwXZtf70=
-X-Google-Smtp-Source: AGHT+IFCHKU0QYU8Q+PsgYniyZYE+NLnrBz5UmhIZEF1snElrai/JI1QLNvk1oshiNoWAmheNJgMew==
-X-Received: by 2002:adf:a15a:0:b0:33e:9ce8:407a with SMTP id r26-20020adfa15a000000b0033e9ce8407amr3400871wrr.13.1710241591646;
-        Tue, 12 Mar 2024 04:06:31 -0700 (PDT)
+        bh=aPeEGWoW+IoEdT4+n4ujFIP7VtdCdwMH4+qLi484W70=;
+        b=Hyy5IhmJ1Gi9PEATPnukF3j3iXRjEsDqFYUdAGqtdgH7SD7Ur5dKq6y+Oat9lEmW2p
+         lGdafTpsNnTnUassb86a/53SRVMQ9bfOlhh2G1feISss4CRXY4FWYDlnMciOFiskeTxX
+         WTNook0241WUBJyP+T21wCwuICOtlFgOywP0BXkzwTaFlhSXs3eE+K+26PH/g78uCxmY
+         5A+hEBeg7fa+TwVPVnF1uFkTqKCpLcesPaCsy8P1DLUryHTznnyv5gLziJ/77rQ3+KVb
+         aPStAnBkmHl9aH6PXOjL/A5XcD5sLoipLwvJgp+6ETQP4ogRnvWWwG5+TfPw/rJzD5tX
+         /86A==
+X-Forwarded-Encrypted: i=1; AJvYcCW+wF803+eyx/ibELwZDEMsz8nryioGcVMLawywvNjLva+O7MJvs8MnLmP/QPF4uybC6wYyuIpdMDA/93W13qivLfP0Dwif2n0QFKxm
+X-Gm-Message-State: AOJu0YzPlIdA2VqorFvGLdc+y0ya/ktfRz48CCEzYq1zLLq9US42nwHL
+	eFQxkjRbcbkBKT09llW1UKJIZ0CQwRJQMda/jlL4DIO29He+Du0dDo1NHVgrfZo=
+X-Google-Smtp-Source: AGHT+IH3aqWGudol2v0PS1/6Fw2zy0xkYpQr7TX3+YfUm+B0nQCIl3urEDvYpupkptHmvzKEXfVJ8w==
+X-Received: by 2002:a05:6000:18e:b0:33d:1eea:4346 with SMTP id p14-20020a056000018e00b0033d1eea4346mr6014945wrx.37.1710241668000;
+        Tue, 12 Mar 2024 04:07:48 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id bs15-20020a056000070f00b0033e9f6997c7sm2800461wrb.66.2024.03.12.04.06.29
+        by smtp.gmail.com with ESMTPSA id bs15-20020a056000070f00b0033e9f6997c7sm2800461wrb.66.2024.03.12.04.07.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 04:06:31 -0700 (PDT)
-Message-ID: <70703417-7146-4ffb-bc72-10f586cd56e7@linaro.org>
-Date: Tue, 12 Mar 2024 12:06:29 +0100
+        Tue, 12 Mar 2024 04:07:47 -0700 (PDT)
+Message-ID: <2e222e07-6a14-4cf6-9d62-8e6d73b25f8d@linaro.org>
+Date: Tue, 12 Mar 2024 12:07:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] dt-bindings: arm: amlogic: add A5 support
+Subject: Re: [PATCH 3/4] arm64: dts: add support for A4 based Amlogic BA400
 Content-Language: en-US
 To: xianwei.zhao@amlogic.com, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -86,7 +86,7 @@ To: xianwei.zhao@amlogic.com, Rob Herring <robh+dt@kernel.org>,
 Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org
 References: <20240312-basic_dt-v1-0-7f11df3a0896@amlogic.com>
- <20240312-basic_dt-v1-2-7f11df3a0896@amlogic.com>
+ <20240312-basic_dt-v1-3-7f11df3a0896@amlogic.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -132,26 +132,177 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240312-basic_dt-v1-2-7f11df3a0896@amlogic.com>
+In-Reply-To: <20240312-basic_dt-v1-3-7f11df3a0896@amlogic.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 12/03/2024 10:18, Xianwei Zhao via B4 Relay wrote:
 > From: Xianwei Zhao <xianwei.zhao@amlogic.com>
 > 
-> Document the new A5 SoC/board device tree bindings.
-> 
-> Amlogic A5 is an application processor designed for smart audio
+> Amlogic A4 is an application processor designed for smart audio
 > and IoT applications.
+> 
+> Add basic support for the A4 based Amlogic BA400 board, which describes
+> the following components: CPU, GIC, IRQ, Timer and UART.
+> These are capable of booting up into the serial console.
 > 
 > Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
 > ---
->  Documentation/devicetree/bindings/arm/amlogic.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  arch/arm64/boot/dts/amlogic/Makefile               |  1 +
+>  .../boot/dts/amlogic/amlogic-a4-a113l2-ba400.dts   | 43 ++++++++++
+>  arch/arm64/boot/dts/amlogic/amlogic-a4.dtsi        | 99 ++++++++++++++++++++++
+>  3 files changed, 143 insertions(+)
 > 
+> diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
+> index 1ab160bf928a..9a50ec11bb8d 100644
+> --- a/arch/arm64/boot/dts/amlogic/Makefile
+> +++ b/arch/arm64/boot/dts/amlogic/Makefile
+> @@ -1,4 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> +dtb-$(CONFIG_ARCH_MESON) += amlogic-a4-a113l2-ba400.dtb
+>  dtb-$(CONFIG_ARCH_MESON) += amlogic-c3-c302x-aw409.dtb
+>  dtb-$(CONFIG_ARCH_MESON) += amlogic-t7-a311d2-an400.dtb
+>  dtb-$(CONFIG_ARCH_MESON) += amlogic-t7-a311d2-khadas-vim4.dtb
+> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-a4-a113l2-ba400.dts b/arch/arm64/boot/dts/amlogic/amlogic-a4-a113l2-ba400.dts
+> new file mode 100644
+> index 000000000000..60f9f23858c6
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/amlogic/amlogic-a4-a113l2-ba400.dts
+> @@ -0,0 +1,43 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2024 Amlogic, Inc. All rights reserved.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "amlogic-a4.dtsi"
+> +
+> +/ {
+> +	model = "Amlogic A113L2 ba400 Development Board";
+> +	compatible = "amlogic,ba400","amlogic,a4";
+> +	interrupt-parent = <&gic>;
+> +	#address-cells = <2>;
+> +	#size-cells = <2>;
+> +
+> +	aliases {
+> +		serial0 = &uart_b;
+> +	};
+> +
+> +	memory@0 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x0 0x0 0x40000000>;
+> +	};
+> +
+> +	reserved-memory {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		/* 52 MiB reserved for ARM Trusted Firmware */
+> +		secmon_reserved:linux,secmon {
+
+Missing space after:, unusual format of node name. Are you sure this
+fits DTS coding convention?
+
+> +			compatible = "shared-dma-pool";
+> +			no-map;
+> +			alignment = <0x0 0x400000>;
+> +			reg = <0x0 0x05000000 0x0 0x3400000>;
+> +		};
+> +	};
+> +};
+> +
+> +&uart_b {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-a4.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-a4.dtsi
+> new file mode 100644
+> index 000000000000..7e8745010b52
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/amlogic/amlogic-a4.dtsi
+> @@ -0,0 +1,99 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2024 Amlogic, Inc. All rights reserved.
+> + */
+> +
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +/ {
+> +	cpus {
+> +		#address-cells = <2>;
+> +		#size-cells = <0>;
+> +
+> +		cpu0: cpu@0 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x0 0x0>;
+> +			enable-method = "psci";
+> +		};
+> +
+> +		cpu1: cpu@1 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x0 0x1>;
+> +			enable-method = "psci";
+> +		};
+> +
+> +		cpu2: cpu@2 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x0 0x2>;
+> +			enable-method = "psci";
+> +		};
+> +
+> +		cpu3: cpu@3 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x0 0x3>;
+> +			enable-method = "psci";
+> +		};
+> +	};
+> +
+> +	timer {
+> +		compatible = "arm,armv8-timer";
+> +		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
+> +	};
+> +
+> +	psci {
+> +		compatible = "arm,psci-0.2";
+> +		method = "smc";
+> +	};
+> +
+> +	xtal: xtal-clk {
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <24000000>;
+> +		clock-output-names = "xtal";
+> +		#clock-cells = <0>;
+> +	};
+> +
+> +	soc {
+> +		compatible = "simple-bus";
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		gic: interrupt-controller@fff01000 {
+> +			compatible = "arm,gic-400";
+> +			#interrupt-cells = <3>;
+> +			#address-cells = <0>;
+> +			interrupt-controller;
+> +			reg = <0x0 0xfff01000 0 0x1000>,
+> +			      <0x0 0xfff02000 0 0x2000>,
+> +			      <0x0 0xfff04000 0 0x2000>,
+> +			      <0x0 0xfff06000 0 0x2000>;
+
+Odd order of properties... reg is usually the second.
 
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
