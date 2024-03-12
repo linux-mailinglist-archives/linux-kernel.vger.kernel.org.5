@@ -1,224 +1,210 @@
-Return-Path: <linux-kernel+bounces-99848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB54878E3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DEEAC878E43
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:46:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32E641C221E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:44:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C7511C221ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0046740C1F;
-	Tue, 12 Mar 2024 05:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="NFah+XmQ"
-Received: from PR0P264CU014.outbound.protection.outlook.com (mail-francecentralazon11022019.outbound.protection.outlook.com [52.101.167.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8738F25742;
+	Tue, 12 Mar 2024 05:46:11 +0000 (UTC)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB25B3FBA4;
-	Tue, 12 Mar 2024 05:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710222261; cv=fail; b=gnKVxF/VM4f4CZCv7ryu3+PpMsaeH9xgnbwiDl9zVw8PbQVrnOKsYYpNKc8N8wNHMAnv9TU5Kkymu4QF92gktg3E/FBy5Fbt06Pu8wZEqfWHUl1oGL6FMvtNAmkra1pTMr+qHzY/6yaH648LHDyeXaeSFyc37BnfPfmKF/S0vMQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710222261; c=relaxed/simple;
-	bh=sDSjnDKjYB8q60mMrakPtyJ7hVaYY2Sr+pjLkbNzrDA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=KYEgJ9kfdFkjt8QOB5Ne0U+Jb228U9fXs7Iz1bMI29M0xAvBaVb+pQNkbugBme9LcnQiGZPtg8rXMBjnMKC9gz9TfPkq8OOvc0wxT8SVcxarDq3ymzN9JeCp+ZCV3gK3DUNod6IZL9XjSwkeEmHXj57toSIZxByzjS6ggDb4Jy4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=NFah+XmQ; arc=fail smtp.client-ip=52.101.167.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z1qJ9XFILXbduB/w4z/8X5+jqKR9QqWIxtY9+BjK2COSRrU04w0Hfe555QZC5urMPrhpDa5DTeuDOf2YGo/ssLYRF8VFH0I9khKTadORLJchX9PtRp9UoNmJf7PkK6yTjkzfE9GOBl/GqfF/Y82xM/VgJBPLRccv+qXEijPqKlZ043PZalrvmoHs+DVamkRGu+F1u4UwNf6+sVaMHO46/IeKXOo+zK7CumIIwAOYujCsATVIT7rhoE33/kLVbgOhxr8PfjnES0G/MmQjgqTst/IEdUZ8uLmIC9AM6RApFKVWkYfOQfbyBHLGe+FayT1ngCQyHpam4ilIhb1PgkMuPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sDSjnDKjYB8q60mMrakPtyJ7hVaYY2Sr+pjLkbNzrDA=;
- b=i71jEEHlpiFaGTdXtyg4rg43RRTw/ftZfH6eXjULrRylSP+ow1tuEe7JgiiQ/GHv4jV2Qo9Z4Sa4t1uBcakV7tTJ6FDvSmdZ9KvjoLeiPOgSR5t0iBpb+MQA2Z/DiSBs5kiq+LwyGhdXbzdrxS/7hRDExN6cuC7HFPt0N1i3Dt0eC501AX1Qm4KXDxtkCtERobtFaYRz3K4lW1XRpNTVndNZznp4jmpy6s39RpLMxArctLG/jQjQRcW0R1WoU+sYNerfVkXjzQGk0aVEOGwAsGHLCTnu2XMm2ukqvF+fYxaEA1JSSsJjnnl0rFUcm6zlsPkPiL5vJufR3sU4mjwdnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sDSjnDKjYB8q60mMrakPtyJ7hVaYY2Sr+pjLkbNzrDA=;
- b=NFah+XmQMwBEFgxMZzaOSj9MPEP9vtdjTaRLKWroUg+/YAx0uygWsuvuW6YSFgg8e7lNRRjfue3sL4Cr13Xe78kr152KXbdScWuRv7idzv2IreHEDOJkLsqWZLnpV4/28GWz2dj2qefyCr4jMDksERnuAx9jv5Cq8C2FHkVLsBewupXdBo0LD/8mI8C3IVmmtuqw5yeE+umv8I5LEUE21JHvArVC8QKQz8LzZ1tp7IKcwvwaV5EgY8V1Io08ABZLMGf2F5gejprCyHm/W3RU6+c79ZNDtGvXaxj9K47aMm7zDNX1tE0BWffOYM0SsmyjnSyXTxhrkHafHQMgFBsF1A==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB2004.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:2::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Tue, 12 Mar
- 2024 05:44:17 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
- 05:44:17 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Waiman Long <longman@redhat.com>, George Stark
-	<gnstark@salutedevices.com>, =?utf-8?B?TWFyZWsgQmVow7pu?=
-	<marek.behun@nic.cz>
-CC: "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>, "pavel@ucw.cz"
-	<pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>, "vadimp@nvidia.com"
-	<vadimp@nvidia.com>, "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-	"npiggin@gmail.com" <npiggin@gmail.com>, "hdegoede@redhat.com"
-	<hdegoede@redhat.com>, "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-	"peterz@infradead.org" <peterz@infradead.org>, "mingo@redhat.com"
-	<mingo@redhat.com>, "will@kernel.org" <will@kernel.org>,
-	"boqun.feng@gmail.com" <boqun.feng@gmail.com>, "nikitos.tr@gmail.com"
-	<nikitos.tr@gmail.com>, "kabel@kernel.org" <kabel@kernel.org>,
-	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"kernel@salutedevices.com" <kernel@salutedevices.com>
-Subject: Re: [PATCH v5 02/10] locking/mutex: introduce devm_mutex_init
-Thread-Topic: [PATCH v5 02/10] locking/mutex: introduce devm_mutex_init
-Thread-Index:
- AQHacDjgK3b+WpnPIEGh5lKDyA2GCLEsCyQAgAA+QACAADOKAIAGv34AgAAXNwCAAEyOAA==
-Date: Tue, 12 Mar 2024 05:44:17 +0000
-Message-ID: <479472f8-58a1-47af-9f83-c75f89f67b00@csgroup.eu>
-References: <20240307024034.1548605-1-gnstark@salutedevices.com>
- <20240307024034.1548605-3-gnstark@salutedevices.com>
- <20240307095639.b6utkbzr36liuu3p@kandell>
- <3d95ab40-2df5-4988-87be-568a628a0561@redhat.com>
- <20240307174414.4059d7ee@dellmb>
- <cfceef12-883e-4593-9dca-50768acb1aa9@salutedevices.com>
- <d98bff53-c85f-45c0-acde-8cb4e018af30@redhat.com>
-In-Reply-To: <d98bff53-c85f-45c0-acde-8cb4e018af30@redhat.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2004:EE_
-x-ms-office365-filtering-correlation-id: a1b38690-dd9c-455f-2800-08dc425774f5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 63kQqecslrYumuItt3DgKz5k24A5csQQfBZIp3WSET3RJWwETVYwEq9WxUgWMV3s/RPKO+qWor3RH2CZ5SQZa1iNPcRYUq78+wbRWhVG2e8feNVodJhB0xpGzs9ZI3mKZ/GBt+vg5tcVh+2hlA7QMuBGS7qRzSifGskWbSFMi0M4iPOozVEnXwG3x8HDDAf1mfewnKUGX2MDXj9h7//OfBN33xqVq46omeP6E+hPC51mL0pHbyy2D/tVR+Q/Wg2XSMjVms+2xjiCjdoyJtMNy6r+xYZDxl5yfkr9IAuNk3pV5rw2YAulh+/n3G1VQ5IyQsLGYOiHeWeMxtr0d745CuOwuAzw2GDZEzbSYfzh1Z5gLMz1RyM+xMgpPOyliodPICuilTLs1uS+H3D0xufo6RgLc7F2OukqvWO3wEX+p6clQXDUDN3DQOxuTaO2yPhpLQbaaH3DAeygUDSE1C1K2eBIrLp4awFb/Vda7fYNjhwEe0F15a3DSlAKCpc/lPeAYR3k2eYAdtDv92+8XWrtU5r9e9YS+vQDXzmIOFH5WguFHsKbVXdyI6Y+3mQJG4le7N3stjuFHqwlOCj1cIjMa0DiLLjHHJSn2mwq7QxIHfPNlKzyyxlzOBz6CBLJ2N9k5NQbVubW81iMkdpBAxxYVD78NcVinaxZI0s6waHQTgyIijcpay+4qSmTDNnhBnsfqeZO0qMpY6y1G3JOyi1DpA==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?QVVJWGdXckhIcll6Z1paZjgyUm1QMXl6ZVExKzR1WDkyb0ZMNFhJMWRqMVpj?=
- =?utf-8?B?QkpOTTMvb3dGcjhWN2djTVp5MWNMTnZBV3JjSEJuZDNmWmE1aHhGd3krZkRC?=
- =?utf-8?B?YUtta2piaE5nS0Zqb1U2eEx4a3Q0REVyS3l1eWVOS1dNOVFEMEs2Ui9GVVlZ?=
- =?utf-8?B?cTZlME9sSmZVa1VxMWp0VzlLQVpVUkY5RHpMWHo1bytsTUtkRCtwelFzS2lu?=
- =?utf-8?B?cFgyY3RtcEtjQXNkcWZseGtEV08rS3ZLZERDOVpDNVpjQmxVYks3M2hPdWN0?=
- =?utf-8?B?cG9ZdzcxZTFnY21LRXJlUzJyeEtaWVhuRDVnRE5LckIrKzdZY3lCSzJCOStN?=
- =?utf-8?B?bjJCZGVpcWdSbFF1alNMbkt0bTJJZHRyZXY3bE1WOXVOeUVlYng0d2xPOVhU?=
- =?utf-8?B?TlcwT09zdUcvTFFWMTkxdGJNNlVvbzVybXRxb1NsRThvNXM0NmR6TXlPSVFE?=
- =?utf-8?B?SVdOSUxvUkFGWW4yMGl0RURZR2RBdUdhdTJkN2Z0MEhhajFpY1gzVUFidGdL?=
- =?utf-8?B?NDYrMEdBVVROVG9TNzdNdzFnVGwxVkhSN0xLUmhxcUl4R0ZvS1ZDK0wxZHlB?=
- =?utf-8?B?U0dla1p6U2xIMEdHRENlTkN4VWRjQjFFejRJbEx6cFBqQnBOOHUwY3kxYVlY?=
- =?utf-8?B?RnVLUUNzdkFnQTFYQVNaWDhEaWFZdkd1WXd5N0t5K2w0NzlvcTVhUVpvL0lM?=
- =?utf-8?B?VUw2eTZCTHFsUVJDOERMbklZTXdqb3UwT2ppVWdkSmxvcngvb0NIcVNqTWRV?=
- =?utf-8?B?NUJHdlBiTTlUNExTYllIb0krZDBFWUR1T1BNYWtkdUhXS2ZKMHF4V0pNU1hl?=
- =?utf-8?B?SkpYS0l0N05aVWhjQmViM2NKclBQKy9XbmtkeGcvRWJLU3pYenRoTk9IUkZz?=
- =?utf-8?B?UVpxZGRNZC9FZnJuTVE5RTBrcStSeHNKNG5IUTJJYXFqR3l1eWpkTG1vUzJr?=
- =?utf-8?B?ZFJhVjRCQWJiYmR3VGtaaktCRjV0dFF2RVJvYWUwbEdqd0NlN1F4WUZFUEtZ?=
- =?utf-8?B?WkFleUxRalpNUVUyUkxNUWJjb0V4MEJibVFLUXljUUNvcFpBR1ZqN0J6bnNi?=
- =?utf-8?B?WDVOMmUxZlNrb2Fyb09GWTBoQThueHJSNjM4bEdiREFLS3lFMnk5dnNNTEZr?=
- =?utf-8?B?c2w0SFlHc3RMb2FPYVoyRTkrUFhCS1B1eHIrV29MVXVkMDB3UXJ1V1B2WDE5?=
- =?utf-8?B?cHJnakdTaEJIVEZyUkNWSHMrYWdmVi9Pd1JhUEhjdlE5RGhxbGYxblB1NHhD?=
- =?utf-8?B?MmI3VE51aG9mUWl0SWd4L2h5eHhJdjdUWW1XbktRQnkzL3N4MnF3d0tZK0M3?=
- =?utf-8?B?SFZrL1FXOVJRYUJEamFOOGUvZ0daeVR1eE1Ld3cvNkdveWtXWkhpQ2FaaHNt?=
- =?utf-8?B?ZVdCc01DMjkyM0hLVjFrYXRRS2ZCbDVjT0NnQ1FUcEYwL29tdlMrT0ZBTHVi?=
- =?utf-8?B?enIwS0FZb2NuQnBqMGxkL1FPZGZmT2JuK1J5ekJON0ZQMTVVUjhFUXBYd1dQ?=
- =?utf-8?B?RUtPYXM5Vi9mNzQ2WnNMSVdlUk9xbjlrRm9CMzhZcFRwUWhVMFUwUjM1VFg5?=
- =?utf-8?B?WW1qcEZMM2lrVFExb1VGSCt4RmlGRWI1N2ZpcUw1OUlyWFR4NHJsSG1MNFRX?=
- =?utf-8?B?TWFPWExqb2hoc01GMzV1L0pRazE2dkdIRGczM3N6bnNoZUN1QmtyNENjcDJM?=
- =?utf-8?B?SmJKNDZxWDA5QWlLUm9ONkhUUjh0ZWdKdGhVSmdERTRLNXd6UWUwRkkyeWl1?=
- =?utf-8?B?OE53NENWeDFVY0R4SzRMOXNOYVJ1MzBGUkJDVHR6MmR1NThGMlIyeWtsRmdO?=
- =?utf-8?B?amkxY21MYktqdUVpSnlPWEU5WTYreUozTlFlc0hHTzlpZGIyNW03d1kxeHZ5?=
- =?utf-8?B?ZVRqVTJVaHFyTzJORnJvb2h3eFlvcTAxbjRveHkwOFg5R1JnMGtFV25XZFBw?=
- =?utf-8?B?WVhWS0FvMUZzYUlxZ3ZnNExVVkxYOFNSRmMrbFZaVGs0V29tOVljeTM4YmF6?=
- =?utf-8?B?ZlZiNWpBd1VpRFJZaGl1aXpud2d5aldPOCtoRElqZzBmNkNxc1N3eGp6U3Zw?=
- =?utf-8?B?MGZCRWtOb3hvRmRmRDlVMHJrZzlhTm5wY1dhRk5GQzYyWlZwZWpxZ2RmY0Rn?=
- =?utf-8?B?NTBlQng3dUdWUE01bVhaaWxTc3pPN1UrNVpORVZyVE9LY1hmNlI4M0lCck9B?=
- =?utf-8?B?ZFRWSUJKdXJtOUVHRVJmajVuMkJSaUJhTVNxb3RWMmx4QnZsZ0ZxeVhKNkY0?=
- =?utf-8?B?QndTUXJjU1Z0TEt3YnhMQXB0bW1BPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D91471BC4ED3244AB30F49F1460B91DB@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8D710A12;
+	Tue, 12 Mar 2024 05:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710222371; cv=none; b=QPBklSxauncsAjR5lp7M7vG0GlwW6PrYeMd9ExvMAKGGMbz5tUG1PScj9RRcPJo+T/H8kW7oJQUbY6F4yJ0OENc9o0LYw7IvtVWIW0ZEyD/FoouuvBZ0YJ4PyYv/9JZ3ejkqdYMe1eGp1h6WD/XwFP/UF/h1XnlIDzXqjOggB70=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710222371; c=relaxed/simple;
+	bh=p/qM/uvqJknlkhIz++zsgYm5UEdegHpPBL/SEz1rPBg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mRPgx98qBWyW+Jj11PoOGqPV2/mQr+Aa7oemlIMWlel5ag95fN4zQ1ZGWff11tn7ZNZkzQsRLz8u5JwOVaEaLzgj9Q7Zpfat4gvkK6u9aAqmckjGZ3hDB+zBr+YX5eOsBXiHC3VUhgX47b5EV9UGQYvmv7a6TiIs3eSsaKxlNpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4429c556efso412448466b.0;
+        Mon, 11 Mar 2024 22:46:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710222367; x=1710827167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mEgAABfrmv9f6da9s+EJl/QuGoeCFMl1ymUuyGPWf5k=;
+        b=VyfCdKi3dAVj8QpPD05LBPsZlUGgKNFMFoK2gac22WHcPpLNjhEvBYEyGwnrl6V1hA
+         zv2A+k+o3y3hxSaNwMiaka9/gVua3I4qsdGH5lSc/0vccADhaY6DW53sLNJ8puoNVAt1
+         Igl8TJILhc3+4YnRNX4R6ZPFldo228FmC/0SKKJg4gp7cJgx6GyI6Wxm41/6Zi5PpBNc
+         43GhLliCCUugeDvbQsKyOsf0PEQV6rv++SwRIFJiEiLBnCltxj6X0+miHMFvdZziR+wi
+         foxQIRVHgKf8aWOSnLILlcJZe5+9lNtoxUtgKz/YAExyU4mdf9/ryKqjiKKcmDbUoBnI
+         4Cfg==
+X-Forwarded-Encrypted: i=1; AJvYcCXumGokw+oboMJu6UIeyDpDLC6Mqywnk2bxtDH9GTY77XZUqyjeOVI/jeXNX4HLK7gs+AKnKNIVOToXnUpmcJvZUgQKeEVf2Na0U26AMQnwB0SUqGwGr2IN4memhm9a1qJMqXwy0wRxmPXODqr4FW+TW3XYNs8Q4eWBguVpRH6h6U51
+X-Gm-Message-State: AOJu0YxQyd5AY1J5zK7C8AIdZM0mByWrYcRHNZaUCkLT6bjkBtXvuv1X
+	n4wTofPmEn1Rrac3HIdKwvL4nH0ZCiXZ3rHSBT/fkhRGQaBf0mCrjvNJRI+WI6EltA==
+X-Google-Smtp-Source: AGHT+IHtYv9eZ0NExks4bz6UDwMuY2zHFIV7h+rZrwrs52ipFLTfRTqWDy2dfIl+mC4lJvmeJtk3Fg==
+X-Received: by 2002:a17:906:3daa:b0:a3f:5144:ada2 with SMTP id y10-20020a1709063daa00b00a3f5144ada2mr5117620ejh.2.1710222366772;
+        Mon, 11 Mar 2024 22:46:06 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id r24-20020a170906549800b00a45a62e0ed0sm3512226ejo.98.2024.03.11.22.46.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 22:46:06 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a4429c556efso412446566b.0;
+        Mon, 11 Mar 2024 22:46:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUNSYnKA5F45lIyBdn7PlcZBypepjMFLGhV8U1VAnMMckA8K9N8/8EHiUtnsb64+hMeoPrGGOVaUHyEtFA/ZhC43f04RscS3cF9Ft99JgNmHrI2NqwjaMGOGv/1TWO7yMOXtLOWtbL06yKfAtmZr1h9yPt8L+wI07Pq2BPlUW+SK+HI
+X-Received: by 2002:a17:906:4a89:b0:a46:2b4d:e3f8 with SMTP id
+ x9-20020a1709064a8900b00a462b4de3f8mr2377402eju.19.1710222366228; Mon, 11 Mar
+ 2024 22:46:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1b38690-dd9c-455f-2800-08dc425774f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2024 05:44:17.1466
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hxvXsRh8rPG36pIjhOmblXU5GW+2RLKZpesjUuXcqoCaVvGfQR1QnxKOBmwX8n5sV8T55FmcpJnJs2U2Y/WBmB687JQCKdi1c44HOKMkR8E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2004
+References: <20240311161558.1310-1-mhklinux@outlook.com> <20240311161558.1310-3-mhklinux@outlook.com>
+ <13581af9-e5f0-41ca-939f-33948b2133e7@linux.intel.com>
+In-Reply-To: <13581af9-e5f0-41ca-939f-33948b2133e7@linux.intel.com>
+Reply-To: sathyanarayanan.kuppuswamy@linux.intel.com
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Date: Mon, 11 Mar 2024 22:45:54 -0700
+X-Gmail-Original-Message-ID: <CAC41dw9RKh1EzprEHqy+BpRbPNYiwOLvnWeauErdMLDCJdRyLA@mail.gmail.com>
+Message-ID: <CAC41dw9RKh1EzprEHqy+BpRbPNYiwOLvnWeauErdMLDCJdRyLA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] Drivers: hv: vmbus: Track decrypted status in vmbus_gpadl
+To: mhklinux@outlook.com, rick.p.edgecombe@intel.com, kys@microsoft.com, 
+	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
+	gregkh@linuxfoundation.org, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, kirill.shutemov@linux.intel.com, 
+	dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-coco@lists.linux.dev
+Cc: elena.reshetova@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCkxlIDEyLzAzLzIwMjQgw6AgMDI6MTAsIFdhaW1hbiBMb25nIGEgw6ljcml0wqA6DQo+IE9u
-IDMvMTEvMjQgMTk6NDcsIEdlb3JnZSBTdGFyayB3cm90ZToNCj4+IEhlbGxvIFdhaW1hbiwgTWFy
-ZWsNCj4+DQo+PiBUaGFua3MgZm9yIHRoZSByZXZpZXcuDQo+Pg0KPj4gSSd2ZSBuZXZlciB1c2Vk
-IGxvY2tkZXAgZm9yIGRlYnVnIGJ1dCBpdCBzZWVtcyBwcmVmZXJhYmxlIHRvDQo+PiBrZWVwIHRo
-YXQgZmVhdHVyZSB3b3JraW5nLiBJdCBjb3VsZCBiZSBsb29rIGxpa2UgdGhpczoNCj4+DQo+PiBk
-aWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdXRleC5oIGIvaW5jbHVkZS9saW51eC9tdXRleC5o
-DQo+PiBpbmRleCBmNzYxMWMwOTJkYjcuLjU3NGY2ZGU2MDg0ZCAxMDA2NDQNCj4+IC0tLSBhL2lu
-Y2x1ZGUvbGludXgvbXV0ZXguaA0KPj4gKysrIGIvaW5jbHVkZS9saW51eC9tdXRleC5oDQo+PiBA
-QCAtMjIsNiArMjIsOCBAQA0KPj4gwqAjaW5jbHVkZSA8bGludXgvY2xlYW51cC5oPg0KPj4gwqAj
-aW5jbHVkZSA8bGludXgvbXV0ZXhfdHlwZXMuaD4NCj4+DQo+PiArc3RydWN0IGRldmljZTsNCj4+
-ICsNCj4+IMKgI2lmZGVmIENPTkZJR19ERUJVR19MT0NLX0FMTE9DDQo+PiDCoCMgZGVmaW5lIF9f
-REVQX01BUF9NVVRFWF9JTklUSUFMSVpFUihsb2NrbmFtZSnCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IFwNCj4+IMKgwqDCoMKgwqDCoMKgwqAgLCAuZGVwX21hcCA9IHvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+PiBAQCAtMTE1LDEwICsxMTcsMzEgQEAgZG8ge8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+Pg0K
-Pj4gwqAjaWZkZWYgQ09ORklHX0RFQlVHX01VVEVYRVMNCj4+DQo+PiAraW50IGRlYnVnX2Rldm1f
-bXV0ZXhfaW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBtdXRleCAqbG9jayk7DQo+PiAr
-DQo+PiArI2RlZmluZSBkZXZtX211dGV4X2luaXQoZGV2LCBtdXRleCnCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIFwNCj4+ICsoe8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBcDQo+PiArwqDCoMKgIGludCByZXQ7wqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4gK8KgwqDCoCBtdXRleF9pbml0KG11dGV4KTvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4gK8KgwqDCoCByZXQgPSBkZWJ1Z19kZXZtX211
-dGV4X2luaXQoZGV2LCBtdXRleCk7wqDCoMKgIFwNCj4+ICvCoMKgwqAgcmV0O8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4gK30pDQo+IA0KPiBUaGUg
-aW50IHJldCB2YXJpYWJsZSBpcyBub3QgbmVlZGVkLiBUaGUgbWFjcm8gY2FuIGp1c3QgZW5kIHdp
-dGggDQo+IGRlYnVnX2Rldm1fbXV0ZXhfaW5pdCgpLg0KPiANCj4gDQo+PiArDQo+PiDCoHZvaWQg
-bXV0ZXhfZGVzdHJveShzdHJ1Y3QgbXV0ZXggKmxvY2spOw0KPj4NCj4+IMKgI2Vsc2UNCj4+DQo+
-PiArLyoNCj4+ICsqIFdoZW4gQ09ORklHX0RFQlVHX01VVEVYRVMgaXMgb2ZmIG11dGV4X2Rlc3Ry
-b3kgaXMganVzdCBhIG5vcCBzbw0KPj4gKyogdGhlcmUncyBubyByZWFsbHkgbmVlZCB0byByZWdp
-c3RlciBpdCBpbiBkZXZtIHN1YnN5c3RlbS4NCj4gIm5vIHJlYWxseSBuZWVkIj8NCj4+ICsqLw0K
-Pj4gKyNkZWZpbmUgZGV2bV9tdXRleF9pbml0KGRldiwgbXV0ZXgpwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBcDQo+PiArKHvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgXA0KPj4gK8KgwqDCoCB0eXBlY2hlY2soc3RydWN0IGRldmljZSAqLCBkZXYp
-O8KgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAgbXV0ZXhfaW5pdChtdXRleCk7wqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAgMDvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICt9KQ0KPiANCj4gRG8gd2UgbmVlZCBh
-IHR5cGVjaGVjaygpIGhlcmU/IENvbXBpbGF0aW9uIHdpbGwgZmFpbCB3aXRoIA0KPiBDT05GSUdf
-REVCVUdfTVVURVhFUyBpZiBkZXYgaXMgbm90IGEgZGV2aWNlIHBvaW50ZXIuDQoNCkkgZ3Vlc3Mg
-dGhlIGlkZWEgaXMgdG8gaGF2ZSBpdCBmYWlsIF9hbHNvXyB3aGVuIENPTkZJR19ERUJVR19NVVRF
-WEVTIGlzIA0Kbm90IHNlbGVjdGVkLCBpbiBvcmRlciB0byBkaXNjb3ZlciBlcnJvcnMgYXMgc29v
-biBhcyBwb3NzaWJsZS4NCg0KPiANCj4gDQo+PiArDQo+PiDCoHN0YXRpYyBpbmxpbmUgdm9pZCBt
-dXRleF9kZXN0cm95KHN0cnVjdCBtdXRleCAqbG9jaykge30NCj4+DQo+PiDCoCNlbmRpZg0KPj4g
-ZGlmZiAtLWdpdCBhL2tlcm5lbC9sb2NraW5nL211dGV4LWRlYnVnLmMgYi9rZXJuZWwvbG9ja2lu
-Zy9tdXRleC1kZWJ1Zy5jDQo+PiBpbmRleCBiYzhhYmI4NTQ5ZDIuLjk2N2E1MzY3Yzc5YSAxMDA2
-NDQNCj4+IC0tLSBhL2tlcm5lbC9sb2NraW5nL211dGV4LWRlYnVnLmMNCj4+ICsrKyBiL2tlcm5l
-bC9sb2NraW5nL211dGV4LWRlYnVnLmMNCj4+IEBAIC0xOSw2ICsxOSw3IEBADQo+PiDCoCNpbmNs
-dWRlIDxsaW51eC9rYWxsc3ltcy5oPg0KPj4gwqAjaW5jbHVkZSA8bGludXgvaW50ZXJydXB0Lmg+
-DQo+PiDCoCNpbmNsdWRlIDxsaW51eC9kZWJ1Z19sb2Nrcy5oPg0KPj4gKyNpbmNsdWRlIDxsaW51
-eC9kZXZpY2UuaD4NCj4+DQo+PiDCoCNpbmNsdWRlICJtdXRleC5oIg0KPj4NCj4+IEBAIC04OSw2
-ICs5MCwxNiBAQCB2b2lkIGRlYnVnX211dGV4X2luaXQoc3RydWN0IG11dGV4ICpsb2NrLCBjb25z
-dCANCj4+IGNoYXIgKm5hbWUsDQo+PiDCoMKgwqDCoCBsb2NrLT5tYWdpYyA9IGxvY2s7DQo+PiDC
-oH0NCj4+DQo+PiArc3RhdGljIHZvaWQgZGV2bV9tdXRleF9yZWxlYXNlKHZvaWQgKnJlcykNCj4+
-ICt7DQo+PiArwqDCoMKgIG11dGV4X2Rlc3Ryb3kocmVzKTsNCj4+ICt9DQo+PiArDQo+PiAraW50
-IGRlYnVnX2Rldm1fbXV0ZXhfaW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBtdXRleCAq
-bG9jaykNCj4+ICt7DQo+PiArwqDCoMKgIHJldHVybiBkZXZtX2FkZF9hY3Rpb25fb3JfcmVzZXQo
-ZGV2LCBkZXZtX211dGV4X3JlbGVhc2UsIGxvY2spOw0KPj4gK30NCj4+ICsNCj4+IMKgLyoqKg0K
-Pj4gwqAgKiBtdXRleF9kZXN0cm95IC0gbWFyayBhIG11dGV4IHVudXNhYmxlDQo+PiDCoCAqIEBs
-b2NrOiB0aGUgbXV0ZXggdG8gYmUgZGVzdHJveWVkDQo+IA0K
+On Mon, Mar 11, 2024 at 10:02=E2=80=AFPM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+>
+> On 3/11/24 9:15 AM, mhkelley58@gmail.com wrote:
+> > From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> >
+> > In CoCo VMs it is possible for the untrusted host to cause
+> > set_memory_encrypted() or set_memory_decrypted() to fail such that an
+> > error is returned and the resulting memory is shared. Callers need to
+> > take care to handle these errors to avoid returning decrypted (shared)
+> > memory to the page allocator, which could lead to functional or securit=
+y
+> > issues.
+> >
+> > In order to make sure callers of vmbus_establish_gpadl() and
+> > vmbus_teardown_gpadl() don't return decrypted/shared pages to
+> > allocators, add a field in struct vmbus_gpadl to keep track of the
+> > decryption status of the buffers. This will allow the callers to
+> > know if they should free or leak the pages.
+> >
+> > Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> > Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+> > ---
+> >  drivers/hv/channel.c   | 25 +++++++++++++++++++++----
+> >  include/linux/hyperv.h |  1 +
+> >  2 files changed, 22 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+> > index 56f7e06c673e..bb5abdcda18f 100644
+> > --- a/drivers/hv/channel.c
+> > +++ b/drivers/hv/channel.c
+> > @@ -472,9 +472,18 @@ static int __vmbus_establish_gpadl(struct vmbus_ch=
+annel *channel,
+> >               (atomic_inc_return(&vmbus_connection.next_gpadl_handle) -=
+ 1);
+> >
+> >       ret =3D create_gpadl_header(type, kbuffer, size, send_offset, &ms=
+ginfo);
+> > -     if (ret)
+> > +     if (ret) {
+> > +             gpadl->decrypted =3D false;
+>
+> Why not set it by default at the beginning of the function?
+>
+> >               return ret;
+> > +     }
+> >
+> > +     /*
+> > +      * Set the "decrypted" flag to true for the set_memory_decrypted(=
+)
+> > +      * success case. In the failure case, the encryption state of the
+> > +      * memory is unknown. Leave "decrypted" as true to ensure the
+> > +      * memory will be leaked instead of going back on the free list.
+> > +      */
+> > +     gpadl->decrypted =3D true;
+> >       ret =3D set_memory_decrypted((unsigned long)kbuffer,
+> >                                  PFN_UP(size));
+> >       if (ret) {
+> > @@ -563,9 +572,15 @@ static int __vmbus_establish_gpadl(struct vmbus_ch=
+annel *channel,
+> >
+> >       kfree(msginfo);
+> >
+> > -     if (ret)
+> > -             set_memory_encrypted((unsigned long)kbuffer,
+> > -                                  PFN_UP(size));
+> > +     if (ret) {
+> > +             /*
+> > +              * If set_memory_encrypted() fails, the decrypted flag is
+> > +              * left as true so the memory is leaked instead of being
+> > +              * put back on the free list.
+> > +              */
+> > +             if (!set_memory_encrypted((unsigned long)kbuffer, PFN_UP(=
+size)))
+> > +                     gpadl->decrypted =3D false;
+> > +     }
+> >
+> >       return ret;
+> >  }
+> > @@ -886,6 +901,8 @@ int vmbus_teardown_gpadl(struct vmbus_channel *chan=
+nel, struct vmbus_gpadl *gpad
+> >       if (ret)
+> >               pr_warn("Fail to set mem host visibility in GPADL teardow=
+n %d.\n", ret);
+>
+> Will this be called only if vmbus_establish_gpad() is successful? If not,=
+ you might want to skip
+> set_memory_encrypted() call for decrypted =3D false case.
+>
+> >
+> > +     gpadl->decrypted =3D ret;
+> > +
+>
+> IMO, you can set it to false by default. Any way with non zero return, us=
+er know about the
+> decryption failure.
+
+I understand this change after looking at the rest of the patches. So
+please ignore the above
+comment.
+
+>
+> >       return ret;
+> >  }
+> >  EXPORT_SYMBOL_GPL(vmbus_teardown_gpadl);
+> > diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> > index 2b00faf98017..5bac136c268c 100644
+> > --- a/include/linux/hyperv.h
+> > +++ b/include/linux/hyperv.h
+> > @@ -812,6 +812,7 @@ struct vmbus_gpadl {
+> >       u32 gpadl_handle;
+> >       u32 size;
+> >       void *buffer;
+> > +     bool decrypted;
+> >  };
+> >
+> >  struct vmbus_channel {
+>
+> --
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
+>
 
