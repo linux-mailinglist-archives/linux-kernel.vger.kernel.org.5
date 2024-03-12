@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-100171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AFA8792EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:26:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA41A8792F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:26:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50E77B20FB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:26:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90F531F22316
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA5079B79;
-	Tue, 12 Mar 2024 11:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A8E79B97;
+	Tue, 12 Mar 2024 11:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kh/udNka"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mAOcmBnS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4177169D0A;
-	Tue, 12 Mar 2024 11:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C03969D0A;
+	Tue, 12 Mar 2024 11:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710242760; cv=none; b=tw/AhlBisnQF9DD427zpeqoKwMLvZKwFaJqP+K+BX1Jq1B1bAcFe0nh9l76BGF0mogJ1aPTnOY5eK7EahWy1cqz6XTCrcpx8O9JqecMLSyuAKbgSfu4ZdK7A+Z+cCSRU5ohIOqxoQl4TesqOpnJ9Q62Pkt8Qc48C1QnZyPi0BFc=
+	t=1710242768; cv=none; b=XfdxfUK+mEXs8cVIMC4pfrKdlWj6LMxJsx/7IjIjsAzaFC7mswiWMxfP9pyDFYdY7gj6swgnGInXxElNhpR2m0cRRIM7OZdTKdT6zmJBJ20Hos2uXRJMPLJYiUHoSkxWDiMwGgceSN/cg6WJyd71nngazjWuZyXjHkg4sAm+Bqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710242760; c=relaxed/simple;
-	bh=ZilwLOWbQIUyQERwtJmyAkcBz7ZY9T8GYcPPtmuMU1c=;
+	s=arc-20240116; t=1710242768; c=relaxed/simple;
+	bh=r7ijxsc0kX+95MwF72Z4rb62mj0KwwtjWWFJxlcPRj0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aY1GsCFw/NPOlpYcZZ+tgdAgxxrI89p/Msu1flWAfZOXPkYfu8ZzSJmCIfV2ixH23No9ultzf9Z4oSPO1rtkJk9blPFW79WNzcVMsDlaTRPNqt1RykTZd1A+825RGW8ZxoUQ8yM7UFvN5p+8hIIap+yLAl4tHiNsyYEtJYRAke4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kh/udNka; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F0B9C433C7;
-	Tue, 12 Mar 2024 11:25:56 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=mG4RWLwkFaiqJlHi/hnWojSdPqGnunOgWR904HL07s0r7SMCVCajYBpKriAoF4fBWxANc+bYLrOA1VdTEgzX8e3mh5DjDezhlZhU6z4jSDg5m+shuLjn9f6YODA/Ddyz6nFOSKtFD28JxIh0DilZJGGqRIi2UL7Ww502rT68WO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mAOcmBnS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FCACC433F1;
+	Tue, 12 Mar 2024 11:26:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710242759;
-	bh=ZilwLOWbQIUyQERwtJmyAkcBz7ZY9T8GYcPPtmuMU1c=;
+	s=k20201202; t=1710242767;
+	bh=r7ijxsc0kX+95MwF72Z4rb62mj0KwwtjWWFJxlcPRj0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Kh/udNka6/i4IHWu1b8rmwTfPPlS9ismdnDY3NG3JhdvMXhogBc/R5SY1tJvdytRX
-	 mKS/5OOTbhQ7AYGrk6gUh9fzywnKsNBRmjFkgqOCJjYQoN3bYVJ4lyFzx/bOISc2qi
-	 5OHCbxT/DKZcOVhN2eIQdGPRzML/WzFzkem5FxFQM+e1ZY8wAo4Ox6qVWoVdjLXhVC
-	 BEecB0ywF7koZ9jtJwRd+KI9paQgOUC2rcNDTzxPonCdaUnZrXSmiN+HZgoZ0pzlSD
-	 qUzjykpULVtycwUjx6Kh/thqzz/3m1GcMVqJ1cN1hezbRkCsmgIHVet5bypiCZ9DRJ
-	 5qoiWuRhBCiVg==
-Message-ID: <153b313b-d386-4c19-84ea-e4cf4f5ec0f5@kernel.org>
-Date: Tue, 12 Mar 2024 12:25:53 +0100
+	b=mAOcmBnSdxiTAwm2CP6usC1N1ZwRn32MApvyOiqs0M1BVbgRQF4OZ6e6gmhyGjTbC
+	 a7fkyCkt4l9p4+8bnOS49aF9b+0H9r34HXYTTtxk6tOICrULw0yeZmJb+sT9Tmtgf7
+	 Lco0QnHK1KFJ/ustHga7PG84sUqhy7Y11S6gzNWzTjh4Zf5qkgCw9QXaxc+YcWGox6
+	 VtaxyvAj01g92i5xoXLIaboueXKFfDRGZo1UJBnnZ3GyUfr+rq2WJZjT7feEHOLGKY
+	 1VkTW73wdKZSYsAF7PXYyM1yY3cUgcyE6nrWjHkp/7ido2St9ahCEqoWnGO0LMenxK
+	 gnLAUCYgCxJwA==
+Message-ID: <fd6612ec-11e2-4f25-85f4-572e664b4480@kernel.org>
+Date: Tue, 12 Mar 2024 12:26:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,14 +49,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: sunxi: add T95 string
+Subject: Re: [PATCH 2/3] dt-bindings: arm: sunxi: add t95 compatible string to
+ list of known boards
+Content-Language: en-US
 To: Kamil Kasperski <ressetkk@gmail.com>, wens@csie.org,
  jernej.skrabec@gmail.com, samuel@sholland.org
 Cc: linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
  linux-kernel@vger.kernel.org
 References: <20240311174750.6428-1-ressetkk@gmail.com>
- <20240311174750.6428-2-ressetkk@gmail.com>
-Content-Language: en-US
+ <20240311174750.6428-3-ressetkk@gmail.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -101,16 +102,18 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240311174750.6428-2-ressetkk@gmail.com>
+In-Reply-To: <20240311174750.6428-3-ressetkk@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 11/03/2024 18:47, Kamil Kasperski wrote:
-> T95 is a commonly known as series of cheap chinese TV Boxes with unknown brand.
-> Since their Android OS is built from Google Pixel 2 sources, all footprints metadata contain Google strings.
-> Let's assume the vendor of these boxes is t95.
+> T95 is a series of cheap TV boxes with unknown vendor.
+> Add compatible string for this board/SoC to the list of known boards.
 > 
 > Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 
 Please use scripts/get_maintainers.pl to get a list of necessary people
 and lists to CC. It might happen, that command when run on an older
