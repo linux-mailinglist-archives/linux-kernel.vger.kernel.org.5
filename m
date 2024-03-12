@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-100659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 707F7879B67
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:31:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 756A2879B6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:32:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956F51C21EE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:31:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ADDC284CDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6381B13D302;
-	Tue, 12 Mar 2024 18:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA78D13C9DD;
+	Tue, 12 Mar 2024 18:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gSkoGLxp"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ci8DnB7L"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33B213C9FA
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9640C13D2F1
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:31:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710268278; cv=none; b=ZqBMJUrx0A6Dwh6gG5V2AzBAQslJAZIUv+9qHD2XwauzbAA3qLygf0QVoQXwls7vV9VSDoAkeAbfYl+RvKVfyZ5emEDEAWXpbAqD9ph4ixB5d4Fdd0qMLCj4RhFqR17C9/L4gQCZoCdtATvf3AIsrw8DLTiV9lOjWmA0aTfcmU8=
+	t=1710268281; cv=none; b=CQST929quIaZhyTdndoD1yCVgJ496sn6rRyAfw+D6UAxLlxGnWuG40xl8WKJ+LzKOHk1JTZS7ILKEhIOQeWPAriuqH1HYkA302xJodhn9+G196wGz72JQI0gGsfjvMCnQI52zv0DMDHY5IkEYntr6LKevhMhKL7YQxBa+K2uuQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710268278; c=relaxed/simple;
-	bh=IG1/QuuCyZab6uaf343Xx63BOPiPFaEpFINhDj+OsmA=;
+	s=arc-20240116; t=1710268281; c=relaxed/simple;
+	bh=jPRItguT0rR1AOyh1nLuIc0iBEuYZWXkQuC/EHQ4T74=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=A6U/+MzYPE9y9AB3pehf07eAzfa6CBzJBHJkTNQYXEhEx0ny9iuf4eIZSwsgruCoJW8lOFLuWmQLDeRvnnlG/PNBIvwgLJvsQJaWotgP2yzRSHEuG5kBTXkBZVYCRKO0smfu/kI6NM68M2JXpbhVwSbcupvYf/Gmuu5RwkKALEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gSkoGLxp; arc=none smtp.client-ip=209.85.167.53
+	 MIME-Version; b=fDsrrZg0wQlpP64v0IQ2g4IPvlD6ksf3UOFl8TzTucWXS9WzWIQjDxbkP4bbu4tixlRlq1RfyhQUi4sTGOnduCnN2kEYskmHU12MBWzYDEFsoFFmsqV5Uvkba3KDUDuS6B6VUxdV66NZUHPF/31pvF0FwifRkJpi4gmxfpgvvLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ci8DnB7L; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513c1434283so239703e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:31:16 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51380c106d9so4990460e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:31:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710268275; x=1710873075; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710268277; x=1710873077; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Qw2xDPlNe7SKmtRrwGLhAFX/roF84DFnyDd6BhT5KcM=;
-        b=gSkoGLxpAEGz3fGmbuFi1gVehTVsdjtoD9QGICelXFUkn8urodH1qeT9LtOSih0z1X
-         bJfA60wTOFMDKydmJbUCLtui2Y/vtCFh1qLRnXaJo4uNcOfv9prqFiYIAacIwUu6yZ7B
-         R080hBkwvRFxCgU7m7rA5kKoWkpVMmCRX8cS5tXUQWy3B5l9VmBVV+LjXGvavZx+aAqL
-         y5svQmhhXWGY4csJ6v0OdOcmKKMz5xDq3QavR/ll7PZMxXPWI+JRPMzOT4WBx2MjtdA4
-         3cXTWDpZy9Hx/0BgOp146t2D3WhYT2juTe4VttldA0v1GKB3c0SRw8iYl8+uKVWNrw3t
-         vDDw==
+        bh=svwNxagQwUw6dGin/+/wtaDz1N/51/WVJ4l0bjMuiYI=;
+        b=Ci8DnB7LdQ9i4KhW6/SicTb7YrO39XcBcjFoMgPHZ2rdygifsW7TLLikk5UuhUw89J
+         7bmZyotI4oC300OPwV4H7XhOForXKKmZfYRN3oCPo76wdBzCri2cjvy+ooZ5Cdcfqd42
+         kvkTsf4tb6Rjj6bq5VWWQaPosFV018jh/ySMgCxz97rHlUX33FWPlkJnSM/L13c6t76M
+         WlqTp/cMgR7YQ8v7PRAyMx84Y/pRldanJ+lT5Pq+91mkOVYaivmu2yPvx+x9fShoQPzv
+         gdkpDWr9C7m3LoDIZPu1Wn9SXqVVabfBRtt5e5pUfwiFaw8YGMfrIxXGKQAzjoEPoz3q
+         W5Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710268275; x=1710873075;
+        d=1e100.net; s=20230601; t=1710268277; x=1710873077;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Qw2xDPlNe7SKmtRrwGLhAFX/roF84DFnyDd6BhT5KcM=;
-        b=v1biTjVh1ZOWBs1HdzqtM8SSHLRG3oxX8TnRGj1v9SlUHsaGBJDbVx8bY7vfGZoUWW
-         X5X80ggAugP8n9+jATh+iCP1xjyNA98WJYA2KLhGMVuQB8P56CUsixE2LY7rL00CfCr5
-         NnS9zhvSTIa09urL/oljpRz7yoQxYjChratn7ks6NltxT8R0feaEQO6cCRGig1HDY1vE
-         kojk2Fp0g7+vnrZLnHe2r2EMN3GPoCV+tuORyqRFOBAooi6z7TvG1Yb5FbXN8JePUNCa
-         +w02ewq0KZqpKhVEl7lcfQoYMrrXgnCY3xlCK2JdNftYlmZ58QKMW4VEKJWVYaPZUai4
-         bfXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUZEmMqXbfXXS3Z4s0rjQEyUsuClRPAGNU5lHlHnHqV2bGhpv7oYgHC9bBd/ugxn0L/0Ghely1tSl4mGmqYCbZ1uIMdlqJObTZfBe35
-X-Gm-Message-State: AOJu0Ywk8n26hz1Jr1ewzaNnx/piyhBWowM1H1McERdXGwkqIF3fVx3S
-	niEZTQLzM3tGkOvZP7ezzdTrAyRSqSAG46HmefmxhC/vb2LFfG3+gWcGz3WdQwg=
-X-Google-Smtp-Source: AGHT+IFZ0YIuOzhmA2zL+kySltHSERfmg5xOrosGsca8rbD/pqygXA44AhOEldxt0FddF7G/aQDwew==
-X-Received: by 2002:a05:6512:46e:b0:513:c5b7:9ee3 with SMTP id x14-20020a056512046e00b00513c5b79ee3mr747592lfd.6.1710268275053;
-        Tue, 12 Mar 2024 11:31:15 -0700 (PDT)
+        bh=svwNxagQwUw6dGin/+/wtaDz1N/51/WVJ4l0bjMuiYI=;
+        b=JimJkVVhVfU9wVhuVNmACF34KcBjnq4QGkNptPm9uaY9jbIO+1QzMei8OxPM2IPtio
+         41FUt/Qk9gR8kM+bY5kO/dTJJ6i2uRRFRKb+R74g25h5MrKWvVg1Ecx7GcsJWnyJ8cJH
+         XUn184yYJsoGMHiYhzOttcigl6luGcAzdece7ZIYoB7A0xn5E+t8tdCOFvTK21KkXizY
+         zifJtmf+/QHtVBd2pOhYnrLDRTsrg2LLtML5b+HyILGzUz434svmsIOacGTNvIM2d9nE
+         B8QsPMVVdp6CWHk4ORvuR4znmRtSZ//6S+9JvHTALAxpMrBTsZrKFC3Bfk52ZHHORWMU
+         DAzA==
+X-Forwarded-Encrypted: i=1; AJvYcCVGuvZSsPVTloiNCwYrtuJC85RI1YoUKkFXDeAO6PgtJjgJZUq4TgYacJFylpZvpLC/DDOggSQdgIGMj5p4n6NgrSEJ4t5D4xnVYTUo
+X-Gm-Message-State: AOJu0Ywe7JN+XoX9B3zjReXgbnzHVGRxgmiNuQ6GQhjHBm3OQwzOv5fz
+	licb09lVwK0oBJoY2x8hGisN1Jxd9dAf5VUcEIAALZWqMdNst53AXN+1UefhS24=
+X-Google-Smtp-Source: AGHT+IEF10AZsbMENd7cz4Aw54PnuDNioiumgrU6CGWMx3XlMQJdOVqhqLJjtt+YrwpVYS26zPiP2A==
+X-Received: by 2002:ac2:51b8:0:b0:513:c1e6:3c54 with SMTP id f24-20020ac251b8000000b00513c1e63c54mr723525lfk.11.1710268276944;
+        Tue, 12 Mar 2024 11:31:16 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id b4-20020a056512060400b0051329001f53sm1661012lfe.54.2024.03.12.11.31.13
+        by smtp.gmail.com with ESMTPSA id b4-20020a056512060400b0051329001f53sm1661012lfe.54.2024.03.12.11.31.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 11:31:14 -0700 (PDT)
+        Tue, 12 Mar 2024 11:31:16 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -79,11 +79,10 @@ To: Rob Herring <robh@kernel.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-samsung-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	stable@vger.kernel.org
-Subject: [PATCH 3/4] ARM: dts: samsung: smdk4412: fix keypad no-autorepeat
-Date: Tue, 12 Mar 2024 19:31:04 +0100
-Message-Id: <20240312183105.715735-3-krzysztof.kozlowski@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 4/4] ARM: dts: samsung: smdk4412: align keypad node names with dtschema
+Date: Tue, 12 Mar 2024 19:31:05 +0100
+Message-Id: <20240312183105.715735-4-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240312183105.715735-1-krzysztof.kozlowski@linaro.org>
 References: <20240312183105.715735-1-krzysztof.kozlowski@linaro.org>
@@ -95,35 +94,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Although the Samsung SoC keypad binding defined
-linux,keypad-no-autorepeat property, Linux driver never implemented it
-and always used linux,input-no-autorepeat.  Correct the DTS to use
-property actually implemented.
+DT schema expects certain node names, as pointed out but dtbs_check:
 
-This also fixes dtbs_check errors like:
+  exynos4412-smdk4412.dtb: keypad@100a0000: 'key-A', 'key-B', 'key-C', 'key-D', 'key-E' do not match any of the regexes: '^key-[0-9a-z]+$', 'pinctrl-[0-9]+'
 
-  exynos4412-smdk4412.dtb: keypad@100a0000: 'key-A', 'key-B', 'key-C', 'key-D', 'key-E', 'linux,keypad-no-autorepeat' do not match any of the regexes: '^key-[0-9a-z]+$', 'pinctrl-[0-9]+'
-
-Cc: <stable@vger.kernel.org>
-Fixes: c9b92dd70107 ("ARM: dts: Add keypad entries to SMDK4412")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
-index 715dfcba1417..e16df9e75fcb 100644
+index e16df9e75fcb..c83fb250e664 100644
 --- a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
 +++ b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
-@@ -69,7 +69,7 @@ cooling_map1: map1 {
- &keypad {
- 	samsung,keypad-num-rows = <3>;
- 	samsung,keypad-num-columns = <8>;
--	linux,keypad-no-autorepeat;
-+	linux,input-no-autorepeat;
- 	wakeup-source;
- 	pinctrl-0 = <&keypad_rows &keypad_cols>;
- 	pinctrl-names = "default";
+@@ -105,31 +105,31 @@ key-5 {
+ 		linux,code = <6>;
+ 	};
+ 
+-	key-A {
++	key-a {
+ 		keypad,row = <2>;
+ 		keypad,column = <6>;
+ 		linux,code = <30>;
+ 	};
+ 
+-	key-B {
++	key-b {
+ 		keypad,row = <2>;
+ 		keypad,column = <7>;
+ 		linux,code = <48>;
+ 	};
+ 
+-	key-C {
++	key-c {
+ 		keypad,row = <0>;
+ 		keypad,column = <5>;
+ 		linux,code = <46>;
+ 	};
+ 
+-	key-D {
++	key-d {
+ 		keypad,row = <2>;
+ 		keypad,column = <5>;
+ 		linux,code = <32>;
+ 	};
+ 
+-	key-E {
++	key-e {
+ 		keypad,row = <0>;
+ 		keypad,column = <7>;
+ 		linux,code = <18>;
 -- 
 2.34.1
 
