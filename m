@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-100658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5442E879B64
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:31:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 707F7879B67
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D64AB284C1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:31:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956F51C21EE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21BEA13D2E9;
-	Tue, 12 Mar 2024 18:31:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6381B13D302;
+	Tue, 12 Mar 2024 18:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jPAA4xcN"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gSkoGLxp"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9D9613C9DD
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33B213C9FA
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710268277; cv=none; b=T0elc2RSfftdprxs0rbsX49yNpYsUND3cf/rvB4qG3OUhXvntYxJlszKMQ3nWES2XmoDHzE3XHqdUw1QYjCTbgQHRQicGQhL2XyEh+swOahDvCqx6cgtue5XPJWrjTK6nHMMKFWkQxTJx/s64eVfwX/xrP6TWLo8k32Vs+RqxxU=
+	t=1710268278; cv=none; b=ZqBMJUrx0A6Dwh6gG5V2AzBAQslJAZIUv+9qHD2XwauzbAA3qLygf0QVoQXwls7vV9VSDoAkeAbfYl+RvKVfyZ5emEDEAWXpbAqD9ph4ixB5d4Fdd0qMLCj4RhFqR17C9/L4gQCZoCdtATvf3AIsrw8DLTiV9lOjWmA0aTfcmU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710268277; c=relaxed/simple;
-	bh=I2tByFWUeg7RQlgkdroHYDhGFt+JCqH+8PvUwgpQncA=;
+	s=arc-20240116; t=1710268278; c=relaxed/simple;
+	bh=IG1/QuuCyZab6uaf343Xx63BOPiPFaEpFINhDj+OsmA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kaixPlzTgwyvYx8QTACsumaFEXy043ZMZffbSOZ4/CLGRICW30K+/JuYEpPvY2v3sgKH7fb/OvpZ6esrv9Mb/NTP7zuma9acBtmfxc2SsxlucH3pQTNIj1BBdteVRAxVmmZeVz1F3jErNYRKDP59D9iC5krSx6ADAH4AuiiqrmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jPAA4xcN; arc=none smtp.client-ip=209.85.167.47
+	 MIME-Version; b=A6U/+MzYPE9y9AB3pehf07eAzfa6CBzJBHJkTNQYXEhEx0ny9iuf4eIZSwsgruCoJW8lOFLuWmQLDeRvnnlG/PNBIvwgLJvsQJaWotgP2yzRSHEuG5kBTXkBZVYCRKO0smfu/kI6NM68M2JXpbhVwSbcupvYf/Gmuu5RwkKALEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gSkoGLxp; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5131c48055cso6185694e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:31:14 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513c1434283so239703e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:31:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710268273; x=1710873073; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710268275; x=1710873075; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=57HI59HbFBJPfK/MjyMJoBtwKg+MFqS1roR+Am2NqOE=;
-        b=jPAA4xcNB7k6e5xdpfGZs0iCnkoweSG3QLl7X/QAqp0rye/dTuUMn2PTTgetURZs7Q
-         uhU8l5jztLSzvxcu91BOZwc5db5KmMWxO0/Irl3rsHKfZuVjISchRMVagim7nCi5bWG2
-         +O0vK/iWuWKZPML/iRmpQmuKXPBKG+2isEHa1HBWbcklswCVtyebs0vXeCZD2oUgeS+Q
-         AWaBxK9PptOV1uyF6NZDtbWZyxPkTwx5psxgy+oqobucXI+z0lTkNflvoJixtr+CEku2
-         CBhS96YkEHyBhYOACDjzXX6667twVsj2+YKg9w+8xg5e3Godr+lXbF4vGphE+lq07P9b
-         vvfw==
+        bh=Qw2xDPlNe7SKmtRrwGLhAFX/roF84DFnyDd6BhT5KcM=;
+        b=gSkoGLxpAEGz3fGmbuFi1gVehTVsdjtoD9QGICelXFUkn8urodH1qeT9LtOSih0z1X
+         bJfA60wTOFMDKydmJbUCLtui2Y/vtCFh1qLRnXaJo4uNcOfv9prqFiYIAacIwUu6yZ7B
+         R080hBkwvRFxCgU7m7rA5kKoWkpVMmCRX8cS5tXUQWy3B5l9VmBVV+LjXGvavZx+aAqL
+         y5svQmhhXWGY4csJ6v0OdOcmKKMz5xDq3QavR/ll7PZMxXPWI+JRPMzOT4WBx2MjtdA4
+         3cXTWDpZy9Hx/0BgOp146t2D3WhYT2juTe4VttldA0v1GKB3c0SRw8iYl8+uKVWNrw3t
+         vDDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710268273; x=1710873073;
+        d=1e100.net; s=20230601; t=1710268275; x=1710873075;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=57HI59HbFBJPfK/MjyMJoBtwKg+MFqS1roR+Am2NqOE=;
-        b=Q8iqOlZRfyfxgpMud7m0IroRiQGsLeQu1GBAiyceKkyflaZHiCV7fz0y/4Pxn3UqbT
-         x30Qtx3PotVcXb2RLAqlolh8+/UGY2Jq8gZ08zixiMo6TKqv9cLoNMCYV5YE/qVQK73R
-         /CTxZWjuDPGqbv17DAHOY/UnlZE9tXZT8Hmh+bQ/rA9a13sOrD0bPPFl6qYZaJqbcH80
-         LJz/+SAYqRoZZapq5EsE1StAHGtAeeKOVlPbcysWfaR6LxMj2PyARcoqAw6AmMEoeQe8
-         9U/2ZhvI3RifHQIzG3NYuHUN1TFc5Ry3rbqopM/FJef+k8whaqTQ+ATswoHyK7GUKHZL
-         h2Dg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+TS6zXPFwmvHdxm5AaGim31YiTOKkiYEUA2+VvSq6l6admwjfh/6MJyo9xyWYDCdENCb4rTezbiB68GjKmGShc6poiBKbyQVIyD3J
-X-Gm-Message-State: AOJu0Yz8DTjskDS9+eNaIwvdr2Unc2NuHGFmU3m40v79GmLHjjNHzUPC
-	7eDWvZOIa+Z+bVVPs5bWwVtNJll6nItx0pcUz8dXOjWPP4GgbHHFLrYTQuBySd0=
-X-Google-Smtp-Source: AGHT+IFxVzjk1QdG/sc3AARsfYa8wm+w+jXz2u6S7MgQ3eF6IyCVFsQ9MzW3dlkUDUrgneMPx+Cj+w==
-X-Received: by 2002:a05:6512:3da0:b0:513:6261:4d4b with SMTP id k32-20020a0565123da000b0051362614d4bmr2346425lfv.43.1710268272763;
-        Tue, 12 Mar 2024 11:31:12 -0700 (PDT)
+        bh=Qw2xDPlNe7SKmtRrwGLhAFX/roF84DFnyDd6BhT5KcM=;
+        b=v1biTjVh1ZOWBs1HdzqtM8SSHLRG3oxX8TnRGj1v9SlUHsaGBJDbVx8bY7vfGZoUWW
+         X5X80ggAugP8n9+jATh+iCP1xjyNA98WJYA2KLhGMVuQB8P56CUsixE2LY7rL00CfCr5
+         NnS9zhvSTIa09urL/oljpRz7yoQxYjChratn7ks6NltxT8R0feaEQO6cCRGig1HDY1vE
+         kojk2Fp0g7+vnrZLnHe2r2EMN3GPoCV+tuORyqRFOBAooi6z7TvG1Yb5FbXN8JePUNCa
+         +w02ewq0KZqpKhVEl7lcfQoYMrrXgnCY3xlCK2JdNftYlmZ58QKMW4VEKJWVYaPZUai4
+         bfXA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZEmMqXbfXXS3Z4s0rjQEyUsuClRPAGNU5lHlHnHqV2bGhpv7oYgHC9bBd/ugxn0L/0Ghely1tSl4mGmqYCbZ1uIMdlqJObTZfBe35
+X-Gm-Message-State: AOJu0Ywk8n26hz1Jr1ewzaNnx/piyhBWowM1H1McERdXGwkqIF3fVx3S
+	niEZTQLzM3tGkOvZP7ezzdTrAyRSqSAG46HmefmxhC/vb2LFfG3+gWcGz3WdQwg=
+X-Google-Smtp-Source: AGHT+IFZ0YIuOzhmA2zL+kySltHSERfmg5xOrosGsca8rbD/pqygXA44AhOEldxt0FddF7G/aQDwew==
+X-Received: by 2002:a05:6512:46e:b0:513:c5b7:9ee3 with SMTP id x14-20020a056512046e00b00513c5b79ee3mr747592lfd.6.1710268275053;
+        Tue, 12 Mar 2024 11:31:15 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id b4-20020a056512060400b0051329001f53sm1661012lfe.54.2024.03.12.11.31.10
+        by smtp.gmail.com with ESMTPSA id b4-20020a056512060400b0051329001f53sm1661012lfe.54.2024.03.12.11.31.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 11:31:11 -0700 (PDT)
+        Tue, 12 Mar 2024 11:31:14 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -81,9 +81,9 @@ To: Rob Herring <robh@kernel.org>,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	stable@vger.kernel.org
-Subject: [PATCH 2/4] ARM: dts: samsung: exynos4412-origen: fix keypad no-autorepeat
-Date: Tue, 12 Mar 2024 19:31:03 +0100
-Message-Id: <20240312183105.715735-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 3/4] ARM: dts: samsung: smdk4412: fix keypad no-autorepeat
+Date: Tue, 12 Mar 2024 19:31:04 +0100
+Message-Id: <20240312183105.715735-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240312183105.715735-1-krzysztof.kozlowski@linaro.org>
 References: <20240312183105.715735-1-krzysztof.kozlowski@linaro.org>
@@ -102,23 +102,23 @@ property actually implemented.
 
 This also fixes dtbs_check errors like:
 
-  exynos4412-origen.dtb: keypad@100a0000: 'linux,keypad-no-autorepeat' does not match any of the regexes: '^key-[0-9a-z]+$', 'pinctrl-[0-9]+'
+  exynos4412-smdk4412.dtb: keypad@100a0000: 'key-A', 'key-B', 'key-C', 'key-D', 'key-E', 'linux,keypad-no-autorepeat' do not match any of the regexes: '^key-[0-9a-z]+$', 'pinctrl-[0-9]+'
 
 Cc: <stable@vger.kernel.org>
-Fixes: bd08f6277e44 ("ARM: dts: Add keypad entries to Exynos4412 based Origen")
+Fixes: c9b92dd70107 ("ARM: dts: Add keypad entries to SMDK4412")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm/boot/dts/samsung/exynos4412-origen.dts | 2 +-
+ arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-origen.dts b/arch/arm/boot/dts/samsung/exynos4412-origen.dts
-index 23b151645d66..10ab7bc90f50 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-origen.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4412-origen.dts
-@@ -453,7 +453,7 @@ buck9_reg: BUCK9 {
+diff --git a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
+index 715dfcba1417..e16df9e75fcb 100644
+--- a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
++++ b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
+@@ -69,7 +69,7 @@ cooling_map1: map1 {
  &keypad {
  	samsung,keypad-num-rows = <3>;
- 	samsung,keypad-num-columns = <2>;
+ 	samsung,keypad-num-columns = <8>;
 -	linux,keypad-no-autorepeat;
 +	linux,input-no-autorepeat;
  	wakeup-source;
