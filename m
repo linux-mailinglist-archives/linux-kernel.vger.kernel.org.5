@@ -1,81 +1,82 @@
-Return-Path: <linux-kernel+bounces-99770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E10BD878D04
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5BD8878D05
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:36:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41F0DB21BFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:34:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2D31B21BFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:36:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A13079C0;
-	Tue, 12 Mar 2024 02:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D9E79C0;
+	Tue, 12 Mar 2024 02:36:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="XZk1aV+B"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="wBZU+ozW"
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D2916FF59
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2998520E3
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710210865; cv=none; b=YFv7AsCiPFPHt24O+KrQg+u0xBYDaEx27EZwbhMT8lHFh5Rzm2pF0OYSOebUiFCKzQRdD0t7NOqI9feR5E/tHSgKCjWXPQFcPUk0eHR372WUOetPhHvRm57VdXcgpyogcfa3f4c44IecxFU41vOrH9yuUiaVUGu+V3NvBW0rktg=
+	t=1710211003; cv=none; b=EXJnZGzeseG38f5B84PawHB102BgSeqQHvI2BAUCgnc+jbS5Zfakc6eV7+7LMzrfJXi/FeismnLNdRrzESIpgo/0Fl2HbZikncQ/TXSqbvy7seB8w/eYYCMmIp168NCTgWwPZFKPAqIfzhaftZ5vzq2cSLZiyLYZujndkHH98es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710210865; c=relaxed/simple;
-	bh=Jmy6Tw7F3sY8Z5+Gd5eo71IMr8d0DdObPTM7iHTRVDY=;
+	s=arc-20240116; t=1710211003; c=relaxed/simple;
+	bh=Gdd+zajJulG0ORxaVzYBG0oetiP7BkALJrNr7JAZjN4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jEtgk1wHuu3MvsXzDuhD5iSs6UUKdGc2HviJMqNje55apELil/hOCBgSoJc/CA9gXvb2Z3J7FQx/r1ULXEMZJfRuME0j6e+GmT1FCxVnzVZlBacgH1uv/6DyT394dCkdFCX3n8cfiwGzwNFF9ELpUkpvso1dBFScBItaecO61Vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=XZk1aV+B; arc=none smtp.client-ip=209.85.219.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=MNQT0V+UI9p8OXhPaMjDcjWijfgnVsLv+V6Nf6958IyyRj3GaQnuCjpuTiDiP5t/94MHB3yHdJBhid95MjKXgBGqxYjYJ7mhFXpMXNDMyuYEeWJcWCMtvWhRWVd72dZKK9n7JiGDqyRGsS7flK9DlCkBlbGM0xFNNvCXwS/cDr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=wBZU+ozW; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-690c821e088so17321506d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:34:21 -0700 (PDT)
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42ee23c64e3so20938261cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:36:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710210861; x=1710815661; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710210999; x=1710815799; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ub7QivAAtZjYlqRZBrv6vJV8M2mzOE2hIvtqdNYKl2I=;
-        b=XZk1aV+BUFd38FmFtaRJQlgkSUm7TnosgKgwr/4OuX+0S7iWb5ss4nrVSDWlIkDQza
-         hJEmV4f9mRUlK8QG0EIyOOMgJ3PK05PyFctHgXR/K0xcUgvuVix0ELCxT3A/dlehBW9T
-         PJv09dEYCZJ/3P+acM0fdZAe3H5v42A0+X3nSHfXbq1XS5GZ+dVginLX8UhsP7cssztV
-         0tvfifQNYcrhRZPW9l/R2F2is7Dg1jKwm5EyuqAzVDu8XwuneFG75uo8aq53SkGcq3hK
-         cDFTWS4N1SLdLqqm7Zv+xwgGGLwdtNFxLIIXcdAVPlWOlsGOiHb66OGqiNafdqlOlbxy
-         tUaQ==
+        bh=K01nQ8DIaiGmIiyDCqQC8SVy7y5ZZ+8vaXt2Ag8RG2Y=;
+        b=wBZU+ozWGuzS67dEU/9g3kzG7Tk89OKPz+3Oq6J4TtOfNg6NJAbZaRbVEjiDQ6jKL8
+         wJEcaYrkt9kQCnIQhO+Z/Q9qdr4H4ksTBaZbliCqs8SdgWHf9zkePBvsIhoMd9a5Mi4g
+         OKvZx7dAw433A6KV6COx4uaQxfTsmx3ppkK98X98vd40S+SQaXiaRo7rAKWPu+hr6rWN
+         E5290QLIymOMF8lIYYb1SLvYaUKSpYxTz/7w1DbIXbIIu7IstbM/w1gKdZimnMYuwpia
+         JO5s0cPlOBIlE8riKbwqBjOfDHILFDM2Az+g+VMPFbsRo817xq3B207h1I+6QImVvln6
+         wvOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710210861; x=1710815661;
+        d=1e100.net; s=20230601; t=1710210999; x=1710815799;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ub7QivAAtZjYlqRZBrv6vJV8M2mzOE2hIvtqdNYKl2I=;
-        b=J+os67QY7Ilno7MDE/L6uFFNmsOIdH2TVxVipBa7h9VzgffMHO9udWICNWi2ZQPM/8
-         42IjyP+/EnczAzVWgEI9cQyJf9ZwwR20FHj7OGk8Qg0Sismc345BS5uhpmmUKQBoal6k
-         W8vOtjDlpOnbb7iKMsSDItWEGSk9mfVDmRi03hPi+viZWcA95DUYXYMYsc0ZjR6btnXR
-         FIgss/02zjFvea7Q6aFVzuMy2GPVSl6ojSTBgblQgd0plq8gTUR9SU/+re6NjI1aYHKW
-         WM1IbDJSWoISVLx8y22x6d9kEiLA3EKEfezlDpS6wT4Uyqh2QcPoDnJfLNs+rtsPBStJ
-         Le7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXwtIzAExwvtDXFzgVbnPtxTXXMy68bs7nH+OKapj6HvVBQBO4HpDPCSkZhhdM4AUVg9jQECamcM9gaOaYXWQk5lM1fzeq5f6q5BWZh
-X-Gm-Message-State: AOJu0YzDamZ4Jgh8/qXIrZ9zdWL0B0vq8DZOqT7QP4oH2x0e27J3ciiQ
-	YrCK574fo7C0pyA/V0+IhX3XrmytL8PXN2dOPI+87jMjKWtc9vsUU17W8BcD7z8=
-X-Google-Smtp-Source: AGHT+IFZulKC4BK1ZVU8uTLFFrfjm6Xefz3DkxAwWmYaazdkd3ur2Bhrw0giRjFsHSXurhumfm+JBQ==
-X-Received: by 2002:a0c:e20c:0:b0:690:e32a:76c7 with SMTP id q12-20020a0ce20c000000b00690e32a76c7mr1126158qvl.15.1710210860777;
-        Mon, 11 Mar 2024 19:34:20 -0700 (PDT)
+        bh=K01nQ8DIaiGmIiyDCqQC8SVy7y5ZZ+8vaXt2Ag8RG2Y=;
+        b=lslRlFCPhYkYd6GapGLIl5+dV021nG2QBxDfI+Xf8mSItqnpkpZwrOQkNh+2hlZAMt
+         nwH+HESvnb7hHKvf2ldHOOblErJb6q5kwFMglgLtTHgGpR6VQU8E2wcpS5A2N/uKKbNL
+         fVcEZYTCRMFCSuY1ruZ3Y+ftZwU/g2ijDafRuL1oRsRwJpMfs0A88/p8w9/hZg39B1aw
+         kSqUEir7Eh427AvxdpdXJCI8blO+7hoQlTAi9rrkQijjaUwY/dx8ZxW0kYUCpEWPoy5q
+         7Y+Qli6nrLSeG2w4EDrpPFE0yFGCFnuy/K6+Ri/tzuWpbObnjSb87fUd9y6L8Kr7GwZi
+         O50Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWYKoAwhSeNHrJSx49yctT+FkmDbVuGJ5P9X5AATpiDWH5vUkdyTOeltPQOaeRhZr4ZEG0fHvdpmDkyWH84XFZ9D1iEHcu6MIyhVSC1
+X-Gm-Message-State: AOJu0YwmXE5iTD0I6Zy1C8Q8kRTmXNfuUWUY9qX7eBa3vqRnO8aCpbyz
+	zriVYNcpe2foLLBzcP1g6NvG6rs5mUOd5lvjnPMa9HP1+0BmNwnDLNcyw/1Z7ig=
+X-Google-Smtp-Source: AGHT+IEpsc3fV9NXOfuMsUXLPJ2BERGjxUodmtZHiuVJtpKYsGq1lBjaWLpfsfpPJ0y1Cqv4EKfsiw==
+X-Received: by 2002:ac8:5f0b:0:b0:42e:8cc9:84de with SMTP id x11-20020ac85f0b000000b0042e8cc984demr10885874qta.62.1710210998891;
+        Mon, 11 Mar 2024 19:36:38 -0700 (PDT)
 Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id ez16-20020ad45910000000b00690c7a788b6sm2346220qvb.48.2024.03.11.19.34.20
+        by smtp.gmail.com with ESMTPSA id jr18-20020a05622a801200b0042f01e612bbsm3294324qtb.37.2024.03.11.19.36.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 19:34:20 -0700 (PDT)
-Date: Mon, 11 Mar 2024 22:34:11 -0400
+        Mon, 11 Mar 2024 19:36:38 -0700 (PDT)
+Date: Mon, 11 Mar 2024 22:36:37 -0400
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Yosry Ahmed <yosryahmed@google.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Nhat Pham <nphamcs@gmail.com>,
 	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: zswap: optimize zswap pool size tracking
-Message-ID: <20240312023411.GA22705@cmpxchg.org>
+Subject: Re: [PATCH 2/2] mm: zpool: return pool size in pages
+Message-ID: <20240312023637.GB22705@cmpxchg.org>
 References: <20240311161214.1145168-1-hannes@cmpxchg.org>
- <Ze-BH5HDNUG5ohJS@google.com>
+ <20240311161214.1145168-2-hannes@cmpxchg.org>
+ <Ze-Bsr8lfC1lm1u7@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,144 +85,186 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Ze-BH5HDNUG5ohJS@google.com>
+In-Reply-To: <Ze-Bsr8lfC1lm1u7@google.com>
 
-On Mon, Mar 11, 2024 at 10:09:35PM +0000, Yosry Ahmed wrote:
-> On Mon, Mar 11, 2024 at 12:12:13PM -0400, Johannes Weiner wrote:
-> > Profiling the munmap() of a zswapped memory region shows 50%(!) of the
-> > total cycles currently going into updating the zswap_pool_total_size.
+On Mon, Mar 11, 2024 at 10:12:02PM +0000, Yosry Ahmed wrote:
+> On Mon, Mar 11, 2024 at 12:12:14PM -0400, Johannes Weiner wrote:
+> > All zswap backends track their pool sizes in pages. Currently they
+> > multiply by PAGE_SIZE for zswap, only for zswap to divide again in
+> > order to do limit math. Report pages directly.
 > 
-> Yikes. I have always hated that size update scheme FWIW.
-> 
-> I have also wondered whether it makes sense to just maintain the number
-> of pages in zswap as an atomic, like zswap_stored_pages. I guess your
-> proposed scheme is even cheaper for the load/invalidate paths because we
-> do nothing at all.  It could be an option if the aggregation in other
-> paths ever becomes a problem, but we would need to make sure it
-> doesn't regress the load/invalidate paths. Just sharing some thoughts.
+> Nice. Although I would prefer renaming the zpool interface to
+> total_pages and renaming the zpool backends functions as well to use
+> pages rather than size.
 
-Agree with you there. I actually tried doing it that way at first, but
-noticed zram uses zs_get_total_pages() and actually wants a per-pool
-count. I didn't want the backend to have to update two atomics, so I
-settled for this version.
+Ha, I was on the fence, since it's kind of churny. But if you don't
+mind, then it works for me as well.
 
-> > There are three consumers of this counter:
-> > - store, to enforce the globally configured pool limit
-> > - meminfo & debugfs, to report the size to the user
-> > - shrink, to determine the batch size for each cycle
-> > 
-> > Instead of aggregating everytime an entry enters or exits the zswap
-> > pool, aggregate the value from the zpools on-demand:
-> > 
-> > - Stores aggregate the counter anyway upon success. Aggregating to
-> >   check the limit instead is the same amount of work.
-> > 
-> > - Meminfo & debugfs might benefit somewhat from a pre-aggregated
-> >   counter, but aren't exactly hotpaths.
-> > 
-> > - Shrinking can aggregate once for every cycle instead of doing it for
-> >   every freed entry. As the shrinker might work on tens or hundreds of
-> >   objects per scan cycle, this is a large reduction in aggregations.
-> > 
-> > The paths that benefit dramatically are swapin, swapoff, and
-> > unmaps. There could be millions of pages being processed until
-> > somebody asks for the pool size again. This eliminates the pool size
-> > updates from those paths entirely.
-> 
-> This looks like a big win, thanks! I wonder if you have any numbers of
-> perf profiles to share. That would be nice to have, but I think the
-> benefit is clear regardless.
-
-I deleted the perf files already, but can re-run it tomorrow.
-
-> I also like the implicit cleanup when we switch to maintaining the
-> number of pages rather than bytes. The code looks much better with all
-> the shifts and divisions gone :)
-> 
-> I have a couple of comments below. With them addressed, feel free to
-> add:
+> Either way:
 > Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
-Thanks!
+Thanks.
 
-> > @@ -1385,6 +1365,10 @@ static void shrink_worker(struct work_struct *w)
-> >  {
-> >  	struct mem_cgroup *memcg;
-> >  	int ret, failures = 0;
-> > +	unsigned long thr;
-> > +
-> > +	/* Reclaim down to the accept threshold */
-> > +	thr = zswap_max_pages() * zswap_accept_thr_percent / 100;
-> 
-> This calculation is repeated twice, so I'd rather keep a helper for it
-> as an alternative to zswap_can_accept(). Perhaps zswap_threshold_page()
-> or zswap_acceptance_pages()?
-
-Sounds good. I went with zswap_accept_thr_pages().
-
-> > @@ -1711,6 +1700,13 @@ void zswap_swapoff(int type)
-> >  
-> >  static struct dentry *zswap_debugfs_root;
-> >  
-> > +static int debugfs_get_total_size(void *data, u64 *val)
-> > +{
-> > +	*val = zswap_total_pages() * PAGE_SIZE;
-> > +	return 0;
-> > +}
-> > +DEFINE_DEBUGFS_ATTRIBUTE(total_size_fops, debugfs_get_total_size, NULL, "%llu");
-> 
-> I think we are missing a newline here to maintain the current format
-> (i.e "%llu\n").
-
-Oops, good catch! I had verified the debugfs file (along with the
-others) with 'grep . *', which hides that this is missing. Fixed up.
-
-Thanks for taking a look. The incremental diff is below. I'll run the
-tests and recapture the numbers tomorrow, then send v2.
-
+diff --git a/include/linux/zpool.h b/include/linux/zpool.h
+index 3296438eec06..a67d62b79698 100644
+--- a/include/linux/zpool.h
++++ b/include/linux/zpool.h
+@@ -53,7 +53,7 @@ void *zpool_map_handle(struct zpool *pool, unsigned long handle,
+ 
+ void zpool_unmap_handle(struct zpool *pool, unsigned long handle);
+ 
+-u64 zpool_get_total_size(struct zpool *pool);
++u64 zpool_get_total_pages(struct zpool *pool);
+ 
+ 
+ /**
+@@ -91,7 +91,7 @@ struct zpool_driver {
+ 				enum zpool_mapmode mm);
+ 	void (*unmap)(void *pool, unsigned long handle);
+ 
+-	u64 (*total_size)(void *pool);
++	u64 (*total_pages)(void *pool);
+ };
+ 
+ void zpool_register_driver(struct zpool_driver *driver);
+diff --git a/mm/z3fold.c b/mm/z3fold.c
+index 9bacacd4168c..2ebfed32871b 100644
+--- a/mm/z3fold.c
++++ b/mm/z3fold.c
+@@ -1237,12 +1237,12 @@ static void z3fold_unmap(struct z3fold_pool *pool, unsigned long handle)
+ }
+ 
+ /**
+- * z3fold_get_pool_size() - gets the z3fold pool size in pages
++ * z3fold_get_pool_pages() - gets the z3fold pool size in pages
+  * @pool:	pool whose size is being queried
+  *
+  * Returns: size in pages of the given pool.
+  */
+-static u64 z3fold_get_pool_size(struct z3fold_pool *pool)
++static u64 z3fold_get_pool_pages(struct z3fold_pool *pool)
+ {
+ 	return atomic64_read(&pool->pages_nr);
+ }
+@@ -1402,9 +1402,9 @@ static void z3fold_zpool_unmap(void *pool, unsigned long handle)
+ 	z3fold_unmap(pool, handle);
+ }
+ 
+-static u64 z3fold_zpool_total_size(void *pool)
++static u64 z3fold_zpool_total_pages(void *pool)
+ {
+-	return z3fold_get_pool_size(pool);
++	return z3fold_get_pool_pages(pool);
+ }
+ 
+ static struct zpool_driver z3fold_zpool_driver = {
+@@ -1417,7 +1417,7 @@ static struct zpool_driver z3fold_zpool_driver = {
+ 	.free =		z3fold_zpool_free,
+ 	.map =		z3fold_zpool_map,
+ 	.unmap =	z3fold_zpool_unmap,
+-	.total_size =	z3fold_zpool_total_size,
++	.total_pages =	z3fold_zpool_total_pages,
+ };
+ 
+ MODULE_ALIAS("zpool-z3fold");
+diff --git a/mm/zbud.c b/mm/zbud.c
+index b7d8a22bbf5f..e9836fff9438 100644
+--- a/mm/zbud.c
++++ b/mm/zbud.c
+@@ -365,13 +365,13 @@ static void zbud_unmap(struct zbud_pool *pool, unsigned long handle)
+ }
+ 
+ /**
+- * zbud_get_pool_size() - gets the zbud pool size in pages
++ * zbud_get_pool_pages() - gets the zbud pool size in pages
+  * @pool:	pool whose size is being queried
+  *
+  * Returns: size in pages of the given pool.  The pool lock need not be
+  * taken to access pages_nr.
+  */
+-static u64 zbud_get_pool_size(struct zbud_pool *pool)
++static u64 zbud_get_pool_pages(struct zbud_pool *pool)
+ {
+ 	return pool->pages_nr;
+ }
+@@ -410,9 +410,9 @@ static void zbud_zpool_unmap(void *pool, unsigned long handle)
+ 	zbud_unmap(pool, handle);
+ }
+ 
+-static u64 zbud_zpool_total_size(void *pool)
++static u64 zbud_zpool_total_pages(void *pool)
+ {
+-	return zbud_get_pool_size(pool);
++	return zbud_get_pool_pages(pool);
+ }
+ 
+ static struct zpool_driver zbud_zpool_driver = {
+@@ -425,7 +425,7 @@ static struct zpool_driver zbud_zpool_driver = {
+ 	.free =		zbud_zpool_free,
+ 	.map =		zbud_zpool_map,
+ 	.unmap =	zbud_zpool_unmap,
+-	.total_size =	zbud_zpool_total_size,
++	.total_pages =	zbud_zpool_total_pages,
+ };
+ 
+ MODULE_ALIAS("zpool-zbud");
+diff --git a/mm/zpool.c b/mm/zpool.c
+index 410808aee7fe..b9fda1fa857d 100644
+--- a/mm/zpool.c
++++ b/mm/zpool.c
+@@ -321,16 +321,16 @@ void zpool_unmap_handle(struct zpool *zpool, unsigned long handle)
+ }
+ 
+ /**
+- * zpool_get_total_size() - The total size of the pool
++ * zpool_get_total_pages() - The total size of the pool
+  * @zpool:	The zpool to check
+  *
+  * This returns the total size in pages of the pool.
+  *
+  * Returns: Total size of the zpool in pages.
+  */
+-u64 zpool_get_total_size(struct zpool *zpool)
++u64 zpool_get_total_pages(struct zpool *zpool)
+ {
+-	return zpool->driver->total_size(zpool->pool);
++	return zpool->driver->total_pages(zpool->pool);
+ }
+ 
+ /**
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index 398f3856817f..b42d3545ca85 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -399,7 +399,7 @@ static void zs_zpool_unmap(void *pool, unsigned long handle)
+ 	zs_unmap_object(pool, handle);
+ }
+ 
+-static u64 zs_zpool_total_size(void *pool)
++static u64 zs_zpool_total_pages(void *pool)
+ {
+ 	return zs_get_total_pages(pool);
+ }
+@@ -414,7 +414,7 @@ static struct zpool_driver zs_zpool_driver = {
+ 	.free =			  zs_zpool_free,
+ 	.map =			  zs_zpool_map,
+ 	.unmap =		  zs_zpool_unmap,
+-	.total_size =		  zs_zpool_total_size,
++	.total_pages =		  zs_zpool_total_pages,
+ };
+ 
+ MODULE_ALIAS("zpool-zsmalloc");
 diff --git a/mm/zswap.c b/mm/zswap.c
-index 7c39327a7cc2..1a5cc7298306 100644
+index 7ed79caf1e1e..9fdf4c76d5ea 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -504,6 +504,11 @@ static unsigned long zswap_max_pages(void)
- 	return totalram_pages() * zswap_max_pool_percent / 100;
- }
+@@ -519,7 +519,7 @@ unsigned long zswap_total_pages(void)
+ 		int i;
  
-+static unsigned long zswap_accept_thr_pages(void)
-+{
-+	return zswap_max_pages() * zswap_accept_thr_percent / 100;
-+}
-+
- unsigned long zswap_total_pages(void)
- {
- 	struct zswap_pool *pool;
-@@ -1368,7 +1373,7 @@ static void shrink_worker(struct work_struct *w)
- 	unsigned long thr;
- 
- 	/* Reclaim down to the accept threshold */
--	thr = zswap_max_pages() * zswap_accept_thr_percent / 100;
-+	thr = zswap_accept_thr_pages();
- 
- 	/* global reclaim will select cgroup in a round-robin fashion. */
- 	do {
-@@ -1493,9 +1498,7 @@ bool zswap_store(struct folio *folio)
+ 		for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
+-			total += zpool_get_total_size(pool->zpools[i]);
++			total += zpool_get_total_pages(pool->zpools[i]);
  	}
+ 	rcu_read_unlock();
  
- 	if (zswap_pool_reached_full) {
--		unsigned long thr = max_pages * zswap_accept_thr_percent / 100;
--
--		if (cur_pages > thr)
-+		if (cur_pages > zswap_accept_thr_pages())
- 			goto shrink;
- 		else
- 			zswap_pool_reached_full = false;
-@@ -1705,7 +1708,7 @@ static int debugfs_get_total_size(void *data, u64 *val)
- 	*val = zswap_total_pages() * PAGE_SIZE;
- 	return 0;
- }
--DEFINE_DEBUGFS_ATTRIBUTE(total_size_fops, debugfs_get_total_size, NULL, "%llu");
-+DEFINE_DEBUGFS_ATTRIBUTE(total_size_fops, debugfs_get_total_size, NULL, "%llu\n");
- 
- static int zswap_debugfs_init(void)
- {
 
