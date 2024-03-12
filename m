@@ -1,218 +1,194 @@
-Return-Path: <linux-kernel+bounces-100918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F15F5879FA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:20:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A382D879FA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50767B219BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:20:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0AD41C21547
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFF514293;
-	Tue, 12 Mar 2024 23:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F8D47768;
+	Tue, 12 Mar 2024 23:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="V8PLminV"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B11F46551
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 23:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kxGgPj9G"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FED26286;
+	Tue, 12 Mar 2024 23:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710285613; cv=none; b=diYQi7UjPzSkdA+PTfXgmsZGd/BJaIt+oLO2dvnvlQmLcgiec5UgJ+4h55kqGeRoLhT3wXzrROj4EnQo6wZaLAH0DdGD1MB7ZEfweSZOdcrA49VuMQdPIm4KJX+ONq22Bz3/U9CtsZRcXgUCq21/DNPH0mrDiMtDvvZUtbdhXdg=
+	t=1710285695; cv=none; b=HXIoeksZBEOjM3QcBW5FP3PsYNYuZcVZAQzdhjheTqZ70LI+fHnCEzhnyVbPgR3yXY18aQy+OY8/R9zi0N8cog90R7ayNZAd/vIb1p8jvdtZ/qKE1Sag1r8U/HMzPJ2l0hjzs6aplhJNX59nr9cey/vLclTB5o2zy+Gl7PjUpMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710285613; c=relaxed/simple;
-	bh=vAGRgWrFG29ZpKaYbISAdAT2VATvqnaiTARR7UUMkQI=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=Ais/44pZiaczziICQr3R0axmv8QuC6KHhXK5NIkPoZCzco0ULswVje0qe6K3i+jiSlgZugBjgQtolUkrPWwQOopdKmzvMvBkIODf3DG3zu7NPlc/42c6pFTqoVmeIYH5d0R4HntwJJdxv6hbqFggeMOoRPEYlbXC0RrI5oW5HcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=V8PLminV; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-68f901192afso25106916d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1710285609; x=1710890409; darn=vger.kernel.org;
-        h=subject:cc:to:from:message-id:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q4uHZt7KxGUnidCn2bJMdIjiza7wq4HXerckaAOr2KE=;
-        b=V8PLminVPu/UWAvRb0sRNVUPL4rkKf+gEGl/0qSc9yl3CRfxgdJ17WRIgRM1Bv1BTH
-         ONvc1qEhIIh90g/qqi0IujsxsrJGdbnxuVxgdh8Dv5qpuAuApvSE5/5GZDsWjas0tht1
-         TnHltsKE8VFWQ9li1sveNvgBZ8FgibLORLFCj7adfDkF1wQt97O/nmURzXrgXFR6EA09
-         CmagFkmFT3DclTDcI28CBxECMTmtbe763y0wBVvs6h66Hag2LJd16I70Eq2vXQaZzDtU
-         FnrQMN8D1WfP8astpsSC9DS/0PPCiGuspJ6dcdu5AFBFg+Phjr4nbqJ2OtYZ/YqE9QCF
-         Bvwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710285609; x=1710890409;
-        h=subject:cc:to:from:message-id:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q4uHZt7KxGUnidCn2bJMdIjiza7wq4HXerckaAOr2KE=;
-        b=HmogS/nyreO74UY6mG7P/dsVpjOl1U6tKo8tLcBapXuMmRSRZVgNyUa0q40ZPglHLA
-         oAyjWoYiXQZag6X44fnBdmfek1zDiLuKkFt5dSEW6BRgNcDLaChUnjIlT3LOBdVnCWM6
-         1ETsZ98HtHtvLkaFDD9Xv4zgd27RuGvWWJ/RVxraIcrUuwuIcwrwo+gJWlFKtDe0HcMN
-         i4aI/NUZUDkvfEdXqcu0BHNlvBm3AKuCkH9sjQrwwgHKsOvBj/KtiastU6srJDvlAU1d
-         Jo3EdkfovQkdMrL5w4HsdADTGybYadUNVOd/wHhAeR/W/26t6nJgLcBmrbk5azUGdMDb
-         OzyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW95rBjU+7vh2f8Fr2/JJH5zRU6N6poo1CqxA6Pp104IB2ZgKoNV5/Mgi4C5MHpx38rJ0VEW1bTQBxP4Ko8d68/cH7GgLS4rhBeLvei
-X-Gm-Message-State: AOJu0YxHPVb1RTPSqwgYLLoqF4WcB4CcJQ0DRSQIJbXvhoeqzk8fzQv/
-	3q6LXkwYS7G8ZwAL9FMXXDeVliW88GfLPhzHDJlrzURyIZ0tUcRHkcP/nEVuT7gTVWYm0s5E/l0
-	=
-X-Google-Smtp-Source: AGHT+IHPNUqAo9RP2k/txKA5ka2+HmtdxQBwQrHxtktbiM4yqbVOMq5En0jyq+xx4sd9Qhe5ypBJeA==
-X-Received: by 2002:a05:6214:4a41:b0:690:d000:c819 with SMTP id ph1-20020a0562144a4100b00690d000c819mr7679037qvb.60.1710285609159;
-        Tue, 12 Mar 2024 16:20:09 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id u5-20020a0cea45000000b006906adc8aa2sm4055062qvp.102.2024.03.12.16.20.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 16:20:08 -0700 (PDT)
-Date: Tue, 12 Mar 2024 19:20:08 -0400
-Message-ID: <75311f9f32a3cd6e4528459ea986dfcf@paul-moore.com>
-From: Paul Moore <paul@paul-moore.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] lsm/lsm-pr-20240312
+	s=arc-20240116; t=1710285695; c=relaxed/simple;
+	bh=l+PQQeX29hSIYRsGK1E3f+tT9i3VuGNzzWMESaSJlkk=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=sUUJxXk4idQMjWRqxSNrEiaRdg0USMqkWdMarvLDTkuV7JEHEQTCmJjZn+1Jlk8G21B1/lJywNlWe0sq1pbv7iV1JCGMueQ5GcjNTNDmAWuulHf+zlinf/5CjjXKJyD60EzIz+T4vyCaKPMEnJwdFRbTKPMO6xbUbdwlPFxJ9Q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kxGgPj9G; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 8E49120B74C0;
+	Tue, 12 Mar 2024 16:21:33 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8E49120B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710285693;
+	bh=tYBQWRvnBjxq98SdJfkL9cZnOn2TzWgczlpG8jTrEPc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kxGgPj9GySi9b7OwPqzycLrmw1f8UYvo7R4+lMUvfrGpK7szA/FysjSeV0ID33dgZ
+	 WZjOyjsLmn2M3PKvr9dZo0YYxVoGtHCvK2IOTkccOHF7GhRPyXH3E3gRVf6xhT/Kie
+	 x+vbPy4aC3L7oIi4yhJoBK/chyziKwlkzge7Xu2s=
+From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: haiyangz@microsoft.com,
+	mhklinux@outlook.com,
+	mhkelley58@gmail.com,
+	kys@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	catalin.marinas@arm.com,
+	tglx@linutronix.de,
+	daniel.lezcano@linaro.org,
+	arnd@arndb.de
+Subject: [PATCH] hyperv-tlfs: Rename some HV_REGISTER_* defines for consistency
+Date: Tue, 12 Mar 2024 16:21:27 -0700
+Message-Id: <1710285687-9160-1-git-send-email-nunodasneves@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Hi Linus,
+Rename HV_REGISTER_GUEST_OSID to HV_REGISTER_GUEST_OS_ID. This matches
+the existing HV_X64_MSR_GUEST_OS_ID.
 
-There are a number of LSM patches for the Linux v6.9 merge window,
-the highlights are shown below.  As a heads-up, someone just flagged
-a problem with the LSM syscalls earlier today, so expect another pull
-request within a few days once we've had a chance to develop/review/test
-the fix.
+Rename HV_REGISTER_CRASH_* to HV_REGISTER_GUEST_CRASH_*. Including
+GUEST_ is consistent with other #defines such as
+HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE. The new names also match the TLFS
+document more accurately, i.e. HvRegisterGuestCrash*.
 
-- Promote IMA/EVM to a proper LSM
+Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+---
+ arch/arm64/hyperv/hv_core.c          | 14 +++++++-------
+ arch/arm64/hyperv/mshyperv.c         |  2 +-
+ arch/arm64/include/asm/hyperv-tlfs.h | 12 ++++++------
+ arch/x86/kernel/cpu/mshyperv.c       |  2 +-
+ include/asm-generic/hyperv-tlfs.h    | 16 ++++++++--------
+ 5 files changed, 23 insertions(+), 23 deletions(-)
 
-This is the bulk of the diffstat in the pull request, and the source
-of all the changes in the VFS code.  Prior to the start of the LSM
-stacking work it was important that IMA/EVM were separate from the
-rest of the LSMs, complete with their own hooks, infrastructure, etc.
-as it was the only way to enable IMA/EVM at the same time as a LSM.
-However, now that the bulk of the LSM infrastructure supports multiple
-simultaneous LSMs, we can simplify things greatly by bringing IMA/EVM
-into the LSM infrastructure as proper LSMs.  This is something I've
-wanted to see happen for quite some time and Roberto was kind enough
-to put in the work to make it happen.
+diff --git a/arch/arm64/hyperv/hv_core.c b/arch/arm64/hyperv/hv_core.c
+index b54c34793701..f1ebc025e1df 100644
+--- a/arch/arm64/hyperv/hv_core.c
++++ b/arch/arm64/hyperv/hv_core.c
+@@ -160,22 +160,22 @@ void hyperv_report_panic(struct pt_regs *regs, long err, bool in_die)
+ 		return;
+ 	panic_reported = true;
+ 
+-	guest_id = hv_get_vpreg(HV_REGISTER_GUEST_OSID);
++	guest_id = hv_get_vpreg(HV_REGISTER_GUEST_OS_ID);
+ 
+ 	/*
+ 	 * Hyper-V provides the ability to store only 5 values.
+ 	 * Pick the passed in error value, the guest_id, the PC,
+ 	 * and the SP.
+ 	 */
+-	hv_set_vpreg(HV_REGISTER_CRASH_P0, err);
+-	hv_set_vpreg(HV_REGISTER_CRASH_P1, guest_id);
+-	hv_set_vpreg(HV_REGISTER_CRASH_P2, regs->pc);
+-	hv_set_vpreg(HV_REGISTER_CRASH_P3, regs->sp);
+-	hv_set_vpreg(HV_REGISTER_CRASH_P4, 0);
++	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P0, err);
++	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P1, guest_id);
++	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P2, regs->pc);
++	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P3, regs->sp);
++	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_P4, 0);
+ 
+ 	/*
+ 	 * Let Hyper-V know there is crash data available
+ 	 */
+-	hv_set_vpreg(HV_REGISTER_CRASH_CTL, HV_CRASH_CTL_CRASH_NOTIFY);
++	hv_set_vpreg(HV_REGISTER_GUEST_CRASH_CTL, HV_CRASH_CTL_CRASH_NOTIFY);
+ }
+ EXPORT_SYMBOL_GPL(hyperv_report_panic);
+diff --git a/arch/arm64/hyperv/mshyperv.c b/arch/arm64/hyperv/mshyperv.c
+index 99362716ac87..03ac88bb9d10 100644
+--- a/arch/arm64/hyperv/mshyperv.c
++++ b/arch/arm64/hyperv/mshyperv.c
+@@ -46,7 +46,7 @@ static int __init hyperv_init(void)
+ 
+ 	/* Setup the guest ID */
+ 	guest_id = hv_generate_guest_id(LINUX_VERSION_CODE);
+-	hv_set_vpreg(HV_REGISTER_GUEST_OSID, guest_id);
++	hv_set_vpreg(HV_REGISTER_GUEST_OS_ID, guest_id);
+ 
+ 	/* Get the features and hints from Hyper-V */
+ 	hv_get_vpreg_128(HV_REGISTER_FEATURES, &result);
+diff --git a/arch/arm64/include/asm/hyperv-tlfs.h b/arch/arm64/include/asm/hyperv-tlfs.h
+index 54846d1d29c3..bc30aadedfe9 100644
+--- a/arch/arm64/include/asm/hyperv-tlfs.h
++++ b/arch/arm64/include/asm/hyperv-tlfs.h
+@@ -37,12 +37,12 @@
+  * - On x86, HV_MSR_ indicates an MSR accessed via rdmsrl/wrmsrl
+  * - On ARM, HV_MSR_ indicates a VP register accessed via hypercall
+  */
+-#define HV_MSR_CRASH_P0		(HV_REGISTER_CRASH_P0)
+-#define HV_MSR_CRASH_P1		(HV_REGISTER_CRASH_P1)
+-#define HV_MSR_CRASH_P2		(HV_REGISTER_CRASH_P2)
+-#define HV_MSR_CRASH_P3		(HV_REGISTER_CRASH_P3)
+-#define HV_MSR_CRASH_P4		(HV_REGISTER_CRASH_P4)
+-#define HV_MSR_CRASH_CTL	(HV_REGISTER_CRASH_CTL)
++#define HV_MSR_CRASH_P0		(HV_REGISTER_GUEST_CRASH_P0)
++#define HV_MSR_CRASH_P1		(HV_REGISTER_GUEST_CRASH_P1)
++#define HV_MSR_CRASH_P2		(HV_REGISTER_GUEST_CRASH_P2)
++#define HV_MSR_CRASH_P3		(HV_REGISTER_GUEST_CRASH_P3)
++#define HV_MSR_CRASH_P4		(HV_REGISTER_GUEST_CRASH_P4)
++#define HV_MSR_CRASH_CTL	(HV_REGISTER_GUEST_CRASH_CTL)
+ 
+ #define HV_MSR_VP_INDEX		(HV_REGISTER_VP_INDEX)
+ #define HV_MSR_TIME_REF_COUNT	(HV_REGISTER_TIME_REF_COUNT)
+diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+index 56e731d8f513..909a6236a4c0 100644
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -450,7 +450,7 @@ static void __init ms_hyperv_init_platform(void)
+ 				/* To be supported: more work is required.  */
+ 				ms_hyperv.features &= ~HV_MSR_REFERENCE_TSC_AVAILABLE;
+ 
+-				/* HV_REGISTER_CRASH_CTL is unsupported. */
++				/* HV_MSR_CRASH_CTL is unsupported. */
+ 				ms_hyperv.misc_features &= ~HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE;
+ 
+ 				/* Don't trust Hyper-V's TLB-flushing hypercalls. */
+diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+index 32514a870b98..87e3d49a4e29 100644
+--- a/include/asm-generic/hyperv-tlfs.h
++++ b/include/asm-generic/hyperv-tlfs.h
+@@ -636,14 +636,14 @@ struct hv_retarget_device_interrupt {
+ /*
+  * Synthetic register definitions equivalent to MSRs on x86/x64
+  */
+-#define HV_REGISTER_CRASH_P0		0x00000210
+-#define HV_REGISTER_CRASH_P1		0x00000211
+-#define HV_REGISTER_CRASH_P2		0x00000212
+-#define HV_REGISTER_CRASH_P3		0x00000213
+-#define HV_REGISTER_CRASH_P4		0x00000214
+-#define HV_REGISTER_CRASH_CTL		0x00000215
+-
+-#define HV_REGISTER_GUEST_OSID		0x00090002
++#define HV_REGISTER_GUEST_CRASH_P0	0x00000210
++#define HV_REGISTER_GUEST_CRASH_P1	0x00000211
++#define HV_REGISTER_GUEST_CRASH_P2	0x00000212
++#define HV_REGISTER_GUEST_CRASH_P3	0x00000213
++#define HV_REGISTER_GUEST_CRASH_P4	0x00000214
++#define HV_REGISTER_GUEST_CRASH_CTL	0x00000215
++
++#define HV_REGISTER_GUEST_OS_ID		0x00090002
+ #define HV_REGISTER_VP_INDEX		0x00090003
+ #define HV_REGISTER_TIME_REF_COUNT	0x00090004
+ #define HV_REGISTER_REFERENCE_TSC	0x00090017
+-- 
+2.25.1
 
-- Use the LSM hook default values to simplify the call_int_hook() macro
-
-Previously the call_int_hook() macro required callers to supply a
-default return value, despite a default value being specified when
-the LSM hook was defined.  This pull request simplifies the macro
-by using the defined default return value which makes life easier
-for callers and should also reduce the number of return value bugs
-in the future (we've had a few pop up recently, hence this work).
-
-- Use the KMEM_CACHE() macro instead of kmem_cache_create()
-
-The guidance appears to be to use the KMEM_CACHE() macro when possible
-and there is no reason why we can't use the macro, so let's use it.
-
-- Fix a number of comment typos in the LSM hook comment blocks
-
-Not much to say here, we fixed some questionable grammar decisions in
-the LSM hook comment blocks.
-
-Please merge when you have the chance,
--Paul
-
---
-The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
-
-  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
-    tags/lsm-pr-20240312
-
-for you to fetch changes up to edc6670233a333ccfd1ec0548f068bd121d209c8:
-
-  cred: Use KMEM_CACHE() instead of kmem_cache_create()
-    (2024-02-23 17:33:31 -0500)
-
-----------------------------------------------------------------
-lsm/stable-6.9 PR 20240312
-
-----------------------------------------------------------------
-Kunwu Chan (1):
-      cred: Use KMEM_CACHE() instead of kmem_cache_create()
-
-Ondrej Mosnacek (1):
-      lsm: use default hook return value in call_int_hook()
-
-Pairman Guo (1):
-      lsm: fix typos in security/security.c comment headers
-
-Roberto Sassu (25):
-      ima: Align ima_inode_post_setattr() definition with LSM infrastructure
-      ima: Align ima_file_mprotect() definition with LSM infrastructure
-      ima: Align ima_inode_setxattr() definition with LSM infrastructure
-      ima: Align ima_inode_removexattr() definition with LSM infrastructure
-      ima: Align ima_post_read_file() definition with LSM infrastructure
-      evm: Align evm_inode_post_setattr() definition with LSM infrastructure
-      evm: Align evm_inode_setxattr() definition with LSM infrastructure
-      evm: Align evm_inode_post_setxattr() definition with LSM infrastructure
-      security: Align inode_setattr hook definition with EVM
-      security: Introduce inode_post_setattr hook
-      security: Introduce inode_post_removexattr hook
-      security: Introduce file_post_open hook
-      security: Introduce file_release hook
-      security: Introduce path_post_mknod hook
-      security: Introduce inode_post_create_tmpfile hook
-      security: Introduce inode_post_set_acl hook
-      security: Introduce inode_post_remove_acl hook
-      security: Introduce key_post_create_or_update hook
-      integrity: Move integrity_kernel_module_request() to IMA
-      ima: Move to LSM infrastructure
-      ima: Move IMA-Appraisal to LSM infrastructure
-      evm: Move to LSM infrastructure
-      evm: Make it independent from 'integrity' LSM
-      ima: Make it independent from 'integrity' LSM
-      integrity: Remove LSM
-
- fs/attr.c                                          |   5 +-
- fs/file_table.c                                    |   3 +-
- fs/namei.c                                         |  12 +-
- fs/nfsd/vfs.c                                      |   3 +-
- fs/open.c                                          |   1 -
- fs/posix_acl.c                                     |   5 +-
- fs/xattr.c                                         |   9 +-
- include/linux/evm.h                                | 117 +---
- include/linux/ima.h                                | 142 ----
- include/linux/integrity.h                          |  27 -
- include/linux/lsm_hook_defs.h                      |  20 +-
- include/linux/security.h                           |  59 ++
- include/uapi/linux/lsm.h                           |   2 +
- kernel/cred.c                                      |   4 +-
- security/integrity/Makefile                        |   1 +
- security/integrity/digsig_asymmetric.c             |  23 -
- security/integrity/evm/Kconfig                     |   1 +
- security/integrity/evm/evm.h                       |  19 +
- security/integrity/evm/evm_crypto.c                |   4 +-
- security/integrity/evm/evm_main.c                  | 195 +++++-
- security/integrity/iint.c                          | 197 +-----
- security/integrity/ima/Kconfig                     |   1 +
- security/integrity/ima/Makefile                    |   2 +-
- security/integrity/ima/ima.h                       | 148 +++-
- security/integrity/ima/ima_api.c                   |  23 +-
- security/integrity/ima/ima_appraise.c              |  66 +-
- security/integrity/ima/ima_iint.c                  | 142 ++++
- security/integrity/ima/ima_init.c                  |   2 +-
- security/integrity/ima/ima_main.c                  | 148 +++-
- security/integrity/ima/ima_policy.c                |   2 +-
- security/integrity/integrity.h                     |  80 +--
- security/keys/key.c                                |  10 +-
- security/security.c                                | 775 ++++++++++-----------
- security/selinux/hooks.c                           |   3 +-
- security/smack/smack_lsm.c                         |   4 +-
- .../testing/selftests/lsm/lsm_list_modules_test.c  |   6 +
- 36 files changed, 1123 insertions(+), 1138 deletions(-)
- create mode 100644 security/integrity/ima/ima_iint.c
-
---
-paul-moore.com
 
