@@ -1,244 +1,144 @@
-Return-Path: <linux-kernel+bounces-100791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DCC8879D42
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:10:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8449A879D54
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:11:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FEB81C21984
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:10:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73A661C21991
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F4E14372A;
-	Tue, 12 Mar 2024 21:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A55B14372E;
+	Tue, 12 Mar 2024 21:11:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dACQp9eT"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Cljudx1v"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F7013B2BF
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E798142913
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710277826; cv=none; b=obaZFO1nUmZRM71nKrngKow0PM9vPCvMkhsoRzjIvYPZkLSXnmAxE9LzcfpKLsykQzv9D3ETH/UQEhDi1I6TWtM1Zx2pAG4lu5wtS6fURjRF9i2QFJeE9wZVuf0xmC0S964TQubOXNTZONZw0RXCzczFG0hI/7Zu+6+JyQwXRHg=
+	t=1710277906; cv=none; b=HlZPIsylyK45NhQW4atNkchb6uBAH79X4LAd/8Z+DDMPdoXz1nYhInU6Ohhruu8f7+u8dYLYd/AuPSTbErJ23RWTnFmPPGVBYFbwljnqAG87SEz1D6CCzte/FhLUzRYMx9JZaPpTAUT0wn7yy23nn5D+RKUSnKlXPwVHuwAlN2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710277826; c=relaxed/simple;
-	bh=gbMXa7fbnavKpS+ZrQQqZX9TKF3YruHspJMBAguqfbw=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Gd4ULzU4MNChXeP3LmkiOzP8MnEGozUH8gv3rVvlKtgV+i+BXbNKIhonRZVd/V/T4BVZ+HKhbpwGoXQfYV1803n5qZGaMZfTUOiWI06U1vsUynKjFMcxcZgyQizbwvLWSCJDZ7vH2paQ9qVqZUF//di3KbQWQPWIRJnO+HHjhVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dACQp9eT; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710277824; x=1741813824;
-  h=date:from:to:cc:subject:message-id;
-  bh=gbMXa7fbnavKpS+ZrQQqZX9TKF3YruHspJMBAguqfbw=;
-  b=dACQp9eTCfZGvZP58FnghHiCF+BZv5gYYlTt01q66NLrYan39pWl/yxw
-   gYQgx+MP9KPhbGLLRvL8ce2pPiKUt1YtH2mVfiQRDPklXNselhZmiFgA6
-   LHQpqG6gOtDe+SOgTo8Lg88bqRxSEUaULuGmK+9AQ3C7Z7wRo+Ll9u0ij
-   UJGAmyhWWbCDf6Ro78uGKNnISQvXwjjWym4PAAHsC+eVB+RvgT1530l/e
-   FojOBWBBBbtUB7rfs8J+Jdjf6cZuM1CH4CeBWhYlLYNN11g9fZOq+uaa2
-   Ap/8kxSNyIpK8Q8+dhWToUoJXvaDv/k10c7nDj9iXYxjAL2VAZ6bx/Jdb
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5143051"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="5143051"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 14:10:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="11571257"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 12 Mar 2024 14:10:21 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rk9O6-000BgJ-0r;
-	Tue, 12 Mar 2024 21:10:18 +0000
-Date: Wed, 13 Mar 2024 05:09:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/boot] BUILD SUCCESS
- 2e2bc42c8381d2c0e9604b59e49264821da29368
-Message-ID: <202403130521.HBdq1wl7-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1710277906; c=relaxed/simple;
+	bh=T3kzBY9GfAnM+q51fC0moJWtnEIIEoGiMeFr1W4OVzg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c9SY1+KiIvr4W8jDU+1V0TRatKIpAIz8wGoHrl7OdB0VDh9yUmcow2IuHEN5uFa8tQv4HBDdXNtNuvYVhMvQrGfOjoXcZlgewUhVaZACJ/IeyKw3RGVC3a5SgVrlF0Gdfmh3sRgsdaDXE1kDIs2JfoVSgIYBlMBOubMYZxMBi+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Cljudx1v; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-568241f40e9so6368262a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1710277902; x=1710882702; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FBYUhCU7Eheux/pd0BVM48w4mv0asJqGomAvUXs2qr4=;
+        b=Cljudx1vYJXDdMdiE3dye/gbHq8S4nyYIVFbs98B9Em7f/veNGS3Mx6HB5XC5+D2tC
+         UE3wqGQBz8OR6KZ0fV5AFzkgl7a9NyogrPfZb5auuJ7Y5NgdE/ni/vJotZ72w0e7c52w
+         5g9KTmq00zB+0BeKEvKQ9ChCS7rF9Szsj7vSM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710277902; x=1710882702;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FBYUhCU7Eheux/pd0BVM48w4mv0asJqGomAvUXs2qr4=;
+        b=jxmunzef8xvwTDE25vrT78yEqHj+7N/vePSXkKzYUQ7Cvcfrdy2PvDkj4eymJUdiiH
+         Y07dJjg6v82rQi08j35CWv0lxhj9afMBQpanmYlB9meS9xUCGW/I1Vu3B36bT9FC0+YP
+         dBTIs8+w4Po5Vk2fa6jxTVDRRMUxjSp0qkHRmXg0nSXZ/f1QkaovIS9cVYkrMajVy0yf
+         wv/ABtCYH5SEow5Z3ICqw576OuPJY9yJ0mtNPU2Rq5md1gYHD0DKlHl4ul4m2pMZjm91
+         tB1vhzlKoYUZno/tm5tP4vwyVskx7XgV/yK7PPyZafeFMWZeEswUkFGG46YjNHo8YdHY
+         w3Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCVOr5lFoSL/8iFOJYgc5aZjJWO6SF6sal70v2Mk+HDzu5ru4yQbsyyhgST93TfpgKyUki65JsnLd4IKHRAhwV94yeFBkktnWiGVlp02
+X-Gm-Message-State: AOJu0Yw3sOiVgfaT0K5ESwS92jd49zRYamIP6tTMlTebv3JDtnkP8neu
+	8/ivG2mKbm3rGFOnNNfKlWV7sA6J3UyM10PmvVjUqzK1jIbc6z6E8jihRHKXp9aMAggo+0MKmbS
+	QlK3Z7w==
+X-Google-Smtp-Source: AGHT+IE1FLc8panA0w9SWA75ljM3UCX6zMlnr4BXzrQmSxH3BhAFReRubjw15jWbX2myu7CwapNw9w==
+X-Received: by 2002:a17:907:c30c:b0:a46:2649:16f9 with SMTP id tl12-20020a170907c30c00b00a46264916f9mr6074358ejc.2.1710277902461;
+        Tue, 12 Mar 2024 14:11:42 -0700 (PDT)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id w6-20020a1709062f8600b00a46376965basm1563076eji.60.2024.03.12.14.11.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 14:11:41 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4499ef8b5aso465229366b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:11:41 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUsJdB5mIigMYlP2qe03+KZQ4Z/+nG2OMm3B5MLX1uo4AVHa1lvwcRJ/qgcTIHm0c/DyhWOSB8sWrvHjF0o41wuZ6lJ1ThHh/bdtCzy
+X-Received: by 2002:a17:906:e0f:b0:a45:da1:9364 with SMTP id
+ l15-20020a1709060e0f00b00a450da19364mr6434203eji.19.1710277901356; Tue, 12
+ Mar 2024 14:11:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240312042504.1835743-1-kuba@kernel.org> <CAHk-=wgknyB6yR+X50rBYDyTnpcU4MukJ2iQ5mQQf+Xzm9N9Dw@mail.gmail.com>
+ <20240312133427.1a744844@kernel.org> <20240312134739.248e6bd3@kernel.org>
+In-Reply-To: <20240312134739.248e6bd3@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 12 Mar 2024 14:11:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiOaBLqarS2uFhM1YdwOvCX4CZaWkeyNDY1zONpbYw2ig@mail.gmail.com>
+Message-ID: <CAHk-=wiOaBLqarS2uFhM1YdwOvCX4CZaWkeyNDY1zONpbYw2ig@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for v6.9
+To: Jakub Kicinski <kuba@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pabeni@redhat.com, bpf@vger.kernel.org, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
-branch HEAD: 2e2bc42c8381d2c0e9604b59e49264821da29368  Merge branch 'linus' into x86/boot, to resolve conflict
+On Tue, 12 Mar 2024 at 13:47, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> With your tree as of 65d287c7eb1d it gets to prompt but dies soon after
+> when prod services kick in (dunno what rpm Kdump does but says iocost
+> so adding Tejun):
 
-elapsed time: 727m
+Both of your traces are timers that seem to either lock up in ioc_now():
 
-configs tested: 156
-configs skipped: 3
+   https://lore.kernel.org/all/20240312133427.1a744844@kernel.org/
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+and now it looks like ioc_timer_fn():
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20240312   gcc  
-arc                   randconfig-002-20240312   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                     davinci_all_defconfig   clang
-arm                                 defconfig   clang
-arm                          pxa3xx_defconfig   clang
-arm                   randconfig-001-20240312   clang
-arm                   randconfig-002-20240312   gcc  
-arm                   randconfig-003-20240312   gcc  
-arm                   randconfig-004-20240312   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240312   gcc  
-arm64                 randconfig-002-20240312   gcc  
-arm64                 randconfig-003-20240312   gcc  
-arm64                 randconfig-004-20240312   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240312   gcc  
-csky                  randconfig-002-20240312   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240312   clang
-hexagon               randconfig-002-20240312   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240312   gcc  
-i386         buildonly-randconfig-002-20240312   gcc  
-i386         buildonly-randconfig-003-20240312   gcc  
-i386         buildonly-randconfig-004-20240312   gcc  
-i386         buildonly-randconfig-005-20240312   clang
-i386         buildonly-randconfig-006-20240312   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240312   gcc  
-i386                  randconfig-002-20240312   clang
-i386                  randconfig-003-20240312   gcc  
-i386                  randconfig-004-20240312   gcc  
-i386                  randconfig-005-20240312   gcc  
-i386                  randconfig-006-20240312   gcc  
-i386                  randconfig-011-20240312   gcc  
-i386                  randconfig-012-20240312   gcc  
-i386                  randconfig-013-20240312   clang
-i386                  randconfig-014-20240312   clang
-i386                  randconfig-015-20240312   gcc  
-i386                  randconfig-016-20240312   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240312   gcc  
-loongarch             randconfig-002-20240312   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         amcore_defconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                        bcm63xx_defconfig   clang
-mips                         db1xxx_defconfig   clang
-mips                    maltaup_xpa_defconfig   gcc  
-mips                          rm200_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240312   gcc  
-nios2                 randconfig-002-20240312   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           alldefconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240312   gcc  
-parisc                randconfig-002-20240312   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                          g5_defconfig   gcc  
-powerpc                     mpc512x_defconfig   clang
-powerpc               randconfig-001-20240312   gcc  
-powerpc               randconfig-002-20240312   clang
-powerpc               randconfig-003-20240312   gcc  
-powerpc                     tqm8540_defconfig   gcc  
-powerpc64             randconfig-001-20240312   clang
-powerpc64             randconfig-002-20240312   clang
-powerpc64             randconfig-003-20240312   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240312   clang
-riscv                 randconfig-002-20240312   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                          debug_defconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240312   clang
-s390                  randconfig-002-20240312   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                    randconfig-001-20240312   gcc  
-sh                    randconfig-002-20240312   gcc  
-sh                           sh2007_defconfig   gcc  
-sh                  sh7785lcr_32bit_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240312   gcc  
-sparc64               randconfig-002-20240312   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240312   gcc  
-um                    randconfig-002-20240312   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240312   gcc  
-xtensa                randconfig-002-20240312   gcc  
-xtensa                    smp_lx200_defconfig   gcc  
+  https://lore.kernel.org/all/20240312134739.248e6bd3@kernel.org/
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+But in neither case does it actually look like it's a lockup on a *lock*.
+
+IOW, the NMI isn't happening on some spin_lock sequence or anything like that.
+
+Yes, ioc_now() could have been looping on the seq read-lock if the
+sequence number was odd. But the writers do seem to be done with
+interrupts disabled, plus then you wouldn't have this lockup in
+ioc_timer_fn, so it's probably not that.
+
+And yes, ioc_timer_fn() does take locks, but again, that doesn't seem
+to be where it is hanging.
+
+So it smells like it's an endless loop in ioc_timer_fn() to me, or
+perhaps retriggering the timer itself infinitely.
+
+Which would then explain both of those traces (that endless loop would
+call ioc_now() as part of it).
+
+The blk-iocost.c code itself hasn't changed, but the timer code has
+gone through big changes.
+
+That said, there's a more blk-related change: da4c8c3d0975 ("block:
+cache current nsec time in struct blk_plug").
+
+*And* your second dump is from that
+
+        period_vtime = now.vnow - ioc->period_at_vtime;
+        if (WARN_ON_ONCE(!period_vtime)) {
+
+so it smells like the blk-iocost code is just completely confused by
+the time caching. Jens?
+
+Jakub, it might be worth seeing if just reverting that commit
+da4c8c3d0975 makes the problem go away. Otherwise a bisect might be
+needed...
+
+          Linus
 
