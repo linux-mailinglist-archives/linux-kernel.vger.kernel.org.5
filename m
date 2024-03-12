@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-99827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 301AB878DF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:54:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E692B878DFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:54:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B41C1F21709
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:54:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13DF91C21526
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B77B7C2FD;
-	Tue, 12 Mar 2024 04:53:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05797D310;
+	Tue, 12 Mar 2024 04:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sY/T5RWB"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xi9lWGYn"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFB93A1C2
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA41B67F
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:54:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710219236; cv=none; b=iA2dVgRqwnnHtYczmip7Xzw2IPRdGGUyZ7YYqtZOtPkAesAsB9mM44ULp66CAIKX7sp29sOHt9zRkRc6A7M4oF6aJ96dJncMzodwMPJbXDflrCJcplLExixxmKaiIv1/XU6D/w4PFYZqUHe7EVBEw6BZr1kCIHRHzGcvymXqkUI=
+	t=1710219288; cv=none; b=a10w7H1NdFKmNcu9YWkMrQdlFCffiqkQfTaTCKp/yCNwz8DGB7Ox5HvMIUgF9LQnU5LtJrzJXIpou7+TfeZaUXX8CLuGe61/p2FDigGSX0MG8nRqOk0Sa+tj3+BZNoZeNjY38qX7iMnb2tIRG3HkgDbAN8Z7uBd9Imnyzj5TC/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710219236; c=relaxed/simple;
-	bh=MGFuZwBwiuiuFNujmelpdeTzQUrEoQl7emQ6fErY7hQ=;
+	s=arc-20240116; t=1710219288; c=relaxed/simple;
+	bh=va3+4SuN4m0QaE4gXvII4HrSkok0BzxMc6FYTwhi8No=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rH8g2pt94L7CotAOIype2i8PhaFJQjh1KfJoodghgWfxw6b84ofaXfH6fotucKzZCOo3Bvy5a28i+pg8OLUdfYTrynXLnsdnFw9flDER6+Tegq3DXDfG4yQaPohvaTIt8zAxDUGSgQHR+CVD4K6AV3GoJHEHtGpWLQ13k+7uovg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sY/T5RWB; arc=none smtp.client-ip=209.85.128.51
+	 To:Cc:Content-Type; b=oLnf6xll0ZbvaN/8Q3UEXvBcACPpMpmDjAWZVck6Zv/rdHwqNBtZdAWjPnWvWjE9eFkMs9I294X/rMz2uwlcGbKeaDKDEsyq9NL0bKrBcPitA1oBQ6Q3i58AiXLNjZZ4wRIay3l9qaPhd19PPf1D4AicJMfbLFzBAG2nROPAArI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xi9lWGYn; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412d84ffbfaso45495e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:53:53 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso3749a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710219232; x=1710824032; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710219284; x=1710824084; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aIpbeEL2FtxAvDMJCVRnniAL8qg1AA09D+6rAveachc=;
-        b=sY/T5RWBYKtrDIi9uPYBtDgCH46g1DBjhY+504dzsjbCaiP33bWJdCuCVbufkRZxTa
-         7nSAYaukqijTlcjoOU3bmvSPjZLCxSfHewbtJ8WZeRyVx+CAAlpRfYc7+Mo1mOSCXMA3
-         FN3IcW6mglwH7iwGmkoE+k3HmvM5aM1MZgAox15zU5lf3HP1EEYBFp6Jb1U8vqL7kzM5
-         alVwcluuGbju76Vn0gIy/PaAYy/0EAYsOJAwanReDRDji7FL/VThzobUpf2b/DGMS6uL
-         ynMz4icZbSwsev4yYzan5beDa4/gR4kQg4/tC5PRe1yTKcagucdB2HXEmN5s3TUlR3Fv
-         UDKw==
+        bh=2ktp0cw7qhM4uTbqS0uF+YCL5AGCW3l4rlYP7tw1r+U=;
+        b=xi9lWGYnw7dislAB+q4GL7TntPquxDUgdkfo8qGzn31FFZuTFg5wmUCP5K9RZAyk5C
+         zJgwX5TPoH29idVDGfZcSURXExKecG8THFde8+7oZnJvu7HMPHLo6xzvdbcEsoxjpfW8
+         4pBcFjE/pZYqzy7ZqKrKzlQ6zu/EgVRJaEDE/p5C70+fZ5+w8junSy4wc8yZ4KRL7e9B
+         miyuJUfDwCsRHdeTg42DfdNvj1TYrbj43/EBZhwkvBbGmK6bC5/wlzRNAvrkgpLRNziJ
+         NRnqVnrSqvQPcUL5+RNVQqwe31wW+C1QGG3WL5aVOP/xvLsvjisSuKYMCh414t2WzdJG
+         3zsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710219232; x=1710824032;
+        d=1e100.net; s=20230601; t=1710219284; x=1710824084;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=aIpbeEL2FtxAvDMJCVRnniAL8qg1AA09D+6rAveachc=;
-        b=gyS6xtcmt3IpqXs+Va7Av88+CCeIJtJrtyuS8wQYPDMg/RPFswu+FTskBVvnhPrxM6
-         8uaOMS+4af05jThoYerRI/HgcSU7zSzB3x+VeTMaqr2xjsks+NEdAfe/vCzW7PQHFELI
-         +Nxx2Bnjoh4t13jzI+ENCMrJMbuVlX2hKUTImA3PyEdzLLsiw9Imwvv9RHt+6S3908WQ
-         Yukk4fuUhenduAQ8JzhNjQAcncM01gRqEMabGL62ZoKziPUCeG7+Xn2Mvk5VFjAUhDSf
-         6tZW1Wtydfl+ISDfh3p8ADVxFqRdPVl+IeKK9noqBzkvw6s9K3IKKWvL57oACGhYJhaV
-         N4Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCVPDr7ZQAbC7qUaFI5dWHL6/pcq0FZx7jHNQyha3lAkcPwWAaLmvcny5w16b3HIc9RNTjBGI/PfLsx4WF5aLkATvs2e1yYG0q5venPM
-X-Gm-Message-State: AOJu0Yz4QgZScy22ImjO6nqS9qqkBq/BamyEKDpc+eqeZcruJVrjqN0u
-	EhwqpdM1hXMmrjxiW9MC/LOt3L8QMBmpB20+IOYVG7IkWXsKZnuO2SIphqqK5cSE8iDUK0OXUAy
-	lgP25DWphWuc1D5OmNOc7ZjOSPR+JyYktsR3G
-X-Google-Smtp-Source: AGHT+IH6+m5w8TGGzuwdUpiEXcJqv00NfGEP/ve9y5SjfQ9XDC9z4o16zHLoCUxftJDTzGASqpMs5DoDZfsu+kGAcvM=
-X-Received: by 2002:a05:600c:a007:b0:413:4d2c:91de with SMTP id
- jg7-20020a05600ca00700b004134d2c91demr12632wmb.0.1710219231893; Mon, 11 Mar
- 2024 21:53:51 -0700 (PDT)
+        bh=2ktp0cw7qhM4uTbqS0uF+YCL5AGCW3l4rlYP7tw1r+U=;
+        b=SsntfUA8xmWRXc5ydh4OVISwPvwYU5SAioPYA0Ddk87IZAdODHczlKXWpetFG6fE5R
+         oCskVTy99S+MzPVT5wr2M3EMfpSZT5ep2Fof7ADCxVSNWra0Om5aSa1X/mgDYelLvVy8
+         PAru9jXCnOoM0J1WDX72Pj+N0mGJSPW8IbLUsXk8vpE/pwheMrAi1V5nyO0IsgqL89M/
+         XQxohMWJV3jJt4qhkd/iklKIJj2LNSVeq1R1BfOPjoLYb6z8i52DfJv8nKN9JrLpgjYq
+         4VvOMnVETxeXAJDh3oz4dyoOc0cbgVNwQ+OHudhKOJCOG7cUd/oJsl+GNGbGq4l/QJso
+         Nt+w==
+X-Forwarded-Encrypted: i=1; AJvYcCXb3t/JaA8UTz/stHKnlKuyTr8hkbSn+BpAAj/1AmO/ETMxClNqGCIwvKmjpIeGGjD+6mloFPBO0aXvxRe7GZaTeWfYNjFXw2gA42YX
+X-Gm-Message-State: AOJu0YxKovPWNgNUnuz9sT49PWzkjIvElHxH8DzcvOVxaeNmMMmobOC7
+	FY8b9xmArr2qCRcpDLgZSQGZla2Q/vuZ2HN5zKFSeVHbH5xL2L3Nn0xefnLMrLENf6XnA7h0+ER
+	ct9yZg432qJaDuy0jTxxMJ2GsZaJ17GlunZUs
+X-Google-Smtp-Source: AGHT+IHMvpeCp94H9+CQpRLnJE1D5gDLC9RFj181IDRLKbMYyc3PKjlVy1+AZvJ+pPL6yiwer/hG6jBTxxW66UEzA90=
+X-Received: by 2002:a05:6402:8c5:b0:568:7767:14fd with SMTP id
+ d5-20020a05640208c500b00568776714fdmr12186edz.7.1710219283993; Mon, 11 Mar
+ 2024 21:54:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-4-mic@digikod.net>
-In-Reply-To: <20240301194037.532117-4-mic@digikod.net>
+References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-6-mic@digikod.net>
+In-Reply-To: <20240301194037.532117-6-mic@digikod.net>
 From: David Gow <davidgow@google.com>
-Date: Tue, 12 Mar 2024 12:53:40 +0800
-Message-ID: <CABVgOSkwfis8rUHFZQ41NGEWritwZGf4+4704FzBREb2Y-G3Zw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] kunit: Fix timeout message
+Date: Tue, 12 Mar 2024 12:54:32 +0800
+Message-ID: <CABVgOS=AkKYjEuzrTGEh_AwMYZ0kmYz-uXsNKW--ExSCae6pVw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] kunit: Fix KUNIT_SUCCESS() calls in iov_iter tests
 To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
 Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.org>, 
 	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
@@ -91,17 +91,19 @@ Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.or
 	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
 	linux-um@lists.infradead.org, x86@kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000d2700d06136f71ac"
+	boundary="000000000000f0536006136f74c2"
 
---000000000000d2700d06136f71ac
+--000000000000f0536006136f74c2
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Sat, 2 Mar 2024 at 03:40, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wro=
 te:
 >
-> The exit code is always checked, so let's properly handle the -ETIMEDOUT
-> error code.
+> Fix KUNIT_SUCCESS() calls to pass a test argument.
+>
+> This is a no-op for now because this macro does nothing, but it will be
+> required for the next commit.
 >
 > Cc: Brendan Higgins <brendanhiggins@google.com>
 > Cc: David Gow <davidgow@google.com>
@@ -109,16 +111,20 @@ te:
 > Cc: Shuah Khan <skhan@linuxfoundation.org>
 > Reviewed-by: Kees Cook <keescook@chromium.org>
 > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240301194037.532117-4-mic@digikod.net
+> Link: https://lore.kernel.org/r/20240301194037.532117-6-mic@digikod.net
 > ---
 
-This looks good to me. It might make sense to use a switch statement
-rather than a change of else-ifs if we end up handling more errors in
-the future, but this is fine for now.
+This is a pretty straightforward fix.
+
+I'm actually a bit surprised how many tests were actually using
+KUNIT_SUCCEEDED().
 
 Reviewed-by: David Gow <davidgow@google.com>
 
-Cheers,
+Thanks,
+-- David
+
+
 -- David
 
 
@@ -126,38 +132,108 @@ Cheers,
 > Changes since v1:
 > * Added Kees's Reviewed-by.
 > ---
->  lib/kunit/try-catch.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  lib/kunit_iov_iter.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 >
-> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index 73f5007f20ea..cab8b24b5d5a 100644
-> --- a/lib/kunit/try-catch.c
-> +++ b/lib/kunit/try-catch.c
-> @@ -79,7 +79,6 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->         time_remaining =3D wait_for_completion_timeout(&try_completion,
->                                                      kunit_test_timeout()=
-);
->         if (time_remaining =3D=3D 0) {
-> -               kunit_err(test, "try timed out\n");
->                 try_catch->try_result =3D -ETIMEDOUT;
->                 kthread_stop(task_struct);
+> diff --git a/lib/kunit_iov_iter.c b/lib/kunit_iov_iter.c
+> index 859b67c4d697..27e0c8ee71d8 100644
+> --- a/lib/kunit_iov_iter.c
+> +++ b/lib/kunit_iov_iter.c
+> @@ -139,7 +139,7 @@ static void __init iov_kunit_copy_to_kvec(struct kuni=
+t *test)
+>                         return;
 >         }
-> @@ -94,6 +93,8 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->                 try_catch->try_result =3D 0;
->         else if (exit_code =3D=3D -EINTR)
->                 kunit_err(test, "wake_up_process() was never called\n");
-> +       else if (exit_code =3D=3D -ETIMEDOUT)
-> +               kunit_err(test, "try timed out\n");
->         else if (exit_code)
->                 kunit_err(test, "Unknown error: %d\n", exit_code);
 >
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  /*
+> @@ -194,7 +194,7 @@ static void __init iov_kunit_copy_from_kvec(struct ku=
+nit *test)
+>                         return;
+>         }
+>
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  struct bvec_test_range {
+> @@ -302,7 +302,7 @@ static void __init iov_kunit_copy_to_bvec(struct kuni=
+t *test)
+>                         return;
+>         }
+>
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  /*
+> @@ -359,7 +359,7 @@ static void __init iov_kunit_copy_from_bvec(struct ku=
+nit *test)
+>                         return;
+>         }
+>
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  static void iov_kunit_destroy_xarray(void *data)
+> @@ -453,7 +453,7 @@ static void __init iov_kunit_copy_to_xarray(struct ku=
+nit *test)
+>                         return;
+>         }
+>
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  /*
+> @@ -516,7 +516,7 @@ static void __init iov_kunit_copy_from_xarray(struct =
+kunit *test)
+>                         return;
+>         }
+>
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  /*
+> @@ -596,7 +596,7 @@ static void __init iov_kunit_extract_pages_kvec(struc=
+t kunit *test)
+>  stop:
+>         KUNIT_EXPECT_EQ(test, size, 0);
+>         KUNIT_EXPECT_EQ(test, iter.count, 0);
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  /*
+> @@ -674,7 +674,7 @@ static void __init iov_kunit_extract_pages_bvec(struc=
+t kunit *test)
+>  stop:
+>         KUNIT_EXPECT_EQ(test, size, 0);
+>         KUNIT_EXPECT_EQ(test, iter.count, 0);
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  /*
+> @@ -753,7 +753,7 @@ static void __init iov_kunit_extract_pages_xarray(str=
+uct kunit *test)
+>         }
+>
+>  stop:
+> -       KUNIT_SUCCEED();
+> +       KUNIT_SUCCEED(test);
+>  }
+>
+>  static struct kunit_case __refdata iov_kunit_cases[] =3D {
 > --
 > 2.44.0
 >
 
---000000000000d2700d06136f71ac
+--000000000000f0536006136f74c2
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -225,14 +301,14 @@ wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
 ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
 MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
 IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIIRwYpLx+UFgLCJwnaN23WnpzIUS6mZGqq9hDDaszYkwMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA0NTM1MlowaQYJKoZIhvcNAQkPMVww
+hvcNAQkEMSIEIAwntcAOUrRJsRZBbycG7e3AU2cSN+1k0xuF7otav2ZJMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA0NTQ0NFowaQYJKoZIhvcNAQkPMVww
 WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAtLDUz
-GSm8/FzLAdaZmcdDM5iXD38aJNkLoFKluOH5QTlfL+y0wIfpUNZnKn8umG9UTtQSRq8+AWbSsv77
-5Ub71Y1LS0zS/sQUsAm7JFFfX5ssbQmLfsT12ZraDe63s2nK9eG2MJLmjkLXvdT6+wkxQ3xvuzNk
-skEvt5hRoESacPBfeQlJZrYcDyQWuPHiXytxsj+U6AwR21DztlpKaoh0CZAK5OWLi2+3++ZNIRVF
-4W7CbKpJdbNi+udW42lPRnw2EyI4zCcsb7FzZITeowt8CPHa6KQWp/mXO0UcWUbHk6vqJUjefo4g
-/r6ZLy9d5v7uhJy4gc/99uY/pmHvqpFw
---000000000000d2700d06136f71ac--
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC0xxcO
+XomfL4QL28VwieN1Zwu6fNNGL2lKjrw5Ic+ujk7USwQ8l44k8mf3ALzeWRTC+6XIUgALpIBBgcY7
+zxL8qJ4S88QxYxLaR1OXTbvCHLzLTK+/otuiVhDObaPmLJfwjXLJdOuWkMpdUXSeHq3nBTtfCPCK
+SzuXKTwChdfVEtfYHnoO8hAkeOrvQkYMbKF4P9XfcDbwjwOWc4+im09Dt0TsrgEer7zhKgZTfOJk
+JUzlCIlFbO2oMwSBWLhKYSljBy0orUOM4yj497a18ncWzsNLHWUW57bQA88lvPrcN3brR1ZWd+Xn
+1q+/SpjDK4YFoH/sNKy+M/DAo1VeBFFR
+--000000000000f0536006136f74c2--
 
