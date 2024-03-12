@@ -1,297 +1,432 @@
-Return-Path: <linux-kernel+bounces-100749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5537A879CAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:11:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3CD879CAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:12:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8E421F23932
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:11:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31C0F1C2099F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79B51428E8;
-	Tue, 12 Mar 2024 20:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E7E142908;
+	Tue, 12 Mar 2024 20:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ty185xmY"
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Th5oIt5X"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A90A14264A
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D886139572
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710274293; cv=none; b=KUl61Zlq4dIDQ8Mw/lopg9GSByu35PLSffCDK2LptYa2Es0g//BD3/+iuYlkBL8faqkAEbJpbpEVG+vwAK9r2I27pxzfLZkAwHepzy4GDKEflcM77OV34x4Wq9wAXnq8QrnMW0yHGKEDj6K9jJbzybmJNKuikLXLAro/YCQMH0Q=
+	t=1710274322; cv=none; b=nHeSuqqxvRC+e+yh9vvATO9j6pGHN9mie/jQ5OOtQFHQGbelqYrlpP94P5d7ZhEFYYl8XJeGo2gcpLBYmNu6sfbxT4z3lJu4KPww8RA/oODT++Ny5UNbSfmEW2BUPLEZ6n8vKw4aU8ejt1CRNNsPQjPiCRK99PB7dNR14jmPrhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710274293; c=relaxed/simple;
-	bh=cA87yRqJJwxmkxglQuA6f8G73KJdrvRpBLSuoXJ8JDo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DjCLbDlczn0NUX47oHIzRtrHcFPv5q9a/hnoJm0xk6iJBUaNMbypIfr83gG4hEni5RT/GNVdEGT1O3BpGHDQZbtN2lTVOZUgEeZNxky/hQn7hoFy0KnTfKvZXiQNMK8T7N82rVIw/95TNWBeEfWgtAsNXWaSvrZsnJMvo13kvsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ty185xmY; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3666ffc850eso3905ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:11:30 -0700 (PDT)
+	s=arc-20240116; t=1710274322; c=relaxed/simple;
+	bh=nOYhRCCNPiKdlVxM2Ai49zpqXWK8JdsC93Pj02mlD8I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a3aPUrGKo5bPhGiVQS4H9AePnlU10aVrvZjHIzvT54dPwG2u3ZWVxqzbndEkIipjf1XLGeQUrO0IJLrYSGHe+n25eoekMd11rRJJyOTSyIoWzLWRdd8+2ucAW0arx352Pqz8SznSfqTWXRh809Nwg5UQ+gWElZVqruIj9kK2/Yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Th5oIt5X; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78850c6609bso220436685a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:12:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710274290; x=1710879090; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=gtyufjympz261LAYpMFsuxxNb0cIyOumJAAy8HMFSng=;
-        b=Ty185xmY2v2QrjX8pRIfWJSYrmLxXSGZePtuMAsf/udI58ObvGa3Dpqr7f+2xXjllE
-         mwmvWqaUbwBDTffCHjRP4T7PQLNW+XN1YmqdGSoZufJuTKJSwR+yVrkhwmo0ZSmTQfMN
-         KTAUKpxLiYcDZ4BkDwAvVnHV1xq4rNV5hulFm6dxeXbjHyTKpBpNGOzItQzaLd4Yt3Xu
-         RG4mpHxgQKxwC4FomtNSUjPrddTE7dm8+WMUbcSKeeWP1NyY80fIoMtAnxbaiUErnEDA
-         llF0dH9323RUPMI0cRsPWAC2w++02Q33mcuMrm4NsVvaZ1xXFUyn6nGjmP6HP7ZAw5Fg
-         1O3A==
+        d=sifive.com; s=google; t=1710274319; x=1710879119; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MnHHGL8Rk7CC2xf+iGr8uOaDj7elDk3WlKFGmrHlJpc=;
+        b=Th5oIt5XNP/mBP8LEsAZK616KTdHtOmcwiUuR6UpHibUnHd3dLwJDS7+Tx49ojYsa6
+         wcizfcUycBCLKRiluytqRtesGabKyne1YguzRaIefj9vSk8JyBoDpvupXB3m/Ik2anJW
+         eir3qoY0WiAGqdcBhE3IhupaGbpfDDoyRKk8QuW1IMVc4BNrxlOHVKl9ihqm8tT2ntl0
+         6JAcxvsYe7++xpp3F13sr7jsQqybQ4AM+29jq2jvpHUHzGQ+avOFxEqunB2U//GYu0Np
+         PFzj2xvT/L6ZDmzpDGOXyJJe2ZpJ3QiTrJnHFSyTK7//hpV1Afb2EVX/0qDboy4M957q
+         wVHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710274290; x=1710879090;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1710274319; x=1710879119;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gtyufjympz261LAYpMFsuxxNb0cIyOumJAAy8HMFSng=;
-        b=Y04rh7cWbcUE8qssNJZR3ilE6UzXERBjIo3GwQf76w+3krIsyhGj4TARldhjPNot7n
-         3+SWtE1UHCRYtu0qVNxC5SQImAEsDZCux/K7gJs07eWk241LRw3t5BrvNNZ/UuWulrOg
-         x8lzbkjiMbOISnF8zCyNZEIB5+vNRiJ8x1lbji60Q9mWYsHQn1VQs0hLwyCR60aPthxH
-         teklaHjMbtgRc6+GOl06xWOJMZ9OTt91M6DWtvAVMUjsGLxV+Svb8jT2GKNgXq9clbzl
-         eqpEckGHu1we2gzvgMf1W1N3DFzqMsuLF72KhQg/mNlOsi9PvNJip541PJx/cua2juaP
-         WJag==
-X-Forwarded-Encrypted: i=1; AJvYcCUJzyCfGYRBtfu4OUnm7nD6yIVVgg6CV6Uuuo8blVhHu9gWAy93o0js3wU2RErPUcTipjn4fTA196H+zalU2ZZPa6y/io2AYtJilyoc
-X-Gm-Message-State: AOJu0YwJHE4oEY5Xngq87Z9jNgNF4lHl3/WhRBfYPRQrJh5znDAbv5QJ
-	w7WwHyKIec/KOGbmIySnx1hCE3HfdN46lEnkzI+3P9jFc/dZBWl+zZuVUt2wNg==
-X-Google-Smtp-Source: AGHT+IGJ79aNGwwMiN/XE1qv+e3S3QKnXAHJweEMjS7wLLVhClpO1ctbpd91SmbTh3SMXUAE9E8ZXQ==
-X-Received: by 2002:a05:6e02:20ce:b0:366:5dc2:2843 with SMTP id 14-20020a056e0220ce00b003665dc22843mr79777ilq.14.1710274290030;
-        Tue, 12 Mar 2024 13:11:30 -0700 (PDT)
-Received: from google.com ([100.64.188.49])
-        by smtp.gmail.com with ESMTPSA id fw18-20020a0566381d9200b00476018ee74csm2483211jab.20.2024.03.12.13.11.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 13:11:28 -0700 (PDT)
-Date: Tue, 12 Mar 2024 14:11:23 -0600
-From: Yu Zhao <yuzhao@google.com>
-To: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Yafang Shao <laoar.shao@gmail.com>, Chris Down <chris@chrisdown.name>,
-	cgroups@vger.kernel.org, hannes@cmpxchg.org, kernel-team@fb.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: MGLRU premature memcg OOM on slow writes
-Message-ID: <ZfC2612ZYwwxpOmR@google.com>
-References: <ZcWOh9u3uqZjNFMa@chrisdown.name>
- <20240229235134.2447718-1-axelrasmussen@google.com>
- <ZeEhvV15IWllPKvM@chrisdown.name>
- <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
- <CALOAHbBupMYBMWEzMK2xdhnqwR1C1+mJSrrZC1L0CKE2BMSC+g@mail.gmail.com>
- <CAJHvVcjhUNx8UP9mao4TdvU6xK7isRzazoSU53a4NCcFiYuM-g@mail.gmail.com>
- <ZfC16BikjhupKnVG@google.com>
+        bh=MnHHGL8Rk7CC2xf+iGr8uOaDj7elDk3WlKFGmrHlJpc=;
+        b=qcx3qLzeSdOyT50KSpiwp6vzYfFNxn+MGjIx5KRclN/AUhE+a9a81zU4KFvC/8CVW1
+         OI02Cd7hnwCo7rjttMMOrNnLKexwsZZQwcxMfVaNmycrF6zYUiMYcLIWRrwjmlz/G9eK
+         oxxTDcHLM/z1R6IszKV0S9SWBb2femTis6yKZHjDlzGQNazXN7pderO19ojjDp0EtB5f
+         jnZ+j6ni83bFZcuddFTaKEpXsi09CvleZAHGUQuaZxaLx4UbisQSJVfy4a3gHEvRCzwD
+         n9UzY4CL7mQNnPjRGIIJVIhM2qIJrlTfQ3FcOBaB1uW8cnVOzSgDl+vr398NWDYvcGWp
+         1mxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWs3H5Ramw/7mW7vLsIzXEl1/RQY4lAF8oxd0/jSf2uXxqf7icjfI+ywpLYLMuU3+QJCMnGg4anIH31AgIrMkNkFPChZED4KCKsWJp2
+X-Gm-Message-State: AOJu0Yy9GncxVJEnQaYLycZqR9/FJprMdCBHic/vRIx71oJXLnYwtBVA
+	d/SlkFV4x47z6aXFdAdzSi0Wp6ykgLpJfc4U/6HX4WCPT57wr5AaJ/QAotdz00U=
+X-Google-Smtp-Source: AGHT+IHn+D2b3VFoUuC25A22wToCBAG5NyxdF+v1kIMRKU5wW8QZXDPLrob9xhKs09oUjOJN2QouMA==
+X-Received: by 2002:a05:620a:4888:b0:788:22c7:edd8 with SMTP id ea8-20020a05620a488800b0078822c7edd8mr13718199qkb.5.1710274319269;
+        Tue, 12 Mar 2024 13:11:59 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.8.176])
+        by smtp.gmail.com with ESMTPSA id a23-20020a05620a02f700b0078821519902sm3988608qko.20.2024.03.12.13.11.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 13:11:58 -0700 (PDT)
+Message-ID: <febde3f3-7df6-4c9a-a1b5-0fae92e018df@sifive.com>
+Date: Tue, 12 Mar 2024 15:11:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZfC16BikjhupKnVG@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 2/4] riscv: Include riscv_set_icache_flush_ctx prctl
+Content-Language: en-US
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+ Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Alexandre Ghiti <alex@ghiti.fr>
+References: <20240312-fencei-v12-0-0f340f004ce7@rivosinc.com>
+ <20240312-fencei-v12-2-0f340f004ce7@rivosinc.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240312-fencei-v12-2-0f340f004ce7@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 12, 2024 at 02:07:04PM -0600, Yu Zhao wrote:
-> On Tue, Mar 12, 2024 at 09:44:19AM -0700, Axel Rasmussen wrote:
-> > On Mon, Mar 11, 2024 at 2:11 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > >
-> > > On Sat, Mar 9, 2024 at 3:19 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > > >
-> > > > On Thu, Feb 29, 2024 at 4:30 PM Chris Down <chris@chrisdown.name> wrote:
-> > > > >
-> > > > > Axel Rasmussen writes:
-> > > > > >A couple of dumb questions. In your test, do you have any of the following
-> > > > > >configured / enabled?
-> > > > > >
-> > > > > >/proc/sys/vm/laptop_mode
-> > > > > >memory.low
-> > > > > >memory.min
-> > > > >
-> > > > > None of these are enabled. The issue is trivially reproducible by writing to
-> > > > > any slow device with memory.max enabled, but from the code it looks like MGLRU
-> > > > > is also susceptible to this on global reclaim (although it's less likely due to
-> > > > > page diversity).
-> > > > >
-> > > > > >Besides that, it looks like the place non-MGLRU reclaim wakes up the
-> > > > > >flushers is in shrink_inactive_list() (which calls wakeup_flusher_threads()).
-> > > > > >Since MGLRU calls shrink_folio_list() directly (from evict_folios()), I agree it
-> > > > > >looks like it simply will not do this.
-> > > > > >
-> > > > > >Yosry pointed out [1], where MGLRU used to call this but stopped doing that. It
-> > > > > >makes sense to me at least that doing writeback every time we age is too
-> > > > > >aggressive, but doing it in evict_folios() makes some sense to me, basically to
-> > > > > >copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
-> > > > >
-> > > > > Thanks! We may also need reclaim_throttle(), depending on how you implement it.
-> > > > > Current non-MGLRU behaviour on slow storage is also highly suspect in terms of
-> > > > > (lack of) throttling after moving away from VMSCAN_THROTTLE_WRITEBACK, but one
-> > > > > thing at a time :-)
-> > > >
-> > > >
-> > > > Hmm, so I have a patch which I think will help with this situation,
-> > > > but I'm having some trouble reproducing the problem on 6.8-rc7 (so
-> > > > then I can verify the patch fixes it).
-> > >
-> > > We encountered the same premature OOM issue caused by numerous dirty pages.
-> > > The issue disappears after we revert the commit 14aa8b2d5c2e
-> > > "mm/mglru: don't sync disk for each aging cycle"
-> > >
-> > > To aid in replicating the issue, we've developed a straightforward
-> > > script, which consistently reproduces it, even on the latest kernel.
-> > > You can find the script provided below:
-> > >
-> > > ```
-> > > #!/bin/bash
-> > >
-> > > MEMCG="/sys/fs/cgroup/memory/mglru"
-> > > ENABLE=$1
-> > >
-> > > # Avoid waking up the flusher
-> > > sysctl -w vm.dirty_background_bytes=$((1024 * 1024 * 1024 *4))
-> > > sysctl -w vm.dirty_bytes=$((1024 * 1024 * 1024 *4))
-> > >
-> > > if [ ! -d ${MEMCG} ]; then
-> > >         mkdir -p ${MEMCG}
-> > > fi
-> > >
-> > > echo $$ > ${MEMCG}/cgroup.procs
-> > > echo 1g > ${MEMCG}/memory.limit_in_bytes
-> > >
-> > > if [ $ENABLE -eq 0 ]; then
-> > >         echo 0 > /sys/kernel/mm/lru_gen/enabled
-> > > else
-> > >         echo 0x7 > /sys/kernel/mm/lru_gen/enabled
-> > > fi
-> > >
-> > > dd if=/dev/zero of=/data0/mglru.test bs=1M count=1023
-> > > rm -rf /data0/mglru.test
-> > > ```
-> > >
-> > > This issue disappears as well after we disable the mglru.
-> > >
-> > > We hope this script proves helpful in identifying and addressing the
-> > > root cause. We eagerly await your insights and proposed fixes.
-> > 
-> > Thanks Yafang, I was able to reproduce the issue using this script.
-> > 
-> > Perhaps interestingly, I was not able to reproduce it with cgroupv2
-> > memcgs. I know writeback semantics are quite a bit different there, so
-> > perhaps that explains why.
-> > 
-> > Unfortunately, it also reproduces even with the commit I had in mind
-> > (basically stealing the "if (all isolated pages are unqueued dirty) {
-> > wakeup_flusher_threads(); reclaim_throttle(); }" from
-> > shrink_inactive_list, and adding it to MGLRU's evict_folios()). So
-> > I'll need to spend some more time on this; I'm planning to send
-> > something out for testing next week.
+On 2024-03-12 2:47 PM, Charlie Jenkins wrote:
+> Support new prctl with key PR_RISCV_SET_ICACHE_FLUSH_CTX to enable
+> optimization of cross modifying code. This prctl enables userspace code
+> to use icache flushing instructions such as fence.i with the guarantee
+> that the icache will continue to be clean after thread migration.
 > 
-> Hi Chris,
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/mmu.h       |  2 +
+>  arch/riscv/include/asm/processor.h | 10 ++++
+>  arch/riscv/include/asm/switch_to.h | 23 ++++++++++
+>  arch/riscv/mm/cacheflush.c         | 94 ++++++++++++++++++++++++++++++++++++++
+>  arch/riscv/mm/context.c            | 17 +++++--
+>  include/uapi/linux/prctl.h         |  6 +++
+>  kernel/sys.c                       |  6 +++
+>  7 files changed, 153 insertions(+), 5 deletions(-)
 > 
-> My apologies for not getting back to you sooner.
-> 
-> And thanks everyone for all the input!
-> 
-> My take is that Chris' premature OOM kills were NOT really due to
-> the flusher not waking up or missing throttling.
-> 
-> Yes, these two are among the differences between the active/inactive
-> LRU and MGLRU, but their roles, IMO, are not as important as the LRU
-> positions of dirty pages. The active/inactive LRU moves dirty pages
-> all the way to the end of the line (reclaim happens at the front)
-> whereas MGLRU moves them into the middle, during direct reclaim. The
-> rationale for MGLRU was that this way those dirty pages would still
-> be counted as "inactive" (or cold).
-> 
-> This theory can be quickly verified by comparing how much
-> nr_vmscan_immediate_reclaim grows, i.e.,
-> 
->   Before the copy
->     grep nr_vmscan_immediate_reclaim /proc/vmstat
->   And then after the copy
->     grep nr_vmscan_immediate_reclaim /proc/vmstat
-> 
-> The growth should be trivial for MGLRU and nontrivial for the
-> active/inactive LRU.
-> 
-> If this is indeed the case, I'd appreciate very much if anyone could
-> try the following (I'll try it myself too later next week).
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 4255619a1a31..020f5d98b9a1 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -4273,10 +4273,13 @@ static bool sort_folio(struct lruvec *lruvec, struct folio *folio, struct scan_c
->  	}
+> diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
+> index 355504b37f8e..60be458e94da 100644
+> --- a/arch/riscv/include/asm/mmu.h
+> +++ b/arch/riscv/include/asm/mmu.h
+> @@ -19,6 +19,8 @@ typedef struct {
+>  #ifdef CONFIG_SMP
+>  	/* A local icache flush is needed before user execution can resume. */
+>  	cpumask_t icache_stale_mask;
+> +	/* Force local icache flush on all migrations. */
+> +	bool force_icache_flush;
+>  #endif
+>  #ifdef CONFIG_BINFMT_ELF_FDPIC
+>  	unsigned long exec_fdpic_loadmap;
+> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+> index a8509cc31ab2..cca62013c3c0 100644
+> --- a/arch/riscv/include/asm/processor.h
+> +++ b/arch/riscv/include/asm/processor.h
+> @@ -69,6 +69,7 @@
+>  #endif
 >  
->  	/* waiting for writeback */
-> -	if (folio_test_locked(folio) || folio_test_writeback(folio) ||
-> -	    (type == LRU_GEN_FILE && folio_test_dirty(folio))) {
-> -		gen = folio_inc_gen(lruvec, folio, true);
-> -		list_move(&folio->lru, &lrugen->folios[gen][type][zone]);
-> +	if (folio_test_writeback(folio) || (type == LRU_GEN_FILE && folio_test_dirty(folio))) {
-> +		DEFINE_MAX_SEQ(lruvec);
-> +		int old_gen, new_gen = lru_gen_from_seq(max_seq);
+>  #ifndef __ASSEMBLY__
+> +#include <linux/cpumask.h>
+>  
+>  struct task_struct;
+>  struct pt_regs;
+> @@ -123,6 +124,12 @@ struct thread_struct {
+>  	struct __riscv_v_ext_state vstate;
+>  	unsigned long align_ctl;
+>  	struct __riscv_v_ext_state kernel_vstate;
+> +#ifdef CONFIG_SMP
+> +	/* Flush the icache on migration */
+> +	bool force_icache_flush;
+> +	/* A forced icache flush is not needed if migrating to the previous cpu. */
+> +	unsigned int prev_cpu;
+> +#endif
+>  };
+>  
+>  /* Whitelist the fstate from the task_struct for hardened usercopy */
+> @@ -184,6 +191,9 @@ extern int set_unalign_ctl(struct task_struct *tsk, unsigned int val);
+>  #define GET_UNALIGN_CTL(tsk, addr)	get_unalign_ctl((tsk), (addr))
+>  #define SET_UNALIGN_CTL(tsk, val)	set_unalign_ctl((tsk), (val))
+>  
+> +#define RISCV_SET_ICACHE_FLUSH_CTX(arg1, arg2)	riscv_set_icache_flush_ctx(arg1, arg2)
+> +extern int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long per_thread);
 > +
-> +		old_gen = folio_update_gen(folio, new_gen);
-> +		lru_gen_update_size(lruvec, folio, old_gen, new_gen);
-> +		list_move(&folio->lru, &lrugen->folios[new_gen][type][zone]);
-
-Sorry missing one line here:
-
- +		folio_set_reclaim(folio);
-
->  		return true;
->  	}
+>  #endif /* __ASSEMBLY__ */
 >  
-> > > > If I understand the issue right, all we should need to do is get a
-> > > > slow filesystem, and then generate a bunch of dirty file pages on it,
-> > > > while running in a tightly constrained memcg. To that end, I tried the
-> > > > following script. But, in reality I seem to get little or no
-> > > > accumulation of dirty file pages.
-> > > >
-> > > > I thought maybe fio does something different than rsync which you said
-> > > > you originally tried, so I also tried rsync (copying /usr/bin into
-> > > > this loop mount) and didn't run into an OOM situation either.
-> > > >
-> > > > Maybe some dirty ratio settings need tweaking or something to get the
-> > > > behavior you see? Or maybe my test has a dumb mistake in it. :)
-> > > >
-> > > >
-> > > >
-> > > > #!/usr/bin/env bash
-> > > >
-> > > > echo 0 > /proc/sys/vm/laptop_mode || exit 1
-> > > > echo y > /sys/kernel/mm/lru_gen/enabled || exit 1
-> > > >
-> > > > echo "Allocate disk image"
-> > > > IMAGE_SIZE_MIB=1024
-> > > > IMAGE_PATH=/tmp/slow.img
-> > > > dd if=/dev/zero of=$IMAGE_PATH bs=1024k count=$IMAGE_SIZE_MIB || exit 1
-> > > >
-> > > > echo "Setup loop device"
-> > > > LOOP_DEV=$(losetup --show --find $IMAGE_PATH) || exit 1
-> > > > LOOP_BLOCKS=$(blockdev --getsize $LOOP_DEV) || exit 1
-> > > >
-> > > > echo "Create dm-slow"
-> > > > DM_NAME=dm-slow
-> > > > DM_DEV=/dev/mapper/$DM_NAME
-> > > > echo "0 $LOOP_BLOCKS delay $LOOP_DEV 0 100" | dmsetup create $DM_NAME || exit 1
-> > > >
-> > > > echo "Create fs"
-> > > > mkfs.ext4 "$DM_DEV" || exit 1
-> > > >
-> > > > echo "Mount fs"
-> > > > MOUNT_PATH="/tmp/$DM_NAME"
-> > > > mkdir -p "$MOUNT_PATH" || exit 1
-> > > > mount -t ext4 "$DM_DEV" "$MOUNT_PATH" || exit 1
-> > > >
-> > > > echo "Generate dirty file pages"
-> > > > systemd-run --wait --pipe --collect -p MemoryMax=32M \
-> > > >         fio -name=writes -directory=$MOUNT_PATH -readwrite=randwrite \
-> > > >         -numjobs=10 -nrfiles=90 -filesize=1048576 \
-> > > >         -fallocate=posix \
-> > > >         -blocksize=4k -ioengine=mmap \
-> > > >         -direct=0 -buffered=1 -fsync=0 -fdatasync=0 -sync=0 \
-> > > >         -runtime=300 -time_based
+>  #endif /* _ASM_RISCV_PROCESSOR_H */
+> diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
+> index 7efdb0584d47..7594df37cc9f 100644
+> --- a/arch/riscv/include/asm/switch_to.h
+> +++ b/arch/riscv/include/asm/switch_to.h
+> @@ -8,6 +8,7 @@
+>  
+>  #include <linux/jump_label.h>
+>  #include <linux/sched/task_stack.h>
+> +#include <linux/mm_types.h>
+>  #include <asm/vector.h>
+>  #include <asm/cpufeature.h>
+>  #include <asm/processor.h>
+> @@ -72,14 +73,36 @@ static __always_inline bool has_fpu(void) { return false; }
+>  extern struct task_struct *__switch_to(struct task_struct *,
+>  				       struct task_struct *);
+>  
+> +static inline bool switch_to_should_flush_icache(struct task_struct *task)
+> +{
+> +#ifdef CONFIG_SMP
+> +	bool stale_mm = task->mm && task->mm->context.force_icache_flush;
+> +	bool stale_thread = task->thread.force_icache_flush;
+> +	bool thread_migrated = smp_processor_id() != task->thread.prev_cpu;
+> +
+> +	return thread_migrated && (stale_mm || stale_thread);
+> +#else
+> +	return false;
+> +#endif
+> +}
+> +
+> +#ifdef CONFIG_SMP
+> +#define __set_prev_cpu(thread) ((thread).prev_cpu = smp_processor_id())
+> +#else
+> +#define __set_prev_cpu(thread)
+> +#endif
+> +
+>  #define switch_to(prev, next, last)			\
+>  do {							\
+>  	struct task_struct *__prev = (prev);		\
+>  	struct task_struct *__next = (next);		\
+> +	__set_prev_cpu(__prev->thread);			\
+>  	if (has_fpu())					\
+>  		__switch_to_fpu(__prev, __next);	\
+>  	if (has_vector())					\
+>  		__switch_to_vector(__prev, __next);	\
+> +	if (switch_to_should_flush_icache(__next))	\
+> +		local_flush_icache_all();		\
+>  	((last) = __switch_to(__prev, __next));		\
+>  } while (0)
+>  
+> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+> index 55a34f2020a8..329b95529580 100644
+> --- a/arch/riscv/mm/cacheflush.c
+> +++ b/arch/riscv/mm/cacheflush.c
+> @@ -5,6 +5,7 @@
+>  
+>  #include <linux/acpi.h>
+>  #include <linux/of.h>
+> +#include <linux/prctl.h>
+>  #include <asm/acpi.h>
+>  #include <asm/cacheflush.h>
+>  
+> @@ -152,3 +153,96 @@ void __init riscv_init_cbo_blocksizes(void)
+>  	if (cboz_block_size)
+>  		riscv_cboz_block_size = cboz_block_size;
+>  }
+> +
+> +/**
+> + * riscv_set_icache_flush_ctx() - Enable/disable icache flushing instructions in
+> + * userspace.
+> + * @ctx: Set the type of icache flushing instructions permitted/prohibited in
+> + *	 userspace. Supported values described below.
+> + *
+> + * Supported values for ctx:
+> + *
+> + * * %PR_RISCV_CTX_SW_FENCEI_ON: Allow fence.i in user space.
+> + *
+> + * * %PR_RISCV_CTX_SW_FENCEI_OFF: Disallow fence.i in user space. All threads in
+> + *   a process will be affected when ``scope == PR_RISCV_SCOPE_PER_PROCESS``.
+> + *   Therefore, caution must be taken; use this flag only when you can guarantee
+> + *   that no thread in the process will emit fence.i from this point onward.
+> + *
+> + * @scope: Set scope of where icache flushing instructions are allowed to be
+> + *	   emitted. Supported values described below.
+> + *
+> + * Supported values for scope:
+> + *
+> + * * %PR_RISCV_SCOPE_PER_PROCESS: Ensure the icache of any thread in this process
+> + *                               is coherent with instruction storage upon
+> + *                               migration.
+> + *
+> + * * %PR_RISCV_SCOPE_PER_THREAD: Ensure the icache of the current thread is
+> + *                              coherent with instruction storage upon
+> + *                              migration.
+> + *
+> + * When ``scope == PR_RISCV_SCOPE_PER_PROCESS``, all threads in the process are
+> + * permitted to emit icache flushing instructions. Whenever any thread in the
+> + * process is migrated, the corresponding hart's icache will be guaranteed to be
+> + * consistent with instruction storage. This does not enforce any guarantees
+> + * outside of migration. If a thread modifies an instruction that another thread
+> + * may attempt to execute, the other thread must still emit an icache flushing
+> + * instruction before attempting to execute the potentially modified
+> + * instruction. This must be performed by the user-space program.
+> + *
+> + * In per-thread context (eg. ``scope == PR_RISCV_SCOPE_PER_THREAD``) only the
+> + * thread calling this function is permitted to emit icache flushing
+> + * instructions. When the thread is migrated, the corresponding hart's icache
+> + * will be guaranteed to be consistent with instruction storage.
+> + *
+> + * On kernels configured without SMP, this function is a nop as migrations
+> + * across harts will not occur.
+> + */
+> +int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long scope)
+> +{
+> +#ifdef CONFIG_SMP
+> +	switch (ctx) {
+> +	case PR_RISCV_CTX_SW_FENCEI_ON:
+> +		switch (scope) {
+> +		case PR_RISCV_SCOPE_PER_PROCESS:
+> +			current->mm->context.force_icache_flush = true;
+> +			break;
+> +		case PR_RISCV_SCOPE_PER_THREAD:
+> +			current->thread.force_icache_flush = true;
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +		break;
+> +	case PR_RISCV_CTX_SW_FENCEI_OFF:
+> +		switch (scope) {
+> +		case PR_RISCV_SCOPE_PER_PROCESS:
+> +		case PR_RISCV_SCOPE_PER_THREAD:
+> +			bool stale_cpu;
+> +			cpumask_t *mask;
+> +
+> +			current->mm->context.force_icache_flush = false;
+
+You still need (at least partially) separate logic for the two scopes, because
+now you're resetting the wrong flag here.
+
+> +
+> +			/*
+> +			 * Mark every other hart's icache as needing a flush for
+> +			 * this MM. Maintain the previous value of the current
+> +			 * cpu to handle the case when this function is called
+> +			 * concurrently on different harts.
+> +			 */
+> +			mask = &current->mm->context.icache_stale_mask;
+> +			stale_cpu = cpumask_test_cpu(smp_processor_id(), mask);
+> +
+> +			cpumask_setall(mask);
+> +			assign_bit(cpumask_check(smp_processor_id()), cpumask_bits(mask), stale_cpu);
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +#endif
+> +	return 0;
+
+I think I brought this up a couple of revisions ago (sorry for not mentioning it
+the last time), but you still need parameter validation for CONFIG_SMP=n. Yes,
+the call is currently a no-op for the combinations of ctx and scope defined so
+far, but if we ever add a new ctx (say, something for Zjid), it may need to do
+something on CONFIG_SMP=n, and older kernels will need to indicate that the new
+ctx is not supported.
+
+> +}
+> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
+> index 217fd4de6134..3e27e5c8c3c6 100644
+> --- a/arch/riscv/mm/context.c
+> +++ b/arch/riscv/mm/context.c
+> @@ -15,6 +15,7 @@
+>  #include <asm/tlbflush.h>
+>  #include <asm/cacheflush.h>
+>  #include <asm/mmu_context.h>
+> +#include <asm/switch_to.h>
+>  
+>  #ifdef CONFIG_MMU
+>  
+> @@ -297,21 +298,27 @@ static inline void set_mm(struct mm_struct *prev,
+>   *
+>   * The "cpu" argument must be the current local CPU number.
+>   */
+> -static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu)
+> +static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu,
+> +					 struct task_struct *task)
+>  {
+>  #ifdef CONFIG_SMP
+>  	cpumask_t *mask = &mm->context.icache_stale_mask;
+>  
+> -	if (cpumask_test_cpu(cpu, mask)) {
+> +	if (cpumask_test_and_clear_cpu(cpu, mask)) {
+>  		cpumask_clear_cpu(cpu, mask);
+
+Now that you only have one mask, this is clearing the same bit twice.
+
+Regards,
+Samuel
+
+> +
+>  		/*
+>  		 * Ensure the remote hart's writes are visible to this hart.
+>  		 * This pairs with a barrier in flush_icache_mm.
+>  		 */
+>  		smp_mb();
+> -		local_flush_icache_all();
+> -	}
+>  
+> +		/*
+> +		 * If cache will be flushed in switch_to, no need to flush here.
+> +		 */
+> +		if (!(task && switch_to_should_flush_icache(task)))
+> +			local_flush_icache_all();
+> +	}
+>  #endif
+>  }
+>  
+> @@ -332,5 +339,5 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+>  
+>  	set_mm(prev, next, cpu);
+>  
+> -	flush_icache_deferred(next, cpu);
+> +	flush_icache_deferred(next, cpu, task);
+>  }
+> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+> index 370ed14b1ae0..524d546d697b 100644
+> --- a/include/uapi/linux/prctl.h
+> +++ b/include/uapi/linux/prctl.h
+> @@ -306,4 +306,10 @@ struct prctl_mm_map {
+>  # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
+>  # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
+>  
+> +#define PR_RISCV_SET_ICACHE_FLUSH_CTX	71
+> +# define PR_RISCV_CTX_SW_FENCEI_ON	0
+> +# define PR_RISCV_CTX_SW_FENCEI_OFF	1
+> +# define PR_RISCV_SCOPE_PER_PROCESS	0
+> +# define PR_RISCV_SCOPE_PER_THREAD	1
+> +
+>  #endif /* _LINUX_PRCTL_H */
+> diff --git a/kernel/sys.c b/kernel/sys.c
+> index e219fcfa112d..69afdd8b430f 100644
+> --- a/kernel/sys.c
+> +++ b/kernel/sys.c
+> @@ -146,6 +146,9 @@
+>  #ifndef RISCV_V_GET_CONTROL
+>  # define RISCV_V_GET_CONTROL()		(-EINVAL)
+>  #endif
+> +#ifndef RISCV_SET_ICACHE_FLUSH_CTX
+> +# define RISCV_SET_ICACHE_FLUSH_CTX(a, b)	(-EINVAL)
+> +#endif
+>  
+>  /*
+>   * this is where the system-wide overflow UID and GID are defined, for
+> @@ -2743,6 +2746,9 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+>  	case PR_RISCV_V_GET_CONTROL:
+>  		error = RISCV_V_GET_CONTROL();
+>  		break;
+> +	case PR_RISCV_SET_ICACHE_FLUSH_CTX:
+> +		error = RISCV_SET_ICACHE_FLUSH_CTX(arg2, arg3);
+> +		break;
+>  	default:
+>  		error = -EINVAL;
+>  		break;
+> 
+
 
