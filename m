@@ -1,193 +1,208 @@
-Return-Path: <linux-kernel+bounces-100478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB759879868
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:56:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62B6487986D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:57:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 449571F22F4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:56:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 864091C21295
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35ADD7D079;
-	Tue, 12 Mar 2024 15:56:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868CC7E572;
+	Tue, 12 Mar 2024 15:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Qqn0s1fr"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MDJEwM1j"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8898956B92;
-	Tue, 12 Mar 2024 15:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710259003; cv=fail; b=dCVgz8wG4R5C9FPQQ2xzk9oUl5E0nKjF/TJwhr0I++ulUYdaye5Iu0G//tYrrjYIRYz84tTiqIqkaPKZYaaUJNWY1cUCITFqZ5+ngpfMqeHOG4YLLKJHWlXnIFsXQ6lcUmgAYEPd0gbXmXqCdh2UK71F/5ar/GNLI3IskpMVePs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710259003; c=relaxed/simple;
-	bh=UsJft2GAt6Jn+wVWP0Od3JiQkhmwuf8H8R6gRsbbB8c=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Jo+R04OxHr6z3FhmIaaXc5p4EiM1NCMKu1Z8C8/WyRzjS/0ov3Eb73nUgQdhdrsEMBpUYNupVZS7rl0okWtojtmvkPuyeU6RR5/PrsRxHnMx+n5y/8Jo4JXbvGzsps5yGPemqAx2zXM0njPOMM7oc158W/Y51IsxbI9nVPu+Zj4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Qqn0s1fr; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JuLir4T5Rjv6TqkxqkmHcPsbVwQfxhZmEX8ssdmh9TaGUaxqTVv7yaYDnZUkqePkuevUbt2C+JQ5fJlLKeL5cjoAh4hKvB1yTenHcJrQhJ9De8HPH47Tx96HDPgilfzeHLsl1pYLfGgfBHDCOnRy2tw7/O221taqNUG2fHq8dF+VaCOVRGnt0XNs3jequsUMKNSYoo82LALrxlvubd7s/TZkKLaiNQUzSthaWt+/h+/6Bxc23K7ZEK9+L95kW+QPUOjlQM0/OEB5JbXemVdyPDXjTRztLcPzTXrDrn/crUk19Ady/a0wq4k8DaqhYo/sv3T+hbdOJI3OzMuU5klY+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UsJft2GAt6Jn+wVWP0Od3JiQkhmwuf8H8R6gRsbbB8c=;
- b=U0Xx1ONn2frjYMpgtCM8HMyluZg76Y2MSEPtvvLOcUOfWEMaf8TWEAdpUloN/IfQOs0EyuOpkRMPoAVciiL1eDDoLPYTplajT5Nm7Y7rNgt4SUfka7oYGSkOvzV0PgW1NmHQotnrx3h3oi2/KLZ/5DcqhdAf6r4lC+wsd5S6tLusA3N89rla2d9dUsDj5THPtkb7JL44f2OB/I5KE5LSORgARxOLE6V5XnjT3nHllN/gihvDWIQFRVS1GcC0uM3FEGdI4/njC3/1xioNHAXiIZWTZhrFj9DuAONtuK4OTPlgvnWnZzMGYWSC19eFx7MGnok1Oo2L+Wxz/VKqS+k8Lg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UsJft2GAt6Jn+wVWP0Od3JiQkhmwuf8H8R6gRsbbB8c=;
- b=Qqn0s1frkzygN9fscOrGGSHMQc4yRxb+n1yvD+72Hu0BQCEEtO/wNe3grm/WL2Rg6BvRIUYkfmydI/9yOXk55hQIfKpKVSeFQZxHD1Dr81STmHWuqhQuK2iE1BIl0T3atnXM/yOVIVwmPiFV/hUgCuu7bk5yRj+ixd8P4SnUi7A=
-Received: from BL1PR12MB5969.namprd12.prod.outlook.com (2603:10b6:208:398::7)
- by SA1PR12MB6823.namprd12.prod.outlook.com (2603:10b6:806:25e::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.34; Tue, 12 Mar
- 2024 15:56:34 +0000
-Received: from BL1PR12MB5969.namprd12.prod.outlook.com
- ([fe80::8bcc:8c11:788a:cab7]) by BL1PR12MB5969.namprd12.prod.outlook.com
- ([fe80::8bcc:8c11:788a:cab7%2]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
- 15:56:34 +0000
-From: "Sagar, Vishal" <vishal.sagar@amd.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	"laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>,
-	"vkoul@kernel.org" <vkoul@kernel.org>
-CC: "Simek, Michal" <michal.simek@amd.com>, "dmaengine@vger.kernel.org"
-	<dmaengine@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "Allagadapa, Varunkumar"
-	<varunkumar.allagadapa@amd.com>
-Subject: RE: [PATCH v2 1/2] dmaengine: xilinx: dpdma: Fix race condition in
- vsync IRQ
-Thread-Topic: [PATCH v2 1/2] dmaengine: xilinx: dpdma: Fix race condition in
- vsync IRQ
-Thread-Index: AQHaaf22nCsgjQLFTE6eYqZBPR6lr7Ez2/MAgAB6KAA=
-Date: Tue, 12 Mar 2024 15:56:34 +0000
-Message-ID:
- <BL1PR12MB59698B0B4AC963EED60C3C479C2B2@BL1PR12MB5969.namprd12.prod.outlook.com>
-References: <20240228042124.3074044-1-vishal.sagar@amd.com>
- <20240228042124.3074044-2-vishal.sagar@amd.com>
- <b08c99fe-c221-4eb8-9b1a-1420cb5c32f3@ideasonboard.com>
-In-Reply-To: <b08c99fe-c221-4eb8-9b1a-1420cb5c32f3@ideasonboard.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=0ae05992-43d6-4d8e-85da-d9dc5973c331;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-03-12T15:50:45Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR12MB5969:EE_|SA1PR12MB6823:EE_
-x-ms-office365-filtering-correlation-id: 014cf883-3e5e-47d6-f101-08dc42acfe5c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- MqtvVyhou5bW+Z+YO7/S5rUETtZDELMaP1maCo+31KAtFYDbnMXDrXqxEFQ4XvDopIXsVi9PCugwfsU2GkwdJgzwZ4s3hZchi/vT+STjgeXIcg7Jv+nmo7DDZbA9kTDvWkwC87DSy9AXuYJvgaegFQfycQrpOj+54LV3uhGIRoQYMcouzgkwBV5KMvQ1QOSqZ206VTetXPDt0HKqNJGVCuDKZGeSk/QLrsrmjMRE7kmx8PNp3Gy+Ob2paDUnf3RtkiEklTg6/QGc2Z7rDNQ/YD8XaqSnG/uMp3pcUqyuBNCQ4uEv9U9rXkI8Ml3+bLgC8QmjkKs8VzCv5qhh9wfYnKkETqILXrl517llFabD8c3mZsUsYC/PLPTlk/5xFMKQdWrMmo48aupO3Dvncuzj00gggA1Hmra7wvBCihzOazCOod8BvG4DXpyTicVBBurjdk161slnxmzf2s0MJ7UhBsNV6ZNUtpATaw3G1KoU9945TdhppW0AtGctNtGch2FcE0VkAfmQ23kiKll9SS5VxW/W2Lm2rQJxzmxwhAMOlocMcEZeUv8RTI1Pq0pUxqO8v1vvlIfsZhDZPYKKlbAPUMUF9jE/h+1n6bfeWlEk7cY4cJ4Sp/fMa1wOAd6TvxMyooKkt4oTLjpDkkgOzYM+spV/AZbXjMXkrsTXm4+KMAA=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5969.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?Y3o2T3JuVklMN1hCTUNDbDc0T05MZ29PYnE0Z204NzVxeW9LQU1WbHVXN2lk?=
- =?utf-8?B?RTVGWGJJd0dtWHJPRlpsWVpTenVaZkRHUE5ydVdkaDdDdFk0bmxxWmhTNU1a?=
- =?utf-8?B?bVp1cGlSS3dpQ1ZlMzhqWE94L2JmTVB4TWxaREEzUzMxdG0wRm9EdU9oQXVs?=
- =?utf-8?B?cDJ2ZS9aRjdnazVlZDk4c2ZjVGE0UklacThqS1VtUmhMMDUrTXBmNzhCRjdo?=
- =?utf-8?B?bDBGNzBBcVowOFlqRjluOTUrUG1JNDA3V0JFaFFnSHp5a2lpRGpiZENGLzFE?=
- =?utf-8?B?ekhJQmRHb2tFZEJSN1NrWHRZQlNPODZTbXUxVk9PTlZRRHNmRm13YmZFS0RE?=
- =?utf-8?B?QnhLMU1MRzlzUDlFZ2tqd3hLZTJxdzRLZlArRTlMN2x3WmRrNEpXZEk1SWp4?=
- =?utf-8?B?UWxDQTZ4VVY2NTErcjF0bTJ6WjY5cEo1K1VidGMzTEtoZXFCeEhEYjVwVXhL?=
- =?utf-8?B?b0dpUGlPcm4xdFZ1SnZtd004VmZDZGdHR3hFRkp2ZnlFU0FCZksvS01qR2Fx?=
- =?utf-8?B?MHRuL2xhWlJaZitKa3JSYlpkWEpGcEtFYkh6dmUrT01kcVJ4TEMvYmw4VE01?=
- =?utf-8?B?YjJsUFNQN3puMGR1LytXVGhJS2ZNMWt0Y0pwelJodkltdXJERDJRbDdxTDU5?=
- =?utf-8?B?eU9YMCtNY2RxVWo3bERiUGdPQ3N0ZGFCYWVVYlVSWk5vSitWNWdhNERUcnYz?=
- =?utf-8?B?RVBSQmFPTEpBTlhrSG95TU9hV1phY1UvZ3RmTzc2ckk5S1VMd3o3K2Zjb1Fh?=
- =?utf-8?B?cm9aQ2szQlpCNVpseUowMk1FSzVVZkFDd1Y2RndWL0padGdzY3hnSW1QMS9G?=
- =?utf-8?B?bFlqV3dHaWxLWkpNaGVQc0Z2bUQwMml6eEc4VjNDaW90ZDA5R0ZTK3dIOVkz?=
- =?utf-8?B?WUhhUjd4REsrVGFRZVRZb3FjbHpzandmbFQyTmJYSCtlV0hVT0gza2tDa0F0?=
- =?utf-8?B?cWsyTkN0dVk2MjdSMWlVM3JSRDFrK1FoOFBINDczL0NLK1NpZG5wQ2hDNWFq?=
- =?utf-8?B?K3hGUml1dm50OFNXbUpadkVOV1Y3TlVrNHUvZlc5THFGRUFWQjgvSlFtSXQ4?=
- =?utf-8?B?cWZmVlFSTkFaeWhTTUJDK2JlUUFqbjFXb1duK3FZTHZ0K3I3eENJUVord1Jj?=
- =?utf-8?B?dkl0SWZJUURLUmdqbWQxWWc2TEJocWZ3bDV1bVp1T1ZGRFcyVEQvM2tJMzdK?=
- =?utf-8?B?S2RRSnVqYWE5SHVDNDR2Zm5lUzBuRExiWEd0Y0RVL0VBaHVkckJ4Sk5tc0V1?=
- =?utf-8?B?Y25FWCtlWS9tUi9CMWZ3Z1NFZS9TRmp2aEFsZTZVZHA3M3lYUHV5UVVzMGpN?=
- =?utf-8?B?VjMxci9KTjVKamd5KytyTjZqdXIzaG9QV3VpM0ZabmZxR0pFcDBmQmRqN2Qr?=
- =?utf-8?B?RGRxWFVxL2FFQ1BUazRNZDZEczRaYVN2YnVOVVhpNVkrRjNHWjVJeWFmL2U0?=
- =?utf-8?B?aXRhdUZtQnBEN2ZzL0U4SVJhejZZazNORk15bzRNSm01RWhKdEhYRDYwdURJ?=
- =?utf-8?B?SnBRdGpWbXZTbjZ3ZG5PQlVsNXVCanlUTzNCYzRWRFluWG1YMHU0UnR4aTBW?=
- =?utf-8?B?VE9wL3E2MGZseWpnVzdBdXhnb1RWS2xZbG9kT2ZqVFA5NVBGU1dpWXRqOXpR?=
- =?utf-8?B?NTJIZW9YWHk0d09BV3RTZ25rZjBHdk5PQm5LcWFGa2JOeE5XWjVCd2UzazdF?=
- =?utf-8?B?ME53cmJWM3NXUllsdkZxY1kwa1FTYnRtMEdnWVpXdVg4RXByNnlpNHJpTllr?=
- =?utf-8?B?RHFVdytYWHNVZjNYYzlHYXJydXFtZ3V4N2dnaGI5MmtEZFZlbysxaTRFQXdq?=
- =?utf-8?B?dEpRRUJ1S1ZTZ0F4bnlHK0ppWDIwc01uN1BkcU9JNW8zc2NsQjB2K0pqWFlL?=
- =?utf-8?B?NUQvaWs4U0w2d2plYXlBT1l4M3NBNXZ3ZkNBeTRHTXZjN3JZL3JJMm4yUkdq?=
- =?utf-8?B?WkJ1SU5JV0M3UWJxaExFL1lLSitFa1hKWThhZktDWkVoUFhteW5pT1dvOHNV?=
- =?utf-8?B?eEt4TEhKcDE3TE5JSVBCNTVZNzRwc2cyWDRhZThoalNXbGI5V3Yxdm1wbG90?=
- =?utf-8?B?eHhnQ3MrL0I1Y2djMnNrMVBnV1o0c3pvdFJPdGV5MmFNT3M2VGJXWnVNb0hy?=
- =?utf-8?Q?lx/M=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7A258AD4
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:56:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710259013; cv=none; b=FRKF2cp6cI44a4s3yqM5zQTXTbhypKBLUd3Rp2abSAv2Z0mquozxQ8GKhwi62jRNfVsXoX2VbzDdfvTxgR3xOOD6K1CnLDZRIqFbAMkPZCpfcZ6ho5vBpHXvgxdSJMQGFlcX4VF6zLNbRzih4HWaHh3fNgAmG01IxP9n32t6Kag=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710259013; c=relaxed/simple;
+	bh=Tt+QKLROjKedEr90kK6xMJjCGHQglvwoFJENFv8MOhY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=S90kXunlSBGcP+VZT86HuWV1U1VzU3f+BD1arjz+z0GqLacjT/mMBtJ+8jP2Z1Mxe1PWn+yKoDR/uq/GWDjDxOO5ANhUzQWzYj6svbnf5ipE+yL0FJsQlZ1D+3Drydktc8bbESrFsYRuLjEKsc4D/u93LxiV8YxyVn+TBGL0viM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MDJEwM1j; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dce775fa8adso9791484276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 08:56:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710259011; x=1710863811; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Utpo4un8WURVOryq3iaezlwySVNXykpwBlPdcQcpqSc=;
+        b=MDJEwM1j5HM8whxgMQJ80QlLe5ehsfJmGXe6qwbJDC9tGyNpvVrS/5w2On9w0sPFJL
+         hCjUMvXt7gAFQlxu0FwAIlp6xZTXHZL8KcvAgGgS3w4ZqOZzLgnB6vQQSfyCZQx0Ojrn
+         WwOAg4mhgG2zVk7p2nDZHH8FjUzomITzKCw5iBg+A5gbWYQy0l1nR2JTxAP6CwM0Wkdg
+         wbOaSjdJ40nBpNOY1PIBC+m+7NvwoTHcSQgJrbxI5a1HulVt6oX38nKL7IXm8Du/GSdY
+         QKWJ/aZexZEbN08C75U444TFDS0bJLLJr5g+uDAaR7k8i8zHMRI97ZX17EEqbmT8idln
+         nSXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710259011; x=1710863811;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Utpo4un8WURVOryq3iaezlwySVNXykpwBlPdcQcpqSc=;
+        b=RNmkAUXPFSidvGBE6wUGIeCkNrNiDsrQcp/xnZumUVGn8gyiC2lAC+3HGxztsYfAef
+         RSZF/Ctk7FP9x/G05nhPMHcWtYiA8rjO73if3c9tO1i6QEodK2BjzIOwbhjhJNaT9q6O
+         hT5LXHhVS2gsxejvRGUSH4rjLMM8ezFbIWc0/gz0rBbqJ0kLMKTvEsjkMrvibGWzbvvF
+         wDYC7IxoSMaF7tjvjOND3i+wGRPE0xmwPfXNvdbo0oOxhV9SVBOF6o8aaDcASaiq5hOL
+         jnfgWkCZIB8zhV9Er8ruHb4a1Pbxrk6bcdMr3snZYJQHITgZxxytBxnIh3Z+Pi4HjqTo
+         pOSw==
+X-Forwarded-Encrypted: i=1; AJvYcCWH9avVWyBAkDVwIhY1dKnnFf9IdS8OZIne8A8MzCZau80wUWV+2c7UF+rp/opEpl0mpqlw8Cm3gpwmsT3mvdGHwBgpP22HVQlLrFL5
+X-Gm-Message-State: AOJu0Ywsjxi76eGBlYKU6gPolZCvn2tva9KOnt/pqQu0YqXP8ip01H3Q
+	OFNGbxBf4IiXzhzI789F7FzwHmQFho/GxXanus0ddlxu08vmDNFgorsnHGObSTlXZWSpn0jGOef
+	UeOQu1OSVs1RNEdwe+g==
+X-Google-Smtp-Source: AGHT+IFTM3Svt5aG2KDAZZ5idfNa42+hKp13eDZYuCEzCHp68sCT3zJVywoPrbfqfLH7MdR0l2OCOvYs3V662FOa
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:10c2:b0:dc6:e1ed:bd1a with
+ SMTP id w2-20020a05690210c200b00dc6e1edbd1amr2596454ybu.2.1710259011049; Tue,
+ 12 Mar 2024 08:56:51 -0700 (PDT)
+Date: Tue, 12 Mar 2024 15:56:39 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5969.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 014cf883-3e5e-47d6-f101-08dc42acfe5c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2024 15:56:34.9034
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QNWGMiLxL7vujw5uK0etJE76eYyX8iAlxsrLqElDyF0IKHKWG654M6P4X2OqjUcZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6823
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240312155641.4003683-1-yosryahmed@google.com>
+Subject: [PATCH v2 1/3] x86/mm: Use IPIs to synchronize LAM enablement
+From: Yosry Ahmed <yosryahmed@google.com>
+To: x86@kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNCkhpIFRvbWksDQoNCj4gLS0tLS1P
-cmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVG9taSBWYWxrZWluZW4gPHRvbWkudmFsa2Vp
-bmVuQGlkZWFzb25ib2FyZC5jb20+DQo+IFNlbnQ6IFR1ZXNkYXksIE1hcmNoIDEyLCAyMDI0IDE6
-MzQgQU0NCj4gVG86IFNhZ2FyLCBWaXNoYWwgPHZpc2hhbC5zYWdhckBhbWQuY29tPjsNCj4gbGF1
-cmVudC5waW5jaGFydEBpZGVhc29uYm9hcmQuY29tOyB2a291bEBrZXJuZWwub3JnDQo+IENjOiBT
-aW1laywgTWljaGFsIDxtaWNoYWwuc2ltZWtAYW1kLmNvbT47IGRtYWVuZ2luZUB2Z2VyLmtlcm5l
-bC5vcmc7DQo+IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZzsNCj4gQWxsYWdhZGFwYSwgVmFydW5rdW1hciA8dmFydW5rdW1h
-ci5hbGxhZ2FkYXBhQGFtZC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMS8yXSBkbWFl
-bmdpbmU6IHhpbGlueDogZHBkbWE6IEZpeCByYWNlIGNvbmRpdGlvbiBpbg0KPiB2c3luYyBJUlEN
-Cj4NCj4gSGksDQo+DQo+IE9uIDI4LzAyLzIwMjQgMDY6MjEsIFZpc2hhbCBTYWdhciB3cm90ZToN
-Cj4gPiBGcm9tOiBOZWVsIEdhbmRoaSA8bmVlbC5nYW5kaGlAeGlsaW54LmNvbT4NCj4gPg0KPiA+
-IFRoZSB2Y2hhbl9uZXh0X2Rlc2MoKSBmdW5jdGlvbiwgY2FsbGVkIGZyb20NCj4gPiB4aWxpbnhf
-ZHBkbWFfY2hhbl9xdWV1ZV90cmFuc2ZlcigpLCBtdXN0IGJlIGNhbGxlZCB3aXRoDQo+ID4gdmly
-dF9kbWFfY2hhbi5sb2NrIGhlbGQuIFRoaXMgaXNuJ3QgY29ycmVjdGx5IGhhbmRsZWQgaW4gYWxs
-IGNvZGUgcGF0aHMsDQo+ID4gcmVzdWx0aW5nIGluIGEgcmFjZSBjb25kaXRpb24gYmV0d2VlbiB0
-aGUgLmRldmljZV9pc3N1ZV9wZW5kaW5nKCkNCj4gPiBoYW5kbGVyIGFuZCB0aGUgSVJRIGhhbmRs
-ZXIgd2hpY2ggY2F1c2VzIERNQSB0byByYW5kb21seSBzdG9wLiBGaXggaXQgYnkNCj4gPiB0YWtp
-bmcgdGhlIGxvY2sgYXJvdW5kIHhpbGlueF9kcGRtYV9jaGFuX3F1ZXVlX3RyYW5zZmVyKCkgY2Fs
-bHMgdGhhdCBhcmUNCj4gPiBtaXNzaW5nIGl0Lg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogTmVl
-bCBHYW5kaGkgPG5lZWwuZ2FuZGhpQGFtZC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogUmFkaGV5
-IFNoeWFtIFBhbmRleSA8cmFkaGV5LnNoeWFtLnBhbmRleUBhbWQuY29tPg0KPiA+IFNpZ25lZC1v
-ZmYtYnk6IFRvbWkgVmFsa2VpbmVuIDx0b21pLnZhbGtlaW5lbkBpZGVhc29uYm9hcmQuY29tPg0K
-PiA+IFNpZ25lZC1vZmYtYnk6IFZpc2hhbCBTYWdhciA8dmlzaGFsLnNhZ2FyQGFtZC5jb20+DQo+
-ID4NCj4gPiBMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMjAxMjIxMjE0MDcu
-MTE0NjctMS0NCj4gbmVlbC5nYW5kaGlAeGlsaW54LmNvbQ0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVy
-cy9kbWEveGlsaW54L3hpbGlueF9kcGRtYS5jIHwgMTAgKysrKysrKystLQ0KPiA+ICAgMSBmaWxl
-IGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4NCj4gVGhpcyBmaXhl
-cyBhIGxvY2tkZXAgd2FybmluZzoNCj4NCj4gV0FSTklORzogQ1BVOiAxIFBJRDogNDY2IGF0IGRy
-aXZlcnMvZG1hL3hpbGlueC94aWxpbnhfZHBkbWEuYzo4MzQNCj4NCj4gQWZhaWNzLCB0aGlzIGlz
-c3VlIGhhcyBiZWVuIGFyb3VuZCBzaW5jZSB0aGUgaW5pdGlhbCBjb21taXQsIGluIHY1LjEwLA0K
-PiBhbmQgdGhlIGZpeCBhcHBsaWVzIG9uIHRvcCBvZiB2NS4xMC4gSSBoYXZlIHRlc3RlZCB0aGlz
-IG9uIHY2LjIsIHdoaWNoDQo+IGlzIHdoZXJlIHRoZSBEUCBzdXBwb3J0IHdhcyBhZGRlZCB0byB0
-aGUgYm9hcmQgSSBoYXZlLg0KPg0KPiBTbyBJIHRoaW5rIHlvdSBjYW4gYWRkOg0KPg0KPiBGaXhl
-czogN2NiYjBjNjNkZTNmICgiZG1hZW5naW5lOiB4aWxpbng6IGRwZG1hOiBBZGQgdGhlIFhpbGlu
-eA0KPiBEaXNwbGF5UG9ydCBETUEgZW5naW5lIGRyaXZlciIpDQo+DQo+ICAgVG9taQ0KPg0KDQo8
-c25pcD4NCg0KVGhhbmtzIGZvciBnb2luZyB0aHJvdWdoIHRoZSBwYXRjaC4NCkkgd2lsbCBhZGQg
-dGhpcyB0byB0aGUgY29tbWl0IG1lc3NhZ2UgYW5kIHJlc2VuZCB2My4NCkkgYW0gc3RpbGwgd2Fp
-dGluZyBmb3IgbW9yZSByZXZpZXdzIHRvIGhhcHBlbi4NCg0KUmVnYXJkcw0KVmlzaGFsIFNhZ2Fy
-DQo=
+LAM can only be enabled when a process is single-threaded.  But _kernel_
+threads can temporarily use a single-threaded process's mm.
+
+If LAM is enabled by a userspace process while a kthread is using its
+mm, the kthread will not observe LAM enablement (i.e.  LAM will be
+disabled in CR3). This could be fine for the kthread itself, as LAM only
+affects userspace addresses. However, if the kthread context switches to
+a thread in the same userspace process, CR3 may or may not be updated
+because the mm_struct doesn't change (based on pending TLB flushes). If
+CR3 is not updated, the userspace thread will run incorrectly with LAM
+disabled, which may cause page faults when using tagged addresses.
+Example scenario:
+
+CPU 1                                   CPU 2
+/* kthread */
+kthread_use_mm()
+                                        /* user thread */
+                                        prctl_enable_tagged_addr()
+                                        /* LAM enabled on CPU 2 */
+/* LAM disabled on CPU 1 */
+                                        context_switch() /* to CPU 1 */
+/* Switching to user thread */
+switch_mm_irqs_off()
+/* CR3 not updated */
+/* LAM is still disabled on CPU 1 */
+
+Synchronize LAM enablement by sending an IPI from
+prctl_enable_tagged_addr() to all CPUs running with the mm_struct to
+enable LAM. This makes sure LAM is enabled on CPU 1 in the above
+scenario before prctl_enable_tagged_addr() returns and userspace starts
+using tagged addresses, and before it's possible to run the userspace
+process on CPU 1.
+
+In switch_mm_irqs_off(), move reading the LAM mask until after
+mm_cpumask() is updated. This ensures that if an outdated LAM mask is
+written to CR3, an IPI is received to update it right after IRQs are
+re-enabled.
+
+Fixes: 82721d8b25d7 ("x86/mm: Handle LAM on context switch")
+Suggested-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+---
+
+v1 -> v2:
+- Defer dereferences in enable_lam_func() until after we check
+  cpu_tlbstate.loaded_mm.
+- Collect Rbs.
+
+---
+ arch/x86/kernel/process_64.c | 13 +++++++++++--
+ arch/x86/mm/tlb.c            |  7 +++----
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 33b268747bb7b..76e91fc68c5f3 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -750,6 +750,16 @@ static long prctl_map_vdso(const struct vdso_image *image, unsigned long addr)
+ 
+ #define LAM_U57_BITS 6
+ 
++static void enable_lam_func(void *__mm)
++{
++	struct mm_struct *mm = __mm;
++
++	if (this_cpu_read(cpu_tlbstate.loaded_mm) == mm) {
++		write_cr3(__read_cr3() | mm->context.lam_cr3_mask);
++		set_tlbstate_lam_mode(mm);
++	}
++}
++
+ static int prctl_enable_tagged_addr(struct mm_struct *mm, unsigned long nr_bits)
+ {
+ 	if (!cpu_feature_enabled(X86_FEATURE_LAM))
+@@ -782,8 +792,7 @@ static int prctl_enable_tagged_addr(struct mm_struct *mm, unsigned long nr_bits)
+ 		return -EINVAL;
+ 	}
+ 
+-	write_cr3(__read_cr3() | mm->context.lam_cr3_mask);
+-	set_tlbstate_lam_mode(mm);
++	on_each_cpu_mask(mm_cpumask(mm), enable_lam_func, mm, true);
+ 	set_bit(MM_CONTEXT_LOCK_LAM, &mm->context.flags);
+ 
+ 	mmap_write_unlock(mm);
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 5768d386efab6..e8feb2e154db2 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -497,9 +497,9 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ {
+ 	struct mm_struct *real_prev = this_cpu_read(cpu_tlbstate.loaded_mm);
+ 	u16 prev_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
+-	unsigned long new_lam = mm_lam_cr3_mask(next);
+ 	bool was_lazy = this_cpu_read(cpu_tlbstate_shared.is_lazy);
+ 	unsigned cpu = smp_processor_id();
++	unsigned long new_lam;
+ 	u64 next_tlb_gen;
+ 	bool need_flush;
+ 	u16 new_asid;
+@@ -622,9 +622,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ 			cpumask_clear_cpu(cpu, mm_cpumask(real_prev));
+ 		}
+ 
+-		/*
+-		 * Start remote flushes and then read tlb_gen.
+-		 */
++		/* Start receiving IPIs and then read tlb_gen (and LAM below) */
+ 		if (next != &init_mm)
+ 			cpumask_set_cpu(cpu, mm_cpumask(next));
+ 		next_tlb_gen = atomic64_read(&next->context.tlb_gen);
+@@ -636,6 +634,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ 		barrier();
+ 	}
+ 
++	new_lam = mm_lam_cr3_mask(next);
+ 	set_tlbstate_lam_mode(next);
+ 	if (need_flush) {
+ 		this_cpu_write(cpu_tlbstate.ctxs[new_asid].ctx_id, next->context.ctx_id);
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
