@@ -1,145 +1,230 @@
-Return-Path: <linux-kernel+bounces-100427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 769FE879769
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EF1887976C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C3CC283CC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:22:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 542A028114C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214207CF01;
-	Tue, 12 Mar 2024 15:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF09C7C6D2;
+	Tue, 12 Mar 2024 15:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P1sGbSfh"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jOcCkFbf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43B97C091
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C787C0A3;
+	Tue, 12 Mar 2024 15:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710256905; cv=none; b=qgFwdOLC/VlMtQSfM1xUHpX9FktvFHbCgn8SAfqflj7HRaVl1vnf0Mpax5GxbhR99JvDme8gbTo+m8gzStswllBzVgZL98aPpApVkFyIMeC1nVACiucNMvfM/bwJZvlt9hkaf1nwUVE+xCFQsa5dNcb7seKpeF0Rj0bn6/gBWnc=
+	t=1710256930; cv=none; b=Xa6L33daDuFmpS0pDrBckUq6xIsuCqp2igkyw65DfEm0X5ex+b9IPeE98MUQjV5BcDIMz9DULvYPkT9Y1iX2DuJgv0m9f/r/AefOp0TAaNLIjo8OcHK9V3EokgTeLx2ipP3nwPkAEw47EmocIqTpydl6cjbRpsUbW/oGh1/pQYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710256905; c=relaxed/simple;
-	bh=l8cFlUqG6TeEDT2PHMu3g5kub53AeJTLgoJZqa8pOT0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=JhGzH2uGRs6FlUmp89HaFZwjOmeXhTN7y6+LM3BMSFEV03n7RGj/1OrzjcChaghkMxabD84N3XEjebxH8mrC/1gELwCEJQPFgpEXDU840I1h73dbl4eWJK5fVO5gMOAOXzWhd0XZvi83UGcW6Rdqdz2+SxK9FaG72b20KWgWOJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=P1sGbSfh; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-608e4171382so522217b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 08:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710256903; x=1710861703; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3xjpLBn34GnxYZBQDEQ50UwfGqCy58xS1xpcBAoyhM=;
-        b=P1sGbSfhGxtfKzqLTNw4dDv0ITGry/K5madExWbOdjCNvIEu6lkeYrUV1hM5uaMyvk
-         RMzKx33OvXoNCa+oSlxLsfLU4P0ab5PbLQyIj4DVkXfqVaTCuCQFvqFlKXr/i1SxwXRe
-         VsnFlL5gg0j0pseQ0Mix20aMSNoJcGccFsnf01HvFhm7SAKfMFGExwrs5dr6++HUJ08l
-         llc/UQm6fIeLyBniw7w2Usb3dquxqoBboXBlTHMVbrFVaO+p7Qcv5Cs6dWfybfJ+cC4U
-         lPwKS8USSgQfkhKIbKD1hz2YYdJ9djvhCj1yk1kTAPZLvnMRaJk8U7RXJ5fqC6+xPOc2
-         AWLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710256903; x=1710861703;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3xjpLBn34GnxYZBQDEQ50UwfGqCy58xS1xpcBAoyhM=;
-        b=iefA+wR2g6nc7PNMr5NuUVB9Xozv/nppJhnr1vZ6/T3fbrYLMFvPtt01WTWDGO2S+3
-         EzkEtp1CXLtQ4PkB/tw6ne+ttcBy9akGgeU6p+yX53O+B1NAbReA1k+2lHt/26b+Xf2z
-         tP7LeAbKsbJJ0WYNCx3zA9Qr2ksRbIiNEGw1wo4XvdrV55fAAzo5fGclkmj17VDP8RBA
-         W1wNoQRJqQSHeQAkZnrJOOLXCNuuYf7KeZUlBL2LGbLGn+Ga/SCXg4F4qiSt06ygN8xs
-         d6xcKPvpiTgzHxfrIi0Let+TQU3wOycBwtzvqJ3sj8BiJr3iWBeEZTp3/86mYreVVNVy
-         F9ig==
-X-Forwarded-Encrypted: i=1; AJvYcCUBQy8VzQTReIewo5Lp1a/f5kc1L1DbpIfahOsoCUgiPt4K5MfrwpZlKfzPLwAnX0B6qZK9iB1kwLr8lF9odOKMztoJggV15L6CzszJ
-X-Gm-Message-State: AOJu0Yx+kMLHzfvuK7sdFAHpgSIqRAV8eGRiPlPNS9BbyzYBSa9XwC3D
-	DQjtnomn+EgmXOZj/c2hOXxxzNqhK77fINdBRTrNdAHNBTeIQJCaFP37V2eGZWXkm3omY0pOsqN
-	qNg==
-X-Google-Smtp-Source: AGHT+IEDUQjk+iVnkL/nXvTeg23l7mhoANKZCGNMVf2KZPBX12mEpqSfgi1Oeu4NkHASdM5Ywuv4wUYOC98=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:bbd0:0:b0:dcb:fb69:eadc with SMTP id
- c16-20020a25bbd0000000b00dcbfb69eadcmr127534ybk.6.1710256902800; Tue, 12 Mar
- 2024 08:21:42 -0700 (PDT)
-Date: Tue, 12 Mar 2024 08:21:41 -0700
-In-Reply-To: <tencent_AA5D14EAA36D58807959EE9AFC9E07548108@qq.com>
+	s=arc-20240116; t=1710256930; c=relaxed/simple;
+	bh=/Ijo8rHPf1fyrPquGh0hCXAuvhCZNBSsRG3Zru7uFyM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u3OSDvbkUvozDCvppX3oZSyogi9EOCftmDXxTNJTDA2qzAyHakEqfBRyl1YVlQN5auM+FUpuITZfYAgbV2eJbVorHVVPMYeLj1K4IDL8fdxmSwnqOAiMSF6RyqbOznMC58KRjWMKAa5ph+6X1kDE/OH089sRSRZnhnnGxcjEvsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jOcCkFbf; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710256929; x=1741792929;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=/Ijo8rHPf1fyrPquGh0hCXAuvhCZNBSsRG3Zru7uFyM=;
+  b=jOcCkFbf2yBifM4x9VufuOXdMSquzzrPwWj9IdpdpZIEjIVabCAL6jLT
+   sxWw+Yot+XIFoTi1nSv6s0SbqJgpIHHvDuEHnZDXi76FU8T9ReuSgWzIX
+   osjqigxiseo09n3i4DvUH6OIaLlw2NOcA2VW1cC7QOJV47ZHkd/JhWMzg
+   bibAcK8EHQKjzxEXTEpHRxfrsWqJJ5/wqFbzWSuv7dOGtUPRIeIXUWZij
+   WkaOWMRzgGYdYgjte74mEL7PNc+HlfQqgsap9UuJoLLoSkPeAwuKFC/Ji
+   ZXmt79oMWx1EkK7HndYxkfStV+F1OubYasL61tqxMaiWw7wz+DK0mKKGL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5103847"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="5103847"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:22:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="11534111"
+Received: from hhutton-mobl1.amr.corp.intel.com (HELO [10.209.25.241]) ([10.209.25.241])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:22:07 -0700
+Message-ID: <4e6627b2-30cd-4c50-bf2f-24cf845cd4bc@linux.intel.com>
+Date: Tue, 12 Mar 2024 08:22:06 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <tencent_4B50D08D2E6211E4F9B867F0531F2C05BA0A@qq.com>
- <Ze8vM6HcU4vnXVSS@google.com> <tencent_AA5D14EAA36D58807959EE9AFC9E07548108@qq.com>
-Message-ID: <ZfBzBUbxpF9MpII-@google.com>
-Subject: Re: [PATCH] KVM: x86/mmu: treat WC memory as MMIO
-From: Sean Christopherson <seanjc@google.com>
-To: francisco flynn <francisco_flynn@foxmail.com>
-Cc: dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org, 
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org, 
-	hpa@zytor.com, rdunlap@infradead.org, akpm@linux-foundation.org, 
-	bhelgaas@google.com, mawupeng1@huawei.com, linux-kernel@vger.kernel.org, 
-	pbonzini@redhat.com, kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/5] Drivers: hv: vmbus: Track decrypted status in
+ vmbus_gpadl
+Content-Language: en-US
+To: Michael Kelley <mhklinux@outlook.com>,
+ "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+ "kys@microsoft.com" <kys@microsoft.com>,
+ "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+ "wei.liu@kernel.org" <wei.liu@kernel.org>,
+ "decui@microsoft.com" <decui@microsoft.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com"
+ <pabeni@redhat.com>,
+ "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
+Cc: "elena.reshetova@intel.com" <elena.reshetova@intel.com>
+References: <20240311161558.1310-1-mhklinux@outlook.com>
+ <20240311161558.1310-3-mhklinux@outlook.com>
+ <13581af9-e5f0-41ca-939f-33948b2133e7@linux.intel.com>
+ <SN6PR02MB415742AEEE7F1389D80B6E51D42B2@SN6PR02MB4157.namprd02.prod.outlook.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <SN6PR02MB415742AEEE7F1389D80B6E51D42B2@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024, francisco flynn wrote:
-> On 2024/3/12 00:20, Sean Christopherson wrote:
-> > On Mon, Mar 11, 2024, francisco_flynn wrote:
-> >> when doing kvm_tdp_mmu_map for WC memory, such as pages
-> >> allocated by amdgpu ttm driver for ttm_write_combined
-> >> caching mode(e.g. host coherent in vulkan),
-> >> the spte would be set to WB, in this case, vcpu write
-> >> to these pages would goes to cache first, and never
-> >> be write-combined and host-coherent anymore. so
-> >> WC memory should be treated as MMIO, and the effective
-> >> memory type is depending on guest PAT.
-> > 
-> > No, the effective memtype is not fully guest controlled.  By forcing the EPT memtype
-> > to UC, the guest can only use UC or WC.  I don't know if there's a use case for
-> 
-> Well,it's actually the host mapping memory WC and guest uses WC,
 
-No, when the guest is running, the host, i.e. KVM, sets the EPT memory type to UC
+On 3/11/24 11:07 PM, Michael Kelley wrote:
+> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> On 3/11/24 9:15 AM, mhkelley58@gmail.com wrote:
+>>> From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+>>>
+>>> In CoCo VMs it is possible for the untrusted host to cause
+>>> set_memory_encrypted() or set_memory_decrypted() to fail such that an
+>>> error is returned and the resulting memory is shared. Callers need to
+>>> take care to handle these errors to avoid returning decrypted (shared)
+>>> memory to the page allocator, which could lead to functional or security
+>>> issues.
+>>>
+>>> In order to make sure callers of vmbus_establish_gpadl() and
+>>> vmbus_teardown_gpadl() don't return decrypted/shared pages to
+>>> allocators, add a field in struct vmbus_gpadl to keep track of the
+>>> decryption status of the buffers. This will allow the callers to
+>>> know if they should free or leak the pages.
+>>>
+>>> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+>>> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+>>> ---
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>>  drivers/hv/channel.c   | 25 +++++++++++++++++++++----
+>>>  include/linux/hyperv.h |  1 +
+>>>  2 files changed, 22 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+>>> index 56f7e06c673e..bb5abdcda18f 100644
+>>> --- a/drivers/hv/channel.c
+>>> +++ b/drivers/hv/channel.c
+>>> @@ -472,9 +472,18 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
+>>>  		(atomic_inc_return(&vmbus_connection.next_gpadl_handle) - 1);
+>>>
+>>>  	ret = create_gpadl_header(type, kbuffer, size, send_offset, &msginfo);
+>>> -	if (ret)
+>>> +	if (ret) {
+>>> +		gpadl->decrypted = false;
+>> Why not set it by default at the beginning of the function?
+> I considered doing that.  But it's an extra step to execute in the normal
+> path, because a couple of lines below it is always set to "true".  But
+> I don't have a strong preference either way.
+>
 
-  static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-  {
-	if (is_mmio)
-		return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
+Got it. I am fine either way.
 
-which effectively makes the guest "MTRR" memtype UC, and thus restricts the guest
-to using UC or WC.
+>>>  		return ret;
+>>> +	}
+>>>
+>>> +	/*
+>>> +	 * Set the "decrypted" flag to true for the set_memory_decrypted()
+>>> +	 * success case. In the failure case, the encryption state of the
+>>> +	 * memory is unknown. Leave "decrypted" as true to ensure the
+>>> +	 * memory will be leaked instead of going back on the free list.
+>>> +	 */
+>>> +	gpadl->decrypted = true;
+>>>  	ret = set_memory_decrypted((unsigned long)kbuffer,
+>>>  				   PFN_UP(size));
+>>>  	if (ret) {
+>>> @@ -563,9 +572,15 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
+>>>
+>>>  	kfree(msginfo);
+>>>
+>>> -	if (ret)
+>>> -		set_memory_encrypted((unsigned long)kbuffer,
+>>> -				     PFN_UP(size));
+>>> +	if (ret) {
+>>> +		/*
+>>> +		 * If set_memory_encrypted() fails, the decrypted flag is
+>>> +		 * left as true so the memory is leaked instead of being
+>>> +		 * put back on the free list.
+>>> +		 */
+>>> +		if (!set_memory_encrypted((unsigned long)kbuffer, PFN_UP(size)))
+>>> +			gpadl->decrypted = false;
+>>> +	}
+>>>
+>>>  	return ret;
+>>>  }
+>>> @@ -886,6 +901,8 @@ int vmbus_teardown_gpadl(struct vmbus_channel *channel, struct vmbus_gpadl *gpad
+>>>  	if (ret)
+>>>  		pr_warn("Fail to set mem host visibility in GPADL teardown %d.\n", ret);
+>> Will this be called only if vmbus_establish_gpad() is successful? If not, you
+>> might want to skip set_memory_encrypted() call for decrypted = false case.
+> It's only called if vmbus_establish_gpadl() is successful.  I agree
+> we don't want to call set_memory_encrypted() if the
+> set_memory_decrypted() wasn't executed or it failed.  But 
+> vmbus_teardown_gpadl() is never called with decrypted = false.
 
-Your use case wants to map the memory as WC in the guest, but there are zero
-guarantees that *every* use case wants to access such memory as WC (or UC),
-i.e. forcing UC could cause performance regressions for existing use cases.
+Since you rely on  vmbus_teardown_gpadl() callers, personally I think it
+is better to add that check. It is up to you.
 
-Ideally, KVM would force the EPT memtype to match the host PAT memtype while still
-honoring guest PAT, but if we wanted to go that route, then KVM should (a) stuff
-the exact memtype, (b) stuff the memtype for all of guest memory, and (c) do so
-for all flavors of KVM on x86, not just EPT on VMX.
+>>> +	gpadl->decrypted = ret;
+>>> +
+>> IMO, you can set it to false by default. Any way with non zero return, user
+>> know about the decryption failure.
+> I don’t agree, but feel free to explain further if my thinking is
+> flawed.
+>
+> If set_memory_encrypted() fails, we want gpadl->decrypted = true.
+> Yes, the caller can see that vmbus_teardown_gpadl() failed,
+> but there's also a memory allocation failure, so the caller
+> would have to distinguish error codes.  And the caller isn't
+> necessarily where the memory is freed (or leaked).  We
+> want the decrypted flag to be correct so the code that
+> eventually frees the memory can decide to leak instead of
+> freeing.
 
-Unfortunatley, making that change now risks breaking 15+ years of KVM ABI.  And
-there's also the whole "unsafe on Intel CPUs without self-snoop" problem.
+I agree. I understood this part after looking at the rest of the series.
 
-> one use case is virtio-gpu host blob, which is to map physical GPU buffers into guest
-> 
-> > the host mapping memory WC while the guest uses WB, but it should be a moot point,
-> > because this this series should do what you want (allow guest to map GPU buffers
-> > as WC).
-> > 
-> > https://lore.kernel.org/all/20240309010929.1403984-1-seanjc@google.com
-> > 
-> 
-> yes, this is what i want, but for virtio-gpu device, if we mapping WC typed 
-> GPU buffer into guest, kvm_arch_has_noncoherent_dma would return false, 
-> so on cpu without self-snoop support, guest PAT will be ignored, the effective
-> memory type would be set to WB, causing data inconsistency.
+>
+> Michael
+>
+>>>  	return ret;
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(vmbus_teardown_gpadl);
+>>> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+>>> index 2b00faf98017..5bac136c268c 100644
+>>> --- a/include/linux/hyperv.h
+>>> +++ b/include/linux/hyperv.h
+>>> @@ -812,6 +812,7 @@ struct vmbus_gpadl {
+>>>  	u32 gpadl_handle;
+>>>  	u32 size;
+>>>  	void *buffer;
+>>> +	bool decrypted;
+>>>  };
+>>>
+>>>  struct vmbus_channel {
+>> --
+>> Sathyanarayanan Kuppuswamy
+>> Linux Kernel Developer
 
-My understanding is that every Intel CPU released in the last 8+ years supports
-self-snoop.  See check_memory_type_self_snoop_errata().
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-IMO, that's a perfectly reasonable line to draw: if you want virtio-gpu support,
-upgrade to Ivy Bridge or later.
 
