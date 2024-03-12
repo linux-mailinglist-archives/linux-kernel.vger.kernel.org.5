@@ -1,187 +1,228 @@
-Return-Path: <linux-kernel+bounces-100273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 171838794A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:58:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 825458794B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AA061C21D27
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:58:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A15A281580
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9DD58112;
-	Tue, 12 Mar 2024 12:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ko4JHe0a"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6B47A143;
+	Tue, 12 Mar 2024 12:59:26 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E4427711
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9323A1F95F;
+	Tue, 12 Mar 2024 12:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710248298; cv=none; b=n0XyYZcKCAioyx0fKEs6IWlxESM6xD5vU2wdzCUOJTnnpcoxnvBtIYyAmSQhVGu0/7tf5aYNBPELh91B8H5dhWlxb20FqXJIiY+16hQk7A6hmA+aPhzxQFvxbg9AC7T6pUQfXOSIqiF1C9Bs+bYMItfxcfxxbxlcalxufByW2J4=
+	t=1710248365; cv=none; b=CpdQuV/rB5ScEej3EKT6R0/EXO/vtUeA5NSDqf7/Eksmm3wdJ591oe4jA/kMw6Cm1kEYvDIqhD7Cel/1ld4Fe8Tgl28PeRhJ/vmyCVUnNmWoGftLoby7GPJrCDqeI9xvlV/JdXWNJr7d+S4yOiCWqg0ixXuZzNz8HUvs3pe2rHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710248298; c=relaxed/simple;
-	bh=8jJKj6cc4Y6n79Wnr/+MYO0ufoa4sZZLw3fvdmmgQU4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uNzFS0ZxtcdHQY4WFajcodUwfrACdnSA5n5fRgBjKFNq5+rSWYYl0CAxoj8niZCZyTCZgNUSXGzEkGt/14z/i1Qhtf9ft5JQvvbNiB9UAmf2XfxsySMYXnTu3i1IfMaMt6ThGbHImjMURFBGJ+3ktRrs+Bu79tptftS6w3vCo5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ko4JHe0a; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc745927098so4902699276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 05:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710248295; x=1710853095; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8jJKj6cc4Y6n79Wnr/+MYO0ufoa4sZZLw3fvdmmgQU4=;
-        b=Ko4JHe0abXk6vELJfOVNeCXW6Psd4MEs2WmNKhQWTYA+ZJn9AxC4t2YoVm1R5RT+65
-         cumAGBxnYu+au92OCNBMcWXtyU1awhPYtmsPbokxKrq+Tu086qJWxybQTsPyVAr/9s7X
-         TRozxxNoUOfuvkiBHppMdAe2SeN/a/p8S16wvW7ne3z0nATjQgKbfA5Ga5nF5KMopi9N
-         BOaE81rZyKYpKOM27Z00HA7T1NBOBgeFsDo99lKr5CWnzcTfAH+dfEZ3N/X0Kw+wuAo8
-         JMtXyxt7slKudV4lr7ClG8W1ja3dAVr/yuw41Nau9uMrDCrXM1gt/RJrG1HZUYPeUBQ1
-         gcXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710248295; x=1710853095;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8jJKj6cc4Y6n79Wnr/+MYO0ufoa4sZZLw3fvdmmgQU4=;
-        b=b7g/VUREVAk5CEoNwb1S/5A6g8ja7RKpO0IlO9Ni1LnVQjUSlqJMLLZrpq3B7xDF3o
-         o+44xzLYQjLF0+zvVDLKIw1gDGxgpbIRS/+tnkKs9NJDoe3V1JxnqcjwdX/nmO/W3yAS
-         taNZjrSpyDv4lOZ7EF4ABkzbZk/NndInRPfrrLz19QibL7dFYwzqUYFZKYe1bgoC00E6
-         JATiF0Ft1VEcf6iqj61310lWl1+Ar347WPwYs890wjFAY1AmoHZqBIcT3gxkqS3lHNvs
-         GGVmjgbAdHDYx8WfwX79KRYuGScPeFlxF8dRYD75IjUSWoI7FcXORRW3X4JfETZ2b0HB
-         faPA==
-X-Forwarded-Encrypted: i=1; AJvYcCVprb4zNY6g4iyYdIecje9m46IsyMb0BM+As43evm2tox2ZTKH64rmBoZ+SL3M3mq7QwfEXsdHp5kZsx9I8xvlobvB2Nkofclvz+Hiu
-X-Gm-Message-State: AOJu0Yw84JBtpjDLMcbfW047BaBbIcAAVH/8ChW5ds2YaGIuxxKpGlC1
-	vaZ2HYQdlubUfNQdZEZdz3cv4JZ1NOk5gicwhuafrcM5Y7xLCij94B3y4n5uWHzGjnL9dsaTjhU
-	SEfDFB+EIFBD4PHkNwoyOHxOlg7ehIc1DdpVpLQ==
-X-Google-Smtp-Source: AGHT+IEXjBJ8SkftenAiispF7JkfvuYojibcHcU8qjJpODRNR2jabK5webcKiPm5H6fkVHd0TPiRsUtBdXjK4ZzWbuo=
-X-Received: by 2002:a25:aa91:0:b0:dcb:aa26:50f9 with SMTP id
- t17-20020a25aa91000000b00dcbaa2650f9mr7296508ybi.46.1710248295348; Tue, 12
- Mar 2024 05:58:15 -0700 (PDT)
+	s=arc-20240116; t=1710248365; c=relaxed/simple;
+	bh=7tSnGJBsA/vNSf47BJiztKMZrl6p5LWxW1fFH8nv4jQ=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=m0maPNgBDl0XW1uCO6WH/TGHlMQ8IFbf1TjqHBJiPnLf0yYMd41dBymwBWHk2m/XGs0re/hxFhXS0rOLLnVuXeWjHT3isN8dIZdtwaLK3yRWnBrfQeUvL02NLBUpb7cXT3SQvEy9IBgeymPWZZDy3TKbmi5mjDY2a7Q4Iyh5dJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TvDHL2ypGz4f3lfX;
+	Tue, 12 Mar 2024 20:59:10 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 1B4BC1A0199;
+	Tue, 12 Mar 2024 20:59:18 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+	by APP1 (Coremail) with SMTP id cCh0CgBXKBGjUfBlZsnnGg--.25952S3;
+	Tue, 12 Mar 2024 20:59:17 +0800 (CST)
+Subject: Re: [PATCH 3/4] iomap: don't increase i_size if it's not a write
+ operation
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
+ david@fromorbit.com, tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com,
+ chengzhihao1@huawei.com, yukuai3@huawei.com
+References: <20240311122255.2637311-1-yi.zhang@huaweicloud.com>
+ <20240311122255.2637311-4-yi.zhang@huaweicloud.com>
+ <20240311154829.GU1927156@frogsfrogsfrogs>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <4a9e607e-36d1-4ea7-1754-c443906b3a1c@huaweicloud.com>
+Date: Tue, 12 Mar 2024 20:59:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1709667858.git.daniel@makrotopia.org> <CAPDyKFpQfue5Fi0fFSnqHNg2ytCxAYfORVP_Y86ucz2k5HRuDA@mail.gmail.com>
- <ZfBK5qT_GO_FgtQP@makrotopia.org>
-In-Reply-To: <ZfBK5qT_GO_FgtQP@makrotopia.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 12 Mar 2024 13:57:39 +0100
-Message-ID: <CAPDyKFr7mMEZE5n=6kxxsj9P3oLjLyVx20O9q0-pmyXzXYk52A@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/8] nvmem: add block device NVMEM provider
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	Christian Brauner <brauner@kernel.org>, Li Lingfeng <lilingfeng3@huawei.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, Min Li <min15.li@samsung.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Hannes Reinecke <hare@suse.de>, 
-	Christian Loehle <CLoehle@hyperstone.com>, Avri Altman <avri.altman@wdc.com>, 
-	Bean Huo <beanhuo@micron.com>, Yeqi Fu <asuk4.q@gmail.com>, 
-	Victor Shih <victor.shih@genesyslogic.com.tw>, 
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
-	"Ricardo B. Marliere" <ricardo@marliere.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org, 
-	Diping Zhang <diping.zhang@gl-inet.com>, Jianhui Zhao <zhaojh329@gmail.com>, 
-	Jieying Zeng <jieying.zeng@gl-inet.com>, Chad Monroe <chad.monroe@adtran.com>, 
-	Adam Fox <adam.fox@adtran.com>, John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20240311154829.GU1927156@frogsfrogsfrogs>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgBXKBGjUfBlZsnnGg--.25952S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxtFy7KF1kCr4xAr48WFWkXrb_yoW7Cr4fpr
+	98KayDCF4ktF47Wr1DJF98Xr1Yy34rKrW7Cry7Gay3ZF1qyr4xKF18Wa4F9F1UJ3sxAr4f
+	XF4vy3s5WF15Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
+	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Tue, 12 Mar 2024 at 13:30, Daniel Golle <daniel@makrotopia.org> wrote:
->
-> Hi Ulf,
->
-> On Tue, Mar 12, 2024 at 01:22:49PM +0100, Ulf Hansson wrote:
-> > On Tue, 5 Mar 2024 at 21:23, Daniel Golle <daniel@makrotopia.org> wrote:
-> > >
-> > > On embedded devices using an eMMC it is common that one or more (hw/sw)
-> > > partitions on the eMMC are used to store MAC addresses and Wi-Fi
-> > > calibration EEPROM data.
-> > >
-> > > Implement an NVMEM provider backed by block devices as typically the
-> > > NVMEM framework is used to have kernel drivers read and use binary data
-> > > from EEPROMs, efuses, flash memory (MTD), ...
-> > >
-> > > In order to be able to reference hardware partitions on an eMMC, add code
-> > > to bind each hardware partition to a specific firmware subnode.
-> > >
-> > > This series is meant to open the discussion on how exactly the device
-> > > tree schema for block devices and partitions may look like, and even
-> > > if using the block layer to back the NVMEM device is at all the way to
-> > > go -- to me it seemed to be a good solution because it will be reuable
-> > > e.g. for (normal, software GPT or MBR) partitions of an NVMe SSD.
-> > >
-> > > This series has previously been submitted on July 19th 2023[1] and most of
-> > > the basic idea did not change since.
-> > >
-> > > However, the recent introduction of bdev_file_open_by_dev() allow to
-> > > get rid of most use of block layer internals which supposedly was the
-> > > main objection raised by Christoph Hellwig back then.
-> > >
-> > > Most of the other comments received for in the first RFC have also
-> > > been addressed, however, what remains is the use of class_interface
-> > > (lacking an alternative way to get notifications about addition or
-> > > removal of block devices from the system). As this has been criticized
-> > > in the past I'm specifically interested in suggestions on how to solve
-> > > this in another way -- ideally without having to implement a whole new
-> > > way for in-kernel notifications of appearing or disappearing block
-> > > devices...
-> > >
-> > > And, in a way just like in case of MTD and UBI, I believe acting as an
-> > > NVMEM provider *is* a functionality which belongs to the block layer
-> > > itself and, other than e.g. filesystems, is inconvenient to implement
-> > > elsewhere.
-> >
-> > I don't object to the above, however to keep things scalable at the
-> > block device driver level, such as the MMC subsystem, I think we
-> > should avoid having *any* knowledge about the binary format at these
-> > kinds of lower levels.
-> >
-> > Even if most of the NVMEM format is managed elsewhere, the support for
-> > NVMEM partitions seems to be dealt with from the MMC subsystem too.
->
-> In an earlier iteration of this RFC it was requested to make NVMEM
-> support opt-in (instead of opt-out for mtdblock and ubiblock, which
-> already got their own NVMEM provider implementation).
-> Hence at least a change to opt-in for NVMEM support is required in the
-> MMC subsystem, together with making sure that MMC devices have their
-> fwnode assigned.
+On 2024/3/11 23:48, Darrick J. Wong wrote:
+> On Mon, Mar 11, 2024 at 08:22:54PM +0800, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> Increase i_size in iomap_zero_range() and iomap_unshare_iter() is not
+>> needed, the caller should handle it. Especially, when truncate partial
+>> block, we could not increase i_size beyond the new EOF here. It doesn't
+>> affect xfs and gfs2 now because they set the new file size after zero
+>> out, it doesn't matter that a transient increase in i_size, but it will
+>> affect ext4 because it set file size before truncate.
+> 
+>>                                                       At the same time,
+>> iomap_write_failed() is also not needed for above two cases too, so
+>> factor them out and move them to iomap_write_iter() and
+>> iomap_zero_iter().
+> 
+> This change should be a separate patch with its own justification.
+> Which is, AFAICT, something along the lines of:
+> 
+> "Unsharing and zeroing can only happen within EOF, so there is never a
+> need to perform posteof pagecache truncation if write begin fails."
 
-So, the NVMEM support needs to be turned on (opt-in) for each and
-every block device driver?
+Sure.
 
-It's not a big deal for me - and I would be happy to apply such a
-change. On the other hand, it is just some binary data that is stored
-on the flash, why should MMC have to opt-in or opt-out at all? It
-should be the upper layers who decide what to store on the flash, not
-the MMC subsystem, if you get my point.
+> 
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> 
+> Doesn't this patch fix a bug in ext4?
 
->
-> > Why can't NVMEM partitions be managed the usual way via the MBR/GPT?
->
-> Absolutely, maybe my wording was not clear, but that's exactly what
-> I'm suggesting here. There are no added parsers nor any knowledge
-> about binary formats in this patchset.
+Yeah, the same as Christoph answered.
 
-Right, but there are new DT bindings added in the $subject series that
-allows us to describe NVMEM partitions for an eMMC. Why isn't that
-parsed from the MBR/GPT, etc, rather than encoded in DT?
+> 
+>> ---
+>>  fs/iomap/buffered-io.c | 59 +++++++++++++++++++++---------------------
+>>  1 file changed, 30 insertions(+), 29 deletions(-)
+>>
+>> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+>> index 093c4515b22a..19f91324c690 100644
+>> --- a/fs/iomap/buffered-io.c
+>> +++ b/fs/iomap/buffered-io.c
+>> @@ -786,7 +786,6 @@ static int iomap_write_begin(struct iomap_iter *iter, loff_t pos,
+>>  
+>>  out_unlock:
+>>  	__iomap_put_folio(iter, pos, 0, folio);
+>> -	iomap_write_failed(iter->inode, pos, len);
+>>  
+>>  	return status;
+>>  }
+>> @@ -838,34 +837,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
+>>  		size_t copied, struct folio *folio)
+>>  {
+>>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
+>> -	loff_t old_size = iter->inode->i_size;
+>> -	size_t ret;
+>> -
+>> -	if (srcmap->type == IOMAP_INLINE) {
+>> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
+>> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+>> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
+>> -				copied, &folio->page, NULL);
+>> -	} else {
+>> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
+>> -	}
+>>  
+>> -	/*
+>> -	 * Update the in-memory inode size after copying the data into the page
+>> -	 * cache.  It's up to the file system to write the updated size to disk,
+>> -	 * preferably after I/O completion so that no stale data is exposed.
+>> -	 */
+>> -	if (pos + ret > old_size) {
+>> -		i_size_write(iter->inode, pos + ret);
+>> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+>> -	}
+>> -	__iomap_put_folio(iter, pos, ret, folio);
+>> -
+>> -	if (old_size < pos)
+>> -		pagecache_isize_extended(iter->inode, old_size, pos);
+>> -	if (ret < len)
+>> -		iomap_write_failed(iter->inode, pos + ret, len - ret);
+>> -	return ret;
+>> +	if (srcmap->type == IOMAP_INLINE)
+>> +		return iomap_write_end_inline(iter, folio, pos, copied);
+>> +	if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
+>> +		return block_write_end(NULL, iter->inode->i_mapping, pos, len,
+>> +				       copied, &folio->page, NULL);
+>> +	return __iomap_write_end(iter->inode, pos, len, copied, folio);
+>>  }
+>>  
+>>  static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>> @@ -880,6 +858,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>>  
+>>  	do {
+>>  		struct folio *folio;
+>> +		loff_t old_size;
+>>  		size_t offset;		/* Offset into folio */
+>>  		size_t bytes;		/* Bytes to write to folio */
+>>  		size_t copied;		/* Bytes copied from user */
+>> @@ -912,8 +891,10 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>>  		}
+>>  
+>>  		status = iomap_write_begin(iter, pos, bytes, &folio);
+>> -		if (unlikely(status))
+>> +		if (unlikely(status)) {
+>> +			iomap_write_failed(iter->inode, pos, bytes);
+>>  			break;
+>> +		}
+>>  		if (iter->iomap.flags & IOMAP_F_STALE)
+>>  			break;
+>>  
+>> @@ -927,6 +908,24 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>>  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
+>>  		status = iomap_write_end(iter, pos, bytes, copied, folio);
+>>  
+>> +		/*
+>> +		 * Update the in-memory inode size after copying the data into
+>> +		 * the page cache.  It's up to the file system to write the
+>> +		 * updated size to disk, preferably after I/O completion so that
+>> +		 * no stale data is exposed.
+>> +		 */
+>> +		old_size = iter->inode->i_size;
+>> +		if (pos + status > old_size) {
+>> +			i_size_write(iter->inode, pos + status);
+>> +			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+>> +		}
+>> +		__iomap_put_folio(iter, pos, status, folio);
+> 
+> Why is it necessary to hoist the __iomap_put_folio calls from
+> iomap_write_end into iomap_write_iter, iomap_unshare_iter, and
+> iomap_zero_iter?  None of those functions seem to use it, and it makes
+> more sense to me that iomap_write_end releases the folio that
+> iomap_write_begin returned.
+> 
 
->
-> Or did I misunderstand your comment?
+Because we have to update i_size before __iomap_put_folio() in
+iomap_write_iter(). If not, once we unlock folio, it could be raced
+by the backgroud write back which could start writing back and call
+folio_zero_segment() (please see iomap_writepage_handle_eof()) to
+zero out the valid data beyond the not updated i_size. So we
+have to move out __iomap_put_folio() out together with the i_size
+updating.
 
-Maybe. I am just trying to understand this, so apologize if you find
-my questions silly. :-)
+Thanks,
+Yi.
 
-Kind regards
-Uffe
 
