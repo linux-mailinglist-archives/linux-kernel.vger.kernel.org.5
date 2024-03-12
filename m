@@ -1,123 +1,107 @@
-Return-Path: <linux-kernel+bounces-100596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB750879A9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:28:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC06879AA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:30:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5C3D1C223F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:28:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2849285C59
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C316B1384B8;
-	Tue, 12 Mar 2024 17:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50CA91386AE;
+	Tue, 12 Mar 2024 17:30:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="NCikJTpz"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="UfIKav0p"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 790EA137C47;
-	Tue, 12 Mar 2024 17:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554CC1272A4;
+	Tue, 12 Mar 2024 17:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710264514; cv=none; b=YAZk55W5eUUhiCQ8+m7IK0CEHN/zWeXZqdB1ZXDuTordix+PBxfVb5Vh7IBlEMj+ilPhgt85fUIg4HKPeRHA3jsYIH8xzEO0lTwn2CMlGxDD5k/gWM8HQuK77lbiuh2egoaj8BB86b9cAGUtoH1HWawA+7lWaUiUmCEBFAJ0qfw=
+	t=1710264611; cv=none; b=ctCal0cd4dsqZZeRJTE5Xn59AStKisrzZFJjdIxGIzagLJDKoWHyC4M9SY/6g3V0G18cj2NwSnr+GLxsD0UovcayGaWHEgzC1b/ZosArdpq2yTTi0E1X72OnBCLj+zXBfh+T2/AhyyGaYuRT+uFvQmRMscWj5KJgB2SBH7atE98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710264514; c=relaxed/simple;
-	bh=VY8Z9b0yJZ4F5uQ55cm9ifujn/axpTeq3PPcZaMOhwc=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=X1rHMwFbFSfOoWURb2VlrB/CeWNMtvtXAP9h9WLo4EWO1TuQ74R8JCQjpkc+XjV9Gs4TEi7E6sFvfb3asmNb8oXZUw4O7ZgRooRxSYwGGZJkiLbNk1zlDKgrci+SeR3OjpRAPjAtY5GD5SeKQXk2ISL/dtwhydMovtx26Nyjh3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=NCikJTpz; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710264509;
-	bh=VY8Z9b0yJZ4F5uQ55cm9ifujn/axpTeq3PPcZaMOhwc=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=NCikJTpzKiqKdXCicrRsLJD+jsiJSPOTOjyArAXIB3o7llCn8WFC/WC3xH3tapkIs
-	 I/l7gDgJk8dnec8pzFSqXdE1VD2pebXttU0PVoHzZwhSgpmG4o4jHwZ/TLH+YfQSe4
-	 qcb5MGNtvlKk+ylXmF5AdwTYsMLjomPVzuyqQz+mpI+NnOU4YbU59Ohu+NKwLHv5Do
-	 wnRFRV2tyRbiciOl4DmfZrDUeTc5T2BEx9eUxpcWAPN7j6eD7I/CaS5MmWxTrrF930
-	 JAI5SLnBNgxw0fdq2Mfe5fznlHvXyR+QBbduPQ+67EHhJ6Yq/L6af3BJWY/T8ah8UT
-	 bEBTx/4itQxjg==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4BF01378204B;
-	Tue, 12 Mar 2024 17:28:26 +0000 (UTC)
-Message-ID: <9bab8e19-962b-416f-b8d9-b113fc4813f7@collabora.com>
-Date: Tue, 12 Mar 2024 22:28:56 +0500
+	s=arc-20240116; t=1710264611; c=relaxed/simple;
+	bh=c42YxN4jWTpl+KaVrC1vllZBtqWQkd/F8q+clCwOlgU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mQ/zethSg6wQt6vLK1vzz/Fxcc1zhvxECj7zWdpcUuGUSCQ93NltXB2Jb2Q6NHY8/HappL0LU31eR6KMkaHmBWPNSB6fhtpdzOqFBtCmUBlNKQQGzzvBvqulRjMbqZwf9t4BRp+KWhGwqvk20obLu4+6f+S4r9hk4KyehvzbObs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=UfIKav0p; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dd9568fc51so23102395ad.2;
+        Tue, 12 Mar 2024 10:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1710264609; x=1710869409; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GbJFRNdUX+AAn/XFov6URlQKxEMKvLoXoY0Vun2l91U=;
+        b=UfIKav0pHTUINtYAzNM+YOOkKh99JLbjxbzPwgyzCfI+FxZhPI1xXKVK1UEmgAvKqc
+         nsNjjW+2LvC7vYYJQR0aP3fCCZP1dTWaIVNqM2hEPwic+v+3RVhmWs1CHogFuBXBk7dM
+         lUBR8j5/CAekRIyYP375NMFvWVXbauNrraO3gYcEQVZxn0FGgHw1axyeznethmGfzU5I
+         15+SMKjqL742wNI76mRQkJxiYDbxFnyzkIeqtgSZrMn4f4U102xhlGwqreec8G+YgdWY
+         1XQ78Jx5kB4uBiFsvPkGSus9pC97sWBCq4MPta8FO3bTEbcFWPXK1F1fOqnvnqnWlGZq
+         T3HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710264609; x=1710869409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GbJFRNdUX+AAn/XFov6URlQKxEMKvLoXoY0Vun2l91U=;
+        b=XWosnlZt3VQ3biN3n7PYZ2oCFacPPy4wuTx/bz8mLhYYIvZyETASVVEsxUaSbUeuvl
+         1qB90eVUrcy3AGMg62ogLaM8l0J9kiPdFhmAUqQC0IxzkvXzNguNU9ikqxVf2gVCIsml
+         PYSNzKn/cF4nRSLYq0iFL3dtVa4QD/+CE9YcTSaff4dJME6JTYgbsuqxz+VYxFbmpL2Q
+         o1vmwjDjXaWppTc4mPEHB+d+BBO0evMJVKEb4Je/bK3U4JxS1aBvFuzwwi9PxGA/7o+M
+         f+TRHZQIxpXlg+l8pVYNScZtoTEUMOv7yRlSueJsyNMIspYaWDDkd0c3jyHnbse2sIPL
+         65XQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX0vCb2dOr1PxZhABU0OsLfUlWIQpcWHZRRapGe0Iiw+qSQ0AsIFBeuGkMk9oPSrfhomEEMsa7hync+EtPcSdnCJtHPysSQMLlK12OcsQqSvmfp3Q1wGiVLvLhrrm0/KrF9EDpFxZrgzQ==
+X-Gm-Message-State: AOJu0YzhdsEuC7zMBigztzt10NAMrxfeQT0xlrB1QQZBF8WYGuCYgTiK
+	I+Rha2bAD9JaxhcCfNrEBLVHtMtpXeYaLEa8x743T4AYSVk2Nlgy+Iz1RiMepDLWvDeSQP79RPO
+	/yy8PjfPpQ5zAFOqIVvQJ+GFCGf0=
+X-Google-Smtp-Source: AGHT+IEHlHIqKOnI30N6kEVdQF0v/F2N8qpv8I46MIfHZh1wIGIrafjKKa9W6hn0s2Ee0QJLBfQkS+qfb6XgN0IPhOw=
+X-Received: by 2002:a17:902:d491:b0:1dd:b728:b890 with SMTP id
+ c17-20020a170902d49100b001ddb728b890mr3078233plg.18.1710264609530; Tue, 12
+ Mar 2024 10:30:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Weihong Zhang <weihong.zhang@intel.com>,
- Binbin Wu <binbin.wu@linux.intel.com>, angquan yu <angquan21@gmail.com>
-Subject: Re: [PATCH] selftests: x86: skip the tests if prerequisites aren't
- fulfilled
-Content-Language: en-US
-To: "Chang S. Bae" <chang.seok.bae@intel.com>
-References: <20240307183730.2858264-1-usama.anjum@collabora.com>
- <dc8d122a-22b7-4d17-abd9-66262af0b058@intel.com>
- <c3362840-365e-40cb-80fe-895aa2d979ec@collabora.com>
- <1cacbd08-1131-4be4-b318-58c05afda2de@intel.com>
- <21f8dbe3-9de2-41ad-a8bd-61d66cb38e90@collabora.com>
- <ad272dc1-1b85-41ef-8454-4888a5ab95ee@intel.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <ad272dc1-1b85-41ef-8454-4888a5ab95ee@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240312-basic_dt-v1-0-7f11df3a0896@amlogic.com> <20240312-basic_dt-v1-3-7f11df3a0896@amlogic.com>
+In-Reply-To: <20240312-basic_dt-v1-3-7f11df3a0896@amlogic.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Tue, 12 Mar 2024 18:29:58 +0100
+Message-ID: <CAFBinCAvT6-gfZQH--AVJAxiVM9bv5=agYzJ-u3NZUGFvp2vZA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arm64: dts: add support for A4 based Amlogic BA400
+To: xianwei.zhao@amlogic.com
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, 
+	Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Chang,
+On Tue, Mar 12, 2024 at 10:19=E2=80=AFAM Xianwei Zhao via B4 Relay
+<devnull+xianwei.zhao.amlogic.com@kernel.org> wrote:
+[...]
+> +               apb@fe000000 {
+Node names need to be generic - since this is a bug it needs to be:
+  bus@fe000000 {
+Or if you want to make it clear how this bus is called then you can use:
+  apb: bus@fe000000 {
 
-On 3/12/24 9:07 PM, Chang S. Bae wrote:
-> On 3/12/2024 2:26 AM, Muhammad Usama Anjum wrote:
->>
->> How can we check if AMX is available or not?
-> 
-> After a successful check_cpuid_xsave(), examining CPUID(eax=0xd, ecx=0)
-> EDX: EAX, which reports the support bits of XCR0, can give assurance of AMX
-> availability. Perhaps, this change is considerable on top of your patch:
-> 
-> static int check_cpuid_xtiledata(void)
-> {
->         uint32_t eax, ebx, ecx, edx;
-> +       uint64_t xfeatures;
-> 
->         __cpuid_count(CPUID_LEAF_XSTATE, CPUID_SUBLEAF_XSTATE_USER,
->                       eax, ebx, ecx, edx);
-> 
-> +       xfeatures = eax + ((uint64_t)edx << 32);
-> +       if ((xfeatures & XFEATURE_MASK_XTILE) != XFEATURE_MASK_XTILE) {
-> +               ksft_print_msg("no AMX support\n");
-> +               return -1;
-> +       }
-Now I understand. I'll use this snippet to skip the test and fail the test
-if eax and ebx are zero. Sorry, I've lesser knowledge on the x86's
-extensions side. I'll build up the knowledge.
+The same comment applies to the amlogic-a5.dtsi patch (4/4).
+And while here, I fully agree with Jerome: having a bit more details
+would be great so we can judge on whether a common .dtsi makes sense.
+For this it would be helpful to know how many IP blocks those two SoCs
+have in common and how many are different.
 
-> 
-> Nevertheless, I still believe that using arch_prctl(ARCH_GET_XCOMP_SUPP,
-> ..) remains a simple and legitimate approach for directly checking dynamic
-> feature support from the kernel: https://docs.kernel.org/arch/x86/xstate.html
-I'll use arch_prtcl in another patch on top of the current patch in v2.
 
-> 
-> Thanks,
-> Chang
-> 
-
--- 
-BR,
-Muhammad Usama Anjum
+Best regards,
+Martin
 
