@@ -1,78 +1,77 @@
-Return-Path: <linux-kernel+bounces-100218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 110688793A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:04:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79ACC8793A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB4441F22552
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:04:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB5061C20CCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F367EEE1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DFC7E785;
 	Tue, 12 Mar 2024 12:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CyDKLnns";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="j1/PI/u7"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hW2dWVZP";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iFTuiidY"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37EA7D3E1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E507D093;
 	Tue, 12 Mar 2024 12:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710244836; cv=none; b=KAf6NFVhRhh071HkAft8oWZz0O9cxHABwTFuRPdeC8SfijudD1hNmAGQAiOZ3MaBkQY6qgbC94WZrp9yfOSYCuYK7EOgqz6nBnVv1eT1ruOjVIXY9huz6urTO/VPgzcjn8ebFLWre5lXFed0Q0VUUW8IqnxMPW0e9vWYZNqNVC8=
+	t=1710244836; cv=none; b=kGuCcXLg9TK/gtZnZrRVtpIJRNxUKRG948wq2lUp8Xmk0jumTYgH/Rew1NgPrFokrKldyvYawRhBedpXjdGnmjWj+beOWsOusB5TcoI4/KrGKy3pmy6tL3RgcMx79OXJM+AyZ33fhZUsVIlzlRb/3SbgPdRQrUmLds1tPwHTiXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710244836; c=relaxed/simple;
-	bh=GhaSFhlDRTnOjkeg6M1RNoMUvKLgDdMJa+3PDZrqVLA=;
+	bh=S0IESX66TgNwo7luCH44I6uCkL3Hz8KiUQgljQt3uko=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ZWZQDLkTtfKizrYbNY6RlXUlkw6ZlCJ62YuO0AFy4JGzGjbQy587It8WMTv6ovHWZlLPaJ9Bz+zhg05ljpms/Js5TZCZV6IJBDmOLH3l8iUh2zS8g+JpWJKQvB1YPnxpHcNALYVn8sl0hu7Vz3MMmdCRSoye0ROjdHUyiKd5w4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CyDKLnns; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=j1/PI/u7; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=aognMwvymI0PPZ8WI0TXnyryTOYvJhuseWfX5BrcVtPObcd3a+OUT4gPo9h5BzGuGWOFijVaaPzIC/2CnTTn8SVfzmZNdJlUCsm65Y54pPaCddvcRwV0RGDi/eddFsaVeXTZRDumE2ajPn4G2VOMol8W3GHFG+VqWj58QLNe0+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hW2dWVZP; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iFTuiidY; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 12 Mar 2024 12:00:31 -0000
+Date: Tue, 12 Mar 2024 12:00:32 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710244832;
+	s=2020; t=1710244833;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VYPiX7D8uOhW7FpTjkVxkOHST60KtrRE4NXnMlbJRfo=;
-	b=CyDKLnnsuxkpn4bq/dbTETCQJbPzToCc429Xfky84QCZMRwc3jdu8GEgIxvS2dEAMzBpxO
-	DfsnKeWEC3Z13w2tTSp4YbfSWQea7m2Mm4tgdW2B3Fy332nd14+Hzxy3ESXRfUFrPBpbIW
-	riCLFA80f4ygNpkoBPFa5D1abbxHCGiQEAUMdFDrDuDjRI/pTlJp2mDs2FjTPootaDfio5
-	t7mmjiBm6ouO87cy7ct/x3zrUbQ81eOrIVogSJmGqzzI8+dBpAguiFurptb5c6h9O9z7Al
-	NeBCYwvJW6X5Esr3xZWS6V/hFC6mouUcbanSHwuahGp3GWGvXnuSbtHOrbUNzA==
+	bh=zG9zHs6qbQIiUoIV4bAea7rLUJMh8fJW9pTnlMn35IE=;
+	b=hW2dWVZP9ZYXJHxg3nFEUSsyUDf/yw/2ofSyj9RZV9ZC8ukPHMcvakTfNfqC2rp3eO7PA8
+	/9NJ/lNgLamaaA8DPQDNefxQQN+VOoRpFY7n+n8oQNOBI0D2kTj/STCY19j9LqArHhU4K7
+	aemlpHteLhRLelt5aSPR+SeBhePdA6jqRmS1+MWbrTeNvstk0x3gnaJaUz4gYP+kx807pz
+	laogD2ffMpAZZ4J9FyXXeDLlTnJs68FfdBpFEs9cQe+kcs0O+Mm/ol6vP5bUmnpND+TGAN
+	gMLign3HNmO9zKWBhn16i1nMtt8EsNwvKRL8PWYeWrxksI/eB9RcAOwIw0TXSg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710244832;
+	s=2020e; t=1710244833;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VYPiX7D8uOhW7FpTjkVxkOHST60KtrRE4NXnMlbJRfo=;
-	b=j1/PI/u795UAZ5oE7m7/lqRKxvdGTaXV0ll70hc2YMxQPeLNvwxVoYrFM7CaI6E09Nz29w
-	zz2yD6LPl+bcPXBQ==
+	bh=zG9zHs6qbQIiUoIV4bAea7rLUJMh8fJW9pTnlMn35IE=;
+	b=iFTuiidYsj41UJGJlG2uTr2dnQiqQfaAiBA1E3ZJPL8dm77ON0M3v8NDVrj1gV8UD0MZ7M
+	vOCPyE8BpmFepnCQ==
 From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/balancing: Fix comments (trying to) refer to
- NOHZ_BALANCE_KICK
-Cc: Ingo Molnar <mingo@kernel.org>, Valentin Schneider <vschneid@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240308105901.1096078-8-mingo@kernel.org>
-References: <20240308105901.1096078-8-mingo@kernel.org>
+Subject: [tip: sched/core] sched/debug: Allow CONFIG_SCHEDSTATS even on
+ !KERNEL_DEBUG kernels
+Cc:
+ Ingo Molnar <mingo@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240308105901.1096078-6-mingo@kernel.org>
+References: <20240308105901.1096078-6-mingo@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171024483120.398.1159218386469274666.tip-bot2@tip-bot2>
+Message-ID: <171024483260.398.15578307228976810423.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -82,53 +81,35 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     3a5fe9305719c680ccf63216781a4d4068c8e3f3
-Gitweb:        https://git.kernel.org/tip/3a5fe9305719c680ccf63216781a4d4068c8e3f3
+Commit-ID:     9ab121d65e03b4dc38f207871070eb353b396b05
+Gitweb:        https://git.kernel.org/tip/9ab121d65e03b4dc38f207871070eb353b396b05
 Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Fri, 08 Mar 2024 11:58:58 +01:00
+AuthorDate:    Fri, 08 Mar 2024 11:58:56 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 12 Mar 2024 11:03:42 +01:00
+CommitterDate: Tue, 12 Mar 2024 11:03:41 +01:00
 
-sched/balancing: Fix comments (trying to) refer to NOHZ_BALANCE_KICK
+sched/debug: Allow CONFIG_SCHEDSTATS even on !KERNEL_DEBUG kernels
 
-Fix two typos:
-
- - There's no such thing as 'nohz_balancing_kick', the
-   flag is named 'BALANCE' and is capitalized:  NOHZ_BALANCE_KICK.
-
- - Likewise there's no such thing as a 'pending nohz_balance_kick'
-   either, the NOHZ_BALANCE_KICK flag is all upper-case.
+All major Linux distributions enable CONFIG_SCHEDSTATS,
+so make it more widely available.
 
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/20240308105901.1096078-8-mingo@kernel.org
+Link: https://lore.kernel.org/r/20240308105901.1096078-6-mingo@kernel.org
 ---
- kernel/sched/fair.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ lib/Kconfig.debug | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 84d4791..f3c03c6 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12409,15 +12409,16 @@ out:
- }
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 6c596e6..ed2ad1a 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1250,7 +1250,7 @@ config SCHED_INFO
  
- /*
-- * run_rebalance_domains is triggered when needed from the scheduler tick.
-- * Also triggered for nohz idle balancing (with nohz_balancing_kick set).
-+ * This softirq may be triggered from the scheduler tick, or by
-+ * any of the flags in NOHZ_KICK_MASK: NOHZ_BALANCE_KICK,
-+ * NOHZ_STATS_KICK or NOHZ_NEXT_KICK.
-  */
- static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
- {
- 	struct rq *this_rq = this_rq();
- 	enum cpu_idle_type idle = this_rq->idle_balance;
- 	/*
--	 * If this CPU has a pending nohz_balance_kick, then do the
-+	 * If this CPU has a pending NOHZ_BALANCE_KICK, then do the
- 	 * balancing on behalf of the other idle CPUs whose ticks are
- 	 * stopped. Do nohz_idle_balance *before* rebalance_domains to
- 	 * give the idle CPUs a chance to load balance. Else we may
+ config SCHEDSTATS
+ 	bool "Collect scheduler statistics"
+-	depends on DEBUG_KERNEL && PROC_FS
++	depends on PROC_FS
+ 	select SCHED_INFO
+ 	help
+ 	  If you say Y here, additional code will be inserted into the
 
