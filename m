@@ -1,131 +1,199 @@
-Return-Path: <linux-kernel+bounces-100017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C2038790D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:24:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 650028790E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:25:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02D361F25A56
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:24:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0336B22765
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA617828D;
-	Tue, 12 Mar 2024 09:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1617867B;
+	Tue, 12 Mar 2024 09:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eW4gS9y3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JjTUxez+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4EUcVuLu";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JjTUxez+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4EUcVuLu"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2D2C78262;
-	Tue, 12 Mar 2024 09:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908E477F25;
+	Tue, 12 Mar 2024 09:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710235241; cv=none; b=Jk6RNPQ2eIJMUjye9G/HDaT5koRc6/37wCk4LFfeogHg8/GDtZquR0PYRKUxsVfQwCD9jh1cz71IuVd56fPxe1UQKqUR1wSE1dOhmuusSWyHiE/AO/XwvDczKnpp+ksUKGL1cmICAZn80qHBAnkXUK5L2gmoaFJDeQO5TT3LaRw=
+	t=1710235379; cv=none; b=CoQ6Ss7h5gxLJv4XvkbVG+x9SvoGRbwcyibiRPfGMxeEQtAMKTxutKM9IYFyi3vjf8DM3Vh2U+mz2GjZsQ24NFHRJxeBnF+5hqmMW93DNsBK78jV/iJQ3/gnkKfOoFWvBg/OK8XnmCb/QMFhjUyAVpPddaUcBikwrFT4gnXiOug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710235241; c=relaxed/simple;
-	bh=zxkiu9aVl8Thl9uVJ1JoV9B0j7ibOXaq9f6g5nQEndM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ag0FLqJVls6gu15xSy421QxoahnltJrxOBus+m7cyEbE8lE365llTt8RyJpIdkWP7lcLIgSNPoYyImLTI52cuhdJsplJMJQYBBP1hU960mVO32eHwL0Vt+ShCUvN65LkLIHxV7pBDXz5Db6TY3FofUVAvNT4LtVqbFdSF2GFvgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eW4gS9y3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A19DC433C7;
-	Tue, 12 Mar 2024 09:20:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710235240;
-	bh=zxkiu9aVl8Thl9uVJ1JoV9B0j7ibOXaq9f6g5nQEndM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eW4gS9y3c6ESVgdHCwyPh8dT4j7jVE5Ns+Y/Jp2Wot7zMcCeUx039VarVhmkSNaCI
-	 vh9kFGjlbX6e+wHvJBaykGLQzjL+n0j2RbCStymyE8Ct2uPLt9aUl+x10x4X5PXjJF
-	 UllMPXed667HVZAB56aCHxQXZPrLeVXIjZgbFsIeeTxs0pUQwGHBW1xtpHppk8zTVB
-	 xsJ3NFVXQJ23Wo22FCw2ODnh1vv8TKkLajwcBlQg6TQT/zrfQ4u5locg8ajB5aDHbb
-	 QowO/OXolXhjulJI4IMXEnfyghJaciZmhI/Stfa0RBri+MU20SkF11LQv2N4SMK9lH
-	 KghG9PGxE4Bmg==
-Date: Tue, 12 Mar 2024 10:20:37 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org,
-	linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-	Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>,
-	quic_vdadhani@quicinc.com
-Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
- mode
-Message-ID: <ZfAeZbV0cXGR_Lkn@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>, konrad.dybcio@linaro.org,
-	andersson@kernel.org, vkoul@kernel.org,
-	linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-	Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>,
-	quic_vdadhani@quicinc.com
-References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
- <170993858923.2618408.4667207790973009000.b4-ty@kernel.org>
+	s=arc-20240116; t=1710235379; c=relaxed/simple;
+	bh=I+EYM0WoETASWaRI0J3YiWa6rmHuNoDSp7q5mvmzE8k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ft51vaxzZeGapGuZUQiYk/ymdLxzFQn0oVqSlA5XJZrelyKtRHTngLuXZlDU3GYYbtoXevnIeMg1f/JD7woPXsrJ2oba6el1g3sSsefq8sAg6+prGs6mFutbT1EGpP3z7UGIavJlZIxqlETQScJnbjj+GWjF48c7DJI8/qFIqlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JjTUxez+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4EUcVuLu; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JjTUxez+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4EUcVuLu; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6A4A6374BE;
+	Tue, 12 Mar 2024 09:22:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710235375; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QstBqPw+TFWXqr+lHM3TQAnfI7rBxMjKCBz0FdaAFh8=;
+	b=JjTUxez+t5+tkgWCeHoYFhbWGQ/8+VyUw3UsPDj4CwE/vP4F1JcUAVotrRQGG7Yyu/yj3B
+	am4oK9MbDA2uZBbKHajOpaLX4c7TyLOFvKXng9vsiDQe/mZGO8kdmNpLDfOda9ZY5Gh2xH
+	ys4+nCE24DEeOg/Y4jnROi95X4GWVCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710235375;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QstBqPw+TFWXqr+lHM3TQAnfI7rBxMjKCBz0FdaAFh8=;
+	b=4EUcVuLu9y7GiROf+XRXjuTVFaEcC9Oez6BLIMLagRJ2BdV7eDlXozkus+xsGav7jhpWGa
+	KAeVEKkPIQD5NgBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710235375; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QstBqPw+TFWXqr+lHM3TQAnfI7rBxMjKCBz0FdaAFh8=;
+	b=JjTUxez+t5+tkgWCeHoYFhbWGQ/8+VyUw3UsPDj4CwE/vP4F1JcUAVotrRQGG7Yyu/yj3B
+	am4oK9MbDA2uZBbKHajOpaLX4c7TyLOFvKXng9vsiDQe/mZGO8kdmNpLDfOda9ZY5Gh2xH
+	ys4+nCE24DEeOg/Y4jnROi95X4GWVCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710235375;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QstBqPw+TFWXqr+lHM3TQAnfI7rBxMjKCBz0FdaAFh8=;
+	b=4EUcVuLu9y7GiROf+XRXjuTVFaEcC9Oez6BLIMLagRJ2BdV7eDlXozkus+xsGav7jhpWGa
+	KAeVEKkPIQD5NgBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A6781364F;
+	Tue, 12 Mar 2024 09:22:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7vPiDe8e8GW6NAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 12 Mar 2024 09:22:55 +0000
+Message-ID: <8aa61329-dc3c-46f2-9db5-6e0770fbedda@suse.cz>
+Date: Tue, 12 Mar 2024 10:22:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ewTupQRwbxuX6vVW"
-Content-Disposition: inline
-In-Reply-To: <170993858923.2618408.4667207790973009000.b4-ty@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 4/4] UNFINISHED mm, fs: use kmem_cache_charge() in
+ path_openat()
+To: Roman Gushchin <roman.gushchin@linux.dev>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>,
+ Muchun Song <muchun.song@linux.dev>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
+ Jan Kara <jack@suse.cz>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
+ <20240301-slab-memcg-v1-4-359328a46596@suse.cz>
+ <CAHk-=whgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0=m1A@mail.gmail.com>
+ <ZeIkKrS7HK6ENwbw@P9FQF9L96D.corp.robot.car>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ZeIkKrS7HK6ENwbw@P9FQF9L96D.corp.robot.car>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JjTUxez+;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4EUcVuLu
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	 R_RATELIMIT(0.00)[to_ip_from(RLduzbn1medsdpg3i8igc4rk67)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-0.983];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.00)[17.18%];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[kernel.org,oracle.com,linux.com,google.com,lge.com,linux-foundation.org,gmail.com,cmpxchg.org,linux.dev,zeniv.linux.org.uk,suse.cz,kvack.org,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 0.00
+X-Rspamd-Queue-Id: 6A4A6374BE
+X-Spam-Flag: NO
 
+On 3/1/24 19:53, Roman Gushchin wrote:
+> On Fri, Mar 01, 2024 at 09:51:18AM -0800, Linus Torvalds wrote:
+>> What I *think* I'd want for this case is
+>> 
+>>  (a) allow the accounting to go over by a bit
+>> 
+>>  (b) make sure there's a cheap way to ask (before) about "did we go
+>> over the limit"
+>> 
+>> IOW, the accounting never needed to be byte-accurate to begin with,
+>> and making it fail (cheaply and early) on the next file allocation is
+>> fine.
+>> 
+>> Just make it really cheap. Can we do that?
+>> 
+>> For example, maybe don't bother with the whole "bytes and pages"
+>> stuff. Just a simple "are we more than one page over?" kind of
+>> question. Without the 'stock_lock' mess for sub-page bytes etc
+>> 
+>> How would that look? Would it result in something that can be done
+>> cheaply without locking and atomics and without excessive pointer
+>> indirection through many levels of memcg data structures?
+> 
+> I think it's possible and I'm currently looking into batching charge,
+> objcg refcnt management and vmstats using per-task caching. It should
+> speed up things for the majority of allocations.
+> For allocations from an irq context and targeted allocations
+> (where the target memcg != memcg of the current task) we'd probably need to
+> keep the old scheme. I hope to post some patches relatively soon.
 
---ewTupQRwbxuX6vVW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Do you think this will work on top of this series, i.e. patches 1+2 could be
+eventually put to slab/for-next after the merge window, or would it
+interfere with your changes?
 
+> I tried to optimize the current implementation but failed to get any
+> significant gains. It seems that the overhead is very evenly spread across
+> objcg pointer access, charge management, objcg refcnt management and vmstats.
+> 
+> Thanks!
 
-> On Fri, 08 Mar 2024 02:25:39 +0530, Mukesh Kumar Savaliya wrote:
-> > I2C driver currently reports "DMA txn failed" error even though it's
-> > NACK OR BUS_PROTO OR ARB_LOST. Detect NACK error when no device ACKs
-> > on the bus instead of generic transfer failure which doesn't give any
-> > specific clue.
-> >=20
-> > Make Changes inside i2c driver callback handler function
-> > i2c_gpi_cb_result() to parse these errors and make sure GSI driver
-> > stores the error status during error interrupt.
-> >=20
-> > [...]
->=20
-> Applied to i2c/i2c-host on
->=20
-> git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
-
-Because this patch touches a file in the DMA realm, we should have an
-ack here from one of the maintainers. So they know and are okay with us
-changing something in their area.
-
-$ scripts/get_maintainer.pl -f drivers/dma/qcom/gpi.c
-Bjorn Andersson <andersson@kernel.org>
-Konrad Dybcio <konrad.dybcio@linaro.org>
-Vinod Koul <vkoul@kernel.org>
-linux-arm-msm@vger.kernel.org
-dmaengine@vger.kernel.org
-linux-kernel@vger.kernel.org
-
-
---ewTupQRwbxuX6vVW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXwHmIACgkQFA3kzBSg
-KbYXUg//WE/vhqWVUyvCYAfe5NQpcr7VSpWQXTelvzhJov7fHX3qVMD5ZAzW9CSk
-Vh6iDgfKCb5JRNrKSvjyPsLvv5Ld2gDglF7+wyVZYh9ZhVpp8ncad6fLuXI3cul5
-mz7QRQ+R92BypzyAXEqE1jHIMgx3n4CDMBYrcJ3QLisUWzp8hPBmyTW7L/JMY3Xg
-Shyf+55Ncf80CXmvL3u1k/KbpGc01KFNMKSI7I0LU/NoJ2ckiVn+eVbpsWQX0JOz
-Ijso7riZWp8ltziANFSBxW0KiGpLlwnHuZUfb7gBPZ5SBNx+PVhX1SsKiw41szko
-JzC0F9WTMmt5FTj2GX7AcidnhpJP/Y4oQP23Nkt5DCkuTwNx3zwqauutshYpjl8x
-/KUyTCyE3eCgF6BzSt6/tWYOz7se4QTGGtAj6y/bnw3txppPOtPFoLP7b/8XPink
-/oQSho2ipuxF3A1o9YjDidV5YZCdbo/aByH0WTXuALJVWbAIgw4/4iMN3zqd30nH
-2jETRKrPj+AC529yh5Q/zUo1cHpNLLwIc+TblAfy0I3vL/aUiRNQssPETln5QxdW
-vkciPDnGD6Ut8gM7uMSbUcsiSItdisAqbDKdR8UoSXdl6YiHIRxh081r0ZanFB8E
-TGzku1i6hOgZ4L0F61zHREFxRRv+w/okp5LSv+FgHav0hKPiC0o=
-=Wqz8
------END PGP SIGNATURE-----
-
---ewTupQRwbxuX6vVW--
 
