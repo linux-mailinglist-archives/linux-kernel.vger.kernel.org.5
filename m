@@ -1,115 +1,138 @@
-Return-Path: <linux-kernel+bounces-100169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D92A68792E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:22:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0AFA8792EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:26:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82CF21F22EA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:22:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50E77B20FB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9269879B7A;
-	Tue, 12 Mar 2024 11:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA5079B79;
+	Tue, 12 Mar 2024 11:26:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ac1emfkd";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lNsVlYH+"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kh/udNka"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6366179B69;
-	Tue, 12 Mar 2024 11:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4177169D0A;
+	Tue, 12 Mar 2024 11:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710242552; cv=none; b=QIUt+ujixUQ2mt5hqjR+z6QS0mfBijnFTfFH2G8qKNse3FqFG4mHTaYkVhvf1wtTjUo6fdU/kuxvdLpXZiJEmusolkrSWlJW+8kb7BHT7QZsnTxsbXIOpQT31v0v0nXvxXBapSvGg11YsSPELWl5kIlO1coDlVtJ68EnSRGiSoE=
+	t=1710242760; cv=none; b=tw/AhlBisnQF9DD427zpeqoKwMLvZKwFaJqP+K+BX1Jq1B1bAcFe0nh9l76BGF0mogJ1aPTnOY5eK7EahWy1cqz6XTCrcpx8O9JqecMLSyuAKbgSfu4ZdK7A+Z+cCSRU5ohIOqxoQl4TesqOpnJ9Q62Pkt8Qc48C1QnZyPi0BFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710242552; c=relaxed/simple;
-	bh=cywT/QByQFIJdhADZzCtgX79R/D7p67c/GQR1xc82d0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=qdpPK2V5+SgpSyT//BHZ8/OJqXwjhdkURKF1ZdgaCvsZ0NK3NNzv2z8jfA+qpmLQMwR0PizS7viejUXd38x7aLA6T1ilQtpOcSAlc0VBy64kerXBcZF97Q62n35lpcntX+3TybuJvLmk23IdtuUrJMjbT16RQglygC/epH1whs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ac1emfkd; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lNsVlYH+; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710242549;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=sf8IIBXXR308h4kRJYGu81pgt61c8R8ZXVrdx1HuATA=;
-	b=Ac1emfkdlm80k4NNTrCk8ypmAbhqVcLh0Kz1QOcDVFPeDx9wpxESgrFvxYlIX1BzpQUp/p
-	em+4Tmjou7GWCWrnQq7k6OpRokEfvU3eKL4sui1heA0izq4y4rY0BLAL6CjQkJorH4XyXu
-	ZU9+FKCqgt1YuWe+GwdNjAafSnXf6H2RiO68MdGyK7m1D15TOeMdHRs8+BtL+L4mwjR5gU
-	PTZGw0ikFWrZIQUtR9rsfeZa+pS6T9QXluTpUC/4zyQ6szYjeGt+Q9ie6YOH8bXa9XyPrc
-	GLPvVp/OsV26opnHbRV2AVepeHgEbK5FX4aJKT5ycRCI5kdF30He28WL4JdqbQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710242549;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=sf8IIBXXR308h4kRJYGu81pgt61c8R8ZXVrdx1HuATA=;
-	b=lNsVlYH+t9pbriX1H3dOtFuKudDyN9IUKK3uLJfP6y+9tXbhZxDSsh7XxbMlABleSvEYfi
-	+yzmuutONeyQN6AA==
-Date: Tue, 12 Mar 2024 12:22:28 +0100
-Subject: [PATCH] ALSA: aaci: Delete unused variable in aaci_do_suspend
+	s=arc-20240116; t=1710242760; c=relaxed/simple;
+	bh=ZilwLOWbQIUyQERwtJmyAkcBz7ZY9T8GYcPPtmuMU1c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aY1GsCFw/NPOlpYcZZ+tgdAgxxrI89p/Msu1flWAfZOXPkYfu8ZzSJmCIfV2ixH23No9ultzf9Z4oSPO1rtkJk9blPFW79WNzcVMsDlaTRPNqt1RykTZd1A+825RGW8ZxoUQ8yM7UFvN5p+8hIIap+yLAl4tHiNsyYEtJYRAke4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kh/udNka; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F0B9C433C7;
+	Tue, 12 Mar 2024 11:25:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710242759;
+	bh=ZilwLOWbQIUyQERwtJmyAkcBz7ZY9T8GYcPPtmuMU1c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Kh/udNka6/i4IHWu1b8rmwTfPPlS9ismdnDY3NG3JhdvMXhogBc/R5SY1tJvdytRX
+	 mKS/5OOTbhQ7AYGrk6gUh9fzywnKsNBRmjFkgqOCJjYQoN3bYVJ4lyFzx/bOISc2qi
+	 5OHCbxT/DKZcOVhN2eIQdGPRzML/WzFzkem5FxFQM+e1ZY8wAo4Ox6qVWoVdjLXhVC
+	 BEecB0ywF7koZ9jtJwRd+KI9paQgOUC2rcNDTzxPonCdaUnZrXSmiN+HZgoZ0pzlSD
+	 qUzjykpULVtycwUjx6Kh/thqzz/3m1GcMVqJ1cN1hezbRkCsmgIHVet5bypiCZ9DRJ
+	 5qoiWuRhBCiVg==
+Message-ID: <153b313b-d386-4c19-84ea-e4cf4f5ec0f5@kernel.org>
+Date: Tue, 12 Mar 2024 12:25:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240312-aaci-unused-v1-1-09be643f67c2@linutronix.de>
-X-B4-Tracking: v=1; b=H4sIAPM68GUC/x3MQQqAIBBA0avIrBtQM6SuEi1Ep5qNhWIE4t2Tl
- m/xf4VMiSnDIiokejjzFTvUIMCfLh6EHLpBS23kqDQ65xlLLJkCBmuUVXLWNEnoxZ1o5/e/rVt
- rH4HQ5qNdAAAA
-To: Russell King <linux@armlinux.org.uk>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710242548; l=1049;
- i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=cywT/QByQFIJdhADZzCtgX79R/D7p67c/GQR1xc82d0=;
- b=Gx2FROu1Olg8QxebPKXGIbZIuHew1YoC26h43RlpBK9Hj4HCacMYmsn4XBAh6+PgVx/d5keqb
- rEIQpH/iYx5DKFGyxE0rb0k+2cGlGMzdAeqGYoConcgYqrUUNP0R94J
-X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
- pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: sunxi: add T95 string
+To: Kamil Kasperski <ressetkk@gmail.com>, wens@csie.org,
+ jernej.skrabec@gmail.com, samuel@sholland.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240311174750.6428-1-ressetkk@gmail.com>
+ <20240311174750.6428-2-ressetkk@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240311174750.6428-2-ressetkk@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The variable aaci is not used anymore and can be deleted.
+On 11/03/2024 18:47, Kamil Kasperski wrote:
+> T95 is a commonly known as series of cheap chinese TV Boxes with unknown brand.
+> Since their Android OS is built from Google Pixel 2 sources, all footprints metadata contain Google strings.
+> Let's assume the vendor of these boxes is t95.
+> 
+> Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
 
-Fixes: 792a6c51875c ("[ALSA] Fix PM support")
-Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
----
-Note: This only seems to trigger with the series
-"ALSA: Clean up with DEFINE_SIMPLE_DEV_PM_OPS()" applied.
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-(Encountered on next-20240312)
+Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+people, so fix your workflow. Tools might also fail if you work on some
+ancient tree (don't, instead use mainline), work on fork of kernel
+(don't, instead use mainline) or you ignore some maintainers (really
+don't). Just use b4 and everything should be fine, although remember
+about `b4 prep --auto-to-cc` if you added new patches to the patchset.
 
-[0] https://lore.kernel.org/all/20240207155140.18238-1-tiwai@suse.de/
----
- sound/arm/aaci.c | 1 -
- 1 file changed, 1 deletion(-)
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
 
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index 0817ad21af74..2bfffdd33864 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -740,7 +740,6 @@ static const struct snd_pcm_ops aaci_capture_ops = {
- #ifdef CONFIG_PM
- static int aaci_do_suspend(struct snd_card *card)
- {
--	struct aaci *aaci = card->private_data;
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3cold);
- 	return 0;
- }
+Please kindly resend and include all necessary To/Cc entries.
 
----
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-change-id: 20240312-aaci-unused-d74171092e50
 
 Best regards,
--- 
-Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+Krzysztof
 
 
