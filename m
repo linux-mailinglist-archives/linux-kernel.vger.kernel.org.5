@@ -1,156 +1,134 @@
-Return-Path: <linux-kernel+bounces-100626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10431879AF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:04:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E23B9879AF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93291B22186
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:04:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 200211C21DB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:07:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65061386D9;
-	Tue, 12 Mar 2024 18:04:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEF7139566;
+	Tue, 12 Mar 2024 18:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HPba/kW7"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="U0lxIATC"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AD41386C5
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04E153BE;
+	Tue, 12 Mar 2024 18:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710266652; cv=none; b=K3dOce0W0oqzS4hzT4uY4mt4otkyORKYnjMtkZjfiMlh1WPJZX6Prw3rs0vBNmXg5RaGeGDMb1IKMhwMQSmMZu5SkXSFXOF+wIPCxsU0nYaZUUBU07COGSudyViBczXSMdF77LjxAQ8c3ET26SInYY9OC6tOOahMRDMP0aPAHNg=
+	t=1710266833; cv=none; b=l3OeUakJt4KXXZKpDG48GGUFokaJBY3Yy580fsnpQwk6rtP9PskHai7HbLFU1jmuR56Vg/yCXSTuPGfNDuQJPa/Skfb1qw/l6k3+w/gS03OQfyIYB6hg1wvC27tw58s+tkWDKv24lhbofos8Peq4g+aewPxQdbssL01cRoR8i38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710266652; c=relaxed/simple;
-	bh=VClP0cN2QUMlvYkmVebFXGy+sO8rF6yXMKxzDT2+OIA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pO0FBUBxnwaeqOizasVGisJQLbhzVkL4OddJG2YbvPMBK5dEf1nq+wl7ZPo3xbxb+aAxs5TuYkt8b6xX8VNlB3WfplnmAER/RFrPX5dDS1C791FvRt6DlDccViRRduyRJ7uNeMqODPcWSZtmJ7DikywgMTjwheDz7K5QEDSAcIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HPba/kW7; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=l9BkDiTDTN4Ez0UwJxL2yXwhyy26CV45Z6H2eGThHSE=; b=HPba/kW79bVSH+uTlz2Jl9XCPo
-	SZ/+LWoFtS7FEjXiVnUKR+APwxAio6ByPV95NmbIkVqv+YoUtB7Y6j0v/T7VwUisnszmiC3cInMxb
-	n8d4yg0nFXUY8kFJylH3fD9Vrv4W/zGO8jXyMhBafy/81TRTZPW33w75trF1yFyuXcz2Cq+EZ1Rxj
-	ROjZp0YMmSp1HZOom6GryIW7u+u5RGLnBhhHrGfcwxTSDkLg4Ub7d1Y6s/rmNbyeqVvY/lPy32B65
-	f6v4YdieARkC3+erOlioxVVoFgSL/0LgF0U3jneyc1cJgwgqADDCnF/HnxSFaJ46n9DijN88XTR8F
-	ggTAKXwQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rk6Tx-00000006xrQ-1HRG;
-	Tue, 12 Mar 2024 18:04:09 +0000
-Date: Tue, 12 Mar 2024 11:04:09 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Lee Jones <lee@kernel.org>, Kees Cook <keescook@chromium.org>
-Cc: Michal Hocko <mhocko@suse.com>, cve@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Joel Granados <j.granados@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: CVE-2023-52596: sysctl: Fix out of bounds access for empty
- sysctl registers
-Message-ID: <ZfCZGevmDe149QeX@bombadil.infradead.org>
-References: <2024030645-CVE-2023-52596-b98e@gregkh>
- <Ze68r7_aTn6Vjbpj@tiehlicka>
- <Ze9-Xmn8v4P_wppv@bombadil.infradead.org>
- <20240312091730.GU86322@google.com>
- <ZfAkOFAV15BDMU7F@tiehlicka>
- <ZfBwuDyzLl5M0mhC@bombadil.infradead.org>
- <20240312154910.GC1522089@google.com>
+	s=arc-20240116; t=1710266833; c=relaxed/simple;
+	bh=xDMpf32XdN9mFoxvXmkOJMQv+yi7XgTifA78SnuM9qM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YR5cIhfsN5/WN5ynnirTW1VwwqL3hT10oKlJw8dssQiJH3n444r65eY7xoRI6AAfdZ3JnW8olNVZmbXmWwCGW9q2Ms3ZPtOrirY8clxPAK7onCKR7jEO/1LwcmV2vAGyVGgnoC9skEm5+qgu5PTT5RUlIAFUIIPKEBseqvGyQZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=U0lxIATC; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1710266824;
+	bh=xDMpf32XdN9mFoxvXmkOJMQv+yi7XgTifA78SnuM9qM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=U0lxIATCYVsgwa37ot09cJBoT6fXos59dZxsvraVILXcSpziqGDUrJF2sOgi6qEfT
+	 noRRWsccNTmlqFZofSTwkl/kLdHrMZJQDq5gw3qab2l5v1zXrRV3GBjm7YuXXWeTNZ
+	 xWRhnVaS7UiOkW6ADptv7GjTKPqKjqXLyP3Oz6Li1/r1bveGrjo4UWRqJtiQSB31CO
+	 Wb8VcsTGo39E9Qwqq0bL95YMaEUj0VptN/3TOeAkw9Y3nzDdiJZksgklgXekOjz2dN
+	 ihaY2eoFlTf0JJSsY1SEqnuszHIA07KoXNVMKhbxOyiyxOF+jD9E9X87T8eyiX4DB3
+	 mTd3pJSJZa3MQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TvM6c1n4dzh0K;
+	Tue, 12 Mar 2024 14:07:04 -0400 (EDT)
+Message-ID: <b7660de7-03ad-4d6c-b135-998d2cc0c80e@efficios.com>
+Date: Tue, 12 Mar 2024 14:07:18 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312154910.GC1522089@google.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] sched: Add missing memory barrier in switch_mm_cid
+Content-Language: en-US
+To: Yeo Reum Yun <YeoReum.Yun@arm.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ Catalin Marinas <Catalin.Marinas@arm.com>,
+ Mark Rutland <Mark.Rutland@arm.com>, Will Deacon <will@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Aaron Lu <aaron.lu@intel.com>
+References: <20240306152443.6340-1-mathieu.desnoyers@efficios.com>
+ <AM0PR08MB428936EACB47856176BFDD8CFB242@AM0PR08MB4289.eurprd08.prod.outlook.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <AM0PR08MB428936EACB47856176BFDD8CFB242@AM0PR08MB4289.eurprd08.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-+ Kees,
-
-On Tue, Mar 12, 2024 at 03:49:10PM +0000, Lee Jones wrote:
-> On Tue, 12 Mar 2024, Luis Chamberlain wrote:
+On 2024-03-11 04:45, Yeo Reum Yun wrote:
+> Hi. Mathieu. Sorry to late answer.
 > 
-> > On Tue, Mar 12, 2024 at 10:45:28AM +0100, Michal Hocko wrote:
-> > > On Tue 12-03-24 09:17:30, Lee Jones wrote:
-> > > [...]
-> > > > > Backporting this is fine, but wouldn't fix an issue unless an external
-> > > > > module had empty sysctls. And exploiting this is not possible unless
-> > > > > you purposely build an external module which could end up with empty
-> > > > > sysctls.
-> > > 
-> > > Thanks for the clarification Luis!
-> > > 
-> > > > Thanks for the amazing explanation Luis.
-> > > > 
-> > > > If I'm reading this correctly, an issue does exist, but an attacker
-> > > > would have to lay some foundations before it could be triggered.  Sounds
-> > > > like loading of a malicious or naive module would be enough.
-> > > 
-> > > If the bar is set as high as a kernel module to create and empty sysctl
-> > > directory then I think it is safe to say that the security aspect is
-> > > mostly moot. There are much simpler ways to attack the system if you are
-> > > able to load a kernel module.
-> > 
-> > Indeed, a simple BUG_ON(1) on external modules cannot possible be a
-> > source of a CVE. And so this becomes BUG_ON(when_sysctl_empty()) where
+>> diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+>> index 35389b2af88e..0d5e54201eb2 100644
+>> --- a/arch/x86/include/asm/barrier.h
+>> +++ b/arch/x86/include/asm/barrier.h
+>> @@ -79,6 +79,9 @@ do {                                                                  \
+>>   #define __smp_mb__before_atomic()      do { } while (0)
+>>   #define __smp_mb__after_atomic()       do { } while (0)
 > 
-> Issues that are capable of crashing the kernel in any way, including
-> with WARN() or BUG() are being considered weaknesses and presently get
-> CVEs.
-
-Its not possible to crash any released kernel with the out of bounds issue
-today, the commit is just a fix for a future world with empty sysctls
-which just don't exist today.
-
-Yes you can crash an external module with an empty sysctl on kernels
-without that commit, but an empty sysctl is not common practice for
-external modules, they'd have to have custom #ifdefs embedded as noted
-earlier with the example crash. So your average external module should
-not be able to crash existing kernels. The scope of a crash then would
-be external modules that used older kernels without the fix starting after
-v6.6. Since the fix is already meged on v6.6+ the scope of possible
-kernels is small, and you'd need a specially crafted sysctl empty array
-to do so.
-
-> > when_sysctl_empty() is hypotethical and I think the source of this
-> > question for CVE. Today's that not at boot time or dynamically with
-> > any linux kernel sources released, and so its only possible if:
-> > 
-> >   a) As Joel indicated if you backported an empty sysctl array (which
-> >   would be unless you carried all the infrastructure to support it).
-> > 
-> >   b) an external module has an empty sysctl
+>> +/* Writing to CR3 provides a full memory barrier in switch_mm(). */
+>> +#define smp_mb__after_switch_mm()      do { } while (0)
+>> +
+>> #include <asm-generic/barrier.h>
 > 
-> So what we're discussing here is weather this situation is
-> _possible_, however unlikely.
+> IIUC, ppc already does smp_mb() in switch_mm.
+> 
+> Would it better to add the same macro which do nothing to pcc?\\
 
-I tried my best to summarize that world as we see it above.
+Does it ?
 
-> You are the maintainer here, so the final decision is yours.  If you say
-> this situation is impossible and the CVE should be revoked, I'll go
-> ahead and do just that.
+Based on arch/powerpc/include/asm/membarrier.h, it appears that
+powerpc does _not_ have a guaranteed barrier in switch_mm():
 
-To the best of our ability, from our perspective, upon our review, the
-only way to trigger a crash would be with sysctls on external modules
-loaded on these kernels:
+static inline void membarrier_arch_switch_mm(struct mm_struct *prev,
+                                              struct mm_struct *next,
+                                              struct task_struct *tsk)
+{
+         /*
+          * Only need the full barrier when switching between processes.
+          * Barrier when switching from kernel to userspace is not
+          * required here, given that it is implied by mmdrop(). Barrier
+          * when switching from userspace to kernel is not needed after
+          * store to rq->curr.
+          */
+         if (IS_ENABLED(CONFIG_SMP) &&
+             likely(!(atomic_read(&next->membarrier_state) &
+                      (MEMBARRIER_STATE_PRIVATE_EXPEDITED |
+                       MEMBARRIER_STATE_GLOBAL_EXPEDITED)) || !prev))
+                 return;
 
- * v6.6 up to v6.6.15 (v6.6.16 has the fix backported) so 16 releases
- * v6.7 up to v6.7.3  (v6.7.4 has the fix backported) so 4 releases
+         /*
+          * The membarrier system call requires a full memory barrier
+          * after storing to rq->curr, before going back to user-space.
+          */
+         smp_mb();
+}
 
-External modules having empty sysctls should be rare, however possible.
-So these 20 release would be affected by a crash with specially crafted
-external modules. I suppose one way to exploit this, might be for a
-vendor providing an external safe-looking module with #ifdefs which make
-a sysctl seem non-empty but in reality it would be. That issue would
-exist for 20 kernel releases. Could someone craft something with the out
-of bounds access given the context to do something evil? Your domain of
-expertise, your call, not ours.
+AFAIU the barrier provided in powerpc switch_mm_irqs_off() is only in the
+"new_on_cpu" case. Am I missing something ?
 
-  Luis
+Thanks,
+
+Mathieu
+
+> 
+> Thanks!
+> 
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
