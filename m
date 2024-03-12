@@ -1,110 +1,108 @@
-Return-Path: <linux-kernel+bounces-100238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D019A8793E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:14:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C88F8793E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:14:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B6C12845BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:14:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADE811C216B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F8D7A129;
-	Tue, 12 Mar 2024 12:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625047A14A;
+	Tue, 12 Mar 2024 12:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YMtMcM1H"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="nuQU3m+A"
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F2C79DBB;
-	Tue, 12 Mar 2024 12:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8007A145
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:14:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710245647; cv=none; b=JQeXRpcZuSpii68h7Mt8wsobh3ucvYkEDRKGjYGRlU33BmK0FGqweJcMEDYRLeNX/p5Yd9DmWlmqnee2/b+ugXy02b+WnpwCPh+nUik9j4leGTERLHU9lYYI5lnycALrSedIZKOGocJcKYsT6fnfkIn49tJKRfQi5D6IXGwHgNU=
+	t=1710245686; cv=none; b=WOCVdF0XqVdWOPKQAb4z68dH6c94wYxD/2GvgU1hvhmaM6BSfttVc70PWm5gGazFHguxDMFmuBXsUnsU1iXva4rRnZ7ZW797+KdfpyoGWlK1N974MwcqqDHWSvmPAMfaiaeNIbrT9NF8siil3mCYt95ZdOe806Zg0sZ5zqzoNFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710245647; c=relaxed/simple;
-	bh=RIledjCrWSCL/IPypQh0lHmpGxAEht7ZxoU3/0wNE40=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gUcx51A72eTC4o4OK5Ic1BT/zXLvFdBRer3NxfxqxHKARNNxGc9wZkksG1jKI8r15cy/BZ6KSgo+e0RPIOhe1+aLvzQWuDZuS8ilZzcwzbqRar3TMhRp6ixu7GTu2wp3CV9SW6HbwE3rPosTcR1EAjgLkKyoiM+XKskAfndyhJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YMtMcM1H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 498B1C43399;
-	Tue, 12 Mar 2024 12:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710245647;
-	bh=RIledjCrWSCL/IPypQh0lHmpGxAEht7ZxoU3/0wNE40=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=YMtMcM1HD9JepAKEyuQuswytFBV5pq115pEWz+RZw+dGwUTHO+H4E8uCtlCmZLu3K
-	 yeOtnQJas5uaLZ5D4TxqkVTt8JDac3yA4qXENMSAKlo1jxQnELvmHvHhkI7osYGwze
-	 YtiXGANJtJ+sCP1L4YujohQOGY44MzijVk8bgsW/4iKM8MrU41wWsXsGr3yQcI5Hlv
-	 ddPv1rRmJn5LS76fTTGBSTVsIoyDae2Ohagyot/OLHO4LaUc2iLaAYU7ypAGttwB2e
-	 r/F1J1p7aMpA21mP3h8ofprS7UQ3ZLuF7U3n1xXqT7sW50x6UCInYUuiyGxhWwRwTS
-	 AQFPaCOFGml7A==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
- <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  Takahiro Kuwano
- <Takahiro.Kuwano@infineon.com>,  kernel@collabora.com,
-  kernel-janitors@vger.kernel.org,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: spi-nor: core: correct type of i
-In-Reply-To: <865fc24b-ae27-4084-893b-c5c389480a09@collabora.com> (Muhammad
-	Usama Anjum's message of "Mon, 11 Mar 2024 22:11:33 +0500")
-References: <20240304090103.818092-1-usama.anjum@collabora.com>
-	<865fc24b-ae27-4084-893b-c5c389480a09@collabora.com>
-Date: Tue, 12 Mar 2024 13:14:03 +0100
-Message-ID: <mafs0r0gf8x6c.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710245686; c=relaxed/simple;
+	bh=duOeKCS6bveowPG54FKvXNovbWkIKFNUj3Vc2HDZcO0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aa5llCD8mJLvhoXL1+A5oXfBHG/ybR64Rup5KrynLWlDXizuFdPD6tO0PS81Rd/xKNBR2OG1VUmR0JWWDQvK1bdB9CNcDQ9OjYSBBlu0INeyDFb7IsWRe79EXw3VWd4dpHllCqJ484frMdiRuuVTIGeYmcoOmktXZZCE5m9UMx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=nuQU3m+A; arc=none smtp.client-ip=209.85.217.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-4727b9d7b1fso763247137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 05:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1710245684; x=1710850484; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XZC0o0r2wFDW28FPKH9Tb5iKiJa9D3c2T5RaNX1TwfI=;
+        b=nuQU3m+AQmfF4KSfY2hHxbJ0RugcJEwPmyY4stpNsvgAkKRw/EGRk/6P0iVrzdQwXm
+         zPm/Z5as16PYXpuIVzM0jT4WueGxMunEAJNqLXroV9VKovIHiYLX53yth+fqZfbcaRq+
+         DWenlwJl+x5Wh7p8+foQVNzU8zkFcB8a471UDbqVZl64SUKUBW1fcgVXkjX6LE9ICRp3
+         BS2MOOzGpNCdvIM0ChddM1D7Zrx3H/acYKsxTfpv7wMXARoyYTd+cq22PPCyJ3Jrg8jq
+         CtIfAKZRTft2TMmhUodPs7NYwLjYnSC30ppJyjBuffNiTbHHEWtBQTxAYdVhh0CO8lif
+         UATQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710245684; x=1710850484;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XZC0o0r2wFDW28FPKH9Tb5iKiJa9D3c2T5RaNX1TwfI=;
+        b=HtcWwV+DJtCqOdR1wbj7TuqNNC6w+hiTxuJCQxOcixk76YwJJqZYiOdkS205iI70fe
+         2MNnu38lrinqKaXM0yfWLl8tFQk9rjx0jnXclXA59udWHsD1xOz7QeYLy3EeaZ6yoAC6
+         tT5V2HQG1x3pphuke4Ni9NsmfPk/ZPJZU/WLOmLZdVoc/Z8S27dKUkeVHwZE6FzBVZjv
+         0MV3iGt91K/4SB5WLqOr0UEFcljBf/ldcEHogCi5P5CIOTIvoukh4KU/wzffUsJBdGfE
+         3sR51HTw3bRGH+hhZXpilPsDPWmxih6iFcbawOgn6IKHzpfueegYtEXCYXUHIVT/p9qF
+         tcEg==
+X-Forwarded-Encrypted: i=1; AJvYcCW0ldPPmgBGDXmMKyLU+twSzYb2JO4uZj6rOjGNzbQoetQWYfGO0Dx0cSkdU2pPN0tacDZeo5X0ldOVa5o9+igOsPDUuXSJp2DBV2X6
+X-Gm-Message-State: AOJu0YzGxI0LT/49jWK2+JdlQ57QcYqeiyx43XmJPBcJJHurGazy/7x0
+	wAbmCR/uDt4ySoq64+c6pB2SZowujdqpZWqeZDdwJ9dvGZI+GLDip/vb/MjYFGVZjB+zVQ681o8
+	gquxXis7kaS4x+WzElKP/wTQ2zUvn3w5e7eUCEQ==
+X-Google-Smtp-Source: AGHT+IGC6GWeZ2uR1cZhuSX5z92E2OTDgg+XTAjGxI/njmH7eNlkIR7bUmLNMi0nRjdzhJz6htsK6DVHtdg4w43ul40=
+X-Received: by 2002:a67:f492:0:b0:474:c602:f4d3 with SMTP id
+ o18-20020a67f492000000b00474c602f4d3mr380845vsn.21.1710245683902; Tue, 12 Mar
+ 2024 05:14:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <ae643df0-3a3e-4270-8dbf-be390ee4b478@moroto.mountain> <CACRpkdYtiyHgvtPJYxq2BNb9UxthwPQPHyUddQ5Q1eat1NY4XQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYtiyHgvtPJYxq2BNb9UxthwPQPHyUddQ5Q1eat1NY4XQ@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 12 Mar 2024 13:14:32 +0100
+Message-ID: <CAMRc=MfvKy=0d3mrE5NaZMdVoG1P5s8AakrrQy+D+9a5Ua3Uqw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: nomadik: remove BUG_ON() in nmk_gpio_populate_chip()
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Mon, Mar 11 2024, Muhammad Usama Anjum wrote:
-
-> Soft reminder
-
-Miquel should pick up the patch when sending out his pull request [0].
-
-[0] https://lore.kernel.org/linux-mtd/20240307180919.4cb7a4cb@xps-13/
-
+On Tue, Mar 12, 2024 at 12:52=E2=80=AFPM Linus Walleij <linus.walleij@linar=
+o.org> wrote:
 >
-> On 3/4/24 2:01 PM, Muhammad Usama Anjum wrote:
->> The i should be signed to find out the end of the loop. Otherwise,
->> i >= 0 is always true and loop becomes infinite. Make its type to be
->> int.
->> 
->> Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->> Changes since v1:
->> - Make i int instead of u8
->> ---
->>  drivers/mtd/spi-nor/core.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 65b32ea59afc6..3e1f1913536bf 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -3373,7 +3373,7 @@ static u32
->>  spi_nor_get_region_erasesize(const struct spi_nor_erase_region *region,
->>  			     const struct spi_nor_erase_type *erase_type)
->>  {
->> -	u8 i;
->> +	int i;
->>  
->>  	if (region->overlaid)
->>  		return region->size;
+> On Mon, Mar 11, 2024 at 12:00=E2=80=AFPM Dan Carpenter <dan.carpenter@lin=
+aro.org> wrote:
+>
+> > Using BUG_ON() is discouraged and also the check wasn't done early
+> > enough to prevent an out of bounds access.  Check earlier and return
+> > an error instead of calling BUG().
+> >
+> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+>
+> Thanks Dan, I applied the patch to the pin control tree since the
+> rest of the stuff is resting there and Bartosz already sent his pull
+> request.
+>
 
--- 
-Regards,
-Pratyush Yadav
+Yes I did. There were no conflicts in next with nomadik updates so I
+figured you'll just send it yourself. Let me know if you need anything
+from my side.
+
+Bart
 
