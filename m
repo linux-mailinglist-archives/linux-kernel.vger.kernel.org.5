@@ -1,124 +1,291 @@
-Return-Path: <linux-kernel+bounces-100431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36175879779
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:24:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D356487977E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF2AB1F24EB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:24:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 453101F25366
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9A07C6D6;
-	Tue, 12 Mar 2024 15:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC777C6C3;
+	Tue, 12 Mar 2024 15:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxa/mtLK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="TSsh+C57"
+Received: from outgoing1.flk.host-h.net (outgoing1.flk.host-h.net [188.40.0.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA5AE7BB08;
-	Tue, 12 Mar 2024 15:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF38E7BB08;
+	Tue, 12 Mar 2024 15:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710257074; cv=none; b=WRd6g+LBLqQlOm9MuJkzfbA08WsfSEkAlEPHMKT1dXgOlcLpsQ440fMRvlwfIoHvTYy00QnSSp89NfIV9bfcg1baMxr7qDyLsZ73ozWtssGfO+2RlCXGzhC3X3h4W1lO/LFCUZlPz+qpKvq264FH0UXFjFs4Q2ngb6YY0ZakK+c=
+	t=1710257186; cv=none; b=LbXsOpnz6pX8LGF7iD7ux6rE54Lpx1wwzPQFxlflvxbmlMwRZmhqgIiXx+DXGZ/c3SV8iuwaYCs/ypU40E96c0KHcWIayl2JsmcuKQqv9eILVPPfF5gPXyJHCArZmcrv+2/KHt8i8tzlHkRcTHswdE1evdjkphjnciiSjPfS+uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710257074; c=relaxed/simple;
-	bh=nqKmQTSmr2KuGua3AdiEOFKyMoOcoM2xLn6yrACNOR4=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UPQTdGFALdpOtiIJ94XA9/oTbs5N0UDIbyvYX/Fy9Jm1FsTQg+ArZO2VTX8Lf1BakDyCD1+1u5YWGUrbw1MA8Qcv7yrQv+lop7LqR4l5zJVFtNz2VamlbLoOkL0OsIS4pn/x8wuW3aGSQDkzXcdti8sDn1dXYVOcS4X2vLnWWFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxa/mtLK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C3BC433F1;
-	Tue, 12 Mar 2024 15:24:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710257073;
-	bh=nqKmQTSmr2KuGua3AdiEOFKyMoOcoM2xLn6yrACNOR4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sxa/mtLKCqHRQ47Z3IGh8g9wEghLqDd4mEdsnmIZ8+rKVeNnIOe7nLGAm8nDyfpfj
-	 9KxyWcia6zoGbsG0CtfaZAKs7CFMwLVbGzY4t9ApEYLyUI08BKL131Efsf5saBdez6
-	 rHerJrF3Zq92BkXrsRTgoXJH099pAxBbqeRbXZRXepBR0iRLuBYDuXi57aDpIDf5Nk
-	 LfxsBtnoRnotjh3fEOqOxOuK2VwGVlBhw7FExY/kO9fzAbb0z0JF+68a0SzxECKKkL
-	 LkwIwhgvT/op/wvS116Vy2CGPWSBUv7lp5r9crmuinVWb4keHgw0k87cRWbQlixRKK
-	 EISGo5xgHdODA==
-Received: from [209.214.232.173] (helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rk3zS-00Blz8-6P;
-	Tue, 12 Mar 2024 15:24:30 +0000
-Date: Tue, 12 Mar 2024 15:24:23 +0000
-Message-ID: <87wmq7pj6g.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Mostafa Saleh <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Add PSCI v1.3 SYSTEM_OFF2 support for hibernation
-In-Reply-To: <20240312135958.727765-1-dwmw2@infradead.org>
-References: <20240312135958.727765-1-dwmw2@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1710257186; c=relaxed/simple;
+	bh=BlcNaRS2BfOhRIBUWeiUQSa+/oYiDbPZSHV9OCJ42CM=;
+	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
+	 References:Message-ID; b=jLbmtBzWWjnelBvPVf4MElA+fEUww773nMjLdM9jCRi8gJe5ENhgqVbdLzc3I4FGE8fD3VAY0ltND62UuJqy0y+FfF2NJ5JOa4tBmY7FZq2/b4FuZIMbxqQQUauCR7mzeYSkdD5C394zmDeTqpFIXsfZpXlsZTVTRCzf+icYfLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=TSsh+C57; arc=none smtp.client-ip=188.40.0.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
+	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
+	sender:bcc; bh=gbDwYUROXNM2O+x3xQy95KV7qywRuIIQTUYJjssMCUw=; b=TSsh+C57H5sx55
+	HSKJfKYRhO6frDbhsHKDuoSHQyqdTxufQRaY+PlKxTjVHIZgYxW78htXgus6zGhYiaTfmIHjvBTJ/
+	OLhlu0i4bU2hqTQYR5TN5x4iwUrCS4Ich5n2qKuqIDqJPdA+b01hEMiqmTzRrzB22H3nM1YWQOMrE
+	dXJPF3/WtmLQSbLdty9pZshSbv2Ck+K1MzM6jxVIc0RP/d6m7RfuiDKqUZ4uLbFTsemdkWZC7siHr
+	RL/VlsJ8cnE5fYWGz2Hvaw33XZTWtF23orOZxJmgGsU8gLFRJsu3srzXWk1oHvPhE10nNFT+MKeY6
+	DI2tYBj2pHKrN5+aNvnA==;
+Received: from www31.flk1.host-h.net ([188.40.1.173])
+	by antispam3-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rk40x-00G4ad-V6; Tue, 12 Mar 2024 17:26:07 +0200
+Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
+	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rk40t-00070T-Sz; Tue, 12 Mar 2024 17:25:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 209.214.232.173
-X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, dwmw@amazon.co.uk, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Tue, 12 Mar 2024 17:25:59 +0200
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, Florian
+ Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Matthias
+ Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] net: dsa: mt7530: disable LEDs before reset
+In-Reply-To: <6df6db7e-7842-4194-b429-ab7443a18ccb@arinc9.com>
+References: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
+ <6064ba52-2470-4c56-958c-35632187f148@arinc9.com>
+ <d45083788db8b0b1ace051adecfe6a3a@risingedge.co.za>
+ <1bfd93f1-36d5-436e-818e-2ebdcf475b44@arinc9.com>
+ <0439f80319127b6a4a9c19108bcc0065@risingedge.co.za>
+ <6df6db7e-7842-4194-b429-ab7443a18ccb@arinc9.com>
+Message-ID: <9a7c29b51575083201b963638bdb9fa5@risingedge.co.za>
+X-Sender: justin.swartz@risingedge.co.za
+User-Agent: Roundcube Webmail/1.3.17
+X-Authenticated-Sender: justin.swartz@risingedge.co.za
+X-Virus-Scanned: Clear
+X-SpamExperts-Domain: risingedge.co.za
+X-SpamExperts-Username: 
+Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.06)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT9TyjqxmnVSjLe3LUILSAncPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
+ WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
+ 3T+KSG//gbuP7hnUK8NQdLwsVWKIv+fXqqb3FJ1Z7kkAIev0U9CKH/oA07tJunDPm536TODb5GPR
+ oyaaXp1VNA9dXvxV+mFktoWo3CKg4C3LDJ75vu2U4GT70q7ZqN/P49BncZ5XB7lfx9K88uL/WnJE
+ LAEP514Y/yfAEbrTclu3OeNcbACmFr3ts0d2E6vXySsvfMaT9Bjf4etJ827HW1/sdZ81dz6BqXHU
+ oYg+nmOeSIjjxA24TPuOyBrko5yKpcR03QEJ9DjWmjcfK/FpTD0spWG+rMYoj8CdNq4vLYsMDbt4
+ 2oUP1Ae/eGZl2OLANHAHEjHENEhX9cq65nsXPA0MIFDIPOMDW/6+MC+5Mq5RH9OoW0W22an/ubzj
+ InB/ImqScRfGyrhHVstPeAuxsRhUFJC4TtSvIahFt3uEpT0304dV2Yoz1SesQUA6bnjJZT6m9lal
+ 9vikoy50DqR3hu/rL5PGAoTDzn0QdoxFeruM0Uhu+TDN1MfKxpvQx1BwwF9G5DEihnVW8zB2Qi26
+ vkVALycwzSdeC1kd8cXa71WqOc72jXbRpMw6Agze1f399OurHEyYS7nq+EBNvgiWKNNSkdVDZOrL
+ 5kxgO94lq2025NSImfKeGaSpuwkt9kMFaoxOFH2cp4YsTYwGNGW12ki18UnPMs4VIrisX+dtrxYn
+ /0jYEvj5QBAPtzfeVlNHdCJmwgf0M7fnqgzRvCMiN68tcHQey84mBB4XoB473XOJmIRPynE3O7YZ
+ oFBs6I7QuC1BjGNT52hVLEr/9PrrMm81h6IAYzikeIJfw26MB/V1E5BP9Gv0xI1YXOxC1lZqyFpL
+ AwQr6muMti2YanICQnMITeB2fd0UyjU/MIq3Vtx6CgQGHtezYqxGMqsKjARq8PBC4qgGsfAERwCB
+ JFs7XjZYbJPBsmpIto2O4JO2fx1gIuNHgi11AwJSTGCrOFs22K1ZnDqAw3gLmOBPHazhChxq9nGW
+ aSi6bFHidB1VgzDzDZn/+QEiRQv+PVjjwa+Z5RFCOMTMctdsTl1csEqhToiNz8IDdfFYVDBYJee7
+ gx/u82RtUz+q9amw8AuFhDmQdF5MpRw0mVfWLKEgol9rYV4JEcNP1rJoln/cD8h/RIvkzXRTCYvX
+ WLQhlD92+1l+zHfJg1FMwntsduNBxKPaTpE5L8d4VqFy6yKUFQtzhTlGiGL9BwIzkmvJREfBLui5
+ jZGa6GhjCOO2HhD88MS3lvGH/VLGIIDSVMZhrIoAWTF5tIdhy/UIEBYDcZg+Q8UhuRLyBn1+pvlH
+ hV6a5QjptwQBGybQyDQ2/GYwPjlMcE57ESN6G+kn87CtwPdB/10jfVNpDbYnXJdSRQj8460WHJib
+ IxmU2pb4i4DTkMZeMiNI9JSIyUbtnrlbG4BI8o81FOo91axhCaqPShJzgHH7y4ZfQxML
+X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-On Tue, 12 Mar 2024 13:51:27 +0000,
-David Woodhouse <dwmw2@infradead.org> wrote:
+On 2024-03-12 16:06, Arınç ÜNAL wrote:
+> On 12.03.2024 15:01, Justin Swartz wrote:
+>> Arınç
+>> 
+>> On 2024-03-12 04:41, Arınç ÜNAL wrote:
+>>> Wouldn't it be a better idea to increase the delay between
+>>> reset_control_assert() and reset_control_deassert(), and
+>>> gpiod_set_value_cansleep(priv->reset, 0) and
+>>> gpiod_set_value_cansleep(priv->reset, 1) instead of disabling the LED
+>>> controller and delaying before reset?
+>> 
+>> I've done some additional tests to see what the difference would be
+>> between increasing the reset hold period vs. disabling the LEDs then
+>> sleeping before reset.
+>> 
+>> 
+>> I wanted to know:
+>> 
+>> When an active link is present on Port 3 at boot, what are the
+>> minimum, maximum and average periods between ESW_P3_LED_0
+>> going low and the signal inversion that seems to co-incide with
+>> reset_control_deassert() for each approach?
+>> 
+>> 
+>> I created two patches:
+>> 
+>> WITH INCREASED RESET DELAY
+>> 
+>> As I submitted a patch that added an intended 1000 - 1100 usec delay
+>> before reset, I thought it would be fair to increase the reset hold
+>> period by the same value.
+>> 
+>> ---%---
+>> --- a/drivers/net/dsa/mt7530.c
+>> +++ b/drivers/net/dsa/mt7530.c
+>> @@ -2243,11 +2243,11 @@ mt7530_setup(struct dsa_switch *ds)
+>>           */
+>>          if (priv->mcm) {
+>>                  reset_control_assert(priv->rstc);
+>> -               usleep_range(1000, 1100);
+>> +               usleep_range(2000, 2200);
+>>                  reset_control_deassert(priv->rstc);
+>>          } else {
+>>                  gpiod_set_value_cansleep(priv->reset, 0);
+>> -               usleep_range(1000, 1100);
+>> +               usleep_range(2000, 2200);
+>>                  gpiod_set_value_cansleep(priv->reset, 1);
+>>          }
+>> ---%---
+>> 
+>> 
+>> DISABLE LEDS BEFORE RESET
+>> 
+>> Reset hold period unchanged from the intended 1000 - 1100 usec.
+>> 
+>> ---%---
+>> --- a/drivers/net/dsa/mt7530.c
+>> +++ b/drivers/net/dsa/mt7530.c
+>> @@ -2238,6 +2238,12 @@ mt7530_setup(struct dsa_switch *ds)
+>>                  }
+>>          }
+>> 
+>> +       /* Disable LEDs before reset to prevent the MT7530 sampling a
+>> +        * potentially incorrect HT_XTAL_FSEL value.
+>> +        */
+>> +       mt7530_write(priv, MT7530_LED_EN, 0);
+>> +       usleep_range(1000, 1100);
+>> +
+>>          /* Reset whole chip through gpio pin or memory-mapped 
+>> registers for
+>>           * different type of hardware
+>>           */
+>> ---%---
+>> 
+>> 
+>> I ran 20 tests per patch, applied exclusively. 40 tests in total.
+>> 
+>>       <-- ESW_P3_LED_0 Low Period before Reset Deassertion -->
+>> 
+>>    TEST    WITH INCREASED RESET DELAY    DISABLE LEDS BEFORE RESET
+>>       #                        (usec)                       (usec)
+>> -------------------------------------------------------------------
+>>       1                           182                         4790
+>>       2                           370                         3470
+>>       3                           240                         4635
+>>       4                          1475                         4850
+>>       5                            70                         4775
+>>       6                          2730                         4575
+>>       7                          3180                         4565
+>>       8                           265                         5650
+>>       9                           270                         4690
+>>      10                          1525                         4450
+>>      11                          3210                         4735
+>>      12                           120                         4690
+>>      13                           185                         4625
+>>      14                           305                         7020
+>>      15                          2975                         4720
+>>      16                           245                         4675
+>>      17                           350                         4740
+>>      18                            80                        17920
+>>      19                           150                        17665
+>>      20                           100                         4620
+>> 
+>>     Min                            70                         3470
+>>     Max                          3210                        17920
+>> 
+>>    Mean                           270                         4720
+-1s/  Mean/Median/
+
+>>     Avg                       923.421                     6161.579
+>> 
+>> 
+>> Every test resulted in a 40MHz HT_XTAL_FSEL, but after seeing 70 usec
+>> and 80 usec periods I wondered how many more tests it may take before
+>> an 25MHz HT_XTAL_FSEL appears.
+>> 
+>> I was also surprised by the 17920 usec and 17665 usec periods listed
+>> under the DISABLED LEDS BEFORE RESET column. Nothing unusual seemed
+>> to be happening, at least as far as the kernel message output was
+>> concerned.
+>> 
+>> What do you make of these results?
 > 
-> The upcoming PSCI v1.3 specification adds support for a SYSTEM_OFF2
-
-Pointer to the spec? Crucially, this is in the Alpha state, meaning
-that it is still subject to change [1].
-
-> function which is analogous to ACPI S4 state. This will allow hosting 
-> environments to determine that a guest is hibernated rather than just 
-> powered off, and ensure that they preserve the virtual environment 
-> appropriately to allow the guest to resume safely (or bump the 
-> hardware_signature in the FACS to trigger a clean reboot instead).
+> What I see is setting ESW_P3_LED_0 low via reset assertion is much more
+> efficient than doing so by setting the LED controller off. So I'd 
+> prefer
+> increasing the delay between assertion and reassertion. For example, 
+> the
+> Realtek DSA subdriver has a much more generous delay. 25ms after reset
+> assertion [1].
 > 
-> This adds support for it to KVM, and to the guest hibernate code.
+> Looking at your results, 2000 - 2200 usec delay still seems too close, 
+> so
+> let's agree on an amount that will ensure that boards in any 
+> circumstances
+> will have these pins back to the bootstrapping configuration before 
+> reset
+> deassertion. What about 5000 - 5100 usec?
+
+    TEST    ESW_P3_LED_0 LOW PERIOD
+       #                     (usec)
+----------------------------------
+       1                       5410
+       2                       5440
+       3                       4375
+       4                       5490
+       5                       5475
+       6                       4335
+       7                       4370
+       8                       5435
+       9                       4205
+      10                       4335
+      11                       3750
+      12                       3170
+      13                       4395
+      14                       4375
+      15                       3515
+      16                       4335
+      17                       4220
+      18                       4175
+      19                       4175
+      20                       4350
+
+     Min                       3170
+     Max                       5490
+
+  Median                   4342.500
+     Avg                   4466.500
+
+Looks reasonable to me.
+
+
+> [1]
+> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/tree/drivers/net/dsa/realtek/rtl83xx.c#n205
 > 
-> Strictly, we should perhaps also allow the guest to detect PSCI v1.3, 
-> but when v1.1 was added in commit 512865d83fd9 it was done 
-> unconditionally, which seems wrong. Shouldn't we have a way for 
-> userspace to control what gets exposed, rather than silently changing 
-> the guest behaviour with newer host kernels? Should I add a 
-> KVM_CAP_ARM_PSCI_VERSION?
-
-Do you mean something like 85bd0ba1ff98?
-
-	M.
-
-[1] https://documentation-service.arm.com/static/65e59325837c4d065f6556a6
-
--- 
-Without deviation from the norm, progress is not possible.
+> Arınç
 
