@@ -1,207 +1,217 @@
-Return-Path: <linux-kernel+bounces-100539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E00187994B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 267E0879953
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:48:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E737A1F233C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:48:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD6791F225ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB44F7EF0A;
-	Tue, 12 Mar 2024 16:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA5580C08;
+	Tue, 12 Mar 2024 16:48:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="jSejd4Y1";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="e+sd3K0K"
-Received: from wfhigh4-smtp.messagingengine.com (wfhigh4-smtp.messagingengine.com [64.147.123.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0M7GvAmw"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AA17E57A
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023638062A
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710262066; cv=none; b=q02tdSjF3YhKwqO/EXtXbKkNcuy4se7Tn9TQL2hFa4MCWHgOa+dA6JS7vm7ThHhqdyDz9HbBd05oN3lSvJHB80lAQKj/ww1IlUP/3wtUxiB1g3udTXapYF1AEmeqXbKKQHksFeelwz6pXrQShvtp/hR7PislLHgyQqN8dTyItT4=
+	t=1710262091; cv=none; b=XHYmFA5yU+OVSRf4dUaRre+qnFZF3RzYF5MVE6GB0NTh4U0f4oAmIyKUhgYUVYLO/rW9uw4gXpViEM6sKH6gXsHSQryFoO12zkj3U2GyHwkfj0fMSZFM/uzBsYk/m5Ayf1ueKO6To7VozDQtOqu2V5XP/Eq58oe/ftkso2pQTLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710262066; c=relaxed/simple;
-	bh=Cd9rPybonIlLBWTPQKtuVaN9u13bgU3SKiAsW58D8iQ=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=laBAGATN42O0IytTmnL9V2gx8+chj38SFmvh+xcpEpGYDEK2qhBw1EjLkhFVNl/nhMUyg11oA8d6FKZ0Kat40OEy940Bple4TDSeazwd3DFB4Y/Apv1MzL/rSLSZrZ78+3wKbVTjm9Wh1sKSxA2jXxsTeDe0XdyGX+WX0pEUBoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=jSejd4Y1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=e+sd3K0K; arc=none smtp.client-ip=64.147.123.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 34EFD180009B;
-	Tue, 12 Mar 2024 12:47:44 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 12 Mar 2024 12:47:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1710262063;
-	 x=1710348463; bh=+pSPTrckktAgZrC61fswcgNJEn0V4pdObZ0UIRDjo6s=; b=
-	jSejd4Y1Og0w0qD4sb0BYJ45LKO+XdP7+lcsKdX3gyyAbdUy0oXoJnoB37bX59ah
-	2ebaMczeuJhhZWcDV4y2cYou0+gG6yyJ6NnZNRm46k1iAIGH9S0Q3+KZQq9trAng
-	7OlRUyxSaSCK+SxHmd71vOF1tL0XIAD9nrTJeA8atwBcyQxeco9JT6ii2+4ilthk
-	fpJJKMZH8Kim6RqXx4IH4dXuAnu9NzTF34+IFNvEdy6KJQX0Dbg0G0j/BCXAI1l7
-	QJmd4KMu0gOsMhRwPeEWEADMpDv/5B8D1ue5aD0DQ+ouUcw7tBkScTCp+LgVO6qV
-	qZX3Oj3o28xHYLED3ZGnQA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710262063; x=
-	1710348463; bh=+pSPTrckktAgZrC61fswcgNJEn0V4pdObZ0UIRDjo6s=; b=e
-	+sd3K0K9jQh2zbY22ovJ1D/memZ1tm4l0M0bElM1FMHbHlYmsghVbZXO/tghhIU4
-	+ar88urCPM8dY+mMsBsWxEly+mJEcELusW26yj791fD2nopPbVEW6ddYztweYlTu
-	lK9AmslOQuNSgc8jkXu1zZQjkRSGCLfS3c0r/83+oDZ3vh63zaXZKr8ImoWoWnuB
-	JVX1R/pv9f/TaH1TfjYX15Hcsn5ziao0f2aJ5EYT9UyczL06ustIiQGimBUPoPUv
-	qY+aBCIsFdHhVpd/PJJqXweXwqeHmWQWuA1H0k6iZVr6Rl2gL0Y2UopkfMiRn/YX
-	fkgBkrOyNk2k/0XMiIfBg==
-X-ME-Sender: <xms:L4fwZfgIbRcUYZhhNYmQZjQCAYhQNeNjSJJmo1sIPz_l191pqP3x3A>
-    <xme:L4fwZcC9EYyqGCFkPLco3beCoT9ex1uVMJA5jta0ldbURmtpUBKNmFZDfDvb5atzE
-    oHU8YWWQLlhObvYsFc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgdelvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeufeef
-    ieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dunecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:L4fwZfGiaPh_HGM65dQQO3eKdd1BBp-0HH6-n4n3pLBfETL8ngTtOQ>
-    <xmx:L4fwZcRSAUCv3VnO5_-W8Xi-qffQHuPzP8cSsK8k1V2OkbDfAVj3mw>
-    <xmx:L4fwZcwZ4PHlCEIrPDIiIdeJU9xO3GnEcE2_PyGp1scJ886LHFI-PQ>
-    <xmx:L4fwZS7gjoTVPrmacTNtGfLTjKF_FM7WDL_qSG7HqPoEt8DOrj7hEA>
-    <xmx:L4fwZWtvJcXqMUOfNjR4-dss2AybCy3FidVLDazqpfMjmwDHkoDQQERvfmY>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 7F847B60089; Tue, 12 Mar 2024 12:47:43 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1710262091; c=relaxed/simple;
+	bh=Q9HjHKn/d07di0Ny/VSuzvRdRoFuJ8TFJKvZUrjtdv0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b7nNj6zqLOe0gzKRzT3TMYmmXQCUxuhkZHTBR+nmPTxvIv31kPk5mTLonqqSVQSmgsNW5tu1Kq1CITPlfH0QAETRWgzGcVj/H1KOckUZqOnoO1aB1qjG64bhM/it02N8ta8AHFoiLT+Lb63CO52g97mVTEHYt4CgnPA4m3evk2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0M7GvAmw; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-413e613316cso1449135e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 09:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710262088; x=1710866888; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X1JdD3SjakPudHQVJ76rnnq2H2jE37lLZ/0x/M6KH0I=;
+        b=0M7GvAmw5MXxK8s34JKi6K+N9SVvWcUQFaEdziy56einrtrPwp+6Sy7iNgYACkcUe0
+         QwLeRyq4wVefsHU82lFwZ3dA9PzuyU3OyxizEUe3AFDS031FvDjZrf7ReRu5mLL2jTIR
+         x25ZxQH9YjhhSHki1b6HdTLBrVnjEhQtERV77PJ851qQrJozFIYaA2KfXHqdNpiloVkT
+         r+ngswREVrv7r/SkwALcTqUbcosyZkqxzYDwtFPxBecK18WRGlyIku0hq4N3OItRlGsf
+         HC1SYAlvqxmUcvQjsCjlpVAlGhS4Yx9pUWBmpzl8ts2lxhcUmAOsPySEN7ujNhwE071j
+         HwmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710262088; x=1710866888;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X1JdD3SjakPudHQVJ76rnnq2H2jE37lLZ/0x/M6KH0I=;
+        b=qXTTj/y+B1aB4uuyI6tJU8QR+BKZw1tc6VoXf4B8dbb8V2zKn3Wzh2JISy1I2bHgRu
+         g0tl6c71AZwO8x0smDbEwt83NmX9SCjENV5/5/H+Z6yXb03FtNkOT0janQuyrQa1jOcx
+         Fg6jwi2Pg4s1NqoX0kV87Bmqp6xW9UhPq8OPrQinXmMs2guDfutUuasLuTXubuXMgIsw
+         mqQLzQ+2mjZY4wi46d0GtMRXWhLsTlls/93wIPYy76r0RubFTKvw6kS/6p/hzECz9APX
+         Ol8p/BUqcbvy4DL8voGsXbG22qgee/ApaMNuBJ1nD+By2+WFXPTae53zo/z+IbhwRsGX
+         +9UA==
+X-Forwarded-Encrypted: i=1; AJvYcCW1EKdyaGj66FmRi8+bD0hq4iHPraKHq1BbbuTLE1qX043/yMYzeC0cxONz4vJaN8hx04GjF8635nxeYla1evtN1axhl+SDCofJrgRE
+X-Gm-Message-State: AOJu0YzViozEtdd+E4sPwtevyv3MhnJ+tXu5Lww63iTr/Vr1exfX9Ax/
+	RL1CFJ2V6yv/I37K+9myaUELHyMGKqzzrmFQ6I4vBOHzQj4p7UL7qLv+oFGU6c1pZcpmPzDVnbd
+	Ij6P0iAMTS2PVsWKNcuErsCIg/SofXN2u70cn
+X-Google-Smtp-Source: AGHT+IHz1t46LqyIdp7DJe0W007vNHqs968mX/S24f/EmXbCZ+L80gonmf0M4eO18CLGv4wGugu605YqTZHSHfDeU2Y=
+X-Received: by 2002:a05:600c:5251:b0:412:ebce:aa81 with SMTP id
+ fc17-20020a05600c525100b00412ebceaa81mr7255060wmb.23.1710262088195; Tue, 12
+ Mar 2024 09:48:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <a901bb0c-bf09-470b-98e1-10ae1cacf0db@app.fastmail.com>
-In-Reply-To: <89d0bb77-a608-4ae0-b9d9-e17fdf5f12da@app.fastmail.com>
-References: <89d0bb77-a608-4ae0-b9d9-e17fdf5f12da@app.fastmail.com>
-Date: Tue, 12 Mar 2024 17:47:22 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc: soc@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL 4/4] ARM defconfig updates for 6.9
-Content-Type: text/plain;charset=utf-8
+References: <a9e3120d-8b79-4435-b113-ceb20aa45ee2@alu.unizg.hr>
+ <4a5c8d28-7f73-4c15-b288-641f0ccc91c2@redhat.com> <Ze8Wr2qH8V0LMi_5@x1n>
+ <b5ff4c70-6379-4cc7-8c92-778d80a6a658@redhat.com> <Ze8fYF5I4mlUGHd9@x1n>
+ <CAJHvVcie+N+4j60m_Dxh7QzbZLmsjnq2-04peuqE8VkkMq984A@mail.gmail.com>
+ <Ze9bWkrD6UBZ2ErV@x1n> <CADrL8HW59nt4ztY3x5G3VgpmaXQbXoXZeAjvzMp7SpsqxgDCxw@mail.gmail.com>
+ <CACw3F51vMqPBHmvj4ehSA8PadXw30s3MxCqph1op5dxtB-tV6Q@mail.gmail.com> <ZfB28NIbflrnsqiX@x1n>
+In-Reply-To: <ZfB28NIbflrnsqiX@x1n>
+From: Axel Rasmussen <axelrasmussen@google.com>
+Date: Tue, 12 Mar 2024 09:47:31 -0700
+Message-ID: <CAJHvVcizoDwYVqnkroBz4nrXJRCkynC19=RBgWhT6xPdrvJ0sA@mail.gmail.com>
+Subject: Re: BUG selftests/mm]
+To: Peter Xu <peterx@redhat.com>
+Cc: Jiaqi Yan <jiaqiyan@google.com>, James Houghton <jthoughton@google.com>, 
+	David Hildenbrand <david@redhat.com>, Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd=
-33d:
+On Tue, Mar 12, 2024 at 8:38=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Mon, Mar 11, 2024 at 03:28:28PM -0700, Jiaqi Yan wrote:
+> > On Mon, Mar 11, 2024 at 2:27=E2=80=AFPM James Houghton <jthoughton@goog=
+le.com> wrote:
+> > >
+> > > On Mon, Mar 11, 2024 at 12:28=E2=80=AFPM Peter Xu <peterx@redhat.com>=
+ wrote:
+> > > >
+> > > > On Mon, Mar 11, 2024 at 11:59:59AM -0700, Axel Rasmussen wrote:
+> > > > > I'd prefer not to require root or CAP_SYS_ADMIN or similar for
+> > > > > UFFDIO_POISON, because those control access to lots more things
+> > > > > besides, which we don't necessarily want the process using UFFD t=
+o be
+> > > > > able to do. :/
+> > >
+> > > I agree; UFFDIO_POISON should not require CAP_SYS_ADMIN.
+> >
+> > +1.
+> >
+> >
+> > >
+> > > > >
+> > > > > Ratelimiting seems fairly reasonable to me. I do see the concern =
+about
+> > > > > dropping some addresses though.
+> > > >
+> > > > Do you know how much could an admin rely on such addresses?  How fr=
+equent
+> > > > would MCE generate normally in a sane system?
+> > >
+> > > I'm not sure about how much admins rely on the address themselves. +c=
+c
+> > > Jiaqi Yan
+> >
+> > I think admins mostly care about MCEs from **real** hardware. For
+> > example they may choose to perform some maintenance if the number of
+> > hardware DIMM errors, keyed by PFN, exceeds some threshold. And I
+> > think mcelog or /sys/devices/system/node/node${X}/memory_failure are
+> > better tools than dmesg. In the case all memory errors are emulated by
+> > hypervisor after a live migration, these dmesgs may confuse admins to
+> > think there is dimm error on host but actually it is not the case. In
+> > this sense, silencing these emulated by UFFDIO_POISON makes sense (if
+> > not too complicated to do).
+>
+> Now we have three types of such error: (1) PFN poisoned, (2) swapin error=
+,
+> (3) emulated.  Both 1+2 should deserve a global message dump, while (3)
+> should be process-internal, and nobody else should need to care except th=
+e
+> process itself (via the signal + meta info).
+>
+> If we want to differenciate (2) v.s. (3), we may need 1 more pte marker b=
+it
+> to show whether such poison is "global" or "local" (while as of now 2+3
+> shares the usage of the same PTE_MARKER_POISONED bit); a swapin error can
+> still be seen as a "global" error (instead of a mem error, it can be a di=
+sk
+> error, and the err msg still applies to it describing a VA corrupt).
+> Another VM_FAULT_* flag is also needed to reflect that locality, then
+> ignore a global broadcast for "local" poison faults.
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+It's easy to implement, as long as folks aren't too offended by taking
+one more bit. :) I can send a patch for this on Monday if there are no
+objections.
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-d=
-efconfig-6.9
-
-for you to fetch changes up to d8999d151e4110effc760397f500dda25d7a60b1:
-
-  arm64: defconfig: Enable support for cbmem entries in the coreboot tab=
-le (2024-03-04 21:18:53 +0100)
-
-----------------------------------------------------------------
-ARM defconfig updates for 6.9
-
-This has the usual updates to enable platform specific driver modules
-as new hardware gets supported, as well as an update to the virt.config
-fragment so we disable all newly added platforms again.
-
-----------------------------------------------------------------
-Abel Vesa (1):
-      arm64: defconfig: Enable X1E80100 multimedia clock controllers con=
-figs
-
-Alexander Stein (1):
-      arm64: defconfig: Enable i.MX8QXP device drivers
-
-Andrew Davis (2):
-      ARM: multi_v7_defconfig: Add more TI Keystone support
-      ARM: multi_v7_defconfig: Add more TI Keystone support
-
-Arnd Bergmann (6):
-      arm64: config: disable new platforms in virt.config
-      Merge tag 'renesas-arm-defconfig-for-v6.9-tag1' of git://git.kerne=
-l.org/pub/scm/linux/kernel/git/geert/renesas-devel into soc/defconfig
-      Merge tag 'qcom-arm64-defconfig-for-6.9' of https://git.kernel.org=
-/pub/scm/linux/kernel/git/qcom/linux into soc/defconfig
-      Merge tag 'imx-defconfig-6.9' of git://git.kernel.org/pub/scm/linu=
-x/kernel/git/shawnguo/linux into soc/defconfig
-      Merge tag 'ti-k3-config-for-v6.9' of https://git.kernel.org/pub/sc=
-m/linux/kernel/git/ti/linux into soc/defconfig
-      Merge tag 'v6.9-rockchip-config64-1' of git://git.kernel.org/pub/s=
-cm/linux/kernel/git/mmind/linux-rockchip into soc/defconfig
-
-Bjorn Andersson (2):
-      arm64: defconfig: Enable MAX20411 regulator driver
-      arm64: defconfig: Enable Qualcomm interconnect providers
-
-Brandon Brnich (1):
-      arm64: defconfig: Enable Wave5 Video Encoder/Decoder
-
-Cristian Ciocaltea (1):
-      arm64: defconfig: Enable Rockchip HDMI/eDP Combo PHY
-
-Geert Uytterhoeven (2):
-      ARM: shmobile: defconfig: Disable staging
-      ARM: multi_v7_defconfig: Disable board staging
-
-Komal Bajaj (1):
-      arm64: defconfig: Enable GCC and interconnect for QDU1000/QRU1000
-
-Krzysztof Kozlowski (1):
-      arm64: defconfig: drop ext2 filesystem and redundant ext3
-
-Linh Phung (1):
-      arm64: defconfig: Enable R8A779H0 SoC
-
-Luca Weiss (1):
-      arm64: defconfig: Enable QCOM PBS
-
-Marek Szyprowski (1):
-      ARM: multi_v7_defconfig: Enable BACKLIGHT_CLASS_DEVICE
-
-Martin J=C3=BCcker (1):
-      ARM: defconfig: enable STMicroelectronics accelerometer and gyro f=
-or Exynos
-
-Martin Kaiser (2):
-      ARM: imx_v6_v7_defconfig: enable the vf610 gpio driver
-      arm64: defconfig: enable the vf610 gpio driver
-
-Neil Armstrong (3):
-      arm64: defconfig: enable audio drivers for SM8650 QRD board
-      arm64: defconfig: enable WCD939x USBSS driver as module
-      arm64: deconfig: enable Goodix Berlin SPI touchscreen driver as mo=
-dule
-
-N=C3=ADcolas F. R. A. Prado (1):
-      arm64: defconfig: Enable support for cbmem entries in the coreboot=
- table
-
-Yannic Moog (1):
-      arm64: defconfig: enable i.MX8MP ldb bridge
-
- arch/arm/configs/exynos_defconfig    |  3 +++
- arch/arm/configs/imx_v6_v7_defconfig |  1 +
- arch/arm/configs/multi_v7_defconfig  | 21 ++++++++++++++++++++-
- arch/arm/configs/shmobile_defconfig  |  2 --
- arch/arm64/configs/defconfig         | 34 +++++++++++++++++++++++++++++=
-+----
- arch/arm64/configs/virt.config       |  4 ++++
- 6 files changed, 58 insertions(+), 7 deletions(-)
+>
+> >
+> > SIGBUS (and logged "MCE: Killing %s:%d due to hardware memory
+> > corruption fault at %lx\n") emit by fault handler due to UFFDIO_POISON
+> > are less useful to admins AFAIK. They are for sure crucial to
+> > userspace / vmm / hypervisor, but the SIGBUS sent already contains the
+> > poisoned address (in si_addr from force_sig_mceerr).
+> >
+> > >
+> > > It's possible for a sane hypervisor dealing with a buggy guest / gues=
+t
+> > > userspace to trigger lots of these pr_errs. Consider the case where a
+> > > guest userspace uses HugeTLB-1G, finds poison (which HugeTLB used to
+> > > ignore), and then ignores SIGBUS. It will keep getting MCEs /
+> > > SIGBUSes.
+> > >
+> > > The sane hypervisor will use UFFDIO_POISON to prevent the guest from
+> > > re-accessing *real* poison, but we will still get the pr_err, and we
+> > > still keep injecting MCEs into the guest. We have observed scenarios
+> > > like this before.
+> > >
+> > > >
+> > > > > Perhaps we can mitigate that concern by defining our own ratelimi=
+t
+> > > > > interval/burst configuration?
+> > > >
+> > > > Any details?
+> > > >
+> > > > > Another idea would be to only ratelimit it if !CONFIG_DEBUG_VM or
+> > > > > similar. Not sure if that's considered valid or not. :)
+> > > >
+> > > > This, OTOH, sounds like an overkill..
+> > > >
+> > > > I just checked again on the detail of ratelimit code, where we by d=
+efault
+> > > > it has:
+> > > >
+> > > > #define DEFAULT_RATELIMIT_INTERVAL      (5 * HZ)
+> > > > #define DEFAULT_RATELIMIT_BURST         10
+> > > >
+> > > > So it allows a 10 times burst rather than 2.. IIUC it means even if
+> > > > there're continous 10 MCEs it won't get suppressed, until the 11th =
+came, in
+> > > > 5 seconds interval.  I think it means it's possibly even less of a =
+concern
+> > > > to directly use pr_err_ratelimited().
+> > >
+> > > I'm okay with any rate limiting everyone agrees on. IMO, silencing
+> > > these pr_errs if they came from UFFDIO_POISON (or, perhaps, if they
+> > > did not come from real hardware MCE events) sounds like the most
+> > > correct thing to do, but I don't mind. Just don't make UFFDIO_POISON
+> > > require CAP_SYS_ADMIN. :)
+> > >
+> > > Thanks.
+> >
+>
+> --
+> Peter Xu
+>
 
