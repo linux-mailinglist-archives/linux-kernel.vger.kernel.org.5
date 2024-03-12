@@ -1,96 +1,117 @@
-Return-Path: <linux-kernel+bounces-100077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A929B879175
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:53:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE8B8878FD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30DE1B2522F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:53:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DCE6282589
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D2C77F08;
-	Tue, 12 Mar 2024 09:53:17 +0000 (UTC)
-Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E24577A0F;
+	Tue, 12 Mar 2024 08:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="da+a25s0"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77EB38464;
-	Tue, 12 Mar 2024 09:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00DB0C8DD;
+	Tue, 12 Mar 2024 08:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710237197; cv=none; b=R9NmInKU0wpM42+iDkmbWwpGQSd7sEAZn/KLSln9m5Vt+gFSPVX2O7QNT+AoT0l4Alhc3sGov3IYJFSVPAPdaYepxdEZGjKFuU75hKQs8SWmnEV6gpnB03Wn4fAonlW8tKdYbxmLkMX8tNtMQ1CJWRigZ7r2+Ta+/B1pEsRU5Yw=
+	t=1710232710; cv=none; b=MJiflShcxrhy+AYTr2KRISM+KtKE1O/RhzeVkXjTjVaCLRrcSWiqrf1loLLXctnTCkIUFgPe+OJeHG1yoWUDVlfvBqLH/suRiOo4L+w6psI2z5zD9PKdwdtlqysR8G0/3B3MbADfeIeVNI+HKD1lBAhQTjjPHxmTBNvs+NIFWb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710237197; c=relaxed/simple;
-	bh=484fGHYCkSxYD6mCMfudQ6WkbUe/ZMV3OusJdX8NaVg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=WFOxKsLCrZ0czGvQO+riSMukOzU3+fWBX7Tw25MxQ+3sqrNauv3KxMc/EXLMHMHdCccldNWfJeE7ji0t07hj/nIYo6DUEHc36wnx0GZGoZV/8mqrIHKfGscXdab3FOWf+qrS8q8lg9fHWRj+eJjsDYv/Mr0IlI5c0z5aKXuWb1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-	by h3cspam02-ex.h3c.com with ESMTP id 42C8cam6070755;
-	Tue, 12 Mar 2024 16:38:36 +0800 (GMT-8)
-	(envelope-from liu.yeC@h3c.com)
-Received: from mail.maildlp.com ([172.25.15.154])
-	by h3cspam02-ex.h3c.com with ESMTP id 42C8bAQO064331;
-	Tue, 12 Mar 2024 16:37:10 +0800 (GMT-8)
-	(envelope-from liu.yeC@h3c.com)
-Received: from DAG6EX12-BJD.srv.huawei-3com.com (unknown [10.153.34.14])
-	by mail.maildlp.com (Postfix) with ESMTP id 9B02C2005153;
-	Tue, 12 Mar 2024 16:38:39 +0800 (CST)
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
- DAG6EX12-BJD.srv.huawei-3com.com (10.153.34.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.27; Tue, 12 Mar 2024 16:37:11 +0800
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
- by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
- mapi id 15.02.1258.027; Tue, 12 Mar 2024 16:37:11 +0800
-From: Liuye <liu.yeC@h3c.com>
-To: Daniel Thompson <daniel.thompson@linaro.org>
-CC: "jason.wessel@windriver.com" <jason.wessel@windriver.com>,
-        "dianders@chromium.org" <dianders@chromium.org>,
-        "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "kgdb-bugreport@lists.sourceforge.net"
-	<kgdb-bugreport@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org"
-	<linux-serial@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogtPC4tDogW1BBVENIXSBrZGI6IEZpeCB0aGUgZGVhZGxvY2sgaXNz?=
- =?gb2312?Q?ue_in_KDB_debugging.?=
-Thread-Topic: =?gb2312?B?tPC4tDogW1BBVENIXSBrZGI6IEZpeCB0aGUgZGVhZGxvY2sgaXNzdWUgaW4g?=
- =?gb2312?Q?KDB_debugging.?=
-Thread-Index: AQHaafG3YC/Li+j42kau1FDQhHr2m7EfIsgAgAMadaD///fWgIAJrHcQ
-Date: Tue, 12 Mar 2024 08:37:11 +0000
-Message-ID: <2ea381e7407a49aaa0b08fa7d4ff62d3@h3c.com>
-References: <20240228025602.3087748-1-liu.yeC@h3c.com>
- <20240228120516.GA22898@aspen.lan> <8b41d34adaef4ddcacde2dd00d4e3541@h3c.com>
- <20240301105931.GB5795@aspen.lan>
-In-Reply-To: <20240301105931.GB5795@aspen.lan>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-sender-location: DAG2
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1710232710; c=relaxed/simple;
+	bh=cADERAidf+JiG6/MllhsUnCwa5dSvHrvwMt2pI41UK4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rEeW5MF4sbLOGX6eSbEVOZQVQnRbkgtVSWATiAEXn8BdGqS9THKzqsmpIonky2v8q9jQYHtuAUWnvVlTihYprmS+x0J+LDYjU6YX0jsz8S7y2YzzIykvaSfCI/u3jJH6jdSBgUSioONRtoXEBAmzXUkG9/DKDAYAF+SPdHIXzUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=da+a25s0; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D340FE0005;
+	Tue, 12 Mar 2024 08:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1710232706;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+y2WCRg38vZjx+jg3Hy0I1hvQc4HDSJn/8wv1tgeMPA=;
+	b=da+a25s08RVCs6ZnhisGvFDQsAwIINFRgmU2YyAgUGEky+9XVBVrD8SXHePUa0Q8LMJbTa
+	27ZdBhTElzHzH9F5CbB+v4OmAbnfa2YlAi4lImVz97hgEZw2TRD7HyIEZCYtiPzGIHX/Zl
+	frEVAuK40PeKHO7E5Y6LGUeeHnCJ+vPQyqq2RPrQJ53r4X0NEBjizcv30H3tw+yhtr9Zkb
+	/R+MqMyHc28Xk0cX4q8rcczB4edWo26nmLsuldu7mhTxj9iqwMswUdHVGRyc2UjCLKH89d
+	bu7Khks1iQYqWt/rY7J1ZDc1QB0BajOi/4dJiJfmZ4sni/4oKI9MLHSf3ml3cQ==
+Message-ID: <7780460c-abc3-4009-9f95-28d123a9a23d@arinc9.com>
+Date: Tue, 12 Mar 2024 11:38:08 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:h3cspam02-ex.h3c.com 42C8cam6070755
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: dsa: mt7530: disable LEDs before reset
+To: patchwork-bot+netdevbpf@kernel.org,
+ Justin Swartz <justin.swartz@risingedge.co.za>
+Cc: daniel@makrotopia.org, dqfext@gmail.com, sean.wang@mediatek.com,
+ andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
+ <171019143163.14853.15330891015381229970.git-patchwork-notify@kernel.org>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <171019143163.14853.15330891015381229970.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-SSBrbm93IHRoYXQgeW91IHNhaWQgc2NoZWR1bGVfd29yayBpcyBub3QgTk1JIHNhdmUsIHdoaWNo
-IGlzIHRoZSBmaXJzdCBpc3N1ZS4gUGVyaGFwcyBpdCBjYW4gYmUgZml4ZWQgdXNpbmcgaXJxX3dv
-cmtfcXVldWUuIEJ1dCBldmVuIGlmIGlycV93b3JrX3F1ZXVlIGlzIHVzZWQgdG8gaW1wbGVtZW50
-IGl0LCB0aGVyZSB3aWxsIHN0aWxsIGJlIGEgZGVhZGxvY2sgcHJvYmxlbSBiZWNhdXNlIHNsYXZl
-IGNwdTEgc3RpbGwgaGFzIG5vdCByZWxlYXNlZCB0aGUgcnVubmluZyBxdWV1ZSBsb2NrIG9mIG1h
-c3RlciBDUFUwLg0KDQoNCg0K
+On 12.03.2024 00:10, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This patch was applied to netdev/net-next.git (main)
+> by Jakub Kicinski <kuba@kernel.org>:
+> 
+> On Tue,  5 Mar 2024 06:39:51 +0200 you wrote:
+>> Disable LEDs just before resetting the MT7530 to avoid
+>> situations where the ESW_P4_LED_0 and ESW_P3_LED_0 pin
+>> states may cause an unintended external crystal frequency
+>> to be selected.
+>>
+>> The HT_XTAL_FSEL (External Crystal Frequency Selection)
+>> field of HWTRAP (the Hardware Trap register) stores a
+>> 2-bit value that represents the state of the ESW_P4_LED_0
+>> and ESW_P4_LED_0 pins (seemingly) sampled just after the
+>> MT7530 has been reset, as:
+>>
+>> [...]
+> 
+> Here is the summary with links:
+>    - net: dsa: mt7530: disable LEDs before reset
+>      https://git.kernel.org/netdev/net-next/c/2920dd92b980
+> 
+> You are awesome, thank you!
+
+I am once again calling for this patch to be reverted on the net-next tree
+on the basis of:
+
+- This patch did not go through a proper reviewing process. There are
+   proposed changes on the code it changes regarding the scope and the
+   method of the patch, and improvements to be made on the patch log.
+
+- This patch should be backported to stable releases, therefore it
+   shouldn't be on the net-next tree and should be submitted to the net tree
+   instead.
+
+Arınç
 
