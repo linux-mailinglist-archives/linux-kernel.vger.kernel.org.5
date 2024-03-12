@@ -1,121 +1,131 @@
-Return-Path: <linux-kernel+bounces-100655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0327F879B57
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:29:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEEF7879B55
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:28:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C0E0B23CFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:29:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E5EDB23E84
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40FE139585;
-	Tue, 12 Mar 2024 18:29:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="LQf6rABS"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA471139571
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A984913958D;
+	Tue, 12 Mar 2024 18:28:26 +0000 (UTC)
+Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A15EC139574;
+	Tue, 12 Mar 2024 18:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710268160; cv=none; b=nvDeFCUWCdkmi36eW69RcJRSYHjxGFzDDijv36520wK2MG4pAZqLUnRA11lwlhuJWQ4aWsQi1m2dbh08AoKYgM84LqfnTz1wnvgCSdSbD54PyPPN1UhAyma/sl9xB2h0XLNCMNuzLKeq25tOMSyvZVQG8qx7CPioFpVfYmjQ+Fk=
+	t=1710268106; cv=none; b=KoIZZFwAGbrcGmFp8hTfsmyRirnFVRNXyq4oltRdLsPSan9iqWOYecnFiMBOS6jt6Qh5hDyOdNkAmQOPIkljQYo5M0wxMBNq1hjtrLaYPQf/LRlUg5ZZlXw17qSN7DIinEcYDf0XS1WK3bO3ijseGj74Y5zANZHr4pv90Ufdkgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710268160; c=relaxed/simple;
-	bh=IqMBeQoinj3qLZggdtQh3TofdcrNpcwKGbcBsFsYlnQ=;
+	s=arc-20240116; t=1710268106; c=relaxed/simple;
+	bh=7EC4IAJJp+c6o0M8iH6pYWKRUgdiQ+sEHXxrJQMhjq4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=td7vyn7jpzOuOfriXN9GrVXdQMtbneswYfq7YA75RkkM6IzEkSyp6vnIpZz7CS2Wc/etmyrmMCI6BRs32lHg4mOfON7gltG3xC6GGwNg+HYOL08drcu/wG21iGCGPtD9zgo1XSdHM6x2NNs/tF2eYLZdiHDAUvaG2xHkiHivrGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=LQf6rABS; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=EnwBgC7sqK5GJPH6z85eAMNz/YmnKPxbu0l4LtLf4hw=; b=LQf6rABSpj7A/tRu6vv+CQgxJJ
-	md3j+iAzRXEcQv666Cx8WQL45ZQP+qydKbWITStW9u16qIDnY3GNy8gdvQzcvBgZ5YYRCaMe/5Lgo
-	HHPZeVauQFcaM+m8e9ORliPEannvyx3BMbK9hn9vl6Ku92hZZstdllz9UREH941bGuRNJJXLKUsY2
-	G2iuOY+Ao4Pyvk4PuEiFkkeQ9Q1yqjche+XyqgaX/TcX4Nd9K7UGxut9vPgRHhL8CxL+Vf0q15hTp
-	YRGt803RpCzBCpcWv7c4Tkm7fkZIFBzAdZ0G5gbAQp7XPVY9VC3esV9XJsZki7WPbxJxSh/LgOEhm
-	fILs/+LA==;
-Received: from [189.6.17.125] (helo=mail.igalia.com)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rk6rs-009TZS-BR; Tue, 12 Mar 2024 19:28:52 +0100
-Date: Tue, 12 Mar 2024 15:27:38 -0300
-From: Melissa Wen <mwen@igalia.com>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
-	Melissa Wen <melissa.srw@gmail.com>, =?utf-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, 
-	Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi, 
-	Louis Chauvet <louis.chauvet@bootlin.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com, 
-	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com, 
-	Pekka Paalanen <pekka.paalanen@collabora.com>
-Subject: Re: [PATCH 1/7] drm: Fix drm_fixp2int_round() making it add 0.5
-Message-ID: <yyrvbqpmqplwtqfdsjkhzmx7wrk4h67kn5443bdou7c7uciouy@hac7zfxiff7t>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
- <20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GoXMEa1cWd6VaocL8PUua2Gyn3d5BfMho3XGg8PEMhNzl4cG6WltYTLUMx8iB41sftGA82M5MvwVxvWCxvfg6E6lbsMlmFfmiEZv6UrV+4nQvuqfaze2kfAo2VWZge4ilDodc/LEpVMfTgeV1BLTCONuI0VlHTecSSHfptQrfWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+	by vmicros1.altlinux.org (Postfix) with ESMTP id 270A072C8FB;
+	Tue, 12 Mar 2024 21:28:21 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+	id 1775B7CCB3A; Tue, 12 Mar 2024 20:28:20 +0200 (IST)
+Date: Tue, 12 Mar 2024 20:28:20 +0200
+From: "Dmitry V. Levin" <ldv@strace.io>
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Paul Moore <paul@paul-moore.com>, linux-security-module@vger.kernel.org,
+	jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+	john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+	stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, mic@digikod.net
+Subject: Re: [PATCH v15 05/11] LSM: Create lsm_list_modules system call
+Message-ID: <20240312182820.GA5122@altlinux.org>
+References: <20230912205658.3432-1-casey@schaufler-ca.com>
+ <20230912205658.3432-6-casey@schaufler-ca.com>
+ <20240312101630.GA903@altlinux.org>
+ <CAHC9VhRgjNT2YnVgCqMJnyr227qUjmfrWZ+LBnu_DGxnJZgeKw@mail.gmail.com>
+ <f122b3a9-1208-4c0b-9289-73eb070a8337@schaufler-ca.com>
+ <CAHC9VhRfwjsGiHXBRcWA6S9+H_kj0vMdQC0gyHr3ZnX-u7KzRQ@mail.gmail.com>
+ <f4f5d993-552b-483a-9a3e-1be99ea48757@schaufler-ca.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f4f5d993-552b-483a-9a3e-1be99ea48757@schaufler-ca.com>
 
-On 03/06, Arthur Grillo wrote:
-> As well noted by Pekka[1], the rounding of drm_fixp2int_round is wrong.
-> To round a number, you need to add 0.5 to the number and floor that,
-> drm_fixp2int_round() is adding 0.0000076. Make it add 0.5.
+On Tue, Mar 12, 2024 at 10:44:38AM -0700, Casey Schaufler wrote:
+> On 3/12/2024 10:06 AM, Paul Moore wrote:
+> > On Tue, Mar 12, 2024 at 11:27 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >> On 3/12/2024 6:25 AM, Paul Moore wrote:
+> >>> On Tue, Mar 12, 2024 at 6:16 AM Dmitry V. Levin <ldv@strace.io> wrote:
+> >>>> On Tue, Sep 12, 2023 at 01:56:50PM -0700, Casey Schaufler wrote:
+> >>>> [...]
+> >>>>> --- a/security/lsm_syscalls.c
+> >>>>> +++ b/security/lsm_syscalls.c
+> >>>>> @@ -55,3 +55,42 @@ SYSCALL_DEFINE4(lsm_get_self_attr, unsigned int, attr, struct lsm_ctx __user *,
+> >>>>>  {
+> >>>>>       return security_getselfattr(attr, ctx, size, flags);
+> >>>>>  }
+> >>>>> +
+> >>>>> +/**
+> >>>>> + * sys_lsm_list_modules - Return a list of the active security modules
+> >>>>> + * @ids: the LSM module ids
+> >>>>> + * @size: pointer to size of @ids, updated on return
+> >>>>> + * @flags: reserved for future use, must be zero
+> >>>>> + *
+> >>>>> + * Returns a list of the active LSM ids. On success this function
+> >>>>> + * returns the number of @ids array elements. This value may be zero
+> >>>>> + * if there are no LSMs active. If @size is insufficient to contain
+> >>>>> + * the return data -E2BIG is returned and @size is set to the minimum
+> >>>>> + * required size. In all other cases a negative value indicating the
+> >>>>> + * error is returned.
+> >>>>> + */
+> >>>>> +SYSCALL_DEFINE3(lsm_list_modules, u64 __user *, ids, size_t __user *, size,
+> >>>>> +             u32, flags)
+> >>>> I'm sorry but the size of userspace size_t is different from the kernel one
+> >>>> on 32-bit compat architectures.
+> >>> D'oh, yes, thanks for pointing that out.  It would have been nice to
+> >>> have caught that before v6.8 was released, but I guess it's better
+> >>> than later.
+> >>>
+> >>>> Looks like there has to be a COMPAT_SYSCALL_DEFINE3(lsm_list_modules, ..)
+> >>>> now.  Other two added lsm syscalls also have this issue.
+> >>> Considering that Linux v6.8, and by extension these syscalls, are only
+> >>> a few days old, I think I'd rather see us just modify the syscalls and
+> >>> avoid the compat baggage.  I'm going to be shocked if anyone has
+> >>> shifted to using the new syscalls yet, and even if they have (!!),
+> >>> moving from a "size_t" type to a "u64" should be mostly transparent
+> >>> for the majority of native 64-bit systems.  Those running the absolute
+> >>> latest kernels on 32-bit systems with custom or bleeding edge
+> >>> userspace *may* see a slight hiccup, but I think that user count is in
+> >>> the single digits, if not zero.
+> >>>
+> >>> Let's fix this quickly with /size_t/u64/ in v6.8.1 and avoid the
+> >>> compat shim if we can.
+> >>>
+> >>> Casey, do you have time to put together a patch for this (you should
+> >>> fix the call chains below the syscalls too)?  If not, please let me
+> >>> know and I'll get a patch out ASAP.
+> >> Grumble. Yes, I'll get right on it.
+> > Great, thanks Casey.
 > 
-> [1]: https://lore.kernel.org/all/20240301135327.22efe0dd.pekka.paalanen@collabora.com/
-> 
-Hi Arthur,
+> Look like lsm_get_self_attr() needs the same change. lsm_set_self_attr()
+> doesn't, need it, but I'm tempted to change it as well for consistency.
+> Thoughts?
 
-thanks for addressing this issue.
+As lsm_get_self_attr() has the same issue, it needs the same treatment.
 
-Please, add a fix tag to the commit that you are fixing, so we can
-easily backport. Might be this commit:
-https://cgit.freedesktop.org/drm/drm-misc/commit/drivers/gpu/drm/vkms?id=ab87f558dcfb2562c3497e89600dec798a446665
-> Suggested-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> ---
->  include/drm/drm_fixed.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
-> index 0c9f917a4d4b..de3a79909ac9 100644
-> --- a/include/drm/drm_fixed.h
-> +++ b/include/drm/drm_fixed.h
-> @@ -90,7 +90,7 @@ static inline int drm_fixp2int(s64 a)
->  
->  static inline int drm_fixp2int_round(s64 a)
->  {
-> -	return drm_fixp2int(a + (1 << (DRM_FIXED_POINT_HALF - 1)));
-Also, this is the only usage of DRM_FIXED_POINT_HALF. Can you also
-remove it as it won't be used anymore?
+lsm_set_self_attr() could be left unchanged.  In fact, changing the type
+of syscall arguments from size_t to an explicit 64-bit type would be
+problematic because 32-bit syscalls cannot have 64-bit arguments.
 
-> +	return drm_fixp2int(a + DRM_FIXED_ONE / 2);
-Would this division be equivalent to just shifting 1ULL by 31 instead of
-32 as done in DRM_FIXED_ONE?
 
-Melissa
-
->  }
->  
->  static inline int drm_fixp2int_ceil(s64 a)
-> 
-> -- 
-> 2.43.0
-> 
+-- 
+ldv
 
