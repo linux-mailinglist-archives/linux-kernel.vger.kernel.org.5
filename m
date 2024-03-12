@@ -1,175 +1,367 @@
-Return-Path: <linux-kernel+bounces-99778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F1A6878D26
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:46:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42B02878D27
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:46:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFA0E1F21D7C
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D574B21E06
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715D3AD4B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FDACAD2C;
 	Tue, 12 Mar 2024 02:45:43 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2112.outbound.protection.partner.outlook.cn [139.219.146.112])
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BgrUt4Wd"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A947482;
-	Tue, 12 Mar 2024 02:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710211542; cv=fail; b=R3v+dUm97jCOC70/VfeXDjw/VN6sHhoQcz88jFWc5JQ9Xv5BeQEytPJRkTDpo4WZaoRc6DgskUMGdrw7KkJ/1UXo9GmXVWHXIhKW3tQQLOPRnCDUM0nsYVr8AdvvA6NVrDU6oBm7WZZkA6v8FunZFmzjeMDgjQnkAM/Blusqeuo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5204053A1;
+	Tue, 12 Mar 2024 02:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710211542; cv=none; b=qVYjYQ+A240gnloeLMDru6oitrjrmOwfv+CAyyMdpjXL/FZGRn1xXsIGfZZygB3fkczAesxrNxEmdK9itg2D+tRuU8ptfuAMd3XO6koOese7t8YnB9NnvNHKj+uPwJTbQtJCU30tE+eMHNfGeNSSYmlqGnqIC5Ym4s2qIKWNqAk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710211542; c=relaxed/simple;
-	bh=cvE1iY6j1g7PYcGYBktFyGnkuJ+N7v4wDIyPQJhKStk=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=PhjhcPYICZQI18sT/1qhd87cFh4RyfyNmQrrN+gGYCPw3nVmn805QxoA+KLiJizNn3TO9aWAf2n4fqjcDtJUgTjxWiNIywALivebslwtKI8wTDTzTyMXfiOaolCu3LxtCfZISIfdlfwswwQUcwNTjG7iwqEHNDCW2KFfyge9cKM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PKERtY7cEtHrlCDu3rT4GsrfaipkpbppcHFwL/cYcZEatFYG0BbUckOVcahhJc2c3qLlcTBNB/qmlXFF9UhblQWzIC4L/pDT829gjjWQX+TpkW3ba3mrBPRaLqwDen1lxRsww3a3g+CCrMyBpweCJU3fL9oApp5YCQ0SPM/P7CrUWQbQROx7562yVb+d/+Gmm9YBkWmu88Phs5Ez78iJgXjWdXzmhT8+gBP8iPMlgfXhuyuFYNPQai0Dg/dhAZORnNYhL0+kdoZQ7fnJxCJy2VnBicfs4oIKyDGDigiFXRo8QKopWLVStI/9J9Hgdv2ldCNpmJtBY9NfZnOpldqSXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iqcsnIrJ8sPmElkzWKcIofUPyC/sXNuZQb/yrEyc3wU=;
- b=g+fxLAFd20BGxjKHyecFuBISQxLhjTbGEU8hmGzUJVO1CkQrczEnqwt8WaRvG8CbGoril/yhf3u6EYmBTzfaOLntKPCIMTMxLLXp+3m5F4tP7saHuDtienBQ/RHcQeZi5ldfqH9QxaqrIcjDPtb3NOj9rfrocy+XXdQim6aLlGwHjS4IlR4qO7Y9sgz6nXaBSErKExshJDgi//xwUYKVlWTAWcmxZULbjze2nw1T83Hg9jWEO6beNYXx0+iOWCgYY80Ea4/kva45rI+EVH9pj+m1dQMNzBkixKU6o/BIHJ09/GpCpvZULr41vPYwQfx+ntXU6UpjuwJqP9Oq9/8cnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::10) by SHXPR01MB0575.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:1e::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.45; Tue, 12 Mar
- 2024 02:45:28 +0000
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- ([fe80::b0af:4c9d:2058:a344]) by
- SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
- with mapi id 15.20.7249.041; Tue, 12 Mar 2024 02:45:28 +0000
-From: Changhuang Liang <changhuang.liang@starfivetech.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Jack Zhu <jack.zhu@starfivetech.com>,
-	Changhuang Liang <changhuang.liang@starfivetech.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-staging@lists.linux.dev
-Subject: [v1] staging: media: starfive: Clean pad selection in isp_try_format()
-Date: Mon, 11 Mar 2024 19:45:20 -0700
-Message-Id: <20240312024520.11022-1-changhuang.liang@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BJSPR01CA0024.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c211:c::36) To SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::10)
+	bh=sJ+l+E/VHR/guBPSrktOtGce38nElCTRPvus+ARJhb4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kbImLsqoEs9K6IfD2tpCFRsbIy53UIIBUh55EFct0tZSTc9GKXF29tukbZz3/HIaUqfP0DsU+yo3zrCzLGPRwsQf3kT2GoTPddf6cziqgOrKO+dwlwDrlSwQ4WELRNQFMdBJmAx7T7X0+imJqP+OTE8WtHImNZDVHTmoTcPv2GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BgrUt4Wd; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=LR+o5zx6xwTvGFqahXOz00NdsDR6t5e6f6CcML+dlxs=; b=BgrUt4WdadJ0f7/2G+ZQGGr/Sz
+	++FE+t9xZ9M/Wf1J7p9XqDMoGq/5uJWG4G+cUpHTT3q15rTmfnQlpqCWReYebnvBKTHBjTXfUOvsv
+	gN59aBHSGQzpgUingDpB/ph9p4GPsvq/hI24BB5waWN70a4CQ/1gbvAJ+XsfsCwbd902KxdAT/NCO
+	fwErWMAg6vHCzAprNODWIuAjRsp7bvrAXIoXi/pScZ/DRlYX+SY2KFQOLKt09/ktiWifTeBtYUyst
+	9/9Exp5lMEDDtWqKbSGT9Q9jSGIkHRcLiHvcO7FZJHhmhiNMtm5NG9EZB4SKLJBbTQnoNVGUqIgvn
+	Y/hCP5HA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rjs91-000000042zE-3WL5;
+	Tue, 12 Mar 2024 02:45:35 +0000
+Message-ID: <50ec3230-c2c9-4c16-899e-d93d164a3e79@infradead.org>
+Date: Mon, 11 Mar 2024 19:45:34 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SHXPR01MB0671:EE_|SHXPR01MB0575:EE_
-X-MS-Office365-Filtering-Correlation-Id: ae8b754c-f47e-4c34-2d42-08dc423e79ce
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	bOOaeHKFVUtIBDLw66TX1DqcaseZqYVxQAXuEq9o5xFCPjhnJgcmLrTUhU6tKWKavyXiC/mzq0G54AHcxEKmuwpcingwkKFVAogC3NApqIatQmeu8dVAw6x9rMHMSLKyOEIhIaucOHTIWjDPkXOWyKmWcRBtaiW+3VNq/9NHn6p4C2rc8n5NlQdzZoTorzm3dCIsksN8WOwKW+Ma7SF8rD3elTRYmvyV9T0kJ4ApZlJq55F0gV6vCPF75n5rG76H6fee2us8SjQu34cbtTAJ+1Vrug/rYwaFr7g/d8hIPJFy1UmNagR1bzYfKamG+J6M6BW2DkCxuXSOJJWMrF30fSTAlwLikZBLGJzmLuodOgtltkSdg8FbZV3Gwyf7t9NukR5+sMm1rK6xVL8crbPIxUly9m4w99SrEZgGpeZrNsXT4mz9jaFWtF8K9ya/Vs+YHoajCmc+UDKp+Um9USaCELv6r2HVgR8T4ZZghzyLDE7p3blYkBxq/epPlD7jibKDmNxkhNaGxac7p0wShRIg+FlNwGcQSJuz27WgTQKkQKiPZcEco0d8TUiFonEYQ4nK4qV1wAHR7pHQqdsVu+exudZTvTA36kKtp43c5WV3gwis5jLZWQNuUsHnLW/qklo/
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(41320700004)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?dTXd6btUGXHBFcJkKsHmQ1T9o3w96MXKJHkDrNtdyIVkdTDeBbIhZq1zEpeb?=
- =?us-ascii?Q?h4ZGf5nzOx9h2aOQqmN+E04I64nUiGaP+TBpywr3kgW+5xSF8/xj6HVpnVNY?=
- =?us-ascii?Q?YfuKkE5sVdqXB61iTe7HNk7maJ6qho95HmGEURWrzUxSyung43tIGmdcmk6p?=
- =?us-ascii?Q?bnoYTVuoxq6KOWrlxuBKjShgdjVqE1y2JMS579oJZqZayxqLakEgIdGyV5mn?=
- =?us-ascii?Q?q47uYM4CAHJ1Sih2kSRT1KbRPLLPXZu1EbmqKHEiA/KyD5tLRNMan+zH3piA?=
- =?us-ascii?Q?NtNL1TkcDS7iS674i7WSoIWh/QbX29uCGrGBjg0kYbs4JqsY+cq8FsN6ZdHW?=
- =?us-ascii?Q?neoG3TzHa8TxrpY9pHTN1Xpz3cfwnZfHfOH1devo5OqwlMPjL9rf+w29jW5y?=
- =?us-ascii?Q?4bGFlYZFukmpZYinfXcSiMwhsG2foMpTtBEiEpeQE0nr51X779Q8yaXtkG7G?=
- =?us-ascii?Q?mHKJ8Kh9puVJdFH2CLJfgdOBtc9BnAFBcpbmPZuiDN1upfvB5YagGD/scdr6?=
- =?us-ascii?Q?PBBxwqADveohtC2b5RlwH/jqZ0SYHoUaj8mtefU9oJYyYlJ5BpY0/A8df4UU?=
- =?us-ascii?Q?R97ANBqKp8cI4O6k/i5tS3IAksDaGwWxq9aDK1YPTMPk8NIZln+BgQFHWoub?=
- =?us-ascii?Q?rniUk0T3mt3lAfSzG9Oqttgln6lf7ZnIxL00Q1exGekzivfZ3doSJl50ED1j?=
- =?us-ascii?Q?YPVY6c2hgqTd525LhU55UBsHiSzgNIt1Jpb8doevbnISFKgftKuxzIdlqtWw?=
- =?us-ascii?Q?HOo8PoMp50MXCa9M+i03MteGu70YyIoCdOP8MWyUDN70I0khAeBLVuaMvDFy?=
- =?us-ascii?Q?gyaeMlZLjlvz9aYHGMePJd1e2nVqc7Zo6pRzDeUJwZR4hWjfrTqKe8XFQ0Jn?=
- =?us-ascii?Q?oQ5fO7AVXKmx4SxSELGpETDZwju5sZl6RIaF4h3CNbdyszjhHgQ73WB5+A2A?=
- =?us-ascii?Q?INPwjhGS6Bn/qL547a/LUarpfT/uwDTH8JVNsbar0syov4su6wHOZbs55bYF?=
- =?us-ascii?Q?JFsypWI4xVjHqA3BuSDTaqNH9Mq+bR5dcG7IrjZuakrzFd5ZHH9+6kUaja6V?=
- =?us-ascii?Q?iv20TvnGcSh1JpEuiWQh+XlP3knhhxE1zP65vw/ZCHq5QoPkeu1l3WptwBI8?=
- =?us-ascii?Q?SrvVFVsPhKViCXCXpf/Htk/07aFTnVM9clAh+2I/0p/jHUhROlhA9q01wJsd?=
- =?us-ascii?Q?a0iGx9BAsCZIR4yC2xoZLRwQLE1wGwJeyi90w3arWfGPmG3HuUY3lZLj3NeA?=
- =?us-ascii?Q?5Rfv0JhrNzz4c5jMEeHfTEwrKB/ffVCiaxUEHPq51ffzajCOx17NBLXje6oI?=
- =?us-ascii?Q?61OfVMFexAuY8WcqaGNJwtTK3CLKHo0Q94SbwfXbR0LTEqmnEucVLcDYJGV0?=
- =?us-ascii?Q?xji8gIMv/w5QLpmAyEkXkM9eUJZTOf+DcthI8FdHH5qC/EilfsivSYNsy35s?=
- =?us-ascii?Q?hkjkJ+BSaVglF/i34Ys7IBzRTF85SXgXFbo/zvKZd13r0jNum0+C1YBA+h93?=
- =?us-ascii?Q?sJjwFHB7MBtXlbUXMVH/OyCQ7N6xOBzohlWFXkO9t3+AQWsi2DIy5FrlSL66?=
- =?us-ascii?Q?DHtJM8iP30KoQbeDoe1+Trr0CUdD5ddwa5DQgkkauag2RkwYDpK3aYYaM5da?=
- =?us-ascii?Q?7qehTMviLmNDG7VHhF6di+w=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae8b754c-f47e-4c34-2d42-08dc423e79ce
-X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 02:45:28.0241
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7sI19hZ/dqRU7okSDiJy3cQfb/ZrPjwpshoejwkwDqmelK7ZGCpco0BcIImbZ7ZvvPJBUzoiU6nYqgpM/pjozC7EWlg5d1anRuz5kWjYrNS9LYAiz4YyKre9vk16/5D0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0575
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 8/8] clavis: Introduce new LSM called clavis
+Content-Language: en-US
+To: Eric Snowberg <eric.snowberg@oracle.com>,
+ linux-security-module@vger.kernel.org
+Cc: dhowells@redhat.com, dwmw2@infradead.org, herbert@gondor.apana.org.au,
+ davem@davemloft.net, ardb@kernel.org, jarkko@kernel.org,
+ paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+ zohar@linux.ibm.com, roberto.sassu@huawei.com, dmitry.kasatkin@gmail.com,
+ mic@digikod.net, casey@schaufler-ca.com, stefanb@linux.ibm.com,
+ linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
+ linux-integrity@vger.kernel.org
+References: <20240311161111.3268190-1-eric.snowberg@oracle.com>
+ <20240311161111.3268190-9-eric.snowberg@oracle.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240311161111.3268190-9-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The code to select isp_dev->formats[] is overly complicated.  We can
-just use the "pad" as the index.  This will making adding new pads
-easier in future patches.  No functional change.
 
-Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
----
- drivers/staging/media/starfive/camss/stf-isp.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/staging/media/starfive/camss/stf-isp.c b/drivers/staging/media/starfive/camss/stf-isp.c
-index d50616ef351e..4e6e26736852 100644
---- a/drivers/staging/media/starfive/camss/stf-isp.c
-+++ b/drivers/staging/media/starfive/camss/stf-isp.c
-@@ -10,9 +10,6 @@
- 
- #include "stf-camss.h"
- 
--#define SINK_FORMATS_INDEX	0
--#define SOURCE_FORMATS_INDEX	1
--
- static int isp_set_selection(struct v4l2_subdev *sd,
- 			     struct v4l2_subdev_state *state,
- 			     struct v4l2_subdev_selection *sel);
-@@ -94,10 +91,7 @@ static void isp_try_format(struct stf_isp_dev *isp_dev,
- 		return;
- 	}
- 
--	if (pad == STF_ISP_PAD_SINK)
--		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
--	else if (pad == STF_ISP_PAD_SRC)
--		formats = &isp_dev->formats[SOURCE_FORMATS_INDEX];
-+	formats = &isp_dev->formats[pad];
- 
- 	fmt->width = clamp_t(u32, fmt->width, STFCAMSS_FRAME_MIN_WIDTH,
- 			     STFCAMSS_FRAME_MAX_WIDTH);
-@@ -123,7 +117,7 @@ static int isp_enum_mbus_code(struct v4l2_subdev *sd,
- 		if (code->index >= ARRAY_SIZE(isp_formats_sink))
- 			return -EINVAL;
- 
--		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
-+		formats = &isp_dev->formats[code->pad];
- 		code->code = formats->fmts[code->index].code;
- 	} else {
- 		struct v4l2_mbus_framefmt *sink_fmt;
+On 3/11/24 09:11, Eric Snowberg wrote:
+> In the future it is envisioned this LSM could be enhanced to provide
+> access control for UEFI Secure Boot Advanced Targeting (SBAT).  Using
+> the same clavis= boot param and storing the additional contents within
+> the new RT UEFI var, SBAT restrictions could be maintained across kexec.
+
+What does "RT" mean here?
+
+(more below)
+
+> 
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> ---
+>  Documentation/admin-guide/LSM/clavis.rst | 190 +++++++++++++++++++++++
+>  MAINTAINERS                              |   7 +
+>  crypto/asymmetric_keys/signature.c       |   4 +
+>  include/linux/lsm_hook_defs.h            |   2 +
+>  include/linux/security.h                 |   7 +
+>  include/uapi/linux/lsm.h                 |   1 +
+>  security/Kconfig                         |  10 +-
+>  security/clavis/Makefile                 |   1 +
+>  security/clavis/clavis.c                 |  25 +++
+>  security/clavis/clavis.h                 |   4 +
+>  security/clavis/clavis_keyring.c         |  83 ++++++++++
+>  security/security.c                      |  16 +-
+>  12 files changed, 344 insertions(+), 6 deletions(-)
+>  create mode 100644 Documentation/admin-guide/LSM/clavis.rst
+>  create mode 100644 security/clavis/clavis.c
+> 
+
+
+> diff --git a/Documentation/admin-guide/LSM/clavis.rst b/Documentation/admin-guide/LSM/clavis.rst
+> new file mode 100644
+> index 000000000000..b0a73defb4fc
+> --- /dev/null
+> +++ b/Documentation/admin-guide/LSM/clavis.rst
+> @@ -0,0 +1,190 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=====
+> +Clavis
+> +=====
+> +
+> +Clavis is a Linux Security Module that provides mandatory access control to
+> +system kernel keys (i.e. builtin, secondary, machine and platform). These
+> +restrictions will prohit keys from being used for validation. Upon boot, the
+
+                     prohibit
+
+> +Clavis LSM is provided a key id as a boot param.  This single key is then
+> +used as the root of trust for any access control modifications made going
+> +forward. Access control updates must be signed and validated by this key.
+> +
+> +Clavis has its own keyring.  All ACL updates are applied through this keyring.
+> +The update must be signed by the single root of trust key.
+> +
+> +When enabled, all system keys are prohibited from being used until an ACL is
+> +added for it. There is two exceptions to this rule, builtin keys may be used
+
+What is     "it"?  The predecessor seems to be "all system keys" (plural).
+
+
+> +to validate both signed kernels and modules.
+> +
+> +Adding system kernel keys can only be performed by the machine owner, this
+
+                                                                  owner;
+
+> +could be through the Machine Owner Key (MOK) or the UEFI Secure Boot DB. It
+> +is possible the machine owner and system administrator may be different
+> +people. The system administrator will not be able to make ACL updates without
+> +them being signed by the machine owner.
+> +
+> +On UEFI platforms, the root of trust key shall survive a kexec. Trying to
+> +defeat or change it from the command line is not allowed.  The original boot
+> +param is stored in UEFI and will always be referenced following a kexec.
+> +
+> +The Clavis LSM contains a system keyring call .clavis.  It contains a single
+> +asymmetric key that is use to validate anything added to it.  This key can only
+> +be added during boot and must be a preexisting system kernel key.  If the
+> +clavis= boot param is not used, the keyring does not exist and the feature
+> +can not be used until the next power on reset.
+
+So just a reboot won't cause it to be used?  Must be power off/on?
+
+> +
+> +The only user space components are OpenSSL and the keyctl utility. A new
+> +key type call clavis_key_acl is used for ACL updates. Any number of signed
+> +clavis_key_acl entries may be added to the .clavis keyring. The clavis_key_acl
+> +contains the subject key identifer along with the allowed usage type for
+
+                            identifier
+
+> +the key.
+> +
+> +The format is as follows:
+> +::
+> +
+> +  XX:YYYYYYYYYYY
+> +
+> +  XX - Single byte of the key type
+> +	VERIFYING_MODULE_SIGNATURE            00
+> +	VERIFYING_FIRMWARE_SIGNATURE          01
+> +	VERIFYING_KEXEC_PE_SIGNATURE          02
+> +	VERIFYING_KEY_SIGNATURE               03
+> +	VERIFYING_KEY_SELF_SIGNATURE          04
+> +	VERIFYING_UNSPECIFIED_SIGNATURE       05
+> +  :  - ASCII colon
+> +  YY - Even number of hexadecimal characters representing the key id
+> +
+> +The clavis_key_acl must be S/MIME signed by the sole asymmetric key contained
+> +within the .clavis keyring.
+> +
+> +In the future if new features are added, new key types could be created.
+> +
+> +Usage Examples
+> +==============
+> +
+> +How to create a signing key:
+> +----------------------------
+> +
+> +::
+> +
+> +  cat <<EOF > clavis-lsm.genkey
+> +  [ req ]
+> +  default_bits = 4096
+> +  distinguished_name = req_distinguished_name
+> +  prompt = no
+> +  string_mask = utf8only
+> +  x509_extensions = v3_ca
+> +  [ req_distinguished_name ]
+> +  O = TEST
+> +  CN = Clavis LSM key
+> +  emailAddress = john.doe@foo.com
+
+There is a foo.com  ;)
+
+> +  [ v3_ca ]
+> +  basicConstraints=CA:TRUE
+> +  subjectKeyIdentifier=hash
+> +  authorityKeyIdentifier=keyid:always,issuer
+> +  keyUsage=digitalSignature
+> +  EOF
+> +
+> +  openssl req -new -x509 -utf8 -sha256 -days 3650 -batch \
+> +        -config clavis-lsm.genkey -outform DER \
+> +        -out clavis-lsm.x509 -keyout clavis-lsm.priv
+> +
+> +How to get the Subject Key Identifier
+> +-------------------------------------
+> +::
+> +
+> +  openssl x509 -in ./clavis-lsm.x509 -inform der \
+> +        -ext subjectKeyIdentifier  -nocert \
+> +        | tail -n +2 | cut -f2 -d '='| tr -d ':'
+> +  4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
+> +
+> +How to enroll the signing key into the MOK
+> +------------------------------------------
+> +
+> +The key must now be added to the machine or platform keyrings.  This
+> +indicates the key was added by the system owner. To add to the machine
+> +keyring on x86 do:
+> +::
+> +
+> +  mokutil --import ./clavis-lsm.x509
+> +
+> +and then reboot and enroll the key through the MokManager.
+> +
+> +How to enable the Clavis LSM
+> +----------------------------
+> +
+> +Add the key id to the clavis= boot param.  With the example above the
+> +key id is the subject key identifer: 4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
+
+                             identifier:
+
+> +
+> +Add the following boot param:
+> +::
+> +
+> +  clavis=4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
+> +
+> +After booting there will be a single key contained in the .clavis keyring:
+> +::
+> +
+> +  $ keyctl show %:.clavis
+> +  Keyring
+> +    254954913 ----swrv      0     0  keyring: .clavis
+> +    301905375 ---lswrv      0     0   \_ asymmetric: TEST: Clavis LSM key: 4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
+> +
+> +The original clavis= boot param will persist across any kexec. Changing it or
+> +removing it has no effect.
+> +
+> +
+> +How to sign an entry to be added to the .clavis keyring:
+> +-------------------------------------------------------
+> +
+> +In this example we have 3 keys in the machine keyring.  Our Clavis LSM key, a
+> +key we want to use for kernel verification and a key we want to use for module
+> +verification.
+> +::
+> +
+> +  $ keyctl show %:.machine
+> +   Keyring
+> +    999488265 ---lswrv      0     0  keyring: .machine
+> +    912608009 ---lswrv      0     0   \_ asymmetric: TEST: Module Key: 17eb8c5bf766364be094c577625213700add9471
+> +    646229664 ---lswrv      0     0   \_ asymmetric: TEST: Kernel Key: b360d113c848ace3f1e6a80060b43d1206f0487d
+> +   1073737099 ---lswrv      0     0   \_ asymmetric: TEST: Clavis LSM key: 4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
+> +
+> +To update the .clavis kerying acl list.  First create a file containing the
+
+                                 ACL list:
+?
+
+> +key usage type followed by a colon and the key id that we want to allow to
+> +validate that usage.  In the first example we are saying key
+> +17eb8c5bf766364be094c577625213700add9471 is allowed to validate kernel modules.
+> +In the second example we are saying key b360d113c848ace3f1e6a80060b43d1206f0487d
+> +is allowed to validate signed kernels.
+> +
+> +::
+> +
+> +  echo "00:17eb8c5bf766364be094c577625213700add9471" > module-acl.txt
+> +  echo "02:b360d113c848ace3f1e6a80060b43d1206f0487d" > kernel-acl.txt
+> +
+> +Now both these files must be signed by the key contained in the .clavis keyring:
+> +
+> +::
+> +
+> +  openssl smime -sign -signer clavis-lsm.x509 -inkey clavis-lsm.priv -in module-acl.txt \
+> +        -out module-acl.pkcs7 -binary -outform DER -nodetach -noattr
+> +
+> +  openssl smime -sign -signer clavis-lsm.x509 -inkey clavis-lsm.priv -in kernel-acl.txt \
+> +        -out kernel-acl.pkcs7 -binary -outform DER -nodetach -noattr
+> +
+> +Afterwards the ACL list in the clavis keyring can be updated:
+> +::
+> +
+> +  keyctl padd clavis_key_acl "" %:.clavis < module-acl.pkcs7
+> +  keyctl padd clavis_key_acl "" %:.clavis < kernel-acl.pkcs7
+> +
+> +  keyctl show %:.clavis
+> +
+> +  Keyring
+> +    254954913 ----swrv      0     0  keyring: .clavis
+> +    301905375 ---lswrv      0     0   \_ asymmetric: TEST: Clavis LSM key: 4a00ab9f35c9dc3aed7c225d22bafcbd9285e1e8
+> +   1013065475 --alswrv      0     0   \_ clavis_key_acl: 02:b360d113c848ace3f1e6a80060b43d1206f0487d
+> +    445581284 --alswrv      0     0   \_ clavis_key_acl: 00:17eb8c5bf766364be094c577625213700add9471
+> +
+> +Now the 17eb8c5bf766364be094c577625213700add9471 key can be used for
+> +validating kernel modules and the b360d113c848ace3f1e6a80060b43d1206f0487d
+> +key can be used to validate signed kernels.
+
+
+
+> diff --git a/security/security.c b/security/security.c
+> index 4cb832b00c40..d1da60a1b7a4 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+
+> @@ -5313,6 +5314,19 @@ void security_key_post_create_or_update(struct key *keyring, struct key *key,
+>  	call_void_hook(key_post_create_or_update, keyring, key, payload,
+>  		       payload_len, flags, create);
+>  }
+> +
+> +/**
+> + * security_key_verify_signature - verify signature
+> + * @key: key
+> + * @public_key_signature: signature
+
+Above should be "@sig:".
+
+> + *
+> + * See wheather signature verification is allowed based on the ACL for
+
+          whether
+
+> + * key usage.
+> + */
+> +int security_key_verify_signature(const struct key *key, const struct public_key_signature *sig)
+> +{
+> +	return call_int_hook(key_verify_signature, key, sig);
+> +}
+>  #endif	/* CONFIG_KEYS */
+>  
+>  #ifdef CONFIG_AUDIT
+
 -- 
-2.25.1
-
+#Randy
 
