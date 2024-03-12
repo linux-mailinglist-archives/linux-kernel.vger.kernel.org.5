@@ -1,147 +1,206 @@
-Return-Path: <linux-kernel+bounces-99775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97870878D1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:44:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A44C878D1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:45:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6CFAB21ABB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:44:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC926282C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823128F51;
-	Tue, 12 Mar 2024 02:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551F28BE7;
+	Tue, 12 Mar 2024 02:45:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="RWHroVnU"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KipOmKom"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F2C79C0
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:44:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B909F79C0;
+	Tue, 12 Mar 2024 02:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710211459; cv=none; b=EtrexBsKU33LRi5mVAFEJPD/5l3+Jlfwyy3FLMyD3cSrqJSUvUQzBciOxePcjS6kf9qIrzpR11QGSVzPkltZXi8wYO/iP/5l75J7tCErQNwTD4DXC3gKH9zo5Vz9atN/9UzmmqsifMiMtzt4Zol2mpUmydy1P2Vp/QgsjZ3Za3c=
+	t=1710211505; cv=none; b=h78QUDTPEK3pVVC7TCwq1tVTXWlMpKTpWr1Ol9TTG98eu4dcNL5FmaxdPnro9XcfphIYd0BgytiE8rzaGjkMxRaEww/o7XtiLmjAhpfkHmyHGriAWfgGsZatrAdoRb3OQRsdFR+A3mniYUoyaHcmzra6F9ecV3vJf4wa0sn7WFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710211459; c=relaxed/simple;
-	bh=w1TsuMUWzBMAa4sluemyX5myNv66iSIjpefpYiqw6No=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YR6qC07dhv49we0crGzckYyrJW2wwM6UoCBhy3SeyuMs9q8DilnmI6VTPkIc/NmbjFfa2iRJzoGxuGCYgwDwOz0nDB/zbDDRPPwaPpvy/cLA9dxXzQ0f3LaxOhdi2FzOHTgv7PuMMKASAhpiSAAlO9Wzcpl9UiYBIHBz0pt5N1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=RWHroVnU; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d8b276979aso3558527a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 19:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1710211458; x=1710816258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n2/zqf8TfkF7fmO3ryrALVmJ2Vqgii1SZQQKBoGp30M=;
-        b=RWHroVnUxNq25PSZi9Z1RDXpYssydo+icth3tlZHvUmzLWeeWJzk9/8oklJblkLmuB
-         aLY8n3upiIeHo772B6JWHGk6j1AmhgZUYqqRtK11vAn0dqqCgS+i0Xea1aRj2XObWMlV
-         GGtH4hmTLW6qB5m5X6qmZH7Qd+C309mkMQJtASCj6R/C9LRKIzLYTNVjir7O6A3j1AOx
-         SEMM40o3rSP+SU/BynrAGdj417Vo85UMZpPC9h+l2bhxh8D1IGJ1PIo+Ia7c+AFSdRgB
-         9pUnQCB+PgaiQQ9ymeXfsCRNGTtrtMfB06l2yZzNAqVhsGP0NU2vsHVz4r1qqxpYWi/4
-         cWqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710211458; x=1710816258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n2/zqf8TfkF7fmO3ryrALVmJ2Vqgii1SZQQKBoGp30M=;
-        b=YYWD11h55U3owBUhvEN60lJoDqvNskbBi+1cB8FGwrZ2u84mSldE1daNcUnNU+UHse
-         WwOFIa/tCEHAVelASECBjxEXA0MHibHOPnL4ndIicgz6GInC7JfoZj75DhlzvW3kCPW1
-         aAS1CpTUTD4M4GXKtSVs/pjiq9XRFEvlF4/oUSM2mgSF4rTS3De+CC0LuN4T19Vdt+XD
-         /upsrSbaJ329NKOtSzx7mzcn4BDdtGSbvUps0J7FfOO7qAYKRlGu5idpsL/wX/50ci+Q
-         sHYx/GPYuEQ6URgts53U7rjC6ATUbVFKSfqRkXGAmsXMlLIkPVahjw9SkbIID1W4J6Zp
-         +m0A==
-X-Forwarded-Encrypted: i=1; AJvYcCW6zsxcp+9EY1uSLS7Ghg66Q9/hBFJEYqAMnwDBT3ta+NBXl6yu3uFmP7T02JP0YR4Zc/Yj+/67fU/7+mW32Borpci1k3a1iId2Si7A
-X-Gm-Message-State: AOJu0Ywwj3DdeBQ/Gjg5EqlekWQ5b9CMAff2F+JpYQvcMOFe9n3qBNTY
-	As0P4UVoToIFYH9v7VvpYNTwJV6Dl6Si4A02vyBS1gMfjzOOtXmuYZX6eVTMerwbHpmvv8c/qqw
-	4XRe52DtEIdEPvsnxvUQEou/2cqZCNfruQRLxeQ==
-X-Google-Smtp-Source: AGHT+IGvIums+DTS3WHK+W5NCGfLkPUVfEDar4QbCGrncl6WQdDDS8a1T8ll9cvRYezwajGoT7cszDUrP5tYmNtBalM=
-X-Received: by 2002:a17:90b:3ec9:b0:29c:4082:2d0b with SMTP id
- rm9-20020a17090b3ec900b0029c40822d0bmr49744pjb.28.1710211457742; Mon, 11 Mar
- 2024 19:44:17 -0700 (PDT)
+	s=arc-20240116; t=1710211505; c=relaxed/simple;
+	bh=0dvdXXyJ1ESxem/rFpA82FAbmKBH4mm6+/qvqOws/sA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VCkbo1AE2zsUI1zT7g09pcK1M/qvk6s2eny8gzeFSNwz/QcBPsT4Cfb4ssXcCxJqYtZHtU32NpXeMtL1Frja/e14SX/uZVtZg31xa4ra2POWu1Hj9PVuV/7JobblBrS5IEdTZRRLIH1IbHXtpDCBsLBpj1AS8xv7xM5jL24bkf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KipOmKom; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710211504; x=1741747504;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=0dvdXXyJ1ESxem/rFpA82FAbmKBH4mm6+/qvqOws/sA=;
+  b=KipOmKomAq3ANsYJDJtgpgtIRidJRuvNU8YL9y3lBwEvSAmM+q72uRNx
+   RVKyXvQqH/OhEqcYxC/7vVUKBioaJZXOJ4cU4QGibuhITQCo8X71e9vB1
+   DRpaNRNXrU+kDWTFBGzD4w4CIJ3xXi79PTWH8yhS04FsRal4qy8dLvH6y
+   RfxecAWnoFoVVdHoQz579x3sEBlH7p/aOMxq4w2b9WO2BhwSneQSIzWzI
+   Ln5qoOzCIBUMEHCV6N1BpEwa/q364tjNSEQPt0+1aOsBQIy6z70Iv46+/
+   aDjMVDQHE7wfagNm4o8YpC5NIg5k+MG1JY+3hnR/p2pYQb76rkT5o7gkf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4760893"
+X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
+   d="scan'208";a="4760893"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 19:45:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
+   d="scan'208";a="11295410"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.125.243.127]) ([10.125.243.127])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 19:44:59 -0700
+Message-ID: <b3650606-712a-468d-9101-04c61c60531a@intel.com>
+Date: Tue, 12 Mar 2024 10:44:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
- <20240311093526.1010158-9-dongmenglong.8@bytedance.com> <CAADnVQK+s3XgSYhpSdh7_9Qhq4DimmSO-D9d5+EsSZQMX4TxxA@mail.gmail.com>
-In-Reply-To: <CAADnVQK+s3XgSYhpSdh7_9Qhq4DimmSO-D9d5+EsSZQMX4TxxA@mail.gmail.com>
-From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Date: Tue, 12 Mar 2024 10:44:06 +0800
-Message-ID: <CALz3k9hZxsbUGoe5JoWpMEV0URykRwiKWLKZNj4nhvnXg3V=Zg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next v2 8/9] libbpf: add support for
- the multi-link of tracing
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] kvm/cpuid: set proper GuestPhysBits in
+ CPUID.0x80000008
+Content-Language: en-US
+To: Gerd Hoffmann <kraxel@redhat.com>, kvm@vger.kernel.org
+Cc: Tom Lendacky <thomas.lendacky@amd.com>,
+ Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)"
+ <linux-kernel@vger.kernel.org>
+References: <20240311104118.284054-1-kraxel@redhat.com>
+ <20240311104118.284054-3-kraxel@redhat.com>
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20240311104118.284054-3-kraxel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 12, 2024 at 9:56=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Mar 11, 2024 at 2:35=E2=80=AFAM Menglong Dong
-> <dongmenglong.8@bytedance.com> wrote:
-> >
-> >
-> > -               err =3D libbpf_find_attach_btf_id(prog, attach_name, &b=
-tf_obj_fd, &btf_type_id);
-> > +               name_end =3D strchr(attach_name, ',');
-> > +               /* for multi-link tracing, use the first target symbol =
-during
-> > +                * loading.
-> > +                */
-> > +               if ((def & SEC_ATTACH_BTF_MULTI) && name_end) {
-> > +                       int len =3D name_end - attach_name + 1;
-> > +                       char *first_tgt;
-> > +
-> > +                       first_tgt =3D malloc(len);
-> > +                       if (!first_tgt)
-> > +                               return -ENOMEM;
-> > +                       strncpy(first_tgt, attach_name, len);
-> > +                       first_tgt[len - 1] =3D '\0';
-> > +                       err =3D libbpf_find_attach_btf_id(prog, first_t=
-gt, &btf_obj_fd,
-> > +                                                       &btf_type_id);
-> > +                       free(first_tgt);
-> > +               } else {
-> > +                       err =3D libbpf_find_attach_btf_id(prog, attach_=
-name, &btf_obj_fd,
-> > +                                                       &btf_type_id);
-> > +               }
->
-> Pls use glob_match the way [ku]probe multi are doing
-> instead of exact match.
+On 3/11/2024 6:41 PM, Gerd Hoffmann wrote:
+> The AMD APM (3.35) defines GuestPhysBits (EAX[23:16]) as:
+> 
+>    Maximum guest physical address size in bits.  This number applies
+>    only to guests using nested paging.  When this field is zero, refer
+>    to the PhysAddrSize field for the maximum guest physical address size.
+> 
+> Tom Lendacky confirmed that the purpose of GuestPhysBits is software use
+> and KVM can use it as described below.  Hardware always returns zero
+> here.
+> 
+> Use the GuestPhysBits field to communicate the max addressable GPA to
+> the guest.  Typically this is identical to the max effective GPA, except
+> in case the CPU supports MAXPHYADDR > 48 but does not support 5-level
+> TDP.
+> 
+> GuestPhysBits is set only in case TDP is enabled, otherwise it is left
+> at zero.
+> 
+> GuestPhysBits will be used by the guest firmware to make sure resources
+> like PCI bars are mapped into the addressable GPA.
+> 
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> ---
+>   arch/x86/kvm/mmu.h     |  2 ++
+>   arch/x86/kvm/cpuid.c   | 31 +++++++++++++++++++++++++++++--
+>   arch/x86/kvm/mmu/mmu.c |  5 +++++
+>   3 files changed, 36 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index 60f21bb4c27b..b410a227c601 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
+>   	return boot_cpu_data.x86_phys_bits;
+>   }
+>   
+> +u8 kvm_mmu_get_max_tdp_level(void);
+> +
+>   void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
+>   void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
+>   void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index c638b5fb2144..cd627dead9ce 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -1221,8 +1221,22 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+>   		entry->eax = entry->ebx = entry->ecx = 0;
+>   		break;
+>   	case 0x80000008: {
+> +		/*
+> +		 * GuestPhysAddrSize (EAX[23:16]) is intended for software
+> +		 * use.
+> +		 *
+> +		 * KVM's ABI is to report the effective MAXPHYADDR for the
+> +		 * guest in PhysAddrSize (phys_as), and the maximum
+> +		 * *addressable* GPA in GuestPhysAddrSize (g_phys_as).
+> +		 *
+> +		 * GuestPhysAddrSize is valid if and only if TDP is enabled,
+> +		 * in which case the max GPA that can be addressed by KVM may
+> +		 * be less than the max GPA that can be legally generated by
+> +		 * the guest, e.g. if MAXPHYADDR>48 but the CPU doesn't
+> +		 * support 5-level TDP.
+> +		 */
+>   		unsigned int virt_as = max((entry->eax >> 8) & 0xff, 48U);
+> -		unsigned int phys_as;
+> +		unsigned int phys_as, g_phys_as;
+>   
+>   		if (!tdp_enabled) {
+>   			/*
+> @@ -1232,11 +1246,24 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+>   			 * for memory encryption affect shadow paging, too.
+>   			 */
+>   			phys_as = boot_cpu_data.x86_phys_bits;
+> +			g_phys_as = 0;
+>   		} else {
+> +			/*
+> +			 * If TDP is enabled, the effective guest MAXPHYADDR
+> +			 * is the same as the raw bare metal MAXPHYADDR, as
+> +			 * reductions to HPAs don't affect GPAs.  The max
+> +			 * addressable GPA is the same as the max effective
+> +			 * GPA, except that it's capped at 48 bits if 5-level
+> +			 * TDP isn't supported (hardware processes bits 51:48
+> +			 * only when walking the fifth level page table).
+> +			 */
 
-Hello,
+If the comment in previous patch gets changed as I suggested, this one 
+needs to be updated as well.
 
-I'm a little suspecting the effect of glob_match. I seldom found
-the use case that the kernel functions which we want to trace
-have the same naming pattern. And the exact match seems more
-useful.
+Anyway, the patch itself looks good.
 
-Can we use both exact and glob match here?
+Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
 
-Thanks!
-Menglong Dong
+>   			phys_as = entry->eax & 0xff;
+> +			g_phys_as = phys_as;
+> +			if (kvm_mmu_get_max_tdp_level() < 5)
+> +				g_phys_as = min(g_phys_as, 48);
+>   		}
+>   
+> -		entry->eax = phys_as | (virt_as << 8);
+> +		entry->eax = phys_as | (virt_as << 8) | (g_phys_as << 16);
+>   		entry->ecx &= ~(GENMASK(31, 16) | GENMASK(11, 8));
+>   		entry->edx = 0;
+>   		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 2d6cdeab1f8a..ffd32400fd8c 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5267,6 +5267,11 @@ static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
+>   	return max_tdp_level;
+>   }
+>   
+> +u8 kvm_mmu_get_max_tdp_level(void)
+> +{
+> +	return tdp_root_level ? tdp_root_level : max_tdp_level;
+> +}
+> +
+>   static union kvm_mmu_page_role
+>   kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
+>   				union kvm_cpu_role cpu_role)
+
 
