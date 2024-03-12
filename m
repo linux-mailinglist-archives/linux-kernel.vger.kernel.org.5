@@ -1,189 +1,123 @@
-Return-Path: <linux-kernel+bounces-100579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DE35879A54
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:10:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E15C7879A5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8552285AA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:10:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DA281C222C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2EE1386C1;
-	Tue, 12 Mar 2024 17:08:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 068AB1384A9;
+	Tue, 12 Mar 2024 17:09:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mdd623ZJ"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="devtnbWI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3861386BC
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455921272D0;
+	Tue, 12 Mar 2024 17:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710263286; cv=none; b=UHdQ7TO9f2+NqZC2kmhz34vIiIWBrAk9DNa39j0dLhAP1nAH3LN/l4ih6G9GhNA+GgB6t4VkfUaJdnJdtdQOMWxCznJoK1gRdcQhxzjQZeankEoxEvo61xNd0kexzh1QOUQKvnoQ8F0E1Oy0AcsrfzXgEjD4HZsdbTPI4X2hl3o=
+	t=1710263351; cv=none; b=NW/jP4q9m0LDcXbXMLwiScKhcMg3ZP+fquhNrQiohglKLJjW174N1HRsIyDuMkykPJ0/fXggvxhUOk/UccuJDvjgFaR/jsKAOWc4dV2Lfdm5Lsxv3eg9VfR+pO+XR1+MsXiMGX3jCUtW4oBa8lAymTjoU15iBYm8x1BGGvEV/sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710263286; c=relaxed/simple;
-	bh=LCt3WWvGn4P8WKRrmZ370zHM2Olntl8aKMiYWPrEOpc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=OqOGpkyafyihWIXcaOp6wj0Q0K8mkaT01sddqBwk/dhonxXnrCRxvJ1rFPbw90sto76ftikn5pNthwe+qovBiA7dIartPd5yNKOsUZiSlDMn0jjrqUG9u9cfFuxGFGOXrL8WOcVe6QFH6PIG+/jRCEKVvdduRKdAmZPOWcLrr3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mdd623ZJ; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5c670f70a37so5220266a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:08:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710263284; x=1710868084; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WE8e1Ziotl3mZ18Tc3buOFiIUh2+sqQFXIcFrXQVlYE=;
-        b=Mdd623ZJ8ozdBoWFRe/vQqSnLlmzGLbDodzEDOBX19UTcrKd+OgXfShY7GlxGT4RMv
-         +sFVjEy6MV4eiYg9SzXgmTdgoBYEY30sO6NXqm+DlNr+vjC1C5koOVqSPQD2DfmHLZTP
-         IQ03Af9ObWtSr6X3SiHkvLlYOhJVPVUESqOMzTuxsj8+RHXN5hOPeuFInzIv2S1rdwMO
-         KH7JIv3ccdGVKTwnCsvJRjcyq2YnQSNdbae46eDDWMumtOjJwOxavTsfoSGRMqZKJwHt
-         lwcihTYhkb3CPfl0MXCt5Aapw6+wIC8bj730pa5gaJYvC76M9EDncMO3u/gsxfkcXuWF
-         V5pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710263284; x=1710868084;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WE8e1Ziotl3mZ18Tc3buOFiIUh2+sqQFXIcFrXQVlYE=;
-        b=M/l/Gjle+6V8AmIBg+ZkhnOCDuca77YXCFlGgQC4PC2NBK5DPJD2g2X1mz5KG90zkt
-         DMJaxfUAVwuNC8QfuX2HPOtwVTm1KbZzIZUNBEFmtHR3E9Kz9n6bwV4gH/nZHkdEJbeQ
-         /pDuv1cVtkU+gAeBP9JjMfNP0M6o7wNnsWupGrOTxsrgbud272R5oHmZA0VVduuAxhHm
-         LbJteyLqgmjHUzgPmpwGxpelF+OmTIa+NPA8MOD141bV07QL6O0y2cSaOGVhCqvxEDe5
-         FuEYMXdw+8HGOev9Cio0cpc4moPsgdhfSatvXwu5Ek38ClfMd8RJ5B1ugf21fFLWI1kx
-         gZUw==
-X-Forwarded-Encrypted: i=1; AJvYcCWn+eQJwyzrHujMkID+CKCgh5UemxKlJdGpwVZICyPc7ojMBuzRoGfB2T+U+aB5ZY6OnnqVs0jFTkbrVk8N/0gX02IL0dcmNAsLq1Al
-X-Gm-Message-State: AOJu0YwS8hdfojflks4/+cFlG5X0QIWh/34P78gn/s2mXw/CZVbE9u9+
-	umuaNPWDeL/Yo6ehTA0Ve1mLRIXEP+HS1HEY+vTZxv3rJLnBfAkAS+ViDWaekLAUZ7q1sHBaI+s
-	gxA==
-X-Google-Smtp-Source: AGHT+IE5t8MewLarAvjjhbmUaRutQbVD7rwK9cE51AMPD3wv7USN8MStB1z1W1pob50IpkZGEhvbJJKimsM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:e02:0:b0:5dc:6130:a914 with SMTP id
- d2-20020a630e02000000b005dc6130a914mr26681pgl.7.1710263284174; Tue, 12 Mar
- 2024 10:08:04 -0700 (PDT)
-Date: Tue, 12 Mar 2024 10:08:02 -0700
-In-Reply-To: <5ee34382-b45b-2069-ea33-ef58acacaa79@oracle.com>
+	s=arc-20240116; t=1710263351; c=relaxed/simple;
+	bh=1jA03QW9AFvjOJhcOZGMu3kdX8qPXMuBJ+eiBAtPS+E=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=mhX4MLcIndNk/mv1SbHhIzbQikqX1vFaqKealJLRLAlTWdcP8QGTdiNj0ZjWNV+6uhUv/YvTaBxGUoo71vvpyCZm0DhjbQeI13TuVmbfwIov7rdvrQetQjko+Y2s2P8jLrNVso4X9zzX2Lepdzh7fwjyMPw0626ke/L4kDrEj+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=devtnbWI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 850A7C433C7;
+	Tue, 12 Mar 2024 17:09:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710263350;
+	bh=1jA03QW9AFvjOJhcOZGMu3kdX8qPXMuBJ+eiBAtPS+E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=devtnbWIbz3pDe7o6Lbc2wO3rFU/mFmuDdiTUvzYqeZJw6u137ySWznv+7MZDpzTD
+	 +6zQeww9Q7QvoxDwiLFPz11TGqhQIyOs4+WIJwOpqQtIv6id4Kao0fhICZGe7fs4Bd
+	 v0kwC5USz1HceWiDRA3+FQ7feHsnQ+GLdZb5uHXo4bg25UwhQyYMTTgO6xKpcMKweC
+	 KONQZNlMp5kNQkALF2ufFmfAJm/d34XAKgBsTR8Nt5OiecSxP/PUJF+PaS1GCmtdCA
+	 0lH5DtiZbEcOsJbPt4i4po2FD+Ru175iQuz32Ie0YX7VaivcvKvWvELIkCo01UooBX
+	 olwsB3zz4cqIg==
+Date: Tue, 12 Mar 2024 12:09:08 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "tasev.stefanoska" <tasev.stefanoska@skynet.be>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	"David E . Box" <david.e.box@linux.intel.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Mark Enriquez <enriquezmark36@gmail.com>,
+	Thomas Witt <kernel@witt.link>,
+	Werner Sembach <wse@tuxedocomputers.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Ricky Wu <ricky_wu@realtek.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Koba Ko <koba.ko@canonical.com>
+Subject: Re: [PATCH v7 0/5] PCI/ASPM: Save/restore L1 PM Substates for
+ suspend/resume
+Message-ID: <20240312170908.GA851847@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-2-seanjc@google.com>
- <5ee34382-b45b-2069-ea33-ef58acacaa79@oracle.com>
-Message-ID: <ZfCL8mCmmEx5wGwv@google.com>
-Subject: Re: [PATCH 1/5] KVM: x86: Remove VMX support for virtualizing guest
- MTRR memtypes
-From: Sean Christopherson <seanjc@google.com>
-To: Dongli Zhang <dongli.zhang@oracle.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, kvm@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>, 
-	Yiwei Zhang <zzyiwei@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <482b5ee6-5581-4e57-8ca3-8aec0d974c6d@skynet.be>
 
-On Mon, Mar 11, 2024, Dongli Zhang wrote:
-> 
-> 
-> On 3/8/24 17:09, Sean Christopherson wrote:
-> > Remove KVM's support for virtualizing guest MTRR memtypes, as full MTRR
-> > adds no value, negatively impacts guest performance, and is a maintenance
-> > burden due to it's complexity and oddities.
+On Tue, Mar 12, 2024 at 06:03:21PM +0100, tasev.stefanoska wrote:
+> Le 7/03/24 à 23:25, Bjorn Helgaas a écrit :
+> > On Tue, Mar 05, 2024 at 03:46:56PM -0600, Bjorn Helgaas wrote:
+> > > On Fri, Feb 23, 2024 at 02:58:46PM -0600, Bjorn Helgaas wrote:
+> > > > From: Bjorn Helgaas <bhelgaas@google.com>
+> > > > 
+> > > > This is some rework of David's series to preserve ASPM L1 substate
+> > > > configuration across suspend/resume.
+> > > > ...
+> > > > David E. Box (5):
+> > > >    PCI/ASPM: Move pci_configure_ltr() to aspm.c
+> > > >    PCI/ASPM: Always build aspm.c
+> > > >    PCI/ASPM: Move pci_save_ltr_state() to aspm.c
+> > > >    PCI/ASPM: Save L1 PM Substates Capability for suspend/resume
+> > > >    PCI/ASPM: Call pci_save_ltr_state() from pci_save_pcie_state()
+> > > > 
+> > > >   drivers/pci/pci.c         |  89 ++++------------
+> > > >   drivers/pci/pci.h         |  13 ++-
+> > > >   drivers/pci/pcie/Makefile |   2 +-
+> > > >   drivers/pci/pcie/aspm.c   | 215 ++++++++++++++++++++++++++++++++++++++
+> > > >   drivers/pci/probe.c       |  62 +----------
+> > > >   include/linux/pci.h       |   2 +-
+> > > >   6 files changed, 252 insertions(+), 131 deletions(-)
+> > >
+> > > I applied these as pci/aspm for v6.9, replacing the original unlabeled
+> > > v6 that has been in -next.
+> >
+> > Would anybody be able to test this, particularly to make sure it works
+> > for the bugs we're claiming to fix with this series?
 > > 
-> > KVM's approach to virtualizating MTRRs make no sense, at all.  KVM *only*
-> > honors guest MTRR memtypes if EPT is enabled *and* the guest has a device
-> > that may perform non-coherent DMA access.  From a hardware virtualization
-> > perspective of guest MTRRs, there is _nothing_ special about EPT.  Legacy
-> > shadowing paging doesn't magically account for guest MTRRs, nor does NPT.
+> >    https://bugzilla.kernel.org/show_bug.cgi?id=217321
+> >    https://bugzilla.kernel.org/show_bug.cgi?id=216782
+> >    https://bugzilla.kernel.org/show_bug.cgi?id=216877
+> > 
+> > This series is headed for v6.9, and I hope we can finally claim
+> > victory over these issues.
+> > 
+> > This is in -next as of the Mar 7 tree.  Or if you want just the ASPM
+> > changes, based on v6.8-rc1, you can use the branch at
+> > https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/log/?h=aspm
 > 
-> [snip]
-> 
-> >  
-> > -bool __kvm_mmu_honors_guest_mtrrs(bool vm_has_noncoherent_dma)
-> > +bool kvm_mmu_may_ignore_guest_pat(void)
-> >  {
-> >  	/*
-> > -	 * If host MTRRs are ignored (shadow_memtype_mask is non-zero), and the
-> > -	 * VM has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's ABI is
-> > -	 * to honor the memtype from the guest's MTRRs so that guest accesses
-> > -	 * to memory that is DMA'd aren't cached against the guest's wishes.
-> > -	 *
-> > -	 * Note, KVM may still ultimately ignore guest MTRRs for certain PFNs,
-> > -	 * e.g. KVM will force UC memtype for host MMIO.
-> > +	 * When EPT is enabled (shadow_memtype_mask is non-zero), and the VM
-> > +	 * has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's ABI is to
-> > +	 * honor the memtype from the guest's PAT so that guest accesses to
-> > +	 * memory that is DMA'd aren't cached against the guest's wishes.  As a
-> > +	 * result, KVM _may_ ignore guest PAT, whereas without non-coherent DMA,
-> > +	 * KVM _always_ ignores guest PAT (when EPT is enabled).
-> >  	 */
-> > -	return vm_has_noncoherent_dma && shadow_memtype_mask;
-> > +	return shadow_memtype_mask;
-> >  }
-> >  
-> 
-> Any special reason to use the naming 'may_ignore_guest_pat', but not
-> 'may_honor_guest_pat'?
+> I just tested the patch v7 from Bjorn, it works on my Asus UX305FA.
+> Tested on kernel v6.8-rc1.
 
-Because which (after this series) is would either be misleading or outright wrong.
-If KVM returns true from the helper based solely on shadow_memtype_mask, then it's
-misleading because KVM will *always* honors guest PAT for such CPUs.  I.e. that
-name would yield this misleading statement.
+Thank you very much!  I added the following to the "PCI/ASPM: Save L1
+PM Substates Capability for suspend/resume" patch:
 
-  If the CPU supports self-snoop, KVM may honor guest PAT.
-
-If KVM returns true iff self-snoop is NOT available (as proposed in this series),
-then it's outright wrong as KVM would return false, i.e. would make this incorrect
-statement:
-
-  If the CPU supports self-snoop, KVM never honors guest PAT.
-
-As saying that KVM may not or cannot do something is saying that KVM will never
-do that thing.
-
-And because the EPT flag is "ignore guest PAT", not "honor guest PAT", but that's
-as much coincidence as it is anything else.
-
-> Since it is also controlled by other cases, e.g., kvm_arch_has_noncoherent_dma()
-> at vmx_get_mt_mask(), it can be 'may_honor_guest_pat' too?
-> 
-> Therefore, why not directly use 'shadow_memtype_mask' (without the API), or some
-> naming like "ept_enabled_for_hardware".
-
-Again, after this series, KVM will *always* honor guest PAT for CPUs with self-snoop,
-i.e. KVM will *never* ignore guest PAT.  But for CPUs without self-snoop (or with
-errata), KVM conditionally honors/ignores guest PAT.
-
-> Even with the code from PATCH 5/5, we still have high chance that VM has
-> non-coherent DMA?
-
-I don't follow.  On CPUs with self-snoop, whether or not the VM has non-coherent
-DMA (from VFIO!) is irrelevant.  If the CPU has self-snoop, then KVM can safely
-honor guest PAT at all times.
-
->  bool kvm_mmu_may_ignore_guest_pat(void)
->  {
->  	/*
-> -	 * When EPT is enabled (shadow_memtype_mask is non-zero), and the VM
-> +	 * When EPT is enabled (shadow_memtype_mask is non-zero), the CPU does
-> +	 * not support self-snoop (or is affected by an erratum), and the VM
->  	 * has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's ABI is to
->  	 * honor the memtype from the guest's PAT so that guest accesses to
->  	 * memory that is DMA'd aren't cached against the guest's wishes.  As a
->  	 * result, KVM _may_ ignore guest PAT, whereas without non-coherent DMA,
-> -	 * KVM _always_ ignores guest PAT (when EPT is enabled).
-> +	 * KVM _always_ ignores or honors guest PAT, i.e. doesn't toggle SPTE
-> +	 * bits in response to non-coherent device (un)registration.
->  	 */
-> -	return shadow_memtype_mask;
-> +	return !static_cpu_has(X86_FEATURE_SELFSNOOP) && shadow_memtype_mask;
->  }
-> 
-> 
-> Thank you very much!
-> 
-> Dongli Zhang
+  Tested-by: Tasev Nikola <tasev.stefanoska@skynet.be> # Asus UX305FA
 
