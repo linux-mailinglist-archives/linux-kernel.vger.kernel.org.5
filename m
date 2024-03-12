@@ -1,228 +1,206 @@
-Return-Path: <linux-kernel+bounces-100885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B47E879EA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:28:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4523879EA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:29:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C06C1C22340
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:28:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C3A028706A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3144CDE0;
-	Tue, 12 Mar 2024 22:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A191B143C71;
+	Tue, 12 Mar 2024 22:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KvjyGu41"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lWSPq3HG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954BA1448EF
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 22:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2574CDE0
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 22:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710282357; cv=none; b=QYckYjZrBbz5eIipEP/PPLQKpfJPTUe9R1v9oAfeuMNFKf5tAPUWiuQfvmtwkqgvHGx2osXqf1FWtyHh/G8BerS2GDyCnaO4ENDX33sDnWqC1PCADvDt9pzAlfxGx6Y2EM9HviW+yLcfeqfSfWPGTS2CcRsia8kRk7wYGy0NxVg=
+	t=1710282544; cv=none; b=DMeGtlgs1KtwQZwwHermm9eEJxLkRDrnaWOPeUq5sNYbYpLmAqYtnogzN4RgD12VKNafmiWCPgSN56e/cTj7k9tdxde3rZxwuRHEP/Rewa/4jhajl2MhBcq4POcfVEN7+XeBTk7BUXMdr5qjHl9/exZr/iz3nrAlZdU8KxXoqW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710282357; c=relaxed/simple;
-	bh=NLduQ1qqi8G4d7ARUwsnkK5vON8Crq0A2u8yvVgVLio=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VORpUScplCgidpprrOwUtxq8D4uB5yrbNinsQRgBdV2aKwJzq8Y0vzU1aY20SPhv5ya1pVtfO2urwFWstFB4uqXwldJzdykmGTF/KUPwMh3G7DXaMbFO/Z3pndmUd5wnJ33NWXDOnlCpkv4a45sC3EyXCbe3Z4CSPcNN/9PTE6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KvjyGu41; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-690b24973beso2631026d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710282354; x=1710887154; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OzQZAVQefo3mI7JaOv3i9HOffYntNfvUVWBj/1pTaQU=;
-        b=KvjyGu41fyxAaBplH63kSqctY+kOsTiquLwH4ZBvO31IBw7LuQuPPLloV8kQvv5HmA
-         5b6bVFPPs2IfNusicO15hXr6S4vGMPAKtK6FjGh+CZ6T1Rm01opWxu2v9nciP+9LBOjp
-         vrou5mo/njzUEYnN0Xq0MYopSSPbwak5Bw6Sg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710282354; x=1710887154;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OzQZAVQefo3mI7JaOv3i9HOffYntNfvUVWBj/1pTaQU=;
-        b=VJ23FWrZC5LRJjRKLLAvPE0o5CdDdUpFvN/YU3Vc7R9EARd6L4Z2sAbZqD1v7ZuU2/
-         2l9KgrtC5kCatFgvs/H7Yp4lm5+xgccF7/V7L+5lOFQxdTvm8k2TpFYdG2aIeTPBhQ8e
-         zv1ph2ldSITSFsspV0mQ30Irg5ssmW1sqVaNOkFjvr2cmNyWhQz5Ss82qNZllaH7/3yK
-         HYVzjiJLZ4ESkV6WH2ru6xmeY0swutnTPRLb7OTHwQH8XU9oNkme5kbBToDbUtO2JjFh
-         2E8Guj9EYnDCsY50KbTEdmRp8sB4F661AHdYSQO6r9/hYl+jdHurh3E25zuYsVWKrqrZ
-         bQLA==
-X-Forwarded-Encrypted: i=1; AJvYcCXkE3QIeP7O5A52ZGmEDxh5n1bHtM+FoVNTpbRFZbyk8koi3H21bzOzOJ9A36R4jFwnyKW7uIkpITl/M1CY4MqmMCeznJnrdyR6AiCE
-X-Gm-Message-State: AOJu0Yy47Yxh2vcwXewOIDJ7fbd/F3UAULElnAOeAnClCZKTw5BPeOrm
-	A9PyJ5yj9W8zfRtdaWyO0JvGp50K9F/dsNbV4NWAsz95p7s6yrStsrv2bkoVDMsICVD5xyQEIZi
-	Af5qoiq7N0vgQYHp5qDvmbVBXGg5GQjmIMe2p
-X-Google-Smtp-Source: AGHT+IGmyFqJ7I5OEdlVeWDP4fniRKop5+ziAYZpGgboPbvZWq7MrHq+rtsBULHzzfs4hoNrK7NjvGlYv1SDUXqSk04=
-X-Received: by 2002:ad4:5c48:0:b0:68f:dde4:fb12 with SMTP id
- a8-20020ad45c48000000b0068fdde4fb12mr1707180qva.9.1710282354445; Tue, 12 Mar
- 2024 15:25:54 -0700 (PDT)
+	s=arc-20240116; t=1710282544; c=relaxed/simple;
+	bh=tTQ5x31bZfDMPtCq1BPOxcN0a7C3MnUNoyPhThEtsVE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=rnGjVoOXC1+kfCE/cthTPX1crHTRetH+ro9jBOsZLCYWQJyYqaYhK3cUHHxAxTJZ0tn746cIo4rUqFMPJHjFAM2qTGVGIm5lKY7DNPGfJGkkJ68xOoRDH9RtP0w6N2GDgk+PB+LNXzZ+H7UnvDl4XHHk5d6Vs6EAX5B3fg/RSYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lWSPq3HG; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710282543; x=1741818543;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tTQ5x31bZfDMPtCq1BPOxcN0a7C3MnUNoyPhThEtsVE=;
+  b=lWSPq3HGfjIGXZeJkMMkpkr2GzVklJ87SpA2aXT9jBsmUK3mbIdwolZe
+   doKVDLL67gI+E5nUWAriZ4DW49Qx+Uwi+iWTftGNA+CbLvh630VBV7LbE
+   3o0ll2KM+10/z50L86qeS9Jr7w9tPRTA05gu756PVU4CvpKJJuAajPfQO
+   HSADQY9wHiKRoLGNkqeKgEcd6Xsq2+DhS0WzJhQakkk/j+8MwAEpjGkzZ
+   zgUESzxtMins6QXVYsIgJoBhkZHzwHyyhk+rZ6eT/C5ZYeYjmTS44/GhO
+   +7ANvnMGuwDXnBv9S5AbY7TVuQJOqUYtgYaMQCyVrXJJz50AQVXsNL52C
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5191902"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="5191902"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 15:29:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="16356823"
+Received: from gargayus-mobl1.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.255.231.196])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 15:29:01 -0700
+From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+To: Liam.Howlett@oracle.com,
+	akpm@linux-foundation.org,
+	bp@alien8.de,
+	broonie@kernel.org,
+	dave.hansen@linux.intel.com,
+	debug@rivosinc.com,
+	hpa@zytor.com,
+	keescook@chromium.org,
+	kirill.shutemov@linux.intel.com,
+	luto@kernel.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	tglx@linutronix.de,
+	x86@kernel.org,
+	christophe.leroy@csgroup.eu
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	rick.p.edgecombe@intel.com
+Subject: [PATCH v3 00/12] Cover a guard gap corner case
+Date: Tue, 12 Mar 2024 15:28:31 -0700
+Message-Id: <20240312222843.2505560-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231116172859.393744-1-sjg@chromium.org> <20231208150042.GA1278773-robh@kernel.org>
- <CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
- <CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
- <CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
- <20231214172702.GA617226-robh@kernel.org> <CAPnjgZ2oJSGPO91Y_aLbe+v250WFrND4n3T0mOvhERYidVu=eQ@mail.gmail.com>
- <CAFLszTizRRVbRO6_ygE2X-Lp5dENWSc4uMGL5GPJAFGAbRdCyQ@mail.gmail.com>
- <CAL_Jsq+j7_KZtQ2ENq9+vsw0LOZF=spu293_G=AxOmBM+m_f-g@mail.gmail.com>
- <CAFLszTimaFw9sf=JKvQXG4fS6V_2T=2n+pfvYLCiuG1o+7cHPA@mail.gmail.com>
- <20240205085056.44278f2c@xps-13> <CAFLszTi+8ygXOidnhxj7sdJwc6X5i+++QvnUyfe-kde5eSts_w@mail.gmail.com>
- <20240205131755.3462084f@xps-13> <CAFLszTh3t6wPz8PFhFzazTAGaLVpObkjY9qv7MtSkQ21zZFzKA@mail.gmail.com>
- <20240308084212.4aa58761@xps-13>
-In-Reply-To: <20240308084212.4aa58761@xps-13>
-From: Simon Glass <sjg@chromium.org>
-Date: Wed, 13 Mar 2024 11:25:42 +1300
-Message-ID: <CAFLszTi8w4gBoa-6uoKUN-Ng07ieA+DXy3gm2cdxfwgAybrgsQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, 
-	Michael Walle <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Miquel,
+Hi,
 
-On Fri, 8 Mar 2024 at 20:42, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Hi Simon,
->
-> sjg@chromium.org wrote on Fri, 8 Mar 2024 15:44:25 +1300:
->
-> > Hi Miquel,
-> >
-> > On Tue, 6 Feb 2024 at 01:17, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >
-> > > Hi Simon,
-> > >
-> > > > > > > > > > > > > > > +description: |
-> > > > > > > > > > > > > > > +  The binman node provides a layout for firmware, used when packaging firmware
-> > > > > > > > > > > > > > > +  from multiple projects. It is based on fixed-partitions, with some
-> > > > > > > > > > > > > > > +  extensions, but uses 'compatible' to indicate the contents of the node, to
-> > > > > > > > > > > > > > > +  avoid perturbing or confusing existing installations which use 'label' for a
-> > > > > > > > > > > > > > > +  particular purpose.
-> > > > > > > > > > > > > > > +
-> > > > > > > > > > > > > > > +  Binman supports properties used as inputs to the firmware-packaging process,
-> > > > > > > > > > > > > > > +  such as those which control alignment of partitions. This binding addresses
-> > > > > > > > > > > > > > > +  these 'input' properties. For example, it is common for the 'reg' property
-> > > > > > > > > > > > > > > +  (an 'output' property) to be set by Binman, based on the alignment requested
-> > > > > > > > > > > > > > > +  in the input.
-> > > > > > > > > > > > > > > +
-> > > > > > > > > > > > > > > +  Once processing is complete, input properties have mostly served their
-> > > > > > > > > > > > > > > +  purpose, at least until the firmware is repacked later, e.g. due to a
-> > > > > > > > > > > > > > > +  firmware update. The 'fixed-partitions' binding should provide enough
-> > > > > > > > > > > > > > > +  information to read the firmware at runtime, including decompression if
-> > > > > > > > > > > > > > > +  needed.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > How is this going to work exactly? binman reads these nodes and then
-> > > > > > > > > > > > > > writes out 'fixed-partitions' nodes. But then you've lost the binman
-> > > > > > > > > > > > > > specifc parts needed for repacking.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > No, they are the same node. I do want the extra information to stick
-> > > > > > > > > > > > > around. So long as it is compatible with fixed-partition as well, this
-> > > > > > > > > > > > > should work OK.
-> > > > > > > > > > > >
-> > > > > > > > > > > > How can it be both? The partitions node compatible can be either
-> > > > > > > > > > > > 'fixed-partitions' or 'binman'.
-> > > > > > > > > > >
-> > > > > > > > > > > Can we not allow it to be both? I have tried to adjust things in
-> > > > > > > > > > > response to feedback but perhaps the feedback was leading me down the
-> > > > > > > > > > > wrong path?
-> > > > > > > > > >
-> > > > > > > > > > Sure, but then the schema has to and that means extending
-> > > > > > > > > > fixed-partitions.
-> > > > > > > > >
-> > > > > > > > > Can we cross that bridge later? There might be resistance to it. I'm
-> > > > > > > > > not sure. For now, perhaps just a binman compatible works well enough
-> > > > > > > > > to make progress.
-> > > > > > > >
-> > > > > > > > Is there any way to make progress on this? I would like to have
-> > > > > > > > software which doesn't understand the binman compatible to at least be
-> > > > > > > > able to understand the fixed-partition compatible. Is that acceptable?
-> > > > > > >
-> > > > > > > There's only 2 ways that it can work. Either binman writes out
-> > > > > > > fixed-partition nodes dropping/replacing anything only defined for
-> > > > > > > binman or fixed-partition is extended to include what binman needs.
-> > > > > >
-> > > > > > OK, then I suppose the best way is to add a new binman compatible, as
-> > > > > > is done with this v6 series. People then need to choose it instead of
-> > > > > > fixed-partition.
-> > > > >
-> > > > > I'm sorry this is not at all what Rob suggested, or did I totally
-> > > > > misunderstand his answer?
-> > > > >
-> > > > > In both cases the solution is to generate a "fixed-partition" node. Now
-> > > > > up to you to decide whether binman should adapt the output to the
-> > > > > current schema, or if the current schema should be extended to
-> > > > > understand all binman's output.
-> > > > >
-> > > > > At least that is my understanding and also what I kind of agree with.
-> > > >
-> > > > I do want to binman schema to include all the features of Binman.
-> > > >
-> > > > So are you saying that there should not be a 'binman'  schema, but I
-> > > > should just add all the binman properties to the fixed-partition
-> > > > schema?
-> > >
-> > > This is my current understanding, yes. But acknowledgment from Rob is
-> > > also welcome.
-> >
-> > I am trying again to wade through all the confusion here.
-> >
-> > There is not actually a 'fixed-partition' node. So are you saying I
-> > should add one? There is already a 'partitions' node. Won't they
-> > conflict?
->
-> Sorry for the confusion, there is a 'partitions' node indeed. This
-> node shall declare it's "programming model" (let's say), ie. how it
-> should be parsed. What defines this programming model today is the
-> 'fixed-partitions' compatible. I think we (Rob and myself, but again,
-> Rob, please confirm) agree on the fact that we don't want to duplicate
-> the fixed-partitions compatible/logic and thus the binman compatible
-> was rejected.
->
-> Hence, in order to move forward, I would definitely appreciate an
-> update of the fixed-partitions binding in order to support what binman
-> can generate.
+For v3, the change is in the struct vm_unmapped_area_info zeroing patches. 
+Per discussion[0], they are switched to a method of intializing the struct 
+at the callers that also doesn't leave useless statements as cleanup, but 
+is a bit easier to manually inspect for bugs. The arch's that acked the 
+old versions are left separate. What's left after that happens in a 
+treewide change. 
 
-OK, so I think my confusion is that I thought you were referring to a
-'partitions' compatible. But you are just referring to the name of the
-node being 'partitions', with the compatible string being
-'fixed-partitions'.
+It seems like a more straightforward change now, but I would still 
+appreciate if anyone can double check the treewide change.
 
-I believe I can make this work by adding a new 'binman.yaml' with the
-compatibles that I want to introduce. I cannot change partition.yaml
-since it does not itself specify a compatible.
+Also, rebase to v6.8.
 
->
-> We are here talking about the output of binman, not its input. TBH I
-> haven't understood the point in having binman's input parsed by the
-> generic yaml binding. I would advise to focus on binman's output first
-> because it feels more relevant, at a first glance.
+[0] https://lore.kernel.org/lkml/e617dea592ec336e991c4362e48cd8c648ba7b49.camel@intel.com/
 
-Yes that is fine.
+v2:
+https://lore.kernel.org/lkml/20240226190951.3240433-1-rick.p.edgecombe@intel.com/
 
->
-> > Would it be possible for you to look at my patches and suggest
-> > something? I think at this point, after so many hours of trying
-> > different things and trying to understand what is needed, I could
-> > really use a little help.
->
-> I hope the above details will help.
+v1:
+https://lore.kernel.org/lkml/20240215231332.1556787-1-rick.p.edgecombe@intel.com/
 
-I think so, thank you. I will send another version.
+=======
 
-Regards,
-Simon
+In working on x86’s shadow stack feature, I came across some limitations 
+around the kernel’s handling of guard gaps. AFAICT these limitations are 
+not too important for the traditional stack usage of guard gaps, but have 
+bigger impact on shadow stack’s usage. And now in addition to x86, we have 
+two other architectures implementing shadow stack like features that plan 
+to use guard gaps. I wanted to see about addressing them, but I have not 
+worked on mmap() placement related code before, so would greatly 
+appreciate if people could take a look and point me in the right 
+direction.
+
+The nature of the limitations of concern is as follows. In order to ensure 
+guard gaps between mappings, mmap() would need to consider two things:
+ 1. That the new mapping isn’t placed in an any existing mapping’s guard
+    gap.
+ 2. That the new mapping isn’t placed such that any existing mappings are
+    not in *its* guard gaps
+Currently mmap never considers (2), and (1) is not considered in some 
+situations.
+
+When not passing an address hint, or passing one without 
+MAP_FIXED_NOREPLACE, (1) is enforced. With MAP_FIXED_NOREPLACE, (1) is not 
+enforced. With MAP_FIXED, (1) is not considered, but this seems to be 
+expected since MAP_FIXED can already clobber existing mappings. For 
+MAP_FIXED_NOREPLACE I would have guessed it should respect the guard gaps 
+of existing mappings, but it is probably a little ambiguous.
+
+In this series I just tried to add enforcement of (2) for the normal (no 
+address hint) case and only for the newer shadow stack memory (not 
+stacks). The reason is that with the no-address-hint situation, landing 
+next to a guard gap could come up naturally and so be more influencable by 
+attackers such that two shadow stacks could be adjacent without a guard 
+gap. Where as the address-hint scenarios would require more control - 
+being able to call mmap() with specific arguments. As for why not just fix 
+the other corner cases anyway, I thought it might have some greater 
+possibility of affecting existing apps.
+
+Thanks,
+
+Rick
+
+Rick Edgecombe (12):
+  mm: Switch mm->get_unmapped_area() to a flag
+  mm: Introduce arch_get_unmapped_area_vmflags()
+  mm: Use get_unmapped_area_vmflags()
+  thp: Add thp_get_unmapped_area_vmflags()
+  csky: Use initializer for struct vm_unmapped_area_info
+  parisc: Use initializer for struct vm_unmapped_area_info
+  powerpc: Use initializer for struct vm_unmapped_area_info
+  treewide: Use initializer for struct vm_unmapped_area_info
+  mm: Take placement mappings gap into account
+  x86/mm: Implement HAVE_ARCH_UNMAPPED_AREA_VMFLAGS
+  x86/mm: Care about shadow stack guard gap during placement
+  selftests/x86: Add placement guard gap test for shstk
+
+ arch/alpha/kernel/osf_sys.c                   |   5 +-
+ arch/arc/mm/mmap.c                            |   4 +-
+ arch/arm/mm/mmap.c                            |   5 +-
+ arch/csky/abiv1/mmap.c                        |  12 +-
+ arch/loongarch/mm/mmap.c                      |   3 +-
+ arch/mips/mm/mmap.c                           |   3 +-
+ arch/parisc/kernel/sys_parisc.c               |   6 +-
+ arch/powerpc/mm/book3s64/slice.c              |  23 ++--
+ arch/s390/mm/hugetlbpage.c                    |   9 +-
+ arch/s390/mm/mmap.c                           |  15 +--
+ arch/sh/mm/mmap.c                             |   5 +-
+ arch/sparc/kernel/sys_sparc_32.c              |   3 +-
+ arch/sparc/kernel/sys_sparc_64.c              |  20 ++--
+ arch/sparc/mm/hugetlbpage.c                   |   9 +-
+ arch/x86/include/asm/pgtable_64.h             |   1 +
+ arch/x86/kernel/cpu/sgx/driver.c              |   2 +-
+ arch/x86/kernel/sys_x86_64.c                  |  42 +++++--
+ arch/x86/mm/hugetlbpage.c                     |   9 +-
+ arch/x86/mm/mmap.c                            |   4 +-
+ drivers/char/mem.c                            |   2 +-
+ drivers/dax/device.c                          |   6 +-
+ fs/hugetlbfs/inode.c                          |  11 +-
+ fs/proc/inode.c                               |  15 +--
+ fs/ramfs/file-mmu.c                           |   2 +-
+ include/linux/huge_mm.h                       |  11 ++
+ include/linux/mm.h                            |  12 +-
+ include/linux/mm_types.h                      |   6 +-
+ include/linux/sched/coredump.h                |   5 +-
+ include/linux/sched/mm.h                      |  22 ++++
+ io_uring/io_uring.c                           |   2 +-
+ mm/debug.c                                    |   6 -
+ mm/huge_memory.c                              |  26 +++--
+ mm/mmap.c                                     | 106 +++++++++++++-----
+ mm/shmem.c                                    |  11 +-
+ mm/util.c                                     |   6 +-
+ .../testing/selftests/x86/test_shadow_stack.c |  67 ++++++++++-
+ 36 files changed, 319 insertions(+), 177 deletions(-)
+
+-- 
+2.34.1
+
 
