@@ -1,49 +1,48 @@
-Return-Path: <linux-kernel+bounces-100193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93FDB87935D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:53:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C19287935E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C70911C21EB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:53:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5787B28180E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9D879DD9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF61E7A120;
 	Tue, 12 Mar 2024 11:53:37 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6954458207;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8104279B9F;
 	Tue, 12 Mar 2024 11:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710244417; cv=none; b=jFKxNiF0AOxbBYJuzzhs6hvRhXBkB2ZPrmtfj50GvVY7zi5dsI8z34o/5Z0RYNEEclWBYU0M3bQDNW5Pupn/R1owu3kYUuLlVeZN1ghIKGsgIGb6QoTsZh0RF1md9oOFZsDnoJ7Y3DwFSmLawxZTtHrmYNsx0mowNUxDgC7Cb/4=
+	t=1710244417; cv=none; b=PJStqaoFdqHbWi8gK5x67FKXrEw1KyHiujavo5TXQgz+obyOF3xjvxCHa7Fg+BgEwab1JhHx0urkMp3GQoXJzYbj7yTBv5D2Osfddl3twvhjObbDdU8s6UduoR2pLflf1uM/AEQpVeuMYlKHexhxu04ZMsyXHwGzEPAHi2OlT1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710244417; c=relaxed/simple;
-	bh=AA3vT42uXJUTEwQhKXY70OTOE0y5XchQ4pdvFf+D2J4=;
+	bh=OFWQHarI5fCAkqHhPKoFup+10oTzUofGo9Ywf9n4jY4=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=BCh6L30aIoeR+tGoYVJC7pWSP/PYIgpJBlZs/36vkkEe6uuCMEBPiyRjRqIDR1BKHhOa3n/oBGbghv/JB98L8Mj4qVQgfGoQqiDHZ0g0qut1JswaAdeVNEmeAJV5C54f1N+9lGeeXojxx4ZQCwRH6zs4qv9O1LuKJRjXskpcZcc=
+	 Content-Type; b=pCGBp+A9lRbloSf35JLhKhGVYyIxYVPzXpJUcjVtNs8ZQ9Q7ekeYbpsoP1TZxfcGBiQri5G6i2ubXszwFUeu4VKitKn5Cuo25YcnO7xQX1qaZtINUlIj5oqYhbpsXSVjIACXH+5iruPWJZbgueH84JleQlYvbdgcTX89JG3nUvw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E2FFC43394;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2600BC433C7;
 	Tue, 12 Mar 2024 11:53:37 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rk0jP-00000001u6S-20wN;
+	id 1rk0jP-00000001u6w-2fLz;
 	Tue, 12 Mar 2024 07:55:43 -0400
-Message-ID: <20240312115543.336872058@goodmis.org>
+Message-ID: <20240312115543.500445373@goodmis.org>
 User-Agent: quilt/0.67
-Date: Tue, 12 Mar 2024 07:54:56 -0400
+Date: Tue, 12 Mar 2024 07:54:57 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- stable@vger.kernel.org
-Subject: [PATCH 1/2] ring-buffer: Fix full_waiters_pending in poll
+ Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH 2/2] ring-buffer: Reuse rb_watermark_hit() for the poll logic
 References: <20240312115455.666920175@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -55,125 +54,50 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-If a reader of the ring buffer is doing a poll, and waiting for the ring
-buffer to hit a specific watermark, there could be a case where it gets
-into an infinite ping-pong loop.
+The check for knowing if the poll should wait or not is basically the
+exact same logic as rb_watermark_hit(). The only difference is that
+rb_watermark_hit() also handles the !full case. But for the full case, the
+logic is the same. Just call that instead of duplicating the code in
+ring_buffer_poll_wait().
 
-The poll code has:
-
-  rbwork->full_waiters_pending = true;
-  if (!cpu_buffer->shortest_full ||
-      cpu_buffer->shortest_full > full)
-         cpu_buffer->shortest_full = full;
-
-The writer will see full_waiters_pending and check if the ring buffer is
-filled over the percentage of the shortest_full value. If it is, it calls
-an irq_work to wake up all the waiters.
-
-But the code could get into a circular loop:
-
-	CPU 0					CPU 1
-	-----					-----
- [ Poll ]
-   [ shortest_full = 0 ]
-   rbwork->full_waiters_pending = true;
-					  if (rbwork->full_waiters_pending &&
-					      [ buffer percent ] > shortest_full) {
-					         rbwork->wakeup_full = true;
-					         [ queue_irqwork ]
-
-   cpu_buffer->shortest_full = full;
-
-					  [ IRQ work ]
-					  if (rbwork->wakeup_full) {
-					        cpu_buffer->shortest_full = 0;
-					        wakeup poll waiters;
-  [woken]
-   if ([ buffer percent ] > full)
-      break;
-   rbwork->full_waiters_pending = true;
-					  if (rbwork->full_waiters_pending &&
-					      [ buffer percent ] > shortest_full) {
-					         rbwork->wakeup_full = true;
-					         [ queue_irqwork ]
-
-   cpu_buffer->shortest_full = full;
-
-					  [ IRQ work ]
-					  if (rbwork->wakeup_full) {
-					        cpu_buffer->shortest_full = 0;
-					        wakeup poll waiters;
-  [woken]
-
- [ Wash, rinse, repeat! ]
-
-In the poll, the shortest_full needs to be set before the
-full_pending_waiters, as once that is set, the writer will compare the
-current shortest_full (which is incorrect) to decide to call the irq_work,
-which will reset the shortest_full (expecting the readers to update it).
-
-Also move the setting of full_waiters_pending after the check if the ring
-buffer has the required percentage filled. There's no reason to tell the
-writer to wake up waiters if there are no waiters.
-
-Cc: stable@vger.kernel.org
-Fixes: 42fb0a1e84ff5 ("tracing/ring-buffer: Have polling block on watermark")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ kernel/trace/ring_buffer.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index aa332ace108b..adfe603a769b 100644
+index adfe603a769b..6ef763f57c66 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -964,16 +964,32 @@ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
+@@ -963,21 +963,16 @@ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
+ 
  		poll_wait(filp, &rbwork->full_waiters, poll_table);
  
- 		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
--		rbwork->full_waiters_pending = true;
- 		if (!cpu_buffer->shortest_full ||
- 		    cpu_buffer->shortest_full > full)
- 			cpu_buffer->shortest_full = full;
- 		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
--	} else {
--		poll_wait(filp, &rbwork->waiters, poll_table);
--		rbwork->waiters_pending = true;
-+		if (full_hit(buffer, cpu, full))
-+			return EPOLLIN | EPOLLRDNORM;
-+		/*
-+		 * Only allow full_waiters_pending update to be seen after
-+		 * the shortest_full is set. If the writer sees the
-+		 * full_waiters_pending flag set, it will compare the
-+		 * amount in the ring buffer to shortest_full. If the amount
-+		 * in the ring buffer is greater than the shortest_full
-+		 * percent, it will call the irq_work handler to wake up
-+		 * this list. The irq_handler will reset shortest_full
-+		 * back to zero. That's done under the reader_lock, but
-+		 * the below smp_mb() makes sure that the update to
-+		 * full_waiters_pending doesn't leak up into the above.
-+		 */
-+		smp_mb();
-+		rbwork->full_waiters_pending = true;
-+		return 0;
- 	}
- 
-+	poll_wait(filp, &rbwork->waiters, poll_table);
-+	rbwork->waiters_pending = true;
-+
- 	/*
- 	 * There's a tight race between setting the waiters_pending and
- 	 * checking if the ring buffer is empty.  Once the waiters_pending bit
-@@ -989,9 +1005,6 @@ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
- 	 */
- 	smp_mb();
- 
--	if (full)
--		return full_hit(buffer, cpu, full) ? EPOLLIN | EPOLLRDNORM : 0;
--
- 	if ((cpu == RING_BUFFER_ALL_CPUS && !ring_buffer_empty(buffer)) ||
- 	    (cpu != RING_BUFFER_ALL_CPUS && !ring_buffer_empty_cpu(buffer, cpu)))
- 		return EPOLLIN | EPOLLRDNORM;
+-		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+-		if (!cpu_buffer->shortest_full ||
+-		    cpu_buffer->shortest_full > full)
+-			cpu_buffer->shortest_full = full;
+-		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+-		if (full_hit(buffer, cpu, full))
++		if (rb_watermark_hit(buffer, cpu, full))
+ 			return EPOLLIN | EPOLLRDNORM;
+ 		/*
+ 		 * Only allow full_waiters_pending update to be seen after
+-		 * the shortest_full is set. If the writer sees the
+-		 * full_waiters_pending flag set, it will compare the
+-		 * amount in the ring buffer to shortest_full. If the amount
+-		 * in the ring buffer is greater than the shortest_full
+-		 * percent, it will call the irq_work handler to wake up
+-		 * this list. The irq_handler will reset shortest_full
++		 * the shortest_full is set (in rb_watermark_hit). If the
++		 * writer sees the full_waiters_pending flag set, it will
++		 * compare the amount in the ring buffer to shortest_full.
++		 * If the amount in the ring buffer is greater than the
++		 * shortest_full percent, it will call the irq_work handler
++		 * to wake up this list. The irq_handler will reset shortest_full
+ 		 * back to zero. That's done under the reader_lock, but
+ 		 * the below smp_mb() makes sure that the update to
+ 		 * full_waiters_pending doesn't leak up into the above.
 -- 
 2.43.0
 
