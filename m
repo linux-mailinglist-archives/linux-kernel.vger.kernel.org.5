@@ -1,156 +1,114 @@
-Return-Path: <linux-kernel+bounces-100752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD8F3879CB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:16:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF332879CBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:17:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F209E1C21890
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:16:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D2611C219FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:17:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A83171428F9;
-	Tue, 12 Mar 2024 20:16:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11E7142914;
+	Tue, 12 Mar 2024 20:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="CRUkd854"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="U7QWMctl"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426967E104
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698878062A
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 20:17:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710274599; cv=none; b=LWCL9znszmytFraowBZyIc6A3Es9FzsmpGHKLCSYrQYb2a8bO7oFOzB96CH2KtdxnkkBvncyoe8/BuaIuUz3XjI992XwXgm2oAEYJSm4NZupUCZBqyLPSbfYlQ8LuQisj79t+Er2YfXJ7JX0s7HlSz1Wo2steCYob6xrj0uAsPM=
+	t=1710274647; cv=none; b=eyjD52LR+x2GUjCBtnJ0KN5Crjg/chw+Ez+vbxiM7btMzYXUbcMAZG3W66uLyJlpXGQZi+WZdJOMLDEKjpnTpGRV/1612L0dTMO+ASZZFGfyzjk1rIfgUmDM9XEpgy+UBqgh4lEqkwPaO8GES0DIkj1zy9jDcxeLc7epTXvvPrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710274599; c=relaxed/simple;
-	bh=+e8AniSaQWLlkyHKk8x3jYF5zupwMoaIeiUhEeWHoi4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OPtHt4Rrk0lttzRPNZMVJWaq5QjCz+rfBcwmz76fBSXIpY4EpDoadcbvBAbGRt+eNFZmEDizG2iqaPBDQdC9q0pjN3tdE2V6QHQawX2GYHtzFSPwX+Q6A3w5Tor8KGNs95COcADVi4ZwN8mRGtdwm4bn7TDK6AMZNFqEekpibbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=CRUkd854; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=icJZII2NzZ8YTpuhYylAOUy/6nsXY8cVerNtIDwM3N0=; b=CRUkd854ft2j4bz3Ta5s9wxdpW
-	KZuvLszbFxDwC1rbr1BFT8JX1mnOL+WEVb+YD6QUy7MYhqPzIMUxjR75lAEYMoi5qzKwkzhjUgHww
-	d6hPK0z/ufuR8dR32hsPazYwRrvbrJ3fs/Kw8WpviryU1FfXaTrp8dnKSbAvNm0bVhAxE0hg0JSPf
-	1Ioz89EYCUK2NEkWLuHL4xNEJkBXUVy13nyhw34zdpL8U5XfKUyjZuZh8y+pfp3n2cBD6C9NxxinN
-	xqivvzWOMTQEY9UXoz6lFRPSOvk6zfXPSbRynlYziCP4Cu0P93xCZP9+ohaqe9juLchDaIgfecLue
-	ggVquWyg==;
-Received: from [189.6.17.125] (helo=mail.igalia.com)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rk8Xk-009VhK-IL; Tue, 12 Mar 2024 21:16:13 +0100
-Date: Tue, 12 Mar 2024 17:16:01 -0300
-From: Melissa Wen <mwen@igalia.com>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
-	Melissa Wen <melissa.srw@gmail.com>, =?utf-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, 
-	Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi, 
-	Louis Chauvet <louis.chauvet@bootlin.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com, 
-	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
-Subject: Re: [PATCH 6/7] drm/vkms: Change the gray RGB representation
-Message-ID: <4jvdfkfnqsn6dcuybruyvexop5du4sd6mmmjvtmeso5kyg4sdi@klimifhnenqm>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
- <20240306-louis-vkms-conv-v1-6-5bfe7d129fdd@riseup.net>
+	s=arc-20240116; t=1710274647; c=relaxed/simple;
+	bh=QfiI841UMd+b4M6uGOAl6Tti6206LQPlspjZ1aGj+vE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IVf5EbSj3C4BogBW6SINPjF5Tw9rTLK6OlJOvAILHVmvTH88o+osHIhdAMOI6YXqFeq7qcjNNFbAOPc3N6VetQaQ4+4bLmGYZzavt+Dhbjix2siMrM/650K2GZTUBwPhHELhzJxeuv5vxXIjhmG2yp+xRStHvMfjyTw8X7avjjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=U7QWMctl; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a4627a7233aso35078266b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1710274643; x=1710879443; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vIGv442Bb3GoyJ4GTJ4MmhCFvAXMUZvcBMa8Hexcis0=;
+        b=U7QWMctl/G45JotggaKN/dnbq4z7uMEANnSMQSWr8GgMCMq8NX4Vu+jhYssskbwA1V
+         wc7293ZskkTB/97luDvU/tXjNdI2uVhGlvN13HVt8VpmCpV+uNewwkhM30iP2C2xn9Qp
+         IPJwg3n8bk/FIVjJEeP1IuPK2eI8R122Ann5Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710274643; x=1710879443;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vIGv442Bb3GoyJ4GTJ4MmhCFvAXMUZvcBMa8Hexcis0=;
+        b=neJm+T5X+kBukJH/p94od2yYjU+Bh3/GIE9+VqGZ6Bu07Y4jzZMi1Ltu+4jg1zQ+1l
+         en0J4NE3PTo1fJu8ePeYKHYOhDACxcEFbZBsvr5YSYL8pfAprY18LB554qvOvVqtqHFJ
+         nPF5r1Bbz4ygC+PZ5zQwsgFRW8hkiMh6vpKKT+7UDDyRcvGxADeo4VQYLIBk1KRJnWYe
+         TQblp/sSIHXcxQH3LRvm0nuq+E1s+mOo3i9ObpLikRswi/mSxezuprUaBzZqlktvpR+O
+         pFdnIAPwZouem8xWm4rERifauSuYWLvoww9eL3d0rPoPFaA97HGH7ZX7lTIiG+G+WODf
+         OWfw==
+X-Forwarded-Encrypted: i=1; AJvYcCVIKHxsbQ5BRMjalPI16rsmvQDdEj0Ca8kINHEu3fIA9PRqgMc1IbjrLuqsF7M05ZovOObZ7rdtn8CrM2hIRWrCdiTkKqqz8eMmOZFq
+X-Gm-Message-State: AOJu0YyAVZ6jnU0hRYkHU4otk539dT/NHo6+6bN4wj4UjZ6emG9hz/CG
+	l5M3wKtaRt1BqOGhvZtVGSurBdIHHN1ECPb3cn2ddZhmPgzfX2F+Ud28iKebKa2qH4iNQKHnibG
+	dzcCkNA==
+X-Google-Smtp-Source: AGHT+IEBgB9XsFbNAyleoj/ta/dY+gTDJLTMv2Lb7zCKEX2UvXk8b8phUfp5ovNphWERLZ767QuIGA==
+X-Received: by 2002:a17:907:d049:b0:a45:5fe8:26b4 with SMTP id vb9-20020a170907d04900b00a455fe826b4mr602473ejc.24.1710274643519;
+        Tue, 12 Mar 2024 13:17:23 -0700 (PDT)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id t13-20020a170906a10d00b00a4605a343ffsm3748325ejy.21.2024.03.12.13.17.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 13:17:22 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5686677bda1so388152a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:17:22 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWq4tZnKnTtpkQ3uzHUxbdgSnAy7rFPsQUGcWJ/Kip7uvyf4W6huxUUtkWY+KrFGdHJNVx7u3Zz2toP9uMKLOStZuAycq7NtZbI7qug
+X-Received: by 2002:a17:906:6c8e:b0:a46:479c:1c1 with SMTP id
+ s14-20020a1709066c8e00b00a46479c01c1mr521289ejr.19.1710274642338; Tue, 12 Mar
+ 2024 13:17:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306-louis-vkms-conv-v1-6-5bfe7d129fdd@riseup.net>
+References: <20240312042504.1835743-1-kuba@kernel.org>
+In-Reply-To: <20240312042504.1835743-1-kuba@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 12 Mar 2024 13:17:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgknyB6yR+X50rBYDyTnpcU4MukJ2iQ5mQQf+Xzm9N9Dw@mail.gmail.com>
+Message-ID: <CAHk-=wgknyB6yR+X50rBYDyTnpcU4MukJ2iQ5mQQf+Xzm9N9Dw@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for v6.9
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pabeni@redhat.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 03/06, Arthur Grillo wrote:
-> Using the drm_fixed calls, this needs to be changed. Which in fact is
-> more correct, colour.YCbCr_to_RGB() gives 0x8080 for same the yuv
-> parameters.
+On Mon, 11 Mar 2024 at 21:25, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> I get what looks like blk-iocost deadlock when I try to run
+> your current tree on real Meta servers :(
 
-Hi Arthur,
+Hmm. This "it breaks on real hardware, but works in virtual boxes"
+sounds like it might be the DM queue limit issue.
 
-For consistency, shouldn't this change be together with the previous
-patch that uses the drm_fixed api? I mean, a single patch that changes
-to drm_fixed calls and adjust the color values accordingly, avoiding
-room for mismatches?
+Did the tree you tested with perhaps have commit 8e0ef4128694 (which
+came in yesterday through the block merge (merge commit 1ddeeb2a058d
+just after 11am Monday), but not the revert (commit bff4b74625fe, six
+hours later).
 
-Melissa
-> 
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> ---
->  drivers/gpu/drm/vkms/tests/vkms_format_test.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vkms/tests/vkms_format_test.c b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
-> index 66cdd83c3d25..49125cf76eb5 100644
-> --- a/drivers/gpu/drm/vkms/tests/vkms_format_test.c
-> +++ b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
-> @@ -48,7 +48,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
->  		.n_colors = 6,
->  		.colors = {
->  			{"white", {0xff, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
-> -			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
-> +			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8080, 0x8080, 0x8080}},
->  			{"black", {0x00, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
->  			{"red",   {0x4c, 0x55, 0xff}, {0xffff, 0xffff, 0x0000, 0x0000}},
->  			{"green", {0x96, 0x2c, 0x15}, {0xffff, 0x0000, 0xffff, 0x0000}},
-> @@ -71,7 +71,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
->  		.n_colors = 6,
->  		.colors = {
->  			{"white", {0xeb, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
-> -			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
-> +			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8080, 0x8080, 0x8080}},
->  			{"black", {0x10, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
->  			{"red",   {0x51, 0x5a, 0xf0}, {0xffff, 0xffff, 0x0000, 0x0000}},
->  			{"green", {0x91, 0x36, 0x22}, {0xffff, 0x0000, 0xffff, 0x0000}},
-> @@ -94,7 +94,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
->  		.n_colors = 4,
->  		.colors = {
->  			{"white", {0xff, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
-> -			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
-> +			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8080, 0x8080, 0x8080}},
->  			{"black", {0x00, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
->  			{"red",   {0x36, 0x63, 0xff}, {0xffff, 0xffff, 0x0000, 0x0000}},
->  			{"green", {0xb6, 0x1e, 0x0c}, {0xffff, 0x0000, 0xffff, 0x0000}},
-> @@ -117,7 +117,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
->  		.n_colors = 4,
->  		.colors = {
->  			{"white", {0xeb, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
-> -			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
-> +			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8080, 0x8080, 0x8080}},
->  			{"black", {0x10, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
->  			{"red",   {0x3f, 0x66, 0xf0}, {0xffff, 0xffff, 0x0000, 0x0000}},
->  			{"green", {0xad, 0x2a, 0x1a}, {0xffff, 0x0000, 0xffff, 0x0000}},
-> @@ -140,7 +140,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
->  		.n_colors = 4,
->  		.colors = {
->  			{"white", {0xff, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
-> -			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
-> +			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8080, 0x8080, 0x8080}},
->  			{"black", {0x00, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
->  			{"red",   {0x43, 0x5c, 0xff}, {0xffff, 0xffff, 0x0000, 0x0000}},
->  			{"green", {0xad, 0x24, 0x0b}, {0xffff, 0x0000, 0xffff, 0x0000}},
-> @@ -163,7 +163,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
->  		.n_colors = 4,
->  		.colors = {
->  			{"white", {0xeb, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
-> -			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
-> +			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8080, 0x8080, 0x8080}},
->  			{"black", {0x10, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
->  			{"red",   {0x4a, 0x61, 0xf0}, {0xffff, 0xffff, 0x0000, 0x0000}},
->  			{"green", {0xa4, 0x2f, 0x19}, {0xffff, 0x0000, 0xffff, 0x0000}},
-> 
-> -- 
-> 2.43.0
-> 
+IOW, just how current was that "current"? Your email was sent multiple
+hours after the revert happened and was pushed out, but I would not be
+surprised if your testing was done with something that was in that
+broken window.
+
+So if you merged some *other* tree than one from that six-hour window,
+please holler - because there's something else going on and we need to
+get the block people on it.
+
+               Linus
 
