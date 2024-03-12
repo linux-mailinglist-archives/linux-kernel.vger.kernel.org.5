@@ -1,118 +1,83 @@
-Return-Path: <linux-kernel+bounces-100140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12A50879267
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:48:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39CCC87926F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43B3C1C217C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:48:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CED7A1F22B06
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C9077655;
-	Tue, 12 Mar 2024 10:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060D978686;
+	Tue, 12 Mar 2024 10:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EV5ikQYR"
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X3qa8QlU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19FB7829C
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A382572;
+	Tue, 12 Mar 2024 10:49:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710240488; cv=none; b=Vjqkf3VLZ/UdeonAVVoHWvDRgk8EX3CXHJlL2ROoMdYK9jiPhDJUTO04SaUC98zy0r9cDiFKHasqnBD0h8HodoeFQRpLrLA7OqQvU8Y0vC0wxIpCgBVJT9KXIkHSRFCGHAfFBoL8gWNT21NBWW1EC/iGof1WOQMWUY4+r+N3WgE=
+	t=1710240597; cv=none; b=Pv21HCC4W1f0EfiZE2/GExDrud3XQYE61N+5rs+gEBK+RXfJrw7B0aDz9cBfp1LmnPFxv3BfWEeyOhzxTA8kmS09QiPjej2JDlQMAvCnw1OE1cckWt62v/kAjJlsuCSTOwnn7Da4lMXSSJIqxrZbrcbmfkLWycey/xLMw96c8UE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710240488; c=relaxed/simple;
-	bh=dcVyGoqqSlaWVI7Li40ed8FGrya0uubWHggdOxoRbuU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mk/g/DQgLTNx7cOPJuiB+UXM6G6mqdxqrqJzsLcM9N9wM8OZtMYVu5In2QprjSzWPqIEK1xZ1vt3kaJyoZitCjeGA0aadhhApZb9zAHtwdMlKcwrXos/sjLKywGyuGmyejcTTW+ZqgPZhtOLVpEndqvtP1lnqO/Ya8jujweINDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EV5ikQYR; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710240482;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=UbrlcU0EbD+LwFEqoMDJGLaOY8fY9hhUZwUFeO9+S4k=;
-	b=EV5ikQYRM9TRKP5nYt6zSLLy6G5Qf6UjNRx/LKktZBXxyMtOKSPyPBnwYw5g5Y3i1MrK5M
-	SZulHP/40OpAYvRnBTbJ/2hy7F3jxILwB7/8OrsT/k5+ivmkkRok0/mMbJBJloLcTaOAEo
-	38+8uVhaDllZSSkEo9E3pWXbjDGvyPc=
-From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-To: Christian Brauner <brauner@kernel.org>,
-	"Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org,
-	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Subject: [PATCH] fs_parser: move fsparam_string_empty() helper into header
-Date: Tue, 12 Mar 2024 10:47:57 +0000
-Message-ID: <20240312104757.27333-1-luis.henriques@linux.dev>
+	s=arc-20240116; t=1710240597; c=relaxed/simple;
+	bh=k7eWGMgPqwqZjBIDKNIRhhMZiM7PCrUCJpk8T5Qn8Dk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gNtE4KSPAlhm0P387rEKqSgXr5L4F+7dU3vmdGD5G3mU9NaasxqX0fa9WvxwN/8TTpl6DZZ3nCoCBOstMZ2XA49EP0JFrMyN4ToW1fGICmVAxavvx2mRu3hjNMLbi/jAOwEdb37Rw9a7Oo8DGphCYKmHO5r4NHgO/RMdMpc6pvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X3qa8QlU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A9F3C433C7;
+	Tue, 12 Mar 2024 10:49:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710240597;
+	bh=k7eWGMgPqwqZjBIDKNIRhhMZiM7PCrUCJpk8T5Qn8Dk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X3qa8QlUAH4tSzpbj7vs7UgKS7Vrt+ayvuDAk+I6fndufc4F5eIzBqETKf6LVclhl
+	 JtZUIEwRCRsmynCL3OHTmYnY0u1pcqGvjb4ylRb7jofw4XVIsgH37oFZS8cPjBdAwr
+	 RTFVF/OOp9WPVsBzBFt3nNU51J4JyrGF50ioThCMolaNzhG3WuoHsQj3d5GLlqvLnH
+	 yMW60K6sg3/nEO5U5FRtRaIJ2wF7XCdTwQocncw4Z0Uev7vty0AyhlI9u5hXByYMRB
+	 0wUr5o9/WVMab+ZigTmrhQ1h2jG12gLJZ9Hz3WQ0Lw04jXy/FNOm0l50hTKBacQuV8
+	 nJQMdLYv+n2Mg==
+Date: Tue, 12 Mar 2024 11:49:52 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Cc: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org, 
+	wsa@kernel.org, linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, quic_vdadhani@quicinc.com, 
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
+ mode
+Message-ID: <a5oiihch2yqsosq337hogqzd3r4ldgfrzub4m6kofheh2k3qjv@wxageydv4q37>
+References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
 
-Since both ext4 and overlayfs define the same macro to specify string
-parameters that may allow empty values, define it in an header file so
-that this helper can be shared.
+Hi Mukesh,
 
-Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
----
- fs/ext4/super.c           | 4 ----
- fs/overlayfs/params.c     | 4 ----
- include/linux/fs_parser.h | 4 ++++
- 3 files changed, 4 insertions(+), 8 deletions(-)
+> +	status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index a8ba84eabab2..2e5592c87c3a 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1724,10 +1724,6 @@ static const struct constant_table ext4_param_dax[] = {
- 	{}
- };
- 
--/* String parameter that allows empty argument */
--#define fsparam_string_empty(NAME, OPT) \
--	__fsparam(fs_param_is_string, NAME, OPT, fs_param_can_be_empty, NULL)
--
- /*
-  * Mount option specification
-  * We don't use fsparam_flag_no because of the way we set the
-diff --git a/fs/overlayfs/params.c b/fs/overlayfs/params.c
-index 36dcc530ac28..4860fcc4611b 100644
---- a/fs/overlayfs/params.c
-+++ b/fs/overlayfs/params.c
-@@ -139,10 +139,6 @@ static int ovl_verity_mode_def(void)
- 	return OVL_VERITY_OFF;
- }
- 
--#define fsparam_string_empty(NAME, OPT) \
--	__fsparam(fs_param_is_string, NAME, OPT, fs_param_can_be_empty, NULL)
--
--
- const struct fs_parameter_spec ovl_parameter_spec[] = {
- 	fsparam_string_empty("lowerdir",    Opt_lowerdir),
- 	fsparam_string("lowerdir+",         Opt_lowerdir_add),
-diff --git a/include/linux/fs_parser.h b/include/linux/fs_parser.h
-index 01542c4b87a2..d3350979115f 100644
---- a/include/linux/fs_parser.h
-+++ b/include/linux/fs_parser.h
-@@ -132,4 +132,8 @@ static inline bool fs_validate_description(const char *name,
- #define fsparam_path(NAME, OPT)	__fsparam(fs_param_is_path, NAME, OPT, 0, NULL)
- #define fsparam_fd(NAME, OPT)	__fsparam(fs_param_is_fd, NAME, OPT, 0, NULL)
- 
-+/* String parameter that allows empty argument */
-+#define fsparam_string_empty(NAME, OPT) \
-+	__fsparam(fs_param_is_string, NAME, OPT, fs_param_can_be_empty, NULL)
-+
- #endif /* _LINUX_FS_PARSER_H */
+This fails here:
+
+drivers/i2c/busses/i2c-qcom-geni.c: In function 'i2c_gpi_cb_result':
+drivers/i2c/busses/i2c-qcom-geni.c:493:18: error: implicit declaration of function 'FIELD_GET' [-Werror=implicit-function-declaration]
+  493 |         status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
+      |                  ^~~~~~~~~
+cc1: all warnings being treated as errors
+
+I will remove this patch from the i2c/i2c-host and we will need
+to wait for the next merge window to get this through.
+
+Please submit v4 with the Cc list recommended by Wolfram.
+
+Thanks,
+Andi
 
