@@ -1,230 +1,209 @@
-Return-Path: <linux-kernel+bounces-100428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EF1887976C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:22:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B59787976E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 542A028114C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:22:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6C9B1F2313F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF09C7C6D2;
-	Tue, 12 Mar 2024 15:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5097C096;
+	Tue, 12 Mar 2024 15:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jOcCkFbf"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e5IQNKHp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C787C0A3;
-	Tue, 12 Mar 2024 15:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAAC17C099;
+	Tue, 12 Mar 2024 15:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710256930; cv=none; b=Xa6L33daDuFmpS0pDrBckUq6xIsuCqp2igkyw65DfEm0X5ex+b9IPeE98MUQjV5BcDIMz9DULvYPkT9Y1iX2DuJgv0m9f/r/AefOp0TAaNLIjo8OcHK9V3EokgTeLx2ipP3nwPkAEw47EmocIqTpydl6cjbRpsUbW/oGh1/pQYc=
+	t=1710256934; cv=none; b=i5w1OeAaxsnr+7Y5+ahGz/zrHIm2mB0FQ3moSgUfQbqIiUQPm5X2VsY9KBe9W8HsIA/Qg6dx4CzsItomPH2PVPkGeaZHmd4Cu0kH3su95mfj3x+Z3JXMB3lj7ADgNhCJqqEHfi26m8mOzZnL30FQNmXGmZkKfFc+Ys+QmMRnvhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710256930; c=relaxed/simple;
-	bh=/Ijo8rHPf1fyrPquGh0hCXAuvhCZNBSsRG3Zru7uFyM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u3OSDvbkUvozDCvppX3oZSyogi9EOCftmDXxTNJTDA2qzAyHakEqfBRyl1YVlQN5auM+FUpuITZfYAgbV2eJbVorHVVPMYeLj1K4IDL8fdxmSwnqOAiMSF6RyqbOznMC58KRjWMKAa5ph+6X1kDE/OH089sRSRZnhnnGxcjEvsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jOcCkFbf; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710256929; x=1741792929;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/Ijo8rHPf1fyrPquGh0hCXAuvhCZNBSsRG3Zru7uFyM=;
-  b=jOcCkFbf2yBifM4x9VufuOXdMSquzzrPwWj9IdpdpZIEjIVabCAL6jLT
-   sxWw+Yot+XIFoTi1nSv6s0SbqJgpIHHvDuEHnZDXi76FU8T9ReuSgWzIX
-   osjqigxiseo09n3i4DvUH6OIaLlw2NOcA2VW1cC7QOJV47ZHkd/JhWMzg
-   bibAcK8EHQKjzxEXTEpHRxfrsWqJJ5/wqFbzWSuv7dOGtUPRIeIXUWZij
-   WkaOWMRzgGYdYgjte74mEL7PNc+HlfQqgsap9UuJoLLoSkPeAwuKFC/Ji
-   ZXmt79oMWx1EkK7HndYxkfStV+F1OubYasL61tqxMaiWw7wz+DK0mKKGL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5103847"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="5103847"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:22:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="11534111"
-Received: from hhutton-mobl1.amr.corp.intel.com (HELO [10.209.25.241]) ([10.209.25.241])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:22:07 -0700
-Message-ID: <4e6627b2-30cd-4c50-bf2f-24cf845cd4bc@linux.intel.com>
-Date: Tue, 12 Mar 2024 08:22:06 -0700
+	s=arc-20240116; t=1710256934; c=relaxed/simple;
+	bh=MR5DHodX1dq6D6TC9p7fOu3i1TJ+/zPJQ7Lu7LaaNp8=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=kd7Hb3fAjNY9ZwLzqxrpqhwRftq7LAk4ZTWFd2ZygUCo/Ca+StgUX4ONAbQJnOz1I4J5g5vDkNWQY1FUC2pKwTDd6l29790yV3L4vpVi80YJttYRD8YWN2sCQB7iEC9SG4UL0gls8m8Wl1LnRmlkljffhA2EDSg9OJdX5HvvU9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e5IQNKHp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93845C433A6;
+	Tue, 12 Mar 2024 15:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710256934;
+	bh=MR5DHodX1dq6D6TC9p7fOu3i1TJ+/zPJQ7Lu7LaaNp8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=e5IQNKHpkqJib/tvoSrz2+UbQ3mVBHHycqLRxzHwBR0wxnqbAgX2Yi3ET0PzbKNwl
+	 bQwOzxLar3wR5YXfPTOw1LIvCs50W5RAEugdfhgrYe3DhPTXv6jFRtHkY77391EA/z
+	 X5Abz+jR665BXDv8yg1E5tpbApbknQ1uvQSjHBAMVPX86igFWYzMdDP4cgIeThbEaO
+	 i3EtLPjRKR3O08JCUg3OAf3XVRPI01horu7T/laN9Q+nUoZKBvhRaY/ltq3a7CXXxw
+	 3IFgtXuTcR81QFsbndal5rEro4176Ez4XxZx6faRos+tCxW6N1O+1WK1OOon8i89iG
+	 sBeIVjTsI7+Vg==
+Date: Wed, 13 Mar 2024 00:22:10 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] ring-buffer: Fix full_waiters_pending in poll
+Message-Id: <20240313002210.d89600218f78a4c55f56b998@kernel.org>
+In-Reply-To: <20240312131952.630922155@goodmis.org>
+References: <20240312131919.314231457@goodmis.org>
+	<20240312131952.630922155@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] Drivers: hv: vmbus: Track decrypted status in
- vmbus_gpadl
-Content-Language: en-US
-To: Michael Kelley <mhklinux@outlook.com>,
- "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
- "kys@microsoft.com" <kys@microsoft.com>,
- "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
- "wei.liu@kernel.org" <wei.liu@kernel.org>,
- "decui@microsoft.com" <decui@microsoft.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "edumazet@google.com" <edumazet@google.com>,
- "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com"
- <pabeni@redhat.com>,
- "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
-Cc: "elena.reshetova@intel.com" <elena.reshetova@intel.com>
-References: <20240311161558.1310-1-mhklinux@outlook.com>
- <20240311161558.1310-3-mhklinux@outlook.com>
- <13581af9-e5f0-41ca-939f-33948b2133e7@linux.intel.com>
- <SN6PR02MB415742AEEE7F1389D80B6E51D42B2@SN6PR02MB4157.namprd02.prod.outlook.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <SN6PR02MB415742AEEE7F1389D80B6E51D42B2@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+On Tue, 12 Mar 2024 09:19:20 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> If a reader of the ring buffer is doing a poll, and waiting for the ring
+> buffer to hit a specific watermark, there could be a case where it gets
+> into an infinite ping-pong loop.
+> 
+> The poll code has:
+> 
+>   rbwork->full_waiters_pending = true;
+>   if (!cpu_buffer->shortest_full ||
+>       cpu_buffer->shortest_full > full)
+>          cpu_buffer->shortest_full = full;
+> 
+> The writer will see full_waiters_pending and check if the ring buffer is
+> filled over the percentage of the shortest_full value. If it is, it calls
+> an irq_work to wake up all the waiters.
+> 
+> But the code could get into a circular loop:
+> 
+> 	CPU 0					CPU 1
+> 	-----					-----
+>  [ Poll ]
+>    [ shortest_full = 0 ]
+>    rbwork->full_waiters_pending = true;
+> 					  if (rbwork->full_waiters_pending &&
+> 					      [ buffer percent ] > shortest_full) {
+> 					         rbwork->wakeup_full = true;
+> 					         [ queue_irqwork ]
+
+Oh, so `[ buffer percent ] > shortest_full` does not work because
+if this happens in this order, shortest_full may be 0.
+
+> 
+>    cpu_buffer->shortest_full = full;
+> 
+> 					  [ IRQ work ]
+> 					  if (rbwork->wakeup_full) {
+> 					        cpu_buffer->shortest_full = 0;
+> 					        wakeup poll waiters;
+>   [woken]
+>    if ([ buffer percent ] > full)
+>       break;
+>    rbwork->full_waiters_pending = true;
+> 					  if (rbwork->full_waiters_pending &&
+> 					      [ buffer percent ] > shortest_full) {
+> 					         rbwork->wakeup_full = true;
+> 					         [ queue_irqwork ]
+> 
+>    cpu_buffer->shortest_full = full;
+> 
+> 					  [ IRQ work ]
+> 					  if (rbwork->wakeup_full) {
+> 					        cpu_buffer->shortest_full = 0;
+> 					        wakeup poll waiters;
+>   [woken]
+> 
+>  [ Wash, rinse, repeat! ]
+> 
+> In the poll, the shortest_full needs to be set before the
+> full_pending_waiters, as once that is set, the writer will compare the
+> current shortest_full (which is incorrect) to decide to call the irq_work,
+> which will reset the shortest_full (expecting the readers to update it).
+> 
+> Also move the setting of full_waiters_pending after the check if the ring
+> buffer has the required percentage filled. There's no reason to tell the
+> writer to wake up waiters if there are no waiters.
+> 
+
+Looks good to me.
+
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you,
 
 
-On 3/11/24 11:07 PM, Michael Kelley wrote:
-> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> On 3/11/24 9:15 AM, mhkelley58@gmail.com wrote:
->>> From: Rick Edgecombe <rick.p.edgecombe@intel.com>
->>>
->>> In CoCo VMs it is possible for the untrusted host to cause
->>> set_memory_encrypted() or set_memory_decrypted() to fail such that an
->>> error is returned and the resulting memory is shared. Callers need to
->>> take care to handle these errors to avoid returning decrypted (shared)
->>> memory to the page allocator, which could lead to functional or security
->>> issues.
->>>
->>> In order to make sure callers of vmbus_establish_gpadl() and
->>> vmbus_teardown_gpadl() don't return decrypted/shared pages to
->>> allocators, add a field in struct vmbus_gpadl to keep track of the
->>> decryption status of the buffers. This will allow the callers to
->>> know if they should free or leak the pages.
->>>
->>> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
->>> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
->>> ---
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->>>  drivers/hv/channel.c   | 25 +++++++++++++++++++++----
->>>  include/linux/hyperv.h |  1 +
->>>  2 files changed, 22 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
->>> index 56f7e06c673e..bb5abdcda18f 100644
->>> --- a/drivers/hv/channel.c
->>> +++ b/drivers/hv/channel.c
->>> @@ -472,9 +472,18 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
->>>  		(atomic_inc_return(&vmbus_connection.next_gpadl_handle) - 1);
->>>
->>>  	ret = create_gpadl_header(type, kbuffer, size, send_offset, &msginfo);
->>> -	if (ret)
->>> +	if (ret) {
->>> +		gpadl->decrypted = false;
->> Why not set it by default at the beginning of the function?
-> I considered doing that.  But it's an extra step to execute in the normal
-> path, because a couple of lines below it is always set to "true".  But
-> I don't have a strong preference either way.
->
+> Cc: stable@vger.kernel.org
+> Fixes: 42fb0a1e84ff5 ("tracing/ring-buffer: Have polling block on watermark")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/ring_buffer.c | 27 ++++++++++++++++++++-------
+>  1 file changed, 20 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index aa332ace108b..adfe603a769b 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -964,16 +964,32 @@ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
+>  		poll_wait(filp, &rbwork->full_waiters, poll_table);
+>  
+>  		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+> -		rbwork->full_waiters_pending = true;
+>  		if (!cpu_buffer->shortest_full ||
+>  		    cpu_buffer->shortest_full > full)
+>  			cpu_buffer->shortest_full = full;
+>  		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+> -	} else {
+> -		poll_wait(filp, &rbwork->waiters, poll_table);
+> -		rbwork->waiters_pending = true;
+> +		if (full_hit(buffer, cpu, full))
+> +			return EPOLLIN | EPOLLRDNORM;
+> +		/*
+> +		 * Only allow full_waiters_pending update to be seen after
+> +		 * the shortest_full is set. If the writer sees the
+> +		 * full_waiters_pending flag set, it will compare the
+> +		 * amount in the ring buffer to shortest_full. If the amount
+> +		 * in the ring buffer is greater than the shortest_full
+> +		 * percent, it will call the irq_work handler to wake up
+> +		 * this list. The irq_handler will reset shortest_full
+> +		 * back to zero. That's done under the reader_lock, but
+> +		 * the below smp_mb() makes sure that the update to
+> +		 * full_waiters_pending doesn't leak up into the above.
+> +		 */
+> +		smp_mb();
+> +		rbwork->full_waiters_pending = true;
+> +		return 0;
+>  	}
+>  
+> +	poll_wait(filp, &rbwork->waiters, poll_table);
+> +	rbwork->waiters_pending = true;
+> +
+>  	/*
+>  	 * There's a tight race between setting the waiters_pending and
+>  	 * checking if the ring buffer is empty.  Once the waiters_pending bit
+> @@ -989,9 +1005,6 @@ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
+>  	 */
+>  	smp_mb();
+>  
+> -	if (full)
+> -		return full_hit(buffer, cpu, full) ? EPOLLIN | EPOLLRDNORM : 0;
+> -
+>  	if ((cpu == RING_BUFFER_ALL_CPUS && !ring_buffer_empty(buffer)) ||
+>  	    (cpu != RING_BUFFER_ALL_CPUS && !ring_buffer_empty_cpu(buffer, cpu)))
+>  		return EPOLLIN | EPOLLRDNORM;
+> -- 
+> 2.43.0
+> 
+> 
 
-Got it. I am fine either way.
-
->>>  		return ret;
->>> +	}
->>>
->>> +	/*
->>> +	 * Set the "decrypted" flag to true for the set_memory_decrypted()
->>> +	 * success case. In the failure case, the encryption state of the
->>> +	 * memory is unknown. Leave "decrypted" as true to ensure the
->>> +	 * memory will be leaked instead of going back on the free list.
->>> +	 */
->>> +	gpadl->decrypted = true;
->>>  	ret = set_memory_decrypted((unsigned long)kbuffer,
->>>  				   PFN_UP(size));
->>>  	if (ret) {
->>> @@ -563,9 +572,15 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
->>>
->>>  	kfree(msginfo);
->>>
->>> -	if (ret)
->>> -		set_memory_encrypted((unsigned long)kbuffer,
->>> -				     PFN_UP(size));
->>> +	if (ret) {
->>> +		/*
->>> +		 * If set_memory_encrypted() fails, the decrypted flag is
->>> +		 * left as true so the memory is leaked instead of being
->>> +		 * put back on the free list.
->>> +		 */
->>> +		if (!set_memory_encrypted((unsigned long)kbuffer, PFN_UP(size)))
->>> +			gpadl->decrypted = false;
->>> +	}
->>>
->>>  	return ret;
->>>  }
->>> @@ -886,6 +901,8 @@ int vmbus_teardown_gpadl(struct vmbus_channel *channel, struct vmbus_gpadl *gpad
->>>  	if (ret)
->>>  		pr_warn("Fail to set mem host visibility in GPADL teardown %d.\n", ret);
->> Will this be called only if vmbus_establish_gpad() is successful? If not, you
->> might want to skip set_memory_encrypted() call for decrypted = false case.
-> It's only called if vmbus_establish_gpadl() is successful.  I agree
-> we don't want to call set_memory_encrypted() if the
-> set_memory_decrypted() wasn't executed or it failed.  But 
-> vmbus_teardown_gpadl() is never called with decrypted = false.
-
-Since you rely on  vmbus_teardown_gpadl() callers, personally I think it
-is better to add that check. It is up to you.
-
->>> +	gpadl->decrypted = ret;
->>> +
->> IMO, you can set it to false by default. Any way with non zero return, user
->> know about the decryption failure.
-> I don’t agree, but feel free to explain further if my thinking is
-> flawed.
->
-> If set_memory_encrypted() fails, we want gpadl->decrypted = true.
-> Yes, the caller can see that vmbus_teardown_gpadl() failed,
-> but there's also a memory allocation failure, so the caller
-> would have to distinguish error codes.  And the caller isn't
-> necessarily where the memory is freed (or leaked).  We
-> want the decrypted flag to be correct so the code that
-> eventually frees the memory can decide to leak instead of
-> freeing.
-
-I agree. I understood this part after looking at the rest of the series.
-
->
-> Michael
->
->>>  	return ret;
->>>  }
->>>  EXPORT_SYMBOL_GPL(vmbus_teardown_gpadl);
->>> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
->>> index 2b00faf98017..5bac136c268c 100644
->>> --- a/include/linux/hyperv.h
->>> +++ b/include/linux/hyperv.h
->>> @@ -812,6 +812,7 @@ struct vmbus_gpadl {
->>>  	u32 gpadl_handle;
->>>  	u32 size;
->>>  	void *buffer;
->>> +	bool decrypted;
->>>  };
->>>
->>>  struct vmbus_channel {
->> --
->> Sathyanarayanan Kuppuswamy
->> Linux Kernel Developer
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
