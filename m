@@ -1,140 +1,121 @@
-Return-Path: <linux-kernel+bounces-99935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CDA6878F69
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:05:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45735878F6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EECE1C20E2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:05:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD8CE281B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 08:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFD569D08;
-	Tue, 12 Mar 2024 08:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rxOMTwL6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB53769976;
-	Tue, 12 Mar 2024 08:05:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7EF69D3E;
+	Tue, 12 Mar 2024 08:05:30 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B00569973
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 08:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710230727; cv=none; b=pgVVR6/NGK3nyMHON13DOwRySU915eub1n+MsUZ4TzQcgN8F9y6qhNFN316t8Or8HI6/ALPIpfaQZykOUzYPN4k8yIzaLTl+4bKPpLi/wYaUtrdilbRUI2iiJSR/eXKoTWItRzXCOWHgj3kLOtsgeciwLkIfyXGGN3GSivyd5PI=
+	t=1710230729; cv=none; b=TvgoxQTWTmIN6cf49HFwxXGnPIe489DlRDhxzFz4ixYlKF1n7EfqBJW/DX6BuPMoHUTDKtHfeV5OlcmnLaMmT8PVPDyoQyzCCXM3lR77ZyKwc3dpU4/oDxDBCT5ZCnstdSt2aD/4/gA0u/sq17gWx6YJy6f7O5YMUNoscy8dBgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710230727; c=relaxed/simple;
-	bh=hjEUoaSnv3s4TMFYXd/dWLIM48mAjAsndwyEjqfY9hY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JSx2PdHomE0rkSBaYjXdPQZAft2syg5289CkoweG/MPbrZGmgxgmeuG57fGknucZeHT+9t5VnQJk4bp0UYBFQCacIlWH95uRfTUASotl6zQSuFawp5MmyGm4ufWAbMugtH3iuWmBPMohs/BuBkdYo4hrvqLNEwh9j7/4vCf5ILQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rxOMTwL6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A85EEC433F1;
-	Tue, 12 Mar 2024 08:05:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710230727;
-	bh=hjEUoaSnv3s4TMFYXd/dWLIM48mAjAsndwyEjqfY9hY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rxOMTwL6CLqKvUmKKZhXs//giXwuz+tRxxYx7Mqvik9xwkptCnzWPx20iaaTnpnNB
-	 5Q5b8fd/ALL7izauL33I5LeCoHis1RCkM63v0bN6bGJuV2gM1cLyZdEzhnr102YlHh
-	 RkVcjcpc9KQW6QpWiq7yNDRtKtmmKGCT7ge0xvb7cUUkgBZbX5CtRAuGPNCvAG83Gv
-	 HumVmlbLTZ1xr6kThWuQtm5NI6dkZBu1kuvUIy3WmtZckP4H6oPgYYpKxb4QZT//S3
-	 u0ALKd5W8as/336mZm0UuaTFri0sALnLH9WzquwPSUkABb59oql0L1zmJ2qmLjEmAO
-	 vzyIejzEnB19A==
-Date: Tue, 12 Mar 2024 10:05:22 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
- parameter configuration
-Message-ID: <20240312080522.GO12921@unreal>
-References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
- <20240310100027.GC12921@unreal>
- <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
- <20240311071119.GH12921@unreal>
- <f8354762-703c-16e2-fa8e-bc8519fdcd06@hisilicon.com>
+	s=arc-20240116; t=1710230729; c=relaxed/simple;
+	bh=bl6AfL2X8NIjP+96i5PQItkn9CCWuVzDqSvid1nmuvo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nx3VIINUpcCnfSZUm0YDQMxYp+UD7MwqX/rMY2STHUapz2VJTg8XlOqlc7IzH6ZxFTI+akwkeZDfoR5yzOco3rfCCiY4PR6nu6i8/F+a0cTMGr2VPppMgizYLWsSPw0qXE1Wm57LZHwOVr8WCVTGSsoBf4u/pFaMBLnYzzTZpMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82A041007;
+	Tue, 12 Mar 2024 01:06:03 -0700 (PDT)
+Received: from [10.57.68.246] (unknown [10.57.68.246])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC8433F73F;
+	Tue, 12 Mar 2024 01:05:24 -0700 (PDT)
+Message-ID: <e3e14098-eade-483e-a459-e43200b87941@arm.com>
+Date: Tue, 12 Mar 2024 08:05:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8354762-703c-16e2-fa8e-bc8519fdcd06@hisilicon.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/migrate: put dest folio on deferred split list if
+ source was there.
+Content-Language: en-GB
+To: Matthew Wilcox <willy@infradead.org>, Zi Yan <ziy@nvidia.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Yang Shi <shy828301@gmail.com>, Huang Ying <ying.huang@intel.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ linux-kernel@vger.kernel.org
+References: <20240311195848.135067-1-zi.yan@sent.com>
+ <Ze_P6xagdTbcu1Kz@casper.infradead.org>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <Ze_P6xagdTbcu1Kz@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 11, 2024 at 10:00:27PM +0800, Junxian Huang wrote:
-> 
-> 
-> On 2024/3/11 15:11, Leon Romanovsky wrote:
-> > On Mon, Mar 11, 2024 at 10:00:51AM +0800, Junxian Huang wrote:
-> >>
-> >>
-> >> On 2024/3/10 18:00, Leon Romanovsky wrote:
-> >>> On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
-> >>>> From: Chengchang Tang <tangchengchang@huawei.com>
-> >>>>
-> >>>> hns RoCE supports 4 congestion control algorithms. Each algorihm
-> >>>> involves multiple parameters. Add port sysfs directory for each
-> >>>> algorithm to allow modifying their parameters.
-> >>>
-> >>> Unless Jason changed his position after this rewrite [1], we don't allow
-> >>> any custom driver sysfs code.
-> >>>
-> >>> [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
-> >>>
-> >>
-> >> I didn't quite get the reason from [1], could you please explain it?
-> > 
-> > Before [1], we didn't allow custom sysfs. After [1], the sysfs code
-> > started to be more sane and usable for the drivers. However, it is
-> > unlikely that the policy is changed to allow driver sysfs code.
-> > 
-> >>
-> >> And it would be helpful if you could give us a hint about any other
-> >> proper ways to do the algorithm parameter configuration.
-> > 
-> > Like any other FW internals.
-> > 
-> 
-> If we add the capability of custom driver parameter configuration to
-> rdmatool (similar to [2]), would it be acceptable?
+On 12/03/2024 03:45, Matthew Wilcox wrote:
+> On Mon, Mar 11, 2024 at 03:58:48PM -0400, Zi Yan wrote:
+>> @@ -1168,6 +1172,17 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+>>  		folio_lock(src);
+>>  	}
+>>  	locked = true;
+>> +	if (folio_test_large_rmappable(src) &&
 
-Moshe's patch is for devlink. We are working on a generic solution for
-other vendors to control/debug their devices.
-https://lwn.net/Articles/955001/
-https://lore.kernel.org/all/20240304160237.GA2909161@nvidia.com/
+I think you also need to check that the order > 1, now that we support order-1
+pagecache folios? _deferred_list only exists if order > 1.
 
-Feel free to join the discussion and reply that you are interested in
-this proposal as well and emphasize that your device is not netdev at
-all.
+>> +		!list_empty(&src->_deferred_list)) {
+>> +		struct deferred_split *ds_queue = get_deferred_split_queue(src);
+>> +
+>> +		spin_lock(&ds_queue->split_queue_lock);
+>> +		ds_queue->split_queue_len--;
+>> +		list_del_init(&src->_deferred_list);
+>> +		spin_unlock(&ds_queue->split_queue_lock);
+>> +		old_page_state |= PAGE_WAS_ON_DEFERRED_LIST;
+>> +	}
+> 
+> I have a few problems with this ...
+> 
+> Trivial: your whitespace is utterly broken.  You can't use a single tab
+> for both indicating control flow change and for line-too-long.
+> 
+> Slightly more important: You're checking list_empty outside the lock
+> (which is fine in order to avoid unnecessarily acquiring the lock),
+> but you need to re-check it inside the lock in case of a race.  And you
+> didn't mark it as data_race(), so KMSAN will whinge.
 
-Thanks
+I've seen data_race() used around list_empty() without the lock held
+inconsistently (see deferred_split_folio()). What are the rules? Given that we
+are not doing a memory access here, I don't really understand why it is needed?
+list_empty() uses READ_ONCE() which I thought would be sufficient? (I've just
+added a similar lockless check in my swap-out series - will add data_race() if
+needed, but previously concluded it's not).
 
 > 
-> [2] https://patchwork.ozlabs.org/project/netdev/patch/1530703837-24563-4-git-send-email-moshe@mellanox.com/
+> Much more important: You're doing this with a positive refcount, which
+> breaks the (undocumented) logic in deferred_split_scan() that a folio
+> with a positive refcount will not be removed from the list.
 > 
-> Junxian
+> Maximally important: Wer shouldn't be doing any of this!  This folio is
+> on the deferred split list.  We shouldn't be migrating it as a single
+> entity; we should be splitting it now that we're in a context where we
+> can do the right thing and split it.  Documentation/mm/transhuge.rst
+> is clear that we don't split it straight away due to locking context.
+> Splitting it on migration is clearly the right thing to do.
 > 
-> > Thanks
-> > 
-> >>
-> >> Thanks,
-> >> Junxian
-> >>
-> >>>>
-> >>>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-> >>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> >>>> ---
-> >>>>  drivers/infiniband/hw/hns/Makefile          |   2 +-
-> >>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  20 ++
-> >>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  59 ++++
-> >>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 132 ++++++++
-> >>>>  drivers/infiniband/hw/hns/hns_roce_main.c   |   3 +
-> >>>>  drivers/infiniband/hw/hns/hns_roce_sysfs.c  | 346 ++++++++++++++++++++
-> >>>>  6 files changed, 561 insertions(+), 1 deletion(-)
-> >>>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_sysfs.c
-> >>>
-> >>> Thanks
-> >>
+> If splitting fails, we should just fail the migration; splitting fails
+> due to excess references, and if the source folio has excess references,
+> then migration would fail too.
+
+This comment makes me wonder what we do in split_huge_page_to_list_to_order() if
+the target order is greater than 1 and the input folio is on the deferred split
+list. Looks like we currently just remove it from the deferred list. Is there a
+case for putting any output folios that are still partially mapped back on the
+deferred list, or splitting them to a lower order such that all output folios
+are fully mapped, and all unmapped portions are freed?
+
+
 
