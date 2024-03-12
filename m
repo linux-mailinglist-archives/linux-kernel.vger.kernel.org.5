@@ -1,193 +1,138 @@
-Return-Path: <linux-kernel+bounces-100536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C485B879947
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 153B2879949
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:47:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A9CD283025
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:47:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCBF7282A30
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3654D7E58A;
-	Tue, 12 Mar 2024 16:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314B87E591;
+	Tue, 12 Mar 2024 16:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="LpGcltHm";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EyP2Jmfx"
-Received: from wfout4-smtp.messagingengine.com (wfout4-smtp.messagingengine.com [64.147.123.147])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pq8ps+Zg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF2015BF
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F80F1CD33;
+	Tue, 12 Mar 2024 16:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710262024; cv=none; b=cnQqFbkVg/Ofv7U4Q0M97+eC7hAMhr2aWt/njfcAOjvdWx4pLPnLXlrqS3RE0KjMZkyY3s2zkkKRmehsV4W7SffZPH9lSNCkPt65Qv2gMZy+raIHFgqDjgMtIHYX+REiKydX5MiWUWDUJRhhlqts+1Y/k+tMCcSY9bOalxzn51Q=
+	t=1710262044; cv=none; b=Z2pmTmgRXCxa3GPJsPMxP/li6tWpptvAoyx1tPGu4awDBptK7Nbn5TDV24th0L9RHjdvx00c2BNaMSLVCwNONwmURMC9csF4pYLWlwb81YGxoxAr3VXqu/iiNBLBZCNeoVtBIIA7CSb2od2Pq2zMYdlO8TJPL07zKevI98o4E6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710262024; c=relaxed/simple;
-	bh=Bmk/3+v1QwJcBRx8UOLPoXvV5jlPuvnYJf1PzbFyo0Y=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=ZPWbRHfx0Rzxxj+EkwyC3/8ZYMNklJvvs7w/N074EQ9YzaHrt4se+q93IgA6pL6qZHrnCQmDTqhXX1ww7NFDCxlyRIJXLrpsHacLTYwJ1TOpqALIOj4xTpTFLLEaB6enc9H/Y+T/gKR5imSg2cpkhzwn4Y5YK80I2jxb6f3d/Eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=LpGcltHm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=EyP2Jmfx; arc=none smtp.client-ip=64.147.123.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id AE5251C00076;
-	Tue, 12 Mar 2024 12:47:01 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 12 Mar 2024 12:47:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1710262021; x=1710348421; bh=MwpOu/tg2M
-	IdvMwhIU2xxdVqRvxdJJhDNXci8dpj6ic=; b=LpGcltHme0xzcZMpEYg74GLl6T
-	lZ7d4wDim82W7CYwpGUsFTANcaPLlidmWy7PdCgzGiSu3alk2o/GEE8JTS48XXc0
-	VhmPAk4UpQb26y+CEQ0nPvb3uLrBm6TQLbpeit2njP+1OYBGatjTUPwiSgbsgRQ1
-	FZz3TammLdBSm75ZP5v0NGzfUuRBIg+jW09cKw+TCms2co3vrOnRBod1HHAOSBui
-	D5KNUrMt9mGZzhXL7N00w0WMvvEqJXVK9ouQzaJ7DAUyVUdNxmVujW8h5B0eZnaN
-	DDsd2NIUdTzdGIr24TEiBSgYn0fUidNyMzKPj49xekq3fWbe7ANzkJkWl0zQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710262021; x=1710348421; bh=MwpOu/tg2MIdvMwhIU2xxdVqRvxd
-	JJhDNXci8dpj6ic=; b=EyP2JmfxOP+Sa6QnCLClT0TAR11NnSYb9chR+SSqhupW
-	TkQExX4SYgJvIAvWUv0iIRo3ngtJLsnbSUjzGxQpruwon9l3wwR3VzDX1l4P4kI5
-	LjDo07AxJCtihMIQ/8Of8IaOZYlqKhclwMkC3gc/qM8VgOg4bnAqOxgTUQMM1lPX
-	QTGxOP4p4jykAnHffRiPR5VYeB9Xtb1Iza+QljWxp5AAm+iifrk71TKbCyk1igFW
-	iYGjfzIJb3v0zpYIIb4pWJv9kKzyXZ6C54jgXkKGujFX2Qik4AOTOORsJRT1WIAo
-	cjLSNE+EFJz34F48DFUFnts9slabtfGavdBnUNpLTw==
-X-ME-Sender: <xms:BYfwZdib365nQoG2OKiT1o5OHXIYbs8NhbFSKY22SFyLOaoyS-P1rQ>
-    <xme:BYfwZSCHT56aZByGKeEIvr8VLrU3ueZrH_mCKLS8sslCh6SLM8gwcqiKLi_6xRQ1K
-    ZkHmS8uiIbNkcYSF0w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgdelvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeeigeeuvdekheevudeiteegudfgjeehuefghfettddvteeuteekhfehudfhtefg
-    vdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhgihhthhhusgdrtghomhenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghr
-    nhgusgdruggv
-X-ME-Proxy: <xmx:BYfwZdGgIyTdSgYKPHCa7ayYGRFc9QV_E7E7jkd4Kndke6TFhwovnw>
-    <xmx:BYfwZSSrNikP_FKKoJrX4xjCPayBV-gToelz1CN-Lu6M7aehqCtiGw>
-    <xmx:BYfwZaz6fOPJ2mteoIPZ_x-ZFWtdKvxTGhYGF0WFDfBDliTa0V1Gjg>
-    <xmx:BYfwZY7f4-Q62Dk2bPOWThf2WnRw6Bzz6TxomTt1_VEFoz23bsT7DA>
-    <xmx:BYfwZUsHNpuxJ0f_xDwTTcU_BtyUc2BRfEV73V3NmnJA2ArmQsQG1ZySPIM>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 030AEB6008D; Tue, 12 Mar 2024 12:47:00 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1710262044; c=relaxed/simple;
+	bh=EsvOuyb+HUnPC1GuDXLeMVoVm0gOgiyNVftcb+r99Ro=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OiNEx0E3e/2FuMDK1Rkc6uUMtlLlkJVQHnj7jbM9mafCAi/U0+WhPbVTkwErk5DhXymbqM++i+ZGrEwfTWYUDrWlQxc2FeCT6Vhz72oB08nqRMxtVwtZIzQEJC4/dFWglwzLeKlTOQnxg0ZXh5bL0qtTBiAv4BElYZ7luXeqjA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pq8ps+Zg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79B17C433F1;
+	Tue, 12 Mar 2024 16:47:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710262044;
+	bh=EsvOuyb+HUnPC1GuDXLeMVoVm0gOgiyNVftcb+r99Ro=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Pq8ps+Zg2MNmRP29GQ1BTPW/9+Jw0BvhunHfMiVBWrtpPRbIWievVAhGGyk/y2X8G
+	 WWjzUOvgp2/56uyyr1mjUd1VCRwI5hFIP8vQnKy3PxsLFUKMXxtXe+U8hu1ec2poGm
+	 yS/oG7Y2vRUNaWns+wI3p8atOOojX0HpIeDvaiRXWutaE/MVSabNqEu8Sdc+PuzTck
+	 KIi/rBB8To/F+zVoV5XQHiI2KTS5cpk5R1DYFTGCiAEgengkvaExYOaxSQUX4A6Gzp
+	 4w1jlE81WEJdRk6qsN65C59HwXYaoPxVswc7vpiQYXjYtPtPjZlV+l5LChc2zvWnQ5
+	 5bct/1732il/w==
+Message-ID: <5abe8292-f9a1-4e47-84a2-3f2ca58ac9e4@kernel.org>
+Date: Tue, 12 Mar 2024 17:47:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <1ba0456e-879b-4435-808d-54dd91b9506c@app.fastmail.com>
-In-Reply-To: <89d0bb77-a608-4ae0-b9d9-e17fdf5f12da@app.fastmail.com>
-References: <89d0bb77-a608-4ae0-b9d9-e17fdf5f12da@app.fastmail.com>
-Date: Tue, 12 Mar 2024 17:46:31 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc: soc@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL 3/4] ARM: SoC code updates for 6.9
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: llcc: Add llcc device availability check
+To: Mukesh Ojha <quic_mojha@quicinc.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240220122805.9084-1-quic_mojha@quicinc.com>
+ <20332b6f-e0cc-4356-83ec-0c9771481083@kernel.org>
+ <ffa32cab-fa74-0c37-b3c9-c3c41cff9f9c@quicinc.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <ffa32cab-fa74-0c37-b3c9-c3c41cff9f9c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+On 12/03/2024 17:25, Mukesh Ojha wrote:
+>>>   static struct llcc_drv_data *drv_data = (void *) -EPROBE_DEFER;
+>>> +static DEFINE_MUTEX(dev_avail);
+>>> +
+>>> +static bool is_llcc_device_available(void)
+>>> +{
+>>> +	static struct llcc_drv_data *ptr;
+>>> +
+>>> +	mutex_lock(&dev_avail);
+>>> +	if (!ptr) {
+>>> +		struct device_node *node;
+>>> +
+>>> +		node = of_find_node_by_name(NULL, "system-cache-controller");
+>>
+>> Why do you look names by name? This create undocumented ABI. >
+>> NAK (also for any future uses of such of_find_node_by_name()).
+> 
+> I agree, what if we add a common compatible string like qcom,llcc to all 
+> llcc supported SoCs.
 
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+I did not dig into the your problem (also commit msg does not really
+help me in that), but usually relationship between device nodes is
+expressed with phandles.
 
-are available in the Git repository at:
+This also has benefits of easier (future) integration with device links
+and probe ordering.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-arm-6.9
+Best regards,
+Krzysztof
 
-for you to fetch changes up to 98dcb872779f8bea30cd34716c7fdeb0963e3606:
-
-  ARM: s32c: update MAINTAINERS entry (2024-03-05 17:23:09 +0100)
-
-----------------------------------------------------------------
-ARM: SoC code updates for 6.9
-
-These are mostly minor updates, including a number of kerneldoc
-fixes from Randy Dunlap across multiple platforms. OMAP gets
-a few bugfixes, and the MAINTAINERS file gets updated for AMD
-Zynq and NXP S32G.
-
-----------------------------------------------------------------
-Alexander Sverdlin (2):
-      ARM: AM33xx: PRM: Remove redundand defines
-      ARM: AM33xx: PRM: Implement REBOOT_COLD
-
-Arnd Bergmann (8):
-      Merge tag 'samsung-soc-6.9' of https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux into soc/arm
-      Merge tag 'imx-soc-6.9' of git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux into soc/arm
-      Merge tag 'omap-for-v6.9/soc-signed' of git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap into soc/arm
-      Merge tag 'zynq-soc-for-6.9' of https://github.com/Xilinx/linux-xlnx into soc/arm
-      Merge tag 'zynqmp-soc-for-6.9' of https://github.com/Xilinx/linux-xlnx into soc/arm
-      Merge tag 'omap-for-v6.9/omap1-signed' of git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap into soc/arm
-      Merge tag 'omap-for-v6.9/soc-part2-signed' of git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap into soc/arm
-      ARM: s32c: update MAINTAINERS entry
-
-Christophe JAILLET (1):
-      ARM: imx: Remove usage of the deprecated ida_simple_xx() API
-
-Jay Buddhabhatti (1):
-      soc: xilinx: update maintainer of event manager driver
-
-Masahiro Yamada (1):
-      ARM: omap1: remove duplicated 'select ARCH_OMAP'
-
-Michal Simek (1):
-      ARM: zynq: Remove clk/zynq.h header
-
-Randy Dunlap (15):
-      ARM: s5pv210: fix pm.c kernel-doc warning
-      ARM: zynq: slcr: fix function prototype kernel-doc warnings
-      ARM: OMAP2+: am33xx-restart: fix function name in kernel-doc
-      ARM: OMAP2+: clockdomain: fix kernel-doc warnings
-      ARM: OMAP2+: clock: fix a function name in kernel-doc
-      ARM: OMAP2+: cm33xx: use matching function name in kernel-doc
-      ARM: OMAP2+: CMINST: use matching function name in kernel-doc
-      ARM: OMAP2+: hwmod: remove misuse of kernel-doc
-      ARM: OMAP2+: hwmod: fix kernel-doc warnings
-      ARM: OMAP2+: pmic-cpcap: fix kernel-doc warnings
-      ARM: OMAP2+: prm44xx: fix a kernel-doc warning
-      ARM: OMAP2+: PRM: fix kernel-doc warnings
-      ARM: OMAP2+: fix a kernel-doc warning
-      ARM: OMAP2+: fix kernel-doc warnings
-      ARM: OMAP2+: fix kernel-doc warnings
-
-Ricardo B. Marliere (1):
-      ARM: s3c64xx: make bus_type const
-
- MAINTAINERS                                  | 20 ++++++++------------
- arch/arm/mach-imx/mmdc.c                     |  6 +++---
- arch/arm/mach-omap1/Kconfig                  |  1 -
- arch/arm/mach-omap2/am33xx-restart.c         |  5 +++--
- arch/arm/mach-omap2/board-generic.c          |  6 ++++++
- arch/arm/mach-omap2/clkt2xxx_virt_prcm_set.c |  2 +-
- arch/arm/mach-omap2/clockdomain.c            |  4 ++--
- arch/arm/mach-omap2/cm33xx.c                 |  2 +-
- arch/arm/mach-omap2/cminst44xx.c             |  2 +-
- arch/arm/mach-omap2/omap-secure.c            |  4 ++--
- arch/arm/mach-omap2/omap_hwmod.c             |  9 +++++----
- arch/arm/mach-omap2/omap_hwmod_common_data.c |  6 +++---
- arch/arm/mach-omap2/pmic-cpcap.c             | 24 ++++++++++++------------
- arch/arm/mach-omap2/powerdomain.c            |  2 +-
- arch/arm/mach-omap2/prm-regbits-33xx.h       |  1 +
- arch/arm/mach-omap2/prm.h                    |  1 +
- arch/arm/mach-omap2/prm33xx.c                | 22 ++++++++++++++--------
- arch/arm/mach-omap2/prm44xx.c                |  2 +-
- arch/arm/mach-omap2/prm_common.c             | 10 +++++++++-
- arch/arm/mach-omap2/wd_timer.c               |  4 +++-
- arch/arm/mach-s3c/cpu.h                      |  2 +-
- arch/arm/mach-s3c/s3c6410.c                  |  2 +-
- arch/arm/mach-s3c/s3c64xx.c                  |  2 +-
- arch/arm/mach-s5pv210/pm.c                   |  2 +-
- arch/arm/mach-zynq/slcr.c                    |  5 ++---
- 25 files changed, 83 insertions(+), 63 deletions(-)
 
