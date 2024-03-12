@@ -1,114 +1,107 @@
-Return-Path: <linux-kernel+bounces-100462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12AE8797D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:40:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9F858797D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:42:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AFC228A4BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:40:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F0001F228CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059BA7C6F0;
-	Tue, 12 Mar 2024 15:39:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD45F7C6F6;
+	Tue, 12 Mar 2024 15:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HmE1VX0q";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hmMjoab8"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ks2tX6Iy"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50377C6D2;
-	Tue, 12 Mar 2024 15:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A6C1E534;
+	Tue, 12 Mar 2024 15:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710257989; cv=none; b=Uu1KLO2kvPd4VG6n6HrKYF0lTaUysdyjs3SOikGGgUSAkoSb3G4TIAD6Ai2YgRM8n3yu4JKxJEpHZsk+IkDCm+N5wh5S70m6p9BIO4+3F/Fq2p7PnhI+zCPtvX8aF9bcnQ15UmJPwhMq5DVgEhXBBc1CD5FamtqWxjnh96NWlx0=
+	t=1710258139; cv=none; b=UOsnW1CGnDaqyJHqklqKpFrNOuZWCvyZGjFeFOhleD+dR8WbJ76kz1nicPLgVPZ4m3XIKVY5nnbWRxG76ALHISRt5hOljRrMFXNUa2nmCuSZHZw7ou3hrLJ/vEJ8XfExUuK8yNy3GeFDhx1xFO6sKFOBofqqwzEVjNLDQFMMSsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710257989; c=relaxed/simple;
-	bh=57D5IAmOzO+bKJrdsCy/GFSoHV0KU4Bf7lhBQ0v9IfE=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=kyp1kNvjma8AXWZOke/V1dp0HPO0r2nGvmHt5a/ty/jwrDCvFLwNHcxI8zOulOV9/sm8LTeXyO4phqJLQuxn8fikgsNYh7RBEuCN2aYQ3c13Mt/1uJSHranF7qcI3rqxYPvRTOMqj6Da3Q1u4of7KrgJdPH4SK5k1IvhpO7H+TI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HmE1VX0q; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hmMjoab8; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 12 Mar 2024 15:39:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710257986;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=xDNKIL2HfUl0ClGAEkjyAwQtbUUBTePppgCTo5zkaAQ=;
-	b=HmE1VX0qpFN2QwoJ1jOBWwbQoqP6ntX+ezqlZQskG1NLB9BNJ0Ycv9HqOhxxweMQD/DVBt
-	tn5nxx/QWWfq9qGD5cDK/YswnBptKpl1NeTVB0JFn5WiK7bEEkJTGrS3yG76kKg6HA73He
-	EKaUtzJul2h0IvawBbkhOyJYbMVtKQY1m7e3XoNZijHicOhA2YxRgwRGV87nZOYieuGMqq
-	Yl9IHeaWVJ2J2XvXN7/tDO//SUZU6l+FMkqp3+rSri/4WG7tTOin/sjKCaGOCTNpeziJty
-	N1CO6WB9vYKKA0GHnd9vAzZlNB8CCb94qJrLFKgYUBVBKfIaf9zkAuiaNtgz2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710257986;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=xDNKIL2HfUl0ClGAEkjyAwQtbUUBTePppgCTo5zkaAQ=;
-	b=hmMjoab8uyMzMnW7ZpmIhMfo+fhIsBDkeHr7xp+XWnO2q6fNSgB2zj7fpZt4ftxOT11ISg
-	d7cBBZJIot8DtyBQ==
-From: "tip-bot2 for Dave Hansen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/apic] Revert "x86/bugs: Use fixed addressing for VERW operand"
-Cc: Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1710258139; c=relaxed/simple;
+	bh=kaba+pIokp3zp1EHJULsrdS8rJZbUpsA1bC4dzl0xGs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ellM1oIZaQ4MSyEWNQRZ5ejujpOYkVSBobm+bPbzFTFuWczHSLNzYVD5WflPgQHNvnH6kKdGIcEV3Rn8UcEWvpoO0jLUBI3sJXk1fjNCwRXDOj/CB5wFRcPaIFP828HAoU6qGifKuaWF2YypaTgmCrVutsHVvf/VeIuQO7StJhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ks2tX6Iy; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710258138; x=1741794138;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kaba+pIokp3zp1EHJULsrdS8rJZbUpsA1bC4dzl0xGs=;
+  b=ks2tX6IyUT7k1/RdctKWzv/Zfi0GrUDFDj3GXGsD0MmiNbvOx9RsRoMW
+   jJGdDDQPvyLY2/0LOzYfNSfDurFg9f8a7bYHE6Ia45Gn9kVUcoMLThyp5
+   KeZdRaDPcbCy018VEU6gKiBVkV+/J+GubgEkeJXEpKJYzjWBvgoguuNFs
+   rD+pF1PC11O7QJgaWwfXxuV6IuKDybEHhgl5fzRVpqN+EM12Acshk7e+i
+   i6eFleacjZ2uUDhphylOQncKaG2nbbblBZCKZmS4EMbIy2I6Xv26pXf7/
+   x/96ZYgHfTiCqFhHF35JVkYV6Rbns7qJwnst0D9y1h6QSqS//tO6eSP80
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4838967"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="4838967"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:42:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="914400083"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="914400083"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:42:14 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rk4GZ-0000000Bvt2-2J1i;
+	Tue, 12 Mar 2024 17:42:11 +0200
+Date: Tue, 12 Mar 2024 17:42:11 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH] lib/bitmap: Fix bitmap_scatter() and bitmap_gather()
+ kernel doc
+Message-ID: <ZfB30-rLXEnJtjrY@smile.fi.intel.com>
+References: <20240312085403.224248-1-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171025798510.398.15036721545498357985.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312085403.224248-1-herve.codina@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The following commit has been merged into the x86/apic branch of tip:
+On Tue, Mar 12, 2024 at 09:54:03AM +0100, Herve Codina wrote:
+> The make htmldoc command failed with the following error
+>   ... include/linux/bitmap.h:524: ERROR: Unexpected indentation.
+>   ... include/linux/bitmap.h:524: CRITICAL: Unexpected section title or transition.
+> 
+> Move the visual representation to a literal block.
 
-Commit-ID:     532a0c57d7ff75e8f07d4e25cba4184989e2a241
-Gitweb:        https://git.kernel.org/tip/532a0c57d7ff75e8f07d4e25cba4184989e2a241
-Author:        Dave Hansen <dave.hansen@linux.intel.com>
-AuthorDate:    Tue, 12 Mar 2024 07:27:57 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Tue, 12 Mar 2024 08:33:51 -07:00
+..
 
-Revert "x86/bugs: Use fixed addressing for VERW operand"
+> This patch fixes de5f84338970 ("lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers")
+> available in net-next and linux-next
 
-This was reverts commit 8009479ee919b9a91674f48050ccbff64eafedaa.
+Not sure about rules of net-next, but I would add Fixes FWIW:
 
-It was originally in x86/urgent, but was deemed wrong so got zapped.
-But in the meantime, x86/urgent had been merged into x86/apic to
-resolve a conflict.  I didn't notice the merge so didn't zap it
-from x86/apic and it managed to make it up with the x86/apic
-material.
+Fixes: de5f84338970 ("lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers")
 
-The reverted commit is known to cause some KASAN problems.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
----
- arch/x86/include/asm/nospec-branch.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index ab19c7f..2aa52ca 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -323,7 +323,7 @@
-  * Note: Only the memory operand variant of VERW clears the CPU buffers.
-  */
- .macro CLEAR_CPU_BUFFERS
--	ALTERNATIVE "", __stringify(verw mds_verw_sel), X86_FEATURE_CLEAR_CPU_BUF
-+	ALTERNATIVE "", __stringify(verw _ASM_RIP(mds_verw_sel)), X86_FEATURE_CLEAR_CPU_BUF
- .endm
- 
- #else /* __ASSEMBLY__ */
 
