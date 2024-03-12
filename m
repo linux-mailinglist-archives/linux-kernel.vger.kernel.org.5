@@ -1,73 +1,54 @@
-Return-Path: <linux-kernel+bounces-100400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 407AF8796EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:54:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CE0B8796F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:55:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 713DE1C21466
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:54:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 025D71F25FC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964DA7B3F5;
-	Tue, 12 Mar 2024 14:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDE17BB13;
+	Tue, 12 Mar 2024 14:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vmebt6rN"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="W0mq3kG8"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301C67B3EE
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99395F4FA;
+	Tue, 12 Mar 2024 14:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710255235; cv=none; b=a0aFIJhCF7uR+eDmCVKKsnxRwBWiRU78+JsOpbkVJsubD+qaIAugO4Z83mEpD0erzFHS7WZw7KacbTpyzFVvaPlTBK71IBLKW5b4cxadtbOZJ3oVEAG5hUPfjvusSo8ieYr+2nAUAztoN8MwQ9PMdEfdGWRvo/OoJzeyjpF8RxY=
+	t=1710255301; cv=none; b=W8M3pQLzwpz4Ff0+Dx9nZDeeK8eOxhXN2l026JoeMCNPHim/XrJGN2+2trzr5SblMAh+rTgoj7RD6QngjybZQ9DdYEH6u9DG3W07hEKrV9S/3oZE7KwX0O8tehAIf5c9qhQDZ9u4s//DGCn9WGuj2K2vP0kVE5hRkbdG+U+DdxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710255235; c=relaxed/simple;
-	bh=bGGHbUurf8z2aahIEBEQAO22P5jFwd8to0iY7TOjxHs=;
+	s=arc-20240116; t=1710255301; c=relaxed/simple;
+	bh=PRWIirwilphIw4zcMNTt1c46izhHLa0/pjMpYw4ic/o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hrwzr6ErFzdD1JJpcPD7/slDd68d5xm6b8FW+DoXI9YOV12XxqOFcGy64oFpGRf+3k2BZgc2CI4kcWHt0cCjdpVU7VM+MVMzXeMUvpkc1ZVAcy4lI5OFk79DxdfhLFJA8aBalS1hc+QRvgSRpa1LGEryRo2FLB4RBn3euLFdVYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vmebt6rN; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51344bebe2fso4366513e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710255232; x=1710860032; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=keCLG9SnPqnp4c4TkDEyJxwdSrYn/phlS9CwfE8jy2w=;
-        b=vmebt6rNs76/YHosCZ/9QU/lg0PfyTRk0cYnyAcI2ZvRBqdEtslHdvlpQH8dh3syQD
-         2QqO87DsPD2AEJBLvGp/f4W3Kpl0eJCD+rk2eOGtJkc5nMzJ/pX1u8oxqrCGMA+qXwpq
-         YwD8xzvIMjsHTjnf5PH4SlMQgNk4p4HcSYkJv24Ax2h9CG7U4zf36grq2rfX3NIwCkHg
-         LSftkcS5uDlmc3aOz7EzgO9nE5eqxE/TLDjLrCXiwhW1hOp6ISG4bP6Zp336D55gpkiV
-         S9e9g6dX/TYaWulRY9/SvUdjMG+1u/tOcqw0owQi8Fo0bF+OxiDVz8x9pQlnblWqcwmo
-         tB3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710255232; x=1710860032;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=keCLG9SnPqnp4c4TkDEyJxwdSrYn/phlS9CwfE8jy2w=;
-        b=SZMecEwJ6K5vYGSeFAB4ycOEK2nb+ANvbnTVYcdUb4Op9HFgqg8FN8wm9VLZ5K6kUJ
-         6IgOhZXMOfUrthG6rNlc5gTVv8nee9q20GiEMNMw+dUwYHMzRhRXuxpHQVLZs0ppNJho
-         EpJHvJiHi7EdY7v8TMCJ66tAEVWuBjScLdZzlWO5AQiskUHrj5JmyZxTkuIN0VMvGr7B
-         je6f1L+7zdiZ6N9icWcFCMyrNW5OlDNJX78d85Gjosmh8rvrh5rTFMeF7EOm6Xh0I9om
-         cqWDYqerO0NMNhV464mbiNzWgWRSYn7DfAQ8mNkLCMMGAn5P9ef+M+MDN6OGEXuwaIN8
-         9NBw==
-X-Forwarded-Encrypted: i=1; AJvYcCWr4cqent5AgStOo+FRZSQUGB88LudGD949pbt5gL+2GqYattn6dPPVgRcNEbfypSJdEwvMLh6OwTzmafq+wBfnLHDBdt/afe8uZwKd
-X-Gm-Message-State: AOJu0Yzvfkzq8o0Kz5XzSeOSFG3m47JuV9GwDkx2lpj/6vxls5hzmYU2
-	1Y3NVsJCDNDxJbEKCIJ6UlUh7yIbNGPWkvzJFdLgxW2SaW5PXwPAag4Ej2fp4/o=
-X-Google-Smtp-Source: AGHT+IHWscraXWfl9i2ubcI6WwPw3EVwwdQh9J4Hzv7X4J9wenpjW8/dzOuu7lN6Ggow35umWvP/Ag==
-X-Received: by 2002:ac2:4da7:0:b0:513:b062:98bf with SMTP id h7-20020ac24da7000000b00513b06298bfmr246742lfe.20.1710255232372;
-        Tue, 12 Mar 2024 07:53:52 -0700 (PDT)
-Received: from [172.30.205.61] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id 2-20020ac24822000000b00513c58e7601sm66644lft.284.2024.03.12.07.53.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 07:53:51 -0700 (PDT)
-Message-ID: <5046cdf6-8111-477b-9724-c68183e5f357@linaro.org>
-Date: Tue, 12 Mar 2024 15:53:50 +0100
+	 In-Reply-To:Content-Type; b=dB5yCEJa9L3lKcDUuu2njYRhmbgbt1FDlNuRlFvbPlggVVE1VaD2UtUyQ6GX8JfhpGU4U7mW/bW1YFfRZCIM89VAzx014IMBtaU9RCAGq4XrI7P+VSquua9KS8ejnLOMF5Qa6xGHxcREfpWPKmH5vJSTaqnkBw5TMvLMmQ+Mtd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=W0mq3kG8; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710255297;
+	bh=PRWIirwilphIw4zcMNTt1c46izhHLa0/pjMpYw4ic/o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=W0mq3kG86LmhXg334vp1B8RhZDdbMeVpYdLAytnolcZyjPNfr2kXn9W5lEeixOCCK
+	 0KmgcInRX8B+FH1LhTbg2EK9zAnwoD7fQt1o7szRtSJduS5tr418smUTWytNHSsx9c
+	 A/8oELBaufMoRsGYc1EXP6BDAttBKUC6Y2dAy3f5JtztfuvHKt2VXujhe3zz2iynMN
+	 y7SYzLBUDaM7HX7tmyEVt7ss7JCHiJFfChIBbyUG6hZTcEi7DWN1evdnztmYn2wV0j
+	 EHH1e+uQBe13DRKMp537t6nk1gMuORiF+BfV/eAqHJxgQL/PllwTWlOh+cBvFWED4M
+	 EPNrpYnulqzZw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 197EA37811D4;
+	Tue, 12 Mar 2024 14:54:56 +0000 (UTC)
+Message-ID: <4572ff92-ca26-4e61-a756-b9456896faef@collabora.com>
+Date: Tue, 12 Mar 2024 15:54:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,31 +56,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] ARM: dts: qcom: Add Sony Xperia Z3 smartphone
+Subject: Re: [PATCH 12/18] ASoC: codecs: mt6357: add MT6357 codec
 Content-Language: en-US
-To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
+To: Alexandre Mergnat <amergnat@baylibre.com>
+Cc: Flora Fu <flora.fu@mediatek.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Conor Dooley <conor+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240310-shinano-common-v1-0-d64cd322ebca@z3ntu.xyz>
- <20240310-shinano-common-v1-3-d64cd322ebca@z3ntu.xyz>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240310-shinano-common-v1-3-d64cd322ebca@z3ntu.xyz>
+ Catalin Marinas <catalin.marinas@arm.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>, Will Deacon <will@kernel.org>,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ Nicolas Belin <nbelin@baylibre.com>
+References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
+ <20240226-audio-i350-v1-12-4fa1cea1667f@baylibre.com>
+ <1641a853-88cb-43a8-bb95-653f5329a682@collabora.com>
+ <253b4b6c-d8ba-40a3-adbb-4455af57d780@baylibre.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <253b4b6c-d8ba-40a3-adbb-4455af57d780@baylibre.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-
-
-On 3/10/24 12:41, Luca Weiss wrote:
-> Add the dts for the Xperia Z3 smartphone which is based on Sony's
-> shinano platform, so at the moment there's little device-specific dts to
-> add on top of the common parts.
+Il 12/03/24 15:50, Alexandre Mergnat ha scritto:
 > 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
+> 
+> On 26/02/2024 16:25, AngeloGioacchino Del Regno wrote:
+>>> +    if (enable) {
+>>> +        /* set gpio mosi mode */
+>>> +        regmap_write(priv->regmap, MT6357_GPIO_MODE2_CLR, GPIO_MODE2_CLEAR_ALL);
+>>> +        regmap_write(priv->regmap, MT6357_GPIO_MODE2_SET, 
+>>> GPIO8_MODE_SET_AUD_CLK_MOSI |
+>>> +                                  GPIO9_MODE_SET_AUD_DAT_MOSI0 |
+>>> +                                  GPIO10_MODE_SET_AUD_DAT_MOSI1 |
+>>> +                                  GPIO11_MODE_SET_AUD_SYNC_MOSI);
+>>
+>> Are you sure that you need to write to MODE2_SET *and* to MODE2?!
+> 
+> This is downstream code and these registers aren't in my documentation.
+> I've removed the MODE2_SET write and test the audio: it's still working.
+> 
+> So I will keep the spurious write removed for v2. :)
+> 
 
-modulo missing makfile, this looks good
+Usually, MediaTek registers are laid out like "REG" being R/legacy-W and
+"REG_SET/CLR" for setting and clearing bits in "REG" internally, and that
+might account for internal latencies and such.
+
+Can you please try to remove the MODE2 write instead of the MODE2_SET one
+and check if that works?
+
+You're already using the SETCLR way when manipulating registers in here,
+so I would confidently expect that to work.
+
+Cheers,
+Angelo
 
