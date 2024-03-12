@@ -1,277 +1,243 @@
-Return-Path: <linux-kernel+bounces-100905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7180879F29
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5774879F25
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:55:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C81F1F22F94
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:56:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B3381F22E82
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:55:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FC24655F;
-	Tue, 12 Mar 2024 22:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7E2844C89;
+	Tue, 12 Mar 2024 22:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DFtwX40D"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="1wkv9pDY"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD9A446AC;
-	Tue, 12 Mar 2024 22:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48BC441236
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 22:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710284114; cv=none; b=ZbEY1vAsomZ1Ot3XHN5EgV/HFswMCnHjJqK/ByU/JwT/FHNQTkj5Rb5LioPTz+u0nqQUprWc2P2TbHMr0kW1OwmoTp2EHG37OPG4on9lToRGIJqeVjaOQNAfgrEQSYvgJe+Gfx8RREnkgL5maDF6V93sGHZwCTVqqS1AapAGecE=
+	t=1710284111; cv=none; b=E+PX7+Xv1LT5m1fc0uWJZJXUial2raKHr+U8iPbY73z4TagRws9YR2D1DH5YqPiLErmk7flI4esqc9rKjcXIOwytjDQjMBRyK+kn/PNETQ8RT1Zsnj9B6GrWr4n+KH+5O/RND9cUjho+AVjRkQkpaQICLNCdhzSFHkPGAUUw0Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710284114; c=relaxed/simple;
-	bh=pqB0kQNo2lOrlfpuu3b2oAK++B35JKyT39mKFe8+dtc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TV+FImfA5AB90WxsnXeBZWwRMkrD6Z68NxzGvqETJFPTtSqhYFd3GegddOR1TfAzWS5Qnsp+0sjZEVIr8RKlpIiCQUzFFGzZiFJ03T7F9oB3uI3aUjFmHVRkvtkhJxlkCGZi1aTjRECeDRc892IjsDouaejlrXLc2GoTCcXfHsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DFtwX40D; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d29111272eso101575581fa.0;
-        Tue, 12 Mar 2024 15:55:11 -0700 (PDT)
+	s=arc-20240116; t=1710284111; c=relaxed/simple;
+	bh=PjTThnS897JBeeLLZ2v/9plHI69Lx4l02jlhaD0hgO4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Qv372B3F44KinqNWIh2A0a4EaTUXT5O+MuCp2x1fB48h6SRy/YN3xtZT7ReIv0x5t14eyzseGGYI+fhsUxlWf1fGc60Pg6FXKFyjatr+iy4FBSxflscwQko6kEwxpKOYDkODFwzsQbl9eUGyAdXwB4BlqwRzj4znjcIYXpmO1kI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1wkv9pDY; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1dd8dc37495so31464765ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 15:55:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710284110; x=1710888910; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dn4o2EhSzw/dPcbf0I+GhuZZGnLjYr0VW9p4Ognw3lA=;
-        b=DFtwX40DTpA1ESUPV8sJR56EUf0c9+qNJjP8KPyPS2NknXIl8JKqC2NOjRk3GBOfnK
-         iLT6My59Je3s9OBwaiCO/IprHf8YrVs30QSn60dAmMqT+0pVlO3b/DBT8VrBcn/jdxQ6
-         gWZk9LLXV2BAdKYPsI+8/WuNu/1/8KlsE/Bg9vTUeFVR65zWNi9ZrA9EATpRbYJoUGYf
-         Z54BA/OxLGfFzUue+yZihS0USuMCATXW4j8nNBEIrvo7QdLXyymmLlXlUc0uzZ6bA2nY
-         iDgFOI87H+NFqddsERgg9nvyty4enf6KnwNkz/LaOKtYQHy5VJampv6oHavbYwljlXr1
-         ssxA==
+        d=google.com; s=20230601; t=1710284109; x=1710888909; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jU95RMg0fdFREnYHW4aRlJKTf827qSXmLhHuHKLFqbs=;
+        b=1wkv9pDYiSG5C8sSGQhoZX25SpnzlE63R6NIk9/Zpd1D84bbUgaSJkemcYRhM8ztrg
+         5Y7M7eHvjPQ9M5Vxc+BdeYaz0gCu1waL2TT55sS3I72cC7BDdFAYQ6wVUrkbi1kQ3oUu
+         nV9XFJ5EgWGw1VrMbhWOolJoRlHPLmqMGg+xvAMEYnAWJ377V8eHpYcgsU/9f0VNsFQG
+         gXI4ue/sY4dGyS4oSXvgdQ2rHuMYoQLB4Q/DXEiQ9GXtsS2m9sshp3ch7wnsVxrLgwwM
+         m43vB1P2X2m1htb+tfQXbSyJokXccALRxVlxIx/DKdYpJjRIMiIrk+eJ9xhPJsDh2+m/
+         ztNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710284110; x=1710888910;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dn4o2EhSzw/dPcbf0I+GhuZZGnLjYr0VW9p4Ognw3lA=;
-        b=ExrLFIbDyxj4RQgFsz3xa7h0a3nxbpZMhmzpiMt2AHV+0WLP4qzZvqIrUkmCFTcrWy
-         tPFiDejlTtounSpnezYeZ2Qhk6st+bPA0iyDOhBH94IyysuqXMq2RbK3zOlp8kA3VYEI
-         dvvh0f0BO09wTx10YVzoum2WG7Ahz3ubjagv4eujHE0R0s7DU5j2wAwSlYP/xN6Li+TL
-         P9K5OTaMIpo8Hdr9raa8STJY7TssTvlF9fg5CbKS/mroT+r4gFlB6XFzscc6f1p0mpJJ
-         HkLzQ7VGqmvk4pibtDIA0cJDbkjOKATGMNk/m9OH1fKXFmbfky98rsHJZlDOeUwto5kM
-         1WNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXFs99Hznk+FI3Y0v2tcVmkwJ76vgVKErB9LXwbxDZKCmmIuaK3j2YB85v7Xo9uTjuiDGQmX8cLAvls3tA/7X1o8S487lUz7KNHzz1EFvIzNnpK1Wk688hFMI/94eQPNg0cU2lG/jGCmGQ=
-X-Gm-Message-State: AOJu0YxjnARnZpY5snCOcf+1CYEiKd4Zn2dkv8zWvZH0AndnEdu1Hmno
-	iFm4wt5dD5OsO73iyg60Hxl27N4ywgJDH1QxRAPF3QBUQPb3eMhxysyGEu5Wvj2WlW5oA4Qw9Yk
-	3k7KgkdN7e+gdODaShp54/f5BFJ1YKeaq
-X-Google-Smtp-Source: AGHT+IFbWul1azbb7FTg9EddCY7T7oYsUqF6TE3i9r9b9TycKD6mwZxOcnZoYoeU6Y0yDRibf8dC3NEMMFfQCe9VDFo=
-X-Received: by 2002:a05:651c:222b:b0:2d2:751f:abb2 with SMTP id
- y43-20020a05651c222b00b002d2751fabb2mr2507208ljq.3.1710284110049; Tue, 12 Mar
- 2024 15:55:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710284109; x=1710888909;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jU95RMg0fdFREnYHW4aRlJKTf827qSXmLhHuHKLFqbs=;
+        b=ACKB5mDkKTri+MIA6uTBe1xLkYo5DQFTw6pkIsYTmr8EUk1LzIAQi1AyvbkrqsMnp5
+         sLC4ESnRZALjFjJjmKoDOJXPJ9IGfO+PdVouYIGa2tGiLCEiJzzEb5TTW54cIC4N4NOB
+         1hRgnBWlquzNu02yIx9eJOuuHqPChUekk5gY4GIxMY2Do8C+ojL4OUv+gBiYwvhLO3xY
+         xy+hsDFcWQqq7ELSQKkKAbTcPeqZpyEYIjGiIsCiG6US9jZlJIusXnIRbFrLjEcTRA0Y
+         D0KJVIncWPeJcsZO+M6T7v57H1V1A7dAmbOLdAEFCcs/nVtgM9E8yolhQCqdBo05QRLO
+         H2Fg==
+X-Forwarded-Encrypted: i=1; AJvYcCVMnWL3Xx0tRf6CO8sWYA6CXN/79cIn01baLglS+48Kxh+Rxre6KrnMORHWDMnV3qy64G2NMvQEDucudEiJkzjvYsR38XL+t0C2v6oC
+X-Gm-Message-State: AOJu0Yy02azwbA5HtS5qX0VWmTy9m0Kw3NZHgQZYTILzDhBbtq7OOq2r
+	hnHFuCZBtYA6ORDmJe9+c2voCsoVDO05L7e7AYnY72fDsts//M/TdGG7opD3PpEpEljkLF0r1dI
+	NDg==
+X-Google-Smtp-Source: AGHT+IEsmFMb35JDWyUf7Z0C3Jb/NUl//hA1C6c4K7I8zAn8oJ3QRU6G6WKtQFWdJ+z8U/3qFn8KpL4ck2Y=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:244d:b0:1dd:a17f:e7d8 with SMTP id
+ l13-20020a170903244d00b001dda17fe7d8mr25271pls.12.1710284109303; Tue, 12 Mar
+ 2024 15:55:09 -0700 (PDT)
+Date: Tue, 12 Mar 2024 15:55:07 -0700
+In-Reply-To: <20240219074733.122080-21-weijiang.yang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
- <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it> <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
- <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it> <ZedaKUge-EBo4CuT@redhat.com>
- <ZeiS/bjJaRcrerWW@fedora> <CAOCpoWeoQMh_-MxzxGBnK2Kf5EhvTLs=GrGwJ5XcfGVRTp73Eg@mail.gmail.com>
- <Ze2azGlb1WxVFv7Z@fedora> <Ze3RWqLvG18cQ4dz@redhat.com> <CAOCpoWf7C=B1sdeUL46sVVtVUDH8+o_T9LGJNTOYqA317uMdmA@mail.gmail.com>
- <Ze8DZLBHhCxgzc+r@fedora>
-In-Reply-To: <Ze8DZLBHhCxgzc+r@fedora>
-From: Patrick Plenefisch <simonpatp@gmail.com>
-Date: Tue, 12 Mar 2024 18:54:59 -0400
-Message-ID: <CAOCpoWd5VWZnAaYvkFDYo736ZXDK0bExC9NkwVGfLv_CATj9Rw@mail.gmail.com>
-Subject: Re: LVM-on-LVM: error while submitting device barriers
-To: Ming Lei <ming.lei@redhat.com>
-Cc: Mike Snitzer <snitzer@kernel.org>, Goffredo Baroncelli <kreijack@inwind.it>, linux-kernel@vger.kernel.org, 
-	Alasdair Kergon <agk@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, regressions@lists.linux.dev, 
-	dm-devel@lists.linux.dev, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240219074733.122080-1-weijiang.yang@intel.com> <20240219074733.122080-21-weijiang.yang@intel.com>
+Message-ID: <ZfDdS8rtVtyEr0UR@google.com>
+Subject: Re: [PATCH v10 20/27] KVM: VMX: Emulate read and write to CET MSRs
+From: Sean Christopherson <seanjc@google.com>
+To: Yang Weijiang <weijiang.yang@intel.com>
+Cc: pbonzini@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
+	john.allen@amd.com, Aaron Lewis <aaronlewis@google.com>, 
+	Jim Mattson <jmattson@google.com>, Oliver Upton <oupton@google.com>, 
+	Mingwei Zhang <mizhang@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Mar 11, 2024 at 9:13=E2=80=AFAM Ming Lei <ming.lei@redhat.com> wrot=
-e:
->
-> On Sun, Mar 10, 2024 at 02:11:11PM -0400, Patrick Plenefisch wrote:
-> > On Sun, Mar 10, 2024 at 11:27=E2=80=AFAM Mike Snitzer <snitzer@kernel.o=
-rg> wrote:
-> > >
-> > > On Sun, Mar 10 2024 at  7:34P -0400,
-> > > Ming Lei <ming.lei@redhat.com> wrote:
-> > >
-> > > > On Sat, Mar 09, 2024 at 03:39:02PM -0500, Patrick Plenefisch wrote:
-> > > > > On Wed, Mar 6, 2024 at 11:00=E2=80=AFAM Ming Lei <ming.lei@redhat=
-com> wrote:
-> > > > > >
-> > > > > > #!/usr/bin/bpftrace
-> > > > > >
-> > > > > > #ifndef BPFTRACE_HAVE_BTF
-> > > > > > #include <linux/blkdev.h>
-> > > > > > #endif
-> > > > > >
-> > > > > > kprobe:submit_bio_noacct,
-> > > > > > kprobe:submit_bio
-> > > > > > / (((struct bio *)arg0)->bi_opf & (1 << __REQ_PREFLUSH)) !=3D 0=
- /
-> > > > > > {
-> > > > > >         $bio =3D (struct bio *)arg0;
-> > > > > >         @submit_stack[arg0] =3D kstack;
-> > > > > >         @tracked[arg0] =3D 1;
-> > > > > > }
-> > > > > >
-> > > > > > kprobe:bio_endio
-> > > > > > /@tracked[arg0] !=3D 0/
-> > > > > > {
-> > > > > >         $bio =3D (struct bio *)arg0;
-> > > > > >
-> > > > > >         if (($bio->bi_flags & (1 << BIO_CHAIN)) && $bio->__bi_r=
-emaining.counter > 1) {
-> > > > > >                 return;
-> > > > > >         }
-> > > > > >
-> > > > > >         if ($bio->bi_status !=3D 0) {
-> > > > > >                 printf("dev %s bio failed %d, submitter %s comp=
-letion %s\n",
-> > > > > >                         $bio->bi_bdev->bd_disk->disk_name,
-> > > > > >                         $bio->bi_status, @submit_stack[arg0], k=
-stack);
-> > > > > >         }
-> > > > > >         delete(@submit_stack[arg0]);
-> > > > > >         delete(@tracked[arg0]);
-> > > > > > }
-> > > > > >
-> > > > > > END {
-> > > > > >         clear(@submit_stack);
-> > > > > >         clear(@tracked);
-> > > > > > }
-> > > > > >
-> > > > >
-> > > > > Attaching 4 probes...
-> > > > > dev dm-77 bio failed 10, submitter
-> > > > >        submit_bio_noacct+5
-> > > > >        __send_duplicate_bios+358
-> > > > >        __send_empty_flush+179
-> > > > >        dm_submit_bio+857
-> > > > >        __submit_bio+132
-> > > > >        submit_bio_noacct_nocheck+345
-> > > > >        write_all_supers+1718
-> > > > >        btrfs_commit_transaction+2342
-> > > > >        transaction_kthread+345
-> > > > >        kthread+229
-> > > > >        ret_from_fork+49
-> > > > >        ret_from_fork_asm+27
-> > > > > completion
-> > > > >        bio_endio+5
-> > > > >        dm_submit_bio+955
-> > > > >        __submit_bio+132
-> > > > >        submit_bio_noacct_nocheck+345
-> > > > >        write_all_supers+1718
-> > > > >        btrfs_commit_transaction+2342
-> > > > >        transaction_kthread+345
-> > > > >        kthread+229
-> > > > >        ret_from_fork+49
-> > > > >        ret_from_fork_asm+27
-> > > > >
-> > > > > dev dm-86 bio failed 10, submitter
-> > > > >        submit_bio_noacct+5
-> > > > >        write_all_supers+1718
-> > > > >        btrfs_commit_transaction+2342
-> > > > >        transaction_kthread+345
-> > > > >        kthread+229
-> > > > >        ret_from_fork+49
-> > > > >        ret_from_fork_asm+27
-> > > > > completion
-> > > > >        bio_endio+5
-> > > > >        clone_endio+295
-> > > > >        clone_endio+295
-> > > > >        process_one_work+369
-> > > > >        worker_thread+635
-> > > > >        kthread+229
-> > > > >        ret_from_fork+49
-> > > > >        ret_from_fork_asm+27
-> > > > >
-> > > > >
-> > > > > For context, dm-86 is /dev/lvm/brokenDisk and dm-77 is /dev/lower=
-VG/lvmPool
-> > > >
-> > > > io_status is 10(BLK_STS_IOERR), which is produced in submission cod=
-e path on
-> > > > /dev/dm-77(/dev/lowerVG/lvmPool) first, so looks it is one device m=
-apper issue.
-> > > >
-> > > > The error should be from the following code only:
-> > > >
-> > > > static void __map_bio(struct bio *clone)
-> > > >
-> > > >       ...
-> > > >       if (r =3D=3D DM_MAPIO_KILL)
-> > > >               dm_io_dec_pending(io, BLK_STS_IOERR);
-> > > >       else
-> > > >               dm_io_dec_pending(io, BLK_STS_DM_REQUEUE);
-> > > >     break;
-> > >
-> > > I agree that the above bpf stack traces for dm-77 indicate that
-> > > dm_submit_bio failed, which would end up in the above branch if the
-> > > target's ->map() returned DM_MAPIO_KILL or DM_MAPIO_REQUEUE.
-> > >
-> > > But such an early failure speaks to the flush bio never being
-> > > submitted to the underlying storage. No?
-> > >
-> > > dm-raid.c:raid_map does return DM_MAPIO_REQUEUE with:
-> > >
-> > >         /*
-> > >          * If we're reshaping to add disk(s)), ti->len and
-> > >          * mddev->array_sectors will differ during the process
-> > >          * (ti->len > mddev->array_sectors), so we have to requeue
-> > >          * bios with addresses > mddev->array_sectors here or
-> > >          * there will occur accesses past EOD of the component
-> > >          * data images thus erroring the raid set.
-> > >          */
-> > >         if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
-> > >                 return DM_MAPIO_REQUEUE;
-> > >
-> > > But a flush doesn't have an end_sector (it'd be 0 afaik).. so it seem=
-s
-> > > weird relative to a flush.
-> > >
-> > > > Patrick, you mentioned lvmPool is raid1, can you explain how lvmPoo=
-l is
-> > > > built? It is dm-raid1 target or over plain raid1 device which is
-> > > > build over /dev/lowerVG?
-> >
-> > LVM raid1:
-> > lvcreate --type raid1 -m 1 ...
->
-> OK, that is the reason, as Mike mentioned.
->
-> dm-raid.c:raid_map returns DM_MAPIO_REQUEUE, which is translated into
-> BLK_STS_IOERR in dm_io_complete().
->
-> Empty flush bio is sent from btrfs, both .bi_size and .bi_sector are set
-> as zero, but the top dm is linear, which(linear_map()) maps new
-> bio->bi_iter.bi_sector, and the mapped bio is sent to dm-raid(raid_map())=
-,
-> then DM_MAPIO_REQUEUE is returned.
->
-> The one-line patch I sent in last email should solve this issue.
->
-> https://lore.kernel.org/dm-devel/a783e5ed-db56-4100-956a-353170b1b7ed@inw=
-ind.it/T/#m8fce3ecb2f98370b7d7ce8db6714bbf644af5459
+-non-KVM people, +Mingwei, Aaron, Oliver, and Jim
 
-With this patch on a 6.6.13 base, I can modify files and the BTRFS
-volume stays RW, while no errors are logged in dmesg!
+On Sun, Feb 18, 2024, Yang Weijiang wrote:
+>  	case MSR_IA32_PERF_CAPABILITIES:
+>  		if (data && !vcpu_to_pmu(vcpu)->version)
+>  			return 1;
 
+Ha, perfect, this is already in the diff context.
 
->
-> But DM_MAPIO_REQUEUE misuse needs close look, and I believe Mike is worki=
-ng
-> on that bigger problem.
->
-> I guess most of dm targets don't deal with empty bio well, at least
-> linear & dm-raid, not look into others yet, :-(
->
->
-> Thanks,
-> Ming
->
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index c0ed69353674..281c3fe728c5 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1849,6 +1849,36 @@ bool kvm_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u32 type)
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_msr_allowed);
+>  
+> +#define CET_US_RESERVED_BITS		GENMASK(9, 6)
+> +#define CET_US_SHSTK_MASK_BITS		GENMASK(1, 0)
+> +#define CET_US_IBT_MASK_BITS		(GENMASK_ULL(5, 2) | GENMASK_ULL(63, 10))
+> +#define CET_US_LEGACY_BITMAP_BASE(data)	((data) >> 12)
+> +
+> +static bool is_set_cet_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u64 data,
+> +				   bool host_initiated)
+> +{
+
+..
+
+> +	/*
+> +	 * If KVM supports the MSR, i.e. has enumerated the MSR existence to
+> +	 * userspace, then userspace is allowed to write '0' irrespective of
+> +	 * whether or not the MSR is exposed to the guest.
+> +	 */
+> +	if (!host_initiated || data)
+> +		return false;
+
+..
+
+> @@ -1951,6 +2017,20 @@ static int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
+>  		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+>  			return 1;
+>  		break;
+> +	case MSR_IA32_U_CET:
+> +	case MSR_IA32_S_CET:
+> +		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK) &&
+> +		    !guest_can_use(vcpu, X86_FEATURE_IBT))
+> +			return 1;
+
+As pointed out by Mingwei in a conversation about PERF_CAPABILITIES, rejecting
+host *reads* while allowing host writes of '0' is inconsistent.  Which, while
+arguably par for the course for KVM's ABI, will likely result in the exact problem
+we're trying to avoid: killing userspace because it attempts to access an MSR KVM
+has said exists.
+
+PERF_CAPABILITIES has a similar, but opposite, problem where KVM returns a non-zero
+value on reads, but rejects that same non-zero value on write.  PERF_CAPABILITIES
+is even more complicated because KVM stuff a non-zero value at vCPU creation, but
+that's not really relevant to this discussion, just another data point for how
+messed up this all is.
+
+Also relevant to this discussion are KVM's PV MSRs, e.g. MSR_KVM_ASYNC_PF_ACK,
+as KVM rejects attempts to write '0' if the guest doesn't support the MSR, but
+if and only userspace has enabled KVM_CAP_ENFORCE_PV_FEATURE_CPUID.
+
+Coming to the point, this mess is getting too hard to maintain, both from a code
+perspective and "what is KVM's ABI?" perspective.
+
+Rather than play whack-a-mole and inevitably end up with bugs and/or inconsistencies,
+what if we (a) return KVM_MSR_RET_INVALID when an MSR access is denied based on
+guest CPUID, (b) wrap userspace MSR accesses at the very top level and convert
+KVM_MSR_RET_INVALID to "success" when KVM reported the MSR as savable and userspace
+is reading or writing '0', and (c) drop all of the host_initiated checks that
+exist purely to exempt userspace access from guest CPUID checks.
+
+The only possible hiccup I can think of is that this could subtly break userspace
+that is setting CPUID _after_ MSRs, but my understanding is that we've agreed to
+draw a line and say that that's unsupported.  And I think it's low risk, because
+I don't see how code like this:
+
+	case MSR_TSC_AUX:
+		if (!kvm_is_supported_user_return_msr(MSR_TSC_AUX))
+			return 1;
+
+		if (!host_initiated &&
+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+			return 1;
+
+		if (guest_cpuid_is_intel(vcpu) && (data >> 32) != 0)
+			return 1;
+
+can possibly work if userspace sets MSRs first.  The RDTSCP/RDPID checks are
+exempt, but the vendor in guest CPUID would be '0', not Intel's magic string,
+and so setting MSRs before CPUID would fail, at least if the target vCPU model
+is Intel.
+
+P.S. I also want to rename KVM_MSR_RET_INVALID => KVM_MSR_RET_UNSUPPORTED, because
+I can never remember that "invalid" doesn't mean the value was invalid, it means
+the MSR index was invalid.
+
+It'll take a few patches, but I believe we can end up with something like this:
+
+static bool kvm_is_msr_to_save(u32 msr_index)
+{
+	unsigned int i;
+
+	for (i = 0; i < num_msrs_to_save; i++) {
+		if (msrs_to_save[i] == msr_index)
+			return true;
+	}
+
+	return false;
+}
+typedef int (*msr_uaccess_t)(struct kvm_vcpu *vcpu, u32 index, u64 *data,
+			     bool host_initiated);
+
+static __always_inline int kvm_do_msr_uaccess(struct kvm_vcpu *vcpu, u32 msr,
+					      u64 *data, bool host_initiated,
+					      enum kvm_msr_access rw,
+					      msr_uaccess_t msr_uaccess_fn)
+{
+	const char *op = rw == MSR_TYPE_W ? "wrmsr" : "rdmsr";
+	int ret;
+
+	BUILD_BUG_ON(rw != MSR_TYPE_R && rw != MSR_TYPE_W);
+
+	/*
+	 * Zero the data on read failures to avoid leaking stack data to the
+	 * guest and/or userspace, e.g. if the failure is ignored below.
+	 */
+	ret = msr_uaccess_fn(vcpu, msr, data, host_initiated);
+	if (ret && rw == MSR_TYPE_R)
+		*data = 0;
+
+	if (ret != KVM_MSR_RET_UNSUPPORTED)
+		return ret;
+
+	/*
+	 * Userspace is allowed to read MSRs, and write '0' to MSRs, that KVM
+	 * reports as to-be-saved, even if an MSRs isn't fully supported.
+	 * Simply check that @data is '0', which covers both the write '0' case
+	 * and all reads (in which case @data is zeroed on failure; see above).
+	 */
+	if (kvm_is_msr_to_save(msr) && !*data)
+		return 0;
+
+	if (!ignore_msrs) {
+		kvm_debug_ratelimited("unhandled %s: 0x%x data 0x%llx\n",
+				      op, msr, *data);
+		return ret;
+	}
+
+	if (report_ignored_msrs)
+		kvm_pr_unimpl("ignored %s: 0x%x data 0x%llx\n", op, msr, *data);
+	
+	return 0;
+}
 
