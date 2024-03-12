@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-100875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28C3E879E81
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:25:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C17AC879E83
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A2651C2228D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:25:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62A38B21B4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C70B145649;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DEA143C67;
 	Tue, 12 Mar 2024 22:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QK/g5/sJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="saNU53oq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75862144026;
-	Tue, 12 Mar 2024 22:24:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12008145640;
+	Tue, 12 Mar 2024 22:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710282250; cv=none; b=h0IZEqlNIMlitTDLzGw5pG4H7VNq1CLNvmoZimPZoU5bHLTi8GixHsRJWkLT9ii4HhONIBsu1KRwMV4mxaG5aiQJ/SqfFI4MLzvCTHwF11yC95zL5ngfWKOPxb+Xkxwo7daNfn/qMTE9Qjt5rY6Ej8Jwu3/US5VxcH5WZL/kks8=
+	t=1710282251; cv=none; b=WzjoXMDWbHBhO9stjuqi9PIaWdGpDauIVw15IPn/DkACcWWlEKv6ADprjyQSMnFrmR0uQYdfffjyXewMLEUI5tvql7xLD1udnCq1MG1O8PCj4JnOvcDe/Qz3QwplpXjOjVTCa057NoxchYiCuDqRqdskNSjIxhVejp1E3IKhHvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710282250; c=relaxed/simple;
-	bh=LosuX9ZhvMA1WGl8nF/mPMs/U1juaFButJhICfa/CTw=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=cvKiV3Dm2lMPEyKJFOLzgg+Fa8AHiNKG3vtlmjdFNb8XIMiaLboS+IwSjBWeL9rOF/XzjjuDlWQvppyEJgaypORckJBDmKODV5DqM2/QcRHiVzcUB+HMDQqAJFpz7SLHcv4mGEcdB2cBBBfV/wL6+x+vUV6wxSucibjwb+Djt6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QK/g5/sJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 56B81C43330;
+	s=arc-20240116; t=1710282251; c=relaxed/simple;
+	bh=E75ilwNyLGs+r2wlyk0MuwQmqnnnjaKiCLqhxQHtjzc=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Qrl+2yLHsFyWZSxLEtLJF/R/PjA8wEfIem7UwaZsyqy0H/4YA3epv4drwplwi58usWZ4we6edSMTZpJFiLBXnhGtjDgLrXl8BrKi9kj+D4lGeqtKJfP3YayW1wbkp9xpwEx3pjp3IdVFYbp+PFrOCpwuotgaQBzegU0okpuL2EY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=saNU53oq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DB086C43394;
 	Tue, 12 Mar 2024 22:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710282250;
-	bh=LosuX9ZhvMA1WGl8nF/mPMs/U1juaFButJhICfa/CTw=;
+	bh=E75ilwNyLGs+r2wlyk0MuwQmqnnnjaKiCLqhxQHtjzc=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=QK/g5/sJ3S7n1ts/rLgNE0CyO8CK2zcoeyXww5hktI+U+PH5C6Q03b+jmXT73kliW
-	 S3H0FBQPaA8ct3aLct+9jUnuq2rPkw96OEUcyWMMtf1KJFmqbtuuC1TgOUEQ6kNydx
-	 wjOySWs3TSx0reuFjBqh9t/JliPJAoMIEYlS4PYxDKA7G4nIIqnPAfdFwNChCUgGJi
-	 VHXWJGz0vVvhf5kMUJz2mfHnfKv08h0d7rySj5C3XzCfSlpte2wtdZJoNbzGv8KMqm
-	 mLbND4sBZkQ3jmailPS7f1p1JZwhEW7F8wRpBYTFc2L4gLTXQySUt0ATOM/EpzwI3p
-	 gYuXC364JVVBQ==
+	b=saNU53oq//X0FIn/OaibsQtHuXy8DD2+TYHMx/2Q1axGXtoN71rzfoX/ulsPVHdFd
+	 hHfgt+BbbEzWA9ntFXklUIXbYhopdtXVMl9hbY/WYtyntd1EZW216gpj6itfHXRyni
+	 hOPxs5diyzZmlDQ9KDP4QZA342azL7qGycHRI/Mpj8oKOTtiqGb1MRVeKIc7lv9y77
+	 SmQeMME8VvMZq36GucIkTzULMqWgScIdn2O+HaLXOFE5S4oPmMoiF57CeVzaXzkOaP
+	 l9tyL0qfE+5gV7+OtHKI3J8ij06OHZD35PBiFTT0u5tpgWGkFKd/U92QoeXZv0BVSf
+	 cvRTpRwLQDj+w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3F4ADD95057;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C8AD2D95057;
 	Tue, 12 Mar 2024 22:24:10 +0000 (UTC)
-Subject: Re: [GIT PULL] fscrypt updates for 6.9
+Subject: Re: [GIT PULL] Smack patches for 6.9
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240312041729.GH1182@sol.localdomain>
-References: <20240312041729.GH1182@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240312041729.GH1182@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 8c62f31eddb71c6f6878258579318c1156045247
+In-Reply-To: <5f321246-e0ba-4882-a42d-fe174d593aaf@schaufler-ca.com>
+References: <5f321246-e0ba-4882-a42d-fe174d593aaf.ref@schaufler-ca.com> <5f321246-e0ba-4882-a42d-fe174d593aaf@schaufler-ca.com>
+X-PR-Tracked-List-Id: <linux-security-module.vger.kernel.org>
+X-PR-Tracked-Message-Id: <5f321246-e0ba-4882-a42d-fe174d593aaf@schaufler-ca.com>
+X-PR-Tracked-Remote: https://github.com/cschaufler/smack-next tags/Smack-for-6.9
+X-PR-Tracked-Commit-Id: 69b6d71052b54fb10feba68564ccb41c0f0ce1e9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3bf95d567d67f8d78d7d2c8553025eaa02e1d9c5
-Message-Id: <171028225025.16151.14766188702593707563.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 681ba318a635787031537b3a7df5c12980835cb1
+Message-Id: <171028225081.16151.11795532763523191273.pr-tracker-bot@kernel.org>
 Date: Tue, 12 Mar 2024 22:24:10 +0000
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Luis Henriques <lhenriques@suse.de>, Xiubo Li <xiubli@redhat.com>
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, LSM List <linux-security-module@vger.kernel.org>, Linux kernel mailing list <linux-kernel@vger.kernel.org>, Casey Schaufler <casey@schaufler-ca.com>, roberto Sassu <roberto.sassu@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Mon, 11 Mar 2024 21:17:29 -0700:
+The pull request you sent on Mon, 11 Mar 2024 13:47:16 -0700:
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/linux.git tags/fscrypt-for-linus
+> https://github.com/cschaufler/smack-next tags/Smack-for-6.9
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3bf95d567d67f8d78d7d2c8553025eaa02e1d9c5
+https://git.kernel.org/torvalds/c/681ba318a635787031537b3a7df5c12980835cb1
 
 Thank you!
 
