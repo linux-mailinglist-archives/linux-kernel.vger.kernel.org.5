@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-100671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D23879B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:38:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699C7879B83
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:37:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9663E1F23ACD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:38:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FDB7285A0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:37:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8071420B6;
-	Tue, 12 Mar 2024 18:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DDD5142621;
+	Tue, 12 Mar 2024 18:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ErHwd3p9"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AbnEu5SC"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EA21419B3;
-	Tue, 12 Mar 2024 18:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3379141988;
+	Tue, 12 Mar 2024 18:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710268663; cv=none; b=KCvuaip31nLOdnFu/IwG8vWAQ9zPutFj1VYGbLThRjsU6K2LsyavEemcTq/YiQ4OclerieeBowP1ZlMjV3e1mTQze7KonVWGE0GvooVjBqArUWCQf/xcHo+hwEW1B8I+5kMq39Ii59OOsX25Sro5NLSyKQ/6zv5k6BD/d1mUkFo=
+	t=1710268661; cv=none; b=CvtQ3ni+5FOwtFGLyDxOgywul954j+ERIMwzx92DOgDwALbIX7VxCzQwnWDBEFvS/iIMY9WRmsgN6MadpMWAPYbr3v4HhwOPVDnUGzYfmjEPLBCHa2NSgo8bvX+/nC8h9QFN9CNefuIqydg66yj81WIADX3KRxAFQePUPzguSfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710268663; c=relaxed/simple;
-	bh=MWiPyM6i+gtXTmPfm9f+kijF7oAxyV6qrb6d9eCuXeA=;
+	s=arc-20240116; t=1710268661; c=relaxed/simple;
+	bh=g6MhNKVNd2sXORCesMKXDsVztERU/zlCVXqxRZ2CUVA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bdWxx3RPVUAnsZMx8QsJgbJjU7T/8jLKnEtgmgWkKO38TlAXy73UVatTVV1uBqTtxKV/HunpgRf5Uo+Z/EKb9RWtUHqh9K4FrT1Bb3JJlsb/HtlcXh/TQevTpaTED+hXXhwYXaSGN/WqAgSDg6Ty2/RObxKI0b4zFiPQf5QH0+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com; spf=none smtp.mailfrom=linux.vnet.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ErHwd3p9; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=agCJ1gURRubUoPs6Vk/ixpL3wNWoS+atgkfUtXTV/JFt/AySx2D73JCEQ5mSbWZkyOyH0ifL2WUw7HSQ+Eax5LmdQLGYdK0g4iO9KG97mKG2Y+BG8n5FaGJETUFJUAYE9ieIoniEkVCvNWbGo01BGAWrCIsHQAXEhEYCO1G/l+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com; spf=none smtp.mailfrom=linux.vnet.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AbnEu5SC; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42CI8TJT009151;
-	Tue, 12 Mar 2024 18:36:27 GMT
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42CIWTJQ012215;
+	Tue, 12 Mar 2024 18:36:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=YNr/nNCEfoEF2XqpozXhzF0uXlGxdVfCag7delkQ4sQ=;
- b=ErHwd3p9NPiqEd3dPTxiJPYjoJArs0+0CgcbpVwyX6bMkbW1sj9INNJnmxtUxxFQ+vVf
- ksdV5RguSGXPFLjCI3LYsFKtwOc/Fj8X/vWw3DCnJ9jbo8xGLcskxAXPbIv/fMdqzDjF
- EoIbTBm/P7ONnh/8F9ZbLJymIBR4/+OO9iEDeEiUJrjOMSQylWXbzgKHoBUB12On39fo
- VhD8PZjNhFf/L8eUVKmyxLuJsYdgSr5+RPZiypPWILooHELAqYp6uqcr6nMBYC1Uknj0
- Dqo/t4lDJenq63rtC15RbL2Gfv4SisWkVn/jYZXsL+6mBj49yELkyACRv10yvwc9tsJ0 NA== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtv2a8csa-1
+ bh=Z9rsgPyclqEJ8S5g9WAxh75Oeb6VzjDjKOTMGoqYnio=;
+ b=AbnEu5SCf74j/3MZVU4U5l0SgZ0D/hXi7PACI89Dknlzs4gXueqK+ajij9TsolStRTZN
+ 2JTviy25yU+XIcivOC5UCQjteP+tRgPKbH87qI6e3RY+koY+Or+1raZsn5g9aSrp6DnU
+ oEm1MoBeT5kVIPiivuotBwi8O3mQuZHjKdH3UPdTY02b8JOYcuYYPRqMqhD2bQ3P+uqn
+ OFNgCuLXwB1tTJKGYcGG+FfKK0gmPuhHnSd8cqLiKEIkGeJqz8+t68A8tTals8hRKUMo
+ mEZzeItcfYW/Vfjy97MQVajBoXKxttVbFxmJWiJS4MlUCbxyaot4u8+/4ukp5aP7FR4g Yw== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtvdrg2bj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 18:36:27 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42CI87ug014861;
+	Tue, 12 Mar 2024 18:36:26 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws33nrv8m-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 12 Mar 2024 18:36:26 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42CIa6On020446;
-	Tue, 12 Mar 2024 18:36:26 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws3km0rdm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 18:36:25 +0000
 Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42CIaMk417564152
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42CIaOsA45809980
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 12 Mar 2024 18:36:25 GMT
+	Tue, 12 Mar 2024 18:36:26 GMT
 Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D6E7058054;
-	Tue, 12 Mar 2024 18:36:22 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 02BE058067;
+	Tue, 12 Mar 2024 18:36:24 +0000 (GMT)
 Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E76435804E;
-	Tue, 12 Mar 2024 18:36:21 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 099EA58062;
+	Tue, 12 Mar 2024 18:36:23 +0000 (GMT)
 Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
 	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 12 Mar 2024 18:36:21 +0000 (GMT)
+	Tue, 12 Mar 2024 18:36:22 +0000 (GMT)
 From: Stefan Berger <stefanb@linux.vnet.ibm.com>
 To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
         herbert@gondor.apana.org.au, davem@davemloft.net
 Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
         bbhushan2@marvell.com, jarkko@kernel.org,
         Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v6 02/13] crypto: ecdsa - Convert byte arrays with key coordinates to digits
-Date: Tue, 12 Mar 2024 14:36:07 -0400
-Message-ID: <20240312183618.1211745-3-stefanb@linux.vnet.ibm.com>
+Subject: [PATCH v6 03/13] crypto: ecdsa - Adjust tests on length of key parameters
+Date: Tue, 12 Mar 2024 14:36:08 -0400
+Message-ID: <20240312183618.1211745-4-stefanb@linux.vnet.ibm.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
 References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
@@ -86,105 +86,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: RWbt9vErJDIt7YCcl0jRED_nUBcrFSII
-X-Proofpoint-GUID: RWbt9vErJDIt7YCcl0jRED_nUBcrFSII
+X-Proofpoint-GUID: tE65JsOMOemlUflzJl1VP2Pg3vE1ekJy
+X-Proofpoint-ORIG-GUID: tE65JsOMOemlUflzJl1VP2Pg3vE1ekJy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-12_11,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 spamscore=0 impostorscore=0 clxscore=1015 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403120139
+ definitions=2024-03-12_12,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 priorityscore=1501 suspectscore=0
+ adultscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403120141
 
 From: Stefan Berger <stefanb@linux.ibm.com>
 
-For NIST P192/256/384 the public key's x and y parameters could be copied
-directly from a given array since both parameters filled 'ndigits' of
-digits (a 'digit' is a u64). For support of NIST P521 the key parameters
-need to have leading zeros prepended to the most significant digit since
-only 2 bytes of the most significant digit are provided.
+In preparation for support of NIST P521, adjust the basic tests on the
+length of the provided key parameters to only ensure that the length of the
+x plus y coordinates parameter array is not an odd number and that each
+coordinate fits into an array of 'ndigits' digits. Mathematical tests on
+the key's parameters are then done in ecc_is_pubkey_valid_full rejecting
+invalid keys.
 
-Therefore, implement ecc_digits_from_bytes to convert a byte array into an
-array of digits and use this function in ecdsa_set_pub_key where an input
-byte array needs to be converted into digits.
+The change is necessary since NIST P521 keys do not have keys with
+coordinates that each fully require 'full' digits (= u64), unlike
+NIST P192/256/384 that all require multiple 'full' digits.
 
-Suggested-by: Lukas Wunner <lukas@wunner.de>
 Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 Tested-by: Lukas Wunner <lukas@wunner.de>
 ---
- crypto/ecdsa.c                | 14 +++++++++-----
- include/crypto/internal/ecc.h | 21 +++++++++++++++++++++
- 2 files changed, 30 insertions(+), 5 deletions(-)
+ crypto/ecdsa.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
-index fbd76498aba8..6653dec17327 100644
+index 6653dec17327..64e1e69d53ba 100644
 --- a/crypto/ecdsa.c
 +++ b/crypto/ecdsa.c
-@@ -222,9 +222,8 @@ static int ecdsa_ecc_ctx_reset(struct ecc_ctx *ctx)
- static int ecdsa_set_pub_key(struct crypto_akcipher *tfm, const void *key, unsigned int keylen)
- {
- 	struct ecc_ctx *ctx = akcipher_tfm_ctx(tfm);
-+	unsigned int digitlen, ndigits;
- 	const unsigned char *d = key;
--	const u64 *digits = (const u64 *)&d[1];
--	unsigned int ndigits;
- 	int ret;
+@@ -230,7 +230,7 @@ static int ecdsa_set_pub_key(struct crypto_akcipher *tfm, const void *key, unsig
+ 	if (ret < 0)
+ 		return ret;
  
- 	ret = ecdsa_ecc_ctx_reset(ctx);
-@@ -238,12 +237,17 @@ static int ecdsa_set_pub_key(struct crypto_akcipher *tfm, const void *key, unsig
+-	if (keylen < 1 || (((keylen - 1) >> 1) % sizeof(u64)) != 0)
++	if (keylen < 1 || ((keylen - 1) & 1) != 0)
  		return -EINVAL;
- 
- 	keylen--;
--	ndigits = (keylen >> 1) / sizeof(u64);
-+	digitlen = keylen >> 1;
-+
-+	ndigits = DIV_ROUND_UP(digitlen, sizeof(u64));
- 	if (ndigits != ctx->curve->g.ndigits)
- 		return -EINVAL;
- 
--	ecc_swap_digits(digits, ctx->pub_key.x, ndigits);
--	ecc_swap_digits(&digits[ndigits], ctx->pub_key.y, ndigits);
-+	d++;
-+
-+	ecc_digits_from_bytes(d, digitlen, ctx->pub_key.x, ndigits);
-+	ecc_digits_from_bytes(&d[digitlen], digitlen, ctx->pub_key.y, ndigits);
-+
- 	ret = ecc_is_pubkey_valid_full(ctx->curve, &ctx->pub_key);
- 
- 	ctx->pub_key_set = ret == 0;
-diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.h
-index 4f6c1a68882f..ab722a8986b7 100644
---- a/include/crypto/internal/ecc.h
-+++ b/include/crypto/internal/ecc.h
-@@ -56,6 +56,27 @@ static inline void ecc_swap_digits(const void *in, u64 *out, unsigned int ndigit
- 		out[i] = get_unaligned_be64(&src[ndigits - 1 - i]);
- }
- 
-+/**
-+ * ecc_digits_from_bytes() - Create ndigits-sized digits array from byte array
-+ * @in:       Input byte array
-+ * @nbytes    Size of input byte array
-+ * @out       Output digits array
-+ * @ndigits:  Number of digits to create from byte array
-+ */
-+static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
-+					 u64 *out, unsigned int ndigits)
-+{
-+	unsigned int o = nbytes & 7;
-+	__be64 msd = 0;
-+
-+	if (o) {
-+		memcpy((u8 *)&msd + sizeof(msd) - o, in, o);
-+		out[--ndigits] = be64_to_cpu(msd);
-+		in += o;
-+	}
-+	ecc_swap_digits(in, out, ndigits);
-+}
-+
- /**
-  * ecc_is_key_valid() - Validate a given ECDH private key
-  *
+ 	/* we only accept uncompressed format indicated by '4' */
+ 	if (d[0] != 4)
 -- 
 2.43.0
 
