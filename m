@@ -1,150 +1,117 @@
-Return-Path: <linux-kernel+bounces-100507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BF228798DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:22:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F157A8798E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:24:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 388C41F218CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:22:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08218B22A24
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC46E7D41F;
-	Tue, 12 Mar 2024 16:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B157E119;
+	Tue, 12 Mar 2024 16:24:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OW4iOzSu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NVjxajyq"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DFA7CF29;
-	Tue, 12 Mar 2024 16:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C38F7E114
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710260561; cv=none; b=eiwxrV9/yNVlS7VbIjghlDBHzI4tCHSMDqso6r9V5LB+yPij/EH8nF7/Rdz/5/k0p2PPuwsLUE9Cru5BfU085cWlBY90GQiydICaN60+9yhzIndPCAkp9agiGvOr4vXclBtV01yHvnyRl+3ya+TceBieJvlU8PByTpptLlWllgc=
+	t=1710260668; cv=none; b=TQAiY3a+LghdxBtgkoqxQWoxim0SyAOdVFFrxREQtvmwBHpggOpcTyMJxoFIKBtyl9NYvpnY8bpL5JWNZym6/tZUG+2q/kl4Wk5jw5PF6aKit9kZStVHgIbjsRF5QChJ3dHbjrwtJdkt/MiJo7+jTdjBWr7M2Dy/UmwHQh6eB3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710260561; c=relaxed/simple;
-	bh=Ipf9zvhfvGw0qCLSPFs+Ov5pJgxtwIC4HDz+MvRXcl4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TIPiE18UNR9zTzV2zfWi0o6vUba0qTyfiqgqZC4akdjwKI1XmjPaYosvQzu0UtHlsf63qbuuOVDBMrU/v4GMbO9QnibSxcQoomojJg4Sw2f4XKjR5UMjk+dTiutOp2LzeVsR4+lRxUyUAf+uwDnhD5u8r5XpDyDlmcBehpNuaQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OW4iOzSu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97175C433F1;
-	Tue, 12 Mar 2024 16:22:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710260560;
-	bh=Ipf9zvhfvGw0qCLSPFs+Ov5pJgxtwIC4HDz+MvRXcl4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OW4iOzSuv4zzNFrLCz3VFKXt6F0ivI5jn4vCa1mqs2H6hgz2795jLI6HYxlb64Fwp
-	 nkbwtAtOuyivEwR1x8+/ZzmhqijkPRkUFUQeov6NPZy1axHDC8QpnbQEBsvpq95PWD
-	 beuftpHwgPAQ+PXkbHtiPZcRr5HxAhqF8xwJzJEEENED2oo+oooatgb8CrRr6+Njnu
-	 luU0iIyj6rtK/80WTEqIicYC4BdtDnpsGaySgtRRRVtawTW0siGOAEnBGEWCwlxMjX
-	 lFaFzgKirwKjAKcR46cYWc7zxjB6hRfIseNIVtwtdVDBNdZ3GzCS7VnrBea0SZU9zL
-	 C9OvBJqVWR7wA==
-Date: Tue, 12 Mar 2024 10:22:38 -0600
-From: Rob Herring <robh@kernel.org>
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	jarkko@kernel.org, rnsastry@linux.ibm.com, peterhuewe@gmx.de,
-	viparash@in.ibm.com
-Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
- with linux,sml-log
-Message-ID: <20240312162238.GA2308643-robh@kernel.org>
-References: <20240306155511.974517-1-stefanb@linux.ibm.com>
- <20240306155511.974517-2-stefanb@linux.ibm.com>
- <87jzmenx2c.fsf@mail.lhotse>
- <20240307215214.GB3110385-robh@kernel.org>
- <851536a5-ad8f-4d65-8c33-707e2fe762df@linux.ibm.com>
- <20240308205751.GA1249866-robh@kernel.org>
- <87a5n34u5p.fsf@mail.lhotse>
+	s=arc-20240116; t=1710260668; c=relaxed/simple;
+	bh=IMTi1mmB21fOGrwdrG1aJWx8CERlzTfordyN6vtcN1Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M+6yEag1j3h8TejTQF+T0rfsW3Gj0+UMawAYEdhY81dkyHMM5nrvUWXrQ9rAwGlW8+tZoaeuJoFzSu/eaeQoiOgfEhUcFH3Y9/cAS287+D5x7lyH0rBpgHWvEB/d6neXqbRf7h+SnD60zK2Txdl3u1m1Z8nQM7PRQ7QXySZ8bxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NVjxajyq; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a44665605f3so809162166b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 09:24:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710260665; x=1710865465; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IMTi1mmB21fOGrwdrG1aJWx8CERlzTfordyN6vtcN1Y=;
+        b=NVjxajyq0h8aMkzHz+E3bPuW7+4RbsM5QXfuFNWsVKI6DhcjBDEalBpI46Ixhj8iqo
+         Xc+oRGqtJOttbDzpzaRtfKRW/A52aK6aMIZV+eLm8qFwZDBTarAPq4w2Y4wM7+Ftt0au
+         duwIdY2RzhEaAq5tPWFOgKt0HmflkIg2zcdTKU0lej9P5ZLgQ6g4KG/Ou3TqALEYA+rp
+         wzSzNRk2K+wy1d+fTBFe+iBc1aruAJCUlmsvyT1AnSFpWCPYeaUhfnOh3CSajiczxpzz
+         5LkWuE8jz3H6pCkiDsyD7ilVc88W8QUc1oY2PRvVBrHwDgqKpj5M9UamsgicCceIs913
+         ILOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710260665; x=1710865465;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IMTi1mmB21fOGrwdrG1aJWx8CERlzTfordyN6vtcN1Y=;
+        b=EeVwsDrkY6QLx1xSn6vYcgP9VugQ/DLFwx3CRi06CjYc5INim8LYTLebDXNvKuFaZi
+         CaUy5PPshv9u1JvbJH3/NsHJECgIrwKn7hEhY8s3dM47Dma0enLESJu4LnLVo+fPAtyC
+         mcncMSOy/Ym5HLnzNz1bIRAKrP/w5Oe9gmoBQo0AgKSLVFNLmd/BcmSnBwtgl5pKoPFE
+         RHIGoTIHu6WF4NdFO8kcIUTxnYJDmMR4CfCF8Cu1qdci7pS9q73w8vX2/2Bse74I9mG6
+         UCkEJ2BPZcOOgS/X0rkcJtucOgyzIdQOkTfp3WTLQbdzBgLbkVDdYwL5WH31AlP59saJ
+         O+Yw==
+X-Forwarded-Encrypted: i=1; AJvYcCUj9d4TkFG9J1WF535cCXIsYjIKA1kndwLRYqIsnRVFBbQFX9qWkSlv2MH3mHF6TT+9Gt5q/S7JVx7W2ph302Fc283dP7Xw0SIJQpPg
+X-Gm-Message-State: AOJu0YwM30/X0ttqC4uuWbcRZqLVn0Aosa6S3dJI/+2CjP7QrK7Gv0MA
+	1h1vnZDojAK5uObrFVmhdtmyOg+MEGCuXTKQvZvwfZtKaMG8tASAgAeIOLEa4QYnKAgqnUInvYL
+	CfeW0gVERZfn2ZwFc5twE5xl8znMsjeBWdvCl
+X-Google-Smtp-Source: AGHT+IFslqmmUssGyflGn1EGvqy/X6vDu2aiTHkYqqbD1uKW93yCxokoKZ+bIq5yFMGyKXdhGCAS8UiLrLdKB9/dtjM=
+X-Received: by 2002:a17:906:19c5:b0:a46:2c22:7f4c with SMTP id
+ h5-20020a17090619c500b00a462c227f4cmr3631747ejd.35.1710260664523; Tue, 12 Mar
+ 2024 09:24:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a5n34u5p.fsf@mail.lhotse>
+References: <20240312155641.4003683-1-yosryahmed@google.com>
+ <d24c8736-d963-4aa5-a3cb-5cc1110e3ca8@intel.com> <CAJD7tkYXfFiOQMpM+GkR7a=aUxFM-smDc-ZFTTtFu2Kbd2KoPQ@mail.gmail.com>
+ <20240312161337.GFZfB_MdSFtAUXjeLU@fat_crate.local>
+In-Reply-To: <20240312161337.GFZfB_MdSFtAUXjeLU@fat_crate.local>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 12 Mar 2024 09:23:48 -0700
+Message-ID: <CAJD7tkYa_NuX2_PD1sEn6kE6Q0Z0VCyq2T2HK_Qdj-_94+OG_w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] x86/mm: Use IPIs to synchronize LAM enablement
+To: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@intel.com>, x86@kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Steven Rostedt <rostedt@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 09:32:50PM +1100, Michael Ellerman wrote:
-> Rob Herring <robh@kernel.org> writes:
-> > On Fri, Mar 08, 2024 at 07:23:35AM -0500, Stefan Berger wrote:
-> >> On 3/7/24 16:52, Rob Herring wrote:
-> >> > On Thu, Mar 07, 2024 at 09:41:31PM +1100, Michael Ellerman wrote:
-> >> > > Stefan Berger <stefanb@linux.ibm.com> writes:
-> >> > > > linux,sml-base holds the address of a buffer with the TPM log. This
-> >> > > > buffer may become invalid after a kexec and therefore embed the whole TPM
-> >> > > > log in linux,sml-log. This helps to protect the log since it is properly
-> >> > > > carried across a kexec with both of the kexec syscalls.
-> >> > > > 
-> >> > > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> >> > > > ---
-> >> > > >   arch/powerpc/kernel/prom_init.c | 8 ++------
-> >> > > >   1 file changed, 2 insertions(+), 6 deletions(-)
-> >> > > > 
-> >> 
-> >> > 
-> >> > 
-> >> > > Also adding the new linux,sml-log property should be accompanied by a
-> >> > > change to the device tree binding.
-> >> > > 
-> >> > > The syntax is not very obvious to me, but possibly something like?
-> >> > > 
-> >> > > diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> >> > > index 50a3fd31241c..cd75037948bc 100644
-> >> > > --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> >> > > +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> >> > > @@ -74,8 +74,6 @@ required:
-> >> > >     - ibm,my-dma-window
-> >> > >     - ibm,my-drc-index
-> >> > >     - ibm,loc-code
-> >> > > -  - linux,sml-base
-> >> > > -  - linux,sml-size
-> >> > 
-> >> > Dropping required properties is an ABI break. If you drop them, an older
-> >> > OS version won't work.
-> >> 
-> >> 1) On PowerVM and KVM on Power these two properties were added in the Linux
-> >> code. I replaced the creation of these properties with creation of
-> >> linux,sml-log (1/2 in this series). I also replaced the handling of
-> >> these two (2/2 in this series) for these two platforms but leaving it for
-> >> powernv systems where the firmware creates these.
-> >
-> > Okay, I guess your case is not a ABI break if the kernel is populating 
-> > it and the same kernel consumes it. 
-> >
-> > You failed to answer my question on using /reserved-memory. Again, why 
-> > can't that be used? That is the standard way we prevent chunks of memory 
-> > from being clobbered.
-> 
-> Yes I think that would mostly work. I don't see support for
-> /reserved-memory in kexec-tools, so that would need fixing I think.
-> 
-> My logic was that the memory is not special. It's just a buffer we
-> allocated during early boot to store the log. There isn't anything else
-> in the system that relies on that memory remaining untouched. So it
-> seemed cleaner to just put the log in the device tree, rather than a
-> pointer to it.
+On Tue, Mar 12, 2024 at 9:14=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrot=
+e:
+>
+> On Tue, Mar 12, 2024 at 09:09:30AM -0700, Yosry Ahmed wrote:
+> > My bad, I lost track of when I sent v1 and saw Kirill's comment when I
+> > woke up so I addressed that. FWIW, v1 and v2 are almost identical
+> > except for a small change in patch 2 to address Kirill's comment. I
+> > will hold off on sending anything else this week.
+>
+> and while you do, you can have a look at
+>
+> https://kernel.org/doc/html/latest/process/development-process.html
 
-My issue is we already have 2 ways to describe the log to the OS. I 
-don't see a good reason to add a 3rd way. (Though it might actually be a 
-4th way, because the chosen property for the last attempt was accepted 
-to dtschema yet the code has been abandoned.)
+Sure, although I am kinda familiar with that. It would be useful to
+point out what part(s) I may be violating :)
 
-If you put the log into the DT, then the memory for the log remains 
-untouched too because the FDT remains untouched. For reserved-memory 
-regions, the OS is free to free them if it knows what the region is and 
-that it is no longer needed. IOW, if freeing the log memory is desired, 
-then the suggested approach doesn't work.
+>
+> And we're in a merge window now so no queueing of new patches for
+> 2 weeks unless they're regressions.
 
-> 
-> Having the log external to the device tree creates several problems,
-> like the crash kernel region colliding with it, it being clobbered by
-> kexec, etc.
-
-We have multiple regions to pass/maintain thru kexec, so how does having 
-one less really matter?
-
-Rob
+Right, I am aware of that part. According to the tip tree handbook I
+shouldn't expect them to be handled during the merge window, but do
+x86 folks prefer I hold off on sending them until after the merge
+window?
 
