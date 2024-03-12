@@ -1,291 +1,344 @@
-Return-Path: <linux-kernel+bounces-99830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43FC1878E04
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D942878E06
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:55:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ECAD1C21346
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:55:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B5C71C21517
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10612E63C;
-	Tue, 12 Mar 2024 04:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D04D26D;
+	Tue, 12 Mar 2024 04:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zVM2Y4ik"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B5n6mRNI"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57DD405F9
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:55:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5162EC154
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710219311; cv=none; b=VClpPyS6AETkKL72xiUdYL41eTqOtJOJ6b3kTwszSbPAjqzJCQLbmW3r17DsAGA6WLPoa32apy6jPhcF7NbIyfGKexamg63c2eVU719fpIdPLw/knonv2vmsIVz+YxOGTICTTk+8JOFdOIJP6rmx+egqlmjJzzemGVjH6Dhekew=
+	t=1710219330; cv=none; b=JSQT3xTLso1MnMky3pYGGLzgAWj3gz/0+GrC1UfmWi88KCsD+roBXlkxIyQI022Wr2Vnp4vJiCXIVj49KDgNvlg639B1K7n4VUHAtA4zE0WCj1m/bsVwaljpslHKXfMNZnddVmJMmAhMruWW1cWFn4RA9bQkB9sBZaW9Q+3qgDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710219311; c=relaxed/simple;
-	bh=WT2kHrwFOlgFCcyoURWL8NsjaB46TTG8xGKjx6wbiUI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qfBC3EEtIZeED3xHOXdu70fQYq0LxVtPY9kWL/aXis0FsROT1kA4+gYHdlwrv7HxT022HdKYRHMdKSbODtWwt46y19b0T16Im55xrKuZRgnSJozscyU9IvOwX845ETRVuqh8NHHQOWUTi5OUfEM1h1Iw7d1Wa7w9MC0Z2HY2pkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zVM2Y4ik; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-568251882d7so10155a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710219308; x=1710824108; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=S0m5oOSj4FBgXlE2LRzVfSxEHnrAFG0VoJq/PrYg5kw=;
-        b=zVM2Y4ikpWSvfoSe2h683ZyzJsb24JxdJvXvgfhDz4iCd/aAV3ijRAp3ENzgKrrkvk
-         qXXtljB+10ctzRANQqlUfoLMrpVemvMNfBKFO5GEdGtTlU8xyOAPlWWgV8csGD9eYpks
-         ekn+MD67j6IE6ADCTBB2xwM75RkmjM+qPUt5HGNBLmI1mjEZrxXY32pRDph16aMKApjd
-         4OHFa4PMiS2emFykuP/f4OOEJH3y3Ifljrl4980C2dyAXwoUR1IT12C4UDfpQo9Wqv9U
-         ugX7/rqLOZIEAT9zaYrluN+aOgWtyDz2dF0FW5+Z7w5FClYZeJP/H8uj9n835ZF7YDXo
-         j/vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710219308; x=1710824108;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S0m5oOSj4FBgXlE2LRzVfSxEHnrAFG0VoJq/PrYg5kw=;
-        b=I91dSdfc4lfoVGXYJtZxeeQYrac7T2P+ekjfTxitLv+hJHZN/FJoM9AQWmso8McNAk
-         tAOGjUxBlMQ0TaBwzTRO30dB48QyOZuVS/xAyj778mnKb2z2lTdQOUlIBip1ImEVFWNq
-         EFy3lHHt1ouTnkH3thCvmKgu6Rj6aNC+0+LzZQ19rKDGcKZa48k14Fq6lCNTgRzcBzUo
-         DmzIOwwbx2UFaDzGlk5dEm5gSKTegG/jj0G2XsAKvDjeUn+3v03H94ZdT1VZIWFnoYA2
-         Qap1NsUnTxQpkFulO96aSYDe0cimFPX8IeP9AqgXBpg1PsExp21BlPvyAxPAzUfbInLb
-         DYZg==
-X-Forwarded-Encrypted: i=1; AJvYcCVjwxysmiXS3yBeE144ZJdsRV9mHeQDaZHcCYkarOJrgE+4MUVjkwlaN/uYHyBYvt3Zar2ArfbiNIakWwWn2tta2p/hV+ELOTy5BFpw
-X-Gm-Message-State: AOJu0Yxs9aMJXK1QyMH1bghAoHaZ7kaWs5abhUsxdC5yU/DE3UCXrEs4
-	ZbiVQeeX0W8V4aZ894wlfDElSj5WrkTlCFrEl6RatA0ZJW9gqnRC8C555gX4N/I3dEHO0ad5UPR
-	uCFfc3zjbRWfMMD8ZKTdeMklK+Ggbddm+EPvG
-X-Google-Smtp-Source: AGHT+IGU5iSaMuUMD3OWkgCq+HPlwyciThiIOt12D5freNFWYAnSma6L8D3ymybDwqVGF32n/LebfHUfkgbXb3HlaVY=
-X-Received: by 2002:aa7:c2d9:0:b0:568:5e6c:a3c4 with SMTP id
- m25-20020aa7c2d9000000b005685e6ca3c4mr109961edp.0.1710219308194; Mon, 11 Mar
- 2024 21:55:08 -0700 (PDT)
+	s=arc-20240116; t=1710219330; c=relaxed/simple;
+	bh=7T9EDboEfa3cyXSLjv1LqU+XKMGW8NC8Gxmaxw6vvHQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FH0JfT7+AqwjBqnAATLjSwWv1Nafax9y7+dXbXhT5GbCGodIotsvTTJai3a6eSVkWvJ4IVPVCFP7exa32Nqa9gMxhYmMLs2z4Ng5VzUcYXiox9T9jHWVOB60D1GooC3sHxMazEUACOV1ZFS4hg5Xz7ItQ47EG1vgAFl7ya8niAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B5n6mRNI; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <92170677-1195-4cbe-8302-85cbc198bf8d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710219325;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9p4UcOMDNuwZRMBAFm2BwtfV89LUzJZLz8qv3j0ea7I=;
+	b=B5n6mRNIWt5qM7j7N/xdgqG/E48bUY1GqDlmWSbZJHCDIR/RI7VuVxUWSaPxVRWJKgvhHv
+	1k3vN3q4UexRQ3QvUE9yK6/S5Gf8dreVt6RttyDw19FYqfGtSDPwxeOEzbgo3xNpnZu2Kn
+	rxEl1axO6ICd4/aedtlLPQeYeEb9H4E=
+Date: Tue, 12 Mar 2024 12:55:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-8-mic@digikod.net>
-In-Reply-To: <20240301194037.532117-8-mic@digikod.net>
-From: David Gow <davidgow@google.com>
-Date: Tue, 12 Mar 2024 12:54:57 +0800
-Message-ID: <CABVgOSmq5JhBdis1rDoD3eYQ_dhaWyEjXNfwasL9sWFMwLpjzA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] kunit: Add tests for fault
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.org>, 
-	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
-	Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-um@lists.infradead.org, x86@kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000005fd63406136f760a"
+Subject: Re: [PATCH 1/2] mm: zswap: optimize zswap pool size tracking
+Content-Language: en-US
+To: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
+ Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240311161214.1145168-1-hannes@cmpxchg.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240311161214.1145168-1-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
---0000000000005fd63406136f760a
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 2024/3/12 00:12, Johannes Weiner wrote:
+> Profiling the munmap() of a zswapped memory region shows 50%(!) of the
+> total cycles currently going into updating the zswap_pool_total_size.
+> 
+> There are three consumers of this counter:
+> - store, to enforce the globally configured pool limit
+> - meminfo & debugfs, to report the size to the user
+> - shrink, to determine the batch size for each cycle
+> 
+> Instead of aggregating everytime an entry enters or exits the zswap
+> pool, aggregate the value from the zpools on-demand:
+> 
+> - Stores aggregate the counter anyway upon success. Aggregating to
+>   check the limit instead is the same amount of work.
+> 
+> - Meminfo & debugfs might benefit somewhat from a pre-aggregated
+>   counter, but aren't exactly hotpaths.
+> 
+> - Shrinking can aggregate once for every cycle instead of doing it for
+>   every freed entry. As the shrinker might work on tens or hundreds of
+>   objects per scan cycle, this is a large reduction in aggregations.
+> 
+> The paths that benefit dramatically are swapin, swapoff, and
+> unmaps. There could be millions of pages being processed until
+> somebody asks for the pool size again. This eliminates the pool size
+> updates from those paths entirely.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-On Sat, 2 Mar 2024 at 03:40, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wro=
-te:
->
-> Add a test case to check NULL pointer dereference and make sure it would
-> result as a failed test.
->
-> The full kunit_fault test suite is marked as skipped when run on UML
-> because it would result to a kernel panic.
->
-> Tested with:
-> ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
-> ./tools/testing/kunit/kunit.py run --arch arm64 \
->   --cross_compile=3Daarch64-linux-gnu- kunit_fault
->
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: David Gow <davidgow@google.com>
-> Cc: Rae Moar <rmoar@google.com>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240301194037.532117-8-mic@digikod.net
+Great! This is a clever simplification and optimization.
+
+With the incremental diff, feel free to add:
+
+Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+
+Thanks.
+
 > ---
->
-> Changes since v1:
-> * Removed the rodata and const test cases for now.
-> * Replace CONFIG_X86 check with !CONFIG_UML, and remove the "_x86"
->   references.
-> ---
-
-I think UML _should_ be able to handle this with signal handlers, but
-I tested it and agree that it's broken, so disabling for now makes
-sense.
-
-In general, I'd prefer to have an empty test which SKIP()s here, but
-since the suite is empty, KUnit does that anyway, so this is fine.
-
-Reviewed-by: David Gow <davidgow@google.com>
-
-Cheers,
--- David
-
-
->  lib/kunit/kunit-test.c | 45 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 44 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-> index f7980ef236a3..0fdca5fffaec 100644
-> --- a/lib/kunit/kunit-test.c
-> +++ b/lib/kunit/kunit-test.c
-> @@ -109,6 +109,48 @@ static struct kunit_suite kunit_try_catch_test_suite=
- =3D {
->         .test_cases =3D kunit_try_catch_test_cases,
+>  fs/proc/meminfo.c     |  3 +-
+>  include/linux/zswap.h |  2 +-
+>  mm/zswap.c            | 98 +++++++++++++++++++++----------------------
+>  3 files changed, 49 insertions(+), 54 deletions(-)
+> 
+> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> index 45af9a989d40..245171d9164b 100644
+> --- a/fs/proc/meminfo.c
+> +++ b/fs/proc/meminfo.c
+> @@ -89,8 +89,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+>  	show_val_kb(m, "SwapTotal:      ", i.totalswap);
+>  	show_val_kb(m, "SwapFree:       ", i.freeswap);
+>  #ifdef CONFIG_ZSWAP
+> -	seq_printf(m,  "Zswap:          %8lu kB\n",
+> -		   (unsigned long)(zswap_pool_total_size >> 10));
+> +	show_val_kb(m, "Zswap:          ", zswap_total_pages());
+>  	seq_printf(m,  "Zswapped:       %8lu kB\n",
+>  		   (unsigned long)atomic_read(&zswap_stored_pages) <<
+>  		   (PAGE_SHIFT - 10));
+> diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+> index 341aea490070..2a85b941db97 100644
+> --- a/include/linux/zswap.h
+> +++ b/include/linux/zswap.h
+> @@ -7,7 +7,6 @@
+>  
+>  struct lruvec;
+>  
+> -extern u64 zswap_pool_total_size;
+>  extern atomic_t zswap_stored_pages;
+>  
+>  #ifdef CONFIG_ZSWAP
+> @@ -27,6 +26,7 @@ struct zswap_lruvec_state {
+>  	atomic_long_t nr_zswap_protected;
 >  };
->
-> +#ifndef CONFIG_UML
-> +
-> +static void kunit_test_null_dereference(void *data)
+>  
+> +unsigned long zswap_total_pages(void);
+>  bool zswap_store(struct folio *folio);
+>  bool zswap_load(struct folio *folio);
+>  void zswap_invalidate(swp_entry_t swp);
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 9a3237752082..7c39327a7cc2 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -43,8 +43,6 @@
+>  /*********************************
+>  * statistics
+>  **********************************/
+> -/* Total bytes used by the compressed storage */
+> -u64 zswap_pool_total_size;
+>  /* The number of compressed pages currently stored in zswap */
+>  atomic_t zswap_stored_pages = ATOMIC_INIT(0);
+>  /* The number of same-value filled pages currently stored in zswap */
+> @@ -264,45 +262,6 @@ static inline struct zswap_tree *swap_zswap_tree(swp_entry_t swp)
+>  	pr_debug("%s pool %s/%s\n", msg, (p)->tfm_name,		\
+>  		 zpool_get_type((p)->zpools[0]))
+>  
+> -static bool zswap_is_full(void)
+> -{
+> -	return totalram_pages() * zswap_max_pool_percent / 100 <
+> -			DIV_ROUND_UP(zswap_pool_total_size, PAGE_SIZE);
+> -}
+> -
+> -static bool zswap_can_accept(void)
+> -{
+> -	return totalram_pages() * zswap_accept_thr_percent / 100 *
+> -				zswap_max_pool_percent / 100 >
+> -			DIV_ROUND_UP(zswap_pool_total_size, PAGE_SIZE);
+> -}
+> -
+> -static u64 get_zswap_pool_size(struct zswap_pool *pool)
+> -{
+> -	u64 pool_size = 0;
+> -	int i;
+> -
+> -	for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
+> -		pool_size += zpool_get_total_size(pool->zpools[i]);
+> -
+> -	return pool_size;
+> -}
+> -
+> -static void zswap_update_total_size(void)
+> -{
+> -	struct zswap_pool *pool;
+> -	u64 total = 0;
+> -
+> -	rcu_read_lock();
+> -
+> -	list_for_each_entry_rcu(pool, &zswap_pools, list)
+> -		total += get_zswap_pool_size(pool);
+> -
+> -	rcu_read_unlock();
+> -
+> -	zswap_pool_total_size = total;
+> -}
+> -
+>  /*********************************
+>  * pool functions
+>  **********************************/
+> @@ -540,6 +499,28 @@ static struct zswap_pool *zswap_pool_find_get(char *type, char *compressor)
+>  	return NULL;
+>  }
+>  
+> +static unsigned long zswap_max_pages(void)
 > +{
-> +       struct kunit *test =3D data;
-> +       int *null =3D NULL;
-> +
-> +       *null =3D 0;
-> +
-> +       KUNIT_FAIL(test, "This line should never be reached\n");
+> +	return totalram_pages() * zswap_max_pool_percent / 100;
 > +}
 > +
-> +static void kunit_test_fault_null_dereference(struct kunit *test)
+> +unsigned long zswap_total_pages(void)
 > +{
-> +       struct kunit_try_catch_test_context *ctx =3D test->priv;
-> +       struct kunit_try_catch *try_catch =3D ctx->try_catch;
+> +	struct zswap_pool *pool;
+> +	u64 total = 0;
 > +
-> +       kunit_try_catch_init(try_catch,
-> +                            test,
-> +                            kunit_test_null_dereference,
-> +                            kunit_test_catch);
-> +       kunit_try_catch_run(try_catch, test);
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(pool, &zswap_pools, list) {
+> +		int i;
 > +
-> +       KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
-> +       KUNIT_EXPECT_TRUE(test, ctx->function_called);
+> +		for (i = 0; i < ZSWAP_NR_ZPOOLS; i++)
+> +			total += zpool_get_total_size(pool->zpools[i]);
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return total >> PAGE_SHIFT;
 > +}
 > +
-> +#endif /* !CONFIG_UML */
-> +
-> +static struct kunit_case kunit_fault_test_cases[] =3D {
-> +#ifndef CONFIG_UML
-> +       KUNIT_CASE(kunit_test_fault_null_dereference),
-> +#endif /* !CONFIG_UML */
-> +       {}
-> +};
-> +
-> +static struct kunit_suite kunit_fault_test_suite =3D {
-> +       .name =3D "kunit_fault",
-> +       .init =3D kunit_try_catch_test_init,
-> +       .test_cases =3D kunit_fault_test_cases,
-> +};
-> +
+>  /*********************************
+>  * param callbacks
+>  **********************************/
+> @@ -912,7 +893,6 @@ static void zswap_entry_free(struct zswap_entry *entry)
+>  	}
+>  	zswap_entry_cache_free(entry);
+>  	atomic_dec(&zswap_stored_pages);
+> -	zswap_update_total_size();
+>  }
+>  
 >  /*
->   * Context for testing test managed resources
->   * is_resource_initialized is used to test arbitrary resources
-> @@ -826,6 +868,7 @@ static struct kunit_suite kunit_current_test_suite =
-=3D {
->
->  kunit_test_suites(&kunit_try_catch_test_suite, &kunit_resource_test_suit=
-e,
->                   &kunit_log_test_suite, &kunit_status_test_suite,
-> -                 &kunit_current_test_suite, &kunit_device_test_suite);
-> +                 &kunit_current_test_suite, &kunit_device_test_suite,
-> +                 &kunit_fault_test_suite);
->
->  MODULE_LICENSE("GPL v2");
-> --
-> 2.44.0
->
-
---0000000000005fd63406136f760a
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
-BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
-Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
-FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
-YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
-AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
-mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
-wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
-5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
-ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
-IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIH104oDLt2YJXGY2Th/tOIltj+ysdkZwtuJlBc32SJA0MBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA0NTUwOFowaQYJKoZIhvcNAQkPMVww
-WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBrXvUN
-G/lKjLxrVJtJuNu0UXjEq4q9AyzPP3ilyTKUn6C2JhGJg23/TCAOvjouYFywkRnygEUjOkA1ZGZO
-jM3lQhXi9GZq6eq/B+3SGs7zQs+lkp6pL3z/iaFRSl4g+Yh5oXMDsw8XeMiFcvbXYuFQ46bEBfxA
-1bITNoyIvKAVKky3fj20sTBCmBcsEvH6JEzv11HE5MtTQmr1d5t4MvDV2clv30x2G27URt9YVmdT
-hiwIHvUiaOPgcwZlx1WSgdmcUA2la0mxbi2ivqN1ttncxmNFn0/s4Vi2GAfT8ePnQihW9np0eOHO
-Mt8DI8UhWtpTHPthmF/9eHcv6tw/iuFd
---0000000000005fd63406136f760a--
+> @@ -1317,7 +1297,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+>  	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
+>  #else
+>  	/* use pool stats instead of memcg stats */
+> -	nr_backing = zswap_pool_total_size >> PAGE_SHIFT;
+> +	nr_backing = zswap_total_pages();
+>  	nr_stored = atomic_read(&zswap_nr_stored);
+>  #endif
+>  
+> @@ -1385,6 +1365,10 @@ static void shrink_worker(struct work_struct *w)
+>  {
+>  	struct mem_cgroup *memcg;
+>  	int ret, failures = 0;
+> +	unsigned long thr;
+> +
+> +	/* Reclaim down to the accept threshold */
+> +	thr = zswap_max_pages() * zswap_accept_thr_percent / 100;
+>  
+>  	/* global reclaim will select cgroup in a round-robin fashion. */
+>  	do {
+> @@ -1432,10 +1416,9 @@ static void shrink_worker(struct work_struct *w)
+>  			break;
+>  		if (ret && ++failures == MAX_RECLAIM_RETRIES)
+>  			break;
+> -
+>  resched:
+>  		cond_resched();
+> -	} while (!zswap_can_accept());
+> +	} while (zswap_total_pages() > thr);
+>  }
+>  
+>  static int zswap_is_page_same_filled(void *ptr, unsigned long *value)
+> @@ -1476,6 +1459,7 @@ bool zswap_store(struct folio *folio)
+>  	struct zswap_entry *entry, *dupentry;
+>  	struct obj_cgroup *objcg = NULL;
+>  	struct mem_cgroup *memcg = NULL;
+> +	unsigned long max_pages, cur_pages;
+>  
+>  	VM_WARN_ON_ONCE(!folio_test_locked(folio));
+>  	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
+> @@ -1487,6 +1471,7 @@ bool zswap_store(struct folio *folio)
+>  	if (!zswap_enabled)
+>  		goto check_old;
+>  
+> +	/* Check cgroup limits */
+>  	objcg = get_obj_cgroup_from_folio(folio);
+>  	if (objcg && !obj_cgroup_may_zswap(objcg)) {
+>  		memcg = get_mem_cgroup_from_objcg(objcg);
+> @@ -1497,15 +1482,20 @@ bool zswap_store(struct folio *folio)
+>  		mem_cgroup_put(memcg);
+>  	}
+>  
+> -	/* reclaim space if needed */
+> -	if (zswap_is_full()) {
+> +	/* Check global limits */
+> +	cur_pages = zswap_total_pages();
+> +	max_pages = zswap_max_pages();
+> +
+> +	if (cur_pages >= max_pages) {
+>  		zswap_pool_limit_hit++;
+>  		zswap_pool_reached_full = true;
+>  		goto shrink;
+>  	}
+>  
+>  	if (zswap_pool_reached_full) {
+> -	       if (!zswap_can_accept())
+> +		unsigned long thr = max_pages * zswap_accept_thr_percent / 100;
+> +
+> +		if (cur_pages > thr)
+>  			goto shrink;
+>  		else
+>  			zswap_pool_reached_full = false;
+> @@ -1581,7 +1571,6 @@ bool zswap_store(struct folio *folio)
+>  
+>  	/* update stats */
+>  	atomic_inc(&zswap_stored_pages);
+> -	zswap_update_total_size();
+>  	count_vm_event(ZSWPOUT);
+>  
+>  	return true;
+> @@ -1711,6 +1700,13 @@ void zswap_swapoff(int type)
+>  
+>  static struct dentry *zswap_debugfs_root;
+>  
+> +static int debugfs_get_total_size(void *data, u64 *val)
+> +{
+> +	*val = zswap_total_pages() * PAGE_SIZE;
+> +	return 0;
+> +}
+> +DEFINE_DEBUGFS_ATTRIBUTE(total_size_fops, debugfs_get_total_size, NULL, "%llu");
+> +
+>  static int zswap_debugfs_init(void)
+>  {
+>  	if (!debugfs_initialized())
+> @@ -1732,8 +1728,8 @@ static int zswap_debugfs_init(void)
+>  			   zswap_debugfs_root, &zswap_reject_compress_poor);
+>  	debugfs_create_u64("written_back_pages", 0444,
+>  			   zswap_debugfs_root, &zswap_written_back_pages);
+> -	debugfs_create_u64("pool_total_size", 0444,
+> -			   zswap_debugfs_root, &zswap_pool_total_size);
+> +	debugfs_create_file("pool_total_size", 0444,
+> +			    zswap_debugfs_root, NULL, &total_size_fops);
+>  	debugfs_create_atomic_t("stored_pages", 0444,
+>  				zswap_debugfs_root, &zswap_stored_pages);
+>  	debugfs_create_atomic_t("same_filled_pages", 0444,
 
