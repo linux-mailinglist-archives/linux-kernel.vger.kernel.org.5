@@ -1,244 +1,149 @@
-Return-Path: <linux-kernel+bounces-100063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5458C879152
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:49:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7D12879154
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3A7A1F230BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:49:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DCA4283C38
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755AD7A72A;
-	Tue, 12 Mar 2024 09:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3D07AE5B;
+	Tue, 12 Mar 2024 09:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com header.i=@armh.onmicrosoft.com header.b="1MP4b0Fy";
-	dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com header.i=@armh.onmicrosoft.com header.b="1MP4b0Fy"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2068.outbound.protection.outlook.com [40.107.6.68])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J77wBx3w"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF83D30B;
-	Tue, 12 Mar 2024 09:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.68
-ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710236783; cv=fail; b=mquwnaVVrhtte6q//SxfWyEUBuX9Ba2XtzeM2SkzUk/SMRTywo3pYS1vjvX6Hf/QiC4RB/ppOMVJ6WwRo/dV08U98UHtWwJ9mCIV8LoyitszrC7DjC20rXRekyVMZn/vN0IkwbyiaBTp1cPWr89NVFLz+3LdkloCx2C+t+oo99E=
-ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710236783; c=relaxed/simple;
-	bh=ROaYGzG7qXODKOC9T78z2j8KHmiFuS43MVLknuXbwdw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=AbgHq/rUOr0z45DnYdIJinma3yGCIqDQQHXb3AvzDFYw+vTVPN+dE+X9HX2hnQGwDxJcT5cKZRxje1ijxEqUs15kfZt6f92DmODjXlnzQXw9rU1/bYaH1ceLPASKnuW7jIP6ipPJ3f/mdSx2hLmX4jOyGoYlf0mU+ZE1qeo05Tg=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com header.i=@armh.onmicrosoft.com header.b=1MP4b0Fy; dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com header.i=@armh.onmicrosoft.com header.b=1MP4b0Fy; arc=fail smtp.client-ip=40.107.6.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
- b=iLNE50rZJx2pqxXLnuIebsqoIWtSeV5hKYFduI+87x7WUtusvpjNrY4nUL34wmbL3RvNT5xVV5utEYhqdf4losfuVoGOWb5/plFzUXy6XjKxwTwe2aaQaWEzBSrMFAruvHsxdNNjf+o8AP4hkn2VYUrs6luioJ2LBO1jmZmO/kd6Yic46HYYLebO6WB9b01/1gMJmp74tiLTtx6Wdoh7025d1zPGjxbaGNCijC94+emFWYMC7v3Fb8f7sWJ7SySql2xKn1pToIkKbzm90+zR23HcTbxnZCPlw8FAOQHCzSGOakOExjbQ7ES54+k33cslA2FNRMAMccLpm19mP/572A==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jOZOEMBbfhIll16JVp4hL3E155Tn8lUB9nsRtiiagdU=;
- b=JkToz2ITKmLmklHv2Pzcbhu+ffCupLu2PRBPhzSWOeNTrNxRaLHgRyWNEyvKZ3FsSx7MzaMluKHCH8peuA4y8oLDFpBJQCHVfaZEnz535N1yW8ZDlfFmaTM9Mugh1CWs5iI6VpfVv9k6XDeKFtZJcl6k95SJymeYKmMBfHxBW0cmRHk6VkOe/V0nQSs7AX2tWEhnTtbGGlXX2cD9MpIABUk7PPblquLTqdCDB6hnnsZ15kxDSz8etkYg6gaf8QbjbVKNN/R26/FNIF7Un9VOXvGcMa0fnS3NrbsYLy8Yexl7yjQf/cvGgod6A5XMHI5Wj2qJHdH/Q9/XT99A/FdkDw==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 63.35.35.123) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=arm.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=arm.com;
- dkim=pass (signature was verified) header.d=armh.onmicrosoft.com; arc=pass (0
- oda=1 ltdi=1 spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
- dmarc=[1,1,header.from=arm.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jOZOEMBbfhIll16JVp4hL3E155Tn8lUB9nsRtiiagdU=;
- b=1MP4b0Fyuf6F5XZWMn64qEgzmuCNg/0GFHoFQmlvQensEVo3ZXe0Iu9nDOERfwPNKRcVcSzJN0bCW3Po6A1rdKTI49evF4L12L6BLL3lGErwhpWUAB12TrcPM0u/iHJbgt9c4Y2eQP+K7oA7bP2O/I5tALuL6tbLVkkbbAVhfZk=
-Received: from AS4P250CA0029.EURP250.PROD.OUTLOOK.COM (2603:10a6:20b:5e3::19)
- by PAWPR08MB9471.eurprd08.prod.outlook.com (2603:10a6:102:2e5::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Tue, 12 Mar
- 2024 09:46:14 +0000
-Received: from AM4PEPF00027A68.eurprd04.prod.outlook.com
- (2603:10a6:20b:5e3:cafe::34) by AS4P250CA0029.outlook.office365.com
- (2603:10a6:20b:5e3::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36 via Frontend
- Transport; Tue, 12 Mar 2024 09:46:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
- pr=C
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- AM4PEPF00027A68.mail.protection.outlook.com (10.167.16.85) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.12 via Frontend Transport; Tue, 12 Mar 2024 09:46:13 +0000
-Received: ("Tessian outbound 598157ceef91:v276"); Tue, 12 Mar 2024 09:46:13 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: 14f10f8ef0686210
-X-CR-MTA-TID: 64aa7808
-Received: from 17a47b054d21.1
-	by 64aa7808-outbound-1.mta.getcheckrecipient.com id F30F8C0D-CEB0-4DF5-812F-A58AC3CBD00C.1;
-	Tue, 12 Mar 2024 09:46:06 +0000
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 17a47b054d21.1
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Tue, 12 Mar 2024 09:46:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W9r8nhYR7VyJ9tVJIuYgn/iqfd0p2OFliNqWB9+GDPe7SRxZaSb3pTzzoD/2EGcjJf9Fq/ooMi7xicvzLweg2L3Clb37VwaNA5pqXH3BeEAVKYM0O9xtRm58RZr2sr2H7/gn5OCH0JjyEaYvS8i40YfNhfmIeER+SU7fzgvfas28ZjUtRFa2P/HAZjj9b/8Vp4wPkwa0aiG7OQ6De7M6Exp5oV9bvZYuUyDMO7u704ZbjP09ccuQIj1zYQabNguQbW0eE5nx2C977zbdwy4EydsKvPOVm98f6cJ0fpOYZ2q/g+xQpUOx0yBsy7J7hvX10QFgjXCqFKq6lJgApA8umQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jOZOEMBbfhIll16JVp4hL3E155Tn8lUB9nsRtiiagdU=;
- b=Y3e3BZ3qu+8zsJbj1kQvIaRrT5u+Nnj5dUJzUa4Mwn1xvEMBjkfgiTGe0XuJyRkW6ca33KXcw5ZjJtnkTeoCT9OiMobsOdaHrGBKYQTd3ZLbXoxc1DiL3YsiWF5Kx2749G9hHT2yawcVxKnshXzHDynaTPmBRAr47RjcEm2Z8Uc4j4ZLWtnQmgQoUqE/kQL/OFj+2wVf7q8RuShiqYEMT57i3XEfmTFln8kNfENMQ2myORhuV129gW+4w6dIIIxF70Rs1RpHcu0h+D/W1tL80l4xiyNyw6wm6QR9Nka/sydlZQpc+IqYTlPKT/7nX1JPY17Rq7fKje7PBCuCrkg0JA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jOZOEMBbfhIll16JVp4hL3E155Tn8lUB9nsRtiiagdU=;
- b=1MP4b0Fyuf6F5XZWMn64qEgzmuCNg/0GFHoFQmlvQensEVo3ZXe0Iu9nDOERfwPNKRcVcSzJN0bCW3Po6A1rdKTI49evF4L12L6BLL3lGErwhpWUAB12TrcPM0u/iHJbgt9c4Y2eQP+K7oA7bP2O/I5tALuL6tbLVkkbbAVhfZk=
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from VI1PR08MB3919.eurprd08.prod.outlook.com (2603:10a6:803:c4::31)
- by DU2PR08MB10204.eurprd08.prod.outlook.com (2603:10a6:10:49b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Tue, 12 Mar
- 2024 09:46:03 +0000
-Received: from VI1PR08MB3919.eurprd08.prod.outlook.com
- ([fe80::363f:3fc8:fc36:58ed]) by VI1PR08MB3919.eurprd08.prod.outlook.com
- ([fe80::363f:3fc8:fc36:58ed%5]) with mapi id 15.20.7362.031; Tue, 12 Mar 2024
- 09:46:03 +0000
-Message-ID: <cf813f92-9806-4449-b099-1bb2bd492b3c@arm.com>
-Date: Tue, 12 Mar 2024 09:45:57 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6 sched/fair: Add
- lag based placement)
-To: "Michael S. Tsirkin" <mst@redhat.com>,
- Tobias Huschle <huschle@linux.ibm.com>
-Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
- virtualization@lists.linux.dev, netdev@vger.kernel.org, nd <nd@arm.com>
-References: <42870.123121305373200110@us-mta-641.us.mimecast.lan>
- <20231213061719-mutt-send-email-mst@kernel.org>
- <25485.123121307454100283@us-mta-18.us.mimecast.lan>
- <20231213094854-mutt-send-email-mst@kernel.org>
- <20231214021328-mutt-send-email-mst@kernel.org>
- <92916.124010808133201076@us-mta-622.us.mimecast.lan>
- <20240121134311-mutt-send-email-mst@kernel.org>
- <07974.124020102385100135@us-mta-501.us.mimecast.lan>
- <20240201030341-mutt-send-email-mst@kernel.org>
- <89460.124020106474400877@us-mta-475.us.mimecast.lan>
- <20240311130446-mutt-send-email-mst@kernel.org>
-Content-Language: en-US
-From: Luis Machado <luis.machado@arm.com>
-In-Reply-To: <20240311130446-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO6P123CA0038.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:2fe::15) To VI1PR08MB3919.eurprd08.prod.outlook.com
- (2603:10a6:803:c4::31)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E477AE51
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 09:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710236818; cv=none; b=MrBYmC87xEcRWqDziMlFNIR5QkIx4wfL8CvwUzYa9CaxkqOhF15euN3tQ4SmU8SrqKOyQwKseoVLA5Lod8uD81XWEJqfk4Ied3aNG3JwJII50FHQ7xsGp2oIFGBT06u3o6v/E+RdIMzY7UvfG/Qcq92hG6AZkJDGHKWAftqrO9Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710236818; c=relaxed/simple;
+	bh=5otCRl5pErtbppJebFHlL8MKqzjYD6gnhXrZ3/9m+hw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Zi9jch9cAQAgS6AkMFObv7LJEeiAeicRFGPZggGvN08q2W87SKCJxVpIBseB9lSkcnmewlohg5hYm75mmCtccmWP+AtoeQKZXn3o24DgqzeC3Hyuy3038fQ6JmoQ3gfq0va7vvt3HHAFVj6MmfsVwrDBLrADHCOEX+rPAI6spIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J77wBx3w; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710236816;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qc7FUh+n3XyKdyc0ndX7maRU9MEDJXiP0LuYvtKNTVk=;
+	b=J77wBx3w/YtZWXdPvKQ7v3A8qLm19Caq7+c/WSazTcsxZaTDAOsJVYFi71Nods66Ic0UuI
+	wtwrvqNqd4bXMIOcfbesteO0iSCpKPcCiISXMpWbvE3XsuIQtvW0y1eatMiGllU24uTDEy
+	VG/PoAd6Hx5aB25erbhNpoK1sN7bkUw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-306-nev22vMwNce1YEx6y0pQ_g-1; Tue, 12 Mar 2024 05:46:54 -0400
+X-MC-Unique: nev22vMwNce1YEx6y0pQ_g-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a463175feb6so1820066b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:46:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710236813; x=1710841613;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qc7FUh+n3XyKdyc0ndX7maRU9MEDJXiP0LuYvtKNTVk=;
+        b=LcrfJc2E6ocInB4W4VSnguoZD0xD3MSL44ZHYhFj8LwitRzr0M9AjTK4JxrLOaPCmt
+         VJEH6yhIPA8O88nhoa2qdIszou0wQeL3HJo+8Ga5XtEUstplWya51AQPfMjL8EvPCxR9
+         NjU0/TJgbBNL95AI0LhzM6eTL/8DSVzzcWeeSRHMnFXHvM6YaSpksHLExnE0ccQff93s
+         yLaiK5retAbICQNFnVoaYLVsaQbnJMRKJgy+5T+aXVLpbWN+X3aNEBsB7EEcS7VA1UAc
+         7g1FW6wnxbSm8ylTLCtHx2Nx1WWqQhFnHXUJF2Az7RPItvWxLoLN09MZOPJaVjzdTuTo
+         N+5g==
+X-Forwarded-Encrypted: i=1; AJvYcCW0lbXmtq3lfS62IWms6MZjiQVuCnWB81rMwigeolOcnaAm187BBFOcEc/U6J3FyyRbMGxd2VpUZJO/nxb+s4b8c4AdcGvNAwPsYhAz
+X-Gm-Message-State: AOJu0YxiZ1CP74PkHmUrtkuZo08QTuiCYlvIOAbNiUrQIX7aPj+P3l/O
+	w4bkqN8BvDM7pIkaMXnZXVsA8hFYFSfrn5T4kaNyc79uvGIs/2++hr1psvJwceAyVh6ZvTJc0Id
+	3e73jrdiHIB5U9l3S04pi3Bi97PCUoIu3QIMTTnKxTFgVNlE/lvbeXwNH1gDwoQ==
+X-Received: by 2002:a17:907:7814:b0:a45:da3d:dc5e with SMTP id la20-20020a170907781400b00a45da3ddc5emr6527392ejc.3.1710236813584;
+        Tue, 12 Mar 2024 02:46:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGRHJP6id7Gi76itlDwyNKS39wtESQR4v/UTUkzJNWlLMaCvEiK7xP+LDQSKZeeKCfaJky6JQ==
+X-Received: by 2002:a17:907:7814:b0:a45:da3d:dc5e with SMTP id la20-20020a170907781400b00a45da3ddc5emr6527377ejc.3.1710236813199;
+        Tue, 12 Mar 2024 02:46:53 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-226-128.dyn.eolo.it. [146.241.226.128])
+        by smtp.gmail.com with ESMTPSA id n18-20020a1709061d1200b00a46478fbbbesm295133ejh.153.2024.03.12.02.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 02:46:52 -0700 (PDT)
+Message-ID: <f856e5cde69b2f99b8d4c6afac32ab82245d8130.camel@redhat.com>
+Subject: Re: [PATCH net-next v3 1/1] net: bridge: switchdev: Improve error
+ message clarity for switchdev_port_obj_add/del_deffered operations
+From: Paolo Abeni <pabeni@redhat.com>
+To: Oleksij Rempel <o.rempel@pengutronix.de>, Jiri Pirko <jiri@resnulli.us>,
+  Ivan Vecera <ivecera@redhat.com>, "David S. Miller" <davem@davemloft.net>,
+ Andrew Lunn <andrew@lunn.ch>,  Eric Dumazet <edumazet@google.com>, Florian
+ Fainelli <f.fainelli@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Vladimir Oltean <olteanv@gmail.com>
+Cc: Simon Horman <horms@kernel.org>, kernel@pengutronix.de, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Date: Tue, 12 Mar 2024 10:46:51 +0100
+In-Reply-To: <9fb980b65b8b4bc7c994cdfa1bac72e3f7c5677e.camel@redhat.com>
+References: <20240309063238.884067-1-o.rempel@pengutronix.de>
+	 <9fb980b65b8b4bc7c994cdfa1bac72e3f7c5677e.camel@redhat.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	VI1PR08MB3919:EE_|DU2PR08MB10204:EE_|AM4PEPF00027A68:EE_|PAWPR08MB9471:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5ccb1211-5ea4-4122-5db0-08dc42794142
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original:
- F+mmDfTvH9FvVrcvJV3jWt6Zm67T4AFdXlDoWfjI7X3rZuJE3F/DjaXonnxzGrIM4NdFhQ7HCf535rZBO224nRtiK/V0DBaWVpeCAaf1OBWi7C487cq7NoUaEz3cIuVbQ1WJ3W7phETwZz6CdEq4LIxFGIT+mPgIENceKmxGy2cvJC44D4E+UoTWW4nOGtYsEWz850k/V4tKPT2nwW8FDJbM1srtzJnh5kAVePglJGob1xU3DkKZnk2Bmzvrt+fDL8A9BNILR1Png1J7v1uSGwvsLaMrvUeSIvECBuEqnErzkeiEujxd3nGMFx+6PnChfw/B795lmtMnG5xnQjq6E8pYmNT5J2ywxRwp591JZj/r6aT+YZtZw2XZpNUoorOyZOve5JIkfyeJEVJz8RQvDnqOQiURrzUWf6h4IOB/d6CdXKNsBOYOs3s73EaQ49ddsTggTZyDxfeYjv3qYyVK+FeLMIyC3gy/W7znzY+kLUOqLSbLrQhifypicItvYAzYTbI4/Xb1gWF2qDOZWTeC4k1M7P4SbmLGjkTI/jCOSvT+uInbLqlVNeyJDydwryaR1NoFxwSGwzrrGyFL28e3N7Yao7rnP31pc2ayXhamS4feT0ZjXv7khOZzEQ374J55
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR08MB3919.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR08MB10204
-Original-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- AM4PEPF00027A68.eurprd04.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	4a7e6c97-7969-42c6-1517-08dc42793b26
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yqlid8dSjJg4WpqPj7iqbMe39HPh4O0pyiPMr7KjDblPRLzGnulfvTsaS0S4SMjOGaWPQ5ZbhBQGOFoahen5iCtXcrv7mqEIh4zBZuDTZlOZZxBLaQRQhjBnCmLBBlpNEf2X2wTlIcbG3a113/F5ab4dLB0gu29CyNCIfaC6IrVnOlxTe2sopTa+GkMppjJx9+simg0oVABqA8JCJvS7/T64XDRsxm+7fQ38sgMx+cvWBAeypzLL9Nuk9SUQxWYkZRoeGftSiLm1puCOHmguDiPDKKkjfq4x09DwBqvkCz+SeMERCgfXS0RfQrUkE8qy4K0OBV/Dn9aMyY2K/5Fxb7Rud1EDqUboqoDOVBPxwgk7GD523UdNBpAY4HO9TEX6/SGUYCXgP7nIRZIf/44Nl3kSCLaVmi62ajDVi6FCsN/e4peJ7c1J/cYU89zh0qtL9aSLamSo6ofwsOMZTauHjsSUrFVqFk8VBgvK+HJoe3ssbACrLE02DS/NicoODSErbkz9nd6P9cKk3LEWCF8DI/oRSOhBqeHROJJM3AhgwEEq70tjXrS+rm8e5h0U/gkIskH+7dtzjLgDhYLH0bXorpYe07LEfEU5dZkuYURujU+SLmWCaoA+H3/ypGTZx4nl0qyXkVWC+fmCdbhXz3pWheSGge+PV0qAhxPrfbGBEeWVatSOc6yUnA45WnicjfpuUvISsWcNov9j89tTZkts4g==
-X-Forefront-Antispam-Report:
-	CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 09:46:13.2174
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ccb1211-5ea4-4122-5db0-08dc42794142
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AM4PEPF00027A68.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB9471
 
-On 3/11/24 17:05, Michael S. Tsirkin wrote:
-> On Thu, Feb 01, 2024 at 12:47:39PM +0100, Tobias Huschle wrote:
->> On Thu, Feb 01, 2024 at 03:08:07AM -0500, Michael S. Tsirkin wrote:
->>> On Thu, Feb 01, 2024 at 08:38:43AM +0100, Tobias Huschle wrote:
->>>> On Sun, Jan 21, 2024 at 01:44:32PM -0500, Michael S. Tsirkin wrote:
->>>>> On Mon, Jan 08, 2024 at 02:13:25PM +0100, Tobias Huschle wrote:
->>>>>> On Thu, Dec 14, 2023 at 02:14:59AM -0500, Michael S. Tsirkin wrote:
->>>>
->>>> -------- Summary --------
->>>>
->>>> In my (non-vhost experience) opinion the way to go would be either
->>>> replacing the cond_resched with a hard schedule or setting the
->>>> need_resched flag within vhost if the a data transfer was successfully
->>>> initiated. It will be necessary to check if this causes problems with
->>>> other workloads/benchmarks.
->>>
->>> Yes but conceptually I am still in the dark on whether the fact that
->>> periodically invoking cond_resched is no longer sufficient to be nice to
->>> others is a bug, or intentional.  So you feel it is intentional?
->>
->> I would assume that cond_resched is still a valid concept.
->> But, in this particular scenario we have the following problem:
->>
->> So far (with CFS) we had:
->> 1. vhost initiates data transfer
->> 2. kworker is woken up
->> 3. CFS gives priority to woken up task and schedules it
->> 4. kworker runs
->>
->> Now (with EEVDF) we have:
->> 0. In some cases, kworker has accumulated negative lag 
->> 1. vhost initiates data transfer
->> 2. kworker is woken up
->> -3a. EEVDF does not schedule kworker if it has negative lag
->> -4a. vhost continues running, kworker on same CPU starves
->> --
->> -3b. EEVDF schedules kworker if it has positive or no lag
->> -4b. kworker runs
->>
->> In the 3a/4a case, the kworker is given no chance to set the
->> necessary flag. The flag can only be set by another CPU now.
->> The schedule of the kworker was not caused by cond_resched, but
->> rather by the wakeup path of the scheduler.
->>
->> cond_resched works successfully once the load balancer (I suppose) 
->> decides to migrate the vhost off to another CPU. In that case, the
->> load balancer on another CPU sets that flag and we are good.
->> That then eventually allows the scheduler to pick kworker, but very
->> late.
-> 
-> Are we going anywhere with this btw?
-> 
->
+On Tue, 2024-03-12 at 10:43 +0100, Paolo Abeni wrote:
+> On Sat, 2024-03-09 at 07:32 +0100, Oleksij Rempel wrote:
+> > Enhance the error reporting mechanism in the switchdev framework to
+> > provide more informative and user-friendly error messages.
+> >=20
+> > Following feedback from users struggling to understand the implications
+> > of error messages like "failed (err=3D-28) to add object (id=3D2)", thi=
+s
+> > update aims to clarify what operation failed and how this might impact
+> > the system or network.
+> >=20
+> > With this change, error messages now include a description of the faile=
+d
+> > operation, the specific object involved, and a brief explanation of the
+> > potential impact on the system. This approach helps administrators and
+> > developers better understand the context and severity of errors,
+> > facilitating quicker and more effective troubleshooting.
+> >=20
+> > Example of the improved logging:
+> >=20
+> > [   70.516446] ksz-switch spi0.0 uplink: Failed to add Port Multicast
+> >                Database entry (object id=3D2) with error: -ENOSPC (-28)=
+.
+> > [   70.516446] Failure in updating the port's Multicast Database could
+> >                lead to multicast forwarding issues.
+> > [   70.516446] Current HW/SW setup lacks sufficient resources.
+> >=20
+> > This comprehensive update includes handling for a range of switchdev
+> > object IDs, ensuring that most operations within the switchdev framewor=
+k
+> > benefit from clearer error reporting.
+> >=20
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > Reviewed-by: Simon Horman <horms@kernel.org>
+>=20
+> Very minor nit: the reviewed-by tag should come first it that has been
+> collected before posting the given revision.
 
-I think Tobias had a couple other threads related to this, with other potential fixes:
+Oops, I almost forgot another very minor nit: a shorter patch title
+would be better, ideally fitting 72 chars.
 
-https://lore.kernel.org/lkml/20240228161018.14253-1-huschle@linux.ibm.com/
+Cheers,
 
-https://lore.kernel.org/lkml/20240228161023.14310-1-huschle@linux.ibm.com/
+Paolo
 
 
