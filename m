@@ -1,226 +1,150 @@
-Return-Path: <linux-kernel+bounces-100601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D61C879AAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:33:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5863879AAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:34:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6EF6286D4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:33:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B6381F232D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5938D1386B8;
-	Tue, 12 Mar 2024 17:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y4ZZ53nn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2832A58107;
-	Tue, 12 Mar 2024 17:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F7B01386B6;
+	Tue, 12 Mar 2024 17:34:28 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCFE58107;
+	Tue, 12 Mar 2024 17:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710264822; cv=none; b=tyhT9Gl/umg9Dqq3wAJWPqRIHTT0aevTvIWwlq9zra8p7qhN9WJsONqnylwxf5j+dA93uvefPtYoqXcZUReaVyUY4ykamZAUZtKHF4Sb0wrJC5wDS1BMQbv0k3YrlU31NasJtnrr5EFWLGiePobOMeAJrtWDUQqfHcuJf4SPi7I=
+	t=1710264867; cv=none; b=t6fTQcTyxMPESBK93a6vmWFk9OBTBv9Wo5JpXkN85btIvMqNz3xOZIwOUbqx5mjIDG4NahwdUFfJEIrd0obPsXY/oQvPXDxODFgRlym6OXOcff5kx8VGGlTM8pxLDy8XMQbHaV6YT7YCiMwXF6JOuqQnE+txT5bw/bVui59HZR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710264822; c=relaxed/simple;
-	bh=NCbPjafC35X2dszbUimr93WO79ZvaDGjYwKw9cjmSfs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=CHg8zgmDT41arE62vhl6l6KyS6y7NckXE9g0dit+n9+i+w4ShASc09duWCHObDqQjSgsi6c/UiuLnopxp1J6r/z1ptThgm1szmBhanntI4QpcMftpF8h5gIQUI9i27lIuy42IfcK3dM310ZGN3/zexwgrArYTTv+iSONP0HKH7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y4ZZ53nn; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710264821; x=1741800821;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NCbPjafC35X2dszbUimr93WO79ZvaDGjYwKw9cjmSfs=;
-  b=Y4ZZ53nncCg9qGvBNOz6QryCZlBwcONU7m090xJXCKZpV/MuldQHZypV
-   OuFCZm9IC1E3I+T2wbuIMArRNsYy5mCNBPZSbCTKb5DrBzS+EaPvwO80J
-   eBZfvQS8kCr0NT+KRIeUxMBycICwnG3FSGCEcNV5D9X+sgqVyrMet2kpe
-   nGiOb2xyv3E2aEQN+R0XnrZquvKHwTDEeq1e5+xX+x720CPDUuwqs0XZa
-   csDr6LJx0dfG69EzpyDe8MYnt5kw4t6+zwTrr1KXaXlojI1MFeaBMKRi4
-   Gfa/+wputQqsEMlIF9rKau0EQMBj4Jll5x8ewBamYvNK5jNCb+ZQJXInp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4919787"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="4919787"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 10:33:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="16271882"
-Received: from gargayus-mobl1.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.255.231.196])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 10:33:40 -0700
-From: Rick Edgecombe <rick.p.edgecombe@intel.com>
-To: seanjc@google.com,
-	pbonzini@redhat.com,
-	hao.p.peng@linux.intel.com,
-	isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org,
+	s=arc-20240116; t=1710264867; c=relaxed/simple;
+	bh=7drBWCwWabZEy2dYA9+ueo/gCQDbMJkiZFLgldP5+yI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LLSvl2pBUic+OxCfH3CI6Xurxg3jpNjw2x1XnySKwxPmEpUc/gccodtSdoPhqdrCaUiev1uSxa4kWsEQUCQ3NJCg8ovTB+Tdp5ohpTO7tXw8vWSsyZUY4MKCZ3SaMvrk6SS+oTHXCTpr0797qH2W/oExZMcnw09qr27aJY5fdHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDA101570;
+	Tue, 12 Mar 2024 10:35:01 -0700 (PDT)
+Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9BAB63F762;
+	Tue, 12 Mar 2024 10:34:22 -0700 (PDT)
+From: Robin Murphy <robin.murphy@arm.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Will Deacon <will@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
 	linux-kernel@vger.kernel.org,
-	rick.p.edgecombe@intel.com
-Subject: [PATCH] KVM: x86/mmu: x86: Don't overflow lpage_info when checking attributes
-Date: Tue, 12 Mar 2024 10:33:34 -0700
-Message-Id: <20240312173334.2484335-1-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.34.1
+	linux-arm-kernel@lists.infradead.org,
+	x86@kernel.org,
+	linux-perf-users@vger.kernel.org,
+	jialong.yang@shingroup.cn
+Subject: [PATCH 00/10] perf: Clean up common uncore boilerplate
+Date: Tue, 12 Mar 2024 17:34:02 +0000
+Message-Id: <cover.1710257512.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Fix KVM_SET_MEMORY_ATTRIBUTES to not overflow lpage_info array and trigger
-KASAN splat, as seen in the private_mem_conversions_test selftest.
+Hi all,
 
-When memory attributes are set on a GFN range, that range will have
-specific properties applied to the TDP. A huge page cannot be used when
-the attributes are inconsistent, so they are disabled for those the
-specific huge pages. For internal KVM reasons, huge pages are also not
-allowed to span adjacent memslots regardless of whether the backing memory
-could be mapped as huge.
+Since this came up yet again recently, and it's an idea which has been
+nagging me for years, I decided it was time to see how hard it really
+would be to start shaving this yak. And it turns out to be refreshingly
+simple - the core code has quietly become capable of doing most of what
+we want, the one new functional addition is trivial (patch #2), and the
+resulting largely-mechanical cleanup seems a pretty nice win.
 
-What GFNs support which huge page sizes is tracked by an array of arrays
-'lpage_info' on the memslot, of ‘kvm_lpage_info’ structs. Each index of
-lpage_info contains a vmalloc allocated array of these for a specific
-supported page size. The kvm_lpage_info denotes whether a specific huge
-page (GFN and page size) on the memslot is supported. These arrays include
-indices for unaligned head and tail huge pages.
+This series is focused on drivers/perf/ as that's where most mess is
+concentrated, but figured I'd include the arch/ patches as well since
+they might be reasonable to land with the core changes, at least for x86
+(FWIW I did also look at the powerpc drivers but they scared me and I
+ran away; sorry). The remaining stragglers elsewhere around the tree I'd
+come back to as a follow-up.
 
-Preventing huge pages from spanning adjacent memslot is covered by
-incrementing the count in head and tail kvm_lpage_info when the memslot is
-allocated, but disallowing huge pages for memory that has mixed attributes
-has to be done in a more complicated way. During the
-KVM_SET_MEMORY_ATTRIBUTES ioctl KVM updates lpage_info for each memslot in
-the range that has mismatched attributes. KVM does this a memslot at a
-time, and marks a special bit, KVM_LPAGE_MIXED_FLAG, in the kvm_lpage_info
-for any huge page. This bit is essentially a permanently elevated count.
-So huge pages will not be mapped for the GFN at that page size if the
-count is elevated in either case: a huge head or tail page unaligned to
-the memslot or if KVM_LPAGE_MIXED_FLAG is set because it has mixed
-attributes.
+(And yes, I appreciate it's mid-merge-window already, but since I do
+have a tree-wide rename proposed here, may as well give the discussion
+a chance for a head start before -rc1...)
 
-To determine whether a huge page has consistent attributes, the
-KVM_SET_MEMORY_ATTRIBUTES operation checks an xarray to make sure it
-consistently has the incoming attribute. Since level - 1 huge pages are
-aligned to level huge pages, it employs an optimization. As long as the
-level - 1 huge pages are checked first, it can just check these and assume
-that if each level - 1 huge page contained within the level sized huge
-page is not mixed, then the level size huge page is not mixed. This
-optimization happens in the helper hugepage_has_attrs().
+Thanks,
+Robin.
 
-Unfortunately, although the kvm_lpage_info array representing page size
-'level' will contain an entry for an unaligned tail page of size level,
-the array for level - 1  will not contain an entry for each GFN at page
-size level. The level - 1 array will only contain an index for any
-unaligned region covered by level - 1 huge page size, which can be a
-smaller region. So this causes the optimization to overflow the level - 1
-kvm_lpage_info and perform a vmalloc out of bounds read.
 
-In some cases of head and tail pages where an overflow could happen,
-callers skip the operation completely as KVM_LPAGE_MIXED_FLAG is not
-required to prevent huge pages as discussed earlier. But for memslots that
-are smaller than the 1GB page size, it does call hugepage_has_attrs(). The
-issue can be observed simply by compiling the kernel with
-CONFIG_KASAN_VMALLOC and running the selftest
-“private_mem_conversions_test”, which produces the output like the
-following:
+Robin Murphy (10):
+  perf/alibaba_uncore_drw: Use correct CPU affinity
+  perf: Add capability for common event support
+  drivers/perf: Use PERF_PMU_CAP_NO_COMMON_EVENTS
+  perf: Rename PERF_PMU_CAP_NO_INTERRUPT
+  drivers/perf: Use PERF_PMU_CAP_NO_SAMPLING consistently
+  drivers/perf: Clean up redundant per-task checks
+  perf: Define common uncore capabilities
+  drivers/perf: Use common uncore capabilities
+  x86: Use common uncore PMU capabilities
+  ARM: Use common uncore PMU capabilities
 
-BUG: KASAN: vmalloc-out-of-bounds in hugepage_has_attrs+0x7e/0x110
-Read of size 4 at addr ffffc900000a3008 by task private_mem_con/169
-Call Trace:
-  dump_stack_lvl
-  print_report
-  ? __virt_addr_valid
-  ? hugepage_has_attrs
-  ? hugepage_has_attrs
-  kasan_report
-  ? hugepage_has_attrs
-  hugepage_has_attrs
-  kvm_arch_post_set_memory_attributes
-  kvm_vm_ioctl
+ arch/arc/kernel/perf_event.c              |  2 +-
+ arch/arm/mach-imx/mmdc.c                  | 16 +-------------
+ arch/arm/mm/cache-l2x0-pmu.c              | 12 +---------
+ arch/csky/kernel/perf_event.c             |  2 +-
+ arch/powerpc/perf/8xx-pmu.c               |  2 +-
+ arch/powerpc/perf/hv-24x7.c               |  2 +-
+ arch/powerpc/perf/hv-gpci.c               |  2 +-
+ arch/powerpc/platforms/pseries/papr_scm.c |  2 +-
+ arch/s390/kernel/perf_cpum_cf.c           |  2 +-
+ arch/sh/kernel/perf_event.c               |  2 +-
+ arch/x86/events/amd/iommu.c               | 17 +-------------
+ arch/x86/events/amd/power.c               | 10 +--------
+ arch/x86/events/amd/uncore.c              | 12 +++-------
+ arch/x86/events/core.c                    |  2 +-
+ arch/x86/events/intel/cstate.c            | 16 +++-----------
+ arch/x86/events/intel/uncore.c            | 11 +--------
+ arch/x86/events/intel/uncore_snb.c        | 20 +++--------------
+ arch/x86/events/msr.c                     |  9 +-------
+ arch/x86/events/rapl.c                    |  9 +-------
+ drivers/fpga/dfl-fme-perf.c               |  2 +-
+ drivers/perf/alibaba_uncore_drw_pmu.c     | 27 +++--------------------
+ drivers/perf/amlogic/meson_ddr_pmu_core.c | 11 +--------
+ drivers/perf/arm-cci.c                    | 15 +------------
+ drivers/perf/arm-ccn.c                    | 20 +----------------
+ drivers/perf/arm-cmn.c                    | 10 +--------
+ drivers/perf/arm_cspmu/arm_cspmu.c        | 27 ++---------------------
+ drivers/perf/arm_dmc620_pmu.c             | 18 +--------------
+ drivers/perf/arm_dsu_pmu.c                | 22 +-----------------
+ drivers/perf/arm_pmu_platform.c           |  2 +-
+ drivers/perf/arm_smmuv3_pmu.c             | 15 +------------
+ drivers/perf/arm_spe_pmu.c                |  7 ++----
+ drivers/perf/cxl_pmu.c                    |  8 +------
+ drivers/perf/dwc_pcie_pmu.c               | 13 +----------
+ drivers/perf/fsl_imx8_ddr_perf.c          | 13 +----------
+ drivers/perf/fsl_imx9_ddr_perf.c          | 13 +----------
+ drivers/perf/hisilicon/hisi_pcie_pmu.c    | 10 +--------
+ drivers/perf/hisilicon/hisi_uncore_pmu.c  | 20 +----------------
+ drivers/perf/hisilicon/hns3_pmu.c         |  9 +-------
+ drivers/perf/marvell_cn10k_ddr_pmu.c      | 15 +------------
+ drivers/perf/marvell_cn10k_tad_pmu.c      |  6 +----
+ drivers/perf/qcom_l2_pmu.c                | 21 ++----------------
+ drivers/perf/qcom_l3_pmu.c                | 21 +-----------------
+ drivers/perf/riscv_pmu_sbi.c              |  2 +-
+ drivers/perf/thunderx2_pmu.c              | 17 +-------------
+ drivers/perf/xgene_pmu.c                  | 16 +-------------
+ include/linux/perf_event.h                |  6 ++++-
+ kernel/events/core.c                      |  7 +++++-
+ 47 files changed, 67 insertions(+), 456 deletions(-)
 
-It is a little ambiguous whether the unaligned tail page should be
-expected to have KVM_LPAGE_MIXED_FLAG set. It is not functionally
-required, as the unaligned tail pages will already have their
-kvm_lpage_info count incremented. The comments imply not setting it on
-unaligned head pages is intentional, so fix the callers to skip trying to
-set KVM_LPAGE_MIXED_FLAG in this case, and in doing so not call
-hugepage_has_attrs().
-
-Also rename hugepage_has_attrs() to __slot_hugepage_has_attrs() because it
-is a delicate function that should not be widely used, and only is valid
-for ranges covered by the passed slot.
-
-Cc: stable@vger.kernel.org
-Fixes: 90b4fe17981e ("KVM: x86: Disallow hugepages when memory attributes are mixed")
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
----
-Hi,
-
-I added cc stable because I didn't rule out a way to trigger a non-kasan
-crash from userspace on non-x86. But of course this is a testing only
-feature at this point and shouldn't cause a crash for normal users.
-
-Testing was just the upstream selftests and a TDX guest boot on out of tree
-branch.
-
-Rick
----
- arch/x86/kvm/mmu/mmu.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 0544700ca50b..4dac778b2520 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -7337,8 +7337,8 @@ static void hugepage_set_mixed(struct kvm_memory_slot *slot, gfn_t gfn,
- 	lpage_info_slot(gfn, slot, level)->disallow_lpage |= KVM_LPAGE_MIXED_FLAG;
- }
- 
--static bool hugepage_has_attrs(struct kvm *kvm, struct kvm_memory_slot *slot,
--			       gfn_t gfn, int level, unsigned long attrs)
-+static bool __slot_hugepage_has_attrs(struct kvm *kvm, struct kvm_memory_slot *slot,
-+				      gfn_t gfn, int level, unsigned long attrs)
- {
- 	const unsigned long start = gfn;
- 	const unsigned long end = start + KVM_PAGES_PER_HPAGE(level);
-@@ -7388,8 +7388,9 @@ bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
- 			 * by the memslot, KVM can't use a hugepage due to the
- 			 * misaligned address regardless of memory attributes.
- 			 */
--			if (gfn >= slot->base_gfn) {
--				if (hugepage_has_attrs(kvm, slot, gfn, level, attrs))
-+			if (gfn >= slot->base_gfn &&
-+			    gfn + nr_pages <= slot->base_gfn + slot->npages) {
-+				if (__slot_hugepage_has_attrs(kvm, slot, gfn, level, attrs))
- 					hugepage_clear_mixed(slot, gfn, level);
- 				else
- 					hugepage_set_mixed(slot, gfn, level);
-@@ -7411,7 +7412,7 @@ bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
- 		 */
- 		if (gfn < range->end &&
- 		    (gfn + nr_pages) <= (slot->base_gfn + slot->npages)) {
--			if (hugepage_has_attrs(kvm, slot, gfn, level, attrs))
-+			if (__slot_hugepage_has_attrs(kvm, slot, gfn, level, attrs))
- 				hugepage_clear_mixed(slot, gfn, level);
- 			else
- 				hugepage_set_mixed(slot, gfn, level);
-@@ -7449,7 +7450,7 @@ void kvm_mmu_init_memslot_memory_attributes(struct kvm *kvm,
- 		for (gfn = start; gfn < end; gfn += nr_pages) {
- 			unsigned long attrs = kvm_get_memory_attributes(kvm, gfn);
- 
--			if (hugepage_has_attrs(kvm, slot, gfn, level, attrs))
-+			if (__slot_hugepage_has_attrs(kvm, slot, gfn, level, attrs))
- 				hugepage_clear_mixed(slot, gfn, level);
- 			else
- 				hugepage_set_mixed(slot, gfn, level);
-
-base-commit: 5abf6dceb066f2b02b225fd561440c98a8062681
 -- 
-2.34.1
+2.39.2.101.g768bb238c484.dirty
 
 
