@@ -1,144 +1,129 @@
-Return-Path: <linux-kernel+bounces-100806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6AE0879D79
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:28:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4C5879D7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:28:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87DE4B235DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:28:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65E8928426A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:28:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5520914373D;
-	Tue, 12 Mar 2024 21:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33CCE143747;
+	Tue, 12 Mar 2024 21:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="HLSdg+pE"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZXUUJAl0"
+Received: from mail-il1-f202.google.com (mail-il1-f202.google.com [209.85.166.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08436143731
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7D9142911
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 21:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710278896; cv=none; b=CMt2RcN+gevOmryNdri+e0Szvug23T3kRIor1VblGOD3FCr/77e236MSD3jmaIbjvbkMRIdHAhl1L8Inzn4xB84zFYxIK9WDK6QdTqfPleXxx4IaSMzHWUfvu5xiWEpup4xoTYrDtArwvcK1MtWvpa3lY8ZzwDvhiJC6R9NWYXg=
+	t=1710278925; cv=none; b=BPy64EGJ0FUNM7V/KAB5L5CUJ+EpfVDKPfsDDfH+SqR9vHwyCImKFpnzI9dTkLOvVp4gm0nKs2+XDg6tlsBZ3RWSIZymGL6O/26hoDSTXBP+h3IMqOQcb9TGTvNEBdi+IYYp1Qvbha2gzXRTa6ehcGuZJZVo5R7WqzUWqVOLyss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710278896; c=relaxed/simple;
-	bh=Gksb9wyj/vOpkuNOlaVDMtiNhk0Vrj7lyZpxMDcI6OQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I57o/qzn98K5daPys53n+WIzxp+pR5gjrOyPE3acv+mDhadSbP8cZuDE1rfXVrjTY2PqLqjngkeXzXfhX6mmU/wZumR9MK16ZOOYY2ccSem2GN8EM8n3wfm0F2IutMF7jpow2+z/fiE4nNS+eA+YrQObr43hIu4Q71q0DAzlSTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=HLSdg+pE; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1ddbad11823so9431355ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:28:14 -0700 (PDT)
+	s=arc-20240116; t=1710278925; c=relaxed/simple;
+	bh=TlN/KcWgKTqrLf9K7Wxdb6jjRGDSlbdWWWnaAZ4pxKc=;
+	h=Date:In-Reply-To:Mime-Version:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=F0MpTKjr6CDv6YOGAnr7TV0vBVoBXnyHPZFmVq1EpKYnT9ZTQc5UNu+QnEFFA3I9Muc+nXpalge361VDvUmsH3bY/DkknviVhahabkftxyXJiYaeMXmvwTj9jlR1zuwUP/x5s6wGr22gu4XxZYstmedi8EUkLN6TZ1TfgsqHDfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZXUUJAl0; arc=none smtp.client-ip=209.85.166.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com
+Received: by mail-il1-f202.google.com with SMTP id e9e14a558f8ab-3662fb60a79so33133405ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:28:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710278894; x=1710883694; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=J07qi3Pm6IWKJCmXkuIy6slfTmc3cDOIJrvkEFADZ84=;
-        b=HLSdg+pEyVyFP+z7jLqjPRwn//hWJNztBBtlw99tf3tn5Exrzw/N7WrTG25LQc/iv1
-         XW2qnb/UBPt1SQbcPyIjUavXeq9RrKwxCLHP3j9mWC9wsio4cpEhXzeKMCT67Sidnlb2
-         aInkKHX4ZvAyOes6JDt4GYplpihzOOPguzDILh1bELPCWlSgjRf8qjgZEljXJobta+sV
-         WxCrBatUCI6GBN9gLMwPB2vONuJMqFlihZqDy8S7A1R44plX1a4aQlOMLYyrGHt7Ynus
-         bwqk3Fvi1G5ZRgrKDHtCf2B/Uht4TcN0lX2z839wD3Bju4TI9fQ3PWLmFJxnktO8FBmB
-         6Ntw==
+        d=google.com; s=20230601; t=1710278923; x=1710883723; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TlN/KcWgKTqrLf9K7Wxdb6jjRGDSlbdWWWnaAZ4pxKc=;
+        b=ZXUUJAl0xjCa6eHZFjZS0FAwnURFfXJYfKg1ppNY/l1ca5AuaM+62rdmWyq9WZ7zJ4
+         3tycJoCu3CFwMdKS/RSrhrOT/nUsyxRjlz7J02FQ4uyV+N8L2AY6uhynuxjN61b3134P
+         o/paacNhWKxqWLzU7U8hcYUU/9PfTWoUZL3xIzQBwzx7v9LCzb0YuCxcZ084QSY++Q5N
+         9RbL9RFIIFIee/+Pw/xhqAQKDZl6dSH0FdfkltrkhS+FO9ipsF/64vZxdz4+fXj1leVA
+         IzVGn6qRpPpLlpQy/CjZSErsFzWG68uKROSP5ZCvfZKvVbZSTYH9/56dHy2xWPKEtOst
+         ebeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710278894; x=1710883694;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J07qi3Pm6IWKJCmXkuIy6slfTmc3cDOIJrvkEFADZ84=;
-        b=D3Ju81dG0ak5uL5aZRZucbxNlPy9U/Eh4Ul8WYWMYZkJYN2n2cMZF9gNT6vGlSnI00
-         zE/m7JDHWyNWAt+6Plfbqz5wm2UQLPBDMm7k8rswo16S1VGPs/6NeevjzNWPkSpLN+ph
-         KdMqAJYmOtrVMHVeW4eu2a/i+++aHyV0rQlZTJaR0sTvQsWMRY3zs3R/GJtH6+cbDUQb
-         RiP/NPx/c7FrpEJKwN/PkMcaC2Iq3eqUiNfUzQNAqMYRsfcTpVeU9zsZ6gYoLUFNXLpH
-         KX2xdD71zIoHZio1okeesGvLtg1YRfNs+aHNLBdGHYloD7YbIsbRsr9bD3HFyg1w2trI
-         9rWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUMGlepf5pNRMIe5Zu0iamUE7GGlAYOJ2DNU/j+dboBCg8qvOF8I9XMaDR+NbsqMHCv/1O4VvSgTqTEraTyjoUN2NlNrZw6fMU27M5S
-X-Gm-Message-State: AOJu0YyJfJH8GzI8nCizQ5ab2Sebpdp5ubmrHrCmr8jEhrzHcs49oEFk
-	1HOOc+4MUAlBW/O0ylORO/oND2u+xAukWU7teHS9eLvKdO0cS7pU0PS+tQIEZ0Q=
-X-Google-Smtp-Source: AGHT+IHUbA2fkuidigz0aEHwAs7BBlFBOtglNgjvKDQ2scnMN4VpbFIoE44l+8Y0xPIP9t2+5WWAFA==
-X-Received: by 2002:a17:902:b58b:b0:1db:edfa:7713 with SMTP id a11-20020a170902b58b00b001dbedfa7713mr11533807pls.18.1710278894337;
-        Tue, 12 Mar 2024 14:28:14 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id u17-20020a170903125100b001db5fc51d71sm7222248plh.160.2024.03.12.14.28.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 14:28:13 -0700 (PDT)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Cc: Samuel Holland <samuel.holland@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH] irqchip/riscv-intc: Fix use of AIA IRQs 32-63 on riscv32
-Date: Tue, 12 Mar 2024 14:28:08 -0700
-Message-ID: <20240312212813.2323841-1-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.43.1
+        d=1e100.net; s=20230601; t=1710278923; x=1710883723;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TlN/KcWgKTqrLf9K7Wxdb6jjRGDSlbdWWWnaAZ4pxKc=;
+        b=kDp25yJ5x5tZs9Lyc81lXjiIkzvy+PRcGepwcCqBtlxJN7BcEHrHyAqTQgq10NCNJN
+         GI3mZXx/fM7ipHasIkx3prixvuVzQ3hLXFrYr37aclqhG9aqHnRTM9Q0XeWl1AYtfxwA
+         cl6XGPybf+WxVNaZ7tEhBZGCgZAx+D9fKhKEZ7nh1doNayVqPWNwld77E63TjFXwj4ix
+         Qt4qVpW2MxHkJ5zQn++yeDtZW2C8SCelheVj5ILYu/mZCQplGy0IQYSxOK8mmZv9Eu4H
+         MxZJCukrGx3UvRHFmA6tgQnvb15c4m4yF9Opvx5/iiJ4EnyTEFiPd2lPqf3jIaFR0MmT
+         hoow==
+X-Forwarded-Encrypted: i=1; AJvYcCUQqhaDRpXgFYnp4nZVdWR2FG1jdNQaiVC/Kft1YfaZgubo4w9mG4PspCmL4moEhBoN1R4ANVb7o+4ws3MjVL2mJlKrVZh1nlPRZLfp
+X-Gm-Message-State: AOJu0YwlqshivU2nQuYkCJyNLG/9q5lP2vsIUU1tRpNuo5VH25+ta5pE
+	NhXYMPsamCZ38k50Ut36GQ5OSMhDzheXtiQGpZy6fR8gW2Vsa/biwWMbkcqCzIAB7tVjtaWMjUw
+	zzcZUjJ47+5jymf2KEcB6jQ==
+X-Google-Smtp-Source: AGHT+IEoVsGuGGGld+ryeqksDKkbTQO1fBRWYgfgCt3ANgMLC+suKNaZec5VszPIVCIIPKCZ9y/dRjlt4XfPMVM4Tg==
+X-Received: from coltonlewis-kvm.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:14ce])
+ (user=coltonlewis job=sendgmr) by 2002:a92:cd84:0:b0:366:1f71:1f6d with SMTP
+ id r4-20020a92cd84000000b003661f711f6dmr438743ilb.2.1710278923231; Tue, 12
+ Mar 2024 14:28:43 -0700 (PDT)
+Date: Tue, 12 Mar 2024 21:28:42 +0000
+In-Reply-To: <Zbgx8hZgWCmtzMjH@linux.dev> (message from Oliver Upton on Mon,
+ 29 Jan 2024 23:17:06 +0000)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Message-ID: <gsntv85rrvg5.fsf@coltonlewis-kvm.c.googlers.com>
+Subject: Re: [PATCH] KVM: arm64: Add capability for unconditional WFx passthrough
+From: Colton Lewis <coltonlewis@google.com>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: kvm@vger.kernel.org, maz@kernel.org, james.morse@arm.com, 
+	suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, 
+	will@kernel.org, pbonzini@redhat.com, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 
-riscv_intc_custom_base is initialized to BITS_PER_LONG, so the second
-check passes even though AIA provides 64 IRQs. Adjust the condition to
-only check the custom IRQ range for IRQs outside the standard range, and
-adjust the standard range when AIA is available.
+Oliver Upton <oliver.upton@linux.dev> writes:
 
-Fixes: bb7921cdea12 ("irqchip/riscv-intc: Add support for RISC-V AIA")
-Fixes: e6bd9b966dc8 ("irqchip/riscv-intc: Fix low-level interrupt handler setup for AIA")
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+> Hi Colton,
 
- drivers/irqchip/irq-riscv-intc.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+> On Mon, Jan 29, 2024 at 09:39:17PM +0000, Colton Lewis wrote:
+>> Add KVM_CAP_ARM_WFX_PASSTHROUGH capability to always allow WFE/WFI
+>> instructions to run without trapping. Current behavior is to only
+>> allow this if the vcpu is the only task running. This commit keeps the
+>> old behavior when the capability is not set.
 
-diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
-index f87aeab460eb..9e71c4428814 100644
---- a/drivers/irqchip/irq-riscv-intc.c
-+++ b/drivers/irqchip/irq-riscv-intc.c
-@@ -149,8 +149,9 @@ static int riscv_intc_domain_alloc(struct irq_domain *domain,
- 	 * Only allow hwirq for which we have corresponding standard or
- 	 * custom interrupt enable register.
- 	 */
--	if ((hwirq >= riscv_intc_nr_irqs && hwirq < riscv_intc_custom_base) ||
--	    (hwirq >= riscv_intc_custom_base + riscv_intc_custom_nr_irqs))
-+	if (hwirq >= riscv_intc_nr_irqs &&
-+	    (hwirq < riscv_intc_custom_base ||
-+	     hwirq >= riscv_intc_custom_base + riscv_intc_custom_nr_irqs))
- 		return -EINVAL;
- 
- 	for (i = 0; i < nr_irqs; i++) {
-@@ -183,10 +184,12 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn, struct irq_ch
- 		return -ENXIO;
- 	}
- 
--	if (riscv_isa_extension_available(NULL, SxAIA))
-+	if (riscv_isa_extension_available(NULL, SxAIA)) {
-+		riscv_intc_nr_irqs = 64;
- 		rc = set_handle_irq(&riscv_intc_aia_irq);
--	else
-+	} else {
- 		rc = set_handle_irq(&riscv_intc_irq);
-+	}
- 	if (rc) {
- 		pr_err("failed to set irq handler\n");
- 		return rc;
-@@ -195,7 +198,7 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn, struct irq_ch
- 	riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
- 
- 	pr_info("%d local interrupts mapped%s\n",
--		riscv_isa_extension_available(NULL, SxAIA) ? 64 : riscv_intc_nr_irqs,
-+		riscv_intc_nr_irqs,
- 		riscv_isa_extension_available(NULL, SxAIA) ? " using AIA" : "");
- 	if (riscv_intc_custom_nr_irqs)
- 		pr_info("%d custom local interrupts mapped\n", riscv_intc_custom_nr_irqs);
--- 
-2.43.1
+>> This allows userspace to set deterministic behavior and increase
+>> efficiency for platforms with direct interrupt injection support.
 
+> Marc and I actually had an offlist conversation (shame on us!) about
+> this very topic since there are users asking for the _opposite_ of this
+> patch (unconditionally trap) [*].
+
+> I had originally wanted something like this, but Marc made the very good
+> point that (1) the behavior of WFx traps is in no way user-visible and
+> (2) it is entirely an IMP DEF behavior. The architecture only requires
+> the traps be effective if the instruction does not complete in finite
+> time.
+
+> We need to think of an interface that doesn't depend on
+> implementation-specific behavior, such as a control based on runqueue
+> depth.
+
+Here's the first thing I came up with after returning to this problem:
+
+We have an ioctl to get/set a threshold value,
+wfx_traps_runqueue_depth. If the depth is less than or equal to the
+threshold, disable WFx traps. If greater than, enable WFx traps.
+
+Current behavior occurs with a setting of 1. Always trap occurs with a
+setting of 0. Never trap occurs with any large enough number.
+
+Of course, having an integer may be more flexible than needed. I can't
+imagine a practical use for a number between 1 and UINT_MAX, in which
+case it would be better as an enum for different behaviors than a
+integer threshold.
+
+What do you think?
+
+Also, do you mean runqueue depth for the current CPU or globally?
 
