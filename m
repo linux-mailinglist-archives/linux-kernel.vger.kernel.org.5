@@ -1,283 +1,219 @@
-Return-Path: <linux-kernel+bounces-100247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 363C58793FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:16:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2571B879400
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A7571C208D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:16:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A439C1F214C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 835837AE68;
-	Tue, 12 Mar 2024 12:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480227B3D7;
+	Tue, 12 Mar 2024 12:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="qAo3RkH4"
-Received: from smtp-8fac.mail.infomaniak.ch (smtp-8fac.mail.infomaniak.ch [83.166.143.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VOeyputJ"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9107A73B
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5E47A707;
+	Tue, 12 Mar 2024 12:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710245766; cv=none; b=QvKCZhcgzTEH2TvRPPN59Wu9hjtFumC+XynjciYoEB0I7ESXxiTfRjw62WgOlwljVkAqgifsMZc9W/AtsrF1C/jsv5xV4hnswz3LzjiKJ/nZ/d6KmTBi/uK2gcpbsvG1zC/K5pa8IAd/Aj66QRQd0wvGxcK/wR/7DIuuEVkTvZE=
+	t=1710245771; cv=none; b=GOu/9y47vPmSeZ/xSj/Uk0ENsnlb7DQsgS7RCOojGQZU9nvFvb4i8JmEGR7+CYN6bzauZmxB+jn4ryfGjcsMSeyn+BWr9dg6JWpuvPhGdntiYiitnYS2aaChZ6XU2dGSycUQBVStSlJMEfsuVQmdQrxTHavq2FNfkVHz3YwsIJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710245766; c=relaxed/simple;
-	bh=toSAL6LOqqiAcHCFf2a7KtT/GkwF4PILGROHmUBWIwU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C0QSyTfYItHGxtebj/2ADCdkC8858Rd8gAmte6U4y+3bRHaTgzJH0gbRfv6umCxTA+UupkikchShbmnafT5iOHuhnSxRn3+V4+rE8YUKnBImhJfOW8zwxjz241Kopyf2cCJBBqkpSo0eZdS84WTtp416iJZiQvCXmmpfep9UwgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=qAo3RkH4; arc=none smtp.client-ip=83.166.143.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0001.mail.infomaniak.ch (unknown [10.7.10.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TvCKR2dbfzMq0WP;
-	Tue, 12 Mar 2024 13:15:55 +0100 (CET)
-Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4TvCKQ0rNKzhRP;
-	Tue, 12 Mar 2024 13:15:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1710245755;
-	bh=toSAL6LOqqiAcHCFf2a7KtT/GkwF4PILGROHmUBWIwU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qAo3RkH4vnvOXezdBsHKVdull/R1EkYTke/fr8cEyftmemu+MgRBRD/0RcN+EPCaG
-	 EUdqDuICfGoyovJLyRKBQ5wMhZjn3FSHKL9MM4TRX7SU5KCMHkdmzm5XJt5suSvpBx
-	 8B6TWfN5IyjrCbk70Iong7MQSOB1Kknnk8bSCZSo=
-Date: Tue, 12 Mar 2024 13:15:43 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>, 
-	Kees Cook <keescook@chromium.org>, Rae Moar <rmoar@google.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	James Morris <jamorris@linux.microsoft.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Thara Gopinath <tgopinath@microsoft.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v2 6/7] kunit: Print last test location on fault
-Message-ID: <20240312.ku4TaiC9uosh@digikod.net>
-References: <20240301194037.532117-1-mic@digikod.net>
- <20240301194037.532117-7-mic@digikod.net>
- <CABVgOSk_vea-LrPwJet6hQ4D3PBQOLVg32nZ_gE4c9kgGDEEnQ@mail.gmail.com>
+	s=arc-20240116; t=1710245771; c=relaxed/simple;
+	bh=Od215/XrPMqF4+aWXTeN/DubjcXHAzjLof05GAiv7mw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Gghpa8ILHsW7naHeUJqirfSvhBlEUH9tspX6P2AkYlLdL3Cc5bvsAll0/s6jEKOTD8PkB+PFSNwIoLjZyV/ObboI8Vubo8iXjkMTAau0Zewp5FSBa/Z0VrUxyuEldtGnZo+Qqvzd2PjYERzGsv6NF5hlkvKSUe9e5fsXxhk04Zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VOeyputJ; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso5001060276.1;
+        Tue, 12 Mar 2024 05:16:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710245768; x=1710850568; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HyFCwjdYDVIsztUBry/f8bsBjuN4jiZlFF7Qs0any0A=;
+        b=VOeyputJx4gB+FKpzjuGz/mJQOfFyhRO+LkMvQEl9ZH0JRUTBcCoMSuXONZbnHoqEq
+         75cJtEYRP4jauCzuJpqThyhz016lY3Yef0bu7ATe5bmU+E9nF2MAieHoFXHG965ryGY/
+         KzdSdjZtF5vAqetOnDGNT2AotDOAoRzjMhkpq0gw+huzEi08bzLG/KROpmgcEzVX/mi8
+         LNlcWfo9Z3p8zOajfhV7Jd6f6YagxUMiqSAlmKAfyBQt2HafTOPVasM9iH5Sm1fDXnd5
+         EDOCn51nh7S86Dwk+uaMzd3dOrdoklB20h3rfHoiAQaKmOOY6wToOlBOkatsHhE0YddK
+         rwww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710245768; x=1710850568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HyFCwjdYDVIsztUBry/f8bsBjuN4jiZlFF7Qs0any0A=;
+        b=acJP4WN3ti81tKV1rVhg2OCj1Q7nXdFS5dp1ajT36fdJXjl6pCUAsqGOeMVZHx9edI
+         Qoe1xwCBr0gSHX8tuRY9OlOaaa0e/6tbFtjaChSjPgYEVRtLKhqGwvI1bYWo2e+qUCPK
+         woShZKKpTeAOBtso7NMOiuirUkkkdbsnxLrt5VT1ItoK+6rIMf+iyXCkqsQh+hXCCXu9
+         XrXtQ7cVvsJrtY69I0/fskOK/ib1YnfMzN1/089MZkTCqbqD0Na6vQeFGeJ9bD/0CO9U
+         nCmUL55hCv8E6RJAdkuEGv8xQ8KUQP4jnnxig6B7zBlq6VtYhUwZU6nEgbBBD4e9uo+A
+         0n5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUJU0ASCsaf1j31I2vx01HsS/CpUnNtl7o2IC/B9pfSKQi6lyOarnrddfbqEv76RL+00xADqNdTJBkJDmcnqPJ9UXfOelt7AQXqehBX2BtaQ1/3fSqFr2UGy/JtrQNM6yiU7YFOEGIdeTR7jPVLTTgdOL+fODDEKWiPAuysNFz4Z9vST30+7Xyx6tn3QUfy8PXbCzNVO7m9j9T5eQ==
+X-Gm-Message-State: AOJu0Yz4wmzeByUnpdC1oCpKQDxVrsjpCVjMxeWLUcjVp5/59mmFy+hu
+	KVJki0jpr1/FBp5+6aqqMtD1L2eg4U8aiyWJOXxSb46QNfVxwl3sKx0s8tFeZRbtjsFZ7jKmcLa
+	gnC89DXOx8sSsGU75kymIA7oyY3k=
+X-Google-Smtp-Source: AGHT+IGsSqgV1J0+s8AAEp+Hw6N2iqJsbKQk1JL5Q7CLDKpFxVnD6clDIdy/25mD+Q8JAgZGZR7sLNILrtt3WOl8e/0=
+X-Received: by 2002:a25:c846:0:b0:dd0:129f:16 with SMTP id y67-20020a25c846000000b00dd0129f0016mr1385426ybf.11.1710245768623;
+ Tue, 12 Mar 2024 05:16:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABVgOSk_vea-LrPwJet6hQ4D3PBQOLVg32nZ_gE4c9kgGDEEnQ@mail.gmail.com>
-X-Infomaniak-Routing: alpha
+References: <20240312095005.8909-1-maimon.sagi@gmail.com> <7bf7d444-4a08-4df4-9aa1-9cd28609d166@app.fastmail.com>
+In-Reply-To: <7bf7d444-4a08-4df4-9aa1-9cd28609d166@app.fastmail.com>
+From: Sagi Maimon <maimon.sagi@gmail.com>
+Date: Tue, 12 Mar 2024 14:15:57 +0200
+Message-ID: <CAMuE1bGkZ=ifyofCUfm4JVS__dgYG41kecS4TxBaHJvyJ607PQ@mail.gmail.com>
+Subject: Re: [PATCH v6] posix-timers: add clock_compare system call
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Richard Cochran <richardcochran@gmail.com>, Andy Lutomirski <luto@kernel.org>, datglx@linutronix.de, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Sohil Mehta <sohil.mehta@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Palmer Dabbelt <palmer@sifive.com>, Kees Cook <keescook@chromium.org>, 
+	Alexey Gladkov <legion@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Miklos Szeredi <mszeredi@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, reibax@gmail.com, 
+	"David S . Miller" <davem@davemloft.net>, Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, 
+	Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 12:54:48PM +0800, David Gow wrote:
-> On Sat, 2 Mar 2024 at 03:40, Mickaël Salaün <mic@digikod.net> wrote:
-> >
-> > This helps identify the location of test faults.
-> >
-> > Cc: Brendan Higgins <brendanhiggins@google.com>
-> > Cc: David Gow <davidgow@google.com>
-> > Cc: Rae Moar <rmoar@google.com>
-> > Cc: Shuah Khan <skhan@linuxfoundation.org>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> > Link: https://lore.kernel.org/r/20240301194037.532117-7-mic@digikod.net
-> > ---
-> 
-> I like the idea of this, but am a little bit worried about how
-> confusing it might be, given that the location only updates on those
-> particular macros.
-> 
-> Maybe the answer is to make the __KUNIT_SAVE_LOC() macro, or something
-> equivalent, a supported API.
-> 
-> One possibility would be to have a KUNIT_MARKER() macro. If we really
-> wanted to, we could expand it to take a string so we can have a more
-> user-friendly KUNIT_MARKER(test, "parsing packet") description of
-> where things went wrong. Another could be to extend this to use the
-> code tagging framework[1], if that lands.
-> 
-> That being said, I think this is still an improvement without any of
-> those features. I've left a few comments below. Let me know what you
-> think.
+Hi Arnd
+Thanks for you comments.
 
-This patch adds opportunistic markers to test code.  Because an uncaught
-fault would be a bug, I think in practice nobody would use
-KUNIT_MARKER() explicitly.  I found _KUNIT_SAVE_LOC() to be useful while
-writing tests or debugging them.  With this patch, it is still possible
-to call KUNIT_SUCCESS() if someone wants to add an explicit mark, and I
-think it would make more sense.
-
-> 
-> Cheers,
-> -- David
-> 
-> [1]: https://lwn.net/Articles/906660/
+On Tue, Mar 12, 2024 at 1:19=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>
+> On Tue, Mar 12, 2024, at 10:50, Sagi Maimon wrote:
+> > Some user space applications need to read a couple of different clocks.
+> > Each read requires moving from user space to kernel space.
+> > Reading each clock separately (syscall) introduces extra
+> > unpredictable/unmeasurable delay. Minimizing this delay contributes to =
+user
+> > space actions on these clocks (e.g. synchronization etc).
 > >
-> > Changes since v1:
-> > * Added Kees's Reviewed-by.
-> > ---
-> >  include/kunit/test.h  | 24 +++++++++++++++++++++---
-> >  lib/kunit/try-catch.c | 10 +++++++---
-> >  2 files changed, 28 insertions(+), 6 deletions(-)
+> > Introduce a new system call clock_compare, which can be used to measure
+> > the offset between two clocks, from variety of types: PHC, virtual PHC
+> > and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
+> > The system call returns the clocks timestamps.
 > >
-> > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> > index fcb4a4940ace..f3aa66eb0087 100644
-> > --- a/include/kunit/test.h
-> > +++ b/include/kunit/test.h
-> > @@ -301,6 +301,8 @@ struct kunit {
-> >         struct list_head resources; /* Protected by lock. */
+> > When possible, use crosstimespec to sync read values.
+> > Else, read clock A twice (before, and after reading clock B) and averag=
+e these
+> > times =E2=80=93 to be as close as possible to the time we read clock B.
 > >
-> >         char status_comment[KUNIT_STATUS_COMMENT_SIZE];
-> > +       /* Saves the last seen test. Useful to help with faults. */
-> > +       struct kunit_loc last_seen;
-> >  };
-> >
-> >  static inline void kunit_set_failure(struct kunit *test)
-> > @@ -567,6 +569,15 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
-> >  #define kunit_err(test, fmt, ...) \
-> >         kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
-> >
-> > +/*
-> > + * Must be called at the beginning of each KUNIT_*_ASSERTION().
-> > + * Cf. KUNIT_CURRENT_LOC.
-> > + */
-> > +#define _KUNIT_SAVE_LOC(test) do {                                            \
-> > +       WRITE_ONCE(test->last_seen.file, __FILE__);                            \
-> > +       WRITE_ONCE(test->last_seen.line, __LINE__);                            \
-> > +} while (0)
-> 
-> Can we get rid of the leading '_', make this public, and document it?
-> If we want to rename it to KUNIT_MARKER() or similar, that might work
-> better, too.
-
-We can do that but I'm not convinced it would be useful.
-
-> 
+> > Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
+>
+> I like this a lot better than the previous versions I looked at,
+> so just a few ideas here how this might be improved further.
+>
+> > +/**
+> > + * clock_compare - Get couple of clocks time stamps
+> > + * @clock_a: clock a ID
+> > + * @clock_b: clock b ID
+> > + * @tp_a:            Pointer to a user space timespec64 for clock a st=
+orage
+> > + * @tp_b:            Pointer to a user space timespec64 for clock b st=
+orage
+> > + *
+> > + * clock_compare gets time sample of two clocks.
+> > + * Supported clocks IDs: PHC, virtual PHC and various system clocks.
+> > + *
+> > + * In case of PHC that supports crosstimespec and the other clock is
+> > Monotonic raw
+> > + * or system time, crosstimespec will be used to synchronously capture
+> > + * system/device time stamp.
+> > + *
+> > + * In other cases: Read clock_a twice (before, and after reading
+> > clock_b) and
+> > + * average these times =E2=80=93 to be as close as possible to the tim=
+e we
+> > read clock_b.
+> > + *
+> > + * Returns:
+> > + *   0               Success. @tp_a and @tp_b contains the time stamps
+> > + *   -EINVAL         @clock a or b ID is not a valid clock ID
+> > + *   -EFAULT         Copying the time stamp to @tp_a or @tp_b faulted
+> > + *   -EOPNOTSUPP     Dynamic POSIX clock does not support crosstimespe=
+c()
+> > + **/
+> > +SYSCALL_DEFINE5(clock_compare, const clockid_t, clock_a, const
+> > clockid_t, clock_b,
+> > +             struct __kernel_timespec __user *, tp_a, struct __kernel_=
+timespec
+> > __user *,
+> > +             tp_b, int64_t __user *, offs_err)
+>
+> The system call is well-formed in the way that the ABI is the
+> same across all supported architectures, good.
+>
+> A minor issue is the use of int64_t, which in user interfaces
+> can cause namespace problems. Please change that to the kernel
+> side __s64 type.
+>
+you are right - it will be fixed on the next patch
+> > +     kc_a =3D clockid_to_kclock(clock_a);
+> > +     if (!kc_a) {
+> > +             error =3D -EINVAL;
+> > +             return error;
+> > +     }
 > > +
-> >  /**
-> >   * KUNIT_SUCCEED() - A no-op expectation. Only exists for code clarity.
-> >   * @test: The test context object.
-> > @@ -575,7 +586,7 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
-> >   * words, it does nothing and only exists for code clarity. See
-> >   * KUNIT_EXPECT_TRUE() for more information.
-> >   */
-> > -#define KUNIT_SUCCEED(test) do {} while (0)
-> > +#define KUNIT_SUCCEED(test) _KUNIT_SAVE_LOC(test)
-> >
-> >  void __noreturn __kunit_abort(struct kunit *test);
-> >
-> > @@ -601,14 +612,16 @@ void __kunit_do_failed_assertion(struct kunit *test,
-> >  } while (0)
-> >
-> >
-> > -#define KUNIT_FAIL_ASSERTION(test, assert_type, fmt, ...)                     \
-> > +#define KUNIT_FAIL_ASSERTION(test, assert_type, fmt, ...) do {                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         _KUNIT_FAILED(test,                                                    \
-> >                       assert_type,                                             \
-> >                       kunit_fail_assert,                                       \
-> >                       kunit_fail_assert_format,                                \
-> >                       {},                                                      \
-> >                       fmt,                                                     \
-> > -                     ##__VA_ARGS__)
-> > +                     ##__VA_ARGS__);                                          \
-> > +} while (0)
-> >
-> >  /**
-> >   * KUNIT_FAIL() - Always causes a test to fail when evaluated.
-> > @@ -637,6 +650,7 @@ void __kunit_do_failed_assertion(struct kunit *test,
-> >                               fmt,                                             \
-> >                               ...)                                             \
-> >  do {                                                                          \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (likely(!!(condition_) == !!expected_true_))                        \
-> >                 break;                                                         \
-> >                                                                                \
-> > @@ -698,6 +712,7 @@ do {                                                                               \
-> >                 .right_text = #right,                                          \
-> >         };                                                                     \
-> >                                                                                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (likely(__left op __right))                                         \
-> >                 break;                                                         \
-> >                                                                                \
-> > @@ -758,6 +773,7 @@ do {                                                                               \
-> >                 .right_text = #right,                                          \
-> >         };                                                                     \
-> >                                                                                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (likely((__left) && (__right) && (strcmp(__left, __right) op 0)))   \
-> >                 break;                                                         \
-> >                                                                                \
-> > @@ -791,6 +807,7 @@ do {                                                                               \
-> >                 .right_text = #right,                                          \
-> >         };                                                                     \
-> >                                                                                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (likely(__left && __right))                                         \
-> >                 if (likely(memcmp(__left, __right, __size) op 0))              \
-> >                         break;                                                 \
-> > @@ -815,6 +832,7 @@ do {                                                                               \
-> >  do {                                                                          \
-> >         const typeof(ptr) __ptr = (ptr);                                       \
-> >                                                                                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (!IS_ERR_OR_NULL(__ptr))                                            \
-> >                 break;                                                         \
-> >                                                                                \
-> > diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> > index c6ee4db0b3bd..2ec21c6918f3 100644
-> > --- a/lib/kunit/try-catch.c
-> > +++ b/lib/kunit/try-catch.c
-> > @@ -91,9 +91,13 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
-> >
-> >         if (exit_code == -EFAULT)
-> >                 try_catch->try_result = 0;
-> > -       else if (exit_code == -EINTR)
-> > -               kunit_err(test, "try faulted\n");
-> > -       else if (exit_code == -ETIMEDOUT)
-> > +       else if (exit_code == -EINTR) {
-> > +               if (test->last_seen.file)
-> > +                       kunit_err(test, "try faulted after %s:%d\n",
-> > +                                 test->last_seen.file, test->last_seen.line);
-> 
-> It's possibly a bit confusing to just say "after file:line",
-> particularly if we then loop or call a function "higher up" in the
-> file. Maybe something like "try faulted: last line seen %s:%d" is
-> clearer.
-
-OK
-
-> 
-> > +               else
-> > +                       kunit_err(test, "try faulted before the first test\n");
-> 
-> I don't like using "test" here, as it introduces ambiguity between
-> "kunit tests" and "assertions/expectations" if we call them both
-> tests. Maybe just "try faulted" here, or "try faulted (no markers
-> seen)" or similar?
-
-I agree that "try faulted" would be enough.  I'm totally OK for you to
-update this patch directly. Please let me know if you'd prefer me to
-send another version with these fixes though.
-
-Do you plan to merge this patches with the v6.9 merge window?
-
-> 
-> 
-> > +       } else if (exit_code == -ETIMEDOUT)
-> >                 kunit_err(test, "try timed out\n");
-> >         else if (exit_code)
-> >                 kunit_err(test, "Unknown error: %d\n", exit_code);
-> > --
-> > 2.44.0
-> >
-
-
+> > +     kc_b =3D clockid_to_kclock(clock_b);
+> > +     if (!kc_b) {
+> > +             error =3D -EINVAL;
+> > +             return error;
+> > +     }
+>
+> I'm not sure if we really need to have it generic enough to
+> support any combination of clocks here. It complicates the
+> implementation a bit but it also generalizes the user space
+> side of it.
+>
+> Can you think of cases where you want to compare against
+> something other than CLOCK_MONOTONIC_RAW or CLOCK_REALTIME,
+> or are these going to be the ones that you expect to
+> be used anyway?
+>
+sure, one example is syncing two different PHCs (which was originally
+why we needed this syscall)
+I hope that I have understand your note and that answers your question.
+> > +     if (crosstime_support_a) {
+> > +             ktime_a1 =3D xtstamp_a1.device;
+> > +             ktime_a2 =3D xtstamp_a2.device;
+> > +     } else {
+> > +             ktime_a1 =3D timespec64_to_ktime(ts_a1);
+> > +             ktime_a2 =3D timespec64_to_ktime(ts_a2);
+> > +     }
+> > +
+> > +     ktime_a =3D ktime_add(ktime_a1, ktime_a2);
+> > +
+> > +     ts_offs =3D ktime_divns(ktime_a, 2);
+> > +
+> > +     ts_a1 =3D ns_to_timespec64(ts_offs);
+>
+> Converting nanoseconds to timespec64 is rather expensive,
+> so I wonder if this could be changed to something cheaper,
+> either by returning nanoseconds in the end and consistently
+> working on those, or by doing the calculation on the
+> timespec64 itself.
+>
+I prefer returning timespec64, so this system call aligns with other
+system calls like clock_gettime for example.
+As far as doing the calculation on timespec64 itself, that looks more
+expansive to me, but I might be wrong.
+Sagi
+>      Arnd
 
