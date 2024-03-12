@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-99757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E2C2878CE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:13:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36A46878CEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 03:15:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13E3B1F21C19
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:13:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCD02B21A47
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 02:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEA1C2E9;
-	Tue, 12 Mar 2024 02:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7EE6FCA;
+	Tue, 12 Mar 2024 02:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BfGb9Gjn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sKkAFQ06"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D26EBE47;
-	Tue, 12 Mar 2024 02:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9A653A1;
+	Tue, 12 Mar 2024 02:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710209590; cv=none; b=ZjSYVdEdd5qFmrMtEz91p3jgujl0Hed4PGvPnq5j9bhusV3tDJZ5EKJQm2mgNuze6Sw7FktBz3SBbg9DbQzp4V8DXZSKdFrbb/hQMkHdJWxCbnL8kaZJ0Lu+f5KbzopSnV0nlkZheOxFP7pm5Kp6Oagt2Y39XP3TlR82x/i15rQ=
+	t=1710209704; cv=none; b=RcKlHVQPPlBQk38ycuLunpDdCsPB0buC0kpCC1dnZPwue6yyfRAcZ/PHjP0GzlVX6p8hSvt7C+CCnUcMQ7Sv5x4MTAvvlfov4weMHciYC1DLzXdPgcNjzPz8Y5k7J0JEjsLlMAfMQhCFjosdKYw4Fn+m0y7CZCXdplMt38DKfMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710209590; c=relaxed/simple;
-	bh=M13j/FiOeQLQqYn62WVaTaw1CEpghTNC1+EUk79X6eU=;
+	s=arc-20240116; t=1710209704; c=relaxed/simple;
+	bh=PJovpp2A+JaRMOnogNorzQ2dH5WkxIAjttZeU5mf2+I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kaDvJ2S6ZfXjT3IqLMCuXRiqQ7Nid+W3NNIV7nqz5WEiq33pjGXeqTZBZlZTyZGKprwPjwMp+oEW1RcE2XhdnRKjNSQQUSWsTaMFXyhW1/NCKLKqPMsss0EOua7DJuWkNXhzPS1qHbnQaT1Kz5Vum0KaTDwROJZwnE0ld/DJ1uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BfGb9Gjn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B36C433F1;
-	Tue, 12 Mar 2024 02:13:09 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=E4m8U70bgTOnYUTyPvLO0ZpViAMwzyVRaEaR0OQIoo4I3iGdaBZB+EDvqlHTFLo/RF4lIWh6la/x5k+PBCbOPZm5RgcKGVPfqxIHUKEQoRshGYFodYa2/6sScQcZScsn3PArbpuO4bF1832Sn0Wgr0EjTUeLu4pn2wB7oMOsqTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sKkAFQ06; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C475AC433C7;
+	Tue, 12 Mar 2024 02:15:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710209590;
-	bh=M13j/FiOeQLQqYn62WVaTaw1CEpghTNC1+EUk79X6eU=;
+	s=k20201202; t=1710209704;
+	bh=PJovpp2A+JaRMOnogNorzQ2dH5WkxIAjttZeU5mf2+I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BfGb9GjnsUqVbDazG2+BcDsVSoSxIPPza6GM7U3qpAT9gQZNQnFEPzczM0t2s+J5Q
-	 KjtScZOrbjh2nMkg6VTS5l1uwmF/p8M1q2ybCJqJNyanau+y2km7Rwh4504OybAxph
-	 JldRAGuflPm+s5U2MxYCDMLA2Yit5IJcWA04eSBQtpZ67PQ7LicCSoRPYT1tA4+PNE
-	 0JVuVVG59n1qHDweMwby7Rifq9v0zQrbYUk0HoW3+ZlRYBgE3t1ewklthlzGf9IYW9
-	 kk1jM7gSm5jKdutK+s/kERPz9fdfsvGzweNSiUgogxeHjjCKGcwR1+F4+0wAcz+MT6
-	 mBq74rhtHN4YQ==
-Date: Mon, 11 Mar 2024 19:13:08 -0700
+	b=sKkAFQ06PHlEUHbibzQjppazuw2ho4yAVBApbsT5E0z3RuR6Mnmc+9tJKvBXyTdFO
+	 4CCjYd1/mkFtSs1Ym1fJuRrld/n+DfzS6pr4XhO/DE6IcLc5qUaP3i6L9cfy3jCz+t
+	 uayY/pY2TRXh5blsEqSEFTsYKlT2NkXhAUAPq7lL0n3qCqVvEmh32B7sSlVu/aS2PU
+	 Px0ubjorDH87kuBNC/JECWUonlQ19hDkuA0NIVZKM0N650+Q2i60PbRIvQ1gn8XQ4x
+	 J5/fXmG9J8A2bYuz02Q68ILhR+OuwKbrkFP4UNdVXdNdnJkhIDx/2qQnT8872xoCpJ
+	 D91ps8Df7kGng==
+Date: Mon, 11 Mar 2024 19:15:02 -0700
 From: Eric Biggers <ebiggers@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Message-ID: <20240312021308.GA1182@sol.localdomain>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+To: "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	herbert@gondor.apana.org.au, davem@davemloft.net, x86@kernel.org
+Subject: Re: [PATCH] crypto: x86/aesni - Update aesni_set_key() to return void
+Message-ID: <20240312021502.GB1182@sol.localdomain>
+References: <20230607053558.GC941@sol.localdomain>
+ <20240311213232.128240-1-chang.seok.bae@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,18 +57,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240308022914.196982-1-kent.overstreet@linux.dev>
+In-Reply-To: <20240311213232.128240-1-chang.seok.bae@intel.com>
 
-On Thu, Mar 07, 2024 at 09:29:12PM -0500, Kent Overstreet wrote:
->  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
->  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
-> +	__u64	stx_subvol;	/* Subvolume identifier */
->  	/* 0xa0 */
-> -	__u64	__spare3[12];	/* Spare space for future expansion */
-> +	__u64	__spare3[11];	/* Spare space for future expansion */
->  	/* 0x100 */
+On Mon, Mar 11, 2024 at 02:32:32PM -0700, Chang S. Bae wrote:
+> The aesni_set_key() implementation has no error case, yet its prototype
+> specifies to return an error code.
+> 
+> Modify the function prototype to return void and adjust the related code.
+> 
+> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: x86@kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+> Previously, Eric identified a similar case in my AES-KL code [1]. Then,
+> this parallel issue was realized.
+> 
+> [1]: https://lore.kernel.org/lkml/20230607053558.GC941@sol.localdomain/
+> ---
+>  arch/x86/crypto/aesni-intel_asm.S  | 5 ++---
+>  arch/x86/crypto/aesni-intel_glue.c | 6 +++---
+>  2 files changed, 5 insertions(+), 6 deletions(-)
 
-The /* 0xa0 */ comment needs to be updated (or deleted).
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 
 - Eric
 
