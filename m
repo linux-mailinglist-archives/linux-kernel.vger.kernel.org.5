@@ -1,132 +1,111 @@
-Return-Path: <linux-kernel+bounces-99822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27EE5878DE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:43:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BACB878DEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D49C42827B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:43:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC95B1F21F3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81288C8DD;
-	Tue, 12 Mar 2024 04:43:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E181C121;
+	Tue, 12 Mar 2024 04:49:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bohHnNVt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A9+LvfFB"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFFDEBE49;
-	Tue, 12 Mar 2024 04:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BA4A939
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710218580; cv=none; b=p33PIcrcgpyMfOUnCcogwhu9hksE0EHen8n99uaGTWw/ltH1rpXpOr15qDDDa9xZtGnXop5/WgBbEEkYoz/7paVZ51Ps08BJQ2484Ir3W5XXUbpyWJptgJJkOSTtxYn3TY430YlxzqnhYYBbAvxSEeZaLJcccm+AR+mN4knY1DA=
+	t=1710218941; cv=none; b=tOX6S9SSH9RzIqMSr2sApsqdeJmqqGpqKmYcA+TA+Kn+Vgza3B40lx382AhX/FH8hsmi790h0aSYbCB+By3nfUzmd00h6tnVp4Ut8Ouxmxc1+EsOaviI5MbcVEeAMsiVxijlyRXVwSRPiV/zauIhthPVdsYYaxTRLD22BJMkwPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710218580; c=relaxed/simple;
-	bh=NhkGM4RbuqoMHpdBSX9DN68Zuh8flIi501dIobET/rE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DXh6VlvoH7eq719nBKs0U6/ACK+JmOqz2GY5PrvZSJ5KJqy/uxiHVcwcbj1Liugwakb2YcVw2jNrq85efCJ393oiT7xPjXnwpat/hxfUor1sOcFIr1GeMzoA6Ma+ABNNGz0yXeBho4I4wzd+amuSlU3tFZ0CVk98Ixw1GvgbAVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bohHnNVt; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710218579; x=1741754579;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NhkGM4RbuqoMHpdBSX9DN68Zuh8flIi501dIobET/rE=;
-  b=bohHnNVtgGujJe7M8KW1oJMJb4YIBEa+FMcbJspndN19/DfX6sFolAlU
-   yCRWKFGwJZ3TK5dUYASH7zVZOAfv2ifzQvcJd+B2YE2fl3LC1bTBNGcGW
-   fRJxoY51P/8MmyzCXn9poAeXHUHEvizBq1VnF3rG2cCJgpWpVKKQCBDMi
-   a7vHC+gyMfUEkgU0GamIB7ehRCOMa8B8DRbmC/d/JorvQWBhuk+AuB1On
-   +Epm1xh//VIIzDmXsmIR+3yutSL7pZFzFgDZRiUnO04KPNnoDapfp02gs
-   MQtxwaHJx9NooZ8W6u2bAPXu/B5f/qJ8BC5foteOTR+WeEb0XyPvL0mVR
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="16055071"
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="16055071"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 21:42:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="48852063"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 21:42:58 -0700
-Date: Mon, 11 Mar 2024 21:42:57 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Yin Fengwei <fengwei.yin@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 022/130] KVM: x86/vmx: Refactor KVM VMX module
- init/exit functions
-Message-ID: <20240312044257.GH935089@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <11d5ae6a1102a50b0e773fc7efd949bb0bd2b776.1708933498.git.isaku.yamahata@intel.com>
- <aa5359e5-46a3-48d0-b4af-3b812b4c93ae@intel.com>
- <20240312021524.GG935089@ls.amr.corp.intel.com>
- <c7be9930-26e7-454c-87f6-c8cdf2fce481@intel.com>
+	s=arc-20240116; t=1710218941; c=relaxed/simple;
+	bh=seOOvWAjaia0c4pwwjG32vAhSVNwQlKE7Ph1Md6JT9o=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=L9QKBAlJaM9lcW5HBWg6qBFP1FPVDy1xSBGPdlKfu6V8kPsyQrOHDp+ZaA6zZWQHPF1aIYjaoYtFB+2fe2Z7HXTQT2woPdGhlyAL9Apy8am95pNFY4eDw2jM7cVtTA+D1KD8fatJ4fqO0O3V6J5Mx2uvT+Ah9GEvoj9XXGLSkTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A9+LvfFB; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so6718345a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 21:48:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710218938; x=1710823738; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4H8D+j+CnCWZPGpERMleqggytqZOUvmKScd+oQhZVhc=;
+        b=A9+LvfFBFkZYf9YJA83X2PseeDiaVwNMkYWWIQoWLCT98OQ58aMo5VVXhBbO/+FqFj
+         cYWbU0Zf/jE8R5D9LEmh3Se3tlqOIufwp78FZ3HJg1S18kCL2W9c+VC5TCBIBvgqavCv
+         rwCpSyMY8v3WLXappuexqzEKGJJAkZ6eeO+sAJNSj8qIUWINFH37pOUcBjrZVJ2rFCiJ
+         J09l0RfEXjRfj7qWVz1MKPb8D11utbmNTb5d7WfX2hdGid12soIDbmdoN3A+xtdgVhbN
+         8E5JwYWS3gJ35xMMG52K3UbssXKqPxrXPVLgPxyrn0hMHmnRK7qlYT9tQgukYfcRAs1S
+         6JvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710218938; x=1710823738;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4H8D+j+CnCWZPGpERMleqggytqZOUvmKScd+oQhZVhc=;
+        b=Be/ucANPqapPiDPMD+EgC2jzewzEncjc8AGc5FXwG5Kasd+dTzqysB3b4SJRBx5TVU
+         hITBcOIYT23kPYjoWvQ03c+RbLJ6f1REOD32BY12wBmKEX5o1gGhSlp4S/1XV8Tv2YcM
+         HnErxpfcoRekLcL2180nmow4c0Dz0dXQUMO8cejosweXMp4FHM/le8C3KbQlMk84TodV
+         es5mhUvJoCci1kFWiMFD4XVBtNIEWLuUCnXw2OI2YpmC+S4W+rcwbOkyMGSVTiSsNuQP
+         ebsLp5LIYVh48TzqKgTYf+KvKyiVWK1HNjpaAeVXbEKw+k4jnBgPmOvGkQAEEUWtKUzN
+         QP0A==
+X-Forwarded-Encrypted: i=1; AJvYcCWSuJYcNzNBHRu+15jjuVDOI0RkUl/E3RdJheqMWRyxM6hlY4cdiui0VTYEhuOrVQMJwAtzhgg1T7hzUQ23C4fMPS8CQG0h/LJdaugk
+X-Gm-Message-State: AOJu0YxrQgf2H5A0qiPgHcmb042znZ2NihPQdCP5IkEEenGFH6DWIjSS
+	ln2HBar8XjB7WrTOuCkTxWiWOQ6ZAAPwcjszY72cdTx9Ty29hsGLjF1vFv6v0+ODDn2HzTX8why
+	pXx+QWBZ/aBGE/rlpMN0VJLSsxD4=
+X-Google-Smtp-Source: AGHT+IF8SOmjS9xims5YlCtAGnnI0LqEZKw3Kq9meynfynIcHsVp0SZjLTGXWPYeKs3AeYSJIQ7sDNBQmuTP3ghVueI=
+X-Received: by 2002:a17:906:c183:b0:a44:2ba0:8200 with SMTP id
+ g3-20020a170906c18300b00a442ba08200mr5029888ejz.26.1710218937882; Mon, 11 Mar
+ 2024 21:48:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c7be9930-26e7-454c-87f6-c8cdf2fce481@intel.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Date: Mon, 11 Mar 2024 23:48:47 -0500
+Message-ID: <CABb+yY3EByujxcqZfwawsQAcmyWjrLnkbZmTb5j7Tqzkyhb5=Q@mail.gmail.com>
+Subject: [GIT PULL] Mailbox changes for v6.9
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Mar 12, 2024 at 10:21:28AM +0800,
-Yin Fengwei <fengwei.yin@intel.com> wrote:
+Hi Linus,
 
-> 
-> 
-> On 3/12/24 10:15, Isaku Yamahata wrote:
-> >>> -
-> >>> -	__vmx_exit();
-> >>> -}
-> >>> -module_exit(vmx_exit);
-> >>> -
-> >>> -static int __init vmx_init(void)
-> >>> +int __init vmx_init(void)
-> >>>   {
-> >>>   	int r, cpu;
-> >>> -	if (!kvm_is_vmx_supported())
-> >>> -		return -EOPNOTSUPP;
-> >>> -
-> >>> -	/*
-> >>> -	 * Note, hv_init_evmcs() touches only VMX knobs, i.e. there's nothing
-> >>> -	 * to unwind if a later step fails.
-> >>> -	 */
-> >>> -	hv_init_evmcs();
-> >>> -
-> >>> -	/* vmx_hardware_disable() accesses loaded_vmcss_on_cpu. */
-> >>> -	for_each_possible_cpu(cpu)
-> >>> -		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> >>> -
-> >>> -	r = kvm_x86_vendor_init(&vt_init_ops);
-> >>> -	if (r)
-> >>> -		return r;
-> >>> -
-> >>>   	/*
-> >>>   	 * Must be called after common x86 init so enable_ept is properly set
-> >>>   	 * up. Hand the parameter mitigation value in which was stored in
-> >> I am wondering whether the first sentence of above comment should be
-> >> moved to vt_init()? So vt_init() has whole information about the init
-> >> sequence.
-> > If we do so, we should move the call of "vmx_setup_l1d_flush() to vt_init().
-> > I hesitated to remove static of vmx_setup_l1d_flush().
-> I meant this one:
->  "Must be called after common x86 init so enable_ept is properly set up"
-> 
-> Not necessary to move vmx_setup_l1d_flush().
+The following changes since commit 805d849d7c3cc1f38efefd48b2480d62b7b5dcb7:
 
-Ah, you mean "only" first sentence. Ok. I'll move it.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+  Merge tag 'acpi-6.8-rc7' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+(2024-02-28 12:20:00 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jassibrar/mailbox.git
+tags/mailbox-v6.9
+
+for you to fetch changes up to 8df6bab6cb9abc98736ffae410a74647995873c6:
+
+  mailbox: imx: support i.MX95 Generic/ELE/V2X MU (2024-03-10 19:05:24 -0500)
+
+----------------------------------------------------------------
+imx: add support for i.MX95 ELE/V2X MU
+misc: I will be signing-off from my personal gmail id from now on.
+
+----------------------------------------------------------------
+Peng Fan (5):
+      dt-bindings: mailbox: fsl,mu: add i.MX95 Generic/ELE/V2X MU compatible
+      mailbox: imx: support return value of init
+      mailbox: imx: get RR/TR registers num from Parameter register
+      mailbox: imx: populate sub-nodes
+      mailbox: imx: support i.MX95 Generic/ELE/V2X MU
+
+ .../devicetree/bindings/mailbox/fsl,mu.yaml        | 58 +++++++++++++-
+ drivers/mailbox/imx-mailbox.c                      | 88 ++++++++++++++++------
+ 2 files changed, 123 insertions(+), 23 deletions(-)
 
