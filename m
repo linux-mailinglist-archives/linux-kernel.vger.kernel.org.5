@@ -1,156 +1,189 @@
-Return-Path: <linux-kernel+bounces-100130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9E2E879243
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:36:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41EBB87924C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9582F284328
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:36:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3F381F22657
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB2155E73;
-	Tue, 12 Mar 2024 10:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8504C69D0B;
+	Tue, 12 Mar 2024 10:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QUlhxw9J"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AixALP2U"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8618941A85
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294F041C89;
+	Tue, 12 Mar 2024 10:37:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710239805; cv=none; b=qthDoWlomLjnwPMrBJatffxdoJp31N5F2mDbjMMoEjjsZZtqdvL7D288ujDiWMZX8DK9y5/+mhgGVXqY67kJRKAsh5kDYAxgenAZWzDz648hK2ZS17cL5FNO2mYL9jkMcbFd7ma7kIWsk/03K/h19Iahfr/W9rzJFW5RwBkQfg8=
+	t=1710239879; cv=none; b=IUPF23BKpya/GxsHzo2lmzKgIa9s8IjbhA+fQ1VxmyDz3U92oG6ABzprw0iP+DQ6NurSqpDVhazEflpgXnyJgLD1qH0MSP82w8KVEKwPJU2i0X/vhUjZUgBnpgVM/eBXH1jGEQ8+JgHJL3DNplZjQT//b7bu++ZcFoQSm8+Dpm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710239805; c=relaxed/simple;
-	bh=ldLHT+7KKkEw/cUtr5TG6uf+iSlib8xpwUzZJgbEDI4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cEl8zQg3zDno7Y1rPvQYYeb1FatBC2AMiB0o1l6ijrtfBYMRAQOmy13pg10RxDdHl4GS2dh9LK/Bf4q91rkwkySko86of0PW4lDi3oevN/zCkg1YvXX1HW6kLrkxWusDKNR4yMI5e2/AlXu+YgQYrtHkvsGK71O+MExwMYO/8IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QUlhxw9J; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4645485da6so59012266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 03:36:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710239802; x=1710844602; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hm+6X/5k3i+VUHvnlRxvFcXi+76msRha0JCkHThjDAY=;
-        b=QUlhxw9Jj5iy/Lkt+2/GnlYxo5RHR/rsCrmhKKFyE3mIxHDIlXdH1+Gfp5n7w8AbXg
-         92QxRrq7qG2LwITxV0sOEP+9oqmWviESg9szDFXBuustZAW7rXufq41yYEBiEIOm+vTR
-         Nq8+0mibeLLl8JbmjhlLgr9Hn4wNiP6tNk1oJ6GtW3J7RsfJdYGIiQxmXkpTc5p6NoQh
-         ijibJXuYJUEJ4xcBwbPeJ0j7MjRFF8egz0aMojxq5SyCKWRCGHs49T+OVGe7DpxzISQf
-         oM2AEofek+x8GIct/ndpmReIFMKmZJE49VFdj6CCyYjBP6iyJ2BNxgYf4qDYP8zLv5i0
-         FTFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710239802; x=1710844602;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hm+6X/5k3i+VUHvnlRxvFcXi+76msRha0JCkHThjDAY=;
-        b=b6IuyorLCYQoJ+4oPswtLpylFWtXDdQHHIfMHDY+qZeXVKG1lZSJWm3zfmofIKxEpz
-         oISrETuM3NdcBrHLD7VdohtNdUPSMVdwl3G2vDXlCnMy7LZVL4yUZlJnnZZyeXinyeS0
-         3Q7x/c88eYR8ra1u0FZyZOONRYJ/F9HTNAJp8N0/DaOACgX3EBqxrLR2LHywoBEN1rcm
-         Bo2eVY3qJGyekaO7wLfAtqSpnp/HDFZJ+MMWhI6cpqT8uSNiaN7Z8PvlOQ2iUrky5M10
-         0vv5cM1MRLehq8p/h7V1mDMDl5eWYAA61os4qdd4SFMsVRaWxwmy7EYh/fJpvbeH3C4O
-         EObw==
-X-Gm-Message-State: AOJu0YwcfnjFQiAk/LwgzHQK7vB4H2Wsbm4K6MEIrJFBrk4H338B7nSv
-	1M0z49xBWV1+CoI1uXvAtdOrBQKvMSUhbgSsxxOKbd9Cp2qhpb1H7ZSyxEO71ik=
-X-Google-Smtp-Source: AGHT+IEZFdaFVTUdN9dVn/mTu5L7cnCYmWrxvWMEB+5DuRWu3+WE39Tm+gKlfe+4ypUAp1s4WojDGQ==
-X-Received: by 2002:a17:907:9406:b0:a46:264e:6fba with SMTP id dk6-20020a170907940600b00a46264e6fbamr4675566ejc.34.1710239801376;
-        Tue, 12 Mar 2024 03:36:41 -0700 (PDT)
-Received: from gmail.com (1F2EF295.nat.pool.telekom.hu. [31.46.242.149])
-        by smtp.gmail.com with ESMTPSA id c23-20020a1709060fd700b00a44180ab871sm3722079ejk.50.2024.03.12.03.36.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 03:36:40 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Tue, 12 Mar 2024 11:36:38 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Honglei Wang <jameshongleiwang@126.com>
-Cc: linux-kernel@vger.kernel.org,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH 09/13] sched/balancing: Rename update_blocked_averages()
- => sched_balance_update_blocked_averages()
-Message-ID: <ZfAwNufbiyt/5biu@gmail.com>
-References: <20240308111819.1101550-1-mingo@kernel.org>
- <20240308111819.1101550-10-mingo@kernel.org>
- <f5687abb-cab7-497d-a997-572358d3807b@126.com>
+	s=arc-20240116; t=1710239879; c=relaxed/simple;
+	bh=j0KHEpP4+A64VEo8ddI2ua0gUpz6VjXmabhAZemrxXI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HGUVDEStZQATGlE5OpCQBOcaJTuUqX1pfDXPx+nx59nF9iDCgtg59R/12L/C5DmR9AUWzIJmyxk49Xx0/i7898o5Ec7Et9dIe8MyyRFyPzYuXy7Twyc3lwW8u4sNGVmE9GjSGuc80w0/t1la3irI+YW/nejedH/29R9GNPhT+C4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AixALP2U; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42C5mQW9013154;
+	Tue, 12 Mar 2024 10:37:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=0/twHL4
+	Fim0hDqCqcJaDFQzlmAB51tPWASIpJFotokM=; b=AixALP2U03azFYiB4gN/w3M
+	m015fPzkt2ckDDMRW07zHG5OlAEWCq4wopMO5WaxzxkwsdJi74BeKxtLA5UsA2//
+	Sn9ViKo3hNqtL1uRsQgymhvdtEnktZF6VXZ7g7zy43CgCnkLnakTQuwPuoaUyeCe
+	FoIiW8yAtbWU4dBjau2rPyBWFxSs5NrOQsitKs6hD8HWPG3sU/qKpGTXktKR6kcL
+	0Gstyv9uY8wg+9ctMCm7BmuTGcTt0CBKuBSu9FhDCmigzPuJNnGKVfUK15pSeFpR
+	KN1i9G+K8lpx/bQOWUks3Twh0U7GOxJAwcf4pLH+jEigpeSomPh0KUvI1tSdD7Q=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wth7rrhtb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 10:37:43 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42CAbhFY027348
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Mar 2024 10:37:43 GMT
+Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 12 Mar 2024 03:37:38 -0700
+From: Sibi Sankar <quic_sibis@quicinc.com>
+To: <dietmar.eggemann@arm.com>, <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <xuwei5@hisilicon.com>, <zhanjie9@hisilicon.com>
+CC: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <quic_rgottimu@quicinc.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-pm@vger.kernel.org>, <d-gole@ti.com>,
+        Sibi Sankar
+	<quic_sibis@quicinc.com>
+Subject: [PATCH V3] cpufreq: Fix per-policy boost behavior on SoCs using cpufreq_boost_set_sw
+Date: Tue, 12 Mar 2024 16:07:23 +0530
+Message-ID: <20240312103723.3469762-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5687abb-cab7-497d-a997-572358d3807b@126.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 1nBfNmxRHoY_LM4sbNxFBJx3mrwAk26c
+X-Proofpoint-ORIG-GUID: 1nBfNmxRHoY_LM4sbNxFBJx3mrwAk26c
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_08,2024-03-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 adultscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403120081
 
+In the existing code, per-policy flags doesn't have any impact i.e.
+if cpufreq_driver boost is enabled and one or more of the per-policy
+boost is disabled, the cpufreq driver will behave as if boost is
+enabled. Fix this by incorporating per-policy boost flag in the policy->max
+calculus used in cpufreq_frequency_table_cpuinfo and setting the default
+per-policy boost to mirror the cpufreq_driver boost flag.
 
-* Honglei Wang <jameshongleiwang@126.com> wrote:
-
-> > --- a/kernel/sched/pelt.c
-> > +++ b/kernel/sched/pelt.c
-> > @@ -209,7 +209,7 @@ ___update_load_sum(u64 now, struct sched_avg *sa,
-> >   	 * This means that weight will be 0 but not running for a sched_entity
-> >   	 * but also for a cfs_rq if the latter becomes idle. As an example,
-> >   	 * this happens during idle_balance() which calls
-> 
-> Could we also fix this ghost idle_balance() in this serial (maybe in patch
-> 10)?
-
-Good point - I've added the patch below.
-
-Thanks,
-
-	Ingo
-
-===================>
-From: Ingo Molnar <mingo@kernel.org>
-Date: Tue, 12 Mar 2024 11:33:50 +0100
-Subject: [PATCH] sched/balancing: Fix a couple of outdated function names in comments
-
-The 'idle_balance()' function hasn't existed for years, and there's no
-load_balance_newidle() either - both are sched_balance_newidle() today.
-
-Reported-by: Honglei Wang <jameshongleiwang@126.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Fixes: 218a06a79d9a ("cpufreq: Support per-policy performance boost")
+Reported-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 ---
- kernel/sched/fair.c | 2 +-
- kernel/sched/pelt.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 54177ff96e4b..c35452109c76 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6866,7 +6866,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+v3:
+* Pickup Rbs.
+* Simplify per-policy boost setting. [Viresh]
+
+v2:
+* Enable per-policy boost flag in the core instead. [Viresh]
+* Add more details regarding the bug. [Viresh]
+* Drop cover-letter and patch 2.
+
+Logs reported-by Dietmar Eggemann:
+https://lore.kernel.org/lkml/265e5f2c-9b45-420f-89b1-44369aeb8418@arm.com/
+
+ drivers/cpufreq/cpufreq.c    | 18 ++++++++++++------
+ drivers/cpufreq/freq_table.c |  2 +-
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index f6f8d7f450e7..66e10a19d76a 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -653,14 +653,16 @@ static ssize_t store_local_boost(struct cpufreq_policy *policy,
+ 	if (policy->boost_enabled == enable)
+ 		return count;
  
- #ifdef CONFIG_SMP
++	policy->boost_enabled = enable;
++
+ 	cpus_read_lock();
+ 	ret = cpufreq_driver->set_boost(policy, enable);
+ 	cpus_read_unlock();
  
--/* Working cpumask for: sched_balance_rq, load_balance_newidle. */
-+/* Working cpumask for: sched_balance_rq(), sched_balance_newidle(). */
- static DEFINE_PER_CPU(cpumask_var_t, load_balance_mask);
- static DEFINE_PER_CPU(cpumask_var_t, select_rq_mask);
- static DEFINE_PER_CPU(cpumask_var_t, should_we_balance_tmpmask);
-diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
-index f80955ecdce6..3a96da25b67c 100644
---- a/kernel/sched/pelt.c
-+++ b/kernel/sched/pelt.c
-@@ -208,7 +208,7 @@ ___update_load_sum(u64 now, struct sched_avg *sa,
- 	 * se has been already dequeued but cfs_rq->curr still points to it.
- 	 * This means that weight will be 0 but not running for a sched_entity
- 	 * but also for a cfs_rq if the latter becomes idle. As an example,
--	 * this happens during idle_balance() which calls
-+	 * this happens during sched_balance_newidle() which calls
- 	 * sched_balance_update_blocked_averages().
- 	 *
- 	 * Also see the comment in accumulate_sum().
+-	if (ret)
++	if (ret) {
++		policy->boost_enabled = !policy->boost_enabled;
+ 		return ret;
+-
+-	policy->boost_enabled = enable;
++	}
+ 
+ 	return count;
+ }
+@@ -1428,6 +1430,9 @@ static int cpufreq_online(unsigned int cpu)
+ 			goto out_free_policy;
+ 		}
+ 
++		/* Let the per-policy boost flag mirror the cpufreq_driver boost during init */
++		policy->boost_enabled = cpufreq_boost_enabled() && policy_has_boost_freq(policy);
++
+ 		/*
+ 		 * The initialization has succeeded and the policy is online.
+ 		 * If there is a problem with its frequency table, take it
+@@ -2769,11 +2774,12 @@ int cpufreq_boost_trigger_state(int state)
+ 
+ 	cpus_read_lock();
+ 	for_each_active_policy(policy) {
++		policy->boost_enabled = state;
+ 		ret = cpufreq_driver->set_boost(policy, state);
+-		if (ret)
++		if (ret) {
++			policy->boost_enabled = !policy->boost_enabled;
+ 			goto err_reset_state;
+-
+-		policy->boost_enabled = state;
++		}
+ 	}
+ 	cpus_read_unlock();
+ 
+diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
+index c4d4643b6ca6..c17dc51a5a02 100644
+--- a/drivers/cpufreq/freq_table.c
++++ b/drivers/cpufreq/freq_table.c
+@@ -40,7 +40,7 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
+ 	cpufreq_for_each_valid_entry(pos, table) {
+ 		freq = pos->frequency;
+ 
+-		if (!cpufreq_boost_enabled()
++		if ((!cpufreq_boost_enabled() || !policy->boost_enabled)
+ 		    && (pos->flags & CPUFREQ_BOOST_FREQ))
+ 			continue;
+ 
+-- 
+2.34.1
 
 
