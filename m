@@ -1,184 +1,101 @@
-Return-Path: <linux-kernel+bounces-100190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79158879359
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C47F879358
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:53:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8FD41C22224
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01BA028528F
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E0079DCA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D042379DC9;
 	Tue, 12 Mar 2024 11:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="M2W8Q4vl"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yZENlQaD"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9229979B9D
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2106179DA4
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710244378; cv=none; b=r/YU3cX3BiWP3WFQGGGtbB3DWavhBnNCMSvPyadScOvaTvp7Ai73HncpwwvWC8xGa6t3MMiCNVVVgRUoQ0PrbGt8QHdl2WlwBjSmRFqKt+0qhfG58KtQLCcG2ipY6kvwI/D5vK6eljbE/rUoboYMi0943F6xPYTvUDI2JvYK/7A=
+	t=1710244378; cv=none; b=VsGJ1987oKhNMfGKztt1jqfUddPjN9+BRk3WWxWb3EjOfkGl2qYTXpE4/PLMESrqDXtpgZkYYa7mS17a9f7o85Ev8zNG3UNGHqbJGgy6lmOvXuPlv4IJsAFIFUYQdtyqrf8SYcXJGmVoRO2C+A6tNGMAJ780dFY1vW+r+f/WqP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710244378; c=relaxed/simple;
-	bh=mTUm9ym/RSqft+KABMxetZ2udu3o3Kzzw4feTXppzQ8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bOeB2l9PIsCa+oUTq3pWBqgwzGqVMKAgjfEU4QSIOZH2QvtRZ5czwZQs7iZ5QhEPCKuaoM71KTVWAYfMtKZZceB3v39XpKff1sY3HebeWPCaCQzZoJ5SFJ0TQiqBK4oM+e8NB+MZ8c0iWDiR3oFCzScibkHAfBSL4a9+F7sxdB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=M2W8Q4vl; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dd611d5645so32398055ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:52:56 -0700 (PDT)
+	bh=JWULMh7o9qtF+RsBiOf3B41hJfHZ1YtSIOHKt7eEqF8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZHSbk6jMGoJ1M3aOApO0AI+OX7FVr2m/w/L7kVdpT2ofupY3RP45ge827NlEl03lHrQ/YmBycwMWm0cCZsktuFNuVLDNuN8ogubTDU2VAolyIw8zEwsR/Nk2P9W14Md0Md905zUESgtDzSSiDRDWVc+4F0BuSqVdD9SB8txNH6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yZENlQaD; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso5327873276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:52:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710244376; x=1710849176; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=32L7EdHAuQ4WnOqivRSfbIvHEBBAYz+hzKyLr7KyYy4=;
-        b=M2W8Q4vlRPDFeM3hAAfZjbtUFJ1eHEkL7aEgnCmW0nH1voi1hbKB7nJ4aEWU6e+HeC
-         CU28L/Hx5xO38hQiL4yYHz1ENTkO2A8cxV2t58IINQa5kudPEK0nm7d/8dRugaYiKvjq
-         VXQ5rurA4PbrnLw8KxzSj0eGfQcDB4n7WtKDg=
+        d=linaro.org; s=google; t=1710244374; x=1710849174; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iYh9NgFiUlDSRFh0N6tnk2Yai7KZlV9KzVjtJmtqPwA=;
+        b=yZENlQaDzlx/kvHDBhrtvkA4pnGAmJ+dTWbp/c6NJHi5zG5fb1aQWnofvuCtgwEoXx
+         f526ph+FDmbKC6AiAadWwltrVIGGLNA5zMW9KJQM3nipF4ssFV2K2GGRwqPcouDt16Qu
+         QLdkpSFfvRx52yqkWDMvfaaInDlwACBbbsu/4TEo7JLu1Ym2HruaiwAFw01S0KB9LQf5
+         xZOGEgQB+VwyfwMzydkXkBQMaD2BkCMn9c1I8oMalsLNOh4F0u0dC/ONrWFX4HoGCqAx
+         bn4Lx9X6HOiUiIJ2xUDI6yeLwR7YRPzRZd9WW9hsTWBofm6T+wU9qy7TUOP+JXfybLUe
+         WkRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710244376; x=1710849176;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=32L7EdHAuQ4WnOqivRSfbIvHEBBAYz+hzKyLr7KyYy4=;
-        b=tlmiZ1pB98Lr02NRh10dlLek2PGgo2Te8wKa3w2BYqePS/LJSHedkBCQ5maS86zepa
-         s2qZwiYOsjmGbEPlVF5BvT8IGvg0zSjJI7KoxsIX4YNY88jBEpcBIG7fiFhDmEKEBFX4
-         oNX7scAZIpBCFl5kKnTY+/wTZ1qV6CVNPYCFyEm+IBo+EhzpTyZpRa+hryENDmVMD27M
-         RqeO5rfmOljd+ARSJ0sYmAQkmiCctZ+CTZ6L0PDcHUBOB4pvBidwPB+4mx8JOPwiqOfx
-         D/WZ1IVuo8O0bDQ92csgb7xcsz9QXfDTLZDwkOsMOb3djiSlUzmjLCwcmLXkOEPjr+/e
-         zfag==
-X-Forwarded-Encrypted: i=1; AJvYcCUocZebdaoy1oOKLHgvWGWZOd/14VCRqEosXLIUDOm+3z9MPc8CKj0aPhm1BbkiAtVZ34cFTbaRWh5sMq2BkygQscF2L4prCeyibCI9
-X-Gm-Message-State: AOJu0Yx5wsJ0ZoAe0UHctscqGBPl7D4WxdTW1weQvDsuzTJoj1Sb4j98
-	PpSoFBe2d12i1BTLvWZ+8r/cutAL3Z2/E75hlv0K4B+GGS1tkuQ+vRB2YX7wSw==
-X-Google-Smtp-Source: AGHT+IFHW7gNc8FGsMt9K1fDNHiUJ5TT/QPfRrLz4t4aGJMOagv8xqOkZuJYIn0TiohOgI7RjlfCgg==
-X-Received: by 2002:a17:902:d2d2:b0:1dd:c227:4175 with SMTP id n18-20020a170902d2d200b001ddc2274175mr813268plc.8.1710244375852;
-        Tue, 12 Mar 2024 04:52:55 -0700 (PDT)
-Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:bae3:7b5f:7434:812e])
-        by smtp.gmail.com with ESMTPSA id b15-20020a170903228f00b001dd1bdee6d9sm6500179plh.31.2024.03.12.04.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 04:52:55 -0700 (PDT)
-From: Pin-yen Lin <treapking@chromium.org>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Chen-Yu Tsai <wenst@chromium.org>,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Pin-yen Lin <treapking@chromium.org>,
-	Weiyi Lu <weiyi.lu@mediatek.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Bosi Zhang <u201911157@hust.edu.cn>,
-	Nicolas Boichat <drinkcat@chromium.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH v4] clk: mediatek: Do a runtime PM get on controllers during probe
-Date: Tue, 12 Mar 2024 19:51:55 +0800
-Message-ID: <20240312115249.3341654-1-treapking@chromium.org>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+        d=1e100.net; s=20230601; t=1710244374; x=1710849174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iYh9NgFiUlDSRFh0N6tnk2Yai7KZlV9KzVjtJmtqPwA=;
+        b=Sxzn3KcOcae+qlIU+dFsCBikwGnGU0+O1s6EwzyLXh7JAG0h7ikDJO28rys+bq4iL6
+         4lBLzfi/8g8T549MHJr0hDMp2P3z0uFHSHAmSJGzKtFonLxZz2p8rgf0YCtmkRebKjEW
+         S0OsMu7r5vDa5cJbXK9jIK2UXaWUSwMOYNB3mU3IqfhcOVQxxKLjkwfpAgLwZRWxveU1
+         Eu88JBaUV/ISHFaezJDPwEXP7zEp5X9vsfidpR/HlFomTN60+6MH/3nZuVeHeId7aIGw
+         7YHa/rGV6KnuML94K+7sVC2YOq3/FtfLw2XjZWIF8rt+BkahBY50UnWq4Nqd4tofHdtU
+         e81w==
+X-Forwarded-Encrypted: i=1; AJvYcCXdlCSZZ0k2wrPbmlUeaDAKSzsh+IkvRTmSiHtwUGP74iCFBl/T8jkwmrMbKt4OrMgnKAzL2QebWfzz3bEp/ua9Kv5Xty2dbFWorKZt
+X-Gm-Message-State: AOJu0YypfdQBQUffEX3eRl/6uHsqDJqw0VADvcupd8X9mcJV4PQxmePa
+	Bh0v1t45r9anzNiWjxNbJVebwW7Wpot3OxwZeZrOjzqP/vDzKoanbrTpNztvezp21i2Hekxit7i
+	K3N8cn8t7d5NnYmpG+Ey3GGoqSEYw304whqIp6g==
+X-Google-Smtp-Source: AGHT+IHM4+XkGrEr4TR1Ej4v7sv8rnNzednJ2Q7ydm5WMikNndCuOBWPz9jPurIvtRqHtOuQiNrGRxmNT6kHIFbRmWU=
+X-Received: by 2002:a25:140b:0:b0:dbf:23cd:c05c with SMTP id
+ 11-20020a25140b000000b00dbf23cdc05cmr6527345ybu.13.1710244374125; Tue, 12 Mar
+ 2024 04:52:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <ae643df0-3a3e-4270-8dbf-be390ee4b478@moroto.mountain>
+In-Reply-To: <ae643df0-3a3e-4270-8dbf-be390ee4b478@moroto.mountain>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 12 Mar 2024 12:52:42 +0100
+Message-ID: <CACRpkdYtiyHgvtPJYxq2BNb9UxthwPQPHyUddQ5Q1eat1NY4XQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: nomadik: remove BUG_ON() in nmk_gpio_populate_chip()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, linux-arm-kernel@lists.infradead.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-mt8183-mfgcfg has a mutual dependency with genpd during the probing
-stage, which leads to a deadlock in the following call stack:
+On Mon, Mar 11, 2024 at 12:00=E2=80=AFPM Dan Carpenter <dan.carpenter@linar=
+o.org> wrote:
 
-CPU0:  genpd_lock --> clk_prepare_lock
-genpd_power_off_work_fn()
- genpd_lock()
- generic_pm_domain::power_off()
-    clk_unprepare()
-      clk_prepare_lock()
+> Using BUG_ON() is discouraged and also the check wasn't done early
+> enough to prevent an out of bounds access.  Check earlier and return
+> an error instead of calling BUG().
+>
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-CPU1: clk_prepare_lock --> genpd_lock
-clk_register()
-  __clk_core_init()
-    clk_prepare_lock()
-    clk_pm_runtime_get()
-      genpd_lock()
+Thanks Dan, I applied the patch to the pin control tree since the
+rest of the stuff is resting there and Bartosz already sent his pull
+request.
 
-Do a runtime PM get at the probe function to make sure clk_register()
-won't acquire the genpd lock. Instead of only modifying mt8183-mfgcfg,
-do this on all mediatek clock controller probings because we don't
-believe this would cause any regression.
-
-Verified on MT8183 and MT8192 Chromebooks.
-
-Fixes: acddfc2c261b ("clk: mediatek: Add MT8183 clock support")
-Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-
----
-v3: https://lore.kernel.org/all/20240108081834.408403-1-treapking@chromium.org/
-
-Changes in v4:
-- Remove the need_runtime_pm flag and apply this to all mtk controllers
-
-Changes in v3:
-- Update the commit message and the comments before runtime PM call
-
-Changes in v2:
-- Fix the order of error handling
-- Update the commit message and add a comment before the runtime PM call
-
- drivers/clk/mediatek/clk-mtk.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-mtk.c
-index 2e55368dc4d8..bd37ab4d1a9b 100644
---- a/drivers/clk/mediatek/clk-mtk.c
-+++ b/drivers/clk/mediatek/clk-mtk.c
-@@ -13,6 +13,7 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/slab.h>
- 
- #include "clk-mtk.h"
-@@ -494,6 +495,16 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
- 			return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
- 	}
- 
-+
-+	devm_pm_runtime_enable(&pdev->dev);
-+	/*
-+	 * Do a pm_runtime_resume_and_get() to workaround a possible
-+	 * deadlock between clk_register() and the genpd framework.
-+	 */
-+	r = pm_runtime_resume_and_get(&pdev->dev);
-+	if (r)
-+		return r;
-+
- 	/* Calculate how many clk_hw_onecell_data entries to allocate */
- 	num_clks = mcd->num_clks + mcd->num_composite_clks;
- 	num_clks += mcd->num_fixed_clks + mcd->num_factor_clks;
-@@ -574,6 +585,8 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
- 			goto unregister_clks;
- 	}
- 
-+	pm_runtime_put(&pdev->dev);
-+
- 	return r;
- 
- unregister_clks:
-@@ -604,6 +617,8 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
- free_base:
- 	if (mcd->shared_io && base)
- 		iounmap(base);
-+
-+	pm_runtime_put(&pdev->dev);
- 	return r;
- }
- 
--- 
-2.44.0.278.ge034bb2e1d-goog
-
+Yours,
+Linus Walleij
 
