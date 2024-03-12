@@ -1,129 +1,127 @@
-Return-Path: <linux-kernel+bounces-99808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F97878DB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:00:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDED878DB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:00:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A8E11C21770
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:00:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA1FB2824F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73476111AC;
-	Tue, 12 Mar 2024 04:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE936BA34;
+	Tue, 12 Mar 2024 04:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ueph0Upu"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="rLZMA8Av"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38FADBA39
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 03:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031A144C73;
+	Tue, 12 Mar 2024 04:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710215999; cv=none; b=kHjU/stPT3JZuBNbXCVhjcduW7QCKiZfqhljwUC1EOl1A1NY9pgACjXJERlHWyzUGl2ClNs7J4wXKYIugA3AdFFvrp21fXC96o4c5/n3o5fjp5GjMKAfKpeyzX1z3wNMl23OJr8W8GD/IAaoWfRAOfjPs2yG66V8Z0ZBEuG0KQk=
+	t=1710216007; cv=none; b=k76w1ds8xPAfWwOBc7z9YXrM5ezX0EIzNIqFecN0WYhlo8hixjBnnh+lv4eTS4BNtcHqiSPBM1o+TNXzTtrlQiTafMUx2j0jZeqRRLnZMDYe+kmFZFoGZDw9u0agGvdNJBHZSjwM/1dAzEn7meVH51XSt6V4AQQgsTVjj5Yvh04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710215999; c=relaxed/simple;
-	bh=ii5uJKIR1GUQaXN/wXyriaRdctB7IViTNGsZQo615/c=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=J8sSntCS+gtFuT6B3I/zPViuMVvcAvgOa9/C6uwsZDYzv+O2AgncDfsWk0xhbbJdJK+dVrUq4ditG/PQKgcj2SQxOaQWDo8kJjnfsdO52KOMAE+iyK3NymyLVVMvNQFdvd2rlKLY2Dz2Ddc3Fr0RoOqwm6B9/7FcVgw5XZvJUN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ueph0Upu; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd0ae66422fso10008187276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 20:59:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710215997; x=1710820797; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UAJ+3ue8h2GtGeMmVF7aptze9cHfLRbMGaK/pSc8DQk=;
-        b=Ueph0Upu0fPJpwsOU9xMB6/rfyQTv8vvQSQQmteEjjm1T0c/q73aDg1ODnRG4bpz8u
-         IDfQljVtnlj4NnpUzVeUVFiTzx1qAUoif8InLJj2tOpYM1yQnLDXiO2bjp7f2fJUd0iE
-         H6Hy0VbC57cnCmW6vFdS70Y9QxC0ZbwlSW4XFtSJ9uh3il7XwTFDfceBynGZJmuPF0JW
-         o1+hwbYM2LEDImZ+3bj8m3hovP0Kf8S5teuKDR7vj706MLhu33UIctcf7tMLRclxVg5/
-         mbp6ex3Q6LEJViwyWX7j3ORr01znmGmEcb9vkahTGZiBGo5mqfWBWG7VAVzOm+jICzXn
-         /v0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710215997; x=1710820797;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UAJ+3ue8h2GtGeMmVF7aptze9cHfLRbMGaK/pSc8DQk=;
-        b=eS5OHFLjY79PteTjywraJN1lAbXPYfR07iYgAnYGTo2KrNWRrnGOHXM8wWKikBh4Gh
-         e82KoARoH4auW75KXgYbW8hQBwvVOXi/cz0xGL1k9heV9ZIgez/LDb0fWIC7ePeluk3C
-         qu8QbanYV9QAXtl3EiLzsrwzUDnkYY7FjecBZF688NJBuiiHULeiOYziG3t61d/GRYcy
-         oYAEztxNqjzWxMqd8ck4T4FQWiMBR3ExVPCoxI16y4HpMk+sod3ZdTYoCFTEoIlE6Ag+
-         CCmT0HhN5SYvR/FvvciBnO3etvAhwPP4IZWFlvnWH1a7yIW8CmH2Px+gLnEOF07nnYtF
-         qQxg==
-X-Forwarded-Encrypted: i=1; AJvYcCVEbw7DIHL9bNMTFUxyHBQV7cFE2PfvLlDbh73e86zOI499wFFGjg6k2Cc9+5U7mGKVJ21KO8abvgOd+NkmS6axVjdSc7ftBwiIrD49
-X-Gm-Message-State: AOJu0YyZnYsiAkt8Ia5j0ir8X7aKbqCbGY9RIbuBqB8lreJO7c7Aeel6
-	pr+m7VOImUgG4MQDscO7F0tqNMcvY4yLB9hoTPfcPru6RHX/IITIKS/vQi2HDDCxQSyp4pB/GpE
-	FGdHJp58aIYH8Zs8nyg==
-X-Google-Smtp-Source: AGHT+IHHHQjD/GEWT164UF9qNBAO6Zdv0oaS7UwIqMuvXE4Wlv6Tn55WWEmKnE3lYPTXnbsqaib7icEdWoIEAoBS
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a25:98c5:0:b0:dc6:e884:2342 with SMTP
- id m5-20020a2598c5000000b00dc6e8842342mr2710694ybo.5.1710215997281; Mon, 11
- Mar 2024 20:59:57 -0700 (PDT)
-Date: Tue, 12 Mar 2024 03:59:51 +0000
-In-Reply-To: <20240312035951.3535980-1-yosryahmed@google.com>
+	s=arc-20240116; t=1710216007; c=relaxed/simple;
+	bh=3URuGkzPRs4E77GmbYD2e4py9I9aZt63BbacUZfesj4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tqAr3+9EQHjmhwXQL1otB3ePsCo6LBEeA3y/qmVvZjX+viuMUi2myxYqrCGJyw50Owi41kCruIlVVr8OewJaSJfP2YzgmzRj1TBQUXHrU/7izeo3RWxgLFqaLE8I0X2zUQVuXrGJQtBFZWsSvKfVE9kUE01U6CcRHfs3yES0foQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=rLZMA8Av; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710216003;
+	bh=yZEz+WS8bOu0ju02ZAMRnOp28kobzHPnntSr9VC43dQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rLZMA8Avh4iVz/ES4lHIoJ6Oo7PzLY2WyH9Wa2iCV5yO7+uVRoEKO1V5AiLSbA61k
+	 OE2Eay8jatzMHgmvWJea9iNJIVgXXRxzhTXNobjpCVEeGb9YmCytb8nDqfcPY5aCP7
+	 HH2gcbKnFqleVQdp5sHPDJLF8oFMQQeoUEcK+9RwpBOw3kX+8wCPDFUBm6xAK5lRbn
+	 lQogRLggX06teXSf7emFd95zzjGxA3OTHjAbbc53GAtGUY5CD5VgR6kw+I8yFzEugA
+	 1DFtDIj+zBPW1EYynw1CyZyQlc/yKZvUebVE0Lzu4UpW4f7fi5iOnLUicnLGeucuNm
+	 W+z/raDNVqD1Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tv0KG4sNjz4wyx;
+	Tue, 12 Mar 2024 15:00:02 +1100 (AEDT)
+Date: Tue, 12 Mar 2024 15:00:01 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Christian Brauner <brauner@kernel.org>, Steve French
+ <smfrench@gmail.com>
+Cc: David Howells <dhowells@redhat.com>, Jeff Layton <jlayton@kernel.org>,
+ CIFS <linux-cifs@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Steve French <stfrench@microsoft.com>
+Subject: Re: linux-next: manual merge of the vfs-brauner tree with the cifs
+ tree
+Message-ID: <20240312150001.471d3d94@canb.auug.org.au>
+In-Reply-To: <20240226110343.28e340eb@canb.auug.org.au>
+References: <20240226110343.28e340eb@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240312035951.3535980-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240312035951.3535980-3-yosryahmed@google.com>
-Subject: [PATCH 3/3] x86/mm: Cleanup prctl_enable_tagged_addr() nr_bits error checking
-From: Yosry Ahmed <yosryahmed@google.com>
-To: x86@kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
-	Rick Edgecombe <rick.p.edgecombe@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/N44fLK/yQcRJfrUddlD0fgT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-There are two separate checks in prctl_enable_tagged_addr() that nr_bits
-is in the correct range. The checks are arranged such the correct case
-is sandwiched between both error cases, which do exactly the same thing.
+--Sig_/N44fLK/yQcRJfrUddlD0fgT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Simplify the if condition and pull the correct case outside with the
-rest of the success code path.
+Hi all,
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- arch/x86/kernel/process_64.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+On Mon, 26 Feb 2024 11:03:43 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the vfs-brauner tree got a conflict in:
+>=20
+>   fs/smb/client/file.c
+>=20
+> between commit:
+>=20
+>   d7e87923939a ("cifs: Fix writeback data corruption")
+>=20
+> from the cifs tree and commit:
+>=20
+>   a69ce85ec9af ("filelock: split common fields into struct file_lock_core=
+")
+>=20
+> from the vfs-brauner tree.
+>=20
+> Please do not do unrelated white space cleanups ...
+>=20
+> I fixed it up (I used the former version) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
 
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 748d2b3bdb985..0608c4df4e95d 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -783,17 +783,13 @@ static int prctl_enable_tagged_addr(struct mm_struct *mm, unsigned long nr_bits)
- 		return -EBUSY;
- 	}
- 
--	if (!nr_bits) {
--		mmap_write_unlock(mm);
--		return -EINVAL;
--	} else if (nr_bits <= LAM_U57_BITS) {
--		mm->context.lam_cr3_mask = X86_CR3_LAM_U57;
--		mm->context.untag_mask =  ~GENMASK(62, 57);
--	} else {
-+	if (!nr_bits || nr_bits > LAM_U57_BITS) {
- 		mmap_write_unlock(mm);
- 		return -EINVAL;
- 	}
- 
-+	mm->context.lam_cr3_mask = X86_CR3_LAM_U57;
-+	mm->context.untag_mask =  ~GENMASK(62, 57);
- 	on_each_cpu_mask(mm_cpumask(mm), enable_lam_func, mm, true);
- 	set_bit(MM_CONTEXT_LOCK_LAM, &mm->context.flags);
- 
--- 
-2.44.0.278.ge034bb2e1d-goog
+This is now a conflict between the cifs tree and Linus' tree.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/N44fLK/yQcRJfrUddlD0fgT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXv00EACgkQAVBC80lX
+0Gz45Qf/UDETD9m+M72hF/5WefZSbb6LRz09k8PyMM9r0PMZhi5wA7DKVMWWT6rV
+ODAz8JnjUvv2j/Q2bPDCrhV+S0kE+D1rJ4V46aZYABA4Bcrl2fGp3ujSWzI+r5gP
+U0s2UVFcgzdB1iNLtj+M72T/qDxvQQ+PSSn+f+dc5L1axvwZtxm2LXghHTlkWwNs
+C9fAORLlnX/OG+SG8cbPZSbYsBIG58lwX14iFV/DchHSzOp8CxJfeLDsiThGwlnW
+8PEhEMjTZgiSWOhsKenRHrfqS6bPoKkw5WkdvO4l+BucvlOcAMfG2XwMD1eOat5w
+xbd36kNPKulgq69T+BSwLhKv5NPLTA==
+=N9Cd
+-----END PGP SIGNATURE-----
+
+--Sig_/N44fLK/yQcRJfrUddlD0fgT--
 
