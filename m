@@ -1,100 +1,187 @@
-Return-Path: <linux-kernel+bounces-99833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFBA8878E0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:58:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E792F878E13
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 06:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0425F1C21429
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 04:58:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA1601C216B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 05:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D861C8DD;
-	Tue, 12 Mar 2024 04:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23CAA10A0F;
+	Tue, 12 Mar 2024 05:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="h6QTprJc"
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PW35itaQ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50A2BE6D
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 04:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7794AB66F;
+	Tue, 12 Mar 2024 05:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710219509; cv=none; b=cL91fybNgQiE9z1jThqG6/8c5KGv3pq7Zvly/WbzgNgdEtUdll63tq7S2pfPaRKoBFvEZOS1rhHAwC0Lpgeap1V2oNZw22PkyuFYkFJuRa+kBoFBKkQBMzHIMvldzpqqyJcGS5iAs1WOHUhwYhnWVbFQ2y/it4zVyVlAKbw48ko=
+	t=1710219772; cv=none; b=r0UL5YDm4llyFjD72I//lvBSbs/VYNTSeIqy1v2F/pCcxDE/ntImoiNXhA4wFe7j+o/+QjdBU60Vwj8L9C00QD306D/+5i5rEGAvdHW6KvHNz26mnbb4jHSW274NJ6Qu+KS6k/2LjpBbEbIYkwxZXt2JkagPH1y6ssj80EYht7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710219509; c=relaxed/simple;
-	bh=6zqa6P2EGkiDuzFO/I4oTsjRTV8BpMATKDpKbTV4IAE=;
+	s=arc-20240116; t=1710219772; c=relaxed/simple;
+	bh=2tsBJwRlZRWmiGzbwBsDlPhhzuZbS4QXjkPuYyC5m20=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mMt2S5F1qifijtMDZ3x76rwQwx+fEdCX3yxV/KpkiI9hPvs9HWU4jKMsJ5bzqKsrYX3iyR+cL17kKTWP8KrpA21g7TUNInfDQyrKpi80xotz0hfd70MgIlebXo0ITimVlb2BlAnzjkGUGMlfCPrqcAY+KP+FIElnOF9cdDf+vxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=h6QTprJc; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <afee884d-b19c-4e03-bba4-9207673b3c96@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710219505;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YE1RJvCCOc/EPRwrM42zHZ3v+Ktd8fYS0EGnWpzzjWA=;
-	b=h6QTprJcRwDIvZD9ZZ2dy/M0LKviyZxlEeF0pVMV+3Rg8bjsIXTCNvQnpFKjrPMJRdnq/1
-	RRWUkBUailildodP3WpTMS7+2BbBrVbSqY7vw9VcuhZvKF0ieZxxQg1VnwvVL06fjJZNJa
-	HdljuodYuF+pBGJK2ctuaJMPs4OLFV4=
-Date: Tue, 12 Mar 2024 12:57:58 +0800
+	 In-Reply-To:Content-Type; b=bmbmfXqt1LIyPLNX51ByKTdFl5xExPUY+q6pCEbwQGgvFxXEdko5ryt5PcvYaSSU4RGMfM91gkjRqGaf0cQiVCEHC+YQLTBiuUdoUOda0rnuSSdIkZ05VeyGFTlQBYm+PpRBA/HM2516fQGrlbXs0If4raQNTlnQxS6+7vi/Riw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PW35itaQ; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710219770; x=1741755770;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2tsBJwRlZRWmiGzbwBsDlPhhzuZbS4QXjkPuYyC5m20=;
+  b=PW35itaQA2fRJHSFN7edhv1yNdBNmSwSs/sz4M8H9b1bwHd9OdttFVus
+   XTsgJZQT4DrBdEmeFfBLrDWWxubiPgdNR9n1aN3t0Ll0QGmaOJbCtHcBL
+   Uy3G/Lqj9np9JgD0LfK7EROUKhQ97cJS3QX3qGvlKCvQfS29f42DvVy+l
+   VhmcguSacLLokMb8w9VD/JAdDyty5wTcadFJsqXR/cCP0l6Cr63g34OYG
+   PLI6of4grblOrLE0K40+ouzk7wzzCk2wgRlj/mj4KZANq0M9NnS9rCtZ/
+   DhA5veamqtzEjNnzwdyLgOSj9F0YbuF1aZ0d7gg0MIHgmUuVtfS3T2StU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="15639605"
+X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
+   d="scan'208";a="15639605"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 22:02:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
+   d="scan'208";a="11834601"
+Received: from sbrowne-mobl.amr.corp.intel.com (HELO [10.209.68.239]) ([10.209.68.239])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 22:02:48 -0700
+Message-ID: <13581af9-e5f0-41ca-939f-33948b2133e7@linux.intel.com>
+Date: Mon, 11 Mar 2024 22:02:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mm: zswap: remove unnecessary check in zswap_find_zpool()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/5] Drivers: hv: vmbus: Track decrypted status in
+ vmbus_gpadl
 Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240311235210.2937484-1-yosryahmed@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20240311235210.2937484-1-yosryahmed@google.com>
+To: mhklinux@outlook.com, rick.p.edgecombe@intel.com, kys@microsoft.com,
+ haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+ gregkh@linuxfoundation.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, kirill.shutemov@linux.intel.com,
+ dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-coco@lists.linux.dev
+Cc: elena.reshetova@intel.com
+References: <20240311161558.1310-1-mhklinux@outlook.com>
+ <20240311161558.1310-3-mhklinux@outlook.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240311161558.1310-3-mhklinux@outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 2024/3/12 07:52, Yosry Ahmed wrote:
-> zswap_find_zpool() checks if ZSWAP_NR_ZPOOLS > 1, which is always true.
-> This is a remnant from a patch version that had ZSWAP_NR_ZPOOLS as a
-> config option and never made it upstream. Remove the unnecessary check.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
-Looks good to me!
-
-Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
-
-Thanks.
-
+On 3/11/24 9:15 AM, mhkelley58@gmail.com wrote:
+> From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+>
+> In CoCo VMs it is possible for the untrusted host to cause
+> set_memory_encrypted() or set_memory_decrypted() to fail such that an
+> error is returned and the resulting memory is shared. Callers need to
+> take care to handle these errors to avoid returning decrypted (shared)
+> memory to the page allocator, which could lead to functional or security
+> issues.
+>
+> In order to make sure callers of vmbus_establish_gpadl() and
+> vmbus_teardown_gpadl() don't return decrypted/shared pages to
+> allocators, add a field in struct vmbus_gpadl to keep track of the
+> decryption status of the buffers. This will allow the callers to
+> know if they should free or leak the pages.
+>
+> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
 > ---
->  mm/zswap.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 9a32377520827..c6267b5e0999a 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -884,12 +884,7 @@ static void zswap_entry_cache_free(struct zswap_entry *entry)
+>  drivers/hv/channel.c   | 25 +++++++++++++++++++++----
+>  include/linux/hyperv.h |  1 +
+>  2 files changed, 22 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+> index 56f7e06c673e..bb5abdcda18f 100644
+> --- a/drivers/hv/channel.c
+> +++ b/drivers/hv/channel.c
+> @@ -472,9 +472,18 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
+>  		(atomic_inc_return(&vmbus_connection.next_gpadl_handle) - 1);
 >  
->  static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
->  {
-> -	int i = 0;
-> -
-> -	if (ZSWAP_NR_ZPOOLS > 1)
-> -		i = hash_ptr(entry, ilog2(ZSWAP_NR_ZPOOLS));
-> -
-> -	return entry->pool->zpools[i];
-> +	return entry->pool->zpools[hash_ptr(entry, ilog2(ZSWAP_NR_ZPOOLS))];
+>  	ret = create_gpadl_header(type, kbuffer, size, send_offset, &msginfo);
+> -	if (ret)
+> +	if (ret) {
+> +		gpadl->decrypted = false;
+
+Why not set it by default at the beginning of the function?
+
+>  		return ret;
+> +	}
+>  
+> +	/*
+> +	 * Set the "decrypted" flag to true for the set_memory_decrypted()
+> +	 * success case. In the failure case, the encryption state of the
+> +	 * memory is unknown. Leave "decrypted" as true to ensure the
+> +	 * memory will be leaked instead of going back on the free list.
+> +	 */
+> +	gpadl->decrypted = true;
+>  	ret = set_memory_decrypted((unsigned long)kbuffer,
+>  				   PFN_UP(size));
+>  	if (ret) {
+> @@ -563,9 +572,15 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
+>  
+>  	kfree(msginfo);
+>  
+> -	if (ret)
+> -		set_memory_encrypted((unsigned long)kbuffer,
+> -				     PFN_UP(size));
+> +	if (ret) {
+> +		/*
+> +		 * If set_memory_encrypted() fails, the decrypted flag is
+> +		 * left as true so the memory is leaked instead of being
+> +		 * put back on the free list.
+> +		 */
+> +		if (!set_memory_encrypted((unsigned long)kbuffer, PFN_UP(size)))
+> +			gpadl->decrypted = false;
+> +	}
+>  
+>  	return ret;
 >  }
+> @@ -886,6 +901,8 @@ int vmbus_teardown_gpadl(struct vmbus_channel *channel, struct vmbus_gpadl *gpad
+>  	if (ret)
+>  		pr_warn("Fail to set mem host visibility in GPADL teardown %d.\n", ret);
+
+Will this be called only if vmbus_establish_gpad() is successful? If not, you might want to skip
+set_memory_encrypted() call for decrypted = false case.
+
 >  
->  /*
+> +	gpadl->decrypted = ret;
+> +
+
+IMO, you can set it to false by default. Any way with non zero return, user know about the
+decryption failure.
+
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(vmbus_teardown_gpadl);
+> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> index 2b00faf98017..5bac136c268c 100644
+> --- a/include/linux/hyperv.h
+> +++ b/include/linux/hyperv.h
+> @@ -812,6 +812,7 @@ struct vmbus_gpadl {
+>  	u32 gpadl_handle;
+>  	u32 size;
+>  	void *buffer;
+> +	bool decrypted;
+>  };
+>  
+>  struct vmbus_channel {
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
 
