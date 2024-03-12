@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-100242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 825938793EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:15:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 586B08793EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C7581F23C88
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:15:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CDD0B23CF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1891E7A71C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B377A72A;
 	Tue, 12 Mar 2024 12:14:58 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664B77A12B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796167A12C;
 	Tue, 12 Mar 2024 12:14:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710245697; cv=none; b=K1WRVamccaROWkMMlHmD7su+lN6QrUbJo9GpmF1cfmR9QmJOwG7bLXX2q0MP3cXn9lK4I4z3FiVp6VytmZxk8muAOQS1sjZNkvt27e7jd7C7Dq9sZYe5Lju6adAeo4zZlPIrP4nClsdyXJ5IxIm2I3yTAqMKrNUuHuUBS6oO9Sw=
+	t=1710245697; cv=none; b=Mb6Eqz4imPFMJ8Q3UjxZIVqnHz5fxKuoazgOT4eSQnJT2vX0tY5Q8nELFgAiq9iSfy1O8KQ9BGgEfEgf1kqwmiePwIRwJy1REQdjrRIxqQ9b6rAISD7+P7eVOosv14fgJIKSsJbioV16n8CzLNVBeqxwg6iMXz8r+Y4ABuombE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710245697; c=relaxed/simple;
-	bh=8LOUjWQ8T9GS+GwmSDKVoVsWbFNPD6fGlsNznIECHSM=;
+	bh=YsssiuiqEvxFvCvcRJa8Z8JONNFwmgSGLT8cNZAvKAU=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=lNud9F1LCPpFHR1CMBf3+7UtiQyKuRxMMPL+Ng2imez86AKdeD4Agp2kYeUw+PVeW98fV/NeNCBbUFgXOCEFCzp2UH4XgCNEDhJcgMExEScsV7TDt8NppqfL0sM1liJHpfPLSQDd5zcID1XGHWBBN/GlTudZv6Z/zfeoT/i+vBg=
+	 Content-Type; b=MkdUCNyvfJNoY3Jr6K7uUw2dxXEiTX0DKf0GTVKAiRI5RI8MJ9kxEwbW3H/npMHBUIcZiB5mfRrFcxnQmgHWBvt/mkJm9ZpbQ4jnIiNMBjDssgUbgqyHrUEmKbuTZt0oxqifNIR29gWSsE/9Z2RKSYz1Ybh2lWBDN2sDyUIxPbw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19361C43394;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EE5BC43399;
 	Tue, 12 Mar 2024 12:14:57 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rk143-00000001uZA-2GfF;
+	id 1rk143-00000001uZj-2taL;
 	Tue, 12 Mar 2024 08:17:03 -0400
-Message-ID: <20240312121703.399598519@goodmis.org>
+Message-ID: <20240312121703.557950713@goodmis.org>
 User-Agent: quilt/0.67
-Date: Tue, 12 Mar 2024 08:15:07 -0400
+Date: Tue, 12 Mar 2024 08:15:08 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -47,7 +47,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  linke li <lilinke99@qq.com>,
  Rabin Vincent <rabin@rab.in>,
  stable@vger.kernel.org
-Subject: [PATCH v4 1/2] ring-buffer: Use wait_event_interruptible() in ring_buffer_wait()
+Subject: [PATCH v4 2/2] tracing/ring-buffer: Fix wait_on_pipe() race
 References: <20240312121506.972039112@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,21 +59,50 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Convert ring_buffer_wait() over to wait_event_interruptible(). The default
-condition is to execute the wait loop inside __wait_event() just once.
+When the trace_pipe_raw file is closed, there should be no new readers on
+the file descriptor. This is mostly handled with the waking and wait_index
+fields of the iterator. But there's still a slight race.
 
-This does not change the ring_buffer_wait() prototype yet, but
-restructures the code so that it can take a "cond" and "data" parameter
-and will call wait_event_interruptible() with a helper function as the
-condition.
+     CPU 0                              CPU 1
+     -----                              -----
+                                   wait_index++;
+   index = wait_index;
+                                   ring_buffer_wake_waiters();
+   wait_on_pipe()
+     ring_buffer_wait();
 
-The helper function (rb_wait_cond) takes the cond function and data
-parameters. It will first check if the buffer hit the watermark defined by
-the "full" parameter and then call the passed in condition parameter. If
-either are true, it returns true.
+The ring_buffer_wait() will miss the wakeup from CPU 1. The problem is
+that the ring_buffer_wait() needs the logic of:
 
-If rb_wait_cond() does not return true, it will set the appropriate
-"waiters_pending" flag and returns false.
+        prepare_to_wait();
+        if (!condition)
+                schedule();
+
+Where the missing condition check is the iter->wait_index update.
+
+Have the ring_buffer_wait() take a conditional callback function and a
+data parameter that can be used within the wait_event_interruptible() of
+the ring_buffer_wait() function.
+
+In wait_on_pipe(), pass a condition function that will check if the
+wait_index has been updated, if it has, it will return true to break out
+of the wait_event_interruptible() loop.
+
+Create a new field "closed" in the trace_iterator and set it in the
+flush() callback before calling ring_buffer_wake_waiters().
+This will keep any new readers from waiting on a closed file descriptor.
+
+Have the wait_on_pipe() condition callback also check the closed field.
+
+Change the wait_index field of the trace_iterator to atomic_t. There's no
+reason it needs to be 'long' and making it atomic and using
+atomic_read_acquire() and atomic_fetch_inc_release() will provide the
+necessary memory barriers.
+
+Add a "woken" flag to tracing_buffers_splice_read() to exit the loop after
+one more try to fetch data. That is, if it waited for data and something
+woke it up, it should try to collect any new data and then exit back to
+user space.
 
 Link: https://lore.kernel.org/linux-trace-kernel/CAHk-=wgsNgewHFxZAJiAQznwPMqEtQmi1waeS2O1v6L4c_Um5A@mail.gmail.com/
 
@@ -81,166 +110,191 @@ Cc: stable@vger.kernel.org
 Fixes: f3ddb74ad0790 ("tracing: Wake up ring buffer waiters on closing of the file")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/ring_buffer.h |   1 +
- kernel/trace/ring_buffer.c  | 116 +++++++++++++++++++++---------------
- 2 files changed, 69 insertions(+), 48 deletions(-)
+ include/linux/ring_buffer.h  |  3 ++-
+ include/linux/trace_events.h |  5 ++++-
+ kernel/trace/ring_buffer.c   | 13 ++++++-----
+ kernel/trace/trace.c         | 43 ++++++++++++++++++++++++++----------
+ 4 files changed, 45 insertions(+), 19 deletions(-)
 
 diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index fa802db216f9..338a33db1577 100644
+index 338a33db1577..dc5ae4e96aee 100644
 --- a/include/linux/ring_buffer.h
 +++ b/include/linux/ring_buffer.h
-@@ -98,6 +98,7 @@ __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *k
- 	__ring_buffer_alloc((size), (flags), &__key);	\
+@@ -99,7 +99,8 @@ __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *k
  })
  
-+typedef bool (*ring_buffer_cond_fn)(void *data);
- int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
+ typedef bool (*ring_buffer_cond_fn)(void *data);
+-int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
++int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full,
++		     ring_buffer_cond_fn cond, void *data);
  __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
  			  struct file *filp, poll_table *poll_table, int full);
+ void ring_buffer_wake_waiters(struct trace_buffer *buffer, int cpu);
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index d68ff9b1247f..fc6d0af56bb1 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -103,13 +103,16 @@ struct trace_iterator {
+ 	unsigned int		temp_size;
+ 	char			*fmt;	/* modified format holder */
+ 	unsigned int		fmt_size;
+-	long			wait_index;
++	atomic_t		wait_index;
+ 
+ 	/* trace_seq for __print_flags() and __print_symbolic() etc. */
+ 	struct trace_seq	tmp_seq;
+ 
+ 	cpumask_var_t		started;
+ 
++	/* Set when the file is closed to prevent new waiters */
++	bool			closed;
++
+ 	/* it's true when current open file is snapshot */
+ 	bool			snapshot;
+ 
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 6ef763f57c66..c198ba466853 100644
+index c198ba466853..67d8405f4451 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -842,43 +842,15 @@ static bool rb_watermark_hit(struct trace_buffer *buffer, int cpu, int full)
- 	return ret;
- }
- 
--/**
-- * ring_buffer_wait - wait for input to the ring buffer
-- * @buffer: buffer to wait on
-- * @cpu: the cpu buffer to wait on
-- * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-- *
-- * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-- * as data is added to any of the @buffer's cpu buffers. Otherwise
-- * it will wait for data to be added to a specific cpu buffer.
-- */
+@@ -901,23 +901,26 @@ static bool rb_wait_once(void *data)
+  * @buffer: buffer to wait on
+  * @cpu: the cpu buffer to wait on
+  * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
++ * @cond: condition function to break out of wait (NULL to run once)
++ * @data: the data to pass to @cond.
+  *
+  * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
+  * as data is added to any of the @buffer's cpu buffers. Otherwise
+  * it will wait for data to be added to a specific cpu buffer.
+  */
 -int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
-+static inline bool
-+rb_wait_cond(struct rb_irq_work *rbwork, struct trace_buffer *buffer,
-+	     int cpu, int full, ring_buffer_cond_fn cond, void *data)
++int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full,
++		     ring_buffer_cond_fn cond, void *data)
  {
--	struct ring_buffer_per_cpu *cpu_buffer;
--	DEFINE_WAIT(wait);
--	struct rb_irq_work *work;
--	int ret = 0;
--
--	/*
--	 * Depending on what the caller is waiting for, either any
--	 * data in any cpu buffer, or a specific buffer, put the
--	 * caller on the appropriate wait queue.
--	 */
--	if (cpu == RING_BUFFER_ALL_CPUS) {
--		work = &buffer->irq_work;
--		/* Full only makes sense on per cpu reads */
--		full = 0;
--	} else {
--		if (!cpumask_test_cpu(cpu, buffer->cpumask))
--			return -ENODEV;
--		cpu_buffer = buffer->buffers[cpu];
--		work = &cpu_buffer->irq_work;
--	}
-+	if (rb_watermark_hit(buffer, cpu, full))
-+		return true;
+ 	struct ring_buffer_per_cpu *cpu_buffer;
+ 	struct wait_queue_head *waitq;
+-	ring_buffer_cond_fn cond;
+ 	struct rb_irq_work *rbwork;
+-	void *data;
+ 	long once = 0;
+ 	int ret = 0;
  
--	if (full)
--		prepare_to_wait(&work->full_waiters, &wait, TASK_INTERRUPTIBLE);
--	else
--		prepare_to_wait(&work->waiters, &wait, TASK_INTERRUPTIBLE);
-+	if (cond(data))
-+		return true;
+-	cond = rb_wait_once;
+-	data = &once;
++	if (!cond) {
++		cond = rb_wait_once;
++		data = &once;
++	}
  
  	/*
- 	 * The events can happen in critical sections where
-@@ -901,27 +873,75 @@ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
- 	 * a task has been queued. It's OK for spurious wake ups.
- 	 */
- 	if (full)
--		work->full_waiters_pending = true;
-+		rbwork->full_waiters_pending = true;
- 	else
--		work->waiters_pending = true;
-+		rbwork->waiters_pending = true;
+ 	 * Depending on what the caller is waiting for, either any
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index c9c898307348..d390fea3a6a5 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -1955,15 +1955,36 @@ update_max_tr_single(struct trace_array *tr, struct task_struct *tsk, int cpu)
  
--	if (rb_watermark_hit(buffer, cpu, full))
--		goto out;
-+	return false;
-+}
+ #endif /* CONFIG_TRACER_MAX_TRACE */
  
--	if (signal_pending(current)) {
--		ret = -EINTR;
--		goto out;
-+/*
-+ * The default wait condition for ring_buffer_wait() is to just to exit the
-+ * wait loop the first time it is woken up.
-+ */
-+static bool rb_wait_once(void *data)
-+{
-+	long *once = data;
++struct pipe_wait {
++	struct trace_iterator		*iter;
++	int				wait_index;
++};
 +
-+	/* wait_event() actually calls this twice before scheduling*/
-+	if (*once > 1)
++static bool wait_pipe_cond(void *data)
++{
++	struct pipe_wait *pwait = data;
++	struct trace_iterator *iter = pwait->iter;
++
++	if (atomic_read_acquire(&iter->wait_index) != pwait->wait_index)
 +		return true;
 +
-+	(*once)++;
-+	return false;
++	return iter->closed;
 +}
 +
-+/**
-+ * ring_buffer_wait - wait for input to the ring buffer
-+ * @buffer: buffer to wait on
-+ * @cpu: the cpu buffer to wait on
-+ * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-+ *
-+ * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-+ * as data is added to any of the @buffer's cpu buffers. Otherwise
-+ * it will wait for data to be added to a specific cpu buffer.
-+ */
-+int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer;
-+	struct wait_queue_head *waitq;
-+	ring_buffer_cond_fn cond;
-+	struct rb_irq_work *rbwork;
-+	void *data;
-+	long once = 0;
-+	int ret = 0;
+ static int wait_on_pipe(struct trace_iterator *iter, int full)
+ {
++	struct pipe_wait pwait;
+ 	int ret;
+ 
+ 	/* Iterators are static, they should be filled or empty */
+ 	if (trace_buffer_iter(iter, iter->cpu_file))
+ 		return 0;
+ 
+-	ret = ring_buffer_wait(iter->array_buffer->buffer, iter->cpu_file, full);
++	pwait.wait_index = atomic_read_acquire(&iter->wait_index);
++	pwait.iter = iter;
 +
-+	cond = rb_wait_once;
-+	data = &once;
++	ret = ring_buffer_wait(iter->array_buffer->buffer, iter->cpu_file, full,
++			       wait_pipe_cond, &pwait);
+ 
+ #ifdef CONFIG_TRACER_MAX_TRACE
+ 	/*
+@@ -8398,9 +8419,9 @@ static int tracing_buffers_flush(struct file *file, fl_owner_t id)
+ 	struct ftrace_buffer_info *info = file->private_data;
+ 	struct trace_iterator *iter = &info->iter;
+ 
+-	iter->wait_index++;
++	iter->closed = true;
+ 	/* Make sure the waiters see the new wait_index */
+-	smp_wmb();
++	(void)atomic_fetch_inc_release(&iter->wait_index);
+ 
+ 	ring_buffer_wake_waiters(iter->array_buffer->buffer, iter->cpu_file);
+ 
+@@ -8500,6 +8521,7 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
+ 		.spd_release	= buffer_spd_release,
+ 	};
+ 	struct buffer_ref *ref;
++	bool woken = false;
+ 	int page_size;
+ 	int entries, i;
+ 	ssize_t ret = 0;
+@@ -8573,17 +8595,17 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
+ 
+ 	/* did we read anything? */
+ 	if (!spd.nr_pages) {
+-		long wait_index;
+ 
+ 		if (ret)
+ 			goto out;
+ 
++		if (woken)
++			goto out;
 +
-+	/*
-+	 * Depending on what the caller is waiting for, either any
-+	 * data in any cpu buffer, or a specific buffer, put the
-+	 * caller on the appropriate wait queue.
-+	 */
-+	if (cpu == RING_BUFFER_ALL_CPUS) {
-+		rbwork = &buffer->irq_work;
-+		/* Full only makes sense on per cpu reads */
-+		full = 0;
-+	} else {
-+		if (!cpumask_test_cpu(cpu, buffer->cpumask))
-+			return -ENODEV;
-+		cpu_buffer = buffer->buffers[cpu];
-+		rbwork = &cpu_buffer->irq_work;
+ 		ret = -EAGAIN;
+ 		if ((file->f_flags & O_NONBLOCK) || (flags & SPLICE_F_NONBLOCK))
+ 			goto out;
+ 
+-		wait_index = READ_ONCE(iter->wait_index);
+-
+ 		ret = wait_on_pipe(iter, iter->snapshot ? 0 : iter->tr->buffer_percent);
+ 		if (ret)
+ 			goto out;
+@@ -8592,10 +8614,8 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
+ 		if (!tracer_tracing_is_on(iter->tr))
+ 			goto out;
+ 
+-		/* Make sure we see the new wait_index */
+-		smp_rmb();
+-		if (wait_index != iter->wait_index)
+-			goto out;
++		/* Iterate one more time to collect any new data then exit */
++		woken = true;
+ 
+ 		goto again;
  	}
+@@ -8618,9 +8638,8 @@ static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned
  
--	schedule();
-- out:
- 	if (full)
--		finish_wait(&work->full_waiters, &wait);
-+		waitq = &rbwork->full_waiters;
- 	else
--		finish_wait(&work->waiters, &wait);
-+		waitq = &rbwork->waiters;
+ 	mutex_lock(&trace_types_lock);
  
--	if (!ret && !rb_watermark_hit(buffer, cpu, full) && signal_pending(current))
--		ret = -EINTR;
-+	ret = wait_event_interruptible((*waitq),
-+				rb_wait_cond(rbwork, buffer, cpu, full, cond, data));
+-	iter->wait_index++;
+ 	/* Make sure the waiters see the new wait_index */
+-	smp_wmb();
++	(void)atomic_fetch_inc_release(&iter->wait_index);
  
- 	return ret;
- }
+ 	ring_buffer_wake_waiters(iter->array_buffer->buffer, iter->cpu_file);
+ 
 -- 
 2.43.0
 
