@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-100774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A4F8879D18
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:51:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 459FA879D19
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:51:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FAE5B22EE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:51:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76ACDB23480
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A42A14291E;
-	Tue, 12 Mar 2024 20:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271DD143747;
+	Tue, 12 Mar 2024 20:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p60KF39Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S6uwLSAI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD070382;
-	Tue, 12 Mar 2024 20:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A75143732;
+	Tue, 12 Mar 2024 20:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710276689; cv=none; b=A5lVcqB+bQ5QPIUz2uPYcpPZF6vQluB4Cw9bdcM5eArPAoDX4VXmrpChdqeIpY+Uq+4Ovi8Yrz3J5s7vs9S3BhFe/tZFWGSGmuoqCohbv0CuI6AsNahErKF1kduvu+Tx/65onDxZ9Vjjy8K8sNatNcplE3AcLbk4C/jFqM5Cc60=
+	t=1710276691; cv=none; b=PIQiSJodTKFeAlXRr7wASu+8OSuazMw6Xi8sXwmLDEq/92UKY7FyZo7kD+nDlSZfyVZoVeikYRauYySn15d16+EJOpLoaqGjO2ApE5gukpBjFGbRq0Ss34ixjoJmy/zrKnEEjTzX0KjaMoEAOXZXYd3I8pELyCWKw71fQQWu0TI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710276689; c=relaxed/simple;
-	bh=UF3BR9cP/8EFmHQ9N2uFh6SQvuijqiPqWC24undZuj8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EXEXQhxkAvPL8qtgcnE5HSa469LZexGeUNuKgfkTO4jyeK36Drm6ispKuqvQKl5zotLAwZvQkBevVgT7W9n6PoAK3mnup8NrXeKrTFw4CCvYUEdGtrdulYNxk/EghQ5CZPdOeK6WeNvVnCPB8PKuTKPXFrFfnOful1gVw1NWSxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p60KF39Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9EBBC433C7;
-	Tue, 12 Mar 2024 20:51:26 +0000 (UTC)
+	s=arc-20240116; t=1710276691; c=relaxed/simple;
+	bh=NdilFZkMwC/3FQbsBc0J7ASCdEIIrYIeoB93By0b0/g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=P04aQvpGAt/wMIcsWtbumNQz3QfwT9Rz3KHObWMqsNM2adRMN8jJbJWSuePS+oQUiTf51lZNpn0i8O5q0tAKoVUw/6ERS7D5Yv+3/rRnKDaEBHkVf3knpluqgk5eb5QVXz0/4PlbTk0e27S66TJUmeZ2M0/mZmlciBZ40MEDnYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S6uwLSAI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBB2AC43390;
+	Tue, 12 Mar 2024 20:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710276688;
-	bh=UF3BR9cP/8EFmHQ9N2uFh6SQvuijqiPqWC24undZuj8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=p60KF39YytFlozmRyxCw1kyC7LJrQBn0kyb2vO3b94jS04+2phn/81RCJkwnEZWMk
-	 jSrTzcvfaf1YB+vK6cJ9TPrJfSkLmyDE55ydw0vBisWCQn+AveHywmiG5RUJcVEPNA
-	 mAoXsxOp1pJPHFjPH/JG4AqeFJbnbpAoFKFOIu39PEKTAYKPV3+rRsBhoVet4Aig2X
-	 1EQKZe7DaD6hxmjkaIFgzd8WUFUxfDNYtk3/SynGX0TBP//ZW+L9QzS1sf0ezGWE5L
-	 /AMztrHMSAMuD44euVs6VWwS9282Oqr26Filfh7Lc6x4t9SjlWT2+50Nm5lBQDRb57
-	 dqWODdCii5N0A==
+	s=k20201202; t=1710276690;
+	bh=NdilFZkMwC/3FQbsBc0J7ASCdEIIrYIeoB93By0b0/g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=S6uwLSAI/wTeiTurEjYa9J+mqFOwjQkLDGaywtekVKFALwj4dSHyvujVn8AtNvwNU
+	 8GvS1Av3gpkXkj1Z1LoCGwd4zM28709anyN6Rn5B66h+Q0tixcr44F9Q3RD6ubT7fz
+	 kR1FQ8OD+uILg3nmPYik756FH8bB9gJAsc8axWXng3+CnsSge61BnmV0YJxN+nUNMy
+	 xI98Bk410aZUfPzfCx4aQ/sWgmBmrgq7BvcowRnbhuXw1GaQT7aLXbM6oRjSsFfhNP
+	 bbdax2BJ4pOjGcAFgUDAbzv9BQ+2fVxZsM+iK4djUtVIup1DH718tDP0/XXqbWCZcZ
+	 Zp0yY42XwePKg==
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>,
@@ -46,11 +47,13 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
 	linux-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH 0/2] Move more stuff to tools/perf/trace/beauty/include
-Date: Tue, 12 Mar 2024 17:51:10 -0300
-Message-ID: <20240312205112.688776-1-acme@kernel.org>
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 1/2] perf beauty: Don't include uapi/linux/mount.h, use sys/mount.h instead
+Date: Tue, 12 Mar 2024 17:51:11 -0300
+Message-ID: <20240312205112.688776-2-acme@kernel.org>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240312205112.688776-1-acme@kernel.org>
+References: <20240312205112.688776-1-acme@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,29 +62,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-	Move one more file that is used by multiple scrappers.
+The tools/include/uapi/linux/mount.h file is mostly used for scrapping
+defines into id->string tables, this is the only place were it is being
+directly used, stop doing so.
 
-- Arnaldo
+Define MOUNT_ATTR_RELATIME and MOUNT_ATTR__ATIME if not available in the
+system's headers.
 
-Arnaldo Carvalho de Melo (2):
-  perf beauty: Don't include uapi/linux/mount.h, use sys/mount.h instead
-  perf beauty: Move uapi/linux/mount.h copy out of the directory used to
-    build perf
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/trace/beauty/fsmount.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
- tools/perf/Makefile.perf                      | 21 +++++++++----------
- tools/perf/check-headers.sh                   |  2 +-
- tools/perf/trace/beauty/fsconfig.sh           |  6 +++---
- tools/perf/trace/beauty/fsmount.c             |  9 +++++++-
- tools/perf/trace/beauty/fsmount.sh            |  6 +++---
- tools/perf/trace/beauty/fspick.sh             |  6 +++---
- .../trace/beauty}/include/uapi/linux/mount.h  |  0
- tools/perf/trace/beauty/mount_flags.sh        |  6 +++---
- tools/perf/trace/beauty/move_mount_flags.sh   |  6 +++---
- 9 files changed, 34 insertions(+), 28 deletions(-)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/mount.h (100%)
-
+diff --git a/tools/perf/trace/beauty/fsmount.c b/tools/perf/trace/beauty/fsmount.c
+index 30c8c082a3c3b3b3..28c2c16fc1a80dfd 100644
+--- a/tools/perf/trace/beauty/fsmount.c
++++ b/tools/perf/trace/beauty/fsmount.c
+@@ -7,7 +7,14 @@
+ 
+ #include "trace/beauty/beauty.h"
+ #include <linux/log2.h>
+-#include <uapi/linux/mount.h>
++#include <sys/mount.h>
++
++#ifndef MOUNT_ATTR__ATIME
++#define MOUNT_ATTR__ATIME	0x00000070 /* Setting on how atime should be updated */
++#endif
++#ifndef MOUNT_ATTR_RELATIME
++#define MOUNT_ATTR_RELATIME	0x00000000 /* - Update atime relative to mtime/ctime. */
++#endif
+ 
+ static size_t fsmount__scnprintf_attr_flags(unsigned long flags, char *bf, size_t size, bool show_prefix)
+ {
 -- 
 2.43.0
 
