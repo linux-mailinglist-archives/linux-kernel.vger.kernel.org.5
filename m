@@ -1,60 +1,73 @@
-Return-Path: <linux-kernel+bounces-99691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61180878BD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:10:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 862FC878BD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:14:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15D9A1F21798
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:10:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10641C2145B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69BA3365;
-	Tue, 12 Mar 2024 00:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588D629AF;
+	Tue, 12 Mar 2024 00:14:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QptglPgs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PHhDC2sf"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDA7A928;
-	Tue, 12 Mar 2024 00:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9151FB2
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 00:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710202223; cv=none; b=IBDoI+VdR+lGP1jS4Crc+YTSD1fjx8Tpzf1VFvYTD8VTHH3IYJEMflZABVcBrfviagtS4sUqsD84GgSsBY4ziGd1sWsY8SvE6hNV78HYzK7pX7sFqUHfuaJJPgQeRJ4GzahQ+lbAaHPZl+1p5uLYLMctqKVkx1uPf1QFoJobke4=
+	t=1710202443; cv=none; b=ZvnOoWmIZ2yVlRVdwBgV1iMD/mfx847ixg9B0slZkTxOzroZVxZFudkUI/vhEp0aapTnYbeCtO5qg+Augtroec7P9Ttv9gbeoPd2seHgOOHMTDrT29EHTuxMY3WA4LSo9XEhTzyNeE++x4oAPo7zBuS3e5iIEg5Jf7DU3uMW6kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710202223; c=relaxed/simple;
-	bh=pPkeMy7fBltTdNYOZZoPxSZoY5kmxQRciVH9Q0F3/DI=;
+	s=arc-20240116; t=1710202443; c=relaxed/simple;
+	bh=TZTFjad6w9R/A4c9QK4bJhaZRfOkzkbY0KMoh1WV0Pk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gmIxdLMQkuOJwWZ0kOefcAamkApeji6EOy52mNdpc9P3sG6iuqOOUYttL17fB1bNpCHrskFHqidBsNYBfmQQIHZYT/nFFML8Br0HgKc7LwQ2D3c4Fwi2nCSiAJmsQS0W6P2q0YAJKwWCGZQOcKYXzyEy/i7gEjYw2l2V4dcsz+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QptglPgs; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710202222; x=1741738222;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=pPkeMy7fBltTdNYOZZoPxSZoY5kmxQRciVH9Q0F3/DI=;
-  b=QptglPgsyZ4kpZ4sDJYpjFv2H0Kgnl6yyYGJeol1LIoiwGPRL2FYSOKZ
-   lplEt5Zqs4GZSKzCYtqptuIW8NMm4ekIrbxm0c9JDayNvgYmvz+27B+SM
-   DagBbuMBet1dzLKkGMbh+0PaO7XonTRzFsx9uKZJRE5bOHF3DxU6MKBtg
-   hOqKrIPBdjF13ahC+rSFmDkgVvrevAo7nfldNINuDFVDI8cyLByQOtf19
-   46036+tSEhulFVX8TG1bAPHZwz3uFP2KweBGdTDD1oYKM7qssXe4zBM3k
-   xkDM/ZmOgo2oPm53Y4twvVyopKVP0E/jXeLm9r8CSsMwtQ4snP4lgujGs
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="22409287"
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="22409287"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:10:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
-   d="scan'208";a="48797633"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.125.242.247]) ([10.125.242.247])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:10:17 -0700
-Message-ID: <bf4cb384-97ce-4782-b6b9-e75780cdf167@linux.intel.com>
-Date: Tue, 12 Mar 2024 08:10:14 +0800
+	 In-Reply-To:Content-Type; b=Nbps6Qj9FiJR5msEW4Deah9l1X33t6Y4naQGVE608btLi+qQUIjUEhSf8MjmrS5gmix3Yd2gCIQrmXcxP7We3/6VPpRC9qADuQToEY5ASNWxUrdqTkhbV8BWK9WeotP0+V9pelxL4P3Dh0UGNLMhrFf9AlmCYkevD5ajl1Byyg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PHhDC2sf; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d3fb16f1a9so60071611fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710202440; x=1710807240; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sX3f9yGyYab0yOk456EndE47zdI6JIzRTWi8Je071cs=;
+        b=PHhDC2sfuHBuCBmoc2/RiBE6Vr+bdjz0Yl/QiFzEDgAZo/zA+ZfPSAmvgESijOGfmY
+         lAtiLwTZP3rDqX7GOORFvgAfN7PqaFkEs+0E7IAkf/A8DktD6uRZN7B8gFt/YBlPS7Vq
+         c9uSvZPotur95L8Qo2DbCo0WzvN2RE3i/Jzb71HgA/8hDsuAnH7KQBJHKFyn83+HmXcR
+         lx1cMiBdrJ5RYLfbzGFBOpzj/sDhVhHukOKbRdq+vKQ1iqNjOIBe2SId1rorTDYXejL4
+         Y6i1jLUsOyYc7P9+1CL/XjwOdWL58IjC/GERir4MnRR7R6zxqhXcYyeUXSfeJo0SGh/V
+         M8YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710202440; x=1710807240;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sX3f9yGyYab0yOk456EndE47zdI6JIzRTWi8Je071cs=;
+        b=YCo3T27ewVEOgfSqMRmuCsbVKaOiQY6GgtdO/XuPTf2smFKDCmkHBDkCrr8nkcJZAM
+         Lv9ZaSgloeKmELrsfl76+8prEDs5YHILQ0xwxr91UlNIYe3CJe10+VJC6NMEZUDyEOVa
+         82Pq5v6lQd1jR6XHteaI/KxQ9dZqfZahtSFy+xU9kJ6yUPI8gelv9volxlLY8stALOTx
+         +t1p21SqCH8URtYb6IOq5Ru669L3JpTekhcm8AkzDqNd7cVdlFwq2s6z5gTmQiL6I0S8
+         Sh3YJJb0/zG7gEB3UnC3dzycfpKNSSVw9rI6Fj+0M+fxBAJNdRoa6ZSnbc5pJOM8t+R0
+         QpSg==
+X-Forwarded-Encrypted: i=1; AJvYcCUaBYdzsZnfV1XJswqS3p+KbF2tsLSOFainBwJ8e1WiAAEyWDsYJcxexdp6rQ+kNQkcpXBYpjIf2I0xWHP88tBKEMrxiI1DG24jsFvH
+X-Gm-Message-State: AOJu0Yy5IN6OGEhAbP5YPBQuvb6hGnmtJv8GVUdpOLEc4uiob8RbGmkQ
+	lNgIs1C4sWcUneg9U1xX0fFe7Sc4bE20xhx5lSozNyE4pEE4pb0oGt51kSBj7hk=
+X-Google-Smtp-Source: AGHT+IFSP0vgMmSJK2RcLkt/TA0YFOfGHvh6uKZayMl6ahMenA7pBLqxxgSD3eZ9uJuin/YYmNhLaw==
+X-Received: by 2002:a19:8c1d:0:b0:513:200e:cced with SMTP id o29-20020a198c1d000000b00513200eccedmr3037840lfd.27.1710202439987;
+        Mon, 11 Mar 2024 17:13:59 -0700 (PDT)
+Received: from [172.30.205.61] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id t22-20020a195f16000000b00513a7962930sm807970lfb.89.2024.03.11.17.13.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 17:13:59 -0700 (PDT)
+Message-ID: <5ddecfb7-fcd2-4df2-95d9-882939a1637b@linaro.org>
+Date: Tue, 12 Mar 2024 01:13:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,38 +75,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests: x86: skip the tests if prerequisites aren't
- fulfilled
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Shuah Khan <shuah@kernel.org>, "Chang S. Bae" <chang.seok.bae@intel.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Weihong Zhang <weihong.zhang@intel.com>, angquan yu <angquan21@gmail.com>,
- kernel@collabora.com, linux-kselftest@vger.kernel.org,
+Subject: Re: [PATCH v5] arm64: dts: qcom: qcm6490-idp: enable PMIC Volume and
+ Power buttons
+To: quic_huliu@quicinc.com, Bjorn Andersson <andersson@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-References: <20240307183730.2858264-1-usama.anjum@collabora.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240307183730.2858264-1-usama.anjum@collabora.com>
+References: <20240311-gpio-keys-v5-1-08823582f6c9@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240311-gpio-keys-v5-1-08823582f6c9@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 3/8/2024 2:37 AM, Muhammad Usama Anjum wrote:
-> diff --git a/tools/testing/selftests/x86/lam.c b/tools/testing/selftests/x86/lam.c
-> index 215b8150b7cca..c0f016f45ee17 100644
-> --- a/tools/testing/selftests/x86/lam.c
-> +++ b/tools/testing/selftests/x86/lam.c
-> @@ -1183,7 +1183,7 @@ int main(int argc, char **argv)
->   
->   	if (!cpu_has_lam()) {
->   		ksft_print_msg("Unsupported LAM feature!\n");
-> -		return -1;
-> +		return KSFT_SKIP;
->   	}
->   
->   	while ((c = getopt(argc, argv, "ht:")) != -1) {
-Looks good to me.
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+On 3/11/24 11:09, Hui Liu via B4 Relay wrote:
+> From: Hui Liu <quic_huliu@quicinc.com>
+> 
+> The Volume Down & Power buttons are controlled by the PMIC via
+> the PON hardware, and the Volume Up is connected to a PMIC gpio.
+> 
+> Enable the necessary hardware and setup the GPIO state for the
+> Volume Up gpio key.
+> 
+> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+> ---
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
 
