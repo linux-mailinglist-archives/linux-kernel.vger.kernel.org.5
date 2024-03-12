@@ -1,152 +1,132 @@
-Return-Path: <linux-kernel+bounces-100727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E520879C6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDD61879C6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:49:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9035A1C2201C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:48:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BCD41C21BEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:49:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2184E14373E;
-	Tue, 12 Mar 2024 19:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C69142652;
+	Tue, 12 Mar 2024 19:49:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="3H5ZUf6R"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lYIDTqbA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0ED514290B
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A3E1E53F;
+	Tue, 12 Mar 2024 19:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710272881; cv=none; b=kiJtaIfaN5i8VAZ1t3QLoEVXg37S2PvlBxQPb0uReRhU06cw0ZLfhwBRAFC+hHLt2GhNdRn0/CeWfxAfzGm+kzvycAziU7kmgV49Gr14HZJi56/B7r7BkYVLL4Scc3hYWlamn43jHr84toV0kV2PDbn1x8+l8cat7Y400uEWu/g=
+	t=1710272981; cv=none; b=diTr5AC0+I9ZM5M/Z/rR2uxODYkgRtjKjtCi/7stCRjaf0AnY/uJroUQ7LsaPK5kAW5quMIEf++2JRMXh0bDxNY6RlXr1O8X01FVltZXUGkZri3lBegNlmVcbKZAlSTjejB70Dzr2z+OT/J15ExWuicUwjgi0grkDh5idRzzsIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710272881; c=relaxed/simple;
-	bh=BFOeXqJe9VyECGMuWiCNLoTZwBpuu0T2u1Mq+P/cqDo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RdmffKgz/i4cKypxg1LnSK9sXHFNCLHI6wSwr3g9r4uY3fWJP3LZdOB6NnIjfVPSjle7/L96TxOv8bKr+M4E08ZFbeq+DrHP51h1HGkyy2J3hIjilMoCfPJL5Sghp+7q78p0fuvP+Fz/KRqnyDhboiFYCn5+pNTzlPa4ItTQm7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=3H5ZUf6R; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a22d940ff4so462291eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1710272879; x=1710877679; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k4XSa/PSXORT4uTdUR+bw2OZtjIlaWQWlwg5OyZv4ig=;
-        b=3H5ZUf6RU1lQQGj/bvMwxqw2skT0BM2V1JAvhbJWo3pFIADpfHK69fFU3QwTjE//IH
-         RuTZZp/foAv6eTPyrIiWUJ4lrOAEBPHqNQzGdlMiwykUNBmlhKZ3KA3dJK/ZmcWdJ2W6
-         YcOFyt638PyoLlYPXWybdKbK0kwz5Hp5jJy8G8n9/kTwxNArZwGAZDDq4EJ+zmqt4jKj
-         odx7M6PcT/c/a2NOhu1ZFYYAIzhYQEyeCv0g34GmkI35rjkERxxsZqEH5yWPAV2rASRr
-         bEqAhKy2PGOux2RCXvKQQnpDHqiaeIygOlcOV4Ht2bayTsdH1c2JhrsQ/pRL/yYE4Gmz
-         3rJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710272879; x=1710877679;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k4XSa/PSXORT4uTdUR+bw2OZtjIlaWQWlwg5OyZv4ig=;
-        b=arZk0ztWD4YBJ+Go+hhIkOeM49GLega5Qid9lUNIwvGD9XgzE6lNQ4xmYwLSxYVcCD
-         vMC7pK6DZ05uLTXnRBV2vNmcH85cnuxsahkaDj/8SNJHjXrLObvUP6fSovH2vA78Ur23
-         gHJDhYAclQGN9uu2bt2WI0V6ya6ls3JAWFB6D2n34jZhJDDUO+kd4sukhUgrN3Qc0rYP
-         JqW4g9zaRTgVl2psEDr6ZzhoVMmG9S15dfVu0pGiTdRjuzgxhf/UhliSdik1mDp/dtId
-         kX+jWF024zA5jqU05n7+X6Kmx+QyWhXoQK0CZbKhozGF1OSsjCPM+qIhmeOdAiS3P0L/
-         5PDg==
-X-Forwarded-Encrypted: i=1; AJvYcCWXL63JmtHexceV/Ut5zYirb/iZMkVSZkzyWjQRO1oyYFe5FViK61qfEMD+qxDAnWslUppeEULPH8mFxJfy1pmufxTxxAZ+7vdWz0iw
-X-Gm-Message-State: AOJu0Yy8msJTRYRGOl5pCAC63KTRqGkCVLBf1UcfFMAB8T073U2q+ljG
-	vr0YVAgd0RTlhMALyVcdcuH8id0g3ERl+54R5PwMjlH6HiwUNP5jsuagkNv55EA=
-X-Google-Smtp-Source: AGHT+IE+Yl3rd4VRKQ0Xgn0vLA0/IXGphbXEbzUjbknciDm6FUQ1nMtO8B6Nv0KNcv+QR9Td6lCSWw==
-X-Received: by 2002:a05:6359:5f9f:b0:17b:88c2:5c13 with SMTP id lh31-20020a0563595f9f00b0017b88c25c13mr12958442rwc.7.1710272878964;
-        Tue, 12 Mar 2024 12:47:58 -0700 (PDT)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id z69-20020a633348000000b005dc884e9f5bsm6433495pgz.38.2024.03.12.12.47.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 12:47:58 -0700 (PDT)
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Tue, 12 Mar 2024 12:47:54 -0700
-Subject: [PATCH v12 4/4] cpumask: Add assign cpu
+	s=arc-20240116; t=1710272981; c=relaxed/simple;
+	bh=dMtF5Qh7erQEtbgRl9kFyUq/5IQdgBd14cT/iolwdSY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kh10ToFSXz6maHAXUhyDcaMGsYPjhsiH0zNZVWAS8hOQSic/o4zaMfTsgxmvzwtDBiYmmEAo8W7eYcasXjTEkr7l17gm3zABMO9RIQlBlthwQPWD9/1zNk9EpE6MOGlt3Uf39zeax5tD7kmL/5Q3StuGbTjau4KbKj4bOoX9j68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lYIDTqbA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18DBDC433F1;
+	Tue, 12 Mar 2024 19:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710272981;
+	bh=dMtF5Qh7erQEtbgRl9kFyUq/5IQdgBd14cT/iolwdSY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lYIDTqbAw3rwZIQsl3GscLfPPLU6q1KiK9nHXUyJZkvH+URwgsPmChuEPCTGQLyK2
+	 B0dwyBjjCQuvI4NdTF77fgG+XtTTzYlWFyhyPGPQ4Iz9w5mYM9Son4PmHnuHV3JnuY
+	 UxmvTKwRpAb9YQjB8XxuS/dXCqJFyqXCVh3+87sg3Ew1qO9eJ+NqXHiiqFuDrind0s
+	 92ps8YtAZbCUncCNO2qjJe7coJhIc1EnKgY8c9ChADJiV1dTTou55z1FQ+U/7TmOPA
+	 U30YNZ87/M6xzu4oC6IpeX6D2FJZxBoWjkcGTQ06+hPHPYD5+ga7hhL6/mHlD5KjQu
+	 MYmpX9vhD0Nlw==
+Received: by pali.im (Postfix)
+	id 49EE7945; Tue, 12 Mar 2024 20:49:38 +0100 (CET)
+Date: Tue, 12 Mar 2024 20:49:38 +0100
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To: Patrick =?utf-8?B?SMO2aG4=?= <hoehnp@gmx.de>
+Cc: Jean Delvare <jdelvare@suse.com>, Andi Shyti <andi.shyti@kernel.org>,
+	Paul Menzel <pmenzel@molgen.mpg.de>, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] i2c: i801: Add lis3lv02d for Dell Precision M6800
+Message-ID: <20240312194938.mxmip456xnjdlrbo@pali>
+References: <20240312193132.26518-1-hoehnp@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240312-fencei-v12-4-0f340f004ce7@rivosinc.com>
-References: <20240312-fencei-v12-0-0f340f004ce7@rivosinc.com>
-In-Reply-To: <20240312-fencei-v12-0-0f340f004ce7@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
- Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>, 
- Alexandre Ghiti <alex@ghiti.fr>, Samuel Holland <samuel.holland@sifive.com>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710272871; l=1746;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=BFOeXqJe9VyECGMuWiCNLoTZwBpuu0T2u1Mq+P/cqDo=;
- b=dUaXZnD9VQ8vsLYsKXOkCevPuNYqjQqs4wBvroTCyGKXR0MwtTqi+kVmNS6cpmRfvj+9eBpTV
- UJ9TU9gIUSeDYCpY+ggkBt8sv4yB1OqY2YjqtfD0d/3rv858ooSwNYg
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240312193132.26518-1-hoehnp@gmx.de>
+User-Agent: NeoMutt/20180716
 
-Standardize an assign_cpu function for cpumasks.
+On Tuesday 12 March 2024 20:31:31 Patrick Höhn wrote:
+> On the Dell Precision M6800/OXD1M5, BIOS A26 06/13/2029, Linux prints the
+> warning below.
+> 
+>     i801_smbus 0000:00:1f.4: Accelerometer lis3lv02d is present on SMBus but its address is unknown, skipping registration
+> 
+> Following the same suggestions by Wolfram Sang as for the Dell Precision
+> 3540 [1], the accelerometer can be successfully found on I2C bus 0 at
+> address 0x29.
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- arch/riscv/mm/cacheflush.c |  2 +-
- include/linux/cpumask.h    | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
+Just to note for other users in future. I2C does not have to be assigned
+with number 0. This number is chosen by the kernel at runtime as the
+first unused number. So in case you have VGA adapter (or GPU) for which
+is i2c driver available and loaded + probed before i801_smbus is loaded
+and probed then kernel would report accelerometer at different bus
+number. On the other hand, accelerometer address on I2C bus normally
+should not change (configurable device can change it but we should hope
+that it does not happen).
 
-diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-index 329b95529580..2e16ed19e957 100644
---- a/arch/riscv/mm/cacheflush.c
-+++ b/arch/riscv/mm/cacheflush.c
-@@ -234,7 +234,7 @@ int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long scope)
- 			stale_cpu = cpumask_test_cpu(smp_processor_id(), mask);
- 
- 			cpumask_setall(mask);
--			assign_bit(cpumask_check(smp_processor_id()), cpumask_bits(mask), stale_cpu);
-+			cpumask_assign_cpu(smp_processor_id(), mask, stale_cpu);
- 			break;
- 		default:
- 			return -EINVAL;
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index cfb545841a2c..1b85e09c4ba5 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -492,6 +492,22 @@ static __always_inline void __cpumask_clear_cpu(int cpu, struct cpumask *dstp)
- 	__clear_bit(cpumask_check(cpu), cpumask_bits(dstp));
- }
- 
-+/**
-+ * cpumask_assign_cpu - assign a cpu in a cpumask
-+ * @cpu: cpu number (< nr_cpu_ids)
-+ * @dstp: the cpumask pointer
-+ * @bool: the value to assign
-+ */
-+static __always_inline void cpumask_assign_cpu(int cpu, struct cpumask *dstp, bool value)
-+{
-+	assign_bit(cpumask_check(cpu), cpumask_bits(dstp), value);
-+}
-+
-+static __always_inline void __cpumask_assign_cpu(int cpu, struct cpumask *dstp, bool value)
-+{
-+	__assign_bit(cpumask_check(cpu), cpumask_bits(dstp), value);
-+}
-+
- /**
-  * cpumask_test_cpu - test for a cpu in a cpumask
-  * @cpu: cpu number (< nr_cpu_ids)
+The correct number of bus can be found by the i2cdetect command too:
 
--- 
-2.43.2
+  # i2cdetect -l | grep I801
 
+For me it prints:
+
+  i2c-0   unknown         SMBus I801 adapter at f040              N/A
+
+> 
+>     $ echo lis3lv02d 0x29 | sudo tee /sys/bus/i2c/devices/i2c-0/new_device
+>     lis3lv02d 0x29
+>     $ dmesg | tail -5
+>     [1185.385204] lis3lv02d_i2c 0-0029: supply Vdd not found, using dummy regulator
+>     [1185.385235] lis3lv02d_i2c 0-0029: supply Vdd_IO not found, using dummy regulator
+>     [1185.399689] lis3lv02d: 8 bits 3DC sensor found
+>     [1185.449391] input: ST LIS3LV02DL Accelerometer as /devices/platform/lis3lv02d/input/input371
+>     [1185.449577] i2c i2c-0: new_device: Instantiated device lis3lv02d at 0x29
+> 
+> So, the device has that accelerometer. Add the I2C address to the
+> mapping list, and test it successfully on the device.
+> 
+> [1]: https://lore.kernel.org/linux-i2c/97708c11-ac85-fb62-2c8e-d37739ca826f@molgen.mpg.de/
+> Signed-off-by: Patrick Höhn <hoehnp@gmx.de>
+
+Otherwise looks good,
+
+Acked-by: Pali Rohár <pali@kernel.org>
+
+> ---
+>  drivers/i2c/busses/i2c-i801.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+> index 2c36b36d7d51..c1fee2c61da1 100644
+> --- a/drivers/i2c/busses/i2c-i801.c
+> +++ b/drivers/i2c/busses/i2c-i801.c
+> @@ -1231,6 +1231,7 @@ static const struct {
+>  	 */
+>  	{ "Latitude 5480",      0x29 },
+>  	{ "Precision 3540",     0x29 },
+> +	{ "Precision M6800",    0x29 },
+>  	{ "Vostro V131",        0x1d },
+>  	{ "Vostro 5568",        0x29 },
+>  	{ "XPS 15 7590",        0x29 },
+> --
+> 2.43.2
+> 
 
