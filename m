@@ -1,91 +1,151 @@
-Return-Path: <linux-kernel+bounces-100296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 272BF879538
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:41:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D9787953D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:42:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6D6E285B54
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:41:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 056311F23EE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E14EC7A154;
-	Tue, 12 Mar 2024 13:41:17 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A0577A72F;
+	Tue, 12 Mar 2024 13:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="AsFv99gt"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EEB2AE66
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF995B1E1;
+	Tue, 12 Mar 2024 13:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710250877; cv=none; b=qHqCjSICxJYoT92IXPY+scRlozTEikZR2apDFOJntKlhD7NuZvlpB+i/ABerpUtx6z9DnHOChihvL0PIp167WcEB5G4GE255Mz2EL4BbWGVSuUxWcVIIKjKUv86D/VQeGkSGxbxSAK1IUJA6J0XSQ94mBvxesUahQeFEHpjRBHg=
+	t=1710250918; cv=none; b=V3YH6NNAzbKvKuk5g1aitiffYsUhnpDydhYR+oRQZaXirwTXdBAiN0iG0zjcGL8FOZw63cUrkA8NwHpBnAd1JTyOxgfe2A+U7bhEtRz2LEhzIPWjY7wml6evVsP2pXIAutopfC9QuvwEX94wSmHCCUZf/UcqPvaVXwlXcLT4hf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710250877; c=relaxed/simple;
-	bh=PjY9Hx4tOJdG4XqfmaFoKDKo7zwgV5FzXjCGKYeM9Is=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=WB87vn59NWrZbq5ramDp8JQjCOK3IT8dPp6CXt7+DMwPqknY3jObpN7HO+jbKGPPndoufeucReWqMSlnvLhB5FIIqJZiQLacTrMz1Qmxdr9n8FG2xiIbXZ/plSCm0sULKxkL2kE3aNd92u5htZw1LUjl1AnM6S03LhdvMZZXpA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3665283d42cso24406915ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 06:41:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710250875; x=1710855675;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s0AA3R38g+NMxfqYoN/vqX14LWr3c0ZeG2Q50m10+nM=;
-        b=bbGNC7HzWxi/E9vq1gzgP4VsuSHHsx3SMlhXfrU/E3rywuA0UzOZwdWKW9Q2VLXvfR
-         HJaroeIuXzajlK9NqHrjb37+fN5oUa1EjUr4KTKU/biS6pUU1naIIEyvG/+WYCVZowlX
-         Zb2vdSo1jtOGOBlsoEXXAlqL2zeCeK5ak0PETlTiTg77pNk2NHracvmcK+NdopxsOKRo
-         TzCkQL2ShLmZoj0U395hjFGksNrl/g82vEJgUlmSc1bF2bpxkjXQKZ1B3e8RQOvLOCs4
-         cZtJs1ssB2X64TaraJ95/F+nBKEiSNZQ3gP5IwC06xg6U/pnyKlsAMM2BEef7aBTuJpP
-         RVoA==
-X-Gm-Message-State: AOJu0Ywd6MzWw2KkK5LHcjiQpAmQspGUdVgIP3J/LbJr7Wxxoe0K/uGl
-	6tXXvxeUhE6xxEGAorUifJ7Q58/vpunl8yP6DIcXR1vkpFZ33TynUbLveG/6vno6Rzr9AictSLE
-	CBWWdaQE1JQzuLcOO6uQVBg36rvQdxjb9JhaV7tHdub1v8Y9nF+KuZdMXCw==
-X-Google-Smtp-Source: AGHT+IFsIUqg0/SLj0rWp59RR86LchZSPN/cneAudsbtNkUgubOuZvJ8R30cUXy3lWz6wFNUpQAp1VzQRsMkqNMut2W2DmxvfauX
+	s=arc-20240116; t=1710250918; c=relaxed/simple;
+	bh=e0tD6pX6xwZoiwXkNmdHyZiDqoGTK5swzwTMQ0e4R40=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oHkAKf+Pgaqv9M188Xu2INAnVKAR+9Zb57pmPO+nwIGXDREtvKMv67EbogPrHsTNCXsMu2TGWeugLcPytLL0FMcXYfZebFBbcLT7ymKwWmYq/+E6JiK6dT5VTG2HdvDA3Wu1q7a8tJMlubH7MmaHH5UrSwB1vRHZTC9RTLPWOZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=AsFv99gt; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=xa8JQ3KvRA3TOgaBHWeRGuMMjhi7suQa/WUm17VoCcg=; b=AsFv99gt9tiVB4IvPWpp0zhn/q
+	yAbrTW80SEAlzDGcnxg0eIauLDMd8Ueell+LxV1jgKPF6ZeEHtxE95I4up6xl7/iYxoR+E4PbscFS
+	+UKnA2/qIyCqV3MF1qK3cHd7Ga86D01o45mEWZJYrJCtP3dPc57wEz85CqU/DQ7FdAyoK2Xzr+xOA
+	lc08WumNg6hxdL2/7cf6dYDCvBqBGk5/WMCu2n4/5DIZhidooDV9qS9CdjA0WHKMGaYl8sZrPs1Al
+	9yNGbz6L5ql2Ubj5V3bvOM24V/9i7h58oz/wSqcZ5nkqkWPI2BQUaR0BzstRC23MOlPJRUqwNECAT
+	VAq7uKSw==;
+Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rk2O5-00000009UzB-2mNO;
+	Tue, 12 Mar 2024 13:41:49 +0000
+Received: from dwoodhou by i7.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rk2O4-000000033FJ-0PsV;
+	Tue, 12 Mar 2024 13:41:48 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	mediou@amazon.de,
+	alisaidi@amazon.com,
+	linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH 1/2] ACPICA: Detect FACS even for hardware reduced platforms
+Date: Tue, 12 Mar 2024 13:41:46 +0000
+Message-ID: <20240312134148.727454-1-dwmw2@infradead.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20ec:b0:365:3db4:16eb with SMTP id
- q12-20020a056e0220ec00b003653db416ebmr14652ilv.3.1710250875148; Tue, 12 Mar
- 2024 06:41:15 -0700 (PDT)
-Date: Tue, 12 Mar 2024 06:41:15 -0700
-In-Reply-To: <000000000000169132060fc66db3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e3ef32061376cfac@google.com>
-Subject: Re: [syzbot] [PATCH] nfc: nci: Fix uninit-value in nci_dev_up
-From: syzbot <syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: David Woodhouse <dwmw2@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-***
+ACPICA PR https://github.com/acpica/acpica/pull/933
 
-Subject: [PATCH] nfc: nci: Fix uninit-value in nci_dev_up
-Author: ryasuoka@redhat.com
+The FACS is optional even on hardware reduced platforms, and may exist
+for the purpose of communicating the hardware_signature field to provke
+a clean reboot instead of a resume from hibernation.
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+---
+ drivers/acpi/acpica/tbfadt.c  | 30 +++++++++++++-----------------
+ drivers/acpi/acpica/tbutils.c |  7 +------
+ 2 files changed, 14 insertions(+), 23 deletions(-)
 
-diff --git a/net/nfc/nci/ntf.c b/net/nfc/nci/ntf.c
-index 994a0a1efb58..56624387e253 100644
---- a/net/nfc/nci/ntf.c
-+++ b/net/nfc/nci/ntf.c
-@@ -765,6 +765,9 @@ void nci_ntf_packet(struct nci_dev *ndev, struct sk_buff *skb)
- 		 nci_opcode_oid(ntf_opcode),
- 		 nci_plen(skb->data));
+diff --git a/drivers/acpi/acpica/tbfadt.c b/drivers/acpi/acpica/tbfadt.c
+index 44267a92bce5..3c126c6d306b 100644
+--- a/drivers/acpi/acpica/tbfadt.c
++++ b/drivers/acpi/acpica/tbfadt.c
+@@ -315,23 +315,19 @@ void acpi_tb_parse_fadt(void)
+ 				       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
+ 				       NULL, FALSE, TRUE, &acpi_gbl_dsdt_index);
  
-+	if (!nci_plen(skb->data))
-+		goto end;
-+
- 	/* strip the nci control header */
- 	skb_pull(skb, NCI_CTRL_HDR_SIZE);
+-	/* If Hardware Reduced flag is set, there is no FACS */
+-
+-	if (!acpi_gbl_reduced_hardware) {
+-		if (acpi_gbl_FADT.facs) {
+-			acpi_tb_install_standard_table((acpi_physical_address)
+-						       acpi_gbl_FADT.facs,
+-						       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
+-						       NULL, FALSE, TRUE,
+-						       &acpi_gbl_facs_index);
+-		}
+-		if (acpi_gbl_FADT.Xfacs) {
+-			acpi_tb_install_standard_table((acpi_physical_address)
+-						       acpi_gbl_FADT.Xfacs,
+-						       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
+-						       NULL, FALSE, TRUE,
+-						       &acpi_gbl_xfacs_index);
+-		}
++	if (acpi_gbl_FADT.facs) {
++		acpi_tb_install_standard_table((acpi_physical_address)
++					       acpi_gbl_FADT.facs,
++					       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
++					       NULL, FALSE, TRUE,
++					       &acpi_gbl_facs_index);
++	}
++	if (acpi_gbl_FADT.Xfacs) {
++		acpi_tb_install_standard_table((acpi_physical_address)
++					       acpi_gbl_FADT.Xfacs,
++					       ACPI_TABLE_ORIGIN_INTERNAL_PHYSICAL,
++					       NULL, FALSE, TRUE,
++					       &acpi_gbl_xfacs_index);
+ 	}
+ }
+ 
+diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.c
+index bb4a56e5673a..15fa68a5ea6e 100644
+--- a/drivers/acpi/acpica/tbutils.c
++++ b/drivers/acpi/acpica/tbutils.c
+@@ -36,12 +36,7 @@ acpi_status acpi_tb_initialize_facs(void)
+ {
+ 	struct acpi_table_facs *facs;
+ 
+-	/* If Hardware Reduced flag is set, there is no FACS */
+-
+-	if (acpi_gbl_reduced_hardware) {
+-		acpi_gbl_FACS = NULL;
+-		return (AE_OK);
+-	} else if (acpi_gbl_FADT.Xfacs &&
++	if (acpi_gbl_FADT.Xfacs &&
+ 		   (!acpi_gbl_FADT.facs
+ 		    || !acpi_gbl_use32_bit_facs_addresses)) {
+ 		(void)acpi_get_table_by_index(acpi_gbl_xfacs_index,
+-- 
+2.44.0
 
 
