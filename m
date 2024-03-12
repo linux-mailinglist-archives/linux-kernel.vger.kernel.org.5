@@ -1,117 +1,153 @@
-Return-Path: <linux-kernel+bounces-100925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB157879FBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5182D879FBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Mar 2024 00:42:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED1E11C219CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:38:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 686E31C2170D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A62752F7A;
-	Tue, 12 Mar 2024 23:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7805B47A52;
+	Tue, 12 Mar 2024 23:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gCWQxzBK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="pQs+2XKK"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28C050A6C
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 23:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956A726286;
+	Tue, 12 Mar 2024 23:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710286660; cv=none; b=qUxTwO53HPCKx6GakDyp8AgBcY55y7cKziK+3VGbp5JfCtD46dtUpXPUZ802rkIdOP0DaeHTWqGex5T+r1xUNxVbXBB13bbCE7fMeqz060uCLNgeqYyX4Qb3JfzzhNq2KwFgpjruAWJJMDFYWzuEK88lNtjp9vDLdY92ri0fsUQ=
+	t=1710286925; cv=none; b=KIZZu9W2l6f1HLly/STJi3JzcecDTYcAr0kv3Z0lGboRNDofCU/mvbgM5gtobescMzFporlN5RRZUiyjsQYWpfjRrPJb7G8AVIshlBajF2rCUqUhoaqpHcsh9EET50MrsH+/AI2kCC6xB4DDPBjk8go7Gz31XxyZV+4HTDarAqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710286660; c=relaxed/simple;
-	bh=w8JCsLSjSA3OkQoV28nEFem36dFCa/7sa9d7M6Kmb8g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LwynpUz6BCg3Ek5zrlCVfOJnwe5s3cYCUPJIdIbGakWtNkKab8UMHDZl+R5+aaILWXF7Dx/tGkiN/FgB+wE/pV2hpeeoXqt7Or4/vyrbmx3I7cBHFnHQH4NnvwI+XaNbpBolOakpAqhHyYJpguzau1Hqqk9YsgTU6ZzMFyJlv0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gCWQxzBK; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710286657;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9OX7Txmvz9CCuXto10fOD2XvYnGo3IOMbl07Vyopd3Y=;
-	b=gCWQxzBK4bjeQgt9MWyK4JBIE1EQAvzHDs8/43eD5Zo0mUByPq1u25EdEBBRLy3kyt8fu4
-	RnPpGw7FwiSyCACzv+OMnZn++7M6KhsRiIz1VCP7dwTCcb9N9nVDTyjRFo+obZ3cTP2vFk
-	+g7DWRTnS656So4mrS+5FHicucxrphk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-343-uMavIwFdNDGV7jNNc5g8HA-1; Tue, 12 Mar 2024 19:37:33 -0400
-X-MC-Unique: uMavIwFdNDGV7jNNc5g8HA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	s=arc-20240116; t=1710286925; c=relaxed/simple;
+	bh=Ht/vgGvTfP6q+zutj4Q4xwtp2EYZWw9H/nQfpl+nkDo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iHgkpAZ/OyGi1V4v1FtdTthQZvXnOREit4hEks5+wFmndWPtlS5pQy/ZS3xxiz9IL1cSBLGPu0vQ70OX0NMm6gICXNKKfbtltQq+XBelXXy2pRn699LXOculbvpDiZiI/FtpX6tB/m4L1PVDTK3uek4l3AJ8cMp6u6Rj64UfWoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=pQs+2XKK; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710286920;
+	bh=M7wqUR1uMhwgn2qeeoDQh7iUiljE4XKlKtAM47Rzd2I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=pQs+2XKKCTYqB7tmyy89+/4Txiqd6SwHDGlVBpci2+TZymPbAvFEQMzbsl5oSH/jX
+	 vSITjwswJ2n1B4tRNmwRJ13FSoUEqcnS18GrrploxN2HeM/UNUOi6qr7biKBHYwAjL
+	 vU16EQIRfAM3gERWEpJu9H84D2KT15GxlwfUK2foFiFlHImytrnKB8XGnKeFwl212J
+	 iwum/lO6TRuKFdQyGu4AF0GLmHBoVDHcyXkqA4+4XXrjfBDFcByFR5TcE9n9ReqK7h
+	 5fcWh4r6RJa+HLlNR/a2jucA5iMv+w/WANaGleFXVY3Lnx6Pf3epICfUygfTP14oXM
+	 DHCISxIqkQ6XQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C4527101A552;
-	Tue, 12 Mar 2024 23:37:32 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.10])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8C54F10F53;
-	Tue, 12 Mar 2024 23:37:31 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: netdev@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-afs@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] rxrpc: Fix error check on ->alloc_txbuf()
-Date: Tue, 12 Mar 2024 23:37:18 +0000
-Message-ID: <20240312233723.2984928-3-dhowells@redhat.com>
-In-Reply-To: <20240312233723.2984928-1-dhowells@redhat.com>
-References: <20240312233723.2984928-1-dhowells@redhat.com>
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TvVY373nXz4wqN;
+	Wed, 13 Mar 2024 10:41:59 +1100 (AEDT)
+Date: Wed, 13 Mar 2024 10:41:58 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Chuck Lever <chuck.lever@oracle.com>
+Cc: Christian Brauner <brauner@kernel.org>, Dai Ngo <dai.ngo@oracle.com>,
+ Jeff Layton <jlayton@kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfs-brauner tree
+Message-ID: <20240313104158.5649190c@canb.auug.org.au>
+In-Reply-To: <20240219104450.4d258995@canb.auug.org.au>
+References: <20240219104450.4d258995@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: multipart/signed; boundary="Sig_/Zd.4RUrtd4Rx6L=dpQzjrfL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-rxrpc_alloc_*_txbuf() and ->alloc_txbuf() return NULL to indicate no
-memory, but rxrpc_send_data() uses IS_ERR().
+--Sig_/Zd.4RUrtd4Rx6L=dpQzjrfL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fix rxrpc_send_data() to check for NULL only and set -ENOMEM if it sees
-that.
+Hi all,
 
-Fixes: 49489bb03a50 ("rxrpc: Do zerocopy using MSG_SPLICE_PAGES and page frags")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reported-by: Marc Dionne <marc.dionne@auristor.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: netdev@vger.kernel.org
----
- net/rxrpc/sendmsg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, 19 Feb 2024 10:44:50 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the vfs-brauner tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+>=20
+> fs/nfsd/nfs4state.c: In function 'nfsd4_deleg_getattr_conflict':
+> fs/nfsd/nfs4state.c:8845:32: error: 'struct file_lease' has no member nam=
+ed 'fl_owner'
+>  8845 |                         dp =3D fl->fl_owner;
+>       |                                ^~
+>=20
+> Caused by commits
+>=20
+>   a69ce85ec9af ("filelock: split common fields into struct file_lock_core=
+")
+>   282c30f320ba ("filelock: remove temporary compatibility macros")
+>=20
+> interacting with commit
+>=20
+>   b9b89fb3e0b6 ("NFSD: handle GETATTR conflict with write delegation")
+>=20
+> from the nfsd tree.
+>=20
+> I have applied the following merge resolution patch.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 19 Feb 2024 10:38:26 +1100
+> Subject: [PATCH] fixup for "filelock: split common fields into struct
+>  file_lock_core"
+>=20
+> interacting with "NFSD: handle GETATTR conflict with write delegation"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  fs/nfsd/nfs4state.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+> index 3545125c8b73..71bb0ee57cf8 100644
+> --- a/fs/nfsd/nfs4state.c
+> +++ b/fs/nfsd/nfs4state.c
+> @@ -8842,7 +8842,7 @@ nfsd4_deleg_getattr_conflict(struct svc_rqst *rqstp=
+, struct inode *inode,
+>  			}
+>  break_lease:
+>  			nfsd_stats_wdeleg_getattr_inc(nn);
+> -			dp =3D fl->fl_owner;
+> +			dp =3D fl->c.flc_owner;
+>  			ncf =3D &dp->dl_cb_fattr;
+>  			nfs4_cb_getattr(&dp->dl_cb_fattr);
+>  			spin_unlock(&ctx->flc_lock);
+> --=20
+> 2.43.0
 
-diff --git a/net/rxrpc/sendmsg.c b/net/rxrpc/sendmsg.c
-index 6f765768c49c..894b8fa68e5e 100644
---- a/net/rxrpc/sendmsg.c
-+++ b/net/rxrpc/sendmsg.c
-@@ -349,8 +349,8 @@ static int rxrpc_send_data(struct rxrpc_sock *rx,
- 			 */
- 			remain = more ? INT_MAX : msg_data_left(msg);
- 			txb = call->conn->security->alloc_txbuf(call, remain, sk->sk_allocation);
--			if (IS_ERR(txb)) {
--				ret = PTR_ERR(txb);
-+			if (!txb) {
-+				ret = -ENOMEM;
- 				goto maybe_error;
- 			}
- 		}
+This is now required in the merge of the nfsd tree with Linus' tree.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Zd.4RUrtd4Rx6L=dpQzjrfL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXw6EYACgkQAVBC80lX
+0GxuEQgAmwdzCg+Z+okkA3vPask4kdQH2VbxyPkHgZcdng66p4LFz88T0OOpbz2x
+skOW9PnMKUVVd9hUTM/YknEWbaUZgxEWFhn7Z1M5xLv9bSVByJOBYxoXNwPT6cBt
+O4hphar7sDhNhrzLFv5D0jYYMNVtHKhN6d4+4Xu67ypS5jNnpTne5cEWixn9wqD1
+z4BG/D6KdFA02u8Cv2ZejqweGW0v9plMKkgJW8yS3cNixQiK7lcfNj157oEGcX38
+uG0yBwq4pO54xa1Upvxt93ELooe0DvlsOJ9Vk1CtekgBmLedOSDoQAz9QDw8AcNX
+83j7AUmjy5Jfwcbs3sV4w0DID8YiVg==
+=zFGI
+-----END PGP SIGNATURE-----
+
+--Sig_/Zd.4RUrtd4Rx6L=dpQzjrfL--
 
