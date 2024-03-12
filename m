@@ -1,86 +1,74 @@
-Return-Path: <linux-kernel+bounces-100009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2B008790AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:22:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC75B8790AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:22:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E7E428695D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:22:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CDBDB22B33
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:22:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C2F57D067;
-	Tue, 12 Mar 2024 09:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F9078B45;
+	Tue, 12 Mar 2024 09:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FNxE8aax"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D/4LLAe2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D7D17CF20;
-	Tue, 12 Mar 2024 09:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07A178274;
+	Tue, 12 Mar 2024 09:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710235075; cv=none; b=VbW3MTJNn9oWBjRsoUAS9nDxlG9f9nhd33I7HYT1Hnm26tuc902GG+sKTYJrG7iUlWi0YV0sbrUCeBMOZjdvc0C4eZtClETSO/AKRMSDlmuh3AxBQBaZf6IlSFR2V2rYbpRxo4hNSkhGD/bdDFuS9mPqE6sDFreRNBZ/DwaJrCM=
+	t=1710235094; cv=none; b=Aqj1+KC0QI16/WAO4ckICszA0a8Ahx0fqC/SYQpvTgyz3sjVdku3eF9W+niiRqw3oUwZLsaTAkuS4LWdquXRgHslRZzXNkt8BfyuOm/cpLutY6Ph5cDK5/pPHvqVuQ6gdC+83astoMaytGm853SmyS2+nhkNmn5D4qdBWt/dA1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710235075; c=relaxed/simple;
-	bh=n/xyd4RSK51AZo83JsP+jj0gL9V4BBAgGqAGe8AEkg4=;
+	s=arc-20240116; t=1710235094; c=relaxed/simple;
+	bh=xULG24erpUcoihlm+Uw7EJPRQq7iaA6trJNTM9vkwmA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c3Vg+G/L84oIgZx8kkZqLo9Z7eo+5vDUKSazUeoH3Rj2kck7s0mNJFR+lKhE2/bfujmqztjKsP4pceWPykacF8X7wbxjyskT29zKhlwO1c2SS0oaosILeEguaMsZnVkYqC7R4ReLEikpiHtA0cPDVR/Zd8ouQ4pRAOSCGd1I4d4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FNxE8aax; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d27fef509eso86793231fa.3;
-        Tue, 12 Mar 2024 02:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710235072; x=1710839872; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZ6n3LCBgXbzRZ+jOk9gBUl7KDl6UUW0N9+kmdRSwFk=;
-        b=FNxE8aaxTE41lxHvEop8BP5yy26v1Bk6wAoqvUWhnDQo2klrkHjK+dKHA5zqp8wyFZ
-         WI3DjOE61M885NnfXJ9RhBjz0M8r5jvj5OyTA4rFTVRkEu3/oje6BZ18THm0siahmQLZ
-         STrCtLAy8SIiPQzWJmOSCl9QQokoqBM1sE/uY7yGkAvLKF8mTTsv+/UEyugM/s54oA+K
-         qPm2BfgPtbNTjygSL+GlKMTxvhFrRdCeklWdbCk5QbYWDhOoiJKsiw7OYhmTCcZ9Cmu0
-         PV0CaFMnRI5cAKdkJ6OtRnlfVdzuY2X+gyDkRE0dwqjjBL27yxfdRiNC2luF1Orq4tXm
-         lmqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710235072; x=1710839872;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BZ6n3LCBgXbzRZ+jOk9gBUl7KDl6UUW0N9+kmdRSwFk=;
-        b=OhLIYnKLjelxIQGcSsolf0P89LISXMdOqdAQT3U1p8uciqVoMol626dxz72lVBG1Ms
-         oPpoEFK450xkXPJA18HNnyyiExCDsl2NYhGlyPNkpM1iLnBh/77aJkxqGgXjBM6LgP3y
-         337K0PuFgwGjw75KCRtENGHqneWR7vSizmSWTln5ADfYij2Gv6GpDhf9OowoaNnMhH18
-         V2odiRMgnRnUVYqxoxcdlUNxDLw9vnW/vmdyUvDu2eEOAQGno/Aqxhfk85+s1SURT5/5
-         wtUB7nhcf8jTPoCuOT96hBHVDbUqUqX60uluMeL1L0YtYrdDlaNCHhW6idEnWjbOHrAL
-         99iA==
-X-Forwarded-Encrypted: i=1; AJvYcCUW6updcz66nF2r0+YZCCCuZApbM9gZRSxiSiipiUn5DrG3MS9eageIUYhfjrmvNoBDL/wESqKORoUiYU5odEHgmbGhwU56AQmScWwNtWSzVT4DmyDT6JM3/CRXM2TjMdsLQdq+Nn9MV/a2xo8V2+l2QVYj3sK/zrJ6IFx8GuuL2ehVLcHNhxs0vgGULiXYP4Z8IOZbHm/PERQDdwtRv8h4sKYDmInQ64HA
-X-Gm-Message-State: AOJu0YwopXVHxULAjUDqcZyNif27uxgES2ixJFPyDXdLc14gyrV1h4Ai
-	q3o8ctVjbkNepousnSfi6Rt1w19/erfOaaiU9Ea/HU/EjboFtAeq
-X-Google-Smtp-Source: AGHT+IFm7+AOiUOnzjOZiIaCXRd9rxISYVnr31Yubo08D3ay+vXSLHfTEBCY79LtjUa86DxxV5qF6A==
-X-Received: by 2002:a2e:be8d:0:b0:2d4:59bd:bc87 with SMTP id a13-20020a2ebe8d000000b002d459bdbc87mr790603ljr.4.1710235071652;
-        Tue, 12 Mar 2024 02:17:51 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id f9-20020a05651c02c900b002d2a710f864sm1521827ljo.24.2024.03.12.02.17.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 02:17:51 -0700 (PDT)
-Date: Tue, 12 Mar 2024 12:17:48 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>, 
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, Rob Herring <robh@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Marek Vasut <marek.vasut+renesas@gmail.com>, 
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Kishon Vijay Abraham I <kishon@kernel.org>, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev, Siddharth Vadapalli <s-vadapalli@ti.com>, 
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v4 2/5] PCI: dwc: Skip finding eDMA channels count for
- HDMA platforms
-Message-ID: <kqztfm6ri54pkxcmsmngldmlf22mt2vn5cgxxfhjqxujx3qkq2@us6rc2sof7gk>
-References: <20240306-dw-hdma-v4-0-9fed506e95be@linaro.org>
- <20240306-dw-hdma-v4-2-9fed506e95be@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DqKvUyqnSss3i8uuRAg8F1Hm7jlPDVSqtZVsj77fNUyitOTtzF2di7JwzGlAv6x5IajZX6rhDjYLyY2vUh3P/tdVC+DYh8ZTFfJSa2hSyBZTwpRZ9iCeWddmdNFth7eu0zsa3FU9bBXhIn3iIzBYxj0gpIX5qSwb1agsOLydvHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D/4LLAe2; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710235093; x=1741771093;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xULG24erpUcoihlm+Uw7EJPRQq7iaA6trJNTM9vkwmA=;
+  b=D/4LLAe2jrbdqW0I5nK0r68hdZBaet0Fu6epfge3tpKNbKARAN/SpQby
+   nAVUdVGk9uYDj8siktNqS5Tuy81nk0aTLELPbyCSShJI/3pY1fuIz5Bw0
+   mhCm2qoHtj9AUYVkCkdNipAZT+Vm6JJcH5LIcKin+0WFLyUxSccACPS2L
+   RfTDDCXpmGF4Mzq0HR4nvZI7hsf06B5cPCQ3LCLsFVcYylKbs5LHQ8jod
+   5LfA4PzJFRs9rcFivk9Yea8cybJFRkV0ZM1xQ1na6/8WPj/6EElBIicYr
+   3gYBKSDEhd6EWyU0pPheTtv3rOM+xENnVz6Ql5z7FiBOHcDnKYeOsFvOJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="4784219"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="4784219"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 02:18:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="937051555"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="937051555"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 12 Mar 2024 02:18:07 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 12 Mar 2024 11:18:06 +0200
+Date: Tue, 12 Mar 2024 11:18:06 +0200
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	=?iso-8859-1?Q?G=FCnter_R=F6ck?= <linux@roeck-us.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	RD Babiera <rdbabiera@google.com>, Rob Herring <robh@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Yu Zhe <yuzhe@nfschina.com>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: typec: fusb302: Use common error handling code in
+ fusb302_probe()
+Message-ID: <ZfAdzsqXeO/IOY/A@kuha.fi.intel.com>
+References: <0b89e175-47da-4e66-bb3b-a45a400dc3ae@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,69 +77,50 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240306-dw-hdma-v4-2-9fed506e95be@linaro.org>
+In-Reply-To: <0b89e175-47da-4e66-bb3b-a45a400dc3ae@web.de>
 
-On Wed, Mar 06, 2024 at 03:51:58PM +0530, Manivannan Sadhasivam wrote:
-> In the case of Hyper DMA (HDMA) present in DWC controllers, there is no way
-> the drivers can auto detect the number of read/write channels as like its
-> predecessor embedded DMA (eDMA). So the glue drivers making use of HDMA
-> have to pass the channels count during probe.
+On Fri, Mar 01, 2024 at 05:23:25PM +0100, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Fri, 1 Mar 2024 17:00:23 +0100
 > 
-> To accommodate that, let's skip the existing auto detection of channels
-> count procedure for HDMA based platforms. If the channels count passed by
-> the glue drivers were wrong in any form, then the existing sanity check
-> will catch it.
+> Add a label so that a bit of exception handling can be better reused
+> at the end of this function implementation.
 > 
-> Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-> Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-
-Please find a tiny nitpick further below.
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
 > ---
->  drivers/pci/controller/dwc/pcie-designware.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+>  drivers/usb/typec/tcpm/fusb302.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 3a26dfc5368f..599991b7ffb2 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -927,13 +927,18 @@ static int dw_pcie_edma_find_channels(struct dw_pcie *pci)
->  {
->  	u32 val;
->  
-> -	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
-> -		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-> -	else
-
-> +	/*
-> +	 * Autodetect the read/write channels count only for non-HDMA platforms.
-> +	 * HDMA platforms doesn't support autodetect, so the glue drivers should've
-> +	 * passed the valid count already. If not, the below sanity check will
-> +	 * catch it.
-> +	 */
-
-This is correct for the _native_ HDMA CSRs mapping. I suggest to emphasize
-that in the note above.
-
--Serge(y)
-
-> +	if (pci->edma.mf != EDMA_MF_HDMA_NATIVE) {
->  		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
->  
-> -	pci->edma.ll_wr_cnt = FIELD_GET(PCIE_DMA_NUM_WR_CHAN, val);
-> -	pci->edma.ll_rd_cnt = FIELD_GET(PCIE_DMA_NUM_RD_CHAN, val);
-> +		pci->edma.ll_wr_cnt = FIELD_GET(PCIE_DMA_NUM_WR_CHAN, val);
-> +		pci->edma.ll_rd_cnt = FIELD_GET(PCIE_DMA_NUM_RD_CHAN, val);
-> +	}
->  
->  	/* Sanity check the channels count if the mapping was incorrect */
->  	if (!pci->edma.ll_wr_cnt || pci->edma.ll_wr_cnt > EDMA_MAX_WR_CH ||
+> diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fusb302.c
+> index ef18a448b740..e1e030da1dec 100644
+> --- a/drivers/usb/typec/tcpm/fusb302.c
+> +++ b/drivers/usb/typec/tcpm/fusb302.c
+> @@ -1741,10 +1741,9 @@ static int fusb302_probe(struct i2c_client *client)
 > 
-> -- 
-> 2.25.1
+>  	chip->tcpm_port = tcpm_register_port(&client->dev, &chip->tcpc_dev);
+>  	if (IS_ERR(chip->tcpm_port)) {
+> -		fwnode_handle_put(chip->tcpc_dev.fwnode);
+>  		ret = dev_err_probe(dev, PTR_ERR(chip->tcpm_port),
+>  				    "cannot register tcpm port\n");
+> -		goto destroy_workqueue;
+> +		goto put_fwnode;
+>  	}
 > 
+>  	ret = request_irq(chip->gpio_int_n_irq, fusb302_irq_intn,
+> @@ -1761,6 +1760,7 @@ static int fusb302_probe(struct i2c_client *client)
+> 
+>  tcpm_unregister_port:
+>  	tcpm_unregister_port(chip->tcpm_port);
+> +put_fwnode:
+>  	fwnode_handle_put(chip->tcpc_dev.fwnode);
+>  destroy_workqueue:
+>  	fusb302_debugfs_exit(chip);
+> --
+> 2.44.0
+
+-- 
+heikki
 
