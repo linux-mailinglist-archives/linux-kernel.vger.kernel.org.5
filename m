@@ -1,141 +1,110 @@
-Return-Path: <linux-kernel+bounces-100499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFCF58798A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:13:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC828798B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:14:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D4C31C218C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:13:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F2571C217A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1278E7D3F9;
-	Tue, 12 Mar 2024 16:13:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76857EF0A;
+	Tue, 12 Mar 2024 16:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EkPp1FMb"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="HCP1iYsb"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CDD7A73F
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D48E7D3F8
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710259985; cv=none; b=DgpJCHhLJWZ8EKR1UQ8pTAzsQSQvJNd5gFzwWA8acgaGtMdcMQZRead9QGYxid7KGJMKCmGY9kswiDhUUbxL6RcxXwF4fpPW8vL5AoidMajcU2w6dAvc7iCFFNlV/MMXjMmNozJ5Azox5PRjW3sX5AOlhUpa/yeTRXQP7xNh/e8=
+	t=1710260048; cv=none; b=QxZGLSpjZinTdA2ioTcKuz2+aIyGfIHMkvmFSfkvdfMooxMIoO/9SmTwJ4ioKkfXSCL+o+HmFuqy8HA+dw6HKEaYSHEmjOy3DK82MC2s82XY1P7T55nvWoUPLaXSUPatVMVrGAbBNbu5OWkwD7pScb6NqDbEUqFOk8k1G08rAG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710259985; c=relaxed/simple;
-	bh=ZCJROvJRrAYT7Jc6E1xIj5ZKRMxyPfvbC0G1OA9L3W8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=aLtdJAMw8X7A62WSEiZibQuH5q76lOZLhl1PFTDVsd/5Ej8oWR8NLfeLWg+CpmG8onncn4U4ts5AckhVNz0KssUwwVCtxtZY9ImzocAC3WXUSac5nEvT+ka5fz2RnD3uHdAxUnTYRurH8pSdxfzgdmXVSBg/gtomSiIwavjgbGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=EkPp1FMb; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42CDK4Xx023716;
-	Tue, 12 Mar 2024 16:12:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=jFeOfqofpER02Z0W5dJuJpJa9a9anKP1f9O1bGqjJMY=; b=Ek
-	Pp1FMb9TvCDqEaWHo5ap2AkjMtbnuOsZWJp4CnhKpRFqWveniZPH0+6VPp1U+XNP
-	NGvRTIoQxJ23Ys/zQojnxVcRzIH7Qckgo405506I8+ihLC4xKUJxsrU4cJorZUsI
-	3mDqsahVooQa0b8IPhdyIxg45ZguMtgW7WcWeUB7mM8qEY9+7JbIDLoicL+i3ihw
-	jCGAIDFqUo80HNO4hqfhfhDG3gsP59jf3Q3MUiP3NR5ZTXMha+m382/3kMNRTmql
-	FHvSvN7sHpdTGso9K+nVNfg2OdU4/cK0r9UaNNAQkUOQNnVH2W/tnUqwQ0qxp99t
-	F/iqZI/RRT3tfx9T8YjQ==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wtgc3hdhq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 16:12:57 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42CGCvWC004990
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 16:12:57 GMT
-Received: from [10.216.60.182] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Mar
- 2024 09:12:53 -0700
-Message-ID: <792e956f-eefb-3d2b-ada2-0eaa175ba81e@quicinc.com>
-Date: Tue, 12 Mar 2024 21:42:36 +0530
+	s=arc-20240116; t=1710260048; c=relaxed/simple;
+	bh=VqIofrJMW35b6TtvRns3ZAPwCJuIsYdZh5yQM9GrNCo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jFNAKmPyn6o00mzPBa3I8TyMxSA0jPJGwiOq5/RJIdds7oqSxqXiyYn2D2Ud2fqSx9PNAC16vAdmO+7zpiA3rNv9TFE5EX5HjZRCKuKmdAhWGqev3IYaP5Qzb9bX0cxM4bJfQrfXXCvxW0HBSNmdmbptE4gZftKqZaSRRbu3SPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=HCP1iYsb; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 33D6F40E0174;
+	Tue, 12 Mar 2024 16:14:02 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id brRHIjIQ3eD6; Tue, 12 Mar 2024 16:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1710260040; bh=rp3UW8kgV0OpqW18xyh0tjUL+7P3rgOm1smIGfUXoH4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HCP1iYsbvT4EHsMVxG2ozNaj1IsGxM5xiGcPn3S79LV/vNMvpdcHzaEThEiXZ6flk
+	 mnRRTD7m2xXL6fgbHk2HKYrAQPKtU6BjoQ8E5Ob7P2zEa74PXsWmca94fOeXJGlvcQ
+	 zE6WtK4urv73nQ0x/a99cGSHDQO83PyccHASriBzN4EykPqjrCHietAGNOTuyHlybt
+	 rn2PjO+HF+cdPMW8mygriQvmBpAX3GozpVShafD/Dyjfw+lJHR8tPZg9kRhghaZsyg
+	 7k2SKgrV27N7YKzNjZ0d5BUM1TwU2/mvGaYrnZdRjbGn3MxTYgUf5fmzc3P8OdNWUS
+	 +S0fPev4wr7HsbxEJWnkR3/kb6W6WLAfbGJP8Ch5MfbUdxXzmpErLutMJbSMv21JXM
+	 l1S+ycqI1kcUgiDD1ZrLp8MoAGkB0cmk14ri2VBreWpHG1ihD7mum+OlEOHWpvNI4M
+	 AmtL3VphgwB/7a2u51WniLc0C3d4tghRG06xtegWfu11vuCePxbk2ZzIcMvcQJKy9X
+	 iwHU0p5oQjpIMAxYl6P3fBkQUidOdXvZLx6bZ4Xb5sZtVsZBCFJut3y108fglhRcOY
+	 FNUDkHUCfpfHNwFzbmCvgfN6W8r6pocC1IFCxdJzo486hPaQA7jv3V5MMORcDZap3I
+	 o67OiO35xR8kRvL98mx4ZeZo=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C590F40E0028;
+	Tue, 12 Mar 2024 16:13:44 +0000 (UTC)
+Date: Tue, 12 Mar 2024 17:13:37 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@google.com>
+Subject: Re: [PATCH v2 1/3] x86/mm: Use IPIs to synchronize LAM enablement
+Message-ID: <20240312161337.GFZfB_MdSFtAUXjeLU@fat_crate.local>
+References: <20240312155641.4003683-1-yosryahmed@google.com>
+ <d24c8736-d963-4aa5-a3cb-5cc1110e3ca8@intel.com>
+ <CAJD7tkYXfFiOQMpM+GkR7a=aUxFM-smDc-ZFTTtFu2Kbd2KoPQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] nvmem: meson-mx-efuse: Remove nvmem_device from efuse
- struct
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: <srinivas.kandagatla@linaro.org>, <neil.armstrong@linaro.org>,
-        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <1709621888-3173-1-git-send-email-quic_mojha@quicinc.com>
- <CAFBinCC2n+Muu2qaAG0PWFj6f+bVFDtHnzm78jSpeodTD47TOg@mail.gmail.com>
-Content-Language: en-US
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <CAFBinCC2n+Muu2qaAG0PWFj6f+bVFDtHnzm78jSpeodTD47TOg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: GfegUGf7_eY_C748SFCEi1-9w7RLtqJz
-X-Proofpoint-GUID: GfegUGf7_eY_C748SFCEi1-9w7RLtqJz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-12_10,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- spamscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403120122
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkYXfFiOQMpM+GkR7a=aUxFM-smDc-ZFTTtFu2Kbd2KoPQ@mail.gmail.com>
 
-Hi Martin,
+On Tue, Mar 12, 2024 at 09:09:30AM -0700, Yosry Ahmed wrote:
+> My bad, I lost track of when I sent v1 and saw Kirill's comment when I
+> woke up so I addressed that. FWIW, v1 and v2 are almost identical
+> except for a small change in patch 2 to address Kirill's comment. I
+> will hold off on sending anything else this week.
 
-On 3/8/2024 2:26 AM, Martin Blumenstingl wrote:
-> Hello Mukesh,
-> 
-> On Tue, Mar 5, 2024 at 7:58 AM Mukesh Ojha <quic_mojha@quicinc.com> wrote:
->>
->> nvmem_device is used at one place while registering nvmem
->> device and it is not required to be present in efuse struct
->> for just this purpose.
->>
->> Drop nvmem_device and manage with nvmem device stack variable.
-> I'm generally fine with this approach
+and while you do, you can have a look at
 
-Thanks.
-Sorry for the late reply, was on vacation.
+https://kernel.org/doc/html/latest/process/development-process.html
 
-> 
-> [...]
->> @@ -223,9 +222,9 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
->>                  return PTR_ERR(efuse->core_clk);
->>          }
->>
->> -       efuse->nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
->> +       nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
-> But this doesn't compile for me:
->    CC      drivers/nvmem/meson-mx-efuse.o
-> ../drivers/nvmem/meson-mx-efuse.c: In function 'meson_mx_efuse_probe':
-> ../drivers/nvmem/meson-mx-efuse.c:252:9: error: 'nvmem' undeclared
-> (first use in this function)
->   252 |         nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
+And we're in a merge window now so no queueing of new patches for
+2 weeks unless they're regressions.
 
-Sent too soon., change was cached never got commited..
+HTH.
 
-v2:
-https://lore.kernel.org/lkml/1710259663-14095-1-git-send-email-quic_mojha@quicinc.com/
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
--Mukesh
-
-> 
-> 
-> Best regards,
-> Martin
+https://people.kernel.org/tglx/notes-about-netiquette
 
