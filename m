@@ -1,207 +1,187 @@
-Return-Path: <linux-kernel+bounces-100272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4592F87949C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:57:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 171838794A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:58:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 733621C219AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:57:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AA061C21D27
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDEE5820D;
-	Tue, 12 Mar 2024 12:57:10 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118C81F95F
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9DD58112;
+	Tue, 12 Mar 2024 12:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ko4JHe0a"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E4427711
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710248229; cv=none; b=Yw3dMLvApozlE5o5490gy/AzXrhJOtXdwbB8uZXRErrstFGVA1H2HQVZdCmJ07LlnPnIOwelyPjIZDgmJpddJ+1QFYpWGnWucXLLv/80zSrq7MfF81B/thMslyOGvUh+504p5EfOHalgZ5muVn+KcDPEiZEIjNoyKVABXARBSSU=
+	t=1710248298; cv=none; b=n0XyYZcKCAioyx0fKEs6IWlxESM6xD5vU2wdzCUOJTnnpcoxnvBtIYyAmSQhVGu0/7tf5aYNBPELh91B8H5dhWlxb20FqXJIiY+16hQk7A6hmA+aPhzxQFvxbg9AC7T6pUQfXOSIqiF1C9Bs+bYMItfxcfxxbxlcalxufByW2J4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710248229; c=relaxed/simple;
-	bh=zR7cKbwRBy8RFNiYd/NNWkRCprZVVOYJ3f/Llk4/OCg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZK442uI+PlXkPgT7OH+HdV5OvrYiwURSD89Pkl3HIZXFG++HYylsbCA28VPHs0o14bQ80d/j8bfV9UyoZ5S9hgzlW5arT4FMnrWlbbA/1HcHXLCpLjE/xddWPkygHqoSQ59HzUEgs8EuDqfn8MXbqXPAkPwPCG+JdaLLxsDXdxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6D291007;
-	Tue, 12 Mar 2024 05:57:43 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E09F93F762;
-	Tue, 12 Mar 2024 05:57:04 -0700 (PDT)
-Message-ID: <da27a0a6-1320-42c0-8365-f915bed00376@arm.com>
-Date: Tue, 12 Mar 2024 12:57:03 +0000
+	s=arc-20240116; t=1710248298; c=relaxed/simple;
+	bh=8jJKj6cc4Y6n79Wnr/+MYO0ufoa4sZZLw3fvdmmgQU4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uNzFS0ZxtcdHQY4WFajcodUwfrACdnSA5n5fRgBjKFNq5+rSWYYl0CAxoj8niZCZyTCZgNUSXGzEkGt/14z/i1Qhtf9ft5JQvvbNiB9UAmf2XfxsySMYXnTu3i1IfMaMt6ThGbHImjMURFBGJ+3ktRrs+Bu79tptftS6w3vCo5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ko4JHe0a; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc745927098so4902699276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 05:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710248295; x=1710853095; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8jJKj6cc4Y6n79Wnr/+MYO0ufoa4sZZLw3fvdmmgQU4=;
+        b=Ko4JHe0abXk6vELJfOVNeCXW6Psd4MEs2WmNKhQWTYA+ZJn9AxC4t2YoVm1R5RT+65
+         cumAGBxnYu+au92OCNBMcWXtyU1awhPYtmsPbokxKrq+Tu086qJWxybQTsPyVAr/9s7X
+         TRozxxNoUOfuvkiBHppMdAe2SeN/a/p8S16wvW7ne3z0nATjQgKbfA5Ga5nF5KMopi9N
+         BOaE81rZyKYpKOM27Z00HA7T1NBOBgeFsDo99lKr5CWnzcTfAH+dfEZ3N/X0Kw+wuAo8
+         JMtXyxt7slKudV4lr7ClG8W1ja3dAVr/yuw41Nau9uMrDCrXM1gt/RJrG1HZUYPeUBQ1
+         gcXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710248295; x=1710853095;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8jJKj6cc4Y6n79Wnr/+MYO0ufoa4sZZLw3fvdmmgQU4=;
+        b=b7g/VUREVAk5CEoNwb1S/5A6g8ja7RKpO0IlO9Ni1LnVQjUSlqJMLLZrpq3B7xDF3o
+         o+44xzLYQjLF0+zvVDLKIw1gDGxgpbIRS/+tnkKs9NJDoe3V1JxnqcjwdX/nmO/W3yAS
+         taNZjrSpyDv4lOZ7EF4ABkzbZk/NndInRPfrrLz19QibL7dFYwzqUYFZKYe1bgoC00E6
+         JATiF0Ft1VEcf6iqj61310lWl1+Ar347WPwYs890wjFAY1AmoHZqBIcT3gxkqS3lHNvs
+         GGVmjgbAdHDYx8WfwX79KRYuGScPeFlxF8dRYD75IjUSWoI7FcXORRW3X4JfETZ2b0HB
+         faPA==
+X-Forwarded-Encrypted: i=1; AJvYcCVprb4zNY6g4iyYdIecje9m46IsyMb0BM+As43evm2tox2ZTKH64rmBoZ+SL3M3mq7QwfEXsdHp5kZsx9I8xvlobvB2Nkofclvz+Hiu
+X-Gm-Message-State: AOJu0Yw84JBtpjDLMcbfW047BaBbIcAAVH/8ChW5ds2YaGIuxxKpGlC1
+	vaZ2HYQdlubUfNQdZEZdz3cv4JZ1NOk5gicwhuafrcM5Y7xLCij94B3y4n5uWHzGjnL9dsaTjhU
+	SEfDFB+EIFBD4PHkNwoyOHxOlg7ehIc1DdpVpLQ==
+X-Google-Smtp-Source: AGHT+IEXjBJ8SkftenAiispF7JkfvuYojibcHcU8qjJpODRNR2jabK5webcKiPm5H6fkVHd0TPiRsUtBdXjK4ZzWbuo=
+X-Received: by 2002:a25:aa91:0:b0:dcb:aa26:50f9 with SMTP id
+ t17-20020a25aa91000000b00dcbaa2650f9mr7296508ybi.46.1710248295348; Tue, 12
+ Mar 2024 05:58:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 4/6] swiotlb: Fix alignment checks when both allocation
- and DMA masks are present
-To: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
-Cc: Will Deacon <will@kernel.org>, Michael Kelley <mhklinux@outlook.com>,
- Nicolin Chen <nicolinc@nvidia.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kernel-team@android.com" <kernel-team@android.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- Dexuan Cui <decui@microsoft.com>
-References: <20240308152829.25754-1-will@kernel.org>
- <20240308152829.25754-5-will@kernel.org>
- <20240311210507.217daf8b@meshulam.tesarici.cz>
- <SN6PR02MB41576E58DDF5A56FC6FC1EB6D4242@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240311224910.GA28426@willie-the-truck>
- <20240312095223.7a05d5b8@meshulam.tesarici.cz>
- <2612acb1-48f9-4117-ae06-9b8f430034ca@arm.com>
- <20240312105103.0f3b6a80@meshulam.tesarici.cz>
-Content-Language: en-GB
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240312105103.0f3b6a80@meshulam.tesarici.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <cover.1709667858.git.daniel@makrotopia.org> <CAPDyKFpQfue5Fi0fFSnqHNg2ytCxAYfORVP_Y86ucz2k5HRuDA@mail.gmail.com>
+ <ZfBK5qT_GO_FgtQP@makrotopia.org>
+In-Reply-To: <ZfBK5qT_GO_FgtQP@makrotopia.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 12 Mar 2024 13:57:39 +0100
+Message-ID: <CAPDyKFr7mMEZE5n=6kxxsj9P3oLjLyVx20O9q0-pmyXzXYk52A@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/8] nvmem: add block device NVMEM provider
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jens Axboe <axboe@kernel.dk>, Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>, 
+	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+	Christian Brauner <brauner@kernel.org>, Li Lingfeng <lilingfeng3@huawei.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, Min Li <min15.li@samsung.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Hannes Reinecke <hare@suse.de>, 
+	Christian Loehle <CLoehle@hyperstone.com>, Avri Altman <avri.altman@wdc.com>, 
+	Bean Huo <beanhuo@micron.com>, Yeqi Fu <asuk4.q@gmail.com>, 
+	Victor Shih <victor.shih@genesyslogic.com.tw>, 
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
+	"Ricardo B. Marliere" <ricardo@marliere.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org, 
+	Diping Zhang <diping.zhang@gl-inet.com>, Jianhui Zhao <zhaojh329@gmail.com>, 
+	Jieying Zeng <jieying.zeng@gl-inet.com>, Chad Monroe <chad.monroe@adtran.com>, 
+	Adam Fox <adam.fox@adtran.com>, John Crispin <john@phrozen.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/03/2024 9:51 am, Petr Tesařík wrote:
-> On Tue, 12 Mar 2024 09:38:36 +0000
-> Robin Murphy <robin.murphy@arm.com> wrote:
-> 
->> On 2024-03-12 8:52 am, Petr Tesařík wrote:
->>> On Mon, 11 Mar 2024 22:49:11 +0000
->>> Will Deacon <will@kernel.org> wrote:
->>>    
->>>> On Mon, Mar 11, 2024 at 09:36:10PM +0000, Michael Kelley wrote:
->>>>> From: Petr Tesařík <petr@tesarici.cz>
->>>>>> On Fri,  8 Mar 2024 15:28:27 +0000
->>>>>> Will Deacon <will@kernel.org> wrote:
->>>>>>> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
->>>>>>> index c20324fba814..c381a7ed718f 100644
->>>>>>> --- a/kernel/dma/swiotlb.c
->>>>>>> +++ b/kernel/dma/swiotlb.c
->>>>>>> @@ -981,8 +981,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->>>>>>>    	dma_addr_t tbl_dma_addr =
->>>>>>>    		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
->>>>>>>    	unsigned long max_slots = get_max_slots(boundary_mask);
->>>>>>> -	unsigned int iotlb_align_mask =
->>>>>>> -		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
->>>>>>> +	unsigned int iotlb_align_mask = dma_get_min_align_mask(dev);
->>>>>>>    	unsigned int nslots = nr_slots(alloc_size), stride;
->>>>>>>    	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
->>>>>>>    	unsigned int index, slots_checked, count = 0, i;
->>>>>>> @@ -993,6 +992,14 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->>>>>>>    	BUG_ON(!nslots);
->>>>>>>    	BUG_ON(area_index >= pool->nareas);
->>>>>>>
->>>>>>> +	/*
->>>>>>> +	 * Ensure that the allocation is at least slot-aligned and update
->>>>>>> +	 * 'iotlb_align_mask' to ignore bits that will be preserved when
->>>>>>> +	 * offsetting into the allocation.
->>>>>>> +	 */
->>>>>>> +	alloc_align_mask |= (IO_TLB_SIZE - 1);
->>>>>>> +	iotlb_align_mask &= ~alloc_align_mask;
->>>>>>> +
->>>>>>
->>>>>> I have started writing the KUnit test suite, and the results look
->>>>>> incorrect to me for this case.
->>>>>>
->>>>>> I'm calling swiotlb_tbl_map_single() with:
->>>>>>
->>>>>> * alloc_align_mask = 0xfff
->>>>>> * a device with min_align_mask = 0xfff
->>>>>> * the 12 lowest bits of orig_addr are 0xfa0
->>>>>>
->>>>>> The min_align_mask becomes zero after the masking added by this patch,
->>>>>> and the 12 lowest bits of the returned address are 0x7a0, i.e. not
->>>>>> equal to 0xfa0.
->>>>>
->>>>> The address returned by swiotlb_tbl_map_single() is the slot index
->>>>> converted to an address, plus the offset modulo the min_align_mask for
->>>>> the device.  The local variable "offset" in swiotlb_tbl_map_single()
->>>>> should be 0xfa0.  The slot index should be an even number to meet
->>>>> the alloc_align_mask requirement.  And the pool->start address should
->>>>> be at least page aligned, producing a page-aligned address *before* the
->>>>> offset is added. Can you debug which of these isn't true for the case
->>>>> you are seeing?
->>>>
->>>> I was just looking into this, and I think the problem starts because
->>>> swiotlb_align_offset() doesn't return the offset modulo the min_align_mask,
->>>> but instead returns the offset *into the slot*:
->>>>
->>>> 	return addr & dma_get_min_align_mask(dev) & (IO_TLB_SIZE - 1);
->>>>
->>>> so this presumably lops off bit 11 without adjusting the slot number.
->>>
->>> Yes. You will never see an offset bigger than IO_TLB_SIZE.
->>>    
->>>> I don't think swiotlb_find_slots() should be handling this though; it's
->>>> more about how swiotlb_tbl_map_single() puts the address back together
->>>> again.
->>>>>> In other words, the min_align_mask constraint is not honored. Of course,
->>>>>> given the above values, it is not possible to honor both min_align_mask
->>>>>> and alloc_align_mask.
->>>>>
->>>>> When orig_addr is specified and min_align_mask is set, alloc_align_mask
->>>>> governs the address of the _allocated_ space, which is not necessarily the
->>>>> returned physical address.  The min_align_mask may dictate some
->>>>> pre-padding of size "offset" within the allocated space, and the returned
->>>>> address is *after* that pre-padding.  In this way, both can be honored.
->>>>
->>>> I agree, modulo the issue with the offset calculation.
->>>
->>> *sigh*
->>>
->>> This is exactly what I tried to suggest here:
->>>
->>>     https://lore.kernel.org/linux-iommu/20240301180853.5ac20b27@meshulam.tesarici.cz/
->>>
->>> To which Robin Murphy replied:
->>>    
->>>> That doesn't make sense - a caller asks to map some range of kernel
->>>> addresses and they get back a corresponding range of DMA addresses; they
->>>> cannot make any reasonable assumptions about DMA addresses *outside*
->>>> that range.
->>>
->>> It sounded like a misunderstanding back then already, but in light of
->>> the present findings, should I send the corresponding patch after all?
->>
->> No, that comment was in reference to the idea of effectively forcing
->> alloc_align_mask in order to honour min_align_mask - specifically that
->> the reasoning given for it was spurious, but it's clear now it would
->> also simply exacerbate this problem.
->>
->> Simply put, if min_align_mask is specified alone, SWIOTLB can allocate a
->> roughly-aligned range of slots such that the bounce offset is always
->> less than IO_TLB_SIZE from the start of the allocation; if both
->> min_align_mask and alloc_align_mask are specified, then the bounce
->> offset may be larger than IO_TLB_SIZE, and SWIOTLB needs to be able to
->> handle that correctly. There is still no benefit in forcing the latter
->> case to happen more often than it needs to.
-> 
-> So yes, it was a misunderstanding. Here's what I wrote:
-> 
-> I thought about it some more, and I believe I know what should happen
-> if the first two constraints appear to be mutually exclusive.
-> 
-> I thought it was clear that the two constraints "appear mutually
-> exclusive" only if both are specified. Admittedly, I also tried to
-> combine the historic page alignment with the explicit alloc_align_mask
-> somehow, so that could have caused confusion.
+On Tue, 12 Mar 2024 at 13:30, Daniel Golle <daniel@makrotopia.org> wrote:
+>
+> Hi Ulf,
+>
+> On Tue, Mar 12, 2024 at 01:22:49PM +0100, Ulf Hansson wrote:
+> > On Tue, 5 Mar 2024 at 21:23, Daniel Golle <daniel@makrotopia.org> wrote:
+> > >
+> > > On embedded devices using an eMMC it is common that one or more (hw/sw)
+> > > partitions on the eMMC are used to store MAC addresses and Wi-Fi
+> > > calibration EEPROM data.
+> > >
+> > > Implement an NVMEM provider backed by block devices as typically the
+> > > NVMEM framework is used to have kernel drivers read and use binary data
+> > > from EEPROMs, efuses, flash memory (MTD), ...
+> > >
+> > > In order to be able to reference hardware partitions on an eMMC, add code
+> > > to bind each hardware partition to a specific firmware subnode.
+> > >
+> > > This series is meant to open the discussion on how exactly the device
+> > > tree schema for block devices and partitions may look like, and even
+> > > if using the block layer to back the NVMEM device is at all the way to
+> > > go -- to me it seemed to be a good solution because it will be reuable
+> > > e.g. for (normal, software GPT or MBR) partitions of an NVMe SSD.
+> > >
+> > > This series has previously been submitted on July 19th 2023[1] and most of
+> > > the basic idea did not change since.
+> > >
+> > > However, the recent introduction of bdev_file_open_by_dev() allow to
+> > > get rid of most use of block layer internals which supposedly was the
+> > > main objection raised by Christoph Hellwig back then.
+> > >
+> > > Most of the other comments received for in the first RFC have also
+> > > been addressed, however, what remains is the use of class_interface
+> > > (lacking an alternative way to get notifications about addition or
+> > > removal of block devices from the system). As this has been criticized
+> > > in the past I'm specifically interested in suggestions on how to solve
+> > > this in another way -- ideally without having to implement a whole new
+> > > way for in-kernel notifications of appearing or disappearing block
+> > > devices...
+> > >
+> > > And, in a way just like in case of MTD and UBI, I believe acting as an
+> > > NVMEM provider *is* a functionality which belongs to the block layer
+> > > itself and, other than e.g. filesystems, is inconvenient to implement
+> > > elsewhere.
+> >
+> > I don't object to the above, however to keep things scalable at the
+> > block device driver level, such as the MMC subsystem, I think we
+> > should avoid having *any* knowledge about the binary format at these
+> > kinds of lower levels.
+> >
+> > Even if most of the NVMEM format is managed elsewhere, the support for
+> > NVMEM partitions seems to be dealt with from the MMC subsystem too.
+>
+> In an earlier iteration of this RFC it was requested to make NVMEM
+> support opt-in (instead of opt-out for mtdblock and ubiblock, which
+> already got their own NVMEM provider implementation).
+> Hence at least a change to opt-in for NVMEM support is required in the
+> MMC subsystem, together with making sure that MMC devices have their
+> fwnode assigned.
 
-The constraints aren't mutually exclusive though, since they represent 
-different (but slightly overlapping) things. Any context in which they 
-appear to be is simply wrong.
+So, the NVMEM support needs to be turned on (opt-in) for each and
+every block device driver?
 
-> Anyway, let me send the patch and discuss it in a new thread.
+It's not a big deal for me - and I would be happy to apply such a
+change. On the other hand, it is just some binary data that is stored
+on the flash, why should MMC have to opt-in or opt-out at all? It
+should be the upper layers who decide what to store on the flash, not
+the MMC subsystem, if you get my point.
 
-I think it gets worse - looks like swiotlb_release_slots() actually 
-relies on offset < IO_TLB_SIZE and will free the wrong slots if not. And 
-since it no longer has the original alloc_align_mask, that seems... 
-tricky :(
+>
+> > Why can't NVMEM partitions be managed the usual way via the MBR/GPT?
+>
+> Absolutely, maybe my wording was not clear, but that's exactly what
+> I'm suggesting here. There are no added parsers nor any knowledge
+> about binary formats in this patchset.
 
-Thanks,
-Robin.
+Right, but there are new DT bindings added in the $subject series that
+allows us to describe NVMEM partitions for an eMMC. Why isn't that
+parsed from the MBR/GPT, etc, rather than encoded in DT?
+
+>
+> Or did I misunderstand your comment?
+
+Maybe. I am just trying to understand this, so apologize if you find
+my questions silly. :-)
+
+Kind regards
+Uffe
 
