@@ -1,189 +1,154 @@
-Return-Path: <linux-kernel+bounces-100132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41EBB87924C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:38:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A8EC879248
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:37:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3F381F22657
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:38:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2966283FB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8504C69D0B;
-	Tue, 12 Mar 2024 10:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AixALP2U"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 053E869D09;
+	Tue, 12 Mar 2024 10:37:37 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294F041C89;
-	Tue, 12 Mar 2024 10:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8034735F18;
+	Tue, 12 Mar 2024 10:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710239879; cv=none; b=IUPF23BKpya/GxsHzo2lmzKgIa9s8IjbhA+fQ1VxmyDz3U92oG6ABzprw0iP+DQ6NurSqpDVhazEflpgXnyJgLD1qH0MSP82w8KVEKwPJU2i0X/vhUjZUgBnpgVM/eBXH1jGEQ8+JgHJL3DNplZjQT//b7bu++ZcFoQSm8+Dpm8=
+	t=1710239856; cv=none; b=oXKnVHDC4Osb2TrNzidCJH7pKxtEfnWWY0/DSpf3Jq9WWd728677COlH+5KWvdpOq2Pls3aKFzFR/zRqgwni5jlri9w1ZBUhw/qHdII74Y97cfjHlnIjARAN/UEESWHR/WyURhzF8tb0GQsl9pnNidDZoPwzdnHOO73PhgpGKFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710239879; c=relaxed/simple;
-	bh=j0KHEpP4+A64VEo8ddI2ua0gUpz6VjXmabhAZemrxXI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HGUVDEStZQATGlE5OpCQBOcaJTuUqX1pfDXPx+nx59nF9iDCgtg59R/12L/C5DmR9AUWzIJmyxk49Xx0/i7898o5Ec7Et9dIe8MyyRFyPzYuXy7Twyc3lwW8u4sNGVmE9GjSGuc80w0/t1la3irI+YW/nejedH/29R9GNPhT+C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AixALP2U; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42C5mQW9013154;
-	Tue, 12 Mar 2024 10:37:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=0/twHL4
-	Fim0hDqCqcJaDFQzlmAB51tPWASIpJFotokM=; b=AixALP2U03azFYiB4gN/w3M
-	m015fPzkt2ckDDMRW07zHG5OlAEWCq4wopMO5WaxzxkwsdJi74BeKxtLA5UsA2//
-	Sn9ViKo3hNqtL1uRsQgymhvdtEnktZF6VXZ7g7zy43CgCnkLnakTQuwPuoaUyeCe
-	FoIiW8yAtbWU4dBjau2rPyBWFxSs5NrOQsitKs6hD8HWPG3sU/qKpGTXktKR6kcL
-	0Gstyv9uY8wg+9ctMCm7BmuTGcTt0CBKuBSu9FhDCmigzPuJNnGKVfUK15pSeFpR
-	KN1i9G+K8lpx/bQOWUks3Twh0U7GOxJAwcf4pLH+jEigpeSomPh0KUvI1tSdD7Q=
-	=
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wth7rrhtb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 10:37:43 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42CAbhFY027348
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 10:37:43 GMT
-Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 12 Mar 2024 03:37:38 -0700
-From: Sibi Sankar <quic_sibis@quicinc.com>
-To: <dietmar.eggemann@arm.com>, <rafael@kernel.org>, <viresh.kumar@linaro.org>,
-        <xuwei5@hisilicon.com>, <zhanjie9@hisilicon.com>
-CC: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <quic_rgottimu@quicinc.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-pm@vger.kernel.org>, <d-gole@ti.com>,
-        Sibi Sankar
-	<quic_sibis@quicinc.com>
-Subject: [PATCH V3] cpufreq: Fix per-policy boost behavior on SoCs using cpufreq_boost_set_sw
-Date: Tue, 12 Mar 2024 16:07:23 +0530
-Message-ID: <20240312103723.3469762-1-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710239856; c=relaxed/simple;
+	bh=Zs/hC5awvf429dQdmQHC6GgeHsRiQtY2P1LueuJh0Zg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U9pcRG1Swoyzav1R0P9SNU+jYgq8yT4NZCBuBWIOAowfiKxetLzo85VskNTJq7zsedYt9/gm33CqqWZs/c3jqorJxyQUqz3ZbW1USj8paOGfOcXtrwmshdhwtGR3RHCB2SuNjA8vngCAfBL+5ekApInf2E4fYnDmN3Yn5TOoWS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F15AC433F1;
+	Tue, 12 Mar 2024 10:37:33 +0000 (UTC)
+Message-ID: <d49012ae-4e67-47d0-8e1b-7b0c4b118f7e@xs4all.nl>
+Date: Tue, 12 Mar 2024 11:37:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 1nBfNmxRHoY_LM4sbNxFBJx3mrwAk26c
-X-Proofpoint-ORIG-GUID: 1nBfNmxRHoY_LM4sbNxFBJx3mrwAk26c
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-12_08,2024-03-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 bulkscore=0 adultscore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403120081
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/34] Qualcomm video encoder and decoder driver
+Content-Language: en-US
+To: Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Hans Verkuil <hans.verkuil@cisco.com>, mchehab@kernel.org,
+ stanimir.k.varbanov@gmail.com, andersson@kernel.org,
+ konrad.dybcio@linaro.org, bryan.odonoghue@linaro.org, agross@kernel.org,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com,
+ Dikshita Agarwal <quic_dikshita@quicinc.com>
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+ <8bf182b1-e05f-0c90-a358-e5c8bf6bd430@quicinc.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+In-Reply-To: <8bf182b1-e05f-0c90-a358-e5c8bf6bd430@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-In the existing code, per-policy flags doesn't have any impact i.e.
-if cpufreq_driver boost is enabled and one or more of the per-policy
-boost is disabled, the cpufreq driver will behave as if boost is
-enabled. Fix this by incorporating per-policy boost flag in the policy->max
-calculus used in cpufreq_frequency_table_cpuinfo and setting the default
-per-policy boost to mirror the cpufreq_driver boost flag.
+Hi Vikash,
 
-Fixes: 218a06a79d9a ("cpufreq: Support per-policy performance boost")
-Reported-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
----
+On 2/29/24 16:09, Vikash Garodia wrote:
+> Hello All,
+> 
+> On 12/18/2023 5:01 PM, Dikshita Agarwal wrote:
+>> This patch series introduces support for Qualcomm new video acceleration
+>> hardware architecture, used for video stream decoding/encoding. This driver
+>> is based on new communication protocol between video hardware and application
+>> processor.
+>> This driver comes with below capabilities:
+>> - V4L2 complaint video driver with M2M and STREAMING capability.
+>> - Supports H264, H265, VP9 decoders.
+>> - Supports H264, H265 encoders.
+>> This driver comes with below features:
+>> - Centralized resource and memory management.
+>> - Centralized management of core and instance states.
+>> - Defines platform specific capabilities and features. As a results, it provides
+>>   a single point of control to enable/disable a given feature depending on 
+>>   specific platform capabilities.
+>> - Handles hardware interdependent configurations. For a given configuration from
+>>   client, the driver checks for hardware dependent configuration/s and updates
+>>   the same.
+>> - Handles multiple complex video scenarios involving state transitions - DRC,
+>>   Drain, Seek, back to back DRC, DRC during Drain sequence, DRC during Seek
+>>   sequence.
+>> - Introduces a flexible way for driver to subscribe for any property with
+>>   hardware. Hardware would inform driver with those subscribed property with any
+>>   change in value.
+>> - Introduces performance (clock and bus) model based on new hardware
+>>   architecture.
+>> - Introduces multi thread safe design to handle communication between client and
+>>   hardware.
+>> - Adapts encoder quality improvements available in new hardware architecture.
+>> - Implements asynchronous communication with hardware to achieve better
+>>   experience in low latency usecases.
+>> - Supports multi stage hardware architecture for encode/decode.
+>> - Output and capture planes are controlled independently. Thereby providing a
+>>   way to reconfigure individual plane.
+>> - Hardware packetization layer supports synchronization between configuration
+>>   packet and data packet.
+>> - Introduces a flexibility to receive a hardware response for a given command
+>>   packet.
+>> - Native hardware support of LAST flag which is mandatory to align with port
+>>   reconfiguration and DRAIN sequence as per V4L guidelines.
+>> - Native hardware support for drain sequence.
+> 
+> 1. We considered enhancing the venus driver to support iris functionality but
+> concluded that the result would essentially be two parallel drivers implemented
+> in the same folder.
+> 2. Although the underlying hardware for venus and iris are quite similar, but
+> there are other factors which brings the need of new driver:
+>    a. the host firmware interface (HFI) changed between the two. Venus supports
+> HFI protocol 1.0 while iris supports HFI protocol 2.0.
+>    b. unlike HFI protocol 1.0, HFI protocol 2.0 is better aligned to V4L2 APIs.
+>    c. iris driver modularize platforms, hardware variants, and states to extend
+> it for any upcoming SOC. Thereby more extendable to newer SOCs in future.
+>    d. Iris also supports many advanced features.
+> 3. Based on the comments received on posted iris driver [1], we evaluated it
+> further and to better align with the upstream standard and practices, we
+> acknowledge that even though iris driver is the way forward, it would be ideal
+> to bring in the Venus hardwares enabled in this driver.
+> 4. Hence, we decided to rework iris driver to add support of HFI protocol 1.0 as
+> well.
+> 5. Initially we would start with adding support for one HFI protocol 1.0 based
+> platform which would be SM8250.
+> 6. SM8250 enablement on iris driver would be incremental, starting with basic
+> decode for H264 codec.
+> 7. In long-term, all venus supported platforms would be migrated to iris.
+> 8. Iris driver and venus driver will co-exist till remaining supported targets
+> also gets migrated to iris driver.
+> 9. We would continue to support and maintain venus driver during this phased out
+> approach.
+> 
+> Please share your thoughts on the above proposal.
 
-v3:
-* Pickup Rbs.
-* Simplify per-policy boost setting. [Viresh]
+I think this is a reasonable approach: the venus driver is quite old and it was
+created when we were at more-or-less the same time also developing better codec
+frameworks. So it is not quite up-to-date with all the latest requirements.
 
-v2:
-* Enable per-policy boost flag in the core instead. [Viresh]
-* Add more details regarding the bug. [Viresh]
-* Drop cover-letter and patch 2.
+Starting with a clean slate for the iris driver and then add support for venus
+platforms to the iris driver makes sense.
 
-Logs reported-by Dietmar Eggemann:
-https://lore.kernel.org/lkml/265e5f2c-9b45-420f-89b1-44369aeb8418@arm.com/
+Just one serious concern: who will do the venus platform migration? Are there resources
+available to do that work? Or is this just wishful thinking?
 
- drivers/cpufreq/cpufreq.c    | 18 ++++++++++++------
- drivers/cpufreq/freq_table.c |  2 +-
- 2 files changed, 13 insertions(+), 7 deletions(-)
+Regards,
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index f6f8d7f450e7..66e10a19d76a 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -653,14 +653,16 @@ static ssize_t store_local_boost(struct cpufreq_policy *policy,
- 	if (policy->boost_enabled == enable)
- 		return count;
- 
-+	policy->boost_enabled = enable;
-+
- 	cpus_read_lock();
- 	ret = cpufreq_driver->set_boost(policy, enable);
- 	cpus_read_unlock();
- 
--	if (ret)
-+	if (ret) {
-+		policy->boost_enabled = !policy->boost_enabled;
- 		return ret;
--
--	policy->boost_enabled = enable;
-+	}
- 
- 	return count;
- }
-@@ -1428,6 +1430,9 @@ static int cpufreq_online(unsigned int cpu)
- 			goto out_free_policy;
- 		}
- 
-+		/* Let the per-policy boost flag mirror the cpufreq_driver boost during init */
-+		policy->boost_enabled = cpufreq_boost_enabled() && policy_has_boost_freq(policy);
-+
- 		/*
- 		 * The initialization has succeeded and the policy is online.
- 		 * If there is a problem with its frequency table, take it
-@@ -2769,11 +2774,12 @@ int cpufreq_boost_trigger_state(int state)
- 
- 	cpus_read_lock();
- 	for_each_active_policy(policy) {
-+		policy->boost_enabled = state;
- 		ret = cpufreq_driver->set_boost(policy, state);
--		if (ret)
-+		if (ret) {
-+			policy->boost_enabled = !policy->boost_enabled;
- 			goto err_reset_state;
--
--		policy->boost_enabled = state;
-+		}
- 	}
- 	cpus_read_unlock();
- 
-diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
-index c4d4643b6ca6..c17dc51a5a02 100644
---- a/drivers/cpufreq/freq_table.c
-+++ b/drivers/cpufreq/freq_table.c
-@@ -40,7 +40,7 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
- 	cpufreq_for_each_valid_entry(pos, table) {
- 		freq = pos->frequency;
- 
--		if (!cpufreq_boost_enabled()
-+		if ((!cpufreq_boost_enabled() || !policy->boost_enabled)
- 		    && (pos->flags & CPUFREQ_BOOST_FREQ))
- 			continue;
- 
--- 
-2.34.1
+	Hans
+
+> 
+> [1]
+> https://patchwork.kernel.org/project/linux-media/cover/1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com/#25643473
+> 
+> Regards,
+> Vikash
+> 
 
 
