@@ -1,202 +1,151 @@
-Return-Path: <linux-kernel+bounces-100902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1EFB879F0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:43:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25BC2879F1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:53:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCE711C21959
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:43:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8DB28338C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998353B2A4;
-	Tue, 12 Mar 2024 22:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CAC43FBA4;
+	Tue, 12 Mar 2024 22:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TIVWnHwx"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gLO/Y7kd"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6475B14293;
-	Tue, 12 Mar 2024 22:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5EB2C9D;
+	Tue, 12 Mar 2024 22:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710283375; cv=none; b=U3OwTx5tK3FhJ7FX55og/DhytODestP7hdIo+o9CI08l41BKfQUqj/wvcMxm+lzV2j7gLbJJQQQlWlSQcGByvfJ5r0L3GgzVjdyE4Mdq3rhnhiTHbbuccMM1ChGy/XlR0q2YMldlGkD2ouFImQFXdzjy3REr3MJG23OoKa0gC6g=
+	t=1710284015; cv=none; b=J14YSipTsW4/eCZf+5WehGq3wdBxTNkAghlMpfkQGdv5HRuaCegPgRON8p+cy21Wu4aCdW1LLrTD2u+dlTtfvrHSJJn0S76uhqkOeLvfwYti8noL5ncJw55iGdkSZJxcgJIDNbbR98Zykt+FwlY8j0pyP9aCjrOoFlEqQZ2OYSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710283375; c=relaxed/simple;
-	bh=itk3+aa121hQohCaZWXLyFbk44xpebuGh6lznsJnwBI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A9XYgKaknHZp7ZvtC5i8IWfUvneyQ4nAXbD8In/SBGVXGAp79so+4cvgq9bZpoX0Qsfz2EqLvjP7BmYcP6eFhFyUYrgSTyTTH4mLYwwLFH9yXmJQiXBQ7Lo/Q1DC3ovrfuXapaNoAzht05YCWjk3P1kR3v2VyAcgGaL2+46qa1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TIVWnHwx; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1710284015; c=relaxed/simple;
+	bh=oiHBupg3hKTNDZyDCbcsnZhSvrtP3cmmac4MXjYgg3E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kyDELppB+/VYB4fzTYCYaOsIXqjfWyr93j/MintaTltMsLiZCbk1SE97IcH7GQ7ESENUA3rARovjdp5a2fisZdV3nkGpjy39Wo92nu6vwAFt1vXWLPf19g7WPiBJrTYBJbuMq4VBcciAKc+C5hxHKeQW0py7HocrIoKyJYiEeuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gLO/Y7kd; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29c23f53eabso1549045a91.0;
-        Tue, 12 Mar 2024 15:42:54 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso3099391a12.2;
+        Tue, 12 Mar 2024 15:53:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710283373; x=1710888173; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GW5vj3ww6Q8f0lmgbHjuCxUYGiTO32XJbsJws7w3Yo4=;
-        b=TIVWnHwx2/uuaE5pqmD2H4Zq4GtrGGAv9o1jEyq+jWiz695Tdfqjb3hNuw+6L5VESc
-         h6q5O0Ws3FdBatlX/jJZrYnUUs6g0s5swQbVyEfTmhNV0r7oPyDf76PYJNZMtlpG1jbp
-         LszeYIwvCHrdvmgwTeDTG4Tml2/RcV9EH29XoPt1ZM9sk3oCZaBIe47JvW1YbEOLfFOl
-         5qx+JDPk7OvptZh/ilhvSHCZXxFxzNvg12bPx0+pgi/8xdFl3AmuNPxpaa8YPFXq6lN0
-         D+DraiunRv+7IQFpZRiwf8VtYJYSYhYSgs25BiiUtjb6DzKRANmgv/1jNlPnr1k4h9TM
-         Q/gA==
+        d=gmail.com; s=20230601; t=1710284013; x=1710888813; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ws0GCecP3gtok9CdydFBjF3vhcGqXsT8MJwMPrN7s4I=;
+        b=gLO/Y7kdAlWve1YKBH5MCxjA15grt7f56uLYMMXAjHHMlg+b24hiz1Gwya1Hun0F2K
+         js0KyRJVuXSYuXbOi6ORzZfuIBrYjaEHUqa/P11Ar5HDUrxRDlKpyG0SKz9oWebiqLgc
+         27o1RT33i0JVuEYXGnm1fg3mrR+nL336od1/EJmAT5HaCE/lD+njhdhrWP3LR2PKtP0d
+         8H4xsNlkS0QCaqpoU197iH4pnO+I25E7CzWolxx1ZOmIsYzTdc4mgS1Cv7urPl4BRfzD
+         7etTjBu57UrrX4dPTjyWfUZMPs1AFut1UiA9NpYAT7TQkilP+tnmvJyo42xMJttMwRxR
+         G40g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710283373; x=1710888173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GW5vj3ww6Q8f0lmgbHjuCxUYGiTO32XJbsJws7w3Yo4=;
-        b=nv/uLKVqUryeMsdpKK/qxNzQ/caZFbHOaZ127BlHHA1Km5WIJS5ANmiwJbKTfL76Qz
-         o4ekB8wDEGf5MRX6ouPpzhKUZ8rsQvRGmhrLjlOEd7P51hhVFiH+Y44QtdnDrc+g5Cd8
-         TU/Na6NCedPs2M/66xbUiCU5z46/8Iq7bmnP03pyjDWkj0dPk2AVHgvilj/sFI/cyQQo
-         mKVOcnSkrHxjwKLh0jqlyuJgRsNCXdf5PlfnpsZIz9NtE+uvcs2Tp9pUSBZwdkEW2O9G
-         WjQhleJ9XxCqjmIqjLJ1duxioPr/XK+OqK+Va5yrrvppekvQxBfJJwZu04GNzZ1gTnQ8
-         t3Vw==
-X-Forwarded-Encrypted: i=1; AJvYcCV4wvqi1iXkoJxZPlfcCjf29srXTWVoWgDjvZyVRCUUuk48s5q+iAn9710d0gQ6kq6fYuOIv7Fyo4aiHHpi87ALLBN4dm7wXVMxYDqB26NlADT47nLZzf/+a1eqfVbvtcPj
-X-Gm-Message-State: AOJu0Yw9zujFMc+g9lbeSQLCWICORsGFXZmOHrWZpGhGvWyoxKV3fAhF
-	Ycl+enBoE8UMgf9afSblOMBwFiKmQ840trmzHjkb+PtyhASOylsDC+WusrbmpmghzXtuSnlA2SM
-	z2CdMHXNus7UwXBgrfNxAJnzWriI=
-X-Google-Smtp-Source: AGHT+IG05AQ8p9LY6kKsQm6GaiTqTBxg+G+H6czkTltA1tGWZzBAoHsJAVkP01GQzO3Mbk3NNcALJkAVyzlg4Vsn3w0=
-X-Received: by 2002:a17:90a:bb8a:b0:29b:a793:e3cb with SMTP id
- v10-20020a17090abb8a00b0029ba793e3cbmr8207504pjr.22.1710283373514; Tue, 12
- Mar 2024 15:42:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710284013; x=1710888813;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ws0GCecP3gtok9CdydFBjF3vhcGqXsT8MJwMPrN7s4I=;
+        b=WkPBz1udna+/r4zVx8BNvJQkRKKT/q0JcTWe4EKjIKoam8HDXSkwvfa8vv1dToQdl3
+         MZOwzp6r6VpdNAVo50hU5sr2+uVmnTh3hvzheDOxP/xRRZePW79osG4R8zIM70+9WX8f
+         19j68OzTYR6inGQ7WCkB6kfc8+LYsikSf5U/EgSsj2e2FoOLAhCz7wTxWF+M/AKL8Toa
+         b2GxItj8OQDW+dRLPVDj0lNgPtNHeFsKUz4kcEhHX9NFbAWQt3mdCpOzTJxkZ7C7J9Bw
+         EbC1NHh0i+Tefjy6TgipyyJngmfRwbypo+NucICHRpqnYrSGbDxYJZ+wbSo7IB1Q8elY
+         WMvw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxC5Ofp3dS5+948ni+2Fz2WWMhVYs14vS/xt5x681FNGoFDHFydqGHx2LMHr0C3cYaTtAGHEdFTOQUn5sLQrte8FkuTitU+sCV5PNjGWrUtW2Vvlm257/XPVyQ5vbdxbGF3x6F
+X-Gm-Message-State: AOJu0YzWTb/Ylag4t+bBopk9PSx0Z4M+ZIt7jDtPrLynMgn9QTtlpwXW
+	DoABlnuNUtwBbaDRYWi2yw80nLgo+GKFc6MJebXbB84dWptMtpGA
+X-Google-Smtp-Source: AGHT+IGgUc908mpe9CvZd5TjoTqUBzD5lc8ql9iD5ivS6tRq+62jKxgFTufh2kq7KuswUAkIOKSchw==
+X-Received: by 2002:a05:6a21:998e:b0:1a3:318f:bc69 with SMTP id ve14-20020a056a21998e00b001a3318fbc69mr442423pzb.4.1710284013162;
+        Tue, 12 Mar 2024 15:53:33 -0700 (PDT)
+Received: from [10.69.40.148] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id c12-20020a17090aa60c00b0029c0cc16888sm104797pjq.1.2024.03.12.15.53.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 15:53:32 -0700 (PDT)
+Message-ID: <ae35799d-5560-4761-848f-578051a9fca3@gmail.com>
+Date: Tue, 12 Mar 2024 15:53:30 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240310154726.734289-1-andrea.righi@canonical.com>
- <CAEf4BzYrwRQu1eNMACfXtsac+=psnNGr+=WQz3zUPP+2DPA2Rg@mail.gmail.com> <Ze9ou-OrYO8NZsDb@gpd>
-In-Reply-To: <Ze9ou-OrYO8NZsDb@gpd>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 12 Mar 2024 15:42:41 -0700
-Message-ID: <CAEf4Bzb6eA5Sz3hKCVKPZjGzCE1v5aGhieR4rOD_appnNDmBqw@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: ringbuf: allow to partially consume items
-To: Andrea Righi <andrea.righi@canonical.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: phy: mdio-bcm-unimac: Cast denominator to
+ unsigned long to avoid overflow
+Content-Language: en-US
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Daniil Dulov
+ <d.dulov@aladdin.ru>, Jakub Kicinski <kuba@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+References: <20240312165358.7712-1-d.dulov@aladdin.ru>
+ <ZfCOb4x/+41y+SW3@shell.armlinux.org.uk>
+ <df295be9-d33e-45d2-914f-c9c1554e5ac0@gmail.com>
+ <b1acf9d0-872c-487a-9938-6d667959d0d3@gmail.com>
+ <ZfCwGF3JRiFdJ353@shell.armlinux.org.uk>
+From: Doug Berger <opendmb@gmail.com>
+In-Reply-To: <ZfCwGF3JRiFdJ353@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 11, 2024 at 1:25=E2=80=AFPM Andrea Righi <andrea.righi@canonica=
-l.com> wrote:
->
-> On Mon, Mar 11, 2024 at 10:55:57AM -0700, Andrii Nakryiko wrote:
-> > On Sun, Mar 10, 2024 at 8:47=E2=80=AFAM Andrea Righi <andrea.righi@cano=
-nical.com> wrote:
-> > >
-> > > Instead of always consuming all items from a ring buffer in a greedy
-> > > way, allow to stop when the callback returns a value > 0.
-> > >
-> > > This allows to distinguish between an error condition and an intentio=
-nal
-> > > stop condition by returning a non-negative non-zero value from the ri=
-ng
-> > > buffer callback.
-> > >
-> > > This can be useful, for example, to consume just a single item from t=
-he
-> > > ring buffer.
-> > >
-> > > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> > > ---
-> > >  tools/lib/bpf/ringbuf.c | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > >
-> > > diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> > > index aacb64278a01..dd8908eb3204 100644
-> > > --- a/tools/lib/bpf/ringbuf.c
-> > > +++ b/tools/lib/bpf/ringbuf.c
-> > > @@ -265,6 +265,14 @@ static int64_t ringbuf_process_ring(struct ring =
-*r)
-> > >                                         return err;
-> > >                                 }
-> > >                                 cnt++;
-> > > +                               if (err > 0) {
-> >
-> > So libbpf already stops at any err < 0 (and sets correct consumer
-> > pos). So you could already get desired behavior by just returning your
-> > own error code. If you need count, you'd have to count it yourself
-> > through custom context, that's a bit of inconvenience.
->
-> Yep, that's exactly what I'm doing right now.
->
-> To give more context, here's the code:
-> https://github.com/sched-ext/scx/blob/b7c06b9ed9f72cad83c31e39e9c4e2cfd86=
-83a55/rust/scx_rustland_core/src/bpf.rs#L217
->
+On 3/12/2024 12:42 PM, Russell King (Oracle) wrote:
+> On Tue, Mar 12, 2024 at 12:23:20PM -0700, Doug Berger wrote:
+>> On 3/12/2024 10:23 AM, Florian Fainelli wrote:
+>>> On 3/12/24 10:18, Russell King (Oracle) wrote:
+>>>> On Tue, Mar 12, 2024 at 07:53:58PM +0300, Daniil Dulov wrote:
+>>>>> The expression priv->clk_freq * 2 can lead to overflow that will cause
+>>>>> a division by zero. So, let's cast it to unsigned long to avoid it.
+>>>>
+>>>> How does casting this help? "unsigned long" can still be 32-bit.
+>>>> Maybe unimac_mdio_probe() should be validating the value it read from
+>>>> DT won't overflow? I suspect that a value of 2.1GHz is way too large
+>>>> for this property in any case.
+>>>>
+>>>> https://en.wikipedia.org/wiki/Management_Data_Input/Output#Electrical_specification
+>>>>
+>>>> (note, this driver is clause-22 only.)
+>>>>
+>>>
+>>> Had commented on the previous version (not sure why this was not
+>>> prefixed with v2) that the maximum clock frequency for this clock is
+>>> 250MHz, the driver could check that to prevent for an overflow, most
+>>> certainly.
+>>
+>> Could also use:
+>> -	div = (rate / (2 * priv->clk_freq)) - 1;
+>> +	div = ((rate / priv->clk_freq) >> 1) - 1;
+>> which is mathematically equivalent without the risk of overflow.
+> 
+> What's the point when the maximum clock frequency that the driver should
+> allow fits within u32, nay u28?
+I'm assuming this question is rhetorical since I agree there is little 
+point to this change.
 
-cool, great that you at least have a work-around
+However, in case it's not, the point is to make the SVACE tool happy. 
+The tool has correctly identified that it is possible for the devicetree 
+to specify values that would produce an intermediate overflow. The fact 
+that there is no existing hardware for which those values are legitimate 
+may be very relevant, but the binding documentation does not specify any 
+such limitations and the future has a tendency to make numbers that seem 
+ludicrous today less ludicrous ;). The brcm,unimac-mdio IP could find 
+itself in some future piece of silicon where it would be capable of 
+dividing such unlikely clocks since software has a knack for outliving 
+the hardware for which it may have been originally written.
 
+My suggestion was merely an attempt to remove the possibility of 
+overflow (the unrealized bug) without altering existing functionality 
+and without needlessly promoting to a larger data type.
 
-> >
-> > But on the other hand, currently if user callback returns anything > 0
-> > they keep going and that return value is ignored. Your change will
-> > break any such user pretty badly. So I'm a bit hesitant to do this.
->
-> So, returning a value > 0 should have the same behavior as returning 0?
-
-yes, that's what the contract is right now
-
-> Why any user callback would return > 0 then?
-
-this is not the code I can control and ringbuf API was like that for a
-long time, which is why I'm saying I'm hesitant to make these changes
-
->
-> >
-> > Is there any reason you can't just return error code (libbpf doesn't
-> > do anything with it, just passes it back, so it might as well be
-> > `-cnt`, if you need that).
->
-> Sure, I can keep using my special error code to stop. It won't be a
-> problem for my particular use case.
->
-> Actually, one thing that it would be nice to have is a way to consume up
-> to a certain amount of items, let's say I need to copy multiple items
-> from the ring buffer to a limited user buffer. But that would require a
-> new API I guess, in order to pass the max counter... right?
-
-Yes, definitely a new API, but that's not a big problem. Though I'm
-wondering if ring_buffer__consume_one() would be a more flexible API,
-where user would have more flexible control. Either way libbpf is
-doing smp_store_release() after each consumed element, so I don't
-think it will have any downsides in terms of performance.
-
-So please consider contributing a patch for this new API.
-
->
-> Thanks,
-> -Andrea
->
-> >
-> > pw-bot: cr
-> >
-> > > +                                       /* update consumer pos and re=
-turn the
-> > > +                                        * total amount of items cons=
-umed.
-> > > +                                        */
-> > > +                                       smp_store_release(r->consumer=
-_pos,
-> > > +                                                         cons_pos);
-> > > +                                       goto done;
-> > > +                               }
-> > >                         }
-> > >
-> > >                         smp_store_release(r->consumer_pos, cons_pos);
-> > > --
-> > > 2.43.0
-> > >
-> > >
+Best regards,
+     Doug
 
