@@ -1,107 +1,184 @@
-Return-Path: <linux-kernel+bounces-100102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1988791CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67DD88791D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:23:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F1F51F22B69
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:22:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D50DC1F22C2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593A878663;
-	Tue, 12 Mar 2024 10:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="w4mlrG9/"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E7BAD53
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90287866D;
+	Tue, 12 Mar 2024 10:23:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8141AD53;
+	Tue, 12 Mar 2024 10:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710238967; cv=none; b=Uv2FsWpQOXKeuWSD222b29aTmnkUqBAg0IIykrMaSH/M231AmuK+fcFFhN5ZT7jALJMetmepnpWQnLJLI76ShNxHpZL/ULAXxav58OAf8Y3Tj/yBjLEyNC/hChp9kqDdSkugtmAgGEkfvg2O2gzXBL1TPfgxTwmNPUdC+vHmTnM=
+	t=1710239017; cv=none; b=HI47wGx1pEz5h68i+8+2slD3CRHdKG51j2k5hsyS9IEWw5ZOBmia4KcK8wyuxj3yK4qoCX4rDL06Bb+e9beoLy6DZkdhzijqa4KlGA+nJe2M7LFl6d8cR5ZmbHVFZUs6TbPXddV2NBsDloFLltwoD9tn7IJlMw6Be9EMqcEu0/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710238967; c=relaxed/simple;
-	bh=qwlSqCcmIQTp4qWBUcG0QiZl7XK3uVt9HTvZMCmPyho=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cXSgh2sFHDuA9+t+ed7AeTSe+RWxOZkG/RE2QRvuvawckV9HdSWU7hjp18XA4fMWv0qowiy58LbfMBPZCknrm+WppXd/MsYbZHEzRtdDRSqy+d3EboEuVrpE9mYGIVKEY0o404KBOYqYfXtNIxYEZnoldXLdeUEc5e6AgVPPNwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=w4mlrG9/; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3122b70439so676709166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 03:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710238964; x=1710843764; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qwlSqCcmIQTp4qWBUcG0QiZl7XK3uVt9HTvZMCmPyho=;
-        b=w4mlrG9/FbShqTEzG+kVSdJlEbboZoEe6uj0iWb6g/LS345+jbnSEtAKD3JQq4IArk
-         Bd7m0CVoZx4PWjR1wODL1qDX8CgRD7aIczT2at9Vm2wDhBD11PXHYft2EdvcelgwOwHt
-         phovQetwuIohc+kdCY6Yz/5NBVY4QeEdQFWf30xE2/bpQTbuPRMrfOdgcxPhhUDa0swU
-         u74gjaV7q8t8uV5h00o12pwhCT3aClXHAHIIksb9jzD85VFAXmAN3aR857qBW7gmj+RB
-         UGtOs9Spy3QMvKSG13SWnq+NeoY29rh0QQM0z2U/+W2GqSMF7PPpUFo3fXn6J8zLtzDP
-         fOCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710238964; x=1710843764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qwlSqCcmIQTp4qWBUcG0QiZl7XK3uVt9HTvZMCmPyho=;
-        b=RvOBOnCfyrB9Z5AY97FACXHFxKe+LsVIo9DhIFeMEmWWb3vv6B5bdUYKRmpSNAjU+P
-         JB9Hqv6T3L3nJ89uSDfYOktm3kr8cuFETOtBPgJagPG7rVM/g5b83y2XQh794bjfb/7H
-         S056DCY0QXeT67bSD45zCW76jOXNxjyjU8C9CtZl8OvlWIIwtX96aGB964vy9eO5q4bn
-         aTyJNSzZp4ZGjM39RpXzuRWAp2R21K/sdoAjNvyWDw1R/Unoawyf+vC6O0ZmV1ZY4rms
-         QXxKV6jyYKTRtOYl+MrLgDf8XuMQgOhWA6bvylDD05m7I1KMbXKv8X39VxXbgUf3bByz
-         kVag==
-X-Forwarded-Encrypted: i=1; AJvYcCU+p2IDbT0c2oAu3Z86kaS51/ccVnvjKRobqZcamhQeqBG9doYO8xEWL7BxqZoA+oUbmNOVBt1SwJIp2GEH3q5aU0bCvomV2KsDx1Mb
-X-Gm-Message-State: AOJu0YyTFzxQLjB+z5YV78D94pP+0ABilriW1ZT8j+t7On4gnWG+c+XY
-	uVsKA9phkej4QKc8s0wWQJZ3ZsheN6J8iAkAkdvNjJH8WnxYKI6qmJddHCtFEv4gp1S/1b1mqm1
-	pu/U0I5GNnQ0ID/HWIzH78PMCfQyg7MGw5Huy
-X-Google-Smtp-Source: AGHT+IG4zIJ6KPcEpowwL2eYULkssu/nf4WiRLsFrH81EeV4R1r9+XavkF2NcCG2sOIumI3K7s5YgsP2tGeXGk2Atts=
-X-Received: by 2002:a17:906:13d5:b0:a44:2563:c5dd with SMTP id
- g21-20020a17090613d500b00a442563c5ddmr900504ejc.45.1710238964252; Tue, 12 Mar
- 2024 03:22:44 -0700 (PDT)
+	s=arc-20240116; t=1710239017; c=relaxed/simple;
+	bh=jNYp7j/OZLkUygvw4Nl+6VSM+4ieafge9Xe2zEruKhQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AXrrJYZ+nlZY2+2sjef2ScLsfmVMaGrnE4SdJSX/lAvcFAnI+QecMTZHd1ccKWUK/nw4hY/g9SibeXekaPYWG10nFSKHhd94RQxDDkEKGkeOhF/jNpktkTU5dv1jmqogpA8/3rN/DY/vy0pH2N6WcPYn5toBPXZT8ex04rh9E0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B4651007;
+	Tue, 12 Mar 2024 03:24:11 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.52.80])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DB78B3F73F;
+	Tue, 12 Mar 2024 03:23:28 -0700 (PDT)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-arm-kernel@lists.infradead.org,
+	suzuki.poulose@arm.com
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	James Clark <james.clark@arm.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	coresight@lists.linaro.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH V6 00/11] coresight: Move remaining AMBA ACPI devices into platform driver
+Date: Tue, 12 Mar 2024 15:53:07 +0530
+Message-Id: <20240312102318.2285165-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311235210.2937484-1-yosryahmed@google.com> <CAKEwX=Oaj=h-Lqk+ZdrB6LpksKF5xhNJkpgUuF-wQ0gk6+pgpg@mail.gmail.com>
-In-Reply-To: <CAKEwX=Oaj=h-Lqk+ZdrB6LpksKF5xhNJkpgUuF-wQ0gk6+pgpg@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 12 Mar 2024 03:22:06 -0700
-Message-ID: <CAJD7tkZSz6A2cEdHzMhJZpa8BwxH8iRUZQqKp6GfPaGzBZthRA@mail.gmail.com>
-Subject: Re: [PATCH] mm: zswap: remove unnecessary check in zswap_find_zpool()
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024 at 2:35=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> On Tue, Mar 12, 2024 at 6:52=E2=80=AFAM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > zswap_find_zpool() checks if ZSWAP_NR_ZPOOLS > 1, which is always true.
-> > This is a remnant from a patch version that had ZSWAP_NR_ZPOOLS as a
-> > config option and never made it upstream. Remove the unnecessary check.
->
-> Do we need a Fixes: tag for this? I guess it's not a bug hmmm.
+This moves remaining AMBA ACPI devices into respective platform drivers for
+enabling ACPI based power management support. This series applies on latest
+coresight next. This series has been built, and boot tested on a DT based
+(RB5) and ACPI supported coresight platform (N1SDP).
 
-The compiler should be producing the exact same code either way, so I
-would say no. It's just a cleanup.
+https://git.gitlab.arm.com/linux-arm/linux-anshuman.git (amba_other_acpi_migration_v6)
 
->
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->
-> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-acpi@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: coresight@lists.linaro.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
 
-Thanks!
+Changes in V6:
+
+- Dropped Jame's RB tag from [PATCH 3/11]
+- Added clk_disable_unprepare() for pclk in replicator_probe() error path
+- Added clk_disable_unprepare() for pclk in funnel_probe() error path
+- Added clk_put() for pclk in catu_platform_probe() error path
+- Added clk_put() for pclk in debug_platform_probe() error path
+- Added WARN_ON(!drvdata) check in replicator_platform_remove()
+- Added WARN_ON(!drvdata) check in funnel_platform_remove()
+- Added WARN_ON(!drvdata) check in catu_platform_remove()
+- Added WARN_ON(!drvdata) check in tpiu_platform_remove()
+- Added WARN_ON(!drvdata) check in tmc_platform_remove()
+- Added WARN_ON(!drvdata) check in stm_platform_remove()
+- Added WARN_ON(!drvdata) check in debug_platform_remove()
+- Added additional elements for all acpi_device_id[] updates
+
+Changes in V5:
+
+https://lore.kernel.org/all/20240222082142.3663983-1-anshuman.khandual@arm.com/
+
+- Used table->mask to filter out bits from pid in coresight_get_uci_data_from_amba()
+- Dropped custom masks such as STM_AMBA_MASK and TMC_AMBA_MASK
+- Modified tmc_etr_setup_caps() to accept struct csdev_access argument
+- Reverted back tmc_etr_setup_caps() call site position in tmc_probe()
+- Changed replicator and funnel devices to use the new helpers earlier in series
+- Updated the commit messages regarding xxx_probe() refactoring and renaming
+
+Changes in V4:
+
+https://lore.kernel.org/all/20240123054608.1790189-1-anshuman.khandual@arm.com/
+
+- Fixed PM imbalance in etm4_probe() error path with pm_runtime_disable()
+- Restored back the pm_runtime_disable() on platform probe error paths
+  in replicator, funnel, catu, tpiu, tmc and stm devices
+- Dropped dev_caps argument from __tmc_probe()
+- Changed xxxx_platform_remove() for platform_driver->remove_new() callback
+
+Changes in V3:
+
+https://lore.kernel.org/all/20231208053939.42901-1-anshuman.khandual@arm.com/
+
+- Split coresight_init_driver/remove_driver() helpers into a separate patch
+- Added 'drvdata->pclk' comments in replicator, funnel, tpiu, tmc, and stm devices
+- Updated funnel, and replicator drivers to use these new helpers
+- Check for drvdata instead of drvdata->pclk in suspend and resume paths in catu,
+  tmc and debug devices
+- Added patch to extract device name from AMBA pid based table lookup for stm
+- Added patch to extract device properties from AMBA pid based table look for tmc
+- Dropped pm_runtime_put() from common __probe() functions
+- Handled pm_runtime_put() in AMBA driver in success path
+- Handled pm_runtime_put() in platform driver in both success and error paths
+
+Changes in V2:
+
+https://lore.kernel.org/all/20231201062053.1268492-1-anshuman.khandual@arm.com/
+
+- Dropped redundant devm_ioremap_resource() hunk from tmc_platform_probe()
+- Defined coresight_[init|remove]_driver() for both AMBA/platform drivers
+- Changed catu, tmc, tpiu, stm and debug coresight drivers to use the new
+  helpers avoiding build issues arising from module_amba_driver(), and
+  module_platform_driver() being on the same file
+
+Changes in V1:
+
+https://lore.kernel.org/all/20231027072943.3418997-1-anshuman.khandual@arm.com/
+
+- Replaced all IS_ERR() instances with IS_ERR_OR_NULL() as per Suzuki
+
+Changes in RFC:
+
+https://lore.kernel.org/all/20230921042040.1334641-1-anshuman.khandual@arm.com/
+
+Anshuman Khandual (11):
+  coresight: etm4x: Fix unbalanced pm_runtime_enable()
+  coresight: stm: Extract device name from AMBA pid based table lookup
+  coresight: tmc: Extract device properties from AMBA pid based table lookup
+  coresight: Add helpers registering/removing both AMBA and platform drivers
+  coresight: replicator: Move ACPI support from AMBA driver to platform driver
+  coresight: funnel: Move ACPI support from AMBA driver to platform driver
+  coresight: catu: Move ACPI support from AMBA driver to platform driver
+  coresight: tpiu: Move ACPI support from AMBA driver to platform driver
+  coresight: tmc: Move ACPI support from AMBA driver to platform driver
+  coresight: stm: Move ACPI support from AMBA driver to platform driver
+  coresight: debug: Move ACPI support from AMBA driver to platform driver
+
+ drivers/acpi/arm64/amba.c                     |   8 -
+ drivers/hwtracing/coresight/coresight-catu.c  | 146 ++++++++++++++---
+ drivers/hwtracing/coresight/coresight-catu.h  |   1 +
+ drivers/hwtracing/coresight/coresight-core.c  |  29 ++++
+ .../hwtracing/coresight/coresight-cpu-debug.c | 146 ++++++++++++++---
+ .../coresight/coresight-etm4x-core.c          |   3 +
+ .../hwtracing/coresight/coresight-funnel.c    |  87 +++++-----
+ drivers/hwtracing/coresight/coresight-priv.h  |  10 ++
+ .../coresight/coresight-replicator.c          |  82 +++++-----
+ drivers/hwtracing/coresight/coresight-stm.c   | 116 +++++++++++--
+ .../hwtracing/coresight/coresight-tmc-core.c  | 154 +++++++++++++++---
+ drivers/hwtracing/coresight/coresight-tmc.h   |   2 +
+ drivers/hwtracing/coresight/coresight-tpiu.c  | 103 ++++++++++--
+ include/linux/coresight.h                     |   7 +
+ 14 files changed, 729 insertions(+), 165 deletions(-)
+
+-- 
+2.25.1
+
 
