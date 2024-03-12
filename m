@@ -1,240 +1,286 @@
-Return-Path: <linux-kernel+bounces-100349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97D1A879612
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:27:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49AEF879623
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:28:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 255291F22AFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:27:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F203B22EBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1E37B3E5;
-	Tue, 12 Mar 2024 14:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88567C6DE;
+	Tue, 12 Mar 2024 14:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="XevwYBsS"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2066.outbound.protection.outlook.com [40.107.244.66])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QwEWEnlw"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8900779B97
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710253604; cv=fail; b=rrQoqYSvDv8JWAITDgVoad0PrPZxCNJnXmt4Qz4wqqA/o70/pdNK3CMuYUbKZpoxS5HLiL5nf3baWo15pEH4nE+MePFrGrohH8TNeeFp6rp2pSYEDgbJgcFPH6VICpMRl1rlD/q25rFBDUs7ESe81f1zCRsWQf0uDa3YBewhhpw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710253604; c=relaxed/simple;
-	bh=U3d7bKa7G3+IqdniFm2Po7zFBhOlr/rQBNL1d9dMnVY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=K40eZAKxcycK3ILM+jVO26MAic0m+2QEQCzPiDQCVVTGjspOXpd1QGrrJTsREPAgfVmsjzFPr9J4ojIGI9QE8JNEZ/OqFmQfvBKf6tvcwY3ds8FW7/EePTc4nhzLDBZOsvaHdwvV3n66BWb7pZSXuh+VgOTyAes6P4LQynrhy6w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=XevwYBsS; arc=fail smtp.client-ip=40.107.244.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e642f+yFtSwE/5M29s5eG6d066ZwseGrAYXrRDbS0jh4vvXyb/u0MndJT73drDSA3G/tB/q7lCOSdt3KOZzLl522/R935Y7ozZmL9aYxJcciamr6LA7scbhfyFIrYi5pwK9xW0lZQeXjGjv22XzNafftWfQseNl2bcLqReritDFFRoUZv5KQiwKfl3atkdKzrPqys/w5OgctKP/D681WfWQFviNlZgjlNiKFn+tRK8cR3JQ6VJukuJejip4B32/A3j+7cRXqQjHIz7Hi3OGJxCLSGsUuS7f1dE+Am6BcTI5tYPIjFFMrwfi5GdAxL3mjaN8ed2vp4onIoKtDOePFQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OcChI5XAuzBbXZ+hTqRwtHw/rMsPY+Y2jk2iMIbVAAY=;
- b=hdUCKFBJ9sgExM7ZHqShTchdKXFd9NPfUskZ9FJFs2a9k+R2r4Mzll2Jw7Vkw0z2esyxaXylHH/QlyblzIwXN3L/wa21iA0jiQEc3ibMGdNFsy5ol2VDuL9M4Bxj6x+mhqpSTAxAF6fRR3K2YMogSmjiVTz/mkRavQ+x5wdtnqb/+KhYCf9+JrwgGlBYftWc11SSvB9q7eHIriGLTal2LHkDdGRURN1V1MznOHQUE3utgh5mn8vPn8h8HayRuhIWMYt7p0kzQaQm9UBnNZlqfeQVPLmsdF5MDrreQyAskxt3wXULfAugLhe4i33aewOVY5vbUmQO4VJ60UN3lsRArQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OcChI5XAuzBbXZ+hTqRwtHw/rMsPY+Y2jk2iMIbVAAY=;
- b=XevwYBsSsCYcsU3QdVPwoN9+HbD4z1GUFxJ89ejrlYjCvPAwtS2dCVj+uKntWXujNgVSRkCDdHMzFJEx7kEU7rkCbk4vOXsPCkWq5RsamR2OEdtiEfUf3LUc2cBnhQhqALJ7ZZuJXnV8M/p4pGAe3Ct2MNZflTdKwmnOQFtIKv7gF1z/tPWoKFrFUIDErwTDzBWqe19P0ukgRQZkjpovX4VQcZMG/sfuqpw89QJB/tyjE45q9eJFJiypJRd5EVywXIpS71SFeZRcqIj3iZlS8fKTOaVGrAoWK4KtSwSyej2yBp6p8AYHiNYQTHIPLZFiEWElAXnm4jg+UMJ/+mtOHg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- SJ2PR12MB7868.namprd12.prod.outlook.com (2603:10b6:a03:4cd::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Tue, 12 Mar
- 2024 14:26:39 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
- 14:26:39 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>, Yang Shi <shy828301@gmail.com>,
- Huang Ying <ying.huang@intel.com>,
- "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/migrate: put dest folio on deferred split list if
- source was there.
-Date: Tue, 12 Mar 2024 10:26:36 -0400
-X-Mailer: MailMate (1.14r6018)
-Message-ID: <373F606D-4A90-4514-8C31-775557B494BB@nvidia.com>
-In-Reply-To: <e3e14098-eade-483e-a459-e43200b87941@arm.com>
-References: <20240311195848.135067-1-zi.yan@sent.com>
- <Ze_P6xagdTbcu1Kz@casper.infradead.org>
- <e3e14098-eade-483e-a459-e43200b87941@arm.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_A38E795F-10D3-4815-B38D-7CA08003ABBF_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL6PEPF00013DFC.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:22e:400:0:1001:0:21) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEA37B3ED;
+	Tue, 12 Mar 2024 14:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710253685; cv=none; b=o+1CcAsVh566wDzNEYJnbaooBZdhQFajExn/BQPwwPfRTdmTxlX6y20ya5xSw1V5ne4/8DIv9ZmnQstWcoCxI6Y3/TGhRbx2HnYW3Zast0LFTS7wBJiZvqvV12BvHF/EeogDS87fDfmXffh4LodwBH2/X37i6ucbU7Mo6e5mqk0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710253685; c=relaxed/simple;
+	bh=X14FpICDCDrbo3b3R9pgbr/q0dlhotKf0sN3RKRRBfQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jqLNvmoH45MwXOgFfF1wtjju+iGmewzwa+ZahJdTgkrVLCXrZNXcuirZpEgnHBVxD/kO+YlY6LyAi24yPc7ZGOH83WPl8fwe37e0OjQ91kGD2a6nGdoQSkR1Fk68GkVF8Xhv6lSuKEtRFr2vsGvktGBDnvAls1VrORJ9/g2St+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QwEWEnlw; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1710253679; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=RlLN0oWvrnaOjj9IeFvo1jXENWHdJO0QzqPqFQ4hSpY=;
+	b=QwEWEnlwFvx331aVGiHiDd6oH9451fMY11Dj173HfcP+cYp3RQAi2nFzGix+HUVLcqc5Vb1a4m3gbwcipOesqQImbMeqfx8Fi8hFqYNA/XYkpKASLuDKSZY8KozMo8smrBkjceCIZ0+0La3ha8SpRSPyWU9icxJ1zT86DdNLJ7I=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W2MAU.1_1710253664;
+Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W2MAU.1_1710253664)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Mar 2024 22:27:58 +0800
+From: Wen Gu <guwen@linux.alibaba.com>
+To: wintera@linux.ibm.com,
+	twinkler@linux.ibm.com,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	wenjia@linux.ibm.com,
+	jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com,
+	svens@linux.ibm.com,
+	alibuda@linux.alibaba.com,
+	tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com,
+	linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH net-next v3 00/11] net/smc: SMC intra-OS shortcut with loopback-ism
+Date: Tue, 12 Mar 2024 22:27:32 +0800
+Message-Id: <20240312142743.41406-1-guwen@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|SJ2PR12MB7868:EE_
-X-MS-Office365-Filtering-Correlation-Id: e19c6057-4884-4000-d5ec-08dc42a06e09
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	KNzzp0xmTsvnL/EWtYTYP6dkHz2umev9mxUsYtHrJF5uFDWo5LN2P++9PZWn5CnlckiXZvsU5wD3AsahyPppa56mNtMtGvW7BzvPaR0URR2NHZmQUHtq9E6ZcdHvm9wK2DuK4nDq3Yb7KWVnOQjsr7reVCcmlzAEDA1FQIrssSPCYt3K0M5iUe9DgdLajpomqJTL2kWyKA2dfHFHYWPSXzZ4MnQbCq5KqbzvCCtHACRBtEL/jVh9GXZzZ3F63k24Z6al76Y+Evhcmms0RVX/rGYAzWtO4QpaV8xmijr9glHMXumQEFZIslEMDRoV736W44tzJtrOx8Qr8De9hny2VRCf09Bf3kDfhtPqtBdZ8s7Peh8YEt05OXIMA8hEzh/kmObLLoGBpZRscAeBf2u6X1kFpuF7zIOWRvVEHoVMK7GRDsI/tcL8VY9OJe7mOCojQVFOiw/m+w1V/Iu1WkIA9Y0ucy+jnDwt+3bPjhYHcJmGCFJ2Dw4u9RQ0sRLeYyYpOpDBjb0ozHtZwK76p9Z5hhRo/0wuFhGt6Gk+n3Qrq5iNiTGIulHUr5OTssHgJIkYfTYqJD4+aI53RrEgithHc/B5QKYjFd1SVCb/DYjbWOFUlZ7IjVvbVM0ELsP4riq7kePwYS1uaN42D81UkXpl40GL6Fb3c5SMjONcGc55u0U=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+3n+JW3W71IIbjVGluFTA/srvVr0K802xUBAfiqM39pi1pHTjb+N6YA9vcjm?=
- =?us-ascii?Q?NGPWoA9UwCmTMAWudnGj2pVunWQWtXZDy+E2fCeJHUjscnI8qDlYTSKr/7Wj?=
- =?us-ascii?Q?zmSQzuGcT0rJ7XPXqZtW3mlLN5W9UgEwT/Y8JjIYYAm5PIphhd9dum15aMwZ?=
- =?us-ascii?Q?Ws2htfLyQMEyS1C0UV7fCwnFc5b/4XL7tV+zJtKLr8KjxbwT91L43KXr8odk?=
- =?us-ascii?Q?FND4oUDh7WN236KctHgisKxCL6rYfa4f1Qk+NZIcIZ1oKSQ6pl/nEUTrIzBs?=
- =?us-ascii?Q?vGdSkZy8w6iLwQTzcY5TBjXds5nBpfBC+shxbvkxtAfcP+GPUKYkImjyojmr?=
- =?us-ascii?Q?YEerVLBkhVbdYfVli8fwUeEClek00r0ySE1UqqEsAyWgW3XdflJTuYRS1Jc2?=
- =?us-ascii?Q?erEFhMqzt++pvy/QUzL8TV85Edn6newflF/3NfO0qb1R7wSd6Qqth8ev4RUD?=
- =?us-ascii?Q?5KKnF+Hfnzh5d7XSfIrm0PgLMT/ZeQmXlJZmenPoCGDXyLJCok8sGbG+V9O5?=
- =?us-ascii?Q?tZOWdslgGRhOYCV4JXUlLOtg5zDxn4pKcvSJEOWu4hi1fctyJ0PnS8aAtHF/?=
- =?us-ascii?Q?47lQXhBwwsfaSb2Pd4Ub2RsQ0824tHtK3xvmnQUja32VH/2XMKYxwrRBFL38?=
- =?us-ascii?Q?/KVNcgA11VByDYT7cADTXXusVFloGxHrTUnmMrTtB2JdH20ra7ov2tlJktnR?=
- =?us-ascii?Q?+vAynxBB32NtOVRUbrP2v5fZe81p+XSM1dP173GpcPDwNpU2XTAfhTE3iaYI?=
- =?us-ascii?Q?E05FnID0kXk0RIaBU5zt0/+s9PhFXf+dBIx3tWs5lyqRrugnE86QIxOQZUhI?=
- =?us-ascii?Q?cm4eQuRJaA8FKoiJDqwtP83e9SIMXOQSN1XhARK3BgIs+HgokDpYkQnd7cOJ?=
- =?us-ascii?Q?XgDCu8rzc59x7GrNgrrYpiQjr8/CSd8pEVsGpiGw1qeH2aCRxA+MI2LRutB9?=
- =?us-ascii?Q?V5n7bQ30P89C9nd+Dl3skWCQlweBppQl3nO/kypbqqAzSOCfAwwZpheGIGyD?=
- =?us-ascii?Q?YIZfjFTJSd7T9ZYTR0nLLb2JQxJVcnhTKNuAKvsb70NSbGUlKOUd854i1Cr/?=
- =?us-ascii?Q?gPlaG/fMRmYsU7mGgOVeFUdjBtrhaBaZe4jRrKJiwqyDMZKH3YrKybPx3rQ2?=
- =?us-ascii?Q?Vrd0/nRPI8Z3C8xFvukuh9oNz0iE4OEOE+lMKKvwkKM/41Qewe3AGnZqGbWu?=
- =?us-ascii?Q?H95+Z05ErSZSM65mJ+nwQ94veSjBsJh9tpZcl+C2n7+RE1jHaYipwTrQXc+H?=
- =?us-ascii?Q?zKkrXqPa5hfeXGGfL/rIk8zx97Vc/sqkMgBzG2qpmIKggsNOInPLm2VZji9l?=
- =?us-ascii?Q?5fyIocdZg4kDe83YOMHKe8lnNP8Vd7AQ1EtXDOcdAN2V8mwIV/Ii/K7iB37A?=
- =?us-ascii?Q?cOq17j66YCGofl5+vo9PPkzXfpG2WvF2yPRLiEnFFM86Nxx1SlBf4+sezo2h?=
- =?us-ascii?Q?WgeczUe4q+bGBqPGG8B2MLDZIug06BbepgWuBrt+B70xymNHWIKszuiFjJvy?=
- =?us-ascii?Q?fS22eL8orkHLcuoc/pT4GIMeqqrA1kXLmEhpST9FyyshN2aEBFNr9CkzSBqN?=
- =?us-ascii?Q?bqe8Tp5OKvGOcw1sR+sGpRaNsYZ1d5aEds7NrXTd?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e19c6057-4884-4000-d5ec-08dc42a06e09
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 14:26:38.9395
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rgeCr+H3Eqb5EvWDUJ420kdPf8PA0IZf8QUJ7GrynCIePVWIBYYORdi3CW0EkyKS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7868
+Content-Transfer-Encoding: 8bit
 
---=_MailMate_A38E795F-10D3-4815-B38D-7CA08003ABBF_=
-Content-Type: text/plain
+This patch set acts as the second part of the new version of [1] (The first
+part can be referred from [2]), the updated things of this version are listed
+at the end.
 
-On 12 Mar 2024, at 4:05, Ryan Roberts wrote:
+- Background
 
-> On 12/03/2024 03:45, Matthew Wilcox wrote:
->> On Mon, Mar 11, 2024 at 03:58:48PM -0400, Zi Yan wrote:
->>> @@ -1168,6 +1172,17 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
->>>  		folio_lock(src);
->>>  	}
->>>  	locked = true;
->>> +	if (folio_test_large_rmappable(src) &&
->
-> I think you also need to check that the order > 1, now that we support order-1
-> pagecache folios? _deferred_list only exists if order > 1.
->
->>> +		!list_empty(&src->_deferred_list)) {
->>> +		struct deferred_split *ds_queue = get_deferred_split_queue(src);
->>> +
->>> +		spin_lock(&ds_queue->split_queue_lock);
->>> +		ds_queue->split_queue_len--;
->>> +		list_del_init(&src->_deferred_list);
->>> +		spin_unlock(&ds_queue->split_queue_lock);
->>> +		old_page_state |= PAGE_WAS_ON_DEFERRED_LIST;
->>> +	}
->>
->> I have a few problems with this ...
->>
->> Trivial: your whitespace is utterly broken.  You can't use a single tab
->> for both indicating control flow change and for line-too-long.
->>
->> Slightly more important: You're checking list_empty outside the lock
->> (which is fine in order to avoid unnecessarily acquiring the lock),
->> but you need to re-check it inside the lock in case of a race.  And you
->> didn't mark it as data_race(), so KMSAN will whinge.
->
-> I've seen data_race() used around list_empty() without the lock held
-> inconsistently (see deferred_split_folio()). What are the rules? Given that we
-> are not doing a memory access here, I don't really understand why it is needed?
-> list_empty() uses READ_ONCE() which I thought would be sufficient? (I've just
-> added a similar lockless check in my swap-out series - will add data_race() if
-> needed, but previously concluded it's not).
->
->>
->> Much more important: You're doing this with a positive refcount, which
->> breaks the (undocumented) logic in deferred_split_scan() that a folio
->> with a positive refcount will not be removed from the list.
->>
->> Maximally important: Wer shouldn't be doing any of this!  This folio is
->> on the deferred split list.  We shouldn't be migrating it as a single
->> entity; we should be splitting it now that we're in a context where we
->> can do the right thing and split it.  Documentation/mm/transhuge.rst
->> is clear that we don't split it straight away due to locking context.
->> Splitting it on migration is clearly the right thing to do.
->>
->> If splitting fails, we should just fail the migration; splitting fails
->> due to excess references, and if the source folio has excess references,
->> then migration would fail too.
->
-> This comment makes me wonder what we do in split_huge_page_to_list_to_order() if
-> the target order is greater than 1 and the input folio is on the deferred split
-> list. Looks like we currently just remove it from the deferred list. Is there a
-> case for putting any output folios that are still partially mapped back on the
-> deferred list, or splitting them to a lower order such that all output folios
-> are fully mapped, and all unmapped portions are freed?
+SMC-D is now used in IBM z with ISM function to optimize network interconnect
+for intra-CPC communications. Inspired by this, we try to make SMC-D available
+on the non-s390 architecture through a software-implemented Emulated-ISM device,
+that is the loopback-ism device here, to accelerate inter-process or
+inter-containers communication within the same OS instance.
 
-I probably would let the caller of split_huge_page_to_list_to_order() to decide
-whether output folios should be put back in deferred list. The caller should
-determine the right order to split. Letting split_huge_page_to_list_to_order()
-change new_order will confuse the caller and complicate the handling of
-output folios.
+- Design
+
+This patch set includes 3 parts:
+
+ - Patch #1-#2: some prepare work for loopback-ism.
+ - Patch #3-#7: implement loopback-ism device. Noted that loopback-ism now
+   serves only SMC and no userspace interface exposed.
+ - Patch #10-#15: memory copy optimization for intra-OS scenario.
+
+The loopback-ism device is designed as an ISMv2 device and not be limited to
+a specific net namespace, ends of both inter-process connection (1/1' in diagram
+below) or inter-container connection (2/2' in diagram below) can find the same
+available loopback-ism and choose it during the CLC handshake.
+
+ Container 1 (ns1)                              Container 2 (ns2)
+ +-----------------------------------------+    +-------------------------+
+ | +-------+      +-------+      +-------+ |    |        +-------+        |
+ | | App A |      | App B |      | App C | |    |        | App D |<-+     |
+ | +-------+      +---^---+      +-------+ |    |        +-------+  |(2') |
+ |     |127.0.0.1 (1')|             |192.168.0.11       192.168.0.12|     |
+ |  (1)|   +--------+ | +--------+  |(2)   |    | +--------+   +--------+ |
+ |     `-->|   lo   |-` |  eth0  |<-`      |    | |   lo   |   |  eth0  | |
+ +---------+--|---^-+---+-----|--+---------+    +-+--------+---+-^------+-+
+              |   |           |                                  |
+ Kernel       |   |           |                                  |
+ +----+-------v---+-----------v----------------------------------+---+----+
+ |    |                            TCP                               |    |
+ |    |                                                              |    |
+ |    +--------------------------------------------------------------+    |
+ |                                                                        |
+ |                           +--------------+                             |
+ |                           | smc loopback |                             |
+ +---------------------------+--------------+-----------------------------+
+
+loopback-ism device creates DMBs (shared memory) for each connection peer.
+Since data transfer occurs within the same kernel, the sndbuf of each peer
+is only a descriptor and point to the same memory region as peer DMB, so that
+the data copy from sndbuf to peer DMB can be avoided in loopback-ism case.
+
+ Container 1 (ns1)                              Container 2 (ns2)
+ +-----------------------------------------+    +-------------------------+
+ | +-------+                               |    |        +-------+        |
+ | | App C |-----+                         |    |        | App D |        |
+ | +-------+     |                         |    |        +-^-----+        |
+ |               |                         |    |          |              |
+ |           (2) |                         |    |     (2') |              |
+ |               |                         |    |          |              |
+ +---------------|-------------------------+    +----------|--------------+
+                 |                                         |
+ Kernel          |                                         |
+ +---------------|-----------------------------------------|--------------+
+ | +--------+ +--v-----+                           +--------+ +--------+  |
+ | |dmb_desc| |snd_desc|                           |dmb_desc| |snd_desc|  |
+ | +-----|--+ +--|-----+                           +-----|--+ +--------+  |
+ | +-----|--+    |                                 +-----|--+             |
+ | | DMB C  |    +---------------------------------| DMB D  |             |
+ | +--------+                                      +--------+             |
+ |                                                                        |
+ |                           +--------------+                             |
+ |                           | smc loopback |                             |
+ +---------------------------+--------------+-----------------------------+
+
+- Benchmark Test
+
+ * Test environments:
+      - VM with Intel Xeon Platinum 8 core 2.50GHz, 16 GiB mem.
+      - SMC sndbuf/DMB size 1MB.
+
+ * Test object:
+      - TCP: run on TCP loopback.
+      - SMC lo: run on SMC loopback-ism.
+
+1. ipc-benchmark (see [3])
+
+ - ./<foo> -c 1000000 -s 100
+
+                            TCP                  SMC-lo
+Message
+rate (msg/s)              81433                  143938(+76.75%)
+
+2. sockperf
+
+ - serv: <smc_run> taskset -c <cpu> sockperf sr --tcp
+ - clnt: <smc_run> taskset -c <cpu> sockperf { tp | pp } --tcp --msg-size={ 64000 for tp | 14 for pp } -i 127.0.0.1 -t 30
+
+                            TCP                  SMC-lo
+Bandwidth(MBps)         4903.07                 7978.69(+62.73%)
+Latency(us)               6.095                   3.539(-41.94%)
+
+3. nginx/wrk
+
+ - serv: <smc_run> nginx
+ - clnt: <smc_run> wrk -t 8 -c 1000 -d 30 http://127.0.0.1:80
+
+                           TCP                   SMC-lo
+Requests/s           161665.67                244272.41(+51.10%)
+
+4. redis-benchmark
+
+ - serv: <smc_run> redis-server
+ - clnt: <smc_run> redis-benchmark -h 127.0.0.1 -q -t set,get -n 400000 -c 200 -d 1024
+
+                           TCP                   SMC-lo
+GET(Requests/s)       88790.23                117474.30(+32.31%)
+SET(Requests/s)       87508.20                118623.96(+35.57%)
 
 
+Change log:
 
---
-Best Regards,
-Yan, Zi
+v3->v2:
+- Patch #11: use tasklet_schedule(&conn->rx_tsklet) instead of smcd_cdc_rx_handler()
+  to avoid possible recursive locking of conn->send_lock and use {read|write}_lock_bh()
+  to acquire dmb_ht_lock.
 
---=_MailMate_A38E795F-10D3-4815-B38D-7CA08003ABBF_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
+v2->v1:
+Link: https://lore.kernel.org/netdev/20240307095536.29648-1-guwen@linux.alibaba.com/
+- All the patches: changed the term virtual-ISM to Emulated-ISM as defined by SMCv2.1.
+- Patch #3: optimized the description of SMC_LO config. Avoid exposing loopback-ism
+  to sysfs and remove all the knobs until future definition clear.
+- Patch #3: try to make lockdep happy by using read_lock_bh() in smc_lo_move_data().
+- Patch #6: defaultly use physical contiguous DMB buffers.
+- Patch #11: defaultly enable DMB no-copy for loopback-ism and free the DMB in
+  unregister_dmb or detach_dmb when dmb_node->refcnt reaches 0, instead of using
+  wait_event to keep waiting in unregister_dmb.
 
------BEGIN PGP SIGNATURE-----
+v1->RFC:
+Link: https://lore.kernel.org/netdev/20240111120036.109903-1-guwen@linux.alibaba.com/
+- Patch #9: merge rx_bytes and tx_bytes as xfer_bytes statistics:
+  /sys/devices/virtual/smc/loopback-ism/xfer_bytes
+- Patch #10: add support_dmb_nocopy operation to check if SMC-D device supports
+  merging sndbuf with peer DMB.
+- Patch #13 & #14: introduce loopback-ism device control of DMB memory type and
+  control of whether to merge sndbuf and DMB. They can be respectively set by:
+  /sys/devices/virtual/smc/loopback-ism/dmb_type
+  /sys/devices/virtual/smc/loopback-ism/dmb_copy
+  The motivation for these two control is that a performance bottleneck was
+  found when using vzalloced DMB and sndbuf is merged with DMB, and there are
+  many CPUs and CONFIG_HARDENED_USERCOPY is set [4]. The bottleneck is caused
+  by the lock contention in vmap_area_lock [5] which is involved in memcpy_from_msg()
+  or memcpy_to_msg(). Currently, Uladzislau Rezki is working on mitigating the
+  vmap lock contention [6]. It has significant effects, but using virtual memory
+  still has additional overhead compared to using physical memory.
+  So this new version provides controls of dmb_type and dmb_copy to suit
+  different scenarios.
+- Some minor changes and comments improvements.
 
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXwZh0PHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUg3EQAIaNBPi4Mi7uXck8YkY+emCL2MNP8lsfMjRd
-C7Qq3v8xffXlvOKuTMeB28805xE0qvQX1dbuZlcwGPz56OndG7Adhuo8EEjcbawZ
-oLYUNTMrfoFARSQrcxablilUkzpLw8kz8Ir9rdIZDR7L5GzV31zfq8AoiIL1PVor
-ru7IcpEdHfXy+mOg5e8otXfjqI675wHf4TXu+W1zod+JYWXxsaemhCxfyjjapui5
-/nz78aOdJkL+LiE8lFv7GCMgvHkHDi19+1KiBcVSoTbNRi7eHmpdCu4yuW7xJzkH
-KA1dBRvjrEAU8+1JSyo9NKxWv09RklPt14GsueU5WXYb6WkLjDuSt+uV1xTw5b1o
-SxhbSbca4A0UC0dzUg9u04gnzw6RzH0rz4IQ8SHYouqcHY691AdsIx1LUmvTINs5
-nBeFnaYN/JdtRogkRyv2WqAsRbQGJbk4rbjl5zJYw9yQ1WDjeR2ghbMcrBBiw3Hg
-8vgZszEe68t7EJg8PGRjtxOWzx5UEYK++cP27T3F6P11ESlrihwkBOeWJ3Zl3vnP
-dI5b5bnn8B+Uoam1Iry2JXVHWZkPrhv6twlrnbIF59AF8ldrO8bwJPUVm+3vroVA
-6ETXqHmXLq7EWcXBnGmXTNwQ8zctm3leY1/UNa3JM0ceOslnLtjLFBlnOiSkZ+vF
-nKknmwTL
-=vpEP
------END PGP SIGNATURE-----
+RFC->old version([1]):
+Link: https://lore.kernel.org/netdev/1702214654-32069-1-git-send-email-guwen@linux.alibaba.com/
+- Patch #1: improve the loopback-ism dump, it shows as follows now:
+  # smcd d
+  FID  Type  PCI-ID        PCHID  InUse  #LGs  PNET-ID
+  0000 0     loopback-ism  ffff   No        0
+- Patch #3: introduce the smc_ism_set_v2_capable() helper and set
+  smc_ism_v2_capable when ISMv2 or virtual ISM is registered,
+  regardless of whether there is already a device in smcd device list.
+- Patch #3: loopback-ism will be added into /sys/devices/virtual/smc/loopback-ism/.
+- Patch #8: introduce the runtime switch /sys/devices/virtual/smc/loopback-ism/active
+  to activate or deactivate the loopback-ism.
+- Patch #9: introduce the statistics of loopback-ism by
+  /sys/devices/virtual/smc/loopback-ism/{{tx|rx}_tytes|dmbs_cnt}.
+- Some minor changes and comments improvements.
 
---=_MailMate_A38E795F-10D3-4815-B38D-7CA08003ABBF_=--
+[1] https://lore.kernel.org/netdev/1695568613-125057-1-git-send-email-guwen@linux.alibaba.com/
+[2] https://lore.kernel.org/netdev/20231219142616.80697-1-guwen@linux.alibaba.com/
+[3] https://github.com/goldsborough/ipc-bench
+[4] https://lore.kernel.org/all/3189e342-c38f-6076-b730-19a6efd732a5@linux.alibaba.com/
+[5] https://lore.kernel.org/all/238e63cd-e0e8-4fbf-852f-bc4d5bc35d5a@linux.alibaba.com/
+[6] https://lore.kernel.org/all/20240102184633.748113-1-urezki@gmail.com/
+
+Wen Gu (11):
+  net/smc: adapt SMC-D device dump for Emulated-ISM
+  net/smc: decouple ism_client from SMC-D DMB registration
+  net/smc: introduce loopback-ism for SMC intra-OS shortcut
+  net/smc: implement ID-related operations of loopback-ism
+  net/smc: implement some unsupported operations of loopback-ism
+  net/smc: implement DMB-related operations of loopback-ism
+  net/smc: register loopback-ism into SMC-D device list
+  net/smc: add operations to merge sndbuf with peer DMB
+  net/smc: attach or detach ghost sndbuf to peer DMB
+  net/smc: adapt cursor update when sndbuf and peer DMB are merged
+  net/smc: implement DMB-merged operations of loopback-ism
+
+ drivers/s390/net/ism_drv.c |   2 +-
+ include/net/smc.h          |   7 +-
+ net/smc/Kconfig            |  13 ++
+ net/smc/Makefile           |   2 +-
+ net/smc/af_smc.c           |  28 ++-
+ net/smc/smc_cdc.c          |  52 ++++-
+ net/smc/smc_core.c         |  61 ++++-
+ net/smc/smc_core.h         |   1 +
+ net/smc/smc_ism.c          |  71 +++++-
+ net/smc/smc_ism.h          |   5 +
+ net/smc/smc_loopback.c     | 462 +++++++++++++++++++++++++++++++++++++
+ net/smc/smc_loopback.h     |  52 +++++
+ 12 files changed, 727 insertions(+), 29 deletions(-)
+ create mode 100644 net/smc/smc_loopback.c
+ create mode 100644 net/smc/smc_loopback.h
+
+-- 
+2.32.0.3.g01195cf9f
+
 
