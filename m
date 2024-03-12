@@ -1,78 +1,122 @@
-Return-Path: <linux-kernel+bounces-100647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E095F879B39
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:20:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE3EC879B44
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:22:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 814E8B20F8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:20:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AEA02832BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:22:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8DD13A866;
-	Tue, 12 Mar 2024 18:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587F013958F;
+	Tue, 12 Mar 2024 18:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rbk3L/e0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QqGwtO3T"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E760139597
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F51273FC;
+	Tue, 12 Mar 2024 18:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710267609; cv=none; b=QXpjZzftWXvoB2i6HORtruCCUgDu6D2XhcCkGYfcjK8ARAqgs6EWPKxpLzegkfySBtQ/7okQgU+fdp4+Q81cnGO8FGV8JS/4qZHk310eziJKUECC/UITZ2MKpRtGLQJ3/JnaCaC+5LPG2RmPnvm4GcN5nIWX1NTR3nCE1OjwQDw=
+	t=1710267767; cv=none; b=HNi6MpSe0LTqmjieTYAAj6xZG58OXg4fa1PncPyx4pnd4SgSBVJPz83x3XevVLLcj4idHIv4qTHL8qakNQk0TkbX3NsYSUCNLQDmRnXvepEk9MXAS0hRzTRdjiuMVk/MxQmvtQQ7Zn6fLfDOpgFzgcJYKCcKSU7/UUx4n8mQq7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710267609; c=relaxed/simple;
-	bh=hwqoQLazlRp03OTGfEBfvs32LIr3/WgkmSbbMuv7IKY=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=UdFcgWEA8Bg6dlk9+qeH5GbQBfwJ1sxFaJ8Uamein8Jg/kP3Ws/AFcvQdISyrY/+EgwurTTKCDh7qKm4UVkXsUx/tLqBogrUBDIF300Q/rq8Z/gdrOgWzFUOqaGNeht6Jnwcjb3NMwLnmoOKpwEE4eeOCFhjVaLlnhFRRae1h2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rbk3L/e0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 47A45C43399;
-	Tue, 12 Mar 2024 18:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710267609;
-	bh=hwqoQLazlRp03OTGfEBfvs32LIr3/WgkmSbbMuv7IKY=;
-	h=Subject:From:In-Reply-To:References:Date:To:List-Id:Cc:From;
-	b=rbk3L/e09jpQxtD10E7TbtFiBV1KomN6fCG98d/S3zP+kSH5cyq501n0JETIIJJ5e
-	 GAaeQgkRNnk3eV9O96k29S7A7GS9H56pR5d5p0RXa4IEr123GG+0NU4SR6/XMIFK3k
-	 10m4ykBrbccxB0/2rZOwJ+U3bOjV76OWUni/7VIWDRR5+srGAmhViaODYYb5pzt0G0
-	 M1JaDoD3N+ylXaQ3i71JftHyIVGcxWCx4eOuzZGyOBSt2qyjhCUAy72E4EWXxv8HuK
-	 SMhbKqatzFKnp41HzOk9acfYtUedQMJDMRBAUEq+hwX8WVXD+77xDsUti/LhO7qVFw
-	 pFoeMFV33EVTw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2D7C2D95061;
-	Tue, 12 Mar 2024 18:20:09 +0000 (UTC)
-Subject: Re: [GIT PULL 2/4] ARM: SoC drivers for 6.9
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <2bb4979a-508f-4791-82ac-ce31065f6da1@app.fastmail.com>
-References: <89d0bb77-a608-4ae0-b9d9-e17fdf5f12da@app.fastmail.com> <2bb4979a-508f-4791-82ac-ce31065f6da1@app.fastmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <2bb4979a-508f-4791-82ac-ce31065f6da1@app.fastmail.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-drivers-6.9
-X-PR-Tracked-Commit-Id: 049238d24467e3d2121e8ef2abef1149be6722e9
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2184dbcde47aefd5358b14463a0d993013f5609e
-Message-Id: <171026760917.25732.10991309858732518614.pr-tracker-bot@kernel.org>
-Date: Tue, 12 Mar 2024 18:20:09 +0000
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, soc@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1710267767; c=relaxed/simple;
+	bh=YUc5IZWOe5T6YFtoM1+wQHxiKRB8D8X7e2HnId3ioaY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q95rzI24UgbvRFo2ta4qFFRNTnERW1hCWn8X8dlJu1wAYDmos0ca+GbWVlDdSroYkSG2994xSUgP8ZOjLmuL6ZoUp+thO9rxVUpOWwQ5L0BlpsjmvQ37SSnbPtyNthsyPWJtRF8Gfhzt+uUWZrY133vIkybiyJYJ3Whbs6lHMK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QqGwtO3T; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=dyIsdsMhrpRwB/lg1STothrgvq3zjNGfcwfAiy3Vmak=; b=QqGwtO3T5/xX63J1bb+PRK1e2Y
+	HCNI2/xOcbWZFosust02xhjQt3eLEU3w032AbMAKk5Q6Us/M2J5LhESewS88IykqWhlkGyIUup8qQ
+	eWnZym/zxsAPg6hPjXEpsxikgIGY6wWieBYp3/aMPXWS42WpM9BMOZODHKJR4rMZAbAc23ibPSQ2N
+	tsSpuc9c6pdvZ/fsZU2Zm+UXsZ15mWdicSuBqEX/ez9fyZ3EDtB8jGH03SSyDIrop2OtOfb2aEcT5
+	lAah57O7yF5dxZ/wVu6s+1BqyiE1TTE8BHL1uBVXRDvk+3wwqGHvEgsWdN+zXpv7A9F9QNQRmBwbu
+	3okmEohw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rk6lQ-00000007648-3mVp;
+	Tue, 12 Mar 2024 18:22:12 +0000
+Date: Tue, 12 Mar 2024 11:22:12 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, penguin-kernel@i-love.sakura.ne.jp,
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+	david@redhat.com, axboe@kernel.dk, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+	kernel-team@android.com, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v5 12/37] lib: prevent module unloading if memory is not
+ freed
+Message-ID: <ZfCdVI464EqeI9YP@bombadil.infradead.org>
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-13-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306182440.2003814-13-surenb@google.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-The pull request you sent on Tue, 12 Mar 2024 17:45:29 +0100:
+On Wed, Mar 06, 2024 at 10:24:10AM -0800, Suren Baghdasaryan wrote:
+> Skip freeing module's data section if there are non-zero allocation tags
+> because otherwise, once these allocations are freed, the access to their
+> code tag would cause UAF.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-drivers-6.9
+So you just let them linger?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2184dbcde47aefd5358b14463a0d993013f5609e
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+>  /* Free a module, remove from lists, etc. */
+>  static void free_module(struct module *mod)
+>  {
+> +	bool unload_codetags;
+> +
+>  	trace_module_free(mod);
+>  
+> -	codetag_unload_module(mod);
+> +	unload_codetags = codetag_unload_module(mod);
+> +	if (!unload_codetags)
+> +		pr_warn("%s: memory allocation(s) from the module still alive, cannot unload cleanly\n",
+> +			mod->name);
+> +
+
+Because this is not unwinding anything. Should'd we check if we can
+free all tags first, if we can't then we can't free the module. If we
+can then ensure we don't enter a state where we can't later?
+
+  Luis
 
