@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-100328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DB288795C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:13:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 624C88795C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:13:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F30D1C21927
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:13:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5D24B24557
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929AB7BAEB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 640647B3E7;
 	Tue, 12 Mar 2024 14:12:49 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A701E7A72F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591CC7A726;
 	Tue, 12 Mar 2024 14:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710252769; cv=none; b=uYgZnROnDaPfAVPxp2gjJLkuy4x2d0u7CurYUjX74WqguMExG044YZ1lTfp28y4lJ4G5tTK+uK6S8ihXGVEQImDF9KWYyISIgV//sULqwYOOHfgMN2N8G9jtC3w6TOlCw0R5par2sQAKQvZr7TV2NOHPJMaL0Sy6Xv62m/phCOg=
+	t=1710252768; cv=none; b=KY9fALph9YN12QZrB8qtHCRn657gTtb+nA7QPQBta3uHYQiRv/13rKXdWWQZJYKFLvXxwhae4rBviavlw5kCNRUTyrDYUga8eP3weXaI92e3yYm/EXH84Sl44PZWxKKmoBNAHX2iMDA8AeYpEZ19UoX2mjNzn1DVstvTYJgGPww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710252769; c=relaxed/simple;
-	bh=WthfU5rqb52QnJaMPjT5KVgI3MToYZAyP8nlAgfk3BE=;
+	s=arc-20240116; t=1710252768; c=relaxed/simple;
+	bh=bmvQ8hOTiSgg1gYAFFWH60u0ekOQ2rtDYr9n67KF1Kk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cFVNEHHQHwh4ZMrPdoNFrOkSEKnPnlKkPsv6GVR6bPI8PmyF+sl9fle4AcETDtqUuKG1SlRXuiYLG8D/gGiQtm6GMnmd0KDAQDoB2JMePq26Gji8opda5APkB15hr1S6azdqd0Qt4INq7HrmiPa9DW0MbGA2VRx8JYu+RMisB+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	 MIME-Version:Content-Type; b=QH6yFUxPypxwxm0Vcv6/2EmNzOTf3Qkxbb9S4Yldgub1zXjPHxsOwSahsBznM/oVEfU1d1gI7OjVHgTu9ip77sa5bMUqBC1B3H1l8sHjaiSX9sdzZgFw3IVpDMdAfanmyawrqFitEGCifXoRYkMWeEkulpmA1KVdMe2XC0//sco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TvFtB30szz1xqkf;
-	Tue, 12 Mar 2024 22:10:58 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TvFvw1DzFz1FM6g;
+	Tue, 12 Mar 2024 22:12:28 +0800 (CST)
 Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id C3F3B1A0172;
+	by mail.maildlp.com (Postfix) with ESMTPS id EA44718001B;
 	Tue, 12 Mar 2024 22:12:42 +0800 (CST)
 Received: from localhost.localdomain (10.50.165.33) by
  dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
@@ -44,9 +44,9 @@ To: <john.g.garry@oracle.com>, <yanaijie@huawei.com>, <jejb@linux.ibm.com>,
 CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
 	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
-Subject: [PATCH v6 2/4] scsi: libsas: Move sas_add_parent_port() to sas_expander.c
-Date: Tue, 12 Mar 2024 14:11:01 +0000
-Message-ID: <20240312141103.31358-3-yangxingui@huawei.com>
+Subject: [PATCH v6 3/4] scsi: libsas: Set port when ex_phy is added or deleted
+Date: Tue, 12 Mar 2024 14:11:02 +0000
+Message-ID: <20240312141103.31358-4-yangxingui@huawei.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240312141103.31358-1-yangxingui@huawei.com>
 References: <20240312141103.31358-1-yangxingui@huawei.com>
@@ -60,82 +60,53 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpemd100001.china.huawei.com (7.185.36.94)
 
-Move sas_add_parent_port() to sas_expander.c and rename it to
-sas_ex_add_parent_port() as it is only used in this file.
+We found that when ex_phy was attached and added to the parent wide port,
+ex_phy->port was not set, resulting in sas_unregister_devs_sas_addr() not
+calling sas_port_delete_phy() when deleting the phy, and the deleted phy
+was still on the parent wide port's phy_list.
+
+When we use sas_port_add_ex_phy() to set ex_phy->port to solve the above
+problem, we find that after all the phys of the parent_port are removed and
+the number of phy becomes 0, the parent_port will not be set to NULL.
+Causes the freed parent port to be used when attaching a new ex_phy in
+sas_ex_add_parent_port().
+
+So use sas_port_add_ex_phy() instead of sas_port_add_phy() to set
+ex_phy->port when ex_phy is added to the parent port, and set
+ex_dev->parent_port to NULL when the number of phy on the port becomes 0.
 
 Signed-off-by: Xingui Yang <yangxingui@huawei.com>
-Reviewed-by: John Garry <john.g.garry@oracle.com>
 ---
- drivers/scsi/libsas/sas_expander.c | 19 +++++++++++++++++--
- drivers/scsi/libsas/sas_internal.h | 15 ---------------
- 2 files changed, 17 insertions(+), 17 deletions(-)
+ drivers/scsi/libsas/sas_expander.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-index c8d4aef2f567..f28a83803947 100644
+index f28a83803947..77daae36232b 100644
 --- a/drivers/scsi/libsas/sas_expander.c
 +++ b/drivers/scsi/libsas/sas_expander.c
-@@ -33,6 +33,21 @@ static void sas_port_add_ex_phy(struct sas_port *port, struct ex_phy *ex_phy)
- 	ex_phy->phy_state = PHY_DEVICE_DISCOVERED;
- }
- 
-+static void sas_ex_add_parent_port(struct domain_device *dev, int phy_id)
-+{
-+	struct expander_device *ex = &dev->ex_dev;
-+	struct ex_phy *ex_phy = &ex->ex_phy[phy_id];
-+
-+	if (!ex->parent_port) {
-+		ex->parent_port = sas_port_alloc(&dev->rphy->dev, phy_id);
-+		/* FIXME: error handling */
-+		BUG_ON(!ex->parent_port);
-+		BUG_ON(sas_port_add(ex->parent_port));
-+		sas_port_mark_backlink(ex->parent_port);
-+	}
-+	sas_port_add_phy(ex->parent_port, ex_phy->phy);
-+}
-+
- /* ---------- SMP task management ---------- */
- 
- /* Give it some long enough timeout. In seconds. */
-@@ -978,11 +993,11 @@ static int sas_ex_discover_dev(struct domain_device *dev, int phy_id)
- 
- 	/* Parent and domain coherency */
- 	if (!dev->parent && sas_phy_match_port_addr(dev->port, ex_phy)) {
--		sas_add_parent_port(dev, phy_id);
-+		sas_ex_add_parent_port(dev, phy_id);
- 		return 0;
+@@ -45,7 +45,7 @@ static void sas_ex_add_parent_port(struct domain_device *dev, int phy_id)
+ 		BUG_ON(sas_port_add(ex->parent_port));
+ 		sas_port_mark_backlink(ex->parent_port);
  	}
- 	if (dev->parent && sas_phy_match_dev_addr(dev->parent, ex_phy)) {
--		sas_add_parent_port(dev, phy_id);
-+		sas_ex_add_parent_port(dev, phy_id);
- 		if (ex_phy->routing_attr == TABLE_ROUTING)
- 			sas_configure_phy(dev, phy_id, dev->port->sas_addr, 1);
- 		return 0;
-diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
-index 3804aef165ad..85948963fb97 100644
---- a/drivers/scsi/libsas/sas_internal.h
-+++ b/drivers/scsi/libsas/sas_internal.h
-@@ -189,21 +189,6 @@ static inline void sas_phy_set_target(struct asd_sas_phy *p, struct domain_devic
- 	}
- }
- 
--static inline void sas_add_parent_port(struct domain_device *dev, int phy_id)
--{
--	struct expander_device *ex = &dev->ex_dev;
--	struct ex_phy *ex_phy = &ex->ex_phy[phy_id];
--
--	if (!ex->parent_port) {
--		ex->parent_port = sas_port_alloc(&dev->rphy->dev, phy_id);
--		/* FIXME: error handling */
--		BUG_ON(!ex->parent_port);
--		BUG_ON(sas_port_add(ex->parent_port));
--		sas_port_mark_backlink(ex->parent_port);
--	}
 -	sas_port_add_phy(ex->parent_port, ex_phy->phy);
--}
--
- static inline struct domain_device *sas_alloc_device(void)
- {
- 	struct domain_device *dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	sas_port_add_ex_phy(ex->parent_port, ex_phy);
+ }
+ 
+ /* ---------- SMP task management ---------- */
+@@ -1879,9 +1879,12 @@ static void sas_unregister_devs_sas_addr(struct domain_device *parent,
+ 	if (phy->port) {
+ 		sas_port_delete_phy(phy->port, phy->phy);
+ 		sas_device_set_phy(found, phy->port);
+-		if (phy->port->num_phys == 0)
++		if (phy->port->num_phys == 0) {
+ 			list_add_tail(&phy->port->del_list,
+ 				&parent->port->sas_port_del_list);
++			if (ex_dev->parent_port == phy->port)
++				ex_dev->parent_port = NULL;
++		}
+ 		phy->port = NULL;
+ 	}
+ }
 -- 
 2.17.1
 
