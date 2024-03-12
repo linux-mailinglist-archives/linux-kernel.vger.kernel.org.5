@@ -1,78 +1,175 @@
-Return-Path: <linux-kernel+bounces-100581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8CD879A63
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:11:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC97879A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:12:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8116C1C20F32
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:11:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38953285ACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1346D1384B4;
-	Tue, 12 Mar 2024 17:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364CD137C3A;
+	Tue, 12 Mar 2024 17:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZkB15YDi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nHQlcvUY"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D0A1272A4
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E2D139564
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710263504; cv=none; b=O9XmuX57QSZS6pi10Uz7/3d0QrO53p0CXIwb3poJHY90xhATnBEdO3TDQNvPx0HvBB5x9lbU2thRlUCQuckE1jNw2gZc5sBztobQw6q8SPBoYcMjitakHFK7sPPfYH4EU/iXh0AOtcwA79xSobdFi4FR8ckJIPMOkDOciFszOTM=
+	t=1710263522; cv=none; b=SF3pZymIVTOWwLYTaKhW6Q+MQJWW2Z2IBfBdyEnTsIa1cEiutfewkiTng3UY0Q7oTMpvLo/qTwWML8EC55q8MJD750BzdQBnKg3UAOLBSiDBkDP9pIgSZ60CVzZFP3pRuvslkwsr12Zx78kVez4N2bWB8uZzLO0IzoLOejor3II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710263504; c=relaxed/simple;
-	bh=e0frPq3R17XkR8Xe2eJSDNMKhbd4Y2kZu0C66gp1gRg=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=S+pnHETK8PHA5lpxrMGYcfrC0h9zqrpz7dETZyBTxqtjm2Lh86O93iAl3M+To0t9rVjJn65vPMXt0z/snYOG4Zntx47716dpQIjX3pVOK8IZBB1dh7JBDJvVEwUyp+ySgH6++XBpTtRUsNLT2lE27/5padIwIxm+HnC+I0Sgw7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZkB15YDi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 38C70C43390;
-	Tue, 12 Mar 2024 17:11:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710263504;
-	bh=e0frPq3R17XkR8Xe2eJSDNMKhbd4Y2kZu0C66gp1gRg=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=ZkB15YDixcvu8IfXHUgc4/rEMwyUJWFXwS1yqY+yxhbJrG8C+7+k55TRPdsmCKdLJ
-	 PkgPUnGkG42IP1st0JfLYYY55OrF6fuysOa+HFykNPsz8Yj2ZDahT7mAQ2j/OgvpO9
-	 h0EnbGqHGXCB+4GDAUCuZvDqRhuxap9gx7rKUV7lemR7xiB7cWkuGatLYggIyIYuyY
-	 i1Zz1MhyVbSWtjKpbHbxjuKuZQiui0zXtzv6vDQkhPgfKt8b7rBSkOPKrQ7NB/EOEf
-	 9CUr71wlCqCdS651P8POQf0hQHl+6b5JJFDULSyl5LJo/ZxzcVY05HbtStbqPJJJZj
-	 WPtwqF+D8JQ8g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1DB53D95057;
-	Tue, 12 Mar 2024 17:11:44 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/boot changes for v6.9
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <ZfAjjSP7raRzEA5/@gmail.com>
-References: <ZfAjjSP7raRzEA5/@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZfAjjSP7raRzEA5/@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-boot-2024-03-12
-X-PR-Tracked-Commit-Id: 2e2bc42c8381d2c0e9604b59e49264821da29368
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b29f377119f68b942369a9366bdcb1fec82b2cda
-Message-Id: <171026350410.10470.1412029869376203652.pr-tracker-bot@kernel.org>
-Date: Tue, 12 Mar 2024 17:11:44 +0000
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, the arch/x86 maintainers <x86@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+	s=arc-20240116; t=1710263522; c=relaxed/simple;
+	bh=+4z/fKVxIVcUeK/DqyugogB+o5o/9pkjvamszPJbA3M=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=edluVkT4FZ4ok4U5svKMKsk4gE4Z5Onx3aswPQk/kA4LVTqtnF52F3uRE4lWidZJqx1KUqq4787Hk/ChI3kDnmv9e3GI8daeidHiBiS4nzL1WQy5pLTuGbpYR8kw+7Gs3sqjAggn9J+UxgBZkzRn6MkBozoR4cB2+lrl7B3iArA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nHQlcvUY; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513c1a82b30so927437e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:12:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710263519; x=1710868319; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GCpDHHk1rEgXXfVDzy2o6ifm7MNu/s628JnAZoViwZM=;
+        b=nHQlcvUYRSbMuVKFHKNksdeUYoSgh5RIItibPTrmyoDtuJqYKk589Xoq43KN6VTBlo
+         AYFD3+M0A0Qy46emDj8txdgPkuyIdHVPxTb3IthkX5fgkG1xjlQdNRao0bLRKkXz/ow8
+         CcbdYEbwPWnUE5CZdyTV7G/Q8N0KygZVNrDkISMkYWrkuKIeiJJkFRJJh/DwUShrR5FY
+         CaICY0NzQGP8wBQjVm0EpX+EOLPnDAlWZK2VeNtAebadPWORYqrPmml7S36je3xv+3/k
+         g54s/IQgGI6NrG+sHxkVugRP2dChniorHA4CZGhtJ8zJR3nDN4E2hS+MQ4ebK8yIJrg0
+         Crtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710263519; x=1710868319;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GCpDHHk1rEgXXfVDzy2o6ifm7MNu/s628JnAZoViwZM=;
+        b=B4i3n6iaJDKUD6hzrpcSDtXIvAihX3KYLxogmusHB+0D+tWROUHfLwFWmzOdmqxXbq
+         SmwnkrC+P6uV2uGSgadfLfrFxEOh7YseguITfJK9ukJIxFtvjCYKAgBZAvh2V0YUQV1/
+         LvwvfjIfILM3AhK3LDXFZPLEmIbicjxYlmQi8A/q40BSK4RRlii9+X+c+0aLvjB0XzYM
+         7FrGAt36sGU3bPIYiDwkvKTpoNyVNOyW7+oh7/k52rq53ojw4CLNooywaobNOuaMFVYZ
+         0B3fGdl5NZHNwPITMk4ojOQyZus+hAQTZpKcIDMH31qrvkctZ581GgluK9+6dRF8MDdp
+         YRig==
+X-Forwarded-Encrypted: i=1; AJvYcCV1N8AxdJts60a7+dMgj2u6sgUX2CRACTF+fPawryFRLTvlDp/AsEWJ/MglS14HnLUp1bmirDKk1KemuyK8PZoHyE8W+Li3okwzswiy
+X-Gm-Message-State: AOJu0YyEaNowYwlXncPXQIiUN2iUl/i58Ah+xAKzqZI33t+H8eszLS7f
+	5g8rejux61YCyUywDml1HuiFwLyFdSxEitmNN32lq4XH9h1WtY8a
+X-Google-Smtp-Source: AGHT+IFoaUFmekupZMWSBdIFGI8p404pPfoUjAX1esuRQ+pbxijn8Do/xwbyzhMShgceQk2+ebRdnQ==
+X-Received: by 2002:ac2:5b9b:0:b0:513:5977:4286 with SMTP id o27-20020ac25b9b000000b0051359774286mr7015029lfn.19.1710263518513;
+        Tue, 12 Mar 2024 10:11:58 -0700 (PDT)
+Received: from MOLeToid ([102.244.37.37])
+        by smtp.gmail.com with ESMTPSA id bt11-20020a056000080b00b0033e9186f043sm6910960wrb.41.2024.03.12.10.11.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 10:11:57 -0700 (PDT)
+Date: Tue, 12 Mar 2024 18:11:53 +0100
+From: "Felix N. Kimbu" <felixkimbu1@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH v3] staging: wlan-ng: Rename 'foo' to 'rc' in p80211conv.c
+Message-ID: <ZfCM2RyeEpxooKz+@MOLeToid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The pull request you sent on Tue, 12 Mar 2024 10:42:37 +0100:
+Rename identifer 'foo' to 'rc' Suggested-by Alison Schofield in functions
+skb_p80211_to_ether() and skb_ether_to_p80211().
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-boot-2024-03-12
+Fix indentation necessitated by above rename Suggested-by Dan Carpenter
+and Philipp Hortmann.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b29f377119f68b942369a9366bdcb1fec82b2cda
+This change adds intuitive meaning to the idenfier, adhering to best
+practices and coding style.
 
-Thank you!
+Also, driver has been included in the subject Suggested-by Philipp Hortmann.
 
+Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
+---
+Changes since v2:
+- Fix wrong indentation introduced in v1
+- Correct subject to include driver from v1
+
+Changes since v1:
+- Rename identifier 'foo' to 'decrypt_check'
+
+ drivers/staging/wlan-ng/p80211conv.c | 30 ++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/staging/wlan-ng/p80211conv.c b/drivers/staging/wlan-ng/p80211conv.c
+index 8336435eccc2..7401a6cacb7f 100644
+--- a/drivers/staging/wlan-ng/p80211conv.c
++++ b/drivers/staging/wlan-ng/p80211conv.c
+@@ -93,7 +93,7 @@ int skb_ether_to_p80211(struct wlandevice *wlandev, u32 ethconv,
+ 	struct wlan_ethhdr e_hdr;
+ 	struct wlan_llc *e_llc;
+ 	struct wlan_snap *e_snap;
+-	int foo;
++	int rc;
+ 
+ 	memcpy(&e_hdr, skb->data, sizeof(e_hdr));
+ 
+@@ -185,14 +185,14 @@ int skb_ether_to_p80211(struct wlandevice *wlandev, u32 ethconv,
+ 		p80211_wep->data = kmalloc(skb->len, GFP_ATOMIC);
+ 		if (!p80211_wep->data)
+ 			return -ENOMEM;
+-		foo = wep_encrypt(wlandev, skb->data, p80211_wep->data,
+-				  skb->len,
+-				  wlandev->hostwep & HOSTWEP_DEFAULTKEY_MASK,
+-				  p80211_wep->iv, p80211_wep->icv);
+-		if (foo) {
++		rc = wep_encrypt(wlandev, skb->data, p80211_wep->data,
++				 skb->len,
++				 wlandev->hostwep & HOSTWEP_DEFAULTKEY_MASK,
++				 p80211_wep->iv, p80211_wep->icv);
++		if (rc) {
+ 			netdev_warn(wlandev->netdev,
+ 				    "Host en-WEP failed, dropping frame (%d).\n",
+-				    foo);
++				    rc);
+ 			kfree(p80211_wep->data);
+ 			return 2;
+ 		}
+@@ -265,7 +265,7 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+ 	struct wlan_llc *e_llc;
+ 	struct wlan_snap *e_snap;
+ 
+-	int foo;
++	int rc;
+ 
+ 	payload_length = skb->len - WLAN_HDR_A3_LEN - WLAN_CRC_LEN;
+ 	payload_offset = WLAN_HDR_A3_LEN;
+@@ -305,15 +305,15 @@ int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+ 				   "WEP frame too short (%u).\n", skb->len);
+ 			return 1;
+ 		}
+-		foo = wep_decrypt(wlandev, skb->data + payload_offset + 4,
+-				  payload_length - 8, -1,
+-				  skb->data + payload_offset,
+-				  skb->data + payload_offset +
+-				  payload_length - 4);
+-		if (foo) {
++		rc = wep_decrypt(wlandev, skb->data + payload_offset + 4,
++				 payload_length - 8, -1,
++				 skb->data + payload_offset,
++				 skb->data + payload_offset +
++				 payload_length - 4);
++		if (rc) {
+ 			/* de-wep failed, drop skb. */
+ 			netdev_dbg(netdev, "Host de-WEP failed, dropping frame (%d).\n",
+-				   foo);
++				   rc);
+ 			wlandev->rx.decrypt_err++;
+ 			return 2;
+ 		}
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.34.1
+
 
