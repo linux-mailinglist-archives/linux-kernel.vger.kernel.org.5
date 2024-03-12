@@ -1,144 +1,153 @@
-Return-Path: <linux-kernel+bounces-100729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE26A879C6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:51:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD4F6879C71
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AEE4282333
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:51:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D1741F24170
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA31714264A;
-	Tue, 12 Mar 2024 19:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86A3142652;
+	Tue, 12 Mar 2024 19:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="bnPxdjWq"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tljUnGRC"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1963D1E53F
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84BD1E53F
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710273072; cv=none; b=lwXaQjeN/nGD/HzussOaAzSFHhKC8nD4xCmoVXmfQD028XuIfEKM5neTCuzTyeSFV9CaR3ZqTDooqtNpniyeq/Y5Cw6ZuhObZoFi8zGqW8ys/a1wTgefmP0/IrmkdtL/iY+1oIL9fpjomi8/HUB9QUbPkWrnz7bkR/jy5PAUbKI=
+	t=1710273387; cv=none; b=lic+EVkBiGAAiwrJyjbkiKMpwCgkcPZVdjJ6I31mtjaXOlayo7vB75TvM4+npIicqE/XcufQYRgizGTRbgNspTOGjPoPm6R4B84ME6ZVr19R7nlJoH0OwbFAolsX/1rn2TKXkcUoLuQxEG08jbbQ4QVPsTRmucsHwTUl5S5nIDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710273072; c=relaxed/simple;
-	bh=baFDkOOrBeZj42NkldSI6/bBuCihDEm4YBHKKbd/BpA=;
+	s=arc-20240116; t=1710273387; c=relaxed/simple;
+	bh=JpCfWmE3gZ134IFjyr24O/ViKidoaAIpyYk5Xdh/x70=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aR1E/TTW5Jhac7Gu0FQGA6JZ897ddKmw2naW3zAaXL5FJspTRApW3dR2vJ9L4A5UZJ5WDQQL1g267J2dIYT6ro0+DNYw0iDS0BPLbLdWkzBq5yJ9aqsClddZdi+Ahk/4zELIr6zDvbkGt3T2mPslrHNMPd6ykQgW59T2Ql7sjsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=bnPxdjWq; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d4141c4438so92723601fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:51:08 -0700 (PDT)
+	 To:Cc:Content-Type; b=CkqzBJIB/4nUlNb1NV9/41wv16I/JhsRurjC9GyLtpUfa1YCqSDgdlXsFBXo6iCtKd1uyQw6yaiFKXUC1/CIapZpabFWoazDXy+iwt0LoTxOvJ1FfdeKqm97oJttGAKHrjH3jErFwCCTBJk+ynou48LcHWxrOLvjFQOCLpdAsc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tljUnGRC; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36645c1169cso28605ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:56:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1710273067; x=1710877867; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710273385; x=1710878185; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=baFDkOOrBeZj42NkldSI6/bBuCihDEm4YBHKKbd/BpA=;
-        b=bnPxdjWqwUAdcukdYSGvLLbcuUDyHyN/tUtYYkQc2gbpYbYSGA6nkHItSqHv52WmvO
-         H+w0XsCtKn09yrnIwkVahPjCXiuZi2rwz1sbU5f4N/ajnzxzObxjV4wP+K5ja5cx48ua
-         JrvKa1nIwkNGEStjINdXKDLcbxgsqGZsMpKwdxKqlv7og3K2ka7Pef4GyCFF/K7nupL/
-         a7WiVAZJ1H320Bebf0/SpKy/tR9yzxZIDsOV0F8knX9ewZKDGsOQzuIhO48NpgTkNQdM
-         n2lBu3B7Y67taE4o2M/sfitwvYwb+6THrhUovEc2GLb2gmMdszM4Tm0n122W7kQfl8JZ
-         cEHw==
+        bh=hf5HSohkhQcxAR7Z7ENUcmxxLo3lTcaUMn5gqzq++Kk=;
+        b=tljUnGRC4WM8+MbRu/n/q3a0kauBZw0DWdItMfnVylmT1iJCMn0Di4Ps2iMCRkzxwW
+         XTckUE8ycXSKLacd90G4+gF0IWGSQFsMSM0qJffNEB6AMj5A/2xtTCT8xl5c/7w/aqVZ
+         GYFXrgYLzqUNIQt+N59bpnmQ7pNIQhA0PcZ9oOJnq+toyKAvEyM5yOhPhQm70jFIOW27
+         n6py1/rI9tNCOydWi/kn7/cFDAsZMuwb7Wv3tSZQl26yW6mfpV2tW3qQUC4EPzDet2EJ
+         9En2r5vyz7GN51kXpwbSUK1Wjf9Z081SNX6aLZRwAUuqr/NapDiDVM6XxsWtq9SHlRdC
+         eMkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710273067; x=1710877867;
+        d=1e100.net; s=20230601; t=1710273385; x=1710878185;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=baFDkOOrBeZj42NkldSI6/bBuCihDEm4YBHKKbd/BpA=;
-        b=UrOXwrVQsHjbLIgZZMPrvqhbxbwhxAfQg4UL7iEN0SI2DP9MBYr0bPZuD0YdZtE6hq
-         9k+gQoU0XZKySqTpo0Dzy8ALlB9yvA2vIGP7yiZR9hjdBfi0mzQxqqIBokCwbBVnKrbG
-         QemBlkqhM0dgPlnHg01lXRm3q7u9Tv5W2ijhj1Nki3DjRmhQ+lqJ/TydRE/YikLTdLU9
-         trN0IhNqmK/gkIoRMv0UMk2dphQiDDbUHkDNYjDR5IOwqIK1RWREs73gLwRwYsAXZHw0
-         Z4iz/96iw6GSLbzDKxolinPw/FTRjqsB3KonqbMd7YTTzHl09avMdWoDL3nHN4bnwP8n
-         bR6A==
-X-Forwarded-Encrypted: i=1; AJvYcCWADze2xrPsXEal4W4MGrOOIeD+6MfD+3ZbP53bIDlTThvoFheYd06FH0Lycf9ne2RfTOHPNNIO3heAuNRdzj6sE8Y1SeCnmmWC33Rx
-X-Gm-Message-State: AOJu0YzNQxW6qxb4HVKnXfPWqyGVdvaBtqktdqFdVYyQPJ8dxjmQVYsB
-	TB1P7Kt9CmSRzNSUJTFQYXpF89BK4LvRB3OpV+YNxpa0lJ8TjkCHYF63RPOs1KWY5CI88XSRrJx
-	LA+IZsXf5N3TDsU7NWFrvyuwAE91GgPSapO1Y+X5Zt4NqdGEb
-X-Google-Smtp-Source: AGHT+IFe9YTQVLfMd91ZALQjsokRk5GYM7O910vUzsLIr5A9y1pj8/SGNzRNmvEtPLAv6HA0eWV/gMFU29HmrNkCenM=
-X-Received: by 2002:a05:651c:3c6:b0:2d3:f81b:7f9 with SMTP id
- f6-20020a05651c03c600b002d3f81b07f9mr6192326ljp.21.1710273067017; Tue, 12 Mar
- 2024 12:51:07 -0700 (PDT)
+        bh=hf5HSohkhQcxAR7Z7ENUcmxxLo3lTcaUMn5gqzq++Kk=;
+        b=TSWOYut3offg1eCf7T7VuT9YYGuyq/Ma/PjsDvFKsHfe+Pra7Soa+m7ongpUT0SIIQ
+         bFPYJHyHv5Pb22fobDq4lFb54M5vEQ6VCZFG7Ag5G53nIUDDdkaCPj7dJ5518B4CYKZC
+         PJVH2U0gG5CJJaW2RwIvwYGYYAkNq1rj6Mo2fStfr4B/Pq985xiSbXmq6g6khoV9UMKn
+         E66LC7/H2b6TFkytbWnvWGAuNQIZGRQkKaSq4hnlUzGIxvTo0SPYNoLcGLDdxHWiH7he
+         wdiQuLmNir4XEH4i5sPxwA/hQHAcoPr9n9dCI2tr/fTkMj3fTFKzTCCl9xsVpuslhjAA
+         T8/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXJPKCsgzrShonQAS5EaBsQJet8UD/3rQZiDtoLGICAomtShw5wF0nl3FFDzsm66vMvCO/zip8OuI8L0a2JYXGPDlNz4WPzXgHdARXh
+X-Gm-Message-State: AOJu0Ywx6FqdB5zM9zkOp4kqrNmrnYjv1EnfcinYEDizaPZIJcbIfw/t
+	AYo8S133RqowrSARrj6ZsyxdcMc4zVW6mMARe0oCjL83Z6hYW+USjUWCAIEJavEdk/P3iiqIDdp
+	Fg5lte9VY4+324/lLwvOQfVdvONJARmDIcsoZ
+X-Google-Smtp-Source: AGHT+IHyoeIdKrv8xlOiCMcXvMsqVvCAyCjtoVw8/VI11YoxqgZF3CePzvE2XLiX5frxi7ieRR/RreuyYCdjvTpOMF8=
+X-Received: by 2002:a05:6e02:1787:b0:363:db1c:22ef with SMTP id
+ y7-20020a056e02178700b00363db1c22efmr18997ilu.24.1710273384776; Tue, 12 Mar
+ 2024 12:56:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312094133.2084996-1-max.kellermann@ionos.com>
- <58fbe42a-3051-46bf-a3f9-d59da28a9cd7@redhat.com> <CAKPOu+8AQ8g_bEOBRoLiiO6eYBGj09YiUx=U0QPnB0Csifa6xw@mail.gmail.com>
- <37ed1ddd-f1d0-4582-b6c5-2f4091dc8335@redhat.com> <CAKPOu+_EwyQEEVV9ULEkncp3727eLGvqD5aswpkG5CtaZ=oJBQ@mail.gmail.com>
- <f959c4c4-8118-436c-83fd-d299689f753a@redhat.com>
-In-Reply-To: <f959c4c4-8118-436c-83fd-d299689f753a@redhat.com>
-From: Max Kellermann <max.kellermann@ionos.com>
-Date: Tue, 12 Mar 2024 20:50:55 +0100
-Message-ID: <CAKPOu+-SMvjfyNGO-Dt8SahF3TOmLaLFE_yP+KQxk0wdHpFeWQ@mail.gmail.com>
-Subject: Re: [PATCH v4 00/15] Fast kernel headers: split linux/mm.h
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, willy@infradead.org, sfr@canb.auug.org.au
+References: <20240312132508.423320-1-james.clark@arm.com>
+In-Reply-To: <20240312132508.423320-1-james.clark@arm.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 12 Mar 2024 12:56:09 -0700
+Message-ID: <CAP-5=fWGrkjx1vz+2aQU0A+_B3d=nCtK9WBGiSPbDbUaTXR4pQ@mail.gmail.com>
+Subject: Re: [PATCH] perf docs: arm_spe: Clarify more SPE requirements
+To: James Clark <james.clark@arm.com>
+Cc: linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 8:26=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
-> It's always a good idea to include at least some sentences about
-> history+motivation in the cover letter.
+On Tue, Mar 12, 2024 at 6:25=E2=80=AFAM James Clark <james.clark@arm.com> w=
+rote:
+>
+> The question of exactly when KPTI needs to be disabled comes up a lot
+> because it doesn't always need to be done. Add the relevant kernel
+> function and some examples that describe the behavior.
+>
+> Also describe the interrupt requirement and that no error message will
+> be printed if this isn't met.
+>
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-Agree, thanks for your review and for the suggestions, that was very
-useful. Once somebody points it out, it's suddenly obvious what was
-missing in my explanations for others to understand my motivation.
-I'll add some more text to the cover letter.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-> Okay, so "Fast kernel headers:" is a bit misleading :P
+Thanks,
+Ian
 
-Yeah. It was the name chosen by Ingo Molnar for his header cleanup
-project, and some of his work was merged several years ago, so I
-thought this phrase would be familiar and would bring back memories
-from these discussions.
-
-> (although I don't immediately understand what correctness means in this
-> context)
-
-Some sources don't include all the headers they need; but by chance,
-this happens to work because deep down the include tree, somebody
-includes kernel.h, mm.h or fs.h and that pulls in everything else;
-thus incorrect includes are never a visible problem. By reducing
-includes to the bare minimum, many of those problems are revealed (by
-producing compiler errors that then have to be fixed). I very much
-like to write code in a way that the compiler points out some kinds of
-mistakes - I rather have a build-time error than a silent runtime
-breakage.
-
-Incorrect includes are not just a theoretical problem; imagine all the
-asm-generic headers that provide fallback definitions for macros that
-are not defined on some architectures (e.g. asm-generic/cacheflush.h).
-If, on some sources, the arch-specific header happens to be not
-included or defines the macro in the wrong header (I've seen it all),
-you suddenly randomly get the correct arch macro or the generic
-fallback macro, leading to inconsistencies, hidden ABI breakages that
-may lead to severe problems that will be hard to debug. One can
-imagine many more ways that code can break silently at runtime due to
-incorrect code (that usually works most of the time, but only by
-chance). Better be explicit about what you really need to include, and
-don't rely on other headers to indirectly include what you need.
-Include what you need even if somebody else down the tree had already
-included it, because that somebody else may change his mind at some
-point, and then your source shouldn't break.
-
-> The problem I see
-> is that once your stuff is merged, it will start getting messed up again
-> over time. But maybe that's just the way it works.
-
-It is. This is like cleaning your house: the following day, somebody
-visits you and brings nice presents (feature patches) but has dirty
-shoes, and then you have to clean the house again... that's the
-infinite cycle of software development, as we all know it.
-
-Max
+> ---
+>  tools/perf/Documentation/perf-arm-spe.txt | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/Documentation/perf-arm-spe.txt b/tools/perf/Docum=
+entation/perf-arm-spe.txt
+> index bf03222e9a68..0a3eda482307 100644
+> --- a/tools/perf/Documentation/perf-arm-spe.txt
+> +++ b/tools/perf/Documentation/perf-arm-spe.txt
+> @@ -116,6 +116,15 @@ Depending on CPU model, the kernel may need to be bo=
+oted with page table isolati
+>  (kpti=3Doff). If KPTI needs to be disabled, this will fail with a consol=
+e message "profiling buffer
+>  inaccessible. Try passing 'kpti=3Doff' on the kernel command line".
+>
+> +For the full criteria that determine whether KPTI needs to be forced off=
+ or not, see function
+> +unmap_kernel_at_el0() in the kernel sources. Common cases where it's not=
+ required
+> +are on the CPUs in kpti_safe_list, or on Arm v8.5+ where FEAT_E0PD is ma=
+ndatory.
+> +
+> +The SPE interrupt must also be described by the firmware. If the module =
+is loaded and KPTI is
+> +disabled (or isn't required to be disabled) but the SPE PMU still doesn'=
+t show in
+> +/sys/bus/event_source/devices/, then it's possible that the SPE interrup=
+t isn't described by
+> +ACPI or DT. In this case no warning will be printed by the driver.
+> +
+>  Capturing SPE with perf command-line tools
+>  ------------------------------------------
+>
+> @@ -199,7 +208,8 @@ Common errors
+>
+>   - "Cannot find PMU `arm_spe'. Missing kernel support?"
+>
+> -   Module not built or loaded, KPTI not disabled (see above), or running=
+ on a VM
+> +   Module not built or loaded, KPTI not disabled, interrupt not describe=
+d by firmware,
+> +   or running on a VM. See 'Kernel Requirements' above.
+>
+>   - "Arm SPE CONTEXT packets not found in the traces."
+>
+> --
+> 2.34.1
+>
 
