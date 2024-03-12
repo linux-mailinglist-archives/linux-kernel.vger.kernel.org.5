@@ -1,153 +1,141 @@
-Return-Path: <linux-kernel+bounces-100730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD4F6879C71
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1992D879C73
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:56:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D1741F24170
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:56:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEE631F221FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86A3142652;
-	Tue, 12 Mar 2024 19:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7782A142657;
+	Tue, 12 Mar 2024 19:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tljUnGRC"
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="QZI1LJ2R"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84BD1E53F
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC81C1E53F
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710273387; cv=none; b=lic+EVkBiGAAiwrJyjbkiKMpwCgkcPZVdjJ6I31mtjaXOlayo7vB75TvM4+npIicqE/XcufQYRgizGTRbgNspTOGjPoPm6R4B84ME6ZVr19R7nlJoH0OwbFAolsX/1rn2TKXkcUoLuQxEG08jbbQ4QVPsTRmucsHwTUl5S5nIDM=
+	t=1710273406; cv=none; b=jL30MJ4/LNdgeHsf8uXZ3vpzrwDAwVW5xaIX2W8Ljr1c3KSc+MX2NJ/7AsTFlHyEDvll7gXAOMLnFSxlDuI+rqHqLjhuya7kxb1ok6xPNO1Jgj+S8s/l2UvZTNdHH6eUU+hYwuMwpR+DZRUgLWu6xScMmXcDSYWi/orz1nblc74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710273387; c=relaxed/simple;
-	bh=JpCfWmE3gZ134IFjyr24O/ViKidoaAIpyYk5Xdh/x70=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CkqzBJIB/4nUlNb1NV9/41wv16I/JhsRurjC9GyLtpUfa1YCqSDgdlXsFBXo6iCtKd1uyQw6yaiFKXUC1/CIapZpabFWoazDXy+iwt0LoTxOvJ1FfdeKqm97oJttGAKHrjH3jErFwCCTBJk+ynou48LcHWxrOLvjFQOCLpdAsc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tljUnGRC; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36645c1169cso28605ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:56:25 -0700 (PDT)
+	s=arc-20240116; t=1710273406; c=relaxed/simple;
+	bh=NfuMaH7Y/8CSMgzfmLwCZoP8iZSzw8HM7XZf9JY3qEA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u/yV06rUzZBrvDOI3wHb0QsEivxdfPF0q7OXd529p8Ipwk82+4yX39e55hP4DNnAgEd6Gv9GS22wokrsbzNSfLtAu61C/Q7mDoaO3DPn63oFNXZ+NlCXoFpNhfTBkgSRUXAZpeN3XklrBrQRu2n5H78ksk5jU1cDRh5jigY+tPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=QZI1LJ2R; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dd8f7d50c6so1674475ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:56:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710273385; x=1710878185; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hf5HSohkhQcxAR7Z7ENUcmxxLo3lTcaUMn5gqzq++Kk=;
-        b=tljUnGRC4WM8+MbRu/n/q3a0kauBZw0DWdItMfnVylmT1iJCMn0Di4Ps2iMCRkzxwW
-         XTckUE8ycXSKLacd90G4+gF0IWGSQFsMSM0qJffNEB6AMj5A/2xtTCT8xl5c/7w/aqVZ
-         GYFXrgYLzqUNIQt+N59bpnmQ7pNIQhA0PcZ9oOJnq+toyKAvEyM5yOhPhQm70jFIOW27
-         n6py1/rI9tNCOydWi/kn7/cFDAsZMuwb7Wv3tSZQl26yW6mfpV2tW3qQUC4EPzDet2EJ
-         9En2r5vyz7GN51kXpwbSUK1Wjf9Z081SNX6aLZRwAUuqr/NapDiDVM6XxsWtq9SHlRdC
-         eMkQ==
+        d=sifive.com; s=google; t=1710273403; x=1710878203; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vxEx3iDsM3WrZG2Ndd+J9E+wXDu/hB2Os8/24Q1t3OY=;
+        b=QZI1LJ2REYGo1Bsc+3/Zqq2HkKct0LVwKXwjvtRUVdoTYpnvFrLuLNk5jJaNBmF8hP
+         KgG7HxYJuYs1yT5N46OP5XurGkntOyZ+8UVrpWeNxRGEbFpLnV95CD91uYzN3tNv2xX2
+         +E50mP7/BOglB3SmJVyEH/o7VpJ1OXjbGXeXM2oa6f04MrW69uFJWgL0H6enqnkCSVj/
+         ApcqOgCuz+BFQQTLt6oRG/ryyK6ZygjUHNVZ1keJVcmndWfHEZ09gggSeZgokmXR8vi9
+         Rxkapb02l9ucsKxnRass5RMvSHXbto/4tsRUyyluvKsNX1xCrgnB5G0Gcq94FOIrQRc0
+         CICg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710273385; x=1710878185;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hf5HSohkhQcxAR7Z7ENUcmxxLo3lTcaUMn5gqzq++Kk=;
-        b=TSWOYut3offg1eCf7T7VuT9YYGuyq/Ma/PjsDvFKsHfe+Pra7Soa+m7ongpUT0SIIQ
-         bFPYJHyHv5Pb22fobDq4lFb54M5vEQ6VCZFG7Ag5G53nIUDDdkaCPj7dJ5518B4CYKZC
-         PJVH2U0gG5CJJaW2RwIvwYGYYAkNq1rj6Mo2fStfr4B/Pq985xiSbXmq6g6khoV9UMKn
-         E66LC7/H2b6TFkytbWnvWGAuNQIZGRQkKaSq4hnlUzGIxvTo0SPYNoLcGLDdxHWiH7he
-         wdiQuLmNir4XEH4i5sPxwA/hQHAcoPr9n9dCI2tr/fTkMj3fTFKzTCCl9xsVpuslhjAA
-         T8/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXJPKCsgzrShonQAS5EaBsQJet8UD/3rQZiDtoLGICAomtShw5wF0nl3FFDzsm66vMvCO/zip8OuI8L0a2JYXGPDlNz4WPzXgHdARXh
-X-Gm-Message-State: AOJu0Ywx6FqdB5zM9zkOp4kqrNmrnYjv1EnfcinYEDizaPZIJcbIfw/t
-	AYo8S133RqowrSARrj6ZsyxdcMc4zVW6mMARe0oCjL83Z6hYW+USjUWCAIEJavEdk/P3iiqIDdp
-	Fg5lte9VY4+324/lLwvOQfVdvONJARmDIcsoZ
-X-Google-Smtp-Source: AGHT+IHyoeIdKrv8xlOiCMcXvMsqVvCAyCjtoVw8/VI11YoxqgZF3CePzvE2XLiX5frxi7ieRR/RreuyYCdjvTpOMF8=
-X-Received: by 2002:a05:6e02:1787:b0:363:db1c:22ef with SMTP id
- y7-20020a056e02178700b00363db1c22efmr18997ilu.24.1710273384776; Tue, 12 Mar
- 2024 12:56:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710273403; x=1710878203;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vxEx3iDsM3WrZG2Ndd+J9E+wXDu/hB2Os8/24Q1t3OY=;
+        b=ZocujWaapQCG6b8kpdHTOkjx7jtS8nOaXTwHZvcQgVqqIY2PNhEK2GA1nXGCi9YV1E
+         axkrwvvboCwW2ZI4MbPOifYyrZt62dT05fS3jserVEqTnzTKVmR8YIvMHNq7dMGU9fNX
+         Njtj+9eh0Tc8ojzOj02l2KYYmN4DoXXTsCfgLQmp4HnqaAfxdqBgW/v846gbznaNStcH
+         4Hsx7hHj4uhbA6/qI5uz0PLz/kgbkt3MaHj5pOiKPre5lFuBPwdKeXzmFscjtkzSMMSZ
+         GKl47tt9MFX0QetdWrgR6CK4NpwIqi2K++0G5GziBim9/REcYLCITUiVUSpBI7Lx1YA+
+         eseg==
+X-Forwarded-Encrypted: i=1; AJvYcCXzNEy5ep3iyLnlx9OC0DXJX6y8tPRsm7dmCeqNSZt//Y7MSR6K80RCr2RSf7netKhhzVtj1AZY/9YfFnfT2WdlxNqnTzaHFJsJL++L
+X-Gm-Message-State: AOJu0YyMy1s02HJ+rztIUoRIW8NniGltX4sy4iby8HUYyJxen4ugASRb
+	53kbda5NUOS9jvLlWFGQVAVT5iWspWYdTfeTKZlToCIsk8VUDUC/ziRaRB3WjR4=
+X-Google-Smtp-Source: AGHT+IFpt7ff6HNFHc9Yq78Z63OwKzFZJ801dFotJRAscTaClrr1h/Au36ogZQmQ69SY/YT0n6oNpQ==
+X-Received: by 2002:a17:90a:e54f:b0:29b:c49b:eb13 with SMTP id ei15-20020a17090ae54f00b0029bc49beb13mr628731pjb.24.1710273403142;
+        Tue, 12 Mar 2024 12:56:43 -0700 (PDT)
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id hi23-20020a17090b30d700b0029bed0e75dbsm4708774pjb.17.2024.03.12.12.56.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 12:56:42 -0700 (PDT)
+From: Samuel Holland <samuel.holland@sifive.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>,
+	linux-riscv@lists.infradead.org
+Cc: Samuel Holland <samuel.holland@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Sia Jee Heng <jeeheng.sia@starfivetech.com>,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org
+Subject: [PATCH] riscv: Do not save the scratch CSR during suspend
+Date: Tue, 12 Mar 2024 12:56:38 -0700
+Message-ID: <20240312195641.1830521-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312132508.423320-1-james.clark@arm.com>
-In-Reply-To: <20240312132508.423320-1-james.clark@arm.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 12 Mar 2024 12:56:09 -0700
-Message-ID: <CAP-5=fWGrkjx1vz+2aQU0A+_B3d=nCtK9WBGiSPbDbUaTXR4pQ@mail.gmail.com>
-Subject: Re: [PATCH] perf docs: arm_spe: Clarify more SPE requirements
-To: James Clark <james.clark@arm.com>
-Cc: linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024 at 6:25=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
-> The question of exactly when KPTI needs to be disabled comes up a lot
-> because it doesn't always need to be done. Add the relevant kernel
-> function and some examples that describe the behavior.
->
-> Also describe the interrupt requirement and that no error message will
-> be printed if this isn't met.
->
-> Signed-off-by: James Clark <james.clark@arm.com>
+While the processor is executing kernel code, the value of the scratch
+CSR is always zero, so there is no need to save the value. Continue to
+write the CSR during the resume flow, so we do not rely on firmware to
+initialize it.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+---
 
-Thanks,
-Ian
+ arch/riscv/include/asm/suspend.h | 1 -
+ arch/riscv/kernel/suspend.c      | 3 +--
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-> ---
->  tools/perf/Documentation/perf-arm-spe.txt | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/Documentation/perf-arm-spe.txt b/tools/perf/Docum=
-entation/perf-arm-spe.txt
-> index bf03222e9a68..0a3eda482307 100644
-> --- a/tools/perf/Documentation/perf-arm-spe.txt
-> +++ b/tools/perf/Documentation/perf-arm-spe.txt
-> @@ -116,6 +116,15 @@ Depending on CPU model, the kernel may need to be bo=
-oted with page table isolati
->  (kpti=3Doff). If KPTI needs to be disabled, this will fail with a consol=
-e message "profiling buffer
->  inaccessible. Try passing 'kpti=3Doff' on the kernel command line".
->
-> +For the full criteria that determine whether KPTI needs to be forced off=
- or not, see function
-> +unmap_kernel_at_el0() in the kernel sources. Common cases where it's not=
- required
-> +are on the CPUs in kpti_safe_list, or on Arm v8.5+ where FEAT_E0PD is ma=
-ndatory.
-> +
-> +The SPE interrupt must also be described by the firmware. If the module =
-is loaded and KPTI is
-> +disabled (or isn't required to be disabled) but the SPE PMU still doesn'=
-t show in
-> +/sys/bus/event_source/devices/, then it's possible that the SPE interrup=
-t isn't described by
-> +ACPI or DT. In this case no warning will be printed by the driver.
-> +
->  Capturing SPE with perf command-line tools
->  ------------------------------------------
->
-> @@ -199,7 +208,8 @@ Common errors
->
->   - "Cannot find PMU `arm_spe'. Missing kernel support?"
->
-> -   Module not built or loaded, KPTI not disabled (see above), or running=
- on a VM
-> +   Module not built or loaded, KPTI not disabled, interrupt not describe=
-d by firmware,
-> +   or running on a VM. See 'Kernel Requirements' above.
->
->   - "Arm SPE CONTEXT packets not found in the traces."
->
-> --
-> 2.34.1
->
+diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
+index 491296a335d0..6569eefacf38 100644
+--- a/arch/riscv/include/asm/suspend.h
++++ b/arch/riscv/include/asm/suspend.h
+@@ -13,7 +13,6 @@ struct suspend_context {
+ 	/* Saved and restored by low-level functions */
+ 	struct pt_regs regs;
+ 	/* Saved and restored by high-level functions */
+-	unsigned long scratch;
+ 	unsigned long envcfg;
+ 	unsigned long tvec;
+ 	unsigned long ie;
+diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
+index 299795341e8a..3d306d8a253d 100644
+--- a/arch/riscv/kernel/suspend.c
++++ b/arch/riscv/kernel/suspend.c
+@@ -14,7 +14,6 @@
+ 
+ void suspend_save_csrs(struct suspend_context *context)
+ {
+-	context->scratch = csr_read(CSR_SCRATCH);
+ 	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
+ 		context->envcfg = csr_read(CSR_ENVCFG);
+ 	context->tvec = csr_read(CSR_TVEC);
+@@ -37,7 +36,7 @@ void suspend_save_csrs(struct suspend_context *context)
+ 
+ void suspend_restore_csrs(struct suspend_context *context)
+ {
+-	csr_write(CSR_SCRATCH, context->scratch);
++	csr_write(CSR_SCRATCH, 0);
+ 	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
+ 		csr_write(CSR_ENVCFG, context->envcfg);
+ 	csr_write(CSR_TVEC, context->tvec);
+-- 
+2.43.1
+
 
