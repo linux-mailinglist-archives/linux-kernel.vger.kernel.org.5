@@ -1,47 +1,51 @@
-Return-Path: <linux-kernel+bounces-100864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A31F9879E5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:20:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 806D9879E61
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 23:20:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EE3D284C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:20:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A43571C221F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F76144048;
-	Tue, 12 Mar 2024 22:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4481A1448C6;
+	Tue, 12 Mar 2024 22:20:17 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D7C143C6F
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 22:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B76144020;
+	Tue, 12 Mar 2024 22:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710282016; cv=none; b=q9PQmpkGA8F0Fdhcl+MJR/FR7jI8LdwJYqoLF/Rke5wWU94Z/mZRzMlF5FZJsC8eAyxhseuZtz+HwkskW4v0hZfX9BeTx7K4LfsaK5MRmIqns6s8g5Dd+litRwe+KWDPPoEx0rccAYheIsVLVH8jetkX6Uil7ASAnBdyn0w3zQU=
+	t=1710282016; cv=none; b=ZGNJ0snPeHH81ywvHMGOGR4UTEnxT/l0I7g01jcBn0ZzvddS6nwUQmaB/TPLZ2euPfWLKP71BrIakKBWWrZDNybPMTs681cgjvunmjYPiiu1kChPeHe0AwxEIrJk2eZNRsvRo1FOlZjGP8Y4AX5N/aw6OvC5F8mU2H3VaxySWXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710282016; c=relaxed/simple;
-	bh=Fn4AJ/vrIiVdY+JUXJRLI5EIHGywgJFTV5iUg9TbdC8=;
+	bh=3cxxrN4f/X4fC9WdeSSnteseLrgahfqHKEo7I90W6bU=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=nOD9TZ0dLHPtPBnL7/hYw96LZb72A9k4FLket3SjBzJn+UIPkQ7fCd8e68vb41IKHzEXdXhwSMBoRBsCszA4WHYpw/K74sHf9qloCpr04dkrqFQqa8yEShzQQuJER9+mQ54p4pZXo3S3pSs5ijIriWpq52WSg0tXNFUBx31olXg=
+	 Content-Type; b=Y2/wF+gVq3/+ekI0mXkJ665wRq/JJxA2e0FF60qogW5Cz9ixq5OS4Emgaj4XAfAyA2mPXUYfxvy2+pOsyM305v6jlvtAM8iwoy/yc4Hx6RO7nHVcVflJ4Nhm/H/AYtPG3cQb4Nr8ypH4RBL2b8LcnFkK/1uOoT+L3ULL7Er1XJk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29DD6C43399;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B9A6C43330;
 	Tue, 12 Mar 2024 22:20:16 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rkAVr-000000022L0-2etg;
+	id 1rkAVr-000000022LU-3KmR;
 	Tue, 12 Mar 2024 18:22:23 -0400
-Message-ID: <20240312222223.494701270@goodmis.org>
+Message-ID: <20240312222223.653647990@goodmis.org>
 User-Agent: quilt/0.67
-Date: Tue, 12 Mar 2024 18:21:02 -0400
+Date: Tue, 12 Mar 2024 18:21:03 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-linus][PATCH 3/5] ring-buffer: Reuse rb_watermark_hit() for the poll logic
+ Andrew Morton <akpm@linux-foundation.org>,
+ stable@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ linke li <lilinke99@qq.com>,
+ Rabin Vincent <rabin@rab.in>
+Subject: [for-linus][PATCH 4/5] ring-buffer: Use wait_event_interruptible() in ring_buffer_wait()
 References: <20240312222059.823191689@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -53,60 +57,196 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The check for knowing if the poll should wait or not is basically the
-exact same logic as rb_watermark_hit(). The only difference is that
-rb_watermark_hit() also handles the !full case. But for the full case, the
-logic is the same. Just call that instead of duplicating the code in
-ring_buffer_poll_wait().
+Convert ring_buffer_wait() over to wait_event_interruptible(). The default
+condition is to execute the wait loop inside __wait_event() just once.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20240312131952.802267543@goodmis.org
+This does not change the ring_buffer_wait() prototype yet, but
+restructures the code so that it can take a "cond" and "data" parameter
+and will call wait_event_interruptible() with a helper function as the
+condition.
 
+The helper function (rb_wait_cond) takes the cond function and data
+parameters. It will first check if the buffer hit the watermark defined by
+the "full" parameter and then call the passed in condition parameter. If
+either are true, it returns true.
+
+If rb_wait_cond() does not return true, it will set the appropriate
+"waiters_pending" flag and returns false.
+
+Link: https://lore.kernel.org/linux-trace-kernel/CAHk-=wgsNgewHFxZAJiAQznwPMqEtQmi1waeS2O1v6L4c_Um5A@mail.gmail.com/
+Link: https://lore.kernel.org/linux-trace-kernel/20240312121703.399598519@goodmis.org
+
+Cc: stable@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linke li <lilinke99@qq.com>
+Cc: Rabin Vincent <rabin@rab.in>
+Fixes: f3ddb74ad0790 ("tracing: Wake up ring buffer waiters on closing of the file")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ include/linux/ring_buffer.h |   1 +
+ kernel/trace/ring_buffer.c  | 116 +++++++++++++++++++++---------------
+ 2 files changed, 69 insertions(+), 48 deletions(-)
 
+diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
+index fa802db216f9..338a33db1577 100644
+--- a/include/linux/ring_buffer.h
++++ b/include/linux/ring_buffer.h
+@@ -98,6 +98,7 @@ __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *k
+ 	__ring_buffer_alloc((size), (flags), &__key);	\
+ })
+ 
++typedef bool (*ring_buffer_cond_fn)(void *data);
+ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
+ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
+ 			  struct file *filp, poll_table *poll_table, int full);
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 99fdda29ce4e..8c3730a88662 100644
+index 8c3730a88662..f4c34b7c7e1e 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -960,25 +960,18 @@ __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
+@@ -843,43 +843,15 @@ static bool rb_watermark_hit(struct trace_buffer *buffer, int cpu, int full)
+ 	return ret;
+ }
+ 
+-/**
+- * ring_buffer_wait - wait for input to the ring buffer
+- * @buffer: buffer to wait on
+- * @cpu: the cpu buffer to wait on
+- * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
+- *
+- * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
+- * as data is added to any of the @buffer's cpu buffers. Otherwise
+- * it will wait for data to be added to a specific cpu buffer.
+- */
+-int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
++static inline bool
++rb_wait_cond(struct rb_irq_work *rbwork, struct trace_buffer *buffer,
++	     int cpu, int full, ring_buffer_cond_fn cond, void *data)
+ {
+-	struct ring_buffer_per_cpu *cpu_buffer;
+-	DEFINE_WAIT(wait);
+-	struct rb_irq_work *work;
+-	int ret = 0;
+-
+-	/*
+-	 * Depending on what the caller is waiting for, either any
+-	 * data in any cpu buffer, or a specific buffer, put the
+-	 * caller on the appropriate wait queue.
+-	 */
+-	if (cpu == RING_BUFFER_ALL_CPUS) {
+-		work = &buffer->irq_work;
+-		/* Full only makes sense on per cpu reads */
+-		full = 0;
+-	} else {
+-		if (!cpumask_test_cpu(cpu, buffer->cpumask))
+-			return -ENODEV;
+-		cpu_buffer = buffer->buffers[cpu];
+-		work = &cpu_buffer->irq_work;
+-	}
++	if (rb_watermark_hit(buffer, cpu, full))
++		return true;
+ 
+-	if (full)
+-		prepare_to_wait(&work->full_waiters, &wait, TASK_INTERRUPTIBLE);
+-	else
+-		prepare_to_wait(&work->waiters, &wait, TASK_INTERRUPTIBLE);
++	if (cond(data))
++		return true;
+ 
+ 	/*
+ 	 * The events can happen in critical sections where
+@@ -902,27 +874,75 @@ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
+ 	 * a task has been queued. It's OK for spurious wake ups.
+ 	 */
+ 	if (full)
+-		work->full_waiters_pending = true;
++		rbwork->full_waiters_pending = true;
+ 	else
+-		work->waiters_pending = true;
++		rbwork->waiters_pending = true;
+ 
+-	if (rb_watermark_hit(buffer, cpu, full))
+-		goto out;
++	return false;
++}
+ 
+-	if (signal_pending(current)) {
+-		ret = -EINTR;
+-		goto out;
++/*
++ * The default wait condition for ring_buffer_wait() is to just to exit the
++ * wait loop the first time it is woken up.
++ */
++static bool rb_wait_once(void *data)
++{
++	long *once = data;
++
++	/* wait_event() actually calls this twice before scheduling*/
++	if (*once > 1)
++		return true;
++
++	(*once)++;
++	return false;
++}
++
++/**
++ * ring_buffer_wait - wait for input to the ring buffer
++ * @buffer: buffer to wait on
++ * @cpu: the cpu buffer to wait on
++ * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
++ *
++ * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
++ * as data is added to any of the @buffer's cpu buffers. Otherwise
++ * it will wait for data to be added to a specific cpu buffer.
++ */
++int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
++{
++	struct ring_buffer_per_cpu *cpu_buffer;
++	struct wait_queue_head *waitq;
++	ring_buffer_cond_fn cond;
++	struct rb_irq_work *rbwork;
++	void *data;
++	long once = 0;
++	int ret = 0;
++
++	cond = rb_wait_once;
++	data = &once;
++
++	/*
++	 * Depending on what the caller is waiting for, either any
++	 * data in any cpu buffer, or a specific buffer, put the
++	 * caller on the appropriate wait queue.
++	 */
++	if (cpu == RING_BUFFER_ALL_CPUS) {
++		rbwork = &buffer->irq_work;
++		/* Full only makes sense on per cpu reads */
++		full = 0;
++	} else {
++		if (!cpumask_test_cpu(cpu, buffer->cpumask))
++			return -ENODEV;
++		cpu_buffer = buffer->buffers[cpu];
++		rbwork = &cpu_buffer->irq_work;
  	}
  
- 	if (full) {
--		unsigned long flags;
--
- 		poll_wait(filp, &rbwork->full_waiters, poll_table);
+-	schedule();
+- out:
+ 	if (full)
+-		finish_wait(&work->full_waiters, &wait);
++		waitq = &rbwork->full_waiters;
+ 	else
+-		finish_wait(&work->waiters, &wait);
++		waitq = &rbwork->waiters;
  
--		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
--		if (!cpu_buffer->shortest_full ||
--		    cpu_buffer->shortest_full > full)
--			cpu_buffer->shortest_full = full;
--		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
--		if (full_hit(buffer, cpu, full))
-+		if (rb_watermark_hit(buffer, cpu, full))
- 			return EPOLLIN | EPOLLRDNORM;
- 		/*
- 		 * Only allow full_waiters_pending update to be seen after
--		 * the shortest_full is set. If the writer sees the
--		 * full_waiters_pending flag set, it will compare the
--		 * amount in the ring buffer to shortest_full. If the amount
--		 * in the ring buffer is greater than the shortest_full
--		 * percent, it will call the irq_work handler to wake up
--		 * this list. The irq_handler will reset shortest_full
-+		 * the shortest_full is set (in rb_watermark_hit). If the
-+		 * writer sees the full_waiters_pending flag set, it will
-+		 * compare the amount in the ring buffer to shortest_full.
-+		 * If the amount in the ring buffer is greater than the
-+		 * shortest_full percent, it will call the irq_work handler
-+		 * to wake up this list. The irq_handler will reset shortest_full
- 		 * back to zero. That's done under the reader_lock, but
- 		 * the below smp_mb() makes sure that the update to
- 		 * full_waiters_pending doesn't leak up into the above.
+-	if (!ret && !rb_watermark_hit(buffer, cpu, full) && signal_pending(current))
+-		ret = -EINTR;
++	ret = wait_event_interruptible((*waitq),
++				rb_wait_cond(rbwork, buffer, cpu, full, cond, data));
+ 
+ 	return ret;
+ }
 -- 
 2.43.0
 
