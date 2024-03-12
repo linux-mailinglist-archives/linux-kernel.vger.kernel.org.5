@@ -1,161 +1,152 @@
-Return-Path: <linux-kernel+bounces-99702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5C8878BF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 571BC878C00
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:47:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D5FD1C21157
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:40:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87C131C215E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33B410E3;
-	Tue, 12 Mar 2024 00:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41CB81869;
+	Tue, 12 Mar 2024 00:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TYeK7gbU"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="2NF+4Lt8"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C15063C;
-	Tue, 12 Mar 2024 00:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B934D10E3;
+	Tue, 12 Mar 2024 00:47:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710204004; cv=none; b=aAveOlbGuNVA5abAlIXVRTX1CFGFazN/kNeQ9CjPMwexl/9AkKxhd/tUbpzuI3P+2506pz/USbZ4QOnoHRfKOr5GfUIoR0mD7OCMPid5msMsUjh2IfxNG/c0d2qzpdwnLK6Qndf3qxKlud/aYTDxh7JPMfXADoPMRmCkftPyvLc=
+	t=1710204436; cv=none; b=IJsQt9vdwOsfgyUlCMWFr6bNMFGQGvqR14lBGMRmUiBLGgPrLX+nUkKfBtM6eJvpAZJEUVQzGwxZ2t3HCO7m24ohwIKEbL72dV+vzXCXqpwdkDhFwy+26UbRZPbh35wVz4k3IGoQi+Pwuq23oPDxEyTqjNhe0d1AW6MmbnAA8SU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710204004; c=relaxed/simple;
-	bh=TVP1c9LRa4PI7mhKO6pbClkiwq07NdPr2Iczsma9oJg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=X+E+m1RSxxN6U8FaDClwRkhLYisQBRmxGG3S01eQgwGcC64khd3WeBIShUPdpx4J2VTasBZzNHmBQYQpw2sSjsWCYK+GT7lMdYdtCVyrMzbdjEczYAh8hoiDwTbFdOa8bahMZgUwP3QhxponKjoKdPCq7UgIb2baCbM5H/iRdWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TYeK7gbU; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710204002; x=1741740002;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=TVP1c9LRa4PI7mhKO6pbClkiwq07NdPr2Iczsma9oJg=;
-  b=TYeK7gbU7gnoI33tXvGWqcxtew1sDQCvx0rBZURx1HxuD6aV26TXJqpw
-   Tty9ntKKPSWFt7WKHEn7mBTuajGmWMkl99FbJbsSWpKZ7ZABlE+HyZDTB
-   l3FESIZC4byJkAcmPfIwPkJsXvgnkb5Z7ycrJMcO9XyOBQ/uhteWbb2tP
-   wlAurUc4g3LHQD1ttxHX+CTR7zcikpTzVRy8KCACKaXr8LH6KVV4xr26I
-   9iDyUn1BFWOlRoBqFdYDeyozAVPVJ6k9zXIlD2wL5C0UbyUOlRUocAExf
-   cqWTxiYUU9hjCGlSiMVU13/nsKodn71nNE6Qez/XS2tZY4zbgRqhWo2xB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="5078310"
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="5078310"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:40:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,118,1708416000"; 
-   d="scan'208";a="15835061"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.125.242.247]) ([10.125.242.247])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:39:59 -0700
-Message-ID: <d20abcde-2d54-45cb-b821-1ff1af5cbb86@linux.intel.com>
-Date: Tue, 12 Mar 2024 08:39:57 +0800
+	s=arc-20240116; t=1710204436; c=relaxed/simple;
+	bh=4Rt4qb4goFm58llMXuHJYSc3IyM3rmcW/4Zju/zlUHY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fvyrNn9OOA5Eo8z+R7VzX2Qg6bsNhQOy5M1PYdyXzFypXj/NYnCmLllsVqi4UiCB58zBS+JzE7UBEVMNmv4fGZ15SGi/CsUkT/t3YGcyjYDYnnWlNewdacvtlhGlRYYwCgoB5+hF9e4BzIj03Ywe2scHPew0zN47xvAFOFCFIDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=2NF+4Lt8; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710204427;
+	bh=4Rt4qb4goFm58llMXuHJYSc3IyM3rmcW/4Zju/zlUHY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=2NF+4Lt8o9JVGYmR3VO0k9trrXpm8PDhiLIm0jdvD6pllfw/EjmqjE+N5l+bq6+p+
+	 /rSwA8ZucC1Vnibg27lrEk0cUXZhJtCc8uWGwuomiIfJKQCA0PjCrRTBCDcjf/Sljg
+	 6FOY5PzVbmETcmwOnosYVIYBkR9g5MpqIef7mzegAU0R5rEUENvTSXL8G5mOpT4Z6d
+	 z8sx6HkD4/qKlWSJiF9vpe/SEnBdycaqSMZsLzG9dCKIYuM+s7gfreihC5dxq6fJAJ
+	 1AYpkhPldwioGErWrgfBvw0Vq/x6/MBcQqQ89pWiBrGz8eXMkCq2VwMYKKchN4i5K2
+	 w5PsixKDO9KuA==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: alarumbe)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6B4E837809D1;
+	Tue, 12 Mar 2024 00:47:07 +0000 (UTC)
+Date: Tue, 12 Mar 2024 00:47:06 +0000
+From: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Tvrtko Ursulin <tursulin@ursulin.net>, robh@kernel.org, 
+	steven.price@arm.com, airlied@gmail.com, daniel@ffwll.ch, 
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, corbet@lwn.net, 
+	kernel@collabora.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] drm/panfrost: Replace fdinfo's profiling debugfs
+ knob with sysfs
+Message-ID: <njeeciw7qetcgyc7mpqxyqjwx2rs2wvhfo2mails6apxv6b4wu@g7dux7u55frj>
+References: <20240306015819.822128-1-adrian.larumbe@collabora.com>
+ <20240306015819.822128-2-adrian.larumbe@collabora.com>
+ <0db9babe-da95-48e2-b577-3e92a81f8303@ursulin.net>
+ <20240311110238.1082a1f6@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Binbin Wu <binbin.wu@linux.intel.com>
-Subject: Re: [PATCH 21/21] KVM: x86: Add gmem hook for determining max NPT
- mapping level
-To: Paolo Bonzini <pbonzini@redhat.com>, michael.roth@amd.com
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
- isaku.yamahata@intel.com, thomas.lendacky@amd.com
-References: <20240227232100.478238-1-pbonzini@redhat.com>
- <20240227232100.478238-22-pbonzini@redhat.com>
-In-Reply-To: <20240227232100.478238-22-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240311110238.1082a1f6@collabora.com>
 
+On 11.03.2024 11:02, Boris Brezillon wrote:
+> On Wed, 6 Mar 2024 08:33:47 +0000
+> Tvrtko Ursulin <tursulin@ursulin.net> wrote:
+> 
+> > On 06/03/2024 01:56, Adrián Larumbe wrote:
+> > > Debugfs isn't always available in production builds that try to squeeze
+> > > every single byte out of the kernel image, but we still need a way to
+> > > toggle the timestamp and cycle counter registers so that jobs can be
+> > > profiled for fdinfo's drm engine and cycle calculations.
+> > > 
+> > > Drop the debugfs knob and replace it with a sysfs file that accomplishes
+> > > the same functionality, and document its ABI in a separate file.
+> > > 
+> > > Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+> > > ---
+> > >   .../testing/sysfs-driver-panfrost-profiling   | 10 +++++
+> > >   Documentation/gpu/panfrost.rst                |  9 ++++
+> > >   drivers/gpu/drm/panfrost/Makefile             |  2 -
+> > >   drivers/gpu/drm/panfrost/panfrost_debugfs.c   | 21 ----------
+> > >   drivers/gpu/drm/panfrost/panfrost_debugfs.h   | 14 -------
+> > >   drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
+> > >   drivers/gpu/drm/panfrost/panfrost_drv.c       | 41 ++++++++++++++++---
+> > >   drivers/gpu/drm/panfrost/panfrost_job.c       |  2 +-
+> > >   8 files changed, 57 insertions(+), 44 deletions(-)
+> > >   create mode 100644 Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > >   delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> > >   delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> > > 
+> > > diff --git a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > > new file mode 100644
+> > > index 000000000000..1d8bb0978920
+> > > --- /dev/null
+> > > +++ b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > > @@ -0,0 +1,10 @@
+> > > +What:		/sys/bus/platform/drivers/panfrost/.../profiling
+> > > +Date:		February 2024
+> > > +KernelVersion:	6.8.0
+> > > +Contact:	Adrian Larumbe <adrian.larumbe@collabora.com>
+> > > +Description:
+> > > +		Get/set drm fdinfo's engine and cycles profiling status.
+> > > +		Valid values are:
+> > > +		0: Don't enable fdinfo job profiling sources.
+> > > +		1: Enable fdinfo job profiling sources, this enables both the GPU's
+> > > +		   timestamp and cycle counter registers.
+> > > \ No newline at end of file
+> > > diff --git a/Documentation/gpu/panfrost.rst b/Documentation/gpu/panfrost.rst
+> > > index b80e41f4b2c5..51ba375fd80d 100644
+> > > --- a/Documentation/gpu/panfrost.rst
+> > > +++ b/Documentation/gpu/panfrost.rst
+> > > @@ -38,3 +38,12 @@ the currently possible format options:
+> > >   
+> > >   Possible `drm-engine-` key names are: `fragment`, and  `vertex-tiler`.
+> > >   `drm-curfreq-` values convey the current operating frequency for that engine.
+> > > +
+> > > +Users must bear in mind that engine and cycle sampling are disabled by default,
+> > > +because of power saving concerns. `fdinfo` users and benchmark applications which
+> > > +query the fdinfo file must make sure to toggle the job profiling status of the
+> > > +driver by writing into the appropriate sysfs node::
+> > > +
+> > > +    echo <N> > /sys/bus/platform/drivers/panfrost/[a-f0-9]*.gpu/profiling  
+> > 
+> > A late thought - how it would work to not output the inactive fdinfo 
+> > keys when this knob is not enabled?
+> > 
+> > Generic userspace like gputop already handles that and wouldn't show the 
+> > stat. Which may be more user friendly than showing stats permanently at 
+> > zero. It may be moot once you add the auto-toggle to gputop (or so) but 
+> > perhaps worth considering.
+> 
+> I agree with Tvrtko, if the line being printed in fdinfo relies on some
+> sysfs knob to be valid, we'd rather not print the information in that
+> case, instead of printing zero.
 
-
-On 2/28/2024 7:21 AM, Paolo Bonzini wrote:
-> From: Michael Roth<michael.roth@amd.com>
->
-> In the case of SEV-SNP, whether or not a 2MB page can be mapped via a
-> 2MB mapping in the guest's nested page table depends on whether or not
-> any subpages within the range have already been initialized as private
-> in the RMP table. The existing mixed-attribute tracking in KVM is
-> insufficient here, for instance:
->
->    - gmem allocates 2MB page
->    - guest issues PVALIDATE on 2MB page
->    - guest later converts a subpage to shared
->    - SNP host code issues PSMASH to split 2MB RMP mapping to 4K
->    - KVM MMU splits NPT mapping to 4K
-
-Is here a sentence missing that "guest converts the shared subpage back
-to private"?
-Otherwise, it conflicts with the following statement "there are no mixed
-attributes".
-
-
-> At this point there are no mixed attributes, and KVM would normally
-> allow for 2MB NPT mappings again, but this is actually not allowed
-> because the RMP table mappings are 4K and cannot be promoted on the
-> hypervisor side, so the NPT mappings must still be limited to 4K to
-> match this.
->
-> Add a hook to determine the max NPT mapping size in situations like
-> this.
->
-> Signed-off-by: Michael Roth<michael.roth@amd.com>
-> Message-Id:<20231230172351.574091-31-michael.roth@amd.com>
-> Signed-off-by: Paolo Bonzini<pbonzini@redhat.com>
-> ---
->   arch/x86/include/asm/kvm-x86-ops.h | 1 +
->   arch/x86/include/asm/kvm_host.h    | 1 +
->   arch/x86/kvm/mmu/mmu.c             | 7 +++++++
->   3 files changed, 9 insertions(+)
->
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> index 42474acb7375..436e3c157fae 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -140,6 +140,7 @@ KVM_X86_OP(vcpu_deliver_sipi_vector)
->   KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
->   KVM_X86_OP_OPTIONAL(get_untagged_addr)
->   KVM_X86_OP_OPTIONAL_RET0(gmem_prepare)
-> +KVM_X86_OP_OPTIONAL_RET0(gmem_validate_fault)
->   KVM_X86_OP_OPTIONAL(gmem_invalidate)
->   
->   #undef KVM_X86_OP
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index e523b204697d..259e6bb1e447 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1806,6 +1806,7 @@ struct kvm_x86_ops {
->   	gva_t (*get_untagged_addr)(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags);
->   	int (*gmem_prepare)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
->   	void (*gmem_invalidate)(kvm_pfn_t start, kvm_pfn_t end);
-> +	int (*gmem_validate_fault)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, u8 *max_level);
->   };
->   
->   struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 6b4cb71668df..bcf12ac489f9 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4339,6 +4339,13 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
->   			       fault->max_level);
->   	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
->   
-> +	r = static_call(kvm_x86_gmem_validate_fault)(vcpu->kvm, fault->pfn,
-> +						     fault->gfn, &fault->max_level);
-> +	if (r) {
-> +		kvm_release_pfn_clean(fault->pfn);
-> +		return r;
-> +	}
-> +
->   	return RET_PF_CONTINUE;
->   }
->   
-
+Me too. I'll go first change both gputop and nvtop to make sure they use the new
+sysfs knob for Panfrost, and then submit a new patch that handles printing of
+the drm-cycles-* and drm-engine-* stats depending on the profiling knob state.
 
