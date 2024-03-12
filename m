@@ -1,70 +1,55 @@
-Return-Path: <linux-kernel+bounces-100158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5159A8792BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:08:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEAA28792C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E793A1F217ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:08:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC8528507A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F373479B6D;
-	Tue, 12 Mar 2024 11:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fqp1vIrb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F3179B69;
+	Tue, 12 Mar 2024 11:11:16 +0000 (UTC)
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA4E7993A;
-	Tue, 12 Mar 2024 11:08:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FBA69D0C;
+	Tue, 12 Mar 2024 11:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710241687; cv=none; b=uVmmvrF5oMyXeCj5Mrmd10gvIPm8KvlUfQwcMbPbOqETo+hQczfUTUaZpeq/hsUhQfCbw2K9Iz8gbceZ0iqvBkp+Q997wPpMih2WaYDbXcFZ8Lfolm2DRzsLctE49s/PzMjsSXO/rwi3Z3FGRpIseTT0+5UAHHi04FKe7QtjUiA=
+	t=1710241875; cv=none; b=opvACLjuJq+rHsFT4DtNIgmZbENNJoboC+MOO/ql2qkCjKUHs9Qo+dlMQwHRJepynq9/K7OXeTnKRTcPMV4thdqnjW83KQoS6lxyvwJzs6JZOOa2E2eiTrLEFSfhmvznexTD5oHbivZ4UN2RG/8157F84X6h7Iyarstv5Kp3Jlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710241687; c=relaxed/simple;
-	bh=gy+C3KqRUOKk7iMhwdgz6Nj8AE8jLwwNIVN5icJq1as=;
+	s=arc-20240116; t=1710241875; c=relaxed/simple;
+	bh=5szbvSG9JnrvwDFGxsynaJ40kTIHT7cLhwAkgTEXuR4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YTlCZneBD3yuSmyFDt+8KcNPF7RfyTzWnO5E5CCC3mDKSh7BntXNL4fPEv01mVDMy7If6um4UDZ2WbeIvjmdW9IgylhDezEui59wXX8Y0vA6uKczuVlWb+uPMBFDbGROoSIljcfqgNqrpVB1Lw2Z+lCaUpGeKIchAWw5k5DVxZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fqp1vIrb; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710241685; x=1741777685;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gy+C3KqRUOKk7iMhwdgz6Nj8AE8jLwwNIVN5icJq1as=;
-  b=Fqp1vIrb22RaM8wJVIzYR4oD5NhtgbwedNIkjjtsZrS36VXQD11yK4rN
-   S3ySUiKSAS2ts+SrTH8PEcUvbiVtuKBhZ4CsEJo15SciUO9lgexuN6wdM
-   tZtuSlgoTLDlQQ5He8WrzuKaezxZOzMA5i3yB+7b6Pdac8ZK/f+c8x59K
-   IGkD4NVDgtyipclvE4SYGBQHDejrlngwSiBOz+1lglarTneES5zpNIuna
-   s0dWionIPKpsqT6MNBH7OPZuEu1ZfOPklCBwFMFFeUxXTYWkISMp5Ar8l
-   9ZxNm9rRNIWghDveknwAQe114W56YIdAmMOZrS3eRO4aRxvNtm/sa57zo
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="30382055"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="30382055"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 04:08:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="937051685"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="937051685"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 12 Mar 2024 04:07:59 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 12 Mar 2024 13:07:59 +0200
-Date: Tue, 12 Mar 2024 13:07:59 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Michael Wu <michael@allwinnertech.com>
-Cc: gregkh@linuxfoundation.org, linux@roeck-us.net, badhri@google.com,
-	kyletso@google.com, frank.wang@rock-chips.com, rdbabiera@google.com,
-	xu.yang_2@nxp.com, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tcpm: support sink port for debounce
-Message-ID: <ZfA3jzTqn8jNIsLZ@kuha.fi.intel.com>
-References: <20240312011300.75081-1-michael@allwinnertech.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dNtQSYkGliuwjqfdMnoCFtxRNaIRX/Px38cpTp0T7loA5J8J1RwWKwBlnxt8NMULUzuWWCBW129gAlhlmFq/X677laD39aw6bD61zQjA0ap/5gzx/MFcEcKuW88XWs5/Rxe1PZZ9niQJZwK5GxKGnTg8XemDh4tEmkml67Swaa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=176.9.242.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id E95E1100DA1D9;
+	Tue, 12 Mar 2024 12:11:09 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id AFE422BC2D8; Tue, 12 Mar 2024 12:11:09 +0100 (CET)
+Date: Tue, 12 Mar 2024 12:11:09 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: mpe@ellerman.id.au, linux-integrity@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	jarkko@kernel.org, rnsastry@linux.ibm.com, peterhuewe@gmx.de,
+	viparash@in.ibm.com, devicetree@vger.kernel.org,
+	jsnitsel@redhat.com, Nayna Jain <nayna@linux.ibm.com>
+Subject: Re: [RFC PATCH v2 2/3] dt-bindings: tpm: Add linux,sml-log to
+ ibm,vtpm.yaml
+Message-ID: <ZfA4TZspY7oOQ4vz@wunner.de>
+References: <20240311132030.1103122-1-stefanb@linux.ibm.com>
+ <20240311132030.1103122-3-stefanb@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,44 +58,87 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240312011300.75081-1-michael@allwinnertech.com>
+In-Reply-To: <20240311132030.1103122-3-stefanb@linux.ibm.com>
 
-On Tue, Mar 12, 2024 at 09:13:00AM +0800, Michael Wu wrote:
-> When both CC1 and CC2 pins are simultaneously pulled up, it often leads
-> to the double Rp to Vbus cable being stuck in the SNK_ATTACH_WAIT state.
-> And the state machine fails to transition to the SNK_ATTACHED state.
+On Mon, Mar 11, 2024 at 09:20:29AM -0400, Stefan Berger wrote:
+> Add linux,sml-log, which carries the firmware TPM log in a uint8-array, to
+> the properties. Either this property is required or both linux,sml-base and
+> linux,sml-size are required. Add a test case for verification.
 > 
-> Therefore, it is recommended to focus on transitioning the sink port to
-> the SNK_DEBOUNCED state instead. By doing so, the desired outcome can be
-> achieved more effectively.
+> Fixes: 82003e0487fb ("Documentation: tpm: add the IBM Virtual TPM device tree binding documentation")
 
-Recommended by whom (or what)?
+The Fixes tag is confusing.  The patch won't even apply cleanly to the
+v4.10 commit referenced here as the conversion to yaml happened only
+recently with v6.8.
 
-> [  134.525750] VBUS on
-> [  134.713240] CC1: 0 -> 3, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
-> [  134.713249] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
-> 
-> Signed-off-by: Michael Wu <michael@allwinnertech.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 0965972310275..9228dbd78bf2b 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -4197,6 +4197,8 @@ static void run_state_machine(struct tcpm_port *port)
->  		else if (tcpm_port_is_disconnected(port))
->  			tcpm_set_state(port, SNK_UNATTACHED,
->  				       PD_T_PD_DEBOUNCE);
-> +		else if (tcpm_port_is_sink(port))
-> +			tcpm_set_state(port, SNK_DEBOUNCED, 0);
->  		break;
->  	case SNK_DEBOUNCED:
->  		if (tcpm_port_is_disconnected(port))
-> -- 
-> 2.29.0
+Why is the Fixes tag necessary in the first place?  Same question for
+the other patches in the series.  This looks like feature work rather
+than a fix.  Not sure whether it satisfies the "obviously correct"
+rule per Documentation/process/stable-kernel-rules.rst.
 
--- 
-heikki
+
+> --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+> +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+> @@ -74,8 +74,6 @@ required:
+>    - ibm,my-dma-window
+>    - ibm,my-drc-index
+>    - ibm,loc-code
+> -  - linux,sml-base
+> -  - linux,sml-size
+
+I assume that either these two or the new "linux,sml-log" property
+are (still) required?  If so, a quick grep through the bindings
+(e.g. auxdisplay/img,ascii-lcd.yaml) shows that the following
+might work:
+
+required:
+  - ...
+
+oneOf:
+  - required:
+      - linux,sml-base
+  - required:
+      - linux,sml-log
+
+
+> --- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+> +++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+> @@ -30,6 +30,11 @@ properties:
+>        size of reserved memory allocated for firmware event log
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>  
+> +  linux,sml-log:
+> +    description:
+> +      Content of firmware event log
+
+Please add one or two sentences of context so that readers don't
+need to use git blame + git log to find out what this is for.
+(Mention at least that the property may be used to pass the log
+to a kexec kernel.)
+
+
+> -# must only have either memory-region or linux,sml-base
+> +# must only have either memory-region or linux,sml-base/size or linux,sml-log
+>  # as well as either resets or reset-gpios
+>  dependentSchemas:
+>    memory-region:
+>      properties:
+>        linux,sml-base: false
+> +      linux,sml-log: false
+>    linux,sml-base:
+>      properties:
+>        memory-region: false
+> +      linux,sml-log: false
+> +  linux,sml-log:
+> +    properties:
+> +      memory-region: false
+> +      linux,sml-base: false
+> +      linux,sml-size: false
+
+Could you add "linux,sml-size: false" to "memory-region" as well
+while at it for consistency?
+
+Thanks,
+
+Lukas
 
