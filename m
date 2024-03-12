@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-100804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35924879D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:27:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 835C2879D78
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:28:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0E99284BA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:27:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6DE91C2134D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:28:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849EF144029;
-	Tue, 12 Mar 2024 21:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 639581448CB;
+	Tue, 12 Mar 2024 21:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="WBDlgpJV"
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="In86CNjl"
 Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2126.outbound.protection.outlook.com [40.107.237.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905F2143C7F;
-	Tue, 12 Mar 2024 21:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1720144045;
+	Tue, 12 Mar 2024 21:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.126
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710278811; cv=fail; b=Mi7hgp1LAOZiDtZbQT2pDkZj/FOaeC8GK0chk2stOSCc61Oq9ft69jXd/uaqmH2Qq0O8X+LhdfDT4RM08NQnUWy3+D85+E3fE/o9E9iM1U5C6x4e7KdN7au89+QYt1B5h/T/BZqGTXAajS9UNpjxiqZ4y7G4XGCHZ6kR8X/E+Ro=
+	t=1710278813; cv=fail; b=pOTE/Og7gt0pPww7PPS+LzIH0qG89J/okF4eEUZGAcnNNm+4MIHsWDepQy1q7U5ObNuAqFWs1jFm4b8C9iWtxs/0u9e7Tv8l60gsrB77n/JX9BXpkqhum2L6Y2B/4/EzAQq8x3uOBkqmYVKUmCa9nDSdrakv9e1U0xoKgx4u1qo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710278811; c=relaxed/simple;
-	bh=Zouqv0H5L57F70wlrfIVnkRFBAfzjyUsXKhaeVoGmkc=;
+	s=arc-20240116; t=1710278813; c=relaxed/simple;
+	bh=7KYSwtYkAvVikuqxH1teDecaPR5iW4hU9jr/4zD6DX4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=F4s2Q+UGd+aYiyObM/R/HKC1LGkTUt2bMOGtl7PA47SWpMY73EON1+6uemIDvm7ghCbRDenbwkiBHj9w9MJhradfAkIOEspD/efNFOv+evmglS6ikrp/rTCNZy2nW7wahe9oKZhxpEnpiRuZJNV6UITMPXsXgArVdydndwxJh14=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=WBDlgpJV; arc=fail smtp.client-ip=40.107.237.126
+	 Content-Type:MIME-Version; b=S7oiMkbkg6Cb5oLKGVJ2+hbijAjg/fkHgt69Qg5mFTM4WENcdiMjVQF7pvo+KJIPGnrvirW/HU/16MR/uqbPesEkZBqfrqRAFwTaP1zDtWNtmtQO6zEyK9r9xR7uYopM2PvTZPH1sZ2Yq3Z3HIPTGIslvwKSkuc/JaCdmpk033Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=In86CNjl; arc=fail smtp.client-ip=40.107.237.126
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mS80xVn65FJHm0kPrDr7CjBedfbTlqR8qGtsjfq/5/ku1Ua/g2jLVwYXHXGlRXqnLo8HcDOlv0aEMDnduuIUxlI7RsHXUvaKd1e50tDXLr1ntvlVz2BkZQ10+11s5YXL3+a/mdh4uDyi+TX0Y+feXxyxPlZsHqxalfWMfyW++jjVcnaTI1Uz6k5JNbLVAHM1U8RCNf4Xdfo2r0Vqm0F1BLrJu/v540/PyBFnokD7nC8zfbEuCUTDRCNFaExlsBVK0bHaj4ySaakyBpSTUP4HQuz8H6D9wZn6E4QWE4h5OFsPJlHG8dPQ8as/c2dRUuRoSSmKlaMq215gCnFhiD48dQ==
+ b=a0D6weIAcsAeZ+2vP6kArIHv4O8sapaSifvMsoTtu3DJY/MkPK1QPCrpInl6lc4toIKkvN3UmYv+qc481721gCSZlzsgt5ylF7zzIoO+fM2yo5Lqfxfbdd0GiEZzlKimygoJm/22/BUQaMBowmT43JqsdQ7s/+CleO7kjm9VtcmJwUjTc9aitKO19RjtiZyxLM4E38MENC0dJiWgqxC5IpG5DTnDZRwQUerv1KIaYaHRd/LPBUIfBVksLZssrK0r2K2vdLcthZvYHqcq4+6LVi4OonEkjp5DP5Z+e398arb6RMILK3iEsIL4HX+Qh3E3tUQYVfn9GuXBvPAfeiCQHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=E72ao28cVRLUj9uWfez2xjvUiB007hmiNtOKAy/mdHI=;
- b=UaBFmKi6VaT6hHMVA1tFH4JD9gk99bNYQM33bbBcn8WZ7Ei6hrxt2PJx5VapONWtMRUeX+Hk3ghPsoa0sZEVlccHym0+PnbGvJnWTM1Z/TnTKbZozERWLmGNPSg42WeIlFBCPbwBc6kq8uXAmWDNuxqfxm9BBBWES89TAdl0wnbGTvuLmqqXQ3270hWtoajDQD75e5tEtgtZqJdJu/HP2UoeUprzzMUidB7yKopCALdCvQdNyg60uK6ph6Msmt+hrKa52Plw/r58FGT0t0M1jVxJ5IVSw/n9L1wM66GqzjOTvKtbNvra2fe4LxgSKndLPxjXmUa+5Q5bvkkWr+d9gA==
+ bh=ntJir3IvZzlv8fon7XmkjeDV5WI86JcU7lrm7tlh8sg=;
+ b=WTvd5Jr/Gee7IXk2e2oa+6DTPeH5MvxPNa2PCV+GFqafzaYiVfWBwJNRfPzN+jwoz8xruQnlDi0nZ/HTdob4Zj9/9gt+Ajtpm2bVHehPsChd/dy+RV/IteQPFA7czzXQvmG2hjrsabOXmiEYTc+7iOVu/F2xbNFvTRMwmMK9viw6qLP5eYwkpYEaSl6FFWx62ETNGKxz1YY/xugi0f/dZxhHlZG9mQJ5+Sz5MfJV6AqXp1sykRe+UaD+Fff8HCL3/9NmFWjeysLrf7LKz04ux5Fl9wqjczIzTlk/josC7gjtpzvXJeyr4DqiHtzKELMambKDuXdvOAfJfcv63wd0mw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
  header.from=os.amperecomputing.com; dkim=pass
@@ -44,18 +44,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E72ao28cVRLUj9uWfez2xjvUiB007hmiNtOKAy/mdHI=;
- b=WBDlgpJVeP4FJCaW9zQeM7QUm5ZESibOjq77xFM7pwFMm50ZjWTKeb5AmoWSKmrC6gyiv7U57F0yAtMJqI256fKYlLgwEhUw0LHNgSE7kRzcz6/g+QZLf9jz2ai1IANcrdna6nv1ZY35DAwVNKZu0sNAHw9Gal/frgfB4Hh9LdA=
+ bh=ntJir3IvZzlv8fon7XmkjeDV5WI86JcU7lrm7tlh8sg=;
+ b=In86CNjlbMSdB2hxIUjg/PhsadH2gVSSGLCfQMTVgRYFF2ZQo3BNWOGdlu/i75nwWbz1UKZkYgTjbFa9CBmOFIBqIMsUWXh3l4feXccawBSN4ns8oeOo7yFyS2QG3du4g/U+vb0wj2Eh6hCK/94BLVI/mFaVvdhlneBUWDX/TwA=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
 Received: from SN7PR01MB7903.prod.exchangelabs.com (2603:10b6:806:34f::17) by
  SJ2PR01MB8102.prod.exchangelabs.com (2603:10b6:a03:4fd::17) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.18; Tue, 12 Mar 2024 21:26:41 +0000
+ 15.20.7386.18; Tue, 12 Mar 2024 21:26:42 +0000
 Received: from SN7PR01MB7903.prod.exchangelabs.com
  ([fe80::32c0:d77c:f00b:bacd]) by SN7PR01MB7903.prod.exchangelabs.com
  ([fe80::32c0:d77c:f00b:bacd%6]) with mapi id 15.20.7362.031; Tue, 12 Mar 2024
- 21:26:41 +0000
+ 21:26:42 +0000
 From: Zaid Alali <zaidal@os.amperecomputing.com>
 To: zaidal@os.amperecomputing.com,
 	lenb@kernel.org,
@@ -68,9 +68,9 @@ To: zaidal@os.amperecomputing.com,
 Cc: linux-acpi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [RFC PATCH 4/5] ACPI: APEI: EINJ: Enable EINJv2 error injections
-Date: Tue, 12 Mar 2024 14:26:25 -0700
-Message-Id: <20240312212626.29007-5-zaidal@os.amperecomputing.com>
+Subject: [RFC PATCH 5/5] ACPI: APEI: EINJ: Update the documentation for EINJv2 support
+Date: Tue, 12 Mar 2024 14:26:26 -0700
+Message-Id: <20240312212626.29007-6-zaidal@os.amperecomputing.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240312212626.29007-1-zaidal@os.amperecomputing.com>
 References: <20240312212626.29007-1-zaidal@os.amperecomputing.com>
@@ -86,227 +86,145 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN7PR01MB7903:EE_|SJ2PR01MB8102:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6b34ced-6d06-4ed3-f0bf-08dc42db1bea
+X-MS-Office365-Filtering-Correlation-Id: f2fbbecb-f691-4cc5-42a0-08dc42db1cc3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	rJpFK+q7oRo+BlmaMtFwruV1qSwTh29Hi8jtddh5enCr7PkLb4LN9knOaLtmKdcxjF9LnFFjV4VgTnHxvxkReFh0TL+MUvBv6OAbzVyFKvzfefx8plTTVTJ/pVRWNLF5u8skj8BCJy15k9D0wfLXdE5MKiXsmYCYS2B5S2DEI+6ock9uCnxSiXHREX8eR6b5u+Uz+eSnjxi/zJUgbuYCsWPb+speLM1YEQm1BGcbYUEKNBaPASaVYOiyzqZXaDUdkZHFC9uRAMaGJDYwSPFP2MYubNjiUyyEIZ9QUkmybZoVdYZYrtRteQQ3G2nDDXP6bS7SOtQJXuHW2y9aE7dCE8WuCC81t1fFxpSwQnJeKZcuXmwEhEU8oxjLYY+Do+GrnAvSr/+3OLmKMy3ukDsh7dsQBA8J+2V96uL1YQ7uXFRC4cRK5BArrviBFk9Gx2N2pyXN1wFLYkx3/UBzVHCPpBuqq/VOA/sKP9arD/QHFhYOP+Xu3RizXwsYRwxwMtilEFO/pK8MbKtRT7u6pCNQSd4UN5PbZ96mJsZy5YsSFCdO+GFcmfAdivfN7jT6GqigMCb1M/IUwzkxImq50qdJtL3Dza8r6WSs86SrnmWhmobZD4/2dGtIFpjkKpk1TEvaC5V87/Hkp7UnUj+wPgBSioUPAUY+W4SK2RfcKbjBppaqJ2dT2kq3ostc9OQSjTOvnKaEog/3SR4tNVKLQquJvpwhkB4J1f3nrKHlB3GFEWo=
+	jf2bQP303LM5r4Ox5sOxh/r0oVT5kFkJ/hl1RobYyvkLDlqp+f6BT6qEu6MEFhLS73YdySuRsChC8++Ey1/kapK5/vGyU01BCbpwSmwvlHiNaEkJnbZF5jrhbiMUDBDuBfKk9XgAHAW8QqZSeNIZmHFQUzJ3AQq2mj7R6Jog2I0pKHJ+7xqLGUfhRU+3PMz2h7uNTmMHINHV1/VcKmE7yY7zT7hbfsPZx6o8GPxUSGVj/1+8046UIoVo/9OALe0DVrA5ZnUJQgaXHe79qH1ZdoH1fInJqlj5mJYCZn010QDAQoTGW1dgCFBJgI4eDnaPWEs8XerioNJRfKnonNPfJ5eLrFDgnd5hHu46pdP/4B/HaqGK/e2mWggIPr49tyMFeMUMkS4SdvgPUupMsCnuFOXZCQe1soNhRb9ZPMlnt8ulisZ1F4LnvGn92mHzg01GhZfX/qYTKdzi0AKqjHZY6rYI4GRTHDSyv6ur0QIsiOr35DojmcvVh/ugDMGJhy/IPDZuaOR09U/dqgD96IDWhok8kyeSADVpLaeqbGmPSLEAino8QMfM5dSzAQqiW/4umeAvpz34+l3iJsu5DHknpr8apkVbVMZh59W5V7rAaM3FiZHyOKkx7pCEYanZ5RcBS58dqsF6S+BjTFMhl39ih5cZrYf9Rb2QNRq8JHkN/x0=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR01MB7903.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(52116005)(376005)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?IuFDM08occ+M8cc5xUbS5cvn7stbKg5pqvd11N+yRGkwE0+t+kCBTrAbDg37?=
- =?us-ascii?Q?5wTW4aDIiqwVunEObmtqFYfQnbRoV4Suow0g/oWjPgdgxr4JwG20udfb/do3?=
- =?us-ascii?Q?g3zEFH3NAxT9Crs/NGK1edaHxG+5CDa06ronzZfyNwzUj+5ZqwxR91Whb4SD?=
- =?us-ascii?Q?i9xrrt/mDou+zrv1nDEtSyF0dY2dAwbuWzSdTpm+7Wap69uFgHRg3EBaRMrp?=
- =?us-ascii?Q?1rGHf7PJUMDl+L295Gzx6Ucc+eP8BLWM7Rtvz7mo5vCwjMLrirTQI/bgpn0n?=
- =?us-ascii?Q?/lymspzvcHxJ3dxrtIBbWMozYSIwD4gesq0KDegtq+kQCq/HIFhylxby4U4c?=
- =?us-ascii?Q?0DgptuuEYf1ZmUf/SYbipXTG1ETpCciccV3UD2JpSYKDc0N03nwsmPZ2Oyr1?=
- =?us-ascii?Q?M8Z92qDLmYOcG+XkWEI3e47/LgkR8V/YNyHiiD/3a2IKbTChUnAJ6FMGY6hF?=
- =?us-ascii?Q?ywlc5Nnt90W01KUiwk1N1dIVXH/pac0fcbv/O82lK3tWrjVVIXh4eHvPlcR6?=
- =?us-ascii?Q?mJZ0kcwpYdwDkzyfBDzOOJ+Em0+BXnEEpJHQ0gMRUjBwYSD6Bpvyh5wR7Ctj?=
- =?us-ascii?Q?RwX7L5ysS+JBTvKXbRpdF4r1M1ked54vfMCesCgLorkIVmoMzy/itROdPP8S?=
- =?us-ascii?Q?f6YEAvm1jDlCbcD9AbNN7rknVXwBsvEsRIlVyJwL7ccQtDkjCTgP3id63uEk?=
- =?us-ascii?Q?fSkHHqMRbIC6/9gOhDxxD66Hu55zVDOmiHCaLwWvpLFE6Slrl8BpTm5us4qs?=
- =?us-ascii?Q?Ko1lPn4vfrM/xIcEjKrVmhVIojk8aOR8tEiIqrHmKKSKaqwBm13Wp1C3ZkZg?=
- =?us-ascii?Q?pxFw/SUTi2+U4H01Su07z/N7IAadyBaEEGi2iFOxGdE82rUhgtSRlXKpwa7X?=
- =?us-ascii?Q?IRky8Vc6Vq6r3VthZefA+sQ6m/3zetDDBFlj5T1+q+gYoX5bC9K39/i2XO8f?=
- =?us-ascii?Q?qaJ3sV6iXIRzPN5Td4y1+nk5JXb9OXytxHobsSJT0nYVmwzuLIygmfsM8AGy?=
- =?us-ascii?Q?3s5+xWGpOC5hZnwhBBKDmbM6FnCvw+1cmnQWAxyzplG4HIZituJ472bnGps2?=
- =?us-ascii?Q?FFHsfBEGGhct1qKtDX70toFqr5nAyOLPuubE3KJ1F12TqoGaeok0nHvJyZlf?=
- =?us-ascii?Q?qmSYgNKuwNhgjGbjGrb6fNNrBkCwkdkaipfuWW+IS4mAFAEMBAUdWHsT/mB4?=
- =?us-ascii?Q?8uvf640B+O+WXdtT6OW8o0c0x4DqQ6sqUz91U+u8kuJo4MXGPBXBzaFf6EPD?=
- =?us-ascii?Q?kVzNeRC9a9Bn+sxXjt6KylHtFr6E2HVDbwe/pw1ovSXcdCJTkWAXGh4vSZ8L?=
- =?us-ascii?Q?oVMDKhFQ7Ny/HTTs/9TSzCU94snUWb8tLbG+6irlPQ3G+yLHtlOJz8fcbbjG?=
- =?us-ascii?Q?6jrROF6pQVM9BkgQQ790WHOPHmUdeSBugEaZIYB+apv2GlIsag4HOEUXSbr1?=
- =?us-ascii?Q?kHodcp0++wIHioC9yMiP4GBWioL8rK19rtoZ0bIHaktUrqAyPP316XZR2n0B?=
- =?us-ascii?Q?iS8TO5lXlYAjcuILviTv5L2DD/9bYTjN3FHRgrplFShr/VPHiy7twbTKqldR?=
- =?us-ascii?Q?LOGfP4D3KbojHcHx2sLYfLFJe/hBcryBTfTM/ClbI9w9PIBL9MaVwNsqgEMc?=
- =?us-ascii?Q?4591GmB1XOa413CJFed1aj4=3D?=
+	=?us-ascii?Q?6je0+VbKc2yg2FHemZ9K+p++/s7rAoL9V5zXxKXYbJNgeAt27c/PK4Zetn0T?=
+ =?us-ascii?Q?rZEsCpmgE9PuXRKfzrQ/hw26hC2s9w3mWJEBye+pSIJs/VrLDSFwAMceDhVo?=
+ =?us-ascii?Q?3f78UdcpQN9nfQDfig6NBRMlCVVGZCFKG7x4S/feCYqpo3t7BxGjoPUip2v2?=
+ =?us-ascii?Q?faMnSSnOPqG7VCKpidUMDdKM1rsrYQy9S+6uDxT5icjlOkrmdVhiSVlj/qda?=
+ =?us-ascii?Q?PPKY22uPEZZ9+s55DKcDYAn0MkF2auiv7nbNVd1WWvIIPGrG79kPmFsBkWKR?=
+ =?us-ascii?Q?6f/xLp7/86Xb8BoGER1DzMJknSbK50YT252NNBfMDDiSpRCnqqhU6OGQDr6O?=
+ =?us-ascii?Q?0h4V5UDxCjS60wGM46UqooOKYtvrDvjnSTMvhlIGBNAsaXfpg9vGzTcm1YKM?=
+ =?us-ascii?Q?bUTJTVR2dMTS4DnSuv2udfBW9xqXO9SiQLJrJWXWJ0WFKgCOm3gqwa6aE/+M?=
+ =?us-ascii?Q?ZEJ2FI+bGYGvoF2VaUZrUgUBoalhU9nyRHgpkkZ/hZq2of16YM4tmptuVBlb?=
+ =?us-ascii?Q?abadYky1uNaXXe3/CTswhnrChNNZaWgolHbRbGXuwe+uRbjwJJEfDi5jhgTg?=
+ =?us-ascii?Q?K9bmEIyieoejZl4hknPZdkz9h2PO4oQ3RxptR2oNVLhQRi5TvODRrpey0KJe?=
+ =?us-ascii?Q?BEXiBB6NmO0L6hCwh4m6FzhZxkHIF9kPTatbqvdGhcS/sQaQdH9E1yXVmA6c?=
+ =?us-ascii?Q?vkeYDgx7Od1M1prmFL4kBHcxsWX33gzPz07hPfyxU/7/aMm1YdtYhiyS0Gv+?=
+ =?us-ascii?Q?XTNqrJkVm5tnpGvfdAucrsJj50zMo3QnjGgEWRTLZXkKBbVlrih4I4bdJmGb?=
+ =?us-ascii?Q?H+cEmtZZ5ZEpnGLa5PoYZ9kUub/rAaPfJLce6+SLMagMOhEeGtJ09DZZUHBt?=
+ =?us-ascii?Q?EeFARKYB8c8Dl5sOK6RlOpkoF03lkb3MTCRtMRofOQzw3Zxe+6SRJlErQO83?=
+ =?us-ascii?Q?CUsf3Rh8Ddv/t0BE2jMdRHVVSRGPkmqRZQA7xqN8e6jJZNy7z0B9RcNX3WSt?=
+ =?us-ascii?Q?vT0jawg/PzQ7D2Pm0k45NSXF66XAJa2gfB2HYAwLVaruD22P8u/wow2LWRrH?=
+ =?us-ascii?Q?FSXDnU15R6yi98sIemIAaI/MahHtP42xlnVA/cPrfZxIPucQbGM/1Xn8bnFw?=
+ =?us-ascii?Q?w48nIM9HHnEr/BQCqZuHk+HHhM74xcA/4I5gqnDgbAzvYAx8MTiMgMzGVRqF?=
+ =?us-ascii?Q?s/7lR7j4mmxR7aMLLeJeTFtSTTBdGJopDShIS8LnQ5DwFeIdjcDjjL1iEUga?=
+ =?us-ascii?Q?cDJBBpR61Ha6DMPDbMejEs6epDswi5Eo5LIZ9pfLkFn2G5jw9yrFH/I/Cd36?=
+ =?us-ascii?Q?ibT+RU+2SI3vMdLZXmEhtvHqVLZKmKUnhTzgp5uoA29R0qVa/uhs+u70C9QN?=
+ =?us-ascii?Q?iIMdiyOYsPWCJrehvlty7LtrHvvps79EIk1r6B43YTud61zRc1MOLgNkgqV8?=
+ =?us-ascii?Q?vH2kq/VTnWiv9mZwMmFiZoNIJANA0yikBmar6lDlGnDXzMx2VF0miQba8i1v?=
+ =?us-ascii?Q?tXmIGa1+hJkoJR3tlCAEHd1yGcnn+u/8415O5JNP1JcfDri4IKBzVo273nMo?=
+ =?us-ascii?Q?1/qVmmDjhUPYnRp9meloXd/F+git09B+OMFklric8EBFpYoP90AnUq9Z+eTV?=
+ =?us-ascii?Q?SUt7Rl5ahRrks6JJ+H3vasE=3D?=
 X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6b34ced-6d06-4ed3-f0bf-08dc42db1bea
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2fbbecb-f691-4cc5-42a0-08dc42db1cc3
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR01MB7903.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 21:26:41.4661
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 21:26:42.8632
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dD7DNn3sCXGw/94U677JFel5UbvBUTHmOrzl48r19oQYpRRTcSGaGLTCivEQ1BGYZIH5q4N7lr8gJSenCvsCNx5tJsbzhV73GSszJbG+3iOlgt4/D/jt5O6iurCOKWqW
+X-MS-Exchange-CrossTenant-UserPrincipalName: OyowBWpH9EMJmnDwGD1JYn+aJpHy1EPTpXhEaplLV115CdAzgm3x0d43vg4xoHdp/tGWvPoQXwion9QhmwcLHJsNEFYM1ie+EaUjWKFUDv4f8nEiJ8SRscMfApC84FZB
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR01MB8102
 
-This commit enable the driver to inject EINJv2 type errors.
-The component array values are parsed from user_input and expected
-to contain hex values for component id and syndrom seperated by
-space, and multiple components are separated by new line.
+Add documentation for the proposed ACPI specs for EINJv2(1)(2)
 
-for example:
-component_id1 component_syndrom1
-component_id2 component_syndrom2
- :
-component_id(n) component_syndrom(n)
+(1)https://bugzilla.tianocore.org/show_bug.cgi?id=4615
+(2)https://bugzilla.tianocore.org/attachment.cgi?id=1446
 
 Signed-off-by: Zaid Alali <zaidal@os.amperecomputing.com>
 ---
- drivers/acpi/apei/einj.c | 89 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 80 insertions(+), 9 deletions(-)
+ .../firmware-guide/acpi/apei/einj.rst         | 44 ++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
-index ceac53aa0d3f..9e31bf707ced 100644
---- a/drivers/acpi/apei/einj.c
-+++ b/drivers/acpi/apei/einj.c
-@@ -80,6 +80,13 @@ enum {
- 	SETWA_FLAGS_APICID = 1,
- 	SETWA_FLAGS_MEM = 2,
- 	SETWA_FLAGS_PCIE_SBDF = 4,
-+	SETWA_FLAGS_EINJV2 = 8,
-+};
-+
-+enum {
-+	EINJV2_PROCESSOR_ERROR = 0x1,
-+	EINJV2_MEMORY_ERROR = 0x2,
-+	EINJV2_PCIE_ERROR = 0x4,
- };
+diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
+index d6b61d22f525..7e5c3f71ccd1 100644
+--- a/Documentation/firmware-guide/acpi/apei/einj.rst
++++ b/Documentation/firmware-guide/acpi/apei/einj.rst
+@@ -57,8 +57,18 @@ The following files belong to it:
+   0x00000800        Platform Uncorrectable fatal
+   ================  ===================================
  
- /*
-@@ -104,6 +111,7 @@ static char vendor_dev[64];
- static struct debugfs_blob_wrapper einjv2_component_arr;
- static u64 component_count;
- static void *user_input;
-+static int nr_components;
++  ================  ===================================
++  Error Type Value      Error Description
++  ================  ===================================
++  0x00000001        EINJV2 Processor Error
++  0x00000002        EINJV2 Memory Error
++  0x00000004        EINJV2 PCI Express Error
++  ================  ===================================
++
+   The format of the file contents are as above, except present are only
+-  the available error types.
++  the available error types. The available Error types are discovered by
++  calling GET_ERROR_TYPE command, and if bit 30 is set in the returned
++  value, then EINJv2 is supported by the system.
  
- /*
-  * Some BIOSes allow parameters to the SET_ERROR_TYPE entries in the
-@@ -275,11 +283,20 @@ static void *einj_get_parameter_address(void)
- 	}
- 	if (pa_v5) {
- 		struct set_error_type_with_address *v5param;
--
- 		v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param));
- 		if (v5param) {
-+			int offset, len;
-+
- 			acpi5 = 1;
- 			check_vendor_extension(pa_v5, v5param);
-+			if (error_type & ACPI65_EINJV2_SUPP) {
-+				len = v5param->einjv2_struct.length;
-+				offset = offsetof(struct einjv2_extension_struct, component_arr);
-+				nr_components = (len-offset)/32;
-+				acpi_os_unmap_iomem(v5param, sizeof(*v5param));
-+				v5param = acpi_os_map_iomem(pa_v5, sizeof(*v5param) + (
-+					(nr_components) * sizeof(struct syndrome_array)));
-+			}
- 			return v5param;
- 		}
- 	}
-@@ -485,10 +502,47 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
- 			v5param->flags = vendor_flags;
- 		} else if (flags) {
- 			v5param->flags = flags;
--			v5param->memory_address = param1;
--			v5param->memory_address_range = param2;
--			v5param->apicid = param3;
--			v5param->pcie_sbdf = param4;
-+			if (flags & SETWA_FLAGS_MEM) {
-+				v5param->memory_address = param1;
-+				v5param->memory_address_range = param2;
-+			}
-+			if (flags & SETWA_FLAGS_EINJV2) {
-+				if (component_count > nr_components)
-+					return -EINVAL;
-+
-+				v5param->einjv2_struct.component_arr_count = component_count;
-+				int count = 0, bytes_read, pos = 0;
-+				unsigned int comp, synd;
-+				struct syndrome_array *component_arr;
-+
-+				component_arr = v5param->einjv2_struct.component_arr;
-+				while (sscanf(user_input+pos, "%x %x\n%n", &comp, &synd,
-+							&bytes_read) == 2) {
-+					count++;
-+					pos += bytes_read;
-+					if (count > component_count)
-+						return -EINVAL;
-+
-+					switch (type) {
-+					case EINJV2_PROCESSOR_ERROR:
-+						component_arr[count-1].comp_id.acpi_id = comp;
-+						component_arr[count-1].comp_synd.proc_synd = synd;
-+						break;
-+					case EINJV2_MEMORY_ERROR:
-+						component_arr[count-1].comp_id.device_id = comp;
-+						component_arr[count-1].comp_synd.mem_synd = synd;
-+						break;
-+					case EINJV2_PCIE_ERROR:
-+						component_arr[count-1].comp_id.pcie_sbdf = comp;
-+						component_arr[count-1].comp_synd.pcie_synd = synd;
-+						break;
-+					}
-+				}
-+
-+			} else {
-+				v5param->apicid = param3;
-+				v5param->pcie_sbdf = param4;
-+			}
- 		} else {
- 			switch (type) {
- 			case ACPI_EINJ_PROCESSOR_CORRECTABLE:
-@@ -572,9 +626,19 @@ static int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+ - error_type
  
- 	/* If user manually set "flags", make sure it is legal */
- 	if (flags && (flags &
--		~(SETWA_FLAGS_APICID|SETWA_FLAGS_MEM|SETWA_FLAGS_PCIE_SBDF)))
-+		~(SETWA_FLAGS_APICID|SETWA_FLAGS_MEM|SETWA_FLAGS_PCIE_SBDF|SETWA_FLAGS_EINJV2)))
- 		return -EINVAL;
+@@ -81,9 +91,11 @@ The following files belong to it:
+     Bit 0
+       Processor APIC field valid (see param3 below).
+     Bit 1
+-      Memory address and mask valid (param1 and param2).
++      Memory address and range valid (param1 and param2).
+     Bit 2
+       PCIe (seg,bus,dev,fn) valid (see param4 below).
++    Bit 3
++      EINJv2 extension structure is valid
  
-+	/*check if type is a valid EINJv2 error type*/
-+	if (flags & SETWA_FLAGS_EINJV2) {
-+		u32 error_type;
+   If set to zero, legacy behavior is mimicked where the type of
+   injection specifies just one bit set, and param1 is multiplexed.
+@@ -118,6 +130,17 @@ The following files belong to it:
+   this actually works depends on what operations the BIOS actually
+   includes in the trigger phase.
+ 
++- einjv2_component_count
 +
-+		rc = einj_get_available_error_type(&error_type, ACPI_EINJV2_GET_ERROR_TYPE);
-+		if (rc)
-+			return rc;
-+		if (!(type & error_type))
-+			return -EINVAL;
-+	}
- 	/*
- 	 * We need extra sanity checks for memory errors.
- 	 * Other types leap directly to injection.
-@@ -694,7 +758,7 @@ static int error_type_get(void *data, u64 *val)
- static int error_type_set(void *data, u64 val)
- {
- 	int rc;
--	u32 available_error_type = 0;
-+	u32 available_error_type = 0, available_error_type_v2 = 0;
- 	u32 tval, vendor;
++  The value from this file is used to set the "Component Array Count"
++  field of EINJv2 Extension Structure.
++
++- einjv2_component_array
++  The contents of this file are used to set the "Component Array" field
++  of the EINJv2 Extension Structure. The expected format is hex values
++  for component id and syndrom seperated by space, and multiple
++  components are seperated by new line.
++
+ BIOS versions based on the ACPI 4.0 specification have limited options
+ in controlling where the errors are injected. Your BIOS may support an
+ extension (enabled with the param_extension=1 module parameter, or boot
+@@ -172,6 +195,23 @@ An error injection example::
+   # echo 0x8 > error_type			# Choose correctable memory error
+   # echo 1 > error_inject			# Inject now
  
- 	/* Only low 32 bits for error type are valid */
-@@ -716,7 +780,13 @@ static int error_type_set(void *data, u64 val)
- 				ACPI_EINJ_GET_ERROR_TYPE);
- 		if (rc)
- 			return rc;
--		if (!(val & available_error_type))
-+		if (available_error_type & ACPI65_EINJV2_SUPP) {
-+			rc = einj_get_available_error_type(&available_error_type_v2,
-+					ACPI_EINJV2_GET_ERROR_TYPE);
-+			if (rc)
-+				return rc;
-+		}
-+		if (!(val & (available_error_type | available_error_type_v2)))
- 			return -EINVAL;
- 	}
- 	error_type = val;
-@@ -886,7 +956,8 @@ static void __exit einj_exit(void)
- 			sizeof(struct set_error_type_with_address) :
- 			sizeof(struct einj_parameter);
++An EINJv2 error injection example::
++
++  # cd /sys/kernel/debug/apei/einj
++  # cat available_error_type            # See which errors can be injected
++  0x00000002    Processor Uncorrectable non-fatal
++  0x00000008    Memory Correctable
++  0x00000010    Memory Uncorrectable non-fatal
++  ==================
++  0x00000001        EINJV2 Processor Error
++  0x00000002        EINJV2 Memory Error
++
++  # echo 0x12345000 > param1            # Set memory address for injection
++  # echo 0xfffffffffffff000 > param2            # Range - anywhere in this page
++  # echo 0x2 > error_type                       # Choose EINJv2 memory error
++  # echo 0x8 > flags				# set flags to indicate EINJv2
++  # echo 1 > error_inject                       # Inject now
++
+ You should see something like this in dmesg::
  
--		acpi_os_unmap_iomem(einj_param, size);
-+		acpi_os_unmap_iomem(einj_param,
-+				size+((nr_components) * sizeof(struct syndrome_array)));
- 		if (vendor_errors.size)
- 			acpi_os_unmap_memory(vendor_errors.data, vendor_errors.size);
- 	}
+   [22715.830801] EDAC sbridge MC3: HANDLING MCE MEMORY ERROR
 -- 
 2.34.1
 
