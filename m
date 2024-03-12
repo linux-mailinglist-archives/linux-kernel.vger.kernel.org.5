@@ -1,116 +1,172 @@
-Return-Path: <linux-kernel+bounces-100555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7316A879990
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02F6B8799A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F4EA2854FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:01:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC03328511C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DD480C08;
-	Tue, 12 Mar 2024 17:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C874E138493;
+	Tue, 12 Mar 2024 17:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Uq41NbSw"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TOCjO/h9"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3EC137937
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:01:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651B0137C28;
+	Tue, 12 Mar 2024 17:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710262900; cv=none; b=G5RDrtQXk+dnR2IRuwNhBWakBYE1cMBXpiMwwd4at2n9nXQ7C9DR3rYIOAaK0aynP5g+m+CKk2b/qr3owt/G87pWmMJbC4SxhZNxPhTCxZASHsTuH2pkF4EI4R26d5DTmWd7ndBbV5As55xtzdvWa4+Ehk7OO1xCz1C8ICOVtto=
+	t=1710262998; cv=none; b=dd6FZzC/jU2GbwxXnqtNclNQWNH7myJyAJqymL4P91eqZul4x3Xur8Zlv4FsNWmuGassPRGjgpazwdVgYBBsVWCMRDtn+2QSAuk81Mlhs6VHw/jrSjieZVm0PESol4WYGlkGncBxJ/FEbJN7uTRVvnPTHucejZBz5qycQhhLnxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710262900; c=relaxed/simple;
-	bh=1+uyJt/XM62F43PT2V7q6lumviIdS3zs0F4HClhwjM8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f2i5yrBLmWi/YpD+qsCKEDhCjAwcFClyZ7mp9XU5KuOa5tqi2MemmqkWtXiqcRX+S320pS4JlL/dUXH60CGncXNnx/vhy+IBEH7+DI6cHLfEj899/miY6awVgIEsM+a3t4RcAficG6pYFH9fBFRyek4/y63nwhVZ4deAEmawHrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Uq41NbSw; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A102540E0028;
-	Tue, 12 Mar 2024 17:01:35 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id YpqKepYhEfGK; Tue, 12 Mar 2024 17:01:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1710262893; bh=6NKQfjU527nLHAaoilA76llGPofbJado6fAgAUTrens=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Uq41NbSw9/fYrBfexrP7VzItaDg/b4/I09fCRQvgtCPhdaTDomuMchvVMhh+cokX0
-	 s+Bf3bNSk5G/nnqK65NID+sSyGs779zMPhs9QUKTAYPRNBcynbRTZMQrNr6+iM1qFD
-	 leSPB42r2cUKd2SikEatFkNqvsSAxTJHDBkB7bXy+ZWL5EZMXkPi8EITqXtwht2n/4
-	 P4YwQQ2AS943cMQZAl/HaRDHlN69x23VzAE0zBO8pTSdLTW8hze8fXkbVw9ayG7DZz
-	 KlGJZO1y4o59HMVI5+p5nwLfyjfRkBP/3eR0XpArjwG1BtUTvP5tZ2UVQfLfvlRd06
-	 IQQgYUGJGxExMmbIWLdFEq85cEq8BI75KAutxtiD2YpNvA0dFkl9wv7holss1suljU
-	 ZDB5mxHrc0ASE77szjvrPWJI1Xhh6Bxs0J0WE5HpB+AkVWTqgSDPdRQzvzbXM3nIl2
-	 vrnDKn54JMGAUw1zTmGDqqExMiM1C+XdLQSdT+yEdRkULv79ClJ66JDD7XdyaSOV0I
-	 mH76IEO8iDx7bgEVrmzMv1jevcJ+Z6yplEQL26ejPuPUO/ayl9+UWbZ3YHHv4RmItv
-	 auutj8mZ3U3QYuetevFRtYyTJqr/qMQxWkbVjR4VG7uI5/2guux2SPqyFLtiepbPQW
-	 rhl3GIxYT0vSjA2zxOVLFFjo=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1D2E440E016B;
-	Tue, 12 Mar 2024 17:01:18 +0000 (UTC)
-Date: Tue, 12 Mar 2024 18:01:11 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@google.com>
-Subject: Re: [PATCH v2 1/3] x86/mm: Use IPIs to synchronize LAM enablement
-Message-ID: <20240312170111.GHZfCKV_brefr6M_2F@fat_crate.local>
-References: <20240312155641.4003683-1-yosryahmed@google.com>
- <d24c8736-d963-4aa5-a3cb-5cc1110e3ca8@intel.com>
- <CAJD7tkYXfFiOQMpM+GkR7a=aUxFM-smDc-ZFTTtFu2Kbd2KoPQ@mail.gmail.com>
- <20240312161337.GFZfB_MdSFtAUXjeLU@fat_crate.local>
- <CAJD7tkYa_NuX2_PD1sEn6kE6Q0Z0VCyq2T2HK_Qdj-_94+OG_w@mail.gmail.com>
- <20240312163502.GGZfCENkvNb41IJWPy@fat_crate.local>
- <CAJD7tkZjHaLpWhn6bKRMwZrgiaK6V3gASB9d--e16xiV8P_7cw@mail.gmail.com>
+	s=arc-20240116; t=1710262998; c=relaxed/simple;
+	bh=8n/02f2SOXoK5vgtrzv7GEjJRgXi58830FC1dkrTfl4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Cspjrz/V1wd1iESPhgf3JPYLRBPUVI/nTUtOgcgCDjv1Ez8elNwV6Vj/gKOTiHFt4pfg6Pws/rix64YuxPm25NQBmByGdCHwqHgItYO6udmO6pJZ2TS4x8UKdWyn70jyDSDgfK8PS0+lib62/H0iq8pckV1QAKIf0wy/hqtOj2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TOCjO/h9; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dd6412da28so941115ad.3;
+        Tue, 12 Mar 2024 10:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710262995; x=1710867795; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=WLftE/7MjlMuOSj897HlMQUMVZbmkOmcm7ijw8JWvLk=;
+        b=TOCjO/h9j9/oYEuEyo3YGECfbtb4ILdLfL2GJrPbCRaaDbbueU0XyC3+kQ6dn4Rnno
+         zUSiLazMocmjTPTFkSQ3/wsG7aYVEPSQp9vwmoudsBziwtM/akbrWDxDa+GYNzNm5zLy
+         EoT5Q62zoH/o4CaFAY/A+wiF04OaCxoFgrpFKoErVhX+ZUWpYcGBtMH0hqGAOXa2w9o4
+         mi1wNtb5WAJm+Cr5qsyOr15E6svu28i20WlE76pynyeYVSg5COfku99ck9V2tp5OhKwO
+         xqkNZ7JnkoRddCjlyho4GTy4rs26uWNMai0FbG1WCgtrKwm7XVA7BLz8FVZSQTaavzxa
+         Uvww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710262995; x=1710867795;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WLftE/7MjlMuOSj897HlMQUMVZbmkOmcm7ijw8JWvLk=;
+        b=OQLiNhl/xFcKq096rVn8/mb/3cAUPfgx4aoE49rfbQch+g6xo+S34OFJnRdq29799U
+         i4kGmdHmx54b02YevxIHiyq9Tp3MUVWMsBSVMZ77f2+9BIYyYTcj0MWCxY1+4crUcJ4j
+         0GHubYei88bFYm09jbNAVQxkjqwz6hpFbfrETNk6FZNk0LAXDQHG+s1cq/lkmNYdc0Vm
+         ZRBmvSJ+JVOjMm5BUx08ALDi8WWtHyyf12+nI+6VROjDt1R0aPeeGhWrZc4jQunTn+BM
+         nUol+Gy0V47p7wjNKZ0wOalBzUl8+Uk4DFGn62wnS58IeoKVKZ93vMpYMnoYxOECQQ+O
+         sLYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUnLYG8h4c9VVjLmlpewox7F6DiwN/nx/43kLSfvBL3Gb6w/9MTboKtobxJCmkNdFlZCGb/MHlwth1AH7+sK9gyGKEEIlGOiVcKYFQK7/WP5YAg21jpiv3HFfF7Z791XI9o4aYCzPvOf0slv2ogVry7mTjlJ+YJbD1MUoDdcOcj2Q9cCCX0RkJRn9dGSBJkK+yjv848s5iiWBsf0lsm36RbUa2wpU/stGT0Bp7V7EWnGb2QpZJRcfzvBeLwIGVuVQFGr52XZEjDaz9sxPFP2amvYmdaVAlkFQ==
+X-Gm-Message-State: AOJu0Yw2f5OruTwvVgd1DktL6ntLNN5/1hQGEKOCWQmFVcgGi7Hqsy0a
+	KQ371PIH06O8aoKysDCL3ZaOHjBwNq6ksnznxeWt7UKFoBdAL/MZZOBfxSgG
+X-Google-Smtp-Source: AGHT+IGoSNJSdzshXUinY0deqrpWSsXfjdp27VpnRBXFH0xqKuZltMGKwFFXD7x5fWGnOCLrPfDYHw==
+X-Received: by 2002:a17:902:7ec9:b0:1dd:b681:990e with SMTP id p9-20020a1709027ec900b001ddb681990emr2092458plb.36.1710262994820;
+        Tue, 12 Mar 2024 10:03:14 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r20-20020a170902c61400b001dd02f4c8fcsm6942533plr.139.2024.03.12.10.03.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 10:03:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: linux-kselftest@vger.kernel.org
+Cc: David Airlie <airlied@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Kees Cook <keescook@chromium.org>,
+	Daniel Diaz <daniel.diaz@linaro.org>,
+	David Gow <davidgow@google.com>,
+	Arthur Grillo <arthurgrillo@riseup.net>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org,
+	kunit-dev@googlegroups.com,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	netdev@lists.linux.dev,
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 00/14] Add support for suppressing warning backtraces
+Date: Tue, 12 Mar 2024 10:02:55 -0700
+Message-Id: <20240312170309.2546362-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkZjHaLpWhn6bKRMwZrgiaK6V3gASB9d--e16xiV8P_7cw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024 at 09:46:07AM -0700, Yosry Ahmed wrote:
-> Thanks for sharing that. I have always assumed this was about pinging
-> or resending patches when reviews are taking too long. In this case, I
-> was responding to review comments. Maybe I misinterpreted that.
+Some unit tests intentionally trigger warning backtraces by passing bad
+parameters to kernel API functions. Such unit tests typically check the
+return value from such calls, not the existence of the warning backtrace.
 
-So what I would do, for example, is send my set, collect review
-comments, work them in, discuss them and once there are no more, I'll do
-a rev+1, test and send again. Not under a week unless it is some really
-serious bug.
+Such intentionally generated warning backtraces are neither desirable
+nor useful for a number of reasons.
+- They can result in overlooked real problems.
+- A warning that suddenly starts to show up in unit tests needs to be
+  investigated and has to be marked to be ignored, for example by
+  adjusting filter scripts. Such filters are ad-hoc because there is
+  no real standard format for warnings. On top of that, such filter
+  scripts would require constant maintenance.
 
-This is a perfectly fine cadence.
+One option to address problem would be to add messages such as "expected
+warning backtraces start / end here" to the kernel log.  However, that
+would again require filter scripts, it might result in missing real
+problematic warning backtraces triggered while the test is running, and
+the irrelevant backtrace(s) would still clog the kernel log.
 
-> Anyway, sending a new version in the same day is too fast regardless.
-> I did admit that already. My bad again :)
+Solve the problem by providing a means to identify and suppress specific
+warning backtraces while executing test code. Support suppressing multiple
+backtraces while at the same time limiting changes to generic code to the
+absolute minimum. Architecture specific changes are kept at minimum by
+retaining function names only if both CONFIG_DEBUG_BUGVERBOSE and
+CONFIG_KUNIT are enabled.
 
-No worries. I'm saying this also for all the others who are reading. :-)
+The first patch of the series introduces the necessary infrastructure.
+The second patch introduces support for counting suppressed backtraces.
+This capability is used in patch three to implement unit tests.
+Patch four documents the new API.
+The next two patches add support for suppressing backtraces in drm_rect
+and dev_addr_lists unit tests. These patches are intended to serve as
+examples for the use of the functionality introduced with this series.
+The remaining patches implement the necessary changes for all
+architectures with GENERIC_BUG support.
 
--- 
-Regards/Gruss,
-    Boris.
+This series is based on the RFC patch and subsequent discussion at
+https://patchwork.kernel.org/project/linux-kselftest/patch/02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain/
+and offers a more comprehensive solution of the problem discussed there.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Design note:
+  Function pointers are only added to the __bug_table section if both
+  CONFIG_KUNIT and CONFIG_DEBUG_BUGVERBOSE are enabled to avoid image
+  size increases if CONFIG_KUNIT=n. There would be some benefits to
+  adding those pointers all the time (reduced complexity, ability to
+  display function names in BUG/WARNING messages). That change, if
+  desired, can be made later.
+
+Checkpatch note:
+  Remaining checkpatch errors and warnings were deliberately ignored.
+  Some are triggered by matching coding style or by comments interpreted
+  as code, others by assembler macros which are disliked by checkpatch.
+  Suggestions for improvements are welcome.
+
+Changes since RFC:
+- Minor cleanups and bug fixes
+- Added support for all affected architectures
+- Added support for counting suppressed warnings
+- Added unit tests using those counters
+- Added patch to suppress warning backtraces in dev_addr_lists tests
 
