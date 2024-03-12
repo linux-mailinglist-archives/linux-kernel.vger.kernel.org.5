@@ -1,136 +1,91 @@
-Return-Path: <linux-kernel+bounces-100126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39BA879237
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:35:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3F0879258
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:44:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31BE91C21384
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:35:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5EE1283972
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:44:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8817869C;
-	Tue, 12 Mar 2024 10:35:07 +0000 (UTC)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300D741C89
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:35:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960DC77F0A;
+	Tue, 12 Mar 2024 10:44:31 +0000 (UTC)
+Received: from chinatelecom.cn (smtpnm6-08.21cn.com [182.42.159.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0444555E73
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=182.42.159.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710239707; cv=none; b=UP6oodvAb9o+9Vy8h9lMEOgR9JFupClRcXJfGrIFYV6IpPhEgfKkgbHljgNfi3d75KOkogdVNOwvm83jCne1BHHHO1y3nOJNfqHI/Zv2XrPbQhsIRdgBhG3MAKSkvQLmOjrWMcgcasTmTPG9yEY9pzeDwoB97K7ShhGQSNySpds=
+	t=1710240271; cv=none; b=GDnPXzXTKztYiNkiIQz3PtqlUy4Z+b031Hg9QZOtbw28blcMml8omGmVWFQMmCLNCiy2YTlUNt1Mil3UxwwGBAXtAEK0AzNTx9uTJYz7SEG+iqsjO1T0cDu1jX+ps+a7Tk8KjMPDH5F+yqwRV6rGydEzoksMIjg/tJZpd1KxETk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710239707; c=relaxed/simple;
-	bh=XBc7Af1NkUozACweWiULsPD5xPfiFYsgN8mpnQ4+IEo=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=IObkDpBf+17YBYb62KpuhGSFK5QMEZSXb0Nz2kHXrJ2oc2EMqT1/38aDGCipaL+tIbWNDC9MjRThSNIFeqFOT7yUl6VnP55Kz4pJsreTb2MN1ysBsV8rrDr5Jni0sdb7CK2RSCvlP3cLPetdI8FB5Bo5jpxYWn5ZHTetxzIHIBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by andre.telenet-ops.be with bizsmtp
-	id xmb22B0020SSLxL01mb2E4; Tue, 12 Mar 2024 11:35:02 +0100
-Received: from geert (helo=localhost)
-	by ramsan.of.borg with local-esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rjzTJ-003RY5-Tk;
-	Tue, 12 Mar 2024 11:35:01 +0100
-Date: Tue, 12 Mar 2024 11:35:01 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Christian Brauner <brauner@kernel.org>
-cc: linux-fsdevel@vger.kernel.org, 
-    Linus Torvalds <torvalds@linux-foundation.org>, 
-    Alexander Viro <viro@zeniv.linux.org.uk>, 
-    Seth Forshee <sforshee@kernel.org>, Tycho Andersen <tycho@tycho.pizza>, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] pidfd: add pidfdfs
-In-Reply-To: <20240213-vfs-pidfd_fs-v1-2-f863f58cfce1@kernel.org>
-Message-ID: <71bc82f4-b2df-c813-3aba-107d95c67d33@linux-m68k.org>
-References: <20240213-vfs-pidfd_fs-v1-0-f863f58cfce1@kernel.org> <20240213-vfs-pidfd_fs-v1-2-f863f58cfce1@kernel.org>
+	s=arc-20240116; t=1710240271; c=relaxed/simple;
+	bh=MfKDSsCO+k//eJBVuSOO62heQl3fYjZ9fUGxXXuhUXE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tDKyk3yLv2VrFH0PbJyt5l/LulapauKqQzVTKynsBnFMCiC8eZAtois5Q9mMzzuqUmI51iDw0i2YR9kqpzHzsZNtR9mvedtaXSUMQIne8Y20jI4Vmw+fcz1MZlQtpbf9WmcuJq0lNYy9imdba4U4b4yS7fVgC1zIf3i037umyiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn; spf=pass smtp.mailfrom=chinatelecom.cn; arc=none smtp.client-ip=182.42.159.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chinatelecom.cn
+HMM_SOURCE_IP:192.168.139.44:63786.1870684316
+HMM_ATTACHE_NUM:0000
+HMM_SOURCE_TYPE:SMTP
+Received: from clientip-124.127.58.150 (unknown [192.168.139.44])
+	by chinatelecom.cn (HERMES) with SMTP id 7579290322CA;
+	Tue, 12 Mar 2024 18:35:46 +0800 (CST)
+X-189-SAVE-TO-SEND: +sibs@chinatelecom.cn
+Received: from  ([124.127.58.150])
+	by gateway-ssl-dep-77bc75f6c8-x5lfc with ESMTP id c6fa781bcd40441ca0a54af00e4aa89d for kai.huang@intel.com;
+	Tue, 12 Mar 2024 18:35:56 CST
+X-Transaction-ID: c6fa781bcd40441ca0a54af00e4aa89d
+X-Real-From: sibs@chinatelecom.cn
+X-Receive-IP: 124.127.58.150
+X-MEDUSA-Status: 0
+Sender: sibs@chinatelecom.cn
+From: Bingsong Si <sibs@chinatelecom.cn>
+To: kai.huang@intel.com,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-kernel@vger.kernel.org,
+	sibs@chinatelecom.cn
+Subject: [PATCH v3] x86/cpu: Clear TME feature flag if TME is not enabled by BIOS
+Date: Tue, 12 Mar 2024 18:35:34 +0800
+Message-Id: <20240312103534.9037-1-sibs@chinatelecom.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <b909cb856eb625f00402472d3f3153db2294f259.camel@intel.com>
+References: <b909cb856eb625f00402472d3f3153db2294f259.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 8bit
 
- 	Hi Christian,
+When TME is disabled by BIOS, dmesg output is "x86/tme: not enabled by
+BIOS" but the TME feature is still shown in the output of/proc/cpuinfo.
 
-On Tue, 13 Feb 2024, Christian Brauner wrote:
-> This moves pidfds from the anonymous inode infrastructure to a tiny
-> pseudo filesystem. This has been on my todo for quite a while as it will
-> unblock further work that we weren't able to do simply because of the
-> very justified limitations of anonymous inodes. Moving pidfds to a tiny
-> pseudo filesystem allows:
->
-> * statx() on pidfds becomes useful for the first time.
-> * pidfds can be compared simply via statx() and then comparing inode
->  numbers.
-> * pidfds have unique inode numbers for the system lifetime.
-> * struct pid is now stashed in inode->i_private instead of
->  file->private_data. This means it is now possible to introduce
->  concepts that operate on a process once all file descriptors have been
->  closed. A concrete example is kill-on-last-close.
-> * file->private_data is freed up for per-file options for pidfds.
-> * Each struct pid will refer to a different inode but the same struct
->  pid will refer to the same inode if it's opened multiple times. In
->  contrast to now where each struct pid refers to the same inode. Even
->  if we were to move to anon_inode_create_getfile() which creates new
->  inodes we'd still be associating the same struct pid with multiple
->  different inodes.
-> * Pidfds now go through the regular dentry_open() path which means that
->  all security hooks are called unblocking proper LSM management for
->  pidfds. In addition fsnotify hooks are called and allow for listening
->  to open events on pidfds.
->
-> The tiny pseudo filesystem is not visible anywhere in userspace exactly
-> like e.g., pipefs and sockfs. There's no lookup, there's no complex
-> inode operations, nothing. Dentries and inodes are always deleted when
-> the last pidfd is closed.
->
-> The code is entirely optional and fairly small. If it's not selected we
-> fallback to anonymous inodes. Heavily inspired by nsfs which uses a
-> similar stashing mechanism just for namespaces.
->
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Bingsong Si <sibs@chinatelecom.cn>
+---
+ arch/x86/kernel/cpu/intel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks for your patch, which is now commit cb12fd8e0dabb9a1
-("pidfd: add pidfs") upstream.
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 40dec9b56f87..119ae291573b 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -228,6 +228,7 @@ static void detect_tme_early(struct cpuinfo_x86 *c)
+ 	if (!TME_ACTIVATE_LOCKED(tme_activate) || !TME_ACTIVATE_ENABLED(tme_activate)) {
+ 		pr_info_once("x86/tme: not enabled by BIOS\n");
+ 		mktme_status = MKTME_DISABLED;
++		clear_cpu_cap(c, X86_FEATURE_TME);
+ 		return;
+ 	}
+ 
+-- 
+2.34.1
 
-> --- a/fs/Kconfig
-> +++ b/fs/Kconfig
-> @@ -174,6 +174,12 @@ source "fs/proc/Kconfig"
-> source "fs/kernfs/Kconfig"
-> source "fs/sysfs/Kconfig"
->
-> +config FS_PIDFD
-> +	bool "Pseudo filesystem for process file descriptors"
-> +	depends on 64BIT
-
-I think it would have been good if this dependency would have been
-explained in the commit message.  I.e. why does this depend on 64BIT?
-
-What is the risk this will not stay entirely optional?  I.e. can it
-become a requirement for modern userspace, and thus be used as a stick
-to kill support for 32-bit architectures?
-
-> +	help
-> +	  Pidfdfs implements advanced features for process file descriptors.
-> +
-> config TMPFS
-> 	bool "Tmpfs virtual memory file system support (former shm fs)"
-> 	depends on SHMEM
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
 
