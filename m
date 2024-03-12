@@ -1,292 +1,251 @@
-Return-Path: <linux-kernel+bounces-100689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88C92879BE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:49:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFA7879BE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:50:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EB7A286C1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:49:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAF80B25243
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F1E1420C6;
-	Tue, 12 Mar 2024 18:49:48 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A1E1420D2;
+	Tue, 12 Mar 2024 18:50:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Icjz8BUa"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E97433A3
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2960B433A3
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710269387; cv=none; b=Rjv7QwmCCCrL/wh6WNR7M14ybkYTuuD2fxGp37nhhhIUmSRDt3ptUmGL2hyYcNssjzgp3YE7xeQkuYoUXs6C/14sl62ZQRPirCssmffOnpiEfIkjXo+9kvVEMoIdudCG9RK5zMQnJ9MSPmCJQjhIY7/CiKONEE3vOkxbnFIngxE=
+	t=1710269443; cv=none; b=O+IimkL3yQCm1SRFsEmewsrpnXQUIo6CAMcIWSLgOBd+kABa4YrDJglQ3SIyNeGfaH4fB9n30ubRt38zJ0q0LlO6JPdJclAr/U1/flfE2fjjav7NpxQCqukvwool3Zf9cL/iF1Bcyy7fZ3kJiuZToJ3JtofroEFJEKdm8FBNxZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710269387; c=relaxed/simple;
-	bh=C2UpO1Vrql9j3LyDrX4w4b1Re3/Vft0wf2V8Hg/Sg+w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BberJypnYNHZKRqAGTpU0un7uD2rFwwwj5mICqd4Zyw5+W6GV5pL9bS5lu0W7lnBKdv4hYrfkGV8Xth2cBhuHjSwzTY+lrKm6arrJsV/66tq3He++AAyxhzbLmL50cDZiyF34W1Qa/Q5BN7zhTLil3qAKN+o1Fgw9MP4nkdbyO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rk7Bs-00050r-0v; Tue, 12 Mar 2024 19:49:32 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rk7Br-005y4v-7Q; Tue, 12 Mar 2024 19:49:31 +0100
-Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mgr@pengutronix.de>)
-	id 1rk7Br-00E7ri-0S;
-	Tue, 12 Mar 2024 19:49:31 +0100
-Date: Tue, 12 Mar 2024 19:49:31 +0100
-From: Michael Grzeschik <mgr@pengutronix.de>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: Re: [PATCH v2] uvc_video: check for fid change early in decode_start
- and avoid wrong error counting
-Message-ID: <ZfCju80gnglLNB6N@pengutronix.de>
-References: <20240221-uvc-host-video-decode-start-v2-1-88c6e17e487a@pengutronix.de>
- <CANiDSCtCse74oK_nCcJXRRQ__RnAAfYEFzfftty58stsFVKoYg@mail.gmail.com>
+	s=arc-20240116; t=1710269443; c=relaxed/simple;
+	bh=VXNVVnHLzcUMf+eMc1cXZF1qhCcY1ZICBw2e0CD90oU=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=XC6OYUIrsNOmIRaThA7VYA6YaQeBBsZk4wqzxIMnY/fnWvzchFmM+mTUjIY54kckry6jf2sfUDWausNJf+F7QKKWIxSgKwzoFlmZ9uLPUaLPnLFvyFbUaLkWe0Z+W558HBKJEqJN3JWuuKA1CjeaXwrPXT8pC8Tj37dpl5EpHq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Icjz8BUa; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-513173e8191so6239312e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710269438; x=1710874238; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWmv8PROciGabllAPSqvA9F+FHYmPZHSjaaUfTtwxLQ=;
+        b=Icjz8BUayisfyD6eGg27vg1xvbZZpSUDXWgVXRI3XLbEG1XoTUuQ/g6NCdeq2S+Ona
+         W7nV1GOjyVyiswaaxOgVjcvElnr1rXQc3fqT954JwzbnAVH5KqmxqKgchKgCmp/34st7
+         KNtRRyJpyOteA3ZIZ8ear3MO5agCjyXVF0IC5nyt9Pi9E2MUw2MV4qvLZdLEyD5kujSS
+         6coBBc0cTw/taDGA2+YR2O0GNckvkoDgCDgTC0u+L2hj+2jMx9LT6boYa4lEQxCI0wMc
+         NNq+i7Zuh4X83lPpkI1TakLxShYp2zwUj/A92Ghz62IeMQ2CSPxtKiwdcbt/6q+59ZI3
+         h3rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710269438; x=1710874238;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWmv8PROciGabllAPSqvA9F+FHYmPZHSjaaUfTtwxLQ=;
+        b=rxDW0ke6ryG542ON96gvHDO6c1X1v3ES2+L9lhfZPFHZL31PBls5YOAjB1lVoBrISP
+         WBCPfVc8aA4/K09MxvwJYwGLkvwGKv2WyX4Kr4kLZJC6iWF1NjF721n9ZLIrW86m50jd
+         4GWHB/3QDd4KrHsYPTh6K3iqmPieABiru+5FhtdLkB4AZGkskgdKl1Qa9woTzFMwjnP+
+         VERgUbgU83RbPf/vrbuqsii5tbext0wOD0kVm37GYb9YvyXPOwAUtRVnW0Jj3BbK3gd8
+         QphpB8YvAmNvaJvxHnta+S4UbBbqvpvWE/L6+MwQmqZYutWhY6ss14oPNytFpll+ivYj
+         ikuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUOOpmTYNx2+AOGr1fh0bSkfs9H7d5IDZYRuS19ngwDTdbm0iKEt9BnRJ9LeELAmrFsacxL0AN44pMebX3LERwYU1TXb5PXuNGzW68L
+X-Gm-Message-State: AOJu0Yzsk/Biee7BgCHUwqNSO5bprnFhqKq8KadaE7Dwq1h+Chm9dU6n
+	wVPC7GtLnFjbz2s5GLjjXRUcPo28rsaiK0I37I7Ajs3WFCa9q3cS4d7FIA/E4X4=
+X-Google-Smtp-Source: AGHT+IGxrhlnbqnZw+75kfh+yq+KarLg4EMELr26c6t+nZ26T7LkDm/X5ar7Kec8Nuoyw6XvydLALA==
+X-Received: by 2002:ac2:47fb:0:b0:513:588a:2614 with SMTP id b27-20020ac247fb000000b00513588a2614mr737193lfp.49.1710269438328;
+        Tue, 12 Mar 2024 11:50:38 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id j20-20020a05600c191400b0041339453775sm2557465wmq.48.2024.03.12.11.50.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 11:50:37 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-samsung-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] dt-bindings: clock: samsung,s3c6400-clock: convert to DT Schema
+Date: Tue, 12 Mar 2024 19:50:35 +0100
+Message-Id: <20240312185035.720491-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="WfC7h8bH4szX/i/z"
-Content-Disposition: inline
-In-Reply-To: <CANiDSCtCse74oK_nCcJXRRQ__RnAAfYEFzfftty58stsFVKoYg@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mgr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
+Convert Samsung S3C6400/S3C6410 SoC clock controller bindings to DT
+schema.
 
---WfC7h8bH4szX/i/z
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../bindings/clock/samsung,s3c6400-clock.yaml | 57 ++++++++++++++
+ .../bindings/clock/samsung,s3c64xx-clock.txt  | 76 -------------------
+ 2 files changed, 57 insertions(+), 76 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,s3c6400-clock.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/samsung,s3c64xx-clock.txt
 
-On Thu, Feb 29, 2024 at 07:20:53PM +0100, Ricardo Ribalda wrote:
->Hi Michael
->
->So if my understanding is correct, what you want to achieve is to
->avoid double stats_decode when the function returns -EAGAIN.
->
->Wouldn't it be simpler to simply move uvc_video_clock_decode() and
->uvc_video_stats_decode() before
->
->stream->last_fid =3D fid;
->
->just at the end of the function? Or am I missing something?
->
->Besides being a small and documented function,
->uvc_video_decode_start() is difficult to follow :), So I might be
->saying something stupid
+diff --git a/Documentation/devicetree/bindings/clock/samsung,s3c6400-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,s3c6400-clock.yaml
+new file mode 100644
+index 000000000000..d0660313c262
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/samsung,s3c6400-clock.yaml
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/samsung,s3c6400-clock.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Samsung S3C6400 SoC clock controller
++
++maintainers:
++  - Krzysztof Kozlowski <krzk@kernel.org>
++
++description: |
++  There are several clocks that are generated outside the SoC. It is expected
++  that they are defined using standard clock bindings with following
++  clock-output-names:
++   - "fin_pll" - PLL input clock (xtal/extclk) - required,
++   - "xusbxti" - USB xtal - required,
++   - "iiscdclk0" - I2S0 codec clock - optional,
++   - "iiscdclk1" - I2S1 codec clock - optional,
++   - "iiscdclk2" - I2S2 codec clock - optional,
++   - "pcmcdclk0" - PCM0 codec clock - optional,
++   - "pcmcdclk1" - PCM1 codec clock - optional, only S3C6410.
++
++  All available clocks are defined as preprocessor macros in
++  include/dt-bindings/clock/samsung,s3c64xx-clock.h header.
++
++properties:
++  compatible:
++    enum:
++      - samsung,s3c6400-clock
++      - samsung,s3c6410-clock
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  "#clock-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - "#clock-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    clock-controller@7e00f000 {
++        compatible = "samsung,s3c6410-clock";
++        reg = <0x7e00f000 0x1000>;
++        #clock-cells = <1>;
++        clocks = <&fin_pll>;
++    };
+diff --git a/Documentation/devicetree/bindings/clock/samsung,s3c64xx-clock.txt b/Documentation/devicetree/bindings/clock/samsung,s3c64xx-clock.txt
+deleted file mode 100644
+index 872ee8e0f041..000000000000
+--- a/Documentation/devicetree/bindings/clock/samsung,s3c64xx-clock.txt
++++ /dev/null
+@@ -1,76 +0,0 @@
+-* Samsung S3C64xx Clock Controller
+-
+-The S3C64xx clock controller generates and supplies clock to various controllers
+-within the SoC. The clock binding described here is applicable to all SoCs in
+-the S3C64xx family.
+-
+-Required Properties:
+-
+-- compatible: should be one of the following.
+-  - "samsung,s3c6400-clock" - controller compatible with S3C6400 SoC.
+-  - "samsung,s3c6410-clock" - controller compatible with S3C6410 SoC.
+-
+-- reg: physical base address of the controller and length of memory mapped
+-  region.
+-
+-- #clock-cells: should be 1.
+-
+-Each clock is assigned an identifier and client nodes can use this identifier
+-to specify the clock which they consume. Some of the clocks are available only
+-on a particular S3C64xx SoC and this is specified where applicable.
+-
+-All available clocks are defined as preprocessor macros in
+-dt-bindings/clock/samsung,s3c64xx-clock.h header and can be used in device
+-tree sources.
+-
+-External clocks:
+-
+-There are several clocks that are generated outside the SoC. It is expected
+-that they are defined using standard clock bindings with following
+-clock-output-names:
+- - "fin_pll" - PLL input clock (xtal/extclk) - required,
+- - "xusbxti" - USB xtal - required,
+- - "iiscdclk0" - I2S0 codec clock - optional,
+- - "iiscdclk1" - I2S1 codec clock - optional,
+- - "iiscdclk2" - I2S2 codec clock - optional,
+- - "pcmcdclk0" - PCM0 codec clock - optional,
+- - "pcmcdclk1" - PCM1 codec clock - optional, only S3C6410.
+-
+-Example: Clock controller node:
+-
+-	clock: clock-controller@7e00f000 {
+-		compatible = "samsung,s3c6410-clock";
+-		reg = <0x7e00f000 0x1000>;
+-		#clock-cells = <1>;
+-	};
+-
+-Example: Required external clocks:
+-
+-	fin_pll: clock-fin-pll {
+-		compatible = "fixed-clock";
+-		clock-output-names = "fin_pll";
+-		clock-frequency = <12000000>;
+-		#clock-cells = <0>;
+-	};
+-
+-	xusbxti: clock-xusbxti {
+-		compatible = "fixed-clock";
+-		clock-output-names = "xusbxti";
+-		clock-frequency = <48000000>;
+-		#clock-cells = <0>;
+-	};
+-
+-Example: UART controller node that consumes the clock generated by the clock
+-  controller (refer to the standard clock bindings for information about
+-  "clocks" and "clock-names" properties):
+-
+-		uart0: serial@7f005000 {
+-			compatible = "samsung,s3c6400-uart";
+-			reg = <0x7f005000 0x100>;
+-			interrupt-parent = <&vic1>;
+-			interrupts = <5>;
+-			clock-names = "uart", "clk_uart_baud2",
+-					"clk_uart_baud3";
+-			clocks = <&clock PCLK_UART0>, <&clocks PCLK_UART0>,
+-					<&clock SCLK_UART>;
+-		};
+-- 
+2.34.1
 
-No, there is nothing stupid. I tested the changed patch. And it works as
-expected. So thanks for the review and the extra mile. I will send v3 now.
-
-Regards,
-Michael
-
->On Sat, 24 Feb 2024 at 23:52, Michael Grzeschik
-><m.grzeschik@pengutronix.de> wrote:
->>
->> When the uvc request will get parsed by uvc_video_decode_start it will
->> leave the function with -EAGAIN to be restarted on the next frame. While
->> the first wrong parse the statistics will already be updated with
->> uvc_video_stats_decode.
->>
->> One value e.g. is the error_count, which therefor will be incremented
->> twice in case the fid has changed on the way. This patch fixes the
->> unnecessary extra parsing by returning early from the function when the
->> fid has changed.
->>
->> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> ---
->> Changes in v2:
->> - Moved the EAGAIN bailout after the sequence handling as mentioned by R=
-icardo Ribalda
->> - Link to v1: https://lore.kernel.org/r/20240221-uvc-host-video-decode-s=
-tart-v1-1-228995925c70@pengutronix.de
->> ---
->>  drivers/media/usb/uvc/uvc_video.c | 64 +++++++++++++++++++-------------=
--------
->>  1 file changed, 32 insertions(+), 32 deletions(-)
->>
->> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/u=
-vc_video.c
->> index 7cbf4692bd875..af368c45c4297 100644
->> --- a/drivers/media/usb/uvc/uvc_video.c
->> +++ b/drivers/media/usb/uvc/uvc_video.c
->> @@ -1068,6 +1068,15 @@ static int uvc_video_decode_start(struct uvc_stre=
-aming *stream,
->>
->>         fid =3D data[1] & UVC_STREAM_FID;
->>
->> +       /*
->> +        * Store the payload FID bit and return immediately when the buf=
-fer is
->> +        * NULL.
->> +        */
->> +       if (buf =3D=3D NULL) {
->> +               stream->last_fid =3D fid;
->> +               return -ENODATA;
->> +       }
->> +
->>         /*
->>          * Increase the sequence number regardless of any buffer states,=
- so
->>          * that discontinuous sequence numbers always indicate lost fram=
-es.
->> @@ -1076,20 +1085,34 @@ static int uvc_video_decode_start(struct uvc_str=
-eaming *stream,
->>                 stream->sequence++;
->>                 if (stream->sequence)
->>                         uvc_video_stats_update(stream);
->> +
->> +               /*
->> +                * Mark the buffer as done if we're at the beginning of =
-a new frame.
->> +                * End of frame detection is better implemented by check=
-ing the EOF
->> +                * bit (FID bit toggling is delayed by one frame compare=
-d to the EOF
->> +                * bit), but some devices don't set the bit at end of fr=
-ame (and the
->> +                * last payload can be lost anyway). We thus must check =
-if the FID has
->> +                * been toggled.
->> +                *
->> +                * stream->last_fid is initialized to -1, so the first i=
-sochronous
->> +                * frame will never trigger an end of frame detection.
->> +                *
->> +                * Empty buffers (bytesused =3D=3D 0) don't trigger end =
-of frame detection
->> +                * as it doesn't make sense to return an empty buffer. T=
-his also
->> +                * avoids detecting end of frame conditions at FID toggl=
-ing if the
->> +                * previous payload had the EOF bit set.
->> +                */
->> +               if (buf->bytesused) {
->> +                       uvc_dbg(stream->dev, FRAME,
->> +                               "Frame complete (FID bit toggled)\n");
->> +                       buf->state =3D UVC_BUF_STATE_READY;
->> +                       return -EAGAIN;
->> +               }
->>         }
->>
->>         uvc_video_clock_decode(stream, buf, data, len);
->>         uvc_video_stats_decode(stream, data, len);
->>
->> -       /*
->> -        * Store the payload FID bit and return immediately when the buf=
-fer is
->> -        * NULL.
->> -        */
->> -       if (buf =3D=3D NULL) {
->> -               stream->last_fid =3D fid;
->> -               return -ENODATA;
->> -       }
->> -
->>         /* Mark the buffer as bad if the error bit is set. */
->>         if (data[1] & UVC_STREAM_ERR) {
->>                 uvc_dbg(stream->dev, FRAME,
->> @@ -1124,29 +1147,6 @@ static int uvc_video_decode_start(struct uvc_stre=
-aming *stream,
->>                 buf->state =3D UVC_BUF_STATE_ACTIVE;
->>         }
->>
->> -       /*
->> -        * Mark the buffer as done if we're at the beginning of a new fr=
-ame.
->> -        * End of frame detection is better implemented by checking the =
-EOF
->> -        * bit (FID bit toggling is delayed by one frame compared to the=
- EOF
->> -        * bit), but some devices don't set the bit at end of frame (and=
- the
->> -        * last payload can be lost anyway). We thus must check if the F=
-ID has
->> -        * been toggled.
->> -        *
->> -        * stream->last_fid is initialized to -1, so the first isochrono=
-us
->> -        * frame will never trigger an end of frame detection.
->> -        *
->> -        * Empty buffers (bytesused =3D=3D 0) don't trigger end of frame=
- detection
->> -        * as it doesn't make sense to return an empty buffer. This also
->> -        * avoids detecting end of frame conditions at FID toggling if t=
-he
->> -        * previous payload had the EOF bit set.
->> -        */
->> -       if (fid !=3D stream->last_fid && buf->bytesused !=3D 0) {
->> -               uvc_dbg(stream->dev, FRAME,
->> -                       "Frame complete (FID bit toggled)\n");
->> -               buf->state =3D UVC_BUF_STATE_READY;
->> -               return -EAGAIN;
->> -       }
->> -
->>         stream->last_fid =3D fid;
->>
->>         return data[0];
->>
->> ---
->> base-commit: e89fbb5bc21a10a0de2bb878d4df09f538dc523b
->> change-id: 20240221-uvc-host-video-decode-start-af53df5924cd
->>
->> Best regards,
->> --
->> Michael Grzeschik <m.grzeschik@pengutronix.de>
->>
->>
->
->
->--=20
->Ricardo Ribalda
->
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---WfC7h8bH4szX/i/z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmXwo7gACgkQC+njFXoe
-LGT2mw/+MIQQZbPBgQCfvfV1yeQzgW0prVNIVHy/leCAxMmhPbHM+AQ44Z4jDjB/
-KzBS/06wvwzmvQTVLE6fBjzq1Oq8dZdkQ+ZuWxbb0zteAsunr/j3iVCrAwqcyn4e
-l7YnsTyjQdeK2ZfdwSxut3HirKr28CduF7SoUx21xxkJ4TlUrSyuumAHcvmYo0EO
-0zx7aCvsJte7s++9s+ScKuK2Z/aAZPWBm/+ZM2q167UiCgG9bODb611cPQpRYPJM
-2xKMTQ3iHV7ogk7OaQfOFMNbry+36bWqSEVM3/DxXRuRXFO79n2BGRGwgpxsMEvy
-+eYNpZZxBnbujGW3XqW+nbDt/gwPmffxmxCMxn1FmPX2HYTXTtwFhjOSrVGI/9bk
-nXOwbWrqY/oEY7rpf9eY5ujVJ20Bj/rxpeM9Xbrokdy+mTlRbOVezd0jB4diaqJJ
-07lCAJLQ9YeatyEVnxcZjvaSmFkNiSpppkoVkR+YofHEOdD0KuTqqMr0HZkopj6b
-dWACIxjs3QzCgqrFpd1AO7VopyDSZJ4prH1sJVs9Rr0KSBZaXQHneTLLiOTnCjgl
-wsLEXbxIEWxYBZwzAkgbDZ0/eCfarONeAMQn+G1b3cs+x9mk1Z4JsPpep9B4kIYj
-qVWA6pwyaSzVMfF+NOdZwYtJlYenvBBWBf8JOWEZVym4EbwH9lM=
-=u9ci
------END PGP SIGNATURE-----
-
---WfC7h8bH4szX/i/z--
 
