@@ -1,145 +1,134 @@
-Return-Path: <linux-kernel+bounces-100525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8919687991F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:38:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52479879923
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:39:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ECCD2820E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:38:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 097BF1F24135
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235137E0EE;
-	Tue, 12 Mar 2024 16:38:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA69E7E11F;
+	Tue, 12 Mar 2024 16:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jYe8NXlh"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZeT/+pI0"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75E915BF
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A279B15BF;
+	Tue, 12 Mar 2024 16:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710261520; cv=none; b=YhekNo71qQC0uEFk3zrPloNtg9w5s0nXvoGnmttrD90a6cXL2QF365UuECNUex81U5UMoT8e6hEVSdtIY9Of/ffJnY7gETvWdtQm6+Myt7phfc9BrhKlIgM1Ok3L59MPt65XC7jz+byWWskHqco5AvHBp20FC//Ncxkv7HHKx6Q=
+	t=1710261568; cv=none; b=c49T55fZh0Hm6cUc9zcZBnijTAQFIhmnmCeaAPcxCZh16++XHEn+eFxNHKroCg5RbD+E8IzSU2sDcngAMTNJPXy3ESaO1EeZ4zZU2Wapa5Qmp4VVGRRZppDew8oPcTALDJrDMq3mWXqYHbE/WQjSrrCmj3ZBB3EE55+wt4ve1bQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710261520; c=relaxed/simple;
-	bh=2Ney3Be8zQ+ahSZrL4rbdZbA6XT2or+RZEEolylCT6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MeG50liojE1JROWyK6l5Io4ncDUYkLYrNU2uHtXXWa4RalNFZDpP2CERv+Nn6KS4mUSW7x2+/NcIe68iy/YHM7q9MDEYQf/X+byC0YjTG3A7kNM1OaPGmL+mLrVyfpjEQ16lxTFATnCAXSRjc9uD/vFaw+5+h9kfLJ7BZe+XRL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=jYe8NXlh; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=8LxRhGuwXJFpATs069eW/+reuCwEH54tH10y+l407N4=; b=jYe8NXlha4EYzdWWFia+M3+OgZ
-	zcOr25Z8IhZ7NogxmHSvhJBS4mlncMVYqEA4ZTB0ctlMv62PpDh+A4O2uExc+OQyuSYVQLnxXZQFn
-	vHmjzdp/5IwVV3oRbpUX5P9gMOmUfw0rFRIfJh6DofHPQ0Milb7vIGn/QehrzX3eTD2dmN+20PqCR
-	x0d6t0Y8A9Eb1cIJok8pYcxtFfX63bOCfsyemI1wb4a0rkpqA0cVOUuwWX53m60MW2ElMvGow0+6X
-	pgULWQrqUXt/XJ0LvA1AQqwDvqCw2ao2/VMK97VIZVIJJQTHnjPkC04Fq+4VhCezk/WwbWM7FD86p
-	uJxSzQAQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rk596-00000003RNz-1xJ1;
-	Tue, 12 Mar 2024 16:38:32 +0000
-Date: Tue, 12 Mar 2024 16:38:32 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zi Yan <ziy@nvidia.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-	Yang Shi <shy828301@gmail.com>, Huang Ying <ying.huang@intel.com>,
-	"\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
-	Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/migrate: put dest folio on deferred split list if
- source was there.
-Message-ID: <ZfCFCGkrLVpySa6X@casper.infradead.org>
-References: <20240311195848.135067-1-zi.yan@sent.com>
- <Ze_P6xagdTbcu1Kz@casper.infradead.org>
- <74AF044A-A14A-4C66-A019-70F8F138A9AB@nvidia.com>
- <ZfBkjf4z-jpaNk6c@casper.infradead.org>
- <DFA2B8B7-C690-422A-BE95-82F7E112BB95@nvidia.com>
+	s=arc-20240116; t=1710261568; c=relaxed/simple;
+	bh=I2yYkyIZAUOobZ+PU29yAMI1mvt35XxTPqGNlgykIf8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HNE9eDUUk0UYK3yOQq1JIk1+EZ5VV7QK5LAUt+cXIJa0QiyPbq14ZSmQeG2LEMNPi1BHHbLLk+P9e+7mI2fBPTSIXDcWm1CaKqYXpLKVvOyHCv3c5NHzIAm4ubDX0tMey+sQiN7slqbFZ3gKcROgNupESZlpH2DP0SJupTxT66o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZeT/+pI0; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a1d1a28da2so1230760eaf.1;
+        Tue, 12 Mar 2024 09:39:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710261565; x=1710866365; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6mSImzSxmXOyBGgGyqPE7UK1kzpq6nd8Az9TYKDgnRs=;
+        b=ZeT/+pI04Pz24AVH1SB1GLdNPaM+UJRmcZWnoqMhBq5Za/CCef+C0MCT7s71aVhri7
+         I34HA0o+iJMxVCEqCNaJ0/J1R6mr+T1ah2THjFvVggtxb4Cf5KO/3Tcu7KmkpasWwlIX
+         qfspKI3T+N8GzeEOouvFtD2cYb2iAwjgL+yLfNnyTxT61EEduhWeqeTk+3EoEFlc1AHB
+         vDAb35KcK6CNMMH4ctnqZh+791/Yb8hjENNDVJxeCFhEcz2HZQbYMr5mRclNo21oYucs
+         ThCZ3LxcEjrJB8LEFZmRwFXhUy5wQdqZkioKu9Iy5UzVcophGVj5QiS63Fq2rwIioHFp
+         GpVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710261565; x=1710866365;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6mSImzSxmXOyBGgGyqPE7UK1kzpq6nd8Az9TYKDgnRs=;
+        b=e7fIF8nU3xYrMyuxBpvlha7co/s77o/CbkdDXHrXeh88+tICT+9yWNY0+shjzVmTi0
+         zTVD/AUFktpEykpre0oKDIn+rieS/4U26VKjyGRdTvWmV5lZ+hNctuWov9u5+VNwAUD5
+         F2gC4bjuNW6nu0UtgUao+sRYBKQubELiUrJW6/4yn7OsYJsxPcU2aU2ZnxR9AOs2BLe2
+         7yF7vEGnbmflA2XeH1qbmo6j+y021JL82HIrZTCo6hc53GxKUhcbtJBYN3FtVgRcYskp
+         gKFGTwgtRpBmZPfA8pEPTdWwL1y4DsmoMMLf3exULo0Y3A33ohk5l6yNT1WaZP1xe2QO
+         qoDA==
+X-Forwarded-Encrypted: i=1; AJvYcCX8FRhG3CLx1+2YTUKPImGLR6UREdyQUI7K+NAYL04Y0S+4vld3OgxoolNaUYUmUIOTC4hhrGdmfXXj6y4D2VNTfNSEDpoxioj8xTOoDS772C6hDdOBQz5hqzC6WIYEw+0MteW8
+X-Gm-Message-State: AOJu0YwKTnImA6zBM7Pu91/gHgXYGU7kGWgs5pPSH6rTVnFw7Imge9Wb
+	CfKc1/b3Ae76NBkROwXodZ+VMNmdJLtsuIJEI9c+CwvmVztpZYwN
+X-Google-Smtp-Source: AGHT+IGgYD2whmhaip7IqFkMiOSXp9sHYtYDAcIcBcMfD55CiLoD5tohapN2hWRU/Z8le8yhDyr25w==
+X-Received: by 2002:a05:6359:4c1a:b0:17e:69d4:ddbb with SMTP id kj26-20020a0563594c1a00b0017e69d4ddbbmr5960829rwc.14.1710261565558;
+        Tue, 12 Mar 2024 09:39:25 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c13-20020a63350d000000b0059b2316be86sm6266409pga.46.2024.03.12.09.39.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 09:39:24 -0700 (PDT)
+Message-ID: <4ad2bfc0-531e-4d66-b071-9bb983d8051b@gmail.com>
+Date: Tue, 12 Mar 2024 09:39:22 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DFA2B8B7-C690-422A-BE95-82F7E112BB95@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] lib/bitmap: Fix bitmap_scatter() and bitmap_gather()
+ kernel doc
+Content-Language: en-US
+To: Herve Codina <herve.codina@bootlin.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Yury Norov <yury.norov@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20240312085403.224248-1-herve.codina@bootlin.com>
+ <ZfB30-rLXEnJtjrY@smile.fi.intel.com> <ZfB4BOknvWRFbn6O@smile.fi.intel.com>
+ <20240312173556.4727ebbf@bootlin.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240312173556.4727ebbf@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 12, 2024 at 11:51:13AM -0400, Zi Yan wrote:
-> On 12 Mar 2024, at 10:19, Matthew Wilcox wrote:
+On 3/12/24 09:35, Herve Codina wrote:
+> Hi Andy,
 > 
-> > On Tue, Mar 12, 2024 at 10:13:16AM -0400, Zi Yan wrote:
-> >> On 11 Mar 2024, at 23:45, Matthew Wilcox wrote:
-> >>> Much more important: You're doing this with a positive refcount, which
-> >>> breaks the (undocumented) logic in deferred_split_scan() that a folio
-> >>> with a positive refcount will not be removed from the list.
-> >>
-> >> What is the issue here? I thought as long as the split_queue_lock is held,
-> >> it should be OK to manipulate the list.
-> >
-> > I just worked this out yesterday:
-> > https://lore.kernel.org/linux-mm/Ze9EFdFLXQEUVtKl@casper.infradead.org/
-> > (the last chunk, starting with Ryan asking me "what about the first bug
-> > you found")
+> On Tue, 12 Mar 2024 17:43:00 +0200
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 > 
-> Hmm, like you said a folio with a positive refcount will not be removed
-> from ds_queue->split_queue, it will have no chance going to the separate
-> list in deferred_list_scan() and list_del_init() will not corrupt
-> that list.
+>> On Tue, Mar 12, 2024 at 05:42:11PM +0200, Andy Shevchenko wrote:
+>>> On Tue, Mar 12, 2024 at 09:54:03AM +0100, Herve Codina wrote:
+>>>> The make htmldoc command failed with the following error
+>>>>    ... include/linux/bitmap.h:524: ERROR: Unexpected indentation.
+>>>>    ... include/linux/bitmap.h:524: CRITICAL: Unexpected section title or transition.
+>>>>
+>>>> Move the visual representation to a literal block.
+>>
+>> ...
+>>
+>>>> This patch fixes de5f84338970 ("lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers")
+>>>> available in net-next and linux-next
+>>>
+>>> Not sure about rules of net-next, but I would add Fixes FWIW:
+>>>
+>>> Fixes: de5f84338970 ("lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers")
+> 
+> I think I cannot add the Fixes tag as the de5f84338970 commit is not yet
+> merged in Torvald's tree and I am not sure that the commit hash will not
+> change during the merge process.
 
-You've misread it.  Folios with a _zero_ refcount are not removed from
-the list in deferred_split_scan.  Folios with a positive refcount are
-removed from the per-node or per-cgroup list _at which point there is
-an undocumented assumption_ that they will not be removed from the
-local list because they have a positive refcount.
+That is not a reason for not providing a Fixes tag, it does not have to 
+be in Linus' tree.
 
-> So it should be safe. Or the issue is that before migration
-> adding a refcount, the folio is removed from ds_queue->split_queue
-> and put on the list in deferred_list_scan(), as a result, any manipulation
-> of folio->_deferred_list could corrupt the list. Basically,
-> !list_empty(&folio->_deferred_list) cannot tell if the folio is on
-> ds_queue->split_queue or another list. I am not sure about why "a positive
-> refcount" is related here.
-> 
-> That makes me wonder whether ds_queue->split_queue_lock is also needed
-> for list_for_each_entry_safe() in deferred_split_scan(). Basically,
-> ds_queue->split_queue_lock protects folio->_deferred_list in addition to
-> ds_queue->split_queue.
-> 
-> 
-> 
-> >>> Maximally important: Wer shouldn't be doing any of this!  This folio is
-> >>> on the deferred split list.  We shouldn't be migrating it as a single
-> >>> entity; we should be splitting it now that we're in a context where we
-> >>> can do the right thing and split it.  Documentation/mm/transhuge.rst
-> >>> is clear that we don't split it straight away due to locking context.
-> >>> Splitting it on migration is clearly the right thing to do.
-> >>>
-> >>> If splitting fails, we should just fail the migration; splitting fails
-> >>> due to excess references, and if the source folio has excess references,
-> >>> then migration would fail too.
-> >>
-> >> You are suggesting:
-> >> 1. checking if the folio is on deferred split list or not
-> >> 2. if yes, split the folio
-> >> 3. if split fails, fail the migration as well.
-> >>
-> >> It sounds reasonable to me. The split folios should be migrated since
-> >> the before-split folio wants to be migrated. This split is not because
-> >> no new page cannot be allocated, thus the split folios should go
-> >> into ret_folios list instead of split_folios list.
-> >
-> > Yes, I'm happy for the split folios to be migrated.  Bonus points if you
-> > want to figure out what order to split the folio to ;-)  I don't think
-> > it's critical.
-> 
-> 
-> --
-> Best Regards,
-> Yan, Zi
-
+As a matter of fact, let us consider someone doing a back port of your 
+patches into their custom local tree, they would like to have that 
+information that this patch fixes a problem introduced by an earlier 
+commit so they can take the entire set of commits as a whole.
+-- 
+Florian
 
 
