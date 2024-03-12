@@ -1,123 +1,111 @@
-Return-Path: <linux-kernel+bounces-100178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D613987930F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:33:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18713879315
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:35:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 911BF283EB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:33:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACF38B2206C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8183079B8D;
-	Tue, 12 Mar 2024 11:33:27 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F7F79B84;
+	Tue, 12 Mar 2024 11:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UmeYNJEG"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D6720304;
-	Tue, 12 Mar 2024 11:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3663069D0A;
+	Tue, 12 Mar 2024 11:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710243207; cv=none; b=KEq12A4KH5Eh5gZObD6MHT4f43ss7JQbin/K3OscunAGyJCwu8Su0ontfdanqOjR3/TxOWZnuEXN1/PvH2wspciJTpVirXn3gBt3YOjiBy1BvuGhDWGoiPpKrd0upA3FIArgaonyDa0oBxj6YKwobUcdWtlumvDE50rz49dM2As=
+	t=1710243334; cv=none; b=sxn2pyqahLdzf4juxRQy0yPGeZEmw3kSoaJUPbD9Tdb+eWUCHFKUBJZvB9XHhjjK9SxnK3Tr/zoeKsNO5/yJDXLUjF4aN4JRBdnK2/G/r/nXTF+oRz2uWBL6rESlzwD7j01Mg5PQ6jXR0A2W3pqz74ixOerKRCOq3Q3QgTTOvVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710243207; c=relaxed/simple;
-	bh=cR7pbgnUEuaLGoCwMBI6KTYXYo4LlhwxbSp3LNaXAqw=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type; b=lq0vwMVi1s0QqwF0FcFWFrEMUkOXNpA4ONLvkk8k9gk0me6ATQgb52SudjjpNEB04E79Ye0Q5u+mX09iLAPWMIU3lWtkOdSELIaInzgaA3gmXoxBN3KMdMoV07D2yceO9GdTEOUEP7wQYr7P3zrkJgeFijdSSU8LyqXB1CYhCkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TvBLC0yzQz1xqhD;
-	Tue, 12 Mar 2024 19:31:31 +0800 (CST)
-Received: from kwepemd100008.china.huawei.com (unknown [7.221.188.193])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5C5EF1A016C;
-	Tue, 12 Mar 2024 19:33:15 +0800 (CST)
-Received: from [10.67.121.2] (10.67.121.2) by kwepemd100008.china.huawei.com
- (7.221.188.193) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Tue, 12 Mar
- 2024 19:33:14 +0800
-Message-ID: <65F03D79.2070008@hisilicon.com>
-Date: Tue, 12 Mar 2024 19:33:13 +0800
-From: Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+	s=arc-20240116; t=1710243334; c=relaxed/simple;
+	bh=O9SDTjN4m4+ACDZlbjWHiqnW6+aHwqWTMkM+PP87lSE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=beytL5CLh+eH3VfOGwDOb3xOGTs9Mwk9zpPccViX7MwBwpsz8c0wW7ZW4/pwmoyVBL6CeXrXUeLCdbyF3zXB+qjDkxsj6kLRFrMy5MwePWLSHMSBCZHqipGsx+qnuCUpuwGTaa25xdlctdGoWpdEiM7Ia5zA1oI+P5b6Qeb1NKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UmeYNJEG; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29bd0669781so2052452a91.1;
+        Tue, 12 Mar 2024 04:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710243332; x=1710848132; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HTp9zNusEHYNa4JuUgat9/OWqEmIx9Z3+sIRQXRqG48=;
+        b=UmeYNJEGfaRsZaVUuK+eIH+I533aKipoAx9Xi871HyaIMNpjxRZm6DeMt9iUhnY2Ee
+         RYZWHDK4BOooYTQpaJVYOrQMGQfaA7Ti8mesQtKXmIPyJxpSFW/6x0pJVAb20vGE+c5D
+         EVaCon9NeROArqE9cX1UF87l/eFiAkWkoMtg7xCzVKr7iXgKc6c6LE6aqbmWlIInIklh
+         nqfnatxAjfcET420+ZSvtXEO3tE0SbHMHvFfZ2KmXYGDaPeh2PUqPIWaEzyfe8/kHJC5
+         s1MvCAulWoE7I0kGx0LamhbAJ/T11MbwuXEqGoHFSX+5sS5ORGL7nfrCjZW+lGJjvtZL
+         tMDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710243332; x=1710848132;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HTp9zNusEHYNa4JuUgat9/OWqEmIx9Z3+sIRQXRqG48=;
+        b=BSEYJnkzfC/ahamFF6GXsFCQbMUMcSsADxmFPC4n9bGZ4MtJL5EvJziRdvo94Lfnj+
+         8w2nztdExkDOMXYp9bi4QW/ghZDivXcrhJxghTB3dAD53TJCXF2fVOhStsXaUoj3RQt3
+         VL817qz7iSIbPOE0jNa0ulkbBPpvusxoJcgrM5aQnv10RSrvuH0WulSbggSXHiwZbvE/
+         tK86fjmQAQaoM2VAMtPfWuBAuMBQXeJ/8PhHd81dXqFsjNhnOYH+ERQzVLdsFbCqzKGY
+         1eVYzwqopD9xJNJ6VVumd4BM8Q37qTtk1vkLIEPZ+dmDet8PatyxlRKDxCqBV+gy0oCF
+         2KCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVnvAFc4mApGHm4VENNCeIJ2rBF8OR+4kwAeckumWUh0e5PDsZT3dqesS+XQ2yBl0Ew16402QE8NPRorvOBko051QsK+Lv74p3/hjlkh+JLPkXhIgTV9MC7noXzd3GBdEjR
+X-Gm-Message-State: AOJu0Yw+rAsrwEpVcjmjUxehY4c2ouvEWFjsXGaErf77yzbl61V/bAFS
+	lvObIMiPoRxQPdAgtzbCG0wKKcTVmZC6AMXAgoKYzwl3ztPD02YgKNv9Iw5s
+X-Google-Smtp-Source: AGHT+IED26I8/64mXLsxuC7CSlYxSuV8S6W1vv/N52uGphSfMXZGRXioHOND8IQSdjGjlRAkdm7n8g==
+X-Received: by 2002:a17:90a:4096:b0:29b:7a28:a795 with SMTP id l22-20020a17090a409600b0029b7a28a795mr7240463pjg.12.1710243332481;
+        Tue, 12 Mar 2024 04:35:32 -0700 (PDT)
+Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
+        by smtp.gmail.com with ESMTPSA id f12-20020a17090a654c00b0029ba4d9b128sm5472286pjs.57.2024.03.12.04.35.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 04:35:32 -0700 (PDT)
+From: Zqiang <qiang.zhang1211@gmail.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org
+Cc: qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu-tasks: Remove unnecessary lazy_jiffies in call_rcu_tasks_generic_timer()
+Date: Tue, 12 Mar 2024 19:35:24 +0800
+Message-Id: <20240312113524.7654-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-To: Yang Xiwen <forbidden405@outlook.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Jiancheng Xue <xuejiancheng@hisilicon.com>, Alex Elder
-	<elder@linaro.org>, Peter Griffin <peter.griffin@linaro.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] arm64: dts: hi3798cv200: fix GICR size, add cache
- info, maintenance irq and GICH, GICV spaces
-References: <20240219-cache-v3-0-a33c57534ae9@outlook.com> <SEZPR06MB695952078B51C4549191F8AB962B2@SEZPR06MB6959.apcprd06.prod.outlook.com>
-In-Reply-To: <SEZPR06MB695952078B51C4549191F8AB962B2@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100008.china.huawei.com (7.221.188.193)
 
-Hi Yang,
+The rcu_tasks_percpu structure's->lazy_timer is queued only when
+the rcu_tasks structure's->lazy_jiffies is not equal to zero in
+call_rcu_tasks_generic(), if the lazy_timer callback is invoked,
+that means the lazy_jiffes is not equal to zero, this commit
+therefore remove lazy_jiffies check in call_rcu_tasks_generic_timer().
 
-On 2024/3/12 19:19, Yang Xiwen wrote:
-> On 2/19/2024 11:05 PM, Yang Xiwen via B4 Relay wrote:
->> The patchset fixes some warnings reported by the kernel during boot.
->>
->> The cache size info is from Processor_Datasheet_v2XX.pdf [1], Section
->> 2.2.1 Master Processor.
->>
->> The cache line size and the set-associative info are from Cortex-A53
->> Documentation [2].
->>
->>  From the doc, it can be concluded that L1 i-cache is 4-way assoc, L1
->> d-cache is 2-way assoc and L2 cache is 16-way assoc. Calculate the dts
->> props accordingly.
->>
->> Also, to use KVM's VGIC code, GICH, GICV registers spaces and maintenance
->> IRQ are added to the dts with verification.
->>
->> [1]: https://github.com/96boards/documentation/blob/master/enterprise/poplar/hardware-docs/Processor_Datasheet_v2XX.pdf
->> [2]: https://developer.arm.com/documentation/ddi0500/j/Level-1-Memory-System
->>
->> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->> ---
->> Changes in v3:
->> - send patches to stable (Andrew Lunn)
->> - rewrite the commit logs more formally (Andrew Lunn)
->> - rename l2-cache0 to l2-cache (Krzysztof Kozlowski)
->> - Link to v2: https://lore.kernel.org/r/20240218-cache-v2-0-1fd919e2bd3e@outlook.com
->>
->> Changes in v2:
->> - arm64: dts: hi3798cv200: add GICH, GICV register spces and
->>    maintainance IRQ.
->> - Link to v1: https://lore.kernel.org/r/20240218-cache-v1-0-2c0a8a4472e7@outlook.com
->>
->> ---
->> Yang Xiwen (3):
->>        arm64: dts: hi3798cv200: fix the size of GICR
->>        arm64: dts: hi3798cv200: add GICH, GICV register space and irq
->>        arm64: dts: hi3798cv200: add cache info
->>
->>   arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 43 +++++++++++++++++++++++++-
->>   1 file changed, 42 insertions(+), 1 deletion(-)
->> ---
->> base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
->> change-id: 20240218-cache-11c8bf7566c2
->>
->> Best regards,
-> 
-> May someone apply this patchset to their tree so that it can land in stable at the end? This is a fix, not adding new functionalities. It's been 2 weeks already.
-> 
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ kernel/rcu/tasks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sorry for the delay, I am too busy to catch up with this cycle.
-I will go through this patch set and maybe apply it during the next cycle.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index b1254cf3c210..439e0b9a2656 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -299,7 +299,7 @@ static void call_rcu_tasks_generic_timer(struct timer_list *tlp)
+ 
+ 	rtp = rtpcp->rtpp;
+ 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+-	if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
++	if (!rcu_segcblist_empty(&rtpcp->cblist)) {
+ 		if (!rtpcp->urgent_gp)
+ 			rtpcp->urgent_gp = 1;
+ 		needwake = true;
+-- 
+2.17.1
 
-Best Regards,
-Wei
 
