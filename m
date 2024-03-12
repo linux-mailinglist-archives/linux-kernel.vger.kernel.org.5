@@ -1,151 +1,159 @@
-Return-Path: <linux-kernel+bounces-100288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55EAC879515
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:25:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9DD987951C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:29:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11A8E284266
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:25:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74D2B284D47
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0667A155;
-	Tue, 12 Mar 2024 13:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="P/rzX1/+"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85827A719;
+	Tue, 12 Mar 2024 13:29:25 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C0DF5820A
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F5F7A152
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:29:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710249929; cv=none; b=QkWw4DKNzywhdhUaYpxHo8pdiaYD93WJD9n8VIhZ7rRk9Y6QhbpuI3xNqv8tm5P9y+NBW9OOKwvcUzHAhoqmXHb9ZFf66WpTMZ9zDPA5o3DmIaBqy161T2+/4SODRTz3hLQM5XlkdRZEiP4Al9RnF5NW9twYLKDYiRA1dGpWF6w=
+	t=1710250165; cv=none; b=Hi00zUqNzsed86LjgSSLK0HjXE+m0uZItb6YHQRdXTpB+lZ7jP5oQZSqJAlbBZ477Og2shE+0io0+m1mAWIHv1rH413RiEex3lA6naXgROQO6ZxZdNg7QQ+/B/VDLgvL4wqTqq3CEqfjTITFOJNUyPmUASOwceOiV8l0o2FrJo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710249929; c=relaxed/simple;
-	bh=psGUUbaGpO0STvfivLy6nh3+05iM/5LFBTb9Tiu2sx0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FtI8Zkhv50xmpLLCXWqg+vBqs1esc4nruojxbver01fIDHrxFJh5VSKQ4jb71IeNtbVT7E/C94qbVNedpTrDUmjCu8UndgaEW3ga8SLqCEbWHypEqjbseAqcSR4X9ucrLMyU5Cm5GCvwOH4/RVvRVshdHLeeNJ9qbiOzzFNYrFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=P/rzX1/+; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dbed0710c74so3408362276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 06:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1710249925; x=1710854725; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JB/fCkc+DY4m42yOK4XJQgiO/OTJKfXykryTXv2ZIvc=;
-        b=P/rzX1/+8Gsya7WVuz83YmqAKIk/yVcSz+63lCQGDNLXEtCbjZfmJqNyyRAeaCHOXf
-         SyFFdqzMnnmVJpWt2JJOgACTKbW2jacz9YWj6isXiPaOP8opHzJwqxFx9f2+Tq8TSH+6
-         TDUlQRefPZhsKvm5EgYDoNK/TsibUrHaChnFDQZkVAXNOI4bBkr3z4Mlp/uMBHSgF8Kg
-         OBPfpJfXZ5W8jq/cNWT6lnyhZ9BEXFArfSrXw9/3vVRec2VKAHOP/HWtLNfgrltHXtSq
-         fbDyUNeW44TOiwofbMGjbsVxYRjHXhhwpT9PSoYAIh3t2J3Vlk16Jx42AIdlGDfM4ouJ
-         5xow==
+	s=arc-20240116; t=1710250165; c=relaxed/simple;
+	bh=9zDWvzr+Z/USZHV5GgIfmY6ihcfdVLNoDxi/gf9ye2s=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=EwoUUv123b1Lqnn4haBgd/gVeByt+QSMigQBKlffjTXOZd7AIi3MkGGFcoB1szfq+nve+tR7kK5DcwJAk/mIOKZxzA+90+Z56P/p+lCBn9nDnIcgNM0cL9M1Vbhn6Ct7zlQ3TF0hFAbd+AOk0GXx5+zu/eweTHWwOwnMh1MwSAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c88a694b46so490474339f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 06:29:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710249925; x=1710854725;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JB/fCkc+DY4m42yOK4XJQgiO/OTJKfXykryTXv2ZIvc=;
-        b=fGzHcEaOxOvcRlK0rkrqqkNSD3Mv4dlozXmg14EvvpRYLI25oJdm/r+oSrdR2DmvPH
-         Auc6QUFbSYAZoSb0NwzcCi46ZeEJXUsdHNjpnJlZD3xIFjptOvcHaLSGgnN+u+w0RcCp
-         LtO+9sNxIcFw5gqNrXH2OCTC7FuISIHJLI11AdRSObLIcQtdsc+XKAan1IUDNSSfU9ZT
-         lOyzCZWluhRgv3/mLDf1685x/KHHbjjPQlyP6p26wN+Zuse7BdbAWgA8QXHyzSVJ8Vxi
-         VG/gdqQJK+vBeBDeFBrJVh0NhIsXNaXmER9A4PlURKdVYmmZPvVTNTJtRpwnx9mW33Kv
-         MQNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWuBlA9uVCvHQ82fp3Ty+su0iNGJV9DXi/OnP8BoztRB2+VBLLiEFaWev9uvtaIG1U6dh6yF+Vtni5hlymt3Kb94mLeX87O9zbiAUJu
-X-Gm-Message-State: AOJu0YwxOfLjQixri4IcrQlSCXRLS0qcdiEvpxn9ydz3SDv/sCwlOMIv
-	WAfCa5yBon95a72nUBtv22oNCYV6GWncsq/goUSMCL+7ucS5SBtYdOB2hWpIkAQWWL9Gr83TjTK
-	S28g6XKV5h5F2IjE7/vp4G5K+1gxrZPhCXsCL
-X-Google-Smtp-Source: AGHT+IF1cRnaQFumfUlCRp41/6fgcEMzhcjpf5y7umsfzmg6pOq1H7nSsHfaaBxXD1PgiupfKYVSHQ8j8xk0GqbcK7k=
-X-Received: by 2002:a25:8f8c:0:b0:dc2:41de:b744 with SMTP id
- u12-20020a258f8c000000b00dc241deb744mr6886137ybl.32.1710249925381; Tue, 12
- Mar 2024 06:25:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710250163; x=1710854963;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bq8oySasJniwgrTVTRjL6eVYP1UAR0wtRyHJzV1J4yQ=;
+        b=Ei8cERoyauQVsnWMtHnBHJIeJGaC15Q6xXuB+a8NNo9fjmN5K6lKcfLG7Zr32cQFFx
+         qlR39TbzRHuCNhLFUX5xZHeQjrPRPeiQfNAsiFJHt3BsZfebepAzVehaqjQROQLSCG7y
+         HZdr72+t2P/gwuZX9Qj42xXyaRJEndgDMdYRJVY/te7mz+R4c9iR7GxvIqMIDCmhAqlc
+         u1UzwSnwDVGwjWwIVahr/S+iavVS/zvWzIkvn45APu4yau/6mXDZOG2GGHJbt5NYfbC1
+         1tW53Q0e160kSKzcMitFOruRUFWFQnYssBICoGQ3yZQxxBxVdyrTtqrQGBEjDAUNZveu
+         cKXw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2BgpdjXDp8qZKk50UXsMelH0sME0lhn2j1EatAaCzQ/DyW7g6uW6U1BUHVOmE/A5AYqWCXQEOUus9aHCrKa2mKx7VWwABfuExSWnJ
+X-Gm-Message-State: AOJu0Yz5NzV67I2TxO2UG8Babzexj8jAzyHDFhC23JzTCnADcg+BNjW2
+	hh7mIC5yargH7wdT6ao63h7IM9544wg96QOLwW9CwFaPVQ9YG3+AsnmJDuge6M7SOr/3uq4pJli
+	7Ysn4a5zSSXTI35aGFBAUcIj9qS9+N6pli9UVwZGOHW2jd/gKletDh58=
+X-Google-Smtp-Source: AGHT+IGZeZXXf8bH1DA0X3MAx8JZZLhiIrMrnaS65+hIG+wrDzDFoNAll+p4zbvX73DtHyoDMbY6aHVDzjeMhO65SD2eaihZWCxn
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912205658.3432-1-casey@schaufler-ca.com> <20230912205658.3432-6-casey@schaufler-ca.com>
- <20240312101630.GA903@altlinux.org>
-In-Reply-To: <20240312101630.GA903@altlinux.org>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 12 Mar 2024 09:25:14 -0400
-Message-ID: <CAHC9VhRgjNT2YnVgCqMJnyr227qUjmfrWZ+LBnu_DGxnJZgeKw@mail.gmail.com>
-Subject: Re: [PATCH v15 05/11] LSM: Create lsm_list_modules system call
-To: "Dmitry V. Levin" <ldv@strace.io>
-Cc: Casey Schaufler <casey@schaufler-ca.com>, linux-security-module@vger.kernel.org, 
-	jmorris@namei.org, serge@hallyn.com, keescook@chromium.org, 
-	john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp, 
-	stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org, 
-	linux-api@vger.kernel.org, mic@digikod.net
+X-Received: by 2002:a05:6602:2dc2:b0:7c8:de8:83c with SMTP id
+ l2-20020a0566022dc200b007c80de8083cmr141541iow.2.1710250162968; Tue, 12 Mar
+ 2024 06:29:22 -0700 (PDT)
+Date: Tue, 12 Mar 2024 06:29:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000070f071061376a5b6@google.com>
+Subject: [syzbot] [net?] [afs?] WARNING in rxrpc_alloc_data_txbuf
+From: syzbot <syzbot+150fa730f40bce72aa05@syzkaller.appspotmail.com>
+To: davem@davemloft.net, dhowells@redhat.com, edumazet@google.com, 
+	kuba@kernel.org, linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, marc.dionne@auristor.com, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 6:16=E2=80=AFAM Dmitry V. Levin <ldv@strace.io> wro=
-te:
-> On Tue, Sep 12, 2023 at 01:56:50PM -0700, Casey Schaufler wrote:
-> [...]
-> > --- a/security/lsm_syscalls.c
-> > +++ b/security/lsm_syscalls.c
-> > @@ -55,3 +55,42 @@ SYSCALL_DEFINE4(lsm_get_self_attr, unsigned int, att=
-r, struct lsm_ctx __user *,
-> >  {
-> >       return security_getselfattr(attr, ctx, size, flags);
-> >  }
-> > +
-> > +/**
-> > + * sys_lsm_list_modules - Return a list of the active security modules
-> > + * @ids: the LSM module ids
-> > + * @size: pointer to size of @ids, updated on return
-> > + * @flags: reserved for future use, must be zero
-> > + *
-> > + * Returns a list of the active LSM ids. On success this function
-> > + * returns the number of @ids array elements. This value may be zero
-> > + * if there are no LSMs active. If @size is insufficient to contain
-> > + * the return data -E2BIG is returned and @size is set to the minimum
-> > + * required size. In all other cases a negative value indicating the
-> > + * error is returned.
-> > + */
-> > +SYSCALL_DEFINE3(lsm_list_modules, u64 __user *, ids, size_t __user *, =
-size,
-> > +             u32, flags)
->
-> I'm sorry but the size of userspace size_t is different from the kernel o=
-ne
-> on 32-bit compat architectures.
+Hello,
 
-D'oh, yes, thanks for pointing that out.  It would have been nice to
-have caught that before v6.8 was released, but I guess it's better
-than later.
+syzbot found the following issue on:
 
-> Looks like there has to be a COMPAT_SYSCALL_DEFINE3(lsm_list_modules, ...=
-)
-> now.  Other two added lsm syscalls also have this issue.
+HEAD commit:    75c2946db360 Merge tag 'wireless-next-2024-03-08' of git:/..
+git tree:       net-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=16700bf2180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bc4c0052bd7e51d8
+dashboard link: https://syzkaller.appspot.com/bug?extid=150fa730f40bce72aa05
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163dfe92180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17818449180000
 
-Considering that Linux v6.8, and by extension these syscalls, are only
-a few days old, I think I'd rather see us just modify the syscalls and
-avoid the compat baggage.  I'm going to be shocked if anyone has
-shifted to using the new syscalls yet, and even if they have (!!),
-moving from a "size_t" type to a "u64" should be mostly transparent
-for the majority of native 64-bit systems.  Those running the absolute
-latest kernels on 32-bit systems with custom or bleeding edge
-userspace *may* see a slight hiccup, but I think that user count is in
-the single digits, if not zero.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b9317816c71d/disk-75c2946d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0d18e4d62eff/vmlinux-75c2946d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9089b556e6fd/bzImage-75c2946d.xz
 
-Let's fix this quickly with /size_t/u64/ in v6.8.1 and avoid the
-compat shim if we can.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+150fa730f40bce72aa05@syzkaller.appspotmail.com
 
-Casey, do you have time to put together a patch for this (you should
-fix the call chains below the syscalls too)?  If not, please let me
-know and I'll get a patch out ASAP.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5074 at include/linux/gfp.h:323 page_frag_alloc_align include/linux/gfp.h:323 [inline]
+WARNING: CPU: 1 PID: 5074 at include/linux/gfp.h:323 rxrpc_alloc_data_txbuf+0x7cf/0xda0 net/rxrpc/txbuf.c:36
+Modules linked in:
+CPU: 1 PID: 5074 Comm: syz-executor206 Not tainted 6.8.0-rc7-syzkaller-02348-g75c2946db360 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+RIP: 0010:page_frag_alloc_align include/linux/gfp.h:323 [inline]
+RIP: 0010:rxrpc_alloc_data_txbuf+0x7cf/0xda0 net/rxrpc/txbuf.c:36
+Code: 96 01 f7 4c 89 f7 e8 a0 f1 58 f7 45 31 f6 4c 89 f0 48 83 c4 40 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 42 96 01 f7 90 <0f> 0b 90 e9 8d f9 ff ff 44 89 fe 83 e6 01 31 ff e8 6c 9a 01 f7 44
+RSP: 0018:ffffc9000398f328 EFLAGS: 00010293
+RAX: ffffffff8a91d8de RBX: 0000000000000000 RCX: ffff8880284f5940
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000000 R08: ffffffff8a91d266 R09: 1ffffffff1f0c0fd
+R10: dffffc0000000000 R11: fffffbfff1f0c0fe R12: ffff88802e3a4390
+R13: ffff88801b6b5280 R14: ffff88801caf4900 R15: 0000000000000cc0
+FS:  0000555556094380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020005c08 CR3: 00000000755e2000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rxrpc_send_data+0xb17/0x2800 net/rxrpc/sendmsg.c:351
+ rxrpc_do_sendmsg+0x1569/0x1910 net/rxrpc/sendmsg.c:718
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmmsg+0x3b2/0x740 net/socket.c:2724
+ __do_sys_sendmmsg net/socket.c:2753 [inline]
+ __se_sys_sendmmsg net/socket.c:2750 [inline]
+ __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2750
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7fb02c0cf369
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdc045a3f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007ffdc045a5c8 RCX: 00007fb02c0cf369
+RDX: 0000000000000001 RSI: 0000000020005c00 RDI: 0000000000000003
+RBP: 00007fb02c142610 R08: 00007ffdc045a5c8 R09: 00007ffdc045a5c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffdc045a5b8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
 
-Thanks all.
 
---=20
-paul-moore.com
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
