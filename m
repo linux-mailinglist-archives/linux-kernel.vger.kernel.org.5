@@ -1,53 +1,66 @@
-Return-Path: <linux-kernel+bounces-100505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B60B8798D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:21:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D928798CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 207C91F22000
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:21:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1DE31F21A92
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D9F7D419;
-	Tue, 12 Mar 2024 16:21:41 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAC27D409;
+	Tue, 12 Mar 2024 16:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="camh+/iE"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017B97E11F
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B367A127
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710260500; cv=none; b=L3yI2BtJTeuv/z16ZeMd+c8e0g+Rxk97f6wu6HqfHY3d8EXfGoVM9K/v00rha0CA2vfWpJKmcGMBwPez0/ExhgcDkMoR6B158glJwJTfkYiRnQd0MtsQtVd1vdHGT3UvVVE/sJe48p5xRu3k7ZYtx9gP9S6rjzrMZz+GPrMmyp8=
+	t=1710260493; cv=none; b=gV+oBQO708GVRNzxUms9U43mDox4zljBiogsiLEXyHViiRbR/HIWaPPq+MQ6AL+MRxb4AoIy6LKEGj8lzcnIv2F6BQBZgFLTBxQhQpOEg0L7UY/HYwyFYxjpWXBY4TCR6Mz11kPuvpjjkbJci6RJL+V3C6R7UO0oEGqA7k5669Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710260500; c=relaxed/simple;
-	bh=50eYY7syBfoEwxVPYan4n/6y+gz5q6VYg8y0DY7CJ24=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jkFwmwJvhc7bRA9LpDKiuRpnsLg99xHm+Y3OHsusjUBWrIZwfpMULA0Kxrl8mIaqlzPaTkQm0CzA+i7C+I2rzoZ+P0MAu6R7V3RitML1joz1MKEHBzT3hZxr05BNzbsNrND/yHPOyUj51iMl/k2iJ/DdWDa5Wn+A7PkzN9PiJ7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from abreu.molgen.mpg.de (g34.guest.molgen.mpg.de [141.14.220.34])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 1C5C461E5FE0A;
-	Tue, 12 Mar 2024 17:20:39 +0100 (CET)
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Xin Li <xin3.li@intel.com>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/fred: Add missing *it* to Kconfig description
-Date: Tue, 12 Mar 2024 17:19:58 +0100
-Message-ID: <20240312161958.102927-2-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1710260493; c=relaxed/simple;
+	bh=MsRp4JisI5eNtN5dgiPuwkfeV04dXLem3AOVgjpaZK4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BEdJU/QQmNmeA0QpgSOmfBoGaMyz/i1cgVDgRt7lz82W3WuVomkhHB4N/Q/vTnTVCPhYjZ3XjqkU618kRykaNkFxon+pOj1xI7houAXYozMfz7Cok74CkCoq3L59kO3j5NZgiYpJeEP1k2COwtjZtBNuxIByM8v659RcJKf5iDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=camh+/iE; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710260491; x=1741796491;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MsRp4JisI5eNtN5dgiPuwkfeV04dXLem3AOVgjpaZK4=;
+  b=camh+/iEnRGQjNMe7XzKGtQGOvrhz3bAvyFg1aXYQaMOqfMHP9899wVl
+   jbfN4b33rOiMUH5oVJSxOp2pgjuCHM1LZa2aIcFHdpsRlsabafdu9uIwW
+   9pSL+BdOK5kw1dVfgzdJcqjw2CK3EhbYaCWefIR/L7LGaYNlUPddnmUs4
+   axXguPfXFYG2CBJ0kCSFkEAHCh+hg7lcMyWU/CWsOFgY7IoGOs7+umblG
+   jT/HGkNDDVXviyt7u1fqkiA3GGF1G+7bl7FGBrzo7/glFcQJE+7vNXUsC
+   2fpDLnosGVFuSm8PJtIvqGzFIkgCohRQgQdvQARwMer0fDnNbQj3monKq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="5585656"
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="5585656"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 09:21:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
+   d="scan'208";a="11686637"
+Received: from viggo.jf.intel.com (HELO ray2.sr71.net) ([10.54.77.144])
+  by fmviesa008.fm.intel.com with ESMTP; 12 Mar 2024 09:21:30 -0700
+From: Dave Hansen <dave.hansen@linux.intel.com>
+To: torvalds@linux-foundation.org
+Cc: x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [GIT PULL] x86/apic for 6.9-rc1 (includes a new revert)
+Date: Tue, 12 Mar 2024 09:21:25 -0700
+Message-Id: <20240312162125.136813-1-dave.hansen@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,31 +69,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The sentence is incomplete, so add the missing *it*.
+Hi Linus,
 
-Fixes: 2cce95918d63 ("x86/fred: Add Kconfig option for FRED (CONFIG_X86_FRED)")
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
----
-As a casual user, I wouldn’t know how to figure out, what is required
-from my system to support FRED.
+Please pull an x86/apic revert.  The reverted commit is not x86/apic
+material and was cruft left over from a merge.
 
- arch/x86/Kconfig | 2 +-
+I believe the sequence of events went something like this:
+
+ * The commit in question was added to x86/urgent
+ * x86/urgent was merged into x86/apic to resolve a conflict
+ * The commit was zapped from x86/urgent, but *not* from x86/apic
+ * x86/apic got pullled (yesterday)
+
+I think we need to be a bit more vigilant when zapping things to
+make sure none of the other branches are depending on the zapped
+material.
+
+--
+
+The following changes since commit f0551af021308a2a1163dc63d1f1bba3594208bd:
+
+  x86/topology: Ignore non-present APIC IDs in a present package (2024-03-06 14:35:30 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86-apic-2024-03-12
+
+for you to fetch changes up to 532a0c57d7ff75e8f07d4e25cba4184989e2a241:
+
+  Revert "x86/bugs: Use fixed addressing for VERW operand" (2024-03-12 08:33:51 -0700)
+
+----------------------------------------------------------------
+ * Revert VERW fixed addressing patch
+
+----------------------------------------------------------------
+Dave Hansen (1):
+      Revert "x86/bugs: Use fixed addressing for VERW operand"
+
+ arch/x86/include/asm/nospec-branch.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8f7271d9f1d7..5fc9fdb84f46 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -504,7 +504,7 @@ config X86_FRED
- 	  When enabled, try to use Flexible Return and Event Delivery
- 	  instead of the legacy SYSCALL/SYSENTER/IDT architecture for
- 	  ring transitions and exception/interrupt handling if the
--	  system supports.
-+	  system supports it.
- 
- if X86_32
- config X86_BIGSMP
--- 
-2.43.0
-
 
