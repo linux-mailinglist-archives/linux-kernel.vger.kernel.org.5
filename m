@@ -1,170 +1,155 @@
-Return-Path: <linux-kernel+bounces-100633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DEF5879B01
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:09:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39E48879B05
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7959E1F23353
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:09:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4889B22F2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F048E1386D7;
-	Tue, 12 Mar 2024 18:09:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2988139577;
+	Tue, 12 Mar 2024 18:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="MO5r/bpc"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="hItb5obg"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C93F7C084
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:09:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D37C1386D8
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 18:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710266985; cv=none; b=n4k+Z5pE0PS7uIHlTDz8xDCQsMGZZk3oDl/ERo0WWzN1R2SE/XzDyfURDGN7PvxppyQEQWMvR4EDzoez1nSft80KfM1trAARfwbhVyQmPK9jPwVqx01KqA8PzU+RDDJ9xVtTUO8hy5P+f5Ul2QLNrMxCbLGgRm09D6+EmCGhgN4=
+	t=1710267092; cv=none; b=eLyq2L2Ena34UcsoZezvCqVXJnV+Ae4LgK5rt+1QqsVCWAu7Kbv169+706awg4HDMIGBVt5q9896seTjIpO2DR1OcljskV3MxlSixVeDf9KzymQiq82p3q61R4MvzMgv3DTtYXQ0Nzko8zyrAs85ByMWbS1sabi0EGfw2HmZzDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710266985; c=relaxed/simple;
-	bh=N6hbKJDOHWvCISGJQnkD0ws17JAmMnk10DjL7GMCPbQ=;
+	s=arc-20240116; t=1710267092; c=relaxed/simple;
+	bh=ClDlP3smAv1X4jMWrBHkgaTmWKeGG4uG9hpj1wGBbXo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F0mdnRzSq1Hk1lkhINFpOs8S3x28aGgzRycxtB68mRrNINx0rEdJegFX7mYbBUhbPwYW5TzdslC3kYVorkeVfXiEWa2TrAz81aUfcpZjle2AG99LHyF/SVEqSCAMyR4tak0mFdQpGzcnbd2fBQWkeCUWMOQNPtSOZnhCSWpSTOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=MO5r/bpc; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-60a0579a955so47184297b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:09:42 -0700 (PDT)
+	 To:Cc:Content-Type; b=BNlsRi0yUkJsD2+nEj6p8z1uGrFbLwVT7l+kZcYVS4mIwzfcuPBLDK8ZBbZ9ZQuStZ2YWcU4oPYBc2Uo+wZtl2XfeHrFGwCao2L3aXfV7rcw4BEXF+q2xQFzlyoLIJZhPuTLFCfMV8pFs0voyfh4GdNUpA37v9CRE/3GMrf07tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=hItb5obg; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d2991e8c12so1054291fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 11:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1710266981; x=1710871781; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1710267087; x=1710871887; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KQo4IO+Obsv8ytjIy9Irob+LVNNIUZt7hIxL51DJ3S4=;
-        b=MO5r/bpcbRlLiTsp9jHWfjaVz2xFdsbjA3WrrFORsFaQ30hrndnLV0mAUzAs1NXtB4
-         74JpTG96HcpxDOSDljAgEsZLY0BNd9Ltn8E/pFES4HGXU4VNFCFBngQxqoDPNd6q62qE
-         govHWYfzwT2mAJ8eMTsXrVAcw/wvCLscgQ0o9GTsRdVGEsF9djHkdNjxvKtbfvmLPuI+
-         384kgTxt8H6bYC43XfkgtIjgeS1NW+NwKej5842rQLRKDz29ECaKG6xDekPP/xjFDw9t
-         q6G/4/8ZOaksFas7uPvCNPgz/U55+v3XFqLUGLQorjBn/X60qhnSyciYh/L/FQZjOj8j
-         iFHw==
+        bh=ClDlP3smAv1X4jMWrBHkgaTmWKeGG4uG9hpj1wGBbXo=;
+        b=hItb5obg0VcyQtwThuLHjvNy+3Qft/s7DjsTuhN+7I4+XGIXdqilTf6J1pv9fp6ykd
+         lDf4Zj87TaX/e+/Tx+N8zhlL86g6bykkdK6EWoixAf/96Wul6Df5V6tthBWfrroVPvba
+         jeexNo7nkb3shA4wcU542qtmnSz+9LVrBQa3rg0p+tivMOV/mHRnKAhyp11mh0hbpbRe
+         cVkLg3us5oY7/vgegnk941a7ma2W+9bIH9vl+sfTmp3MwKfwqVvEAQDZ63g8RB9KrNs1
+         X6uJ4tKeBPiX/KIvOUe1XFROoc5mtneXkTFznyUpXBJQjFXxPavoKV0k1BFUQqJ45bJ8
+         02Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710266981; x=1710871781;
+        d=1e100.net; s=20230601; t=1710267087; x=1710871887;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KQo4IO+Obsv8ytjIy9Irob+LVNNIUZt7hIxL51DJ3S4=;
-        b=JqK6kBMqpZ3fvksm7Xtynj4V+3/qSrl/pY1MZepSvgxcUEofWVC3FSEu2okSHird8m
-         gzPBLxaIh9iv96s3Cwg1todrFp71tn9+xSKRkDgoAwxRnIh5yljJY/eWCEg19YRUxDM1
-         xUr4E8ooX7O7Tweb8SHK47w58t0IbaRJuNuYzkByonctaWa/JvfkLhdUxwtOkp2zhHEf
-         hODOY5ElGi9G7/k9N0pyDk1I2nU37i+sIdW9eWtGKE0FgayeaeIRP+oruLkx/bEhDfJW
-         u6pKQQk+9NTMQuA9DuKtvKsEkxP63bhcLfDY/cdLtqpVYZX5g9Dg4V4rRtrKl1ZvRsWL
-         oTHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXAeISTUdZAgqQjsazQ2dk2XVtFsYG2y0zxZqetnXUCWCMHLbAUezzCZAd/DuOlR+nNYauJ61SHwGWA2kPoEU+Mb+fMbfOdr6aACjJF
-X-Gm-Message-State: AOJu0YyxDvX2BSuWSPTC+BbQKHYd4ZIpzkKC6mWF+F1Em0T/+W6gOjR4
-	/wx/kFPb2RyDZyZaYI3cwiSML16tqgnp/4M4rtNZGiQfIFyeVRHqkQrNWuZsF01CQ+ges1oEibC
-	gpVN4prKYWBOWOQwHvNTclc9CcuWSqJAnGjDl
-X-Google-Smtp-Source: AGHT+IH6XUpoIR4I7KGxCGGcQZ+fLoTY6rtMqBf0P2fTFq0mAdMh6HRJQ6lDe0ysu+Y5GV5ITdX5ZTJY7Yana+iWyGc=
-X-Received: by 2002:a25:bf8d:0:b0:dc6:19ea:9204 with SMTP id
- l13-20020a25bf8d000000b00dc619ea9204mr212004ybk.61.1710266981294; Tue, 12 Mar
- 2024 11:09:41 -0700 (PDT)
+        bh=ClDlP3smAv1X4jMWrBHkgaTmWKeGG4uG9hpj1wGBbXo=;
+        b=JCIt4HHfOZgsD8oRK+aNl6szUR9ekv6NErO0i9aMpdszTY4zRoAXzHF2Cd3Yq94PKb
+         8PqUoyskRHJ3YkAZHq7KrgF43arAodnPiSipWFZOMsGkQ0mPGA1z95s4++DebIqqXqG1
+         OAIuym4vh/JUq+TInMp8pTWe61U9oI1rT12YiS9ZVhPUNwVcJ8WXFQU18Z1EKpMC9Ktc
+         /gj4rnYRhv/1AUpPSOtZxigQ2/Swk47oGmiTjrljEuGS2rBAf3hh3Edzb8yp0rWdjFys
+         A8nMT6XufU7LzTpJv6ij0QyTyb+iLDXrV7YUy2kgeR1GsO2fGCFm7B2iROAYXkzttEeo
+         pErA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwjwChuKSlHeSHJaUTfHBq3Rp/E30h4tbHY9gP2bIKzKvL86zrs9W8WmKI2X+VPOJSCLd2V1QKojFmqM6DM8iqDyjSTEow2RUTGxhP
+X-Gm-Message-State: AOJu0Yziql1bjTS3zGbvxgUxkDBHD1taYgNVLV3BUV9CrD9K7Y3HpTdN
+	j/jwffr6Fou/xYumkDUi371yswlTm6mkq6CB4VwwcZVTU2oDnOTDOpwFw6ElK7/4Re7x+wQZM35
+	rUcN98NrRTvopU32E5efOHUv5KOCAyZOzD+pT1A==
+X-Google-Smtp-Source: AGHT+IG5phwWtKzG7Qn8SCd38fKlm0T82meI6dpteEwueBcej3WDzgs7PvhaHkNK5lcZJgN4BCTdYivMSrjkWh/EdOQ=
+X-Received: by 2002:a05:651c:324:b0:2d2:31a8:cb1a with SMTP id
+ b4-20020a05651c032400b002d231a8cb1amr113200ljp.13.1710267087555; Tue, 12 Mar
+ 2024 11:11:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230912205658.3432-1-casey@schaufler-ca.com> <20230912205658.3432-6-casey@schaufler-ca.com>
- <20240312101630.GA903@altlinux.org> <CAHC9VhRgjNT2YnVgCqMJnyr227qUjmfrWZ+LBnu_DGxnJZgeKw@mail.gmail.com>
- <f122b3a9-1208-4c0b-9289-73eb070a8337@schaufler-ca.com> <CAHC9VhRfwjsGiHXBRcWA6S9+H_kj0vMdQC0gyHr3ZnX-u7KzRQ@mail.gmail.com>
- <f4f5d993-552b-483a-9a3e-1be99ea48757@schaufler-ca.com>
-In-Reply-To: <f4f5d993-552b-483a-9a3e-1be99ea48757@schaufler-ca.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 12 Mar 2024 14:09:30 -0400
-Message-ID: <CAHC9VhSewmfbuqyTMgC7MRcw8EcQN0Srdsxmy5r01cCN8U5pAw@mail.gmail.com>
-Subject: Re: [PATCH v15 05/11] LSM: Create lsm_list_modules system call
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: "Dmitry V. Levin" <ldv@strace.io>, linux-security-module@vger.kernel.org, jmorris@namei.org, 
-	serge@hallyn.com, keescook@chromium.org, john.johansen@canonical.com, 
-	penguin-kernel@i-love.sakura.ne.jp, stephen.smalley.work@gmail.com, 
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, mic@digikod.net
+References: <20240312094133.2084996-1-max.kellermann@ionos.com>
+ <58fbe42a-3051-46bf-a3f9-d59da28a9cd7@redhat.com> <CAKPOu+8AQ8g_bEOBRoLiiO6eYBGj09YiUx=U0QPnB0Csifa6xw@mail.gmail.com>
+ <37ed1ddd-f1d0-4582-b6c5-2f4091dc8335@redhat.com>
+In-Reply-To: <37ed1ddd-f1d0-4582-b6c5-2f4091dc8335@redhat.com>
+From: Max Kellermann <max.kellermann@ionos.com>
+Date: Tue, 12 Mar 2024 19:11:16 +0100
+Message-ID: <CAKPOu+_EwyQEEVV9ULEkncp3727eLGvqD5aswpkG5CtaZ=oJBQ@mail.gmail.com>
+Subject: Re: [PATCH v4 00/15] Fast kernel headers: split linux/mm.h
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, willy@infradead.org, sfr@canb.auug.org.au
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 1:44=E2=80=AFPM Casey Schaufler <casey@schaufler-ca=
-com> wrote:
-> On 3/12/2024 10:06 AM, Paul Moore wrote:
-> > On Tue, Mar 12, 2024 at 11:27=E2=80=AFAM Casey Schaufler <casey@schaufl=
-er-ca.com> wrote:
-> >> On 3/12/2024 6:25 AM, Paul Moore wrote:
-> >>> On Tue, Mar 12, 2024 at 6:16=E2=80=AFAM Dmitry V. Levin <ldv@strace.i=
-o> wrote:
-> >>>> On Tue, Sep 12, 2023 at 01:56:50PM -0700, Casey Schaufler wrote:
-> >>>> [...]
-> >>>>> --- a/security/lsm_syscalls.c
-> >>>>> +++ b/security/lsm_syscalls.c
-> >>>>> @@ -55,3 +55,42 @@ SYSCALL_DEFINE4(lsm_get_self_attr, unsigned int,=
- attr, struct lsm_ctx __user *,
-> >>>>>  {
-> >>>>>       return security_getselfattr(attr, ctx, size, flags);
-> >>>>>  }
-> >>>>> +
-> >>>>> +/**
-> >>>>> + * sys_lsm_list_modules - Return a list of the active security mod=
-ules
-> >>>>> + * @ids: the LSM module ids
-> >>>>> + * @size: pointer to size of @ids, updated on return
-> >>>>> + * @flags: reserved for future use, must be zero
-> >>>>> + *
-> >>>>> + * Returns a list of the active LSM ids. On success this function
-> >>>>> + * returns the number of @ids array elements. This value may be ze=
-ro
-> >>>>> + * if there are no LSMs active. If @size is insufficient to contai=
-n
-> >>>>> + * the return data -E2BIG is returned and @size is set to the mini=
-mum
-> >>>>> + * required size. In all other cases a negative value indicating t=
-he
-> >>>>> + * error is returned.
-> >>>>> + */
-> >>>>> +SYSCALL_DEFINE3(lsm_list_modules, u64 __user *, ids, size_t __user=
- *, size,
-> >>>>> +             u32, flags)
-> >>>> I'm sorry but the size of userspace size_t is different from the ker=
-nel one
-> >>>> on 32-bit compat architectures.
-> >>> D'oh, yes, thanks for pointing that out.  It would have been nice to
-> >>> have caught that before v6.8 was released, but I guess it's better
-> >>> than later.
-> >>>
-> >>>> Looks like there has to be a COMPAT_SYSCALL_DEFINE3(lsm_list_modules=
-, ..)
-> >>>> now.  Other two added lsm syscalls also have this issue.
-> >>> Considering that Linux v6.8, and by extension these syscalls, are onl=
-y
-> >>> a few days old, I think I'd rather see us just modify the syscalls an=
-d
-> >>> avoid the compat baggage.  I'm going to be shocked if anyone has
-> >>> shifted to using the new syscalls yet, and even if they have (!!),
-> >>> moving from a "size_t" type to a "u64" should be mostly transparent
-> >>> for the majority of native 64-bit systems.  Those running the absolut=
-e
-> >>> latest kernels on 32-bit systems with custom or bleeding edge
-> >>> userspace *may* see a slight hiccup, but I think that user count is i=
-n
-> >>> the single digits, if not zero.
-> >>>
-> >>> Let's fix this quickly with /size_t/u64/ in v6.8.1 and avoid the
-> >>> compat shim if we can.
-> >>>
-> >>> Casey, do you have time to put together a patch for this (you should
-> >>> fix the call chains below the syscalls too)?  If not, please let me
-> >>> know and I'll get a patch out ASAP.
-> >> Grumble. Yes, I'll get right on it.
-> > Great, thanks Casey.
->
-> Look like lsm_get_self_attr() needs the same change. lsm_set_self_attr()
-> doesn't, need it, but I'm tempted to change it as well for consistency.
-> Thoughts?
+On Tue, Mar 12, 2024 at 5:33=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+> Just curious: why? Usually build time, do you have some numbers?
 
-I'd suggest changing both.
+(This has been discussed so often and I thought having smaller header
+dependencies was already established as general consensus among kernel
+devs, and everybody agreed that mm.h and kernel.h are a big mess that
+needs cleanup.)
 
---=20
-paul-moore.com
+Why: Correctness, less namespace pollution, and the least important
+aspect is reduced build times. However, the gains by this patch set
+are very small; each optimization gains very little.
+
+Some time ago, I posted a much larger patch set with a few numbers:
+https://lore.kernel.org/lkml/20240131145008.1345531-1-max.kellermann@ionos.=
+com/
+- the speedup was measurable, but not amazing, because even after that
+patch set, everybody still includes everything, and much more cleanup
+is needed to make a bigger difference. Once the big knots like
+kernel.h and mm.h are broken up, we will have better results. And as I
+said: build times are nice, but the lesser advantage.
+
+Anyway, this first patch set was so extremely large that nobody was
+able to review it. So this patch contains just the parts that deal
+with mm.h; later, when this patch set is merged, I can continue with
+other headers. (I already have a branch that splits kernel.h and I'll
+submit it eventually, after the mm.h cleanup.)
+
+> I'm not against splitting out stuff. But one function per header is a
+> bit excessive IMHO.
+
+One function per header is certainly not my goal and I agree it's
+excessive; but folio_next() in its own header made sense, just in this
+special case, because it allowed removing the mm.h dependency from
+bio.h. Removing this dependency was the goal, and folio_next.h was the
+solution for this particular problem.
+
+> Ideally, we'd have some MM guideline that we'll be
+> able to follow in the future. So we don't need "personal taste".
+
+Agree. But lacking such a guideline, all I can do is make suggestions
+and submit patches for review, trying to follow what seemed to be
+consensus in previous cleanups and what had previously been merged.
+
+> For example, if I were to write a folio_prev(), should I put it in
+> include/linux/mm/folio_prev.h ? Likely we'd put it into folio_next.h,
+> but then the name doesn't make any sense.
+
+True. But since no folio_prev() function exists, the only name that
+made sense for this header was folio_next.h. If folio_prev() gets
+added, I'd say put it in that header, but rename it to, let's say,
+"folio_iterator.h". But right now, with just this one function (and
+nothing else like it that could be added here), I decided to suggest
+naming it "folio_next.h". If you think "folio_iterator.h" or something
+else is better, I'll rename and resubmit; names don't matter so much
+to me; the general idea of cleaning up the headers is what's
+important.
+
+> The point I am trying to make: if there was a single folio_ops.h, it
+> would be clearer where it would go.
+
+Maybe, but IMO this wouldn't be a good place to add folio_next(),
+because folio_next() doesn't "operate" on a folio, but on a folio
+pointer (or "iterator"). Again, names don't matter to me -
+ideas/concepts matter. I'm only explaining why I decided to submit my
+patches that way, but I'll change them any way you people want.
+
+Max
 
