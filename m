@@ -1,85 +1,70 @@
-Return-Path: <linux-kernel+bounces-100320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768488795AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:08:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873E38795AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:09:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8E71F24FFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:08:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCD072834E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:09:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C26A7A72F;
-	Tue, 12 Mar 2024 14:08:06 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265557A72E;
+	Tue, 12 Mar 2024 14:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SDPhDzwz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BEEA78298
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BF77A72F;
+	Tue, 12 Mar 2024 14:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710252486; cv=none; b=dJye+u2e5r7wJovXc4TupUACTaOlRfaS+GdRdR+E71pFCJ7akxcmrtQvOIYOrLvcUsvVSNe5vq8UN3r0emCFPQBt4xp0VwyDGM1WrQw6XtgbnBBjVq3yDDDRs1GpscNJ7nwHruWyQJyaxHzNYAXvwAm6qQ3jAjx6UocX1bsIyT0=
+	t=1710252568; cv=none; b=eRgOYCgG6aVOBDSkMb7751LERHW7fb5JglBUV2xBmJurSIXFN9hNqmTVpEkGrdKOg1mC9vlU/iUUNaVTqK5qLamq5koW2tzavwGVrdlOWaCNv9aAH0TKGMOubNCkyBEJzYXoGRAVzCi7IZw/k38sMzC/X+xyCFem6TG9p/lgnwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710252486; c=relaxed/simple;
-	bh=HHVDSFp36ZnZErKZO9wmMVy6SRsc9Fju0AWIIIYPKSk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=TKxrgpmetc4AsEETo9OJ2tladMPxkveH/APNkJlsCTELLPMftiAIHHJiJgYD3O8XXGyzyRaYu2vQMNql8GVdTL5lShPr4EKwhpaRBm4Q2aBt5kJ6kUg5ZxHvplnsKTReyhfiJTg7Yoz0YAYd/WCHrf714ZfskFz4KMFsyCl4rdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c8a87a58e5so304455539f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:08:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710252484; x=1710857284;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CRxbYyAl65YGCI67bVSRKMZcJ777VEo8CqlNScBoQqs=;
-        b=C2xRzaIZzwb1IxmfRdAnHFTKelcbEJqOstIscBNDqp89oirnudwlsQKUB4nVBbQzAd
-         jWFBFBT3MKEGU4H4cXrZ84UX1BVUgbTnyEacaO9S3oxGsMMBqQBjP7vDWROFKB9+O2Yz
-         ol2CGuxjvnypcTLvH2docnpFLMCMWgOgnkdg0k9SLIvze72hImmhou4HvjOB8uEjm+FF
-         vA7zJDS8f2pzvFPdHZLo6gKPB/6ngWUzuDp+hncAKTxrytKXUAxt+RPrkzam4iQDXBpK
-         fnKIyZSeVJDcZUzNn1gDsE4E9kDTPYdd5gikUhSIoXSLaTazm+rWs70/rKlU4HqZ2E1E
-         5VIw==
-X-Gm-Message-State: AOJu0YyDrHeENsyKomW5z8v5ZXiYTVQbYGOvsuW++wCMujolk2FgR5yF
-	289R93mMjnAwhvChcMYWHOe8YMFzPFcE5z4C84wVsh5VxizIolKrBOPQPnt77xRqsFFq9FKY5lX
-	YCY1/QK+Y7o8ASJGnzjVx2FXy/t6e5K5GLMcCD+IR3KBgm/R9Mci1CHQ5hw==
-X-Google-Smtp-Source: AGHT+IFIwSTCU3UVGry21b/AXH+QRACbvZwjrdsA5TJxonFxftKG/2wmtwt125G5mhHrX3vEuM08OBAWFvb4epFP8/ZIBqbWbnZH
+	s=arc-20240116; t=1710252568; c=relaxed/simple;
+	bh=OHs6gIp06vpbC5HdsLdDt0/n/SfwHjJGPz0I98zSqfs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KNFcLXevuEu0FBGjX9tkVaeHFkDz5E7lXliJYv4st6wHJoxgBZt3fijV1+rI478f7CVVXgakDCkV6XCJZki2ht9p0gX+RKJB4xoGRV98CEgFQrYT2bYWycmEfLJFkFaA7gBuxYAgHdVsuXUAMrYKotFrRVBVbwbIrJdp8osy0p4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SDPhDzwz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03886C433F1;
+	Tue, 12 Mar 2024 14:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710252568;
+	bh=OHs6gIp06vpbC5HdsLdDt0/n/SfwHjJGPz0I98zSqfs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SDPhDzwzLqpuGijqDS+OzUrakyRVTlV1DR+spBDFh//uvaNDw4JC9VkrVVAbDkq3d
+	 S53lr4jBcpaLd04yul/H5zKEMrAfsy0dY1vPYMXluXzxbHFH4YYg+Srz/w1H6M8SPe
+	 RHkzEMq1FXDffGOuklgN/QnvkO9mdWHNEnjoWPAKWl7OBrWw2on5uXOnwDzDr/+dA1
+	 0WV4mTZJzWPk/IGLBnA5xqQevzs2wf3zMpCk/MySOti4UC0ndNQAzUZNCu5HPvd48f
+	 1tYrsP91FWoL3iQv3hukk3F3h9Zixx5lv1m5cH2ubbDzyH+VLBr9ZXazJE1woVvBoD
+	 Oy8lQU/9ly9dg==
+Date: Tue, 12 Mar 2024 15:09:23 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-fsdevel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Seth Forshee <sforshee@kernel.org>, Tycho Andersen <tycho@tycho.pizza>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] pidfd: add pidfdfs
+Message-ID: <20240312-akzeptabel-ablegen-d82c1e8f4e23@brauner>
+References: <20240213-vfs-pidfd_fs-v1-0-f863f58cfce1@kernel.org>
+ <20240213-vfs-pidfd_fs-v1-2-f863f58cfce1@kernel.org>
+ <71bc82f4-b2df-c813-3aba-107d95c67d33@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2581:b0:476:e064:b02b with SMTP id
- s1-20020a056638258100b00476e064b02bmr407170jat.0.1710252483815; Tue, 12 Mar
- 2024 07:08:03 -0700 (PDT)
-Date: Tue, 12 Mar 2024 07:08:03 -0700
-In-Reply-To: <ZfBbcgv4PHg7SojP@zeus>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c640a80613772f82@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KMSAN: uninit-value in nci_dev_up
-From: syzbot <syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, ryasuoka@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <71bc82f4-b2df-c813-3aba-107d95c67d33@linux-m68k.org>
 
-Hello,
+> What is the risk this will not stay entirely optional?  I.e. can it
+> become a requirement for modern userspace, and thus be used as a stick
+> to kill support for 32-bit architectures?
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         9f8413c4 Merge tag 'cgroup-for-6.8' of git://git.kerne..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=127fa91a180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
-dashboard link: https://syzkaller.appspot.com/bug?extid=7ea9413ea6749baf5574
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16060901180000
-
-Note: testing is done by a robot and is best-effort only.
+Yeah, Linus has requested to remove the config option.
+I'm about to send him a patch.
 
