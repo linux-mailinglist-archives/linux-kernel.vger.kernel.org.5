@@ -1,81 +1,85 @@
-Return-Path: <linux-kernel+bounces-99986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B75DA879046
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:04:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B5B087904A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCC0CB2168F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:04:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A32201F229A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 09:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4814A77F20;
-	Tue, 12 Mar 2024 09:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE90E78272;
+	Tue, 12 Mar 2024 09:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dgVrCpjh"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tv5xst78"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A278877F08
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 09:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2671078265;
+	Tue, 12 Mar 2024 09:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710234259; cv=none; b=NkUbhr6XA5TMvvUAXeB4hBvc1j0OTCDbDXkw9+4R9ahekSY/zgl8ZX80tXIB44Uk1d56Eo670iOGiKLTT69YxwFeldtNlMoEpniooeg4VGiGO8MVcLO6z813lzIj63qlj7s5dtwK4hb5H05g/Sb/xhdCB2ae3ZaFJ4KdvU8/qzk=
+	t=1710234264; cv=none; b=PuxRQT9DckiHzbnYKs8RdzCVWxbTVkOaWU6P8uuHRILlhsehtr+FpJNQjmEcUTkEY2amX2KmIQ0gRLwASbsL2gPSJVcN9zdhUnlbfL6u+vTaEna7suk8GPMrgkih342mkjZBVugUNMtwi6/qLT8ldwii9nXMqlPJ37QkvzwFsDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710234259; c=relaxed/simple;
-	bh=8cPRkKDwhOjOinN7/KvqFlSp2n3BNkd495iOvtqXRig=;
+	s=arc-20240116; t=1710234264; c=relaxed/simple;
+	bh=qdhaJZYzAfGiNZcY1AyLkSazWvntkfiFETQEFvh2LUY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SeuPj0m+HUEvTpM7qsfamJIFMP9rJAy9soKC4RCC/0SA7IxpxV9yiiPUFlYfHizTasaOFxtQbosrcdADoMPuAJYXeXe035QagNS/VTnoM+9mqRMlDEdLN9K7qqXX7uXOy96sG/1/GCoHQ5d89WSx84rFZZ+Qca2CPRX2nnpDBiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dgVrCpjh; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=K9HXPNg9ws3DdXZSk+T3Mh3tdsyjysJCm8I99+XtZsDqwjy64i1cQUcHQYBChsCQaveW1Iagce8424DaTwUKgLT/z0H8e5MullVpmGNiWYk5bVsNSwpC9s2/44DHVqTFo82JsTcPAPtT+SFeDl5PSpR/xC0bEUiJhEZzAq1rAZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tv5xst78; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51381021af1so5056162e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 02:04:17 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d459a0462fso4603281fa.2;
+        Tue, 12 Mar 2024 02:04:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710234256; x=1710839056; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710234261; x=1710839061; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1O7zxAyQF3D3E9D7zRfWoSnQN6R55rWso5I91Sy8Nv0=;
-        b=dgVrCpjhKWUJFflAcwAdpjeTnlaM8VZjwpCN4XmXKGQwPHyGfkYMHyem4XrSf1zkZT
-         hQpuURjyy6eYpLfsb1OckVzGSuBubA51REqJX00J+Nj6KaLcKoVQp09pNbsU5VsKmc+G
-         VYQzynra7RnGTTXGbJR11AdwqR6qtWJ61nfCX9BlefWlM+VgwTbbjs+hN2DmTHdGiM2V
-         uOt4++qJJNN5qbPRHiPT+KWeIYSXEpHO92nrPz0rOagHeZ2bqwcnTh5446ZqfMfG3VJt
-         gfVjbTgzcIVkamWXrQcZeU/yTbE41xTEiTvjXXzwSahdQk7dvE5i/PAnqqCFCu2+yWAi
-         X3vQ==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h7rk9dzFLtOBBhT0DXPNQ6GEvnLtRWY6goiKR1vrVJs=;
+        b=Tv5xst78+A8ASuTgxrg58ew1kXl/8m5G0Dr1XjWa/6jVCSFp3+6FyBEgeAt75EUJal
+         eAD7E9uCgjh8qdN+0FiCetLnWRqnU8fs0YMt+THCCZAYRvGn9OZ1YFYPjtYNXKV/DwjD
+         T7T1aROpSHvS+Jx2fr6Z5b2jZfKjkXmRfd6qHw9LG8NVdKoNzJ/nZL5C7BjYWqbLVetc
+         OHbUK1ZRZY32oiDK/ACjtQfnLUvKJAyT1EJxx3vqmAWRB/3/Ae8AlJdPhcdWuXKYmG9D
+         abRDgZiYb7nV5zTqx+zMKazeED2zLPUeHdk1iMZhVp2PYhDP4p+iJ3uoCv1cVYVxro47
+         LqLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710234256; x=1710839056;
+        d=1e100.net; s=20230601; t=1710234261; x=1710839061;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1O7zxAyQF3D3E9D7zRfWoSnQN6R55rWso5I91Sy8Nv0=;
-        b=lj3IxLnkmApJplv9guQCCUWYNEbrmpmtGhOlSxjnSBiB3r3oJpW42Ln+C1vF/KadGM
-         EAs8DYct5myxXqi/ixbVmAs0/U4qwx9pR3NcE/ia+w7Ze4WqR99EqMexK6wqp1cqEw+Q
-         nf2turTz9D/EAy1+QWMLx7/dmRYa90gw4gQS2x9jtRmNckmEDrLoSvusD6IiRhb112WK
-         qoO9/cCQg2ky2LDK3tqkIcp/s5g2KseFpWlV1gtRpQ4fTva86R1rJaqw0rST1iVA5iE7
-         RSwndyS1kyt4KqyGJwzSaRtBC3akiVm21Je3DrUB2cw/WBhysl89Z+gNmx1CQPyxCv8C
-         zCMw==
-X-Forwarded-Encrypted: i=1; AJvYcCWwwk5gQjHqDOusqQSl5mhui/YjCvmRP7l9Xj52DI2B+zmZyBf9XVSTZyIh+jCnQtbjXlfDdleePt0q4v9RzYtNdv0mdGdMupE7zeaT
-X-Gm-Message-State: AOJu0YwD2/YuxvH/6C47ZGwmNDnfwoNy9Msr06pUdQXbBDM/GdiWWbdA
-	8wUIbknzHUGQjO/2ZJKPhGj4sDKmw6L6DOsVax2jBY08Voo+r7HjoT5E69E4Wp8=
-X-Google-Smtp-Source: AGHT+IF7jRGKUWcc9+xc1C8LaTDLuV1gfOIdPpXZDA45JouV+odf1Ft319wMfzCFJft299C7xXkSPQ==
-X-Received: by 2002:a05:6512:238e:b0:513:a738:20f1 with SMTP id c14-20020a056512238e00b00513a73820f1mr5437293lfv.25.1710234255222;
-        Tue, 12 Mar 2024 02:04:15 -0700 (PDT)
-Received: from gmail.com (1F2EF295.nat.pool.telekom.hu. [31.46.242.149])
-        by smtp.gmail.com with ESMTPSA id n2-20020adfe782000000b0033e7715bafasm8516787wrm.59.2024.03.12.02.04.13
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h7rk9dzFLtOBBhT0DXPNQ6GEvnLtRWY6goiKR1vrVJs=;
+        b=WhizYavShXxuRHm90XA/Hkf5vHsLnHSk+F1L1vJv+Fh8kcufYPTmdINmfRsYjxoZ0C
+         17E/TkrvmphV4oc1Nq5H4vrAZCMi1/VzOv5cw6nXCFLwtbeiSBBubX0ECQbp14lEWdJw
+         g3OH5AaL7kXTYbUKBmo7ByEJAcZCGpbqKmEJvQh4gEtuWvc7W5rH+nAwWK/PWm+zAuav
+         Sdr6UlLEfhIOO7h41TzQnYm4GK/UjkEZXVyAIHXINUHAiCdlzR4avqYG4My8gXavN88+
+         6LQYFcFA6Mw9w4UQ5J/q0UZUWSmy4QUv58ILm4dcDhb80eTcpT/BMAAwwITyGyhUXc58
+         KqdA==
+X-Forwarded-Encrypted: i=1; AJvYcCX+X25MmAaSAKYz8B9kiTzCs/XFhkv7sUlvs7bya2YdsQqRq1IR1RX0E4XCRW8y9qC6Ty4V0yuGe5EJk1lKlB2JCBazK8Rwm3BwII2hlwXGpVcNUTf+bvpUTUFLGzmTSoH5RGkXacR4JoU7aC0QxEGwPHlNCbAJfOu1ZBo4NtzHht1TVn3gLdToc//L0dQYOlmvUyneOLPiR05CuDjcii20X00i/K4m7j4b
+X-Gm-Message-State: AOJu0Yyi0hZ6BIK09mg2DgONbU4De50Q8taq776pSjlEdxkLH5TB30w7
+	+SV470RalbkBdMYlbuRIZEZRGaEPWUcTgu3zD81IoINxuV9aw05T
+X-Google-Smtp-Source: AGHT+IHq5fMBsDl048RBn+pRrCOIdHvh26Fn3Ebv41AXt4kex74sIY36NhN7e05VM3Pbi21f/tWJ7Q==
+X-Received: by 2002:a05:651c:141e:b0:2d3:3e83:8309 with SMTP id u30-20020a05651c141e00b002d33e838309mr4968298lje.19.1710234261019;
+        Tue, 12 Mar 2024 02:04:21 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id q17-20020a2eb4b1000000b002d43dfc5d5csm804351ljm.7.2024.03.12.02.04.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 02:04:14 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Tue, 12 Mar 2024 10:04:12 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Borislav Petkov <bp@alien8.de>, x86-ml <x86@kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] x86/sev for v6.9-rc1
-Message-ID: <ZfAajHpcEULEmi/8@gmail.com>
-References: <20240311151909.GAZe8g7SqDKRcP4XrO@fat_crate.local>
- <CAHk-=witL2fFR-FK_nt5TTLHKffueUQnv875-aDGUqn8O3+o_w@mail.gmail.com>
+        Tue, 12 Mar 2024 02:04:20 -0700 (PDT)
+Date: Tue, 12 Mar 2024 12:04:17 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>, 
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, Rob Herring <robh@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Marek Vasut <marek.vasut+renesas@gmail.com>, 
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev, Siddharth Vadapalli <s-vadapalli@ti.com>, 
+	Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH v4 1/5] PCI: dwc: Refactor dw_pcie_edma_find_chip() API
+Message-ID: <flwmqlr3irjuwfqpjn227qnrkyyayym57d5v3ksr4xqmfxshaj@ibdi3dyetkou>
+References: <20240306-dw-hdma-v4-0-9fed506e95be@linaro.org>
+ <20240306-dw-hdma-v4-1-9fed506e95be@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,86 +88,126 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=witL2fFR-FK_nt5TTLHKffueUQnv875-aDGUqn8O3+o_w@mail.gmail.com>
+In-Reply-To: <20240306-dw-hdma-v4-1-9fed506e95be@linaro.org>
 
+Hi Mani
 
-* Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> > diff --cc arch/x86/include/asm/coco.h
-> > index 76c310b19b11,21940ef8d290..42871bb262d0
-> > --- a/arch/x86/include/asm/coco.h
-> > +++ b/arch/x86/include/asm/coco.h
-> > @@@ -10,9 -11,15 +11,15 @@@ enum cc_vendor
-> >         CC_VENDOR_INTEL,
-> >   };
-> >
-> >  -extern enum cc_vendor cc_vendor;
-> > + extern u64 cc_mask;
-> > +
-> >   #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
-> >  +extern enum cc_vendor cc_vendor;
+On Wed, Mar 06, 2024 at 03:51:57PM +0530, Manivannan Sadhasivam wrote:
+> In order to add support for Hyper DMA (HDMA), let's refactor the existing
+> dw_pcie_edma_find_chip() API by moving the common code to separate
+> functions.
 > 
-> I put the 'cc_mask' declaration inside the #ifdef too.
+> No functional change.
 > 
-> Because those two variables are defined together, and without
-> CONFIG_ARCH_HAS_CC_PLATFORM the whole coco/ subdirectory that defines
-> them won't even be built, as far as I can tell.
+> Suggested-by: Serge Semin <fancer.lancer@gmail.com>
+> Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware.c | 40 +++++++++++++++++++++++-----
+>  1 file changed, 33 insertions(+), 7 deletions(-)
 > 
-> And I don't see any _use_ of 'cc_mask' anywhere outside of that one
-> 'cc_set_mask()' inline function and the coco/core.c file. So declaring
-> it only when it's all enabled seems to be the right thing.
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index 250cf7f40b85..3a26dfc5368f 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -880,7 +880,17 @@ static struct dw_edma_plat_ops dw_pcie_edma_ops = {
+>  	.irq_vector = dw_pcie_edma_irq_vector,
+>  };
+>  
+> -static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+> +static void dw_pcie_edma_init_data(struct dw_pcie *pci)
+> +{
+> +	pci->edma.dev = pci->dev;
+> +
+> +	if (!pci->edma.ops)
+> +		pci->edma.ops = &dw_pcie_edma_ops;
+> +
+> +	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
+> +}
+> +
+> +static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
+>  {
+>  	u32 val;
+>  
+> @@ -902,8 +912,6 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+>  
+>  	if (val == 0xFFFFFFFF && pci->edma.reg_base) {
+>  		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
+> -
+> -		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+>  	} else if (val != 0xFFFFFFFF) {
+>  		pci->edma.mf = EDMA_MF_EDMA_LEGACY;
+>  
+> @@ -912,12 +920,17 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+>  		return -ENODEV;
+>  	}
+>  
+> -	pci->edma.dev = pci->dev;
+> +	return 0;
+> +}
+>  
+> -	if (!pci->edma.ops)
+> -		pci->edma.ops = &dw_pcie_edma_ops;
+> +static int dw_pcie_edma_find_channels(struct dw_pcie *pci)
+> +{
+> +	u32 val;
+>  
+
+> -	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
+> +	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
+> +		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
+> +	else
+> +		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+
+Once again:
+
+On Tue, Feb 27, 2024 at 01:04:55PM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Feb 27, 2024 at 12:00:41AM +0300, Serge Semin wrote:
+> > The entire
+> > 
+> > +	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
+> > +		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
+> > +	else
+> > +		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+> > 
+> > can be replaced with a single line
+> > 
+> > +	val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+> > 
+> > since in the legacy case (reg_base = PCIE_DMA_VIEWPORT_BASE) the
+> > pci->edma.reg_base has been initialized by now.
+> > 
 > 
-> Let's hope my artistic merge resolution doesn't end up coming back to bite me.
+> Ah okay, got it!
 
-So it does come back in a fashion, because the tip:x86/boot tree has an 
-internal merge of x86/sev, where it dutifully followed the original pattern 
-of:
+-Serge(y)
 
-   1c811d403afd x86/sev: Fix position dependent variable references in startup code
-
-.. instead of merging it smartly like you did. :-/
-
-And because I think it would suck to force you to do the same smart merge 
-conflict resolution *twice*, I did it myself in x86/boot and documented the 
-background:
-
-  commit 2e2bc42c8381d2c0e9604b59e49264821da29368 (origin/x86/boot, x86/boot)
-  Merge: 428080c9b19b 855684c7d938
-  Author: Ingo Molnar <mingo@kernel.org>
-  Date:   Tue Mar 12 09:49:52 2024 +0100
-
-    Merge branch 'linus' into x86/boot, to resolve conflict
-    
-    There's a new conflict with Linus's upstream tree, because
-    in the following merge conflict resolution in <asm/coco.h>:
-    
-      38b334fc767e Merge tag 'x86_sev_for_v6.9_rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-    
-    Linus has resolved the conflicting placement of 'cc_mask' better
-    than the original commit:
-    
-      1c811d403afd x86/sev: Fix position dependent variable references in startup code
-    
-    ... which was also done by an internal merge resolution:
-    
-      2e5fc4786b7a Merge branch 'x86/sev' into x86/boot, to resolve conflicts and to pick up dependent tree
-    
-    But Linus is right in 38b334fc767e, the 'cc_mask' declaration is sufficient
-    within the #ifdef CONFIG_ARCH_HAS_CC_PLATFORM block.
-    
-    So instead of forcing Linus to do the same resolution again, merge in Linus's
-    tree and follow his conflict resolution.
-    
-     Conflicts:
-            arch/x86/include/asm/coco.h
-    
-    Signed-off-by: Ingo Molnar <mingo@kernel.org>
-
-You'll get the x86/boot pull request later today. If that extra merge 
-commit is too much, please merge FETCH_HEAD~1 instead to discard my merge 
-commit.
-
-Thanks,
-
-	Ingo
+>  
+>  	pci->edma.ll_wr_cnt = FIELD_GET(PCIE_DMA_NUM_WR_CHAN, val);
+>  	pci->edma.ll_rd_cnt = FIELD_GET(PCIE_DMA_NUM_RD_CHAN, val);
+> @@ -930,6 +943,19 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+>  	return 0;
+>  }
+>  
+> +static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+> +{
+> +	int ret;
+> +
+> +	dw_pcie_edma_init_data(pci);
+> +
+> +	ret = dw_pcie_edma_find_mf(pci);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return dw_pcie_edma_find_channels(pci);
+> +}
+> +
+>  static int dw_pcie_edma_irq_verify(struct dw_pcie *pci)
+>  {
+>  	struct platform_device *pdev = to_platform_device(pci->dev);
+> 
+> -- 
+> 2.25.1
+> 
 
