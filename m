@@ -1,154 +1,125 @@
-Return-Path: <linux-kernel+bounces-100497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD9E87989C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:12:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A38CF8798A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:12:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B45F21F2320E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:12:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33A41B23D1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BB37E107;
-	Tue, 12 Mar 2024 16:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F017E0FC;
+	Tue, 12 Mar 2024 16:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aQZF+FKV"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VkaKbl3O"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF637A733;
-	Tue, 12 Mar 2024 16:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB5D7C08A
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710259916; cv=none; b=eInpm4tDVgOHP66sP3aTVBJg6RwNiKwwiq73lRLThnUFKZuhw5tAkasGPcLpNYHzyu+8fteOI54uGvtfs7V3Fr6/L18bFXLCOeVqm5ujSdNNML6iqcDA2u/yYgNQwpxXFXhafwAoAlOE2kR0zfB+yFrZW675i9i6UjWwOWtzPNg=
+	t=1710259945; cv=none; b=seZ9UoqkamYYou9TwOPOX3f4uEgGZaEtq/eLwUP4OUsRG8fP4eDoFOxtapEJrgF7ZqtF96nhfh+ADORsmVSBzM0TVNeQlraRj5gsHq+iuoBj+g/G4rLKrljWm8RTBhZQFlGUyKtk+FKURryislP68J6P1h9sn/oo2YNMFjmp1GY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710259916; c=relaxed/simple;
-	bh=pK5/KZXV6dGLZcSbEQLvyxdyemAdcpgwpgjSR+FzciQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T9cJOC/ut3JGPGi0vjF6lJd2GPsmbv9vKQog2VFLsJJDxnjT7lrjkjyADjSGMIpXgwE4QkOecMYrT0h4YuA2YiuUupycb/RSoKvoth3H40wTECYEwxO9jPSPPZRKQ7KL/44EbrJN0JNweqWUnq43kJ3fd3Hyf2mgHw3VdLE3Y5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aQZF+FKV; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33e99b639e0so1410165f8f.0;
-        Tue, 12 Mar 2024 09:11:54 -0700 (PDT)
+	s=arc-20240116; t=1710259945; c=relaxed/simple;
+	bh=rXaL0LJcdegT3oLCAhYYQ90a8sQqF6H95AJnSTlrKSc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lPCaFunRrnum9P2EKSMRvqwVQnZ9RuPoXD9GvwII4wapNY/RPC8X/sfCxKG9vbcbo1yHc+ziRvDxtNEhgDsNO0YzkRt9WhNSyHl5lUhqK9ogwnUKchArzmeshHZaAhljVXc400WxHHyOVzO+RVy9VJve/2RW1hPBUMnsK73mXPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VkaKbl3O; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5131bec457eso118484e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 09:12:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710259913; x=1710864713; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mlMGohocih4/vv8NN3ExYyD4aDTNUoH7ERTwZOWg+9o=;
-        b=aQZF+FKVulDD0cD6twny7vFQuct4bMGN7AEwkOwIR3HS+hs4inJmjoZg5bzKqLbGHp
-         0kuOsotVuQtutGuq4sR7//h5NP2HJw+Zam6DgZpluUiOH9d+KUgrQImpOMfo9TStuCF9
-         PFUP70DjifLJStO30F0BeNoJxjHfbd4/6Hq32nfz+8RRj5ix1+1zjuFrqio9hh11ApV+
-         tc2iHR2fiicsH8ls8POlBJb9PiVDPiF4lcVtqF/II6kFahdp3Qd8n7K36FZU38lU4LFY
-         4DxapN8kj9fn9Krh8JvFXoaHQak4wVIxd3hf+gaa6cc/zfzHSuXZoGx/EA/dltX0DpK2
-         mLfA==
+        d=linaro.org; s=google; t=1710259942; x=1710864742; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zLG0VkRk9T+MqlwYSwMr85lswH7UeBe9EKEDGZIjNWM=;
+        b=VkaKbl3OsvXrFmg4E80Ozyosy3q8c7v0SYE5ZgaVP8kkVtVxnhBaXrSltAxKs7fieN
+         4iFYDNM/aKYLsliKygdYE5llmP5alF0YBHRVzAsn5ZbgF8yXkW33szIXxRN9aUt2I85W
+         FQty0IIldS6e+jyPuZ60jzeplo6g55x+Du6oD4BLrUSLC9+gha++YwMRPdChAdB88dLd
+         tq8F47vH1P+TDYQ7pkVKdLd633GU9BlVjfbuoUfZGpMJlqJFwW36Ty7s/nbqsankpES6
+         9XNqGezrepJHGBPwfAhbY1+eks1ZQ8vWvKT9pZUyGDIgENzEQ8p9TXV0Lo6q5edCDu4a
+         k51w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710259913; x=1710864713;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mlMGohocih4/vv8NN3ExYyD4aDTNUoH7ERTwZOWg+9o=;
-        b=EJnhgzG+e2kx5raLIy1y7mWK5x855plVwFeTwqE8q/Qj7ueLFHBk5XPQriZSiFbylA
-         jX1sFx0ww94nWrVJj5VLyyWTjNt39sHTNnKRRQ1QYvzacOmAvLoOUniVEUe8U0iXXH38
-         Ol1tnt9XpJSAdeJpfcS3cR3+t163bwJHOV+yDLjcVFdlsxEJ4gw4hgeLYUke5PMEPPXO
-         1TcgZRf3e3tFx+YWodFJsW2oNOR3Ge3m+XzvNZMSgLk6dv7ONiSswWdXWYNS7YZXTPnq
-         ncwW8h1Z+pIQFtouenLiqVh17DLlVnMMErk+QjKzPEQ7dK0nqP7r+ghLbtI+ky9Y+spE
-         M86Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUPKXvDBXb3yAv7Tj4DYSdnjYksswD+BXRS7tNZb198Ky5/cbuSaNSfrS+3BP+YHc8bHzHjQaMRMvKVxCpWYgFVLnUvTyQ9NQbhpvZJla/H1Qo0x0Jy/x8pa1C9izyiTGDJYvcW2FC40puqPPauHlRshTtQsYpqImrEJxXUeA2bgIpoOk1WmfwM501N+oJVReIEuxamNLGy2nrY5aJPKSGLMlu6RK8ziJcay5WX3M29F7spwRiGS4IS6UTr0yqs9qgL17uoOufB6HnZ1bXJf6j5jxWlkRCQKPsE3A==
-X-Gm-Message-State: AOJu0YwR0ICy4wGJrRYu9dNdob3cmLuuh+oIGyQm4I001mDVoINHS45Y
-	54cMSmOfG9eje96VI/1IVz66AmhkCKXOjRATUcXuFh+sxKTeaefaffAE4FvsAn2v7Mh4z+4dnQs
-	7BdIMpK19V4A9MCsYg+DBQ4CHmnM=
-X-Google-Smtp-Source: AGHT+IEluJaPH2ZbEhOuqEk+ZR7WjEJU3XS86GzKec4PZE8B7+fsWbUJbxd+Mrhd/TndoYPK/al8v9EOlZQdZgQXq3Y=
-X-Received: by 2002:adf:f60a:0:b0:33c:e396:b035 with SMTP id
- t10-20020adff60a000000b0033ce396b035mr458814wrp.69.1710259912730; Tue, 12 Mar
- 2024 09:11:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710259942; x=1710864742;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zLG0VkRk9T+MqlwYSwMr85lswH7UeBe9EKEDGZIjNWM=;
+        b=k2xImF527pYQ0ONNseIJs/oEff3PwdTGBNSfM7doCRWjVetnRLNb+5caYD1hlHxnke
+         7foKsCCNPjqpyrHU8nHYZvfdqj7vmnvn9KWOv2cyLoN1T/RHl+fn8IZ1F6KrsqzGZddU
+         bysK2fNNHW7cBI8ox3PetNkhLIT01kjIbTXS1R7FiKqxaldGy2qv7lHSDQG9j+qqJLex
+         j81vf7iVeW8ZO+vQ4bP1OjQVSW1ao5vE0CBaFyppsTVd9TZ2FboeZmqLNj2bQfbCeMKW
+         rBGh1wbRYP8sLMX9q7PsRPDpmPPcksfFuPGYmVjbXG3xv4NVhhPbRYIjGICnSG/1aY+r
+         bKog==
+X-Forwarded-Encrypted: i=1; AJvYcCXcSpJzilgPcUkFs1rKYZgajEuNUoW4oHjD0C1HeOlGxd+Zr14amxS+cVBkkxTSMArNdtceE2YRAfE/VhgW2+poGkuLiZEhcKLBdId/
+X-Gm-Message-State: AOJu0YxhNBm6JNB5pkdh7TaUQDUtm1wqp4cdPUMYrfOcPUfV/WBqqjsd
+	knsZlteMpNEmq1fiQmT1gbKZJCGSjPFYTM0DdemWhIr0MJBgFY21Lub1SA7mYsI=
+X-Google-Smtp-Source: AGHT+IHFOEHl33gs0on8qTVXiyJ+aHRxksDiQ505Q8fof/YGiXciDjx8sbsbVrPzSuDgBdzksPF1+g==
+X-Received: by 2002:ac2:4d0f:0:b0:513:488a:95af with SMTP id r15-20020ac24d0f000000b00513488a95afmr1774lfi.15.1710259942295;
+        Tue, 12 Mar 2024 09:12:22 -0700 (PDT)
+Received: from [87.246.221.205] (netpanel-87-246-221-205.pol.akademiki.lublin.pl. [87.246.221.205])
+        by smtp.gmail.com with ESMTPSA id o5-20020ac24945000000b0051321db6a0dsm1634984lfi.139.2024.03.12.09.12.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 09:12:21 -0700 (PDT)
+Message-ID: <83734790-85c5-446f-b353-f3765cb10d41@linaro.org>
+Date: Tue, 12 Mar 2024 17:12:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
- <20240311093526.1010158-9-dongmenglong.8@bytedance.com> <CAADnVQK+s3XgSYhpSdh7_9Qhq4DimmSO-D9d5+EsSZQMX4TxxA@mail.gmail.com>
- <CALz3k9hZxsbUGoe5JoWpMEV0URykRwiKWLKZNj4nhvnXg3V=Zg@mail.gmail.com>
-In-Reply-To: <CALz3k9hZxsbUGoe5JoWpMEV0URykRwiKWLKZNj4nhvnXg3V=Zg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 12 Mar 2024 09:11:41 -0700
-Message-ID: <CAADnVQJ87Ov6ny2hj-0_WymGB3TeuEZu373EmqmRJqZv-8Ze_Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next v2 8/9] libbpf: add support for
- the multi-link of tracing
-To: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/7] clk: qcom: clk-alpha-pll: Add HUAYRA_2290 support
+Content-Language: en-US
+To: Trilok Soni <quic_tsoni@quicinc.com>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Clark <robdclark@gmail.com>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Konrad Dybcio <konradybcio@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org
+References: <20240219-topic-rb1_gpu-v2-0-2d3d6a0db040@linaro.org>
+ <20240219-topic-rb1_gpu-v2-2-2d3d6a0db040@linaro.org>
+ <605d9e50-d61b-b0ce-1664-00554ba70b41@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <605d9e50-d61b-b0ce-1664-00554ba70b41@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 11, 2024 at 7:44=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <dongme=
-nglong.8@bytedance.com> wrote:
->
-> On Tue, Mar 12, 2024 at 9:56=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Mar 11, 2024 at 2:35=E2=80=AFAM Menglong Dong
-> > <dongmenglong.8@bytedance.com> wrote:
-> > >
-> > >
-> > > -               err =3D libbpf_find_attach_btf_id(prog, attach_name, =
-&btf_obj_fd, &btf_type_id);
-> > > +               name_end =3D strchr(attach_name, ',');
-> > > +               /* for multi-link tracing, use the first target symbo=
-l during
-> > > +                * loading.
-> > > +                */
-> > > +               if ((def & SEC_ATTACH_BTF_MULTI) && name_end) {
-> > > +                       int len =3D name_end - attach_name + 1;
-> > > +                       char *first_tgt;
-> > > +
-> > > +                       first_tgt =3D malloc(len);
-> > > +                       if (!first_tgt)
-> > > +                               return -ENOMEM;
-> > > +                       strncpy(first_tgt, attach_name, len);
-> > > +                       first_tgt[len - 1] =3D '\0';
-> > > +                       err =3D libbpf_find_attach_btf_id(prog, first=
-_tgt, &btf_obj_fd,
-> > > +                                                       &btf_type_id)=
-;
-> > > +                       free(first_tgt);
-> > > +               } else {
-> > > +                       err =3D libbpf_find_attach_btf_id(prog, attac=
-h_name, &btf_obj_fd,
-> > > +                                                       &btf_type_id)=
-;
-> > > +               }
-> >
-> > Pls use glob_match the way [ku]probe multi are doing
-> > instead of exact match.
->
-> Hello,
->
-> I'm a little suspecting the effect of glob_match. I seldom found
-> the use case that the kernel functions which we want to trace
-> have the same naming pattern. And the exact match seems more
-> useful.
->
-> Can we use both exact and glob match here?
 
-exact is a subset of glob_match.
-Pls follow the pattern that[ku]probe multi established
-in terms of user interface expectations.
+
+On 2/23/24 23:48, Trilok Soni wrote:
+> On 2/23/2024 1:21 PM, Konrad Dybcio wrote:
+>> +	/* Wait 50us for PLL_LOCK_DET bit to go high */
+>> +	usleep_range(50, 55);
+>> +
+>> +	/* Enable PLL output */
+>> +	regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
+>> +}
+>> +EXPORT_SYMBOL(clk_huayra_2290_pll_configure);
+> 
+> Please use EXPORT_SYMBOL_GPL.
+
+Sure, I glanced over this!
+
+I've also noticed that it's a very common oversight.. would you be
+interested in extending scripts/checkpatch.pl to suggest the _GPL
+variant?
+
+Konrad
 
