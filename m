@@ -1,174 +1,204 @@
-Return-Path: <linux-kernel+bounces-99698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-99700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 507C1878BEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:25:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AAAC878BF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 01:29:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71AF31C214E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:25:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C10D628242F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 00:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DF763C;
-	Tue, 12 Mar 2024 00:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE7265C;
+	Tue, 12 Mar 2024 00:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3/Xcn34j"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L9/8N9vP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A556B19B
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 00:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E6164690;
+	Tue, 12 Mar 2024 00:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710203151; cv=none; b=Q5r23g8tQEmneVnmv5bHUkykNROjLLBig2Uc0nc1/c7sQTF4LkrkOQuk/PzXTueuIYcsTrr8pBt+mktS9AOxU2Bqe9mu3QdNCUOr0SpQGvYa51KitIyaCeMm03DBhJtCBu7op409f/iwi/feKEPpZlWPyTLI4dH4LQ/fKkbqm5s=
+	t=1710203376; cv=none; b=pdVZAmFC2/xL/B99hWUz+iPU1N3KEO57/UFj/UKPkhPn0XpvmTlStcz5oR6FgvKlzQno23yjt8mZNfjb1vpvF8qEJhVsKLWG1A7DtkJiAVDZYIXqFWqTbw9yH1GkOPXx2x+F6YU5aCLw8xO8QI3v6mG/BFbMMwBdx8hiF5WFlpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710203151; c=relaxed/simple;
-	bh=DN4kgqkguxDqDuzpxWOfE0S71IXcgVo6miwC7b+9qOw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=bwMlUZanSC8uzDDh0VxbQ7SEE4jqFrfgHfepMGuzoEuWqexdLnc905K2ZoNKESDYyvVNj91Pp60WlVWmyMvyyKe2b8WRqtBtPE3HyRYWh7+f3SVy9ta5rpLVpcqYLQpccE+MpcDzBUxiDDdaOL6JRNqsLEJEF6lKF2OjHGlJJQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3/Xcn34j; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60832a48684so74375647b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Mar 2024 17:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710203149; x=1710807949; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DSKE9dynpVDGdnjTP2PPz0UtHmW2LY6em1fpB/+NyBg=;
-        b=3/Xcn34j/nGHh3CzJjVJwx5sC5qPTQNUUoZAmSVL2XfV1iKowyqSj/WJLHalLEdYLr
-         BY3WjtBhABWunzDKuv0wI2AvencPnZNTZktMkF77HsreOXEcBuKzdSIYGlhT8uAb7N5n
-         kBnoFxXICP9tok1lvDDbeli/h4rcV8lCK9wBi4A63BbKYxguvs810DGY/L5fL0fiEnNE
-         NCIopgKPosSfAmu7Tg+E20YmGZq1BrsxvxgW6Keeyq0gDAuVRIihPVYqG4e8ffUMq6yX
-         apV1AHbYUGzbP4BQe8dBgB98WZ7EcQ2XUzVTq9YbM8wmx9pTtF8axl+XaeM6j+CdzT5h
-         vrAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710203149; x=1710807949;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DSKE9dynpVDGdnjTP2PPz0UtHmW2LY6em1fpB/+NyBg=;
-        b=SsPK074CFV84M5y7CFOFVqi7plVRfIH79+O0SzvPBwZUC4CHQWoGbQodPTh0Ju+rzR
-         SGuvoKZEAgVCod+Ke1D/te4Dpp5yTM9Xrmt2y4jwmik9TtISsdXbD3AIXx0CXBdKZokF
-         zSDKOrx9XdudBmoLoKQHUMZxmNreD3Tol51LdYxAnB7X2qLJU/PtxH141uugxjszBpqB
-         QgY/tFVt8QqSwTIuIOR5KgI14TFhvu6avU5XbvWRzCBF0WsBLVzIdlRrXWxaSucST6sF
-         B8I8UOz3KkRILfnGdlDkfxqPRCKw9+xLOz/bqLKtL1RA0vHGcA6v4YqtXmHh4wtOb33/
-         bkqw==
-X-Forwarded-Encrypted: i=1; AJvYcCW9e9hjJ8SqSM6L+GO6pVF3dnjwZEFhDqShz2Y7n9uaCh6BvDsgAcdzIGnRlqdKfWOh8RtYldg3f69XLneKiHc11HdmPkWVod51j71Z
-X-Gm-Message-State: AOJu0YzoJr0SH3Gwcqdf5w10cKxTX7ZvSPqGLNzPCjRjpmwwCSTZUApm
-	vkInuKLaDwAssgkxWQoKKBwphE7yRvFAXmMkHdMQ3mpbURhgPcjMP4CE45aLlk2bh2SqrIHOIHd
-	TCg==
-X-Google-Smtp-Source: AGHT+IGzoNaeLD5UF6HPjQNHq3cJfFHLeuCdtnN3G+/43PHfTFE8knrmObKsB05Sk+y7M0LF1sr9r44xtTU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:d486:0:b0:60a:2eb9:539a with SMTP id
- w128-20020a0dd486000000b0060a2eb9539amr1057117ywd.2.1710203148785; Mon, 11
- Mar 2024 17:25:48 -0700 (PDT)
-Date: Mon, 11 Mar 2024 17:25:47 -0700
-In-Reply-To: <Ze5bee/qJ41IESdk@yzhao56-desk.sh.intel.com>
+	s=arc-20240116; t=1710203376; c=relaxed/simple;
+	bh=sW+dADlfFW3sgJ2Rei1AseXsmQNC6ar3yV5n7ckvMsI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=eW5DwR3inRCSBI1+ap4BlI3503mfD1GZxaT9AeS1uGUKMEkWsZazSC/AuEMX+kyfOFP9i5l9zV3199Y86CjmbPEWl3YFbsO7ip64JT1bfbgfEXNvIVOlbJTcfnuQHLfyqth6hUmeMvgyBcgtb6vPlA8IZZrf5aZUMX20bnUDvZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L9/8N9vP; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710203373; x=1741739373;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=sW+dADlfFW3sgJ2Rei1AseXsmQNC6ar3yV5n7ckvMsI=;
+  b=L9/8N9vPTPrbVxzdLQnhfXk4H7kUKKT/ZtcUajoMALgmleuOc4HJKpSp
+   rLW/2SwNE5fkAws1CNel9xfl42OPFJiE1j9+NjEtNrKx4tIrZ56qVfWwd
+   7pfH2fNGT3+jsS5QCcCmpUOUzA/X1aYj5RSXoQNelVE/4OptZaNO7SN+p
+   WvXgwE64TpsqC/TwwNKEp43AQ7NY6J5vqRj9qHF4pc4PcI8fxKec4iAUS
+   Nfb1nHmgRCqkS+lnTlyn8uXbsHQc0w1ZeVOJrOnDnjo1wrKvwewfP0djx
+   VwbwhQ/wbBbdohoWl0OKq+H+GpsR/DbthC4cGVvZ6emzs/S7DkM0YQHjK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="16296337"
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="16296337"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:29:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="11791884"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 17:29:31 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  <linux-mm@kvack.org>,
+  <linux-kernel@vger.kernel.org>,  David Hildenbrand <david@redhat.com>,
+  <stable@vger.kernel.org>
+Subject: Re: [PATCH -v3] mm: swap: fix race between free_swap_and_cache()
+ and swapoff()
+In-Reply-To: <1d27e93b-1c6b-4909-859f-e0756974a640@arm.com> (Ryan Roberts's
+	message of "Mon, 11 Mar 2024 09:44:47 +0000")
+References: <20240311084426.447164-1-ying.huang@intel.com>
+	<1d27e93b-1c6b-4909-859f-e0756974a640@arm.com>
+Date: Tue, 12 Mar 2024 08:27:36 +0800
+Message-ID: <87v85s47lz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-6-seanjc@google.com>
- <Ze5bee/qJ41IESdk@yzhao56-desk.sh.intel.com>
-Message-ID: <Ze-hC8NozVbOQQIT@google.com>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
-From: Sean Christopherson <seanjc@google.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, kvm@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kevin Tian <kevin.tian@intel.com>, Yiwei Zhang <zzyiwei@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
 
-On Mon, Mar 11, 2024, Yan Zhao wrote:
-> On Fri, Mar 08, 2024 at 05:09:29PM -0800, Sean Christopherson wrote:
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 17a8e4fdf9c4..5dc4c24ae203 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -7605,11 +7605,13 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> >  
-> >  	/*
-> >  	 * Force WB and ignore guest PAT if the VM does NOT have a non-coherent
-> > -	 * device attached.  Letting the guest control memory types on Intel
-> > -	 * CPUs may result in unexpected behavior, and so KVM's ABI is to trust
-> > -	 * the guest to behave only as a last resort.
-> > +	 * device attached and the CPU doesn't support self-snoop.  Letting the
-> > +	 * guest control memory types on Intel CPUs without self-snoop may
-> > +	 * result in unexpected behavior, and so KVM's (historical) ABI is to
-> > +	 * trust the guest to behave only as a last resort.
-> >  	 */
-> > -	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> > +	if (!static_cpu_has(X86_FEATURE_SELFSNOOP) &&
-> > +	    !kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> >  		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> 
-> For the case of !static_cpu_has(X86_FEATURE_SELFSNOOP) &&
-> kvm_arch_has_noncoherent_dma(vcpu->kvm), I think we at least should warn
-> about unsafe before honoring guest memory type.
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-I don't think it gains us enough to offset the potential pain such a message
-would bring.  Assuming the warning isn't outright ignored, the most likely scenario
-is that the warning will cause random end users to worry that the setup they've
-been running for years is broken, when in reality it's probably just fine for their
-use case.
+> On 11/03/2024 08:44, Huang Ying wrote:
+>> From: Ryan Roberts <ryan.roberts@arm.com>
+>> 
+>> There was previously a theoretical window where swapoff() could run and
+>> teardown a swap_info_struct while a call to free_swap_and_cache() was
+>> running in another thread.  This could cause, amongst other bad
+>> possibilities, swap_page_trans_huge_swapped() (called by
+>> free_swap_and_cache()) to access the freed memory for swap_map.
+>> 
+>> This is a theoretical problem and I haven't been able to provoke it from a
+>> test case.  But there has been agreement based on code review that this is
+>> possible (see link below).
+>> 
+>> Fix it by using get_swap_device()/put_swap_device(), which will stall
+>> swapoff().  There was an extra check in _swap_info_get() to confirm that
+>> the swap entry was not free.  This isn't present in get_swap_device()
+>> because it doesn't make sense in general due to the race between getting
+>> the reference and swapoff.  So I've added an equivalent check directly in
+>> free_swap_and_cache().
+>> 
+>> Details of how to provoke one possible issue:
+>> 
+>> --8<-----
+>> 
+>> CPU0                               CPU1
+>> ----                               ----
+>> shmem_undo_range
+>>   shmem_free_swap
+>>     xa_cmpxchg_irq
+>>     free_swap_and_cache
+>>       __swap_entry_free
+>>       /* swap_count() become 0 */
+>>                                    swapoff
+>>                                      try_to_unuse
+>>                                        shmem_unuse /* cannot find swap entry */
+>>                                        find_next_to_unuse
+>>                                        filemap_get_folio
+>>                                        folio_free_swap
+>>                                        /* remove swap cache */
+>>                                        /* free si->swap_map[] */
+>>       swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+>> 
+>> --8<-----
+>> 
+>> Link: https://lkml.kernel.org/r/20240306140356.3974886-1-ryan.roberts@arm.com
+>> Closes: https://lore.kernel.org/linux-mm/8734t27awd.fsf@yhuang6-desk2.ccr.corp.intel.com/
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com> [patch description]
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>> ---
+>> Hi, Andrew,
+>> 
+>> If it's not too late.  Please replace v2 of this patch in mm-stable
+>> with this version.
+>
+> Thanks for sorting this out, Huang, Ying! I saw your note asking if I could do
+> it, and it was on my list, but I've been busy debugging other urgent issues in
+> mm-stable. That should be solved now so unblocks me finishing the testing on my
+> large folios swap-out v4 series. Hopefully that will be incomming in the next
+> couple of days.
 
-I would be quite surprised if there are people running untrusted workloads on
-10+ year old silicon *and* have passthrough devices and non-coherent IOMMUs/DMA.
-And anyone exposing a device directly to an untrusted workload really should have
-done their homework.
+You are welcome!
 
-And it's not like we're going to change KVM's historical behavior at this point.
+> You did previously suggest you wanted some comments around synchronise_rcu() in
+> swapoff(), but I don't see those here. I don't think that should hold this up
+> though.
 
-> Though it's a KVM's historical ABI, it's not safe in the security perspective
-> because page aliasing without proper cache flush handling on CPUs without
-> self-snoop may open a door for guest to read uninitialized host data.
-> e.g. when there's a noncoherent DMA device attached, and if there's a memory
-> region that is not pinned in vfio/iommufd side, (e.g. memory region in vfio's
-> skipped section), then though the guest memory from this memory region is not
-> accessible to noncoherent DMAs, vCPUs can still access this part of guest memory.
-> Then if vCPUs use WC as guest type, it may bypass host's initialization data in
-> cache and read stale data in host, causing information leak.
-> 
-> My preference is still to force WB
-> (i.e. (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT) in case of
-> !static_cpu_has(X86_FEATURE_SELFSNOOP) && kvm_arch_has_noncoherent_dma(vcpu->kvm).
-> Firstly, it's because there're few CPUs with features VMX without self-snoop;
+I will send a separate patch for that, including comments for
+get_swap_device() and around synchronize_rcu() in swapoff().
 
-This is unfortunately not true.  I don't know the details, but apparently all
-Intel CPUs before Ivy Bridge had a one or more related errata.
+--
+Best Regards,
+Huang, Ying
 
-/*
- * Processors which have self-snooping capability can handle conflicting
- * memory type across CPUs by snooping its own cache. However, there exists
- * CPU models in which having conflicting memory types still leads to
- * unpredictable behavior, machine check errors, or hangs. Clear this
- * feature to prevent its use on machines with known erratas.
- */
-static void check_memory_type_self_snoop_errata(struct cpuinfo_x86 *c)
-{
-	switch (c->x86_model) {
-	case INTEL_FAM6_CORE_YONAH:
-	case INTEL_FAM6_CORE2_MEROM:
-	case INTEL_FAM6_CORE2_MEROM_L:
-	case INTEL_FAM6_CORE2_PENRYN:
-	case INTEL_FAM6_CORE2_DUNNINGTON:
-	case INTEL_FAM6_NEHALEM:
-	case INTEL_FAM6_NEHALEM_G:
-	case INTEL_FAM6_NEHALEM_EP:
-	case INTEL_FAM6_NEHALEM_EX:
-	case INTEL_FAM6_WESTMERE:
-	case INTEL_FAM6_WESTMERE_EP:
-	case INTEL_FAM6_SANDYBRIDGE:
-		setup_clear_cpu_cap(X86_FEATURE_SELFSNOOP);
-	}
-}
-
-> Secondly, security takes priority over functionality :)
-
-Yeah, but not breaking userspace for setups that have existed for 10+ years takes
-priority over all of that :-)
+> Thanks,
+> Ryan
+>
+>
+>> 
+>> Changes since v2:
+>> 
+>>  - Remove comments for get_swap_device() because it's not correct.
+>>  - Revised patch description about the race condition description.
+>> 
+>> Changes since v1:
+>> 
+>>  - Added comments for get_swap_device() as suggested by David
+>>  - Moved check that swap entry is not free from get_swap_device() to
+>>    free_swap_and_cache() since there are some paths that legitimately call with
+>>    a free offset.
+>> 
+>> Best Regards,
+>> Huang, Ying
+>> 
+>>  mm/swapfile.c | 8 +++++++-
+>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 2b3a2d85e350..9e0691276f5e 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -1609,13 +1609,19 @@ int free_swap_and_cache(swp_entry_t entry)
+>>  	if (non_swap_entry(entry))
+>>  		return 1;
+>>  
+>> -	p = _swap_info_get(entry);
+>> +	p = get_swap_device(entry);
+>>  	if (p) {
+>> +		if (WARN_ON(data_race(!p->swap_map[swp_offset(entry)]))) {
+>> +			put_swap_device(p);
+>> +			return 0;
+>> +		}
+>> +
+>>  		count = __swap_entry_free(p, entry);
+>>  		if (count == SWAP_HAS_CACHE &&
+>>  		    !swap_page_trans_huge_swapped(p, entry))
+>>  			__try_to_reclaim_swap(p, swp_offset(entry),
+>>  					      TTRS_UNMAPPED | TTRS_FULL);
+>> +		put_swap_device(p);
+>>  	}
+>>  	return p != NULL;
+>>  }
 
