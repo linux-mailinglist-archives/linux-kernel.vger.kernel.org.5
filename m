@@ -1,138 +1,108 @@
-Return-Path: <linux-kernel+bounces-100492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75E6987988B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:08:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF2BF879891
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F1C1C21388
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:08:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D40241C21AE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C327CF09;
-	Tue, 12 Mar 2024 16:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD637E56A;
+	Tue, 12 Mar 2024 16:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Jy9B1xZK"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iT4MRI2b"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC75A7D082
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6BA7E11A
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 16:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710259698; cv=none; b=sY9KNb44tHx033bK+8WgIIG2IYCIZHYRQ9k8s91/hLiczHPpreUlCep3Z4DwU4FZNtKcKDSlH14DYyU+zNHOIDbxK6YZwgNGlzyNLwPzMdcMay3Kaccpcnb0/3uU62muOu8wqc+4Gaj2aJA67bzEn4O/XAF5UQFH43SllyPgnT4=
+	t=1710259811; cv=none; b=Ndv1QUrD6VlF/YJXFNZLeC4QsHlM3VEvuxu/sj2BEx/35hjW2MMqTafEutq5xWf9AGqpy/3cHFHctsl/Q4AnPaa7zM7tD/238LVT3pNkaIcw8DjgowpOPVJe3NSdPX9W4BMmdqJtxvuO7vjlFD14/Sgom7/sP1ONnsEyXjjjmVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710259698; c=relaxed/simple;
-	bh=imxA4nPUfikFjsSKbUjFthkL/dgXzrsW+jBqIZgMcdQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pv75cg41u6CDfxV0NGpRZ0lOIEdYrSoiWKVEeh2f+g1t4R8g1kkIk+8ruR7WPflv1a29MRHAVop0tqgMSb2S4cg8K0CMDI6HTMIdkvuHEMJ2jPIInnl+I+Dct06lwlnzgoKRxJ9wpWGwpz+NYTcetLUbswG0mHwHotsuvFL9QtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Jy9B1xZK; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42CBa9Bj002055;
-	Tue, 12 Mar 2024 16:08:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=7X2vSXMAScoiJxLj1PmKMl0pCpvMqNXlce2fTPnd/cc=; b=Jy
-	9B1xZKbJ/AADOIhVH/v7uZiuzrCzog3g807dCUlM4Q9ZSodBuMtu8ld6YL205HQf
-	b4vgw2UEUp/IgOYLB+xPEoB88TI1gXe1NyUXK2SCyJHpdZc2lfPS7XrbPoqWLAK1
-	FrA5kkoGW1vahdX9YZiv6XbiksOfpTY+sUuA5C8U3u/iFSSmXW00umb5Ns/Htyns
-	Q8l2HS9ne1UwBQ5UJm0vJt5VCgxHJJczWURY+QVubJyGZ8IcAyZkpbHRkffNxFJA
-	90BuYU8eakLoeBscH/brED+jG5RRFEICAuej2BE3mv58z4dXGK2akFFgbAjI4MLL
-	92TbVS88/ojxi1ly/q1Q==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wte5d1mfa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 16:08:05 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42CG827w022808
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 16:08:02 GMT
-Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 12 Mar 2024 09:07:59 -0700
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-To: <srinivas.kandagatla@linaro.org>, <neil.armstrong@linaro.org>,
-        <khilman@baylibre.com>
-CC: <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: [PATCH v2] nvmem: meson-mx-efuse: Remove nvmem_device from efuse struct
-Date: Tue, 12 Mar 2024 21:37:43 +0530
-Message-ID: <1710259663-14095-1-git-send-email-quic_mojha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+	s=arc-20240116; t=1710259811; c=relaxed/simple;
+	bh=qPjhJHW1dcYo8k1atulrqKd7xFkV2OV5T4XFSz4kxUA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kzbbx83V5jVi8WXuy3E5XcHYeKgZ11gXWshuSjcAMzvlS7SDhTbyW8pqMDlzVMTD0LeizkPaRKqnGGCoIpePZ66W4it3e6tGcZYd8iN+SVkMB3HAHNKPknFHvL96/1JoUMj8gyzo8Ri+0AXmMYAsFvsZ1Rk6kSwzyNjL6v2s6BE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iT4MRI2b; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4649c6f040so84085166b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 09:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710259808; x=1710864608; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S3+O10vd3liFJMunazLMlhKBOkgOhJq74haBneqSUXs=;
+        b=iT4MRI2bJVX2UqPUI6iUq2aGqBj7UAhiIR9Xf73KajY1rVBvNLhzfUGof5ndn+wo4d
+         LUSipPernN1zCeRZ8cPEKLeX6BjMknn4GbQ9ytAyNqkUXIl62TI/0NeJbfxAMI2NXmON
+         jQYbWhXuCTUCT4WsCDp5jHr+jN2utX7u2vLsV9cmzaZIdBosM/OiYwaW2eaaQVsy0ntY
+         Tb9e3UWnG7iorxsdk94fAyt2oNfhM9I8hqwUd9OH2iiu6JHt2pnhLwxRLXO1AdW3W8M6
+         huit4gHauSjOiWxMN2ieFxSBny/nplkzcJL4nI0zqoYbb+FS7NIhYYMHnv5j/2aWTyb9
+         mPVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710259808; x=1710864608;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S3+O10vd3liFJMunazLMlhKBOkgOhJq74haBneqSUXs=;
+        b=Vi/WPxiVaA417nKZQP8PP/AJ2681IcZ+vt1llWZ5Udkzac5H7z2ixFODOMLVlLDHCf
+         Pa108LWkiEkFGPQqP5Cf0zSma6wg+Sa080VSXzKOp3lCEu0t5wuZ8UA7rAHIBLPe+V5t
+         d1Bu3tHaAlR1DE/Kj3yhCqSnSqwQgIPJFNcwBdCb3u9ug6NKEeQidIBbWTgTR9KKNdo3
+         8ee7PQbuFcc18iu6cNm8dpRnjqLiJSeTfkMy0SP9KB1cRTXHSW5PJ76c0w5v1BydbHX8
+         ZflCqaxE9laJy2PvjBcLoh0UpooVZpyW8A1LgYuscp8jnqzrBQCPU5YUutGTeYD9+NCm
+         ODjA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxZO/CdvAqDc+UW7JQPRcPopECT28y6sI/qDvo5q8n62XlHUd/UmDBou0hSt+x1JZzxzXXmJk6YhRcqI+j77fImV/KSn8b+YsLyg+1
+X-Gm-Message-State: AOJu0YzcUwX2WmQv4n9+lqimFIg+/seBQMHdmL7dp2pzzTjcCLkyiThV
+	6R3yLj7n11bRPIDB1l8llSaRG7AcPehJo97X3EhmbJOBtQBWbfVZxrcecJHD3mGp2ex03Ee470K
+	8M+uboTPaBISUUbn9CkCoPSvH6XFtxdYawnMn
+X-Google-Smtp-Source: AGHT+IE80lye4zSsuGhA8kA3D+sK/NVpvlJukMC7Gww9CfMolxu7wRSlYSv2oORoukxm9HtOLfrE1Q10/pe/qHtuCto=
+X-Received: by 2002:a17:906:b14e:b0:a43:6cd2:7bb7 with SMTP id
+ bt14-20020a170906b14e00b00a436cd27bb7mr6714888ejb.47.1710259808090; Tue, 12
+ Mar 2024 09:10:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: znuVCDFekpWMPK91xIzVv04MctyQn7kv
-X-Proofpoint-GUID: znuVCDFekpWMPK91xIzVv04MctyQn7kv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-12_10,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 phishscore=0 suspectscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 lowpriorityscore=0 bulkscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403120121
+References: <20240312155641.4003683-1-yosryahmed@google.com> <d24c8736-d963-4aa5-a3cb-5cc1110e3ca8@intel.com>
+In-Reply-To: <d24c8736-d963-4aa5-a3cb-5cc1110e3ca8@intel.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 12 Mar 2024 09:09:30 -0700
+Message-ID: <CAJD7tkYXfFiOQMpM+GkR7a=aUxFM-smDc-ZFTTtFu2Kbd2KoPQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] x86/mm: Use IPIs to synchronize LAM enablement
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Steven Rostedt <rostedt@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-nvmem_device is used at one place while registering nvmem
-device and it is not required to be present in efuse struct
-for just this purpose.
+On Tue, Mar 12, 2024 at 9:04=E2=80=AFAM Dave Hansen <dave.hansen@intel.com>=
+ wrote:
+>
+> Yosry,
+>
+> Could you please slow down a bit on these?  Us lazy west coast Americans
+> are barely a cup of coffee into our day.  We haven't even had a chance
+> to read v1.
+>
+> Once a week is about the right cadence to be sending these.  Every 12
+> hours is more than my poor inbox can take! :)
 
-Drop nvmem_device and manage with nvmem device stack variable.
+My bad, I lost track of when I sent v1 and saw Kirill's comment when I
+woke up so I addressed that. FWIW, v1 and v2 are almost identical
+except for a small change in patch 2 to address Kirill's comment. I
+will hold off on sending anything else this week.
 
-Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
----
-Changes in v2:
- - Fixed compilation issue.
-
- drivers/nvmem/meson-mx-efuse.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/nvmem/meson-mx-efuse.c b/drivers/nvmem/meson-mx-efuse.c
-index 3ff04d5ca8f8..8a16f5f02657 100644
---- a/drivers/nvmem/meson-mx-efuse.c
-+++ b/drivers/nvmem/meson-mx-efuse.c
-@@ -43,7 +43,6 @@ struct meson_mx_efuse_platform_data {
- struct meson_mx_efuse {
- 	void __iomem *base;
- 	struct clk *core_clk;
--	struct nvmem_device *nvmem;
- 	struct nvmem_config config;
- };
- 
-@@ -193,6 +192,7 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
- {
- 	const struct meson_mx_efuse_platform_data *drvdata;
- 	struct meson_mx_efuse *efuse;
-+	struct nvmem_device *nvmem;
- 
- 	drvdata = of_device_get_match_data(&pdev->dev);
- 	if (!drvdata)
-@@ -223,9 +223,9 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
- 		return PTR_ERR(efuse->core_clk);
- 	}
- 
--	efuse->nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
-+	nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
- 
--	return PTR_ERR_OR_ZERO(efuse->nvmem);
-+	return PTR_ERR_OR_ZERO(nvmem);
- }
- 
- static struct platform_driver meson_mx_efuse_driver = {
--- 
-2.7.4
-
+Cheers!
 
