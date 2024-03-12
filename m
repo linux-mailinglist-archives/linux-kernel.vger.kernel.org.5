@@ -1,87 +1,170 @@
-Return-Path: <linux-kernel+bounces-100808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 758DA879D7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:29:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCDDF879D86
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 22:34:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 157BD1F21A7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:29:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB3F01C2133C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A25143C65;
-	Tue, 12 Mar 2024 21:28:54 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E702143738;
+	Tue, 12 Mar 2024 21:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NBQLXa6B"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E425143736;
-	Tue, 12 Mar 2024 21:28:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1C4142636;
+	Tue, 12 Mar 2024 21:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710278934; cv=none; b=c1Z2b7pizgN/32qSGZrAdtmKt4c9NG7AxCxsS2J3a4LEvV5pVQj8AjOm/119arXvRx0ilEdmAWWU+ZjVyHpKJWcuGnT9RJVrS2PXo2mcZ2+6E1fg/TsGVOhZKJO9hgEjOztRAwMkq+kCyUfQ+UUbGH0r8vdmMSFpIXgJVMcMJZ8=
+	t=1710279275; cv=none; b=sMlQL+6FsBLLQdc7QiW/bCRhSXcWsePHrWy1RCH6QBydTB5RNoSZfkRInk28KhQPbfb8KXVWucASWR4tO+UGMhfiTyURM+JW+9J3ksfF/3VkOXz9lzjdThdDwpxzmEvisaUKOdz2R2qAWSMjkzD0TvxoZfi55HhFH/4KTyGi/2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710278934; c=relaxed/simple;
-	bh=BRQTLaIPx6C1TH1fJOMUn+wWNHenNMsiGQ36m5L9rtA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nUaSLr3fMhCWL6/cnQGL7z8+tAZuUBAwPU0MfKC8Stmo5L2Unp0zoRK7urt13mG/M/+rJP0+qpcMy1xOKQ3ggtNf0ZrvVrO9sGDoGYOCbixIBbmWd6eXJrNoT/3vAOLO4l7kaXXlBW/yKU6W1FEtRkkdZOQdSTXygpuhT/saT1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 514BE68BFE; Tue, 12 Mar 2024 22:28:45 +0100 (CET)
-Date: Tue, 12 Mar 2024 22:28:44 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
- steps
-Message-ID: <20240312212844.GA3018@lst.de>
-References: <20240306162022.GB28427@lst.de> <20240306174456.GO9225@ziepe.ca> <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca> <20240307150505.GA28978@lst.de> <20240307210116.GQ9225@ziepe.ca> <20240308164920.GA17991@lst.de> <20240308202342.GZ9225@ziepe.ca> <20240309161418.GA27113@lst.de> <20240310093513.GB12921@unreal>
+	s=arc-20240116; t=1710279275; c=relaxed/simple;
+	bh=5/wmLAHrNeE9hx434xthwOeHWChqxB0kDiERSOp8o0I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cK1/0yYBsLFzNS4PmtdbQmD6I9HnVGOvllqnuAQ51gY1vvruoCUajMYZWLgkmCSxyYBTAYqqajWJSR4R+3VNA79N3O4Zt6EhCYrCaNF0ggcHgdiqRJHWwxyBZ1uD45mm6z/NaFs/O76KZssgmBvwGx3OVuyTJTS2GWn/iVOOVn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NBQLXa6B; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-788598094c4so18957285a.0;
+        Tue, 12 Mar 2024 14:34:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710279273; x=1710884073; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GCudM8ZtMIW67UvoP6AuDrXeLE5sRAx6WLMUwr1J0BE=;
+        b=NBQLXa6B2/uksXznlJmuZvLPXqYyGIrHA76G4zDsEtwJ//aIGZ5iSqOOX3SDemLdmk
+         NJcaOVFqVtJBsB6bgS7LccWqzBYeNlW8ZnAItrgfQgIZCxktd0PBvh1xNfKyAVY6qwx5
+         FtDGwdPMxbFRccLSytRefiAEzfbFlW8Q4nteSj2mRqYA/2Lui58Zm2jEFYtUfJv2vbx0
+         oa4Jel3TAclSo2apzckvIwmqwreBbyb+rNeKzFo3/sUc4qtDlpyQg2qvTU33xur4aOJX
+         M3XxlkIqoGh+FteNTm94bg9rKoVVds3glJlx/jeUuMxlvmXobLEXatSbzkYMsSllisck
+         E4fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710279273; x=1710884073;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GCudM8ZtMIW67UvoP6AuDrXeLE5sRAx6WLMUwr1J0BE=;
+        b=A3RxGOyajktTC8T3A62YUakIhn8GAM1fCGP9wNZJhOWSGeBaRD1cuvmdcrN/JwFzqn
+         /zaqmHOyDapY0MV4qw7Ck2+t2tUxeYLQ6vZFkkZPGirJzl3pLwRIVVp4VloBfBNsLapT
+         SZnaLDqtV6vcqx8Q4xD+WAvjCNOPlWxJ6mBOOPKizCUKjP3P5OqtSf1oFyRKRaIfIb4b
+         RasmQJxNGaxq/QiyVzPt/LMoTjaKRDzGjvDnyNU5dZcnMBLT5qAlLogRV14gOpEsWaVT
+         tKJb1INQV2mjgaTHViVxRqTru+Zwdd9uc+fC158v590kevg4esI6vByQc9occLc6a8M9
+         zkwg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9jRadppoI9mzgN+mxG8SoO22vuMm4l61S9x5U+Y7tdA9lRvmZTsDSKhpc7rMAKfUnTyIjkt0icFyFOXXr1KoV21dhaN1+szpMWsWStpdm6US3fhxVgKRIU7h+p+GwiBhb
+X-Gm-Message-State: AOJu0YwDxkRdmBpOpyfljCXsv5S9tJQQ4fMd8APDipX/cAZpyiibixJM
+	cgmVwnPsDU/2y1T13WW7S5RXpjsA+Ma7a8qXwVCjF9M8w9mOXZ45
+X-Google-Smtp-Source: AGHT+IHXID+7gP2sUx4phBx3tc2k2/yc2yFFNeZTDEoMW36oB5Av/N49JY+JkO7hVi8AiTpMnfhXKQ==
+X-Received: by 2002:a05:620a:a43:b0:788:6221:85c4 with SMTP id j3-20020a05620a0a4300b00788622185c4mr4498433qka.20.1710279273092;
+        Tue, 12 Mar 2024 14:34:33 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q6-20020a05620a0c8600b00787f42e6299sm4042468qki.113.2024.03.12.14.34.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 14:34:32 -0700 (PDT)
+Message-ID: <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+Date: Tue, 12 Mar 2024 14:34:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240310093513.GB12921@unreal>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla Thunderbird
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
+ v6.9]
+Content-Language: en-US
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+ kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org,
+ tglx@linutronix.de, rcu@vger.kernel.org, joel@joelfernandes.org,
+ neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
+ frederic@kernel.org, bigeasy@linutronix.de, anna-maria@linutronix.de,
+ chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org
+References: <ZetHwrCb0KXE0xFI@tardis>
+ <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
+ <ZfDEIs63EBIYBJIC@boqun-archlinux>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <ZfDEIs63EBIYBJIC@boqun-archlinux>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Mar 10, 2024 at 11:35:13AM +0200, Leon Romanovsky wrote:
-> And you will need to have a way to instruct that pin_user_pages() variant
-> to continue anyway, because you asked for FOLL_PCI_P2PDMA. Without that
-> force, you will have !FOLL_PCI_P2PDMA behaviour.
+On 3/12/24 14:07, Boqun Feng wrote:
+> On Tue, Mar 12, 2024 at 01:32:03PM -0700, Florian Fainelli wrote:
+>> Hi Boqun,
+>>
+>> On 3/8/24 09:15, Boqun Feng wrote:
+>>> Hi Linus,
+>>>
+>>> Please pull this for the RCU changes of v6.9:
+>>>
+>>> The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+>>>
+>>>     Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+>>>
+>>> are available in the Git repository at:
+>>>
+>>>     git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git tags/rcu.next.v6.9
+>>>
+>>> for you to fetch changes up to 3add00be5fe5810d7aa5ec3af8b6a245ef33144b:
+>>>
+>>>     Merge branches 'rcu-doc.2024.02.14a', 'rcu-nocb.2024.02.14a', 'rcu-exp.2024.02.14a', 'rcu-tasks.2024.02.26a' and 'rcu-misc.2024.02.14a' into rcu.2024.02.26a (2024-02-26 17:37:25 -0800)
+>>>
+>>>
+>>> Two merge conflicts were detected by linux-next:
+>>>
+>>> * https://lore.kernel.org/lkml/20240226135745.12ac854d@canb.auug.org.au/
+>>> * https://lore.kernel.org/lkml/20240227125522.2bdbe6be@canb.auug.org.au/
+>>>
+>>> These conflict resolutions from linux-next look good to me, plus I made
+>>> my own resolutions at branch merge/rcu.2024.02.27a for your reference.
+>>>
+>>>
+>>> Some highlights of the changes:
+>>>
+>>> * Eliminates deadlocks involving do_exit() and RCU tasks, by Paul:
+>>>     Instead of SRCU read side critical sections, now a percpu list is used
+>>>     in do_exit() for scaning yet-to-exit tasks.
+>>>
+>>> * Fixes a deadlock due to the dependency between workqueue and RCU
+>>>     expedited grace period, reported by Anna-Maria Behnsen and Thomas
+>>>     Gleixner and fixed by Frederic: Now RCU expedited always uses its own
+>>>     kthread worker instead of a workqueue.
+>>
+>> At least one device in my test farm (ARM 32-bit) has consistently shown a
+>> very long boot, and some others are intermittently affected. This
+>> consistently looks like this on most of my devices:
+>>
+>> [    2.450351] bcmgenet f0480000.ethernet: GENET 5.0 EPHY: 0x0000
+>> [    2.547562] ata1: SATA link down (SStatus 0 SControl 300)
+>> [  162.107264] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
+>>
+>> this gets flagged by my boot script as a boot failure since we exceeded the
+>> 30 seconds timeout given to boot a kernel to a prompt.
+>>
+>> It has been somewhat difficult to get a reliable bisection going on, but
+>> what I am sure of is that e5a3878c947ceef7b6ab68fdc093f3848059842c~1 does
+>> not expose the problem for 10 consecutive boots, while I *might* see it at
+>> e5a3878c947ceef7b6ab68fdc093f3848059842c and beyond.
+>>
+>> Any clues what is going on here?
+>>
+> 
+> Could you share the config file and your kernel parameters? Also could
+> you share the whole log? Thanks!
 
-I don't understand what you mean.
+Here is the configuration file:
 
-> When you say "simplify the overall interface", which interface do you mean?
+https://gist.github.com/ffainelli/f3fd38752a186cee0cb8719089c0b6b8
 
-Primarily the dma mapping interface.  Secondarily also everything around
-it.
+and here is a log where this fails:
+
+https://gist.github.com/ffainelli/ed08a2b3e853f59343786ebd20364fc8
+-- 
+Florian
+
 
