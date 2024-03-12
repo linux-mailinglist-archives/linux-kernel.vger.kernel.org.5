@@ -1,111 +1,127 @@
-Return-Path: <linux-kernel+bounces-100466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B208797DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E3248797DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:43:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6C581F22A1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:43:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8932F1F22AD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:43:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648457D073;
-	Tue, 12 Mar 2024 15:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31807CF04;
+	Tue, 12 Mar 2024 15:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LUIH071w"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TemBDO3n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618177CF10;
-	Tue, 12 Mar 2024 15:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27DBF79B65;
+	Tue, 12 Mar 2024 15:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710258188; cv=none; b=h0Ax0VHw7h7GWvBOoo+dyRnQdAZz+HmyvsSpPxVM4uZkm48AsK/zayRHdIvnRm39qJyceYiLxktSAuRnqZMOUg8AGM/1D/8U0vTgIkNay2wwtDFVto//PlUPMxzkvGhAMu4hfu0Y6Y067jccdGuqSN2pAeYdI8ut2kwK4Gw1Pcw=
+	t=1710258186; cv=none; b=GV4Ev5kMvke3HhqQh/j9XpNV+u8ieOO4J3FTjMJzkrMBq43mYJYqyJ3iaxwX1dYlRHPqjFVqQSJdDdOxXSR+AqH8d/yYlgoYmJofe9KvroKpGjVl3azdVxlJqdhwQNJk+ugbypG/vUoyE8ZOp7yRQpCHO4l4P+66b1Q08L8Yu34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710258188; c=relaxed/simple;
-	bh=bZ7KFfWAgmonZ5xuDLjCI1VRdG2i0RpJPL/iyHsbdeM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D/I8hUo3CHofMk1MTZMBmFatu0k4c2BkUdglEIjG2ULea8/5iADJ+F1y+z8nTiaoXE2LNG4xW+dOMLiqyOqmOqXkCjMJwyvNxdYTC9Kg/bsj/s93i04hUeH2WOfIfoqvFgQdaG1ZBd4WP15yVCPvic/qwlPrl6NLEyonvnoRu2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LUIH071w; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710258188; x=1741794188;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bZ7KFfWAgmonZ5xuDLjCI1VRdG2i0RpJPL/iyHsbdeM=;
-  b=LUIH071wAlNjLERXfleCFJiuLaWQ9EszcCJWJwXzySVVXzm8CwwJ62FT
-   YWnYHcS5j3qwwtuyZaXcjbztu9WB8ocS1qJUyqJQwyY2NKyiA4+NlKvb/
-   LhPeYYOwWDyBfPy7g3SUIqjFh3y2X/2ArJY5O9mzDfvgkOhKE/trL4QAJ
-   QyTglyp2Ftik0hc8TvfWV9dHtdsUye+dY/PiWBAykB8MZUsnCS0YnkyUn
-   fxGGQhfYMYns1B/SB/PLNC4RiGd2NyLBj59b9cq5apDpyb5mljMpgkK9q
-   cHT8R1N2UXPn66CfdHrYWsZVEYVDz3D+l1OJuMTfV37fN+0scuSbsdf6U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="4839026"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="4839026"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:43:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="914400103"
-X-IronPort-AV: E=Sophos;i="6.07,119,1708416000"; 
-   d="scan'208";a="914400103"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2024 08:43:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rk4HN-0000000BvuI-0qCL;
-	Tue, 12 Mar 2024 17:43:01 +0200
-Date: Tue, 12 Mar 2024 17:43:00 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH] lib/bitmap: Fix bitmap_scatter() and bitmap_gather()
- kernel doc
-Message-ID: <ZfB4BOknvWRFbn6O@smile.fi.intel.com>
-References: <20240312085403.224248-1-herve.codina@bootlin.com>
- <ZfB30-rLXEnJtjrY@smile.fi.intel.com>
+	s=arc-20240116; t=1710258186; c=relaxed/simple;
+	bh=saSsJLPGKVqRyifWAvITNA+MsAjtts2uqCkZdCGrjgs=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=ekeFA6reD+erHbw4vaE4wLZnceCBCD1z60Kj492/vfK0FIE8RWWDHqkWNKNA5MB+wgWxvbu1Nd98L8/EA0aG5ygSiM6AUr8TlxJ43kUatsuNqjM18y++1fpBLo+DRxGMpSRIuQWKIhAYsHjz3gVZpiBP6Jn266bfjnbpSzujd8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TemBDO3n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4F2CC433C7;
+	Tue, 12 Mar 2024 15:43:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710258185;
+	bh=saSsJLPGKVqRyifWAvITNA+MsAjtts2uqCkZdCGrjgs=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=TemBDO3nAYXN5PjNextlJQDVn+cFCmHn/AifJjXH6yecbnsdNN8Ous1QY12Ws6cGx
+	 2eRXf8mSyuVI3HwcyjjVcIk91kh534i8hyGyDbalN1eZXfkQs8Pu56OJvudVLCWp2N
+	 fPdsDzwUn+99Jh8zVJwhktzAUB1IG0habTa2gU7ksuArwToqzBSa4vmVRZNSsKrp1s
+	 fjKckEktCEAjODpf8UymIbvTGSTv1tpJyXHGaFaWJSsUinXKYRGwerCLQ2p5D3yzM8
+	 QsDbA09IbM0jG5La0Z+u23T/tBCKlpI3Xg4/J7AIfG6p9yk0veQNhXzNbAmvlykzNi
+	 iWrLDRvuUxmAw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfB30-rLXEnJtjrY@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 12 Mar 2024 17:43:01 +0200
+Message-Id: <CZRVXE96ZZA8.33VFES8S07YS9@kernel.org>
+Subject: Re: [RFC PATCH v2 3/3] tpm: of: If available use linux,sml-log to
+ get the log and its size
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.ibm.com>, <mpe@ellerman.id.au>,
+ <linux-integrity@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
+Cc: <linux-kernel@vger.kernel.org>, <rnsastry@linux.ibm.com>,
+ <peterhuewe@gmx.de>, <viparash@in.ibm.com>, <devicetree@vger.kernel.org>,
+ <jsnitsel@redhat.com>
+X-Mailer: aerc 0.17.0
+References: <20240311132030.1103122-1-stefanb@linux.ibm.com>
+ <20240311132030.1103122-4-stefanb@linux.ibm.com>
+ <CZR7B45P71XS.53XNZD9FWZSL@kernel.org>
+ <916fb19b-daf8-4c1b-bc25-f071d2b3ae33@linux.ibm.com>
+In-Reply-To: <916fb19b-daf8-4c1b-bc25-f071d2b3ae33@linux.ibm.com>
 
-On Tue, Mar 12, 2024 at 05:42:11PM +0200, Andy Shevchenko wrote:
-> On Tue, Mar 12, 2024 at 09:54:03AM +0100, Herve Codina wrote:
-> > The make htmldoc command failed with the following error
-> >   ... include/linux/bitmap.h:524: ERROR: Unexpected indentation.
-> >   ... include/linux/bitmap.h:524: CRITICAL: Unexpected section title or transition.
-> > 
-> > Move the visual representation to a literal block.
+On Mon Mar 11, 2024 at 10:33 PM EET, Stefan Berger wrote:
+>
+>
+> On 3/11/24 16:25, Jarkko Sakkinen wrote:
+> > On Mon Mar 11, 2024 at 3:20 PM EET, Stefan Berger wrote:
+> >> If linux,sml-log is available use it to get the TPM log rather than th=
+e
+> >> pointer found in linux,sml-base. This resolves an issue on PowerVM and=
+ KVM
+> >> on Power where after a kexec the memory pointed to by linux,sml-base m=
+ay
+> >> have become inaccessible or corrupted. Also, linux,sml-log has replace=
+d
+> >> linux,sml-base and linux,sml-size on these two platforms.
+> >>
+> >> Keep the handling of linux,sml-base/sml-size for powernv platforms tha=
+t
+> >> provide the two properties via skiboot.
+> >>
+> >> Fixes: c5df39262dd5 ("drivers/char/tpm: Add securityfs support for eve=
+nt log")
+> >> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> >=20
+> > I'm worried about not being up to date and instead using "cached" value=
+s
+> > when verifying anything from a security chip. Does this guarantee that
+> > TPM log is corrupted and will not get updated somehow?
+>
+>
+> What do you mean 'guarantee that TPM log is corrupted'?
 
-..
+I presume that this is for power architecture but I have no idea what
+leads log being corrupted, and is the scope all of that that arch or
+some subset of CPUs.
 
-> > This patch fixes de5f84338970 ("lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers")
-> > available in net-next and linux-next
-> 
-> Not sure about rules of net-next, but I would add Fixes FWIW:
-> 
-> Fixes: de5f84338970 ("lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers")
+The commit message is not very detailed on kexec scenario. It more like
+assumes that reader knows all the detail beforehand. So probably this
+will start to make sense once the backing story is improved, that's
+all.
 
-And probably Reported-by...
+> The TPM was handed over from the firmware to Linux and the firmware then=
+=20
+> freed all memory associated with the log and will then not create a new=
+=20
+> log or touch the TPM or do anything that would require an update to the=
+=20
+> handed-over log. Linux also does not append to the firmware log. So=20
+> whatever we now find in linux,sml-log would be the latest firmware log=20
+> and the state of the 'firmware PCRs' computed from it should correspond=
+=20
+> to the current state of the 'firmware PCRs'.
 
--- 
-With Best Regards,
-Andy Shevchenko
+So on what CPU this happens and is there any bigger picture for that
+design choice in the firmware?
 
+If it is a firmware bug, this should emit FW_BUG log message. If not,
+then this commit message should provide the necessary context.
 
+BR, Jarkko
 
