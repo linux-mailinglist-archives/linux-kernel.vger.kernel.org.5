@@ -1,150 +1,103 @@
-Return-Path: <linux-kernel+bounces-100677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B42AB879BAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:40:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF404879BB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:40:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D25D288786
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:40:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C7D41C2300E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BFB142651;
-	Tue, 12 Mar 2024 18:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA45145643;
+	Tue, 12 Mar 2024 18:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AcdJyQDx"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="SSss0uhJ"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17838142630;
-	Tue, 12 Mar 2024 18:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B7C14535E;
+	Tue, 12 Mar 2024 18:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710268678; cv=none; b=aJjps/FWVYu4AfpPeYPu/nPDi9/x4nvmoTHrKihLXSE3NsZZiu2j6kE3YayqFMissH1Yts0nr2AHc3Ip4y1huWc5I/0CrEP/fNmvJerl26VDsW7rJrny0xkZNlozAGbpcEG9yNlZ+PUKblr/Ey9za1FmnnB7/wPdOs/wrmyRG6s=
+	t=1710268688; cv=none; b=SOkFnTuMHnz82BJD3zIlelwbbXKmIUVVRn+XX4x/lk0q9GGh2pQqPOrQVoUesUbjeZEL3aT+mif6KjattlJhyurLEOkRnHQ0SqynStfPkXeD3XEIuSnkYrZm0aF76tjeQ0VeUq82sFk3UiamS7A+R09nIj5XURf1Vb/wgqCrZ+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710268678; c=relaxed/simple;
-	bh=RGzYtkq3koJ+IYtBiPKa/zCvRRqct8hCOumMlCZ0lu8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o3Wv8io/rn+Qx6BC1H64qOlAHq//6jm3GFM/SAwJfTkCBnEEPhsAxHhfI1A1zwSPUD5GEzF2YqdEQKVFvBp452Ibvc+0XfQDuXiuV91zFJ1xkM+FArYV0M1Tx1TH0kP1W+8AbQXiqaNhpAblOxDoz0r3GGsJ7c83c3jsbJBAdI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com; spf=none smtp.mailfrom=linux.vnet.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AcdJyQDx; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42CIW0m0011605;
-	Tue, 12 Mar 2024 18:36:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=HYtIQQmQyi2J8b6s2DXbCXcJus8U+wP4ZhU7m7CSRUA=;
- b=AcdJyQDxglcJ0wWtwM6na0FBNVRTLkUiqqNu2bfark5ulieKAu/gP6+KxET+uCOW39XA
- 7vhHq0anqvj30ED0leXy+jNSAKMFD1rNZfPAZsQ2nICZMqU8uAImAcy/AgqXlZmjDwnr
- XpZNXzyaea1ZyGj+6mDW5LgU+Cy03D+qKjk38erjLZtXXlQSDIwiUeRlujgniYGfl1da
- 0UqZZNz4eIsz1FZBjS2mOqneNYwyWxkErP44qDP7/WEr2Fa+NiE/v1jJ6IA4SMRxUwIg
- KjmaI8jw2/ARv4zvIj6xrcCqsaJw2xnGYeCWLxwfCaRVOyEveL/S++u2cgk6AAY4/y4W 4Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtsaputc0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 18:36:39 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42CIac84022396;
-	Tue, 12 Mar 2024 18:36:38 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wtsaputbt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 18:36:38 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42CIJl9D020435;
-	Tue, 12 Mar 2024 18:36:38 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws3km0ren-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 18:36:38 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42CIaZaL18547162
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 12 Mar 2024 18:36:37 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0752758056;
-	Tue, 12 Mar 2024 18:36:35 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 067C858060;
-	Tue, 12 Mar 2024 18:36:34 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 12 Mar 2024 18:36:33 +0000 (GMT)
-From: Stefan Berger <stefanb@linux.vnet.ibm.com>
-To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
-        bbhushan2@marvell.com, jarkko@kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH v6 13/13] crypto: x509 - Add OID for NIST P521 and extend parser for it
-Date: Tue, 12 Mar 2024 14:36:18 -0400
-Message-ID: <20240312183618.1211745-14-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
-References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+	s=arc-20240116; t=1710268688; c=relaxed/simple;
+	bh=KBeNabMPyHZTzPFwHRuKA/oMBkMVrKwDeLe1Oa3s8AA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bgfzHNiVtbpQKd1Y5keIhOlr6SI6XIJEdWotQpW8YJC/fwsUTQ7D1/gdYsSXGqzfaJChUZahX+F19CV+hE/6Ge/nghVDJmQlpyaYdJhipS6qO3UWsM3Q+gOv0xJGJOOEAxI9IKbFd3CejGF8/SZTWRji8iq2gxuxl5mdpKLwnKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=SSss0uhJ; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost (unknown [10.10.165.10])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 7F4AF40AC4FF;
+	Tue, 12 Mar 2024 18:38:02 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 7F4AF40AC4FF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1710268682;
+	bh=L9dzc+wGc4r7hud1ML6f1cQ5Otk2+AYhLY1+PNPRrw0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SSss0uhJu0QRrKAmX2o8P4uMjMC7LUrMbVuiWtXTum3vdp5J/D8y+s/nCVNJp1lZu
+	 6lAaNOqkjRptT6ID+BJ/AJRE07D0DYW3JXv10cZxt30Z+qlsregCeFSToYnqbmMEh3
+	 AxwNoxPWgp5ixLhYCrP8lF3Fgms59WvPHmdY3I8U=
+Date: Tue, 12 Mar 2024 21:38:02 +0300
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Pavel Begunkov <asml.silence@gmail.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, io-uring@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>, 
+	lvc-project@linuxtesting.org, Nikita Zhandarovich <n.zhandarovich@fintech.ru>, 
+	Roman Belyaev <belyaevrd@yandex.ru>
+Subject: Re: [PATCH 5.10/5.15] io_uring: fix registered files leak
+Message-ID: <a8c81d35-e6ac-420c-9ffa-24dd9e009e29-pchelkin@ispras.ru>
+References: <20240312142313.3436-1-pchelkin@ispras.ru>
+ <8a9993c7-fd4d-44ff-8971-af59c7f3052c@kernel.dk>
+ <466e842f-66c6-4530-8c16-2b008fc3fbc6-pchelkin@ispras.ru>
+ <fb57be64-4da6-418b-9369-eae0db42a570@kernel.dk>
+ <085beb85-d1a4-4cb0-969b-e0f895a95738@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: lcengRLdxZm4iBzPJ4JF2j8PG8dxzR0s
-X-Proofpoint-GUID: ocG_9iP6VjEYR4oQNpVm_KIspBilBW8F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-12_11,2024-03-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- suspectscore=0 clxscore=1015 phishscore=0 mlxlogscore=986 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403120139
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <085beb85-d1a4-4cb0-969b-e0f895a95738@kernel.dk>
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+On 24/03/12 11:54AM, Jens Axboe wrote:
+> On 3/12/24 9:21 AM, Jens Axboe wrote:
+> > On 3/12/24 9:14 AM, Fedor Pchelkin wrote:
+> >> On 24/03/12 08:34AM, Jens Axboe wrote:
+> >>> On 3/12/24 8:23 AM, Fedor Pchelkin wrote:
+> >>
+> >> [...]
+> >>
+> >>>> I feel io_uring-SCM related code should be dropped entirely from the
+> >>>> stable branches as the backports already differ greatly between versions
+> >>>> and some parts are still kept, some have been dropped in a non-consistent
+> >>>> order. Though this might contradict with stable kernel rules or be
+> >>>> inappropriate for some other reason.
+> >>>
+> >>> Looks fine to me, and I agree, it makes much more sense to drop it all
+> >>> from 5.10/5.15-stable as well to keep them in sync with upstream. And I
+> >>> think this is fine for stable, dropping code is always a good thing.
+> >>>
+> >>
+> >> Alright, got it. So that would require dropping it from all of the
+> >> supported 5.4, 6.1, 6.6, 6.7, too.
+> >>
+> >> Would it be okay if I'll send this as a series?
+> > 
+> > Yeah I think so, keeping the code more in sync is always a good thing
+> > when it comes to stable. Just make sure you mark the backport commits
+> > with the appropriate upstream shas. Thanks!
+> 
+> I'll just do these backports myself, thanks for bringing it up.
 
-Enable the x509 parser to accept NIST P521 certificates and add the
-OID for ansip521r1, which is the identifier for NIST P521.
+Great, thanks!
 
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Tested-by: Lukas Wunner <lukas@wunner.de>
----
- crypto/asymmetric_keys/x509_cert_parser.c | 3 +++
- include/linux/oid_registry.h              | 1 +
- 2 files changed, 4 insertions(+)
-
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 487204d39426..99f809b7910b 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -538,6 +538,9 @@ int x509_extract_key_data(void *context, size_t hdrlen,
- 		case OID_id_ansip384r1:
- 			ctx->cert->pub->pkey_algo = "ecdsa-nist-p384";
- 			break;
-+		case OID_id_ansip521r1:
-+			ctx->cert->pub->pkey_algo = "ecdsa-nist-p521";
-+			break;
- 		default:
- 			return -ENOPKG;
- 		}
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 3921fbed0b28..af16d96fbbf2 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -65,6 +65,7 @@ enum OID {
- 	OID_Scram,			/* 1.3.6.1.5.5.14 */
- 	OID_certAuthInfoAccess,		/* 1.3.6.1.5.5.7.1.1 */
- 	OID_id_ansip384r1,		/* 1.3.132.0.34 */
-+	OID_id_ansip521r1,		/* 1.3.132.0.35 */
- 	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
- 	OID_sha384,			/* 2.16.840.1.101.3.4.2.2 */
- 	OID_sha512,			/* 2.16.840.1.101.3.4.2.3 */
--- 
-2.43.0
-
+--
+Fedor
 
