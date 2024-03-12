@@ -1,278 +1,150 @@
-Return-Path: <linux-kernel+bounces-100776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4453A879D1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:52:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB56D879D1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 21:53:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEFD1B23412
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:52:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF2DD1C2159B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BC3143C48;
-	Tue, 12 Mar 2024 20:51:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 805A714291E;
+	Tue, 12 Mar 2024 20:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrPOuVw7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="kQKdatTc"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2055.outbound.protection.outlook.com [40.92.18.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA61014374F;
-	Tue, 12 Mar 2024 20:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710276692; cv=none; b=pVyaU8Q2RHEENFoRxoBWNPSnZ0xdi8cnPQy+/unnF9ALdjLN9L+XAhsVLZEcLPAagZg5BT5WEeyAuayhoPUOa1pPtahrmfUwhfl+aNEJhuk4AcnuCPqxsVUiFEwzDBC4wYdXkUmsVa/WQx0JaqroDt1aBYpIt+jBX/r9lcQyS0E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710276692; c=relaxed/simple;
-	bh=2TiUaR/zgBzTGSvXrzZw/55Fy772pQs7tRpaW5Bu84A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D3bLrWw0tcEYE3Ea1yQ1D2VwFf6V+tMJATFen1ymUfpY66A8NZ6GEaiPatrKI8c54qnD9QlyQESLKYdPFe7cZNagdvbTPqn1plx4KmhgUgZAkfEkBDHzE5HxTUpxMaW7wwC6goRsBYVnF9v2S8YT+f8EpQA5PIQYonLl6nTkxBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrPOuVw7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB84EC433F1;
-	Tue, 12 Mar 2024 20:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710276692;
-	bh=2TiUaR/zgBzTGSvXrzZw/55Fy772pQs7tRpaW5Bu84A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IrPOuVw7OIbxE4pqJbkd75rdxc4tGeU+qz6+wcQhPE2GbOv8efgxxvLi4/2njq8vd
-	 kMoYEdXsjpaQ8BZ1K/yh03oq5UKf5SYMUyCWtby/2dfq6s8LaA6OElIw6JyUqZfIsk
-	 OgXy9oCwwD4tkIfmzTuXlwkqN841lCESbauVIU/UTG69+U24NBGKRUppdxVt8HfKJ+
-	 WCn+++6r+xZKRNfC73CtSXSEv+NAhnNQOEGTMy0ZQx+G6tzkyp5NH/SCKo12a8rqvk
-	 vGwwYorBm3XZWXXcZibymrQnCaoUsXprT79Jkgtj5gKnJNAmUCBpO+SfTHq8dXic/E
-	 wLUW+O2o/oZYg==
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 2/2] perf beauty: Move uapi/linux/mount.h copy out of the directory used to build perf
-Date: Tue, 12 Mar 2024 17:51:12 -0300
-Message-ID: <20240312205112.688776-3-acme@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240312205112.688776-1-acme@kernel.org>
-References: <20240312205112.688776-1-acme@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E090E382;
+	Tue, 12 Mar 2024 20:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.18.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710276815; cv=fail; b=G8GR0YYAIZAVYLB5mMzAh0wYuIz8umFFNQZ82dAiQvkCpFHHV78lI29nc146dY0BFzGVyARoIaJy8KNAmaiI0KF3YJBzuH+5+bGmLsbaoHKahRKG817fSlITAlwAgoLtX8nyt11RBr1COpNhTNFH21bWyk4xuc/Mk5VvgmXgzbY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710276815; c=relaxed/simple;
+	bh=1I1HO3lFWvGy7TtQYHdQN/BuERhN9IiQ4TtWWWoMdBs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=IgPchGg79XQRm6tRRX4OSfJrb9DyQ5dUR3T8Fqs4PmWQO6bLdECSaK18scNObEo4qomdP+Rjn4RJamaOwZxpxig0ohUVjGtVgvDbaRdcbyBw66XOe98J81Raf9MyHL/W/yX39sHzwfQ8WNmYP/z6HXBFaUrtYeRxvXQVCK12Q/c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=kQKdatTc; arc=fail smtp.client-ip=40.92.18.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aPNQh+JZ86vaUm2osokvF0PqY3ouxG4zoGlImeBEYMuOc9frS3cAnfC6I/sxMOKgR3N76mKogcaYSTTxv9nzOfLvrS6uWJJgwlISekjJwyDlMfsSBXkObFagV2uO+p12q3Jh6XT+e0uf4VGkXSAw3Cso/XOPDC/WS07ybK1yi8nMSVx3a90rhOlNcaq6/ipAyfzy4KRLXvZImNCdGRiT4+HmuKQl45DzEGNHDcI/oin0WEjAFzYFs/1ERNZ69pQ638tGjwHRa+rr/HNaASjRu9BzN/yuf3Q5ppzJKzszhiXtC+XE+ZaHoclpTiQESI4l/p0raE9DxOAyY2IubRnB7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1I1HO3lFWvGy7TtQYHdQN/BuERhN9IiQ4TtWWWoMdBs=;
+ b=QoWNLguXXoUCk+p7Bs1rNh7/G9IU+oUsgbIWZouh5wnhvnUTV0zf3WTKJRZkpz5BYbZL9b8vzdnavalWJtmkayhWEaDkwHwGbGV+UX42P8Z5R02ZTkCgOu2QkqH/S1cDjpzC6Jg298qiDxDxUwF7W9IgItQHjmJTgxdpP4mqWL7VaIME/lMQC14QbJmHCpHfUrObMlqfYfcYE5Jwy7vr/lAobl0aCklSsHSKxXvNzzVaagLlKfecMLc8R9hTbWTC7h3JP+meSdAZxCBZlI2/NynDxD2nbFM4UAFl1PIoRb7tmUyzUQlUIqVnN4WUvnwQcQwfb4gwkRJu0tvb33tX6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1I1HO3lFWvGy7TtQYHdQN/BuERhN9IiQ4TtWWWoMdBs=;
+ b=kQKdatTcTObje0a+Syfb2Ygm5jIDlH6nBNEwSSpTJkUrkGtQlWLd4hsfjT0eilyhSZu70ZvLXqY0Kf7GsdNYz9J2/qqWTsGOPkJ+LjFBiTEh1RlA5RyFK2K8WCNES+wtvqs46p1J9Zce/SpetUh1bX1bxIV/NJGFq5vE050ZubtPqoznDKpdsB08FbHxvNEfqnoED538hn5Q9RwCRFvn2jlb7x39ZzHMufxQJIbUEBjLw8t7BHgdQOgcD1UcglwONNNnFCrgPMe/1X56FalcYCRE3dHEIqOoc5T74kYCTtIR4R9dhYh14gPtN+R0Y6bRturliByVn/DCSGPcP+7F6A==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by BY5PR02MB6659.namprd02.prod.outlook.com (2603:10b6:a03:20b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Tue, 12 Mar
+ 2024 20:53:31 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
+ 20:53:31 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>, "Kirill A . Shutemov"
+	<kirill.shutemov@linux.intel.com>, Rick Edgecombe
+	<rick.p.edgecombe@intel.com>, Wei Liu <wei.liu@kernel.org>,
+	"kys@microsoft.com" <kys@microsoft.com>, "haiyangz@microsoft.com"
+	<haiyangz@microsoft.com>, "sthemmin@microsoft.com" <sthemmin@microsoft.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com"
+	<mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org"
+	<x86@kernel.org>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "luto@kernel.org" <luto@kernel.org>,
+	"peterz@infradead.org" <peterz@infradead.org>, "devel@linuxdriverproject.org"
+	<devel@linuxdriverproject.org>
+Subject: RE: [PATCH AUTOSEL 6.1 3/7] x86/hyperv: Use slow_virt_to_phys() in
+ page transition hypervisor callback
+Thread-Topic: [PATCH AUTOSEL 6.1 3/7] x86/hyperv: Use slow_virt_to_phys() in
+ page transition hypervisor callback
+Thread-Index: AQHadLzVAkgWooNpOke57f1qHnLiFrE0lO2g
+Date: Tue, 12 Mar 2024 20:53:30 +0000
+Message-ID:
+ <SN6PR02MB41573B4014405943158B8F31D42B2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240311183826.328535-1-sashal@kernel.org>
+ <20240311183826.328535-3-sashal@kernel.org> <ZfC8j2eUP/139bSh@duo.ucw.cz>
+In-Reply-To: <ZfC8j2eUP/139bSh@duo.ucw.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [p4AxuvCEP9ab2a/wg0UxEbie6jPmHgLe]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|BY5PR02MB6659:EE_
+x-ms-office365-filtering-correlation-id: 8124531d-182f-4a87-df63-08dc42d679b7
+x-ms-exchange-slblob-mailprops:
+ Cq7lScuPrnoAVlBsXi+5fvsd/1azsy4llBB8dZyMzxQY0WiF4l6L+rY+Qbb1zFGaQn+wQ/kn8iEScsYZTrGSNviEe2RQrMGKt0V4xQL2EaNMiD03rZj7gjbhe6elPFfg7k6It5k5rFQeC7SWkqyPto/723vJVRSlkJTgrte/eAxss7cR4jqvWvBpdx7DP+eLtbgoRUueyKWWQSL7N5g3IHvAq8ex+3USnEFkUuTNE2yAZmm7Zt2G8OE4XJy0HGwJKpT0WTNxZFGOnxGGlxNwW4HsDnssibKBfQn4xxs5Yy1UNYtz3Pa2JWluxcKNrk6BJMs9h71wfFVkVplUXKZvh+BeRNxfWYpzD8/eYGYIqyi3ZBsgbALN69oo1AztHHd6hdp4bEdFnCex+XUgFe7dPiOf/lQ9NNfJhLC9Jt1QPf5zCA7LTHOQp09tG7ia/KoM+vkMdqLqnNUPmFsZ316/5jqaaKxP7EI22cjnvKQhdJx/zhzH3S9LpbK9HHU6UfnUr2o+Xz0EYfxFu/52v+5BBEDEiqNausTlOSaTC8oq1pSad1sO9TKymV/B1a1uzEUiVB0rIsrdgh54zgu5UWWj55RAKGfF7J6caJuF5lZ7DuhoJ2q4yymCVIeTKTRNc99Dk4x4OydhsL+LdQrHnq7wD7uFtRIHAeK2Njmy/i1qWDk7MEJPtrXOyneHjkXMgUb87ol8c/N71KiZsLrlt0HGn+lst1sqM/iYAfeZJicO/uMyTGzMm1B0MWb0lEhaG7PxQKVlr0xUU28=
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ at1/mPvQL4+XLawtqVGQk/3EPFsejh0g1UgMo7Tbf/wqMqKjNdNCdwG55dVNpNz/jr5owqkie09/48d8PGTi2AKZxevnF0J5tRZUFmNIfVAV4UK1oCWpU4ZDeoyze8ni6cDbPbDGYZPVPbsYA9IFjgi4ACcnGtxD/Kqv3M1NOGXCk+yKCWDZl5JL5rOPwpwJGD/b7GjzmzsAeS9jDPnFSNbopl8S1QjsDh4TzgzpGq4JBIU9D3HQgZkZ4+JGANiaEr4Ka8IpH11DA2zG8ndgICMXGVAauphxgWFeoTYG2iiFswZQ9Cm6JHjWO+JobQ2jm4d60Q370sDFgoIATkp+9JD8W1j1hhgQhMJRa6nsCRWXlqv3AuHmTwTCgYc64SQ6PSOZeHXfgZtXkzw/wMF0MmFYetJMFuA9AduCr81Ik7JKN4Km2MPiXN5z3D70/0PNUfSPV/y96QaPqccri1xxaLQsQTxA6zZgT0FJBDY3gj7QcdzO6H7uVFKK0O/97OiwsWel49OBS7w6x4vjgmTeljYqX5kznsuYEFAqUJ3UJmT0axg9HeNUqdeA9At9S1hb
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?f+PuGFZfH5YHlZFnWGfKLsyg9pt3+BP3ATX82seJhdQdiECQjF1ckfZOHZHQ?=
+ =?us-ascii?Q?47YnupYZnmDSK0DTqCnYzXE+AcjmXqEs564pABctOxUZqfHSHXkVfKEL+7o0?=
+ =?us-ascii?Q?8LpU7tMqPw6c3IDtsgPvy6aOAtiuFgjhkeSz/h9NdHh9SyH77EhW9jyBmYaJ?=
+ =?us-ascii?Q?PVyYC0kZ1sTbG0D74rPICsbEY7ypM0/+6hCUKQ5x+63PCo7X19o9Jzo6K4WS?=
+ =?us-ascii?Q?Uyvc+3Lc+ErBHWdB+c/J9czEM+ic1EPMVqr61/3ij+u/mnCXJx8+ac5/c6Rl?=
+ =?us-ascii?Q?wAU5U4/aXt8CM+GVtUowax/LjGHCg/PdDTJyawJVoweYCb32/IuY2EeOetPE?=
+ =?us-ascii?Q?lSmg2ugFqz3YluxAZS5AclTKDVSc8MR+oLZLpqhuTw+joGt7CCx1s7kwWVWY?=
+ =?us-ascii?Q?YMno/pwGhA2EbVfKykNT/TZcISUwXmIrUo57hClPg2jAZiMT/9Hk3hCpuDzG?=
+ =?us-ascii?Q?Jqr4C/WB0G3ITx281uBTeAicEWpZz6QRF1QZb024QnM8JfNN+qczptvljVdO?=
+ =?us-ascii?Q?8IBaGpPjkQmsTyX9JNYtFrUOE/0/+urRhwhMG4GJeMn9A3frttH0HdN1qMJU?=
+ =?us-ascii?Q?W9l8rvUvNFUOD8vRafYCW7895OhwvgCOyqKtZp9g+spQIsKNd2abxR5YT+z2?=
+ =?us-ascii?Q?07gzzi1Rei4oFh9pHDQDjQ3rzhn/O4WVGXOCRiAFgm/XlGTFltiWOJKEqAkH?=
+ =?us-ascii?Q?UcsiNyPO7/taXFs7+qDH1VLjnPTcslRqVsE9mlqwGnNMxMgfu72SnnxIk/lN?=
+ =?us-ascii?Q?+ErvQWwSWM63a7v7BrblnHJfkPARzgRxO2UYOR9zMP+efvHrWbrpliN9Lh0d?=
+ =?us-ascii?Q?kd5KxH+4ES/o3Pc3q9zY3JoYWBgnx9D3tDNDm7gPf0mp+R4TZYf1lErGzuNc?=
+ =?us-ascii?Q?uZ2VizLXAvYckt2PBW3mjL+/in7RXlAv6sV2fJkzNTG7V6JKWBETZ+OwgUtq?=
+ =?us-ascii?Q?zONn4fDXnNB1957Tpuu3C0aTD2NL0SplYiL6Q4WxKjEpEq7WfCLN+PgY7/xk?=
+ =?us-ascii?Q?f2ZLNnSYOQanVEeYAgzSmZOR4dc86AEk/MU0V3mP8m+bpI5xoQWvsLueykRa?=
+ =?us-ascii?Q?kfdsFoXHGqelHw6KOrmVBVmr8y0kNZdJFs4O7CyrFuyIdaPcobXllNuXOAdG?=
+ =?us-ascii?Q?49qwaxU74szkbMjlL4qMLTFfm2WS2kSV4jeNVA59uXYW+j77aUT7oUxzeXBy?=
+ =?us-ascii?Q?03wkjAQcnHE8EaFlxvjgyAXePogj5o7iHw5RPw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8124531d-182f-4a87-df63-08dc42d679b7
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2024 20:53:31.1811
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6659
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+From: Pavel Machek <pavel@ucw.cz> Sent: Tuesday, March 12, 2024 1:35 PM
+>=20
+> > In preparation for temporarily marking pages not present during a
+> > transition between encrypted and decrypted, use slow_virt_to_phys()
+> > in the hypervisor callback. As long as the PFN is correct,
+>=20
+> This seems to be preparation for something we don't plan to do in
+> -stable. Please drop.
+>=20
 
-It is mostly used only to generate string tables, not to build perf, so
-move it to the tools/perf/trace/beauty/include/ hierarchy, that is used
-just for scrapping.
+As the author of the patch, I agree.
 
-This is a something that should've have happened, as happened with the
-linux/socket.h scrapper, do it now as Ian suggested while doing an
-audit/refactor session in the headers used by perf.
-
-No other tools/ living code uses it, just <linux/mount.h> coming from
-either 'make install_headers' or from the system /usr/include/
-directory.
-
-Suggested-by: Ian Rogers <irogers@google.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/lkml/CAP-5=fWZVrpRufO4w-S4EcSi9STXcTAN2ERLwTSN7yrSSA-otQ@mail.gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/Makefile.perf                      | 21 +++++++++----------
- tools/perf/check-headers.sh                   |  2 +-
- tools/perf/trace/beauty/fsconfig.sh           |  6 +++---
- tools/perf/trace/beauty/fsmount.sh            |  6 +++---
- tools/perf/trace/beauty/fspick.sh             |  6 +++---
- .../trace/beauty}/include/uapi/linux/mount.h  |  0
- tools/perf/trace/beauty/mount_flags.sh        |  6 +++---
- tools/perf/trace/beauty/move_mount_flags.sh   |  6 +++---
- 8 files changed, 26 insertions(+), 27 deletions(-)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/mount.h (100%)
-
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 643e9fa6ec89c58c..523c3b7d6c9d3f51 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -500,20 +500,20 @@ $(fadvise_advice_array): $(linux_uapi_dir)/in.h $(fadvise_advice_tbl)
- fsmount_arrays := $(beauty_outdir)/fsmount_arrays.c
- fsmount_tbls := $(srctree)/tools/perf/trace/beauty/fsmount.sh
- 
--$(fsmount_arrays): $(linux_uapi_dir)/mount.h $(fsmount_tbls)
--	$(Q)$(SHELL) '$(fsmount_tbls)' $(linux_uapi_dir) > $@
-+$(fsmount_arrays): $(beauty_uapi_linux_dir)/mount.h $(fsmount_tbls)
-+	$(Q)$(SHELL) '$(fsmount_tbls)' $(beauty_uapi_linux_dir) > $@
- 
- fspick_arrays := $(beauty_outdir)/fspick_arrays.c
- fspick_tbls := $(srctree)/tools/perf/trace/beauty/fspick.sh
- 
--$(fspick_arrays): $(linux_uapi_dir)/mount.h $(fspick_tbls)
--	$(Q)$(SHELL) '$(fspick_tbls)' $(linux_uapi_dir) > $@
-+$(fspick_arrays): $(beauty_uapi_linux_dir)/mount.h $(fspick_tbls)
-+	$(Q)$(SHELL) '$(fspick_tbls)' $(beauty_uapi_linux_dir) > $@
- 
- fsconfig_arrays := $(beauty_outdir)/fsconfig_arrays.c
- fsconfig_tbls := $(srctree)/tools/perf/trace/beauty/fsconfig.sh
- 
--$(fsconfig_arrays): $(linux_uapi_dir)/mount.h $(fsconfig_tbls)
--	$(Q)$(SHELL) '$(fsconfig_tbls)' $(linux_uapi_dir) > $@
-+$(fsconfig_arrays): $(beauty_uapi_linux_dir)/mount.h $(fsconfig_tbls)
-+	$(Q)$(SHELL) '$(fsconfig_tbls)' $(beauty_uapi_linux_dir) > $@
- 
- pkey_alloc_access_rights_array := $(beauty_outdir)/pkey_alloc_access_rights_array.c
- asm_generic_hdr_dir := $(srctree)/tools/include/uapi/asm-generic/
-@@ -598,15 +598,14 @@ $(mremap_flags_array): $(linux_uapi_dir)/mman.h $(mremap_flags_tbl)
- mount_flags_array := $(beauty_outdir)/mount_flags_array.c
- mount_flags_tbl := $(srctree)/tools/perf/trace/beauty/mount_flags.sh
- 
--$(mount_flags_array): $(linux_uapi_dir)/mount.h $(mount_flags_tbl)
--	$(Q)$(SHELL) '$(mount_flags_tbl)' $(linux_uapi_dir) > $@
-+$(mount_flags_array): $(beauty_uapi_linux_dir)/mount.h $(mount_flags_tbl)
-+	$(Q)$(SHELL) '$(mount_flags_tbl)' $(beauty_uapi_linux_dir) > $@
- 
- move_mount_flags_array := $(beauty_outdir)/move_mount_flags_array.c
- move_mount_flags_tbl := $(srctree)/tools/perf/trace/beauty/move_mount_flags.sh
- 
--$(move_mount_flags_array): $(linux_uapi_dir)/mount.h $(move_mount_flags_tbl)
--	$(Q)$(SHELL) '$(move_mount_flags_tbl)' $(linux_uapi_dir) > $@
--
-+$(move_mount_flags_array): $(beauty_uapi_linux_dir)/mount.h $(move_mount_flags_tbl)
-+	$(Q)$(SHELL) '$(move_mount_flags_tbl)' $(beauty_uapi_linux_dir) > $@
- 
- mmap_prot_array := $(beauty_outdir)/mmap_prot_array.c
- mmap_prot_tbl := $(srctree)/tools/perf/trace/beauty/mmap_prot.sh
-diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-index 015f74137b755eaf..c2c26d6b87ef52f9 100755
---- a/tools/perf/check-headers.sh
-+++ b/tools/perf/check-headers.sh
-@@ -15,7 +15,6 @@ FILES=(
-   "include/uapi/linux/kcmp.h"
-   "include/uapi/linux/kvm.h"
-   "include/uapi/linux/in.h"
--  "include/uapi/linux/mount.h"
-   "include/uapi/linux/openat2.h"
-   "include/uapi/linux/perf_event.h"
-   "include/uapi/linux/prctl.h"
-@@ -98,6 +97,7 @@ declare -a BEAUTY_FILES
- BEAUTY_FILES=(
-   "include/linux/socket.h"
-   "include/uapi/linux/fs.h"
-+  "include/uapi/linux/mount.h"
- )
- 
- declare -a FAILURES
-diff --git a/tools/perf/trace/beauty/fsconfig.sh b/tools/perf/trace/beauty/fsconfig.sh
-index bc6ef7bb7a5f93c2..09cee79de00ca35d 100755
---- a/tools/perf/trace/beauty/fsconfig.sh
-+++ b/tools/perf/trace/beauty/fsconfig.sh
-@@ -2,12 +2,12 @@
- # SPDX-License-Identifier: LGPL-2.1
- 
- if [ $# -ne 1 ] ; then
--	linux_header_dir=tools/include/uapi/linux
-+	beauty_uapi_linux_dir=tools/perf/trace/beauty/include/uapi/linux/
- else
--	linux_header_dir=$1
-+	beauty_uapi_linux_dir=$1
- fi
- 
--linux_mount=${linux_header_dir}/mount.h
-+linux_mount=${beauty_uapi_linux_dir}/mount.h
- 
- printf "static const char *fsconfig_cmds[] = {\n"
- ms='[[:space:]]*'
-diff --git a/tools/perf/trace/beauty/fsmount.sh b/tools/perf/trace/beauty/fsmount.sh
-index cba8897a751fd487..6b67a54cdeee64b3 100755
---- a/tools/perf/trace/beauty/fsmount.sh
-+++ b/tools/perf/trace/beauty/fsmount.sh
-@@ -2,12 +2,12 @@
- # SPDX-License-Identifier: LGPL-2.1
- 
- if [ $# -ne 1 ] ; then
--	linux_header_dir=tools/include/uapi/linux
-+	beauty_uapi_linux_dir=tools/perf/trace/beauty/include/uapi/linux/
- else
--	linux_header_dir=$1
-+	beauty_uapi_linux_dir=$1
- fi
- 
--linux_mount=${linux_header_dir}/mount.h
-+linux_mount=${beauty_uapi_linux_dir}/mount.h
- 
- # Remove MOUNT_ATTR_RELATIME as it is zeros, handle it a special way in the beautifier
- # Only handle MOUNT_ATTR_ followed by a capital letter/num as __ is special case
-diff --git a/tools/perf/trace/beauty/fspick.sh b/tools/perf/trace/beauty/fspick.sh
-index 1f088329b96ef0f2..0d9951c22b952ed1 100755
---- a/tools/perf/trace/beauty/fspick.sh
-+++ b/tools/perf/trace/beauty/fspick.sh
-@@ -2,12 +2,12 @@
- # SPDX-License-Identifier: LGPL-2.1
- 
- if [ $# -ne 1 ] ; then
--	linux_header_dir=tools/include/uapi/linux
-+	beauty_uapi_linux_dir=tools/perf/trace/beauty/include/uapi/linux/
- else
--	linux_header_dir=$1
-+	beauty_uapi_linux_dir=$1
- fi
- 
--linux_mount=${linux_header_dir}/mount.h
-+linux_mount=${beauty_uapi_linux_dir}/mount.h
- 
- printf "static const char *fspick_flags[] = {\n"
- regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+FSPICK_([[:alnum:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*.*'
-diff --git a/tools/include/uapi/linux/mount.h b/tools/perf/trace/beauty/include/uapi/linux/mount.h
-similarity index 100%
-rename from tools/include/uapi/linux/mount.h
-rename to tools/perf/trace/beauty/include/uapi/linux/mount.h
-diff --git a/tools/perf/trace/beauty/mount_flags.sh b/tools/perf/trace/beauty/mount_flags.sh
-index 730099a9a67c1e57..ff578f7b451b5a1d 100755
---- a/tools/perf/trace/beauty/mount_flags.sh
-+++ b/tools/perf/trace/beauty/mount_flags.sh
-@@ -1,15 +1,15 @@
- #!/bin/sh
- # SPDX-License-Identifier: LGPL-2.1
- 
--[ $# -eq 1 ] && header_dir=$1 || header_dir=tools/include/uapi/linux/
-+[ $# -eq 1 ] && beauty_uapi_linux_dir=$1 || beauty_uapi_linux_dir=tools/perf/trace/beauty/include/uapi/linux/
- 
- printf "static const char *mount_flags[] = {\n"
- regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MS_([[:alnum:]_]+)[[:space:]]+([[:digit:]]+)[[:space:]]*.*'
--grep -E $regex ${header_dir}/mount.h | grep -E -v '(MSK|VERBOSE|MGC_VAL)\>' | \
-+grep -E $regex ${beauty_uapi_linux_dir}/mount.h | grep -E -v '(MSK|VERBOSE|MGC_VAL)\>' | \
- 	sed -r "s/$regex/\2 \2 \1/g" | sort -n | \
- 	xargs printf "\t[%s ? (ilog2(%s) + 1) : 0] = \"%s\",\n"
- regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MS_([[:alnum:]_]+)[[:space:]]+\(1<<([[:digit:]]+)\)[[:space:]]*.*'
--grep -E $regex ${header_dir}/mount.h | \
-+grep -E $regex ${beauty_uapi_linux_dir}/mount.h | \
- 	sed -r "s/$regex/\2 \1/g" | \
- 	xargs printf "\t[%s + 1] = \"%s\",\n"
- printf "};\n"
-diff --git a/tools/perf/trace/beauty/move_mount_flags.sh b/tools/perf/trace/beauty/move_mount_flags.sh
-index ce5e632d14484bd2..c0dde9020bc38c21 100755
---- a/tools/perf/trace/beauty/move_mount_flags.sh
-+++ b/tools/perf/trace/beauty/move_mount_flags.sh
-@@ -2,12 +2,12 @@
- # SPDX-License-Identifier: LGPL-2.1
- 
- if [ $# -ne 1 ] ; then
--	linux_header_dir=tools/include/uapi/linux
-+	beauty_uapi_linux_dir=tools/perf/trace/beauty/include/uapi/linux/
- else
--	linux_header_dir=$1
-+	beauty_uapi_linux_dir=$1
- fi
- 
--linux_mount=${linux_header_dir}/mount.h
-+linux_mount=${beauty_uapi_linux_dir}/mount.h
- 
- printf "static const char *move_mount_flags[] = {\n"
- regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MOVE_MOUNT_([^_]+[[:alnum:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*.*'
--- 
-2.43.0
-
+Michael
 
