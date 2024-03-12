@@ -1,98 +1,125 @@
-Return-Path: <linux-kernel+bounces-100128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 698B087923D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:36:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97C22879242
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24DBE28235A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:36:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36F6A1F225BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 10:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D556679B76;
-	Tue, 12 Mar 2024 10:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723BD7828D;
+	Tue, 12 Mar 2024 10:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="fSkUOcUx"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gT4LbfdA"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECD135F18;
-	Tue, 12 Mar 2024 10:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8E579DA6
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 10:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710239748; cv=none; b=uXOCZJgqX0fzD2xFMQ8ZH+brjlpz7FcA7RqmHEydBtLU/DNcUuG45/O825aGvsnau31GSUOc8qL4loYO9c1o+vjPT59vcTyVhSjwy+HsSj4HXjZF3DzF+paLb/6wxEZT8HU+CDJncadbCosVD2HtRzeshVxJ1mVSERlpPU+Ib3M=
+	t=1710239752; cv=none; b=ulf+vjLBcCqCko9p9dpn4Wj1r7LkhjG+uNM4pI/7rOy8Ur6DRCW9ovBUsN2sfXnKVw8LN5edmcNWbWELYsTkINWbf+flvj7py0z70B6MfQf++I9ijpgtdx8qRa4LUHUkk+E9s3931pStTzrOAkYkvKGqGHmt/9XHU+Ki438RGQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710239748; c=relaxed/simple;
-	bh=3Ren6oCQrE76vKh+CCJiqBhAuW8cn+/gbi++0hCSJYo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GLCKJDqDsF0WQhDqQIjD6hD1O3pj0saj91qvB0JN6ePJtVVgTlYjS/LTdr20KiZKuAkjtuClI5KGyyI1gHhU5oPDfLdnxxPnEVXV0rKwOjiPp6yhrVZd+k4kLeelW3wavxO4bg6julM3KpFhelc7t3IW0vyoXSUqkzlMiECCuYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=fSkUOcUx; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1710239743;
-	bh=RZEfYiLTkNnDL11Vo6sbxwGAoRDVBPoFLJr3cr56jVk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=fSkUOcUxT9cjPVrU6sP8jJWYfWnjxzJLfKf1w6I4iWC+czN6ATNMjWO3u4Ol/6NIA
-	 klGcwVNW/8svX8Sa0TDuNXmzpmRaIWCIIJiAZwux8+TQ3uC3zJKgS+4d8VliKauaaY
-	 QdI3599p5DxoYz1/zN+FEVUnepZ4ntyegPliodd6Q0GAAbzech0kGB5Sx2JeG/YXdz
-	 RK3wuxQVdXT+La7rI/Bh4+uNV4SHIuCZXcVn2QbzLvPia4W0BFpkoWtyvQOi29Hrqo
-	 QNBAi86yP7jeyw45oqpE9N7aCxKKaxoPn9m8zJIHkxcpuba/Z1fMqcONSLaWpLv5kc
-	 BYSV9xOI9uHDA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tv95q63Rvz4x0t;
-	Tue, 12 Mar 2024 21:35:43 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Stefan Berger <stefanb@linux.ibm.com>, Jarkko Sakkinen
- <jarkko@kernel.org>, linux-integrity@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, rnsastry@linux.ibm.com, peterhuewe@gmx.de,
- viparash@in.ibm.com
-Subject: Re: [PATCH 2/2] tpm: of: If available Use linux,sml-log to get the
- log and its size
-In-Reply-To: <663a3834-056e-4dda-99dd-16ee8734100e@linux.ibm.com>
-References: <20240306155511.974517-1-stefanb@linux.ibm.com>
- <20240306155511.974517-3-stefanb@linux.ibm.com>
- <CZNS7FO53BHK.6NO93P0C0VY5@kernel.org>
- <CZNS9K4BJPQ8.2MD4WZS8YMI3W@kernel.org>
- <663a3834-056e-4dda-99dd-16ee8734100e@linux.ibm.com>
-Date: Tue, 12 Mar 2024 21:35:43 +1100
-Message-ID: <877ci74u0w.fsf@mail.lhotse>
+	s=arc-20240116; t=1710239752; c=relaxed/simple;
+	bh=J87wPB5kfR1Vgy0rpL+lAvnIl/mRMrKHOZE0us+WmkM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D7q/EO2qTZ+8alls7Q6xp62dqSpRqrXd19CU7ofOn3kYoQK+Gg3PUxoQXmyZqbbwPglEwluo7n86Ot/n6g4Eq1ulJ8OPw32OvcTRABkENi6XoxOLiVbQ7xKmm1RPID9iCa1mORukwRvc6sZM/dVe0ITWE2A4oq0NAnDiR2Ex40Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gT4LbfdA; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-512e39226efso5289131e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 03:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710239749; x=1710844549; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gT8NsrDdn/4eUzU6LsHlS9sX2d6WD+4RS5GzUvLPnDg=;
+        b=gT4LbfdAjLd/ZG/7+LZq/Xyzvjpq0mgMoDSesLF1yJe6Bm0Ya0eA6MFpFpANGSWJmz
+         npncWr9EDexb35HohsGrxUnt6ywBNlYQy28LjC1qiB5+C6AhbD6MR11HOdO8aV0R+BoN
+         8b0hD2RcZTUDO0ezZJI5mMnv6wZOU62+7GOK1C7m8UoG8UaYXgTSrbF9VnO0e98PZ3Cr
+         J/gmhHIJdEcUW5+nGyzTSm59iWq7mA+3ipUD5QYGHTy+34OQMB5Ias/dq3hUCLjD9eGx
+         0qi/BgPG1UodV6amoA1+hc21UpAppHd77qxAleaOyeo9LjPECz+cdIuI/OWBbvm3QpNQ
+         0GIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710239749; x=1710844549;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gT8NsrDdn/4eUzU6LsHlS9sX2d6WD+4RS5GzUvLPnDg=;
+        b=uo4mgmG7Vo44xiukWGrUbrgJ89KRd0qZZ/uKWaIePUY09r4KdWj1VvF5CGNtlQCK86
+         s8d2JZCwg1fcN1gG7LVyzmW3USY5oSRnRO6Q7dcnkIZOjc7QPXbg8MLt58c82bg99zbM
+         ZvhbsAfsSBvTIeu8z8obIFkE0I9E/eZBFDT+iuMSVuxZJk0IjjRz4BsJt0qhxYHtEnrC
+         SFfMD6gpTelr2oFFCANNxSCYzPWOH9IVugZ6dE4O9IE02+pb9QTAD4zZi+hab8gZ32UH
+         95pHA46N4y1fjtwy4ek9NWuL/4mXodpVvFtnun9AOwvxFwhCWYeaWwfCWJtvCM7GjZMN
+         rsPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVjgVCz0291WsBPc6LIX+jIWaeVTGFAQTHnbW7172R9DQ/kOQxUIyqEPPhQ7KFq8v1sdISeDkgkOCtUtJtul8cn4/tiXUXhAvFJJqJp
+X-Gm-Message-State: AOJu0Ywk9fPtI/0CdIbt8k/VUkYCB9+MrL2DRFP8FGr0M9xwlYKZMuuY
+	ysPlpUcRaj3ocQz6Gp0QslctzJDYdVu/wmZ76EQLkmWk7RVcti7ziMWap3DR/e6jDAEVe66U8LE
+	KaeI=
+X-Google-Smtp-Source: AGHT+IETlifHZT+hAAKWHTZL07PZLEEtbBwZ4zEw20Dkdb3oSqUSUH1qMOIS6ZeDJ1M80KTwsIsTiw==
+X-Received: by 2002:a05:6512:ea2:b0:513:b0d4:da40 with SMTP id bi34-20020a0565120ea200b00513b0d4da40mr3272425lfb.20.1710239749100;
+        Tue, 12 Mar 2024 03:35:49 -0700 (PDT)
+Received: from [172.30.205.61] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id m24-20020a056512359800b00513c104ace9sm167986lfr.198.2024.03.12.03.35.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 03:35:48 -0700 (PDT)
+Message-ID: <feb1be8f-ed13-4925-b284-27303651e933@linaro.org>
+Date: Tue, 12 Mar 2024 11:35:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] arm64: dts: qcom: sc7280: Add clocks for QOS
+ configuration
+Content-Language: en-US
+To: Odelu Kukatla <quic_okukatla@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, cros-qcom-dts-watchers@chromium.org,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, quic_rlaggysh@quicinc.com,
+ quic_mdtipton@quicinc.com
+References: <20240306073016.2163-1-quic_okukatla@quicinc.com>
+ <20240306073016.2163-5-quic_okukatla@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240306073016.2163-5-quic_okukatla@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Stefan Berger <stefanb@linux.ibm.com> writes:
-> On 3/7/24 15:00, Jarkko Sakkinen wrote:
->> On Thu Mar 7, 2024 at 9:57 PM EET, Jarkko Sakkinen wrote:
->>> in short summary: s/Use/use/
->>>
->>> On Wed Mar 6, 2024 at 5:55 PM EET, Stefan Berger wrote:
->>>> If linux,sml-log is available use it to get the TPM log rather than the
->>>> pointer found in linux,sml-base. This resolves an issue on PowerVM and KVM
->>>> on Power where after a kexec the memory pointed to by linux,sml-base may
->>>> have been corrupted. Also, linux,sml-log has replaced linux,sml-base and
->>>> linux,sml-size on these two platforms.
->>>>
->>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->>>
->>> So shouldn't this have a fixed tag, or not?
->> 
->> In English: do we want this to be backported to stable kernel releases or not?
->
-> Ideally, yes. v3 will have 3 patches and all 3 of them will have to be 
-> backported *together* and not applied otherwise if any one of them 
-> fails. Can this be 'guaranteed'?
 
-You can use Depends-on: <previous commit SHA> to indicate the relationship.
 
-cheers
+On 3/6/24 08:30, Odelu Kukatla wrote:
+> Add handles for required clocks to be enabled for configuring
+> QoS on sc7280.
+> 
+> Signed-off-by: Odelu Kukatla <quic_okukatla@quicinc.com>
+> ---
+>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 7e7f0f0fb41b..e1d8fb6afae8 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -2129,6 +2129,8 @@
+>   			reg = <0 0x016e0000 0 0x1c080>;
+>   			#interconnect-cells = <2>;
+>   			qcom,bcm-voters = <&apps_bcm_voter>;
+> +			clocks = <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
+> +				<&gcc GCC_AGGRE_USB3_PRIM_AXI_CLK>;
+
+Please align this with the previous <
+
+Konrad
 
