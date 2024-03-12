@@ -1,135 +1,121 @@
-Return-Path: <linux-kernel+bounces-100306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5061187955D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:51:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C111879583
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:00:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A7351C21CBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:51:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDCD11C21D05
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8832D7A71A;
-	Tue, 12 Mar 2024 13:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99517AE7C;
+	Tue, 12 Mar 2024 14:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="A5Tmndt2"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OkBA9tac"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEBDA939;
-	Tue, 12 Mar 2024 13:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC2F79B96;
+	Tue, 12 Mar 2024 14:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710251494; cv=none; b=qXLkli9s/i9g7bipNBBXoLqat3s33q0IXwZu7oIcdjxV7D7ftiohBOPBcEWBKFONYyiKdn7+f+OSqLuPGBw43I2FAyGX1F/efzpzxiUXGah2g5zhDFTZvhvk7wJK/RmEWibtMHddSYd9oSTTx1ZueY1PM7HX4/Kt1mAKcVTsDbI=
+	t=1710252012; cv=none; b=CG+OA/gCOk9Y4Lrgb41g6fFo6RW/MUHeyixZnx57h5mLWNo6Lnvpf6LpttZ7o2ZMrPanYGE5C3dGi7Gah8IyMokjDYTz/LgERlFoc3ZGYwejg7a8E5ruXmu6hgGznn4hcp/EIjSbARxEQqmCHhUYyVEfDrJcTCWTXKUOxhzw+AI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710251494; c=relaxed/simple;
-	bh=qUIQDwVkNhqHGtVr61movIKhOxPIBocHfP0erjlEQiM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CPlGX6FoEvlrGneP/gSpyLNRpKx+EIdGiQ+ARJ/eYEpm0tSwS5fkkKhIYx3DRmHMLenHeREhOxDyw06u+aOpHpOKbMXmOWcHMhtuRr5jM2amPV9OMDQU8cTQfmJER+hqwCREsX5XTm2nNxBCklFXhQxha68J5BVM9lCBwrvT6SA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=A5Tmndt2; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42C5Whac023805;
-	Tue, 12 Mar 2024 08:51:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=RjYWwCJuJ3X8Wvm
-	1CI3hmDo7m+jseERS+0GlvROE8Kc=; b=A5Tmndt2aHzDT+2CZeMaFbQIqLTM3ju
-	wPOk12nxAgL0n/s2uV2mLf4UloOHaS55BpszAd6quy0ZF0QqDLm+3LcoS8KIuHuI
-	YZh3wgMlhzdTx2rIaEDuyluSPpj3kwlbS/VTsmtzZu4jSIQpfT+z0Bqd3eVEOYiI
-	rHI24Ii/QMRahjpoZuEDJuWxmMYK5C1Z48UWm/j0D1UldEp7cmSF+W91+nR/KWww
-	S+lF6QAd5t6FMpukdg701hMKxzFW1FfwDK/8bt6VT3Nsj1koHhPkQyayZoupzNJU
-	Ts4gbzHGm5qnzJYIEu97OxibGiDwPpa/DLiRLs7J+eSmhuFEeFeNeRQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wrp22u7jy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Mar 2024 08:51:06 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 12 Mar
- 2024 13:51:03 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
- via Frontend Transport; Tue, 12 Mar 2024 13:51:03 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id A0755820241;
-	Tue, 12 Mar 2024 13:51:03 +0000 (UTC)
-Date: Tue, 12 Mar 2024 13:51:02 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
-CC: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>,
-        <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        "Mark
- Brown" <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai
-	<tiwai@suse.com>
-Subject: Re: [RFC PATCH v1] ASoC: wm8904: enable fll with fixed mclk
-Message-ID: <ZfBdxrzX3EnPuGOn@ediswmail9.ad.cirrus.com>
-References: <20240308155831.141229-1-andrejs.cainikovs@gmail.com>
- <Ze7smWSeoCVIcxIo@ediswmail9.ad.cirrus.com>
- <ZfBG9IMFEjjIdgdi@toradex.com>
+	s=arc-20240116; t=1710252012; c=relaxed/simple;
+	bh=3HWKckNpAQ8AY3aLQCp6UBNnYrtUMUkbdHYWXQt4TtY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EXKnbQkZdfDQa5Q+QosiooOvkBHHsaXk4gHObh88EjcaL63XAh+nf05iOrg82xJvumblJP+NexwHErHeRncRTOd4gCV4LzMRWhzQjO/YItMlwEpAnr5t2AaeHtLVBqL7/70nykPPmAm4+Ius6JID23wJLeW6xlZ251g8aiO+GT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OkBA9tac; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=jQe08bY6cMcC0sBvnFpiFQcBV697YeZ0n6MJqTOrObA=; b=OkBA9tacW41yqQUpfP1Hzcplt8
+	xtAww7kN00Sx5K7o7fgoszyFLXs+91r6SQIcCn/Jv7GQY566BTvYHRHPtNF2MhyqQwf3NwcdyXnof
+	1kiFoNaj9RN1c8qgyvTRK0GfX1iOqV7ATqTE1fcfzWHm4XpEVQW3OgYVZs1sDw4eEr5hj5JY5ePht
+	Ag8x2K6WMsl29tDBbHuPrqFnyqhcmv7vIHk74dqsDUPYbiBvQifpSoh098LUkq+al5F5TLrJTjdk9
+	mA81FeGfnVhdKHCOfllPPrMnySBa6SwGeF1e+mDU4w+TbV12/54iDj1Vncdv5ZiSJ9HlIvmEGeo2a
+	hyB9wd0A==;
+Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rk2fh-00000009V5K-3oqy;
+	Tue, 12 Mar 2024 14:00:02 +0000
+Received: from dwoodhou by i7.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rk2fg-000000033N2-2oJe;
+	Tue, 12 Mar 2024 14:00:00 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+To: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Mostafa Saleh <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: [RFC PATCH 0/2] Add PSCI v1.3 SYSTEM_OFF2 support for hibernation
+Date: Tue, 12 Mar 2024 13:51:27 +0000
+Message-ID: <20240312135958.727765-1-dwmw2@infradead.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZfBG9IMFEjjIdgdi@toradex.com>
-X-Proofpoint-GUID: iZDarsVptUBAMHR0ZgPVsN7Fsdut8fUs
-X-Proofpoint-ORIG-GUID: iZDarsVptUBAMHR0ZgPVsN7Fsdut8fUs
-X-Proofpoint-Spam-Reason: safe
+Content-Transfer-Encoding: 8bit
+Sender: David Woodhouse <dwmw2@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, Mar 12, 2024 at 01:13:40PM +0100, Andrejs Cainikovs wrote:
-> On Mon, Mar 11, 2024 at 11:35:53AM +0000, Charles Keepax wrote:
-> > On Fri, Mar 08, 2024 at 04:58:31PM +0100, Andrejs Cainikovs wrote:
-> > > From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
-> With or without mclk-fs wm8904_set_sysclk() is called always during probe,
-> with following parameters:
-> 
-> clk_id = 0
-> dir = 0
-> freq = 25000000
-> mclk_freq = 25000000
-> 
-> When mclk-fs is set, wm8904_set_sysclk() is also called before each
-> playback [1]. In case of 44.1kHz:
-> 
-> clk_id = 0
-> dir = 0
-> freq = 11289600
-> mclk_freq = 11235955
-> 
-> In both scenarios, clk_id is always WM8904_CLK_AUTO.
+The upcoming PSCI v1.3 specification adds support for a SYSTEM_OFF2 
+function which is analogous to ACPI S4 state. This will allow hosting 
+environments to determine that a guest is hibernated rather than just 
+powered off, and ensure that they preserve the virtual environment 
+appropriately to allow the guest to resume safely (or bump the 
+hardware_signature in the FACS to trigger a clean reboot instead).
 
-Ah, ok I see what I was missing here. simple_card_utils calls
-clk_set_rate if you specify mclk_fs. Which you don't want in this
-case. My gut reaction is that really the problem here is the machine
-driver doesn't support the clocking setup you have.
+This adds support for it to KVM, and to the guest hibernate code.
 
-Having a quick look through the simple card stuff can you remove:
+Strictly, we should perhaps also allow the guest to detect PSCI v1.3, 
+but when v1.1 was added in commit 512865d83fd9 it was done 
+unconditionally, which seems wrong. Shouldn't we have a way for 
+userspace to control what gets exposed, rather than silently changing 
+the guest behaviour with newer host kernels? Should I add a 
+KVM_CAP_ARM_PSCI_VERSION?
 
-	clocks = <&audio_refclk1>;
+For the guest side, this adds a new SYS_OFF_MODE_POWER_OFF with higher 
+priority than the EFI one, but which *only* triggers when there's a 
+hibernation in progress. That seemed like the simplest option, but see 
+the commit message for alternative possilities. I told Rafael I'd post a 
+straw man for bikeshedding, and here it is.
 
-From the machine driver DT stuff, and add mclk-fs. I think that
-should cause the simple card to call the codec dai_set_sysclk
-but without ever touching the audio_refclk. A small change in
-simple_util_parse_clk might also be needed to allow it to return
-without finding a clock. Which feels like a much simpler and less
-scary change.
+ Documentation/virt/kvm/api.rst       | 11 +++++++++++
+ arch/arm64/include/asm/kvm_host.h    |  2 ++
+ arch/arm64/include/uapi/asm/kvm.h    |  6 ++++++
+ arch/arm64/kvm/arm.c                 |  5 +++++
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c |  2 ++
+ arch/arm64/kvm/psci.c                | 37 ++++++++++++++++++++++++++++++++++++
+ drivers/firmware/psci/psci.c         | 35 ++++++++++++++++++++++++++++++++++
+ include/uapi/linux/kvm.h             |  1 +
+ include/uapi/linux/psci.h            |  5 +++++
+ kernel/power/hibernate.c             |  5 ++++-
+ 10 files changed, 108 insertions(+), 1 deletion(-)
 
-My only slight reservation is the automatic clocking thing only
-really exists as a hack to support simple card anyway. But overal
-I think it might be better to try to move the direction of travel
-more to adding support for the clocking systems that exist into
-simple-card rather than tweaking the codec driver to work around
-it.
-
-Thanks,
-Charles
 
