@@ -1,212 +1,215 @@
-Return-Path: <linux-kernel+bounces-100301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B6B87954D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:48:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC51E879552
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D2F8285EEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:48:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C42E3B22849
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 13:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4B37A720;
-	Tue, 12 Mar 2024 13:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCC77A714;
+	Tue, 12 Mar 2024 13:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="a0mDb4pR";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lDFatT0+"
-Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l4n5hPNN"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270715B1E1;
-	Tue, 12 Mar 2024 13:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 920067A15A
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 13:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710251281; cv=none; b=C61Tlq9wpPL0nUlqZ4AH03jE/5XGYGQgtha7AS5yx/gmBl1gFSccYI0mXIjtknYGgECc4OiWSPWJAZweLSEFvXthZ+1LlV0go9kGL6KEisDG3AVI6RKoWQa9dde89NWw7eJyBm+RW6BUrMg3PUuE73XgUzcLL2opI39nC6+ry2A=
+	t=1710251329; cv=none; b=t4QqFOdbrRPy27funoiJoqXd1QkNDAk/R4ZloZiabwSOjeDlrDA7aFwlMOK8D9yIqefhRR4USAR7Kcmfi4Gk+a1bFr72qXIgAlBoBuAogiVj7hGqM3afUY5fhmKkEz4XrU1tEbwokO5rbf19WBiq9y/CyJ8RBc4XOoeS+feP/D8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710251281; c=relaxed/simple;
-	bh=3PLdIJmYTKB6gkGFZ9Bne0cSJ5xec83W3smNXqUjWso=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=QUwEUZDeT0FbTV58vV5LmOh1cKsqTlbQczCSxxMJhjjnH77wDtgeek9vrhuQfbw0bmBPpK+LXOoiJw8ZzjqWeIQ6+LytWe1QcInbajogIxYUz27I1xV+G+vn7t3+GMiSzS8TktDNpeJba8V97LK8RK3qqBKNtJamP6i7DwTSOOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=a0mDb4pR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lDFatT0+; arc=none smtp.client-ip=64.147.123.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id CCA9A1C000A3;
-	Tue, 12 Mar 2024 09:47:55 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 12 Mar 2024 09:47:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1710251275;
-	 x=1710337675; bh=Bjy1wqXHISa4mvQY02jG8JIIsUcNLSlrmrkVMNTQWAQ=; b=
-	a0mDb4pRPVrLP1HPtkBSgW5ZnB73TtkkPT/FZBnpMqxewQgvPuWImXb3uDemLx/m
-	wSvjez4eA0/rIa1hZphVSvBUDbfuiNFsBl2VpcfTrTktFUy/J0PfsGGcg+sIxMUG
-	9DQRTtKVZ8CU6I24rKRRhdpmSDAiWDHQM+k6TYBv4xG1pe34dOYklPduJmIoFhpS
-	CrAzShryLlcID3SwMGy2utRETRh/LOuzSFiausMAYvZ/Uxxat6Nqx8w+P6ccrbET
-	gXnzd1Dz9q6/RYQhp6beKDT1olhi+7dRcUKjJy1xMJa4GqkfeQQcCkESrG/lKobW
-	Y0ll+aRUbwddS/axfJWbag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710251275; x=
-	1710337675; bh=Bjy1wqXHISa4mvQY02jG8JIIsUcNLSlrmrkVMNTQWAQ=; b=l
-	DFatT0+nF31R7ZyBzAe8mHgWuGi+srr48TLHIeBwT4u5C1KeQc3pKqj0sk7w6Lqc
-	N2FyBjNcrgu5GBOEwZts/IFFVATcmzvDgx1rDTgGImMMqKxPXRkhIS+PmDaH1Isw
-	KTqSbP7U3dpgoK95KM6l9Iig8lRwh4nM7CuwYxeGwvg2q6xACelIyOvP5bwgJC9g
-	BXsjLudbuM7r10pO4VKbrARM1qCajmRD5WCFGArCa8URjWrAz+K/WrINwB73npMR
-	QiWrmvpe7HGRxh1UXdSXwgt/yufpBxFksDod08NIuFZKJ7nGnj3BAykGvVJF8ter
-	4O+SqYaU4F1kcF7SGIULA==
-X-ME-Sender: <xms:CV3wZZWs9P2zX9yCI8RlclX0s0av5QUUrtKdQO6JzPxaznGMxGvAQg>
-    <xme:CV3wZZl1jYtKseL0Oji4Uy3tb54p3lbwswOzMKrqDcc-5v0e7pEhPDaK3pijRwLA8
-    Kdf7HafcHX7jADKjo0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgdehiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:CV3wZVbgTpEeWDXrLXE4N0-I43eo4OF7LhSGGIX-fmoGMnDWP1pDFQ>
-    <xmx:CV3wZcU0TmTecnXndyvJG_ls_NoyU3abBFWCmBnnsBMXA72Bo8Lnuw>
-    <xmx:CV3wZTk6lbB_Vd0gtjRgz0uuMUUrd08nj2Dx3KR_fu41JBuOTpEj1Q>
-    <xmx:CV3wZZecS909lb2jNM3D0mMNkhNEuuHtMGODT63XkGUlMgKkFgbSAw>
-    <xmx:C13wZXyNzd7ziPJAGYzgNhfiJVr7M3VjwuKuW8M3dg-HEXju4t1XwCi0-TI>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 3AE4CB6008F; Tue, 12 Mar 2024 09:47:53 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1710251329; c=relaxed/simple;
+	bh=mqdloibA4FQfmySkAVlcFWZ2kduQF+L4m1UAOl23IMY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jTkWKOHgWpUiwI91tzHTDbB2bz/vUi1CReChVKUmO7Ls1rcdBHCevX76iuTtbN3Ik6AZ+ZYFs5UbT6RvIyH1BytURZMjACeqTH8yFQCZgRaoaj0Z6UhnQAkG86kimlu7lu0mQV57wYEV+b65f5tpfMbBazBC8AR+SoIPoGCCIPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l4n5hPNN; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so9252a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 06:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710251326; x=1710856126; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f+kG37cn+Hhk9HFtQJetz/0W7LCqtER5XXHHxqsY9KU=;
+        b=l4n5hPNN/efK0XTplNKWJSbb5AoFW/LHqIOPFYDKsZoS5KlkkvW9ZTRXGFCjjBJd+W
+         mgDVoNTeAh4+DV3xspz9j5Ogxi380uNqemmCfLWt5WFijJNVN+L9YY+472cu9pAaSUzV
+         tq/XU6iGJT4itAfjkrlSRWDEYLvPTY2RAxibALlNufyIL0ZYcU8WkAUvoSYzeLV/+oMb
+         GK/D1Ulgu30iRDF78K6l5O2jpL83Z7hTJLvbAnMPRXGbUScyxQddDDk2b99Yp2I1ElWL
+         vXYz+HsTxvHTfdOAXaFyfF3fu0TBFl6OCkQB/uIbsLvNeEdn1G7jR09MC7Da+UOa1Hgr
+         bjtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710251326; x=1710856126;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f+kG37cn+Hhk9HFtQJetz/0W7LCqtER5XXHHxqsY9KU=;
+        b=Y+1+1d5ZqALv8IYOLXxQGVYqr6oEA7kl/UVjWfWKKYwWeCOTC4jYN/TYrUyM2RBAVC
+         Xdjwe7nyG09b2lxEBnMfB+u48W+9obkQgp28c6qYCao1fehVaBJBc33woVNu2MnGI6Hc
+         wOB/CRRaT8ERQxmlsdc69nVHtDJ96WqB+xlk4SwYZZ3eR7cAXFt6v/r/y7wIBK8CeCK7
+         mss2CdsTXhiESPFbDKy2QsI4Nuy0kaUU8iWdF/q0wNcS2wlnhOzKlBifprAM2r+sNA9e
+         3RJRIZJJ71NKWksfCPFnSCFMzyg/EKmXBXVgZpncJ3EM4FV9+3vk96Zs8VUaePlijBDz
+         Nbew==
+X-Forwarded-Encrypted: i=1; AJvYcCWpDga4oShoed3N3RAf30LEeZV6hvSqdJTqbbjtFdCOID+JrLuUlwqzC73OQv5bG2Jc8FT8mTKNjlsobgTB62Sy905cqGEj0dOPQVeH
+X-Gm-Message-State: AOJu0YwO8D/yJhCRzrJn01Umrhv0/414FewUGRogKjA9uwbd0gFUvuMo
+	IQkjuEpmvzX4Sa/TH0UoE5e5VewnIDa3hzCcm4/rz7+2eMWh6n4KuVNv51cl8F/TM7XTpDTDFd6
+	q2pJZMrDzP9OIugxoiO9LLyGjtUjbi+/BULUd
+X-Google-Smtp-Source: AGHT+IFcQAFNe2bhFCHb4bclCBXccqBguTbmeCO0n9SDxQ5IunD0vK40Gu7SAv/OLCbD+Mb5itB8534hYWCS08Sgg7g=
+X-Received: by 2002:a50:9f2f:0:b0:568:72e2:4e6f with SMTP id
+ b44-20020a509f2f000000b0056872e24e6fmr133392edf.6.1710251325617; Tue, 12 Mar
+ 2024 06:48:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <0a4e4505-cf04-4481-955c-1e35cf97ff8d@app.fastmail.com>
-In-Reply-To: 
- <CAMuE1bGkZ=ifyofCUfm4JVS__dgYG41kecS4TxBaHJvyJ607PQ@mail.gmail.com>
-References: <20240312095005.8909-1-maimon.sagi@gmail.com>
- <7bf7d444-4a08-4df4-9aa1-9cd28609d166@app.fastmail.com>
- <CAMuE1bGkZ=ifyofCUfm4JVS__dgYG41kecS4TxBaHJvyJ607PQ@mail.gmail.com>
-Date: Tue, 12 Mar 2024 14:47:32 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Sagi Maimon" <maimon.sagi@gmail.com>
-Cc: "Richard Cochran" <richardcochran@gmail.com>,
- "Andy Lutomirski" <luto@kernel.org>, datglx@linutronix.de,
- "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Johannes Weiner" <hannes@cmpxchg.org>,
- "Sohil Mehta" <sohil.mehta@intel.com>,
- "Rick Edgecombe" <rick.p.edgecombe@intel.com>,
- "Nhat Pham" <nphamcs@gmail.com>, "Palmer Dabbelt" <palmer@sifive.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Alexey Gladkov" <legion@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Miklos Szeredi" <mszeredi@redhat.com>,
- "Casey Schaufler" <casey@schaufler-ca.com>, reibax@gmail.com,
- "David S . Miller" <davem@davemloft.net>,
- "Christian Brauner" <brauner@kernel.org>, linux-kernel@vger.kernel.org,
- linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
- Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v6] posix-timers: add clock_compare system call
-Content-Type: text/plain;charset=utf-8
+References: <CABOYnLwtfAxS7WoMw-1_uxVe3EYajXRuzZfwaQEk0+7m6-B+ug@mail.gmail.com>
+ <CANn89i+qLwyPLztPt6Mavjimyv0H_UihVVNfJXWLjcwrqOudTw@mail.gmail.com>
+ <20240306103632.GC4420@breakpoint.cc> <CANn89iLe0KGjbSim5Qxxr6o0AjJVs7-h79UvMMXKOgGKQUosiA@mail.gmail.com>
+ <20240312132107.GA1529@breakpoint.cc>
+In-Reply-To: <20240312132107.GA1529@breakpoint.cc>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 12 Mar 2024 14:48:31 +0100
+Message-ID: <CANn89iLkDwnZdBY8CwkrQwCk2o7EAM9J1sv+uxU1tjKb=VB=Ag@mail.gmail.com>
+Subject: Re: KASAN: slab-use-after-free Read in ip_finish_output
+To: Florian Westphal <fw@strlen.de>
+Cc: xingwei lee <xrivendell7@gmail.com>, pabeni@redhat.com, davem@davemloft.net, 
+	kuba@kernel.org, linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, ralf@linux-mips.org, syzkaller-bugs@googlegroups.com, 
+	samsun1006219@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024, at 13:15, Sagi Maimon wrote:
-> On Tue, Mar 12, 2024 at 1:19=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> =
-wrote:
->> On Tue, Mar 12, 2024, at 10:50, Sagi Maimon wrote:
->> > +     kc_a =3D clockid_to_kclock(clock_a);
->> > +     if (!kc_a) {
->> > +             error =3D -EINVAL;
->> > +             return error;
->> > +     }
->> > +
->> > +     kc_b =3D clockid_to_kclock(clock_b);
->> > +     if (!kc_b) {
->> > +             error =3D -EINVAL;
->> > +             return error;
->> > +     }
->>
->> I'm not sure if we really need to have it generic enough to
->> support any combination of clocks here. It complicates the
->> implementation a bit but it also generalizes the user space
->> side of it.
->>
->> Can you think of cases where you want to compare against
->> something other than CLOCK_MONOTONIC_RAW or CLOCK_REALTIME,
->> or are these going to be the ones that you expect to
->> be used anyway?
->>
-> sure, one example is syncing two different PHCs (which was originally
-> why we needed this syscall)
-> I hope that I have understand your note and that answers your question.
+On Tue, Mar 12, 2024 at 2:21=E2=80=AFPM Florian Westphal <fw@strlen.de> wro=
+te:
+>
+> Eric Dumazet <edumazet@google.com> wrote:
+> > > so skb->sk gets propagated down to __ip_finish_output(), long
+> > > after connrack defrag has called skb_orphan().
+> > >
+> > > No idea yet how to fix it,
+> >
+> > My plan was to refine "inet: frag: Always orphan skbs inside
+> > ip_defrag()" and only do the skb_orphan()
+> > for skb added to a frag_list.
+> >
+> > The head skb would keep a reference to the socket.
+>
+> I tried to follow this but its beyond my abilities.
+>
+> Defrag messes with skb->truesize, and I do not know how to
+> fix that up safely so later calls to destructor won't underflow sk
+> accouting.
+>
+> Furthermore, depending on delivery order, the skb that gets
+> passed to rest of stack might not be the head skb (the one with
+> full l4 header and sk reference), its always the last one that arrived.
+>
+> Existing code skb_morphs() this, see inet_frag_reasm_prepare() and also
+> the ->truesize munging (which is fine only because all skbs are
+> orphans...).
+>
+> So in order to not pass already-released sk to inet output somehow
+> the skb->sk reference needs to be stolen and moved from one sk
+> to another.
+>
+> No idea how to do this, let alone do regression testing for this.
+> see e.g. 48cac18ecf1de82f76259a54402c3adb7839ad01 which added
+> unconditional orphaning in ipv6 netfilter defrag.
+>
+> ATM the only "solution" I see is to completely remove netfilter defrag
+> support for outgoing packets.
 
-Right, that is clearly a sensible use case.
+Thanks for taking a look Florian.
 
-I'm still trying to understand the implementation for the case
-where you have two different PHCs and both implement=20
-clock_get_crosstimespec(). Rather than averaging between
-two snapshots here, I would expect this to result in
-something like
+Perhaps not messing with truesize at all would help ?
 
-      ktime_a1 +=3D xtstamp_b.sys_monoraw - xtstamp_a1.sys_monoraw;
+Something based on this POC :
 
-in order get two device timestamps ktime_a1 and ktime_b
-that reflect the snapshots as if they were taken
-simulatenously. Am I missing some finer detail here,
-or is this something you should do?
+diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
+index 153960663ce4c2389259e0dc2bb4ba0b011dc698..8fd688df4b24dec7b5a1ea365d5=
+b34d81fe6e0e5
+100644
+--- a/include/net/inet_frag.h
++++ b/include/net/inet_frag.h
+@@ -94,6 +94,7 @@ struct inet_frag_queue {
+        struct rb_root          rb_fragments;
+        struct sk_buff          *fragments_tail;
+        struct sk_buff          *last_run_head;
++       struct sock             *sk;
+        ktime_t                 stamp;
+        int                     len;
+        int                     meat;
+diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+index 7072fc0783ef56e59c886a2f2516e7db7d10c942..aee706226ef8d9e9514fcf7d60e=
+4d278ff7178fa
+100644
+--- a/net/ipv4/inet_fragment.c
++++ b/net/ipv4/inet_fragment.c
+@@ -297,6 +297,8 @@ void inet_frag_destroy(struct inet_frag_queue *q)
+                        SKB_CONSUMED;
+        WARN_ON(del_timer(&q->timer) !=3D 0);
 
->> > +     if (crosstime_support_a) {
->> > +             ktime_a1 =3D xtstamp_a1.device;
->> > +             ktime_a2 =3D xtstamp_a2.device;
->> > +     } else {
->> > +             ktime_a1 =3D timespec64_to_ktime(ts_a1);
->> > +             ktime_a2 =3D timespec64_to_ktime(ts_a2);
->> > +     }
->> > +
->> > +     ktime_a =3D ktime_add(ktime_a1, ktime_a2);
->> > +
->> > +     ts_offs =3D ktime_divns(ktime_a, 2);
->> > +
->> > +     ts_a1 =3D ns_to_timespec64(ts_offs);
->>
->> Converting nanoseconds to timespec64 is rather expensive,
->> so I wonder if this could be changed to something cheaper,
->> either by returning nanoseconds in the end and consistently
->> working on those, or by doing the calculation on the
->> timespec64 itself.
->>
-> I prefer returning timespec64, so this system call aligns with other
-> system calls like clock_gettime for example.
-> As far as doing the calculation on timespec64 itself, that looks more
-> expansive to me, but I might be wrong.
++       if (q->sk)
++               sock_put(q->sk);
+        /* Release all fragment data. */
+        fqdir =3D q->fqdir;
+        f =3D fqdir->f;
+diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
+index a4941f53b523725cd777d213500b8f6918287920..198a4c35cd1232278678a20bf0f=
+2a49c63f548fc
+100644
+--- a/net/ipv4/ip_fragment.c
++++ b/net/ipv4/ip_fragment.c
+@@ -377,6 +377,10 @@ static int ip_frag_queue(struct ipq *qp, struct
+sk_buff *skb)
 
-In the general case, dividing a 64-bit variable by some other
-variable is really expensive and will take hundreds of cycles.
-This one is a bit cheaper because the division is done using
-a constant divider of NS_PER_SEC, which can get optimized fairly
-well on many systems by turning it into an equivalent 128-bit
-multiplication plus shift.
+                skb->_skb_refdst =3D 0UL;
+                err =3D ip_frag_reasm(qp, skb, prev_tail, dev);
++               if (qp->q.sk) {
++                       swap(qp->q.sk, skb->sk);
++                       skb->destructor =3D sock_edemux;
++               }
+                skb->_skb_refdst =3D orefdst;
+                if (err)
+                        inet_frag_kill(&qp->q);
+@@ -384,6 +388,7 @@ static int ip_frag_queue(struct ipq *qp, struct
+sk_buff *skb)
+        }
 
-For the case where you start out with a timespec64, I would
-expect it to be cheaper to calculate the nanosecond difference
-between ts_a1 and ts_a2 to add half of that to the timespec
-than to average two large 64-bit values and convert that back
-to a timespec afterwards. This should be fairly easy to try
-out if you can test a 32-bit kernel. We could decide that
-there is no need to care about anything bug 64-bit kernels
-here, in which case your current version should be just as
-good for both the crosstime_support_a and !crosstime_support_a
-cases.
+        skb_dst_drop(skb);
++       skb_orphan(skb);
+        return -EINPROGRESS;
 
-     Arnd
+ insert_error:
+@@ -487,7 +492,6 @@ int ip_defrag(struct net *net, struct sk_buff
+*skb, u32 user)
+        struct ipq *qp;
+
+        __IP_INC_STATS(net, IPSTATS_MIB_REASMREQDS);
+-       skb_orphan(skb);
+
+        /* Lookup (or create) queue header */
+        qp =3D ip_find(net, ip_hdr(skb), user, vif);
+@@ -495,7 +499,12 @@ int ip_defrag(struct net *net, struct sk_buff
+*skb, u32 user)
+                int ret;
+
+                spin_lock(&qp->q.lock);
++               if (!qp->q.sk) {
++                       struct sock *sk =3D skb->sk;
+
++                       if (sk && refcount_inc_not_zero(&sk->sk_refcnt))
++                               qp->q.sk =3D sk;
++               }
+                ret =3D ip_frag_queue(qp, skb);
+
+                spin_unlock(&qp->q.lock);
 
