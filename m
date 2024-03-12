@@ -1,107 +1,491 @@
-Return-Path: <linux-kernel+bounces-100598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC06879AA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:30:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1554B879AA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 18:31:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2849285C59
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:30:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE560B21B1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50CA91386AE;
-	Tue, 12 Mar 2024 17:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6241386A8;
+	Tue, 12 Mar 2024 17:31:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="UfIKav0p"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nfh7vzbK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554CC1272A4;
-	Tue, 12 Mar 2024 17:30:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1431272A4
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 17:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710264611; cv=none; b=ctCal0cd4dsqZZeRJTE5Xn59AStKisrzZFJjdIxGIzagLJDKoWHyC4M9SY/6g3V0G18cj2NwSnr+GLxsD0UovcayGaWHEgzC1b/ZosArdpq2yTTi0E1X72OnBCLj+zXBfh+T2/AhyyGaYuRT+uFvQmRMscWj5KJgB2SBH7atE98=
+	t=1710264685; cv=none; b=B6JzE/Hmet6d/U1Rg3QApwuf5qDiiJmURr13VEyGQhI+2rE7nsb+6uhFX3kU5ht5Ty7fhXOG9/L6QLuXOkO0CsMhgCP3EJZOEIoWSpKdtdixfjs/lEkAQa9L0KKhm6KLGxBOBykraukp5SU6WelYVARbrnS1zouMlUC2zNLI7Qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710264611; c=relaxed/simple;
-	bh=c42YxN4jWTpl+KaVrC1vllZBtqWQkd/F8q+clCwOlgU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mQ/zethSg6wQt6vLK1vzz/Fxcc1zhvxECj7zWdpcUuGUSCQ93NltXB2Jb2Q6NHY8/HappL0LU31eR6KMkaHmBWPNSB6fhtpdzOqFBtCmUBlNKQQGzzvBvqulRjMbqZwf9t4BRp+KWhGwqvk20obLu4+6f+S4r9hk4KyehvzbObs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=UfIKav0p; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dd9568fc51so23102395ad.2;
-        Tue, 12 Mar 2024 10:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1710264609; x=1710869409; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GbJFRNdUX+AAn/XFov6URlQKxEMKvLoXoY0Vun2l91U=;
-        b=UfIKav0pHTUINtYAzNM+YOOkKh99JLbjxbzPwgyzCfI+FxZhPI1xXKVK1UEmgAvKqc
-         nsNjjW+2LvC7vYYJQR0aP3fCCZP1dTWaIVNqM2hEPwic+v+3RVhmWs1CHogFuBXBk7dM
-         lUBR8j5/CAekRIyYP375NMFvWVXbauNrraO3gYcEQVZxn0FGgHw1axyeznethmGfzU5I
-         15+SMKjqL742wNI76mRQkJxiYDbxFnyzkIeqtgSZrMn4f4U102xhlGwqreec8G+YgdWY
-         1XQ78Jx5kB4uBiFsvPkGSus9pC97sWBCq4MPta8FO3bTEbcFWPXK1F1fOqnvnqnWlGZq
-         T3HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710264609; x=1710869409;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GbJFRNdUX+AAn/XFov6URlQKxEMKvLoXoY0Vun2l91U=;
-        b=XWosnlZt3VQ3biN3n7PYZ2oCFacPPy4wuTx/bz8mLhYYIvZyETASVVEsxUaSbUeuvl
-         1qB90eVUrcy3AGMg62ogLaM8l0J9kiPdFhmAUqQC0IxzkvXzNguNU9ikqxVf2gVCIsml
-         PYSNzKn/cF4nRSLYq0iFL3dtVa4QD/+CE9YcTSaff4dJME6JTYgbsuqxz+VYxFbmpL2Q
-         o1vmwjDjXaWppTc4mPEHB+d+BBO0evMJVKEb4Je/bK3U4JxS1aBvFuzwwi9PxGA/7o+M
-         f+TRHZQIxpXlg+l8pVYNScZtoTEUMOv7yRlSueJsyNMIspYaWDDkd0c3jyHnbse2sIPL
-         65XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX0vCb2dOr1PxZhABU0OsLfUlWIQpcWHZRRapGe0Iiw+qSQ0AsIFBeuGkMk9oPSrfhomEEMsa7hync+EtPcSdnCJtHPysSQMLlK12OcsQqSvmfp3Q1wGiVLvLhrrm0/KrF9EDpFxZrgzQ==
-X-Gm-Message-State: AOJu0YzhdsEuC7zMBigztzt10NAMrxfeQT0xlrB1QQZBF8WYGuCYgTiK
-	I+Rha2bAD9JaxhcCfNrEBLVHtMtpXeYaLEa8x743T4AYSVk2Nlgy+Iz1RiMepDLWvDeSQP79RPO
-	/yy8PjfPpQ5zAFOqIVvQJ+GFCGf0=
-X-Google-Smtp-Source: AGHT+IEHlHIqKOnI30N6kEVdQF0v/F2N8qpv8I46MIfHZh1wIGIrafjKKa9W6hn0s2Ee0QJLBfQkS+qfb6XgN0IPhOw=
-X-Received: by 2002:a17:902:d491:b0:1dd:b728:b890 with SMTP id
- c17-20020a170902d49100b001ddb728b890mr3078233plg.18.1710264609530; Tue, 12
- Mar 2024 10:30:09 -0700 (PDT)
+	s=arc-20240116; t=1710264685; c=relaxed/simple;
+	bh=1LU30rB7WQ6LlI4EK4heTlo+Gok6kG/krhVPdgp1g2I=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fO2lt0dF3rwjqsORcPSGrZ/yhS1idSJrD4n+HdLE5oQq5CTnBTPwJe7doG0riJx7+gy+wj5ooQp1jDkaX8irQ7rpUlvvVq2JevoM6X8unb4QXKI/P9HwQpEKwLcgVMoWMnW6V6s1fQgwHFRInyzH5QgRZjmcuycWm7lDC7Ye4MY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nfh7vzbK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8AA5C433C7;
+	Tue, 12 Mar 2024 17:31:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710264685;
+	bh=1LU30rB7WQ6LlI4EK4heTlo+Gok6kG/krhVPdgp1g2I=;
+	h=From:Date:Subject:To:Cc:From;
+	b=Nfh7vzbK7W0Ct0ZZD77kSoDgbuySqZ05zRpohch8fpfMZNC5O2DujX/oNCT45gtu5
+	 JZPGTvW5yjEawoQWuGVyYAUJgH4Z1L0wWSESBcXJS4uhIc2bT9SzfiqHseGo1lRcxa
+	 s/6UCdHa8xg91geLt1cc4a6U6twpxCIE0w3Tmn+SH8HwsvTXrKHXLyb7gG9MwTeEWI
+	 6OmmQ5I7BcPLBJFS3RTsykKJPeKPKikuYleX8YSBhm9z3YwQm+KbFmdRxJO1uNAxva
+	 FZ6IYfrx7lxrm4BIFfbu7y9E5CCuso085BF5WtYhftV+Pti//JrkZp/sbLVGopmm7t
+	 D7UZ44rnmzVlg==
+From: Chris Li <chrisl@kernel.org>
+Date: Tue, 12 Mar 2024 10:31:12 -0700
+Subject: [PATCH v6] zswap: replace RB tree with xarray
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240312-basic_dt-v1-0-7f11df3a0896@amlogic.com> <20240312-basic_dt-v1-3-7f11df3a0896@amlogic.com>
-In-Reply-To: <20240312-basic_dt-v1-3-7f11df3a0896@amlogic.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Tue, 12 Mar 2024 18:29:58 +0100
-Message-ID: <CAFBinCAvT6-gfZQH--AVJAxiVM9bv5=agYzJ-u3NZUGFvp2vZA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] arm64: dts: add support for A4 based Amlogic BA400
-To: xianwei.zhao@amlogic.com
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, 
-	Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-amlogic@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240312-zswap-xarray-v6-1-1b82027d7082@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAF+R8GUC/2XQTW7CMBCG4asgr+tqZvyThFXvgbpwnDFYrRJkV
+ waKcvcaVAlIlp9Hz7vwVWROkbPYbq4icYk5TmMd9m0j/MGNe5ZxqFsQkAYELX/zyR3l2aXkLrJ
+ BSxbYaGQlKjkmDvF8z+0+6z7E/DOly71e8Pb6H8LmNVRQgrSDc6310AbHH1+cRv5+n9Je3EqFH
+ pqoW2iSKNkAtXoIfuhxpdVDK6CFVlWbDoAMBarnldbPevEFRVftda+NbcB7BSttnjTiQpuqnaq
+ HwH3nW/Oi53n+A5wEav6hAQAA
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+ Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>, 
+ Johannes Weiner <hannes@cmpxchg.org>, 
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+ Chengming Zhou <zhouchengming@bytedance.com>, 
+ Barry Song <v-songbaohua@oppo.com>, Barry Song <baohua@kernel.org>, 
+ Chengming Zhou <chengming.zhou@linux.dev>, Chris Li <chrisl@kernel.org>
+X-Mailer: b4 0.12.4
 
-On Tue, Mar 12, 2024 at 10:19=E2=80=AFAM Xianwei Zhao via B4 Relay
-<devnull+xianwei.zhao.amlogic.com@kernel.org> wrote:
-[...]
-> +               apb@fe000000 {
-Node names need to be generic - since this is a bug it needs to be:
-  bus@fe000000 {
-Or if you want to make it clear how this bus is called then you can use:
-  apb: bus@fe000000 {
+Very deep RB tree requires rebalance at times. That
+contributes to the zswap fault latencies. Xarray does not
+need to perform tree rebalance. Replacing RB tree to xarray
+can have some small performance gain.
 
-The same comment applies to the amlogic-a5.dtsi patch (4/4).
-And while here, I fully agree with Jerome: having a bit more details
-would be great so we can judge on whether a common .dtsi makes sense.
-For this it would be helpful to know how many IP blocks those two SoCs
-have in common and how many are different.
+One small difference is that xarray insert might fail with
+ENOMEM, while RB tree insert does not allocate additional
+memory.
 
+The zswap_entry size will reduce a bit due to removing the
+RB node, which has two pointers and a color field. Xarray
+store the pointer in the xarray tree rather than the
+zswap_entry. Every entry has one pointer from the xarray
+tree. Overall, switching to xarray should save some memory,
+if the swap entries are densely packed.
+
+Notice the zswap_rb_search and zswap_rb_insert always
+followed by zswap_rb_erase. Use xa_erase and xa_store
+directly. That saves one tree lookup as well.
+
+Remove zswap_invalidate_entry due to no need to call
+zswap_rb_erase any more. Use zswap_free_entry instead.
+
+The "struct zswap_tree" has been replaced by "struct xarray".
+The tree spin lock has transferred to the xarray lock.
+
+Run the kernel build testing 10 times for each version, averages:
+(memory.max=2GB, zswap shrinker and writeback enabled,
+one 50GB swapfile, 24 HT core, 32 jobs)
+
+mm-9a0181a3710eb             xarray v5
+user       3532.385			3535.658
+sys        536.231                      530.083
+real       200.431                      200.176
+
+---
+
+
+Reviewed-by: Barry Song <baohua@kernel.org>
+Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
+Signed-off-by: Chris Li <chrisl@kernel.org>
+---
+Changes in v6:
+- Add WARN_ONCE() for xa_store failed other than -ENOMEM.
+- Collect review tags.
+- Link to v5: https://lore.kernel.org/r/20240311-zswap-xarray-v5-1-a3031feb9c85@kernel.org
+
+Changes in v5:
+- Remove zswap_xa_insert(), call xa_store and xa_erase directly.
+- Remove zswap_reject_xarray_fail. 
+- Link to v4: https://lore.kernel.org/r/20240304-zswap-xarray-v4-1-c4b45670cc30@kernel.org
+
+Changes in v4:
+- Remove zswap_xa_search_and_earse, use xa_erase directly.
+- Move charge of objcg after zswap_xa_insert.
+- Avoid erase old entry on insert fail error path.
+- Remove not needed swap_zswap_tree change
+- Link to v3: https://lore.kernel.org/r/20240302-zswap-xarray-v3-1-5900252f2302@kernel.org
+
+Changes in v3:
+- Use xa_cmpxchg instead of zswap_xa_search_and_delete in zswap_writeback_entry.
+- Use xa_store in zswap_xa_insert directly. Reduce the scope of spinlock.
+- Fix xa_store error handling for same page fill case.
+- Link to v2: https://lore.kernel.org/r/20240229-zswap-xarray-v2-1-e50284dfcdb1@kernel.org
+
+Changes in v2:
+- Replace struct zswap_tree with struct xarray.
+- Remove zswap_tree spinlock, use xarray lock instead.
+- Fold zswap_rb_erase() into zswap_xa_search_and_delete() and zswap_xa_insert().
+- Delete zswap_invalidate_entry(), use zswap_free_entry() instead.
+- Link to v1: https://lore.kernel.org/r/20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org
+---
+ mm/zswap.c | 169 ++++++++++++++++---------------------------------------------
+ 1 file changed, 44 insertions(+), 125 deletions(-)
+
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 011e068eb355..2fc5eae9fcb4 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -20,7 +20,6 @@
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
+ #include <linux/atomic.h>
+-#include <linux/rbtree.h>
+ #include <linux/swap.h>
+ #include <linux/crypto.h>
+ #include <linux/scatterlist.h>
+@@ -196,7 +195,6 @@ static struct {
+  * This structure contains the metadata for tracking a single compressed
+  * page within zswap.
+  *
+- * rbnode - links the entry into red-black tree for the appropriate swap type
+  * swpentry - associated swap entry, the offset indexes into the red-black tree
+  * length - the length in bytes of the compressed page data.  Needed during
+  *          decompression. For a same value filled page length is 0, and both
+@@ -208,7 +206,6 @@ static struct {
+  * lru - handle to the pool's lru used to evict pages.
+  */
+ struct zswap_entry {
+-	struct rb_node rbnode;
+ 	swp_entry_t swpentry;
+ 	unsigned int length;
+ 	struct zswap_pool *pool;
+@@ -220,12 +217,7 @@ struct zswap_entry {
+ 	struct list_head lru;
+ };
+ 
+-struct zswap_tree {
+-	struct rb_root rbroot;
+-	spinlock_t lock;
+-};
+-
+-static struct zswap_tree *zswap_trees[MAX_SWAPFILES];
++static struct xarray *zswap_trees[MAX_SWAPFILES];
+ static unsigned int nr_zswap_trees[MAX_SWAPFILES];
+ 
+ /* RCU-protected iteration */
+@@ -253,7 +245,7 @@ static bool zswap_has_pool;
+ * helpers and fwd declarations
+ **********************************/
+ 
+-static inline struct zswap_tree *swap_zswap_tree(swp_entry_t swp)
++static inline struct xarray *swap_zswap_tree(swp_entry_t swp)
+ {
+ 	return &zswap_trees[swp_type(swp)][swp_offset(swp)
+ 		>> SWAP_ADDRESS_SPACE_SHIFT];
+@@ -804,63 +796,6 @@ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
+ 	spin_unlock(&zswap.shrink_lock);
+ }
+ 
+-/*********************************
+-* rbtree functions
+-**********************************/
+-static struct zswap_entry *zswap_rb_search(struct rb_root *root, pgoff_t offset)
+-{
+-	struct rb_node *node = root->rb_node;
+-	struct zswap_entry *entry;
+-	pgoff_t entry_offset;
+-
+-	while (node) {
+-		entry = rb_entry(node, struct zswap_entry, rbnode);
+-		entry_offset = swp_offset(entry->swpentry);
+-		if (entry_offset > offset)
+-			node = node->rb_left;
+-		else if (entry_offset < offset)
+-			node = node->rb_right;
+-		else
+-			return entry;
+-	}
+-	return NULL;
+-}
+-
+-/*
+- * In the case that a entry with the same offset is found, a pointer to
+- * the existing entry is stored in dupentry and the function returns -EEXIST
+- */
+-static int zswap_rb_insert(struct rb_root *root, struct zswap_entry *entry,
+-			struct zswap_entry **dupentry)
+-{
+-	struct rb_node **link = &root->rb_node, *parent = NULL;
+-	struct zswap_entry *myentry;
+-	pgoff_t myentry_offset, entry_offset = swp_offset(entry->swpentry);
+-
+-	while (*link) {
+-		parent = *link;
+-		myentry = rb_entry(parent, struct zswap_entry, rbnode);
+-		myentry_offset = swp_offset(myentry->swpentry);
+-		if (myentry_offset > entry_offset)
+-			link = &(*link)->rb_left;
+-		else if (myentry_offset < entry_offset)
+-			link = &(*link)->rb_right;
+-		else {
+-			*dupentry = myentry;
+-			return -EEXIST;
+-		}
+-	}
+-	rb_link_node(&entry->rbnode, parent, link);
+-	rb_insert_color(&entry->rbnode, root);
+-	return 0;
+-}
+-
+-static void zswap_rb_erase(struct rb_root *root, struct zswap_entry *entry)
+-{
+-	rb_erase(&entry->rbnode, root);
+-	RB_CLEAR_NODE(&entry->rbnode);
+-}
+-
+ /*********************************
+ * zswap entry functions
+ **********************************/
+@@ -872,7 +807,6 @@ static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
+ 	entry = kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
+ 	if (!entry)
+ 		return NULL;
+-	RB_CLEAR_NODE(&entry->rbnode);
+ 	return entry;
+ }
+ 
+@@ -914,17 +848,6 @@ static void zswap_entry_free(struct zswap_entry *entry)
+ 	zswap_update_total_size();
+ }
+ 
+-/*
+- * The caller hold the tree lock and search the entry from the tree,
+- * so it must be on the tree, remove it from the tree and free it.
+- */
+-static void zswap_invalidate_entry(struct zswap_tree *tree,
+-				   struct zswap_entry *entry)
+-{
+-	zswap_rb_erase(&tree->rbroot, entry);
+-	zswap_entry_free(entry);
+-}
+-
+ /*********************************
+ * compressed storage functions
+ **********************************/
+@@ -1113,7 +1036,8 @@ static void zswap_decompress(struct zswap_entry *entry, struct page *page)
+ static int zswap_writeback_entry(struct zswap_entry *entry,
+ 				 swp_entry_t swpentry)
+ {
+-	struct zswap_tree *tree;
++	struct xarray *tree;
++	pgoff_t offset = swp_offset(swpentry);
+ 	struct folio *folio;
+ 	struct mempolicy *mpol;
+ 	bool folio_was_allocated;
+@@ -1150,19 +1074,13 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
+ 	 * be dereferenced.
+ 	 */
+ 	tree = swap_zswap_tree(swpentry);
+-	spin_lock(&tree->lock);
+-	if (zswap_rb_search(&tree->rbroot, swp_offset(swpentry)) != entry) {
+-		spin_unlock(&tree->lock);
++	if (entry != xa_cmpxchg(tree, offset, entry, NULL, GFP_KERNEL)) {
+ 		delete_from_swap_cache(folio);
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+ 		return -ENOMEM;
+ 	}
+ 
+-	/* Safe to deref entry after the entry is verified above. */
+-	zswap_rb_erase(&tree->rbroot, entry);
+-	spin_unlock(&tree->lock);
+-
+ 	zswap_decompress(entry, &folio->page);
+ 
+ 	count_vm_event(ZSWPWB);
+@@ -1471,8 +1389,8 @@ bool zswap_store(struct folio *folio)
+ {
+ 	swp_entry_t swp = folio->swap;
+ 	pgoff_t offset = swp_offset(swp);
+-	struct zswap_tree *tree = swap_zswap_tree(swp);
+-	struct zswap_entry *entry, *dupentry;
++	struct xarray *tree = swap_zswap_tree(swp);
++	struct zswap_entry *entry, *old;
+ 	struct obj_cgroup *objcg = NULL;
+ 	struct mem_cgroup *memcg = NULL;
+ 
+@@ -1555,28 +1473,35 @@ bool zswap_store(struct folio *folio)
+ insert_entry:
+ 	entry->swpentry = swp;
+ 	entry->objcg = objcg;
+-	if (objcg) {
+-		obj_cgroup_charge_zswap(objcg, entry->length);
+-		/* Account before objcg ref is moved to tree */
+-		count_objcg_event(objcg, ZSWPOUT);
+-	}
+ 
+-	/* map */
+-	spin_lock(&tree->lock);
+ 	/*
+ 	 * The folio may have been dirtied again, invalidate the
+ 	 * possibly stale entry before inserting the new entry.
+ 	 */
+-	if (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
+-		zswap_invalidate_entry(tree, dupentry);
+-		WARN_ON(zswap_rb_insert(&tree->rbroot, entry, &dupentry));
++	old = xa_store(tree, offset, entry, GFP_KERNEL);
++	if (xa_is_err(old)) {
++		int err = xa_err(old);
++		if (err == -ENOMEM)
++			zswap_reject_alloc_fail++;
++		else
++			WARN_ONCE(err, "%s: xa_store failed: %d\n",
++				  __func__, err);
++		goto store_failed;
++	}
++	if (old)
++		zswap_entry_free(old);
++
++	if (objcg) {
++		obj_cgroup_charge_zswap(objcg, entry->length);
++		/* Account before objcg ref is moved to tree */
++		count_objcg_event(objcg, ZSWPOUT);
+ 	}
++
+ 	if (entry->length) {
+ 		INIT_LIST_HEAD(&entry->lru);
+ 		zswap_lru_add(&zswap.list_lru, entry);
+ 		atomic_inc(&zswap.nr_stored);
+ 	}
+-	spin_unlock(&tree->lock);
+ 
+ 	/* update stats */
+ 	atomic_inc(&zswap_stored_pages);
+@@ -1585,6 +1510,12 @@ bool zswap_store(struct folio *folio)
+ 
+ 	return true;
+ 
++store_failed:
++	if (!entry->length) {
++		atomic_dec(&zswap_same_filled_pages);
++		goto freepage;
++	}
++	zpool_free(zswap_find_zpool(entry), entry->handle);
+ put_pool:
+ 	zswap_pool_put(entry->pool);
+ freepage:
+@@ -1598,11 +1529,9 @@ bool zswap_store(struct folio *folio)
+ 	 * possibly stale entry which was previously stored at this offset.
+ 	 * Otherwise, writeback could overwrite the new data in the swapfile.
+ 	 */
+-	spin_lock(&tree->lock);
+-	entry = zswap_rb_search(&tree->rbroot, offset);
++	entry = xa_erase(tree, offset);
+ 	if (entry)
+-		zswap_invalidate_entry(tree, entry);
+-	spin_unlock(&tree->lock);
++		zswap_entry_free(entry);
+ 	return false;
+ 
+ shrink:
+@@ -1615,20 +1544,15 @@ bool zswap_load(struct folio *folio)
+ 	swp_entry_t swp = folio->swap;
+ 	pgoff_t offset = swp_offset(swp);
+ 	struct page *page = &folio->page;
+-	struct zswap_tree *tree = swap_zswap_tree(swp);
++	struct xarray *tree = swap_zswap_tree(swp);
+ 	struct zswap_entry *entry;
+ 	u8 *dst;
+ 
+ 	VM_WARN_ON_ONCE(!folio_test_locked(folio));
+ 
+-	spin_lock(&tree->lock);
+-	entry = zswap_rb_search(&tree->rbroot, offset);
+-	if (!entry) {
+-		spin_unlock(&tree->lock);
++	entry = xa_erase(tree, offset);
++	if (!entry)
+ 		return false;
+-	}
+-	zswap_rb_erase(&tree->rbroot, entry);
+-	spin_unlock(&tree->lock);
+ 
+ 	if (entry->length)
+ 		zswap_decompress(entry, page);
+@@ -1652,19 +1576,17 @@ bool zswap_load(struct folio *folio)
+ void zswap_invalidate(swp_entry_t swp)
+ {
+ 	pgoff_t offset = swp_offset(swp);
+-	struct zswap_tree *tree = swap_zswap_tree(swp);
++	struct xarray *tree = swap_zswap_tree(swp);
+ 	struct zswap_entry *entry;
+ 
+-	spin_lock(&tree->lock);
+-	entry = zswap_rb_search(&tree->rbroot, offset);
++	entry = xa_erase(tree, offset);
+ 	if (entry)
+-		zswap_invalidate_entry(tree, entry);
+-	spin_unlock(&tree->lock);
++		zswap_entry_free(entry);
+ }
+ 
+ int zswap_swapon(int type, unsigned long nr_pages)
+ {
+-	struct zswap_tree *trees, *tree;
++	struct xarray *trees, *tree;
+ 	unsigned int nr, i;
+ 
+ 	nr = DIV_ROUND_UP(nr_pages, SWAP_ADDRESS_SPACE_PAGES);
+@@ -1674,11 +1596,8 @@ int zswap_swapon(int type, unsigned long nr_pages)
+ 		return -ENOMEM;
+ 	}
+ 
+-	for (i = 0; i < nr; i++) {
+-		tree = trees + i;
+-		tree->rbroot = RB_ROOT;
+-		spin_lock_init(&tree->lock);
+-	}
++	for (i = 0; i < nr; i++)
++		xa_init(trees + i);
+ 
+ 	nr_zswap_trees[type] = nr;
+ 	zswap_trees[type] = trees;
+@@ -1687,7 +1606,7 @@ int zswap_swapon(int type, unsigned long nr_pages)
+ 
+ void zswap_swapoff(int type)
+ {
+-	struct zswap_tree *trees = zswap_trees[type];
++	struct xarray *trees = zswap_trees[type];
+ 	unsigned int i;
+ 
+ 	if (!trees)
+@@ -1695,7 +1614,7 @@ void zswap_swapoff(int type)
+ 
+ 	/* try_to_unuse() invalidated all the entries already */
+ 	for (i = 0; i < nr_zswap_trees[type]; i++)
+-		WARN_ON_ONCE(!RB_EMPTY_ROOT(&trees[i].rbroot));
++		WARN_ON_ONCE(!xa_empty(trees + i));
+ 
+ 	kvfree(trees);
+ 	nr_zswap_trees[type] = 0;
+
+---
+base-commit: 9a0181a3710eba1f5c6d19eadcca888be3d54e4f
+change-id: 20240104-zswap-xarray-716260e541e3
 
 Best regards,
-Martin
+-- 
+Chris Li <chrisl@kernel.org>
+
 
