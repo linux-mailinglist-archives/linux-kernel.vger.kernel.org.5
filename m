@@ -1,408 +1,220 @@
-Return-Path: <linux-kernel+bounces-100379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42DD2879689
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:39:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1D4879687
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:39:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9A1284538
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:39:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7CE1C221F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D355F7BB0A;
-	Tue, 12 Mar 2024 14:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gx7jBqVl"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FA87A72C
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43A27AE73;
+	Tue, 12 Mar 2024 14:39:16 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7605978286;
+	Tue, 12 Mar 2024 14:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710254356; cv=none; b=D9RofnznXwCtYHvRbO1Cx9ZLVFzKXoTKh5qPbDjDxSmTjwZpVDdBQ0s58NGnN3lhiIGTs8kMhVwkC5x0O9kx/U7/UfRHjkaXF7YHfHpxNenphx1IRFOnQFMyuoYw1BS4E1DOk7jNwZU4Dw52r0kocrEE+xyx1hbJkJl0aNepRAU=
+	t=1710254356; cv=none; b=s1ozK8e4K8K+EV/s543Lqcv6H2U/6nRrf54J0i5wSXdrPoB5i8+DM1VkHf72YYtOR+FB08AU6JQQebT6d3fytemJSCA7V52F4e9WxBTz1tPggWmoLsV+W9qPZNqc9fiMeclwbhOBYfvhP+nNGpAnQEadnVBzAEr+/pZa2S2uvxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710254356; c=relaxed/simple;
-	bh=6G228Lphk0rlkU29bdOENgX5OXrMOrVaqWm38EVzM0Y=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=lpoHBjQ275VsawSAioBDJgVG/jt5gfFSn2uxJ7S/81tDMCJmKmkwg+ivRMlo6+zFY3pmBaTaYC7TFo5p5wvOcefWAH2Hjy2oLH2IJwOsFoEzkah+KyBELbCpDz9n1//ctKzewcqT5VgcjCzwMEcj0hzh2lcYaOJZv/UuBmmXdh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gx7jBqVl; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710254353;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XMJRtZVN7j/hb0lf5DmhVFdq1TvSh1Jy4166EHZPeco=;
-	b=Gx7jBqVlQWzGYSQKGIlmDPECiPZntPxp3oBfAxBUt4p9N0YhLeBPa1SNuwGCWEAIE+Hp+Y
-	WiYRGtmiDVeeIQ6/B31Wr+Nwy70TYLXBJWHpMJn271fueLK2+cznSpCaCpDP/NmpnO823M
-	viucHErMvbHFLvEJutYfSVYAEidx+0M=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-6BA6fyAFN7GDnRxt7lHTjQ-1; Tue, 12 Mar 2024 10:39:12 -0400
-X-MC-Unique: 6BA6fyAFN7GDnRxt7lHTjQ-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5ce67a3f275so2851153a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:39:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710254351; x=1710859151;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XMJRtZVN7j/hb0lf5DmhVFdq1TvSh1Jy4166EHZPeco=;
-        b=oupj0O9DG7WplYnugjGj8zFeWt2DoRGEfgQ8Z/lk7+rkjF9H4nU1Pn0eaL5obvzIBF
-         REF8uN0mTq8MFe+kPMapCKMivjpa2o3WGjyu6ACg7g1Fi7aCoXDTFtSxDJACSAAYjZt5
-         PqhQOPOSMi9pK20d+IAGG0BTUca/J7CFZH/Jc99TxZVzW3WAo2DlXiWPWoULLwWkHg79
-         l5HzbV5RRC/MilFIyIjBhxKcA5P++sq6Ta8VfDffqhWD43UeA62Z6EvMMyQzqOswdHIX
-         XVW2QgOE5ZcVtLVUh3Dd1Dtv2fk3uG5jUwWK0NyEe7/o7FwVIy7Dc4hMhEapyGO6F8CM
-         tM9A==
-X-Gm-Message-State: AOJu0YwyWmia0IMriV4otc61HfBVUAARCEaAvcn2Y0Qm6rZ2JoNtUYp7
-	Xudw7EZ7wLTKgCd/75zR5iEatucwXcVUHUouZgomEpcXP5GkFa39ALU3SaKFE4bHsCcJH6ydKMA
-	8of8wUUJjvKF9bM99SupgngzsejLZWRaQLDSkLwBiBFj0ndl5aaTW5D6Dn5gQ+A==
-X-Received: by 2002:a05:6a20:3b86:b0:1a1:484b:bb72 with SMTP id b6-20020a056a203b8600b001a1484bbb72mr5382584pzh.51.1710254351255;
-        Tue, 12 Mar 2024 07:39:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHPP5p51xPHF2DD8z81UogPopL+7AvbfQe8qKjS8v04/Cfcqoeaa+s5PtsgFBJjF90oaSKGoQ==
-X-Received: by 2002:a05:6a20:3b86:b0:1a1:484b:bb72 with SMTP id b6-20020a056a203b8600b001a1484bbb72mr5382568pzh.51.1710254350762;
-        Tue, 12 Mar 2024 07:39:10 -0700 (PDT)
-Received: from fc37-ani ([27.6.216.53])
-        by smtp.googlemail.com with ESMTPSA id q66-20020a17090a17c800b0029bb1631819sm694127pja.0.2024.03.12.07.39.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 07:39:10 -0700 (PDT)
-Date: Tue, 12 Mar 2024 20:09:03 +0530 (IST)
-From: Ani Sinha <anisinha@redhat.com>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-    "K. Y. Srinivasan" <kys@microsoft.com>, 
-    Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-    Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>, 
-    Michael Kelley <mikelley@microsoft.com>, Olaf Hering <olaf@aepfle.de>, 
-    Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v2] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination
- for keyfile format
-In-Reply-To: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
-Message-ID: <2d4aeba3-79db-67f7-9d38-5a55788e7cc7@redhat.com>
-References: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
+	bh=A4yPPNx2A/vP3ZK0ygDuOKWhQXboHEU9aZot/+5ZzZ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aVNxgun9oVCRc2jeHVQDln1MOhNaNRKuCeE25bqG9EDxetTVkKGPyT2z45YiJvbE8r+7HGC0H/BhPu2C6Li8AITyeMLnAgMhsz9+VVY4SLGbjmh3VV6EtHKG/L3MUUwUIbsso9ExSwcxse8zhz1LVyqtLj7SOr3Rh1XHaquQfsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2F98FEC;
+	Tue, 12 Mar 2024 07:39:49 -0700 (PDT)
+Received: from [10.57.50.231] (unknown [10.57.50.231])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15E053F73F;
+	Tue, 12 Mar 2024 07:39:09 -0700 (PDT)
+Message-ID: <9f95ba15-b75c-414c-b87a-e88fddc77ebf@arm.com>
+Date: Tue, 12 Mar 2024 14:39:08 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V6 05/11] coresight: replicator: Move ACPI support from
+ AMBA driver to platform driver
+Content-Language: en-GB
+To: Anshuman Khandual <anshuman.khandual@arm.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
+References: <20240312102318.2285165-1-anshuman.khandual@arm.com>
+ <20240312102318.2285165-6-anshuman.khandual@arm.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240312102318.2285165-6-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On Tue, 12 Mar 2024, Shradha Gupta wrote:
-
-> If the network configuration strings are passed as a combination of IPv and
-> IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
-> configuration format.
-> With these changes, the keyfile config generation logic scans through the
-> list twice to generate IPv4 and IPv6 sections for the configuration files
-> to handle this support.
->
-> Built-on: Rhel9
-> Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+On 12/03/2024 10:23, Anshuman Khandual wrote:
+> Add support for the dynamic replicator device in the platform driver, which
+> can then be used on ACPI based platforms. This change would now allow
+> runtime power management for replicator devices on ACPI based systems.
+> 
+> The driver would try to enable the APB clock if available. Also, rename the
+> code to reflect the fact that it now handles both static and dynamic
+> replicators. But first this refactors replicator_probe() making sure it can
+> be used both for platform and AMBA drivers, by moving the pm_runtime_put()
+> to the callers.
+> 
+> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: James Clark <james.clark@arm.com>
+> Cc: linux-acpi@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: coresight@lists.linaro.org
+> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
+> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+> Reviewed-by: James Clark <james.clark@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->  Changes in v2
->  * Use calloc to avoid initialization later
->  * Return standard error codes
->  * Free the output_str pointer on completion
->  * Add out-of bound checks while writing to buffers
-> ---
->  tools/hv/hv_kvp_daemon.c | 173 +++++++++++++++++++++++++++++----------
->  1 file changed, 132 insertions(+), 41 deletions(-)
->
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index 318e2dad27e0..ae65be004eb1 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -76,6 +76,12 @@ enum {
->  	DNS
->  };
->
-> +enum {
-> +	IPV4 = 1,
-> +	IPV6,
-> +	IP_TYPE_MAX
-> +};
+> Changes in V6:
+> 
+> - Added clk_disable_unprepare() for pclk in replicator_probe() error path
+> - Added WARN_ON(!drvdata) check in replicator_platform_remove()
+> - Added additional elements for acpi_device_id[]
+> 
+>   drivers/acpi/arm64/amba.c                     |  1 -
+>   .../coresight/coresight-replicator.c          | 68 ++++++++++++-------
+>   2 files changed, 45 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+> index 171b5c2c7edd..270f4e3819a2 100644
+> --- a/drivers/acpi/arm64/amba.c
+> +++ b/drivers/acpi/arm64/amba.c
+> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
+>   	{"ARMHC503", 0}, /* ARM CoreSight Debug */
+>   	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
+>   	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+> -	{"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */
+>   	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>   	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
+>   	{"", 0},
+> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+> index ddb530a8436f..ed9be5435f94 100644
+> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+> @@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
+>    * @base:	memory mapped base address for this component. Also indicates
+>    *		whether this one is programmable or not.
+>    * @atclk:	optional clock for the core parts of the replicator.
+> + * @pclk:	APB clock if present, otherwise NULL
+>    * @csdev:	component vitals needed by the framework
+>    * @spinlock:	serialize enable/disable operations.
+>    * @check_idfilter_val: check if the context is lost upon clock removal.
+> @@ -38,6 +39,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
+>   struct replicator_drvdata {
+>   	void __iomem		*base;
+>   	struct clk		*atclk;
+> +	struct clk		*pclk;
+>   	struct coresight_device	*csdev;
+>   	spinlock_t		spinlock;
+>   	bool			check_idfilter_val;
+> @@ -243,6 +245,10 @@ static int replicator_probe(struct device *dev, struct resource *res)
+>   			return ret;
+>   	}
+>   
+> +	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
+> +	if (IS_ERR(drvdata->pclk))
+> +		return -ENODEV;
 > +
->  static int in_hand_shake;
->
->  static char *os_name = "";
-> @@ -102,6 +108,7 @@ static struct utsname uts_buf;
->
->  #define MAX_FILE_NAME 100
->  #define ENTRIES_PER_BLOCK 50
-> +#define MAX_IP_ENTRIES 64
->
->  struct kvp_record {
->  	char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
-> @@ -1171,6 +1178,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
->  	return 0;
->  }
->
-> +int ip_version_check(const char *input_addr)
-> +{
-> +	struct in6_addr addr;
-> +
-> +	if (inet_pton(AF_INET, input_addr, &addr))
-> +		return IPV4;
-> +	else if (inet_pton(AF_INET6, input_addr, &addr))
-> +		return IPV6;
-> +	else
-> +		return -EINVAL;
-> +}
-> +
->  /*
->   * Only IPv4 subnet strings needs to be converted to plen
->   * For IPv6 the subnet is already privided in plen format
-> @@ -1197,14 +1216,71 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
->  	return plen;
->  }
->
-> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-> +				  int ip_sec)
-> +{
-> +	char addr[INET6_ADDRSTRLEN], *output_str;
-> +	int ip_offset = 0, error = 0, ip_ver;
-> +	char *param_name;
-> +
-> +	output_str = (char *)calloc(INET6_ADDRSTRLEN * MAX_IP_ENTRIES,
-> +				    sizeof(char));
-
-Can we define INET6_ADDRSTRLEN * MAX_IP_ENTRIES as something like
-OUTSTR_BUF_SZ or some such? Then it becomes more readable here and below.
-
-> +
-> +	if (!output_str)
-> +		return -ENOMEM;
-> +
-> +	memset(addr, 0, sizeof(addr));
-
-
-> +
-> +	if (type == DNS) {
-> +		param_name = "dns";
-> +	} else if (type == GATEWAY) {
-> +		param_name = "gateway";
-> +	} else {
-> +		error = -EINVAL;
-> +		goto cleanup;
-> +	}
-
-If you move the above check before you allocate memory for output_str, you
-can return right away without doing a free().
-
-> +
-> +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-> +				   (MAX_IP_ADDR_SIZE * 2))) {
-> +		ip_ver = ip_version_check(addr);
-> +		if (ip_ver < 0)
-> +			continue;
-> +
-> +		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
-> +		    (ip_ver == IPV6 && ip_sec == IPV6)) {
-> +			if (((INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str)) >
-> +			    (strlen(addr))) {
-> +				strcat(output_str, addr);
-> +				strcat(output_str, ",");
-
-Your bound check does not take into consideration one additional character
-(the ","). It should be
-
-(INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str) > strlen(addr) + 1
-
-> +			}
-> +			memset(addr, 0, sizeof(addr));
-> +
-> +		} else {
-> +			memset(addr, 0, sizeof(addr));
-
-if you do memset() at the beginning of the loop, you do not need to do
-this separately for both branches. Plus there would be no need to do this
-at the beginning of the function as well.
-So you could do something like:
-
-while(1) {
-  memset(addr ...);
-  if (!parse_ip_val_buffer(...))
-      break;
-  ...
-}
-
-
-> +			continue;
-> +		}
-> +	}
-> +
-> +	if (strlen(output_str)) {
-
-                // remove the last comma character
-
-> +		output_str[strlen(output_str) - 1] = '\0';
-> +		error = fprintf(f, "%s=%s\n", param_name, output_str);
-> +		if (error <  0)
-> +			goto cleanup;
-
-You need to free memory regardless of whether there is an error or not.
-
-> +	}
-> +
-> +cleanup:
-> +	free(output_str);
-> +	return error;
-> +}
-> +
->  static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-> -				int is_ipv6)
-> +				int ip_sec)
->  {
->  	char addr[INET6_ADDRSTRLEN];
->  	char subnet_addr[INET6_ADDRSTRLEN];
->  	int error, i = 0;
->  	int ip_offset = 0, subnet_offset = 0;
-> -	int plen;
-> +	int plen, ip_ver;
->
->  	memset(addr, 0, sizeof(addr));
->  	memset(subnet_addr, 0, sizeof(subnet_addr));
-> @@ -1216,10 +1292,16 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
->  						       subnet_addr,
->  						       (MAX_IP_ADDR_SIZE *
->  							2))) {
-> -		if (!is_ipv6)
-> +		ip_ver = ip_version_check(addr);
-> +		if (ip_ver < 0)
-> +			continue;
-> +
-> +		if (ip_ver == IPV4 && ip_sec == IPV4)
->  			plen = kvp_subnet_to_plen((char *)subnet_addr);
-> -		else
-> +		else if (ip_ver == IPV6 && ip_sec == IPV6)
->  			plen = atoi(subnet_addr);
-> +		else
-> +			continue;
->
->  		if (plen < 0)
->  			return plen;
-> @@ -1238,12 +1320,11 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
->
->  static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
->  {
-> -	int error = 0;
-> +	int error = 0, ip_type;
->  	char if_filename[PATH_MAX];
->  	char nm_filename[PATH_MAX];
->  	FILE *ifcfg_file, *nmfile;
->  	char cmd[PATH_MAX];
-> -	int is_ipv6 = 0;
->  	char *mac_addr;
->  	int str_len;
->
-> @@ -1421,52 +1502,62 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
->  	if (error)
->  		goto setval_error;
->
-> -	if (new_val->addr_family & ADDR_FAMILY_IPV6) {
-> -		error = fprintf(nmfile, "\n[ipv6]\n");
-> -		if (error < 0)
-> -			goto setval_error;
-> -		is_ipv6 = 1;
-> -	} else {
-> -		error = fprintf(nmfile, "\n[ipv4]\n");
-> -		if (error < 0)
-> -			goto setval_error;
-> -	}
+>   	/*
+>   	 * Map the device base for dynamic-replicator, which has been
+>   	 * validated by AMBA core
+> @@ -285,11 +291,12 @@ static int replicator_probe(struct device *dev, struct resource *res)
+>   	}
+>   
+>   	replicator_reset(drvdata);
+> -	pm_runtime_put(dev);
+>   
+>   out_disable_clk:
+>   	if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
+>   		clk_disable_unprepare(drvdata->atclk);
+> +	if (ret && !IS_ERR_OR_NULL(drvdata->pclk))
+> +		clk_disable_unprepare(drvdata->pclk);
+>   	return ret;
+>   }
+>   
+> @@ -301,29 +308,34 @@ static int replicator_remove(struct device *dev)
+>   	return 0;
+>   }
+>   
+> -static int static_replicator_probe(struct platform_device *pdev)
+> +static int replicator_platform_probe(struct platform_device *pdev)
+>   {
+> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>   	int ret;
+>   
+>   	pm_runtime_get_noresume(&pdev->dev);
+>   	pm_runtime_set_active(&pdev->dev);
+>   	pm_runtime_enable(&pdev->dev);
+>   
+> -	/* Static replicators do not have programming base */
+> -	ret = replicator_probe(&pdev->dev, NULL);
 > -
->  	/*
-> -	 * Now we populate the keyfile format
-> +	 * The keyfile format expects the IPv6 and IPv4 configuration in
-> +	 * different sections. Therefore we iterate through the list twice,
-> +	 * once to populate the IPv4 section and the next time for IPv6
->  	 */
-> +	ip_type = IPV4;
-> +	do {
-> +		if (ip_type == IPV4) {
-> +			error = fprintf(nmfile, "\n[ipv4]\n");
-> +			if (error < 0)
-> +				goto setval_error;
-> +		} else {
-> +			error = fprintf(nmfile, "\n[ipv6]\n");
-> +			if (error < 0)
-> +				goto setval_error;
-> +		}
->
-> -	if (new_val->dhcp_enabled) {
-> -		error = kvp_write_file(nmfile, "method", "", "auto");
-> -		if (error < 0)
-> -			goto setval_error;
-> -	} else {
-> -		error = kvp_write_file(nmfile, "method", "", "manual");
-> +		/*
-> +		 * Now we populate the keyfile format
-> +		 */
-> +
-> +		if (new_val->dhcp_enabled) {
-> +			error = kvp_write_file(nmfile, "method", "", "auto");
-> +			if (error < 0)
-> +				goto setval_error;
-> +		} else {
-> +			error = kvp_write_file(nmfile, "method", "", "manual");
-> +			if (error < 0)
-> +				goto setval_error;
-> +		}
-> +
-> +		/*
-> +		 * Write the configuration for ipaddress, netmask, gateway and
-> +		 * name services
-> +		 */
-> +		error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> +					     (char *)new_val->sub_net,
-> +					     ip_type);
->  		if (error < 0)
->  			goto setval_error;
+> -	if (ret) {
+> -		pm_runtime_put_noidle(&pdev->dev);
+> +	ret = replicator_probe(&pdev->dev, res);
+> +	pm_runtime_put(&pdev->dev);
+> +	if (ret)
+>   		pm_runtime_disable(&pdev->dev);
 > -	}
->
-> -	/*
-> -	 * Write the configuration for ipaddress, netmask, gateway and
-> -	 * name services
-> -	 */
-> -	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> -				     (char *)new_val->sub_net, is_ipv6);
-> -	if (error < 0)
-> -		goto setval_error;
-> -
-> -	/* we do not want ipv4 addresses in ipv6 section and vice versa */
-> -	if (is_ipv6 != is_ipv4((char *)new_val->gate_way)) {
-> -		error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
-> +		error = process_dns_gateway_nm(nmfile,
-> +					       (char *)new_val->gate_way,
-> +					       GATEWAY, ip_type);
->  		if (error < 0)
->  			goto setval_error;
-> -	}
->
-> -	if (is_ipv6 != is_ipv4((char *)new_val->dns_addr)) {
-> -		error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
-> +		error = process_dns_gateway_nm(nmfile,
-> +					       (char *)new_val->dns_addr, DNS,
-> +					       ip_type);
->  		if (error < 0)
->  			goto setval_error;
-> -	}
+>   
+>   	return ret;
+>   }
+>   
+> -static void static_replicator_remove(struct platform_device *pdev)
+> +static void replicator_platform_remove(struct platform_device *pdev)
+>   {
+> +	struct replicator_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
 > +
-> +		ip_type++;
-> +	} while (ip_type < IP_TYPE_MAX);
+> +	if (WARN_ON(!drvdata))
+> +		return;
 > +
->  	fclose(nmfile);
->  	fclose(ifcfg_file);
->
-> --
-> 2.34.1
->
->
+>   	replicator_remove(&pdev->dev);
+>   	pm_runtime_disable(&pdev->dev);
+> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+> +		clk_put(drvdata->pclk);
+>   }
+>   
+>   #ifdef CONFIG_PM
+> @@ -334,6 +346,8 @@ static int replicator_runtime_suspend(struct device *dev)
+>   	if (drvdata && !IS_ERR(drvdata->atclk))
+>   		clk_disable_unprepare(drvdata->atclk);
+>   
+> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+> +		clk_disable_unprepare(drvdata->pclk);
+>   	return 0;
+>   }
+>   
+> @@ -344,6 +358,8 @@ static int replicator_runtime_resume(struct device *dev)
+>   	if (drvdata && !IS_ERR(drvdata->atclk))
+>   		clk_prepare_enable(drvdata->atclk);
+>   
+> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+> +		clk_prepare_enable(drvdata->pclk);
+
+nit: drvdata is != NULL, so could drop it.
+
+Rest looks fine
+
+Suzuki
 
 
