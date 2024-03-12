@@ -1,156 +1,150 @@
-Return-Path: <linux-kernel+bounces-100484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A14879873
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:58:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2603487987C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 17:00:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8951F2409D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:58:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B67461F24345
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 16:00:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1559C7E566;
-	Tue, 12 Mar 2024 15:57:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8996116FF3B;
-	Tue, 12 Mar 2024 15:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7DA7D3E1;
+	Tue, 12 Mar 2024 16:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H6BsOMGo"
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD507BB08;
+	Tue, 12 Mar 2024 16:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710259068; cv=none; b=tEny7+y/TOyiRf94sEyYvhA/DeSnlO8l1yfDUOei427PGRUp86bKgoER/FMjR4QeMen4Ld/Q7RRoBBV4bJ+wDt3yKSx5zT6ZK22YNXRVTpyZHotrK0vfxOmoNTGUTW9jDuNmGU1WWxduXgP/jpk02U0aVIk4EZLRS9Qmbd5M8Gc=
+	t=1710259236; cv=none; b=GFpJ/r/83WW700mi4a5WQ3COow68TUeuU/ZSzqV7ltmXS30efcM1N/tmDjpnisUH6M3Sic4QAekY4ibMKE+PEwDitmAj79/EavguwtHwHC2lJBFrUfbKTsLA+wkhw4SAEqMBTvjvmjyv/Vowm38dzNJt1scL7khdlADY1WlQI+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710259068; c=relaxed/simple;
-	bh=qHTdrZJMFBSmWNwbyHjOmWb7ZpYhhu2kMlfqSqKfUEs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KfVPWif/5hLh1eZwRayH3q3lKC0h/JtC2u0n2NNk+gl3dQZzVJ9sFWU+PgDWjW+9mviMU5hFW/bjJQQek+jP9FLu8rh21hX9Sf+uBMRvSvGAzrIQ1XEDyoBAQ3QfkFmLvPXryrdcL+1BWmgGLQ1OcNoENtuHjlxc/FWsajPEzak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE2391007;
-	Tue, 12 Mar 2024 08:58:22 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 558A63F73F;
-	Tue, 12 Mar 2024 08:57:42 -0700 (PDT)
-Date: Tue, 12 Mar 2024 15:57:39 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>, Marc Zyngier <maz@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Mostafa Saleh <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] arm64: Use SYSTEM_OFF2 PSCI call to power off
- for hibernate
-Message-ID: <ZfB7c9ifUiZR6gy1@bogus>
-References: <20240312135958.727765-1-dwmw2@infradead.org>
- <20240312135958.727765-3-dwmw2@infradead.org>
+	s=arc-20240116; t=1710259236; c=relaxed/simple;
+	bh=kSaCTYJwLy187cV9f/oHCT6J7jWDnNWrBPC9wyby4yU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L+E0CVQaUUqlJiYa019yR4hoDasXkPKixk7SEhCtm+LqilU3HE8yNDMXeEgPj1Z9acRCujEmmHUQnouJpmaOzyGUYoHsPfbWjGxAnUuBVjMpHEgFJvjX3gL8zTpqV2ed3lc2tlYYMbTtQIftZ6aTL8YhDhMVvsUaQQT+qaxk49o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H6BsOMGo; arc=none smtp.client-ip=209.85.219.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-69107859bedso588956d6.2;
+        Tue, 12 Mar 2024 09:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710259234; x=1710864034; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=1BtyRPL2RK9hoZHhxRN4BFuS2lRzybcWfo5FHNeAlTI=;
+        b=H6BsOMGovmymXViqMkHU1CRhyjVWHN1oBH1r7NV9rPTP9zG9U+aQ5/IpN7mf74K+qx
+         6dTL2IGxkK8Ss27eNA//v2ptNyxURW1dfp5GQNIB9bTNaNlpJeD9rRaFxEG8YX2Hrt85
+         TZ7oMEX7PzTt0bh4hYtSUXPqrTYhFLLqvqm3QuLHKVDRTciZO1uoGj2fp/NxEgaqjyKb
+         iExdNWHjH8FMVd/9483QWaqfwGesGKApG8EefGNzuCSAhxzwshYqP8RSUMxFNKZkmQaG
+         muxwQnDfDpsD1RiAIhSTj9MYDR+Jkoz6h+TSH//NVTpq3Xfx4FxSV4Uf8pVZvQT12gHh
+         VFgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710259234; x=1710864034;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1BtyRPL2RK9hoZHhxRN4BFuS2lRzybcWfo5FHNeAlTI=;
+        b=tZ8uNlO1YvYCk39nEurPBkCsvQkkuywyRg1QzTeZFZw09pvEGSbyvZqvK7tcv9RVjw
+         kzujat7Fv0GFk3xgUtM3K4Kl5rkT9t2Apz/epHt6L+OY6hAW21cSo+SWdXHGWGLoUTTL
+         fOMuvIgvNpWF6BBs6K03LEKBIsj5tq3XWj/GxA+RD3fkUjgILHHq9QqSjD5cJhZzYAIQ
+         Z2oTFJgMMcEcVeIDKappnThUCltjTz3KMeeNY/N3bhRm6pIaPVMaVRLtCesDMNWd3tUw
+         ghXohNyfkuGVfkEdIF7d6p5tviP+pMtY9kKKYKSjI7quf488+FO3ow1B1XCt6AcGB7lD
+         ETRg==
+X-Forwarded-Encrypted: i=1; AJvYcCXWrIMiMyRKzE6mJWTvGSm5RiE+dKG5VtPPDlSl5OIbwvWrDL6ZKM18MDTECQGNgHnWouEpIF6407kKb9JzWNOEkvu19CBY2yoa0uLl
+X-Gm-Message-State: AOJu0YwOxulH9WAtlMn+k/ex2ZqGqpam27ED2/frkhW9PA7hkNqiDu4g
+	DWbJR2NLJhunoNv2cg+9IUJhmUpWy2nfA58XRb/rFBFZK1ID0kz8
+X-Google-Smtp-Source: AGHT+IFtW9QMD7SiQG3j94RZGz2Jcgsjp2NHcVyfeQ4To9PTvKu3QDvcwK5FtD6zUTxDQ7FBNW8ItQ==
+X-Received: by 2002:a05:6214:2a7:b0:690:b27f:1b24 with SMTP id m7-20020a05621402a700b00690b27f1b24mr3511923qvv.12.1710259234036;
+        Tue, 12 Mar 2024 09:00:34 -0700 (PDT)
+Received: from fionn.redhat.com (bras-base-rdwyon0600w-grc-15-174-88-88-13.dsl.bell.ca. [174.88.88.13])
+        by smtp.gmail.com with ESMTPSA id kl30-20020a056214519e00b00690f9ea30aesm431702qvb.26.2024.03.12.09.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 09:00:33 -0700 (PDT)
+Sender: John Kacur <jkacur@gmail.com>
+From: John Kacur <jkacur@redhat.com>
+To: Daniel Bristot de Oliveria <bristot@kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>
+Cc: linux-trace-devel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Kacur <jkacur@redhat.com>
+Subject: [PATCH] rtla: Remove tarfile functionality
+Date: Tue, 12 Mar 2024 12:00:09 -0400
+Message-ID: <20240312160009.15679-1-jkacur@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312135958.727765-3-dwmw2@infradead.org>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024 at 01:51:29PM +0000, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> The PSCI v1.3 specification (alpha) adds support for a SYSTEM_OFF2
-> function which is analogous to ACPI S4 state. This will allow hosting
-> environments to determine that a guest is hibernated rather than just
-> powered off, and handle that state appropriately on subsequent launches.
-> 
-> Since commit 60c0d45a7f7a ("efi/arm64: use UEFI for system reset and
-> poweroff") the EFI shutdown method is deliberately preferred over PSCI
-> or other methods. So register a SYS_OFF_MODE_POWER_OFF handler which
-> *only* handles the hibernation, leaving the original PSCI SYSTEM_OFF as
-> a last resort via the legacy pm_power_off function pointer.
-> 
-> The hibernation code already exports a system_entering_hibernation()
-> function which is be used by the higher-priority handler to check for
-> hibernation. That existing function just returns the value of a static
-> boolean variable from hibernate.c, which was previously only set in the
-> hibernation_platform_enter() code path. Set the same flag in the simpler
-> code path around the call to kernel_power_off() too.
-> 
-> An alternative way to hook SYSTEM_OFF2 into the hibernation code would
-> be to register a platform_hibernation_ops structure with an ->enter()
-> method which makes the new SYSTEM_OFF2 call. But that would have the
-> unwanted side-effect of making hibernation take a completely different
-> code path in hibernation_platform_enter(), invoking a lot of special dpm
-> callbacks.
-> 
-> Another option might be to add a new SYS_OFF_MODE_HIBERNATE mode, with
-> fallback to SYS_OFF_MODE_POWER_OFF. Or to use the sys_off_data to
-> indicate whether the power off is for hibernation.
-> 
-> But this version works and is relatively simple.
-> 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->  drivers/firmware/psci/psci.c | 35 +++++++++++++++++++++++++++++++++++
->  kernel/power/hibernate.c     |  5 ++++-
->  2 files changed, 39 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> index d9629ff87861..69d2f6969438 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -78,6 +78,7 @@ struct psci_0_1_function_ids get_psci_0_1_function_ids(void)
->  
->  static u32 psci_cpu_suspend_feature;
->  static bool psci_system_reset2_supported;
-> +static bool psci_system_off2_supported;
->  
->  static inline bool psci_has_ext_power_state(void)
->  {
-> @@ -333,6 +334,28 @@ static void psci_sys_poweroff(void)
->  	invoke_psci_fn(PSCI_0_2_FN_SYSTEM_OFF, 0, 0, 0);
->  }
->  
-> +#ifdef CONFIG_HIBERNATION
-> +static int psci_sys_hibernate(struct sys_off_data *data)
-> +{
-> +	if (system_entering_hibernation())
-> +		invoke_psci_fn(PSCI_FN_NATIVE(1_3, SYSTEM_OFF2),
-> +			       PSCI_1_3_HIBERNATE_TYPE_OFF, 0, 0);
-> +	return NOTIFY_DONE;
-> +}
-> +
-> +static int __init psci_hibernate_init(void)
-> +{
-> +	if (psci_system_off2_supported) {
-> +		/* Higher priority than EFI shutdown, but only for hibernate */
-> +		register_sys_off_handler(SYS_OFF_MODE_POWER_OFF,
-> +					 SYS_OFF_PRIO_FIRMWARE + 2,
-> +					 psci_sys_hibernate, NULL);
-> +	}
-> +	return 0;
-> +}
-> +subsys_initcall(psci_hibernate_init);
+Linux distributions have been installing directly from kernel source, so
+simplify the Makefile by removing the unneeded tarfile functionality.
 
-Looked briefly at register_sys_off_handler and it should be OK to call
-it from psci_init_system_off2() below. Any particular reason for having
-separate initcall to do this ? We can even eliminate the need for
-psci_init_system_off2 if it can be called from there. What am I missing ?
+Signed-off-by: John Kacur <jkacur@redhat.com>
+---
+ tools/tracing/rtla/Makefile | 24 ++----------------------
+ 1 file changed, 2 insertions(+), 22 deletions(-)
 
---
-Regards,
-Sudeep
+diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+index afd18c678ff5..0bf182cda0b0 100644
+--- a/tools/tracing/rtla/Makefile
++++ b/tools/tracing/rtla/Makefile
+@@ -45,23 +45,13 @@ OBJ	:=	$(SRC:.c=.o)
+ DIRS	:=	src
+ FILES	:=	Makefile README.txt
+ CEXT	:=	bz2
+-TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
+-TAROPTS	:=	-cvjf $(TARBALL)
+ BINDIR	:=	/usr/bin
+ DATADIR	:=	/usr/share
+ DOCDIR	:=	$(DATADIR)/doc
+ MANDIR	:=	$(DATADIR)/man
+ LICDIR	:=	$(DATADIR)/licenses
+ SRCTREE	:=	$(or $(BUILD_SRC),$(CURDIR))
+-
+-# If running from the tarball, man pages are stored in the Documentation
+-# dir. If running from the kernel source, man pages are stored in
+-# Documentation/tools/rtla/.
+-ifneq ($(wildcard Documentation/.*),)
+-DOCSRC	=	Documentation/
+-else
+ DOCSRC	=	$(SRCTREE)/../../../Documentation/tools/rtla/
+-endif
+ 
+ LIBTRACEEVENT_MIN_VERSION = 1.5
+ LIBTRACEFS_MIN_VERSION = 1.3
+@@ -129,22 +119,12 @@ install: doc_install
+ 	@test ! -f $(DESTDIR)$(BINDIR)/timerlat || rm $(DESTDIR)$(BINDIR)/timerlat
+ 	ln -s rtla $(DESTDIR)$(BINDIR)/timerlat
+ 
+-.PHONY: clean tarball
++.PHONY: clean
+ clean: doc_clean
+ 	@test ! -f rtla || rm rtla
+ 	@test ! -f rtla-static || rm rtla-static
+ 	@test ! -f src/rtla.o || rm src/rtla.o
+-	@test ! -f $(TARBALL) || rm -f $(TARBALL)
+-	@rm -rf *~ $(OBJ) *.tar.$(CEXT)
+-
+-tarball: clean
+-	rm -rf $(NAME)-$(VERSION) && mkdir $(NAME)-$(VERSION)
+-	echo $(VERSION) > $(NAME)-$(VERSION)/VERSION
+-	cp -r $(DIRS) $(FILES) $(NAME)-$(VERSION)
+-	mkdir $(NAME)-$(VERSION)/Documentation/
+-	cp -rp $(SRCTREE)/../../../Documentation/tools/rtla/* $(NAME)-$(VERSION)/Documentation/
+-	tar $(TAROPTS) --exclude='*~' $(NAME)-$(VERSION)
+-	rm -rf $(NAME)-$(VERSION)
++	@rm -rf *~ $(OBJ)
+ 
+ .PHONY: doc doc_clean doc_install
+ doc:
+-- 
+2.44.0
+
 
