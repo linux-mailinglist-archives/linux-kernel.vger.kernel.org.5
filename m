@@ -1,133 +1,118 @@
-Return-Path: <linux-kernel+bounces-100710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7018879C45
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:32:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7E1B879C46
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:33:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A050283A01
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:32:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6407F2860CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DE7142651;
-	Tue, 12 Mar 2024 19:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 515E2142652;
+	Tue, 12 Mar 2024 19:33:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=hoehnp@gmx.de header.b="iSJSyajB"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="A9UvRpPo"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350C62E85C;
-	Tue, 12 Mar 2024 19:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145442E85C
+	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710271968; cv=none; b=MerYO+W6W/gLjz5Ma7Mcfzhc/OIu2QP2PFSNMfVHgnD9UOydE2xi1GWaObq4PL67A6F4HVJ96sIBzZfLTmCHPtPLpfqtd758Mo3hZJ+yWBH4a/MHpxI/niJZjcoBUpY49ykNr/gjXZ3eXhLwbtOXn0YFYFa/qBnqxCndJ2jgV9k=
+	t=1710271989; cv=none; b=TKq9qhrHNIQxWGpn1zY3piNe2p6PTTpCn09IK8dnK2oXXvuHMrGuLAGRka+6HAs5d0NIBMJZyA544xy/Qt3A5RVT9halITROA3zHwWzmIMw4YLO+3Flba7r4XpDr4yDSCep3Uvx8vdCRSrZOBaWH2X8Vl750WNpj3FvZoNZDV60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710271968; c=relaxed/simple;
-	bh=WHsFLYe3izAm3bdxyupw+0wOzYbmQP/tb380HfmcaaQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=m/CP41DCLJn3zUoBs0Y5A15rpEKrTGPVKJ9S9bHGsASUyfi+nm20DBKr2mgeLlZ7vZuWQT4+lJRXj0UT3xtMS9NB8g+4mdKpyGaT6sM13gCS8U02fulImxqLHDyUTiFYGiV0Mjk8ZgL9CnojGEybKv0c+eTyPEDFZP6s6GfRSU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=hoehnp@gmx.de header.b=iSJSyajB; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1710271958; x=1710876758; i=hoehnp@gmx.de;
-	bh=WHsFLYe3izAm3bdxyupw+0wOzYbmQP/tb380HfmcaaQ=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=iSJSyajBRiw9WXnTGQ2Tu0S1F6mfoEeGS/T1hIMxs7XYbN3JsjlLXj2/BcYKnQCg
-	 t7IrFlGWCrmXH6bXsxr46MksHOoZp45FpHhdS6VquGEqMqnxlcf4vRQshvqT6YDy5
-	 lkn5wjebxQVzeR4kuWuD9J9IQTkdOTDE9nAG9ds9fG9q6zp0klJeukNdrN2fB5wDo
-	 Pg1DYu+DPMQH/HcUeO5X1xqxdVcj4OU2BUIbd5NnpvS9iPXFO6DL4bW5cYnLmQ7Yh
-	 h54wFkHZ+ggcQ+Uw2xuaR4Rf/2Y+mSemAHQJhLpZyA/mpGyFiUiEjHpP2/Ur8EXGg
-	 Ek9DEDGMl8M8hj/Nog==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from patrick-dell.lan ([31.18.168.131]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mjj8D-1r4yQn1N1P-00lDg8; Tue, 12
- Mar 2024 20:32:38 +0100
-From: =?UTF-8?q?Patrick=20H=C3=B6hn?= <hoehnp@gmx.de>
-To: Jean Delvare <jdelvare@suse.com>,
-	Andi Shyti <andi.shyti@kernel.org>
-Cc: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	=?UTF-8?q?Patrick=20H=C3=B6hn?= <hoehnp@gmx.de>,
-	linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] i2c: i801: Add lis3lv02d for Dell Precision M6800
-Date: Tue, 12 Mar 2024 20:31:31 +0100
-Message-ID: <20240312193132.26518-1-hoehnp@gmx.de>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1710271989; c=relaxed/simple;
+	bh=5U2+9lGF4FrJHQBBFO1tR3vs7XnJmNVzcpkEqWxS99o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V31pHkNY3mZhL/22XwGruF6J0M/Bmn3hZgUSAVzuuAfy3CL4f70SUB/pAl3pTRfE95HF8CBrRuqzUIVwAs16N5bNsePZcmUIu//lJi4+0nQ6bju5Jxv/pi9q8TgofqMN6RLyhVL6KR1uJ5meoBZRjfzztZFP/fbFGlHPixz7J3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=A9UvRpPo; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dd81aee2b4so32824105ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1710271987; x=1710876787; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0ftTA/bI42ti4Fz3CgBot24iMh4CdOEErvPMHNFt7wY=;
+        b=A9UvRpPoGFCIRKJtyPSfJNa6xuLZbwxt2WEL4dKJ/NiRtQxbxzfb+HOpZxSTccpU0Q
+         WvNdFUJ+mDfZz9Xh5l4lmryJgffjNAusbKNvhy3Foy7j11voG7frNNssTmgUweWk7Md1
+         ZY7YK3ZmQs6Jyiu8PDE4qoOZ6WdBMfi+dBvboWQHuQ6ap0bamHccaO/l/ggZuydyeCJZ
+         +CQNyH5pO//g801aFYquqyW3HnnWgoYHnQ/gWu6sKx+PYTsUc//GPTUrBnlzalw2aKmO
+         KGh4mAkCJ4KCV9Wpql/ZQLyyh1TN2w/YzGUU4e2Q1SJpEMTea1D+INQBn60bWxx0/WR2
+         FHbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710271987; x=1710876787;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0ftTA/bI42ti4Fz3CgBot24iMh4CdOEErvPMHNFt7wY=;
+        b=NbNLxM2GlpLV9nzDMZOD6P/ocS3w9y+XdQs/dfQeW5tuB3jDHnXybHy1iuMrL5MFP5
+         9R+83CZtMUKY4UB8MEB9K68orkQa9LVAZE2+tFi9XO375OTQo3+OJ5amVnlsIC0zthBf
+         o0yVt2D1x8SQbOHZ3clvb8JVKy1onfI/MVgwWE9T5O9/YaDOXB/c7UAdvlW7o91wl6zp
+         9Bxzyb0BMZZ8iU35TAHPxprr4mwlXVRS1jKZH1VUwG06GxuBNdARGxXJyLxBNSkXk+Ph
+         TbpnwWVmhfTHP1sciscpDllahSCvsYkg/qlCG2Jp5nUQrqsw3I0Nr7+2WhWdTkOJ1JHg
+         jGCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXFmZjJ7ybownP8VOXTwm0T4046ZNdy2B9SiG0oDTfZWQlnmihhae2xL+RqFj8Ie4ReZ9CP9mVId1VC+34/Mtuc281HjNmrx+rG5BVc
+X-Gm-Message-State: AOJu0YzCUxL3F+7U7zeqUGjCExSUefCDs2ZqF6sQ3/4tPnT8wPW8Pz/l
+	pZc2hPDibfHlt2hp79ryKcSIjZIhN96W4gfNLtovx+QElYYx1hzggkmTHu2+xAU=
+X-Google-Smtp-Source: AGHT+IHMAaeTF22TajddSfUp+8UCNTmclqWbgeHaOV9+99pfD3RLiLJzSzhcL0gOzhuE960W3tWdnA==
+X-Received: by 2002:a17:903:32c4:b0:1dd:998f:f21d with SMTP id i4-20020a17090332c400b001dd998ff21dmr8772872plr.22.1710271987305;
+        Tue, 12 Mar 2024 12:33:07 -0700 (PDT)
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id e4-20020a170902b78400b001dcc3a46a6bsm7017385pls.262.2024.03.12.12.33.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 12:33:06 -0700 (PDT)
+From: Samuel Holland <samuel.holland@sifive.com>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: Samuel Holland <samuel.holland@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH] clocksource/drivers/timer-riscv: Drop extra CSR write
+Date: Tue, 12 Mar 2024 12:32:47 -0700
+Message-ID: <20240312193306.1814593-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wHut0w3UEgHaJn/ZKEMFpHb+Bff1z1Ll8Kr9oVZmLoj1RqcDPDh
- jqC6OmCgDJ/uu7HMN4xqIx31kjDnFMh9WoPWfSwC8z0rv9nUYAVhA17x06HCT/EYaavqXLf
- d8qivBLJ5U94WvDtM//vFSwdgGMT0lYN6tDZ2sYApBoxZOcFwkocJIZcq2aIPXqEfqT/Lhm
- EMvcDci1kAcYXRvgCCx/A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Nj5kLxCHHaM=;DaBy0diapkw+edhrKBHaZeNj8o7
- 3Bu2sWDwpHXG2CjMVgm0klacyj9N9tUR/48KZrUBoGc/YdWYzFvyR4K9uKWmvF72OqlVI9SJq
- 1CUtQ6tUXZI+RJzcrvyNkD7FPleddJEn75Q6jzR5OXp7/1TUbZglhJQRLt6fO6E8i6BuAUJ5K
- In7tQyB5ta1bSAX0ULhs1E8Gvz7pLeBFdJptXIVX4jpeuLHnHUCANy4Pg9kbIs6Ont7yO3PX/
- tqTXqw1ClpQCPlWvgftL4hj/vhlQNyw3xzoSTG2M0eB+SzZkdnqhNUv+/7Almr7NffI3Of1zs
- WL0B3BdBS5Q0hXN02PVyX4wFsH9sN8dPRbQR6pP1qjQEI6rnXCf5kI4Cr/o4XdtJycTwH3A9G
- RWhzRW57Z28ZahFtm/wf6qJnYV7wqP++ahl7Nwr73lWNfbX+WG/WZLDrf6ZTSJo9ZJ7ivkmIv
- unsg8nsLBv6ZSXrfoLRc8SAj8iOeU/ahi0xJSL8K/Zy7MJ0o8voFLZVP10/B+j+OSiUAPeGpZ
- omeW2BJjtzS9zPTUBhLutx/n1BrfH/7tYFowuPhURVzhhSVLfm43H7G3njiX4zyZUCZTgNNjv
- QKFjat+ETUvFQnuJaIBFXx7e8VSjZtOTK+7cbCLfO65JcjBjqCm7SQ/1uLsJYrw2GFv70sRLi
- 6FwIUyNKrf/SSTQxZbjv/74lpr2z0gXxalbuz7tkCz3jwXhWKJM5PkVySdRQcaK+EE1IkZ1mq
- PtZD4Yw/s1UHKoz156vqwLt7qUkAuF93nrlPtUr3HYH30q1QYA2Byyvd9aFH5/XzU216Li0Mw
- aZfKepXyLrEQCjc8D/FOdjcIxS4NfNp62Vgh7G7N09qTo=
+Content-Transfer-Encoding: 8bit
 
-On the Dell Precision M6800/OXD1M5, BIOS A26 06/13/2029, Linux prints the
-warning below.
+On riscv32, the time comparator value is split across two CSRs. We write
+both when stopping the timer, but realistically the time is just as
+unlikely to reach 0xffffffff00000000 as 0xffffffffffffffff, so there is
+no need to write the low CSR.
 
-    i801_smbus 0000:00:1f.4: Accelerometer lis3lv02d is present on SMBus b=
-ut its address is unknown, skipping registration
+Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+---
 
-Following the same suggestions by Wolfram Sang as for the Dell Precision
-3540 [1], the accelerometer can be successfully found on I2C bus 0 at
-address 0x29.
+ drivers/clocksource/timer-riscv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-    $ echo lis3lv02d 0x29 | sudo tee /sys/bus/i2c/devices/i2c-0/new_device
-    lis3lv02d 0x29
-    $ dmesg | tail -5
-    [1185.385204] lis3lv02d_i2c 0-0029: supply Vdd not found, using dummy =
-regulator
-    [1185.385235] lis3lv02d_i2c 0-0029: supply Vdd_IO not found, using dum=
-my regulator
-    [1185.399689] lis3lv02d: 8 bits 3DC sensor found
-    [1185.449391] input: ST LIS3LV02DL Accelerometer as /devices/platform/=
-lis3lv02d/input/input371
-    [1185.449577] i2c i2c-0: new_device: Instantiated device lis3lv02d at =
-0x29
-
-So, the device has that accelerometer. Add the I2C address to the
-mapping list, and test it successfully on the device.
-
-[1]: https://lore.kernel.org/linux-i2c/97708c11-ac85-fb62-2c8e-d37739ca826=
-f@molgen.mpg.de/
-Signed-off-by: Patrick H=C3=B6hn <hoehnp@gmx.de>
-=2D--
- drivers/i2c/busses/i2c-i801.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-index 2c36b36d7d51..c1fee2c61da1 100644
-=2D-- a/drivers/i2c/busses/i2c-i801.c
-+++ b/drivers/i2c/busses/i2c-i801.c
-@@ -1231,6 +1231,7 @@ static const struct {
- 	 */
- 	{ "Latitude 5480",      0x29 },
- 	{ "Precision 3540",     0x29 },
-+	{ "Precision M6800",    0x29 },
- 	{ "Vostro V131",        0x1d },
- 	{ "Vostro 5568",        0x29 },
- 	{ "XPS 15 7590",        0x29 },
-=2D-
-2.43.2
+diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
+index e66dcbd66566..eaaf01f3c34b 100644
+--- a/drivers/clocksource/timer-riscv.c
++++ b/drivers/clocksource/timer-riscv.c
+@@ -35,9 +35,10 @@ static bool riscv_timer_cannot_wake_cpu;
+ static void riscv_clock_event_stop(void)
+ {
+ 	if (static_branch_likely(&riscv_sstc_available)) {
+-		csr_write(CSR_STIMECMP, ULONG_MAX);
+ 		if (IS_ENABLED(CONFIG_32BIT))
+ 			csr_write(CSR_STIMECMPH, ULONG_MAX);
++		else
++			csr_write(CSR_STIMECMP, ULONG_MAX);
+ 	} else {
+ 		sbi_set_timer(U64_MAX);
+ 	}
+-- 
+2.43.1
 
 
