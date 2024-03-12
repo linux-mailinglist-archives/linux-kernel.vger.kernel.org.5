@@ -1,118 +1,108 @@
-Return-Path: <linux-kernel+bounces-100711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7E1B879C46
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:33:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E18879C49
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 20:33:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6407F2860CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:33:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34B641F2356D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 19:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 515E2142652;
-	Tue, 12 Mar 2024 19:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7A3142904;
+	Tue, 12 Mar 2024 19:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="A9UvRpPo"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LqyDIbGj"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145442E85C
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 19:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA4114263A;
+	Tue, 12 Mar 2024 19:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710271989; cv=none; b=TKq9qhrHNIQxWGpn1zY3piNe2p6PTTpCn09IK8dnK2oXXvuHMrGuLAGRka+6HAs5d0NIBMJZyA544xy/Qt3A5RVT9halITROA3zHwWzmIMw4YLO+3Flba7r4XpDr4yDSCep3Uvx8vdCRSrZOBaWH2X8Vl750WNpj3FvZoNZDV60=
+	t=1710271992; cv=none; b=GRhIQ3k/FizvD8et6Jn6M0HpAV2GdJ+lC8UgsZQUk/HyGzAQy3Q7IZOr12XkPvECFm8egP74qHSp8s4SKGirODVusI6cyqPdIXMJvOv9cQsntjTqZfrFpnAUtvcNlkAaGP9AV+j9jwBKLqFdtL42L0ToSfypmLEB5cYo4QUqjZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710271989; c=relaxed/simple;
-	bh=5U2+9lGF4FrJHQBBFO1tR3vs7XnJmNVzcpkEqWxS99o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V31pHkNY3mZhL/22XwGruF6J0M/Bmn3hZgUSAVzuuAfy3CL4f70SUB/pAl3pTRfE95HF8CBrRuqzUIVwAs16N5bNsePZcmUIu//lJi4+0nQ6bju5Jxv/pi9q8TgofqMN6RLyhVL6KR1uJ5meoBZRjfzztZFP/fbFGlHPixz7J3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=A9UvRpPo; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dd81aee2b4so32824105ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 12:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710271987; x=1710876787; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0ftTA/bI42ti4Fz3CgBot24iMh4CdOEErvPMHNFt7wY=;
-        b=A9UvRpPoGFCIRKJtyPSfJNa6xuLZbwxt2WEL4dKJ/NiRtQxbxzfb+HOpZxSTccpU0Q
-         WvNdFUJ+mDfZz9Xh5l4lmryJgffjNAusbKNvhy3Foy7j11voG7frNNssTmgUweWk7Md1
-         ZY7YK3ZmQs6Jyiu8PDE4qoOZ6WdBMfi+dBvboWQHuQ6ap0bamHccaO/l/ggZuydyeCJZ
-         +CQNyH5pO//g801aFYquqyW3HnnWgoYHnQ/gWu6sKx+PYTsUc//GPTUrBnlzalw2aKmO
-         KGh4mAkCJ4KCV9Wpql/ZQLyyh1TN2w/YzGUU4e2Q1SJpEMTea1D+INQBn60bWxx0/WR2
-         FHbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710271987; x=1710876787;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0ftTA/bI42ti4Fz3CgBot24iMh4CdOEErvPMHNFt7wY=;
-        b=NbNLxM2GlpLV9nzDMZOD6P/ocS3w9y+XdQs/dfQeW5tuB3jDHnXybHy1iuMrL5MFP5
-         9R+83CZtMUKY4UB8MEB9K68orkQa9LVAZE2+tFi9XO375OTQo3+OJ5amVnlsIC0zthBf
-         o0yVt2D1x8SQbOHZ3clvb8JVKy1onfI/MVgwWE9T5O9/YaDOXB/c7UAdvlW7o91wl6zp
-         9Bxzyb0BMZZ8iU35TAHPxprr4mwlXVRS1jKZH1VUwG06GxuBNdARGxXJyLxBNSkXk+Ph
-         TbpnwWVmhfTHP1sciscpDllahSCvsYkg/qlCG2Jp5nUQrqsw3I0Nr7+2WhWdTkOJ1JHg
-         jGCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFmZjJ7ybownP8VOXTwm0T4046ZNdy2B9SiG0oDTfZWQlnmihhae2xL+RqFj8Ie4ReZ9CP9mVId1VC+34/Mtuc281HjNmrx+rG5BVc
-X-Gm-Message-State: AOJu0YzCUxL3F+7U7zeqUGjCExSUefCDs2ZqF6sQ3/4tPnT8wPW8Pz/l
-	pZc2hPDibfHlt2hp79ryKcSIjZIhN96W4gfNLtovx+QElYYx1hzggkmTHu2+xAU=
-X-Google-Smtp-Source: AGHT+IHMAaeTF22TajddSfUp+8UCNTmclqWbgeHaOV9+99pfD3RLiLJzSzhcL0gOzhuE960W3tWdnA==
-X-Received: by 2002:a17:903:32c4:b0:1dd:998f:f21d with SMTP id i4-20020a17090332c400b001dd998ff21dmr8772872plr.22.1710271987305;
-        Tue, 12 Mar 2024 12:33:07 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id e4-20020a170902b78400b001dcc3a46a6bsm7017385pls.262.2024.03.12.12.33.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Mar 2024 12:33:06 -0700 (PDT)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Cc: Samuel Holland <samuel.holland@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH] clocksource/drivers/timer-riscv: Drop extra CSR write
-Date: Tue, 12 Mar 2024 12:32:47 -0700
-Message-ID: <20240312193306.1814593-1-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.43.1
+	s=arc-20240116; t=1710271992; c=relaxed/simple;
+	bh=YmQF7O6DR+mxRv2WxozK861oQq0jmfUGuyvloZmLcco=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sDFtzn6Qlgg7wpMyZlW2YAxj4rdZs4c4SCubQJXZ58B7L1W9Vv9L8zr85gEA0vvj0qErHwP50flKqHL3wuycuYI4yVZf7XU60PSo4DOad+rlQ1nQWQrajML76AP/67kx2vLhrKrM8xXCajN+BZgcLTi59wI64Bz++J4jf0XUQ9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LqyDIbGj; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=kubIgq/GdbJcvxgMJi1o1EH2/AWxnGiUKA6KgBSz0r4=; b=LqyDIbGj41wCOr/hh8HuGexIVM
+	hKJs36dID9db94U5lPlL9RGQn4OGs56qUagNn3RN+BuhkHxSkWAPv8LGx46v43R6a3VnNNgJxraVA
+	+oXI0XYJZEqr19DPK5pVw8C/rg4Xr0YPEjUebI2nI6xHRWb1ToC+vCRSA18CirbJbRCLKk/Bkf0TN
+	SCijgrPz2C4jqtXvHv5z24xlvun8gekZrgxKprK3c3AC1DesTU8q4ym1m+mKVMZWhm117BGtWNXrp
+	CF25rtoQzkJ++o1FL6ZsOlOnOP2JVkBHTbKIYNyEXpjm2ktIWzW6KeM25jO7j79hGY9+U5WuRoC7w
+	0/+4mblg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rk7rt-00000003k5Z-3F5B;
+	Tue, 12 Mar 2024 19:32:57 +0000
+Date: Tue, 12 Mar 2024 19:32:57 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Vlastimil Babka <vbabka@suse.cz>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 2/4] mm, slab: move slab_memcg hooks to
+ mm/memcontrol.c
+Message-ID: <ZfCt6TKEENN_Rq_C@casper.infradead.org>
+References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
+ <20240301-slab-memcg-v1-2-359328a46596@suse.cz>
+ <ZfClX_CJBYRW-cCc@P9FQF9L96D>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfClX_CJBYRW-cCc@P9FQF9L96D>
 
-On riscv32, the time comparator value is split across two CSRs. We write
-both when stopping the timer, but realistically the time is just as
-unlikely to reach 0xffffffff00000000 as 0xffffffffffffffff, so there is
-no need to write the low CSR.
+On Tue, Mar 12, 2024 at 11:56:31AM -0700, Roman Gushchin wrote:
+> On Fri, Mar 01, 2024 at 06:07:09PM +0100, Vlastimil Babka wrote:
+> > The hooks make multiple calls to functions in mm/memcontrol.c, including
+> > to th current_obj_cgroup() marked __always_inline. It might be faster to
+> > make a single call to the hook in mm/memcontrol.c instead. The hooks
+> > also don't use almost anything from mm/slub.c. obj_full_size() can move
+> > with the hooks and cache_vmstat_idx() to the internal mm/slab.h
+> > 
+> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > ---
+> >  mm/memcontrol.c |  90 ++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  mm/slab.h       |  10 ++++++
+> >  mm/slub.c       | 100 --------------------------------------------------------
+> >  3 files changed, 100 insertions(+), 100 deletions(-)
+> 
+> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+> 
+> Btw, even before your change:
+> $ cat mm/memcontrol.c | wc -l
+> 8318
+> so I wonder if soon we might want to split it into some smaller parts.
 
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
-
- drivers/clocksource/timer-riscv.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
-index e66dcbd66566..eaaf01f3c34b 100644
---- a/drivers/clocksource/timer-riscv.c
-+++ b/drivers/clocksource/timer-riscv.c
-@@ -35,9 +35,10 @@ static bool riscv_timer_cannot_wake_cpu;
- static void riscv_clock_event_stop(void)
- {
- 	if (static_branch_likely(&riscv_sstc_available)) {
--		csr_write(CSR_STIMECMP, ULONG_MAX);
- 		if (IS_ENABLED(CONFIG_32BIT))
- 			csr_write(CSR_STIMECMPH, ULONG_MAX);
-+		else
-+			csr_write(CSR_STIMECMP, ULONG_MAX);
- 	} else {
- 		sbi_set_timer(U64_MAX);
- 	}
--- 
-2.43.1
-
+If we are going to split it, perhaps a mm/memcg-v1.c would make sense,
+because I certainly don't have a good idea about what's v1 and what's
+v2.  And maybe we could even conditionally compile the v1 file ;-)
 
