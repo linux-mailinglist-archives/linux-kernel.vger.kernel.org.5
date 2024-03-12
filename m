@@ -1,173 +1,293 @@
-Return-Path: <linux-kernel+bounces-100333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18AAE8795D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:15:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E49228795D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:16:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD5B5B213F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:14:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B4A62837AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480CD58AD4;
-	Tue, 12 Mar 2024 14:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67737AE41;
+	Tue, 12 Mar 2024 14:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="E2L7PumP"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhjQRZDL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5067A726
-	for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 14:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8EBE57307;
+	Tue, 12 Mar 2024 14:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710252853; cv=none; b=ubGGEt5Jeju0CPFbGt/nRVPuZn+apf9XLdDPvhcC07yr4YIqvK1kBMZCzQZzGG6FsUDl6JhQL9ReLKzExAE7ni8xUiuoOjxvqOm6gcZndHU/iqjOmIJULs3wMN65Jf0DKW0/FHJ+X3vvI+/ktrcutlf7MD8qT91RFqu7XVvSJ5M=
+	t=1710252960; cv=none; b=E7E7x9sJtK1WsVZTXx8svNwbrgylwQ0X/a9EyOBxT5gI1gvUQbQuhICmbHlUAey1PMixLBxYWSCHEKYfwFh0OZY33/KmLajBFLNv2ZHftuk35/UAXQYdX9Yc/a5DoOguNpmQoKDroZoKaf29yaJpI+QApLtH82QXjyyQa645Oes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710252853; c=relaxed/simple;
-	bh=RNfz9UMeVHEZ4EC/7S+cusApvHD/n33RU7Q6sN1FNmc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B9JuKbFu+ip2Ge+rhCJr4V4GD2iYaSjgCOsR3vIxiZUtqFYXWex49AlUktCQ+nTwmSDgqxZzsTL1xO7PgK3MyKV/36nwuOgzN6IYmDS3hVcyQsUx8FiIUWdydMMsctMeMfLBkOzsyhhS97/QBopNQwdQq6uT+QiEILI1Tk/qo3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=E2L7PumP; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d4515ec3aaso8106761fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Mar 2024 07:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710252848; x=1710857648; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qHhBAVPkSXMRlsnEU7VzojS2GB1k8UvtbfmWURp3Ays=;
-        b=E2L7PumPmIMGXvuRkv8xfNWlK1dDz+7Fad+oLDWh54xlCUWdlg4L2tTalVYo6qStjT
-         +Qv2IYkr1sgJCnNv+PQLXkHoxeQ/dijjmlcunf0OA79yXQ20GYaZuB41W482THZphy4G
-         wGZcgjTBt+T51aa4/nvR9KFCi37EfFqJQZyQgVfLLLldXy8xrIEzeefrymRTnwPUqvqK
-         p9kBkJ/PlNfuDiV9E+SDG5oVIu7a1G23ceJZy7qSOOo0HMWZxswRpQLfp3jYEZIIJgQ/
-         hrZ9U6Oj2LO1JO1CgdTsufMaHrCgDL30yMvK9EMYdDgbIa8BmBTof5DR/0/5gV3ZxxrF
-         szSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710252848; x=1710857648;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qHhBAVPkSXMRlsnEU7VzojS2GB1k8UvtbfmWURp3Ays=;
-        b=WeAbSxQCQjh+VwM6AQrM02mV8yndVnaYD6xj8OF9792Tm9GGCnVWHpcUm40kK/D5nR
-         RdQL6OLmNLFRJG1Td7+Tjhi6MHmkeVw7xkCI3dRXy91752Tk9g4wyMT1s9OP05RxQ++6
-         SQsj+n+RER2rdEvnyefbWAiHgRvAfTdITzZKlhittA0fSJWkpsSYHvAL+oV6M2EB19qB
-         Qow5R4Y3yB3OA/SDTJ9TkrtHNzBdYxdHhZnVgGhwuudRNPphpx0bZ0T30nDCNkQ6Sk4f
-         z1lPdjNIC6mZw2dEaEBlA+lJ7T86nUHbGAPm75jAqF/JufHTxQ6ijyQrnd8P7An9Wkx5
-         ezJg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4RKTD+OGFyWwDsa7ePh2PRgaB35A+5r9LxyfboLrgDcrXQGNZZA9C+MpF2sInbamIfiLA0g9GYAnoMxsALJsU2wmlOuaApLGVuzmA
-X-Gm-Message-State: AOJu0YwNxzGGGW7iRzSXBkYEfNPr8im8iYNDOISbl6ABmYFW1sRHhtmY
-	xwBeEtOoSKARjZxeqmmnI4JHIWdgU2eycgYjjJa5eC4GnFHunryEw+5Dyt27j4XIjnMQUolW2iP
-	4mOwA2cYWN9nX+09yNn0ZvaZ48zYNabwXilZoIQ==
-X-Google-Smtp-Source: AGHT+IERJ/rpv5Wl0fKtFBs5+P9ARp4/wWg+dr8a4LK3zFX9bbNJCrn9b/Gg30XUh4iaQqytjgejBFIsYucV3ChpNqw=
-X-Received: by 2002:a05:651c:2224:b0:2d4:5359:7098 with SMTP id
- y36-20020a05651c222400b002d453597098mr897028ljq.18.1710252847939; Tue, 12 Mar
- 2024 07:14:07 -0700 (PDT)
+	s=arc-20240116; t=1710252960; c=relaxed/simple;
+	bh=6nPUkJYMV8BT9PyAcnRUtEYmd9f0t4J3gV+n/eWAeSc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JrYge6NAJ9D1y9QlkCxDpkD4p4VmFZN48MRjMIfrfa/FA2KHX8AfnWT51/dNrMSgF3CHEbUB1v/UcgSBbxxD5cS8jfMpsWv1yXK7pIvvMjsinb311SVzyDUmr3LE9hzgj6V/B9cXVhRKQY/g5piPqOKXuaAqZkckNjC84bkAg6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhjQRZDL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10534C433C7;
+	Tue, 12 Mar 2024 14:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710252960;
+	bh=6nPUkJYMV8BT9PyAcnRUtEYmd9f0t4J3gV+n/eWAeSc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YhjQRZDLfKKKKvdPVWBN4Ge6Cy0DfjnXIjFtz0FzwGyE4LGOik+dihC3GrN3ELN3o
+	 8CNf3ytBtJF6dDuXwM3HRccNCspK+wZnHsNnAVxlHa4kpbckNAaA0QbF58W4NUbQsc
+	 OUpwizi0D/qFLLhBPvLlbPCfAae/xCHTQxdYlP0cZwZbWRE8Ayg+du/7aWCYd8YQB+
+	 kfY+Y0vp741UAeIhmVdU8pyCSzeDYt/7gv2rUO8oAHN+LKHR9ozJpTBs3k+J8hlMMk
+	 xb3sP5zzrqPGiLaL5oeDgdlP42nSfyQSanFI6paB+I2JSAIMba7SPcDyKqzYduPy9L
+	 8hNC4hfJzqFMA==
+Date: Tue, 12 Mar 2024 15:15:56 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] vfs pidfd
+Message-ID: <20240312-dingo-sehnlich-b3ecc35c6de7@brauner>
+References: <20240308-vfs-pidfd-b106369f5406@brauner>
+ <CAHk-=wigcyOxVQuQrmk2Rgn_-B=1+oQhCnTTjynQs0CdYekEYg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311-mainline-ad7944-3-wire-mode-v1-1-8e8199efa1f7@baylibre.com>
- <8ee551edeff9c4c959a4dbda53d1a2a26a9bb62c.camel@gmail.com>
-In-Reply-To: <8ee551edeff9c4c959a4dbda53d1a2a26a9bb62c.camel@gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Tue, 12 Mar 2024 09:13:56 -0500
-Message-ID: <CAMknhBE8OwrtbJ9xYVZ8ObsZTnxmn9Fpk2a-gj1aCSaN-whDRg@mail.gmail.com>
-Subject: Re: [PATCH] iio: adc: ad7944: Add support for "3-wire mode"
-To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc: Jonathan Cameron <jic23@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>, 
-	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="hi544pxirl5tf4xv"
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wigcyOxVQuQrmk2Rgn_-B=1+oQhCnTTjynQs0CdYekEYg@mail.gmail.com>
 
-On Tue, Mar 12, 2024 at 4:08=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.com=
-> wrote:
->
-> On Mon, 2024-03-11 at 16:26 -0500, David Lechner wrote:
 
-..
+--hi544pxirl5tf4xv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-> >  /*
-> >   * ad7944_4wire_mode_conversion - Perform a 4-wire mode conversion and=
- acquisition
-> >   * @adc: The ADC device structure
-> > @@ -167,9 +246,22 @@ static int ad7944_single_conversion(struct ad7944_=
-adc *adc,
-> >  {
-> >       int ret;
+On Mon, Mar 11, 2024 at 01:05:06PM -0700, Linus Torvalds wrote:
+> On Fri, 8 Mar 2024 at 02:14, Christian Brauner <brauner@kernel.org> wrote:
 > >
-> > -     ret =3D ad7944_4wire_mode_conversion(adc, chan);
-> > -     if (ret)
-> > -             return ret;
-> > +     switch (adc->spi_mode) {
-> > +     case AD7944_SPI_MODE_DEFAULT:
-> > +             ret =3D ad7944_4wire_mode_conversion(adc, chan);
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             break;
-> > +     case AD7944_SPI_MODE_SINGLE:
-> > +             ret =3D ad7944_3wire_cs_mode_conversion(adc, chan);
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             break;
-> > +     case AD7944_SPI_MODE_CHAIN:
-> > +             return -EOPNOTSUPP;
->
-> This mode is not really supported for now and in theory we can't really h=
-ave
-> adc->spi_mode =3D AD7944_SPI_MODE_CHAIN, right? So, I would just make thi=
-s the
-> 'default' branch and not care about chain mode (implementing it when addi=
-ng it).
+> > * Move pidfds from the anonymous inode infrastructure to a tiny
+> >   pseudo filesystem. This will unblock further work that we weren't able
+> >   to do simply because of the very justified limitations of anonymous
+> >   inodes. Moving pidfds to a tiny pseudo filesystem allows for statx on
+> >   pidfds to become useful for the first time. They can now be compared
+> >   by inode number which are unique for the system lifetime.
+> 
+> So I obviously pulled this already, but I did have one question - we
+> don't make nsfs conditional, and I'm not convinced we should make
+> pidfs conditional either.
+> 
+> I think (and *hope*) all the semantic annoyances got sorted out, and I
+> don't think there are any realistic size advantages to not enabling
+> CONFIG_FS_PID.
+> 
+> Is there some fundamental reason for that config entry to exist?
 
-The compiler was happy with this, but yeah, default: is probably safer.
+No, the size of struct pid was the main reason but I don't think it
+matters. A side-effect was that we could easily enforce 64bit inode
+numbers. But realistically it's trivial enough to workaround. Here's a
+patch for what I think is pretty simple appended. Does that work?
 
-..
+--hi544pxirl5tf4xv
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment;
+	filename="0001-pidfs-remove-config-option.patch"
 
-> > +     if (!adc->cnv && adc->spi_mode =3D=3D AD7944_SPI_MODE_DEFAULT)
-> > +             return dev_err_probe(&spi->dev, -EINVAL, "CNV GPIO is
-> > required\n");
-> > +     else if (adc->cnv && adc->spi_mode !=3D AD7944_SPI_MODE_DEFAULT)
-> > +             return dev_err_probe(&spi->dev, -EINVAL,
-> > +                                  "CNV GPIO in single and chain mode i=
-s not
-> > currently supported\n");
-> > +
->
-> Redundant else...
+From ce1c50a3d8d569be338f2a06f5e8470603038363 Mon Sep 17 00:00:00 2001
+From: Christian Brauner <brauner@kernel.org>
+Date: Tue, 12 Mar 2024 10:39:44 +0100
+Subject: [PATCH] pidfs: remove config option
 
-yup
+Enable pidfs unconditionally. There's no real reason not do to it. One
+of the really nice properties of pidfs is that we have unique inode
+numbers for the system lifetime which allows userspace to do a bunch of
+elegant things. So we should retain that property. So on arches where
+inode number in the kernel are only 32bit we simply use get_next_ino()
+and print the full value into fdinfo. On 64bit we do it cleanly and put
+this into stat where it belongs.
 
->
-> >       adc->turbo =3D devm_gpiod_get_optional(dev, "turbo", GPIOD_OUT_LO=
-W);
-> >       if (IS_ERR(adc->turbo))
-> >               return dev_err_probe(dev, PTR_ERR(adc->turbo),
-> > @@ -369,6 +486,10 @@ static int ad7944_probe(struct spi_device *spi)
-> >               return dev_err_probe(dev, -EINVAL,
-> >                       "cannot have both turbo-gpios and adi,always-turb=
-o\n");
-> >
-> > +     if (adc->spi_mode =3D=3D AD7944_SPI_MODE_CHAIN && adc->always_tur=
-bo)
-> > +             return dev_err_probe(dev, -EINVAL,
-> > +                     "cannot have both chain mode and always turbo\n")=
-;
-> > +
->
->
-> I'm fine in having this now but shouldn't we only have the above when we =
-do support
-> chain mode? A bit odd having it when we don't even allow chain mode.
->
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ fs/Kconfig            |  7 ------
+ fs/pidfs.c            | 50 ++++++-------------------------------------
+ include/linux/pid.h   |  4 +---
+ include/linux/pidfs.h |  1 -
+ kernel/pid.c          |  4 ----
+ 5 files changed, 7 insertions(+), 59 deletions(-)
 
-Yeah, we could wait to add this. It seemed like something easy to
-overlook though if we don't add chain mode right away, so I just went
-ahead and added it now.
+diff --git a/fs/Kconfig b/fs/Kconfig
+index f3dbd84a0e40..89fdbefd1075 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -174,13 +174,6 @@ source "fs/proc/Kconfig"
+ source "fs/kernfs/Kconfig"
+ source "fs/sysfs/Kconfig"
+ 
+-config FS_PID
+-	bool "Pseudo filesystem for process file descriptors"
+-	depends on 64BIT
+-	default y
+-	help
+-	  Pidfs implements advanced features for process file descriptors.
+-
+ config TMPFS
+ 	bool "Tmpfs virtual memory file system support (former shm fs)"
+ 	depends on SHMEM
+diff --git a/fs/pidfs.c b/fs/pidfs.c
+index 8fd71a00be9c..677fa2f1bbbb 100644
+--- a/fs/pidfs.c
++++ b/fs/pidfs.c
+@@ -16,17 +16,6 @@
+ 
+ #include "internal.h"
+ 
+-static int pidfd_release(struct inode *inode, struct file *file)
+-{
+-#ifndef CONFIG_FS_PID
+-	struct pid *pid = file->private_data;
+-
+-	file->private_data = NULL;
+-	put_pid(pid);
+-#endif
+-	return 0;
+-}
+-
+ #ifdef CONFIG_PROC_FS
+ /**
+  * pidfd_show_fdinfo - print information about a pidfd
+@@ -89,6 +78,9 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
+ 		for (i = ns->level + 1; i <= pid->level; i++)
+ 			seq_put_decimal_ll(m, "\t", pid->numbers[i].nr);
+ 	}
++#endif
++#if BITS_PER_LONG == 32
++	seq_put_decimal_ll(m, "\nPidfsId:\t", pid->ino);
+ #endif
+ 	seq_putc(m, '\n');
+ }
+@@ -120,7 +112,6 @@ static __poll_t pidfd_poll(struct file *file, struct poll_table_struct *pts)
+ }
+ 
+ static const struct file_operations pidfs_file_operations = {
+-	.release	= pidfd_release,
+ 	.poll		= pidfd_poll,
+ #ifdef CONFIG_PROC_FS
+ 	.show_fdinfo	= pidfd_show_fdinfo,
+@@ -131,14 +122,9 @@ struct pid *pidfd_pid(const struct file *file)
+ {
+ 	if (file->f_op != &pidfs_file_operations)
+ 		return ERR_PTR(-EBADF);
+-#ifdef CONFIG_FS_PID
+ 	return file_inode(file)->i_private;
+-#else
+-	return file->private_data;
+-#endif
+ }
+ 
+-#ifdef CONFIG_FS_PID
+ static struct vfsmount *pidfs_mnt __ro_after_init;
+ 
+ /*
+@@ -200,6 +186,9 @@ static void pidfs_init_inode(struct inode *inode, void *data)
+ 	inode->i_mode |= S_IRWXU;
+ 	inode->i_op = &pidfs_inode_operations;
+ 	inode->i_fop = &pidfs_file_operations;
++#if BITS_PER_LONG == 32
++	inode->i_ino = get_next_ino();
++#endif
+ }
+ 
+ static void pidfs_put_data(void *data)
+@@ -261,30 +250,3 @@ void __init pidfs_init(void)
+ 	if (IS_ERR(pidfs_mnt))
+ 		panic("Failed to mount pidfs pseudo filesystem");
+ }
+-
+-bool is_pidfs_sb(const struct super_block *sb)
+-{
+-	return sb == pidfs_mnt->mnt_sb;
+-}
+-
+-#else /* !CONFIG_FS_PID */
+-
+-struct file *pidfs_alloc_file(struct pid *pid, unsigned int flags)
+-{
+-	struct file *pidfd_file;
+-
+-	pidfd_file = anon_inode_getfile("[pidfd]", &pidfs_file_operations, pid,
+-					flags | O_RDWR);
+-	if (IS_ERR(pidfd_file))
+-		return pidfd_file;
+-
+-	get_pid(pid);
+-	return pidfd_file;
+-}
+-
+-void __init pidfs_init(void) { }
+-bool is_pidfs_sb(const struct super_block *sb)
+-{
+-	return false;
+-}
+-#endif
+diff --git a/include/linux/pid.h b/include/linux/pid.h
+index c79a0efd0258..ae0c0fd943c4 100644
+--- a/include/linux/pid.h
++++ b/include/linux/pid.h
+@@ -55,10 +55,8 @@ struct pid
+ 	refcount_t count;
+ 	unsigned int level;
+ 	spinlock_t lock;
+-#ifdef CONFIG_FS_PID
+ 	struct dentry *stashed;
+-	unsigned long ino;
+-#endif
++	u64 ino;
+ 	/* lists of tasks that use this pid */
+ 	struct hlist_head tasks[PIDTYPE_MAX];
+ 	struct hlist_head inodes;
+diff --git a/include/linux/pidfs.h b/include/linux/pidfs.h
+index 40dd325a32a6..75bdf9807802 100644
+--- a/include/linux/pidfs.h
++++ b/include/linux/pidfs.h
+@@ -4,6 +4,5 @@
+ 
+ struct file *pidfs_alloc_file(struct pid *pid, unsigned int flags);
+ void __init pidfs_init(void);
+-bool is_pidfs_sb(const struct super_block *sb);
+ 
+ #endif /* _LINUX_PID_FS_H */
+diff --git a/kernel/pid.c b/kernel/pid.c
+index 99a0c5eb24b8..8ced4e208c22 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -66,13 +66,11 @@ int pid_max = PID_MAX_DEFAULT;
+ 
+ int pid_max_min = RESERVED_PIDS + 1;
+ int pid_max_max = PID_MAX_LIMIT;
+-#ifdef CONFIG_FS_PID
+ /*
+  * Pseudo filesystems start inode numbering after one. We use Reserved
+  * PIDs as a natural offset.
+  */
+ static u64 pidfs_ino = RESERVED_PIDS;
+-#endif
+ 
+ /*
+  * PID-map pages start out as NULL, they get allocated upon
+@@ -280,10 +278,8 @@ struct pid *alloc_pid(struct pid_namespace *ns, pid_t *set_tid,
+ 	spin_lock_irq(&pidmap_lock);
+ 	if (!(ns->pid_allocated & PIDNS_ADDING))
+ 		goto out_unlock;
+-#ifdef CONFIG_FS_PID
+ 	pid->stashed = NULL;
+ 	pid->ino = ++pidfs_ino;
+-#endif
+ 	for ( ; upid >= pid->numbers; --upid) {
+ 		/* Make the PID visible to find_pid_ns. */
+ 		idr_replace(&upid->ns->idr, pid, upid->nr);
+-- 
+2.43.0
+
+
+--hi544pxirl5tf4xv--
 
