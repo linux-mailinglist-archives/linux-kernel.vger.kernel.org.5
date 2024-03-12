@@ -1,124 +1,99 @@
-Return-Path: <linux-kernel+bounces-100357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18B6B87963F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:29:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E5487961B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 15:27:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C80F82819AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:29:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11993B2388D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 14:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6537E10F;
-	Tue, 12 Mar 2024 14:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286DE7B3C7;
+	Tue, 12 Mar 2024 14:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WYfd5Viz"
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S2E2gY86"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D6F7D070;
-	Tue, 12 Mar 2024 14:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF9279933;
+	Tue, 12 Mar 2024 14:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710253693; cv=none; b=qStEmyQgf/ry9/Z25IVr3lNgPPWUBoUxCYx4pzbCeGN0pB2G6wh9VAWWAClboCVNOpGhhRucoe6P/JtPH3FyjyLWvEu2teBL/0yAQfaVTfeMZjqB3brwyyNBr1iFJiP7PLwQ5EXUY9RZxZZUY7XNDKI+monVzZclBbSFJVX5d1A=
+	t=1710253660; cv=none; b=ib9sZtXoXAka08jHI1sIZ3i2zZx7t58A1dUfrotRaj/qmt2VNYRFwz4WEUfeLhdRjJcK1WmqtUP1YpnE9L7Tc2Nc8ZVaZPDTkcXELnHrIL3lBpgXt/3dSYzljmQ67QpT+KpuLBqLDFftLyyMb2suv77QfvbVkD82rvjIXuP4q8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710253693; c=relaxed/simple;
-	bh=dvrjP6FyooMZfH9tP3r/k0q7Zxk1MxNigKI5R5WFDZg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hhyf7MtLFkCiYFUNnZM7UPiS2LskCawqE59jVjvqc/hihAVF+nUzHMk7VieWQW0xQItfruXX+pyOUWwhvEFwUQADNGL12mglL2Lu7xPS8lsSuxSZvP/h3h8MEVFFHFQUOx9SOztU1VGjRIRmsOj88PIsY93GSBMjWJY/IOlZOcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WYfd5Viz; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1710253681; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=ioFYp50r+AC0yjO8FJo0KTmmSlkoNb91N+pNLCEdIRU=;
-	b=WYfd5VizNb9SE3HUzl40ZHd1jy2A9TSu6Z5YR0n2wMQSgBPGdD3OSGf4BS6n2mHE+WWTAjkyWXaw74hKvJpCLlA6k/n47mAsbLqNzTLY5V6o28be0H+K0/HP8f8U+axSUt5zh0143JOM0xSThBK8odwgmRTXvlO/+sfX0kxHDbM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W2M60RJ_1710253679;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W2M60RJ_1710253679)
-          by smtp.aliyun-inc.com;
-          Tue, 12 Mar 2024 22:28:01 +0800
-From: Wen Gu <guwen@linux.alibaba.com>
-To: wintera@linux.ibm.com,
-	twinkler@linux.ibm.com,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com,
-	svens@linux.ibm.com,
-	alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH net-next v3 01/11] net/smc: adapt SMC-D device dump for Emulated-ISM
-Date: Tue, 12 Mar 2024 22:27:33 +0800
-Message-Id: <20240312142743.41406-2-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20240312142743.41406-1-guwen@linux.alibaba.com>
-References: <20240312142743.41406-1-guwen@linux.alibaba.com>
+	s=arc-20240116; t=1710253660; c=relaxed/simple;
+	bh=bvndcJKgC/kiItScSENHsgi4u+xxjLobnUDEB/IFVlE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ftna7HSxdqos779ukCNHpDew6Pc0drzvZn0qafugcWEadYqI4GpvC2/94k+73nmU30yk+xWKrKAc9L7B/g1ZbG+wxtDdXGZgmj8Z32vZW6NRdfkvDjx5ZhIKgRyy2GJWq9WMFsB5f6f/S3LlibLIjTK+lwklQVdCsMDa0xh64mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S2E2gY86; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F516C433C7;
+	Tue, 12 Mar 2024 14:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710253659;
+	bh=bvndcJKgC/kiItScSENHsgi4u+xxjLobnUDEB/IFVlE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S2E2gY86B6K2Qx/XA1LALB2vephl9VjNUEbRksClTVaBq45YMp6q79KYThBBx61Ab
+	 PTDkos2aNFWq1vrMKcv9+jOWqcHuiiH9Vi4YyL8zdv5o/zavVhgP3tj9NpfwCjJvSS
+	 rUMEq5X1k76Wc7fhC6vz35y1Ktznt8h1tWlRammGISbYubSxeLYxITDQifvY2zyuqS
+	 DoJtv7oXzr7f3+5M7neQzqlbm/lbv7hF+x3yn18AdA0nMkyu02eTvN5NyAz+UCt9us
+	 x9ttdkV9KZpHzkUPbKMrfSz5haoMImkYY19RF6Dt+7RZhLdi6RTmOvbGkHog+rYlfR
+	 R26WMuaQhKAtg==
+Date: Tue, 12 Mar 2024 15:27:33 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	Miklos Szeredi <mszeredi@redhat.com>, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+Message-ID: <20240312-erstrahlen-lauch-9fc2b6ba3829@brauner>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <2f598709-fccb-4364-bf15-f9c171b440aa@wdc.com>
+ <20240311-zugeparkt-mulden-48b143bf51e0@brauner>
+ <kzhjrn5kfggurz46wahncz4smekj7aizmhoe4sqphxt44vyfdm@3fgozft33f5u>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <kzhjrn5kfggurz46wahncz4smekj7aizmhoe4sqphxt44vyfdm@3fgozft33f5u>
 
-The introduction of Emulated-ISM requires adaptation of SMC-D device
-dump. Software implemented non-PCI device (loopback-ism) should be
-handled correctly and the CHID reserved for Emulated-ISM should be got
-from smcd_ops interface instead of PCI information.
+On Mon, Mar 11, 2024 at 04:15:04PM -0400, Kent Overstreet wrote:
+> On Mon, Mar 11, 2024 at 02:43:11PM +0100, Christian Brauner wrote:
+> > On Mon, Mar 11, 2024 at 08:12:33AM +0000, Johannes Thumshirn wrote:
+> > > On 08.03.24 03:29, Kent Overstreet wrote:
+> > > > Add a new statx field for (sub)volume identifiers, as implemented by
+> > > > btrfs and bcachefs.
+> > > > 
+> > > > This includes bcachefs support; we'll definitely want btrfs support as
+> > > > well.
+> > > 
+> > > For btrfs you can add the following:
+> > > 
+> > > 
+> > >  From 82343b7cb2a947bca43234c443b9c22339367f68 Mon Sep 17 00:00:00 2001
+> > > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> > > Date: Mon, 11 Mar 2024 09:09:36 +0100
+> > > Subject: [PATCH] btrfs: provide subvolume id for statx
+> > > 
+> > > Add the inode's subvolume id to the newly proposed statx subvol field.
+> > > 
+> > > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> > > ---
+> > 
+> > Thanks, will fold, once I hear from Josef.
+> 
+> Can we try to make 6.9? Need to know what to put in the manpage, and
+> I've got userspace tooling that wants to use it.
 
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
----
- net/smc/smc_ism.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
-index ac88de2a06a0..b6eca4231913 100644
---- a/net/smc/smc_ism.c
-+++ b/net/smc/smc_ism.c
-@@ -252,12 +252,11 @@ static int smc_nl_handle_smcd_dev(struct smcd_dev *smcd,
- 	char smc_pnet[SMC_MAX_PNETID_LEN + 1];
- 	struct smc_pci_dev smc_pci_dev;
- 	struct nlattr *port_attrs;
-+	struct device *device;
- 	struct nlattr *attrs;
--	struct ism_dev *ism;
- 	int use_cnt = 0;
- 	void *nlh;
- 
--	ism = smcd->priv;
- 	nlh = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
- 			  &smc_gen_nl_family, NLM_F_MULTI,
- 			  SMC_NETLINK_GET_DEV_SMCD);
-@@ -272,7 +271,15 @@ static int smc_nl_handle_smcd_dev(struct smcd_dev *smcd,
- 	if (nla_put_u8(skb, SMC_NLA_DEV_IS_CRIT, use_cnt > 0))
- 		goto errattr;
- 	memset(&smc_pci_dev, 0, sizeof(smc_pci_dev));
--	smc_set_pci_values(to_pci_dev(ism->dev.parent), &smc_pci_dev);
-+	device = smcd->ops->get_dev(smcd);
-+	if (device->parent)
-+		smc_set_pci_values(to_pci_dev(device->parent), &smc_pci_dev);
-+	if (smc_ism_is_emulated(smcd)) {
-+		smc_pci_dev.pci_pchid = smc_ism_get_chid(smcd);
-+		if (!device->parent)
-+			snprintf(smc_pci_dev.pci_id, sizeof(smc_pci_dev.pci_id),
-+				 "%s", dev_name(device));
-+	}
- 	if (nla_put_u32(skb, SMC_NLA_DEV_PCI_FID, smc_pci_dev.pci_fid))
- 		goto errattr;
- 	if (nla_put_u16(skb, SMC_NLA_DEV_PCI_CHID, smc_pci_dev.pci_pchid))
--- 
-2.32.0.3.g01195cf9f
-
+Hm, I understand that you want to see this done but I think it's just
+too tight. If this would've been Acked last week then we could've done
+it the second week of the merge window. So my reaction is to wait for
+v6.10. What do others think?
 
