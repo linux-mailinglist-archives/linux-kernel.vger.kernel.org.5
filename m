@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-100172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-100173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA41A8792F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F01A8792F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 12:27:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90F531F22316
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:26:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D61D1F23780
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Mar 2024 11:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A8E79B97;
-	Tue, 12 Mar 2024 11:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD21579B7A;
+	Tue, 12 Mar 2024 11:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mAOcmBnS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZJsckACC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C03969D0A;
-	Tue, 12 Mar 2024 11:26:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E571A78B45;
+	Tue, 12 Mar 2024 11:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710242768; cv=none; b=XfdxfUK+mEXs8cVIMC4pfrKdlWj6LMxJsx/7IjIjsAzaFC7mswiWMxfP9pyDFYdY7gj6swgnGInXxElNhpR2m0cRRIM7OZdTKdT6zmJBJ20Hos2uXRJMPLJYiUHoSkxWDiMwGgceSN/cg6WJyd71nngazjWuZyXjHkg4sAm+Bqk=
+	t=1710242831; cv=none; b=Mu0Mse5pDfR7A4eWr2rGihNSORll5cW4gcjUUNIal0OKRSWMW0uY+bdDBufkopoYvH7gstBSBHpaNP86ESo6qKNRHnuDCRZbDTNIXXB/y2+z7wmk4I6f607BxX4PG1l9S+boFDX+Rp0j2z72dEEseEubqQgaT6rQjuMLfrzPamc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710242768; c=relaxed/simple;
-	bh=r7ijxsc0kX+95MwF72Z4rb62mj0KwwtjWWFJxlcPRj0=;
+	s=arc-20240116; t=1710242831; c=relaxed/simple;
+	bh=D760xegi0eUswJpM84bSMHbMLVbnjfhI2zMX7a6GK6Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mG4RWLwkFaiqJlHi/hnWojSdPqGnunOgWR904HL07s0r7SMCVCajYBpKriAoF4fBWxANc+bYLrOA1VdTEgzX8e3mh5DjDezhlZhU6z4jSDg5m+shuLjn9f6YODA/Ddyz6nFOSKtFD28JxIh0DilZJGGqRIi2UL7Ww502rT68WO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mAOcmBnS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FCACC433F1;
-	Tue, 12 Mar 2024 11:26:05 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=H5F81i1TrSdGnvu84Q754/QPpmMauz+2qPQ6ENuM+drU50kYAd2RX2lUIuiZisZJRgpn7b7hDIQaD0sZJeeLYaMapHWMwZ86WSkbMoRzdHb/ZJ9JHY3GBaPkVhI063O26oFAn+a3iRHDihJ4jOr0DyZtxg1WXWp022we8HEaGF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZJsckACC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A249BC433C7;
+	Tue, 12 Mar 2024 11:27:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710242767;
-	bh=r7ijxsc0kX+95MwF72Z4rb62mj0KwwtjWWFJxlcPRj0=;
+	s=k20201202; t=1710242830;
+	bh=D760xegi0eUswJpM84bSMHbMLVbnjfhI2zMX7a6GK6Y=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mAOcmBnSdxiTAwm2CP6usC1N1ZwRn32MApvyOiqs0M1BVbgRQF4OZ6e6gmhyGjTbC
-	 a7fkyCkt4l9p4+8bnOS49aF9b+0H9r34HXYTTtxk6tOICrULw0yeZmJb+sT9Tmtgf7
-	 Lco0QnHK1KFJ/ustHga7PG84sUqhy7Y11S6gzNWzTjh4Zf5qkgCw9QXaxc+YcWGox6
-	 VtaxyvAj01g92i5xoXLIaboueXKFfDRGZo1UJBnnZ3GyUfr+rq2WJZjT7feEHOLGKY
-	 1VkTW73wdKZSYsAF7PXYyM1yY3cUgcyE6nrWjHkp/7ido2St9ahCEqoWnGO0LMenxK
-	 gnLAUCYgCxJwA==
-Message-ID: <fd6612ec-11e2-4f25-85f4-572e664b4480@kernel.org>
-Date: Tue, 12 Mar 2024 12:26:05 +0100
+	b=ZJsckACC+mg3tw6x0Qo1xS0gtXt5583MlikbJyo3hzUfJznSJNerBURRBFaUVkgH/
+	 k3f9bTok5vHmJ9B93XnzbG0vRt/DryuRypsVmnZs1y8GJaTDil2gbb9i8+DDNMp5m7
+	 6EsEzRQp9Fh0BU3iqtQKdhnWWIt02be40nulFI7CVroKE/yTGF1BcQJZ5dXzOAsHv3
+	 b18RTEO+vd/K+jQiLV63fifEo5XK4V/dcTAQ5rlJf8BB6l0oiTKQqc7Zl4kg5RYlxD
+	 U77+UMp4kWHa+H4oVt4W5Ox2YDEuA6kPiKGsP4cijrHR/0lqfrQORtAscwmbHM4H4Y
+	 yhMEclsAh0ViA==
+Message-ID: <204e2fc3-19f5-45c9-b313-fdc81f38ec70@kernel.org>
+Date: Tue, 12 Mar 2024 12:27:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,15 +49,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: arm: sunxi: add t95 compatible string to
- list of known boards
+Subject: Re: [PATCH 3/3] dts: arm64: sunxi: add initial dts for T95 AXP313 tv
+ box
 Content-Language: en-US
 To: Kamil Kasperski <ressetkk@gmail.com>, wens@csie.org,
  jernej.skrabec@gmail.com, samuel@sholland.org
 Cc: linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
  linux-kernel@vger.kernel.org
 References: <20240311174750.6428-1-ressetkk@gmail.com>
- <20240311174750.6428-3-ressetkk@gmail.com>
+ <20240311174750.6428-4-ressetkk@gmail.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -102,38 +102,55 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240311174750.6428-3-ressetkk@gmail.com>
+In-Reply-To: <20240311174750.6428-4-ressetkk@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 11/03/2024 18:47, Kamil Kasperski wrote:
-> T95 is a series of cheap TV boxes with unknown vendor.
-> Add compatible string for this board/SoC to the list of known boards.
+> T95 is a most commonly known for being a box with a pre-installed malware.
+> It uses Allwinner H616 and comes with eMMC and DDR3 memory.
+> 
+> Those TV boxes usually come with common hardware:
+> - Allwinner H616 SoC
+> - 2/4 GB DDR3 SDRAM (Hynix H5TQ2G43BFR)
+> - 16/32/64 GB eMMC
+> - microSD slot
+> - AXP305 or AXP313 PMIC depending on board revision
+> - 3.5mm A/V output
+> - HDMI port
+> - 2x USB 2.0 ports
+> - 100M ETH using Internal PHY
+> - 7-segment display
+> - DC 5V barrel jack port
+> 
+> The board contains holes hor UART header wired to &uart0.
+> From the DRAM specification its operation voltage is 1.5V.
 > 
 > Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
+
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
+
 > ---
->  Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
+>  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+>  .../dts/allwinner/sun50i-h616-t95-axp313.dts  | 138 ++++++++++++++++++
+>  2 files changed, 139 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-t95-axp313.dts
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+> index 21149b346a60..183dcdea40ad 100644
+> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> @@ -43,6 +43,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-t95-axp313.dtb
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+'t' goes before 'x'.
 
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline), work on fork of kernel
-(don't, instead use mainline) or you ignore some maintainers (really
-don't). Just use b4 and everything should be fine, although remember
-about `b4 prep --auto-to-cc` if you added new patches to the patchset.
-
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time, thus I will skip this patch entirely till you follow
-the process allowing the patch to be tested.
-
-Please kindly resend and include all necessary To/Cc entries.
-
+Keep the order.
 
 Best regards,
 Krzysztof
